@@ -1,6 +1,6 @@
 ///
-///  @file    bang_cmd.c
-///  @brief   Execute ! command.
+///  @file    a_cmd.c
+///  @brief   Execute A command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -39,16 +39,16 @@
 
 
 ///
-///  @brief    Execute ! command (comment/tag).
+///  @brief    Execute A command (append next page of input file).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bang(void)
+void exec_A(void)
 {
-    check_mod(MOD_A);                   // Allow @!//
+    check_mod(MOD_C);                   // Allow @A//
 
-    get_cmd('!', 1, &cmd);
+    get_cmd(ESC, 1, &cmd);
 }
 

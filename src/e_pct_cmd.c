@@ -1,6 +1,6 @@
 ///
-///  @file    bang_cmd.c
-///  @brief   Execute ! command.
+///  @file    e%_cmd.c
+///  @brief   Execute E%q command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,16 +40,17 @@
 
 
 ///
-///  @brief    Execute ! command (comment/tag).
+///  @brief    Execute E%q command (create file with contents of Q-register).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bang(void)
+void exec_E_pct(void)
 {
-    check_mod(MOD_A);                   // Allow @!//
+    cmd.qreg = true;
+    cmd.qlocal = false;
 
-    get_cmd('!', 1, &cmd);
+    get_cmd(ESC, 1, &cmd);
 }
 

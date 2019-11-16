@@ -44,6 +44,6 @@
 
 void exec_EM(void)
 {
-    print_err(E_NIH);                   // Yes, we can't do that
+    print_err(E_NIH);                   // We don't do magtapes
 }
 

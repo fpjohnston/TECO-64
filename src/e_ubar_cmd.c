@@ -47,8 +47,6 @@
 
 void exec_E_ubar(void)
 {
-    check_mod(MOD_A | MOD_C);           // E_ allows @ and :
-
-    get_cmd(ESC, 1, &command);
+    get_cmd(ESC, 1, &cmd);
 }
 

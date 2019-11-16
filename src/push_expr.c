@@ -255,12 +255,40 @@ static void reduce3(void)
     {
         switch (e2->item)
         {
-            case '+': e3->item += e1->item; break;
-            case '-': e3->item -= e1->item; break;
-            case '*': e3->item *= e1->item; break;
-            case '/': e3->item /= e1->item; break;
-            case '&': e3->item &= e1->item; break;
-            case '#': e3->item |= e1->item; break;
+            case '+':
+                e3->item += e1->item;
+
+                break;
+
+            case '-':
+                e3->item -= e1->item;
+
+                break;
+
+            case '*':
+                e3->item *= e1->item;
+
+                break;
+
+            case '/':
+                if (e1->item == 0)
+                {
+                    print_err(E_IFE);   // Can't divide by zero!
+                }
+
+                e3->item /= e1->item;
+
+                break;
+
+            case '&':
+                e3->item &= e1->item;
+
+                break;
+
+            case '#':
+                e3->item |= e1->item;
+
+                break;
 
             default:
                 print_err(E_ARG);       // Improper arguments

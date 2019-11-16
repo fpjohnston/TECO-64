@@ -42,6 +42,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -50,6 +51,30 @@
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
+
+struct f_cmds
+{
+    int c2;
+    void (*exec)(void);
+    int nargs;
+    int mflags;
+};
+    
+static struct f_cmds f_cmds[] =
+{
+    { 'B',  exec_FB,       1, MOD_ACMN },
+    { 'C',  exec_FC,       0, MOD_ACN  },
+    { 'D',  exec_FD,       0, MOD_AN   },
+    { 'K',  exec_FK,       0, MOD_AN   },
+    { 'N',  exec_FN,       1, MOD_AN   },
+    { 'R',  exec_FR,       1, MOD_AMN  },
+    { 'S',  exec_FS,       0, MOD_MN   },
+    { '\'', exec_F_apos,   1, MOD_NONE },
+    { '<',  exec_F_langle, 1, MOD_NONE },
+    { '>',  exec_F_rangle, 1, MOD_NONE },
+    { '_',  exec_F_ubar,   1, MOD_AN   },
+    { '|',  exec_F_vbar,   1, MOD_NONE },
+};
 
 
 ///
@@ -63,91 +88,29 @@ void exec_F(void)
 {
     int c = fetch_cmd();                // Get character following F
 
-    command.subcmd = c;
-
-    switch (c)
+    for (uint i = 0; i < countof(f_cmds); ++i)
     {
-        case EOF:
-            break;
+        if (f_cmds[i].c2 == toupper(c))
+        {
+            cmd.c2 = c;
 
-        case 'B':                       // FB
-        case 'b':
-            exec_FB();
+            check_mod(f_cmds[i].mflags);
 
-            break;
+            (*f_cmds[i].exec)();
 
-        case 'C':                       // FC
-        case 'c':
-            exec_FC();
-
-            break;
-
-        case 'D':                       // FD
-        case 'd':
-            exec_FD();
-
-            break;
-
-        case 'K':                       // FK
-        case 'k':
-            exec_FK();
-
-            break;
-
-        case 'N':                       // FN
-        case 'n':
-            exec_FN();
-
-            break;
-
-        case 'R':                       // FR
-        case 'r':
-            exec_FR();
-
-            break;
-
-        case 'S':                       // FS
-        case 's':
-            exec_FS();
-
-            break;
-
-        case '\'':                      // F' (apostrophe)
-            exec_F_apos();
-
-            break;
-
-        case '<':                       // F< (left angle)
-            exec_F_langle();
-
-            break;
-
-        case '>':                       // F> (right angle)
-            exec_F_rangle();
-
-            break;
-
-        case '_':                       // F_ (underscore)
-            exec_F_ubar();
-
-            break;
-
-        case '|':                       // F| (vertical bar)
-            exec_F_vbar();
-
-            break;
-
-        default:
-            printc_err(E_IFC, c);       // Illegal F character
+            return;
+        }
     }
+
+    printc_err(E_IFC, c);               // Illegal F character
 }
 
 
 void exec_FB(void)
 {
-    check_mod(MOD_A | MOD_C);
+    check_mod(MOD_AC);
 
-    get_cmd(ESC, 1, &command);
+    get_cmd(ESC, 1, &cmd);
 }
 
 

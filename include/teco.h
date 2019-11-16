@@ -27,6 +27,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     !defined(_TECO_H)
+
+#define _TECO_H
+
 #if     !defined(_SETJMP_H)
 #include <setjmp.h>
 #endif
@@ -49,11 +53,22 @@ enum expr_type
 
 enum mod_flag
 {
-    MOD_A = 1,                          // @ allowed
-    MOD_C = 2,                          // : allowed
-    MOD_D = 4,                          // :: allowed
-    MOD_M = 8,                          // m argument allowed
-    MOD_N = 16                          // n argument allowed
+    MOD_NONE = 0,                       // No modifiers allowed
+    MOD_A    = 1,                       // @ allowed
+    MOD_C    = 2,                       // : allowed
+    MOD_D    = 4,                       // :: allowed
+    MOD_M    = 8,                       // m argument allowed
+    MOD_N    = 16,                      // n argument allowed
+    MOD_Q    = 32,                      // Q-reg. required
+    MOD_AC   = MOD_A | MOD_C,           // @ and : allowed
+    MOD_ACN  = MOD_A | MOD_C | MOD_N,   // @, :, and n allowed
+    MOD_AN   = MOD_A | MOD_N,           // @ and n allowed
+    MOD_ACMN = MOD_A | MOD_C | MOD_M | MOD_N, // @, :, m, n, allowed
+    MOD_AMN  = MOD_A | MOD_M | MOD_N,   // @, m, and n allowed
+    MOD_ACQ  = MOD_A | MOD_C | MOD_Q,   // @, : allowed, Q-reg. required
+    MOD_CDN  = MOD_C | MOD_D | MOD_N,   // :, ::, and n allowed
+    MOD_CN   = MOD_C | MOD_N,           // : and n allowed
+    MOD_MN   = MOD_M | MOD_N,           // m and n allowed
 };
 
 struct qreg
@@ -73,8 +88,10 @@ struct tstr
 
 struct cmd
 {
-    char name;                  // Command name
-    char sub;                   // Sub command (or NUL)
+    char c1;                    // 1st character of command name
+    char c2;                    // 2nd character of command name (or NUL)
+    char qreg;                  // Q-register, if any
+    char qlocal;                // Q-register is local (not global)
     uint level;                 // Nesting level
     struct tstr arg1;           // 1st argument
     struct tstr arg2;           // 2nd argument
@@ -232,3 +249,5 @@ extern int start_cmd(void);
 extern void store_cmd(int c);
 
 extern void unfetch_cmd(int c);
+
+#endif  // !defined(_TECO_H)

@@ -47,8 +47,8 @@
 
 void exec_F_ubar(void)
 {
-    check_mod(MOD_A);                   // F_ allows @
+    check_mod(MOD_A);                   // Allow @F_//
 
-    get_cmd(ESC, 2, &command);
+    get_cmd(ESC, 2, &cmd);
 }
 

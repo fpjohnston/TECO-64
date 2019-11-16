@@ -1,6 +1,6 @@
 ///
-///  @file    bang_cmd.c
-///  @brief   Execute ! command.
+///  @file    eq_cmd.c
+///  @brief   Execute EQ command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,16 +40,16 @@
 
 
 ///
-///  @brief    Execute ! command (comment/tag).
+///  @brief    Execute EQ command (read file into Q-register).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bang(void)
+void exec_EQ(void)
 {
-    check_mod(MOD_A);                   // Allow @!//
+    cmd.qreg = true;
+    cmd.qlocal = false;
 
-    get_cmd('!', 1, &cmd);
+    get_cmd(ESC, 1, &cmd);
 }
-

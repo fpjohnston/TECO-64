@@ -1,6 +1,6 @@
 ///
-///  @file    bang_cmd.c
-///  @brief   Execute ! command.
+///  @file    en_cmd.c
+///  @brief   Execute EN command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -39,16 +39,14 @@
 
 
 ///
-///  @brief    Execute ! command (comment/tag).
+///  @brief    Execute EN command (wildcard filename lookup).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bang(void)
+void exec_EN(void)
 {
-    check_mod(MOD_A);                   // Allow @!//
-
-    get_cmd('!', 1, &cmd);
+    get_cmd(ESC, 1, &cmd);
 }
 

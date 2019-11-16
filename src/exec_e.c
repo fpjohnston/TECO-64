@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,34 +37,43 @@
 #include "errors.h"
 #include "exec.h"
 
-static void (*commands[])(void) =
+struct e_cmds
 {
-    exec_EA,                        // A
-    exec_EB,                        // B
-    exec_EC,                        // C
-    exec_ED,                        // D
-    exec_EE,                        // E
-    exec_EF,                        // F
-    exec_EG,                        // G
-    exec_EH,                        // H
-    exec_EI,                        // I
-    exec_EJ,                        // J
-    exec_EK,                        // K
-    exec_EL,                        // L
-    exec_EM,                        // M
-    exec_EN,                        // N
-    exec_EO,                        // O
-    exec_EP,                        // P
-    exec_EQ,                        // Q
-    exec_ER,                        // R
-    exec_ES,                        // S
-    exec_ET,                        // T
-    exec_EU,                        // U
-    exec_EV,                        // V
-    exec_EW,                        // W
-    exec_EX,                        // X
-    exec_EY,                        // Y
-    exec_EZ,                        // Z
+    void (*exec)(void);
+    int nargs;
+    int mods;
+};
+    
+static struct e_cmds e_cmds[] =
+{
+    { exec_EA,     0, MOD_NONE },
+    { exec_EB,     1, MOD_AC   },
+    { exec_EC,     0, MOD_NONE },
+    { exec_ED,     0, MOD_MN   },
+    { exec_EE,     0, MOD_MN   },
+    { exec_EF,     0, MOD_NONE },
+    { exec_EG,     1, MOD_AC   },
+    { exec_EH,     0, MOD_MN   },
+    { exec_EI,     1, MOD_AC   },
+    { exec_EJ,     0, MOD_MN   },
+    { exec_EK,     0, MOD_NONE },
+    { exec_EL,     1, MOD_ACQ  },
+    { exec_EM,     0, MOD_AC   },
+    { exec_EN,     1, MOD_NONE },
+    { exec_EO,     0, MOD_NONE },
+    { exec_EP,     0, MOD_NONE },
+    { exec_EQ,     1, MOD_ACQ  },
+    { exec_ER,     1, MOD_AC   },
+    { exec_ES,     0, MOD_MN   },
+    { exec_ET,     0, MOD_MN   },
+    { exec_EU,     0, MOD_MN   },
+    { exec_EV,     0, MOD_MN   },
+    { exec_EW,     1, MOD_AC   },
+    { exec_EX,     0, MOD_NONE },
+    { exec_EY,     0, MOD_ACQ  },
+    { exec_EZ,     1, MOD_AC   },
+    { exec_E_pct,  1, MOD_ACQ  },
+    { exec_E_ubar, 1, MOD_AC   },
 };
 
 
@@ -78,64 +88,37 @@ void exec_E(void)
 {
     int c = fetch_cmd();                // Get character following E
 
-    command.subcmd = c;
-
-    switch (c)
+    if (c == EOF)
     {
-        case EOF:
-            break;
-
-        case '%':                       // E%q
-            exec_E_pct();
-
-            break;
-
-        case '_':                       // nE_*
-            exec_E_ubar();
-
-            break;
-
-        default:                        // EA through EZ
-            if (!isalpha(c))
-            {
-                printc_err(E_IEC, c);   // Illegal E character
-            }
-
-            (*commands[toupper(c) - 'A'])();
-
-            break;
+        print_err(E_UTC);               // Unterminated command
     }
+
+    uint i = toupper(c);
+    
+    if (!isalpha(c))
+    {
+        if (c == '%')
+        {
+            i = 'Z' + 1;
+        }
+        else if (c == '_')
+        {
+            i = 'Z' + 2;
+        }
+        else
+        {
+            printc_err(E_IEC, c);       // Illegal E character
+        }
+    }
+
+    cmd.c2 = c;
+    i -= 'A';                           // Make index zero-based
+
+    assert(i < countof(e_cmds));
+
+    int mod = e_cmds[i].mods;           // Get command modifiers
+
+    check_mod(mod);
+
+    (*e_cmds[i].exec)();
 }
-
-
-void exec_EN(void)
-{
-    printf("EN command\r\n");
-
-    skip_arg1(ESC);
-}
-
-
-void exec_EQ(void)
-{
-    printf("EQ command\r\n");
-
-    skip_one();
-}
-
-
-void exec_EY(void)
-{
-    printf("EY command\r\n");
-
-    skip_cmd();
-}
-
-
-void exec_E_pct(void)
-{
-    printf("E%% command\r\n");
-
-    skip_one();
-}
-

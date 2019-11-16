@@ -50,7 +50,7 @@
 
 void exec_ctrl_t(void)
 {
-    check_mod(MOD_C | MOD_N);           // n^T and n:^T are okay
+    check_mod(MOD_CN);                  // Allow n^T and n:^T
 
     if (!operand_expr())                // Operand on top of stack?
     {

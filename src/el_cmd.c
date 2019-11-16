@@ -47,7 +47,5 @@
 
 void exec_EL(void)
 {
-    check_mod(MOD_A);                   // EL allows @
-
-    get_cmd(ESC, 1, &command);
+    get_cmd(ESC, 1, &cmd);
 }

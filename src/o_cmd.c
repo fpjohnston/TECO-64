@@ -1,6 +1,6 @@
 ///
-///  @file    bang_cmd.c
-///  @brief   Execute ! command.
+///  @file    o_cmd.c
+///  @brief   Execute O command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -39,16 +39,16 @@
 
 
 ///
-///  @brief    Execute ! command (comment/tag).
+///  @brief    Execute O command (goto).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bang(void)
+void exec_O(void)
 {
-    check_mod(MOD_A);                   // Allow @!//
+    check_mod(MOD_A);                   // Allow @O//
 
-    get_cmd('!', 1, &cmd);
+    get_cmd(ESC, 1, &cmd);
 }
 

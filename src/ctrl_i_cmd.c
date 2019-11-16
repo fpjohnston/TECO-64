@@ -1,6 +1,6 @@
 ///
-///  @file    bang_cmd.c
-///  @brief   Execute ! command.
+///  @file    ctrl_i_cmd.c
+///  @brief   Execute ^I (CTRL/I) command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -39,16 +39,16 @@
 
 
 ///
-///  @brief    Execute ! command (comment/tag).
+///  @brief    Execute ^I (CTRL/I) command (insert text).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bang(void)
+void exec_ctrl_i(void)
 {
-    check_mod(MOD_A);                   // Allow @!//
+    check_mod(MOD_A);                   // Allow @^I//
 
-    get_cmd('!', 1, &cmd);
+    get_cmd(ESC, 1, &cmd);
 }
 

@@ -47,7 +47,5 @@
 
 void exec_EP(void)
 {
-    check_mod(MOD_A);                   // EP allows @
-
-    printf("EP: switch to secondary input stream\r\n");
+    get_cmd(ESC, 0, &cmd);
 }

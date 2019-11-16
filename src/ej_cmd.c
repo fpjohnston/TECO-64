@@ -73,8 +73,6 @@
 
 void exec_EJ(void)
 {
-    check_mod(MOD_N);                   // Allow nEJ
-
     int n_arg = 0;
 
     if (!empty_expr())                  // Any numeric argument?

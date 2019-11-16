@@ -43,8 +43,6 @@
 
 void exec_EV(void)
 {
-    check_mod(MOD_N);                   // Allow nEV
-
     f.ev = get_flag(f.ev);
 }
 

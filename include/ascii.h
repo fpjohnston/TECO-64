@@ -27,6 +27,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     !defined(_ASCII_H)
+
+#define _ASCII_H
+
 enum ascii
 {
     NUL = 0,
@@ -67,5 +71,9 @@ enum ascii
 };
 
 #define BEL         CTRL_G
+
 #define CRLF        (CR | (LF << 8))
+
 #define CTRL_ZZ     (CTRL_Z | (CTRL_Z << 8))
+
+#endif  // !defined(_ASCII_H)

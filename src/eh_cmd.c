@@ -45,8 +45,6 @@
 
 void exec_EH(void)
 {
-    check_mod(MOD_M | MOD_N);           // Allow nEH and m,nEH
-
     f.eh.flag = get_flag(f.eh.flag);
 }
 

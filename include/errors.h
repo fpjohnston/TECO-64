@@ -27,6 +27,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     !defined(_ERRORS_H)
+
+#define _ERRORS_H
+
 #include <stdnoreturn.h>
 
 extern int last_error;
@@ -125,4 +129,4 @@ extern noreturn void printc_err(int err_teco, int c);
 
 extern noreturn void prints_err(int err_teco, const char *str);
 
-
+#endif  // !defined(_ERRORS_H)

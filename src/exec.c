@@ -179,8 +179,8 @@ struct cmd cmd =
 {
     .next   = NULL,
     .prev   = NULL,
-    .cmd    = NUL,
-    .subcmd = NUL,
+    .c1  = NUL,
+    .c2  = NUL,
     .arg1   = { .str = NUL, .count = 0 },
     .arg2   = { .str = NUL, .count = 0 },
     .exec   = NULL,
@@ -215,8 +215,8 @@ void exec_cmd(void)
         {
             f.ei.exec = true;
 
-            cmd.cmd        = c;
-            cmd.subcmd     = NUL;
+            cmd.c1       = c;
+            cmd.c2      = NUL;
             cmd.arg1.str   = NUL;
             cmd.arg2.count = 0;
             cmd.arg2.str   = NUL;
@@ -273,4 +273,85 @@ void exec_caret(void)
     }
 
     (*commands[i])();
+}
+
+void exec_escape(void)
+{
+}
+
+
+void exec_nul(void)
+{
+}
+
+
+void exec_ctrl_ubar(void)
+{
+    push_expr(US, EXPR_OPERATOR);
+}
+
+
+void exec_operator(void)
+{
+    push_expr(last_c, EXPR_OPERATOR);
+}
+
+
+
+struct vars
+{
+    int b;                              // Beginning of buffer = 0
+    int z;                              // End of buffer
+    int dot;                            // Current pointer position
+    int eof;                            // End of file flag
+};
+
+struct vars vars =
+{
+    .b = 0,
+    .z = 1000,
+    .dot = 0,
+    .eof = 0,
+};
+
+
+void exec_B(void)
+{
+    printf("B command\r\n");
+}
+
+
+void exec_H(void)
+{
+    printf("H command\r\n");
+}
+
+
+void exec_Z(void)
+{
+    printf("Z command\r\n");
+}
+
+
+void exec_ctrl_n(void)
+{
+    printf("ctrl_n command\r\n");
+}
+
+
+void exec_ctrl_s(void)
+{
+    printf("ctrl_s command\r\n");
+}
+
+
+void exec_ctrl_y(void)
+{
+    printf("ctrl_y command\r\n");
+}
+
+
+void exec_dot(void)
+{
+    printf(". command\r\n");
 }

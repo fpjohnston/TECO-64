@@ -46,8 +46,6 @@
 
 void exec_EE(void)
 {
-    check_mod(MOD_N);                   // Allow nEE
-
     int ee = f.ee;                      // Save old value
 
     f.ee = get_flag(f.ee);              // Get new value

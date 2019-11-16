@@ -32,19 +32,8 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "errors.h"
 #include "exec.h"
-
-
-void exec_A(void)
-{
-    printf("A command\r\n");
-}
-
-
-void exec_B(void)
-{
-    printf("B command\r\n");
-}
 
 
 void exec_C(void)
@@ -62,12 +51,6 @@ void exec_D(void)
 void exec_G(void)
 {
     printf("G command\r\n");
-}
-
-
-void exec_H(void)
-{
-    printf("H command\r\n");
 }
 
 
@@ -92,24 +75,6 @@ void exec_L(void)
 void exec_M(void)
 {
     printf("M command\r\n");
-}
-
-
-void exec_N(void)
-{
-    printf("N command\r\n");
-}
-
-
-void exec_O(void)
-{
-    printf(" command\r\n");
-}
-
-
-void exec_P(void)
-{
-    printf("P command\r\n");
 }
 
 
@@ -155,18 +120,6 @@ void exec_X(void)
 }
 
 
-void exec_Y(void)
-{
-    printf("Y command\r\n");
-}
-
-
-void exec_Z(void)
-{
-    printf("Z command\r\n");
-}
-
-
 void exec_backslash(void)
 {
     printf("\\ command\r\n");
@@ -191,21 +144,9 @@ void exec_ctrl_caret(void)
 }
 
 
-void exec_ctrl_i(void)
-{
-    printf("TAB command\r\n");
-}
-
-
 void exec_ctrl_l(void)
 {
     printf("ctrl_l command\r\n");
-}
-
-
-void exec_ctrl_n(void)
-{
-    printf("ctrl_n command\r\n");
 }
 
 
@@ -223,21 +164,9 @@ void exec_ctrl_q(void)
 }
 
 
-void exec_ctrl_s(void)
-{
-    printf("ctrl_s command\r\n");
-}
-
-
 void exec_ctrl_u(void)
 {
     printf("ctrl_u command\r\n");
-}
-
-
-void exec_ctrl_ubar(void)
-{
-    push_expr(US, EXPR_OPERATOR);
 }
 
 
@@ -253,26 +182,9 @@ void exec_ctrl_w(void)
 }
 
 
-void exec_ctrl_y(void)
-{
-    printf("ctrl_y command\r\n");
-}
-
-
 void exec_ctrl_z(void)
 {
     printf("ctrl_z command\r\n");
-}
-
-
-void exec_dot(void)
-{
-    printf(". command\r\n");
-}
-
-
-void exec_escape(void)
-{
 }
 
 
@@ -285,24 +197,6 @@ void exec_lbracket(void)
 void exec_langle(void)
 {
     printf("< command\r\n");
-}
-
-
-void exec_nul(void)
-{
-    printf(" command\r\n");
-}
-
-
-void exec_nyi(void)
-{
-    printf(" command\r\n");
-}
-
-
-void exec_operator(void)
-{
-    push_expr(last_c, EXPR_OPERATOR);
 }
 
 

@@ -80,6 +80,7 @@ int main(int unused1, const char * const argv[])
     assert(argv != NULL);               // (This assertion should NEVER fire)
 
     f.ei.error = false;
+    f.ei.strict = true;
 
     init_env();                         // Initialize environment
     init_term();                        // Initialize terminal
@@ -161,43 +162,12 @@ void print_prompt(void)
 }
 
 
-int get_delim(int delim)
-{
-    if (f.ei.atsign)
-    {
-        return '/';
-    }
-    else
-    {
-        return delim;
-    }
-}
-
 void get_arg(int delim, struct tstr *tstr)
 {
-    int c;
-    
     tstr->count = 0;
- 
-    if (f.ei.atsign)
-    {
-        c = fetch_cmd();
-
-        if (c == EOF)
-        {
-            print_err(E_UTC);
-        }
-            
-        if (c != delim)
-        {
-            tstr->str = NULL;
-
-            return;
-        }
-    }
-
     tstr->str = next_cmd();
-    c = fetch_cmd();
+
+    int c = fetch_cmd();
     
     if (c == EOF)
     {
@@ -223,9 +193,46 @@ void get_arg(int delim, struct tstr *tstr)
     }
 }
 
+static void print_cmd(int delim, struct cmd *cmd);
+
 void get_cmd(int delim, int ncmds, struct cmd *cmd)
 {
-    delim = get_delim(ESC);
+    int c;
+
+    if (cmd->qreg)
+    {
+        c = fetch_cmd();
+
+        if (c == '.')                   // Local Q-register?
+        {
+            cmd->qlocal = true;         // Yes, mark it
+            c = fetch_cmd();            // Get Q-register name
+        }        
+
+        if (c == EOF)
+        {
+            print_err(E_UTC);           // Unterminated command
+        }
+
+        if (!isalnum(c))
+        {
+            printc_err(E_IQN, c);       // Illegal Q-register name
+        }
+
+        cmd->qreg = c;                  // Save the name
+    }
+
+    if (f.ei.atsign)
+    {
+        c = fetch_cmd();
+
+        if (c == EOF)
+        {
+            print_err(E_UTC);
+        }
+
+        delim = c;
+    }
 
     get_arg(delim, &cmd->arg1);
 
@@ -234,68 +241,76 @@ void get_cmd(int delim, int ncmds, struct cmd *cmd)
         get_arg(delim, &cmd->arg2);
     }
 
-    // Print out cmd
+    print_cmd(delim, cmd);              // Print the command we just parsed
+
+    f.ei.atsign = false;
+    f.ei.colon  = false;
+    f.ei.dcolon = false;
+    f.ei.comma  = false;
+}
+
+static void print_cmd(int delim, struct cmd *cmd)
+{
+    // Here when we've parsed the entire command - now type it out.
 
     printf("cmd: ");
     fflush(stdout);
     
     if (f.ei.colon)
     {
-        putc_term(':');
+        echo_chr(':');
     }
     else if (f.ei.dcolon)
     {
-        putc_term(':');
-        putc_term(':');
+        echo_chr(':');
+        echo_chr(':');
     }        
 
     if (f.ei.atsign)
     {
-        putc_term('@');
+        echo_chr('@');
     }
 
-    echo_chr(cmd->cmd);
+    echo_chr(cmd->c1);
 
-    if (cmd->subcmd != NUL)
+    if (cmd->c2 != NUL)
     {
-        echo_chr(cmd->subcmd);
+        echo_chr(cmd->c2);
     }
 
-    if (f.ei.atsign)
+    if (cmd->qreg)                      // Do we have a Q-register name?
     {
-        putc_term(delim);
+        if (cmd->qlocal)                // Yes, is it local?
+        {
+            echo_chr('.');
+        }
+
+        echo_chr(cmd->qreg);
     }
 
-    const char *p;
-    uint i;
-    
-    for (i = 0, p = cmd->arg1.str; i < cmd->arg1.count; ++i)
+    if (cmd->arg1.count != 0)
     {
-        echo_chr(*p++);
-    }
+        if (f.ei.atsign)                // Conditionally echo delimiter before 1st arg.
+        {
+            echo_chr(delim);
+        }
 
-    if (f.ei.atsign)
-    {
-        putc_term(delim);
+        for (const char *p = cmd->arg1.str; p < cmd->arg1.str + cmd->arg1.count; ++p)
+        {
+            echo_chr(*p);
+        }
     }
 
     if (cmd->arg2.count != 0)
     {
-        if (f.ei.atsign)
-        {
-            putc_term(delim);
-        }
+        echo_chr(delim);                // Always echo delimiter before 2nd arg.
 
-        for (i = 0, p = cmd->arg1.str; i < cmd->arg1.count; ++i)
+        for (const char *p = cmd->arg2.str; p < cmd->arg2.str + cmd->arg2.count; ++p)
         {
-            echo_chr(*p++);
+            echo_chr(*p);
         }
     }
-    
-    putc_term(CRLF);
 
-    f.ei.atsign = false;
-    f.ei.colon  = false;
-    f.ei.dcolon = false;
-    f.ei.comma  = false;
+    echo_chr(delim);                    // And always echo delimiter at end
+    putc_term(CRLF);
 }

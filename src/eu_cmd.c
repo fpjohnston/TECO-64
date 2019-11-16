@@ -43,8 +43,6 @@
 
 void exec_EU(void)
 {
-    check_mod(MOD_N);                   // Allow nEU
-
     f.eu = get_flag(f.eu);
 }
 

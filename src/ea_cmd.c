@@ -47,8 +47,6 @@
 
 void exec_EA(void)
 {
-    check_mod(MOD_A);                   // EA allows @
-
-    printf("EA: switch to secondary output stream\r\n");
+    get_cmd(ESC, 0, &cmd);
 }
 

@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute EI command (open file for input)
+///  @brief    Execute EI command (open command file).
 ///
 ///  @returns  Nothing.
 ///
@@ -47,8 +47,6 @@
 
 void exec_EI(void)
 {
-    check_mod(MOD_A);                   // EI allows @
-
-    get_cmd(ESC, 1, &command);
+    get_cmd(ESC, 1, &cmd);
 }
 

@@ -45,7 +45,7 @@
 
 void exec_ctrl_r(void)
 {
-    check_mod(MOD_N);                   // n^R is allowed
+    check_mod(MOD_N);                   // Allow n^R
 
     if (!operand_expr())                // Any operand available?
     {

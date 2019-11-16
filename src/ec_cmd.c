@@ -47,8 +47,6 @@
 
 void exec_EC(void)
 {
-    check_mod(MOD_A);                   // EC allows @
-
-    printf("ER: close file\r\n");
+    get_cmd(ESC, 0, &cmd);
 }
 

@@ -47,8 +47,6 @@
 
 void exec_EZ(void)
 {
-    check_mod(MOD_A | MOD_C);           // EZ allows @ and :
-
-    get_cmd(ESC, 1, &command);
+    get_cmd(ESC, 1, &cmd);
 }
 

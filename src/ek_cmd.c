@@ -47,8 +47,6 @@
 
 void exec_EK(void)
 {
-    check_mod(MOD_A);                   // EK allows @
-
-    printf("EK: kill file\r\n");
+    get_cmd(ESC, 0, &cmd);
 }
 

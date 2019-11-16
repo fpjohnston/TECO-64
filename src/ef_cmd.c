@@ -47,8 +47,6 @@
 
 void exec_EF(void)
 {
-    check_mod(MOD_A);                   // EF allows @
-
-    printf("EF: close file\r\n");
+    get_cmd(ESC, 0, &cmd);
 }
 

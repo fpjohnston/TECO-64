@@ -27,6 +27,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     !defined(_EXEC_H)
+
+#define _EXEC_H
+
 extern void exec_A(void);
 
 extern void exec_B(void);
@@ -261,3 +265,4 @@ extern void exec_F_ubar(void);
 
 extern void exec_F_vbar(void);
 
+#endif  // _EXEC_H

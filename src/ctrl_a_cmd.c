@@ -47,7 +47,7 @@
 
 void exec_ctrl_a(void)
 {
-    check_mod(MOD_A);                   // ^A allows @
+    check_mod(MOD_A);                   // Allow @^A//
 
-    get_cmd(CTRL_A, 1, &command);
+    get_cmd(CTRL_A, 1, &cmd);
 }

@@ -44,8 +44,6 @@
 
 void exec_ET(void)
 {
-    check_mod(MOD_M | MOD_N);           // Allow nET and m,nET
-
     // If any of the following are changed, we need to take further action.
 
     bool eightbit = f.et.eightbit;

@@ -1,6 +1,6 @@
 ///
-///  @file    bang_cmd.c
-///  @brief   Execute ! command.
+///  @file    ey_cmd.c
+///  @brief   Execute EY command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -39,16 +39,14 @@
 
 
 ///
-///  @brief    Execute ! command (comment/tag).
+///  @brief    Execute EY command (clear input buffer and read next page).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bang(void)
+void exec_EY(void)
 {
-    check_mod(MOD_A);                   // Allow @!//
-
-    get_cmd('!', 1, &cmd);
+    get_cmd(ESC, 1, &cmd);
 }
 

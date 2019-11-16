@@ -1,6 +1,6 @@
 ///
-///  @file    bang_cmd.c
-///  @brief   Execute ! command.
+///  @file    p_cmd.c
+///  @brief   Execute P command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,16 +40,27 @@
 
 
 ///
-///  @brief    Execute ! command (comment/tag).
+///  @brief    Execute P command (write out buffer, and read next page).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bang(void)
+void exec_P(void)
 {
-    check_mod(MOD_A);                   // Allow @!//
+    check_mod(MOD_C);                   // Allow :P
 
-    get_cmd('!', 1, &cmd);
+    int c = fetch_cmd();                // Check for PW
+
+    if (isupper(c) == 'W')
+    {
+        cmd.c2 = 'W';
+    }
+    else
+    {
+        unfetch_cmd(c);
+    }
+
+    get_cmd(ESC, 1, &cmd);
 }
 

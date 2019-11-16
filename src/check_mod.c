@@ -44,6 +44,11 @@
 
 void check_mod(int mod)
 {
+    if (!f.ei.strict)                   // If not in strict mode, skip this
+    {
+        return;
+    }
+
     if (   (f.ei.atsign    && !(mod & MOD_A))
         || (f.ei.colon     && !(mod & MOD_C))
         || (f.ei.dcolon    && !(mod & MOD_D))

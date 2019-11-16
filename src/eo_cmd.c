@@ -49,8 +49,6 @@ void exec_EO(void)
         print_err(E_NYI);               // Yes, we don't do that yet
     }
 
-    check_mod(0);                       // No modifiers allowed
-
     push_expr(teco_version, EXPR_OPERAND);
 }
 

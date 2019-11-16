@@ -53,7 +53,7 @@
 
 void exec_equals(void)
 {
-    check_mod(MOD_C | MOD_D | MOD_N);
+    check_mod(MOD_CN);                  // Allow n= and n:=
 
     if (empty_expr())
     {

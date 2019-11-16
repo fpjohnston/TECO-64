@@ -73,6 +73,7 @@ VPATH=src:obj:$(INCDIR)
 LIBS =
 
 SOURCES = \
+    a_cmd.c       \
     atsign_cmd.c  \
     bang_cmd.c    \
     check_mod.c   \
@@ -85,6 +86,7 @@ SOURCES = \
     ctrl_e_cmd.c  \
     ctrl_f_cmd.c  \
     ctrl_h_cmd.c  \
+    ctrl_i_cmd.c  \
     ctrl_o_cmd.c  \
     ctrl_r_cmd.c  \
     ctrl_t_cmd.c  \
@@ -103,9 +105,12 @@ SOURCES = \
     ek_cmd.c      \
     el_cmd.c      \
     em_cmd.c      \
+    en_cmd.c      \
     env_sys.c     \
     eo_cmd.c      \
     ep_cmd.c      \
+    e_pct_cmd.c   \
+    eq_cmd.c      \
     equals_cmd.c  \
     er_cmd.c      \
     errors.c      \
@@ -119,6 +124,7 @@ SOURCES = \
     exec.c        \
     exec_e.c      \
     exec_f.c      \
+    ey_cmd.c      \
     ez_cmd.c      \
     fc_cmd.c      \
     fd_cmd.c      \
@@ -129,6 +135,9 @@ SOURCES = \
     f_ubar_cmd.c  \
     get_flag.c    \
     i_cmd.c       \
+    n_cmd.c       \
+    o_cmd.c       \
+    p_cmd.c       \
     push_expr.c   \
     quote_cmd.c   \
     qreg.c        \
@@ -139,6 +148,7 @@ SOURCES = \
     stubs.c       \
     teco.c        \
     term_sys.c    \
+    y_cmd.c       \
 
 ifdef   VERBOSE
 

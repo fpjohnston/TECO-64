@@ -47,8 +47,8 @@
 
 void exec_FN(void)
 {
-    check_mod(MOD_A);                   // FN allows @
+    check_mod(MOD_A);                   // Allow @FN//
 
-    get_cmd(ESC, 2, &command);
+    get_cmd(ESC, 2, &cmd);
 }
 

@@ -47,9 +47,9 @@
 
 void exec_FD(void)
 {
-    check_mod(MOD_A);                   // FD allows @
+    check_mod(MOD_A);                   // Allow @FD//
 
-    get_cmd(ESC, 1, &command);
+    get_cmd(ESC, 1, &cmd);
 }
 
 

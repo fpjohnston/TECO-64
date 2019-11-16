@@ -27,6 +27,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     !defined(_EFLAGS_H)
+
+#define _EFLAGS_H
+
 #if     !defined(_STDINT_H)
 #include <stdint.h>
 #endif
@@ -67,6 +71,7 @@ union eh_flag
 
 struct ei_flag
 {
+    uint strict    : 1;         // Strictly enforce command syntax
     uint error     : 1;         // Processing error
     uint exec      : 1;         // Executing command
     uint lf        : 1;         // Discard next character if LF
@@ -152,3 +157,5 @@ struct flags
 // structure members (e.g., f.eh.verbose, f.et.lower, f.eu).
 
 extern struct flags f;
+
+#endif  // !defined(_EXEC_H)

@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute S command (open file for input)
+///  @brief    Execute S command (local search).
 ///
 ///  @returns  Nothing.
 ///
@@ -47,8 +47,8 @@
 
 void exec_S(void)
 {
-    check_mod(MOD_A | MOD_C);           // S allows @ and :
+    check_mod(MOD_AC);                  // Allow :S and @S//
 
-    get_cmd(ESC, 1, &command);
+    get_cmd(ESC, 1, &cmd);
 }
 
