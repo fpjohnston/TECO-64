@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -43,8 +44,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_b(void)
+void exec_ctrl_b(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+    
     time_t t = time(NULL);
     struct tm tm;
 

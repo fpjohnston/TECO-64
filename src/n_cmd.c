@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -45,10 +46,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_N(void)
+void exec_N(struct cmd *cmd)
 {
-    check_mod(MOD_AC);                  // Allow :N and @N//
-
-    get_cmd(ESC, 1, &cmd);
+    assert(cmd != NULL);
 }
 

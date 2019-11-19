@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -42,13 +43,17 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_f(void)
+void exec_ctrl_f(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     if (!empty_expr())                  // Is it n^F?
     {
         print_err(E_NIH);               // Yes, we can't do that
     }
 
-    push_expr(0, EXPR_OPERAND);         // Value is always 0 for now
+    push_expr(0, EXPR_OPERAND);    // Value is always 0 for now
+
+    cmd->state = CMD_EXPR;
 }
 

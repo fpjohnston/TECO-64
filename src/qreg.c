@@ -148,6 +148,7 @@ struct qreg *get_qreg(int qname, bool qdot)
                  (QRptr) &QRgstr[QIndex+36]; // else use main level ones
         }
 #endif
+
 }
 
 

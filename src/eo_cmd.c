@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -42,13 +43,17 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EO(void)
+void exec_EO(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     if (!empty_expr())                  // Is it nEO?
     {
         print_err(E_NYI);               // Yes, we don't do that yet
     }
 
     push_expr(teco_version, EXPR_OPERAND);
+
+    cmd->state = CMD_EXPR;
 }
 

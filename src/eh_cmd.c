@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,8 +44,12 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EH(void)
+void exec_EH(struct cmd *cmd)
 {
-    f.eh.flag = get_flag(f.eh.flag);
+    assert(cmd != NULL);
+
+    get_flag(&f.eh.flag, cmd);
+
+    f.eh.flag &= (2 << 3) - 1;          // Mask off low 3 bits
 }
 

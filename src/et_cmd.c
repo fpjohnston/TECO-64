@@ -27,10 +27,12 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "exec.h"
 
@@ -42,30 +44,25 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ET(void)
+void exec_ET(struct cmd *cmd)
 {
-    // If any of the following are changed, we need to take further action.
+    assert(cmd != NULL);
 
-    bool eightbit = f.et.eightbit;
-    bool scope    = f.et.scope;
-    bool refresh  = f.et.refresh;
+    union et_flag old = { .flag = f.et.flag };
 
-    f.et.flag = get_flag(f.et.flag);
+    cmd->opt_m = true;
+    cmd->opt_n = true;
 
-    // If user set or cleared 8-bit flag, tell operating system.
+    get_flag(&f.et.flag, cmd);
 
-    if (eightbit && !f.et.eightbit)
+    if (f.et.eightbit ^ old.eightbit)
     {
-        // TODO: tell operating system we cleared bit?
-    }
-    else if (!eightbit && f.et.eightbit)
-    {
-        // TODO: tell operating system we set bit?
+        // TODO: tell operating system if user changed bit
     }
 
-    // The following bits cannot be changed by the user.
+    // The following are read-only bits and cannot be changed by the user.
 
-    f.et.scope   = scope;
-    f.et.refresh = refresh;
+    f.et.scope   = old.scope;
+    f.et.refresh = old.refresh;
 }
 

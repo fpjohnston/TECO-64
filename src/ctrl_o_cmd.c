@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -41,14 +42,9 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_o(void)
+void exec_ctrl_o(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     radix = 8;                          // Set radix to octal
-
-    // Clear expression modifiers
-
-    f.ei.colon  = false;
-    f.ei.dcolon = false;
-    f.ei.atsign = false;
-    f.ei.comma  = false;
 }

@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "teco.h"
@@ -42,12 +43,19 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_atsign(void)
+void scan_atsign(struct cmd *cmd)
 {
-    if (f.ei.atsign)                    // Already seen @?
+    assert(cmd != NULL);
+
+    if (!f.ei.strict)                   // If not in strict mode, skip this
+    {
+        return;
+    }
+
+    if (cmd->opt_atsign)                // Is @ allowed?
     {
         print_err(E_MOD);               // Yes, that's an error
     }
 
-    f.ei.atsign = true;
+    cmd->state = CMD_MOD;
 }

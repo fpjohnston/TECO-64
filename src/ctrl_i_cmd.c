@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -45,10 +46,12 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_i(void)
+void exec_ctrl_i(struct cmd *cmd)
 {
-    check_mod(MOD_A);                   // Allow @^I//
+    assert(cmd != NULL);
 
-    get_cmd(ESC, 1, &cmd);
+    scan_cmd(cmd);
+
+    cmd->state = CMD_DONE;
 }
 

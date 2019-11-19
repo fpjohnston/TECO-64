@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -42,14 +43,9 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_d(void)
+void exec_ctrl_d(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+    
     radix = 10;                         // Set radix to decimal
-
-    // Clear expression modifiers
-
-    f.ei.colon  = false;
-    f.ei.dcolon = false;
-    f.ei.atsign = false;
-    f.ei.comma  = false;
 }

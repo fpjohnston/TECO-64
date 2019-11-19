@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "teco.h"
@@ -37,12 +38,26 @@
 ///
 ///  @brief    Execute EV command.
 ///
-///  @returns  Nothing.
+///  @returns  true if done parsing command, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EV(void)
+void exec_EV(struct cmd *cmd)
 {
-    f.ev = get_flag(f.ev);
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // Is there an operand available?
+    {
+        f.ev = cmd->n = get_n_arg();
+
+        cmd->got_n = true;
+        cmd->state = CMD_DONE;
+    }
+    else
+    {
+        push_expr(f.ev, EXPR_OPERAND);
+
+        cmd->state = CMD_EXPR;
+    }
 }
 

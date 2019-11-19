@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -41,8 +42,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_rparen(void)
+void exec_rparen(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     if (!operand_expr())                // Is there an operand available?
     {
         print_err(E_NAP);               // No argument before )

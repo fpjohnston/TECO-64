@@ -38,22 +38,10 @@
 #include "eflags.h"
 #include "errors.h"
 
-struct expr
-{
-    long item;
-    enum expr_type type;
-};
-
-#define EXPR_SIZE       64
-
-struct expr_stack
-{
-    struct expr stack[EXPR_SIZE];
-    uint count;
-} expr =
+struct expr_stack expr =
 {
     .stack[0 ... EXPR_SIZE - 1] = { .item = 0L, .type = EXPR_NONE },
-    .count = 0,
+    .len = 0,
 };
 
 int m_arg;                              // "m" argument
@@ -76,7 +64,7 @@ static void reduce3(void);
 
 bool empty_expr(void)
 {
-    return (expr.count == 0);
+    return (expr.len == 0);
 }
 
 
@@ -92,32 +80,33 @@ bool empty_expr(void)
 
 int get_n_arg(void)
 {
-    assert(expr.count > 0);             // Caller should check before calling
+    assert(expr.len > 0);               // Caller should check before calling
 
-    if (expr.stack[--expr.count].type != EXPR_OPERAND)
+    if (expr.stack[--expr.len].type != EXPR_OPERAND)
     {
         print_err(E_IFE);               // Ill-formed numeric expression
     }
 
-    return expr.stack[expr.count].item;
+    return expr.stack[expr.len].item;
 }
 
 
 ///
-///  @brief    Initialize expression stack.
+///  @brief    Return whether the top of the expression stack is an operand.
+///            Note: if the stack is empty, then there's obviously no operand.
 ///
-///  @returns  Nothing.
+///  @returns  true if an operand, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_expr(void)
+bool operand_expr(void)
 {
-    expr.count = 0;
+    if (expr.len == 0 || expr.stack[expr.len - 1].type != EXPR_OPERAND)
+    {
+        return false;
+    }
 
-    f.ei.atsign = false;
-    f.ei.colon  = false;
-    f.ei.dcolon = false;
-    f.ei.comma  = false;
+    return true;
 }
 
 
@@ -142,15 +131,15 @@ void push_expr(int item, enum expr_type type)
 {
     assert(type == EXPR_OPERATOR || type == EXPR_OPERAND);
 
-    if (expr.count == EXPR_SIZE)
+    if (expr.len == EXPR_SIZE)
     {
         print_err(E_PDO);               // Push-down list overflow
     }
 
-    expr.stack[expr.count].item = item;
-    expr.stack[expr.count].type = type;
+    expr.stack[expr.len].item = item;
+    expr.stack[expr.len].type = type;
 
-    ++expr.count;
+    ++expr.len;
 
     reduce();                           // Reduce what we can
 }
@@ -165,14 +154,14 @@ void push_expr(int item, enum expr_type type)
 
 static void reduce(void)
 {
-    while (expr.count > 1)
+    while (expr.len > 1)
     {
-        if (expr.count >= 3)            // At least three operands?
+        if (expr.len >= 3)            // At least three operands?
         {
             reduce3();
         }
 
-        if (expr.count >= 2)            // At least two operands?
+        if (expr.len >= 2)            // At least two operands?
         {
             if (!reduce2())             // Could we reduce anything?
             {
@@ -192,8 +181,8 @@ static void reduce(void)
 
 static bool reduce2(void)
 {
-    struct expr *e1 = &expr.stack[expr.count - 1];
-    struct expr *e2 = &expr.stack[expr.count - 2];
+    struct expr *e1 = &expr.stack[expr.len - 1];
+    struct expr *e2 = &expr.stack[expr.len - 2];
 
     if (e1->type == EXPR_OPERAND && e2->type == EXPR_OPERATOR)
     {
@@ -202,14 +191,14 @@ static bool reduce2(void)
             e2->item = e1->item;
             e2->type = EXPR_OPERAND;
 
-            --expr.count;
+            --expr.len;
         }
         else if (e2->item == '-')
         {
             e2->item = -e1->item;
             e2->type = EXPR_OPERAND;
 
-            --expr.count;
+            --expr.len;
         }
         else
         {
@@ -218,14 +207,14 @@ static bool reduce2(void)
     }
     else if (e1->type == EXPR_OPERATOR && e1->item == US)
     {
-        if (expr.count == 1 || e2->type != EXPR_OPERAND)
+        if (expr.len == 1 || e2->type != EXPR_OPERAND)
         {
             print_err(E_NAB);           // No argument before ^_
         }
 
         e2->item = ~(e2->item);
 
-        --expr.count;
+        --expr.len;
     }
     else
     {
@@ -244,9 +233,9 @@ static bool reduce2(void)
 
 static void reduce3(void)
 {
-    struct expr *e1 = &expr.stack[expr.count - 1];
-    struct expr *e2 = &expr.stack[expr.count - 2];
-    struct expr *e3 = &expr.stack[expr.count - 3];
+    struct expr *e1 = &expr.stack[expr.len - 1];
+    struct expr *e2 = &expr.stack[expr.len - 2];
+    struct expr *e3 = &expr.stack[expr.len - 3];
 
     if (e1->type == EXPR_OPERAND  &&
         e2->type == EXPR_OPERATOR &&
@@ -294,7 +283,7 @@ static void reduce3(void)
                 print_err(E_ARG);       // Improper arguments
         }
 
-        expr.count -= 2;
+        expr.len -= 2;
     }
     else if (e1->type == EXPR_OPERATOR && e1->item == ')' &&
              e2->type == EXPR_OPERAND  &&
@@ -303,25 +292,6 @@ static void reduce3(void)
         e3->item = e2->item;
         e3->type = EXPR_OPERAND;
 
-        expr.count -= 2;
+        expr.len -= 2;
     }
-}
-
-
-///
-///  @brief    Return whether the top of the expression stack is an operand.
-///            Note: if the stack is empty, then there's obviously no operand.
-///
-///  @returns  true if an operand, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool operand_expr(void)
-{
-    if (expr.count == 0 || expr.stack[expr.count - 1].type != EXPR_OPERAND)
-    {
-        return false;
-    }
-
-    return true;
 }

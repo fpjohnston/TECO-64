@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -47,8 +48,10 @@
 #define MINUTES_PER_HOUR        60
 #define SECONDS_PER_MINUTE      60
 
-void exec_ctrl_h(void)
+void exec_ctrl_h(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     time_t t = time(NULL);
     struct tm tm;
 
@@ -61,3 +64,4 @@ void exec_ctrl_h(void)
 
     push_expr(teco_time / 2, EXPR_OPERAND);
 }
+

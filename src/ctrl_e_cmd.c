@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "teco.h"
@@ -41,21 +42,24 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_e(void)
+void exec_ctrl_e(struct cmd *cmd)
 {
-    check_mod(MOD_N);                   // Allow n^E
+    assert(cmd != NULL);
 
-    if (!operand_expr())                // Any operand available?
+    cmd->opt_n = true;
+
+    if (operand_expr())                 // Any operand available?
+    {
+        int n_arg = get_n_arg();
+
+        form_feed = (n_arg == -1) ? -1 : 0;
+
+        cmd->state = CMD_DONE;
+    }
+    else
     {
         push_expr(form_feed, EXPR_OPERAND);
 
-        return;
+        cmd->state = CMD_EXPR;
     }
-
-    int n_arg = get_n_arg();
-
-    form_feed = (n_arg == -1) ? -1 : 0;
-
-    init_expr();
 }
-

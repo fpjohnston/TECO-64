@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -45,8 +46,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EK(void)
+void exec_EK(struct cmd *cmd)
 {
-    get_cmd(ESC, 0, &cmd);
+    assert(cmd != NULL);
 }
 

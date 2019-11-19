@@ -27,9 +27,11 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 
 
@@ -38,40 +40,44 @@
 ///            ED, EH, ES, ET, EU, EV, EZ and ^X. The EO flag can only be
 ///            examined, not set, so it does not use this function. (TODO?)
 ///
-///  @returns  Mode control flag (possibly modified).
+///  @returns  New value of flag.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int get_flag(int flag)
+bool get_flag(int *flag, struct cmd *cmd)
 {
-    if (!operand_expr())                // Is there an operand available?
+    if (operand_expr())                 // Is there an operand available?
     {
-        push_expr(flag, EXPR_OPERAND);
+        int n_arg = cmd->n = get_n_arg();
 
-        return flag;
+        cmd->opt_n = true;
+
+        if (!cmd->opt_m)                // m or n argument?
+        {
+            *flag = n_arg;
+        }
+        else if (m_arg !=0 && n_arg != 0) // It's m,n<flag>
+        {
+            *flag &= ~m_arg;             // Turn off m bits
+            *flag |= n_arg;              // Turn on n bits
+        }
+        else if (m_arg == 0 && n_arg != 0) // It's 0,n<flag>
+        {
+            *flag |= n_arg;              // Turn on n bits
+        }
+        else if (m_arg != 0 && n_arg == 0) // It's m,0<flag>
+        {
+            *flag &= ~m_arg;             // Turn off m bits
+        }
+
+        cmd->state = CMD_DONE;
+    }
+    else
+    {
+        push_expr(*flag, EXPR_OPERAND);
+
+        cmd->state = CMD_EXPR;
     }
 
-    int n_arg = get_n_arg();
-
-    if (!f.ei.comma)                    // m or n argument?
-    {
-        flag = n_arg;
-    }
-    else if (m_arg !=0 && n_arg != 0)   // It's m,n<flag>
-    {
-        flag &= ~m_arg;                 // Turn off m bits
-        flag |= n_arg;                  // Turn on n bits
-    }
-    else if (m_arg == 0 && n_arg != 0)  // It's 0,n<flag>
-    {
-        flag |= n_arg;                  // Turn on n bits
-    }
-    else if (m_arg != 0 && n_arg == 0)  // It's m,0<flag>
-    {
-        flag &= ~m_arg;                 // Turn off m bits
-    }
-
-    init_expr();
-
-    return flag;
+    return false;
 }

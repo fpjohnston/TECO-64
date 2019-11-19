@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -42,8 +43,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EM(void)
+void exec_EM(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     print_err(E_NIH);                   // We don't do magtapes
 }
 

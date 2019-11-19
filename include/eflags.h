@@ -76,10 +76,10 @@ struct ei_flag
     uint exec      : 1;         // Executing command
     uint lf        : 1;         // Discard next character if LF
     uint ctrl_c    : 1;         // CTRL/C seen
-    uint comma     : 1;         // Comma seen
-    uint colon     : 1;         // Colon seen
-    uint dcolon    : 1;         // Double colon seen
-    uint atsign    : 1;         // At sign seen
+//    uint comma     : 1;         // Comma seen
+//    uint colon     : 1;         // Colon seen
+//    uint dcolon    : 1;         // Double colon seen
+//    uint atsign    : 1;         // At sign seen
 };
 
 // ET flags - these affect terminal behavior.

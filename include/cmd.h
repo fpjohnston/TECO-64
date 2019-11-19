@@ -1,6 +1,6 @@
 ///
-///  @file    check_mod.c
-///  @brief   Check command for allowed modifiers.
+///  @file    cmd.h
+///  @brief   Definitions for scanning command strings.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -27,35 +27,17 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-#include <stdlib.h>
+#if     !defined(_CMD_H)
 
-#include "teco.h"
-#include "eflags.h"
-#include "errors.h"
+#define _TECO_H
+
+#if     !defined(_STDBOOL_H)
+#include <stdbool.h>
+#endif
+
+#if     !defined(_STDINT_H)
+#include <stdint.h>
+#endif
 
 
-///
-///  @brief    Check command for allowed modifiers.
-///
-///  @returns  Nothing (exits to main loop if error).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void check_mod(int mod)
-{
-    if (!f.ei.strict)                   // If not in strict mode, skip this
-    {
-        return;
-    }
-
-    if (   (f.ei.atsign    && !(mod & MOD_A))
-        || (f.ei.colon     && !(mod & MOD_C))
-        || (f.ei.dcolon    && !(mod & MOD_D))
-        || (f.ei.comma     && !(mod & MOD_M))
-        || (operand_expr() && !(mod & MOD_N)))
-    {
-        print_err(E_MOD);               // Invalid modifier for command
-    }
-
-}
+#endif  // !defined(_CMD_H)

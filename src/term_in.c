@@ -1,6 +1,6 @@
 ///
-///  @file    readcmd.c
-///  @brief   Functions to read and parse command-line.
+///  @file    term_in.c
+///  @brief   System-independent functions to input from user's terminal.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -46,10 +46,6 @@ int CR_count = 0;
 
 // Local functions
 
-static bool help_command(void);
-
-static void print_badseq(void);
-
 static void read_bs(void);
 
 static void read_cr(void);
@@ -73,144 +69,6 @@ static void read_lf(void);
 static void read_qname(int c);
 
 static void read_vt(void);
-
-
-///  @brief    Echo character in a printable form, either as c, ^c, or [c].
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void echo_chr(int c)
-{
-    if (isprint(c))
-    {
-        putc_term(c);
-    }
-    else if (!isascii(c))               // 8-bit character?
-    {
-        if (f.et.eightbit)              // Can terminal display it?
-        {
-            putc_term(c);               // Yes
-        }
-        else                            // No, make it printable
-        {
-            char chrbuf[5];             // [xx] + NUL
-
-            uint nbytes = snprintf(chrbuf, sizeof(chrbuf), "[%02x]", c);
-
-            assert(nbytes < sizeof(chrbuf));
-        }
-    }
-    else                                // Must be a control character
-    {
-        switch (c)
-        {
-            case BS:                    // TODO: is this correct?
-            case TAB:
-            case LF:
-            case CR:
-                putc_term(c);
-
-                break;
-
-            case DEL:
-                break;
-
-            case ESC:
-                putc_term('$');
-
-                break;
-
-            case FF:
-                putc_term('\r');
-                //lint -fallthrough
-
-            case VT:
-                putc_term('\n');
-                putc_term('\n');
-                putc_term('\n');
-                putc_term('\n');
-
-                break;
-
-            case CTRL_G:
-                putc_term(CTRL_G);
-
-                //lint -fallthrough
-
-            default:                    // Display as +^c
-                putc_term('^');
-                putc_term(c + 'A' - 1);
-
-                break;
-         }
-    }
-}
-
-
-///
-///  @brief    Process HELP command (TBD).
-///
-///  @returns  Returns true if we have a HELP command, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static bool help_command(void)
-{
-    bool match = match_cmd("HELP");
-
-    if (!match)
-    {
-        return false;
-    }
-
-    f.ei.lf = true;                     // Discard next chr. if LF
-
-    putc_term(CRLF);
-    print_err(E_NYI);                   // TODO: temporary!
-}
-
-
-///
-///  @brief    Print detailed information about a bad escape sequence.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void print_badseq(void)
-{
-    static const char *badseq[] =
-    {
-        "",
-        "",
-        "Invalid escape sequence.",
-        "The 16384 bit of the ET flag is set, which means",
-        "that you are in VT200 mode. In this mode, the",
-        "escape character is not used to terminate commands.",
-        "It is used to introduce escape sequences. This",
-        "allows the function keys to take on meanings. The",
-        "accent grave (~) character is the command terminator.",
-        "If you want to turn off VT200 mode, say 16384,0ET``",
-        "Note that the recognition of accent grave as a",
-        "command terminator is controlled by the 8192 bit",
-        "of the ET flag, separate from the VT200 bit.",
-        "There may be a part of the unrecognized escape",
-        "sequence in the command string.  The last line of",
-        "the command string is shown to help you recover.",
-        "",
-        NULL
-    };
-
-
-    for (const char **line = badseq; *line != NULL; ++line)
-    {
-        print_term(*line);
-    }
-
-    store_cmd(SPACE);
-}
 
 
 ///
@@ -237,7 +95,7 @@ void read_cmd(void)
         // If the character is an accent grave and and the et.accent bit is set,
         // or it matches a non-NUL EE flag, then treat it as an ESCape.
 
-        if ((c == ACCENT && f.et.accent) || (f.ee != NUL && f.ee == c))
+        if ((f.et.accent && c == ACCENT) || f.ee == c)
         {
             echo_chr(ACCENT);           // Echo as accent grave
             store_cmd(c = ESC);         // But store as ESCape
@@ -370,6 +228,9 @@ static void read_bs(void)
     }
     else
     {
+        delete_cmd();
+        putc_term(BS);
+        putc_term(SPACE);
         putc_term(BS);
     }
 }
@@ -449,7 +310,7 @@ static void read_ctrl_g(void)
     // Here when we have a special CTRL/G command
 
     putc_term(CRLF);                    // Start new line
-    delete_cmd();                          // Delete CTRL/G in buffer
+    delete_cmd();                       // Delete CTRL/G in buffer
 
     if (c == CTRL_G)                    // ^G^G
     {
@@ -494,28 +355,27 @@ static void read_ctrl_u(void)
     {
         if (c == LF)
         {
-            store_cmd(c);                 // Add line terminator back
+            store_cmd(c);               // Add line terminator back
 
             break;
         }
     }
 
-    putc_term(CR);
-
     if (f.et.scope)
     {
+        putc_term(CR);
+
         // TODO: finish this
         // ZScrOp(SCR_EEL);             // erase line
     }
     else
     {
-        putc_term(LF);
+        echo_chr(CTRL_U);
+        putc_term(CRLF);
     }
 
-    if (empty_cmd())
-    {
-        print_prompt();
-    }
+    reset_cmd();
+    print_prompt();
 }
 
 

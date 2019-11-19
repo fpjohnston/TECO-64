@@ -1,6 +1,6 @@
 ///
-///  @file    ea_cmd.c
-///  @brief   Execute EA command.
+///  @file    cmd_tables.c
+///  @brief   Tables and other data used for parsing & executing commands.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -28,26 +28,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
+#include <setjmp.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
-
-
-///
-///  @brief    Execute EA command (switch to secondary output stream).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_EA(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-}
 

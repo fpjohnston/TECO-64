@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -45,10 +46,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_F_ubar(void)
+void exec_F_ubar(struct cmd *cmd)
 {
-    check_mod(MOD_A);                   // Allow @F_//
-
-    get_cmd(ESC, 2, &cmd);
+    assert(cmd != NULL);
 }
 

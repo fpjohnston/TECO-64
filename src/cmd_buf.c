@@ -1,5 +1,5 @@
 ///
-///  @file    cmdbuf.c
+///  @file    cmd_buf.c
 ///  @brief   Functions that affect command buffer.
 ///
 ///  @author  Nowwith Treble Software
@@ -36,6 +36,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
+#include "errors.h"
 
 // Define command buffer. This is dynamically allocated, and can be resized as
 // necessary. It consists of a pointer to a memory block, the size of the block
@@ -71,6 +72,8 @@ static void free_cmd(void);
 
 char *clone_cmd(int delim)
 {
+    abort();                            // TODO: TEMPORARY!
+
     if (buf.p == NULL)
     {
         return NULL;
@@ -82,11 +85,6 @@ char *clone_cmd(int delim)
 
     while ((c = fetch_cmd()) != delim)
     {
-        if (c == EOF)
-        {
-            return NULL;
-        }
-
         ++len;
     }
 
@@ -204,7 +202,7 @@ int fetch_cmd(void)
     {
         buf.get = buf.put = 0;
 
-        return EOF;
+        print_err(E_UTC);               // Unterminated command
     }
 
     return buf.p[buf.get++];
@@ -310,6 +308,11 @@ bool match_cmd(const char *str)
 
 const char *next_cmd(void)
 {
+    if (buf.get == buf.put)
+    {
+        return NULL;
+    }
+
     return buf.p + buf.get;
 }
 
@@ -324,40 +327,6 @@ const char *next_cmd(void)
 void reset_cmd(void)
 {
     buf.get = buf.put = 0;
-}
-
-
-///
-///  @brief    Scan command buffer for end of string.
-///
-///  @returns  Length and start of string.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int scan_cmd(int delim)
-{
-    if (f.ei.atsign)                    // Modified by @?
-    {
-        if ((delim = fetch_cmd()) == EOF) // Yes, get alternate delimiter
-        {
-            return EOF;
-        }
-    }
-
-    int c;
-    int len = 0;
-
-    while ((c = fetch_cmd()) != delim)
-    {
-        if (c == EOF)
-        {
-            return EOF;
-        }
-
-        ++len;
-    }
-
-    return len;
 }
 
 

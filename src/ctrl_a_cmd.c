@@ -45,9 +45,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_a(void)
+void exec_ctrl_a(struct cmd *cmd)
 {
-    check_mod(MOD_A);                   // Allow @^A//
-
-    get_cmd(CTRL_A, 1, &cmd);
+    assert(cmd != NULL);
 }

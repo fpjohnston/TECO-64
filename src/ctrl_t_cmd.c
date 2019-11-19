@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -48,9 +49,12 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_t(void)
+void exec_ctrl_t(struct cmd *cmd)
 {
-    check_mod(MOD_CN);                  // Allow n^T and n:^T
+    assert(cmd != NULL);
+
+    cmd->opt_n = true;
+    cmd->opt_colon = true;
 
     if (!operand_expr())                // Operand on top of stack?
     {
@@ -66,12 +70,12 @@ void exec_ctrl_t(void)
 
         push_expr(c, EXPR_OPERAND);
 
-        return;
+        return;    
     }
 
     int n_arg = get_n_arg();
 
-    if (f.ei.colon || f.et.image)
+    if (cmd->got_colon || f.et.image)
     {
         putc_term(n_arg);
     }
@@ -79,6 +83,5 @@ void exec_ctrl_t(void)
     {
         echo_chr(n_arg);
     }
-
-    init_expr();
 }
+

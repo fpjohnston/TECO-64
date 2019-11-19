@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,21 +47,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_P(void)
+void exec_P(struct cmd *cmd)
 {
-    check_mod(MOD_C);                   // Allow :P
-
-    int c = fetch_cmd();                // Check for PW
-
-    if (isupper(c) == 'W')
-    {
-        cmd.c2 = 'W';
-    }
-    else
-    {
-        unfetch_cmd(c);
-    }
-
-    get_cmd(ESC, 1, &cmd);
+    assert(cmd != NULL);
 }
 

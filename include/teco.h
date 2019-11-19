@@ -39,10 +39,14 @@
 #include <stdbool.h>
 #endif
 
+#include "cmd.h"
+
 #define countof(array) (sizeof(array) / sizeof(array[0]))
 
 #define WAIT        true                // Wait for terminal input
 #define CMDBUFSIZ   1000                // Command buffer size
+
+#define EXPR_SIZE       64
 
 enum expr_type
 {
@@ -51,25 +55,19 @@ enum expr_type
     EXPR_OPERAND
 };
 
-enum mod_flag
+struct expr
 {
-    MOD_NONE = 0,                       // No modifiers allowed
-    MOD_A    = 1,                       // @ allowed
-    MOD_C    = 2,                       // : allowed
-    MOD_D    = 4,                       // :: allowed
-    MOD_M    = 8,                       // m argument allowed
-    MOD_N    = 16,                      // n argument allowed
-    MOD_Q    = 32,                      // Q-reg. required
-    MOD_AC   = MOD_A | MOD_C,           // @ and : allowed
-    MOD_ACN  = MOD_A | MOD_C | MOD_N,   // @, :, and n allowed
-    MOD_AN   = MOD_A | MOD_N,           // @ and n allowed
-    MOD_ACMN = MOD_A | MOD_C | MOD_M | MOD_N, // @, :, m, n, allowed
-    MOD_AMN  = MOD_A | MOD_M | MOD_N,   // @, m, and n allowed
-    MOD_ACQ  = MOD_A | MOD_C | MOD_Q,   // @, : allowed, Q-reg. required
-    MOD_CDN  = MOD_C | MOD_D | MOD_N,   // :, ::, and n allowed
-    MOD_CN   = MOD_C | MOD_N,           // : and n allowed
-    MOD_MN   = MOD_M | MOD_N,           // m and n allowed
+    long item;
+    enum expr_type type;
 };
+
+struct expr_stack
+{
+    struct expr stack[EXPR_SIZE];
+    uint len;
+};
+
+extern struct expr_stack expr;
 
 struct qreg
 {
@@ -80,101 +78,109 @@ struct qreg
 
 struct tstr
 {
-    const char *str;            // Start of string
-    uint count;                 // No. of characters
+    const char *buf;            // Start of string
+    uint len;                   // No. of characters
 };
+
+
+//
+//  The following bit-encoded flags defined the available options for each
+//  command. These are OR'd together in dispatch tables to determine how par-
+//  sing and execution should proceed.
+//
+//  Note: no given command uses more than three or four of these.
+//
+
+enum cmd_opts
+{
+    _A  = (2 << 0),                 // @ modifier allowed
+    _C  = (2 << 1),                 // : modifier allowed
+    _D  = (2 << 2),                 // :: modifier allowed
+    _N  = (2 << 3),                 // n argument allowed
+    _MN = (2 << 4) | _N,            // m and n arguments allowed
+    _Q  = (2 << 5),                 // Q-register required
+    _T1 = (2 << 6),                 // 1 text string allowed
+    _T2 = (2 << 7),                 // 2 text strings allowed
+    _W  = (2 << 8),                 // W modifier allowed (for P)
+};
+    
+enum cmd_state
+{
+    CMD_NULL,                       // Scanning for start of command
+    CMD_EXPR,                       // Scanning expression
+    CMD_MOD,                        // Scanning modifiers
+    CMD_DONE                        // Scanning is done
+};
+    
 
 // Define the command block structure.
 
 struct cmd
 {
-    char c1;                    // 1st character of command name
-    char c2;                    // 2nd character of command name (or NUL)
-    char qreg;                  // Q-register, if any
-    char qlocal;                // Q-register is local (not global)
-    uint level;                 // Nesting level
-    struct tstr arg1;           // 1st argument
-    struct tstr arg2;           // 2nd argument
-    struct cmd *next;           // Next command (or NULL)
-    struct cmd *prev;           // Previous command (or NULL)
-    void (*exec)(struct cmd *cmd); // Execution function
+    enum cmd_state state;           // State of command (for parsing)
+    uint level;                     // Nesting level
+
+    union
+    {
+        uint flag;                  // Command flag
+
+        struct
+        {
+            uint opt_m      : 1;    // m argument allowed
+            uint opt_n      : 1;    // n argument allowed
+            uint opt_bits   : 1;    // m,n set & clear flag bits
+            uint opt_colon  : 1;    // : allowed
+            uint opt_dcolon : 1;    // :: allowed
+            uint opt_atsign : 1;    // @ allowed
+            uint opt_w      : 1;    // W allowed (for P)
+            uint opt_qreg   : 1;    // Q-register required
+            uint opt_t1     : 1;    // 1 text field allowed
+            uint opt_t2     : 1;    // 2 text fields allowed
+            uint got_m      : 1;    // m argument found
+            uint got_n      : 1;    // n argument found
+            uint got_colon  : 1;    // : found
+            uint got_dcolon : 1;    // :: found
+            uint got_atsign : 1;    // @ found
+        };
+    };
+
+    char c1;                        // 1st command character
+    char c2;                        // 2nd command character (or NUL)
+    char c3;                        // 3nd command character (or NUL)
+    int m;                          // m argument
+    int n;                          // n argument
+    int paren;                      // No. of parentheses counted
+    char delim;                     // Delimiter for @ modifier
+    char qreg;                      // Q-register, if any
+    char qlocal;                    // Q-register is local (not global)
+    struct tstr expr;               // Expression string
+    struct tstr text1;              // 1st text string
+    struct tstr text2;              // 2nd text string
+    struct cmd *next;               // Next command (or NULL)
+    struct cmd *prev;               // Previous command (or NULL)
+    void (*scan)(struct cmd *cmd);  // Scan function
+    void (*exec)(struct cmd *cmd);  // Execution function
 };
 
-extern struct cmd cmd;          // TODO: temporary
+// Scanning functions
 
-// Global variables
+extern void scan_bad(struct cmd *cmd);
 
-extern int teco_version;
+extern void scan_cmd(struct cmd *cmd);
 
-extern jmp_buf jump_main;
+extern void scan_flag(struct cmd *cmd);
 
-extern jmp_buf jump_command;
+extern void scan_null(struct cmd *cmd);
 
-extern const char *prompt;
+extern void print_cmd(struct cmd *cmd);
 
-extern int last_c;
+extern void scan_done(struct cmd *cmd);
 
-extern int radix;
+extern void scan_expr(struct cmd *cmd);
 
-extern int ctrl_x;
+extern void scan_mod(struct cmd *cmd);
 
-extern int m_arg;
-
-extern bool trace_mode;
-
-extern uint rows;
-
-extern uint cols;
-
-extern int form_feed;
-
-// Global functions
-
-extern void check_errno(int ecode);
-
-extern void check_mod(int c);
-
-extern void check_zero(int ecode);
-
-extern void echo_chr(int c);
-
-extern void exec_cmd(void);
-
-extern int get_flag(int flag);
-
-extern void init_env(void);
-
-extern void init_qreg(void);
-
-extern void init_term(void);
-
-extern int getc_term(bool nowait);
-
-extern void print_prompt(void);
-
-extern void print_term(const char *str);
-
-extern void put_bell(void);
-
-extern void putc_term(int c);
-
-extern void puts_term(const char *str, unsigned int nbytes);
-
-extern void read_cmd(void);
-
-extern int read_term(void);
-
-extern int teco_env(int n);
-
-extern void write_term(const char *buf, unsigned int nbytes);
-
-extern struct qreg *get_qreg(int qname, bool qlocal);
-
-extern int get_delim(int delim);
-
-extern void get_arg(int delim, struct tstr *tstr);
-
-extern void get_cmd(int delim, int ncmds, struct cmd *cmd);
+extern void scan_null(struct cmd *cmd);
 
 // Functions that skip to the next command
 
@@ -202,13 +208,83 @@ extern void skip_quote(void);
 
 extern void skip_tag(void);
 
+// Global variables
+
+extern int teco_version;
+
+extern jmp_buf jump_main;
+
+extern jmp_buf jump_command;
+
+extern const char *prompt;
+
+extern int last_c;
+
+extern int radix;
+
+extern int ctrl_x;
+
+extern int m_arg;
+
+extern bool trace_mode;
+
+extern uint rows;
+
+extern uint cols;
+
+extern int form_feed;
+
+extern bool f_expression;
+
+// Global functions
+
+extern void check_errno(int ecode);
+
+extern void echo_chr(int c);
+
+extern void exec_cmd(void);
+
+extern bool get_flag(int *flag, struct cmd *cmd);
+
+extern void init_env(void);
+
+extern void init_qreg(void);
+
+extern void init_term(void);
+
+extern int getc_term(bool nowait);
+
+extern void print_prompt(void);
+
+extern void print_term(const char *str);
+
+extern void put_bell(void);
+
+extern void putc_term(int c);
+
+extern void puts_term(const char *str, unsigned int nbytes);
+
+extern bool help_command(void);
+
+extern void print_badseq(void);
+
+extern void read_cmd(void);
+
+extern int read_term(void);
+
+extern int teco_env(int n);
+
+extern void write_term(const char *buf, unsigned int nbytes);
+
+extern struct qreg *get_qreg(int qname, bool qlocal);
+
+extern int get_delim(int delim);
+
 // Functions that access the expression stack
 
 extern bool empty_expr(void);
 
 extern int get_n_arg(void);
-
-extern void init_expr(void);
 
 extern const char *next_cmd(void);
 
@@ -216,9 +292,9 @@ extern bool operand_expr(void);
 
 extern void push_expr(int c, enum expr_type type);
 
-extern int scan_cmd(int delim);
-
 extern void type_cmd(const char *p, int len);
+
+extern bool valid_radix(int c);
 
 // Command buffer functions
 

@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,17 +45,28 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EE(void)
+void exec_EE(struct cmd *cmd)
 {
-    int ee = f.ee;                      // Save old value
+    assert(cmd != NULL);
 
-    f.ee = get_flag(f.ee);              // Get new value
-
-    if (!isascii(f.ee))                 // Is it an ASCII value?
+    if (operand_expr())                 // Is there an operand available?
     {
-        f.ee = ee;                      // No, restore old value
+        int ee = get_n_arg();
 
-        print_err(E_CHR);               // Invalid character for command
+        if (!isascii(f.ee))
+        {
+            print_err(E_CHR);           // Invalid character for command
+        }
+
+        f.ee = ee;
+
+        cmd->state = CMD_DONE;
+    }
+    else
+    {
+        push_expr(f.ee, EXPR_OPERAND);
+
+        cmd->state = CMD_EXPR;
     }
 }
 

@@ -27,9 +27,11 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "exec.h"
 
@@ -41,8 +43,22 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EU(void)
+void exec_EU(struct cmd *cmd)
 {
-    f.eu = get_flag(f.eu);
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // Is there an operand available?
+    {
+        f.eu = cmd->n = get_n_arg();
+
+        cmd->got_n = true;
+        cmd->state = CMD_DONE;
+    }
+    else
+    {
+        push_expr(f.eu, EXPR_OPERAND);
+
+        cmd->state = CMD_EXPR;
+    }
 }
 

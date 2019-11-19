@@ -1,5 +1,5 @@
 ///
-///  @file    ea_cmd.c
+///  @file    ep_cmd.c
 ///  @brief   Execute EP command.
 ///
 ///  @author  Nowwith Treble Software
@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -45,7 +46,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EP(void)
+void exec_EP(struct cmd *cmd)
 {
-    get_cmd(ESC, 0, &cmd);
+    assert(cmd != NULL);
 }

@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -42,8 +43,21 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ES(void)
+void exec_ES(struct cmd *cmd)
 {
-    f.es = get_flag(f.es);
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // Is there an operand available?
+    {
+        f.es = get_n_arg();
+
+        cmd->state = CMD_DONE;
+    }
+    else
+    {
+        push_expr(f.es, EXPR_OPERAND);
+
+        cmd->state = CMD_EXPR;
+    }
 }
 

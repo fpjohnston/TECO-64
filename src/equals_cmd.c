@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -51,48 +52,33 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_equals(void)
+void exec_equals(struct cmd *cmd)
 {
-    check_mod(MOD_CN);                  // Allow n= and n:=
+    assert(cmd != NULL);
 
-    if (empty_expr())
+    if (!operand_expr())                // If no operand, then complain
     {
         print_err(E_NAE);               // No argument before =
     }
 
-    int n_arg = get_n_arg();
-    int c;
+    cmd->n = get_n_arg();
 
-    if ((c = fetch_cmd()) == EOF || c != '=')
+    if (cmd->c3 == '=')                 // If ===, print hexadecimal
     {
-        printf("%d", n_arg);
-
-        if (c != EOF)
-        {
-            unfetch_cmd(c);
-        }
+        printf("%x", cmd->n);
     }
-    else if ((c = fetch_cmd()) == EOF || c != '=')
+    else if (cmd->c2 == '=')            // If ==, print octal
     {
-        printf("%o", n_arg);
-
-        if (c != EOF)
-        {
-            unfetch_cmd(c);
-        }
+        printf("%o", cmd->n);
     }
-    else
+    else                                // If =, print decimal
     {
-        printf("%x", n_arg);
+        printf("%d", cmd->n);
     }
-
+        
     (void)fflush(stdout);
 
-    if (f.ei.colon)                     // Colon modifier?
-    {
-        f.ei.colon = false;             // Yes, clear flag
-    }
-    else
+    if (!cmd->got_colon)                // Suppress CRLF?
     {
         putc_term(CRLF);
     }

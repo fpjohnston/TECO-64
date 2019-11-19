@@ -38,9 +38,6 @@
 #include "errors.h"
 #include "exec.h"
 
-// Local functions
-
-static bool valid_radix(int c);
 
 
 ///
@@ -50,10 +47,12 @@ static bool valid_radix(int c);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_digit(void)
+void exec_digit(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     long sum = 0;
-    int c = last_c;
+    int c = cmd->c1;
 
     // Here when we have a digit. Check to see that it's valid for the current
     // radix, and then loop until we run out of valid digits, at which point we
@@ -71,11 +70,10 @@ void exec_digit(void)
         sum *= radix;
         sum += n;
 
-        if ((c = fetch_cmd()) == EOF)
-        {
-            break;
-        }
+        c = fetch_cmd();
     }
+
+    // When we exit the loop, we've gone one character too far, so put it back.
 
     unfetch_cmd(c);
 
@@ -90,21 +88,21 @@ void exec_digit(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool valid_radix(int c)
+bool valid_radix(int c)
 {
     if (radix == 16 && isxdigit(c))
     {
-        return true;                    // Valid hexadecimal digit
+        return true;
     }
     else if (isdigit(c))
     {
         if (radix == 10 || c <= '7')
         {
-            return true;                // Valid decimal or octal digit
+            return true;
         }
 
         print_err(E_ILN);               // Illegal octal digit
     }
 
-    return false;                       // Not a digit in current radix
+    return false;
 }

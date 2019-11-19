@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -71,8 +72,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EJ(void)
+void exec_EJ(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     int n_arg = 0;
 
     if (!empty_expr())                  // Any numeric argument?
@@ -83,4 +86,6 @@ void exec_EJ(void)
     n_arg = teco_env(n_arg);            // Do the system-dependent part
 
     push_expr(n_arg, EXPR_OPERAND);
+
+    cmd->state = CMD_EXPR;
 }

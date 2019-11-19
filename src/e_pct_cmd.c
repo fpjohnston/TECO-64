@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,11 +47,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_pct(void)
+void exec_E_pct(struct cmd *cmd)
 {
-    cmd.qreg = true;
-    cmd.qlocal = false;
-
-    get_cmd(ESC, 1, &cmd);
+    assert(cmd != NULL);
 }
 

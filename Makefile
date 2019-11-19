@@ -76,8 +76,9 @@ SOURCES = \
     a_cmd.c       \
     atsign_cmd.c  \
     bang_cmd.c    \
-    check_mod.c   \
-    cmdbuf.c      \
+    cmd_buf.c     \
+    cmd_exec.c    \
+    cmd_scan.c    \
     colon_cmd.c   \
     comma_cmd.c   \
     ctrl_a_cmd.c  \
@@ -92,6 +93,7 @@ SOURCES = \
     ctrl_t_cmd.c  \
     ctrl_x_cmd.c  \
     digit_cmd.c   \
+    e_cmd.c       \
     ea_cmd.c      \
     eb_cmd.c      \
     ec_cmd.c      \
@@ -121,11 +123,9 @@ SOURCES = \
     ev_cmd.c      \
     ew_cmd.c      \
     ex_cmd.c      \
-    exec.c        \
-    exec_e.c      \
-    exec_f.c      \
     ey_cmd.c      \
     ez_cmd.c      \
+    f_cmd.c       \
     fc_cmd.c      \
     fd_cmd.c      \
     fk_cmd.c      \
@@ -141,12 +141,12 @@ SOURCES = \
     push_expr.c   \
     quote_cmd.c   \
     qreg.c        \
-    readcmd.c     \
     rparen_cmd.c  \
     s_cmd.c       \
-    skip_cmd.c    \
     stubs.c       \
     teco.c        \
+    term_in.c     \
+    term_out.c    \
     term_sys.c    \
     y_cmd.c       \
 

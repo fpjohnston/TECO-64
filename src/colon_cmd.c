@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "teco.h"
@@ -42,19 +43,26 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_colon(void)
+void exec_colon(struct cmd *cmd)
 {
-    if (f.ei.dcolon)                    // Third colon?
+    assert(cmd != NULL);
+
+    // If in strict mode, and we don't allow colons, then exit with error.
+
+    if (f.ei.strict && !cmd->opt_colon)
     {
-        print_err(E_MOD);               // Yes, that's bad
+        print_err(E_MOD);
     }
-    else if (f.ei.colon)                // Second colon?
+
+    if (cmd->got_colon)                 // Second colon?
     {
-        f.ei.dcolon = true;
-        f.ei.colon = false;
+        cmd->got_dcolon = true;
+        cmd->got_colon = false;
     }
     else                                // Must be the first colon
     {
-        f.ei.colon = true;
+        cmd->got_colon = true;
     }
+
+    cmd->state = CMD_MOD;
 }

@@ -1,5 +1,5 @@
 ///
-///  @file    exec_f.c
+///  @file    f_cmd.c
 ///  @brief   General dispatcher for TECO F commands (e.g., FR, FS).
 ///
 ///           nFB    Search, bounded by n lines
@@ -42,6 +42,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,88 +53,57 @@
 #include "errors.h"
 #include "exec.h"
 
-struct f_cmds
+struct cmd_table
 {
     int c2;
-    void (*exec)(void);
-    int nargs;
-    int mflags;
+    void (*scan)(struct cmd *cmd);  // Scan function
+    void (*exec)(struct cmd *cmd);  // Execution function
+    enum cmd_opts opts;
 };
     
-static struct f_cmds f_cmds[] =
+
+static const struct cmd_table cmd_table[] =
 {
-    { 'B',  exec_FB,       1, MOD_ACMN },
-    { 'C',  exec_FC,       0, MOD_ACN  },
-    { 'D',  exec_FD,       0, MOD_AN   },
-    { 'K',  exec_FK,       0, MOD_AN   },
-    { 'N',  exec_FN,       1, MOD_AN   },
-    { 'R',  exec_FR,       1, MOD_AMN  },
-    { 'S',  exec_FS,       0, MOD_MN   },
-    { '\'', exec_F_apos,   1, MOD_NONE },
-    { '<',  exec_F_langle, 1, MOD_NONE },
-    { '>',  exec_F_rangle, 1, MOD_NONE },
-    { '_',  exec_F_ubar,   1, MOD_AN   },
-    { '|',  exec_F_vbar,   1, MOD_NONE },
+    { 'B',  scan_done,  exec_FB,        _A | _MN | _T1           },
+    { 'C',  scan_done,  exec_FC,        _A | _MN | _T2           },
+    { 'D',  scan_done,  exec_FD,        _A | _N | _T1            },
+    { 'K',  scan_done,  exec_FK,        _A | _N | _T1            },
+    { 'N',  scan_done,  exec_FN,        _A | _N | _T2            },
+    { 'R',  scan_done,  exec_FR,        _A | _MN | _T1           },
+    { 'S',  scan_done,  exec_FS,        _A | _C | _D | _MN | _T2 },
+    { '\'', scan_done,  exec_F_apos,    0                        },
+    { '<',  scan_done,  exec_F_langle,  0                        },
+    { '>',  scan_done,  exec_F_rangle,  0                        },
+    { '_',  scan_done,  exec_F_ubar,    _A | _N | _T2            },
+    { '|',  scan_done,  exec_F_vbar,    0                        },
 };
+
 
 
 ///
-///  @brief    Execute F command.
+///  @brief    Initialize for F command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_F(void)
+enum cmd_opts init_F(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     int c = fetch_cmd();                // Get character following F
 
-    for (uint i = 0; i < countof(f_cmds); ++i)
+    for (uint i = 0; i < countof(cmd_table); ++i)
     {
-        if (f_cmds[i].c2 == toupper(c))
+        if (cmd_table[i].c2 == toupper(c))
         {
-            cmd.c2 = c;
+            cmd->c2   = c;
+            cmd->exec = cmd_table[i].exec;
+            cmd->scan = cmd_table[i].scan;
 
-            check_mod(f_cmds[i].mflags);
-
-            (*f_cmds[i].exec)();
-
-            return;
+            return cmd_table[i].opts;
         }
     }
 
     printc_err(E_IFC, c);               // Illegal F character
 }
-
-
-void exec_FB(void)
-{
-    check_mod(MOD_AC);
-
-    get_cmd(ESC, 1, &cmd);
-}
-
-
-void exec_F_apos(void)
-{
-    printf("F%% command\r\n");
-}
-
-
-void exec_F_langle(void)
-{
-    printf("F< command\r\n");
-}
-
-
-void exec_F_rangle(void)
-{
-    printf("F> command\r\n");
-}
-
-
-void exec_F_vbar(void)
-{
-    printf("F| command\r\n");
-}
-

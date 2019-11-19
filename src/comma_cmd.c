@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "teco.h"
@@ -42,9 +43,11 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_comma(void)
+void exec_comma(struct cmd *cmd)
 {
-    if (f.ei.comma)                     // Already seen m argument?
+    assert(cmd != NULL);
+    
+    if (cmd->got_m)                     // Already seen m argument?
     {
         print_err(E_ARG);               // Yes, two commas aren't allowed
     }
@@ -57,7 +60,7 @@ void exec_comma(void)
     // If we've seen a comma, then what's on the expression is an "m" argument,
     // not an "n" argument (numeric arguments can take the form m,n).
 
-    m_arg = get_n_arg();                // Save the m argument
+    cmd->m = get_n_arg();               // Save the m argument
 
-    f.ei.comma = true;                  // And say we have one
+    cmd->got_m = true;                  // And say we have one
 }

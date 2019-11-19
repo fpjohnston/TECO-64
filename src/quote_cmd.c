@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdlib.h>
 
@@ -62,9 +63,11 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_quote(void)
+void exec_quote(struct cmd *cmd)
 {
-    check_mod(MOD_N);                   // Allow n"
+    assert(cmd != NULL);
+
+    cmd->opt_n = true;
 
     if (empty_expr())                   // If nothing on stack,
     {
@@ -73,8 +76,6 @@ void exec_quote(void)
 
     int c = get_n_arg();                // Character to test
     int test = fetch_cmd();             // Test condition
-
-    init_expr();
 
     switch (toupper(test))
     {
@@ -156,9 +157,7 @@ void exec_quote(void)
             break;
 
         default:
-            print_err(E_IQC);           // Illegal character after "
-
-            return;
+            break;
     }
 
 #if     0       // TODO: finish this
@@ -167,7 +166,7 @@ void exec_quote(void)
         return;
     }
 #endif
-    
-    return;
+
+    print_err(E_IQC);                   // Illegal character after "
 }
 

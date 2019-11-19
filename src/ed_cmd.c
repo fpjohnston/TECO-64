@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,8 +44,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ED(void)
+void exec_ED(struct cmd *cmd)
 {
-    f.eh.flag = get_flag(f.eh.flag);
+    assert(cmd != NULL);
+
+    get_flag(&f.ed.flag, cmd);
 }
 

@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,13 +44,17 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_r(void)
+void exec_ctrl_r(struct cmd *cmd)
 {
-    check_mod(MOD_N);                   // Allow n^R
+    assert(cmd != NULL);
+
+    cmd->opt_n = true;
 
     if (!operand_expr())                // Any operand available?
     {
         push_expr(radix, EXPR_OPERAND); // No, just save what we have
+
+        cmd->state = CMD_EXPR;
 
         return;
     }
@@ -63,10 +68,5 @@ void exec_ctrl_r(void)
 
     radix = n_arg;                      // Set the radix
 
-    // Clear expression modifiers
-
-    f.ei.colon  = false;
-    f.ei.dcolon = false;
-    f.ei.atsign = false;
-    f.ei.comma  = false;
+    cmd->state = CMD_DONE;
 }

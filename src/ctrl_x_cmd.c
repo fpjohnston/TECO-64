@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -41,8 +42,21 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(void)
+void exec_ctrl_x(struct cmd *cmd)
 {
-    ctrl_x = get_flag(ctrl_x);
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // Is there an operand available?
+    {
+        ctrl_x = get_n_arg();
+
+        cmd->state = CMD_DONE;
+    }
+    else
+    {
+        push_expr(ctrl_x, EXPR_OPERAND);
+
+        cmd->state = CMD_EXPR;
+    }
 }
 

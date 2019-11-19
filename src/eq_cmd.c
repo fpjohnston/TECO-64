@@ -27,6 +27,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,10 +47,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EQ(void)
+void exec_EQ(struct cmd *cmd)
 {
-    cmd.qreg = true;
-    cmd.qlocal = false;
-
-    get_cmd(ESC, 1, &cmd);
+    assert(cmd != NULL);
 }

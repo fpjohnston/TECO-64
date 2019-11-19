@@ -68,11 +68,6 @@ void init_env(void)
 
 int teco_env(int n_arg)
 {
-    if (f.ei.comma)                     // Do we have m argument?
-    {
-        print_err(E_NIH);               // Yes, we can't do that here
-    }
-
     switch (n_arg)
     {
         case -1:
