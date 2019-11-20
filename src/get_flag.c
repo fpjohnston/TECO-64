@@ -40,44 +40,34 @@
 ///            ED, EH, ES, ET, EU, EV, EZ and ^X. The EO flag can only be
 ///            examined, not set, so it does not use this function. (TODO?)
 ///
-///  @returns  New value of flag.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool get_flag(int *flag, struct cmd *cmd)
+void get_flag(int *flag, struct cmd *cmd)
 {
     if (operand_expr())                 // Is there an operand available?
     {
-        int n_arg = cmd->n = get_n_arg();
+        cmd->n = get_n_arg();
 
-        cmd->opt_n = true;
-
-        if (!cmd->opt_m)                // m or n argument?
+        if (!cmd->got_m)                // m argument?
         {
-            *flag = n_arg;
+            *flag = cmd->n;             // No, so just set flag
         }
-        else if (m_arg !=0 && n_arg != 0) // It's m,n<flag>
+        else                            // Both m and n were specified
         {
-            *flag &= ~m_arg;             // Turn off m bits
-            *flag |= n_arg;              // Turn on n bits
+            if (cmd->m != 0)
+            {
+                *flag &= ~cmd->m;       // Turn off m bits
+            }
+            if (cmd->n != 0)
+            {
+                *flag |= cmd->n;        // Turn on n bits
+            }
         }
-        else if (m_arg == 0 && n_arg != 0) // It's 0,n<flag>
-        {
-            *flag |= n_arg;              // Turn on n bits
-        }
-        else if (m_arg != 0 && n_arg == 0) // It's m,0<flag>
-        {
-            *flag &= ~m_arg;             // Turn off m bits
-        }
-
-        cmd->state = CMD_DONE;
     }
     else
     {
         push_expr(*flag, EXPR_OPERAND);
-
-        cmd->state = CMD_EXPR;
     }
-
-    return false;
 }

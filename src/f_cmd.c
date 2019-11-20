@@ -46,6 +46,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -53,29 +54,20 @@
 #include "errors.h"
 #include "exec.h"
 
-struct cmd_table
-{
-    int c2;
-    void (*scan)(struct cmd *cmd);  // Scan function
-    void (*exec)(struct cmd *cmd);  // Execution function
-    enum cmd_opts opts;
-};
-    
-
 static const struct cmd_table cmd_table[] =
 {
-    { 'B',  scan_done,  exec_FB,        _A | _MN | _T1           },
-    { 'C',  scan_done,  exec_FC,        _A | _MN | _T2           },
-    { 'D',  scan_done,  exec_FD,        _A | _N | _T1            },
-    { 'K',  scan_done,  exec_FK,        _A | _N | _T1            },
-    { 'N',  scan_done,  exec_FN,        _A | _N | _T2            },
-    { 'R',  scan_done,  exec_FR,        _A | _MN | _T1           },
-    { 'S',  scan_done,  exec_FS,        _A | _C | _D | _MN | _T2 },
-    { '\'', scan_done,  exec_F_apos,    0                        },
-    { '<',  scan_done,  exec_F_langle,  0                        },
-    { '>',  scan_done,  exec_F_rangle,  0                        },
-    { '_',  scan_done,  exec_F_ubar,    _A | _N | _T2            },
-    { '|',  scan_done,  exec_F_vbar,    0                        },
+    { scan_done,  exec_FB,        _A | _MN | _T1           },
+    { scan_done,  exec_FC,        _A | _MN | _T2           },
+    { scan_done,  exec_FD,        _A | _N | _T1            },
+    { scan_done,  exec_FK,        _A | _N | _T1            },
+    { scan_done,  exec_FN,        _A | _N | _T2            },
+    { scan_done,  exec_FR,        _A | _MN | _T1           },
+    { scan_done,  exec_FS,        _A | _C | _D | _MN | _T2 },
+    { scan_done,  exec_F_langle,  0                        },
+    { scan_done,  exec_F_rangle,  0                        },
+    { scan_done,  exec_F_apos,    0                        },
+    { scan_done,  exec_F_ubar,    _A | _N | _T2            },
+    { scan_done,  exec_F_vbar,    0                        },
 };
 
 
@@ -87,23 +79,21 @@ static const struct cmd_table cmd_table[] =
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-enum cmd_opts init_F(struct cmd *cmd)
+const struct cmd_table *init_F(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int c = fetch_cmd();                // Get character following F
+    int c = cmd->c2;
 
-    for (uint i = 0; i < countof(cmd_table); ++i)
+    const char *f_cmds = "BCDKNRS<>\\_|";
+    const char *f_cmd  = strchr(f_cmds, c);
+
+    if (f_cmd == NULL)
     {
-        if (cmd_table[i].c2 == toupper(c))
-        {
-            cmd->c2   = c;
-            cmd->exec = cmd_table[i].exec;
-            cmd->scan = cmd_table[i].scan;
-
-            return cmd_table[i].opts;
-        }
+        printc_err(E_IFC, c);           // Illegal F character
     }
 
-    printc_err(E_IFC, c);               // Illegal F character
+    cmd->c2 = c;
+
+    return &cmd_table[f_cmd - f_cmds];
 }

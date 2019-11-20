@@ -47,6 +47,7 @@ enum errors
     E_CON,          //  Confused use of conditionals
     E_CPQ,          //  Can't pop into Q-register
     E_DEV,          //  Invalid device
+    E_DIV,          //  Division by zero
     E_DTB,          //  Delete too big
     E_ERR,          //  RSTS/E error message
     E_FER,          //  File error

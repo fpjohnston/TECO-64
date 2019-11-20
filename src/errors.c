@@ -54,6 +54,7 @@ static struct err_table
     [E_CON] = { "CON",  "Confused use of conditionals", },
     [E_CPQ] = { "CPQ",  "Can't pop into Q-register", },
     [E_DEV] = { "DEV",  "Invalid device", },
+    [E_DIV] = { "DIV",  "Division by zero", },
     [E_DTB] = { "DTB",  "Delete too big", },
     [E_ERR] = { "ERR",  "%s", },
     [E_FER] = { "FER",  "File error", },
@@ -148,6 +149,8 @@ static const char *verbose[] =
 
     [E_DEV] = "A file specification string in an E command contains an "
               "unknown device name.",
+
+    [E_DIV] = "An attempt was made to divide a number by zero.",
 
     [E_DTB] = "An nD command has been attempted which is not contained "
               "within the current page.",

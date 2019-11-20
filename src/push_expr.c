@@ -92,6 +92,19 @@ int get_n_arg(void)
 
 
 ///
+///  @brief    Initialize expression stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void init_expr(void)
+{
+    expr.len = 0;
+}
+
+
+///
 ///  @brief    Return whether the top of the expression stack is an operand.
 ///            Note: if the stack is empty, then there's obviously no operand.
 ///
@@ -260,9 +273,16 @@ static void reduce3(void)
                 break;
 
             case '/':
-                if (e1->item == 0)
+                if (e1->item == 0)      // Division by zero?
                 {
-                    print_err(E_IFE);   // Can't divide by zero!
+                    if (f.ei.scan)      // Are we just scanning?
+                    {
+                        e1->item = 1;   // Yes, just let it pass
+                    }
+                    else
+                    {
+                        print_err(E_DIV);
+                    }
                 }
 
                 e3->item /= e1->item;

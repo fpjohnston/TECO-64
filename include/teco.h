@@ -93,17 +93,18 @@ struct tstr
 
 enum cmd_opts
 {
-    _A  = (2 << 0),                 // @ modifier allowed
-    _C  = (2 << 1),                 // : modifier allowed
-    _D  = (2 << 2),                 // :: modifier allowed
-    _N  = (2 << 3),                 // n argument allowed
-    _MN = (2 << 4) | _N,            // m and n arguments allowed
-    _Q  = (2 << 5),                 // Q-register required
-    _T1 = (2 << 6),                 // 1 text string allowed
-    _T2 = (2 << 7),                 // 2 text strings allowed
-    _W  = (2 << 8),                 // W modifier allowed (for P)
+    _A  = (1 << 0),                 // @ modifier allowed
+    _C  = (1 << 1),                 // : modifier allowed
+    _D  = (1 << 2),                 // :: modifier allowed
+    _N  = (1 << 3),                 // n argument allowed
+    _MN = (1 << 4) | _N,            // m and n arguments allowed
+    _Q  = (1 << 5),                 // Q-register required
+    _T1 = (1 << 6),                 // 1 text string allowed
+    _T2 = (1 << 7),                 // 2 text strings allowed
+    _W  = (1 << 8),                 // W modifier allowed (for P)
 };
     
+
 enum cmd_state
 {
     CMD_NULL,                       // Scanning for start of command
@@ -158,10 +159,15 @@ struct cmd
     struct tstr text2;              // 2nd text string
     struct cmd *next;               // Next command (or NULL)
     struct cmd *prev;               // Previous command (or NULL)
-    void (*scan)(struct cmd *cmd);  // Scan function
-    void (*exec)(struct cmd *cmd);  // Execution function
 };
 
+struct cmd_table
+{
+    void (*scan)(struct cmd *cmd);  // Scan function
+    void (*exec)(struct cmd *cmd);  // Execution function
+    enum cmd_opts opts;
+};
+    
 // Scanning functions
 
 extern void scan_bad(struct cmd *cmd);
@@ -244,7 +250,7 @@ extern void echo_chr(int c);
 
 extern void exec_cmd(void);
 
-extern bool get_flag(int *flag, struct cmd *cmd);
+extern void get_flag(int *flag, struct cmd *cmd);
 
 extern void init_env(void);
 
@@ -285,6 +291,8 @@ extern int get_delim(int delim);
 extern bool empty_expr(void);
 
 extern int get_n_arg(void);
+
+extern void init_expr(void);
 
 extern const char *next_cmd(void);
 

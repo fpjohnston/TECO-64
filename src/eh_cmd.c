@@ -50,6 +50,6 @@ void exec_EH(struct cmd *cmd)
 
     get_flag(&f.eh.flag, cmd);
 
-    f.eh.flag &= (2 << 3) - 1;          // Mask off low 3 bits
+    f.eh.flag &= (1 << 3) - 1;          // Mask off low 3 bits
 }
 

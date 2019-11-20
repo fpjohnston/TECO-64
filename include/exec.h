@@ -141,7 +141,7 @@ extern void exec_ctrl_y(struct cmd *cmd);
 
 extern void exec_ctrl_z(struct cmd *cmd);
 
-extern void exec_digit(struct cmd *cmd);
+extern int exec_digit(const char *str, int nchrs);
 
 extern void exec_dot(struct cmd *cmd);
 
@@ -261,8 +261,8 @@ extern void exec_F_ubar(struct cmd *cmd);
 
 extern void exec_F_vbar(struct cmd *cmd);
 
-extern enum cmd_opts init_E(struct cmd *cmd);
+extern const struct cmd_table *init_E(struct cmd *cmd);
 
-extern enum cmd_opts init_F(struct cmd *cmd);
+extern const struct cmd_table *init_F(struct cmd *cmd);
 
 #endif  // _EXEC_H

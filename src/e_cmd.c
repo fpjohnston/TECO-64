@@ -31,19 +31,12 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
 #include "errors.h"
 #include "exec.h"
-
-
-struct cmd_table
-{
-    void (*scan)(struct cmd *cmd);  // Scan function
-    void (*exec)(struct cmd *cmd);  // Execution function
-    enum cmd_opts opts;             // Command options
-};
 
 static const struct cmd_table cmd_table[] =
 {
@@ -85,34 +78,19 @@ static const struct cmd_table cmd_table[] =
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-enum cmd_opts init_E(struct cmd *cmd)
+const struct cmd_table *init_E(struct cmd *cmd)
 {
-    int c = fetch_cmd();                // Get character following E
-    uint i = toupper(c);                // Index into cmd_table[]
-    
-    if (!isalpha(c))
+    int c = cmd->c2;
+
+    const char *e_cmds = "ABCDEFGHIJKLMNOPQRSTUVWXYZ%_";
+    const char *e_cmd  = strchr(e_cmds, toupper(c));
+
+    if (e_cmd == NULL)
     {
-        if (c == '%')
-        {
-            i = 'Z' + 1;
-        }
-        else if (c == '_')
-        {
-            i = 'Z' + 2;
-        }
-        else
-        {
-            printc_err(E_IEC, c);       // Illegal E character
-        }
+        printc_err(E_IEC, c);           // Illegal F character
     }
 
-    i -= 'A';                           // Make index zero-based
+    cmd->c2 = c;
 
-    assert(i < countof(cmd_table));
-
-    cmd->c2   = c;
-    cmd->scan = cmd_table[i].scan;
-    cmd->exec = cmd_table[i].exec;
-
-    return cmd_table[i].opts;
+    return &cmd_table[e_cmd - e_cmds];
 }

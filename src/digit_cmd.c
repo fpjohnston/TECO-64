@@ -47,18 +47,19 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_digit(struct cmd *cmd)
+int exec_digit(const char *str, int nchrs)
 {
-    assert(cmd != NULL);
+    assert(str != NULL);
 
     long sum = 0;
-    int c = cmd->c1;
+    int ndigits = 0;
+    int c;
 
     // Here when we have a digit. Check to see that it's valid for the current
     // radix, and then loop until we run out of valid digits, at which point we
     // have to return the last character to the command buffer.
 
-    while (valid_radix(c))
+    while (valid_radix(c = *str++) && nchrs-- > 0)
     {
         const char *digits = "0123456789ABCDEF";
         const char *digit = strchr(digits, toupper(c));
@@ -70,14 +71,12 @@ void exec_digit(struct cmd *cmd)
         sum *= radix;
         sum += n;
 
-        c = fetch_cmd();
+        ++ndigits;
     }
 
-    // When we exit the loop, we've gone one character too far, so put it back.
-
-    unfetch_cmd(c);
-
     push_expr(sum, EXPR_OPERAND);
+
+    return ndigits;
 }
 
 

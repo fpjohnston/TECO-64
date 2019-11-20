@@ -81,10 +81,6 @@ void scan_cmd(struct cmd *cmd)
     {
         print_err(E_MRP);               // Missing right parenthesis
     }
-    else if (!empty_expr())             // Expression stack must be empty here
-    {
-        print_err(E_IFE);               // Ill-formed expression
-    }
     else if (f.ei.strict)
     {
         if (   (cmd->got_m      && !cmd->opt_m     )

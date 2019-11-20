@@ -288,12 +288,13 @@ void print_cmd(struct cmd *cmd)
 
     if (cmd->text1.len != 0)
     {
-        putc_term('{');
-
         if (cmd->got_atsign)            // Conditionally echo delimiter before 1st arg.
         {
             echo_chr(cmd->delim);
+            putc_term(SPACE);
         }
+
+        putc_term('{');
 
         const char *p = cmd->text1.buf;
 
@@ -302,9 +303,13 @@ void print_cmd(struct cmd *cmd)
             echo_chr(*p++);
         }
 
-        echo_chr(cmd->delim);           // Echo delimiter at end
-
         putc_term('}');
+        putc_term(SPACE);
+    }
+
+    if (cmd->text2.len != 0 || cmd->delim != ESC)
+    {
+        echo_chr(cmd->delim);           // Echo delimiter between texts
         putc_term(SPACE);
     }
 
@@ -319,13 +324,13 @@ void print_cmd(struct cmd *cmd)
             echo_chr(*p++);
         }
 
+        putc_term('}');
+        putc_term(SPACE);
+
         if (cmd->delim != ESC)
         {
             echo_chr(cmd->delim);       // Echo delimiter at end
         }
-
-        putc_term('}');
-        putc_term(SPACE);
     }
 
     putc_term(CRLF);

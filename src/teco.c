@@ -77,8 +77,7 @@ int main(int unused1, const char * const argv[])
 {
     assert(argv != NULL);               // (This assertion should NEVER fire)
 
-    f.ei.error = false;
-    f.ei.strict = true;
+    f.ei.strict = true;                 // TODO: temporary
 
     init_env();                         // Initialize environment
     init_term();                        // Initialize terminal
@@ -96,24 +95,9 @@ int main(int unused1, const char * const argv[])
         {
             read_cmd();                 // Read one or more commands
 
-#if     defined(TEST_SKIP)
+            init_expr();                // Initialize expression stack
 
-            int command = 0;
-
-            while (!empty_cmd())
-            {
-                const char *buf = next_cmd();
-                int len = strlen(buf);
-            
-                printf("command #%d: ", ++command); fflush(stdout);
-                type_cmd(buf, len);
-                putc_term(CRLF);
-
-//                skip_cmd();
-            }
-#else
-            exec_cmd();                 // Then execute them
-#endif
+            exec_cmd();                 // Then execute what we have
         }
     }
 }

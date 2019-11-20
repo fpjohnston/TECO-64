@@ -50,9 +50,6 @@ void exec_ET(struct cmd *cmd)
 
     union et_flag old = { .flag = f.et.flag };
 
-    cmd->opt_m = true;
-    cmd->opt_n = true;
-
     get_flag(&f.et.flag, cmd);
 
     if (f.et.eightbit ^ old.eightbit)
