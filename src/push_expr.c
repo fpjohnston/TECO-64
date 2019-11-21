@@ -82,7 +82,15 @@ int get_n_arg(void)
 {
     assert(expr.len > 0);               // Caller should check before calling
 
-    if (expr.stack[--expr.len].type != EXPR_OPERAND)
+    --expr.len;
+
+    if (expr.len == 0 && expr.stack[expr.len].type == EXPR_OPERATOR
+        && expr.stack[expr.len].item == '-')
+    {
+        return -1;
+    }
+
+    if (expr.stack[expr.len].type != EXPR_OPERAND)
     {
         print_err(E_IFE);               // Ill-formed numeric expression
     }
@@ -114,12 +122,26 @@ void init_expr(void)
 
 bool operand_expr(void)
 {
-    if (expr.len == 0 || expr.stack[expr.len - 1].type != EXPR_OPERAND)
+    if (expr.len == 0)                  // Anything on stack?
     {
-        return false;
+        return false;                   // No
     }
 
-    return true;
+    if (expr.stack[expr.len - 1].type == EXPR_OPERAND)
+    {
+        return true;                    // Done if we have an operand
+    }
+
+    // Say we have an "operand" if there is only one thing on the stack, and
+    // it's a unary operator.
+
+    if (expr.len == 1 && expr.stack[0].type == EXPR_OPERATOR
+        && expr.stack[0].item == '-')
+    {
+        return true;
+    }
+
+    return false;
 }
 
 
@@ -275,7 +297,7 @@ static void reduce3(void)
             case '/':
                 if (e1->item == 0)      // Division by zero?
                 {
-                    if (f.ei.scan)      // Are we just scanning?
+                    if (f.ei.dryrun)    // Are we just scanning?
                     {
                         e1->item = 1;   // Yes, just let it pass
                     }

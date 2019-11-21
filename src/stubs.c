@@ -53,14 +53,6 @@ void exec_D(struct cmd *cmd)
 }
 
 
-void exec_G(struct cmd *cmd)
-{
-    printf("G command\r\n");
-
-    return;
-}
-
-
 void exec_J(struct cmd *cmd)
 {
     printf("J command\r\n");
@@ -93,14 +85,6 @@ void exec_M(struct cmd *cmd)
 }
 
 
-void exec_Q(struct cmd *cmd)
-{
-    printf("Q command\r\n");
-
-    return;
-}
-
-
 void exec_R(struct cmd *cmd)
 {
     printf("R command\r\n");
@@ -117,14 +101,6 @@ void exec_T(struct cmd *cmd)
 }
 
 
-void exec_U(struct cmd *cmd)
-{
-    printf("U command\r\n");
-
-    return;
-}
-
-
 void exec_V(struct cmd *cmd)
 {
     printf("V command\r\n");
@@ -136,14 +112,6 @@ void exec_V(struct cmd *cmd)
 void exec_W(struct cmd *cmd)
 {
     printf("W command\r\n");
-
-    return;
-}
-
-
-void exec_X(struct cmd *cmd)
-{
-    printf("X command\r\n");
 
     return;
 }
@@ -207,14 +175,6 @@ void exec_ctrl_q(struct cmd *cmd)
 }
 
 
-void exec_ctrl_u(struct cmd *cmd)
-{
-    printf("ctrl_u command\r\n");
-
-    return;
-}
-
-
 void exec_ctrl_v(struct cmd *cmd)
 {
     printf("ctrl_v command\r\n");
@@ -239,25 +199,9 @@ void exec_ctrl_z(struct cmd *cmd)
 }
 
 
-void exec_lbracket(struct cmd *cmd)
-{
-    printf("[ command\r\n");
-
-    return;
-}
-
-
 void exec_langle(struct cmd *cmd)
 {
     printf("< command\r\n");
-
-    return;
-}
-
-
-void exec_pct(struct cmd *cmd)
-{
-    printf("%% command\r\n");
 
     return;
 }
@@ -274,14 +218,6 @@ void exec_question(struct cmd *cmd)
 void exec_rangle(struct cmd *cmd)
 {
     printf("> command\r\n");
-
-    return;
-}
-
-
-void exec_rbracket(struct cmd *cmd)
-{
-    printf("] command\r\n");
 
     return;
 }
@@ -309,7 +245,6 @@ void exec_vbar(struct cmd *cmd)
 
     return;
 }
-
 
 
 void exec_nul(struct cmd *cmd)

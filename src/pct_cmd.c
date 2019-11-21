@@ -1,6 +1,6 @@
 ///
-///  @file    e%_cmd.c
-///  @brief   Execute E%q command.
+///  @file    pct_cmd.c
+///  @brief   Execute % command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -28,27 +28,37 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute E%q command: write Q-register to file.
+///  @brief    Execute % command - Add value to Q-register.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_pct(struct cmd *cmd)
+void exec_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (operand_expr())                 // Is there an operand available?
+    {
+        cmd->n = get_n_arg();
+    }
+    else
+    {
+        cmd->n = 1;
+    }
+
+    printf("add %u to Q-register %s%c\r\n", cmd->n, cmd->qlocal ? "." : "", cmd->qreg);
+    fflush(stdout);
+
+    push_expr(cmd->n, EXPR_OPERAND);
 }
 

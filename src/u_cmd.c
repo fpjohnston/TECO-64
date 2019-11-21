@@ -1,6 +1,6 @@
 ///
-///  @file    e%_cmd.c
-///  @brief   Execute E%q command.
+///  @file    u_cmd.c
+///  @brief   Execute U command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -28,27 +28,36 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute E%q command: write Q-register to file.
+///  @brief    Execute U command - Copy number to Q-register.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_pct(struct cmd *cmd)
+void exec_U(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (operand_expr())                 // Is there an operand available?
+    {
+        cmd->n = get_n_arg();
+    }
+
+    printf("copy %u to Q-register %s%c\r\n", cmd->n, cmd->qlocal ? "." : "", cmd->qreg);
+    fflush(stdout);
+
+    if (cmd->got_m)
+    {
+        push_expr(cmd->m, EXPR_OPERAND);
+    }
 }
 

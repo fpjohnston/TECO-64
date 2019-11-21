@@ -86,7 +86,7 @@ const struct cmd_table *init_F(struct cmd *cmd)
     int c = cmd->c2;
 
     const char *f_cmds = "BCDKNRS<>\\_|";
-    const char *f_cmd  = strchr(f_cmds, c);
+    const char *f_cmd  = strchr(f_cmds, toupper(c));
 
     if (f_cmd == NULL)
     {

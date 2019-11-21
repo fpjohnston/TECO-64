@@ -120,7 +120,7 @@ static const struct cmd_table cmd_table[] =
     ['&']         = { scan_expr,  exec_operator,    0                        },
     ['\'']        = { scan_done,  exec_apos,        0                        },
     ['(']         = { scan_expr,  exec_operator,    0                        },
-    [')']         = { scan_expr,  exec_operator,    0                        },
+    [')']         = { scan_expr,  exec_rparen,      0                        },
     ['*']         = { scan_expr,  exec_operator,    0                        },
     ['+']         = { scan_expr,  exec_operator,    0                        },
     [',']         = { scan_expr,  exec_comma,       0                        },
@@ -283,7 +283,7 @@ void exec_cmd(void)
             }
             else if (toupper(c) == '^')          // ^{x} command
             {
-                cmd.c2 = fetch_cmd();
+                cmd.c1 = fetch_cmd();
 
                 table = scan_caret(&cmd);
             }
@@ -304,11 +304,11 @@ void exec_cmd(void)
  
             set_opts(&cmd, table->opts);
 
-            f.ei.scan = true;
+            f.ei.dryrun = true;
 
             (*exec_scan)(&cmd);
 
-            f.ei.scan = false;
+            f.ei.dryrun = false;
 
             if (cmd.state == CMD_EXPR)
             {
@@ -328,6 +328,7 @@ void exec_cmd(void)
                     fflush(stdout);
                 }
 
+                init_expr();
                 exec_expr(&cmd);        // Execute expression
 
                 if (exec_cmd != NULL)
@@ -369,10 +370,7 @@ void exec_escape(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->expr.len > 0)
-    {
-        print_cmd(cmd);
-    }
+    init_expr();
 }
 
 
@@ -389,7 +387,7 @@ static void exec_expr(struct cmd *cmd)
     cmd->got_m = false;
     cmd->got_n = false;
 
-    init_expr();
+//    init_expr();
 
     if (cmd->c1 == ESC)
     {
@@ -428,7 +426,7 @@ static void exec_expr(struct cmd *cmd)
         }
         else if (toupper(c) == '^')     // ^{x} command
         {
-            cmd->c2 = *p++;
+            cmd->c1 = *p++;
 
             assert(p <= cmd->expr.buf + cmd->expr.len);
 

@@ -40,7 +40,7 @@
 
 
 ///
-///  @brief    Execute E_ command (TODO: ?)
+///  @brief    Execute E_ command: read file into Q-register.
 ///
 ///  @returns  Nothing.
 ///

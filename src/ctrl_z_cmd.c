@@ -1,6 +1,6 @@
 ///
-///  @file    e%_cmd.c
-///  @brief   Execute E%q command.
+///  @file    ctrl_z_cmd.c
+///  @brief   Execute ^Z (CTRL/Z) command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -28,27 +28,24 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
-#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute E%q command: write Q-register to file.
+///  @brief    Execute ^Z (CTRL/Z) command - get no. of chrs. in all Q-registers.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_pct(struct cmd *cmd)
+void exec_ctrl_z(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    push_expr(1, EXPR_OPERAND);         // TODO: make this real
 }
 

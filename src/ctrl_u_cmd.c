@@ -1,6 +1,6 @@
 ///
-///  @file    e%_cmd.c
-///  @brief   Execute E%q command.
+///  @file    ctrl_u_cmd.c
+///  @brief   Execute ^U (CTRL/U) command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -28,27 +28,51 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute E%q command: write Q-register to file.
+///  @brief    Execute ^U (CTRL/U) command - copy/append string in Q-register.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_pct(struct cmd *cmd)
+void exec_ctrl_u(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (operand_expr())                 // Is there an operand available?
+    {
+        cmd->n = get_n_arg();
+
+        if (cmd->text1.len != 0)
+        {
+            print_err(E_MOD);           // Can't have both modifiers
+        }
+
+        printf("%s character '%c' to Q-register %s%c\r\n",
+               cmd->got_colon ? "append" : "copy", cmd->n,
+               cmd->qlocal ? "." : "", cmd->qreg);
+        fflush(stdout);
+    }
+    else
+    {
+        if (cmd->text1.len == 0)
+        {
+            print_err(E_MOD);           // Must have at least one modifier
+        }
+
+        printf("%s string '%.*s' to Q-register %s%c\r\n",
+               cmd->got_colon ? "append" : "copy",
+               cmd->text1.len, cmd->text1.buf,
+               cmd->qlocal ? "s" : "", cmd->qreg);
+        fflush(stdout);
+    }
 }
 

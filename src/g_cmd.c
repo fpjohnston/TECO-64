@@ -1,6 +1,6 @@
 ///
-///  @file    e%_cmd.c
-///  @brief   Execute E%q command.
+///  @file    g_cmd.c
+///  @brief   Execute G command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -28,27 +28,34 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute E%q command: write Q-register to file.
+///  @brief    Execute G command - Print Q-register contents, or copy to buffer.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_pct(struct cmd *cmd)
+void exec_G(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (cmd->got_colon)
+    {
+        printf("print Q-register %s%c\r\n", cmd->qlocal ? "." : "", cmd->qreg);
+    }
+    else
+    {
+        printf("copy Q-register %s%c to buffer\r\n", cmd->qlocal ? "." : "", cmd->qreg);
+    }
+
+    fflush(stdout);
 }
 

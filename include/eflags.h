@@ -72,7 +72,7 @@ union eh_flag
 struct ei_flag
 {
     uint strict    : 1;         // Strictly enforce command syntax
-    uint scan      : 1;         // Scanning command
+    uint dryrun    : 1;         // Don't evaluate expression for real
     uint exec      : 1;         // Executing command
     uint lf        : 1;         // Discard next character if LF
     uint ctrl_c    : 1;         // CTRL/C seen

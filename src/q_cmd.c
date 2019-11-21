@@ -1,6 +1,6 @@
 ///
-///  @file    e%_cmd.c
-///  @brief   Execute E%q command.
+///  @file    q_cmd.c
+///  @brief   Execute Q command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -28,27 +28,54 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute E%q command: write Q-register to file.
+///  @brief    Execute Q command - Return numeric part of Q-register.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_pct(struct cmd *cmd)
+void exec_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (operand_expr())                 // nQq
+    {
+        cmd->n = get_n_arg();
+
+        if (cmd->got_colon)
+        {
+            print_err(E_MOD);
+        }
+
+        printf("get ASCII value of chr. #%d in Q-register %s%c\r\n",
+               cmd->n, cmd->qlocal ? "." : "", cmd->qreg);
+
+        push_expr(1, EXPR_OPERAND);
+    }
+    else if (cmd->got_colon)            // :Qq
+    {
+        printf("return # of chrs. in Q-register %s%c\r\n",
+               cmd->qlocal ? "." : "", cmd->qreg);
+
+        push_expr(1, EXPR_OPERAND);
+    }
+    else                                // Qq
+    {
+        printf("return numeric value in Q-register %s%c\r\n",
+               cmd->qlocal ? "." : "", cmd->qreg);
+        
+        push_expr(1, EXPR_OPERAND);
+    }
+        
+    fflush(stdout);
 }
 
