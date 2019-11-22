@@ -141,7 +141,7 @@ SOURCES = \
     n_cmd.c        \
     o_cmd.c        \
     p_cmd.c        \
-    pct_cmd.c      \
+    percent_cmd.c  \
     push_expr.c    \
     q_cmd.c        \
     quote_cmd.c    \

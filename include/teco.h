@@ -83,28 +83,6 @@ struct tstr
 };
 
 
-//
-//  The following bit-encoded flags defined the available options for each
-//  command. These are OR'd together in dispatch tables to determine how par-
-//  sing and execution should proceed.
-//
-//  Note: no given command uses more than three or four of these.
-//
-
-enum cmd_opts
-{
-    _A  = (1 << 0),                 // @ modifier allowed
-    _C  = (1 << 1),                 // : modifier allowed
-    _D  = (1 << 2),                 // :: modifier allowed
-    _N  = (1 << 3),                 // n argument allowed
-    _MN = (1 << 4) | _N,            // m and n arguments allowed
-    _Q  = (1 << 5),                 // Q-register required
-    _T1 = (1 << 6),                 // 1 text string allowed
-    _T2 = (1 << 7),                 // 2 text strings allowed
-    _W  = (1 << 8),                 // W modifier allowed (for P)
-};
-    
-
 enum cmd_state
 {
     CMD_NULL,                       // Scanning for start of command
@@ -165,7 +143,7 @@ struct cmd_table
 {
     void (*scan)(struct cmd *cmd);  // Scan function
     void (*exec)(struct cmd *cmd);  // Execution function
-    enum cmd_opts opts;
+    const char *opts;               // Command modifiers and options
 };
     
 // Scanning functions

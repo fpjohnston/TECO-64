@@ -56,18 +56,18 @@
 
 static const struct cmd_table cmd_table[] =
 {
-    { scan_done,  exec_FB,        _A | _MN | _T1           },
-    { scan_done,  exec_FC,        _A | _MN | _T2           },
-    { scan_done,  exec_FD,        _A | _N | _T1            },
-    { scan_done,  exec_FK,        _A | _N | _T1            },
-    { scan_done,  exec_FN,        _A | _N | _T2            },
-    { scan_done,  exec_FR,        _A | _MN | _T1           },
-    { scan_done,  exec_FS,        _A | _C | _D | _MN | _T2 },
-    { scan_done,  exec_F_langle,  0                        },
-    { scan_done,  exec_F_rangle,  0                        },
-    { scan_done,  exec_F_apos,    0                        },
-    { scan_done,  exec_F_ubar,    _A | _N | _T2            },
-    { scan_done,  exec_F_vbar,    0                        },
+    { scan_done,  exec_FB,        "m n @ 1"      },
+    { scan_done,  exec_FC,        "m n @ 1 2"    },
+    { scan_done,  exec_FD,        "m n @ 1"      },
+    { scan_done,  exec_FK,        "n @ 1"        },
+    { scan_done,  exec_FN,        "n : @ 1 2"    },
+    { scan_done,  exec_FR,        "m n @ 1 2"    },
+    { scan_done,  exec_FS,        "m n :: @ 1 2" },
+    { scan_done,  exec_F_langle,  ""             },
+    { scan_done,  exec_F_rangle,  ""             },
+    { scan_done,  exec_F_apos,    ""             },
+    { scan_done,  exec_F_ubar,    "n @ 1 2"      },
+    { scan_done,  exec_F_vbar,    ""             },
 };
 
 

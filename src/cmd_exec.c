@@ -79,100 +79,100 @@ static const struct cmd_table *scan_caret(struct cmd *cmd);
 
 static const struct cmd_table cmd_table[] =
 {
-    [NUL]         = { NULL,       NULL,             0                        },
-    [CTRL_A]      = { scan_done,  exec_ctrl_a,      _A | _T1                 },
-    [CTRL_B]      = { scan_expr,  exec_ctrl_b,      0                        },
-    [CTRL_C]      = { NULL,       exec_ctrl_c,      0                        },
-    [CTRL_D]      = { scan_done,  exec_ctrl_d,      0                        },
-    [CTRL_E]      = { scan_expr,  exec_ctrl_e,      0                        },
-    [CTRL_F]      = { scan_expr,  exec_ctrl_f,      _N                       },
-    [CTRL_G]      = { scan_bad,   NULL,             0                        },
-    [BS]          = { scan_expr,  exec_ctrl_h,      0                        },
-    [TAB]         = { scan_done,  exec_ctrl_i,      _T1                      },
-    [LF]          = { NULL,       exec_nul,         0                        },
-    [VT]          = { scan_bad,   NULL,             0                        },
-    [FF]          = { NULL,       exec_ctrl_l,      0                        },
-    [CR]          = { NULL,       NULL,             0                        },
-    [CTRL_N]      = { scan_expr,  exec_ctrl_n,      0                        },
-    [CTRL_O]      = { scan_done,  exec_ctrl_o,      0                        },
-    [CTRL_P]      = { scan_bad,   exec_ctrl_p,      0                        },
-    [CTRL_Q]      = { NULL,       exec_ctrl_q,      0                        },
-    [CTRL_R]      = { NULL,       exec_ctrl_r,      _N                       },
-    [CTRL_S]      = { scan_expr,  exec_ctrl_s,      0                        },
-    [CTRL_T]      = { NULL,       exec_ctrl_t,      _C                       },
-    [CTRL_U]      = { scan_done,  exec_ctrl_u,      _A | _C | _N | _Q | _T1  },
-    [CTRL_V]      = { NULL,       exec_ctrl_v,      0                        },
-    [CTRL_W]      = { NULL,       exec_ctrl_w,      0                        },
-    [CTRL_X]      = { scan_expr,  exec_ctrl_x,      _N                       },
-    [CTRL_Y]      = { scan_expr,  exec_ctrl_y,      0                        },
-    [CTRL_Z]      = { scan_expr,  exec_ctrl_z,      0                        },
-    [ESC]         = { scan_done,  exec_escape,      _MN                      },
-    [FS]          = { scan_bad,   NULL,             0                        },
-    [GS]          = { scan_bad,   NULL,             0                        },
-    [RS]          = { NULL,       exec_ctrl_caret,  0                        },
-    [US]          = { scan_expr,  exec_ctrl_ubar,   0                        },
-    [SPACE]       = { NULL,       NULL,             0                        },
-    ['!']         = { scan_done,  exec_bang,        _A | _T1                 },
-    ['"']         = { scan_done,  exec_quote,       0                        },
-    ['#']         = { scan_expr,  exec_operator,    0                        },
-    ['$']         = { scan_done,  exec_escape,      _MN                      },
-    ['%']         = { scan_done,  exec_pct,         _N | _Q                  },
-    ['&']         = { scan_expr,  exec_operator,    0                        },
-    ['\'']        = { scan_done,  exec_apos,        0                        },
-    ['(']         = { scan_expr,  exec_operator,    0                        },
-    [')']         = { scan_expr,  exec_rparen,      0                        },
-    ['*']         = { scan_expr,  exec_operator,    0                        },
-    ['+']         = { scan_expr,  exec_operator,    0                        },
-    [',']         = { scan_expr,  exec_comma,       0                        },
-    ['-']         = { scan_expr,  exec_operator,    0                        },
-    ['.']         = { scan_expr,  exec_dot,         0                        },
-    ['/']         = { scan_expr,  exec_operator,    0                        },
-    ['0' ... '9'] = { scan_expr,  NULL,             0                        },
-    [':']         = { scan_mod,   NULL,             0                        },
-    [';']         = { scan_done,  exec_semi,        _C | _N                  },
-    ['<']         = { scan_done,  exec_langle,      _N                       },
-    ['=']         = { scan_done,  exec_equals,      _C | _N                  },
-    ['>']         = { scan_done,  exec_rangle,      0                        },
-    ['?']         = { scan_done,  exec_question,    0                        },
-    ['@']         = { scan_mod,   NULL,             0                        },
-    ['A']         = { scan_done,  exec_A,           _C | _N                  },
-    ['B']         = { scan_expr,  exec_B,           0                        },
-    ['C']         = { scan_done,  exec_C,           _C | _N                  },
-    ['D']         = { scan_done,  exec_D,           _C | _MN                 },
-    ['E']         = { NULL,       NULL,             0                        },
-    ['F']         = { NULL,       NULL,             0                        },
-    ['G']         = { scan_done,  exec_G,           _C | _Q                  },
-    ['H']         = { scan_expr,  exec_H,           0                        },
-    ['I']         = { scan_done,  exec_I,           _A | _N | _T1            },
-    ['J']         = { scan_done,  exec_J,           _C | _N                  },
-    ['K']         = { scan_done,  exec_K,           _MN                      },
-    ['L']         = { scan_done,  exec_L,           _N                       },
-    ['M']         = { scan_done,  exec_M,           _C | _MN | _Q            },
-    ['N']         = { scan_done,  exec_N,           _A | _C | _N | _T1       },
-    ['O']         = { scan_done,  exec_O,           _A | _N | _T1            },
-    ['P']         = { scan_done,  exec_P,           _C | _MN | _W            },
-    ['Q']         = { scan_done,  exec_Q,           _C | _Q                  },
-    ['R']         = { scan_done,  exec_R,           _C | _N                  },
-    ['S']         = { scan_done,  exec_S,           _A | _C | _D | _MN | _T1 },
-    ['T']         = { scan_done,  exec_T,           _C | _MN                 },
-    ['U']         = { scan_done,  exec_U,           _MN | _Q                 },
-    ['V']         = { scan_done,  exec_V,           _MN                      },
-    ['W']         = { scan_done,  exec_W,           _C | _MN                 },
-    ['X']         = { scan_done,  exec_X,           _C | _MN | _Q            },
-    ['Y']         = { scan_done,  exec_Y,           _C | _N                  },
-    ['Z']         = { scan_expr,  exec_Z,           0                        },
-    ['[']         = { scan_done,  exec_lbracket,    _Q                       },
-    ['\\']        = { scan_expr,  exec_backslash,   0                        },
-    [']']         = { scan_done,  exec_rbracket,    _C | _Q                  },
-    ['^']         = { NULL,       NULL,             0                        },
-    ['_']         = { scan_expr,  exec_ubar,        _A | _C | _N | _T1       },
-    ['`']         = { scan_bad,   NULL,             0                        },
-    ['a' ... 'z'] = { NULL,       NULL,             0                        },
-    ['{']         = { scan_bad,   NULL,             0                        },
-    ['|']         = { scan_done,  exec_vbar,        0                        },
-    ['}']         = { scan_bad,   NULL,             0                        },
-    ['~']         = { scan_bad,   NULL,             0                        },
-    [DEL]         = { scan_bad,   NULL,             0                        },
+    [NUL]         = { NULL,       NULL,             ""             },
+    [CTRL_A]      = { scan_done,  exec_ctrl_a,      "@ 1",         },
+    [CTRL_B]      = { scan_expr,  exec_ctrl_b,      ""             },
+    [CTRL_C]      = { NULL,       exec_ctrl_c,      ""             },
+    [CTRL_D]      = { scan_done,  exec_ctrl_d,      ""             },
+    [CTRL_E]      = { scan_expr,  exec_ctrl_e,      ""             },
+    [CTRL_F]      = { scan_expr,  exec_ctrl_f,      "n"            },
+    [CTRL_G]      = { scan_bad,   NULL,             ""             },
+    [BS]          = { scan_expr,  exec_ctrl_h,      ""             },
+    [TAB]         = { scan_done,  exec_ctrl_i,      "1"            },
+    [LF]          = { NULL,       exec_nul,         ""             },
+    [VT]          = { scan_bad,   NULL,             ""             },
+    [FF]          = { NULL,       exec_ctrl_l,      ""             },
+    [CR]          = { NULL,       NULL,             ""             },
+    [CTRL_N]      = { scan_expr,  exec_ctrl_n,      ""             },
+    [CTRL_O]      = { scan_done,  exec_ctrl_o,      ""             },
+    [CTRL_P]      = { scan_bad,   exec_ctrl_p,      ""             },
+    [CTRL_Q]      = { NULL,       exec_ctrl_q,      ""             },
+    [CTRL_R]      = { NULL,       exec_ctrl_r,      "n"            },
+    [CTRL_S]      = { scan_expr,  exec_ctrl_s,      ""             },
+    [CTRL_T]      = { NULL,       exec_ctrl_t,      ":"            },
+    [CTRL_U]      = { scan_done,  exec_ctrl_u,      "n : @ q 1"    },
+    [CTRL_V]      = { NULL,       exec_ctrl_v,      ""             },
+    [CTRL_W]      = { NULL,       exec_ctrl_w,      ""             },
+    [CTRL_X]      = { scan_expr,  exec_ctrl_x,      "n"            },
+    [CTRL_Y]      = { scan_expr,  exec_ctrl_y,      ""             },
+    [CTRL_Z]      = { scan_expr,  exec_ctrl_z,      ""             },
+    [ESC]         = { scan_done,  exec_escape,      "m n"          },
+    [FS]          = { scan_bad,   NULL,             ""             },
+    [GS]          = { scan_bad,   NULL,             ""             },
+    [RS]          = { NULL,       exec_ctrl_caret,  ""             },
+    [US]          = { scan_expr,  exec_ctrl_ubar,   ""             },
+    [SPACE]       = { NULL,       NULL,             ""             },
+    ['!']         = { scan_done,  exec_bang,        "@ 1"          },
+    ['"']         = { scan_done,  exec_quote,       ""             },
+    ['#']         = { scan_expr,  exec_operator,    ""             },
+    ['$']         = { scan_done,  exec_escape,      "m n"          },
+    ['%']         = { scan_done,  exec_pct,         "n q"          },
+    ['&']         = { scan_expr,  exec_operator,    ""             },
+    ['\'']        = { scan_done,  exec_apos,        ""             },
+    ['(']         = { scan_expr,  exec_operator,    ""             },
+    [')']         = { scan_expr,  exec_rparen,      ""             },
+    ['*']         = { scan_expr,  exec_operator,    ""             },
+    ['+']         = { scan_expr,  exec_operator,    ""             },
+    [',']         = { scan_expr,  exec_comma,       ""             },
+    ['-']         = { scan_expr,  exec_operator,    ""             },
+    ['.']         = { scan_expr,  exec_dot,         ""             },
+    ['/']         = { scan_expr,  exec_operator,    ""             },
+    ['0' ... '9'] = { scan_expr,  NULL,             ""             },
+    [':']         = { scan_mod,   NULL,             ""             },
+    [';']         = { scan_done,  exec_semi,        "n :"          },
+    ['<']         = { scan_done,  exec_langle,      "n"            },
+    ['=']         = { scan_done,  exec_equals,      "n :"          },
+    ['>']         = { scan_done,  exec_rangle,      ""             },
+    ['?']         = { scan_done,  exec_question,    ""             },
+    ['@']         = { scan_mod,   NULL,             ""             },
+    ['A']         = { scan_done,  exec_A,           "n :"          },
+    ['B']         = { scan_expr,  exec_B,           ""             },
+    ['C']         = { scan_done,  exec_C,           "n :"          },
+    ['D']         = { scan_done,  exec_D,           "m n :"        },
+    ['E']         = { NULL,       NULL,             ""             },
+    ['F']         = { NULL,       NULL,             ""             },
+    ['G']         = { scan_done,  exec_G,           ":q"           },
+    ['H']         = { scan_expr,  exec_H,           ""             },
+    ['I']         = { scan_done,  exec_I,           "n @ 1"        },
+    ['J']         = { scan_done,  exec_J,           "n :"          },
+    ['K']         = { scan_done,  exec_K,           "m n"          },
+    ['L']         = { scan_done,  exec_L,           "n"            },
+    ['M']         = { scan_done,  exec_M,           "m n : q"      },
+    ['N']         = { scan_done,  exec_N,           "n : @ 1"      },
+    ['O']         = { scan_done,  exec_O,           "n @ 1"        },
+    ['P']         = { scan_done,  exec_P,           "m n : W"      },
+    ['Q']         = { scan_done,  exec_Q,           ": q"          },
+    ['R']         = { scan_done,  exec_R,           "n :"          },
+    ['S']         = { scan_done,  exec_S,           "m n : :: @ 1" },
+    ['T']         = { scan_done,  exec_T,           "m n :"        },
+    ['U']         = { scan_done,  exec_U,           "m n q"        },
+    ['V']         = { scan_done,  exec_V,           "m n"          },
+    ['W']         = { scan_done,  exec_W,           "m n :"        },
+    ['X']         = { scan_done,  exec_X,           "m n : q"      },
+    ['Y']         = { scan_done,  exec_Y,           "n :"          },
+    ['Z']         = { scan_expr,  exec_Z,           ""             },
+    ['[']         = { scan_done,  exec_lbracket,    "q"            },
+    ['\\']        = { scan_expr,  exec_backslash,   ""             },
+    [']']         = { scan_done,  exec_rbracket,    ": q"          },
+    ['^']         = { NULL,       NULL,             ""             },
+    ['_']         = { scan_expr,  exec_ubar,        "n : @ 1"      },
+    ['`']         = { scan_bad,   NULL,             ""             },
+    ['a' ... 'z'] = { NULL,       NULL,             ""             },
+    ['{']         = { scan_bad,   NULL,             ""             },
+    ['|']         = { scan_done,  exec_vbar,        ""             },
+    ['}']         = { scan_bad,   NULL,             ""             },
+    ['~']         = { scan_bad,   NULL,             ""             },
+    [DEL]         = { scan_bad,   NULL,             ""             },
 };
 
 // Define initial values for command block
@@ -203,7 +203,7 @@ const struct cmd null_cmd =
 
 static void exec_expr(struct cmd *cmd);
 
-static void set_opts(struct cmd *cmd, int opts);
+static void set_opts(struct cmd *cmd, const char *opts);
 
 
 ///
@@ -495,25 +495,70 @@ static const struct cmd_table *scan_caret(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void set_opts(struct cmd *cmd, int opts)
+static void set_opts(struct cmd *cmd, const char *opts)
 {
     assert(cmd != NULL);
 
-    if (opts & _A)  cmd->opt_atsign         = true;
+    if (opts == NULL)
+    {
+        return;
+    }
 
-    if (opts & _C)  cmd->opt_colon          = true;
+    int c;
 
-    if (opts & _D)  cmd->opt_dcolon         = true;
+    while ((c = *opts++) != NUL)
+    {
+        switch (c)
+        {
+            case 'm':
+                cmd->opt_m = true;
+                //lint -fallthrough
 
-    if (opts & _MN) cmd->opt_m = cmd->opt_n = true;
+            case 'n':
+                cmd->opt_n = true;
 
-    if (opts & _N)  cmd->opt_n              = true;
+                break;
 
-    if (opts & _Q)  cmd->opt_qreg           = true;
+            case ':':
+                if (*opts == ':')
+                {
+                    cmd->opt_dcolon = true;
 
-    if (opts & _T1) cmd->opt_t1             = true;
+                    ++opts;
+                }
+                else
+                {
+                    cmd->opt_colon  = true;
+                }
 
-    if (opts & _T2) cmd->opt_t2             = true;
+                break;
 
-    if (opts & _W)  cmd->opt_w              = true;
+            case '@':
+                cmd->opt_atsign = true;
+
+                break;
+
+            case 'q':
+                cmd->opt_qreg = true;
+
+                break;
+
+            case 'W':
+                cmd->opt_w  = true;
+
+                break;
+
+            case '2':
+                cmd->opt_t2 = true;
+                //lint -fallthrough
+
+            case '1':
+                cmd->opt_t1 = true;
+
+                break;
+
+            default:
+                break;
+        }
+    }
 }

@@ -1,5 +1,5 @@
 ///
-///  @file    pct_cmd.c
+///  @file    percent_cmd.c
 ///  @brief   Execute % command.
 ///
 ///  @author  Nowwith Treble Software
