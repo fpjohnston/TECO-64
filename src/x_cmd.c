@@ -47,16 +47,12 @@ void exec_X(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // Is there an operand available?
-    {
-        cmd->n = get_n_arg();
-    }
-    else
+    if (!cmd->got_n)                    // n argument?
     {
         cmd->n = 1;
     }
 
-    if (cmd->got_m)
+    if (cmd->got_m)                     // m argument too?
     {
         if (cmd->m < 0 || cmd->n < 0)   // If m,nXq, m & n must be positive
         {

@@ -40,7 +40,7 @@
 
 
 ///
-///  @brief    Execute E_ command: read file into Q-register.
+///  @brief    Execute E_ command: search without yank protection.
 ///
 ///  @returns  Nothing.
 ///

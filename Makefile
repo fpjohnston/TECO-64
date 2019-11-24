@@ -74,12 +74,10 @@ LIBS =
 
 SOURCES = \
     a_cmd.c        \
-    atsign_cmd.c   \
     bang_cmd.c     \
-    cmd_buf.c      \
+    buffer.c       \
     cmd_exec.c     \
     cmd_scan.c     \
-    colon_cmd.c    \
     comma_cmd.c    \
     ctrl_a_cmd.c   \
     ctrl_b_cmd.c   \
@@ -93,6 +91,7 @@ SOURCES = \
     ctrl_t_cmd.c   \
     ctrl_u_cmd.c   \
     ctrl_x_cmd.c   \
+    ctrl_z_cmd.c   \
     digit_cmd.c    \
     e_cmd.c        \
     ea_cmd.c       \
@@ -129,6 +128,7 @@ SOURCES = \
     f_cmd.c        \
     fc_cmd.c       \
     fd_cmd.c       \
+    files.c        \
     fk_cmd.c       \
     fn_cmd.c       \
     fr_cmd.c       \

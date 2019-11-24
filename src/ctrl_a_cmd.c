@@ -51,4 +51,5 @@ void exec_ctrl_a(struct cmd *cmd)
     assert(cmd->text1.buf != NULL);
     
     printf("%.*s", cmd->text1.len, cmd->text1.buf);
+    fflush(stdout);
 }

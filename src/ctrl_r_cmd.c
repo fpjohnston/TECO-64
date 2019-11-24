@@ -48,25 +48,17 @@ void exec_ctrl_r(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    cmd->opt_n = true;
-
-    if (!operand_expr())                // Any operand available?
+    if (!cmd->got_n)                    // n argument?
     {
         push_expr(radix, EXPR_OPERAND); // No, just save what we have
-
-        cmd->state = CMD_EXPR;
 
         return;
     }
 
-    int n_arg = get_n_arg();
-
-    if (n_arg != 8 && n_arg != 10 && n_arg != 16)
+    if (cmd->n != 8 && cmd->n != 10 && cmd->n != 16)
     {
         print_err(E_IRA);               // Illegal radix argument
     }
 
-    radix = n_arg;                      // Set the radix
-
-    cmd->state = CMD_DONE;
+    radix = cmd->n;                     // Set the radix
 }

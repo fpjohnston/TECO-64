@@ -53,10 +53,7 @@ void exec_ctrl_t(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    cmd->opt_n = true;
-    cmd->opt_colon = true;
-
-    if (!operand_expr())                // Operand on top of stack?
+    if (!cmd->got_n)                    // n argument?
     {
         bool wait = f.et.nowait ? false : true;
         int c = getc_term(wait);
@@ -73,15 +70,13 @@ void exec_ctrl_t(struct cmd *cmd)
         return;    
     }
 
-    int n_arg = get_n_arg();
-
     if (cmd->got_colon || f.et.image)
     {
-        putc_term(n_arg);
+        putc_term(cmd->n);
     }
     else
     {
-        echo_chr(n_arg);
+        echo_chr(cmd->n);
     }
 }
 

@@ -46,18 +46,13 @@ void exec_EV(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // Is there an operand available?
+    if (cmd->got_n)                     // n argument?
     {
-        f.ev = cmd->n = get_n_arg();
-
-        cmd->got_n = true;
-        cmd->state = CMD_DONE;
+        f.ev = cmd->n;
     }
     else
     {
         push_expr(f.ev, EXPR_OPERAND);
-
-        cmd->state = CMD_EXPR;
     }
 }
 

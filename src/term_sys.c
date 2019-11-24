@@ -368,8 +368,6 @@ static void reset_term(void)
     // Note: there is no point to adding error checking for this function,
     //       because we're already in the process of exiting when we get here.
 
-    print_term("<Terminal reset>");
-
     (void)tcsetattr(fileno(stdin), TCSAFLUSH, &saved_mode);
 }
 

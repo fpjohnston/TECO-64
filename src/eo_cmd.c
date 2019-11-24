@@ -53,7 +53,5 @@ void exec_EO(struct cmd *cmd)
     }
 
     push_expr(teco_version, EXPR_OPERAND);
-
-    cmd->state = CMD_EXPR;
 }
 

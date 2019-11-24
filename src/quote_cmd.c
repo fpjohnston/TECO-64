@@ -75,7 +75,7 @@ void exec_quote(struct cmd *cmd)
     }
 
     int c = get_n_arg();                // Character to test
-    int test = fetch_cmd();             // Test condition
+    int test = fetch_buf();             // Test condition
 
     switch (toupper(test))
     {

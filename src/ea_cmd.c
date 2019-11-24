@@ -49,5 +49,7 @@
 void exec_EA(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    istream = IFILE_SECONDARY;
 }
 

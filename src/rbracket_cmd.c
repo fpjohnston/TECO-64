@@ -47,8 +47,20 @@ void exec_rbracket(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    printf("pop from push-down list into Q-register %s%c\r\n",
-           cmd->qlocal ? "." : "", cmd->qreg);
-    fflush(stdout);
+    if (!pop_qreg(cmd->qreg, cmd->qlocal))
+    {
+        if (!cmd->got_colon)
+        {
+            print_err(E_CPQ);           // Push-down list is empty.
+        }
+
+        cmd->n = 0;                     // 0 -> failure
+    }
+    else if (cmd->got_colon)
+    {
+        cmd->n = 1;                     // 1 -> success
+    }
+
+    push_expr(cmd->n, EXPR_OPERAND);    // Leave for next command
 }
 

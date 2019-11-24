@@ -47,18 +47,15 @@ void exec_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // Is there an operand available?
-    {
-        cmd->n = get_n_arg();
-    }
-    else
+    if (!cmd->got_n)                    // n argument?
     {
         cmd->n = 1;
     }
 
-    printf("add %u to Q-register %s%c\r\n", cmd->n, cmd->qlocal ? "." : "", cmd->qreg);
-    fflush(stdout);
+    int n = get_qnum(cmd->qreg, cmd->qlocal) + cmd->n;
 
-    push_expr(cmd->n, EXPR_OPERAND);
+    store_qnum(cmd->qreg, cmd->qlocal, n);
+
+    push_expr(n, EXPR_OPERAND);
 }
 

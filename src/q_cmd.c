@@ -47,35 +47,26 @@ void exec_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // nQq
-    {
-        cmd->n = get_n_arg();
+    int n;
 
+    if (cmd->got_n)                     // n argument? 
+    {
         if (cmd->got_colon)
         {
             print_err(E_MOD);
         }
 
-        printf("get ASCII value of chr. #%d in Q-register %s%c\r\n",
-               cmd->n, cmd->qlocal ? "." : "", cmd->qreg);
-
-        push_expr(1, EXPR_OPERAND);
+        n = get_qchr(cmd->qreg, cmd->qlocal, cmd->n);
     }
     else if (cmd->got_colon)            // :Qq
     {
-        printf("return # of chrs. in Q-register %s%c\r\n",
-               cmd->qlocal ? "." : "", cmd->qreg);
-
-        push_expr(1, EXPR_OPERAND);
+        n = get_qsize(cmd->qreg, cmd->qlocal);
     }
     else                                // Qq
     {
-        printf("return numeric value in Q-register %s%c\r\n",
-               cmd->qlocal ? "." : "", cmd->qreg);
-        
-        push_expr(1, EXPR_OPERAND);
+        n = get_qnum(cmd->qreg, cmd->qlocal);
     }
         
-    fflush(stdout);
+    push_expr(n, EXPR_OPERAND);
 }
 

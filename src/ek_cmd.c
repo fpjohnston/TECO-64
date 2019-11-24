@@ -28,6 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,7 +41,7 @@
 
 
 ///
-///  @brief    Execute EK command (close file)
+///  @brief    Execute EK command: kill current output file.
 ///
 ///  @returns  Nothing.
 ///
@@ -49,5 +50,31 @@
 void exec_EK(struct cmd *cmd)
 {
     assert(cmd != NULL);
-}
 
+    struct ofile *ofile = &ofiles[ostream];
+    const char *oname;
+    FILE *fp;
+
+    if ((fp = ofile->fp) != NULL)
+    {
+        fclose(fp);
+
+        ofile->fp = NULL;
+    }
+
+    if (ofile->temp != NULL)
+    {
+        oname = ofile->temp;
+    }
+    else
+    {
+        oname = ofile->name;
+    }
+
+    printf("killing file %s\r\n", oname); fflush(stdout);
+
+    if (remove(oname) != 0)
+    {
+        fatal_err(errno, E_SYS, NULL);
+    }
+}

@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute U command - Copy number to Q-register.
+///  @brief    Execute U command - Store number in Q-register.
 ///
 ///  @returns  Nothing.
 ///
@@ -47,15 +47,14 @@ void exec_U(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // Is there an operand available?
+    if (!cmd->got_n)                    // n argument?
     {
-        cmd->n = get_n_arg();
+        cmd->n = 0;                     // TODO: is this correct?
     }
 
-    printf("copy %u to Q-register %s%c\r\n", cmd->n, cmd->qlocal ? "." : "", cmd->qreg);
-    fflush(stdout);
+    store_qnum(cmd->qreg, cmd->qlocal, cmd->n);
 
-    if (cmd->got_m)
+    if (cmd->got_m)                     // m argument too?
     {
         push_expr(cmd->m, EXPR_OPERAND);
     }

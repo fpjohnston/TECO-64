@@ -50,5 +50,7 @@ void exec_EX(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    exec_EC(cmd);                       // Close everything normally
+
     exit(EXIT_SUCCESS);
 }

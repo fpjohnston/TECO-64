@@ -76,16 +76,12 @@ void exec_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n_arg = 0;
-
-    if (!empty_expr())                  // Any numeric argument?
+    if (!cmd->got_n)                    // n argument?
     {
-        n_arg = get_n_arg();
+        cmd->n = 0;                     // No, so assume 0
     }
 
-    n_arg = teco_env(n_arg);            // Do the system-dependent part
+    cmd->n = teco_env(cmd->n);          // Do the system-dependent part
 
-    push_expr(n_arg, EXPR_OPERAND);
-
-    cmd->state = CMD_EXPR;
+    push_expr(cmd->n, EXPR_OPERAND);
 }

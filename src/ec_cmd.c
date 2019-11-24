@@ -28,6 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,7 +41,7 @@
 
 
 ///
-///  @brief    Execute EC command (close file)
+///  @brief    Execute EC command: copy input to output and close file.
 ///
 ///  @returns  Nothing.
 ///
@@ -49,5 +50,61 @@
 void exec_EC(struct cmd *cmd)
 {
     assert(cmd != NULL);
-}
 
+    FILE *fp;
+    struct ifile *ifile = &ifiles[istream];
+    struct ofile *ofile = &ofiles[ostream];
+    
+    if ((fp = ifile->fp) != NULL)
+    {
+        fclose(fp);
+
+        ifile->fp = NULL;
+    }
+
+    ifile->eof = true;
+    ifile->cr  = false;
+
+    if ((fp = ofile->fp) != NULL)
+    {
+        fclose(fp);
+
+        ofile->fp = NULL;
+    }
+
+    if (ofile->temp != NULL)
+    {
+        assert(ofile->name != NULL);
+
+        if (ofile->backup)
+        {
+            sprintf(scratch, "%s~", ofile->name);
+
+            if (rename(ofile->name, scratch) != 0)
+            {
+                fatal_err(errno, E_SYS, NULL);
+            }
+//            printf("renamed %s to %s\r\n", ofile->name, scratch);
+        }
+        else
+        {
+            if (remove(ofile->name) != 0)
+            {
+                fatal_err(errno, E_SYS, NULL);
+            }
+        }
+        
+        if (rename(ofile->temp, ofile->name) != 0)
+        {
+            fatal_err(errno, E_SYS, NULL);
+        }
+//        printf("renamed %s to %s\r\n", ofile->temp, ofile->name);
+
+        dealloc(&ofile->temp);
+    }
+    fflush(stdout);
+
+    dealloc(&ofile->name);
+
+    ofile->backup = false;
+}

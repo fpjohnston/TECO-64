@@ -61,6 +61,8 @@ jmp_buf jump_main;
 
 int form_feed = -1;
 
+bool teco_debug = false;
+
 // Local functions
 
 static void cleanup(void);
@@ -81,8 +83,9 @@ int main(int unused1, const char * const argv[])
 
     init_env();                         // Initialize environment
     init_term();                        // Initialize terminal
-    init_cmd();                         // Initialize command buffer
+    init_buf();                         // Initialize command buffer
     init_qreg();                        // Initialize Q-registers
+    init_files();                       // Initialize file streams
 
     if (atexit(cleanup) != 0)           // Clean up when we exit
     {
@@ -114,15 +117,9 @@ static void cleanup(void)
 {
     // TODO: finish these
 
-    print_term("<Close primary input stream>");
-    print_term("<Close secondary input stream>");
-    print_term("<Close primary output stream>");
-    print_term("<Close secondary output stream>");
-
-    print_term("<Free the digit buffer>");
-    print_term("<Free the edit buffer>");
-    print_term("<Free the filename buffer>");
-    print_term("<Free the search buffer>");
+    print_term("<TBD: free digit buffer>");
+    print_term("<TBD: free edit buffer>");
+    print_term("<TBD: free search buffer>");
 
     (void)fflush(stdout);
 }
@@ -141,4 +138,66 @@ void print_prompt(void)
     f.et.abort = false;                 // Don't abort on error
 
     puts_term(prompt, strlen(prompt));
+}
+
+
+///
+///  @brief    Get more memory.
+///
+///  @returns  Nothing (error if memory allocation fails).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void *alloc_more(void *ptr, size_t size)
+{
+    // TODO: check for relative size change?
+
+    void *newptr = realloc(ptr, size);
+
+    if (newptr == NULL)
+    {
+        print_err(E_MEM);               // Memory overflow)
+    }
+
+    return newptr;
+}
+
+
+///
+///  @brief    Get new memory.
+///
+///  @returns  Nothing (error if memory allocation fails).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void *alloc_new(size_t size)
+{
+    void *ptr = calloc(1, size);
+
+    if (ptr == NULL)
+    {
+        print_err(E_MEM);               // Memory overflow
+    }
+
+    return ptr;
+}
+
+
+///
+///  @brief    Deallocate memory.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void dealloc(char **ptr)
+{
+    assert(ptr != NULL);                // Make sure pointer to pointer is real
+
+    if (*ptr != NULL)
+    {
+        free(*ptr);
+
+        *ptr = NULL;                    // Make sure we don't use this again
+    }
 }

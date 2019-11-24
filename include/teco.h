@@ -39,14 +39,17 @@
 #include <stdbool.h>
 #endif
 
-#include "cmd.h"
+#if     !defined(_STDIO_H)
+#include <stdio.h>
+#endif
 
 #define countof(array) (sizeof(array) / sizeof(array[0]))
 
-#define WAIT        true                // Wait for terminal input
-#define CMDBUFSIZ   1000                // Command buffer size
+#define WAIT                 true       // Wait for terminal input
 
-#define EXPR_SIZE       64
+#define STR_SIZE_INIT        128        // Initial string size
+
+#define EXPR_SIZE            64
 
 enum expr_type
 {
@@ -69,128 +72,87 @@ struct expr_stack
 
 extern struct expr_stack expr;
 
-struct qreg
+// Define general buffer. This is dynamically allocated, and can be resized as
+// necessary. It consists of a pointer to a memory block, the size of the block
+// in bytes, and two counters, one for storing new characters, and one for
+// removing characters as the buffer is read.
+
+struct buffer
 {
-    char *start;                // Start of Q-register
-    char *end;                  // End of Q-register
-    int value;                  // Value of Q-register
+    char *buf;                      // Start of buffer
+    uint size;                      // Total size of buffer in bytes
+    uint get;                       // Index of next character to fetch
+    uint put;                       // Index of next character to store
 };
 
 struct tstr
 {
-    const char *buf;            // Start of string
-    uint len;                   // No. of characters
+    char *buf;                      // Start of string
+    uint len;                       // No. of characters
 };
 
-
-enum cmd_state
+struct qreg
 {
-    CMD_NULL,                       // Scanning for start of command
-    CMD_EXPR,                       // Scanning expression
-    CMD_MOD,                        // Scanning modifiers
-    CMD_DONE                        // Scanning is done
+    struct buffer text;             // Q-register text
+    int n;                          // Q-register numeric value
 };
-    
 
-// Define the command block structure.
+// Define the number of Q-registers in each set
 
-struct cmd
+#define QREG_SIZE       (('9' - '0') + 1 + ('Z' - 'A') + 1)
+
+// File structures and data
+
+enum file_status
 {
-    enum cmd_state state;           // State of command (for parsing)
-    uint level;                     // Nesting level
-
-    union
-    {
-        uint flag;                  // Command flag
-
-        struct
-        {
-            uint opt_m      : 1;    // m argument allowed
-            uint opt_n      : 1;    // n argument allowed
-            uint opt_bits   : 1;    // m,n set & clear flag bits
-            uint opt_colon  : 1;    // : allowed
-            uint opt_dcolon : 1;    // :: allowed
-            uint opt_atsign : 1;    // @ allowed
-            uint opt_w      : 1;    // W allowed (for P)
-            uint opt_qreg   : 1;    // Q-register required
-            uint opt_t1     : 1;    // 1 text field allowed
-            uint opt_t2     : 1;    // 2 text fields allowed
-            uint got_m      : 1;    // m argument found
-            uint got_n      : 1;    // n argument found
-            uint got_colon  : 1;    // : found
-            uint got_dcolon : 1;    // :: found
-            uint got_atsign : 1;    // @ found
-        };
-    };
-
-    char c1;                        // 1st command character
-    char c2;                        // 2nd command character (or NUL)
-    char c3;                        // 3nd command character (or NUL)
-    int m;                          // m argument
-    int n;                          // n argument
-    int paren;                      // No. of parentheses counted
-    char delim;                     // Delimiter for @ modifier
-    char qreg;                      // Q-register, if any
-    char qlocal;                    // Q-register is local (not global)
-    struct tstr expr;               // Expression string
-    struct tstr text1;              // 1st text string
-    struct tstr text2;              // 2nd text string
-    struct cmd *next;               // Next command (or NULL)
-    struct cmd *prev;               // Previous command (or NULL)
+    OPEN_SUCCESS = -1,
+    OPEN_FAILURE =  0
 };
 
-struct cmd_table
+struct ifile
 {
-    void (*scan)(struct cmd *cmd);  // Scan function
-    void (*exec)(struct cmd *cmd);  // Execution function
-    const char *opts;               // Command modifiers and options
+    FILE *fp;                       // Input file stream
+    uint eof  : 1;                  // End of file reached
+    uint cr   : 1;                  // Last character was CR
 };
-    
-// Scanning functions
 
-extern void scan_bad(struct cmd *cmd);
+enum itype
+{
+    IFILE_PRIMARY,                  // Primary input stream
+    IFILE_SECONDARY,                // Secondary input stream
+    IFILE_INDIRECT,                 // EI command stream
+    IFILE_MAX                       // Maximum input files
+};
 
-extern void scan_cmd(struct cmd *cmd);
+struct ofile
+{
+    FILE *fp;                       // Output file stream
+    char *name;                     // Output file name
+    char *temp;                     // Temporary file name
+    uint backup : 1;                // File opened by EB command
+};
 
-extern void scan_flag(struct cmd *cmd);
+enum otype
+{
+    OFILE_PRIMARY,                  // Primary output stream
+    OFILE_SECONDARY,                // Secondary output stream
+    OFILE_INDIRECT,                 // E%q command stream
+    OFILE_MAX                       // Maximum output files
+};
 
-extern void scan_null(struct cmd *cmd);
+extern struct ifile ifiles[];
 
-extern void print_cmd(struct cmd *cmd);
+extern struct ofile ofiles[];
 
-extern void scan_done(struct cmd *cmd);
+extern uint istream, ostream;
 
-extern void scan_expr(struct cmd *cmd);
+extern char *last_file;
 
-extern void scan_mod(struct cmd *cmd);
-
-extern void scan_null(struct cmd *cmd);
-
-// Functions that skip to the next command
-
-extern void skip_arg1(int c);
-
-extern void skip_arg2(void);
-
-extern void skip_caret(void);
-
-extern void skip_cmd(void);
-
-extern void skip_ctrl_a(void);
-
-extern void skip_ctrl_u(void);
-
-extern void skip_e(void);
-
-extern void skip_esc(void);
-
-extern void skip_f(void);
-
-extern void skip_one(void);
-
-extern void skip_quote(void);
-
-extern void skip_tag(void);
+enum
+{
+    NOBACKUP_FILE,
+    BACKUP_FILE
+};
 
 // Global variables
 
@@ -220,17 +182,27 @@ extern int form_feed;
 
 extern bool f_expression;
 
+extern bool teco_debug;
+
+extern char scratch[];
+
 // Global functions
 
+extern void *alloc_more(void *ptr, size_t size);
+
+extern void *alloc_new(size_t size);
+
 extern void check_errno(int ecode);
+
+extern void dealloc(char **ptr);
 
 extern void echo_chr(int c);
 
 extern void exec_cmd(void);
 
-extern void get_flag(int *flag, struct cmd *cmd);
-
 extern void init_env(void);
+
+extern void init_files(void);
 
 extern void init_qreg(void);
 
@@ -250,6 +222,10 @@ extern void puts_term(const char *str, unsigned int nbytes);
 
 extern bool help_command(void);
 
+extern int open_input(struct tstr *text);
+
+extern int open_output(struct tstr *text, bool backup);
+
 extern void print_badseq(void);
 
 extern void read_cmd(void);
@@ -260,9 +236,31 @@ extern int teco_env(int n);
 
 extern void write_term(const char *buf, unsigned int nbytes);
 
-extern struct qreg *get_qreg(int qname, bool qlocal);
+// Q-register functions
 
-extern int get_delim(int delim);
+extern void append_qchr(int qname, bool qdot, int c);
+
+extern void append_qtext(int qname, bool qdot, struct tstr text);
+
+extern int get_qall(void);
+
+extern int get_qchr(int qname, bool qdot, int n);
+
+extern int get_qnum(int qname, bool qdot);
+
+extern int get_qsize(int qname, bool qdot);
+
+extern bool pop_qreg(int qname, bool qdot);
+
+extern void print_qreg(int qname, bool qdot);
+
+extern bool push_qreg(int qname, bool qdot);
+
+extern void store_qtext(int qname, bool qdot, struct tstr text);
+
+extern void store_qchr(int qname, bool qdot, int c);
+
+extern void store_qnum(int qname, bool qdot, int n);
 
 // Functions that access the expression stack
 
@@ -272,44 +270,38 @@ extern int get_n_arg(void);
 
 extern void init_expr(void);
 
-extern const char *next_cmd(void);
-
 extern bool operand_expr(void);
 
 extern void push_expr(int c, enum expr_type type);
 
-extern void type_cmd(const char *p, int len);
-
 extern bool valid_radix(int c);
 
-// Command buffer functions
+// Buffer functions
 
-extern char *clone_cmd(int delim);
+extern struct tstr copy_buf(void);
 
-extern char *copy_cmd(void);
+extern int count_buf(void);
 
-extern int count_cmd(void);
+extern int delete_buf(void);
 
-extern int delete_cmd(void);
+extern void echo_buf(int pos);
 
-extern void echo_cmd(int pos);
+extern bool empty_buf(void);
 
-extern bool empty_cmd(void);
+extern int fetch_buf(void);
 
-extern int fetch_cmd(void);
+extern void init_buf(void);
 
-extern void init_cmd(void);
+extern bool match_buf(const char *str);
 
-extern int last_cmd(void);
+extern char *next_buf(void);
 
-extern bool match_cmd(const char *str);
+extern void reset_buf(void);
 
-extern void reset_cmd(void);
+extern int start_buf(void);
 
-extern int start_cmd(void);
+extern void store_buf(int c);
 
-extern void store_cmd(int c);
-
-extern void unfetch_cmd(int c);
+extern void unfetch_buf(int c);
 
 #endif  // !defined(_TECO_H)

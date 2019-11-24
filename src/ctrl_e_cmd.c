@@ -46,20 +46,12 @@ void exec_ctrl_e(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    cmd->opt_n = true;
-
-    if (operand_expr())                 // Any operand available?
+    if (cmd->got_n)                     // n argument?
     {
-        int n_arg = get_n_arg();
-
-        form_feed = (n_arg == -1) ? -1 : 0;
-
-        cmd->state = CMD_DONE;
+        form_feed = (cmd->n == -1) ? -1 : 0;
     }
     else
     {
         push_expr(form_feed, EXPR_OPERAND);
-
-        cmd->state = CMD_EXPR;
     }
 }

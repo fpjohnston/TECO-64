@@ -53,7 +53,5 @@ void exec_ctrl_f(struct cmd *cmd)
     }
 
     push_expr(0, EXPR_OPERAND);    // Value is always 0 for now
-
-    cmd->state = CMD_EXPR;
 }
 

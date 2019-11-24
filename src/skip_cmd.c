@@ -149,7 +149,7 @@ static int next_chr(void)
 {
     int c;
     
-    if ((c = fetch_cmd()) == EOF)       // Yes, get the real delimiter
+    if ((c = fetch_buf()) == EOF)       // Yes, get the real delimiter
     {
         if (MstTop < 0)                 // If not in a macro
         {
@@ -220,7 +220,7 @@ void skip_arg2(void)
         }
     }
 
-    (void)fetch_cmd();                  // Skip delimiter between args
+    (void)fetch_buf();                  // Skip delimiter between args
 
     while ((c = next_chr()) != delim)   // Skip second argument
     {
@@ -467,7 +467,7 @@ void skip_f(void)                 // Skip an Fx command
 
 void skip_one(void)
 {
-    (void)next_cmd();                   // Read and discard one character
+    (void)next_buf();                   // Read and discard one character
 }
 
 

@@ -83,7 +83,7 @@ void read_cmd(void)
     int c = read_first();               // Check for immediate-mode commands
     int last = EOF;
 
-    reset_cmd();                        // Initialize command buffer
+    reset_buf();                        // Initialize command buffer
 
     for (;;)
     {
@@ -98,7 +98,7 @@ void read_cmd(void)
         if ((f.et.accent && c == ACCENT) || f.ee == c)
         {
             echo_chr(ACCENT);           // Echo as accent grave
-            store_cmd(c = ESC);         // But store as ESCape
+            store_buf(c = ESC);         // But store as ESCape
 
             if (last == ESC)            // Consecutive delimiter?
             {
@@ -154,7 +154,7 @@ void read_cmd(void)
                     else                    // No, escape is normal character
                     {
                         putc_term('$');     // Use dollar sign to echo ESC
-                        store_cmd(c);
+                        store_buf(c);
 
                         if (last == ESC)    // 2nd ESCape?
                         {
@@ -178,7 +178,7 @@ void read_cmd(void)
 
                 default:
                     echo_chr(c);
-                    store_cmd(c);
+                    store_buf(c);
 
                     break;
             }
@@ -200,7 +200,7 @@ void read_cmd(void)
 
 static void read_bs(void)
 {
-    if (empty_cmd())                    // In immediate mode?
+    if (empty_buf())                    // In immediate mode?
     {
         putc_term(CRLF);
         print_prompt();
@@ -228,7 +228,7 @@ static void read_bs(void)
     }
     else
     {
-        delete_cmd();
+        delete_buf();
         putc_term(BS);
         putc_term(SPACE);
         putc_term(BS);
@@ -253,7 +253,7 @@ static void read_cr(void)
     }
     else
     {
-        store_cmd(CR);
+        store_buf(CR);
 
         ++CR_count;
     }
@@ -270,7 +270,7 @@ static void read_cr(void)
 static void read_ctrl_c(int last)
 {
     echo_chr(CTRL_C);
-    store_cmd(CTRL_C);
+    store_buf(CTRL_C);
     putc_term(CRLF);
 
     if (last == CTRL_C)                 // Second CTRL/C?
@@ -279,7 +279,7 @@ static void read_ctrl_c(int last)
     }
 
     CR_count = 0;
-    reset_cmd();
+    reset_buf();
     print_prompt();
 }
 
@@ -294,7 +294,7 @@ static void read_ctrl_c(int last)
 static void read_ctrl_g(void)
 {
     echo_chr(CTRL_G);
-    store_cmd(CTRL_G);
+    store_buf(CTRL_G);
 
     int c = getc_term(WAIT);            // Get next character
 
@@ -302,7 +302,7 @@ static void read_ctrl_g(void)
 
     if (c != CTRL_G && c != SPACE && c != '*')
     {
-        store_cmd(c);                     // Regular character, so just store it
+        store_buf(c);                     // Regular character, so just store it
 
         return;
     }
@@ -310,32 +310,32 @@ static void read_ctrl_g(void)
     // Here when we have a special CTRL/G command
 
     putc_term(CRLF);                    // Start new line
-    delete_cmd();                       // Delete CTRL/G in buffer
+    delete_buf();                       // Delete CTRL/G in buffer
 
     if (c == CTRL_G)                    // ^G^G
     {
         put_bell();
-        reset_cmd();
+        reset_buf();
         CR_count = 0;
         print_prompt();
     }
     else if (c == SPACE)                // ^G<SPACE>
     {
-        if (empty_cmd())                // Printing from beginning of buffer?
+        if (empty_buf())                // Printing from beginning of buffer?
         {
             print_prompt();             // Yes, so output prompt
         }
 
-        echo_cmd(start_cmd());
+        echo_buf(start_buf());
     }
     else /* if (c == '*') */            // ^G*
     {
-        if (empty_cmd())                // Printing from beginning of buffer?
+        if (empty_buf())                // Printing from beginning of buffer?
         {
             print_prompt();             // Yes, so output prompt
         }
 
-        echo_cmd(0);
+        echo_buf(0);
     }
 }
 
@@ -351,11 +351,11 @@ static void read_ctrl_u(void)
 {
     int c;
 
-    while ((c = delete_cmd()) != EOF)
+    while ((c = delete_buf()) != EOF)
     {
         if (c == LF)
         {
-            store_cmd(c);               // Add line terminator back
+            store_buf(c);               // Add line terminator back
 
             break;
         }
@@ -374,7 +374,7 @@ static void read_ctrl_u(void)
         putc_term(CRLF);
     }
 
-    reset_cmd();
+    reset_buf();
     print_prompt();
 }
 
@@ -389,7 +389,7 @@ static void read_ctrl_u(void)
 static void read_ctrl_z(void)
 {
     echo_chr(CTRL_Z);
-    store_cmd(CTRL_Z);
+    store_buf(CTRL_Z);
 
     int c = getc_term(WAIT);
 
@@ -400,7 +400,7 @@ static void read_ctrl_z(void)
         exit(EXIT_SUCCESS);             // Clean up, reset, and exit
     }
 
-    store_cmd(c);                       // Normal character
+    store_buf(c);                       // Normal character
 }
 
 
@@ -428,7 +428,7 @@ static void read_esc(void)
 
                 if (c == '4')
                 {
-                    store_cmd(c);
+                    store_buf(c);
 
                     c = getc_term(WAIT);
 
@@ -438,12 +438,12 @@ static void read_esc(void)
                     }
                     else
                     {
-                        store_cmd(BS);
+                        store_buf(BS);
                     }
                 }
                 else if (c == '5')
                 {
-                    store_cmd(c);
+                    store_buf(c);
 
                     c = getc_term(WAIT);
 
@@ -453,7 +453,7 @@ static void read_esc(void)
                     }
                     else
                     {
-                        store_cmd(LF);
+                        store_buf(LF);
                     }
                 }
                 else
@@ -488,7 +488,7 @@ static void read_ff(void)
         putc_term(LF);
     }
 
-    store_cmd(FF);
+    store_buf(FF);
 }
 
 
@@ -564,7 +564,7 @@ static int read_first(void)
                 if (last_error != E_NUL)
                 {
                     putc_term(c);
-                    echo_cmd(0);
+                    echo_buf(0);        // Echo command line
                     putc_term(c);
                 }
 
@@ -573,6 +573,7 @@ static int read_first(void)
                 break;
 
             case '*':                   // Store last command in Q-register
+                putc_term(c);
                 c = getc_term(WAIT);    // Get Q-register name
 
                 if (f.ei.ctrl_c)
@@ -602,7 +603,7 @@ static int read_first(void)
 
 static void read_lf(void)
 {
-    if (empty_cmd())                    // Immediate mode?
+    if (empty_buf())                    // Immediate mode?
     {
         putc_term(CRLF);
         print_prompt();
@@ -631,7 +632,7 @@ static void read_lf(void)
     else
     {
         putc_term(LF);
-        store_cmd(LF);
+        store_buf(LF);
     }
 }
 
@@ -656,31 +657,23 @@ static void read_qname(int c)
         return;
     }
 
-    echo_chr(c);
+    int qname = c;
+    bool qdot = (qname == '.');
 
-    bool q_dot = (c == '.');
-
-    if (q_dot)                          // Local Q-register?
+    if (qdot)                           // Local Q-register?
     {
-        c = getc_term(WAIT);            // And get next character
-        echo_chr(c);                    // Echo it
+        echo_chr(c);                    // Yes, echo the dot
+
+        qname = getc_term(WAIT);        // And get next character
     }
 
-    struct qreg *qr = get_qreg(c, q_dot);
-
-    assert(qr != NULL);
-
-    if (qr->start != NULL)
-    {
-        free(qr->start);
-
-        qr->start = qr->end = NULL;
-    }
-
-    qr->start = copy_cmd();
-    qr->end = qr->start + count_cmd();
+    echo_chr(qname);                    // Echo Q-register name
 
     putc_term(CRLF);
+
+    struct tstr text = copy_buf();
+
+    store_qtext(qname, qdot, text);
 }
 
 
@@ -700,5 +693,5 @@ static void read_vt(void)
         putc_term(LF);
     }
 
-    store_cmd(VT);
+    store_buf(VT);
 }

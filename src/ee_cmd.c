@@ -49,9 +49,9 @@ void exec_EE(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // Is there an operand available?
+    if (cmd->got_n)                     // n argument?
     {
-        int ee = get_n_arg();
+        int ee = cmd->n;
 
         if (!isascii(f.ee))
         {
@@ -59,14 +59,10 @@ void exec_EE(struct cmd *cmd)
         }
 
         f.ee = ee;
-
-        cmd->state = CMD_DONE;
     }
     else
     {
         push_expr(f.ee, EXPR_OPERAND);
-
-        cmd->state = CMD_EXPR;
     }
 }
 

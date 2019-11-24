@@ -28,6 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,5 +50,38 @@
 void exec_EB(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (cmd->text1.len == 0)
+    {
+        print_err(E_NFI);               // No file for input
+    }
+
+    if (open_input(&cmd->text1) == EXIT_FAILURE)
+    {
+        if (!cmd->got_colon || (errno != ENOENT && errno != ENODEV))
+        {
+            prints_err(E_FNF, last_file);
+        }
+
+        push_expr(OPEN_FAILURE, EXPR_OPERAND);
+    }
+    else if (cmd->got_colon)
+    {
+        push_expr(OPEN_SUCCESS, EXPR_OPERAND);
+    }
+
+    if (open_output(&cmd->text1, BACKUP_FILE) == EXIT_FAILURE)
+    {
+        if (!cmd->got_colon)
+        {
+            prints_err(E_UFO, last_file);
+        }
+
+        push_expr(OPEN_FAILURE, EXPR_OPERAND);
+    }
+    else if (cmd->got_colon)
+    {
+        push_expr(OPEN_SUCCESS, EXPR_OPERAND);
+    }
 }
 

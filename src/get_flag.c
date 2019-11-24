@@ -33,6 +33,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
+#include "exec.h"
 
 
 ///
@@ -46,11 +47,9 @@
 
 void get_flag(int *flag, struct cmd *cmd)
 {
-    if (operand_expr())                 // Is there an operand available?
+    if (cmd->got_n)                     // n argument?
     {
-        cmd->n = get_n_arg();
-
-        if (!cmd->got_m)                // m argument?
+        if (!cmd->got_m)                // m argument too?
         {
             *flag = cmd->n;             // No, so just set flag
         }

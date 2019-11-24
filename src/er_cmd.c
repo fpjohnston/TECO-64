@@ -28,6 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,5 +50,26 @@
 void exec_ER(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (cmd->text1.len == 0)            // ER`?
+    {
+        istream = IFILE_PRIMARY;
+
+        return;
+    }
+
+    if (open_input(&cmd->text1) == EXIT_FAILURE)
+    {
+        if (!cmd->got_colon || (errno != ENOENT && errno != ENODEV))
+        {
+            prints_err(E_FNF, last_file);
+        }
+
+        push_expr(OPEN_FAILURE, EXPR_OPERAND);
+    }
+    else if (cmd->got_colon)
+    {
+        push_expr(OPEN_SUCCESS, EXPR_OPERAND);
+    }
 }
 

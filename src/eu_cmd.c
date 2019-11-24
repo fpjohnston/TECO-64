@@ -47,18 +47,13 @@ void exec_EU(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // Is there an operand available?
+    if (cmd->got_n)                     // n argument?
     {
-        f.eu = cmd->n = get_n_arg();
-
-        cmd->got_n = true;
-        cmd->state = CMD_DONE;
+        f.eu = cmd->n;
     }
     else
     {
         push_expr(f.eu, EXPR_OPERAND);
-
-        cmd->state = CMD_EXPR;
     }
 }
 

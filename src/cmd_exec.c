@@ -41,6 +41,7 @@
 #include "errors.h"
 #include "exec.h"
 
+
 struct vars
 {
     int b;                              // Beginning of buffer = 0
@@ -241,15 +242,15 @@ void exec_cmd(void)
 
         if (cmd.expr.len == 0)
         {
-            cmd.expr.buf = next_cmd();
+            cmd.expr.buf = next_buf();
         }
 
-        if (next_cmd() == NULL)
+        if (next_buf() == NULL)
         {
             break;
         }
 
-        int c = fetch_cmd();
+        int c = fetch_buf();
 
         // Flag that command execution has started. This is placed after we
         // read the next character, so that any CTRL/C causes return to main
@@ -271,19 +272,19 @@ void exec_cmd(void)
 
             if (toupper(c) == 'E')               // E{x} command
             {
-                cmd.c2 = fetch_cmd();
+                cmd.c2 = fetch_buf();
 
                 table = init_E(&cmd);
             }
             else if (toupper(c) == 'F')          // F{x} command
             {
-                cmd.c2 = fetch_cmd();
+                cmd.c2 = fetch_buf();
 
                 table = init_F(&cmd);
             }
             else if (toupper(c) == '^')          // ^{x} command
             {
-                cmd.c1 = fetch_cmd();
+                cmd.c1 = fetch_buf();
 
                 table = scan_caret(&cmd);
             }
@@ -312,7 +313,7 @@ void exec_cmd(void)
 
             if (cmd.state == CMD_EXPR)
             {
-                cmd.expr.len = next_cmd() - cmd.expr.buf;
+                cmd.expr.len = next_buf() - cmd.expr.buf;
             }
             else if (cmd.state == CMD_DONE)
             {
@@ -320,19 +321,28 @@ void exec_cmd(void)
 
                 if (c != ESC || (c == ESC && cmd.expr.len != 0))
                 {
-                    print_cmd(&cmd);    // TODO: debugging only
+                    if (teco_debug)
+                    {
+                        print_cmd(&cmd);
+                    }
                 }
                 else if (c == ESC)
                 {
-                    printf("<ESC>\r\n");
-                    fflush(stdout);
+//                    printf("<ESC>\r\n");
+//                    fflush(stdout);
                 }
 
-                init_expr();
+//                init_expr();
                 exec_expr(&cmd);        // Execute expression
 
                 if (exec_cmd != NULL)
                 {
+                    if (operand_expr())
+                    {
+                        cmd.got_n = true;
+                        cmd.n = get_n_arg();
+                    }
+
                     (*exec_cmd)(&cmd);
 
                     cmd = null_cmd;
@@ -341,7 +351,7 @@ void exec_cmd(void)
         }
         else
         {
-            reset_cmd();
+            reset_buf();
 
             // TODO: check for unclosed loop
             // print_err(E_UTC);
@@ -489,7 +499,24 @@ static const struct cmd_table *scan_caret(struct cmd *cmd)
 
 
 ///
-///  @brief    Set command options.
+///  @brief    Set command options. The command tables in this file, e_cmd.c,
+///            and f_cmd.c all include strings that define the options for each
+///            command. The while() and switch() statements below parse these
+///            strings to set the appropriate options, as follows:
+///
+///            n  - Command allows one argument          (e.g., nC).
+///            m  - Command allows two arguments         (e.g., m,nT).
+///            :  - Command allows colon modifier        (e.g., :ERfile`).
+///            :: - Command allows double colon modifier (e.g., ::Stext`).
+///            @  - Command allows atsign form           (e.g., @^A/hello/).
+///            q  - Command requires Q-register          (e.g., Mq).
+///            W  - Command allows W                     (e.g., PW).
+///            1  - Command allows one text string       (e.g., Otag`).
+///            2  - Command allows two text strings      (e.g., FNfoo`baz`).
+///
+///            These do not need to be in any particular order, and characters
+///            not in the list above will be ignored. This allows the use of
+///            spaces to improve readability.
 ///
 ///  @returns  Nothing.
 ///

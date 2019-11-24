@@ -108,13 +108,13 @@ void scan_cmd(struct cmd *cmd)
 
     if (cmd->opt_qreg)                  // Do we need a Q-register?
     {
-        c = fetch_cmd();                // Yes
+        c = fetch_buf();                // Yes
 
         if (c == '.')                   // Is it a local Q-register?
         {
             cmd->qlocal = true;         // Yes, mark it
 
-            c = fetch_cmd();            // Get Q-register name
+            c = fetch_buf();            // Get Q-register name
         }        
 
         if (!isalnum(c))
@@ -130,7 +130,7 @@ void scan_cmd(struct cmd *cmd)
 
     if (cmd->opt_w)                     // Optional W following?
     {
-        c = fetch_cmd();                // Maybe
+        c = fetch_buf();                // Maybe
 
         if (toupper(c) == 'W')          // Is it?
         {
@@ -138,7 +138,7 @@ void scan_cmd(struct cmd *cmd)
         }
         else
         {
-            unfetch_cmd(c);             // No. Put character back
+            unfetch_buf(c);             // No. Put character back
         }
     }
 
@@ -148,7 +148,7 @@ void scan_cmd(struct cmd *cmd)
 
     if (cmd->got_atsign)                // @ modifier?
     {
-        cmd->delim = fetch_cmd();       // Yes, next character is delimiter
+        cmd->delim = fetch_buf();       // Yes, next character is delimiter
     }
 
     // Now get the text strings, if they're allowed for this command.
@@ -198,10 +198,10 @@ void scan_expr(struct cmd *cmd)
     {
         do
         {
-            c = fetch_cmd();            // Keep reading characters
+            c = fetch_buf();            // Keep reading characters
         } while (valid_radix(c));       // As long as they're valid for our radix
 
-        unfetch_cmd(c);                 // Went too far, so return character
+        unfetch_buf(c);                 // Went too far, so return character
 
         push_expr(1, EXPR_OPERAND);     // Dummy value
     }
@@ -311,9 +311,9 @@ void scan_mod(struct cmd *cmd)
 static void scan_text(int delim, struct tstr *text)
 {
     text->len = 0;
-    text->buf = next_cmd();
+    text->buf = next_buf();
 
-    int c = fetch_cmd();
+    int c = fetch_buf();
     
     if (c == delim)
     {
@@ -324,7 +324,7 @@ static void scan_text(int delim, struct tstr *text)
 
     ++text->len;
 
-    while ((c = fetch_cmd()) != delim)
+    while ((c = fetch_buf()) != delim)
     {
         ++text->len;
     }

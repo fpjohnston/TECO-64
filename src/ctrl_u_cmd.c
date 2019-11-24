@@ -37,7 +37,8 @@
 
 
 ///
-///  @brief    Execute ^U (CTRL/U) command - copy/append string in Q-register.
+///  @brief    Execute ^U (CTRL/U) command - store/append string/character in
+///            Q-register.
 ///
 ///  @returns  Nothing.
 ///
@@ -47,32 +48,37 @@ void exec_ctrl_u(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // Is there an operand available?
+    if (cmd->got_n)                     // n argument?
     {
-        cmd->n = get_n_arg();
-
-        if (cmd->text1.len != 0)
+        if (cmd->text1.len != 0)        // Yes, text too?
         {
-            print_err(E_MOD);           // Can't have both modifiers
+            print_err(E_MOD);           // Yes, that's an error
         }
 
-        printf("%s character '%c' to Q-register %s%c\r\n",
-               cmd->got_colon ? "append" : "copy", cmd->n,
-               cmd->qlocal ? "." : "", cmd->qreg);
-        fflush(stdout);
+        if (cmd->got_colon)             // n:^Uq`
+        {
+            append_qchr(cmd->qreg, cmd->qlocal, cmd->n);
+        }
+        else                            // n^Uq`
+        {
+            store_qchr(cmd->qreg, cmd->qlocal, cmd->n);
+        }
     }
-    else
+    else                                // No n argument
     {
-        if (cmd->text1.len == 0)
+        if (cmd->text1.len == 0)        // No text either?
         {
-            print_err(E_MOD);           // Must have at least one modifier
+            print_err(E_MOD);           // Yes, that's wrong
         }
 
-        printf("%s string '%.*s' to Q-register %s%c\r\n",
-               cmd->got_colon ? "append" : "copy",
-               cmd->text1.len, cmd->text1.buf,
-               cmd->qlocal ? "s" : "", cmd->qreg);
-        fflush(stdout);
+        if (cmd->got_colon)             // ^Ustring`
+        {
+            append_qtext(cmd->qreg, cmd->qlocal, cmd->text1);
+        }
+        else                            // n^Uq`
+        {
+            store_qtext(cmd->qreg, cmd->qlocal, cmd->text1);
+        }
     }
 }
 

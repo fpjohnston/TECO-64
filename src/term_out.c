@@ -38,6 +38,7 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "exec.h"
 
 
 ///
@@ -136,7 +137,7 @@ void echo_chr(int c)
 
 bool help_command(void)
 {
-    bool match = match_cmd("HELP");
+    bool match = match_buf("HELP");
 
     if (!match)
     {
@@ -188,7 +189,7 @@ void print_badseq(void)
         print_term(*line);
     }
 
-    store_cmd(SPACE);
+    store_buf(SPACE);
 }
 
 

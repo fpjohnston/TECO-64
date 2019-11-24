@@ -49,7 +49,7 @@ void exec_G(struct cmd *cmd)
 
     if (cmd->got_colon)
     {
-        printf("print Q-register %s%c\r\n", cmd->qlocal ? "." : "", cmd->qreg);
+        print_qreg(cmd->qreg, cmd->qlocal);
     }
     else
     {

@@ -47,8 +47,11 @@ void exec_lbracket(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    printf("copy Q-register %s%c to push-down list\r\n",
-           cmd->qlocal ? "." : "", cmd->qreg);
-    fflush(stdout);
+    if (!push_qreg(cmd->qreg, cmd->qlocal))
+    {
+        print_err(E_PDO);               // Push-down list is full
+    }
+
+    push_expr(cmd->n, EXPR_OPERAND);    // Leave for next command
 }
 

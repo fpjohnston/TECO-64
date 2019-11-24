@@ -54,6 +54,7 @@
 #include "errors.h"
 #include "exec.h"
 
+
 static const struct cmd_table cmd_table[] =
 {
     { scan_done,  exec_FB,        "m n @ 1"      },

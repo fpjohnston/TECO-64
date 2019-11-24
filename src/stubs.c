@@ -191,14 +191,6 @@ void exec_ctrl_w(struct cmd *cmd)
 }
 
 
-void exec_ctrl_z(struct cmd *cmd)
-{
-    printf("ctrl_z command\r\n");
-
-    return;
-}
-
-
 void exec_langle(struct cmd *cmd)
 {
     printf("< command\r\n");
@@ -268,8 +260,6 @@ void exec_ctrl_ubar(struct cmd *cmd)
 
     push_expr(US, EXPR_OPERATOR);
 
-    cmd->state = CMD_EXPR;
-
     return;
 }
 
@@ -284,8 +274,6 @@ void exec_operator(struct cmd *cmd)
     }
 
     push_expr(cmd->c1, EXPR_OPERATOR);
-
-    cmd->state = CMD_EXPR;
 
     return;
 }

@@ -40,7 +40,7 @@
 
 
 ///
-///  @brief    Execute EP command (switch to secondary input stream).
+///  @brief    Execute EP command (switch to secondary output stream).
 ///
 ///  @returns  Nothing.
 ///
@@ -49,4 +49,6 @@
 void exec_EP(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    ostream = OFILE_SECONDARY;
 }

@@ -53,6 +53,11 @@ void init_env(void)
     {
         prompt = env;                   // Change TECO prompt
     }
+
+    if ((env = getenv("TECO_DEBUG")) != NULL)
+    {
+        teco_debug = true;
+    }
 }
 
 

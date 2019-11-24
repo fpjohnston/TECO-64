@@ -46,17 +46,13 @@ void exec_ctrl_x(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // Is there an operand available?
+    if (cmd->got_n)                     // n argument?
     {
-        ctrl_x = get_n_arg();
-
-        cmd->state = CMD_DONE;
+        ctrl_x = cmd->n;
     }
     else
     {
         push_expr(ctrl_x, EXPR_OPERAND);
-
-        cmd->state = CMD_EXPR;
     }
 }
 

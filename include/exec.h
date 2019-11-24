@@ -1,6 +1,6 @@
 ///
 ///  @file    exec.h
-///  @brief   Header file for executive function prototypes.
+///  @brief   Header file for parsing and executing TECO commands.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -32,6 +32,75 @@
 #define _EXEC_H
 
 #include "teco.h"
+
+enum cmd_state
+{
+    CMD_NULL,                       // Scanning for start of command
+    CMD_EXPR,                       // Scanning expression
+    CMD_MOD,                        // Scanning modifiers
+    CMD_DONE                        // Scanning is done
+};
+    
+// Define the command block structure.
+
+struct cmd
+{
+    enum cmd_state state;           // State of command (for parsing)
+    uint level;                     // Command level
+
+    union
+    {
+        uint flag;                  // Command flag
+
+        struct
+        {
+            uint opt_m      : 1;    // m argument allowed
+            uint opt_n      : 1;    // n argument allowed
+            uint opt_bits   : 1;    // m,n set & clear flag bits
+            uint opt_colon  : 1;    // : allowed
+            uint opt_dcolon : 1;    // :: allowed
+            uint opt_atsign : 1;    // @ allowed
+            uint opt_w      : 1;    // W allowed (for P)
+            uint opt_qreg   : 1;    // Q-register required
+            uint opt_t1     : 1;    // 1 text field allowed
+            uint opt_t2     : 1;    // 2 text fields allowed
+            uint got_m      : 1;    // m argument found
+            uint got_n      : 1;    // n argument found
+            uint got_colon  : 1;    // : found
+            uint got_dcolon : 1;    // :: found
+            uint got_atsign : 1;    // @ found
+        };
+    };
+
+    char c1, c2, c3;                // Command characters (or NUL)
+    int m, n;                       // m,n arguments
+    int paren;                      // No. of parentheses counted
+    char delim;                     // Delimiter for @ modifier
+    char qreg;                      // Q-register, if any
+    bool qlocal;                    // Q-register is local (not global)
+    struct tstr expr;               // Expression string
+    struct tstr text1;              // 1st text string
+    struct tstr text2;              // 2nd text string
+    struct cmd *next;               // Next command (or NULL)
+    struct cmd *prev;               // Previous command (or NULL)
+};
+
+struct cmd_table
+{
+    void (*scan)(struct cmd *cmd);  // Scan function
+    void (*exec)(struct cmd *cmd);  // Execution function
+    const char *opts;               // Command modifiers and options
+};
+    
+// Functions that assist in parsing commands
+
+extern void get_flag(int *flag, struct cmd *cmd);
+
+extern const struct cmd_table *init_E(struct cmd *cmd);
+
+extern const struct cmd_table *init_F(struct cmd *cmd);
+
+// Functions that execute commands
 
 extern void exec_A(struct cmd *cmd);
 
@@ -261,8 +330,50 @@ extern void exec_F_ubar(struct cmd *cmd);
 
 extern void exec_F_vbar(struct cmd *cmd);
 
-extern const struct cmd_table *init_E(struct cmd *cmd);
+// Functions that parse a command string.
 
-extern const struct cmd_table *init_F(struct cmd *cmd);
+extern void scan_bad(struct cmd *cmd);
+
+extern void scan_cmd(struct cmd *cmd);
+
+extern void scan_flag(struct cmd *cmd);
+
+extern void scan_null(struct cmd *cmd);
+
+extern void print_cmd(struct cmd *cmd);
+
+extern void scan_done(struct cmd *cmd);
+
+extern void scan_expr(struct cmd *cmd);
+
+extern void scan_mod(struct cmd *cmd);
+
+extern void scan_null(struct cmd *cmd);
+
+// Functions that skip to the next command.
+
+extern void skip_arg1(int c);
+
+extern void skip_arg2(void);
+
+extern void skip_caret(void);
+
+extern void skip_cmd(void);
+
+extern void skip_ctrl_a(void);
+
+extern void skip_ctrl_u(void);
+
+extern void skip_e(void);
+
+extern void skip_esc(void);
+
+extern void skip_f(void);
+
+extern void skip_one(void);
+
+extern void skip_quote(void);
+
+extern void skip_tag(void);
 
 #endif  // _EXEC_H

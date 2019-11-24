@@ -51,7 +51,5 @@ void exec_ctrl_i(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_cmd(cmd);
-
-    cmd->state = CMD_DONE;
 }
 

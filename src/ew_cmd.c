@@ -28,6 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,5 +50,32 @@
 void exec_EW(struct cmd *cmd)
 {
     assert(cmd != NULL);
-}
 
+    if (cmd->text1.len == 0)            // EW`?
+    {
+        ostream = OFILE_PRIMARY;        // Yes, switch to primary output stream
+
+        return;
+    }
+
+    FILE *fp = ofiles[ostream].fp;
+
+    if (fp != NULL)
+    {
+        print_err(E_OFO);               // Output file is already open
+    }
+
+    if (open_output(&cmd->text1, NOBACKUP_FILE) == EXIT_FAILURE)
+    {
+        if (!cmd->got_colon)
+        {
+            prints_err(E_UFO, last_file);
+        }
+
+        push_expr(OPEN_FAILURE, EXPR_OPERAND);
+    }
+    else if (cmd->got_colon)
+    {
+        push_expr(OPEN_SUCCESS, EXPR_OPERAND);
+    }
+}

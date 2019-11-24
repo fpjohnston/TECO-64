@@ -56,12 +56,10 @@ void exec_equals(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!operand_expr())                // If no operand, then complain
+    if (!cmd->got_n)                    // If no operand, then complain
     {
         print_err(E_NAE);               // No argument before =
     }
-
-    cmd->n = get_n_arg();
 
     if (cmd->c3 == '=')                 // If ===, print hexadecimal
     {

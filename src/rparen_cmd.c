@@ -46,7 +46,7 @@ void exec_rparen(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!operand_expr())                // Is there an operand available?
+    if (!cmd->got_n)                    // n argument?
     {
         print_err(E_NAP);               // No argument before )
     }
