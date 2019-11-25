@@ -128,7 +128,16 @@ static const struct cmd_table cmd_table[] =
     ['-']         = { scan_expr,  exec_operator,    ""             },
     ['.']         = { scan_expr,  exec_dot,         ""             },
     ['/']         = { scan_expr,  exec_operator,    ""             },
-    ['0' ... '9'] = { scan_expr,  NULL,             ""             },
+    ['0']         = { scan_expr,  NULL,             ""             },
+    ['1']         = { scan_expr,  NULL,             ""             },
+    ['2']         = { scan_expr,  NULL,             ""             },
+    ['3']         = { scan_expr,  NULL,             ""             },
+    ['4']         = { scan_expr,  NULL,             ""             },
+    ['5']         = { scan_expr,  NULL,             ""             },
+    ['6']         = { scan_expr,  NULL,             ""             },
+    ['7']         = { scan_expr,  NULL,             ""             },
+    ['8']         = { scan_expr,  NULL,             ""             },
+    ['9']         = { scan_expr,  NULL,             ""             },
     [':']         = { scan_mod,   NULL,             ""             },
     [';']         = { scan_done,  exec_semi,        "n :"          },
     ['<']         = { scan_done,  exec_langle,      "n"            },
@@ -168,7 +177,32 @@ static const struct cmd_table cmd_table[] =
     ['^']         = { NULL,       NULL,             ""             },
     ['_']         = { scan_expr,  exec_ubar,        "n : @ 1"      },
     ['`']         = { scan_bad,   NULL,             ""             },
-    ['a' ... 'z'] = { NULL,       NULL,             ""             },
+    ['a']         = { NULL,       NULL,             ""             },
+    ['b']         = { NULL,       NULL,             ""             },
+    ['c']         = { NULL,       NULL,             ""             },
+    ['d']         = { NULL,       NULL,             ""             },
+    ['e']         = { NULL,       NULL,             ""             },
+    ['f']         = { NULL,       NULL,             ""             },
+    ['g']         = { NULL,       NULL,             ""             },
+    ['h']         = { NULL,       NULL,             ""             },
+    ['i']         = { NULL,       NULL,             ""             },
+    ['j']         = { NULL,       NULL,             ""             },
+    ['k']         = { NULL,       NULL,             ""             },
+    ['l']         = { NULL,       NULL,             ""             },
+    ['m']         = { NULL,       NULL,             ""             },
+    ['n']         = { NULL,       NULL,             ""             },
+    ['o']         = { NULL,       NULL,             ""             },
+    ['p']         = { NULL,       NULL,             ""             },
+    ['q']         = { NULL,       NULL,             ""             },
+    ['r']         = { NULL,       NULL,             ""             },
+    ['s']         = { NULL,       NULL,             ""             },
+    ['t']         = { NULL,       NULL,             ""             },
+    ['u']         = { NULL,       NULL,             ""             },
+    ['v']         = { NULL,       NULL,             ""             },
+    ['w']         = { NULL,       NULL,             ""             },
+    ['x']         = { NULL,       NULL,             ""             },
+    ['y']         = { NULL,       NULL,             ""             },
+    ['z']         = { NULL,       NULL,             ""             },
     ['{']         = { scan_bad,   NULL,             ""             },
     ['|']         = { scan_done,  exec_vbar,        ""             },
     ['}']         = { scan_bad,   NULL,             ""             },
@@ -268,23 +302,23 @@ void exec_cmd(void)
         {
             const struct cmd_table *table;
 
-            cmd.c1 = c;
+            cmd.c1 = (char)c;
 
             if (toupper(c) == 'E')               // E{x} command
             {
-                cmd.c2 = fetch_buf();
+                cmd.c2 = (char)fetch_buf();
 
                 table = init_E(&cmd);
             }
             else if (toupper(c) == 'F')          // F{x} command
             {
-                cmd.c2 = fetch_buf();
+                cmd.c2 = (char)fetch_buf();
 
                 table = init_F(&cmd);
             }
             else if (toupper(c) == '^')          // ^{x} command
             {
-                cmd.c1 = fetch_buf();
+                cmd.c1 = (char)fetch_buf();
 
                 table = scan_caret(&cmd);
             }
@@ -296,7 +330,7 @@ void exec_cmd(void)
             }
 
             void (*exec_scan)(struct cmd *cmd) = table->scan;
-            void (*exec_cmd)(struct cmd *cmd) = table->exec;
+            void (*exec_func)(struct cmd *cmd) = table->exec;
             
             if (exec_scan == NULL)
             {
@@ -313,29 +347,24 @@ void exec_cmd(void)
 
             if (cmd.state == CMD_EXPR)
             {
-                cmd.expr.len = next_buf() - cmd.expr.buf;
+                cmd.expr.len = (uint)(next_buf() - cmd.expr.buf);
             }
             else if (cmd.state == CMD_DONE)
             {
                 scan_cmd(&cmd);         // Finish scanning command
 
-                if (c != ESC || (c == ESC && cmd.expr.len != 0))
+                if (c != ESC || cmd.expr.len != 0)
                 {
                     if (teco_debug)
                     {
                         print_cmd(&cmd);
                     }
                 }
-                else if (c == ESC)
-                {
-//                    printf("<ESC>\r\n");
-//                    fflush(stdout);
-                }
 
 //                init_expr();
                 exec_expr(&cmd);        // Execute expression
 
-                if (exec_cmd != NULL)
+                if (exec_func != NULL)
                 {
                     if (operand_expr())
                     {
@@ -343,7 +372,7 @@ void exec_cmd(void)
                         cmd.n = get_n_arg();
                     }
 
-                    (*exec_cmd)(&cmd);
+                    (*exec_func)(&cmd);
 
                     cmd = null_cmd;
                 }
@@ -394,6 +423,8 @@ void exec_escape(struct cmd *cmd)
 
 static void exec_expr(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     cmd->got_m = false;
     cmd->got_n = false;
 
@@ -409,18 +440,18 @@ static void exec_expr(struct cmd *cmd)
     while (p < cmd->expr.buf + cmd->expr.len)
     {
         const struct cmd_table *table;
-        uint c = *p++;
+        int c = *p++;
 
-        if (c >= countof(cmd_table))
+        if ((uint)c >= countof(cmd_table))
         {
             printc_err(E_ILL, c);
         }
 
-        cmd->c1 = c;
+        cmd->c1 = (char)c;
 
         if (toupper(c) == 'E')          // E{x} command
         {
-            cmd->c2 = *p++;
+            cmd->c2 = (char)*p++;
 
             assert(p <= cmd->expr.buf + cmd->expr.len);
 
@@ -428,7 +459,7 @@ static void exec_expr(struct cmd *cmd)
         }
         else if (toupper(c) == 'F')     // F{x} command
         {
-            cmd->c2 = *p++;
+            cmd->c2 = (char)*p++;
 
             assert(p <= cmd->expr.buf + cmd->expr.len);
 
@@ -436,7 +467,7 @@ static void exec_expr(struct cmd *cmd)
         }
         else if (toupper(c) == '^')     // ^{x} command
         {
-            cmd->c1 = *p++;
+            cmd->c1 = (char)*p++;
 
             assert(p <= cmd->expr.buf + cmd->expr.len);
 
@@ -449,11 +480,11 @@ static void exec_expr(struct cmd *cmd)
             table = &cmd_table[toupper(c)];
         }
 
-        void (*exec_expr)(struct cmd *cmd) = table->exec;
+        void (*exec_func)(struct cmd *cmd) = table->exec;
 
-        if (exec_expr != NULL)
+        if (exec_func != NULL)
         {
-            (*exec_expr)(cmd);
+            (*exec_func)(cmd);
         }
         else if (isdigit(c))
         {
@@ -485,14 +516,14 @@ static const struct cmd_table *scan_caret(struct cmd *cmd)
     assert(cmd != NULL);
 
     int c = cmd->c1;
-    int ctrl = toupper(c) - 'A' + 1;    // Convert to control character
+    int ctrl = (toupper(c) - 'A') + 1;  // Convert to control character
 
     if (ctrl <= NUL || ctrl >= SPACE)
     {
         printc_err(E_IUC, c);           // Illegal character following ^
     }
 
-    cmd->c1 = ctrl;
+    cmd->c1 = (char)ctrl;
 
     return &cmd_table[ctrl];
 }

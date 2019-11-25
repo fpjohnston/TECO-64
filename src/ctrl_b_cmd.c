@@ -51,7 +51,7 @@ void exec_ctrl_b(struct cmd *cmd)
     time_t t = time(NULL);
     struct tm tm;
 
-    localtime_r(&t, &tm);
+    (void)localtime_r(&t, &tm);
 
     int teco_date = ((tm.tm_year) * 16 + tm.tm_mon+1) * 32 + tm.tm_mday;
 

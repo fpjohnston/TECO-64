@@ -1,0 +1,169 @@
+///
+///  @file    file_sys.c
+///  @brief   System-dependent file-handling functions.
+///
+///  @author  Nowwith Treble Software
+///
+///  @bug     No known bugs.
+///
+///  @copyright  tbd
+///
+///  Permission is hereby granted, free of charge, to any person obtaining a copy
+///  of this software and associated documentation files (the "Software"), to deal
+///  in the Software without restriction, including without limitation the rights
+///  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+///  copies of the Software, and to permit persons to whom the Software is
+///  furnished to do so, subject to the following conditions:
+///
+///  The above copyright notice and this permission notice shall be included in
+///  all copies or substantial portions of the Software.
+///
+///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#include <assert.h>
+#include <errno.h>
+#include <glob.h>                       // for glob()
+#include <libgen.h>                     // for dirname()
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>                   // for stat()
+#include <unistd.h>                     // for access()
+
+#include "teco.h"
+#include "errors.h"
+
+glob_t pglob;                           // Used with EN command
+
+static char **next_file;
+
+
+///
+///  @brief    Get output file name. We are passed the output file name the
+///            user specified, but we can't use it if we are opening it for
+///            output, because that might supercede and truncate an existing
+///            file. So if a file exists, we create a temporary name to use for
+///            the actual open, and then when we close the output stream, we
+///            will delete (or, if a backup copy was requested, rename) the
+///            original file, and then rename the temporary file. This allows
+///            for the situation where the user decides to kill the output file
+///            with an EK command, in which we can simply close and delete the
+///            temporary file and leave the original intact.
+///
+///            This function is system-dependent because some operating environ-
+///            may have alternative methods of dealing with output files that
+///            may need to be deleted, such as versioning on VMS.
+///
+///  @returns  Name of file to open.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+const char *get_oname(struct ofile *ofile, uint nbytes)
+{
+    assert(ofile != NULL);
+
+    struct stat file_stat;
+    const char *oname;
+    char scratch[nbytes + 1];
+
+    if (access(last_file, F_OK) == 0)   // Does file already exist?
+    {
+        if (stat(last_file, &file_stat) != 0)
+        {
+            fatal_err(errno, E_SYS, NULL);
+        }
+
+        ofile->name = alloc_new(nbytes + 1);
+
+        memcpy(ofile->name, last_file, (size_t)nbytes + 1);
+        memcpy(scratch, last_file, (size_t)nbytes + 1);
+    
+        char *dir = dirname(scratch);
+        char tempfile[] = "_teco-XXXXXX";
+        int fd = mkstemp(tempfile);
+
+        close(fd);
+
+        nbytes = (uint)(strlen(dir) + 1 + strlen(tempfile));
+
+        ofile->temp = alloc_new(nbytes + 1);
+
+        sprintf(ofile->temp, "%s/%s", dir, tempfile);
+
+        oname = ofile->temp;
+    }
+    else                                // File does not exist
+    {
+        ofile->name = alloc_new(nbytes + 1);
+
+        memcpy(ofile->name, last_file, (size_t)nbytes + 1);
+
+        oname = ofile->name;
+    }
+
+    return oname;
+}
+
+
+///
+///  @brief    Get next filename matching wildcard specification.
+///
+///  @returns  EXIT_SUCCESS if found another match, else EXIT_FAILURE.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int get_wild(void)
+{
+    const char *filename = *next_file++;
+
+    // TODO: add check to make sure it's a file and not a directory
+
+    if (filename == NULL)               // At end of list if NULL
+    {
+        return EXIT_FAILURE;
+    }
+
+    sprintf(filename_buf, "%s", filename);
+
+    return EXIT_SUCCESS;
+}
+
+
+///
+///  @brief    Set wildcard filename buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void set_wild(const char *filename)
+{
+    int flags = GLOB_ERR | GLOB_MARK | GLOB_TILDE;
+
+    switch (glob(filename, flags, NULL, &pglob))
+    {
+        case 0:                         // Success
+            break;
+
+        case GLOB_NOSPACE:
+            print_err(E_MEM);           // Ran out of memory
+
+        case GLOB_ABORTED:
+            print_err(E_FER);           // File error
+
+        case GLOB_NOMATCH:
+            prints_err(E_FNF, filename); // Can't find any matches
+
+        default:                        // Something unexpected
+            fatal_err(errno, E_SYS, NULL);
+    }
+
+    next_file = &pglob.gl_pathv[0];
+}

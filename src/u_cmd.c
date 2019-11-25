@@ -32,7 +32,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "exec.h"
 
 

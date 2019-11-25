@@ -35,7 +35,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "errors.h"
 
 #define MSTACK_SIZE     64          // Macro stack for local Q-registers
@@ -46,7 +45,7 @@ struct qreg qglobal[QREG_SIZE];
 
 struct mstack
 {
-    struct buffer cmd;
+//    struct buffer cmd;
     struct qreg qlocal[QREG_SIZE];
 };
 
@@ -56,7 +55,7 @@ int mlevel;
 
 struct qreg *qlocal = mstack[0].qlocal;
 
-struct qreg *qreg = NULL;
+//struct qreg *qreg = NULL;
 
 static struct qreg qstack[QSTACK_SIZE];
 
@@ -86,15 +85,11 @@ void append_qchr(int qname, bool qdot, int c)
     {
         nbytes += STR_SIZE_INIT;
 
-        void *p = realloc(qreg->text.buf, nbytes);
-
-        assert(p != NULL);
-
-        qreg->text.buf = p;
+        qreg->text.buf = alloc_more(qreg->text.buf, nbytes);
         qreg->text.size = nbytes;
     }
 
-    qreg->text.buf[qreg->text.put++] = c;
+    qreg->text.buf[qreg->text.put++] = (char)c;
 }
 
 
@@ -124,7 +119,7 @@ void append_qtext(int qname, bool qdot, struct tstr text)
         qreg->text.size = nbytes;
     }
 
-    memcpy(qreg->text.buf + qreg->text.put, text.buf, text.len);
+    memcpy(qreg->text.buf + qreg->text.put, text.buf, (size_t)text.len);
 
     text.buf = NULL;
 
@@ -182,9 +177,10 @@ static void free_qreg(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int get_qall(void)
+uint get_qall(void)
 {
-    int n = 0;
+    struct qreg *qreg;
+    uint n = 0;
     
     for (int i = 0; i < QREG_SIZE; ++i)
     {
@@ -252,7 +248,7 @@ static struct qreg *get_qreg(int qname, bool qdot)
         printc_err(E_IQN, qname);
     }
 
-    uint qindex = qchar - qchars;
+    uint qindex = (uint)(qchar - qchars);
     struct qreg *qreg;
 
     if (qdot)                           // Local Q-register?
@@ -275,7 +271,7 @@ static struct qreg *get_qreg(int qname, bool qdot)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int get_qsize(int qname, bool qdot)
+uint get_qsize(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
@@ -342,8 +338,8 @@ void print_qreg(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    printf("%.*s", qreg->text.put, qreg->text.buf);
-    fflush(stdout);
+    printf("%.*s", (int)qreg->text.put, qreg->text.buf);
+    (void)fflush(stdout);
 }
 
 
@@ -390,7 +386,7 @@ void store_qchr(int qname, bool qdot, int c)
     qreg->text.size = STR_SIZE_INIT;
     qreg->text.buf  = alloc_new(qreg->text.size);
 
-    qreg->text.buf[qreg->text.put++] = c;
+    qreg->text.buf[qreg->text.put++] = (char)c;
 }
 
 
@@ -438,5 +434,5 @@ void store_qtext(int qname, bool qdot, struct tstr text)
     qreg->text.get  = 0;
     qreg->text.put  = text.len;
 
-    memcpy(qreg->text.buf, text.buf, text.len);
+    memcpy(qreg->text.buf, text.buf, (size_t)text.len);
 }

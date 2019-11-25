@@ -31,12 +31,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
-#include "errors.h"
 #include "exec.h"
+
+char *eg_command;
 
 
 ///
@@ -49,5 +49,39 @@
 void exec_EG(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (cmd->got_colon)
+    {
+        // TODO: TBD
+
+        return;
+    }
+
+    // EG`, not :EG`, so get ready to exit
+
+
+    eg_command = alloc_new(cmd->text1.len + 1);
+
+    sprintf(eg_command, "%.*s", cmd->text1.len, cmd->text1.buf);
+
+    exit(EXIT_SUCCESS);
+}
+
+
+///
+///  @brief    Initialize check that will be called to see if we need to execute
+///            an EG command before we exit. We do it this way to ensure that
+///            we've handled all possible cleanup.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void init_EG(void)
+{
+    if (atexit(exit_EG) != 0)
+    {
+        exit(EXIT_FAILURE);
+    }
 }
 

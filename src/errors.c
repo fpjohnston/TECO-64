@@ -467,11 +467,11 @@ void help_err(int err_teco)
 
         if (next != NULL)
         {
-            len = next - start;
+            len = (uint)(next - start);
 
             if (len > cols)
             {
-                puts_term(start, end - start - 1);
+                puts_term(start, ((uint)(end - start)) - 1);
                 putc_term(CRLF);
 
                 start = end;
@@ -484,7 +484,7 @@ void help_err(int err_teco)
         }
         else
         {
-            len = strlen(start);
+            len = (uint)strlen(start);
 
             puts_term(start, len);
             putc_term(CRLF);
@@ -533,19 +533,19 @@ noreturn void printc_err(int err_teco, int c)
 {
     if (isprint(c))
     {
-        uint nbytes = snprintf(err_buf, sizeof(err_buf), "%c", c);
+        uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "%c", c);
 
         assert(nbytes < sizeof(err_buf));
     }
     else if (!isascii(c))               // 8-bit character?
     {
-        uint nbytes = snprintf(err_buf, sizeof(err_buf), "[%02x]", c);
+        uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "[%02x]", c);
 
         assert(nbytes < sizeof(err_buf));
     }
     else                                // Must be a control character
     {
-        uint nbytes = snprintf(err_buf, sizeof(err_buf), "^%c", c + 'A' - 1);
+        uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "^%c", c + 'A' - 1);
 
         assert(nbytes < sizeof(err_buf));
     }

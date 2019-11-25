@@ -1,5 +1,5 @@
 ///
-///  @file    e_cmd.c
+///  @file    cmd_e.c
 ///  @brief   General dispatcher for TECO E commands (e.g., EO, ER, ET).
 ///
 ///  @author  Nowwith Treble Software
@@ -34,7 +34,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -81,6 +80,8 @@ static const struct cmd_table cmd_table[] =
 
 const struct cmd_table *init_E(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     int c = cmd->c2;
 
     const char *e_cmds = "ABCDEFGHIJKLMNOPQRSTUVWXYZ%_";
@@ -91,7 +92,11 @@ const struct cmd_table *init_E(struct cmd *cmd)
         printc_err(E_IEC, c);           // Illegal F character
     }
 
-    cmd->c2 = c;
+    cmd->c2 = (char)c;
 
-    return &cmd_table[e_cmd - e_cmds];
+    uint i = (uint)(e_cmd - e_cmds);
+
+    assert(i < countof(cmd_table));
+
+    return &cmd_table[i];
 }

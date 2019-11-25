@@ -31,7 +31,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "eflags.h"
 #include "exec.h"
 

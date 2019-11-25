@@ -47,7 +47,7 @@ void exec_EO(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!empty_expr())                  // Is it nEO?
+    if (cmd->got_n)                     // Is it nEO?
     {
         print_err(E_NYI);               // Yes, we don't do that yet
     }

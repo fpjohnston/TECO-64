@@ -32,7 +32,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "exec.h"
 
 
@@ -49,13 +48,35 @@ void exec_G(struct cmd *cmd)
 
     if (cmd->got_colon)
     {
-        print_qreg(cmd->qreg, cmd->qlocal);
+        if (cmd->qreg == '*')           // :G* -> print filename buffer
+        {
+            printf("%s", filename_buf);
+            (void)fflush(stdout);
+        }
+        else if (cmd->qreg == '_')      // :G_ -> print search string buffer
+        {
+            printf("<print search string buffer here>\r\n");
+            (void)fflush(stdout);
+        }
+        else                            // :Gq -> print Q-register
+        {
+            print_qreg(cmd->qreg, cmd->qlocal);
+        }
     }
     else
     {
-        printf("copy Q-register %s%c to buffer\r\n", cmd->qlocal ? "." : "", cmd->qreg);
+        if (cmd->qreg == '*')           // G* -> copy filename to buffer
+        {
+            // TODO: add code here
+        }
+        else if (cmd->qreg == '_')      // G_ -> copy searcg string to buffer
+        {
+            // TODO: add code here
+        }
+        else                            // Gq -> copy Q-register to buffer
+        {
+            // TODO: add code here
+        }
     }
-
-    fflush(stdout);
 }
 

@@ -76,6 +76,8 @@ SOURCES = \
     a_cmd.c        \
     bang_cmd.c     \
     buffer.c       \
+    cmd_e.c        \
+    cmd_f.c        \
     cmd_exec.c     \
     cmd_scan.c     \
     comma_cmd.c    \
@@ -93,7 +95,6 @@ SOURCES = \
     ctrl_x_cmd.c   \
     ctrl_z_cmd.c   \
     digit_cmd.c    \
-    e_cmd.c        \
     ea_cmd.c       \
     eb_cmd.c       \
     ec_cmd.c       \
@@ -125,10 +126,10 @@ SOURCES = \
     ex_cmd.c       \
     ey_cmd.c       \
     ez_cmd.c       \
-    f_cmd.c        \
     fc_cmd.c       \
     fd_cmd.c       \
-    files.c        \
+    file.c         \
+    file_sys.c     \
     fk_cmd.c       \
     fn_cmd.c       \
     fr_cmd.c       \
@@ -208,7 +209,7 @@ DFILES = $(SOURCES:.c=.d)
 
 CFLAGS += -MMD -c $(INCLUDES) $(OPT_OPT) $(DFLAGS)
 
-LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt
+LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt -e818 -e786
 
 %.lob: %.c
 	@echo Making $@ $(NULL)
@@ -219,7 +220,7 @@ LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt
 	$(AT)chdir obj && $(CC) @../CFLAGS ../$<
 
 .PHONY: all
-all: lint $(TARGET) doc
+all: $(TARGET)
 
 .PHONY: scratch
 scratch: clobber all

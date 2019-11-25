@@ -39,7 +39,7 @@
 
 union ed_flag
 {
-    int flag;                   // Entire ED flag
+    uint flag;                  // Entire ED flag
 
     struct
     {
@@ -58,7 +58,7 @@ union ed_flag
 
 union eh_flag
 {
-    int flag;                   // Entire EH flag
+    uint flag;                  // Entire EH flag
 
     struct
     {
@@ -86,7 +86,7 @@ struct ei_flag
 
 union et_flag
 {
-    int flag;                   // Entire ET flag
+    uint flag;                  // Entire ET flag
 
     struct
     {
@@ -113,7 +113,7 @@ union et_flag
 
 union ez_flag
 {
-    int flag;                   // Entire EZ flag
+    uint flag;                  // Entire EZ flag
 
     struct
     {

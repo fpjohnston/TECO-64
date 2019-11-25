@@ -34,8 +34,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -72,19 +70,23 @@ void exec_EC(struct cmd *cmd)
         ofile->fp = NULL;
     }
 
+    // TODO: the logic for handling backup files is system-dependent,
+    //       move it elsewhere.
+
     if (ofile->temp != NULL)
     {
         assert(ofile->name != NULL);
 
         if (ofile->backup)
         {
+            char scratch[strlen(ofile->name) + 1 + 1];
+
             sprintf(scratch, "%s~", ofile->name);
 
             if (rename(ofile->name, scratch) != 0)
             {
                 fatal_err(errno, E_SYS, NULL);
             }
-//            printf("renamed %s to %s\r\n", ofile->name, scratch);
         }
         else
         {
@@ -98,13 +100,9 @@ void exec_EC(struct cmd *cmd)
         {
             fatal_err(errno, E_SYS, NULL);
         }
-//        printf("renamed %s to %s\r\n", ofile->temp, ofile->name);
 
         dealloc(&ofile->temp);
     }
-    fflush(stdout);
 
     dealloc(&ofile->name);
-
-    ofile->backup = false;
 }

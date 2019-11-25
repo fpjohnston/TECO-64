@@ -31,7 +31,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -52,7 +51,7 @@ void exec_comma(struct cmd *cmd)
         print_err(E_ARG);               // Yes, two commas aren't allowed
     }
 
-    if (empty_expr())                   // If nothing on stack,
+    if (!cmd->got_n)                    // Any n argument specified?
     {
         print_err(E_NAC);               // No argument before ,
     }

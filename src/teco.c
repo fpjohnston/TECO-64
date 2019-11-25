@@ -39,7 +39,6 @@
 #include <unistd.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 
@@ -63,10 +62,6 @@ int form_feed = -1;
 
 bool teco_debug = false;
 
-// Local functions
-
-static void cleanup(void);
-
 
 ///
 ///  @brief    Main program entry for TECO text editor.
@@ -81,16 +76,12 @@ int main(int unused1, const char * const argv[])
 
     f.ei.strict = true;                 // TODO: temporary
 
+    init_EG();                          // Initialize for EG command
     init_env();                         // Initialize environment
     init_term();                        // Initialize terminal
     init_buf();                         // Initialize command buffer
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams
-
-    if (atexit(cleanup) != 0)           // Clean up when we exit
-    {
-        exit(EXIT_FAILURE);
-    }
 
     for (;;)                            // Loop forever
     {
@@ -107,25 +98,6 @@ int main(int unused1, const char * const argv[])
 
 
 ///
-///  @brief    General cleanup, initiated when exit() is called.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void cleanup(void)
-{
-    // TODO: finish these
-
-    print_term("<TBD: free digit buffer>");
-    print_term("<TBD: free edit buffer>");
-    print_term("<TBD: free search buffer>");
-
-    (void)fflush(stdout);
-}
-
-
-///
 ///  @brief    Print the TECO prompt (this may be the standard asterisk, or
 ///            something else specified by the user).
 ///
@@ -137,7 +109,7 @@ void print_prompt(void)
 {
     f.et.abort = false;                 // Don't abort on error
 
-    puts_term(prompt, strlen(prompt));
+    puts_term(prompt, (uint)strlen(prompt));
 }
 
 
@@ -148,11 +120,11 @@ void print_prompt(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void *alloc_more(void *ptr, size_t size)
+void *alloc_more(void *ptr, uint size)
 {
     // TODO: check for relative size change?
 
-    void *newptr = realloc(ptr, size);
+    void *newptr = realloc(ptr, (size_t)size);
 
     if (newptr == NULL)
     {
@@ -170,9 +142,9 @@ void *alloc_more(void *ptr, size_t size)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void *alloc_new(size_t size)
+void *alloc_new(uint size)
 {
-    void *ptr = calloc(1, size);
+    void *ptr = calloc(1uL, (size_t)size);
 
     if (ptr == NULL)
     {

@@ -60,9 +60,6 @@ void exec_X(struct cmd *cmd)
         }
     }
 
-    printf("%s %d line%s to Q-register %s%c\r\n", cmd->got_colon ? "append" : "copy",
-           cmd->n, cmd->n == 1 ? "" : "s",
-           cmd->qlocal ? "." : "", cmd->qreg);
-    fflush(stdout);
+    // TODO: add lines of text to Q-register
 }
 

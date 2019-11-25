@@ -32,7 +32,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -186,7 +185,7 @@ void read_cmd(void)
 
         last = c;
 
-        c = getc_term(WAIT);
+        c = getc_term((bool)WAIT);
     }
 }
 
@@ -228,7 +227,7 @@ static void read_bs(void)
     }
     else
     {
-        delete_buf();
+        (void)delete_buf();
         putc_term(BS);
         putc_term(SPACE);
         putc_term(BS);
@@ -296,7 +295,7 @@ static void read_ctrl_g(void)
     echo_chr(CTRL_G);
     store_buf(CTRL_G);
 
-    int c = getc_term(WAIT);            // Get next character
+    int c = getc_term((bool)WAIT);      // Get next character
 
     echo_chr(c);                        // Echo it
 
@@ -310,7 +309,7 @@ static void read_ctrl_g(void)
     // Here when we have a special CTRL/G command
 
     putc_term(CRLF);                    // Start new line
-    delete_buf();                       // Delete CTRL/G in buffer
+    (void)delete_buf();                 // Delete CTRL/G in buffer
 
     if (c == CTRL_G)                    // ^G^G
     {
@@ -326,7 +325,7 @@ static void read_ctrl_g(void)
             print_prompt();             // Yes, so output prompt
         }
 
-        echo_buf(start_buf());
+        echo_buf((int)start_buf());
     }
     else /* if (c == '*') */            // ^G*
     {
@@ -391,7 +390,7 @@ static void read_ctrl_z(void)
     echo_chr(CTRL_Z);
     store_buf(CTRL_Z);
 
-    int c = getc_term(WAIT);
+    int c = getc_term((bool)WAIT);
 
     echo_chr(CTRL_Z);
 
@@ -413,7 +412,7 @@ static void read_ctrl_z(void)
 
 static void read_esc(void)
 {
-    int c = getc_term(WAIT);
+    int c = getc_term((bool)WAIT);
 
     if (c != '[')                       // Escape must start with '['
     {
@@ -421,16 +420,16 @@ static void read_esc(void)
     }
     else
     {
-        switch (c = getc_term(WAIT))
+        switch (c = getc_term((bool)WAIT))
         {
             case '2':                   // F9 - F16
-                c = getc_term(WAIT);
+                c = getc_term((bool)WAIT);
 
                 if (c == '4')
                 {
                     store_buf(c);
 
-                    c = getc_term(WAIT);
+                    c = getc_term((bool)WAIT);
 
                     if (c != '~')
                     {
@@ -445,7 +444,7 @@ static void read_esc(void)
                 {
                     store_buf(c);
 
-                    c = getc_term(WAIT);
+                    c = getc_term((bool)WAIT);
 
                     if (c != '~')
                     {
@@ -526,10 +525,10 @@ static int read_first(void)
             // DoEvEs(EvFlag);          // TODO: TBD!
         }
 
-        fflush(stdout);                 // TODO: is this needed?
+        (void)fflush(stdout);           // TODO: is this needed?
         print_prompt();
 
-        int c = getc_term(WAIT);
+        int c = getc_term((bool)WAIT);
 
         if (f.ei.lf)                    // Need to skip LF?
         {
@@ -537,7 +536,7 @@ static int read_first(void)
 
             if (c == LF)                // Is this LF?
             {
-                c = getc_term(WAIT);    // Yes, get another character
+                c = getc_term((bool)WAIT);    // Yes, get another character
             }
         }
 
@@ -574,7 +573,7 @@ static int read_first(void)
 
             case '*':                   // Store last command in Q-register
                 putc_term(c);
-                c = getc_term(WAIT);    // Get Q-register name
+                c = getc_term((bool)WAIT);    // Get Q-register name
 
                 if (f.ei.ctrl_c)
                 {
@@ -664,7 +663,7 @@ static void read_qname(int c)
     {
         echo_chr(c);                    // Yes, echo the dot
 
-        qname = getc_term(WAIT);        // And get next character
+        qname = getc_term((bool)WAIT);        // And get next character
     }
 
     echo_chr(qname);                    // Echo Q-register name

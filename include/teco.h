@@ -112,8 +112,8 @@ enum file_status
 struct ifile
 {
     FILE *fp;                       // Input file stream
-    uint eof  : 1;                  // End of file reached
-    uint cr   : 1;                  // Last character was CR
+    bool eof;                       // End of file reached
+    bool cr;                        // Last character was CR
 };
 
 enum itype
@@ -129,7 +129,7 @@ struct ofile
     FILE *fp;                       // Output file stream
     char *name;                     // Output file name
     char *temp;                     // Temporary file name
-    uint backup : 1;                // File opened by EB command
+    bool backup;                    // File is opened for backup
 };
 
 enum otype
@@ -184,35 +184,39 @@ extern bool f_expression;
 
 extern bool teco_debug;
 
-extern char scratch[];
+extern char *filename_buf;
+
+extern char *eg_command;
 
 // Global functions
 
-extern void *alloc_more(void *ptr, size_t size);
+extern void *alloc_more(void *ptr, uint size);
 
-extern void *alloc_new(size_t size);
+extern void *alloc_new(uint size);
 
 extern void check_errno(int ecode);
 
 extern void dealloc(char **ptr);
 
-extern void echo_chr(int c);
-
 extern void exec_cmd(void);
 
 extern void init_env(void);
 
-extern void init_files(void);
+extern int teco_env(int n);
 
-extern void init_qreg(void);
+// Terminal input/output functions
 
-extern void init_term(void);
+extern void echo_chr(int c);
+
+extern void exit_EG(void);
 
 extern int getc_term(bool nowait);
 
-extern void print_prompt(void);
+extern bool help_command(void);
 
-extern void print_term(const char *str);
+extern void init_EG(void);
+ 
+extern void init_term(void);
 
 extern void put_bell(void);
 
@@ -220,19 +224,15 @@ extern void putc_term(int c);
 
 extern void puts_term(const char *str, unsigned int nbytes);
 
-extern bool help_command(void);
-
-extern int open_input(struct tstr *text);
-
-extern int open_output(struct tstr *text, bool backup);
-
 extern void print_badseq(void);
+
+extern void print_prompt(void);
+
+extern void print_term(const char *str);
 
 extern void read_cmd(void);
 
 extern int read_term(void);
-
-extern int teco_env(int n);
 
 extern void write_term(const char *buf, unsigned int nbytes);
 
@@ -242,13 +242,15 @@ extern void append_qchr(int qname, bool qdot, int c);
 
 extern void append_qtext(int qname, bool qdot, struct tstr text);
 
-extern int get_qall(void);
+extern uint get_qall(void);
 
 extern int get_qchr(int qname, bool qdot, int n);
 
 extern int get_qnum(int qname, bool qdot);
 
-extern int get_qsize(int qname, bool qdot);
+extern uint get_qsize(int qname, bool qdot);
+
+extern void init_qreg(void);
 
 extern bool pop_qreg(int qname, bool qdot);
 
@@ -264,8 +266,6 @@ extern void store_qnum(int qname, bool qdot, int n);
 
 // Functions that access the expression stack
 
-extern bool empty_expr(void);
-
 extern int get_n_arg(void);
 
 extern void init_expr(void);
@@ -280,7 +280,7 @@ extern bool valid_radix(int c);
 
 extern struct tstr copy_buf(void);
 
-extern int count_buf(void);
+extern uint count_buf(void);
 
 extern int delete_buf(void);
 
@@ -298,10 +298,24 @@ extern char *next_buf(void);
 
 extern void reset_buf(void);
 
-extern int start_buf(void);
+extern uint start_buf(void);
 
 extern void store_buf(int c);
 
 extern void unfetch_buf(int c);
+
+// File functions
+
+extern const char *get_oname(struct ofile *ofile, uint nbytes);
+
+extern int get_wild(void);
+
+extern void init_files(void);
+
+extern int open_input(const struct tstr *text);
+
+extern int open_output(const struct tstr *text, int backup);
+
+extern void set_wild(const char *filename);
 
 #endif  // !defined(_TECO_H)

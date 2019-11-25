@@ -55,7 +55,7 @@ void exec_ctrl_h(struct cmd *cmd)
     time_t t = time(NULL);
     struct tm tm;
 
-    localtime_r(&t, &tm);
+    (void)localtime_r(&t, &tm);
 
     int teco_time = tm.tm_hour * MINUTES_PER_HOUR + tm.tm_min;
 

@@ -34,8 +34,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -71,10 +69,13 @@ void exec_EK(struct cmd *cmd)
         oname = ofile->name;
     }
 
-    printf("killing file %s\r\n", oname); fflush(stdout);
-
     if (remove(oname) != 0)
     {
         fatal_err(errno, E_SYS, NULL);
     }
+
+    dealloc(&ofile->name);
+    dealloc(&ofile->temp);
+
+    ofile->backup = false;
 }

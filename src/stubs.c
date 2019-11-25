@@ -37,7 +37,7 @@
 #include "exec.h"
 
 
-void exec_C(struct cmd *cmd)
+void exec_C(struct cmd *unused1)
 {
     printf("C command\r\n");
 
@@ -45,7 +45,7 @@ void exec_C(struct cmd *cmd)
 }
 
 
-void exec_D(struct cmd *cmd)
+void exec_D(struct cmd *unused1)
 {
     printf("D command\r\n");
 
@@ -53,7 +53,7 @@ void exec_D(struct cmd *cmd)
 }
 
 
-void exec_J(struct cmd *cmd)
+void exec_J(struct cmd *unused1)
 {
     printf("J command\r\n");
 
@@ -61,7 +61,7 @@ void exec_J(struct cmd *cmd)
 }
 
 
-void exec_K(struct cmd *cmd)
+void exec_K(struct cmd *unused1)
 {
     printf("K command\r\n");
 
@@ -69,7 +69,7 @@ void exec_K(struct cmd *cmd)
 }
 
 
-void exec_L(struct cmd *cmd)
+void exec_L(struct cmd *unused1)
 {
     printf("L command\r\n");
 
@@ -77,7 +77,7 @@ void exec_L(struct cmd *cmd)
 }
 
 
-void exec_M(struct cmd *cmd)
+void exec_M(struct cmd *unused1)
 {
     printf("M command\r\n");
 
@@ -85,7 +85,7 @@ void exec_M(struct cmd *cmd)
 }
 
 
-void exec_R(struct cmd *cmd)
+void exec_R(struct cmd *unused1)
 {
     printf("R command\r\n");
 
@@ -93,7 +93,7 @@ void exec_R(struct cmd *cmd)
 }
 
 
-void exec_T(struct cmd *cmd)
+void exec_T(struct cmd *unused1)
 {
     printf("T command\r\n");
 
@@ -101,7 +101,7 @@ void exec_T(struct cmd *cmd)
 }
 
 
-void exec_V(struct cmd *cmd)
+void exec_V(struct cmd *unused1)
 {
     printf("V command\r\n");
 
@@ -109,7 +109,7 @@ void exec_V(struct cmd *cmd)
 }
 
 
-void exec_W(struct cmd *cmd)
+void exec_W(struct cmd *unused1)
 {
     printf("W command\r\n");
 
@@ -117,7 +117,7 @@ void exec_W(struct cmd *cmd)
 }
 
 
-void exec_apos(struct cmd *cmd)
+void exec_apos(struct cmd *unused1)
 {
     printf("' command\r\n");
 
@@ -125,7 +125,7 @@ void exec_apos(struct cmd *cmd)
 }
 
 
-void exec_backslash(struct cmd *cmd)
+void exec_backslash(struct cmd *unused1)
 {
     printf("\\ command\r\n");
 
@@ -133,7 +133,7 @@ void exec_backslash(struct cmd *cmd)
 }
 
 
-void exec_ctrl_c(struct cmd *cmd)
+void exec_ctrl_c(struct cmd *unused1)
 {
     printf("ctrl_c command\r\n");
 
@@ -141,7 +141,7 @@ void exec_ctrl_c(struct cmd *cmd)
 }
 
 
-void exec_ctrl_caret(struct cmd *cmd)
+void exec_ctrl_caret(struct cmd *unused1)
 {
     printf("ctrl_^ command\r\n");
 
@@ -149,7 +149,7 @@ void exec_ctrl_caret(struct cmd *cmd)
 }
 
 
-void exec_ctrl_l(struct cmd *cmd)
+void exec_ctrl_l(struct cmd *unused1)
 {
     printf("ctrl_l command\r\n");
 
@@ -157,7 +157,7 @@ void exec_ctrl_l(struct cmd *cmd)
 }
 
 
-void exec_ctrl_p(struct cmd *cmd)
+void exec_ctrl_p(struct cmd *unused1)
 {
     // TODO: use for debugging?
 
@@ -167,7 +167,7 @@ void exec_ctrl_p(struct cmd *cmd)
 }
 
 
-void exec_ctrl_q(struct cmd *cmd)
+void exec_ctrl_q(struct cmd *unused1)
 {
     printf("ctrl_q command\r\n");
 
@@ -175,7 +175,7 @@ void exec_ctrl_q(struct cmd *cmd)
 }
 
 
-void exec_ctrl_v(struct cmd *cmd)
+void exec_ctrl_v(struct cmd *unused1)
 {
     printf("ctrl_v command\r\n");
 
@@ -183,7 +183,7 @@ void exec_ctrl_v(struct cmd *cmd)
 }
 
 
-void exec_ctrl_w(struct cmd *cmd)
+void exec_ctrl_w(struct cmd *unused1)
 {
     printf("ctrl_w command\r\n");
 
@@ -191,7 +191,7 @@ void exec_ctrl_w(struct cmd *cmd)
 }
 
 
-void exec_langle(struct cmd *cmd)
+void exec_langle(struct cmd *unused1)
 {
     printf("< command\r\n");
 
@@ -199,7 +199,7 @@ void exec_langle(struct cmd *cmd)
 }
 
 
-void exec_question(struct cmd *cmd)
+void exec_question(struct cmd *unused1)
 {
     printf("? command\r\n");
 
@@ -207,7 +207,7 @@ void exec_question(struct cmd *cmd)
 }
 
 
-void exec_rangle(struct cmd *cmd)
+void exec_rangle(struct cmd *unused1)
 {
     printf("> command\r\n");
 
@@ -215,7 +215,7 @@ void exec_rangle(struct cmd *cmd)
 }
 
 
-void exec_semi(struct cmd *cmd)
+void exec_semi(struct cmd *unused1)
 {
     printf("; command\r\n");
 
@@ -223,7 +223,7 @@ void exec_semi(struct cmd *cmd)
 }
 
 
-void exec_ubar(struct cmd *cmd)
+void exec_ubar(struct cmd *unused1)
 {
     printf("_ command\r\n");
 
@@ -231,7 +231,7 @@ void exec_ubar(struct cmd *cmd)
 }
 
 
-void exec_vbar(struct cmd *cmd)
+void exec_vbar(struct cmd *unused1)
 {
     printf("| command\r\n");
 
@@ -254,10 +254,8 @@ void exec_nul(struct cmd *cmd)
 }
 
 
-void exec_ctrl_ubar(struct cmd *cmd)
+void exec_ctrl_ubar(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     push_expr(US, EXPR_OPERATOR);
 
     return;
@@ -279,70 +277,56 @@ void exec_operator(struct cmd *cmd)
 }
 
 
-void exec_B(struct cmd *cmd)
+void exec_B(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     printf("B command\r\n");
 
     return;
 }
 
 
-void exec_H(struct cmd *cmd)
+void exec_H(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     printf("H command\r\n");
 
     return;
 }
 
 
-void exec_Z(struct cmd *cmd)
+void exec_Z(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     printf("Z command\r\n");
 
     return;
 }
 
 
-void exec_ctrl_n(struct cmd *cmd)
+void exec_ctrl_n(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     printf("ctrl_n command\r\n");
 
     return;
 }
 
 
-void exec_ctrl_s(struct cmd *cmd)
+void exec_ctrl_s(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     printf("ctrl_s command\r\n");
 
     return;
 }
 
 
-void exec_ctrl_y(struct cmd *cmd)
+void exec_ctrl_y(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     printf("ctrl_y command\r\n");
 
     return;
 }
 
 
-void exec_dot(struct cmd *cmd)
+void exec_dot(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     printf(". command\r\n");
 
     return;
@@ -363,40 +347,32 @@ void exec_FB(struct cmd *cmd)
 }
 
 
-void exec_F_apos(struct cmd *cmd)
+void exec_F_apos(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     printf("F%% command\r\n");
 
     return;
 }
 
 
-void exec_F_langle(struct cmd *cmd)
+void exec_F_langle(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     printf("F< command\r\n");
 
     return;
 }
 
 
-void exec_F_rangle(struct cmd *cmd)
+void exec_F_rangle(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     printf("F> command\r\n");
 
     return;
 }
 
 
-void exec_F_vbar(struct cmd *cmd)
+void exec_F_vbar(struct cmd *unused)
 {
-    assert(cmd != NULL);
-
     printf("F| command\r\n");
 
     return;

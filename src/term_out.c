@@ -76,7 +76,7 @@ void echo_chr(int c)
         {
             char chrbuf[5];             // [xx] + NUL
 
-            uint nbytes = snprintf(chrbuf, sizeof(chrbuf), "[%02x]", c);
+            uint nbytes = (uint)snprintf(chrbuf, sizeof(chrbuf), "[%02x]", c);
 
             assert(nbytes < sizeof(chrbuf));
         }
@@ -149,6 +149,8 @@ bool help_command(void)
     putc_term(CRLF);
 
     print_err(E_NYI);                   // TODO: temporary!
+
+    return true;
 }
 
 
@@ -202,10 +204,12 @@ void print_badseq(void)
 
 void print_cmd(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     // Here when we've parsed the entire command - now type it out.
 
     printf("command: ");
-    fflush(stdout);
+    (void)fflush(stdout);
 
     if (cmd->expr.len != 0)
     {

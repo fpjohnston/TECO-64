@@ -31,8 +31,23 @@
 #include <unistd.h>
 
 #include "teco.h"
-#include "eflags.h"
 #include "errors.h"
+
+
+///
+///  @brief    Final execution of EG command.
+///
+///  @returns  Nothing (return to operating system).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exit_EG(void)
+{
+    if (eg_command != NULL)
+    {
+        execlp("/bin/sh", "sh", "-c", eg_command, NULL);
+    }
+}
 
 
 ///
@@ -54,7 +69,7 @@ void init_env(void)
         prompt = env;                   // Change TECO prompt
     }
 
-    if ((env = getenv("TECO_DEBUG")) != NULL)
+    if (getenv("TECO_DEBUG") != NULL)
     {
         teco_debug = true;
     }

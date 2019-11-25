@@ -32,7 +32,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -69,7 +68,7 @@ void exec_quote(struct cmd *cmd)
 
     cmd->opt_n = true;
 
-    if (empty_expr())                   // If nothing on stack,
+    if (!cmd->got_n)                    // Did we see an argument?
     {
         print_err(E_NAQ);               // No argument before "
     }

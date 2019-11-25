@@ -33,9 +33,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
-#include "errors.h"
 #include "exec.h"
 
 
@@ -50,6 +47,6 @@ void exec_ctrl_i(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    scan_cmd(cmd);
+    // TODO: insert string into buffer.
 }
 

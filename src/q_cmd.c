@@ -60,7 +60,7 @@ void exec_Q(struct cmd *cmd)
     }
     else if (cmd->got_colon)            // :Qq
     {
-        n = get_qsize(cmd->qreg, cmd->qlocal);
+        n = (int)get_qsize(cmd->qreg, cmd->qlocal);
     }
     else                                // Qq
     {

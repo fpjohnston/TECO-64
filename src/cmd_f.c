@@ -1,5 +1,5 @@
 ///
-///  @file    f_cmd.c
+///  @file    cmd_f.c
 ///  @brief   General dispatcher for TECO F commands (e.g., FR, FS).
 ///
 ///           nFB    Search, bounded by n lines
@@ -49,8 +49,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -94,7 +92,7 @@ const struct cmd_table *init_F(struct cmd *cmd)
         printc_err(E_IFC, c);           // Illegal F character
     }
 
-    cmd->c2 = c;
+    cmd->c2 = (char)c;
 
     return &cmd_table[f_cmd - f_cmds];
 }

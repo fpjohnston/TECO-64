@@ -1,5 +1,5 @@
 ///
-///  @file    files.c
+///  @file    file.c
 ///  @brief   File-handling functions.
 ///
 ///  @author  Nowwith Treble Software
@@ -28,20 +28,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <unistd.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
-#include "errors.h"
-#include "exec.h"
+
 
 struct ifile ifiles[IFILE_MAX];
 
@@ -53,7 +45,11 @@ uint ostream = OFILE_PRIMARY;
 
 char *last_file = NULL;
 
-char scratch[512];
+char *filename_buf;                     // Allocated space for filename
+
+// Local functions
+
+static void file_exit(void);
 
 
 ///
@@ -63,8 +59,10 @@ char scratch[512];
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void free_files(void)
+static void file_exit(void)
 {
+    dealloc(&filename_buf);
+
     FILE *fp;
 
     for (int i = 0; i < IFILE_MAX; ++i)
@@ -89,7 +87,6 @@ void free_files(void)
         }
 
         ofiles[i].fp = NULL;
-        ofiles[i].backup = false;
 
         dealloc(&ofiles[i].name);
         dealloc(&ofiles[i].temp);
@@ -110,11 +107,6 @@ void free_files(void)
 
 void init_files(void)
 {
-    if (atexit(free_files) != 0)
-    {
-        exit(EXIT_FAILURE);
-    }
-         
     for (int i = 0; i < IFILE_MAX; ++i)
     {
         ifiles[i].fp  = NULL;
@@ -129,12 +121,21 @@ void init_files(void)
         ofiles[i].fp     = NULL;
         ofiles[i].name   = NULL;
         ofiles[i].temp   = NULL;
-        ofiles[i].backup = false;
     }
 
     ostream = OFILE_PRIMARY;
 
     last_file = NULL;
+
+    if ((filename_buf = alloc_new(FILENAME_MAX + 1)) == NULL)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    if (atexit(file_exit) != 0)
+    {
+        exit(EXIT_FAILURE);
+    }
 }
 
 
@@ -145,7 +146,7 @@ void init_files(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int open_input(struct tstr *text)
+int open_input(const struct tstr *text)
 {
     assert(text != NULL);
     
@@ -155,15 +156,13 @@ int open_input(struct tstr *text)
     if (fp != NULL)                     // Stream already open?
     {
         fclose(fp);                     // Yes, so close it
-
-        fp = NULL;
     }
 
     dealloc(&last_file);
 
     last_file = alloc_new(text->len + 1);
 
-    sprintf(last_file, "%.*s", text->len, text->buf);
+    sprintf(last_file, "%.*s", (int)text->len, text->buf);
 
     if ((fp = fopen(last_file, "r")) == NULL)
     {
@@ -185,15 +184,12 @@ int open_input(struct tstr *text)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int open_output(struct tstr *text, bool backup)
+int open_output(const struct tstr *text, int backup)
 {
     assert(text != NULL);
 
     struct ofile *ofile = &ofiles[ostream];
-    const char *oname;                  // Output file name
-    struct stat file_stat;
-    FILE *fp;
-    uint nbytes = text->len;             // Length of text string
+    uint nbytes = text->len;            // Length of text string
     
     dealloc(&ofile->name);
     dealloc(&ofile->temp);
@@ -201,59 +197,15 @@ int open_output(struct tstr *text, bool backup)
 
     last_file = alloc_new(nbytes + 1);
 
-    sprintf(last_file, "%.*s", nbytes, text->buf);
+    sprintf(last_file, "%.*s", (int)nbytes, text->buf);
 
-    // TODO: move system-dependent code elsewhere.
+    const char *oname = get_oname(ofile, nbytes);
 
-    if (access(last_file, F_OK) == 0)   // Does file already exist?
-    {
-        if (stat(last_file, &file_stat) != 0)
-        {
-            fatal_err(errno, E_SYS, NULL);
-        }
-
-        ofile->name = alloc_new(nbytes + 1);
-
-        memcpy(ofile->name, last_file, nbytes + 1);
-        memcpy(scratch, last_file, nbytes + 1);
-    
-        char *dir = dirname(scratch);
-        char tempfile[] = "teco-XXXXXX";
-        int fd = mkstemp(tempfile);
-
-        close(fd);
-
-        nbytes = strlen(dir) + 1 + strlen(tempfile);
-
-        ofile->temp = alloc_new(nbytes + 1);
-
-        sprintf(ofile->temp, "%s/%s", dir, tempfile);
-
-        oname = ofile->temp;
-    }
-    else                                // File does not exist
-    {
-        ofile->name = alloc_new(nbytes + 1);
-
-        memcpy(ofile->name, last_file, nbytes + 1);
-
-        oname = ofile->name;
-    }
-
-    if ((fp = fopen(oname, "w+")) == NULL)
+    if ((ofile->fp = fopen(oname, "w+")) == NULL)
     {
         return EXIT_FAILURE;
     }
 
-    if (ofile->temp != NULL)
-    {
-        if (chmod(oname, file_stat.st_mode | S_IRUSR | S_IWUSR) != 0)
-        {
-            fatal_err(errno, E_SYS, NULL);
-        }
-    }
-
-    ofile->fp = fp;
     ofile->backup = (backup == BACKUP_FILE) ? true : false;
 
     return EXIT_SUCCESS;

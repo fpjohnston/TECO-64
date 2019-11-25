@@ -1,0 +1,61 @@
+include.lnt
+co-gcc.lnt   // Basic gcc configuration
+
+// prevent the GCC version of offsetof being used
+// the semantics of the builtin version are unknown
+// suppress the warnings due to the 0 pointer used
+++"doffsetof(type,member)=((size_t)&((type*)0)->member)"
+-emacro(413,offsetof)
+-emacro(545,offsetof)
+
+-passes(2)
+-A(C2011)           // Enable ANSI C 2011 standard
+-w3                 // Turn on all messages except notes
++fie                // Treat enums and ints as distinct
++fsc                // Assume string constants are const char *
++fpn                // Warn about use of pointers if possibly NULL
++fas                // Allow anonymous structs
++fan                // Allow anonymous unions
+-ffc                // Functions generally don't take custody of pointers
++libclass(angle, ansi)
+
+// Formatting options
+
+-width(0)
+-HF1
+-v
+
+// Local options 
+
+-d_Noreturn=
+-esym(715,unused*) // Ignore unused parameters if named unused???
+-esym(516,__builtin_constant_p)
+-esym(526,__builtin_constant_p)
+-esym(628,__builtin_constant_p)
+-esym(644,__v)
+//-passes(4)
+
+-esym(526,__builtin_va_start)
+-esym(628,__builtin_va_start)
+
+-function(abort, fatal_err, print_err, printc_err, prints_err)
+
+// Ensure that prototypes are in scope before functions are defined
+
++e957
++elib(957)
+-emacro(124,va_arg)
+-emacro(530,va_start)
+-emacro(413,offsetof)
+-emacro(845,offsetof)
+-emacro(502,FD_CLR)
+-emacro(529,FD_ZERO)
+-emacro(703,FD_CLR)
+-emacro(703,FD_SET)
+-emacro(703,FD_ISSET)
+-emacro(717,FD_ZERO)
+
+-elib(10,18,19,30,31,36,38,43,46,49,101,104,129,132,145,148,957)
+-elibmacro(160,506,866)
+-elib(126,169)
+

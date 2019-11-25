@@ -74,7 +74,7 @@ int exec_digit(const char *str, int nchrs)
         ++ndigits;
     }
 
-    push_expr(sum, EXPR_OPERAND);
+    push_expr((int)sum, EXPR_OPERAND);
 
     return ndigits;
 }

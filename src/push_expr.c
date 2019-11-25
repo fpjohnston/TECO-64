@@ -56,19 +56,6 @@ static void reduce3(void);
 
 
 ///
-///  @brief    Check to see if expression stack is empty.
-///
-///  @returns  true if stack is empty, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool empty_expr(void)
-{
-    return (expr.len == 0);
-}
-
-
-///
 ///  @brief    Handle numeric argument from expression stack. We check to see
 ///            if there's something on the stack, and that the top element is
 ///            an operand. If so, we pop it off and return it whenever someone
@@ -95,7 +82,7 @@ int get_n_arg(void)
         print_err(E_IFE);               // Ill-formed numeric expression
     }
 
-    return expr.stack[expr.len].item;
+    return (int)expr.stack[expr.len].item;
 }
 
 
@@ -247,7 +234,7 @@ static bool reduce2(void)
             print_err(E_NAB);           // No argument before ^_
         }
 
-        e2->item = ~(e2->item);
+        e2->item = (int)(~((uint)e2->item));
 
         --expr.len;
     }

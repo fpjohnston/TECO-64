@@ -33,14 +33,12 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
-#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute EF command (close file)
+///  @brief    Execute EF command: close output file without writing out current
+///            buffer.
 ///
 ///  @returns  Nothing.
 ///
@@ -49,5 +47,20 @@
 void exec_EF(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    FILE *fp;
+    struct ofile *ofile = &ofiles[ostream];
+
+    if ((fp = ofile->fp) != NULL)
+    {
+        fclose(fp);
+
+        ofile->fp = NULL;
+    }
+
+    dealloc(&ofile->name);
+    dealloc(&ofile->temp);
+
+    ofile->backup = false;
 }
 

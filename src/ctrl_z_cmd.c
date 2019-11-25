@@ -46,8 +46,8 @@ void exec_ctrl_z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n = get_qall();
+    uint n = get_qall();
     
-    push_expr(n, EXPR_OPERAND);
+    push_expr((int)n, EXPR_OPERAND);
 }
 

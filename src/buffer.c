@@ -35,7 +35,6 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 
 static struct buffer cmd =
@@ -74,11 +73,11 @@ struct tstr copy_buf(void)
 ///
 ///  @brief    Return number of characters in buffer.
 ///
-///  @returns  Nothing.
+///  @returns  No. of characters left to be read.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int count_buf(void)
+uint count_buf(void)
 {
     assert(curbuf != NULL);
     
@@ -203,7 +202,7 @@ void init_buf(void)
   
     curbuf->size = STR_SIZE_INIT;
 
-    if ((curbuf->buf = calloc(1, curbuf->size)) == NULL)
+    if ((curbuf->buf = calloc(1uL, (size_t)curbuf->size)) == NULL)
     {
         exit(EXIT_FAILURE);             // Clean up, reset, and exit
     }
@@ -229,9 +228,9 @@ bool match_buf(const char *str)
     assert(str != NULL);
     assert(curbuf != NULL);
 
-    uint len = strlen(str);
+    uint len = (uint)strlen(str);
 
-    if (strncasecmp(curbuf->buf, str, len))
+    if (strncasecmp(curbuf->buf, str, (size_t)len))
     {
         return false;
     }
@@ -278,32 +277,17 @@ void reset_buf(void)
 
 
 ///
-///  @brief    Set buffer to point to new string.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void set_buf(struct buffer *buf)
-{
-    assert(buf != NULL);
-
-    curbuf = buf;
-}
-
-
-///
 ///  @brief    Get start of line.
 ///
 ///  @returns  Index of start of line.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int start_buf(void)
+uint start_buf(void)
 {
     assert(curbuf != NULL);
 
-    int i = curbuf->put;
+    uint i = curbuf->put;
 
     while (i > 0)
     {
@@ -347,14 +331,14 @@ void store_buf(int c)
         assert(curbuf->size != 0);
         assert(curbuf->buf != NULL);
 
-        int newsize = curbuf->size + STR_SIZE_INIT;
+        uint newsize = curbuf->size + STR_SIZE_INIT;
         char *newbuf = alloc_more(curbuf->buf, newsize);
 
         curbuf->size = newsize;
         curbuf->buf  = newbuf;
     }
 
-    curbuf->buf[curbuf->put++] = c;
+    curbuf->buf[curbuf->put++] = (char)c;
     curbuf->buf[curbuf->put] = NUL;
 }
 
@@ -372,6 +356,6 @@ void unfetch_buf(int c)
 
     if (curbuf->get != 0)
     {
-        curbuf->buf[--curbuf->get] = c;
+        curbuf->buf[--curbuf->get] = (char)c;
     }
 }

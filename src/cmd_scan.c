@@ -119,10 +119,15 @@ void scan_cmd(struct cmd *cmd)
 
         if (!isalnum(c))
         {
-            printc_err(E_IQN, c);       // Illegal Q-register name
+            // The following allows use of G* and G_
+
+            if (toupper(cmd->c1) != 'G' || (c != '*' && c != '_'))
+            {
+                printc_err(E_IQN, c);   // Illegal Q-register name
+            }
         }
 
-        cmd->qreg = c;                  // Save the name
+        cmd->qreg = (char)c;            // Save the name
     }
 
     // The P command can optionally be followed by a W. This doesn't really
@@ -134,7 +139,7 @@ void scan_cmd(struct cmd *cmd)
 
         if (toupper(c) == 'W')          // Is it?
         {
-            cmd->c2 = c;                // Yes
+            cmd->c2 = (char)c;          // Yes
         }
         else
         {
@@ -148,7 +153,7 @@ void scan_cmd(struct cmd *cmd)
 
     if (cmd->got_atsign)                // @ modifier?
     {
-        cmd->delim = fetch_buf();       // Yes, next character is delimiter
+        cmd->delim = (char)fetch_buf(); // Yes, next character is delimiter
     }
 
     // Now get the text strings, if they're allowed for this command.
@@ -310,12 +315,12 @@ void scan_mod(struct cmd *cmd)
 
 static void scan_text(int delim, struct tstr *text)
 {
+    assert(text != NULL);
+
     text->len = 0;
     text->buf = next_buf();
 
-    int c = fetch_buf();
-    
-    if (c == delim)
+    if (fetch_buf() == delim)
     {
         text->buf = NULL;
 
@@ -324,7 +329,7 @@ static void scan_text(int delim, struct tstr *text)
 
     ++text->len;
 
-    while ((c = fetch_buf()) != delim)
+    while (fetch_buf() != delim)
     {
         ++text->len;
     }

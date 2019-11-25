@@ -31,8 +31,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
 #include "exec.h"
 
 
@@ -45,28 +43,31 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void get_flag(int *flag, struct cmd *cmd)
+void get_flag(uint *flag, struct cmd *cmd)
 {
+    assert(flag != NULL);
+    assert(cmd != NULL);
+
     if (cmd->got_n)                     // n argument?
     {
         if (!cmd->got_m)                // m argument too?
         {
-            *flag = cmd->n;             // No, so just set flag
+            *flag = (uint)cmd->n;       // No, so just set flag
         }
         else                            // Both m and n were specified
         {
             if (cmd->m != 0)
             {
-                *flag &= ~cmd->m;       // Turn off m bits
+                *flag &= ~(uint)cmd->m; // Turn off m bits
             }
             if (cmd->n != 0)
             {
-                *flag |= cmd->n;        // Turn on n bits
+                *flag |= (uint)cmd->n;  // Turn on n bits
             }
         }
     }
     else
     {
-        push_expr(*flag, EXPR_OPERAND);
+        push_expr((int)*flag, EXPR_OPERAND);
     }
 }

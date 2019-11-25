@@ -32,7 +32,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "eflags.h"
 #include "exec.h"
 
 ///

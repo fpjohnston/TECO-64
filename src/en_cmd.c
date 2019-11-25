@@ -33,8 +33,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -49,5 +47,33 @@
 void exec_EN(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (cmd->text1.len == 0)            // Was it EN`?
+    {
+        if (get_wild() == EXIT_FAILURE)
+        {
+            if (!cmd->got_colon)
+            {
+                print_err(E_FNF);       // No more matches
+            }
+
+            push_expr(0, EXPR_OPERAND);
+        }
+        else
+        {
+            if (cmd->got_colon)
+            {
+                push_expr(-1, EXPR_OPERAND);
+            }
+        }
+    }
+    else                                // Have filespec, so must set it
+    {
+        char scratch[cmd->text1.len + 1];
+
+        sprintf(scratch, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+
+        set_wild(scratch);
+    }
 }
 

@@ -32,9 +32,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
-#include "errors.h"
 #include "exec.h"
 
 
@@ -50,6 +47,6 @@ void exec_ctrl_a(struct cmd *cmd)
     assert(cmd != NULL);
     assert(cmd->text1.buf != NULL);
     
-    printf("%.*s", cmd->text1.len, cmd->text1.buf);
-    fflush(stdout);
+    printf("%.*s", (int)cmd->text1.len, cmd->text1.buf);
+    (void)fflush(stdout);
 }
