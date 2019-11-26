@@ -49,18 +49,18 @@ void exec_rbracket(struct cmd *cmd)
 
     if (!pop_qreg(cmd->qreg, cmd->qlocal))
     {
-        if (!cmd->got_colon)
+        if (!cmd->colon_set)
         {
             print_err(E_CPQ);           // Push-down list is empty.
         }
 
-        cmd->n = 0;                     // 0 -> failure
+        cmd->n_arg = 0;                 // 0 -> failure
     }
-    else if (cmd->got_colon)
+    else if (cmd->colon_set)
     {
-        cmd->n = 1;                     // 1 -> success
+        cmd->n_arg = 1;                 // 1 -> success
     }
 
-    push_expr(cmd->n, EXPR_OPERAND);    // Leave for next command
+    push_expr(cmd->n_arg, EXPR_OPERAND); // Leave for next command
 }
 

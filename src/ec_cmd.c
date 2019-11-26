@@ -70,39 +70,8 @@ void exec_EC(struct cmd *cmd)
         ofile->fp = NULL;
     }
 
-    // TODO: the logic for handling backup files is system-dependent,
-    //       move it elsewhere.
+    close_output(ofile);                // Handle file deletion and/or renaming
 
-    if (ofile->temp != NULL)
-    {
-        assert(ofile->name != NULL);
-
-        if (ofile->backup)
-        {
-            char scratch[strlen(ofile->name) + 1 + 1];
-
-            sprintf(scratch, "%s~", ofile->name);
-
-            if (rename(ofile->name, scratch) != 0)
-            {
-                fatal_err(errno, E_SYS, NULL);
-            }
-        }
-        else
-        {
-            if (remove(ofile->name) != 0)
-            {
-                fatal_err(errno, E_SYS, NULL);
-            }
-        }
-        
-        if (rename(ofile->temp, ofile->name) != 0)
-        {
-            fatal_err(errno, E_SYS, NULL);
-        }
-
-        dealloc(&ofile->temp);
-    }
-
+    dealloc(&ofile->temp);
     dealloc(&ofile->name);
 }

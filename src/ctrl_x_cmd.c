@@ -46,9 +46,9 @@ void exec_ctrl_x(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->got_n)                     // n argument?
+    if (cmd->n_set)                     // n argument?
     {
-        ctrl_x = cmd->n;
+        ctrl_x = cmd->n_arg;
     }
     else
     {

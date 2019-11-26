@@ -46,16 +46,16 @@ void exec_U(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->got_n)                    // n argument?
+    if (!cmd->n_set)                    // n argument?
     {
-        cmd->n = 0;                     // TODO: is this correct?
+        cmd->n_arg = 0;                 // TODO: is this correct?
     }
 
-    store_qnum(cmd->qreg, cmd->qlocal, cmd->n);
+    store_qnum(cmd->qreg, cmd->qlocal, cmd->n_arg);
 
-    if (cmd->got_m)                     // m argument too?
+    if (cmd->m_set)                     // m argument too?
     {
-        push_expr(cmd->m, EXPR_OPERAND);
+        push_expr(cmd->m_arg, EXPR_OPERAND);
     }
 }
 

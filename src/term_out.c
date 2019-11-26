@@ -149,8 +149,6 @@ bool help_command(void)
     putc_term(CRLF);
 
     print_err(E_NYI);                   // TODO: temporary!
-
-    return true;
 }
 
 
@@ -233,13 +231,13 @@ void print_cmd(struct cmd *cmd)
         return;
     }
 
-    if (cmd->got_colon || cmd->got_dcolon)
+    if (cmd->colon_set || cmd->dcolon_set)
     {
         putc_term('{');
 
         echo_chr(':');
 
-        if (cmd->got_dcolon)
+        if (cmd->dcolon_set)
         {
             echo_chr(':');
         }        
@@ -248,7 +246,7 @@ void print_cmd(struct cmd *cmd)
         putc_term(SPACE);
     }
 
-    if (cmd->got_atsign)
+    if (cmd->atsign_set)
     {
         putc_term('{');
 
@@ -293,7 +291,7 @@ void print_cmd(struct cmd *cmd)
 
     if (cmd->text1.len != 0)
     {
-        if (cmd->got_atsign)            // Conditionally echo delimiter before 1st arg.
+        if (cmd->atsign_set)            // Conditionally echo delimiter before 1st arg.
         {
             echo_chr(cmd->delim);
             putc_term(SPACE);

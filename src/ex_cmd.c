@@ -47,6 +47,9 @@ void exec_EX(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    // TODO: issue error E_NFO if there is text in the buffer,
+    //       but there is no output file open.
+
     exec_EC(cmd);                       // Close everything normally
 
     exit(EXIT_SUCCESS);

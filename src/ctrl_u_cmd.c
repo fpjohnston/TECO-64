@@ -48,20 +48,20 @@ void exec_ctrl_u(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->got_n)                     // n argument?
+    if (cmd->n_set)                     // n argument?
     {
         if (cmd->text1.len != 0)        // Yes, text too?
         {
             print_err(E_MOD);           // Yes, that's an error
         }
 
-        if (cmd->got_colon)             // n:^Uq`
+        if (cmd->colon_set)             // n:^Uq`
         {
-            append_qchr(cmd->qreg, cmd->qlocal, cmd->n);
+            append_qchr(cmd->qreg, cmd->qlocal, cmd->n_arg);
         }
         else                            // n^Uq`
         {
-            store_qchr(cmd->qreg, cmd->qlocal, cmd->n);
+            store_qchr(cmd->qreg, cmd->qlocal, cmd->n_arg);
         }
     }
     else                                // No n argument
@@ -71,7 +71,7 @@ void exec_ctrl_u(struct cmd *cmd)
             print_err(E_MOD);           // Yes, that's wrong
         }
 
-        if (cmd->got_colon)             // ^Ustring`
+        if (cmd->colon_set)             // ^Ustring`
         {
             append_qtext(cmd->qreg, cmd->qlocal, cmd->text1);
         }

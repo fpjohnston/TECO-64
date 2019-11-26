@@ -66,9 +66,9 @@ void exec_quote(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    cmd->opt_n = true;
+    cmd->n_opt = true;
 
-    if (!cmd->got_n)                    // Did we see an argument?
+    if (!cmd->n_set)                    // Did we see an argument?
     {
         print_err(E_NAQ);               // No argument before "
     }

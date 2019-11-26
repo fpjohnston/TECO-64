@@ -55,27 +55,27 @@ void exec_equals(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->got_n)                    // If no operand, then complain
+    if (!cmd->n_set)                    // If no operand, then complain
     {
         print_err(E_NAE);               // No argument before =
     }
 
     if (cmd->c3 == '=')                 // If ===, print hexadecimal
     {
-        printf("%x", cmd->n);
+        printf("%x", cmd->n_arg);
     }
     else if (cmd->c2 == '=')            // If ==, print octal
     {
-        printf("%o", cmd->n);
+        printf("%o", cmd->n_arg);
     }
     else                                // If =, print decimal
     {
-        printf("%d", cmd->n);
+        printf("%d", cmd->n_arg);
     }
         
     (void)fflush(stdout);
 
-    if (!cmd->got_colon)                // Suppress CRLF?
+    if (!cmd->colon_set)                // Suppress CRLF?
     {
         putc_term(CRLF);
     }

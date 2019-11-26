@@ -83,11 +83,11 @@ void scan_cmd(struct cmd *cmd)
     }
     else if (f.ei.strict)
     {
-        if (   (cmd->got_m      && !cmd->opt_m     )
-            || (cmd->got_n      && !cmd->opt_n     )
-            || (cmd->got_colon  && !cmd->opt_colon )
-            || (cmd->got_dcolon && !cmd->opt_dcolon)
-            || (cmd->got_atsign && !cmd->opt_atsign))
+        if (   (cmd->m_set      && !cmd->m_opt     )
+            || (cmd->n_set      && !cmd->n_opt     )
+            || (cmd->colon_set  && !cmd->colon_opt )
+            || (cmd->dcolon_set && !cmd->dcolon_opt)
+            || (cmd->atsign_set && !cmd->atsign_opt))
         {
             print_err(E_MOD);           // Invalid modifier for command
         }
@@ -106,7 +106,7 @@ void scan_cmd(struct cmd *cmd)
 
     int c;
 
-    if (cmd->opt_qreg)                  // Do we need a Q-register?
+    if (cmd->q_req)                     // Do we need a Q-register?
     {
         c = fetch_buf();                // Yes
 
@@ -133,7 +133,7 @@ void scan_cmd(struct cmd *cmd)
     // The P command can optionally be followed by a W. This doesn't really
     // change how the command works.
 
-    if (cmd->opt_w)                     // Optional W following?
+    if (cmd->w_opt)                     // Optional W following?
     {
         c = fetch_buf();                // Maybe
 
@@ -151,18 +151,18 @@ void scan_cmd(struct cmd *cmd)
     // specified it, the first character after the command is the alternate
     // delimiter to use for the subsequent text string.
 
-    if (cmd->got_atsign)                // @ modifier?
+    if (cmd->atsign_set)                // @ modifier?
     {
         cmd->delim = (char)fetch_buf(); // Yes, next character is delimiter
     }
 
     // Now get the text strings, if they're allowed for this command.
 
-    if (cmd->opt_t1 || cmd->opt_t2)
+    if (cmd->t1_opt || cmd->t2_opt)
     {
         scan_text(cmd->delim, &cmd->text1);
 
-        if (cmd->opt_t2)
+        if (cmd->t2_opt)
         {
             scan_text(cmd->delim, &cmd->text2);
         }
@@ -187,7 +187,7 @@ void scan_done(struct cmd *cmd)
 
 ///
 ///  @brief    Scan expression. Note that we don't do much here other than to
-///            check for correctc form.
+///            check for correct form.
 ///
 ///  @returns  Nothing.
 ///
@@ -208,7 +208,10 @@ void scan_expr(struct cmd *cmd)
 
         unfetch_buf(c);                 // Went too far, so return character
 
-        push_expr(1, EXPR_OPERAND);     // Dummy value
+        cmd->n_set = true;
+        cmd->n_arg = 1;
+
+        push_expr(cmd->n_arg, EXPR_OPERAND); // Dummy value
     }
     else if (c == ',')
     {
@@ -228,6 +231,10 @@ void scan_expr(struct cmd *cmd)
             }
 
             --cmd->paren;
+        }
+        else
+        {
+            c = 1;
         }
 
         push_expr(c, EXPR_OPERATOR);
@@ -252,7 +259,7 @@ void scan_flag(struct cmd *cmd)
     {
         (void)get_n_arg();
 
-        cmd->got_n = true;
+        cmd->n_set = true;
         cmd->state = CMD_DONE;
     }
     else
@@ -277,28 +284,28 @@ void scan_mod(struct cmd *cmd)
 
     if (cmd->c1 == '@')
     {
-        if (f.ei.strict && cmd->got_atsign)
+        if (f.ei.strict && cmd->atsign_set)
         {
             print_err(E_MOD);           // Two @'s are not allowed
         }
 
-        cmd->got_atsign = true;
+        cmd->atsign_set = true;
     }
     else if (cmd->c1 == ':')
     {
-        if (f.ei.strict && cmd->got_dcolon)
+        if (f.ei.strict && cmd->dcolon_set)
         {
             print_err(E_MOD);           // More than two :'s are not allowed
         }
 
-        if (cmd->got_colon)
+        if (cmd->colon_set)
         {
-            cmd->got_colon = false;
-            cmd->got_dcolon = true;
+            cmd->colon_set = false;
+            cmd->dcolon_set = true;
         }
-        else if (!cmd->got_dcolon)
+        else if (!cmd->dcolon_set)
         {
-            cmd->got_colon = true;
+            cmd->colon_set = true;
         }
     }
 

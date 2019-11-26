@@ -47,9 +47,9 @@ void exec_ES(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->got_n)                     // n argument?
+    if (cmd->n_set)                     // n argument?
     {
-        f.es = cmd->n;
+        f.es = cmd->n_arg;
     }
     else
     {

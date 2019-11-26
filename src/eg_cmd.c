@@ -50,19 +50,23 @@ void exec_EG(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->got_colon)
+    if (cmd->colon_set)
     {
         // TODO: TBD
 
         return;
     }
 
-    // EG`, not :EG`, so get ready to exit
+    // TODO: issue error E_OFO if there is text in the buffer,
+    //       but there is no output file open.
 
+    exec_EC(cmd);
+
+    // EG`, not :EG`, so get ready to exit
 
     eg_command = alloc_new(cmd->text1.len + 1);
 
-    sprintf(eg_command, "%.*s", cmd->text1.len, cmd->text1.buf);
+    sprintf(eg_command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
 
     exit(EXIT_SUCCESS);
 }

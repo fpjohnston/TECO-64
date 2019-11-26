@@ -46,12 +46,12 @@ void exec_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->got_n)                    // n argument?
+    if (!cmd->n_set)                    // n argument?
     {
-        cmd->n = 1;
+        cmd->n_arg = 1;
     }
 
-    int n = get_qnum(cmd->qreg, cmd->qlocal) + cmd->n;
+    int n = get_qnum(cmd->qreg, cmd->qlocal) + cmd->n_arg;
 
     store_qnum(cmd->qreg, cmd->qlocal, n);
 

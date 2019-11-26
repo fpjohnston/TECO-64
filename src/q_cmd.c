@@ -49,16 +49,16 @@ void exec_Q(struct cmd *cmd)
 
     int n;
 
-    if (cmd->got_n)                     // n argument? 
+    if (cmd->n_set)                     // n argument? 
     {
-        if (cmd->got_colon)
+        if (cmd->colon_set)
         {
             print_err(E_MOD);
         }
 
-        n = get_qchr(cmd->qreg, cmd->qlocal, cmd->n);
+        n = get_qchr(cmd->qreg, cmd->qlocal, cmd->n_arg);
     }
-    else if (cmd->got_colon)            // :Qq
+    else if (cmd->colon_set)            // :Qq
     {
         n = (int)get_qsize(cmd->qreg, cmd->qlocal);
     }

@@ -34,6 +34,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "errors.h"
 #include "exec.h"
 
 
@@ -47,5 +48,17 @@
 void exec_P(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (cmd->n_set)
+    {
+        if (cmd->n_arg == 0)
+        {
+            print_err(E_NPA);           // Not a valid argument for P`
+        }
+        else if (cmd->n_arg < 0)        // -nP?
+        {
+            print_err(E_T32);           // TECO-32 command not implemented
+        }
+    }
 }
 

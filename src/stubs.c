@@ -285,14 +285,6 @@ void exec_B(struct cmd *unused1)
 }
 
 
-void exec_H(struct cmd *unused1)
-{
-    printf("H command\r\n");
-
-    return;
-}
-
-
 void exec_Z(struct cmd *unused1)
 {
     printf("Z command\r\n");
@@ -338,8 +330,8 @@ void exec_FB(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    cmd->opt_colon  = true;
-    cmd->opt_atsign = true;
+    cmd->colon_opt  = true;
+    cmd->atsign_opt = true;
 
     scan_cmd(cmd);
 
@@ -371,7 +363,7 @@ void exec_F_rangle(struct cmd *unused1)
 }
 
 
-void exec_F_vbar(struct cmd *unused)
+void exec_F_vbar(struct cmd *unused1)
 {
     printf("F| command\r\n");
 

@@ -45,9 +45,9 @@ void exec_ctrl_e(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->got_n)                     // n argument?
+    if (cmd->n_set)                     // n argument?
     {
-        form_feed = (cmd->n == -1) ? -1 : 0;
+        form_feed = (cmd->n_arg == -1) ? -1 : 0;
     }
     else
     {

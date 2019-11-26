@@ -45,7 +45,10 @@ void exit_EG(void)
 {
     if (eg_command != NULL)
     {
-        execlp("/bin/sh", "sh", "-c", eg_command, NULL);
+        if (execlp("/bin/sh", "sh", "-c", eg_command, NULL) == -1)
+        {
+            perror("EG command failed");
+        }
     }
 }
 

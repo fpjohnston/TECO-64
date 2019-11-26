@@ -41,6 +41,7 @@
 #include "errors.h"
 #include "exec.h"
 
+#if     0 // TODO: TBD
 
 struct vars
 {
@@ -58,6 +59,9 @@ struct vars vars =
     .eof = 0,
 };
 
+#endif
+
+
 // The following is used when a command is done and we want to skip to the
 // next command.
 
@@ -65,7 +69,7 @@ jmp_buf jump_command;
 
 // Local functions
 
-static const struct cmd_table *scan_caret(struct cmd *cmd);
+static struct cmd_table *scan_caret(struct cmd *cmd);
 
 
 //
@@ -78,7 +82,7 @@ static const struct cmd_table *scan_caret(struct cmd *cmd);
 //  Also, we handle E and F commands specially, as they involve a 2nd character.
 //
 
-static const struct cmd_table cmd_table[] =
+static struct cmd_table cmd_table[] =
 {
     [NUL]         = { NULL,       NULL,             ""             },
     [CTRL_A]      = { scan_done,  exec_ctrl_a,      "@ 1",         },
@@ -160,7 +164,7 @@ static const struct cmd_table cmd_table[] =
     ['M']         = { scan_done,  exec_M,           "m n : q"      },
     ['N']         = { scan_done,  exec_N,           "n : @ 1"      },
     ['O']         = { scan_done,  exec_O,           "n @ 1"        },
-    ['P']         = { scan_done,  exec_P,           "m n : W"      },
+    ['P']         = { scan_done,  exec_P,           "m n H : W"    },
     ['Q']         = { scan_done,  exec_Q,           ": q"          },
     ['R']         = { scan_done,  exec_R,           "n :"          },
     ['S']         = { scan_done,  exec_S,           "m n : :: @ 1" },
@@ -212,7 +216,7 @@ static const struct cmd_table cmd_table[] =
 
 // Define initial values for command block
 
-const struct cmd null_cmd =
+struct cmd null_cmd =
 {
     .state      = CMD_NULL,
     .level      = 0,
@@ -220,8 +224,8 @@ const struct cmd null_cmd =
     .c1         = NUL,
     .c2         = NUL,
     .c3         = NUL,
-    .m          = 0,
-    .n          = 0,
+    .m_arg      = 0,
+    .n_arg      = 0,
     .paren      = 0,
     .delim      = ESC,
     .qreg       = NUL,
@@ -300,7 +304,7 @@ void exec_cmd(void)
         }
         else if (setjmp(jump_command) == 0)
         {
-            const struct cmd_table *table;
+            struct cmd_table *table;
 
             cmd.c1 = (char)c;
 
@@ -368,8 +372,8 @@ void exec_cmd(void)
                 {
                     if (operand_expr())
                     {
-                        cmd.got_n = true;
-                        cmd.n = get_n_arg();
+                        cmd.n_set = true;
+                        cmd.n_arg = get_n_arg();
                     }
 
                     (*exec_func)(&cmd);
@@ -425,8 +429,8 @@ static void exec_expr(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    cmd->got_m = false;
-    cmd->got_n = false;
+    cmd->m_set = false;
+    cmd->n_set = false;
 
 //    init_expr();
 
@@ -439,7 +443,7 @@ static void exec_expr(struct cmd *cmd)
 
     while (p < cmd->expr.buf + cmd->expr.len)
     {
-        const struct cmd_table *table;
+        struct cmd_table *table;
         int c = *p++;
 
         if ((uint)c >= countof(cmd_table))
@@ -496,6 +500,9 @@ static void exec_expr(struct cmd *cmd)
             p += ndigits;
 
             assert(p <= cmd->expr.buf + cmd->expr.len);
+
+            cmd->n_set = true;
+            cmd->n_arg = expr.stack[expr.len - 1].item;
         }
     }
 }
@@ -511,7 +518,7 @@ static void exec_expr(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static const struct cmd_table *scan_caret(struct cmd *cmd)
+static struct cmd_table *scan_caret(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -536,7 +543,10 @@ static const struct cmd_table *scan_caret(struct cmd *cmd)
 ///            strings to set the appropriate options, as follows:
 ///
 ///            n  - Command allows one argument          (e.g., nC).
+///                 Note: implies n.
 ///            m  - Command allows two arguments         (e.g., m,nT).
+///            H  - Command allows H to be special       (e.g., HP).
+///                 Note: implies m and n
 ///            :  - Command allows colon modifier        (e.g., :ERfile`).
 ///            :: - Command allows double colon modifier (e.g., ::Stext`).
 ///            @  - Command allows atsign form           (e.g., @^A/hello/).
@@ -544,6 +554,7 @@ static const struct cmd_table *scan_caret(struct cmd *cmd)
 ///            W  - Command allows W                     (e.g., PW).
 ///            1  - Command allows one text string       (e.g., Otag`).
 ///            2  - Command allows two text strings      (e.g., FNfoo`baz`).
+///                 Note: implies 1.
 ///
 ///            These do not need to be in any particular order, and characters
 ///            not in the list above will be ignored. This allows the use of
@@ -568,54 +579,60 @@ static void set_opts(struct cmd *cmd, const char *opts)
     {
         switch (c)
         {
+            case 'H':
+                cmd->h_opt = true;
+                //lint -fallthrough 
+
             case 'm':
-                cmd->opt_m = true;
+                cmd->m_opt = true;
                 //lint -fallthrough
 
             case 'n':
-                cmd->opt_n = true;
+                cmd->n_opt = true;
 
                 break;
 
             case ':':
                 if (*opts == ':')
                 {
-                    cmd->opt_dcolon = true;
+                    cmd->dcolon_opt = true;
 
                     ++opts;
                 }
                 else
                 {
-                    cmd->opt_colon  = true;
+                    cmd->colon_opt  = true;
                 }
 
                 break;
 
             case '@':
-                cmd->opt_atsign = true;
+                cmd->atsign_opt = true;
 
                 break;
 
             case 'q':
-                cmd->opt_qreg = true;
+                cmd->q_req = true;
 
                 break;
 
             case 'W':
-                cmd->opt_w  = true;
+                cmd->w_opt  = true;
 
                 break;
 
             case '2':
-                cmd->opt_t2 = true;
+                cmd->t2_opt = true;
                 //lint -fallthrough
 
             case '1':
-                cmd->opt_t1 = true;
+                cmd->t1_opt = true;
 
                 break;
 
             default:
+                // TODO: should this be an error for printing characters?
+
                 break;
         }
     }

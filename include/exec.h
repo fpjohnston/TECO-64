@@ -49,44 +49,46 @@ CMD_DONE                        // Scanning is done
 
 struct cmd
 {
-enum cmd_state state;           // State of command (for parsing)
-uint level;                     // Command level
+    enum cmd_state state;           // State of command (for parsing)
+    uint level;                     // Command level
 
-union
-{
-uint flag;                  // Command flag
+    union
+    {
+        uint flag;                  // Command flag
 
-struct
-{
-    uint opt_m      : 1;    // m argument allowed
-    uint opt_n      : 1;    // n argument allowed
-    uint opt_bits   : 1;    // m,n set & clear flag bits
-    uint opt_colon  : 1;    // : allowed
-    uint opt_dcolon : 1;    // :: allowed
-    uint opt_atsign : 1;    // @ allowed
-    uint opt_w      : 1;    // W allowed (for P)
-    uint opt_qreg   : 1;    // Q-register required
-    uint opt_t1     : 1;    // 1 text field allowed
-    uint opt_t2     : 1;    // 2 text fields allowed
-    uint got_m      : 1;    // m argument found
-    uint got_n      : 1;    // n argument found
-    uint got_colon  : 1;    // : found
-    uint got_dcolon : 1;    // :: found
-    uint got_atsign : 1;    // @ found
-};
-};
+        struct
+        {
+            uint m_opt      : 1;    // m argument allowed
+            uint n_opt      : 1;    // n argument allowed
+            uint h_opt      : 1;    // H allowed
+            uint colon_opt  : 1;    // : allowed
+            uint dcolon_opt : 1;    // :: allowed
+            uint atsign_opt : 1;    // @ allowed
+            uint w_opt      : 1;    // W allowed (for P)
+            uint q_req      : 1;    // Q-register required
+            uint t1_opt     : 1;    // 1 text field allowed
+            uint t2_opt     : 1;    // 2 text fields allowed
+            uint m_set      : 1;    // m argument found
+            uint n_set      : 1;    // n argument found
+            uint h_set      : 1;    // H found
+            uint colon_set  : 1;    // : found
+            uint dcolon_set : 1;    // :: found
+            uint atsign_set : 1;    // @ found
+        };
+    };
 
-char c1, c2, c3;                // Command characters (or NUL)
-int m, n;                       // m,n arguments
-int paren;                      // No. of parentheses counted
-char delim;                     // Delimiter for @ modifier
-char qreg;                      // Q-register, if any
-bool qlocal;                    // Q-register is local (not global)
-struct tstr expr;               // Expression string
-struct tstr text1;              // 1st text string
-struct tstr text2;              // 2nd text string
-struct cmd *next;               // Next command (or NULL)
-struct cmd *prev;               // Previous command (or NULL)
+    char c1, c2, c3;                // Command characters (or NUL)
+    int m_arg;                      // m argument (if m_set is true)
+    int n_arg;                      // n argument (if n_set is true)
+    int paren;                      // No. of parentheses counted
+    char delim;                     // Delimiter for @ modifier
+    char qreg;                      // Q-register, if any
+    bool qlocal;                    // Q-register is local (not global)
+    struct tstr expr;               // Expression string
+    struct tstr text1;              // 1st text string
+    struct tstr text2;              // 2nd text string
+    struct cmd *next;               // Next command (or NULL)
+    struct cmd *prev;               // Previous command (or NULL)
 };
 
 struct cmd_table
@@ -100,9 +102,9 @@ const char *opts;               // Command modifiers and options
 
 extern void get_flag(uint *flag, struct cmd *cmd);
 
-extern const struct cmd_table *init_E(struct cmd *cmd);
+extern struct cmd_table *init_E(struct cmd *cmd);
 
-extern const struct cmd_table *init_F(struct cmd *cmd);
+extern struct cmd_table *init_F(struct cmd *cmd);
 
 // Functions that execute commands
 

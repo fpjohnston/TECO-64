@@ -49,9 +49,9 @@ void exec_EE(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->got_n)                     // n argument?
+    if (cmd->n_set)                     // n argument?
     {
-        int ee = cmd->n;
+        int ee = cmd->n_arg;
 
         if (!isascii(f.ee))
         {

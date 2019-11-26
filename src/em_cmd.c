@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute EM command for magtapes.
+///  @brief    Execute EM command: open file on magtape (TECO-10 only).
 ///
 ///  @returns  Nothing.
 ///
@@ -47,6 +47,6 @@ void exec_EM(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    print_err(E_NIH);                   // We don't do magtapes
+    print_err(E_T10);                   // TECO-10 command not implemented
 }
 

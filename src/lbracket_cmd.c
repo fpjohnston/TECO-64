@@ -52,6 +52,6 @@ void exec_lbracket(struct cmd *cmd)
         print_err(E_PDO);               // Push-down list is full
     }
 
-    push_expr(cmd->n, EXPR_OPERAND);    // Leave for next command
+    push_expr(cmd->n_arg, EXPR_OPERAND); // Leave for next command
 }
 

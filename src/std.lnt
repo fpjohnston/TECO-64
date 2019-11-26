@@ -28,7 +28,9 @@ co-gcc.lnt   // Basic gcc configuration
 // Local options 
 
 -d_Noreturn=
+-esym(379,unused*) // Ignore unused parameters if named unused???
 -esym(715,unused*) // Ignore unused parameters if named unused???
+-esym(818,unused*) // Ignore unused parameters if named unused???
 -esym(516,__builtin_constant_p)
 -esym(526,__builtin_constant_p)
 -esym(628,__builtin_constant_p)
@@ -38,7 +40,7 @@ co-gcc.lnt   // Basic gcc configuration
 -esym(526,__builtin_va_start)
 -esym(628,__builtin_va_start)
 
--function(abort, fatal_err, print_err, printc_err, prints_err)
+-function(exit, fatal_err, print_err, printc_err, prints_err, execlp)
 
 // Ensure that prototypes are in scope before functions are defined
 

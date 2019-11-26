@@ -52,7 +52,7 @@ void exec_EN(struct cmd *cmd)
     {
         if (get_wild() == EXIT_FAILURE)
         {
-            if (!cmd->got_colon)
+            if (!cmd->colon_set)
             {
                 print_err(E_FNF);       // No more matches
             }
@@ -61,7 +61,7 @@ void exec_EN(struct cmd *cmd)
         }
         else
         {
-            if (cmd->got_colon)
+            if (cmd->colon_set)
             {
                 push_expr(-1, EXPR_OPERAND);
             }

@@ -137,6 +137,7 @@ SOURCES = \
     f_ubar_cmd.c   \
     g_cmd.c        \
     get_flag.c     \
+    h_cmd.c        \
     i_cmd.c        \
     lbracket_cmd.c \
     n_cmd.c        \
@@ -209,7 +210,7 @@ DFILES = $(SOURCES:.c=.d)
 
 CFLAGS += -MMD -c $(INCLUDES) $(OPT_OPT) $(DFLAGS)
 
-LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt -e818 -e786
+LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt -e786 -e818 -e830
 
 %.lob: %.c
 	@echo Making $@ $(NULL)

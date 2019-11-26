@@ -1,0 +1,336 @@
+///
+///  @file    cmd_scan.c
+///  @brief   Functions to scan TECO command string.
+///
+///  @author  Nowwith Treble Software
+///
+///  @bug     No known bugs.
+///
+///  @copyright  tbd
+///
+///  Permission is hereby granted, free of charge, to any person obtaining a copy
+///  of this software and associated documentation files (the "Software"), to deal
+///  in the Software without restriction, including without limitation the rights
+///  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+///  copies of the Software, and to permit persons to whom the Software is
+///  furnished to do so, subject to the following conditions:
+///
+///  The above copyright notice and this permission notice shall be included in
+///  all copies or substantial portions of the Software.
+///
+///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+///
+///  @mainpage teco - TECO text editor
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#include <assert.h>
+#include <ctype.h>
+#include <setjmp.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include "teco.h"
+#include "ascii.h"
+#include "eflags.h"
+#include "errors.h"
+#include "exec.h"
+
+
+// Local functions
+
+static void scan_text(int delim, struct tstr *tstr);
+
+
+///
+///  @brief    We've scanned an illegal character, so return to main loop.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_bad(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    printc_err(E_ILL, cmd->c1);
+}
+
+
+///
+///  @brief    Scan the rest of the command string. We enter here after scanning
+///            any expression, and any prefix modifiers.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_cmd(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->paren != 0)
+    {
+        print_err(E_MRP);               // Missing right parenthesis
+    }
+    else if (f.ei.strict)
+    {
+        if (   (cmd->m_set      && !cmd->m_opt     )
+            || (cmd->n_set      && !cmd->n_opt     )
+            || (cmd->colon_set  && !cmd->colon_opt )
+            || (cmd->dcolon_set && !cmd->dcolon_opt)
+            || (cmd->atsign_set && !cmd->atsign_opt))
+        {
+            print_err(E_MOD);           // Invalid modifier for command
+        }
+    }
+
+    cmd->delim = ESC;                   // Assume we'll use the std. delimiter
+
+    if (cmd->c1 == CTRL_A || cmd->c1 == '!')
+    {
+        cmd->delim = cmd->c1;           // Switch delimiter for CTRL/A and !
+    }
+
+    // Some commands have a postfix Q-register, which is an alphanumeric name
+    // optionally preceded by a . (to flag that it's a local and not a global
+    // Q-register.
+
+    int c;
+
+    if (cmd->q_req)                     // Do we need a Q-register?
+    {
+        c = fetch_buf();                // Yes
+
+        if (c == '.')                   // Is it a local Q-register?
+        {
+            cmd->qlocal = true;         // Yes, mark it
+
+            c = fetch_buf();            // Get Q-register name
+        }        
+
+        if (!isalnum(c))
+        {
+            // The following allows use of G* and G_
+
+            if (toupper(cmd->c1) != 'G' || (c != '*' && c != '_'))
+            {
+                printc_err(E_IQN, c);   // Illegal Q-register name
+            }
+        }
+
+        cmd->qreg = (char)c;            // Save the name
+    }
+
+    // The P command can optionally be followed by a W. This doesn't really
+    // change how the command works.
+
+    if (cmd->w_opt)                     // Optional W following?
+    {
+        c = fetch_buf();                // Maybe
+
+        if (toupper(c) == 'W')          // Is it?
+        {
+            cmd->c2 = (char)c;          // Yes
+        }
+        else
+        {
+            unfetch_buf(c);             // No. Put character back
+        }
+    }
+
+    // The @ prefix modifier has already been scanned here, but if the user
+    // specified it, the first character after the command is the alternate
+    // delimiter to use for the subsequent text string.
+
+    if (cmd->atsign_set)                // @ modifier?
+    {
+        cmd->delim = (char)fetch_buf(); // Yes, next character is delimiter
+    }
+
+    // Now get the text strings, if they're allowed for this command.
+
+    if (cmd->t1_opt || cmd->t2_opt)
+    {
+        scan_text(cmd->delim, &cmd->text1);
+
+        if (cmd->t2_opt)
+        {
+            scan_text(cmd->delim, &cmd->text2);
+        }
+    }
+}
+
+
+///
+///  @brief    Flag that we've scanned the actual command character.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_done(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    cmd->state = CMD_DONE;
+}
+
+
+///
+///  @brief    Scan expression. Note that we don't do much here other than to
+///            check for correctc form.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_expr(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int c = cmd->c1;
+
+    if (isdigit(c))
+    {
+        do
+        {
+            c = fetch_buf();            // Keep reading characters
+        } while (valid_radix(c));       // As long as they're valid for our radix
+
+        unfetch_buf(c);                 // Went too far, so return character
+
+        push_expr(1, EXPR_OPERAND);     // Dummy value
+    }
+    else if (c == ',')
+    {
+        exec_comma(cmd);
+    }
+    else
+    {
+        if (c == '(')
+        {
+            ++cmd->paren;
+        }
+        else if (c == ')')
+        {
+            if (cmd->paren == 0)
+            {
+                print_err(E_MLP);
+            }
+
+            --cmd->paren;
+        }
+
+        push_expr(c, EXPR_OPERATOR);
+    }
+             
+    cmd->state = CMD_EXPR;
+}
+
+
+///
+///  @brief    Scan a flag value (which can be an operand as well as a command).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_flag(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // Is there an operand available?
+    {
+        (void)get_n_arg();
+
+        cmd->n_set = true;
+        cmd->state = CMD_DONE;
+    }
+    else
+    {
+        push_expr(1, EXPR_OPERAND);     // Dummy value
+
+        cmd->state = CMD_EXPR;
+    }
+}
+
+
+///
+///  @brief    Scan a command modifier (i.e., @ or :).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_mod(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->c1 == '@')
+    {
+        if (f.ei.strict && cmd->atsign_set)
+        {
+            print_err(E_MOD);           // Two @'s are not allowed
+        }
+
+        cmd->atsign_set = true;
+    }
+    else if (cmd->c1 == ':')
+    {
+        if (f.ei.strict && cmd->dcolon_set)
+        {
+            print_err(E_MOD);           // More than two :'s are not allowed
+        }
+
+        if (cmd->colon_set)
+        {
+            cmd->colon_set = false;
+            cmd->dcolon_set = true;
+        }
+        else if (!cmd->dcolon_set)
+        {
+            cmd->colon_set = true;
+        }
+    }
+
+    cmd->state = CMD_MOD;
+}
+
+
+///
+///  @brief    Scan the text string following the command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void scan_text(int delim, struct tstr *text)
+{
+    assert(text != NULL);
+
+    text->len = 0;
+    text->buf = next_buf();
+
+    if (fetch_buf() == delim)
+    {
+        text->buf = NULL;
+
+        return;
+    }
+
+    ++text->len;
+
+    while (fetch_buf() != delim)
+    {
+        ++text->len;
+    }
+}

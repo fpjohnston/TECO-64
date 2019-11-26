@@ -306,6 +306,8 @@ extern void unfetch_buf(int c);
 
 // File functions
 
+extern void close_output(struct ofile *ofile);
+
 extern const char *get_oname(struct ofile *ofile, uint nbytes);
 
 extern int get_wild(void);

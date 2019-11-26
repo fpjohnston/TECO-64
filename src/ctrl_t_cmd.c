@@ -52,7 +52,7 @@ void exec_ctrl_t(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->got_n)                    // n argument?
+    if (!cmd->n_set)                    // n argument?
     {
         bool wait = f.et.nowait ? false : true;
         int c = getc_term(wait);
@@ -69,13 +69,13 @@ void exec_ctrl_t(struct cmd *cmd)
         return;    
     }
 
-    if (cmd->got_colon || f.et.image)
+    if (cmd->colon_set || f.et.image)
     {
-        putc_term(cmd->n);
+        putc_term(cmd->n_arg);
     }
     else
     {
-        echo_chr(cmd->n);
+        echo_chr(cmd->n_arg);
     }
 }
 

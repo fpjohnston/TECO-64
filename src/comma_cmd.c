@@ -46,12 +46,12 @@ void exec_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);
     
-    if (cmd->got_m)                     // Already seen m argument?
+    if (cmd->m_set)                     // Already seen m argument?
     {
         print_err(E_ARG);               // Yes, two commas aren't allowed
     }
 
-    if (!cmd->got_n)                    // Any n argument specified?
+    if (!cmd->n_set)                    // Any n argument specified?
     {
         print_err(E_NAC);               // No argument before ,
     }
@@ -59,7 +59,8 @@ void exec_comma(struct cmd *cmd)
     // If we've seen a comma, then what's on the expression is an "m" argument,
     // not an "n" argument (numeric arguments can take the form m,n).
 
-    cmd->m = get_n_arg();               // Save the m argument
+    cmd->m_arg = get_n_arg();           // Save the m argument
 
-    cmd->got_m = true;                  // And say we have one
+    cmd->m_set = true;                  // And say we have one
+    cmd->n_set = false;                 // But forget about n argument
 }

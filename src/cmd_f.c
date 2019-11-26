@@ -53,7 +53,7 @@
 #include "exec.h"
 
 
-static const struct cmd_table cmd_table[] =
+static struct cmd_table cmd_table[] =
 {
     { scan_done,  exec_FB,        "m n @ 1"      },
     { scan_done,  exec_FC,        "m n @ 1 2"    },
@@ -78,7 +78,7 @@ static const struct cmd_table cmd_table[] =
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-const struct cmd_table *init_F(struct cmd *cmd)
+struct cmd_table *init_F(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

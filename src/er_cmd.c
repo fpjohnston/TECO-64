@@ -58,14 +58,14 @@ void exec_ER(struct cmd *cmd)
 
     if (open_input(&cmd->text1) == EXIT_FAILURE)
     {
-        if (!cmd->got_colon || (errno != ENOENT && errno != ENODEV))
+        if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
         {
             prints_err(E_FNF, last_file);
         }
 
         push_expr(OPEN_FAILURE, EXPR_OPERAND);
     }
-    else if (cmd->got_colon)
+    else if (cmd->colon_set)
     {
         push_expr(OPEN_SUCCESS, EXPR_OPERAND);
     }

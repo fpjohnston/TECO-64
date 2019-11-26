@@ -48,21 +48,21 @@ void get_flag(uint *flag, struct cmd *cmd)
     assert(flag != NULL);
     assert(cmd != NULL);
 
-    if (cmd->got_n)                     // n argument?
+    if (cmd->n_set)                     // n argument?
     {
-        if (!cmd->got_m)                // m argument too?
+        if (!cmd->m_set)                // m argument too?
         {
-            *flag = (uint)cmd->n;       // No, so just set flag
+            *flag = (uint)cmd->n_arg;   // No, so just set flag
         }
         else                            // Both m and n were specified
         {
-            if (cmd->m != 0)
+            if (cmd->m_arg != 0)
             {
-                *flag &= ~(uint)cmd->m; // Turn off m bits
+                *flag &= ~(uint)cmd->m_arg; // Turn off m bits
             }
-            if (cmd->n != 0)
+            if (cmd->n_arg != 0)
             {
-                *flag |= (uint)cmd->n;  // Turn on n bits
+                *flag |= (uint)cmd->n_arg; // Turn on n bits
             }
         }
     }

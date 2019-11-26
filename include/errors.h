@@ -102,6 +102,8 @@ enum errors
     E_STL,          //  String too long
     E_SYS,          //+ System error message
     E_TAG,          //  Missing tag !tag!
+    E_T10,          //+ TECO-10 command not implemented
+    E_T32,          //+ TECO-32 command not implemented
     E_UCD,          //+ Unable to close and delete output file "x"
     E_UCI,          //+ Unable to close input file
     E_UCO,          //+ Unable to close output file

@@ -47,9 +47,9 @@ void exec_ctrl_f(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->got_n)                     // Is it n^F?
+    if (cmd->n_set)                     // Is it n^F?
     {
-        print_err(E_NIH);               // Yes, we can't do that
+        print_err(E_T10);               // TECO-10 command not implemented.
     }
 
     push_expr(0, EXPR_OPERAND);         // Value is always 0 for now

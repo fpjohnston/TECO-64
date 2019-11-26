@@ -64,14 +64,14 @@ void exec_EW(struct cmd *cmd)
 
     if (open_output(&cmd->text1, NOBACKUP_FILE) == EXIT_FAILURE)
     {
-        if (!cmd->got_colon)
+        if (!cmd->colon_set)
         {
             prints_err(E_UFO, last_file);
         }
 
         push_expr(OPEN_FAILURE, EXPR_OPERAND);
     }
-    else if (cmd->got_colon)
+    else if (cmd->colon_set)
     {
         push_expr(OPEN_SUCCESS, EXPR_OPERAND);
     }

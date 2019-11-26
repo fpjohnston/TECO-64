@@ -46,9 +46,9 @@ void exec_EU(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->got_n)                     // n argument?
+    if (cmd->n_set)                     // n argument?
     {
-        f.eu = cmd->n;
+        f.eu = cmd->n_arg;
     }
     else
     {
