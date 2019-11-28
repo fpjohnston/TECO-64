@@ -41,35 +41,16 @@
 #include "errors.h"
 #include "exec.h"
 
-#if     0 // TODO: TBD
 
-struct vars
-{
-    int b;                              // Beginning of buffer = 0
-    int z;                              // End of buffer
-    int dot;                            // Current pointer position
-    int eof;                            // End of file flag
-};
-
-struct vars vars =
-{
-    .b   = 0,
-    .z   = 1000,
-    .dot = 0,
-    .eof = 0,
-};
-
-#endif
-
-
-// The following is used when a command is done and we want to skip to the
-// next command.
-
-jmp_buf jump_command;
+enum scan_state scan_state;
 
 // Local functions
 
-static struct cmd_table *scan_caret(struct cmd *cmd);
+static void exec_expr(struct cmd *cmd);
+
+static void exec_operator(struct cmd *cmd);
+
+static void finish_cmd(struct cmd *cmd, const struct cmd_table *table);
 
 
 //
@@ -82,19 +63,19 @@ static struct cmd_table *scan_caret(struct cmd *cmd);
 //  Also, we handle E and F commands specially, as they involve a 2nd character.
 //
 
-static struct cmd_table cmd_table[] =
+struct cmd_table cmd_table[] =
 {
     [NUL]         = { NULL,       NULL,             ""             },
-    [CTRL_A]      = { scan_done,  exec_ctrl_a,      "@ 1",         },
+    [CTRL_A]      = { scan_done,  exec_ctrl_a,      "@ 1"          },
     [CTRL_B]      = { scan_expr,  exec_ctrl_b,      ""             },
     [CTRL_C]      = { NULL,       exec_ctrl_c,      ""             },
     [CTRL_D]      = { scan_done,  exec_ctrl_d,      ""             },
-    [CTRL_E]      = { scan_expr,  exec_ctrl_e,      ""             },
-    [CTRL_F]      = { scan_expr,  exec_ctrl_f,      "n"            },
+    [CTRL_E]      = { scan_var,   exec_ctrl_e,      ""             },
+    [CTRL_F]      = { scan_var,   exec_ctrl_f,      "n"            },
     [CTRL_G]      = { scan_bad,   NULL,             ""             },
     [BS]          = { scan_expr,  exec_ctrl_h,      ""             },
     [TAB]         = { scan_done,  exec_ctrl_i,      "1"            },
-    [LF]          = { NULL,       exec_nul,         ""             },
+    [LF]          = { NULL,       NULL,             ""             },
     [VT]          = { scan_bad,   NULL,             ""             },
     [FF]          = { NULL,       exec_ctrl_l,      ""             },
     [CR]          = { NULL,       NULL,             ""             },
@@ -108,13 +89,13 @@ static struct cmd_table cmd_table[] =
     [CTRL_U]      = { scan_done,  exec_ctrl_u,      "n : @ q 1"    },
     [CTRL_V]      = { NULL,       exec_ctrl_v,      ""             },
     [CTRL_W]      = { NULL,       exec_ctrl_w,      ""             },
-    [CTRL_X]      = { scan_expr,  exec_ctrl_x,      "n"            },
+    [CTRL_X]      = { scan_var,   exec_ctrl_x,      "n"            },
     [CTRL_Y]      = { scan_expr,  exec_ctrl_y,      ""             },
     [CTRL_Z]      = { scan_expr,  exec_ctrl_z,      ""             },
     [ESC]         = { scan_done,  exec_escape,      "m n"          },
     [FS]          = { scan_bad,   NULL,             ""             },
     [GS]          = { scan_bad,   NULL,             ""             },
-    [RS]          = { NULL,       exec_ctrl_caret,  ""             },
+    [RS]          = { NULL,       NULL,             ""             },
     [US]          = { scan_expr,  exec_ctrl_ubar,   ""             },
     [SPACE]       = { NULL,       NULL,             ""             },
     ['!']         = { scan_done,  exec_bang,        "@ 1"          },
@@ -128,7 +109,7 @@ static struct cmd_table cmd_table[] =
     [')']         = { scan_expr,  exec_rparen,      ""             },
     ['*']         = { scan_expr,  exec_operator,    ""             },
     ['+']         = { scan_expr,  exec_operator,    ""             },
-    [',']         = { scan_expr,  exec_comma,       ""             },
+    [',']         = { exec_comma, exec_comma,       ""             },
     ['-']         = { scan_expr,  exec_operator,    ""             },
     ['.']         = { scan_expr,  exec_dot,         ""             },
     ['/']         = { scan_expr,  exec_operator,    ""             },
@@ -218,7 +199,6 @@ static struct cmd_table cmd_table[] =
 
 struct cmd null_cmd =
 {
-    .state      = CMD_NULL,
     .level      = 0,
     .flag       = 0,
     .c1         = NUL,
@@ -238,13 +218,6 @@ struct cmd null_cmd =
 };
 
 
-// Local functions
-
-static void exec_expr(struct cmd *cmd);
-
-static void set_opts(struct cmd *cmd, const char *opts);
-
-
 ///
 ///  @brief    Execute command string.
 ///
@@ -256,13 +229,9 @@ void exec_cmd(void)
 {
     struct cmd cmd = null_cmd;
 
-    // Here to start parsing a command string,  one character at a time. Note
-    // that although some commands may contain only a single character, most of
-    // them comprise multiple characters, so we have to keep looping until we
-    // have found everything we need. As we continue, we store information in
-    // the command block defined by 'cmd', for use when we're ready to actually
-    // execute the command. This includes such things as m and n arguments,
-    // modifiers such as : and @, and any text strings followed the command.
+    scan_state = SCAN_NULL;
+
+    // Loop for all characters in command string.
 
     for (;;)
     {
@@ -283,16 +252,16 @@ void exec_cmd(void)
             cmd.expr.buf = next_buf();
         }
 
-        if (next_buf() == NULL)
+        if (next_buf() == NULL)         // If end of command string,
         {
-            break;
+            break;                      //  then back to main loop
         }
 
-        int c = fetch_buf();
+        int c = fetch_buf();            // Get next command string character
 
         // Flag that command execution has started. This is placed after we
-        // read the next character, so that any CTRL/C causes return to main
-        // loop without an error message.
+        // call fetch_buf(), so that any CTRL/C causes return to main loop
+        // without an error message.
 
         // TODO: add check for trace mode
 
@@ -300,94 +269,20 @@ void exec_cmd(void)
 
         if ((uint)c >= countof(cmd_table))
         {
-            printc_err(E_ILL, c);
+            printc_err(E_ILL, c);       // Illegal character
         }
-        else if (setjmp(jump_command) == 0)
+
+        const struct cmd_table *table = scan_cmd(&cmd, c);
+
+        (*table->scan)(&cmd);
+
+        if (scan_state == SCAN_EXPR)    // Still scanning expression?
         {
-            struct cmd_table *table;
-
-            cmd.c1 = (char)c;
-
-            if (toupper(c) == 'E')               // E{x} command
-            {
-                cmd.c2 = (char)fetch_buf();
-
-                table = init_E(&cmd);
-            }
-            else if (toupper(c) == 'F')          // F{x} command
-            {
-                cmd.c2 = (char)fetch_buf();
-
-                table = init_F(&cmd);
-            }
-            else if (toupper(c) == '^')          // ^{x} command
-            {
-                cmd.c1 = (char)fetch_buf();
-
-                table = scan_caret(&cmd);
-            }
-            else                                 // Everything else
-            {
-                cmd.c2 = NUL;
-
-                table = &cmd_table[toupper(c)];
-            }
-
-            void (*exec_scan)(struct cmd *cmd) = table->scan;
-            void (*exec_func)(struct cmd *cmd) = table->exec;
-            
-            if (exec_scan == NULL)
-            {
-                continue;
-            }
- 
-            set_opts(&cmd, table->opts);
-
-            f.ei.dryrun = true;
-
-            (*exec_scan)(&cmd);
-
-            f.ei.dryrun = false;
-
-            if (cmd.state == CMD_EXPR)
-            {
-                cmd.expr.len = (uint)(next_buf() - cmd.expr.buf);
-            }
-            else if (cmd.state == CMD_DONE)
-            {
-                scan_cmd(&cmd);         // Finish scanning command
-
-                if (c != ESC || cmd.expr.len != 0)
-                {
-                    if (teco_debug)
-                    {
-                        print_cmd(&cmd);
-                    }
-                }
-
-//                init_expr();
-                exec_expr(&cmd);        // Execute expression
-
-                if (exec_func != NULL)
-                {
-                    if (operand_expr())
-                    {
-                        cmd.n_set = true;
-                        cmd.n_arg = get_n_arg();
-                    }
-
-                    (*exec_func)(&cmd);
-
-                    cmd = null_cmd;
-                }
-            }
+            cmd.expr.len = (uint)(next_buf() - cmd.expr.buf);
         }
-        else
+        else if (scan_state == SCAN_DONE) // Done scanning expression?
         {
-            reset_buf();
-
-            // TODO: check for unclosed loop
-            // print_err(E_UTC);
+            finish_cmd(&cmd, table);
         }
 
         f.ei.exec = false;              // Suspend this to check CTRL/C
@@ -432,8 +327,6 @@ static void exec_expr(struct cmd *cmd)
     cmd->m_set = false;
     cmd->n_set = false;
 
-//    init_expr();
-
     if (cmd->c1 == ESC)
     {
         return;
@@ -459,7 +352,7 @@ static void exec_expr(struct cmd *cmd)
 
             assert(p <= cmd->expr.buf + cmd->expr.len);
 
-            table = init_E(cmd);
+            table = scan_E(cmd);
         }
         else if (toupper(c) == 'F')     // F{x} command
         {
@@ -467,7 +360,7 @@ static void exec_expr(struct cmd *cmd)
 
             assert(p <= cmd->expr.buf + cmd->expr.len);
 
-            table = init_F(cmd);
+            table = scan_F(cmd);
         }
         else if (toupper(c) == '^')     // ^{x} command
         {
@@ -475,7 +368,9 @@ static void exec_expr(struct cmd *cmd)
 
             assert(p <= cmd->expr.buf + cmd->expr.len);
 
-            table = scan_caret(cmd);
+            cmd->c1 = scan_caret(cmd);
+
+            table = &cmd_table[(int)cmd->c1];
         }
         else                            // Everything else
         {
@@ -502,138 +397,87 @@ static void exec_expr(struct cmd *cmd)
             assert(p <= cmd->expr.buf + cmd->expr.len);
 
             cmd->n_set = true;
-            cmd->n_arg = expr.stack[expr.len - 1].item;
+            cmd->n_arg = estack.item[estack.level - 1];
         }
     }
 }
 
 
 ///
-///  @brief    Translate command starting with a caret (^). Most TECO commands
-///            which are control characters (^A, ^B, etc) can also be entered
-///            as a caret and letter combination. For example, control-A can
-///            also be entered as caret-A.
-///
-///  @returns  true if command completed, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static struct cmd_table *scan_caret(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    int c = cmd->c1;
-    int ctrl = (toupper(c) - 'A') + 1;  // Convert to control character
-
-    if (ctrl <= NUL || ctrl >= SPACE)
-    {
-        printc_err(E_IUC, c);           // Illegal character following ^
-    }
-
-    cmd->c1 = (char)ctrl;
-
-    return &cmd_table[ctrl];
-}
-
-
-///
-///  @brief    Set command options. The command tables in this file, e_cmd.c,
-///            and f_cmd.c all include strings that define the options for each
-///            command. The while() and switch() statements below parse these
-///            strings to set the appropriate options, as follows:
-///
-///            n  - Command allows one argument          (e.g., nC).
-///                 Note: implies n.
-///            m  - Command allows two arguments         (e.g., m,nT).
-///            H  - Command allows H to be special       (e.g., HP).
-///                 Note: implies m and n
-///            :  - Command allows colon modifier        (e.g., :ERfile`).
-///            :: - Command allows double colon modifier (e.g., ::Stext`).
-///            @  - Command allows atsign form           (e.g., @^A/hello/).
-///            q  - Command requires Q-register          (e.g., Mq).
-///            W  - Command allows W                     (e.g., PW).
-///            1  - Command allows one text string       (e.g., Otag`).
-///            2  - Command allows two text strings      (e.g., FNfoo`baz`).
-///                 Note: implies 1.
-///
-///            These do not need to be in any particular order, and characters
-///            not in the list above will be ignored. This allows the use of
-///            spaces to improve readability.
+///  @brief    Process operator in expression. This may be any of the binary
+///            operators (+, -, *, /, &, #), the 1's complement operator (^_),
+///            or a left or right parenthesis.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void set_opts(struct cmd *cmd, const char *opts)
+static void exec_operator(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (opts == NULL)
+    if (cmd->c1 == ')' && !operand_expr()) // Is there an operand available?
     {
-        return;
+        print_err(E_NAP);               // No argument before )
     }
 
-    int c;
+    push_expr(cmd->c1, EXPR_OPERATOR);
 
-    while ((c = *opts++) != NUL)
+    return;
+}
+
+
+///
+///  @brief    Finish scanning command, after we have done a preliminary scan
+///            for an expression, and for any modifiers.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
+{
+    scan_tail(cmd);                     // Finish scanning command
+
+    if (teco_debug && cmd->c1 != ESC)
     {
-        switch (c)
+        print_cmd(cmd);                 // Print command if debugging
+    }
+
+    if (cmd->expr.len != 0)             // Did we parse an expression?
+    {
+        init_expr();                    // Yes, so we need to re-initialize
+    }
+
+    exec_expr(cmd);                     // Execute expression for real
+
+    // If the only thing on the expression stack is a minus sign, then say we
+    // have an n argument equal to -1.
+    //
+    // If we have anything else on the stack after parsing an expression, then
+    // that's an error.
+
+    if (cmd->expr.len == 1 && estack.type[0] == EXPR_OPERATOR
+        && estack.item[0] == '-')
+    {
+        estack.type[0] = EXPR_OPERAND;
+        estack.item[0] = -1;
+    }
+    else if (estack.level > 0 && estack.type[estack.level - 1] == EXPR_OPERATOR)
+    {
+        print_err(E_ARG);
+    }
+
+    if (table->exec != NULL)
+    {
+        if (operand_expr())
         {
-            case 'H':
-                cmd->h_opt = true;
-                //lint -fallthrough 
-
-            case 'm':
-                cmd->m_opt = true;
-                //lint -fallthrough
-
-            case 'n':
-                cmd->n_opt = true;
-
-                break;
-
-            case ':':
-                if (*opts == ':')
-                {
-                    cmd->dcolon_opt = true;
-
-                    ++opts;
-                }
-                else
-                {
-                    cmd->colon_opt  = true;
-                }
-
-                break;
-
-            case '@':
-                cmd->atsign_opt = true;
-
-                break;
-
-            case 'q':
-                cmd->q_req = true;
-
-                break;
-
-            case 'W':
-                cmd->w_opt  = true;
-
-                break;
-
-            case '2':
-                cmd->t2_opt = true;
-                //lint -fallthrough
-
-            case '1':
-                cmd->t1_opt = true;
-
-                break;
-
-            default:
-                // TODO: should this be an error for printing characters?
-
-                break;
+            cmd->n_set = true;
+            cmd->n_arg = get_n_arg();
         }
+
+        (*table->exec)(cmd);
+
+        *cmd = null_cmd;
     }
 }

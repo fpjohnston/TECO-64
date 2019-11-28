@@ -239,21 +239,6 @@ void exec_vbar(struct cmd *unused1)
 }
 
 
-void exec_nul(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->expr.len > 0)
-    {
-        return;
-    }
-    else
-    {
-        return;
-    }
-}
-
-
 void exec_ctrl_ubar(struct cmd *unused1)
 {
     push_expr(US, EXPR_OPERATOR);
@@ -262,24 +247,9 @@ void exec_ctrl_ubar(struct cmd *unused1)
 }
 
 
-void exec_operator(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->c1 == ')' && !operand_expr()) // Is there an operand available?
-    {
-        print_err(E_NAP);               // No argument before )
-    }
-
-    push_expr(cmd->c1, EXPR_OPERATOR);
-
-    return;
-}
-
-
 void exec_B(struct cmd *unused1)
 {
-    printf("B command\r\n");
+    push_expr(0, EXPR_OPERAND);
 
     return;
 }
@@ -287,7 +257,7 @@ void exec_B(struct cmd *unused1)
 
 void exec_Z(struct cmd *unused1)
 {
-    printf("Z command\r\n");
+    push_expr(65536u, EXPR_OPERAND);
 
     return;
 }
@@ -325,15 +295,9 @@ void exec_dot(struct cmd *unused1)
 }
 
 
-
-void exec_FB(struct cmd *cmd)
+void exec_FB(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
-    cmd->colon_opt  = true;
-    cmd->atsign_opt = true;
-
-    scan_cmd(cmd);
+    printf("FB command\r\n");
 
     return;
 }

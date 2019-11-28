@@ -48,22 +48,17 @@ const char *prompt = "*";
 
 struct flags f;
 
-struct vars v =
-{
-    .b   = 0,
-    .z   = 1000,
-    .dot = 0,
-    .eof = 0,
-    .ff = -1,
-    .radix = 10,
-    .ctrl_x = 0,
-};
+int radix = 10;
 
 int teco_version = TECO_VERSION;
+
+int ctrl_x = 0;
 
 bool trace_mode = false;
 
 jmp_buf jump_main;
+
+int form_feed = -1;
 
 bool teco_debug = false;
 
@@ -125,17 +120,15 @@ void print_prompt(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void *alloc_more(void *ptr, uint oldsize, uint newsize)
+void *alloc_more(void *ptr, uint size)
 {
-    assert(ptr != NULL);
-    assert(oldsize != newsize);
-    assert(oldsize < newsize);
+    // TODO: check for relative size change?
 
-    void *newptr = realloc(ptr, (size_t)newsize);
+    void *newptr = realloc(ptr, (size_t)size);
 
     if (newptr == NULL)
     {
-        print_err(E_MEM);               // Memory overflow
+        print_err(E_MEM);               // Memory overflow)
     }
 
     return newptr;

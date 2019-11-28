@@ -48,11 +48,11 @@ void exec_ctrl_x(struct cmd *cmd)
 
     if (cmd->n_set)                     // n argument?
     {
-        ctrl_x = cmd->n_arg;
+        v.ctrl_x = cmd->n_arg;
     }
     else
     {
-        push_expr(ctrl_x, EXPR_OPERAND);
+        push_expr(v.ctrl_x, EXPR_OPERAND);
     }
 }
 

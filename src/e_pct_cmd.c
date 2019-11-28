@@ -1,5 +1,5 @@
 ///
-///  @file    e%_cmd.c
+///  @file    e_pct_cmd.c
 ///  @brief   Execute E%q command.
 ///
 ///  @author  Nowwith Treble Software
@@ -34,6 +34,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "errors.h"
 #include "exec.h"
 
 
@@ -47,5 +48,7 @@
 void exec_E_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    print_err(E_T10);                   // TECO-10 command not implemented
 }
 

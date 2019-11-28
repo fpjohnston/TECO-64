@@ -53,7 +53,7 @@
 #include "exec.h"
 
 
-static struct cmd_table cmd_table[] =
+static struct cmd_table cmd_f_table[] =
 {
     { scan_done,  exec_FB,        "m n @ 1"      },
     { scan_done,  exec_FC,        "m n @ 1 2"    },
@@ -72,13 +72,13 @@ static struct cmd_table cmd_table[] =
 
 
 ///
-///  @brief    Initialize for F command.
+///  @brief    Scan F command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct cmd_table *init_F(struct cmd *cmd)
+struct cmd_table *scan_F(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -94,5 +94,5 @@ struct cmd_table *init_F(struct cmd *cmd)
 
     cmd->c2 = (char)c;
 
-    return &cmd_table[f_cmd - f_cmds];
+    return &cmd_f_table[f_cmd - f_cmds];
 }

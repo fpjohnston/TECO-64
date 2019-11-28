@@ -45,5 +45,5 @@ void exec_ctrl_o(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    radix = 8;                          // Set radix to octal
+    v.radix = 8;                        // Set radix to octal
 }

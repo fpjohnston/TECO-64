@@ -43,13 +43,28 @@
 #include <stdio.h>
 #endif
 
+/// @def    countof(array)
+/// @brief  Returns the number of elements in an array.
+
 #define countof(array) (sizeof(array) / sizeof(array[0]))
+
+/// @def    WAIT
+/// @brief  Flag to indicate whether to pause for terminal input or not.
 
 #define WAIT                 true       // Wait for terminal input
 
-#define STR_SIZE_INIT        128        // Initial string size
+/// @def    STR_SIZE_INIT
+/// @brief  Initial size of command string.
+
+#define STR_SIZE_INIT        1024       // Initial string size
+
+/// @def    EXPR_SIZE
+/// @brief  Size of expression stack.
 
 #define EXPR_SIZE            64
+
+///  @enum   expr_type
+///  @brief  Type of item stored on expression stack.
 
 enum expr_type
 {
@@ -58,50 +73,60 @@ enum expr_type
     EXPR_OPERAND
 };
 
-struct expr
+///  @struct estack
+///  @brief  Definition of expression stack.
+
+struct estack
 {
-    long item;
-    enum expr_type type;
+    uint level;
+    long item[EXPR_SIZE];
+    enum expr_type type[EXPR_SIZE];
 };
 
-struct expr_stack
-{
-    struct expr stack[EXPR_SIZE];
-    uint len;
-};
+extern struct estack estack;
 
-extern struct expr_stack expr;
-
-// Define general buffer. This is dynamically allocated, and can be resized as
-// necessary. It consists of a pointer to a memory block, the size of the block
-// in bytes, and two counters, one for storing new characters, and one for
-// removing characters as the buffer is read.
+///  @struct   buffer
+///  @brief    Definition of general buffer. This is dynamically allocated, and
+///            can be resized as necessary. It consists of a pointer to a memory
+///            block, the size of the block in bytes, and two counters, one for
+///            storing new characters, and one for removing characters as the
+///            buffer is read.
 
 struct buffer
 {
-    char *buf;                      // Start of buffer
-    uint size;                      // Total size of buffer in bytes
-    uint get;                       // Index of next character to fetch
-    uint put;                       // Index of next character to store
+    char *buf;                      ///< Start of buffer
+    uint size;                      ///< Total size of buffer in bytes
+    uint get;                       ///< Index of next character to fetch
+    uint put;                       ///< Index of next character to store
 };
+
+///  @struct tstr
+///  @brief  Definition of TECO-string, which is a counted (not NUL-terminated)
+///          string.
 
 struct tstr
 {
-    char *buf;                      // Start of string
-    uint len;                       // No. of characters
+    char *buf;                      ///< Start of string
+    uint len;                       ///< No. of characters
 };
+
+///  @struct  qreg
+///  @brief   Definition of Q-register storage, which includes a string and a
+///           numeric value.
 
 struct qreg
 {
-    struct buffer text;             // Q-register text
-    int n;                          // Q-register numeric value
+    struct buffer text;             ///< Q-register text
+    int n;                          ///< Q-register numeric value
 };
 
-// Define the number of Q-registers in each set
+///  @def     QREG_SIZE
+///  @brief   No. of Q-registers in each set.
 
 #define QREG_SIZE       (('9' - '0') + 1 + ('Z' - 'A') + 1)
 
-// File structures and data
+///  @enum    file_status
+///  @brief   Returned file status from functions opening files.
 
 enum file_status
 {
@@ -109,12 +134,18 @@ enum file_status
     OPEN_FAILURE =  0
 };
 
+///  @struct  ifile
+///  @brief   Definition of variables used to keep track of input files.
+
 struct ifile
 {
-    FILE *fp;                       // Input file stream
-    bool eof;                       // End of file reached
-    bool cr;                        // Last character was CR
+    FILE *fp;                       ///< Input file stream
+    bool eof;                       ///< End of file reached
+    bool cr;                        ///< Last character was CR
 };
+
+///  @enum    itype
+///  @brief   Definition of input file stream types.
 
 enum itype
 {
@@ -124,13 +155,19 @@ enum itype
     IFILE_MAX                       // Maximum input files
 };
 
+///  @struct  ofile
+///  @brief   Definition of variables used to keep track of output files.
+
 struct ofile
 {
-    FILE *fp;                       // Output file stream
-    char *name;                     // Output file name
-    char *temp;                     // Temporary file name
-    bool backup;                    // File is opened for backup
+    FILE *fp;                       ///< Output file stream
+    char *name;                     ///< Output file name
+    char *temp;                     ///< Temporary file name
+    bool backup;                    ///< File is opened for backup
 };
+
+///  @enum    otype
+///  @brief   Definition of output file stream types.
 
 enum otype
 {
@@ -148,37 +185,44 @@ extern uint istream, ostream;
 
 extern char *last_file;
 
-enum
+///  @enum    backup_flag
+///  @brief   Definition of flag that specifies whether or not a file is
+///           opened for backup.
+
+enum backup_flag
 {
-    NOBACKUP_FILE,
-    BACKUP_FILE
+NOBACKUP_FILE,
+BACKUP_FILE
 };
 
 // Global variables
+
+struct vars
+{
+    int b;                         // Beginning of buffer = 0
+    int z;                         // End of buffer
+    int dot;                       // Current pointer position
+    int eof;                       // End of file flag
+    int ff;                        // Form feed flag
+    int radix;                     // Current output radix
+    int ctrl_x;                    // CTRL/X flag
+};
+
+extern struct vars v;
 
 extern int teco_version;
 
 extern jmp_buf jump_main;
 
-extern jmp_buf jump_command;
-
 extern const char *prompt;
 
 extern int last_c;
-
-extern int radix;
-
-extern int ctrl_x;
-
-extern int m_arg;
 
 extern bool trace_mode;
 
 extern uint rows;
 
 extern uint cols;
-
-extern int form_feed;
 
 extern bool f_expression;
 
@@ -190,7 +234,7 @@ extern char *eg_command;
 
 // Global functions
 
-extern void *alloc_more(void *ptr, uint size);
+extern void *alloc_more(void *ptr, uint oldsize, uint newsize);
 
 extern void *alloc_new(uint size);
 

@@ -49,6 +49,11 @@ void exec_EC(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    if (cmd->n_set)                     // Was n argument specified?
+    {
+        print_err(E_T10);               // TECO-10 command not implemented
+    }
+
     FILE *fp;
     struct ifile *ifile = &ifiles[istream];
     struct ofile *ofile = &ofiles[ostream];

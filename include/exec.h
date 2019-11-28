@@ -37,19 +37,18 @@
 
 #endif
 
-enum cmd_state
+enum scan_state
 {
-CMD_NULL,                       // Scanning for start of command
-CMD_EXPR,                       // Scanning expression
-CMD_MOD,                        // Scanning modifiers
-CMD_DONE                        // Scanning is done
+    SCAN_NULL,                      // Scanning for start of command
+    SCAN_EXPR,                      // Scanning expression
+    SCAN_MOD,                       // Scanning modifiers
+    SCAN_DONE                       // Scanning is done
 };
 
 // Define the command block structure.
 
 struct cmd
 {
-    enum cmd_state state;           // State of command (for parsing)
     uint level;                     // Command level
 
     union
@@ -93,18 +92,24 @@ struct cmd
 
 struct cmd_table
 {
-void (*scan)(struct cmd *cmd);  // Scan function
-void (*exec)(struct cmd *cmd);  // Execution function
-const char *opts;               // Command modifiers and options
+    void (*scan)(struct cmd *cmd);  // Scan function
+    void (*exec)(struct cmd *cmd);  // Execution function
+    const char *opts;               // Command modifiers and options
 };
+
+extern struct cmd_table cmd_table[];
+
+extern enum scan_state scan_state;
 
 // Functions that assist in parsing commands
 
 extern void get_flag(uint *flag, struct cmd *cmd);
 
-extern struct cmd_table *init_E(struct cmd *cmd);
+extern int scan_caret(struct cmd *cmd);
 
-extern struct cmd_table *init_F(struct cmd *cmd);
+extern struct cmd_table *scan_E(struct cmd *cmd);
+
+extern struct cmd_table *scan_F(struct cmd *cmd);
 
 // Functions that execute commands
 
@@ -228,12 +233,6 @@ extern void exec_langle(struct cmd *cmd);
 
 extern void exec_lbracket(struct cmd *cmd);
 
-extern void exec_nul(struct cmd *cmd);
-
-extern void exec_nyi(struct cmd *cmd);
-
-extern void exec_operator(struct cmd *cmd);
-
 extern void exec_pct(struct cmd *cmd);
 
 extern void exec_question(struct cmd *cmd);
@@ -338,13 +337,11 @@ extern void exec_F_vbar(struct cmd *cmd);
 
 // Functions that parse a command string.
 
+extern void print_cmd(struct cmd *cmd);
+
 extern void scan_bad(struct cmd *cmd);
 
-extern void scan_cmd(struct cmd *cmd);
-
-extern void scan_flag(struct cmd *cmd);
-
-extern void print_cmd(struct cmd *cmd);
+extern const struct cmd_table *scan_cmd(struct cmd *cmd, int c);
 
 extern void scan_done(struct cmd *cmd);
 
@@ -353,6 +350,10 @@ extern void scan_expr(struct cmd *cmd);
 extern void scan_mod(struct cmd *cmd);
 
 extern void scan_null(struct cmd *cmd);
+
+extern void scan_var(struct cmd *cmd);
+
+extern void scan_tail(struct cmd *cmd);
 
 // Functions that skip to the next command.
 

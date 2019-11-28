@@ -47,10 +47,10 @@ void exec_ctrl_e(struct cmd *cmd)
 
     if (cmd->n_set)                     // n argument?
     {
-        form_feed = (cmd->n_arg == -1) ? -1 : 0;
+        v.ff = (cmd->n_arg == -1) ? -1 : 0;
     }
     else
     {
-        push_expr(form_feed, EXPR_OPERAND);
+        push_expr(v.ff, EXPR_OPERAND);
     }
 }

@@ -85,7 +85,7 @@ void append_qchr(int qname, bool qdot, int c)
     {
         nbytes += STR_SIZE_INIT;
 
-        qreg->text.buf = alloc_more(qreg->text.buf, nbytes);
+        qreg->text.buf = alloc_more(qreg->text.buf, qreg->text.size, nbytes);
         qreg->text.size = nbytes;
     }
 
@@ -113,7 +113,7 @@ void append_qtext(int qname, bool qdot, struct tstr text)
                         
         nbytes = nblocks * STR_SIZE_INIT;
         
-        void *p = alloc_more(qreg->text.buf, nbytes);
+        void *p = alloc_more(qreg->text.buf, qreg->text.size, nbytes);
 
         qreg->text.buf = p;
         qreg->text.size = nbytes;

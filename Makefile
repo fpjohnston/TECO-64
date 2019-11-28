@@ -76,6 +76,7 @@ SOURCES = \
     a_cmd.c        \
     bang_cmd.c     \
     buffer.c       \
+    cmd_caret.c    \
     cmd_e.c        \
     cmd_f.c        \
     cmd_exec.c     \

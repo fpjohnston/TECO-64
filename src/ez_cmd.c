@@ -33,6 +33,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "errors.h"
 #include "exec.h"
 
 
@@ -46,5 +47,7 @@
 void exec_EZ(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    print_err(E_T10);                   // TECO-10 command not implemented
 }
 

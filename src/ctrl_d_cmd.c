@@ -46,5 +46,5 @@ void exec_ctrl_d(struct cmd *cmd)
 {
     assert(cmd != NULL);
     
-    radix = 10;                         // Set radix to decimal
+    v.radix = 10;                       // Set radix to decimal
 }

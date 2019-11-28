@@ -49,7 +49,7 @@ void exec_ctrl_r(struct cmd *cmd)
 
     if (!cmd->n_set)                    // n argument?
     {
-        push_expr(radix, EXPR_OPERAND); // No, just save what we have
+        push_expr(v.radix, EXPR_OPERAND); // No, just save what we have
 
         return;
     }
@@ -59,5 +59,5 @@ void exec_ctrl_r(struct cmd *cmd)
         print_err(E_IRA);               // Illegal radix argument
     }
 
-    radix = cmd->n_arg;                 // Set the radix
+    v.radix = cmd->n_arg;               // Set the radix
 }

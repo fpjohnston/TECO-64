@@ -37,14 +37,15 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "exec.h"
 
-struct expr_stack expr =
+struct estack estack =
 {
-    .stack[0 ... EXPR_SIZE - 1] = { .item = 0L, .type = EXPR_NONE },
-    .len = 0,
+    .level = 0,
+    .item[0 ... EXPR_SIZE - 1] = 0L,
+    .type[0 ... EXPR_SIZE - 1] = EXPR_NONE,
 };
 
-int m_arg;                              // "m" argument
 
 // Local functions
 
@@ -67,22 +68,22 @@ static void reduce3(void);
 
 int get_n_arg(void)
 {
-    assert(expr.len > 0);               // Caller should check before calling
+    assert(estack.level > 0);           // Caller should check before calling
 
-    --expr.len;
+    --estack.level;
 
-    if (expr.len == 0 && expr.stack[expr.len].type == EXPR_OPERATOR
-        && expr.stack[expr.len].item == '-')
+    if (estack.level == 0 && estack.type[estack.level] == EXPR_OPERATOR
+        && estack.item[estack.level] == '-')
     {
         return -1;
     }
 
-    if (expr.stack[expr.len].type != EXPR_OPERAND)
+    if (estack.type[estack.level] != EXPR_OPERAND)
     {
         print_err(E_IFE);               // Ill-formed numeric expression
     }
 
-    return (int)expr.stack[expr.len].item;
+    return (int)estack.item[estack.level];
 }
 
 
@@ -95,7 +96,7 @@ int get_n_arg(void)
 
 void init_expr(void)
 {
-    expr.len = 0;
+    estack.level = 0;
 }
 
 
@@ -109,12 +110,12 @@ void init_expr(void)
 
 bool operand_expr(void)
 {
-    if (expr.len == 0)                  // Anything on stack?
+    if (estack.level == 0)                  // Anything on stack?
     {
         return false;                   // No
     }
 
-    if (expr.stack[expr.len - 1].type == EXPR_OPERAND)
+    if (estack.type[estack.level - 1] == EXPR_OPERAND)
     {
         return true;                    // Done if we have an operand
     }
@@ -122,8 +123,8 @@ bool operand_expr(void)
     // Say we have an "operand" if there is only one thing on the stack, and
     // it's a unary operator.
 
-    if (expr.len == 1 && expr.stack[0].type == EXPR_OPERATOR
-        && expr.stack[0].item == '-')
+    if (estack.level == 1 && estack.type[0] == EXPR_OPERATOR
+        && estack.item[0] == '-')
     {
         return true;
     }
@@ -153,15 +154,15 @@ void push_expr(int item, enum expr_type type)
 {
     assert(type == EXPR_OPERATOR || type == EXPR_OPERAND);
 
-    if (expr.len == EXPR_SIZE)
+    if (estack.level == EXPR_SIZE)
     {
         print_err(E_PDO);               // Push-down list overflow
     }
 
-    expr.stack[expr.len].item = item;
-    expr.stack[expr.len].type = type;
+    estack.item[estack.level] = item;
+    estack.type[estack.level] = type;
 
-    ++expr.len;
+    ++estack.level;
 
     reduce();                           // Reduce what we can
 }
@@ -176,14 +177,14 @@ void push_expr(int item, enum expr_type type)
 
 static void reduce(void)
 {
-    while (expr.len > 1)
+    while (estack.level > 1)
     {
-        if (expr.len >= 3)            // At least three operands?
+        if (estack.level >= 3)            // At least three operands?
         {
             reduce3();
         }
 
-        if (expr.len >= 2)            // At least two operands?
+        if (estack.level >= 2)            // At least two operands?
         {
             if (!reduce2())             // Could we reduce anything?
             {
@@ -203,40 +204,42 @@ static void reduce(void)
 
 static bool reduce2(void)
 {
-    struct expr *e1 = &expr.stack[expr.len - 1];
-    struct expr *e2 = &expr.stack[expr.len - 2];
+    long *e1_item = &estack.item[estack.level - 1];
+    long *e2_item = &estack.item[estack.level - 2];
+    enum expr_type *e1_type = &estack.type[estack.level - 1];
+    enum expr_type *e2_type = &estack.type[estack.level - 2];
 
-    if (e1->type == EXPR_OPERAND && e2->type == EXPR_OPERATOR)
+    if (*e1_type == EXPR_OPERAND && *e2_type == EXPR_OPERATOR)
     {
-        if (e2->item == '+')
+        if (*e2_item == '+')
         {
-            e2->item = e1->item;
-            e2->type = EXPR_OPERAND;
+            *e2_item = *e1_item;
+            *e2_type = EXPR_OPERAND;
 
-            --expr.len;
+            --estack.level;
         }
-        else if (e2->item == '-')
+        else if (*e2_item == '-')
         {
-            e2->item = -e1->item;
-            e2->type = EXPR_OPERAND;
+            *e2_item = -*e1_item;
+            *e2_type = EXPR_OPERAND;
 
-            --expr.len;
+            --estack.level;
         }
         else
         {
             return false;
         }
     }
-    else if (e1->type == EXPR_OPERATOR && e1->item == US)
+    else if (*e1_type == EXPR_OPERATOR && *e1_item == US)
     {
-        if (expr.len == 1 || e2->type != EXPR_OPERAND)
+        if (estack.level == 1 || *e2_type != EXPR_OPERAND)
         {
             print_err(E_NAB);           // No argument before ^_
         }
 
-        e2->item = (int)(~((uint)e2->item));
+        *e2_item = (int)(~((uint)*e2_item));
 
-        --expr.len;
+        --estack.level;
     }
     else
     {
@@ -255,38 +258,43 @@ static bool reduce2(void)
 
 static void reduce3(void)
 {
-    struct expr *e1 = &expr.stack[expr.len - 1];
-    struct expr *e2 = &expr.stack[expr.len - 2];
-    struct expr *e3 = &expr.stack[expr.len - 3];
+    long *e1_item = &estack.item[estack.level - 1];
+    long *e2_item = &estack.item[estack.level - 2];
+    long *e3_item = &estack.item[estack.level - 3];
+    enum expr_type *e1_type = &estack.type[estack.level - 1];
+    enum expr_type *e2_type = &estack.type[estack.level - 2];
+    enum expr_type *e3_type = &estack.type[estack.level - 3];
 
-    if (e1->type == EXPR_OPERAND  &&
-        e2->type == EXPR_OPERATOR &&
-        e3->type == EXPR_OPERAND  &&
-        e2->item != ')' && e2->item != '(')
+    if (*e1_type == EXPR_OPERAND  &&
+        *e2_type == EXPR_OPERATOR &&
+        *e3_type == EXPR_OPERAND  &&
+        *e2_item != ')' && *e2_item != '(')
     {
-        switch (e2->item)
+        switch (*e2_item)
         {
             case '+':
-                e3->item += e1->item;
+                *e3_item += *e1_item;
 
                 break;
 
             case '-':
-                e3->item -= e1->item;
+                *e3_item -= *e1_item;
 
                 break;
 
             case '*':
-                e3->item *= e1->item;
+                *e3_item *= *e1_item;
 
                 break;
 
             case '/':
-                if (e1->item == 0)      // Division by zero?
+                if (*e1_item == 0)      // Division by zero?
                 {
-                    if (f.ei.dryrun)    // Are we just scanning?
+                    // Don't allow divide by zero if we're scanning expression.
+
+                    if (scan_state == SCAN_EXPR)
                     {
-                        e1->item = 1;   // Yes, just let it pass
+                        *e1_item = 1;   // Just use a dummy result here
                     }
                     else
                     {
@@ -294,17 +302,17 @@ static void reduce3(void)
                     }
                 }
 
-                e3->item /= e1->item;
+                *e3_item /= *e1_item;
 
                 break;
 
             case '&':
-                e3->item &= e1->item;
+                *e3_item &= *e1_item;
 
                 break;
 
             case '#':
-                e3->item |= e1->item;
+                *e3_item |= *e1_item;
 
                 break;
 
@@ -312,15 +320,15 @@ static void reduce3(void)
                 print_err(E_ARG);       // Improper arguments
         }
 
-        expr.len -= 2;
+        estack.level -= 2;
     }
-    else if (e1->type == EXPR_OPERATOR && e1->item == ')' &&
-             e2->type == EXPR_OPERAND  &&
-             e3->type == EXPR_OPERATOR && e3->item == '(')
+    else if (*e1_type == EXPR_OPERATOR && *e1_item == ')' &&
+             *e2_type == EXPR_OPERAND  &&
+             *e3_type == EXPR_OPERATOR && *e3_item == '(')
     {
-        e3->item = e2->item;
-        e3->type = EXPR_OPERAND;
+        *e3_item = *e2_item;
+        *e3_type = EXPR_OPERAND;
 
-        expr.len -= 2;
+        estack.level -= 2;
     }
 }

@@ -517,14 +517,7 @@ noreturn void print_err(int err_teco)
         exit(EXIT_FAILURE);
     }
 
-    if (f.ei.exec)                      // Executing a command?
-    {
-        longjmp(jump_command, 1);       // Yes, get another one
-    }
-    else
-    {
-        longjmp(jump_main, 1);          // No, return to main loop
-    }
+    longjmp(jump_main, 1);              // Return to main loop
 }
 
 

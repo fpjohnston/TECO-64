@@ -60,19 +60,29 @@ void exec_equals(struct cmd *cmd)
         print_err(E_NAE);               // No argument before =
     }
 
-    if (cmd->c3 == '=')                 // If ===, print hexadecimal
+    int c;
+
+    if ((c = fetch_buf()) != '=')       // Print decimal if =
     {
-        printf("%x", cmd->n_arg);
-    }
-    else if (cmd->c2 == '=')            // If ==, print octal
-    {
-        printf("%o", cmd->n_arg);
-    }
-    else                                // If =, print decimal
-    {
+        unfetch_buf(c);
+
         printf("%d", cmd->n_arg);
     }
-        
+    else if ((c = fetch_buf()) != '=')  // Print octal if ==
+    {
+        unfetch_buf(c);
+
+        cmd->c2 = '=';
+
+        printf("%o", cmd->n_arg);
+    }
+    else                                // Print hexadecimal if ===
+    {
+        cmd->c3 = cmd->c2 = '=';
+
+        printf("%x", cmd->n_arg);
+    }
+
     (void)fflush(stdout);
 
     if (!cmd->colon_set)                // Suppress CRLF?

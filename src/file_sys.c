@@ -167,18 +167,33 @@ const char *get_oname(struct ofile *ofile, uint nbytes)
 
 int get_wild(void)
 {
-    const char *filename = *next_file++;
+    const char *filename;
 
-    // TODO: add check to make sure it's a file and not a directory
-
-    if (filename == NULL)               // At end of list if NULL
+    if (next_file == NULL)
     {
         return EXIT_FAILURE;
     }
 
-    sprintf(filename_buf, "%s", filename);
+    while ((filename = *next_file++) != NULL)
+    {
+        struct stat file_stat;
+        
+        if (stat(filename, &file_stat) != 0)
+        {
+            fatal_err(errno, E_SYS, NULL);
+        }
 
-    return EXIT_SUCCESS;
+        if (S_ISREG(file_stat.st_mode))
+        {
+            sprintf(filename_buf, "%s", filename);
+
+            printf("loaded filespec buffer with %s\r\n", filename);
+
+            return EXIT_SUCCESS;
+        }
+    }
+
+    return EXIT_FAILURE;
 }
 
 

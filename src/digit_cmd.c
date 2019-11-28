@@ -68,7 +68,7 @@ int exec_digit(const char *str, int nchrs)
 
         long n = digit - digits;
 
-        sum *= radix;
+        sum *= v.radix;
         sum += n;
 
         ++ndigits;
@@ -89,13 +89,13 @@ int exec_digit(const char *str, int nchrs)
 
 bool valid_radix(int c)
 {
-    if (radix == 16 && isxdigit(c))
+    if (v.radix == 16 && isxdigit(c))
     {
         return true;
     }
     else if (isdigit(c))
     {
-        if (radix == 10 || c <= '7')
+        if (v.radix == 10 || c <= '7')
         {
             return true;
         }

@@ -38,30 +38,30 @@
 #include "exec.h"
 
 
-static struct cmd_table cmd_table[] =
+static struct cmd_table cmd_e_table[] =
 {
     { scan_done,  exec_EA,      ""        },
     { scan_done,  exec_EB,      ": @ 1"   },
-    { scan_done,  exec_EC,      ""        },
-    { scan_flag,  exec_ED,      "m n"     },
-    { scan_flag,  exec_EE,      "n"       },
+    { scan_done,  exec_EC,      "n"       },
+    { scan_var,   exec_ED,      "m n"     },
+    { scan_var,   exec_EE,      "n"       },
     { scan_done,  exec_EF,      ""        },
     { scan_done,  exec_EG,      ": @ 1"   },
-    { scan_flag,  exec_EH,      "m n"     },
+    { scan_var,   exec_EH,      "m n"     },
     { scan_done,  exec_EI,      "@ 1"     },
-    { scan_flag,  exec_EJ,      "n"       },
+    { scan_var,   exec_EJ,      "n"       },
     { scan_done,  exec_EK,      ""        },
     { scan_done,  exec_EL,      "@ 1"     },
     { scan_done,  exec_EM,      "n"       },
     { scan_done,  exec_EN,      ": @ 1"   },
-    { scan_flag,  exec_EO,      "n"       },
+    { scan_var,   exec_EO,      "n"       },
     { scan_done,  exec_EP,      ""        },
     { scan_done,  exec_EQ,      ": @ q 1" },
     { scan_done,  exec_ER,      ": @ 1"   },
-    { scan_flag,  exec_ES,      "n"       },
-    { scan_flag,  exec_ET,      "m n"     },
-    { scan_flag,  exec_EU,      "n"       },
-    { scan_flag,  exec_EV,      "n"       },
+    { scan_var,   exec_ES,      "n"       },
+    { scan_var,   exec_ET,      "m n"     },
+    { scan_var,   exec_EU,      "n"       },
+    { scan_var,   exec_EV,      "n"       },
     { scan_done,  exec_EW,      "@ 1"     },
     { scan_done,  exec_EX,      ""        },
     { scan_done,  exec_EY,      ":"       },
@@ -72,13 +72,13 @@ static struct cmd_table cmd_table[] =
 
 
 ///
-///  @brief    Initialize E command.
+///  @brief    Scan E command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct cmd_table *init_E(struct cmd *cmd)
+struct cmd_table *scan_E(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -96,7 +96,7 @@ struct cmd_table *init_E(struct cmd *cmd)
 
     uint i = (uint)(e_cmd - e_cmds);
 
-    assert(i < countof(cmd_table));
+    assert(i < countof(cmd_e_table));
 
-    return &cmd_table[i];
+    return &cmd_e_table[i];
 }

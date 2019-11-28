@@ -1,6 +1,6 @@
 ///
-///  @file    x_cmd.c
-///  @brief   Execute X command.
+///  @file    cmd_caret.c
+///  @brief   Execute command beginning with ^ (caret).
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -28,38 +28,41 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
+#include <setjmp.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 #include "teco.h"
+#include "ascii.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute X command - Copy lines to Q-register.
+///  @brief    Translate command starting with a caret (^). Most TECO commands
+///            which are control characters (^A, ^B, etc) can also be entered
+///            as a caret and letter combination. For example, control-A can
+///            also be entered as caret-A.
 ///
-///  @returns  Nothing.
+///  @returns  Translated control character.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_X(struct cmd *cmd)
+int scan_caret(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)                    // n argument?
+    int c = cmd->c1;
+    int ctrl = (toupper(c) - 'A') + 1;  // Convert to control character
+
+    if (ctrl <= NUL || ctrl >= SPACE)
     {
-        cmd->n = 1;
+        printc_err(E_IUC, c);           // Illegal character following ^
     }
 
-    if (cmd->m_set)                     // m argument too?
-    {
-        if (cmd->m < 0 || cmd->n < 0)   // If m,nXq, m & n must be positive
-        {
-            print_err(E_MOD);
-        }
-    }
-
-    // TODO: add lines of text to Q-register
+    return ctrl;
 }
-

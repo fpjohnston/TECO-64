@@ -49,6 +49,8 @@
 
 static void scan_text(int delim, struct tstr *tstr);
 
+static void set_opts(struct cmd *cmd, const char *opts);
+
 
 ///
 ///  @brief    We've scanned an illegal character, so return to main loop.
@@ -66,6 +68,172 @@ void scan_bad(struct cmd *cmd)
 
 
 ///
+///  @brief    Scan command string.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
+{
+    // Here to start parsing a command string,  one character at a time. Note
+    // that although some commands may contain only a single character, most of
+    // them comprise multiple characters, so we have to keep looping until we
+    // have found everything we need. As we continue, we store information in
+    // the command block defined by 'cmd', for use when we're ready to actually
+    // execute the command. This includes such things as m and n arguments,
+    // modifiers such as : and @, and any text strings followed the command.
+
+    struct cmd_table *table;
+
+    cmd->c1 = (char)c;
+
+    if (toupper(c) == 'E')          // E{x} command
+    {
+        cmd->c2 = (char)fetch_buf();
+
+        table = scan_E(cmd);
+    }
+    else if (toupper(c) == 'F')     // F{x} command
+    {
+        cmd->c2 = (char)fetch_buf();
+
+        table = scan_F(cmd);
+    }
+    else if (toupper(c) == '^')     // ^{x} command
+    {
+        cmd->c1 = (char)fetch_buf();
+        cmd->c1 = scan_caret(cmd);
+
+        table = &cmd_table[(int)cmd->c1];
+    }
+    else                            // Everything else
+    {
+        cmd->c2 = NUL;
+
+        table = &cmd_table[toupper(c)];
+    }
+
+    if (table->scan == NULL)
+    {
+        return NULL;
+    }
+
+    set_opts(cmd, table->opts);
+
+    return table;
+}
+
+
+///
+///  @brief    Flag that we've scanned the actual command character.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_done(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    scan_state = SCAN_DONE;
+}
+
+
+///
+///  @brief    Scan expression. Note that we don't do much here other than to
+///            check for correct form.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_expr(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int c = cmd->c1;
+
+    if (isdigit(c))
+    {
+        do
+        {
+            c = fetch_buf();            // Keep reading characters
+        } while (valid_radix(c));       // As long as they're valid for our radix
+
+        unfetch_buf(c);                 // Went too far, so return character
+
+        cmd->n_set = true;
+        cmd->n_arg = 1;
+
+        push_expr(cmd->n_arg, EXPR_OPERAND); // Dummy value
+    }
+    else
+    {
+        if (c == '(')
+        {
+            ++cmd->paren;
+        }
+        else if (c == ')')
+        {
+            if (cmd->paren == 0)
+            {
+                print_err(E_MLP);
+            }
+
+            --cmd->paren;
+        }
+
+        push_expr(c, EXPR_OPERATOR);
+    }
+             
+    scan_state = SCAN_EXPR;
+}
+
+
+///
+///  @brief    Scan a command modifier (i.e., @ or :).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_mod(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->c1 == '@')
+    {
+        if (f.ei.strict && cmd->atsign_set)
+        {
+            print_err(E_MOD);           // Two @'s are not allowed
+        }
+
+        cmd->atsign_set = true;
+    }
+    else if (cmd->c1 == ':')
+    {
+        if (f.ei.strict && cmd->dcolon_set)
+        {
+            print_err(E_MOD);           // More than two :'s are not allowed
+        }
+
+        if (cmd->colon_set)
+        {
+            cmd->colon_set = false;
+            cmd->dcolon_set = true;
+        }
+        else if (!cmd->dcolon_set)
+        {
+            cmd->colon_set = true;
+        }
+    }
+
+    scan_state = SCAN_MOD;
+}
+
+
+///
 ///  @brief    Scan the rest of the command string. We enter here after scanning
 ///            any expression, and any prefix modifiers.
 ///
@@ -73,7 +241,7 @@ void scan_bad(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_cmd(struct cmd *cmd)
+void scan_tail(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -171,149 +339,6 @@ void scan_cmd(struct cmd *cmd)
 
 
 ///
-///  @brief    Flag that we've scanned the actual command character.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_done(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    cmd->state = CMD_DONE;
-}
-
-
-///
-///  @brief    Scan expression. Note that we don't do much here other than to
-///            check for correct form.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_expr(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    int c = cmd->c1;
-
-    if (isdigit(c))
-    {
-        do
-        {
-            c = fetch_buf();            // Keep reading characters
-        } while (valid_radix(c));       // As long as they're valid for our radix
-
-        unfetch_buf(c);                 // Went too far, so return character
-
-        cmd->n_set = true;
-        cmd->n_arg = 1;
-
-        push_expr(cmd->n_arg, EXPR_OPERAND); // Dummy value
-    }
-    else if (c == ',')
-    {
-        exec_comma(cmd);
-    }
-    else
-    {
-        if (c == '(')
-        {
-            ++cmd->paren;
-        }
-        else if (c == ')')
-        {
-            if (cmd->paren == 0)
-            {
-                print_err(E_MLP);
-            }
-
-            --cmd->paren;
-        }
-        else
-        {
-            c = 1;
-        }
-
-        push_expr(c, EXPR_OPERATOR);
-    }
-             
-    cmd->state = CMD_EXPR;
-}
-
-
-///
-///  @brief    Scan a flag value (which can be an operand as well as a command).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_flag(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (operand_expr())                 // Is there an operand available?
-    {
-        (void)get_n_arg();
-
-        cmd->n_set = true;
-        cmd->state = CMD_DONE;
-    }
-    else
-    {
-        push_expr(1, EXPR_OPERAND);     // Dummy value
-
-        cmd->state = CMD_EXPR;
-    }
-}
-
-
-///
-///  @brief    Scan a command modifier (i.e., @ or :).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_mod(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->c1 == '@')
-    {
-        if (f.ei.strict && cmd->atsign_set)
-        {
-            print_err(E_MOD);           // Two @'s are not allowed
-        }
-
-        cmd->atsign_set = true;
-    }
-    else if (cmd->c1 == ':')
-    {
-        if (f.ei.strict && cmd->dcolon_set)
-        {
-            print_err(E_MOD);           // More than two :'s are not allowed
-        }
-
-        if (cmd->colon_set)
-        {
-            cmd->colon_set = false;
-            cmd->dcolon_set = true;
-        }
-        else if (!cmd->dcolon_set)
-        {
-            cmd->colon_set = true;
-        }
-    }
-
-    cmd->state = CMD_MOD;
-}
-
-
-///
 ///  @brief    Scan the text string following the command.
 ///
 ///  @returns  Nothing.
@@ -339,5 +364,135 @@ static void scan_text(int delim, struct tstr *text)
     while (fetch_buf() != delim)
     {
         ++text->len;
+    }
+}
+
+
+///
+///  @brief    Scan a variable (which can be an operand as well as a command).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_var(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // Is there an operand available?
+    {
+        (void)get_n_arg();
+
+        cmd->n_set = true;
+        scan_state = SCAN_DONE;
+    }
+    else
+    {
+        push_expr(1, EXPR_OPERAND);     // Dummy value
+
+        scan_state = SCAN_EXPR;
+    }
+}
+
+
+///
+///  @brief    Set command options. The command tables in this file, e_cmd.c,
+///            and f_cmd.c all include strings that define the options for each
+///            command. The while() and switch() statements below parse these
+///            strings to set the appropriate options, as follows:
+///
+///            n  - Command allows one argument          (e.g., nC).
+///                 Note: implies n.
+///            m  - Command allows two arguments         (e.g., m,nT).
+///            H  - Command allows H to be special       (e.g., HP).
+///                 Note: implies m and n
+///            :  - Command allows colon modifier        (e.g., :ERfile`).
+///            :: - Command allows double colon modifier (e.g., ::Stext`).
+///            @  - Command allows atsign form           (e.g., @^A/hello/).
+///            q  - Command requires Q-register          (e.g., Mq).
+///            W  - Command allows W                     (e.g., PW).
+///            1  - Command allows one text string       (e.g., Otag`).
+///            2  - Command allows two text strings      (e.g., FNfoo`baz`).
+///                 Note: implies 1.
+///
+///            These do not need to be in any particular order, and characters
+///            not in the list above will be ignored. This allows the use of
+///            spaces to improve readability.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void set_opts(struct cmd *cmd, const char *opts)
+{
+    assert(cmd != NULL);
+
+    if (opts == NULL)
+    {
+        return;
+    }
+
+    int c;
+
+    while ((c = *opts++) != NUL)
+    {
+        switch (c)
+        {
+            case 'H':
+                cmd->h_opt = true;
+                //lint -fallthrough 
+
+            case 'm':
+                cmd->m_opt = true;
+                //lint -fallthrough
+
+            case 'n':
+                cmd->n_opt = true;
+
+                break;
+
+            case ':':
+                if (*opts == ':')       // Double colon?
+                {
+                    cmd->dcolon_opt = true;
+
+                    ++opts;
+                }
+                else                    // No, just single colon
+                {
+                    cmd->colon_opt  = true;
+                }
+
+                break;
+
+            case '@':
+                cmd->atsign_opt = true;
+
+                break;
+
+            case 'q':
+                cmd->q_req = true;
+
+                break;
+
+            case 'W':
+                cmd->w_opt  = true;
+
+                break;
+
+            case '2':
+                cmd->t2_opt = true;
+                //lint -fallthrough
+
+            case '1':
+                cmd->t1_opt = true;
+
+                break;
+
+            default:
+                assert(isspace(c));
+
+                break;
+        }
     }
 }

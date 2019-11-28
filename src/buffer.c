@@ -332,7 +332,7 @@ void store_buf(int c)
         assert(curbuf->buf != NULL);
 
         uint newsize = curbuf->size + STR_SIZE_INIT;
-        char *newbuf = alloc_more(curbuf->buf, newsize);
+        char *newbuf = alloc_more(curbuf->buf, curbuf->size, newsize);
 
         curbuf->size = newsize;
         curbuf->buf  = newbuf;
