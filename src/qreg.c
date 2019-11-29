@@ -37,27 +37,64 @@
 #include "teco.h"
 #include "errors.h"
 
-#define MSTACK_SIZE     64          // Macro stack for local Q-registers
-
-#define QSTACK_SIZE     64          // Maximum depth for push-down list
+///  @var    qglobal
+///  @brief  Global Q-registers.
 
 struct qreg qglobal[QREG_SIZE];
+
+////////////////////////////////////////////////////////////////////////////////
+///
+///  Definitions for macro stack for local Q-registers.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+///  @def    MSTACK_SIZE
+///  @brief  Number of items that can be put on macro stack.
+
+#define MSTACK_SIZE     64          // Macro stack for local Q-registers
+
+///  @struct mstack
+///  @brief  Definition of macro stack structure.
 
 struct mstack
 {
 //    struct buffer cmd;
-    struct qreg qlocal[QREG_SIZE];
+    struct qreg qlocal[QREG_SIZE];      ///< Local Q-register set.
 };
+
+///  @var    mstack
+///  @brief  Macro stack.
 
 struct mstack mstack[MSTACK_SIZE];
 
+///  @var    mlevel
+///  @brief  Current level in macro stack.
+
 int mlevel;
+
+///  @var    qlocal
+///  @brief  Current set of local Q-registers.
 
 struct qreg *qlocal = mstack[0].qlocal;
 
-//struct qreg *qreg = NULL;
+////////////////////////////////////////////////////////////////////////////////
+///
+///  Definitions for Q-register push-down list.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+///  @def    QSTACK_SIZE
+///  @brief  Number of items that can be  put on push-down list.
+
+#define QSTACK_SIZE     64          // Maximum depth for push-down list
+
+///  @var    qstack
+///  @brief  Q-register push-down list.
 
 static struct qreg qstack[QSTACK_SIZE];
+
+///  @var    qlevel
+///  @brief  Current level in push-down list.
 
 static uint qlevel;
 
@@ -100,7 +137,7 @@ void append_qchr(int qname, bool qdot, int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void append_qtext(int qname, bool qdot, struct tstr text)
+void append_qtext(int qname, bool qdot, struct tstring text)
 {
     assert(text.buf != NULL);
 
@@ -412,7 +449,7 @@ void store_qnum(int qname, bool qdot, int n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void store_qtext(int qname, bool qdot, struct tstr text)
+void store_qtext(int qname, bool qdot, struct tstring text)
 {
     assert(text.buf != NULL);
 

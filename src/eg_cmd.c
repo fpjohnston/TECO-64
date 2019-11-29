@@ -36,7 +36,7 @@
 #include "teco.h"
 #include "exec.h"
 
-char *eg_command;
+char *eg_command;                       ///< EG command to be executed.
 
 
 ///
@@ -57,7 +57,7 @@ void exec_EG(struct cmd *cmd)
         return;
     }
 
-    // TODO: issue error E_OFO if there is text in the buffer,
+    // TODO: issue error E_NFO if there is text in the buffer,
     //       but there is no output file open.
 
     exec_EC(cmd);

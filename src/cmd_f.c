@@ -53,6 +53,9 @@
 #include "exec.h"
 
 
+///  @var    cmd_f_table
+///  @brief  Table for all commands starting with F.
+
 static struct cmd_table cmd_f_table[] =
 {
     { scan_done,  exec_FB,        "m n @ 1"      },

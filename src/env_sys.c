@@ -1,5 +1,5 @@
 ///
-///  @file    env.c
+///  @file    env_sys.c
 ///  @brief   System-specific environment functions for Linux.
 ///
 ///  @author  Nowwith Treble Software
@@ -32,6 +32,10 @@
 
 #include "teco.h"
 #include "errors.h"
+
+#define TECO_HW         101             ///< x86 platform
+
+#define TECO_OS           2             ///< Linux O/S
 
 
 ///
@@ -85,9 +89,6 @@ void init_env(void)
 ///  @returns  Result for requested value.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#define TECO_HW         101             // x86 platform
-#define TECO_OS           2             // Linux O/S
 
 int teco_env(int n_arg)
 {

@@ -42,7 +42,7 @@
 #include "exec.h"
 
 
-enum scan_state scan_state;
+enum scan_state scan_state;             ///< Current expression scanning state
 
 // Local functions
 
@@ -53,15 +53,16 @@ static void exec_operator(struct cmd *cmd);
 static void finish_cmd(struct cmd *cmd, const struct cmd_table *table);
 
 
-//
-//  Dispatch table, defining functions to call for each character read, as well
-//  as the options for each command.
-//
-//  Note that to avoid duplication, lower-case letters can be omitted, because
-//  we translate characters to upper-case before indexing into this table.
-//
-//  Also, we handle E and F commands specially, as they involve a 2nd character.
-//
+///
+///  @var    cmd_table
+///  @brief  Dispatch table, defining functions to call for each character read,
+///          as well as the options for each command.
+///
+///          Note that to avoid duplication, lower-case letters can be omitted,
+///          because we translate characters to upper-case before indexing into
+///          this table. Also, we handle E and F commands specially, as they
+///          involve a 2nd character.
+///
 
 struct cmd_table cmd_table[] =
 {
@@ -195,7 +196,8 @@ struct cmd_table cmd_table[] =
     [DEL]         = { scan_bad,   NULL,             ""             },
 };
 
-// Define initial values for command block
+///  @var    null_cmd
+///  @brief  Initial command block values.
 
 struct cmd null_cmd =
 {
@@ -368,7 +370,7 @@ static void exec_expr(struct cmd *cmd)
 
             assert(p <= cmd->expr.buf + cmd->expr.len);
 
-            cmd->c1 = scan_caret(cmd);
+            cmd->c1 = (char)scan_caret(cmd);
 
             table = &cmd_table[(int)cmd->c1];
         }
@@ -397,7 +399,7 @@ static void exec_expr(struct cmd *cmd)
             assert(p <= cmd->expr.buf + cmd->expr.len);
 
             cmd->n_set = true;
-            cmd->n_arg = estack.item[estack.level - 1];
+            cmd->n_arg = (int)estack.item[estack.level - 1];
         }
     }
 }
@@ -437,6 +439,9 @@ static void exec_operator(struct cmd *cmd)
 
 static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
 {
+    assert(cmd != NULL);
+    assert(table != NULL);
+
     scan_tail(cmd);                     // Finish scanning command
 
     if (teco_debug && cmd->c1 != ESC)

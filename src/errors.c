@@ -38,13 +38,22 @@
 #include "eflags.h"
 #include "errors.h"
 
-int last_error = E_NUL;
+int last_error = E_NUL;                 ///< Last error encountered
 
-static struct err_table
+///  @struct  err_table
+///  @brief   Structure of error table.
+
+struct err_table
 {
-    const char *code;           // Three-letter error code
-    const char *text;           // Short description of error
-} err_table[] =
+    const char *code;           ///< Three-letter error code
+    const char *text;           ///< Short description of error
+};
+
+///  @struct  err_table
+///  @var     err_table
+///  @brief   Text definitions for TECO error messages.
+
+static struct err_table err_table[] =
 {
     [E_NUL] = { "---",  "Unknown error code" },
     [E_ARG] = { "ARG",  "Improper arguments" },
@@ -126,6 +135,9 @@ static struct err_table
     [E_XAB] = { "XAB",  "Execution aborted" },
     [E_YCA] = { "YCA",  "Y command aborted" },
 };
+
+///  @var    verbose
+///  @brief  Verbose descriptions of TECO error messages.
 
 static const char *verbose[] =
 {
@@ -361,9 +373,9 @@ static const char *verbose[] =
               "the output file. The ED command controls this check.",
 };
 
-char err_buf[64];                       // Buffer for error argument
+char err_buf[64];                       ///< Buffer for error argument
 
-const char *err_str = err_buf;          // Error message argument
+const char *err_str = err_buf;          ///< Error message argument
 
 // Local functions
 

@@ -35,15 +35,17 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
+///  @struct  estack
+///  @brief   Expression stack used for parsing command strings.
+
 struct estack estack =
 {
-    .level = 0,
-    .item[0 ... EXPR_SIZE - 1] = 0L,
-    .type[0 ... EXPR_SIZE - 1] = EXPR_NONE,
+    .level = 0,                         ///< Current level
+    .item[0 ... EXPR_SIZE - 1] = 0L,    ///< Item values
+    .type[0 ... EXPR_SIZE - 1] = EXPR_NONE ///< Item types
 };
 
 

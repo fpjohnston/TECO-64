@@ -38,10 +38,11 @@
 #include "eflags.h"
 #include "errors.h"
 
-#define FF_LINES    40
-#define VT_LINES    4
+#define FF_LINES    40                  ///< No. of lines to print for FF
 
-int CR_count = 0;
+#define VT_LINES    4                   ///< No. of lines to print for VT
+
+int CR_count = 0;                       ///< Current count of CRs seen
 
 // Local functions
 
@@ -284,7 +285,7 @@ static void read_ctrl_c(int last)
 
 
 ///
-///  @brief    Process CTRL/G, looking for ^G^G, ^G<SPACE>, and ^G*.
+///  @brief    Process CTRL/G, looking for ^G^G, ^G{SPACE}, and ^G*.
 ///
 ///  @returns  Nothing.
 ///
@@ -499,7 +500,7 @@ static void read_ff(void)
 ///
 ///            ?    Display previous command string up to erroneous command
 ///            /    Display verbose explanation of last error
-///            *<q> Copy last command string to q-register <q>
+///            *{q} Copy last command string to q-register {q}.
 ///
 ///            Once we return, the previous command string and error are con-
 ///            sidered lost. Our caller then overwrites the old command string
@@ -670,7 +671,7 @@ static void read_qname(int c)
 
     putc_term(CRLF);
 
-    struct tstr text = copy_buf();
+    struct tstring text = copy_buf();
 
     store_qtext(qname, qdot, text);
 }

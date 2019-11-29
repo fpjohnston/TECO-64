@@ -37,64 +37,73 @@
 
 #endif
 
+///  @enum   scan_state
+///  @brief  Definitions for scanning expressions.
+
 enum scan_state
 {
-    SCAN_NULL,                      // Scanning for start of command
-    SCAN_EXPR,                      // Scanning expression
-    SCAN_MOD,                       // Scanning modifiers
-    SCAN_DONE                       // Scanning is done
+    SCAN_NULL,                      ///< Scanning for start of command
+    SCAN_EXPR,                      ///< Scanning expression
+    SCAN_MOD,                       ///< Scanning modifiers
+    SCAN_DONE                       ///< Scanning is done
 };
 
-// Define the command block structure.
+///  @struct cmd
+///  @brief  Command block structure.
 
 struct cmd
 {
-    uint level;                     // Command level
+    uint level;                     ///< Command level
 
     union
     {
-        uint flag;                  // Command flag
+        uint flag;                  ///< Command flag
 
         struct
         {
-            uint m_opt      : 1;    // m argument allowed
-            uint n_opt      : 1;    // n argument allowed
-            uint h_opt      : 1;    // H allowed
-            uint colon_opt  : 1;    // : allowed
-            uint dcolon_opt : 1;    // :: allowed
-            uint atsign_opt : 1;    // @ allowed
-            uint w_opt      : 1;    // W allowed (for P)
-            uint q_req      : 1;    // Q-register required
-            uint t1_opt     : 1;    // 1 text field allowed
-            uint t2_opt     : 1;    // 2 text fields allowed
-            uint m_set      : 1;    // m argument found
-            uint n_set      : 1;    // n argument found
-            uint h_set      : 1;    // H found
-            uint colon_set  : 1;    // : found
-            uint dcolon_set : 1;    // :: found
-            uint atsign_set : 1;    // @ found
+            uint m_opt      : 1;    ///< m argument allowed
+            uint n_opt      : 1;    ///< n argument allowed
+            uint h_opt      : 1;    ///< H allowed
+            uint colon_opt  : 1;    ///< : allowed
+            uint dcolon_opt : 1;    ///< :: allowed
+            uint atsign_opt : 1;    ///< @ allowed
+            uint w_opt      : 1;    ///< W allowed (for P)
+            uint q_req      : 1;    ///< Q-register required
+            uint t1_opt     : 1;    ///< 1 text field allowed
+            uint t2_opt     : 1;    ///< 2 text fields allowed
+            uint m_set      : 1;    ///< m argument found
+            uint n_set      : 1;    ///< n argument found
+            uint h_set      : 1;    ///< H found
+            uint colon_set  : 1;    ///< : found
+            uint dcolon_set : 1;    ///< :: found
+            uint atsign_set : 1;    ///< @ found
         };
     };
 
-    char c1, c2, c3;                // Command characters (or NUL)
-    int m_arg;                      // m argument (if m_set is true)
-    int n_arg;                      // n argument (if n_set is true)
-    int paren;                      // No. of parentheses counted
-    char delim;                     // Delimiter for @ modifier
-    char qreg;                      // Q-register, if any
-    bool qlocal;                    // Q-register is local (not global)
-    struct tstr expr;               // Expression string
-    struct tstr text1;              // 1st text string
-    struct tstr text2;              // 2nd text string
-    struct cmd *next;               // Next command (or NULL)
-    struct cmd *prev;               // Previous command (or NULL)
+    char c1;                        ///< 1st command character (or NUL)
+    char c2;                        ///< 2nd command character (or NUL)
+    char c3;                        ///< 3rd command character (or NUL)
+    int m_arg;                      ///< m argument (if m_set is true)
+    int n_arg;                      ///< n argument (if n_set is true)
+    int paren;                      ///< No. of parentheses counted
+    char delim;                     ///< Delimiter for @ modifier
+    char qreg;                      ///< Q-register, if any
+    bool qlocal;                    ///< Q-register is local (not global)
+    struct tstring expr;               ///< Expression string
+    struct tstring text1;              ///< 1st text string
+    struct tstring text2;              ///< 2nd text string
+    struct cmd *next;               ///< Next command (or NULL)
+    struct cmd *prev;               ///< Previous command (or NULL)
 };
+
+///  @struct cmd_table
+///  @brief  Format of command tables used to parse and execute commands.
 
 struct cmd_table
 {
-    void (*scan)(struct cmd *cmd);  // Scan function
-    void (*exec)(struct cmd *cmd);  // Execution function
-    const char *opts;               // Command modifiers and options
+    void (*scan)(struct cmd *cmd);  ///< Scan function
+    void (*exec)(struct cmd *cmd);  ///< Execution function
+    const char *opts;               ///< Command modifiers and options
 };
 
 extern struct cmd_table cmd_table[];
@@ -163,13 +172,9 @@ extern void exec_Z(struct cmd *cmd);
 
 extern void exec_apos(struct cmd *cmd);
 
-extern void exec_atsign(struct cmd *cmd);
-
 extern void exec_backslash(struct cmd *cmd);
 
 extern void exec_bang(struct cmd *cmd);
-
-extern void exec_colon(struct cmd *cmd);
 
 extern void exec_comma(struct cmd *cmd);
 
@@ -349,36 +354,8 @@ extern void scan_expr(struct cmd *cmd);
 
 extern void scan_mod(struct cmd *cmd);
 
-extern void scan_null(struct cmd *cmd);
-
 extern void scan_var(struct cmd *cmd);
 
 extern void scan_tail(struct cmd *cmd);
-
-// Functions that skip to the next command.
-
-extern void skip_arg1(int c);
-
-extern void skip_arg2(void);
-
-extern void skip_caret(void);
-
-extern void skip_cmd(void);
-
-extern void skip_ctrl_a(void);
-
-extern void skip_ctrl_u(void);
-
-extern void skip_e(void);
-
-extern void skip_esc(void);
-
-extern void skip_f(void);
-
-extern void skip_one(void);
-
-extern void skip_quote(void);
-
-extern void skip_tag(void);
 
 #endif  // _EXEC_H

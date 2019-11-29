@@ -40,9 +40,9 @@
 #include "teco.h"
 #include "errors.h"
 
-glob_t pglob;                           // Used with EN command
+glob_t pglob;                           ///< Saved list of wildcard files
 
-static char **next_file;
+static char **next_file;                ///< Next file in pglob
 
 
 ///

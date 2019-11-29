@@ -48,20 +48,11 @@
 
 #define countof(array) (sizeof(array) / sizeof(array[0]))
 
-/// @def    WAIT
-/// @brief  Flag to indicate whether to pause for terminal input or not.
+#define WAIT                 true       ///< Wait for terminal input
 
-#define WAIT                 true       // Wait for terminal input
+#define STR_SIZE_INIT        1024       ///< Initial string size
 
-/// @def    STR_SIZE_INIT
-/// @brief  Initial size of command string.
-
-#define STR_SIZE_INIT        1024       // Initial string size
-
-/// @def    EXPR_SIZE
-/// @brief  Size of expression stack.
-
-#define EXPR_SIZE            64
+#define EXPR_SIZE            64         ///< Size of expression stack
 
 ///  @enum   expr_type
 ///  @brief  Type of item stored on expression stack.
@@ -78,12 +69,10 @@ enum expr_type
 
 struct estack
 {
-    uint level;
-    long item[EXPR_SIZE];
-    enum expr_type type[EXPR_SIZE];
+    uint level;                     ///< Expression stack level
+    long item[EXPR_SIZE];           ///< Expression stack items
+    enum expr_type type[EXPR_SIZE]; ///< Expression stack types
 };
-
-extern struct estack estack;
 
 ///  @struct   buffer
 ///  @brief    Definition of general buffer. This is dynamically allocated, and
@@ -100,11 +89,11 @@ struct buffer
     uint put;                       ///< Index of next character to store
 };
 
-///  @struct tstr
+///  @struct tstring
 ///  @brief  Definition of TECO-string, which is a counted (not NUL-terminated)
 ///          string.
 
-struct tstr
+struct tstring
 {
     char *buf;                      ///< Start of string
     uint len;                       ///< No. of characters
@@ -149,10 +138,10 @@ struct ifile
 
 enum itype
 {
-    IFILE_PRIMARY,                  // Primary input stream
-    IFILE_SECONDARY,                // Secondary input stream
-    IFILE_INDIRECT,                 // EI command stream
-    IFILE_MAX                       // Maximum input files
+    IFILE_PRIMARY,                  ///< Primary input stream
+    IFILE_SECONDARY,                ///< Secondary input stream
+    IFILE_INDIRECT,                 ///< EI command stream
+    IFILE_MAX                       ///< Maximum input files
 };
 
 ///  @struct  ofile
@@ -171,19 +160,11 @@ struct ofile
 
 enum otype
 {
-    OFILE_PRIMARY,                  // Primary output stream
-    OFILE_SECONDARY,                // Secondary output stream
-    OFILE_INDIRECT,                 // E%q command stream
-    OFILE_MAX                       // Maximum output files
+    OFILE_PRIMARY,                  ///< Primary output stream
+    OFILE_SECONDARY,                ///< Secondary output stream
+    OFILE_INDIRECT,                 ///< E%q command stream
+    OFILE_MAX                       ///< Maximum output files
 };
-
-extern struct ifile ifiles[];
-
-extern struct ofile ofiles[];
-
-extern uint istream, ostream;
-
-extern char *last_file;
 
 ///  @enum    backup_flag
 ///  @brief   Definition of flag that specifies whether or not a file is
@@ -191,22 +172,26 @@ extern char *last_file;
 
 enum backup_flag
 {
-NOBACKUP_FILE,
-BACKUP_FILE
+    NOBACKUP_FILE,                  ///< Not opening a file for backup
+    BACKUP_FILE                     ///< Opening a file for backup
 };
 
-// Global variables
+///  @struct  vars
+///  @brief   Global variables that the user can display or set.
 
 struct vars
 {
-    int b;                         // Beginning of buffer = 0
-    int z;                         // End of buffer
-    int dot;                       // Current pointer position
-    int eof;                       // End of file flag
-    int ff;                        // Form feed flag
-    int radix;                     // Current output radix
-    int ctrl_x;                    // CTRL/X flag
+    int b;                          ///< Beginning of buffer (always 0)
+    int z;                          ///< End of buffer (no. of chrs. in buffer)
+    int dot;                        ///< Current pointer position in buffer
+    int eof;                        ///< End of file flag
+    int ff;                         ///< Form feed flag
+    int radix;                      ///< Current output radix
+    int ctrl_x;                     ///< CTRL/X flag
+    bool trace;                     ///< true if trace mode is on
 };
+
+// Global variables
 
 extern struct vars v;
 
@@ -216,15 +201,9 @@ extern jmp_buf jump_main;
 
 extern const char *prompt;
 
-extern int last_c;
-
-extern bool trace_mode;
-
 extern uint rows;
 
 extern uint cols;
-
-extern bool f_expression;
 
 extern bool teco_debug;
 
@@ -232,13 +211,21 @@ extern char *filename_buf;
 
 extern char *eg_command;
 
+extern struct estack estack;            ///< Expression stack
+
+extern struct ifile ifiles[];
+
+extern struct ofile ofiles[];
+
+extern uint istream, ostream;
+
+extern char *last_file;
+
 // Global functions
 
 extern void *alloc_more(void *ptr, uint oldsize, uint newsize);
 
 extern void *alloc_new(uint size);
-
-extern void check_errno(int ecode);
 
 extern void dealloc(char **ptr);
 
@@ -276,15 +263,11 @@ extern void print_term(const char *str);
 
 extern void read_cmd(void);
 
-extern int read_term(void);
-
-extern void write_term(const char *buf, unsigned int nbytes);
-
 // Q-register functions
 
 extern void append_qchr(int qname, bool qdot, int c);
 
-extern void append_qtext(int qname, bool qdot, struct tstr text);
+extern void append_qtext(int qname, bool qdot, struct tstring text);
 
 extern uint get_qall(void);
 
@@ -302,7 +285,7 @@ extern void print_qreg(int qname, bool qdot);
 
 extern bool push_qreg(int qname, bool qdot);
 
-extern void store_qtext(int qname, bool qdot, struct tstr text);
+extern void store_qtext(int qname, bool qdot, struct tstring text);
 
 extern void store_qchr(int qname, bool qdot, int c);
 
@@ -322,7 +305,7 @@ extern bool valid_radix(int c);
 
 // Buffer functions
 
-extern struct tstr copy_buf(void);
+extern struct tstring copy_buf(void);
 
 extern uint count_buf(void);
 
@@ -358,9 +341,9 @@ extern int get_wild(void);
 
 extern void init_files(void);
 
-extern int open_input(const struct tstr *text);
+extern int open_input(const struct tstring *text);
 
-extern int open_output(const struct tstr *text, int backup);
+extern int open_output(const struct tstring *text, int backup);
 
 extern void set_wild(const char *filename);
 

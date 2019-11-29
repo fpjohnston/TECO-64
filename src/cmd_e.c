@@ -37,6 +37,8 @@
 #include "errors.h"
 #include "exec.h"
 
+///  @var    cmd_e_table
+///  @brief  Table for all commands starting with E.
 
 static struct cmd_table cmd_e_table[] =
 {

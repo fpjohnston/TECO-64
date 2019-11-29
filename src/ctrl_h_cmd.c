@@ -35,6 +35,9 @@
 #include "teco.h"
 #include "exec.h"
 
+#define MINUTES_PER_HOUR        60      ///< Minutes per hour
+
+#define SECONDS_PER_MINUTE      60      ///< Seconds per minute
 
 ///
 ///  @brief    Execute ^H (CTRL/H) command. This returns the current time
@@ -44,9 +47,6 @@
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#define MINUTES_PER_HOUR        60
-#define SECONDS_PER_MINUTE      60
 
 void exec_ctrl_h(struct cmd *cmd)
 {

@@ -222,7 +222,7 @@ LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt -e786 -e818 -e83
 	$(AT)chdir obj && $(CC) @../CFLAGS ../$<
 
 .PHONY: all
-all: $(TARGET)
+all: lobs $(TARGET) doc
 
 .PHONY: scratch
 scratch: clobber all

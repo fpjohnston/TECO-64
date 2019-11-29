@@ -25,8 +25,6 @@
 ///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ///
-///  @mainpage teco - TECO text editor
-///
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
@@ -47,7 +45,7 @@
 
 // Local functions
 
-static void scan_text(int delim, struct tstr *tstr);
+static void scan_text(int delim, struct tstring *tstring);
 
 static void set_opts(struct cmd *cmd, const char *opts);
 
@@ -76,6 +74,8 @@ void scan_bad(struct cmd *cmd)
 
 const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 {
+    assert(cmd != NULL);
+
     // Here to start parsing a command string,  one character at a time. Note
     // that although some commands may contain only a single character, most of
     // them comprise multiple characters, so we have to keep looping until we
@@ -103,7 +103,7 @@ const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
     else if (toupper(c) == '^')     // ^{x} command
     {
         cmd->c1 = (char)fetch_buf();
-        cmd->c1 = scan_caret(cmd);
+        cmd->c1 = (char)scan_caret(cmd);
 
         table = &cmd_table[(int)cmd->c1];
     }
@@ -345,7 +345,7 @@ void scan_tail(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void scan_text(int delim, struct tstr *text)
+static void scan_text(int delim, struct tstring *text)
 {
     assert(text != NULL);
 
@@ -407,7 +407,7 @@ void scan_var(struct cmd *cmd)
 ///            H  - Command allows H to be special       (e.g., HP).
 ///                 Note: implies m and n
 ///            :  - Command allows colon modifier        (e.g., :ERfile`).
-///            :: - Command allows double colon modifier (e.g., ::Stext`).
+///            :: - Command allows double colon modifier (e.g., :: Stext`).
 ///            @  - Command allows atsign form           (e.g., @^A/hello/).
 ///            q  - Command requires Q-register          (e.g., Mq).
 ///            W  - Command allows W                     (e.g., PW).

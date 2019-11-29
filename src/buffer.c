@@ -37,6 +37,9 @@
 #include "ascii.h"
 #include "errors.h"
 
+///  @var    cmd
+///  @brief  Definition of command string buffer.
+
 static struct buffer cmd =
 {
     .buf  = NULL,
@@ -45,7 +48,7 @@ static struct buffer cmd =
     .get  = 0,
 };
 
-static struct buffer *curbuf;
+static struct buffer *curbuf;           ///< Current command string buffer.
 
 // Local functions
 
@@ -59,12 +62,12 @@ static void free_buf(void);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct tstr copy_buf(void)
+struct tstring copy_buf(void)
 {
     assert(curbuf != NULL);
     assert(curbuf->size != 0);
 
-    struct tstr str = { .buf = curbuf->buf, .len = curbuf->put };
+    struct tstring str = { .buf = curbuf->buf, .len = curbuf->put };
     
     return str;
 }

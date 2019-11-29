@@ -35,17 +35,17 @@
 #include "teco.h"
 
 
-struct ifile ifiles[IFILE_MAX];
+struct ifile ifiles[IFILE_MAX];         ///< Input file descriptors
 
-struct ofile ofiles[OFILE_MAX];
+struct ofile ofiles[OFILE_MAX];         ///< Output file descriptors
 
-uint istream = IFILE_PRIMARY;
+uint istream = IFILE_PRIMARY;           ///< Current input stream
 
-uint ostream = OFILE_PRIMARY;
+uint ostream = OFILE_PRIMARY;           ///< Current output stream
 
-char *last_file = NULL;
+char *last_file = NULL;                 ///< Last file opened
 
-char *filename_buf;                     // Allocated space for filename
+char *filename_buf;                     ///< Allocated space for filename
 
 // Local functions
 
@@ -146,7 +146,7 @@ void init_files(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int open_input(const struct tstr *text)
+int open_input(const struct tstring *text)
 {
     assert(text != NULL);
     
@@ -184,7 +184,7 @@ int open_input(const struct tstr *text)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int open_output(const struct tstr *text, int backup)
+int open_output(const struct tstring *text, int backup)
 {
     assert(text != NULL);
 

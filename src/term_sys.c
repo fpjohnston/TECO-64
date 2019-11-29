@@ -59,14 +59,14 @@
 #include "eflags.h"
 #include "errors.h"
 
-#define DEFAULT_ROWS            24
-#define DEFAULT_COLS            80
+#define DEFAULT_ROWS            24      ///< Default terminal rows
+#define DEFAULT_COLS            80      ///< Default terminal columns
 
-uint rows = DEFAULT_ROWS;
+uint rows = DEFAULT_ROWS;               ///< Current terminal rows
 
-uint cols = DEFAULT_COLS;
+uint cols = DEFAULT_COLS;               ///< Current terminal columns
 
-static struct termios saved_mode;
+static struct termios saved_mode;       ///< Saved terminal mode
 
 // Local functions
 

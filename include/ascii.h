@@ -31,9 +31,12 @@
 
 #define _ASCII_H
 
+///  @enum   ascii
+///  @brief  Definitions of special ASCII characters.
+
 enum ascii
 {
-    NUL = 0,
+    NUL     = 0,
     CTRL_A,
     CTRL_B,
     CTRL_C,
@@ -41,6 +44,7 @@ enum ascii
     CTRL_E,
     CTRL_F,
     CTRL_G,
+    BEL     = CTRL_G,                   ///< Used for ringing bell on terminal
     BS,
     TAB,
     LF,
@@ -65,15 +69,14 @@ enum ascii
     GS,
     RS,
     US,
-    SPACE = 32,
-    ACCENT = 96,
-    DEL = 127
+    SPACE   = 32,                       ///< Space character
+    ACCENT  = 96,                       ///< Accent grave
+    DEL     = 127                       ///< DELETE/RUBOUT
 };
 
-#define BEL         CTRL_G
+///  @var    CRLF
+///  @brief  Special character used to print CR/LF on terminal.
 
 #define CRLF        (CR | (LF << 8))
-
-#define CTRL_ZZ     (CTRL_Z | (CTRL_Z << 8))
 
 #endif  // !defined(_ASCII_H)

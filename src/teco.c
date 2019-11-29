@@ -42,28 +42,45 @@
 #include "eflags.h"
 #include "errors.h"
 
-#define TECO_VERSION    200
+#define TECO_VERSION    200             ///< Our version of TECO
+
+///  @var     prompt
+///  @brief   Command-line prompt (usually '*').
 
 const char *prompt = "*";
 
+///  @var     f
+///  @brief   Global flag variables.
+
 struct flags f;
+
+///  @var     v
+///  @brief   Global variables that the user can display or set.
 
 struct vars v =
 {
-    .b   = 0,
-    .z   = 1000,
-    .dot = 0,
-    .eof = 0,
-    .ff = -1,
-    .radix = 10,
-    .ctrl_x = 0,
+    .b      = 0,                    ///< Beginning of buffer (always 0)
+    .z      = 1000,                 ///< End of buffer (no. of chrs. in buffer)
+    .dot    = 0,                    ///< Current pointer position in buffer
+    .eof    = 0,                    ///< End of file flag
+    .ff     = -1,                   ///< Form feed flag
+    .radix  = 10,                   ///< Current output radix
+    .ctrl_x = 0,                    ///< CTRL/X flag
+    .trace  = false,                ///< Trace mode
 };
+
+///  @var     teco_version
+///  @brief   TECO version number (200+).
 
 int teco_version = TECO_VERSION;
 
-bool trace_mode = false;
+///  @var     jump_main
+///  @brief   longjmp() buffer used to return to main loop after error.
 
 jmp_buf jump_main;
+
+///  @var     teco_debug
+///  @brief   true if TECO debugging features are enabled.
 
 bool teco_debug = false;
 
