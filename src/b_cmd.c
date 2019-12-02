@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_f_cmd.c
-///  @brief   Execute ^F (CTRL/F) command.
+///  @file    b_cmd.c
+///  @brief   Execute B command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -32,33 +32,19 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "eflags.h"
-#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Scan ^F (CTRL/F) command: return value of console switch
-///            register, or terminal number of specified job.
+///  @brief    Scan B command: read first position in buffer (always 0).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_f(struct cmd *cmd)
+void scan_B(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // n^F specified?
-    {
-        (void)get_n_arg();              // Yes, just ignore it
-
-        if (f.ei.strict)
-        {
-            print_err(E_T10);           // TECO-10 command not implemented.
-        }
-    }
-
-    push_expr(0, EXPR_VALUE);           // Value is always 0 for now
+    push_expr(v.b, EXPR_VALUE);
 }
-

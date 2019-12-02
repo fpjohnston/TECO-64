@@ -48,7 +48,9 @@ static struct buffer cmd =
     .get  = 0,
 };
 
-static struct buffer *curbuf;           ///< Current command string buffer.
+// TODO: add static below.
+
+struct buffer *curbuf;           ///< Current command string buffer.
 
 // Local functions
 
@@ -143,7 +145,7 @@ bool empty_buf(void)
 {
     assert(curbuf != NULL);
     
-    return ((curbuf->put - curbuf->get) == 0);
+    return (curbuf->put == curbuf->get);
 }
 
 

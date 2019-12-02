@@ -45,8 +45,10 @@ enum ascii
     CTRL_F,
     CTRL_G,
     BEL     = CTRL_G,                   ///< Used for ringing bell on terminal
-    BS,
-    TAB,
+    CTRL_H,
+    BS      = CTRL_H,
+    CTRL_I,
+    TAB     = CTRL_I,
     LF,
     VT,
     FF,
@@ -69,8 +71,8 @@ enum ascii
     GS,
     RS,
     US,
-    SPACE   = 32,                       ///< Space character
-    ACCENT  = 96,                       ///< Accent grave
+    SPACE   = ' ',                      ///< Space character
+    ACCENT  = '`',                      ///< Accent grave
     DEL     = 127                       ///< DELETE/RUBOUT
 };
 

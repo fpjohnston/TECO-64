@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_f_cmd.c
-///  @brief   Execute ^F (CTRL/F) command.
+///  @file    back_cmd.c
+///  @brief   Execute \ (backslash) command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -32,33 +32,57 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "eflags.h"
-#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Scan ^F (CTRL/F) command: return value of console switch
-///            register, or terminal number of specified job.
+///  @brief    Execute \ (backslash) command: insert a digit string into buffer.
 ///
-///  @returns  Nothing.
+///  @returns  nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_f(struct cmd *cmd)
+void exec_bslash(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // n^F specified?
+    if (cmd->n_set)                     // n argument?
     {
-        (void)get_n_arg();              // Yes, just ignore it
-
-        if (f.ei.strict)
-        {
-            print_err(E_T10);           // TECO-10 command not implemented.
-        }
+        // TODO: convert n to string using current radix and insert into buffer.
     }
-
-    push_expr(0, EXPR_VALUE);           // Value is always 0 for now
 }
 
+
+///
+///  @brief    Scan \ (backslash) command: read digit string.
+///
+///  @returns  nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_bslash(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // n\`?
+    {
+        scan_state = SCAN_DONE;
+    }
+    else
+    {
+        int n;
+
+        if (scan_state != SCAN_DONE)
+        {
+            n = 0;
+        }
+        else
+        {
+            // TODO: read digit string in buffer using current radix.
+
+            n = 0;
+        }
+
+        push_expr(n, EXPR_VALUE);
+    }
+}

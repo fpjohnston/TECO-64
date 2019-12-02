@@ -36,23 +36,42 @@
 
 
 ///
-///  @brief    Execute EV command.
+///  @brief    Execute EV command: set edit verify flag.
 ///
-///  @returns  true if done parsing command, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 void exec_EV(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    assert(cmd->n_set == true);
 
-    if (cmd->n_set)                     // n argument?
+    f.ev = cmd->n_arg;
+}
+
+
+///
+///  @brief    Scan EV command: read edit verify flag.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_EV(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (operand_expr())
     {
-        f.ev = cmd->n_arg;
+        cmd->n_arg = get_n_arg();
+        cmd->n_set = true;
+
+        scan_state = SCAN_DONE;
     }
     else
     {
-        push_expr(f.ev, EXPR_OPERAND);
+        push_expr(f.ev, EXPR_VALUE);
     }
 }
 

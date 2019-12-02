@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute EU command.
+///  @brief    Execute EU command: set upper/lower case flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -45,14 +45,33 @@
 void exec_EU(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    assert(cmd->n_set == true);
+    
+    f.eu = cmd->n_arg;
+}
 
-    if (cmd->n_set)                     // n argument?
+
+///
+///  @brief    Scan EU command: read upper/lower case flag.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_EU(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (operand_expr())
     {
-        f.eu = cmd->n_arg;
+        cmd->n_arg = get_n_arg();
+        cmd->n_set = true;
+
+        scan_state = SCAN_DONE;
     }
     else
     {
-        push_expr(f.eu, EXPR_OPERAND);
+        push_expr(f.eu, EXPR_VALUE);
     }
 }
 

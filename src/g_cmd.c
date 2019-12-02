@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute G command - Print Q-register contents, or copy to buffer.
+///  @brief    Execute G command: print Q-register contents, or copy to buffer.
 ///
 ///  @returns  Nothing.
 ///

@@ -106,6 +106,7 @@ static struct err_table err_table[] =
     [E_NIH] = { "NIH",  "Not implemented here" },
     [E_NPA] = { "NPA",  "Negative or 0 argument to P" },
     [E_NRO] = { "NRO",  "No room for output" },
+    [E_NTF] = { "NTF",  "No tag found" },
     [E_NYA] = { "NYA",  "Numeric argument with Y" },
     [E_NYI] = { "NYI",  "Not yet implemented" },
     [E_OFO] = { "OFO",  "Output file already open" },
@@ -117,7 +118,7 @@ static struct err_table err_table[] =
     [E_SRH] = { "SRH",  "Search failure \"%s\"" },
     [E_STL] = { "STL",  "String too long" },
     [E_SYS] = { "SYS",  "%s" },
-    [E_TAG] = { "TAG",  "Missing tag !tag!" },
+    [E_TAG] = { "TAG",  "Missing tag !%s!" },
     [E_T10] = { "T10",  "TECO-10 command not implemented" },
     [E_T32] = { "T32",  "TECO-32 command not implemented" },
     [E_UCD] = { "UCD",  "Unable to close and delete output file \"%s\"" },
@@ -299,6 +300,9 @@ static const char *verbose[] =
     [E_NPA] = NULL,
 
     [E_NRO] = NULL,
+
+    [E_NTF] = "The O command did not include a tag, or an nO command "
+              "had a value that was zero, negative, or out of range.",
 
     [E_NYA] = "The Y command must not be preceded by either a numeric "
               "argument or a command that returns a numeric value.",

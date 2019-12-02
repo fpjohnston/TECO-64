@@ -48,8 +48,28 @@ void exec_EH(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    get_flag(&f.eh.flag, cmd);
+    f.eh.flag = set_flag(cmd, f.eh.flag);
 
-    f.eh.flag &= (1 << 3) - 1;          // Mask off low 3 bits
+    uint verbose = f.eh.verbose;
+    uint command = f.eh.command;
+
+    f.eh.flag = 0;
+
+    f.eh.command = command;
+    f.eh.verbose = verbose;
 }
 
+
+///
+///  @brief    Scan EH command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_EH(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    get_flag(cmd, f.eh.flag);
+}

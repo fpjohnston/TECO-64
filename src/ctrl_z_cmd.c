@@ -36,18 +36,18 @@
 
 
 ///
-///  @brief    Execute ^Z (CTRL/Z) command - get no. of chrs. in all Q-registers.
+///  @brief    Scan ^Z (CTRL/Z) command: get no. of chrs. in all Q-registers.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_z(struct cmd *cmd)
+void scan_ctrl_z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
     uint n = get_qall();
     
-    push_expr((int)n, EXPR_OPERAND);
+    push_expr((int)n, EXPR_VALUE);
 }
 

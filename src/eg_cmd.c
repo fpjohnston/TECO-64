@@ -40,7 +40,7 @@ char *eg_command;                       ///< EG command to be executed.
 
 
 ///
-///  @brief    Execute EG command (execute system command).
+///  @brief    Execute EG command: execute system command.
 ///
 ///  @returns  Nothing.
 ///

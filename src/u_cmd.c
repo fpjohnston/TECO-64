@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute U command - Store number in Q-register.
+///  @brief    Execute U command: store number in Q-register.
 ///
 ///  @returns  Nothing.
 ///
@@ -55,7 +55,6 @@ void exec_U(struct cmd *cmd)
 
     if (cmd->m_set)                     // m argument too?
     {
-        push_expr(cmd->m_arg, EXPR_OPERAND);
+        push_expr(cmd->m_arg, EXPR_VALUE);
     }
 }
-

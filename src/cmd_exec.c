@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -48,15 +49,14 @@ enum scan_state scan_state;             ///< Current expression scanning state
 
 static void exec_expr(struct cmd *cmd);
 
-static void exec_operator(struct cmd *cmd);
-
 static void finish_cmd(struct cmd *cmd, const struct cmd_table *table);
 
 
 ///
 ///  @var    cmd_table
-///  @brief  Dispatch table, defining functions to call for each character read,
-///          as well as the options for each command.
+///
+///  @brief  Dispatch table, defining functions to scan execute input
+///          characters, as well as the options for each command.
 ///
 ///          Note that to avoid duplication, lower-case letters can be omitted,
 ///          because we translate characters to upper-case before indexing into
@@ -66,134 +66,134 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table);
 
 struct cmd_table cmd_table[] =
 {
-    [NUL]         = { NULL,       NULL,             ""             },
-    [CTRL_A]      = { scan_done,  exec_ctrl_a,      "@ 1"          },
-    [CTRL_B]      = { scan_expr,  exec_ctrl_b,      ""             },
-    [CTRL_C]      = { NULL,       exec_ctrl_c,      ""             },
-    [CTRL_D]      = { scan_done,  exec_ctrl_d,      ""             },
-    [CTRL_E]      = { scan_var,   exec_ctrl_e,      ""             },
-    [CTRL_F]      = { scan_var,   exec_ctrl_f,      "n"            },
-    [CTRL_G]      = { scan_bad,   NULL,             ""             },
-    [BS]          = { scan_expr,  exec_ctrl_h,      ""             },
-    [TAB]         = { scan_done,  exec_ctrl_i,      "1"            },
-    [LF]          = { NULL,       NULL,             ""             },
-    [VT]          = { scan_bad,   NULL,             ""             },
-    [FF]          = { NULL,       exec_ctrl_l,      ""             },
-    [CR]          = { NULL,       NULL,             ""             },
-    [CTRL_N]      = { scan_expr,  exec_ctrl_n,      ""             },
-    [CTRL_O]      = { scan_done,  exec_ctrl_o,      ""             },
-    [CTRL_P]      = { scan_bad,   exec_ctrl_p,      ""             },
-    [CTRL_Q]      = { NULL,       exec_ctrl_q,      ""             },
-    [CTRL_R]      = { NULL,       exec_ctrl_r,      "n"            },
-    [CTRL_S]      = { scan_expr,  exec_ctrl_s,      ""             },
-    [CTRL_T]      = { NULL,       exec_ctrl_t,      ":"            },
-    [CTRL_U]      = { scan_done,  exec_ctrl_u,      "n : @ q 1"    },
-    [CTRL_V]      = { NULL,       exec_ctrl_v,      ""             },
-    [CTRL_W]      = { NULL,       exec_ctrl_w,      ""             },
-    [CTRL_X]      = { scan_var,   exec_ctrl_x,      "n"            },
-    [CTRL_Y]      = { scan_expr,  exec_ctrl_y,      ""             },
-    [CTRL_Z]      = { scan_expr,  exec_ctrl_z,      ""             },
-    [ESC]         = { scan_done,  exec_escape,      "m n"          },
-    [FS]          = { scan_bad,   NULL,             ""             },
-    [GS]          = { scan_bad,   NULL,             ""             },
-    [RS]          = { NULL,       NULL,             ""             },
-    [US]          = { scan_expr,  exec_ctrl_ubar,   ""             },
-    [SPACE]       = { NULL,       NULL,             ""             },
-    ['!']         = { scan_done,  exec_bang,        "@ 1"          },
-    ['"']         = { scan_done,  exec_quote,       ""             },
-    ['#']         = { scan_expr,  exec_operator,    ""             },
-    ['$']         = { scan_done,  exec_escape,      "m n"          },
-    ['%']         = { scan_done,  exec_pct,         "n q"          },
-    ['&']         = { scan_expr,  exec_operator,    ""             },
-    ['\'']        = { scan_done,  exec_apos,        ""             },
-    ['(']         = { scan_expr,  exec_operator,    ""             },
-    [')']         = { scan_expr,  exec_rparen,      ""             },
-    ['*']         = { scan_expr,  exec_operator,    ""             },
-    ['+']         = { scan_expr,  exec_operator,    ""             },
-    [',']         = { exec_comma, exec_comma,       ""             },
-    ['-']         = { scan_expr,  exec_operator,    ""             },
-    ['.']         = { scan_expr,  exec_dot,         ""             },
-    ['/']         = { scan_expr,  exec_operator,    ""             },
-    ['0']         = { scan_expr,  NULL,             ""             },
-    ['1']         = { scan_expr,  NULL,             ""             },
-    ['2']         = { scan_expr,  NULL,             ""             },
-    ['3']         = { scan_expr,  NULL,             ""             },
-    ['4']         = { scan_expr,  NULL,             ""             },
-    ['5']         = { scan_expr,  NULL,             ""             },
-    ['6']         = { scan_expr,  NULL,             ""             },
-    ['7']         = { scan_expr,  NULL,             ""             },
-    ['8']         = { scan_expr,  NULL,             ""             },
-    ['9']         = { scan_expr,  NULL,             ""             },
-    [':']         = { scan_mod,   NULL,             ""             },
-    [';']         = { scan_done,  exec_semi,        "n :"          },
-    ['<']         = { scan_done,  exec_langle,      "n"            },
-    ['=']         = { scan_done,  exec_equals,      "n :"          },
-    ['>']         = { scan_done,  exec_rangle,      ""             },
-    ['?']         = { scan_done,  exec_question,    ""             },
-    ['@']         = { scan_mod,   NULL,             ""             },
-    ['A']         = { scan_done,  exec_A,           "n :"          },
-    ['B']         = { scan_expr,  exec_B,           ""             },
-    ['C']         = { scan_done,  exec_C,           "n :"          },
-    ['D']         = { scan_done,  exec_D,           "m n :"        },
-    ['E']         = { NULL,       NULL,             ""             },
-    ['F']         = { NULL,       NULL,             ""             },
-    ['G']         = { scan_done,  exec_G,           ":q"           },
-    ['H']         = { scan_expr,  exec_H,           ""             },
-    ['I']         = { scan_done,  exec_I,           "n @ 1"        },
-    ['J']         = { scan_done,  exec_J,           "n :"          },
-    ['K']         = { scan_done,  exec_K,           "m n"          },
-    ['L']         = { scan_done,  exec_L,           "n"            },
-    ['M']         = { scan_done,  exec_M,           "m n : q"      },
-    ['N']         = { scan_done,  exec_N,           "n : @ 1"      },
-    ['O']         = { scan_done,  exec_O,           "n @ 1"        },
-    ['P']         = { scan_done,  exec_P,           "m n H : W"    },
-    ['Q']         = { scan_done,  exec_Q,           ": q"          },
-    ['R']         = { scan_done,  exec_R,           "n :"          },
-    ['S']         = { scan_done,  exec_S,           "m n : :: @ 1" },
-    ['T']         = { scan_done,  exec_T,           "m n :"        },
-    ['U']         = { scan_done,  exec_U,           "m n q"        },
-    ['V']         = { scan_done,  exec_V,           "m n"          },
-    ['W']         = { scan_done,  exec_W,           "m n :"        },
-    ['X']         = { scan_done,  exec_X,           "m n : q"      },
-    ['Y']         = { scan_done,  exec_Y,           "n :"          },
-    ['Z']         = { scan_expr,  exec_Z,           ""             },
-    ['[']         = { scan_done,  exec_lbracket,    "q"            },
-    ['\\']        = { scan_expr,  exec_backslash,   ""             },
-    [']']         = { scan_done,  exec_rbracket,    ": q"          },
-    ['^']         = { NULL,       NULL,             ""             },
-    ['_']         = { scan_expr,  exec_ubar,        "n : @ 1"      },
-    ['`']         = { scan_bad,   NULL,             ""             },
-    ['a']         = { NULL,       NULL,             ""             },
-    ['b']         = { NULL,       NULL,             ""             },
-    ['c']         = { NULL,       NULL,             ""             },
-    ['d']         = { NULL,       NULL,             ""             },
-    ['e']         = { NULL,       NULL,             ""             },
-    ['f']         = { NULL,       NULL,             ""             },
-    ['g']         = { NULL,       NULL,             ""             },
-    ['h']         = { NULL,       NULL,             ""             },
-    ['i']         = { NULL,       NULL,             ""             },
-    ['j']         = { NULL,       NULL,             ""             },
-    ['k']         = { NULL,       NULL,             ""             },
-    ['l']         = { NULL,       NULL,             ""             },
-    ['m']         = { NULL,       NULL,             ""             },
-    ['n']         = { NULL,       NULL,             ""             },
-    ['o']         = { NULL,       NULL,             ""             },
-    ['p']         = { NULL,       NULL,             ""             },
-    ['q']         = { NULL,       NULL,             ""             },
-    ['r']         = { NULL,       NULL,             ""             },
-    ['s']         = { NULL,       NULL,             ""             },
-    ['t']         = { NULL,       NULL,             ""             },
-    ['u']         = { NULL,       NULL,             ""             },
-    ['v']         = { NULL,       NULL,             ""             },
-    ['w']         = { NULL,       NULL,             ""             },
-    ['x']         = { NULL,       NULL,             ""             },
-    ['y']         = { NULL,       NULL,             ""             },
-    ['z']         = { NULL,       NULL,             ""             },
-    ['{']         = { scan_bad,   NULL,             ""             },
-    ['|']         = { scan_done,  exec_vbar,        ""             },
-    ['}']         = { scan_bad,   NULL,             ""             },
-    ['~']         = { scan_bad,   NULL,             ""             },
-    [DEL]         = { scan_bad,   NULL,             ""             },
+    [NUL]         = { NULL,           NULL,             ""             },
+    [CTRL_A]      = { NULL,           exec_ctrl_a,      "@ 1"          },
+    [CTRL_B]      = { scan_ctrl_b,    NULL,             ""             },
+    [CTRL_C]      = { NULL,           exec_ctrl_c,      ""             },
+    [CTRL_D]      = { NULL,           exec_ctrl_d,      ""             },
+    [CTRL_E]      = { scan_ctrl_e,    exec_ctrl_e,      ""             },
+    [CTRL_F]      = { scan_ctrl_f,    NULL,             "n"            },
+    [CTRL_G]      = { scan_bad,       NULL,             ""             },
+    [CTRL_H]      = { scan_ctrl_h,    NULL,             ""             },
+    [CTRL_I]      = { NULL,           exec_ctrl_i,      "1"            },
+    [LF]          = { NULL,           NULL,             ""             },
+    [VT]          = { scan_bad,       NULL,             ""             },
+    [FF]          = { NULL,           NULL,             ""             },
+    [CR]          = { NULL,           NULL,             ""             },
+    [CTRL_N]      = { scan_ctrl_n,    NULL,             ""             },
+    [CTRL_O]      = { NULL,           exec_ctrl_o,      ""             },
+    [CTRL_P]      = { scan_bad,       NULL,             ""             },
+    [CTRL_Q]      = { NULL,           exec_ctrl_q,      ""             },
+    [CTRL_R]      = { scan_ctrl_r,    exec_ctrl_r,      "n"            },
+    [CTRL_S]      = { scan_ctrl_s,    NULL,             ""             },
+    [CTRL_T]      = { scan_ctrl_t,    exec_ctrl_t,      "n :"          },
+    [CTRL_U]      = { NULL,           exec_ctrl_u,      "n : @ q 1"    },
+    [CTRL_V]      = { NULL,           exec_ctrl_v,      ""             },
+    [CTRL_W]      = { NULL,           exec_ctrl_w,      ""             },
+    [CTRL_X]      = { scan_ctrl_x,    exec_ctrl_x,      "n"            },
+    [CTRL_Y]      = { scan_ctrl_y,    NULL,             ""             },
+    [CTRL_Z]      = { scan_ctrl_z,    NULL,             ""             },
+    [ESC]         = { NULL,           exec_escape,      "m n"          },
+    ['\x1C']      = { scan_bad,       NULL,             ""             },
+    ['\x1D']      = { scan_bad,       NULL,             ""             },
+    ['\x1E']      = { NULL,           NULL,             ""             },
+    ['\x1F']      = { scan_operator,  NULL,             ""             },
+    [SPACE]       = { NULL,           NULL,             ""             },
+    ['!']         = { NULL,           exec_bang,        "@ 1"          },
+    ['"']         = { scan_quote,     exec_quote,       "n"            },
+    ['#']         = { scan_operator,  NULL,             ""             },
+    ['$']         = { NULL,           exec_escape,      "m n"          },
+    ['%']         = { scan_pct,       NULL,             "n q"          },
+    ['&']         = { scan_operator,  NULL,             ""             },
+    ['\'']        = { NULL,           exec_apos,        ""             },
+    ['(']         = { scan_operator,  NULL,             ""             },
+    [')']         = { scan_operator,  NULL,             ""             },
+    ['*']         = { scan_operator,  NULL,             ""             },
+    ['+']         = { scan_operator,  NULL,             ""             },
+    [',']         = { scan_comma,     NULL,             ""             },
+    ['-']         = { scan_operator,  NULL,             ""             },
+    ['.']         = { scan_dot,       NULL,             ""             },
+    ['/']         = { scan_operator,  NULL,             ""             },
+    ['0']         = { scan_digits,    NULL,             ""             },
+    ['1']         = { scan_digits,    NULL,             ""             },
+    ['2']         = { scan_digits,    NULL,             ""             },
+    ['3']         = { scan_digits,    NULL,             ""             },
+    ['4']         = { scan_digits,    NULL,             ""             },
+    ['5']         = { scan_digits,    NULL,             ""             },
+    ['6']         = { scan_digits,    NULL,             ""             },
+    ['7']         = { scan_digits,    NULL,             ""             },
+    ['8']         = { scan_digits,    NULL,             ""             },
+    ['9']         = { scan_digits,    NULL,             ""             },
+    [':']         = { scan_mod,       NULL,             ""             },
+    [';']         = { NULL,           exec_semi,        "n :"          },
+    ['<']         = { NULL,           exec_langle,      "n"            },
+    ['=']         = { NULL,           exec_equals,      "n :"          },
+    ['>']         = { NULL,           exec_rangle,      ""             },
+    ['?']         = { NULL,           exec_question,    ""             },
+    ['@']         = { scan_mod,       NULL,             ""             },
+    ['A']         = { scan_A,         exec_A,           "n :"          },
+    ['B']         = { scan_B,         NULL,             ""             },
+    ['C']         = { NULL,           exec_C,           "n :"          },
+    ['D']         = { NULL,           exec_D,           "m n :"        },
+    ['E']         = { NULL,           NULL,             ""             },
+    ['F']         = { NULL,           NULL,             ""             },
+    ['G']         = { NULL,           exec_G,           ":q"           },
+    ['H']         = { scan_H,         NULL,             ""             },
+    ['I']         = { NULL,           exec_I,           "n @ 1"        },
+    ['J']         = { NULL,           exec_J,           "n :"          },
+    ['K']         = { NULL,           exec_K,           "m n"          },
+    ['L']         = { NULL,           exec_L,           "n"            },
+    ['M']         = { NULL,           exec_M,           "m n : q"      },
+    ['N']         = { NULL,           exec_N,           "n : @ 1"      },
+    ['O']         = { NULL,           exec_O,           "n @ 1"        },
+    ['P']         = { NULL,           exec_P,           "m n H : W"    },
+    ['Q']         = { scan_Q,         NULL,             "n : q"        },
+    ['R']         = { NULL,           exec_R,           "n :"          },
+    ['S']         = { NULL,           exec_S,           "m n : :: @ 1" },
+    ['T']         = { NULL,           exec_T,           "m n :"        },
+    ['U']         = { NULL,           exec_U,           "m n q"        },
+    ['V']         = { NULL,           exec_V,           "m n"          },
+    ['W']         = { NULL,           exec_W,           "m n :"        },
+    ['X']         = { NULL,           exec_X,           "m n : q"      },
+    ['Y']         = { NULL,           exec_Y,           "n :"          },
+    ['Z']         = { scan_Z,         NULL,             ""             },
+    ['[']         = { NULL,           exec_lbracket,    "q"            },
+    ['\\']        = { scan_bslash,    exec_bslash,      "n"            },
+    [']']         = { NULL,           exec_rbracket,    ": q"          },
+    ['^']         = { NULL,           NULL,             ""             },
+    ['_']         = { NULL,           exec_ubar,        "n : @ 1"      },
+    ['`']         = { scan_bad,       NULL,             ""             },
+    ['a']         = { NULL,           NULL,             ""             },
+    ['b']         = { NULL,           NULL,             ""             },
+    ['c']         = { NULL,           NULL,             ""             },
+    ['d']         = { NULL,           NULL,             ""             },
+    ['e']         = { NULL,           NULL,             ""             },
+    ['f']         = { NULL,           NULL,             ""             },
+    ['g']         = { NULL,           NULL,             ""             },
+    ['h']         = { NULL,           NULL,             ""             },
+    ['i']         = { NULL,           NULL,             ""             },
+    ['j']         = { NULL,           NULL,             ""             },
+    ['k']         = { NULL,           NULL,             ""             },
+    ['l']         = { NULL,           NULL,             ""             },
+    ['m']         = { NULL,           NULL,             ""             },
+    ['n']         = { NULL,           NULL,             ""             },
+    ['o']         = { NULL,           NULL,             ""             },
+    ['p']         = { NULL,           NULL,             ""             },
+    ['q']         = { NULL,           NULL,             ""             },
+    ['r']         = { NULL,           NULL,             ""             },
+    ['s']         = { NULL,           NULL,             ""             },
+    ['t']         = { NULL,           NULL,             ""             },
+    ['u']         = { NULL,           NULL,             ""             },
+    ['v']         = { NULL,           NULL,             ""             },
+    ['w']         = { NULL,           NULL,             ""             },
+    ['x']         = { NULL,           NULL,             ""             },
+    ['y']         = { NULL,           NULL,             ""             },
+    ['z']         = { NULL,           NULL,             ""             },
+    ['{']         = { scan_bad,       NULL,             ""             },
+    ['|']         = { NULL,           exec_vbar,        ""             },
+    ['}']         = { scan_bad,       NULL,             ""             },
+    ['~']         = { scan_bad,       NULL,             ""             },
+    [DEL]         = { scan_bad,       NULL,             ""             },
 };
 
 ///  @var    null_cmd
@@ -276,7 +276,42 @@ void exec_cmd(void)
 
         const struct cmd_table *table = scan_cmd(&cmd, c);
 
-        (*table->scan)(&cmd);
+        if (table->scan != NULL)
+        {
+            (*table->scan)(&cmd);
+        }
+        else if (table->exec != NULL)
+        {
+            scan_state = SCAN_DONE;
+        }
+
+        // Some commands have a postfix Q-register, which is an alphanumeric name
+        // optionally preceded by a . (to flag that it's a local and not a global
+        // Q-register.
+
+        if (cmd.q_req)                  // Do we need a Q-register?
+        {
+            c = fetch_buf();            // Yes
+
+            if (c == '.')               // Is it a local Q-register?
+            {
+                cmd.qlocal = true;      // Yes, mark it
+
+                c = fetch_buf();        // Get Q-register name
+            }        
+
+            if (!isalnum(c))
+            {
+                // The following allows use of G* and G_
+
+                if (toupper(cmd.c1) != 'G' || (c != '*' && c != '_'))
+                {
+                    printc_err(E_IQN, c); // Illegal Q-register name
+                }
+            }
+
+            cmd.qreg = (char)c;         // Save the name
+        }
 
         if (scan_state == SCAN_EXPR)    // Still scanning expression?
         {
@@ -285,6 +320,8 @@ void exec_cmd(void)
         else if (scan_state == SCAN_DONE) // Done scanning expression?
         {
             finish_cmd(&cmd, table);
+
+            scan_state = SCAN_NULL;
         }
 
         f.ei.exec = false;              // Suspend this to check CTRL/C
@@ -338,7 +375,7 @@ static void exec_expr(struct cmd *cmd)
 
     while (p < cmd->expr.buf + cmd->expr.len)
     {
-        struct cmd_table *table;
+        struct cmd_table *table = NULL;
         int c = *p++;
 
         if ((uint)c >= countof(cmd_table))
@@ -350,29 +387,79 @@ static void exec_expr(struct cmd *cmd)
 
         if (toupper(c) == 'E')          // E{x} command
         {
-            cmd->c2 = (char)*p++;
+            assert(p < cmd->expr.buf + cmd->expr.len);
 
-            assert(p <= cmd->expr.buf + cmd->expr.len);
+            cmd->c2 = (char)*p++;
 
             table = scan_E(cmd);
         }
         else if (toupper(c) == 'F')     // F{x} command
         {
-            cmd->c2 = (char)*p++;
+            assert(p < cmd->expr.buf + cmd->expr.len);
 
-            assert(p <= cmd->expr.buf + cmd->expr.len);
+            cmd->c2 = (char)*p++;
 
             table = scan_F(cmd);
         }
-        else if (toupper(c) == '^')     // ^{x} command
+        else if (c == '^')              // ^{x} or ^^{x} command
         {
-            cmd->c1 = (char)*p++;
+            assert(p < cmd->expr.buf + cmd->expr.len);
 
-            assert(p <= cmd->expr.buf + cmd->expr.len);
+            if ((c = *p++) == '^')      // ^^{x} - value of character
+            {
+                assert(p < cmd->expr.buf + cmd->expr.len);
 
-            cmd->c1 = (char)scan_caret(cmd);
+                push_expr(*p++, EXPR_VALUE);
 
-            table = &cmd_table[(int)cmd->c1];
+                continue;
+            }
+            else                        // ^{x}
+            {
+                cmd->c1 = (char)c;
+                cmd->c1 = (char)scan_caret(cmd);
+
+                table = &cmd_table[(int)cmd->c1];
+            }
+        }
+        else if (c == '\x1E')           // CTRL/^{x} command
+        {
+            assert(p < cmd->expr.buf + cmd->expr.len);
+
+            push_expr(*p++, EXPR_VALUE);
+
+            continue;
+        }
+        else if (isdigit(c))
+        {
+            long sum = 0;
+
+            // Here when we have a digit. Check to see that it's valid for the current
+            // radix, and then loop until we run out of valid digits, at which point we
+            // have to return the last character to the command buffer.
+
+            --p;
+
+            while (valid_radix(*p))
+            {
+                const char *digits = "0123456789ABCDEF";
+                const char *digit = strchr(digits, toupper(*p));
+
+                assert(digit != NULL);
+
+                long n = digit - digits;
+
+                sum *= v.radix;
+                sum += n;
+
+                if (++p >= cmd->expr.buf + cmd->expr.len)
+                {
+                    break;
+                }
+            }
+
+            push_expr((int)sum, EXPR_VALUE);
+
+            continue;
         }
         else                            // Everything else
         {
@@ -381,51 +468,19 @@ static void exec_expr(struct cmd *cmd)
             table = &cmd_table[toupper(c)];
         }
 
-        void (*exec_func)(struct cmd *cmd) = table->exec;
+        assert(table != NULL);
 
-        if (exec_func != NULL)
+        if (table->scan != NULL)
         {
-            (*exec_func)(cmd);
-        }
-        else if (isdigit(c))
-        {
-            --p;
-
-            int maxchrs = cmd->expr.buf + cmd->expr.len - p;
-            int ndigits = exec_digit(p, maxchrs);
-
-            p += ndigits;
-
-            assert(p <= cmd->expr.buf + cmd->expr.len);
-
-            cmd->n_set = true;
-            cmd->n_arg = (int)estack.item[estack.level - 1];
+            (*table->scan)(cmd);
         }
     }
-}
 
-
-///
-///  @brief    Process operator in expression. This may be any of the binary
-///            operators (+, -, *, /, &, #), the 1's complement operator (^_),
-///            or a left or right parenthesis.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void exec_operator(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->c1 == ')' && !operand_expr()) // Is there an operand available?
+    if (operand_expr())
     {
-        print_err(E_NAP);               // No argument before )
+        cmd->n_arg = get_n_arg();
+        cmd->n_set = true;
     }
-
-    push_expr(cmd->c1, EXPR_OPERATOR);
-
-    return;
 }
 
 
@@ -437,13 +492,30 @@ static void exec_operator(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+extern uint ncommands;
+
 static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
 {
     assert(cmd != NULL);
     assert(table != NULL);
 
+    (void)fflush(stdout);
+
     scan_tail(cmd);                     // Finish scanning command
 
+    // Tags that start with !+ are really comments, so discard them.
+
+    if (cmd->c1 == '!')
+    {
+        if (cmd->text1.len > 0)
+        {
+            if (cmd->text1.buf[0] == '+')
+            {
+                return;
+            }
+        }
+    }
+    
     if (teco_debug && cmd->c1 != ESC)
     {
         print_cmd(cmd);                 // Print command if debugging
@@ -454,7 +526,19 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
         init_expr();                    // Yes, so we need to re-initialize
     }
 
+    // Save command characters
+
+    char c1 = cmd->c1;
+    char c2 = cmd->c2;
+    char c3 = cmd->c3;
+
     exec_expr(cmd);                     // Execute expression for real
+
+    // Restore command characters
+
+    cmd->c3 = c3;
+    cmd->c2 = c2;
+    cmd->c1 = c1;
 
     // If the only thing on the expression stack is a minus sign, then say we
     // have an n argument equal to -1.
@@ -462,16 +546,17 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
     // If we have anything else on the stack after parsing an expression, then
     // that's an error.
 
-    if (cmd->expr.len == 1 && estack.type[0] == EXPR_OPERATOR
-        && estack.item[0] == '-')
+    if (cmd->expr.len == 1 && estack.obj[0].type == EXPR_MINUS)
     {
-        estack.type[0] = EXPR_OPERAND;
-        estack.item[0] = -1;
+        estack.obj[0].type = EXPR_VALUE;
+        estack.obj[0].value = -1;
     }
-    else if (estack.level > 0 && estack.type[estack.level - 1] == EXPR_OPERATOR)
+    else if (estack.level > 0 && estack.obj[estack.level - 1].type != EXPR_VALUE)
     {
         print_err(E_ARG);
     }
+
+    init_expr();
 
     if (table->exec != NULL)
     {
@@ -482,7 +567,22 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
         }
 
         (*table->exec)(cmd);
-
-        *cmd = null_cmd;
     }
+
+    // Re-initialize command block, but keep m and n arguments for next command.
+    
+    uint m_set = cmd->m_set;
+    uint m_arg = cmd->m_arg;
+    uint n_set = cmd->n_set;
+    uint n_arg = cmd->n_arg;
+    uint h_set = cmd->h_set;
+
+    *cmd = null_cmd;
+
+    cmd->m_set = m_set;
+    cmd->m_arg = m_arg;
+    cmd->n_set = n_set;
+    cmd->n_arg = n_arg;
+    cmd->h_set = h_set;
 }
+

@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_f_cmd.c
-///  @brief   Execute ^F (CTRL/F) command.
+///  @file    ctrl_y_cmd.c
+///  @brief   Execute ^Y (CTRL/Y) command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -32,33 +32,29 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Scan ^F (CTRL/F) command: return value of console switch
-///            register, or terminal number of specified job.
+///  @brief    Scan ^Y (CTRL/Y) command: equivalent to .+^S,.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_f(struct cmd *cmd)
+void scan_ctrl_y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // n^F specified?
+    if (operand_expr() || cmd->m_set)   // m or n specified?
     {
-        (void)get_n_arg();              // Yes, just ignore it
-
-        if (f.ei.strict)
-        {
-            print_err(E_T10);           // TECO-10 command not implemented.
-        }
+        print_err(E_ARG);               // Bad arguments
     }
 
-    push_expr(0, EXPR_VALUE);           // Value is always 0 for now
+    cmd->m_arg = 0;                     // TODO: this should be .+^S
+    cmd->m_set = true;
+
+    push_expr(v.dot, EXPR_VALUE);
 }
 

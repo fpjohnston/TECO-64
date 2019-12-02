@@ -30,7 +30,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
 #include "errors.h"
@@ -38,26 +37,27 @@
 
 
 ///
-///  @brief    Execute H command: equivalent to B,Z.
+///  @brief    Scan H command: equivalent to B,Z.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_H(struct cmd *cmd)
+void scan_H(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->m_set || cmd->n_set)
-    {
-        print_err(E_ARG);
-    }
+    // TODO: is this correct?
 
-    cmd->m_set = cmd->n_set = true;     // H -> B,Z
+//    if (operand_expr() || cmd->m_set)   // m or n specified?
+//    {
+//        print_err(E_ARG);               // Bad arguments
+//    }
 
-    cmd->m_arg = 0;                     // TODO: change this to B
-    cmd->n_arg = 0;                     // TODO: change this to Z
+    cmd->m_arg = v.z;
+    cmd->m_set = true;
+    cmd->h_set = true;
 
-    push_expr(cmd->n_arg, EXPR_OPERAND);
+    push_expr(v.b, EXPR_VALUE);
 }
 

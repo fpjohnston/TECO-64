@@ -47,17 +47,35 @@ void exec_ctrl_r(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)                    // n argument?
+    if (cmd->n_set)                     // n argument?
     {
-        push_expr(v.radix, EXPR_OPERAND); // No, just save what we have
+        if (cmd->n_arg != 8 && cmd->n_arg != 10 && cmd->n_arg != 16)
+        {
+            print_err(E_IRA);           // Illegal radix argument
+        }
 
-        return;
+        v.radix = cmd->n_arg;           // Set the radix
     }
+}
 
-    if (cmd->n_arg != 8 && cmd->n_arg != 10 && cmd->n_arg != 16)
+
+///
+///  @brief    Scan ^R (CTRL/R) command: read current radix.
+///
+///  @returns  nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_ctrl_r(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // n^R?
     {
-        print_err(E_IRA);               // Illegal radix argument
+        scan_state = SCAN_DONE;         // Yes, scan is done
     }
-
-    v.radix = cmd->n_arg;               // Set the radix
+    else
+    {
+        push_expr(v.radix, EXPR_VALUE); // No, just save what we have
+    }
 }

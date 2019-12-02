@@ -43,6 +43,7 @@
 #include <stdio.h>
 #endif
 
+
 /// @def    countof(array)
 /// @brief  Returns the number of elements in an array.
 
@@ -59,9 +60,25 @@
 
 enum expr_type
 {
-    EXPR_NONE,
-    EXPR_OPERATOR,
-    EXPR_OPERAND
+    EXPR_VALUE = '0',
+    EXPR_NOT   = '\x1F',
+    EXPR_OR    = '#',
+    EXPR_AND   = '&',
+    EXPR_LEFT  = '(',
+    EXPR_RIGHT = ')',
+    EXPR_MUL   = '*',
+    EXPR_PLUS  = '+',
+    EXPR_MINUS = '-',
+    EXPR_DIV   = '/'
+};
+
+///  @struct e_obj
+///  @brief  Definition of objects on expression stack.
+
+struct e_obj
+{
+    long value;                     // Operand/operator value
+    enum expr_type type;            // Value type (operand/operator)
 };
 
 ///  @struct estack
@@ -70,8 +87,7 @@ enum expr_type
 struct estack
 {
     uint level;                     ///< Expression stack level
-    long item[EXPR_SIZE];           ///< Expression stack items
-    enum expr_type type[EXPR_SIZE]; ///< Expression stack types
+    struct e_obj obj[EXPR_SIZE];    ///< Expression stack objects
 };
 
 ///  @struct   buffer
@@ -221,6 +237,8 @@ extern uint istream, ostream;
 
 extern char *last_file;
 
+extern int last_in;
+
 // Global functions
 
 extern void *alloc_more(void *ptr, uint oldsize, uint newsize);
@@ -254,8 +272,6 @@ extern void put_bell(void);
 extern void putc_term(int c);
 
 extern void puts_term(const char *str, unsigned int nbytes);
-
-extern void print_badseq(void);
 
 extern void print_prompt(void);
 
@@ -333,7 +349,9 @@ extern void unfetch_buf(int c);
 
 // File functions
 
-extern void close_output(struct ofile *ofile);
+extern void close_indirect(void);
+
+extern void create_filename(const struct tstring *text);
 
 extern const char *get_oname(struct ofile *ofile, uint nbytes);
 
@@ -341,9 +359,13 @@ extern int get_wild(void);
 
 extern void init_files(void);
 
-extern int open_input(const struct tstring *text);
+extern int open_input(const char *filespec, uint stream);
 
 extern int open_output(const struct tstring *text, int backup);
+
+extern bool read_indirect(void);
+
+extern void rename_output(struct ofile *ofile);
 
 extern void set_wild(const char *filename);
 

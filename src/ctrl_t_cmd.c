@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute ^T (CTRL/H) command.
+///  @brief    Execute n^T (CTRL/T) command.
 ///
 ///              ^T  Read and decode next character typed.
 ///              ^T= Type ASCII value of next character.
@@ -51,8 +51,47 @@
 void exec_ctrl_t(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    assert(cmd->n_set == true);
 
-    if (!cmd->n_set)                    // n argument?
+    if (cmd->colon_set || f.et.image)
+    {
+        putc_term(cmd->n_arg);
+    }
+    else
+    {
+        echo_chr(cmd->n_arg);
+    }
+}
+
+
+///
+///  @brief    Scan ^T (CTRL/T) command.
+///
+///              ^T  Read and decode next character typed.
+///              ^T= Type ASCII value of next character.
+///             n^T  Type ASCII character of value n.
+///            n:^T  Output binary byte of value n.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_ctrl_t(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // n argument?
+    {
+        cmd->n_arg = get_n_arg();
+        cmd->n_set = true;
+
+        scan_state = SCAN_DONE;
+    }
+    else if (scan_state != SCAN_DONE)
+    {
+        push_expr(1, EXPR_VALUE);       // Dummy expression
+    }
+    else
     {
         bool wait = f.et.nowait ? false : true;
         int c = getc_term(wait);
@@ -64,18 +103,7 @@ void exec_ctrl_t(struct cmd *cmd)
             echo_chr(c);
         }
 
-        push_expr(c, EXPR_OPERAND);
-
-        return;    
-    }
-
-    if (cmd->colon_set || f.et.image)
-    {
-        putc_term(cmd->n_arg);
-    }
-    else
-    {
-        echo_chr(cmd->n_arg);
+        push_expr(c, EXPR_VALUE);
     }
 }
 

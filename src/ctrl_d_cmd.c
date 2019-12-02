@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute ^D (CTRL/D) command - switch radix to decimal.
+///  @brief    Execute ^D (CTRL/D) command: switch radix to decimal.
 ///
 ///  @returns  Nothing.
 ///

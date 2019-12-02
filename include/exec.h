@@ -89,9 +89,9 @@ struct cmd
     char delim;                     ///< Delimiter for @ modifier
     char qreg;                      ///< Q-register, if any
     bool qlocal;                    ///< Q-register is local (not global)
-    struct tstring expr;               ///< Expression string
-    struct tstring text1;              ///< 1st text string
-    struct tstring text2;              ///< 2nd text string
+    struct tstring expr;            ///< Expression string
+    struct tstring text1;           ///< 1st text string
+    struct tstring text2;           ///< 2nd text string
     struct cmd *next;               ///< Next command (or NULL)
     struct cmd *prev;               ///< Previous command (or NULL)
 };
@@ -112,7 +112,7 @@ extern enum scan_state scan_state;
 
 // Functions that assist in parsing commands
 
-extern void get_flag(uint *flag, struct cmd *cmd);
+extern void get_flag(struct cmd *cmd, uint flag);
 
 extern int scan_caret(struct cmd *cmd);
 
@@ -120,19 +120,17 @@ extern struct cmd_table *scan_E(struct cmd *cmd);
 
 extern struct cmd_table *scan_F(struct cmd *cmd);
 
+extern uint set_flag(struct cmd *cmd, uint flag);
+
 // Functions that execute commands
 
 extern void exec_A(struct cmd *cmd);
-
-extern void exec_B(struct cmd *cmd);
 
 extern void exec_C(struct cmd *cmd);
 
 extern void exec_D(struct cmd *cmd);
 
 extern void exec_G(struct cmd *cmd);
-
-extern void exec_H(struct cmd *cmd);
 
 extern void exec_I(struct cmd *cmd);
 
@@ -172,19 +170,13 @@ extern void exec_Z(struct cmd *cmd);
 
 extern void exec_apos(struct cmd *cmd);
 
-extern void exec_backslash(struct cmd *cmd);
+extern void exec_bslash(struct cmd *cmd);
 
 extern void exec_bang(struct cmd *cmd);
 
-extern void exec_comma(struct cmd *cmd);
-
 extern void exec_ctrl_a(struct cmd *cmd);
 
-extern void exec_ctrl_b(struct cmd *cmd);
-
 extern void exec_ctrl_c(struct cmd *cmd);
-
-extern void exec_ctrl_caret(struct cmd *cmd);
 
 extern void exec_ctrl_d(struct cmd *cmd);
 
@@ -192,43 +184,23 @@ extern void exec_ctrl_e(struct cmd *cmd);
 
 extern void exec_ctrl_f(struct cmd *cmd);
 
-extern void exec_ctrl_h(struct cmd *cmd);
-
 extern void exec_ctrl_i(struct cmd *cmd);
 
-extern void exec_ctrl_l(struct cmd *cmd);
-
-extern void exec_ctrl_n(struct cmd *cmd);
-
 extern void exec_ctrl_o(struct cmd *cmd);
-
-extern void exec_ctrl_p(struct cmd *cmd);
 
 extern void exec_ctrl_q(struct cmd *cmd);
 
 extern void exec_ctrl_r(struct cmd *cmd);
 
-extern void exec_ctrl_s(struct cmd *cmd);
-
 extern void exec_ctrl_t(struct cmd *cmd);
 
 extern void exec_ctrl_u(struct cmd *cmd);
-
-extern void exec_ctrl_ubar(struct cmd *cmd);
 
 extern void exec_ctrl_v(struct cmd *cmd);
 
 extern void exec_ctrl_w(struct cmd *cmd);
 
 extern void exec_ctrl_x(struct cmd *cmd);
-
-extern void exec_ctrl_y(struct cmd *cmd);
-
-extern void exec_ctrl_z(struct cmd *cmd);
-
-extern int exec_digit(const char *str, int nchrs);
-
-extern void exec_dot(struct cmd *cmd);
 
 extern void exec_equals(struct cmd *cmd);
 
@@ -238,8 +210,6 @@ extern void exec_langle(struct cmd *cmd);
 
 extern void exec_lbracket(struct cmd *cmd);
 
-extern void exec_pct(struct cmd *cmd);
-
 extern void exec_question(struct cmd *cmd);
 
 extern void exec_quote(struct cmd *cmd);
@@ -247,8 +217,6 @@ extern void exec_quote(struct cmd *cmd);
 extern void exec_rangle(struct cmd *cmd);
 
 extern void exec_rbracket(struct cmd *cmd);
-
-extern void exec_rparen(struct cmd *cmd);
 
 extern void exec_semi(struct cmd *cmd);
 
@@ -276,8 +244,6 @@ extern void exec_EH(struct cmd *cmd);
 
 extern void exec_EI(struct cmd *cmd);
 
-extern void exec_EJ(struct cmd *cmd);
-
 extern void exec_EK(struct cmd *cmd);
 
 extern void exec_EL(struct cmd *cmd);
@@ -285,8 +251,6 @@ extern void exec_EL(struct cmd *cmd);
 extern void exec_EM(struct cmd *cmd);
 
 extern void exec_EN(struct cmd *cmd);
-
-extern void exec_EO(struct cmd *cmd);
 
 extern void exec_EP(struct cmd *cmd);
 
@@ -344,18 +308,80 @@ extern void exec_F_vbar(struct cmd *cmd);
 
 extern void print_cmd(struct cmd *cmd);
 
+extern void scan_A(struct cmd *cmd);
+
+extern void scan_B(struct cmd *cmd);
+
 extern void scan_bad(struct cmd *cmd);
+
+extern void scan_bslash(struct cmd *cmd);
 
 extern const struct cmd_table *scan_cmd(struct cmd *cmd, int c);
 
-extern void scan_done(struct cmd *cmd);
+extern void scan_comma(struct cmd *cmd);
 
-extern void scan_expr(struct cmd *cmd);
+extern void scan_ctrl_b(struct cmd *cmd);
+
+extern void scan_ctrl_e(struct cmd *cmd);
+
+extern void scan_ctrl_f(struct cmd *cmd);
+
+extern void scan_ctrl_h(struct cmd *cmd);
+
+extern void scan_ctrl_n(struct cmd *cmd);
+
+extern void scan_ctrl_r(struct cmd *cmd);
+
+extern void scan_ctrl_s(struct cmd *cmd);
+
+extern void scan_ctrl_t(struct cmd *cmd);
+
+extern void scan_ctrl_x(struct cmd *cmd);
+
+extern void scan_ctrl_y(struct cmd *cmd);
+
+extern void scan_ctrl_z(struct cmd *cmd);
+
+extern void scan_digits(struct cmd *cmd);
+
+extern void scan_dot(struct cmd *cmd);
+
+extern void scan_EC(struct cmd *cmd);
+
+extern void scan_ED(struct cmd *cmd);
+
+extern void scan_EE(struct cmd *cmd);
+
+extern void scan_EH(struct cmd *cmd);
+
+extern void scan_EJ(struct cmd *cmd);
+
+extern void scan_EO(struct cmd *cmd);
+
+extern void scan_ES(struct cmd *cmd);
+
+extern void scan_ET(struct cmd *cmd);
+
+extern void scan_EU(struct cmd *cmd);
+
+extern void scan_EV(struct cmd *cmd);
+
+extern void scan_EZ(struct cmd *cmd);
+
+extern void scan_H(struct cmd *cmd);
 
 extern void scan_mod(struct cmd *cmd);
 
-extern void scan_var(struct cmd *cmd);
+extern void scan_operator(struct cmd *cmd);
+
+extern void scan_pct(struct cmd *cmd);
+
+extern void scan_Q(struct cmd *cmd);
+
+extern void scan_quote(struct cmd *cmd);
 
 extern void scan_tail(struct cmd *cmd);
+
+extern void scan_Z(struct cmd *cmd);
 
 #endif  // _EXEC_H

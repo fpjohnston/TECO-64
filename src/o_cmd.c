@@ -33,11 +33,16 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
+#include "errors.h"
 #include "exec.h"
 
 
+static char tag[128 + 1];               // TODO: magic number
+
+
 ///
-///  @brief    Execute O command (goto).
+///  @brief    Execute O command: goto and computed goto.
 ///
 ///  @returns  Nothing.
 ///
@@ -46,5 +51,61 @@
 void exec_O(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (cmd->text1.len == 0)            // Is there a tag?
+    {
+        print_err(E_NTF);               // No tag found
+    }
+
+    // Here if we have a tag
+
+    if (!cmd->n_set)                    // Is it Otag` or nOtag1,tag,tag3`?
+    {
+        sprintf(tag, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+
+//        prints_err(E_TAG, tag);         // TODO: do something better here
+    }
+
+    // Here if the command was nO (computed goto).
+
+    if (cmd->n_arg <= 0)                // Is value non-positive?
+    {
+        return;
+//        print_err(E_NTF);               // No tag found
+    }
+
+    char *taglist = alloc_new(cmd->text1.len + 1);
+    char *buf = taglist;
+    char *next;
+    char *saveptr;
+    uint ntags = 0;
+
+    tag[0] = NUL;
+
+    sprintf(taglist, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+
+    // Find all tags, looking for the one matching the n argument, but
+    // validating all regardless.
+
+    while ((next = strtok_r(buf, ",", &saveptr)) != NULL)
+    {
+        buf = NULL;
+
+        // TODO: validate tag
+
+        if (++ntags == (uint)cmd->n_arg) // Is this the tag we want?
+        {
+            sprintf(tag, "%s", next);
+        }
+    }
+
+    dealloc(&taglist);
+    
+    if (tag[0] == NUL)                  // Did we find the tag in the list?
+    {
+        print_err(E_NTF);               // No tag found
+    }
+
+//    prints_err(E_TAG, tag);             // TODO: do something better here
 }
 

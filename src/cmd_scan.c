@@ -84,110 +84,62 @@ const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
     // execute the command. This includes such things as m and n arguments,
     // modifiers such as : and @, and any text strings followed the command.
 
-    struct cmd_table *table;
+    struct cmd_table *table = NULL;
 
     cmd->c1 = (char)c;
 
-    if (toupper(c) == 'E')          // E{x} command
+    if (toupper(c) == 'E')              // E{x} command
     {
         cmd->c2 = (char)fetch_buf();
 
         table = scan_E(cmd);
     }
-    else if (toupper(c) == 'F')     // F{x} command
+    else if (toupper(c) == 'F')         // F{x} command
     {
         cmd->c2 = (char)fetch_buf();
 
         table = scan_F(cmd);
     }
-    else if (toupper(c) == '^')     // ^{x} command
+    else if (c == '^')                  // ^{x} or ^^{x} command
     {
-        cmd->c1 = (char)fetch_buf();
-        cmd->c1 = (char)scan_caret(cmd);
+        c = (char)fetch_buf();
 
-        table = &cmd_table[(int)cmd->c1];
+        if (c == '^')
+        {
+            (void)fetch_buf();          // Just discard chr. after ^^
+
+            scan_state = SCAN_EXPR;
+
+            table = &cmd_table[NUL];
+        }
+        else
+        {
+            cmd->c1 = (char)c;
+            cmd->c1 = (char)scan_caret(cmd);
+
+            table = &cmd_table[(int)cmd->c1];
+        }
     }
-    else                            // Everything else
+    else if (c == '\x1E')               // CTRL/^{x} command
+    {
+        (void)fetch_buf();              // Just discard chr. after CTRL/^
+
+        scan_state = SCAN_EXPR;
+
+        table = &cmd_table[NUL];
+    }
+    else                                // Everything else
     {
         cmd->c2 = NUL;
 
         table = &cmd_table[toupper(c)];
     }
 
-    if (table->scan == NULL)
-    {
-        return NULL;
-    }
+    assert(table != NULL);
 
     set_opts(cmd, table->opts);
 
     return table;
-}
-
-
-///
-///  @brief    Flag that we've scanned the actual command character.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_done(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    scan_state = SCAN_DONE;
-}
-
-
-///
-///  @brief    Scan expression. Note that we don't do much here other than to
-///            check for correct form.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_expr(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    int c = cmd->c1;
-
-    if (isdigit(c))
-    {
-        do
-        {
-            c = fetch_buf();            // Keep reading characters
-        } while (valid_radix(c));       // As long as they're valid for our radix
-
-        unfetch_buf(c);                 // Went too far, so return character
-
-        cmd->n_set = true;
-        cmd->n_arg = 1;
-
-        push_expr(cmd->n_arg, EXPR_OPERAND); // Dummy value
-    }
-    else
-    {
-        if (c == '(')
-        {
-            ++cmd->paren;
-        }
-        else if (c == ')')
-        {
-            if (cmd->paren == 0)
-            {
-                print_err(E_MLP);
-            }
-
-            --cmd->paren;
-        }
-
-        push_expr(c, EXPR_OPERATOR);
-    }
-             
-    scan_state = SCAN_EXPR;
 }
 
 
@@ -234,6 +186,28 @@ void scan_mod(struct cmd *cmd)
 
 
 ///
+///  @brief    Process operator in expression. This may be any of the binary
+///            operators (+, -, *, /, &, #), the 1's complement operator (^_),
+///            or a left or right parenthesis.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_operator(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->c1 == ')' && !operand_expr()) // Is there an operand available?
+    {
+        print_err(E_NAP);               // No argument before )
+    }
+
+    push_expr(0, cmd->c1);              // Use operator as expression type
+}
+
+
+///
 ///  @brief    Scan the rest of the command string. We enter here after scanning
 ///            any expression, and any prefix modifiers.
 ///
@@ -257,7 +231,7 @@ void scan_tail(struct cmd *cmd)
             || (cmd->dcolon_set && !cmd->dcolon_opt)
             || (cmd->atsign_set && !cmd->atsign_opt))
         {
-            print_err(E_MOD);           // Invalid modifier for command
+//            print_err(E_MOD);           // Invalid modifier for command
         }
     }
 
@@ -268,42 +242,12 @@ void scan_tail(struct cmd *cmd)
         cmd->delim = cmd->c1;           // Switch delimiter for CTRL/A and !
     }
 
-    // Some commands have a postfix Q-register, which is an alphanumeric name
-    // optionally preceded by a . (to flag that it's a local and not a global
-    // Q-register.
-
-    int c;
-
-    if (cmd->q_req)                     // Do we need a Q-register?
-    {
-        c = fetch_buf();                // Yes
-
-        if (c == '.')                   // Is it a local Q-register?
-        {
-            cmd->qlocal = true;         // Yes, mark it
-
-            c = fetch_buf();            // Get Q-register name
-        }        
-
-        if (!isalnum(c))
-        {
-            // The following allows use of G* and G_
-
-            if (toupper(cmd->c1) != 'G' || (c != '*' && c != '_'))
-            {
-                printc_err(E_IQN, c);   // Illegal Q-register name
-            }
-        }
-
-        cmd->qreg = (char)c;            // Save the name
-    }
-
     // The P command can optionally be followed by a W. This doesn't really
     // change how the command works.
 
     if (cmd->w_opt)                     // Optional W following?
     {
-        c = fetch_buf();                // Maybe
+        int c = fetch_buf();            // Maybe
 
         if (toupper(c) == 'W')          // Is it?
         {
@@ -369,33 +313,6 @@ static void scan_text(int delim, struct tstring *text)
 
 
 ///
-///  @brief    Scan a variable (which can be an operand as well as a command).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_var(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (operand_expr())                 // Is there an operand available?
-    {
-        (void)get_n_arg();
-
-        cmd->n_set = true;
-        scan_state = SCAN_DONE;
-    }
-    else
-    {
-        push_expr(1, EXPR_OPERAND);     // Dummy value
-
-        scan_state = SCAN_EXPR;
-    }
-}
-
-
-///
 ///  @brief    Set command options. The command tables in this file, e_cmd.c,
 ///            and f_cmd.c all include strings that define the options for each
 ///            command. The while() and switch() statements below parse these
@@ -426,6 +343,8 @@ void scan_var(struct cmd *cmd)
 static void set_opts(struct cmd *cmd, const char *opts)
 {
     assert(cmd != NULL);
+
+    cmd->q_req = false;
 
     if (opts == NULL)
     {

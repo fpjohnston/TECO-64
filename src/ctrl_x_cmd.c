@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command.
+///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -50,9 +50,23 @@ void exec_ctrl_x(struct cmd *cmd)
     {
         v.ctrl_x = cmd->n_arg;
     }
-    else
+}
+
+
+///
+///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_ctrl_x(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (!operand_expr())                // ^X`?
     {
-        push_expr(v.ctrl_x, EXPR_OPERAND);
+        push_expr(v.ctrl_x, EXPR_VALUE);
     }
 }
 

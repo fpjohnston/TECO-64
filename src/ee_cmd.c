@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute EE command.
+///  @brief    Execute EE command: set alternate delimiter.
 ///
 ///  @returns  Nothing.
 ///
@@ -48,21 +48,38 @@
 void exec_EE(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    assert(cmd->n_set == true);
 
-    if (cmd->n_set)                     // n argument?
+    f.ee = cmd->n_arg;
+}
+
+
+///
+///  @brief    Scan EE command: read alternate delimiter.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_EE(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // nEE`?
     {
-        int ee = cmd->n_arg;
+        cmd->n_arg = get_n_arg();
+        cmd->n_set = true;
+        
+        scan_state = SCAN_DONE;
 
-        if (!isascii(f.ee))
+        if (!isascii(cmd->n_arg))       // Must be an ASCII character
         {
             print_err(E_CHR);           // Invalid character for command
         }
-
-        f.ee = ee;
     }
     else
     {
-        push_expr(f.ee, EXPR_OPERAND);
+        push_expr(f.ee, EXPR_VALUE);
     }
 }
 

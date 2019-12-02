@@ -37,7 +37,11 @@
 
 
 ///
-///  @brief    Execute A command (append next page of input file).
+///  @brief    Execute A command: append text to buffer.
+///
+///              A -> Append page to buffer.
+///             :A -> Same as A, but returns -1/0 for success/failure.
+///            n:A -> Appends n lines of text. Returns -1/0 for success/failure.
 ///
 ///  @returns  Nothing.
 ///
@@ -46,5 +50,37 @@
 void exec_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
+}
+
+
+///
+///  @brief    Parse A command: get value of character in buffer.
+///
+///            nA - Value of nth character in buffer, 0 = first, -1 = last.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_A(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // Is it nA or n:A?
+    {
+        cmd->n_arg = get_n_arg();
+        cmd->n_set = true;
+
+        if (!cmd->colon_set)            // nA or n:A?
+        {
+            // TODO: get actual value of character in buffer.
+
+            push_expr(1, EXPR_VALUE);   // Dummy expression
+
+            return;
+        }
+    }
+
+    scan_state = SCAN_DONE;
 }
 

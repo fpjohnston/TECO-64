@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute ER command (open file for input)
+///  @brief    Execute ER command: open file for input.
 ///
 ///  @returns  Nothing.
 ///
@@ -56,18 +56,20 @@ void exec_ER(struct cmd *cmd)
         return;
     }
 
-    if (open_input(&cmd->text1) == EXIT_FAILURE)
+    create_filename(&cmd->text1);
+
+    if (open_input(filename_buf, istream) == EXIT_FAILURE)
     {
         if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
         {
             prints_err(E_FNF, last_file);
         }
 
-        push_expr(OPEN_FAILURE, EXPR_OPERAND);
+        push_expr(OPEN_FAILURE, EXPR_VALUE);
     }
     else if (cmd->colon_set)
     {
-        push_expr(OPEN_SUCCESS, EXPR_OPERAND);
+        push_expr(OPEN_SUCCESS, EXPR_VALUE);
     }
 }
 

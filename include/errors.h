@@ -91,6 +91,7 @@ enum errors
     E_NIH,          ///< Not implemented here
     E_NPA,          ///< Negative or 0 argument to P
     E_NRO,          ///< No room for output
+    E_NTF,          ///< No tag found
     E_NYA,          ///< Numeric argument with Y
     E_NYI,          ///< Not yet implemented
     E_OFO,          ///< Output file already open
@@ -102,7 +103,7 @@ enum errors
     E_SRH,          ///< Search failure "text"
     E_STL,          ///< String too long
     E_SYS,          ///< System error message
-    E_TAG,          ///< Missing tag !tag!
+    E_TAG,          ///< Missing tag !x!
     E_T10,          ///< TECO-10 command not implemented
     E_T32,          ///< TECO-32 command not implemented
     E_UCD,          ///< Unable to close and delete output file "x"

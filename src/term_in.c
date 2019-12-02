@@ -44,6 +44,9 @@
 
 int CR_count = 0;                       ///< Current count of CRs seen
 
+int last_in = EOF;                      ///< Last character read
+
+
 // Local functions
 
 static void read_bs(void);
@@ -58,8 +61,6 @@ static void read_ctrl_u(void);
 
 static void read_ctrl_z(void);
 
-static void read_esc(void);
-
 static void read_ff(void);
 
 static int read_first(void);
@@ -69,126 +70,6 @@ static void read_lf(void);
 static void read_qname(int c);
 
 static void read_vt(void);
-
-
-///
-///  @brief    Read command string.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void read_cmd(void)
-{
-    int c = read_first();               // Check for immediate-mode commands
-    int last = EOF;
-
-    reset_buf();                        // Initialize command buffer
-
-    for (;;)
-    {
-        if (!f.et.lower)                // Does terminal allow lower case?
-        {
-            c = toupper(c);             // No, so convert to upper case
-        }
-
-        // If the character is an accent grave and and the et.accent bit is set,
-        // or it matches a non-NUL EE flag, then treat it as an ESCape.
-
-        if ((f.et.accent && c == ACCENT) || f.ee == c)
-        {
-            echo_chr(ACCENT);           // Echo as accent grave
-            store_buf(c = ESC);         // But store as ESCape
-
-            if (last == ESC)            // Consecutive delimiter?
-            {
-                putc_term(CRLF);
-
-                return;                 // Yes, time to execute command
-            }
-        }
-        else
-        {
-            switch (c)
-            {
-                case BS:
-                    read_bs();
-
-                    break;
-
-                case FF:
-                    read_ff();
-
-                    break;
-
-                case CR:
-                    read_cr();
-
-                    break;
-
-                case CTRL_C:
-                    read_ctrl_c(last);
-
-                    break;
-
-                case CTRL_G:
-                    read_ctrl_g();
-
-                    break;
-
-                case CTRL_U:
-                    read_ctrl_u();
-
-                    break;
-
-                case CTRL_Z:
-                    read_ctrl_z();
-
-                    break;
-
-                case ESC:
-                    if (f.et.vt200)         // VT200 mode?
-                    {
-                        read_esc();         // Yes, read escape sequence
-                    }
-                    else                    // No, escape is normal character
-                    {
-                        putc_term('$');     // Use dollar sign to echo ESC
-                        store_buf(c);
-
-                        if (last == ESC)    // 2nd ESCape?
-                        {
-                            putc_term(CRLF);
-
-                            return;         // Done reading command
-                        }
-                    }
-
-                    break;
-
-                case LF:
-                    read_lf();
-
-                    break;
-
-                case VT:
-                    read_vt();
-
-                    break;
-
-                default:
-                    echo_chr(c);
-                    store_buf(c);
-
-                    break;
-            }
-        }
-
-        last = c;
-
-        c = getc_term((bool)WAIT);
-    }
-}
 
 
 ///
@@ -232,6 +113,131 @@ static void read_bs(void)
         putc_term(BS);
         putc_term(SPACE);
         putc_term(BS);
+    }
+}
+
+
+///
+///  @brief    Read next character from terminal.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void read_cmd(void)
+{
+    int c;
+
+    if (empty_buf())                    // If nothing in command string,
+    {
+        reset_buf();
+
+        c = read_first();               // check for immediate-mode commands
+    }
+    else
+    {
+        c = getc_term((bool)WAIT);      // else read another character
+    }
+
+    for (;;)
+    {
+        // If the character is an accent grave and and the et.accent bit is set,
+        // or it matches a non-NUL EE flag, then treat it as an ESCape.
+
+        if ((f.et.accent && c == ACCENT) || f.ee == c)
+        {
+            echo_chr(ACCENT);           // Echo as accent grave
+            store_buf(c = ESC);         // But store as ESCape
+
+            if (last_in == ESC)         // Consecutive delimiter?
+            {
+                putc_term(CRLF);
+
+                last_in = EOF;
+
+                return;                 // Yes, time to execute command
+            }
+        }
+        else
+        {
+            switch (c)
+            {
+                case BS:
+                    read_bs();
+
+                    break;
+
+                case FF:
+                    read_ff();
+
+                    break;
+
+                case CR:
+                    read_cr();
+
+                    break;
+
+                case CTRL_C:
+                    read_ctrl_c(last_in);
+
+                    break;
+
+                case CTRL_G:
+                    read_ctrl_g();
+
+                    break;
+
+                case CTRL_U:
+                    read_ctrl_u();
+
+                    break;
+
+                case CTRL_Z:
+                    read_ctrl_z();
+
+                    break;
+
+                case ESC:
+                    echo_chr('$');              // Use dollar sign to echo ESC
+                    store_buf(c);
+
+                    if (last_in == ESC)
+                    {
+                        last_in = EOF;
+
+                        putc_term(CRLF);
+
+                        return;                 // Done reading command
+                    }
+
+                    break;
+
+                case LF:
+                    read_lf();
+
+                    break;
+
+                case VT:
+                    read_vt();
+
+                    break;
+
+                default:
+                    if (!f.et.lower)
+                    {
+                        c = toupper(c);
+                    }
+
+                    echo_chr(c);
+                    store_buf(c);
+
+                    break;
+            }
+        }
+
+        last_in = c;
+
+        c = getc_term((bool)WAIT);
     }
 }
 
@@ -405,74 +411,6 @@ static void read_ctrl_z(void)
 
 
 ///
-///  @brief    Process input escape sequence.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_esc(void)
-{
-    int c = getc_term((bool)WAIT);
-
-    if (c != '[')                       // Escape must start with '['
-    {
-        print_badseq();
-    }
-    else
-    {
-        switch (c = getc_term((bool)WAIT))
-        {
-            case '2':                   // F9 - F16
-                c = getc_term((bool)WAIT);
-
-                if (c == '4')
-                {
-                    store_buf(c);
-
-                    c = getc_term((bool)WAIT);
-
-                    if (c != '~')
-                    {
-                        print_badseq();
-                    }
-                    else
-                    {
-                        store_buf(BS);
-                    }
-                }
-                else if (c == '5')
-                {
-                    store_buf(c);
-
-                    c = getc_term((bool)WAIT);
-
-                    if (c != '~')
-                    {
-                        print_badseq();
-                    }
-                    else
-                    {
-                        store_buf(LF);
-                    }
-                }
-                else
-                {
-                    print_badseq();
-                }
-
-                break;
-
-            default:
-                print_badseq();
-
-                break;
-        }
-    }
-}
-
-
-///
 ///  @brief    Process input form feed.
 ///
 ///  @returns  Nothing.
@@ -526,7 +464,6 @@ static int read_first(void)
             // DoEvEs(EvFlag);          // TODO: TBD!
         }
 
-        (void)fflush(stdout);           // TODO: is this needed?
         print_prompt();
 
         int c = getc_term((bool)WAIT);

@@ -41,25 +41,24 @@
 
 
 ///
-///  @brief    Process digits in a command string.
+///  @brief    Scan digits in a command string.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int exec_digit(const char *str, int nchrs)
+void scan_digits(struct cmd *cmd)
 {
-    assert(str != NULL);
+    assert(cmd != NULL);
 
     long sum = 0;
-    int ndigits = 0;
-    int c;
+    int c = cmd->c1;
 
     // Here when we have a digit. Check to see that it's valid for the current
     // radix, and then loop until we run out of valid digits, at which point we
     // have to return the last character to the command buffer.
-
-    while (valid_radix(c = *str++) && nchrs-- > 0)
+    
+    while (valid_radix(c))
     {
         const char *digits = "0123456789ABCDEF";
         const char *digit = strchr(digits, toupper(c));
@@ -71,12 +70,12 @@ int exec_digit(const char *str, int nchrs)
         sum *= v.radix;
         sum += n;
 
-        ++ndigits;
+        c = fetch_buf();                // Get next digit
     }
 
-    push_expr((int)sum, EXPR_OPERAND);
+    unfetch_buf(c);                     // Return last (non-digit) character
 
-    return ndigits;
+    push_expr((int)sum, EXPR_VALUE);
 }
 
 

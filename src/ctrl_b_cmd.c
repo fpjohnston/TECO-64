@@ -37,14 +37,14 @@
 
 
 ///
-///  @brief    Execute ^B (CTRL/B) command. We return the current date encoded
+///  @brief    Scan ^B (CTRL/B) command. We return the current date encoded
 ///            in the following way: ((year - 1900) * 16 + month) * 32 + day.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_b(struct cmd *cmd)
+void scan_ctrl_b(struct cmd *cmd)
 {
     assert(cmd != NULL);
     
@@ -55,5 +55,5 @@ void exec_ctrl_b(struct cmd *cmd)
 
     int teco_date = ((tm.tm_year) * 16 + tm.tm_mon+1) * 32 + tm.tm_mday;
 
-    push_expr(teco_date, EXPR_OPERAND);
+    push_expr(teco_date, EXPR_VALUE);
 }

@@ -35,39 +35,60 @@
 
 
 ///
-///  @brief    Get or set specified mode control flag. The possible flags are
-///            ED, EH, ES, ET, EU, EV, EZ and ^X. The EO flag can only be
-///            examined, not set, so it does not use this function. (TODO?)
+///  @brief    Get specified mode control flag
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void get_flag(uint *flag, struct cmd *cmd)
+void get_flag(struct cmd *cmd, uint flag)
 {
-    assert(flag != NULL);
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // n argument?
+    if (operand_expr())                 // n argument?
+    {
+        cmd->n_arg = get_n_arg();
+        cmd->n_set = true;
+
+        scan_state = SCAN_DONE;
+    }
+    else
+    {
+        push_expr((int)flag, EXPR_VALUE); // Assume we're an operand
+    }
+}
+
+
+///
+///  @brief    Set specified mode control flag. The possible flags are ED, EH,
+///            and ET.
+///
+///  @returns  New value of flag.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint set_flag(struct cmd *cmd, uint flag)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)
     {
         if (!cmd->m_set)                // m argument too?
         {
-            *flag = (uint)cmd->n_arg;   // No, so just set flag
+            flag = (uint)cmd->n_arg;    // No, so just set flag
         }
         else                            // Both m and n were specified
         {
             if (cmd->m_arg != 0)
             {
-                *flag &= ~(uint)cmd->m_arg; // Turn off m bits
+                flag &= ~(uint)cmd->m_arg; // Turn off m bits
             }
             if (cmd->n_arg != 0)
             {
-                *flag |= (uint)cmd->n_arg; // Turn on n bits
+                flag |= (uint)cmd->n_arg; // Turn on n bits
             }
         }
     }
-    else
-    {
-        push_expr((int)*flag, EXPR_OPERAND);
-    }
+
+    return flag;
 }

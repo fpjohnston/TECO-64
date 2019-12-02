@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute ^U (CTRL/U) command - store/append string/character in
+///  @brief    Execute ^U (CTRL/U) command: store/append string/character in
 ///            Q-register.
 ///
 ///  @returns  Nothing.
@@ -48,14 +48,17 @@ void exec_ctrl_u(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // n argument?
+    if (operand_expr())                 // n^Uq`?
     {
-        if (cmd->text1.len != 0)        // Yes, text too?
+        cmd->n_arg = get_n_arg();
+        cmd->n_set = true;
+
+        if (cmd->text1.len != 0)        // Does it have a text string?
         {
             print_err(E_MOD);           // Yes, that's an error
         }
 
-        if (cmd->colon_set)             // n:^Uq`
+        if (cmd->colon_set)             // n:^Uq`?
         {
             append_qchr(cmd->qreg, cmd->qlocal, cmd->n_arg);
         }
@@ -71,11 +74,11 @@ void exec_ctrl_u(struct cmd *cmd)
             print_err(E_MOD);           // Yes, that's wrong
         }
 
-        if (cmd->colon_set)             // ^Ustring`
+        if (cmd->colon_set)             // :^Utext`
         {
             append_qtext(cmd->qreg, cmd->qlocal, cmd->text1);
         }
-        else                            // n^Uq`
+        else                            // ^Uqtext`
         {
             store_qtext(cmd->qreg, cmd->qlocal, cmd->text1);
         }

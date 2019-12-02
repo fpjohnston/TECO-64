@@ -48,6 +48,21 @@ void exec_ED(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    get_flag(&f.ed.flag, cmd);
+    f.ed.flag = set_flag(cmd, f.ed.flag);
+}
+
+
+///
+///  @brief    Scan ED command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_ED(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    get_flag(cmd, f.ed.flag);
 }
 

@@ -40,15 +40,16 @@
 #define SECONDS_PER_MINUTE      60      ///< Seconds per minute
 
 ///
-///  @brief    Execute ^H (CTRL/H) command. This returns the current time
-///            as seconds since midnight divided by 2. The division is necessary
-///            so that the result is no more than 16 bits.
+///  @brief    Scan ^H (CTRL/H) command. This returns the current time as
+///            seconds since midnight divided by 2 (this is format expected by
+///            RT-11, RSX-11, and VMS. The division is necessary so that the
+//             result is no more than 16 bits.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_h(struct cmd *cmd)
+void scan_ctrl_h(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -62,6 +63,6 @@ void exec_ctrl_h(struct cmd *cmd)
     teco_time *= SECONDS_PER_MINUTE;
     teco_time += tm.tm_sec;
 
-    push_expr(teco_time / 2, EXPR_OPERAND);
+    push_expr(teco_time / 2, EXPR_VALUE);
 }
 

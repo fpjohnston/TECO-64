@@ -1,6 +1,6 @@
 ///
-///  @file    rparen_cmd.c
-///  @brief   Execute ")" (right parenthesis) command.
+///  @file    right_cmd.c
+///  @brief   Execute ] (right bracket) command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -35,21 +35,34 @@
 #include "errors.h"
 #include "exec.h"
 
+
 ///
-///  @brief    Handle right parenthesis in command.
+///  @brief    Execute ] command: pop Q-register from push-down list.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_rparen(struct cmd *cmd)
+void exec_rbracket(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)                    // n argument?
+    if (!pop_qreg(cmd->qreg, cmd->qlocal))
     {
-        print_err(E_NAP);               // No argument before )
-    }
+        if (!cmd->colon_set)
+        {
+            print_err(E_CPQ);           // Push-down list is empty.
+        }
 
-    push_expr(')', EXPR_OPERATOR);
+        push_expr(0, EXPR_VALUE);       // 0 ->failure
+    }
+    else if (cmd->colon_set)
+    {
+        push_expr(1, EXPR_VALUE);       // 1 -> success
+    }
+    else if (cmd->n_set)
+    {
+        push_expr(cmd->n_arg, EXPR_VALUE); // Leave for next command
+    }
 }
+

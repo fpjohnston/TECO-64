@@ -37,36 +37,39 @@
 
 
 ///
-///  @brief    Execute Q command - Return numeric part of Q-register.
+///  @brief    Scan Q command: return numeric value of Q-register, or size of
+///            text string.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_Q(struct cmd *cmd)
+void scan_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
     int n;
 
-    if (cmd->n_set)                     // n argument? 
+    if (operand_expr())                 // nQq`?
     {
+        n = get_n_arg();
+
         if (cmd->colon_set)
         {
             print_err(E_MOD);
         }
 
-        n = get_qchr(cmd->qreg, cmd->qlocal, cmd->n_arg);
+        n = get_qchr(cmd->qreg, cmd->qlocal, n);
     }
-    else if (cmd->colon_set)            // :Qq
+    else if (cmd->colon_set)            // :Qq`?
     {
         n = (int)get_qsize(cmd->qreg, cmd->qlocal);
     }
-    else                                // Qq
+    else                                // Qq`
     {
         n = get_qnum(cmd->qreg, cmd->qlocal);
     }
         
-    push_expr(n, EXPR_OPERAND);
+    push_expr(n, EXPR_VALUE);
 }
 

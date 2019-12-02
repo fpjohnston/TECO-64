@@ -109,11 +109,18 @@ int main(int unused1, const char * const argv[])
     {
         if (setjmp(jump_main) == 0)
         {
-            read_cmd();                 // Read one or more commands
+            if (!read_indirect())       // Indirect command to execute yet?
+            {
+                read_cmd();             // No, read from terminal
+            }
 
             init_expr();                // Initialize expression stack
 
             exec_cmd();                 // Then execute what we have
+        }
+        else                            // We get here on error
+        {
+            reset_buf();
         }
     }
 }

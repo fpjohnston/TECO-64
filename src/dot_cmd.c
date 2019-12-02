@@ -1,6 +1,6 @@
 ///
-///  @file    rbracket_cmd.c
-///  @brief   Execute ] command.
+///  @file    dot_cmd.c
+///  @brief   Execute . (dot) command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -32,35 +32,20 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute ] command - Pop Q-register from push-down list.
+///  @brief    Scan . (dot) command: get current position in buffer.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_rbracket(struct cmd *cmd)
+void scan_dot(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!pop_qreg(cmd->qreg, cmd->qlocal))
-    {
-        if (!cmd->colon_set)
-        {
-            print_err(E_CPQ);           // Push-down list is empty.
-        }
-
-        cmd->n_arg = 0;                 // 0 -> failure
-    }
-    else if (cmd->colon_set)
-    {
-        cmd->n_arg = 1;                 // 1 -> success
-    }
-
-    push_expr(cmd->n_arg, EXPR_OPERAND); // Leave for next command
+    push_expr(v.dot, EXPR_VALUE);
 }
 

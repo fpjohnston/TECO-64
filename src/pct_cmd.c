@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_f_cmd.c
-///  @brief   Execute ^F (CTRL/F) command.
+///  @file    pct_cmd.c
+///  @brief   Execute % command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -32,33 +32,38 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "eflags.h"
-#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Scan ^F (CTRL/F) command: return value of console switch
-///            register, or terminal number of specified job.
+///  @brief    Scan % command: add value to Q-register, and read result.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_f(struct cmd *cmd)
+void scan_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // n^F specified?
-    {
-        (void)get_n_arg();              // Yes, just ignore it
+    int n = 1;                          // Assume %q`
 
-        if (f.ei.strict)
-        {
-            print_err(E_T10);           // TECO-10 command not implemented.
-        }
+    if (scan_state != SCAN_DONE)
+    {
+        push_expr(1, EXPR_VALUE);
+
+        return;
     }
 
-    push_expr(0, EXPR_VALUE);           // Value is always 0 for now
+    if (operand_expr())                 // n%q`?
+    {
+        n = get_n_arg();
+    }
+
+    n += get_qnum(cmd->qreg, cmd->qlocal);
+
+    store_qnum(cmd->qreg, cmd->qlocal, n);
+
+    push_expr(n, EXPR_VALUE);
 }
 

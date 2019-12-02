@@ -66,34 +66,32 @@ void exec_quote(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    cmd->n_opt = true;
-
     if (!cmd->n_set)                    // Did we see an argument?
     {
         print_err(E_NAQ);               // No argument before "
     }
 
-    int c = get_n_arg();                // Character to test
-    int test = fetch_buf();             // Test condition
+    int c = cmd->n_arg;                 // Value to test
+    int test = cmd->c2;                 // Test condition
 
     switch (toupper(test))
     {
         case 'A':                       // Test for alphabetic
-            if (isalpha(c))
+            if (!isalpha(c))
             {
                 return;
             }
             break;
 
         case 'C':                       // Test for symbol constituent
-            if (isalnum(c) || c == '.' || c == '_' || c == '$')
+            if (!isalnum(c) && c != '.' && c != '_' && c != '$')
             {
                 return;
             }
             break;
 
         case 'D':                       // Test for numeric
-            if (isdigit(c))
+            if (!isdigit(c))
             {
                 return;
             }
@@ -103,7 +101,7 @@ void exec_quote(struct cmd *cmd)
         case 'E':                       // Test for equal to zero
         case 'F':                       // Test for false
         case 'U':                       // Test for unsuccessful
-            if (c == 0)
+            if (!(c == 0))
             {
                 return;
             }
@@ -111,7 +109,7 @@ void exec_quote(struct cmd *cmd)
 
         case '>':                       // Test for greater than zero
         case 'G':                       // Test for greater than zero
-            if (c > 0)
+            if (!(c > 0))
             {
                 return;
             }
@@ -121,43 +119,45 @@ void exec_quote(struct cmd *cmd)
         case 'L':                       // Test for less than zero
         case 'S':                       // Test for successful
         case 'T':                       // Test for true
-            if (c < 0)
+            if (!(c < 0))
             {
                 return;
             }
             break;
 
         case 'N':                       // Test for not equal to zero
-            if (c != 0)
+            if (c == 0)
             {
                 return;
             }
             break;
 
         case 'R':                       // Test for alphanumeric
-            if (isalnum(c))
+            if (!isalnum(c))
             {
                 return;
             }
             break;
 
         case 'V':                       // Test for lower case
-            if (islower(c))
+            if (!islower(c))
             {
                 return;
             }
             break;
 
         case 'W':                       // Test for upper case
-            if (isupper(c))
+            if (!isupper(c))
             {
                 return;
             }
             break;
 
         default:
-            break;
+            print_err(E_IQC);           // Illegal character after "
     }
+
+    // Here if the test was successful
 
 #if     0       // TODO: finish this
     if (FlowEE() == EXIT_FAILURE)       // Flow to | or '
@@ -166,6 +166,21 @@ void exec_quote(struct cmd *cmd)
     }
 #endif
 
-    print_err(E_IQC);                   // Illegal character after "
 }
 
+
+///
+///  @brief    Scan " (quote) command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_quote(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    cmd->c2 = (char)fetch_buf();       // Just store 2nd character
+
+    scan_state = SCAN_DONE;
+}

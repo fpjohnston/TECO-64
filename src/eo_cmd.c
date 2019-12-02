@@ -37,21 +37,21 @@
 
 
 ///
-///  @brief    Execute EO command (get or set TECO version number).
+///  @brief    Scan EO command: read or set TECO version number.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EO(struct cmd *cmd)
+void scan_EO(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // Is it nEO?
+    if (operand_expr())                 // nEO?
     {
-        print_err(E_NYI);               // Yes, we don't do that yet
+        print_err(E_NYI);               // Yes, we don't do that (yet).
     }
 
-    push_expr(teco_version, EXPR_OPERAND);
+    push_expr(teco_version, EXPR_VALUE);
 }
 

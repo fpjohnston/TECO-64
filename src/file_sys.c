@@ -46,17 +46,17 @@ static char **next_file;                ///< Next file in pglob
 
 
 ///
-///  @brief    Close output file. This is system-dependent, because on Linux we
-///            use a temporary name when opening the file, and we will need to
-///            delete the original file and then rename the temporary file. If
-///            a backup was requested, we will just rename the original file
+///  @brief    Rename output file. This is system-dependent, because on Linux
+///            we use a temporary name when opening the file, and we will need
+///            to delete the original file and then rename the temporary file.
+///            If a backup was requested, we will just rename the original file
 ///            instead of deleting it.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void close_output(struct ofile *ofile)
+void rename_output(struct ofile *ofile)
 {
     assert(ofile != NULL);
 

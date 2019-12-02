@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute ES command.
+///  @brief    Execute ES command: set search verification flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -46,14 +46,33 @@
 void exec_ES(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    assert(cmd->n_set == true);
+    
+    f.es = cmd->n_arg;
+}
 
-    if (cmd->n_set)                     // n argument?
+
+///
+///  @brief    Scan ES command: read search verification flag.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_ES(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (operand_expr())
     {
-        f.es = cmd->n_arg;
+        cmd->n_arg = get_n_arg();
+        cmd->n_set = true;
+
+        scan_state = SCAN_DONE;
     }
     else
     {
-        push_expr(f.es, EXPR_OPERAND);
+        push_expr(f.es, EXPR_VALUE);
     }
 }
 

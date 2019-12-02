@@ -34,8 +34,9 @@
 #include "teco.h"
 #include "exec.h"
 
+
 ///
-///  @brief    Execute ^O (CTRL/O) command - switch radix to octal.
+///  @brief    Execute ^O (CTRL/O) command: switch radix to octal.
 ///
 ///  @returns  Nothing.
 ///

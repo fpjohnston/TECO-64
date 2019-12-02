@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute EJ command; get operating environment characteristics:
+///  @brief    Scan EJ command; get operating environment characteristics:
 ///
 ///            -1EJ - This has the form (m << 8) + n, where m is a code for the
 ///                   computer hardware in use, and n is a code for the operating
@@ -70,16 +70,21 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EJ(struct cmd *cmd)
+void scan_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)                    // n argument?
+    int n;
+
+    if (operand_expr())                 // Do we have an operand?
     {
-        cmd->n_arg = 0;                 // No, so assume 0
+        n = get_n_arg();                // Yes, get the argument
+        n = teco_env(n);                // Do the system-dependent part
+    }
+    else
+    {
+        n = teco_env(0);                // Assume a default of 0
     }
 
-    cmd->n_arg = teco_env(cmd->n_arg);  // Do the system-dependent part
-
-    push_expr(cmd->n_arg, EXPR_OPERAND);
+    push_expr(n, EXPR_VALUE);
 }

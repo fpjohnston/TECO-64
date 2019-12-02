@@ -1,6 +1,6 @@
 ///
-///  @file    percent_cmd.c
-///  @brief   Execute % command.
+///  @file    ctrl_n_cmd.c
+///  @brief   Execute ^N (CTRL/N) command.
 ///
 ///  @author  Nowwith Treble Software
 ///
@@ -36,25 +36,16 @@
 
 
 ///
-///  @brief    Execute % command - Add value to Q-register.
+///  @brief    Scan ^N (CTRL/N) command: read end of file flag.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_pct(struct cmd *cmd)
+void scan_ctrl_n(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)                    // n argument?
-    {
-        cmd->n_arg = 1;
-    }
-
-    int n = get_qnum(cmd->qreg, cmd->qlocal) + cmd->n_arg;
-
-    store_qnum(cmd->qreg, cmd->qlocal, n);
-
-    push_expr(n, EXPR_OPERAND);
+    push_expr(v.eof, EXPR_VALUE);
 }
 

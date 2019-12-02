@@ -28,6 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,6 +51,38 @@ char *filename_buf;                     ///< Allocated space for filename
 // Local functions
 
 static void file_exit(void);
+
+
+///
+///  @brief    Create a file name specification in file name buffer. We copy
+///            from the specified text string, skipping any characters, such
+///            as spaces or control characters, that aren't normal graphic
+///            characters.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void create_filename(const struct tstring *text)
+{
+    assert(text != NULL);
+    assert(filename_buf != NULL);
+
+    char *from = text->buf;
+    char *to = filename_buf;
+
+    for (uint i = 0; i < text->len; ++i)
+    {
+        if (isgraph(*from))
+        {
+            *to++ = *from++;
+        }
+        else
+        {
+            ++from;
+        }
+    }
+}
 
 
 ///
@@ -146,11 +179,11 @@ void init_files(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int open_input(const struct tstring *text)
+int open_input(const char *filespec, uint stream)
 {
-    assert(text != NULL);
+    assert(filespec != NULL);
     
-    struct ifile *ifile = &ifiles[istream]; // Current input stream
+    struct ifile *ifile = &ifiles[stream];
     FILE *fp = ifile->fp;             
 
     if (fp != NULL)                     // Stream already open?
@@ -158,20 +191,20 @@ int open_input(const struct tstring *text)
         fclose(fp);                     // Yes, so close it
     }
 
-    dealloc(&last_file);
+//    dealloc(&last_file);
 
-    last_file = alloc_new(text->len + 1);
+//    last_file = alloc_new(text->len + 1);
 
-    sprintf(last_file, "%.*s", (int)text->len, text->buf);
+//    sprintf(last_file, "%.*s", (int)text->len, text->buf);
 
-    if ((fp = fopen(last_file, "r")) == NULL)
+    if ((fp = fopen(filename_buf, "r")) == NULL)
     {
         return EXIT_FAILURE;
     }
 
-    ifiles[istream].fp  = fp;
-    ifiles[istream].eof = false;
-    ifiles[istream].cr  = false;
+    ifiles[stream].fp  = fp;
+    ifiles[stream].eof = false;
+    ifiles[stream].cr  = false;
 
     return EXIT_SUCCESS;
 }

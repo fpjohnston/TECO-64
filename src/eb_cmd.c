@@ -54,18 +54,20 @@ void exec_EB(struct cmd *cmd)
         print_err(E_NFI);               // No file for input
     }
 
-    if (open_input(&cmd->text1) == EXIT_FAILURE)
+    create_filename(&cmd->text1);
+
+    if (open_input(filename_buf, istream) == EXIT_FAILURE)
     {
         if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
         {
             prints_err(E_FNF, last_file);
         }
 
-        push_expr(OPEN_FAILURE, EXPR_OPERAND);
+        push_expr(OPEN_FAILURE, EXPR_VALUE);
     }
     else if (cmd->colon_set)
     {
-        push_expr(OPEN_SUCCESS, EXPR_OPERAND);
+        push_expr(OPEN_SUCCESS, EXPR_VALUE);
     }
 
     if (open_output(&cmd->text1, BACKUP_FILE) == EXIT_FAILURE)
@@ -75,11 +77,11 @@ void exec_EB(struct cmd *cmd)
             prints_err(E_UFO, last_file);
         }
 
-        push_expr(OPEN_FAILURE, EXPR_OPERAND);
+        push_expr(OPEN_FAILURE, EXPR_VALUE);
     }
     else if (cmd->colon_set)
     {
-        push_expr(OPEN_SUCCESS, EXPR_OPERAND);
+        push_expr(OPEN_SUCCESS, EXPR_VALUE);
     }
 }
 

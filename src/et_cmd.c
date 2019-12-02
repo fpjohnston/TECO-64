@@ -49,7 +49,7 @@ void exec_ET(struct cmd *cmd)
 
     union et_flag old = { .flag = f.et.flag };
 
-    get_flag(&f.et.flag, cmd);
+    f.et.flag = set_flag(cmd, f.et.flag);
 
     if (f.et.eightbit ^ old.eightbit)
     {
@@ -62,3 +62,17 @@ void exec_ET(struct cmd *cmd)
     f.et.refresh = old.refresh;
 }
 
+
+///
+///  @brief    Scan ET command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_ET(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    get_flag(cmd, f.et.flag);
+}

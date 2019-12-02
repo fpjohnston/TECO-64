@@ -48,11 +48,6 @@ void exec_EC(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // Was n argument specified?
-    {
-        print_err(E_T10);               // TECO-10 command not implemented
-    }
-
     FILE *fp;
     struct ifile *ifile = &ifiles[istream];
     struct ofile *ofile = &ofiles[ostream];
@@ -74,8 +69,26 @@ void exec_EC(struct cmd *cmd)
         ofile->fp = NULL;
     }
 
-    close_output(ofile);                // Handle file deletion and/or renaming
+    rename_output(ofile);              // Handle any required file renaming
 
     dealloc(&ofile->temp);
     dealloc(&ofile->name);
+}
+
+
+///
+///  @brief    Scan nEC command: reserved for TECO-10, so error.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_EC(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (operand_expr())                 // Was it nEC?
+    {
+        print_err(E_T10);               // TECO-10 command not implemented
+    }
 }

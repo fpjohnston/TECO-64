@@ -33,9 +33,11 @@
 #include <string.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
+#if     0       // TODO: do we keep old or new EZ?
 
 ///
 ///  @brief    Execute EZ command (open file for output) (same as EW).
@@ -51,3 +53,34 @@ void exec_EZ(struct cmd *cmd)
     print_err(E_T10);                   // TECO-10 command not implemented
 }
 
+#endif
+
+
+///
+///  @brief    Execute EZ command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_EZ(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    f.ez.flag = set_flag(cmd, f.ez.flag);
+}
+
+
+///
+///  @brief    Scan EZ command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_EZ(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    get_flag(cmd, f.ez.flag);
+}
