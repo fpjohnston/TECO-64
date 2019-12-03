@@ -2,11 +2,9 @@
 ///  @file    e_ubar_cmd.c
 ///  @brief   Execute E_ command.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal

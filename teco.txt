@@ -1,0 +1,737 @@
+command #53: "S 
+command #81:    {Q1&4096} "E 
+command #266:        {-1EJ-4} "N 
+command #267:            J 
+command #268:            {::} S {TE} 
+command #269:            "S 
+command #270:                < 
+command #271:                    {0A} "A 
+command #272:                        C 
+command #273:                    > 
+command #274:                ' 
+command #275:                {::} S {^ES@} 
+command #276:                "S 
+command #277:                    {0} K 
+command #278:                    I {MUNG } 
+command #279:                ' 
+command #280:            ' 
+command #281:        ' 
+command #282:        J 
+command #284:        "S 
+command #285:            < 
+command #286:                {0A} "A 
+command #287:                    D 
+command #288:                > 
+command #289:            ' 
+command #290:            {::} {@} FS % {^ES} % 
+command #291:            {-1EJ-5} "E 
+command #292:                J 
+command #293:                {::} {@} FS % {"} % 
+command #294:                "S 
+command #295:                    {::} {@} FS % {^ES} % 
+command #296:                ' 
+command #297:            ' 
+command #298:            {Z} U0 
+command #299:            J 
+command #300:            {:} S {/} 
+command #301:            "S 
+command #302:                R 
+command #303:                {.-Q0} "L 
+command #304:                    {.} U0 
+command #305:                ' 
+command #306:            ' 
+command #307:            J 
+command #308:            {:} S {^ES} 
+command #309:            "S 
+command #310:                {.-Q0} "L 
+command #311:                    {.} U0 
+command #312:                ' 
+command #313:            ' 
+command #314:            J 
+command #315:            < 
+command #316:                S {,} 
+command #317:                ; 
+command #318:                {.} U1 
+command #319:                {Q1-1} J 
+command #320:                {-} {:} S {[} 
+command #321:                "S 
+command #322:                    {:} S {]} 
+command #323:                    "S 
+command #324:                        {.-Q1} "G 
+command #325:                            F< 
+command #326:                        ' 
+command #327:                    ' 
+command #328:                ' 
+command #329:                {Q1-1} J 
+command #330:                {-} {:} S {<} 
+command #331:                "S 
+command #332:                    {:} S {>} 
+command #333:                    "S 
+command #334:                        {.-Q1} "G 
+command #335:                            F< 
+command #336:                        ' 
+command #337:                    ' 
+command #338:                ' 
+command #339:                {Q1-1} J 
+command #340:                {-} {:} S {(} 
+command #341:                "S 
+command #342:                    {:} S {)} 
+command #343:                    "S 
+command #344:                        {.-Q1} "G 
+command #345:                            F< 
+command #346:                        ' 
+command #347:                    ' 
+command #348:                ' 
+command #349:                {Q1-1} J 
+command #350:                {.-1-Q0} "L 
+command #351:                    D 
+command #352:                    {.} U0 
+command #353:                ' 
+command #354:                {0} ; 
+command #355:            > 
+command #356:            {Q0} J 
+command #357:            < 
+command #358:                {-.} ; 
+command #359:                {-1A-32} "N 
+command #360:                    {-1A-9} "N 
+command #361:                        {0} ; 
+command #362:                    ' 
+command #363:                ' 
+command #364:                {-} D 
+command #365:            > 
+command #366:            {0,.} X0 
+command #367:            {::} S {^ES} 
+command #368:            {0,.} K 
+command #369:            {Q0} {:} "E 
+command #370:                ^A {?How can I MUNG nothing?} ^A 
+command #371:                ^C 
+command #372:                ^C 
+command #373:            ' 
+command #374:            EI {^EQ0} 
+command #375:            J 
+command #376:            O {DONE} 
+command #377:        ' 
+command #378:        J 
+command #379:        {:} {@} FS % {^ES/GT} % 
+command #380:        "S 
+command #381:            O {/GTEDIT} 
+command #382:        ' 
+command #383:        J 
+command #384:        {:} {@} FS % {/GT} % 
+command #385:        "S 
+command #386:            ! {/GTEDIT} ! 
+command #387:            {::} {@} FS % {E} % 
+command #388:            "S 
+command #389:                {::} {@} FS % {D} % 
+command #390:                "S 
+command #391:                    {::} {@} FS % {I} % 
+command #392:                    "S 
+command #393:                        {::} {@} FS % {T} % 
+command #394:                    ' 
+command #395:                ' 
+command #396:            ' 
+command #397:            {::} {@} FS % {^ES} % 
+command #398:            "S 
+command #399:                {0A} "A 
+command #400:                    I { } 
+command #401:                ' 
+command #402:            ' 
+command #403:            {Q1#64} U1 
+command #404:        ' 
+command #405:        J 
+command #406:        {:} {@} FS % {^ES/VT} % 
+command #407:        "S 
+command #408:            O {/VTEDIT} 
+command #409:        ' 
+command #410:        J 
+command #411:        {:} {@} FS % {/VT} % 
+command #412:        "S 
+command #413:            ! {/VTEDIT} ! 
+command #414:            {::} {@} FS % {E} % 
+command #415:            "S 
+command #416:                {::} {@} FS % {D} % 
+command #417:                "S 
+command #418:                    {::} {@} FS % {I} % 
+command #419:                    "S 
+command #420:                        {::} {@} FS % {T} % 
+command #421:                    ' 
+command #422:                ' 
+command #423:            ' 
+command #424:            {::} {@} FS % {:H} % 
+command #425:            "S 
+command #426:                {::} {@} FS % {O} % 
+command #427:                "S 
+command #428:                    {::} {@} FS % {L} % 
+command #429:                    "S 
+command #430:                        {::} {@} FS % {D} % 
+command #431:                    ' 
+command #432:                ' 
+command #433:                {Q1#32} U1 
+command #434:            ' 
+command #435:            {::} {@} FS % {:S} % 
+command #436:            "S 
+command #437:                {::} {@} FS % {E} % 
+command #438:                "S 
+command #439:                    {::} {@} FS % {E} % 
+command #440:                    "S 
+command #441:                        {::} {@} FS % {A} % 
+command #442:                        "S 
+command #443:                            {::} {@} FS % {L} % 
+command #444:                            "S 
+command #445:                                {::} {@} FS % {L} % 
+command #446:                            ' 
+command #447:                        ' 
+command #448:                    ' 
+command #449:                ' 
+command #450:                {Q1#16} U1 
+command #451:            ' 
+command #452:            {::} {@} FS % {:H} % 
+command #453:            "S 
+command #454:                {::} {@} FS % {O} % 
+command #455:                "S 
+command #456:                    {::} {@} FS % {L} % 
+command #457:                    "S 
+command #458:                        {::} {@} FS % {D} % 
+command #459:                    ' 
+command #460:                ' 
+command #461:                {Q1#32} U1 
+command #462:            ' 
+command #463:            {::} {@} FS % {^ES} % 
+command #464:            "S 
+command #465:                {0A} "A 
+command #466:                    I { } 
+command #467:                ' 
+command #468:            ' 
+command #469:            {Q1#1} U1 
+command #470:        ' 
+command #471:        J 
+command #472:        {:} {@} FS % {^ES/SC} % 
+command #473:        "S 
+command #474:            O {/SCROLL} 
+command #475:        ' 
+command #476:        J 
+command #477:        {:} {@} FS % {/SC} % 
+command #478:        "S 
+command #479:            ! {/SCROLL} ! 
+command #480:            {::} {@} FS % {R} % 
+command #481:            "S 
+command #482:                {::} {@} FS % {O} % 
+command #483:                "S 
+command #484:                    {::} {@} FS % {L} % 
+command #485:                    "S 
+command #486:                        {::} {@} FS % {L} % 
+command #487:                    ' 
+command #488:                ' 
+command #489:            ' 
+command #490:            {::} {@} FS % {:} % 
+command #491:            "S 
+command #492:                {\} U2 
+command #493:                FR $ {|0U2'::@FS%^ES%%"S0A"AI } 
+command #494:            ' 
+command #495:        ' 
+command #496:        {Q1#128} U1 
+command #497:    ' 
+command #498:    J 
+command #499:    {::} {@} FS % {TE} % 
+command #500:    "S 
+command #501:        < 
+command #502:            {0A} "A 
+command #503:                D 
+command #504:            > 
+command #505:        ' 
+command #506:        {::} {@} FS % {^ES} % 
+command #507:        J 
+command #508:        {:} {@} FS % {^ES/IN} % 
+command #509:        "S 
+command #510:            O {/INSPECT} 
+command #511:        ' 
+command #512:        J 
+command #513:        {:} {@} FS % {/IN} % 
+command #514:        "S 
+command #515:            ! {/INSPECT} ! 
+command #516:            {::} {@} FS % {S} % 
+command #517:            "S 
+command #518:                {::} {@} FS % {P} % 
+command #519:                "S 
+command #520:                    {::} {@} FS % {E} % 
+command #521:                    "S 
+command #522:                        {::} {@} FS % {C} % 
+command #523:                        "S 
+command #524:                            {::} {@} FS % {T} % 
+command #525:                        ' 
+command #526:                    ' 
+command #527:                ' 
+command #528:            ' 
+command #529:            {::} {@} FS % {^ES} % 
+command #530:            "S 
+command #531:                {0A} "A 
+command #532:                    I { } 
+command #533:                ' 
+command #534:            ' 
+command #535:            {Q1#2} U1 
+command #536:        ' 
+command #537:        J 
+command #538:        {:} {@} FS % {^ES/FI} % 
+command #539:        "S 
+command #540:            O {/FIND} 
+command #541:        ' 
+command #542:        J 
+command #543:        {:} {@} FS % {/FI} % 
+command #544:        "S 
+command #545:            ! {/FIND} ! 
+command #546:            {::} {@} FS % {N} % 
+command #547:            "S 
+command #548:                {::} {@} FS % {D} % 
+command #549:            ' 
+command #550:            {::} {@} FS % {^ES} % 
+command #551:            "S 
+command #552:                {0A} "A 
+command #553:                    I { } 
+command #554:                ' 
+command #555:            ' 
+command #556:            {Q1#8} U1 
+command #557:        ' 
+command #558:        J 
+command #559:        < 
+command #560:            {@} FS % {^ES} % 
+command #561:            ; 
+command #562:        > 
+command #563:        {Q1&4#Z} "E 
+command #564:            {:} EG {MEM} 
+command #565:            "S 
+command #566:                G* 
+command #567:                J 
+command #568:                {::} {@} FS % {$} % 
+command #569:                "S 
+command #570:                    F| 
+command #571:                ' 
+command #572:            | 
+command #573:                {Z} "E 
+command #574:                    {Q1} {:} "E 
+command #575:                        {-1EJ-5} "E 
+command #576:                            EN {*.*} 
+command #577:                            {:} EN 
+command #578:                            "S 
+command #579:                                G* 
+command #580:                                J 
+command #581:                                S {[} 
+command #582:                                R 
+command #583:                                {0} K 
+command #584:                                FS {.} $ {]} 
+command #585:                                J 
+command #586:                                S {]} 
+command #587:                                {0,.} X1 
+command #588:                                {H} K 
+command #589:                            ' 
+command #590:                        ' 
+command #591:                    ' 
+command #592:                    {Q9} {:} "E 
+command #593:                        {0EJ+100} \ 
+command #594:                        J 
+command #595:                        D 
+command #596:                        G1 
+command #597:                        I {TECF} 
+command #598:                        {Z} J 
+command #599:                        I {.TMP} 
+command #600:                        {-1EJ-4} "E 
+command #601:                            I {<60>/MODE:#3000} 
+command #602:                        | 
+command #603:                            {-1EJ-7} "N 
+command #604:                                I {;1/-CR} 
+command #605:                            ' 
+command #606:                        ' 
+command #607:                        {H} X9 
+command #608:                        {H} K 
+command #609:                    ' 
+command #610:                    G9 
+command #611:                ' 
+command #612:                {H} X0 
+command #613:                {H} K 
+command #614:                EP 
+command #615:                EA 
+command #616:                EF 
+command #617:                {:} ER {^EQ0} 
+command #618:                "S 
+command #619:                    Y 
+command #620:                    L 
+command #621:                    {.} "N 
+command #622:                        {-1A-10} "E 
+command #623:                            {-} D 
+command #624:                        ' 
+command #625:                    ' 
+command #626:                    {.} "N 
+command #627:                        {-1A-13} "E 
+command #628:                            {-} D 
+command #629:                        ' 
+command #630:                    ' 
+command #631:                    {Z} K 
+command #632:                    {H} X0 
+command #633:                    {H} K 
+command #634:                    G0 
+command #635:                ' 
+command #636:                ER 
+command #637:                EW 
+command #638:                {0,0} X0 
+command #639:            ' 
+command #640:            J 
+command #641:            < 
+command #642:                {@} FS % {^ES} % 
+command #643:                ; 
+command #644:            > 
+command #645:            J 
+command #646:            {:} {@} FS % {/FI} % 
+command #647:            "S 
+command #648:                {::} {@} FS % {N} % 
+command #649:                "S 
+command #650:                    {::} {@} FS % {D} % 
+command #651:                ' 
+command #652:                {Q1#8192#8} U1 
+command #653:            ' 
+command #654:            {Z} "N 
+command #655:                {Q1#32768#16384} U1 
+command #656:            ' 
+command #657:        ' 
+command #658:        {Q1&16384} "N 
+command #659:            {Q1&2} "E 
+command #660:                ^A {Edi} ^A 
+command #661:            | 
+command #662:                ^A {Inspec} ^A 
+command #663:            ' 
+command #664:            ^A {ting file "} ^A 
+command #665:            {H} T 
+command #666:            ^A {"} ^A 
+command #667:        ' 
+command #668:        {Z} "E 
+command #669:            {Q1&2} "E 
+command #670:                O {SCOPES} 
+command #671:            ' 
+command #672:            ^A {?How can I inspect nothing?} ^A 
+command #673:            ^C 
+command #674:            ^C 
+command #675:        ' 
+command #676:        {Q1&2} "E 
+command #677:            J 
+command #678:            {:} S {=} 
+command #679:            "S 
+command #680:                {0,.-1} X0 
+command #681:                {0,.} K 
+command #682:                {Z} U0 
+command #683:                {H} X2 
+command #684:                {H} K 
+command #685:                {Q2} {:} "N 
+command #686:                    {:} ER {^EQ2} 
+command #687:                    "U 
+command #688:                        G2 
+command #689:                        {H} X0 
+command #690:                        {H} K 
+command #691:                        O {NOTFND} 
+command #692:                    ' 
+command #693:                ' 
+command #694:                {Q0} {:} "N 
+command #695:                    EW {^EQ0} 
+command #696:                ' 
+command #697:                {Q0} "N 
+command #698:                    {Q1#2048} U1 
+command #699:                ' 
+command #700:                O {REMEM} 
+command #701:            ' 
+command #702:        ' 
+command #703:        {H} X0 
+command #704:        {H} K 
+command #705:        {Q1&2} "E 
+command #706:            {:} EB {^EQ0} 
+command #707:            "S 
+command #708:                {Q1#2048} U1 
+command #709:                O {REMEM} 
+command #710:            ' 
+command #711:            {Q1&256} "N 
+command #712:                {Q1&32768} "E 
+command #713:                    O {NOTFND} 
+command #714:                ' 
+command #715:            ' 
+command #716:            ^A {%Can't find file "} ^A 
+command #717:            {:} G0 
+command #718:            ^A {"} ^A 
+command #719:            {Q1&32768} "E 
+command #720:                ^A {%Creating new file} ^A 
+command #721:                O {CREATE} 
+command #722:            | 
+command #723:                ^A {%Ignoring TECO's memory} ^A 
+command #724:                {Q1#8192} U1 
+command #725:                {0,0} X0 
+command #726:                O {REMEM} 
+command #727:            ' 
+command #728:        ' 
+command #729:        {:} ER {^EQ0} 
+command #730:        "S 
+command #731:            {Q1#2048} U1 
+command #732:            O {SCOPES} 
+command #733:        ' 
+command #734:        ! {NOTFND} ! 
+command #735:        ^A {?Can't find file "} ^A 
+command #736:        {:} G0 
+command #737:        ^A {"?} ^A 
+command #738:        ^C 
+command #739:        ^C 
+command #740:    ' 
+command #741:    J 
+command #742:    {::} {@} FS % {MA} % 
+command #743:    "S 
+command #744:        < 
+command #745:            {0A} "A 
+command #746:                D 
+command #747:            > 
+command #748:        ' 
+command #749:        {::} {@} FS % {^ES} % 
+command #750:        J 
+command #751:        < 
+command #752:            {@} FS % {^ES} % 
+command #753:            ; 
+command #754:        > 
+command #755:        {Z} "E 
+command #756:            ^A {?How can I MAKE nothing?} ^A 
+command #757:            ^C 
+command #758:            ^C 
+command #759:        ' 
+command #760:        {Z-4} "E 
+command #761:            J 
+command #762:            {::} S {LOVE} 
+command #763:            "S 
+command #764:                ^A {Not war?} ^A 
+command #765:            ' 
+command #766:        ' 
+command #767:        {H} X0 
+command #768:        {H} K 
+command #769:        ! {CREATE} ! 
+command #770:        EW {^EQ0} 
+command #771:        O {REMEM} 
+command #772:    ' 
+command #773:    ^A {%Unrecognized command "} ^A 
+command #774:    {H} T 
+command #775:    {H} K 
+command #776:    ^A {"} ^A 
+command #777:    O {SCOPES} 
+command #778:    ! {REMEM} ! 
+command #779:    {Q1&8192} "N 
+command #780:        O {WRITE} 
+command #781:    ' 
+command #782:    {Q1&(32768#4)} "N 
+command #783:        O {SCOPES} 
+command #784:    ' 
+command #785:    {Q0} {:} "E 
+command #786:        O {SCOPES} 
+command #787:    ' 
+command #788:    ! {WRITE} ! 
+command #789:    {:} EG {MEM} 
+command #790:    "S 
+command #791:        {Z} J 
+command #792:        G* 
+command #793:        {^S} C 
+command #794:        {::} {@} FS % {$} % 
+command #795:        "U 
+command #796:            {Z} K 
+command #797:            {:} EG {MEM ^EQ0} 
+command #798:        | 
+command #799:            {Z} X9 
+command #800:            {Z} K 
+command #801:            F| 
+command #802:        ' 
+command #803:    | 
+command #804:        {Q9} {:} "E 
+command #805:            {Q1} {:} "E 
+command #806:                {-1EJ-5} "E 
+command #807:                    EN {*.*} 
+command #808:                    {:} EN 
+command #809:                    "S 
+command #810:                        {Z} J 
+command #811:                        {.} U0 
+command #812:                        G* 
+command #813:                        {Q0} J 
+command #814:                        S {[} 
+command #815:                        R 
+command #816:                        {Q0,.} K 
+command #817:                        FS {.} $ {]} 
+command #818:                        {Q0} J 
+command #819:                        S {]} 
+command #820:                        {Q0,.} X1 
+command #821:                        {Q0,Z} K 
+command #822:                    ' 
+command #823:                ' 
+command #824:            ' 
+command #825:            G1 
+command #826:            {^Y} X9 
+command #827:            {^Y} K 
+command #828:            {:} ^U9 {TECF} 
+command #829:            {0EJ+100} \ 
+command #830:            {.-2,.} {:} X9 
+command #831:            {-3} D 
+command #832:            {:} ^U9 {.TMP} 
+command #833:            {-1EJ-4} "E 
+command #834:                {:} ^U9 {<60>/MODE:#3000} 
+command #835:            | 
+command #836:                {-1EJ-7} "N 
+command #837:                    {:} ^U9 {;1/-CR} 
+command #838:                ' 
+command #839:            ' 
+command #840:        ' 
+command #841:        EA 
+command #842:        {:} EW {^EQ9} 
+command #843:        "S 
+command #844:            G0 
+command #845:            {^Y} PW 
+command #846:            {^Y} K 
+command #847:        ' 
+command #848:        EF 
+command #849:        EW 
+command #850:    ' 
+command #851:    ! {SCOPES} ! 
+command #852:    {Q1&64} "N 
+command #853:        {ET&1024} "E 
+command #854:            ^A {%You don't have a refresh scope} ^A 
+command #855:            {Q1#64-64} U1 
+command #856:        ' 
+command #857:    ' 
+command #858:    {Q1&1} "N 
+command #859:        {ET&512} "E 
+command #860:            ^A {%Your terminal is not an interactive scope} ^A 
+command #861:            {Q1#1-1} U1 
+command #862:        | 
+command #863:            {Q1&16} "N 
+command #864:            ' 
+command #865:            {Q1&32} "N 
+command #866:            ' 
+command #867:        ' 
+command #868:    ' 
+command #869:    {Q1&(64#1)} "E 
+command #870:        O {YANK} 
+command #871:    ' 
+command #872:    {Q1&64} "N 
+command #873:        ^U9 {GTE} 
+command #874:    | 
+command #875:        ^U9 {VTE} 
+command #876:    ' 
+command #877:    {:} EG {^EQ9} 
+command #878:    "S 
+command #879:        ^U1 
+command #880:        G* 
+command #881:        {^Y} X9 
+command #882:        {^Y} K 
+command #883:    | 
+command #884:        {:} ^U9 {DIT} 
+command #885:        {Q1} {:} "E 
+command #886:            {-1EJ-5} "E 
+command #887:                EN {*.*} 
+command #888:                {:} EN 
+command #889:                "S 
+command #890:                    {Z} J 
+command #891:                    {.} U0 
+command #892:                    G* 
+command #893:                    {Q0} J 
+command #894:                    S {[} 
+command #895:                    R 
+command #896:                    {Q0,.} K 
+command #897:                    FS {.} $ {]} 
+command #898:                    {Q0} J 
+command #899:                    S {]} 
+command #900:                    {Q0,.} X1 
+command #901:                    {Q0,Z} K 
+command #902:                ' 
+command #903:            ' 
+command #904:        ' 
+command #905:    ' 
+command #906:    {Q9} {:} "N 
+command #907:        {:} EI {^EQ1^EQ9} 
+command #908:        "S 
+command #909:            {Q1#2048-2048} U1 
+command #910:            O {YANK} 
+command #911:        ' 
+command #912:    ' 
+command #913:    {:} EG {LIB} 
+command #914:    "S 
+command #915:        G* 
+command #916:        {^Y} X1 
+command #917:        {^Y} K 
+command #918:    | 
+command #919:        ^U1 
+command #920:    ' 
+command #921:    {Q1} {:} "E 
+command #922:        ^U1 {LB:[1,2]} 
+command #923:        {-1EJ-7} "E 
+command #924:            ^U1 {SY:} 
+command #925:        ' 
+command #926:        {-1EJ-5} "E 
+command #927:            ^U1 {SYS$LIBRARY:} 
+command #928:        ' 
+command #929:        {-1EJ-4} "E 
+command #930:            ^U1 {$} 
+command #931:        ' 
+command #932:    ' 
+command #933:    {Q1&64} "N 
+command #934:        ^U9 {GTEDIT} 
+command #935:    | 
+command #936:        ^U9 {VTEDIT} 
+command #937:    ' 
+command #938:    {Q1} {:} "N 
+command #939:        {:} EI {^EQ1^EQ9} 
+command #940:        "S 
+command #941:            {Q1#2048-2048} U1 
+command #942:            O {YANK} 
+command #943:        ' 
+command #944:    ' 
+command #945:    ^A {%The } ^A 
+command #946:    {:} G9 
+command #947:    ^A { macro is not available} ^A 
+command #948:    ! {YANK} ! 
+command #949:    {Q1&2048} "N 
+command #950:        Y 
+command #951:    ' 
+command #952:    J 
+command #953:    {Q1&8} "N 
+command #954:        ^A {Finding position marker...} ^A 
+command #955:        EW 
+command #956:        G* 
+command #957:        {^Y} X0 
+command #958:        {^Y} K 
+command #959:        {-1^X:Q0} {:} "N 
+command #960:            {:} {@} FN % {~~/\~~} % 
+command #961:            U0 
+command #962:        | 
+command #963:            {:} {@} F_ % {~~/\~~} % 
+command #964:            U0 
+command #965:        ' 
+command #966:        {0^XQ0} "U 
+command #967:            ^A {?Position marker not found?} ^A 
+command #968:            ^C 
+command #969:            ^C 
+command #970:        ' 
+command #971:    ' 
+command #972:    {Q1&128} "N 
+command #973:        {ET&512} "E 
+command #974:            ^A {%Your terminal is not an interactive scope} ^A 
+command #975:        | 
+command #976:            {Q2} "E 
+command #977:                {2:W/4} {:} U2 
+command #978:            ' 
+command #979:            {Q2,7:W-Q2} {:} "N 
+command #980:                ^A {%Your terminal doesn't support scrolling} ^A 
+command #981:            ' 
+command #982:        ' 
+command #983:    ' 
+command #984:    ! {DONE} ! 
+command #985:    ]1 
+command #986:    ]0 
+command #987:    {Q0} ET 
+command #988:    ]0 
+command #989:    {Q0} ES 
+command #990:    ]0 
+command #991:    {Q0} EU 
+command #992:    ]0 
+command #993:    {Q0} ED 
+command #994:    ]0 
+command #995:    {Q0^X} ]0 
+command #996:    {Q0} ^R 
+command #997:    ]2 
+command #998:    ]0 
+command #999:    ]9 
+*ex$$
+command #1000: ex 

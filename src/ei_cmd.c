@@ -2,11 +2,9 @@
 ///  @file    ei_cmd.c
 ///  @brief   Execute EI command.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +39,7 @@
 
 // Local functions
 
-static int open_indirect(bool colon_set, bool default_type);
+static int open_indirect(bool default_type);
 
 
 ///
@@ -64,8 +62,8 @@ void exec_EI(struct cmd *cmd)
 
     create_filename(&cmd->text1);
 
-    if (open_indirect(cmd->colon_set, false) == EXIT_FAILURE
-        && open_indirect(cmd->colon_set, true) == EXIT_FAILURE)
+    if (open_indirect((bool)false) == EXIT_FAILURE
+        && open_indirect((bool)true) == EXIT_FAILURE)
     {
         if (cmd->colon_set)
         {
@@ -88,7 +86,7 @@ void exec_EI(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int open_indirect(bool colon_set, bool default_type)
+static int open_indirect(bool default_type)
 {
     if (default_type)
     {

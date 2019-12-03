@@ -2,11 +2,9 @@
 ///  @file    exec.h
 ///  @brief   Header file for parsing and executing TECO commands.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -74,6 +72,7 @@ struct cmd
             uint m_set      : 1;    ///< m argument found
             uint n_set      : 1;    ///< n argument found
             uint h_set      : 1;    ///< H found
+            uint comma_set  : 1;    ///< Comma found
             uint colon_set  : 1;    ///< : found
             uint dcolon_set : 1;    ///< :: found
             uint atsign_set : 1;    ///< @ found
@@ -148,8 +147,6 @@ extern void exec_O(struct cmd *cmd);
 
 extern void exec_P(struct cmd *cmd);
 
-extern void exec_Q(struct cmd *cmd);
-
 extern void exec_R(struct cmd *cmd);
 
 extern void exec_S(struct cmd *cmd);
@@ -166,11 +163,9 @@ extern void exec_X(struct cmd *cmd);
 
 extern void exec_Y(struct cmd *cmd);
 
-extern void exec_Z(struct cmd *cmd);
-
 extern void exec_apos(struct cmd *cmd);
 
-extern void exec_bslash(struct cmd *cmd);
+extern void exec_back(struct cmd *cmd);
 
 extern void exec_bang(struct cmd *cmd);
 
@@ -181,8 +176,6 @@ extern void exec_ctrl_c(struct cmd *cmd);
 extern void exec_ctrl_d(struct cmd *cmd);
 
 extern void exec_ctrl_e(struct cmd *cmd);
-
-extern void exec_ctrl_f(struct cmd *cmd);
 
 extern void exec_ctrl_i(struct cmd *cmd);
 
@@ -206,7 +199,7 @@ extern void exec_equals(struct cmd *cmd);
 
 extern void exec_escape(struct cmd *cmd);
 
-extern void exec_langle(struct cmd *cmd);
+extern void exec_lt(struct cmd *cmd);
 
 extern void exec_lbracket(struct cmd *cmd);
 
@@ -214,7 +207,7 @@ extern void exec_question(struct cmd *cmd);
 
 extern void exec_quote(struct cmd *cmd);
 
-extern void exec_rangle(struct cmd *cmd);
+extern void exec_gt(struct cmd *cmd);
 
 extern void exec_rbracket(struct cmd *cmd);
 
@@ -296,9 +289,9 @@ extern void exec_FS(struct cmd *cmd);
 
 extern void exec_F_apos(struct cmd *cmd);
 
-extern void exec_F_langle(struct cmd *cmd);
+extern void exec_F_lt(struct cmd *cmd);
 
-extern void exec_F_rangle(struct cmd *cmd);
+extern void exec_F_gt(struct cmd *cmd);
 
 extern void exec_F_ubar(struct cmd *cmd);
 
@@ -314,7 +307,7 @@ extern void scan_B(struct cmd *cmd);
 
 extern void scan_bad(struct cmd *cmd);
 
-extern void scan_bslash(struct cmd *cmd);
+extern void scan_back(struct cmd *cmd);
 
 extern const struct cmd_table *scan_cmd(struct cmd *cmd, int c);
 
@@ -381,6 +374,8 @@ extern void scan_Q(struct cmd *cmd);
 extern void scan_quote(struct cmd *cmd);
 
 extern void scan_tail(struct cmd *cmd);
+
+extern void scan_W(struct cmd *cmd);
 
 extern void scan_Z(struct cmd *cmd);
 

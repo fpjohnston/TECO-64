@@ -2,11 +2,9 @@
 ///  @file    file.c
 ///  @brief   File-handling functions.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -94,7 +92,7 @@ void create_filename(const struct tstring *text)
 
 static void file_exit(void)
 {
-    dealloc(&filename_buf);
+    free_mem(&filename_buf);
 
     FILE *fp;
 
@@ -121,13 +119,13 @@ static void file_exit(void)
 
         ofiles[i].fp = NULL;
 
-        dealloc(&ofiles[i].name);
-        dealloc(&ofiles[i].temp);
+        free_mem(&ofiles[i].name);
+        free_mem(&ofiles[i].temp);
     }
 
     ostream = OFILE_PRIMARY;
 
-    dealloc(&last_file);
+    free_mem(&last_file);
 }
 
 
@@ -160,7 +158,7 @@ void init_files(void)
 
     last_file = NULL;
 
-    if ((filename_buf = alloc_new(FILENAME_MAX + 1)) == NULL)
+    if ((filename_buf = alloc_mem(FILENAME_MAX + 1)) == NULL)
     {
         exit(EXIT_FAILURE);
     }
@@ -191,9 +189,9 @@ int open_input(const char *filespec, uint stream)
         fclose(fp);                     // Yes, so close it
     }
 
-//    dealloc(&last_file);
+//    free_mem(&last_file);
 
-//    last_file = alloc_new(text->len + 1);
+//    last_file = alloc_mem(text->len + 1);
 
 //    sprintf(last_file, "%.*s", (int)text->len, text->buf);
 
@@ -224,11 +222,11 @@ int open_output(const struct tstring *text, int backup)
     struct ofile *ofile = &ofiles[ostream];
     uint nbytes = text->len;            // Length of text string
     
-    dealloc(&ofile->name);
-    dealloc(&ofile->temp);
-    dealloc(&last_file);
+    free_mem(&ofile->name);
+    free_mem(&ofile->temp);
+    free_mem(&last_file);
 
-    last_file = alloc_new(nbytes + 1);
+    last_file = alloc_mem(nbytes + 1);
 
     sprintf(last_file, "%.*s", (int)nbytes, text->buf);
 

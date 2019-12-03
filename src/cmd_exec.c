@@ -2,11 +2,9 @@
 ///  @file    cmd_exec.c
 ///  @brief   Execute command string.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -126,9 +124,9 @@ struct cmd_table cmd_table[] =
     ['9']         = { scan_digits,    NULL,             ""             },
     [':']         = { scan_mod,       NULL,             ""             },
     [';']         = { NULL,           exec_semi,        "n :"          },
-    ['<']         = { NULL,           exec_langle,      "n"            },
+    ['<']         = { NULL,           exec_lt,          "n"            },
     ['=']         = { NULL,           exec_equals,      "n :"          },
-    ['>']         = { NULL,           exec_rangle,      ""             },
+    ['>']         = { NULL,           exec_gt,          ""             },
     ['?']         = { NULL,           exec_question,    ""             },
     ['@']         = { scan_mod,       NULL,             ""             },
     ['A']         = { scan_A,         exec_A,           "n :"          },
@@ -153,12 +151,12 @@ struct cmd_table cmd_table[] =
     ['T']         = { NULL,           exec_T,           "m n :"        },
     ['U']         = { NULL,           exec_U,           "m n q"        },
     ['V']         = { NULL,           exec_V,           "m n"          },
-    ['W']         = { NULL,           exec_W,           "m n :"        },
+    ['W']         = { scan_W,         exec_W,           "m n :"        },
     ['X']         = { NULL,           exec_X,           "m n : q"      },
     ['Y']         = { NULL,           exec_Y,           "n :"          },
     ['Z']         = { scan_Z,         NULL,             ""             },
     ['[']         = { NULL,           exec_lbracket,    "q"            },
-    ['\\']        = { scan_bslash,    exec_bslash,      "n"            },
+    ['\\']        = { scan_back,      exec_back,        "n"            },
     [']']         = { NULL,           exec_rbracket,    ": q"          },
     ['^']         = { NULL,           NULL,             ""             },
     ['_']         = { NULL,           exec_ubar,        "n : @ 1"      },
@@ -365,6 +363,7 @@ static void exec_expr(struct cmd *cmd)
 
     cmd->m_set = false;
     cmd->n_set = false;
+    cmd->colon_set = false;
 
     if (cmd->c1 == ESC)
     {
@@ -492,8 +491,6 @@ static void exec_expr(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-extern uint ncommands;
-
 static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
 {
     assert(cmd != NULL);
@@ -515,10 +512,20 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
             }
         }
     }
-    
+
+    if (cmd->c1 == '\'' || cmd->c1 == '|' || cmd->c1 == '>')
+    {
+        --cmd->level;
+    }
+
     if (teco_debug && cmd->c1 != ESC)
     {
         print_cmd(cmd);                 // Print command if debugging
+    }
+
+    if (cmd->c1 == '"' || cmd->c1 == '|' || cmd->c1 == '<')
+    {
+        ++cmd->level;
     }
 
     if (cmd->expr.len != 0)             // Did we parse an expression?
@@ -566,17 +573,19 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
             cmd->n_arg = get_n_arg();
         }
 
-        (*table->exec)(cmd);
+        if (!teco_debug || (cmd->c1 == 'e' && cmd->c2 == 'i'))
+            (*table->exec)(cmd);
     }
 
     // Re-initialize command block, but keep m and n arguments for next command.
     
     uint m_set = cmd->m_set;
-    uint m_arg = cmd->m_arg;
+    int m_arg  = cmd->m_arg;
     uint n_set = cmd->n_set;
-    uint n_arg = cmd->n_arg;
+    int n_arg  = cmd->n_arg;
     uint h_set = cmd->h_set;
-
+    uint level = cmd->level;
+    
     *cmd = null_cmd;
 
     cmd->m_set = m_set;
@@ -584,5 +593,6 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
     cmd->n_set = n_set;
     cmd->n_arg = n_arg;
     cmd->h_set = h_set;
+    cmd->level = level;
 }
 

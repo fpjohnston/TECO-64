@@ -2,11 +2,9 @@
 ///  @file    ctrl_y_cmd.c
 ///  @brief   Execute ^Y (CTRL/Y) command.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +30,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "exec.h"
 
 
@@ -47,10 +44,10 @@ void scan_ctrl_y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr() || cmd->m_set)   // m or n specified?
-    {
-        print_err(E_ARG);               // Bad arguments
-    }
+//    if (operand_expr() || cmd->m_set)   // m or n specified?
+//    {
+//        print_err(E_ARG);               // Bad arguments
+//    }
 
     cmd->m_arg = 0;                     // TODO: this should be .+^S
     cmd->m_set = true;

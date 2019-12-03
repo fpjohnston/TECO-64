@@ -2,11 +2,9 @@
 ///  @file    quote_cmd.c
 ///  @brief   Execute quote command.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -73,6 +71,8 @@ void exec_quote(struct cmd *cmd)
 
     int c = cmd->n_arg;                 // Value to test
     int test = cmd->c2;                 // Test condition
+
+    ++cmd->level;
 
     switch (toupper(test))
     {

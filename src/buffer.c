@@ -2,11 +2,9 @@
 ///  @file    buffer.c
 ///  @brief   Buffer-handling functions.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -337,7 +335,7 @@ void store_buf(int c)
         assert(curbuf->buf != NULL);
 
         uint newsize = curbuf->size + STR_SIZE_INIT;
-        char *newbuf = alloc_more(curbuf->buf, curbuf->size, newsize);
+        char *newbuf = expand_mem(curbuf->buf, curbuf->size, newsize);
 
         curbuf->size = newsize;
         curbuf->buf  = newbuf;

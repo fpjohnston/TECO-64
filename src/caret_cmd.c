@@ -1,6 +1,6 @@
 ///
-///  @file    eb_cmd.c
-///  @brief   Execute EB command.
+///  @file    caret_cmd.c
+///  @brief   Execute command beginning with ^ (caret).
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,60 +26,39 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <errno.h>
+#include <ctype.h>
+#include <setjmp.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute EB command (open file for backup)
+///  @brief    Translate command starting with a caret (^). Most TECO commands
+///            which are control characters (^A, ^B, etc) can also be entered
+///            as a caret and letter combination. For example, control-A can
+///            also be entered as caret-A.
 ///
-///  @returns  Nothing.
+///  @returns  Translated control character.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EB(struct cmd *cmd)
+int scan_caret(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)
+    int c = cmd->c1;
+    int ctrl = (toupper(c) - 'A') + 1;  // Convert to control character
+
+    if (ctrl <= NUL || ctrl >= SPACE)
     {
-        print_err(E_NFI);               // No file for input
+        printc_err(E_IUC, c);           // Illegal character following ^
     }
 
-    create_filename(&cmd->text1);
-
-    if (open_input(filename_buf, istream) == EXIT_FAILURE)
-    {
-        if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
-        {
-            prints_err(E_FNF, last_file);
-        }
-
-        push_expr(OPEN_FAILURE, EXPR_VALUE);
-    }
-    else if (cmd->colon_set)
-    {
-        push_expr(OPEN_SUCCESS, EXPR_VALUE);
-    }
-
-    if (open_output(&cmd->text1, BACKUP_FILE) == EXIT_FAILURE)
-    {
-        if (!cmd->colon_set)
-        {
-            prints_err(E_UFO, last_file);
-        }
-
-        push_expr(OPEN_FAILURE, EXPR_VALUE);
-    }
-    else if (cmd->colon_set)
-    {
-        push_expr(OPEN_SUCCESS, EXPR_VALUE);
-    }
+    return ctrl;
 }
-

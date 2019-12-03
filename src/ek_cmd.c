@@ -2,11 +2,9 @@
 ///  @file    ek_cmd.c
 ///  @brief   Execute EK command.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -74,8 +72,8 @@ void exec_EK(struct cmd *cmd)
         fatal_err(errno, E_SYS, NULL);
     }
 
-    dealloc(&ofile->name);
-    dealloc(&ofile->temp);
+    free_mem(&ofile->name);
+    free_mem(&ofile->temp);
 
     ofile->backup = false;
 }

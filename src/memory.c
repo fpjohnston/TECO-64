@@ -1,12 +1,10 @@
 ///
-///  @file    cmd_caret.c
-///  @brief   Execute command beginning with ^ (caret).
+///  @file       memory.c
+///  @brief      Memory allocation & deallocation functions.
 ///
-///  @author  Nowwith Treble Software
+///  @bug        No known bugs.
 ///
-///  @bug     No known bugs.
-///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -28,39 +26,72 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
-#include <setjmp.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "errors.h"
-#include "exec.h"
 
 
 ///
-///  @brief    Translate command starting with a caret (^). Most TECO commands
-///            which are control characters (^A, ^B, etc) can also be entered
-///            as a caret and letter combination. For example, control-A can
-///            also be entered as caret-A.
+///  @brief    Get new memory.
 ///
-///  @returns  Translated control character.
+///  @returns  Nothing (error if memory allocation fails).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int scan_caret(struct cmd *cmd)
+void *alloc_mem(uint size)
 {
-    assert(cmd != NULL);
+    void *ptr = calloc(1uL, (size_t)size);
 
-    int c = cmd->c1;
-    int ctrl = (toupper(c) - 'A') + 1;  // Convert to control character
-
-    if (ctrl <= NUL || ctrl >= SPACE)
+    if (ptr == NULL)
     {
-        printc_err(E_IUC, c);           // Illegal character following ^
+        print_err(E_MEM);               // Memory overflow
     }
 
-    return ctrl;
+    return ptr;
+}
+
+
+///
+///  @brief    Get more memory.
+///
+///  @returns  Nothing (error if memory allocation fails).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void *expand_mem(void *ptr, uint oldsize, uint newsize)
+{
+    assert(ptr != NULL);
+    assert(oldsize != newsize);
+    assert(oldsize < newsize);
+
+    void *newptr = realloc(ptr, (size_t)newsize);
+
+    if (newptr == NULL)
+    {
+        print_err(E_MEM);               // Memory overflow
+    }
+
+    return newptr;
+}
+
+
+///
+///  @brief    Deallocate memory.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void free_mem(char **ptr)
+{
+    assert(ptr != NULL);                // Make sure pointer to pointer is real
+
+    if (*ptr != NULL)
+    {
+        free(*ptr);
+
+        *ptr = NULL;                    // Make sure we don't use this again
+    }
 }

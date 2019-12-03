@@ -2,11 +2,9 @@
 ///  @file    file_sys.c
 ///  @brief   System-dependent file-handling functions.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -126,7 +124,7 @@ const char *get_oname(struct ofile *ofile, uint nbytes)
             fatal_err(errno, E_SYS, NULL);
         }
 
-        ofile->name = alloc_new(nbytes + 1);
+        ofile->name = alloc_mem(nbytes + 1);
 
         memcpy(ofile->name, last_file, (size_t)nbytes + 1);
         memcpy(scratch, last_file, (size_t)nbytes + 1);
@@ -139,7 +137,7 @@ const char *get_oname(struct ofile *ofile, uint nbytes)
 
         nbytes = (uint)(strlen(dir) + 1 + strlen(tempfile));
 
-        ofile->temp = alloc_new(nbytes + 1);
+        ofile->temp = alloc_mem(nbytes + 1);
 
         sprintf(ofile->temp, "%s/%s", dir, tempfile);
 
@@ -147,7 +145,7 @@ const char *get_oname(struct ofile *ofile, uint nbytes)
     }
     else                                // File does not exist
     {
-        ofile->name = alloc_new(nbytes + 1);
+        ofile->name = alloc_mem(nbytes + 1);
 
         memcpy(ofile->name, last_file, (size_t)nbytes + 1);
 

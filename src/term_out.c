@@ -2,11 +2,9 @@
 ///  @file    term_out.c
 ///  @brief   System-independent functions to output to user's terminal.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +38,7 @@
 #include "errors.h"
 #include "exec.h"
 
-uint ncommands = 0;
+uint ncommands = 0;                     ///< No. of commands seen so far
 
 
 ///
@@ -167,7 +165,7 @@ void print_cmd(struct cmd *cmd)
 
     // Here when we've parsed the entire command - now type it out.
 
-    printf("command #%u: ", ++ncommands);
+    printf("%u,%u:%*s", ++ncommands, cmd->level, (int)cmd->level * 4, " ");
     (void)fflush(stdout);
 
     if (cmd->expr.len != 0)

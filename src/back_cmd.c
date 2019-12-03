@@ -2,11 +2,9 @@
 ///  @file    back_cmd.c
 ///  @brief   Execute \ (backslash) command.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +40,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bslash(struct cmd *cmd)
+void exec_back(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -60,7 +58,7 @@ void exec_bslash(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_bslash(struct cmd *cmd)
+void scan_back(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

@@ -2,11 +2,9 @@
 ///  @file    o_cmd.c
 ///  @brief   Execute O command.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -37,8 +35,9 @@
 #include "errors.h"
 #include "exec.h"
 
+// TODO: do something better here.
 
-static char tag[128 + 1];               // TODO: magic number
+static char tag[128 + 1];               ///< Last tag seen
 
 
 ///
@@ -74,7 +73,7 @@ void exec_O(struct cmd *cmd)
 //        print_err(E_NTF);               // No tag found
     }
 
-    char *taglist = alloc_new(cmd->text1.len + 1);
+    char *taglist = alloc_mem(cmd->text1.len + 1);
     char *buf = taglist;
     char *next;
     char *saveptr;
@@ -99,7 +98,7 @@ void exec_O(struct cmd *cmd)
         }
     }
 
-    dealloc(&taglist);
+    free_mem(&taglist);
     
     if (tag[0] == NUL)                  // Did we find the tag in the list?
     {

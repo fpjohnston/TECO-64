@@ -2,11 +2,9 @@
 ///  @file    ez_cmd.c
 ///  @brief   Execute EZ command.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +32,7 @@
 
 #include "teco.h"
 #include "eflags.h"
-#include "errors.h"
+//#include "errors.h"
 #include "exec.h"
 
 #if     0       // TODO: do we keep old or new EZ?

@@ -2,11 +2,9 @@
 ///  @file    comma_cmd.c
 ///  @brief   Process comma argument separator.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +44,7 @@ void scan_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);
     
-    if (cmd->m_set)                     // Already seen m argument?
+    if (cmd->comma_set)                 // Already seen comma?
     {
         print_err(E_ARG);               // Yes, two commas aren't allowed
     }

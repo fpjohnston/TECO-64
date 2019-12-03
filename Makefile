@@ -74,11 +74,12 @@ LIBS =
 
 SOURCES = \
     a_cmd.c       \
+    apos_cmd.c    \
     b_cmd.c       \
     back_cmd.c    \
     bang_cmd.c    \
     buffer.c      \
-    cmd_caret.c   \
+    caret_cmd.c   \
     cmd_e.c       \
     cmd_f.c       \
     cmd_exec.c    \
@@ -144,10 +145,13 @@ SOURCES = \
     f_ubar_cmd.c  \
     g_cmd.c       \
     get_flag.c    \
+    gt_cmd.c      \
     h_cmd.c       \
     i_cmd.c       \
     left_cmd.c    \
+    lt_cmd.c      \
     m_cmd.c       \
+    memory.c      \
     n_cmd.c       \
     o_cmd.c       \
     p_cmd.c       \
@@ -164,6 +168,8 @@ SOURCES = \
     term_out.c    \
     term_sys.c    \
     u_cmd.c       \
+    vbar_cmd.c    \
+    w_cmd.c       \
     x_cmd.c       \
     y_cmd.c       \
     z_cmd.c       \

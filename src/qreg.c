@@ -2,11 +2,9 @@
 ///  @file    qreg.c
 ///  @brief   Q-register functions for TECO.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -122,7 +120,7 @@ void append_qchr(int qname, bool qdot, int c)
     {
         nbytes += STR_SIZE_INIT;
 
-        qreg->text.buf = alloc_more(qreg->text.buf, qreg->text.size, nbytes);
+        qreg->text.buf = expand_mem(qreg->text.buf, qreg->text.size, nbytes);
         qreg->text.size = nbytes;
     }
 
@@ -150,7 +148,7 @@ void append_qtext(int qname, bool qdot, struct tstring text)
                         
         nbytes = nblocks * STR_SIZE_INIT;
         
-        void *p = alloc_more(qreg->text.buf, qreg->text.size, nbytes);
+        void *p = expand_mem(qreg->text.buf, qreg->text.size, nbytes);
 
         qreg->text.buf = p;
         qreg->text.size = nbytes;
@@ -421,7 +419,7 @@ void store_qchr(int qname, bool qdot, int c)
     qreg->text.get  = 0;
     qreg->text.put  = 0;
     qreg->text.size = STR_SIZE_INIT;
-    qreg->text.buf  = alloc_new(qreg->text.size);
+    qreg->text.buf  = alloc_mem(qreg->text.size);
 
     qreg->text.buf[qreg->text.put++] = (char)c;
 }
@@ -464,7 +462,7 @@ void store_qtext(int qname, bool qdot, struct tstring text)
 
     uint nbytes = STR_SIZE_INIT;
         
-    void *p = alloc_new(nbytes);
+    void *p = alloc_mem(nbytes);
 
     qreg->text.buf  = p;
     qreg->text.size = nbytes;

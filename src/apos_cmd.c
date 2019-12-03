@@ -1,6 +1,6 @@
 ///
-///  @file    eb_cmd.c
-///  @brief   Execute EB command.
+///  @file    apos_cmd.c
+///  @brief   Execute ' (apostrophe) command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,60 +26,25 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute EB command (open file for backup)
+///  @brief    Execute ' (apostrophe) command: end conditional statement.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EB(struct cmd *cmd)
+void exec_apos(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)
-    {
-        print_err(E_NFI);               // No file for input
-    }
+    --cmd->level;
 
-    create_filename(&cmd->text1);
-
-    if (open_input(filename_buf, istream) == EXIT_FAILURE)
-    {
-        if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
-        {
-            prints_err(E_FNF, last_file);
-        }
-
-        push_expr(OPEN_FAILURE, EXPR_VALUE);
-    }
-    else if (cmd->colon_set)
-    {
-        push_expr(OPEN_SUCCESS, EXPR_VALUE);
-    }
-
-    if (open_output(&cmd->text1, BACKUP_FILE) == EXIT_FAILURE)
-    {
-        if (!cmd->colon_set)
-        {
-            prints_err(E_UFO, last_file);
-        }
-
-        push_expr(OPEN_FAILURE, EXPR_VALUE);
-    }
-    else if (cmd->colon_set)
-    {
-        push_expr(OPEN_SUCCESS, EXPR_VALUE);
-    }
+    // TODO: add more here
 }
-

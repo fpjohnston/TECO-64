@@ -1,12 +1,10 @@
 ///
-///  @file    x_cmd.c
-///  @brief   Execute X command.
-///
-///  @author  Nowwith Treble Software
+///  @file    m_cmd.c
+///  @brief   Execute M command.
 ///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -32,33 +30,30 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "errors.h"
+//#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute X command: copy lines to Q-register.
+///  @brief    Execute M command: invoke macro in Q-register.
+///
+///                Mq -> Execute Q-register q as a command string.
+///               nMq -> Same as Mq; use n as numeric argument.
+///             m,nMq -> Same as Mq; use m,n as numeric arguments.
+///               :Mq -> Same as Mq; no new local Q-registers.
+///              n:Mq -> Same as nMq; no new local Q-registers.
+///            m,n:Mq -> Same as m,nMq; no new local Q-registers.
+///
+///            All of the above combinations may be used for a local Q-register,
+///            but no new set of local Q-registers is created.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_X(struct cmd *cmd)
+void exec_M(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)                    // n argument?
-    {
-        cmd->n_arg = 1;
-    }
-
-    if (cmd->m_set)                     // m argument too?
-    {
-        if (cmd->m_arg < 0 || cmd->n_arg < 0)   // If m,nXq, m & n must be positive
-        {
-            print_err(E_MOD);
-        }
-    }
-
-    // TODO: add lines of text to Q-register
+    // TODO: add more code here soon.
 }

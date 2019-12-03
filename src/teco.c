@@ -1,12 +1,10 @@
 ///
-///  @file    teco.c
-///  @brief   Main program for TECO text editor.
+///  @file       teco.c
+///  @brief      Main program for TECO text editor.
 ///
-///  @author  Nowwith Treble Software
+///  @bug        No known bugs.
 ///
-///  @bug     No known bugs.
-///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -25,22 +23,54 @@
 ///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ///
-///  @mainpage teco - TECO text editor
+///  @mainpage TECO 64 - TECO text editor for 64-bit environments.
+///
+///  This is an implementation in C of the TECO text editor for 64-bit operating
+///  environments.
+///
+///  It is a complete re-write of version 147 of TECO C, and is a work in
+///  progress. Further documentation will be added later.
+///
+///  @version 200
+///
+///  @author   Franklin P. Johnston / Nowwith Treble Software
+///
+///  @remarks  Previous authors of TECO, who deserve credit for their work on
+///            TECO, and on whose the shoulders I stood to develop this version.
+///
+///  @remarks  Dan Murphy - Created TECO on a PDP-1 in 1963 at MIT.
+///
+///  @remarks  Mark Bramhall - Developed TECO-11.
+///
+///  @remarks  Stan Rabinowitz - Standardized features of TECO-8, TECO-10, and
+///                              TECO-11.
+///
+///  @remarks  Rick Murphy - Translated TECO-11 to TECO-32.
+///
+///  @remarks  Andy Goldstein - Developed TECO-11 and TECO-32.
+///
+///  @remarks  Pete Siemsen - Developed TECO C in 1983. The first TECO written
+///                           in a language other than assembler.
+///
+///  @remarks  Tom Almy - Developed TECO C.
+///
+///  @remarks  Mark Henderson - Developed TECO C.
+///
+///  @remarks  Blake McBride - Developed version 147 of TECO C, the most recent
+///                            version as of October 2019.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <setjmp.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "teco.h"
 #include "eflags.h"
-#include "errors.h"
+
 
 #define TECO_VERSION    200             ///< Our version of TECO
 
@@ -139,68 +169,4 @@ void print_prompt(void)
     f.et.abort = false;                 // Don't abort on error
 
     puts_term(prompt, (uint)strlen(prompt));
-}
-
-
-///
-///  @brief    Get more memory.
-///
-///  @returns  Nothing (error if memory allocation fails).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void *alloc_more(void *ptr, uint oldsize, uint newsize)
-{
-    assert(ptr != NULL);
-    assert(oldsize != newsize);
-    assert(oldsize < newsize);
-
-    void *newptr = realloc(ptr, (size_t)newsize);
-
-    if (newptr == NULL)
-    {
-        print_err(E_MEM);               // Memory overflow
-    }
-
-    return newptr;
-}
-
-
-///
-///  @brief    Get new memory.
-///
-///  @returns  Nothing (error if memory allocation fails).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void *alloc_new(uint size)
-{
-    void *ptr = calloc(1uL, (size_t)size);
-
-    if (ptr == NULL)
-    {
-        print_err(E_MEM);               // Memory overflow
-    }
-
-    return ptr;
-}
-
-
-///
-///  @brief    Deallocate memory.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void dealloc(char **ptr)
-{
-    assert(ptr != NULL);                // Make sure pointer to pointer is real
-
-    if (*ptr != NULL)
-    {
-        free(*ptr);
-
-        *ptr = NULL;                    // Make sure we don't use this again
-    }
 }

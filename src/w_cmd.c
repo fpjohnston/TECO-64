@@ -1,6 +1,6 @@
 ///
-///  @file    eb_cmd.c
-///  @brief   Execute EB command.
+///  @file    w_cmd.c
+///  @brief   Execute W command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,60 +26,59 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute EB command (open file for backup)
+///  @brief    Execute W command: process window functions.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EB(struct cmd *cmd)
+void exec_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)
-    {
-        print_err(E_NFI);               // No file for input
-    }
-
-    create_filename(&cmd->text1);
-
-    if (open_input(filename_buf, istream) == EXIT_FAILURE)
-    {
-        if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
-        {
-            prints_err(E_FNF, last_file);
-        }
-
-        push_expr(OPEN_FAILURE, EXPR_VALUE);
-    }
-    else if (cmd->colon_set)
-    {
-        push_expr(OPEN_SUCCESS, EXPR_VALUE);
-    }
-
-    if (open_output(&cmd->text1, BACKUP_FILE) == EXIT_FAILURE)
-    {
-        if (!cmd->colon_set)
-        {
-            prints_err(E_UFO, last_file);
-        }
-
-        push_expr(OPEN_FAILURE, EXPR_VALUE);
-    }
-    else if (cmd->colon_set)
-    {
-        push_expr(OPEN_SUCCESS, EXPR_VALUE);
-    }
+    // TODO: finish window command handling
 }
 
+
+///
+///  @brief    Scan W command: process window functions.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_W(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (!operand_expr())                // W by itself does nothing
+    {
+        // TODO: error?
+        return;
+    }
+
+    int n = get_n_arg();
+
+    if (cmd->colon_set)                 // n:W returns a value
+    {
+        push_expr(1, EXPR_VALUE);       // Dummy expression
+
+        return;
+    }
+
+
+    // Here for nW - send value to exec function.
+
+    cmd->n_arg = n;
+    cmd->n_set = true;
+
+    scan_state = SCAN_DONE;
+}

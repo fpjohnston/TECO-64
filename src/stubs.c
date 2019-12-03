@@ -2,11 +2,9 @@
 ///  @file    stubs.c
 ///  @brief   Temporary stub functions for TECO.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -33,17 +31,6 @@
 
 #include "teco.h"
 #include "exec.h"
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
-void exec_apos(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
 
 
 ///  @brief    Temporary stub function.
@@ -137,39 +124,6 @@ void exec_F_apos(struct cmd *unused1)
 ///  @brief    Temporary stub function.
 ///  @returns  Nothing.
 
-void exec_F_langle(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
-void exec_F_rangle(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
-void exec_F_vbar(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
 void exec_J(struct cmd *unused1)
 {
     printf("%s() not yet completed\r\n", __func__);
@@ -236,18 +190,7 @@ void exec_V(struct cmd *unused1)
 ///  @brief    Temporary stub function.
 ///  @returns  Nothing.
 
-void exec_W(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
-void exec_langle(struct cmd *unused1)
+void exec_F_lt(struct cmd *unused1)
 {
     printf("%s() not yet completed\r\n", __func__);
     (void)fflush(stdout);
@@ -269,7 +212,7 @@ void exec_question(struct cmd *unused1)
 ///  @brief    Temporary stub function.
 ///  @returns  Nothing.
 
-void exec_rangle(struct cmd *unused1)
+void exec_F_gt(struct cmd *unused1)
 {
     printf("%s() not yet completed\r\n", __func__);
     (void)fflush(stdout);
@@ -302,7 +245,7 @@ void exec_ubar(struct cmd *unused1)
 ///  @brief    Temporary stub function.
 ///  @returns  Nothing.
 
-void exec_vbar(struct cmd *unused1)
+void exec_F_vbar(struct cmd *unused1)
 {
     printf("%s() not yet completed\r\n", __func__);
     (void)fflush(stdout);

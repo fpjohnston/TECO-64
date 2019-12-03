@@ -2,11 +2,9 @@
 ///  @file    eg_cmd.c
 ///  @brief   Execute EG command.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +62,7 @@ void exec_EG(struct cmd *cmd)
 
     // EG`, not :EG`, so get ready to exit
 
-    eg_command = alloc_new(cmd->text1.len + 1);
+    eg_command = alloc_mem(cmd->text1.len + 1);
 
     sprintf(eg_command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
 

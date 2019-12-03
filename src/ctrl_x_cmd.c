@@ -2,11 +2,9 @@
 ///  @file    ctrl_x_cmd.c
 ///  @brief   Execute ^X (CTRL/X) command.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -67,6 +65,11 @@ void scan_ctrl_x(struct cmd *cmd)
     if (!operand_expr())                // ^X`?
     {
         push_expr(v.ctrl_x, EXPR_VALUE);
+    }
+    else
+    {
+        cmd->n_arg = get_n_arg();
+        cmd->n_set = true;
     }
 }
 

@@ -2,11 +2,9 @@
 ///  @file    teco.h
 ///  @brief   Main header file for TECO text editor.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -77,8 +75,8 @@ enum expr_type
 
 struct e_obj
 {
-    long value;                     // Operand/operator value
-    enum expr_type type;            // Value type (operand/operator)
+    long value;                     ///< Operand value (if type = EXPR_VALUE)
+    enum expr_type type;            ///< Value type (operand/operator)
 };
 
 ///  @struct estack
@@ -241,11 +239,11 @@ extern int last_in;
 
 // Global functions
 
-extern void *alloc_more(void *ptr, uint oldsize, uint newsize);
+extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
 
-extern void *alloc_new(uint size);
+extern void *alloc_mem(uint size);
 
-extern void dealloc(char **ptr);
+extern void free_mem(char **ptr);
 
 extern void exec_cmd(void);
 

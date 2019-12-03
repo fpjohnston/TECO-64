@@ -17,11 +17,9 @@
 ///           nF_    Destructive search and replace
 ///           F|     Flow to ELSE part of conditional
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -65,8 +63,8 @@ static struct cmd_table cmd_f_table[] =
     { NULL,  exec_FN,        "n : @ 1 2"    },
     { NULL,  exec_FR,        "m n @ 1 2"    },
     { NULL,  exec_FS,        "m n :: @ 1 2" },
-    { NULL,  exec_F_langle,  ""             },
-    { NULL,  exec_F_rangle,  ""             },
+    { NULL,  exec_F_lt,      ""             },
+    { NULL,  exec_F_gt,      ""             },
     { NULL,  exec_F_apos,    ""             },
     { NULL,  exec_F_ubar,    "n @ 1 2"      },
     { NULL,  exec_F_vbar,    ""             },

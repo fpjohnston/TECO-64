@@ -2,11 +2,9 @@
 ///  @file    ec_cmd.c
 ///  @brief   Execute EC command.
 ///
-///  @author  Nowwith Treble Software
-///
 ///  @bug     No known bugs.
 ///
-///  @copyright  tbd
+///  @copyright  2019-2020 Franklin P. Johnston
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a copy
 ///  of this software and associated documentation files (the "Software"), to deal
@@ -71,8 +69,8 @@ void exec_EC(struct cmd *cmd)
 
     rename_output(ofile);              // Handle any required file renaming
 
-    dealloc(&ofile->temp);
-    dealloc(&ofile->name);
+    free_mem(&ofile->temp);
+    free_mem(&ofile->name);
 }
 
 
