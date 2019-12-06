@@ -87,7 +87,7 @@ void scan_ctrl_t(struct cmd *cmd)
     }
     else if (scan_state != SCAN_DONE)
     {
-        push_expr(1, EXPR_VALUE);       // Dummy expression
+        push_expr(DUMMY_VALUE, EXPR_VALUE);
     }
     else
     {

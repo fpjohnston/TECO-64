@@ -51,27 +51,6 @@
 #include "exec.h"
 
 
-///  @var    cmd_f_table
-///  @brief  Table for all commands starting with F.
-
-static struct cmd_table cmd_f_table[] =
-{
-    { NULL,  exec_FB,        "m n @ 1"      },
-    { NULL,  exec_FC,        "m n @ 1 2"    },
-    { NULL,  exec_FD,        "m n @ 1"      },
-    { NULL,  exec_FK,        "n @ 1"        },
-    { NULL,  exec_FN,        "n : @ 1 2"    },
-    { NULL,  exec_FR,        "m n @ 1 2"    },
-    { NULL,  exec_FS,        "m n :: @ 1 2" },
-    { NULL,  exec_F_lt,      ""             },
-    { NULL,  exec_F_gt,      ""             },
-    { NULL,  exec_F_apos,    ""             },
-    { NULL,  exec_F_ubar,    "n @ 1 2"      },
-    { NULL,  exec_F_vbar,    ""             },
-};
-
-
-
 ///
 ///  @brief    Scan F command.
 ///
@@ -95,5 +74,9 @@ struct cmd_table *scan_F(struct cmd *cmd)
 
     cmd->c2 = (char)c;
 
-    return &cmd_f_table[f_cmd - f_cmds];
+    uint i = (uint)(f_cmd - f_cmds);
+
+    assert(i < cmd_f_count);
+
+    return &cmd_f_table[i];
 }

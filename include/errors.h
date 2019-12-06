@@ -38,7 +38,7 @@ extern int last_error;
 
 enum errors
 {
-    E_NUL = 1,      ///< No error
+    E_NUL,          ///< No error
     E_ARG,          ///< Improper arguments
     E_BNI,          ///< >not in iteration
     E_CCL,          ///< CCV.SV not found or EG argument too long

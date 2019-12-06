@@ -52,11 +52,11 @@ void exec_rbracket(struct cmd *cmd)
             print_err(E_CPQ);           // Push-down list is empty.
         }
 
-        push_expr(0, EXPR_VALUE);       // 0 ->failure
+        push_expr(TECO_FAILURE, EXPR_VALUE);
     }
     else if (cmd->colon_set)
     {
-        push_expr(1, EXPR_VALUE);       // 1 -> success
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
     else if (cmd->n_set)
     {

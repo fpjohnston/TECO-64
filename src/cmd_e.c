@@ -35,41 +35,6 @@
 #include "errors.h"
 #include "exec.h"
 
-///  @var    cmd_e_table
-///  @brief  Table for all commands starting with E.
-
-static struct cmd_table cmd_e_table[] =
-{
-    { NULL,       exec_EA,      ""        },
-    { NULL,       exec_EB,      ": @ 1"   },
-    { scan_EC,    exec_EC,      "n"       },
-    { scan_ED,    exec_ED,      "m n"     },
-    { scan_EE,    exec_EE,      "n"       },
-    { NULL,       exec_EF,      ""        },
-    { NULL,       exec_EG,      ": @ 1"   },
-    { scan_EH,    exec_EH,      "m n"     },
-    { NULL,       exec_EI,      ": @ 1"   },
-    { scan_EJ,    NULL,         "n"       },
-    { NULL,       exec_EK,      ""        },
-    { NULL,       exec_EL,      "@ 1"     },
-    { NULL,       exec_EM,      "n"       },
-    { NULL,       exec_EN,      ": @ 1"   },
-    { scan_EO,    NULL,         "n"       },
-    { NULL,       exec_EP,      ""        },
-    { NULL,       exec_EQ,      ": @ q 1" },
-    { NULL,       exec_ER,      ": @ 1"   },
-    { scan_ES,    exec_ES,      "n"       },
-    { scan_ET,    exec_ET,      "m n"     },
-    { scan_EU,    exec_EU,      "n"       },
-    { scan_EV,    exec_EV,      "n"       },
-    { NULL,       exec_EW,      "@ 1"     },
-    { NULL,       exec_EX,      ""        },
-    { NULL,       exec_EY,      ":"       },
-    { scan_EZ,    exec_EZ,      "m n"     },
-    { NULL,       exec_E_pct,   ": @ q 1" },
-    { NULL,       exec_E_ubar,  "n @ 1"   },
-};
-
 
 ///
 ///  @brief    Scan E command.
@@ -96,7 +61,7 @@ struct cmd_table *scan_E(struct cmd *cmd)
 
     uint i = (uint)(e_cmd - e_cmds);
 
-    assert(i < countof(cmd_e_table));
+    assert(i < cmd_e_count);
 
     return &cmd_e_table[i];
 }

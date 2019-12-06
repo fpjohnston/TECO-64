@@ -41,6 +41,10 @@
 #include <stdio.h>
 #endif
 
+#if     !defined(_STDLIB_H)
+#include <stdlib.h>
+#endif
+
 
 /// @def    countof(array)
 /// @brief  Returns the number of elements in an array.
@@ -52,6 +56,14 @@
 #define STR_SIZE_INIT        1024       ///< Initial string size
 
 #define EXPR_SIZE            64         ///< Size of expression stack
+
+enum
+{
+    TECO_FAILURE = 0,                   ///< TECO function failure
+    TECO_SUCCESS = -1                   ///< TECO function success
+};
+
+#define DUMMY_VALUE     1               ///< Temporary dummy value
 
 ///  @enum   expr_type
 ///  @brief  Type of item stored on expression stack.
@@ -143,7 +155,10 @@ enum file_status
 struct ifile
 {
     FILE *fp;                       ///< Input file stream
+    bool ff;                        ///< Form feed seen
     bool eof;                       ///< End of file reached
+    bool warn;                      ///< Warning threshold reached
+    bool full;                      ///< Edit buffer is full
     bool cr;                        ///< Last character was CR
 };
 
@@ -239,11 +254,13 @@ extern int last_in;
 
 // Global functions
 
-extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
-
 extern void *alloc_mem(uint size);
 
+extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
+
 extern void free_mem(char **ptr);
+
+extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 
 extern void exec_cmd(void);
 
@@ -276,6 +293,25 @@ extern void print_prompt(void);
 extern void print_term(const char *str);
 
 extern void read_cmd(void);
+
+// Edit buffer functions
+
+enum
+{
+    EDIT_OK,
+    EDIT_WARN,
+    EDIT_FULL
+};
+
+extern void init_edit(uint size, uint plus, uint warn, bool shrink);
+
+extern uint add_edit(int c);
+
+extern bool empty_edit(void);
+
+extern void kill_edit(void);
+
+extern void type_edit(void);
 
 // Q-register functions
 

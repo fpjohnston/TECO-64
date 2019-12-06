@@ -67,7 +67,7 @@ void exec_EK(struct cmd *cmd)
         oname = ofile->name;
     }
 
-    if (remove(oname) != 0)
+    if (oname != NULL && remove(oname) != 0)
     {
         fatal_err(errno, E_SYS, NULL);
     }

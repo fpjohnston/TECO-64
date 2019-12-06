@@ -73,17 +73,33 @@ VPATH=src:obj:$(INCDIR)
 LIBS =
 
 SOURCES = \
+    buffer.c      \
+    cmd_e.c       \
+    cmd_f.c       \
+    cmd_exec.c    \
+    cmd_scan.c    \
+    cmd_tables.c  \
+    edit_buf.c    \
+    env_sys.c     \
+    errors.c      \
+    file.c        \
+    file_sys.c    \
+    get_flag.c    \
+    memory.c      \
+    push_expr.c   \
+    qreg.c        \
+    stubs.c       \
+    teco.c        \
+    term_in.c     \
+    term_out.c    \
+    term_sys.c    \
+                  \
     a_cmd.c       \
     apos_cmd.c    \
     b_cmd.c       \
     back_cmd.c    \
     bang_cmd.c    \
-    buffer.c      \
     caret_cmd.c   \
-    cmd_e.c       \
-    cmd_f.c       \
-    cmd_exec.c    \
-    cmd_scan.c    \
     comma_cmd.c   \
     ctrl_a_cmd.c  \
     ctrl_b_cmd.c  \
@@ -117,14 +133,12 @@ SOURCES = \
     el_cmd.c      \
     em_cmd.c      \
     en_cmd.c      \
-    env_sys.c     \
     eo_cmd.c      \
     ep_cmd.c      \
     e_pct_cmd.c   \
     eq_cmd.c      \
     equals_cmd.c  \
     er_cmd.c      \
-    errors.c      \
     es_cmd.c      \
     et_cmd.c      \
     e_ubar_cmd.c  \
@@ -136,37 +150,29 @@ SOURCES = \
     ez_cmd.c      \
     fc_cmd.c      \
     fd_cmd.c      \
-    file.c        \
-    file_sys.c    \
     fk_cmd.c      \
     fn_cmd.c      \
     fr_cmd.c      \
     fs_cmd.c      \
     f_ubar_cmd.c  \
     g_cmd.c       \
-    get_flag.c    \
     gt_cmd.c      \
     h_cmd.c       \
     i_cmd.c       \
+    k_cmd.c       \
     left_cmd.c    \
     lt_cmd.c      \
     m_cmd.c       \
-    memory.c      \
     n_cmd.c       \
     o_cmd.c       \
     p_cmd.c       \
     pct_cmd.c     \
-    push_expr.c   \
     q_cmd.c       \
+    quest_cmd.c   \
     quote_cmd.c   \
-    qreg.c        \
     right_cmd.c   \
     s_cmd.c       \
-    stubs.c       \
-    teco.c        \
-    term_in.c     \
-    term_out.c    \
-    term_sys.c    \
+    t_cmd.c       \
     u_cmd.c       \
     vbar_cmd.c    \
     w_cmd.c       \
@@ -224,7 +230,7 @@ DFILES = $(SOURCES:.c=.d)
 
 CFLAGS += -MMD -c $(INCLUDES) $(OPT_OPT) $(DFLAGS)
 
-LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt -e786 -e818 -e830
+LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt -e786 -e818 -e830 +fan +fas
 
 %.lob: %.c
 	@echo Making $@ $(NULL)

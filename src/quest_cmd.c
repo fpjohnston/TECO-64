@@ -1,6 +1,6 @@
 ///
-///  @file    ey_cmd.c
-///  @brief   Execute EY command.
+///  @file    quest_cmd.c
+///  @brief   Execute ? (question mark) TECO command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,59 +26,21 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute EY command: yank text into buffer (no protection).
+///  @brief    Execute ? (question mark) command: toggle trace mode.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EY(struct cmd *cmd)
+void exec_question(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    struct ifile *ifile = &ifiles[istream];
-
-    if (ifile->eof)
-    {
-        if (cmd->colon_set)
-        {
-            push_expr(TECO_FAILURE, EXPR_VALUE);
-
-            return;
-        }
-    }
-
-    if (cmd->n_set)
-    {
-        if (cmd->n_arg == -1)
-        {
-            print_err(E_T32);           // TECO-32 feature
-        }
-        else
-        {
-            print_err(E_NYA);           // Numeric argument with Y
-        }
-    }
-
-    kill_edit();
-
-    while (append_line())               // Read what we can
-    {
-        ;
-    }
-
-    if (cmd->colon_set)
-    {
-        push_expr(TECO_SUCCESS, EXPR_VALUE);
-    }
+    v.trace = v.trace ? false : true;
 }

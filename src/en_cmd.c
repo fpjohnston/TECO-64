@@ -55,13 +55,13 @@ void exec_EN(struct cmd *cmd)
                 print_err(E_FNF);       // No more matches
             }
 
-            push_expr(0, EXPR_VALUE);
+            push_expr(TECO_FAILURE, EXPR_VALUE);
         }
         else
         {
             if (cmd->colon_set)
             {
-                push_expr(-1, EXPR_VALUE);
+                push_expr(TECO_SUCCESS, EXPR_VALUE);
             }
         }
     }

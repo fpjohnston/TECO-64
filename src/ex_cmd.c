@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "errors.h"
 #include "exec.h"
 
 
@@ -45,8 +46,10 @@ void exec_EX(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // TODO: issue error E_NFO if there is text in the buffer,
-    //       but there is no output file open.
+    if (!empty_edit())                  // Anything in buffer?
+    {
+        print_err(E_NFO);               // No file for output
+    }
 
     exec_EC(cmd);                       // Close everything normally
 

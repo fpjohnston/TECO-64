@@ -34,7 +34,8 @@
 
 
 ///
-///  @brief    Scan ^N (CTRL/N) command: read end of file flag.
+///  @brief    Scan ^N (CTRL/N) command: read end of file flag for current
+///            input stream.
 ///
 ///  @returns  Nothing.
 ///
@@ -44,6 +45,8 @@ void scan_ctrl_n(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr(v.eof, EXPR_VALUE);
+    struct ifile *ifile = &ifiles[istream];
+
+    push_expr(ifile->eof, EXPR_VALUE);
 }
 

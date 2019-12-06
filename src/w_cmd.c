@@ -69,7 +69,7 @@ void scan_W(struct cmd *cmd)
 
     if (cmd->colon_set)                 // n:W returns a value
     {
-        push_expr(1, EXPR_VALUE);       // Dummy expression
+        push_expr(DUMMY_VALUE, EXPR_VALUE);
 
         return;
     }

@@ -107,9 +107,25 @@ struct cmd_table
 
 extern struct cmd_table cmd_table[];
 
+extern struct cmd_table cmd_e_table[];
+
+extern struct cmd_table cmd_f_table[];
+
+extern uint cmd_count;
+
+extern uint cmd_e_count;
+
+extern uint cmd_f_count;
+
+extern struct cmd null_cmd;
+
 extern enum scan_state scan_state;
 
 // Functions that assist in parsing commands
+
+extern bool append(struct cmd *cmd);
+
+extern bool append_line(void);
 
 extern void get_flag(struct cmd *cmd, uint flag);
 

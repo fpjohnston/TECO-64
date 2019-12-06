@@ -95,3 +95,27 @@ void free_mem(char **ptr)
         *ptr = NULL;                    // Make sure we don't use this again
     }
 }
+
+
+///
+///  @brief    Shrink memory.
+///
+///  @returns  Nothing (error if memory allocation fails).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void *shrink_mem(void *ptr, uint oldsize, uint newsize)
+{
+    assert(ptr != NULL);
+    assert(oldsize != newsize);
+    assert(oldsize > newsize);
+
+    void *newptr = realloc(ptr, (size_t)newsize);
+
+    if (newptr == NULL)
+    {
+        print_err(E_MEM);               // Memory overflow
+    }
+
+    return newptr;
+}

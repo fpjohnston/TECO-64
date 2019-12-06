@@ -165,7 +165,7 @@ void print_cmd(struct cmd *cmd)
 
     // Here when we've parsed the entire command - now type it out.
 
-    printf("%u,%u:%*s", ++ncommands, cmd->level, (int)cmd->level * 4, " ");
+    printf("[%u,%u] %*s", ++ncommands, cmd->level, (int)cmd->level * 4, " ");
     (void)fflush(stdout);
 
     if (cmd->expr.len != 0)

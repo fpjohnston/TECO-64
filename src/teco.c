@@ -74,6 +74,8 @@
 
 #define TECO_VERSION    200             ///< Our version of TECO
 
+#define EDIT_BUF_SIZE   (16 * 1024)     ///< Edit buffer is initially 16KB
+
 ///  @var     prompt
 ///  @brief   Command-line prompt (usually '*').
 
@@ -132,6 +134,8 @@ int main(int unused1, const char * const argv[])
     init_env();                         // Initialize environment
     init_term();                        // Initialize terminal
     init_buf();                         // Initialize command buffer
+    init_edit(EDIT_BUF_SIZE, EDIT_BUF_SIZE, 75, (bool)true);
+                                        // Initialize edit buffer
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams
 

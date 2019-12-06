@@ -135,17 +135,6 @@ void exec_J(struct cmd *unused1)
 ///  @brief    Temporary stub function.
 ///  @returns  Nothing.
 
-void exec_K(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
 void exec_L(struct cmd *unused1)
 {
     printf("%s() not yet completed\r\n", __func__);
@@ -168,17 +157,6 @@ void exec_R(struct cmd *unused1)
 ///  @brief    Temporary stub function.
 ///  @returns  Nothing.
 
-void exec_T(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
 void exec_V(struct cmd *unused1)
 {
     printf("%s() not yet completed\r\n", __func__);
@@ -191,17 +169,6 @@ void exec_V(struct cmd *unused1)
 ///  @returns  Nothing.
 
 void exec_F_lt(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
-void exec_question(struct cmd *unused1)
 {
     printf("%s() not yet completed\r\n", __func__);
     (void)fflush(stdout);

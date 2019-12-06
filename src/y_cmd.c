@@ -31,11 +31,13 @@
 #include <string.h>
 
 #include "teco.h"
+#include "eflags.h"
+#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute Y command (clears text buffer and reads next page).
+///  @brief    Execute Y command: yank text into buffer.
 ///
 ///  @returns  Nothing.
 ///
@@ -44,5 +46,45 @@
 void exec_Y(struct cmd *cmd)
 {
     assert(cmd != NULL);
-}
 
+    struct ifile *ifile = &ifiles[istream];
+
+    if (ifile->eof)
+    {
+        if (cmd->colon_set)
+        {
+            push_expr(TECO_FAILURE, EXPR_VALUE);
+
+            return;
+        }
+    }
+
+    if (cmd->n_set)
+    {
+        if (cmd->n_arg == -1)
+        {
+            print_err(E_T32);           // TECO-32 feature
+        }
+        else
+        {
+            print_err(E_NYA);           // Numeric argument with Y
+        }
+    }
+
+    if (!f.ed.yank)                     // Can we do this?
+    {
+        print_err(E_YCA);               // Y command aborted
+    }
+
+    kill_edit();
+
+    while (append_line())               // Read what we can
+    {
+        ;
+    }
+
+    if (cmd->colon_set)
+    {
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
+    }
+}

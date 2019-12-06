@@ -31,7 +31,106 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "exec.h"
+
+
+///
+///  @brief    Append to edit buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool append(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    struct ifile *ifile = &ifiles[istream];
+
+    // Here if we have A, :A, or n:A
+
+    if (ifile->eof)                     // Already at EOF?
+    {
+        return false;
+    }
+    else if (cmd->n_set)                // n:A -> append n lines
+    {
+        for (int i = 0; i < cmd->n_arg; ++i)
+        {
+            if (!append_line())         // If append failed
+            {
+                break;
+            }
+        }
+    }
+    else if (!cmd->colon_set)           // A -> append entire page
+    {
+        for (;;)                        // Append all we can
+        {
+            if (!append_line())         // If append failed
+            {
+                break;
+            }
+        }
+    }
+    else
+    {
+        (void)append_line();            // :A -> append single line
+    }
+
+    return true;
+}
+
+
+///
+///  @brief    Append line to edit buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool append_line(void)
+{
+    struct ifile *ifile = &ifiles[istream];
+    int c;
+ 
+    while ((c = fgetc(ifile->fp)) != EOF)
+    {
+        if (c == FF)                    // If form feed, don't store it
+        {
+            ifile->ff = true;           // But do flag it
+
+            return true;
+        }
+
+        switch (add_edit(c))
+        {
+            default:
+            case EDIT_OK:
+                if (c == LF || c == VT) // Done if line terminator found
+                {
+                    return true;
+                }
+
+                break;
+
+            case EDIT_WARN:             // Set flag if buffer getting full
+                ifile->warn = true;
+
+                break;
+
+            case EDIT_FULL:             // Stop if buffer is full
+                ifile->full = true;
+
+                return false;
+        }
+    }
+
+    ifile->eof = true;
+
+    return false;
+}
 
 
 ///
@@ -48,11 +147,25 @@
 void exec_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    // nA is a different command - shouldn't get here.
+
+    if (cmd->n_set && !cmd->colon_set)
+    {
+        return;
+    }
+
+    int status = append(cmd);
+
+    if (cmd->colon_set)
+    {
+        push_expr(status, EXPR_VALUE);
+    }
 }
 
 
 ///
-///  @brief    Parse A command: get value of character in buffer.
+///  @brief Parse A command: get value of character in buffer.
 ///
 ///            nA - Value of nth character in buffer, 0 = first, -1 = last.
 ///
@@ -73,7 +186,7 @@ void scan_A(struct cmd *cmd)
         {
             // TODO: get actual value of character in buffer.
 
-            push_expr(1, EXPR_VALUE);   // Dummy expression
+            push_expr(DUMMY_VALUE, EXPR_VALUE);
 
             return;
         }
