@@ -1,0 +1,353 @@
+!TECO.TEC V40.00![00U00,0X0[10U10,0X1[20U20,0X2[30U30,0X3[40U40,0X4[50U50,0X5[60U60,0X6[70U70,0X7[80U80,0X8[90U90,0X9[90,0X9[00,0X0[20,0X210U0[0^D^X ?U0[00?^X EDU0[0ED&4EDEUU0[0-1EUESU0[00ESETU0[032768#32#8#1,0ETQ1U00U1[10,0X1-1EJ-4"E:QZ#Z"E-1^X G_J::FSdcl  teco
+TECO
+"UHK':S 
+
+J0^X ''Q0+1"E32768U0'32768"E:EITECO?
+"S]1Q0#32768U1[1JODONE
+''Z"EGZ0,0XZ'J::FS^ES
+
+
+::FSTECO32
+TECO
+ZJ-:S^ES
+"S.-Z"EFR
+''Z"EODONE
+'Q0&32767U10,0X10,0X9J:FS^ES/NOI
+
+"SO/NOINI
+'J:FS/NOI
+
+"S!/NOINI!::FSN
+
+"S::FSI
+
+
+'::FS^ES
+
+"S0A"AI 
+''Q1#4096U1'Q1&4096"EHX0HKEPEAEF:EGINI
+"SG*J::FS$
+
+"SHX1HK:ER^EQ1
+"SYHX1HKECG1 | %Can't find initialization file ":G1"^M^J''0,0X1 | 0,0X1-1EJ-5*-1EJ-1024"EEN[]*.*
+:EN
+"SG*JS[
+R0KFS.
+]
+JS]
+0,.X1HK'':ER^EQ1TECO.INI
+"SYHX9HKECG90,0X9''ER
+EW
+Z"NZJ.U0G1I=
+G0Q0JZX9ZK]1]0Q0ET]0Q0ES]0Q0EU]0Q0ED]0Q0^X ]0Q0^R]2HX0HKG9JS=
+0,.-1X90,.KM0+0U90,0X0[20,0X210U0[0^D^X U0[00^X EDU0[0ED&4EDEUU0[0-1EUESU0[00ESETU0[032768#32#8#1,0ET[1G9^YX1^YK0,0X9Q9U1J::FS^ES
+
+
+ZJ-:S^ES
+"S.-Z"EFR
+''Z"EOSCOPES
+' | G0''J:FS^ES/NOM
+
+"SO/NOMEMORY
+'J:FS/NOM
+
+"S!/NOMEMORY!::FSE
+
+"S::FSM
+
+"S::FSO
+
+"S::FSR
+
+"S::FSY
+
+
+''''::FS^ES
+
+"S0A"AI 
+''Q1#4U1'J:FS^ES/NOC
+
+"SO/NOCREATE
+'J:FS/NOC
+
+"S!/NOCREATE!::FSR
+
+"S::FSE
+
+"S::FSA
+
+"S::FST
+
+"S::FSE
+
+
+''''::FS^ES
+
+"S0A"AI 
+''Q1#256U1'-1EJ-4"NJ::STE
+"S<0A"AC>'::S^ES@
+"S0KIMUNG 
+'''J::FSMU
+
+"S<0A"AD>'::FS^ES
+
+
+-1EJ-5*-1EJ-1024"EJ::FS"
+
+"S::FS^ES
+
+
+''ZU0J:S/
+"SR.-Q0"L.U0''J:S^ES
+"S.-Q0"L.U0''J<S,
+;.U1Q1-1J-:S[
+"S:S]
+"S.-Q1"GF<'''Q1-1J-:S<
+"S:S>
+"S.-Q1"GF<'''Q1-1J-:S(
+"S:S)
+"S.-Q1"GF<'''Q1-1J.-1-Q0"LD.U0'0;>Q0J<-.;-1A-32"N-1A-9"N0;''-D>0,.X0::S^ES
+
+0,.K:Q0"E?How can I MUNG nothing?^M^J^C^C'EI^EQ0
+JODONE
+'J:FS^ES/GT
+
+"SO/GTEDIT
+'J:FS/GT
+
+"S!/GTEDIT!::FSE
+
+"S::FSD
+
+"S::FSI
+
+"S::FST
+
+
+'''::FS^ES
+
+"S0A"AI 
+''Q1#64U1'J:FS^ES/VT
+
+"SO/VTEDIT
+'J:FS/VT
+
+"S!/VTEDIT!::FSE
+
+"S::FSD
+
+"S::FSI
+
+"S::FST
+
+
+'''::FS:H
+
+"S::FSO
+
+"S::FSL
+
+"S::FSD
+
+
+''Q1#32U1'::FS:S
+
+"S::FSE
+
+"S::FSE
+
+"S::FSA
+
+"S::FSL
+
+"S::FSL
+
+
+''''Q1#16U1'::FS:H
+
+"S::FSO
+
+"S::FSL
+
+"S::FSD
+
+
+''Q1#32U1'::FS^ES
+
+"S0A"AI 
+''Q1#1U1'J:FS^ES/SC
+
+"SO/SCROLL
+'J:FS/SC
+
+"S!/SCROLL!::FSR
+
+"S::FSO
+
+"S::FSL
+
+"S::FSL
+
+
+'''::S:^ED
+"SR-D\U2FR
+ | 0U2'::FS:S
+
+"S::FSE
+
+"S::FSE
+
+"S::FSA
+
+"S::FSL
+
+"S::FSL
+
+
+''''Q1#16U1'::FS^ES
+
+"S0A"AI 
+''Q1#128U1'J::FSTE
+
+"S<0A"AD>'::FS^ES
+
+
+J:FS^ES/IN
+
+"SO/INSPECT
+'J:FS/IN
+
+"S!/INSPECT!::FSS
+
+"S::FSP
+
+"S::FSE
+
+"S::FSC
+
+"S::FST
+
+
+''''::FS^ES
+
+"S0A"AI 
+''Q1#2U1'J:FS^ES/FI
+
+"SO/FIND
+'J:FS/FI
+
+"S!/FIND!::FSN
+
+"S::FSD
+
+
+'::FS^ES
+
+"S0A"AI 
+''Q1#8U1'J<.-Z;0A-9"EDF<'0A-32"EDF<'C-1A-^^""E:S"
+"UZJ''>Q1&4#Z"E:EGMEM
+"SG*J::FS$
+
+"SF | ' | Z"E:Q1"E-1EJ-5*-1EJ-1024"EEN[]*.*
+:EN
+"SG*JS[
+R0KFS.
+]
+JS]
+0,.X1HK''':Q9"E0EJ+100\JDG1ITECF
+ZJI.TMP
+-1EJ-4"EI</MODE:#3000
+ | -1EJ-7"NI;1/-CR
+''HX9HK'G9'HX0HKEPEAEF:ER^EQ0
+"SYL."N-1A-10"E-D''."N-1A-13"E-D''ZKHX0HKECG0'ER
+EW
+0,0X0'J<.-Z;0A-9"EDF<'0A-32"EDF<'C-1A-^^""E:S"
+"UZJ''>J:FS/FI
+
+"S::FSN
+
+"S::FSD
+
+
+'Q1#8192#8U1'Z"NQ1#32768#16384U1''Q1&16384"NQ1&2"EEdi | Inspec'ting file "HT"^M^J'Z"EQ1&2"EOSCOPES
+'?How can I inspect nothing?^M^J^C^C'Q1&2"EJ:S=
+"S0,.-1X00,.KZU0HX2HK:Q2"N:ER^EQ2
+"UG2HX0HKONOTFND
+'':Q0"NEW^EQ0
+'Q0"NQ1#2048U1'OREMEM
+''HX0HKQ1&2"E:EB^EQ0
+"SQ1#2048U1OREMEM
+'Q1&256"NQ1&32768"EONOTFND
+''%Can't find file ":G0"^M^JQ1&32768"E%Creating new file^M^JOCREATE
+ | %Ignoring TECO's memory^M^JQ1#8192U10,0X0OREMEM
+'':ER^EQ0
+"SQ1#2048U1OSCOPES
+'!NOTFND!?Can't find file ":G0"?^M^J^C^C'J::FSMA
+
+"S<0A"AD>'::FS^ES
+
+
+J<.-Z;0A-9"EDF<'0A-32"EDF<'C-1A-^^""E:S"
+"UZJ''>Z"E?How can I MAKE nothing?^M^J^C^C'Z-4"EJ::SLOVE
+"SNot war?^M^J''HX0HK!CREATE!EW^EQ0
+OREMEM
+'%Unrecognized command "HTHK"^M^JOSCOPES
+!REMEM!Q1&8192"NOWRITE
+'Q1&(32768#4)"NOSCOPES
+':Q0"EOSCOPES
+'!WRITE!:EGMEM
+"SZJG*^SC::FS$
+
+"UZK:EGMEM ^EQ0
+
+ | ZX9ZKF | ' | :Q9"E:Q1"E-1EJ-5*-1EJ-1024"EEN[]*.*
+:EN
+"SZJ.U0G*Q0JS[
+RQ0,.KFS.
+]
+Q0JS]
+Q0,.X1Q0,ZK'''G1^YX9^YK:^U9TECF
+0EJ+100\.-2,.:X9-3D:^U9.TMP
+-1EJ-4"E:^U9</MODE:#3000
+ | -1EJ-7"N:^U9;1/-CR
+'''EA:EW^EQ9
+"SG0^YPW^YK'EFEW
+'!SCOPES!Q1&64"NET&1024"E%You don't have a refresh scope^M^JQ1#64-64U1''Q1&1"NET&512"E%Your terminal is not an interactive scope^M^JQ1#1-1U1 | 0,3:W
+Q1&16"N-1,3:W
+'0,5:W
+Q1&32"N-1,5:W
+'''Q1&(64#1)"EOYANK
+'Q1&64"N^U9GTE
+ | ^U9VTE
+':EG^EQ9
+"S^U1
+G*^YX9^YK | :^U9DIT
+:Q1"E-1EJ-5*-1EJ-1024"EEN[]*.*
+:EN
+"SZJ.U0G*Q0JS[
+RQ0,.KFS.
+]
+Q0JS]
+Q0,.X1Q0,ZK'''':Q9"N:EI^EQ1^EQ9
+"SQ1#2048-2048U1OYANK
+'':EGLIB
+"SG*^YX1^YK | ^U1
+':Q1"E^U1LB:[1,2]
+-1EJ-7"E^U1SY:
+'-1EJ-5*-1EJ-1024"E^U1SYS$LIBRARY:
+'-1EJ-4"E^U1$
+''Q1&64"N^U9GTEDIT
+ | ^U9VTEDIT
+':Q1"N:EI^EQ1^EQ9
+"SQ1#2048-2048U1OYANK
+''%The :G9 macro is not available^M^J!YANK!Q1&2048"NY'JQ1&8"NFinding position marker...^M^JEW
+G*^YX0^YK-1^X :Q0"N:FN~~/\~~^M^J
+
+U0 | :F_~~/\~~^M^J
+
+U0'0^X Q0"U?Position marker not found?^M^J^C^C''Q1&128"NET&512"E%Your terminal is not an interactive scope^M^J | Q2"E2:W/4U2'0,3:W
+Q1&16"N-1,3:W
+'0,5:W
+Q1&32"N-1,5:W
+'Q2,7:W-Q2"N%Your terminal doesn't support scrolling^M^J | -1EV'''!DONE!]1]0Q0ET]0Q0ES]0Q0EU]0Q0ED]0Q0^X ]0Q0^R]2]0]90,0XY]9]8]7]6]5]4]3]2]1]0
+^[^[

@@ -93,7 +93,8 @@ int teco_env(int n_arg)
     switch (n_arg)
     {
         case -1:
-            return (TECO_HW << 8) | TECO_OS;
+            return 1024;                // TODO: temporary!
+//            return (TECO_HW << 8) | TECO_OS;
 
         case 0:
             return getpid();
@@ -103,6 +104,9 @@ int teco_env(int n_arg)
             return 0;
 
         default:
-            print_err(E_NIH);
+            printf("{%d EJ}\r\n", n_arg);
+            (void)fflush(stdout);
+            return 1024;
+//            print_err(E_NIH);
     }
 }

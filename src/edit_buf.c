@@ -49,6 +49,8 @@ static struct
     uint low;                   ///< Low water mark for gap
     bool shrink;                ///< true = shrink buffer when cleared
     uint dot;                   ///< Current position in buffer
+    uint B;                     ///< First position in buffer
+    uint Z;                     ///< Last position in buffer
     uint left;                  ///< No. of bytes before gap
     uint gap;                   ///< No. of bytes in gap
     uint right;                 ///< No. of bytes after gap
@@ -61,6 +63,8 @@ static struct
     .warn   = 100,
     .shrink = false,
     .dot    = 0,
+    .B      = 0,
+    .Z      = 0,
     .left   = 0,
     .gap    = 0,
     .right  = 0,
@@ -72,6 +76,10 @@ static struct
 static void expand_edit(void);
 
 static void free_edit(void);
+
+static uint last_delim(uint nlines);
+
+static uint next_delim(uint nlines);
 
 static void print_size(uint size);
 
@@ -93,7 +101,7 @@ uint add_edit(int c)
     }
 
     e.buf[e.left++] = (char)c;
-    e.dot = e.left;
+    ++e.Z;
 
     --e.gap;
 
@@ -112,6 +120,33 @@ uint add_edit(int c)
     }
 
     return EDIT_OK;
+}
+
+
+///
+///  @brief    Get ASCII value of nth character before or after dot.
+///
+///  @returns  ASCII value, or -1 if character outside of edit buffer.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int char_edit(int n)
+{
+    uint pos = (uint)((int)e.dot + n);
+
+    if (pos >= e.B && pos < e.Z)
+    {
+        uint i = pos;
+
+        if (pos >= e.left)
+        {
+            i += e.gap;
+        }
+
+        return e.buf[i];
+    }
+
+    return -1;
 }
 
 
@@ -178,9 +213,50 @@ static void free_edit(void)
     e.low    = 0;
     e.shrink = false;
     e.dot    = 0;
+    e.B      = 0;
+    e.Z      = 0;
     e.left   = 0;
     e.gap    = 0;
     e.right  = 0;
+}
+
+
+///
+///  @brief    Get first position in buffer.
+///
+///  @returns  First position in buffer (a.k.a. B).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint get_B(void)
+{
+    return e.B;
+}
+
+
+///
+///  @brief    Get current position in buffer.
+///
+///  @returns  Current position in buffer (a.k.a. dot).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint get_dot(void)
+{
+    return e.dot;
+}
+
+
+///
+///  @brief    Get last position in buffer.
+///
+///  @returns  Last position in buffer (a.k.a. Z).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint get_Z(void)
+{
+    return e.Z;
 }
 
 
@@ -207,6 +283,8 @@ void init_edit(
     e.low    = start - ((start * warn) / 100);
     e.shrink = shrink;
     e.dot    = 0;
+    e.B      = 0;
+    e.Z      = 0;
     e.left   = 0;
     e.gap    = start;
     e.right  = 0;
@@ -220,6 +298,26 @@ void init_edit(
 
 
 ///
+///  @brief    Jump to position in buffer.
+///
+///  @returns  true if success, false if attempt to move pointer off page.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool jump_edit(uint n)
+{
+    if (n < e.B || n > e.Z)
+    {
+        return false;
+    }
+
+    e.dot = n;
+
+    return true;
+}
+
+
+///
 ///  @brief    Kill entire edit buffer.
 ///
 ///  @returns  Nothing.
@@ -228,7 +326,7 @@ void init_edit(
 
 void kill_edit(void)
 {
-    if (e.shrink)                       // Can we shrink the buffer?
+    if (e.shrink && e.size > e.start)   // Can we shrink the buffer?
     {
         e.buf  = shrink_mem(e.buf, e.size, e.start);
         e.size = e.start;
@@ -245,6 +343,171 @@ void kill_edit(void)
 
 
 ///
+///  @brief    Scan backward n lines in edit buffer.
+///
+///  @returns  Position following line terminator.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static uint last_delim(uint nlines)
+{
+    int c;
+    uint pos = e.dot;
+
+    for (;;)
+    {
+        uint i = pos;
+        
+        if (pos >= e.left)
+        {
+            i += e.gap;
+        }
+
+        c = e.buf[i];
+
+        if (c == LF || c == VT || c == FF)
+        {
+            if (nlines-- == 0)
+            {
+                return ++pos;
+            }
+        }
+
+        if (pos > e.B)
+        {
+            --pos;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return e.B;
+}
+
+
+///
+///  @brief    Move n characters forward or backward in buffer.
+///
+///  @returns  true if success, false if attempt to move pointer off page.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool move_edit(int n)
+{
+    if (n == 0)
+    {
+        return true;
+    }
+
+    if (n < 0)
+    {
+        while (n++ < 0)
+        {
+            if (e.dot == e.B)
+            {
+                return false;
+            }
+
+            --e.dot;
+        }
+    }
+    else
+    {
+        while (n-- > 0)
+        {
+            if (e.dot == e.Z)
+            {
+                return false;
+            }
+
+            ++e.dot;
+        }
+    }
+
+    return true;
+}
+
+
+///
+///  @brief    Scan forward nlines in edit buffer.
+///
+///  @returns  Position including line terminator.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static uint next_delim(uint nlines)
+{
+    for (uint pos = e.dot; pos < e.Z; ++pos)
+    {
+        uint i = pos;
+        
+        if (pos >= e.left)
+        {
+            i += e.gap;
+        }
+
+        int c = e.buf[i];
+
+        if (c == LF || c == VT || c == FF)
+        {
+            if (--nlines == 0)
+            {
+                return ++pos;
+            }
+        }
+    }
+
+    return e.Z;
+}
+
+
+///
+///  @brief    Print edit buffer lines. Called by T and V commands:
+///
+///            T    -> current position through line terminator (same as 1T)
+///            0T   -> past last line terminator to current position
+///            +nT  -> current position through next n line terminators
+///            V    -> equivalent to 0T 1T
+///            nV   -> equivalent to 1-nT nT
+///            m,nV -> equivalent to -(m - 1)T n-1T
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void print_edit(int m, int n)
+{
+    assert(m != -1 || n != -1);
+
+    uint x, y;
+
+    if (m == -1)                        // Print previous line(s)?
+    {
+        x = e.dot;                      // No, just use dot
+    }
+    else
+    {
+        x = last_delim((uint)m);
+    }
+
+    if (n == -1)                        // Print following line(s)?
+    {
+        y = e.dot;                      // No, just use dot
+    }
+    else
+    {
+        y = next_delim((uint)n);
+    }
+
+    assert(x >= e.B && y <= e.Z);
+    
+    (void)type_edit(x, y);
+}
+
+
+///
 ///  @brief    Print buffer size.
 ///
 ///  @returns  Nothing.
@@ -253,44 +516,88 @@ void kill_edit(void)
 
 static void print_size(uint size)
 {
-    if (size > 1024 * 1024)
+    const char *type = "";
+
+    if (size > 1024)
     {
-        printf("[%uM Bytes]\r\n", size / (1024 * 1024));
-    }
-    else if (size > 1024)
-    {
-        printf("[%uK Bytes]\r\n", size / 1024);
-    }
-    else
-    {
-        printf("[%u Bytes]\r\n", size);
+        if ((size /= 1024) > 1024)
+        {
+            size /= 1024;
+            type = "M";
+        }
+        else
+        {
+            type = "K";
+        }
     }
 
+    printf("[%u%s bytes]", size, type);
+
     (void)fflush(stdout);
+
+    putc_term(CRLF);
 }
 
 
 ///
-///  @brief    Type edit buffer line.
+///  @brief    Step forward or backward n lines.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void type_edit(void)
+void step_edit(int n)
 {
-    const char *p = e.buf;
-
-    for (uint i = 0; i < e.left; ++i)
+    if (n < 0)
     {
-        int c = *p++;
-
-        if (c == LF)
-        {
-            echo_chr(CR);
-        }
-
-        echo_chr(c);
+        e.dot = last_delim((uint)-n);
+    }
+    else
+    {
+        e.dot = next_delim((uint)n);
     }
 }
 
+
+///
+///  @brief    Type edit buffer characters. Called by T command:
+///
+///            m,nT -> Type buffer between positions m and n.
+///
+///  @returns  true if success, false if attempt to move pointer off page.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool type_edit(uint m, uint n)
+{
+    if (m > e.Z || n > e.Z)             // Both positions within buffer?
+    {
+        return false;                   // Nope
+    }
+
+    if (m > n)
+    {
+        return true;                    // TODO: print error instead?
+    }
+
+    for (uint pos = m; pos < n; ++pos)
+    {
+        uint i = pos;                   // Index into buffer
+        
+        if (pos >= e.left)              // Left or right of gap?
+        {
+            i += e.gap;                 // Right, so add bias
+        }
+
+        int c = e.buf[i];               // Get character from buffer
+
+        if (c == LF)
+        {
+            echo_chr(CR);               // TODO: use callback?
+        }
+
+        echo_chr(c);                    // TODO: use callback?
+    }
+
+    return true;
+}

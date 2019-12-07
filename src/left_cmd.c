@@ -49,5 +49,10 @@ void exec_lbracket(struct cmd *cmd)
     {
         print_err(E_PDO);               // Push-down list is full
     }
+
+    if (cmd->n_set)
+    {
+        push_expr(cmd->n_arg, EXPR_VALUE);
+    }
 }
 

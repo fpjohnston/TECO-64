@@ -99,6 +99,7 @@ SOURCES = \
     b_cmd.c       \
     back_cmd.c    \
     bang_cmd.c    \
+    c_cmd.c       \
     caret_cmd.c   \
     comma_cmd.c   \
     ctrl_a_cmd.c  \
@@ -159,7 +160,9 @@ SOURCES = \
     gt_cmd.c      \
     h_cmd.c       \
     i_cmd.c       \
+    j_cmd.c       \
     k_cmd.c       \
+    l_cmd.c       \
     left_cmd.c    \
     lt_cmd.c      \
     m_cmd.c       \
@@ -170,10 +173,12 @@ SOURCES = \
     q_cmd.c       \
     quest_cmd.c   \
     quote_cmd.c   \
+    r_cmd.c       \
     right_cmd.c   \
     s_cmd.c       \
     t_cmd.c       \
     u_cmd.c       \
+    v_cmd.c       \
     vbar_cmd.c    \
     w_cmd.c       \
     x_cmd.c       \

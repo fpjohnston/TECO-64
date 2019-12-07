@@ -32,6 +32,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 
 
 struct ifile ifiles[IFILE_MAX];         ///< Input file descriptors
@@ -53,9 +54,10 @@ static void file_exit(void);
 
 ///
 ///  @brief    Create a file name specification in file name buffer. We copy
-///            from the specified text string, skipping any characters, such
-///            as spaces or control characters, that aren't normal graphic
-///            characters.
+///            from the specified text string, skipping any characters, such as
+///            spaces or control characters, that aren't normal graphic char-
+///            acters. We also ensure that the file name ends with a NUL, since
+///            that's the required format for library calls such as fopen().
 ///
 ///  @returns  Nothing.
 ///
@@ -80,6 +82,8 @@ void create_filename(const struct tstring *text)
             ++from;
         }
     }
+
+    *to = NUL;
 }
 
 

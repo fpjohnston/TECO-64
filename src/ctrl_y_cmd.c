@@ -52,6 +52,8 @@ void scan_ctrl_y(struct cmd *cmd)
     cmd->m_arg = 0;                     // TODO: this should be .+^S
     cmd->m_set = true;
 
-    push_expr(v.dot, EXPR_VALUE);
+    uint dot = get_dot();
+
+    push_expr((int)dot, EXPR_VALUE);
 }
 

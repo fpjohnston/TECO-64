@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "errors.h"
 #include "exec.h"
 
 
@@ -45,9 +46,35 @@ void exec_T(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->h_set)                     // HT?
+    if (cmd->h_set)
     {
-        type_edit();                    // Yes, type the whole buffer
+        (void)type_edit(get_B(), get_Z());
+    }
+    else if (cmd->m_set && cmd->n_set)
+    {
+        if (!type_edit((uint)cmd->m_arg, (uint)cmd->n_arg))
+        {
+            print_err(E_POP);           // Pointer off page
+        }
+    }
+    else if (cmd->n_set)
+    {
+        if (cmd->n_arg == 0)
+        {
+            print_edit(0, -1);
+        }
+        else if (cmd->n_arg < 0)
+        {
+            print_edit(-cmd->n_arg, -1);
+        }
+        else
+        {
+            print_edit(-1, cmd->n_arg);
+        }
+    }
+    else
+    {
+        print_edit(-1, 1);
     }
 }
 

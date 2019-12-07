@@ -210,10 +210,6 @@ enum backup_flag
 
 struct vars
 {
-    int b;                          ///< Beginning of buffer (always 0)
-    int z;                          ///< End of buffer (no. of chrs. in buffer)
-    int dot;                        ///< Current pointer position in buffer
-    int eof;                        ///< End of file flag
     int ff;                         ///< Form feed flag
     int radix;                      ///< Current output radix
     int ctrl_x;                     ///< CTRL/X flag
@@ -307,11 +303,27 @@ extern void init_edit(uint size, uint plus, uint warn, bool shrink);
 
 extern uint add_edit(int c);
 
+extern int char_edit(int n);
+
 extern bool empty_edit(void);
+
+extern uint get_dot(void);
+
+extern uint get_B(void);
+
+extern uint get_Z(void);
+
+extern bool jump_edit(uint n);
 
 extern void kill_edit(void);
 
-extern void type_edit(void);
+extern bool move_edit(int n);
+
+extern void print_edit(int m, int n);
+
+extern void step_edit(int n);
+
+extern bool type_edit(uint m, uint n);
 
 // Q-register functions
 

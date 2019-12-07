@@ -44,6 +44,8 @@ void scan_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr(v.z, EXPR_VALUE);
+    uint Z = get_Z();
+
+    push_expr((int)Z, EXPR_VALUE);
 }
 

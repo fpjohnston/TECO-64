@@ -196,9 +196,24 @@ void scan_operator(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->c1 == ')' && !operand_expr()) // Is there an operand available?
+    if (cmd->c1 == '(')
     {
-        print_err(E_NAP);               // No argument before )
+        ++cmd->paren;
+    }
+    else if (cmd->c1 == ')')
+    {
+        if (cmd->paren == 0)            // Can't have ) without (
+        {
+            print_err(E_MLP);           // Missing left parenthesis
+        }
+        else if (!operand_expr())       // Is there an operand available?
+        {
+            print_err(E_NAP);           // No argument before )
+        }
+        else
+        {
+            --cmd->paren;
+        }
     }
 
     push_expr(0, cmd->c1);              // Use operator as expression type

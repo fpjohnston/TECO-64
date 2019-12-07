@@ -44,6 +44,8 @@ void scan_dot(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr(v.dot, EXPR_VALUE);
+    uint dot = get_dot();
+
+    push_expr((int)dot, EXPR_VALUE);
 }
 

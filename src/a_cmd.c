@@ -139,6 +139,7 @@ bool append_line(void)
 ///              A -> Append page to buffer.
 ///             :A -> Same as A, but returns -1/0 for success/failure.
 ///            n:A -> Appends n lines of text. Returns -1/0 for success/failure.
+///             nA -> Value of nth character before or after dot.
 ///
 ///  @returns  Nothing.
 ///
@@ -148,26 +149,30 @@ void exec_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // nA is a different command - shouldn't get here.
+    // nA -> get ASCII value of nth character relative to dot.
 
     if (cmd->n_set && !cmd->colon_set)
     {
-        return;
+        int n = char_edit(cmd->n_arg);
+
+        push_expr(n, EXPR_VALUE);
     }
-
-    int status = append(cmd);
-
-    if (cmd->colon_set)
+    else
     {
-        push_expr(status, EXPR_VALUE);
+        // Here if we need to append anything to the buffer.
+
+        int status = append(cmd);
+
+        if (cmd->colon_set)
+        {
+            push_expr(status, EXPR_VALUE);
+        }
     }
 }
 
 
 ///
 ///  @brief Parse A command: get value of character in buffer.
-///
-///            nA - Value of nth character in buffer, 0 = first, -1 = last.
 ///
 ///  @returns  Nothing.
 ///
@@ -182,14 +187,7 @@ void scan_A(struct cmd *cmd)
         cmd->n_arg = get_n_arg();
         cmd->n_set = true;
 
-        if (!cmd->colon_set)            // nA or n:A?
-        {
-            // TODO: get actual value of character in buffer.
-
-            push_expr(DUMMY_VALUE, EXPR_VALUE);
-
-            return;
-        }
+        push_expr(DUMMY_VALUE, EXPR_VALUE);
     }
 
     scan_state = SCAN_DONE;

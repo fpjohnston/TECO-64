@@ -60,7 +60,7 @@ void exec_rbracket(struct cmd *cmd)
     }
     else if (cmd->n_set)
     {
-        push_expr(cmd->n_arg, EXPR_VALUE); // Leave for next command
+        push_expr(cmd->n_arg, EXPR_VALUE);
     }
 }
 

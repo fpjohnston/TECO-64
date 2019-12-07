@@ -195,7 +195,7 @@ static void exec_expr(struct cmd *cmd)
 
     cmd->m_set = false;
     cmd->n_set = false;
-//    cmd->colon_set = false;
+    cmd->colon_set = false;
 
     if (cmd->c1 == ESC)
     {
@@ -360,24 +360,30 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
         ++cmd->level;
     }
 
-    if (cmd->expr.len != 0)             // Did we parse an expression?
+    if (cmd->expr.len != 0)             // Do we have an expression?
     {
-        init_expr();                    // Yes, so we need to re-initialize
+        init_expr();                    // Re-initialize the stack
+
+        // Save the stuff we'll need for the actual command
+
+        char c1 = cmd->c1;
+        char c2 = cmd->c2;
+        char c3 = cmd->c3;
+        uint atsign_set = cmd->atsign_set;
+        uint colon_set  = cmd->colon_set;
+        uint dcolon_set = cmd->dcolon_set;
+
+        exec_expr(cmd);                 // Execute expression for real
+
+        // Restore command characters
+
+        cmd->dcolon_set = dcolon_set;
+        cmd->colon_set  = colon_set;
+        cmd->atsign_set = atsign_set;
+        cmd->c3 = c3;
+        cmd->c2 = c2;
+        cmd->c1 = c1;
     }
-
-    // Save command characters
-
-    char c1 = cmd->c1;
-    char c2 = cmd->c2;
-    char c3 = cmd->c3;
-
-    exec_expr(cmd);                     // Execute expression for real
-
-    // Restore command characters
-
-    cmd->c3 = c3;
-    cmd->c2 = c2;
-    cmd->c1 = c1;
 
     // If the only thing on the expression stack is a minus sign, then say we
     // have an n argument equal to -1.
@@ -390,7 +396,7 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
         estack.obj[0].type = EXPR_VALUE;
         estack.obj[0].value = -1;
     }
-    else if (estack.level > 0 && estack.obj[estack.level - 1].type != EXPR_VALUE)
+    else if (estack.level > 0)
     {
         print_err(E_ARG);
     }
@@ -407,24 +413,18 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
             (*table->exec)(cmd);
     }
 
-    init_expr();
+    uint level = cmd->level;        
 
-    // Re-initialize command block, but keep m and n arguments for next command.
-    
-    uint m_set = cmd->m_set;
-    int m_arg  = cmd->m_arg;
-    uint n_set = cmd->n_set;
-    int n_arg  = cmd->n_arg;
-    uint h_set = cmd->h_set;
-    uint level = cmd->level;
-    
     *cmd = null_cmd;
 
-    cmd->m_set = m_set;
-    cmd->m_arg = m_arg;
-    cmd->n_set = n_set;
-    cmd->n_arg = n_arg;
-    cmd->h_set = h_set;
     cmd->level = level;
+
+    if (operand_expr())                 // Pass through n to next command?
+    {
+        cmd->n_set = true;
+        cmd->n_arg = get_n_arg();
+    }
+
+    assert(estack.level == 0);          // Sanity check
 }
 

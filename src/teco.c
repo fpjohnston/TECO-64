@@ -91,10 +91,6 @@ struct flags f;
 
 struct vars v =
 {
-    .b      = 0,                    ///< Beginning of buffer (always 0)
-    .z      = 1000,                 ///< End of buffer (no. of chrs. in buffer)
-    .dot    = 0,                    ///< Current pointer position in buffer
-    .eof    = 0,                    ///< End of file flag
     .ff     = -1,                   ///< Form feed flag
     .radix  = 10,                   ///< Current output radix
     .ctrl_x = 0,                    ///< CTRL/X flag

@@ -1,6 +1,6 @@
 ///
-///  @file    u_cmd.c
-///  @brief   Execute U command.
+///  @file    r_cmd.c
+///  @brief   Execute R command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -28,33 +28,43 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
+#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute U command: store number in Q-register.
+///  @brief    Execute R command: move position in edit buffer.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_U(struct cmd *cmd)
+void exec_R(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)                    // n argument?
+    uint n = (uint)cmd->n_arg;
+
+    if (!cmd->n_set)
     {
-        cmd->n_arg = 0;                 // TODO: is this correct?
+        n = 1;
     }
 
-    store_qnum(cmd->qreg, cmd->qlocal, cmd->n_arg);
-
-    // Pass through m argument as n argument for next command.
-
-    if (cmd->m_set)
+    if (!move_edit(-(int)n))
     {
-        push_expr(cmd->m_arg, EXPR_VALUE);
+        if (cmd->colon_set)
+        {
+            push_expr(TECO_FAILURE, EXPR_VALUE);
+        }
+
+        print_err(E_POP);               // Pointer off page
+    }
+    else if (cmd->colon_set)
+    {
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
 }
+

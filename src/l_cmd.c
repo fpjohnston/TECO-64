@@ -1,6 +1,6 @@
 ///
-///  @file    u_cmd.c
-///  @brief   Execute U command.
+///  @file    l_cmd.c
+///  @brief   Execute L command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -28,33 +28,30 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute U command: store number in Q-register.
+///  @brief    Execute L command: step forwards or backwards.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_U(struct cmd *cmd)
+void exec_L(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)                    // n argument?
+    if (cmd->n_set)
     {
-        cmd->n_arg = 0;                 // TODO: is this correct?
+        step_edit(cmd->n_arg);
     }
-
-    store_qnum(cmd->qreg, cmd->qlocal, cmd->n_arg);
-
-    // Pass through m argument as n argument for next command.
-
-    if (cmd->m_set)
+    else
     {
-        push_expr(cmd->m_arg, EXPR_VALUE);
+        step_edit(1);
     }
 }
+
