@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "edit_buf.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -70,7 +71,7 @@ void exec_EY(struct cmd *cmd)
         }
     }
 
-    kill_edit();
+    kill_edit(EDIT_NOSHRINK);
 
     while (append_line())               // Read what we can
     {

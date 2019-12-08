@@ -32,6 +32,9 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
+#include "edit_buf.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -47,16 +50,134 @@ void exec_P(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)
+    uint start = get_B();
+    uint end   = get_Z();
+    int count  = 1;
+    bool ff    = false;
+    bool yank  = false;
+
+    // Use of a colon only makes sense for P and nP
+
+    if (f.ei.strict && cmd->colon_set)
     {
-        if (cmd->n_arg == 0)
+        if (cmd->m_set || cmd->h_set || cmd->w_set)
         {
-            print_err(E_NPA);           // Not a valid argument for P`
+            print_err(E_MOD);           // Invalid modifier
         }
-        else if (cmd->n_arg < 0)        // -nP?
+    }
+
+    if (cmd->h_set)                     // HPW, HP
+    {
+        ;                               // Just accept all presets above
+    }
+    else if (cmd->m_set)
+    {
+        assert(cmd->n_set == true);
+
+        // TODO: check whether this is correct
+
+        if (cmd->m_arg < (int)start || cmd->m_arg >= (int)end ||
+            cmd->n_arg < (int)start || cmd->n_arg >= (int)end)
+        {
+            print_err(E_POP);           // Pointer off page
+        }
+
+        start = (uint)cmd->m_arg;
+        end   = (uint)cmd->n_arg;
+    }
+    else if (cmd->n_set)                // nP, n:P, nPW
+    {
+        if ((count = cmd->n_arg) == 0)
+        {
+            print_err(E_NPA);           // Not a valid argument for P
+        }
+        else if (count < 0)             // -nP?
         {
             print_err(E_T32);           // TECO-32 command not implemented
         }
+
+        if (cmd->w_set)                 // Is it nPW?
+        {
+            ff = true;
+        }
+        else                            // Must be nP or n:P
+        {
+            ff = v.ff;
+            yank = true;
+        }
+    }
+    else                                // P, :P, PW
+    {
+        count = 1;
+
+        if (cmd->w_set)                 // Is it PW?
+        {
+            ff = true;
+        }
+        else                            // Must be P or :P
+        {
+            ff = v.ff;
+            yank = true;
+        }
+    }
+
+    for (int i = 0; i < count; ++i)
+    {
+        if (!next_page(start, end, ff, yank))
+        {
+            if (cmd->colon_set)
+            {
+                push_expr(TECO_FAILURE, EXPR_VALUE);
+            }
+
+            return;
+        }
+
+        // If the command isn't m,nP or m,nPW, then we're always writing out
+        // the entire buffer, so check the start and end positions each time.
+
+        if (!cmd->m_set)
+        {
+            start = get_B();
+            end   = get_Z();
+        }
+    }
+
+    if (cmd->colon_set)
+    {
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
 }
 
+
+///
+///  @brief    Write out current page. If needed, add form feed, clear buffer,
+///            and read next page.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool next_page(uint start, uint end, bool ff, bool yank)
+{
+    write_edit(start, end, write_file);
+
+    if (ff)                             // Add a form feed if we should
+    {
+        char c = FF;
+
+        write_file(&c, 1);
+    }
+
+    if (yank)                           // Read in next page if we should
+    {
+        kill_edit(EDIT_NOSHRINK);       // Delete old page
+
+        if (!append((bool)false, 0, (bool)false))
+        {
+            return false;               // False if no more data
+        }
+    }
+
+    return true;
+}

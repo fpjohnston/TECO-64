@@ -168,6 +168,7 @@ SOURCES = \
     m_cmd.c       \
     n_cmd.c       \
     o_cmd.c       \
+    option_sys.c  \
     p_cmd.c       \
     pct_cmd.c     \
     q_cmd.c       \

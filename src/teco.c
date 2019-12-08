@@ -69,6 +69,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "edit_buf.h"
 #include "eflags.h"
 
 
@@ -91,26 +92,19 @@ struct flags f;
 
 struct vars v =
 {
-    .ff     = -1,                   ///< Form feed flag
+    .ff     = 0,                    ///< Form feed flag
     .radix  = 10,                   ///< Current output radix
     .ctrl_x = 0,                    ///< CTRL/X flag
     .trace  = false,                ///< Trace mode
 };
 
-///  @var     teco_version
-///  @brief   TECO version number (200+).
+int teco_version = TECO_VERSION;    ///< TECO version number (200+)
 
-int teco_version = TECO_VERSION;
+jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
-///  @var     jump_main
-///  @brief   longjmp() buffer used to return to main loop after error.
+bool teco_debug = false;            ///< true if debugging features enabled
 
-jmp_buf jump_main;
-
-///  @var     teco_debug
-///  @brief   true if TECO debugging features are enabled.
-
-bool teco_debug = false;
+const char *mung_file = NULL;       ///< Name of file to MUNG
 
 
 ///
@@ -120,20 +114,18 @@ bool teco_debug = false;
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int main(int unused1, const char * const argv[])
+int main(int argc, const char * const argv[])
 {
-    assert(argv != NULL);               // (This assertion should NEVER fire)
-
-    f.ei.strict = true;                 // TODO: temporary
-
-    init_EG();                          // Initialize for EG command
-    init_env();                         // Initialize environment
+    init_env(argc, argv);               // Initialize environment
     init_term();                        // Initialize terminal
     init_buf();                         // Initialize command buffer
-    init_edit(EDIT_BUF_SIZE, EDIT_BUF_SIZE, 75, (bool)true);
+    init_edit(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75, EDIT_SHRINK);
                                         // Initialize edit buffer
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams
+    init_EG();                          // Initialize for EG command
+
+    f.ei.strict = true;                 // TODO: temporary
 
     for (;;)                            // Loop forever
     {

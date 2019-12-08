@@ -30,6 +30,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "edit_buf.h"
 //#include "errors.h"
 #include "exec.h"
 

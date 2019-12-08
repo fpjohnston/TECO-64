@@ -33,6 +33,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "edit_buf.h"
 
 
 ///  @var     e
@@ -42,11 +43,12 @@
 static struct
 {
     char *buf;                  ///< Start of buffer
-    uint start;                 ///< Starting size, in bytes
     uint size;                  ///< Current size, in bytes
-    uint plus;                  ///< Increment size, in bytes
+    uint minsize;               ///< Initial and minimum size, in bytes
+    uint maxsize;               ///< Maximum size, in bytes
+    uint stepsize;              ///< Increment size, in bytes
+    uint lowsize;               ///< Low water mark for gap
     uint warn;                  ///< Warning threshold (0-100%)
-    uint low;                   ///< Low water mark for gap
     bool shrink;                ///< true = shrink buffer when cleared
     uint dot;                   ///< Current position in buffer
     uint B;                     ///< First position in buffer
@@ -56,18 +58,20 @@ static struct
     uint right;                 ///< No. of bytes after gap
 } e =
 {    
-    .buf    = NULL,
-    .start  = 0,
-    .size   = 0,
-    .plus   = 0,
-    .warn   = 100,
-    .shrink = false,
-    .dot    = 0,
-    .B      = 0,
-    .Z      = 0,
-    .left   = 0,
-    .gap    = 0,
-    .right  = 0,
+    .buf      = NULL,
+    .size     = 0,
+    .minsize  = 0,
+    .maxsize  = 0,
+    .stepsize = 0,
+    .lowsize  = 0,
+    .warn     = 100,
+    .shrink   = false,
+    .dot      = 0,
+    .B        = 0,
+    .Z        = 0,
+    .left     = 0,
+    .gap      = 0,
+    .right    = 0,
 };
 
 
@@ -83,21 +87,39 @@ static uint next_delim(uint nlines);
 
 static void print_size(uint size);
 
+static void shift_left(uint nbytes);
+
+static void shift_right(uint nbytes);
+
+
+void bug(int n)
+{
+    if (n > 0)
+        shift_right(n);
+    else if (n < 0)
+        shift_left(-n);
+    else
+    {
+        printf("bug check\r\n");
+        (void)fflush(stdout);
+    }
+}
+
 
 ///
 ///  @brief    Add character to edit buffer.
 ///
-///  @returns  EDIT_OK, EDIT_WARN, or EDIT_FULL.
+///  @returns  EDIT_OK, EDIT_WARN, EDIT_FULL, or EDIT_ERROR.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-uint add_edit(int c)
+estatus add_edit(int c)
 {
     assert(e.buf != NULL);
 
     if (e.gap == 0)
     {
-        return EDIT_FULL;
+        return EDIT_ERROR;              // Buffer is already full
     }
 
     e.buf[e.left++] = (char)c;
@@ -105,21 +127,21 @@ uint add_edit(int c)
 
     --e.gap;
 
-    if (e.gap <= e.low)                 // Below low water mark?
+    if (e.gap <= e.lowsize)             // Below low water mark?
     {
         expand_edit();                  // Try to make buffer bigger
 
-        if (e.gap == 0)                 // Buffer full?
+        if (e.gap == 0)
         {
-            return EDIT_FULL;
+            return EDIT_FULL;           // Buffer is now full
         }
-        else if (e.gap <= e.low)        // Not full, but getting there?
+        else if (e.gap <= e.lowsize)
         {
-            return EDIT_WARN;
+            return EDIT_WARN;           // Buffer is getting full
         }
     }
 
-    return EDIT_OK;
+    return EDIT_OK;                     // Insertion was successful
 }
 
 
@@ -151,26 +173,6 @@ int char_edit(int n)
 
 
 ///
-///  @brief    See if edit buffer is empty.
-///
-///  @returns  true if buffer is empty, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool empty_edit(void)
-{
-    if (e.buf == NULL || e.gap == e.size)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-
-///
 ///  @brief    Expand edit buffer.
 ///
 ///  @returns  Nothing.
@@ -179,17 +181,23 @@ bool empty_edit(void)
 
 static void expand_edit(void)
 {
-    if (e.plus == 0)
+    if (e.stepsize == 0 || e.size >= e.maxsize)
     {
         return;
     }
 
-    char *newbuf = expand_mem(e.buf, e.size, e.size + e.plus);
+    char *newbuf = expand_mem(e.buf, e.size, e.size + e.stepsize);
 
     e.buf   = newbuf;
-    e.size += e.plus;
-    e.low   = e.size - ((e.size * e.warn) / 100);
-    e.gap  += e.plus;
+    e.size += e.stepsize;
+
+    if (e.size > e.maxsize)
+    {
+        e.size = e.maxsize;
+    }
+
+    e.lowsize = e.size - ((e.size * e.warn) / 100);
+    e.gap    += e.stepsize;
 
     print_size(e.size);
 }
@@ -206,31 +214,19 @@ static void free_edit(void)
 {
     free_mem(&e.buf);
 
-    e.start  = 0;
-    e.size   = 0;
-    e.plus   = 0;
-    e.warn   = 0;
-    e.low    = 0;
-    e.shrink = false;
-    e.dot    = 0;
-    e.B      = 0;
-    e.Z      = 0;
-    e.left   = 0;
-    e.gap    = 0;
-    e.right  = 0;
-}
-
-
-///
-///  @brief    Get first position in buffer.
-///
-///  @returns  First position in buffer (a.k.a. B).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-uint get_B(void)
-{
-    return e.B;
+    e.size     = 0;
+    e.minsize  = 0;
+    e.maxsize  = 0;
+    e.stepsize = 0;
+    e.lowsize  = 0;
+    e.warn     = 0;
+    e.shrink   = false;
+    e.dot      = 0;
+    e.B        = 0;
+    e.Z        = 0;
+    e.left     = 0;
+    e.gap      = 0;
+    e.right    = 0;
 }
 
 
@@ -268,26 +264,33 @@ uint get_Z(void)
 ////////////////////////////////////////////////////////////////////////////////
 
 void init_edit(
-    uint start,                         ///< Initial size of buffer
-    uint plus,                          ///< Size to increase buffer (or 0)
+    uint minsize,                       ///< Initial and min. size of buffer 
+    uint maxsize,                       ///< Maximum size of buffer, in bytes
+    uint stepsize,                      ///< Incremental increase, in bytes
     uint warn,                          ///< Warning threshold (0-100)
     bool shrink)                        ///< true = reset buffer when cleared
 {
     assert(e.buf == NULL);
 
-    e.buf    = alloc_mem(start);
-    e.start  = start;
-    e.size   = start;
-    e.plus   = plus;
-    e.warn   = warn;
-    e.low    = start - ((start * warn) / 100);
-    e.shrink = shrink;
-    e.dot    = 0;
-    e.B      = 0;
-    e.Z      = 0;
-    e.left   = 0;
-    e.gap    = start;
-    e.right  = 0;
+    if (warn > 100)                     // Buffer can't be more than 100% full
+    {
+        warn = 100;
+    }
+
+    e.buf      = alloc_mem(minsize);
+    e.size     = minsize;
+    e.minsize  = minsize;
+    e.maxsize  = maxsize;
+    e.stepsize = stepsize;
+    e.lowsize  = minsize - ((minsize * warn) / 100);
+    e.warn     = warn;
+    e.shrink   = shrink;
+    e.dot      = 0;
+    e.B        = 0;
+    e.Z        = 0;
+    e.left     = 0;
+    e.gap      = minsize;
+    e.right    = 0;
 
     if (atexit(free_edit) != 0)         // Ensure we clean up on exit
     {
@@ -324,18 +327,21 @@ bool jump_edit(uint n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void kill_edit(void)
+void kill_edit(bool shrink)
 {
-    if (e.shrink && e.size > e.start)   // Can we shrink the buffer?
+    // Check to see if we can shrink the buffer.
+
+    if (shrink && e.shrink && e.size > e.minsize)
     {
-        e.buf  = shrink_mem(e.buf, e.size, e.start);
-        e.size = e.start;
-        e.low  = e.size - ((e.size * e.warn) / 100);
+        e.buf     = shrink_mem(e.buf, e.size, e.minsize);
+        e.size    = e.minsize;
+        e.lowsize = e.size - ((e.size * e.warn) / 100);
 
         print_size(e.size);
     }
 
     e.dot    = 0;
+    e.Z      = 0;
     e.left   = 0;
     e.gap    = e.size;
     e.right  = 0;
@@ -477,9 +483,10 @@ static uint next_delim(uint nlines)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void print_edit(int m, int n)
+void print_edit(int m, int n, void (*print_cb)(int c))
 {
     assert(m != -1 || n != -1);
+    assert(print_cb != NULL);
 
     uint x, y;
 
@@ -503,7 +510,7 @@ void print_edit(int m, int n)
 
     assert(x >= e.B && y <= e.Z);
     
-    (void)type_edit(x, y);
+    (void)type_edit(x, y, print_cb);
 }
 
 
@@ -540,6 +547,46 @@ static void print_size(uint size)
 
 
 ///
+///  @brief    Move characters from right side of gap to left side.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void shift_left(uint nbytes)
+{
+    char *src   = e.buf + e.size - e.right;
+    char *dst   = e.buf + e.left;
+
+    e.left  += nbytes;
+    e.right -= nbytes;
+
+    memmove(dst, src, nbytes);
+    memset(src, '-', nbytes);           // TODO: temporary
+}
+
+
+///
+///  @brief    Move characters from left side of gap to right side.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void shift_right(uint nbytes)
+{
+    e.left  -= nbytes;
+    e.right += nbytes;
+
+    char *src   = e.buf + e.left;
+    char *dst   = e.buf + e.size - e.right;
+
+    memmove(dst, src, nbytes);
+    memset(src, '+', nbytes);           // TODO: temporary
+}
+
+
+///
 ///  @brief    Step forward or backward n lines.
 ///
 ///  @returns  Nothing.
@@ -548,13 +595,13 @@ static void print_size(uint size)
 
 void step_edit(int n)
 {
-    if (n < 0)
+    if (n > 0)
     {
-        e.dot = last_delim((uint)-n);
+        e.dot = next_delim((uint)n);
     }
     else
     {
-        e.dot = next_delim((uint)n);
+        e.dot = last_delim((uint)-n);
     }
 }
 
@@ -568,8 +615,10 @@ void step_edit(int n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool type_edit(uint m, uint n)
+bool type_edit(uint m, uint n, void (*print_cb)(int c))
 {
+    assert(print_cb != NULL);
+    
     if (m > e.Z || n > e.Z)             // Both positions within buffer?
     {
         return false;                   // Nope
@@ -589,15 +638,52 @@ bool type_edit(uint m, uint n)
             i += e.gap;                 // Right, so add bias
         }
 
-        int c = e.buf[i];               // Get character from buffer
-
-        if (c == LF)
-        {
-            echo_chr(CR);               // TODO: use callback?
-        }
-
-        echo_chr(c);                    // TODO: use callback?
+        (*print_cb)(e.buf[i]);          // Print character
     }
 
     return true;
+}
+
+
+///
+///  @brief    Write out edit buffer. Called by P command.
+///
+///            Since we have a gap buffer, there are three possible cases
+///            regarding the data to be output:
+///
+///            1. It is entirely to the left of the gap.
+///            2. It is entirely to the right of the gap.
+///            3. It is in both the left and right parts.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void write_edit(uint m, uint n, void (*write_cb)(const char *buf, uint len))
+{
+    assert(write_cb != NULL);
+
+    if (m > e.Z || n > e.Z)             // Both positions within buffer?
+    {
+        return;                         // Nope
+    }
+
+    if (m > n)
+    {
+        return;                         // TODO: is this an error?
+    }
+
+    if (n < e.left)                     // Just output left side?
+    {
+        (*write_cb)(e.buf + m, n - m);
+    }
+    else if (m >= e.left)               // Just output right side?
+    {
+        (*write_cb)(e.buf + e.gap + m, n - m);
+    }
+    else                                // Output from both sides
+    {
+        (*write_cb)(e.buf + m, e.left);
+        (*write_cb)(e.buf + e.left + e.gap, n - e.left);
+    }
 }

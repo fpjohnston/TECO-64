@@ -41,8 +41,8 @@
 #include <stdio.h>
 #endif
 
-#if     !defined(_STDLIB_H)
-#include <stdlib.h>
+#if     !defined(_SYS_TYPES_H)
+#include <sys/types.h>
 #endif
 
 
@@ -71,7 +71,7 @@ enum
 enum expr_type
 {
     EXPR_VALUE = '0',
-    EXPR_NOT   = '\x1F',
+    EXPR_NOT   = '\x1F',                // ^^ (CTRL/^) = ASCII RS
     EXPR_OR    = '#',
     EXPR_AND   = '&',
     EXPR_LEFT  = '(',
@@ -139,15 +139,6 @@ struct qreg
 ///  @brief   No. of Q-registers in each set.
 
 #define QREG_SIZE       (('9' - '0') + 1 + ('Z' - 'A') + 1)
-
-///  @enum    file_status
-///  @brief   Returned file status from functions opening files.
-
-enum file_status
-{
-    OPEN_SUCCESS = -1,
-    OPEN_FAILURE =  0
-};
 
 ///  @struct  ifile
 ///  @brief   Definition of variables used to keep track of input files.
@@ -248,6 +239,8 @@ extern char *last_file;
 
 extern int last_in;
 
+extern const char *mung_file;
+
 // Global functions
 
 extern void *alloc_mem(uint size);
@@ -260,7 +253,9 @@ extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 
 extern void exec_cmd(void);
 
-extern void init_env(void);
+extern void init_env(int argc, const char * const argv[]);
+
+extern void set_config(int argc, const char * const argv[]);
 
 extern int teco_env(int n);
 
@@ -278,52 +273,19 @@ extern void init_EG(void);
  
 extern void init_term(void);
 
+extern void print_callback(int c);
+
+extern void print_prompt(void);
+
+extern void print_term(const char *str);
+
 extern void put_bell(void);
 
 extern void putc_term(int c);
 
 extern void puts_term(const char *str, unsigned int nbytes);
 
-extern void print_prompt(void);
-
-extern void print_term(const char *str);
-
 extern void read_cmd(void);
-
-// Edit buffer functions
-
-enum
-{
-    EDIT_OK,
-    EDIT_WARN,
-    EDIT_FULL
-};
-
-extern void init_edit(uint size, uint plus, uint warn, bool shrink);
-
-extern uint add_edit(int c);
-
-extern int char_edit(int n);
-
-extern bool empty_edit(void);
-
-extern uint get_dot(void);
-
-extern uint get_B(void);
-
-extern uint get_Z(void);
-
-extern bool jump_edit(uint n);
-
-extern void kill_edit(void);
-
-extern bool move_edit(int n);
-
-extern void print_edit(int m, int n);
-
-extern void step_edit(int n);
-
-extern bool type_edit(uint m, uint n);
 
 // Q-register functions
 
@@ -414,5 +376,7 @@ extern bool read_indirect(void);
 extern void rename_output(struct ofile *ofile);
 
 extern void set_wild(const char *filename);
+
+extern void write_file(const char *buf, uint len);
 
 #endif  // !defined(_TECO_H)

@@ -42,6 +42,23 @@
 ///          involve a 2nd character.
 ///
 
+extern void bug(int n);
+
+void exec_ctrl_p(struct cmd *cmd);
+
+void exec_ctrl_p(struct cmd *cmd)
+{
+    if (cmd->n_set)
+    {
+        bug(cmd->n_arg);
+    }
+    else
+    {
+        bug(0);
+    }
+}
+        
+
 struct cmd_table cmd_table[] =
 {
     [NUL]         = { NULL,           NULL,             ""             },
@@ -60,7 +77,8 @@ struct cmd_table cmd_table[] =
     [CR]          = { NULL,           NULL,             ""             },
     [CTRL_N]      = { scan_ctrl_n,    NULL,             ""             },
     [CTRL_O]      = { NULL,           exec_ctrl_o,      ""             },
-    [CTRL_P]      = { scan_bad,       NULL,             ""             },
+//  [CTRL_P]      = { scan_bad,       NULL,             ""             },
+    [CTRL_P]      = { NULL,           exec_ctrl_p,      ""             },
     [CTRL_Q]      = { NULL,           exec_ctrl_q,      ""             },
     [CTRL_R]      = { scan_ctrl_r,    exec_ctrl_r,      "n"            },
     [CTRL_S]      = { scan_ctrl_s,    NULL,             ""             },
@@ -204,7 +222,7 @@ struct cmd_table cmd_e_table[] =
     { scan_ET,    exec_ET,      "m n"     },
     { scan_EU,    exec_EU,      "n"       },
     { scan_EV,    exec_EV,      "n"       },
-    { NULL,       exec_EW,      "@ 1"     },
+    { NULL,       exec_EW,      ": @ 1"   },
     { NULL,       exec_EX,      ""        },
     { NULL,       exec_EY,      ":"       },
     { scan_EZ,    exec_EZ,      "m n"     },
@@ -220,18 +238,18 @@ uint cmd_e_count = countof(cmd_e_table); ///< No. of items in cmd_e_table[]
 
 struct cmd_table cmd_f_table[] =
 {
-    { NULL,  exec_FB,        "m n @ 1"      },
-    { NULL,  exec_FC,        "m n @ 1 2"    },
-    { NULL,  exec_FD,        "m n @ 1"      },
-    { NULL,  exec_FK,        "n @ 1"        },
-    { NULL,  exec_FN,        "n : @ 1 2"    },
-    { NULL,  exec_FR,        "m n @ 1 2"    },
-    { NULL,  exec_FS,        "m n :: @ 1 2" },
-    { NULL,  exec_F_lt,      ""             },
-    { NULL,  exec_F_gt,      ""             },
-    { NULL,  exec_F_apos,    ""             },
-    { NULL,  exec_F_ubar,    "n @ 1 2"      },
-    { NULL,  exec_F_vbar,    ""             },
+    { NULL,  exec_FB,        "m n @ 1"        },
+    { NULL,  exec_FC,        "m n @ 1 2"      },
+    { NULL,  exec_FD,        "m n @ 1"        },
+    { NULL,  exec_FK,        "n @ 1"          },
+    { NULL,  exec_FN,        "n : @ 1 2"      },
+    { NULL,  exec_FR,        "m n @ 1"        },
+    { NULL,  exec_FS,        "m n : :: @ 1 2" },
+    { NULL,  exec_F_lt,      ""               },
+    { NULL,  exec_F_gt,      ""               },
+    { NULL,  exec_F_apos,    ""               },
+    { NULL,  exec_F_ubar,    "n : @ 1 2"      },
+    { NULL,  exec_F_vbar,    ""               },
 };
 
 uint cmd_f_count = countof(cmd_f_table); ///< No. of items in cmd_f_table[]

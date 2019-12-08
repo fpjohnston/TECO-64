@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "edit_buf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
@@ -71,12 +72,14 @@ void exec_Y(struct cmd *cmd)
         }
     }
 
-    if (!f.ed.yank)                     // Can we do this?
+    // If data in buffer and yank protection is enabled, then abort.
+
+    if (get_Z() && !f.ed.yank)
     {
         print_err(E_YCA);               // Y command aborted
     }
 
-    kill_edit();
+    kill_edit(EDIT_NOSHRINK);
 
     while (append_line())               // Read what we can
     {

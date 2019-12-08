@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "edit_buf.h"
 #include "exec.h"
 
 
@@ -49,16 +50,16 @@ void exec_V(struct cmd *cmd)
     {
         if (cmd->m_set)
         {
-            print_edit(cmd->m_arg - 1, cmd->n_arg - 1);
+            print_edit(cmd->m_arg - 1, cmd->n_arg - 1, print_callback);
         }
         else
         {
-            print_edit(cmd->n_arg - 1, cmd->n_arg);
+            print_edit(cmd->n_arg - 1, cmd->n_arg, print_callback);
         }
     }
     else
     {
-        print_edit(0, 1);
+        print_edit(0, 1, print_callback);
     }
 }
 

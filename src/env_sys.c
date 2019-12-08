@@ -63,8 +63,10 @@ void exit_EG(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_env(void)
+void init_env(int argc, const char * const argv[])
 {
+    set_config(argc, argv);             // Process command-line options
+
     const char *env;
 
     // TODO: add more functionality here

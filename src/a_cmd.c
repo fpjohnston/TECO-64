@@ -32,21 +32,22 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "edit_buf.h"
 #include "exec.h"
 
 
 ///
 ///  @brief    Append to edit buffer.
 ///
-///  @returns  Nothing.
+///  @returns  true if not already at end of file, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool append(struct cmd *cmd)
+bool append(bool n_set, int n_arg, bool colon_set)
 {
-    assert(cmd != NULL);
-
     struct ifile *ifile = &ifiles[istream];
+
+    v.ff = 0;                           // Assume no form feed
 
     // Here if we have A, :A, or n:A
 
@@ -54,21 +55,21 @@ bool append(struct cmd *cmd)
     {
         return false;
     }
-    else if (cmd->n_set)                // n:A -> append n lines
+    else if (n_set)                     // n:A -> append n lines
     {
-        for (int i = 0; i < cmd->n_arg; ++i)
+        for (int i = 0; i < n_arg; ++i)
         {
-            if (!append_line())         // If append failed
+            if (!append_line())         // If we should stop
             {
                 break;
             }
         }
     }
-    else if (!cmd->colon_set)           // A -> append entire page
+    else if (!colon_set)                // A -> append entire page
     {
         for (;;)                        // Append all we can
         {
-            if (!append_line())         // If append failed
+            if (!append_line())         // If we should stop
             {
                 break;
             }
@@ -86,7 +87,7 @@ bool append(struct cmd *cmd)
 ///
 ///  @brief    Append line to edit buffer.
 ///
-///  @returns  Nothing.
+///  @returns  true if OK to add more, false if buffer full or nearly so.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -117,6 +118,11 @@ bool append_line(void)
 
             case EDIT_WARN:             // Set flag if buffer getting full
                 ifile->warn = true;
+
+                if (c == LF || c == VT)
+                {
+                    return false;
+                }
 
                 break;
 
@@ -161,7 +167,7 @@ void exec_A(struct cmd *cmd)
     {
         // Here if we need to append anything to the buffer.
 
-        int status = append(cmd);
+        int status = append((bool)cmd->n_set, cmd->n_arg, (bool)cmd->colon_set);
 
         if (cmd->colon_set)
         {

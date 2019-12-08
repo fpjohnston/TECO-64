@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "edit_buf.h"
 #include "exec.h"
 
 
@@ -47,7 +48,7 @@ void exec_K(struct cmd *cmd)
 
     if (cmd->h_set)                     // HK?
     {
-        kill_edit();                    // Yes, kill the whole buffer
+        kill_edit(EDIT_SHRINK);         // Yes, kill the whole buffer
     }
 }
 

@@ -72,6 +72,7 @@ struct cmd
             uint m_set      : 1;    ///< m argument found
             uint n_set      : 1;    ///< n argument found
             uint h_set      : 1;    ///< H found
+            uint w_set      : 1;    ///< W found
             uint comma_set  : 1;    ///< Comma found
             uint colon_set  : 1;    ///< : found
             uint dcolon_set : 1;    ///< :: found
@@ -123,11 +124,13 @@ extern enum scan_state scan_state;
 
 // Functions that assist in parsing commands
 
-extern bool append(struct cmd *cmd);
+extern bool append(bool n_set, int n_arg, bool colon_set);
 
 extern bool append_line(void);
 
 extern void get_flag(struct cmd *cmd, uint flag);
+
+extern bool next_page(uint start, uint end, bool ff, bool yank);
 
 extern int scan_caret(struct cmd *cmd);
 

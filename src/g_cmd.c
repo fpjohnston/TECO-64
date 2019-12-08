@@ -67,7 +67,7 @@ void exec_G(struct cmd *cmd)
         {
             // TODO: add code here
         }
-        else if (cmd->qreg == '_')      // G_ -> copy searcg string to buffer
+        else if (cmd->qreg == '_')      // G_ -> copy search string to buffer
         {
             // TODO: add code here
         }

@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "edit_buf.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -48,11 +49,11 @@ void exec_T(struct cmd *cmd)
 
     if (cmd->h_set)
     {
-        (void)type_edit(get_B(), get_Z());
+        (void)type_edit(get_B(), get_Z(), print_callback);
     }
     else if (cmd->m_set && cmd->n_set)
     {
-        if (!type_edit((uint)cmd->m_arg, (uint)cmd->n_arg))
+        if (!type_edit((uint)cmd->m_arg, (uint)cmd->n_arg, print_callback))
         {
             print_err(E_POP);           // Pointer off page
         }
@@ -61,20 +62,20 @@ void exec_T(struct cmd *cmd)
     {
         if (cmd->n_arg == 0)
         {
-            print_edit(0, -1);
+            print_edit(0, -1, print_callback);
         }
         else if (cmd->n_arg < 0)
         {
-            print_edit(-cmd->n_arg, -1);
+            print_edit(-cmd->n_arg, -1, print_callback);
         }
         else
         {
-            print_edit(-1, cmd->n_arg);
+            print_edit(-1, cmd->n_arg, print_callback);
         }
     }
     else
     {
-        print_edit(-1, 1);
+        print_edit(-1, 1, print_callback);
     }
 }
 

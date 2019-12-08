@@ -33,6 +33,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "errors.h"
 
 
 struct ifile ifiles[IFILE_MAX];         ///< Input file descriptors
@@ -244,4 +245,26 @@ int open_output(const struct tstring *text, int backup)
     ofile->backup = (backup == BACKUP_FILE) ? true : false;
 
     return EXIT_SUCCESS;
+}
+
+
+///
+///  @brief    Write string to output file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void write_file(const char *buf, uint len)
+{
+    assert(buf != NULL);
+
+    struct ofile *ofile = &ofiles[ostream];
+
+    if (ofile->fp == NULL)
+    {
+        print_err(E_NFO);               // No file for output
+    }
+
+    (void)fwrite(buf, (size_t)len, 1uL, ofile->fp);
 }

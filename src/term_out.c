@@ -153,6 +153,31 @@ bool help_command(void)
 
 
 ///
+///  @brief    Print a character.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void print_callback(int c)
+{
+    if (f.et.image)
+    {
+        putc_term(c);
+    }
+    else
+    {
+        if (c == LF)
+        {
+            echo_chr(CR);
+        }
+
+        echo_chr(c);
+    }
+}
+
+
+///
 ///  @brief    Print the command we just parsed.
 ///
 ///  @returns  Nothing.

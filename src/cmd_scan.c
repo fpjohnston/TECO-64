@@ -238,13 +238,11 @@ void scan_tail(struct cmd *cmd)
     }
     else if (f.ei.strict)
     {
-        if (   (cmd->m_set      && !cmd->m_opt     )
-            || (cmd->n_set      && !cmd->n_opt     )
-            || (cmd->colon_set  && !cmd->colon_opt )
+        if (   (cmd->colon_set  && !cmd->colon_opt )
             || (cmd->dcolon_set && !cmd->dcolon_opt)
             || (cmd->atsign_set && !cmd->atsign_opt))
         {
-//            print_err(E_MOD);           // Invalid modifier for command
+            print_err(E_MOD);           // Invalid modifier for command
         }
     }
 
@@ -255,8 +253,7 @@ void scan_tail(struct cmd *cmd)
         cmd->delim = cmd->c1;           // Switch delimiter for CTRL/A and !
     }
 
-    // The P command can optionally be followed by a W. This doesn't really
-    // change how the command works.
+    // The P command can optionally be followed by a W.
 
     if (cmd->w_opt)                     // Optional W following?
     {
@@ -264,7 +261,7 @@ void scan_tail(struct cmd *cmd)
 
         if (toupper(c) == 'W')          // Is it?
         {
-            cmd->c2 = (char)c;          // Yes
+            cmd->w_set = true;          // Yes
         }
         else
         {

@@ -108,6 +108,11 @@ void exec_cmd(void)
 
         if (table->scan != NULL)
         {
+            if (cmd.expr.len == 0)      // Start of a new expression?
+            {
+                init_expr();            // Yes, reset expression stack
+            }
+
             (*table->scan)(&cmd);
         }
         else if (table->exec != NULL)
@@ -396,7 +401,12 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
         estack.obj[0].type = EXPR_VALUE;
         estack.obj[0].value = -1;
     }
-    else if (estack.level > 0)
+    else if (operand_expr())
+    {
+        cmd->n_set = true;
+        cmd->n_arg = get_n_arg();
+    }
+    else if (estack.level != 0)
     {
         print_err(E_ARG);
     }

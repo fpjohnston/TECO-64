@@ -67,10 +67,10 @@ void exec_EW(struct cmd *cmd)
             prints_err(E_UFO, last_file);
         }
 
-        push_expr(OPEN_FAILURE, EXPR_VALUE);
+        push_expr(TECO_FAILURE, EXPR_VALUE);
     }
     else if (cmd->colon_set)
     {
-        push_expr(OPEN_SUCCESS, EXPR_VALUE);
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
 }

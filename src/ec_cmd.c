@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "edit_buf.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -49,7 +50,13 @@ void exec_EC(struct cmd *cmd)
     FILE *fp;
     struct ifile *ifile = &ifiles[istream];
     struct ofile *ofile = &ofiles[ostream];
-    
+    bool ff = (v.ff == -1) ? true : false;
+
+    while (next_page(get_B(), get_Z(), ff, (bool)true))
+    {
+        ;
+    }
+
     if ((fp = ifile->fp) != NULL)
     {
         fclose(fp);

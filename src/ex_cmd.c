@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "edit_buf.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -46,7 +47,12 @@ void exec_EX(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!empty_edit())                  // Anything in buffer?
+    // The following ensures that we don't exit if we have nowhere to output
+    // the dat in the buffer to.
+    
+    struct ofile *ofile = &ofiles[ostream];
+
+    if (ofile->fp == NULL && get_Z() != 0)
     {
         print_err(E_NFO);               // No file for output
     }
