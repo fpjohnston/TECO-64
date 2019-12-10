@@ -74,11 +74,9 @@ void scan_W(struct cmd *cmd)
         return;
     }
 
-
     // Here for nW - send value to exec function.
 
-    cmd->n_arg = n;
-    cmd->n_set = true;
+    push_expr(n, EXPR_VALUE);
 
     scan_state = SCAN_DONE;
 }

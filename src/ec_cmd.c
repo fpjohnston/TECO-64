@@ -32,7 +32,6 @@
 
 #include "teco.h"
 #include "edit_buf.h"
-#include "errors.h"
 #include "exec.h"
 
 
@@ -47,28 +46,30 @@ void exec_EC(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    if (cmd->n_set)                     // nEC?
+    {
+        if (cmd->n_arg > 0)
+        {
+            set_edit((uint)cmd->n_arg);
+        }
+
+        return;
+    }
+
     FILE *fp;
     struct ifile *ifile = &ifiles[istream];
     struct ofile *ofile = &ofiles[ostream];
-    bool ff = (v.ff == -1) ? true : false;
 
-    while (next_page(get_B(), get_Z(), ff, (bool)true))
-    {
-        ;
-    }
-
-    if ((fp = ifile->fp) != NULL)
-    {
-        fclose(fp);
-
-        ifile->fp = NULL;
-    }
-
-    ifile->eof = true;
-    ifile->cr  = false;
+    // Note that we call size_edit() for every call to next_page() because the
+    // size of the edit buffer can change every time we read in another page.
 
     if ((fp = ofile->fp) != NULL)
     {
+        while (next_page(v.B, size_edit(), v.ff, (bool)true))
+        {
+            ;
+        }
+
         fclose(fp);
 
         ofile->fp = NULL;
@@ -78,6 +79,16 @@ void exec_EC(struct cmd *cmd)
 
     free_mem(&ofile->temp);
     free_mem(&ofile->name);
+    
+    if ((fp = ifile->fp) != NULL)
+    {
+        fclose(fp);
+
+        ifile->fp = NULL;
+    }
+
+    ifile->eof = true;
+    ifile->cr  = false;
 }
 
 
@@ -94,6 +105,9 @@ void scan_EC(struct cmd *cmd)
 
     if (operand_expr())                 // Was it nEC?
     {
-        print_err(E_T10);               // TECO-10 command not implemented
+        cmd->n_set = true;
+        cmd->n_arg = get_n_arg();
     }
+
+    scan_state = SCAN_DONE;
 }

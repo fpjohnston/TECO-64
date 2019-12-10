@@ -45,7 +45,7 @@ void scan_dot(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint dot = get_dot();
+    uint dot = pos_edit();
 
     push_expr((int)dot, EXPR_VALUE);
 }

@@ -80,9 +80,6 @@ void scan_ctrl_t(struct cmd *cmd)
 
     if (operand_expr())                 // n argument?
     {
-        cmd->n_arg = get_n_arg();
-        cmd->n_set = true;
-
         scan_state = SCAN_DONE;
     }
     else if (scan_state != SCAN_DONE)

@@ -30,7 +30,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "exec.h"
 
 
@@ -48,26 +47,27 @@ void scan_Q(struct cmd *cmd)
 
     int n;
 
-    if (operand_expr())                 // nQq`?
+    if (scan_state != SCAN_DONE)
     {
-        n = get_n_arg();
-
-        if (cmd->colon_set)
+        n = DUMMY_VALUE;
+    }
+    else
+    {
+        if (operand_expr())                 // nQq
         {
-            print_err(E_MOD);
+            n = get_n_arg();
+            n = get_qchr(cmd->qreg, cmd->qlocal, n);
         }
+        else if (cmd->colon_set)            // :Qq
+        {
+            n = (int)get_qsize(cmd->qreg, cmd->qlocal);
+        }
+        else                                // Qq
+        {
+            n = get_qnum(cmd->qreg, cmd->qlocal);
+        }
+    }        
 
-        n = get_qchr(cmd->qreg, cmd->qlocal, n);
-    }
-    else if (cmd->colon_set)            // :Qq`?
-    {
-        n = (int)get_qsize(cmd->qreg, cmd->qlocal);
-    }
-    else                                // Qq`
-    {
-        n = get_qnum(cmd->qreg, cmd->qlocal);
-    }
-        
     push_expr(n, EXPR_VALUE);
 }
 

@@ -49,10 +49,7 @@ static struct
     uint stepsize;              ///< Increment size, in bytes
     uint lowsize;               ///< Low water mark for gap
     uint warn;                  ///< Warning threshold (0-100%)
-    bool shrink;                ///< true = shrink buffer when cleared
     uint dot;                   ///< Current position in buffer
-    uint B;                     ///< First position in buffer
-    uint Z;                     ///< Last position in buffer
     uint left;                  ///< No. of bytes before gap
     uint gap;                   ///< No. of bytes in gap
     uint right;                 ///< No. of bytes after gap
@@ -65,10 +62,7 @@ static struct
     .stepsize = 0,
     .lowsize  = 0,
     .warn     = 100,
-    .shrink   = false,
     .dot      = 0,
-    .B        = 0,
-    .Z        = 0,
     .left     = 0,
     .gap      = 0,
     .right    = 0,
@@ -91,16 +85,17 @@ static void shift_left(uint nbytes);
 
 static void shift_right(uint nbytes);
 
+void bug(int n);
 
 void bug(int n)
 {
     if (n > 0)
-        shift_right(n);
+        shift_right((uint)n);
     else if (n < 0)
-        shift_left(-n);
+        shift_left((uint)-n);
     else
     {
-        printf("bug check\r\n");
+        printf("[bug check]\r\n");
         (void)fflush(stdout);
     }
 }
@@ -123,7 +118,6 @@ estatus add_edit(int c)
     }
 
     e.buf[e.left++] = (char)c;
-    ++e.Z;
 
     --e.gap;
 
@@ -156,7 +150,7 @@ int char_edit(int n)
 {
     uint pos = (uint)((int)e.dot + n);
 
-    if (pos >= e.B && pos < e.Z)
+    if (pos < e.left + e.right)
     {
         uint i = pos;
 
@@ -169,6 +163,49 @@ int char_edit(int n)
     }
 
     return -1;
+}
+
+
+///
+///  @brief    Delete n chars at current position.
+///
+///  @returns  true if success, false if delete was too big.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool delete_edit(int n)
+{
+    if (e.dot < e.left)
+    {
+        shift_right(e.left - e.dot);
+    }
+    else if (e.dot > e.left)
+    {
+        shift_left(e.dot - e.left);
+    }
+
+    if (n < 0)
+    {
+        if ((uint)n > e.left)
+        {
+            return false;
+        }
+
+        e.left -= (uint)n;
+    }
+    else if (n > 0)
+    {
+        if ((uint)n > e.right)
+        {
+            return false;
+        }
+
+        e.right -= (uint)n;
+    }
+
+    e.gap += (uint)n;
+
+    return true;
 }
 
 
@@ -220,39 +257,10 @@ static void free_edit(void)
     e.stepsize = 0;
     e.lowsize  = 0;
     e.warn     = 0;
-    e.shrink   = false;
     e.dot      = 0;
-    e.B        = 0;
-    e.Z        = 0;
     e.left     = 0;
     e.gap      = 0;
     e.right    = 0;
-}
-
-
-///
-///  @brief    Get current position in buffer.
-///
-///  @returns  Current position in buffer (a.k.a. dot).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-uint get_dot(void)
-{
-    return e.dot;
-}
-
-
-///
-///  @brief    Get last position in buffer.
-///
-///  @returns  Last position in buffer (a.k.a. Z).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-uint get_Z(void)
-{
-    return e.Z;
 }
 
 
@@ -267,8 +275,7 @@ void init_edit(
     uint minsize,                       ///< Initial and min. size of buffer 
     uint maxsize,                       ///< Maximum size of buffer, in bytes
     uint stepsize,                      ///< Incremental increase, in bytes
-    uint warn,                          ///< Warning threshold (0-100)
-    bool shrink)                        ///< true = reset buffer when cleared
+    uint warn)                          ///< Warning threshold (0-100)
 {
     assert(e.buf == NULL);
 
@@ -284,10 +291,7 @@ void init_edit(
     e.stepsize = stepsize;
     e.lowsize  = minsize - ((minsize * warn) / 100);
     e.warn     = warn;
-    e.shrink   = shrink;
     e.dot      = 0;
-    e.B        = 0;
-    e.Z        = 0;
     e.left     = 0;
     e.gap      = minsize;
     e.right    = 0;
@@ -301,6 +305,63 @@ void init_edit(
 
 
 ///
+///  @brief    Insert string at dot.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void insert_edit(const char *buf, uint len)
+{
+    assert(buf != NULL);
+
+    //
+    //  The physical buffer looks like this:
+    //
+    //  [left][gap][right]
+    //
+    //  and our dot can be anywhere in the left or right halves. What we need
+    //  to do before inserting is to ensure that the current position (dot) is
+    //  at the end of the left half. This makes insertion easy, because we're
+    //  just reducing the gap, and don't have to move data in the right half.
+    //
+
+    if (e.dot < e.left)
+    {
+        shift_right(e.left - e.dot);
+    }
+    else if (e.dot > e.left)
+    {
+        shift_left(e.dot - e.left);
+    }
+
+    for (uint i = 0; i < len; ++i)
+    {
+        int c = *buf++;
+
+        if (c == CR)
+        {
+            continue;
+        }
+        
+        switch (add_edit(c))
+        {
+            case EDIT_FULL:
+                ++e.dot;
+                //lint -fallthrough
+
+            case EDIT_ERROR:
+                return;
+
+            default:
+                ++e.dot;
+                break;
+        }                
+    }
+}
+
+
+///
 ///  @brief    Jump to position in buffer.
 ///
 ///  @returns  true if success, false if attempt to move pointer off page.
@@ -309,7 +370,7 @@ void init_edit(
 
 bool jump_edit(uint n)
 {
-    if (n < e.B || n > e.Z)
+    if (n > e.left + e.right)
     {
         return false;
     }
@@ -327,24 +388,12 @@ bool jump_edit(uint n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void kill_edit(bool shrink)
+void kill_edit(void)
 {
-    // Check to see if we can shrink the buffer.
-
-    if (shrink && e.shrink && e.size > e.minsize)
-    {
-        e.buf     = shrink_mem(e.buf, e.size, e.minsize);
-        e.size    = e.minsize;
-        e.lowsize = e.size - ((e.size * e.warn) / 100);
-
-        print_size(e.size);
-    }
-
-    e.dot    = 0;
-    e.Z      = 0;
-    e.left   = 0;
-    e.gap    = e.size;
-    e.right  = 0;
+    e.dot   = 0;
+    e.left  = 0;
+    e.gap   = e.size;
+    e.right = 0;
 }
 
 
@@ -379,7 +428,7 @@ static uint last_delim(uint nlines)
             }
         }
 
-        if (pos > e.B)
+        if (pos > 0)
         {
             --pos;
         }
@@ -389,7 +438,7 @@ static uint last_delim(uint nlines)
         }
     }
 
-    return e.B;
+    return 0;
 }
 
 
@@ -400,39 +449,59 @@ static uint last_delim(uint nlines)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool move_edit(int n)
+bool move_edit(int n, bool error)
 {
-    if (n == 0)
+    if (n > 0)
     {
-        return true;
-    }
-
-    if (n < 0)
-    {
-        while (n++ < 0)
+        if ((uint)n > e.left + e.right + e.dot)
         {
-            if (e.dot == e.B)
+            if (error)
             {
-                return false;
+                e.dot = e.left + e.right;
             }
 
-            --e.dot;
+            return false;
         }
+
+        e.dot += (uint)n;
     }
-    else
+    else if (n < 0)
     {
-        while (n-- > 0)
+        if ((uint)-n > e.dot)
         {
-            if (e.dot == e.Z)
+            if (error)
             {
-                return false;
+                e.dot = 0;
             }
 
-            ++e.dot;
+            return false;
         }
+
+        e.dot -= (uint)-n;
     }
 
     return true;
+}
+
+
+///
+///  @brief    Return number of characters between dot and nth line terminator.
+///
+///  @returns  Number of characters relative to dot (can be plus or minus).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int nchars_edit(int n)
+{
+    if (n > 0)
+    {
+        return (int)(next_delim((uint)n) - e.dot);
+    }
+    else
+    {
+        return (int)(last_delim((uint)-n) - e.dot);
+    }
+
 }
 
 
@@ -445,7 +514,7 @@ bool move_edit(int n)
 
 static uint next_delim(uint nlines)
 {
-    for (uint pos = e.dot; pos < e.Z; ++pos)
+    for (uint pos = e.dot; pos < e.left + e.right; ++pos)
     {
         uint i = pos;
         
@@ -465,7 +534,20 @@ static uint next_delim(uint nlines)
         }
     }
 
-    return e.Z;
+    return e.left + e.right;
+}
+
+
+///
+///  @brief    Get current position in buffer.
+///
+///  @returns  Current position in buffer (a.k.a. dot).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint pos_edit(void)
+{
+    return e.dot;
 }
 
 
@@ -508,7 +590,7 @@ void print_edit(int m, int n, void (*print_cb)(int c))
         y = next_delim((uint)n);
     }
 
-    assert(x >= e.B && y <= e.Z);
+    assert(y <= e.left + e.right);
     
     (void)type_edit(x, y, print_cb);
 }
@@ -561,8 +643,8 @@ static void shift_left(uint nbytes)
     e.left  += nbytes;
     e.right -= nbytes;
 
-    memmove(dst, src, nbytes);
-    memset(src, '-', nbytes);           // TODO: temporary
+    memmove(dst, src, (size_t)nbytes);
+    memset(src, '{', (size_t)nbytes);   // TODO: temporary
 }
 
 
@@ -581,28 +663,62 @@ static void shift_right(uint nbytes)
     char *src   = e.buf + e.left;
     char *dst   = e.buf + e.size - e.right;
 
-    memmove(dst, src, nbytes);
-    memset(src, '+', nbytes);           // TODO: temporary
+    memmove(dst, src, (size_t)nbytes);
+    memset(src, '}', (size_t)nbytes);   // TODO: temporary
 }
 
 
 ///
-///  @brief    Step forward or backward n lines.
+///  @brief    Set memory size.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void step_edit(int n)
+void set_edit(uint n)
 {
-    if (n > 0)
+    n *= 1024;                          // Make it K bytes
+
+    if (n < e.minsize || n < e.left + e.right || n == e.size)
     {
-        e.dot = next_delim((uint)n);
+        return;
+    }
+
+    if (n > e.maxsize)
+    {
+        n = e.maxsize;
+    }
+
+    if (n < e.size)
+    {
+        e.buf = shrink_mem(e.buf, e.size, n);
     }
     else
     {
-        e.dot = last_delim((uint)-n);
+        e.buf = expand_mem(e.buf, e.size, n);
     }
+
+    e.size    = n;
+    e.lowsize = e.size - ((e.size * e.warn) / 100);
+    e.dot     = 0;
+    e.left    = 0;
+    e.gap     = e.size;
+    e.right   = 0;
+
+    print_size(e.size);
+}
+
+
+///
+///  @brief    Get last position in buffer.
+///
+///  @returns  Last position in buffer (a.k.a. Z).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint size_edit(void)
+{
+    return e.left + e.right;
 }
 
 
@@ -618,8 +734,10 @@ void step_edit(int n)
 bool type_edit(uint m, uint n, void (*print_cb)(int c))
 {
     assert(print_cb != NULL);
-    
-    if (m > e.Z || n > e.Z)             // Both positions within buffer?
+
+    uint z = e.left + e.right;
+
+    if (m > z || n > z)                 // Both positions within buffer?
     {
         return false;                   // Nope
     }
@@ -663,7 +781,9 @@ void write_edit(uint m, uint n, void (*write_cb)(const char *buf, uint len))
 {
     assert(write_cb != NULL);
 
-    if (m > e.Z || n > e.Z)             // Both positions within buffer?
+    uint z = e.left + e.right;
+
+    if (m > z || n > z)                 // Both positions within buffer?
     {
         return;                         // Nope
     }

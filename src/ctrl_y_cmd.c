@@ -45,15 +45,10 @@ void scan_ctrl_y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-//    if (operand_expr() || cmd->m_set)   // m or n specified?
-//    {
-//        print_err(E_ARG);               // Bad arguments
-//    }
-
     cmd->m_arg = 0;                     // TODO: this should be .+^S
     cmd->m_set = true;
 
-    uint dot = get_dot();
+    uint dot = pos_edit();
 
     push_expr((int)dot, EXPR_VALUE);
 }

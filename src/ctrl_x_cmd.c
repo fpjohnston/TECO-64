@@ -62,14 +62,9 @@ void scan_ctrl_x(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!operand_expr())                // ^X`?
+    if (!operand_expr())                // ^X?
     {
         push_expr(v.ctrl_x, EXPR_VALUE);
-    }
-    else
-    {
-        cmd->n_arg = get_n_arg();
-        cmd->n_set = true;
     }
 }
 

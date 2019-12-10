@@ -43,9 +43,15 @@
 
 // Local functions
 
+static const struct cmd_table *scan_cmd(struct cmd *cmd);
+
+static uint scan_digits(int c, const char *p, uint len, bool pass1);
+
 static void scan_text(int delim, struct tstring *tstring);
 
 static void set_opts(struct cmd *cmd, const char *opts);
+
+static bool valid_radix(int c);
 
 
 ///
@@ -70,74 +76,134 @@ void scan_bad(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
+static const struct cmd_table *scan_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // Here to start parsing a command string,  one character at a time. Note
-    // that although some commands may contain only a single character, most of
-    // them comprise multiple characters, so we have to keep looping until we
-    // have found everything we need. As we continue, we store information in
-    // the command block defined by 'cmd', for use when we're ready to actually
-    // execute the command. This includes such things as m and n arguments,
-    // modifiers such as : and @, and any text strings followed the command.
+    const struct cmd_table *table;
 
-    struct cmd_table *table = NULL;
-
-    cmd->c1 = (char)c;
-
-    if (toupper(c) == 'E')              // E{x} command
+    if (toupper(cmd->c1) == 'E')
     {
-        cmd->c2 = (char)fetch_buf();
+        const char *e_cmds = "ABCDEFGHIJKLMNOPQRSTUVWXYZ%_";
+        const char *e_cmd  = strchr(e_cmds, toupper(cmd->c2));
 
-        table = scan_E(cmd);
-    }
-    else if (toupper(c) == 'F')         // F{x} command
-    {
-        cmd->c2 = (char)fetch_buf();
-
-        table = scan_F(cmd);
-    }
-    else if (c == '^')                  // ^{x} or ^^{x} command
-    {
-        c = (char)fetch_buf();
-
-        if (c == '^')
+        if (e_cmd == NULL)
         {
-            (void)fetch_buf();          // Just discard chr. after ^^
+            printc_err(E_IEC, cmd->c2); // Illegal E character
+        }
 
-            scan_state = SCAN_EXPR;
+        uint i = (uint)(e_cmd - e_cmds);
 
-            table = &cmd_table[NUL];
+        assert(i < cmd_e_count);
+
+        table = &cmd_e_table[i];
+    }
+    else if (toupper(cmd->c1) == 'F')
+    {
+        const char *f_cmds = "BCDKNRS<>\\_|";
+        const char *f_cmd  = strchr(f_cmds, toupper(cmd->c2));
+
+        if (f_cmd == NULL)
+        {
+            printc_err(E_IFC, cmd->c2); // Illegal F character
+        }
+
+        uint i = (uint)(f_cmd - f_cmds);
+
+        assert(i < cmd_f_count);
+
+        table = &cmd_f_table[i];
+    }
+    else if (cmd->c1 == '^')
+    {
+        if (cmd->c2 == '^')
+        {
+            push_expr(cmd->c3, EXPR_VALUE);
+
+            return NULL;
         }
         else
         {
-            cmd->c1 = (char)c;
-            cmd->c1 = (char)scan_caret(cmd);
+            cmd->c1 = (char)toupper(cmd->c2) - ('A' + 1);
+
+            if (cmd->c1 <= NUL || cmd->c1 >= SPACE)
+            {
+                printc_err(E_IUC, cmd->c1);  // Illegal character following ^
+            }
 
             table = &cmd_table[(int)cmd->c1];
         }
     }
-    else if (c == '\x1E')               // CTRL/^{x} command
+    else if (cmd->c1 == '\x1E')
     {
-        (void)fetch_buf();              // Just discard chr. after CTRL/^
+        push_expr(cmd->c2, EXPR_VALUE);
 
-        scan_state = SCAN_EXPR;
-
-        table = &cmd_table[NUL];
+        return NULL;
     }
     else                                // Everything else
     {
-        cmd->c2 = NUL;
-
-        table = &cmd_table[toupper(c)];
+        table = &cmd_table[toupper(cmd->c1)];
     }
 
     assert(table != NULL);
 
-    set_opts(cmd, table->opts);
-
     return table;
+}
+
+
+///
+///  @brief    Scan digits in a command string. Note that these can be decimal,
+///            octal, or hexadecimal digits, depending on the current radix.
+///
+///  @returns  No. of digits we scanned.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static uint scan_digits(int c, const char *p, uint len, bool pass1)
+{
+    uint maxlen = len;
+    long sum = 0;
+
+    // Here when we have a digit. Check to see that it's valid for the current
+    // radix, and then loop until we run out of valid digits.
+    
+    while (valid_radix(c))
+    {
+        const char *digits = "0123456789ABCDEF";
+        const char *digit = strchr(digits, toupper(c));
+
+        assert(digit != NULL);
+
+        long n = digit - digits;
+
+        sum *= v.radix;
+        sum += n;
+
+        if (pass1)
+        {
+            c = fetch_buf();            // Get next digit
+        }
+        else
+        {
+            if (len-- == 0)
+            {
+                break;
+            }
+
+            assert(p != NULL);
+
+            c = *p++;
+        }
+    }
+
+    if (pass1)
+    {
+        unfetch_buf(c);                 // Return last (non-digit) character
+    }
+
+    push_expr((int)sum, EXPR_VALUE);
+
+    return maxlen - len;
 }
 
 
@@ -217,6 +283,143 @@ void scan_operator(struct cmd *cmd)
     }
 
     push_expr(0, cmd->c1);              // Use operator as expression type
+}
+
+
+
+
+///
+///  @brief    Do first pass of scanning command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+exec_func *scan_pass1(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    // Here to start parsing a command string,  one character at a time. Note
+    // that although some commands may contain only a single character, most of
+    // them comprise multiple characters, so we have to keep looping until we
+    // have found everything we need. As we continue, we store information in
+    // the command block defined by 'cmd', for use when we're ready to actually
+    // execute the command. This includes such things as m and n arguments,
+    // modifiers such as : and @, and any text strings followed the command.
+
+    cmd->c2 = NUL;
+    cmd->c3 = NUL;
+
+    if (isdigit(cmd->c1))
+    {
+        (void)scan_digits(cmd->c1, NULL, 0, (bool)true);
+
+        if (scan_state == SCAN_EXPR)    // Still scanning expression?
+        {
+            cmd->expr.len = (uint)(next_buf() - cmd->expr.buf);
+        }
+
+        return NULL;
+    }
+    else if (strchr("EF^\x1E", toupper(cmd->c1)) != NULL)
+    {
+        cmd->c2 = (char)fetch_buf();
+
+        if (cmd->c1 == '^' && cmd->c2 == '^')
+        {
+            cmd->c3 = (char)fetch_buf();
+        }
+    }
+
+    const struct cmd_table *table = scan_cmd(cmd);
+
+    if (table->scan != NULL)            // If we have anything to scan,
+    {
+        (*table->scan)(cmd);            //  then scan it
+    }
+
+    set_opts(cmd, table->opts);
+
+    if (table->exec != NULL)
+    {
+        scan_state = SCAN_DONE;
+    }
+
+    return table->exec;
+}
+
+
+///
+///  @brief    Do second pass of scanning for expression.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_pass2(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    cmd->m_set = false;
+    cmd->n_set = false;
+    cmd->colon_set = false;
+
+    if (cmd->c1 == ESC)
+    {
+        return;
+    }
+
+    const char *p = cmd->expr.buf;
+    uint len = cmd->expr.len;
+
+    while (len-- > 0)
+    {
+        int c = *p++;
+
+        cmd->c1 = (char)c;
+        cmd->c2 = NUL;
+        cmd->c3 = NUL;
+
+        assert((uint)c < cmd_count);
+
+        if (strchr("EF^\x1E", toupper(c)) != NULL)
+        {
+            if (len-- == 0)
+            {
+                print_err(E_UTC);       // Unterminated command
+            }
+
+            cmd->c2 = *p++;
+
+            if (c == '^' && cmd->c2 == '^')
+            {
+                if (len-- == 0)
+                {
+                    print_err(E_UTC);   // Unterminated command
+                }
+
+                cmd->c3 = *p++;
+            }
+        }
+        else if (isdigit(c))
+        {
+            uint ndigits = scan_digits(c, p, len, (bool)false);
+
+            p   += ndigits;
+            len -= ndigits;
+            
+            if (len > 0)
+            {
+                continue;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        (void)scan_cmd(cmd);
+    }
 }
 
 
@@ -424,4 +627,31 @@ static void set_opts(struct cmd *cmd, const char *opts)
                 break;
         }
     }
+}
+
+
+///
+///  @brief    Determine if character is valid in our current radix.
+///
+///  @returns  true if valid, false if not (if invalid octal digit, E_ILN).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static bool valid_radix(int c)
+{
+    if (v.radix == 16 && isxdigit(c))
+    {
+        return true;
+    }
+    else if (isdigit(c))
+    {
+        if (v.radix == 10 || c <= '7')
+        {
+            return true;
+        }
+
+        print_err(E_ILN);               // Illegal octal digit
+    }
+
+    return false;
 }

@@ -47,7 +47,7 @@ void exec_ctrl_e(struct cmd *cmd)
 
     if (cmd->n_set)                     // n argument?
     {
-        v.ff = (cmd->n_arg == 0) ? 0 : -1;
+        v.ff = (cmd->n_arg == 0) ? false : true;
     }
     else if (f.ei.strict)
     {
@@ -67,7 +67,7 @@ void scan_ctrl_e(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr(v.ff, EXPR_VALUE);
+    push_expr(v.ff ? -1 : 0, EXPR_VALUE);
 }
 
 

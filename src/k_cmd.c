@@ -32,6 +32,7 @@
 
 #include "teco.h"
 #include "edit_buf.h"
+#include "errors.h"
 #include "exec.h"
 
 
@@ -48,7 +49,39 @@ void exec_K(struct cmd *cmd)
 
     if (cmd->h_set)                     // HK?
     {
-        kill_edit(EDIT_SHRINK);         // Yes, kill the whole buffer
+        kill_edit();                    // Yes, kill the whole buffer
+
+        return;
     }
+
+    int n = 1;
+    int m;
+    
+    if (cmd->n_set)
+    {
+        n = cmd->n_arg;
+    }
+
+    if (cmd->m_set)                     // m,nK
+    {
+        m = cmd->m_arg;
+
+        uint z = size_edit();
+
+        if (m < 0 || (uint)m > z || n < 0 || (uint)n > z || m > n)
+        {
+            print_err(E_POP);           // Pointer off page
+        }
+
+        (void)jump_edit((uint)m);       // Go to first position
+
+        n -= m;                         // And delete this many chars
+    }
+    else
+    {
+        n = nchars_edit(n);
+    }
+
+    (void)delete_edit(n);
 }
 

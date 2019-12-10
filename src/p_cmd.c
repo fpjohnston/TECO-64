@@ -50,8 +50,8 @@ void exec_P(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint start = get_B();
-    uint end   = get_Z();
+    uint start = v.B;
+    uint end   = size_edit();
     int count  = 1;
     bool ff    = false;
     bool yank  = false;
@@ -138,8 +138,8 @@ void exec_P(struct cmd *cmd)
 
         if (!cmd->m_set)
         {
-            start = get_B();
-            end   = get_Z();
+            start = v.B;
+            end   = size_edit();
         }
     }
 
@@ -162,16 +162,16 @@ bool next_page(uint start, uint end, bool ff, bool yank)
 {
     write_edit(start, end, write_file);
 
-    if (ff)                             // Add a form feed if we should
+    if (ff)                             // Add a form feed if necessary
     {
         char c = FF;
 
         write_file(&c, 1);
     }
 
-    if (yank)                           // Read in next page if we should
+    if (yank)                           // Read in next page if necessary
     {
-        kill_edit(EDIT_NOSHRINK);       // Delete old page
+        kill_edit();                    // Delete old page
 
         if (!append((bool)false, 0, (bool)false))
         {

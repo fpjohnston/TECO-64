@@ -53,14 +53,12 @@ void scan_H(struct cmd *cmd)
 //        print_err(E_ARG);               // Bad arguments
 //    }
 
-    uint Z = get_Z();
+    uint Z = size_edit();
     
     cmd->m_arg = (int)Z;
     cmd->m_set = true;
     cmd->h_set = true;
 
-    uint B = get_B();
-
-    push_expr((int)B, EXPR_VALUE);
+    push_expr((int)v.B, EXPR_VALUE);
 }
 

@@ -47,17 +47,6 @@ void exec_ctrl_c(struct cmd *unused1)
 ///  @brief    Temporary stub function.
 ///  @returns  Nothing.
 
-void exec_ctrl_q(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
 void exec_ctrl_v(struct cmd *unused1)
 {
     printf("%s() not yet completed\r\n", __func__);
@@ -70,17 +59,6 @@ void exec_ctrl_v(struct cmd *unused1)
 ///  @returns  Nothing.
 
 void exec_ctrl_w(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
-void exec_D(struct cmd *unused1)
 {
     printf("%s() not yet completed\r\n", __func__);
     (void)fflush(stdout);

@@ -274,9 +274,9 @@ int get_qnum(int qname, bool qdot)
 
 static struct qreg *get_qreg(int qname, bool qdot)
 {
-    static const char *qchars = "0123456789abcdefghijklmnopqrstuvwxyz";
+    static const char *qchars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    const char *qchar = strchr(qchars, tolower(qname));
+    const char *qchar = strchr(qchars, toupper(qname));
 
     if (qchar == NULL)
     {

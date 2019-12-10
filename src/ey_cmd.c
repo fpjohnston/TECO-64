@@ -71,7 +71,7 @@ void exec_EY(struct cmd *cmd)
         }
     }
 
-    kill_edit(EDIT_NOSHRINK);
+    kill_edit();
 
     while (append_line())               // Read what we can
     {

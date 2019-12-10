@@ -1,6 +1,6 @@
 ///
-///  @file    cmd_e.c
-///  @brief   General dispatcher for TECO E commands (e.g., EO, ER, ET).
+///  @file    d_cmd.c
+///  @brief   Execute D command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,42 +26,63 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "teco.h"
+#include "edit_buf.h"
 #include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Scan E command.
+///  @brief    Execute D command: delete characters at dot.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct cmd_table *scan_E(struct cmd *cmd)
+void exec_D(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int c = cmd->c2;
-
-    const char *e_cmds = "ABCDEFGHIJKLMNOPQRSTUVWXYZ%_";
-    const char *e_cmd  = strchr(e_cmds, toupper(c));
-
-    if (e_cmd == NULL)
+    int n = 1;
+    int m;
+    
+    if (cmd->n_set)
     {
-        printc_err(E_IEC, c);           // Illegal F character
+        n = cmd->n_arg;
     }
 
-    cmd->c2 = (char)c;
+    if (cmd->m_set)                     // m,nD - same as m,nK
+    {
+        m = cmd->m_arg;
 
-    uint i = (uint)(e_cmd - e_cmds);
+        uint z = size_edit();
 
-    assert(i < cmd_e_count);
+        if (m < 0 || (uint)m > z || n < 0 || (uint)n > z || m > n)
+        {
+            print_err(E_POP);           // Pointer off page
+        }
 
-    return &cmd_e_table[i];
+        (void)jump_edit((uint)m);       // Go to first position
+
+        n -= m;                         // And delete this many chars
+    }
+
+    if (!delete_edit(n))
+    {
+        if (cmd->colon_set)
+        {
+            push_expr(TECO_FAILURE, EXPR_VALUE);
+        }
+
+        print_err(E_DTB);               // Delete too big
+    }
+    else if (cmd->colon_set)
+    {
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
+    }
 }
+

@@ -45,7 +45,7 @@ void scan_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint Z = get_Z();
+    uint Z = size_edit();
 
     push_expr((int)Z, EXPR_VALUE);
 }

@@ -33,7 +33,6 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "errors.h"
 
 
 struct ifile ifiles[IFILE_MAX];         ///< Input file descriptors
@@ -261,10 +260,7 @@ void write_file(const char *buf, uint len)
 
     struct ofile *ofile = &ofiles[ostream];
 
-    if (ofile->fp == NULL)
-    {
-        print_err(E_NFO);               // No file for output
-    }
+    assert(ofile != NULL && ofile->fp != NULL);
 
     (void)fwrite(buf, (size_t)len, 1uL, ofile->fp);
 }

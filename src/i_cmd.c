@@ -31,8 +31,12 @@
 #include <string.h>
 
 #include "teco.h"
+#include "edit_buf.h"
+#include "eflags.h"
+#include "errors.h"
 #include "exec.h"
 
+char insert_string[1024 + 1];
 
 ///
 ///  @brief    Execute I command (insert text).
@@ -44,5 +48,32 @@
 void exec_I(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (cmd->n_set && cmd->text1.len != 0)
+    {
+        if (f.ei.strict)
+        {
+            print_err(E_MOD);
+        }
+    }
+
+    if (cmd->text1.len != 0)
+    {
+        assert(cmd->text1.len <= 1024); // FIXME!
+
+        sprintf(insert_string, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+
+        insert_edit(insert_string, cmd->text1.len);
+    }
+    else if (cmd->n_set)
+    {
+        char c = (char)cmd->n_arg;
+
+        insert_edit(&c, 1);
+    }
+    else
+    {
+        // TODO: print error or warning?
+    }
 }
 

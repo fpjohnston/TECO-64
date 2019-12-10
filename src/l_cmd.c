@@ -46,13 +46,15 @@ void exec_L(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    int n = 1;
+    
     if (cmd->n_set)
     {
-        step_edit(cmd->n_arg);
+        n = cmd->n_arg;
     }
-    else
-    {
-        step_edit(1);
-    }
+
+    n = nchars_edit(n);
+
+    (void)move_edit(n, (bool)false);
 }
 

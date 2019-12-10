@@ -63,7 +63,7 @@ void exec_EG(struct cmd *cmd)
     
     struct ofile *ofile = &ofiles[ostream];
 
-    if (ofile->fp == NULL && get_Z() != 0)
+    if (ofile->fp == NULL && size_edit() != 0)
     {
         print_err(E_NFO);               // No file for output
     }

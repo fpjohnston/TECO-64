@@ -92,10 +92,13 @@ struct flags f;
 
 struct vars v =
 {
-    .ff     = 0,                    ///< Form feed flag
+    .B      = 0,                    ///< Beginning of buffer (always 0)
     .radix  = 10,                   ///< Current output radix
     .ctrl_x = 0,                    ///< CTRL/X flag
+    .ff     = false,                ///< Form feed flag
     .trace  = false,                ///< Trace mode
+    .warn   = false,                ///< Edit buffer is almost full
+    .full   = false,                ///< Edit buffer is full
 };
 
 int teco_version = TECO_VERSION;    ///< TECO version number (200+)
@@ -119,7 +122,7 @@ int main(int argc, const char * const argv[])
     init_env(argc, argv);               // Initialize environment
     init_term();                        // Initialize terminal
     init_buf();                         // Initialize command buffer
-    init_edit(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75, EDIT_SHRINK);
+    init_edit(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);
                                         // Initialize edit buffer
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams

@@ -30,7 +30,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "edit_buf.h"
 #include "exec.h"
 
 
@@ -45,7 +44,5 @@ void scan_B(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint B = get_B();
-
-    push_expr((int)B, EXPR_VALUE);
+    push_expr((int)v.B, EXPR_VALUE);
 }

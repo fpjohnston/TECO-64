@@ -99,10 +99,14 @@ struct cmd
 ///  @struct cmd_table
 ///  @brief  Format of command tables used to parse and execute commands.
 
+typedef void (scan_func)(struct cmd *cmd);
+
+typedef void (exec_func)(struct cmd *cmd);
+
 struct cmd_table
 {
-    void (*scan)(struct cmd *cmd);  ///< Scan function
-    void (*exec)(struct cmd *cmd);  ///< Execution function
+    scan_func *scan;                ///< Scan function
+    exec_func *exec;                ///< Execution function
     const char *opts;               ///< Command modifiers and options
 };
 
@@ -131,12 +135,6 @@ extern bool append_line(void);
 extern void get_flag(struct cmd *cmd, uint flag);
 
 extern bool next_page(uint start, uint end, bool ff, bool yank);
-
-extern int scan_caret(struct cmd *cmd);
-
-extern struct cmd_table *scan_E(struct cmd *cmd);
-
-extern struct cmd_table *scan_F(struct cmd *cmd);
 
 extern uint set_flag(struct cmd *cmd, uint flag);
 
@@ -199,8 +197,6 @@ extern void exec_ctrl_e(struct cmd *cmd);
 extern void exec_ctrl_i(struct cmd *cmd);
 
 extern void exec_ctrl_o(struct cmd *cmd);
-
-extern void exec_ctrl_q(struct cmd *cmd);
 
 extern void exec_ctrl_r(struct cmd *cmd);
 
@@ -328,8 +324,6 @@ extern void scan_bad(struct cmd *cmd);
 
 extern void scan_back(struct cmd *cmd);
 
-extern const struct cmd_table *scan_cmd(struct cmd *cmd, int c);
-
 extern void scan_comma(struct cmd *cmd);
 
 extern void scan_ctrl_b(struct cmd *cmd);
@@ -342,6 +336,8 @@ extern void scan_ctrl_h(struct cmd *cmd);
 
 extern void scan_ctrl_n(struct cmd *cmd);
 
+extern void scan_ctrl_q(struct cmd *cmd);
+
 extern void scan_ctrl_r(struct cmd *cmd);
 
 extern void scan_ctrl_s(struct cmd *cmd);
@@ -353,8 +349,6 @@ extern void scan_ctrl_x(struct cmd *cmd);
 extern void scan_ctrl_y(struct cmd *cmd);
 
 extern void scan_ctrl_z(struct cmd *cmd);
-
-extern void scan_digits(struct cmd *cmd);
 
 extern void scan_dot(struct cmd *cmd);
 
@@ -385,6 +379,10 @@ extern void scan_H(struct cmd *cmd);
 extern void scan_mod(struct cmd *cmd);
 
 extern void scan_operator(struct cmd *cmd);
+
+extern exec_func *scan_pass1(struct cmd *cmd);
+
+extern void scan_pass2(struct cmd *cmd);
 
 extern void scan_pct(struct cmd *cmd);
 

@@ -29,7 +29,7 @@
 #include <unistd.h>
 
 #include "teco.h"
-#include "errors.h"
+
 
 #define TECO_HW         101             ///< x86 platform
 
@@ -94,9 +94,9 @@ int teco_env(int n_arg)
 {
     switch (n_arg)
     {
+        default:                        // TODO: temporary
         case -1:
-            return 1024;                // TODO: temporary!
-//            return (TECO_HW << 8) | TECO_OS;
+            return (TECO_HW << 8) | TECO_OS;
 
         case 0:
             return getpid();
@@ -105,10 +105,8 @@ int teco_env(int n_arg)
         case 2:
             return 0;
 
-        default:
-            printf("{%d EJ}\r\n", n_arg);
-            (void)fflush(stdout);
-            return 1024;
+//        default:
 //            print_err(E_NIH);
+
     }
 }

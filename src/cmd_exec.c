@@ -45,9 +45,7 @@ enum scan_state scan_state;             ///< Current expression scanning state
 
 // Local functions
 
-static void exec_expr(struct cmd *cmd);
-
-static void finish_cmd(struct cmd *cmd, const struct cmd_table *table);
+static void finish_cmd(struct cmd *cmd, exec_func *exec);
 
 
 ///
@@ -104,25 +102,13 @@ void exec_cmd(void)
             printc_err(E_ILL, c);       // Illegal character
         }
 
-        const struct cmd_table *table = scan_cmd(&cmd, c);
+        cmd.c1 = (char)c;
 
-        if (table->scan != NULL)
-        {
-            if (cmd.expr.len == 0)      // Start of a new expression?
-            {
-                init_expr();            // Yes, reset expression stack
-            }
-
-            (*table->scan)(&cmd);
-        }
-        else if (table->exec != NULL)
-        {
-            scan_state = SCAN_DONE;
-        }
+        exec_func *exec = scan_pass1(&cmd);
 
         // Some commands have a postfix Q-register, which is an alphanumeric name
         // optionally preceded by a . (to flag that it's a local and not a global
-        // Q-register.
+        // Q-register).
 
         if (cmd.q_req)                  // Do we need a Q-register?
         {
@@ -154,7 +140,7 @@ void exec_cmd(void)
         }
         else if (scan_state == SCAN_DONE) // Done scanning expression?
         {
-            finish_cmd(&cmd, table);
+            finish_cmd(&cmd, exec);
 
             scan_state = SCAN_NULL;
         }
@@ -187,140 +173,6 @@ void exec_escape(struct cmd *cmd)
 
 
 ///
-///  @brief    Do a full scan of the expression. All we've done up to now is to
-///            check the expression for form. Now we check it for substance.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void exec_expr(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    cmd->m_set = false;
-    cmd->n_set = false;
-    cmd->colon_set = false;
-
-    if (cmd->c1 == ESC)
-    {
-        return;
-    }
-
-    const char *p = cmd->expr.buf;
-
-    while (p < cmd->expr.buf + cmd->expr.len)
-    {
-        struct cmd_table *table = NULL;
-        int c = *p++;
-
-        if ((uint)c >= cmd_count)
-        {
-            printc_err(E_ILL, c);
-        }
-
-        cmd->c1 = (char)c;
-
-        if (toupper(c) == 'E')          // E{x} command
-        {
-            assert(p < cmd->expr.buf + cmd->expr.len);
-
-            cmd->c2 = (char)*p++;
-
-            table = scan_E(cmd);
-        }
-        else if (toupper(c) == 'F')     // F{x} command
-        {
-            assert(p < cmd->expr.buf + cmd->expr.len);
-
-            cmd->c2 = (char)*p++;
-
-            table = scan_F(cmd);
-        }
-        else if (c == '^')              // ^{x} or ^^{x} command
-        {
-            assert(p < cmd->expr.buf + cmd->expr.len);
-
-            if ((c = *p++) == '^')      // ^^{x} - value of character
-            {
-                assert(p < cmd->expr.buf + cmd->expr.len);
-
-                push_expr(*p++, EXPR_VALUE);
-
-                continue;
-            }
-            else                        // ^{x}
-            {
-                cmd->c1 = (char)c;
-                cmd->c1 = (char)scan_caret(cmd);
-
-                table = &cmd_table[(int)cmd->c1];
-            }
-        }
-        else if (c == '\x1E')           // CTRL/^{x} command
-        {
-            assert(p < cmd->expr.buf + cmd->expr.len);
-
-            push_expr(*p++, EXPR_VALUE);
-
-            continue;
-        }
-        else if (isdigit(c))
-        {
-            long sum = 0;
-
-            // Here when we have a digit. Check to see that it's valid for the current
-            // radix, and then loop until we run out of valid digits, at which point we
-            // have to return the last character to the command buffer.
-
-            --p;
-
-            while (valid_radix(*p))
-            {
-                const char *digits = "0123456789ABCDEF";
-                const char *digit = strchr(digits, toupper(*p));
-
-                assert(digit != NULL);
-
-                long n = digit - digits;
-
-                sum *= v.radix;
-                sum += n;
-
-                if (++p >= cmd->expr.buf + cmd->expr.len)
-                {
-                    break;
-                }
-            }
-
-            push_expr((int)sum, EXPR_VALUE);
-
-            continue;
-        }
-        else                            // Everything else
-        {
-            cmd->c2 = NUL;
-
-            table = &cmd_table[toupper(c)];
-        }
-
-        assert(table != NULL);
-
-        if (table->scan != NULL)
-        {
-            (*table->scan)(cmd);
-        }
-    }
-
-    if (operand_expr())
-    {
-        cmd->n_arg = get_n_arg();
-        cmd->n_set = true;
-    }
-}
-
-
-///
 ///  @brief    Finish scanning command, after we have done a preliminary scan
 ///            for an expression, and for any modifiers.
 ///
@@ -328,12 +180,9 @@ static void exec_expr(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
+static void finish_cmd(struct cmd *cmd, exec_func *exec)
 {
     assert(cmd != NULL);
-    assert(table != NULL);
-
-    (void)fflush(stdout);
 
     scan_tail(cmd);                     // Finish scanning command
 
@@ -378,7 +227,7 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
         uint colon_set  = cmd->colon_set;
         uint dcolon_set = cmd->dcolon_set;
 
-        exec_expr(cmd);                 // Execute expression for real
+        scan_pass2(cmd);
 
         // Restore command characters
 
@@ -398,8 +247,10 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
 
     if (cmd->expr.len == 1 && estack.obj[0].type == EXPR_MINUS)
     {
-        estack.obj[0].type = EXPR_VALUE;
-        estack.obj[0].value = -1;
+        estack.level = 0;
+
+        cmd->n_set = true;
+        cmd->n_arg = -1;
     }
     else if (operand_expr())
     {
@@ -411,16 +262,10 @@ static void finish_cmd(struct cmd *cmd, const struct cmd_table *table)
         print_err(E_ARG);
     }
 
-    if (table->exec != NULL)
+    if (exec != NULL)
     {
-        if (operand_expr())
-        {
-            cmd->n_set = true;
-            cmd->n_arg = get_n_arg();
-        }
-
         if (!teco_debug || cmd->c1 == 'e')
-            (*table->exec)(cmd);
+            (*exec)(cmd);
     }
 
     uint level = cmd->level;        

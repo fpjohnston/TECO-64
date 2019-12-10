@@ -1,21 +1,6 @@
 ///
-///  @file    cmd_f.c
-///  @brief   General dispatcher for TECO F commands (e.g., FR, FS).
-///
-///           nFB    Search, bounded by n lines
-///           m,nFB  Search between locations m and n
-///           nFC    Search and replace over n lines
-///           m,nFC  Search and replace between locations m and n
-///           nFD    Search and delete string
-///           nFK    Search and delete intervening text
-///           nFN    Global string replace
-///           FR     Replace last string
-///           nFS    Local string replace
-///           F'     Flow to end of conditional
-///           F<     Flow to start of iteration
-///           F>     Flow to end of iteration
-///           nF_    Destructive search and replace
-///           F|     Flow to ELSE part of conditional
+///  @file    ctrl_q_cmd.c
+///  @brief   Execute ^Q (CTRL/Q) command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -41,42 +26,39 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "errors.h"
+#include "edit_buf.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Scan F command.
+///  @brief    Scan ^Q (CTRL/Q) command: get no. of characters between dot and
+///            nth line terminator. n may be negative.
 ///
-///  @returns  Nothing.
+///  @returns  nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct cmd_table *scan_F(struct cmd *cmd)
+void scan_ctrl_q(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int c = cmd->c2;
+    int n = cmd->n_arg;
 
-    const char *f_cmds = "BCDKNRS<>\\_|";
-    const char *f_cmd  = strchr(f_cmds, toupper(c));
-
-    if (f_cmd == NULL)
+    if (operand_expr())
     {
-        printc_err(E_IFC, c);           // Illegal F character
+        cmd->n_set = true;
+        cmd->n_arg = get_n_arg();
+    }
+    else
+    {
+        cmd->n_arg = 0;
     }
 
-    cmd->c2 = (char)c;
-
-    uint i = (uint)(f_cmd - f_cmds);
-
-    assert(i < cmd_f_count);
-
-    return &cmd_f_table[i];
+    int nchrs = nchars_edit(n);
+    
+    push_expr(nchrs, EXPR_VALUE);
 }

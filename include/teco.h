@@ -146,10 +146,7 @@ struct qreg
 struct ifile
 {
     FILE *fp;                       ///< Input file stream
-    bool ff;                        ///< Form feed seen
     bool eof;                       ///< End of file reached
-    bool warn;                      ///< Warning threshold reached
-    bool full;                      ///< Edit buffer is full
     bool cr;                        ///< Last character was CR
 };
 
@@ -201,10 +198,13 @@ enum backup_flag
 
 struct vars
 {
-    int ff;                         ///< Form feed flag
+    uint B;                         ///< Beginning of buffer (always 0)
     int radix;                      ///< Current output radix
     int ctrl_x;                     ///< CTRL/X flag
+    bool ff;                        ///< Form feed flag
     bool trace;                     ///< true if trace mode is on
+    bool warn;                      ///< true if edit buffer is almost full
+    bool full;                      ///< true if edit buffer is full
 };
 
 // Global variables
@@ -324,8 +324,6 @@ extern void init_expr(void);
 extern bool operand_expr(void);
 
 extern void push_expr(int c, enum expr_type type);
-
-extern bool valid_radix(int c);
 
 // Buffer functions
 

@@ -74,12 +74,12 @@ void exec_Y(struct cmd *cmd)
 
     // If data in buffer and yank protection is enabled, then abort.
 
-    if (get_Z() && !f.ed.yank)
+    if (size_edit() && !f.ed.yank)
     {
         print_err(E_YCA);               // Y command aborted
     }
 
-    kill_edit(EDIT_NOSHRINK);
+    kill_edit();
 
     while (append_line())               // Read what we can
     {

@@ -51,7 +51,7 @@ void exec_J(struct cmd *cmd)
 
     if (!cmd->n_set)
     {
-        n = get_B();
+        n = v.B;
     }
 
     if (!jump_edit(n))

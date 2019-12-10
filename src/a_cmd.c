@@ -47,7 +47,7 @@ bool append(bool n_set, int n_arg, bool colon_set)
 {
     struct ifile *ifile = &ifiles[istream];
 
-    v.ff = 0;                           // Assume no form feed
+    v.ff = false;                       // Assume no form feed
 
     // Here if we have A, :A, or n:A
 
@@ -100,7 +100,7 @@ bool append_line(void)
     {
         if (c == FF)                    // If form feed, don't store it
         {
-            ifile->ff = true;           // But do flag it
+            v.ff = true;                // But do flag it
 
             return true;
         }
@@ -117,7 +117,7 @@ bool append_line(void)
                 break;
 
             case EDIT_WARN:             // Set flag if buffer getting full
-                ifile->warn = true;
+                v.warn = true;
 
                 if (c == LF || c == VT)
                 {
@@ -127,7 +127,7 @@ bool append_line(void)
                 break;
 
             case EDIT_FULL:             // Stop if buffer is full
-                ifile->full = true;
+                v.full = true;
 
                 return false;
         }
@@ -188,14 +188,9 @@ void scan_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // Is it nA or n:A?
+    if (scan_state != SCAN_DONE)
     {
-        cmd->n_arg = get_n_arg();
-        cmd->n_set = true;
-
         push_expr(DUMMY_VALUE, EXPR_VALUE);
     }
-
-    scan_state = SCAN_DONE;
 }
 

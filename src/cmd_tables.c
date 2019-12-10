@@ -46,8 +46,12 @@ extern void bug(int n);
 
 void exec_ctrl_p(struct cmd *cmd);
 
+#include <assert.h>
+
 void exec_ctrl_p(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     if (cmd->n_set)
     {
         bug(cmd->n_arg);
@@ -79,7 +83,7 @@ struct cmd_table cmd_table[] =
     [CTRL_O]      = { NULL,           exec_ctrl_o,      ""             },
 //  [CTRL_P]      = { scan_bad,       NULL,             ""             },
     [CTRL_P]      = { NULL,           exec_ctrl_p,      ""             },
-    [CTRL_Q]      = { NULL,           exec_ctrl_q,      ""             },
+    [CTRL_Q]      = { scan_ctrl_q,    NULL,             ""             },
     [CTRL_R]      = { scan_ctrl_r,    exec_ctrl_r,      "n"            },
     [CTRL_S]      = { scan_ctrl_s,    NULL,             ""             },
     [CTRL_T]      = { scan_ctrl_t,    exec_ctrl_t,      "n :"          },
@@ -110,16 +114,16 @@ struct cmd_table cmd_table[] =
     ['-']         = { scan_operator,  NULL,             ""             },
     ['.']         = { scan_dot,       NULL,             ""             },
     ['/']         = { scan_operator,  NULL,             ""             },
-    ['0']         = { scan_digits,    NULL,             ""             },
-    ['1']         = { scan_digits,    NULL,             ""             },
-    ['2']         = { scan_digits,    NULL,             ""             },
-    ['3']         = { scan_digits,    NULL,             ""             },
-    ['4']         = { scan_digits,    NULL,             ""             },
-    ['5']         = { scan_digits,    NULL,             ""             },
-    ['6']         = { scan_digits,    NULL,             ""             },
-    ['7']         = { scan_digits,    NULL,             ""             },
-    ['8']         = { scan_digits,    NULL,             ""             },
-    ['9']         = { scan_digits,    NULL,             ""             },
+    ['0']         = { NULL,           NULL,             ""             },
+    ['1']         = { NULL,           NULL,             ""             },
+    ['2']         = { NULL,           NULL,             ""             },
+    ['3']         = { NULL,           NULL,             ""             },
+    ['4']         = { NULL,           NULL,             ""             },
+    ['5']         = { NULL,           NULL,             ""             },
+    ['6']         = { NULL,           NULL,             ""             },
+    ['7']         = { NULL,           NULL,             ""             },
+    ['8']         = { NULL,           NULL,             ""             },
+    ['9']         = { NULL,           NULL,             ""             },
     [':']         = { scan_mod,       NULL,             ""             },
     [';']         = { NULL,           exec_semi,        "n :"          },
     ['<']         = { NULL,           exec_lt,          "n"            },

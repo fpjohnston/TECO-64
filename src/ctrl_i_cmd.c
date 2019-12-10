@@ -31,7 +31,11 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
+#include "edit_buf.h"
 #include "exec.h"
+
+extern char insert_string[];
 
 
 ///
@@ -45,6 +49,19 @@ void exec_ctrl_i(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // TODO: insert string into buffer.
+    if (cmd->text1.len != 0)
+    {
+        insert_string[0] = TAB;
+
+        assert(cmd->text1.len <= 1023); // FIXME!
+
+        sprintf(insert_string + 1, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+
+        insert_edit(insert_string, 1 + cmd->text1.len);
+    }
+    else
+    {
+        // TODO: print error or warning?
+    }
 }
 

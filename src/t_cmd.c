@@ -49,7 +49,9 @@ void exec_T(struct cmd *cmd)
 
     if (cmd->h_set)
     {
-        (void)type_edit(get_B(), get_Z(), print_callback);
+        uint Z = size_edit();
+
+        (void)type_edit(v.B, Z, print_callback);
     }
     else if (cmd->m_set && cmd->n_set)
     {

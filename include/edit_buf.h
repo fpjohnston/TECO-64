@@ -43,10 +43,6 @@ typedef enum
     EDIT_ERROR
 } estatus;
 
-#define EDIT_SHRINK     (bool)true      ///< Allow edit buffer to shrink
-
-#define EDIT_NOSHRINK   (bool)false     ///< Don't allow edit buffer to shrink
-
 
 // Add one character to buffer at current position of dot.
 //
@@ -70,18 +66,9 @@ extern estatus add_edit(int c);
 
 extern int char_edit(int n);
 
-// Get beginning position in buffer (always returns 0).
+//  Delete nbytes at dot. Argument can be positive or negative.
 
-#define get_B()         0
-
-// Get current dot in buffer.
-
-extern uint get_dot(void);
-
-// Get ending position in buffer. Used to return value of TECO variable Z, as
-// as to determine whether the buffer is currently empty.
-
-extern uint get_Z(void);
+extern bool delete_edit(int n);
 
 // Initialize buffer.
 //
@@ -92,11 +79,12 @@ extern uint get_Z(void);
 //
 // warn  -  Number from 0-100 indicating the percentage of how full the buffer
 //          can be before trying to increase its size.
-//
-// shrink - true if should decrease buffer to initial size whenever it is
-//          emptied by HK command.
 
-extern void init_edit(uint minsize, uint maxsize, uint stepsize, uint warn, bool shrink);
+extern void init_edit(uint minsize, uint maxsize, uint stepsize, uint warn);
+
+// Insert string into buffer at dot.
+
+extern void insert_edit(const char *buf, uint len);
 
 // Jump to absolute position in buffer.
 //
@@ -104,24 +92,36 @@ extern void init_edit(uint minsize, uint maxsize, uint stepsize, uint warn, bool
 
 extern bool jump_edit(uint n);
 
-// Delete entire buffer (used by HK). This will cause the buffer to shrink back
-// its original size, if the shrink parameter in init_edit() was true.
+// Delete entire buffer.
 
-extern void kill_edit(bool shrink);
+extern void kill_edit(void);
 
 // Move to position in buffer relative to dot.
 //
 // Returns: true if position was in buffer, false if it was not.
 
-extern bool move_edit(int n);
+extern bool move_edit(int n, bool error);
+
+//  Get the number of chars between current dot and nth line terminator.
+
+extern int nchars_edit(int n);
+
+// Get current position in buffer. Equivalent to TECO variable "." (dot).
+
+extern uint pos_edit(void);
 
 // Print contents of buffer between lines m and n relative to dot.
 
 extern void print_edit(int m, int n, void (*printc)(int c));
 
-// Move to line relative to current position.
+// Set memory size, in K bytes.
 
-extern void step_edit(int n);
+extern void set_edit(uint n);
+
+// Get ending position in buffer. Used to return value of TECO variable Z, as
+// well as to determine whether the buffer is currently empty.
+
+extern uint size_edit(void);
 
 // Type contents of buffer between absolute positions m and n.
 //

@@ -54,7 +54,7 @@ void exec_C(struct cmd *cmd)
         n = 1;
     }
 
-    if (!move_edit(n))
+    if (!move_edit(n, (bool)true))
     {
         if (cmd->colon_set)
         {
