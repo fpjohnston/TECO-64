@@ -106,34 +106,6 @@ void exec_cmd(void)
 
         exec_func *exec = scan_pass1(&cmd);
 
-        // Some commands have a postfix Q-register, which is an alphanumeric name
-        // optionally preceded by a . (to flag that it's a local and not a global
-        // Q-register).
-
-        if (cmd.q_req)                  // Do we need a Q-register?
-        {
-            c = fetch_buf();            // Yes
-
-            if (c == '.')               // Is it a local Q-register?
-            {
-                cmd.qlocal = true;      // Yes, mark it
-
-                c = fetch_buf();        // Get Q-register name
-            }        
-
-            if (!isalnum(c))
-            {
-                // The following allows use of G* and G_
-
-                if (toupper(cmd.c1) != 'G' || (c != '*' && c != '_'))
-                {
-                    printc_err(E_IQN, c); // Illegal Q-register name
-                }
-            }
-
-            cmd.qreg = (char)c;         // Save the name
-        }
-
         if (scan_state == SCAN_EXPR)    // Still scanning expression?
         {
             cmd.expr.len = (uint)(next_buf() - cmd.expr.buf);

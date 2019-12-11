@@ -59,9 +59,6 @@ struct cmd
 
         struct
         {
-            uint m_opt      : 1;    ///< m argument allowed
-            uint n_opt      : 1;    ///< n argument allowed
-            uint h_opt      : 1;    ///< H allowed
             uint colon_opt  : 1;    ///< : allowed
             uint dcolon_opt : 1;    ///< :: allowed
             uint atsign_opt : 1;    ///< @ allowed

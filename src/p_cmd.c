@@ -50,6 +50,13 @@ void exec_P(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    struct ofile *ofile = &ofiles[ostream];
+
+    if (ofile->fp == NULL)
+    {
+        print_err(E_NFO);               // No file for output
+    }       
+
     uint start = v.B;
     uint end   = size_edit();
     int count  = 1;

@@ -33,6 +33,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "edit_buf.h"
+#include "errors.h"
 #include "exec.h"
 
 
@@ -46,6 +47,11 @@
 bool append(bool n_set, int n_arg, bool colon_set)
 {
     struct ifile *ifile = &ifiles[istream];
+
+    if (ifile->fp == NULL)
+    {
+        print_err(E_NFI);               // No file for input
+    }       
 
     v.ff = false;                       // Assume no form feed
 

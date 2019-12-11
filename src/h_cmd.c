@@ -31,7 +31,7 @@
 
 #include "teco.h"
 #include "edit_buf.h"
-//#include "errors.h"
+#include "errors.h"
 #include "exec.h"
 
 
@@ -46,12 +46,10 @@ void scan_H(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // TODO: is this correct?
-
-//    if (operand_expr() || cmd->m_set)   // m or n specified?
-//    {
-//        print_err(E_ARG);               // Bad arguments
-//    }
+    if (cmd->comma_set || cmd->h_set)   // Already seen comma or H?
+    {
+        print_err(E_ARG);               // Invalid arguments
+    }
 
     uint Z = size_edit();
     

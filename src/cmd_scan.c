@@ -147,6 +147,8 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
 
     assert(table != NULL);
 
+    set_opts(cmd, table->opts);
+
     return table;
 }
 
@@ -333,14 +335,37 @@ exec_func *scan_pass1(struct cmd *cmd)
 
     const struct cmd_table *table = scan_cmd(cmd);
 
+    // Check to see if command requires a global (or local) Q-register.
+
+    if (cmd->q_req)                     // Do we need a Q-register?
+    {
+        int c = fetch_buf();            // Yes
+
+        if (c == '.')                   // Is it a local Q-register?
+        {
+            cmd->qlocal = true;         // Yes, mark it
+
+            c = fetch_buf();            // Get Q-register name
+        }        
+
+        if (!isalnum(c))
+        {
+            // The following allows use of G* and G_
+
+            if (toupper(cmd->c1) != 'G' || (c != '*' && c != '_'))
+            {
+                printc_err(E_IQN, c);   // Illegal Q-register name
+            }
+        }
+
+        cmd->qreg = (char)c;            // Save the name
+    }
+
     if (table->scan != NULL)            // If we have anything to scan,
     {
         (*table->scan)(cmd);            //  then scan it
     }
-
-    set_opts(cmd, table->opts);
-
-    if (table->exec != NULL)
+    else if (table->exec != NULL)
     {
         scan_state = SCAN_DONE;
     }
@@ -363,6 +388,7 @@ void scan_pass2(struct cmd *cmd)
     cmd->m_set = false;
     cmd->n_set = false;
     cmd->colon_set = false;
+    cmd->comma_set = false;
 
     if (cmd->c1 == ESC)
     {
@@ -405,8 +431,8 @@ void scan_pass2(struct cmd *cmd)
         {
             uint ndigits = scan_digits(c, p, len, (bool)false);
 
-            p   += ndigits;
-            len -= ndigits;
+            p   += ndigits - 1;
+            len -= ndigits - 1;
             
             if (len > 0)
             {
@@ -418,7 +444,48 @@ void scan_pass2(struct cmd *cmd)
             }
         }
 
-        (void)scan_cmd(cmd);
+        const struct cmd_table *table = scan_cmd(cmd);
+
+        // Check to see if command requires a global (or local) Q-register.
+
+        if (cmd->q_req)                 // Do we need a Q-register?
+        {
+            if (len-- == 0)
+            {
+                print_err(E_UTC);       // Unterminated command
+            }
+            
+            c = *p++;
+
+            if (c == '.')               // Is it a local Q-register?
+            {
+                cmd->qlocal = true;     // Yes, mark it
+
+                if (len-- == 0)
+                {
+                    print_err(E_UTC);   // Unterminated command
+                }
+                
+                c = *p++;               // Get Q-register name
+            }        
+
+            if (!isalnum(c))
+            {
+                // The following allows use of G* and G_
+
+                if (toupper(cmd->c1) != 'G' || (c != '*' && c != '_'))
+                {
+                    printc_err(E_IQN, c); // Illegal Q-register name
+                }
+            }
+
+            cmd->qreg = (char)c;        // Save the name
+        }
+
+        if (table->scan != NULL)        // If we have anything to scan,
+        {
+            (*table->scan)(cmd);        //  then scan it
+        }
     }
 }
 
@@ -526,16 +593,8 @@ static void scan_text(int delim, struct tstring *text)
 
 
 ///
-///  @brief    Set command options. The command tables in this file, e_cmd.c,
-///            and f_cmd.c all include strings that define the options for each
-///            command. The while() and switch() statements below parse these
-///            strings to set the appropriate options, as follows:
+///  @brief    Set options for each command. These are as follows:
 ///
-///            n  - Command allows one argument          (e.g., nC).
-///                 Note: implies n.
-///            m  - Command allows two arguments         (e.g., m,nT).
-///            H  - Command allows H to be special       (e.g., HP).
-///                 Note: implies m and n
 ///            :  - Command allows colon modifier        (e.g., :ERfile`).
 ///            :: - Command allows double colon modifier (e.g., :: Stext`).
 ///            @  - Command allows atsign form           (e.g., @^A/hello/).
@@ -570,19 +629,6 @@ static void set_opts(struct cmd *cmd, const char *opts)
     {
         switch (c)
         {
-            case 'H':
-                cmd->h_opt = true;
-                //lint -fallthrough 
-
-            case 'm':
-                cmd->m_opt = true;
-                //lint -fallthrough
-
-            case 'n':
-                cmd->n_opt = true;
-
-                break;
-
             case ':':
                 if (*opts == ':')       // Double colon?
                 {

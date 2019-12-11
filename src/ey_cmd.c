@@ -49,6 +49,11 @@ void exec_EY(struct cmd *cmd)
 
     struct ifile *ifile = &ifiles[istream];
 
+    if (ifile->fp == NULL)
+    {
+        print_err(E_NFI);               // No file for input
+    }       
+
     if (ifile->eof)
     {
         if (cmd->colon_set)
