@@ -1,6 +1,6 @@
 ///
-///  @file    r_cmd.c
-///  @brief   Execute R command.
+///  @file    yank_cmd.c
+///  @brief   Execute EY and Y commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -31,41 +31,107 @@
 #include <string.h>
 
 #include "teco.h"
-#include "edit_buf.h"
+#include "textbuf.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
 
+// Local functions
+
+static void exec_yank(struct cmd *cmd, bool f_ed_yank);
+
+
 ///
-///  @brief    Execute R command: move position in edit buffer.
+///  @brief    Execute EY command: yank text into buffer (no protection).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_R(struct cmd *cmd)
+void exec_EY(struct cmd *cmd)
+{
+    exec_yank(cmd, (bool)true);
+}
+
+
+///
+///  @brief    Execute Y command: yank text into buffer (with protection).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_Y(struct cmd *cmd)
+{
+    exec_yank(cmd, (bool)f.ed.yank);
+}
+
+
+///
+///  @brief    Execute yank command: yank text into buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_yank(struct cmd *cmd, bool f_ed_yank)
 {
     assert(cmd != NULL);
 
-    uint n = (uint)cmd->n_arg;
+    struct ifile *ifile = &ifiles[istream];
 
-    if (!cmd->n_set)
+    if (ifile->fp == NULL)
     {
-        n = 1;
-    }
+        print_err(E_NFI);               // No file for input
+    }       
 
-    if (!move_edit(-(int)n, (bool)true))
+    uint olddot = getpos_tbuf();
+
+    if (ifile->eof)
     {
         if (cmd->colon_set)
         {
             push_expr(TECO_FAILURE, EXPR_VALUE);
-        }
 
-        print_err(E_POP);               // Pointer off page
+            return;
+        }
     }
-    else if (cmd->colon_set)
+
+    if (cmd->n_set)
+    {
+        if (cmd->n_arg == -1)
+        {
+            print_err(E_T32);           // TECO-32 feature
+        }
+        else
+        {
+            print_err(E_NYA);           // Numeric argument with Y
+        }
+    }
+
+    // If data in buffer and yank protection is enabled, then abort.
+
+    if (getsize_tbuf() && !f_ed_yank)
+    {
+        print_err(E_YCA);               // Y command aborted
+    }
+
+    uint Z = getsize_tbuf();
+
+    setpos_tbuf(B);
+        
+    delete_tbuf((int)Z);                // Kill the whole buffer
+
+    while (append_line())               // Read what we can
+    {
+        ;
+    }
+
+    if (cmd->colon_set)
     {
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
-}
 
+    setpos_tbuf(olddot);
+}

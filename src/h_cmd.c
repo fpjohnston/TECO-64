@@ -30,7 +30,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "edit_buf.h"
+#include "textbuf.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -51,12 +51,12 @@ void scan_H(struct cmd *cmd)
         print_err(E_ARG);               // Invalid arguments
     }
 
-    uint Z = size_edit();
+    uint Z = getsize_tbuf();
     
+    cmd->h_set = true;
     cmd->m_arg = (int)Z;
     cmd->m_set = true;
-    cmd->h_set = true;
 
-    push_expr((int)v.B, EXPR_VALUE);
+    push_expr(B, EXPR_VALUE);
 }
 

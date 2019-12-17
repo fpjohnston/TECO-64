@@ -1,5 +1,5 @@
 ///
-///  @file    edit_buf.h
+///  @file    textbuf.h
 ///  @brief   Edit buffer interface.
 ///
 ///  @bug     No known bugs.
@@ -51,7 +51,11 @@ typedef enum
 //          EDIT_FULL  - Insertion was successful, but buffer just became full.
 //          EDIT_ERROR - Insertion was unsuccessful. Buffer is already full.
 
-extern estatus add_edit(int c);
+extern int add_tbuf(int c);
+
+//  Delete nbytes at dot. Argument can be positive or negative.
+
+extern void delete_tbuf(int n);
 
 // Get ASCII value of character in buffer at position relative to dot.
 //
@@ -64,72 +68,40 @@ extern estatus add_edit(int c);
 // Returns: character found, or EOF (-1) if attempt was made to go beyond the
 //          beginning or end of buffer.
 
-extern int char_edit(int n);
-
-//  Delete nbytes at dot. Argument can be positive or negative.
-
-extern bool delete_edit(int n);
-
-// Initialize buffer.
-//
-// start -  Initial size of buffer, in bytes.
-//
-// plus  -  No. of bytes to increment buffer when warning level encountered.
-//          If 0, buffer is never increased.
-//
-// warn  -  Number from 0-100 indicating the percentage of how full the buffer
-//          can be before trying to increase its size.
-
-extern void init_edit(uint minsize, uint maxsize, uint stepsize, uint warn);
-
-// Insert string into buffer at dot.
-
-extern void insert_edit(const char *buf, uint len);
-
-// Jump to absolute position in buffer.
-//
-// Returns: true if position was in buffer, false if not.
-
-extern bool jump_edit(uint n);
-
-// Delete entire buffer.
-
-extern void kill_edit(void);
-
-// Move to position in buffer relative to dot.
-//
-// Returns: true if position was in buffer, false if it was not.
-
-extern bool move_edit(int n, bool error);
+extern int getchar_tbuf(int n);
 
 //  Get the number of chars between current dot and nth line terminator.
 
-extern int nchars_edit(int n);
+extern int getdelta_tbuf(int n);
 
-// Get current position in buffer. Equivalent to TECO variable "." (dot).
+// Get buffer position.
 
-extern uint pos_edit(void);
+extern uint getpos_tbuf(void);
 
-// Print contents of buffer between lines m and n relative to dot.
+// Get current size of buffer, in bytes.
 
-extern void print_edit(int m, int n, void (*printc)(int c));
+extern uint getsize_tbuf(void);
 
-// Set memory size, in K bytes.
-
-extern void set_edit(uint n);
-
-// Get ending position in buffer. Used to return value of TECO variable Z, as
-// well as to determine whether the buffer is currently empty.
-
-extern uint size_edit(void);
-
-// Type contents of buffer between absolute positions m and n.
 //
-// Returns: true if both positions were within buffer, false if not.
+//  Initialize buffer.
+//
+//  minsize -  Initial and minimum size of buffer, in bytes.
+//
+//  maxsize -  Maximum size of buffer, in bytes.
+//
+//  stepsize - No. of bytes to increment buffer when warning level encountered.
+//             If 0, buffer is never increased.
+//
+//  warn     - The percentage (0-100%) of how full the buffer can be before
+//             trying to increase its size.
+//
 
-extern bool type_edit(uint m, uint n, void (*printc)(int c));
+extern void init_tbuf(uint minsize, uint maxsize, uint stepsize, uint warn);
 
-// Write out contents of buffer from position m through n.
+// Set buffer position.
 
-extern void write_edit(uint m, uint n, void (*write_cb)(const char *buf, uint len));
+extern void setpos_tbuf(uint n);
 
+// Set maximum memory size, in K bytes.
+
+extern uint setsize_tbuf(uint n);

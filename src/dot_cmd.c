@@ -30,7 +30,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "edit_buf.h"
+#include "textbuf.h"
 #include "exec.h"
 
 
@@ -45,7 +45,7 @@ void scan_dot(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint dot = pos_edit();
+    uint dot = getpos_tbuf();
 
     push_expr((int)dot, EXPR_VALUE);
 }

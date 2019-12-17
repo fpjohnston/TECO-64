@@ -73,10 +73,12 @@ union eh_flag
 
 struct ei_flag
 {
-    uint strict    : 1;         ///< Strictly enforce command syntax
-    uint exec      : 1;         ///< Executing command
-    uint lf        : 1;         ///< Discard next character if LF
-    uint ctrl_c    : 1;         ///< CTRL/C seen
+    uint add_cr : 1;            ///< Add CR to LF on output
+    uint no_cr  : 1;            ///< Strip CR on input
+    uint no_ff  : 1;            ///< FF is normal character on input
+    uint strict : 1;            ///< Strictly enforce command syntax
+    uint exec   : 1;            ///< Executing command
+    uint ctrl_c : 1;            ///< CTRL/C seen
 };
 
 ///  @union   et_flag
@@ -88,22 +90,22 @@ union et_flag
 
     struct
     {
-        uint image     : 1;     ///< Type out in image mode
-        uint rubout    : 1;     ///< Process DEL and ^U in scope mode
-        uint lower     : 1;     ///< Read lower case
-        uint noecho    : 1;     ///< Disable echo for ^T commands
-        uint cancel    : 1;     ///< Cancel ^O on type out
-        uint nowait    : 1;     ///< Read with no wait
-        uint detach    : 1;     ///< Detach flag
-        uint abort     : 1;     ///< Abort-on-error bit
-        uint truncate  : 1;     ///< Truncate output lines to terminal width
-        uint scope     : 1;     ///< Scope type terminal
-        uint refresh   : 1;     ///< Refresh scope watch feature exists
-        uint           : 1;     ///< (reserved for TECO-8)
-        uint eightbit  : 1;     ///< Can handle 8-bit characters
-        uint accent    : 1;     ///< Accent grave is ESCAPE surrogate
-        uint vt200     : 1;     ///< Special VT200 mode
-        uint ctrl_c    : 1;     ///< CTRL/C detection control
+        uint image    : 1;      ///< Type out in image mode
+        uint rubout   : 1;      ///< Process DEL and ^U in scope mode
+        uint lower    : 1;      ///< Read lower case
+        uint noecho   : 1;      ///< Disable echo for ^T commands
+        uint cancel   : 1;      ///< Cancel ^O on type out
+        uint nowait   : 1;      ///< Read with no wait
+        uint detach   : 1;      ///< Detach flag
+        uint abort    : 1;      ///< Abort-on-error bit
+        uint truncate : 1;      ///< Truncate output lines to terminal width
+        uint scope    : 1;      ///< Scope type terminal
+        uint refresh  : 1;      ///< Refresh scope watch feature exists
+        uint          : 1;      ///< (reserved for TECO-8)
+        uint eightbit : 1;      ///< Can handle 8-bit characters
+        uint accent   : 1;      ///< Accent grave is ESCAPE surrogate
+        uint vt200    : 1;      ///< Special VT200 mode
+        uint ctrl_c   : 1;      ///< CTRL/C detection control
     };
 };
 

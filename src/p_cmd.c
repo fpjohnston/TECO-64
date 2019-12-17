@@ -33,7 +33,7 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "edit_buf.h"
+#include "textbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
@@ -57,8 +57,8 @@ void exec_P(struct cmd *cmd)
         print_err(E_NFO);               // No file for output
     }       
 
-    uint start = v.B;
-    uint end   = size_edit();
+    uint start = B;
+    uint end   = getsize_tbuf();
     int count  = 1;
     bool ff    = false;
     bool yank  = false;
@@ -96,7 +96,7 @@ void exec_P(struct cmd *cmd)
     {
         if ((count = cmd->n_arg) == 0)
         {
-            print_err(E_NPA);           // Not a valid argument for P
+            print_err(E_IPA);           // Negative argument to P
         }
         else if (count < 0)             // -nP?
         {
@@ -145,8 +145,8 @@ void exec_P(struct cmd *cmd)
 
         if (!cmd->m_set)
         {
-            start = v.B;
-            end   = size_edit();
+            start = B;
+            end   = getsize_tbuf();
         }
     }
 
@@ -167,18 +167,37 @@ void exec_P(struct cmd *cmd)
 
 bool next_page(uint start, uint end, bool ff, bool yank)
 {
-    write_edit(start, end, write_file);
+    struct ofile *ofile = &ofiles[ostream];
+    uint dot = getpos_tbuf();
+    int m = (int)(start - dot);
+    int n = (int)(end - dot);
+
+    assert(ofile != NULL && ofile->fp != NULL);
+
+    for (int i = m; i < n; ++i)
+    {
+        int c = getchar_tbuf(i);
+
+        if (c == LF && f.ei.add_cr)
+        {
+            fputc(CR, ofile->fp);
+        }
+
+        fputc(c, ofile->fp);
+    }
 
     if (ff)                             // Add a form feed if necessary
     {
-        char c = FF;
-
-        write_file(&c, 1);
+        fputc(FF, ofile->fp);
     }
 
     if (yank)                           // Read in next page if necessary
     {
-        kill_edit();                    // Delete old page
+        uint Z = getsize_tbuf();
+
+        setpos_tbuf(B);
+        
+        delete_tbuf((int)Z);            // Kill the whole buffer
 
         if (!append((bool)false, 0, (bool)false))
         {

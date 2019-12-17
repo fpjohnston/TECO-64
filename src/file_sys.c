@@ -204,7 +204,7 @@ int get_wild(void)
 
 void set_wild(const char *filename)
 {
-    int flags = GLOB_ERR | GLOB_MARK | GLOB_TILDE;
+    int flags = GLOB_ERR | GLOB_MARK | GLOB_TILDE; //lint !e835
 
     switch (glob(filename, flags, NULL, &pglob))
     {

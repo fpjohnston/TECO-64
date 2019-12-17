@@ -31,7 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
-#include "edit_buf.h"
+#include "textbuf.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -47,9 +47,10 @@ void exec_D(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    uint Z = getsize_tbuf();
     int n = 1;
     int m;
-    
+
     if (cmd->n_set)
     {
         n = cmd->n_arg;
@@ -59,28 +60,33 @@ void exec_D(struct cmd *cmd)
     {
         m = cmd->m_arg;
 
-        uint z = size_edit();
-
-        if (m < 0 || (uint)m > z || n < 0 || (uint)n > z || m > n)
+        if (m < 0 || (uint)m > Z || n < 0 || (uint)n > Z || m > n)
         {
             print_err(E_POP);           // Pointer off page
         }
 
-        (void)jump_edit((uint)m);       // Go to first position
+        setpos_tbuf((uint)m);           // Go to first position
 
         n -= m;                         // And delete this many chars
     }
 
-    if (!delete_edit(n))
-    {
-        if (cmd->colon_set)
-        {
-            push_expr(TECO_FAILURE, EXPR_VALUE);
-        }
+    uint dot = getpos_tbuf();
 
-        print_err(E_DTB);               // Delete too big
+    if ((n < 0 && (uint)-n > dot) || (n > 0 && (uint)n > Z - dot))
+    {
+        if (!cmd->colon_set)
+        {
+            print_err(E_DTB);           // Delete too big
+        }
+        
+        push_expr(TECO_FAILURE, EXPR_VALUE);
+
+        return;
     }
-    else if (cmd->colon_set)
+
+    delete_tbuf(n);
+
+    if (cmd->colon_set)
     {
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }

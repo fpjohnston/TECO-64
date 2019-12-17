@@ -32,9 +32,10 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "edit_buf.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
+#include "textbuf.h"
 
 
 ///
@@ -56,6 +57,8 @@ bool append(bool n_set, int n_arg, bool colon_set)
     v.ff = false;                       // Assume no form feed
 
     // Here if we have A, :A, or n:A
+
+    uint olddot = getpos_tbuf();
 
     if (ifile->eof)                     // Already at EOF?
     {
@@ -86,6 +89,8 @@ bool append(bool n_set, int n_arg, bool colon_set)
         (void)append_line();            // :A -> append single line
     }
 
+    setpos_tbuf(olddot);
+
     return true;
 }
 
@@ -104,14 +109,14 @@ bool append_line(void)
  
     while ((c = fgetc(ifile->fp)) != EOF)
     {
-        if (c == FF)                    // If form feed, don't store it
+        if (c == FF && !f.ei.no_ff)     // If form feed, don't store it
         {
             v.ff = true;                // But do flag it
 
             return true;
         }
 
-        switch (add_edit(c))
+        switch (add_tbuf(c))
         {
             default:
             case EDIT_OK:
@@ -161,24 +166,15 @@ void exec_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // nA -> get ASCII value of nth character relative to dot.
+    assert(!cmd->n_set || cmd->colon_set);
 
-    if (cmd->n_set && !cmd->colon_set)
+    // Here if we need to append anything to the buffer.
+
+    int status = append((bool)cmd->n_set, cmd->n_arg, (bool)cmd->colon_set);
+
+    if (cmd->colon_set)
     {
-        int n = char_edit(cmd->n_arg);
-
-        push_expr(n, EXPR_VALUE);
-    }
-    else
-    {
-        // Here if we need to append anything to the buffer.
-
-        int status = append((bool)cmd->n_set, cmd->n_arg, (bool)cmd->colon_set);
-
-        if (cmd->colon_set)
-        {
-            push_expr(status, EXPR_VALUE);
-        }
+        push_expr(status, EXPR_VALUE);
     }
 }
 
@@ -194,9 +190,20 @@ void scan_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (scan_state != SCAN_DONE)
+    if (operand_expr())
     {
-        push_expr(DUMMY_VALUE, EXPR_VALUE);
+        if (scan_state == SCAN_DONE)
+        {
+            int n = get_n_arg();
+
+            n = getchar_tbuf(n);
+
+            push_expr(n, EXPR_VALUE);
+        }
+    }
+    else
+    {
+        scan_state = SCAN_DONE;
     }
 }
 

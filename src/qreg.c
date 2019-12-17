@@ -34,6 +34,8 @@
 
 #include "teco.h"
 #include "errors.h"
+#include "qreg.h"
+
 
 ///  @var    qglobal
 ///  @brief  Global Q-registers.
@@ -114,7 +116,7 @@ void append_qchr(int qname, bool qdot, int c)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    uint nbytes = qreg->text.put;
+    uint nbytes = qreg->text.put + 1;
 
     if (nbytes >= qreg->text.size)
     {
@@ -179,9 +181,7 @@ static void free_qreg(void)
 
         if (qreg->text.buf != NULL)
         {
-            free(qreg->text.buf);
-
-            qreg->text.buf = NULL;
+            free_mem(&qreg->text.buf);
         }
     }
 
@@ -195,9 +195,7 @@ static void free_qreg(void)
 
             if (qreg->text.buf != NULL)
             {
-                free(qreg->text.buf);
-
-                qreg->text.buf = NULL;
+                free_mem(&qreg->text.buf);
             }
         }
         --mlevel;
@@ -353,7 +351,7 @@ bool pop_qreg(int qname, bool qdot)
 
     if (qreg->text.buf != NULL && qreg->text.buf != oldreg.text.buf)
     {
-        free(qreg->text.buf);
+        free_mem(&qreg->text.buf);
     }
 
     *qreg = oldreg;
@@ -413,7 +411,7 @@ void store_qchr(int qname, bool qdot, int c)
 
     if (qreg->text.buf != NULL)         // Existing buffer?
     {
-        free(qreg->text.buf);           // Yes, discard it
+        free_mem(&qreg->text.buf);      // Yes, discard it
     }
 
     qreg->text.get  = 0;
@@ -455,9 +453,7 @@ void store_qtext(int qname, bool qdot, struct tstring text)
 
     if (qreg->text.buf != NULL)         // Existing buffer?
     {
-        free(qreg->text.buf);           // Yes, discard it
-
-        qreg->text.buf = NULL;
+        free_mem(&qreg->text.buf);      // Yes, discard it
     }
 
     uint nbytes = STR_SIZE_INIT;

@@ -91,39 +91,6 @@ void exec_F_apos(struct cmd *unused1)
 ///  @brief    Temporary stub function.
 ///  @returns  Nothing.
 
-void exec_F_lt(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
-void exec_F_gt(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
-void exec_semi(struct cmd *unused1)
-{
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
-    return;
-}
-
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
 void exec_ubar(struct cmd *unused1)
 {
     printf("%s() not yet completed\r\n", __func__);

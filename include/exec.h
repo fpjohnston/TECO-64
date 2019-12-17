@@ -51,7 +51,7 @@ enum scan_state
 
 struct cmd
 {
-    uint level;                     ///< Command level
+    int level;                      ///< Command level
 
     union
     {
@@ -93,12 +93,18 @@ struct cmd
     struct cmd *prev;               ///< Previous command (or NULL)
 };
 
-///  @struct cmd_table
-///  @brief  Format of command tables used to parse and execute commands.
+///  @typedef  scan_func
+///  @brief   Function to scan command.
 
 typedef void (scan_func)(struct cmd *cmd);
 
+///  @typedef exec_func
+///  @brief   Function to execute command.
+
 typedef void (exec_func)(struct cmd *cmd);
+
+///  @struct cmd_table
+///  @brief  Format of command tables used to parse and execute commands.
 
 struct cmd_table
 {
@@ -210,6 +216,8 @@ extern void exec_ctrl_x(struct cmd *cmd);
 extern void exec_equals(struct cmd *cmd);
 
 extern void exec_escape(struct cmd *cmd);
+
+extern void exec_insert(const char *buf, uint len);
 
 extern void exec_lt(struct cmd *cmd);
 

@@ -45,7 +45,6 @@
 #include <sys/types.h>
 #endif
 
-
 /// @def    countof(array)
 /// @brief  Returns the number of elements in an array.
 
@@ -56,6 +55,8 @@
 #define STR_SIZE_INIT        1024       ///< Initial string size
 
 #define EXPR_SIZE            64         ///< Size of expression stack
+
+#define B                    (0)        ///< Beginning of text buffer
 
 enum
 {
@@ -125,21 +126,6 @@ struct tstring
     uint len;                       ///< No. of characters
 };
 
-///  @struct  qreg
-///  @brief   Definition of Q-register storage, which includes a string and a
-///           numeric value.
-
-struct qreg
-{
-    struct buffer text;             ///< Q-register text
-    int n;                          ///< Q-register numeric value
-};
-
-///  @def     QREG_SIZE
-///  @brief   No. of Q-registers in each set.
-
-#define QREG_SIZE       (('9' - '0') + 1 + ('Z' - 'A') + 1)
-
 ///  @struct  ifile
 ///  @brief   Definition of variables used to keep track of input files.
 
@@ -198,7 +184,6 @@ enum backup_flag
 
 struct vars
 {
-    uint B;                         ///< Beginning of buffer (always 0)
     int radix;                      ///< Current output radix
     int ctrl_x;                     ///< CTRL/X flag
     bool ff;                        ///< Form feed flag
@@ -273,8 +258,6 @@ extern void init_EG(void);
  
 extern void init_term(void);
 
-extern void print_callback(int c);
-
 extern void print_prompt(void);
 
 extern void print_term(const char *str);
@@ -286,34 +269,6 @@ extern void putc_term(int c);
 extern void puts_term(const char *str, unsigned int nbytes);
 
 extern void read_cmd(void);
-
-// Q-register functions
-
-extern void append_qchr(int qname, bool qdot, int c);
-
-extern void append_qtext(int qname, bool qdot, struct tstring text);
-
-extern uint get_qall(void);
-
-extern int get_qchr(int qname, bool qdot, int n);
-
-extern int get_qnum(int qname, bool qdot);
-
-extern uint get_qsize(int qname, bool qdot);
-
-extern void init_qreg(void);
-
-extern bool pop_qreg(int qname, bool qdot);
-
-extern void print_qreg(int qname, bool qdot);
-
-extern bool push_qreg(int qname, bool qdot);
-
-extern void store_qtext(int qname, bool qdot, struct tstring text);
-
-extern void store_qchr(int qname, bool qdot, int c);
-
-extern void store_qnum(int qname, bool qdot, int n);
 
 // Functions that access the expression stack
 
@@ -374,7 +329,5 @@ extern bool read_indirect(void);
 extern void rename_output(struct ofile *ofile);
 
 extern void set_wild(const char *filename);
-
-extern void write_file(const char *buf, uint len);
 
 #endif  // !defined(_TECO_H)

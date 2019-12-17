@@ -237,10 +237,12 @@ static void finish_cmd(struct cmd *cmd, exec_func *exec)
     if (exec != NULL)
     {
         if (!teco_debug || cmd->c1 == 'e')
+        {
             (*exec)(cmd);
+        }
     }
 
-    uint level = cmd->level;        
+    int level = cmd->level;        
 
     *cmd = null_cmd;
 

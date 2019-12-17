@@ -1,6 +1,6 @@
 ///
-///  @file    push_expr.c
-///  @brief   Push operand or operator on expression stack.
+///  @file    estack.c
+///  @brief   Functions that handle the expression stack.
 ///
 ///  @bug     No known bugs.
 ///
@@ -155,7 +155,10 @@ void push_expr(int value, enum expr_type type)
         print_err(E_PDO);               // Push-down list overflow
     }
 
-    scan_state = SCAN_EXPR;
+    if (scan_state != SCAN_DONE)
+    {
+        scan_state = SCAN_EXPR;
+    }
 
     estack.obj[estack.level].value = value;
     estack.obj[estack.level].type = type;
@@ -180,6 +183,14 @@ static void reduce(void)
         if (!reduce3() && !reduce2())
         {
             break;
+        }
+    }
+
+    if (estack.level >= 1 && estack.obj[estack.level - 1].type == '\x1F')
+    {
+        if (estack.level == 1 || estack.obj[estack.level - 2].type != EXPR_VALUE)
+        {
+            print_err(E_NAB);           // No argument before ^_
         }
     }
 }
@@ -222,17 +233,6 @@ static bool reduce2(void)
         {
             return false;
         }
-    }
-    else if (e1->type == (enum expr_type)'\x1F') // One's complement
-    {
-        if (estack.level == 1 || e2->type != EXPR_VALUE)
-        {
-            print_err(E_NAB);           // No argument before ^_
-        }
-
-        e2->value = (int)(~(uint)e2->value);
-
-        --estack.level;
     }
     else
     {

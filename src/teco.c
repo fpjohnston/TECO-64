@@ -69,8 +69,9 @@
 #include <string.h>
 
 #include "teco.h"
-#include "edit_buf.h"
 #include "eflags.h"
+#include "qreg.h"
+#include "textbuf.h"
 
 
 #define TECO_VERSION    200             ///< Our version of TECO
@@ -92,7 +93,6 @@ struct flags f;
 
 struct vars v =
 {
-    .B      = 0,                    ///< Beginning of buffer (always 0)
     .radix  = 10,                   ///< Current output radix
     .ctrl_x = 0,                    ///< CTRL/X flag
     .ff     = false,                ///< Form feed flag
@@ -122,7 +122,7 @@ int main(int argc, const char * const argv[])
     init_env(argc, argv);               // Initialize environment
     init_term();                        // Initialize terminal
     init_buf();                         // Initialize command buffer
-    init_edit(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);
+    init_tbuf(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);
                                         // Initialize edit buffer
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams
@@ -132,6 +132,8 @@ int main(int argc, const char * const argv[])
 
     for (;;)                            // Loop forever
     {
+        f.ei.exec = false;              // Not executing command
+
         if (setjmp(jump_main) == 0)
         {
             if (!read_indirect())       // Indirect command to execute yet?

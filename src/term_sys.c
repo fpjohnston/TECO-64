@@ -51,6 +51,7 @@
 #include <sys/ioctl.h>
 
 #undef CURSES                           // TODO: add support for curses
+#undef refresh                          // So we can use refresh as a symbol
 
 #include "teco.h"
 #include "ascii.h"

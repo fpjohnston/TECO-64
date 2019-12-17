@@ -73,18 +73,18 @@ VPATH=src:obj:$(INCDIR)
 LIBS =
 
 SOURCES = \
-    buffer.c      \
+    cmd_buf.c     \
     cmd_exec.c    \
     cmd_scan.c    \
     cmd_tables.c  \
-    edit_buf.c    \
     env_sys.c     \
     errors.c      \
+    estack.c      \
     file.c        \
     file_sys.c    \
+    gapbuf.c      \
     get_flag.c    \
     memory.c      \
-    push_expr.c   \
     qreg.c        \
     stubs.c       \
     teco.c        \
@@ -97,7 +97,6 @@ SOURCES = \
     b_cmd.c       \
     back_cmd.c    \
     bang_cmd.c    \
-    c_cmd.c       \
     comma_cmd.c   \
     ctrl_a_cmd.c  \
     ctrl_b_cmd.c  \
@@ -105,7 +104,6 @@ SOURCES = \
     ctrl_e_cmd.c  \
     ctrl_f_cmd.c  \
     ctrl_h_cmd.c  \
-    ctrl_i_cmd.c  \
     ctrl_n_cmd.c  \
     ctrl_o_cmd.c  \
     ctrl_q_cmd.c  \
@@ -145,7 +143,6 @@ SOURCES = \
     ev_cmd.c      \
     ew_cmd.c      \
     ex_cmd.c      \
-    ey_cmd.c      \
     ez_cmd.c      \
     fc_cmd.c      \
     fd_cmd.c      \
@@ -157,13 +154,13 @@ SOURCES = \
     g_cmd.c       \
     gt_cmd.c      \
     h_cmd.c       \
-    i_cmd.c       \
-    j_cmd.c       \
+    insert_cmd.c  \
     k_cmd.c       \
-    l_cmd.c       \
     left_cmd.c    \
+    loop_cmd.c    \
     lt_cmd.c      \
     m_cmd.c       \
+    move_cmd.c    \
     n_cmd.c       \
     o_cmd.c       \
     option_sys.c  \
@@ -172,16 +169,14 @@ SOURCES = \
     q_cmd.c       \
     quest_cmd.c   \
     quote_cmd.c   \
-    r_cmd.c       \
     right_cmd.c   \
     s_cmd.c       \
-    t_cmd.c       \
+    type_cmd.c    \
     u_cmd.c       \
-    v_cmd.c       \
     vbar_cmd.c    \
     w_cmd.c       \
     x_cmd.c       \
-    y_cmd.c       \
+    yank_cmd.c    \
     z_cmd.c       \
 
 ifdef   VERBOSE
@@ -312,7 +307,7 @@ lobs: $(LOBS)
 .PHONY: lint
 lint:   $(LOBS)
 	@echo Linting object files $(NULL)
-	$(AT)chdir obj && $(LINT) -summary *.lob
+	$(AT)chdir obj && $(LINT) -e768 -e769 -summary *.lob
 
 .PHONY: doc
 doc: doxygen

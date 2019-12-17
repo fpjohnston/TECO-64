@@ -31,8 +31,8 @@
 #include <string.h>
 
 #include "teco.h"
-#include "edit_buf.h"
 #include "exec.h"
+#include "qreg.h"
 
 
 ///
@@ -67,7 +67,7 @@ void exec_G(struct cmd *cmd)
     {
         if (cmd->qreg == '*')           // G* -> copy filename to buffer
         {
-            insert_edit(filename_buf, (uint)strlen(filename_buf));
+            exec_insert(filename_buf, (uint)strlen(filename_buf));
         }
         else if (cmd->qreg == '_')      // G_ -> copy search string to buffer
         {

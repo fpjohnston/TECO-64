@@ -30,7 +30,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "edit_buf.h"
+#include "textbuf.h"
 #include "exec.h"
 
 
@@ -45,7 +45,7 @@ void scan_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint Z = size_edit();
+    uint Z = getsize_tbuf();
 
     push_expr((int)Z, EXPR_VALUE);
 }

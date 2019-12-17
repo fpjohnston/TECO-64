@@ -80,6 +80,28 @@ void exec_EI(struct cmd *cmd)
 
 
 ///
+///  @brief    Close indirect file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void close_indirect(void)
+{
+    struct ifile *stream = &ifiles[IFILE_INDIRECT];
+
+    if (stream->fp != NULL)             // Is indirect file open?
+    {
+        fclose(stream->fp);
+        
+        stream->fp  = NULL;
+        stream->eof = true;
+        stream->cr  = false;
+    }
+}
+
+
+///
 ///  @brief    Open indirect file.
 ///
 ///  @returns  Nothing.
@@ -129,52 +151,32 @@ bool read_indirect(void)
     }
 
     int c;
-
-    last_in = NUL;
+    bool esc_1 = false;
+    bool esc_2 = false;
 
     while ((c = fgetc(stream->fp)) != EOF)
     {
         store_buf(c);
 
-        if (c == ESC)                   // Escape?
+        if (c != ESC)
         {
-            if (last_in == ESC)         // Yes; 2nd in a row?
-            {
-                close_indirect();
-
-                return true;
-            }
+            esc_1 = esc_2 = false;
         }
-
-        last_in = c;
+        else
+        {
+            esc_2 = esc_1;
+            esc_1 = true;
+        }
     }        
 
     close_indirect();
 
-    return false;
-}
-
-
-///
-///  @brief    Close indirect file.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void close_indirect(void)
-{
-    struct ifile *stream = &ifiles[IFILE_INDIRECT];
-
-    if (stream->fp != NULL)             // Is indirect file open?
+    if (esc_1 && esc_2)                 // Did it end with <ESC><ESC>?
     {
-        fclose(stream->fp);
-        
-        stream->fp  = NULL;
-        stream->eof = true;
-        stream->cr  = false;
+        return true;                    // If so, execute it
+    }
+    else
+    {
+        return false;                   // Else wait until user terminates it
     }
 }
-
-
-    

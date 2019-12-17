@@ -30,7 +30,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "edit_buf.h"
+#include "textbuf.h"
 #include "exec.h"
 
 
@@ -58,7 +58,7 @@ void scan_ctrl_q(struct cmd *cmd)
         cmd->n_arg = 0;
     }
 
-    int nchrs = nchars_edit(n);
+    int nchrs = getdelta_tbuf(n);
     
     push_expr(nchrs, EXPR_VALUE);
 }

@@ -32,7 +32,7 @@
 #include <unistd.h>
 
 #include "teco.h"
-#include "edit_buf.h"
+#include "textbuf.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -63,7 +63,7 @@ void exec_EG(struct cmd *cmd)
     
     struct ofile *ofile = &ofiles[ostream];
 
-    if (ofile->fp == NULL && size_edit() != 0)
+    if (ofile->fp == NULL && getsize_tbuf() != 0)
     {
         print_err(E_NFO);               // No file for output
     }

@@ -35,6 +35,8 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "qreg.h"
+
 
 #define FF_LINES    40                  ///< No. of lines to print for FF
 
@@ -465,16 +467,6 @@ static int read_first(void)
         print_prompt();
 
         int c = getc_term((bool)WAIT);
-
-        if (f.ei.lf)                    // Need to skip LF?
-        {
-            f.ei.lf = false;
-
-            if (c == LF)                // Is this LF?
-            {
-                c = getc_term((bool)WAIT);    // Yes, get another character
-            }
-        }
 
         switch (c)
         {

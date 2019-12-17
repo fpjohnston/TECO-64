@@ -57,8 +57,14 @@ void scan_comma(struct cmd *cmd)
     // If we've seen a comma, then what's on the expression is an "m" argument,
     // not an "n" argument (numeric arguments can take the form m,n).
 
-    cmd->comma_set = true;
     cmd->m_arg = get_n_arg();
+
+    if (cmd->m_arg < 0)
+    {
+        print_err(E_NCA);               // No argument before comma
+    }
+
     cmd->m_set = true;                  // And say we have one
     cmd->n_set = false;                 // But forget about n argument
+    cmd->comma_set = true;
 }

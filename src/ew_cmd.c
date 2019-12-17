@@ -53,13 +53,6 @@ void exec_EW(struct cmd *cmd)
         return;
     }
 
-    FILE *fp = ofiles[ostream].fp;
-
-    if (fp != NULL)
-    {
-        print_err(E_OFO);               // Output file is already open
-    }
-
     if (open_output(&cmd->text1, NOBACKUP_FILE) == EXIT_FAILURE)
     {
         if (!cmd->colon_set)

@@ -124,7 +124,8 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
         }
         else
         {
-            cmd->c1 = (char)toupper(cmd->c2) - ('A' + 1);
+            cmd->c1 = (char)(toupper(cmd->c2) - 'A') + 1;
+            cmd->c2 = NUL;
 
             if (cmd->c1 <= NUL || cmd->c1 >= SPACE)
             {
@@ -323,14 +324,25 @@ exec_func *scan_pass1(struct cmd *cmd)
 
         return NULL;
     }
-    else if (strchr("EF^\x1E", toupper(cmd->c1)) != NULL)
+    else if (toupper(cmd->c1) == 'E' || toupper(cmd->c1) == 'F')
     {
-        cmd->c2 = (char)fetch_buf();
+        // Ex and Fx commands may have whitespace before the 'x'.
 
-        if (cmd->c1 == '^' && cmd->c2 == '^')
+        do
+        {
+            cmd->c2 = (char)fetch_buf();
+        } while (isspace(cmd->c2));
+    }
+    else if (cmd->c1 == '^')
+    {
+        if ((cmd->c2 = (char)fetch_buf()) == '^')
         {
             cmd->c3 = (char)fetch_buf();
         }
+    }
+    else if (cmd->c1 == '\x1E')
+    {
+        cmd->c2 = (char)fetch_buf();
     }
 
     const struct cmd_table *table = scan_cmd(cmd);
@@ -361,6 +373,11 @@ exec_func *scan_pass1(struct cmd *cmd)
         cmd->qreg = (char)c;            // Save the name
     }
 
+    if (table == NULL)
+    {
+        return NULL;
+    }
+
     if (table->scan != NULL)            // If we have anything to scan,
     {
         (*table->scan)(cmd);            //  then scan it
@@ -387,6 +404,7 @@ void scan_pass2(struct cmd *cmd)
 
     cmd->m_set = false;
     cmd->n_set = false;
+    cmd->h_set = false;
     cmd->colon_set = false;
     cmd->comma_set = false;
 
@@ -395,7 +413,15 @@ void scan_pass2(struct cmd *cmd)
         return;
     }
 
-    const char *p = cmd->expr.buf;
+    const char *p = cmd->expr.buf + cmd->expr.len;
+
+    while (isspace(*--p) && cmd->expr.len > 0)
+    {
+        --cmd->expr.len;
+    }
+
+    p = cmd->expr.buf;
+
     uint len = cmd->expr.len;
 
     while (len-- > 0)
@@ -482,9 +508,9 @@ void scan_pass2(struct cmd *cmd)
             cmd->qreg = (char)c;        // Save the name
         }
 
-        if (table->scan != NULL)        // If we have anything to scan,
+        if (table != NULL && table->scan != NULL)
         {
-            (*table->scan)(cmd);        //  then scan it
+            (*table->scan)(cmd);        // Scan it if we can
         }
     }
 }

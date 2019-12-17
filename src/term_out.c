@@ -144,36 +144,9 @@ bool help_command(void)
         return false;
     }
 
-    f.ei.lf = true;                     // Discard next chr. if LF
-
     putc_term(CRLF);
 
     print_err(E_NYI);                   // TODO: temporary!
-}
-
-
-///
-///  @brief    Print a character.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void print_callback(int c)
-{
-    if (f.et.image)
-    {
-        putc_term(c);
-    }
-    else
-    {
-        if (c == LF)
-        {
-            echo_chr(CR);
-        }
-
-        echo_chr(c);
-    }
 }
 
 
@@ -190,21 +163,18 @@ void print_cmd(struct cmd *cmd)
 
     // Here when we've parsed the entire command - now type it out.
 
-    printf("[%u,%u] %*s", ++ncommands, cmd->level, (int)cmd->level * 4, " ");
+    printf("[%5u] %*s", ++ncommands, (int)cmd->level * 4, " ");
     (void)fflush(stdout);
 
     if (cmd->expr.len != 0)
     {
         const char *p = cmd->expr.buf;
 
-        putc_term('{');
-
         while (p < cmd->expr.buf + cmd->expr.len)
         {
             echo_chr(*p++);
         }
 
-        putc_term('}');
         putc_term(SPACE);
     }
 
@@ -218,8 +188,6 @@ void print_cmd(struct cmd *cmd)
 
     if (cmd->colon_set || cmd->dcolon_set)
     {
-        putc_term('{');
-
         echo_chr(':');
 
         if (cmd->dcolon_set)
@@ -227,17 +195,13 @@ void print_cmd(struct cmd *cmd)
             echo_chr(':');
         }        
 
-        putc_term('}');
         putc_term(SPACE);
     }
 
     if (cmd->atsign_set)
     {
-        putc_term('{');
-
         echo_chr('@');
 
-        putc_term('}');
         putc_term(SPACE);
     }
 
@@ -270,17 +234,15 @@ void print_cmd(struct cmd *cmd)
         }
     }
 
-    putc_term(SPACE);
+//    putc_term(SPACE);
 
     if (cmd->text1.len != 0)
     {
         if (cmd->atsign_set)            // Conditionally echo delimiter before 1st arg.
         {
             echo_chr(cmd->delim);
-            putc_term(SPACE);
+//            putc_term(SPACE);
         }
-
-        putc_term('{');
 
         const char *p = cmd->text1.buf;
 
@@ -293,20 +255,20 @@ void print_cmd(struct cmd *cmd)
             ++p;
         }
 
-        putc_term('}');
-        putc_term(SPACE);
+//        putc_term(SPACE);
     }
 
-    if (cmd->text2.len != 0 || cmd->delim != ESC)
+    if (cmd->text2.len != 0) // || cmd->delim != ESC)
     {
-        echo_chr(cmd->delim);           // Echo delimiter between texts
-        putc_term(SPACE);
+        if (cmd->delim == ESC)
+            echo_chr('`');
+        else
+            echo_chr(cmd->delim);           // Echo delimiter between texts
+//        putc_term(SPACE);
     }
 
     if (cmd->text2.len != 0)
     {
-        putc_term('{');
-
         const char *p = cmd->text2.buf;
 
         while (p < cmd->text2.buf + cmd->text2.len)
@@ -318,12 +280,28 @@ void print_cmd(struct cmd *cmd)
             ++p;
         }
 
-        putc_term('}');
-        putc_term(SPACE);
+//        putc_term(SPACE);
 
-        if (cmd->delim != ESC)
+//        if (cmd->delim != ESC)
+//        {
+//            echo_chr(cmd->delim);       // Echo delimiter at end
+//        }
+    }
+
+    if (cmd->t1_opt || cmd->t2_opt)
+    {
+        if (cmd->c1 == CTRL_A || cmd->c1 == '!')
         {
-            echo_chr(cmd->delim);       // Echo delimiter at end
+            echo_chr(cmd->delim);
+        }
+        else
+        {
+            echo_chr('`');
+
+            if (cmd->text1.len == 0)
+            {
+                echo_chr('`');
+            }
         }
     }
 

@@ -31,7 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
-#include "edit_buf.h"
+#include "textbuf.h"
 #include "exec.h"
 
 
@@ -50,7 +50,7 @@ void exec_EC(struct cmd *cmd)
     {
         if (cmd->n_arg > 0)
         {
-            set_edit((uint)cmd->n_arg);
+            (void)setsize_tbuf((uint)cmd->n_arg);
         }
 
         return;
@@ -65,7 +65,7 @@ void exec_EC(struct cmd *cmd)
 
     if ((fp = ofile->fp) != NULL)
     {
-        while (next_page(v.B, size_edit(), v.ff, (bool)true))
+        while (next_page(B, getsize_tbuf(), v.ff, (bool)true))
         {
             ;
         }

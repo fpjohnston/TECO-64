@@ -44,5 +44,5 @@ void scan_B(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr((int)v.B, EXPR_VALUE);
+    push_expr(B, EXPR_VALUE);
 }

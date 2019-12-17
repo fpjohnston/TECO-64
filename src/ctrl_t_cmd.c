@@ -51,6 +51,8 @@ void exec_ctrl_t(struct cmd *cmd)
     assert(cmd != NULL);
     assert(cmd->n_set == true);
 
+    cmd->n_arg &= 0xFF;                 // Limit value to 8 bits
+
     if (cmd->colon_set || f.et.image)
     {
         putc_term(cmd->n_arg);

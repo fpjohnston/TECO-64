@@ -31,7 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
-#include "edit_buf.h"
+#include "textbuf.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -49,7 +49,11 @@ void exec_K(struct cmd *cmd)
 
     if (cmd->h_set)                     // HK?
     {
-        kill_edit();                    // Yes, kill the whole buffer
+        uint Z = getsize_tbuf();
+
+        setpos_tbuf(B);
+        
+        delete_tbuf((int)Z);            // Yes, kill the whole buffer
 
         return;
     }
@@ -66,22 +70,22 @@ void exec_K(struct cmd *cmd)
     {
         m = cmd->m_arg;
 
-        uint z = size_edit();
+        uint Z = getsize_tbuf();
 
-        if (m < 0 || (uint)m > z || n < 0 || (uint)n > z || m > n)
+        if (m < 0 || (uint)m > Z || n < 0 || (uint)n > Z || m > n)
         {
             print_err(E_POP);           // Pointer off page
         }
 
-        (void)jump_edit((uint)m);       // Go to first position
+        setpos_tbuf((uint)m);           // Go to first position
 
         n -= m;                         // And delete this many chars
     }
     else
     {
-        n = nchars_edit(n);
+        n = getdelta_tbuf(n);
     }
 
-    (void)delete_edit(n);
+    delete_tbuf(n);
 }
 

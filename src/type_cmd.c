@@ -1,6 +1,6 @@
 ///
-///  @file    t_cmd.c
-///  @brief   Execute T command.
+///  @file    type_cmd.c
+///  @brief   Execute T and V commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -31,9 +31,16 @@
 #include <string.h>
 
 #include "teco.h"
-#include "edit_buf.h"
+#include "ascii.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
+#include "textbuf.h"
+
+
+// Local functions
+
+static void exec_type(int m, int n);
 
 
 ///
@@ -47,37 +54,121 @@ void exec_T(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    uint dot = getpos_tbuf();
+    uint Z = getsize_tbuf();
+    int m;
+    int n;
+
     if (cmd->h_set)
     {
-        uint Z = size_edit();
-
-        (void)type_edit(v.B, Z, print_callback);
+        m = -(int)dot;
+        n = (int)(Z - dot);
     }
     else if (cmd->m_set && cmd->n_set)
     {
-        if (!type_edit((uint)cmd->m_arg, (uint)cmd->n_arg, print_callback))
+        if ((uint)cmd->m_arg > Z || (uint)cmd->n_arg > Z)
         {
             print_err(E_POP);           // Pointer off page
         }
+
+        if (cmd->m_arg > cmd->n_arg)
+        {
+            return;
+        }
+
+        m = cmd->m_arg - (int)dot;
+        n = cmd->n_arg - (int)dot;
     }
     else if (cmd->n_set)
     {
         if (cmd->n_arg == 0)
         {
-            print_edit(0, -1, print_callback);
+            m = getdelta_tbuf(0);
+            n = 0;
         }
         else if (cmd->n_arg < 0)
         {
-            print_edit(-cmd->n_arg, -1, print_callback);
+            m = getdelta_tbuf(cmd->n_arg);
+            n = 0;
         }
         else
         {
-            print_edit(-1, cmd->n_arg, print_callback);
+            m = 0;
+            n = getdelta_tbuf(cmd->n_arg);
         }
     }
     else
     {
-        print_edit(-1, 1, print_callback);
+        m = 0;
+        n = getdelta_tbuf(1);
+    }
+
+    exec_type(m, n);
+}
+
+
+///
+///  @brief    Execute type command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_type(int m, int n)
+{
+    for (int i = m; i < n; ++i)
+    {
+        int c = getchar_tbuf(i);
+
+        if (f.et.image)
+        {
+            putc_term(c);
+        }
+        else
+        {
+            if (c == LF)
+            {
+                echo_chr(CR);
+            }
+
+            echo_chr(c);
+        }
     }
 }
 
+
+///
+///  @brief    Execute V command: type line(s).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_V(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int m;
+    int n;
+
+    if (cmd->n_set)
+    {
+        if (cmd->m_set)
+        {
+            m = getdelta_tbuf(1 - cmd->m_arg);
+            n = getdelta_tbuf(cmd->n_arg - 1);
+        }
+        else
+        {
+            m = getdelta_tbuf(1 - cmd->n_arg);
+            n = getdelta_tbuf(cmd->n_arg);
+        }
+    }
+    else
+    {
+        m = getdelta_tbuf(0);
+        n = getdelta_tbuf(1);
+    }
+
+    exec_type(m, n);
+}

@@ -1,6 +1,6 @@
 ///
-///  @file    buffer.c
-///  @brief   Buffer-handling functions.
+///  @file    cmd_buf.c
+///  @brief   Command buffer-handling functions.
 ///
 ///  @bug     No known bugs.
 ///

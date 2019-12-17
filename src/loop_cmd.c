@@ -1,6 +1,6 @@
 ///
-///  @file    v_cmd.c
-///  @brief   Execute V command.
+///  @file    loop_cmd.c
+///  @brief   Execute loop command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -28,38 +28,54 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "edit_buf.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute V command: type line(s).
+///  @brief    Execute < (left angle bracket) command: start iteration.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_V(struct cmd *cmd)
+void exec_F_lt(struct cmd *unused1)
 {
-    assert(cmd != NULL);
+    printf("%s() not yet completed\r\n", __func__);
+    (void)fflush(stdout);
 
-    if (cmd->n_set)
-    {
-        if (cmd->m_set)
-        {
-            print_edit(cmd->m_arg - 1, cmd->n_arg - 1, print_callback);
-        }
-        else
-        {
-            print_edit(cmd->n_arg - 1, cmd->n_arg, print_callback);
-        }
-    }
-    else
-    {
-        print_edit(0, 1, print_callback);
-    }
+    return;
 }
 
+
+///
+///  @brief    Execute > (right angle bracket) command: end iteration.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_F_gt(struct cmd *unused1)
+{
+    printf("%s() not yet completed\r\n", __func__);
+    (void)fflush(stdout);
+
+    return;
+}
+
+
+///
+///  @brief    Execute ; (semi-colon) command: exit iteration.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_semi(struct cmd *unused1)
+{
+    printf("%s() not yet completed\r\n", __func__);
+    (void)fflush(stdout);
+
+    return;
+}

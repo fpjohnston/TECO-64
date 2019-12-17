@@ -30,7 +30,9 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "errors.h"
 #include "exec.h"
+#include "qreg.h"
 
 
 ///
@@ -46,7 +48,7 @@ void exec_U(struct cmd *cmd)
 
     if (!cmd->n_set)                    // n argument?
     {
-        cmd->n_arg = 0;                 // TODO: is this correct?
+        print_err(E_NAU);               // No argument before U
     }
 
     store_qnum(cmd->qreg, cmd->qlocal, cmd->n_arg);
