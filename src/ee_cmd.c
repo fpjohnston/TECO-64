@@ -63,9 +63,8 @@ void scan_EE(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // nEE`?
+    if (pop_expr(&cmd->n_arg))          // nEE`?
     {
-        cmd->n_arg = get_n_arg();
         cmd->n_set = true;
         
         scan_state = SCAN_DONE;

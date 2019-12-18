@@ -54,9 +54,9 @@ void scan_pct(struct cmd *cmd)
         return;
     }
 
-    if (operand_expr())                 // n%q`?
+    if (pop_expr(&cmd->n_arg))          // n%q`?
     {
-        n = get_n_arg();
+        cmd->n_set = true;
     }
 
     n += get_qnum(cmd->qreg, cmd->qlocal);

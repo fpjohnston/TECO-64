@@ -80,7 +80,7 @@ void scan_ctrl_t(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // n argument?
+    if (pop_expr(NULL))                 // n argument?
     {
         scan_state = SCAN_DONE;
     }

@@ -247,7 +247,7 @@ static void finish_cmd(struct cmd *cmd, exec_func *exec)
 
     cmd->level = level;
 
-    if (pop_expr(&cmd->n_arg))          // Pass through n to next command?
+    if (pop_expr(&cmd->n_arg))      // Pass through n to next command?
     {
         cmd->n_set = true;
     }

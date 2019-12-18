@@ -62,14 +62,16 @@ void scan_back(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // n\`?
+    int n;
+
+    if (pop_expr(&n))                   // n\`?
     {
         scan_state = SCAN_DONE;
+
+        push_expr(n, EXPR_VALUE);       // TODO: is this correct?
     }
     else
     {
-        int n;
-
         if (scan_state != SCAN_DONE)
         {
             n = 0;

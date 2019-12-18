@@ -50,6 +50,36 @@ static bool reduce3(void);
 
 
 ///
+///  @brief    Handle numeric argument from expression stack. We check to see
+///            if there's something on the stack, and that the top element is
+///            an operand. If so, we pop it off and return it whenever someone
+///            needs a numeric value.
+///
+///  @returns  Value of argument (if error, returns to main loop).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int get_n_arg(void)
+{
+    assert(estack.level > 0);           // Caller should check before calling
+
+    --estack.level;
+
+    if (estack.level == 0 && estack.obj[estack.level].type == EXPR_MINUS)
+    {
+        return -1;
+    }
+
+    if (estack.obj[estack.level].type != EXPR_VALUE)
+    {
+        print_err(E_IFE);               // Ill-formed numeric expression
+    }
+
+    return (int)estack.obj[estack.level].value;
+}
+
+
+///
 ///  @brief    Initialize expression stack.
 ///
 ///  @returns  Nothing.
@@ -75,13 +105,8 @@ void init_expr(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool pop_expr(int *operand)
+bool operand_expr(void)
 {
-    if (operand != NULL)
-    {
-        *operand = 0;
-    }
-
     if (estack.level == 0)              // Anything on stack?
     {
         return false;                   // No
@@ -89,37 +114,18 @@ bool pop_expr(int *operand)
 
     if (estack.obj[estack.level - 1].type == EXPR_VALUE)
     {
-        if (operand != NULL)
-        {
-            *operand = (int)estack.obj[--estack.level].value;
-        }
+        return true;                    // Done if we have an operand
+    }
 
+    // Say we have an "operand" if there is only one thing on the stack, and
+    // it's a unary operator.
+
+    if (estack.level == 1
+        && estack.obj[0].type == EXPR_VALUE
+        && estack.obj[0].value == '-')
+    {
         return true;
     }
-
-    // A leading minus sign without a previous operand is treated as -1;
-    // any other leading operator is an error.
-
-    if (estack.level == 1)
-    {
-        if (estack.obj[estack.level - 1].type == EXPR_MINUS)
-        {
-            --estack.level;
-
-            if (operand != NULL)
-            {
-                *operand = -1;
-            }
-
-            return true;
-        }
-        else if (estack.obj[estack.level - 1].type != EXPR_VALUE)
-        {
-            print_err(E_IFE);           // Ill-formed numeric expression
-        }
-    }
-
-    // Here if we have a partial expression with no operand on top
 
     return false;
 }

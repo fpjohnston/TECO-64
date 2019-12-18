@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_x_cmd.c
-///  @brief   Execute ^X (CTRL/X) command.
+///  @file    ee_cmd.c
+///  @brief   Process TECO EE command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,49 +26,57 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "teco.h"
+#include "errors.h"
+#include "eflags.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
+///  @brief    Execute EE command: set alternate delimiter.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(struct cmd *cmd)
+void exec_EE(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    assert(cmd->n_set == true);
 
-    if (cmd->n_set)                     // n argument?
-    {
-        v.ctrl_x = cmd->n_arg;
-    }
+    f.ee = cmd->n_arg;
 }
 
 
 ///
-///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
+///  @brief    Scan EE command: read alternate delimiter.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_x(struct cmd *cmd)
+void scan_EE(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(NULL))                 // n^X
+    if (pop_expr(&cmd->n_arg))      // nEE`?
     {
+        cmd->n_set = true;
+        
         scan_state = SCAN_DONE;
+
+        if (!isascii(cmd->n_arg))       // Must be an ASCII character
+        {
+            print_err(E_CHR);           // Invalid character for command
+        }
     }
     else
     {
-        push_expr(v.ctrl_x, EXPR_VALUE);
+        push_expr(f.ee, EXPR_VALUE);
     }
 }
 

@@ -42,23 +42,13 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_q(struct cmd *cmd)
+void scan_ctrl_q(struct cmd *unused1)
 {
-    assert(cmd != NULL);
+    int nlines;
+    
+    (void)pop_expr(&nlines);
 
-    int n = cmd->n_arg;
-
-    if (operand_expr())
-    {
-        cmd->n_set = true;
-        cmd->n_arg = get_n_arg();
-    }
-    else
-    {
-        cmd->n_arg = 0;
-    }
-
-    int nchrs = getdelta_tbuf(n);
+    int nchrs = getdelta_tbuf(nlines);
     
     push_expr(nchrs, EXPR_VALUE);
 }

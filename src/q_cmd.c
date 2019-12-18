@@ -54,9 +54,8 @@ void scan_Q(struct cmd *cmd)
     }
     else
     {
-        if (operand_expr())                 // nQq
+        if (pop_expr(&n))                   // nQq
         {
-            n = get_n_arg();
             n = get_qchr(cmd->qreg, cmd->qlocal, n);
         }
         else if (cmd->colon_set)            // :Qq

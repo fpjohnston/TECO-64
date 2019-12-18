@@ -43,9 +43,8 @@ void get_flag(struct cmd *cmd, uint flag)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // n argument?
+    if (pop_expr(&cmd->n_arg))          // n argument?
     {
-        cmd->n_arg = get_n_arg();
         cmd->n_set = true;
 
         scan_state = SCAN_DONE;

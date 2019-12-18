@@ -68,7 +68,7 @@ void scan_ctrl_r(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // n^R?
+    if (pop_expr(NULL))                 // n^R?
     {
         scan_state = SCAN_DONE;         // Yes, scan is done
     }

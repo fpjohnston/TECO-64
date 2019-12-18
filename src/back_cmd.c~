@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_x_cmd.c
-///  @brief   Execute ^X (CTRL/X) command.
+///  @file    back_cmd.c
+///  @brief   Execute \ (backslash) command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -34,41 +34,55 @@
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
+///  @brief    Execute \ (backslash) command: insert a digit string into buffer.
 ///
-///  @returns  Nothing.
+///  @returns  nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(struct cmd *cmd)
+void exec_back(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
     if (cmd->n_set)                     // n argument?
     {
-        v.ctrl_x = cmd->n_arg;
+        // TODO: convert n to string using current radix and insert into buffer.
     }
 }
 
 
 ///
-///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
+///  @brief    Scan \ (backslash) command: read digit string.
 ///
-///  @returns  Nothing.
+///  @returns  nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_x(struct cmd *cmd)
+void scan_back(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(NULL))                 // n^X
+    int n;
+
+    if (pop_expr(&n))               // n\`?
     {
         scan_state = SCAN_DONE;
+
+        push_expr(n, EXPR_VALUE);       // TODO: is this correct?
     }
     else
     {
-        push_expr(v.ctrl_x, EXPR_VALUE);
+        if (scan_state != SCAN_DONE)
+        {
+            n = 0;
+        }
+        else
+        {
+            // TODO: read digit string in buffer using current radix.
+
+            n = 0;
+        }
+
+        push_expr(n, EXPR_VALUE);
     }
 }
-

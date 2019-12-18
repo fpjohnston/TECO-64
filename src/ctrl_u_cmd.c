@@ -47,9 +47,8 @@ void exec_ctrl_u(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // n^Uq`?
+    if (pop_expr(&cmd->n_arg))          // n^Uq`?
     {
-        cmd->n_arg = get_n_arg();
         cmd->n_set = true;
 
         if (cmd->text1.len != 0)        // Does it have a text string?

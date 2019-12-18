@@ -47,10 +47,8 @@ void scan_ctrl_f(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // n^F specified?
+    if (pop_expr(&cmd->n_arg))          // n^F specified?
     {
-        (void)get_n_arg();              // Yes, just ignore it
-
         if (f.ei.strict)
         {
             print_err(E_T10);           // TECO-10 command not implemented.

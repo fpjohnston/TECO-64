@@ -190,18 +190,20 @@ void scan_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n;
-
-    if (pop_expr(&n))
+    if (operand_expr())
     {
         if (scan_state == SCAN_DONE)
         {
+            int n = get_n_arg();
+
             n = getchar_tbuf(n);
 
             push_expr(n, EXPR_VALUE);
         }
         else
         {
+            (void)get_n_arg();
+
             push_expr(DUMMY_VALUE, EXPR_VALUE);
         }
     }

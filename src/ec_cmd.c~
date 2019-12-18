@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_x_cmd.c
-///  @brief   Execute ^X (CTRL/X) command.
+///  @file    ec_cmd.c
+///  @brief   Execute EC command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -28,47 +28,85 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
+#include "textbuf.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
+///  @brief    Execute EC command: copy input to output and close file.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(struct cmd *cmd)
+void exec_EC(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // n argument?
+    if (cmd->n_set)                     // nEC?
     {
-        v.ctrl_x = cmd->n_arg;
+        if (cmd->n_arg > 0)
+        {
+            (void)setsize_tbuf((uint)cmd->n_arg);
+        }
+
+        return;
     }
+
+    FILE *fp;
+    struct ifile *ifile = &ifiles[istream];
+    struct ofile *ofile = &ofiles[ostream];
+
+    // Note that we call size_edit() for every call to next_page() because the
+    // size of the edit buffer can change every time we read in another page.
+
+    if ((fp = ofile->fp) != NULL)
+    {
+        while (next_page(B, getsize_tbuf(), v.ff, (bool)true))
+        {
+            ;
+        }
+
+        fclose(fp);
+
+        ofile->fp = NULL;
+    }
+
+    rename_output(ofile);              // Handle any required file renaming
+
+    free_mem(&ofile->temp);
+    free_mem(&ofile->name);
+    
+    if ((fp = ifile->fp) != NULL)
+    {
+        fclose(fp);
+
+        ifile->fp = NULL;
+    }
+
+    ifile->eof = true;
+    ifile->cr  = false;
 }
 
 
 ///
-///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
+///  @brief    Scan nEC command: reserved for TECO-10, so error.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_x(struct cmd *cmd)
+void scan_EC(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(NULL))                 // n^X
+    if (pop_expr(&cmd->n_arg))      // Was it nEC?
     {
-        scan_state = SCAN_DONE;
+        cmd->n_set = true;
     }
-    else
-    {
-        push_expr(v.ctrl_x, EXPR_VALUE);
-    }
-}
 
+    scan_state = SCAN_DONE;
+}

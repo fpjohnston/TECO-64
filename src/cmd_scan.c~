@@ -275,7 +275,7 @@ void scan_operator(struct cmd *cmd)
         {
             print_err(E_MLP);           // Missing left parenthesis
         }
-        else if (!pop_expr(NULL))       // Is there an operand available?
+        else if (!pop_expr(NULL))   // Is there an operand available?
         {
             print_err(E_NAP);           // No argument before )
         }

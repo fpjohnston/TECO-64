@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_x_cmd.c
-///  @brief   Execute ^X (CTRL/X) command.
+///  @file    w_cmd.c
+///  @brief   Execute W command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -34,41 +34,49 @@
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
+///  @brief    Execute W command: process window functions.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(struct cmd *cmd)
+void exec_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // n argument?
-    {
-        v.ctrl_x = cmd->n_arg;
-    }
+    // TODO: finish window command handling
 }
 
 
 ///
-///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
+///  @brief    Scan W command: process window functions.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_x(struct cmd *cmd)
+void scan_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(NULL))                 // n^X
-    {
-        scan_state = SCAN_DONE;
-    }
-    else
-    {
-        push_expr(v.ctrl_x, EXPR_VALUE);
-    }
-}
+    int n;
 
+    if (!pop_expr(&n))              // W by itself does nothing
+    {
+        // TODO: error?
+        return;
+    }
+
+    if (cmd->colon_set)                 // n:W returns a value
+    {
+        push_expr(DUMMY_VALUE, EXPR_VALUE);
+
+        return;
+    }
+
+    // Here for nW - send value to exec function.
+
+    push_expr(n, EXPR_VALUE);
+
+    scan_state = SCAN_DONE;
+}

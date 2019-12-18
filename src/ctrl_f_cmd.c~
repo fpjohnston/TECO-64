@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_x_cmd.c
-///  @brief   Execute ^X (CTRL/X) command.
+///  @file    ctrl_f_cmd.c
+///  @brief   Execute ^F (CTRL/F) command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -30,45 +30,31 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
+#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
+///  @brief    Scan ^F (CTRL/F) command: return value of console switch
+///            register, or terminal number of specified job.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(struct cmd *cmd)
+void scan_ctrl_f(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // n argument?
+    if (pop_expr(&cmd->n_arg))      // n^F specified?
     {
-        v.ctrl_x = cmd->n_arg;
+        if (f.ei.strict)
+        {
+            print_err(E_T10);           // TECO-10 command not implemented.
+        }
     }
-}
 
-
-///
-///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_ctrl_x(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (pop_expr(NULL))                 // n^X
-    {
-        scan_state = SCAN_DONE;
-    }
-    else
-    {
-        push_expr(v.ctrl_x, EXPR_VALUE);
-    }
+    push_expr(0, EXPR_VALUE);           // Value is always 0 for now
 }
 

@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_x_cmd.c
-///  @brief   Execute ^X (CTRL/X) command.
+///  @file    ctrl_q_cmd.c
+///  @brief   Execute ^Q (CTRL/Q) command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -30,45 +30,25 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "textbuf.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
+///  @brief    Scan ^Q (CTRL/Q) command: get no. of characters between dot and
+///            nth line terminator. n may be negative.
 ///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctrl_x(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->n_set)                     // n argument?
-    {
-        v.ctrl_x = cmd->n_arg;
-    }
-}
-
-
-///
-///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
-///
-///  @returns  Nothing.
+///  @returns  nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_x(struct cmd *cmd)
+void scan_ctrl_q(struct cmd *unused1)
 {
-    assert(cmd != NULL);
+    int nlines = 0;
+    
+    operand_expr(&nlines);
 
-    if (pop_expr(NULL))                 // n^X
-    {
-        scan_state = SCAN_DONE;
-    }
-    else
-    {
-        push_expr(v.ctrl_x, EXPR_VALUE);
-    }
+    int nchrs = getdelta_tbuf(nlines);
+    
+    push_expr(nchrs, EXPR_VALUE);
 }
-

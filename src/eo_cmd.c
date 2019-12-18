@@ -45,7 +45,7 @@ void scan_EO(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (operand_expr())                 // nEO?
+    if (pop_expr(NULL))                 // nEO?
     {
         print_err(E_NYI);               // Yes, we don't do that (yet).
     }

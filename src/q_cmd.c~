@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_x_cmd.c
-///  @brief   Execute ^X (CTRL/X) command.
+///  @file    q_cmd.c
+///  @brief   Execute Q command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -31,44 +31,43 @@
 
 #include "teco.h"
 #include "exec.h"
+#include "qreg.h"
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctrl_x(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->n_set)                     // n argument?
-    {
-        v.ctrl_x = cmd->n_arg;
-    }
-}
-
-
-///
-///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
+///  @brief    Scan Q command: return numeric value of Q-register, or size of
+///            text string.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_x(struct cmd *cmd)
+void scan_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(NULL))                 // n^X
+    int n;
+
+    if (scan_state != SCAN_DONE)
     {
-        scan_state = SCAN_DONE;
+        n = DUMMY_VALUE;
     }
     else
     {
-        push_expr(v.ctrl_x, EXPR_VALUE);
-    }
+        if (pop_expr(&n))               // nQq
+        {
+            n = get_qchr(cmd->qreg, cmd->qlocal, n);
+        }
+        else if (cmd->colon_set)            // :Qq
+        {
+            n = (int)get_qsize(cmd->qreg, cmd->qlocal);
+        }
+        else                                // Qq
+        {
+            n = get_qnum(cmd->qreg, cmd->qlocal);
+        }
+    }        
+
+    push_expr(n, EXPR_VALUE);
 }
 

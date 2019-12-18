@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_x_cmd.c
-///  @brief   Execute ^X (CTRL/X) command.
+///  @file    eu_cmd.c
+///  @brief   Execute TECO EU command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,49 +26,50 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
+///  @brief    Execute EU command: set upper/lower case flag.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(struct cmd *cmd)
+void exec_EU(struct cmd *cmd)
 {
     assert(cmd != NULL);
-
-    if (cmd->n_set)                     // n argument?
-    {
-        v.ctrl_x = cmd->n_arg;
-    }
+    assert(cmd->n_set == true);
+    
+    f.eu = cmd->n_arg;
 }
 
 
 ///
-///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
+///  @brief    Scan EU command: read upper/lower case flag.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_x(struct cmd *cmd)
+void scan_EU(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(NULL))                 // n^X
+    if (operand_expr())
     {
+        cmd->n_arg = get_n_arg();
+        cmd->n_set = true;
+
         scan_state = SCAN_DONE;
     }
     else
     {
-        push_expr(v.ctrl_x, EXPR_VALUE);
+        push_expr(f.eu, EXPR_VALUE);
     }
 }
 

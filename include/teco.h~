@@ -272,9 +272,11 @@ extern void read_cmd(void);
 
 // Functions that access the expression stack
 
+extern int get_n_arg(void);
+
 extern void init_expr(void);
 
-extern bool pop_expr(int *operand);
+extern bool operand_expr(void);
 
 extern void push_expr(int c, enum expr_type type);
 

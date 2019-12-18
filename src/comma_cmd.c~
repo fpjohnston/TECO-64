@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_x_cmd.c
-///  @brief   Execute ^X (CTRL/X) command.
+///  @file    comma_cmd.c
+///  @brief   Process comma argument separator.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,49 +26,46 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "teco.h"
+#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
+///  @brief    Process "," (comma argument separator).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(struct cmd *cmd)
+void scan_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);
-
-    if (cmd->n_set)                     // n argument?
+    
+    if (cmd->comma_set || cmd->h_set)   // Already seen comma or H?
     {
-        v.ctrl_x = cmd->n_arg;
+        print_err(E_ARG);               // Invalid arguments
     }
+
+    if (!pop_expr(&cmd->m_arg))     // Any n argument specified?
+    {
+        print_err(E_NAC);               // No argument before ,
+    }
+
+    // If we've seen a comma, then what's on the expression is an "m" argument,
+    // not an "n" argument (numeric arguments can take the form m,n).
+
+    if (cmd->m_arg < 0)
+    {
+        if (scan_state == SCAN_DONE && !teco_debug)
+        {
+            print_err(E_NCA);           // Negative argument to ,
+        }
+    }
+
+    cmd->m_set = true;                  // And say we have one
+    cmd->n_set = false;                 // But forget about n argument
+    cmd->comma_set = true;
 }
-
-
-///
-///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_ctrl_x(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (pop_expr(NULL))                 // n^X
-    {
-        scan_state = SCAN_DONE;
-    }
-    else
-    {
-        push_expr(v.ctrl_x, EXPR_VALUE);
-    }
-}
-

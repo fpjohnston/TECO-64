@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_x_cmd.c
-///  @brief   Execute ^X (CTRL/X) command.
+///  @file    get_flag.c
+///  @brief   Get and set flag values.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,7 +26,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "teco.h"
@@ -34,41 +33,59 @@
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
+///  @brief    Get specified mode control flag
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(struct cmd *cmd)
+void get_flag(struct cmd *cmd, uint flag)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // n argument?
+    if (pop_expr(&cmd->n_arg))      // n argument?
     {
-        v.ctrl_x = cmd->n_arg;
-    }
-}
+        cmd->n_set = true;
 
-
-///
-///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_ctrl_x(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (pop_expr(NULL))                 // n^X
-    {
         scan_state = SCAN_DONE;
     }
     else
     {
-        push_expr(v.ctrl_x, EXPR_VALUE);
+        push_expr((int)flag, EXPR_VALUE); // Assume we're an operand
     }
 }
 
+
+///
+///  @brief    Set specified mode control flag. The possible flags are ED, EH,
+///            and ET.
+///
+///  @returns  New value of flag.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint set_flag(struct cmd *cmd, uint flag)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)
+    {
+        if (!cmd->m_set)                // m argument too?
+        {
+            flag = (uint)cmd->n_arg;    // No, so just set flag
+        }
+        else                            // Both m and n were specified
+        {
+            if (cmd->m_arg != 0)
+            {
+                flag &= ~(uint)cmd->m_arg; // Turn off m bits
+            }
+            if (cmd->n_arg != 0)
+            {
+                flag |= (uint)cmd->n_arg; // Turn on n bits
+            }
+        }
+    }
+
+    return flag;
+}

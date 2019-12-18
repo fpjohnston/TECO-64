@@ -62,7 +62,7 @@ void scan_ctrl_x(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(NULL))                 // n^X
+    if (pop_expr(NULL))             // n^X
     {
         scan_state = SCAN_DONE;
     }

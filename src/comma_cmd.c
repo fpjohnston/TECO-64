@@ -49,7 +49,7 @@ void scan_comma(struct cmd *cmd)
         print_err(E_ARG);               // Invalid arguments
     }
 
-    if (!operand_expr())                // Any n argument specified?
+    if (!pop_expr(&cmd->m_arg))         // Any n argument specified?
     {
         print_err(E_NAC);               // No argument before ,
     }
@@ -57,11 +57,12 @@ void scan_comma(struct cmd *cmd)
     // If we've seen a comma, then what's on the expression is an "m" argument,
     // not an "n" argument (numeric arguments can take the form m,n).
 
-    cmd->m_arg = get_n_arg();
-
     if (cmd->m_arg < 0)
     {
-        print_err(E_NCA);               // No argument before comma
+        if (scan_state == SCAN_DONE && !teco_debug)
+        {
+            print_err(E_NCA);           // Negative argument to ,
+        }
     }
 
     cmd->m_set = true;                  // And say we have one

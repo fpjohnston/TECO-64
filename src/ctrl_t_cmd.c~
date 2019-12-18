@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_x_cmd.c
-///  @brief   Execute ^X (CTRL/X) command.
+///  @file    ctrl_t_cmd.c
+///  @brief   Execute ^T (CTRL/T) command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -30,45 +30,77 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute ^X (CTRL/X) command: set value of search mode flag.
+///  @brief    Execute n^T (CTRL/T) command.
+///
+///              ^T  Read and decode next character typed.
+///              ^T= Type ASCII value of next character.
+///             n^T  Type ASCII character of value n.
+///            n:^T  Output binary byte of value n.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(struct cmd *cmd)
+void exec_ctrl_t(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    assert(cmd->n_set == true);
 
-    if (cmd->n_set)                     // n argument?
+    cmd->n_arg &= 0xFF;                 // Limit value to 8 bits
+
+    if (cmd->colon_set || f.et.image)
     {
-        v.ctrl_x = cmd->n_arg;
+        putc_term(cmd->n_arg);
+    }
+    else
+    {
+        echo_chr(cmd->n_arg);
     }
 }
 
 
 ///
-///  @brief    Scan ^X (CTRL/X) command: read value of search mode flag.
+///  @brief    Scan ^T (CTRL/T) command.
+///
+///              ^T  Read and decode next character typed.
+///              ^T= Type ASCII value of next character.
+///             n^T  Type ASCII character of value n.
+///            n:^T  Output binary byte of value n.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_x(struct cmd *cmd)
+void scan_ctrl_t(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(NULL))                 // n^X
+    if (pop_expr(NULL))             // n argument?
     {
         scan_state = SCAN_DONE;
     }
+    else if (scan_state != SCAN_DONE)
+    {
+        push_expr(DUMMY_VALUE, EXPR_VALUE);
+    }
     else
     {
-        push_expr(v.ctrl_x, EXPR_VALUE);
+        bool wait = f.et.nowait ? false : true;
+        int c = getc_term(wait);
+
+        // TODO: check for CTRL/C?
+
+        if (!f.et.noecho)
+        {
+            echo_chr(c);
+        }
+
+        push_expr(c, EXPR_VALUE);
     }
 }
 

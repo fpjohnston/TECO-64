@@ -59,13 +59,13 @@ void scan_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!operand_expr())                // W by itself does nothing
+    int n;
+
+    if (!pop_expr(&n))                  // W by itself does nothing
     {
         // TODO: error?
         return;
     }
-
-    int n = get_n_arg();
 
     if (cmd->colon_set)                 // n:W returns a value
     {
