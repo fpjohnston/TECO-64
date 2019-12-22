@@ -163,7 +163,9 @@ void print_cmd(struct cmd *cmd)
 
     // Here when we've parsed the entire command - now type it out.
 
-    printf("[%5u] %*s", ++ncommands, (int)cmd->level * 4, " ");
+    uint nbytes = 0;
+    
+    nbytes += printf("%*s", (int)cmd->level * 4, "");
     (void)fflush(stdout);
 
     if (cmd->expr.len != 0)
@@ -173,15 +175,18 @@ void print_cmd(struct cmd *cmd)
         while (p < cmd->expr.buf + cmd->expr.len)
         {
             echo_chr(*p++);
+            ++nbytes;
         }
 
         putc_term(SPACE);
+        ++nbytes;
     }
 
     if (cmd->c1 == ESC)
     {
         echo_chr('$');
         putc_term(CRLF);
+        nbytes += 3;
 
         return;
     }
@@ -189,31 +194,33 @@ void print_cmd(struct cmd *cmd)
     if (cmd->colon_set || cmd->dcolon_set)
     {
         echo_chr(':');
+        ++nbytes;
 
         if (cmd->dcolon_set)
         {
             echo_chr(':');
+            ++nbytes;
         }        
-
-        putc_term(SPACE);
     }
 
     if (cmd->atsign_set)
     {
         echo_chr('@');
-
-        putc_term(SPACE);
+        ++nbytes;
     }
 
     echo_chr(cmd->c1);
+    ++nbytes;
 
     if (cmd->c2 != NUL)
     {
         echo_chr(cmd->c2);
+        ++nbytes;
 
         if (cmd->c3 != NUL)
         {
             echo_chr(cmd->c3);
+            ++nbytes;
         }
     }
 
@@ -222,26 +229,27 @@ void print_cmd(struct cmd *cmd)
         if (cmd->qlocal)                // Yes, is it local?
         {
             echo_chr('.');
+            ++nbytes;
         }
 
         if (isprint(cmd->qreg))
         {
             echo_chr(cmd->qreg);
+            ++nbytes;
         }
         else
         {
             echo_chr('?');
+            ++nbytes;
         }
     }
-
-//    putc_term(SPACE);
 
     if (cmd->text1.len != 0)
     {
         if (cmd->atsign_set)            // Conditionally echo delimiter before 1st arg.
         {
             echo_chr(cmd->delim);
-//            putc_term(SPACE);
+            ++nbytes;
         }
 
         const char *p = cmd->text1.buf;
@@ -251,20 +259,16 @@ void print_cmd(struct cmd *cmd)
             if (isprint(*p) || toupper(cmd->c1) == 'I' || cmd->c1 == TAB)
             {
                 echo_chr(*p);
+                ++nbytes;
             }
             ++p;
         }
-
-//        putc_term(SPACE);
     }
 
-    if (cmd->text2.len != 0) // || cmd->delim != ESC)
+    if (cmd->text2.len != 0)
     {
-        if (cmd->delim == ESC)
-            echo_chr('`');
-        else
-            echo_chr(cmd->delim);           // Echo delimiter between texts
-//        putc_term(SPACE);
+        echo_chr(cmd->delim);
+        ++nbytes;
     }
 
     if (cmd->text2.len != 0)
@@ -276,34 +280,76 @@ void print_cmd(struct cmd *cmd)
             if (isprint(*p))
             {
                 echo_chr(*p);
+                ++nbytes;
             }
             ++p;
         }
-
-//        putc_term(SPACE);
-
-//        if (cmd->delim != ESC)
-//        {
-//            echo_chr(cmd->delim);       // Echo delimiter at end
-//        }
     }
 
     if (cmd->t1_opt || cmd->t2_opt)
     {
-        if (cmd->c1 == CTRL_A || cmd->c1 == '!')
+        echo_chr(cmd->delim);
+        ++nbytes;
+
+        if (cmd->c1 != CTRL_A && cmd->c1 != '!' && cmd->text1.len == 0)
         {
             echo_chr(cmd->delim);
-        }
-        else
-        {
-            echo_chr('`');
-
-            if (cmd->text1.len == 0)
-            {
-                echo_chr('`');
-            }
+            ++nbytes;
         }
     }
 
-    putc_term(CRLF);
+    if (nbytes > 70)
+    {
+        nbytes = 70;
+    }
+
+    printf("%*s ! %u, ", 70 - nbytes, " ", ++ncommands);
+    (void)fflush(stdout);
+
+    if (cmd->c1 == CTRL_U || toupper(cmd->c1) == 'X')
+    {
+        if (cmd->colon_set)
+        {
+            echo_chr(':');
+        }
+    }
+
+    if (cmd->c1 != NUL)
+    {
+        echo_chr(cmd->c1);
+    }
+
+    if (cmd->c2 != NUL)
+    {
+        echo_chr(cmd->c2);
+    }
+    
+    if (cmd->c3 != NUL)
+    {
+        echo_chr(cmd->c3);
+    }
+
+    if (cmd->text1.len == 0 && toupper(cmd->c1) == 'E')
+    {
+        if (toupper(cmd->c2) == 'N' || toupper(cmd->c2) == 'R' ||
+            toupper(cmd->c2) == 'W')
+        {
+            printf("`");
+        }
+    }
+
+    printf(", ");
+
+    if (cmd->q_req)
+    {
+        printf("%s%c", cmd->qlocal ? "." : "", cmd->qreg);
+    }
+    else if (toupper(cmd->c1) == 'O')
+    {
+        printf("%.*s", cmd->text1.len, cmd->text1.buf);
+    }
+
+    printf(" !\r\n");
+
+    (void)fflush(stdout);
 }

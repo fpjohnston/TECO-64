@@ -59,7 +59,7 @@ void exec_cmd(void)
 {
     struct cmd cmd = null_cmd;
 
-    scan_state = SCAN_NULL;
+    scan_state = SCAN_PASS1;
 
     // Loop for all characters in command string.
 
@@ -106,15 +106,23 @@ void exec_cmd(void)
 
         exec_func *exec = scan_pass1(&cmd);
 
-        if (scan_state == SCAN_EXPR)    // Still scanning expression?
+        if (scan_state == SCAN_PASS1)    // Still scanning expression?
         {
-            cmd.expr.len = (uint)(next_buf() - cmd.expr.buf);
+            // If we haven't started scanning an expression, and we just read a
+            // whitespace character, then just skip it. Note that if we see a
+            // TAB, we'll switch state to SCAN_PASS2, so there's no concern
+            // that the code below will cause TABs to be ignored.
+
+            if (cmd.expr.len == 0 || !isspace(c))
+            {
+                cmd.expr.len = (uint)(next_buf() - cmd.expr.buf);
+            }
         }
-        else if (scan_state == SCAN_DONE) // Done scanning expression?
+        else if (scan_state == SCAN_PASS2) // Done scanning expression?
         {
             finish_cmd(&cmd, exec);
 
-            scan_state = SCAN_NULL;
+            scan_state = SCAN_PASS1;
         }
 
         f.ei.exec = false;              // Suspend this to check CTRL/C

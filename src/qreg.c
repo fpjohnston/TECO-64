@@ -33,6 +33,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "errors.h"
 #include "qreg.h"
 
@@ -101,8 +102,6 @@ static uint qlevel;
 // Local functions
 
 static void free_qreg(void);
-
-static struct qreg *get_qreg(int qname, bool qdot);
 
 
 ///
@@ -270,7 +269,7 @@ int get_qnum(int qname, bool qdot)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static struct qreg *get_qreg(int qname, bool qdot)
+struct qreg *get_qreg(int qname, bool qdot)
 {
     static const char *qchars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -371,8 +370,19 @@ void print_qreg(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    printf("%.*s", (int)qreg->text.put, qreg->text.buf);
-    (void)fflush(stdout);
+    for (uint i = 0; i < qreg->text.put; ++i)
+    {
+        int c = qreg->text.buf[i];
+
+        if (c == LF)
+        {
+            putc_term(CRLF);
+        }
+        else
+        {
+            echo_chr(c);
+        }
+    }    
 }
 
 

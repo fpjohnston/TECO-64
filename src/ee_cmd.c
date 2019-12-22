@@ -67,7 +67,7 @@ void scan_EE(struct cmd *cmd)
     {
         cmd->n_set = true;
         
-        scan_state = SCAN_DONE;
+        scan_state = SCAN_PASS2;
 
         if (!isascii(cmd->n_arg))       // Must be an ASCII character
         {

@@ -317,7 +317,7 @@ exec_func *scan_pass1(struct cmd *cmd)
     {
         (void)scan_digits(cmd->c1, NULL, 0, (bool)true);
 
-        if (scan_state == SCAN_EXPR)    // Still scanning expression?
+        if (scan_state == SCAN_PASS1)    // Still scanning expression?
         {
             cmd->expr.len = (uint)(next_buf() - cmd->expr.buf);
         }
@@ -384,7 +384,7 @@ exec_func *scan_pass1(struct cmd *cmd)
     }
     else if (table->exec != NULL)
     {
-        scan_state = SCAN_DONE;
+        scan_state = SCAN_PASS2;
     }
 
     return table->exec;
@@ -542,11 +542,21 @@ void scan_tail(struct cmd *cmd)
         }
     }
 
-    cmd->delim = ESC;                   // Assume we'll use the std. delimiter
-
     if (cmd->c1 == CTRL_A || cmd->c1 == '!')
     {
-        cmd->delim = cmd->c1;           // Switch delimiter for CTRL/A and !
+        cmd->delim = cmd->c1;           // Special delimiter for CTRL/A & tag
+    }
+    else if (f.ee != NUL)
+    {
+        cmd->delim = (char)f.ee;
+    }
+    else if (f.et.accent)
+    {
+        cmd->delim = '`';
+    }
+    else
+    {
+        cmd->delim = ESC;
     }
 
     // The P command can optionally be followed by a W.
@@ -622,7 +632,7 @@ static void scan_text(int delim, struct tstring *text)
 ///  @brief    Set options for each command. These are as follows:
 ///
 ///            :  - Command allows colon modifier        (e.g., :ERfile`).
-///            :: - Command allows double colon modifier (e.g., :: Stext`).
+///            :: - Command allows double colon modifier (e.g., ::Stext`).
 ///            @  - Command allows atsign form           (e.g., @^A/hello/).
 ///            q  - Command requires Q-register          (e.g., Mq).
 ///            W  - Command allows W                     (e.g., PW).

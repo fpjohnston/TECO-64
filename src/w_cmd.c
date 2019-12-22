@@ -78,5 +78,5 @@ void scan_W(struct cmd *cmd)
 
     push_expr(n, EXPR_VALUE);
 
-    scan_state = SCAN_DONE;
+    scan_state = SCAN_PASS2;
 }

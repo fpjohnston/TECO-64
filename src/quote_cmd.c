@@ -180,10 +180,10 @@ void scan_quote(struct cmd *cmd)
 {
     assert(cmd != NULL);
     
-    if (scan_state != SCAN_DONE)
+    if (scan_state != SCAN_PASS2)
     {
         cmd->c2 = (char)fetch_buf();   // Just store 2nd character
 
-        scan_state = SCAN_DONE;
+        scan_state = SCAN_PASS2;
     }
 }

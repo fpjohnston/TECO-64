@@ -47,7 +47,7 @@ void get_flag(struct cmd *cmd, uint flag)
     {
         cmd->n_set = true;
 
-        scan_state = SCAN_DONE;
+        scan_state = SCAN_PASS2;
     }
     else
     {

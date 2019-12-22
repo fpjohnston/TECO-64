@@ -66,13 +66,13 @@ void scan_back(struct cmd *cmd)
 
     if (pop_expr(&n))                   // n\`?
     {
-        scan_state = SCAN_DONE;
+        scan_state = SCAN_PASS2;
 
         push_expr(n, EXPR_VALUE);       // TODO: is this correct?
     }
     else
     {
-        if (scan_state != SCAN_DONE)
+        if (scan_state != SCAN_PASS2)
         {
             n = 0;
         }

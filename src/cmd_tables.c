@@ -42,7 +42,7 @@
 ///          involve a 2nd character.
 ///
 
-struct cmd_table cmd_table[] =
+const struct cmd_table cmd_table[] =
 {
     [NUL]         = { NULL,           NULL,             ""         },
     [CTRL_A]      = { NULL,           exec_ctrl_a,      "@ 1"      },
@@ -174,13 +174,13 @@ struct cmd_table cmd_table[] =
     [DEL]         = { scan_bad,       NULL,             ""         },
 };
 
-uint cmd_count = countof(cmd_table);    ///< No. of items in cmd_table[]
+const uint cmd_count = countof(cmd_table); ///< No. of items in cmd_table[]
 
 
 ///  @var    cmd_e_table
 ///  @brief  Table for all commands starting with E.
 
-struct cmd_table cmd_e_table[] =
+const struct cmd_table cmd_e_table[] =
 {
     { NULL,       exec_EA,      ""        },
     { NULL,       exec_EB,      ": @ 1"   },
@@ -212,13 +212,13 @@ struct cmd_table cmd_e_table[] =
     { NULL,       exec_E_ubar,  "@ 1"     },
 };
 
-uint cmd_e_count = countof(cmd_e_table); ///< No. of items in cmd_e_table[]
+const uint cmd_e_count = countof(cmd_e_table); ///< No. of items in cmd_e_table[]
 
 
 ///  @var    cmd_f_table
 ///  @brief  Table for all commands starting with F.
 
-struct cmd_table cmd_f_table[] =
+const struct cmd_table cmd_f_table[] =
 {
     { NULL,  exec_FB,        "@ 1"        },
     { NULL,  exec_FC,        "@ 1 2"      },
@@ -234,16 +234,30 @@ struct cmd_table cmd_f_table[] =
     { NULL,  exec_F_vbar,    ""           },
 };
 
-uint cmd_f_count = countof(cmd_f_table); ///< No. of items in cmd_f_table[]
+const uint cmd_f_count = countof(cmd_f_table); ///< No. of items in cmd_f_table[]
 
 
 ///  @var    null_cmd
 ///  @brief  Initial command block values.
 
-struct cmd null_cmd =
+const struct cmd null_cmd =
 {
     .level      = 0,
-    .flag       = false,
+    .colon_opt  = false,
+    .dcolon_opt = false,
+    .atsign_opt = false,
+    .w_opt      = false,
+    .q_req      = false,
+    .t1_opt     = false,
+    .t2_opt     = false,
+    .m_set      = false,
+    .n_set      = false,
+    .h_set      = false,
+    .w_set      = false,
+    .comma_set  = false,
+    .colon_set  = false,
+    .dcolon_set = false,
+    .atsign_set = false,
     .c1         = NUL,
     .c2         = NUL,
     .c3         = NUL,

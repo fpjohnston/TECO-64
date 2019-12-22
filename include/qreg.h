@@ -69,6 +69,8 @@ extern int get_qchr(int qname, bool qdot, int n);
 
 extern int get_qnum(int qname, bool qdot);
 
+extern struct qreg *get_qreg(int qname, bool qdot);
+
 extern uint get_qsize(int qname, bool qdot);
 
 extern void init_qreg(void);

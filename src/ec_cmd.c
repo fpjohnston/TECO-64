@@ -108,5 +108,5 @@ void scan_EC(struct cmd *cmd)
         cmd->n_set = true;
     }
 
-    scan_state = SCAN_DONE;
+    scan_state = SCAN_PASS2;
 }

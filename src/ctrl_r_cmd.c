@@ -70,7 +70,7 @@ void scan_ctrl_r(struct cmd *cmd)
 
     if (pop_expr(NULL))                 // n^R?
     {
-        scan_state = SCAN_DONE;         // Yes, scan is done
+        scan_state = SCAN_PASS2;         // Yes, scan is done
     }
     else
     {

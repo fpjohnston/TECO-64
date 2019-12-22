@@ -68,7 +68,7 @@ void exec_T(struct cmd *cmd)
     {
         if ((uint)cmd->m_arg > Z || (uint)cmd->n_arg > Z)
         {
-            print_err(E_POP);           // Pointer off page
+            printc_err(E_POP, 'T');     // Pointer off page
         }
 
         if (cmd->m_arg > cmd->n_arg)

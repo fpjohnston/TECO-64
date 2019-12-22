@@ -62,7 +62,7 @@ void exec_D(struct cmd *cmd)
 
         if (m < 0 || (uint)m > Z || n < 0 || (uint)n > Z || m > n)
         {
-            print_err(E_POP);           // Pointer off page
+            printc_err(E_POP, 'D');     // Pointer off page
         }
 
         setpos_tbuf((uint)m);           // Go to first position

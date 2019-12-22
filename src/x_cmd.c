@@ -33,6 +33,7 @@
 #include "errors.h"
 #include "exec.h"
 #include "qreg.h"
+#include "textbuf.h"
 
 
 ///
@@ -46,18 +47,60 @@ void exec_X(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)                    // n argument?
+    int n = 1;
+    int m;
+    uint dot = getpos_tbuf();
+
+    if (cmd->n_set)                     // n argument?
     {
-        cmd->n_arg = 1;
+        n = cmd->n_arg;
     }
 
     if (cmd->m_set)                     // m argument too?
     {
-        if (cmd->m_arg < 0 || cmd->n_arg < 0)   // If m,nXq, m & n must be positive
+        uint Z = getsize_tbuf();
+
+        m = cmd->m_arg;
+
+        if (m < 0 || (uint)m > Z || n < 0 || (uint)n > Z)
         {
-            print_err(E_MOD);
+            printc_err(E_POP, 'X');     // Pointer off page
+        }
+        else if (m <= n || n == 0)
+        {
+            print_err(E_ARG);           // Invalid arguments
+        }
+    }
+    else
+    {
+        int delta = getdelta_tbuf(n);
+
+        if (n <= 0)
+        {
+            m = (int)dot + delta;
+            n = (int)dot;
+        }
+        else
+        {
+            m = (int)dot;
+            n = (int)dot + delta;
         }
     }
 
-    // TODO: add lines of text to Q-register
+    // TODO: clean this up: either m and n should be relative to dot, or
+    //       getchar_tbuf() needs to take an absolute position.
+
+    for (int i = m - (int)dot; i < n - (int)dot; ++i)
+    {
+        int c = getchar_tbuf(i);
+
+        if (i == m - (int)dot && !cmd->colon_set)
+        {
+            store_qchr(cmd->qreg, cmd->qlocal, c);
+        }
+        else
+        {
+            append_qchr(cmd->qreg, cmd->qlocal, c);
+        }
+    }
 }

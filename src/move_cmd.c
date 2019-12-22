@@ -38,9 +38,9 @@
 
 // Local functions
 
-static void exec_c_r(struct cmd *cmd, int sign);
+static void exec_c_r(struct cmd *cmd, int sign, int chr);
 
-static void exec_move(struct cmd *cmd, uint pos, bool cond);
+static void exec_move(struct cmd *cmd, uint pos, bool cond, int chr);
 
     
 ///
@@ -52,7 +52,7 @@ static void exec_move(struct cmd *cmd, uint pos, bool cond);
 
 void exec_C(struct cmd *cmd)
 {
-    exec_c_r(cmd, 1);
+    exec_c_r(cmd, 1, 'C');
 }
 
 
@@ -63,7 +63,7 @@ void exec_C(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_c_r(struct cmd *cmd, int sign)
+static void exec_c_r(struct cmd *cmd, int sign, int chr)
 {
     assert(cmd != NULL);
 
@@ -81,7 +81,7 @@ static void exec_c_r(struct cmd *cmd, int sign)
 
     n += (int)dot;                      // Calculate absolute position
 
-    exec_move(cmd, (uint)n, (bool)(n < B || (uint)n > Z));
+    exec_move(cmd, (uint)n, (bool)(n < B || (uint)n > Z), chr);
 }
 
 
@@ -105,7 +105,7 @@ void exec_J(struct cmd *cmd)
 
     uint Z = getsize_tbuf();
 
-    exec_move(cmd, n, (bool)(n > Z));
+    exec_move(cmd, n, (bool)(n > Z), 'J');
 }
 
 
@@ -142,7 +142,7 @@ void exec_L(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_move(struct cmd *cmd, uint pos, bool cond)
+static void exec_move(struct cmd *cmd, uint pos, bool cond, int chr)
 {
     assert(cmd != NULL);
 
@@ -150,7 +150,7 @@ static void exec_move(struct cmd *cmd, uint pos, bool cond)
     {
         if (!cmd->colon_set)
         {
-            print_err(E_POP);           // Pointer off page
+            printc_err(E_POP, chr);     // Pointer off page
         }
 
         push_expr(TECO_FAILURE, EXPR_VALUE);
@@ -176,5 +176,5 @@ static void exec_move(struct cmd *cmd, uint pos, bool cond)
 
 void exec_R(struct cmd *cmd)
 {
-    exec_c_r(cmd, -1);                  // Reverse of C command
+    exec_c_r(cmd, -1, 'R');             // Reverse of C command
 }

@@ -71,11 +71,17 @@ void exec_G(struct cmd *cmd)
         }
         else if (cmd->qreg == '_')      // G_ -> copy search string to buffer
         {
-            // TODO: add code here
+            printf("<copy search string buffer here>\r\n");
+            (void)fflush(stdout);
         }
         else                            // Gq -> copy Q-register to buffer
         {
-            // TODO: add code here
+            struct qreg *qreg = get_qreg(cmd->qreg, cmd->qlocal);
+
+            assert(qreg != NULL);
+
+            exec_insert(qreg->text.buf + qreg->text.get,
+                        qreg->text.put - qreg->text.get);
         }
     }
 }

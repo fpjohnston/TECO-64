@@ -86,7 +86,7 @@ void exec_P(struct cmd *cmd)
         if (cmd->m_arg < (int)start || cmd->m_arg >= (int)end ||
             cmd->n_arg < (int)start || cmd->n_arg >= (int)end)
         {
-            print_err(E_POP);           // Pointer off page
+            printc_err(E_POP, 'P');     // Pointer off page
         }
 
         start = (uint)cmd->m_arg;

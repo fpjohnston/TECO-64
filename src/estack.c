@@ -149,9 +149,9 @@ void push_expr(int value, enum expr_type type)
         print_err(E_PDO);               // Push-down list overflow
     }
 
-    if (scan_state != SCAN_DONE)
+    if (scan_state != SCAN_PASS2)
     {
-        scan_state = SCAN_EXPR;
+        scan_state = SCAN_PASS1;
     }
 
     estack.obj[estack.level].value = value;
@@ -299,7 +299,7 @@ static bool reduce3(void)
             {
                 // Don't allow divide by zero if we're scanning expression.
 
-                if (scan_state == SCAN_EXPR)
+                if (scan_state == SCAN_PASS1)
                 {
                     e1->value = 1;      // Just use a dummy result here
                 }

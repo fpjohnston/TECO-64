@@ -47,7 +47,7 @@ void scan_pct(struct cmd *cmd)
 
     int n = 1;                          // Assume %q`
 
-    if (scan_state != SCAN_DONE)
+    if (scan_state != SCAN_PASS2)
     {
         push_expr(1, EXPR_VALUE);
 

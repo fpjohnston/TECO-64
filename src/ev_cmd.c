@@ -64,7 +64,7 @@ void scan_EV(struct cmd *cmd)
     {
         cmd->n_set = true;
 
-        scan_state = SCAN_DONE;
+        scan_state = SCAN_PASS2;
     }
     else
     {

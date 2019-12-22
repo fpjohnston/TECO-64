@@ -48,7 +48,7 @@ void scan_Q(struct cmd *cmd)
 
     int n;
 
-    if (scan_state != SCAN_DONE)
+    if (scan_state != SCAN_PASS2)
     {
         n = DUMMY_VALUE;
     }

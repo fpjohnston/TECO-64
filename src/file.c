@@ -34,6 +34,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "errors.h"
+#include "unistd.h"
 
 
 struct ifile ifiles[IFILE_MAX];         ///< Input file descriptors
@@ -243,6 +244,11 @@ int open_output(const struct tstring *text, int backup)
 
     const char *oname = get_oname(ofile, nbytes);
 
+    if (backup == NOBACKUP_FILE && access(oname, F_OK) == 0)
+    {
+        printf("%s", "%Superseding existing file\r\n");
+    }
+    
     if ((ofile->fp = fopen(oname, "w+")) == NULL)
     {
         return EXIT_FAILURE;

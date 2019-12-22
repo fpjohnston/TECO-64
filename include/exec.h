@@ -40,10 +40,9 @@
 
 enum scan_state
 {
-    SCAN_NULL,                      ///< Scanning for start of command
-    SCAN_EXPR,                      ///< Scanning expression
-    SCAN_MOD,                       ///< Scanning modifiers
-    SCAN_DONE                       ///< Scanning is done
+    SCAN_PASS1,                     ///< First expression scan
+    SCAN_MOD,                       ///< Command modifier scan
+    SCAN_PASS2                      ///< Second expression scan
 };
 
 ///  @struct cmd
@@ -52,31 +51,21 @@ enum scan_state
 struct cmd
 {
     int level;                      ///< Command level
-
-    union
-    {
-        uint flag;                  ///< Command flag
-
-        struct
-        {
-            uint colon_opt  : 1;    ///< : allowed
-            uint dcolon_opt : 1;    ///< :: allowed
-            uint atsign_opt : 1;    ///< @ allowed
-            uint w_opt      : 1;    ///< W allowed (for P)
-            uint q_req      : 1;    ///< Q-register required
-            uint t1_opt     : 1;    ///< 1 text field allowed
-            uint t2_opt     : 1;    ///< 2 text fields allowed
-            uint m_set      : 1;    ///< m argument found
-            uint n_set      : 1;    ///< n argument found
-            uint h_set      : 1;    ///< H found
-            uint w_set      : 1;    ///< W found
-            uint comma_set  : 1;    ///< Comma found
-            uint colon_set  : 1;    ///< : found
-            uint dcolon_set : 1;    ///< :: found
-            uint atsign_set : 1;    ///< @ found
-        };
-    };
-
+    uint colon_opt  : 1;            ///< : allowed
+    uint dcolon_opt : 1;            ///< :: allowed
+    uint atsign_opt : 1;            ///< @ allowed
+    uint w_opt      : 1;            ///< W allowed (for P)
+    uint q_req      : 1;            ///< Q-register required
+    uint t1_opt     : 1;            ///< 1 text field allowed
+    uint t2_opt     : 1;            ///< 2 text fields allowed
+    uint m_set      : 1;            ///< m argument found
+    uint n_set      : 1;            ///< n argument found
+    uint h_set      : 1;            ///< H found
+    uint w_set      : 1;            ///< W found
+    uint comma_set  : 1;            ///< Comma found
+    uint colon_set  : 1;            ///< : found
+    uint dcolon_set : 1;            ///< :: found
+    uint atsign_set : 1;            ///< @ found
     char c1;                        ///< 1st command character (or NUL)
     char c2;                        ///< 2nd command character (or NUL)
     char c3;                        ///< 3rd command character (or NUL)
@@ -113,19 +102,19 @@ struct cmd_table
     const char *opts;               ///< Command modifiers and options
 };
 
-extern struct cmd_table cmd_table[];
+extern const struct cmd_table cmd_table[];
 
-extern struct cmd_table cmd_e_table[];
+extern const struct cmd_table cmd_e_table[];
 
-extern struct cmd_table cmd_f_table[];
+extern const struct cmd_table cmd_f_table[];
 
-extern uint cmd_count;
+extern const uint cmd_count;
 
-extern uint cmd_e_count;
+extern const uint cmd_e_count;
 
-extern uint cmd_f_count;
+extern const uint cmd_f_count;
 
-extern struct cmd null_cmd;
+extern const struct cmd null_cmd;
 
 extern enum scan_state scan_state;
 
