@@ -28,7 +28,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
 #include "exec.h"
@@ -42,23 +41,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EF(struct cmd *cmd)
+void exec_EF(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
-    FILE *fp;
-    struct ofile *ofile = &ofiles[ostream];
-
-    if ((fp = ofile->fp) != NULL)
-    {
-        fclose(fp);
-
-        ofile->fp = NULL;
-    }
-
-    free_mem(&ofile->name);
-    free_mem(&ofile->temp);
-
-    ofile->backup = false;
+    close_output(ostream);
 }
 

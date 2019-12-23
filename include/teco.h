@@ -166,17 +166,8 @@ enum otype
     OFILE_PRIMARY,                  ///< Primary output stream
     OFILE_SECONDARY,                ///< Secondary output stream
     OFILE_INDIRECT,                 ///< E%q command stream
+    OFILE_LOG,                      ///< EL log file
     OFILE_MAX                       ///< Maximum output files
-};
-
-///  @enum    backup_flag
-///  @brief   Definition of flag that specifies whether or not a file is
-///           opened for backup.
-
-enum backup_flag
-{
-    NOBACKUP_FILE,                  ///< Not opening a file for backup
-    BACKUP_FILE                     ///< Opening a file for backup
 };
 
 ///  @struct  vars
@@ -310,17 +301,17 @@ extern void unfetch_buf(int c);
 
 extern void close_indirect(void);
 
+extern void close_output(uint stream);
+
 extern void create_filename(const struct tstring *text);
 
-extern const char *get_oname(struct ofile *ofile, uint nbytes);
+extern const char *get_oname(struct ofile *ofile, uint nbytes, bool exists);
 
 extern int get_wild(void);
 
 extern void init_files(void);
 
 extern int open_input(const char *filespec, uint stream);
-
-extern int open_output(const struct tstring *text, int backup);
 
 extern bool read_indirect(void);
 

@@ -30,11 +30,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "teco.h"
 #include "ascii.h"
 #include "errors.h"
-#include "unistd.h"
+#include "exec.h"
 
 
 struct ifile ifiles[IFILE_MAX];         ///< Input file descriptors
@@ -52,6 +53,32 @@ char *filename_buf;                     ///< Allocated space for filename
 // Local functions
 
 static void file_exit(void);
+
+
+///
+///  @brief    Close output file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void close_output(uint stream)
+{
+    struct ofile *ofile = &ofiles[stream];
+    FILE *fp;
+
+    if ((fp = ofile->fp) != NULL)
+    {
+        fclose(fp);
+
+        ofile->fp = NULL;
+    }
+
+    free_mem(&ofile->name);
+    free_mem(&ofile->temp);
+
+    ofile->backup = false;
+}
 
 
 ///
@@ -221,40 +248,67 @@ int open_input(const char *filespec, uint stream)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int open_output(const struct tstring *text, int backup)
+int open_output(const struct cmd *cmd, uint stream)
 {
-    assert(text != NULL);
+    assert(cmd != NULL);
 
-    struct ofile *ofile = &ofiles[ostream];
+    struct ofile *ofile = &ofiles[stream];
 
     if (ofile->fp != NULL)
     {
-        print_err(E_OFO);               // Output file is already open
+        if (stream == OFILE_LOG)
+        {
+            close_output(stream);
+        }
+        else
+        {
+            print_err(E_OFO);           // Output file is already open
+        }
+    }
+    else
+    {
+        free_mem(&ofile->name);
+        free_mem(&ofile->temp);
+        free_mem(&last_file);
     }
 
-    uint nbytes = text->len;            // Length of text string
+    uint nbytes = cmd->text1.len;       // Length of text string
     
-    free_mem(&ofile->name);
-    free_mem(&ofile->temp);
-    free_mem(&last_file);
-
     last_file = alloc_mem(nbytes + 1);
 
-    sprintf(last_file, "%.*s", (int)nbytes, text->buf);
+    sprintf(last_file, "%.*s", (int)nbytes, cmd->text1.buf);
 
-    const char *oname = get_oname(ofile, nbytes);
+    bool exists = (access(last_file, F_OK) == 0 && toupper(cmd->c2) != 'L');
 
-    if (backup == NOBACKUP_FILE && access(oname, F_OK) == 0)
+    const char *oname = get_oname(ofile, nbytes, exists);
+
+    // If EW command and file exists, warn the user.
+
+    if (exists && toupper(cmd->c2) == 'W')
     {
         printf("%s", "%Superseding existing file\r\n");
     }
-    
-    if ((ofile->fp = fopen(oname, "w+")) == NULL)
+
+    const char *mode = "w";
+
+    if (cmd->text2.len != 0)
+    {
+        char option[cmd->text2.len + 1];
+
+        sprintf(option, "%.*s", (int)cmd->text2.len, cmd->text2.buf);
+
+        if (!strcasecmp(option, "append") || !strcasecmp(option, "/append"))
+        {
+            mode = "a";
+        }
+    }
+
+    if ((ofile->fp = fopen(oname, mode)) == NULL)
     {
         return EXIT_FAILURE;
     }
 
-    ofile->backup = (backup == BACKUP_FILE) ? true : false;
+    ofile->backup = (toupper(cmd->c2) == 'B') ? true : false;
 
     return EXIT_SUCCESS;
 }

@@ -53,7 +53,7 @@ void exec_EW(struct cmd *cmd)
         return;
     }
 
-    if (open_output(&cmd->text1, NOBACKUP_FILE) == EXIT_FAILURE)
+    if (open_output(cmd, ostream) == EXIT_FAILURE)
     {
         if (!cmd->colon_set)
         {

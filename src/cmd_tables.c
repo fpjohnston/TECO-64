@@ -193,7 +193,7 @@ const struct cmd_table cmd_e_table[] =
     { NULL,       exec_EI,      ": @ 1"   },
     { scan_EJ,    NULL,         ""        },
     { NULL,       exec_EK,      ""        },
-    { NULL,       exec_EL,      "@ 1"     },
+    { NULL,       exec_EL,      "@ 1 2"   },
     { NULL,       exec_EM,      ""        },
     { NULL,       exec_EN,      ": @ 1"   },
     { scan_EO,    NULL,         ""        },

@@ -19,6 +19,7 @@ my %commands =
     "^C"  => "stop execution",
     "^D"  => "set input radix to decimal",
     "^R"  => "set input radix",
+    "^T"  => "type out character",
     "^U"  => "copy text to Q-register %s",
     ":^U" => "append text to Q-register %s",
     "^X"  => "set search mode flag",
@@ -58,6 +59,7 @@ my %commands =
     "EW"  => "open file for output",
     "EW`" => "switch to primary output stream",
     "EX"  => "exit",
+    "EZ"  => "set TECO C flag",
     "FN"  => "non-stop search and replace",
     "FR"  => "delete and replace",
     "FS"  => "search and replace",
@@ -93,35 +95,63 @@ my %commands =
     "|"   => "else",
 );
 
+my $sequence = 0;
+
 while (<>)
 {
     chomp;
 
     s/\r//;
 
-    next unless /^(.+?)\s+! (\d+), (\S+), (\S*) !$/;
+    next unless /^(.+?)\s+! (\S+), (\S*) !$/;
 
     my $teco = $1;
-    my $sequence = $2;
-    my $key = uc $3;
-    my $arg = $4;
-    my $description = $commands{$key};
+    my $key = uc $2;
+    my $arg = $3;
+    my $text = $commands{$key};
+
+    if (!defined $text)
+    {
+        if ($key =~ /^(.+)`$/)
+        {
+            $text = $commands{$1};
+        }
+    }
+
+    if (!defined $text)
+    {
+        if ($key =~ /^:(.+)$/)
+        {
+            $text = $commands{$1};
+        }
+    }    
+
+    # If goto command, get the tag
+
+    if ($key eq 'O')
+    {
+        if ($teco =~ /^\s*$key(.+)`$/)
+        {
+            $arg = $1;
+        }
+    }
+
     my $line = sprintf "%s", $teco;
 
     print $line;
-    printf "%*s! % 5u: ", 64 - length $line, " ", $sequence;
+    printf "%*s! % 5u: ", 64 - length $line, " ", ++$sequence;
 
-    if (!defined $description)
+    if (!defined $text)
     {
         print "(n/a)";
     }
-    elsif ($description =~ /%s/)
+    elsif ($text =~ /%s/)
     {
-        printf $description, $arg;
+        printf $text, $arg;
     }
     else
     {
-        print $description;
+        print $text;
     }
 
     print " !\n";

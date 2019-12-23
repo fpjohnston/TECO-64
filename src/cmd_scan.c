@@ -408,6 +408,10 @@ void scan_pass2(struct cmd *cmd)
     cmd->colon_set = false;
     cmd->comma_set = false;
 
+    bool saved_qreq = cmd->q_req;
+
+    cmd->q_req = false;
+
     if (cmd->c1 == ESC)
     {
         return;
@@ -478,9 +482,9 @@ void scan_pass2(struct cmd *cmd)
         {
             if (len-- == 0)
             {
-                print_err(E_UTC);       // Unterminated command
+                print_err(E_UTC);
             }
-            
+
             c = *p++;
 
             if (c == '.')               // Is it a local Q-register?
@@ -489,10 +493,10 @@ void scan_pass2(struct cmd *cmd)
 
                 if (len-- == 0)
                 {
-                    print_err(E_UTC);   // Unterminated command
+                    print_err(E_UTC);
                 }
-                
-                c = *p++;               // Get Q-register name
+
+               c = *p++;               // Get Q-register name
             }        
 
             if (!isalnum(c))
@@ -513,6 +517,8 @@ void scan_pass2(struct cmd *cmd)
             (*table->scan)(cmd);        // Scan it if we can
         }
     }
+
+    cmd->q_req = saved_qreq;
 }
 
 

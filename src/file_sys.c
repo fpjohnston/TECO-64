@@ -44,52 +44,6 @@ static char **next_file;                ///< Next file in pglob
 
 
 ///
-///  @brief    Rename output file. This is system-dependent, because on Linux
-///            we use a temporary name when opening the file, and we will need
-///            to delete the original file and then rename the temporary file.
-///            If a backup was requested, we will just rename the original file
-///            instead of deleting it.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void rename_output(struct ofile *ofile)
-{
-    assert(ofile != NULL);
-
-    if (ofile->temp != NULL)
-    {
-        assert(ofile->name != NULL);
-
-        if (ofile->backup)
-        {
-            char scratch[strlen(ofile->name) + 1 + 1];
-
-            sprintf(scratch, "%s~", ofile->name);
-
-            if (rename(ofile->name, scratch) != 0)
-            {
-                fatal_err(errno, E_SYS, NULL);
-            }
-        }
-        else
-        {
-            if (remove(ofile->name) != 0)
-            {
-                fatal_err(errno, E_SYS, NULL);
-            }
-        }
-        
-        if (rename(ofile->temp, ofile->name) != 0)
-        {
-            fatal_err(errno, E_SYS, NULL);
-        }
-    }
-}
-
-
-///
 ///  @brief    Get output file name. We are passed the output file name the
 ///            user specified, but we can't use it if we are opening it for
 ///            output, because that might supercede and truncate an existing
@@ -109,7 +63,7 @@ void rename_output(struct ofile *ofile)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-const char *get_oname(struct ofile *ofile, uint nbytes)
+const char *get_oname(struct ofile *ofile, uint nbytes, bool exists)
 {
     assert(ofile != NULL);
 
@@ -117,7 +71,7 @@ const char *get_oname(struct ofile *ofile, uint nbytes)
     const char *oname;
     char scratch[nbytes + 1];
 
-    if (access(last_file, F_OK) == 0)   // Does file already exist?
+    if (exists)                         // Does file already exist?
     {
         if (stat(last_file, &file_stat) != 0)
         {
@@ -192,6 +146,52 @@ int get_wild(void)
     }
 
     return EXIT_FAILURE;
+}
+
+
+///
+///  @brief    Rename output file. This is system-dependent, because on Linux
+///            we use a temporary name when opening the file, and we will need
+///            to delete the original file and then rename the temporary file.
+///            If a backup was requested, we will just rename the original file
+///            instead of deleting it.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void rename_output(struct ofile *ofile)
+{
+    assert(ofile != NULL);
+
+    if (ofile->temp != NULL)
+    {
+        assert(ofile->name != NULL);
+
+        if (ofile->backup)
+        {
+            char scratch[strlen(ofile->name) + 1 + 1];
+
+            sprintf(scratch, "%s~", ofile->name);
+
+            if (rename(ofile->name, scratch) != 0)
+            {
+                fatal_err(errno, E_SYS, NULL);
+            }
+        }
+        else
+        {
+            if (remove(ofile->name) != 0)
+            {
+                fatal_err(errno, E_SYS, NULL);
+            }
+        }
+        
+        if (rename(ofile->temp, ofile->name) != 0)
+        {
+            fatal_err(errno, E_SYS, NULL);
+        }
+    }
 }
 
 

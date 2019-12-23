@@ -68,7 +68,7 @@ void exec_EB(struct cmd *cmd)
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
 
-    if (open_output(&cmd->text1, BACKUP_FILE) == EXIT_FAILURE)
+    if (open_output(cmd, ostream) == EXIT_FAILURE)
     {
         if (!cmd->colon_set)
         {

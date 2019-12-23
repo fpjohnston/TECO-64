@@ -35,7 +35,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
@@ -184,10 +183,7 @@ static void finish_cmd(struct cmd *cmd, exec_func *exec)
         --cmd->level;
     }
 
-    if (teco_debug && cmd->c1 != ESC)
-    {
-        print_cmd(cmd);                 // Print command if debugging
-    }
+    log_cmd(cmd);
 
     if (cmd->c1 == '"' || cmd->c1 == '|' || cmd->c1 == '<')
     {

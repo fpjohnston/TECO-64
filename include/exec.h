@@ -308,8 +308,6 @@ extern void exec_F_vbar(struct cmd *cmd);
 
 // Functions that parse a command string.
 
-extern void print_cmd(struct cmd *cmd);
-
 extern void scan_A(struct cmd *cmd);
 
 extern void scan_B(struct cmd *cmd);
@@ -389,5 +387,11 @@ extern void scan_tail(struct cmd *cmd);
 extern void scan_W(struct cmd *cmd);
 
 extern void scan_Z(struct cmd *cmd);
+
+// Miscellaneous functions
+
+extern void log_cmd(struct cmd *cmd);
+
+extern int open_output(const struct cmd *cmd, uint stream);
 
 #endif  // _EXEC_H
