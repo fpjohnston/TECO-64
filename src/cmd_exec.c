@@ -231,6 +231,11 @@ static void finish_cmd(struct cmd *cmd, exec_func *exec)
     else if (pop_expr(&cmd->n_arg))
     {
         cmd->n_set = true;
+
+        if (pop_expr(&cmd->m_arg))
+        {
+            cmd->m_set = true;
+        }
     }
     else if (estack.level != 0)
     {

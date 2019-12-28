@@ -62,13 +62,19 @@ void exec_equals(struct cmd *cmd)
 
     if ((c = fetch_buf()) != '=')       // Print decimal if =
     {
-        unfetch_buf(c);
+        if (c != EOF)
+        {
+            unfetch_buf(c);
+        }
 
         printf("%d", cmd->n_arg);
     }
     else if ((c = fetch_buf()) != '=')  // Print octal if ==
     {
-        unfetch_buf(c);
+        if (c != EOF)
+        {
+            unfetch_buf(c);
+        }
 
         cmd->c2 = '=';
 

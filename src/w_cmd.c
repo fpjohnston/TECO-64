@@ -59,7 +59,7 @@ void scan_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n;
+    int n = 0;
 
     if (!pop_expr(&n))                  // W by itself does nothing
     {

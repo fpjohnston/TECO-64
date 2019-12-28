@@ -71,15 +71,12 @@ struct cmd
     char c3;                        ///< 3rd command character (or NUL)
     int m_arg;                      ///< m argument (if m_set is true)
     int n_arg;                      ///< n argument (if n_set is true)
-    int paren;                      ///< No. of parentheses counted
     char delim;                     ///< Delimiter for @ modifier
-    char qreg;                      ///< Q-register, if any
-    bool qlocal;                    ///< Q-register is local (not global)
+    char qname;                     ///< Q-register name
+    bool qlocal;                    ///< If true, Q-register is local
     struct tstring expr;            ///< Expression string
     struct tstring text1;           ///< 1st text string
     struct tstring text2;           ///< 2nd text string
-    struct cmd *next;               ///< Next command (or NULL)
-    struct cmd *prev;               ///< Previous command (or NULL)
 };
 
 ///  @typedef  scan_func
@@ -155,6 +152,8 @@ extern void exec_N(struct cmd *cmd);
 extern void exec_O(struct cmd *cmd);
 
 extern void exec_P(struct cmd *cmd);
+
+extern void exec_Q(struct cmd *cmd);
 
 extern void exec_R(struct cmd *cmd);
 

@@ -41,6 +41,8 @@
 #include "exec.h"
 
 
+static uint paren_count = 0;            ///< No. of unmatched left parentheses
+
 // Local functions
 
 static const struct cmd_table *scan_cmd(struct cmd *cmd);
@@ -267,11 +269,11 @@ void scan_operator(struct cmd *cmd)
 
     if (cmd->c1 == '(')
     {
-        ++cmd->paren;
+        ++paren_count;
     }
     else if (cmd->c1 == ')')
     {
-        if (cmd->paren == 0)            // Can't have ) without (
+        if (paren_count == 0)           // Can't have ) without (
         {
             print_err(E_MLP);           // Missing left parenthesis
         }
@@ -281,7 +283,7 @@ void scan_operator(struct cmd *cmd)
         }
         else
         {
-            --cmd->paren;
+            --paren_count;
         }
     }
 
@@ -310,6 +312,7 @@ exec_func *scan_pass1(struct cmd *cmd)
     // execute the command. This includes such things as m and n arguments,
     // modifiers such as : and @, and any text strings followed the command.
 
+    paren_count = 0;
     cmd->c2 = NUL;
     cmd->c3 = NUL;
 
@@ -370,7 +373,7 @@ exec_func *scan_pass1(struct cmd *cmd)
             }
         }
 
-        cmd->qreg = (char)c;            // Save the name
+        cmd->qname = (char)c;           // Save the name
     }
 
     if (table == NULL)
@@ -402,6 +405,7 @@ void scan_pass2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    paren_count = 0;
     cmd->m_set = false;
     cmd->n_set = false;
     cmd->h_set = false;
@@ -509,7 +513,7 @@ void scan_pass2(struct cmd *cmd)
                 }
             }
 
-            cmd->qreg = (char)c;        // Save the name
+            cmd->qname = (char)c;       // Save the name
         }
 
         if (table != NULL && table->scan != NULL)
@@ -534,7 +538,7 @@ void scan_tail(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->paren != 0)
+    if (paren_count != 0)
     {
         print_err(E_MRP);               // Missing right parenthesis
     }
@@ -638,7 +642,7 @@ static void scan_text(int delim, struct tstring *text)
 ///  @brief    Set options for each command. These are as follows:
 ///
 ///            :  - Command allows colon modifier        (e.g., :ERfile`).
-///            :: - Command allows double colon modifier (e.g., ::Stext`).
+///            :: - Command allows double colon modifier (e.g., :: Stext`).
 ///            @  - Command allows atsign form           (e.g., @^A/hello/).
 ///            q  - Command requires Q-register          (e.g., Mq).
 ///            W  - Command allows W                     (e.g., PW).

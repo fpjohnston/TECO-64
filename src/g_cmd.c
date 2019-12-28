@@ -48,40 +48,43 @@ void exec_G(struct cmd *cmd)
 
     if (cmd->colon_set)
     {
-        if (cmd->qreg == '*')           // :G* -> print filename buffer
+        if (cmd->qname == '*')          // :G* -> print filename buffer
         {
             printf("%s", filename_buf);
             (void)fflush(stdout);
         }
-        else if (cmd->qreg == '_')      // :G_ -> print search string buffer
+        else if (cmd->qname == '_')     // :G_ -> print search string buffer
         {
             printf("<print search string buffer here>\r\n");
             (void)fflush(stdout);
         }
         else                            // :Gq -> print Q-register
         {
-            print_qreg(cmd->qreg, cmd->qlocal);
+            print_qreg(cmd->qname, cmd->qlocal);
         }
     }
     else
     {
-        if (cmd->qreg == '*')           // G* -> copy filename to buffer
+        if (cmd->qname == '*')          // G* -> copy filename to buffer
         {
             exec_insert(filename_buf, (uint)strlen(filename_buf));
         }
-        else if (cmd->qreg == '_')      // G_ -> copy search string to buffer
+        else if (cmd->qname == '_')     // G_ -> copy search string to buffer
         {
             printf("<copy search string buffer here>\r\n");
             (void)fflush(stdout);
         }
-        else                            // Gq -> copy Q-register to buffer
+        else                           // Gq -> copy Q-register to buffer
         {
-            struct qreg *qreg = get_qreg(cmd->qreg, cmd->qlocal);
+            struct qreg *qreg = get_qreg(cmd->qname, cmd->qlocal);
 
             assert(qreg != NULL);
 
-            exec_insert(qreg->text.buf + qreg->text.get,
-                        qreg->text.put - qreg->text.get);
+            if (qreg->text != NULL && qreg->text->size != 0)
+            {
+                exec_insert(qreg->text->buf + qreg->text->get,
+                            qreg->text->put - qreg->text->get);
+            }
         }
     }
 }

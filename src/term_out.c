@@ -34,7 +34,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
-#include "errors.h"
+//#include "errors.h"
 
 
 uint ncommands = 0;                     ///< No. of commands seen so far
@@ -124,26 +124,4 @@ void echo_chr(int c)
                 break;
          }
     }
-}
-
-
-///
-///  @brief    Process HELP command (TBD).
-///
-///  @returns  Returns true if we have a HELP command, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool help_command(void)
-{
-    bool match = match_buf("HELP");
-
-    if (!match)
-    {
-        return false;
-    }
-
-    putc_term(CRLF);
-
-    print_err(E_NYI);                   // TODO: temporary!
 }

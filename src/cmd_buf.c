@@ -33,22 +33,14 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "errors.h"
+
 
 ///  @var    cmd
 ///  @brief  Definition of command string buffer.
 
-static struct buffer cmd =
-{
-    .buf  = NULL,
-    .size = 0,
-    .put  = 0,
-    .get  = 0,
-};
+static struct buffer *term_buf;
 
-// TODO: add static below.
-
-struct buffer *curbuf;           ///< Current command string buffer.
+static struct buffer *cmd_buf;          ///< Current command string buffer.
 
 // Local functions
 
@@ -56,35 +48,39 @@ static void free_buf(void);
 
 
 ///
-///  @brief    Create copy of current buffer and return it.
+///  @brief    Create copy of current buffer and return it. This is used by the
+///            *x immediate-mode action command to save the command string in a
+///            Q-register.
 ///
 ///  @returns  String copy of buffer.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct tstring copy_buf(void)
+struct buffer *copy_buf(void)
 {
-    assert(curbuf != NULL);
-    assert(curbuf->size != 0);
+    assert(cmd_buf != NULL);
+    assert(cmd_buf->size != 0);
 
-    struct tstring str = { .buf = curbuf->buf, .len = curbuf->put };
-    
-    return str;
-}
+    struct buffer *clone = alloc_mem((uint)sizeof(struct buffer));
 
+    clone->put  = cmd_buf->put;
+    clone->get  = cmd_buf->get;
+    clone->size = cmd_buf->size;
+    clone->buf  = alloc_mem(clone->size);
 
-///
-///  @brief    Return number of characters in buffer.
-///
-///  @returns  No. of characters left to be read.
-///
-////////////////////////////////////////////////////////////////////////////////
+    if (clone->put > 0 && cmd_buf->buf[clone->put - 1] == ESC)
+    {
+        --clone->put;
+    }
 
-uint count_buf(void)
-{
-    assert(curbuf != NULL);
-    
-    return curbuf->put - curbuf->get;
+    if (clone->put > 0 && cmd_buf->buf[clone->put - 1] == ESC)
+    {
+        --clone->put;
+    }
+
+    memcpy(clone->buf, cmd_buf->buf, (ulong)clone->put);
+
+    return clone;
 }
 
 
@@ -97,14 +93,14 @@ uint count_buf(void)
 
 int delete_buf(void)
 {
-    assert(curbuf != NULL);
+    assert(cmd_buf != NULL);
     
-    if (curbuf->put == 0)               // Anything in buffer?
+    if (cmd_buf->put == 0)               // Anything in buffer?
     {
         return EOF;                     // No
     }
 
-    return curbuf->buf[--curbuf->put];  // Delete character and return it
+    return cmd_buf->buf[--cmd_buf->put];  // Delete character and return it
 }
 
 
@@ -117,17 +113,17 @@ int delete_buf(void)
 
 void echo_buf(int pos)
 {
-    assert(curbuf != NULL);
+    assert(cmd_buf != NULL);
     
-    assert((uint)pos <= curbuf->put);
+    assert((uint)pos <= cmd_buf->put);
 
     // Just echo everything we're supposed to print. Note that this is not the
     // same as typing out what's in a buffer, so things such as the settings of
     // the EU flag don't matter here.
 
-    for (uint i = (uint)pos; i < curbuf->put; ++i)
+    for (uint i = (uint)pos; i < cmd_buf->put; ++i)
     {
-        echo_chr(curbuf->buf[i]);
+        echo_chr(cmd_buf->buf[i]);
     }
 }
 
@@ -135,42 +131,44 @@ void echo_buf(int pos)
 ///
 ///  @brief    Check if buffer is empty.
 ///
-///  @returns  Nothing.
+///  @returns  true if buffer is empty, false if it's not empty.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 bool empty_buf(void)
 {
-    assert(curbuf != NULL);
-    
-    return (curbuf->put == curbuf->get);
+    assert(cmd_buf != NULL);
+
+    return (cmd_buf->put == cmd_buf->get);
 }
 
 
 ///
 ///  @brief    Fetch next character from buffer.
 ///
-///  @returns  Character fetched.
+///  @returns  Character fetched, or EOF if no character available.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 int fetch_buf(void)
 {
-    assert(curbuf != NULL);
+    assert(cmd_buf != NULL);
     
-    if (curbuf->get == curbuf->put)
+    if (cmd_buf->get == cmd_buf->put)
     {
-        curbuf->get = curbuf->put = 0;
+        cmd_buf->get = cmd_buf->put = 0;
 
-        print_err(E_UTC);               // Unterminated command
+        return EOF;
     }
 
-    return curbuf->buf[curbuf->get++];
+    return cmd_buf->buf[cmd_buf->get++];
 }
 
 
 ///
-///  @brief    Free up memory for command buffer.
+///  @brief    Free up memory for command string. The only command level for
+///            which we need be concerned here is level 0; all other levels are
+///            for macros, which will be freed up by Q-register functions.
 ///
 ///  @returns  Nothing.
 ///
@@ -178,15 +176,30 @@ int fetch_buf(void)
 
 static void free_buf(void)
 {
-    curbuf = &cmd;
+    cmd_buf = NULL;
 
-    if (curbuf->buf != NULL)
+    if (term_buf != NULL && term_buf->buf != NULL)
     {
-        free(curbuf->buf);
+        term_buf->size = 0;
+        term_buf->get  = 0;
+        term_buf->put  = 0;
 
-        curbuf->buf = NULL;
-        curbuf->size = curbuf->get = curbuf->put = 0;
+        free_mem(&term_buf->buf);
+        free_mem((char **)(void *)&term_buf);
     }
+}
+
+
+///
+///  @brief    Get current command buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+struct buffer *get_buf(void)
+{
+    return cmd_buf;
 }
 
 
@@ -199,47 +212,18 @@ static void free_buf(void)
 
 void init_buf(void)
 {
-    curbuf = &cmd;
+    term_buf = alloc_mem((uint)sizeof(struct buffer));
 
-    assert(curbuf->size == 0);         // Allow only one call
-  
-    curbuf->size = STR_SIZE_INIT;
+    term_buf->put  = 0;
+    term_buf->get  = 0;
+    term_buf->size = STR_SIZE_INIT;
+    term_buf->buf  = alloc_mem(term_buf->size);
 
-    if ((curbuf->buf = calloc(1uL, (size_t)curbuf->size)) == NULL)
-    {
-        exit(EXIT_FAILURE);             // Clean up, reset, and exit
-    }
-
-    curbuf->get = curbuf->put = 0;
+    cmd_buf = term_buf;
 
     if (atexit(free_buf) != 0)          // Ensure we clean up on exit
     {
         exit(EXIT_FAILURE);
-    }
-}
-
-
-///
-///  @brief    See if beginning of buffer matches passed string.
-///
-///  @returns  true if match, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool match_buf(const char *str)
-{
-    assert(str != NULL);
-    assert(curbuf != NULL);
-
-    uint len = (uint)strlen(str);
-
-    if (strncasecmp(curbuf->buf, str, (size_t)len))
-    {
-        return false;
-    }
-    else
-    {
-        return true;
     }
 }
 
@@ -253,14 +237,14 @@ bool match_buf(const char *str)
 
 char *next_buf(void)
 {
-    assert(curbuf != NULL);
+    assert(cmd_buf != NULL);
 
-    if (curbuf->get == curbuf->put)
+    if (cmd_buf->get == cmd_buf->put)
     {
         return NULL;
     }
 
-    return curbuf->buf + curbuf->get;
+    return cmd_buf->buf + cmd_buf->get;
 }
 
 
@@ -273,9 +257,27 @@ char *next_buf(void)
 
 void reset_buf(void)
 {
-    curbuf = &cmd;
+    assert(term_buf != NULL);
 
-    curbuf->get = curbuf->put = 0;
+    cmd_buf = term_buf;
+
+    cmd_buf->get = 0;
+    cmd_buf->put = 0;
+}
+
+
+///
+///  @brief    Set command buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void set_buf(struct buffer *buf)
+{
+    assert(buf != NULL);
+
+    cmd_buf = buf;
 }
 
 
@@ -288,15 +290,13 @@ void reset_buf(void)
 
 uint start_buf(void)
 {
-    assert(curbuf != NULL);
-
-    uint i = curbuf->put;
+    uint i = cmd_buf->put;
 
     while (i > 0)
     {
         // Back up on line until we find a line terminator.
 
-        int c = curbuf->buf[i];
+        int c = cmd_buf->buf[i];
 
         if (c == LF || c == VT || c == FF)
         {
@@ -319,30 +319,33 @@ uint start_buf(void)
 
 void store_buf(int c)
 {
-    assert(curbuf != NULL);
-
-    // If we run out of room for the command string, try to increase it by
+    // If we haven't yet allocated space for the command string, do so now.
+    // If we have filled up the current command string, try to increase it by
     // calling realloc(). Note that this may move the block, so we have to
     // reinitialize all of our pointers.
 
-    if (curbuf->put == curbuf->size)            // Has buffer filled up?
+    assert(cmd_buf != NULL);
+    assert(cmd_buf->buf != NULL);
+
+    if (cmd_buf->put == cmd_buf->size)    // Has buffer filled up?
     {
-        // If size is 0, then init_buf() hasn't been called yet. realloc() will
-        // function like malloc() if its first argument is zero, but it's a bad
-        // coding practice, so we don't allow it.
+        assert(cmd_buf->size != 0);
 
-        assert(curbuf->size != 0);
-        assert(curbuf->buf != NULL);
+        // Round up size to a multiple of STR_SIZE_INIT
 
-        uint newsize = curbuf->size + STR_SIZE_INIT;
-        char *newbuf = expand_mem(curbuf->buf, curbuf->size, newsize);
+        cmd_buf->size += STR_SIZE_INIT - 1;
+        cmd_buf->size /= STR_SIZE_INIT;
+        cmd_buf->size *= STR_SIZE_INIT;
 
-        curbuf->size = newsize;
-        curbuf->buf  = newbuf;
+        uint newsize = cmd_buf->size + STR_SIZE_INIT;
+        char *newbuf = expand_mem(cmd_buf->buf, cmd_buf->size, newsize);
+
+        cmd_buf->size = newsize;
+        cmd_buf->buf  = newbuf;
     }
 
-    curbuf->buf[curbuf->put++] = (char)c;
-    curbuf->buf[curbuf->put] = NUL;
+    cmd_buf->buf[cmd_buf->put++] = (char)c;
+    cmd_buf->buf[cmd_buf->put] = NUL;
 }
 
 
@@ -355,10 +358,10 @@ void store_buf(int c)
 
 void unfetch_buf(int c)
 {
-    assert(curbuf != NULL);
+    assert(cmd_buf != NULL);
 
-    if (curbuf->get != 0)
+    if (cmd_buf->get != 0)
     {
-        curbuf->buf[--curbuf->get] = (char)c;
+        cmd_buf->buf[--cmd_buf->get] = (char)c;
     }
 }

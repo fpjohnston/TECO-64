@@ -59,9 +59,9 @@ void scan_pct(struct cmd *cmd)
         cmd->n_set = true;
     }
 
-    n += get_qnum(cmd->qreg, cmd->qlocal);
+    n += get_qnum(cmd->qname, cmd->qlocal);
 
-    store_qnum(cmd->qreg, cmd->qlocal, n);
+    store_qnum(cmd->qname, cmd->qlocal, n);
 
     push_expr(n, EXPR_VALUE);
 }

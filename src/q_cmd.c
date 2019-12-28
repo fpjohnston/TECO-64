@@ -35,6 +35,37 @@
 
 
 ///
+///  @brief    Execute Q command: return numeric value of Q-register, or size of
+///            text string, or the ASCII value of the nth character in string.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_Q(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int n;
+
+    if (cmd->n_set)                     // nQq
+    {
+        n = get_qchr(cmd->qname, cmd->qlocal, cmd->n_arg);
+    }
+    else if (cmd->colon_set)            // :Qq
+    {
+        n = (int)get_qsize(cmd->qname, cmd->qlocal);
+    }
+    else                                // Qq
+    {
+        n = get_qnum(cmd->qname, cmd->qlocal);
+    }
+
+    push_expr(n, EXPR_VALUE);           // Pass value to next command
+}
+
+
+///
 ///  @brief    Scan Q command: return numeric value of Q-register, or size of
 ///            text string.
 ///
@@ -48,25 +79,18 @@ void scan_Q(struct cmd *cmd)
 
     int n;
 
-    if (scan_state != SCAN_PASS2)
+    if (pop_expr(&n))                   // nQq
     {
-        n = DUMMY_VALUE;
+        n = get_qchr(cmd->qname, cmd->qlocal, n);
     }
-    else
+    else if (cmd->colon_set)            // :Qq
     {
-        if (pop_expr(&n))                   // nQq
-        {
-            n = get_qchr(cmd->qreg, cmd->qlocal, n);
-        }
-        else if (cmd->colon_set)            // :Qq
-        {
-            n = (int)get_qsize(cmd->qreg, cmd->qlocal);
-        }
-        else                                // Qq
-        {
-            n = get_qnum(cmd->qreg, cmd->qlocal);
-        }
-    }        
+        n = (int)get_qsize(cmd->qname, cmd->qlocal);
+    }
+    else                                // Qq
+    {
+        n = get_qnum(cmd->qname, cmd->qlocal);
+    }
 
     push_expr(n, EXPR_VALUE);
 }

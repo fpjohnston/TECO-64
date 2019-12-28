@@ -44,7 +44,7 @@
 
 void scan_ctrl_q(struct cmd *unused1)
 {
-    int nlines;
+    int nlines = 0;
     
     (void)pop_expr(&nlines);
 

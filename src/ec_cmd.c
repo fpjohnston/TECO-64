@@ -103,10 +103,5 @@ void scan_EC(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(&cmd->n_arg))          // Was it nEC?
-    {
-        cmd->n_set = true;
-    }
-
     scan_state = SCAN_PASS2;
 }

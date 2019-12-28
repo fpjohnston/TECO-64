@@ -51,7 +51,7 @@ void exec_U(struct cmd *cmd)
         print_err(E_NAU);               // No argument before U
     }
 
-    store_qnum(cmd->qreg, cmd->qlocal, cmd->n_arg);
+    store_qnum(cmd->qname, cmd->qlocal, cmd->n_arg);
 
     // Pass through m argument as n argument for next command.
 

@@ -37,7 +37,13 @@
 #include "errors.h"
 #include "exec.h"
 
+
+static struct buffer *file_buf = NULL;
+
+
 // Local functions
+
+static void free_indirect(void);
 
 static int open_indirect(bool default_type);
 
@@ -98,6 +104,27 @@ void close_indirect(void)
         stream->eof = true;
         stream->cr  = false;
     }
+
+    free_indirect();
+
+    reset_buf();
+}
+
+
+///
+///  @brief    Free indirect command buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void free_indirect(void)
+{
+    if (file_buf != NULL)
+    {
+        free_mem(&file_buf->buf);
+        free_mem((char **)(void *)&file_buf);
+    }
 }
 
 
@@ -120,6 +147,17 @@ static int open_indirect(bool default_type)
 
     if (open_input(filename_buf, IFILE_INDIRECT) == EXIT_SUCCESS)
     {
+        free_indirect();
+
+        file_buf = alloc_mem((uint)sizeof(struct buffer));
+
+        file_buf->put  = 0;
+        file_buf->get  = 0;
+        file_buf->size = STR_SIZE_INIT;
+        file_buf->buf  = alloc_mem(file_buf->size);
+
+        set_buf(file_buf);
+
         return EXIT_SUCCESS;
     }
 
@@ -150,6 +188,15 @@ bool read_indirect(void)
         return false;                   // No
     }
 
+    if (feof(stream->fp))               // Are we at end of file?
+    {
+        close_indirect();               // Yes, just close file
+
+        // TODO: why can't we return false here?
+
+        return true;                    // Say we're done with command file
+    }
+
     int c;
     bool esc_1 = false;
     bool esc_2 = false;
@@ -168,8 +215,6 @@ bool read_indirect(void)
             esc_1 = true;
         }
     }        
-
-    close_indirect();
 
     if (esc_1 && esc_2)                 // Did it end with <ESC><ESC>?
     {

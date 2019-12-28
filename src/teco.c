@@ -147,6 +147,7 @@ int main(int argc, const char * const argv[])
         }
         else                            // We get here on error
         {
+            close_indirect();           // Close any indirect file
             reset_buf();
         }
     }

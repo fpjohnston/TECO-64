@@ -48,7 +48,7 @@
 
 struct qreg
 {
-    struct buffer text;             ///< Q-register text storage
+    struct buffer *text;            ///< Q-register text storage
     int n;                          ///< Q-register numeric value
 };
 
@@ -59,32 +59,30 @@ struct qreg
 
 // Q-register functions
 
-extern void append_qchr(int qname, bool qdot, int c);
-
-extern void append_qtext(int qname, bool qdot, struct tstring text);
+extern void append_qchr(int qname, bool qlocal, int c);
 
 extern uint get_qall(void);
 
-extern int get_qchr(int qname, bool qdot, int n);
+extern int get_qchr(int qname, bool qlocal, int n);
 
-extern int get_qnum(int qname, bool qdot);
+extern int get_qnum(int qname, bool qlocal);
 
-extern struct qreg *get_qreg(int qname, bool qdot);
+extern struct qreg *get_qreg(int qname, bool qlocal);
 
-extern uint get_qsize(int qname, bool qdot);
+extern uint get_qsize(int qname, bool qlocal);
 
 extern void init_qreg(void);
 
-extern bool pop_qreg(int qname, bool qdot);
+extern bool pop_qreg(int qname, bool qlocal);
 
-extern void print_qreg(int qname, bool qdot);
+extern void print_qreg(int qname, bool qlocal);
 
-extern bool push_qreg(int qname, bool qdot);
+extern bool push_qreg(int qname, bool qlocal);
 
-extern void store_qtext(int qname, bool qdot, struct tstring text);
+extern void store_qtext(int qname, bool qlocal, struct buffer *text);
 
-extern void store_qchr(int qname, bool qdot, int c);
+extern void store_qchr(int qname, bool qlocal, int c);
 
-extern void store_qnum(int qname, bool qdot, int n);
+extern void store_qnum(int qname, bool qlocal, int n);
 
 #endif  // !defined(_QREG_H)

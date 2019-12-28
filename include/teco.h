@@ -102,11 +102,12 @@ struct estack
 };
 
 ///  @struct   buffer
-///  @brief    Definition of general buffer. This is dynamically allocated, and
-///            can be resized as necessary. It consists of a pointer to a memory
-///            block, the size of the block in bytes, and two counters, one for
-///            storing new characters, and one for removing characters as the
-///            buffer is read.
+///  @brief    Definition of general buffer, used both for the main command
+///            string and for Q-register macros. This is dynamically allocated,
+///            and can be resized as necessary. It consists of a pointer to a
+///            memory block, the size of the block in bytes, and two counters,
+///            one for storing new characters, and one for removing characters
+///            as the buffer is read.
 
 struct buffer
 {
@@ -203,7 +204,7 @@ extern char *filename_buf;
 
 extern char *eg_command;
 
-extern struct estack estack;            ///< Expression stack
+extern struct estack estack;        ///< Expression stack
 
 extern struct ifile ifiles[];
 
@@ -271,9 +272,7 @@ extern void push_expr(int c, enum expr_type type);
 
 // Buffer functions
 
-extern struct tstring copy_buf(void);
-
-extern uint count_buf(void);
+extern struct buffer *copy_buf(void);
 
 extern int delete_buf(void);
 
@@ -283,13 +282,19 @@ extern bool empty_buf(void);
 
 extern int fetch_buf(void);
 
-extern void init_buf(void);
+extern struct buffer *get_buf(void);
 
-extern bool match_buf(const char *str);
+extern void init_buf(void);
 
 extern char *next_buf(void);
 
+extern struct buffer *pop_buf(void);
+
+extern void push_buf(struct buffer *p);
+
 extern void reset_buf(void);
+
+extern void set_buf(struct buffer *buf);
 
 extern uint start_buf(void);
 

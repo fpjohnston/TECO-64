@@ -72,7 +72,7 @@ void scan_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n;
+    int n = 0;
 
     (void)pop_expr(&n);                 // Get whatever operand we can
 

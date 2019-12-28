@@ -71,7 +71,7 @@ static struct termios saved_mode;       ///< Saved terminal mode
 
 static void get_window(void);
 
-static void reset_term(void);
+void reset_term(void);
 
 static void sigint(int signal);
 
@@ -373,7 +373,7 @@ void print_term(const char *str)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void reset_term(void)
+void reset_term(void)
 {
     // Note: there is no point to adding error checking for this function,
     //       because we're already in the process of exiting when we get here.

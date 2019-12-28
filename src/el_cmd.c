@@ -189,7 +189,7 @@ void log_cmd(struct cmd *cmd)
     log_chr(cmd->c2);
     log_chr(cmd->c3);
     log_chr(cmd->qlocal ? '.' : NUL);
-    log_chr(cmd->q_req ? cmd->qreg : NUL);
+    log_chr(cmd->q_req ? cmd->qname : NUL);
     log_chr(cmd->atsign_set ? cmd->delim : NUL);
     log_str(cmd->text1.buf, cmd->text1.len);
     log_chr(cmd->t1_opt ? cmd->delim : NUL);
@@ -223,9 +223,12 @@ void log_cmd(struct cmd *cmd)
     log_chr(',');
     log_chr(SPACE);
     log_chr(cmd->qlocal ? '.' : NUL);
-    log_chr(cmd->q_req ? cmd->qreg : NUL);
+    log_chr(cmd->q_req ? cmd->qname : NUL);
     log_chr(SPACE);
     log_chr('!');
-         
+
+    line[nbytes] = NUL;
+    
     fprintf(fp, "%s\n", line);
+    (void)fflush(fp);
 }

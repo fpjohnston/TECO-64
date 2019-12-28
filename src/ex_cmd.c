@@ -47,6 +47,9 @@ void exec_EX(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    extern void reset_term(void);
+    reset_term();
+
     // The following ensures that we don't exit if we have nowhere to output
     // the dat in the buffer to.
     

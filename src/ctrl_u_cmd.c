@@ -28,6 +28,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
 #include "errors.h"
@@ -47,10 +48,8 @@ void exec_ctrl_u(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(&cmd->n_arg))          // n^Uq`?
+    if (cmd->n_set)                     // n^Uq`?
     {
-        cmd->n_set = true;
-
         if (cmd->text1.len != 0)        // Does it have a text string?
         {
             print_err(E_MOD);           // Yes, that's an error
@@ -58,11 +57,11 @@ void exec_ctrl_u(struct cmd *cmd)
 
         if (cmd->colon_set)             // n:^Uq`?
         {
-            append_qchr(cmd->qreg, cmd->qlocal, cmd->n_arg);
+            append_qchr(cmd->qname, cmd->qlocal, cmd->n_arg);
         }
         else                            // n^Uq`
         {
-            store_qchr(cmd->qreg, cmd->qlocal, cmd->n_arg);
+            store_qchr(cmd->qname, cmd->qlocal, cmd->n_arg);
         }
     }
     else                                // No n argument
@@ -74,11 +73,25 @@ void exec_ctrl_u(struct cmd *cmd)
 
         if (cmd->colon_set)             // :^Utext`
         {
-            append_qtext(cmd->qreg, cmd->qlocal, cmd->text1);
+            const char *p = cmd->text1.buf;
+
+            for (uint i = 0; i < cmd->text1.len; ++i)
+            {
+                append_qchr(cmd->qname, cmd->qlocal, *p++);
+            }
         }
         else                            // ^Uqtext`
         {
-            store_qtext(cmd->qreg, cmd->qlocal, cmd->text1);
+            struct buffer *text = alloc_mem((uint)sizeof(struct buffer));
+
+            text->put  = cmd->text1.len;
+            text->get  = 0;
+            text->size = cmd->text1.len;
+            text->buf  = alloc_mem(text->size);
+
+            memcpy(text->buf, cmd->text1.buf, (ulong)cmd->text1.len);            
+
+            store_qtext(cmd->qname, cmd->qlocal, text);
         }
     }
 }

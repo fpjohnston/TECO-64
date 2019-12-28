@@ -46,7 +46,7 @@ void exec_rbracket(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!pop_qreg(cmd->qreg, cmd->qlocal))
+    if (!pop_qreg(cmd->qname, cmd->qlocal))
     {
         if (!cmd->colon_set)
         {

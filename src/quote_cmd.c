@@ -28,6 +28,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
 #include "errors.h"
@@ -183,6 +184,11 @@ void scan_quote(struct cmd *cmd)
     if (scan_state != SCAN_PASS2)
     {
         cmd->c2 = (char)fetch_buf();   // Just store 2nd character
+
+        if (strchr("ACDEFGLNRSTUVW<=>", cmd->c2) == NULL)
+        {
+            print_err(E_IQC);
+        }
 
         scan_state = SCAN_PASS2;
     }

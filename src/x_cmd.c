@@ -96,11 +96,11 @@ void exec_X(struct cmd *cmd)
 
         if (i == m - (int)dot && !cmd->colon_set)
         {
-            store_qchr(cmd->qreg, cmd->qlocal, c);
+            store_qchr(cmd->qname, cmd->qlocal, c);
         }
         else
         {
-            append_qchr(cmd->qreg, cmd->qlocal, c);
+            append_qchr(cmd->qname, cmd->qlocal, c);
         }
     }
 }

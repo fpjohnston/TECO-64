@@ -77,11 +77,6 @@ void init_expr(void)
 
 bool pop_expr(int *operand)
 {
-    if (operand != NULL)
-    {
-        *operand = 0;
-    }
-
     if (estack.level == 0)              // Anything on stack?
     {
         return false;                   // No

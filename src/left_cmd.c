@@ -46,7 +46,7 @@ void exec_lbracket(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!push_qreg(cmd->qreg, cmd->qlocal))
+    if (!push_qreg(cmd->qname, cmd->qlocal))
     {
         print_err(E_PDO);               // Push-down list is full
     }

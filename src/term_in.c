@@ -42,8 +42,6 @@
 
 #define VT_LINES    4                   ///< No. of lines to print for VT
 
-int CR_count = 0;                       ///< Current count of CRs seen
-
 int last_in = EOF;                      ///< Last character read
 
 
@@ -130,9 +128,8 @@ void read_cmd(void)
 
     if (empty_buf())                    // If nothing in command string,
     {
-        reset_buf();
-
         c = read_first();               // check for immediate-mode commands
+        reset_buf();
     }
     else
     {
@@ -253,16 +250,7 @@ static void read_cr(void)
 {
     putc_term(CR);
 
-    if (CR_count == 0 && help_command())
-    {
-        CR_count = 0;
-    }
-    else
-    {
-        store_buf(CR);
-
-        ++CR_count;
-    }
+    store_buf(CR);
 }
 
 
@@ -284,7 +272,6 @@ static void read_ctrl_c(int last)
         exit(EXIT_SUCCESS);             // Yes: clean up, reset, and exit
     }
 
-    CR_count = 0;
     reset_buf();
     print_prompt();
 }
@@ -322,7 +309,6 @@ static void read_ctrl_g(void)
     {
         put_bell();
         reset_buf();
-        CR_count = 0;
         print_prompt();
     }
     else if (c == SPACE)                // ^G<SPACE>
@@ -591,16 +577,14 @@ static void read_qname(int c)
     {
         echo_chr(c);                    // Yes, echo the dot
 
-        qname = getc_term((bool)WAIT);        // And get next character
+        qname = getc_term((bool)WAIT);  // And get next character
     }
 
     echo_chr(qname);                    // Echo Q-register name
 
     putc_term(CRLF);
 
-    struct tstring text = copy_buf();
-
-    store_qtext(qname, qdot, text);
+    store_qtext(qname, qdot, copy_buf());
 }
 
 

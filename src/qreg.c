@@ -52,7 +52,7 @@ struct qreg qglobal[QREG_SIZE];
 ///  @def    MSTACK_SIZE
 ///  @brief  Number of items that can be put on macro stack.
 
-#define MSTACK_SIZE     64          // Macro stack for local Q-registers
+#define MSTACK_SIZE     64              // Macro stack for local Q-registers
 
 ///  @struct mstack
 ///  @brief  Definition of macro stack structure.
@@ -115,51 +115,17 @@ void append_qchr(int qname, bool qdot, int c)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    uint nbytes = qreg->text.put + 1;
+    uint nbytes = qreg->text->put + 1;
 
-    if (nbytes >= qreg->text.size)
+    if (nbytes >= qreg->text->size)
     {
         nbytes += STR_SIZE_INIT;
 
-        qreg->text.buf = expand_mem(qreg->text.buf, qreg->text.size, nbytes);
-        qreg->text.size = nbytes;
+        qreg->text->buf = expand_mem(qreg->text->buf, qreg->text->size, nbytes);
+        qreg->text->size = nbytes;
     }
 
-    qreg->text.buf[qreg->text.put++] = (char)c;
-}
-
-
-///
-///  @brief    Append text to Q-register.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void append_qtext(int qname, bool qdot, struct tstring text)
-{
-    assert(text.buf != NULL);
-
-    struct qreg *qreg = get_qreg(qname, qdot);
-    uint nbytes = qreg->text.put + text.len;
-
-    if (nbytes >= qreg->text.size)
-    {
-        uint nblocks = ((nbytes + (STR_SIZE_INIT - 1)) / STR_SIZE_INIT);
-                        
-        nbytes = nblocks * STR_SIZE_INIT;
-        
-        void *p = expand_mem(qreg->text.buf, qreg->text.size, nbytes);
-
-        qreg->text.buf = p;
-        qreg->text.size = nbytes;
-    }
-
-    memcpy(qreg->text.buf + qreg->text.put, text.buf, (size_t)text.len);
-
-    text.buf = NULL;
-
-    qreg->text.put += text.len;
+    qreg->text->buf[qreg->text->put++] = (char)c;
 }
 
 
@@ -178,9 +144,10 @@ static void free_qreg(void)
     {
         struct qreg *qreg = &qglobal[i];
 
-        if (qreg->text.buf != NULL)
+        if (qreg->text != NULL)
         {
-            free_mem(&qreg->text.buf);
+            free_mem(&qreg->text->buf);
+            free_mem((char **)(void *)&qreg->text);
         }
     }
 
@@ -192,9 +159,10 @@ static void free_qreg(void)
         {
             struct qreg *qreg = &mstack[mlevel].qlocal[i];
 
-            if (qreg->text.buf != NULL)
+            if (qreg->text != NULL)
             {
-                free_mem(&qreg->text.buf);
+                free_mem(&qreg->text->buf);
+                free_mem((char **)(void *)&qreg->text);
             }
         }
         --mlevel;
@@ -217,10 +185,10 @@ uint get_qall(void)
     for (int i = 0; i < QREG_SIZE; ++i)
     {
         qreg = &qglobal[i];
-        n += qreg->text.put;
+        n += qreg->text->put;
 
         qreg = &mstack[0].qlocal[i];
-        n += qreg->text.put;
+        n += qreg->text->put;
     }
 
     return n;
@@ -238,12 +206,12 @@ int get_qchr(int qname, bool qdot, int n)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    if (n < 0 || (uint)n >= qreg->text.put) // Out of range?
+    if (n < 0 || (uint)n >= qreg->text->put) // Out of range?
     {
         return EOF;                     // Yes
     }
 
-    return qreg->text.buf[n];
+    return qreg->text->buf[n];
 }
 
 
@@ -307,7 +275,7 @@ uint get_qsize(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    return qreg->text.put;
+    return qreg->text->put;
 }
 
 
@@ -348,9 +316,10 @@ bool pop_qreg(int qname, bool qdot)
 
     struct qreg oldreg = qstack[--qlevel];
 
-    if (qreg->text.buf != NULL && qreg->text.buf != oldreg.text.buf)
+    if (qreg->text != NULL && qreg->text->buf != NULL &&
+        qreg->text->buf != oldreg.text->buf)
     {
-        free_mem(&qreg->text.buf);
+        free_mem(&qreg->text->buf);
     }
 
     *qreg = oldreg;
@@ -370,9 +339,9 @@ void print_qreg(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    for (uint i = 0; i < qreg->text.put; ++i)
+    for (uint i = 0; i < qreg->text->put; ++i)
     {
-        int c = qreg->text.buf[i];
+        int c = qreg->text->buf[i];
 
         if (c == LF)
         {
@@ -419,17 +388,18 @@ void store_qchr(int qname, bool qdot, int c)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    if (qreg->text.buf != NULL)         // Existing buffer?
+    if (qreg->text != NULL)             // Discard current macro
     {
-        free_mem(&qreg->text.buf);      // Yes, discard it
+        free_mem(&qreg->text->buf);
+        free_mem((char **)(void *)&qreg->text);
     }
 
-    qreg->text.get  = 0;
-    qreg->text.put  = 0;
-    qreg->text.size = STR_SIZE_INIT;
-    qreg->text.buf  = alloc_mem(qreg->text.size);
+    qreg->text->get  = 0;
+    qreg->text->put  = 0;
+    qreg->text->size = STR_SIZE_INIT;
+    qreg->text->buf  = alloc_mem(qreg->text->size);
 
-    qreg->text.buf[qreg->text.put++] = (char)c;
+    qreg->text->buf[qreg->text->put++] = (char)c;
 }
 
 
@@ -455,25 +425,19 @@ void store_qnum(int qname, bool qdot, int n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void store_qtext(int qname, bool qdot, struct tstring text)
+void store_qtext(int qname, bool qdot, struct buffer *text)
 {
-    assert(text.buf != NULL);
+    assert(text != NULL);
+    assert(text->buf != NULL);
+    assert(text->size != 0);
 
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    if (qreg->text.buf != NULL)         // Existing buffer?
+    if (qreg->text != NULL)             // Discard current macro
     {
-        free_mem(&qreg->text.buf);      // Yes, discard it
+        free_mem(&qreg->text->buf);
+        free_mem((char **)(void *)&qreg->text);
     }
 
-    uint nbytes = STR_SIZE_INIT;
-        
-    void *p = alloc_mem(nbytes);
-
-    qreg->text.buf  = p;
-    qreg->text.size = nbytes;
-    qreg->text.get  = 0;
-    qreg->text.put  = text.len;
-
-    memcpy(qreg->text.buf, text.buf, (size_t)text.len);
+    qreg->text = text;
 }
