@@ -1,6 +1,6 @@
 ///
 ///  @file    loop_cmd.c
-///  @brief   Execute loop command.
+///  @brief   Execute loop commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -28,13 +28,83 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>                     // TODO: temporary
 
 #include "teco.h"
+#include "errors.h"
 #include "exec.h"
+
+#define INFINITE        (-1)            ///< Infinite loop count
+
+bool search_success = true;             ///< true if last search succeeded
+
+// TODO: add loop stack
+
+struct loop
+{
+    int count;                          ///< Iteration count
+    uint start;                         ///< Starting position
+};
+
+struct loop loop;
+
+bool loop_active = false;
+
+// Local functions
+
+static void endloop(struct cmd *cmd);
 
 
 ///
-///  @brief    Execute < (left angle bracket) command: start iteration.
+///  @brief    Flow to end of loop
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void endloop(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    uint depth = 0;                     // Nesting depth
+
+    do
+    {
+        *cmd = null_cmd;
+
+        (void)next_cmd(cmd);
+
+        if (cmd->c1 == '<')             // Start of a new loop?
+        {
+            ++depth;
+        }
+        else if (cmd->c1 == '>')        // End of a loop?
+        {
+            --depth;
+        }
+    } while (depth > 0);
+
+    loop_active = false;
+}
+
+
+///
+///  @brief    Execute F> command: flow to end of loop.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_F_gt(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    endloop(cmd);                       // Flow to end of loop
+}
+
+
+///
+///  @brief    Execute F< command: flow to start of loop.
 ///
 ///  @returns  Nothing.
 ///
@@ -42,40 +112,120 @@
 
 void exec_F_lt(struct cmd *unused1)
 {
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
+    (void)sleep(1);                     // TODO: temporary
+
+    cmd_buf->get = loop.start;          // Just restart the loop
 
     return;
 }
 
 
 ///
-///  @brief    Execute > (right angle bracket) command: end iteration.
+///  @brief    Execute > command: end of loop.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_F_gt(struct cmd *unused1)
+void exec_gt(struct cmd *cmd)
 {
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
+    assert(cmd != NULL);
 
-    return;
+    if (!loop_active)
+    {
+        print_err(E_BNI);               // Close bracket not in iteration
+    }
+
+    printf("loop count = %d\r\n", loop.count); // TODO: temporary
+
+    if (loop.count == INFINITE || --loop.count > 0)
+    {
+        (void)sleep(1);                 // TODO: temporary
+
+        cmd_buf->get = loop.start;      // Go back to start of loop
+    }
+    else
+    {
+        loop_active = false;
+    }
 }
 
 
 ///
-///  @brief    Execute ; (semi-colon) command: exit iteration.
+///  @brief    Execute < command: start of loop.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_semi(struct cmd *unused1)
+void exec_lt(struct cmd *cmd)
 {
-    printf("%s() not yet completed\r\n", __func__);
-    (void)fflush(stdout);
+    assert(cmd != NULL);
 
-    return;
+    if (!cmd->n_set)
+    {
+        loop.count = INFINITE;          // Special value for infinite loop
+    }
+    else if ((loop.count = cmd->n_arg) <= 0)
+    {
+        endloop(cmd);                   // End loop if count is <= 0
+    }
+    else
+    {
+        loop.start = cmd_buf->get;
+
+        loop_active = true;
+    }
+}
+
+
+///
+///  @brief    Execute ; (semi-colon) command: exit loop.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_semi(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (!loop_active)
+    {
+        print_err(E_SNI);               // Semi-colon not in loop
+    }
+
+    if (cmd->n_set)
+    {
+        if (cmd->colon_set)             // n:; command
+        {
+            if (cmd->n_arg >= 0)        // End loop if n < 0
+            {
+                return;
+            }
+        }
+        else                            // n; command
+        {
+            if (cmd->n_arg < 0)         // End loop if n >= 0
+            {
+                return;
+            }
+        }
+    }
+    else if (cmd->colon_set)            // :; command
+    {
+        if (!search_success)            // End loop if last search succeeded
+        {
+            return;
+        }
+    }
+    else                                // ; command
+    {
+        if (search_success)             // End loop if last search failed
+        {
+            return;
+        }
+    }
+
+    endloop(cmd);
 }

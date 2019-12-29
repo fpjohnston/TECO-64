@@ -35,12 +35,9 @@
 #include "ascii.h"
 
 
-///  @var    cmd
-///  @brief  Definition of command string buffer.
+struct buffer *cmd_buf;                 ///< Current command string buffer.
 
-static struct buffer *term_buf;
-
-static struct buffer *cmd_buf;          ///< Current command string buffer.
+static struct buffer *term_buf;         ///< Command buffer for terminal input
 
 // Local functions
 
@@ -95,12 +92,12 @@ int delete_buf(void)
 {
     assert(cmd_buf != NULL);
     
-    if (cmd_buf->put == 0)               // Anything in buffer?
+    if (cmd_buf->put == 0)              // Anything in buffer?
     {
         return EOF;                     // No
     }
 
-    return cmd_buf->buf[--cmd_buf->put];  // Delete character and return it
+    return cmd_buf->buf[--cmd_buf->put]; // Delete character and return it
 }
 
 
@@ -185,7 +182,7 @@ static void free_buf(void)
         term_buf->put  = 0;
 
         free_mem(&term_buf->buf);
-        free_mem((char **)(void *)&term_buf);
+        free_mem(&term_buf);
     }
 }
 

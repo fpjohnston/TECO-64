@@ -85,6 +85,7 @@ SOURCES = \
     gapbuf.c      \
     get_flag.c    \
     memory.c      \
+    option_sys.c  \
     qreg.c        \
     stubs.c       \
     teco.c        \
@@ -93,10 +94,10 @@ SOURCES = \
     term_sys.c    \
                   \
     a_cmd.c       \
-    apos_cmd.c    \
     b_cmd.c       \
     back_cmd.c    \
     bang_cmd.c    \
+    bracket_cmd.c \
     comma_cmd.c   \
     ctrl_a_cmd.c  \
     ctrl_b_cmd.c  \
@@ -114,7 +115,7 @@ SOURCES = \
     ctrl_x_cmd.c  \
     ctrl_y_cmd.c  \
     ctrl_z_cmd.c  \
-    d_cmd.c       \
+    delete_cmd.c  \
     dot_cmd.c     \
     ea_cmd.c      \
     eb_cmd.c      \
@@ -152,28 +153,21 @@ SOURCES = \
     fs_cmd.c      \
     f_ubar_cmd.c  \
     g_cmd.c       \
-    gt_cmd.c      \
     h_cmd.c       \
+    if_cmd.c      \
     insert_cmd.c  \
-    k_cmd.c       \
-    left_cmd.c    \
     loop_cmd.c    \
-    lt_cmd.c      \
     m_cmd.c       \
     move_cmd.c    \
     n_cmd.c       \
     o_cmd.c       \
-    option_sys.c  \
     p_cmd.c       \
     pct_cmd.c     \
     q_cmd.c       \
     quest_cmd.c   \
-    quote_cmd.c   \
-    right_cmd.c   \
     s_cmd.c       \
     type_cmd.c    \
     u_cmd.c       \
-    vbar_cmd.c    \
     w_cmd.c       \
     x_cmd.c       \
     yank_cmd.c    \

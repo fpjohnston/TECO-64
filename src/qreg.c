@@ -41,63 +41,46 @@
 ///  @var    qglobal
 ///  @brief  Global Q-registers.
 
-struct qreg qglobal[QREG_SIZE];
+static struct qreg qglobal[QREG_SIZE];
 
-////////////////////////////////////////////////////////////////////////////////
-///
-///  Definitions for macro stack for local Q-registers.
-///
-////////////////////////////////////////////////////////////////////////////////
+///  @struct qlocal
+///  @brief  Local Q-register set.
 
-///  @def    MSTACK_SIZE
-///  @brief  Number of items that can be put on macro stack.
-
-#define MSTACK_SIZE     64              // Macro stack for local Q-registers
-
-///  @struct mstack
-///  @brief  Definition of macro stack structure.
-
-struct mstack
+struct qlocal
 {
-//    struct buffer cmd;
-    struct qreg qlocal[QREG_SIZE];      ///< Local Q-register set.
+    struct qlocal *next;                ///< Next item in list
+    struct qreg qreg[QREG_SIZE];        ///< Local Q-register set
 };
 
-///  @var    mstack
-///  @brief  Macro stack.
+///  @var    local_head
+///  @brief  Head of local Q-register set linked list.
 
-struct mstack mstack[MSTACK_SIZE];
-
-///  @var    mlevel
-///  @brief  Current level in macro stack.
-
-int mlevel;
-
-///  @var    qlocal
-///  @brief  Current set of local Q-registers.
-
-struct qreg *qlocal = mstack[0].qlocal;
+static struct qlocal *local_head = NULL;
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-///  Definitions for Q-register push-down list.
+///  Definitions for Q-register push-down list. This is actually implemented as
+///  linked list with a head pointer, which removes any need for an artificial
+///  limit as to how many items can be pushed.
+///
+///  TODO: add environment variable to limit the number of pushed items?
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-///  @def    QSTACK_SIZE
-///  @brief  Number of items that can be  put on push-down list.
+///  @struct qlist
+///  @brief  Linked list for pushing and popping Q-registers.
 
-#define QSTACK_SIZE     64          // Maximum depth for push-down list
+struct qlist
+{
+    struct qlist *next;                 ///< Next item in list
+    struct qreg qreg;                   ///< Q-register value and text
+};
 
-///  @var    qstack
+///  @var    list_head
 ///  @brief  Q-register push-down list.
 
-static struct qreg qstack[QSTACK_SIZE];
+static struct qlist *list_head = NULL;
 
-///  @var    qlevel
-///  @brief  Current level in push-down list.
-
-static uint qlevel;
 
 // Local functions
 
@@ -115,17 +98,17 @@ void append_qchr(int qname, bool qdot, int c)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    uint nbytes = qreg->text->put + 1;
+    uint nbytes = qreg->text.put + 1;
 
-    if (nbytes >= qreg->text->size)
+    if (nbytes >= qreg->text.size)
     {
         nbytes += STR_SIZE_INIT;
 
-        qreg->text->buf = expand_mem(qreg->text->buf, qreg->text->size, nbytes);
-        qreg->text->size = nbytes;
+        qreg->text.buf = expand_mem(qreg->text.buf, qreg->text.size, nbytes);
+        qreg->text.size = nbytes;
     }
 
-    qreg->text->buf[qreg->text->put++] = (char)c;
+    qreg->text.buf[qreg->text.put++] = (char)c;
 }
 
 
@@ -138,34 +121,33 @@ void append_qchr(int qname, bool qdot, int c)
 
 static void free_qreg(void)
 {
-    // Free the global Q-registers
+    // Free local Q-registers and reset the push-down list.
+    
+    reset_qreg();
 
-    for (int i = 0; i < QREG_SIZE; ++i)
+    // The prompt level set of local Q-registers is not freed by reset_qreg(),
+    // so we have to do that ourselves.
+
+    assert(local_head != NULL);
+    assert(local_head->next == NULL);
+
+    for (uint i = 0; i < QREG_SIZE; ++i)
     {
-        struct qreg *qreg = &qglobal[i];
-
-        if (qreg->text != NULL)
+        if (local_head->qreg[i].text.buf != NULL)
         {
-            free_mem(&qreg->text->buf);
-            free_mem((char **)(void *)&qreg->text);
+            free_mem(&local_head->qreg[i].text.buf);
         }
     }
 
-    // Free the local Q-registers
+    free_mem(&local_head);
 
-    while (mlevel > 0)
+    // Free the global Q-registers
+
+    for (uint i = 0; i < QREG_SIZE; ++i)
     {
-        for (int i = 0; i < QREG_SIZE; ++i)
-        {
-            struct qreg *qreg = &mstack[mlevel].qlocal[i];
+        struct qreg *qreg = &qglobal[i];
 
-            if (qreg->text != NULL)
-            {
-                free_mem(&qreg->text->buf);
-                free_mem((char **)(void *)&qreg->text);
-            }
-        }
-        --mlevel;
+        free_mem(&qreg->text.buf);
     }
 }
 
@@ -182,13 +164,13 @@ uint get_qall(void)
     struct qreg *qreg;
     uint n = 0;
     
-    for (int i = 0; i < QREG_SIZE; ++i)
+    for (uint i = 0; i < QREG_SIZE; ++i)
     {
         qreg = &qglobal[i];
-        n += qreg->text->put;
+        n += qreg->text.put;
 
-        qreg = &mstack[0].qlocal[i];
-        n += qreg->text->put;
+//        qreg = &qlocal[i];
+//        n += qreg->text.put;
     }
 
     return n;
@@ -206,12 +188,12 @@ int get_qchr(int qname, bool qdot, int n)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    if (n < 0 || (uint)n >= qreg->text->put) // Out of range?
+    if (n < 0 || (uint)n >= qreg->text.put) // Out of range?
     {
         return EOF;                     // Yes
     }
 
-    return qreg->text->buf[n];
+    return qreg->text.buf[n];
 }
 
 
@@ -239,7 +221,7 @@ int get_qnum(int qname, bool qdot)
 
 struct qreg *get_qreg(int qname, bool qdot)
 {
-    static const char *qchars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    static const char *qchars = QCHARS;
 
     const char *qchar = strchr(qchars, toupper(qname));
 
@@ -253,7 +235,7 @@ struct qreg *get_qreg(int qname, bool qdot)
 
     if (qdot)                           // Local Q-register?
     {
-        qreg = &mstack[0].qlocal[qindex];
+        qreg = local_head->qreg;
     }
     else
     {
@@ -275,7 +257,7 @@ uint get_qsize(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    return qreg->text->put;
+    return qreg->text.put;
 }
 
 
@@ -288,13 +270,38 @@ uint get_qsize(int qname, bool qdot)
 
 void init_qreg(void)
 {
-    mlevel = 0;
-    qlevel = 0;
+    list_head = NULL;
+    local_head = alloc_mem((uint)sizeof(struct qlocal));
 
     if (atexit(free_qreg) != 0)
     {
         exit(EXIT_FAILURE);
     }
+}
+
+
+///
+///  @brief    Pop local Q-register set.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void pop_qlocal(void)
+{
+    struct qlocal *saved_set = local_head;
+
+    local_head = saved_set->next;
+
+    for (uint i = 0; i < QREG_SIZE; ++i)
+    {
+        if (saved_set->qreg[i].text.buf != NULL)
+        {
+            free_mem(&saved_set->qreg[i].text.buf);
+        }
+    }
+
+    free_mem(&saved_set);
 }
 
 
@@ -309,20 +316,21 @@ bool pop_qreg(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    if (qlevel == 0)
+    if (list_head == NULL)
     {
         return false;
     }
 
-    struct qreg oldreg = qstack[--qlevel];
+    struct qlist *savedq = list_head;
 
-    if (qreg->text != NULL && qreg->text->buf != NULL &&
-        qreg->text->buf != oldreg.text->buf)
+    list_head = savedq->next;
+
+    if (qreg->text.buf != NULL && qreg->text.buf != savedq->qreg.text.buf)
     {
-        free_mem(&qreg->text->buf);
+        free_mem(&qreg->text.buf);
     }
 
-    *qreg = oldreg;
+    *qreg = savedq->qreg;
 
     return true;
 }
@@ -339,9 +347,9 @@ void print_qreg(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    for (uint i = 0; i < qreg->text->put; ++i)
+    for (uint i = 0; i < qreg->text.put; ++i)
     {
-        int c = qreg->text->buf[i];
+        int c = qreg->text.buf[i];
 
         if (c == LF)
         {
@@ -356,7 +364,24 @@ void print_qreg(int qname, bool qdot)
 
 
 ///
-///  @brief    Push Q-register onto push-down list.
+///  @brief    Push local Q-register set.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void push_qlocal(void)
+{
+    struct qlocal *qlocal = alloc_mem((uint)sizeof(struct qlocal));
+
+    qlocal->next = local_head;
+
+    local_head = qlocal;
+}
+
+
+///
+///  @brief    Push (deep) copy of Q-register onto push-down list.
 ///
 ///  @returns  true if success, false if push-down list is full.
 ///
@@ -365,15 +390,63 @@ void print_qreg(int qname, bool qdot)
 bool push_qreg(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
+    struct qlist *savedq = alloc_mem((uint)sizeof(struct qlist));
 
-    if (qlevel == QSTACK_SIZE)
+    savedq->qreg.n         = qreg->n;
+    savedq->qreg.text.size = qreg->text.size;
+    savedq->qreg.text.get  = qreg->text.get;
+    savedq->qreg.text.put  = qreg->text.put;
+    savedq->qreg.text.buf  = alloc_mem(savedq->qreg.text.size);
+
+    memcpy(savedq->qreg.text.buf, qreg->text.buf, (ulong)savedq->qreg.text.size);
+
+    savedq->next = list_head;
+
+    list_head = savedq;
+    
+    return true;
+}
+
+
+///
+///  @brief    Free local Q-registers and reset the push-down list.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_qreg(void)
+{
+    // Free the local Q-registers
+
+    while (local_head->next != NULL)
     {
-        return false;
+        struct qlocal *saved_set = local_head;
+
+        local_head = saved_set->next;
+
+        for (uint i = 0; i < QREG_SIZE; ++i)
+        {
+            if (saved_set->qreg[i].text.buf != NULL)
+            {
+                free_mem(&saved_set->qreg[i].text.buf);
+            }
+        }
+
+        free_mem(&saved_set);
     }
 
-    qstack[qlevel++] = *qreg;
+    // Free up what's on the Q-register push-down list.
 
-    return true;
+    struct qlist *savedq;
+    
+    while ((savedq = list_head) != NULL)
+    {
+        list_head = savedq->next;
+
+        free_mem(&savedq->qreg.text.buf);
+        free_mem(&savedq);
+    }
 }
 
 
@@ -388,18 +461,14 @@ void store_qchr(int qname, bool qdot, int c)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    if (qreg->text != NULL)             // Discard current macro
-    {
-        free_mem(&qreg->text->buf);
-        free_mem((char **)(void *)&qreg->text);
-    }
+    free_mem(&qreg->text.buf);
 
-    qreg->text->get  = 0;
-    qreg->text->put  = 0;
-    qreg->text->size = STR_SIZE_INIT;
-    qreg->text->buf  = alloc_mem(qreg->text->size);
+    qreg->text.get  = 0;
+    qreg->text.put  = 1;
+    qreg->text.size = STR_SIZE_INIT;
+    qreg->text.buf  = alloc_mem(qreg->text.size);
 
-    qreg->text->buf[qreg->text->put++] = (char)c;
+    qreg->text.buf[qreg->text.put++] = (char)c;
 }
 
 
@@ -428,16 +497,11 @@ void store_qnum(int qname, bool qdot, int n)
 void store_qtext(int qname, bool qdot, struct buffer *text)
 {
     assert(text != NULL);
-    assert(text->buf != NULL);
     assert(text->size != 0);
 
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    if (qreg->text != NULL)             // Discard current macro
-    {
-        free_mem(&qreg->text->buf);
-        free_mem((char **)(void *)&qreg->text);
-    }
+    free_mem(&qreg->text.buf);
 
-    qreg->text = text;
+    qreg->text = *text;
 }

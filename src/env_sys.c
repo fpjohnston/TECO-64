@@ -29,6 +29,7 @@
 #include <unistd.h>
 
 #include "teco.h"
+#include "exec.h"
 
 
 #define TECO_HW         101             ///< x86 platform

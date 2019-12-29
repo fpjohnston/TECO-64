@@ -1,6 +1,6 @@
 ///
-///  @file    right_cmd.c
-///  @brief   Execute ] (right bracket) command.
+///  @file    bracket_cmd.c
+///  @brief   Execute bracket commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -36,6 +36,29 @@
 
 
 ///
+///  @brief    Execute [ command - Push Q-register onto push-down list.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_lbracket(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (!push_qreg(cmd->qname, cmd->qlocal))
+    {
+        print_err(E_PDO);               // Push-down list is full
+    }
+
+    if (cmd->n_set)
+    {
+        push_expr(cmd->n_arg, EXPR_VALUE);
+    }
+}
+
+
+///
 ///  @brief    Execute ] command: pop Q-register from push-down list.
 ///
 ///  @returns  Nothing.
@@ -64,4 +87,3 @@ void exec_rbracket(struct cmd *cmd)
         push_expr(cmd->n_arg, EXPR_VALUE);
     }
 }
-

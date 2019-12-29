@@ -48,14 +48,19 @@
 
 struct qreg
 {
-    struct buffer *text;            ///< Q-register text storage
     int n;                          ///< Q-register numeric value
+    struct buffer text;             ///< Q-register text storage
 };
+
+///  @var     QCHARS
+///  @brief   List of (global) Q-registers.
+
+#define QCHARS          "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 ///  @def     QREG_SIZE
 ///  @brief   No. of Q-registers in each set.
 
-#define QREG_SIZE       (('9' - '0') + 1 + ('Z' - 'A') + 1)
+#define QREG_SIZE       (uint)(sizeof(QCHARS) - 1)
 
 // Q-register functions
 
@@ -73,11 +78,17 @@ extern uint get_qsize(int qname, bool qlocal);
 
 extern void init_qreg(void);
 
+extern void pop_qlocal(void);
+
 extern bool pop_qreg(int qname, bool qlocal);
 
 extern void print_qreg(int qname, bool qlocal);
 
+extern void push_qlocal(void);
+
 extern bool push_qreg(int qname, bool qlocal);
+
+extern void reset_qreg(void);
 
 extern void store_qtext(int qname, bool qlocal, struct buffer *text);
 

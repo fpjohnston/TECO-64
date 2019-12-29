@@ -87,8 +87,6 @@ void exec_equals(struct cmd *cmd)
         printf("%x", cmd->n_arg);
     }
 
-    (void)fflush(stdout);
-
     if (!cmd->colon_set)                // Suppress CRLF?
     {
         putc_term(CRLF);

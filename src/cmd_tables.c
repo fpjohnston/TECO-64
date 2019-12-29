@@ -125,7 +125,7 @@ const struct cmd_table cmd_table[] =
     ['N']         = { NULL,           exec_N,           ": @ 1"    },
     ['O']         = { NULL,           exec_O,           "@ 1"      },
     ['P']         = { NULL,           exec_P,           ": W"      },
-    ['Q']         = { NULL,           exec_Q,           ": q"      },
+    ['Q']         = { scan_Q,         NULL,             ": q"      },
     ['R']         = { NULL,           exec_R,           ":"        },
     ['S']         = { NULL,           exec_S,           ": :: @ 1" },
     ['T']         = { NULL,           exec_T,           ":"        },
@@ -242,7 +242,6 @@ const uint cmd_f_count = countof(cmd_f_table); ///< No. of items in cmd_f_table[
 
 const struct cmd null_cmd =
 {
-    .level      = 0,
     .colon_opt  = false,
     .dcolon_opt = false,
     .atsign_opt = false,

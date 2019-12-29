@@ -1,6 +1,6 @@
 ///
-///  @file    quote_cmd.c
-///  @brief   Execute quote command.
+///  @file    if_cmd.c
+///  @brief   Execute conditional commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -33,6 +33,51 @@
 #include "teco.h"
 #include "errors.h"
 #include "exec.h"
+
+
+///
+///  @brief    Execute ' (apostrophe) command: end conditional statement.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_apos(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    // TODO: add more here
+}
+
+
+///
+///  @brief    Execute F' command: flow to end of conditional statement.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_F_apos(struct cmd *unused1)
+{
+    printf("%s() not yet completed\r\n", __func__);
+
+    return;
+}
+
+
+///
+///  @brief    Execute F| command: flow to else clause of conditional statement.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_F_vbar(struct cmd *unused1)
+{
+    printf("%s() not yet completed\r\n", __func__);
+
+    return;
+}
 
 
 ///
@@ -72,8 +117,6 @@ void exec_quote(struct cmd *cmd)
 
     int c = cmd->n_arg;                 // Value to test
     int test = cmd->c2;                 // Test condition
-
-    ++cmd->level;
 
     switch (toupper(test))
     {
@@ -167,6 +210,22 @@ void exec_quote(struct cmd *cmd)
     }
 #endif
 
+}
+
+
+///
+///  @brief    Execute | (vertical bar) command: else clause of conditional
+///            statement.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_vbar(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    // TODO: add more here
 }
 
 

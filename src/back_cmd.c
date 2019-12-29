@@ -32,6 +32,11 @@
 #include "teco.h"
 #include "exec.h"
 
+///  @var    MAX_DIGITS
+///  @brief  Maximum length of digit string. Note that this is big enough to
+///          hold a 64-bit octal number.
+
+#define MAX_DIGITS      22
 
 ///
 ///  @brief    Execute \ (backslash) command: insert a digit string into buffer.
@@ -46,7 +51,24 @@ void exec_back(struct cmd *cmd)
 
     if (cmd->n_set)                     // n argument?
     {
-        // TODO: convert n to string using current radix and insert into buffer.
+        char string[MAX_DIGITS];
+        const char *format = "%d";        
+
+        if (v.radix == 8)
+        {
+            format = "%o";
+        }
+        else if (v.radix == 16)
+        {
+            format = "%x";
+        }
+
+        uint nbytes = (uint)snprintf(string, sizeof(string), format,
+                                     cmd->n_arg);
+
+        assert(nbytes < sizeof(string));
+
+        exec_insert(string, nbytes);
     }
 }
 

@@ -84,15 +84,17 @@ void *expand_mem(void *ptr, uint oldsize, uint newsize)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void free_mem(char **ptr)
+void free_mem(void *p1)
 {
-    assert(ptr != NULL);                // Make sure pointer to pointer is real
+    assert(p1 != NULL);                 // Make sure pointer to pointer is real
 
-    if (*ptr != NULL)
+    char **p2 = p1;                     // Make it something we can dereference
+
+    if (*p2 != NULL)
     {
-        free(*ptr);
+        free(*p2);
 
-        *ptr = NULL;                    // Make sure we don't use this again
+        *p2 = NULL;                     // Make sure we don't use this again
     }
 }
 

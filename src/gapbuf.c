@@ -461,8 +461,6 @@ static void print_size(uint size)
 
     printf("[%u%s bytes]", size, type);
 
-    (void)fflush(stdout);
-
     putc_term(CRLF);
 }
 

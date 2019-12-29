@@ -50,7 +50,6 @@ enum scan_state
 
 struct cmd
 {
-    int level;                      ///< Command level
     uint colon_opt  : 1;            ///< : allowed
     uint dcolon_opt : 1;            ///< :: allowed
     uint atsign_opt : 1;            ///< @ allowed
@@ -152,8 +151,6 @@ extern void exec_N(struct cmd *cmd);
 extern void exec_O(struct cmd *cmd);
 
 extern void exec_P(struct cmd *cmd);
-
-extern void exec_Q(struct cmd *cmd);
 
 extern void exec_R(struct cmd *cmd);
 
@@ -389,8 +386,24 @@ extern void scan_Z(struct cmd *cmd);
 
 // Miscellaneous functions
 
+extern bool check_indirect(void);
+
+extern void close_indirect(void);
+
+extern void exit_EG(void);
+
+extern void init_EG(void);
+ 
 extern void log_cmd(struct cmd *cmd);
 
+extern exec_func *next_cmd(struct cmd *cmd);
+
+extern int open_indirect(bool default_type);
+
 extern int open_output(const struct cmd *cmd, uint stream);
+
+extern bool read_indirect(void);
+
+extern bool test_indirect(void);
 
 #endif  // _EXEC_H

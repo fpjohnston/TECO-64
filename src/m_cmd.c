@@ -30,13 +30,11 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "exec.h"
 #include "qreg.h"
 
-#define MAX_LEVELS      64              ///< Max. macro levels
 
-static uint macro_level = 0;            ///< Current macro level
+// TODO: add environment variable to control maximum depth of macros?
 
 
 ///
@@ -66,24 +64,17 @@ void exec_M(struct cmd *cmd)
 
     // Nothing to do if macro is empty
 
-    if (qreg->text == NULL || qreg->text->put == 0)
+    if (qreg->text.put == 0)
     {
         return;
     }
 
-    if (++macro_level == MAX_LEVELS)    // Have we reached maximum depth?
-    {
-        macro_level = 0;
+    qreg->text.get = 0;
 
-        print_err(E_MEM);               // Memory overflow
-    }
-
-    qreg->text->get = 0;
-
-    uint saved_put = qreg->text->put;
+    uint saved_put = qreg->text.put;
     struct buffer *saved_buf = get_buf();
 
-    set_buf(qreg->text);
+    set_buf(&qreg->text);
 
     // If invoked with nMq or m,nMq, then pass argument(s) to macro.
 
@@ -97,13 +88,24 @@ void exec_M(struct cmd *cmd)
         push_expr(cmd->n_arg, EXPR_VALUE);
     }
 
-    // TODO: check for saving local Q-registers.
+    // If no colon modifier, and not a local Q-register, then save current
+    // local Q-registers before executing macro, and restore them afterwards.
+
+    bool save_local = (!cmd->colon_set && !cmd->qlocal);
+
+    if (save_local)
+    {
+        push_qlocal();
+    }
 
     exec_cmd();
 
+    if (save_local)
+    {
+        pop_qlocal();
+    }
+
     set_buf(saved_buf);
 
-    qreg->text->put = saved_put;
-
-    --macro_level;
+    qreg->text.put = saved_put;
 }

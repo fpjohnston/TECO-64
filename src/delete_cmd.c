@@ -1,6 +1,6 @@
 ///
-///  @file    k_cmd.c
-///  @brief   Execute k command.
+///  @file    delete_cmd.c
+///  @brief   Execute delete commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -34,6 +34,63 @@
 #include "textbuf.h"
 #include "errors.h"
 #include "exec.h"
+
+
+///
+///  @brief    Execute D command: delete characters at dot.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_D(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    uint Z = getsize_tbuf();
+    int n = 1;
+    int m;
+
+    if (cmd->n_set)
+    {
+        n = cmd->n_arg;
+    }
+
+    if (cmd->m_set)                     // m,nD - same as m,nK
+    {
+        m = cmd->m_arg;
+
+        if (m < 0 || (uint)m > Z || n < 0 || (uint)n > Z || m > n)
+        {
+            printc_err(E_POP, 'D');     // Pointer off page
+        }
+
+        setpos_tbuf((uint)m);           // Go to first position
+
+        n -= m;                         // And delete this many chars
+    }
+
+    uint dot = getpos_tbuf();
+
+    if ((n < 0 && (uint)-n > dot) || (n > 0 && (uint)n > Z - dot))
+    {
+        if (!cmd->colon_set)
+        {
+            print_err(E_DTB);           // Delete too big
+        }
+        
+        push_expr(TECO_FAILURE, EXPR_VALUE);
+
+        return;
+    }
+
+    delete_tbuf(n);
+
+    if (cmd->colon_set)
+    {
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
+    }
+}
 
 
 ///
@@ -88,4 +145,3 @@ void exec_K(struct cmd *cmd)
 
     delete_tbuf(n);
 }
-

@@ -38,14 +38,12 @@
 #include "exec.h"
 
 
-static struct buffer *file_buf = NULL;
+static struct buffer *file_buf = NULL;  ///< Command buffer for indirect file
 
 
 // Local functions
 
 static void free_indirect(void);
-
-static int open_indirect(bool default_type);
 
 
 ///
@@ -68,8 +66,8 @@ void exec_EI(struct cmd *cmd)
 
     create_filename(&cmd->text1);
 
-    if (open_indirect((bool)false) == EXIT_FAILURE
-        && open_indirect((bool)true) == EXIT_FAILURE)
+    if (open_indirect((bool)false) == EXIT_FAILURE &&
+        open_indirect((bool)true)  == EXIT_FAILURE)
     {
         if (cmd->colon_set)
         {
@@ -82,6 +80,39 @@ void exec_EI(struct cmd *cmd)
     {
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
+}
+
+
+///
+///  @brief    Check for input from indirect file.
+///
+///  @returns  true if need to execute command string, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool check_indirect(void)
+{
+    if (mung_file == NULL)
+    {
+        return read_indirect();
+    }
+
+    // Here if user wants to "mung" a file (that is, there was a command-line
+    // argument that specified that a file to process just like an EI command).
+
+    filename_buf = alloc_mem((uint)strlen(mung_file) + 1);
+
+    strcpy(filename_buf, mung_file);
+
+    mung_file = NULL;                   // Only do this once
+
+    if (open_indirect((bool)false) == EXIT_FAILURE &&
+        open_indirect((bool)true)  == EXIT_FAILURE)
+    {
+        prints_err(E_FNF, filename_buf);
+    }
+
+    return true;
 }
 
 
@@ -123,7 +154,7 @@ static void free_indirect(void)
     if (file_buf != NULL)
     {
         free_mem(&file_buf->buf);
-        free_mem((char **)(void *)&file_buf);
+        free_mem(&file_buf);
     }
 }
 
@@ -135,7 +166,7 @@ static void free_indirect(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int open_indirect(bool default_type)
+int open_indirect(bool default_type)
 {
     if (default_type)
     {
@@ -224,4 +255,19 @@ bool read_indirect(void)
     {
         return false;                   // Else wait until user terminates it
     }
+}
+
+
+///
+///  @brief    Test to see if we have an indirect file open.
+///
+///  @returns  true if indirect file is open, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool test_indirect(void)
+{
+    struct ifile *stream = &ifiles[IFILE_INDIRECT];
+
+    return (stream->fp != NULL);
 }

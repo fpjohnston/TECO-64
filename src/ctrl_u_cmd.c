@@ -82,16 +82,16 @@ void exec_ctrl_u(struct cmd *cmd)
         }
         else                            // ^Uqtext`
         {
-            struct buffer *text = alloc_mem((uint)sizeof(struct buffer));
+            struct buffer text;
 
-            text->put  = cmd->text1.len;
-            text->get  = 0;
-            text->size = cmd->text1.len;
-            text->buf  = alloc_mem(text->size);
+            text.put  = cmd->text1.len;
+            text.get  = 0;
+            text.size = cmd->text1.len;
+            text.buf  = alloc_mem(text.size);
 
-            memcpy(text->buf, cmd->text1.buf, (ulong)cmd->text1.len);            
+            memcpy(text.buf, cmd->text1.buf, (ulong)text.size);            
 
-            store_qtext(cmd->qname, cmd->qlocal, text);
+            store_qtext(cmd->qname, cmd->qlocal, &text);
         }
     }
 }

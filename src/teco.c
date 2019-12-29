@@ -70,6 +70,7 @@
 
 #include "teco.h"
 #include "eflags.h"
+#include "exec.h"
 #include "qreg.h"
 #include "textbuf.h"
 
@@ -136,7 +137,7 @@ int main(int argc, const char * const argv[])
 
         if (setjmp(jump_main) == 0)
         {
-            if (!read_indirect())       // Indirect command to execute yet?
+            if (!check_indirect())      // Indirect command to execute yet?
             {
                 read_cmd();             // No, read from terminal
             }
@@ -148,7 +149,8 @@ int main(int argc, const char * const argv[])
         else                            // We get here on error
         {
             close_indirect();           // Close any indirect file
-            reset_buf();
+            reset_buf();                // Reset the input buffer
+            reset_qreg();               // Free up Q-register storage
         }
     }
 }

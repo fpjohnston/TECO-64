@@ -312,7 +312,6 @@ exec_func *scan_pass1(struct cmd *cmd)
     // execute the command. This includes such things as m and n arguments,
     // modifiers such as : and @, and any text strings followed the command.
 
-    paren_count = 0;
     cmd->c2 = NUL;
     cmd->c3 = NUL;
 
@@ -405,7 +404,24 @@ void scan_pass2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    if (cmd->expr.len == 0)             // Do we have an expression?
+    {
+        return;                         // No, so we're done
+    }
+
+    init_expr();                        // Re-initialize expression stack
+
+    // Save the stuff we'll need for the actual command
+
+    char c1 = cmd->c1;
+    char c2 = cmd->c2;
+    char c3 = cmd->c3;
+    uint atsign_set = cmd->atsign_set;
+    uint colon_set  = cmd->colon_set;
+    uint dcolon_set = cmd->dcolon_set;
+
     paren_count = 0;
+
     cmd->m_set = false;
     cmd->n_set = false;
     cmd->h_set = false;
@@ -523,6 +539,15 @@ void scan_pass2(struct cmd *cmd)
     }
 
     cmd->q_req = saved_qreq;
+
+    // Restore command characters
+
+    cmd->dcolon_set = dcolon_set;
+    cmd->colon_set  = colon_set;
+    cmd->atsign_set = atsign_set;
+    cmd->c3 = c3;
+    cmd->c2 = c2;
+    cmd->c1 = c1;
 }
 
 

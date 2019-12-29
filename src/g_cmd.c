@@ -34,6 +34,8 @@
 #include "exec.h"
 #include "qreg.h"
 
+const char *last_search = "<last search string>"; ///< Last search string
+
 
 ///
 ///  @brief    Execute G command: print Q-register contents, or copy to buffer.
@@ -51,12 +53,10 @@ void exec_G(struct cmd *cmd)
         if (cmd->qname == '*')          // :G* -> print filename buffer
         {
             printf("%s", filename_buf);
-            (void)fflush(stdout);
         }
         else if (cmd->qname == '_')     // :G_ -> print search string buffer
         {
-            printf("<print search string buffer here>\r\n");
-            (void)fflush(stdout);
+            printf("%s", last_search);
         }
         else                            // :Gq -> print Q-register
         {
@@ -71,8 +71,7 @@ void exec_G(struct cmd *cmd)
         }
         else if (cmd->qname == '_')     // G_ -> copy search string to buffer
         {
-            printf("<copy search string buffer here>\r\n");
-            (void)fflush(stdout);
+            exec_insert(last_search, (uint)strlen(last_search));
         }
         else                           // Gq -> copy Q-register to buffer
         {
@@ -80,10 +79,10 @@ void exec_G(struct cmd *cmd)
 
             assert(qreg != NULL);
 
-            if (qreg->text != NULL && qreg->text->size != 0)
+            if (qreg->text.size != 0)
             {
-                exec_insert(qreg->text->buf + qreg->text->get,
-                            qreg->text->put - qreg->text->get);
+                exec_insert(qreg->text.buf + qreg->text.get,
+                            qreg->text.put - qreg->text.get);
             }
         }
     }

@@ -160,6 +160,8 @@ static void log_str(const char *p, uint n)
 
 void log_cmd(struct cmd *cmd)
 {
+    static int cmd_level = 0;
+
     assert(cmd != NULL);
 
     FILE *fp = ofiles[OFILE_LOG].fp;
@@ -172,9 +174,23 @@ void log_cmd(struct cmd *cmd)
         return;
     }
 
+    // Decrease indentation level for commands that end a control structure.
+
+    if (cmd->c1 == '\'' || cmd->c1 == '|' || cmd->c1 == '>')
+    {
+        --cmd_level;
+    }
+
     // Start with any necessary indenting
 
-    nbytes = (uint)snprintf(line, sizeof(line), "%*s", (int)cmd->level * 4, "");
+    nbytes = (uint)snprintf(line, sizeof(line), "%*s", cmd_level * 4, "");
+
+    // Increase indentation level for commands that begin a control structure.
+
+    if (cmd->c1 == '"' || cmd->c1 == '|' || cmd->c1 == '<')
+    {
+        ++cmd_level;
+    }
 
     assert(nbytes < sizeof(line));
 
@@ -201,8 +217,6 @@ void log_cmd(struct cmd *cmd)
     if (teco_debug)
     {
         printf("{%5u}  %s\r\n", ++sequence, line);
-
-        (void)fflush(stdout);
     }
 
     if (fp == NULL)

@@ -218,13 +218,15 @@ extern int last_in;
 
 extern const char *mung_file;
 
+extern struct buffer *cmd_buf;      ///< Current command string
+
 // Global functions
 
 extern void *alloc_mem(uint size);
 
 extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
 
-extern void free_mem(char **ptr);
+extern void free_mem(void *ptr);
 
 extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 
@@ -240,14 +242,8 @@ extern int teco_env(int n);
 
 extern void echo_chr(int c);
 
-extern void exit_EG(void);
-
 extern int getc_term(bool nowait);
 
-extern bool help_command(void);
-
-extern void init_EG(void);
- 
 extern void init_term(void);
 
 extern void print_prompt(void);
@@ -288,10 +284,6 @@ extern void init_buf(void);
 
 extern char *next_buf(void);
 
-extern struct buffer *pop_buf(void);
-
-extern void push_buf(struct buffer *p);
-
 extern void reset_buf(void);
 
 extern void set_buf(struct buffer *buf);
@@ -304,8 +296,6 @@ extern void unfetch_buf(int c);
 
 // File functions
 
-extern void close_indirect(void);
-
 extern void close_output(uint stream);
 
 extern void create_filename(const struct tstring *text);
@@ -317,8 +307,6 @@ extern int get_wild(void);
 extern void init_files(void);
 
 extern int open_input(const char *filespec, uint stream);
-
-extern bool read_indirect(void);
 
 extern void rename_output(struct ofile *ofile);
 

@@ -414,8 +414,6 @@ static void common_err(int err_teco)
     {
         printf("   ");
         printf(text, err_str);
-
-        (void)fflush(stdout);
     }
 
     putc_term(CRLF);

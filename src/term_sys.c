@@ -302,10 +302,12 @@ void putc_term(int c)
         putc_term(CR);
         putc_term(LF);
     }
-    else if (write(STDOUT_FILENO, &c, 1uL) == -1)
+    else if (fputc(c, stdout) == EOF)
     {
         fatal_err(errno, E_UWC, NULL);
     }
+
+    (void)fflush(stdout);
 
 #endif
 }
@@ -328,10 +330,12 @@ void puts_term(const char *str, unsigned int nbytes)
 
 #else
 
-    if (write(STDOUT_FILENO, str, (ulong)nbytes) == -1)
+    if (fwrite(str, (ulong)nbytes, 1uL, stdout) != nbytes)
     {
         fatal_err(errno, E_UWL, NULL);
     }
+
+    (void)fflush(stdout);
 
 #endif
 }
@@ -355,12 +359,15 @@ void print_term(const char *str)
 #else
 
     char crlf[] = { '\r', '\n' };
+    uint len = (uint)strlen(str);
 
-    if (write(STDOUT_FILENO, str, strlen(str)) == -1
-        || write(STDOUT_FILENO, crlf, sizeof(crlf)) == -1)
+    if (fwrite(str, (ulong)len, 1uL, stdout) != len
+        || fwrite(crlf, sizeof(crlf), 1uL, stdout) != sizeof(crlf))
     {
         fatal_err(errno, E_UWL, NULL);
     }
+
+    (void)fflush(stdout);
 
 #endif
 }
