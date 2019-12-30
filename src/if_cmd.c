@@ -35,6 +35,48 @@
 #include "exec.h"
 
 
+// TODO: add code to handle termination of loop before end of conditional
+//       (e.g., a command string like "< 1 "N > '".
+
+static uint if_depth = 0;
+
+
+// Local functions
+
+static void endif(struct cmd *cmd, bool vbar);
+
+
+///
+///  @brief    Flow to end of conditional statement.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void endif(struct cmd *cmd, bool vbar)
+{
+    assert(cmd != NULL);
+
+    do
+    {
+        (void)next_cmd(cmd);
+
+        if (cmd->c1 == '"')             // Start of a new conditional?
+        {
+            ++if_depth;
+        }
+        else if (cmd->c1 == '\'')       // End of conditional?
+        {
+            --if_depth;
+        }
+        else if (vbar && cmd->c1 == '|' && if_depth == 1)
+        {
+            break;
+        }
+    } while (if_depth > 0);
+}
+
+
 ///
 ///  @brief    Execute ' (apostrophe) command: end conditional statement.
 ///
@@ -42,11 +84,14 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_apos(struct cmd *cmd)
+void exec_apos(struct cmd *unused1)
 {
-    assert(cmd != NULL);
+    if (if_depth == 0)
+    {
+        print_err(E_NIC);               // Not in conditional
+    }
 
-    // TODO: add more here
+    --if_depth;
 }
 
 
@@ -57,11 +102,14 @@ void exec_apos(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_F_apos(struct cmd *unused1)
+void exec_F_apos(struct cmd *cmd)
 {
-    printf("%s() not yet completed\r\n", __func__);
+    if (if_depth == 0)
+    {
+        print_err(E_NIC);               // Not in conditional
+    }
 
-    return;
+    endif(cmd, (bool)false);
 }
 
 
@@ -72,18 +120,20 @@ void exec_F_apos(struct cmd *unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_F_vbar(struct cmd *unused1)
+void exec_F_vbar(struct cmd *cmd)
 {
-    printf("%s() not yet completed\r\n", __func__);
+    if (if_depth == 0)
+    {
+        print_err(E_NIC);               // Not in conditional
+    }
 
-    return;
+    endif(cmd, (bool)true);
 }
 
 
 ///
-///  @brief    Execute quote command (test value).
+///  @brief    Execute quote command: if/then/else statement.
 ///
-///            "      Start conditional
 ///            n"<    Text for less than zero
 ///            n"=    Test for equal to zero
 ///            n">    Test for greater than zero
@@ -118,24 +168,26 @@ void exec_quote(struct cmd *cmd)
     int c = cmd->n_arg;                 // Value to test
     int test = cmd->c2;                 // Test condition
 
+    ++if_depth;
+
     switch (toupper(test))
     {
         case 'A':                       // Test for alphabetic
-            if (!isalpha(c))
+            if (isalpha(c))
             {
                 return;
             }
             break;
 
         case 'C':                       // Test for symbol constituent
-            if (!isalnum(c) && c != '.' && c != '_' && c != '$')
+            if (isalnum(c) || c == '.' || c == '_' || c == '$')
             {
                 return;
             }
             break;
 
         case 'D':                       // Test for numeric
-            if (!isdigit(c))
+            if (isdigit(c))
             {
                 return;
             }
@@ -145,7 +197,7 @@ void exec_quote(struct cmd *cmd)
         case 'E':                       // Test for equal to zero
         case 'F':                       // Test for false
         case 'U':                       // Test for unsuccessful
-            if (!(c == 0))
+            if (c == 0)
             {
                 return;
             }
@@ -153,7 +205,7 @@ void exec_quote(struct cmd *cmd)
 
         case '>':                       // Test for greater than zero
         case 'G':                       // Test for greater than zero
-            if (!(c > 0))
+            if (c > 0)
             {
                 return;
             }
@@ -163,53 +215,49 @@ void exec_quote(struct cmd *cmd)
         case 'L':                       // Test for less than zero
         case 'S':                       // Test for successful
         case 'T':                       // Test for true
-            if (!(c < 0))
+            if (c < 0)
             {
                 return;
             }
             break;
 
         case 'N':                       // Test for not equal to zero
-            if (c == 0)
+            if (c != 0)
             {
                 return;
             }
             break;
 
         case 'R':                       // Test for alphanumeric
-            if (!isalnum(c))
+            if (isalnum(c))
             {
                 return;
             }
             break;
 
         case 'V':                       // Test for lower case
-            if (!islower(c))
+            if (islower(c))
             {
                 return;
             }
             break;
 
         case 'W':                       // Test for upper case
-            if (!isupper(c))
+            if (isupper(c))
             {
                 return;
             }
             break;
 
         default:
-            print_err(E_IQC);           // Illegal character after "
+            --if_depth;
+
+            print_err(E_IQC);           // Illegal quote character
     }
 
-    // Here if the test was successful
+    // Here if the test was unsuccessful
 
-#if     0       // TODO: finish this
-    if (FlowEE() == EXIT_FAILURE)       // Flow to | or '
-    {
-        return;
-    }
-#endif
-
+    endif(cmd, (bool)true);
 }
 
 
@@ -225,7 +273,25 @@ void exec_vbar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // TODO: add more here
+    if (if_depth == 0)
+    {
+        print_err(E_NIC);               // Not in conditional
+    }
+
+    endif(cmd, (bool)false);
+}
+
+
+///
+///  @brief    Reset conditional statement depth.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_if(void)
+{
+    if_depth = 0;
 }
 
 
@@ -242,13 +308,26 @@ void scan_quote(struct cmd *cmd)
     
     if (scan_state != SCAN_PASS2)
     {
-        cmd->c2 = (char)fetch_buf();   // Just store 2nd character
+        cmd->c2 = (char)fetch_buf();    // Just store 2nd character
 
-        if (strchr("ACDEFGLNRSTUVW<=>", cmd->c2) == NULL)
+        if (strchr("<=>ACDEFGLNRSTUVW", cmd->c2) == NULL)
         {
-            print_err(E_IQC);
+            print_err(E_IQC);           // Illegal quote character
         }
 
         scan_state = SCAN_PASS2;
     }
+}
+
+
+///
+///  @brief    Test for being in a conditional.
+///
+///  @returns  true if in conditional, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool test_if(void)
+{
+    return (if_depth != 0) ? true : false;
 }

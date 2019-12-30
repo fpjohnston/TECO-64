@@ -86,7 +86,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
 
     if (toupper(cmd->c1) == 'E')
     {
-        const char *e_cmds = "ABCDEFGHIJKLMNOPQRSTUVWXYZ%_";
+        const char *e_cmds = "%ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
         const char *e_cmd  = strchr(e_cmds, toupper(cmd->c2));
 
         if (e_cmd == NULL)
@@ -102,7 +102,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
     }
     else if (toupper(cmd->c1) == 'F')
     {
-        const char *f_cmds = "BCDKNRS<>\\_|";
+        const char *f_cmds = "'<>BCDKNRS_|";
         const char *f_cmd  = strchr(f_cmds, toupper(cmd->c2));
 
         if (f_cmd == NULL)
@@ -502,7 +502,7 @@ void scan_pass2(struct cmd *cmd)
         {
             if (len-- == 0)
             {
-                print_err(E_UTC);
+                print_err(E_UTC);       // Unterminated command
             }
 
             c = *p++;
@@ -513,7 +513,7 @@ void scan_pass2(struct cmd *cmd)
 
                 if (len-- == 0)
                 {
-                    print_err(E_UTC);
+                    print_err(E_UTC);   // Unterminated command
                 }
 
                c = *p++;               // Get Q-register name

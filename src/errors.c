@@ -63,6 +63,7 @@ static struct err_table err_table[] =
     [E_DEV] = { "DEV",  "Invalid device" },
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DTB] = { "DTB",  "Delete too big" },
+    [E_DUP] = { "DUP",  "Duplicate tag !%s!" },
     [E_ERR] = { "ERR",  "%s" },
     [E_FER] = { "FER",  "File error" },
     [E_FNF] = { "FNF",  "File not found \"%s\"" },
@@ -101,6 +102,7 @@ static struct err_table err_table[] =
     [E_NCA] = { "NCA",  "Negative argument to ," },
     [E_NFI] = { "NFI",  "No file for input" },
     [E_NFO] = { "NFO",  "No file for output" },
+    [E_NIC] = { "NIC",  "Not in conditional" },
     [E_NIH] = { "NIH",  "Not implemented here" },
     [E_NPA] = { "NPA",  "Negative or 0 argument to P" },
     [E_NRO] = { "NRO",  "No room for output" },
@@ -130,6 +132,7 @@ static struct err_table err_table[] =
     [E_UWL] = { "UWL",  "Unable to write line to output file" },
     [E_UTC] = { "UTC",  "Unterminated command \"%s\"" },
     [E_UTM] = { "UTM",  "Unterminated macro" },
+    [E_UTQ] = { "UTQ",  "Unterminated quote" },
     [E_WLO] = { "WLO",  "System device write-locked" },
     [E_XAB] = { "XAB",  "Execution aborted" },
     [E_YCA] = { "YCA",  "Y command aborted" },
@@ -167,6 +170,8 @@ static const char *verbose[] =
 
     [E_DTB] = "An nD command has been attempted which is not contained "
               "within the current page.",
+
+    [E_DUP] = "An O command found a duplicate tag within the command string.",
 
     [E_ERR] = NULL,
 
@@ -292,6 +297,9 @@ static const char *verbose[] =
               "it is necessary to open an output file by use of a "
               "command such as EW or EB.",
 
+    [E_NIC] = "A |, ', F|, or F' command occurred outside a conditional "
+              "statement.",
+
     [E_NIH] = "A command was issued whose implementation makes no sense "
               "in this operating environment.",
 
@@ -363,6 +371,9 @@ static const char *verbose[] =
               "(i.e., it was a macro). (Note: An entire command "
               "sequence stored in a q-register must be complete within "
               "the Q-register.)",
+
+    [E_UTQ] = "A \" command was not terminated before the end of a command"
+              "string.",
 
     [E_WLO] = NULL,
 
@@ -487,7 +498,7 @@ void help_err(int err_teco)
         {
             len = (uint)(next - start);
 
-            if (len > cols)
+            if (len > w.width)
             {
                 puts_term(start, ((uint)(end - start)) - 1);
                 putc_term(CRLF);
@@ -529,7 +540,7 @@ noreturn void print_err(int err_teco)
         exit(EXIT_FAILURE);
     }
 
-    longjmp(jump_main, 1);              // Return to main loop
+    longjmp(jump_main, 2);              // Return to main loop
 }
 
 

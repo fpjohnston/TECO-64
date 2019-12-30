@@ -71,7 +71,7 @@ const struct cmd_table cmd_table[] =
     [CTRL_X]      = { scan_ctrl_x,    exec_ctrl_x,      ""         },
     [CTRL_Y]      = { scan_ctrl_y,    NULL,             ""         },
     [CTRL_Z]      = { scan_ctrl_z,    NULL,             ""         },
-    [ESC]         = { NULL,           exec_escape,      ""         },
+    [ESC]         = { NULL,           NULL,             ""         },
     ['\x1C']      = { scan_bad,       NULL,             ""         },
     ['\x1D']      = { scan_bad,       NULL,             ""         },
     ['\x1E']      = { NULL,           NULL,             ""         },
@@ -80,7 +80,7 @@ const struct cmd_table cmd_table[] =
     ['!']         = { NULL,           exec_bang,        "@ 1"      },
     ['"']         = { scan_quote,     exec_quote,       ""         },
     ['#']         = { scan_operator,  NULL,             ""         },
-    ['$']         = { NULL,           exec_escape,      ""         },
+    ['$']         = { scan_bad,       NULL,             ""         },
     ['%']         = { scan_pct,       NULL,             "q"        },
     ['&']         = { scan_operator,  NULL,             ""         },
     ['\'']        = { NULL,           exec_apos,        ""         },
@@ -182,6 +182,7 @@ const uint cmd_count = countof(cmd_table); ///< No. of items in cmd_table[]
 
 const struct cmd_table cmd_e_table[] =
 {
+    { NULL,       exec_E_pct,   ": @ q 1" },
     { NULL,       exec_EA,      ""        },
     { NULL,       exec_EB,      ": @ 1"   },
     { scan_EC,    exec_EC,      ""        },
@@ -208,7 +209,6 @@ const struct cmd_table cmd_e_table[] =
     { NULL,       exec_EX,      ""        },
     { NULL,       exec_EY,      ":"       },
     { scan_EZ,    exec_EZ,      ""        },
-    { NULL,       exec_E_pct,   ": @ q 1" },
     { NULL,       exec_E_ubar,  "@ 1"     },
 };
 
@@ -220,6 +220,9 @@ const uint cmd_e_count = countof(cmd_e_table); ///< No. of items in cmd_e_table[
 
 const struct cmd_table cmd_f_table[] =
 {
+    { NULL,  exec_F_apos,    ""           },
+    { NULL,  exec_F_lt,      ""           },
+    { NULL,  exec_F_gt,      ""           },
     { NULL,  exec_FB,        "@ 1"        },
     { NULL,  exec_FC,        "@ 1 2"      },
     { NULL,  exec_FD,        "@ 1"        },
@@ -227,45 +230,8 @@ const struct cmd_table cmd_f_table[] =
     { NULL,  exec_FN,        ": @ 1 2"    },
     { NULL,  exec_FR,        "@ 1"        },
     { NULL,  exec_FS,        ": :: @ 1 2" },
-    { NULL,  exec_F_lt,      ""           },
-    { NULL,  exec_F_gt,      ""           },
-    { NULL,  exec_F_apos,    ""           },
     { NULL,  exec_F_ubar,    ": @ 1 2"    },
     { NULL,  exec_F_vbar,    ""           },
 };
 
 const uint cmd_f_count = countof(cmd_f_table); ///< No. of items in cmd_f_table[]
-
-
-///  @var    null_cmd
-///  @brief  Initial command block values.
-
-const struct cmd null_cmd =
-{
-    .colon_opt  = false,
-    .dcolon_opt = false,
-    .atsign_opt = false,
-    .w_opt      = false,
-    .q_req      = false,
-    .t1_opt     = false,
-    .t2_opt     = false,
-    .m_set      = false,
-    .n_set      = false,
-    .h_set      = false,
-    .w_set      = false,
-    .comma_set  = false,
-    .colon_set  = false,
-    .dcolon_set = false,
-    .atsign_set = false,
-    .c1         = NUL,
-    .c2         = NUL,
-    .c3         = NUL,
-    .m_arg      = 0,
-    .n_arg      = 0,
-    .delim      = ESC,
-    .qname      = NUL,
-    .qlocal     = false,
-    .expr       = { .buf = NULL, .len = 0 },
-    .text1      = { .buf = NULL, .len = 0 },
-    .text2      = { .buf = NULL, .len = 0 },
-};

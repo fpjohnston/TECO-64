@@ -1,6 +1,6 @@
 ///
-///  @file    bang_cmd.c
-///  @brief   Execute ! command.
+///  @file    ctrl_c_cmd.c
+///  @brief   Execute ^C (CTRL/C) command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -25,24 +25,21 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute ! command (comment/tag).
+///  @brief    Execute ^C (CTRL/C) command: return control to main loop.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bang(struct cmd *cmd)
+void exec_ctrl_c(struct cmd *unused1)
 {
-    assert(cmd != NULL);
+    longjmp(jump_main, 1);
 }
-

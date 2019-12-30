@@ -48,6 +48,7 @@ enum errors
     E_DEV,          ///< Invalid device
     E_DIV,          ///< Division by zero
     E_DTB,          ///< Delete too big
+    E_DUP,          ///< Duplicate tag "x"
     E_ERR,          ///< RSTS/E error message
     E_FER,          ///< File error
     E_FNF,          ///< File not found "filespec"
@@ -86,6 +87,7 @@ enum errors
     E_NCA,          ///< Negative argument to ,
     E_NFI,          ///< No file for input
     E_NFO,          ///< No file for output
+    E_NIC,          ///< Not in conditional
     E_NIH,          ///< Not implemented here
     E_NPA,          ///< Negative or 0 argument to P
     E_NRO,          ///< No room for output
@@ -115,6 +117,7 @@ enum errors
     E_URL,          ///< Unable to read line from input file
     E_UTC,          ///< Unterminated command "x"
     E_UTM,          ///< Unterminated macro
+    E_UTQ,          ///< Unterminated quote
     E_UWL,          ///< Unable to write line to output file
     E_UWC,          ///< Unable to write character to output file
     E_WLO,          ///< System device write-locked

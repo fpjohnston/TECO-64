@@ -28,27 +28,35 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>                     // TODO: temporary
 
 #include "teco.h"
 #include "errors.h"
 #include "exec.h"
 
+
+// TODO: add code to handle termination of conditionals before end of loop
+//       (e.g., a command string like "< 1 "N > '".
+
+
 #define INFINITE        (-1)            ///< Infinite loop count
+
+// TODO: the following should be moved elsewhere
 
 bool search_success = true;             ///< true if last search succeeded
 
-// TODO: add loop stack
+// TODO: add environment variable to limit loop depth?
+
+///  @struct loop
+///  @brief  Linked list structure for loops
 
 struct loop
 {
+    struct loop *next;                  ///< Next item in list
     int count;                          ///< Iteration count
     uint start;                         ///< Starting position
 };
 
-struct loop loop;
-
-bool loop_active = false;
+struct loop *loop_head;                 ///< Head of loop list
 
 // Local functions
 
@@ -66,12 +74,10 @@ static void endloop(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint depth = 0;                     // Nesting depth
+    uint depth = 1;                     // Nesting depth
 
     do
     {
-        *cmd = null_cmd;
-
         (void)next_cmd(cmd);
 
         if (cmd->c1 == '<')             // Start of a new loop?
@@ -84,7 +90,13 @@ static void endloop(struct cmd *cmd)
         }
     } while (depth > 0);
 
-    loop_active = false;
+    struct loop *loop = loop_head;    
+
+    assert(loop != NULL);
+
+    loop_head = loop->next;
+
+    free_mem(&loop);
 }
 
 
@@ -112,9 +124,7 @@ void exec_F_gt(struct cmd *cmd)
 
 void exec_F_lt(struct cmd *unused1)
 {
-    (void)sleep(1);                     // TODO: temporary
-
-    cmd_buf->get = loop.start;          // Just restart the loop
+    cmd_buf->get = loop_head->start;    // Just restart the loop
 
     return;
 }
@@ -131,22 +141,22 @@ void exec_gt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!loop_active)
+    struct loop *loop = loop_head;
+
+    if (loop == NULL)
     {
         print_err(E_BNI);               // Close bracket not in iteration
     }
 
-    printf("loop count = %d\r\n", loop.count); // TODO: temporary
-
-    if (loop.count == INFINITE || --loop.count > 0)
+    if (loop->count == INFINITE || --loop->count > 0)
     {
-        (void)sleep(1);                 // TODO: temporary
-
-        cmd_buf->get = loop.start;      // Go back to start of loop
+        cmd_buf->get = loop->start;     // Go back to start of loop
     }
     else
     {
-        loop_active = false;
+        loop_head = loop->next;
+
+        free_mem(&loop);
     }
 }
 
@@ -162,19 +172,21 @@ void exec_lt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)
-    {
-        loop.count = INFINITE;          // Special value for infinite loop
-    }
-    else if ((loop.count = cmd->n_arg) <= 0)
+    int count = INFINITE;               // Assume infinite loop
+
+    if (cmd->n_set && (count = cmd->n_arg) <= 0)
     {
         endloop(cmd);                   // End loop if count is <= 0
     }
     else
     {
-        loop.start = cmd_buf->get;
+        struct loop *loop = alloc_mem((uint)sizeof(*loop));
 
-        loop_active = true;
+        loop->count = count;
+        loop->start = cmd_buf->get;
+        loop->next  = loop_head;
+
+        loop_head   = loop;
     }
 }
 
@@ -190,7 +202,7 @@ void exec_semi(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!loop_active)
+    if (loop_head == NULL)
     {
         print_err(E_SNI);               // Semi-colon not in loop
     }
@@ -228,4 +240,42 @@ void exec_semi(struct cmd *cmd)
     }
 
     endloop(cmd);
+}
+
+
+///
+///  @brief    Initialize loop structures.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void init_loop(void)
+{
+    loop_head = NULL;
+
+    if (atexit(reset_loop) != 0)
+    {
+        exit(EXIT_FAILURE);
+    }
+}
+
+
+///
+///  @brief    Reset loop structures.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_loop(void)
+{
+    struct loop *loop;
+
+    while ((loop = loop_head) != NULL)
+    {
+        loop_head = loop->next;
+
+        free_mem(&loop);
+    }
 }

@@ -300,7 +300,7 @@ static bool reduce3(void)
                 }
                 else
                 {
-                    print_err(E_DIV);
+                    print_err(E_DIV);   // Division by zero
                 }
             }
 

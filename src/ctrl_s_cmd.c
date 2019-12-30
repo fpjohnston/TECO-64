@@ -46,6 +46,6 @@ void scan_ctrl_s(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr(-1, EXPR_VALUE);          // TODO: not complete
+    push_expr(v.ctrl_s, EXPR_VALUE);
 }
 

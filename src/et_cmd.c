@@ -56,8 +56,8 @@ void exec_ET(struct cmd *cmd)
 
     // The following are read-only bits and cannot be changed by the user.
 
-    f.et.scope   = old.scope;
-    f.et.refresh = old.refresh;
+    f.et.scope  = old.scope;
+    f.et.rscope = old.rscope;
 }
 
 

@@ -110,8 +110,6 @@ extern const uint cmd_e_count;
 
 extern const uint cmd_f_count;
 
-extern const struct cmd null_cmd;
-
 extern enum scan_state scan_state;
 
 // Functions that assist in parsing commands
@@ -199,8 +197,6 @@ extern void exec_ctrl_w(struct cmd *cmd);
 extern void exec_ctrl_x(struct cmd *cmd);
 
 extern void exec_equals(struct cmd *cmd);
-
-extern void exec_escape(struct cmd *cmd);
 
 extern void exec_insert(const char *buf, uint len);
 
@@ -394,6 +390,8 @@ extern void exit_EG(void);
 
 extern void init_EG(void);
  
+extern void init_loop(void);
+
 extern void log_cmd(struct cmd *cmd);
 
 extern exec_func *next_cmd(struct cmd *cmd);
@@ -402,7 +400,13 @@ extern int open_indirect(bool default_type);
 
 extern int open_output(const struct cmd *cmd, uint stream);
 
+extern void reset_if(void);
+
 extern bool read_indirect(void);
+
+extern void reset_loop(void);
+
+extern bool test_if(void);
 
 extern bool test_indirect(void);
 

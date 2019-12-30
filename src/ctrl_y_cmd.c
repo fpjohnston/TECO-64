@@ -45,11 +45,9 @@ void scan_ctrl_y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    cmd->m_arg = 0;                     // TODO: this should be .+^S
-    cmd->m_set = true;
+    int dot = (int)getpos_tbuf();
 
-    uint dot = getpos_tbuf();
-
-    push_expr((int)dot, EXPR_VALUE);
+    push_expr(dot + v.ctrl_s, EXPR_VALUE);
+    push_expr(dot, EXPR_VALUE);
 }
 

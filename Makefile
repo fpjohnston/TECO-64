@@ -96,11 +96,11 @@ SOURCES = \
     a_cmd.c       \
     b_cmd.c       \
     back_cmd.c    \
-    bang_cmd.c    \
     bracket_cmd.c \
     comma_cmd.c   \
     ctrl_a_cmd.c  \
     ctrl_b_cmd.c  \
+    ctrl_c_cmd.c  \
     ctrl_d_cmd.c  \
     ctrl_e_cmd.c  \
     ctrl_f_cmd.c  \
@@ -153,6 +153,7 @@ SOURCES = \
     fs_cmd.c      \
     f_ubar_cmd.c  \
     g_cmd.c       \
+    goto_cmd.c    \
     h_cmd.c       \
     if_cmd.c      \
     insert_cmd.c  \
@@ -160,7 +161,6 @@ SOURCES = \
     m_cmd.c       \
     move_cmd.c    \
     n_cmd.c       \
-    o_cmd.c       \
     p_cmd.c       \
     pct_cmd.c     \
     q_cmd.c       \

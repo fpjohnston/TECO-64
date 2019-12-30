@@ -58,13 +58,6 @@
 #include "eflags.h"
 #include "errors.h"
 
-#define DEFAULT_ROWS            24      ///< Default terminal rows
-#define DEFAULT_COLS            80      ///< Default terminal columns
-
-uint rows = DEFAULT_ROWS;               ///< Current terminal rows
-
-uint cols = DEFAULT_COLS;               ///< Current terminal columns
-
 static struct termios saved_mode;       ///< Saved terminal mode
 
 // Local functions
@@ -116,7 +109,7 @@ int getc_term(bool wait)
             echo_chr(CTRL_C);
             putc_term(CRLF);
 
-            print_err(E_XAB);           // No, restart command
+            print_err(E_XAB);           // Execution aborted
         }
         else                            // Something other than CTRL/C
         {
@@ -165,8 +158,8 @@ static void get_window(void)
         fatal_err(errno, E_SYS, NULL);
     }
 
-    cols = ts.ws_col;
-    rows = ts.ws_row;
+    w.width  = ts.ws_col;
+    w.height = ts.ws_row;
 
 #elif   defined(TIOCGSIZE)
 
@@ -177,8 +170,8 @@ static void get_window(void)
         fatal_err(errno, E_SYS, NULL);
     }
 
-    cols = ts.ts_cols;
-    rows = ts.ts_lines;
+    w.width  = ts.ts_cols;
+    w.height = ts.ts_lines;
 
 #endif
 }
@@ -224,14 +217,17 @@ void init_term(void)
 
     f.et.rubout    = true;              // Process DEL and ^U in scope mode
     f.et.lower     = true;              // Terminal can read lower case
-//  f.et.scope     = true;              // Terminal is a scope
+    f.et.scope     = true;              // Terminal is a scope
+    f.et.rscope    = true;              // Terminal is a refresh scope
     f.et.eightbit  = true;              // Terminal can use 8-bit characters
-//  f.et.accent    = true;              // Use accent grave as delimiter
+    f.et.accent    = true;              // Use accent grave as delimiter
 
     f.eu           = -1;                // No case flagging
 
-    f.ez.noversion = true;
-    f.ez.hidecr    = true;
+    // TODO: what to do here?
+    
+//    f.ez.noversion = true;
+//    f.ez.hidecr    = true;
 
     // TODO: use sigaction() instead of signal()
 

@@ -297,7 +297,9 @@ int open_output(const struct cmd *cmd, uint stream)
 
         sprintf(option, "%.*s", (int)cmd->text2.len, cmd->text2.buf);
 
-        if (!strcasecmp(option, "append") || !strcasecmp(option, "/append"))
+        // TODO: add /noin, /noout, and other switches.
+
+        if (!strcasecmp(option, "/append"))
         {
             mode = "a";
         }

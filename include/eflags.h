@@ -99,8 +99,8 @@ union et_flag
         uint detach   : 1;      ///< Detach flag
         uint abort    : 1;      ///< Abort-on-error bit
         uint truncate : 1;      ///< Truncate output lines to terminal width
-        uint scope    : 1;      ///< Scope type terminal
-        uint refresh  : 1;      ///< Refresh scope watch feature exists
+        uint scope    : 1;      ///< Terminal is a scope type
+        uint rscope   : 1;      ///< Terminal is a refresh scope
         uint          : 1;      ///< (reserved for TECO-8)
         uint eightbit : 1;      ///< Can handle 8-bit characters
         uint accent   : 1;      ///< Accent grave is ESCAPE surrogate

@@ -177,11 +177,26 @@ enum otype
 struct vars
 {
     int radix;                      ///< Current output radix
+    int ctrl_s;                     ///< CTRL/S flag
     int ctrl_x;                     ///< CTRL/X flag
     bool ff;                        ///< Form feed flag
     bool trace;                     ///< true if trace mode is on
     bool warn;                      ///< true if edit buffer is almost full
     bool full;                      ///< true if edit buffer is full
+};
+
+struct watch
+{
+    uint type;                      ///< Type of scope
+    uint width;                     ///< Terminal width in columns
+    uint height;                    ///< Terminal height in rows
+    bool seeall;                    ///< SEEALL mode
+    int mark;                       ///< "Mark" status
+    int hold;                       ///< Hold mode indicator
+    uint topdot;                    ///< Buffer position of upper left corner
+    uint nscroll;                   ///< No. of scrolling lines
+    uint spacemark;                 ///< TODO: unknown
+    uint keypad;                    ///< TODO: unknown
 };
 
 // Global variables
@@ -193,10 +208,6 @@ extern int teco_version;
 extern jmp_buf jump_main;
 
 extern const char *prompt;
-
-extern uint rows;
-
-extern uint cols;
 
 extern bool teco_debug;
 
@@ -219,6 +230,8 @@ extern int last_in;
 extern const char *mung_file;
 
 extern struct buffer *cmd_buf;      ///< Current command string
+
+extern struct watch w;
 
 // Global functions
 

@@ -95,6 +95,7 @@ struct flags f;
 struct vars v =
 {
     .radix  = 10,                   ///< Current output radix
+    .ctrl_s = 0,                    ///< CTRL/S flag
     .ctrl_x = 0,                    ///< CTRL/X flag
     .ff     = false,                ///< Form feed flag
     .trace  = false,                ///< Trace mode
@@ -128,6 +129,7 @@ int main(int argc, const char * const argv[])
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams
     init_EG();                          // Initialize for EG command
+    init_loop();                        // Initialie for loops
 
     f.ei.strict = true;                 // TODO: temporary
 
@@ -135,7 +137,9 @@ int main(int argc, const char * const argv[])
     {
         f.ei.exec = false;              // Not executing command
 
-        if (setjmp(jump_main) == 0)
+        int jump = setjmp(jump_main);
+
+        if (jump == 0)
         {
             if (!check_indirect())      // Indirect command to execute yet?
             {
@@ -146,11 +150,19 @@ int main(int argc, const char * const argv[])
 
             exec_cmd();                 // Then execute what we have
         }
-        else                            // We get here on error
+        else if (jump == 1)             // ^C exit from macro
         {
+            (void)fflush(NULL);
+            reset_buf();
+        }
+        else if (jump == 2)             // Error occurred
+        {
+            (void)fflush(NULL);         // Flush all streams
             close_indirect();           // Close any indirect file
             reset_buf();                // Reset the input buffer
             reset_qreg();               // Free up Q-register storage
+            reset_if();                 // Reset if statement depth
+            reset_loop();               // Free up loop structures
         }
     }
 }

@@ -35,12 +35,18 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
 
 enum scan_state scan_state;             ///< Current expression scanning state
+
+
+// Local functions
+
+static void exec_escape(bool double_escape);
 
 
 ///
@@ -54,9 +60,11 @@ void exec_cmd(void)
 {
     // Loop for all characters in command string.
 
+    bool double_escape = false;
+
     for (;;)
     {
-        struct cmd cmd = null_cmd;
+        struct cmd cmd;
 
         scan_state = SCAN_PASS1;
 
@@ -96,7 +104,26 @@ void exec_cmd(void)
 
         if (!teco_debug || !test_indirect())
         {
-            (*exec)(&cmd);              // Now finally execute command
+            if (cmd.c1 == ESC)
+            {
+                exec_escape(double_escape);
+
+                if (double_escape)
+                {
+                    return;
+                }
+
+                double_escape = true;
+            }
+            else if (exec != NULL)
+            {
+                (*exec)(&cmd);          // Now finally execute command
+            }
+        }
+
+        if (cmd.c1 != ESC)
+        {
+            double_escape = false;
         }
 
         f.ei.exec = false;              // Suspend this to check CTRL/C
@@ -105,7 +132,7 @@ void exec_cmd(void)
         {
             f.ei.ctrl_c = false;
 
-            print_err(E_XAB);
+            print_err(E_XAB);           // Execution aborted
         }
     }
 }
@@ -118,9 +145,15 @@ void exec_cmd(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_escape(struct cmd *cmd)
+static void exec_escape(bool double_escape)
 {
-    assert(cmd != NULL);
+    //  If we're in strict mode, and a command ended while we were in
+    //  the middle of a conditional statement, then issue an error.
+
+    if (f.ei.strict && test_if() && double_escape)
+    {
+        print_err(E_UTQ);               // Unterminated quote command
+    }
 
     init_expr();
 }
@@ -135,7 +168,42 @@ void exec_escape(struct cmd *cmd)
 
 exec_func *next_cmd(struct cmd *cmd)
 {
+    ///  @var    null_cmd
+    ///  @brief  Initial command block values.
+
+    static const struct cmd null_cmd =
+    {
+        .colon_opt  = false,
+        .dcolon_opt = false,
+        .atsign_opt = false,
+        .w_opt      = false,
+        .q_req      = false,
+        .t1_opt     = false,
+        .t2_opt     = false,
+        .m_set      = false,
+        .n_set      = false,
+        .h_set      = false,
+        .w_set      = false,
+        .comma_set  = false,
+        .colon_set  = false,
+        .dcolon_set = false,
+        .atsign_set = false,
+        .c1         = NUL,
+        .c2         = NUL,
+        .c3         = NUL,
+        .m_arg      = 0,
+        .n_arg      = 0,
+        .delim      = ESC,
+        .qname      = NUL,
+        .qlocal     = false,
+        .expr       = { .buf = NULL, .len = 0 },
+        .text1      = { .buf = NULL, .len = 0 },
+        .text2      = { .buf = NULL, .len = 0 },
+    };
+
     assert(cmd != NULL);
+
+    *cmd = null_cmd;
 
     // Loop for all characters in command.
 
@@ -162,6 +230,11 @@ exec_func *next_cmd(struct cmd *cmd)
 
         if (c == EOF)
         {
+            if (f.ei.strict && test_if())
+            {
+                print_err(E_UTQ);       // Unterminated quote
+            }
+
             print_err(E_UTC);           // Unterminated command
         }
 
@@ -172,7 +245,10 @@ exec_func *next_cmd(struct cmd *cmd)
             printc_err(E_ILL, c);       // Illegal character
         }
 
-        cmd->c1 = (char)c;
+        if ((cmd->c1 = (char)c) == ESC)
+        {
+            return NULL;
+        }
 
         exec_func *exec = scan_pass1(cmd);
 

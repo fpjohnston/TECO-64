@@ -90,6 +90,8 @@ void scan_ctrl_t(struct cmd *cmd)
     }
     else
     {
+        (void)fflush(stdout);           // Make sure we flush output
+
         bool wait = f.et.nowait ? false : true;
         int c = getc_term(wait);
 
