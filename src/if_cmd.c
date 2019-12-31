@@ -57,9 +57,12 @@ static void endif(struct cmd *cmd, bool vbar)
 {
     assert(cmd != NULL);
 
+    uint start_depth = if_depth;
+
     do
     {
         (void)next_cmd(cmd);
+        log_cmd(cmd);
 
         if (cmd->c1 == '"')             // Start of a new conditional?
         {
@@ -69,7 +72,7 @@ static void endif(struct cmd *cmd, bool vbar)
         {
             --if_depth;
         }
-        else if (vbar && cmd->c1 == '|' && if_depth == 1)
+        else if (vbar && cmd->c1 == '|' && if_depth == start_depth)
         {
             break;
         }
@@ -306,7 +309,7 @@ void scan_quote(struct cmd *cmd)
 {
     assert(cmd != NULL);
     
-    if (scan_state != SCAN_PASS2)
+    if (scan.state != SCAN_PASS2)
     {
         cmd->c2 = (char)fetch_buf();    // Just store 2nd character
 
@@ -315,7 +318,7 @@ void scan_quote(struct cmd *cmd)
             print_err(E_IQC);           // Illegal quote character
         }
 
-        scan_state = SCAN_PASS2;
+        scan.state = SCAN_PASS2;
     }
 }
 

@@ -64,14 +64,14 @@ void exec_M(struct cmd *cmd)
 
     // Nothing to do if macro is empty
 
-    if (qreg->text.put == 0)
+    if (qreg->text.len == 0)
     {
         return;
     }
 
-    qreg->text.get = 0;
+    qreg->text.pos = 0;
 
-    uint saved_put = qreg->text.put;
+    uint saved_put = qreg->text.len;
     struct buffer *saved_buf = get_buf();
 
     set_buf(&qreg->text);
@@ -107,5 +107,5 @@ void exec_M(struct cmd *cmd)
 
     set_buf(saved_buf);
 
-    qreg->text.put = saved_put;
+    qreg->text.len = saved_put;
 }

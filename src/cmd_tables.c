@@ -42,6 +42,39 @@
 ///          involve a 2nd character.
 ///
 
+///  Types of commands regarding arguments:
+///
+///  1. used/not used
+///  2. consumed/not consumed
+///  3. terminal/not terminal
+///
+///  examples:
+///
+///  used, consumed, terminal: C, D
+///  used, consumed, not terminal: ET, %
+///  used, not consumed, terminal:
+///  used, not consumed, not terminal:
+///  not used, consumed, terminal: >, ", |, '
+///  not used, consumed, not terminal:
+///  not used, not consumed, terminal: [, ]
+///  not used, not consumed, not terminal:
+///
+///  argument preceding command:
+///
+///  - can be used and consumed: e.g., 22U0
+///  - can be used and passed through: e.g., 47%A
+///  - can be consumed without use: e.g., >, ", |, ', ESC
+///  - can be passed through: e.g., [, ]
+///  - can be an error; e.g., B followed by Z
+///
+///  commands that:
+///
+///  - are a value
+///  - take a value
+///  - make a value
+///  - junk a value
+///  - ignore a value
+
 const struct cmd_table cmd_table[] =
 {
     [NUL]         = { NULL,           NULL,             ""         },
@@ -81,7 +114,7 @@ const struct cmd_table cmd_table[] =
     ['"']         = { scan_quote,     exec_quote,       ""         },
     ['#']         = { scan_operator,  NULL,             ""         },
     ['$']         = { scan_bad,       NULL,             ""         },
-    ['%']         = { scan_pct,       NULL,             "q"        },
+    ['%']         = { scan_pct,       exec_pct,         "q"        },
     ['&']         = { scan_operator,  NULL,             ""         },
     ['\'']        = { NULL,           exec_apos,        ""         },
     ['(']         = { scan_operator,  NULL,             ""         },
@@ -107,7 +140,7 @@ const struct cmd_table cmd_table[] =
     ['<']         = { NULL,           exec_lt,          ""         },
     ['=']         = { NULL,           exec_equals,      ":"        },
     ['>']         = { NULL,           exec_gt,          ""         },
-    ['?']         = { NULL,           exec_question,    ""         },
+    ['?']         = { NULL,           exec_question,    "i"        },
     ['@']         = { scan_mod,       NULL,             ""         },
     ['A']         = { scan_A,         exec_A,           ":"        },
     ['B']         = { scan_B,         NULL,             ""         },
@@ -135,9 +168,9 @@ const struct cmd_table cmd_table[] =
     ['X']         = { NULL,           exec_X,           ": q"      },
     ['Y']         = { NULL,           exec_Y,           ":"        },
     ['Z']         = { scan_Z,         NULL,             ""         },
-    ['[']         = { NULL,           exec_lbracket,    "q"        },
+    ['[']         = { NULL,           exec_lbracket,    "q i"      },
     ['\\']        = { scan_back,      exec_back,        ""         },
-    [']']         = { NULL,           exec_rbracket,    ": q"      },
+    [']']         = { NULL,           exec_rbracket,    ": q i"    },
     ['^']         = { NULL,           NULL,             ""         },
     ['_']         = { NULL,           exec_ubar,        ": @ 1"    },
     ['`']         = { scan_bad,       NULL,             ""         },

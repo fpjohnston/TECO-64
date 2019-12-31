@@ -124,7 +124,7 @@ void exec_F_gt(struct cmd *cmd)
 
 void exec_F_lt(struct cmd *unused1)
 {
-    cmd_buf->get = loop_head->start;    // Just restart the loop
+    cmdbuf->pos = loop_head->start;    // Just restart the loop
 
     return;
 }
@@ -150,7 +150,7 @@ void exec_gt(struct cmd *cmd)
 
     if (loop->count == INFINITE || --loop->count > 0)
     {
-        cmd_buf->get = loop->start;     // Go back to start of loop
+        cmdbuf->pos = loop->start;     // Go back to start of loop
     }
     else
     {
@@ -183,7 +183,7 @@ void exec_lt(struct cmd *cmd)
         struct loop *loop = alloc_mem((uint)sizeof(*loop));
 
         loop->count = count;
-        loop->start = cmd_buf->get;
+        loop->start = cmdbuf->pos;
         loop->next  = loop_head;
 
         loop_head   = loop;

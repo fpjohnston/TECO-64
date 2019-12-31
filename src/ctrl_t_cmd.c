@@ -82,9 +82,9 @@ void scan_ctrl_t(struct cmd *cmd)
 
     if (pop_expr(NULL))                 // n argument?
     {
-        scan_state = SCAN_PASS2;
+        scan.state = SCAN_PASS2;
     }
-    else if (scan_state != SCAN_PASS2)
+    else if (scan.state != SCAN_PASS2)
     {
         push_expr(DUMMY_VALUE, EXPR_VALUE);
     }

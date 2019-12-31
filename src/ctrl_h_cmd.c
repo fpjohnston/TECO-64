@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <sys/time.h>
 
 #include "teco.h"
 #include "exec.h"
@@ -39,9 +40,7 @@
 
 ///
 ///  @brief    Scan ^H (CTRL/H) command. This returns the current time as
-///            seconds since midnight divided by 2 (this is format expected by
-///            RT-11, RSX-11, and VMS. The division is necessary so that the
-//             result is no more than 16 bits.
+///            milliseconds since midnight.
 ///
 ///  @returns  Nothing.
 ///
@@ -50,6 +49,13 @@
 void scan_ctrl_h(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (scan.state == SCAN_PASS1)
+    {
+        push_expr(DUMMY_VALUE, EXPR_VALUE);
+
+        return;
+    }
 
     time_t t = time(NULL);
     struct tm tm;
@@ -61,6 +67,16 @@ void scan_ctrl_h(struct cmd *cmd)
     teco_time *= SECONDS_PER_MINUTE;
     teco_time += tm.tm_sec;
 
-    push_expr(teco_time / 2, EXPR_VALUE);
+    struct timeval tv;
+
+    if (gettimeofday(&tv, NULL) == -1)
+    {
+//        print_err(E_SYS);
+    }
+
+//    teco_time *= 1000;
+//    teco_time += (uint)(tv.tv_usec / 1000);
+
+    push_expr(teco_time, EXPR_VALUE);
 }
 

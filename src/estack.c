@@ -30,6 +30,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
 #include "errors.h"
@@ -108,10 +109,6 @@ bool pop_expr(int *operand)
 
             return true;
         }
-        else if (estack.obj[estack.level - 1].type != EXPR_VALUE)
-        {
-            print_err(E_IFE);           // Ill-formed numeric expression
-        }
     }
 
     // Here if we have a partial expression with no operand on top
@@ -144,9 +141,9 @@ void push_expr(int value, enum expr_type type)
         print_err(E_PDO);               // Push-down list overflow
     }
 
-    if (scan_state != SCAN_PASS2)
+    if (scan.state != SCAN_PASS2)
     {
-        scan_state = SCAN_PASS1;
+        scan.state = SCAN_PASS1;
     }
 
     estack.obj[estack.level].value = value;
@@ -202,6 +199,15 @@ static bool reduce2(void)
     struct e_obj *e1 = &estack.obj[estack.level - 1];
     struct e_obj *e2 = &estack.obj[estack.level - 2];
 
+#if    0    // TODO: fix this
+    if ((e1->type == EXPR_VALUE && e2->type == EXPR_VALUE) ||
+        (strchr("+-*/&#", e1->type) != NULL &&
+         strchr("+-*/&#", e2->type) != NULL))
+    {
+        print_err(E_IFE);               // Ill-formed numeric expression
+    }
+#endif
+    
     if (e1->type == EXPR_VALUE && e2->type != EXPR_VALUE)
     {
         if (e2->type == '+')
@@ -294,7 +300,7 @@ static bool reduce3(void)
             {
                 // Don't allow divide by zero if we're scanning expression.
 
-                if (scan_state == SCAN_PASS1)
+                if (scan.state == SCAN_PASS1)
                 {
                     e1->value = 1;      // Just use a dummy result here
                 }

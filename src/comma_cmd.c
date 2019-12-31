@@ -44,7 +44,7 @@ void scan_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);
     
-    if (cmd->comma_set || cmd->h_set)   // Already seen comma or H?
+    if (scan.comma_set || cmd->h_set)   // Already seen comma or H?
     {
         print_err(E_ARG);               // Invalid arguments
     }
@@ -59,7 +59,7 @@ void scan_comma(struct cmd *cmd)
 
     if (cmd->m_arg < 0)
     {
-        if (scan_state == SCAN_PASS2 && !teco_debug)
+        if (scan.state == SCAN_PASS2 && !teco_debug)
         {
             print_err(E_NCA);           // Negative argument to ,
         }
@@ -67,5 +67,6 @@ void scan_comma(struct cmd *cmd)
 
     cmd->m_set = true;                  // And say we have one
     cmd->n_set = false;                 // But forget about n argument
-    cmd->comma_set = true;
+
+    scan.comma_set = true;
 }

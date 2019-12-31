@@ -113,8 +113,8 @@ struct buffer
 {
     char *buf;                      ///< Start of buffer
     uint size;                      ///< Total size of buffer in bytes
-    uint get;                       ///< Index of next character to fetch
-    uint put;                       ///< Index of next character to store
+    uint len;                       ///< Current length stored
+    uint pos;                       ///< Position of next character
 };
 
 ///  @struct tstring
@@ -229,7 +229,7 @@ extern int last_in;
 
 extern const char *mung_file;
 
-extern struct buffer *cmd_buf;      ///< Current command string
+extern struct buffer *cmdbuf;
 
 extern struct watch w;
 

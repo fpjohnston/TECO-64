@@ -84,8 +84,8 @@ void exec_ctrl_u(struct cmd *cmd)
         {
             struct buffer text;
 
-            text.put  = cmd->text1.len;
-            text.get  = 0;
+            text.len  = cmd->text1.len;
+            text.pos  = 0;
             text.size = cmd->text1.len;
             text.buf  = alloc_mem(text.size);
 

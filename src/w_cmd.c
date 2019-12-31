@@ -31,6 +31,7 @@
 
 #include "teco.h"
 #include "eflags.h"
+#include "errors.h"
 #include "exec.h"
 
 
@@ -199,8 +200,10 @@ void scan_W(struct cmd *cmd)
     {
         push_expr(cmd->n_set ? cmd->n_arg : 0, EXPR_VALUE);
     }
-
-    scan_state = SCAN_PASS2;
+    else
+    {
+        scan.state = SCAN_PASS2;
+    }
 }
 
 
@@ -225,12 +228,12 @@ static void set_type(int m)
         case 11:                        // VT200 in VT200 mode
         case 12:                        // VT200 in ANSI (VT100) mode
         case 13:                        // VT200 in VT52 mode
-            w.type = m;
+            w.type = (uint)m;
 
             break;
 
         default:
-            print_err(E_INA);           // Invalid negative argument
+            print_err(E_ARG);           // Invalid argument
 
             break;
     }
@@ -269,5 +272,7 @@ static void set_w(int m, int n)
         case 8: w.spacemark = (uint)m;               break;
 
         case 9: w.keypad = (uint)m;                  break;
+
+        default: print_err(E_ARG);
     }
 }

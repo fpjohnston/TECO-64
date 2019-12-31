@@ -65,7 +65,7 @@ void scan_ES(struct cmd *cmd)
     {
         cmd->n_set = true;
 
-        scan_state = SCAN_PASS2;
+        scan.state = SCAN_PASS2;
     }
     else
     {

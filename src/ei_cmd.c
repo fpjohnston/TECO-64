@@ -182,8 +182,8 @@ int open_indirect(bool default_type)
 
         file_buf = alloc_mem((uint)sizeof(struct buffer));
 
-        file_buf->put  = 0;
-        file_buf->get  = 0;
+        file_buf->len  = 0;
+        file_buf->pos  = 0;
         file_buf->size = STR_SIZE_INIT;
         file_buf->buf  = alloc_mem(file_buf->size);
 

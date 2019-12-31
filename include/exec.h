@@ -45,34 +45,42 @@ enum scan_state
     SCAN_PASS2                      ///< Second expression scan
 };
 
+struct scan
+{
+    enum scan_state state;          ///< Current scan state
+    uint nparens;                   ///< No. of unmatched left parentheses
+    uint comma_set  : 1;            ///< Comma seen in expression
+    uint colon_opt  : 1;            ///< Colon allowed in command
+    uint dcolon_opt : 1;            ///< Double colon allowed in command
+    uint atsign_opt : 1;            ///< At sign allowed in command
+    uint w_opt      : 1;            ///< W allowed (for P)
+    uint t1_opt     : 1;            ///< 1st text string allowed in command
+    uint t2_opt     : 1;            ///< 2nd text string allowed in command
+    uint q_register : 1;            ///< Q-register required
+};
+
+extern struct scan scan;
+
 ///  @struct cmd
 ///  @brief  Command block structure.
 
 struct cmd
 {
-    uint colon_opt  : 1;            ///< : allowed
-    uint dcolon_opt : 1;            ///< :: allowed
-    uint atsign_opt : 1;            ///< @ allowed
-    uint w_opt      : 1;            ///< W allowed (for P)
-    uint q_req      : 1;            ///< Q-register required
-    uint t1_opt     : 1;            ///< 1 text field allowed
-    uint t2_opt     : 1;            ///< 2 text fields allowed
+    char c1;                        ///< 1st command character
+    char c2;                        ///< 2nd command character (or NUL)
+    char c3;                        ///< 3rd command character (or NUL)
+    char qname;                     ///< Q-register name
+    bool qlocal;                    ///< If true, Q-register is local
+    int m_arg;                      ///< m argument
+    int n_arg;                      ///< n argument
     uint m_set      : 1;            ///< m argument found
     uint n_set      : 1;            ///< n argument found
     uint h_set      : 1;            ///< H found
     uint w_set      : 1;            ///< W found
-    uint comma_set  : 1;            ///< Comma found
     uint colon_set  : 1;            ///< : found
     uint dcolon_set : 1;            ///< :: found
     uint atsign_set : 1;            ///< @ found
-    char c1;                        ///< 1st command character (or NUL)
-    char c2;                        ///< 2nd command character (or NUL)
-    char c3;                        ///< 3rd command character (or NUL)
-    int m_arg;                      ///< m argument (if m_set is true)
-    int n_arg;                      ///< n argument (if n_set is true)
     char delim;                     ///< Delimiter for @ modifier
-    char qname;                     ///< Q-register name
-    bool qlocal;                    ///< If true, Q-register is local
     struct tstring expr;            ///< Expression string
     struct tstring text1;           ///< 1st text string
     struct tstring text2;           ///< 2nd text string
@@ -209,6 +217,8 @@ extern void exec_question(struct cmd *cmd);
 extern void exec_quote(struct cmd *cmd);
 
 extern void exec_gt(struct cmd *cmd);
+
+extern void exec_pct(struct cmd *cmd);
 
 extern void exec_rbracket(struct cmd *cmd);
 
@@ -405,6 +415,8 @@ extern void reset_if(void);
 extern bool read_indirect(void);
 
 extern void reset_loop(void);
+
+extern void reset_scan(enum scan_state state);
 
 extern bool test_if(void);
 

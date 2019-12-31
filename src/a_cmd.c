@@ -194,7 +194,7 @@ void scan_A(struct cmd *cmd)
 
     if (pop_expr(&n))
     {
-        if (scan_state == SCAN_PASS2)
+        if (scan.state == SCAN_PASS2)
         {
             n = getchar_tbuf(n);
 
@@ -207,7 +207,7 @@ void scan_A(struct cmd *cmd)
     }
     else
     {
-        scan_state = SCAN_PASS2;
+        scan.state = SCAN_PASS2;
     }
 }
 

@@ -41,9 +41,6 @@
 #include "exec.h"
 
 
-enum scan_state scan_state;             ///< Current expression scanning state
-
-
 // Local functions
 
 static void exec_escape(bool double_escape);
@@ -66,8 +63,6 @@ void exec_cmd(void)
     {
         struct cmd cmd;
 
-        scan_state = SCAN_PASS1;
-
         if (next_buf() == NULL)         // If end of command string,
         {
             break;                      //  then back to main loop
@@ -79,8 +74,18 @@ void exec_cmd(void)
 
         exec_func *exec = next_cmd(&cmd); // Find and scan next command
 
-        log_cmd(&cmd);                  // Log command (if needed)
+        scan_tail(&cmd);                // Scan stuff after command character
+
+        // Assume any tags that start with a space are really comments,
+        // and skip them.
+
+        if (cmd.c1 == '!' && cmd.text1.len != 0 && cmd.text1.buf[0] == ' ')
+        {
+            continue;
+        }
+
         scan_pass2(&cmd);               // Scan expression for real
+        log_cmd(&cmd);                  // Log command
 
         // If only thing on expression stack is a minus sign, then say we have
         // an n argument equal to -1. Otherwise check for m and n arguments.
@@ -173,18 +178,10 @@ exec_func *next_cmd(struct cmd *cmd)
 
     static const struct cmd null_cmd =
     {
-        .colon_opt  = false,
-        .dcolon_opt = false,
-        .atsign_opt = false,
-        .w_opt      = false,
-        .q_req      = false,
-        .t1_opt     = false,
-        .t2_opt     = false,
         .m_set      = false,
         .n_set      = false,
         .h_set      = false,
         .w_set      = false,
-        .comma_set  = false,
         .colon_set  = false,
         .dcolon_set = false,
         .atsign_set = false,
@@ -204,6 +201,8 @@ exec_func *next_cmd(struct cmd *cmd)
     assert(cmd != NULL);
 
     *cmd = null_cmd;
+
+    reset_scan(SCAN_PASS1);
 
     // Loop for all characters in command.
 
@@ -228,6 +227,11 @@ exec_func *next_cmd(struct cmd *cmd)
 
         int c = fetch_buf();            // Get next command string character
 
+        if (c == NUL)
+        {
+            assert(c != NUL);
+        }
+
         if (c == EOF)
         {
             if (f.ei.strict && test_if())
@@ -236,6 +240,11 @@ exec_func *next_cmd(struct cmd *cmd)
             }
 
             print_err(E_UTC);           // Unterminated command
+        }
+
+        if (c == LF || c == CR)
+        {
+            continue;
         }
 
         // TODO: add check for trace mode
@@ -252,7 +261,7 @@ exec_func *next_cmd(struct cmd *cmd)
 
         exec_func *exec = scan_pass1(cmd);
 
-        if (scan_state == SCAN_PASS1)   // Still scanning expression?
+        if (scan.state == SCAN_PASS1)   // Still scanning expression?
         {
             // If we haven't started scanning an expression, and we just read a
             // whitespace character, then just skip it. Note that if we see a
@@ -264,10 +273,8 @@ exec_func *next_cmd(struct cmd *cmd)
                 cmd->expr.len = (uint)(next_buf() - cmd->expr.buf);
             }
         }
-        else if (scan_state == SCAN_PASS2) // Done scanning expression?
+        else if (scan.state == SCAN_PASS2) // Done scanning expression?
         {
-            scan_tail(cmd);             // Scan stuff after command character
-
             return exec;
         }
     }

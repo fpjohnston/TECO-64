@@ -66,7 +66,7 @@ void exec_X(struct cmd *cmd)
         {
             printc_err(E_POP, 'X');     // Pointer off page
         }
-        else if (m <= n || n == 0)
+        else if (m >= n || n == 0)
         {
             print_err(E_ARG);           // Invalid arguments
         }

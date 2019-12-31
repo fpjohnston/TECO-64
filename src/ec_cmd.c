@@ -103,5 +103,5 @@ void scan_EC(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    scan_state = SCAN_PASS2;
+    scan.state = SCAN_PASS2;
 }

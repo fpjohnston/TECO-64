@@ -52,7 +52,7 @@ static void find_tag(struct cmd *cmd, const char *text, uint len);
 
 void exec_bang(struct cmd *unused1)
 {
-    scan_state = SCAN_PASS2;
+    scan.state = SCAN_PASS2;
 }
 
 
@@ -139,13 +139,13 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
 
     int tag_pos = -1;                   // No tag found yet
 
-    cmd_buf->get = 0;                   // Start at beginning of command
+    cmdbuf->pos = 0;                   // Start at beginning of command
 
     for (;;)
     {
         (void)next_cmd(cmd);
 
-        if (cmd_buf->get == cmd_buf->put) // End of command string?
+        if (cmdbuf->pos == cmdbuf->len) // End of command string?
         {
             if (tag_pos != -1)          // Did we find the tag?
             {
@@ -165,11 +165,11 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
         else if (cmd->text1.len == nbytes &&
                  !memcmp(cmd->text1.buf, tag, (long)nbytes))
         {
-            tag_pos = (int)cmd_buf->get; // Remember tag for later
+            tag_pos = (int)cmdbuf->pos; // Remember tag for later
         }
     }
 
     free_mem(&tag);
 
-    cmd_buf->get = (uint)tag_pos;       // Execute goto
+    cmdbuf->pos = (uint)tag_pos;       // Execute goto
 }

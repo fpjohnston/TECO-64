@@ -81,8 +81,8 @@ void exec_G(struct cmd *cmd)
 
             if (qreg->text.size != 0)
             {
-                exec_insert(qreg->text.buf + qreg->text.get,
-                            qreg->text.put - qreg->text.get);
+                exec_insert(qreg->text.buf + qreg->text.pos,
+                            qreg->text.len - qreg->text.pos);
             }
         }
     }

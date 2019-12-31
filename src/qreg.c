@@ -98,7 +98,7 @@ void append_qchr(int qname, bool qdot, int c)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    uint nbytes = qreg->text.put + 1;
+    uint nbytes = qreg->text.len + 1;
 
     if (nbytes >= qreg->text.size)
     {
@@ -108,7 +108,7 @@ void append_qchr(int qname, bool qdot, int c)
         qreg->text.size = nbytes;
     }
 
-    qreg->text.buf[qreg->text.put++] = (char)c;
+    qreg->text.buf[qreg->text.len++] = (char)c;
 }
 
 
@@ -167,10 +167,10 @@ uint get_qall(void)
     for (uint i = 0; i < QREG_SIZE; ++i)
     {
         qreg = &qglobal[i];
-        n += qreg->text.put;
+        n += qreg->text.len;
 
 //        qreg = &qlocal[i];
-//        n += qreg->text.put;
+//        n += qreg->text.len;
     }
 
     return n;
@@ -188,7 +188,7 @@ int get_qchr(int qname, bool qdot, int n)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    if (n < 0 || (uint)n >= qreg->text.put) // Out of range?
+    if (n < 0 || (uint)n >= qreg->text.len) // Out of range?
     {
         return EOF;                     // Yes
     }
@@ -257,7 +257,7 @@ uint get_qsize(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    return qreg->text.put;
+    return qreg->text.len;
 }
 
 
@@ -347,7 +347,7 @@ void print_qreg(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    for (uint i = 0; i < qreg->text.put; ++i)
+    for (uint i = 0; i < qreg->text.len; ++i)
     {
         int c = qreg->text.buf[i];
 
@@ -394,8 +394,8 @@ bool push_qreg(int qname, bool qdot)
 
     savedq->qreg.n         = qreg->n;
     savedq->qreg.text.size = qreg->text.size;
-    savedq->qreg.text.get  = qreg->text.get;
-    savedq->qreg.text.put  = qreg->text.put;
+    savedq->qreg.text.pos  = qreg->text.pos;
+    savedq->qreg.text.len  = qreg->text.len;
     savedq->qreg.text.buf  = alloc_mem(savedq->qreg.text.size);
 
     memcpy(savedq->qreg.text.buf, qreg->text.buf, (ulong)savedq->qreg.text.size);
@@ -463,12 +463,12 @@ void store_qchr(int qname, bool qdot, int c)
 
     free_mem(&qreg->text.buf);
 
-    qreg->text.get  = 0;
-    qreg->text.put  = 1;
+    qreg->text.pos  = 0;
+    qreg->text.len  = 0;
     qreg->text.size = STR_SIZE_INIT;
     qreg->text.buf  = alloc_mem(qreg->text.size);
 
-    qreg->text.buf[qreg->text.put++] = (char)c;
+    qreg->text.buf[qreg->text.len++] = (char)c;
 }
 
 

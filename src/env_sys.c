@@ -95,19 +95,15 @@ int teco_env(int n_arg)
 {
     switch (n_arg)
     {
-        default:                        // TODO: temporary
         case -1:
             return (TECO_HW << 8) | TECO_OS;
 
         case 0:
             return getpid();
 
+        default:
         case 1:
         case 2:
             return 0;
-
-//        default:
-//            print_err(E_NIH);
-
     }
 }

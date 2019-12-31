@@ -183,7 +183,12 @@ void log_cmd(struct cmd *cmd)
 
     // Start with any necessary indenting
 
-    nbytes = (uint)snprintf(line, sizeof(line), "%*s", cmd_level * 4, "");
+    nbytes = 0;
+
+    if (cmd->c1 != '!')                 // No indentation for tags
+    {
+        nbytes = (uint)snprintf(line, sizeof(line), "%*s", cmd_level * 4, "");
+    }
 
     // Increase indentation level for commands that begin a control structure.
 
@@ -194,10 +199,29 @@ void log_cmd(struct cmd *cmd)
 
     assert(nbytes < sizeof(line));
 
+    while (cmd->expr.len != 0)
+    {
+        if (isspace(cmd->expr.buf[0]))
+        {
+            ++cmd->expr.buf;
+            --cmd->expr.len;
+        }
+        else
+        {
+            break;
+        }
+    }
+
     // Now re-create the command
 
-    log_str(cmd->expr.buf, cmd->expr.len);
-    log_chr(cmd->expr.len ? SPACE : NUL);
+    if (cmd->expr.len != 0)
+    {
+        log_chr('(');
+        log_str(cmd->expr.buf, cmd->expr.len);
+        log_chr(')');
+        log_chr(SPACE);
+    }
+
     log_chr(cmd->colon_set ? ':' : NUL);
     log_chr(cmd->dcolon_set ? ':' : NUL);
     log_chr(cmd->atsign_set ? '@' : NUL);
@@ -205,12 +229,12 @@ void log_cmd(struct cmd *cmd)
     log_chr(cmd->c2);
     log_chr(cmd->c3);
     log_chr(cmd->qlocal ? '.' : NUL);
-    log_chr(cmd->q_req ? cmd->qname : NUL);
+    log_chr(cmd->qname);
     log_chr(cmd->atsign_set ? cmd->delim : NUL);
     log_str(cmd->text1.buf, cmd->text1.len);
-    log_chr(cmd->t1_opt ? cmd->delim : NUL);
+    log_chr(cmd->text1.buf != NULL ? cmd->delim : NUL);
     log_str(cmd->text2.buf, cmd->text2.len);
-    log_chr(cmd->t2_opt ? cmd->delim : NUL);
+    log_chr(cmd->text2.buf != NULL ? cmd->delim : NUL);
 
     line[nbytes] = NUL;
 
@@ -219,30 +243,9 @@ void log_cmd(struct cmd *cmd)
         printf("{%5u}  %s\r\n", ++sequence, line);
     }
 
-    if (fp == NULL)
+    if (fp != NULL)                     // Print to log file if it's open
     {
-        return;
+        fprintf(fp, "%s\n", line);
+        (void)fflush(fp);
     }
-
-    nbytes += (uint)snprintf(line + nbytes, sizeof(line) - nbytes, "%*s! ",
-                       64 - (int)nbytes, "");
-
-    assert(nbytes < sizeof(line));
-
-    log_chr(cmd->colon_set ? ':' : NUL);
-    log_chr(cmd->c1);
-    log_chr(cmd->c2);
-    log_chr(cmd->c3);
-    log_chr(cmd->t1_opt && !cmd->text1.len ? ESC : NUL);
-    log_chr(',');
-    log_chr(SPACE);
-    log_chr(cmd->qlocal ? '.' : NUL);
-    log_chr(cmd->q_req ? cmd->qname : NUL);
-    log_chr(SPACE);
-    log_chr('!');
-
-    line[nbytes] = NUL;
-    
-    fprintf(fp, "%s\n", line);
-    (void)fflush(fp);
 }

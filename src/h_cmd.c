@@ -46,7 +46,7 @@ void scan_H(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->comma_set || cmd->h_set)   // Already seen comma or H?
+    if (scan.comma_set || cmd->h_set)   // Already seen comma or H?
     {
         print_err(E_ARG);               // Invalid arguments
     }
@@ -54,9 +54,8 @@ void scan_H(struct cmd *cmd)
     uint Z = getsize_tbuf();
     
     cmd->h_set = true;
-    cmd->m_arg = (int)Z;
-    cmd->m_set = true;
 
     push_expr(B, EXPR_VALUE);
+    push_expr((int)Z, EXPR_VALUE);
 }
 

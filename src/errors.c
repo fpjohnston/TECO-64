@@ -103,7 +103,6 @@ static struct err_table err_table[] =
     [E_NFI] = { "NFI",  "No file for input" },
     [E_NFO] = { "NFO",  "No file for output" },
     [E_NIC] = { "NIC",  "Not in conditional" },
-    [E_NIH] = { "NIH",  "Not implemented here" },
     [E_NPA] = { "NPA",  "Negative or 0 argument to P" },
     [E_NRO] = { "NRO",  "No room for output" },
     [E_NTF] = { "NTF",  "No tag found" },
@@ -299,9 +298,6 @@ static const char *verbose[] =
 
     [E_NIC] = "A |, ', F|, or F' command occurred outside a conditional "
               "statement.",
-
-    [E_NIH] = "A command was issued whose implementation makes no sense "
-              "in this operating environment.",
 
     [E_NPA] = NULL,
 

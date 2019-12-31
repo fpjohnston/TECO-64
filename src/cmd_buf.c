@@ -35,9 +35,9 @@
 #include "ascii.h"
 
 
-struct buffer *cmd_buf;                 ///< Current command string buffer.
+struct buffer *cmdbuf;                  ///< Current command string buffer.
 
-static struct buffer *term_buf;         ///< Command buffer for terminal input
+static struct buffer *termbuf;         ///< Command buffer for terminal input
 
 // Local functions
 
@@ -55,27 +55,27 @@ static void free_buf(void);
 
 struct buffer *copy_buf(void)
 {
-    assert(cmd_buf != NULL);
-    assert(cmd_buf->size != 0);
+    assert(cmdbuf != NULL);
+    assert(cmdbuf->size != 0);
 
     struct buffer *clone = alloc_mem((uint)sizeof(struct buffer));
 
-    clone->put  = cmd_buf->put;
-    clone->get  = cmd_buf->get;
-    clone->size = cmd_buf->size;
+    clone->len  = cmdbuf->len;
+    clone->pos  = cmdbuf->pos;
+    clone->size = cmdbuf->size;
     clone->buf  = alloc_mem(clone->size);
 
-    if (clone->put > 0 && cmd_buf->buf[clone->put - 1] == ESC)
+    if (clone->len > 0 && cmdbuf->buf[clone->len - 1] == ESC)
     {
-        --clone->put;
+        --clone->len;
     }
 
-    if (clone->put > 0 && cmd_buf->buf[clone->put - 1] == ESC)
+    if (clone->len > 0 && cmdbuf->buf[clone->len - 1] == ESC)
     {
-        --clone->put;
+        --clone->len;
     }
 
-    memcpy(clone->buf, cmd_buf->buf, (ulong)clone->put);
+    memcpy(clone->buf, cmdbuf->buf, (ulong)clone->len);
 
     return clone;
 }
@@ -90,14 +90,14 @@ struct buffer *copy_buf(void)
 
 int delete_buf(void)
 {
-    assert(cmd_buf != NULL);
+    assert(cmdbuf != NULL);
     
-    if (cmd_buf->put == 0)              // Anything in buffer?
+    if (cmdbuf->len == 0)              // Anything in buffer?
     {
         return EOF;                     // No
     }
 
-    return cmd_buf->buf[--cmd_buf->put]; // Delete character and return it
+    return cmdbuf->buf[--cmdbuf->len]; // Delete character and return it
 }
 
 
@@ -110,17 +110,17 @@ int delete_buf(void)
 
 void echo_buf(int pos)
 {
-    assert(cmd_buf != NULL);
+    assert(cmdbuf != NULL);
     
-    assert((uint)pos <= cmd_buf->put);
+    assert((uint)pos <= cmdbuf->len);
 
     // Just echo everything we're supposed to print. Note that this is not the
     // same as typing out what's in a buffer, so things such as the settings of
     // the EU flag don't matter here.
 
-    for (uint i = (uint)pos; i < cmd_buf->put; ++i)
+    for (uint i = (uint)pos; i < cmdbuf->len; ++i)
     {
-        echo_chr(cmd_buf->buf[i]);
+        echo_chr(cmdbuf->buf[i]);
     }
 }
 
@@ -134,9 +134,9 @@ void echo_buf(int pos)
 
 bool empty_buf(void)
 {
-    assert(cmd_buf != NULL);
+    assert(cmdbuf != NULL);
 
-    return (cmd_buf->put == cmd_buf->get);
+    return (cmdbuf->len == cmdbuf->pos);
 }
 
 
@@ -149,16 +149,16 @@ bool empty_buf(void)
 
 int fetch_buf(void)
 {
-    assert(cmd_buf != NULL);
+    assert(cmdbuf != NULL);
     
-    if (cmd_buf->get == cmd_buf->put)
+    if (cmdbuf->pos == cmdbuf->len)
     {
-        cmd_buf->get = cmd_buf->put = 0;
+        cmdbuf->pos = cmdbuf->len = 0;
 
         return EOF;
     }
 
-    return cmd_buf->buf[cmd_buf->get++];
+    return cmdbuf->buf[cmdbuf->pos++];
 }
 
 
@@ -173,16 +173,16 @@ int fetch_buf(void)
 
 static void free_buf(void)
 {
-    cmd_buf = NULL;
+    cmdbuf = NULL;
 
-    if (term_buf != NULL && term_buf->buf != NULL)
+    if (termbuf != NULL && termbuf->buf != NULL)
     {
-        term_buf->size = 0;
-        term_buf->get  = 0;
-        term_buf->put  = 0;
+        termbuf->size = 0;
+        termbuf->pos  = 0;
+        termbuf->len  = 0;
 
-        free_mem(&term_buf->buf);
-        free_mem(&term_buf);
+        free_mem(&termbuf->buf);
+        free_mem(&termbuf);
     }
 }
 
@@ -196,7 +196,7 @@ static void free_buf(void)
 
 struct buffer *get_buf(void)
 {
-    return cmd_buf;
+    return cmdbuf;
 }
 
 
@@ -209,14 +209,14 @@ struct buffer *get_buf(void)
 
 void init_buf(void)
 {
-    term_buf = alloc_mem((uint)sizeof(struct buffer));
+    termbuf = alloc_mem((uint)sizeof(struct buffer));
 
-    term_buf->put  = 0;
-    term_buf->get  = 0;
-    term_buf->size = STR_SIZE_INIT;
-    term_buf->buf  = alloc_mem(term_buf->size);
+    termbuf->len  = 0;
+    termbuf->pos  = 0;
+    termbuf->size = STR_SIZE_INIT;
+    termbuf->buf  = alloc_mem(termbuf->size);
 
-    cmd_buf = term_buf;
+    cmdbuf = termbuf;
 
     if (atexit(free_buf) != 0)          // Ensure we clean up on exit
     {
@@ -234,14 +234,14 @@ void init_buf(void)
 
 char *next_buf(void)
 {
-    assert(cmd_buf != NULL);
+    assert(cmdbuf != NULL);
 
-    if (cmd_buf->get == cmd_buf->put)
+    if (cmdbuf->pos == cmdbuf->len)
     {
         return NULL;
     }
 
-    return cmd_buf->buf + cmd_buf->get;
+    return cmdbuf->buf + cmdbuf->pos;
 }
 
 
@@ -254,12 +254,12 @@ char *next_buf(void)
 
 void reset_buf(void)
 {
-    assert(term_buf != NULL);
+    assert(termbuf != NULL);
 
-    cmd_buf = term_buf;
+    cmdbuf = termbuf;
 
-    cmd_buf->get = 0;
-    cmd_buf->put = 0;
+    cmdbuf->pos = 0;
+    cmdbuf->len = 0;
 }
 
 
@@ -274,7 +274,7 @@ void set_buf(struct buffer *buf)
 {
     assert(buf != NULL);
 
-    cmd_buf = buf;
+    cmdbuf = buf;
 }
 
 
@@ -287,13 +287,13 @@ void set_buf(struct buffer *buf)
 
 uint start_buf(void)
 {
-    uint i = cmd_buf->put;
+    uint i = cmdbuf->len;
 
     while (i > 0)
     {
         // Back up on line until we find a line terminator.
 
-        int c = cmd_buf->buf[i];
+        int c = cmdbuf->buf[i];
 
         if (c == LF || c == VT || c == FF)
         {
@@ -321,28 +321,28 @@ void store_buf(int c)
     // calling realloc(). Note that this may move the block, so we have to
     // reinitialize all of our pointers.
 
-    assert(cmd_buf != NULL);
-    assert(cmd_buf->buf != NULL);
+    assert(cmdbuf != NULL);
+    assert(cmdbuf->buf != NULL);
 
-    if (cmd_buf->put == cmd_buf->size)    // Has buffer filled up?
+    if (cmdbuf->len == cmdbuf->size)    // Has buffer filled up?
     {
-        assert(cmd_buf->size != 0);
+        assert(cmdbuf->size != 0);
 
         // Round up size to a multiple of STR_SIZE_INIT
 
-        cmd_buf->size += STR_SIZE_INIT - 1;
-        cmd_buf->size /= STR_SIZE_INIT;
-        cmd_buf->size *= STR_SIZE_INIT;
+        cmdbuf->size += STR_SIZE_INIT - 1;
+        cmdbuf->size /= STR_SIZE_INIT;
+        cmdbuf->size *= STR_SIZE_INIT;
 
-        uint newsize = cmd_buf->size + STR_SIZE_INIT;
-        char *newbuf = expand_mem(cmd_buf->buf, cmd_buf->size, newsize);
+        uint newsize = cmdbuf->size + STR_SIZE_INIT;
+        char *newbuf = expand_mem(cmdbuf->buf, cmdbuf->size, newsize);
 
-        cmd_buf->size = newsize;
-        cmd_buf->buf  = newbuf;
+        cmdbuf->size = newsize;
+        cmdbuf->buf  = newbuf;
     }
 
-    cmd_buf->buf[cmd_buf->put++] = (char)c;
-    cmd_buf->buf[cmd_buf->put] = NUL;
+    cmdbuf->buf[cmdbuf->len++] = (char)c;
+    cmdbuf->buf[cmdbuf->len] = NUL;
 }
 
 
@@ -355,10 +355,10 @@ void store_buf(int c)
 
 void unfetch_buf(int c)
 {
-    assert(cmd_buf != NULL);
+    assert(cmdbuf != NULL);
 
-    if (cmd_buf->get != 0)
+    if (cmdbuf->pos != 0)
     {
-        cmd_buf->buf[--cmd_buf->get] = (char)c;
+        cmdbuf->buf[--cmdbuf->pos] = (char)c;
     }
 }

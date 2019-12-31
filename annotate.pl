@@ -13,15 +13,15 @@ use Readonly;
 
 # Main program starts here
 
-my %commands =
+my %details =
 (
     "^A"  => "type out text",
     "^C"  => "stop execution",
     "^D"  => "set input radix to decimal",
     "^R"  => "set input radix",
     "^T"  => "type out character",
-    "^U"  => "copy text to Q-register %s",
-    ":^U" => "append text to Q-register %s",
+    "^U"  => "copy text to Q-register %c",
+    ":^U" => "append text to Q-register %c",
     "^X"  => "set search mode flag",
     "!"   => "tag/comment",
     "\"A" => "if alpha",
@@ -68,30 +68,30 @@ my %commands =
     "F>"  => "go to end of loop",
     "F_"  => "non-stop search and replace",
     "F|"  => "go to else clause",
-    "G"   => "copy Q-register %s to buffer",
+    "G"   => "copy Q-register %c to buffer",
     "G*"  => "copy command string to buffer",
     "G_"  => "copy search string to buffer",
-    ":G"  => "print Q-register %s",
+    ":G"  => "print Q-register %c",
     ":G*" => "print command string",
     ":G_" => "print search string",
     "I"   => "insert",
     "J"   => "jump",
     "K"   => "delete lines",
     "L"   => "move forward/backward lines",
-    "M"   => "execute Q-register %s", 
+    "M"   => "execute Q-register %c", 
     "O"   => "goto %s", 
     "P"   => "page",
     "C"   => "move forward",
     "R"   => "move backward",
     "S"   => "search",
     "T"   => "print text",
-    "U"   => "store number in Q-register %s",
-    "X"   => "copy buffer to Q-register %s",
-    ":X"  => "append buffer to Q-register %s",
+    "U"   => "store number in Q-register %c",
+    "X"   => "copy buffer to Q-register %c",
+    ":X"  => "append buffer to Q-register %c",
     "Y"   => "yank",
-    "]"   => "pop Q-register %s",
+    "]"   => "pop Q-register %c",
     "\\"  => "insert digit string",
-    "["   => "push Q-register %s",
+    "["   => "push Q-register %c",
     "|"   => "else",
 );
 
@@ -103,55 +103,123 @@ while (<>)
 
     s/\r//;
 
-    next unless /^(.+?)\s+! (\S+), (\S*) !$/;
+    my $command = $_;
+    my $expression = "";
+    my $key;
+    my $colon;
+    my $atsign;
+    my $qreg;
+    my $text;
 
-    my $teco = $1;
-    my $key = uc $2;
-    my $arg = $3;
-    my $text = $commands{$key};
-
-    if (!defined $text)
+    if (/^(\s*)(\(.+\)) (.+)$/)
     {
-        if ($key =~ /^(.+)`$/)
-        {
-            $text = $commands{$1};
-        }
+        $expression = $2;
+        $key = $3;
+    }
+    elsif (/^(\s*)(.+)$/)
+    {
+        $key = $2;
     }
 
-    if (!defined $text)
-    {
-        if ($key =~ /^:(.+)$/)
-        {
-            $text = $commands{$1};
-        }
-    }    
+    $key = $1 if ($key =~ /^::(.+)$/);
 
-    # If goto command, get the tag
-
-    if ($key eq 'O')
+    if ($key =~ /^:(.+)$/)
     {
-        if ($teco =~ /^\s*$key(.+)`$/)
-        {
-            $arg = $1;
-        }
+        $colon = 1;
+        $key = $1;
     }
 
-    my $line = sprintf "%s", $teco;
+    if ($key =~ /^@(.+)$/)
+    {
+        $atsign = 1;
+        $key = $1;
+    }
 
-    print $line;
-    printf "%*s! % 5u: ", 64 - length $line, " ", ++$sequence;
+    if ($key =~ /^([][%GMQUX])(.)/i || $key =~ /^(\^U)(.)/i)
+    {
+        $key = $1;
+        $qreg = $2;
+    }
+    elsif ($key =~ /^([EF].)(.*)/i)
+    {
+        $key = $1;
+        $text = $2;
+    }
+    elsif ($key =~ /^([INS_]).+/i)
+    {
+        $key = $1;
+    }
+    elsif ($atsign && $key =~ /^([!O]).(.+)./i)
+    {
+        $key = $1;
+        $text = $2;
+    }
+    elsif ($key =~ /^(O)(.+)`/i)
+    {
+        $key = $1;
+        $text = $2;
+    }
+    elsif ($key =~ /^(!)(.+)!/)
+    {
+        $key = $1;
+        $text = $2;
+    }
+    elsif ($key =~ /^(".)/)
+    {
+        $key = $1;
+    }
+    elsif ($key =~ /(\^.)/)
+    {
+        $key = $1;
+    }
 
-    if (!defined $text)
+    my $detail;
+
+    $key = uc $key;
+
+    if ($text && $text =~ /^`$/)
+    {
+        $detail = $details{$key};
+    }
+    elsif ($colon)
+    {
+        if ($qreg)
+        {
+            $detail = $details{":$key$qreg"};
+        }
+        else
+        {
+            $detail = $details{":$key"};
+        }
+    }
+    elsif ($qreg)
+    {
+        $detail = $details{"$key$qreg"};
+    }
+
+    if (!defined $detail)
+    {
+        $detail = $details{$key};
+    }
+
+    print $command;
+    printf "%*s! % 5u: ", 64 - length $command, " ", ++$sequence;
+
+    if (!defined $detail)
     {
         print "(n/a)";
     }
-    elsif ($text =~ /%s/)
+    elsif ($detail =~ /%c/)
     {
-        printf $text, $arg;
+        printf $detail, ord($qreg);
+    }
+    elsif ($detail =~ /%s/)
+    {
+        printf $detail, $text;
     }
     else
     {
-        print $text;
+        print $detail;
     }
 
     print " !\n";

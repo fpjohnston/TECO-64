@@ -220,7 +220,7 @@ void init_term(void)
     f.et.scope     = true;              // Terminal is a scope
     f.et.rscope    = true;              // Terminal is a refresh scope
     f.et.eightbit  = true;              // Terminal can use 8-bit characters
-    f.et.accent    = true;              // Use accent grave as delimiter
+//    f.et.accent    = true;              // Use accent grave as delimiter
 
     f.eu           = -1;                // No case flagging
 

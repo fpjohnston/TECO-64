@@ -41,7 +41,8 @@
 #include "exec.h"
 
 
-static uint paren_count = 0;            ///< No. of unmatched left parentheses
+struct scan scan;                   ///< Internal scan variables
+
 
 // Local functions
 
@@ -54,6 +55,28 @@ static void scan_text(int delim, struct tstring *tstring);
 static void set_opts(struct cmd *cmd, const char *opts);
 
 static bool valid_radix(int c);
+
+
+///
+///  @brief    Reset internal variables for next scan.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_scan(enum scan_state state)
+{
+    scan.state       = state;
+    scan.nparens     = 0;
+    scan.comma_set   = false;
+    scan.colon_opt   = false;
+    scan.dcolon_opt  = false;
+    scan.atsign_opt  = false;
+    scan.w_opt       = false;
+    scan.t1_opt      = false;
+    scan.t2_opt      = false;
+    scan.q_register  = false;
+}
 
 
 ///
@@ -250,7 +273,7 @@ void scan_mod(struct cmd *cmd)
         }
     }
 
-    scan_state = SCAN_MOD;
+    scan.state = SCAN_MOD;
 }
 
 
@@ -269,11 +292,11 @@ void scan_operator(struct cmd *cmd)
 
     if (cmd->c1 == '(')
     {
-        ++paren_count;
+        ++scan.nparens;
     }
     else if (cmd->c1 == ')')
     {
-        if (paren_count == 0)           // Can't have ) without (
+        if (scan.nparens == 0)          // Can't have ) without (
         {
             print_err(E_MLP);           // Missing left parenthesis
         }
@@ -283,7 +306,7 @@ void scan_operator(struct cmd *cmd)
         }
         else
         {
-            --paren_count;
+            --scan.nparens;
         }
     }
 
@@ -319,7 +342,7 @@ exec_func *scan_pass1(struct cmd *cmd)
     {
         (void)scan_digits(cmd->c1, NULL, 0, (bool)true);
 
-        if (scan_state == SCAN_PASS1)    // Still scanning expression?
+        if (scan.state == SCAN_PASS1)    // Still scanning expression?
         {
             cmd->expr.len = (uint)(next_buf() - cmd->expr.buf);
         }
@@ -351,7 +374,7 @@ exec_func *scan_pass1(struct cmd *cmd)
 
     // Check to see if command requires a global (or local) Q-register.
 
-    if (cmd->q_req)                     // Do we need a Q-register?
+    if (scan.q_register)                // Do we need a Q-register?
     {
         int c = fetch_buf();            // Yes
 
@@ -386,7 +409,7 @@ exec_func *scan_pass1(struct cmd *cmd)
     }
     else if (table->exec != NULL)
     {
-        scan_state = SCAN_PASS2;
+        scan.state = SCAN_PASS2;
     }
 
     return table->exec;
@@ -409,52 +432,39 @@ void scan_pass2(struct cmd *cmd)
         return;                         // No, so we're done
     }
 
+    reset_scan(SCAN_PASS2);
+
     init_expr();                        // Re-initialize expression stack
-
-    // Save the stuff we'll need for the actual command
-
-    char c1 = cmd->c1;
-    char c2 = cmd->c2;
-    char c3 = cmd->c3;
-    uint atsign_set = cmd->atsign_set;
-    uint colon_set  = cmd->colon_set;
-    uint dcolon_set = cmd->dcolon_set;
-
-    paren_count = 0;
-
-    cmd->m_set = false;
-    cmd->n_set = false;
-    cmd->h_set = false;
-    cmd->colon_set = false;
-    cmd->comma_set = false;
-
-    bool saved_qreq = cmd->q_req;
-
-    cmd->q_req = false;
 
     if (cmd->c1 == ESC)
     {
         return;
     }
 
-    const char *p = cmd->expr.buf + cmd->expr.len;
+    struct cmd tmp;                     // Temporary command block
 
-    while (isspace(*--p) && cmd->expr.len > 0)
+    memset(&tmp, 0, sizeof(tmp));
+
+    tmp.expr = cmd->expr;
+
+    const char *p = tmp.expr.buf + tmp.expr.len;
+
+    while (isspace(*--p) && tmp.expr.len > 0)
     {
-        --cmd->expr.len;
+        --tmp.expr.len;
     }
 
-    p = cmd->expr.buf;
+    p = tmp.expr.buf;
 
-    uint len = cmd->expr.len;
+    uint len = tmp.expr.len;
 
     while (len-- > 0)
     {
         int c = *p++;
 
-        cmd->c1 = (char)c;
-        cmd->c2 = NUL;
-        cmd->c3 = NUL;
+        tmp.c1 = (char)c;
+        tmp.c2 = NUL;
+        tmp.c3 = NUL;
 
         assert((uint)c < cmd_count);
 
@@ -465,16 +475,16 @@ void scan_pass2(struct cmd *cmd)
                 print_err(E_UTC);       // Unterminated command
             }
 
-            cmd->c2 = *p++;
+            tmp.c2 = *p++;
 
-            if (c == '^' && cmd->c2 == '^')
+            if (c == '^' && tmp.c2 == '^')
             {
                 if (len-- == 0)
                 {
                     print_err(E_UTC);   // Unterminated command
                 }
 
-                cmd->c3 = *p++;
+                tmp.c3 = *p++;
             }
         }
         else if (isdigit(c))
@@ -494,11 +504,11 @@ void scan_pass2(struct cmd *cmd)
             }
         }
 
-        const struct cmd_table *table = scan_cmd(cmd);
+        const struct cmd_table *table = scan_cmd(&tmp);
 
         // Check to see if command requires a global (or local) Q-register.
 
-        if (cmd->q_req)                 // Do we need a Q-register?
+        if (scan.q_register)            // Do we need a Q-register?
         {
             if (len-- == 0)
             {
@@ -509,45 +519,41 @@ void scan_pass2(struct cmd *cmd)
 
             if (c == '.')               // Is it a local Q-register?
             {
-                cmd->qlocal = true;     // Yes, mark it
+                tmp.qlocal = true;      // Yes, mark it
 
                 if (len-- == 0)
                 {
                     print_err(E_UTC);   // Unterminated command
                 }
 
-               c = *p++;               // Get Q-register name
+               c = *p++;                // Get Q-register name
             }        
 
             if (!isalnum(c))
             {
                 // The following allows use of G* and G_
 
-                if (toupper(cmd->c1) != 'G' || (c != '*' && c != '_'))
+                if (toupper(tmp.c1) != 'G' || (c != '*' && c != '_'))
                 {
                     printc_err(E_IQN, c); // Illegal Q-register name
                 }
             }
 
-            cmd->qname = (char)c;       // Save the name
+            tmp.qname = (char)c;        // Save the name
         }
 
         if (table != NULL && table->scan != NULL)
         {
-            (*table->scan)(cmd);        // Scan it if we can
+            (*table->scan)(&tmp);       // Scan it if we can
         }
     }
 
-    cmd->q_req = saved_qreq;
+    cmd->m_set = tmp.m_set;
+    cmd->n_set = tmp.n_set;
+    cmd->h_set = tmp.h_set;
 
-    // Restore command characters
-
-    cmd->dcolon_set = dcolon_set;
-    cmd->colon_set  = colon_set;
-    cmd->atsign_set = atsign_set;
-    cmd->c3 = c3;
-    cmd->c2 = c2;
-    cmd->c1 = c1;
+    cmd->m_arg = tmp.m_arg;
+    cmd->n_arg = tmp.n_arg;
 }
 
 
@@ -563,15 +569,15 @@ void scan_tail(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (paren_count != 0)
+    if (scan.nparens != 0)
     {
         print_err(E_MRP);               // Missing right parenthesis
     }
     else if (f.ei.strict)
     {
-        if (   (cmd->colon_set  && !cmd->colon_opt )
-            || (cmd->dcolon_set && !cmd->dcolon_opt)
-            || (cmd->atsign_set && !cmd->atsign_opt))
+        if (   (cmd->colon_set  && !scan.colon_opt )
+            || (cmd->dcolon_set && !scan.dcolon_opt)
+            || (cmd->atsign_set && !scan.atsign_opt))
         {
             print_err(E_MOD);           // Invalid modifier for command
         }
@@ -596,7 +602,7 @@ void scan_tail(struct cmd *cmd)
 
     // The P command can optionally be followed by a W.
 
-    if (cmd->w_opt)                     // Optional W following?
+    if (scan.w_opt)                     // Optional W following?
     {
         int c = fetch_buf();            // Maybe
 
@@ -621,11 +627,11 @@ void scan_tail(struct cmd *cmd)
 
     // Now get the text strings, if they're allowed for this command.
 
-    if (cmd->t1_opt || cmd->t2_opt)
+    if (scan.t1_opt)
     {
         scan_text(cmd->delim, &cmd->text1);
 
-        if (cmd->t2_opt)
+        if (scan.t2_opt)
         {
             scan_text(cmd->delim, &cmd->text2);
         }
@@ -647,17 +653,27 @@ static void scan_text(int delim, struct tstring *text)
     text->len = 0;
     text->buf = next_buf();
 
-    if (fetch_buf() == delim)
-    {
-        text->buf = NULL;
+    int c;
 
+    if ((c = fetch_buf()) == EOF)
+    {
+        print_err(E_UTC);               // Unterminated command
+    }
+
+    if (c == delim)
+    {
         return;
     }
 
     ++text->len;
 
-    while (fetch_buf() != delim)
+    while ((c = fetch_buf()) != delim)
     {
+        if (c == EOF)
+        {
+            print_err(E_UTC);           // Unterminated command
+        }
+
         ++text->len;
     }
 }
@@ -687,7 +703,7 @@ static void set_opts(struct cmd *cmd, const char *opts)
 {
     assert(cmd != NULL);
 
-    cmd->q_req = false;
+    scan.q_register = false;
 
     if (opts == NULL)
     {
@@ -696,6 +712,14 @@ static void set_opts(struct cmd *cmd, const char *opts)
 
     int c;
 
+    scan.colon_opt  = false;
+    scan.dcolon_opt = false;
+    scan.atsign_opt = false;
+    scan.q_register = false;
+    scan.w_opt      = false;
+    scan.t1_opt     = false;
+    scan.t2_opt     = false;
+
     while ((c = *opts++) != NUL)
     {
         switch (c)
@@ -703,38 +727,38 @@ static void set_opts(struct cmd *cmd, const char *opts)
             case ':':
                 if (*opts == ':')       // Double colon?
                 {
-                    cmd->dcolon_opt = true;
+                    scan.dcolon_opt = true;
 
                     ++opts;
                 }
                 else                    // No, just single colon
                 {
-                    cmd->colon_opt  = true;
+                    scan.colon_opt  = true;
                 }
 
                 break;
 
             case '@':
-                cmd->atsign_opt = true;
+                scan.atsign_opt = true;
 
                 break;
 
             case 'q':
-                cmd->q_req = true;
+                scan.q_register = true;
 
                 break;
 
             case 'W':
-                cmd->w_opt  = true;
+                scan.w_opt = true;
 
                 break;
 
             case '2':
-                cmd->t2_opt = true;
+                scan.t2_opt = true;
                 //lint -fallthrough
 
             case '1':
-                cmd->t1_opt = true;
+                scan.t1_opt = true;
 
                 break;
 
@@ -743,6 +767,12 @@ static void set_opts(struct cmd *cmd, const char *opts)
 
                 break;
         }
+    }
+
+    if (!scan.q_register)
+    {
+        cmd->qname = NUL;
+        cmd->qlocal = false;
     }
 }
 

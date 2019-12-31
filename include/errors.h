@@ -88,7 +88,6 @@ enum errors
     E_NFI,          ///< No file for input
     E_NFO,          ///< No file for output
     E_NIC,          ///< Not in conditional
-    E_NIH,          ///< Not implemented here
     E_NPA,          ///< Negative or 0 argument to P
     E_NRO,          ///< No room for output
     E_NTF,          ///< No tag found

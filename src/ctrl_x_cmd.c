@@ -64,7 +64,7 @@ void scan_ctrl_x(struct cmd *cmd)
 
     if (pop_expr(NULL))                 // n^X
     {
-        scan_state = SCAN_PASS2;
+        scan.state = SCAN_PASS2;
     }
     else
     {
