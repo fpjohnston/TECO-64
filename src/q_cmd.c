@@ -48,11 +48,7 @@ void scan_Q(struct cmd *cmd)
 
     int n;
 
-    if (scan.state == SCAN_PASS1)
-    {
-        n = DUMMY_VALUE;
-    }
-    else if (pop_expr(&n))              // nQq
+    if (pop_expr(&n))                   // nQq
     {
         n = get_qchr(cmd->qname, cmd->qlocal, n);
     }

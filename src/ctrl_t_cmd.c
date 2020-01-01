@@ -35,36 +35,6 @@
 
 
 ///
-///  @brief    Execute n^T (CTRL/T) command.
-///
-///              ^T  Read and decode next character typed.
-///              ^T= Type ASCII value of next character.
-///             n^T  Type ASCII character of value n.
-///            n:^T  Output binary byte of value n.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctrl_t(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-    assert(cmd->n_set == true);
-
-    cmd->n_arg &= 0xFF;                 // Limit value to 8 bits
-
-    if (cmd->colon_set || f.et.image)
-    {
-        putc_term(cmd->n_arg);
-    }
-    else
-    {
-        echo_chr(cmd->n_arg);
-    }
-}
-
-
-///
 ///  @brief    Scan ^T (CTRL/T) command.
 ///
 ///              ^T  Read and decode next character typed.
@@ -80,13 +50,20 @@ void scan_ctrl_t(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(NULL))                 // n argument?
+    int n;
+
+    if (pop_expr(&n))                   // n argument?
     {
-        scan.state = SCAN_PASS2;
-    }
-    else if (scan.state != SCAN_PASS2)
-    {
-        push_expr(DUMMY_VALUE, EXPR_VALUE);
+        n &= 0xFF;                      // Limit value to 8 bits
+
+        if (cmd->colon_set || f.et.image)
+        {
+            putc_term(n);
+        }
+        else
+        {
+            echo_chr(n);
+        }
     }
     else
     {

@@ -59,10 +59,7 @@ void scan_comma(struct cmd *cmd)
 
     if (cmd->m_arg < 0)
     {
-        if (scan.state == SCAN_PASS2 && !teco_debug)
-        {
-            print_err(E_NCA);           // Negative argument to ,
-        }
+        print_err(E_NCA);               // Negative argument to ,
     }
 
     cmd->m_set = true;                  // And say we have one

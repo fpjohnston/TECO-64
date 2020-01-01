@@ -50,13 +50,6 @@ void scan_ctrl_h(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (scan.state == SCAN_PASS1)
-    {
-        push_expr(DUMMY_VALUE, EXPR_VALUE);
-
-        return;
-    }
-
     time_t t = time(NULL);
     struct tm tm;
 
@@ -77,6 +70,6 @@ void scan_ctrl_h(struct cmd *cmd)
 //    teco_time *= 1000;
 //    teco_time += (uint)(tv.tv_usec / 1000);
 
-    push_expr(teco_time, EXPR_VALUE);
+    push_expr(teco_time / 2, EXPR_VALUE);
 }
 

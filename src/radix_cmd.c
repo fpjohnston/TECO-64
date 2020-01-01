@@ -1,6 +1,6 @@
 ///
-///  @file    ez_cmd.c
-///  @brief   Execute EZ command.
+///  @file    radix_cmd.c
+///  @brief   Execute radix commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -28,57 +28,66 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "eflags.h"
-//#include "errors.h"
+#include "errors.h"
 #include "exec.h"
 
-#if     0       // TODO: do we keep old or new EZ?
 
 ///
-///  @brief    Execute EZ command (open file for output) (same as EW).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_EZ(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    print_err(E_T10);                   // TECO-10 command not implemented
-}
-
-#endif
-
-
-///
-///  @brief    Execute EZ command.
+///  @brief    Execute ^D (CTRL/D) command: switch radix to decimal.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EZ(struct cmd *cmd)
+void exec_ctrl_d(struct cmd *cmd)
 {
     assert(cmd != NULL);
-
-    f.ez.flag = set_flag(cmd, f.ez.flag);
+    
+    v.radix = 10;                       // Set radix to decimal
 }
 
 
 ///
-///  @brief    Scan EZ command.
+///  @brief    Execute ^O (CTRL/O) command: switch radix to octal.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_EZ(struct cmd *cmd)
+void exec_ctrl_o(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    get_flag(cmd, f.ez.flag);
+    v.radix = 8;                        // Set radix to octal
+}
+
+
+///
+///  @brief    Scan ^R (CTRL/R) command: read current radix.
+///
+///  @returns  nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_ctrl_r(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int n;
+
+    if (pop_expr(&n))                   // n^R?
+    {
+        if (n != 8 && n != 10 && n != 16)
+        {
+            print_err(E_IRA);           // Illegal radix argument
+        }
+
+        v.radix = n;                    // Set the radix
+    }
+    else
+    {
+        push_expr(v.radix, EXPR_VALUE); // No, just save what we have
+    }
 }

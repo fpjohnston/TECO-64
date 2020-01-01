@@ -33,8 +33,9 @@
 #include <string.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errors.h"
-#include "exec.h"
+
 
 ///  @struct  estack
 ///  @brief   Expression stack used for parsing command strings.
@@ -141,11 +142,6 @@ void push_expr(int value, enum expr_type type)
         print_err(E_PDO);               // Push-down list overflow
     }
 
-    if (scan.state != SCAN_PASS2)
-    {
-        scan.state = SCAN_PASS1;
-    }
-
     estack.obj[estack.level].value = value;
     estack.obj[estack.level].type = type;
 
@@ -199,15 +195,19 @@ static bool reduce2(void)
     struct e_obj *e1 = &estack.obj[estack.level - 1];
     struct e_obj *e2 = &estack.obj[estack.level - 2];
 
-#if    0    // TODO: fix this
-    if ((e1->type == EXPR_VALUE && e2->type == EXPR_VALUE) ||
-        (strchr("+-*/&#", e1->type) != NULL &&
-         strchr("+-*/&#", e2->type) != NULL))
+    // TODO: fix magic numbers
+
+    // The following prevents double operators in expressions such as 1++2.
+
+    if (f.ei.strict)
     {
-        print_err(E_IFE);               // Ill-formed numeric expression
-    }
-#endif
-    
+        if (e1->type != EXPR_VALUE && e1->value == 2 &&
+            e2->type != EXPR_VALUE && e2->value == 2)
+        {
+            print_err(E_IFE);               // Ill-formed numeric expression
+        }
+    }    
+
     if (e1->type == EXPR_VALUE && e2->type != EXPR_VALUE)
     {
         if (e2->type == '+')
@@ -296,21 +296,19 @@ static bool reduce3(void)
             break;
 
         case '/':
-            if (e1->value == 0)         // Division by zero?
+            if (e1->value == 0)
             {
-                // Don't allow divide by zero if we're scanning expression.
-
-                if (scan.state == SCAN_PASS1)
-                {
-                    e1->value = 1;      // Just use a dummy result here
-                }
-                else
+                if (f.ei.strict)
                 {
                     print_err(E_DIV);   // Division by zero
                 }
-            }
 
-            e3->value /= e1->value;
+                e3->value = 0;
+            }
+            else
+            {
+                e3->value /= e1->value;
+            }
 
             break;
 
@@ -328,8 +326,8 @@ static bool reduce3(void)
             print_err(E_ARG);           // Improper arguments
     }
 
-    estack.level -= 2;
     e3->type = EXPR_VALUE;
+    estack.level -= 2;
 
     return true;
 }

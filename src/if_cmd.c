@@ -61,7 +61,11 @@ static void endif(struct cmd *cmd, bool vbar)
 
     do
     {
-        (void)next_cmd(cmd);
+        while (next_cmd(cmd) == NULL)
+        {
+            ;
+        }
+
         log_cmd(cmd);
 
         if (cmd->c1 == '"')             // Start of a new conditional?
@@ -76,6 +80,8 @@ static void endif(struct cmd *cmd, bool vbar)
         {
             break;
         }
+
+        memset(cmd, 0, sizeof(*cmd));
     } while (if_depth > 0);
 }
 
@@ -169,11 +175,10 @@ void exec_quote(struct cmd *cmd)
     }
 
     int c = cmd->n_arg;                 // Value to test
-    int test = cmd->c2;                 // Test condition
 
     ++if_depth;
 
-    switch (toupper(test))
+    switch (toupper(cmd->c2))
     {
         case 'A':                       // Test for alphabetic
             if (isalpha(c))
@@ -295,31 +300,6 @@ void exec_vbar(struct cmd *cmd)
 void reset_if(void)
 {
     if_depth = 0;
-}
-
-
-///
-///  @brief    Scan " (quote) command.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_quote(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-    
-    if (scan.state != SCAN_PASS2)
-    {
-        cmd->c2 = (char)fetch_buf();    // Just store 2nd character
-
-        if (strchr("<=>ACDEFGLNRSTUVW", cmd->c2) == NULL)
-        {
-            print_err(E_IQC);           // Illegal quote character
-        }
-
-        scan.state = SCAN_PASS2;
-    }
 }
 
 

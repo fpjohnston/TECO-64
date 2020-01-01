@@ -83,7 +83,6 @@ SOURCES = \
     file.c        \
     file_sys.c    \
     gapbuf.c      \
-    get_flag.c    \
     memory.c      \
     option_sys.c  \
     qreg.c        \
@@ -101,18 +100,14 @@ SOURCES = \
     ctrl_a_cmd.c  \
     ctrl_b_cmd.c  \
     ctrl_c_cmd.c  \
-    ctrl_d_cmd.c  \
     ctrl_e_cmd.c  \
     ctrl_f_cmd.c  \
     ctrl_h_cmd.c  \
     ctrl_n_cmd.c  \
-    ctrl_o_cmd.c  \
     ctrl_q_cmd.c  \
-    ctrl_r_cmd.c  \
     ctrl_s_cmd.c  \
     ctrl_t_cmd.c  \
     ctrl_u_cmd.c  \
-    ctrl_x_cmd.c  \
     ctrl_y_cmd.c  \
     ctrl_z_cmd.c  \
     delete_cmd.c  \
@@ -120,11 +115,9 @@ SOURCES = \
     ea_cmd.c      \
     eb_cmd.c      \
     ec_cmd.c      \
-    ed_cmd.c      \
     ee_cmd.c      \
     ef_cmd.c      \
     eg_cmd.c      \
-    eh_cmd.c      \
     ei_cmd.c      \
     ej_cmd.c      \
     ek_cmd.c      \
@@ -137,17 +130,13 @@ SOURCES = \
     eq_cmd.c      \
     equals_cmd.c  \
     er_cmd.c      \
-    es_cmd.c      \
-    et_cmd.c      \
     e_ubar_cmd.c  \
-    eu_cmd.c      \
-    ev_cmd.c      \
     ew_cmd.c      \
     ex_cmd.c      \
-    ez_cmd.c      \
     fc_cmd.c      \
     fd_cmd.c      \
     fk_cmd.c      \
+    flag_cmd.c    \
     fn_cmd.c      \
     fr_cmd.c      \
     fs_cmd.c      \
@@ -165,6 +154,7 @@ SOURCES = \
     pct_cmd.c     \
     q_cmd.c       \
     quest_cmd.c   \
+    radix_cmd.c   \
     s_cmd.c       \
     type_cmd.c    \
     u_cmd.c       \

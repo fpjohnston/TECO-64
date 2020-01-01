@@ -61,15 +61,59 @@ static void set_w(int m, int n);
 
 
 ///
-///  @brief    Execute W command: process window functions.
+///  @brief    Get watch scope variable.
+///
+///  @returns  Value of watch scope variable.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int get_w(int n)
+{
+    switch (n)
+    {
+        default:
+        case 0: return (int)w.type;
+
+        case 1: return (int)w.width;
+
+        case 2: return (int)w.height;
+
+        case 3: return w.seeall ? -1 : 0;
+
+        case 4: return w.mark;
+
+        case 5: return w.hold;
+
+        case 6: return (int)w.topdot;
+
+        case 7: return (int)w.nscroll;
+
+        case 8: return (int)w.spacemark;
+
+        case 9: return (int)w.keypad;
+    }
+}
+
+
+///
+///  @brief    Scan W command: process window functions.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_W(struct cmd *cmd)
+void scan_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (cmd->colon_set)                 // n:W returns a value
+    {
+        push_expr(cmd->n_set ? cmd->n_arg : 0, EXPR_VALUE);
+
+        return;
+    }
+
+    // Here for W command without a colon.
 
     if (!f.et.scope)
     {
@@ -146,63 +190,6 @@ void exec_W(struct cmd *cmd)
     else
     {
         // TODO: forget screen image and special scope modes
-    }
-}
-
-
-///
-///  @brief    Get watch scope variable.
-///
-///  @returns  Value of watch scope variable.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static int get_w(int n)
-{
-    switch (n)
-    {
-        default:
-        case 0: return (int)w.type;
-
-        case 1: return (int)w.width;
-
-        case 2: return (int)w.height;
-
-        case 3: return w.seeall ? -1 : 0;
-
-        case 4: return w.mark;
-
-        case 5: return w.hold;
-
-        case 6: return (int)w.topdot;
-
-        case 7: return (int)w.nscroll;
-
-        case 8: return (int)w.spacemark;
-
-        case 9: return (int)w.keypad;
-    }
-}
-
-
-///
-///  @brief    Scan W command: process window functions.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_W(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->colon_set)                 // n:W returns a value
-    {
-        push_expr(cmd->n_set ? cmd->n_arg : 0, EXPR_VALUE);
-    }
-    else
-    {
-        scan.state = SCAN_PASS2;
     }
 }
 

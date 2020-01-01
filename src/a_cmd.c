@@ -151,35 +151,6 @@ bool append_line(void)
 
 
 ///
-///  @brief    Execute A command: append text to buffer.
-///
-///              A -> Append page to buffer.
-///             :A -> Same as A, but returns -1/0 for success/failure.
-///            n:A -> Appends n lines of text. Returns -1/0 for success/failure.
-///             nA -> Value of nth character before or after dot.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_A(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    assert(!cmd->n_set || cmd->colon_set);
-
-    // Here if we need to append anything to the buffer.
-
-    int status = append((bool)cmd->n_set, cmd->n_arg, (bool)cmd->colon_set);
-
-    if (cmd->colon_set)
-    {
-        push_expr(status, EXPR_VALUE);
-    }
-}
-
-
-///
 ///  @brief Parse A command: get value of character in buffer.
 ///
 ///  @returns  Nothing.
@@ -190,24 +161,27 @@ void scan_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n;
-
-    if (pop_expr(&n))
+    if (pop_expr(&cmd->n_arg))
     {
-        if (scan.state == SCAN_PASS2)
+        cmd->n_set = true;
+
+        if (!cmd->colon_set)
         {
-            n = getchar_tbuf(n);
+            int n = getchar_tbuf(cmd->n_arg);
 
             push_expr(n, EXPR_VALUE);
-        }
-        else
-        {
-            push_expr(DUMMY_VALUE, EXPR_VALUE);
         }
     }
     else
     {
-        scan.state = SCAN_PASS2;
+        // Here to append to buffer with A, :A, or n:A command.
+
+        int status = append((bool)cmd->n_set, cmd->n_arg, (bool)cmd->colon_set);
+
+        if (cmd->colon_set)
+        {
+            push_expr(status, EXPR_VALUE);
+        }
     }
 }
 

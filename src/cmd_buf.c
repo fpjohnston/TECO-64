@@ -33,6 +33,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "errors.h"
 
 
 struct buffer *cmdbuf;                  ///< Current command string buffer.
@@ -153,9 +154,10 @@ int fetch_buf(void)
     
     if (cmdbuf->pos == cmdbuf->len)
     {
-        cmdbuf->pos = cmdbuf->len = 0;
+//        cmdbuf->pos = cmdbuf->len = 0;
 
-        return EOF;
+//        return EOF;
+        print_err(E_UTC);               // Unterminated command
     }
 
     return cmdbuf->buf[cmdbuf->pos++];

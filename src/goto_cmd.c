@@ -52,7 +52,7 @@ static void find_tag(struct cmd *cmd, const char *text, uint len);
 
 void exec_bang(struct cmd *unused1)
 {
-    scan.state = SCAN_PASS2;
+
 }
 
 

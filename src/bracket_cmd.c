@@ -51,8 +51,13 @@ void exec_lbracket(struct cmd *cmd)
         print_err(E_PDO);               // Push-down list is full
     }
 
-    if (cmd->n_set)
+    if (cmd->n_set)                     // Pass through m and n arguments
     {
+        if (cmd->m_set)
+        {
+            push_expr(cmd->m_arg, EXPR_VALUE);
+        }
+
         push_expr(cmd->n_arg, EXPR_VALUE);
     }
 }
@@ -82,8 +87,13 @@ void exec_rbracket(struct cmd *cmd)
     {
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
-    else if (cmd->n_set)
+    else if (cmd->n_set)                // Pass through m and n arguments
     {
+        if (cmd->m_set)
+        {
+            push_expr(cmd->m_arg, EXPR_VALUE);
+        }
+
         push_expr(cmd->n_arg, EXPR_VALUE);
     }
 }

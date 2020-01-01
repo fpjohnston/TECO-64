@@ -29,31 +29,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "eflags.h"
-#include "errors.h"
 #include "exec.h"
-
-
-///
-///  @brief    Execute ^E (CTRL/E) command: set form feed flag.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctrl_e(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->n_set)                     // n argument?
-    {
-        v.ff = (cmd->n_arg == 0) ? false : true;
-    }
-    else if (f.ei.strict)
-    {
-        print_err(E_ARG);               // Missing argument
-    }
-}
 
 
 ///
@@ -67,7 +43,16 @@ void scan_ctrl_e(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr(v.ff ? -1 : 0, EXPR_VALUE);
+    int n;
+
+    if (pop_expr(&n))                   // nEE?
+    {
+        v.ff = (cmd->n_arg == 0) ? false : true;
+    }        
+    else
+    {
+        push_expr(v.ff ? -1 : 0, EXPR_VALUE);
+    }
 }
 
 

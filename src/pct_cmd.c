@@ -35,29 +35,6 @@
 
 
 ///
-///  @brief    Execute % command: add value to Q-register, and return result.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_pct(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    assert(cmd->n_set == true);
-
-    int n = cmd->n_arg;
-    
-    n += get_qnum(cmd->qname, cmd->qlocal);
-
-    store_qnum(cmd->qname, cmd->qlocal, n);
-
-    push_expr(n, EXPR_VALUE);
-}
-
-
-///
 ///  @brief    Scan % command: add value to Q-register, and read result.
 ///
 ///  @returns  Nothing.
@@ -68,12 +45,14 @@ void scan_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    (void)pop_expr(&cmd->n_arg);        // n%q`
+    int n = 1;
 
-    push_expr(cmd->n_arg, EXPR_VALUE);
+    (void)pop_expr(&n);                 // n%q`
 
-    cmd->n_set = true;
+    n += get_qnum(cmd->qname, cmd->qlocal);
 
-    scan.state = SCAN_PASS2;            // TODO: this isn't quite right
+    store_qnum(cmd->qname, cmd->qlocal, n);
+
+    push_expr(n, EXPR_VALUE);
 }
 

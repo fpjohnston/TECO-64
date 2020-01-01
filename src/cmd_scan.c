@@ -46,15 +46,126 @@ struct scan scan;                   ///< Internal scan variables
 
 // Local functions
 
-static const struct cmd_table *scan_cmd(struct cmd *cmd);
-
-static uint scan_digits(int c, const char *p, uint len, bool pass1);
+static const struct cmd_table *find_cmd(struct cmd *cmd);
 
 static void scan_text(int delim, struct tstring *tstring);
 
 static void set_opts(struct cmd *cmd, const char *opts);
 
-static bool valid_radix(int c);
+
+///
+///  @brief    Find command in command table.
+///
+///  @returns  Command entry found, or NULL.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static const struct cmd_table *find_cmd(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    const struct cmd_table *table;
+    int c = toupper(cmd->c1);
+
+    if (scan.digits && !scan.space && isxdigit(c))
+    {
+        c = '0';
+        table = &cmd_table[c];          // then treat A-F the same as 0-9.
+    }
+    else if (c == 'E')
+    {
+        const char *e_cmds = "%ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+        const char *e_cmd  = strchr(e_cmds, toupper(cmd->c2));
+
+        if (e_cmd == NULL)
+        {
+            printc_err(E_IEC, cmd->c2); // Illegal E character
+        }
+
+        uint i = (uint)(e_cmd - e_cmds);
+
+        assert(i < cmd_e_count);
+
+        table = &cmd_e_table[i];
+    }
+    else if (c == 'F')
+    {
+        const char *f_cmds = "'<>BCDKNRS_|";
+        const char *f_cmd  = strchr(f_cmds, toupper(cmd->c2));
+
+        if (f_cmd == NULL)
+        {
+            printc_err(E_IFC, cmd->c2); // Illegal F character
+        }
+
+        uint i = (uint)(f_cmd - f_cmds);
+
+        assert(i < cmd_f_count);
+
+        table = &cmd_f_table[i];
+    }
+    else if (c == '^')
+    {
+        if (cmd->c2 == '^')
+        {
+            push_expr(cmd->c3, EXPR_VALUE);
+
+            return NULL;
+        }
+        else
+        {
+            cmd->c1 = (char)(toupper(cmd->c2) - 'A') + 1;
+            cmd->c2 = NUL;
+
+            if (cmd->c1 <= NUL || cmd->c1 >= SPACE)
+            {
+                printc_err(E_IUC, cmd->c1);  // Illegal character following ^
+            }
+
+            table = &cmd_table[(int)cmd->c1];
+        }
+    }
+    else if (c == '\x1E')
+    {
+        push_expr(cmd->c2, EXPR_VALUE);
+
+        return NULL;
+    }
+    else                                // Everything else
+    {
+        table = &cmd_table[c];
+    }
+
+    assert(table != NULL);
+
+    // The following allows for whitespace between digits in an expression.
+    // This copies the behavior of TECO-32. Note that any hexadecimal digits
+    // (A-F) have to follow one or more decimal digits, or they will be
+    // interpreted as being part of a command.
+
+    if (isspace(c))
+    {
+        scan.space = true;
+    }
+    else
+    {
+        scan.space = false;
+
+        if (!isdigit(c))
+        {
+            if (scan.digits)
+            {
+                push_expr(scan.sum, EXPR_VALUE);
+            }
+
+            scan.digits = false;
+        }
+    }
+    
+    set_opts(cmd, table->opts);
+
+    return table;
+}
 
 
 ///
@@ -68,6 +179,9 @@ void reset_scan(enum scan_state state)
 {
     scan.state       = state;
     scan.nparens     = 0;
+    scan.sum         = 0;
+    scan.digits      = false;
+    scan.space       = false;
     scan.comma_set   = false;
     scan.colon_opt   = false;
     scan.dcolon_opt  = false;
@@ -95,143 +209,41 @@ void scan_bad(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan command string.
+///  @brief    Scan digits in a command string. Note that these can be decimal,
+///            octal, or hexadecimal digits, depending on the current radix.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static const struct cmd_table *scan_cmd(struct cmd *cmd)
+void scan_digits(struct cmd *cmd)
 {
+    static const char *digits = "0123456789ABCDEF";
+
     assert(cmd != NULL);
 
-    const struct cmd_table *table;
+    int c = cmd->c1;
 
-    if (toupper(cmd->c1) == 'E')
+    const char *digit = strchr(digits, toupper(c));
+
+    if (digit == NULL ||                // If not a hexadecimal digit,
+        (v.radix != 16 && !isdigit(c)) || // or base 8 or 10 and not a digit,
+        (v.radix == 8 && c > '7'))      // or base 8 and digit is 8 or 9
     {
-        const char *e_cmds = "%ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-        const char *e_cmd  = strchr(e_cmds, toupper(cmd->c2));
-
-        if (e_cmd == NULL)
-        {
-            printc_err(E_IEC, cmd->c2); // Illegal E character
-        }
-
-        uint i = (uint)(e_cmd - e_cmds);
-
-        assert(i < cmd_e_count);
-
-        table = &cmd_e_table[i];
-    }
-    else if (toupper(cmd->c1) == 'F')
-    {
-        const char *f_cmds = "'<>BCDKNRS_|";
-        const char *f_cmd  = strchr(f_cmds, toupper(cmd->c2));
-
-        if (f_cmd == NULL)
-        {
-            printc_err(E_IFC, cmd->c2); // Illegal F character
-        }
-
-        uint i = (uint)(f_cmd - f_cmds);
-
-        assert(i < cmd_f_count);
-
-        table = &cmd_f_table[i];
-    }
-    else if (cmd->c1 == '^')
-    {
-        if (cmd->c2 == '^')
-        {
-            push_expr(cmd->c3, EXPR_VALUE);
-
-            return NULL;
-        }
-        else
-        {
-            cmd->c1 = (char)(toupper(cmd->c2) - 'A') + 1;
-            cmd->c2 = NUL;
-
-            if (cmd->c1 <= NUL || cmd->c1 >= SPACE)
-            {
-                printc_err(E_IUC, cmd->c1);  // Illegal character following ^
-            }
-
-            table = &cmd_table[(int)cmd->c1];
-        }
-    }
-    else if (cmd->c1 == '\x1E')
-    {
-        push_expr(cmd->c2, EXPR_VALUE);
-
-        return NULL;
-    }
-    else                                // Everything else
-    {
-        table = &cmd_table[toupper(cmd->c1)];
+        print_err(E_ILN);               // Illegal number
     }
 
-    assert(table != NULL);
+    long n = digit - digits;            // Value of digit in range [0,15]
 
-    set_opts(cmd, table->opts);
+    if (!scan.digits)                   // If first digit,
+    {
+        scan.sum = 0;                   //  then start at zero
+    }
 
-    return table;
-}
-
-
-///
-///  @brief    Scan digits in a command string. Note that these can be decimal,
-///            octal, or hexadecimal digits, depending on the current radix.
-///
-///  @returns  No. of digits we scanned.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static uint scan_digits(int c, const char *p, uint len, bool pass1)
-{
-    uint maxlen = len;
-    long sum = 0;
-
-    // Here when we have a digit. Check to see that it's valid for the current
-    // radix, and then loop until we run out of valid digits.
+    scan.digits = true;
     
-    while (valid_radix(c))
-    {
-        const char *digits = "0123456789ABCDEF";
-        const char *digit = strchr(digits, toupper(c));
-
-        assert(digit != NULL);
-
-        long n = digit - digits;
-
-        sum *= v.radix;
-        sum += n;
-
-        if (pass1)
-        {
-            c = fetch_buf();            // Get next digit
-        }
-        else
-        {
-            if (len-- == 0)
-            {
-                break;
-            }
-
-            assert(p != NULL);
-
-            c = *p++;
-        }
-    }
-
-    if (pass1)
-    {
-        unfetch_buf(c);                 // Return last (non-digit) character
-    }
-
-    push_expr((int)sum, EXPR_VALUE);
-
-    return maxlen - len;
+    scan.sum *= (int)v.radix;           // Shift over existing digits
+    scan.sum += (int)n;                 // And add in the new one
 }
 
 
@@ -290,6 +302,8 @@ void scan_operator(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    int value = 1;                      // 1 = parenthesis, 2 = operator
+
     if (cmd->c1 == '(')
     {
         ++scan.nparens;
@@ -309,8 +323,12 @@ void scan_operator(struct cmd *cmd)
             --scan.nparens;
         }
     }
+    else
+    {
+        value = 2;                      // Arithmetic operator
+    }
 
-    push_expr(0, cmd->c1);              // Use operator as expression type
+    push_expr(value, cmd->c1);          // Use operator as expression type
 }
 
 
@@ -323,35 +341,30 @@ void scan_operator(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+extern struct tstring expr;
+extern char *last_chr;
+
+bool cmd_expr;
+
 exec_func *scan_pass1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // Here to start parsing a command string,  one character at a time. Note
+    // Here to start parsing a command string, one character at a time. Note
     // that although some commands may contain only a single character, most of
     // them comprise multiple characters, so we have to keep looping until we
     // have found everything we need. As we continue, we store information in
     // the command block defined by 'cmd', for use when we're ready to actually
     // execute the command. This includes such things as m and n arguments,
-    // modifiers such as : and @, and any text strings followed the command.
+    // modifiers such as : and @, and any text strings following the command.
 
     cmd->c2 = NUL;
     cmd->c3 = NUL;
 
-    if (isdigit(cmd->c1))
+    if (toupper(cmd->c1) == 'E' || toupper(cmd->c1) == 'F')
     {
-        (void)scan_digits(cmd->c1, NULL, 0, (bool)true);
-
-        if (scan.state == SCAN_PASS1)    // Still scanning expression?
-        {
-            cmd->expr.len = (uint)(next_buf() - cmd->expr.buf);
-        }
-
-        return NULL;
-    }
-    else if (toupper(cmd->c1) == 'E' || toupper(cmd->c1) == 'F')
-    {
-        // Ex and Fx commands may have whitespace before the 'x'.
+        // E and F commands may have whitespace before 2nd character. This
+        // seems to be a feature of TECO-32/TECO C (TODO: which one?)
 
         do
         {
@@ -370,7 +383,7 @@ exec_func *scan_pass1(struct cmd *cmd)
         cmd->c2 = (char)fetch_buf();
     }
 
-    const struct cmd_table *table = scan_cmd(cmd);
+    const struct cmd_table *table = find_cmd(cmd);
 
     // Check to see if command requires a global (or local) Q-register.
 
@@ -398,162 +411,38 @@ exec_func *scan_pass1(struct cmd *cmd)
         cmd->qname = (char)c;           // Save the name
     }
 
+    if (cmd->c1 == '"')                 // " requires additional character
+    {
+        cmd->c2 = fetch_buf();
+    }
+
+    // table will be NULL for ^^x and CTRL/^ commands, both of which just
+    // push a value on the stack, requiring no further processing here.
+
     if (table == NULL)
     {
         return NULL;
     }
 
+    cmd_expr = false;
+
     if (table->scan != NULL)            // If we have anything to scan,
     {
         (*table->scan)(cmd);            //  then scan it
     }
-    else if (table->exec != NULL)
+
+    // See if we need to set the expression string for the command.
+
+    if (expr.len == 0 && (table->exec != NULL || cmd_expr))
     {
-        scan.state = SCAN_PASS2;
+//        expr.len = (uint)(last_chr - expr.buf);
+
+//        cmd->expr = expr;
+
+        scan_tail(cmd);
     }
 
     return table->exec;
-}
-
-
-///
-///  @brief    Do second pass of scanning for expression.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_pass2(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->expr.len == 0)             // Do we have an expression?
-    {
-        return;                         // No, so we're done
-    }
-
-    reset_scan(SCAN_PASS2);
-
-    init_expr();                        // Re-initialize expression stack
-
-    if (cmd->c1 == ESC)
-    {
-        return;
-    }
-
-    struct cmd tmp;                     // Temporary command block
-
-    memset(&tmp, 0, sizeof(tmp));
-
-    tmp.expr = cmd->expr;
-
-    const char *p = tmp.expr.buf + tmp.expr.len;
-
-    while (isspace(*--p) && tmp.expr.len > 0)
-    {
-        --tmp.expr.len;
-    }
-
-    p = tmp.expr.buf;
-
-    uint len = tmp.expr.len;
-
-    while (len-- > 0)
-    {
-        int c = *p++;
-
-        tmp.c1 = (char)c;
-        tmp.c2 = NUL;
-        tmp.c3 = NUL;
-
-        assert((uint)c < cmd_count);
-
-        if (strchr("EF^\x1E", toupper(c)) != NULL)
-        {
-            if (len-- == 0)
-            {
-                print_err(E_UTC);       // Unterminated command
-            }
-
-            tmp.c2 = *p++;
-
-            if (c == '^' && tmp.c2 == '^')
-            {
-                if (len-- == 0)
-                {
-                    print_err(E_UTC);   // Unterminated command
-                }
-
-                tmp.c3 = *p++;
-            }
-        }
-        else if (isdigit(c))
-        {
-            uint ndigits = scan_digits(c, p, len, (bool)false);
-
-            p   += ndigits - 1;
-            len -= ndigits - 1;
-            
-            if (len > 0)
-            {
-                continue;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        const struct cmd_table *table = scan_cmd(&tmp);
-
-        // Check to see if command requires a global (or local) Q-register.
-
-        if (scan.q_register)            // Do we need a Q-register?
-        {
-            if (len-- == 0)
-            {
-                print_err(E_UTC);       // Unterminated command
-            }
-
-            c = *p++;
-
-            if (c == '.')               // Is it a local Q-register?
-            {
-                tmp.qlocal = true;      // Yes, mark it
-
-                if (len-- == 0)
-                {
-                    print_err(E_UTC);   // Unterminated command
-                }
-
-               c = *p++;                // Get Q-register name
-            }        
-
-            if (!isalnum(c))
-            {
-                // The following allows use of G* and G_
-
-                if (toupper(tmp.c1) != 'G' || (c != '*' && c != '_'))
-                {
-                    printc_err(E_IQN, c); // Illegal Q-register name
-                }
-            }
-
-            tmp.qname = (char)c;        // Save the name
-        }
-
-        if (table != NULL && table->scan != NULL)
-        {
-            (*table->scan)(&tmp);       // Scan it if we can
-        }
-    }
-
-    cmd->m_set = tmp.m_set;
-    cmd->n_set = tmp.n_set;
-    cmd->h_set = tmp.h_set;
-
-    cmd->m_arg = tmp.m_arg;
-    cmd->n_arg = tmp.n_arg;
 }
 
 
@@ -682,6 +571,8 @@ static void scan_text(int delim, struct tstring *text)
 ///
 ///  @brief    Set options for each command. These are as follows:
 ///
+///            m  - Command allows m & n arguments       (e.g., m,nET).
+///            n  - Command allows n argument            (e.g., nC).
 ///            :  - Command allows colon modifier        (e.g., :ERfile`).
 ///            :: - Command allows double colon modifier (e.g., :: Stext`).
 ///            @  - Command allows atsign form           (e.g., @^A/hello/).
@@ -690,6 +581,7 @@ static void scan_text(int delim, struct tstring *text)
 ///            1  - Command allows one text string       (e.g., Otag`).
 ///            2  - Command allows two text strings      (e.g., FNfoo`baz`).
 ///                 Note: implies 1.
+///            &  - Command passes arguments through     (e.g., [A or ]B).
 ///
 ///            These do not need to be in any particular order, and characters
 ///            not in the list above will be ignored. This allows the use of
@@ -724,6 +616,11 @@ static void set_opts(struct cmd *cmd, const char *opts)
     {
         switch (c)
         {
+            case '&':
+                scan.retain = true;
+
+                break;
+
             case ':':
                 if (*opts == ':')       // Double colon?
                 {
@@ -740,6 +637,15 @@ static void set_opts(struct cmd *cmd, const char *opts)
 
             case '@':
                 scan.atsign_opt = true;
+
+                break;
+
+            case 'm':
+                scan.m_opt = true;
+                //lint -fallthrough
+
+            case 'n':
+                scan.n_opt = true;
 
                 break;
 
@@ -763,8 +669,10 @@ static void set_opts(struct cmd *cmd, const char *opts)
                 break;
 
             default:
-                assert(isspace(c));
+//                assert(isspace(c));     // TODO: only for debugging
+                //lint -fallthrough
 
+            case ',':
                 break;
         }
     }
@@ -774,31 +682,4 @@ static void set_opts(struct cmd *cmd, const char *opts)
         cmd->qname = NUL;
         cmd->qlocal = false;
     }
-}
-
-
-///
-///  @brief    Determine if character is valid in our current radix.
-///
-///  @returns  true if valid, false if not (if invalid octal digit, E_ILN).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static bool valid_radix(int c)
-{
-    if (v.radix == 16 && isxdigit(c))
-    {
-        return true;
-    }
-    else if (isdigit(c))
-    {
-        if (v.radix == 10 || c <= '7')
-        {
-            return true;
-        }
-
-        print_err(E_ILN);               // Illegal octal digit
-    }
-
-    return false;
 }

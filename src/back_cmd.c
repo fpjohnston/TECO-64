@@ -38,40 +38,6 @@
 
 #define MAX_DIGITS      22
 
-///
-///  @brief    Execute \ (backslash) command: insert a digit string into buffer.
-///
-///  @returns  nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_back(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->n_set)                     // n argument?
-    {
-        char string[MAX_DIGITS];
-        const char *format = "%d";        
-
-        if (v.radix == 8)
-        {
-            format = "%o";
-        }
-        else if (v.radix == 16)
-        {
-            format = "%x";
-        }
-
-        uint nbytes = (uint)snprintf(string, sizeof(string), format,
-                                     cmd->n_arg);
-
-        assert(nbytes < sizeof(string));
-
-        exec_insert(string, nbytes);
-    }
-}
-
 
 ///
 ///  @brief    Scan \ (backslash) command: read digit string.
@@ -88,22 +54,30 @@ void scan_back(struct cmd *cmd)
 
     if (pop_expr(&n))                   // n\`?
     {
-        scan.state = SCAN_PASS2;
+        char string[MAX_DIGITS];
+        const char *format = "%d";        
 
+        if (v.radix == 8)
+        {
+            format = "%o";
+        }
+        else if (v.radix == 16)
+        {
+            format = "%x";
+        }
+
+        uint nbytes = (uint)snprintf(string, sizeof(string), format, n);
+
+        assert(nbytes < sizeof(string));
+
+        exec_insert(string, nbytes);
         push_expr(n, EXPR_VALUE);       // TODO: is this correct?
     }
     else
     {
-        if (scan.state != SCAN_PASS2)
-        {
-            n = 0;
-        }
-        else
-        {
-            // TODO: read digit string in buffer using current radix.
+        // TODO: read digit string in buffer using current radix.
 
-            n = 0;
-        }
+        n = 0;
 
         push_expr(n, EXPR_VALUE);
     }

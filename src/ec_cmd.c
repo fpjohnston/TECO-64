@@ -90,18 +90,3 @@ void exec_EC(struct cmd *cmd)
     ifile->eof = true;
     ifile->cr  = false;
 }
-
-
-///
-///  @brief    Scan nEC command: reserved for TECO-10, so error.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_EC(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    scan.state = SCAN_PASS2;
-}
