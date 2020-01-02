@@ -43,6 +43,11 @@
 
 struct scan scan;                   ///< Internal scan variables
 
+extern struct tstring expr;
+//extern char *last_chr;
+
+bool cmd_expr;                      ///< Current expression
+
 
 // Local functions
 
@@ -74,7 +79,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
     }
     else if (c == 'E')
     {
-        const char *e_cmds = "%ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+        const char *e_cmds = "%0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
         const char *e_cmd  = strchr(e_cmds, toupper(cmd->c2));
 
         if (e_cmd == NULL)
@@ -181,6 +186,7 @@ void reset_scan(enum scan_state state)
     scan.nparens     = 0;
     scan.sum         = 0;
     scan.digits      = false;
+    scan.expr        = false;
     scan.space       = false;
     scan.comma_set   = false;
     scan.colon_opt   = false;
@@ -205,45 +211,6 @@ void scan_bad(struct cmd *cmd)
     assert(cmd != NULL);
 
     printc_err(E_ILL, cmd->c1);
-}
-
-
-///
-///  @brief    Scan digits in a command string. Note that these can be decimal,
-///            octal, or hexadecimal digits, depending on the current radix.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_digits(struct cmd *cmd)
-{
-    static const char *digits = "0123456789ABCDEF";
-
-    assert(cmd != NULL);
-
-    int c = cmd->c1;
-
-    const char *digit = strchr(digits, toupper(c));
-
-    if (digit == NULL ||                // If not a hexadecimal digit,
-        (v.radix != 16 && !isdigit(c)) || // or base 8 or 10 and not a digit,
-        (v.radix == 8 && c > '7'))      // or base 8 and digit is 8 or 9
-    {
-        print_err(E_ILN);               // Illegal number
-    }
-
-    long n = digit - digits;            // Value of digit in range [0,15]
-
-    if (!scan.digits)                   // If first digit,
-    {
-        scan.sum = 0;                   //  then start at zero
-    }
-
-    scan.digits = true;
-    
-    scan.sum *= (int)v.radix;           // Shift over existing digits
-    scan.sum += (int)n;                 // And add in the new one
 }
 
 
@@ -332,19 +299,12 @@ void scan_operator(struct cmd *cmd)
 }
 
 
-
-
 ///
 ///  @brief    Do first pass of scanning command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-extern struct tstring expr;
-extern char *last_chr;
-
-bool cmd_expr;
 
 exec_func *scan_pass1(struct cmd *cmd)
 {
@@ -385,6 +345,11 @@ exec_func *scan_pass1(struct cmd *cmd)
 
     const struct cmd_table *table = find_cmd(cmd);
 
+    if (scan.expr && scan.state == SCAN_MOD)
+    {
+        print_err(E_MOD);               // Invalid modifier for command
+    }
+
     // Check to see if command requires a global (or local) Q-register.
 
     if (scan.q_register)                // Do we need a Q-register?
@@ -413,7 +378,7 @@ exec_func *scan_pass1(struct cmd *cmd)
 
     if (cmd->c1 == '"')                 // " requires additional character
     {
-        cmd->c2 = fetch_buf();
+        cmd->c2 = (char)fetch_buf();
     }
 
     // table will be NULL for ^^x and CTRL/^ commands, both of which just
@@ -556,13 +521,8 @@ static void scan_text(int delim, struct tstring *text)
 
     ++text->len;
 
-    while ((c = fetch_buf()) != delim)
+    while (fetch_buf() != delim)
     {
-        if (c == EOF)
-        {
-            print_err(E_UTC);           // Unterminated command
-        }
-
         ++text->len;
     }
 }
@@ -604,6 +564,9 @@ static void set_opts(struct cmd *cmd, const char *opts)
 
     int c;
 
+    scan.expr       = false;
+    scan.m_opt      = false;
+    scan.n_opt      = false;
     scan.colon_opt  = false;
     scan.dcolon_opt = false;
     scan.atsign_opt = false;
@@ -611,6 +574,7 @@ static void set_opts(struct cmd *cmd, const char *opts)
     scan.w_opt      = false;
     scan.t1_opt     = false;
     scan.t2_opt     = false;
+    scan.retain     = false;
 
     while ((c = *opts++) != NUL)
     {
@@ -656,6 +620,11 @@ static void set_opts(struct cmd *cmd, const char *opts)
 
             case 'W':
                 scan.w_opt = true;
+
+                break;
+
+            case 'x':
+                scan.expr = true;
 
                 break;
 

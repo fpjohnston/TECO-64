@@ -26,11 +26,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "teco.h"
 #include "eflags.h"
+#include "errors.h"
 #include "exec.h"
 
 
@@ -65,19 +67,22 @@ static bool check_mn_flag(struct cmd *cmd, uint *flag)
     // Here if there is a value preceding the flag, which
     // means that the flag is not part of an expression.
 
-    if (!cmd->m_set)                    // m argument too?
+    if (!scan.dryrun)
     {
-        *flag = (uint)cmd->n_arg;       // No, so just set flag
-    }
-    else                                // Both m and n were specified
-    {
-        if (cmd->m_arg != 0)
+        if (!cmd->m_set)                // m argument too?
         {
-            *flag &= ~(uint)cmd->m_arg; // Turn off m bits
+            *flag = (uint)cmd->n_arg;   // No, so just set flag
         }
-        if (cmd->n_arg != 0)
+        else                            // Both m and n were specified
         {
-            *flag |= (uint)cmd->n_arg;  // Turn on n bits
+            if (cmd->m_arg != 0)        // Turn off m bits
+            {
+                *flag &= ~(uint)cmd->m_arg;
+            }
+            if (cmd->n_arg != 0)        // Turn on n bits
+            {
+                *flag |= (uint)cmd->n_arg;
+            }
         }
     }
 
@@ -112,11 +117,80 @@ static bool check_n_flag(int *flag)
     // Here if there is a value preceding the flag, which
     // means that the flag is not part of an expression.
 
-    *flag = n;
+    if (!scan.dryrun)
+    {
+        *flag = n;
+    }
 
     cmd_expr = true;
 
     return true;
+}
+
+
+///
+///  @brief    Scan ^E (CTRL/E) command: read form feed flag.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_ctrl_e(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int n;
+
+    if (pop_expr(&n))                   // nEE?
+    {
+        v.ff = (cmd->n_arg == 0) ? false : true;
+    }        
+    else
+    {
+        push_expr(v.ff ? -1 : 0, EXPR_VALUE);
+    }
+}
+
+
+///
+///  @brief    Scan ^F (CTRL/F) command: return value of console switch
+///            register, or terminal number of specified job.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_ctrl_f(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (pop_expr(&cmd->n_arg))          // n^F specified?
+    {
+        if (f.ei.strict)
+        {
+            print_err(E_T10);           // TECO-10 command not implemented.
+        }
+    }
+
+    push_expr(0, EXPR_VALUE);           // Value is always 0 for now
+}
+
+
+///
+///  @brief    Scan ^N (CTRL/N) command: read end of file flag for current
+///            input stream.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_ctrl_n(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    struct ifile *ifile = &ifiles[istream];
+
+    push_expr(ifile->eof, EXPR_VALUE);
 }
 
 
@@ -134,6 +208,26 @@ void scan_ctrl_x(struct cmd *unused1)
 
 
 ///
+///  @brief    Scan E0 command: set format for CTRL/H (^H) value.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_E0(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    (void)check_n_flag(&f.e0);
+
+    if (f.e0 != 0)
+    {
+        f.e0 = -1;
+    }
+}
+
+
+///
 ///  @brief    Scan ED command.
 ///
 ///  @returns  Nothing.
@@ -145,6 +239,40 @@ void scan_ED(struct cmd *cmd)
     assert(cmd != NULL);
 
     (void)check_mn_flag(cmd, &f.ed.flag);
+}
+
+
+///
+///  @brief    Scan EE command: read alternate delimiter.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_EE(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (scan.dryrun)
+    {
+        return;
+    }
+        
+    int n;
+
+    if (pop_expr(&n))                   // nEE`?
+    {
+        if (!isascii(n))                // Must be an ASCII character
+        {
+            print_err(E_CHR);           // Invalid character for command
+        }
+
+        f.ee = n;
+    }
+    else
+    {
+        push_expr(f.ee, EXPR_VALUE);
+    }
 }
 
 
@@ -169,6 +297,85 @@ void scan_EH(struct cmd *cmd)
         f.eh.command = command;
         f.eh.verbose = verbose;
     }
+}
+
+
+///
+///  @brief    Scan EJ command; get operating environment characteristics:
+///
+///            -1EJ - This has the form (m << 8) + n, where m is a code for the
+///                   computer hardware in use, and n is a code for the operating
+///                   system, as follows:
+///
+///                    m   n    -1EJ  Hardware  Operating system
+///                   --- ---   ----  --------  ----------------  
+///                     0   0      0   PDP-11   RSX-11D
+///                     0   1      1   PDP-11   RSX-11M
+///                     0   2      2   PDP-11   RSX-11S
+///                     0   3      3   PDP-11   IAS
+///                     0   4      4   PDP-11   RSTS/E
+///                     0   5      5   PDP-11   VAX/VMS (compatibility mode)
+///                     0   6      6   PDP-11   RSM-11M+
+///                     0   7      7   PDP-11   RT-11
+///                     1   0    256   PDP-8    OS/8
+///                     2   0    512   DEC-10   TOPS-10
+///                     3   0    768   DEC-20   TOPS-20
+///                     4   0   1024   VAX-11   VAX/VMS (native mode)
+///                     4   1   1025   VAX-11   Ultrix
+///                   100   0  25600   Sun      SunOS
+///                   101   0  25856   x86      MS-DOS
+///                   101   1  25857   x86      OS/2
+///                   101   2  25858   x86      Linux
+///
+///             0EJ - Process number, 0 if single-process system.
+///             1EJ - Terminal keyboard number, 0 if single-user system.
+///             2EJ - User identification number.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_EJ(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (scan.dryrun)
+    {
+        return;
+    }
+
+    int n = 0;
+
+    (void)pop_expr(&n);                 // Get whatever operand we can
+
+    n = teco_env(n);                    // Do the system-dependent part
+
+    push_expr(n, EXPR_VALUE);
+}
+
+
+///
+///  @brief    Scan EO command: read or set TECO version number.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_EO(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (scan.dryrun)
+    {
+        return;
+    }
+
+    if (pop_expr(NULL))                 // nEO?
+    {
+        print_err(E_NYI);               // Yes, we don't do that (yet).
+    }
+
+    push_expr(teco_version, EXPR_VALUE);
 }
 
 

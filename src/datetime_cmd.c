@@ -1,6 +1,6 @@
 ///
-///  @file    eo_cmd.c
-///  @brief   Process TECO EO command.
+///  @file    datetime_cmd.c
+///  @brief   Execute date and time commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,30 +26,85 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
 
+#define MINUTES_PER_HOUR        60      ///< Minutes per hour
+
+#define SECONDS_PER_MINUTE      60      ///< Seconds per minute
+
+
 ///
-///  @brief    Scan EO command: read or set TECO version number.
+///  @brief    Scan ^B (CTRL/B) command. We return the current date encoded
+///            in the following way: ((year - 1900) * 16 + month) * 32 + day.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_EO(struct cmd *cmd)
+void scan_ctrl_b(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+    
+    time_t t = time(NULL);
+    struct tm tm;
+
+    (void)localtime_r(&t, &tm);
+
+    int teco_date = ((tm.tm_year) * 16 + tm.tm_mon+1) * 32 + tm.tm_mday;
+
+    push_expr(teco_date, EXPR_VALUE);
+}
+
+
+///
+///  @brief    Scan ^H (CTRL/H) command. This returns the current time as
+///            milliseconds since midnight.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_ctrl_h(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(NULL))                 // nEO?
+    time_t t = time(NULL);
+    struct tm tm;
+
+    (void)localtime_r(&t, &tm);
+
+    int teco_time = tm.tm_hour * MINUTES_PER_HOUR + tm.tm_min;
+
+    teco_time *= SECONDS_PER_MINUTE;
+    teco_time += tm.tm_sec;
+
+    if (f.e0 == 0)
     {
-        print_err(E_NYI);               // Yes, we don't do that (yet).
+        teco_time /= 2;
+    }
+    else
+    {
+        struct timeval tv;
+
+        if (gettimeofday(&tv, NULL) == -1)
+        {
+            fatal_err(errno, E_SYS, NULL);
+        }
+
+        teco_time *= 1000;
+        teco_time += (int)(tv.tv_usec / 1000);
     }
 
-    push_expr(teco_version, EXPR_VALUE);
+    push_expr(teco_time, EXPR_VALUE);
 }
 

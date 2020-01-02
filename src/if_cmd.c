@@ -38,7 +38,7 @@
 // TODO: add code to handle termination of loop before end of conditional
 //       (e.g., a command string like "< 1 "N > '".
 
-static uint if_depth = 0;
+static uint if_depth = 0;           ///< Current depth of conditionals
 
 
 // Local functions
@@ -61,10 +61,9 @@ static void endif(struct cmd *cmd, bool vbar)
 
     do
     {
-        while (next_cmd(cmd) == NULL)
-        {
-            ;
-        }
+        scan.dryrun = true;
+        (void)next_cmd(cmd);
+        scan.dryrun = false;
 
         log_cmd(cmd);
 
@@ -81,8 +80,7 @@ static void endif(struct cmd *cmd, bool vbar)
             break;
         }
 
-        memset(cmd, 0, sizeof(*cmd));
-    } while (if_depth > 0);
+    } while (if_depth >= start_depth);
 }
 
 

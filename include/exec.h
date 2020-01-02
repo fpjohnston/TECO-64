@@ -50,21 +50,23 @@ enum scan_state
 struct scan
 {
     enum scan_state state;          ///< Current scan state
+    bool dryrun;                    ///< "Dry run" scan (no changes)
     uint nparens;                   ///< No. of unmatched left parentheses
     int sum;                        ///< Accumulated sum of digits scanned
-    uint digits     : 1;            ///< Accumulated sum is valid
-    uint space      : 1;            ///< Last chr. scanned was whitespace
-    uint comma_set  : 1;            ///< Comma seen in expression
-    uint m_opt      : 1;            ///< m argument allowed
-    uint n_opt      : 1;            ///< n argument allowed
-    uint colon_opt  : 1;            ///< Colon allowed in command
-    uint dcolon_opt : 1;            ///< Double colon allowed in command
-    uint atsign_opt : 1;            ///< At sign allowed in command
-    uint w_opt      : 1;            ///< W allowed (for P)
-    uint t1_opt     : 1;            ///< 1st text string allowed in command
-    uint t2_opt     : 1;            ///< 2nd text string allowed in command
-    uint q_register : 1;            ///< Q-register required
-    uint retain     : 1;            ///< Retain m & n arguments (pass through)
+    bool digits;                    ///< Accumulated sum is valid
+    bool expr;                      ///< Current command is part of expression
+    bool space;                     ///< Last chr. scanned was whitespace
+    bool comma_set;                 ///< Comma seen in expression
+    bool m_opt;                     ///< m argument allowed
+    bool n_opt;                     ///< n argument allowed
+    bool colon_opt;                 ///< Colon allowed in command
+    bool dcolon_opt;                ///< Double colon allowed in command
+    bool atsign_opt;                ///< At sign allowed in command
+    bool w_opt;                     ///< W allowed (for P)
+    bool t1_opt;                    ///< 1st text string allowed in command
+    bool t2_opt;                    ///< 2nd text string allowed in command
+    bool q_register;                ///< Q-register required
+    bool retain;                    ///< Retain m & n arguments (pass through)
 };
 
 extern struct scan scan;
@@ -81,13 +83,13 @@ struct cmd
     bool qlocal;                    ///< If true, Q-register is local
     int m_arg;                      ///< m argument
     int n_arg;                      ///< n argument
-    uint m_set      : 1;            ///< m argument found
-    uint n_set      : 1;            ///< n argument found
-    uint h_set      : 1;            ///< H found
-    uint w_set      : 1;            ///< W found
-    uint colon_set  : 1;            ///< : found
-    uint dcolon_set : 1;            ///< :: found
-    uint atsign_set : 1;            ///< @ found
+    bool m_set;                     ///< m argument found
+    bool n_set;                     ///< n argument found
+    bool h_set;                     ///< H found
+    bool w_set;                     ///< W found
+    bool colon_set;                 ///< : found
+    bool dcolon_set;                ///< :: found
+    bool atsign_set;                ///< @ found
     char delim;                     ///< Delimiter for @ modifier
     struct tstring expr;            ///< Expression string
     struct tstring text1;           ///< 1st text string
@@ -126,8 +128,6 @@ extern const uint cmd_e_count;
 
 extern const uint cmd_f_count;
 
-extern enum scan_state scan_state;
-
 extern bool cmd_expr;
 
 // Functions that assist in parsing commands
@@ -139,8 +139,6 @@ extern bool append_line(void);
 extern bool next_page(uint start, uint end, bool ff, bool yank);
 
 // Functions that execute commands
-
-extern void exec_A(struct cmd *cmd);
 
 extern void exec_C(struct cmd *cmd);
 
@@ -174,8 +172,6 @@ extern void exec_U(struct cmd *cmd);
 
 extern void exec_V(struct cmd *cmd);
 
-extern void exec_W(struct cmd *cmd);
-
 extern void exec_X(struct cmd *cmd);
 
 extern void exec_Y(struct cmd *cmd);
@@ -189,8 +185,6 @@ extern void exec_ctrl_a(struct cmd *cmd);
 extern void exec_ctrl_c(struct cmd *cmd);
 
 extern void exec_ctrl_d(struct cmd *cmd);
-
-extern void exec_ctrl_e(struct cmd *cmd);
 
 extern void exec_ctrl_i(struct cmd *cmd);
 
@@ -232,15 +226,9 @@ extern void exec_EB(struct cmd *cmd);
 
 extern void exec_EC(struct cmd *cmd);
 
-extern void exec_ED(struct cmd *cmd);
-
-extern void exec_EE(struct cmd *cmd);
-
 extern void exec_EF(struct cmd *cmd);
 
 extern void exec_EG(struct cmd *cmd);
-
-extern void exec_EH(struct cmd *cmd);
 
 extern void exec_EI(struct cmd *cmd);
 
@@ -258,21 +246,11 @@ extern void exec_EQ(struct cmd *cmd);
 
 extern void exec_ER(struct cmd *cmd);
 
-extern void exec_ES(struct cmd *cmd);
-
-extern void exec_ET(struct cmd *cmd);
-
-extern void exec_EU(struct cmd *cmd);
-
-extern void exec_EV(struct cmd *cmd);
-
 extern void exec_EW(struct cmd *cmd);
 
 extern void exec_EX(struct cmd *cmd);
 
 extern void exec_EY(struct cmd *cmd);
-
-extern void exec_EZ(struct cmd *cmd);
 
 extern void exec_E_pct(struct cmd *cmd);
 
@@ -304,7 +282,7 @@ extern void exec_F_ubar(struct cmd *cmd);
 
 extern void exec_F_vbar(struct cmd *cmd);
 
-// Functions that parse a command string.
+// Functions that may be part of an expression
 
 extern void scan_A(struct cmd *cmd);
 
@@ -340,9 +318,11 @@ extern void scan_ctrl_y(struct cmd *cmd);
 
 extern void scan_ctrl_z(struct cmd *cmd);
 
-extern void scan_digits(struct cmd *cmd);
+extern void scan_digit(struct cmd *cmd);
 
 extern void scan_dot(struct cmd *cmd);
+
+extern void scan_E0(struct cmd *cmd);
 
 extern void scan_ED(struct cmd *cmd);
 
@@ -372,13 +352,9 @@ extern void scan_operator(struct cmd *cmd);
 
 extern exec_func *scan_pass1(struct cmd *cmd);
 
-extern void scan_pass2(struct cmd *cmd);
-
 extern void scan_pct(struct cmd *cmd);
 
 extern void scan_Q(struct cmd *cmd);
-
-extern void scan_quote(struct cmd *cmd);
 
 extern void scan_tail(struct cmd *cmd);
 

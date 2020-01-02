@@ -41,11 +41,13 @@
 #include "exec.h"
 
 
-static uint nescapes = 0;
+uint line;                              ///< Current line number
 
-struct tstring expr;
+uint nescapes = 0;               ///< No. of consecutive escapes seen
 
-char *last_chr;
+struct tstring expr;                    ///< Current expression
+
+char *last_chr;                         ///< Last character in expression
 
 ///  @var    null_cmd
 ///  @brief  Initial command block values.
@@ -86,12 +88,14 @@ static bool exec_escape(void);
 
 void exec_cmd(void)
 {
-    struct cmd cmd = null_cmd;
+    struct cmd cmd;
 
     nescapes = 0;
 
     expr.buf = NULL;
     expr.len = 0;
+
+    line = 1;
 
     // Loop for all characters in command string.
 
@@ -108,10 +112,13 @@ void exec_cmd(void)
         }
 
         f.ei.exec = true;
-
         exec_func *exec = next_cmd(&cmd);
-
         f.ei.exec = false;
+
+        if (cmd.c1 == LF)
+        {
+            ++line;
+        }
 
         // Assume any tags that start with a space are really comments,
         // and skip them.
@@ -123,11 +130,7 @@ void exec_cmd(void)
             continue;
         }
 
-        if (cmd.c1 != ESC)
-        {
-            nescapes = 0;
-        }
-        else if (exec_escape())
+        if (cmd.c1 == ESC && exec_escape())
         {
             return;
         }
@@ -156,15 +159,11 @@ void exec_cmd(void)
             }
 
             f.ei.exec = true;
-
-            (*exec)(&cmd);               // Now finally execute command
-
+            (*exec)(&cmd);              // Execute command
             f.ei.exec = false;
 
             expr.buf = NULL;
             expr.len = 0;
-
-            cmd = null_cmd;
         }
 
         if (f.ei.ctrl_c)                // If CTRL/C typed, return to main loop
@@ -186,27 +185,27 @@ void exec_cmd(void)
 
 static bool exec_escape(void)
 {
-    //  If we're in strict mode, and a command ended while we were in
-    //  the middle of a conditional statement, then issue an error.
-
-    bool cmd_done = ++nescapes >= 2;
-
-    if (cmd_done)
-    {
-        nescapes = 0;
-
-        if (f.ei.strict && test_if())
-        {
-            print_err(E_UTQ);           // Unterminated quote command
-        }
-    }
-
     int n;
 
     (void)pop_expr(&n);
     (void)pop_expr(&n);
 
-    return cmd_done;
+    if (nescapes < 2)
+    {
+        return false;
+    }
+
+    nescapes = 0;
+
+    //  If we're in strict mode, and a command ended while we were in
+    //  the middle of a conditional statement, then issue an error.
+
+    if (f.ei.strict && test_if())
+    {
+        print_err(E_UTQ);           // Unterminated quote command
+    }
+
+    return true;
 }
 
 
@@ -221,16 +220,29 @@ exec_func *next_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    scan.q_register = false;
-
+    *cmd = null_cmd;
+    reset_scan(SCAN_EXPR);
+    init_expr();                        // Reset expression stack
     last_chr = next_buf();
 
-    cmd->c1 = (char)fetch_buf();        // Get next command string character
+    exec_func *exec = NULL;
 
-    if (cmd->c1 < 0 || cmd->c1 >= (int)cmd_count)
+    // Keep reading characters until we have a full command.
+
+    do
     {
-        printc_err(E_ILL, cmd->c1);     // Illegal character
-    }
+        int c = (char)fetch_buf();      // Get next command string character
 
-    return scan_pass1(cmd);
+        if (c < 0 || c >= (int)cmd_count)
+        {
+            printc_err(E_ILL, c);       // Illegal character
+        }
+
+        cmd->c1 = (char)c;
+
+        exec = scan_pass1(cmd);
+
+    } while (exec == NULL && cmd->c1 != ESC);
+
+    return exec;
 }

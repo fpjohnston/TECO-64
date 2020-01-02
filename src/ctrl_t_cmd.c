@@ -52,6 +52,11 @@ void scan_ctrl_t(struct cmd *cmd)
 
     int n;
 
+    if (scan.dryrun)
+    {
+        return;
+    }
+
     if (pop_expr(&n))                   // n argument?
     {
         n &= 0xFF;                      // Limit value to 8 bits

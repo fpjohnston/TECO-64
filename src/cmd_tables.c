@@ -82,62 +82,62 @@ const struct cmd_table cmd_table[] =
 {
     [NUL]         = { NULL,           NULL,             ""             },
     [CTRL_A]      = { NULL,           exec_ctrl_a,      "@ 1"          }, // consume value
-    [CTRL_B]      = { scan_ctrl_b,    NULL,             ""             }, // return value
+    [CTRL_B]      = { scan_ctrl_b,    NULL,             "x"            }, // return value
     [CTRL_C]      = { NULL,           exec_ctrl_c,      ""             }, // consume value
     [CTRL_D]      = { NULL,           exec_ctrl_d,      ""             }, // disallow value
-    [CTRL_E]      = { scan_ctrl_e,    NULL,             "n"            },
-    [CTRL_F]      = { scan_ctrl_f,    NULL,             "n"            },
+    [CTRL_E]      = { scan_ctrl_e,    NULL,             "n x"          },
+    [CTRL_F]      = { scan_ctrl_f,    NULL,             "n x"          },
     [CTRL_G]      = { scan_bad,       NULL,             ""             },
-    [CTRL_H]      = { scan_ctrl_h,    NULL,             ""             }, // return value
+    [CTRL_H]      = { scan_ctrl_h,    NULL,             "x"            }, // return value
     [CTRL_I]      = { NULL,           exec_ctrl_i,      "1"            }, // disallow value
     [LF]          = { NULL,           NULL,             ""             }, // ignore value
     [VT]          = { scan_bad,       NULL,             ""             },
     [FF]          = { NULL,           NULL,             ""             }, // ignore value
     [CR]          = { NULL,           NULL,             ""             }, // ignore value
-    [CTRL_N]      = { scan_ctrl_n,    NULL,             ""             }, // return value
+    [CTRL_N]      = { scan_ctrl_n,    NULL,             "x"            }, // return value
     [CTRL_O]      = { NULL,           exec_ctrl_o,      ""             }, // consume value
     [CTRL_P]      = { scan_bad,       NULL,             ""             },
-    [CTRL_Q]      = { scan_ctrl_q,    NULL,             "n"            }, // take & return value
-    [CTRL_R]      = { scan_ctrl_r,    NULL,             ""             }, // take or return value
-    [CTRL_S]      = { scan_ctrl_s,    NULL,             ""             }, // return value
-    [CTRL_T]      = { scan_ctrl_t,    NULL,             "n :"          }, // allow & return value
+    [CTRL_Q]      = { scan_ctrl_q,    NULL,             "n x"          }, // take & return value
+    [CTRL_R]      = { scan_ctrl_r,    NULL,             "x"            }, // take or return value
+    [CTRL_S]      = { scan_ctrl_s,    NULL,             "x"            }, // return value
+    [CTRL_T]      = { scan_ctrl_t,    NULL,             "n x :"        }, // allow & return value
     [CTRL_U]      = { NULL,           exec_ctrl_u,      "n : @ q 1"    }, // allow value
     [CTRL_V]      = { NULL,           exec_ctrl_v,      ""             },
     [CTRL_W]      = { NULL,           exec_ctrl_w,      ""             },
-    [CTRL_X]      = { scan_ctrl_x,    NULL,             "n"            }, // take or return value
-    [CTRL_Y]      = { scan_ctrl_y,    NULL,             ""             }, // return value
-    [CTRL_Z]      = { scan_ctrl_z,    NULL,             ""             }, // return value
+    [CTRL_X]      = { scan_ctrl_x,    NULL,             "x n"          }, // take or return value
+    [CTRL_Y]      = { scan_ctrl_y,    NULL,             "x"            }, // return value
+    [CTRL_Z]      = { scan_ctrl_z,    NULL,             "x"            }, // return value
     [ESC]         = { NULL,           NULL,             ""             }, // consume value
     ['\x1C']      = { scan_bad,       NULL,             ""             },
     ['\x1D']      = { scan_bad,       NULL,             ""             },
     ['\x1E']      = { NULL,           NULL,             ""             }, // return value
-    ['\x1F']      = { scan_operator,  NULL,             ""             }, // expression command
+    ['\x1F']      = { scan_operator,  NULL,             "x"            }, // expression command
     [SPACE]       = { NULL,           NULL,             ""             }, // ignore value
     ['!']         = { NULL,           exec_bang,        "@ 1"          }, // prohibited value?
     ['"']         = { NULL,           exec_quote,       "n"            }, // required value
-    ['#']         = { scan_operator,  NULL,             ""             }, // expression command
+    ['#']         = { scan_operator,  NULL,             "x"            }, // expression command
     ['$']         = { scan_bad,       NULL,             ""             },
-    ['%']         = { scan_pct,       NULL,             "n q"          }, // allow & return value
-    ['&']         = { scan_operator,  NULL,             ""             }, // expression command
+    ['%']         = { scan_pct,       NULL,             "n x q"        }, // allow & return value
+    ['&']         = { scan_operator,  NULL,             "x"            }, // expression command
     ['\'']        = { NULL,           exec_apos,        ""             }, // consume value
-    ['(']         = { scan_operator,  NULL,             ""             }, // expression command
-    [')']         = { scan_operator,  NULL,             ""             }, // expression command
-    ['*']         = { scan_operator,  NULL,             ""             }, // expression command
-    ['+']         = { scan_operator,  NULL,             ""             }, // expression command
-    [',']         = { scan_comma,     NULL,             ""             }, // expression command
-    ['-']         = { scan_operator,  NULL,             ""             }, // expression command
-    ['.']         = { scan_dot,       NULL,             ""             }, // return value
-    ['/']         = { scan_operator,  NULL,             ""             }, // expression command
-    ['0']         = { scan_digits,    NULL,             ""             }, // return value
-    ['1']         = { scan_digits,    NULL,             ""             }, // return value
-    ['2']         = { scan_digits,    NULL,             ""             }, // return value
-    ['3']         = { scan_digits,    NULL,             ""             }, // return value
-    ['4']         = { scan_digits,    NULL,             ""             }, // return value
-    ['5']         = { scan_digits,    NULL,             ""             }, // return value
-    ['6']         = { scan_digits,    NULL,             ""             }, // return value
-    ['7']         = { scan_digits,    NULL,             ""             }, // return value
-    ['8']         = { scan_digits,    NULL,             ""             }, // return value
-    ['9']         = { scan_digits,    NULL,             ""             }, // return value
+    ['(']         = { scan_operator,  NULL,             "x"            }, // expression command
+    [')']         = { scan_operator,  NULL,             "x"            }, // expression command
+    ['*']         = { scan_operator,  NULL,             "x"            }, // expression command
+    ['+']         = { scan_operator,  NULL,             "x"            }, // expression command
+    [',']         = { scan_comma,     NULL,             "x"            }, // expression command
+    ['-']         = { scan_operator,  NULL,             "x"            }, // expression command
+    ['.']         = { scan_dot,       NULL,             "x"            }, // return value
+    ['/']         = { scan_operator,  NULL,             "x"            }, // expression command
+    ['0']         = { scan_digit,     NULL,             "x"            }, // return value
+    ['1']         = { scan_digit,     NULL,             "x"            }, // return value
+    ['2']         = { scan_digit,     NULL,             "x"            }, // return value
+    ['3']         = { scan_digit,     NULL,             "x"            }, // return value
+    ['4']         = { scan_digit,     NULL,             "x"            }, // return value
+    ['5']         = { scan_digit,     NULL,             "x"            }, // return value
+    ['6']         = { scan_digit,     NULL,             "x"            }, // return value
+    ['7']         = { scan_digit,     NULL,             "x"            }, // return value
+    ['8']         = { scan_digit,     NULL,             "x"            }, // return value
+    ['9']         = { scan_digit,     NULL,             "x"            }, // return value
     [':']         = { scan_mod,       NULL,             ""             }, // command modifier
     [';']         = { NULL,           exec_semi,        "n :"          }, // allow value
     ['<']         = { NULL,           exec_lt,          "n"            }, // allow value
@@ -145,14 +145,14 @@ const struct cmd_table cmd_table[] =
     ['>']         = { NULL,           exec_gt,          ""             }, // consume value
     ['?']         = { NULL,           exec_question,    "i"            }, // consume value
     ['@']         = { scan_mod,       NULL,             ""             }, // command modifier
-    ['A']         = { scan_A,         NULL,             "n :"          }, // allow value
-    ['B']         = { scan_B,         NULL,             ""             }, // return value
+    ['A']         = { scan_A,         NULL,             "n x :"        }, // allow value
+    ['B']         = { scan_B,         NULL,             "x"            }, // return value
     ['C']         = { NULL,           exec_C,           "n :"          }, // allow value
     ['D']         = { NULL,           exec_D,           "m,n :"        }, // allow value
     ['E']         = { NULL,           NULL,             "m,n"          }, // (see below)
     ['F']         = { NULL,           NULL,             ""             }, // (see below)
     ['G']         = { NULL,           exec_G,           ": q"          }, // consume value
-    ['H']         = { scan_H,         NULL,             ""             }, // return value(s)
+    ['H']         = { scan_H,         NULL,             "x"            }, // return value(s)
     ['I']         = { NULL,           exec_I,           "n @ 1"        }, // allow value
     ['J']         = { NULL,           exec_J,           "n :"          }, // allow value
     ['K']         = { NULL,           exec_K,           "m,n"          }, // allow value
@@ -161,18 +161,18 @@ const struct cmd_table cmd_table[] =
     ['N']         = { NULL,           exec_N,           "n : @ 1"      }, // allow & return value
     ['O']         = { NULL,           exec_O,           "n @ 1"        }, // allow value
     ['P']         = { NULL,           exec_P,           ": W"          }, // allow value(s)
-    ['Q']         = { scan_Q,         NULL,             "n : q"        }, // allow value
+    ['Q']         = { scan_Q,         NULL,             "n x : q"      }, // allow value
     ['R']         = { NULL,           exec_R,           "n :"          }, // allow value
     ['S']         = { NULL,           exec_S,           "m,n : :: @ 1" }, // allow & return value
     ['T']         = { NULL,           exec_T,           "m,n :"        }, // allow value
     ['U']         = { NULL,           exec_U,           "m,n q"        }, // allow value
     ['V']         = { NULL,           exec_V,           "m,n"          }, // allow value
-    ['W']         = { scan_W,         NULL,             "m,n :"        }, // allow value(s)
+    ['W']         = { scan_W,         NULL,             "m,n x :"      }, // allow value(s)
     ['X']         = { NULL,           exec_X,           "m,n : q"      }, // allow value(s)
     ['Y']         = { NULL,           exec_Y,           ":"            }, // allow value
-    ['Z']         = { scan_Z,         NULL,             ""             }, // return value
+    ['Z']         = { scan_Z,         NULL,             "x"            }, // return value
     ['[']         = { NULL,           exec_lbracket,    "q &"          }, // pass through value
-    ['\\']        = { scan_back,      NULL,             "n"            }, // allow value
+    ['\\']        = { scan_back,      NULL,             "n x"          }, // allow value
     [']']         = { NULL,           exec_rbracket,    ": q &"        }, // pass through value
     ['^']         = { NULL,           NULL,             ""             }, // return value
     ['_']         = { NULL,           exec_ubar,        "n : @ 1"      }, // allow value
@@ -219,32 +219,42 @@ const uint cmd_count = countof(cmd_table); ///< No. of items in cmd_table[]
 const struct cmd_table cmd_e_table[] =
 {
     { NULL,       exec_E_pct,   ": @ q 1" },
+    { scan_E0,    NULL,         "n x"     }, // allow or return value
+    { NULL,       NULL,         "n x"     }, // allow or return value
+    { NULL,       NULL,         "n x"     }, // allow or return value
+    { NULL,       NULL,         "n x"     }, // allow or return value
+    { NULL,       NULL,         "n x"     }, // allow or return value
+    { NULL,       NULL,         "n x"     }, // allow or return value
+    { NULL,       NULL,         "n x"     }, // allow or return value
+    { NULL,       NULL,         "n x"     }, // allow or return value
+    { NULL,       NULL,         "n x"     }, // allow or return value
+    { NULL,       NULL,         "n x"     }, // allow or return value
     { NULL,       exec_EA,      ""        }, // consume value
     { NULL,       exec_EB,      ": @ 1"   }, // consume & return value
     { NULL,       exec_EC,      "n"       }, // allow value
-    { scan_ED,    NULL,         "m,n"     }, // allow or return value
-    { scan_EE,    NULL,         "n"       }, // allow or return value
+    { scan_ED,    NULL,         "m,n x"   }, // allow or return value
+    { scan_EE,    NULL,         "n x"     }, // allow or return value
     { NULL,       exec_EF,      ""        }, // consume value
     { NULL,       exec_EG,      ": @ 1"   }, // consume value
-    { scan_EH,    NULL,         "m,n"     }, // allow or return value
+    { scan_EH,    NULL,         "m,n x"   }, // allow or return value
     { NULL,       exec_EI,      ": @ 1"   }, // consume value
-    { scan_EJ,    NULL,         "m,n"     }, // allow & return value
+    { scan_EJ,    NULL,         "m,n x"   }, // allow & return value
     { NULL,       exec_EK,      ""        }, // consume value
     { NULL,       exec_EL,      "@ 2"     }, // consume value
     { NULL,       exec_EM,      "n"       }, // consume value
     { NULL,       exec_EN,      ": @ 1"   }, // consume value
-    { scan_EO,    NULL,         "n"       }, // allow & return value
+    { scan_EO,    NULL,         "n x"     }, // allow & return value
     { NULL,       exec_EP,      ""        }, // consume value
     { NULL,       exec_EQ,      ": @ q 1" }, // consume value
     { NULL,       exec_ER,      ": @ 1"   }, // consume & return value
-    { scan_ES,    NULL,         "n"       },
-    { scan_ET,    NULL,         "m,n"     }, // allow or return value
-    { scan_EU,    NULL,         "n"       }, // allow or return value
-    { scan_EV,    NULL,         "n"       }, // allow or return value
+    { scan_ES,    NULL,         "n x"     },
+    { scan_ET,    NULL,         "m,n x"   }, // allow or return value
+    { scan_EU,    NULL,         "n x"     }, // allow or return value
+    { scan_EV,    NULL,         "n x"     }, // allow or return value
     { NULL,       exec_EW,      ": @ 1"   }, // consume & return value
     { NULL,       exec_EX,      ""        }, // consume value
     { NULL,       exec_EY,      ":"       }, // disallow value
-    { scan_EZ,    NULL,         ""        },
+    { scan_EZ,    NULL,         "x"       },
     { NULL,       exec_E_ubar,  "n @ 1"   },
 };
 

@@ -326,7 +326,7 @@ void puts_term(const char *str, unsigned int nbytes)
 
 #else
 
-    if (fwrite(str, (ulong)nbytes, 1uL, stdout) != nbytes)
+    if (fwrite(str, 1uL, (ulong)nbytes, stdout) != (ulong)nbytes)
     {
         fatal_err(errno, E_UWL, NULL);
     }
@@ -357,8 +357,8 @@ void print_term(const char *str)
     char crlf[] = { '\r', '\n' };
     uint len = (uint)strlen(str);
 
-    if (fwrite(str, (ulong)len, 1uL, stdout) != len
-        || fwrite(crlf, sizeof(crlf), 1uL, stdout) != sizeof(crlf))
+    if (fwrite(str, 1uL, (ulong)len, stdout) != len
+        || fwrite(crlf, 1uL, sizeof(crlf), stdout) != sizeof(crlf))
     {
         fatal_err(errno, E_UWL, NULL);
     }

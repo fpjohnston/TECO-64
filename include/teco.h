@@ -144,6 +144,7 @@ enum itype
 {
     IFILE_PRIMARY,                  ///< Primary input stream
     IFILE_SECONDARY,                ///< Secondary input stream
+    IFILE_QREGISTER,                ///< EQ input stream
     IFILE_INDIRECT,                 ///< EI command stream
     IFILE_MAX                       ///< Maximum input files
 };
@@ -166,7 +167,7 @@ enum otype
 {
     OFILE_PRIMARY,                  ///< Primary output stream
     OFILE_SECONDARY,                ///< Secondary output stream
-    OFILE_INDIRECT,                 ///< E%q command stream
+    OFILE_QREGISTER,                ///< E%q command stream
     OFILE_LOG,                      ///< EL log file
     OFILE_MAX                       ///< Maximum output files
 };
@@ -184,6 +185,9 @@ struct vars
     bool warn;                      ///< true if edit buffer is almost full
     bool full;                      ///< true if edit buffer is full
 };
+
+///  @struct  watch
+///  @brief   Watch scope variables (for controlling display).
 
 struct watch
 {

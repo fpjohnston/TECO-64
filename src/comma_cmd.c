@@ -43,7 +43,12 @@
 void scan_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);
-    
+
+    if (scan.dryrun)
+    {
+        return;
+    }
+                        
     if (scan.comma_set || cmd->h_set)   // Already seen comma or H?
     {
         print_err(E_ARG);               // Invalid arguments

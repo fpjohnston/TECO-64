@@ -1,12 +1,13 @@
 !DATE.TEC!
 ! display the current date and time:                    !
 !   ^B == ((year-1900)*16+month)*32+day                 !
-!   ^H == (seconds since midnight)/2                    !
+!   ^H == (milliseconds since midnight)                 !
 
 
 
-[M[D[Y[W[H[M[S[0[1    ! save used Q-reg's               !
+[X[T[M[D[Y[W[H[M[S[0[1 ! save used Q-reg's               !
 
+-1 E0
                       ! Get MM/DD/YYYY in Q-reg's M,D,Y !
 ^B U0                 ! 0.num = encoded date            !
 (Q0/32) & 15  UM      ! M.num = month                   !
@@ -56,7 +57,10 @@ QM-11"= @^UM%November%  |
 QM-12"= @^UM%December%  ''''''''''''
 
                       ! Get HH:MM:SS in Q-reg's H,N,S   !
-^H*2 U0               ! 0.num = second's since midnight !
+^H UT                 ! T.num = returned time           !
+E0"= QT*2    U0 |     ! 0.num = seconds since midnight  !
+     QT/1000 U0 
+     QT-(Q0*1000) UX' ! X.num = milliseconds            !
 Q0/3600         UH    ! H.num = hours                   !
 QH*3600         U1    ! 1.num = hours (in seconds)      !
 (Q0-Q1)/60      UN    ! N.num = minutes                 !
@@ -64,24 +68,18 @@ QH*3600         U1    ! 1.num = hours (in seconds)      !
 
                       ! Display DAY MM/DD/YYYY          !
 :GW                   ! display DAY                     !
-44                  ! display ,                       !
-32                  ! display <SP>                    !
+44^T                  ! display ,                       !
+32^T                  ! display <SP>                    !
 
 :GM                   ! display MONTH                   !
-32                  ! display <SP>                    !
+32^T                  ! display <SP>                    !
 
-! QM-10"< 48^T '        display leading zero?           !
-! QM:=                  display MM                      !
-! 47^T                  display /                       !
-
-QD-10"< 48^T '        ! display leading zero?           !
 QD:=                  ! display DD                      !
-! 47^T                  display /                       !
-44                  ! display ,                       !
-32                  ! display <SP>                    !
+44^T                  ! display ,                       !
+32^T                  ! display <SP>                    !
 
 1900+QY :=            ! display YYYY                    !
-32                  ! display <SP>                    !
+32^T                  ! display <SP>                    !
 
                       ! Display HH:MM:DD                !
 QH-10"< 48^T '        ! display leading zero?           !
@@ -91,7 +89,16 @@ QN-10"< 48^T '        ! display leading zero?           !
 QN:=                  ! display MM                      !
 58^T                  ! display :                       !
 QS-10"< 48^T '        ! display leading zero?           !
-QS=                   ! display SS<CR><LF>              !
+QS:=                  ! display SS                      !
 
-]1]0]S]M]H]W]Y]D]M    ! restore used Q-reg's            !
+E0"<                  ! Display milliseconds (maybe)    !
+    46^T ^[           ! display period                  !
+    QX-100"< 48^T '   ! display leading zero?           !
+    QX-10"< 48^T '    ! display leading zero?           !
+    QX:=              ! display milliseconds            !
+'
+13^T 10^T
+
+]1]0]S]M]H]W]Y]D]M]T]X ! restore used Q-reg's            !
+! ex !
 

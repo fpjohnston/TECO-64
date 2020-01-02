@@ -25,6 +25,9 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     !defined(_TEXTBUF_H)
+#define _TEXTBUF_H
+
 #if     !defined(_STDBOOL_H)
 #include <stdbool.h>
 #endif
@@ -105,3 +108,5 @@ extern void setpos_tbuf(uint n);
 // Set maximum memory size, in K bytes.
 
 extern uint setsize_tbuf(uint n);
+
+#endif

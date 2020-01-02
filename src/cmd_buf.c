@@ -150,6 +150,8 @@ bool empty_buf(void)
 
 int fetch_buf(void)
 {
+    extern uint nescapes;
+
     assert(cmdbuf != NULL);
     
     if (cmdbuf->pos == cmdbuf->len)
@@ -160,7 +162,18 @@ int fetch_buf(void)
         print_err(E_UTC);               // Unterminated command
     }
 
-    return cmdbuf->buf[cmdbuf->pos++];
+    int c = cmdbuf->buf[cmdbuf->pos++];
+
+    if (c == ESC)
+    {
+        ++nescapes;
+    }
+    else
+    {
+        nescapes = 0;
+    }
+
+    return c;
 }
 
 

@@ -45,6 +45,11 @@ void scan_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    if (scan.dryrun)
+    {
+        return;
+    }
+
     int n = 1;
 
     (void)pop_expr(&n);                 // n%q`

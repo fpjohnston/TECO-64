@@ -27,6 +27,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,6 +35,7 @@
 #include "teco.h"
 #include "errors.h"
 #include "exec.h"
+#include "qreg.h"
 
 
 ///
@@ -47,6 +49,51 @@ void exec_E_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    print_err(E_T10);                   // TECO-10 command not implemented
+    if (cmd->text1.len == 0)            // If no file name, then done
+    {
+        return;
+    }
+
+    create_filename(&cmd->text1);
+
+    if (open_output(cmd, OFILE_QREGISTER) == EXIT_FAILURE)
+    {
+        if (!cmd->colon_set)
+        {
+            prints_err(E_UFO, last_file);
+        }
+
+        push_expr(TECO_FAILURE, EXPR_VALUE);
+    }
+    else if (cmd->colon_set)
+    {
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
+    }
+
+    struct ofile *ofile = &ofiles[OFILE_QREGISTER];
+    struct qreg *qreg = get_qreg(cmd->qname, cmd->qlocal);
+    
+    assert(qreg != NULL);
+
+    uint size = qreg->text.len;    
+
+    if (size != 0)
+    {
+        if (fwrite(qreg->text.buf, 1uL, (ulong)size, ofile->fp) != size)
+        {
+            fatal_err(errno, E_SYS, NULL);
+        }
+    }
+
+    rename_output(ofile);
+
+    fclose(ofile->fp);
+
+    ofile->fp = NULL;
+
+    if (cmd->colon_set)
+    {
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
+    }
 }
 

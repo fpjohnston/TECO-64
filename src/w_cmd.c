@@ -38,6 +38,9 @@
 #define DEFAULT_HEIGHT          24      ///< Default terminal rows
 #define DEFAULT_WIDTH           80      ///< Default terminal columns
 
+///  @var    w
+///  @brief  Variables to read and control scope display.
+
 struct watch w =
 {
     .type      = 4,                     // VT100 in ANSI mode

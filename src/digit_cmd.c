@@ -1,6 +1,6 @@
 ///
-///  @file    z_cmd.c
-///  @brief   Execute Z command.
+///  @file    digit_cmd.c
+///  @brief   Execute digit commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,27 +26,49 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <string.h>
 
 #include "teco.h"
-#include "textbuf.h"
+#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Scan Z command: read last position in buffer.
+///  @brief    Scan digits in a command string. Note that these can be decimal,
+///            octal, or hexadecimal digits, depending on the current radix.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_Z(struct cmd *cmd)
+void scan_digit(struct cmd *cmd)
 {
+    static const char *digits = "0123456789ABCDEF";
+
     assert(cmd != NULL);
 
-    uint Z = getsize_tbuf();
+    int c = cmd->c1;
 
-    push_expr((int)Z, EXPR_VALUE);
+    const char *digit = strchr(digits, toupper(c));
+
+    if (digit == NULL ||                // If not a hexadecimal digit,
+        (v.radix != 16 && !isdigit(c)) || // or base 8 or 10 and not a digit,
+        (v.radix == 8 && c > '7'))      // or base 8 and digit is 8 or 9
+    {
+        print_err(E_ILN);               // Illegal number
+    }
+
+    long n = digit - digits;            // Value of digit in range [0,15]
+
+    if (!scan.digits)                   // If first digit,
+    {
+        scan.sum = 0;                   //  then start at zero
+    }
+
+    scan.digits = true;
+    
+    scan.sum *= (int)v.radix;           // Shift over existing digits
+    scan.sum += (int)n;                 // And add in the new one
 }
-

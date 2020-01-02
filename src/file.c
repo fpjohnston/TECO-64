@@ -284,28 +284,12 @@ int open_output(const struct cmd *cmd, uint stream)
 
     // If EW command and file exists, warn the user.
 
-    if (exists && toupper(cmd->c2) == 'W')
+    if (exists && (toupper(cmd->c2) == 'W'))
     {
         printf("%s", "%Superseding existing file\r\n");
     }
 
-    const char *mode = "w";
-
-    if (cmd->text2.len != 0)
-    {
-        char option[cmd->text2.len + 1];
-
-        sprintf(option, "%.*s", (int)cmd->text2.len, cmd->text2.buf);
-
-        // TODO: add /noin, /noout, and other switches.
-
-        if (!strcasecmp(option, "/append"))
-        {
-            mode = "a";
-        }
-    }
-
-    if ((ofile->fp = fopen(oname, mode)) == NULL)
+    if ((ofile->fp = fopen(oname, "w")) == NULL)
     {
         return EXIT_FAILURE;
     }

@@ -27,17 +27,21 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 #include "teco.h"
 #include "errors.h"
 #include "exec.h"
+#include "qreg.h"
 
 
 ///
-///  @brief    Execute EQ command (read file into Q-register).
+///  @brief    Execute EQ command: read file into Q-register.
 ///
 ///  @returns  Nothing.
 ///
@@ -47,5 +51,60 @@ void exec_EQ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    print_err(E_T10);                   // TECO-10 command not implemented
+    if (cmd->text1.len == 0)            // If no file name, then done
+    {
+        return;
+    }
+
+    create_filename(&cmd->text1);
+
+    if (open_input(filename_buf, IFILE_QREGISTER) == EXIT_FAILURE)
+    {
+        if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
+        {
+            prints_err(E_FNF, last_file);
+        }
+
+        push_expr(TECO_FAILURE, EXPR_VALUE);
+    }
+    else if (cmd->colon_set)
+    {
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
+    }
+
+    struct stat file_stat;
+
+    if (stat(filename_buf, &file_stat) == -1)
+    {
+        if (cmd->colon_set)
+        {
+            push_expr(TECO_FAILURE, EXPR_VALUE);
+        }
+    }
+
+    uint size = (uint)file_stat.st_size;
+    struct ifile *ifile = &ifiles[IFILE_QREGISTER];
+    struct buffer text =
+    {
+        .len  = size,
+        .pos  = 0,
+        .size = size,
+        .buf  = alloc_mem(size),
+    };
+
+    if (fread(text.buf, 1uL, size, ifile->fp) != size)
+    {
+        fatal_err(errno, E_SYS, NULL);
+    }
+
+    store_qtext(cmd->qname, cmd->qlocal, &text);
+
+    fclose(ifile->fp);
+
+    ifile->fp = NULL;
+
+    if (cmd->colon_set)
+    {
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
+    }
 }

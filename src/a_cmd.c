@@ -176,7 +176,7 @@ void scan_A(struct cmd *cmd)
     {
         // Here to append to buffer with A, :A, or n:A command.
 
-        int status = append((bool)cmd->n_set, cmd->n_arg, (bool)cmd->colon_set);
+        int status = append(cmd->n_set, cmd->n_arg, cmd->colon_set);
 
         if (cmd->colon_set)
         {

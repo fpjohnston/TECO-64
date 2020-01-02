@@ -88,7 +88,7 @@ static struct err_table err_table[] =
     [E_MEM] = { "MEM",  "Memory overflow" },
     [E_MLA] = { "MLA",  "Missing left angle bracket" },
     [E_MLP] = { "MLP",  "Missing (" },
-    [E_MOD] = { "MOD",  "Invalid modifier for command" },
+    [E_MOD] = { "MOD",  "Invalid command modifier" },
     [E_MRA] = { "MRA",  "Missing right angle bracket" },
     [E_MRP] = { "MRP",  "Missing )" },
     [E_MSC] = { "MSC",  "Missing start of conditional" },
@@ -246,13 +246,15 @@ static const char *verbose[] =
     [E_MLP] = "There is a right parenthesis trhat is not matched by a "
               "corresponding left parenthesis.",
 
-    [E_MOD] = "TODO: fill this in",
+    [E_MOD] = "A modifier (:, ::, or @) was specified that was invalid "
+              "for a command, occurred in the middle of an expression, "
+              "or duplicated another modifier.",
 
     [E_MRA] = "There is a left angle bracket that has no matching right "
               "angle bracket. An iteration must be complete within the "
               "macro or command.",
 
-    [E_MRP] = "There is a left parenthesis trhat is not matched by a "
+    [E_MRP] = "There is a left parenthesis that is not matched by a "
               "corresponding right parenthesis.",
 
     [E_MSC] = "A ' command (end of conditional) was encountered. Every "
@@ -483,9 +485,9 @@ void help_err(int err_teco)
     const char *start = text;
     const char *end = start;
     uint pos = 0;
-    int maxlines = 20;                  // TODO: sanity check for now
+    uint maxlines = 20;
 
-    for (int i = 0; i < maxlines; ++i)
+    while (maxlines > 0)
     {
         const char *next = strchr(end + pos, ' ');
         uint len;
@@ -498,6 +500,8 @@ void help_err(int err_teco)
             {
                 puts_term(start, ((uint)(end - start)) - 1);
                 putc_term(CRLF);
+
+                --maxlines;
 
                 start = end;
                 pos = 0;

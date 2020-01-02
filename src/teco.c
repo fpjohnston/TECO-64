@@ -52,6 +52,10 @@
 ///  @remarks  Pete Siemsen - Developed TECO C in 1983. The first TECO written
 ///                           in a language other than assembler.
 ///
+///  @remarks  Ben Mesander - ?
+///
+///  @remarks  Jerry Leichter - ?
+///
 ///  @remarks  Tom Almy - Developed TECO C.
 ///
 ///  @remarks  Mark Henderson - Developed TECO C.
@@ -149,6 +153,7 @@ int main(int argc, const char * const argv[])
             init_expr();                // Initialize expression stack
 
             exec_cmd();                 // Then execute what we have
+            (void)fflush(NULL);
         }
         else if (jump == 1)             // ^C exit from macro
         {

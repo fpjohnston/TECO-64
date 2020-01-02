@@ -44,8 +44,11 @@
 void exec_ctrl_d(struct cmd *cmd)
 {
     assert(cmd != NULL);
-    
-    v.radix = 10;                       // Set radix to decimal
+
+    if (!scan.dryrun)
+    {
+        v.radix = 10;                   // Set radix to decimal
+    }
 }
 
 
@@ -60,7 +63,10 @@ void exec_ctrl_o(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    v.radix = 8;                        // Set radix to octal
+    if (!scan.dryrun)
+    {
+        v.radix = 8;                    // Set radix to octal
+    }
 }
 
 
@@ -76,6 +82,11 @@ void scan_ctrl_r(struct cmd *cmd)
     assert(cmd != NULL);
 
     int n;
+
+    if (scan.dryrun)
+    {
+        return;
+    }
 
     if (pop_expr(&n))                   // n^R?
     {

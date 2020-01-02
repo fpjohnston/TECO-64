@@ -141,6 +141,7 @@ union ez_flag
 
 struct flags
 {
+    int            e0;          ///< Time format flag
     union  ed_flag ed;          ///< Edit level flags
     int            ee;          ///< ESCape surrogate
     union  eh_flag eh;          ///< Help message flags
@@ -149,8 +150,8 @@ struct flags
     int            eo;          ///< TECO version number
     int            es;          ///< Search verification flag
     union  et_flag et;          ///< Terminal flags
-    int            eu;          ///< Upper/lower case flags
-    int            ev;          ///< Edit verify flags
+    int            eu;          ///< Upper/lower case flag
+    int            ev;          ///< Edit verify flag
     union  ez_flag ez;          ///< Additional external flags
 };
 
