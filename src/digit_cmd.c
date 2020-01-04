@@ -36,8 +36,8 @@
 
 
 ///
-///  @brief    Scan digits in a command string. Note that these can be decimal,
-///            octal, or hexadecimal digits, depending on the current radix.
+///  @brief    Scan digits in a command string. These can be decimal or octal,
+///            depending on the current radix.
 ///
 ///  @returns  Nothing.
 ///
@@ -45,22 +45,14 @@
 
 void scan_digit(struct cmd *cmd)
 {
-    static const char *digits = "0123456789ABCDEF";
-
     assert(cmd != NULL);
 
     int c = cmd->c1;
 
-    const char *digit = strchr(digits, toupper(c));
-
-    if (digit == NULL ||                // If not a hexadecimal digit,
-        (v.radix != 16 && !isdigit(c)) || // or base 8 or 10 and not a digit,
-        (v.radix == 8 && c > '7'))      // or base 8 and digit is 8 or 9
+    if (v.radix == 8 && c > '7')        // If base 8 and digit is 8 or 9
     {
         print_err(E_ILN);               // Illegal number
     }
-
-    long n = digit - digits;            // Value of digit in range [0,15]
 
     if (!scan.digits)                   // If first digit,
     {
@@ -70,5 +62,5 @@ void scan_digit(struct cmd *cmd)
     scan.digits = true;
     
     scan.sum *= (int)v.radix;           // Shift over existing digits
-    scan.sum += (int)n;                 // And add in the new one
+    scan.sum += c - '0';                // And add in the new one
 }

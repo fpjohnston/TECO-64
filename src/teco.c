@@ -125,6 +125,8 @@ const char *mung_file = NULL;       ///< Name of file to MUNG
 
 int main(int argc, const char * const argv[])
 {
+    extern uint macro_depth;
+
     init_env(argc, argv);               // Initialize environment
     init_term();                        // Initialize terminal
     init_buf();                         // Initialize command buffer
@@ -135,11 +137,11 @@ int main(int argc, const char * const argv[])
     init_EG();                          // Initialize for EG command
     init_loop();                        // Initialie for loops
 
-    f.ei.strict = true;                 // TODO: temporary
+    f.e0.strict = true;                 // TODO: temporary
 
     for (;;)                            // Loop forever
     {
-        f.ei.exec = false;              // Not executing command
+        f.e0.exec = false;              // Not executing command
 
         int jump = setjmp(jump_main);
 
@@ -168,6 +170,7 @@ int main(int argc, const char * const argv[])
             reset_qreg();               // Free up Q-register storage
             reset_if();                 // Reset if statement depth
             reset_loop();               // Free up loop structures
+            macro_depth = 0;
         }
     }
 }

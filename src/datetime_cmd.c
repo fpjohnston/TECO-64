@@ -88,7 +88,7 @@ void scan_ctrl_h(struct cmd *cmd)
     teco_time *= SECONDS_PER_MINUTE;
     teco_time += tm.tm_sec;
 
-    if (f.e0 == 0)
+    if (f.e1 == 0)
     {
         teco_time /= 2;
     }

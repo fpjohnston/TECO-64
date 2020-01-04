@@ -89,10 +89,11 @@ void exec_EQ(struct cmd *cmd)
         .len  = size,
         .pos  = 0,
         .size = size,
-        .buf  = alloc_mem(size),
     };
 
-    if (fread(text.buf, 1uL, size, ifile->fp) != size)
+    text.buf = alloc_mem(size);
+
+    if (fread(text.buf, 1uL, (ulong)size, ifile->fp) != size)
     {
         fatal_err(errno, E_SYS, NULL);
     }

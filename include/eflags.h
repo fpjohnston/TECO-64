@@ -33,6 +33,27 @@
 #include <stdint.h>
 #endif
 
+///  @struct  e0_flag
+///  @brief   Definition of flags are used internally, and which cannot be read
+///           or set by the user.
+
+union e0_flag
+{
+    uint flag;                  ///< Entire E0 flag
+
+    struct
+    {
+        uint strict : 1;        ///< Strictly enforce command syntax
+        uint brace  : 1;        ///< Allow braced expressions
+        uint dollar : 1;        ///< $ is a valid symbol character
+        uint add_cr : 1;        ///< Add CR to LF on output
+        uint no_cr  : 1;        ///< Strip CR on input
+        uint no_ff  : 1;        ///< FF is normal character on input
+        uint exec   : 1;        ///< Executing command
+        uint ctrl_c : 1;        ///< CTRL/C seen
+    };
+};
+
 ///  @union   ed_flag
 ///  @brief   Definition of flags that affect edit operations.
 
@@ -65,20 +86,6 @@ union eh_flag
         uint verbose   : 2;     ///< Error message verbosity
         uint command   : 1;     ///< Print failing command if error
     };
-};
-
-///  @struct  ei_flag
-///  @brief   Definition of flags are used internally, and which cannot be read
-///           or set by the user.
-
-struct ei_flag
-{
-    uint add_cr : 1;            ///< Add CR to LF on output
-    uint no_cr  : 1;            ///< Strip CR on input
-    uint no_ff  : 1;            ///< FF is normal character on input
-    uint strict : 1;            ///< Strictly enforce command syntax
-    uint exec   : 1;            ///< Executing command
-    uint ctrl_c : 1;            ///< CTRL/C seen
 };
 
 ///  @union   et_flag
@@ -141,18 +148,18 @@ union ez_flag
 
 struct flags
 {
-    int            e0;          ///< Time format flag
-    union  ed_flag ed;          ///< Edit level flags
-    int            ee;          ///< ESCape surrogate
-    union  eh_flag eh;          ///< Help message flags
-    struct ei_flag ei;          ///< Internal flags
-    int            ej;          ///< Operating system type
-    int            eo;          ///< TECO version number
-    int            es;          ///< Search verification flag
-    union  et_flag et;          ///< Terminal flags
-    int            eu;          ///< Upper/lower case flag
-    int            ev;          ///< Edit verify flag
-    union  ez_flag ez;          ///< Additional external flags
+    union e0_flag e0;           ///< Internal flags
+    int           e1;           ///< Time format flag
+    union ed_flag ed;           ///< Edit level flags
+    int           ee;           ///< ESCape surrogate
+    union eh_flag eh;           ///< Help message flags
+    int           ej;           ///< Operating system type
+    int           eo;           ///< TECO version number
+    int           es;           ///< Search verification flag
+    union et_flag et;           ///< Terminal flags
+    int           eu;           ///< Upper/lower case flag
+    int           ev;           ///< Edit verify flag
+    union ez_flag ez;           ///< Additional external flags
 };
 
 ///  @var    f

@@ -148,30 +148,29 @@ bool empty_buf(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int fetch_buf(void)
+int fetch_buf(bool start)
 {
-    extern uint nescapes;
+    extern uint macro_depth;
 
     assert(cmdbuf != NULL);
     
     if (cmdbuf->pos == cmdbuf->len)
     {
-//        cmdbuf->pos = cmdbuf->len = 0;
-
-//        return EOF;
-        print_err(E_UTC);               // Unterminated command
+        if (start)
+        {
+            return EOF;
+        }
+        else if (macro_depth > 0)
+        {
+            print_err(E_UTM);           // Unterminated macro
+        }
+        else
+        {
+            print_err(E_UTC);           // Unterminated command
+        }
     }
 
     int c = cmdbuf->buf[cmdbuf->pos++];
-
-    if (c == ESC)
-    {
-        ++nescapes;
-    }
-    else
-    {
-        nescapes = 0;
-    }
 
     return c;
 }

@@ -93,12 +93,10 @@ static void endif(struct cmd *cmd, bool vbar)
 
 void exec_apos(struct cmd *unused1)
 {
-    if (if_depth == 0)
+    if (if_depth > 0)
     {
-        print_err(E_NIC);               // Not in conditional
+        --if_depth;
     }
-
-    --if_depth;
 }
 
 
@@ -111,11 +109,6 @@ void exec_apos(struct cmd *unused1)
 
 void exec_F_apos(struct cmd *cmd)
 {
-    if (if_depth == 0)
-    {
-        print_err(E_NIC);               // Not in conditional
-    }
-
     endif(cmd, (bool)false);
 }
 
@@ -129,11 +122,6 @@ void exec_F_apos(struct cmd *cmd)
 
 void exec_F_vbar(struct cmd *cmd)
 {
-    if (if_depth == 0)
-    {
-        print_err(E_NIC);               // Not in conditional
-    }
-
     endif(cmd, (bool)true);
 }
 
@@ -186,7 +174,7 @@ void exec_quote(struct cmd *cmd)
             break;
 
         case 'C':                       // Test for symbol constituent
-            if (isalnum(c) || c == '.' || c == '_' || c == '$')
+            if (isalnum(c) || c == '.' || c == '_' || (f.e0.dollar && c == '$'))
             {
                 return;
             }
@@ -279,11 +267,6 @@ void exec_vbar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (if_depth == 0)
-    {
-        print_err(E_NIC);               // Not in conditional
-    }
-
     endif(cmd, (bool)false);
 }
 
@@ -298,17 +281,4 @@ void exec_vbar(struct cmd *cmd)
 void reset_if(void)
 {
     if_depth = 0;
-}
-
-
-///
-///  @brief    Test for being in a conditional.
-///
-///  @returns  true if in conditional, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool test_if(void)
-{
-    return (if_depth != 0) ? true : false;
 }

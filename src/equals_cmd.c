@@ -60,7 +60,7 @@ void exec_equals(struct cmd *cmd)
 
     int c;
 
-    if ((c = fetch_buf()) != '=')       // Print decimal if =
+    if ((c = fetch_buf(NOCMD_START)) != '=') // Print decimal if =
     {
         if (c != EOF)
         {
@@ -69,7 +69,7 @@ void exec_equals(struct cmd *cmd)
 
         printf("%d", cmd->n_arg);
     }
-    else if ((c = fetch_buf()) != '=')  // Print octal if ==
+    else if ((c = fetch_buf(NOCMD_START)) != '=') // Print octal if ==
     {
         if (c != EOF)
         {

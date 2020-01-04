@@ -33,6 +33,7 @@
 #include "exec.h"
 #include "qreg.h"
 
+uint macro_depth = 0;
 
 // TODO: add environment variable to control maximum depth of macros?
 
@@ -98,7 +99,9 @@ void exec_M(struct cmd *cmd)
         push_qlocal();
     }
 
+    ++macro_depth;
     exec_cmd();
+    --macro_depth;
 
     if (save_local)
     {

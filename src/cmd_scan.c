@@ -72,12 +72,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
     const struct cmd_table *table;
     int c = toupper(cmd->c1);
 
-    if (scan.digits && !scan.space && isxdigit(c))
-    {
-        c = '0';
-        table = &cmd_table[c];          // then treat A-F the same as 0-9.
-    }
-    else if (c == 'E')
+    if (c == 'E')
     {
         const char *e_cmds = "%0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
         const char *e_cmd  = strchr(e_cmds, toupper(cmd->c2));
@@ -124,7 +119,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
 
             if (cmd->c1 <= NUL || cmd->c1 >= SPACE)
             {
-                printc_err(E_IUC, cmd->c1);  // Illegal character following ^
+                printc_err(E_IUC, cmd->c1); // Illegal character following ^
             }
 
             table = &cmd_table[(int)cmd->c1];
@@ -144,9 +139,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
     assert(table != NULL);
 
     // The following allows for whitespace between digits in an expression.
-    // This copies the behavior of TECO-32. Note that any hexadecimal digits
-    // (A-F) have to follow one or more decimal digits, or they will be
-    // interpreted as being part of a command.
+    // This copies the behavior of TECO-32.
 
     if (isspace(c))
     {
@@ -180,13 +173,15 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void reset_scan(enum scan_state state)
+void reset_scan(void)
 {
-    scan.state       = state;
     scan.nparens     = 0;
     scan.sum         = 0;
     scan.digits      = false;
+    scan.brace_set   = false;
+    scan.brace_opt   = false;
     scan.expr        = false;
+    scan.mod         = false;
     scan.space       = false;
     scan.comma_set   = false;
     scan.colon_opt   = false;
@@ -227,7 +222,7 @@ void scan_mod(struct cmd *cmd)
 
     if (cmd->c1 == '@')
     {
-        if (f.ei.strict && cmd->atsign_set)
+        if (f.e0.strict && cmd->atsign_set)
         {
             print_err(E_MOD);           // Two @'s are not allowed
         }
@@ -236,7 +231,7 @@ void scan_mod(struct cmd *cmd)
     }
     else if (cmd->c1 == ':')
     {
-        if (f.ei.strict && cmd->dcolon_set)
+        if (f.e0.strict && cmd->dcolon_set)
         {
             print_err(E_MOD);           // More than two :'s are not allowed
         }
@@ -252,7 +247,7 @@ void scan_mod(struct cmd *cmd)
         }
     }
 
-    scan.state = SCAN_MOD;
+    scan.mod = true;
 }
 
 
@@ -271,11 +266,16 @@ void scan_operator(struct cmd *cmd)
 
     int value = 1;                      // 1 = parenthesis, 2 = operator
 
-    if (cmd->c1 == '(')
+    if (cmd->c1 == '(' || cmd->c1 == '{')
     {
         ++scan.nparens;
+
+        if (cmd->c1 == '{')
+        {
+            scan.brace_set = true;
+        }
     }
-    else if (cmd->c1 == ')')
+    else if (cmd->c1 == ')' || cmd->c1 == '}')
     {
         if (scan.nparens == 0)          // Can't have ) without (
         {
@@ -287,7 +287,10 @@ void scan_operator(struct cmd *cmd)
         }
         else
         {
-            --scan.nparens;
+            if (--scan.nparens == 0)
+            {
+                scan.brace_set = false;
+            }
         }
     }
     else
@@ -328,24 +331,41 @@ exec_func *scan_pass1(struct cmd *cmd)
 
         do
         {
-            cmd->c2 = (char)fetch_buf();
+            cmd->c2 = (char)fetch_buf(NOCMD_START);
         } while (isspace(cmd->c2));
     }
     else if (cmd->c1 == '^')
     {
-        if ((cmd->c2 = (char)fetch_buf()) == '^')
+        if ((cmd->c2 = (char)fetch_buf(NOCMD_START)) == '^')
         {
-            cmd->c3 = (char)fetch_buf();
+            cmd->c3 = (char)fetch_buf(NOCMD_START);
         }
     }
     else if (cmd->c1 == '\x1E')
     {
-        cmd->c2 = (char)fetch_buf();
+        cmd->c2 = (char)fetch_buf(NOCMD_START);
     }
 
     const struct cmd_table *table = find_cmd(cmd);
 
-    if (scan.expr && scan.state == SCAN_MOD)
+    if (table == NULL)
+    {
+        return NULL;
+    }
+
+    void (*temp_func)(struct cmd *cmd) = table->scan;
+
+    if (f.e0.brace)                     // Are braced expresions okay?
+    {
+        if (cmd->c1 == '{' || (scan.brace_set && scan.brace_opt))
+        {
+            temp_func = scan_operator;
+        }
+    }
+
+// Command modifiers cannot occur in the middle of expressions
+
+    if (scan.expr && scan.mod)
     {
         print_err(E_MOD);               // Invalid modifier for command
     }
@@ -354,13 +374,13 @@ exec_func *scan_pass1(struct cmd *cmd)
 
     if (scan.q_register)                // Do we need a Q-register?
     {
-        int c = fetch_buf();            // Yes
+        int c = fetch_buf(NOCMD_START); // Yes
 
         if (c == '.')                   // Is it a local Q-register?
         {
             cmd->qlocal = true;         // Yes, mark it
 
-            c = fetch_buf();            // Get Q-register name
+            c = fetch_buf(NOCMD_START); // Get Q-register name
         }        
 
         if (!isalnum(c))
@@ -378,22 +398,14 @@ exec_func *scan_pass1(struct cmd *cmd)
 
     if (cmd->c1 == '"')                 // " requires additional character
     {
-        cmd->c2 = (char)fetch_buf();
-    }
-
-    // table will be NULL for ^^x and CTRL/^ commands, both of which just
-    // push a value on the stack, requiring no further processing here.
-
-    if (table == NULL)
-    {
-        return NULL;
+        cmd->c2 = (char)fetch_buf(NOCMD_START);
     }
 
     cmd_expr = false;
 
-    if (table->scan != NULL)            // If we have anything to scan,
+    if (temp_func != NULL)              // If we have anything to scan,
     {
-        (*table->scan)(cmd);            //  then scan it
+        (*temp_func)(cmd);              //  then scan it
     }
 
     // See if we need to set the expression string for the command.
@@ -427,7 +439,7 @@ void scan_tail(struct cmd *cmd)
     {
         print_err(E_MRP);               // Missing right parenthesis
     }
-    else if (f.ei.strict)
+    else if (f.e0.strict)
     {
         if (   (cmd->colon_set  && !scan.colon_opt )
             || (cmd->dcolon_set && !scan.dcolon_opt)
@@ -458,7 +470,7 @@ void scan_tail(struct cmd *cmd)
 
     if (scan.w_opt)                     // Optional W following?
     {
-        int c = fetch_buf();            // Maybe
+        int c = fetch_buf(NOCMD_START); // Maybe
 
         if (toupper(c) == 'W')          // Is it?
         {
@@ -476,7 +488,7 @@ void scan_tail(struct cmd *cmd)
 
     if (cmd->atsign_set)                // @ modifier?
     {
-        cmd->delim = (char)fetch_buf(); // Yes, next character is delimiter
+        cmd->delim = (char)fetch_buf(NOCMD_START); // Yes, next character is delimiter
     }
 
     // Now get the text strings, if they're allowed for this command.
@@ -509,7 +521,7 @@ static void scan_text(int delim, struct tstring *text)
 
     int c;
 
-    if ((c = fetch_buf()) == EOF)
+    if ((c = fetch_buf(NOCMD_START)) == EOF)
     {
         print_err(E_UTC);               // Unterminated command
     }
@@ -521,7 +533,7 @@ static void scan_text(int delim, struct tstring *text)
 
     ++text->len;
 
-    while (fetch_buf() != delim)
+    while (fetch_buf(NOCMD_START) != delim)
     {
         ++text->len;
     }
@@ -565,6 +577,7 @@ static void set_opts(struct cmd *cmd, const char *opts)
     int c;
 
     scan.expr       = false;
+    scan.brace_opt  = false;
     scan.m_opt      = false;
     scan.n_opt      = false;
     scan.colon_opt  = false;
@@ -574,14 +587,27 @@ static void set_opts(struct cmd *cmd, const char *opts)
     scan.w_opt      = false;
     scan.t1_opt     = false;
     scan.t2_opt     = false;
-    scan.retain     = false;
 
     while ((c = *opts++) != NUL)
     {
         switch (c)
         {
-            case '&':
-                scan.retain = true;
+            case 'b':
+                scan.brace_opt = true;
+
+                break;
+
+            case 'x':
+                scan.expr = true;
+
+                break;
+
+            case 'm':
+                scan.m_opt = true;
+                //lint -fallthrough
+
+            case 'n':
+                scan.n_opt = true;
 
                 break;
 
@@ -604,15 +630,6 @@ static void set_opts(struct cmd *cmd, const char *opts)
 
                 break;
 
-            case 'm':
-                scan.m_opt = true;
-                //lint -fallthrough
-
-            case 'n':
-                scan.n_opt = true;
-
-                break;
-
             case 'q':
                 scan.q_register = true;
 
@@ -620,11 +637,6 @@ static void set_opts(struct cmd *cmd, const char *opts)
 
             case 'W':
                 scan.w_opt = true;
-
-                break;
-
-            case 'x':
-                scan.expr = true;
 
                 break;
 

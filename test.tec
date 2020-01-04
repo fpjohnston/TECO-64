@@ -1,0 +1,28 @@
+^H UT                 ! T.num = returned time           !
+E0"= QT*2    U0 |     ! 0.num = seconds since midnight  !
+     QT/1000 U0 
+     QT-(Q0*1000) UX' ! X.num = milliseconds            !
+Q0/3600         UH    ! H.num = hours                   !
+QH*3600         U1    ! 1.num = hours (in seconds)      !
+(Q0-Q1)/60      UN    ! N.num = minutes                 !
+(Q0-Q1)-(QN*60) US    ! S.num = seconds                 !
+
+                      ! Display HH:MM:DD                !
+QH-10"< 48^T '        ! display leading zero?           !
+QH:=                  ! display HH                      !
+58^T                  ! display :                       !
+QN-10"< 48^T '        ! display leading zero?           !
+QN:=                  ! display MM                      !
+58^T                  ! display :                       !
+QS-10"< 48^T '        ! display leading zero?           !
+QS:=                  ! display SS                      !
+
+-1E0
+E0"<
+    46^T
+    QX-100"< 48^T '
+    QX-10"< 48^T '
+    QX:=
+'
+13^T 10^T
+

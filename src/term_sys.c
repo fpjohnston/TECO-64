@@ -97,7 +97,7 @@ int getc_term(bool wait)
     }
     else if (read(fileno(stdin), &c, 1uL) == -1)
     {
-        if (f.ei.ctrl_c)                // Error caused by CTRL/C?
+        if (f.e0.ctrl_c)                // Error caused by CTRL/C?
         {
             if (f.et.ctrl_c)            // Yes, does user want CTRL/C?
             {
@@ -117,7 +117,7 @@ int getc_term(bool wait)
         }
     }
 
-    f.ei.ctrl_c = false;                // Something other than CTRL/C
+    f.e0.ctrl_c = false;                // Something other than CTRL/C
 
     if (f.et.rubout)
     {
@@ -401,7 +401,7 @@ static void sigint(int unused1)
         fatal_err(errno, E_SYS, NULL);
     }
 
-    if (f.et.abort || f.ei.ctrl_c)      // Should CTRL/C cause abort?
+    if (f.et.abort || f.e0.ctrl_c)      // Should CTRL/C cause abort?
     {
         echo_chr(CTRL_C);
         putc_term(CRLF);
@@ -411,7 +411,7 @@ static void sigint(int unused1)
         exit(EXIT_FAILURE);             // Cleanup, reset, and exit
     }
 
-    f.ei.ctrl_c = true;                 // Say we've seen CTRL/C
+    f.e0.ctrl_c = true;                 // Say we've seen CTRL/C
 
     if (signal(SIGINT, sigint) == SIG_ERR) // And reset interrupt handler
     {

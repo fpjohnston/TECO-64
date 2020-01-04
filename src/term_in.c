@@ -489,9 +489,9 @@ static int read_first(void)
                 putc_term(c);
                 c = getc_term((bool)WAIT);    // Get Q-register name
 
-                if (f.ei.ctrl_c)
+                if (f.e0.ctrl_c)
                 {
-                    f.ei.ctrl_c = false;
+                    f.e0.ctrl_c = false;
 
                     return CTRL_C;
                 }

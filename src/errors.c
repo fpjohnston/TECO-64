@@ -102,7 +102,6 @@ static struct err_table err_table[] =
     [E_NCA] = { "NCA",  "Negative argument to ," },
     [E_NFI] = { "NFI",  "No file for input" },
     [E_NFO] = { "NFO",  "No file for output" },
-    [E_NIC] = { "NIC",  "Not in conditional" },
     [E_NPA] = { "NPA",  "Negative or 0 argument to P" },
     [E_NRO] = { "NRO",  "No room for output" },
     [E_NTF] = { "NTF",  "No tag found" },
@@ -298,10 +297,8 @@ static const char *verbose[] =
               "it is necessary to open an output file by use of a "
               "command such as EW or EB.",
 
-    [E_NIC] = "A |, ', F|, or F' command occurred outside a conditional "
-              "statement.",
-
-    [E_NPA] = NULL,
+    [E_NPA] = "A P command was issued with an argument that was zero "
+              "or negative.",
 
     [E_NRO] = NULL,
 
@@ -404,7 +401,7 @@ static void common_err(int err_teco)
 {
     // If CTRL/C and we're not executing a command, don't print error.
 
-    if (err_teco == E_XAB && !f.ei.exec)
+    if (err_teco == E_XAB && !f.e0.exec)
     {
         return;
     }

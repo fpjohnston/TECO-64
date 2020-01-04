@@ -35,26 +35,19 @@
 
 #endif
 
-///  @enum   scan_state
-///  @brief  Definitions for scanning expressions.
-
-enum scan_state
-{
-    SCAN_EXPR,                      ///< Scanning expression
-    SCAN_MOD                        ///< Scanning command modifiers
-};
-
 ///  @struct  scan
 ///  @brief   Internal scanning state
 
 struct scan
 {
-    enum scan_state state;          ///< Current scan state
     bool dryrun;                    ///< "Dry run" scan (no changes)
     uint nparens;                   ///< No. of unmatched left parentheses
     int sum;                        ///< Accumulated sum of digits scanned
     bool digits;                    ///< Accumulated sum is valid
+    bool brace_set;                 ///< Left brace found
+    bool brace_opt;                 ///< Brace expression character found
     bool expr;                      ///< Current command is part of expression
+    bool mod;                       ///< Command modifier seen
     bool space;                     ///< Last chr. scanned was whitespace
     bool comma_set;                 ///< Comma seen in expression
     bool m_opt;                     ///< m argument allowed
@@ -63,10 +56,9 @@ struct scan
     bool dcolon_opt;                ///< Double colon allowed in command
     bool atsign_opt;                ///< At sign allowed in command
     bool w_opt;                     ///< W allowed (for P)
+    bool q_register;                ///< Q-register required
     bool t1_opt;                    ///< 1st text string allowed in command
     bool t2_opt;                    ///< 2nd text string allowed in command
-    bool q_register;                ///< Q-register required
-    bool retain;                    ///< Retain m & n arguments (pass through)
 };
 
 extern struct scan scan;
@@ -198,6 +190,8 @@ extern void exec_ctrl_w(struct cmd *cmd);
 
 extern void exec_equals(struct cmd *cmd);
 
+extern void exec_escape(struct cmd *cmd);
+
 extern void exec_insert(const char *buf, uint len);
 
 extern void exec_lt(struct cmd *cmd);
@@ -324,6 +318,8 @@ extern void scan_dot(struct cmd *cmd);
 
 extern void scan_E0(struct cmd *cmd);
 
+extern void scan_E1(struct cmd *cmd);
+
 extern void scan_ED(struct cmd *cmd);
 
 extern void scan_EE(struct cmd *cmd);
@@ -388,9 +384,7 @@ extern bool read_indirect(void);
 
 extern void reset_loop(void);
 
-extern void reset_scan(enum scan_state state);
-
-extern bool test_if(void);
+extern void reset_scan(void);
 
 extern bool test_indirect(void);
 

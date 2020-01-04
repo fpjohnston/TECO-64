@@ -65,7 +65,7 @@ void exec_P(struct cmd *cmd)
 
     // Use of a colon only makes sense for P and nP
 
-    if (f.ei.strict && cmd->colon_set)
+    if (f.e0.strict && cmd->colon_set)
     {
         if (cmd->m_set || cmd->h_set || cmd->w_set)
         {
@@ -178,7 +178,7 @@ bool next_page(uint start, uint end, bool ff, bool yank)
     {
         int c = getchar_tbuf(i);
 
-        if (c == LF && f.ei.add_cr)
+        if (c == LF && f.e0.add_cr)
         {
             fputc(CR, ofile->fp);
         }

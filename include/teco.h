@@ -203,6 +203,9 @@ struct watch
     uint keypad;                    ///< TODO: unknown
 };
 
+#define CMD_START       (bool)true
+#define NOCMD_START     (bool)false
+
 // Global variables
 
 extern struct vars v;
@@ -293,7 +296,7 @@ extern void echo_buf(int pos);
 
 extern bool empty_buf(void);
 
-extern int fetch_buf(void);
+extern int fetch_buf(bool start);
 
 extern struct buffer *get_buf(void);
 

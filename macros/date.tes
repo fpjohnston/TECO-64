@@ -7,7 +7,6 @@
 
 [X[T[M[D[Y[W[H[M[S[0[1 ! save used Q-reg's               !
 
--1 E0
                       ! Get MM/DD/YYYY in Q-reg's M,D,Y !
 ^B U0                 ! 0.num = encoded date            !
 (Q0/32) & 15  UM      ! M.num = month                   !
@@ -58,7 +57,7 @@ QM-12"= @^UM%December%  ''''''''''''
 
                       ! Get HH:MM:SS in Q-reg's H,N,S   !
 ^H UT                 ! T.num = returned time           !
-E0"= QT*2    U0 |     ! 0.num = seconds since midnight  !
+E1"= QT*2    U0 |     ! 0.num = seconds since midnight  !
      QT/1000 U0 
      QT-(Q0*1000) UX' ! X.num = milliseconds            !
 Q0/3600         UH    ! H.num = hours                   !
@@ -68,33 +67,33 @@ QH*3600         U1    ! 1.num = hours (in seconds)      !
 
                       ! Display DAY MM/DD/YYYY          !
 :GW                   ! display DAY                     !
-44^T                  ! display ,                       !
+^^, ^T                ! display ,                       !
 32^T                  ! display <SP>                    !
 
 :GM                   ! display MONTH                   !
 32^T                  ! display <SP>                    !
 
 QD:=                  ! display DD                      !
-44^T                  ! display ,                       !
+^^, ^T                ! display ,                       !
 32^T                  ! display <SP>                    !
 
 1900+QY :=            ! display YYYY                    !
 32^T                  ! display <SP>                    !
 
                       ! Display HH:MM:DD                !
-QH-10"< 48^T '        ! display leading zero?           !
+QH-10"< ^^0 ^T '      ! display leading zero?           !
 QH:=                  ! display HH                      !
-58^T                  ! display :                       !
-QN-10"< 48^T '        ! display leading zero?           !
+^^: ^T                ! display :                       !
+QN-10"< ^^0 ^T '      ! display leading zero?           !
 QN:=                  ! display MM                      !
-58^T                  ! display :                       !
-QS-10"< 48^T '        ! display leading zero?           !
+^^: ^T                ! display :                       !
+QS-10"< ^^0 ^T '      ! display leading zero?           !
 QS:=                  ! display SS                      !
 
-E0"<                  ! Display milliseconds (maybe)    !
-    46^T ^[           ! display period                  !
-    QX-100"< 48^T '   ! display leading zero?           !
-    QX-10"< 48^T '    ! display leading zero?           !
+E1"<                  ! Display milliseconds (maybe)    !
+    ^^. ^T            ! display period                  !
+    QX-100"< ^^0 ^T ' ! display leading zero?           !
+    QX-10"< ^^0 ^T '  ! display leading zero?           !
     QX:=              ! display milliseconds            !
 '
 13^T 10^T

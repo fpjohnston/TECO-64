@@ -74,10 +74,6 @@ static const struct cmd null_cmd =
     .text2      = { .buf = NULL, .len = 0 },
 };
 
-// Local functions
-
-static bool exec_escape(void);
-
 
 ///
 ///  @brief    Execute command string.
@@ -106,69 +102,54 @@ void exec_cmd(void)
             expr.buf = next_buf();
         }
 
-        if (expr.buf == NULL)           // If end of command string,
-        {
-            break;                      //  then back to main loop
-        }
-
-        f.ei.exec = true;
+        f.e0.exec = true;
         exec_func *exec = next_cmd(&cmd);
-        f.ei.exec = false;
+        f.e0.exec = false;
 
-        if (cmd.c1 == LF)
+        if (exec == NULL)
+        {
+            break;                      // Back to main loop if command done
+        }
+        else if (cmd.c1 == LF)
         {
             ++line;
         }
-
-        // Assume any tags that start with a space are really comments,
-        // and skip them.
-
-        if (cmd.c1 == '!' && cmd.text1.len != 0 && cmd.text1.buf[0] == ' ')
+        else if (cmd.c1 == '!' && cmd.text1.len != 0 && cmd.text1.buf[0] == ' ')
         {
-            cmd = null_cmd;
-
             continue;
         }
 
-        if (cmd.c1 == ESC && exec_escape())
+        // If the only thing on the expression stack is a minus sign,
+        // then say we have an n argument equal to -1. Otherwise check
+        // for m and n arguments.
+
+        if (cmd.expr.len == 1 && estack.obj[0].type == EXPR_MINUS)
         {
-            return;
+            estack.level = 0;
+
+            cmd.n_set = true;
+            cmd.n_arg = -1;
+        }
+        else if (pop_expr(&cmd.n_arg))
+        {
+            cmd.n_set = true;
+
+            if (pop_expr(&cmd.m_arg))
+            {
+                cmd.m_set = true;
+            }
         }
 
-        if (exec != NULL)
+        f.e0.exec = true;
+        (*exec)(&cmd);                  // Execute command
+        f.e0.exec = false;
+
+        expr.buf = NULL;
+        expr.len = 0;
+
+        if (f.e0.ctrl_c)                // If CTRL/C typed, return to main loop
         {
-            // If the only thing on the expression stack is a minus sign,
-            // then say we have an n argument equal to -1. Otherwise check
-            // for m and n arguments.
-
-            if (cmd.expr.len == 1 && estack.obj[0].type == EXPR_MINUS)
-            {
-                estack.level = 0;
-
-                cmd.n_set = true;
-                cmd.n_arg = -1;
-            }
-            else if (pop_expr(&cmd.n_arg))
-            {
-                cmd.n_set = true;
-
-                if (pop_expr(&cmd.m_arg))
-                {
-                    cmd.m_set = true;
-                }
-            }
-
-            f.ei.exec = true;
-            (*exec)(&cmd);              // Execute command
-            f.ei.exec = false;
-
-            expr.buf = NULL;
-            expr.len = 0;
-        }
-
-        if (f.ei.ctrl_c)                // If CTRL/C typed, return to main loop
-        {
-            f.ei.ctrl_c = false;
+            f.e0.ctrl_c = false;
 
             print_err(E_XAB);           // Execution aborted
         }
@@ -177,42 +158,28 @@ void exec_cmd(void)
 
 
 ///
-///  @brief    Process ESCape which terminates a command string.
+///  @brief    Execute ESCape command. Note that we're called here only for
+///            escape characters between commands, or at the end of command
+///            strings, not for escapes used to delimit commands (such as is
+///            the case for a command such as ^Ahello, world!<ESC>).
 ///
-///  @returns  true if double escape seen, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool exec_escape(void)
+void exec_escape(struct cmd *unused1)
 {
     int n;
 
     (void)pop_expr(&n);
     (void)pop_expr(&n);
-
-    if (nescapes < 2)
-    {
-        return false;
-    }
-
-    nescapes = 0;
-
-    //  If we're in strict mode, and a command ended while we were in
-    //  the middle of a conditional statement, then issue an error.
-
-    if (f.ei.strict && test_if())
-    {
-        print_err(E_UTQ);           // Unterminated quote command
-    }
-
-    return true;
 }
 
 
 ///
-///  @brief    Get next command.
+///  @brief    Get next command. This 
 ///
-///  @returns  Command block with options.
+///  @returns  Command block with options, or NULL if at end of command string.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -221,28 +188,34 @@ exec_func *next_cmd(struct cmd *cmd)
     assert(cmd != NULL);
 
     *cmd = null_cmd;
-    reset_scan(SCAN_EXPR);
+    reset_scan();
     init_expr();                        // Reset expression stack
     last_chr = next_buf();
 
-    exec_func *exec = NULL;
-
     // Keep reading characters until we have a full command.
 
-    do
-    {
-        int c = (char)fetch_buf();      // Get next command string character
+    bool start = CMD_START;
+    exec_func *exec;
+    int c;
 
-        if (c < 0 || c >= (int)cmd_count)
+    for (;;)
+    {
+        if ((c = fetch_buf(start)) == EOF)
+        {
+            return NULL;                // NULL means command is done
+        }
+        else if (c < 0 || c >= (int)cmd_count)
         {
             printc_err(E_ILL, c);       // Illegal character
         }
 
         cmd->c1 = (char)c;
 
-        exec = scan_pass1(cmd);
+        if ((exec = scan_pass1(cmd)) != NULL)
+        {
+            return exec;
+        }
 
-    } while (exec == NULL && cmd->c1 != ESC);
-
-    return exec;
+        start = NOCMD_START;
+    }
 }
