@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -174,7 +175,7 @@ void exec_quote(struct cmd *cmd)
             break;
 
         case 'C':                       // Test for symbol constituent
-            if (isalnum(c) || c == '.' || c == '_' || (f.e0.dollar && c == '$'))
+            if (isalnum(c) || c == '.' || c == '_' || (f.e1.dollar && c == '$'))
             {
                 return;
             }

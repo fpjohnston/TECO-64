@@ -178,8 +178,6 @@ void reset_scan(void)
     scan.nparens     = 0;
     scan.sum         = 0;
     scan.digits      = false;
-    scan.brace_set   = false;
-    scan.brace_opt   = false;
     scan.expr        = false;
     scan.mod         = false;
     scan.space       = false;
@@ -222,7 +220,7 @@ void scan_mod(struct cmd *cmd)
 
     if (cmd->c1 == '@')
     {
-        if (f.e0.strict && cmd->atsign_set)
+        if (f.e1.strict && cmd->atsign_set)
         {
             print_err(E_MOD);           // Two @'s are not allowed
         }
@@ -231,7 +229,7 @@ void scan_mod(struct cmd *cmd)
     }
     else if (cmd->c1 == ':')
     {
-        if (f.e0.strict && cmd->dcolon_set)
+        if (f.e1.strict && cmd->dcolon_set)
         {
             print_err(E_MOD);           // More than two :'s are not allowed
         }
@@ -266,16 +264,11 @@ void scan_operator(struct cmd *cmd)
 
     int value = 1;                      // 1 = parenthesis, 2 = operator
 
-    if (cmd->c1 == '(' || cmd->c1 == '{')
+    if (cmd->c1 == '(')
     {
         ++scan.nparens;
-
-        if (cmd->c1 == '{')
-        {
-            scan.brace_set = true;
-        }
     }
-    else if (cmd->c1 == ')' || cmd->c1 == '}')
+    else if (cmd->c1 == ')')
     {
         if (scan.nparens == 0)          // Can't have ) without (
         {
@@ -287,10 +280,7 @@ void scan_operator(struct cmd *cmd)
         }
         else
         {
-            if (--scan.nparens == 0)
-            {
-                scan.brace_set = false;
-            }
+            --scan.nparens;
         }
     }
     else
@@ -353,17 +343,7 @@ exec_func *scan_pass1(struct cmd *cmd)
         return NULL;
     }
 
-    void (*temp_func)(struct cmd *cmd) = table->scan;
-
-    if (f.e0.brace)                     // Are braced expresions okay?
-    {
-        if (cmd->c1 == '{' || (scan.brace_set && scan.brace_opt))
-        {
-            temp_func = scan_operator;
-        }
-    }
-
-// Command modifiers cannot occur in the middle of expressions
+    // Command modifiers cannot occur in the middle of expressions
 
     if (scan.expr && scan.mod)
     {
@@ -403,9 +383,9 @@ exec_func *scan_pass1(struct cmd *cmd)
 
     cmd_expr = false;
 
-    if (temp_func != NULL)              // If we have anything to scan,
+    if (table->scan != NULL)
     {
-        (*temp_func)(cmd);              //  then scan it
+        (*table->scan)(cmd);            //  then scan it
     }
 
     // See if we need to set the expression string for the command.
@@ -439,7 +419,7 @@ void scan_tail(struct cmd *cmd)
     {
         print_err(E_MRP);               // Missing right parenthesis
     }
-    else if (f.e0.strict)
+    else if (f.e1.strict)
     {
         if (   (cmd->colon_set  && !scan.colon_opt )
             || (cmd->dcolon_set && !scan.dcolon_opt)
@@ -577,7 +557,6 @@ static void set_opts(struct cmd *cmd, const char *opts)
     int c;
 
     scan.expr       = false;
-    scan.brace_opt  = false;
     scan.m_opt      = false;
     scan.n_opt      = false;
     scan.colon_opt  = false;
@@ -592,11 +571,6 @@ static void set_opts(struct cmd *cmd, const char *opts)
     {
         switch (c)
         {
-            case 'b':
-                scan.brace_opt = true;
-
-                break;
-
             case 'x':
                 scan.expr = true;
 

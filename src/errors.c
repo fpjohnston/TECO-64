@@ -56,6 +56,7 @@ static struct err_table err_table[] =
     [E_NUL] = { "---",  "Unknown error code" },
     [E_ARG] = { "ARG",  "Improper arguments" },
     [E_BNI] = { "BNI",  "> not in iteration" },
+    [E_BRC] = { "BRC",  "Invalid braced expression" },
     [E_CCL] = { "CCL",  "CCV.SV not found or EG argument too long" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
     [E_CON] = { "CON",  "Confused use of conditionals" },
@@ -147,6 +148,8 @@ static const char *verbose[] =
               "angle bracket somewhere to its left. (Note: an "
               "iteration in a macro stored in a Q-register must be "
               "complete within the Q-register.)",
+
+    [E_BRC] = "TODO: fill this in",
 
     [E_CCL] = NULL,
 

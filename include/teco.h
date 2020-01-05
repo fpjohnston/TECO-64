@@ -71,16 +71,28 @@ enum
 
 enum expr_type
 {
-    EXPR_VALUE = '0',
-    EXPR_NOT   = '\x1F',                // ^^ (CTRL/^) = ASCII RS
-    EXPR_OR    = '#',
-    EXPR_AND   = '&',
-    EXPR_LEFT  = '(',
-    EXPR_RIGHT = ')',
-    EXPR_MUL   = '*',
-    EXPR_PLUS  = '+',
-    EXPR_MINUS = '-',
-    EXPR_DIV   = '/'
+    EXPR_NONE   = 0,
+    EXPR_VALUE  = '0',
+    EXPR_COMP   = '\x1F',                // ^^ (CTRL/^) = ASCII RS
+    EXPR_OR     = '#',
+    EXPR_AND    = '&',
+    EXPR_OPEN   = '(',
+    EXPR_CLOSE  = ')',
+    EXPR_MUL    = '*',
+    EXPR_PLUS   = '+',
+    EXPR_MINUS  = '-',
+    EXPR_DIV    = '/',
+    EXPR_XOR    = '^',
+    EXPR_REM    = '%',
+    EXPR_NOT    = '~',
+    EXPR_LT     = '<',
+    EXPR_GT     = '>',
+    EXPR_EQ     = '=',
+    EXPR_NE     = '!',
+    EXPR_LE     = 'L',
+    EXPR_GE     = 'G',
+    EXPR_LEFT   = 'S',
+    EXPR_RIGHT  = 'U'
 };
 
 ///  @struct e_obj

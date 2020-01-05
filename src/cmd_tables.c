@@ -113,13 +113,13 @@ const struct cmd_table cmd_table[] =
     ['\x1E']      = { NULL,           NULL,             ""             }, // return value
     ['\x1F']      = { scan_operator,  NULL,             "x"            }, // expression command
     [SPACE]       = { NULL,           NULL,             ""             }, // ignore value
-    ['!']         = { NULL,           exec_bang,        "b @ 1"        }, // prohibited value?
+    ['!']         = { NULL,           exec_bang,        "@ 1"          }, // prohibited value?
     ['"']         = { NULL,           exec_quote,       "n"            }, // required value
     ['#']         = { scan_operator,  NULL,             "x"            }, // expression command
     ['$']         = { scan_bad,       NULL,             ""             },
     ['%']         = { scan_pct,       NULL,             "n x q"        }, // allow & return value
     ['&']         = { scan_operator,  NULL,             "x"            }, // expression command
-    ['\'']        = { NULL,           exec_apos,        "b"            }, // consume value
+    ['\'']        = { NULL,           exec_apos,        ""             }, // consume value
     ['(']         = { scan_operator,  NULL,             "x"            }, // expression command
     [')']         = { scan_operator,  NULL,             "x"            }, // expression command
     ['*']         = { scan_operator,  NULL,             "x"            }, // expression command
@@ -140,9 +140,9 @@ const struct cmd_table cmd_table[] =
     ['9']         = { scan_digit,     NULL,             "x"            }, // return value
     [':']         = { scan_mod,       NULL,             ""             }, // command modifier
     [';']         = { NULL,           exec_semi,        "n :"          }, // allow value
-    ['<']         = { NULL,           exec_lt,          "b n"          }, // allow value
-    ['=']         = { NULL,           exec_equals,      "b n :"        }, // require value
-    ['>']         = { NULL,           exec_gt,          "b "           }, // consume value
+    ['<']         = { NULL,           exec_lt,          "n"            }, // allow value
+    ['=']         = { NULL,           exec_equals,      "n :"          }, // require value
+    ['>']         = { NULL,           exec_gt,          ""             }, // consume value
     ['?']         = { NULL,           exec_question,    "i"            }, // consume value
     ['@']         = { scan_mod,       NULL,             ""             }, // command modifier
     ['A']         = { scan_A,         NULL,             "n x :"        }, // allow value
@@ -203,10 +203,10 @@ const struct cmd_table cmd_table[] =
     ['x']         = { NULL,           NULL,             ""             },
     ['y']         = { NULL,           NULL,             ""             },
     ['z']         = { NULL,           NULL,             ""             },
-    ['{']         = { scan_bad,       NULL,             "b"            },
+    ['{']         = { scan_brace,     NULL,             ""             },
     ['|']         = { NULL,           exec_vbar,        ""             }, // consume value
-    ['}']         = { scan_bad,       NULL,             "b"            },
-    ['~']         = { scan_bad,       NULL,             "b"            },
+    ['}']         = { scan_bad,       NULL,             ""             },
+    ['~']         = { scan_tilde,     NULL,             ""             },
     [DEL]         = { scan_bad,       NULL,             ""             },
 };
 
@@ -219,7 +219,7 @@ const uint cmd_count = countof(cmd_table); ///< No. of items in cmd_table[]
 const struct cmd_table cmd_e_table[] =
 {
     { NULL,       exec_E_pct,   ": @ q 1" },
-    { scan_E0,    NULL,         "m,n x"   }, // allow or return value
+    { NULL,       NULL,         ""        }, // allow or return value
     { scan_E1,    NULL,         "n x"     }, // allow or return value
     { NULL,       NULL,         "n x"     }, // allow or return value
     { NULL,       NULL,         "n x"     }, // allow or return value

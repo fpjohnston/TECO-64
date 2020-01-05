@@ -44,8 +44,6 @@ struct scan
     uint nparens;                   ///< No. of unmatched left parentheses
     int sum;                        ///< Accumulated sum of digits scanned
     bool digits;                    ///< Accumulated sum is valid
-    bool brace_set;                 ///< Left brace found
-    bool brace_opt;                 ///< Brace expression character found
     bool expr;                      ///< Current command is part of expression
     bool mod;                       ///< Command modifier seen
     bool space;                     ///< Last chr. scanned was whitespace
@@ -286,6 +284,8 @@ extern void scan_bad(struct cmd *cmd);
 
 extern void scan_back(struct cmd *cmd);
 
+extern void scan_brace(struct cmd *cmd);
+
 extern void scan_comma(struct cmd *cmd);
 
 extern void scan_ctrl_b(struct cmd *cmd);
@@ -315,8 +315,6 @@ extern void scan_ctrl_z(struct cmd *cmd);
 extern void scan_digit(struct cmd *cmd);
 
 extern void scan_dot(struct cmd *cmd);
-
-extern void scan_E0(struct cmd *cmd);
 
 extern void scan_E1(struct cmd *cmd);
 
@@ -353,6 +351,8 @@ extern void scan_pct(struct cmd *cmd);
 extern void scan_Q(struct cmd *cmd);
 
 extern void scan_tail(struct cmd *cmd);
+
+extern void scan_tilde(struct cmd *cmd);
 
 extern void scan_W(struct cmd *cmd);
 

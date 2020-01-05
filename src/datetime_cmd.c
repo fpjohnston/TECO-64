@@ -88,11 +88,7 @@ void scan_ctrl_h(struct cmd *cmd)
     teco_time *= SECONDS_PER_MINUTE;
     teco_time += tm.tm_sec;
 
-    if (f.e1 == 0)
-    {
-        teco_time /= 2;
-    }
-    else
+    if (f.e1.msec)                      // Return time in milliseconds?
     {
         struct timeval tv;
 
@@ -103,6 +99,10 @@ void scan_ctrl_h(struct cmd *cmd)
 
         teco_time *= 1000;
         teco_time += (int)(tv.tv_usec / 1000);
+    }
+    else                                // RT-11, RSX-11, and VMS format
+    {
+        teco_time /= 2;                 // (seconds since midnight) / 2
     }
 
     push_expr(teco_time, EXPR_VALUE);

@@ -199,27 +199,41 @@ static bool reduce2(void)
 
     // The following prevents double operators in expressions such as 1++2.
 
-    if (f.e0.strict)
+    if (f.e1.strict)
     {
-        if (e1->type != EXPR_VALUE && e1->value == 2 &&
-            e2->type != EXPR_VALUE && e2->value == 2)
+        if (e1->type == EXPR_NOT)
         {
-            print_err(E_IFE);               // Ill-formed numeric expression
+            if (e2->type == EXPR_VALUE)
+            {
+                print_err(E_IFE);       // Ill-formed numeric expression
+            }
+        }
+        else if (e1->type != EXPR_VALUE && e1->value == 2 &&
+                 e2->type != EXPR_VALUE && e2->value == 2)
+        {
+            print_err(E_IFE);           // Ill-formed numeric expression
         }
     }    
 
     if (e1->type == EXPR_VALUE && e2->type != EXPR_VALUE)
     {
-        if (e2->type == '+')
+        if (e2->type == EXPR_PLUS)
         {
             e2->value = e1->value;
             e2->type = EXPR_VALUE;
 
             --estack.level;
         }
-        else if (e2->type == '-')
+        else if (e2->type == EXPR_MINUS)
         {
             e2->value = -e1->value;
+            e2->type = EXPR_VALUE;
+
+            --estack.level;
+        }
+        else if (e2->type == EXPR_NOT)
+        {
+            e2->value = !e1->value ? -1 : 0;
             e2->type = EXPR_VALUE;
 
             --estack.level;
@@ -282,25 +296,25 @@ static bool reduce3(void)
     
     switch ((int)e2->type)
     {
-        case '+':
+        case EXPR_PLUS:
             e3->value += e1->value;
 
             break;
 
-        case '-':
+        case EXPR_MINUS:
             e3->value -= e1->value;
 
             break;
 
-        case '*':
+        case EXPR_MUL:
             e3->value *= e1->value;
 
             break;
 
-        case '/':
+        case EXPR_DIV:
             if (e1->value == 0)
             {
-                if (f.e0.strict)
+                if (f.e1.strict)
                 {
                     print_err(E_DIV);   // Division by zero
                 }
@@ -314,13 +328,61 @@ static bool reduce3(void)
 
             break;
 
-        case '&':
+        case EXPR_AND:
             e3->value &= e1->value;
 
             break;
 
-        case '#':
+        case EXPR_OR:
             e3->value |= e1->value;
+
+            break;
+
+        case EXPR_XOR:
+            e3->value ^= e1->value;
+            break;
+
+        case EXPR_REM:
+            e3->value %= e1->value;
+            break;
+
+        case EXPR_EQ:
+            e3->value = (e3->value == e1->value) ? -1 : 0;
+
+            break;
+
+        case EXPR_NE:
+            e3->value = (e3->value != e1->value) ? -1 : 0;
+
+            break;
+
+        case EXPR_LT:
+            e3->value = (e3->value < e1->value) ? -1 : 0;
+
+            break;
+
+        case EXPR_LE:
+            e3->value = (e3->value <= e1->value) ? -1 : 0;
+
+            break;
+
+        case EXPR_GT:
+            e3->value = (e3->value > e1->value) ? -1 : 0;
+
+            break;
+
+        case EXPR_GE:
+            e3->value = (e3->value >= e1->value) ? -1 : 0;
+
+            break;
+
+        case EXPR_LEFT:
+            e3->value = (int)((uint)e3->value << e1->value);
+
+            break;
+
+        case EXPR_RIGHT:
+            e3->value = (int)((uint)e3->value >> e1->value);
 
             break;
 

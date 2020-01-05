@@ -109,7 +109,7 @@ bool append_line(void)
  
     while ((c = fgetc(ifile->fp)) != EOF)
     {
-        if (c == FF && !f.e0.no_ff)     // If form feed, don't store it
+        if (c == FF && !f.e1.no_ff)     // If form feed, don't store it
         {
             v.ff = true;                // But do flag it
 

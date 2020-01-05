@@ -37,20 +37,29 @@
 ///  @brief   Definition of flags are used internally, and which cannot be read
 ///           or set by the user.
 
-union e0_flag
+struct e0_flag
 {
-    uint flag;                  ///< Entire E0 flag
+    uint exec   : 1;            ///< Executing command
+    uint ctrl_c : 1;            ///< CTRL/C seen
+};
+
+///  @struct  e1_flag
+///  @brief   Definition of extended flags.
+
+union e1_flag
+{
+    uint flag;                  ///< Entire E1 flag
 
     struct
     {
         uint strict : 1;        ///< Strictly enforce command syntax
-        uint brace  : 1;        ///< Allow braced expressions
+        uint brace  : 1;        ///< Enable braced expressions
+        uint tilde  : 1;        ///< Enable tilde commands
+        uint msec   : 1;        ///< Return millisecond time for CTRL/H
         uint dollar : 1;        ///< $ is a valid symbol character
         uint add_cr : 1;        ///< Add CR to LF on output
         uint no_cr  : 1;        ///< Strip CR on input
         uint no_ff  : 1;        ///< FF is normal character on input
-        uint exec   : 1;        ///< Executing command
-        uint ctrl_c : 1;        ///< CTRL/C seen
     };
 };
 
@@ -66,7 +75,7 @@ union ed_flag
         uint caret     : 1;     ///< Allow caret (^) in search strings
         uint yank      : 1;     ///< Allow all Y and _ commands
         uint memory    : 1;     ///< Expand memory as much as possible
-        uint           : 1;     ///< (reserved for TECO-8)
+        uint           : 1;     ///< (unused)
         uint keepdot   : 1;     ///< Preserve dot if search fails
         uint escape    : 1;     ///< Enable immediate escape-sequence commands
         uint movedot   : 1;     ///< Move dot by one on multiple occurrence searches
@@ -108,7 +117,7 @@ union et_flag
         uint truncate : 1;      ///< Truncate output lines to terminal width
         uint scope    : 1;      ///< Terminal is a scope type
         uint rscope   : 1;      ///< Terminal is a refresh scope
-        uint          : 1;      ///< (reserved for TECO-8)
+        uint          : 1;      ///< (unused)
         uint eightbit : 1;      ///< Can handle 8-bit characters
         uint accent   : 1;      ///< Accent grave is ESCAPE surrogate
         uint vt200    : 1;      ///< Special VT200 mode
@@ -148,18 +157,18 @@ union ez_flag
 
 struct flags
 {
-    union e0_flag e0;           ///< Internal flags
-    int           e1;           ///< Time format flag
-    union ed_flag ed;           ///< Edit level flags
-    int           ee;           ///< ESCape surrogate
-    union eh_flag eh;           ///< Help message flags
-    int           ej;           ///< Operating system type
-    int           eo;           ///< TECO version number
-    int           es;           ///< Search verification flag
-    union et_flag et;           ///< Terminal flags
-    int           eu;           ///< Upper/lower case flag
-    int           ev;           ///< Edit verify flag
-    union ez_flag ez;           ///< Additional external flags
+    struct e0_flag e0;          ///< Internal flags (not settable by user)
+    union  e1_flag e1;          ///< Extended flags
+    union  ed_flag ed;          ///< Edit level flags
+    int            ee;          ///< ESCape surrogate
+    union  eh_flag eh;          ///< Help message flags
+    int            ej;          ///< Operating system type
+    int            eo;          ///< TECO version number
+    int            es;          ///< Search verification flag
+    union  et_flag et;          ///< Terminal flags
+    int            eu;          ///< Upper/lower case flag
+    int            ev;          ///< Edit verify flag
+    union  ez_flag ez;          ///< Additional external flags
 };
 
 ///  @var    f

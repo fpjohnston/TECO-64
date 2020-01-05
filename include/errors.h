@@ -41,6 +41,7 @@ enum errors
     E_NUL,          ///< No error
     E_ARG,          ///< Improper arguments
     E_BNI,          ///< >not in iteration
+    E_BRC,          ///< Invalid braced expression
     E_CCL,          ///< CCV.SV not found or EG argument too long
     E_CHR,          ///< Invalid character for command
     E_CON,          ///< Confused use of conditionals

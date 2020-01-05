@@ -166,7 +166,7 @@ void scan_ctrl_f(struct cmd *cmd)
 
     if (pop_expr(&cmd->n_arg))          // n^F specified?
     {
-        if (f.e0.strict)
+        if (f.e1.strict)
         {
             print_err(E_T10);           // TECO-10 command not implemented.
         }
@@ -208,35 +208,17 @@ void scan_ctrl_x(struct cmd *unused1)
 
 
 ///
-///  @brief    Scan E0 command: set internal flags.
+///  @brief    Scan E1 command: set extended flags.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_E0(struct cmd *cmd)
+void scan_E1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    (void)check_mn_flag(cmd, &f.e0.flag);
-}
-
-
-///
-///  @brief    Scan E1 command: set format for CTRL/H (^H) value.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_E1(struct cmd *unused1)
-{
-    (void)check_n_flag(&f.e1);
-
-    if (f.e1 != 0)
-    {
-        f.e1 = -1;
-    }
+    (void)check_mn_flag(cmd, &f.e1.flag);
 }
 
 

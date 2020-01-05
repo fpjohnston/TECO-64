@@ -3,7 +3,11 @@
 !   ^B == ((year-1900)*16+month)*32+day                 !
 !   ^H == (milliseconds since midnight)                 !
 
-
+EO-200"L
+    @^A/%Macro requires TECO v200 or later/
+    13^T 10^T
+    ^C
+'
 
 [X[T[M[D[Y[W[H[M[S[0[1 ! save used Q-reg's               !
 
@@ -57,7 +61,7 @@ QM-12"= @^UM%December%  ''''''''''''
 
                       ! Get HH:MM:SS in Q-reg's H,N,S   !
 ^H UT                 ! T.num = returned time           !
-E1"= QT*2    U0 |     ! 0.num = seconds since midnight  !
+E1&128"E QT*2 U0 |    ! 0.num = seconds since midnight  !
      QT/1000 U0 
      QT-(Q0*1000) UX' ! X.num = milliseconds            !
 Q0/3600         UH    ! H.num = hours                   !
@@ -90,7 +94,7 @@ QN:=                  ! display MM                      !
 QS-10"< ^^0 ^T '      ! display leading zero?           !
 QS:=                  ! display SS                      !
 
-E1"<                  ! Display milliseconds (maybe)    !
+E1&128"N              ! Display milliseconds (maybe)    !
     ^^. ^T            ! display period                  !
     QX-100"< ^^0 ^T ' ! display leading zero?           !
     QX-10"< ^^0 ^T '  ! display leading zero?           !

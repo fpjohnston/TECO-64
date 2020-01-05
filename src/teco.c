@@ -137,7 +137,10 @@ int main(int argc, const char * const argv[])
     init_EG();                          // Initialize for EG command
     init_loop();                        // Initialie for loops
 
-    f.e0.strict = true;                 // TODO: temporary
+    f.e1.strict = true;
+    f.e1.brace  = true;
+    f.e1.tilde  = true;
+    f.e1.msec   = true;
 
     for (;;)                            // Loop forever
     {

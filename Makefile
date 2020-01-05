@@ -94,6 +94,7 @@ SOURCES = \
                    \
     a_cmd.c        \
     back_cmd.c     \
+    brace_cmd.c    \
     bracket_cmd.c  \
     comma_cmd.c    \
     ctrl_a_cmd.c   \
@@ -143,6 +144,7 @@ SOURCES = \
     quest_cmd.c    \
     radix_cmd.c    \
     s_cmd.c        \
+    tilde_cmd.c    \
     type_cmd.c     \
     u_cmd.c        \
     value_cmd.c    \
