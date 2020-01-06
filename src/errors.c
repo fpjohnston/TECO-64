@@ -89,6 +89,7 @@ static struct err_table err_table[] =
     [E_MEM] = { "MEM",  "Memory overflow" },
     [E_MLA] = { "MLA",  "Missing left angle bracket" },
     [E_MLP] = { "MLP",  "Missing (" },
+    [E_MNA] = { "MNA",  "Missing n argument" },
     [E_MOD] = { "MOD",  "Invalid command modifier" },
     [E_MRA] = { "MRA",  "Missing right angle bracket" },
     [E_MRP] = { "MRP",  "Missing )" },
@@ -125,6 +126,8 @@ static struct err_table err_table[] =
     [E_UCO] = { "UCO",  "Unable to close output file" },
     [E_UFI] = { "UFI",  "Unable to open file \"%s\" for input" },
     [E_UFO] = { "UFO",  "Unable to open file \"%s\" for output" },
+    [E_UMA] = { "UMA",  "Useless m argument" },
+    [E_UNA] = { "UNA",  "Useless n argument" },
     [E_URC] = { "URC",  "Unable to read character from terminal" },
     [E_URE] = { "URE",  "Unable to read TECO command file" },
     [E_URL] = { "URL",  "Unable to read line from input file" },
@@ -248,6 +251,8 @@ static const char *verbose[] =
     [E_MLP] = "There is a right parenthesis trhat is not matched by a "
               "corresponding left parenthesis.",
 
+    [E_MNA] = "An m argument was not followed by an n argument.",
+
     [E_MOD] = "A modifier (:, ::, or @) was specified that was invalid "
               "for a command, occurred in the middle of an expression, "
               "or duplicated another modifier.",
@@ -357,6 +362,10 @@ static const char *verbose[] =
     [E_T10] = "A TECO-10 command cannot be or has not been implemented.",
 
     [E_T32] = "A TECO-32 command cannot be or has not been implemented.",
+
+    [E_UMA] = "An m argument was provided to a command which does not allow it.",
+
+    [E_UNA] = "An n argument was provided to a command which does not allow it.",
 
     [E_UTC] = "This is a general error which is usually caused by an "
               "unterminated insert, search, or filename argument, an "

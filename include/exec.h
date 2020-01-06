@@ -86,11 +86,6 @@ struct cmd
     struct tstring text2;           ///< 2nd text string
 };
 
-///  @typedef  scan_func
-///  @brief   Function to scan command.
-
-typedef void (scan_func)(struct cmd *cmd);
-
 ///  @typedef exec_func
 ///  @brief   Function to execute command.
 
@@ -101,7 +96,6 @@ typedef void (exec_func)(struct cmd *cmd);
 
 struct cmd_table
 {
-    scan_func *scan;                ///< Scan function
     exec_func *exec;                ///< Execution function
     const char *opts;               ///< Command modifiers and options
 };
@@ -186,6 +180,8 @@ extern void exec_ctrl_v(struct cmd *cmd);
 
 extern void exec_ctrl_w(struct cmd *cmd);
 
+extern void exec_dummy(struct cmd *cmd);
+
 extern void exec_equals(struct cmd *cmd);
 
 extern void exec_escape(struct cmd *cmd);
@@ -195,6 +191,8 @@ extern void exec_insert(const char *buf, uint len);
 extern void exec_lt(struct cmd *cmd);
 
 extern void exec_lbracket(struct cmd *cmd);
+
+extern void exec_mod(struct cmd *cmd);
 
 extern void exec_question(struct cmd *cmd);
 
@@ -276,87 +274,89 @@ extern void exec_F_vbar(struct cmd *cmd);
 
 // Functions that may be part of an expression
 
-extern void scan_A(struct cmd *cmd);
+extern void exec_A(struct cmd *cmd);
 
-extern void scan_B(struct cmd *cmd);
+extern void exec_B(struct cmd *cmd);
 
-extern void scan_bad(struct cmd *cmd);
+extern void exec_bad(struct cmd *cmd);
 
-extern void scan_back(struct cmd *cmd);
+extern void exec_back(struct cmd *cmd);
 
-extern void scan_brace(struct cmd *cmd);
+extern void exec_brace(struct cmd *cmd);
 
-extern void scan_comma(struct cmd *cmd);
+extern void exec_comma(struct cmd *cmd);
 
-extern void scan_ctrl_b(struct cmd *cmd);
+extern void exec_ctrl_b(struct cmd *cmd);
 
-extern void scan_ctrl_e(struct cmd *cmd);
+extern void exec_ctrl_e(struct cmd *cmd);
 
-extern void scan_ctrl_f(struct cmd *cmd);
+extern void exec_ctrl_f(struct cmd *cmd);
 
-extern void scan_ctrl_h(struct cmd *cmd);
+extern void exec_ctrl_h(struct cmd *cmd);
 
-extern void scan_ctrl_n(struct cmd *cmd);
+extern void exec_ctrl_n(struct cmd *cmd);
 
-extern void scan_ctrl_q(struct cmd *cmd);
+extern void exec_ctrl_q(struct cmd *cmd);
 
-extern void scan_ctrl_r(struct cmd *cmd);
+extern void exec_ctrl_r(struct cmd *cmd);
 
-extern void scan_ctrl_s(struct cmd *cmd);
+extern void exec_ctrl_s(struct cmd *cmd);
 
-extern void scan_ctrl_t(struct cmd *cmd);
+extern void exec_ctrl_t(struct cmd *cmd);
 
-extern void scan_ctrl_x(struct cmd *cmd);
+extern void exec_ctrl_x(struct cmd *cmd);
 
-extern void scan_ctrl_y(struct cmd *cmd);
+extern void exec_ctrl_y(struct cmd *cmd);
 
-extern void scan_ctrl_z(struct cmd *cmd);
+extern void exec_ctrl_z(struct cmd *cmd);
 
-extern void scan_digit(struct cmd *cmd);
+extern void exec_digit(struct cmd *cmd);
 
-extern void scan_dot(struct cmd *cmd);
+extern void exec_dot(struct cmd *cmd);
 
-extern void scan_E1(struct cmd *cmd);
+extern void exec_E1(struct cmd *cmd);
 
-extern void scan_ED(struct cmd *cmd);
+extern void exec_E2(struct cmd *cmd);
 
-extern void scan_EE(struct cmd *cmd);
+extern void exec_E3(struct cmd *cmd);
 
-extern void scan_EH(struct cmd *cmd);
+extern void exec_E4(struct cmd *cmd);
 
-extern void scan_EJ(struct cmd *cmd);
+extern void exec_E5(struct cmd *cmd);
 
-extern void scan_EO(struct cmd *cmd);
+extern void exec_ED(struct cmd *cmd);
 
-extern void scan_ES(struct cmd *cmd);
+extern void exec_EE(struct cmd *cmd);
 
-extern void scan_ET(struct cmd *cmd);
+extern void exec_EH(struct cmd *cmd);
 
-extern void scan_EU(struct cmd *cmd);
+extern void exec_EJ(struct cmd *cmd);
 
-extern void scan_EV(struct cmd *cmd);
+extern void exec_EO(struct cmd *cmd);
 
-extern void scan_EZ(struct cmd *cmd);
+extern void exec_ES(struct cmd *cmd);
 
-extern void scan_H(struct cmd *cmd);
+extern void exec_ET(struct cmd *cmd);
 
-extern void scan_mod(struct cmd *cmd);
+extern void exec_EU(struct cmd *cmd);
 
-extern void scan_operator(struct cmd *cmd);
+extern void exec_EV(struct cmd *cmd);
 
-extern exec_func *scan_pass1(struct cmd *cmd);
+extern void exec_EZ(struct cmd *cmd);
 
-extern void scan_pct(struct cmd *cmd);
+extern void exec_H(struct cmd *cmd);
 
-extern void scan_Q(struct cmd *cmd);
+extern void exec_operator(struct cmd *cmd);
 
-extern void scan_tail(struct cmd *cmd);
+extern void exec_pct(struct cmd *cmd);
 
-extern void scan_tilde(struct cmd *cmd);
+extern void exec_Q(struct cmd *cmd);
 
-extern void scan_W(struct cmd *cmd);
+extern void exec_tilde(struct cmd *cmd);
 
-extern void scan_Z(struct cmd *cmd);
+extern void exec_W(struct cmd *cmd);
+
+extern void exec_Z(struct cmd *cmd);
 
 // Miscellaneous functions
 
@@ -385,6 +385,10 @@ extern bool read_indirect(void);
 extern void reset_loop(void);
 
 extern void reset_scan(void);
+
+extern exec_func *scan_cmd(struct cmd *cmd);
+
+extern void scan_tail(struct cmd *cmd);
 
 extern bool test_indirect(void);
 

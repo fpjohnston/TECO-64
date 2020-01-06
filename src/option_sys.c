@@ -33,6 +33,8 @@
 #include <string.h>
 
 #include "teco.h"
+#include "eflags.h"
+
 
 ///  @enum     option_t
 ///  case values for command-line options.
@@ -94,7 +96,7 @@ void set_config(
         {
             case OPTION_d:
                 printf("[Debugging mode on]\n");
-                teco_debug = true;
+                f.e1.noexec = true;
 
                 break;
 

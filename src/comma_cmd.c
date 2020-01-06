@@ -29,6 +29,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -40,7 +41,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_comma(struct cmd *cmd)
+void exec_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -56,7 +57,12 @@ void scan_comma(struct cmd *cmd)
 
     if (!pop_expr(&cmd->m_arg))         // Any n argument specified?
     {
-        print_err(E_NAC);               // No argument before ,
+        if (f.e1.strict)                // No -- should we issue error?
+        {
+            print_err(E_NAC);           // No argument before ,
+        }
+
+        return;
     }
 
     // If we've seen a comma, then what's on the expression is an "m" argument,

@@ -74,6 +74,7 @@ enum errors
     E_MEM,          ///< Memory overflow
     E_MLA,          ///< Missing left angle bracket
     E_MLP,          ///< Missing (
+    E_MNA,          ///< Missing n argument
     E_MOD,          ///< Invalid modifier
     E_MRA,          ///< Missing right angle bracket
     E_MRP,          ///< Missing )
@@ -111,6 +112,8 @@ enum errors
     E_UFI,          ///< Unable to open file "x" for input
     E_UFO,          ///< Unable to open file "x" for output
     E_UIT,          ///< Unable to initialize terminal
+    E_UMA,          ///< Useless m argument
+    E_UNA,          ///< Useless n argument
     E_URC,          ///< Unable to read character from terminal
     E_URE,          ///< Unable to read TECO command file
     E_URL,          ///< Unable to read line from input file

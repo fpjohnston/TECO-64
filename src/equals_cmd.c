@@ -31,6 +31,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -52,6 +53,11 @@
 void exec_equals(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (f.e1.strict || scan.dryrun)
+    {
+        return;
+    }
 
     if (!cmd->n_set)                    // If no operand, then complain
     {

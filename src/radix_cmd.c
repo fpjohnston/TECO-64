@@ -77,7 +77,7 @@ void exec_ctrl_o(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_r(struct cmd *cmd)
+void exec_ctrl_r(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

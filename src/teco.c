@@ -111,8 +111,6 @@ int teco_version = TECO_VERSION;    ///< TECO version number (200+)
 
 jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
-bool teco_debug = false;            ///< true if debugging features enabled
-
 const char *mung_file = NULL;       ///< Name of file to MUNG
 
 
@@ -137,10 +135,10 @@ int main(int argc, const char * const argv[])
     init_EG();                          // Initialize for EG command
     init_loop();                        // Initialie for loops
 
-    f.e1.strict = true;
-    f.e1.brace  = true;
-    f.e1.tilde  = true;
-    f.e1.msec   = true;
+    f.e1.strict = true;                 // Strictly enforce syntax
+    f.e3.brace  = true;                 // Allow braced expressions
+    f.e3.tilde  = true;                 // Allow tilde operator
+    f.e3.msec   = true;                 // Return time in milliseconds
 
     for (;;)                            // Loop forever
     {

@@ -204,14 +204,6 @@ CFLAGS += -MMD -c $(INCLUDES) $(OPT_OPT) $(DFLAGS)
 
 LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt -e786 -e818 -e830 +fan +fas
 
-%.lob: %.c
-	@echo Making $@ $(NULL)
-	$(AT)chdir src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
-
-%.o: %.c
-	@echo Making $@ $(NULL)
-	$(AT)chdir obj && $(CC) @../CFLAGS ../$<
-
 .PHONY: default 
 default: $(TARGET)
 
@@ -253,7 +245,19 @@ bin/$(TARGET): $(OBJECTS)
 	@echo Making $(@F) $(NULL)
 	$(AT)chdir obj && $(CC) -Xlinker -Map=../$@.map $(DFLAGS) -o ../$@ $(OBJECTS) $(LIBS) -lncurses
 
--include $(DFILES) 
+%.lob: %.c
+	@echo Making $@ $(NULL)
+	$(AT)chdir src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
+
+#%.d: %.c CFLAGS
+#	@echo Making $@ $(NULL)
+#	$(AT)chdir obj && $(CC) @../CFLAGS ../$<
+
+%.o: %.c
+	@echo Making $@ $(NULL)
+	$(AT)chdir obj && $(CC) @../CFLAGS ../$<
+
+-include $(DFILES)
 
 $(OBJECTS): CFLAGS
 

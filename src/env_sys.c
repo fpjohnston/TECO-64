@@ -29,6 +29,7 @@
 #include <unistd.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "exec.h"
 
 
@@ -79,7 +80,7 @@ void init_env(int argc, const char * const argv[])
 
     if (getenv("TECO_DEBUG") != NULL)
     {
-        teco_debug = true;
+        f.e1.noexec = true;
     }
 }
 

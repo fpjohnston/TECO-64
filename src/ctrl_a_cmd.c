@@ -30,6 +30,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "exec.h"
 
 
@@ -44,6 +45,11 @@ void exec_ctrl_a(struct cmd *cmd)
 {
     assert(cmd != NULL);
     assert(cmd->text1.buf != NULL);
-    
+
+    if (f.e1.noexec || scan.dryrun)
+    {
+        return;
+    }
+
     printf("%.*s", (int)cmd->text1.len, cmd->text1.buf);
 }

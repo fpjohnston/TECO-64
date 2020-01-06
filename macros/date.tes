@@ -9,7 +9,7 @@ EO-200"L
     ^C
 '
 
-[X[T[M[D[Y[W[H[M[S[0[1 ! save used Q-reg's               !
+[X[T[M[D[Y[W[H[M[S[0[1 ! save Q-registers we use        !
 
                       ! Get MM/DD/YYYY in Q-reg's M,D,Y !
 ^B U0                 ! 0.num = encoded date            !
@@ -46,7 +46,7 @@ Q1-5"= @^UW%Friday%    |
 Q1-6"= @^UW%Saturday%  '''''''
 
 
-QM-1"=  @^UM%January%   |  ! get name of month in Q-reg M !
+QM-1"=  @^UM%January%   | ! get name of month in Q-reg M !
 QM-2"=  @^UM%February%  |
 QM-3"=  @^UM%March%     |
 QM-4"=  @^UM%April%     |
@@ -61,7 +61,7 @@ QM-12"= @^UM%December%  ''''''''''''
 
                       ! Get HH:MM:SS in Q-reg's H,N,S   !
 ^H UT                 ! T.num = returned time           !
-E1&128"E QT*2 U0 |    ! 0.num = seconds since midnight  !
+E3&4"E QT*2 U0 |      ! 0.num = seconds since midnight  !
      QT/1000 U0 
      QT-(Q0*1000) UX' ! X.num = milliseconds            !
 Q0/3600         UH    ! H.num = hours                   !
@@ -94,7 +94,7 @@ QN:=                  ! display MM                      !
 QS-10"< ^^0 ^T '      ! display leading zero?           !
 QS:=                  ! display SS                      !
 
-E1&128"N              ! Display milliseconds (maybe)    !
+E3&4"N                ! Display milliseconds (maybe)    !
     ^^. ^T            ! display period                  !
     QX-100"< ^^0 ^T ' ! display leading zero?           !
     QX-10"< ^^0 ^T '  ! display leading zero?           !
@@ -102,6 +102,6 @@ E1&128"N              ! Display milliseconds (maybe)    !
 '
 13^T 10^T
 
-]1]0]S]M]H]W]Y]D]M]T]X ! restore used Q-reg's            !
+]1]0]S]M]H]W]Y]D]M]T]X ! restore used Q-reg's           !
 ! ex !
 

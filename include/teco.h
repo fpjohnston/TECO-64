@@ -169,7 +169,7 @@ struct ofile
     FILE *fp;                       ///< Output file stream
     char *name;                     ///< Output file name
     char *temp;                     ///< Temporary file name
-    bool backup;                    ///< File is opened for backup
+    bool backup;                    ///< File is open for backup
 };
 
 ///  @enum    otype
@@ -228,8 +228,6 @@ extern jmp_buf jump_main;
 
 extern const char *prompt;
 
-extern bool teco_debug;
-
 extern char *filename_buf;
 
 extern char *eg_command;
@@ -243,8 +241,6 @@ extern struct ofile ofiles[];
 extern uint istream, ostream;
 
 extern char *last_file;
-
-extern int last_in;
 
 extern const char *mung_file;
 

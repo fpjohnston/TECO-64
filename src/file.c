@@ -34,6 +34,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -278,18 +279,34 @@ int open_output(const struct cmd *cmd, uint stream)
 
     sprintf(last_file, "%.*s", (int)nbytes, cmd->text1.buf);
 
-    bool exists = (access(last_file, F_OK) == 0 && toupper(cmd->c2) != 'L');
+    bool exists = (access(last_file, F_OK) == 0);
 
     const char *oname = get_oname(ofile, nbytes, exists);
 
-    // If EW command and file exists, warn the user.
+    // Issue warnings about existing files for EW and EL commands.
 
-    if (exists && (toupper(cmd->c2) == 'W'))
+    if (exists)
     {
-        printf("%s", "%Superseding existing file\r\n");
+        if (toupper(cmd->c2) == 'W')    // EW command
+        {
+            if (f.e4.append)
+            {
+                printf("%s", "%Appending to existing file\r\n");
+            }
+            else
+            {
+                printf("%s", "%Superseding existing file\r\n");
+            }
+        }
+        else if (toupper(cmd->c2) == 'L') // EL command
+        {
+            printf("%s", "%Appending to existing file\r\n");
+        }
     }
-
-    if ((ofile->fp = fopen(oname, "w")) == NULL)
+    
+    const char *mode = f.e4.append ? "a" : "w";
+    
+    if ((ofile->fp = fopen(oname, mode)) == NULL)
     {
         return EXIT_FAILURE;
     }

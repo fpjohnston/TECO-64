@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "exec.h"
 #include "qreg.h"
 
@@ -47,6 +48,11 @@ const char *last_search = "<last search string>"; ///< Last search string
 void exec_G(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (f.e1.noexec || scan.dryrun)
+    {
+        return;
+    }
 
     if (cmd->colon_set)
     {

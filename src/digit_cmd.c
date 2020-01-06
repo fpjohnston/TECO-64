@@ -43,7 +43,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_digit(struct cmd *cmd)
+void exec_digit(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

@@ -66,8 +66,6 @@ static void endif(struct cmd *cmd, bool vbar)
         (void)next_cmd(cmd);
         scan.dryrun = false;
 
-        log_cmd(cmd);
-
         if (cmd->c1 == '"')             // Start of a new conditional?
         {
             ++if_depth;
@@ -175,7 +173,7 @@ void exec_quote(struct cmd *cmd)
             break;
 
         case 'C':                       // Test for symbol constituent
-            if (isalnum(c) || c == '.' || c == '_' || (f.e1.dollar && c == '$'))
+            if (isalnum(c) || c == '.' || c == '_' || (f.e2.dollar && c == '$'))
             {
                 return;
             }

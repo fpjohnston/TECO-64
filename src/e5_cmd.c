@@ -1,6 +1,6 @@
 ///
-///  @file    ctrl_t_cmd.c
-///  @brief   Execute ^T (CTRL/T) command.
+///  @file    e5_cmd.c
+///  @brief   Execute E5 command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,63 +26,86 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
-#include "eflags.h"
+#include "ascii.h"
 #include "exec.h"
 
+struct write_opts write_opts =
+{
+    .append = false,
+    .noin   = false,
+    .noout  = false,
+};
+
 
 ///
-///  @brief    Scan ^T (CTRL/T) command.
-///
-///              ^T  Read and decode next character typed.
-///              ^T= Type ASCII value of next character.
-///             n^T  Type ASCII character of value n.
-///            n:^T  Output binary byte of value n.
+///  @brief    Execute E5 command: set options for writing files.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_t(struct cmd *cmd)
+void exec_E5(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e1.noexec || scan.dryrun)
+    if (cmd->text1.len == 0)
     {
+        write_opts.append = false;
+        write_opts.noin   = false;
+        write_opts.noout  = false;
+
         return;
     }
 
-    if (cmd->n_set)                     // n argument?
-    {
-        int n = cmd->n_arg & 0xFF;      // Limit value to 8 bits
+    // Parse the slash-separated list of options.
 
-        if (cmd->colon_set || f.et.image)
+    char *optlist = alloc_mem(cmd->text1.len + 1);
+    char *buf = optlist;
+    char *saveptr;
+    char *option;
+
+    sprintf(optlist, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+
+    // Find all options.
+
+    while ((option = strtok_r(buf, "/", &saveptr)) != NULL)
+    {
+        buf = NULL;
+
+        uint len = strlen(option);
+        char *p = option + len - 1;
+
+        while (len-- > 0 && isspace(*p))
         {
-            putc_term(n);
+            *p-- = NUL;
         }
-        else
+
+        if (len)
         {
-            echo_chr(n);
+            if (!strcasecmp(option, "append"))
+            {
+                write_opts.append = true;
+            }
+            else if (!strcasecmp(option, "noin"))
+            {
+                write_opts.noin = true;
+            }
+            else if (!strcasecmp(option, "noout"))
+            {
+                write_opts.noout = true;
+            }
+            else
+            {
+                printf("%%Skipping invalid option \"/%s\"\r\n", option);
+            }
         }
     }
-    else
-    {
-        (void)fflush(stdout);           // Make sure we flush output
 
-        bool wait = f.et.nowait ? false : true;
-        int c = getc_term(wait);
-
-        // TODO: check for CTRL/C?
-
-        if (!f.et.noecho)
-        {
-            echo_chr(c);
-        }
-
-        push_expr(c, EXPR_VALUE);
-    }
+    free_mem(&optlist);
 }
-

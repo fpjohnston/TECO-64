@@ -178,7 +178,7 @@ bool next_page(uint start, uint end, bool ff, bool yank)
     {
         int c = getchar_tbuf(i);
 
-        if (c == LF && f.e1.add_cr)
+        if (c == LF && f.e2.add_cr)
         {
             fputc(CR, ofile->fp);
         }

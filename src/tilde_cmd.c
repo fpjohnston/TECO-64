@@ -42,13 +42,13 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_tilde(struct cmd *cmd)
+void exec_tilde(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!f.e1.tilde)
+    if (!f.e3.tilde)
     {
-        scan_bad(cmd);                  // Issue error and return to main loop
+        exec_bad(cmd);                  // Issue error and return to main loop
     }
 
     push_expr(2, EXPR_NOT);

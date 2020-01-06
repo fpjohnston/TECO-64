@@ -43,7 +43,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_B(struct cmd *cmd)
+void exec_B(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -59,7 +59,7 @@ void scan_B(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_q(struct cmd *unused1)
+void exec_ctrl_q(struct cmd *unused1)
 {
     int nlines = 0;
     
@@ -80,7 +80,7 @@ void scan_ctrl_q(struct cmd *unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_s(struct cmd *cmd)
+void exec_ctrl_s(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -95,7 +95,7 @@ void scan_ctrl_s(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_y(struct cmd *cmd)
+void exec_ctrl_y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -113,7 +113,7 @@ void scan_ctrl_y(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_z(struct cmd *cmd)
+void exec_ctrl_z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -131,7 +131,7 @@ void scan_ctrl_z(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_dot(struct cmd *cmd)
+void exec_dot(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -148,7 +148,7 @@ void scan_dot(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_H(struct cmd *cmd)
+void exec_H(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -173,7 +173,7 @@ void scan_H(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_Z(struct cmd *cmd)
+void exec_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

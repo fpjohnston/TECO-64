@@ -43,15 +43,10 @@
 
 struct scan scan;                   ///< Internal scan variables
 
-extern struct tstring expr;
-//extern char *last_chr;
-
-bool cmd_expr;                      ///< Current expression
-
 
 // Local functions
 
-static const struct cmd_table *find_cmd(struct cmd *cmd);
+static exec_func *find_cmd(struct cmd *cmd);
 
 static void scan_text(int delim, struct tstring *tstring);
 
@@ -61,11 +56,11 @@ static void set_opts(struct cmd *cmd, const char *opts);
 ///
 ///  @brief    Find command in command table.
 ///
-///  @returns  Command entry found, or NULL.
+///  @returns  Command function found, or NULL if not found.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static const struct cmd_table *find_cmd(struct cmd *cmd)
+static exec_func *find_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -74,7 +69,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
 
     if (c == 'E')
     {
-        const char *e_cmds = "%0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+        const char *e_cmds = "%123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
         const char *e_cmd  = strchr(e_cmds, toupper(cmd->c2));
 
         if (e_cmd == NULL)
@@ -162,7 +157,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
     
     set_opts(cmd, table->opts);
 
-    return table;
+    return table->exec;
 }
 
 
@@ -193,113 +188,13 @@ void reset_scan(void)
 
 
 ///
-///  @brief    We've scanned an illegal character, so return to main loop.
+///  @brief    Scan command string for next part of command.
 ///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_bad(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    printc_err(E_ILL, cmd->c1);
-}
-
-
-///
-///  @brief    Scan a command modifier (i.e., @ or :).
-///
-///  @returns  Nothing.
+///  @returns  Function to execute, or NULL if command is not yet complete.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_mod(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->c1 == '@')
-    {
-        if (f.e1.strict && cmd->atsign_set)
-        {
-            print_err(E_MOD);           // Two @'s are not allowed
-        }
-
-        cmd->atsign_set = true;
-    }
-    else if (cmd->c1 == ':')
-    {
-        if (f.e1.strict && cmd->dcolon_set)
-        {
-            print_err(E_MOD);           // More than two :'s are not allowed
-        }
-
-        if (cmd->colon_set)
-        {
-            cmd->colon_set = false;
-            cmd->dcolon_set = true;
-        }
-        else if (!cmd->dcolon_set)
-        {
-            cmd->colon_set = true;
-        }
-    }
-
-    scan.mod = true;
-}
-
-
-///
-///  @brief    Process operator in expression. This may be any of the binary
-///            operators (+, -, *, /, &, #), the 1's complement operator (^_),
-///            or a left or right parenthesis.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_operator(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    int value = 1;                      // 1 = parenthesis, 2 = operator
-
-    if (cmd->c1 == '(')
-    {
-        ++scan.nparens;
-    }
-    else if (cmd->c1 == ')')
-    {
-        if (scan.nparens == 0)          // Can't have ) without (
-        {
-            print_err(E_MLP);           // Missing left parenthesis
-        }
-        else if (!pop_expr(NULL))       // Is there an operand available?
-        {
-            print_err(E_NAP);           // No argument before )
-        }
-        else
-        {
-            --scan.nparens;
-        }
-    }
-    else
-    {
-        value = 2;                      // Arithmetic operator
-    }
-
-    push_expr(value, cmd->c1);          // Use operator as expression type
-}
-
-
-///
-///  @brief    Do first pass of scanning command.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-exec_func *scan_pass1(struct cmd *cmd)
+exec_func *scan_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -336,9 +231,9 @@ exec_func *scan_pass1(struct cmd *cmd)
         cmd->c2 = (char)fetch_buf(NOCMD_START);
     }
 
-    const struct cmd_table *table = find_cmd(cmd);
+    exec_func *exec = find_cmd(cmd);
 
-    if (table == NULL)
+    if (exec == NULL)
     {
         return NULL;
     }
@@ -381,25 +276,32 @@ exec_func *scan_pass1(struct cmd *cmd)
         cmd->c2 = (char)fetch_buf(NOCMD_START);
     }
 
-    cmd_expr = false;
-
-    if (table->scan != NULL)
+    if (cmd->c1 == CTRL_T && estack.level == 1 &&
+        estack.obj[0].type == EXPR_VALUE)
     {
-        (*table->scan)(cmd);            //  then scan it
+        ;
+    }
+    else if (toupper(cmd->c1) == 'A' && estack.level == 0)
+    {
+        ;
+    }
+    else if (scan.expr && scan.n_opt && (cmd->m_set || cmd->n_set))
+    {
+        ;
+    }
+    else if (scan.expr || exec == exec_mod)
+    {
+        (*exec)(cmd);
+
+        exec = NULL;
     }
 
-    // See if we need to set the expression string for the command.
-
-    if (expr.len == 0 && (table->exec != NULL || cmd_expr))
+    if (exec != NULL)
     {
-//        expr.len = (uint)(last_chr - expr.buf);
-
-//        cmd->expr = expr;
-
         scan_tail(cmd);
     }
 
-    return table->exec;
+    return exec;
 }
 
 
@@ -421,9 +323,9 @@ void scan_tail(struct cmd *cmd)
     }
     else if (f.e1.strict)
     {
-        if (   (cmd->colon_set  && !scan.colon_opt )
-            || (cmd->dcolon_set && !scan.dcolon_opt)
-            || (cmd->atsign_set && !scan.atsign_opt))
+        if ((cmd->colon_set  && !scan.colon_opt ) ||
+            (cmd->dcolon_set && !scan.dcolon_opt) ||
+            (cmd->atsign_set && !scan.atsign_opt))
         {
             print_err(E_MOD);           // Invalid modifier for command
         }

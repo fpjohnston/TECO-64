@@ -45,13 +45,13 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_brace(struct cmd *cmd)
+void exec_brace(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!f.e1.brace)
+    if (!f.e3.brace)
     {
-        scan_bad(cmd);                  // Issue error and return to main loop
+        exec_bad(cmd);                  // Issue error and return to main loop
     }
 
     enum expr_type type = EXPR_NONE;

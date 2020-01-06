@@ -55,11 +55,11 @@ static bool check_mn_flag(struct cmd *cmd, uint *flag)
     assert(cmd != NULL);
     assert(flag != NULL);
 
-    if (!pop_expr(&cmd->n_arg))          // n argument?
+    // TODO: is this the best we can do here?
+
+    if (!cmd->n_set && !pop_expr(&cmd->n_arg)) // n argument?
     {
         push_expr((int)*flag, EXPR_VALUE);  // Assume we're an operand
-
-        cmd_expr = false;
 
         return false;
     }
@@ -86,8 +86,6 @@ static bool check_mn_flag(struct cmd *cmd, uint *flag)
         }
     }
 
-    cmd_expr = true;
-
     return true;
 }
 
@@ -109,8 +107,6 @@ static bool check_n_flag(int *flag)
     {
         push_expr(*flag, EXPR_VALUE);
 
-        cmd_expr = false;
-
         return false;
     }
 
@@ -121,8 +117,6 @@ static bool check_n_flag(int *flag)
     {
         *flag = n;
     }
-
-    cmd_expr = true;
 
     return true;
 }
@@ -135,7 +129,7 @@ static bool check_n_flag(int *flag)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_e(struct cmd *cmd)
+void exec_ctrl_e(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -160,7 +154,7 @@ void scan_ctrl_e(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_f(struct cmd *cmd)
+void exec_ctrl_f(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -184,7 +178,7 @@ void scan_ctrl_f(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_n(struct cmd *cmd)
+void exec_ctrl_n(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -201,24 +195,84 @@ void scan_ctrl_n(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_x(struct cmd *unused1)
+void exec_ctrl_x(struct cmd *unused1)
 {
     (void)check_n_flag(&v.ctrl_x);
 }
 
 
 ///
-///  @brief    Scan E1 command: set extended flags.
+///  @brief    Scan E1 command: set debugging features.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_E1(struct cmd *cmd)
+void exec_E1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
     (void)check_mn_flag(cmd, &f.e1.flag);
+}
+
+
+///
+///  @brief    Scan E2 command: set compatibility features.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_E2(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    (void)check_mn_flag(cmd, &f.e2.flag);
+}
+
+
+///
+///  @brief    Scan E3 command: set extended features.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_E3(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    (void)check_mn_flag(cmd, &f.e3.flag);
+}
+
+
+///
+///  @brief    Scan E4 command: set file options.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_E4(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    (void)check_mn_flag(cmd, &f.e4.flag);
+}
+
+
+///
+///  @brief    Scan E5 command: set comment bypass character.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_E5(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    (void)check_n_flag(&f.e5);
 }
 
 
@@ -229,7 +283,7 @@ void scan_E1(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ED(struct cmd *cmd)
+void exec_ED(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -244,7 +298,7 @@ void scan_ED(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_EE(struct cmd *cmd)
+void exec_EE(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -278,7 +332,7 @@ void scan_EE(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_EH(struct cmd *cmd)
+void exec_EH(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -330,7 +384,7 @@ void scan_EH(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_EJ(struct cmd *cmd)
+void exec_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -356,7 +410,7 @@ void scan_EJ(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_EO(struct cmd *cmd)
+void exec_EO(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -381,7 +435,7 @@ void scan_EO(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ES(struct cmd *unused1)
+void exec_ES(struct cmd *unused1)
 {
     (void)check_n_flag(&f.es);
 }
@@ -394,7 +448,7 @@ void scan_ES(struct cmd *unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ET(struct cmd *cmd)
+void exec_ET(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -422,7 +476,7 @@ void scan_ET(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_EU(struct cmd *unused1)
+void exec_EU(struct cmd *unused1)
 {
     (void)check_n_flag(&f.eu);
 }
@@ -435,7 +489,7 @@ void scan_EU(struct cmd *unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_EV(struct cmd *unused1)
+void exec_EV(struct cmd *unused1)
 {
     (void)check_n_flag(&f.ev);
 }
@@ -448,7 +502,7 @@ void scan_EV(struct cmd *unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_EZ(struct cmd *cmd)
+void exec_EZ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

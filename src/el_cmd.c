@@ -39,7 +39,7 @@
 
 static char line[256];                  ///< Output line
 static uint nbytes;                     ///< Length of output line
-static uint sequence;                   ///< Command sequence no.
+static uint sequence = 0;               ///< Command sequence no.
 
 // Local functions
 
@@ -51,9 +51,7 @@ static void log_str(const char *p, uint nbytes);
 ///
 ///  @brief    Execute EL command (open or close log file). Format is:
 ///
-///            ELfile`         - open log file for write (truncate previous
-///                              file).
-///            ELfile`/append` - open log file for append.
+///            ELfile`         - open log file for write.
 ///            EL`             - close log file.
 ///
 ///  @returns  Nothing.
@@ -84,8 +82,6 @@ void exec_EL(struct cmd *cmd)
     {
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
-
-    sequence = 0;
 }
 
 
@@ -160,7 +156,7 @@ static void log_str(const char *p, uint n)
 
 void log_cmd(struct cmd *cmd)
 {
-    static int cmd_level = 0;
+//    static int cmd_level = 0;
 
     assert(cmd != NULL);
 
@@ -169,35 +165,14 @@ void log_cmd(struct cmd *cmd)
     // If we're not in debug mode, or there is no log file open,
     // or the command is just an ESCape, then skip this.
 
-    if ((fp == NULL && !teco_debug) || cmd->c1 == ESC)
+    if ((fp == NULL && !f.e1.noexec) || cmd->c1 == ESC)
     {
         return;
     }
 
-    // Decrease indentation level for commands that end a control structure.
-
-    if (cmd->c1 == '\'' || cmd->c1 == '|' || cmd->c1 == '>')
-    {
-        --cmd_level;
-    }
-
-    // Start with any necessary indenting
-
     nbytes = 0;
 
-    if (cmd->c1 != '!')                 // No indentation for tags
-    {
-        nbytes = (uint)snprintf(line, sizeof(line), "%*s", cmd_level * 4, "");
-    }
-
-    // Increase indentation level for commands that begin a control structure.
-
-    if (cmd->c1 == '"' || cmd->c1 == '|' || cmd->c1 == '<')
-    {
-        ++cmd_level;
-    }
-
-    assert(nbytes < sizeof(line));
+    // Skip any leading whitespace in expression
 
     while (cmd->expr.len != 0)
     {
@@ -212,7 +187,21 @@ void log_cmd(struct cmd *cmd)
         }
     }
 
-    // Now re-create the command
+    // Skip any trailing whitespace in expression
+
+    while (cmd->expr.len != 0)
+    {
+        if (isspace(cmd->expr.buf[cmd->expr.len - 1]))
+        {
+            --cmd->expr.len;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    // Output the expression
 
     if (cmd->expr.len != 0)
     {
@@ -221,7 +210,7 @@ void log_cmd(struct cmd *cmd)
         log_chr(')');
         log_chr(SPACE);
     }
-
+   
     log_chr(cmd->colon_set ? ':' : NUL);
     log_chr(cmd->dcolon_set ? ':' : NUL);
     log_chr(cmd->atsign_set ? '@' : NUL);
@@ -238,9 +227,9 @@ void log_cmd(struct cmd *cmd)
 
     line[nbytes] = NUL;
 
-    if (teco_debug)
+    if (f.e1.noexec)
     {
-        printf("{%5u}  %s\r\n", ++sequence, line);
+        printf("#%05u:  %s\r\n", ++sequence, line);
     }
 
     if (fp != NULL)                     // Print to log file if it's open

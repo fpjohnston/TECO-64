@@ -105,7 +105,7 @@ static int get_w(int n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_W(struct cmd *cmd)
+void exec_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

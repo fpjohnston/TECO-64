@@ -109,7 +109,7 @@ bool append_line(void)
  
     while ((c = fgetc(ifile->fp)) != EOF)
     {
-        if (c == FF && !f.e1.no_ff)     // If form feed, don't store it
+        if (c == FF && !f.e2.no_ff)     // If form feed, don't store it
         {
             v.ff = true;                // But do flag it
 
@@ -151,20 +151,18 @@ bool append_line(void)
 
 
 ///
-///  @brief Parse A command: get value of character in buffer.
+///  @brief    Parse A command: get value of character in buffer.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_A(struct cmd *cmd)
+void exec_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(&cmd->n_arg))
+    if (cmd->n_set)
     {
-        cmd->n_set = true;
-
         if (!cmd->colon_set)
         {
             int n = getchar_tbuf(cmd->n_arg);

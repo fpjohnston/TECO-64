@@ -19,24 +19,33 @@ my %details =
     "^C"  => "stop execution",
     "^D"  => "set input radix to decimal",
     "^R"  => "set input radix",
-    "^T"  => "type out character",
+    "^T"  => "type character",
     "^U"  => "copy text to Q-register %c",
     ":^U" => "append text to Q-register %c",
     "^X"  => "set search mode flag",
     "!"   => "tag/comment",
+    "%"   => "increment Q-register %c and return value",
     "\"A" => "if alpha",
+    "\"C" => "if symbol",
     "\"D" => "if digit",
     "\"E" => "if == 0",
     "\"F" => "if false",
     "\"G" => "if > 0",
     "\"L" => "if < 0",
     "\"N" => "if <> 0",
+    "\"R" => "if alphanumeric",
     "\"S" => "if success",
     "\"T" => "if true",
     "\"U" => "if failure",
+    "\"V" => "if lower case",
+    "\"W" => "if upper case",
+    "\"<" => "if < 0",
+    "\"=" => "if == 0",
+    "\">" => "if > 0",
     "'"   => "endif",
     ";"   => "branch out of loop",
     "<"   => "start of loop",
+    "="   => "print value",
     ">"   => "end of loop",
     "D"   => "delete characters",
     "EA"  => "switch to secondary output stream",
@@ -96,6 +105,7 @@ my %details =
 );
 
 my $sequence = 0;
+my $indent = 0;
 
 while (<>)
 {
@@ -111,16 +121,30 @@ while (<>)
     my $qreg;
     my $text;
 
-    if (/^(\s*)(\(.+\)) (.+)$/)
+    if (/^\((.+)\) (.+)$/)
     {
-        $expression = $2;
-        $key = $3;
+        my $tail;
+
+        $tail = $1;
+        $key = $command = $2;
+
+        while ($tail =~ /^(.+?)^^ (.+)$/)
+        {
+            $expression .= $1;
+            $expression =~ s/\s+//g;
+            $expression .= "^^ ";
+            $tail = $2;
+        }
+
+        $tail =~ s/\s+//g;
+        $expression .= $tail;
     }
-    elsif (/^(\s*)(.+)$/)
+    else
     {
-        $key = $2;
+        $key = $command;
     }
 
+    $key =~ s/\s+//g;
     $key = $1 if ($key =~ /^::(.+)$/);
 
     if ($key =~ /^:(.+)$/)
@@ -202,8 +226,30 @@ while (<>)
         $detail = $details{$key};
     }
 
-    print $command;
-    printf "%*s! % 5u: ", 64 - length $command, " ", ++$sequence;
+    my $c1 = substr($key, 0, 1);
+
+    if ($c1 eq '\'' || $c1 eq '|')
+    {
+        if (length $expression)
+        {
+            $expression = sprintf "%*s%s", $indent, "", $expression;
+
+            printf "%s%*s! % 5u: (TBD)!\n", $expression, 64 - length $expression, " ", ++$sequence;
+
+            $expression = "";
+        }
+        $indent -= 4;
+    }
+
+    $command = sprintf "%*s%s%s%s", $indent, "", $expression,
+        length $expression ? " " : "", $command;
+
+    if ($c1 eq '"' || $c1 eq '|')
+    {
+        $indent += 4;
+    }
+
+    printf "%s%*s! % 5u: ", $command, 64 - length $command, " ", ++$sequence;
 
     if (!defined $detail)
     {

@@ -44,7 +44,7 @@ struct e0_flag
 };
 
 ///  @struct  e1_flag
-///  @brief   Definition of extended flags.
+///  @brief   Definition of debugging flags.
 
 union e1_flag
 {
@@ -53,13 +53,53 @@ union e1_flag
     struct
     {
         uint strict : 1;        ///< Strictly enforce command syntax
-        uint brace  : 1;        ///< Enable braced expressions
-        uint tilde  : 1;        ///< Enable tilde commands
-        uint msec   : 1;        ///< Return millisecond time for CTRL/H
+        uint noexec : 1;        ///< Parse commands w/o execution
+    };
+};
+
+///  @struct  e2_flag
+///  @brief   Definition of compatibility features.
+
+union e2_flag
+{
+    uint flag;                  ///< Entire E2 flag
+
+    struct
+    {
         uint dollar : 1;        ///< $ is a valid symbol character
         uint add_cr : 1;        ///< Add CR to LF on output
         uint no_cr  : 1;        ///< Strip CR on input
         uint no_ff  : 1;        ///< FF is normal character on input
+    };
+};
+
+///  @struct  e3_flag
+///  @brief   Definition of extended features.
+
+union e3_flag
+{
+    uint flag;                  ///< Entire E3 flag
+
+    struct
+    {
+        uint brace  : 1;        ///< Enable braced expressions
+        uint tilde  : 1;        ///< Enable tilde commands
+        uint msec   : 1;        ///< Return time in milliseconds
+    };
+};
+
+///  @struct  e4_flag
+///  @brief   Definition of file options.
+
+union e4_flag
+{
+    uint flag;                  ///< Entire E4 flag
+
+    struct
+    {
+        uint append : 1;        ///< Open output file for append
+        uint noin   : 1;        ///< Don't type input to log file
+        uint noout  : 1;        ///< Don't type output to log file
     };
 };
 
@@ -158,7 +198,11 @@ union ez_flag
 struct flags
 {
     struct e0_flag e0;          ///< Internal flags (not settable by user)
-    union  e1_flag e1;          ///< Extended flags
+    union  e1_flag e1;          ///< Debugging flags
+    union  e2_flag e2;          ///< Compatibility features
+    union  e3_flag e3;          ///< Extended features
+    union  e4_flag e4;          ///< File options
+    int            e5;          ///< Comment bypass flag
     union  ed_flag ed;          ///< Edit level flags
     int            ee;          ///< ESCape surrogate
     union  eh_flag eh;          ///< Help message flags

@@ -51,7 +51,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_b(struct cmd *cmd)
+void exec_ctrl_b(struct cmd *cmd)
 {
     assert(cmd != NULL);
     
@@ -74,7 +74,7 @@ void scan_ctrl_b(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_ctrl_h(struct cmd *cmd)
+void exec_ctrl_h(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -88,7 +88,7 @@ void scan_ctrl_h(struct cmd *cmd)
     teco_time *= SECONDS_PER_MINUTE;
     teco_time += tm.tm_sec;
 
-    if (f.e1.msec)                      // Return time in milliseconds?
+    if (f.e3.msec)                      // Return time in milliseconds?
     {
         struct timeval tv;
 

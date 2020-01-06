@@ -43,12 +43,6 @@
 
 uint line;                              ///< Current line number
 
-uint nescapes = 0;               ///< No. of consecutive escapes seen
-
-struct tstring expr;                    ///< Current expression
-
-char *last_chr;                         ///< Last character in expression
-
 ///  @var    null_cmd
 ///  @brief  Initial command block values.
 
@@ -86,22 +80,12 @@ void exec_cmd(void)
 {
     struct cmd cmd;
 
-    nescapes = 0;
-
-    expr.buf = NULL;
-    expr.len = 0;
-
     line = 1;
 
     // Loop for all characters in command string.
 
     for (;;)
     {
-        if (expr.buf == NULL)
-        {
-            expr.buf = next_buf();
-        }
-
         f.e0.exec = true;
         exec_func *exec = next_cmd(&cmd);
         f.e0.exec = false;
@@ -138,14 +122,30 @@ void exec_cmd(void)
             {
                 cmd.m_set = true;
             }
+
+            if (f.e1.strict)
+            {
+                if (cmd.n_set && !scan.n_opt)
+                {
+                    print_err(E_UNA);   // Unused n argument
+                }
+                else if (cmd.m_set && !scan.m_opt)
+                {
+                    print_err(E_UMA);   // Unused m argument
+                }
+            }
+        }
+        else if (cmd.m_set)             // m but no n argument?
+        {
+            if (f.e1.strict)
+            {
+                print_err(E_MNA);       // Missing n argument
+            }
         }
 
         f.e0.exec = true;
         (*exec)(&cmd);                  // Execute command
         f.e0.exec = false;
-
-        expr.buf = NULL;
-        expr.len = 0;
 
         if (f.e0.ctrl_c)                // If CTRL/C typed, return to main loop
         {
@@ -154,6 +154,36 @@ void exec_cmd(void)
             print_err(E_XAB);           // Execution aborted
         }
     }
+}
+
+
+
+
+///
+///  @brief    We've scanned an illegal character, so return to main loop.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_bad(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    printc_err(E_ILL, cmd->c1);
+}
+
+
+///
+///  @brief    Dummy exec function, used to skip a command we don't need or
+///            intend to execute.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_dummy(struct cmd *unused1)
+{
 }
 
 
@@ -177,6 +207,91 @@ void exec_escape(struct cmd *unused1)
 
 
 ///
+///  @brief    Execute : or @: command modifiers.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_mod(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->c1 == '@')
+    {
+        if (f.e1.strict && cmd->atsign_set)
+        {
+            print_err(E_MOD);           // Two @'s are not allowed
+        }
+
+        cmd->atsign_set = true;
+    }
+    else if (cmd->c1 == ':')
+    {
+        if (f.e1.strict && cmd->dcolon_set)
+        {
+            print_err(E_MOD);           // More than two :'s are not allowed
+        }
+
+        if (cmd->colon_set)
+        {
+            cmd->colon_set = false;
+            cmd->dcolon_set = true;
+        }
+        else if (!cmd->dcolon_set)
+        {
+            cmd->colon_set = true;
+        }
+    }
+
+    scan.mod = true;
+}
+
+
+///
+///  @brief    Execute operator in expression. This may be any of the binary
+///            operators (+, -, *, /, &, #), the 1's complement operator (^_),
+///            or a left or right parenthesis.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_operator(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int value = 1;                      // 1 = parenthesis, 2 = operator
+
+    if (cmd->c1 == '(')
+    {
+        ++scan.nparens;
+    }
+    else if (cmd->c1 == ')')
+    {
+        if (scan.nparens == 0)          // Can't have ) without (
+        {
+            print_err(E_MLP);           // Missing left parenthesis
+        }
+        else if (!pop_expr(NULL))       // Is there an operand available?
+        {
+            print_err(E_NAP);           // No argument before )
+        }
+        else
+        {
+            --scan.nparens;
+        }
+    }
+    else
+    {
+        value = 2;                      // Arithmetic operator
+    }
+
+    push_expr(value, cmd->c1);          // Use operator as expression type
+}
+
+
+///
 ///  @brief    Get next command. This 
 ///
 ///  @returns  Command block with options, or NULL if at end of command string.
@@ -190,19 +305,26 @@ exec_func *next_cmd(struct cmd *cmd)
     *cmd = null_cmd;
     reset_scan();
     init_expr();                        // Reset expression stack
-    last_chr = next_buf();
 
     // Keep reading characters until we have a full command.
 
     bool start = CMD_START;
-    exec_func *exec;
-    int c;
+    exec_func *exec = NULL;
+
+    cmd->expr.buf = next_buf();
 
     for (;;)
     {
+        int c;
+
+        if (!scan.mod)
+        {
+            cmd->expr.len = (uint)(next_buf() - cmd->expr.buf);
+        }
+
         if ((c = fetch_buf(start)) == EOF)
         {
-            return NULL;                // NULL means command is done
+            break;
         }
         else if (c < 0 || c >= (int)cmd_count)
         {
@@ -211,11 +333,32 @@ exec_func *next_cmd(struct cmd *cmd)
 
         cmd->c1 = (char)c;
 
-        if ((exec = scan_pass1(cmd)) != NULL)
+        if ((exec = scan_cmd(cmd)) != NULL)
         {
-            return exec;
+            break;
         }
 
         start = NOCMD_START;
     }
+
+    // If we have a tag and the accompanying text starts with the character
+    // defined in E4, then we skip it. This allows us to differentiate between
+    // tags (which may the target of O commands) and comments (which aren't).
+    // So for example, E4 could be set to a SPACE character (ASCII 32), which
+    // would mean that a comment could take the form ! comment !, and a tag
+    // could take the form !tag!. Note that the E4 character is only checked
+    // for the first character after the first !, and is not required to
+    // precede the second !.
+
+    if (cmd->c1 == '!' && (cmd->text1.len == 0 ||
+                          (cmd->text1.len != 0 && cmd->text1.buf[0] == f.e5)))
+    {
+        return exec_dummy;              // Just ignore tag
+    }
+    else if (exec != NULL)
+    {
+        log_cmd(cmd);
+    }
+
+    return exec;
 }
