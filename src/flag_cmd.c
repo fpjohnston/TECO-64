@@ -67,7 +67,7 @@ static bool check_mn_flag(struct cmd *cmd, uint *flag)
     // Here if there is a value preceding the flag, which
     // means that the flag is not part of an expression.
 
-    if (!scan.dryrun)
+    if (!f.e0.dryrun)
     {
         if (!cmd->m_set)                // m argument too?
         {
@@ -113,7 +113,7 @@ static bool check_n_flag(int *flag)
     // Here if there is a value preceding the flag, which
     // means that the flag is not part of an expression.
 
-    if (!scan.dryrun)
+    if (!f.e0.dryrun)
     {
         *flag = n;
     }
@@ -302,7 +302,7 @@ void exec_EE(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (scan.dryrun)
+    if (f.e0.dryrun)
     {
         return;
     }
@@ -388,7 +388,7 @@ void exec_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (scan.dryrun)
+    if (f.e0.dryrun)
     {
         return;
     }
@@ -414,7 +414,7 @@ void exec_EO(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (scan.dryrun)
+    if (f.e0.dryrun)
     {
         return;
     }

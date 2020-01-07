@@ -40,7 +40,6 @@
 
 struct scan
 {
-    bool dryrun;                    ///< "Dry run" scan (no changes)
     uint nparens;                   ///< No. of unmatched left parentheses
     int sum;                        ///< Accumulated sum of digits scanned
     bool digits;                    ///< Accumulated sum is valid

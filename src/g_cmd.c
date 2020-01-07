@@ -49,7 +49,7 @@ void exec_G(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e1.noexec || scan.dryrun)
+    if (f.e1.noexec || f.e0.dryrun)
     {
         return;
     }

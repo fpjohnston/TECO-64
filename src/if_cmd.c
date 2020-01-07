@@ -62,9 +62,11 @@ static void endif(struct cmd *cmd, bool vbar)
 
     do
     {
-        scan.dryrun = true;
+        bool dryrun = f.e0.dryrun;
+
+        f.e0.dryrun = true;
         (void)next_cmd(cmd);
-        scan.dryrun = false;
+        f.e0.dryrun = dryrun;
 
         if (cmd->c1 == '"')             // Start of a new conditional?
         {

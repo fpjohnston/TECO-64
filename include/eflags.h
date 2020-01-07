@@ -41,6 +41,7 @@ struct e0_flag
 {
     uint exec   : 1;            ///< Executing command
     uint ctrl_c : 1;            ///< CTRL/C seen
+    uint dryrun : 1;            ///< Parse commands w/o executing them
 };
 
 ///  @struct  e1_flag

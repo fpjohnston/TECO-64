@@ -30,6 +30,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "exec.h"
 #include "qreg.h"
 
@@ -45,7 +46,7 @@ void exec_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (scan.dryrun)
+    if (f.e0.dryrun)
     {
         return;
     }

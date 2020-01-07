@@ -50,7 +50,7 @@ void exec_ctrl_t(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e1.noexec || scan.dryrun)
+    if (f.e1.noexec || f.e0.dryrun)
     {
         return;
     }

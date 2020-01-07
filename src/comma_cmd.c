@@ -45,7 +45,7 @@ void exec_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (scan.dryrun)
+    if (f.e0.dryrun)
     {
         return;
     }

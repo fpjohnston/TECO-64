@@ -30,6 +30,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -45,7 +46,7 @@ void exec_ctrl_d(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!scan.dryrun)
+    if (!f.e0.dryrun)
     {
         v.radix = 10;                   // Set radix to decimal
     }
@@ -63,7 +64,7 @@ void exec_ctrl_o(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!scan.dryrun)
+    if (!f.e0.dryrun)
     {
         v.radix = 8;                    // Set radix to octal
     }
@@ -83,7 +84,7 @@ void exec_ctrl_r(struct cmd *cmd)
 
     int n;
 
-    if (scan.dryrun)
+    if (f.e0.dryrun)
     {
         return;
     }

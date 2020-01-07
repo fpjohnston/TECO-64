@@ -242,7 +242,10 @@ exec_func *scan_cmd(struct cmd *cmd)
 
     if (scan.expr && scan.mod)
     {
-        print_err(E_MOD);               // Invalid modifier for command
+        if (f.e1.strict)
+        {
+            print_err(E_MOD);           // Invalid modifier for command
+        }
     }
 
     // Check to see if command requires a global (or local) Q-register.
@@ -401,12 +404,7 @@ static void scan_text(int delim, struct tstring *text)
     text->len = 0;
     text->buf = next_buf();
 
-    int c;
-
-    if ((c = fetch_buf(NOCMD_START)) == EOF)
-    {
-        print_err(E_UTC);               // Unterminated command
-    }
+    int c = fetch_buf(NOCMD_START);
 
     if (c == delim)
     {
