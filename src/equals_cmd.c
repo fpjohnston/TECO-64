@@ -65,33 +65,37 @@ void exec_equals(struct cmd *cmd)
     }
 
     int c;
+    const char *mode = "%d";
 
-    if ((c = fetch_buf(NOCMD_START)) != '=') // Print decimal if =
+    if ((c = fetch_buf(NOCMD_START)) != '=')
     {
-        if (c != EOF)
-        {
-            unfetch_buf(c);
-        }
-
-        printf("%d", cmd->n_arg);
+        unfetch_buf(c);
     }
-    else if ((c = fetch_buf(NOCMD_START)) != '=') // Print octal if ==
+    else if ((c = fetch_buf(NOCMD_START)) != '=')
     {
-        if (c != EOF)
-        {
-            unfetch_buf(c);
-        }
+        unfetch_buf(c);
 
         cmd->c2 = '=';
 
-        printf("%o", cmd->n_arg);
+        mode = "%o";
     }
-    else                                // Print hexadecimal if ===
+    else
     {
         cmd->c3 = cmd->c2 = '=';
 
-        printf("%x", cmd->n_arg);
+        mode = "%x";
     }
+
+    char user_mode[64];                 // TODO: fix magic number
+
+    if (cmd->atsign_set && cmd->text1.len != 0)
+    {
+        sprintf(user_mode, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+
+        mode = user_mode;
+    }
+
+    printf(mode, cmd->n_arg);
 
     if (!cmd->colon_set)                // Suppress CRLF?
     {

@@ -105,7 +105,7 @@ const struct cmd_table cmd_table[] =
     [':']         = { exec_mod,       ""             },
     [';']         = { exec_semi,      "n :"          },
     ['<']         = { exec_lt,        "n"            },
-    ['=']         = { exec_equals,    "n :"          },
+    ['=']         = { exec_equals,    "n : @ 1"      },
     ['>']         = { exec_gt,        ""             },
     ['?']         = { exec_question,  "i"            },
     ['@']         = { exec_mod,       ""             },
@@ -167,10 +167,10 @@ const struct cmd_table cmd_table[] =
     ['x']         = { NULL,           ""             },
     ['y']         = { NULL,           ""             },
     ['z']         = { NULL,           ""             },
-    ['{']         = { exec_brace,     ""             },
+    ['{']         = { exec_brace,     "x"            },
     ['|']         = { exec_vbar,      ""             },
     ['}']         = { exec_bad,       ""             },
-    ['~']         = { exec_tilde,     ""             },
+    ['~']         = { exec_tilde,     "x"            },
     [DEL]         = { exec_bad,       ""             },
 };
 

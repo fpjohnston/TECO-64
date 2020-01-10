@@ -235,7 +235,7 @@ struct qreg *get_qreg(int qname, bool qdot)
 
     if (qdot)                           // Local Q-register?
     {
-        qreg = local_head->qreg;
+        qreg = &local_head->qreg[qindex];
     }
     else
     {

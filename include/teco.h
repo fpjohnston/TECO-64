@@ -72,27 +72,27 @@ enum
 enum expr_type
 {
     EXPR_NONE   = 0,
-    EXPR_VALUE  = '0',
-    EXPR_COMP   = '\x1F',                // ^^ (CTRL/^) = ASCII RS
-    EXPR_OR     = '#',
-    EXPR_AND    = '&',
-    EXPR_OPEN   = '(',
-    EXPR_CLOSE  = ')',
-    EXPR_MUL    = '*',
-    EXPR_PLUS   = '+',
-    EXPR_MINUS  = '-',
-    EXPR_DIV    = '/',
-    EXPR_XOR    = '^',
-    EXPR_REM    = '%',
-    EXPR_NOT    = '~',
-    EXPR_LT     = '<',
-    EXPR_GT     = '>',
-    EXPR_EQ     = '=',
-    EXPR_NE     = '!',
-    EXPR_LE     = 'L',
-    EXPR_GE     = 'G',
-    EXPR_LEFT   = 'S',
-    EXPR_RIGHT  = 'U'
+    EXPR_VALUE  = '0',               // General value
+    EXPR_OPEN   = '(',               // Left parenthesis
+    EXPR_CLOSE  = ')',               // Close parenthesis
+    EXPR_COMP   = '\x1F',            // ^^ (CTRL/^) = ASCII RS
+    EXPR_OR     = '#',               // Bitwise OR
+    EXPR_AND    = '&',               // Bitwise AND
+    EXPR_MUL    = '*',               // Multiplication
+    EXPR_PLUS   = '+',               // Addition and unary plus
+    EXPR_MINUS  = '-',               // Subtraction and unary minus
+    EXPR_DIV    = '/',               // Division w/ quotient
+    EXPR_XOR    = '\'',              // Bitwise XOR (~)
+    EXPR_REM    = '%',               // Division w/ remainder (%)
+    EXPR_NOT    = '~',               // Logical NOT (!)
+    EXPR_LT     = '<',               // Less than (<)
+    EXPR_GT     = '>',               // Greater than (>)
+    EXPR_EQ     = '=',               // Equals (==)
+    EXPR_NE     = '!',               // Not equals (<>)
+    EXPR_LE     = 'L',               // Less than or equal (<=)
+    EXPR_GE     = 'G',               // Greater than or equal (>=)
+    EXPR_LEFT   = 'S',               // Left shift (<<)
+    EXPR_RIGHT  = 'U'                // Right shift (>>)
 };
 
 ///  @struct e_obj

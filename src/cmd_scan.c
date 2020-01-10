@@ -320,6 +320,14 @@ void scan_tail(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    // Text argument for equals command is only possible with at-sign. This is
+    // necessary not to break instances which don't include a text command.
+
+    if (cmd->c1 == '=' && !cmd->atsign_set)
+    {
+        scan.t1_opt = scan.t2_opt = false;
+    }
+
     if (scan.nparens != 0)
     {
         print_err(E_MRP);               // Missing right parenthesis
@@ -489,6 +497,7 @@ static void set_opts(struct cmd *cmd, const char *opts)
                 if (*opts == ':')       // Double colon?
                 {
                     scan.dcolon_opt = true;
+                    scan.colon_opt = true;
 
                     ++opts;
                 }

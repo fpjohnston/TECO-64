@@ -31,7 +31,12 @@
 #include <string.h>
 
 #include "teco.h"
+#include "errors.h"
 #include "exec.h"
+
+// TODO: fix magic number
+
+char search_string[128] = { '\0' };     ///< last search string
 
 
 ///
@@ -44,5 +49,40 @@
 void exec_S(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (cmd->n_set && cmd->n_arg == 0)  // 0Stext` isn't allowed
+    {
+        print_err(E_ISA);               // Illegal search argument
+    }
+
+    if (cmd->dcolon_set)                // ::Stext` => 1,1:Stext`
+    {
+        cmd->m_arg = cmd->n_arg = 1;
+        cmd->m_set = cmd->n_set = true;
+    }
+    else if (!cmd->n_set)               // Stext` => 1Stext`
+    {
+        cmd->n_arg = 1;
+        cmd->n_set = true;
+    }
+
+    if (cmd->text1.len != 0)
+    {
+        sprintf(search_string, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+    }
+
+    printf("%s search for occurrence #%u of \"%s\"\r\n",
+           cmd->n_arg < 0 ? "backward" : "forward", (uint)abs(cmd->n_arg),
+           search_string);
+
+    if (cmd->m_set)
+    {
+        printf("    limit search to %d characters\r\n", abs(cmd->m_arg) - 1);
+    }
+
+    if (cmd->colon_set)
+    {
+        printf("    return success or failure\r\n");
+    }
 }
 
