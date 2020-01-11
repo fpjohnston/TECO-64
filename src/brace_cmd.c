@@ -32,14 +32,12 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "eflags.h"
-#include "errors.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Execute braced expression.
+///  @brief    Execute { (left brace) command: start of braced expression.
 ///
 ///  @returns  Nothing.
 ///
@@ -49,140 +47,12 @@ void exec_brace(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!f.e3.brace)
+    if (f.e3.brace)
     {
-        exec_bad(cmd);                  // Issue error and return to main loop
+        exec_operator(cmd);
     }
-
-    enum expr_type type = EXPR_NONE;
-    int c;
-    int c1 = NUL;
-    int c2 = NUL;
-    bool space = false;
-
-    // Find the one or two characters inside the braced expression
-
-    while ((c = fetch_buf(NOCMD_START)) != '}')
+    else
     {
-        if (isspace(c))
-        {
-            space = true;
-
-            continue;
-        }
-        else if (c1 == NUL)
-        {
-            space = false;            
-
-            c1 = toupper(c);
-        }
-        else if (c2 == NUL && !space)
-        {
-            c2 = toupper(c);
-        }
-        else
-        {
-            print_err(E_BRC);           // Invalid braced expression
-        }
-    }    
-
-    // Here when we've reached the right brace and have the expression
-
-    switch (c1)
-    {
-        case 'G':
-            if (c2 == 'E')
-            {
-                type = EXPR_GE;
-            }
-            else if (c2 == 'T')
-            {
-                type = EXPR_GT;
-            }
-            break;
-
-        case 'E':
-            if (c2 == 'Q')
-            {
-                type = EXPR_EQ;
-            }
-            break;
-
-        case 'L':
-            if (c2 == 'E')
-            {
-                type = EXPR_LE;
-            }
-            else if (c2 == 'T')
-            {
-                type = EXPR_LT;
-            }
-            break;
-
-        case 'N':
-            if (c2 == 'E')
-            {
-                type = EXPR_NE;
-            }
-            break;
-
-        case '^':
-            type = EXPR_XOR;
-            break;
-
-        case '%':
-            type = EXPR_REM;
-            break;
-
-        case '<':
-            if (c2 == NUL)
-            {
-                type = EXPR_LT;
-            }
-            else if (c2 == '=')
-            {
-                type = EXPR_LE;
-            }
-            else if (c2 == '>')
-            {
-                type = EXPR_NE;
-            }
-            else if (c2 == '<')
-            {
-                type = EXPR_LEFT;
-            }
-            break;
-            
-        case '>':
-            if (c2 == NUL)
-            {
-                type = EXPR_GT;
-            }
-            else if (c2 == '=')
-            {
-                type = EXPR_GE;
-            }
-            else if (c2 == '>')
-            {
-                type = EXPR_RIGHT;
-            }
-            break;
-
-        case '=':
-            if (c2 == '=')
-            {
-                type = EXPR_EQ;
-            }
-            break;
-
-        default:
-            break;
+        exec_bad(cmd);
     }
-
-    if (type == EXPR_NONE)
-    {
-        print_err(E_BRC);               // Invalid braced expression
-    }
-
-    push_expr(2, type);
 }

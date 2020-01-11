@@ -261,33 +261,125 @@ void exec_operator(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int value = 1;                      // 1 = parenthesis, 2 = operator
+    int c;
+    int type = cmd->c1;
 
-    if (cmd->c1 == '(')
+    switch (type)
     {
-        ++scan.nparens;
-    }
-    else if (cmd->c1 == ')')
+        case '(':
+            ++scan.nparens;
+            break;
+
+        case ')':
+            if (scan.nparens == 0)      // Can't have ) without (
+            {
+                print_err(E_MLP);       // Missing left parenthesis
+            }
+            else if (!pop_expr(NULL))   // Is there an operand available?
+            {
+                print_err(E_NAP);       // No argument before )
+            }
+            else
+            {
+                --scan.nparens;
+            }
+            break;
+
+        case '{':
+            ++scan.nbraces;
+            break;
+
+        case '}':
+            if (scan.nbraces == 0)      // Can't have ) without (
+            {
+                print_err(E_MLP);       // Missing left brace
+            }
+            else if (!pop_expr(NULL))   // Is there an operand available?
+            {
+                print_err(E_NAP);       // No argument before )
+            }
+            else
+            {
+                --scan.nbraces;
+            }
+            break;
+
+        case '/':
+            if (f.e3.brace && scan.nbraces)
+            {
+                if ((c = fetch_buf(NOCMD_START)) == '/')
+                {
+                    type = EXPR_REM;
+                }
+                else
+                {
+                    unfetch_buf(c);
+                }
+            }
+            break;
+
+        case '<':
+            if ((c = fetch_buf(NOCMD_START)) == '=')
+            {
+                type = EXPR_LE;
+            }
+            else if (c == '>')
+            {
+                type = EXPR_NE;
+            }
+            else if (c == '<')
+            {
+                type = EXPR_LEFT;
+            }
+            else
+            {
+                unfetch_buf(c);
+            }
+            break;
+
+        case '>':
+            if ((c = fetch_buf(NOCMD_START)) == '=')
+            {
+                type = EXPR_GE;
+            }
+            else if (c == '>')
+            {
+                type = EXPR_RIGHT;
+            }
+            else
+            {
+                unfetch_buf(c);
+            }
+            break;
+
+        case '=':
+            if (fetch_buf(NOCMD_START) != '=')
+            {
+                print_err(E_ARG);
+            }
+            break;
+
+        case '+':
+        case '-':
+        case '*':
+        case '&':
+        case '#':
+        case '~':
+        case '!':
+            break;
+
+        default:
+            print_err(E_ARG);
+    } 
+
+    if (strchr("(){}", type) != NULL)
     {
-        if (scan.nparens == 0)          // Can't have ) without (
-        {
-            print_err(E_MLP);           // Missing left parenthesis
-        }
-        else if (!pop_expr(NULL))       // Is there an operand available?
-        {
-            print_err(E_NAP);           // No argument before )
-        }
-        else
-        {
-            --scan.nparens;
-        }
+        push_expr(TYPE_GROUP, type);
     }
     else
     {
-        value = 2;                      // Arithmetic operator
+        push_expr(TYPE_OPER, type);
     }
-
-    push_expr(value, cmd->c1);          // Use operator as expression type
 }
 
 

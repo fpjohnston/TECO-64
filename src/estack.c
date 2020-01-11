@@ -208,8 +208,8 @@ static bool reduce2(void)
                 print_err(E_IFE);       // Ill-formed numeric expression
             }
         }
-        else if (e1->type != EXPR_VALUE && e1->value == 2 &&
-                 e2->type != EXPR_VALUE && e2->value == 2)
+        else if (e1->type != EXPR_VALUE && e1->value == TYPE_OPER &&
+                 e2->type != EXPR_VALUE && e2->value == TYPE_OPER)
         {
             print_err(E_IFE);           // Ill-formed numeric expression
         }
@@ -269,11 +269,11 @@ static bool reduce3(void)
     struct e_obj *e2 = &estack.obj[estack.level - 2];
     struct e_obj *e3 = &estack.obj[estack.level - 3];
 
-    // Reduce (x) to x
+    // Reduce (x) and {x} to x
 
-    if ((e3->type == '(' || e3->type == '{') &&
-        e2->type == EXPR_VALUE &&
-        (e1->type == ')' || e1->type == '}'))
+    if (((e3->type == '(' && e1->type == ')') ||
+         (e3->type == '{' && e1->type == '}')) &&
+        e2->type == EXPR_VALUE)
     {
         e3->value = e2->value;
         e3->type = EXPR_VALUE;

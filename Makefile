@@ -144,7 +144,6 @@ SOURCES = \
     quest_cmd.c    \
     radix_cmd.c    \
     s_cmd.c        \
-    tilde_cmd.c    \
     type_cmd.c     \
     u_cmd.c        \
     value_cmd.c    \

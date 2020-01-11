@@ -174,6 +174,7 @@ void reset_scan(void)
     scan.sum         = 0;
     scan.digits      = false;
     scan.expr        = false;
+    scan.brace_opt   = false;
     scan.mod         = false;
     scan.space       = false;
     scan.comma_set   = false;
@@ -232,6 +233,13 @@ exec_func *scan_cmd(struct cmd *cmd)
     }
 
     exec_func *exec = find_cmd(cmd);
+
+    if (f.e3.brace && scan.nbraces && scan.brace_opt)
+    {
+        scan.expr = true;
+
+        exec = exec_operator;
+    }
 
     if (exec == NULL)
     {
@@ -465,6 +473,7 @@ static void set_opts(struct cmd *cmd, const char *opts)
     int c;
 
     scan.expr       = false;
+    scan.brace_opt  = false;
     scan.m_opt      = false;
     scan.n_opt      = false;
     scan.colon_opt  = false;
@@ -479,6 +488,11 @@ static void set_opts(struct cmd *cmd, const char *opts)
     {
         switch (c)
         {
+            case 'b':
+                scan.brace_opt = true;
+
+                break;
+
             case 'x':
                 scan.expr = true;
 

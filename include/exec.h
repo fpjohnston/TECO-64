@@ -41,11 +41,13 @@
 struct scan
 {
     uint nparens;                   ///< No. of unmatched left parentheses
+    uint nbraces;                   ///< No. of unmatched left braces
     int sum;                        ///< Accumulated sum of digits scanned
     bool digits;                    ///< Accumulated sum is valid
     bool expr;                      ///< Current command is part of expression
     bool mod;                       ///< Command modifier seen
     bool space;                     ///< Last chr. scanned was whitespace
+    bool brace_opt;                 ///< Command has alternate meaning in braces
     bool comma_set;                 ///< Comma seen in expression
     bool m_opt;                     ///< m argument allowed
     bool n_opt;                     ///< n argument allowed

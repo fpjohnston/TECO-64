@@ -64,7 +64,14 @@ enum
     TECO_SUCCESS = -1                   ///< TECO function success
 };
 
-#define DUMMY_VALUE     1               ///< Temporary dummy value
+///  @enum   oper_type
+///  @brief  Type of operator stored on expression stack
+
+enum oper_type
+{
+    TYPE_GROUP = 1,                 // Group command (,),{,}
+    TYPE_OPER  = 2                  // Operator command
+};
 
 ///  @enum   expr_type
 ///  @brief  Type of item stored on expression stack.
@@ -72,27 +79,29 @@ enum
 enum expr_type
 {
     EXPR_NONE   = 0,
-    EXPR_VALUE  = '0',               // General value
-    EXPR_OPEN   = '(',               // Left parenthesis
-    EXPR_CLOSE  = ')',               // Close parenthesis
-    EXPR_COMP   = '\x1F',            // ^^ (CTRL/^) = ASCII RS
-    EXPR_OR     = '#',               // Bitwise OR
-    EXPR_AND    = '&',               // Bitwise AND
-    EXPR_MUL    = '*',               // Multiplication
-    EXPR_PLUS   = '+',               // Addition and unary plus
-    EXPR_MINUS  = '-',               // Subtraction and unary minus
-    EXPR_DIV    = '/',               // Division w/ quotient
-    EXPR_XOR    = '\'',              // Bitwise XOR (~)
-    EXPR_REM    = '%',               // Division w/ remainder (%)
-    EXPR_NOT    = '~',               // Logical NOT (!)
-    EXPR_LT     = '<',               // Less than (<)
-    EXPR_GT     = '>',               // Greater than (>)
-    EXPR_EQ     = '=',               // Equals (==)
-    EXPR_NE     = '!',               // Not equals (<>)
-    EXPR_LE     = 'L',               // Less than or equal (<=)
-    EXPR_GE     = 'G',               // Greater than or equal (>=)
-    EXPR_LEFT   = 'S',               // Left shift (<<)
-    EXPR_RIGHT  = 'U'                // Right shift (>>)
+    EXPR_VALUE  = '0',              // General value
+    EXPR_LPAREN = '(',              // Left parenthesis
+    EXPR_RPAREN = ')',              // Right parenthesis
+    EXPR_LBRACE = '{',              // Left brace
+    EXPR_RBRACE = '}',              // Right brace
+    EXPR_COMP   = '\x1F',           // 1's complement
+    EXPR_OR     = '#',              // Bitwise OR
+    EXPR_AND    = '&',              // Bitwise AND
+    EXPR_XOR    = '~',              // Bitwise XOR
+    EXPR_MUL    = '*',              // Multiplication
+    EXPR_PLUS   = '+',              // Addition and unary plus
+    EXPR_MINUS  = '-',              // Subtraction and unary minus
+    EXPR_DIV    = '/',              // Division w/ quotient
+    EXPR_REM    = '%',              // Division w/ remainder (//)
+    EXPR_NOT    = '!',              // Logical NOT
+    EXPR_LT     = '<',              // Less than
+    EXPR_GT     = '>',              // Greater than
+    EXPR_EQ     = '=',              // Equals (==)
+    EXPR_NE     = 'N',              // Not equals (<>)
+    EXPR_LE     = 'L',              // Less than or equal (<=)
+    EXPR_GE     = 'G',              // Greater than or equal (>=)
+    EXPR_LEFT   = 'S',              // Left shift (<<)
+    EXPR_RIGHT  = 'U'               // Right shift (>>)
 };
 
 ///  @struct e_obj

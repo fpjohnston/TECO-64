@@ -60,11 +60,11 @@ Q.M-12"= @^U.M%December%  ''''''''''''
 ^H U.T                  ! T.num = returned time           !
 E3&4"E Q.T * 2 U.0 |    ! 0.num = seconds since midnight  !
      Q.T / 1000    U.0 
-     {Q.T // 1000} U.X' ! X.num = milliseconds            !
+     Q.T {%} 1000  U.X' ! X.num = milliseconds            !
 Q.0 / 3600         U.H  ! H.num = hours                   !
-{Q.0 // 3600}      U.S  ! S.num = seconds                 !
+Q.0 {%} 3600       U.S  ! S.num = seconds                 !
 Q.S / 60           U.N  ! N.num = minutes                 !
-{Q.S // 60}        U.S  ! S.num = seconds                 !
+Q.S {%} 60         U.S  ! S.num = seconds                 !
 
                       ! Display DAY MM/DD/YYYY          !
 :G.W                  ! display DAY                     !
