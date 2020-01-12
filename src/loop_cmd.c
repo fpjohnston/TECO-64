@@ -78,7 +78,11 @@ static void endloop(struct cmd *cmd)
 
     do
     {
+        bool dryrun = f.e0.dryrun;
+
+        f.e0.dryrun = true;
         (void)next_cmd(cmd);
+        f.e0.dryrun = dryrun;
 
         if (cmd->c1 == '<')             // Start of a new loop?
         {

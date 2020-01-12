@@ -302,6 +302,11 @@ exec_func *scan_cmd(struct cmd *cmd)
     }
     else if (scan.expr || exec == exec_mod)
     {
+        if (toupper(cmd->c1) == 'A' && pop_expr(&cmd->n_arg))
+        {
+            cmd->n_set = true;
+        }
+
         (*exec)(cmd);
 
         exec = NULL;

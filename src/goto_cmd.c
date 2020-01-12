@@ -32,6 +32,7 @@
 #include <unistd.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -143,7 +144,11 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
 
     for (;;)
     {
+        bool dryrun = f.e0.dryrun;
+
+        f.e0.dryrun = true;
         (void)next_cmd(cmd);
+        f.e0.dryrun = dryrun;
 
         if (cmdbuf->pos == cmdbuf->len) // End of command string?
         {
@@ -158,14 +163,14 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
         {
             continue;                   // No
         }
-        else if (tag_pos != -1)         // Have we seen it before?
+        else if (tag_pos == -1)         // Have we seen it before?
         {
-            prints_err(E_DUP, tag);     // Duplicate tag
+            tag_pos = (int)cmdbuf->pos; // Remember tag for later
         }
         else if (cmd->text1.len == nbytes &&
                  !memcmp(cmd->text1.buf, tag, (long)nbytes))
         {
-            tag_pos = (int)cmdbuf->pos; // Remember tag for later
+            prints_err(E_DUP, tag);     // Duplicate tag
         }
     }
 
