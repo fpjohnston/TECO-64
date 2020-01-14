@@ -102,7 +102,7 @@ void exec_E5(struct cmd *cmd)
             }
             else
             {
-                printf("%%Skipping invalid option \"/%s\"\r\n", option);
+                prints("%%Skipping invalid option \"/%s\"\r\n", option);
             }
         }
     }

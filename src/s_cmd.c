@@ -71,18 +71,18 @@ void exec_S(struct cmd *cmd)
         sprintf(search_string, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
     }
 
-    printf("%s search for occurrence #%u of \"%s\"\r\n",
+    prints("%s search for occurrence #%u of \"%s\"\r\n",
            cmd->n_arg < 0 ? "backward" : "forward", (uint)abs(cmd->n_arg),
            search_string);
 
     if (cmd->m_set)
     {
-        printf("    limit search to %d characters\r\n", abs(cmd->m_arg) - 1);
+        prints("    limit search to %d characters\r\n", abs(cmd->m_arg) - 1);
     }
 
     if (cmd->colon_set)
     {
-        printf("    return success or failure\r\n");
+        prints("    return success or failure\r\n");
     }
 }
 

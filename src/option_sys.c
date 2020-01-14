@@ -95,7 +95,7 @@ void set_config(
         switch (c)
         {
             case OPTION_d:
-                printf("[Debugging mode on]\n");
+                prints("[Debugging mode on]\n");
                 f.e1.noexec = true;
 
                 break;

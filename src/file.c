@@ -291,16 +291,16 @@ int open_output(const struct cmd *cmd, uint stream)
         {
             if (f.e4.append)
             {
-                printf("%s", "%Appending to existing file\r\n");
+                prints("%s", "%Appending to existing file\r\n");
             }
             else
             {
-                printf("%s", "%Superseding existing file\r\n");
+                prints("%s", "%Superseding existing file\r\n");
             }
         }
         else if (toupper(cmd->c2) == 'L') // EL command
         {
-            printf("%s", "%Appending to existing file\r\n");
+            prints("%s", "%Appending to existing file\r\n");
         }
     }
     

@@ -95,7 +95,7 @@ void exec_equals(struct cmd *cmd)
         mode = user_mode;
     }
 
-    printf(mode, cmd->n_arg);
+    prints(mode, cmd->n_arg);
 
     if (!cmd->colon_set)                // Suppress CRLF?
     {

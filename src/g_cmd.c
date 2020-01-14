@@ -58,11 +58,11 @@ void exec_G(struct cmd *cmd)
     {
         if (cmd->qname == '*')          // :G* -> print filename buffer
         {
-            printf("%s", filename_buf);
+            prints("%s", filename_buf);
         }
         else if (cmd->qname == '_')     // :G_ -> print search string buffer
         {
-            printf("%s", last_search);
+            prints("%s", last_search);
         }
         else                            // :Gq -> print Q-register
         {

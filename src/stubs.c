@@ -38,7 +38,7 @@
 
 void exec_ctrl_v(struct cmd *unused1)
 {
-    printf("%s() not yet completed\r\n", __func__);
+    prints("%s() not yet completed\r\n", __func__);
 
     return;
 }
@@ -49,7 +49,7 @@ void exec_ctrl_v(struct cmd *unused1)
 
 void exec_ctrl_w(struct cmd *unused1)
 {
-    printf("%s() not yet completed\r\n", __func__);
+    prints("%s() not yet completed\r\n", __func__);
 
     return;
 }
@@ -60,7 +60,7 @@ void exec_ctrl_w(struct cmd *unused1)
 
 void exec_FB(struct cmd *unused1)
 {
-    printf("%s() not yet completed\r\n", __func__);
+    prints("%s() not yet completed\r\n", __func__);
 
     return;
 }
@@ -71,7 +71,7 @@ void exec_FB(struct cmd *unused1)
 
 void exec_ubar(struct cmd *unused1)
 {
-    printf("%s() not yet completed\r\n", __func__);
+    prints("%s() not yet completed\r\n", __func__);
 
     return;
 }

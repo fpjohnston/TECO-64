@@ -459,7 +459,7 @@ static void print_size(uint size)
         }
     }
 
-    printf("[%u%s bytes]", size, type);
+    prints("[%u%s bytes]", size, type);
 
     putc_term(CRLF);
 }

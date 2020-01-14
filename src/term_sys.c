@@ -259,23 +259,62 @@ void init_term(void)
 
 void put_bell(void)
 {
-#if     defined(CURSES)
-
-    if (f.ez.beep)
-    {
-        beep();
-    }
-    else
-    {
-        flash();
-    }
-
-#else
-
     putc_term(CTRL_G);
-
-#endif
 }
+
+int printc(int c)
+{
+    int c1 = fputc(c, stdout);
+
+    FILE *fp = ofiles[OFILE_LOG].fp;
+
+    if (fp != NULL)
+    {
+        fputc(c, fp);
+    }
+
+    return c1;
+}
+
+size_t printn(const char *str, size_t nmemb)
+{
+    assert(str != NULL);
+
+    size_t nbytes = fwrite(str, 1uL, nmemb, stdout);
+    FILE *fp = ofiles[OFILE_LOG].fp;
+
+    if (fp != NULL)
+    {
+        fwrite(str, 1uL, nmemb, fp);
+    }
+
+    return nbytes;
+}
+
+
+int prints(const char *fmt, ...)
+{
+    assert(fmt != NULL);
+
+    va_list argptr;
+    va_start(argptr, fmt);
+    
+    int nbytes = vprintf(fmt, argptr);
+
+    va_end(argptr);
+
+    FILE *fp = ofiles[OFILE_LOG].fp;
+
+    if (fp != NULL)
+    {
+        va_start(argptr, fmt);
+        (void)vfprintf(fp, fmt, argptr);
+        va_end(argptr);
+    }
+
+    return nbytes;
+}
+
 
 ///
 ///  @brief    Output character to terminal.
@@ -286,26 +325,24 @@ void put_bell(void)
 
 void putc_term(int c)
 {
-
-#if     defined(CURSES)
-
-    zaddch(c, 1);                       // TODO: finish this!
-
-#else
-
     if (c == CRLF)
     {
-        putc_term(CR);
-        putc_term(LF);
+        if (printc(CR) == EOF)
+        {
+            fatal_err(errno, E_UWC, NULL);
+        }
+
+        if (printc(LF) == EOF)
+        {
+            fatal_err(errno, E_UWC, NULL);
+        }
     }
-    else if (fputc(c, stdout) == EOF)
+    else if (printc(c) == EOF)
     {
         fatal_err(errno, E_UWC, NULL);
     }
 
     (void)fflush(stdout);
-
-#endif
 }
 
 
@@ -320,20 +357,12 @@ void puts_term(const char *str, unsigned int nbytes)
 {
     assert(str != NULL);
 
-#if     defined(CURSES)
-
-    zaddch(c, 1);                       // TODO: finish this!
-
-#else
-
-    if (fwrite(str, 1uL, (ulong)nbytes, stdout) != (ulong)nbytes)
+    if (printn(str, (size_t)nbytes) != (size_t)nbytes)
     {
         fatal_err(errno, E_UWL, NULL);
     }
 
     (void)fflush(stdout);
-
-#endif
 }
 
 
@@ -348,24 +377,16 @@ void print_term(const char *str)
 {
     assert(str != NULL);
 
-#if     defined(CURSES)
-
-    zaddch(c, 1);                       // TODO: finish this!
-
-#else
-
     char crlf[] = { '\r', '\n' };
     uint len = (uint)strlen(str);
 
-    if (fwrite(str, 1uL, (ulong)len, stdout) != len
-        || fwrite(crlf, 1uL, sizeof(crlf), stdout) != sizeof(crlf))
+    if (printn(str, (size_t)len) != len
+        || printn(crlf, sizeof(crlf)) != sizeof(crlf))
     {
         fatal_err(errno, E_UWL, NULL);
     }
 
     (void)fflush(stdout);
-
-#endif
 }
 
 

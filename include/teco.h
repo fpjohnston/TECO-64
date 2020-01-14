@@ -45,6 +45,13 @@
 #include <sys/types.h>
 #endif
 
+extern int printc(int c);
+
+extern size_t printn(const char *str, size_t nmemb);
+
+extern int prints(const char *fmt, ...);
+
+
 /// @def    countof(array)
 /// @brief  Returns the number of elements in an array.
 

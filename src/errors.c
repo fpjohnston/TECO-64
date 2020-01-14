@@ -426,12 +426,12 @@ static void common_err(int err_teco)
     const char *code = err_table[err_teco].code;
     const char *text = err_table[err_teco].text;
 
-    printf("?%s", code);                // Always print code
+    prints("?%s", code);               // Always print code
 
     if (f.eh.verbose != 1)              // Need to print more?
     {
-        printf("   ");
-        printf(text, err_str);
+        prints("   ");
+        prints(text, err_str);
     }
 
     putc_term(CRLF);

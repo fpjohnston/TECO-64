@@ -170,6 +170,8 @@ void log_cmd(struct cmd *cmd)
         return;
     }
 
+    return;
+
     nbytes = 0;
 
     // Skip any leading whitespace in expression
@@ -229,7 +231,7 @@ void log_cmd(struct cmd *cmd)
 
     if (f.e1.noexec)
     {
-        printf("#%05u:  %s\r\n", ++sequence, line);
+        prints("#%05u:  %s\r\n", ++sequence, line);
     }
 
     if (fp != NULL)                     // Print to log file if it's open

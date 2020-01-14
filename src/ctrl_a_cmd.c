@@ -51,5 +51,5 @@ void exec_ctrl_a(struct cmd *cmd)
         return;
     }
 
-    printf("%.*s", (int)cmd->text1.len, cmd->text1.buf);
+    prints("%.*s", (int)cmd->text1.len, cmd->text1.buf);
 }
