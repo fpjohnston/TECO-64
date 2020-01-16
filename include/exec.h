@@ -377,8 +377,6 @@ extern exec_func *next_cmd(struct cmd *cmd);
 
 extern int open_indirect(bool default_type);
 
-extern int open_output(const struct cmd *cmd, uint stream);
-
 extern void reset_if(void);
 
 extern bool read_indirect(void);
@@ -392,5 +390,7 @@ extern exec_func *scan_cmd(struct cmd *cmd);
 extern void scan_tail(struct cmd *cmd);
 
 extern bool test_indirect(void);
+
+extern int fopen_output(const struct cmd *cmd, uint stream);
 
 #endif  // _EXEC_H

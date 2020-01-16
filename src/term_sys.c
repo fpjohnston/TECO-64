@@ -106,8 +106,8 @@ int getc_term(bool wait)
                 return CTRL_C;          // Yes
             }
 
-            echo_chr(CTRL_C);
-            putc_term(CRLF);
+            echo_in(CTRL_C);
+            print_echo(CRLF);
 
             print_err(E_XAB);           // Execution aborted
         }
@@ -200,6 +200,11 @@ void init_term(void)
         fatal_err(errno, E_UIT, NULL);
     }
 
+    if (setvbuf(stdout, NULL, _IONBF, 0uL) != 0)
+    {
+        fatal_err(errno, E_UIT, NULL);
+    }
+
     // Note: NL below means LF
 
     mode.c_lflag &= ~ICANON;            // Disable canonical (cooked) mode
@@ -223,11 +228,6 @@ void init_term(void)
 //    f.et.accent    = true;              // Use accent grave as delimiter
 
     f.eu           = -1;                // No case flagging
-
-    // TODO: what to do here?
-    
-//    f.ez.noversion = true;
-//    f.ez.hidecr    = true;
 
     // TODO: use sigaction() instead of signal()
 
@@ -259,134 +259,7 @@ void init_term(void)
 
 void put_bell(void)
 {
-    putc_term(CTRL_G);
-}
-
-int printc(int c)
-{
-    int c1 = fputc(c, stdout);
-
-    FILE *fp = ofiles[OFILE_LOG].fp;
-
-    if (fp != NULL)
-    {
-        fputc(c, fp);
-    }
-
-    return c1;
-}
-
-size_t printn(const char *str, size_t nmemb)
-{
-    assert(str != NULL);
-
-    size_t nbytes = fwrite(str, 1uL, nmemb, stdout);
-    FILE *fp = ofiles[OFILE_LOG].fp;
-
-    if (fp != NULL)
-    {
-        fwrite(str, 1uL, nmemb, fp);
-    }
-
-    return nbytes;
-}
-
-
-int prints(const char *fmt, ...)
-{
-    assert(fmt != NULL);
-
-    va_list argptr;
-    va_start(argptr, fmt);
-    
-    int nbytes = vprintf(fmt, argptr);
-
-    va_end(argptr);
-
-    FILE *fp = ofiles[OFILE_LOG].fp;
-
-    if (fp != NULL)
-    {
-        va_start(argptr, fmt);
-        (void)vfprintf(fp, fmt, argptr);
-        va_end(argptr);
-    }
-
-    return nbytes;
-}
-
-
-///
-///  @brief    Output character to terminal.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void putc_term(int c)
-{
-    if (c == CRLF)
-    {
-        if (printc(CR) == EOF)
-        {
-            fatal_err(errno, E_UWC, NULL);
-        }
-
-        if (printc(LF) == EOF)
-        {
-            fatal_err(errno, E_UWC, NULL);
-        }
-    }
-    else if (printc(c) == EOF)
-    {
-        fatal_err(errno, E_UWC, NULL);
-    }
-
-    (void)fflush(stdout);
-}
-
-
-///
-///  @brief    Output string to terminal.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void puts_term(const char *str, unsigned int nbytes)
-{
-    assert(str != NULL);
-
-    if (printn(str, (size_t)nbytes) != (size_t)nbytes)
-    {
-        fatal_err(errno, E_UWL, NULL);
-    }
-
-    (void)fflush(stdout);
-}
-
-
-///
-///  @brief    Output null-terminated string and CR/LF to terminal.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void print_term(const char *str)
-{
-    assert(str != NULL);
-
-    char crlf[] = { '\r', '\n' };
-    uint len = (uint)strlen(str);
-
-    if (printn(str, (size_t)len) != len
-        || printn(crlf, sizeof(crlf)) != sizeof(crlf))
-    {
-        fatal_err(errno, E_UWL, NULL);
-    }
-
-    (void)fflush(stdout);
+    print_chr(CTRL_G);
 }
 
 
@@ -424,8 +297,8 @@ static void sigint(int unused1)
 
     if (f.et.abort || f.e0.ctrl_c)      // Should CTRL/C cause abort?
     {
-        echo_chr(CTRL_C);
-        putc_term(CRLF);
+        echo_in(CTRL_C);
+        print_chr(CRLF);
 
         // TODO: add code for EK and HK commands.
 

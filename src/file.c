@@ -249,7 +249,7 @@ int open_input(const char *filespec, uint stream)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int open_output(const struct cmd *cmd, uint stream)
+int fopen_output(const struct cmd *cmd, uint stream)
 {
     assert(cmd != NULL);
 
@@ -273,13 +273,27 @@ int open_output(const struct cmd *cmd, uint stream)
         free_mem(&last_file);
     }
 
-    uint nbytes = cmd->text1.len;       // Length of text string
-    
+    return open_output(ofile, toupper(cmd->c2), cmd->text1.buf, cmd->text1.len);
+}
+
+
+///
+///  @brief    Open file for output.
+///
+///  @returns  EXIT_SUCCESS or EXIT_FAILURE.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int open_output(struct ofile *ofile, int c, const char *name, uint nbytes)
+{
+    assert(ofile != NULL);
+    assert(name != NULL);
+
     last_file = alloc_mem(nbytes + 1);
 
-    sprintf(last_file, "%.*s", (int)nbytes, cmd->text1.buf);
+    sprintf(last_file, "%.*s", (int)nbytes, name);
 
-    bool exists = (access(last_file, F_OK) == 0);
+    bool exists = (c != 'L' && access(last_file, F_OK) == 0);
 
     const char *oname = get_oname(ofile, nbytes, exists);
 
@@ -287,20 +301,23 @@ int open_output(const struct cmd *cmd, uint stream)
 
     if (exists)
     {
-        if (toupper(cmd->c2) == 'W')    // EW command
+        if (c == 'W')                   // EW command
         {
             if (f.e4.append)
             {
-                prints("%s", "%Appending to existing file\r\n");
+                print_str("%s", "%Appending to existing file\r\n");
             }
             else
             {
-                prints("%s", "%Superseding existing file\r\n");
+                print_str("%s", "%Superseding existing file\r\n");
             }
         }
-        else if (toupper(cmd->c2) == 'L') // EL command
+        else if (c == 'L')              // EL command
         {
-            prints("%s", "%Appending to existing file\r\n");
+            if (f.e4.append)
+            {
+                print_str("%s", "%Appending to existing file\r\n");
+            }
         }
     }
     
@@ -311,7 +328,12 @@ int open_output(const struct cmd *cmd, uint stream)
         return EXIT_FAILURE;
     }
 
-    ofile->backup = (toupper(cmd->c2) == 'B') ? true : false;
+    ofile->backup = (c == 'B') ? true : false;
+
+    if (c == 'L')
+    {
+        (void)setvbuf(ofile->fp, NULL, _IONBF, 0uL);
+    }
 
     return EXIT_SUCCESS;
 }

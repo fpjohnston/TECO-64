@@ -42,13 +42,14 @@
 enum option_t
 {
     OPTION_d = 'd',
+    OPTION_l = 'l',
     OPTION_m = 'm'
 };
 
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "dm:";
+static const char * const optstring = "dl:m:";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -57,6 +58,7 @@ static const struct option long_options[] =
 {
     { "debug",  no_argument,        NULL,  'd'    },
     { "mung",   required_argument,  NULL,  'm'    },
+    { "log",    required_argument,  NULL,  'l'    },
     { NULL,     no_argument,        NULL,  0      },  // Markers for end of list
 };
 
@@ -95,13 +97,18 @@ void set_config(
         switch (c)
         {
             case OPTION_d:
-                prints("[Debugging mode on]\n");
+                print_str("[Debugging mode on]\n");
                 f.e1.noexec = true;
 
                 break;
 
             case OPTION_m:
                 mung_file = optarg;
+
+                break;
+
+            case OPTION_l:
+                log_file = optarg;
 
                 break;
 

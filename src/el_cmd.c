@@ -69,7 +69,7 @@ void exec_EL(struct cmd *cmd)
         return;
     }
 
-    if (open_output(cmd, OFILE_LOG) == EXIT_FAILURE)
+    if (fopen_output(cmd, OFILE_LOG) == EXIT_FAILURE)
     {
         if (!cmd->colon_set)
         {
@@ -231,12 +231,11 @@ void log_cmd(struct cmd *cmd)
 
     if (f.e1.noexec)
     {
-        prints("#%05u:  %s\r\n", ++sequence, line);
+        print_str("#%05u:  %s\r\n", ++sequence, line);
     }
 
     if (fp != NULL)                     // Print to log file if it's open
     {
         fprintf(fp, "%s\n", line);
-        (void)fflush(fp);
     }
 }

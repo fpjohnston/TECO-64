@@ -95,10 +95,10 @@ void exec_equals(struct cmd *cmd)
         mode = user_mode;
     }
 
-    prints(mode, cmd->n_arg);
+    print_str(mode, cmd->n_arg);
 
     if (!cmd->colon_set)                // Suppress CRLF?
     {
-        putc_term(CRLF);
+        print_chr(CRLF);
     }
 }

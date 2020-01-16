@@ -45,11 +45,11 @@
 #include <sys/types.h>
 #endif
 
-extern int printc(int c);
+extern void print_chr(int c);
 
-extern size_t printn(const char *str, size_t nmemb);
+extern void print_echo(int c);
 
-extern int prints(const char *fmt, ...);
+extern void print_str(const char *fmt, ...);
 
 
 /// @def    countof(array)
@@ -258,6 +258,8 @@ extern uint istream, ostream;
 
 extern char *last_file;
 
+extern const char *log_file;
+
 extern const char *mung_file;
 
 extern struct buffer *cmdbuf;
@@ -284,7 +286,9 @@ extern int teco_env(int n);
 
 // Terminal input/output functions
 
-extern void echo_chr(int c);
+extern void echo_in(int c);
+
+extern void echo_out(int c);
 
 extern int getc_term(bool nowait);
 
@@ -295,10 +299,6 @@ extern void print_prompt(void);
 extern void print_term(const char *str);
 
 extern void put_bell(void);
-
-extern void putc_term(int c);
-
-extern void puts_term(const char *str, unsigned int nbytes);
 
 extern void read_cmd(void);
 
@@ -351,6 +351,8 @@ extern int get_wild(void);
 extern void init_files(void);
 
 extern int open_input(const char *filespec, uint stream);
+
+extern int open_output(struct ofile *ofile, int c, const char *name, uint nbytes);
 
 extern void rename_output(struct ofile *ofile);
 

@@ -353,11 +353,11 @@ void print_qreg(int qname, bool qdot)
 
         if (c == LF)
         {
-            putc_term(CRLF);
+            print_chr(CRLF);
         }
         else
         {
-            echo_chr(c);
+            echo_out(c);
         }
     }    
 }

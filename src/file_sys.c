@@ -139,7 +139,7 @@ int get_wild(void)
         {
             sprintf(filename_buf, "%s", filename);
 
-            prints("loaded filespec buffer with %s\r\n", filename);
+            print_str("loaded filespec buffer with %s\r\n", filename);
 
             return EXIT_SUCCESS;
         }

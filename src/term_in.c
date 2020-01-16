@@ -81,7 +81,7 @@ static void read_bs(void)
 {
     if (empty_buf())                    // In immediate mode?
     {
-        putc_term(CRLF);
+        print_echo(CRLF);
         print_prompt();
 
         if (f.et.scope)
@@ -108,9 +108,9 @@ static void read_bs(void)
     else
     {
         (void)delete_buf();
-        putc_term(BS);
-        putc_term(SPACE);
-        putc_term(BS);
+        print_echo(BS);
+        print_echo(SPACE);
+        print_echo(BS);
     }
 }
 
@@ -143,12 +143,12 @@ void read_cmd(void)
 
         if ((f.et.accent && c == ACCENT) || f.ee == c)
         {
-            echo_chr(ACCENT);           // Echo as accent grave
+            echo_in(ACCENT);           // Echo as accent grave
             store_buf(c = ESC);         // But store as ESCape
 
             if (last_in == ESC)         // Consecutive delimiter?
             {
-                putc_term(CRLF);
+                print_echo(CRLF);
 
                 last_in = EOF;
 
@@ -195,14 +195,14 @@ void read_cmd(void)
                     break;
 
                 case ESC:
-                    echo_chr('$');              // Use dollar sign to echo ESC
+                    echo_in('$');              // Use dollar sign to echo ESC
                     store_buf(c);
 
                     if (last_in == ESC)
                     {
                         last_in = EOF;
 
-                        putc_term(CRLF);
+                        print_echo(CRLF);
 
                         return;                 // Done reading command
                     }
@@ -225,7 +225,7 @@ void read_cmd(void)
                         c = toupper(c);
                     }
 
-                    echo_chr(c);
+                    echo_in(c);
                     store_buf(c);
 
                     break;
@@ -248,7 +248,7 @@ void read_cmd(void)
 
 static void read_cr(void)
 {
-    putc_term(CR);
+    print_echo(CR);
 
     store_buf(CR);
 }
@@ -263,9 +263,9 @@ static void read_cr(void)
 
 static void read_ctrl_c(int last)
 {
-    echo_chr(CTRL_C);
+    echo_in(CTRL_C);
     store_buf(CTRL_C);
-    putc_term(CRLF);
+    print_echo(CRLF);
 
     if (last == CTRL_C)                 // Second CTRL/C?
     {
@@ -286,12 +286,12 @@ static void read_ctrl_c(int last)
 
 static void read_ctrl_g(void)
 {
-    echo_chr(CTRL_G);
+    echo_in(CTRL_G);
     store_buf(CTRL_G);
 
     int c = getc_term((bool)WAIT);      // Get next character
 
-    echo_chr(c);                        // Echo it
+    echo_in(c);                        // Echo it
 
     if (c != CTRL_G && c != SPACE && c != '*')
     {
@@ -302,7 +302,7 @@ static void read_ctrl_g(void)
 
     // Here when we have a special CTRL/G command
 
-    putc_term(CRLF);                    // Start new line
+    print_echo(CRLF);                       // Start new line
     (void)delete_buf();                 // Delete CTRL/G in buffer
 
     if (c == CTRL_G)                    // ^G^G
@@ -355,15 +355,15 @@ static void read_ctrl_u(void)
 
     if (f.et.scope)
     {
-        putc_term(CR);
+        print_echo(CR);
 
         // TODO: finish this
         // ZScrOp(SCR_EEL);             // erase line
     }
     else
     {
-        echo_chr(CTRL_U);
-        putc_term(CRLF);
+        echo_in(CTRL_U);
+        print_echo(CRLF);
     }
 
     reset_buf();
@@ -380,12 +380,12 @@ static void read_ctrl_u(void)
 
 static void read_ctrl_z(void)
 {
-    echo_chr(CTRL_Z);
+    echo_in(CTRL_Z);
     store_buf(CTRL_Z);
 
     int c = getc_term((bool)WAIT);
 
-    echo_chr(CTRL_Z);
+    echo_in(CTRL_Z);
 
     if (c == CTRL_Z)                    // Two CTRL/Z's?
     {
@@ -405,11 +405,11 @@ static void read_ctrl_z(void)
 
 static void read_ff(void)
 {
-    putc_term(CR);
+    print_echo(CR);
 
     for (int i = 0; i < FF_LINES; ++i)
     {
-        putc_term(LF);
+        print_echo(LF);
     }
 
     store_buf(FF);
@@ -458,16 +458,16 @@ static int read_first(void)
         {
             case DEL:
             case CTRL_U:
-                putc_term(CR);
+                print_echo(CR);
 
                 break;
 
             case '/':                   // Display verbose error message
-                putc_term(c);
+                print_echo(c);
 
                 if (last_error != E_NUL)
                 {
-                    putc_term(CRLF);
+                    print_echo(CRLF);
                     help_err(last_error);
                 }
 
@@ -476,17 +476,17 @@ static int read_first(void)
             case '?':                   // Display erroneous command string
                 if (last_error != E_NUL)
                 {
-                    putc_term(c);
+                    print_echo(c);
                     echo_buf(0);        // Echo command line
-                    putc_term(c);
+                    print_echo(c);
                 }
 
-                putc_term(CRLF);
+                print_echo(CRLF);
 
                 break;
 
             case '*':                   // Store last command in Q-register
-                putc_term(c);
+                print_echo(c);
                 c = getc_term((bool)WAIT);    // Get Q-register name
 
                 if (f.e0.ctrl_c)
@@ -518,7 +518,7 @@ static void read_lf(void)
 {
     if (empty_buf())                    // Immediate mode?
     {
-        putc_term(CRLF);
+        print_echo(CRLF);
         print_prompt();
 
         if (f.et.scope)
@@ -544,7 +544,7 @@ static void read_lf(void)
     }
     else
     {
-        putc_term(LF);
+        print_echo(LF);
         store_buf(LF);
     }
 }
@@ -565,7 +565,7 @@ static void read_qname(int c)
     }
     else if (c == BS || c == DEL || c == CTRL_U)
     {
-        putc_term(CR);
+        print_echo(CR);
 
         return;
     }
@@ -575,14 +575,14 @@ static void read_qname(int c)
 
     if (qdot)                           // Local Q-register?
     {
-        echo_chr(c);                    // Yes, echo the dot
+        echo_in(c);                    // Yes, echo the dot
 
         qname = getc_term((bool)WAIT);  // And get next character
     }
 
-    echo_chr(qname);                    // Echo Q-register name
+    echo_in(qname);                    // Echo Q-register name
 
-    putc_term(CRLF);
+    print_echo(CRLF);
 
     store_qtext(qname, qdot, copy_buf());
 }
@@ -597,11 +597,11 @@ static void read_qname(int c)
 
 static void read_vt(void)
 {
-    putc_term(CR);
+    print_echo(CR);
 
     for (int i = 0; i < VT_LINES; ++i)
     {
-        putc_term(LF);
+        print_echo(LF);
     }
 
     store_buf(VT);

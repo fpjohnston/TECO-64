@@ -121,7 +121,7 @@ void echo_buf(int pos)
 
     for (uint i = (uint)pos; i < cmdbuf->len; ++i)
     {
-        echo_chr(cmdbuf->buf[i]);
+        echo_out(cmdbuf->buf[i]);
     }
 }
 

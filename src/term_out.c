@@ -27,6 +27,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,10 +35,11 @@
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
-//#include "errors.h"
 
 
 uint ncommands = 0;                     ///< No. of commands seen so far
+
+static void echo_chr(int c, void (*print)(int c));
 
 
 ///
@@ -47,8 +49,36 @@ uint ncommands = 0;                     ///< No. of commands seen so far
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void echo_chr(int c)
+void echo_in(int c)
 {
+    echo_chr(c, print_echo);
+}
+
+
+///
+///  @brief    Echo character in a printable form, either as c, ^c, or [c].
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void echo_out(int c)
+{
+    echo_chr(c, print_chr);
+}
+
+
+///
+///  @brief    Echo character in a printable form, either as c, ^c, or [c].
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void echo_chr(int c, void (*print)(int c))
+{
+    assert(print != NULL);
+
     if (c == ESC)
     {
         if (f.et.accent)
@@ -63,13 +93,13 @@ void echo_chr(int c)
 
     if (isprint(c))
     {
-        putc_term(c);
+        (print)(c);
     }
     else if (!isascii(c))               // 8-bit character?
     {
         if (f.et.eightbit)              // Can terminal display it?
         {
-            putc_term(c);               // Yes
+            (print)(c);
         }
         else                            // No, make it printable
         {
@@ -88,7 +118,7 @@ void echo_chr(int c)
             case TAB:
             case LF:
             case CR:
-                putc_term(c);
+                (print)(c);
 
                 break;
 
@@ -96,32 +126,126 @@ void echo_chr(int c)
                 break;
 
             case ESC:
-                putc_term('$');
+                (print)('$');
 
                 break;
 
             case FF:
-                putc_term('\r');
+                (print)('\r');
                 //lint -fallthrough
 
             case VT:
-                putc_term('\n');
-                putc_term('\n');
-                putc_term('\n');
-                putc_term('\n');
+                (print)('\n');
+                (print)('\n');
+                (print)('\n');
+                (print)('\n');
 
                 break;
 
             case CTRL_G:
-                putc_term(CTRL_G);
+                (print)(CTRL_G);
 
                 //lint -fallthrough
 
             default:                    // Display as +^c
-                putc_term('^');
-                putc_term(c + 'A' - 1);
+                (print)('^');
+                (print)(c + 'A' - 1);
 
                 break;
          }
+    }
+}
+
+
+///
+///  @brief    Output character to terminal, and possibly to log file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void print_chr(int c)
+{
+    if (c == CRLF)
+    {
+        print_chr(CR);
+
+        c = LF;
+    }
+
+    fputc(c, stdout);
+
+    if (!f.e4.noout)
+    {
+        FILE *fp = ofiles[OFILE_LOG].fp;
+
+        if (fp != NULL)
+        {
+            fputc(c, fp);
+        }
+    }
+}
+
+
+///
+///  @brief    Echo character to terminal, and possibly to log file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void print_echo(int c)
+{
+    if (c == CRLF)
+    {
+        print_echo(CR);
+        print_echo(LF);
+
+        return;
+    }
+
+    fputc(c, stdout);
+
+    if (!f.e4.noin)
+    {
+        FILE *fp = ofiles[OFILE_LOG].fp;
+
+        if (fp != NULL)
+        {
+            fputc(c, fp);
+        }
+    }
+}
+
+
+///
+///  @brief    Output NUL-terminated string to terminal, and possibly also to
+///            log file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void print_str(const char *fmt, ...)
+{
+    assert(fmt != NULL);
+
+    va_list argptr;
+    va_start(argptr, fmt);
+    
+    (void)vprintf(fmt, argptr);
+
+    va_end(argptr);
+
+    if (!f.e4.noout)
+    {
+        FILE *fp = ofiles[OFILE_LOG].fp;
+
+        if (fp != NULL)
+        {
+            va_start(argptr, fmt);
+            (void)vfprintf(fp, fmt, argptr);
+            va_end(argptr);
+        }
     }
 }

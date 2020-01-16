@@ -56,7 +56,7 @@ void exec_E_pct(struct cmd *cmd)
 
     create_filename(&cmd->text1);
 
-    if (open_output(cmd, OFILE_QREGISTER) == EXIT_FAILURE)
+    if (fopen_output(cmd, OFILE_QREGISTER) == EXIT_FAILURE)
     {
         if (!cmd->colon_set)
         {

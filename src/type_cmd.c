@@ -122,16 +122,16 @@ static void exec_type(int m, int n)
 
         if (f.et.image)
         {
-            putc_term(c);
+            print_chr(c);
         }
         else
         {
             if (c == LF)
             {
-                echo_chr(CR);
+                echo_out(CR);
             }
 
-            echo_chr(c);
+            echo_out(c);
         }
     }
 }

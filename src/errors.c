@@ -426,15 +426,15 @@ static void common_err(int err_teco)
     const char *code = err_table[err_teco].code;
     const char *text = err_table[err_teco].text;
 
-    prints("?%s", code);               // Always print code
+    print_str("?%s", code);               // Always print code
 
     if (f.eh.verbose != 1)              // Need to print more?
     {
-        prints("   ");
-        prints(text, err_str);
+        print_str("   ");
+        print_str(text, err_str);
     }
 
-    putc_term(CRLF);
+    print_chr(CRLF);
 
     last_error = err_teco;
 }
@@ -507,8 +507,8 @@ void help_err(int err_teco)
 
             if (len > w.width)
             {
-                puts_term(start, ((uint)(end - start)) - 1);
-                putc_term(CRLF);
+                print_str(start, ((uint)(end - start)) - 1);
+                print_chr(CRLF);
 
                 --maxlines;
 
@@ -524,8 +524,8 @@ void help_err(int err_teco)
         {
             len = (uint)strlen(start);
 
-            puts_term(start, len);
-            putc_term(CRLF);
+            print_str(start, len);
+            print_chr(CRLF);
 
             break;
         }

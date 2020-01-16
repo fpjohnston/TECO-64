@@ -44,13 +44,13 @@ struct write_opts write_opts =
 
 
 ///
-///  @brief    Execute E5 command: set options for writing files.
+///  @brief    Execute E4 command: set options for writing files.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E5(struct cmd *cmd)
+void exec_E4(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -102,7 +102,7 @@ void exec_E5(struct cmd *cmd)
             }
             else
             {
-                prints("%%Skipping invalid option \"/%s\"\r\n", option);
+                print_str("%%Skipping invalid option \"/%s\"\r\n", option);
             }
         }
     }

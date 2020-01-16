@@ -113,6 +113,8 @@ jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
 const char *mung_file = NULL;       ///< Name of file to MUNG
 
+const char *log_file = NULL;        ///< Name of log file
+
 
 ///
 ///  @brief    Main program entry for TECO text editor.
@@ -140,6 +142,13 @@ int main(int argc, const char * const argv[])
     f.e3.tilde  = true;                 // Allow tilde operator
     f.e3.msec   = true;                 // Return time in milliseconds
 
+    // If a log file was requested on the command line, then open it now.
+
+    if (log_file != NULL)
+    {
+        open_output(&ofiles[OFILE_LOG], 'L', log_file, strlen(log_file));
+    }
+
     for (;;)                            // Loop forever
     {
         f.e0.exec = false;              // Not executing command
@@ -156,16 +165,13 @@ int main(int argc, const char * const argv[])
             init_expr();                // Initialize expression stack
 
             exec_cmd();                 // Then execute what we have
-            (void)fflush(NULL);
         }
         else if (jump == 1)             // ^C exit from macro
         {
-            (void)fflush(NULL);
             reset_buf();
         }
         else if (jump == 2)             // Error occurred
         {
-            (void)fflush(NULL);         // Flush all streams
             close_indirect();           // Close any indirect file
             reset_buf();                // Reset the input buffer
             reset_qreg();               // Free up Q-register storage
@@ -189,5 +195,5 @@ void print_prompt(void)
 {
     f.et.abort = false;                 // Don't abort on error
 
-    puts_term(prompt, (uint)strlen(prompt));
+    print_str(prompt, (uint)strlen(prompt));
 }

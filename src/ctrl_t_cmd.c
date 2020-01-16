@@ -61,17 +61,15 @@ void exec_ctrl_t(struct cmd *cmd)
 
         if (cmd->colon_set || f.et.image)
         {
-            putc_term(n);
+            print_chr(n);
         }
         else
         {
-            echo_chr(n);
+            echo_out(n);
         }
     }
     else
     {
-        (void)fflush(stdout);           // Make sure we flush output
-
         bool wait = f.et.nowait ? false : true;
         int c = getc_term(wait);
 
@@ -79,7 +77,7 @@ void exec_ctrl_t(struct cmd *cmd)
 
         if (!f.et.noecho)
         {
-            echo_chr(c);
+            echo_out(c);
         }
 
         push_expr(c, EXPR_VALUE);
