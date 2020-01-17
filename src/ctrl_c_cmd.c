@@ -29,6 +29,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "exec.h"
 
 
@@ -41,5 +42,10 @@
 
 void exec_ctrl_c(struct cmd *unused1)
 {
+    if (f.et.abort)
+    {
+        exit(EXIT_FAILURE);
+    }
+
     longjmp(jump_main, 1);
 }

@@ -223,9 +223,7 @@ bool read_indirect(void)
     {
         close_indirect();               // Yes, just close file
 
-        // TODO: why can't we return false here?
-
-        return true;                    // Say we're done with command file
+        return true;                    // TODO: return false here?
     }
 
     int c;

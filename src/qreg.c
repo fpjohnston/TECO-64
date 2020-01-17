@@ -161,16 +161,41 @@ static void free_qreg(void)
 
 uint get_qall(void)
 {
-    struct qreg *qreg;
     uint n = 0;
-    
+    struct qreg *qreg;
+
+    // Get count of all text in global Q-registers
+
     for (uint i = 0; i < QREG_SIZE; ++i)
     {
         qreg = &qglobal[i];
         n += qreg->text.len;
+    }
 
-//        qreg = &qlocal[i];
-//        n += qreg->text.len;
+    struct qlocal *qnext = local_head;
+
+    // Get count of all text in local Q-registers
+
+    while (qnext != NULL)
+    {
+        for (uint i = 0; i < QREG_SIZE; ++i)
+        {
+            qreg = &qnext->qreg[i];
+            n += qreg->text.len;
+        }
+
+        qnext = qnext->next;
+    }
+
+    // Get count of all text in push-down list
+
+    struct qlist *qlist = list_head;
+
+    while (qlist != NULL)
+    {
+        qreg = &qlist->qreg;
+        n += qreg->text.len;
+        qlist = qlist->next;
     }
 
     return n;

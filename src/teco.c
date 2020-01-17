@@ -127,6 +127,8 @@ int main(int argc, const char * const argv[])
 {
     extern uint macro_depth;
 
+    f.et.abort = true;
+
     init_env(argc, argv);               // Initialize environment
     init_term();                        // Initialize terminal
     init_buf();                         // Initialize command buffer
@@ -146,12 +148,14 @@ int main(int argc, const char * const argv[])
 
     if (log_file != NULL)
     {
-        open_output(&ofiles[OFILE_LOG], 'L', log_file, strlen(log_file));
+        (void)open_output(&ofiles[OFILE_LOG], 'L', log_file,
+                          (uint)strlen(log_file));
     }
 
     for (;;)                            // Loop forever
     {
         f.e0.exec = false;              // Not executing command
+        f.et.abort = false;             // Don't abort on error
 
         int jump = setjmp(jump_main);
 

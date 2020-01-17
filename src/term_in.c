@@ -264,6 +264,12 @@ static void read_cr(void)
 static void read_ctrl_c(int last)
 {
     echo_in(CTRL_C);
+
+    if (f.et.abort)
+    {
+        exit(EXIT_FAILURE);
+    }
+
     store_buf(CTRL_C);
     print_echo(CRLF);
 
