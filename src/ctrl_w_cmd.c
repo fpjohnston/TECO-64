@@ -1,6 +1,6 @@
 ///
-///  @file    stubs.c
-///  @brief   Temporary stub functions for TECO.
+///  @file    ctrl_w_cmd.c
+///  @brief   Execute ^W (CTRL/W) command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -30,26 +30,33 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "exec.h"
 
 
-///  @brief    Temporary stub function.
+///
+///  @brief    Execute ^W (CTRL/W) command: force conversion to upper case.
+///
+///             ^W -> enable upper-case conversion.
+///            0^W -> disable upper-case conversion.
+///            n^w -> enable upper-case conversion if n is non-zero.
+///
 ///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
 
-void exec_FB(struct cmd *unused1)
+void exec_ctrl_w(struct cmd *cmd)
 {
-    print_str("%s() not yet completed\r\n", __func__);
+    assert(cmd != NULL);
 
-    return;
-}
+    if (cmd->n_set && cmd->n_arg == 0)
+    {
+        f.e0.upper = false;
+    }
+    else
+    {
+        f.e0.upper = true;
+    }
 
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
-void exec_ubar(struct cmd *unused1)
-{
-    print_str("%s() not yet completed\r\n", __func__);
-
-    return;
+    f.e0.lower = false;
 }

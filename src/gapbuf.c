@@ -33,6 +33,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "textbuf.h"
 
 
@@ -369,6 +370,11 @@ static uint last_delim(uint nlines)
     int c;
     uint pos = e.dot;
 
+    if (pos-- == 0)
+    {
+        return 0;
+    }
+
     for (;;)
     {
         uint i = pos;
@@ -444,6 +450,11 @@ static uint next_delim(uint nlines)
 
 static void print_size(uint size)
 {
+    if (f.et.abort)                     // Is abort bit set?
+    {
+        return;                         // Yes, don't print messages then
+    }
+
     const char *type = "";
 
     if (size > 1024)

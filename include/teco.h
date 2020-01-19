@@ -266,9 +266,15 @@ extern struct buffer *cmdbuf;
 
 extern struct watch w;
 
+extern uint macro_depth;
+
+extern struct tstring last_search;
+
 // Global functions
 
 extern void *alloc_mem(uint size);
+
+extern uint build_string(char **dest, const char *src, uint len);
 
 extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
 
@@ -279,6 +285,8 @@ extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 extern void exec_cmd(void);
 
 extern void init_env(int argc, const char * const argv[]);
+
+extern void init_search(void);
 
 extern void set_config(int argc, const char * const argv[]);
 

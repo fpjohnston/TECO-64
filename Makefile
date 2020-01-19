@@ -73,6 +73,7 @@ VPATH=src:obj:$(INCDIR)
 LIBS =
 
 SOURCES = \
+    build_str.c    \
     cmd_buf.c      \
     cmd_exec.c     \
     cmd_scan.c     \
@@ -101,6 +102,8 @@ SOURCES = \
     ctrl_c_cmd.c   \
     ctrl_t_cmd.c   \
     ctrl_u_cmd.c   \
+    ctrl_v_cmd.c   \
+    ctrl_w_cmd.c   \
     datetime_cmd.c \
     delete_cmd.c   \
     digit_cmd.c    \

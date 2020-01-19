@@ -125,24 +125,22 @@ const char *log_file = NULL;        ///< Name of log file
 
 int main(int argc, const char * const argv[])
 {
-    extern uint macro_depth;
-
-    f.et.abort = true;
-
-    init_env(argc, argv);               // Initialize environment
-    init_term();                        // Initialize terminal
-    init_buf();                         // Initialize command buffer
-    init_tbuf(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);
-                                        // Initialize edit buffer
-    init_qreg();                        // Initialize Q-registers
-    init_files();                       // Initialize file streams
-    init_EG();                          // Initialize for EG command
-    init_loop();                        // Initialie for loops
-
+    f.et.abort  = true;                 // Abort on error
     f.e1.strict = true;                 // Strictly enforce syntax
     f.e3.brace  = true;                 // Allow braced expressions
     f.e3.tilde  = true;                 // Allow tilde operator
     f.e3.msec   = true;                 // Return time in milliseconds
+
+    init_env(argc, argv);               // Initialize environment
+    init_term();                        // Initialize terminal
+    init_buf();                         // Initialize command buffer
+    init_qreg();                        // Initialize Q-registers
+    init_files();                       // Initialize file streams
+    init_EG();                          // Initialize EG command
+    init_loop();                        // Initialize loop stack
+    init_search();                      // Initialize search string
+    init_tbuf(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);
+                                        // Initialize edit buffer
 
     // If a log file was requested on the command line, then open it now.
 
@@ -157,31 +155,36 @@ int main(int argc, const char * const argv[])
         f.e0.exec = false;              // Not executing command
         f.et.abort = false;             // Don't abort on error
 
-        int jump = setjmp(jump_main);
-
-        if (jump == 0)
+        switch (setjmp(jump_main))
         {
-            if (!check_indirect())      // Indirect command to execute yet?
-            {
-                read_cmd();             // No, read from terminal
-            }
+            case 0:                     // Normal entry
+                if (!check_indirect())  // Indirect command to execute yet?
+                {
+                    read_cmd();         // No, read from terminal
+                }
 
-            init_expr();                // Initialize expression stack
+                init_expr();            // Initialize expression stack
 
-            exec_cmd();                 // Then execute what we have
-        }
-        else if (jump == 1)             // ^C exit from macro
-        {
-            reset_buf();
-        }
-        else if (jump == 2)             // Error occurred
-        {
-            close_indirect();           // Close any indirect file
-            reset_buf();                // Reset the input buffer
-            reset_qreg();               // Free up Q-register storage
-            reset_if();                 // Reset if statement depth
-            reset_loop();               // Free up loop structures
-            macro_depth = 0;
+                exec_cmd();             // Then execute what we have
+
+                break;
+
+            case 1:                     // CTRL/C typed
+                reset_buf();            // TODO: is this correct?
+
+                break;
+
+            default:
+            case 2:                     // Error
+                close_indirect();       // Close any indirect file
+                reset_buf();            // Reset the input buffer
+                reset_qreg();           // Free up Q-register storage
+                reset_if();             // Reset if statement depth
+                reset_loop();           // Free up loop structures
+
+                macro_depth = 0;
+
+                break;
         }
     }
 }
@@ -197,7 +200,5 @@ int main(int argc, const char * const argv[])
 
 void print_prompt(void)
 {
-    f.et.abort = false;                 // Don't abort on error
-
-    print_str(prompt, (uint)strlen(prompt));
+    print_str("%s", prompt);
 }

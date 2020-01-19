@@ -41,7 +41,7 @@
 ///
 ///  @brief    Final execution of EG command.
 ///
-///  @returns  Nothing (return to operating system).
+///  @returns  Nothing (returns to operating system).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

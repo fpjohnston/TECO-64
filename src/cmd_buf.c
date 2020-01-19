@@ -150,8 +150,6 @@ bool empty_buf(void)
 
 int fetch_buf(bool start)
 {
-    extern uint macro_depth;
-
     assert(cmdbuf != NULL);
     
     if (cmdbuf->pos == cmdbuf->len)

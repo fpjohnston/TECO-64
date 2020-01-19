@@ -41,10 +41,6 @@
 
 #define INFINITE        (-1)            ///< Infinite loop count
 
-// TODO: the following should be moved elsewhere
-
-bool search_success = true;             ///< true if last search succeeded
-
 // TODO: add environment variable to limit loop depth?
 
 ///  @struct loop
@@ -211,34 +207,21 @@ void exec_semi(struct cmd *cmd)
     {
         print_err(E_SNI);               // Semi-colon not in loop
     }
-
-    if (cmd->n_set)
+    else if (!cmd->n_set)
     {
-        if (cmd->colon_set)             // n:; command
-        {
-            if (cmd->n_arg >= 0)        // End loop if n < 0
-            {
-                return;
-            }
-        }
-        else                            // n; command
-        {
-            if (cmd->n_arg < 0)         // End loop if n >= 0
-            {
-                return;
-            }
-        }
+        print_err(E_NAS);               // No argument before semi-colon
     }
-    else if (cmd->colon_set)            // :; command
+
+    if (cmd->colon_set)                 // n:; command
     {
-        if (!search_success)            // End loop if last search succeeded
+        if (cmd->n_arg >= 0)            // End loop if n < 0
         {
             return;
         }
     }
-    else                                // ; command
+    else                                // n; command
     {
-        if (search_success)             // End loop if last search failed
+        if (cmd->n_arg < 0)             // End loop if n >= 0
         {
             return;
         }

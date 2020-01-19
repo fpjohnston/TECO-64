@@ -507,7 +507,7 @@ void help_err(int err_teco)
 
             if (len > w.width)
             {
-                print_str(start, ((uint)(end - start)) - 1);
+                print_str("%.s", (end - start) - 1, start);
                 print_chr(CRLF);
 
                 --maxlines;

@@ -42,6 +42,8 @@ struct e0_flag
     uint exec   : 1;            ///< Executing command
     uint ctrl_c : 1;            ///< CTRL/C seen
     uint dryrun : 1;            ///< Parse commands w/o executing them
+    uint lower  : 1;            ///< Force string arguments to lower case
+    uint upper  : 1;            ///< Force string arguments to upper case
 };
 
 ///  @struct  e1_flag
@@ -68,6 +70,7 @@ union e2_flag
     struct
     {
         uint dollar : 1;        ///< $ is a valid symbol character
+        uint ubar   : 1;        ///< _ is a valid symbol character
         uint add_cr : 1;        ///< Add CR to LF on output
         uint no_cr  : 1;        ///< Strip CR on input
         uint no_ff  : 1;        ///< FF is normal character on input

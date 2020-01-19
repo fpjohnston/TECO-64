@@ -35,8 +35,6 @@
 #include "exec.h"
 #include "qreg.h"
 
-const char *last_search = "<last search string>"; ///< Last search string
-
 
 ///
 ///  @brief    Execute G command: print Q-register contents, or copy to buffer.
@@ -62,7 +60,7 @@ void exec_G(struct cmd *cmd)
         }
         else if (cmd->qname == '_')     // :G_ -> print search string buffer
         {
-            print_str("%s", last_search);
+            print_str("%.*s", (int)last_search.len, last_search.buf);
         }
         else                            // :Gq -> print Q-register
         {
@@ -77,7 +75,7 @@ void exec_G(struct cmd *cmd)
         }
         else if (cmd->qname == '_')     // G_ -> copy search string to buffer
         {
-            exec_insert(last_search, (uint)strlen(last_search));
+            exec_insert(last_search.buf, last_search.len);
         }
         else                           // Gq -> copy Q-register to buffer
         {

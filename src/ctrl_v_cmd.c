@@ -1,6 +1,6 @@
 ///
-///  @file    stubs.c
-///  @brief   Temporary stub functions for TECO.
+///  @file    ctrl_v_cmd.c
+///  @brief   Execute ^V (CTRL/V) command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -30,26 +30,33 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "exec.h"
 
 
-///  @brief    Temporary stub function.
+///
+///  @brief    Execute ^V (CTRL/V) command: force conversion to lower case.
+///
+///             ^V -> enable lower-case conversion.
+///            0^V -> disable lower-case conversion.
+///            n^V -> enable lower-case conversion if n is non-zero.
+///
 ///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
 
-void exec_FB(struct cmd *unused1)
+void exec_ctrl_v(struct cmd *cmd)
 {
-    print_str("%s() not yet completed\r\n", __func__);
+    assert(cmd != NULL);
 
-    return;
-}
+    if (cmd->n_set && cmd->n_arg == 0)
+    {
+        f.e0.lower = false;
+    }
+    else
+    {
+        f.e0.lower = true;
+    }
 
-
-///  @brief    Temporary stub function.
-///  @returns  Nothing.
-
-void exec_ubar(struct cmd *unused1)
-{
-    print_str("%s() not yet completed\r\n", __func__);
-
-    return;
+    f.e0.upper = false;
 }
