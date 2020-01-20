@@ -292,6 +292,10 @@ extern void set_config(int argc, const char * const argv[]);
 
 extern int teco_env(int n);
 
+extern bool check_loop(void);
+
+extern bool check_macro(void);
+
 // Terminal input/output functions
 
 extern void echo_in(int c);

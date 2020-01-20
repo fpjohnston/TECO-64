@@ -61,6 +61,26 @@ static void endloop(struct cmd *cmd);
 
 
 ///
+///  @brief    Check to see if we're in a loop.
+///
+///  @returns  true if we're in a loop, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool check_loop(void)
+{
+    if (loop_head != NULL)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+///
 ///  @brief    Flow to end of loop
 ///
 ///  @returns  Nothing.

@@ -39,6 +39,26 @@ uint macro_depth = 0;
 
 
 ///
+///  @brief    Check to see if we're in a macro.
+///
+///  @returns  true if we're in a macro, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool check_macro(void)
+{
+    if (macro_depth != 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+///
 ///  @brief    Execute M command: invoke macro in Q-register.
 ///
 ///                Mq -> Execute Q-register q as a command string.

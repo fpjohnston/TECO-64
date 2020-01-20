@@ -186,15 +186,22 @@ uint build_string(char **dest, const char *src, uint len)
 
             // Here for <CTRL/E>Q or <CTRL/E>U
 
-            int qname;
-            bool qlocal = false;
-
             if (len-- == 0)             // Q-register specified?
             {
                 printc_err(E_IQN, NUL); // Illegal Q-register
             }
 
-            if ((qname = *src++) == '.') // Local Q-register?
+            int qname = *src++;
+            bool qlocal = false;
+
+            if (qname == '*' && c == 'Q')
+            {
+                store_str(filename_buf, (uint)strlen(filename_buf));
+
+                continue;
+            }
+
+            if (qname == '.')           // Local Q-register?
             {
                 qlocal = true;
 

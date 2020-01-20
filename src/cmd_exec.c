@@ -88,7 +88,6 @@ void exec_cmd(void)
     {
         f.e0.exec = true;
         exec_func *exec = next_cmd(&cmd);
-        f.e0.exec = false;
 
         if (exec == NULL)
         {
@@ -103,47 +102,6 @@ void exec_cmd(void)
             continue;
         }
 
-        // If the only thing on the expression stack is a minus sign,
-        // then say we have an n argument equal to -1. Otherwise check
-        // for m and n arguments.
-
-        if (cmd.expr.len == 1 && estack.obj[0].type == EXPR_MINUS)
-        {
-            estack.level = 0;
-
-            cmd.n_set = true;
-            cmd.n_arg = -1;
-        }
-        else if (pop_expr(&cmd.n_arg))
-        {
-            cmd.n_set = true;
-
-            if (pop_expr(&cmd.m_arg))
-            {
-                cmd.m_set = true;
-            }
-
-            if (f.e1.strict)
-            {
-                if (cmd.n_set && !scan.n_opt)
-                {
-                    print_err(E_UNA);   // Unused n argument
-                }
-                else if (cmd.m_set && !scan.m_opt)
-                {
-                    print_err(E_UMA);   // Unused m argument
-                }
-            }
-        }
-        else if (cmd.m_set)             // m but no n argument?
-        {
-            if (f.e1.strict)
-            {
-                print_err(E_MNA);       // Missing n argument
-            }
-        }
-
-        f.e0.exec = true;
         (*exec)(&cmd);                  // Execute command
         f.e0.exec = false;
 
@@ -155,8 +113,6 @@ void exec_cmd(void)
         }
     }
 }
-
-
 
 
 ///
@@ -395,6 +351,19 @@ exec_func *next_cmd(struct cmd *cmd)
     assert(cmd != NULL);
 
     *cmd = null_cmd;
+
+    // Pop m and n arguments (if any) from the expression stack
+
+    if (pop_expr(&cmd->n_arg))
+    {
+        cmd->n_set = true;
+
+        if (pop_expr(&cmd->m_arg))
+        {
+            cmd->m_set = true;
+        }
+    }
+
     reset_scan();
     init_expr();                        // Reset expression stack
 
@@ -450,6 +419,46 @@ exec_func *next_cmd(struct cmd *cmd)
     else if (exec != NULL)
     {
         log_cmd(cmd);
+    }
+
+    // Pop m and n arguments (if any) from the expression stack
+
+    if (pop_expr(&cmd->n_arg))
+    {
+        cmd->n_set = true;
+
+        if (pop_expr(&cmd->m_arg))
+        {
+            cmd->m_set = true;
+        }
+    }
+
+    // If the only thing on the expression stack is a minus sign,
+    // then say we have an n argument equal to -1. Otherwise check
+    // for m and n arguments.
+
+    if (estack.level == 1 && estack.obj[0].type == EXPR_MINUS)
+    {
+        estack.level = 0;
+
+        cmd->n_set = true;
+        cmd->n_arg = -1;
+    }
+    else if (f.e1.strict)
+    {
+        if (estack.level != 0)
+        {
+            printf("expression stack warning\r\n"); // TODO: TBD
+        }
+
+        if (cmd->n_set && !scan.n_opt)
+        {
+            print_err(E_UNA);           // Unused n argument
+        }
+        else if (cmd->m_set && !scan.m_opt)
+        {
+            print_err(E_UMA);           // Unused m argument
+        }
     }
 
     return exec;

@@ -161,7 +161,7 @@ void exec_P(struct cmd *cmd)
 ///  @brief    Write out current page. If needed, add form feed, clear buffer,
 ///            and read next page.
 ///
-///  @returns  Nothing.
+///  @returns  true if more data, false if not.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -191,7 +191,7 @@ bool next_page(uint start, uint end, bool ff, bool yank)
         fputc(FF, ofile->fp);
     }
 
-    if (yank)                           // Read in next page if necessary
+    if (yank)                           // Yank next page if we need to
     {
         uint Z = getsize_tbuf();
 
@@ -199,7 +199,9 @@ bool next_page(uint start, uint end, bool ff, bool yank)
         
         delete_tbuf((int)Z);            // Kill the whole buffer
 
-        if (!append((bool)false, 0, (bool)false))
+        struct ifile *ifile = &ifiles[istream];
+
+        if (ifile->fp == NULL || !append((bool)false, 0, (bool)false))
         {
             return false;               // False if no more data
         }
