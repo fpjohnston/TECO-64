@@ -1,6 +1,6 @@
 ///
-///  @file    n_cmd.c
-///  @brief   Execute N and FN commands.
+///  @file    case_cmd.c
+///  @brief   Execute commands to change lower and upper case.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,136 +26,131 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "eflags.h"
+#include "textbuf.h"
 #include "errors.h"
 #include "exec.h"
-#include "textbuf.h"
 
 
 // Local functions
 
-static void exec_search(struct cmd *cmd, bool replace);
+static void exec_case(struct cmd *cmd, bool lower);
 
 
 ///
-///  @brief    Execute N command: global search.
+///  @brief    Execute FL command: convert characters to lower case.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_N(struct cmd *cmd)
+void exec_FL(struct cmd *cmd)
 {
-    exec_search(cmd, (bool)false);
+    exec_case(cmd, (bool)true);
 }
 
 
 ///
-///  @brief    Execute FN command: global search and replace.
+///  @brief    Execute FU command: convert characters to upper case.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_FN(struct cmd *cmd)
+void exec_FU(struct cmd *cmd)
 {
-    exec_search(cmd, (bool)true);
+    exec_case(cmd, (bool)false);
 }
 
 
 ///
-///  @brief    Execute search and replace.
+///  @brief    Execute upper or lower case command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_search(struct cmd *cmd, bool replace)
+static void exec_case(struct cmd *cmd, bool lower)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set && cmd->n_arg == 0)  // 0Ntext` isn't allowed
-    {
-        print_err(E_ISA);               // Illegal search argument
-    }
-
-    if (!cmd->n_set)                    // Ntext` => 1Ntext`
-    {
-        cmd->n_arg = 1;
-        cmd->n_set = true;
-    }
-
-    if (cmd->text1.len != 0)
-    {
-        free_mem(&last_search.buf);
-
-        last_search.len = build_string(&last_search.buf, cmd->text1.buf,
-                                       cmd->text1.len);
-    }
-
     int dot = (int)getpos_tbuf();
-    struct search s;
+    int Z   = (int)getsize_tbuf();
+    int m, n;
 
-    if (cmd->n_arg < 0)
+    if (cmd->h_set)                     // HFU/HFL?
     {
-        s.type       = SEARCH_S;
-        s.search     = search_backward;
-        s.count      = -cmd->n_arg;
-        s.text_start = -1;
-        s.text_end   = -dot;
+        m = 0 - dot;
+        n = Z - dot;
     }
     else
     {
-        s.type       = SEARCH_N;
-        s.search     = search_forward;
-        s.count      = cmd->n_arg;
-        s.text_start = 0;
-        s.text_end   = (int)getsize_tbuf() - dot;
+        if (cmd->m_set)                 // m,nFU/m,nFL
+        {
+            if (cmd->n_set)
+            {
+                n = cmd->n_arg;
+            }
+            else
+            {
+                n = 0;
+            }
+
+            m = cmd->m_arg;
+
+            if (m < 0 || m > Z || n < 0 || n > Z || m > n)
+            {
+                printc_err(E_POP, '?'); // Pointer off page
+            }
+
+            m -= dot;
+            n -= dot;
+        }
+        else
+        {
+            if (cmd->n_set)
+            {
+                n = cmd->n_arg;
+            }
+            else
+            {
+                n = 1;
+            }
+
+            m = 0;
+            n = getdelta_tbuf(n);
+        }
     }
 
-    if (search_loop(&s))
+    for (int i = m; i < n; ++i)
     {
-        if (replace)
-        {
-            delete_tbuf(-(int)last_len);
+        int c = getchar_tbuf(i);
 
-            if (cmd->text2.len)
+        if (c == EOF)
+        {
+            break;
+        }
+
+        if (lower)
+        {
+            if (isupper(c))
             {
-                exec_insert(cmd->text2.buf, cmd->text2.len);
+                (void)putchar_tbuf(i, tolower(c));
             }
         }
         else
         {
-            search_print();
-        }
-
-        if (cmd->colon_set)
-        {
-            push_expr(-1, EXPR_VALUE);
-        }
-    }
-    else
-    {
-        if (cmd->colon_set)
-        {
-            push_expr(0, EXPR_VALUE);
-        }
-        else
-        {
-            if (!f.ed.keepdot)
+            if (islower(c))
             {
-                setpos_tbuf(0);
+                (void)putchar_tbuf(i, toupper(c));
             }
-
-            last_search.buf[last_search.len] = NUL;
-
-            prints_err(E_SRH, last_search.buf);
         }
     }
+
+    setpos_tbuf((uint)(dot + n));
 }

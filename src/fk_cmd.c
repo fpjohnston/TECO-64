@@ -31,11 +31,15 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
+#include "eflags.h"
+#include "errors.h"
 #include "exec.h"
+#include "textbuf.h"
 
 
 ///
-///  @brief    Execute FK command (global search and replace).
+///  @brief    Execute FK command: forward search and delete.
 ///
 ///  @returns  Nothing.
 ///
@@ -44,6 +48,63 @@
 void exec_FK(struct cmd *cmd)
 {
     assert(cmd != NULL);
-}
 
+    if (cmd->n_set)
+    {
+        if (cmd->n_arg <= 0)            // 0FKtext` and -nFKtext` aren't allowed
+        {
+            print_err(E_ISA);           // Illegal search argument
+        }
+    }
+    else                                // FKtext` => 1FKtext`
+    {
+        cmd->n_arg = 1;
+        cmd->n_set = true;
+    }
+
+    if (cmd->text1.len != 0)
+    {
+        free_mem(&last_search.buf);
+
+        last_search.len = build_string(&last_search.buf, cmd->text1.buf,
+                                       cmd->text1.len);
+    }
+
+    int dot = (int)getpos_tbuf();
+    struct search s;
+
+    s.type       = SEARCH_S;
+    s.search     = search_forward;
+    s.count      = cmd->n_arg;
+    s.text_start = 0;
+    s.text_end   = (int)getsize_tbuf() - dot;
+
+    if (search_loop(&s))
+    {
+        delete_tbuf(-s.text_pos);
+
+        if (cmd->colon_set)
+        {
+            push_expr(-1, EXPR_VALUE);
+        }
+    }
+    else
+    {
+        if (cmd->colon_set)
+        {
+            push_expr(0, EXPR_VALUE);
+        }
+        else
+        {
+            if (!f.ed.keepdot)
+            {
+                setpos_tbuf(0);
+            }
+
+            last_search.buf[last_search.len] = NUL;
+
+            prints_err(E_SRH, last_search.buf);
+        }
+    }
+}
 

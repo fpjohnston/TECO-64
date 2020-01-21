@@ -257,11 +257,15 @@ extern void exec_FD(struct cmd *cmd);
 
 extern void exec_FK(struct cmd *cmd);
 
+extern void exec_FL(struct cmd *cmd);
+
 extern void exec_FN(struct cmd *cmd);
 
 extern void exec_FR(struct cmd *cmd);
 
 extern void exec_FS(struct cmd *cmd);
+
+extern void exec_FU(struct cmd *cmd);
 
 extern void exec_F_apos(struct cmd *cmd);
 
@@ -392,5 +396,7 @@ extern void scan_tail(struct cmd *cmd);
 extern bool test_indirect(void);
 
 extern int fopen_output(const struct cmd *cmd, uint stream);
+
+extern bool next_yank(void);
 
 #endif  // _EXEC_H

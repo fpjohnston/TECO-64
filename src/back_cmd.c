@@ -26,11 +26,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
 #include "exec.h"
+#include "textbuf.h"
+
 
 ///  @var    MAX_DIGITS
 ///  @brief  Maximum length of digit string. Note that this is big enough to
@@ -50,9 +54,7 @@ void exec_back(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n;
-
-    if (pop_expr(&n))                   // n\`?
+    if (cmd->n_set)                     // n\`?
     {
         char string[MAX_DIGITS];
         const char *format = "%d";        
@@ -66,19 +68,69 @@ void exec_back(struct cmd *cmd)
             format = "%x";
         }
 
-        uint nbytes = (uint)snprintf(string, sizeof(string), format, n);
+        uint nbytes = (uint)snprintf(string, sizeof(string), format, cmd->n_arg);
 
         assert(nbytes < sizeof(string));
 
         exec_insert(string, nbytes);
-        push_expr(n, EXPR_VALUE);       // TODO: is this correct?
+
+        last_len = nbytes;
     }
     else
     {
-        // TODO: read digit string in buffer using current radix.
+        uint dot = getpos_tbuf();
+        bool minus = false;
+        int pos = 0;
+        uint digits = 0;
+        int n = 0;
 
-        n = 0;
+        int c = getchar_tbuf(pos++);
 
-        push_expr(n, EXPR_VALUE);
+        if (c == '+')
+        {
+            c = getchar_tbuf(pos++);
+        }
+        else if (c == '-')
+        {
+            c = getchar_tbuf(pos++);
+            minus = true;
+        }
+
+        while (c != -1)
+        {
+            const char *dstr = "0123456789abcdef";
+            const char *dchar = strchr(dstr, tolower(c));
+
+            if (dchar == NULL)
+            {
+                break;
+            }
+
+            int digit = dchar - dstr;
+
+            if ((v.radix == 8 && digit >= 8) || (v.radix == 10 && digit >= 10))
+            {
+                break;
+            }
+
+            ++digits;
+
+            n *= v.radix;
+            n += digit;
+
+            c = getchar_tbuf(pos++);
+        }
+
+        if (digits != 0)
+        {
+            if (minus)
+            {
+                n = -n;
+            }
+
+            setpos_tbuf(dot + (uint)pos - 1);
+
+            push_expr(n, EXPR_VALUE);
+        }
     }
 }

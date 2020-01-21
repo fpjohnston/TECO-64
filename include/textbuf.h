@@ -101,6 +101,13 @@ extern uint getsize_tbuf(void);
 
 extern void init_tbuf(uint minsize, uint maxsize, uint stepsize, uint warn);
 
+// Replace ASCII value of character in buffer at position relative to dot.
+//
+// Returns: original character, or EOF (-1) if attempt was made to go beyond
+//          the beginning or end of buffer.
+
+extern int putchar_tbuf(int n, int c);
+
 // Set buffer position.
 
 extern void setpos_tbuf(uint n);

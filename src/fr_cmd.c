@@ -32,10 +32,13 @@
 
 #include "teco.h"
 #include "exec.h"
+#include "textbuf.h"
 
+
+uint last_len;
 
 ///
-///  @brief    Execute FR command (global search and replace).
+///  @brief    Execute FR command: delete and replace.
 ///
 ///  @returns  Nothing.
 ///
@@ -44,6 +47,20 @@
 void exec_FR(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    int n;
+
+    if (cmd->n_set)
+    {
+        n = cmd->n_arg;
+    }
+    else
+    {
+        n = -(int)last_len;
+    }
+
+    delete_tbuf(n);
+    exec_insert(cmd->text1.buf, cmd->text1.len);
 }
 
 

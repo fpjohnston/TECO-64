@@ -37,11 +37,6 @@
 #include "exec.h"
 
 
-// Local functions
-
-static void exec_yank(struct cmd *cmd, bool f_ed_yank);
-
-
 ///
 ///  @brief    Execute EY command: yank text into buffer (no protection).
 ///
@@ -50,32 +45,6 @@ static void exec_yank(struct cmd *cmd, bool f_ed_yank);
 ////////////////////////////////////////////////////////////////////////////////
 
 void exec_EY(struct cmd *cmd)
-{
-    exec_yank(cmd, (bool)true);
-}
-
-
-///
-///  @brief    Execute Y command: yank text into buffer (with protection).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_Y(struct cmd *cmd)
-{
-    exec_yank(cmd, (bool)f.ed.yank);
-}
-
-
-///
-///  @brief    Execute yank command: yank text into buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void exec_yank(struct cmd *cmd, bool f_ed_yank)
 {
     assert(cmd != NULL);
 
@@ -86,7 +55,7 @@ static void exec_yank(struct cmd *cmd, bool f_ed_yank)
         print_err(E_NFI);               // No file for input
     }       
 
-    uint olddot = getpos_tbuf();
+    uint olddot = getpos_tbuf();        // Save current buffer position
 
     if (ifile->eof)
     {
@@ -102,7 +71,7 @@ static void exec_yank(struct cmd *cmd, bool f_ed_yank)
     {
         if (cmd->n_arg == -1)
         {
-            print_err(E_T32);           // TECO-32 feature
+            print_err(E_T32);           // Unimplemented TECO-32 feature
         }
         else
         {
@@ -110,13 +79,46 @@ static void exec_yank(struct cmd *cmd, bool f_ed_yank)
         }
     }
 
+    (void)next_yank();
+
+    if (cmd->colon_set)
+    {
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
+    }
+
+    setpos_tbuf(olddot);                // Restore buffer position
+}
+
+
+///
+///  @brief    Execute Y command: yank text into buffer (with protection).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_Y(struct cmd *cmd)
+{
     // If data in buffer and yank protection is enabled, then abort.
 
-    if (getsize_tbuf() && !f_ed_yank)
+    if (getsize_tbuf() && !f.ed.yank)
     {
         print_err(E_YCA);               // Y command aborted
     }
 
+    exec_EY(cmd);
+}
+
+
+///
+///  @brief    Yank next page into buffer.
+///
+///  @returns  true if buffer has data, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool next_yank(void)
+{
     uint Z = getsize_tbuf();
 
     setpos_tbuf(B);
@@ -128,10 +130,5 @@ static void exec_yank(struct cmd *cmd, bool f_ed_yank)
         ;
     }
 
-    if (cmd->colon_set)
-    {
-        push_expr(TECO_SUCCESS, EXPR_VALUE);
-    }
-
-    setpos_tbuf(olddot);
+    return (getsize_tbuf() != 0) ? true : false;
 }

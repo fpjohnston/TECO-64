@@ -444,6 +444,7 @@ exec_func *next_cmd(struct cmd *cmd)
         cmd->n_set = true;
         cmd->n_arg = -1;
     }
+#if     0               // TODO: can we keep this?
     else if (f.e1.strict)
     {
         if (estack.level != 0)
@@ -460,6 +461,7 @@ exec_func *next_cmd(struct cmd *cmd)
             print_err(E_UMA);           // Unused m argument
         }
     }
+#endif
 
     return exec;
 }

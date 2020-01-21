@@ -476,6 +476,37 @@ static void print_size(uint size)
 
 
 ///
+///  @brief    Replace ASCII value of nth character before or after dot.
+///
+///  @returns  Original character, or -1 if character outside of edit buffer.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int putchar_tbuf(int n, int c)
+{
+    uint pos = (uint)((int)e.dot + n);
+
+    if (pos < e.left + e.right)
+    {
+        uint i = pos;
+
+        if (pos >= e.left)
+        {
+            i += e.gap;
+        }
+
+        int orig = e.buf[i];
+
+        e.buf[i] = (char)c;
+
+        return orig;
+    }
+
+    return -1;
+}
+
+
+///
 ///  @brief    Set buffer position.
 ///
 ///  @returns  Nothing.

@@ -234,6 +234,26 @@ struct watch
 #define CMD_START       (bool)true
 #define NOCMD_START     (bool)false
 
+enum search_type
+{
+    SEARCH_S = 1,
+    SEARCH_N = 2,
+    SEARCH_U = 3,
+    SEARCH_E = 4
+};
+
+struct search
+{
+    enum search_type type;              ///< Search type
+    bool (*search)(struct search *s);   ///< Search function
+    int count;                          ///< No. of iterations for search
+    int text_start;                     ///< Start search at this position
+    int text_end;                       ///< End search at this position
+    int text_pos;                       ///< Position of string relative to dot
+    uint match_len;                     ///< No. of characters left to match
+    const char *match_buf;              ///< Next character to match
+};
+
 // Global variables
 
 extern struct vars v;
@@ -270,6 +290,8 @@ extern uint macro_depth;
 
 extern struct tstring last_search;
 
+extern uint last_len;
+
 // Global functions
 
 extern void *alloc_mem(uint size);
@@ -295,6 +317,14 @@ extern int teco_env(int n);
 extern bool check_loop(void);
 
 extern bool check_macro(void);
+
+extern bool search_loop(struct search *s);
+
+extern void search_print(void);
+
+extern bool search_backward(struct search *s);
+
+extern bool search_forward(struct search *s);
 
 // Terminal input/output functions
 

@@ -1,6 +1,6 @@
 ///
-///  @file    e_ubar_cmd.c
-///  @brief   Execute E_ command.
+///  @file    ubar_cmd.c
+///  @brief   Execute _ (underscore) and F_ commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -38,23 +38,54 @@
 #include "textbuf.h"
 
 
+// Local functions
+
+static void exec_search(struct cmd *cmd, bool replace);
+
+    
 ///
-///  @brief    Execute E_ command: search without yank protection.
+///  @brief    Execute F_ command: search and replace with yank protection.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_ubar(struct cmd *cmd)
+void exec_F_ubar(struct cmd *cmd)
+{
+    exec_search(cmd, (bool)true);
+}
+
+
+///
+///  @brief    Execute _ (underscore) command: search with yank protection.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_ubar(struct cmd *cmd)
+{
+    exec_search(cmd, (bool)false);
+}
+
+
+///
+///  @brief    Execute search and replace.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_search(struct cmd *cmd, bool replace)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set && cmd->n_arg == 0)  // 0E_text` isn't allowed
+    if (cmd->n_set && cmd->n_arg == 0)  // 0_text` isn't allowed
     {
         print_err(E_ISA);               // Illegal search argument
     }
 
-    if (!cmd->n_set)                    // E_text` => 1E_text`
+    if (!cmd->n_set)                    // _text` => 1_text`
     {
         cmd->n_arg = 1;
         cmd->n_set = true;
@@ -81,7 +112,7 @@ void exec_E_ubar(struct cmd *cmd)
     }
     else
     {
-        s.type       = SEARCH_E;
+        s.type       = SEARCH_U;
         s.search     = search_forward;
         s.count      = cmd->n_arg;
         s.text_start = 0;
@@ -90,7 +121,19 @@ void exec_E_ubar(struct cmd *cmd)
 
     if (search_loop(&s))
     {
-        search_print();
+        if (replace)
+        {
+            delete_tbuf(-(int)last_len);
+
+            if (cmd->text2.len)
+            {
+                exec_insert(cmd->text2.buf, cmd->text2.len);
+            }
+        }
+        else
+        {
+            search_print();
+        }
 
         if (cmd->colon_set)
         {

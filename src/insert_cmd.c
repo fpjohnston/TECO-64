@@ -136,4 +136,6 @@ void exec_insert(const char *buf, uint len)
                 break;
         }                
     }
+
+    last_len = len;
 }

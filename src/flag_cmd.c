@@ -421,7 +421,7 @@ void exec_EO(struct cmd *cmd)
 
     if (pop_expr(NULL))                 // nEO?
     {
-        print_err(E_NYI);               // Yes, we don't do that (yet).
+        print_err(E_NYI);               // Not yet implemented
     }
 
     push_expr(teco_version, EXPR_VALUE);

@@ -87,7 +87,7 @@ SOURCES = \
     memory.c       \
     option_sys.c   \
     qreg.c         \
-    stubs.c        \
+    search.c       \
     teco.c         \
     term_in.c      \
     term_out.c     \
@@ -97,6 +97,7 @@ SOURCES = \
     back_cmd.c     \
     brace_cmd.c    \
     bracket_cmd.c  \
+    case_cmd.c     \
     comma_cmd.c    \
     ctrl_a_cmd.c   \
     ctrl_c_cmd.c   \
@@ -125,14 +126,11 @@ SOURCES = \
     e_ubar_cmd.c   \
     ew_cmd.c       \
     ex_cmd.c       \
-    fc_cmd.c       \
+    fb_cmd.c       \
     fd_cmd.c       \
     fk_cmd.c       \
     flag_cmd.c     \
-    fn_cmd.c       \
     fr_cmd.c       \
-    fs_cmd.c       \
-    f_ubar_cmd.c   \
     g_cmd.c        \
     goto_cmd.c     \
     if_cmd.c       \
@@ -148,6 +146,7 @@ SOURCES = \
     radix_cmd.c    \
     s_cmd.c        \
     type_cmd.c     \
+    ubar_cmd.c     \
     u_cmd.c        \
     value_cmd.c    \
     w_cmd.c        \

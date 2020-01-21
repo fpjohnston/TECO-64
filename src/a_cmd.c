@@ -113,7 +113,7 @@ bool append_line(void)
         {
             v.ff = true;                // But do flag it
 
-            return true;
+            return false;               // And say we need to stop
         }
 
         switch (add_tbuf(c))

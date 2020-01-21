@@ -85,7 +85,7 @@ static exec_func *find_cmd(struct cmd *cmd)
     }
     else if (c == 'F')
     {
-        const char *f_cmds = "'<>BCDKNRS_|";
+        const char *f_cmds = "'<>BCDKLNRSU_|";
         const char *f_cmd  = strchr(f_cmds, toupper(cmd->c2));
 
         if (f_cmd == NULL)

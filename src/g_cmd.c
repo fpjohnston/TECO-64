@@ -72,10 +72,14 @@ void exec_G(struct cmd *cmd)
         if (cmd->qname == '*')          // G* -> copy filename to buffer
         {
             exec_insert(filename_buf, (uint)strlen(filename_buf));
+
+            last_len = (uint)strlen(filename_buf);
         }
         else if (cmd->qname == '_')     // G_ -> copy search string to buffer
         {
             exec_insert(last_search.buf, last_search.len);
+
+            last_len = last_search.len;
         }
         else                           // Gq -> copy Q-register to buffer
         {
@@ -85,8 +89,9 @@ void exec_G(struct cmd *cmd)
 
             if (qreg->text.size != 0)
             {
-                exec_insert(qreg->text.buf + qreg->text.pos,
-                            qreg->text.len - qreg->text.pos);
+                exec_insert(qreg->text.buf, qreg->text.len);
+
+                last_len = qreg->text.len;
             }
         }
     }

@@ -1,6 +1,6 @@
 ///
-///  @file    e_ubar_cmd.c
-///  @brief   Execute E_ command.
+///  @file    fb_cmd.c
+///  @brief   Execute FB and FC commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -38,23 +38,49 @@
 #include "textbuf.h"
 
 
+// Local functions
+
+static void exec_search(struct cmd *cmd, bool replace);
+
+
 ///
-///  @brief    Execute E_ command: search without yank protection.
+///  @brief    Execute FB command: bounded search.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_ubar(struct cmd *cmd)
+void exec_FB(struct cmd *cmd)
+{
+    exec_search(cmd, (bool)false);
+}
+
+
+///
+///  @brief    Execute FC command: bounded search and replace.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_FC(struct cmd *cmd)
+{
+    exec_search(cmd, (bool)true);
+}
+
+
+///
+///  @brief    Execute bounded search (and maybe replace).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_search(struct cmd *cmd, bool replace)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set && cmd->n_arg == 0)  // 0E_text` isn't allowed
-    {
-        print_err(E_ISA);               // Illegal search argument
-    }
-
-    if (!cmd->n_set)                    // E_text` => 1E_text`
+    if (!cmd->n_set)                    // FBtext` => 1FBtext`
     {
         cmd->n_arg = 1;
         cmd->n_set = true;
@@ -71,26 +97,45 @@ void exec_E_ubar(struct cmd *cmd)
     int dot = (int)getpos_tbuf();
     struct search s;
 
-    if (cmd->n_arg < 0)
+    s.type  = SEARCH_S;
+    s.count = 1;
+
+    if (cmd->m_set)
     {
-        s.type       = SEARCH_S;
+        bool reverse = (cmd->m_arg > cmd->n_arg);
+
+        s.search     = reverse ? search_backward : search_forward;
+        s.text_start = cmd->m_arg - dot;
+        s.text_end   = cmd->n_arg - dot;
+    }
+    else if (cmd->n_arg <= 0)
+    {
         s.search     = search_backward;
-        s.count      = -cmd->n_arg;
-        s.text_start = -1;
-        s.text_end   = -dot;
+        s.text_start = getdelta_tbuf(cmd->n_arg);
+        s.text_end   = dot - 1;
     }
     else
     {
-        s.type       = SEARCH_E;
         s.search     = search_forward;
-        s.count      = cmd->n_arg;
-        s.text_start = 0;
-        s.text_end   = (int)getsize_tbuf() - dot;
+        s.text_start = dot;
+        s.text_end   = getdelta_tbuf(cmd->n_arg);
     }
 
     if (search_loop(&s))
     {
-        search_print();
+        if (replace)
+        {
+            delete_tbuf(-(int)last_len);
+
+            if (cmd->text2.len)
+            {
+                exec_insert(cmd->text2.buf, cmd->text2.len);
+            }
+        }
+        else
+        {
+            search_print();
+        }
 
         if (cmd->colon_set)
         {
@@ -116,4 +161,3 @@ void exec_E_ubar(struct cmd *cmd)
         }
     }
 }
-

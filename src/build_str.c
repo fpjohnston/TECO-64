@@ -256,6 +256,8 @@ uint build_string(char **dest, const char *src, uint len)
 
     *dest = build_str;
 
+    last_len = build_len;
+
     return build_len;
 }
 

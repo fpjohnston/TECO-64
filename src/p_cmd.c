@@ -100,7 +100,7 @@ void exec_P(struct cmd *cmd)
         }
         else if (count < 0)             // -nP?
         {
-            print_err(E_T32);           // TECO-32 command not implemented
+            print_err(E_T32);           // Unimplemented TECO-32 feature
         }
 
         if (cmd->w_set)                 // Is it nPW?

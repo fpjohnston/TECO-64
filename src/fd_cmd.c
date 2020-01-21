@@ -31,11 +31,15 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
+#include "eflags.h"
+#include "errors.h"
 #include "exec.h"
+#include "textbuf.h"
 
 
 ///
-///  @brief    Execute FD command (global search and replace).
+///  @brief    Execute FD command: search and delete.
 ///
 ///  @returns  Nothing.
 ///
@@ -44,6 +48,71 @@
 void exec_FD(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (cmd->n_set && cmd->n_arg == 0)  // 0FDtext` isn't allowed
+    {
+        print_err(E_ISA);               // Illegal search argument
+    }
+
+    if (!cmd->n_set)                    // FDtext` => 1FDtext`
+    {
+        cmd->n_arg = 1;
+        cmd->n_set = true;
+    }
+
+    if (cmd->text1.len != 0)
+    {
+        free_mem(&last_search.buf);
+
+        last_search.len = build_string(&last_search.buf, cmd->text1.buf,
+                                       cmd->text1.len);
+    }
+
+    int dot = (int)getpos_tbuf();
+    struct search s;
+
+    s.type = SEARCH_S;
+
+    if (cmd->n_arg < 0)
+    {
+        s.search     = search_backward;
+        s.count      = -cmd->n_arg;
+        s.text_start = -1;
+        s.text_end = -dot;
+    }
+    else
+    {
+        s.search     = search_forward;
+        s.count      = cmd->n_arg;
+        s.text_start = 0;
+        s.text_end   = (int)getsize_tbuf() - dot;
+    }
+
+    if (search_loop(&s))
+    {
+        delete_tbuf(-(int)last_len);
+
+        if (cmd->colon_set)
+        {
+            push_expr(-1, EXPR_VALUE);
+        }
+    }
+    else
+    {
+        if (cmd->colon_set)
+        {
+            push_expr(0, EXPR_VALUE);
+        }
+        else
+        {
+            if (!f.ed.keepdot)
+            {
+                setpos_tbuf(0);
+            }
+
+            last_search.buf[last_search.len] = NUL;
+
+            prints_err(E_SRH, last_search.buf);
+        }
+    }
 }
-
-
