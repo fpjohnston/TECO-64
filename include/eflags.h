@@ -201,6 +201,7 @@ union ez_flag
 
 struct flags
 {
+    int        ctrl_x;          ///< Search mode flag
     struct e0_flag e0;          ///< Internal flags (not settable by user)
     union  e1_flag e1;          ///< Debugging flags
     union  e2_flag e2;          ///< Compatibility features

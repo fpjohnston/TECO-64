@@ -197,7 +197,7 @@ void exec_ctrl_n(struct cmd *cmd)
 
 void exec_ctrl_x(struct cmd *unused1)
 {
-    (void)check_n_flag(&v.ctrl_x);
+    (void)check_n_flag(&f.ctrl_x);
 }
 
 

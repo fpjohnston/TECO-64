@@ -207,7 +207,6 @@ struct vars
 {
     int radix;                      ///< Current output radix
     int ctrl_s;                     ///< CTRL/S flag
-    int ctrl_x;                     ///< CTRL/X flag
     bool ff;                        ///< Form feed flag
     bool trace;                     ///< true if trace mode is on
     bool warn;                      ///< true if edit buffer is almost full

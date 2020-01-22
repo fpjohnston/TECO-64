@@ -172,6 +172,15 @@ void print_chr(int c)
 
         c = LF;
     }
+    else if (f.eu != -1)
+    {
+        if ((f.eu == 0 && islower(c)) || (f.eu == 1 && isupper(c)))
+        {
+            fputc('\'', stdout);
+        }
+
+        c = toupper(c);
+    }
 
     fputc(c, stdout);
 

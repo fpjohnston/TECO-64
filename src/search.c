@@ -285,7 +285,15 @@ static bool match_chr(int c, struct search *s)
     {
         return !match_chr(match, s);
     }
-    else if ((match == CTRL_S && !isalnum(c)) || match == CTRL_X || c == match)
+    else if ((match == CTRL_S && !isalnum(c)) || match == CTRL_X)
+    {
+        return true;
+    }
+    else if ((f.ctrl_x == 0 && tolower(c) == tolower(match)))
+    {
+        return true;
+    }
+    else if (c == match)
     {
         return true;
     }

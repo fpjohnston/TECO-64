@@ -100,7 +100,6 @@ struct vars v =
 {
     .radix  = 10,                   ///< Current output radix
     .ctrl_s = 0,                    ///< CTRL/S flag
-    .ctrl_x = 0,                    ///< CTRL/X flag
     .ff     = false,                ///< Form feed flag
     .trace  = false,                ///< Trace mode
     .warn   = false,                ///< Edit buffer is almost full
@@ -125,6 +124,7 @@ const char *log_file = NULL;        ///< Name of log file
 
 int main(int argc, const char * const argv[])
 {
+    f.ctrl_x    = 0;                    // Case-insensitive searches
     f.et.abort  = true;                 // Abort on error
     f.e1.strict = true;                 // Strictly enforce syntax
     f.e2.dollar = true;                 // Allow dollar signs in symbols
