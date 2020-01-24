@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "teco.h"
@@ -54,6 +55,65 @@ void exit_EG(void)
             perror("EG command failed");
         }
     }
+}
+
+extern int find_eg(const char *buf, uint len);
+
+///
+///  @brief    Find EG function.
+///
+///  @returns  -1 = success, 0 = unsupported, 1 = failure.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int find_eg(const char *buf, uint len)
+{
+    char *cmd = alloc_mem(len + 1);
+    char *arg;
+    char *saveptr;
+    
+    sprintf(cmd, "%.*s", (int)len, buf);
+
+    cmd = strtok_r(cmd, "\t\n\v\f\r ", &saveptr);
+    arg = strtok_r(NULL, "\t\n\v\f\r ", &saveptr);
+
+    if (arg != NULL)
+    {
+        return 0;
+    }
+
+    const char *name;
+    const char *result;
+
+    if (!strcasecmp(cmd, "INI"))
+    {
+        name = "TECO_INIT";
+    }
+    if (!strcasecmp(cmd, "LIB"))
+    {
+        name = "TECO_LIBRARY";
+    }
+    else if (!strcasecmp(cmd, "MEM"))
+    {
+        name = "TECO_MEMORY";
+    }
+    else if (!strcasecmp(cmd, "VTE"))
+    {
+        name = "TECO_VTEDIT";
+    }
+    else
+    {
+        return 0;
+    }
+
+    if ((result = getenv(name)) == NULL)
+    {
+        return 1;
+    }
+
+    strcpy(filename_buf, result);
+
+    return -1;
 }
 
 

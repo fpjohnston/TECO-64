@@ -1,0 +1,30 @@
+! TECO macro to generate boiler plate for a new spec. Prompts for subject,
+  then signs out next memo number from index and makes index entry.
+!
+ei@^UT?<!L!^TU1 Q1-127"E Z"N -D ' OL' Q1-21"E HK
+' Q1-13"E ^T 0;' Q1-27"E 
+ 0;' Q1I > HXGHK?
+@^UW? !DATE!
+^B&31\  !DAY!
+^B/32&15U1   !MONTH!
+ Q1-1"E I-Jan-19'
+ Q1-2"E I-Feb-19'
+ Q1-3"E I-Mar-19'
+ Q1-4"E I-Apr-19'
+ Q1-5"E I-May-19'
+ Q1-6"E I-Jun-19'
+ Q1-7"E I-Jul-19'
+ Q1-8"E I-Aug-19'
+ Q1-9"E I-Sep-19'
+ Q1-10"E I-Oct-19'
+ Q1-11"E I-Nov-19'
+ Q1-12"E I-Dec-19'
+^B/512\I     !YEAR!?
+z"e Subject?  mt | hxghk'
+gg j::ss  0k 0a-^^""e d zj-1a-^^""e -d'' hxghk
+ebindex.txty zj-sACGddd 3r\+1un
+liACG qn-100"l i0 qn-10"l i0'' qn\ .-3,.xm i.RNO 0xn
+i	 Subj:## ggi
+ -t ec
+erspec.rno ewqn y ssubtitlei gg
+<sXXX; -3d gm> sTitle:## gg sDate:## mw 6,7:w

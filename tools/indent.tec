@@ -1,0 +1,9 @@
+! TECO macro to indent text by one BLISS tab stop (4 spaces). EI to
+  load into QR; invoke with nMR to do n lines.
+!
+@^ur?< 0l .-z; 0a-^^!"n 0a-13"n  ::ss  .-3"g 4r ::s    "s 4r
+  ."n -s ' 4d i	 | 4c i    ' | i    ' '' l>?
+INDENT loaded into QR
+
+ei
+

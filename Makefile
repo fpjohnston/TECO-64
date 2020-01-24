@@ -47,7 +47,7 @@
 #
 ################################################################################
 
-GDB = 1                                 # TODO: only for development
+#GDB = 1                                 # TODO: only for development
 
 TARGET = teco
 

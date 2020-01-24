@@ -81,7 +81,7 @@
 
 #define TECO_VERSION    200             ///< Our version of TECO
 
-#define EDIT_BUF_SIZE   (16 * 1024)     ///< Edit buffer is initially 16KB
+#define EDIT_BUF_SIZE   (1 * 1024)      ///< Edit buffer is initially 1KB
 
 ///  @var     prompt
 ///  @brief   Command-line prompt (usually '*').

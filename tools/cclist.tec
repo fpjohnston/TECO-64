@@ -1,0 +1,23 @@
+! cclist.tec - TECO macro to extract cc list from SMTP mail header.
+!
+js
+
+-10000k
+s
+
+10000k
+js
+from:0lx9
+j:s
+to:"s .u1 s
+srq1,.:x9'
+j:s
+cc:"s .u1 s
+srq1,.:x9'
+j:s
+bcc:"s .u1 s
+srq1,.:x9'
+hkg9
+js<0,.k iSMTP%" <s> ri"
+.u1s<; q1,.k iSMTP%"> q1,zk
+hpef0,7:whthkex

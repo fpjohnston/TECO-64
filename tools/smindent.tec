@@ -1,0 +1,49 @@
+!THIS MACRO CANONICALLY INDENTS SUPERMAC CODE AND ALIGNS COMMENTS
+ IN THE RIGHT MARGIN. START IT AND ANSWER THE QUESTIONS.!
+^D EI
+@^UT*0U0<U1 Q1I Q1-13"E I 0;' Q1-27"E -DI
+ .-2,.T' Q1-127"E -D .-1,.T -D' Q1-21"E 0K
+' Q1-26"E 0K 
+ -1U0 0;'>*
+@^UI*U9 <Q3#7-Q9; I	 Q3#7+1U3> <Q3-Q9; I  %3>*
+ZJ .UZ FILE NAME?  MT Q0"L OEX'
+QZ+2-ZUF -L IEB L2R @I*Y* 0LXAK QF"N MA'
+INDENT?  MT Q0"L OEX'
+-L \US QS"E 2US' 0LK
+COMMENTS?  MT Q0"L OEX'
+-L0UC ::SNO"U \UC QC"E 41UC' QC-1UC ' 0LK
+@^UC*ZU4 :SS;"S R.U4'*
+QC"N @^UC* 0A-^^;"E .U4 OR'
+ZU4 :SS;"S FR; R.U4 Q2J  <.-Q4; 0A-9"E Q3#7U3' C %3>
+!R! QCU5 Q3+1-QC"G Q3+1U5' Q5MI' *'
+8UM 0,0XT J
+<<!S!.-Z; 0A-^^;"E L OS'
+.UX XZ ZJ.UZ GZ QZJ .U1 .U2
+::SS"U  !A!0A"C COA' ::S::"U ::S:"U .-Q1U3 MC OL''
+.U2 ::SS '  Q2,.K
+::SEND"S OX'
+::SUNTIL"S OX'
+::SUNTILB"S OX'
+::SELSE"S OX' OY
+!X! QM-QSUM QM"L 0UM'
+!Y! Q2J .-Q1U3 QMMI .U2 MC Q2J
+::SIF"S OI'
+::SIFB"S OI'
+::SON.ERROR"S OI'
+::SON.NOERROR"S OI'
+::SFOR"S OJ'
+::SFOR.ABS"S OJ'
+::SWHILEB"S OJ'
+::SWHILE"S OJ'
+::SREPEAT"S OK'
+::STHRU"S OM'
+::SBEGIN"S OM'
+::SCASE"S OM'
+::SELSE"S OM'  OL
+!I! Q2J :SGOTO"S .-Q4"L OL''
+    Q2J :SLEAVE"S .-Q4"L OL''
+!J! Q2J :STHEN"S .-Q4"L OL''
+    OM
+!K! Q2J :SUNTIL"S .-Q4"L OL''
+!M! QM+QS UM
+!L! QZJ XZK QXJKGZ> QF;  ^N^_; P>  QF"N EC' !EX! J

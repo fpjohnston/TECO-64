@@ -1,0 +1,9 @@
+! TECO macro to line sequence a text buffer. Load into Qs with
+  EISEQUENCE$. Run with n,mMS, where n = number of digits in line
+  number (default = 4) and m = line number increment (default = 10).
+!
+@^us?
+[n[t[1[2+0ut+0un qn"e 4un' qt"e 10ut'
+j0u1 <.-z; qt%1\ i	 .u2 0l qn+.+1-q2<i0>l>]2]1]t]n?
+SEQUENCE loaded into QS
+

@@ -1,0 +1,15 @@
+! LISTSLIDES.TEC - compress slide text source into listing form;
+  i.e., multiple slides per page. Invoke with MUNG LISTSLIDES,filename.
+  Reads .TXT, writes .LIS.
+!
+j<ss;fr> hxfhk
+erqf.txty ewqf.lis
+
+<^n:; zj.u1 i
+
+--------------------------------------------------------------
+
+.u2 a 0u3j<s
+; %3> q3-60"g q1j 12i 0,.p 0,q2+1k'
+> ex
+

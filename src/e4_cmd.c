@@ -57,8 +57,8 @@ void exec_E4(struct cmd *cmd)
     if (cmd->text1.len == 0)
     {
         write_opts.append = false;
-        write_opts.noin   = false;
-        write_opts.noout  = false;
+        write_opts.noin   = true;
+        write_opts.noout  = true;
 
         return;
     }

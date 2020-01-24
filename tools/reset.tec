@@ -1,0 +1,4 @@
+! TECO macro to reset the screen when the VT100 screws up.
+!
+et#1et c 1:w-80"g ?3h' 0,7:w6,7:w et&(-2)et 
+

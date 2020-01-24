@@ -1,0 +1,6 @@
+! TECO macro to convert appended list of mail replies into
+  a mail distribution list. Open mail text and run. Leaves list
+  in buffer
+!
+0,0xl <:e_from:s;.u1 1:fbs  i!  l q1,.:xl> hkgl
+

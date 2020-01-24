@@ -1,0 +1,11 @@
+! TECO macro to list a MAIL file. Converts form feeds into dotted line.
+  run with MUNG LISTMAIL filename. Reads filename.MAI and writes
+  filename.LIS.
+!
+hxf hkerqf.MAI ewqf.LIS yy
+<^n:; zji
+
+--------------------------------------------
+
+hphka> ex
+

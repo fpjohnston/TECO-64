@@ -1,0 +1,25 @@
+! FINDUNTERM.TEC - macro to find unterminated C comments.
+  Stops on first unterminated comment found.
+!
+en*.h
+
+<:en; erq*
+
+:g*
+
+<_/*; .u1 :s*/"s .u2 | ounterm' q1j :s/*"s q2-."g ounterm' 2r | zj'>
+>
+en*.c
+
+<:en; erq*
+
+:g*
+
+<_/*; .u1 :s*/"s .u2 | ounterm' q1j :s/*"s q2-."g ounterm' 2r | zj'>
+>
+odone
+
+!unterm! q1-2j Unterminated comment found here
+
+!done!
+

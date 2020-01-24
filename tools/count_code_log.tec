@@ -1,0 +1,210 @@
+! TECO macro to count lines of code in MACRO or BLISS. Expects result
+  disk directory layout on default device.
+
+  Q-register usage:
+
+	QO = report per-module data
+	QP = language:
+	   = 0 for unknown
+	   = 1 for Macro
+	   = 2 for Bliss
+	   = 3 for C
+	QA = number of MACRO modules
+	QB = number of MACRO code lines
+	QC = number of MACRO comment lines
+	QD = number of MACRO blank lines
+	QE = number of BLISS modules
+	QF = number of BLISS code lines
+	QG = number of BLISS comment lines
+	QH = number of BLISS blank lines
+	QN = number of BLISS macro code lines
+	QI = number of C modules
+	QJ = number of C code lines
+	QK = number of C comment lines
+	QL = number of C blank lines
+	QM = number of unknown modules
+	QW = number of code lines per module
+	QX = number of comment lines per module
+	QY = number of blank lines per module
+	QZ = number of generated code lines per module
+	Q1 = current line pointer
+	Q2 = local page count
+	Q3 = start of code seen
+	Q4 = in comment
+!
+0ua 0ub 0uc 0ud 0ue 0uf 0ug 0uh 0ui 0uj 0uk 0ul 0um 0un 0uo
+j:s^es"u zj | ^sd' 0xf z-."n 1uo'
+en^eqf*.lis
+
+! Open next file !
+<:en; :g*
+ erq* 0up 0u1 0u2 0u3 0u4 0uw 0ux 0uy 0uz
+! Determine language !
+<:y; %2'
+1:fb VAX MACRO "s 1up %a 0;'
+1:fb Bliss-32 "s 2up %e 0;'
+1:fb VAX C "s 3up %i 0;'
+q2-3"g %m 0;'>
+! Macro !
+qp-1"e
+<jl::sTable of contents"s zj | ::sSymbol table"s 0; | j3l .u1''
+ <.u1 .-z; l2r .-q1-47"g 0l 48c 0a-13"e %y%d | 0a-^^;"e %x%c | %w%b''' l>
+:y; %2>'
+! Bliss !
+qp-2"e
+<j3l
+ <.u1 .-z; l2r .-q1-11"g 0l 0a-^^;"e 12c 0a-13"e %y%h | 0a-^^!"e %x%g |
+  %w%f 1:fbeludom"s oeom''' | %z%n'' l>
+:y; %2>'
+! C !
+qp-3"e
+<j3l
+ <.u1 .-z; ::sCommand Line"s oeom'
+  l2r .-q1-13"g 0l14c 0a-13"e %y%l | q4"e ::s/*"u %w%j | %x%k'
+  1:fb/*"s 1u4 .-q1-16"e %x%k'' | 1:fb*/"s 0u4 .u5 l2r.-q5"n %w%j | %x%k' | %x%k'''' l>
+:y; %2>'
+!eom!
+qo"n File:   :g*
+
+qp-1"e
+       Number of MACRO code lines	= QW = 
+       Number of MACRO comment lines	= QX = 
+       Number of MACRO blank lines	= QY = '
+qp-2"e
+       Number of BLISS code lines	= QW = 
+       Number of BLISS comment lines	= QX = 
+       Number of BLISS blank lines	= QY = 
+       Number of BLISS macro code lines = QZ = '
+qp-3"e
+       Number of C code lines		= QW = 
+       Number of C comment lines	= QX = 
+       Number of C blank lines	= QY = '
+qp"e
+       Unknown Module
+''
+>
+Number of MACRO modules		= QA = 
+Number of MACRO code lines	= QB = 
+Number of MACRO comment lines	= QC = 
+Number of MACRO blank lines	= QD = 
+Number of BLISS modules		= QE = 
+Number of BLISS code lines	= QF = 
+Number of BLISS comment lines	= QG = 
+Number of BLISS blank lines	= QH = 
+Number of BLISS macro code lines= QN = 
+Number of C modules		= QI = 
+Number of C code lines		= QJ = 
+Number of C comment lines	= QK = 
+Number of C blank lines		= QL = 
+Number of unknown modules	= QM =
+hkex
+XQPMSG                          - Messages for user notification of XQP   8-APR-1988 01:11:38  VAX MACRO V5.0-8            Page  11
+Symbol table                                                             18-MAR-1988 16:35:03  [F11X.SRC]XQPMSG.MAR;1            (4)
+
+XQP$_MATCHING_ACE                00000707 RG    02        
+XQP$_MODACLENT                   0000060B RG    02        
+XQP$_MODIFY                      00000122 RG    02        
+XQP$_MOUNT                       0000004B RG    02        
+XQP$_NEW_ENTRY                   0000082C RG    02        
+XQP$_NEXTVOL                     000001A1 RG    02        
+XQP$_NEXT_ACE                    000007A9 RG    02        
+XQP$_NULL_STRING                 00000000 RG    02        
+XQP$_OUTDEV_LEN                  00000D09 R     02        
+XQP$_OUTDEV_NAM                  00000CFF R     02        
+XQP$_OUTDEV_NAM_END              00000D09 R     02        
+XQP$_PHY_READ                    00000008 RG    02        
+XQP$_PHY_WRITE                   0000001D RG    02        
+XQP$_POSEND                      0000017A RG    02        
+XQP$_PRIVS_USED                  000006EE RG    02        
+XQP$_QUOTA_ADD                   000008D9 RG    02        
+XQP$_QUOTA_CHG                   00000953 RG    02        
+XQP$_QUOTA_DESC_1                00000ADD RG    02        
+XQP$_QUOTA_DESC_2                00000B1E RG    02        
+XQP$_QUOTA_DESC_3                00000B53 RG    02        
+XQP$_QUOTA_DESC_4                00000BAA RG    02        
+XQP$_QUOTA_DSA                   000008BF RG    02        
+XQP$_QUOTA_ENA                   000008A6 RG    02        
+XQP$_QUOTA_EXA                   00000933 RG    02        
+XQP$_QUOTA_MOD                   000008F5 RG    02        
+XQP$_QUOTA_OP                    0000024F RG    02        
+XQP$_QUOTA_REM                   00000914 RG    02        
+XQP$_READACE                     00000687 RG    02        
+XQP$_READACL                     00000661 RG    02        
+XQP$_READ_ATTR                   00000130 RG    02        
+XQP$_RECATTR                     00000319 RG    02        
+XQP$_REMAP                       0000028A RG    02        
+XQP$_REMOVE                      00000114 RG    02        
+XQP$_RESERVED                    00000699 RG    02        
+XQP$_REVDATE                     0000049B RG    02        
+XQP$_REWINDFIL                   000001FB RG    02        
+XQP$_REWINDVOL                   0000015F RG    02        
+XQP$_RO_DIR_ACCESS               000007E9 RG    02        
+XQP$_RPRO                        0000050C RG    02        
+XQP$_RU_ACTIVE                   00000779 RG    02        
+XQP$_RWATTR_DESC_1               00000AAC RG    02        
+XQP$_RW_DIR_ACCESS               000007C6 RG    02        
+XQP$_SEMASK                      00000542 RG    02        
+XQP$_SHRINK_DIR                  00000887 RG    02        
+XQP$_SPACE                       000001BC RG    02        
+XQP$_STATBLK                     000003A4 RG    02        
+XQP$_SUPERSEDE                   0000080B RG    02        
+XQP$_UCHAR                       000002F6 RG    02        
+XQP$_UIC                         000004E0 RG    02        
+XQP$_UIC_RO                      00000563 RG    02        
+XQP$_UNLK_VOL                    00000238 RG    02        
+XQP$_USEREOT                     00000268 RG    02        
+XQP$_USERLABEL                   000003EF RG    02        
+XQP$_WRITE_ATTR                  00000147 RG    02        
+
+XQPMSG                          - Messages for user notification of XQP   8-APR-1988 01:11:38  VAX MACRO V5.0-8            Page  12
+Psect synopsis                                                           18-MAR-1988 16:35:03  [F11X.SRC]XQPMSG.MAR;1            (4)
+
+
+                                                +----------------+
+                                                ! Psect synopsis !
+                                                +----------------+
+
+PSECT name                      Allocation          PSECT No.  Attributes     
+----------                      ----------          ---------  ----------     
+.  ABS  .                       00000000  (    0.)  00 (  0.)  NOPIC   USR   CON   ABS   LCL NOSHR NOEXE NORD  NOWRT NOVEC BYTE  
+$ABS$                           00000168  (  360.)  01 (  1.)  NOPIC   USR   CON   ABS   LCL NOSHR   EXE   RD    WRT NOVEC BYTE  
+$CODE$                          00000D0D  ( 3341.)  02 (  2.)  NOPIC   USR   CON   REL   LCL NOSHR   EXE   RD  NOWRT NOVEC LONG  
+
+                                             +------------------------+
+                                             ! Performance indicators !
+                                             +------------------------+
+
+Phase                    Page faults    CPU Time       Elapsed Time   
+-----                    -----------    --------       ------------   
+Initialization                   25     00:00:00.02    00:00:00.24
+Command processing              873     00:00:00.37    00:00:04.48
+Pass 1                          339     00:00:01.53    00:00:08.34
+Symbol table sort                 0     00:00:00.14    00:00:00.14
+Pass 2                           53     00:00:00.40    00:00:05.58
+Symbol table output               2     00:00:00.02    00:00:02.84
+Psect synopsis output             2     00:00:00.01    00:00:00.00
+Cross-reference output            0     00:00:00.00    00:00:00.00
+Assembler run totals           1300     00:00:02.50    00:00:21.62
+
+The working set limit was 2224 pages.
+42926 bytes (84 pages) of virtual memory were used to buffer the intermediate code.
+There were 40 pages of symbol table space allocated to hold 525 non-local and 5 local symbols.
+346 source lines were read in Pass 1, producing 37 object records in Pass 2.
+17 pages of virtual memory were used to define 15 macros.
+
+                                            +--------------------------+
+                                            ! Macro library statistics !
+                                            +--------------------------+
+
+Macro library name                           Macros defined      
+------------------                           --------------      
+_$254$DUA225:[SHRLIB]DCL.MLB;1                          2        
+_$254$DUA225:[SYS.OBJ]LIB.MLB;1                         1        
+_$254$DUA225:[SYSLIB]STARLET.MLB;2                      8        
+TOTALS (all libraries)                                 11        
+
+516 GETS were required to define 11 macros.
+
+There were no errors, warnings or information messages.
+
+MACRO/LIS=LIS$:XQPMSG/OBJ=OBJ$:XQPMSG TMP$:XQPMSG.MAR+EXECML$/LIB+SHRLIB$:DCL/LIB

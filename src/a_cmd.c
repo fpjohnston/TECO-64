@@ -41,7 +41,7 @@
 ///
 ///  @brief    Append to edit buffer.
 ///
-///  @returns  true if not already at end of file, else false.
+///  @returns  true if success, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -59,6 +59,8 @@ bool append(bool n_set, int n_arg, bool colon_set)
     // Here if we have A, :A, or n:A
 
     uint olddot = getpos_tbuf();
+
+    setpos_tbuf(getsize_tbuf());        // Go to end of buffer
 
     if (ifile->eof)                     // Already at EOF?
     {
@@ -161,25 +163,21 @@ void exec_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)
+    if (cmd->colon_set)                 // :A or n:A command
     {
-        if (!cmd->colon_set)
-        {
-            int n = getchar_tbuf(cmd->n_arg);
+        bool success = append(cmd->n_set, cmd->n_arg, cmd->colon_set);
 
-            push_expr(n, EXPR_VALUE);
-        }
+        push_expr(success ? TECO_SUCCESS : TECO_FAILURE, EXPR_VALUE);
     }
-    else
+    else if (cmd->n_set)                // nA command
     {
-        // Here to append to buffer with A, :A, or n:A command.
+        int n = getchar_tbuf(cmd->n_arg);
 
-        int status = append(cmd->n_set, cmd->n_arg, cmd->colon_set);
-
-        if (cmd->colon_set)
-        {
-            push_expr(status, EXPR_VALUE);
-        }
+        push_expr(n, EXPR_VALUE);
+    }
+    else                                // A command
+    {
+        (void)append(cmd->n_set, cmd->n_arg, cmd->colon_set);
     }
 }
 

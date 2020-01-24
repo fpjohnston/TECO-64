@@ -1,0 +1,9 @@
+! DO-EXPIRED.TEC - TECO macro to turn listing of expired licenses into
+  commands to delete them.
+!
+ebexpired.comy
+j 0,0xd
+<e_Authorization:s; .u1 l2rq1,.xu e_Product Name:s .u1 l2rq1,.xn li$ license delete gn i /authorization=gu i
+ -:xd-100k>
+hkgd ex
+

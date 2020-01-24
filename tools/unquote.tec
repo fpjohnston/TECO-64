@@ -1,0 +1,12 @@
+! Remove all MIME header and decode MIME quoted-printable encoding.
+!
+:sMIME-version:"u j' s
+.u1
+<fs=20
+
+
+;>
+q1j<s=
+;-3d>
+q1j 16^r <s=;2ci  3r\u2 -3ddq2i>^d10^r
+

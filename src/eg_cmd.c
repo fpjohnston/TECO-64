@@ -39,6 +39,7 @@
 
 char *eg_command;                       ///< EG command to be executed.
 
+extern int find_eg(const char *buf, uint len);
 
 ///
 ///  @brief    Execute EG command: execute system command.
@@ -53,7 +54,9 @@ void exec_EG(struct cmd *cmd)
 
     if (cmd->colon_set)
     {
-        // TODO: TBD
+        int status = find_eg(cmd->text1.buf, cmd->text1.len);
+
+        push_expr(status, EXPR_VALUE);
 
         return;
     }

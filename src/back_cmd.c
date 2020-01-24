@@ -83,7 +83,6 @@ void exec_back(struct cmd *cmd)
         int pos = 0;
         uint digits = 0;
         int n = 0;
-
         int c = getchar_tbuf(pos++);
 
         if (c == '+')
@@ -129,8 +128,8 @@ void exec_back(struct cmd *cmd)
             }
 
             setpos_tbuf(dot + (uint)pos - 1);
-
-            push_expr(n, EXPR_VALUE);
         }
+
+        push_expr(n, EXPR_VALUE);
     }
 }

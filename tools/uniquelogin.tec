@@ -1,0 +1,14 @@
+! TECO macro to filter unique login records
+!
+eblogin.logy
+
+! Eliminate redundant records !
+<nusername:; 0l0,.p0,.ka 3xx 3l
+<nqx; -l-n
+
+ -2l 0,.p0,.ka 2l.u1 s
+
+ q1,.k>
+-10000p nqx>
+ex
+

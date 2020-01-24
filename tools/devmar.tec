@@ -1,0 +1,29 @@
+! TECO macro to construct DEV.MAR file. Scans [VMSLIB.obj]STARDEF.MAR
+  and [VMSLIB.obj]SYSDEF.MAR and extracts interesting stuff.
+!
+ewdev.mar
+
+erresd$:[vmslib.obj]stardef.mar
+
+e_$atrdef pwhk
+e_$devdef pwhk
+e_$fibdef pwhk
+erresd$:[vmslib.obj]sysdef.mar
+
+e_$aibdef pwhk
+e_$aqbdef pwhk
+e_$bbsdef pwhk
+e_$ccbdef pwhk
+e_$ddbdef pwhk
+e_$dyndef pwhk
+e_$fcbdef pwhk
+e_$irpdef pwhk
+e_$mtldef pwhk
+e_$rvtdef pwhk
+e_$rvxdef pwhk
+e_$ucbdef pwhk
+e_$vcadef pwhk
+e_$vcbdef pwhk
+e_$wcbdef pwhk
+ef hkex
+

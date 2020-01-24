@@ -212,14 +212,19 @@ int open_indirect(bool default_type)
 
 bool read_indirect(void)
 {
+    static bool esc_1 = false;
+    static bool esc_2 = false;
+
     struct ifile *stream = &ifiles[IFILE_INDIRECT];
 
     if (stream->fp == NULL)             // Is indirect file open?
     {
+        esc_1 = esc_2 = false;
+
         return false;                   // No
     }
 
-    if (feof(stream->fp))               // Are we at end of file?
+    if ((esc_1 && esc_2) || feof(stream->fp)) // Are we at end of file?
     {
         close_indirect();               // Yes, just close file
 
@@ -227,8 +232,6 @@ bool read_indirect(void)
     }
 
     int c;
-    bool esc_1 = false;
-    bool esc_2 = false;
 
     while ((c = fgetc(stream->fp)) != EOF)
     {
@@ -242,6 +245,11 @@ bool read_indirect(void)
         {
             esc_2 = esc_1;
             esc_1 = true;
+
+            if (esc_2)
+            {
+                return true;
+            }
         }
     }        
 

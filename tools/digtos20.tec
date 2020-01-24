@@ -1,0 +1,42 @@
+! TECO macro to covert DIGICALC dump format output to ACCESS/2020 model
+  format. Handles most computations but no formatting data.
+!
+@^uq/.u1 0u2 <0fb"; %2> q1j q2&1/
+@^up/1u9<0a-13"e 0;' 0a-^^("e %9' 0a-^^)"e -1%9"e 0;''c>/
+<s
+!; 0lk-l>
+<s
+>; 0lk-l>
+<ss\/; ^sc ki
+>
+<s
+s/f; 0lk-l>
+<saad; -3a-(-2a)"e 3rdiA2c'>
+<sa'd; r-driB>
+<fs<>!=;>
+<sds:; r^s+2d> <sd:sa; r^s+3d>
+<sd:a;r-di..>
+<fs,s),);>
+<slookup; .u1 1:fb)"s -2a-^^,"e r-d q1j-6diindex''>
+<s[; r.u1 1:fb]"s q1-1j-s^s .,q1x9.,q1k diicell( s] -di, g9i)'>
+<s then ; .u1 0:fbif "s i( fs then,
+
+ .u1 1:fb if "s .u2 | l2r .u2'
+ q1j 1:fb else "s .-q2"l fr,  | mpi, 0' | mpi, 0' mpi) 0l'>
+<s and ; mq"e -5di <and> '>
+<s or ; mq"e -4di <or> '>
+<fs"
+
+
+;>
+<fs"';>
+<fs = #/; 0li>l2ri#/l>
+ji/OVC2#/ /DLU /DW16#/ /DF0#/ /OCMM /ONL /OCON /OCRM
+/ODD1N4- /ODTA: /ODS., /ODFC$#/L /ODFN- 
+#onerror (#ignore nomsg)
+/OVAY /OVDB /ODZN
+#bko #bko #bko
+#onerror (#exit)
+/DJLL /DJNR /DAN
+
+

@@ -108,9 +108,12 @@ void exec_K(struct cmd *cmd)
     {
         uint Z = getsize_tbuf();
 
-        setpos_tbuf(B);
+        if (Z != 0)
+        {
+            setpos_tbuf(B);
         
-        delete_tbuf((int)Z);            // Yes, kill the whole buffer
+            delete_tbuf((int)Z);        // Yes, kill the whole buffer
+        }
 
         return;
     }
@@ -143,5 +146,8 @@ void exec_K(struct cmd *cmd)
         n = getdelta_tbuf(n);
     }
 
-    delete_tbuf(n);
+    if (n != 0)
+    {
+        delete_tbuf(n);
+    }
 }

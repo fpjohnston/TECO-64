@@ -258,6 +258,8 @@ void exec_E4(struct cmd *cmd)
     assert(cmd != NULL);
 
     (void)check_mn_flag(cmd, &f.e4.flag);
+
+    f.e4.noin = f.e4.noout = true;
 }
 
 

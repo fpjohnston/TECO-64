@@ -1,0 +1,4 @@
+! Put quote markers on text buffer.
+!
+j<.-z;i> 0a-32"g 0a-^^>"n  i ''l> j
+

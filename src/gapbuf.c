@@ -523,46 +523,6 @@ void setpos_tbuf(uint n)
 
 
 ///
-///  @brief    Move characters from right side of gap to left side.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void shift_left(uint nbytes)
-{
-    char *src   = e.buf + e.size - e.right;
-    char *dst   = e.buf + e.left;
-
-    e.left  += nbytes;
-    e.right -= nbytes;
-
-    memmove(dst, src, (size_t)nbytes);
-    memset(src, '{', (size_t)nbytes);   // TODO: temporary
-}
-
-
-///
-///  @brief    Move characters from left side of gap to right side.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void shift_right(uint nbytes)
-{
-    e.left  -= nbytes;
-    e.right += nbytes;
-
-    char *src   = e.buf + e.left;
-    char *dst   = e.buf + e.size - e.right;
-
-    memmove(dst, src, (size_t)nbytes);
-    memset(src, '}', (size_t)nbytes);   // TODO: temporary
-}
-
-
-///
 ///  @brief    Set memory size.
 ///
 ///  @returns  Nothing.
@@ -602,4 +562,44 @@ uint setsize_tbuf(uint n)
     print_size(e.size);
 
     return e.size;
+}
+
+
+///
+///  @brief    Move characters from right side of gap to left side.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void shift_left(uint nbytes)
+{
+    char *src   = e.buf + e.size - e.right;
+    char *dst   = e.buf + e.left;
+
+    e.left  += nbytes;
+    e.right -= nbytes;
+
+    memmove(dst, src, (size_t)nbytes);
+//    memset(src, '{', (size_t)e.gap);   // TODO: temporary
+}
+
+
+///
+///  @brief    Move characters from left side of gap to right side.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void shift_right(uint nbytes)
+{
+    e.left  -= nbytes;
+    e.right += nbytes;
+
+    char *src   = e.buf + e.left;
+    char *dst   = e.buf + e.size - e.right;
+
+    memmove(dst, src, (size_t)nbytes);
+//    memset(src, '}', (size_t)e.gap);    // TODO: temporary
 }

@@ -199,8 +199,6 @@ void exec_mod(struct cmd *cmd)
             cmd->colon_set = true;
         }
     }
-
-    scan.mod = true;
 }
 
 
@@ -340,7 +338,7 @@ void exec_operator(struct cmd *cmd)
 
 
 ///
-///  @brief    Get next command. This 
+///  @brief    Get next command.
 ///
 ///  @returns  Command block with options, or NULL if at end of command string.
 ///
@@ -418,7 +416,7 @@ exec_func *next_cmd(struct cmd *cmd)
     }
     else if (exec != NULL)
     {
-        log_cmd(cmd);
+//        log_cmd(cmd);  // TODO: complete this
     }
 
     // Pop m and n arguments (if any) from the expression stack

@@ -246,16 +246,6 @@ exec_func *scan_cmd(struct cmd *cmd)
         return NULL;
     }
 
-    // Command modifiers cannot occur in the middle of expressions
-
-    if (scan.expr && scan.mod)
-    {
-        if (f.e1.strict)
-        {
-            print_err(E_MOD);           // Invalid modifier for command
-        }
-    }
-
     // Check to see if command requires a global (or local) Q-register.
 
     if (scan.q_register)                // Do we need a Q-register?
@@ -287,35 +277,67 @@ exec_func *scan_cmd(struct cmd *cmd)
         cmd->c2 = (char)fetch_buf(NOCMD_START);
     }
 
-    if (cmd->c1 == CTRL_T && estack.level == 1 &&
-        estack.obj[0].type == EXPR_VALUE)
+    // CTRL/T, A, and \ (backslash) may or may not be part of an expression,
+    // depending on whether they're preceded by a numeric value. So we have
+    // to handle them specially here.
+
+    if (cmd->c1 == CTRL_T && pop_expr(&cmd->n_arg))
     {
-        ;
+        scan.expr = false;              // n^T types out a value
+        push_expr(cmd->n_arg, EXPR_VALUE);
     }
-    else if (toupper(cmd->c1) == 'A' && estack.level == 0)
+    else if (toupper(cmd->c1) == 'A' && pop_expr(&cmd->n_arg))
     {
-        ;
-    }
-    else if (scan.expr && scan.n_opt && (cmd->m_set || cmd->n_set))
-    {
-        ;
-    }
-    else if (scan.expr || exec == exec_mod)
-    {
-        if (toupper(cmd->c1) == 'A' && pop_expr(&cmd->n_arg))
+        if (cmd->colon_set)
+        {
+            scan.expr = false;          // n:A appends pages
+            push_expr(cmd->n_arg, EXPR_VALUE);
+        }
+        else
         {
             cmd->n_set = true;
+        }
+    }
+    else if (cmd->c1 == '\\' && pop_expr(&cmd->n_arg))
+    {
+        scan.expr = false;              // n\ inserts value in buffer
+        push_expr(cmd->n_arg, EXPR_VALUE);
+    }
+
+#if     0 // TODO: what was this here for?
+    if (scan.expr && scan.n_opt && (cmd->m_set || cmd->n_set))
+    {
+        ;
+    }
+    else
+    {
+    }
+#endif
+
+    // If character is part of an expression or a modifier, then process
+    // it here and tell our caller that we're not done with the command.
+
+    if (scan.expr || exec == exec_mod)
+    {
+        // Command modifiers cannot occur in the middle of expressions
+
+        if (scan.expr && scan.mod)
+        {
+            if (f.e1.strict)
+            {
+                print_err(E_MOD);       // Invalid modifier for command
+            }
         }
 
         (*exec)(cmd);
 
-        exec = NULL;
+        return NULL;
     }
 
-    if (exec != NULL)
-    {
-        scan_tail(cmd);
-    }
+    // Here if we've found the terminal command, so process any following post
+    // data (e.g., text strings), and then tell our caller what we found.
+
+    scan_tail(cmd);
 
     return exec;
 }
@@ -509,6 +531,11 @@ static void set_opts(struct cmd *cmd, const char *opts)
 
             case 'n':
                 scan.n_opt = true;
+
+                break;
+
+            case 'a':
+                scan.mod = true;
 
                 break;
 

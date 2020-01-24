@@ -1,0 +1,12 @@
+! EXPANDLIST.TEC - TECO macro to expand a MAIL distribution list with
+  sublists. MUNG EXPANDLIST, filespec.
+!
+j:s."u zji.DIS' zj
+-:s:"s .u1 | 0u1' zj-:s]"s .u2 | 0u2' q2-q1"g q2u1' q1,zx9
+hxfhkerqf hkg9 i_expanded hxfhkewqf <:a;>
+<j <.-z; 0a-^^@"e c0;'l> .-z; .u1 l0,.p q1j 0,.k l.,zx9.,zk-2d
+j::ss"s fr' :ss"s ^sck' zj-:s.dis"u zji.dis' hxfhk
+erqf <:a;> ji!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+zji!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+g9>
+ex

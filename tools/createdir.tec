@@ -1,0 +1,7 @@
+! TECO macro to create command file to create the directories present on
+  DB2. Generates command file in CREATEDIR.COM. !
+EWCREATEDIR.COM  ENDB2:[0,0]*.DIR;1
+<:EN; HKG* JS] 0K I$MCR UFD BK:[
+ 0A"D 3CI,' S.RKI]
+ HP>
+EFHKEX

@@ -1,0 +1,15 @@
+! UNQUOTE.TEC - TECO macro to remove MIME quoted printable encoding
+!
+0us j:sContent-Transfer-Encoding: quoted-printable"s l.us
+  | j:s
+
+"s .us''
+qsj<s=
+;-3d>
+qsj<fs=20
+
+
+;>
+
+qsj16^r <s=; -d2ci  3r\u1 -2ddq1i>
+^d

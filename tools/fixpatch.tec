@@ -1,0 +1,58 @@
+! TECO macro to clean up PATCH generated command files. Removes
+  superfluous ^x's and leading zeroes, expands commands, etc.
+!
+1ed
+j<s
+se ec
+; ::s^x"s 16^r \u1 0k8+2^r q1\ 0l' -2diO  5riT>
+j<s
+ch ec
+; ::s^x"s 16^r \u1 0k8+2^r q1\ 0l' -2diO  5riECK
+
+<l::sexi"s 0lk 0; | ::s^x"s 16^r \u1 0k8+2^r q1\ 0l' 0l-2di, '>>
+1ed j<s^x;-3a"a |-2d <::s0;-d> 0a"d|i0''>
+0ed
+j<s
+re^s; riPLACE ::s 
+"s -2d'>
+j<s
+al^s; riIGN ::s 
+"s -2d'>
+j<s
+d^s; riEPOSIT ::s 
+"s -2d 1:fb="u 2l ::sexi"s 0lk -2lfs
+ = '''>
+j<s
+del^s; riETE ::s 
+"s -2d'>
+j<s
+inse^s; riRT ::s 
+"s -2d'>
+j<s
+def
+; -2diINE 1:fb="u fs
+ =  l::sexi"s 0lk'-l'>
+j<s/i^s; riNSTRUCTION ::s
+"s -2di '>
+j<s/lo^s; riNG ::s
+"s -2di '>
+j<s/w^s; riORD ::s
+"s -2di '>
+j<s/byt^s; riE ::s
+"s -2di '>
+j<s/b^s; riYTE ::s
+"s -2di '>
+j<s/pat^s; riCH ::s
+"s -2di '>
+j<s
+exi^s; riT>
+j<s
+u^s; riPDATE>
+j<s
+se^s; riT 1:fbpat^s"s riCH_AREA ::s
+"s -2di ''>
+j<s
+'; ::s^es"s fr' 1:fc^es::  0lc1:fb:"s ::s^es"s fr' | i	 ' i	
+
+1:fc^es	  >
+
