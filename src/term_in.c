@@ -42,7 +42,7 @@
 
 #define VT_LINES    4                   ///< No. of lines to print for VT
 
-int last_in = EOF;                      ///< Last character read
+static int last_in = EOF;               ///< Last character read
 
 
 // Local functions

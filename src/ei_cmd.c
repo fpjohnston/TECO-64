@@ -45,6 +45,10 @@ static struct buffer *file_buf = NULL;  ///< Command buffer for indirect file
 
 static void free_indirect(void);
 
+static int open_indirect(bool default_type);
+
+static bool read_indirect(void);
+
 
 ///
 ///  @brief    Execute EI command: read TECO command file.
@@ -100,7 +104,7 @@ bool check_indirect(void)
     // Here if user wants to "mung" a file (that is, there was a command-line
     // argument that specified that a file to process just like an EI command).
 
-    filename_buf = alloc_mem((uint)strlen(mung_file) + 1);
+    assert(filename_buf != NULL);
 
     strcpy(filename_buf, mung_file);
 
@@ -160,16 +164,34 @@ static void free_indirect(void)
 
 
 ///
+///  @brief    Initialize for EI commands.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void init_EI(void)
+{
+    if (atexit(free_indirect) != 0)
+    {
+        exit(EXIT_FAILURE);
+    }
+}
+
+
+///
 ///  @brief    Open indirect file.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int open_indirect(bool default_type)
+static int open_indirect(bool default_type)
 {
     if (default_type)
     {
+        assert(filename_buf != NULL);
+
         if (strchr(filename_buf, '.') == NULL)
         {
             strcat(filename_buf, ".tec");
@@ -210,7 +232,7 @@ int open_indirect(bool default_type)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool read_indirect(void)
+static bool read_indirect(void)
 {
     static bool esc_1 = false;
     static bool esc_2 = false;
@@ -261,19 +283,4 @@ bool read_indirect(void)
     {
         return false;                   // Else wait until user terminates it
     }
-}
-
-
-///
-///  @brief    Test to see if we have an indirect file open.
-///
-///  @returns  true if indirect file is open, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool test_indirect(void)
-{
-    struct ifile *stream = &ifiles[IFILE_INDIRECT];
-
-    return (stream->fp != NULL);
 }

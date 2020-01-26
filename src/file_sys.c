@@ -38,7 +38,7 @@
 #include "teco.h"
 #include "errors.h"
 
-glob_t pglob;                           ///< Saved list of wildcard files
+static glob_t pglob;                    ///< Saved list of wildcard files
 
 static char **next_file;                ///< Next file in pglob
 

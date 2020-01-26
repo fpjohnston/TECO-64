@@ -48,6 +48,8 @@ struct scan scan;                   ///< Internal scan variables
 
 static exec_func *find_cmd(struct cmd *cmd);
 
+static void scan_tail(struct cmd *cmd);
+
 static void scan_text(int delim, struct tstring *tstring);
 
 static void set_opts(struct cmd *cmd, const char *opts);
@@ -277,9 +279,10 @@ exec_func *scan_cmd(struct cmd *cmd)
         cmd->c2 = (char)fetch_buf(NOCMD_START);
     }
 
-    // CTRL/T, A, and \ (backslash) may or may not be part of an expression,
-    // depending on whether they're preceded by a numeric value. So we have
-    // to handle them specially here.
+    // CTRL/T, A, and \ (backslash) may or may not be part of an
+    // expression, depending on whether they're preceded by a numeric
+    // value, and L is only part of an expression if a colon modifier
+    // is specified, so we have to handle them specially here.
 
     if (cmd->c1 == CTRL_T && pop_expr(&cmd->n_arg))
     {
@@ -297,6 +300,10 @@ exec_func *scan_cmd(struct cmd *cmd)
         {
             cmd->n_set = true;
         }
+    }
+    else if (toupper(cmd->c1) == 'L' && !cmd->colon_set)
+    {
+        scan.expr = false;              // nL moves lines, n:L counts lines
     }
     else if (cmd->c1 == '\\' && pop_expr(&cmd->n_arg))
     {
@@ -319,17 +326,12 @@ exec_func *scan_cmd(struct cmd *cmd)
 
     if (scan.expr || exec == exec_mod)
     {
-        // Command modifiers cannot occur in the middle of expressions
-
-        if (scan.expr && scan.mod)
-        {
-            if (f.e1.strict)
-            {
-                print_err(E_MOD);       // Invalid modifier for command
-            }
-        }
-
         (*exec)(cmd);
+
+        if (toupper(cmd->c1) == 'L')
+        {
+            cmd->colon_set = false;
+        }
 
         return NULL;
     }
@@ -351,7 +353,7 @@ exec_func *scan_cmd(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_tail(struct cmd *cmd)
+static void scan_tail(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

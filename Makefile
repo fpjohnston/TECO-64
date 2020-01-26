@@ -47,7 +47,7 @@
 #
 ################################################################################
 
-#GDB = 1                                 # TODO: only for development
+GDB = 1                                 # TODO: only for development
 
 TARGET = teco
 
@@ -203,7 +203,7 @@ DFILES = $(SOURCES:.c=.d)
 
 CFLAGS += -MMD -c $(INCLUDES) $(OPT_OPT) $(DFLAGS)
 
-LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt -e786 -e818 -e830 +fan +fas
+LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt -e126 -e786 -e818 -e830 +fan +fas
 
 .PHONY: default 
 default: $(TARGET)

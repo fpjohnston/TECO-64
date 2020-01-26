@@ -81,7 +81,7 @@
 
 #define TECO_VERSION    200             ///< Our version of TECO
 
-#define EDIT_BUF_SIZE   (1 * 1024)      ///< Edit buffer is initially 1KB
+#define EDIT_BUF_SIZE   (16 * 1024)     ///< Edit buffer is initially 16KB
 
 ///  @var     prompt
 ///  @brief   Command-line prompt (usually '*').
@@ -114,7 +114,6 @@ const char *mung_file = NULL;       ///< Name of file to MUNG
 
 const char *log_file = NULL;        ///< Name of log file
 
-
 ///
 ///  @brief    Main program entry for TECO text editor.
 ///
@@ -139,6 +138,7 @@ int main(int argc, const char * const argv[])
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams
     init_EG();                          // Initialize EG command
+    init_EI();                          // Initialize EI command
     init_loop();                        // Initialize loop stack
     init_search();                      // Initialize search string
     init_tbuf(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);

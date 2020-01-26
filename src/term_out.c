@@ -37,8 +37,6 @@
 #include "eflags.h"
 
 
-uint ncommands = 0;                     ///< No. of commands seen so far
-
 static void echo_chr(int c, void (*print)(int c));
 
 

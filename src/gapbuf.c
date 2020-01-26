@@ -200,10 +200,14 @@ static bool expand_tbuf(void)
     {
         return false;
     }
+    
+    // Buffer: [left][gap][right]
 
-    char *newbuf = expand_mem(e.buf, e.size, e.size + e.stepsize);
+    shift_left(e.right);
+    
+    // Buffer: [left + right][gap]
 
-    e.buf   = newbuf;
+    e.buf   = expand_mem(e.buf, e.size, e.size + e.stepsize);
     e.size += e.stepsize;
 
     if (e.size > e.maxsize)
@@ -212,7 +216,12 @@ static bool expand_tbuf(void)
     }
 
     e.lowsize = e.size - ((e.size * e.warn) / 100);
-    e.gap    += e.stepsize;
+
+    shift_right(e.right);
+
+    // Buffer: [left][gap][right]
+
+    e.gap += e.stepsize;
 
     print_size(e.size);
 
@@ -257,14 +266,12 @@ int getchar_tbuf(int n)
 
     if (pos < e.left + e.right)
     {
-        uint i = pos;
-
         if (pos >= e.left)
         {
-            i += e.gap;
+            pos += e.gap;
         }
 
-        return e.buf[i];
+        return e.buf[pos];
     }
 
     return -1;

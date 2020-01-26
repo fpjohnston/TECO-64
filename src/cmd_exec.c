@@ -41,8 +41,6 @@
 #include "exec.h"
 
 
-uint line;                              ///< Current line number
-
 ///  @var    null_cmd
 ///  @brief  Initial command block values.
 
@@ -69,6 +67,11 @@ static const struct cmd null_cmd =
 };
 
 
+// Local functions
+
+static void exec_dummy(struct cmd *cmd);
+
+
 ///
 ///  @brief    Execute command string.
 ///
@@ -80,8 +83,6 @@ void exec_cmd(void)
 {
     struct cmd cmd;
 
-    line = 1;
-
     // Loop for all characters in command string.
 
     for (;;)
@@ -92,10 +93,6 @@ void exec_cmd(void)
         if (exec == NULL)
         {
             break;                      // Back to main loop if command done
-        }
-        else if (cmd.c1 == LF)
-        {
-            ++line;
         }
         else if (cmd.c1 == '!' && cmd.text1.len != 0 && cmd.text1.buf[0] == ' ')
         {
@@ -138,7 +135,7 @@ void exec_bad(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_dummy(struct cmd *unused1)
+static void exec_dummy(struct cmd *unused1)
 {
 }
 

@@ -181,8 +181,6 @@ extern void exec_ctrl_v(struct cmd *cmd);
 
 extern void exec_ctrl_w(struct cmd *cmd);
 
-extern void exec_dummy(struct cmd *cmd);
-
 extern void exec_equals(struct cmd *cmd);
 
 extern void exec_escape(struct cmd *cmd);
@@ -372,28 +370,22 @@ extern void close_indirect(void);
 extern void exit_EG(void);
 
 extern void init_EG(void);
- 
+
+extern void init_EI(void);
+
 extern void init_loop(void);
 
 extern void log_cmd(struct cmd *cmd);
 
 extern exec_func *next_cmd(struct cmd *cmd);
 
-extern int open_indirect(bool default_type);
-
 extern void reset_if(void);
-
-extern bool read_indirect(void);
 
 extern void reset_loop(void);
 
 extern void reset_scan(void);
 
 extern exec_func *scan_cmd(struct cmd *cmd);
-
-extern void scan_tail(struct cmd *cmd);
-
-extern bool test_indirect(void);
 
 extern int fopen_output(const struct cmd *cmd, uint stream);
 

@@ -28,6 +28,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
 #include "errors.h"
@@ -66,12 +67,16 @@ void *expand_mem(void *ptr, uint oldsize, uint newsize)
     assert(oldsize != newsize);
     assert(oldsize < newsize);
 
-    void *newptr = realloc(ptr, (size_t)newsize);
+    char *newptr = realloc(ptr, (size_t)newsize);
 
     if (newptr == NULL)
     {
         print_err(E_MEM);               // Memory overflow
     }
+
+    // Initialize the extra memory we just allocated.
+
+    memset(newptr + oldsize, '\0', (size_t)(newsize - oldsize));
 
     return newptr;
 }

@@ -1,16 +1,15 @@
-121 UN
+600 UN
 B UH
 B UV
 HK
 QN <
     J
     B UQ
-    QN * 10 / 3 UI
+    QN * 10 / 3 UI 
     QI <
         \ U0
         Q0 + 2 * 10 + (QQ * QI) UA
-        B L
-        K
+        B L K
         QI * 2 - 1 UJ
         QA / QJ UQ
         QA -(QQ * QJ) - 2 UZ
@@ -24,7 +23,7 @@ QN <
         48 UW
         %V
     '
-    QV"N
+    QV "N
         QV ^T
     '
     QW UV

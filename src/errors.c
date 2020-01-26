@@ -393,9 +393,9 @@ static const char *verbose[] =
               "the output file. The ED command controls this check.",
 };
 
-char err_buf[64];                       ///< Buffer for error argument
+static char err_buf[64];                ///< Buffer for error argument
 
-const char *err_str = err_buf;          ///< Error message argument
+static const char *err_str = err_buf;   ///< Error message argument
 
 // Local functions
 

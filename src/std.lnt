@@ -59,7 +59,11 @@ co-gcc.lnt   // Basic gcc configuration
 
 -elib(10,18,19,30,31,36,38,43,46,49,101,104,129,132,145,148,957)
 -elibmacro(160,506,866)
--elib(126,169)
-
+-elib(169)
 -esym(534,prints)
+-elib(126)
+-elibcall(126)
+-elibmacro(126)
+-elibsym(126)
+
 

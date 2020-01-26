@@ -53,7 +53,7 @@ struct loop
     uint start;                         ///< Starting position
 };
 
-struct loop *loop_head;                 ///< Head of loop list
+static struct loop *loop_head;          ///< Head of loop list
 
 // Local functions
 

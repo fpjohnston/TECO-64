@@ -37,7 +37,7 @@
 #include "textbuf.h"
 
 
-char insert_string[1024 + 1];           ///< Last string inserted in buffer
+static char insert_string[1024 + 1];    ///< Last string inserted in buffer
 
 
 ///

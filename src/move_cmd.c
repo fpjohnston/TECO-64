@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "textbuf.h"
 #include "errors.h"
 #include "exec.h"
@@ -120,8 +121,8 @@ void exec_L(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n = 1;
-    
+    int n = cmd->colon_set ? 0 : 1;
+
     if (cmd->n_set)
     {
         n = cmd->n_arg;
@@ -129,9 +130,39 @@ void exec_L(struct cmd *cmd)
 
     uint dot = getpos_tbuf();
 
-    n = getdelta_tbuf(n);
+    if (!cmd->colon_set)
+    {
+        n = getdelta_tbuf(n);
 
-    setpos_tbuf((uint)n + dot);
+        setpos_tbuf((uint)n + dot);
+
+        return;
+    }
+
+    // Here if we have :L or n:L to count lines in buffer.
+    //
+    //  0:L -> Total no. of lines
+    // -1:L -> No. of preceding lines
+    //  1:L -> No. of following lines
+    //   :L -> Same as 0:L
+
+    int start = (n > 0) ? 0 : -(int)dot;
+    int end   = (n < 0) ? 0 :  (int)getsize_tbuf();
+    int nlines = 0;
+
+    for (int pos = start; pos < end; ++pos)
+    {
+        int c = getchar_tbuf(pos);
+
+        // TODO: use isdelim() function
+
+        if (c == LF || c == VT || c == FF)
+        {
+            ++nlines;
+        }
+    }
+
+    push_expr(nlines, EXPR_VALUE);
 }
 
 
