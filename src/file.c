@@ -34,7 +34,6 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -297,33 +296,14 @@ int open_output(struct ofile *ofile, int c, const char *name, uint nbytes)
 
     const char *oname = get_oname(ofile, nbytes, exists);
 
-    // Issue warnings about existing files for EW and EL commands.
+    // Issue warnings about existing files for EW commands.
 
-    if (exists)
+    if (c == 'W' && exists)
     {
-        if (c == 'W')                   // EW command
-        {
-            if (f.e4.append)
-            {
-                print_str("%s", "%Appending to existing file\r\n");
-            }
-            else
-            {
-                print_str("%s", "%Superseding existing file\r\n");
-            }
-        }
-        else if (c == 'L')              // EL command
-        {
-            if (f.e4.append)
-            {
-                print_str("%s", "%Appending to existing file\r\n");
-            }
-        }
+        print_str("%s", "%Superseding existing file\r\n");
     }
     
-    const char *mode = f.e4.append ? "a" : "w";
-    
-    if ((ofile->fp = fopen(oname, mode)) == NULL)
+    if ((ofile->fp = fopen(oname, "w")) == NULL)
     {
         return EXIT_FAILURE;
     }

@@ -1,8 +1,0 @@
-! TECO macro to undent text by one BLISS tab stop (4 spaces). EI to
-  load into QU; invoke with nMU to do n lines.
-!
-@^uu?< 0l .-z; <::s	;> ::s    "s -4d | -1a-^^	"e -di    ' ' l>?
-UNDENT loaded into QU
-
-ei
-

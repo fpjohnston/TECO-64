@@ -35,7 +35,12 @@
 #include "textbuf.h"
 
 
+///  @var    last_len
+///  @brief  Length of last string searched for, or length of last insert by I,
+///          tab, or G command.
+
 uint last_len;
+
 
 ///
 ///  @brief    Execute FR command: delete and replace.

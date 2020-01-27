@@ -113,8 +113,6 @@ extern const uint cmd_e_count;
 
 extern const uint cmd_f_count;
 
-extern bool cmd_expr;
-
 // Functions that assist in parsing commands
 
 extern bool append(bool n_set, int n_arg, bool colon_set);
@@ -354,8 +352,6 @@ extern void exec_operator(struct cmd *cmd);
 extern void exec_pct(struct cmd *cmd);
 
 extern void exec_Q(struct cmd *cmd);
-
-extern void exec_tilde(struct cmd *cmd);
 
 extern void exec_W(struct cmd *cmd);
 

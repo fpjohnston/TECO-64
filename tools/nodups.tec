@@ -1,4 +1,0 @@
-! NODUPS.TEC - macro to eliminate adjacent duplicate lines in a buffer.
-!
-j<.-z; x9 l::sq9"s -k-l'>
-

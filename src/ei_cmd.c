@@ -34,6 +34,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -96,6 +97,16 @@ void exec_EI(struct cmd *cmd)
 
 bool check_indirect(void)
 {
+    if (mung_file != NULL && mung_file[0] == NUL)
+    {
+        if (f.e0.exit)
+        {
+            exit(EXIT_SUCCESS);
+        }
+
+        mung_file = NULL;
+    }
+
     if (mung_file == NULL)
     {
         return read_indirect();
@@ -108,7 +119,7 @@ bool check_indirect(void)
 
     strcpy(filename_buf, mung_file);
 
-    mung_file = NULL;                   // Only do this once
+    mung_file = "";                     // Only do this once
 
     if (open_indirect((bool)false) == EXIT_FAILURE &&
         open_indirect((bool)true)  == EXIT_FAILURE)
@@ -116,7 +127,7 @@ bool check_indirect(void)
         prints_err(E_FNF, filename_buf);
     }
 
-    return true;
+    return read_indirect();
 }
 
 

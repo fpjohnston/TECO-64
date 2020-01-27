@@ -1,7 +1,0 @@
-! Macro to regularize BLISS block comments.!
-j<n
-!; -l 0a-^^!"n 0a-13"n li
--l'' l <0a-^^!"n 0;' l> -l1a-13"n 1a-^^-"n 1a-^^*"n  li!
--l'''l 0a-13"n i
-'>
-ei

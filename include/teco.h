@@ -230,16 +230,22 @@ struct watch
     uint keypad;                    ///< TODO: unknown
 };
 
-#define CMD_START       (bool)true
-#define NOCMD_START     (bool)false
+#define CMD_START       (bool)true  ///< Read character at start of command
+#define NOCMD_START     (bool)false ///< Read character in middle of command
+
+///  @enum   search_type
+///  @brief  Type of search requested.
 
 enum search_type
 {
-    SEARCH_S = 1,
-    SEARCH_N = 2,
-    SEARCH_U = 3,
-    SEARCH_E = 4
+    SEARCH_S = 1,                   ///< Local search within page
+    SEARCH_N = 2,                   ///< Non-stop search
+    SEARCH_U = 3,                   ///< Search with yank protection
+    SEARCH_E = 4                    ///< Search w/o yank protection
 };
+
+///  @struct  search
+///  @brief   Common block used by all search functions.
 
 struct search
 {
@@ -336,8 +342,6 @@ extern int getc_term(bool nowait);
 extern void init_term(void);
 
 extern void print_prompt(void);
-
-extern void print_term(const char *str);
 
 extern void put_bell(void);
 

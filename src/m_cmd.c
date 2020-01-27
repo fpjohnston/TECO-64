@@ -33,7 +33,7 @@
 #include "exec.h"
 #include "qreg.h"
 
-uint macro_depth = 0;
+uint macro_depth = 0;                   ///< Current macro depth
 
 // TODO: add environment variable to control maximum depth of macros?
 

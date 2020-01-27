@@ -94,10 +94,10 @@ void exec_cmd(void)
         {
             break;                      // Back to main loop if command done
         }
-        else if (cmd.c1 == '!' && cmd.text1.len != 0 && cmd.text1.buf[0] == ' ')
-        {
-            continue;
-        }
+//        else if (cmd.c1 == '!' && cmd.text1.len != 0 && cmd.text1.buf[0] == ' ')
+//        {
+//            continue;
+//        }
 
         (*exec)(&cmd);                  // Execute command
         f.e0.exec = false;
@@ -144,7 +144,7 @@ static void exec_dummy(struct cmd *unused1)
 ///  @brief    Execute ESCape command. Note that we're called here only for
 ///            escape characters between commands, or at the end of command
 ///            strings, not for escapes used to delimit commands (such as is
-///            the case for a command such as ^Ahello, world!<ESC>).
+///            the case for a command such as "^Ahello, world!<ESC>").
 ///
 ///  @returns  Nothing.
 ///

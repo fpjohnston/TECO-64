@@ -50,13 +50,12 @@
 
 #include <sys/ioctl.h>
 
-#undef CURSES                           // TODO: add support for curses
-#undef refresh                          // So we can use refresh as a symbol
-
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "exec.h"
+#include "textbuf.h"
 
 static struct termios saved_mode;       ///< Saved terminal mode
 
@@ -66,9 +65,7 @@ static void get_window(void);
 
 static void reset_term(void);
 
-static void sigint(int signal);
-
-static void sigwin(int signal);
+static void sig_handler(int signal);
 
 
 ///
@@ -149,8 +146,6 @@ int getc_term(bool wait)
 
 static void get_window(void)
 {
-#if     defined(TIOCGWINSZ)
-
     struct winsize ts;
 
     if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
@@ -160,20 +155,6 @@ static void get_window(void)
 
     w.width  = ts.ws_col;
     w.height = ts.ws_row;
-
-#elif   defined(TIOCGSIZE)
-
-    struct ttysize ts;
-
-    if (ioctl(fileno(stdin), TIOCGSIZE, &ts) == -1)
-    {
-        fatal_err(errno, E_SYS, NULL);
-    }
-
-    w.width  = ts.ts_cols;
-    w.height = ts.ts_lines;
-
-#endif
 }
 
 
@@ -229,19 +210,15 @@ void init_term(void)
 
     f.eu           = -1;                // No case flagging
 
-    // TODO: use sigaction() instead of signal()
+    struct sigaction sa;
 
-    if (signal(SIGINT, sigint) == SIG_ERR)
-    {
-        fatal_err(errno, E_UIT, NULL);
-    }
+    sa.sa_handler = sig_handler;        // Set up general handler
+    sa.sa_flags = 0;
 
-    if (signal(SIGWINCH, sigwin) == SIG_ERR)
-    {
-        fatal_err(errno, E_UIT, NULL);
-    }
+    (void)sigfillset(&sa.sa_mask);      // Block all signals in handler
 
-    if (siginterrupt(SIGINT, 1) == -1)
+    if (sigaction(SIGINT,   &sa, NULL) == -1 ||
+        sigaction(SIGWINCH, &sa, NULL) == -1)
     {
         fatal_err(errno, E_UIT, NULL);
     }
@@ -280,61 +257,46 @@ static void reset_term(void)
 
 
 ///
-///  @brief    Signal handler for CTRL/C.
+///  @brief    Signal handler for CTRL/C and window size changes.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void sigint(int unused1)
+static void sig_handler(int signum)
 {
-    // TODO: use sigaction() instead of signal()
-
-    if (signal(SIGINT, SIG_IGN) == SIG_ERR)
+    switch (signum)
     {
-        fatal_err(errno, E_SYS, NULL);
-    }
+        case SIGINT:
+            if (f.et.abort || f.e0.ctrl_c) // Should CTRL/C cause abort?
+            {
+                echo_in(CTRL_C);
+                print_chr(CRLF);
 
-    if (f.et.abort || f.e0.ctrl_c)      // Should CTRL/C cause abort?
-    {
-        echo_in(CTRL_C);
-        print_chr(CRLF);
+                exec_EK(NULL);          // Kill any current edit
 
-        // TODO: add code for EK and HK commands.
+                int Z = (int)getsize_tbuf();
 
-        exit(EXIT_FAILURE);             // Cleanup, reset, and exit
-    }
+                if (Z != 0)
+                {
+                    setpos_tbuf(B);
 
-    f.e0.ctrl_c = true;                 // Say we've seen CTRL/C
+                    delete_tbuf(Z);     // Kill the whole buffer
+                }
 
-    if (signal(SIGINT, sigint) == SIG_ERR) // And reset interrupt handler
-    {
-        fatal_err(errno, E_SYS, NULL);
+                exit(EXIT_FAILURE);     // Cleanup, reset, and exit
+            }
+
+            f.e0.ctrl_c = true;         // Say we've seen CTRL/C
+
+            break;
+
+        case SIGWINCH:
+            get_window();
+
+            break;
+
+        default:
+            break;
     }
 }
-
-
-///
-///  @brief    Signal handler for window size changes.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void sigwin(int unused1)
-{
-    // TODO: use sigaction() instead of signal()
-
-    if (signal(SIGWINCH, SIG_IGN) == SIG_ERR)
-    {
-        fatal_err(errno, E_SYS, NULL);
-    }
-
-    get_window();
-
-    if (signal(SIGWINCH, sigwin) == SIG_ERR)
-    {
-        fatal_err(errno, E_SYS, NULL);
-    }
-}
-

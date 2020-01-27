@@ -42,5 +42,5 @@ void exec_question(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    v.trace = v.trace ? false : true;
+    v.trace = !v.trace;
 }

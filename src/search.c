@@ -40,6 +40,8 @@
 #include "qreg.h"
 #include "textbuf.h"
 
+///   @var    last_search
+///   @brief  Last string searched for
 
 struct tstring last_search = { .len = 0 };
 

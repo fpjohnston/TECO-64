@@ -1,7 +1,0 @@
-! LINENUMBER.TEC - prefix line numbers to records of a file. Line numbers
-  match those reported in a DIFF. Operates on open input and output file.
-!
--100000p 0u1
-<:p; j<.-z; q1-9999"l i  q1-999"l i  q1-99"l i  q1-9"l i ''''
-  %1\i   l z-60000"g 0,.p0,.k'> ^E"n %1'> -100000pp
-

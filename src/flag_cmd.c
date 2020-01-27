@@ -29,8 +29,10 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
@@ -247,7 +249,7 @@ void exec_E3(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan E4 command: set file options.
+///  @brief    Execute E4 command: set options for writing files.
 ///
 ///  @returns  Nothing.
 ///
@@ -257,9 +259,55 @@ void exec_E4(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    (void)check_mn_flag(cmd, &f.e4.flag);
+    if (cmd->text1.len == 0)
+    {
+        f.e4.noin   = true;
+        f.e4.noout  = true;
 
-    f.e4.noin = f.e4.noout = true;
+        return;
+    }
+
+    // Parse the slash-separated list of options.
+
+    char *optlist = alloc_mem(cmd->text1.len + 1);
+    char *buf = optlist;
+    char *saveptr;
+    char *option;
+
+    sprintf(optlist, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+
+    // Find all options.
+
+    while ((option = strtok_r(buf, "/", &saveptr)) != NULL)
+    {
+        buf = NULL;
+
+        uint len = (uint)strlen(option);
+        char *p = option + len - 1;
+
+        while (len-- > 0 && isspace(*p))
+        {
+            *p-- = NUL;
+        }
+
+        if (len)
+        {
+            if (!strcasecmp(option, "noin"))
+            {
+                f.e4.noin = true;
+            }
+            else if (!strcasecmp(option, "noout"))
+            {
+                f.e4.noout = true;
+            }
+            else
+            {
+                print_str("%%Skipping invalid option \"/%s\"\r\n", option);
+            }
+        }
+    }
+
+    free_mem(&optlist);
 }
 
 

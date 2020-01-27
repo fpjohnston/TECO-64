@@ -33,6 +33,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "errors.h"
 
 
@@ -169,6 +170,11 @@ int fetch_buf(bool start)
     }
 
     int c = cmdbuf->buf[cmdbuf->pos++];
+
+    if (v.trace && !f.e0.dryrun)
+    {
+        echo_in(c);
+    }
 
     return c;
 }

@@ -44,6 +44,7 @@ struct e0_flag
     uint dryrun : 1;            ///< Parse commands w/o executing them
     uint lower  : 1;            ///< Force string arguments to lower case
     uint upper  : 1;            ///< Force string arguments to upper case
+    uint exit   : 1;            ///< Exit when MUNG command is done
 };
 
 ///  @struct  e1_flag
@@ -101,7 +102,6 @@ union e4_flag
 
     struct
     {
-        uint append : 1;        ///< Open output file for append
         uint noin   : 1;        ///< Don't type input to log file
         uint noout  : 1;        ///< Don't type output to log file
     };
@@ -123,7 +123,7 @@ union ed_flag
         uint keepdot   : 1;     ///< Preserve dot if search fails
         uint escape    : 1;     ///< Enable immediate escape-sequence commands
         uint movedot   : 1;     ///< Move dot by one on multiple occurrence searches
-        uint refresh   : 1;     ///< Automatic refresh inhibit
+        uint norfrsh   : 1;     ///< Automatic refresh inhibit
     };
 };
 

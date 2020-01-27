@@ -205,9 +205,9 @@ void log_cmd(struct cmd *cmd)
 
     if (cmd->expr.len != 0)
     {
-        log_chr('(');
+//        log_chr('(');
         log_str(cmd->expr.buf, cmd->expr.len);
-        log_chr(')');
+//        log_chr(')');
         log_chr(SPACE);
     }
    

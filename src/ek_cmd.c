@@ -43,10 +43,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EK(struct cmd *cmd)
+void exec_EK(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     struct ofile *ofile = &ofiles[ostream];
     const char *oname;
     FILE *fp;

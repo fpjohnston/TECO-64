@@ -154,8 +154,9 @@ int main(int argc, const char * const argv[])
 
     for (;;)                            // Loop forever
     {
-        f.e0.exec = false;              // Not executing command
+        f.e0.exec  = false;             // Not executing command
         f.et.abort = false;             // Don't abort on error
+        v.trace    = false;             // Disable tracing
 
         switch (setjmp(jump_main))
         {
