@@ -468,6 +468,11 @@ static int read_first(void)
 
                 break;
 
+            case CTRL_W:
+                printf("\r\n(^W is not yet implemented)\r\n");
+
+                break;
+
             case '/':                   // Display verbose error message
                 print_echo(c);
 

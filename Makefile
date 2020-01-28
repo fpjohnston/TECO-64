@@ -86,6 +86,7 @@ SOURCES = \
     gapbuf.c       \
     memory.c       \
     option_sys.c   \
+    print_cmd.c    \
     qreg.c         \
     search.c       \
     teco.c         \

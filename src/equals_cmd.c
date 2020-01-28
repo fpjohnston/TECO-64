@@ -26,14 +26,21 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
+
+
+// Local functions
+
+static bool check_format(const char *format);
 
 
 ///
@@ -54,7 +61,7 @@ void exec_equals(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e1.noexec || f.e0.dryrun)
+    if (f.e0.dryrun)
     {
         return;
     }
@@ -86,13 +93,18 @@ void exec_equals(struct cmd *cmd)
         mode = "%x";
     }
 
-    char user_mode[64];                 // TODO: fix magic number
+    char user_mode[cmd->text1.len + 1];
 
     if (cmd->atsign_set && cmd->text1.len != 0)
     {
-        sprintf(user_mode, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+        memcpy(user_mode, cmd->text1.buf, (ulong)cmd->text1.len);
 
-        mode = user_mode;
+        user_mode[cmd->text1.len] = NUL;
+        
+        if (check_format(user_mode))
+        {
+            mode = user_mode;
+        }
     }
 
     print_str(mode, cmd->n_arg);
@@ -101,4 +113,76 @@ void exec_equals(struct cmd *cmd)
     {
         print_chr(CRLF);
     }
+}
+
+
+///
+///  @brief    Check format string, making sure that one and only one numeric
+///            format is specified (we do allow for %%). We do this to ensure
+///            that the user does not include something like %s in the format
+///            string which would cause unexpected (and potentially fatal)
+///            things to happen.
+///
+///  @returns  true if exactly one numeric format found, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static bool check_format(const char *format)
+{
+    assert(format != NULL);
+
+    int c;
+    bool is_numeric = false;            // No numeric format seen yet
+
+    while ((c = *format++) != NUL)
+    {
+        if (c != '%')
+        {
+            continue;
+        }
+        else if ((c = *format++) == NUL)
+        {
+            return false;
+        }
+        else if (c == '%')              // %% is okay
+        {
+            continue;
+        }
+        else if (is_numeric)            // No more than one numeric format
+        {
+            return false;
+        }
+
+        // Here if we have something following % besides %.
+
+        while (!isalpha(c))
+        {
+            if ((c = *format++) == NUL || !isprint(c))
+            {
+                return false;
+            }
+        }
+
+        // Here when we have an alphabetic character.
+
+        if (strchr("hlqjz", c) != NULL)
+        {
+            if ((c = *format++) == NUL ||
+                ((c == 'h' || c == 'l') && (c = *format++) == NUL))
+            {
+                return false;
+            }
+        }
+
+        // Here to finally check for a numeric format
+
+        if (strchr("diouxX", c) == NULL)
+        {
+            return false;
+        }
+
+        is_numeric = true;
+    }
+
+    return is_numeric;
 }

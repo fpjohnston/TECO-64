@@ -33,6 +33,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -67,11 +68,6 @@ static const struct cmd null_cmd =
 };
 
 
-// Local functions
-
-static void exec_dummy(struct cmd *cmd);
-
-
 ///
 ///  @brief    Execute command string.
 ///
@@ -99,7 +95,15 @@ void exec_cmd(void)
 //            continue;
 //        }
 
-        (*exec)(&cmd);                  // Execute command
+        if (f.e0.dryrun)
+        {
+            print_cmd(&cmd);            // Just print command
+        }
+        else
+        {
+            (*exec)(&cmd);              // Execute command
+        }
+
         f.e0.exec = false;
 
         if (f.e0.ctrl_c)                // If CTRL/C typed, return to main loop
@@ -135,7 +139,7 @@ void exec_bad(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_dummy(struct cmd *unused1)
+void exec_dummy(struct cmd *unused1)
 {
 }
 
@@ -394,7 +398,7 @@ exec_func *next_cmd(struct cmd *cmd)
             break;
         }
 
-        start = NOCMD_START;
+//        start = NOCMD_START;
     }
 
     // If we have a tag and the accompanying text starts with the character
@@ -410,10 +414,6 @@ exec_func *next_cmd(struct cmd *cmd)
                           (cmd->text1.len != 0 && cmd->text1.buf[0] == f.e5)))
     {
         return exec_dummy;              // Just ignore tag
-    }
-    else if (exec != NULL)
-    {
-//        log_cmd(cmd);  // TODO: complete this
     }
 
     // Pop m and n arguments (if any) from the expression stack

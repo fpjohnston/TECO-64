@@ -137,7 +137,7 @@ void exec_ctrl_e(struct cmd *cmd)
 
     int n;
 
-    if (pop_expr(&n))                   // nEE?
+    if (pop_expr(&n))                   // n<CTRL/E>?
     {
         v.ff = (cmd->n_arg == 0) ? false : true;
     }        
@@ -513,8 +513,8 @@ void exec_ET(struct cmd *cmd)
 
         // The following are read-only bits and cannot be changed by the user.
 
-        f.et.scope  = old.scope;
-        f.et.rscope = old.rscope;
+//        f.et.scope  = old.scope;
+//        f.et.rscope = old.rscope;
     }
 }
 

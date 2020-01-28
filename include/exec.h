@@ -47,6 +47,7 @@ struct scan
     bool expr;                      ///< Current command is part of expression
     bool mod;                       ///< Command modifier seen
     bool space;                     ///< Last chr. scanned was whitespace
+    bool flag;                      ///< Command is a mode control flag
     bool brace_opt;                 ///< Command has alternate meaning in braces
     bool comma_set;                 ///< Comma seen in expression
     bool m_opt;                     ///< m argument allowed
@@ -178,6 +179,8 @@ extern void exec_ctrl_u(struct cmd *cmd);
 extern void exec_ctrl_v(struct cmd *cmd);
 
 extern void exec_ctrl_w(struct cmd *cmd);
+
+extern void exec_dummy(struct cmd *cmd);
 
 extern void exec_equals(struct cmd *cmd);
 
@@ -371,7 +374,7 @@ extern void init_EI(void);
 
 extern void init_loop(void);
 
-extern void log_cmd(struct cmd *cmd);
+extern void print_cmd(struct cmd *cmd);
 
 extern exec_func *next_cmd(struct cmd *cmd);
 

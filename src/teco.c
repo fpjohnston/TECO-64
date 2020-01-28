@@ -125,7 +125,7 @@ int main(int argc, const char * const argv[])
 {
     f.ctrl_x    = 0;                    // Case-insensitive searches
     f.et.abort  = true;                 // Abort on error
-    f.e1.strict = true;                 // Strictly enforce syntax
+//    f.e1.strict = true;                 // Strictly enforce syntax
     f.e2.dollar = true;                 // Allow dollar signs in symbols
     f.e2.ubar   = true;                 // Allow underscores in symbols
     f.e3.brace  = true;                 // Allow braced expressions

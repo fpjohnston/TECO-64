@@ -98,17 +98,44 @@ void append_qchr(int qname, bool qdot, int c)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    uint nbytes = qreg->text.len + 1;
-
-    if (nbytes >= qreg->text.size)
+    if (qreg->text.buf == NULL)
     {
-        nbytes += STR_SIZE_INIT;
+        qreg->text.pos  = 0;
+        qreg->text.len  = 0;
+        qreg->text.size = STR_SIZE_INIT;
+        qreg->text.buf  = alloc_mem(qreg->text.size);
+    }
+    else
+    {
+        uint nbytes = qreg->text.len;
 
-        qreg->text.buf = expand_mem(qreg->text.buf, qreg->text.size, nbytes);
-        qreg->text.size = nbytes;
+        if (nbytes == qreg->text.size)
+        {
+            nbytes += STR_SIZE_INIT;
+
+            qreg->text.buf = expand_mem(qreg->text.buf, qreg->text.size, nbytes);
+            qreg->text.size = nbytes;
+        }
     }
 
     qreg->text.buf[qreg->text.len++] = (char)c;
+}
+
+
+///
+///  @brief    Delete text in Q-register.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void delete_qtext(int qname, bool qdot)
+{
+    struct qreg *qreg = get_qreg(qname, qdot);
+
+    free_mem(&qreg->text.buf);
+
+    qreg->text.len = 0;
 }
 
 

@@ -314,7 +314,7 @@ static bool reduce3(void)
         case EXPR_DIV:
             if (e1->value == 0)
             {
-                if (f.e1.strict)
+                if (f.e1.strict && !f.e0.dryrun)
                 {
                     print_err(E_DIV);   // Division by zero
                 }

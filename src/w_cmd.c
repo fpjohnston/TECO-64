@@ -109,13 +109,6 @@ void exec_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->colon_set)                 // n:W returns a value
-    {
-        push_expr(cmd->n_set ? cmd->n_arg : 0, EXPR_VALUE);
-
-        return;
-    }
-
     // Here for W command without a colon.
 
     if (!f.et.scope)
@@ -127,68 +120,51 @@ void exec_W(struct cmd *cmd)
     {
         int n;
 
-        if (cmd->n_set)
+        if (pop_expr(&cmd->n_arg))
         {
             if (cmd->m_set)
             {
                 set_w(cmd->m_arg, cmd->n_arg);
+                printf("%d,%d:W\r\n", cmd->m_arg, cmd->n_arg);
             }
-
-            n = cmd->n_arg;
+            else
+            {
+                printf("%d:W\r\n", cmd->n_arg);
+            }
         }
         else
         {
-            n = 0;                      // :W = 0:W
+            cmd->n_arg = 0;             // :W = 0:W
+            printf(":W\r\n");
         }
 
-        n = get_w(n);
+        n = get_w(cmd->n_arg);
 
         push_expr(n, EXPR_VALUE);
     }
     else if (cmd->n_set)
     {
-        if (f.et.rscope)
+        printf("%dW\r\n", cmd->n_arg);
+        if (cmd->n_arg == -1000)
         {
-            if (cmd->n_arg == 0)
-            {
-                // TODO: turn off the refresh scope display
-            }
-            else if (cmd->n_arg > 0)
-            {
-                // TODO: set number of display lines
-            }
-            else
-            {
-                // TODO: error?
-            }
+            // TODO: forget that output was done
+        }
+        else if (cmd->n_arg == -1)
+        {
+            // TODO: refresh screen
+        }
+        else if (cmd->n_arg < 0)
+        {
+            // TODO: top n-1 lines have been altered
+        }
+        else if (cmd->n_arg == 0)
+        {
+            // TODO: equivalent to 16W
         }
         else
         {
-            if (cmd->n_arg == -1000)
-            {
-                // TODO: forget that output was done
-            }
-            else if (cmd->n_arg == -1)
-            {
-                // TODO: refresh screen
-            }
-            else if (cmd->n_arg < 0)
-            {
-                // TODO: top n-1 lines have been altered
-            }
-            else if (cmd->n_arg == 0)
-            {
-                // TODO: equivalent to 16W
-            }
-            else
-            {
-                // TODO: place cursor line at line n
-            }
+            // TODO: place cursor line at line n
         }
-    }
-    else if (f.et.rscope)
-    {
-        // TODO: update the refresh scope screen
     }
     else
     {

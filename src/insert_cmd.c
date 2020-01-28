@@ -114,6 +114,11 @@ void exec_I(struct cmd *cmd)
 
 void exec_insert(const char *buf, uint len)
 {
+    if (buf == NULL)
+    {
+        printf("buffer is NULL\r\n");
+    }
+
     assert(buf != NULL);
 
     for (uint i = 0; i < len; ++i)

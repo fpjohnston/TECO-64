@@ -140,7 +140,7 @@ void init_env(int argc, const char * const argv[])
 
     if (getenv("TECO_DEBUG") != NULL)
     {
-        f.e1.noexec = true;
+        f.e0.dryrun = true;
     }
 }
 

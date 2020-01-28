@@ -66,6 +66,16 @@ void exec_X(struct cmd *cmd)
         {
             printc_err(E_POP, 'X');     // Pointer off page
         }
+        else if (m == 0 && n == 0)
+        {
+            // Use of 0,0Xq is supposedly not valid, according to the May 1990
+            // manual; regardless, it is used in macros to delete Q-register
+            // text storage, so we've implemented it here.
+
+            delete_qtext(cmd->qname, cmd->qlocal);
+
+            return;
+        }
         else if (m >= n || n == 0)
         {
             print_err(E_ARG);           // Invalid arguments
@@ -87,8 +97,7 @@ void exec_X(struct cmd *cmd)
         }
     }
 
-    // TODO: clean this up: either m and n should be relative to dot, or
-    //       getchar_tbuf() needs to take an absolute position.
+    // TODO: clean this up: m and n should be relative to dot.
 
     for (int i = m - (int)dot; i < n - (int)dot; ++i)
     {

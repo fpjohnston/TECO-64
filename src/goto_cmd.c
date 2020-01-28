@@ -135,10 +135,10 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
     assert(cmd != NULL);
     assert(text != NULL);    
 
-    char *tag = alloc_mem(len + 1);
-    uint nbytes = (uint)sprintf(tag, "%.*s", (int)len, text);
-
+    char tag[len + 1];                  // Tag we're looking for
     int tag_pos = -1;                   // No tag found yet
+
+    (void)sprintf(tag, "%.*s", (int)len, text);
 
     cmdbuf->pos = 0;                   // Start at beginning of command
 
@@ -167,14 +167,16 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
         {
             tag_pos = (int)cmdbuf->pos; // Remember tag for later
         }
-        else if (cmd->text1.len == nbytes &&
-                 !memcmp(cmd->text1.buf, tag, (long)nbytes))
+//        else if (cmd->text1.len == len &&
+//                 !memcmp(cmd->text1.buf, tag, (ulong)len))
+//        {
+//            prints_err(E_DUP, tag);     // Duplicate tag
+//        }
+        else
         {
-            prints_err(E_DUP, tag);     // Duplicate tag
+            tag_pos = (int)cmdbuf->pos;
         }
     }
-
-    free_mem(&tag);
 
     cmdbuf->pos = (uint)tag_pos;       // Execute goto
 }

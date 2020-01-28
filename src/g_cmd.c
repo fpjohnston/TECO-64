@@ -47,7 +47,7 @@ void exec_G(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e1.noexec || f.e0.dryrun)
+    if (f.e0.dryrun)
     {
         return;
     }
@@ -71,15 +71,29 @@ void exec_G(struct cmd *cmd)
     {
         if (cmd->qname == '*')          // G* -> copy filename to buffer
         {
-            exec_insert(filename_buf, (uint)strlen(filename_buf));
+            if (filename_buf == NULL)
+            {
+                last_len = 0;
+            }
+            else
+            {
+                exec_insert(filename_buf, (uint)strlen(filename_buf));
 
-            last_len = (uint)strlen(filename_buf);
+                last_len = (uint)strlen(filename_buf);
+            }
         }
         else if (cmd->qname == '_')     // G_ -> copy search string to buffer
         {
-            exec_insert(last_search.buf, last_search.len);
+            if (last_search.buf == NULL)
+            {
+                last_len = 0;
+            }
+            else
+            {
+                exec_insert(last_search.buf, last_search.len);
 
-            last_len = last_search.len;
+                last_len = last_search.len;
+            }
         }
         else                           // Gq -> copy Q-register to buffer
         {

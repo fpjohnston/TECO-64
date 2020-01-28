@@ -46,10 +46,16 @@ void exec_ctrl_a(struct cmd *cmd)
     assert(cmd != NULL);
     assert(cmd->text1.buf != NULL);
 
-    if (f.e1.noexec || f.e0.dryrun)
+    if (f.e0.dryrun)
     {
         return;
     }
 
-    print_str("%.*s", (int)cmd->text1.len, cmd->text1.buf);
+    const char *p = cmd->text1.buf;
+
+    for (unsigned int i = 0; i < cmd->text1.len; ++i)
+    {
+        print_chr(*p++);
+    }
+//    print_str("%.*s", (int)cmd->text1.len, cmd->text1.buf);
 }

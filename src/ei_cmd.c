@@ -48,7 +48,7 @@ static void free_indirect(void);
 
 static int open_indirect(bool default_type);
 
-static bool read_indirect(void);
+static bool read_indirect(FILE *fp);
 
 
 ///
@@ -97,37 +97,45 @@ void exec_EI(struct cmd *cmd)
 
 bool check_indirect(void)
 {
-    if (mung_file != NULL && mung_file[0] == NUL)
+    if (mung_file != NULL)
     {
-        if (f.e0.exit)
+        // Here if user wants to "mung" a file (that is, there was a
+        // command-line argument that specified that a file to process
+        // just like an EI command).
+
+        assert(filename_buf != NULL);
+
+        strcpy(filename_buf, mung_file);
+
+        mung_file = NULL;                   // Only do this once
+
+        if (open_indirect((bool)false) == EXIT_FAILURE &&
+            open_indirect((bool)true)  == EXIT_FAILURE)
         {
-            exit(EXIT_SUCCESS);
+            prints_err(E_FNF, filename_buf);
         }
-
-        mung_file = NULL;
     }
 
-    if (mung_file == NULL)
+    struct ifile *stream = &ifiles[IFILE_INDIRECT];
+
+    if (stream->fp == NULL)
     {
-        return read_indirect();
+        return false;
     }
 
-    // Here if user wants to "mung" a file (that is, there was a command-line
-    // argument that specified that a file to process just like an EI command).
-
-    assert(filename_buf != NULL);
-
-    strcpy(filename_buf, mung_file);
-
-    mung_file = "";                     // Only do this once
-
-    if (open_indirect((bool)false) == EXIT_FAILURE &&
-        open_indirect((bool)true)  == EXIT_FAILURE)
+    if (read_indirect(stream->fp))
     {
-        prints_err(E_FNF, filename_buf);
+        return true;
     }
 
-    return read_indirect();
+    close_indirect();
+
+    if (f.e0.exit)
+    {
+        exit(EXIT_SUCCESS);
+    }
+
+    return false;
 }
 
 
@@ -243,38 +251,20 @@ static int open_indirect(bool default_type)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool read_indirect(void)
+static bool read_indirect(FILE *fp)
 {
-    static bool esc_1 = false;
-    static bool esc_2 = false;
+    assert(fp != NULL);
 
-    struct ifile *stream = &ifiles[IFILE_INDIRECT];
-
-    if (stream->fp == NULL)             // Is indirect file open?
-    {
-        esc_1 = esc_2 = false;
-
-        return false;                   // No
-    }
-
-    if ((esc_1 && esc_2) || feof(stream->fp)) // Are we at end of file?
-    {
-        close_indirect();               // Yes, just close file
-
-        return true;                    // TODO: return false here?
-    }
+    bool esc_1 = false;
+    bool esc_2 = false;
 
     int c;
 
-    while ((c = fgetc(stream->fp)) != EOF)
+    while ((c = fgetc(fp)) != EOF)
     {
         store_buf(c);
 
-        if (c != ESC)
-        {
-            esc_1 = esc_2 = false;
-        }
-        else
+        if (c == ESC)
         {
             esc_2 = esc_1;
             esc_1 = true;
@@ -284,14 +274,13 @@ static bool read_indirect(void)
                 return true;
             }
         }
+        else
+        {
+            esc_1 = esc_2 = false;
+        }
     }        
 
-    if (esc_1 && esc_2)                 // Did it end with <ESC><ESC>?
-    {
-        return true;                    // If so, execute it
-    }
-    else
-    {
-        return false;                   // Else wait until user terminates it
-    }
+    // Here when we've run out of characters before a double ESCape.
+
+    return false;
 }

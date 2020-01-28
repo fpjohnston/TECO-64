@@ -204,7 +204,7 @@ void init_term(void)
     f.et.rubout    = true;              // Process DEL and ^U in scope mode
     f.et.lower     = true;              // Terminal can read lower case
     f.et.scope     = true;              // Terminal is a scope
-    f.et.rscope    = true;              // Terminal is a refresh scope
+//    f.et.rscope    = true;              // Terminal is a refresh scope
     f.et.eightbit  = true;              // Terminal can use 8-bit characters
 //    f.et.accent    = true;              // Use accent grave as delimiter
 

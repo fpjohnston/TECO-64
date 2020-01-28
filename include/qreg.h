@@ -66,6 +66,8 @@ struct qreg
 
 extern void append_qchr(int qname, bool qlocal, int c);
 
+extern void delete_qtext(int qname, bool qlocal);
+
 extern uint get_qall(void);
 
 extern int get_qchr(int qname, bool qlocal, int n);
@@ -90,10 +92,10 @@ extern bool push_qreg(int qname, bool qlocal);
 
 extern void reset_qreg(void);
 
-extern void store_qtext(int qname, bool qlocal, struct buffer *text);
-
 extern void store_qchr(int qname, bool qlocal, int c);
 
 extern void store_qnum(int qname, bool qlocal, int n);
+
+extern void store_qtext(int qname, bool qlocal, struct buffer *text);
 
 #endif  // !defined(_QREG_H)

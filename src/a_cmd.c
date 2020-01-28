@@ -163,6 +163,16 @@ void exec_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    if (f.e0.dryrun)
+    {
+        if (cmd->n_set && !cmd->colon_set)
+        {
+            push_expr(0, EXPR_VALUE);
+        }
+
+        return;
+    }
+
     if (cmd->colon_set)                 // :A or n:A command
     {
         bool success = append(cmd->n_set, cmd->n_arg, cmd->colon_set);

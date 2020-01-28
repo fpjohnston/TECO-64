@@ -177,6 +177,7 @@ void reset_scan(void)
     scan.digits      = false;
     scan.expr        = false;
     scan.brace_opt   = false;
+    scan.flag        = false;
     scan.mod         = false;
     scan.space       = false;
     scan.comma_set   = false;
@@ -281,8 +282,8 @@ exec_func *scan_cmd(struct cmd *cmd)
 
     // CTRL/T, A, and \ (backslash) may or may not be part of an
     // expression, depending on whether they're preceded by a numeric
-    // value, and L is only part of an expression if a colon modifier
-    // is specified, so we have to handle them specially here.
+    // value, and L and W are only part of an expression if a colon
+    // modifier is specified.
 
     if (cmd->c1 == CTRL_T && pop_expr(&cmd->n_arg))
     {
@@ -305,9 +306,18 @@ exec_func *scan_cmd(struct cmd *cmd)
     {
         scan.expr = false;              // nL moves lines, n:L counts lines
     }
+    else if (toupper(cmd->c1) == 'W' && !cmd->colon_set)
+    {
+        scan.expr = false;              // nW sets scope stuff
+    }
     else if (cmd->c1 == '\\' && pop_expr(&cmd->n_arg))
     {
         scan.expr = false;              // n\ inserts value in buffer
+        push_expr(cmd->n_arg, EXPR_VALUE);
+    }
+    else if (scan.flag && pop_expr(&cmd->n_arg))
+    {
+        scan.expr = false;
         push_expr(cmd->n_arg, EXPR_VALUE);
     }
 
@@ -328,9 +338,9 @@ exec_func *scan_cmd(struct cmd *cmd)
     {
         (*exec)(cmd);
 
-        if (toupper(cmd->c1) == 'L')
+        if (exec != exec_mod)
         {
-            cmd->colon_set = false;
+            cmd->colon_set = scan.mod = false;
         }
 
         return NULL;
@@ -503,6 +513,7 @@ static void set_opts(struct cmd *cmd, const char *opts)
 
     scan.expr       = false;
     scan.brace_opt  = false;
+    scan.flag       = false;
     scan.m_opt      = false;
     scan.n_opt      = false;
     scan.colon_opt  = false;
@@ -519,6 +530,11 @@ static void set_opts(struct cmd *cmd, const char *opts)
         {
             case 'b':
                 scan.brace_opt = true;
+
+                break;
+
+            case 'f':
+                scan.flag = true;
 
                 break;
 

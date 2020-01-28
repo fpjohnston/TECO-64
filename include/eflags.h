@@ -57,7 +57,6 @@ union e1_flag
     struct
     {
         uint strict : 1;        ///< Strictly enforce command syntax
-        uint noexec : 1;        ///< Parse commands w/o execution
     };
 };
 

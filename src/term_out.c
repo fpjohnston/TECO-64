@@ -164,7 +164,11 @@ static void echo_chr(int c, void (*print)(int c))
 
 void print_chr(int c)
 {
-    if (c == CRLF)
+    if (c == LF && !f.et.image)
+    {
+        print_chr(CR);
+    }
+    else if (c == CRLF)
     {
         print_chr(CR);
 
@@ -203,7 +207,11 @@ void print_chr(int c)
 
 void print_echo(int c)
 {
-    if (c == CRLF)
+    if (c == LF && !f.et.image)
+    {
+        print_echo(CR);
+    }
+    else if (c == CRLF)
     {
         print_echo(CR);
         print_echo(LF);
