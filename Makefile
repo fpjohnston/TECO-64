@@ -54,6 +54,7 @@ TARGET = teco
 CC = gcc
 
 CFLAGS = -std=gnu18 -Wall -Wextra -Wno-unused-parameter -fshort-enums
+CFLAGS += -D NCURSES
 
 DFLAGS =
 
@@ -61,7 +62,7 @@ ENABLE_DEBUG =
 
 INCDIR = include
 
-LINT_DEBUG =
+LINT_DEBUG = -D NCURSES
 
 OPT ?= 3
 OPT_OPT = -O$(OPT)
@@ -93,6 +94,7 @@ SOURCES = \
     term_in.c      \
     term_out.c     \
     term_sys.c     \
+    window.c       \
                    \
     a_cmd.c        \
     back_cmd.c     \

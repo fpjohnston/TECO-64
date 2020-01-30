@@ -6,12 +6,12 @@
 ///
 ///  @copyright  2019-2020 Franklin P. Johnston
 ///
-///  Permission is hereby granted, free of charge, to any person obtaining a copy
-///  of this software and associated documentation files (the "Software"), to deal
-///  in the Software without restriction, including without limitation the rights
-///  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-///  copies of the Software, and to permit persons to whom the Software is
-///  furnished to do so, subject to the following conditions:
+///  Permission is hereby granted, free of charge, to any person obtaining a
+///  copy of this software and associated documentation files (the "Software"),
+///  to deal in the Software without restriction, including without limitation
+///  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+///  and/or sell copies of the Software, and to permit persons to whom the
+///  Software is furnished to do so, subject to the following conditions:
 ///
 ///  The above copyright notice and this permission notice shall be included in
 ///  all copies or substantial portions of the Software.
@@ -19,9 +19,10 @@
 ///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 ///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 ///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIA-
+///  BILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+///  THE SOFTWARE.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -42,7 +43,6 @@ enum errors
     E_ARG,          ///< Improper arguments
     E_BNI,          ///< >not in iteration
     E_BRC,          ///< Invalid braced expression
-    E_CCL,          ///< CCV.SV not found or EG argument too long
     E_CHR,          ///< Invalid character for command
     E_CON,          ///< Confused use of conditionals
     E_CPQ,          ///< Can't pop into Q-register
@@ -50,10 +50,8 @@ enum errors
     E_DIV,          ///< Division by zero
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag "x"
-    E_ERR,          ///< RSTS/E error message
     E_FER,          ///< File error
     E_FNF,          ///< File not found "filespec"
-    E_FUL,          ///< Output command would have overflowed output device
     E_ICE,          ///< Illegal ^E command in search argument
     E_IEC,          ///< Illegal character "x" after E
     E_IFC,          ///< Illegal character "x" after F
@@ -122,7 +120,7 @@ enum errors
     E_UTQ,          ///< Unterminated quote
     E_UWL,          ///< Unable to write line to output file
     E_UWC,          ///< Unable to write character to output file
-    E_WLO,          ///< System device write-locked
+    E_WIN,          ///< Window error
     E_XAB,          ///< Execution aborted
     E_YCA           ///< Y command aborted
 };

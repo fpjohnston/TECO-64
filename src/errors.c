@@ -6,12 +6,12 @@
 ///
 ///  @copyright  2019-2020 Franklin P. Johnston
 ///
-///  Permission is hereby granted, free of charge, to any person obtaining a copy
-///  of this software and associated documentation files (the "Software"), to deal
-///  in the Software without restriction, including without limitation the rights
-///  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-///  copies of the Software, and to permit persons to whom the Software is
-///  furnished to do so, subject to the following conditions:
+///  Permission is hereby granted, free of charge, to any person obtaining a
+///  copy of this software and associated documentation files (the "Software"),
+///  to deal in the Software without restriction, including without limitation
+///  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+///  and/or sell copies of the Software, and to permit persons to whom the
+///  Software is furnished to do so, subject to the following conditions:
 ///
 ///  The above copyright notice and this permission notice shall be included in
 ///  all copies or substantial portions of the Software.
@@ -19,9 +19,10 @@
 ///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 ///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 ///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIA-
+///  BILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+///  THE SOFTWARE.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -57,7 +58,6 @@ static struct err_table err_table[] =
     [E_ARG] = { "ARG",  "Improper arguments" },
     [E_BNI] = { "BNI",  "> not in iteration" },
     [E_BRC] = { "BRC",  "Invalid braced expression" },
-    [E_CCL] = { "CCL",  "CCV.SV not found or EG argument too long" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
     [E_CON] = { "CON",  "Confused use of conditionals" },
     [E_CPQ] = { "CPQ",  "Can't pop into Q-register" },
@@ -65,10 +65,8 @@ static struct err_table err_table[] =
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag !%s!" },
-    [E_ERR] = { "ERR",  "%s" },
     [E_FER] = { "FER",  "File error" },
     [E_FNF] = { "FNF",  "File not found \"%s\"" },
-    [E_FUL] = { "FUL",  "Output command would have overflowed output device" },
     [E_ICE] = { "ICE",  "Illegal ^E command in search argument" },
     [E_IEC] = { "IEC",  "Illegal character \"%s\" after E" },
     [E_IFC] = { "IFC",  "Illegal character \"%s\" after F" },
@@ -135,7 +133,7 @@ static struct err_table err_table[] =
     [E_UTC] = { "UTC",  "Unterminated command \"%s\"" },
     [E_UTM] = { "UTM",  "Unterminated macro" },
     [E_UTQ] = { "UTQ",  "Unterminated quote" },
-    [E_WLO] = { "WLO",  "System device write-locked" },
+    [E_WIN] = { "WIN",  "Window error" },
     [E_XAB] = { "XAB",  "Execution aborted" },
     [E_YCA] = { "YCA",  "Y command aborted" },
 };
@@ -153,8 +151,6 @@ static const char *verbose[] =
               "complete within the Q-register.)",
 
     [E_BRC] = "TODO: fill this in",
-
-    [E_CCL] = NULL,
 
     [E_CHR] = "TODO: fill this in",
 
@@ -177,15 +173,11 @@ static const char *verbose[] =
 
     [E_DUP] = "An O command found a duplicate tag within the command string.",
 
-    [E_ERR] = NULL,
-
     [E_FER] = "The file specified in an ER, EW, or EB command was not found.",
 
     [E_FNF] = "The requested input file could not be located. If this "
               "occurred within a macro, the colon modified ER or EB "
               "command may be necessary.",
-
-    [E_FUL] = NULL,
 
     [E_ICE] = "A search argument contains a ^E command that is either "
               "not defined or incomplete. The only valid ^E commands "
@@ -382,7 +374,7 @@ static const char *verbose[] =
     [E_UTQ] = "A \" command was not terminated before the end of a command"
               "string.",
 
-    [E_WLO] = NULL,
+    [E_WIN] = "Window error occurred. More information is TBD.",
 
     [E_XAB] = "Execution of TECO was aborted. This is usually due to the "
               "typing of <CTRL/C>.",
@@ -505,7 +497,7 @@ void help_err(int err_teco)
         {
             len = (uint)(next - start);
 
-            if (len > w.width)
+            if (len > (uint)w.width)
             {
                 print_str("%.s", (end - start) - 1, start);
                 print_chr(CRLF);
@@ -524,7 +516,7 @@ void help_err(int err_teco)
         {
             len = (uint)strlen(start);
 
-            print_str(start, len);
+            print_str("%.*s", (int)len, start);
             print_chr(CRLF);
 
             break;

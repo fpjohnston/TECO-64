@@ -6,12 +6,12 @@
 ///
 ///  @copyright  2019-2020 Franklin P. Johnston
 ///
-///  Permission is hereby granted, free of charge, to any person obtaining a copy
-///  of this software and associated documentation files (the "Software"), to deal
-///  in the Software without restriction, including without limitation the rights
-///  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-///  copies of the Software, and to permit persons to whom the Software is
-///  furnished to do so, subject to the following conditions:
+///  Permission is hereby granted, free of charge, to any person obtaining a
+///  copy of this software and associated documentation files (the "Software"),
+///  to deal in the Software without restriction, including without limitation
+///  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+///  and/or sell copies of the Software, and to permit persons to whom the
+///  Software is furnished to do so, subject to the following conditions:
 ///
 ///  The above copyright notice and this permission notice shall be included in
 ///  all copies or substantial portions of the Software.
@@ -19,9 +19,10 @@
 ///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 ///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 ///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIA-
+///  BILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+///  THE SOFTWARE.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -260,6 +261,11 @@ static bool read_indirect(FILE *fp)
 
     int c;
 
+    // Read and store commands from file. We need to note whether the macro
+    // ends with a double ESCape (ignoring trailing whitespace), because that
+    // tells the main loop whether or not to begin execution, or wait until
+    // the user provides more input.
+
     while ((c = fgetc(fp)) != EOF)
     {
         store_buf(c);
@@ -268,19 +274,20 @@ static bool read_indirect(FILE *fp)
         {
             esc_2 = esc_1;
             esc_1 = true;
-
-            if (esc_2)
-            {
-                return true;
-            }
         }
         else
         {
-            esc_1 = esc_2 = false;
+            esc_1 = false;
+
+            // We allow trailing whitespace after a double ESCape, except for
+            // a tab, since that's a TECO command.
+
+            if (!isspace(c) && c != TAB)
+            {
+                esc_2 = false;
+            }
         }
     }        
 
-    // Here when we've run out of characters before a double ESCape.
-
-    return false;
+    return esc_2;
 }

@@ -6,12 +6,12 @@
 ///
 ///  @copyright  2019-2020 Franklin P. Johnston
 ///
-///  Permission is hereby granted, free of charge, to any person obtaining a copy
-///  of this software and associated documentation files (the "Software"), to deal
-///  in the Software without restriction, including without limitation the rights
-///  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-///  copies of the Software, and to permit persons to whom the Software is
-///  furnished to do so, subject to the following conditions:
+///  Permission is hereby granted, free of charge, to any person obtaining a
+///  copy of this software and associated documentation files (the "Software"),
+///  to deal in the Software without restriction, including without limitation
+///  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+///  and/or sell copies of the Software, and to permit persons to whom the
+///  Software is furnished to do so, subject to the following conditions:
 ///
 ///  The above copyright notice and this permission notice shall be included in
 ///  all copies or substantial portions of the Software.
@@ -19,15 +19,18 @@
 ///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 ///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 ///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIA-
+///  BILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+///  THE SOFTWARE.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <ncurses.h>
 
 #include "teco.h"
 #include "eflags.h"
@@ -43,7 +46,7 @@
 
 struct watch w =
 {
-    .type      = 4,                     // VT100 in ANSI mode
+    .type      = 8,                     // VT102 in ANSI mode
     .width     = DEFAULT_WIDTH,
     .height    = DEFAULT_HEIGHT,
     .seeall    = false,
@@ -75,11 +78,11 @@ static int get_w(int n)
     switch (n)
     {
         default:
-        case 0: return (int)w.type;
+        case 0: return w.type;
 
-        case 1: return (int)w.width;
+        case 1: return w.width;
 
-        case 2: return (int)w.height;
+        case 2: return w.height - w.nscroll;
 
         case 3: return w.seeall ? -1 : 0;
 
@@ -87,13 +90,13 @@ static int get_w(int n)
 
         case 5: return w.hold;
 
-        case 6: return (int)w.topdot;
+        case 6: return w.topdot;
 
-        case 7: return (int)w.nscroll;
+        case 7: return w.nscroll;
 
-        case 8: return (int)w.spacemark;
+        case 8: return w.spacemark;
 
-        case 9: return (int)w.keypad;
+        case 9: return w.keypad;
     }
 }
 
@@ -125,17 +128,11 @@ void exec_W(struct cmd *cmd)
             if (cmd->m_set)
             {
                 set_w(cmd->m_arg, cmd->n_arg);
-                printf("%d,%d:W\r\n", cmd->m_arg, cmd->n_arg);
-            }
-            else
-            {
-                printf("%d:W\r\n", cmd->n_arg);
             }
         }
         else
         {
             cmd->n_arg = 0;             // :W = 0:W
-            printf(":W\r\n");
         }
 
         n = get_w(cmd->n_arg);
@@ -144,14 +141,26 @@ void exec_W(struct cmd *cmd)
     }
     else if (cmd->n_set)
     {
-        printf("%dW\r\n", cmd->n_arg);
+        init_window();
+
         if (cmd->n_arg == -1000)
         {
             // TODO: forget that output was done
         }
         else if (cmd->n_arg == -1)
         {
-            // TODO: refresh screen
+            int x, y;
+
+            getyx(stdscr, y, x);
+            move(0, 0);
+
+            addstr("To be, or not to be: that is the question:\n");
+            addstr("Whether 'tis nobler in the mind to suffer\n");
+            addstr("The slings and arrows of outrageous fortune,\n");
+            addstr("Or to take arms against a sea of troubles,\n");
+            addstr("And by opposing end them?\n");
+
+            move(y, x);
         }
         else if (cmd->n_arg < 0)
         {
@@ -168,7 +177,13 @@ void exec_W(struct cmd *cmd)
     }
     else
     {
-        // TODO: forget screen image and special scope modes
+
+#if     defined(NCURSES)
+
+        end_window();
+
+#endif
+
     }
 }
 
@@ -184,17 +199,10 @@ static void set_type(int m)
 {
     switch (m)
     {
-        case 0:                         // VT52
-        case 1:                         // VT61
-        case 2:                         // VT100 in VT52 mode
         case 4:                         // VT100 in VT100 mode
-        case 6:                         // VT05
-        case 8:                         // VT102
-        case 10:                        // VK100
         case 11:                        // VT200 in VT200 mode
         case 12:                        // VT200 in ANSI (VT100) mode
-        case 13:                        // VT200 in VT52 mode
-            w.type = (uint)m;
+            w.type = m;
 
             break;
 
@@ -217,13 +225,11 @@ static void set_w(int m, int n)
 {
     switch (n)
     {
-        case 0:
-            set_type(m);
-            break;
+        case 0: set_type(m);                         break;
 
-        case 1: w.width = (uint)m;                   break;
+        case 1: w.width = m;                         break;
 
-        case 2: w.height = (uint)m;                  break;
+        case 2: w.height = m;                        break;
 
         case 3: w.seeall = (n == -1) ? true : false; break;
 
@@ -231,13 +237,23 @@ static void set_w(int m, int n)
 
         case 5: w.hold = m;                          break;
 
-        case 6: w.topdot = (uint)m;                  break;
+        case 6: w.topdot = m;                        break;
 
-        case 7: w.nscroll = (uint)m;                 break;
+        case 7:
+            if (m <= 1 || w.height - m < 9)
+            {
+                print_err(E_WIN);       // Window error
+            }
 
-        case 8: w.spacemark = (uint)m;               break;
+            w.nscroll = m;
 
-        case 9: w.keypad = (uint)m;                  break;
+            set_scroll(w.height, w.nscroll);
+            
+            break;
+
+        case 8: w.spacemark = m;                     break;
+
+        case 9: w.keypad = m;                        break;
 
         default: print_err(E_ARG);
     }

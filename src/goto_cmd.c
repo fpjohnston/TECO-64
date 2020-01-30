@@ -6,12 +6,12 @@
 ///
 ///  @copyright  2019-2020 Franklin P. Johnston
 ///
-///  Permission is hereby granted, free of charge, to any person obtaining a copy
-///  of this software and associated documentation files (the "Software"), to deal
-///  in the Software without restriction, including without limitation the rights
-///  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-///  copies of the Software, and to permit persons to whom the Software is
-///  furnished to do so, subject to the following conditions:
+///  Permission is hereby granted, free of charge, to any person obtaining a
+///  copy of this software and associated documentation files (the "Software"),
+///  to deal in the Software without restriction, including without limitation
+///  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+///  and/or sell copies of the Software, and to permit persons to whom the
+///  Software is furnished to do so, subject to the following conditions:
 ///
 ///  The above copyright notice and this permission notice shall be included in
 ///  all copies or substantial portions of the Software.
@@ -19,9 +19,10 @@
 ///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 ///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 ///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIA-
+///  BILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+///  THE SOFTWARE.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -142,41 +143,37 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
 
     cmdbuf->pos = 0;                   // Start at beginning of command
 
-    for (;;)
+    while (cmdbuf->pos < cmdbuf->len)
     {
         bool dryrun = f.e0.dryrun;
 
         f.e0.dryrun = true;
-        (void)next_cmd(cmd);
+
+        (void)next_cmd(cmd);            // Get next command
+
         f.e0.dryrun = dryrun;
 
-        if (cmdbuf->pos == cmdbuf->len) // End of command string?
-        {
-            if (tag_pos != -1)          // Did we find the tag?
-            {
-                break;
-            }
-
-            prints_err(E_TAG, tag);     // Missing tag
-        }
-        else if (cmd->c1 != '!')        // Is this a tag?
+        if (cmd->c1 != '!')             // Is this a tag?
         {
             continue;                   // No
         }
-        else if (tag_pos == -1)         // Have we seen it before?
+
+        if (cmd->text1.len == len &&
+            !memcmp(cmd->text1.buf, tag, (ulong)len))
         {
+            if (tag_pos != -1)          // Found tag. Have we seen it already?
+            {
+                prints_err(E_DUP, tag); // Duplicate tag
+            }
+
             tag_pos = (int)cmdbuf->pos; // Remember tag for later
-        }
-//        else if (cmd->text1.len == len &&
-//                 !memcmp(cmd->text1.buf, tag, (ulong)len))
-//        {
-//            prints_err(E_DUP, tag);     // Duplicate tag
-//        }
-        else
-        {
-            tag_pos = (int)cmdbuf->pos;
         }
     }
 
-    cmdbuf->pos = (uint)tag_pos;       // Execute goto
+    if (tag_pos == -1)                  // Did we find the tag?
+    {
+        prints_err(E_TAG, tag);         // Missing tag
+    }
+
+    cmdbuf->pos = (uint)tag_pos;        // Execute goto
 }

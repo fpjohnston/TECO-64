@@ -6,12 +6,12 @@
 ///
 ///  @copyright  2019-2020 Franklin P. Johnston
 ///
-///  Permission is hereby granted, free of charge, to any person obtaining a copy
-///  of this software and associated documentation files (the "Software"), to deal
-///  in the Software without restriction, including without limitation the rights
-///  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-///  copies of the Software, and to permit persons to whom the Software is
-///  furnished to do so, subject to the following conditions:
+///  Permission is hereby granted, free of charge, to any person obtaining a
+///  copy of this software and associated documentation files (the "Software"),
+///  to deal in the Software without restriction, including without limitation
+///  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+///  and/or sell copies of the Software, and to permit persons to whom the
+///  Software is furnished to do so, subject to the following conditions:
 ///
 ///  The above copyright notice and this permission notice shall be included in
 ///  all copies or substantial portions of the Software.
@@ -19,9 +19,10 @@
 ///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 ///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 ///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIA-
+///  BILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+///  THE SOFTWARE.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -32,12 +33,46 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <ncurses.h>
+
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
 
+#if     defined(NCURSES)
+
+#include "exec.h"
+
+#endif
+
+// Local functions
+
+static void display(int c);
 
 static void echo_chr(int c, void (*print)(int c));
+
+
+///
+///  @brief    Display character on terminal or in window.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void display(int c)
+{
+
+#if     defined(NCURSES)
+
+    if (wdisplay(c))
+    {
+        return;
+    }
+        
+#endif
+
+    fputc(c, stdout);
+}
 
 
 ///
@@ -129,25 +164,26 @@ static void echo_chr(int c, void (*print)(int c))
                 break;
 
             case FF:
-                (print)('\r');
+//                (print)('\r');
                 //lint -fallthrough
 
             case VT:
-                (print)('\n');
-                (print)('\n');
-                (print)('\n');
-                (print)('\n');
+//                (print)('\n');
+//                (print)('\n');
+//                (print)('\n');
+//                (print)('\n');
 
                 break;
 
             case CTRL_G:
-                (print)(CTRL_G);
+//                (print)(CTRL_G);
 
                 //lint -fallthrough
 
             default:                    // Display as +^c
-                (print)('^');
-                (print)(c + 'A' - 1);
+                (print)(c);
+//                (print)('^');
+//                (print)(c + 'A' - 1);
 
                 break;
          }
@@ -178,13 +214,13 @@ void print_chr(int c)
     {
         if ((f.eu == 0 && islower(c)) || (f.eu == 1 && isupper(c)))
         {
-            fputc('\'', stdout);
+            display('\'');
         }
 
         c = toupper(c);
     }
 
-    fputc(c, stdout);
+    display(c);
 
     if (!f.e4.noout)
     {
@@ -219,8 +255,18 @@ void print_echo(int c)
         return;
     }
 
-    fputc(c, stdout);
+//    fputc(c, stdout);
 
+    // TODO: move the following to window.c
+
+    if (c == 13)
+    {
+        return;
+    }
+
+    waddch(stdscr, c);
+    wrefresh(stdscr);
+    
     if (!f.e4.noin)
     {
         FILE *fp = ofiles[OFILE_LOG].fp;
@@ -235,7 +281,8 @@ void print_echo(int c)
 
 ///
 ///  @brief    Output NUL-terminated string to terminal, and possibly also to
-///            log file.
+///            log file. Note that this function is not used to output anything
+///            to the text buffer window.
 ///
 ///  @returns  Nothing.
 ///
@@ -245,12 +292,21 @@ void print_str(const char *fmt, ...)
 {
     assert(fmt != NULL);
 
+    char buf[256];
+
     va_list argptr;
     va_start(argptr, fmt);
     
-    (void)vprintf(fmt, argptr);
+    (void)vsnprintf(buf, sizeof(buf), fmt, argptr);
 
     va_end(argptr);
+
+    // TODO: move the following to window.c
+
+    waddstr(stdscr, buf);
+    wrefresh(stdscr);
+
+//    fputs(buf, stdout);
 
     if (!f.e4.noout)
     {
