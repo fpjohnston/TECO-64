@@ -32,10 +32,9 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
-#include "textbuf.h"
 #include "errors.h"
 #include "exec.h"
+#include "textbuf.h"
 
 
 // Local functions
@@ -155,9 +154,7 @@ void exec_L(struct cmd *cmd)
     {
         int c = getchar_tbuf(pos);
 
-        // TODO: use isdelim() function
-
-        if (c == LF || c == VT || c == FF)
+        if (isdelim(c))
         {
             ++nlines;
         }

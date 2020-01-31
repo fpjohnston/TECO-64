@@ -394,7 +394,7 @@ static uint last_delim(uint nlines)
 
         c = e.buf[i];
 
-        if (c == LF || c == VT || c == FF)
+        if (isdelim(c))
         {
             if (nlines-- == 0)
             {
@@ -436,7 +436,7 @@ static uint next_delim(uint nlines)
 
         int c = e.buf[i];
 
-        if (c == LF || c == VT || c == FF)
+        if (isdelim(c))
         {
             if (--nlines == 0)
             {

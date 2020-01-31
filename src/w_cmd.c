@@ -30,12 +30,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <ncurses.h>
-
 #include "teco.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
+#include "window.h"
 
 
 #define DEFAULT_HEIGHT          24      ///< Default terminal rows
@@ -149,18 +148,7 @@ void exec_W(struct cmd *cmd)
         }
         else if (cmd->n_arg == -1)
         {
-            int x, y;
-
-            getyx(stdscr, y, x);
-            move(0, 0);
-
-            addstr("To be, or not to be: that is the question:\n");
-            addstr("Whether 'tis nobler in the mind to suffer\n");
-            addstr("The slings and arrows of outrageous fortune,\n");
-            addstr("Or to take arms against a sea of troubles,\n");
-            addstr("And by opposing end them?\n");
-
-            move(y, x);
+            // TODO: do something?
         }
         else if (cmd->n_arg < 0)
         {
@@ -177,13 +165,7 @@ void exec_W(struct cmd *cmd)
     }
     else
     {
-
-#if     defined(NCURSES)
-
         end_window();
-
-#endif
-
     }
 }
 
@@ -245,9 +227,7 @@ static void set_w(int m, int n)
                 print_err(E_WIN);       // Window error
             }
 
-            w.nscroll = m;
-
-            set_scroll(w.height, w.nscroll);
+            set_scroll(w.height, w.nscroll = m);
             
             break;
 

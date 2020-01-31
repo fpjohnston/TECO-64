@@ -547,7 +547,7 @@ void exec_EV(struct cmd *unused1)
 
 
 ///
-///  @brief    Scan EZ command.
+///  @brief    Scan EZ command: TECO C flags.
 ///
 ///  @returns  Nothing.
 ///
@@ -557,14 +557,5 @@ void exec_EZ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-#if     0                               // TODO: use old or new EZ command?
-
-    print_err(E_T10);                   // TECO-10 command not implemented
-
-#else
-    
     (void)check_mn_flag(cmd, &f.ez.flag);
-
-#endif
-
 }

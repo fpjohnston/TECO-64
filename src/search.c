@@ -50,8 +50,6 @@ struct tstring last_search = { .len = 0 };
 
 static int isblankx(int c, struct search *s);
 
-static int isdelim(int c);
-
 static int isqreg(int c, struct search *s);
 
 static int issymbol(int c);
@@ -111,29 +109,6 @@ static int isblankx(int c, struct search *s)
     }
 
     return 1;
-}
-
-
-///
-///  @brief    Check for delimiter (LF, VT, or FF) at current position.
-///
-///            Note that we return 1/0 instead of true/false for compatibility
-///            with the ANSI isxxx() functions.
-///
-///  @returns  1 if a delimiter found, else 0.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static int isdelim(int c)
-{
-    if (c == LF || c == VT || c == FF)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
 }
 
 
@@ -306,9 +281,9 @@ static bool match_chr(int c, struct search *s)
 
 
 ///
-///  @brief    Check for delimiter (LF, VT, or FF) at current position.
+///  @brief    Check to see if text string matches search string.
 ///
-///  @returns  true if a delimiter found, else false.
+///  @returns  true if match, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

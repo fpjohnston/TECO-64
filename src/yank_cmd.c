@@ -31,8 +31,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ncurses.h>
-
 #include "teco.h"
 #include "textbuf.h"
 #include "eflags.h"
@@ -133,31 +131,5 @@ bool next_yank(void)
         ;
     }
 
-#if     defined(NCURSES)
-
-    Z = getsize_tbuf();
-
-    int x, y;
-
-    getyx(stdscr, y, x);
-
-    move(0, 0);
-
-    int pos = 0;
-    int c;
-
-    setpos_tbuf(B);
-
-    while ((c = getchar_tbuf(pos++)) != EOF)
-    {
-        addch(c);
-    }
-
-    move(y, x);
-
-    refresh();
-
-#endif
-    
     return (Z != 0) ? true : false;
 }

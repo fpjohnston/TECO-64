@@ -314,7 +314,7 @@ uint start_buf(void)
 
         int c = cmdbuf->buf[i];
 
-        if (c == LF || c == VT || c == FF)
+        if (isdelim(c))
         {
             break;
         }

@@ -38,12 +38,8 @@
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
+#include "window.h"
 
-#if     defined(NCURSES)
-
-#include "exec.h"
-
-#endif
 
 // Local functions
 
@@ -61,15 +57,10 @@ static void echo_chr(int c, void (*print)(int c));
 
 static void display(int c)
 {
-
-#if     defined(NCURSES)
-
     if (wdisplay(c))
     {
         return;
     }
-        
-#endif
 
     fputc(c, stdout);
 }
@@ -255,17 +246,10 @@ void print_echo(int c)
         return;
     }
 
-//    fputc(c, stdout);
-
-    // TODO: move the following to window.c
-
-    if (c == 13)
+    if (!wdisplay(c))
     {
-        return;
+        fputc(c, stdout);
     }
-
-    waddch(stdscr, c);
-    wrefresh(stdscr);
     
     if (!f.e4.noin)
     {
@@ -303,8 +287,8 @@ void print_str(const char *fmt, ...)
 
     // TODO: move the following to window.c
 
-    waddstr(stdscr, buf);
-    wrefresh(stdscr);
+    (void)addstr(buf);
+    refresh_win();
 
 //    fputs(buf, stdout);
 

@@ -399,6 +399,7 @@ exec_func *next_cmd(struct cmd *cmd)
             break;
         }
 
+//        cmd->m_set = cmd->n_set = false;
 //        start = NOCMD_START;
     }
 

@@ -36,18 +36,6 @@
 
 #endif
 
-// TODO: move window stuff to new header file.
-
-extern bool wdisplay(int c);
-
-extern void end_window(void);
-
-extern bool get_winsize(int *x, int *y);
-
-extern void init_window(void);
-
-extern void set_scroll(int height, int nscroll);
-
 
 ///  @struct  scan
 ///  @brief   Internal scanning state

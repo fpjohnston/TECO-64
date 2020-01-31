@@ -58,7 +58,8 @@ union e1_flag
 
     struct
     {
-        uint strict : 1;        ///< Strictly enforce command syntax
+        uint strict  : 1;       ///< Strictly enforce command syntax
+        uint bottext : 1;       ///< Put text window under command window
     };
 };
 
@@ -180,18 +181,18 @@ union ez_flag
     struct
     {
         uint noversion : 1;     ///< No VMS-style versions
-        uint           : 1;     ///< (unused)
-        uint           : 1;     ///< (unused)
-        uint arrow     : 1;     ///< ???
-        uint beep      : 1;     ///< Audio beep or flash (CURSES)
-        uint line      : 1;     ///< Line between windows
-        uint           : 1;     ///< (unused)
+        uint           : 1;     ///
+        uint           : 1;     ///
+        uint arrow     : 1;     ///< (TODO: what's this for?)
+        uint beep      : 1;     ///< Audio beep instead of flash
+        uint winline   : 1;     ///< Line between windows
+        uint           : 1;     ///
         uint formfeed  : 1;     ///< Do not stop read on FF
         uint unixnl    : 1;     ///< Use Unix-style newline terminators
         uint vt100     : 1;     ///< Use VT100 graphics
-        uint           : 1;     ///< (unused)
+        uint           : 1;     ///
         uint btee      : 1;     ///< Use BTEE instead of DIAMOND (???)
-        uint           : 1;     ///< (unused)
+        uint           : 1;     ///
         uint hidecr    : 1;     ///< Hide CR in scope
         uint nostrip   : 1;     ///< Don't strip filename extension
     };

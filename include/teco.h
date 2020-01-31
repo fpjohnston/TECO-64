@@ -214,23 +214,6 @@ struct vars
     bool full;                      ///< true if edit buffer is full
 };
 
-///  @struct  watch
-///  @brief   Watch scope variables (for controlling display).
-
-struct watch
-{
-    int type;                       ///< Type of scope
-    int width;                      ///< Terminal width in columns
-    int height;                     ///< Terminal height in rows
-    bool seeall;                    ///< SEEALL mode
-    int mark;                       ///< "Mark" status
-    int hold;                       ///< Hold mode indicator
-    int topdot;                     ///< Buffer position of upper left corner
-    int nscroll;                    ///< No. of scrolling lines
-    int spacemark;                  ///< TODO: unknown
-    int keypad;                     ///< TODO: unknown
-};
-
 #define CMD_START       (bool)true  ///< Read character at start of command
 #define NOCMD_START     (bool)false ///< Read character in middle of command
 
@@ -304,11 +287,13 @@ extern void *alloc_mem(uint size);
 
 extern uint build_string(char **dest, const char *src, uint len);
 
+extern bool check_loop(void);
+
+extern bool check_macro(void);
+
 extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
 
 extern void free_mem(void *ptr);
-
-extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 
 extern void exec_cmd(void);
 
@@ -316,13 +301,7 @@ extern void init_env(int argc, const char * const argv[]);
 
 extern void init_search(void);
 
-extern void set_config(int argc, const char * const argv[]);
-
-extern int teco_env(int n);
-
-extern bool check_loop(void);
-
-extern bool check_macro(void);
+extern int isdelim(int c);
 
 extern bool search_loop(struct search *s);
 
@@ -331,6 +310,12 @@ extern void search_print(void);
 extern bool search_backward(struct search *s);
 
 extern bool search_forward(struct search *s);
+
+extern int teco_env(int n);
+
+extern void set_config(int argc, const char * const argv[]);
+
+extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 
 // Terminal input/output functions
 

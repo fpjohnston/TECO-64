@@ -1,6 +1,6 @@
 ///
-///  @file    comma_cmd.c
-///  @brief   Process comma argument separator.
+///  @file    window.h
+///  @brief   Header file for window support functions.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,56 +26,51 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <assert.h>
-#include <stdlib.h>
+#if     !defined(_WINDOW_H)
+
+#define _WINDOW_H
+
+#if     !defined(_TECO_H)
 
 #include "teco.h"
-#include "eflags.h"
-#include "errors.h"
-#include "exec.h"
 
+#endif
 
-///
-///  @brief    Process "," (comma argument separator).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
+#if     !defined(_STDBOOL_H)
 
-void exec_comma(struct cmd *cmd)
+#include <stdbool.h>
+
+#endif
+
+///  @struct  watch
+///  @brief   Watch scope variables (for controlling display).
+
+struct watch
 {
-    assert(cmd != NULL);
+    int type;                       ///< Type of scope
+    int width;                      ///< Terminal width in columns
+    int height;                     ///< Terminal height in rows
+    bool seeall;                    ///< SEEALL mode
+    int mark;                       ///< "Mark" status
+    int hold;                       ///< Hold mode indicator
+    int topdot;                     ///< Buffer position of upper left corner
+    int nscroll;                    ///< No. of scrolling lines
+    int spacemark;                  ///< TODO: unknown
+    int keypad;                     ///< TODO: unknown
+};
 
-    if (f.e0.dryrun)
-    {
-        return;
-    }
-                        
-    if (scan.comma_set || cmd->h_set)   // Already seen comma or H?
-    {
-        print_err(E_ARG);               // Invalid arguments
-    }
+// Window functions
 
-    if (!pop_expr(&cmd->m_arg))         // Any n argument specified?
-    {
-        if (f.e1.strict)                // No -- should we issue error?
-        {
-            print_err(E_NAC);           // No argument before ,
-        }
+extern bool wdisplay(int c);
 
-        return;
-    }
+extern void end_window(void);
 
-    // If we've seen a comma, then what's on the expression is an "m" argument,
-    // not an "n" argument (numeric arguments can take the form m,n).
+extern bool get_winsize(int *x, int *y);
 
-    if (cmd->m_arg < 0)
-    {
-        print_err(E_NCA);           // Negative argument to ,
-    }
+extern void init_window(void);
 
-    cmd->m_set = true;                  // And say we have one
-    cmd->n_set = false;                 // But forget about n argument
+extern void refresh_win(void);
 
-    scan.comma_set = true;
-}
+extern void set_scroll(int height, int nscroll);
+
+#endif  // _EXEC_H

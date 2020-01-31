@@ -57,6 +57,8 @@
 #include "errors.h"
 #include "exec.h"
 #include "textbuf.h"
+#include "window.h"
+
 
 static struct termios saved_mode;       ///< Saved terminal mode
 

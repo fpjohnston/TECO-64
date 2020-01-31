@@ -29,6 +29,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #if     defined(NCURSES)
 
@@ -37,13 +38,20 @@
 #endif
 
 #include "teco.h"
-//#include "eflags.h"
+#include "ascii.h"
+#include "eflags.h"
 #include "errors.h"
-#include "exec.h"
+#include "textbuf.h"
+#include "window.h"
+
+
+#define BRIGHT_WHITE 16
 
 #if     defined(NCURSES)
 
-bool winactive = false;
+static bool winactive = false;
+
+static int text_top;
 
 #endif
 
@@ -64,12 +72,14 @@ bool wdisplay(int c)
     {
         if (c != 13)
         {
-            if (addch(c) == ERR || refresh() == ERR)
+            if (addch((uint)c) == ERR || refresh() == ERR)
             {
                 end_window();
 
                 print_err(E_WIN);
             }
+
+            (void)refresh();
         }
 
         return true;
@@ -145,12 +155,12 @@ void init_window(void)
 
 #if     defined(NCURSES)
 
-    if (!winactive)
+    if (f.e0.window && !winactive)
     {
-        // Initialize screen. Note that initscr() will print an error message
-        // and exit if it fails, so there is no error return to check for.
+        // Note that initscr() will print an error message and exit if it
+        // fails to initialize, so there is no error return to check for.
 
-        initscr();
+        (void)initscr();
 
         winactive = true;
 
@@ -160,16 +170,26 @@ void init_window(void)
             notimeout(stdscr, (bool)TRUE) == ERR ||
             idlok(stdscr, (bool)TRUE) == ERR ||
             scrollok(stdscr, (bool)TRUE) == ERR ||
-            keypad(stdscr, (bool)TRUE) == ERR)
+            keypad(stdscr, (bool)TRUE) == ERR ||
+            !has_colors() ||
+            start_color() == ERR ||
+            assume_default_colors(COLOR_BLUE, COLOR_WHITE | A_BOLD))
         {
             end_window();
 
             print_err(E_WIN);
         }
 
-        // TODO: is this needed?
+        short color_bg = COLOR_WHITE;
 
-        (void)wrefresh(stdscr);
+        if (can_change_color() && COLORS >= 16)
+        {
+            (void)init_color(BRIGHT_WHITE, 1000, 1000, 1000);
+
+            color_bg = BRIGHT_WHITE;
+        }
+
+        (void)init_pair(1, COLOR_GREEN, color_bg);
 
         if (atexit(end_window) != 0)
         {
@@ -185,6 +205,74 @@ void init_window(void)
 
 
 ///
+///  @brief    Refresh screen.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void refresh_win(void)
+{
+
+#if     defined(NCURSES)
+
+    if (w.nscroll != 0)
+    {
+        int row, col, c;
+
+        getyx(stdscr, row, col);
+
+        (void)move(text_top, 0);
+        (void)attron(A_BOLD);
+        (void)attrset(COLOR_PAIR(1));   //lint !e835
+
+        int pos = getdelta_tbuf(0);     // Start of current line
+        int dot = abs(pos);             // Position within first line
+        int nrows = w.height - w.nscroll;
+
+        if (f.ez.winline)
+        {
+            --nrows;
+        }
+
+        assert(nrows > 0);
+
+        while ((c = getchar_tbuf(pos++)) != -1)
+        {
+            if (c != CR)
+            {
+                (void)addch((uint)c);
+            }
+
+            if (isdelim(c) && --nrows == 0)
+            {
+                break;
+            }
+        }
+
+        while (nrows-- > 0)
+        {
+            (void)addch('\n');
+        }
+
+        (void)move(text_top, dot);
+        c = inch() & A_CHARTEXT;        //lint !e835
+        (void)delch();
+        (void)insch((uint)c | A_REVERSE);
+
+        (void)move(row, col);
+        (void)attroff(A_BOLD);
+        (void)attrset(COLOR_PAIR(0));   //lint !e835 !e845
+    }
+
+    (void)refresh();
+
+#endif
+    
+}
+
+
+///
 ///  @brief    Set scrolling region.
 ///
 ///  @returns  Nothing.
@@ -196,28 +284,62 @@ void set_scroll(int height, int nscroll)
 
 #if     defined(NCURSES)
 
+    int cmd_top, cmd_bot;
+
     if (winactive)
     {
-        int top = height - nscroll;
-        int bot = height - 1;
+        if (f.e1.bottext)
+        {
+            cmd_top  = 0;
+            cmd_bot  = nscroll - 1;
+            text_top = nscroll;
+        }
+        else
+        {
+            cmd_top  = height - nscroll;
+            cmd_bot  = height - 1;
+            text_top = 0;
+        }
 
-        if (setscrreg(top, bot) == ERR)
+        if (setscrreg(cmd_top, cmd_bot) == ERR)
         {
             end_window();
 
             print_err(E_WIN);
         }
 
-        move(top - 1, 0);
-
-        for (int i = 0; i < w.width; ++i)
+        if (f.ez.winline)
         {
-            addch(ACS_HLINE);
+            int line_row;
+
+            if (f.e1.bottext)
+            {
+                line_row = cmd_bot + 1;
+                ++text_top;
+            }
+            else
+            {
+                line_row = cmd_top - 1;
+            }
+
+            // Draw line between text window and command window
+
+            (void)move(line_row, 0);
+
+            for (int i = 0; i < w.width; ++i)
+            {
+                (void)addch(ACS_HLINE);
+            }
         }
 
-        move(top, 0);
+        (void)move(cmd_top, 0);
 
-        refresh();
+        for (int i = cmd_top; i <= cmd_bot; ++i)
+        {
+            (void)addch('\n');
+        }
+
+        (void)move(cmd_top, 0);
     }
 
 #endif

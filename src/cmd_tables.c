@@ -218,7 +218,7 @@ const struct cmd_table cmd_e_table[] =
     { exec_EW,      ": @ 1"   },
     { exec_EX,      ""        },
     { exec_EY,      ":"       },
-    { exec_EZ,      ""        },
+    { exec_EZ,      "f m x"   },
     { exec_E_ubar,  "n : @ 1" },
 };
 

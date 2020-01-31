@@ -36,6 +36,8 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "window.h"
+
 
 int last_error = E_NUL;                 ///< Last error encountered
 
