@@ -56,7 +56,7 @@ void exec_P(struct cmd *cmd)
     if (ofile->fp == NULL)
     {
         print_err(E_NFO);               // No file for output
-    }       
+    }
 
     uint start = B;
     uint end   = getsize_tbuf();
@@ -197,7 +197,7 @@ bool next_page(uint start, uint end, bool ff, bool yank)
         uint Z = getsize_tbuf();
 
         setpos_tbuf(B);
-        
+
         delete_tbuf((int)Z);            // Kill the whole buffer
 
         struct ifile *ifile = &ifiles[istream];

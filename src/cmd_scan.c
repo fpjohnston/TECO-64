@@ -157,7 +157,7 @@ static exec_func *find_cmd(struct cmd *cmd)
             scan.digits = false;
         }
     }
-    
+
     set_opts(cmd, table->opts);
 
     return table->exec;
@@ -261,7 +261,7 @@ exec_func *scan_cmd(struct cmd *cmd)
             cmd->qlocal = true;         // Yes, mark it
 
             c = fetch_buf(NOCMD_START); // Get Q-register name
-        }        
+        }
 
         if (!isalnum(c))
         {
@@ -393,14 +393,6 @@ static void scan_tail(struct cmd *cmd)
     if (cmd->c1 == CTRL_A || cmd->c1 == '!')
     {
         cmd->delim = cmd->c1;           // Special delimiter for CTRL/A & tag
-    }
-    else if (f.ee != NUL)
-    {
-        cmd->delim = (char)f.ee;
-    }
-    else if (f.et.accent)
-    {
-        cmd->delim = '`';
     }
     else
     {

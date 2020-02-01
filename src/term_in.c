@@ -37,6 +37,7 @@
 #include "eflags.h"
 #include "errors.h"
 #include "qreg.h"
+#include "window.h"
 
 
 #define FF_LINES    40                  ///< No. of lines to print for FF
@@ -90,13 +91,6 @@ static void read_bs(void)
             //ZScrOp(SCR_EEL);          // TODO: write this function
         }
 
-        // TODO: finish the following code
-
-//        HowFar = Ln2Chr(-1L);
-//        GapBeg += HowFar;
-//        GapEnd += HowFar;
-//        memmove(GapEnd + 1, GapBeg, (SIZE_T) - HowFar);
-
         if (f.ev)
         {
             //DoEvEs(EvFlag);
@@ -142,85 +136,79 @@ void read_cmd(void)
         // If the character is an accent grave and and the et.accent bit is set,
         // or it matches a non-NUL EE flag, then treat it as an ESCape.
 
+        bool accent = false;
+
         if ((f.et.accent && c == ACCENT) || f.ee == c)
         {
-            echo_in(ACCENT);           // Echo as accent grave
-            store_buf(c = ESC);         // But store as ESCape
-
-            if (last_in == ESC)         // Consecutive delimiter?
-            {
-                print_echo(CRLF);
-
-                last_in = EOF;
-
-                return;                 // Yes, time to execute command
-            }
+            accent = true;
+            c = ESC;                    // Process it as ESCape.
         }
-        else
+
+        switch (c)
         {
-            switch (c)
-            {
-                case BS:
-                    read_bs();
+            case BS:
+                read_bs();
 
-                    break;
+                break;
 
-                case FF:
-                    read_ff();
+            case FF:
+                read_ff();
 
-                    break;
+                break;
 
-                case CR:
-                    read_cr();
+            case CR:
+                read_cr();
 
-                    break;
+                break;
 
-                case CTRL_C:
-                    read_ctrl_c(last_in);
+            case CTRL_C:
+                read_ctrl_c(last_in);
 
-                    break;
+                break;
 
-                case CTRL_G:
-                    read_ctrl_g();
+            case CTRL_G:
+                read_ctrl_g();
 
-                    break;
+                break;
 
-                case CTRL_U:
-                    read_ctrl_u();
+            case CTRL_U:
+                read_ctrl_u();
 
-                    break;
+                break;
 
-                case CTRL_Z:
-                    read_ctrl_z();
+            case CTRL_Z:
+                read_ctrl_z();
 
-                    break;
+                break;
 
-                case ESC:
-                    echo_in('$');              // Use dollar sign to echo ESC
-                    store_buf(c);
+            case ESC:
+                echo_in(accent ? '`' : '$');
+                store_buf(c);
 
-                    if (last_in == ESC)
-                    {
-                        last_in = EOF;
+                if (last_in == ESC)
+                {
+                    last_in = EOF;
 
-                        print_echo(CRLF);
+                    print_echo(CRLF);
 
-                        return;                 // Done reading command
-                    }
+                    return;             // Done reading command
+                }
 
-                    break;
+                break;
 
-                case LF:
-                    read_lf();
+            case LF:
+                read_lf();
 
-                    break;
+                break;
 
-                case VT:
-                    read_vt();
+            case VT:
+                read_vt();
 
-                    break;
+                break;
 
-                default:
+            default:
+                if (!readkey_win(c))
+                {
                     if (!f.et.lower)
                     {
                         c = toupper(c);
@@ -228,9 +216,9 @@ void read_cmd(void)
 
                     echo_in(c);
                     store_buf(c);
+                }
 
-                    break;
-            }
+                break;
         }
 
         last_in = c;
@@ -442,7 +430,7 @@ static void read_ff(void)
 ///            being typed following a CTRL/U used to delete a command string.
 ///            For this reason, these commands must be handled by our caller.
 ///
-///  @returns  Nothing.
+///  @returns  Character to be processed.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -470,7 +458,7 @@ static int read_first(void)
                 break;
 
             case CTRL_W:
-                printf("\r\n(^W is not yet implemented)\r\n");
+                refresh_win();
 
                 break;
 
@@ -486,6 +474,7 @@ static int read_first(void)
                 break;
 
             case '?':                   // Display erroneous command string
+                // TODO: make sure this prints correct string
                 if (last_error != E_NUL)
                 {
                     print_echo(c);
@@ -499,7 +488,7 @@ static int read_first(void)
 
             case '*':                   // Store last command in Q-register
                 print_echo(c);
-                c = getc_term((bool)WAIT);    // Get Q-register name
+                c = getc_term((bool)WAIT); // Get Q-register name
 
                 if (f.e0.ctrl_c)
                 {

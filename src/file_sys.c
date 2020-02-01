@@ -83,7 +83,7 @@ const char *get_oname(struct ofile *ofile, uint nbytes, bool exists)
 
         memcpy(ofile->name, last_file, (size_t)nbytes + 1);
         memcpy(scratch, last_file, (size_t)nbytes + 1);
-    
+
         char *dir = dirname(scratch);
         char tempfile[] = "_teco-XXXXXX";
         int fd = mkstemp(tempfile);
@@ -130,7 +130,7 @@ int get_wild(void)
     while ((filename = *next_file++) != NULL)
     {
         struct stat file_stat;
-        
+
         if (stat(filename, &file_stat) != 0)
         {
             fatal_err(errno, E_SYS, NULL);
@@ -185,7 +185,7 @@ void rename_output(struct ofile *ofile)
                 fatal_err(errno, E_SYS, NULL);
             }
         }
-        
+
         if (rename(ofile->temp, ofile->name) != 0)
         {
             fatal_err(errno, E_SYS, NULL);

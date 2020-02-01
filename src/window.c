@@ -27,9 +27,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <unistd.h>
+
+#include <sys/ioctl.h>
 
 #if     defined(NCURSES)
 
@@ -45,50 +48,17 @@
 #include "window.h"
 
 
-#define BRIGHT_WHITE 16
+#define CMD             0               ///< Command window colors
+#define TEXT            1               ///< Text window colors
+#define LINE            2               ///< Line separator colors
+
+#define BRIGHT_WHITE    16              ///< Bright white background
 
 #if     defined(NCURSES)
-
-static bool winactive = false;
 
 static int text_top;
 
 #endif
-
-
-///
-///  @brief    Output character to window.
-///
-///  @returns  true if character output, false if window not active.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool wdisplay(int c)
-{
-
-#if     defined(NCURSES)
-
-    if (winactive)
-    {
-        if (c != 13)
-        {
-            if (addch((uint)c) == ERR || refresh() == ERR)
-            {
-                end_window();
-
-                print_err(E_WIN);
-            }
-
-            (void)refresh();
-        }
-
-        return true;
-    }
-
-#endif
-    
-    return false;
-}
 
 
 ///
@@ -103,9 +73,9 @@ void end_window(void)
 
 #if     defined(NCURSES)
 
-    if (winactive)
+    if (f.e0.window)
     {
-        winactive = false;
+        f.e0.window = false;
 
         (void)endwin();
     }
@@ -116,30 +86,92 @@ void end_window(void)
 
 
 ///
-///  @brief    Get window size.
+///  @brief    Get next character.
 ///
-///  @returns  true if got window size, else false.
+///  @returns  Character read, or -1 if no character available.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool get_winsize(int *x, int *y)
+int getchar_win(bool wait)
+{
+    int c = 0;                          // Ensure that high bits are clear
+
+#if     defined(NCURSES)
+
+    if (f.e0.window)
+    {
+        if (!wait)
+        {
+            (void)nodelay(stdscr, (bool)TRUE);
+        }
+
+        c = getch();
+
+        if (!wait)
+        {
+            (void)nodelay(stdscr, (bool)FALSE);
+        }
+
+        if (c == KEY_BACKSPACE)
+        {
+            return DEL;
+        }
+
+        return c;
+    }
+
+#endif
+
+    // If windows support isn't compiled in, or it's not currently active, then
+    // read a character through alternate means. Note that if windows are inactive,
+    // getch() always returns immediately, which is why we usually call read() to
+    // get a single character.
+
+    if (!wait)
+    {
+        return getch();
+    }
+    else if (read(fileno(stdin), &c, 1uL) == -1)
+    {
+        return -1;
+    }
+    else
+    {
+        return c;
+    }
+}
+
+
+///
+///  @brief    Get window size.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void getsize_win(void)
 {
 
 #if     defined(NCURSES)
 
-    assert(x != NULL);
-    assert(y != NULL);
-    
-    if (winactive)
+    if (f.e0.window)
     {
-        getmaxyx(stdscr, *y, *x);
+        getmaxyx(stdscr, w.height, w.width);
 
-        return true;
+        return;
     }
 
 #endif
-    
-    return false;
+
+    struct winsize ts;
+
+    if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
+    {
+        fatal_err(errno, E_SYS, NULL);
+    }
+
+    w.width  = ts.ws_col;
+    w.height = ts.ws_row;
 }
 
 
@@ -155,14 +187,12 @@ void init_window(void)
 
 #if     defined(NCURSES)
 
-    if (f.e0.window && !winactive)
+    if (f.e0.window)
     {
         // Note that initscr() will print an error message and exit if it
         // fails to initialize, so there is no error return to check for.
 
         (void)initscr();
-
-        winactive = true;
 
         if (cbreak() == ERR ||
             noecho() == ERR ||
@@ -173,12 +203,12 @@ void init_window(void)
             keypad(stdscr, (bool)TRUE) == ERR ||
             !has_colors() ||
             start_color() == ERR ||
-            assume_default_colors(COLOR_BLUE, COLOR_WHITE | A_BOLD))
+            assume_default_colors(COLOR_BLUE, COLOR_WHITE | A_BOLD) == ERR)
         {
-            end_window();
-
             print_err(E_WIN);
         }
+
+        getsize_win();
 
         short color_bg = COLOR_WHITE;
 
@@ -189,7 +219,11 @@ void init_window(void)
             color_bg = BRIGHT_WHITE;
         }
 
-        (void)init_pair(1, COLOR_GREEN, color_bg);
+        (void)init_pair(TEXT, COLOR_GREEN, color_bg);
+        (void)init_pair(LINE, COLOR_RED, color_bg);
+        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
+
+        (void)color_set(COLOR_PAIR(CMD), NULL); //lint !e835 !e845
 
         if (atexit(end_window) != 0)
         {
@@ -201,6 +235,138 @@ void init_window(void)
 
 #endif
 
+}
+
+
+///
+///  @brief    Output character to window.
+///
+///  @returns  true if character output, false if window not active.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool putc_win(int c)
+{
+
+#if     defined(NCURSES)
+
+    if (f.e0.window)
+    {
+        if (c != CR)
+        {
+            (void)addch((uint)c);
+            (void)refresh();
+        }
+
+        return true;
+    }
+
+#endif
+
+    return false;
+}
+
+
+///
+///  @brief    Output string to window.
+///
+///  @returns  true if character output, false if window not active.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool puts_win(const char *buf)
+{
+
+#if     defined(NCURSES)
+
+    if (f.e0.window)
+    {
+        (void)addstr(buf);
+        refresh_win();
+
+        return true;
+    }
+
+#endif
+
+    return false;
+
+}
+
+
+///
+///  @brief    Read window key.
+///
+///  @returns  true if window key, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool readkey_win(int c)
+{
+    if (c < KEY_MIN || c > KEY_MAX)
+    {
+        return false;
+    }
+
+    int dot = (int)getpos_tbuf();
+
+    if (c == KEY_UP)
+    {
+        int cur  = -getdelta_tbuf(0);   // Offset in current line
+        int prev = -getdelta_tbuf(-1);  // Distance to start of previous
+        int len  = prev - cur;          // Length of previous line
+
+        dot -= prev;
+
+        if (len < cur)
+        {
+            dot += len - 1;
+        }
+        else
+        {
+            dot += cur;
+        }
+    }
+    else if (c == KEY_DOWN)
+    {
+        int Z    = (int)getsize_tbuf();
+        int cur  = -getdelta_tbuf(0);   // Offset in current line
+        int next = getdelta_tbuf(1);    // Start of next line
+        int len  = getdelta_tbuf(2) - next; // Length of next line
+
+        dot += next;
+
+        if (len < cur)
+        {
+            dot += len - 1;
+        }
+        else
+        {
+            dot += cur;
+        }
+
+        if (dot > Z)                    // Make sure we stay within buffer
+        {
+            dot = Z;
+        }
+    }
+    else if (c == KEY_LEFT)
+    {
+        --dot;
+    }
+    else if (c == KEY_RIGHT)
+    {
+        ++dot;
+    }
+    else
+    {
+        return true;
+    }
+
+    setpos_tbuf((uint)dot);
+    refresh_win();
+
+    return true;
 }
 
 
@@ -218,24 +384,27 @@ void refresh_win(void)
 
     if (w.nscroll != 0)
     {
-        int row, col, c;
+        int cmdrow, cmdcol;
 
-        getyx(stdscr, row, col);
+        getyx(stdscr, cmdrow, cmdcol);  // Save position in command window
 
-        (void)move(text_top, 0);
+        (void)move(text_top, 0);        // Switch to text window
         (void)attron(A_BOLD);
-        (void)attrset(COLOR_PAIR(1));   //lint !e835
+        (void)attrset(COLOR_PAIR(TEXT)); //lint !e835
 
-        int pos = getdelta_tbuf(0);     // Start of current line
-        int dot = abs(pos);             // Position within first line
-        int nrows = w.height - w.nscroll;
+        int nrows = w.height - w.nscroll; // No. of rows on screen
 
-        if (f.ez.winline)
+        if (!f.e1.noline)
         {
             --nrows;
         }
 
         assert(nrows > 0);
+
+        int line = getlines_tbuf(-1);   // Current (relative) line number
+        int row = line % nrows;         // Relative row within screen
+        int pos = getdelta_tbuf(-row);  // Position of 1st chr. in 1st row
+        int c;
 
         while ((c = getchar_tbuf(pos++)) != -1)
         {
@@ -250,25 +419,33 @@ void refresh_win(void)
             }
         }
 
+        // Blank out the rest of the lines if nothing to display
+
         while (nrows-- > 0)
         {
             (void)addch('\n');
         }
 
-        (void)move(text_top, dot);
+        // Highlight our current position in text window
+
+        int dot = abs(getdelta_tbuf(0));
+
+        (void)move(row + text_top, dot);
         c = inch() & A_CHARTEXT;        //lint !e835
         (void)delch();
         (void)insch((uint)c | A_REVERSE);
 
-        (void)move(row, col);
+        // Restore position in command window
+
+        (void)move(cmdrow, cmdcol);
         (void)attroff(A_BOLD);
-        (void)attrset(COLOR_PAIR(0));   //lint !e835 !e845
+        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
     }
 
     (void)refresh();
 
 #endif
-    
+
 }
 
 
@@ -286,9 +463,9 @@ void set_scroll(int height, int nscroll)
 
     int cmd_top, cmd_bot;
 
-    if (winactive)
+    if (f.e0.window)
     {
-        if (f.e1.bottext)
+        if (f.e1.cmdtop)
         {
             cmd_top  = 0;
             cmd_bot  = nscroll - 1;
@@ -308,11 +485,11 @@ void set_scroll(int height, int nscroll)
             print_err(E_WIN);
         }
 
-        if (f.ez.winline)
+        if (!f.e1.noline)
         {
             int line_row;
 
-            if (f.e1.bottext)
+            if (f.e1.cmdtop)
             {
                 line_row = cmd_bot + 1;
                 ++text_top;
@@ -325,6 +502,8 @@ void set_scroll(int height, int nscroll)
             // Draw line between text window and command window
 
             (void)move(line_row, 0);
+            (void)attron(A_BOLD);
+            (void)attrset(COLOR_PAIR(LINE)); //lint !e835
 
             for (int i = 0; i < w.width; ++i)
             {
@@ -338,6 +517,11 @@ void set_scroll(int height, int nscroll)
         {
             (void)addch('\n');
         }
+
+        (void)refresh();
+
+        (void)attron(A_BOLD);
+        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
 
         (void)move(cmd_top, 0);
     }

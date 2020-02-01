@@ -90,7 +90,7 @@ void exec_ctrl_u(struct cmd *cmd)
             text.size = cmd->text1.len;
             text.buf  = alloc_mem(text.size);
 
-            memcpy(text.buf, cmd->text1.buf, (ulong)text.size);            
+            memcpy(text.buf, cmd->text1.buf, (ulong)text.size);
 
             store_qtext(cmd->qname, cmd->qlocal, &text);
         }

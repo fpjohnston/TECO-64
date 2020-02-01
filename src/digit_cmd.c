@@ -61,7 +61,7 @@ void exec_digit(struct cmd *cmd)
     }
 
     scan.digits = true;
-    
+
     scan.sum *= (int)v.radix;           // Shift over existing digits
     scan.sum += c - '0';                // And add in the new one
 }

@@ -59,7 +59,8 @@ union e1_flag
     struct
     {
         uint strict  : 1;       ///< Strictly enforce command syntax
-        uint bottext : 1;       ///< Put text window under command window
+        uint cmdtop  : 1;       ///< Put command window above text window
+        uint noline  : 1;       ///< No line between text and command window
     };
 };
 
@@ -185,7 +186,7 @@ union ez_flag
         uint           : 1;     ///
         uint arrow     : 1;     ///< (TODO: what's this for?)
         uint beep      : 1;     ///< Audio beep instead of flash
-        uint winline   : 1;     ///< Line between windows
+        uint           : 1;     ///< Line between windows
         uint           : 1;     ///
         uint formfeed  : 1;     ///< Do not stop read on FF
         uint unixnl    : 1;     ///< Use Unix-style newline terminators

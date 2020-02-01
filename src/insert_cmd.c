@@ -140,7 +140,7 @@ void exec_insert(const char *buf, uint len)
             case EDIT_WARN:
             default:
                 break;
-        }                
+        }
     }
 
     last_len = len;

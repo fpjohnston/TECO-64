@@ -112,7 +112,7 @@ static void endloop(struct cmd *cmd)
         }
     } while (depth > 0);
 
-    struct loop *loop = loop_head;    
+    struct loop *loop = loop_head;
 
     assert(loop != NULL);
 

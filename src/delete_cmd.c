@@ -79,7 +79,7 @@ void exec_D(struct cmd *cmd)
         {
             print_err(E_DTB);           // Delete too big
         }
-        
+
         push_expr(TECO_FAILURE, EXPR_VALUE);
 
         return;
@@ -112,7 +112,7 @@ void exec_K(struct cmd *cmd)
         if (Z != 0)
         {
             setpos_tbuf(B);
-        
+
             delete_tbuf((int)Z);        // Yes, kill the whole buffer
         }
 
@@ -121,7 +121,7 @@ void exec_K(struct cmd *cmd)
 
     int n = 1;
     int m;
-    
+
     if (cmd->n_set)
     {
         n = cmd->n_arg;

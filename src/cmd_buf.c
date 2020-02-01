@@ -94,7 +94,7 @@ struct buffer *copy_buf(void)
 int delete_buf(void)
 {
     assert(cmdbuf != NULL);
-    
+
     if (cmdbuf->len == 0)              // Anything in buffer?
     {
         return EOF;                     // No
@@ -114,7 +114,7 @@ int delete_buf(void)
 void echo_buf(int pos)
 {
     assert(cmdbuf != NULL);
-    
+
     assert((uint)pos <= cmdbuf->len);
 
     // Just echo everything we're supposed to print. Note that this is not the
@@ -153,7 +153,7 @@ bool empty_buf(void)
 int fetch_buf(bool start)
 {
     assert(cmdbuf != NULL);
-    
+
     if (cmdbuf->pos == cmdbuf->len)
     {
         if (start)

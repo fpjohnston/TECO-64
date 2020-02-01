@@ -73,10 +73,10 @@ void exec_E_pct(struct cmd *cmd)
 
     struct ofile *ofile = &ofiles[OFILE_QREGISTER];
     struct qreg *qreg = get_qreg(cmd->qname, cmd->qlocal);
-    
+
     assert(qreg != NULL);
 
-    uint size = qreg->text.len;    
+    uint size = qreg->text.len;
 
     if (size != 0)
     {

@@ -72,7 +72,7 @@ int find_eg(const char *buf, uint len)
     char *cmd = alloc_mem(len + 1);
     char *arg;
     char *saveptr;
-    
+
     sprintf(cmd, "%.*s", (int)len, buf);
 
     cmd = strtok_r(cmd, "\t\n\v\f\r ", &saveptr);

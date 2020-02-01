@@ -43,7 +43,7 @@ static void exec_c_r(struct cmd *cmd, int sign, int chr);
 
 static void exec_move(struct cmd *cmd, uint pos, bool cond, int chr);
 
-    
+
 ///
 ///  @brief    Execute C command: move to relative position forward in buffer.
 ///
@@ -128,10 +128,10 @@ void exec_L(struct cmd *cmd)
         n = cmd->n_arg;
     }
 
-    uint dot = getpos_tbuf();
-
     if (!cmd->colon_set)
     {
+        uint dot = getpos_tbuf();
+
         n = getdelta_tbuf(n);
 
         setpos_tbuf((uint)n + dot);
@@ -146,19 +146,7 @@ void exec_L(struct cmd *cmd)
     //  1:L -> No. of following lines
     //   :L -> Same as 0:L
 
-    int start = (n > 0) ? 0 : -(int)dot;
-    int end   = (n < 0) ? 0 :  (int)getsize_tbuf();
-    int nlines = 0;
-
-    for (int pos = start; pos < end; ++pos)
-    {
-        int c = getchar_tbuf(pos);
-
-        if (isdelim(c))
-        {
-            ++nlines;
-        }
-    }
+    int nlines = getlines_tbuf(n);
 
     push_expr(nlines, EXPR_VALUE);
 }

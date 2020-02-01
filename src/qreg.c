@@ -150,7 +150,7 @@ void delete_qtext(int qname, bool qdot)
 static void free_qreg(void)
 {
     // Free local Q-registers and reset the push-down list.
-    
+
     reset_qreg();
 
     // The prompt level set of local Q-registers is not freed by reset_qreg(),
@@ -412,7 +412,7 @@ void print_qreg(int qname, bool qdot)
         {
             echo_out(c);
         }
-    }    
+    }
 }
 
 
@@ -456,7 +456,7 @@ bool push_qreg(int qname, bool qdot)
     savedq->next = list_head;
 
     list_head = savedq;
-    
+
     return true;
 }
 
@@ -492,7 +492,7 @@ void reset_qreg(void)
     // Free up what's on the Q-register push-down list.
 
     struct qlist *savedq;
-    
+
     while ((savedq = list_head) != NULL)
     {
         list_head = savedq->next;

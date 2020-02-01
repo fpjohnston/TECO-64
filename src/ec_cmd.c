@@ -80,7 +80,7 @@ void exec_EC(struct cmd *cmd)
 
     free_mem(&ofile->temp);
     free_mem(&ofile->name);
-    
+
     if ((fp = ifile->fp) != NULL)
     {
         fclose(fp);

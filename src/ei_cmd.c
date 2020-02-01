@@ -154,7 +154,7 @@ void close_indirect(void)
     if (stream->fp != NULL)             // Is indirect file open?
     {
         fclose(stream->fp);
-        
+
         stream->fp  = NULL;
         stream->eof = true;
         stream->cr  = false;
@@ -287,7 +287,7 @@ static bool read_indirect(FILE *fp)
                 esc_2 = false;
             }
         }
-    }        
+    }
 
     return esc_2;
 }

@@ -63,11 +63,11 @@ void exec_B(struct cmd *cmd)
 void exec_ctrl_q(struct cmd *unused1)
 {
     int nlines = 0;
-    
+
     (void)pop_expr(&nlines);
 
     int nchrs = getdelta_tbuf(nlines);
-    
+
     push_expr(nchrs, EXPR_VALUE);
 }
 
@@ -119,7 +119,7 @@ void exec_ctrl_z(struct cmd *cmd)
     assert(cmd != NULL);
 
     uint n = get_qall();
-    
+
     push_expr((int)n, EXPR_VALUE);
 }
 
@@ -159,7 +159,7 @@ void exec_H(struct cmd *cmd)
     }
 
     uint Z = getsize_tbuf();
-    
+
     cmd->h_set = true;
 
     push_expr(B, EXPR_VALUE);

@@ -58,7 +58,7 @@ void exec_back(struct cmd *cmd)
     if (cmd->n_set)                     // n\`?
     {
         char string[MAX_DIGITS];
-        const char *format = "%d";        
+        const char *format = "%d";
 
         if (v.radix == 8)
         {

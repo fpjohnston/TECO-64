@@ -54,7 +54,7 @@ void exec_EY(struct cmd *cmd)
     if (ifile->fp == NULL)
     {
         print_err(E_NFI);               // No file for input
-    }       
+    }
 
     uint olddot = getpos_tbuf();        // Save current buffer position
 
@@ -123,7 +123,7 @@ bool next_yank(void)
     uint Z = getsize_tbuf();
 
     setpos_tbuf(B);
-        
+
     delete_tbuf((int)Z);                // Kill the whole buffer
 
     while (append_line())               // Read what we can

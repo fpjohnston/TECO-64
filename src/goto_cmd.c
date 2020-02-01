@@ -134,7 +134,7 @@ void exec_O(struct cmd *cmd)
 static void find_tag(struct cmd *cmd, const char *text, uint len)
 {
     assert(cmd != NULL);
-    assert(text != NULL);    
+    assert(text != NULL);
 
     char tag[len + 1];                  // Tag we're looking for
     int tag_pos = -1;                   // No tag found yet

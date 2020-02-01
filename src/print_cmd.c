@@ -79,7 +79,7 @@ static void format_chr(int c)
     }
 }
 
-           
+
 ///
 ///  @brief    Format string for dry run print out.
 ///
@@ -97,7 +97,7 @@ static void format_str(const char *p, uint n)
         }
     }
 }
-           
+
 
 ///
 ///  @brief    Print the current command to terminal and/or log file.
@@ -148,7 +148,7 @@ void print_cmd(struct cmd *cmd)
         format_chr(')');
         format_chr(SPACE);
     }
-   
+
     format_chr(cmd->colon_set ? ':' : NUL);
     format_chr(cmd->dcolon_set ? ':' : NUL);
     format_chr(cmd->atsign_set ? '@' : NUL);

@@ -127,8 +127,8 @@ static int isqreg(int c, struct search *s)
     assert(s != NULL);
 
     int qname;
-    bool qlocal = false;            
-    
+    bool qlocal = false;
+
     if (s->match_len-- == 0)
     {
         print_err(E_IQN);
@@ -436,7 +436,7 @@ bool search_loop(struct search *s)
                     if (ofile->fp == NULL)
                     {
                         print_err(E_NFO); // No file for output
-                    }       
+                    }
 
                     if (!next_page(0, getsize_tbuf(), v.ff, (bool)true))
                     {
@@ -456,7 +456,7 @@ bool search_loop(struct search *s)
                     if (ifile->fp == NULL)
                     {
                         print_err(E_NFI); // No file for input
-                    }       
+                    }
 
                     if (!next_yank())
                     {
@@ -499,7 +499,7 @@ void search_print(void)
 {
     int m    = 0;
     int n    = f.es;
-    int flag = 0;         
+    int flag = 0;
 
     // Never print anything if we're in a loop or a macro.
 

@@ -141,7 +141,7 @@ void exec_ctrl_e(struct cmd *cmd)
     if (pop_expr(&n))                   // n<CTRL/E>?
     {
         v.ff = (cmd->n_arg == 0) ? false : true;
-    }        
+    }
     else
     {
         push_expr(v.ff ? -1 : 0, EXPR_VALUE);
@@ -357,7 +357,7 @@ void exec_EE(struct cmd *cmd)
     {
         return;
     }
-        
+
     int n;
 
     if (pop_expr(&n))                   // nEE`?
@@ -408,7 +408,7 @@ void exec_EH(struct cmd *cmd)
 ///                   system, as follows:
 ///
 ///                    m   n    -1EJ  Hardware  Operating system
-///                   --- ---   ----  --------  ----------------  
+///                   --- ---   ----  --------  ----------------
 ///                     0   0      0   PDP-11   RSX-11D
 ///                     0   1      1   PDP-11   RSX-11M
 ///                     0   2      2   PDP-11   RSX-11S

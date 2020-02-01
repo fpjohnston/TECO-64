@@ -50,7 +50,7 @@ void exec_EX(struct cmd *cmd)
 
     // The following ensures that we don't exit if we have nowhere to output
     // the dat in the buffer to.
-    
+
     struct ofile *ofile = &ofiles[ostream];
 
     if (ofile->fp == NULL && getsize_tbuf() != 0)

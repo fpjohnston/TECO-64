@@ -33,8 +33,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <ncurses.h>
-
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
@@ -57,7 +55,7 @@ static void echo_chr(int c, void (*print)(int c));
 
 static void display(int c)
 {
-    if (wdisplay(c))
+    if (putc_win(c))
     {
         return;
     }
@@ -246,11 +244,11 @@ void print_echo(int c)
         return;
     }
 
-    if (!wdisplay(c))
+    if (!putc_win(c))
     {
         fputc(c, stdout);
     }
-    
+
     if (!f.e4.noin)
     {
         FILE *fp = ofiles[OFILE_LOG].fp;
@@ -280,17 +278,15 @@ void print_str(const char *fmt, ...)
 
     va_list argptr;
     va_start(argptr, fmt);
-    
+
     (void)vsnprintf(buf, sizeof(buf), fmt, argptr);
 
     va_end(argptr);
 
-    // TODO: move the following to window.c
-
-    (void)addstr(buf);
-    refresh_win();
-
-//    fputs(buf, stdout);
+    if (!puts_win(buf))
+    {
+        fputs(buf, stdout);
+    }
 
     if (!f.e4.noout)
     {

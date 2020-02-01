@@ -78,6 +78,10 @@ extern int getchar_tbuf(int n);
 
 extern int getdelta_tbuf(int n);
 
+//  Get the number of lines between current dot and start/end of text buffer.
+
+extern int getlines_tbuf(int n);
+
 // Get buffer position.
 
 extern uint getpos_tbuf(void);

@@ -214,9 +214,9 @@ void init_files(void)
 int open_input(const char *filespec, uint stream)
 {
     assert(filespec != NULL);
-    
+
     struct ifile *ifile = &ifiles[stream];
-    FILE *fp = ifile->fp;             
+    FILE *fp = ifile->fp;
 
     if (fp != NULL)                     // Stream already open?
     {
@@ -303,7 +303,7 @@ int open_output(struct ofile *ofile, int c, const char *name, uint nbytes)
     {
         print_str("%s", "%Superseding existing file\r\n");
     }
-    
+
     if ((ofile->fp = fopen(oname, "w")) == NULL)
     {
         return EXIT_FAILURE;

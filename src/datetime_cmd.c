@@ -55,7 +55,7 @@
 void exec_ctrl_b(struct cmd *cmd)
 {
     assert(cmd != NULL);
-    
+
     time_t t = time(NULL);
     struct tm tm;
 

@@ -228,7 +228,7 @@ static void set_w(int m, int n)
             }
 
             set_scroll(w.height, w.nscroll = m);
-            
+
             break;
 
         case 8: w.spacemark = m;                     break;

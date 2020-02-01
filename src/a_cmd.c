@@ -53,7 +53,7 @@ bool append(bool n_set, int n_arg, bool colon_set)
     if (ifile->fp == NULL)
     {
         print_err(E_NFI);               // No file for input
-    }       
+    }
 
     v.ff = false;                       // Assume no form feed
 
@@ -109,7 +109,7 @@ bool append_line(void)
 {
     struct ifile *ifile = &ifiles[istream];
     int c;
- 
+
     while ((c = fgetc(ifile->fp)) != EOF)
     {
         if (c == FF && !f.e2.no_ff)     // If form feed, don't store it

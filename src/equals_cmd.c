@@ -101,7 +101,7 @@ void exec_equals(struct cmd *cmd)
         memcpy(user_mode, cmd->text1.buf, (ulong)cmd->text1.len);
 
         user_mode[cmd->text1.len] = NUL;
-        
+
         if (check_format(user_mode))
         {
             mode = user_mode;

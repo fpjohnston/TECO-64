@@ -2,6 +2,7 @@
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 
 #define KEY(key) { key, #key }
@@ -223,17 +224,6 @@ void print_key(int c)
     printf("[%02x]", c);
 }
 
-bool winactive = false;
-
-void stopwin(void)
-{
-    if (winactive)
-    {
-        winactive = false;
-        endwin();
-    }
-}
-
 int main(void)
 {
     initscr();
@@ -245,21 +235,17 @@ int main(void)
     scrollok(stdscr, TRUE);
     keypad(stdscr, TRUE);
 
-    winactive = true;
-
-    if (atexit(stopwin) != 0)
-    {
-        stopwin();
-
-//        print_err(E_WIN);
-        printf("atexit() failure\n");
-        abort();
-    }
-
     int c;
 
     while ((c = getch()) != 96)
     {
+        if (c == ERR)
+        {
+            printf("no character\n");
+            sleep(1);
+            continue;
+        }
+
         if (c >= KEY_MIN && c <= KEY_MAX)
         {
             print_key(c);
@@ -281,5 +267,7 @@ int main(void)
         fflush(stdout);
     }
 
+    endwin();
+    
     return EXIT_SUCCESS;
 }

@@ -326,7 +326,7 @@ void exec_operator(struct cmd *cmd)
 
         default:
             print_err(E_ARG);
-    } 
+    }
 
     if (strchr("(){}", type) != NULL)
     {

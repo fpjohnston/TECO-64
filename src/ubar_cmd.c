@@ -43,7 +43,7 @@
 
 static void exec_search(struct cmd *cmd, bool replace);
 
-    
+
 ///
 ///  @brief    Execute F_ command: search and replace with yank protection.
 ///

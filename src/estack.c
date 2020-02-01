@@ -214,7 +214,7 @@ static bool reduce2(void)
         {
             print_err(E_IFE);           // Ill-formed numeric expression
         }
-    }    
+    }
 
     if (e1->type == EXPR_VALUE && e2->type != EXPR_VALUE)
     {
@@ -294,7 +294,7 @@ static bool reduce3(void)
     }
 
     // Here to process arithmetic and logical operators
-    
+
     switch ((int)e2->type)
     {
         case EXPR_PLUS:

@@ -28,7 +28,6 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <curses.h>
 #include <errno.h>
 #include <signal.h>
 
@@ -47,9 +46,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <termios.h>
-#include <unistd.h>
-
-#include <sys/ioctl.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -64,8 +60,6 @@ static struct termios saved_mode;       ///< Saved terminal mode
 
 // Local functions
 
-static void get_window(void);
-
 static void reset_term(void);
 
 static void sig_handler(int signal);
@@ -74,15 +68,13 @@ static void sig_handler(int signal);
 ///
 ///  @brief    Get single character from terminal.
 ///
-///  @returns  Character read.
+///  @returns  Character read, or -1 if none available.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 int getc_term(bool wait)
 {
     static bool LF_pending = false;
-
-    int c = 0;
 
     if (LF_pending)
     {
@@ -91,11 +83,9 @@ int getc_term(bool wait)
         return LF;
     }
 
-    if (!wait)
-    {
-        c = getch();                    // If no input, c = EOF
-    }
-    else if (read(fileno(stdin), &c, 1uL) == -1)
+    int c = getchar_win(wait);
+
+    if (c == -1)
     {
         if (f.e0.ctrl_c)                // Error caused by CTRL/C?
         {
@@ -111,7 +101,11 @@ int getc_term(bool wait)
 
             print_err(E_XAB);           // Execution aborted
         }
-        else                            // Something other than CTRL/C
+        else if (!wait)                 // Failure on immediate read?
+        {
+            return -1;
+        }
+        else
         {
             fatal_err(errno, E_URC, NULL);
         }
@@ -137,34 +131,6 @@ int getc_term(bool wait)
     }
 
     return c;
-}
-
-
-///
-///  @brief    Get size of terminal window (rows & columns).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void get_window(void)
-{
-    if (get_winsize((int *)&w.width, (int *)&w.height))
-    {
-        return;
-    }
-    else
-    {
-        struct winsize ts;
-
-        if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
-        {
-            fatal_err(errno, E_SYS, NULL);
-        }
-
-        w.width  = ts.ws_col;
-        w.height = ts.ws_row;
-    }
 }
 
 
@@ -209,14 +175,13 @@ void init_term(void)
         fatal_err(errno, E_UIT, NULL);
     }
 
-    get_window();
+    getsize_win();
 
     f.et.rubout    = true;              // Process DEL and ^U in scope mode
     f.et.lower     = true;              // Terminal can read lower case
     f.et.scope     = true;              // Terminal is a scope
-//    f.et.rscope    = true;              // Terminal is a refresh scope
     f.et.eightbit  = true;              // Terminal can use 8-bit characters
-//    f.et.accent    = true;              // Use accent grave as delimiter
+    f.et.accent    = true;              // Use accent grave as delimiter
 
     f.eu           = -1;                // No case flagging
 
@@ -227,7 +192,7 @@ void init_term(void)
 
     (void)sigfillset(&sa.sa_mask);      // Block all signals in handler
 
-    if (sigaction(SIGINT,   &sa, NULL) == -1)
+    if (sigaction(SIGINT, &sa, NULL) == -1)
     {
         fatal_err(errno, E_UIT, NULL);
     }
@@ -311,7 +276,7 @@ static void sig_handler(int signum)
             break;
 
         case SIGWINCH:
-            get_window();
+            getsize_win();
 
             break;
 

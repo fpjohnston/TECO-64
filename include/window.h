@@ -61,13 +61,19 @@ struct watch
 
 // Window functions
 
-extern bool wdisplay(int c);
-
 extern void end_window(void);
 
-extern bool get_winsize(int *x, int *y);
+extern int getchar_win(bool wait);
+
+extern void getsize_win(void);
 
 extern void init_window(void);
+
+extern bool putc_win(int c);
+
+extern bool puts_win(const char *buf);
+
+extern bool readkey_win(int c);
 
 extern void refresh_win(void);
 

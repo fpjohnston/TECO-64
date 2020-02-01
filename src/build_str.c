@@ -169,7 +169,7 @@ uint build_string(char **dest, const char *src, uint len)
             {
                 print_err(E_ISS);       // Illegal search string
             }
-                
+
             c = *src++;
 
             // If neither <CTRL/E>Q nor <CTRL/E>U, then it's probably a match
