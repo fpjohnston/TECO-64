@@ -105,7 +105,6 @@ static void exec_search(struct cmd *cmd, bool replace)
                                        cmd->text1.len);
     }
 
-    int dot = (int)getpos_tbuf();
     struct search s;
 
     s.type = SEARCH_S;
@@ -122,7 +121,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         s.search     = search_backward;
         s.count      = -cmd->n_arg;
         s.text_start = -1;
-        s.text_end = -dot;
+        s.text_end   = -(int)t.dot;
 
         if (cmd->m_set && cmd->m_arg != 0)
         {
@@ -139,7 +138,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         s.search     = search_forward;
         s.count      = cmd->n_arg;
         s.text_start = 0;
-        s.text_end   = (int)getsize_tbuf() - dot;
+        s.text_end   = (int)(t.Z - t.dot);
 
         if (cmd->m_set && cmd->m_arg != 0)
         {

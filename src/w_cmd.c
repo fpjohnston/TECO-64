@@ -111,13 +111,6 @@ void exec_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // Here for W command without a colon.
-
-    if (!f.et.scope)
-    {
-        return;
-    }
-
     if (cmd->colon_set)
     {
         int n;
@@ -137,36 +130,37 @@ void exec_W(struct cmd *cmd)
         n = get_w(cmd->n_arg);
 
         push_expr(n, EXPR_VALUE);
-    }
-    else if (cmd->n_set)
-    {
-        init_window();
 
-        if (cmd->n_arg == -1000)
+        return;
+    }
+
+#if     defined(NCURSES)
+
+    if (!f.et.scope)                    // Scope mode allowed?
+    {
+        return;                         // No
+    }
+
+    if (cmd->n_set)
+    {
+        if (!f.e0.winact)
         {
-            // TODO: forget that output was done
-        }
-        else if (cmd->n_arg == -1)
-        {
-            // TODO: do something?
-        }
-        else if (cmd->n_arg < 0)
-        {
-            // TODO: top n-1 lines have been altered
-        }
-        else if (cmd->n_arg == 0)
-        {
-            // TODO: equivalent to 16W
-        }
-        else
-        {
-            // TODO: place cursor line at line n
+            reset_term();
+            init_win();
+            clear_win();
         }
     }
     else
     {
-        end_window();
+        if (f.e0.winact)
+        {
+            reset_win();
+            init_term();
+        }
     }
+
+#endif
+
 }
 
 

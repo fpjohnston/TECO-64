@@ -56,7 +56,7 @@ void exec_EY(struct cmd *cmd)
         print_err(E_NFI);               // No file for input
     }
 
-    uint olddot = getpos_tbuf();        // Save current buffer position
+    int olddot = t.dot;                 // Save current buffer position
 
     if (ifile->eof)
     {
@@ -102,7 +102,7 @@ void exec_Y(struct cmd *cmd)
 {
     // If data in buffer and yank protection is enabled, then abort.
 
-    if (getsize_tbuf() && !f.ed.yank)
+    if (t.Z && !f.ed.yank)
     {
         print_err(E_YCA);               // Y command aborted
     }
@@ -120,16 +120,14 @@ void exec_Y(struct cmd *cmd)
 
 bool next_yank(void)
 {
-    uint Z = getsize_tbuf();
+    setpos_tbuf(t.B);
 
-    setpos_tbuf(B);
-
-    delete_tbuf((int)Z);                // Kill the whole buffer
+    delete_tbuf((int)t.Z);              // Kill the whole buffer
 
     while (append_line())               // Read what we can
     {
         ;
     }
 
-    return (Z != 0) ? true : false;
+    return (t.Z != 0) ? true : false;
 }

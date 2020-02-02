@@ -28,7 +28,6 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <errno.h>
 #include <signal.h>
 
 #if     !defined(_STDBOOL_H)
@@ -58,9 +57,9 @@
 
 static struct termios saved_mode;       ///< Saved terminal mode
 
-// Local functions
+static bool term_active = false;        ///< Are terminal settings active?
 
-static void reset_term(void);
+// Local functions
 
 static void sig_handler(int signal);
 
@@ -101,33 +100,27 @@ int getc_term(bool wait)
 
             print_err(E_XAB);           // Execution aborted
         }
-        else if (!wait)                 // Failure on immediate read?
-        {
-            return -1;
-        }
-        else
-        {
-            fatal_err(errno, E_URC, NULL);
-        }
     }
-
-    f.e0.ctrl_c = false;                // Something other than CTRL/C
-
-    if (f.et.rubout)
+    else                                // Got a real character
     {
-        if (c == DEL)
-        {
-            return BS;
-        }
-        else if (c == BS)
-        {
-            return DEL;
-        }
-    }
+        f.e0.ctrl_c = false;
 
-    if (c == CR)
-    {
-        LF_pending = true;
+        if (f.et.rubout)
+        {
+            if (c == DEL)
+            {
+                return BS;
+            }
+            else if (c == BS)
+            {
+                return DEL;
+            }
+        }
+
+        if (c == CR)
+        {
+            LF_pending = true;
+        }
     }
 
     return c;
@@ -143,68 +136,62 @@ int getc_term(bool wait)
 
 void init_term(void)
 {
-    struct termios mode;
+    static bool term_oneshot = false;
 
-    if (tcgetattr(fileno(stdin), &mode) == -1)
+    // The following only needs to be executed once, regardless
+    // how many times terminal initialization is done.
+
+    if (!term_oneshot)
     {
-        fatal_err(errno, E_UIT, NULL);
+        term_oneshot = true;
+
+        (void)tcgetattr(fileno(stdin), &saved_mode);
+
+        struct sigaction sa;
+
+        sa.sa_handler = sig_handler;    // Set up general handler
+        sa.sa_flags = 0;
+
+        (void)sigfillset(&sa.sa_mask);  // Block all signals in handler
+
+        (void)sigaction(SIGINT, &sa, NULL);
+
+        sa.sa_flags = SA_RESTART;       // Restarts are okay for screen resizing
+
+        (void)sigaction(SIGWINCH, &sa, NULL);
+
+        (void)setvbuf(stdout, NULL, _IONBF, 0uL);
+
+        (void)atexit(reset_term);
+
+        f.et.rubout    = true;          // Process DEL and ^U in scope mode
+        f.et.lower     = true;          // Terminal can read lower case
+        f.et.scope     = true;          // Terminal is a scope
+        f.et.eightbit  = true;          // Terminal can use 8-bit characters
+
+        getsize_win();
     }
 
-    saved_mode = mode;
+    // The following is needed only if there is no window active and we haven't
+    // already initialized the terminal mode.
 
-    if (atexit(reset_term) != 0)
+    if (!f.e0.winact && !term_active)
     {
-        fatal_err(errno, E_UIT, NULL);
-    }
+        term_active = true;
 
-    if (setvbuf(stdout, NULL, _IONBF, 0uL) != 0)
-    {
-        fatal_err(errno, E_UIT, NULL);
-    }
+        struct termios mode;
 
-    // Note: NL below means LF
+        (void)tcgetattr(fileno(stdin), &mode);
 
-    mode.c_lflag &= ~ICANON;            // Disable canonical (cooked) mode
-    mode.c_lflag &= ~ECHO;              // Disable echo
-    mode.c_iflag &= ~ICRNL;             // Don't map CR to NL on input
-    mode.c_iflag &= ~INLCR;             // Don't map NL to CR on input
-    mode.c_oflag &= ~ONLCR;             // Don't map CR to CR/NL on output
+        // Note: NL below means LF
 
-    if (tcsetattr(fileno(stdin), TCSAFLUSH, &mode) == -1)
-    {
-        fatal_err(errno, E_UIT, NULL);
-    }
+        mode.c_lflag &= ~ICANON;        // Disable canonical (cooked) mode
+        mode.c_lflag &= ~ECHO;          // Disable echo
+        mode.c_iflag &= ~ICRNL;         // Don't map CR to NL on input
+        mode.c_iflag &= ~INLCR;         // Don't map NL to CR on input
+        mode.c_oflag &= ~ONLCR;         // Don't map CR to CR/NL on output
 
-    getsize_win();
-
-    f.et.rubout    = true;              // Process DEL and ^U in scope mode
-    f.et.lower     = true;              // Terminal can read lower case
-    f.et.scope     = true;              // Terminal is a scope
-    f.et.eightbit  = true;              // Terminal can use 8-bit characters
-    f.et.accent    = true;              // Use accent grave as delimiter
-
-    f.eu           = -1;                // No case flagging
-
-    struct sigaction sa;
-
-    sa.sa_handler = sig_handler;        // Set up general handler
-    sa.sa_flags = 0;
-
-    (void)sigfillset(&sa.sa_mask);      // Block all signals in handler
-
-    if (sigaction(SIGINT, &sa, NULL) == -1)
-    {
-        fatal_err(errno, E_UIT, NULL);
-    }
-
-    sa.sa_handler = sig_handler;        // Set up general handler
-    sa.sa_flags = SA_RESTART;
-
-    (void)sigfillset(&sa.sa_mask);      // Block all signals in handler
-
-    if (sigaction(SIGWINCH, &sa, NULL) == -1)
-    {
-        fatal_err(errno, E_UIT, NULL);
+        (void)tcsetattr(fileno(stdin), TCSAFLUSH, &mode);
     }
 }
 
@@ -231,12 +218,14 @@ void put_bell(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void reset_term(void)
+void reset_term(void)
 {
-    // Note: there is no point to adding error checking for this function,
-    //       because we're already in the process of exiting when we get here.
+    if (term_active)
+    {
+        term_active = false;
 
-    (void)tcsetattr(fileno(stdin), TCSAFLUSH, &saved_mode);
+        (void)tcsetattr(fileno(stdin), TCSAFLUSH, &saved_mode);
+    }
 }
 
 
@@ -259,13 +248,11 @@ static void sig_handler(int signum)
 
                 exec_EK(NULL);          // Kill any current edit
 
-                int Z = (int)getsize_tbuf();
-
-                if (Z != 0)
+                if (t.Z != 0)
                 {
-                    setpos_tbuf(B);
+                    setpos_tbuf(t.B);
 
-                    delete_tbuf(Z);     // Kill the whole buffer
+                    delete_tbuf(t.Z);   // Kill the whole buffer
                 }
 
                 exit(EXIT_FAILURE);     // Cleanup, reset, and exit

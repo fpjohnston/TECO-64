@@ -71,14 +71,13 @@ void exec_FK(struct cmd *cmd)
                                        cmd->text1.len);
     }
 
-    int dot = (int)getpos_tbuf();
     struct search s;
 
     s.type       = SEARCH_S;
     s.search     = search_forward;
     s.count      = cmd->n_arg;
     s.text_start = 0;
-    s.text_end   = (int)getsize_tbuf() - dot;
+    s.text_end   = (int)(t.Z - t.dot);
 
     if (search_loop(&s))
     {

@@ -41,7 +41,7 @@
 
 // Local functions
 
-static bool check_n_flag(int *flag);
+static bool check_n_flag(struct cmd *cmd, int *flag);
 
 static bool check_mn_flag(struct cmd *cmd, uint *flag);
 
@@ -60,9 +60,9 @@ static bool check_mn_flag(struct cmd *cmd, uint *flag)
 
     // TODO: is this the best we can do here?
 
-    if (!cmd->n_set && !pop_expr(&cmd->n_arg)) // n argument?
+    if (!cmd->n_set)                    // n argument?
     {
-        push_expr((int)*flag, EXPR_VALUE);  // Assume we're an operand
+        push_expr((int)*flag, EXPR_VALUE); // Assume we're an operand
 
         return false;
     }
@@ -100,13 +100,12 @@ static bool check_mn_flag(struct cmd *cmd, uint *flag)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool check_n_flag(int *flag)
+static bool check_n_flag(struct cmd *cmd, int *flag)
 {
+    assert(cmd != NULL);
     assert(flag != NULL);
 
-    int n;
-
-    if (!pop_expr(&n))
+    if (!cmd->n_set)
     {
         push_expr(*flag, EXPR_VALUE);
 
@@ -118,7 +117,7 @@ static bool check_n_flag(int *flag)
 
     if (!f.e0.dryrun)
     {
-        *flag = n;
+        *flag = cmd->n_arg;
     }
 
     return true;
@@ -198,9 +197,20 @@ void exec_ctrl_n(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(struct cmd *unused1)
+void exec_ctrl_x(struct cmd *cmd)
 {
-    (void)check_n_flag(&f.ctrl_x);
+    (void)check_n_flag(cmd, &f.ctrl_x);
+
+    // Make sure flag only has values -1, 0, or 1.
+
+    if (f.ctrl_x < 0)
+    {
+        f.ctrl_x = -1;
+    }
+    else if (f.ctrl_x > 0)
+    {
+        f.ctrl_x = 1;
+    }
 }
 
 
@@ -323,7 +333,7 @@ void exec_E5(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    (void)check_n_flag(&f.e5);
+    (void)check_n_flag(cmd, &f.e5);
 }
 
 
@@ -486,9 +496,9 @@ void exec_EO(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ES(struct cmd *unused1)
+void exec_ES(struct cmd *cmd)
 {
-    (void)check_n_flag(&f.es);
+    (void)check_n_flag(cmd, &f.es);
 }
 
 
@@ -527,9 +537,9 @@ void exec_ET(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EU(struct cmd *unused1)
+void exec_EU(struct cmd *cmd)
 {
-    (void)check_n_flag(&f.eu);
+    (void)check_n_flag(cmd, &f.eu);
 }
 
 
@@ -540,9 +550,9 @@ void exec_EU(struct cmd *unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EV(struct cmd *unused1)
+void exec_EV(struct cmd *cmd)
 {
-    (void)check_n_flag(&f.ev);
+    (void)check_n_flag(cmd, &f.ev);
 }
 
 

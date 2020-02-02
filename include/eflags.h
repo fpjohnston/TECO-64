@@ -42,11 +42,12 @@ struct e0_flag
 {
     uint exec   : 1;            ///< Executing command
     uint ctrl_c : 1;            ///< CTRL/C seen
-    uint dryrun : 1;            ///< Parse commands w/o executing them
     uint lower  : 1;            ///< Force string arguments to lower case
     uint upper  : 1;            ///< Force string arguments to upper case
     uint exit   : 1;            ///< Exit when MUNG command is done
-    uint window : 1;            ///< Use window display
+    uint dryrun : 1;            ///< --dry-run: just display EI commands
+    uint window : 1;            ///< --window: enable window display
+    uint winact : 1;            ///< Window display is active
 };
 
 ///  @struct  e1_flag

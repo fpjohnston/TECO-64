@@ -58,8 +58,8 @@ void exec_P(struct cmd *cmd)
         print_err(E_NFO);               // No file for output
     }
 
-    uint start = B;
-    uint end   = getsize_tbuf();
+    int start = t.B;
+    int end   = t.Z;
     int count  = 1;
     bool ff    = false;
     bool yank  = false;
@@ -90,8 +90,8 @@ void exec_P(struct cmd *cmd)
             printc_err(E_POP, 'P');     // Pointer off page
         }
 
-        start = (uint)cmd->m_arg;
-        end   = (uint)cmd->n_arg;
+        start = cmd->m_arg;
+        end   = cmd->n_arg;
     }
     else if (cmd->n_set)                // nP, n:P, nPW
     {
@@ -146,8 +146,8 @@ void exec_P(struct cmd *cmd)
 
         if (!cmd->m_set)
         {
-            start = B;
-            end   = getsize_tbuf();
+            start = t.B;
+            end   = t.Z;
         }
     }
 
@@ -166,12 +166,11 @@ void exec_P(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool next_page(uint start, uint end, bool ff, bool yank)
+bool next_page(int start, int end, bool ff, bool yank)
 {
     struct ofile *ofile = &ofiles[ostream];
-    uint dot = getpos_tbuf();
-    int m = (int)(start - dot);
-    int n = (int)(end - dot);
+    int m = start - t.dot;
+    int n = end - t.dot;
 
     assert(ofile != NULL && ofile->fp != NULL);
 
@@ -194,11 +193,9 @@ bool next_page(uint start, uint end, bool ff, bool yank)
 
     if (yank)                           // Yank next page if we need to
     {
-        uint Z = getsize_tbuf();
+        setpos_tbuf(t.B);
 
-        setpos_tbuf(B);
-
-        delete_tbuf((int)Z);            // Kill the whole buffer
+        delete_tbuf(t.Z);               // Kill the whole buffer
 
         struct ifile *ifile = &ifiles[istream];
 

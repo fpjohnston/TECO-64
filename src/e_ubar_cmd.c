@@ -69,7 +69,6 @@ void exec_E_ubar(struct cmd *cmd)
                                        cmd->text1.len);
     }
 
-    int dot = (int)getpos_tbuf();
     struct search s;
 
     if (cmd->n_arg < 0)
@@ -78,7 +77,7 @@ void exec_E_ubar(struct cmd *cmd)
         s.search     = search_backward;
         s.count      = -cmd->n_arg;
         s.text_start = -1;
-        s.text_end   = -dot;
+        s.text_end   = -t.dot;
     }
     else
     {
@@ -86,7 +85,7 @@ void exec_E_ubar(struct cmd *cmd)
         s.search     = search_forward;
         s.count      = cmd->n_arg;
         s.text_start = 0;
-        s.text_end   = (int)getsize_tbuf() - dot;
+        s.text_end   = (int)(t.Z - t.dot);
     }
 
     if (search_loop(&s))

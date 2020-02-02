@@ -95,7 +95,6 @@ static void exec_search(struct cmd *cmd, bool replace)
                                        cmd->text1.len);
     }
 
-    int dot = (int)getpos_tbuf();
     struct search s;
 
     s.type  = SEARCH_S;
@@ -106,19 +105,19 @@ static void exec_search(struct cmd *cmd, bool replace)
         bool reverse = (cmd->m_arg > cmd->n_arg);
 
         s.search     = reverse ? search_backward : search_forward;
-        s.text_start = cmd->m_arg - dot;
-        s.text_end   = cmd->n_arg - dot;
+        s.text_start = cmd->m_arg - t.dot;
+        s.text_end   = cmd->n_arg - t.dot;
     }
     else if (cmd->n_arg <= 0)
     {
         s.search     = search_backward;
         s.text_start = getdelta_tbuf(cmd->n_arg);
-        s.text_end   = dot - 1;
+        s.text_end   = (int)t.dot - 1;
     }
     else
     {
         s.search     = search_forward;
-        s.text_start = dot;
+        s.text_start = t.dot;
         s.text_end   = getdelta_tbuf(cmd->n_arg);
     }
 

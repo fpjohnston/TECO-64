@@ -38,24 +38,34 @@
 #include "textbuf.h"
 
 
-///  @var     t
+///  @var    t
 ///
-///  @brief   Define text buffer
+///  @brief  Text data buffer (external)
+
+struct text t =
+{
+    .B        = 0,
+    .Z        = 0,
+    .dot      = 0,
+};
+
+///  @var     tb
+///
+///  @brief   Text buffer data (internal)
 
 static struct
 {
     char *buf;                  ///< Start of buffer
-    uint size;                  ///< Current size, in bytes
-    uint minsize;               ///< Initial and minimum size, in bytes
-    uint maxsize;               ///< Maximum size, in bytes
-    uint stepsize;              ///< Increment size, in bytes
-    uint lowsize;               ///< Low water mark for gap
-    uint warn;                  ///< Warning threshold (0-100%)
-    uint dot;                   ///< Current position in buffer
-    uint left;                  ///< No. of bytes before gap
-    uint gap;                   ///< No. of bytes in gap
-    uint right;                 ///< No. of bytes after gap
-} t =
+    int size;                   ///< Current size of buffer, in bytes
+    int minsize;                ///< Initial and minimum size, in bytes
+    int maxsize;                ///< Maximum size, in bytes
+    int stepsize;               ///< Increment size, in bytes
+    int lowsize;                ///< Low water mark for gap
+    int warn;                   ///< Warning threshold (0-100%)
+    int left;                   ///< No. of bytes before gap
+    int gap;                    ///< No. of bytes in gap
+    int right;                  ///< No. of bytes after gap
+} tb =
 {
     .buf      = NULL,
     .size     = 0,
@@ -64,7 +74,6 @@ static struct
     .stepsize = 0,
     .lowsize  = 0,
     .warn     = 100,
-    .dot      = 0,
     .left     = 0,
     .gap      = 0,
     .right    = 0,
@@ -77,15 +86,15 @@ static bool expand_tbuf(void);
 
 static void free_tbuf(void);
 
-static uint last_delim(uint nlines);
+static int last_delim(int nlines);
 
-static uint next_delim(uint nlines);
+static int next_delim(int nlines);
 
-static void print_size(uint size);
+static void print_size(int size);
 
-static void shift_left(uint nbytes);
+static void shift_left(int nbytes);
 
-static void shift_right(uint nbytes);
+static void shift_right(int nbytes);
 
 
 ///
@@ -97,32 +106,33 @@ static void shift_right(uint nbytes);
 
 int add_tbuf(int c)
 {
-    assert(t.buf != NULL);
+    assert(tb.buf != NULL);
 
-    if (t.gap == 0)
+    if (tb.gap == 0)
     {
         return EDIT_ERROR;              // Buffer is already full
     }
 
-    if (t.dot < t.left)
+    if (t.dot < tb.left)
     {
-        shift_right(t.left - t.dot);
+        shift_right(tb.left - t.dot);
     }
-    else if (t.dot > t.left)
+    else if (t.dot > tb.left)
     {
-        shift_left(t.dot - t.left);
+        shift_left(t.dot - tb.left);
     }
 
-    t.buf[t.left++] = (char)c;
+    tb.buf[tb.left++] = (char)c;
 
     ++t.dot;
-    --t.gap;
+    ++t.Z;
+    --tb.gap;
 
-    if (t.gap <= t.lowsize)             // Below low water mark?
+    if (tb.gap <= tb.lowsize)           // Below low water mark?
     {
         if (!expand_tbuf())             // Try to make buffer bigger
         {
-            if (t.gap == 0)
+            if (tb.gap == 0)
             {
                 return EDIT_FULL;       // Buffer just filled up
             }
@@ -146,45 +156,47 @@ int add_tbuf(int c)
 
 void delete_tbuf(int n)
 {
-    if (t.dot == 0 && (uint)n == t.left + t.right)
+    if (t.dot == 0 && n == tb.left + tb.right)
     {
-        t.left = t.right = 0;
+        tb.left = tb.right = 0;
     }
     else
     {
-        if (t.dot < t.left)
+        if (t.dot < tb.left)
         {
-            shift_right(t.left - t.dot);
+            shift_right(tb.left - t.dot);
         }
-        else if (t.dot > t.left)
+        else if (t.dot > tb.left)
         {
-            shift_left(t.dot - t.left);
+            shift_left(t.dot - tb.left);
         }
 
         if (n < 0)
         {
             n = -n;
 
-            if ((uint)n > t.left)
+            if (n > tb.left)
             {
                 return;
             }
 
-            t.left -= (uint)n;
-            t.dot -= (uint)n;
+            tb.left -= n;
+            t.dot -= n;
         }
         else if (n > 0)
         {
-            if ((uint)n > t.right)
+            if (n > tb.right)
             {
                 return;
             }
 
-            t.right -= (uint)n;
+            tb.right -= n;
         }
     }
 
-    t.gap += (uint)n;
+    tb.gap += n;
+
+    t.Z = tb.left + tb.right;
 }
 
 
@@ -197,34 +209,34 @@ void delete_tbuf(int n)
 
 static bool expand_tbuf(void)
 {
-    if (t.stepsize == 0 || t.size >= t.maxsize)
+    if (tb.stepsize == 0 || tb.size >= tb.maxsize)
     {
         return false;
     }
 
     // Buffer: [left][gap][right]
 
-    shift_left(t.right);
+    shift_left(tb.right);
 
     // Buffer: [left + right][gap]
 
-    t.buf   = expand_mem(t.buf, t.size, t.size + t.stepsize);
-    t.size += t.stepsize;
+    tb.buf   = expand_mem(tb.buf, (uint)tb.size, (uint)(tb.size + tb.stepsize));
+    tb.size += tb.stepsize;
 
-    if (t.size > t.maxsize)
+    if (tb.size > tb.maxsize)
     {
-        t.size = t.maxsize;
+        tb.size = tb.maxsize;
     }
 
-    t.lowsize = t.size - ((t.size * t.warn) / 100);
+    tb.lowsize = tb.size - ((tb.size * tb.warn) / 100);
 
-    shift_right(t.right);
+    shift_right(tb.right);
 
     // Buffer: [left][gap][right]
 
-    t.gap += t.stepsize;
+    tb.gap += tb.stepsize;
 
-    print_size(t.size);
+    print_size(tb.size);
 
     return true;
 }
@@ -239,18 +251,21 @@ static bool expand_tbuf(void)
 
 static void free_tbuf(void)
 {
-    free_mem(&t.buf);
+    free_mem(&tb.buf);
 
-    t.size     = 0;
-    t.minsize  = 0;
-    t.maxsize  = 0;
-    t.stepsize = 0;
-    t.lowsize  = 0;
-    t.warn     = 0;
-    t.dot      = 0;
-    t.left     = 0;
-    t.gap      = 0;
-    t.right    = 0;
+    t.B         = 0;
+    t.Z         = 0;
+    t.dot       = 0;
+
+    tb.size     = 0;
+    tb.minsize  = 0;
+    tb.maxsize  = 0;
+    tb.stepsize = 0;
+    tb.lowsize  = 0;
+    tb.warn     = 0;
+    tb.left     = 0;
+    tb.gap      = 0;
+    tb.right    = 0;
 }
 
 
@@ -263,16 +278,16 @@ static void free_tbuf(void)
 
 int getchar_tbuf(int n)
 {
-    uint pos = (uint)((int)t.dot + n);
+    int pos = t.dot + n;
 
-    if (pos < t.left + t.right)
+    if (pos < tb.left + tb.right)
     {
-        if (pos >= t.left)
+        if (pos >= tb.left)
         {
-            pos += t.gap;
+            pos += tb.gap;
         }
 
-        return t.buf[pos];
+        return tb.buf[pos];
     }
 
     return -1;
@@ -290,11 +305,11 @@ int getdelta_tbuf(int n)
 {
     if (n > 0)
     {
-        return (int)(next_delim((uint)n) - t.dot);
+        return next_delim(n) - t.dot;
     }
     else
     {
-        return (int)(last_delim((uint)-n) - t.dot);
+        return last_delim(-n) - t.dot;
     }
 
 }
@@ -309,8 +324,8 @@ int getdelta_tbuf(int n)
 
 int getlines_tbuf(int n)
 {
-    int start = (n > 0) ? 0 : -(int)t.dot;
-    int end   = (n < 0) ? 0 :  (int)t.size;
+    int start = (n > 0) ? 0 : -t.dot;
+    int end   = (n < 0) ? 0 :  tb.left + tb.right;
     int nlines = 0;
 
     for (int pos = start; pos < end; ++pos)
@@ -328,32 +343,6 @@ int getlines_tbuf(int n)
 
 
 ///
-///  @brief    Get current position in buffer.
-///
-///  @returns  Current position in buffer (a.k.a. dot).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-uint getpos_tbuf(void)
-{
-    return t.dot;
-}
-
-
-///
-///  @brief    Get last position in buffer.
-///
-///  @returns  Last position in buffer (a.k.a. Z).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-uint getsize_tbuf(void)
-{
-    return t.left + t.right;
-}
-
-
-///
 ///  @brief    Initialize edit buffer.
 ///
 ///  @returns  Nothing.
@@ -361,29 +350,31 @@ uint getsize_tbuf(void)
 ////////////////////////////////////////////////////////////////////////////////
 
 void init_tbuf(
-    uint minsize,                       ///< Initial and min. size of buffer
-    uint maxsize,                       ///< Maximum size of buffer, in bytes
-    uint stepsize,                      ///< Incremental increase, in bytes
-    uint warn)                          ///< Warning threshold (0-100)
+    int minsize,                        ///< Initial and min. size of buffer
+    int maxsize,                        ///< Maximum size of buffer, in bytes
+    int stepsize,                       ///< Incremental increase, in bytes
+    int warn)                           ///< Warning threshold (0-100)
 {
-    assert(t.buf == NULL);
+    assert(tb.buf == NULL);
 
     if (warn > 100)                     // Buffer can't be more than 100% full
     {
         warn = 100;
     }
 
-    t.buf      = alloc_mem(minsize);
-    t.size     = minsize;
-    t.minsize  = minsize;
-    t.maxsize  = maxsize;
-    t.stepsize = stepsize;
-    t.lowsize  = minsize - ((minsize * warn) / 100);
-    t.warn     = warn;
-    t.dot      = 0;
-    t.left     = 0;
-    t.gap      = minsize;
-    t.right    = 0;
+    t.Z         = 0;
+    t.dot       = 0;
+
+    tb.size     = minsize;
+    tb.minsize  = minsize;
+    tb.maxsize  = maxsize;
+    tb.stepsize = stepsize;
+    tb.lowsize  = minsize - ((minsize * warn) / 100);
+    tb.buf      = alloc_mem((uint)tb.size);
+    tb.warn     = warn;
+    tb.left     = 0;
+    tb.gap      = minsize;
+    tb.right    = 0;
 
     if (atexit(free_tbuf) != 0)         // Ensure we clean up on exit
     {
@@ -400,10 +391,10 @@ void init_tbuf(
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static uint last_delim(uint nlines)
+static int last_delim(int nlines)
 {
     int c;
-    uint pos = t.dot;
+    int pos = t.dot;
 
     if (pos-- == 0)
     {
@@ -412,14 +403,14 @@ static uint last_delim(uint nlines)
 
     for (;;)
     {
-        uint i = pos;
+        int i = pos;
 
-        if (pos >= t.left)
+        if (pos >= tb.left)
         {
-            i += t.gap;
+            i += tb.gap;
         }
 
-        c = t.buf[i];
+        c = tb.buf[i];
 
         if (isdelim(c) && nlines-- == 0)
         {
@@ -436,6 +427,9 @@ static uint last_delim(uint nlines)
         }
     }
 
+    // There aren't n lines preceding the current position, so just back up to
+    // the beginning of the buffer.
+
     return 0;
 }
 
@@ -447,18 +441,18 @@ static uint last_delim(uint nlines)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static uint next_delim(uint nlines)
+static int next_delim(int nlines)
 {
-    for (uint pos = t.dot; pos < t.left + t.right; ++pos)
+    for (int pos = t.dot; pos < tb.left + tb.right; ++pos)
     {
-        uint i = pos;
+        int i = pos;
 
-        if (pos >= t.left)
+        if (pos >= tb.left)
         {
-            i += t.gap;
+            i += tb.gap;
         }
 
-        int c = t.buf[i];
+        int c = tb.buf[i];
 
         if (isdelim(c) && --nlines == 0)
         {
@@ -466,7 +460,7 @@ static uint next_delim(uint nlines)
         }
     }
 
-    return t.left + t.right;
+    return tb.left + tb.right;
 }
 
 
@@ -477,7 +471,7 @@ static uint next_delim(uint nlines)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void print_size(uint size)
+static void print_size(int size)
 {
     if (f.et.abort)                     // Is abort bit set?
     {
@@ -499,7 +493,7 @@ static void print_size(uint size)
         }
     }
 
-    print_str("[%u%s bytes]", size, type);
+    print_str("[%d%s bytes]", size, type);
     print_chr(CRLF);
 }
 
@@ -513,20 +507,20 @@ static void print_size(uint size)
 
 int putchar_tbuf(int n, int c)
 {
-    uint pos = (uint)((int)t.dot + n);
+    int pos = t.dot + n;
 
-    if (pos < t.left + t.right)
+    if (pos < tb.left + tb.right)
     {
-        uint i = pos;
+        int i = pos;
 
-        if (pos >= t.left)
+        if (pos >= tb.left)
         {
-            i += t.gap;
+            i += tb.gap;
         }
 
-        int orig = t.buf[i];
+        int orig = tb.buf[i];
 
-        t.buf[i] = (char)c;
+        tb.buf[i] = (char)c;
 
         return orig;
     }
@@ -542,9 +536,9 @@ int putchar_tbuf(int n, int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void setpos_tbuf(uint n)
+void setpos_tbuf(int n)
 {
-    if (n <= t.left + t.right)
+    if (n <= tb.left + tb.right)
     {
         t.dot = n;
     }
@@ -554,43 +548,46 @@ void setpos_tbuf(uint n)
 ///
 ///  @brief    Set memory size.
 ///
-///  @returns  Nothing.
+///  @returns  New memory size (may be unchanged).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-uint setsize_tbuf(uint n)
+int setsize_tbuf(int n)
 {
     n *= 1024;                          // Make it K bytes
 
-    if (n < t.minsize || n < t.left + t.right || n == t.size)
+    if (n < tb.minsize || n < tb.left + tb.right || n == tb.size)
     {
-        return t.size;
+        return tb.size;
     }
 
-    if (n > t.maxsize)
+    if (n > tb.maxsize)
     {
-        n = t.maxsize;
+        n = tb.maxsize;
     }
 
-    if (n < t.size)
+    if (n < tb.size)
     {
-        t.buf = shrink_mem(t.buf, t.size, n);
+        tb.buf = shrink_mem(tb.buf, (uint)tb.size, (uint)n);
     }
     else
     {
-        t.buf = expand_mem(t.buf, t.size, n);
+        tb.buf = expand_mem(tb.buf, (uint)tb.size, (uint)n);
     }
 
-    t.size    = n;
-    t.lowsize = t.size - ((t.size * t.warn) / 100);
     t.dot     = 0;
-    t.left    = 0;
-    t.gap     = t.size;
-    t.right   = 0;
 
-    print_size(t.size);
+    // TODO: is this correct?
 
-    return t.size;
+    tb.size    = n;
+    tb.lowsize = tb.size - ((tb.size * tb.warn) / 100);
+    tb.left    = 0;
+    tb.gap     = tb.size;
+    tb.right   = 0;
+
+    print_size(tb.size);
+
+    return tb.size;
 }
 
 
@@ -601,16 +598,15 @@ uint setsize_tbuf(uint n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void shift_left(uint nbytes)
+static void shift_left(int nbytes)
 {
-    char *src   = t.buf + t.size - t.right;
-    char *dst   = t.buf + t.left;
+    char *src   = tb.buf + tb.size - tb.right;
+    char *dst   = tb.buf + tb.left;
 
-    t.left  += nbytes;
-    t.right -= nbytes;
+    tb.left  += nbytes;
+    tb.right -= nbytes;
 
-    memmove(dst, src, (size_t)nbytes);
-//    memset(src, '{', (size_t)t.gap);   // TODO: temporary
+    memmove(dst, src, (size_t)(uint)nbytes);
 }
 
 
@@ -621,14 +617,13 @@ static void shift_left(uint nbytes)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void shift_right(uint nbytes)
+static void shift_right(int nbytes)
 {
-    t.left  -= nbytes;
-    t.right += nbytes;
+    tb.left  -= nbytes;
+    tb.right += nbytes;
 
-    char *src   = t.buf + t.left;
-    char *dst   = t.buf + t.size - t.right;
+    char *src   = tb.buf + tb.left;
+    char *dst   = tb.buf + tb.size - tb.right;
 
-    memmove(dst, src, (size_t)nbytes);
-//    memset(src, '}', (size_t)t.gap);    // TODO: temporary
+    memmove(dst, src, (size_t)(uint)nbytes);
 }

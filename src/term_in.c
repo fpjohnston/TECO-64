@@ -207,16 +207,13 @@ void read_cmd(void)
                 break;
 
             default:
-                if (!readkey_win(c))
+                if (!f.et.lower)
                 {
-                    if (!f.et.lower)
-                    {
-                        c = toupper(c);
-                    }
-
-                    echo_in(c);
-                    store_buf(c);
+                    c = toupper(c);
                 }
+
+                echo_in(c);
+                store_buf(c);
 
                 break;
         }
@@ -286,18 +283,18 @@ static void read_ctrl_g(void)
 
     int c = getc_term((bool)WAIT);      // Get next character
 
-    echo_in(c);                        // Echo it
+    echo_in(c);                         // Echo it
 
     if (c != CTRL_G && c != SPACE && c != '*')
     {
-        store_buf(c);                     // Regular character, so just store it
+        store_buf(c);                   // Regular character, so just store it
 
         return;
     }
 
     // Here when we have a special CTRL/G command
 
-    print_echo(CRLF);                       // Start new line
+    print_echo(CRLF);                   // Start new line
     (void)delete_buf();                 // Delete CTRL/G in buffer
 
     if (c == CTRL_G)                    // ^G^G
@@ -438,6 +435,8 @@ static int read_first(void)
 {
     // Loop until we seen something other than an immediate-mode command.
 
+    bool prompt_enabled = true;
+
     for (;;)
     {
         if (f.ev)                       // Is edit verify flag set?
@@ -445,7 +444,12 @@ static int read_first(void)
             // DoEvEs(EvFlag);          // TODO: TBD!
         }
 
-        print_prompt();
+        if (prompt_enabled)
+        {
+            print_prompt();
+        }
+
+        prompt_enabled = true;
 
         int c = getc_term((bool)WAIT);
 
@@ -453,21 +457,23 @@ static int read_first(void)
         {
             case DEL:
             case CTRL_U:
-                print_echo(CR);
+                echo_in(CR);
 
                 break;
 
             case CTRL_W:
-                refresh_win();
+                echo_in(CTRL_W);
+                echo_in(CRLF);
+                clear_win();
 
                 break;
 
             case '/':                   // Display verbose error message
-                print_echo(c);
+                echo_in(c);
 
                 if (last_error != E_NUL)
                 {
-                    print_echo(CRLF);
+                    echo_in(CRLF);
                     help_err(last_error);
                 }
 
@@ -477,17 +483,17 @@ static int read_first(void)
                 // TODO: make sure this prints correct string
                 if (last_error != E_NUL)
                 {
-                    print_echo(c);
+                    echo_in(c);
                     echo_buf(0);        // Echo command line
-                    print_echo(c);
+                    echo_in(c);
                 }
 
-                print_echo(CRLF);
+                echo_in(CRLF);
 
                 break;
 
             case '*':                   // Store last command in Q-register
-                print_echo(c);
+                echo_in(c);
                 c = getc_term((bool)WAIT); // Get Q-register name
 
                 if (f.e0.ctrl_c)
@@ -502,7 +508,14 @@ static int read_first(void)
                 break;
 
             default:
-                return c;
+                if (!readkey_win(c))
+                {
+                    return c;
+                }
+
+                prompt_enabled = false;
+
+                break;
         }
     }
 }

@@ -41,7 +41,7 @@
 
 static void exec_c_r(struct cmd *cmd, int sign, int chr);
 
-static void exec_move(struct cmd *cmd, uint pos, bool cond, int chr);
+static void exec_move(struct cmd *cmd, int pos, bool cond, int chr);
 
 
 ///
@@ -76,13 +76,9 @@ static void exec_c_r(struct cmd *cmd, int sign, int chr)
     }
 
     n *= sign;
+    n += t.dot;                         // Calculate absolute position
 
-    uint dot = getpos_tbuf();
-    uint Z = getsize_tbuf();
-
-    n += (int)dot;                      // Calculate absolute position
-
-    exec_move(cmd, (uint)n, (bool)(n < B || (uint)n > Z), chr);
+    exec_move(cmd, n, (bool)(n < t.B || n > t.Z), chr);
 }
 
 
@@ -97,16 +93,14 @@ void exec_J(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint n = B;
+    int n = t.B;
 
     if (cmd->n_set)
     {
-        n = (uint)cmd->n_arg;
+        n = cmd->n_arg;
     }
 
-    uint Z = getsize_tbuf();
-
-    exec_move(cmd, n, (bool)(n > Z), 'J');
+    exec_move(cmd, n, (bool)(n > t.Z), 'J');
 }
 
 
@@ -130,11 +124,9 @@ void exec_L(struct cmd *cmd)
 
     if (!cmd->colon_set)
     {
-        uint dot = getpos_tbuf();
-
         n = getdelta_tbuf(n);
 
-        setpos_tbuf((uint)n + dot);
+        setpos_tbuf(n + t.dot);
 
         return;
     }
@@ -159,7 +151,7 @@ void exec_L(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_move(struct cmd *cmd, uint pos, bool cond, int chr)
+static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
 {
     assert(cmd != NULL);
 

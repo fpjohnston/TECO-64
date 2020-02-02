@@ -48,6 +48,20 @@ typedef enum
 } estatus;
 
 
+///  @struct  text
+///
+///  @brief   Text buffer
+
+struct text
+{
+    int B;                      ///< First position in buffer
+    int Z;                      ///< Last position in buffer
+    int dot;                    ///< Current position in buffer
+};
+
+extern struct text t;
+
+
 // Add one character to buffer at current position of dot.
 //
 // Returns: EDIT_OK    - Insertion was successful.
@@ -82,14 +96,6 @@ extern int getdelta_tbuf(int n);
 
 extern int getlines_tbuf(int n);
 
-// Get buffer position.
-
-extern uint getpos_tbuf(void);
-
-// Get current size of buffer, in bytes.
-
-extern uint getsize_tbuf(void);
-
 //
 //  Initialize buffer.
 //
@@ -104,7 +110,7 @@ extern uint getsize_tbuf(void);
 //             trying to increase its size.
 //
 
-extern void init_tbuf(uint minsize, uint maxsize, uint stepsize, uint warn);
+extern void init_tbuf(int minsize, int maxsize, int stepsize, int warn);
 
 // Replace ASCII value of character in buffer at position relative to dot.
 //
@@ -115,10 +121,10 @@ extern int putchar_tbuf(int n, int c);
 
 // Set buffer position.
 
-extern void setpos_tbuf(uint n);
+extern void setpos_tbuf(int n);
 
 // Set maximum memory size, in K bytes.
 
-extern uint setsize_tbuf(uint n);
+extern int setsize_tbuf(int n);
 
 #endif

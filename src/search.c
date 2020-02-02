@@ -50,6 +50,8 @@ struct tstring last_search = { .len = 0 };
 
 static int isblankx(int c, struct search *s);
 
+static int isctrlx(int c, int match);
+
 static int isqreg(int c, struct search *s);
 
 static int issymbol(int c);
@@ -109,6 +111,52 @@ static int isblankx(int c, struct search *s)
     }
 
     return 1;
+}
+
+
+///
+///  @brief    Check for case-insensitive match, depending on the setting of
+///            the CTRL/X flag:
+///
+///            -1: Case-sensitive match.
+///             0: Case-insensitive match.
+///             1: Old case-insensitive match. Not only matches alphabetic
+///                characters, but additionally the following pairs.
+///
+///                @ (64) and ` (96)
+///                [ (91) and { (123)
+///                | (92) and \ (124)
+///                ] (93) and } (125)
+///                ^ (94) and ~ (126)
+///
+///            Note that we return 1/0 instead of true/false for compatibility
+///            with the ANSI isxxx() functions.
+///
+///  @returns  1 if a match found, else 0.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int isctrlx(int c, int match)
+{
+    if (f.ctrl_x == 0)
+    {
+        c = toupper(c);
+        match = toupper(match);
+    }
+    else if (f.ctrl_x == 1)
+    {
+        if (c >= '@' && c <= '^')
+        {
+            c += 'a' - 'A';
+        }
+
+        if (match >= '@' && c <= '^')
+        {
+            match += 'a' - 'A';
+        }
+    }
+
+    return (c == match) ? 1 : 0;
 }
 
 
@@ -263,15 +311,10 @@ static bool match_chr(int c, struct search *s)
     {
         return !match_chr(match, s);
     }
-    else if ((match == CTRL_S && !isalnum(c)) || match == CTRL_X)
-    {
-        return true;
-    }
-    else if ((f.ctrl_x == 0 && tolower(c) == tolower(match)))
-    {
-        return true;
-    }
-    else if (c == match)
+    else if ((match == CTRL_S && !isalnum(c)) ||
+             match == CTRL_X                  ||
+             isctrlx(c, match)                ||
+             c == match)
     {
         return true;
     }
@@ -438,7 +481,7 @@ bool search_loop(struct search *s)
                         print_err(E_NFO); // No file for output
                     }
 
-                    if (!next_page(0, getsize_tbuf(), v.ff, (bool)true))
+                    if (!next_page(0, t.Z, v.ff, (bool)true))
                     {
                         return false;
                     }
@@ -475,13 +518,11 @@ bool search_loop(struct search *s)
             // Here with a new page, so reinitialize pointers
 
             s->text_start = 0;
-            s->text_end   = (int)getsize_tbuf();
+            s->text_end   = t.Z;
         }
     }
 
-    int dot = (int)getpos_tbuf() + s->text_pos;
-
-    setpos_tbuf((uint)dot);
+    setpos_tbuf(t.dot + s->text_pos);
 
     return true;
 }

@@ -51,7 +51,7 @@ void exec_EC(struct cmd *cmd)
     {
         if (cmd->n_arg > 0)
         {
-            (void)setsize_tbuf((uint)cmd->n_arg);
+            (void)setsize_tbuf(cmd->n_arg);
         }
 
         return;
@@ -66,7 +66,7 @@ void exec_EC(struct cmd *cmd)
 
     if ((fp = ofile->fp) != NULL)
     {
-        while (next_page(B, getsize_tbuf(), v.ff, (bool)true))
+        while (next_page(t.B, t.Z, v.ff, (bool)true))
         {
             ;
         }

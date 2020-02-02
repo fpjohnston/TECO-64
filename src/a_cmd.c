@@ -59,9 +59,9 @@ bool append(bool n_set, int n_arg, bool colon_set)
 
     // Here if we have A, :A, or n:A
 
-    uint olddot = getpos_tbuf();
+    int olddot = t.dot;
 
-    setpos_tbuf(getsize_tbuf());        // Go to end of buffer
+    setpos_tbuf(t.Z);                   // Go to end of buffer
 
     if (ifile->eof)                     // Already at EOF?
     {

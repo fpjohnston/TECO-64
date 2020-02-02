@@ -162,17 +162,17 @@ static void echo_chr(int c, void (*print)(int c))
 //                (print)('\n');
 //                (print)('\n');
 
-                break;
+                //lint -fallthrough
 
             case CTRL_G:
 //                (print)(CTRL_G);
-
+//                break;
                 //lint -fallthrough
 
             default:                    // Display as +^c
-                (print)(c);
-//                (print)('^');
-//                (print)(c + 'A' - 1);
+//                (print)(c);
+                (print)('^');
+                (print)(c + 'A' - 1);
 
                 break;
          }

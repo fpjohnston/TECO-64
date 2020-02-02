@@ -127,8 +127,10 @@ const char *log_file = NULL;        ///< Name of log file
 int main(int argc, const char * const argv[])
 {
     f.ctrl_x    = 0;                    // Case-insensitive searches
+    f.eu        = -1;                   // No case flagging
     f.et.abort  = true;                 // Abort on error
-//    f.e1.strict = true;                 // Strictly enforce syntax
+    f.et.accent = true;                 // Use accent grave as delimiter
+    f.e1.strict = true;                 // Strictly enforce syntax
     f.e2.dollar = true;                 // Allow dollar signs in symbols
     f.e2.ubar   = true;                 // Allow underscores in symbols
     f.e3.brace  = true;                 // Allow braced expressions
@@ -136,6 +138,15 @@ int main(int argc, const char * const argv[])
     f.e3.msec   = true;                 // Return time in milliseconds
 
     init_env(argc, argv);               // Initialize environment
+
+    // init_win() must be called before init_term(), because the latter will
+    // skip some of its initialization if we're going to be in scope mode.
+
+    if (f.e0.window)
+    {
+        init_win();                     // Initialize window if we can
+    }
+
     init_term();                        // Initialize terminal
     init_buf();                         // Initialize command buffer
     init_qreg();                        // Initialize Q-registers
@@ -146,7 +157,6 @@ int main(int argc, const char * const argv[])
     init_search();                      // Initialize search string
     init_tbuf(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);
                                         // Initialize edit buffer
-    init_window();                      // Initialize window if needed
 
     // If a log file was requested on the command line, then open it now.
 

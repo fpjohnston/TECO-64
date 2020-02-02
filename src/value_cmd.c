@@ -48,7 +48,7 @@ void exec_B(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr(B, EXPR_VALUE);
+    push_expr(t.B, EXPR_VALUE);
 }
 
 
@@ -100,10 +100,8 @@ void exec_ctrl_y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int dot = (int)getpos_tbuf();
-
-    push_expr(dot + v.ctrl_s, EXPR_VALUE);
-    push_expr(dot, EXPR_VALUE);
+    push_expr(t.dot + v.ctrl_s, EXPR_VALUE);
+    push_expr(t.dot, EXPR_VALUE);
 }
 
 
@@ -136,9 +134,7 @@ void exec_dot(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint dot = getpos_tbuf();
-
-    push_expr((int)dot, EXPR_VALUE);
+    push_expr((int)t.dot, EXPR_VALUE);
 }
 
 
@@ -158,12 +154,10 @@ void exec_H(struct cmd *cmd)
         print_err(E_ARG);               // Invalid arguments
     }
 
-    uint Z = getsize_tbuf();
-
     cmd->h_set = true;
 
-    push_expr(B, EXPR_VALUE);
-    push_expr((int)Z, EXPR_VALUE);
+    push_expr(t.B, EXPR_VALUE);
+    push_expr((int)t.Z, EXPR_VALUE);
 }
 
 
@@ -178,7 +172,5 @@ void exec_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint Z = getsize_tbuf();
-
-    push_expr((int)Z, EXPR_VALUE);
+    push_expr((int)t.Z, EXPR_VALUE);
 }

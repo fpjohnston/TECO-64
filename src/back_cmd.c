@@ -79,7 +79,6 @@ void exec_back(struct cmd *cmd)
     }
     else
     {
-        uint dot = getpos_tbuf();
         bool minus = false;
         int pos = 0;
         uint digits = 0;
@@ -128,7 +127,7 @@ void exec_back(struct cmd *cmd)
                 n = -n;
             }
 
-            setpos_tbuf(dot + (uint)pos - 1);
+            setpos_tbuf(t.dot + pos - 1);
         }
 
         push_expr(n, EXPR_VALUE);

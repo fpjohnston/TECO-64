@@ -62,26 +62,19 @@ static int text_top;
 
 
 ///
-///  @brief    Terminate window display.
+///  @brief    Clear screen and redraw window.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void end_window(void)
+void clear_win(void)
 {
+    (void)clear();
 
-#if     defined(NCURSES)
+    set_scroll(w.height, w.nscroll);
 
-    if (f.e0.window)
-    {
-        f.e0.window = false;
-
-        (void)endwin();
-    }
-
-#endif
-
+    refresh_win();
 }
 
 
@@ -98,7 +91,7 @@ int getchar_win(bool wait)
 
 #if     defined(NCURSES)
 
-    if (f.e0.window)
+    if (f.e0.winact)
     {
         if (!wait)
         {
@@ -154,7 +147,7 @@ void getsize_win(void)
 
 #if     defined(NCURSES)
 
-    if (f.e0.window)
+    if (f.e0.winact)
     {
         getmaxyx(stdscr, w.height, w.width);
 
@@ -182,33 +175,47 @@ void getsize_win(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_window(void)
+void init_win(void)
 {
 
 #if     defined(NCURSES)
 
-    if (f.e0.window)
+    if (!f.e0.winact)
     {
+        f.e0.winact = true;
+
+        static bool end_set = false;
+
+        if (!end_set)
+        {
+            end_set = true;
+
+            if (atexit(reset_win) != 0)
+            {
+                print_err(E_WIN);
+            }
+        }
+
         // Note that initscr() will print an error message and exit if it
         // fails to initialize, so there is no error return to check for.
 
         (void)initscr();
 
-        if (cbreak() == ERR ||
-            noecho() == ERR ||
-            nonl() == ERR ||
-            notimeout(stdscr, (bool)TRUE) == ERR ||
-            idlok(stdscr, (bool)TRUE) == ERR ||
-            scrollok(stdscr, (bool)TRUE) == ERR ||
-            keypad(stdscr, (bool)TRUE) == ERR ||
-            !has_colors() ||
-            start_color() == ERR ||
+        if (cbreak()                                                == ERR ||
+            noecho()                                                == ERR ||
+            nonl()                                                  == ERR ||
+            notimeout(stdscr, (bool)TRUE)                           == ERR ||
+            idlok(stdscr, (bool)TRUE)                               == ERR ||
+            scrollok(stdscr, (bool)TRUE)                            == ERR ||
+            keypad(stdscr, (bool)TRUE)                              == ERR ||
+            !has_colors()                                                  ||
+            start_color()                                           == ERR ||
             assume_default_colors(COLOR_BLUE, COLOR_WHITE | A_BOLD) == ERR)
         {
             print_err(E_WIN);
         }
 
-        getsize_win();
+        ESCDELAY = 0;
 
         short color_bg = COLOR_WHITE;
 
@@ -222,15 +229,6 @@ void init_window(void)
         (void)init_pair(TEXT, COLOR_GREEN, color_bg);
         (void)init_pair(LINE, COLOR_RED, color_bg);
         (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
-
-        (void)color_set(COLOR_PAIR(CMD), NULL); //lint !e835 !e845
-
-        if (atexit(end_window) != 0)
-        {
-            end_window();
-
-            print_err(E_WIN);
-        }
     }
 
 #endif
@@ -239,7 +237,14 @@ void init_window(void)
 
 
 ///
-///  @brief    Output character to window.
+///  @brief    Output character to window. We do not output CR because ncurses
+///            does the following when processing LF:
+///
+///            1. Clear to end of line.
+///            2. Go to start of next line.
+///
+///            So, not only is CR not necessary, but if it preceded LF, this
+///            would result in the current line getting blanked.
 ///
 ///  @returns  true if character output, false if window not active.
 ///
@@ -250,7 +255,7 @@ bool putc_win(int c)
 
 #if     defined(NCURSES)
 
-    if (f.e0.window)
+    if (f.e0.winact)
     {
         if (c != CR)
         {
@@ -279,7 +284,7 @@ bool puts_win(const char *buf)
 
 #if     defined(NCURSES)
 
-    if (f.e0.window)
+    if (f.e0.winact)
     {
         (void)addstr(buf);
         refresh_win();
@@ -308,7 +313,8 @@ bool readkey_win(int c)
         return false;
     }
 
-    int dot = (int)getpos_tbuf();
+    int dot = (int)t.dot;
+    int Z   = (int)t.Z;
 
     if (c == KEY_UP)
     {
@@ -329,7 +335,6 @@ bool readkey_win(int c)
     }
     else if (c == KEY_DOWN)
     {
-        int Z    = (int)getsize_tbuf();
         int cur  = -getdelta_tbuf(0);   // Offset in current line
         int next = getdelta_tbuf(1);    // Start of next line
         int len  = getdelta_tbuf(2) - next; // Length of next line
@@ -363,7 +368,7 @@ bool readkey_win(int c)
         return true;
     }
 
-    setpos_tbuf((uint)dot);
+    setpos_tbuf(dot);
     refresh_win();
 
     return true;
@@ -382,7 +387,7 @@ void refresh_win(void)
 
 #if     defined(NCURSES)
 
-    if (w.nscroll != 0)
+    if (f.e0.winact && w.nscroll != 0)
     {
         int cmdrow, cmdcol;
 
@@ -450,6 +455,30 @@ void refresh_win(void)
 
 
 ///
+///  @brief    Terminate window display.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_win(void)
+{
+
+#if     defined(NCURSES)
+
+    if (f.e0.winact)
+    {
+        f.e0.winact = false;
+
+        (void)endwin();
+    }
+
+#endif
+
+}
+
+
+///
 ///  @brief    Set scrolling region.
 ///
 ///  @returns  Nothing.
@@ -463,7 +492,7 @@ void set_scroll(int height, int nscroll)
 
     int cmd_top, cmd_bot;
 
-    if (f.e0.window)
+    if (f.e0.winact)
     {
         if (f.e1.cmdtop)
         {
@@ -478,12 +507,7 @@ void set_scroll(int height, int nscroll)
             text_top = 0;
         }
 
-        if (setscrreg(cmd_top, cmd_bot) == ERR)
-        {
-            end_window();
-
-            print_err(E_WIN);
-        }
+        (void)setscrreg(cmd_top, cmd_bot);
 
         if (!f.e1.noline)
         {

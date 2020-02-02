@@ -122,7 +122,7 @@ extern bool append(bool n_set, int n_arg, bool colon_set);
 
 extern bool append_line(void);
 
-extern bool next_page(uint start, uint end, bool ff, bool yank);
+extern bool next_page(int start, int end, bool ff, bool yank);
 
 // Functions that execute commands
 

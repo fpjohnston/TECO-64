@@ -80,8 +80,8 @@ static void exec_case(struct cmd *cmd, bool lower)
 {
     assert(cmd != NULL);
 
-    int dot = (int)getpos_tbuf();
-    int Z   = (int)getsize_tbuf();
+    int dot = (int)t.dot;
+    int Z   = (int)t.Z;
     int m, n;
 
     if (cmd->h_set)                     // HFU/HFL?
@@ -153,5 +153,5 @@ static void exec_case(struct cmd *cmd, bool lower)
         }
     }
 
-    setpos_tbuf((uint)(dot + n));
+    setpos_tbuf(dot + n);
 }

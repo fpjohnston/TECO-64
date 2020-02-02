@@ -64,8 +64,6 @@ extern void print_str(const char *fmt, ...);
 
 #define EXPR_SIZE            64         ///< Size of expression stack
 
-#define B                    (0)        ///< Beginning of text buffer
-
 enum
 {
     TECO_FAILURE = 0,                   ///< TECO function failure
@@ -332,6 +330,8 @@ extern void print_prompt(void);
 extern void put_bell(void);
 
 extern void read_cmd(void);
+
+extern void reset_term(void);
 
 // Functions that access the expression stack
 

@@ -50,7 +50,6 @@ void exec_X(struct cmd *cmd)
 
     int n = 1;
     int m;
-    uint dot = getpos_tbuf();
 
     if (cmd->n_set)                     // n argument?
     {
@@ -59,11 +58,9 @@ void exec_X(struct cmd *cmd)
 
     if (cmd->m_set)                     // m argument too?
     {
-        uint Z = getsize_tbuf();
-
         m = cmd->m_arg;
 
-        if (m < 0 || (uint)m > Z || n < 0 || (uint)n > Z)
+        if (m < 0 || m > t.Z || n < 0 || n > t.Z)
         {
             printc_err(E_POP, 'X');     // Pointer off page
         }
@@ -88,23 +85,23 @@ void exec_X(struct cmd *cmd)
 
         if (n <= 0)
         {
-            m = (int)dot + delta;
-            n = (int)dot;
+            m = t.dot + delta;
+            n = t.dot;
         }
         else
         {
-            m = (int)dot;
-            n = (int)dot + delta;
+            m = t.dot;
+            n = t.dot + delta;
         }
     }
 
     // TODO: clean this up: m and n should be relative to dot.
 
-    for (int i = m - (int)dot; i < n - (int)dot; ++i)
+    for (int i = m - t.dot; i < n - t.dot; ++i)
     {
         int c = getchar_tbuf(i);
 
-        if (i == m - (int)dot && !cmd->colon_set)
+        if (i == m - t.dot && !cmd->colon_set)
         {
             store_qchr(cmd->qname, cmd->qlocal, c);
         }

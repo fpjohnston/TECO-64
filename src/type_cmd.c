@@ -55,19 +55,17 @@ void exec_T(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint dot = getpos_tbuf();
-    uint Z = getsize_tbuf();
     int m;
     int n;
 
     if (cmd->h_set)
     {
-        m = -(int)dot;
-        n = (int)(Z - dot);
+        m = -t.dot;
+        n = t.Z - t.dot;
     }
     else if (cmd->m_set && cmd->n_set)
     {
-        if ((uint)cmd->m_arg > Z || (uint)cmd->n_arg > Z)
+        if (cmd->m_arg > t.Z || cmd->n_arg > t.Z)
         {
             printc_err(E_POP, 'T');     // Pointer off page
         }
@@ -77,8 +75,8 @@ void exec_T(struct cmd *cmd)
             return;
         }
 
-        m = cmd->m_arg - (int)dot;
-        n = cmd->n_arg - (int)dot;
+        m = cmd->m_arg - t.dot;
+        n = cmd->n_arg - t.dot;
     }
     else if (cmd->n_set)
     {

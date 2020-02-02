@@ -48,7 +48,6 @@ void exec_D(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint Z = getsize_tbuf();
     int n = 1;
     int m;
 
@@ -61,19 +60,17 @@ void exec_D(struct cmd *cmd)
     {
         m = cmd->m_arg;
 
-        if (m < 0 || (uint)m > Z || n < 0 || (uint)n > Z || m > n)
+        if (m < 0 || m > t.Z || n < 0 || n > t.Z || m > n)
         {
             printc_err(E_POP, 'D');     // Pointer off page
         }
 
-        setpos_tbuf((uint)m);           // Go to first position
+        setpos_tbuf(m);                 // Go to first position
 
         n -= m;                         // And delete this many chars
     }
 
-    uint dot = getpos_tbuf();
-
-    if ((n < 0 && (uint)-n > dot) || (n > 0 && (uint)n > Z - dot))
+    if ((n < 0 && -n > t.dot) || (n > 0 && n > t.Z - t.dot))
     {
         if (!cmd->colon_set)
         {
@@ -107,13 +104,11 @@ void exec_K(struct cmd *cmd)
 
     if (cmd->h_set)                     // HK?
     {
-        uint Z = getsize_tbuf();
-
-        if (Z != 0)
+        if (t.Z != 0)
         {
-            setpos_tbuf(B);
+            setpos_tbuf(t.B);
 
-            delete_tbuf((int)Z);        // Yes, kill the whole buffer
+            delete_tbuf(t.Z);           // Yes, kill the whole buffer
         }
 
         return;
@@ -131,14 +126,12 @@ void exec_K(struct cmd *cmd)
     {
         m = cmd->m_arg;
 
-        uint Z = getsize_tbuf();
-
-        if (m < 0 || (uint)m > Z || n < 0 || (uint)n > Z || m > n)
+        if (m < 0 || m > t.Z || n < 0 || n > t.Z || m > n)
         {
             printc_err(E_POP, 'K');     // Pointer off page
         }
 
-        setpos_tbuf((uint)m);           // Go to first position
+        setpos_tbuf(m);                 // Go to first position
 
         n -= m;                         // And delete this many chars
     }
