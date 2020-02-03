@@ -52,7 +52,9 @@ void exec_pct(struct cmd *cmd)
         return;
     }
 
-    int n = 1;
+    // %q with no argument increments by one, :%q decrements by one.
+
+    int n = cmd->colon_set ? -1 : 1;
 
     (void)pop_expr(&n);                 // n%q`
 

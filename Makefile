@@ -27,10 +27,9 @@
 #      all        lint + teco + doc [default]
 #      clean      Clean object files.
 #      clobber    Clean everything.
-#      doc        doxygen + html
+#      doc        doxygen
 #      doxygen    Update Doxygen documentation.
 #      help       Print help message.
-#      html       Generate HTML options file.
 #      lint       Lint source files.
 #      lobs       Build lint object files.
 #      options    Print list of makefile options.
@@ -223,10 +222,9 @@ help:
 	@echo "    all        lint + teco + doc [default]"
 	@echo "    clean      Clean object files."
 	@echo "    clobber    Clean everything."
-	@echo "    doc        doxygen + html"
+	@echo "    doc        doxygen"
 	@echo "    doxygen    Update Doxygen documentation."
 	@echo "    help       Print this message."
-	@echo "    html       Generate HTML options file."
 	@echo "    lint       Lint source files."
 	@echo "    lobs       Build lint object files."
 	@echo "    scratch    clobber + all"
@@ -280,7 +278,6 @@ clobber: clean
 	-$(AT)chdir obj && rm -f *.d *.lob $(NULL2)
 	-$(AT)chdir src && rm -f *.bak $(NULL2)
 	-$(AT)chdir $(INCDIR) && rm -f *.bak _*.h $(NULL2)
-	-$(AT)rm -rf html $(NULL2)
 
 .PHONY: lobs
 lobs: $(LOBS)

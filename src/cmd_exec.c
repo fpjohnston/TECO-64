@@ -69,6 +69,11 @@ static const struct cmd null_cmd =
 };
 
 
+// Local functions
+
+static void exec_dummy(struct cmd *unused1);
+
+
 ///
 ///  @brief    Execute command string.
 ///
@@ -133,15 +138,15 @@ void exec_bad(struct cmd *cmd)
 
 
 ///
-///  @brief    Dummy exec function, used to skip a command we don't need or
-///            intend to execute.
+///  @brief    Dummy function, used to ignore commands.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_dummy(struct cmd *unused1)
+static void exec_dummy(struct cmd *unused1)
 {
+
 }
 
 
@@ -441,6 +446,7 @@ exec_func *next_cmd(struct cmd *cmd)
         cmd->n_set = true;
         cmd->n_arg = -1;
     }
+
 #if     0               // TODO: can we keep this?
     else if (f.e1.strict)
     {

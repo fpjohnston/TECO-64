@@ -182,8 +182,6 @@ extern void exec_ctrl_v(struct cmd *cmd);
 
 extern void exec_ctrl_w(struct cmd *cmd);
 
-extern void exec_dummy(struct cmd *cmd);
-
 extern void exec_equals(struct cmd *cmd);
 
 extern void exec_escape(struct cmd *cmd);

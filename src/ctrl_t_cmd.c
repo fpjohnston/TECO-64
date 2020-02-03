@@ -61,11 +61,6 @@ void exec_ctrl_t(struct cmd *cmd)
     {
         int n = cmd->n_arg & 0xFF;      // Limit value to 8 bits
 
-        if (iscntrl(n))                 // TODO: for debugging
-        {
-            printf("\r\n[%02x]", n);
-            return;
-        }
         if (cmd->colon_set || f.et.image)
         {
             print_chr(n);
