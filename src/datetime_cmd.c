@@ -27,7 +27,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -35,7 +34,6 @@
 
 #include "teco.h"
 #include "eflags.h"
-#include "errors.h"
 #include "exec.h"
 
 
@@ -91,12 +89,9 @@ void exec_ctrl_h(struct cmd *cmd)
 
     if (f.e3.msec)                      // Return time in milliseconds?
     {
-        struct timeval tv;
+        struct timeval tv = { .tv_usec = 0 };
 
-        if (gettimeofday(&tv, NULL) == -1)
-        {
-            fatal_err(errno, E_SYS, NULL);
-        }
+        (void)gettimeofday(&tv, NULL);
 
         teco_time *= 1000;
         teco_time += (int)(tv.tv_usec / 1000);

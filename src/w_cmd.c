@@ -115,16 +115,13 @@ void exec_W(struct cmd *cmd)
     {
         int n;
 
-        if (pop_expr(&cmd->n_arg))
-        {
-            if (cmd->m_set)
-            {
-                set_w(cmd->m_arg, cmd->n_arg);
-            }
-        }
-        else
+        if (!pop_expr(&cmd->n_arg))
         {
             cmd->n_arg = 0;             // :W = 0:W
+        }
+        else if (cmd->m_set)            // If m,n:W, then do set before read
+        {
+            set_w(cmd->m_arg, cmd->n_arg);
         }
 
         n = get_w(cmd->n_arg);
@@ -133,8 +130,6 @@ void exec_W(struct cmd *cmd)
 
         return;
     }
-
-#if     defined(NCURSES)
 
     if (!f.et.scope)                    // Scope mode allowed?
     {
@@ -145,7 +140,13 @@ void exec_W(struct cmd *cmd)
     {
         if (!f.e0.winact)
         {
-            reset_term();
+
+#if     defined(SCOPE)
+
+            reset_term();               // Don't reset if no window support
+
+#endif
+
             init_win();
             clear_win();
         }
@@ -158,9 +159,6 @@ void exec_W(struct cmd *cmd)
             init_term();
         }
     }
-
-#endif
-
 }
 
 

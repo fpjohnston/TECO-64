@@ -27,7 +27,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -68,7 +67,7 @@ void exec_EK(struct cmd *unused1)
 
     if (oname != NULL && remove(oname) != 0)
     {
-        fatal_err(errno, E_SYS, NULL);
+        print_err(E_SYS);
     }
 
     free_mem(&ofile->name);

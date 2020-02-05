@@ -27,18 +27,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
 #include <sys/ioctl.h>
 
-#if     defined(NCURSES)
-
 #include <ncurses.h>
-
-#endif
 
 #include "teco.h"
 #include "ascii.h"
@@ -47,6 +42,25 @@
 #include "textbuf.h"
 #include "window.h"
 
+///
+///  @def    err_if_true
+///
+///  @brief  Issue error if function returns specified value.
+///
+
+#define err_if_true(func, cond) if (func == cond) error_win()
+
+///
+///  @def    err_if_false
+///
+///  @brief  Issue error if function does not return specified value.
+///
+
+#define err_if_false(func, cond) if (func != cond) error_win()
+
+
+#define C_FG COLOR_BLUE                 ///< Default foreground color
+#define C_BG (COLOR_WHITE | A_BOLD)     ///< Default background color
 
 #define CMD             0               ///< Command window colors
 #define TEXT            1               ///< Text window colors
@@ -54,9 +68,47 @@
 
 #define BRIGHT_WHITE    16              ///< Bright white background
 
-#if     defined(NCURSES)
+#if     defined(SCOPE)
 
-static int text_top;
+///
+///  @struct  region
+///
+///  @brief   Characteristics of a screen region
+///
+
+struct region
+{
+    int top;                            ///< Top of region
+    int bot;                            ///< Bottom of region
+    int fg;                             ///< Foreground color
+    int bg;                             ///< Background color
+};
+
+///
+///  @struct  display
+///
+///  @brief   Display format
+///
+
+struct display
+{
+    int row;
+    int col;
+    struct region text;
+    struct region cmd;
+    struct region line;
+};
+
+static struct display d;                ///< Display format
+
+
+// Local functions
+
+static void error_win(void);
+
+static void repaint(int row, int col, int pos);
+
+static void updown_win(int key);
 
 #endif
 
@@ -70,12 +122,41 @@ static int text_top;
 
 void clear_win(void)
 {
+
+#if     defined(SCOPE)
+
     (void)clear();
 
     set_scroll(w.height, w.nscroll);
 
     refresh_win();
+
+#endif
+
 }
+
+
+///
+///  @brief    Reset window and issue error. When TECO starts, we either try to
+///            initialize for a window display, or initialize terminal settings.
+///            So if window initialization fails, we have to ensure that the
+///            terminal is set up correctly.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(SCOPE)
+
+static void error_win(void)
+{
+    reset_win();
+    init_term();
+
+    print_err(E_WIN);                   // Window initialization
+}
+
+#endif
 
 
 ///
@@ -89,7 +170,7 @@ int getchar_win(bool wait)
 {
     int c = 0;                          // Ensure that high bits are clear
 
-#if     defined(NCURSES)
+#if     defined(SCOPE)
 
     if (f.e0.winact)
     {
@@ -145,7 +226,7 @@ int getchar_win(bool wait)
 void getsize_win(void)
 {
 
-#if     defined(NCURSES)
+#if     defined(SCOPE)
 
     if (f.e0.winact)
     {
@@ -160,7 +241,7 @@ void getsize_win(void)
 
     if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
     {
-        fatal_err(errno, E_SYS, NULL);
+        print_err(E_SYS);
     }
 
     w.width  = ts.ws_col;
@@ -178,7 +259,7 @@ void getsize_win(void)
 void init_win(void)
 {
 
-#if     defined(NCURSES)
+#if     defined(SCOPE)
 
     if (!f.e0.winact)
     {
@@ -190,10 +271,7 @@ void init_win(void)
         {
             end_set = true;
 
-            if (atexit(reset_win) != 0)
-            {
-                print_err(E_WIN);
-            }
+            err_if_false(atexit(reset_win), 0);
         }
 
         // Note that initscr() will print an error message and exit if it
@@ -201,19 +279,16 @@ void init_win(void)
 
         (void)initscr();
 
-        if (cbreak()                                                == ERR ||
-            noecho()                                                == ERR ||
-            nonl()                                                  == ERR ||
-            notimeout(stdscr, (bool)TRUE)                           == ERR ||
-            idlok(stdscr, (bool)TRUE)                               == ERR ||
-            scrollok(stdscr, (bool)TRUE)                            == ERR ||
-            keypad(stdscr, (bool)TRUE)                              == ERR ||
-            !has_colors()                                                  ||
-            start_color()                                           == ERR ||
-            assume_default_colors(COLOR_BLUE, COLOR_WHITE | A_BOLD) == ERR)
-        {
-            print_err(E_WIN);
-        }
+        err_if_true(cbreak(),                          ERR);
+        err_if_true(noecho(),                          ERR);
+        err_if_true(nonl(),                            ERR);
+        err_if_true(notimeout(stdscr, (bool)TRUE),     ERR);
+        err_if_true(idlok(stdscr,     (bool)TRUE),     ERR);
+        err_if_true(scrollok(stdscr,  (bool)TRUE),     ERR);
+        err_if_true(keypad(stdscr,    (bool)TRUE),     ERR);
+        err_if_true(has_colors(),                      FALSE);
+        err_if_true(start_color(),                     ERR);
+        err_if_true(assume_default_colors(C_FG, C_BG), ERR);
 
         ESCDELAY = 0;
 
@@ -230,6 +305,10 @@ void init_win(void)
         (void)init_pair(LINE, COLOR_RED, color_bg);
         (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
     }
+
+#else
+
+    print_err(E_NOW);                   // Window support not enabled
 
 #endif
 
@@ -253,7 +332,7 @@ void init_win(void)
 bool putc_win(int c)
 {
 
-#if     defined(NCURSES)
+#if     defined(SCOPE)
 
     if (f.e0.winact)
     {
@@ -282,7 +361,7 @@ bool putc_win(int c)
 bool puts_win(const char *buf)
 {
 
-#if     defined(NCURSES)
+#if     defined(SCOPE)
 
     if (f.e0.winact)
     {
@@ -306,73 +385,107 @@ bool puts_win(const char *buf)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool readkey_win(int c)
+bool readkey_win(int key)
 {
-    if (c < KEY_MIN || c > KEY_MAX)
+
+#if     defined(SCOPE)
+
+    if (key < KEY_MIN || key > KEY_MAX)
     {
         return false;
     }
 
-    int dot = (int)t.dot;
-    int Z   = (int)t.Z;
-
-    if (c == KEY_UP)
+    if (key == KEY_UP || key == KEY_DOWN)
     {
-        int cur  = -getdelta_tbuf(0);   // Offset in current line
-        int prev = -getdelta_tbuf(-1);  // Distance to start of previous
-        int len  = prev - cur;          // Length of previous line
+        updown_win(key);
 
-        dot -= prev;
-
-        if (len < cur)
-        {
-            dot += len - 1;
-        }
-        else
-        {
-            dot += cur;
-        }
+        return true;
     }
-    else if (c == KEY_DOWN)
-    {
-        int cur  = -getdelta_tbuf(0);   // Offset in current line
-        int next = getdelta_tbuf(1);    // Start of next line
-        int len  = getdelta_tbuf(2) - next; // Length of next line
-
-        dot += next;
-
-        if (len < cur)
-        {
-            dot += len - 1;
-        }
-        else
-        {
-            dot += cur;
-        }
-
-        if (dot > Z)                    // Make sure we stay within buffer
-        {
-            dot = Z;
-        }
-    }
-    else if (c == KEY_LEFT)
-    {
-        --dot;
-    }
-    else if (c == KEY_RIGHT)
-    {
-        ++dot;
-    }
-    else
+    else if (key != KEY_LEFT && key != KEY_RIGHT)
     {
         return true;
     }
+
+    int dot = (int)t.dot + (key == KEY_LEFT ? -1 : 1);
 
     setpos_tbuf(dot);
     refresh_win();
 
     return true;
+
+#else
+
+    return false;
+
+#endif
+
 }
+
+
+///
+///  @brief    Repaint screen.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(SCOPE)
+
+static void repaint(int row, int col, int pos)
+{
+    int saved_row, saved_col;
+
+    getyx(stdscr, saved_row, saved_col); // Save position in command window
+
+    (void)move(d.text.top, 0);      // Switch to text window
+    (void)attrset(COLOR_PAIR(TEXT)); //lint !e835
+
+    int c;
+    int nrows = w.height - (w.nscroll + (f.e1.winline ? 1 : 0));
+
+    assert(nrows > 0);
+
+    while ((c = getchar_tbuf(pos++)) != -1)
+    {
+        if (c != CR)
+        {
+            (void)addch((uint)c);
+        }
+
+        if (isdelim(c) && --nrows == 0)
+        {
+            break;
+        }
+    }
+
+    // Blank out the rest of the lines if nothing to display
+
+    while (nrows-- > 0)
+    {
+        (void)addch('\n');
+    }
+
+    // Highlight our current position in text window
+
+    (void)move(d.text.top + row, col);
+
+    d.row = row;
+    d.col = col;
+
+    c = (int)inch();
+
+    (void)delch();
+    (void)insch((uint)c | A_REVERSE);
+
+    // Restore position in command window
+
+    (void)move(saved_row, saved_col);
+    (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
+
+    (void)refresh();
+}
+
+#endif
 
 
 ///
@@ -385,69 +498,21 @@ bool readkey_win(int c)
 void refresh_win(void)
 {
 
-#if     defined(NCURSES)
+#if     defined(SCOPE)
 
     if (f.e0.winact && w.nscroll != 0)
     {
-        int cmdrow, cmdcol;
-
-        getyx(stdscr, cmdrow, cmdcol);  // Save position in command window
-
-        (void)move(text_top, 0);        // Switch to text window
-        (void)attron(A_BOLD);
-        (void)attrset(COLOR_PAIR(TEXT)); //lint !e835
-
-        int nrows = w.height - w.nscroll; // No. of rows on screen
-
-        if (!f.e1.noline)
-        {
-            --nrows;
-        }
+        int nrows = w.height - (w.nscroll + (f.e1.winline ? 1 : 0));
 
         assert(nrows > 0);
 
-        int line = getlines_tbuf(-1);   // Current (relative) line number
-        int row = line % nrows;         // Relative row within screen
-        int pos = getdelta_tbuf(-row);  // Position of 1st chr. in 1st row
-        int c;
+        int line = getlines_tbuf(-1);   // Line number within buffer
+        int row  = line % nrows;        // Relative row within screen
+        int col  = -getdelta_tbuf(0);   // Offset within row
+        int pos  = getdelta_tbuf(-row); // First character to output
 
-        while ((c = getchar_tbuf(pos++)) != -1)
-        {
-            if (c != CR)
-            {
-                (void)addch((uint)c);
-            }
-
-            if (isdelim(c) && --nrows == 0)
-            {
-                break;
-            }
-        }
-
-        // Blank out the rest of the lines if nothing to display
-
-        while (nrows-- > 0)
-        {
-            (void)addch('\n');
-        }
-
-        // Highlight our current position in text window
-
-        int dot = abs(getdelta_tbuf(0));
-
-        (void)move(row + text_top, dot);
-        c = inch() & A_CHARTEXT;        //lint !e835
-        (void)delch();
-        (void)insch((uint)c | A_REVERSE);
-
-        // Restore position in command window
-
-        (void)move(cmdrow, cmdcol);
-        (void)attroff(A_BOLD);
-        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
+        repaint(row, col, pos);
     }
-
-    (void)refresh();
 
 #endif
 
@@ -464,7 +529,7 @@ void refresh_win(void)
 void reset_win(void)
 {
 
-#if     defined(NCURSES)
+#if     defined(SCOPE)
 
     if (f.e0.winact)
     {
@@ -488,45 +553,42 @@ void reset_win(void)
 void set_scroll(int height, int nscroll)
 {
 
-#if     defined(NCURSES)
+#if     defined(SCOPE)
 
-    int cmd_top, cmd_bot;
-
-    if (f.e0.winact)
+    if (f.e0.winact && w.nscroll != 0)
     {
         if (f.e1.cmdtop)
         {
-            cmd_top  = 0;
-            cmd_bot  = nscroll - 1;
-            text_top = nscroll;
+            d.cmd.top  = 0;
+            d.cmd.bot  = nscroll - 1;
+            d.text.top = nscroll;
         }
         else
         {
-            cmd_top  = height - nscroll;
-            cmd_bot  = height - 1;
-            text_top = 0;
+            d.cmd.top  = height - nscroll;
+            d.cmd.bot  = height - 1;
+            d.text.top = 0;
         }
 
-        (void)setscrreg(cmd_top, cmd_bot);
+        (void)setscrreg(d.cmd.top, d.cmd.bot);
 
-        if (!f.e1.noline)
+        d.line.top = d.line.bot = -1;
+
+        if (f.e1.winline)
         {
-            int line_row;
-
             if (f.e1.cmdtop)
             {
-                line_row = cmd_bot + 1;
-                ++text_top;
+                d.line.top = d.line.bot = d.cmd.bot + 1;
+                ++d.text.top;
             }
             else
             {
-                line_row = cmd_top - 1;
+                d.line.top = d.line.bot = d.cmd.top - 1;
             }
 
             // Draw line between text window and command window
 
-            (void)move(line_row, 0);
-            (void)attron(A_BOLD);
+            (void)move(d.line.top, 0);
             (void)attrset(COLOR_PAIR(LINE)); //lint !e835
 
             for (int i = 0; i < w.width; ++i)
@@ -535,21 +597,89 @@ void set_scroll(int height, int nscroll)
             }
         }
 
-        (void)move(cmd_top, 0);
+        (void)move(d.cmd.top, 0);
 
-        for (int i = cmd_top; i <= cmd_bot; ++i)
+        for (int i = d.cmd.top; i <= d.cmd.bot; ++i)
         {
             (void)addch('\n');
         }
 
-        (void)refresh();
-
-        (void)attron(A_BOLD);
         (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
 
-        (void)move(cmd_top, 0);
+        (void)move(d.cmd.top, 0);
+
+        (void)refresh();
     }
 
 #endif
 
+}
+
+static void updown_win(int key)
+{
+    int line = getlines_tbuf(-1);       // Get current line number
+    int row = d.row;
+    int col = d.col;
+    int pos;
+    int len;
+    int dot = t.dot;
+
+    if (key == KEY_UP)
+    {
+        if (line == 0)                  // On first line?
+        {
+            return;
+        }
+
+        if (row > 0)
+        {
+            --row;
+        }
+
+        pos = 0;
+
+        int prev = -getdelta_tbuf(-1);  // Distance to start of previous
+
+        len = prev - col;               // Length of previous line
+
+        dot -= prev;
+    }
+    else
+    {
+        if (line == getlines_tbuf(0))   // On last line?
+        {
+            return;
+        }
+
+        pos = getdelta_tbuf(-row);
+
+        if (row < 47)
+        {
+            ++row;
+        }
+
+        int next = getdelta_tbuf(1);    // Start of next line
+
+        len = getdelta_tbuf(2) - next;  // Length of next line
+
+        dot += next;
+    }
+
+    if (len < col)
+    {
+        dot += len - 1;
+    }
+    else
+    {
+        dot += col;
+    }
+
+    if (dot > t.Z)                      // Make sure we stay within buffer
+    {
+        dot = t.Z;
+    }
+
+    setpos_tbuf(dot);
+
+    repaint(row, col, pos);
 }

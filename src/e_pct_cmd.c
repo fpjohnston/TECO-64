@@ -28,7 +28,6 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -82,7 +81,7 @@ void exec_E_pct(struct cmd *cmd)
     {
         if (fwrite(qreg->text.buf, 1uL, (ulong)size, ofile->fp) != size)
         {
-            fatal_err(errno, E_SYS, NULL);
+            print_err(E_SYS);
         }
     }
 

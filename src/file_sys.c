@@ -76,7 +76,7 @@ const char *get_oname(struct ofile *ofile, uint nbytes, bool exists)
     {
         if (stat(last_file, &file_stat) != 0)
         {
-            fatal_err(errno, E_SYS, NULL);
+            print_err(E_SYS);
         }
 
         ofile->name = alloc_mem(nbytes + 1);
@@ -133,7 +133,7 @@ int get_wild(void)
 
         if (stat(filename, &file_stat) != 0)
         {
-            fatal_err(errno, E_SYS, NULL);
+            print_err(E_SYS);
         }
 
         if (S_ISREG(file_stat.st_mode))
@@ -175,20 +175,20 @@ void rename_output(struct ofile *ofile)
 
             if (rename(ofile->name, scratch) != 0)
             {
-                fatal_err(errno, E_SYS, NULL);
+                print_err(E_SYS);
             }
         }
         else
         {
             if (remove(ofile->name) != 0)
             {
-                fatal_err(errno, E_SYS, NULL);
+                print_err(E_SYS);
             }
         }
 
         if (rename(ofile->temp, ofile->name) != 0)
         {
-            fatal_err(errno, E_SYS, NULL);
+            print_err(E_SYS);
         }
     }
 }
@@ -220,7 +220,7 @@ void set_wild(const char *filename)
             prints_err(E_FNF, filename); // Can't find any matches
 
         default:                        // Something unexpected
-            fatal_err(errno, E_SYS, NULL);
+            print_err(E_SYS);
     }
 
     next_file = &pglob.gl_pathv[0];

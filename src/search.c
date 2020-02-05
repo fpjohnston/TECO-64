@@ -28,7 +28,6 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -72,10 +71,7 @@ static void reset_search(void);
 
 void init_search(void)
 {
-    if (atexit(reset_search) != 0)
-    {
-        fatal_err(errno, E_UIT, NULL);
-    }
+    (void)atexit(reset_search);
 }
 
 

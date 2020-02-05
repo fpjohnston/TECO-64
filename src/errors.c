@@ -28,6 +28,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,8 +39,6 @@
 #include "errors.h"
 #include "window.h"
 
-
-int last_error = E_NUL;                 ///< Last error encountered
 
 ///  @struct  err_table
 ///  @brief   Structure of error table.
@@ -104,6 +103,7 @@ static struct err_table err_table[] =
     [E_NCA] = { "NCA",  "Negative argument to ," },
     [E_NFI] = { "NFI",  "No file for input" },
     [E_NFO] = { "NFO",  "No file for output" },
+    [E_NOW] = { "NOW",  "Window support not enabled" },
     [E_NPA] = { "NPA",  "Negative or 0 argument to P" },
     [E_NRO] = { "NRO",  "No room for output" },
     [E_NTF] = { "NTF",  "No tag found" },
@@ -135,7 +135,7 @@ static struct err_table err_table[] =
     [E_UTC] = { "UTC",  "Unterminated command \"%s\"" },
     [E_UTM] = { "UTM",  "Unterminated macro" },
     [E_UTQ] = { "UTQ",  "Unterminated quote" },
-    [E_WIN] = { "WIN",  "Window error" },
+    [E_WIN] = { "WIN",  "Window initialization error" },
     [E_XAB] = { "XAB",  "Execution aborted" },
     [E_YCA] = { "YCA",  "Y command aborted" },
 };
@@ -387,81 +387,14 @@ static const char *verbose[] =
               "the output file. The ED command controls this check.",
 };
 
+
+int last_error = E_NUL;                 ///< Last error encountered
+
+// TODO: do something about magic number.
+
 static char err_buf[64];                ///< Buffer for error argument
 
 static const char *err_str = err_buf;   ///< Error message argument
-
-// Local functions
-
-static void common_err(int err_teco);
-
-
-///
-///  @brief    Print error message (or maybe not -- see code below).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void common_err(int err_teco)
-{
-    // If CTRL/C and we're not executing a command, don't print error.
-
-    if (err_teco == E_XAB && !f.e0.exec)
-    {
-        return;
-    }
-
-    if ((uint)err_teco > countof(err_table))
-    {
-        err_teco = E_NUL;
-    }
-
-    const char *code = err_table[err_teco].code;
-    const char *text = err_table[err_teco].text;
-
-    print_str("?%s", code);               // Always print code
-
-    if (f.eh.verbose != 1)              // Need to print more?
-    {
-        print_str("   ");
-        print_str(text, err_str);
-    }
-
-    print_chr(CRLF);
-
-    last_error = err_teco;
-}
-
-
-///
-///  @brief    Print fatal error and exit.
-///
-///  @returns  Exits.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-noreturn void fatal_err(int err_sys, int err_teco, const char *err_arg)
-{
-    if (err_arg == NULL)
-    {
-        err_arg = "";
-    }
-
-    f.eh.verbose = 2;                   // Force detail for fatal errors
-
-    err_str = strerror(err_sys);        // Convert errno to string
-
-    common_err(E_SYS);                  // Print system error
-
-    if (err_teco != E_SYS)              // More to print?
-    {
-        err_str = err_arg;
-        common_err(err_teco);           // Print TECO error
-    }
-
-    exit(EXIT_FAILURE);                 // Clean up, reset, and exit
-}
 
 
 ///
@@ -536,14 +469,45 @@ void help_err(int err_teco)
 
 noreturn void print_err(int err_teco)
 {
-    common_err(err_teco);               // Print TECO error
+    // If CTRL/C and we're not executing a command, don't print error.
 
-    if (f.et.abort)                     // Abort on error?
+    if (err_teco != E_XAB || f.e0.exec)
     {
-        exit(EXIT_FAILURE);
+        if (err_teco == E_SYS)
+        {
+            f.eh.verbose = 2;           // Force detail for system errors
+
+            err_str = strerror(errno);  // Convert errno to string
+        }
+        else if ((uint)err_teco > countof(err_table))
+        {
+            err_teco = E_NUL;
+        }
+
+        const char *code = err_table[err_teco].code;
+        const char *text = err_table[err_teco].text;
+
+        print_str("?%s", code);         // Always print code
+
+        if (f.eh.verbose != 1)          // Need to print more?
+        {
+            print_str("   ");
+            print_str(text, err_str);
+        }
+
+        print_chr(CRLF);
+
+        last_error = err_teco;
     }
 
-    longjmp(jump_main, 2);              // Return to main loop
+    // Done printing error, now how are we supposed to get out of here?
+
+    if (f.et.abort || !main_active)     // Abort on error, or no main loop?
+    {
+        exit(EXIT_FAILURE);             // Yes, we're all done here
+    }
+
+    longjmp(jump_main, 2);              // Back to the shadows again!
 }
 
 

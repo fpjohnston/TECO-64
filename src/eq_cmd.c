@@ -96,7 +96,7 @@ void exec_EQ(struct cmd *cmd)
 
     if (fread(text.buf, 1uL, (ulong)size, ifile->fp) != size)
     {
-        fatal_err(errno, E_SYS, NULL);
+        print_err(E_SYS);
     }
 
     store_qtext(cmd->qname, cmd->qlocal, &text);

@@ -279,6 +279,8 @@ extern struct tstring last_search;
 
 extern uint last_len;
 
+extern bool main_active;
+
 // Global functions
 
 extern void *alloc_mem(uint size);

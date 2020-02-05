@@ -87,6 +87,7 @@ enum errors
     E_NCA,          ///< Negative argument to ,
     E_NFI,          ///< No file for input
     E_NFO,          ///< No file for output
+    E_NOW,          ///< Window support not enabled
     E_NPA,          ///< Negative or 0 argument to P
     E_NRO,          ///< No room for output
     E_NTF,          ///< No tag found
@@ -120,12 +121,10 @@ enum errors
     E_UTQ,          ///< Unterminated quote
     E_UWL,          ///< Unable to write line to output file
     E_UWC,          ///< Unable to write character to output file
-    E_WIN,          ///< Window error
+    E_WIN,          ///< Window initialization error
     E_XAB,          ///< Execution aborted
     E_YCA           ///< Y command aborted
 };
-
-extern noreturn void fatal_err(int err_sys, int err_teco, const char *err_arg);
 
 extern void help_err(int err_teco);
 
