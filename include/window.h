@@ -55,8 +55,6 @@ struct watch
     int hold;                       ///< Hold mode indicator
     int topdot;                     ///< Buffer position of upper left corner
     int nscroll;                    ///< No. of scrolling lines
-    int spacemark;                  ///< TODO: unknown
-    int keypad;                     ///< TODO: unknown
 };
 
 // Window functions
@@ -64,8 +62,6 @@ struct watch
 extern void clear_win(void);
 
 extern int getchar_win(bool wait);
-
-extern void getsize_win(void);
 
 extern void init_win(void);
 
@@ -78,6 +74,8 @@ extern bool readkey_win(int c);
 extern void reset_win(void);
 
 extern void refresh_win(void);
+
+extern void set_nrows(void);
 
 extern void set_scroll(int height, int nscroll);
 

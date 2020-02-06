@@ -53,8 +53,6 @@ struct watch w =
     .hold      = 0,
     .topdot    = 0,
     .nscroll   = 0,
-    .spacemark = 0,
-    .keypad    = 0,
 };
 
 
@@ -77,25 +75,29 @@ static int get_w(int n)
     switch (n)
     {
         default:
-        case 0: return w.type;
+        case 0:
+            return w.type;
 
-        case 1: return w.width;
+        case 1:
+            return w.width;
 
-        case 2: return w.height - w.nscroll;
+        case 2:
+            return w.height - w.nscroll;
 
-        case 3: return w.seeall ? -1 : 0;
+        case 3:
+            return w.seeall ? -1 : 0;
 
-        case 4: return w.mark;
+        case 4:
+            return w.mark;
 
-        case 5: return w.hold;
+        case 5:
+            return w.hold;
 
-        case 6: return w.topdot;
+        case 6:
+            return w.topdot;
 
-        case 7: return w.nscroll;
-
-        case 8: return w.spacemark;
-
-        case 9: return w.keypad;
+        case 7:
+            return w.nscroll;
     }
 }
 
@@ -163,32 +165,6 @@ void exec_W(struct cmd *cmd)
 
 
 ///
-///  @brief    Set scope type.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void set_type(int m)
-{
-    switch (m)
-    {
-        case 4:                         // VT100 in VT100 mode
-        case 11:                        // VT200 in VT200 mode
-        case 12:                        // VT200 in ANSI (VT100) mode
-            w.type = m;
-
-            break;
-
-        default:
-            print_err(E_ARG);           // Invalid argument
-
-            break;
-    }
-}
-
-
-///
 ///  @brief    Set watch scope variable.
 ///
 ///  @returns  Nothing.
@@ -199,19 +175,41 @@ static void set_w(int m, int n)
 {
     switch (n)
     {
-        case 0: set_type(m);                         break;
+        case 0:
+            w.type = m;
 
-        case 1: w.width = m;                         break;
+            break;
 
-        case 2: w.height = m;                        break;
+        case 1:
+            w.width = m;
 
-        case 3: w.seeall = (n == -1) ? true : false; break;
+            break;
 
-        case 4: w.mark = m;                          break;
+        case 2:
+            w.height = m;
+            set_nrows();
 
-        case 5: w.hold = m;                          break;
+            break;
 
-        case 6: w.topdot = m;                        break;
+        case 3:
+            w.seeall = (n == -1) ? true : false;
+
+            break;
+
+        case 4:
+            w.mark = m;
+            
+            break;
+
+        case 5:
+            w.hold = m;
+
+            break;
+
+        case 6:
+            w.topdot = m;
+
+            break;
 
         case 7:
             if (m <= 1 || w.height - m < 9)
@@ -219,14 +217,13 @@ static void set_w(int m, int n)
                 print_err(E_WIN);       // Window error
             }
 
-            set_scroll(w.height, w.nscroll = m);
+            w.nscroll = m;
+
+            set_scroll(w.height, w.nscroll);
 
             break;
 
-        case 8: w.spacemark = m;                     break;
-
-        case 9: w.keypad = m;                        break;
-
-        default: print_err(E_ARG);
+        default:
+            print_err(E_ARG);
     }
 }

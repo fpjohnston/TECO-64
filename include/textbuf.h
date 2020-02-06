@@ -61,6 +61,7 @@ struct text
 
 extern struct text t;
 
+extern bool tbuf_changed;
 
 // Add one character to buffer at current position of dot.
 //

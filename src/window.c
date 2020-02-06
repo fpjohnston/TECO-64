@@ -31,8 +31,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <sys/ioctl.h>
-
 #include <ncurses.h>
 
 #include "teco.h"
@@ -92,8 +90,10 @@ struct region
 
 struct display
 {
-    int row;
-    int col;
+    int row;                            ///< Text row
+    int col;                            ///< Text column
+    int vcol;                           ///< Virtual column
+    int nrows;                          ///< No. of text rows
     struct region text;
     struct region cmd;
     struct region line;
@@ -106,9 +106,13 @@ static struct display d;                ///< Display format
 
 static void error_win(void);
 
-static void repaint(int row, int col, int pos);
+static void mark_cursor(int row, int col);
 
-static void updown_win(int key);
+static void move_down(void);
+
+static void move_up(void);
+
+static void repaint(int row, int col, int pos);
 
 #endif
 
@@ -126,6 +130,8 @@ void clear_win(void)
 #if     defined(SCOPE)
 
     (void)clear();
+
+    tbuf_changed = true;
 
     set_scroll(w.height, w.nscroll);
 
@@ -217,39 +223,6 @@ int getchar_win(bool wait)
 
 
 ///
-///  @brief    Get window size.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void getsize_win(void)
-{
-
-#if     defined(SCOPE)
-
-    if (f.e0.winact)
-    {
-        getmaxyx(stdscr, w.height, w.width);
-
-        return;
-    }
-
-#endif
-
-    struct winsize ts;
-
-    if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
-    {
-        print_err(E_SYS);
-    }
-
-    w.width  = ts.ws_col;
-    w.height = ts.ws_row;
-}
-
-
-///
 ///  @brief    Initialize for window display.
 ///
 ///  @returns  Nothing.
@@ -304,6 +277,10 @@ void init_win(void)
         (void)init_pair(TEXT, COLOR_GREEN, color_bg);
         (void)init_pair(LINE, COLOR_RED, color_bg);
         (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
+
+        set_nrows();
+
+        d.vcol = 0;
     }
 
 #else
@@ -312,6 +289,168 @@ void init_win(void)
 
 #endif
 
+}
+
+
+///
+///  @brief    Mark or unmark cursor at current position.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void mark_cursor(int row, int col)
+{
+    // Save current position
+
+    int saved_row, saved_col;
+    uint c;
+
+    getyx(stdscr, saved_row, saved_col);
+
+    (void)attrset(COLOR_PAIR(TEXT));    //lint !e835
+
+    // Go to old cursor position
+
+    (void)move(d.text.top + d.row, d.col);
+
+    c = inch() & A_CHARTEXT;            //lint !e835
+
+    (void)delch();
+    (void)insch(c);
+
+    // Go to new cursor position
+
+    d.row = row;
+    d.col = col;
+
+    (void)move(d.text.top + d.row, d.col);
+
+    c = inch() | A_REVERSE;
+
+    (void)delch();
+    (void)insch(c);
+
+    // Restore old position and color
+
+    (void)attrset(COLOR_PAIR(CMD));     //lint !e835 !e845
+    (void)move(d.text.top + saved_row, saved_col);
+}
+
+
+///
+///  @brief    Move cursor down.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void move_down(void)
+{
+    int line = getlines_tbuf(-1);       // Get current line number
+    int row = d.row;
+    int col = d.col;
+
+    if (line == getlines_tbuf(0))       // On last line?
+    {
+        return;
+    }
+
+    if (row == d.nrows - 1)
+    {
+        // TODO: scroll up
+
+        return;
+    }
+
+    ++row;
+
+    int next = getdelta_tbuf(1);        // Start of next line
+    int len = getdelta_tbuf(2) - next;  // Length of next line
+    int dot = t.dot + next;
+
+    if (d.vcol < col)
+    {
+        d.vcol = col;
+    }
+
+    col = d.vcol;
+
+    if (len < col)
+    {
+        dot += len - 1;
+        col = len - 1;
+    }
+    else
+    {
+        dot += col;
+    }
+
+    if (dot > t.Z)                      // Make sure we stay within buffer
+    {
+        dot = t.Z;
+    }
+
+    mark_cursor(row, col);
+
+    setpos_tbuf(dot);
+
+    (void)refresh();
+}
+
+
+///
+///  @brief    Move cursor up.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void move_up(void)
+{
+    int line = getlines_tbuf(-1);       // Get current line number
+    int row = d.row;
+    int col = d.col;
+
+    if (line == 0)                      // On first line?
+    {
+        return;                         // Yes, nothing to do
+    }
+
+    if (row == 0)
+    {
+        // TODO: scroll lines down
+        return;
+    }
+
+    --row;
+
+    int prev = -getdelta_tbuf(-1);      // Distance to start of previous
+    int len = prev - col;               // Length of previous line
+    int dot = t.dot - prev;
+
+    if (d.vcol < col)
+    {
+        d.vcol = col;
+    }
+
+    col = d.vcol;
+
+    if (len < col)
+    {
+        dot += len - 1;
+        col = len - 1;
+    }
+    else
+    {
+        dot += col;
+    }
+
+    mark_cursor(row, col);
+
+    setpos_tbuf(dot);
+
+    (void)refresh();
 }
 
 
@@ -395,9 +534,15 @@ bool readkey_win(int key)
         return false;
     }
 
-    if (key == KEY_UP || key == KEY_DOWN)
+    if (key == KEY_UP)
     {
-        updown_win(key);
+        move_up();
+
+        return true;
+    }
+    else if (key == KEY_DOWN)
+    {
+        move_down();
 
         return true;
     }
@@ -433,6 +578,15 @@ bool readkey_win(int key)
 
 static void repaint(int row, int col, int pos)
 {
+    if (!tbuf_changed)
+    {
+        return;
+    }
+
+    tbuf_changed = false;
+
+    d.vcol = 0;
+
     int saved_row, saved_col;
 
     getyx(stdscr, saved_row, saved_col); // Save position in command window
@@ -441,9 +595,7 @@ static void repaint(int row, int col, int pos)
     (void)attrset(COLOR_PAIR(TEXT)); //lint !e835
 
     int c;
-    int nrows = w.height - (w.nscroll + (f.e1.winline ? 1 : 0));
-
-    assert(nrows > 0);
+    int nrows = d.nrows;
 
     while ((c = getchar_tbuf(pos++)) != -1)
     {
@@ -502,12 +654,8 @@ void refresh_win(void)
 
     if (f.e0.winact && w.nscroll != 0)
     {
-        int nrows = w.height - (w.nscroll + (f.e1.winline ? 1 : 0));
-
-        assert(nrows > 0);
-
         int line = getlines_tbuf(-1);   // Line number within buffer
-        int row  = line % nrows;        // Relative row within screen
+        int row  = line % d.nrows;      // Relative row within screen
         int col  = -getdelta_tbuf(0);   // Offset within row
         int pos  = getdelta_tbuf(-row); // First character to output
 
@@ -540,6 +688,26 @@ void reset_win(void)
 
 #endif
 
+}
+
+
+///
+///  @brief    Set maximum no. of rows.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void set_nrows(void)
+{
+    d.nrows = w.height - w.nscroll;
+
+    if (f.e1.winline)
+    {
+        --d.nrows;
+    }
+
+    assert(d.nrows > 0);
 }
 
 
@@ -609,77 +777,10 @@ void set_scroll(int height, int nscroll)
         (void)move(d.cmd.top, 0);
 
         (void)refresh();
+
+        set_nrows();
     }
 
 #endif
 
-}
-
-static void updown_win(int key)
-{
-    int line = getlines_tbuf(-1);       // Get current line number
-    int row = d.row;
-    int col = d.col;
-    int pos;
-    int len;
-    int dot = t.dot;
-
-    if (key == KEY_UP)
-    {
-        if (line == 0)                  // On first line?
-        {
-            return;
-        }
-
-        if (row > 0)
-        {
-            --row;
-        }
-
-        pos = 0;
-
-        int prev = -getdelta_tbuf(-1);  // Distance to start of previous
-
-        len = prev - col;               // Length of previous line
-
-        dot -= prev;
-    }
-    else
-    {
-        if (line == getlines_tbuf(0))   // On last line?
-        {
-            return;
-        }
-
-        pos = getdelta_tbuf(-row);
-
-        if (row < 47)
-        {
-            ++row;
-        }
-
-        int next = getdelta_tbuf(1);    // Start of next line
-
-        len = getdelta_tbuf(2) - next;  // Length of next line
-
-        dot += next;
-    }
-
-    if (len < col)
-    {
-        dot += len - 1;
-    }
-    else
-    {
-        dot += col;
-    }
-
-    if (dot > t.Z)                      // Make sure we stay within buffer
-    {
-        dot = t.Z;
-    }
-
-    setpos_tbuf(dot);
-
-    repaint(row, col, pos);
 }

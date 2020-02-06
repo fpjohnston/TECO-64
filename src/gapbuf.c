@@ -79,6 +79,7 @@ static struct
     .right    = 0,
 };
 
+bool tbuf_changed;              ///< true if text buffer modified
 
 // Local functions
 
@@ -123,6 +124,8 @@ int add_tbuf(int c)
     }
 
     tb.buf[tb.left++] = (char)c;
+
+    tbuf_changed = true;
 
     ++t.dot;
     ++t.Z;
@@ -197,6 +200,8 @@ void delete_tbuf(int n)
     tb.gap += n;
 
     t.Z = tb.left + tb.right;
+
+    tbuf_changed = true;
 }
 
 
@@ -522,6 +527,8 @@ int putchar_tbuf(int n, int c)
 
         tb.buf[i] = (char)c;
 
+        tbuf_changed = true;
+
         return orig;
     }
 
@@ -541,6 +548,8 @@ void setpos_tbuf(int n)
     if (n <= tb.left + tb.right)
     {
         t.dot = n;
+
+        tbuf_changed = true;
     }
 }
 
