@@ -27,11 +27,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ncurses.h>
+
+#if     !defined(_STDIO_H)
+
 #include <stdio.h>
+
+#endif
+
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 #include <unistd.h>
 
-#include <ncurses.h>
+#include <sys/ioctl.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -113,6 +122,8 @@ static void move_down(void);
 static void move_up(void);
 
 static void repaint(int row, int col, int pos);
+
+static void update_status(void);
 
 #endif
 
@@ -223,6 +234,29 @@ int getchar_win(bool wait)
 
 
 ///
+///  @brief    Get terminal height and width.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void getsize_win(void)
+{
+    struct winsize ts;
+
+    if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
+    {
+        print_err(E_SYS);
+    }
+
+    w.width  = ts.ws_col;
+    w.height = ts.ws_row;
+
+    set_nrows();
+}
+
+
+///
 ///  @brief    Initialize for window display.
 ///
 ///  @returns  Nothing.
@@ -275,7 +309,8 @@ void init_win(void)
         }
 
         (void)init_pair(TEXT, COLOR_GREEN, color_bg);
-        (void)init_pair(LINE, COLOR_RED, color_bg);
+        (void)init_pair(LINE, BRIGHT_WHITE, COLOR_BLACK);
+//        (void)init_pair(LINE, COLOR_RED, color_bg);
         (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
 
         set_nrows();
@@ -395,6 +430,8 @@ static void move_down(void)
 
     setpos_tbuf(dot);
 
+    update_status();
+
     (void)refresh();
 }
 
@@ -449,6 +486,8 @@ static void move_up(void)
     mark_cursor(row, col);
 
     setpos_tbuf(dot);
+
+    update_status();
 
     (void)refresh();
 }
@@ -578,61 +617,61 @@ bool readkey_win(int key)
 
 static void repaint(int row, int col, int pos)
 {
-    if (!tbuf_changed)
+    if (tbuf_changed)
     {
-        return;
-    }
+        tbuf_changed = false;
 
-    tbuf_changed = false;
+        d.vcol = 0;
 
-    d.vcol = 0;
+        int saved_row, saved_col;
 
-    int saved_row, saved_col;
+        getyx(stdscr, saved_row, saved_col); // Save position in command window
 
-    getyx(stdscr, saved_row, saved_col); // Save position in command window
+        (void)move(d.text.top, 0);      // Switch to text window
+        (void)attrset(COLOR_PAIR(TEXT)); //lint !e835
 
-    (void)move(d.text.top, 0);      // Switch to text window
-    (void)attrset(COLOR_PAIR(TEXT)); //lint !e835
+        int c;
+        int nrows = d.nrows;
 
-    int c;
-    int nrows = d.nrows;
-
-    while ((c = getchar_tbuf(pos++)) != -1)
-    {
-        if (c != CR)
+        while ((c = getchar_tbuf(pos++)) != -1)
         {
-            (void)addch((uint)c);
+            if (c != CR)
+            {
+                (void)addch((uint)c);
+            }
+
+            if (isdelim(c) && --nrows == 0)
+            {
+                break;
+            }
         }
 
-        if (isdelim(c) && --nrows == 0)
+        // Blank out the rest of the lines if nothing to display
+
+        while (nrows-- > 0)
         {
-            break;
+            (void)addch('\n');
         }
+
+        // Highlight our current position in text window
+
+        (void)move(d.text.top + row, col);
+
+        d.row = row;
+        d.col = col;
+
+        c = (int)inch();
+
+        (void)delch();
+        (void)insch((uint)c | A_REVERSE);
+
+        // Restore position in command window
+
+        (void)move(saved_row, saved_col);
+        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
     }
 
-    // Blank out the rest of the lines if nothing to display
-
-    while (nrows-- > 0)
-    {
-        (void)addch('\n');
-    }
-
-    // Highlight our current position in text window
-
-    (void)move(d.text.top + row, col);
-
-    d.row = row;
-    d.col = col;
-
-    c = (int)inch();
-
-    (void)delch();
-    (void)insch((uint)c | A_REVERSE);
-
-    // Restore position in command window
-
-    (void)move(saved_row, saved_col);
-    (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
+    update_status();
 
     (void)refresh();
 }
@@ -754,15 +793,7 @@ void set_scroll(int height, int nscroll)
                 d.line.top = d.line.bot = d.cmd.top - 1;
             }
 
-            // Draw line between text window and command window
-
-            (void)move(d.line.top, 0);
-            (void)attrset(COLOR_PAIR(LINE)); //lint !e835
-
-            for (int i = 0; i < w.width; ++i)
-            {
-                (void)addch(ACS_HLINE);
-            }
+            update_status();
         }
 
         (void)move(d.cmd.top, 0);
@@ -783,4 +814,70 @@ void set_scroll(int height, int nscroll)
 
 #endif
 
+}
+
+
+///
+///  @brief    Update status line.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void update_status(void)
+{
+    // Draw line between text window and command window
+
+    int saved_row, saved_col;
+
+    getyx(stdscr, saved_row, saved_col);
+
+    (void)move(d.line.top, 0);
+    (void)attrset(COLOR_PAIR(LINE));    //lint !e835
+
+    if (f.e1.status)
+    {
+        char status[w.width];
+
+        memset(status, SPACE, (size_t)(uint)w.width);
+
+        // Add some file status to the left side of the status line
+
+        int row   = getlines_tbuf(-1);
+        int nrows = getlines_tbuf(0);
+        int col   = -getdelta_tbuf(0);
+        int nbytes = sprintf(status, ".=%d, Z=%d/%d, row=%d/%d, col=%d",
+                             t.dot, t.Z, t.size, row, nrows, col);
+
+        status[nbytes] = SPACE;         // Replace NUL character with space
+
+        // Now add in date and time on the right side of status line
+
+        time_t now = time(NULL);
+        struct tm *tm = localtime(&now);
+        char tbuf[w.width];
+
+        nbytes = (int)strftime(tbuf, sizeof(tbuf),
+                               "%a, %e %b %Y, %H:%M %Z", tm);
+        assert(nbytes != 0);
+
+        memcpy(status + w.width - nbytes, tbuf, nbytes);
+
+        for (int i = 0; i < w.width; ++i)
+        {
+            int c = status[i];
+
+            (void)addch((uint)c);
+        }
+    }
+    else
+    {
+        for (int i = 0; i < w.width; ++i)
+        {
+            (void)addch(ACS_HLINE);
+        }
+    }
+
+    (void)move(saved_row, saved_col);
+    (void)attrset(COLOR_PAIR(CMD));     //lint !e835 !e845
 }

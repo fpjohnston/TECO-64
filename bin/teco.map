@@ -1,0 +1,2299 @@
+Archive member included to satisfy reference by file (symbol)
+
+//usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                              /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o (__libc_csu_init)
+//usr/lib/x86_64-linux-gnu/libc_nonshared.a(atexit.oS)
+                              cmd_buf.o (atexit)
+//usr/lib/x86_64-linux-gnu/libc_nonshared.a(stat.oS)
+                              file_sys.o (stat)
+
+As-needed library included to satisfy reference by file (symbol)
+
+libncurses.so.6               window.o (scrollok@@NCURSES6_5.0.19991023)
+libtinfo.so.6                 window.o (nodelay@@NCURSES6_TINFO_5.0.19991023)
+libc.so.6                     env_sys.o (strcpy@@GLIBC_2.2.5)
+
+Allocating common symbols
+Common symbol       size              file
+
+eg_command          0x8               eg_cmd.o
+ofiles              0x80              file.o
+f                   0x44              teco.o
+cmdbuf              0x8               cmd_buf.o
+jump_main           0xc8              teco.o
+last_len            0x4               fr_cmd.o
+tbuf_changed        0x1               gapbuf.o
+filename_buf        0x8               file.o
+ifiles              0x40              file.o
+estack              0x408             estack.o
+scan                0x1c              cmd_scan.o
+
+Discarded input sections
+
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build_str.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 cmd_buf.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 cmd_exec.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 cmd_scan.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 cmd_tables.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 env_sys.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 errors.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 estack.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 file.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 file_sys.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 gapbuf.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 memory.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 option_sys.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 print_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 qreg.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 search.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 teco.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 term_in.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 term_out.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 term_sys.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 window.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 a_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 back_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 brace_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 bracket_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 case_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 comma_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ctrl_a_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ctrl_c_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ctrl_t_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ctrl_u_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ctrl_v_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ctrl_w_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 datetime_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 delete_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 digit_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ea_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 eb_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ec_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ef_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 eg_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ei_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ek_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 el_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 em_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 en_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ep_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 e_pct_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 eq_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 equals_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 er_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 e_ubar_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ew_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ex_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 fb_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 fd_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 fk_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 flag_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 fr_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 g_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 goto_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 if_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 insert_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 loop_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 m_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 move_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 n_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 p_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 pct_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 q_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 quest_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 radix_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 s_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 type_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 ubar_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 u_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 value_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 w_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 x_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 yank_cmd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .note.GNU-stack
+                0x0000000000000000        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(atexit.oS)
+ .note.GNU-stack
+                0x0000000000000000        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(stat.oS)
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+LOAD build_str.o
+LOAD cmd_buf.o
+LOAD cmd_exec.o
+LOAD cmd_scan.o
+LOAD cmd_tables.o
+LOAD env_sys.o
+LOAD errors.o
+LOAD estack.o
+LOAD file.o
+LOAD file_sys.o
+LOAD gapbuf.o
+LOAD memory.o
+LOAD option_sys.o
+LOAD print_cmd.o
+LOAD qreg.o
+LOAD search.o
+LOAD teco.o
+LOAD term_in.o
+LOAD term_out.o
+LOAD term_sys.o
+LOAD window.o
+LOAD a_cmd.o
+LOAD back_cmd.o
+LOAD brace_cmd.o
+LOAD bracket_cmd.o
+LOAD case_cmd.o
+LOAD comma_cmd.o
+LOAD ctrl_a_cmd.o
+LOAD ctrl_c_cmd.o
+LOAD ctrl_t_cmd.o
+LOAD ctrl_u_cmd.o
+LOAD ctrl_v_cmd.o
+LOAD ctrl_w_cmd.o
+LOAD datetime_cmd.o
+LOAD delete_cmd.o
+LOAD digit_cmd.o
+LOAD ea_cmd.o
+LOAD eb_cmd.o
+LOAD ec_cmd.o
+LOAD ef_cmd.o
+LOAD eg_cmd.o
+LOAD ei_cmd.o
+LOAD ek_cmd.o
+LOAD el_cmd.o
+LOAD em_cmd.o
+LOAD en_cmd.o
+LOAD ep_cmd.o
+LOAD e_pct_cmd.o
+LOAD eq_cmd.o
+LOAD equals_cmd.o
+LOAD er_cmd.o
+LOAD e_ubar_cmd.o
+LOAD ew_cmd.o
+LOAD ex_cmd.o
+LOAD fb_cmd.o
+LOAD fd_cmd.o
+LOAD fk_cmd.o
+LOAD flag_cmd.o
+LOAD fr_cmd.o
+LOAD g_cmd.o
+LOAD goto_cmd.o
+LOAD if_cmd.o
+LOAD insert_cmd.o
+LOAD loop_cmd.o
+LOAD m_cmd.o
+LOAD move_cmd.o
+LOAD n_cmd.o
+LOAD p_cmd.o
+LOAD pct_cmd.o
+LOAD q_cmd.o
+LOAD quest_cmd.o
+LOAD radix_cmd.o
+LOAD s_cmd.o
+LOAD type_cmd.o
+LOAD ubar_cmd.o
+LOAD u_cmd.o
+LOAD value_cmd.o
+LOAD w_cmd.o
+LOAD x_cmd.o
+LOAD yank_cmd.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/libncurses.so
+LOAD /lib/x86_64-linux-gnu/libncurses.so.6
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/libtinfo.so
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc.a
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc_s.so
+START GROUP
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc_s.so.1
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc.a
+END GROUP
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/libc.so
+START GROUP
+LOAD //lib/x86_64-linux-gnu/libc.so.6
+LOAD //usr/lib/x86_64-linux-gnu/libc_nonshared.a
+LOAD //lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+END GROUP
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc.a
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc_s.so
+START GROUP
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc_s.so.1
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/libgcc.a
+END GROUP
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
+                [!provide]                        PROVIDE (__executable_start = SEGMENT_START ("text-segment", 0x0))
+                0x00000000000002a8                . = (SEGMENT_START ("text-segment", 0x0) + SIZEOF_HEADERS)
+
+.interp         0x00000000000002a8       0x1c
+ *(.interp)
+ .interp        0x00000000000002a8       0x1c /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+
+.note.ABI-tag   0x00000000000002c4       0x20
+ .note.ABI-tag  0x00000000000002c4       0x20 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+
+.note.gnu.build-id
+                0x00000000000002e4       0x24
+ *(.note.gnu.build-id)
+ .note.gnu.build-id
+                0x00000000000002e4       0x24 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+
+.hash
+ *(.hash)
+
+.gnu.hash       0x0000000000000308       0x48
+ *(.gnu.hash)
+ .gnu.hash      0x0000000000000308       0x48 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+
+.dynsym         0x0000000000000350      0x9c0
+ *(.dynsym)
+ .dynsym        0x0000000000000350      0x9c0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+
+.dynstr         0x0000000000000d10      0x419
+ *(.dynstr)
+ .dynstr        0x0000000000000d10      0x419 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+
+.gnu.version    0x000000000000112a       0xd0
+ *(.gnu.version)
+ .gnu.version   0x000000000000112a       0xd0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+
+.gnu.version_d  0x0000000000001200        0x0
+ *(.gnu.version_d)
+ .gnu.version_d
+                0x0000000000001200        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+
+.gnu.version_r  0x0000000000001200       0xb0
+ *(.gnu.version_r)
+ .gnu.version_r
+                0x0000000000001200       0xb0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+
+.rela.dyn       0x00000000000012b0     0x3648
+ *(.rela.init)
+ *(.rela.text .rela.text.* .rela.gnu.linkonce.t.*)
+ .rela.text     0x00000000000012b0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ *(.rela.fini)
+ *(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*)
+ *(.rela.data .rela.data.* .rela.gnu.linkonce.d.*)
+ .rela.data.rel.ro
+                0x00000000000012b0     0x1de8 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ .rela.data.rel.local
+                0x0000000000003098     0x1650 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ .rela.data.rel.ro.local
+                0x00000000000046e8       0xa8 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ *(.rela.tdata .rela.tdata.* .rela.gnu.linkonce.td.*)
+ *(.rela.tbss .rela.tbss.* .rela.gnu.linkonce.tb.*)
+ *(.rela.ctors)
+ *(.rela.dtors)
+ *(.rela.got)
+ .rela.got      0x0000000000004790       0x78 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*)
+ .rela.bss      0x0000000000004808       0xc0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ *(.rela.ldata .rela.ldata.* .rela.gnu.linkonce.l.*)
+ *(.rela.lbss .rela.lbss.* .rela.gnu.linkonce.lb.*)
+ *(.rela.lrodata .rela.lrodata.* .rela.gnu.linkonce.lr.*)
+ *(.rela.ifunc)
+ .rela.ifunc    0x00000000000048c8        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ .rela.fini_array
+                0x00000000000048c8       0x18 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ .rela.init_array
+                0x00000000000048e0       0x18 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+
+.rela.plt       0x00000000000048f8      0x870
+ *(.rela.plt)
+ .rela.plt      0x00000000000048f8      0x870 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                [!provide]                        PROVIDE (__rela_iplt_start = .)
+ *(.rela.iplt)
+                [!provide]                        PROVIDE (__rela_iplt_end = .)
+                0x0000000000006000                . = ALIGN (CONSTANT (MAXPAGESIZE))
+
+.init           0x0000000000006000       0x17
+ *(SORT_NONE(.init))
+ .init          0x0000000000006000       0x12 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
+                0x0000000000006000                _init
+ .init          0x0000000000006012        0x5 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
+
+.plt            0x0000000000006020      0x5b0
+ *(.plt)
+ .plt           0x0000000000006020      0x5b0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                0x0000000000006030                has_colors@@NCURSES6_5.0.19991023
+                0x0000000000006040                nodelay@@NCURSES6_TINFO_5.0.19991023
+                0x0000000000006050                getenv@@GLIBC_2.2.5
+                0x0000000000006060                wattrset@@NCURSES6_5.0.19991023
+                0x0000000000006070                free@@GLIBC_2.2.5
+                0x0000000000006080                wdelch@@NCURSES6_5.0.19991023
+                0x0000000000006090                strcasecmp@@GLIBC_2.2.5
+                0x00000000000060a0                localtime@@GLIBC_2.2.5
+                0x00000000000060b0                __errno_location@@GLIBC_2.2.5
+                0x00000000000060c0                scrollok@@NCURSES6_5.0.19991023
+                0x00000000000060d0                remove@@GLIBC_2.2.5
+                0x00000000000060e0                localtime_r@@GLIBC_2.2.5
+                0x00000000000060f0                nonl@@NCURSES6_5.0.19991023
+                0x0000000000006100                strcpy@@GLIBC_2.2.5
+                0x0000000000006110                toupper@@GLIBC_2.2.5
+                0x0000000000006120                puts@@GLIBC_2.2.5
+                0x0000000000006130                sigaction@@GLIBC_2.2.5
+                0x0000000000006140                idlok@@NCURSES6_TINFO_5.0.19991023
+                0x0000000000006150                fread@@GLIBC_2.2.5
+                0x0000000000006160                vsnprintf@@GLIBC_2.2.5
+                0x0000000000006170                wgetch@@NCURSES6_5.0.19991023
+                0x0000000000006180                wclear@@NCURSES6_5.0.19991023
+                0x0000000000006190                getpid@@GLIBC_2.2.5
+                0x00000000000061a0                fclose@@GLIBC_2.2.5
+                0x00000000000061b0                strlen@@GLIBC_2.2.5
+                0x00000000000061c0                noecho@@NCURSES6_5.0.19991023
+                0x00000000000061d0                __stack_chk_fail@@GLIBC_2.4
+                0x00000000000061e0                getopt_long@@GLIBC_2.2.5
+                0x00000000000061f0                strchr@@GLIBC_2.2.5
+                0x0000000000006200                printf@@GLIBC_2.2.5
+                0x0000000000006210                snprintf@@GLIBC_2.2.5
+                0x0000000000006220                can_change_color@@NCURSES6_5.0.19991023
+                0x0000000000006230                dirname@@GLIBC_2.2.5
+                0x0000000000006240                gettimeofday@@GLIBC_2.2.5
+                0x0000000000006250                __assert_fail@@GLIBC_2.2.5
+                0x0000000000006260                fputs@@GLIBC_2.2.5
+                0x0000000000006270                initscr@@NCURSES6_5.0.19991023
+                0x0000000000006280                wrefresh@@NCURSES6_5.0.19991023
+                0x0000000000006290                memset@@GLIBC_2.2.5
+                0x00000000000062a0                ioctl@@GLIBC_2.2.5
+                0x00000000000062b0                start_color@@NCURSES6_5.0.19991023
+                0x00000000000062c0                fgetc@@GLIBC_2.2.5
+                0x00000000000062d0                close@@GLIBC_2.2.5
+                0x00000000000062e0                keypad@@NCURSES6_TINFO_5.0.19991023
+                0x00000000000062f0                fputc@@GLIBC_2.2.5
+                0x0000000000006300                strtok_r@@GLIBC_2.2.5
+                0x0000000000006310                read@@GLIBC_2.2.5
+                0x0000000000006320                memcmp@@GLIBC_2.2.5
+                0x0000000000006330                notimeout@@NCURSES6_TINFO_5.0.19991023
+                0x0000000000006340                _setjmp@@GLIBC_2.2.5
+                0x0000000000006350                calloc@@GLIBC_2.2.5
+                0x0000000000006360                wsetscrreg@@NCURSES6_5.0.19991023
+                0x0000000000006370                strtol@@GLIBC_2.2.5
+                0x0000000000006380                sigfillset@@GLIBC_2.2.5
+                0x0000000000006390                memcpy@@GLIBC_2.14
+                0x00000000000063a0                winsch@@NCURSES6_5.0.19991023
+                0x00000000000063b0                time@@GLIBC_2.2.5
+                0x00000000000063c0                fileno@@GLIBC_2.2.5
+                0x00000000000063d0                __xstat@@GLIBC_2.2.5
+                0x00000000000063e0                tolower@@GLIBC_2.2.5
+                0x00000000000063f0                cbreak@@NCURSES6_TINFO_5.0.19991023
+                0x0000000000006400                init_pair@@NCURSES6_5.0.19991023
+                0x0000000000006410                winch@@NCURSES6_5.0.19991023
+                0x0000000000006420                mkstemp@@GLIBC_2.2.5
+                0x0000000000006430                realloc@@GLIBC_2.2.5
+                0x0000000000006440                setvbuf@@GLIBC_2.2.5
+                0x0000000000006450                longjmp@@GLIBC_2.2.5
+                0x0000000000006460                strftime@@GLIBC_2.2.5
+                0x0000000000006470                memmove@@GLIBC_2.2.5
+                0x0000000000006480                init_color@@NCURSES6_5.0.19991023
+                0x0000000000006490                tcgetattr@@GLIBC_2.2.5
+                0x00000000000064a0                tcsetattr@@GLIBC_2.2.5
+                0x00000000000064b0                access@@GLIBC_2.2.5
+                0x00000000000064c0                fopen@@GLIBC_2.2.5
+                0x00000000000064d0                perror@@GLIBC_2.2.5
+                0x00000000000064e0                assume_default_colors@@NCURSES6_5.1.20000708
+                0x00000000000064f0                rename@@GLIBC_2.2.5
+                0x0000000000006500                vfprintf@@GLIBC_2.2.5
+                0x0000000000006510                wmove@@NCURSES6_5.0.19991023
+                0x0000000000006520                __cxa_atexit@@GLIBC_2.2.5
+                0x0000000000006530                waddch@@NCURSES6_5.0.19991023
+                0x0000000000006540                glob@@GLIBC_2.27
+                0x0000000000006550                sprintf@@GLIBC_2.2.5
+                0x0000000000006560                exit@@GLIBC_2.2.5
+                0x0000000000006570                fwrite@@GLIBC_2.2.5
+                0x0000000000006580                endwin@@NCURSES6_5.0.19991023
+                0x0000000000006590                execlp@@GLIBC_2.2.5
+                0x00000000000065a0                strerror@@GLIBC_2.2.5
+                0x00000000000065b0                waddnstr@@NCURSES6_5.0.19991023
+                0x00000000000065c0                __ctype_b_loc@@GLIBC_2.3
+ *(.iplt)
+
+.plt.got        0x00000000000065d0        0x8
+ *(.plt.got)
+ .plt.got       0x00000000000065d0        0x8 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                0x00000000000065d0                __cxa_finalize@@GLIBC_2.2.5
+
+.plt.sec
+ *(.plt.sec)
+
+.text           0x00000000000065e0     0xedd0
+ *(.text.unlikely .text.*_unlikely .text.unlikely.*)
+ *(.text.exit .text.exit.*)
+ *(.text.startup .text.startup.*)
+ *(.text.hot .text.hot.*)
+ *(.text .stub .text.* .gnu.linkonce.t.*)
+ .text          0x00000000000065e0       0x2b /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                0x00000000000065e0                _start
+ .text          0x000000000000660b        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
+ *fill*         0x000000000000660b        0x5 
+ .text          0x0000000000006610       0xb5 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+ .text          0x00000000000066c5      0x4cf build_str.o
+                0x00000000000066c5                build_string
+ .text          0x0000000000006b94      0x7db cmd_buf.o
+                0x0000000000006b94                copy_buf
+                0x0000000000006cf0                delete_buf
+                0x0000000000006d5e                echo_buf
+                0x0000000000006dff                empty_buf
+                0x0000000000006e49                fetch_buf
+                0x0000000000006f86                get_buf
+                0x0000000000006f93                init_buf
+                0x0000000000007022                next_buf
+                0x000000000000708b                reset_buf
+                0x00000000000070e7                set_buf
+                0x0000000000007127                start_buf
+                0x0000000000007177                store_buf
+                0x0000000000007301                unfetch_buf
+ .text          0x000000000000736f      0x69d cmd_exec.o
+                0x000000000000736f                exec_cmd
+                0x0000000000007426                exec_bad
+                0x0000000000007479                exec_escape
+                0x00000000000074c3                exec_mod
+                0x0000000000007595                exec_operator
+                0x00000000000077ea                next_cmd
+ .text          0x0000000000007a0c      0xb9b cmd_scan.o
+                0x0000000000007d54                reset_scan
+                0x0000000000007dd1                scan_cmd
+ .text          0x00000000000085a7        0x0 cmd_tables.o
+ .text          0x00000000000085a7      0x261 env_sys.o
+                0x00000000000085a7                exit_EG
+                0x00000000000085fa                find_eg
+                0x0000000000008774                init_env
+                0x00000000000087da                teco_env
+ .text          0x0000000000008808      0x3ce errors.o
+                0x0000000000008808                help_err
+                0x0000000000008946                print_err
+                0x0000000000008a7a                printc_err
+                0x0000000000008bb2                prints_err
+ .text          0x0000000000008bd6      0x7f0 estack.o
+                0x0000000000008bd6                init_expr
+                0x0000000000008c2c                pop_expr
+                0x0000000000008d02                push_expr
+ .text          0x00000000000093c6      0x715 file.o
+                0x00000000000093c6                close_output
+                0x000000000000943d                create_filename
+                0x0000000000009681                init_files
+                0x00000000000097ac                open_input
+                0x0000000000009889                fopen_output
+                0x000000000000996c                open_output
+ .text          0x0000000000009adb      0x5bb file_sys.o
+                0x0000000000009adb                get_oname
+                0x0000000000009d86                get_wild
+                0x0000000000009e5d                rename_output
+                0x000000000000a00b                set_wild
+ .text          0x000000000000a096      0xad2 gapbuf.o
+                0x000000000000a096                add_tbuf
+                0x000000000000a1bf                delete_tbuf
+                0x000000000000a483                getchar_tbuf
+                0x000000000000a4dd                getdelta_tbuf
+                0x000000000000a520                getlines_tbuf
+                0x000000000000a5a0                init_tbuf
+                0x000000000000a875                putchar_tbuf
+                0x000000000000a8f9                setpos_tbuf
+                0x000000000000a926                setsize_tbuf
+ .text          0x000000000000ab68      0x221 memory.o
+                0x000000000000ab68                alloc_mem
+                0x000000000000ab9e                expand_mem
+                0x000000000000ac73                free_mem
+                0x000000000000acd6                shrink_mem
+ .text          0x000000000000ad89      0x202 option_sys.o
+                0x000000000000ad89                set_config
+ .text          0x000000000000af8b      0x39a print_cmd.o
+                0x000000000000b083                print_cmd
+ .text          0x000000000000b325      0x990 qreg.o
+                0x000000000000b325                append_qchr
+                0x000000000000b409                delete_qtext
+                0x000000000000b548                get_qall
+                0x000000000000b617                get_qchr
+                0x000000000000b671                get_qnum
+                0x000000000000b69d                get_qreg
+                0x000000000000b737                get_qsize
+                0x000000000000b764                init_qreg
+                0x000000000000b7a1                pop_qlocal
+                0x000000000000b83b                pop_qreg
+                0x000000000000b8eb                print_qreg
+                0x000000000000b95e                push_qlocal
+                0x000000000000b990                push_qreg
+                0x000000000000ba56                reset_qreg
+                0x000000000000bb41                store_qchr
+                0x000000000000bbd8                store_qnum
+                0x000000000000bc0b                store_qtext
+ .text          0x000000000000bcb5      0xaca search.o
+                0x000000000000bcb5                init_search
+                0x000000000000c33d                search_backward
+                0x000000000000c3d3                search_forward
+                0x000000000000c4a0                search_loop
+                0x000000000000c63a                search_print
+ .text          0x000000000000c77f      0x24f teco.o
+                0x000000000000c77f                main
+                0x000000000000c985                isdelim
+                0x000000000000c9ac                print_prompt
+ .text          0x000000000000c9ce      0x63b term_in.o
+                0x000000000000ca12                read_cmd
+ .text          0x000000000000d009      0x543 term_out.o
+                0x000000000000d03b                echo_in
+                0x000000000000d05a                echo_out
+                0x000000000000d206                print_chr
+                0x000000000000d30b                print_echo
+                0x000000000000d3ad                print_str
+ .text          0x000000000000d54c      0x3b3 term_sys.o
+                0x000000000000d54c                getc_term
+                0x000000000000d628                init_term
+                0x000000000000d81e                put_bell
+                0x000000000000d825                reset_term
+ .text          0x000000000000d8ff      0xffc window.o
+                0x000000000000d8ff                clear_win
+                0x000000000000d94e                getchar_win
+                0x000000000000da4b                getsize_win
+                0x000000000000dad0                init_win
+                0x000000000000dfdf                putc_win
+                0x000000000000e02f                puts_win
+                0x000000000000e077                readkey_win
+                0x000000000000e2e4                refresh_win
+                0x000000000000e353                reset_win
+                0x000000000000e37d                set_nrows
+                0x000000000000e3e0                set_scroll
+ .text          0x000000000000e8fb      0x2b7 a_cmd.o
+                0x000000000000e8fb                append
+                0x000000000000e9d1                append_line
+                0x000000000000ea8d                exec_A
+ .text          0x000000000000ebb2      0x242 back_cmd.o
+                0x000000000000ebb2                exec_back
+ .text          0x000000000000edf4       0x5d brace_cmd.o
+                0x000000000000edf4                exec_brace
+ .text          0x000000000000ee51      0x183 bracket_cmd.o
+                0x000000000000ee51                exec_lbracket
+                0x000000000000eef4                exec_rbracket
+ .text          0x000000000000efd4      0x219 case_cmd.o
+                0x000000000000efd4                exec_FL
+                0x000000000000eff4                exec_FU
+ .text          0x000000000000f1ed       0xc4 comma_cmd.o
+                0x000000000000f1ed                exec_comma
+ .text          0x000000000000f2b1       0xaf ctrl_a_cmd.o
+                0x000000000000f2b1                exec_ctrl_a
+ .text          0x000000000000f360       0x35 ctrl_c_cmd.o
+                0x000000000000f360                exec_ctrl_c
+ .text          0x000000000000f395       0xe3 ctrl_t_cmd.o
+                0x000000000000f395                exec_ctrl_t
+ .text          0x000000000000f478      0x1bc ctrl_u_cmd.o
+                0x000000000000f478                exec_ctrl_u
+ .text          0x000000000000f634       0x7e ctrl_v_cmd.o
+                0x000000000000f634                exec_ctrl_v
+ .text          0x000000000000f6b2       0x7e ctrl_w_cmd.o
+                0x000000000000f6b2                exec_ctrl_w
+ .text          0x000000000000f730      0x1be datetime_cmd.o
+                0x000000000000f730                exec_ctrl_b
+                0x000000000000f7d5                exec_ctrl_h
+ .text          0x000000000000f8ee      0x23c delete_cmd.o
+                0x000000000000f8ee                exec_D
+                0x000000000000fa1f                exec_K
+ .text          0x000000000000fb2a       0xa5 digit_cmd.o
+                0x000000000000fb2a                exec_digit
+ .text          0x000000000000fbcf       0x3f ea_cmd.o
+                0x000000000000fbcf                exec_EA
+ .text          0x000000000000fc0e      0x145 eb_cmd.o
+                0x000000000000fc0e                exec_EB
+ .text          0x000000000000fd53      0x154 ec_cmd.o
+                0x000000000000fd53                exec_EC
+ .text          0x000000000000fea7       0x1c ef_cmd.o
+                0x000000000000fea7                exec_EF
+ .text          0x000000000000fec3      0x130 eg_cmd.o
+                0x000000000000fec3                exec_EG
+                0x000000000000ffcf                init_EG
+ .text          0x000000000000fff3      0x44d ei_cmd.o
+                0x000000000000fff3                exec_EI
+                0x00000000000100b1                check_indirect
+                0x00000000000101a6                close_indirect
+                0x000000000001022a                init_EI
+ .text          0x0000000000010440       0xc5 ek_cmd.o
+                0x0000000000010440                exec_EK
+ .text          0x0000000000010505       0xb0 el_cmd.o
+                0x0000000000010505                exec_EL
+ .text          0x00000000000105b5       0x3c em_cmd.o
+                0x00000000000105b5                exec_EM
+ .text          0x00000000000105f1      0x15d en_cmd.o
+                0x00000000000105f1                exec_EN
+ .text          0x000000000001074e       0x3f ep_cmd.o
+                0x000000000001074e                exec_EP
+ .text          0x000000000001078d      0x194 e_pct_cmd.o
+                0x000000000001078d                exec_E_pct
+ .text          0x0000000000010921      0x255 eq_cmd.o
+                0x0000000000010921                exec_EQ
+ .text          0x0000000000010b76      0x3a3 equals_cmd.o
+                0x0000000000010b76                exec_equals
+ .text          0x0000000000010f19       0xe1 er_cmd.o
+                0x0000000000010f19                exec_ER
+ .text          0x0000000000010ffa      0x1d3 e_ubar_cmd.o
+                0x0000000000010ffa                exec_E_ubar
+ .text          0x00000000000111cd       0xb3 ew_cmd.o
+                0x00000000000111cd                exec_EW
+ .text          0x0000000000011280       0x85 ex_cmd.o
+                0x0000000000011280                exec_EX
+ .text          0x0000000000011305      0x290 fb_cmd.o
+                0x0000000000011305                exec_FB
+                0x0000000000011325                exec_FC
+ .text          0x0000000000011595      0x1d9 fd_cmd.o
+                0x0000000000011595                exec_FD
+ .text          0x000000000001176e      0x191 fk_cmd.o
+                0x000000000001176e                exec_FK
+ .text          0x00000000000118ff      0xa1d flag_cmd.o
+                0x0000000000011aa0                exec_ctrl_e
+                0x0000000000011b3f                exec_ctrl_f
+                0x0000000000011baf                exec_ctrl_n
+                0x0000000000011c18                exec_ctrl_x
+                0x0000000000011c64                exec_E1
+                0x0000000000011cac                exec_E2
+                0x0000000000011cf4                exec_E3
+                0x0000000000011d3c                exec_E4
+                0x0000000000011f24                exec_E5
+                0x0000000000011f6c                exec_ED
+                0x0000000000011fb4                exec_EE
+                0x000000000001205d                exec_EH
+                0x0000000000012115                exec_EJ
+                0x00000000000121ac                exec_EO
+                0x000000000001221b                exec_ES
+                0x000000000001223d                exec_ET
+                0x0000000000012290                exec_EU
+                0x00000000000122b2                exec_EV
+                0x00000000000122d4                exec_EZ
+ .text          0x000000000001231c       0x7b fr_cmd.o
+                0x000000000001231c                exec_FR
+ .text          0x0000000000012397      0x208 g_cmd.o
+                0x0000000000012397                exec_G
+ .text          0x000000000001259f      0x398 goto_cmd.o
+                0x000000000001259f                exec_bang
+                0x00000000000125aa                exec_O
+ .text          0x0000000000012937      0x411 if_cmd.o
+                0x0000000000012a32                exec_apos
+                0x0000000000012a56                exec_F_apos
+                0x0000000000012a76                exec_F_vbar
+                0x0000000000012a96                exec_quote
+                0x0000000000012cf1                exec_vbar
+                0x0000000000012d37                reset_if
+ .text          0x0000000000012d48      0x26a insert_cmd.o
+                0x0000000000012d48                exec_ctrl_i
+                0x0000000000012dfe                exec_I
+                0x0000000000012f17                exec_insert
+ .text          0x0000000000012fb2      0x42d loop_cmd.o
+                0x0000000000012fb2                check_loop
+                0x00000000000130f4                exec_F_gt
+                0x0000000000013135                exec_F_lt
+                0x0000000000013154                exec_gt
+                0x0000000000013217                exec_lt
+                0x00000000000132bf                exec_semi
+                0x0000000000013355                init_loop
+                0x0000000000013381                reset_loop
+ .text          0x00000000000133df      0x197 m_cmd.o
+                0x00000000000133df                check_macro
+                0x00000000000133fb                exec_M
+ .text          0x0000000000013576      0x2a6 move_cmd.o
+                0x0000000000013576                exec_C
+                0x0000000000013640                exec_J
+                0x00000000000136b7                exec_L
+                0x00000000000137f7                exec_R
+ .text          0x000000000001381c      0x253 n_cmd.o
+                0x000000000001381c                exec_N
+                0x000000000001383c                exec_FN
+ .text          0x0000000000013a6f      0x3ee p_cmd.o
+                0x0000000000013a6f                exec_P
+                0x0000000000013ceb                next_page
+ .text          0x0000000000013e5d       0xed pct_cmd.o
+                0x0000000000013e5d                exec_pct
+ .text          0x0000000000013f4a       0xf0 q_cmd.o
+                0x0000000000013f4a                exec_Q
+ .text          0x000000000001403a       0x53 quest_cmd.o
+                0x000000000001403a                exec_question
+ .text          0x000000000001408d      0x151 radix_cmd.o
+                0x000000000001408d                exec_ctrl_d
+                0x00000000000140da                exec_ctrl_o
+                0x0000000000014127                exec_ctrl_r
+ .text          0x00000000000141de      0x353 s_cmd.o
+                0x00000000000141de                exec_S
+                0x00000000000141fe                exec_FS
+ .text          0x0000000000014531      0x2be type_cmd.o
+                0x0000000000014531                exec_T
+                0x000000000001471c                exec_V
+ .text          0x00000000000147ef      0x253 ubar_cmd.o
+                0x00000000000147ef                exec_F_ubar
+                0x000000000001480f                exec_ubar
+ .text          0x0000000000014a42       0x93 u_cmd.o
+                0x0000000000014a42                exec_U
+ .text          0x0000000000014ad5      0x2ac value_cmd.o
+                0x0000000000014ad5                exec_B
+                0x0000000000014b1c                exec_ctrl_q
+                0x0000000000014b7d                exec_ctrl_s
+                0x0000000000014bc4                exec_ctrl_y
+                0x0000000000014c25                exec_ctrl_z
+                0x0000000000014c71                exec_dot
+                0x0000000000014cb8                exec_H
+                0x0000000000014d3a                exec_Z
+ .text          0x0000000000014d81      0x26a w_cmd.o
+                0x0000000000014e0c                exec_W
+ .text          0x0000000000014feb      0x1c7 x_cmd.o
+                0x0000000000014feb                exec_X
+ .text          0x00000000000151b2      0x161 yank_cmd.o
+                0x00000000000151b2                exec_EY
+                0x00000000000152a1                exec_Y
+                0x00000000000152de                next_yank
+ *fill*         0x0000000000015313        0xd 
+ .text          0x0000000000015320       0x61 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                0x0000000000015320                __libc_csu_init
+                0x0000000000015380                __libc_csu_fini
+ *fill*         0x0000000000015381        0xf 
+ .text          0x0000000000015390        0xe //usr/lib/x86_64-linux-gnu/libc_nonshared.a(atexit.oS)
+                0x0000000000015390                atexit
+ *fill*         0x000000000001539e        0x2 
+ .text          0x00000000000153a0       0x10 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(stat.oS)
+                0x00000000000153a0                __stat
+                0x00000000000153a0                stat
+ .text          0x00000000000153b0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+ .text          0x00000000000153b0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
+ *(.gnu.warning)
+
+.fini           0x00000000000153b0        0x9
+ *(SORT_NONE(.fini))
+ .fini          0x00000000000153b0        0x4 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
+                0x00000000000153b0                _fini
+ .fini          0x00000000000153b4        0x5 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
+                [!provide]                        PROVIDE (__etext = .)
+                [!provide]                        PROVIDE (_etext = .)
+                [!provide]                        PROVIDE (etext = .)
+                0x0000000000016000                . = ALIGN (CONSTANT (MAXPAGESIZE))
+                0x0000000000016000                . = SEGMENT_START ("rodata-segment", (ALIGN (CONSTANT (MAXPAGESIZE)) + (. & (CONSTANT (MAXPAGESIZE) - 0x1))))
+
+.rodata         0x0000000000016000     0x4548
+ *(.rodata .rodata.* .gnu.linkonce.r.*)
+ .rodata.cst4   0x0000000000016000        0x4 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                0x0000000000016000                _IO_stdin_used
+ *fill*         0x0000000000016004        0x4 
+ .rodata        0x0000000000016008       0x52 build_str.o
+ *fill*         0x000000000001605a        0x6 
+ .rodata        0x0000000000016060      0x114 cmd_buf.o
+ *fill*         0x0000000000016174        0xc 
+ .rodata        0x0000000000016180      0x221 cmd_exec.o
+ *fill*         0x00000000000163a1        0x7 
+ .rodata        0x00000000000163a8      0x1f9 cmd_scan.o
+ *fill*         0x00000000000165a1        0x3 
+ .rodata        0x00000000000165a4       0xd8 cmd_tables.o
+                0x000000000001663c                cmd_count
+                0x0000000000016658                cmd_e_count
+                0x0000000000016678                cmd_f_count
+ .rodata        0x000000000001667c       0x82 env_sys.o
+ *fill*         0x00000000000166fe        0x2 
+ .rodata        0x0000000000016700     0x2823 errors.o
+ *fill*         0x0000000000018f23        0x1 
+ .rodata        0x0000000000018f24      0x170 estack.o
+ *fill*         0x0000000000019094        0xc 
+ .rodata        0x00000000000190a0       0xdc file.o
+ *fill*         0x000000000001917c        0x4 
+ .rodata        0x0000000000019180       0x66 file_sys.o
+ *fill*         0x00000000000191e6        0x2 
+ .rodata        0x00000000000191e8       0x5a gapbuf.o
+ *fill*         0x0000000000019242        0x6 
+ .rodata        0x0000000000019248       0x8b memory.o
+ *fill*         0x00000000000192d3        0x5 
+ .rodata        0x00000000000192d8      0x1bb option_sys.o
+ *fill*         0x0000000000019493        0x5 
+ .rodata        0x0000000000019498       0x32 print_cmd.o
+ *fill*         0x00000000000194ca        0x6 
+ .rodata        0x00000000000194d0       0x9c qreg.o
+ *fill*         0x000000000001956c        0x4 
+ .rodata        0x0000000000019570       0x7c search.o
+ .rodata        0x00000000000195ec        0x5 teco.o
+ *fill*         0x00000000000195f1        0x3 
+ .rodata        0x00000000000195f4       0x64 term_in.o
+ .rodata        0x0000000000019658       0x6a term_out.o
+ *fill*         0x00000000000196c2        0x6 
+ .rodata        0x00000000000196c8       0x86 window.o
+ .rodata        0x000000000001974e       0x22 a_cmd.o
+ .rodata        0x0000000000019770       0x5a back_cmd.o
+ *fill*         0x00000000000197ca        0x6 
+ .rodata        0x00000000000197d0       0x2b brace_cmd.o
+ *fill*         0x00000000000197fb        0x5 
+ .rodata        0x0000000000019800       0x46 bracket_cmd.o
+ *fill*         0x0000000000019846        0x2 
+ .rodata        0x0000000000019848       0x2a case_cmd.o
+ *fill*         0x0000000000019872        0x6 
+ .rodata        0x0000000000019878       0x2b comma_cmd.o
+ *fill*         0x00000000000198a3        0x5 
+ .rodata        0x00000000000198a8       0x44 ctrl_a_cmd.o
+ *fill*         0x00000000000198ec        0x4 
+ .rodata        0x00000000000198f0       0x2c ctrl_t_cmd.o
+ *fill*         0x000000000001991c        0x4 
+ .rodata        0x0000000000019920       0x2c ctrl_u_cmd.o
+ *fill*         0x000000000001994c        0x4 
+ .rodata        0x0000000000019950       0x2c ctrl_v_cmd.o
+ *fill*         0x000000000001997c        0x4 
+ .rodata        0x0000000000019980       0x2c ctrl_w_cmd.o
+ *fill*         0x00000000000199ac        0x4 
+ .rodata        0x00000000000199b0       0x44 datetime_cmd.o
+ .rodata        0x00000000000199f4       0x2e delete_cmd.o
+ *fill*         0x0000000000019a22        0x6 
+ .rodata        0x0000000000019a28       0x2b digit_cmd.o
+ *fill*         0x0000000000019a53        0x5 
+ .rodata        0x0000000000019a58       0x28 ea_cmd.o
+ .rodata        0x0000000000019a80       0x28 eb_cmd.o
+ .rodata        0x0000000000019aa8       0x28 ec_cmd.o
+ .rodata        0x0000000000019ad0       0x30 eg_cmd.o
+ .rodata        0x0000000000019b00       0x76 ei_cmd.o
+ *fill*         0x0000000000019b76        0x2 
+ .rodata        0x0000000000019b78       0x28 el_cmd.o
+ .rodata        0x0000000000019ba0       0x28 em_cmd.o
+ .rodata        0x0000000000019bc8       0x30 en_cmd.o
+ .rodata        0x0000000000019bf8       0x28 ep_cmd.o
+ .rodata        0x0000000000019c20       0x3b e_pct_cmd.o
+ *fill*         0x0000000000019c5b        0x5 
+ .rodata        0x0000000000019c60       0x28 eq_cmd.o
+ .rodata        0x0000000000019c88       0x65 equals_cmd.o
+ *fill*         0x0000000000019ced        0x3 
+ .rodata        0x0000000000019cf0       0x28 er_cmd.o
+ .rodata        0x0000000000019d18       0x2c e_ubar_cmd.o
+ *fill*         0x0000000000019d44        0x4 
+ .rodata        0x0000000000019d48       0x28 ew_cmd.o
+ .rodata        0x0000000000019d70       0x28 ex_cmd.o
+ .rodata        0x0000000000019d98       0x2c fb_cmd.o
+ *fill*         0x0000000000019dc4        0x4 
+ .rodata        0x0000000000019dc8       0x28 fd_cmd.o
+ .rodata        0x0000000000019df0       0x28 fk_cmd.o
+ .rodata        0x0000000000019e18      0x118 flag_cmd.o
+ .rodata        0x0000000000019f30       0x28 fr_cmd.o
+ .rodata        0x0000000000019f58       0x37 g_cmd.o
+ *fill*         0x0000000000019f8f        0x1 
+ .rodata        0x0000000000019f90       0x49 goto_cmd.o
+ *fill*         0x0000000000019fd9        0x7 
+ .rodata        0x0000000000019fe0       0xb2 if_cmd.o
+ *fill*         0x000000000001a092        0x6 
+ .rodata        0x000000000001a098       0x94 insert_cmd.o
+ *fill*         0x000000000001a12c        0x4 
+ .rodata        0x000000000001a130       0x62 loop_cmd.o
+ .rodata        0x000000000001a192       0x2f m_cmd.o
+ *fill*         0x000000000001a1c1        0x7 
+ .rodata        0x000000000001a1c8       0x42 move_cmd.o
+ *fill*         0x000000000001a20a        0x6 
+ .rodata        0x000000000001a210       0x2c n_cmd.o
+ *fill*         0x000000000001a23c        0x4 
+ .rodata        0x000000000001a240       0x6a p_cmd.o
+ *fill*         0x000000000001a2aa        0x6 
+ .rodata        0x000000000001a2b0       0x29 pct_cmd.o
+ .rodata        0x000000000001a2d9       0x22 q_cmd.o
+ *fill*         0x000000000001a2fb        0x5 
+ .rodata        0x000000000001a300       0x2e quest_cmd.o
+ *fill*         0x000000000001a32e        0x2 
+ .rodata        0x000000000001a330       0x4c radix_cmd.o
+ *fill*         0x000000000001a37c        0x4 
+ .rodata        0x000000000001a380       0x2c s_cmd.o
+ .rodata        0x000000000001a3ac       0x2c type_cmd.o
+ .rodata        0x000000000001a3d8       0x2c ubar_cmd.o
+ .rodata        0x000000000001a404       0x22 u_cmd.o
+ *fill*         0x000000000001a426        0x2 
+ .rodata        0x000000000001a428       0x6f value_cmd.o
+ *fill*         0x000000000001a497        0x1 
+ .rodata        0x000000000001a498       0x63 w_cmd.o
+ .rodata        0x000000000001a4fb       0x22 x_cmd.o
+ *fill*         0x000000000001a51d        0x3 
+ .rodata        0x000000000001a520       0x28 yank_cmd.o
+
+.rodata1
+ *(.rodata1)
+
+.eh_frame_hdr   0x000000000001a548      0x97c
+ *(.eh_frame_hdr)
+ .eh_frame_hdr  0x000000000001a548      0x97c /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                0x000000000001a548                __GNU_EH_FRAME_HDR
+ *(.eh_frame_entry .eh_frame_entry.*)
+
+.eh_frame       0x000000000001aec8     0x2640
+ *(.eh_frame)
+ .eh_frame      0x000000000001aec8       0x30 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                                         0x2c (size before relaxing)
+ *fill*         0x000000000001aef8        0x0 
+ .eh_frame      0x000000000001aef8       0x40 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ .eh_frame      0x000000000001af38       0x18 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                                         0x30 (size before relaxing)
+ .eh_frame      0x000000000001af50       0x60 build_str.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001afb0      0x1c8 cmd_buf.o
+                                        0x1e0 (size before relaxing)
+ .eh_frame      0x000000000001b178       0xe0 cmd_exec.o
+                                         0xf8 (size before relaxing)
+ .eh_frame      0x000000000001b258       0xc0 cmd_scan.o
+                                         0xd8 (size before relaxing)
+ .eh_frame      0x000000000001b318       0x80 env_sys.o
+                                         0x98 (size before relaxing)
+ .eh_frame      0x000000000001b398       0x78 errors.o
+                                         0x90 (size before relaxing)
+ .eh_frame      0x000000000001b410       0xc0 estack.o
+                                         0xd8 (size before relaxing)
+ .eh_frame      0x000000000001b4d0       0xe8 file.o
+                                        0x100 (size before relaxing)
+ .eh_frame      0x000000000001b5b8       0x90 file_sys.o
+                                         0xa8 (size before relaxing)
+ .eh_frame      0x000000000001b648      0x200 gapbuf.o
+                                        0x218 (size before relaxing)
+ .eh_frame      0x000000000001b848       0x80 memory.o
+                                         0x98 (size before relaxing)
+ .eh_frame      0x000000000001b8c8       0x20 option_sys.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001b8e8       0x60 print_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001b948      0x240 qreg.o
+                                        0x258 (size before relaxing)
+ .eh_frame      0x000000000001bb88      0x180 search.o
+                                        0x198 (size before relaxing)
+ .eh_frame      0x000000000001bd08       0x60 teco.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001bd68      0x180 term_in.o
+                                        0x198 (size before relaxing)
+ .eh_frame      0x000000000001bee8       0xe0 term_out.o
+                                         0xf8 (size before relaxing)
+ .eh_frame      0x000000000001bfc8       0xa0 term_sys.o
+                                         0xb8 (size before relaxing)
+ .eh_frame      0x000000000001c068      0x228 window.o
+                                        0x240 (size before relaxing)
+ .eh_frame      0x000000000001c290       0x60 a_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001c2f0       0x20 back_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c310       0x20 brace_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c330       0x40 bracket_cmd.o
+                                         0x58 (size before relaxing)
+ .eh_frame      0x000000000001c370       0x60 case_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001c3d0       0x20 comma_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c3f0       0x20 ctrl_a_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c410       0x20 ctrl_c_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c430       0x20 ctrl_t_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c450       0x20 ctrl_u_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c470       0x20 ctrl_v_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c490       0x20 ctrl_w_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c4b0       0x40 datetime_cmd.o
+                                         0x58 (size before relaxing)
+ .eh_frame      0x000000000001c4f0       0x40 delete_cmd.o
+                                         0x58 (size before relaxing)
+ .eh_frame      0x000000000001c530       0x20 digit_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c550       0x20 ea_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c570       0x20 eb_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c590       0x20 ec_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c5b0       0x20 ef_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c5d0       0x40 eg_cmd.o
+                                         0x58 (size before relaxing)
+ .eh_frame      0x000000000001c610       0xe8 ei_cmd.o
+                                        0x100 (size before relaxing)
+ .eh_frame      0x000000000001c6f8       0x20 ek_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c718       0x20 el_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c738       0x20 em_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c758       0x28 en_cmd.o
+                                         0x40 (size before relaxing)
+ .eh_frame      0x000000000001c780       0x20 ep_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c7a0       0x20 e_pct_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c7c0       0x20 eq_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c7e0       0x50 equals_cmd.o
+                                         0x68 (size before relaxing)
+ .eh_frame      0x000000000001c830       0x20 er_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c850       0x20 e_ubar_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c870       0x20 ew_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c890       0x20 ex_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c8b0       0x60 fb_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001c910       0x20 fd_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c930       0x20 fk_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001c950      0x2a0 flag_cmd.o
+                                        0x2b8 (size before relaxing)
+ .eh_frame      0x000000000001cbf0       0x20 fr_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001cc10       0x20 g_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001cc30       0x68 goto_cmd.o
+                                         0x80 (size before relaxing)
+ .eh_frame      0x000000000001cc98       0xe0 if_cmd.o
+                                         0xf8 (size before relaxing)
+ .eh_frame      0x000000000001cd78       0x60 insert_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001cdd8      0x120 loop_cmd.o
+                                        0x138 (size before relaxing)
+ .eh_frame      0x000000000001cef8       0x40 m_cmd.o
+                                         0x58 (size before relaxing)
+ .eh_frame      0x000000000001cf38       0xc0 move_cmd.o
+                                         0xd8 (size before relaxing)
+ .eh_frame      0x000000000001cff8       0x60 n_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001d058       0x40 p_cmd.o
+                                         0x58 (size before relaxing)
+ .eh_frame      0x000000000001d098       0x20 pct_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001d0b8       0x20 q_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001d0d8       0x20 quest_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001d0f8       0x60 radix_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001d158       0x60 s_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001d1b8       0x60 type_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001d218       0x60 ubar_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001d278       0x20 u_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001d298      0x100 value_cmd.o
+                                        0x118 (size before relaxing)
+ .eh_frame      0x000000000001d398       0x60 w_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001d3f8       0x20 x_cmd.o
+                                         0x38 (size before relaxing)
+ .eh_frame      0x000000000001d418       0x60 yank_cmd.o
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001d478       0x60 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+                                         0x78 (size before relaxing)
+ .eh_frame      0x000000000001d4d8       0x18 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(atexit.oS)
+                                         0x30 (size before relaxing)
+ .eh_frame      0x000000000001d4f0       0x14 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(stat.oS)
+                                         0x30 (size before relaxing)
+ .eh_frame      0x000000000001d504        0x4 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+ *(.eh_frame.*)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.gnu_extab
+ *(.gnu_extab*)
+
+.exception_ranges
+ *(.exception_ranges .exception_ranges*)
+                0x000000000001ee90                . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE))
+
+.eh_frame
+ *(.eh_frame)
+ *(.eh_frame.*)
+
+.gnu_extab
+ *(.gnu_extab)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.exception_ranges
+ *(.exception_ranges .exception_ranges*)
+
+.tdata          0x000000000001ee90        0x0
+                [!provide]                        PROVIDE (__tdata_start = .)
+ *(.tdata .tdata.* .gnu.linkonce.td.*)
+
+.tbss
+ *(.tbss .tbss.* .gnu.linkonce.tb.*)
+ *(.tcommon)
+
+.preinit_array  0x000000000001ee90        0x0
+                [!provide]                        PROVIDE (__preinit_array_start = .)
+ *(.preinit_array)
+                [!provide]                        PROVIDE (__preinit_array_end = .)
+
+.init_array     0x000000000001ee90        0x8
+                0x000000000001ee90                PROVIDE (__init_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*))
+ *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
+ .init_array    0x000000000001ee90        0x8 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+                0x000000000001ee98                PROVIDE (__init_array_end = .)
+
+.fini_array     0x000000000001ee98        0x8
+                [!provide]                        PROVIDE (__fini_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*))
+ *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
+ .fini_array    0x000000000001ee98        0x8 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+                [!provide]                        PROVIDE (__fini_array_end = .)
+
+.ctors
+ *crtbegin.o(.ctors)
+ *crtbegin?.o(.ctors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+ *(SORT_BY_NAME(.ctors.*))
+ *(.ctors)
+
+.dtors
+ *crtbegin.o(.dtors)
+ *crtbegin?.o(.dtors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+ *(SORT_BY_NAME(.dtors.*))
+ *(.dtors)
+
+.jcr
+ *(.jcr)
+
+.data.rel.ro    0x000000000001eea0      0xc40
+ *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*)
+ .data.rel.ro.local
+                0x000000000001eea0      0x100 option_sys.o
+ *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*)
+ .data.rel.ro   0x000000000001efa0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ .data.rel.ro   0x000000000001efa0      0xb40 cmd_tables.o
+                0x000000000001efa0                cmd_table
+                0x000000000001f7a0                cmd_e_table
+                0x000000000001fa00                cmd_f_table
+
+.dynamic        0x000000000001fae0      0x210
+ *(.dynamic)
+ .dynamic       0x000000000001fae0      0x210 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                0x000000000001fae0                _DYNAMIC
+
+.got            0x000000000001fcf0      0x310
+ *(.got.plt)
+ .got.plt       0x000000000001fcf0      0x2e8 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                0x000000000001fcf0                _GLOBAL_OFFSET_TABLE_
+ *(.igot.plt)
+ *(.got)
+ .got           0x000000000001ffd8       0x28 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ *(.igot)
+                0x0000000000020000                . = DATA_SEGMENT_RELRO_END (., 0x0)
+
+.data           0x0000000000020000      0x8c0
+ *(.data .data.* .gnu.linkonce.d.*)
+ .data          0x0000000000020000        0x4 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                0x0000000000020000                data_start
+                0x0000000000020000                __data_start
+ .data          0x0000000000020004        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
+ .data          0x0000000000020004        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+ *fill*         0x0000000000020004        0x4 
+ .data.rel.local
+                0x0000000000020008        0x8 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+                0x0000000000020008                __dso_handle
+ .data          0x0000000000020010        0x0 build_str.o
+ .data          0x0000000000020010        0x0 cmd_buf.o
+ .data          0x0000000000020010        0x0 cmd_exec.o
+ .data          0x0000000000020010        0x0 cmd_scan.o
+ .data          0x0000000000020010        0x0 cmd_tables.o
+ .data          0x0000000000020010        0x0 env_sys.o
+ .data          0x0000000000020010        0x0 errors.o
+ *fill*         0x0000000000020010       0x10 
+ .data.rel.local
+                0x0000000000020020      0x810 errors.o
+ .data          0x0000000000020830        0x0 estack.o
+ .data          0x0000000000020830        0x0 file.o
+ .data          0x0000000000020830        0x0 file_sys.o
+ *fill*         0x0000000000020830       0x10 
+ .data          0x0000000000020840       0x30 gapbuf.o
+ .data          0x0000000000020870        0x0 memory.o
+ .data          0x0000000000020870        0x0 option_sys.o
+ .data          0x0000000000020870        0x0 print_cmd.o
+ .data          0x0000000000020870        0x0 qreg.o
+ .data.rel.local
+                0x0000000000020870        0x8 qreg.o
+ .data          0x0000000000020878        0x0 search.o
+ .data          0x0000000000020878       0x10 teco.o
+                0x0000000000020878                v
+                0x0000000000020884                teco_version
+ .data.rel.local
+                0x0000000000020888        0x8 teco.o
+                0x0000000000020888                prompt
+ .data          0x0000000000020890        0x4 term_in.o
+ .data          0x0000000000020894        0x0 term_out.o
+ .data          0x0000000000020894        0x0 term_sys.o
+ .data          0x0000000000020894        0x0 window.o
+ .data          0x0000000000020894        0x0 a_cmd.o
+ .data          0x0000000000020894        0x0 back_cmd.o
+ .data          0x0000000000020894        0x0 brace_cmd.o
+ .data          0x0000000000020894        0x0 bracket_cmd.o
+ .data          0x0000000000020894        0x0 case_cmd.o
+ .data          0x0000000000020894        0x0 comma_cmd.o
+ .data          0x0000000000020894        0x0 ctrl_a_cmd.o
+ .data          0x0000000000020894        0x0 ctrl_c_cmd.o
+ .data          0x0000000000020894        0x0 ctrl_t_cmd.o
+ .data          0x0000000000020894        0x0 ctrl_u_cmd.o
+ .data          0x0000000000020894        0x0 ctrl_v_cmd.o
+ .data          0x0000000000020894        0x0 ctrl_w_cmd.o
+ .data          0x0000000000020894        0x0 datetime_cmd.o
+ .data          0x0000000000020894        0x0 delete_cmd.o
+ .data          0x0000000000020894        0x0 digit_cmd.o
+ .data          0x0000000000020894        0x0 ea_cmd.o
+ .data          0x0000000000020894        0x0 eb_cmd.o
+ .data          0x0000000000020894        0x0 ec_cmd.o
+ .data          0x0000000000020894        0x0 ef_cmd.o
+ .data          0x0000000000020894        0x0 eg_cmd.o
+ .data          0x0000000000020894        0x0 ei_cmd.o
+ .data          0x0000000000020894        0x0 ek_cmd.o
+ .data          0x0000000000020894        0x0 el_cmd.o
+ .data          0x0000000000020894        0x0 em_cmd.o
+ .data          0x0000000000020894        0x0 en_cmd.o
+ .data          0x0000000000020894        0x0 ep_cmd.o
+ .data          0x0000000000020894        0x0 e_pct_cmd.o
+ .data          0x0000000000020894        0x0 eq_cmd.o
+ .data          0x0000000000020894        0x0 equals_cmd.o
+ .data          0x0000000000020894        0x0 er_cmd.o
+ .data          0x0000000000020894        0x0 e_ubar_cmd.o
+ .data          0x0000000000020894        0x0 ew_cmd.o
+ .data          0x0000000000020894        0x0 ex_cmd.o
+ .data          0x0000000000020894        0x0 fb_cmd.o
+ .data          0x0000000000020894        0x0 fd_cmd.o
+ .data          0x0000000000020894        0x0 fk_cmd.o
+ .data          0x0000000000020894        0x0 flag_cmd.o
+ .data          0x0000000000020894        0x0 fr_cmd.o
+ .data          0x0000000000020894        0x0 g_cmd.o
+ .data          0x0000000000020894        0x0 goto_cmd.o
+ .data          0x0000000000020894        0x0 if_cmd.o
+ .data          0x0000000000020894        0x0 insert_cmd.o
+ .data          0x0000000000020894        0x0 loop_cmd.o
+ .data          0x0000000000020894        0x0 m_cmd.o
+ .data          0x0000000000020894        0x0 move_cmd.o
+ .data          0x0000000000020894        0x0 n_cmd.o
+ .data          0x0000000000020894        0x0 p_cmd.o
+ .data          0x0000000000020894        0x0 pct_cmd.o
+ .data          0x0000000000020894        0x0 q_cmd.o
+ .data          0x0000000000020894        0x0 quest_cmd.o
+ .data          0x0000000000020894        0x0 radix_cmd.o
+ .data          0x0000000000020894        0x0 s_cmd.o
+ .data          0x0000000000020894        0x0 type_cmd.o
+ .data          0x0000000000020894        0x0 ubar_cmd.o
+ .data          0x0000000000020894        0x0 u_cmd.o
+ .data          0x0000000000020894        0x0 value_cmd.o
+ *fill*         0x0000000000020894        0xc 
+ .data          0x00000000000208a0       0x20 w_cmd.o
+                0x00000000000208a0                w
+ .data          0x00000000000208c0        0x0 x_cmd.o
+ .data          0x00000000000208c0        0x0 yank_cmd.o
+ .data          0x00000000000208c0        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .data          0x00000000000208c0        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(atexit.oS)
+ .data          0x00000000000208c0        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(stat.oS)
+ .data          0x00000000000208c0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+ .data          0x00000000000208c0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
+
+.tm_clone_table
+                0x00000000000208c0        0x0
+ .tm_clone_table
+                0x00000000000208c0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+ .tm_clone_table
+                0x00000000000208c0        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+
+.data1
+ *(.data1)
+                0x00000000000208c0                _edata = .
+                [!provide]                        PROVIDE (edata = .)
+                0x00000000000208c0                . = .
+                0x00000000000208c0                __bss_start = .
+
+.bss            0x00000000000208c0     0x1338
+ *(.dynbss)
+ .dynbss        0x00000000000208c0      0x244 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+                0x00000000000208c0                stdout@@GLIBC_2.2.5
+                0x00000000000208d0                stdin@@GLIBC_2.2.5
+                0x00000000000208d8                optind@@GLIBC_2.2.5
+                0x00000000000208e0                acs_map@@NCURSES6_TINFO_5.0.19991023
+                0x0000000000020ae0                stdscr@@NCURSES6_TINFO_5.0.19991023
+                0x0000000000020ae8                ESCDELAY@@NCURSES6_5.0.19991023
+                0x0000000000020af0                optarg@@GLIBC_2.2.5
+                0x0000000000020b00                COLORS@@NCURSES6_5.0.19991023
+ *(.bss .bss.* .gnu.linkonce.b.*)
+ .bss           0x0000000000020b04        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/Scrt1.o
+ .bss           0x0000000000020b04        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crti.o
+ .bss           0x0000000000020b04        0x1 /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+ *fill*         0x0000000000020b05        0x3 
+ .bss           0x0000000000020b08       0x10 build_str.o
+ .bss           0x0000000000020b18        0x8 cmd_buf.o
+ .bss           0x0000000000020b20        0x0 cmd_exec.o
+ .bss           0x0000000000020b20        0x0 cmd_scan.o
+ .bss           0x0000000000020b20        0x0 cmd_tables.o
+ .bss           0x0000000000020b20        0x0 env_sys.o
+ .bss           0x0000000000020b20       0x60 errors.o
+                0x0000000000020b20                last_error
+ .bss           0x0000000000020b80        0x0 estack.o
+ .bss           0x0000000000020b80       0x10 file.o
+                0x0000000000020b80                istream
+                0x0000000000020b84                ostream
+                0x0000000000020b88                last_file
+ *fill*         0x0000000000020b90       0x10 
+ .bss           0x0000000000020ba0       0x50 file_sys.o
+ .bss           0x0000000000020bf0       0x10 gapbuf.o
+                0x0000000000020bf0                t
+ .bss           0x0000000000020c00        0x0 memory.o
+ .bss           0x0000000000020c00        0x0 option_sys.o
+ .bss           0x0000000000020c00        0x0 print_cmd.o
+ .bss           0x0000000000020c00      0x490 qreg.o
+ .bss           0x0000000000021090       0x10 search.o
+                0x0000000000021090                last_search
+ .bss           0x00000000000210a0       0x18 teco.o
+                0x00000000000210a0                main_active
+                0x00000000000210a8                mung_file
+                0x00000000000210b0                log_file
+ .bss           0x00000000000210b8        0x0 term_in.o
+ .bss           0x00000000000210b8        0x0 term_out.o
+ *fill*         0x00000000000210b8        0x8 
+ .bss           0x00000000000210c0       0x3f term_sys.o
+ *fill*         0x00000000000210ff        0x1 
+ .bss           0x0000000000021100       0x41 window.o
+ .bss           0x0000000000021141        0x0 a_cmd.o
+ .bss           0x0000000000021141        0x0 back_cmd.o
+ .bss           0x0000000000021141        0x0 brace_cmd.o
+ .bss           0x0000000000021141        0x0 bracket_cmd.o
+ .bss           0x0000000000021141        0x0 case_cmd.o
+ .bss           0x0000000000021141        0x0 comma_cmd.o
+ .bss           0x0000000000021141        0x0 ctrl_a_cmd.o
+ .bss           0x0000000000021141        0x0 ctrl_c_cmd.o
+ .bss           0x0000000000021141        0x0 ctrl_t_cmd.o
+ .bss           0x0000000000021141        0x0 ctrl_u_cmd.o
+ .bss           0x0000000000021141        0x0 ctrl_v_cmd.o
+ .bss           0x0000000000021141        0x0 ctrl_w_cmd.o
+ .bss           0x0000000000021141        0x0 datetime_cmd.o
+ .bss           0x0000000000021141        0x0 delete_cmd.o
+ .bss           0x0000000000021141        0x0 digit_cmd.o
+ .bss           0x0000000000021141        0x0 ea_cmd.o
+ .bss           0x0000000000021141        0x0 eb_cmd.o
+ .bss           0x0000000000021141        0x0 ec_cmd.o
+ .bss           0x0000000000021141        0x0 ef_cmd.o
+ .bss           0x0000000000021141        0x0 eg_cmd.o
+ *fill*         0x0000000000021141        0x7 
+ .bss           0x0000000000021148        0x8 ei_cmd.o
+ .bss           0x0000000000021150        0x0 ek_cmd.o
+ .bss           0x0000000000021150        0x0 el_cmd.o
+ .bss           0x0000000000021150        0x0 em_cmd.o
+ .bss           0x0000000000021150        0x0 en_cmd.o
+ .bss           0x0000000000021150        0x0 ep_cmd.o
+ .bss           0x0000000000021150        0x0 e_pct_cmd.o
+ .bss           0x0000000000021150        0x0 eq_cmd.o
+ .bss           0x0000000000021150        0x0 equals_cmd.o
+ .bss           0x0000000000021150        0x0 er_cmd.o
+ .bss           0x0000000000021150        0x0 e_ubar_cmd.o
+ .bss           0x0000000000021150        0x0 ew_cmd.o
+ .bss           0x0000000000021150        0x0 ex_cmd.o
+ .bss           0x0000000000021150        0x0 fb_cmd.o
+ .bss           0x0000000000021150        0x0 fd_cmd.o
+ .bss           0x0000000000021150        0x0 fk_cmd.o
+ .bss           0x0000000000021150        0x0 flag_cmd.o
+ .bss           0x0000000000021150        0x0 fr_cmd.o
+ .bss           0x0000000000021150        0x0 g_cmd.o
+ .bss           0x0000000000021150        0x0 goto_cmd.o
+ .bss           0x0000000000021150        0x4 if_cmd.o
+ *fill*         0x0000000000021154        0xc 
+ .bss           0x0000000000021160      0x401 insert_cmd.o
+ *fill*         0x0000000000021561        0x7 
+ .bss           0x0000000000021568        0x8 loop_cmd.o
+ .bss           0x0000000000021570        0x4 m_cmd.o
+                0x0000000000021570                macro_depth
+ .bss           0x0000000000021574        0x0 move_cmd.o
+ .bss           0x0000000000021574        0x0 n_cmd.o
+ .bss           0x0000000000021574        0x0 p_cmd.o
+ .bss           0x0000000000021574        0x0 pct_cmd.o
+ .bss           0x0000000000021574        0x0 q_cmd.o
+ .bss           0x0000000000021574        0x0 quest_cmd.o
+ .bss           0x0000000000021574        0x0 radix_cmd.o
+ .bss           0x0000000000021574        0x0 s_cmd.o
+ .bss           0x0000000000021574        0x0 type_cmd.o
+ .bss           0x0000000000021574        0x0 ubar_cmd.o
+ .bss           0x0000000000021574        0x0 u_cmd.o
+ .bss           0x0000000000021574        0x0 value_cmd.o
+ .bss           0x0000000000021574        0x0 w_cmd.o
+ .bss           0x0000000000021574        0x0 x_cmd.o
+ .bss           0x0000000000021574        0x0 yank_cmd.o
+ .bss           0x0000000000021574        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(elf-init.oS)
+ .bss           0x0000000000021574        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(atexit.oS)
+ .bss           0x0000000000021574        0x0 //usr/lib/x86_64-linux-gnu/libc_nonshared.a(stat.oS)
+ .bss           0x0000000000021574        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+ .bss           0x0000000000021574        0x0 /usr/lib/gcc/x86_64-linux-gnu/8/../../../x86_64-linux-gnu/crtn.o
+ *(COMMON)
+ *fill*         0x0000000000021574        0x4 
+ COMMON         0x0000000000021578        0x8 cmd_buf.o
+                0x0000000000021578                cmdbuf
+ COMMON         0x0000000000021580       0x1c cmd_scan.o
+                0x0000000000021580                scan
+ *fill*         0x000000000002159c        0x4 
+ COMMON         0x00000000000215a0      0x408 estack.o
+                0x00000000000215a0                estack
+ *fill*         0x00000000000219a8       0x18 
+ COMMON         0x00000000000219c0       0xe0 file.o
+                0x00000000000219c0                ofiles
+                0x0000000000021a40                filename_buf
+                0x0000000000021a60                ifiles
+ COMMON         0x0000000000021aa0        0x1 gapbuf.o
+                0x0000000000021aa0                tbuf_changed
+ *fill*         0x0000000000021aa1       0x1f 
+ COMMON         0x0000000000021ac0      0x128 teco.o
+                0x0000000000021ac0                f
+                0x0000000000021b20                jump_main
+ COMMON         0x0000000000021be8        0x8 eg_cmd.o
+                0x0000000000021be8                eg_command
+ COMMON         0x0000000000021bf0        0x4 fr_cmd.o
+                0x0000000000021bf0                last_len
+                0x0000000000021bf8                . = ALIGN ((. != 0x0)?0x8:0x1)
+ *fill*         0x0000000000021bf4        0x4 
+
+.lbss
+ *(.dynlbss)
+ *(.lbss .lbss.* .gnu.linkonce.lb.*)
+ *(LARGE_COMMON)
+                0x0000000000021bf8                . = ALIGN (0x8)
+                0x0000000000021bf8                . = SEGMENT_START ("ldata-segment", .)
+
+.lrodata
+ *(.lrodata .lrodata.* .gnu.linkonce.lr.*)
+
+.ldata          0x0000000000023bf8        0x0
+ *(.ldata .ldata.* .gnu.linkonce.l.*)
+                0x0000000000023bf8                . = ALIGN ((. != 0x0)?0x8:0x1)
+                0x0000000000023bf8                . = ALIGN (0x8)
+                0x0000000000023bf8                _end = .
+                [!provide]                        PROVIDE (end = .)
+                0x0000000000023bf8                . = DATA_SEGMENT_END (.)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x0000000000000000       0x2b
+ *(.comment)
+ .comment       0x0000000000000000       0x2b /usr/lib/gcc/x86_64-linux-gnu/8/crtbeginS.o
+                                         0x2c (size before relaxing)
+ .comment       0x000000000000002b       0x2c build_str.o
+ .comment       0x000000000000002b       0x2c cmd_buf.o
+ .comment       0x000000000000002b       0x2c cmd_exec.o
+ .comment       0x000000000000002b       0x2c cmd_scan.o
+ .comment       0x000000000000002b       0x2c cmd_tables.o
+ .comment       0x000000000000002b       0x2c env_sys.o
+ .comment       0x000000000000002b       0x2c errors.o
+ .comment       0x000000000000002b       0x2c estack.o
+ .comment       0x000000000000002b       0x2c file.o
+ .comment       0x000000000000002b       0x2c file_sys.o
+ .comment       0x000000000000002b       0x2c gapbuf.o
+ .comment       0x000000000000002b       0x2c memory.o
+ .comment       0x000000000000002b       0x2c option_sys.o
+ .comment       0x000000000000002b       0x2c print_cmd.o
+ .comment       0x000000000000002b       0x2c qreg.o
+ .comment       0x000000000000002b       0x2c search.o
+ .comment       0x000000000000002b       0x2c teco.o
+ .comment       0x000000000000002b       0x2c term_in.o
+ .comment       0x000000000000002b       0x2c term_out.o
+ .comment       0x000000000000002b       0x2c term_sys.o
+ .comment       0x000000000000002b       0x2c window.o
+ .comment       0x000000000000002b       0x2c a_cmd.o
+ .comment       0x000000000000002b       0x2c back_cmd.o
+ .comment       0x000000000000002b       0x2c brace_cmd.o
+ .comment       0x000000000000002b       0x2c bracket_cmd.o
+ .comment       0x000000000000002b       0x2c case_cmd.o
+ .comment       0x000000000000002b       0x2c comma_cmd.o
+ .comment       0x000000000000002b       0x2c ctrl_a_cmd.o
+ .comment       0x000000000000002b       0x2c ctrl_c_cmd.o
+ .comment       0x000000000000002b       0x2c ctrl_t_cmd.o
+ .comment       0x000000000000002b       0x2c ctrl_u_cmd.o
+ .comment       0x000000000000002b       0x2c ctrl_v_cmd.o
+ .comment       0x000000000000002b       0x2c ctrl_w_cmd.o
+ .comment       0x000000000000002b       0x2c datetime_cmd.o
+ .comment       0x000000000000002b       0x2c delete_cmd.o
+ .comment       0x000000000000002b       0x2c digit_cmd.o
+ .comment       0x000000000000002b       0x2c ea_cmd.o
+ .comment       0x000000000000002b       0x2c eb_cmd.o
+ .comment       0x000000000000002b       0x2c ec_cmd.o
+ .comment       0x000000000000002b       0x2c ef_cmd.o
+ .comment       0x000000000000002b       0x2c eg_cmd.o
+ .comment       0x000000000000002b       0x2c ei_cmd.o
+ .comment       0x000000000000002b       0x2c ek_cmd.o
+ .comment       0x000000000000002b       0x2c el_cmd.o
+ .comment       0x000000000000002b       0x2c em_cmd.o
+ .comment       0x000000000000002b       0x2c en_cmd.o
+ .comment       0x000000000000002b       0x2c ep_cmd.o
+ .comment       0x000000000000002b       0x2c e_pct_cmd.o
+ .comment       0x000000000000002b       0x2c eq_cmd.o
+ .comment       0x000000000000002b       0x2c equals_cmd.o
+ .comment       0x000000000000002b       0x2c er_cmd.o
+ .comment       0x000000000000002b       0x2c e_ubar_cmd.o
+ .comment       0x000000000000002b       0x2c ew_cmd.o
+ .comment       0x000000000000002b       0x2c ex_cmd.o
+ .comment       0x000000000000002b       0x2c fb_cmd.o
+ .comment       0x000000000000002b       0x2c fd_cmd.o
+ .comment       0x000000000000002b       0x2c fk_cmd.o
+ .comment       0x000000000000002b       0x2c flag_cmd.o
+ .comment       0x000000000000002b       0x2c fr_cmd.o
+ .comment       0x000000000000002b       0x2c g_cmd.o
+ .comment       0x000000000000002b       0x2c goto_cmd.o
+ .comment       0x000000000000002b       0x2c if_cmd.o
+ .comment       0x000000000000002b       0x2c insert_cmd.o
+ .comment       0x000000000000002b       0x2c loop_cmd.o
+ .comment       0x000000000000002b       0x2c m_cmd.o
+ .comment       0x000000000000002b       0x2c move_cmd.o
+ .comment       0x000000000000002b       0x2c n_cmd.o
+ .comment       0x000000000000002b       0x2c p_cmd.o
+ .comment       0x000000000000002b       0x2c pct_cmd.o
+ .comment       0x000000000000002b       0x2c q_cmd.o
+ .comment       0x000000000000002b       0x2c quest_cmd.o
+ .comment       0x000000000000002b       0x2c radix_cmd.o
+ .comment       0x000000000000002b       0x2c s_cmd.o
+ .comment       0x000000000000002b       0x2c type_cmd.o
+ .comment       0x000000000000002b       0x2c ubar_cmd.o
+ .comment       0x000000000000002b       0x2c u_cmd.o
+ .comment       0x000000000000002b       0x2c value_cmd.o
+ .comment       0x000000000000002b       0x2c w_cmd.o
+ .comment       0x000000000000002b       0x2c x_cmd.o
+ .comment       0x000000000000002b       0x2c yank_cmd.o
+ .comment       0x000000000000002b       0x2c /usr/lib/gcc/x86_64-linux-gnu/8/crtendS.o
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x0000000000000000      0xef0
+ *(.debug_aranges)
+ .debug_aranges
+                0x0000000000000000       0x30 build_str.o
+ .debug_aranges
+                0x0000000000000030       0x30 cmd_buf.o
+ .debug_aranges
+                0x0000000000000060       0x30 cmd_exec.o
+ .debug_aranges
+                0x0000000000000090       0x30 cmd_scan.o
+ .debug_aranges
+                0x00000000000000c0       0x20 cmd_tables.o
+ .debug_aranges
+                0x00000000000000e0       0x30 env_sys.o
+ .debug_aranges
+                0x0000000000000110       0x30 errors.o
+ .debug_aranges
+                0x0000000000000140       0x30 estack.o
+ .debug_aranges
+                0x0000000000000170       0x30 file.o
+ .debug_aranges
+                0x00000000000001a0       0x30 file_sys.o
+ .debug_aranges
+                0x00000000000001d0       0x30 gapbuf.o
+ .debug_aranges
+                0x0000000000000200       0x30 memory.o
+ .debug_aranges
+                0x0000000000000230       0x30 option_sys.o
+ .debug_aranges
+                0x0000000000000260       0x30 print_cmd.o
+ .debug_aranges
+                0x0000000000000290       0x30 qreg.o
+ .debug_aranges
+                0x00000000000002c0       0x30 search.o
+ .debug_aranges
+                0x00000000000002f0       0x30 teco.o
+ .debug_aranges
+                0x0000000000000320       0x30 term_in.o
+ .debug_aranges
+                0x0000000000000350       0x30 term_out.o
+ .debug_aranges
+                0x0000000000000380       0x30 term_sys.o
+ .debug_aranges
+                0x00000000000003b0       0x30 window.o
+ .debug_aranges
+                0x00000000000003e0       0x30 a_cmd.o
+ .debug_aranges
+                0x0000000000000410       0x30 back_cmd.o
+ .debug_aranges
+                0x0000000000000440       0x30 brace_cmd.o
+ .debug_aranges
+                0x0000000000000470       0x30 bracket_cmd.o
+ .debug_aranges
+                0x00000000000004a0       0x30 case_cmd.o
+ .debug_aranges
+                0x00000000000004d0       0x30 comma_cmd.o
+ .debug_aranges
+                0x0000000000000500       0x30 ctrl_a_cmd.o
+ .debug_aranges
+                0x0000000000000530       0x30 ctrl_c_cmd.o
+ .debug_aranges
+                0x0000000000000560       0x30 ctrl_t_cmd.o
+ .debug_aranges
+                0x0000000000000590       0x30 ctrl_u_cmd.o
+ .debug_aranges
+                0x00000000000005c0       0x30 ctrl_v_cmd.o
+ .debug_aranges
+                0x00000000000005f0       0x30 ctrl_w_cmd.o
+ .debug_aranges
+                0x0000000000000620       0x30 datetime_cmd.o
+ .debug_aranges
+                0x0000000000000650       0x30 delete_cmd.o
+ .debug_aranges
+                0x0000000000000680       0x30 digit_cmd.o
+ .debug_aranges
+                0x00000000000006b0       0x30 ea_cmd.o
+ .debug_aranges
+                0x00000000000006e0       0x30 eb_cmd.o
+ .debug_aranges
+                0x0000000000000710       0x30 ec_cmd.o
+ .debug_aranges
+                0x0000000000000740       0x30 ef_cmd.o
+ .debug_aranges
+                0x0000000000000770       0x30 eg_cmd.o
+ .debug_aranges
+                0x00000000000007a0       0x30 ei_cmd.o
+ .debug_aranges
+                0x00000000000007d0       0x30 ek_cmd.o
+ .debug_aranges
+                0x0000000000000800       0x30 el_cmd.o
+ .debug_aranges
+                0x0000000000000830       0x30 em_cmd.o
+ .debug_aranges
+                0x0000000000000860       0x30 en_cmd.o
+ .debug_aranges
+                0x0000000000000890       0x30 ep_cmd.o
+ .debug_aranges
+                0x00000000000008c0       0x30 e_pct_cmd.o
+ .debug_aranges
+                0x00000000000008f0       0x30 eq_cmd.o
+ .debug_aranges
+                0x0000000000000920       0x30 equals_cmd.o
+ .debug_aranges
+                0x0000000000000950       0x30 er_cmd.o
+ .debug_aranges
+                0x0000000000000980       0x30 e_ubar_cmd.o
+ .debug_aranges
+                0x00000000000009b0       0x30 ew_cmd.o
+ .debug_aranges
+                0x00000000000009e0       0x30 ex_cmd.o
+ .debug_aranges
+                0x0000000000000a10       0x30 fb_cmd.o
+ .debug_aranges
+                0x0000000000000a40       0x30 fd_cmd.o
+ .debug_aranges
+                0x0000000000000a70       0x30 fk_cmd.o
+ .debug_aranges
+                0x0000000000000aa0       0x30 flag_cmd.o
+ .debug_aranges
+                0x0000000000000ad0       0x30 fr_cmd.o
+ .debug_aranges
+                0x0000000000000b00       0x30 g_cmd.o
+ .debug_aranges
+                0x0000000000000b30       0x30 goto_cmd.o
+ .debug_aranges
+                0x0000000000000b60       0x30 if_cmd.o
+ .debug_aranges
+                0x0000000000000b90       0x30 insert_cmd.o
+ .debug_aranges
+                0x0000000000000bc0       0x30 loop_cmd.o
+ .debug_aranges
+                0x0000000000000bf0       0x30 m_cmd.o
+ .debug_aranges
+                0x0000000000000c20       0x30 move_cmd.o
+ .debug_aranges
+                0x0000000000000c50       0x30 n_cmd.o
+ .debug_aranges
+                0x0000000000000c80       0x30 p_cmd.o
+ .debug_aranges
+                0x0000000000000cb0       0x30 pct_cmd.o
+ .debug_aranges
+                0x0000000000000ce0       0x30 q_cmd.o
+ .debug_aranges
+                0x0000000000000d10       0x30 quest_cmd.o
+ .debug_aranges
+                0x0000000000000d40       0x30 radix_cmd.o
+ .debug_aranges
+                0x0000000000000d70       0x30 s_cmd.o
+ .debug_aranges
+                0x0000000000000da0       0x30 type_cmd.o
+ .debug_aranges
+                0x0000000000000dd0       0x30 ubar_cmd.o
+ .debug_aranges
+                0x0000000000000e00       0x30 u_cmd.o
+ .debug_aranges
+                0x0000000000000e30       0x30 value_cmd.o
+ .debug_aranges
+                0x0000000000000e60       0x30 w_cmd.o
+ .debug_aranges
+                0x0000000000000e90       0x30 x_cmd.o
+ .debug_aranges
+                0x0000000000000ec0       0x30 yank_cmd.o
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info     0x0000000000000000    0x51592
+ *(.debug_info .gnu.linkonce.wi.*)
+ .debug_info    0x0000000000000000     0x11e3 build_str.o
+ .debug_info    0x00000000000011e3     0x13a7 cmd_buf.o
+ .debug_info    0x000000000000258a     0x151d cmd_exec.o
+ .debug_info    0x0000000000003aa7     0x15e4 cmd_scan.o
+ .debug_info    0x000000000000508b      0xafa cmd_tables.o
+ .debug_info    0x0000000000005b85     0x10ca env_sys.o
+ .debug_info    0x0000000000006c4f     0x136d errors.o
+ .debug_info    0x0000000000007fbc     0x1055 estack.o
+ .debug_info    0x0000000000009011     0x119f file.o
+ .debug_info    0x000000000000a1b0      0xe32 file_sys.o
+ .debug_info    0x000000000000afe2     0x13dd gapbuf.o
+ .debug_info    0x000000000000c3bf      0xab9 memory.o
+ .debug_info    0x000000000000ce78     0x10d3 option_sys.o
+ .debug_info    0x000000000000df4b     0x115f print_cmd.o
+ .debug_info    0x000000000000f0aa     0x1233 qreg.o
+ .debug_info    0x00000000000102dd     0x188c search.o
+ .debug_info    0x0000000000011b69     0x1261 teco.o
+ .debug_info    0x0000000000012dca     0x12b0 term_in.o
+ .debug_info    0x000000000001407a     0x117f term_out.o
+ .debug_info    0x00000000000151f9     0x18d8 term_sys.o
+ .debug_info    0x0000000000016ad1     0x1c1a window.o
+ .debug_info    0x00000000000186eb     0x1458 a_cmd.o
+ .debug_info    0x0000000000019b43      0xb3e back_cmd.o
+ .debug_info    0x000000000001a681      0xfb1 brace_cmd.o
+ .debug_info    0x000000000001b632      0xc7b bracket_cmd.o
+ .debug_info    0x000000000001c2ad      0xda5 case_cmd.o
+ .debug_info    0x000000000001d052     0x11ce comma_cmd.o
+ .debug_info    0x000000000001e220      0xfdd ctrl_a_cmd.o
+ .debug_info    0x000000000001f1fd      0xf85 ctrl_c_cmd.o
+ .debug_info    0x0000000000020182     0x1002 ctrl_t_cmd.o
+ .debug_info    0x0000000000021184      0xc93 ctrl_u_cmd.o
+ .debug_info    0x0000000000021e17      0xfb1 ctrl_v_cmd.o
+ .debug_info    0x0000000000022dc8      0xfb1 ctrl_w_cmd.o
+ .debug_info    0x0000000000023d79     0x11de datetime_cmd.o
+ .debug_info    0x0000000000024f57      0xd03 delete_cmd.o
+ .debug_info    0x0000000000025c5a      0xc30 digit_cmd.o
+ .debug_info    0x000000000002688a      0xa37 ea_cmd.o
+ .debug_info    0x00000000000272c1      0xc3e eb_cmd.o
+ .debug_info    0x0000000000027eff      0xa92 ec_cmd.o
+ .debug_info    0x0000000000028991      0x9da ef_cmd.o
+ .debug_info    0x000000000002936b      0xd1c eg_cmd.o
+ .debug_info    0x000000000002a087     0x150b ei_cmd.o
+ .debug_info    0x000000000002b592      0xc2d ek_cmd.o
+ .debug_info    0x000000000002c1bf      0xc6f el_cmd.o
+ .debug_info    0x000000000002ce2e      0xc23 em_cmd.o
+ .debug_info    0x000000000002da51      0xc70 en_cmd.o
+ .debug_info    0x000000000002e6c1      0xa37 ep_cmd.o
+ .debug_info    0x000000000002f0f8      0xcda e_pct_cmd.o
+ .debug_info    0x000000000002fdd2      0xe86 eq_cmd.o
+ .debug_info    0x0000000000030c58     0x13dd equals_cmd.o
+ .debug_info    0x0000000000032035      0xc6f er_cmd.o
+ .debug_info    0x0000000000032ca4     0x13db e_ubar_cmd.o
+ .debug_info    0x000000000003407f      0xc6f ew_cmd.o
+ .debug_info    0x0000000000034cee      0xc8c ex_cmd.o
+ .debug_info    0x000000000003597a     0x1465 fb_cmd.o
+ .debug_info    0x0000000000036ddf     0x13db fd_cmd.o
+ .debug_info    0x00000000000381ba     0x13db fk_cmd.o
+ .debug_info    0x0000000000039595     0x195e flag_cmd.o
+ .debug_info    0x000000000003aef3      0xa79 fr_cmd.o
+ .debug_info    0x000000000003b96c      0xffe g_cmd.o
+ .debug_info    0x000000000003c96a     0x1372 goto_cmd.o
+ .debug_info    0x000000000003dcdc     0x13d6 if_cmd.o
+ .debug_info    0x000000000003f0b2      0xe9a insert_cmd.o
+ .debug_info    0x000000000003ff4c     0x144d loop_cmd.o
+ .debug_info    0x0000000000041399      0xa9e m_cmd.o
+ .debug_info    0x0000000000041e37      0xe58 move_cmd.o
+ .debug_info    0x0000000000042c8f     0x1443 n_cmd.o
+ .debug_info    0x00000000000440d2     0x14b5 p_cmd.o
+ .debug_info    0x0000000000045587      0xfbe pct_cmd.o
+ .debug_info    0x0000000000046545      0xa13 q_cmd.o
+ .debug_info    0x0000000000046f58      0xa06 quest_cmd.o
+ .debug_info    0x000000000004795e     0x1259 radix_cmd.o
+ .debug_info    0x0000000000048bb7     0x148b s_cmd.o
+ .debug_info    0x000000000004a042     0x13f8 type_cmd.o
+ .debug_info    0x000000000004b43a     0x1443 ubar_cmd.o
+ .debug_info    0x000000000004c87d      0xc23 u_cmd.o
+ .debug_info    0x000000000004d4a0      0xe7c value_cmd.o
+ .debug_info    0x000000000004e31c     0x12d5 w_cmd.o
+ .debug_info    0x000000000004f5f1      0xcf4 x_cmd.o
+ .debug_info    0x00000000000502e5     0x12ad yank_cmd.o
+
+.debug_abbrev   0x0000000000000000     0xa6f0
+ *(.debug_abbrev)
+ .debug_abbrev  0x0000000000000000      0x235 build_str.o
+ .debug_abbrev  0x0000000000000235      0x302 cmd_buf.o
+ .debug_abbrev  0x0000000000000537      0x2a4 cmd_exec.o
+ .debug_abbrev  0x00000000000007db      0x2c2 cmd_scan.o
+ .debug_abbrev  0x0000000000000a9d      0x16f cmd_tables.o
+ .debug_abbrev  0x0000000000000c0c      0x231 env_sys.o
+ .debug_abbrev  0x0000000000000e3d      0x25b errors.o
+ .debug_abbrev  0x0000000000001098      0x267 estack.o
+ .debug_abbrev  0x00000000000012ff      0x2b3 file.o
+ .debug_abbrev  0x00000000000015b2      0x1ef file_sys.o
+ .debug_abbrev  0x00000000000017a1      0x33c gapbuf.o
+ .debug_abbrev  0x0000000000001add      0x1e1 memory.o
+ .debug_abbrev  0x0000000000001cbe      0x1dd option_sys.o
+ .debug_abbrev  0x0000000000001e9b      0x22a print_cmd.o
+ .debug_abbrev  0x00000000000020c5      0x2cc qreg.o
+ .debug_abbrev  0x0000000000002391      0x309 search.o
+ .debug_abbrev  0x000000000000269a      0x229 teco.o
+ .debug_abbrev  0x00000000000028c3      0x28c term_in.o
+ .debug_abbrev  0x0000000000002b4f      0x2d0 term_out.o
+ .debug_abbrev  0x0000000000002e1f      0x294 term_sys.o
+ .debug_abbrev  0x00000000000030b3      0x32d window.o
+ .debug_abbrev  0x00000000000033e0      0x280 a_cmd.o
+ .debug_abbrev  0x0000000000003660      0x1d9 back_cmd.o
+ .debug_abbrev  0x0000000000003839      0x1d3 brace_cmd.o
+ .debug_abbrev  0x0000000000003a0c      0x1cb bracket_cmd.o
+ .debug_abbrev  0x0000000000003bd7      0x217 case_cmd.o
+ .debug_abbrev  0x0000000000003dee      0x1d3 comma_cmd.o
+ .debug_abbrev  0x0000000000003fc1      0x1ed ctrl_a_cmd.o
+ .debug_abbrev  0x00000000000041ae      0x1c4 ctrl_c_cmd.o
+ .debug_abbrev  0x0000000000004372      0x209 ctrl_t_cmd.o
+ .debug_abbrev  0x000000000000457b      0x1cb ctrl_u_cmd.o
+ .debug_abbrev  0x0000000000004746      0x1d3 ctrl_v_cmd.o
+ .debug_abbrev  0x0000000000004919      0x1d3 ctrl_w_cmd.o
+ .debug_abbrev  0x0000000000004aec      0x21f datetime_cmd.o
+ .debug_abbrev  0x0000000000004d0b      0x1dc delete_cmd.o
+ .debug_abbrev  0x0000000000004ee7      0x1a6 digit_cmd.o
+ .debug_abbrev  0x000000000000508d      0x195 ea_cmd.o
+ .debug_abbrev  0x0000000000005222      0x1b1 eb_cmd.o
+ .debug_abbrev  0x00000000000053d3      0x1b7 ec_cmd.o
+ .debug_abbrev  0x000000000000558a      0x186 ef_cmd.o
+ .debug_abbrev  0x0000000000005710      0x1d8 eg_cmd.o
+ .debug_abbrev  0x00000000000058e8      0x2b1 ei_cmd.o
+ .debug_abbrev  0x0000000000005b99      0x1aa ek_cmd.o
+ .debug_abbrev  0x0000000000005d43      0x1b1 el_cmd.o
+ .debug_abbrev  0x0000000000005ef4      0x195 em_cmd.o
+ .debug_abbrev  0x0000000000006089      0x1db en_cmd.o
+ .debug_abbrev  0x0000000000006264      0x195 ep_cmd.o
+ .debug_abbrev  0x00000000000063f9      0x1c2 e_pct_cmd.o
+ .debug_abbrev  0x00000000000065bb      0x1c2 eq_cmd.o
+ .debug_abbrev  0x000000000000677d      0x257 equals_cmd.o
+ .debug_abbrev  0x00000000000069d4      0x1b1 er_cmd.o
+ .debug_abbrev  0x0000000000006b85      0x1f8 e_ubar_cmd.o
+ .debug_abbrev  0x0000000000006d7d      0x1b1 ew_cmd.o
+ .debug_abbrev  0x0000000000006f2e      0x1a6 ex_cmd.o
+ .debug_abbrev  0x00000000000070d4      0x257 fb_cmd.o
+ .debug_abbrev  0x000000000000732b      0x1f8 fd_cmd.o
+ .debug_abbrev  0x0000000000007523      0x1f8 fk_cmd.o
+ .debug_abbrev  0x000000000000771b      0x29f flag_cmd.o
+ .debug_abbrev  0x00000000000079ba      0x1b5 fr_cmd.o
+ .debug_abbrev  0x0000000000007b6f      0x1ed g_cmd.o
+ .debug_abbrev  0x0000000000007d5c      0x253 goto_cmd.o
+ .debug_abbrev  0x0000000000007faf      0x2a6 if_cmd.o
+ .debug_abbrev  0x0000000000008255      0x206 insert_cmd.o
+ .debug_abbrev  0x000000000000845b      0x297 loop_cmd.o
+ .debug_abbrev  0x00000000000086f2      0x1d1 m_cmd.o
+ .debug_abbrev  0x00000000000088c3      0x218 move_cmd.o
+ .debug_abbrev  0x0000000000008adb      0x23d n_cmd.o
+ .debug_abbrev  0x0000000000008d18      0x264 p_cmd.o
+ .debug_abbrev  0x0000000000008f7c      0x1e4 pct_cmd.o
+ .debug_abbrev  0x0000000000009160      0x1a6 q_cmd.o
+ .debug_abbrev  0x0000000000009306      0x195 quest_cmd.o
+ .debug_abbrev  0x000000000000949b      0x1fe radix_cmd.o
+ .debug_abbrev  0x0000000000009699      0x262 s_cmd.o
+ .debug_abbrev  0x00000000000098fb      0x22a type_cmd.o
+ .debug_abbrev  0x0000000000009b25      0x23d ubar_cmd.o
+ .debug_abbrev  0x0000000000009d62      0x195 u_cmd.o
+ .debug_abbrev  0x0000000000009ef7      0x1e2 value_cmd.o
+ .debug_abbrev  0x000000000000a0d9      0x230 w_cmd.o
+ .debug_abbrev  0x000000000000a309      0x1cb x_cmd.o
+ .debug_abbrev  0x000000000000a4d4      0x21c yank_cmd.o
+
+.debug_line     0x0000000000000000     0xdf1f
+ *(.debug_line .debug_line.* .debug_line_end)
+ .debug_line    0x0000000000000000      0x360 build_str.o
+ .debug_line    0x0000000000000360      0x4cd cmd_buf.o
+ .debug_line    0x000000000000082d      0x477 cmd_exec.o
+ .debug_line    0x0000000000000ca4      0x69a cmd_scan.o
+ .debug_line    0x000000000000133e      0x182 cmd_tables.o
+ .debug_line    0x00000000000014c0      0x24d env_sys.o
+ .debug_line    0x000000000000170d      0x2d5 errors.o
+ .debug_line    0x00000000000019e2      0x5d3 estack.o
+ .debug_line    0x0000000000001fb5      0x437 file.o
+ .debug_line    0x00000000000023ec      0x2ef file_sys.o
+ .debug_line    0x00000000000026db      0x6a7 gapbuf.o
+ .debug_line    0x0000000000002d82      0x228 memory.o
+ .debug_line    0x0000000000002faa      0x240 option_sys.o
+ .debug_line    0x00000000000031ea      0x3a9 print_cmd.o
+ .debug_line    0x0000000000003593      0x53b qreg.o
+ .debug_line    0x0000000000003ace      0x65d search.o
+ .debug_line    0x000000000000412b      0x262 teco.o
+ .debug_line    0x000000000000438d      0x42d term_in.o
+ .debug_line    0x00000000000047ba      0x34d term_out.o
+ .debug_line    0x0000000000004b07      0x306 term_sys.o
+ .debug_line    0x0000000000004e0d      0x8af window.o
+ .debug_line    0x00000000000056bc      0x2fa a_cmd.o
+ .debug_line    0x00000000000059b6      0x26a back_cmd.o
+ .debug_line    0x0000000000005c20      0x1b4 brace_cmd.o
+ .debug_line    0x0000000000005dd4      0x22d bracket_cmd.o
+ .debug_line    0x0000000000006001      0x263 case_cmd.o
+ .debug_line    0x0000000000006264      0x1fc comma_cmd.o
+ .debug_line    0x0000000000006460      0x1ed ctrl_a_cmd.o
+ .debug_line    0x000000000000664d      0x1a3 ctrl_c_cmd.o
+ .debug_line    0x00000000000067f0      0x1ee ctrl_t_cmd.o
+ .debug_line    0x00000000000069de      0x27b ctrl_u_cmd.o
+ .debug_line    0x0000000000006c59      0x1c0 ctrl_v_cmd.o
+ .debug_line    0x0000000000006e19      0x1c0 ctrl_w_cmd.o
+ .debug_line    0x0000000000006fd9      0x261 datetime_cmd.o
+ .debug_line    0x000000000000723a      0x2d0 delete_cmd.o
+ .debug_line    0x000000000000750a      0x1da digit_cmd.o
+ .debug_line    0x00000000000076e4      0x199 ea_cmd.o
+ .debug_line    0x000000000000787d      0x20f eb_cmd.o
+ .debug_line    0x0000000000007a8c      0x20e ec_cmd.o
+ .debug_line    0x0000000000007c9a      0x18e ef_cmd.o
+ .debug_line    0x0000000000007e28      0x224 eg_cmd.o
+ .debug_line    0x000000000000804c      0x348 ei_cmd.o
+ .debug_line    0x0000000000008394      0x1d7 ek_cmd.o
+ .debug_line    0x000000000000856b      0x1cb el_cmd.o
+ .debug_line    0x0000000000008736      0x1a0 em_cmd.o
+ .debug_line    0x00000000000088d6      0x1ee en_cmd.o
+ .debug_line    0x0000000000008ac4      0x199 ep_cmd.o
+ .debug_line    0x0000000000008c5d      0x224 e_pct_cmd.o
+ .debug_line    0x0000000000008e81      0x27c eq_cmd.o
+ .debug_line    0x00000000000090fd      0x309 equals_cmd.o
+ .debug_line    0x0000000000009406      0x1f1 er_cmd.o
+ .debug_line    0x00000000000095f7      0x27a e_ubar_cmd.o
+ .debug_line    0x0000000000009871      0x1cd ew_cmd.o
+ .debug_line    0x0000000000009a3e      0x1ce ex_cmd.o
+ .debug_line    0x0000000000009c0c      0x2e0 fb_cmd.o
+ .debug_line    0x0000000000009eec      0x27a fd_cmd.o
+ .debug_line    0x000000000000a166      0x24d fk_cmd.o
+ .debug_line    0x000000000000a3b3      0x4f5 flag_cmd.o
+ .debug_line    0x000000000000a8a8      0x1bc fr_cmd.o
+ .debug_line    0x000000000000aa64      0x24b g_cmd.o
+ .debug_line    0x000000000000acaf      0x2e0 goto_cmd.o
+ .debug_line    0x000000000000af8f      0x310 if_cmd.o
+ .debug_line    0x000000000000b29f      0x290 insert_cmd.o
+ .debug_line    0x000000000000b52f      0x32b loop_cmd.o
+ .debug_line    0x000000000000b85a      0x23f m_cmd.o
+ .debug_line    0x000000000000ba99      0x2a1 move_cmd.o
+ .debug_line    0x000000000000bd3a      0x2a2 n_cmd.o
+ .debug_line    0x000000000000bfdc      0x36b p_cmd.o
+ .debug_line    0x000000000000c347      0x21d pct_cmd.o
+ .debug_line    0x000000000000c564      0x1d5 q_cmd.o
+ .debug_line    0x000000000000c739      0x1a5 quest_cmd.o
+ .debug_line    0x000000000000c8de      0x223 radix_cmd.o
+ .debug_line    0x000000000000cb01      0x331 s_cmd.o
+ .debug_line    0x000000000000ce32      0x2cd type_cmd.o
+ .debug_line    0x000000000000d0ff      0x2a5 ubar_cmd.o
+ .debug_line    0x000000000000d3a4      0x1c6 u_cmd.o
+ .debug_line    0x000000000000d56a      0x265 value_cmd.o
+ .debug_line    0x000000000000d7cf      0x28b w_cmd.o
+ .debug_line    0x000000000000da5a      0x287 x_cmd.o
+ .debug_line    0x000000000000dce1      0x23e yank_cmd.o
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str      0x0000000000000000     0x2653
+ *(.debug_str)
+ .debug_str     0x0000000000000000      0x961 build_str.o
+                                        0xa69 (size before relaxing)
+ .debug_str     0x0000000000000961       0xa8 cmd_buf.o
+                                        0xa94 (size before relaxing)
+ .debug_str     0x0000000000000a09      0x1a5 cmd_exec.o
+                                        0xbc7 (size before relaxing)
+ .debug_str     0x0000000000000bae       0xd3 cmd_scan.o
+                                        0xc14 (size before relaxing)
+ .debug_str     0x0000000000000c81       0x14 cmd_tables.o
+                                        0x74b (size before relaxing)
+ .debug_str     0x0000000000000c95       0x4c env_sys.o
+                                        0x8b1 (size before relaxing)
+ .debug_str     0x0000000000000ce1       0x99 errors.o
+                                        0xaef (size before relaxing)
+ .debug_str     0x0000000000000d7a       0x4c estack.o
+                                        0x97e (size before relaxing)
+ .debug_str     0x0000000000000dc6      0x102 file.o
+                                        0xb15 (size before relaxing)
+ .debug_str     0x0000000000000ec8      0x1cc file_sys.o
+                                        0x982 (size before relaxing)
+ .debug_str     0x0000000000001094      0x12d gapbuf.o
+                                        0x90e (size before relaxing)
+ .debug_str     0x00000000000011c1       0x40 memory.o
+                                        0x7b8 (size before relaxing)
+ .debug_str     0x0000000000001201       0x8b option_sys.o
+                                        0xa05 (size before relaxing)
+ .debug_str     0x000000000000128c       0x33 print_cmd.o
+                                        0x9a0 (size before relaxing)
+ .debug_str     0x00000000000012bf      0x11e qreg.o
+                                        0x95c (size before relaxing)
+ .debug_str     0x00000000000013dd       0xfd search.o
+                                        0xc9e (size before relaxing)
+ .debug_str     0x00000000000014da       0x23 teco.o
+                                        0x9a5 (size before relaxing)
+ .debug_str     0x00000000000014fd       0xa4 term_in.o
+                                        0xa9c (size before relaxing)
+ .debug_str     0x00000000000015a1       0xc4 term_out.o
+                                        0x97f (size before relaxing)
+ .debug_str     0x0000000000001665      0x285 term_sys.o
+                                        0xdf6 (size before relaxing)
+ .debug_str     0x00000000000018ea      0x2f6 window.o
+                                        0xd9a (size before relaxing)
+ .debug_str     0x0000000000001be0       0x52 a_cmd.o
+                                        0xb9b (size before relaxing)
+ .debug_str     0x0000000000001c32       0x2d back_cmd.o
+                                        0x6f8 (size before relaxing)
+ .debug_str     0x0000000000001c5f       0x1e brace_cmd.o
+                                        0x871 (size before relaxing)
+ .debug_str     0x0000000000001c7d       0x31 bracket_cmd.o
+                                        0x8f9 (size before relaxing)
+ .debug_str     0x0000000000001cae       0x2c case_cmd.o
+                                        0x95f (size before relaxing)
+ .debug_str     0x0000000000001cda       0x1e comma_cmd.o
+                                        0xa81 (size before relaxing)
+ .debug_str     0x0000000000001cf8       0x20 ctrl_a_cmd.o
+                                        0x873 (size before relaxing)
+ .debug_str     0x0000000000001d18       0x20 ctrl_c_cmd.o
+                                        0x867 (size before relaxing)
+ .debug_str     0x0000000000001d38       0x20 ctrl_t_cmd.o
+                                        0x878 (size before relaxing)
+ .debug_str     0x0000000000001d58       0x20 ctrl_u_cmd.o
+                                        0x8d9 (size before relaxing)
+ .debug_str     0x0000000000001d78       0x20 ctrl_v_cmd.o
+                                        0x873 (size before relaxing)
+ .debug_str     0x0000000000001d98       0x20 ctrl_w_cmd.o
+                                        0x873 (size before relaxing)
+ .debug_str     0x0000000000001db8       0x7a datetime_cmd.o
+                                        0x974 (size before relaxing)
+ .debug_str     0x0000000000001e32       0x22 delete_cmd.o
+                                        0x8fc (size before relaxing)
+ .debug_str     0x0000000000001e54       0x1e digit_cmd.o
+                                        0x8cc (size before relaxing)
+ .debug_str     0x0000000000001e72       0x18 ea_cmd.o
+                                        0x703 (size before relaxing)
+ .debug_str     0x0000000000001e8a       0x18 eb_cmd.o
+                                        0x8e0 (size before relaxing)
+ .debug_str     0x0000000000001ea2       0x18 ec_cmd.o
+                                        0x6c8 (size before relaxing)
+ .debug_str     0x0000000000001eba       0x18 ef_cmd.o
+                                        0x6aa (size before relaxing)
+ .debug_str     0x0000000000001ed2       0x20 eg_cmd.o
+                                        0x90d (size before relaxing)
+ .debug_str     0x0000000000001ef2       0x8a ei_cmd.o
+                                        0xc75 (size before relaxing)
+ .debug_str     0x0000000000001f7c       0x18 ek_cmd.o
+                                        0x8c0 (size before relaxing)
+ .debug_str     0x0000000000001f94       0x18 el_cmd.o
+                                        0x928 (size before relaxing)
+ .debug_str     0x0000000000001fac       0x18 em_cmd.o
+                                        0x8c6 (size before relaxing)
+ .debug_str     0x0000000000001fc4       0x18 en_cmd.o
+                                        0x8e8 (size before relaxing)
+ .debug_str     0x0000000000001fdc       0x18 ep_cmd.o
+                                        0x6fe (size before relaxing)
+ .debug_str     0x0000000000001ff4       0x1e e_pct_cmd.o
+                                        0x93e (size before relaxing)
+ .debug_str     0x0000000000002012       0x18 eq_cmd.o
+                                        0xa6c (size before relaxing)
+ .debug_str     0x000000000000202a       0x42 equals_cmd.o
+                                        0xbd1 (size before relaxing)
+ .debug_str     0x000000000000206c       0x18 er_cmd.o
+                                        0x92d (size before relaxing)
+ .debug_str     0x0000000000002084       0x20 e_ubar_cmd.o
+                                        0xbb0 (size before relaxing)
+ .debug_str     0x00000000000020a4       0x18 ew_cmd.o
+                                        0x928 (size before relaxing)
+ .debug_str     0x00000000000020bc       0x18 ex_cmd.o
+                                        0x8d8 (size before relaxing)
+ .debug_str     0x00000000000020d4       0x3c fb_cmd.o
+                                        0xbcc (size before relaxing)
+ .debug_str     0x0000000000002110       0x18 fd_cmd.o
+                                        0xba8 (size before relaxing)
+ .debug_str     0x0000000000002128       0x18 fk_cmd.o
+                                        0xba8 (size before relaxing)
+ .debug_str     0x0000000000002140       0xdd flag_cmd.o
+                                        0xc69 (size before relaxing)
+ .debug_str     0x000000000000221d       0x18 fr_cmd.o
+                                        0x6c8 (size before relaxing)
+ .debug_str     0x0000000000002235       0x16 g_cmd.o
+                                        0x873 (size before relaxing)
+ .debug_str     0x000000000000224b       0x42 goto_cmd.o
+                                        0xaeb (size before relaxing)
+ .debug_str     0x000000000000228d       0x6b if_cmd.o
+                                        0xb48 (size before relaxing)
+ .debug_str     0x00000000000022f8       0x41 insert_cmd.o
+                                        0x9d5 (size before relaxing)
+ .debug_str     0x0000000000002339       0x72 loop_cmd.o
+                                        0xaf9 (size before relaxing)
+ .debug_str     0x00000000000023ab       0x41 m_cmd.o
+                                        0x6e9 (size before relaxing)
+ .debug_str     0x00000000000023ec       0x4b move_cmd.o
+                                        0x92c (size before relaxing)
+ .debug_str     0x0000000000002437       0x1e n_cmd.o
+                                        0xbc2 (size before relaxing)
+ .debug_str     0x0000000000002455       0x20 p_cmd.o
+                                        0xb68 (size before relaxing)
+ .debug_str     0x0000000000002475       0x1a pct_cmd.o
+                                        0x86d (size before relaxing)
+ .debug_str     0x000000000000248f       0x16 q_cmd.o
+                                        0x6b4 (size before relaxing)
+ .debug_str     0x00000000000024a5       0x21 quest_cmd.o
+                                        0x6bf (size before relaxing)
+ .debug_str     0x00000000000024c6       0x37 radix_cmd.o
+                                        0xa9a (size before relaxing)
+ .debug_str     0x00000000000024fd       0x1e s_cmd.o
+                                        0xbc9 (size before relaxing)
+ .debug_str     0x000000000000251b       0x2a type_cmd.o
+                                        0xb4c (size before relaxing)
+ .debug_str     0x0000000000002545       0x28 ubar_cmd.o
+                                        0xbcc (size before relaxing)
+ .debug_str     0x000000000000256d       0x16 u_cmd.o
+                                        0x8c4 (size before relaxing)
+ .debug_str     0x0000000000002583       0x67 value_cmd.o
+                                        0x936 (size before relaxing)
+ .debug_str     0x00000000000025ea       0x22 w_cmd.o
+                                        0xab2 (size before relaxing)
+ .debug_str     0x000000000000260c       0x1c x_cmd.o
+                                        0x8dc (size before relaxing)
+ .debug_str     0x0000000000002628       0x2b yank_cmd.o
+                                        0xac1 (size before relaxing)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_pubtypes
+ *(.debug_pubtypes)
+
+.debug_ranges   0x0000000000000000      0x210
+ *(.debug_ranges)
+ .debug_ranges  0x0000000000000000       0x30 cmd_buf.o
+ .debug_ranges  0x0000000000000030       0x30 cmd_exec.o
+ .debug_ranges  0x0000000000000060       0x30 gapbuf.o
+ .debug_ranges  0x0000000000000090       0x30 a_cmd.o
+ .debug_ranges  0x00000000000000c0       0x30 back_cmd.o
+ .debug_ranges  0x00000000000000f0       0x30 case_cmd.o
+ .debug_ranges  0x0000000000000120       0x30 goto_cmd.o
+ .debug_ranges  0x0000000000000150       0x30 if_cmd.o
+ .debug_ranges  0x0000000000000180       0x60 insert_cmd.o
+ .debug_ranges  0x00000000000001e0       0x30 p_cmd.o
+
+.debug_macro
+ *(.debug_macro)
+
+.debug_addr
+ *(.debug_addr)
+
+.gnu.attributes
+ *(.gnu.attributes)
+
+/DISCARD/
+ *(.note.GNU-stack)
+ *(.gnu_debuglink)
+ *(.gnu.lto_*)
+OUTPUT(../bin/teco elf64-x86-64)

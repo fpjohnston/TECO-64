@@ -46,8 +46,6 @@
 #include <string.h>
 #include <termios.h>
 
-#include <sys/ioctl.h>
-
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
@@ -62,8 +60,6 @@ static struct termios saved_mode;       ///< Saved terminal mode
 static bool term_active = false;        ///< Are terminal settings active?
 
 // Local functions
-
-static void getsize(void);
 
 static void sig_handler(int signal);
 
@@ -132,29 +128,6 @@ int getc_term(bool wait)
 
 
 ///
-///  @brief    Get terminal height and width.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void getsize(void)
-{
-    struct winsize ts;
-
-    if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
-    {
-        print_err(E_SYS);
-    }
-
-    w.width  = ts.ws_col;
-    w.height = ts.ws_row;
-
-    set_nrows();
-}
-
-
-///
 ///  @brief    Initialize terminal.
 ///
 ///  @returns  Nothing.
@@ -196,7 +169,7 @@ void init_term(void)
         f.et.scope     = true;          // Terminal is a scope
         f.et.eightbit  = true;          // Terminal can use 8-bit characters
 
-        getsize();
+        getsize_win();
     }
 
     // The following is needed only if there is no window active and we haven't
@@ -290,7 +263,7 @@ static void sig_handler(int signum)
             break;
 
         case SIGWINCH:
-            getsize();
+            getsize_win();
 
             break;
 

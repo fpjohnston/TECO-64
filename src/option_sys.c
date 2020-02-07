@@ -35,6 +35,8 @@
 
 #include "teco.h"
 #include "eflags.h"
+#include "errors.h"
+#include "window.h"
 
 
 ///  @enum     option_t
@@ -45,6 +47,7 @@ enum option_t
     OPTION_l = 'l',
     OPTION_m = 'm',
     OPTION_n = 'n',
+    OPTION_s = 's',
     OPTION_w = 'w',
     OPTION_x = 'x'
 };
@@ -52,7 +55,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "l:m:nwx";
+static const char * const optstring = "l:m:ns:wx";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -63,6 +66,7 @@ static const struct option long_options[] =
     { "exit",    no_argument,        NULL,  'x'    },
     { "log",     required_argument,  NULL,  'l'    },
     { "mung",    required_argument,  NULL,  'm'    },
+    { "scroll",  required_argument,  NULL,  's'    },
     { "window",  no_argument,        NULL,  'w'    },
     { NULL,      no_argument,        NULL,  0      },  // Markers for end of list
 };
@@ -99,6 +103,8 @@ void set_config(
     while ((c = getopt_long(argc, (char * const *)argv,
                             optstring, long_options, &idx)) != -1)
     {
+        char *endptr;
+
         switch (c)
         {
             case OPTION_l:
@@ -115,6 +121,15 @@ void set_config(
                 f.e0.dryrun = true;
 
                 break;
+
+            case OPTION_s:
+                w.nscroll = (int)strtol(optarg, &endptr, 0);
+
+                if (*endptr != '\0')
+                {
+                    print_err(E_WIN);
+                }
+                //lint -fallthrough
 
             case OPTION_w:
                 f.e0.window = true;

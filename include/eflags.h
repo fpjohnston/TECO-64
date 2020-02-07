@@ -62,6 +62,7 @@ union e1_flag
         uint strict  : 1;       ///< Strictly enforce command syntax
         uint cmdtop  : 1;       ///< Put command window above text window
         uint winline : 1;       ///< Line between text and command window
+        uint status  : 1;       ///< Display status on line
     };
 };
 

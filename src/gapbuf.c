@@ -47,6 +47,7 @@ struct text t =
     .B        = 0,
     .Z        = 0,
     .dot      = 0,
+    .size     = 0,
 };
 
 ///  @var     tb
@@ -227,6 +228,7 @@ static bool expand_tbuf(void)
 
     tb.buf   = expand_mem(tb.buf, (uint)tb.size, (uint)(tb.size + tb.stepsize));
     tb.size += tb.stepsize;
+    t.size  += tb.size;
 
     if (tb.size > tb.maxsize)
     {
@@ -261,6 +263,7 @@ static void free_tbuf(void)
     t.B         = 0;
     t.Z         = 0;
     t.dot       = 0;
+    t.size      = 0;
 
     tb.size     = 0;
     tb.minsize  = 0;
@@ -371,6 +374,7 @@ void init_tbuf(
     t.dot       = 0;
 
     tb.size     = minsize;
+    t.size      = tb.size;
     tb.minsize  = minsize;
     tb.maxsize  = maxsize;
     tb.stepsize = stepsize;
@@ -570,7 +574,7 @@ int setsize_tbuf(int n)
         return tb.size;
     }
 
-    if (n > tb.maxsize)
+    if (tb.maxsize != 0 && n > tb.maxsize)
     {
         n = tb.maxsize;
     }
@@ -589,6 +593,8 @@ int setsize_tbuf(int n)
     // TODO: is this correct?
 
     tb.size    = n;
+    t.size     = tb.size;
+
     tb.lowsize = tb.size - ((tb.size * tb.warn) / 100);
     tb.left    = 0;
     tb.gap     = tb.size;

@@ -63,6 +63,8 @@ extern void clear_win(void);
 
 extern int getchar_win(bool wait);
 
+extern void getsize_win(void);
+
 extern void init_win(void);
 
 extern bool putc_win(int c);

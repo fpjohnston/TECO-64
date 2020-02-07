@@ -128,6 +128,7 @@ const char *mung_file = NULL;       ///< Name of file to MUNG
 
 const char *log_file = NULL;        ///< Name of log file
 
+
 ///
 ///  @brief    Main program entry for TECO text editor.
 ///
@@ -161,10 +162,19 @@ int main(int argc, const char * const argv[])
 
     if (f.e0.window)
     {
-        init_win();                     // Initialize window if we can
+        init_win();                     // Initialize window
     }
 
     init_term();                        // Initialize terminal
+
+    // After we initialize the terminal settings, and therefore know our width
+    // and height, check to see if the user wants to start with a split screen.
+
+    if (f.e0.window && w.nscroll != 0)
+    {
+        clear_win();
+    }
+
     init_buf();                         // Initialize command buffer
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams
@@ -172,6 +182,9 @@ int main(int argc, const char * const argv[])
     init_EI();                          // Initialize EI command
     init_loop();                        // Initialize loop stack
     init_search();                      // Initialize search string
+
+    // TODO: magic numbers for initial buffer size and percentage
+
     init_tbuf(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);
                                         // Initialize edit buffer
 

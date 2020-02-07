@@ -57,6 +57,7 @@ struct text
     int B;                      ///< First position in buffer
     int Z;                      ///< Last position in buffer
     int dot;                    ///< Current position in buffer
+    int size;                   ///< Size of buffer in bytes
 };
 
 extern struct text t;
