@@ -20,11 +20,11 @@ my %details =
     "^D"  => "set input radix to decimal",
     "^R"  => "set input radix",
     "^T"  => "type character",
-    "^U"  => "copy text to Q-register %s",
-    ":^U" => "append text to Q-register %s",
+    "^U"  => "copy text to Q-register %c",
+    ":^U" => "append text to Q-register %c",
     "^X"  => "set search mode flag",
     "!"   => "tag/comment",
-    "%"   => "increment Q-register %s and return value",
+    "%"   => "increment Q-register %c and return value",
     "\"A" => "if alpha",
     "\"C" => "if symbol",
     "\"D" => "if digit",
@@ -77,30 +77,30 @@ my %details =
     "F>"  => "go to end of loop",
     "F_"  => "non-stop search and replace",
     "F|"  => "go to else clause",
-    "G"   => "copy Q-register %s to buffer",
+    "G"   => "copy Q-register %c to buffer",
     "G*"  => "copy command string to buffer",
     "G_"  => "copy search string to buffer",
-    ":G"  => "print Q-register %s",
+    ":G"  => "print Q-register %c",
     ":G*" => "print command string",
     ":G_" => "print search string",
     "I"   => "insert",
     "J"   => "jump",
     "K"   => "delete lines",
     "L"   => "move forward/backward lines",
-    "M"   => "execute Q-register %s", 
+    "M"   => "execute Q-register %c", 
     "O"   => "goto %s", 
     "P"   => "page",
     "C"   => "move forward",
     "R"   => "move backward",
     "S"   => "search",
     "T"   => "print text",
-    "U"   => "store number in Q-register %s",
-    "X"   => "copy buffer to Q-register %s",
-    ":X"  => "append buffer to Q-register %s",
+    "U"   => "store number in Q-register %c",
+    "X"   => "copy buffer to Q-register %c",
+    ":X"  => "append buffer to Q-register %c",
     "Y"   => "yank",
-    "]"   => "pop Q-register %s",
+    "]"   => "pop Q-register %c",
     "\\"  => "insert digit string",
-    "["   => "push Q-register %s",
+    "["   => "push Q-register %c",
     "|"   => "else",
 );
 
@@ -159,10 +159,10 @@ while (<>)
         $key = $1;
     }
 
-    if ($key =~ /^([][%GMQUX])(\.?.)/i || $key =~ /^(\^U)(\.?.)/i)
+    if ($key =~ /^([][%GMQUX])(.)/i || $key =~ /^(\^U)(.)/i)
     {
         $key = $1;
-        $text = $2;
+        $qreg = $2;
     }
     elsif ($key =~ /^([EF].)(.*)/i)
     {
@@ -234,8 +234,7 @@ while (<>)
         {
             $expression = sprintf "%*s%s", $indent, "", $expression;
 
-            printf "%s%*s! % 5u: (TBD) !\n", $expression,
-                64 - length $expression, " ", ++$sequence;
+            printf "%s%*s! % 5u: (TBD)!\n", $expression, 64 - length $expression, " ", ++$sequence;
 
             $expression = "";
         }
@@ -255,6 +254,10 @@ while (<>)
     if (!defined $detail)
     {
         print "(n/a)";
+    }
+    elsif ($detail =~ /%c/)
+    {
+        printf $detail, ord($qreg);
     }
     elsif ($detail =~ /%s/)
     {

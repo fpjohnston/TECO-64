@@ -861,7 +861,7 @@ static void update_status(void)
                                "%a, %e %b %Y, %H:%M %Z", tm);
         assert(nbytes != 0);
 
-        memcpy(status + w.width - nbytes, tbuf, nbytes);
+        memcpy(status + w.width - nbytes, tbuf, (size_t)(uint)nbytes);
 
         for (int i = 0; i < w.width; ++i)
         {

@@ -1,1 +1,0 @@
--std=gnu18 -Wall -Wextra -Wno-unused-parameter -fshort-enums -D SCOPE -MMD -c -I ../include -O0  -g
