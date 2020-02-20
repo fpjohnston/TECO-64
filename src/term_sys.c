@@ -48,10 +48,10 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
-#include "textbuf.h"
 #include "window.h"
 
 
@@ -250,9 +250,9 @@ static void sig_handler(int signum)
 
                 if (t.Z != 0)
                 {
-                    setpos_tbuf(t.B);
+                    setpos_ebuf(t.B);
 
-                    delete_tbuf(t.Z);   // Kill the whole buffer
+                    delete_ebuf(t.Z);   // Kill the whole buffer
                 }
 
                 exit(EXIT_FAILURE);     // Cleanup, reset, and exit

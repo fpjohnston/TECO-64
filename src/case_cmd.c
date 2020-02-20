@@ -33,7 +33,7 @@
 #include <string.h>
 
 #include "teco.h"
-#include "textbuf.h"
+#include "editbuf.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -124,13 +124,13 @@ static void exec_case(struct cmd *cmd, bool lower)
             }
 
             m = 0;
-            n = getdelta_tbuf(n);
+            n = getdelta_ebuf(n);
         }
     }
 
     for (int i = m; i < n; ++i)
     {
-        int c = getchar_tbuf(i);
+        int c = getchar_ebuf(i);
 
         if (c == EOF)
         {
@@ -141,17 +141,17 @@ static void exec_case(struct cmd *cmd, bool lower)
         {
             if (isupper(c))
             {
-                (void)putchar_tbuf(i, tolower(c));
+                (void)putchar_ebuf(i, tolower(c));
             }
         }
         else
         {
             if (islower(c))
             {
-                (void)putchar_tbuf(i, toupper(c));
+                (void)putchar_ebuf(i, toupper(c));
             }
         }
     }
 
-    setpos_tbuf(dot + n);
+    setpos_ebuf(dot + n);
 }

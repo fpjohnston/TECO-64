@@ -32,7 +32,7 @@
 #include <string.h>
 
 #include "teco.h"
-#include "textbuf.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
@@ -87,7 +87,7 @@ void exec_EY(struct cmd *cmd)
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
 
-    setpos_tbuf(olddot);                // Restore buffer position
+    setpos_ebuf(olddot);                // Restore buffer position
 }
 
 
@@ -120,9 +120,9 @@ void exec_Y(struct cmd *cmd)
 
 bool next_yank(void)
 {
-    setpos_tbuf(t.B);
+    setpos_ebuf(t.B);
 
-    delete_tbuf((int)t.Z);              // Kill the whole buffer
+    delete_ebuf((int)t.Z);              // Kill the whole buffer
 
     while (append_line())               // Read what we can
     {

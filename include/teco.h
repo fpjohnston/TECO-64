@@ -269,7 +269,7 @@ extern const char *log_file;
 
 extern const char *mung_file;
 
-extern struct buffer *cmdbuf;
+extern struct buffer *current;
 
 extern struct watch w;
 
@@ -343,33 +343,43 @@ extern bool pop_expr(int *operand);
 
 extern void push_expr(int c, enum expr_type type);
 
-// Buffer functions
+// Command buffer functions
 
-extern struct buffer *copy_buf(void);
+extern struct buffer *copy_cbuf(void);
 
-extern int delete_buf(void);
+extern int fetch_cbuf(bool start);
 
-extern void echo_buf(int pos);
+extern struct buffer *get_cbuf(void);
 
-extern bool empty_buf(void);
+extern void init_cbuf(void);
 
-extern int fetch_buf(bool start);
+extern char *next_cbuf(void);
 
-extern struct buffer *get_buf(void);
+extern void reset_cbuf(void);
 
-extern void init_buf(void);
+extern void set_cbuf(struct buffer *buf);
 
-extern char *next_buf(void);
+extern void store_cbuf(int c);
 
-extern void reset_buf(void);
+extern void unfetch_cbuf(int c);
 
-extern void set_buf(struct buffer *buf);
+// Terminal buffer functions
 
-extern uint start_buf(void);
+extern int delete_tbuf(void);
 
-extern void store_buf(int c);
+extern void echo_tbuf(int pos);
 
-extern void unfetch_buf(int c);
+extern bool empty_tbuf(void);
+
+extern int fetch_tbuf(void);
+
+extern void init_tbuf(void);
+
+extern void reset_tbuf(void);
+
+extern uint start_tbuf(void);
+
+extern void store_tbuf(int c);
 
 // File functions
 

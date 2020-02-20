@@ -31,10 +31,10 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "editbuf.h"
 #include "errors.h"
 #include "exec.h"
 #include "qreg.h"
-#include "textbuf.h"
 
 
 ///
@@ -81,7 +81,7 @@ void exec_X(struct cmd *cmd)
     }
     else
     {
-        int delta = getdelta_tbuf(n);
+        int delta = getdelta_ebuf(n);
 
         if (n <= 0)
         {
@@ -99,7 +99,7 @@ void exec_X(struct cmd *cmd)
 
     for (int i = m - t.dot; i < n - t.dot; ++i)
     {
-        int c = getchar_tbuf(i);
+        int c = getchar_ebuf(i);
 
         if (i == m - t.dot && !cmd->colon_set)
         {

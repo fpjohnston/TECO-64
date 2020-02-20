@@ -32,9 +32,9 @@
 #include <string.h>
 
 #include "teco.h"
+#include "editbuf.h"
 #include "errors.h"
 #include "exec.h"
-#include "textbuf.h"
 
 
 // Local functions
@@ -124,9 +124,9 @@ void exec_L(struct cmd *cmd)
 
     if (!cmd->colon_set)
     {
-        n = getdelta_tbuf(n);
+        n = getdelta_ebuf(n);
 
-        setpos_tbuf(n + t.dot);
+        setpos_ebuf(n + t.dot);
 
         return;
     }
@@ -138,7 +138,7 @@ void exec_L(struct cmd *cmd)
     //  1:L -> No. of following lines
     //   :L -> Same as 0:L
 
-    int nlines = getlines_tbuf(n);
+    int nlines = getlines_ebuf(n);
 
     push_expr(nlines, EXPR_VALUE);
 }
@@ -167,7 +167,7 @@ static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
         return;
     }
 
-    setpos_tbuf(pos);
+    setpos_ebuf(pos);
 
     if (cmd->colon_set)
     {

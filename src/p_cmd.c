@@ -34,7 +34,7 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "textbuf.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
@@ -176,7 +176,7 @@ bool next_page(int start, int end, bool ff, bool yank)
 
     for (int i = m; i < n; ++i)
     {
-        int c = getchar_tbuf(i);
+        int c = getchar_ebuf(i);
 
         if (c == LF && f.e2.add_cr)
         {
@@ -193,9 +193,9 @@ bool next_page(int start, int end, bool ff, bool yank)
 
     if (yank)                           // Yank next page if we need to
     {
-        setpos_tbuf(t.B);
+        setpos_ebuf(t.B);
 
-        delete_tbuf(t.Z);               // Kill the whole buffer
+        delete_ebuf(t.Z);               // Kill the whole buffer
 
         struct ifile *ifile = &ifiles[istream];
 

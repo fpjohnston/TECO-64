@@ -31,10 +31,10 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "editbuf.h"
 #include "errors.h"
 #include "exec.h"
 #include "qreg.h"
-#include "textbuf.h"
 
 
 ///
@@ -66,7 +66,7 @@ void exec_ctrl_q(struct cmd *unused1)
 
     (void)pop_expr(&nlines);
 
-    int nchrs = getdelta_tbuf(nlines);
+    int nchrs = getdelta_ebuf(nlines);
 
     push_expr(nchrs, EXPR_VALUE);
 }

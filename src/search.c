@@ -34,11 +34,12 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 #include "qreg.h"
-#include "textbuf.h"
+
 
 ///   @var    last_search
 ///   @brief  Last string searched for
@@ -96,7 +97,7 @@ static int isblankx(int c, struct search *s)
 
     while (s->text_pos < s->text_end)
     {
-        c = getchar_tbuf(s->text_pos++);
+        c = getchar_ebuf(s->text_pos++);
 
         if (!isblank(c))
         {
@@ -332,7 +333,7 @@ static bool match_str(struct search *s)
 
     while (s->match_len > 0)
     {
-        int c = getchar_tbuf(s->text_pos++);
+        int c = getchar_ebuf(s->text_pos++);
 
         if (!match_chr(c, s))
         {
@@ -502,7 +503,7 @@ bool search_loop(struct search *s)
                         return false;
                     }
 
-                    setpos_tbuf(0);
+                    setpos_ebuf(0);
 
                     break;
 
@@ -518,7 +519,7 @@ bool search_loop(struct search *s)
         }
     }
 
-    setpos_tbuf(t.dot + s->text_pos);
+    setpos_ebuf(t.dot + s->text_pos);
 
     return true;
 }
@@ -574,13 +575,13 @@ void search_print(void)
 
     if (m == 0)
     {
-        n = getdelta_tbuf(1);
-        m = getdelta_tbuf(0);
+        n = getdelta_ebuf(1);
+        m = getdelta_ebuf(0);
     }
     else
     {
-        n = getdelta_tbuf(m);
-        m = getdelta_tbuf(1 - m);
+        n = getdelta_ebuf(m);
+        m = getdelta_ebuf(1 - m);
     }
 
     for (int i = m; i < n; ++i)
@@ -590,7 +591,7 @@ void search_print(void)
             echo_out(flag);
         }
 
-        int c = getchar_tbuf(i);
+        int c = getchar_ebuf(i);
 
         if (c == LF)
         {

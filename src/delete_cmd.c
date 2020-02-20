@@ -32,7 +32,7 @@
 #include <string.h>
 
 #include "teco.h"
-#include "textbuf.h"
+#include "editbuf.h"
 #include "errors.h"
 #include "exec.h"
 
@@ -65,7 +65,7 @@ void exec_D(struct cmd *cmd)
             printc_err(E_POP, 'D');     // Pointer off page
         }
 
-        setpos_tbuf(m);                 // Go to first position
+        setpos_ebuf(m);                 // Go to first position
 
         n -= m;                         // And delete this many chars
     }
@@ -82,7 +82,7 @@ void exec_D(struct cmd *cmd)
         return;
     }
 
-    delete_tbuf(n);
+    delete_ebuf(n);
 
     if (cmd->colon_set)
     {
@@ -106,9 +106,9 @@ void exec_K(struct cmd *cmd)
     {
         if (t.Z != 0)
         {
-            setpos_tbuf(t.B);
+            setpos_ebuf(t.B);
 
-            delete_tbuf(t.Z);           // Yes, kill the whole buffer
+            delete_ebuf(t.Z);           // Yes, kill the whole buffer
         }
 
         return;
@@ -131,17 +131,17 @@ void exec_K(struct cmd *cmd)
             printc_err(E_POP, 'K');     // Pointer off page
         }
 
-        setpos_tbuf(m);                 // Go to first position
+        setpos_ebuf(m);                 // Go to first position
 
         n -= m;                         // And delete this many chars
     }
     else
     {
-        n = getdelta_tbuf(n);
+        n = getdelta_ebuf(n);
     }
 
     if (n != 0)
     {
-        delete_tbuf(n);
+        delete_ebuf(n);
     }
 }

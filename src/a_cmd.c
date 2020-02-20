@@ -33,10 +33,10 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
-#include "textbuf.h"
 
 
 ///
@@ -61,7 +61,7 @@ bool append(bool n_set, int n_arg, bool colon_set)
 
     int olddot = t.dot;
 
-    setpos_tbuf(t.Z);                   // Go to end of buffer
+    setpos_ebuf(t.Z);                   // Go to end of buffer
 
     if (ifile->eof)                     // Already at EOF?
     {
@@ -92,7 +92,7 @@ bool append(bool n_set, int n_arg, bool colon_set)
         (void)append_line();            // :A -> append single line
     }
 
-    setpos_tbuf(olddot);
+    setpos_ebuf(olddot);
 
     return true;
 }
@@ -119,7 +119,7 @@ bool append_line(void)
             return false;               // And say we need to stop
         }
 
-        switch (add_tbuf(c))
+        switch (add_ebuf(c))
         {
             default:
             case EDIT_OK:
@@ -180,7 +180,7 @@ void exec_A(struct cmd *cmd)
     }
     else if (cmd->n_set)                // nA command
     {
-        int n = getchar_tbuf(cmd->n_arg);
+        int n = getchar_ebuf(cmd->n_arg);
 
         push_expr(n, EXPR_VALUE);
     }

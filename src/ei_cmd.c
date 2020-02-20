@@ -40,16 +40,11 @@
 #include "exec.h"
 
 
-static struct buffer *file_buf = NULL;  ///< Command buffer for indirect file
-
-
 // Local functions
 
-static void free_indirect(void);
+static void close_indirect(void);
 
 static int open_indirect(bool default_type);
-
-static bool read_indirect(FILE *fp);
 
 
 ///
@@ -63,7 +58,7 @@ void exec_EI(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)            // EN` command?
+    if (cmd->text1.len == 0)            // EI` command?
     {
         close_indirect();               // Close any open file
 
@@ -78,11 +73,14 @@ void exec_EI(struct cmd *cmd)
         if (cmd->colon_set)
         {
             push_expr(TECO_FAILURE, EXPR_VALUE);
+
+            return;
         }
 
         prints_err(E_FNF, filename_buf);
     }
-    else if (cmd->colon_set)
+
+    if (cmd->colon_set)
     {
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
@@ -90,68 +88,17 @@ void exec_EI(struct cmd *cmd)
 
 
 ///
-///  @brief    Check for input from indirect file.
-///
-///  @returns  true if need to execute command string, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool check_indirect(void)
-{
-    if (mung_file != NULL)
-    {
-        // Here if user wants to "mung" a file (that is, there was a
-        // command-line argument that specified that a file to process
-        // just like an EI command).
-
-        assert(filename_buf != NULL);
-
-        strcpy(filename_buf, mung_file);
-
-        mung_file = NULL;                   // Only do this once
-
-        if (open_indirect((bool)false) == EXIT_FAILURE &&
-            open_indirect((bool)true)  == EXIT_FAILURE)
-        {
-            prints_err(E_FNF, filename_buf);
-        }
-    }
-
-    struct ifile *stream = &ifiles[IFILE_INDIRECT];
-
-    if (stream->fp == NULL)
-    {
-        return false;
-    }
-
-    if (read_indirect(stream->fp))
-    {
-        return true;
-    }
-
-    close_indirect();
-
-    if (f.e0.exit)
-    {
-        exit(EXIT_SUCCESS);
-    }
-
-    return false;
-}
-
-
-///
-///  @brief    Close indirect file.
+///  @brief    Close indirect command file.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void close_indirect(void)
+static void close_indirect(void)
 {
     struct ifile *stream = &ifiles[IFILE_INDIRECT];
 
-    if (stream->fp != NULL)             // Is indirect file open?
+    if (stream->fp != NULL)
     {
         fclose(stream->fp);
 
@@ -160,41 +107,9 @@ void close_indirect(void)
         stream->cr  = false;
     }
 
-    free_indirect();
-
-    reset_buf();
-}
-
-
-///
-///  @brief    Free indirect command buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void free_indirect(void)
-{
-    if (file_buf != NULL)
+    if (f.e0.exit)                      // Command-line option to exit?
     {
-        free_mem(&file_buf->buf);
-        free_mem(&file_buf);
-    }
-}
-
-
-///
-///  @brief    Initialize for EI commands.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void init_EI(void)
-{
-    if (atexit(free_indirect) != 0)
-    {
-        exit(EXIT_FAILURE);
+        exit(EXIT_SUCCESS);             // Yes, we're done
     }
 }
 
@@ -220,17 +135,6 @@ static int open_indirect(bool default_type)
 
     if (open_input(filename_buf, IFILE_INDIRECT) == EXIT_SUCCESS)
     {
-        free_indirect();
-
-        file_buf = alloc_mem((uint)sizeof(struct buffer));
-
-        file_buf->len  = 0;
-        file_buf->pos  = 0;
-        file_buf->size = STR_SIZE_INIT;
-        file_buf->buf  = alloc_mem(file_buf->size);
-
-        set_buf(file_buf);
-
         return EXIT_SUCCESS;
     }
 
@@ -248,46 +152,57 @@ static int open_indirect(bool default_type)
 ///
 ///  @brief    Read input from indirect file if one is open.
 ///
-///  @returns  true if need to execute command string, else false.
+///  @returns  -1 if we have a complete command, 1 if we have a partial
+///            command, 0 if no data is available.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool read_indirect(FILE *fp)
+int read_indirect(void)
 {
-    assert(fp != NULL);
+    struct ifile *stream = &ifiles[IFILE_INDIRECT];
 
-    bool esc_1 = false;
-    bool esc_2 = false;
-
-    int c;
-
-    // Read and store commands from file. We need to note whether the macro
-    // ends with a double ESCape (ignoring trailing whitespace), because that
-    // tells the main loop whether or not to begin execution, or wait until
-    // the user provides more input.
-
-    while ((c = fgetc(fp)) != EOF)
+    if (stream->fp == NULL)
     {
-        store_buf(c);
-
-        if (c == ESC)
-        {
-            esc_2 = esc_1;
-            esc_1 = true;
-        }
-        else
-        {
-            esc_1 = false;
-
-            // We allow trailing whitespace after a double ESCape, except for
-            // a tab, since that's a TECO command.
-
-            if (!isspace(c) && c != TAB)
-            {
-                esc_2 = false;
-            }
-        }
+        return 0;
     }
 
-    return esc_2;
+    // If a file is open, then we may have data, so clear the command buffer,
+    // since we can only get here after the completion of a command string.
+
+    reset_cbuf();
+
+    int c, last = EOF;                  // Current and previous characters read
+    bool nbytes = false;                // true if we've read any data
+
+    while ((c = fgetc(stream->fp)) != EOF)
+    {
+        store_cbuf(c);
+
+        if (c == ESC && last == ESC)
+        {
+            return -1;                  // Done if double escape seen
+        }
+
+        last = c;
+        nbytes = true;
+    }
+
+    // File ended without a double escape, so close it.
+
+    close_indirect();
+
+    return nbytes ? 1 : 0;
+}
+
+
+///
+///  @brief    Reset indirect command file buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_indirect(void)
+{
+    close_indirect();
 }

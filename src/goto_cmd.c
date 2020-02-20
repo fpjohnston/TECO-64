@@ -141,9 +141,9 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
 
     (void)sprintf(tag, "%.*s", (int)len, text);
 
-    cmdbuf->pos = 0;                   // Start at beginning of command
+    current->pos = 0;                   // Start at beginning of command
 
-    while (cmdbuf->pos < cmdbuf->len)
+    while (current->pos < current->len)
     {
         bool dryrun = f.e0.dryrun;
 
@@ -166,7 +166,7 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
                 prints_err(E_DUP, tag); // Duplicate tag
             }
 
-            tag_pos = (int)cmdbuf->pos; // Remember tag for later
+            tag_pos = (int)current->pos; // Remember tag for later
         }
     }
 
@@ -175,5 +175,5 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
         prints_err(E_TAG, tag);         // Missing tag
     }
 
-    cmdbuf->pos = (uint)tag_pos;        // Execute goto
+    current->pos = (uint)tag_pos;       // Execute goto
 }

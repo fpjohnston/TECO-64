@@ -221,19 +221,19 @@ exec_func *scan_cmd(struct cmd *cmd)
 
         do
         {
-            cmd->c2 = (char)fetch_buf(NOCMD_START);
+            cmd->c2 = (char)fetch_cbuf(NOCMD_START);
         } while (isspace(cmd->c2));
     }
     else if (cmd->c1 == '^')
     {
-        if ((cmd->c2 = (char)fetch_buf(NOCMD_START)) == '^')
+        if ((cmd->c2 = (char)fetch_cbuf(NOCMD_START)) == '^')
         {
-            cmd->c3 = (char)fetch_buf(NOCMD_START);
+            cmd->c3 = (char)fetch_cbuf(NOCMD_START);
         }
     }
     else if (cmd->c1 == '\x1E')
     {
-        cmd->c2 = (char)fetch_buf(NOCMD_START);
+        cmd->c2 = (char)fetch_cbuf(NOCMD_START);
     }
 
     exec_func *exec = find_cmd(cmd);
@@ -254,13 +254,13 @@ exec_func *scan_cmd(struct cmd *cmd)
 
     if (scan.q_register)                // Do we need a Q-register?
     {
-        int c = fetch_buf(NOCMD_START); // Yes
+        int c = fetch_cbuf(NOCMD_START); // Yes
 
         if (c == '.')                   // Is it a local Q-register?
         {
             cmd->qlocal = true;         // Yes, mark it
 
-            c = fetch_buf(NOCMD_START); // Get Q-register name
+            c = fetch_cbuf(NOCMD_START); // Get Q-register name
         }
 
         if (!isalnum(c))
@@ -278,7 +278,7 @@ exec_func *scan_cmd(struct cmd *cmd)
 
     if (cmd->c1 == '"')                 // " requires additional character
     {
-        cmd->c2 = (char)fetch_buf(NOCMD_START);
+        cmd->c2 = (char)fetch_cbuf(NOCMD_START);
     }
 
     // CTRL/T, A, and \ (backslash) may or may not be part of an
@@ -403,7 +403,7 @@ static void scan_tail(struct cmd *cmd)
 
     if (scan.w_opt)                     // Optional W following?
     {
-        int c = fetch_buf(NOCMD_START); // Maybe
+        int c = fetch_cbuf(NOCMD_START); // Maybe
 
         if (toupper(c) == 'W')          // Is it?
         {
@@ -411,7 +411,7 @@ static void scan_tail(struct cmd *cmd)
         }
         else
         {
-            unfetch_buf(c);             // No. Put character back
+            unfetch_cbuf(c);             // No. Put character back
         }
     }
 
@@ -421,7 +421,7 @@ static void scan_tail(struct cmd *cmd)
 
     if (cmd->atsign_set)                // @ modifier?
     {
-        cmd->delim = (char)fetch_buf(NOCMD_START); // Yes, next character is delimiter
+        cmd->delim = (char)fetch_cbuf(NOCMD_START); // Yes, next character is delimiter
     }
 
     // Now get the text strings, if they're allowed for this command.
@@ -450,9 +450,9 @@ static void scan_text(int delim, struct tstring *text)
     assert(text != NULL);
 
     text->len = 0;
-    text->buf = next_buf();
+    text->buf = next_cbuf();
 
-    int c = fetch_buf(NOCMD_START);
+    int c = fetch_cbuf(NOCMD_START);
 
     if (c == delim)
     {
@@ -461,7 +461,7 @@ static void scan_text(int delim, struct tstring *text)
 
     ++text->len;
 
-    while (fetch_buf(NOCMD_START) != delim)
+    while (fetch_cbuf(NOCMD_START) != delim)
     {
         ++text->len;
     }

@@ -32,7 +32,7 @@
 #include <string.h>
 
 #include "teco.h"
-#include "textbuf.h"
+#include "editbuf.h"
 #include "exec.h"
 
 
@@ -51,7 +51,7 @@ void exec_EC(struct cmd *cmd)
     {
         if (cmd->n_arg > 0)
         {
-            (void)setsize_tbuf(cmd->n_arg);
+            (void)setsize_ebuf(cmd->n_arg);
         }
 
         return;

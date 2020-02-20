@@ -62,7 +62,7 @@ struct text
 
 extern struct text t;
 
-extern bool tbuf_changed;
+extern bool ebuf_changed;
 
 // Add one character to buffer at current position of dot.
 //
@@ -71,11 +71,11 @@ extern bool tbuf_changed;
 //          EDIT_FULL  - Insertion was successful, but buffer just became full.
 //          EDIT_ERROR - Insertion was unsuccessful. Buffer is already full.
 
-extern int add_tbuf(int c);
+extern int add_ebuf(int c);
 
 //  Delete nbytes at dot. Argument can be positive or negative.
 
-extern void delete_tbuf(int n);
+extern void delete_ebuf(int n);
 
 // Get ASCII value of character in buffer at position relative to dot.
 //
@@ -88,15 +88,15 @@ extern void delete_tbuf(int n);
 // Returns: character found, or EOF (-1) if attempt was made to go beyond the
 //          beginning or end of buffer.
 
-extern int getchar_tbuf(int n);
+extern int getchar_ebuf(int n);
 
 //  Get the number of chars between current dot and nth line terminator.
 
-extern int getdelta_tbuf(int n);
+extern int getdelta_ebuf(int n);
 
 //  Get the number of lines between current dot and start/end of text buffer.
 
-extern int getlines_tbuf(int n);
+extern int getlines_ebuf(int n);
 
 //
 //  Initialize buffer.
@@ -112,21 +112,21 @@ extern int getlines_tbuf(int n);
 //             trying to increase its size.
 //
 
-extern void init_tbuf(int minsize, int maxsize, int stepsize, int warn);
+extern void init_ebuf(int minsize, int maxsize, int stepsize, int warn);
 
 // Replace ASCII value of character in buffer at position relative to dot.
 //
 // Returns: original character, or EOF (-1) if attempt was made to go beyond
 //          the beginning or end of buffer.
 
-extern int putchar_tbuf(int n, int c);
+extern int putchar_ebuf(int n, int c);
 
 // Set buffer position.
 
-extern void setpos_tbuf(int n);
+extern void setpos_ebuf(int n);
 
 // Set maximum memory size, in K bytes.
 
-extern int setsize_tbuf(int n);
+extern int setsize_ebuf(int n);
 
 #endif

@@ -32,8 +32,8 @@
 #include <string.h>
 
 #include "teco.h"
+#include "editbuf.h"
 #include "exec.h"
-#include "textbuf.h"
 
 
 ///  @var    last_len
@@ -65,7 +65,7 @@ void exec_FR(struct cmd *cmd)
         n = -(int)last_len;
     }
 
-    delete_tbuf(n);
+    delete_ebuf(n);
     exec_insert(cmd->text1.buf, cmd->text1.len);
 }
 

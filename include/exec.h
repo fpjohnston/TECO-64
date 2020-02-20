@@ -362,15 +362,9 @@ extern void exec_Z(struct cmd *cmd);
 
 // Miscellaneous functions
 
-extern bool check_indirect(void);
-
-extern void close_indirect(void);
-
 extern void exit_EG(void);
 
 extern void init_EG(void);
-
-extern void init_EI(void);
 
 extern void init_loop(void);
 
@@ -378,7 +372,11 @@ extern void print_cmd(struct cmd *cmd);
 
 extern exec_func *next_cmd(struct cmd *cmd);
 
+extern int read_indirect(void);
+
 extern void reset_if(void);
+
+extern void reset_indirect(void);
 
 extern void reset_loop(void);
 

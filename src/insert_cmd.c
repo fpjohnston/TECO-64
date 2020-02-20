@@ -33,9 +33,9 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "editbuf.h"
 #include "errors.h"
 #include "exec.h"
-#include "textbuf.h"
 
 
 static char insert_string[1024 + 1];    ///< Last string inserted in buffer
@@ -131,7 +131,7 @@ void exec_insert(const char *buf, uint len)
             continue;
         }
 
-        switch (add_tbuf(c))
+        switch (add_ebuf(c))
         {
             case EDIT_FULL:
             case EDIT_ERROR:

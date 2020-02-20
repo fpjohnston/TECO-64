@@ -44,9 +44,9 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
-#include "textbuf.h"
 #include "window.h"
 
 ///
@@ -142,7 +142,7 @@ void clear_win(void)
 
     (void)clear();
 
-    tbuf_changed = true;
+    ebuf_changed = true;
 
     set_scroll(w.height, w.nscroll);
 
@@ -382,11 +382,11 @@ static void mark_cursor(int row, int col)
 
 static void move_down(void)
 {
-    int line = getlines_tbuf(-1);       // Get current line number
+    int line = getlines_ebuf(-1);       // Get current line number
     int row = d.row;
     int col = d.col;
 
-    if (line == getlines_tbuf(0))       // On last line?
+    if (line == getlines_ebuf(0))       // On last line?
     {
         return;
     }
@@ -400,8 +400,8 @@ static void move_down(void)
 
     ++row;
 
-    int next = getdelta_tbuf(1);        // Start of next line
-    int len = getdelta_tbuf(2) - next;  // Length of next line
+    int next = getdelta_ebuf(1);        // Start of next line
+    int len = getdelta_ebuf(2) - next;  // Length of next line
     int dot = t.dot + next;
 
     if (d.vcol < col)
@@ -428,7 +428,7 @@ static void move_down(void)
 
     mark_cursor(row, col);
 
-    setpos_tbuf(dot);
+    setpos_ebuf(dot);
 
     update_status();
 
@@ -445,7 +445,7 @@ static void move_down(void)
 
 static void move_up(void)
 {
-    int line = getlines_tbuf(-1);       // Get current line number
+    int line = getlines_ebuf(-1);       // Get current line number
     int row = d.row;
     int col = d.col;
 
@@ -462,7 +462,7 @@ static void move_up(void)
 
     --row;
 
-    int prev = -getdelta_tbuf(-1);      // Distance to start of previous
+    int prev = -getdelta_ebuf(-1);      // Distance to start of previous
     int len = prev - col;               // Length of previous line
     int dot = t.dot - prev;
 
@@ -485,7 +485,7 @@ static void move_up(void)
 
     mark_cursor(row, col);
 
-    setpos_tbuf(dot);
+    setpos_ebuf(dot);
 
     update_status();
 
@@ -592,7 +592,7 @@ bool readkey_win(int key)
 
     int dot = (int)t.dot + (key == KEY_LEFT ? -1 : 1);
 
-    setpos_tbuf(dot);
+    setpos_ebuf(dot);
     refresh_win();
 
     return true;
@@ -617,9 +617,9 @@ bool readkey_win(int key)
 
 static void repaint(int row, int col, int pos)
 {
-    if (tbuf_changed)
+    if (ebuf_changed)
     {
-        tbuf_changed = false;
+        ebuf_changed = false;
 
         d.vcol = 0;
 
@@ -633,7 +633,7 @@ static void repaint(int row, int col, int pos)
         int c;
         int nrows = d.nrows;
 
-        while ((c = getchar_tbuf(pos++)) != -1)
+        while ((c = getchar_ebuf(pos++)) != -1)
         {
             if (c != CR)
             {
@@ -693,10 +693,10 @@ void refresh_win(void)
 
     if (f.e0.winact && w.nscroll != 0)
     {
-        int line = getlines_tbuf(-1);   // Line number within buffer
+        int line = getlines_ebuf(-1);   // Line number within buffer
         int row  = line % d.nrows;      // Relative row within screen
-        int col  = -getdelta_tbuf(0);   // Offset within row
-        int pos  = getdelta_tbuf(-row); // First character to output
+        int col  = -getdelta_ebuf(0);   // Offset within row
+        int pos  = getdelta_ebuf(-row); // First character to output
 
         repaint(row, col, pos);
     }
@@ -843,9 +843,9 @@ static void update_status(void)
 
         // Add some file status to the left side of the status line
 
-        int row   = getlines_tbuf(-1);
-        int nrows = getlines_tbuf(0);
-        int col   = -getdelta_tbuf(0);
+        int row   = getlines_ebuf(-1);
+        int nrows = getlines_ebuf(0);
+        int col   = -getdelta_ebuf(0);
         int nbytes = sprintf(status, ".=%d, Z=%d/%d, row=%d/%d, col=%d",
                              t.dot, t.Z, t.size, row, nrows, col);
 

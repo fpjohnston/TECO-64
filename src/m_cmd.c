@@ -94,9 +94,9 @@ void exec_M(struct cmd *cmd)
     qreg->text.pos = 0;
 
     uint saved_put = qreg->text.len;
-    struct buffer *saved_buf = get_buf();
+    struct buffer *saved_buf = get_cbuf();
 
-    set_buf(&qreg->text);
+    set_cbuf(&qreg->text);
 
     // If invoked with nMq or m,nMq, then pass argument(s) to macro.
 
@@ -129,7 +129,7 @@ void exec_M(struct cmd *cmd)
         pop_qlocal();
     }
 
-    set_buf(saved_buf);
+    set_cbuf(saved_buf);
 
     qreg->text.len = saved_put;
 }

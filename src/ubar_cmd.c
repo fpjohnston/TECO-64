@@ -33,10 +33,10 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
-#include "textbuf.h"
 
 
 // Local functions
@@ -123,7 +123,7 @@ static void exec_search(struct cmd *cmd, bool replace)
     {
         if (replace)
         {
-            delete_tbuf(-(int)last_len);
+            delete_ebuf(-(int)last_len);
 
             if (cmd->text2.len)
             {
@@ -150,7 +150,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         {
             if (!f.ed.keepdot)
             {
-                setpos_tbuf(0);
+                setpos_ebuf(0);
             }
 
             last_search.buf[last_search.len] = NUL;

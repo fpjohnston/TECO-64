@@ -90,6 +90,7 @@ SOURCES = \
     qreg.c         \
     search.c       \
     teco.c         \
+    term_buf.c     \
     term_in.c      \
     term_out.c     \
     term_sys.c     \

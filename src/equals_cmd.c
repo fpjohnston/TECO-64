@@ -75,13 +75,13 @@ void exec_equals(struct cmd *cmd)
     int c;
     const char *mode = "%d";
 
-    if ((c = fetch_buf(NOCMD_START)) != '=')
+    if ((c = fetch_cbuf(NOCMD_START)) != '=')
     {
-        unfetch_buf(c);
+        unfetch_cbuf(c);
     }
-    else if ((c = fetch_buf(NOCMD_START)) != '=')
+    else if ((c = fetch_cbuf(NOCMD_START)) != '=')
     {
-        unfetch_buf(c);
+        unfetch_cbuf(c);
 
         cmd->c2 = '=';
 

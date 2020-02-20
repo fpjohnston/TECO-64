@@ -33,10 +33,10 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
-#include "textbuf.h"
 
 
 // Local functions
@@ -82,24 +82,24 @@ void exec_T(struct cmd *cmd)
     {
         if (cmd->n_arg == 0)
         {
-            m = getdelta_tbuf(0);
+            m = getdelta_ebuf(0);
             n = 0;
         }
         else if (cmd->n_arg < 0)
         {
-            m = getdelta_tbuf(cmd->n_arg);
+            m = getdelta_ebuf(cmd->n_arg);
             n = 0;
         }
         else
         {
             m = 0;
-            n = getdelta_tbuf(cmd->n_arg);
+            n = getdelta_ebuf(cmd->n_arg);
         }
     }
     else
     {
         m = 0;
-        n = getdelta_tbuf(1);
+        n = getdelta_ebuf(1);
     }
 
     exec_type(m, n);
@@ -117,7 +117,7 @@ static void exec_type(int m, int n)
 {
     for (int i = m; i < n; ++i)
     {
-        int c = getchar_tbuf(i);
+        int c = getchar_ebuf(i);
 
         if (f.et.image)
         {
@@ -154,19 +154,19 @@ void exec_V(struct cmd *cmd)
     {
         if (cmd->m_set)
         {
-            m = getdelta_tbuf(1 - cmd->m_arg);
-            n = getdelta_tbuf(cmd->n_arg - 1);
+            m = getdelta_ebuf(1 - cmd->m_arg);
+            n = getdelta_ebuf(cmd->n_arg - 1);
         }
         else
         {
-            m = getdelta_tbuf(1 - cmd->n_arg);
-            n = getdelta_tbuf(cmd->n_arg);
+            m = getdelta_ebuf(1 - cmd->n_arg);
+            n = getdelta_ebuf(cmd->n_arg);
         }
     }
     else
     {
-        m = getdelta_tbuf(0);
-        n = getdelta_tbuf(1);
+        m = getdelta_ebuf(0);
+        n = getdelta_ebuf(1);
     }
 
     exec_type(m, n);

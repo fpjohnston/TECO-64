@@ -71,14 +71,13 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "exec.h"
 #include "qreg.h"
-#include "textbuf.h"
 #include "window.h"
 
 
@@ -124,10 +123,6 @@ bool main_active = false;
 
 jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
-const char *mung_file = NULL;       ///< Name of file to MUNG
-
-const char *log_file = NULL;        ///< Name of log file
-
 
 ///
 ///  @brief    Main program entry for TECO text editor.
@@ -143,7 +138,7 @@ int main(int argc, const char * const argv[])
     f.eu         = -1;                  // No case flagging
 
     f.et.abort   = true;                // Abort on error
-    f.et.accent  = true;                // Use accent grave as delimiter
+    f.et.accent  = false;               // Don't use accent grave as delimiter
 
     f.e1.strict  = true;                // Strictly enforce syntax
     f.e1.winline = true;                // Line between text & command regions
@@ -154,8 +149,6 @@ int main(int argc, const char * const argv[])
     f.e3.brace   = true;                // Allow braced expressions
     f.e3.tilde   = true;                // Allow tilde operator
     f.e3.msec    = true;                // Return time in milliseconds
-
-    init_env(argc, argv);               // Initialize environment
 
     // init_win() must be called before init_term(), because the latter will
     // skip some of its initialization if we're going to be in scope mode.
@@ -175,25 +168,25 @@ int main(int argc, const char * const argv[])
         clear_win();
     }
 
-    init_buf();                         // Initialize command buffer
+    init_tbuf();                        // Initialize terminal buffer
+    init_cbuf();                        // Initialize command buffer
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams
     init_EG();                          // Initialize EG command
-    init_EI();                          // Initialize EI command
     init_loop();                        // Initialize loop stack
     init_search();                      // Initialize search string
+    init_env(argc, argv);               // Initialize environment
 
     // TODO: magic numbers for initial buffer size and percentage
 
-    init_tbuf(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);
+    init_ebuf(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);
                                         // Initialize edit buffer
 
-    // If a log file was requested on the command line, then open it now.
+    bool initial_cmd = false;
 
-    if (log_file != NULL)
+    if (current->pos != current->len)
     {
-        (void)open_output(&ofiles[OFILE_LOG], 'L', log_file,
-                          (uint)strlen(log_file));
+        initial_cmd = true;
     }
 
     main_active = true;                 // Initialization is complete
@@ -209,26 +202,29 @@ int main(int argc, const char * const argv[])
 
                 refresh_win();          // Refresh window if needed
 
-                if (!check_indirect())  // Indirect command to execute yet?
+                if (!initial_cmd)
                 {
-                    read_cmd();         // No, read from terminal
+                    read_cmd();
                 }
 
-                init_expr();            // Initialize expression stack
+                initial_cmd = false;
 
-                exec_cmd();             // Then execute what we have
+                init_expr();            // Initialize expression stack
+                exec_cmd();             // Execute what we have
 
                 break;
 
             case 1:                     // CTRL/C typed
-                reset_buf();            // TODO: is this correct?
+                reset_tbuf();           // Reset terminal buffer
+                reset_cbuf();           // TODO: is this correct?
 
                 break;
 
             default:
             case 2:                     // Error
-                close_indirect();       // Close any indirect file
-                reset_buf();            // Reset the input buffer
+                reset_indirect();       // Close any indirect file
+                reset_tbuf();            // Reset terminal buffer
+                reset_cbuf();           // Reset the input buffer
                 reset_qreg();           // Free up Q-register storage
                 reset_if();             // Reset if statement depth
                 reset_loop();           // Free up loop structures

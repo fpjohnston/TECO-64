@@ -33,8 +33,8 @@
 #include <string.h>
 
 #include "teco.h"
+#include "editbuf.h"
 #include "exec.h"
-#include "textbuf.h"
 
 
 ///  @var    MAX_DIGITS
@@ -83,15 +83,15 @@ void exec_back(struct cmd *cmd)
         int pos = 0;
         uint digits = 0;
         int n = 0;
-        int c = getchar_tbuf(pos++);
+        int c = getchar_ebuf(pos++);
 
         if (c == '+')
         {
-            c = getchar_tbuf(pos++);
+            c = getchar_ebuf(pos++);
         }
         else if (c == '-')
         {
-            c = getchar_tbuf(pos++);
+            c = getchar_ebuf(pos++);
             minus = true;
         }
 
@@ -117,7 +117,7 @@ void exec_back(struct cmd *cmd)
             n *= v.radix;
             n += digit;
 
-            c = getchar_tbuf(pos++);
+            c = getchar_ebuf(pos++);
         }
 
         if (digits != 0)
@@ -127,7 +127,7 @@ void exec_back(struct cmd *cmd)
                 n = -n;
             }
 
-            setpos_tbuf(t.dot + pos - 1);
+            setpos_ebuf(t.dot + pos - 1);
         }
 
         push_expr(n, EXPR_VALUE);

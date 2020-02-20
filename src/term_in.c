@@ -36,6 +36,7 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "exec.h"
 #include "qreg.h"
 #include "window.h"
 
@@ -50,6 +51,8 @@ static int last_in = EOF;               ///< Last character read
 // Local functions
 
 static void read_bs(void);
+
+static int read_chr(int c, bool accent);
 
 static void read_cr(void);
 
@@ -81,7 +84,7 @@ static void read_vt(void);
 
 static void read_bs(void)
 {
-    if (empty_buf())                    // In immediate mode?
+    if (empty_tbuf())                    // In immediate mode?
     {
         print_echo(CRLF);
         print_prompt();
@@ -102,11 +105,98 @@ static void read_bs(void)
     }
     else
     {
-        (void)delete_buf();
+        (void)delete_tbuf();
         print_echo(BS);
         print_echo(SPACE);
         print_echo(BS);
     }
+}
+
+
+///
+///  @brief    Read next character.
+///
+///  @returns  Character processed, or EOF if double escape seen.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int read_chr(int c, bool accent)
+{
+    switch (c)
+    {
+        case BS:
+            read_bs();
+
+            break;
+
+        case FF:
+            read_ff();
+
+            break;
+
+        case CR:
+            read_cr();
+
+            break;
+
+        case CTRL_C:
+            read_ctrl_c(last_in);
+
+            break;
+
+        case CTRL_G:
+            read_ctrl_g();
+
+            break;
+
+        case CTRL_U:
+            read_ctrl_u();
+
+            break;
+
+        case CTRL_Z:
+            read_ctrl_z();
+
+            break;
+
+        case ESC:
+            echo_in(accent ? '`' : '$');
+            store_tbuf(c);
+
+            if (last_in == ESC)
+            {
+                last_in = EOF;
+
+                print_echo(CRLF);
+
+                return EOF;             // Done reading command
+            }
+
+            break;
+
+        case LF:
+            read_lf();
+
+            break;
+
+        case VT:
+            read_vt();
+
+            break;
+
+        default:
+            if (!f.et.lower)
+            {
+                c = toupper(c);
+            }
+
+            echo_in(c);
+            store_tbuf(c);
+
+            break;
+    }
+
+    return c;
 }
 
 
@@ -119,12 +209,20 @@ static void read_bs(void)
 
 void read_cmd(void)
 {
+    int ei_status;
+
+    reset_tbuf();
+
+    if ((ei_status = read_indirect()) == -1)
+    {
+        return;                         // Exit if we have a complete command
+    }
+
     int c;
 
-    if (empty_buf())                    // If nothing in command string,
+    if (ei_status == 0)                 // If no EI command,
     {
-        c = read_first();               // check for immediate-mode commands
-        reset_buf();
+        c = read_first();               //  check for immediate-mode commands
     }
     else
     {
@@ -144,83 +242,21 @@ void read_cmd(void)
             c = ESC;                    // Process it as ESCape.
         }
 
-        switch (c)
+        if (read_chr(c, accent) == EOF)
         {
-            case BS:
-                read_bs();
-
-                break;
-
-            case FF:
-                read_ff();
-
-                break;
-
-            case CR:
-                read_cr();
-
-                break;
-
-            case CTRL_C:
-                read_ctrl_c(last_in);
-
-                break;
-
-            case CTRL_G:
-                read_ctrl_g();
-
-                break;
-
-            case CTRL_U:
-                read_ctrl_u();
-
-                break;
-
-            case CTRL_Z:
-                read_ctrl_z();
-
-                break;
-
-            case ESC:
-                echo_in(accent ? '`' : '$');
-                store_buf(c);
-
-                if (last_in == ESC)
-                {
-                    last_in = EOF;
-
-                    print_echo(CRLF);
-
-                    return;             // Done reading command
-                }
-
-                break;
-
-            case LF:
-                read_lf();
-
-                break;
-
-            case VT:
-                read_vt();
-
-                break;
-
-            default:
-                if (!f.et.lower)
-                {
-                    c = toupper(c);
-                }
-
-                echo_in(c);
-                store_buf(c);
-
-                break;
+            break;
         }
 
         last_in = c;
 
         c = getc_term((bool)WAIT);
+    }
+
+    // Copy everything to command buffer.
+
+    while ((c = fetch_tbuf()) != EOF)
+    {
+        store_cbuf(c);
     }
 }
 
@@ -236,7 +272,7 @@ static void read_cr(void)
 {
     print_echo(CR);
 
-    store_buf(CR);
+    store_tbuf(CR);
 }
 
 
@@ -256,7 +292,7 @@ static void read_ctrl_c(int last)
         exit(EXIT_FAILURE);
     }
 
-    store_buf(CTRL_C);
+    store_tbuf(CTRL_C);
     print_echo(CRLF);
 
     if (last == CTRL_C)                 // Second CTRL/C?
@@ -264,7 +300,7 @@ static void read_ctrl_c(int last)
         exit(EXIT_SUCCESS);             // Yes: clean up, reset, and exit
     }
 
-    reset_buf();
+    reset_tbuf();
     print_prompt();
 }
 
@@ -279,7 +315,7 @@ static void read_ctrl_c(int last)
 static void read_ctrl_g(void)
 {
     echo_in(CTRL_G);
-    store_buf(CTRL_G);
+    store_tbuf(CTRL_G);
 
     int c = getc_term((bool)WAIT);      // Get next character
 
@@ -287,7 +323,7 @@ static void read_ctrl_g(void)
 
     if (c != CTRL_G && c != SPACE && c != '*')
     {
-        store_buf(c);                   // Regular character, so just store it
+        store_tbuf(c);                   // Regular character, so just store it
 
         return;
     }
@@ -295,31 +331,32 @@ static void read_ctrl_g(void)
     // Here when we have a special CTRL/G command
 
     print_echo(CRLF);                   // Start new line
-    (void)delete_buf();                 // Delete CTRL/G in buffer
+    (void)delete_tbuf();                 // Delete CTRL/G in buffer
 
     if (c == CTRL_G)                    // ^G^G
     {
         put_bell();
-        reset_buf();
+        reset_tbuf();
+        reset_cbuf();
         print_prompt();
     }
     else if (c == SPACE)                // ^G<SPACE>
     {
-        if (empty_buf())                // Printing from beginning of buffer?
+        if (empty_tbuf())                // Printing from beginning of buffer?
         {
             print_prompt();             // Yes, so output prompt
         }
 
-        echo_buf((int)start_buf());
+        echo_tbuf((int)start_tbuf());
     }
     else /* if (c == '*') */            // ^G*
     {
-        if (empty_buf())                // Printing from beginning of buffer?
+        if (empty_tbuf())                // Printing from beginning of buffer?
         {
             print_prompt();             // Yes, so output prompt
         }
 
-        echo_buf(0);
+        echo_tbuf(0);
     }
 }
 
@@ -335,11 +372,11 @@ static void read_ctrl_u(void)
 {
     int c;
 
-    while ((c = delete_buf()) != EOF)
+    while ((c = delete_tbuf()) != EOF)
     {
         if (c == LF)
         {
-            store_buf(c);               // Add line terminator back
+            store_tbuf(c);               // Add line terminator back
 
             break;
         }
@@ -358,7 +395,7 @@ static void read_ctrl_u(void)
         print_echo(CRLF);
     }
 
-    reset_buf();
+    reset_tbuf();
     print_prompt();
 }
 
@@ -373,7 +410,7 @@ static void read_ctrl_u(void)
 static void read_ctrl_z(void)
 {
     echo_in(CTRL_Z);
-    store_buf(CTRL_Z);
+    store_tbuf(CTRL_Z);
 
     int c = getc_term((bool)WAIT);
 
@@ -384,7 +421,7 @@ static void read_ctrl_z(void)
         exit(EXIT_SUCCESS);             // Clean up, reset, and exit
     }
 
-    store_buf(c);                       // Normal character
+    store_tbuf(c);                       // Normal character
 }
 
 
@@ -404,7 +441,7 @@ static void read_ff(void)
         print_echo(LF);
     }
 
-    store_buf(FF);
+    store_tbuf(FF);
 }
 
 
@@ -484,7 +521,7 @@ static int read_first(void)
                 if (last_error != E_NUL)
                 {
                     echo_in(c);
-                    echo_buf(0);        // Echo command line
+                    echo_tbuf(0);        // Echo command line
                     echo_in(c);
                 }
 
@@ -530,7 +567,7 @@ static int read_first(void)
 
 static void read_lf(void)
 {
-    if (empty_buf())                    // Immediate mode?
+    if (empty_tbuf())                    // Immediate mode?
     {
         print_echo(CRLF);
         print_prompt();
@@ -539,13 +576,6 @@ static void read_lf(void)
         {
             //ZScrOp(SCR_EEL);
         }
-
-#if     0                               // TODO: finish this
-        HowFar = Ln2Chr((LONG)1);
-        MEMMOVE(GapBeg, GapEnd + 1, (SIZE_T)HowFar);
-        GapBeg += HowFar;
-        GapEnd += HowFar;
-#endif
 
         if (f.ev)
         {
@@ -559,7 +589,7 @@ static void read_lf(void)
     else
     {
         print_echo(LF);
-        store_buf(LF);
+        store_tbuf(LF);
     }
 }
 
@@ -589,16 +619,16 @@ static void read_qname(int c)
 
     if (qdot)                           // Local Q-register?
     {
-        echo_in(c);                    // Yes, echo the dot
+        echo_in(c);                     // Yes, echo the dot
 
         qname = getc_term((bool)WAIT);  // And get next character
     }
 
-    echo_in(qname);                    // Echo Q-register name
+    echo_in(qname);                     // Echo Q-register name
 
     print_echo(CRLF);
 
-    store_qtext(qname, qdot, copy_buf());
+    store_qtext(qname, qdot, copy_cbuf());
 }
 
 
@@ -618,5 +648,5 @@ static void read_vt(void)
         print_echo(LF);
     }
 
-    store_buf(VT);
+    store_tbuf(VT);
 }

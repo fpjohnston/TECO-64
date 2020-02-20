@@ -34,9 +34,8 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
-#include "errors.h"
-#include "window.h"
 
 
 ///  @enum     option_t
@@ -44,6 +43,7 @@
 
 enum option_t
 {
+    OPTION_c = 'c',
     OPTION_l = 'l',
     OPTION_m = 'm',
     OPTION_n = 'n',
@@ -55,13 +55,14 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "l:m:ns:wx";
+static const char * const optstring = "c:l:m:ns:wx";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
 
 static const struct option long_options[] =
 {
+    { "command", required_argument,  NULL,  'c'    },
     { "dry-run", no_argument,        NULL,  'n'    },
     { "exit",    no_argument,        NULL,  'x'    },
     { "log",     required_argument,  NULL,  'l'    },
@@ -71,6 +72,11 @@ static const struct option long_options[] =
     { NULL,      no_argument,        NULL,  0      },  // Markers for end of list
 };
 
+// Local functions
+
+static void store_cmd(const char *p);
+
+    
 ///
 ///  @brief    Process configuration options.
 ///
@@ -100,20 +106,30 @@ void set_config(
 
     optind = 0;                         // Reset from any previous calls
 
+    char command[64];
+
     while ((c = getopt_long(argc, (char * const *)argv,
                             optstring, long_options, &idx)) != -1)
     {
-        char *endptr;
+        command[0] = NUL;
 
         switch (c)
         {
+            case OPTION_c:
+                sprintf(command, "%s ", optarg);
+                store_cmd(command);
+
+                break;
+
             case OPTION_l:
-                log_file = optarg;
+                sprintf(command, "@EL/%s/ ", optarg);
+                store_cmd(command);
 
                 break;
 
             case OPTION_m:
-                mung_file = optarg;
+                sprintf(command, "@EI/%s/ ", optarg);
+                store_cmd(command);
 
                 break;
 
@@ -123,16 +139,14 @@ void set_config(
                 break;
 
             case OPTION_s:
-                w.nscroll = (int)strtol(optarg, &endptr, 0);
+                sprintf(command, "1W %s,7:W ", optarg);
+                store_cmd(command);
 
-                if (*endptr != '\0')
-                {
-                    print_err(E_WIN);
-                }
-                //lint -fallthrough
+                break;
 
             case OPTION_w:
-                f.e0.window = true;
+                strcpy(command, "1W ");
+                store_cmd(command);
 
                 break;
 
@@ -151,5 +165,24 @@ void set_config(
 
                 break;
         }
+    }
+}
+
+///
+///  @brief    Store command-line option in command string.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void store_cmd(const char *p)
+{
+    assert(p != NULL);
+
+    int c;
+
+    while ((c = *p++) != NUL)
+    {
+        store_cbuf(c);
     }
 }

@@ -33,10 +33,10 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
-#include "textbuf.h"
 
 
 ///
@@ -81,7 +81,7 @@ void exec_FK(struct cmd *cmd)
 
     if (search_loop(&s))
     {
-        delete_tbuf(-s.text_pos);
+        delete_ebuf(-s.text_pos);
 
         if (cmd->colon_set)
         {
@@ -98,7 +98,7 @@ void exec_FK(struct cmd *cmd)
         {
             if (!f.ed.keepdot)
             {
-                setpos_tbuf(0);
+                setpos_ebuf(0);
             }
 
             last_search.buf[last_search.len] = NUL;

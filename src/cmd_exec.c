@@ -268,19 +268,19 @@ void exec_operator(struct cmd *cmd)
         case '/':
             if (f.e3.brace && scan.nbraces)
             {
-                if ((c = fetch_buf(NOCMD_START)) == '/')
+                if ((c = fetch_cbuf(NOCMD_START)) == '/')
                 {
                     type = EXPR_REM;
                 }
                 else
                 {
-                    unfetch_buf(c);
+                    unfetch_cbuf(c);
                 }
             }
             break;
 
         case '<':
-            if ((c = fetch_buf(NOCMD_START)) == '=')
+            if ((c = fetch_cbuf(NOCMD_START)) == '=')
             {
                 type = EXPR_LE;
             }
@@ -294,12 +294,12 @@ void exec_operator(struct cmd *cmd)
             }
             else
             {
-                unfetch_buf(c);
+                unfetch_cbuf(c);
             }
             break;
 
         case '>':
-            if ((c = fetch_buf(NOCMD_START)) == '=')
+            if ((c = fetch_cbuf(NOCMD_START)) == '=')
             {
                 type = EXPR_GE;
             }
@@ -309,12 +309,12 @@ void exec_operator(struct cmd *cmd)
             }
             else
             {
-                unfetch_buf(c);
+                unfetch_cbuf(c);
             }
             break;
 
         case '=':
-            if (fetch_buf(NOCMD_START) != '=')
+            if (fetch_cbuf(NOCMD_START) != '=')
             {
                 print_err(E_ARG);
             }
@@ -377,7 +377,7 @@ exec_func *next_cmd(struct cmd *cmd)
     bool start = CMD_START;
     exec_func *exec = NULL;
 
-    cmd->expr.buf = next_buf();
+    cmd->expr.buf = next_cbuf();
 
     for (;;)
     {
@@ -385,10 +385,10 @@ exec_func *next_cmd(struct cmd *cmd)
 
         if (!scan.mod)
         {
-            cmd->expr.len = (uint)(next_buf() - cmd->expr.buf);
+            cmd->expr.len = (uint)(next_cbuf() - cmd->expr.buf);
         }
 
-        if ((c = fetch_buf(start)) == EOF)
+        if ((c = fetch_cbuf(start)) == EOF)
         {
             break;
         }
