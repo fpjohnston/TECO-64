@@ -58,31 +58,30 @@ void exec_EI(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)            // EI` command?
+    close_indirect();                   // Close any open file
+
+    // If EIfile`, then try to open file
+
+    if (cmd->text1.len != 0)
     {
-        close_indirect();               // Close any open file
+        create_filename(&cmd->text1);
 
-        return;
-    }
-
-    create_filename(&cmd->text1);
-
-    if (open_indirect((bool)false) == EXIT_FAILURE &&
-        open_indirect((bool)true)  == EXIT_FAILURE)
-    {
-        if (cmd->colon_set)
+        if (open_indirect((bool)false) == EXIT_FAILURE &&
+            open_indirect((bool)true)  == EXIT_FAILURE)
         {
-            push_expr(TECO_FAILURE, EXPR_VALUE);
-
-            return;
+            if (cmd->colon_set)
+            {
+                push_expr(TECO_FAILURE, EXPR_VALUE);
+            }
+            else
+            {
+                prints_err(E_FNF, filename_buf);
+            }
         }
-
-        prints_err(E_FNF, filename_buf);
-    }
-
-    if (cmd->colon_set)
-    {
-        push_expr(TECO_SUCCESS, EXPR_VALUE);
+        else if (cmd->colon_set)
+        {
+            push_expr(TECO_SUCCESS, EXPR_VALUE);
+        }
     }
 }
 

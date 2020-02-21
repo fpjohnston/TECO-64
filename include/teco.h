@@ -305,7 +305,7 @@ extern int isdelim(int c);
 
 extern bool search_loop(struct search *s);
 
-extern void search_print(void);
+extern void flag_print(int flag);
 
 extern bool search_backward(struct search *s);
 

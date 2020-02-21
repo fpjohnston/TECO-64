@@ -181,14 +181,6 @@ int main(int argc, const char * const argv[])
 
     init_ebuf(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);
                                         // Initialize edit buffer
-
-    bool initial_cmd = false;
-
-    if (current->pos != current->len)
-    {
-        initial_cmd = true;
-    }
-
     main_active = true;                 // Initialization is complete
 
     for (;;)                            // Loop forever
@@ -202,12 +194,12 @@ int main(int argc, const char * const argv[])
 
                 refresh_win();          // Refresh window if needed
 
-                if (!initial_cmd)
+                // If command buffer empty, read another command
+
+                if (current->pos == current->len)
                 {
                     read_cmd();
                 }
-
-                initial_cmd = false;
 
                 init_expr();            // Initialize expression stack
                 exec_cmd();             // Execute what we have

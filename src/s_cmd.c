@@ -164,7 +164,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         }
         else
         {
-            search_print();
+            flag_print(f.es);
         }
 
         if (cmd->colon_set)

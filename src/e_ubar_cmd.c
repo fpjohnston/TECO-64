@@ -90,7 +90,7 @@ void exec_E_ubar(struct cmd *cmd)
 
     if (search_loop(&s))
     {
-        search_print();
+        flag_print(f.es);
 
         if (cmd->colon_set)
         {

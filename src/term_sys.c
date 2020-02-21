@@ -105,18 +105,6 @@ int getc_term(bool wait)
     {
         f.e0.ctrl_c = false;
 
-        if (f.et.rubout)
-        {
-            if (c == DEL)
-            {
-                return BS;
-            }
-            else if (c == BS)
-            {
-                return DEL;
-            }
-        }
-
         if (c == CR)
         {
             LF_pending = true;

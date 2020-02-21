@@ -32,8 +32,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <ncurses.h>
+
 #include "teco.h"
 #include "ascii.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
@@ -84,28 +87,44 @@ static void read_vt(void);
 
 static void read_bs(void)
 {
-    if (empty_tbuf())                    // In immediate mode?
+    if (empty_tbuf())                   // Immediate mode?
     {
-        print_echo(CRLF);
-        print_prompt();
-
         if (f.et.scope)
         {
-            //ZScrOp(SCR_EEL);          // TODO: write this function
+            if (f.e0.winact)
+            {
+                (void)printw("\r");
+                (void)clrtoeol();
+                (void)refresh();
+            }
+            else
+            {
+                print_echo(CR);
+            }
         }
 
-        if (f.ev)
+        if (t.dot != t.B)
         {
-            //DoEvEs(EvFlag);
+            int n = getdelta_ebuf(-1);
+
+            setpos_ebuf(n + t.dot);
+
+            if (f.ev)
+            {
+                flag_print(f.ev);
+            }
+            else
+            {
+                flag_print(-1);
+            }
         }
-        else
-        {
-            //TypBuf(GapEnd + 1, GapEnd + Ln2Chr((LONG)1) + 1);
-        }
+
+        print_prompt();
     }
     else
     {
         (void)delete_tbuf();
+
         print_echo(BS);
         print_echo(SPACE);
         print_echo(BS);
@@ -323,7 +342,7 @@ static void read_ctrl_g(void)
 
     if (c != CTRL_G && c != SPACE && c != '*')
     {
-        store_tbuf(c);                   // Regular character, so just store it
+        store_tbuf(c);                  // Regular character, so just store it
 
         return;
     }
@@ -331,7 +350,7 @@ static void read_ctrl_g(void)
     // Here when we have a special CTRL/G command
 
     print_echo(CRLF);                   // Start new line
-    (void)delete_tbuf();                 // Delete CTRL/G in buffer
+    (void)delete_tbuf();                // Delete CTRL/G in buffer
 
     if (c == CTRL_G)                    // ^G^G
     {
@@ -342,7 +361,7 @@ static void read_ctrl_g(void)
     }
     else if (c == SPACE)                // ^G<SPACE>
     {
-        if (empty_tbuf())                // Printing from beginning of buffer?
+        if (empty_tbuf())               // Printing from beginning of buffer?
         {
             print_prompt();             // Yes, so output prompt
         }
@@ -351,7 +370,7 @@ static void read_ctrl_g(void)
     }
     else /* if (c == '*') */            // ^G*
     {
-        if (empty_tbuf())                // Printing from beginning of buffer?
+        if (empty_tbuf())               // Printing from beginning of buffer?
         {
             print_prompt();             // Yes, so output prompt
         }
@@ -374,20 +393,19 @@ static void read_ctrl_u(void)
 
     while ((c = delete_tbuf()) != EOF)
     {
-        if (c == LF)
+        if (isdelim(c))
         {
-            store_tbuf(c);               // Add line terminator back
+            store_tbuf(c);              // Add line terminator back
 
             break;
         }
     }
 
-    if (f.et.scope)
+    if (f.et.scope && f.e0.winact)
     {
-        print_echo(CR);
-
-        // TODO: finish this
-        // ZScrOp(SCR_EEL);             // erase line
+        (void)printw("\r");
+        (void)clrtoeol();
+        (void)refresh();
     }
     else
     {
@@ -421,7 +439,7 @@ static void read_ctrl_z(void)
         exit(EXIT_SUCCESS);             // Clean up, reset, and exit
     }
 
-    store_tbuf(c);                       // Normal character
+    store_tbuf(c);                      // Normal character
 }
 
 
@@ -478,7 +496,7 @@ static int read_first(void)
     {
         if (f.ev)                       // Is edit verify flag set?
         {
-            // DoEvEs(EvFlag);          // TODO: TBD!
+            flag_print(f.ev);
         }
 
         if (prompt_enabled)
@@ -492,7 +510,6 @@ static int read_first(void)
 
         switch (c)
         {
-            case DEL:
             case CTRL_U:
                 echo_in(CR);
 
@@ -521,7 +538,7 @@ static int read_first(void)
                 if (last_error != E_NUL)
                 {
                     echo_in(c);
-                    echo_tbuf(0);        // Echo command line
+                    echo_tbuf(0);       // Echo command line
                     echo_in(c);
                 }
 
@@ -541,6 +558,11 @@ static int read_first(void)
                 }
 
                 read_qname(c);
+
+                break;
+
+            case DEL:
+                echo_in(CRLF);
 
                 break;
 
@@ -567,24 +589,39 @@ static int read_first(void)
 
 static void read_lf(void)
 {
-    if (empty_tbuf())                    // Immediate mode?
+    if (empty_tbuf())                   // Immediate mode?
     {
-        print_echo(CRLF);
-        print_prompt();
-
         if (f.et.scope)
         {
-            //ZScrOp(SCR_EEL);
+            if (f.e0.winact)
+            {
+                (void)printw("\r");
+                (void)clrtoeol();
+                (void)refresh();
+            }
+            else
+            {
+                print_echo(CR);
+            }
         }
 
-        if (f.ev)
+        if (t.dot != t.Z)
         {
-            //DoEvEs(EvFlag);
+            int n = getdelta_ebuf(1);
+
+            setpos_ebuf(n + t.dot);
+
+            if (f.ev)
+            {
+                flag_print(f.ev);
+            }
+            else
+            {
+                flag_print(-1);
+            }
         }
-        else
-        {
-            //TypBuf(GapEnd + 1, GapEnd + Ln2Chr((LONG)1) + 1);
-        }
+
+        print_prompt();
     }
     else
     {

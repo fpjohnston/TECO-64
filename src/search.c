@@ -527,50 +527,36 @@ bool search_loop(struct search *s)
 
 ///
 ///  @brief    Check to see if we need to print anything after a successful
-///            search.
+///            search, or before a prompt.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void search_print(void)
+void flag_print(int flag)
 {
-    int m    = 0;
-    int n    = f.es;
-    int flag = 0;
+    int m    = flag / 256;
+    int n    = flag % 256;
+    int mark = 0;
 
     // Never print anything if we're in a loop or a macro.
 
-    if (check_loop() || check_macro())
+    if (check_loop() || check_macro() || n == 0)
     {
         return;
-    }
-
-    if (n == 0)
-    {
-        return;
-    }
-    else
-    {
-        m = f.es / 256;
-        n = f.es % 256;
     }
 
     if (n > NUL && n < SPACE)
     {
-        flag = LF;
+        mark = LF;
     }
     else if (n >= SPACE && n < DEL)
     {
-        flag = n;
-    }
-    else if (n == -1)
-    {
-        flag = -1;
+        mark = n;
     }
     else
     {
-        return;
+        mark = -1;
     }
 
     if (m == 0)
@@ -586,9 +572,9 @@ void search_print(void)
 
     for (int i = m; i < n; ++i)
     {
-        if (i == 0 && flag != -1)
+        if (i == 0 && mark != -1)
         {
-            echo_out(flag);
+            echo_out(mark);
         }
 
         int c = getchar_ebuf(i);
