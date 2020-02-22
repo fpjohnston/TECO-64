@@ -54,7 +54,7 @@ int delete_tbuf(void)
 {
     assert(term_buf != NULL);
 
-    if (term_buf->len == 0)              // Anything in buffer?
+    if (term_buf->len == 0)             // Anything in buffer?
     {
         return EOF;                     // No
     }
@@ -90,7 +90,7 @@ void echo_tbuf(int pos)
 ///
 ///  @brief    Check if buffer is empty.
 ///
-///  @returns  true if buffer is empty, false if it's not empty.
+///  @returns  true if buffer is empty, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

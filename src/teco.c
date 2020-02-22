@@ -138,7 +138,7 @@ int main(int argc, const char * const argv[])
     f.eu         = -1;                  // No case flagging
 
     f.et.abort   = true;                // Abort on error
-    f.et.accent  = false;               // Don't use accent grave as delimiter
+    f.et.accent  = true;                // Use accent grave as delimiter
 
     f.e1.strict  = true;                // Strictly enforce syntax
     f.e1.winline = true;                // Line between text & command regions

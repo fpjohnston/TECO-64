@@ -71,7 +71,7 @@ extern bool putc_win(int c);
 
 extern bool puts_win(const char *buf);
 
-extern bool readkey_win(int c);
+extern int readkey_win(int c);
 
 extern void reset_win(void);
 

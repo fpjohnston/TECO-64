@@ -31,6 +31,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <ncurses.h>
 
@@ -55,6 +56,8 @@ static int last_in = EOF;               ///< Last character read
 
 static void read_bs(void);
 
+static void read_bs_or_lf(int pos, int line);
+
 static int read_chr(int c, bool accent);
 
 static void read_cr(void);
@@ -78,6 +81,7 @@ static void read_qname(int c);
 static void read_vt(void);
 
 
+
 ///
 ///  @brief    Process backspace.
 ///
@@ -87,47 +91,82 @@ static void read_vt(void);
 
 static void read_bs(void)
 {
-    if (empty_tbuf())                   // Immediate mode?
+    int c = delete_tbuf();
+
+    if (c != EOF)
     {
-        if (f.et.scope)
+        if (f.et.rubout)
         {
-            if (f.e0.winact)
+            print_echo(BS);
+            print_echo(SPACE);
+            print_echo(BS);
+        }
+        else
+        {
+            print_echo(c);
+        }
+    }
+}
+
+
+///
+///  @brief    Process immediate-mode BS or LF character.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void read_bs_or_lf(int pos, int line)
+{
+    if (f.et.scope && f.e0.winact)
+    {
+        (void)printw("\r");
+        (void)clrtoeol();
+        (void)refresh();
+    }
+    else if (f.et.rubout)
+    {
+        int c;
+        int nbytes = (int)strlen(prompt);
+
+        while ((c = delete_tbuf()) != EOF)
+        {
+            if (isdelim(c))
             {
-                (void)printw("\r");
-                (void)clrtoeol();
-                (void)refresh();
+                store_tbuf(c);
+
+                break;
             }
-            else
-            {
-                print_echo(CR);
-            }
+
+            ++nbytes;
         }
 
-        if (t.dot != t.B)
+        for (int i = 0; i < nbytes; ++i)
         {
-            int n = getdelta_ebuf(-1);
-
-            setpos_ebuf(n + t.dot);
-
-            if (f.ev)
-            {
-                flag_print(f.ev);
-            }
-            else
-            {
-                flag_print(-1);
-            }
+            print_echo(BS);
+            print_echo(SPACE);
+            print_echo(BS);
         }
-
-        print_prompt();
     }
     else
     {
-        (void)delete_tbuf();
+        print_echo(CR);
+    }
 
-        print_echo(BS);
-        print_echo(SPACE);
-        print_echo(BS);
+    if (t.dot != pos)
+    {
+        int n = getdelta_ebuf(line);
+
+        setpos_ebuf(n + t.dot);
+
+        if (f.ev)
+        {
+            flag_print(f.ev);
+        }
+        else
+        {
+            flag_print(-1);
+        }
     }
 }
 
@@ -144,6 +183,7 @@ static int read_chr(int c, bool accent)
     switch (c)
     {
         case BS:
+        case DEL:
             read_bs();
 
             break;
@@ -334,54 +374,45 @@ static void read_ctrl_c(int last)
 static void read_ctrl_g(void)
 {
     echo_in(CTRL_G);
-    store_tbuf(CTRL_G);
 
     int c = getc_term((bool)WAIT);      // Get next character
 
     echo_in(c);                         // Echo it
 
-    if (c != CTRL_G && c != SPACE && c != '*')
-    {
-        store_tbuf(c);                  // Regular character, so just store it
-
-        return;
-    }
-
-    // Here when we have a special CTRL/G command
-
-    print_echo(CRLF);                   // Start new line
-    (void)delete_tbuf();                // Delete CTRL/G in buffer
-
     if (c == CTRL_G)                    // ^G^G
     {
+        print_echo(CRLF);               // Start new line
         put_bell();
         reset_tbuf();
         reset_cbuf();
         print_prompt();
     }
-    else if (c == SPACE)                // ^G<SPACE>
+    else if (c == SPACE)                // ^G<SPACE> - retype current line
     {
-        if (empty_tbuf())               // Printing from beginning of buffer?
+        if (start_tbuf() == 0)          // First line?
         {
-            print_prompt();             // Yes, so output prompt
+            print_prompt();             // Yes, we need the prompt
         }
 
         echo_tbuf((int)start_tbuf());
     }
-    else /* if (c == '*') */            // ^G*
+    else if (c == '*')                  // ^G* - retype all input lines
     {
-        if (empty_tbuf())               // Printing from beginning of buffer?
-        {
-            print_prompt();             // Yes, so output prompt
-        }
+        print_echo(CRLF);
+        print_prompt();
 
         echo_tbuf(0);
+    }
+    else                                // Not special CTRL/G sequence
+    {
+        store_tbuf(CTRL_G);
+        store_tbuf(c);                  // Regular character, so just store it
     }
 }
 
 
 ///
-///  @brief    Process CTRL/U.
+///  @brief    Process CTRL/U: delete to start of current line.
 ///
 ///  @returns  Nothing.
 ///
@@ -389,23 +420,35 @@ static void read_ctrl_g(void)
 
 static void read_ctrl_u(void)
 {
-    int c;
-
-    while ((c = delete_tbuf()) != EOF)
-    {
-        if (isdelim(c))
-        {
-            store_tbuf(c);              // Add line terminator back
-
-            break;
-        }
-    }
-
     if (f.et.scope && f.e0.winact)
     {
         (void)printw("\r");
         (void)clrtoeol();
         (void)refresh();
+    }
+    else if (f.et.rubout)
+    {
+        int c;
+        int nbytes = (int)strlen(prompt);
+
+        while ((c = delete_tbuf()) != EOF)
+        {
+            if (isdelim(c))
+            {
+                store_tbuf(c);
+
+                break;
+            }
+
+            ++nbytes;
+        }
+
+        for (int i = 0; i < nbytes; ++i)
+        {
+            print_echo(BS);
+            print_echo(SPACE);
+            print_echo(BS);
+        }
     }
     else
     {
@@ -413,7 +456,6 @@ static void read_ctrl_u(void)
         print_echo(CRLF);
     }
 
-    reset_tbuf();
     print_prompt();
 }
 
@@ -508,10 +550,17 @@ static int read_first(void)
 
         int c = getc_term((bool)WAIT);
 
+        c = readkey_win(c);             // See if it's a window key
+
         switch (c)
         {
-            case CTRL_U:
-                echo_in(CR);
+            case BS:
+                read_bs_or_lf(t.B, -1);
+                
+                break;
+
+            case LF:
+                read_bs_or_lf(t.Z, 1);
 
                 break;
 
@@ -566,15 +615,13 @@ static int read_first(void)
 
                 break;
 
-            default:
-                if (!readkey_win(c))
-                {
-                    return c;
-                }
-
+            case EOF:                   // Window key we already processed
                 prompt_enabled = false;
 
                 break;
+
+            default:
+                return c;
         }
     }
 }
@@ -589,45 +636,8 @@ static int read_first(void)
 
 static void read_lf(void)
 {
-    if (empty_tbuf())                   // Immediate mode?
-    {
-        if (f.et.scope)
-        {
-            if (f.e0.winact)
-            {
-                (void)printw("\r");
-                (void)clrtoeol();
-                (void)refresh();
-            }
-            else
-            {
-                print_echo(CR);
-            }
-        }
-
-        if (t.dot != t.Z)
-        {
-            int n = getdelta_ebuf(1);
-
-            setpos_ebuf(n + t.dot);
-
-            if (f.ev)
-            {
-                flag_print(f.ev);
-            }
-            else
-            {
-                flag_print(-1);
-            }
-        }
-
-        print_prompt();
-    }
-    else
-    {
-        print_echo(LF);
-        store_tbuf(LF);
-    }
+    print_echo(LF);
+    store_tbuf(LF);
 }
 
 

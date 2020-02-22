@@ -559,47 +559,45 @@ bool puts_win(const char *buf)
 ///
 ///  @brief    Read window key.
 ///
-///  @returns  true if window key, else false.
+///  @returns  Character to process, or EOF if already processed.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool readkey_win(int key)
+int readkey_win(int key)
 {
 
 #if     defined(SCOPE)
 
     if (key < KEY_MIN || key > KEY_MAX)
     {
-        return false;
+        return key;
     }
 
-    if (key == KEY_UP)
+    if (key == KEY_BACKSPACE)
+    {
+        return BS;
+    }
+    else if (key == KEY_UP)
     {
         move_up();
-
-        return true;
     }
     else if (key == KEY_DOWN)
     {
         move_down();
-
-        return true;
     }
-    else if (key != KEY_LEFT && key != KEY_RIGHT)
+    else if (key == KEY_LEFT || key == KEY_RIGHT)
     {
-        return true;
+       int dot = (int)t.dot + (key == KEY_LEFT ? -1 : 1);
+
+       setpos_ebuf(dot);
+       refresh_win();
     }
 
-    int dot = (int)t.dot + (key == KEY_LEFT ? -1 : 1);
-
-    setpos_ebuf(dot);
-    refresh_win();
-
-    return true;
+    return EOF;
 
 #else
 
-    return false;
+    return key;
 
 #endif
 
