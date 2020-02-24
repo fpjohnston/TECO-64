@@ -27,7 +27,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+
+#if     defined(SCOPE)
+
 #include <ncurses.h>
+
+#endif
 
 #if     !defined(_STDIO_H)
 
@@ -126,6 +131,33 @@ static void repaint(int row, int col, int pos);
 static void update_status(void);
 
 #endif
+
+
+///
+///  @brief    Clear to end of line.
+///
+///  @returns  true if success, false if we couldn't.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool clear_eol(void)
+{
+
+#if     defined(SCOPE)
+
+    if (f.et.scope && f.e0.winact)
+    {
+        (void)printw("\r");
+        (void)clrtoeol();
+        (void)refresh();
+
+        return true;
+    }
+
+#endif
+
+    return false;
+}
 
 
 ///
@@ -334,6 +366,8 @@ void init_win(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(SCOPE)
+
 static void mark_cursor(int row, int col)
 {
     // Save current position
@@ -372,6 +406,8 @@ static void mark_cursor(int row, int col)
     (void)move(d.text.top + saved_row, saved_col);
 }
 
+#endif
+
 
 ///
 ///  @brief    Move cursor down.
@@ -379,6 +415,8 @@ static void mark_cursor(int row, int col)
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(SCOPE)
 
 static void move_down(void)
 {
@@ -435,6 +473,8 @@ static void move_down(void)
     (void)refresh();
 }
 
+#endif
+
 
 ///
 ///  @brief    Move cursor up.
@@ -442,6 +482,8 @@ static void move_down(void)
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(SCOPE)
 
 static void move_up(void)
 {
@@ -491,6 +533,8 @@ static void move_up(void)
 
     (void)refresh();
 }
+
+#endif
 
 
 ///
@@ -737,6 +781,9 @@ void reset_win(void)
 
 void set_nrows(void)
 {
+
+#if     defined(SCOPE)
+
     d.nrows = w.height - w.nscroll;
 
     if (f.e1.winline)
@@ -745,6 +792,9 @@ void set_nrows(void)
     }
 
     assert(d.nrows > 0);
+
+#endif
+
 }
 
 
@@ -822,6 +872,8 @@ void set_scroll(int height, int nscroll)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(SCOPE)
+
 static void update_status(void)
 {
     // Draw line between text window and command window
@@ -879,3 +931,5 @@ static void update_status(void)
     (void)move(saved_row, saved_col);
     (void)attrset(COLOR_PAIR(CMD));     //lint !e835 !e845
 }
+
+#endif

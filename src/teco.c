@@ -143,6 +143,8 @@ int main(int argc, const char * const argv[])
     f.e1.strict  = true;                // Strictly enforce syntax
     f.e1.winline = true;                // Line between text & command regions
 
+    f.e2.in_crlf = true;                // Convert CR/LF to LF on input
+    f.e2.out_lf  = OUT_CRLF;            // Convert LF to CR/LF on output
     f.e2.dollar  = true;                // Allow dollar signs in symbols
     f.e2.ubar    = true;                // Allow underscores in symbols
 

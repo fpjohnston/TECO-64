@@ -189,10 +189,10 @@ const struct cmd_table cmd_e_table[] =
     { exec_E3,      "f m x"   },
     { exec_E4,      "f m x"   },
     { exec_E5,      "f n x"   },
-    { NULL,         "n x"     },
-    { NULL,         "n x"     },
-    { NULL,         "n x"     },
-    { NULL,         "n x"     },
+    { NULL,         "n x"     },        // Placeholder for E6
+    { NULL,         "n x"     },        // Placeholder for E7
+    { NULL,         "n x"     },        // Placeholder for E8
+    { NULL,         "n x"     },        // Placeholder for E9
     { exec_EA,      ""        },
     { exec_EB,      ": @ 1"   },
     { exec_EC,      "n"       },
@@ -218,7 +218,7 @@ const struct cmd_table cmd_e_table[] =
     { exec_EW,      ": @ 1"   },
     { exec_EX,      ""        },
     { exec_EY,      ":"       },
-    { exec_EZ,      "f m x"   },
+    { NULL,         ""        },
     { exec_E_ubar,  "n : @ 1" },
 };
 

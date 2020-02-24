@@ -66,8 +66,16 @@ union e1_flag
     };
 };
 
+enum
+{
+    OUT_CRLF,                   ///< Convert LF to CRLF on output
+    OUT_LFCR,                   ///< Convert LF to LFCR on output
+    OUT_CR,                     ///< Convert LF to CR on output
+    OUT_LF                      ///< Convert LF to LF on output
+};
+
 ///  @struct  e2_flag
-///  @brief   Definition of compatibility features.
+///  @brief   File format features.
 
 union e2_flag
 {
@@ -75,11 +83,14 @@ union e2_flag
 
     struct
     {
-        uint dollar : 1;        ///< $ is a valid symbol character
-        uint ubar   : 1;        ///< _ is a valid symbol character
-        uint add_cr : 1;        ///< Add CR to LF on output
-        uint no_cr  : 1;        ///< Strip CR on input
-        uint no_ff  : 1;        ///< FF is normal character on input
+        uint in_crlf : 1;       ///< CR/LF is input delimiter
+        uint in_lfcr : 1;       ///< LF/CR is input delimiter
+        uint in_cr   : 1;       ///< CR is input delimiter
+        uint in_lf   : 1;       ///< LF is input delimiter
+        uint out_lf  : 2;       ///< Output delimiter for LF
+        uint no_ff   : 1;       ///< FF is normal character on input
+        uint dollar  : 1;       ///< $ is a valid symbol character
+        uint ubar    : 1;       ///< _ is a valid symbol character
     };
 };
 
@@ -174,33 +185,6 @@ union et_flag
     };
 };
 
-///  @union   ez_flag
-///  @brief   Definition of additional flags settable by the user.
-
-union ez_flag
-{
-    uint flag;                  ///< Entire EZ flag
-
-    struct
-    {
-        uint noversion : 1;     ///< No VMS-style versions
-        uint           : 1;     ///
-        uint           : 1;     ///
-        uint arrow     : 1;     ///< (TODO: what's this for?)
-        uint beep      : 1;     ///< Audio beep instead of flash
-        uint           : 1;     ///< Line between windows
-        uint           : 1;     ///
-        uint formfeed  : 1;     ///< Do not stop read on FF
-        uint unixnl    : 1;     ///< Use Unix-style newline terminators
-        uint vt100     : 1;     ///< Use VT100 graphics
-        uint           : 1;     ///
-        uint btee      : 1;     ///< Use BTEE instead of DIAMOND (???)
-        uint           : 1;     ///
-        uint hidecr    : 1;     ///< Hide CR in scope
-        uint nostrip   : 1;     ///< Don't strip filename extension
-    };
-};
-
 ///  @struct  flags
 ///  @brief   Master flag structure.
 
@@ -222,10 +206,10 @@ struct flags
     union  et_flag et;          ///< Terminal flags
     int            eu;          ///< Upper/lower case flag
     int            ev;          ///< Edit verify flag
-    union  ez_flag ez;          ///< Additional external flags
 };
 
 ///  @var    f
+///
 ///  @brief  Master flag used to access all other flag variables. Note that
 ///          the fact that this variable is only a single character is not
 ///          a problem, because it will never be referenced by itself, but

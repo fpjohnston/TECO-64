@@ -178,9 +178,35 @@ bool next_page(int start, int end, bool ff, bool yank)
     {
         int c = getchar_ebuf(i);
 
-        if (c == LF && f.e2.add_cr)
+        if (c == LF)
         {
-            fputc(CR, ofile->fp);
+            switch (f.e2.out_lf)
+            {
+                default:
+                case OUT_CRLF:
+                    fputc(CR, ofile->fp);
+                    fputc(LF, ofile->fp);
+
+                    break;
+
+                case OUT_LFCR:
+                    fputc(LF, ofile->fp);
+                    fputc(CR, ofile->fp);
+
+                    break;
+
+                case OUT_CR:
+                    fputc(CR, ofile->fp);
+
+                    break;
+
+                case OUT_LF:
+                    fputc(LF, ofile->fp);
+
+                    break;
+            }
+
+            continue;
         }
 
         fputc(c, ofile->fp);

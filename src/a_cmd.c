@@ -108,17 +108,47 @@ bool append(bool n_set, int n_arg, bool colon_set)
 bool append_line(void)
 {
     struct ifile *ifile = &ifiles[istream];
+    int next = fgetc(ifile->fp);
     int c;
 
-    while ((c = fgetc(ifile->fp)) != EOF)
+    while ((c = next) != EOF)
     {
+        next = fgetc(ifile->fp);
+
         if (c == FF && !f.e2.no_ff)     // If form feed, don't store it
         {
             v.ff = true;                // But do flag it
 
             return false;               // And say we need to stop
         }
+        else if (c == LF)
+        {
+            if (f.e2.in_lfcr && next == CR)
+            {
+                ;
+            }
+            else if (!f.e2.in_lf)
+            {
+                continue;               // Ignore LF
+            }
 
+            (void)ungetc(next, ifile->fp); // Save chr. for next line
+        }
+        else if (c == CR)
+        {
+            if (f.e2.in_crlf && next == LF)
+            {
+                ;
+            }
+            else if (!f.e2.in_cr)
+            {
+                continue;               // Ignore CR
+            }
+
+            (void)ungetc(next, ifile->fp); // Save chr. for next line
+            c = LF;                     // Store LF in buffer
+        }
+            
         switch (add_ebuf(c))
         {
             default:

@@ -203,7 +203,17 @@ void rename_output(struct ofile *ofile)
 
 void set_wild(const char *filename)
 {
-    int flags = GLOB_ERR | GLOB_MARK | GLOB_TILDE; //lint !e835
+    int flags;
+
+#if     defined(__GNUC__)
+
+    flags = GLOB_ERR | GLOB_MARK | GLOB_TILDE; //lint !e835
+
+#else
+
+    flags = GLOB_ERR | GLOB_MARK;       //lint !e835
+
+#endif
 
     switch (glob(filename, flags, NULL, &pglob))
     {

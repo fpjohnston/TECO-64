@@ -59,6 +59,8 @@ struct watch
 
 // Window functions
 
+extern bool clear_eol(void);
+
 extern void clear_win(void);
 
 extern int getchar_win(bool wait);

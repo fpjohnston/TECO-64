@@ -33,8 +33,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ncurses.h>
-
 #include "teco.h"
 #include "ascii.h"
 #include "editbuf.h"
@@ -118,11 +116,9 @@ static void read_bs(void)
 
 static void read_bs_or_lf(int pos, int line)
 {
-    if (f.et.scope && f.e0.winact)
+    if (clear_eol())                    // Can we clear to end of line?
     {
-        (void)printw("\r");
-        (void)clrtoeol();
-        (void)refresh();
+        ;                               // If so, we're done
     }
     else if (f.et.rubout)
     {
@@ -420,11 +416,9 @@ static void read_ctrl_g(void)
 
 static void read_ctrl_u(void)
 {
-    if (f.et.scope && f.e0.winact)
+    if (clear_eol())                    // Can we clear to end of line?
     {
-        (void)printw("\r");
-        (void)clrtoeol();
-        (void)refresh();
+        ;                               // If so, we're done
     }
     else if (f.et.rubout)
     {

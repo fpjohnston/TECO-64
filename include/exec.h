@@ -346,8 +346,6 @@ extern void exec_EU(struct cmd *cmd);
 
 extern void exec_EV(struct cmd *cmd);
 
-extern void exec_EZ(struct cmd *cmd);
-
 extern void exec_H(struct cmd *cmd);
 
 extern void exec_operator(struct cmd *cmd);

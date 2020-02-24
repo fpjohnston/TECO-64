@@ -554,18 +554,3 @@ void exec_EV(struct cmd *cmd)
 {
     (void)check_n_flag(cmd, &f.ev);
 }
-
-
-///
-///  @brief    Scan EZ command: TECO C flags.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_EZ(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    (void)check_mn_flag(cmd, &f.ez.flag);
-}
