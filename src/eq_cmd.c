@@ -37,7 +37,9 @@
 
 #include "teco.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
+#include "file.h"
 #include "qreg.h"
 
 

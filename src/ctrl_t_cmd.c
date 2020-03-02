@@ -33,7 +33,9 @@
 
 #include "teco.h"
 #include "eflags.h"
+#include "estack.h"
 #include "exec.h"
+#include "term.h"
 
 
 ///

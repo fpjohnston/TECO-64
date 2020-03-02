@@ -52,6 +52,7 @@
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
+#include "term.h"
 #include "window.h"
 
 ///
@@ -243,18 +244,19 @@ int getchar_win(bool wait)
         return c;
     }
 
-#endif
-
-    // If windows support isn't compiled in, or it's not currently active, then
-    // read a character through alternate means. Note that if windows are inactive,
-    // getch() always returns immediately, which is why we usually call read() to
-    // get a single character.
+    // If windows support isn't compiled in, or it's not currently active,
+    // then read a character through alternate means. Note that if windows
+    // are inactive, getch() always returns immediately, which is why we
+    // usually call read() to get a single character.
 
     if (!wait)
     {
         return getch();
     }
-    else if (read(fileno(stdin), &c, 1uL) == -1)
+
+#endif        
+
+    if (read(fileno(stdin), &c, 1uL) == -1)
     {
         return -1;
     }

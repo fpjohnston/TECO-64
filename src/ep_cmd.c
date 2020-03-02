@@ -33,6 +33,7 @@
 
 #include "teco.h"
 #include "exec.h"
+#include "file.h"
 
 
 ///

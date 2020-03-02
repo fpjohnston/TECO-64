@@ -34,7 +34,10 @@
 #include "teco.h"
 #include "eflags.h"
 #include "exec.h"
+#include "file.h"
 #include "qreg.h"
+#include "search.h"
+#include "term.h"
 
 
 ///

@@ -37,6 +37,8 @@
 #include "ascii.h"
 #include "errors.h"
 #include "exec.h"
+#include "file.h"
+#include "term.h"
 
 
 struct ifile ifiles[IFILE_MAX];         ///< Input file descriptors

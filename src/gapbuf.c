@@ -36,6 +36,7 @@
 #include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
+#include "term.h"
 
 
 ///  @var    t

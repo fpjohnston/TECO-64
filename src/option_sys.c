@@ -28,10 +28,19 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if     defined(__DECC)
+
+#include "getopt.h"
+
+#else
+
+#include <getopt.h>
+
+#endif
 
 #include "teco.h"
 #include "ascii.h"

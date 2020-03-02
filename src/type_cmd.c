@@ -37,6 +37,7 @@
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
+#include "term.h"
 
 
 // Local functions

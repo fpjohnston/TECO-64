@@ -36,6 +36,7 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "term.h"
 
 
 struct buffer *current;                 ///< Current command string buffer

@@ -1,3 +1,4 @@
+-I ../include
 include.lnt
 co-gcc.lnt   // Basic gcc configuration
 

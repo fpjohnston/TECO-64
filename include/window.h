@@ -57,6 +57,8 @@ struct watch
     int nscroll;                    ///< No. of scrolling lines
 };
 
+extern struct watch w;
+
 // Window functions
 
 extern bool clear_eol(void);

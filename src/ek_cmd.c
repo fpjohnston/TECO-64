@@ -34,6 +34,7 @@
 #include "teco.h"
 #include "errors.h"
 #include "exec.h"
+#include "file.h"
 
 
 ///

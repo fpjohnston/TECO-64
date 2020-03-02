@@ -40,6 +40,7 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 
 

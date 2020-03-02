@@ -36,7 +36,9 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "file.h"
 #include "qreg.h"
+#include "search.h"
 
 
 #define BUILD_INIT      128             ///< Initial size of string

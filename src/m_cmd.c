@@ -31,6 +31,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "estack.h"
 #include "exec.h"
 #include "qreg.h"
 

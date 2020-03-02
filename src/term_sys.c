@@ -44,7 +44,12 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+#if     !defined(__DECC)
+
 #include <termios.h>
+
+#endif
 
 #include "teco.h"
 #include "ascii.h"
@@ -52,10 +57,15 @@
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
+#include "term.h"
 #include "window.h"
 
 
+#if     !defined(__DECC)
+
 static struct termios saved_mode;       ///< Saved terminal mode
+
+#endif
 
 static bool term_active = false;        ///< Are terminal settings active?
 
@@ -133,7 +143,11 @@ void init_term(void)
     {
         term_oneshot = true;
 
+#if     !defined(__DECC)
+
         (void)tcgetattr(fileno(stdin), &saved_mode);
+
+#endif
 
         struct sigaction sa;
 
@@ -144,7 +158,11 @@ void init_term(void)
 
         (void)sigaction(SIGINT, &sa, NULL);
 
+#if     !defined(__DECC)
+
         sa.sa_flags = SA_RESTART;       // Restarts are okay for screen resizing
+
+#endif
 
         (void)sigaction(SIGWINCH, &sa, NULL);
 
@@ -167,6 +185,8 @@ void init_term(void)
     {
         term_active = true;
 
+#if     !defined(__DECC)
+
         struct termios mode;
 
         (void)tcgetattr(fileno(stdin), &mode);
@@ -180,6 +200,9 @@ void init_term(void)
         mode.c_oflag &= ~ONLCR;         // Don't map CR to CR/NL on output
 
         (void)tcsetattr(fileno(stdin), TCSAFLUSH, &mode);
+
+#endif
+
     }
 }
 
@@ -212,7 +235,12 @@ void reset_term(void)
     {
         term_active = false;
 
+#if     !defined(__DECC)
+
         (void)tcsetattr(fileno(stdin), TCSAFLUSH, &saved_mode);
+
+#endif
+
     }
 }
 

@@ -38,6 +38,8 @@
 
 #include "teco.h"
 #include "errors.h"
+#include "file.h"
+
 
 static glob_t pglob;                    ///< Saved list of wildcard files
 

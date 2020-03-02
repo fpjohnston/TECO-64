@@ -76,8 +76,12 @@
 #include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
+#include "estack.h"
 #include "exec.h"
+#include "file.h"
 #include "qreg.h"
+#include "search.h"
+#include "term.h"
 #include "window.h"
 
 

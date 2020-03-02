@@ -37,6 +37,7 @@
 #include "ascii.h"
 #include "errors.h"
 #include "qreg.h"
+#include "term.h"
 
 
 ///  @var    qglobal

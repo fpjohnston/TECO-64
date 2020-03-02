@@ -1,6 +1,6 @@
 ///
-///  @file    el_cmd.c
-///  @brief   Execute EL command.
+///  @file    term.h
+///  @brief   Header file for TECO terminal functions.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,51 +26,57 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <assert.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#if     !defined(_TERM_H)
+#define _TERM_H
 
-#include "teco.h"
-#include "errors.h"
-#include "estack.h"
-#include "exec.h"
-#include "file.h"
+#if     !defined(_STDBOOL_H)
+#include <stdbool.h>
+#endif
 
+#if     !defined(_SYS_TYPES_H)
+#include <sys/types.h>
+#endif
 
-///
-///  @brief    Execute EL command (open or close log file). Format is:
-///
-///            ELfile`         - open log file for write.
-///            EL`             - close log file.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
+// Terminal buffer functions
 
-void exec_EL(struct cmd *cmd)
-{
-    assert(cmd != NULL);
+extern int delete_tbuf(void);
 
-    if (cmd->text1.len == 0)
-    {
-        close_output(OFILE_LOG);
+extern void echo_tbuf(int pos);
 
-        return;
-    }
+extern bool empty_tbuf(void);
 
-    if (fopen_output(cmd, OFILE_LOG) == EXIT_FAILURE)
-    {
-        if (!cmd->colon_set)
-        {
-            prints_err(E_UFO, last_file);
-        }
+extern int fetch_tbuf(void);
 
-        push_expr(TECO_FAILURE, EXPR_VALUE);
-    }
-    else if (cmd->colon_set)
-    {
-        push_expr(TECO_SUCCESS, EXPR_VALUE);
-    }
-}
+extern void init_tbuf(void);
+
+extern void reset_tbuf(void);
+
+extern uint start_tbuf(void);
+
+extern void store_tbuf(int c);
+
+// Terminal input/output functions
+
+extern void echo_in(int c);
+
+extern void echo_out(int c);
+
+extern int getc_term(bool nowait);
+
+extern void init_term(void);
+
+extern void print_chr(int c);
+
+extern void print_echo(int c);
+
+extern void print_prompt(void);
+
+extern void print_str(const char *fmt, ...);
+
+extern void put_bell(void);
+
+extern void read_cmd(void);
+
+extern void reset_term(void);
+
+#endif  // !defined(_TERM_H)

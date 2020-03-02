@@ -34,6 +34,7 @@
 #include "teco.h"
 #include "editbuf.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 
 

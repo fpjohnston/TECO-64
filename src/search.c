@@ -38,7 +38,10 @@
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
+#include "file.h"
 #include "qreg.h"
+#include "search.h"
+#include "term.h"
 
 
 ///   @var    last_search

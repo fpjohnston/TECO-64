@@ -40,6 +40,7 @@
 #include "errors.h"
 #include "exec.h"
 #include "qreg.h"
+#include "term.h"
 #include "window.h"
 
 

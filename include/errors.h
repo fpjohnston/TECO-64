@@ -30,7 +30,15 @@
 
 #define _ERRORS_H
 
+#if     defined(__DECC)
+
+#define noreturn
+
+#else
+
 #include <stdnoreturn.h>
+
+#endif
 
 extern int last_error;
 

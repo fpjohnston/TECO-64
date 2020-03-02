@@ -1,5 +1,5 @@
 ///
-///  @file    textbuf.h
+///  @file    editbuf.h
 ///  @brief   Edit buffer interface.
 ///
 ///  @bug     No known bugs.
@@ -26,8 +26,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     !defined(_TEXTBUF_H)
-#define _TEXTBUF_H
+#if     !defined(_EDITBUF_H)
+#define _EDITBUF_H
 
 #if     !defined(_STDBOOL_H)
 #include <stdbool.h>

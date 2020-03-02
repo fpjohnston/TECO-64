@@ -33,6 +33,7 @@
 #include "teco.h"
 #include "eflags.h"
 #include "exec.h"
+#include "file.h"
 
 
 #define TECO_HW         101             ///< x86 platform

@@ -37,6 +37,7 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "term.h"
 #include "window.h"
 
 

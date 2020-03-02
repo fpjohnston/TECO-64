@@ -33,6 +33,7 @@
 #include "teco.h"
 #include "eflags.h"
 #include "exec.h"
+#include "term.h"
 
 
 ///

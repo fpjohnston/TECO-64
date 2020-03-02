@@ -246,19 +246,19 @@ $(TARGET): bin/$(TARGET)
 
 bin/$(TARGET): $(OBJECTS)
 	@echo Making $(@F) $(NULL)
-	$(AT)chdir obj && $(CC) -Xlinker -Map=../$@.map $(DFLAGS) -o ../$@ $(OBJECTS) $(LIBS) -lncurses
+	$(AT)cd obj && $(CC) $(DFLAGS) -o ../$@ $(OBJECTS) $(LIBS) -lncurses
 
 %.lob: %.c
 	@echo Making $@ $(NULL)
-	$(AT)chdir src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
+	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
 
 #%.d: %.c CFLAGS
 #	@echo Making $@ $(NULL)
-#	$(AT)chdir obj && $(CC) @../CFLAGS ../$<
+#	$(AT)cd obj && $(CC) @../CFLAGS ../$<
 
 %.o: %.c
 	@echo Making $@ $(NULL)
-	$(AT)chdir obj && $(CC) @../CFLAGS ../$<
+	$(AT)cd obj && $(CC) @../CFLAGS ../$<
 
 -include $(DFILES)
 
@@ -270,15 +270,15 @@ CFLAGS: FORCE
 
 .PHONY: clean
 clean:
-	-$(AT)chdir bin && rm -f $(TARGET) $(TARGET).map $(NULL2)
-	-$(AT)chdir obj && rm -f *.o $(NULL2)
+	-$(AT)cd bin && rm -f $(TARGET) $(TARGET).map $(NULL2)
+	-$(AT)cd obj && rm -f *.o $(NULL2)
 
 .PHONY: clobber
 clobber: clean
 	-$(AT)rm -f CFLAGS $(NULL2) 
-	-$(AT)chdir obj && rm -f *.d *.lob $(NULL2)
-	-$(AT)chdir src && rm -f *.bak $(NULL2)
-	-$(AT)chdir $(INCDIR) && rm -f *.bak _*.h $(NULL2)
+	-$(AT)cd obj && rm -f *.d *.lob $(NULL2)
+	-$(AT)cd src && rm -f *.bak $(NULL2)
+	-$(AT)cd $(INCDIR) && rm -f *.bak _*.h $(NULL2)
 
 .PHONY: lobs
 lobs: $(LOBS)
@@ -286,7 +286,7 @@ lobs: $(LOBS)
 .PHONY: lint
 lint:   $(LOBS)
 	@echo Linting object files $(NULL)
-	$(AT)chdir obj && $(LINT) -e768 -e769 -summary *.lob
+	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
 
 .PHONY: doc
 doc: doxygen

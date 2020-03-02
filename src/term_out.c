@@ -36,6 +36,8 @@
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
+#include "file.h"
+#include "term.h"
 #include "window.h"
 
 

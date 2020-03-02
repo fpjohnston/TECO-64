@@ -35,7 +35,9 @@
 #include "teco.h"
 #include "editbuf.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
+#include "file.h"
 
 
 char *eg_command;                       ///< EG command to be executed.
