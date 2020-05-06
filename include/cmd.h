@@ -122,33 +122,11 @@ extern const uint cmd_f_count;
 
 // Miscellaneous functions
 
-extern bool append(bool n_set, int n_arg, bool colon_set);
-
-extern bool append_line(void);
-
-extern void exit_EG(void);
-
 extern int fopen_output(const struct cmd *cmd, uint stream);
-
-extern void init_EG(void);
-
-extern void init_loop(void);
 
 extern exec_func *next_cmd(struct cmd *cmd);
 
-extern bool next_page(int start, int end, bool ff, bool yank);
-
-extern bool next_yank(void);
-
 extern void print_cmd(struct cmd *cmd);
-
-extern int read_indirect(void);
-
-extern void reset_if(void);
-
-extern void reset_indirect(void);
-
-extern void reset_loop(void);
 
 extern void reset_scan(void);
 

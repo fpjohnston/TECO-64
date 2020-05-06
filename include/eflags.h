@@ -68,9 +68,9 @@ union e1_flag
 
 enum
 {
+    OUT_CR,
+    OUT_LFCR,
     OUT_CRLF,                   ///< Convert LF to CRLF on output
-    OUT_LFCR,                   ///< Convert LF to LFCR on output
-    OUT_CR,                     ///< Convert LF to CR on output
     OUT_LF                      ///< Convert LF to LF on output
 };
 
@@ -84,9 +84,9 @@ union e2_flag
     struct
     {
         uint in_crlf : 1;       ///< CR/LF is input delimiter
-        uint in_lfcr : 1;       ///< LF/CR is input delimiter
-        uint in_cr   : 1;       ///< CR is input delimiter
         uint in_lf   : 1;       ///< LF is input delimiter
+        uint in_cr   : 1;
+        uint in_lfcr : 1;
         uint out_lf  : 2;       ///< Output delimiter for LF
         uint no_ff   : 1;       ///< FF is normal character on input
         uint dollar  : 1;       ///< $ is a valid symbol character

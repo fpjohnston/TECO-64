@@ -1,5 +1,5 @@
 -I ../include
-include.lnt
+//include.lnt
 co-gcc.lnt   // Basic gcc configuration
 
 // prevent the GCC version of offsetof being used

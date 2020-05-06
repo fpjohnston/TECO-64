@@ -146,6 +146,7 @@ int main(int argc, const char * const argv[])
 
     f.e1.strict  = true;                // Strictly enforce syntax
     f.e1.winline = true;                // Line between text & command regions
+    f.e1.status  = true;                // Display status on line
 
     f.e2.in_crlf = true;                // Convert CR/LF to LF on input
     f.e2.out_lf  = OUT_CRLF;            // Convert LF to CR/LF on output
@@ -156,24 +157,7 @@ int main(int argc, const char * const argv[])
     f.e3.tilde   = true;                // Allow tilde operator
     f.e3.msec    = true;                // Return time in milliseconds
 
-    // init_win() must be called before init_term(), because the latter will
-    // skip some of its initialization if we're going to be in scope mode.
-
-    if (f.e0.window)
-    {
-        init_win();                     // Initialize window
-    }
-
     init_term();                        // Initialize terminal
-
-    // After we initialize the terminal settings, and therefore know our width
-    // and height, check to see if the user wants to start with a split screen.
-
-    if (f.e0.window && w.nscroll != 0)
-    {
-        clear_win();
-    }
-
     init_tbuf();                        // Initialize terminal buffer
     init_cbuf();                        // Initialize command buffer
     init_qreg();                        // Initialize Q-registers

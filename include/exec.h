@@ -36,97 +36,7 @@
 
 #endif
 
-
-#define CMD_START       (bool)true  ///< Read character at start of command
-
-#define NOCMD_START     (bool)false ///< Read character in middle of command
-
-///  @struct  scan
-///  @brief   Internal scanning state
-
-struct scan
-{
-    uint nparens;                   ///< No. of unmatched left parentheses
-    uint nbraces;                   ///< No. of unmatched left braces
-    int sum;                        ///< Accumulated sum of digits scanned
-    bool digits;                    ///< Accumulated sum is valid
-    bool expr;                      ///< Current command is part of expression
-    bool mod;                       ///< Command modifier seen
-    bool space;                     ///< Last chr. scanned was whitespace
-    bool flag;                      ///< Command is a mode control flag
-    bool brace_opt;                 ///< Command has alternate meaning in braces
-    bool comma_set;                 ///< Comma seen in expression
-    bool m_opt;                     ///< m argument allowed
-    bool n_opt;                     ///< n argument allowed
-    bool colon_opt;                 ///< Colon allowed in command
-    bool dcolon_opt;                ///< Double colon allowed in command
-    bool atsign_opt;                ///< At sign allowed in command
-    bool w_opt;                     ///< W allowed (for P)
-    bool q_register;                ///< Q-register required
-    bool t1_opt;                    ///< 1st text string allowed in command
-    bool t2_opt;                    ///< 2nd text string allowed in command
-};
-
-extern struct scan scan;
-
-///  @struct cmd
-///  @brief  Command block structure.
-
-struct cmd
-{
-    char c1;                        ///< 1st command character
-    char c2;                        ///< 2nd command character (or NUL)
-    char c3;                        ///< 3rd command character (or NUL)
-    char qname;                     ///< Q-register name
-    bool qlocal;                    ///< If true, Q-register is local
-    int m_arg;                      ///< m argument
-    int n_arg;                      ///< n argument
-    bool m_set;                     ///< m argument found
-    bool n_set;                     ///< n argument found
-    bool h_set;                     ///< H found
-    bool w_set;                     ///< W found
-    bool colon_set;                 ///< : found
-    bool dcolon_set;                ///< :: found
-    bool atsign_set;                ///< @ found
-    char delim;                     ///< Delimiter for @ modifier
-    struct tstring expr;            ///< Expression string
-    struct tstring text1;           ///< 1st text string
-    struct tstring text2;           ///< 2nd text string
-};
-
-///  @typedef exec_func
-///  @brief   Function to execute command.
-
-typedef void (exec_func)(struct cmd *cmd);
-
-///  @struct cmd_table
-///  @brief  Format of command tables used to parse and execute commands.
-
-struct cmd_table
-{
-    exec_func *exec;                ///< Execution function
-    const char *opts;               ///< Command modifiers and options
-};
-
-extern const struct cmd_table cmd_table[];
-
-extern const struct cmd_table cmd_e_table[];
-
-extern const struct cmd_table cmd_f_table[];
-
-extern const uint cmd_count;
-
-extern const uint cmd_e_count;
-
-extern const uint cmd_f_count;
-
-// Functions that assist in parsing commands
-
-extern bool append(bool n_set, int n_arg, bool colon_set);
-
-extern bool append_line(void);
-
-extern bool next_page(int start, int end, bool ff, bool yank);
+#include "cmd.h"
 
 // Functions that execute commands
 
@@ -362,7 +272,11 @@ extern void exec_W(struct cmd *cmd);
 
 extern void exec_Z(struct cmd *cmd);
 
-// Miscellaneous functions
+// Helper functions for executing commands
+
+extern bool append(bool n_set, int n_arg, bool colon_set);
+
+extern bool append_line(void);
 
 extern void exit_EG(void);
 
@@ -370,9 +284,7 @@ extern void init_EG(void);
 
 extern void init_loop(void);
 
-extern void print_cmd(struct cmd *cmd);
-
-extern exec_func *next_cmd(struct cmd *cmd);
+extern bool next_page(int start, int end, bool ff, bool yank);
 
 extern int read_indirect(void);
 
@@ -381,12 +293,6 @@ extern void reset_if(void);
 extern void reset_indirect(void);
 
 extern void reset_loop(void);
-
-extern void reset_scan(void);
-
-extern exec_func *scan_cmd(struct cmd *cmd);
-
-extern int fopen_output(const struct cmd *cmd, uint stream);
 
 extern bool next_yank(void);
 

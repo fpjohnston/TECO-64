@@ -331,7 +331,7 @@ void init_win(void)
         err_if_true(start_color(),                     ERR);
         err_if_true(assume_default_colors(C_FG, C_BG), ERR);
 
-        ESCDELAY = 0;
+        set_escdelay(0);
 
         short color_bg = COLOR_WHITE;
 
