@@ -87,7 +87,10 @@
 
 #define TECO_VERSION    200             ///< Our version of TECO
 
-#define EDIT_BUF_SIZE   (16 * 1024)     ///< Edit buffer is initially 16KB
+#define EDIT_BUF_INIT   ( 8 * 1024)     ///< Edit buffer is initially 8K
+#define EDIT_BUF_MAX    (64 * 1024)     ///< Maximum edit buffer is 64K
+#define EDIT_BUF_STEP   EDIT_BUF_INIT   ///< Increase edit buffer by 8K
+#define EDIT_BUF_WARN   75              ///< Warn when edit buffer is 75% full
 
 ///  @var     prompt
 ///  @brief   Command-line prompt (usually '*').
@@ -106,7 +109,6 @@ struct vars v =
 {
     .radix  = 10,                   ///< Current output radix
     .ctrl_s = 0,                    ///< CTRL/S flag
-    .ff     = false,                ///< Form feed flag
     .trace  = false,                ///< Trace mode
     .warn   = false,                ///< Edit buffer is almost full
     .full   = false,                ///< Edit buffer is full
@@ -148,8 +150,8 @@ int main(int argc, const char * const argv[])
     f.e1.winline = true;                // Line between text & command regions
     f.e1.status  = true;                // Display status on line
 
-    f.e2.in_crlf = true;                // Convert CR/LF to LF on input
-    f.e2.out_lf  = OUT_CRLF;            // Convert LF to CR/LF on output
+    f.e2.icrlf   = true;                // Use CR/LF for input lines
+    f.e2.ocrlf   = true;                // Use CR/LF for output lines
     f.e2.dollar  = true;                // Allow dollar signs in symbols
     f.e2.ubar    = true;                // Allow underscores in symbols
 
@@ -167,9 +169,7 @@ int main(int argc, const char * const argv[])
     init_search();                      // Initialize search string
     init_env(argc, argv);               // Initialize environment
 
-    // TODO: magic numbers for initial buffer size and percentage
-
-    init_ebuf(EDIT_BUF_SIZE, (64 * 1024), EDIT_BUF_SIZE, 75);
+    init_ebuf(EDIT_BUF_INIT, EDIT_BUF_MAX, EDIT_BUF_STEP, EDIT_BUF_WARN);
                                         // Initialize edit buffer
     main_active = true;                 // Initialization is complete
 

@@ -52,7 +52,7 @@ static bool check_mn_flag(struct cmd *cmd, uint *flag);
 ///
 ///  @brief    Check flag variable that takes one or two arguments.
 ///
-///  @returns  true if we have flag has a value, otherwise false.
+///  @returns  true if flag has a value, otherwise false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -60,8 +60,6 @@ static bool check_mn_flag(struct cmd *cmd, uint *flag)
 {
     assert(cmd != NULL);
     assert(flag != NULL);
-
-    // TODO: is this the best we can do here?
 
     if (!cmd->n_set)                    // n argument?
     {
@@ -99,7 +97,7 @@ static bool check_mn_flag(struct cmd *cmd, uint *flag)
 ///
 ///  @brief    Check flag variable that takes one argument.
 ///
-///  @returns  true if we have flag has a value, otherwise false.
+///  @returns  true if flag has a value, otherwise false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -138,15 +136,11 @@ void exec_ctrl_e(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n;
+    int n = f.ctrl_e ? -1 : 0;          // Reading flag returns 0 or -1
 
-    if (pop_expr(&n))                   // n<CTRL/E>?
+    if (check_n_flag(cmd, &n))
     {
-        v.ff = (cmd->n_arg == 0) ? false : true;
-    }
-    else
-    {
-        push_expr(v.ff ? -1 : 0, EXPR_VALUE);
+        f.ctrl_e = n ? true : false;
     }
 }
 
@@ -163,15 +157,15 @@ void exec_ctrl_f(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (pop_expr(&cmd->n_arg))          // n^F specified?
+    int n = 0;                          // Default value for CTRL/F
+
+    if (check_n_flag(cmd, &n))
     {
         if (f.e1.strict)
         {
             print_err(E_T10);           // TECO-10 command not implemented.
         }
     }
-
-    push_expr(0, EXPR_VALUE);           // Value is always 0 for now
 }
 
 
@@ -202,17 +196,18 @@ void exec_ctrl_n(struct cmd *cmd)
 
 void exec_ctrl_x(struct cmd *cmd)
 {
-    (void)check_n_flag(cmd, &f.ctrl_x);
-
-    // Make sure flag only has values -1, 0, or 1.
-
-    if (f.ctrl_x < 0)
+    if (check_n_flag(cmd, &f.ctrl_x))
     {
-        f.ctrl_x = -1;
-    }
-    else if (f.ctrl_x > 0)
-    {
-        f.ctrl_x = 1;
+        // Make sure that the flag only has the values -1, 0, or 1.
+
+        if (f.ctrl_x < 0)
+        {
+            f.ctrl_x = -1;
+        }
+        else if (f.ctrl_x > 0)
+        {
+            f.ctrl_x = 1;
+        }
     }
 }
 
@@ -366,14 +361,9 @@ void exec_EE(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e0.dryrun)
-    {
-        return;
-    }
-
-    int n;
-
-    if (pop_expr(&n))                   // nEE`?
+    int n = f.ee;
+    
+    if (check_n_flag(cmd, &n))
     {
         if (!isascii(n))                // Must be an ASCII character
         {
@@ -381,10 +371,6 @@ void exec_EE(struct cmd *cmd)
         }
 
         f.ee = n;
-    }
-    else
-    {
-        push_expr(f.ee, EXPR_VALUE);
     }
 }
 
@@ -441,6 +427,7 @@ void exec_EH(struct cmd *cmd)
 ///                   101   2  25858   x86      Linux
 ///
 ///             0EJ - Process number, 0 if single-process system.
+///              EJ - Same as 0EJ.
 ///             1EJ - Terminal keyboard number, 0 if single-user system.
 ///             2EJ - User identification number.
 ///
@@ -457,13 +444,16 @@ void exec_EJ(struct cmd *cmd)
         return;
     }
 
-    int n = 0;
+    int n = 0;                          // 0EJ is default command
 
-    (void)pop_expr(&n);                 // Get whatever operand we can
+    if (cmd->n_set)
+    {
+        n = cmd->n_arg;                 // Get whatever operand we can
+    }
 
-    n = teco_env(n);                    // Do the system-dependent part
+    n = teco_env(n, cmd->colon_set);    // Do the system-dependent part
 
-    push_expr(n, EXPR_VALUE);
+    push_expr(n, EXPR_VALUE);           // Now return the result
 }
 
 
@@ -478,17 +468,12 @@ void exec_EO(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e0.dryrun)
-    {
-        return;
-    }
+    int n = teco_version;
 
-    if (pop_expr(NULL))                 // nEO?
+    if (check_n_flag(cmd, &n))
     {
         print_err(E_NYI);               // Not yet implemented
     }
-
-    push_expr(teco_version, EXPR_VALUE);
 }
 
 
@@ -516,19 +501,19 @@ void exec_ET(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    union et_flag old = { .flag = f.et.flag };
+    union et_flag saved = { .flag = f.et.flag };
 
     if (check_mn_flag(cmd, &f.et.flag))
     {
-        if (f.et.eightbit ^ old.eightbit)
+        if (f.et.eightbit ^ saved.eightbit)
         {
             // TODO: tell operating system if user changed bit
         }
 
         // The following are read-only bits and cannot be changed by the user.
 
-//        f.et.scope  = old.scope;
-//        f.et.rscope = old.rscope;
+        f.et.scope   = saved.scope;
+        f.et.refresh = saved.refresh;
     }
 }
 

@@ -40,6 +40,9 @@
 #include "term.h"
 
 
+uint qreg_depth = 0;                ///< Current Q-register depth
+uint qreg_max = 0;                  ///< Max. Q-register depth (0 => infinite)
+
 ///  @var    qglobal
 ///  @brief  Global Q-registers.
 
@@ -64,8 +67,6 @@ static struct qlocal *local_head = NULL;
 ///  Definitions for Q-register push-down list. This is actually implemented as
 ///  linked list with a head pointer, which removes any need for an artificial
 ///  limit as to how many items can be pushed.
-///
-///  TODO: add environment variable to limit the number of pushed items?
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -386,6 +387,10 @@ bool pop_qreg(int qname, bool qdot)
 
     *qreg = savedq->qreg;
 
+    assert(qreg_depth > 0);
+
+    --qreg_depth;
+
     return true;
 }
 
@@ -426,6 +431,13 @@ void print_qreg(int qname, bool qdot)
 
 void push_qlocal(void)
 {
+    if (qreg_max != 0 && qreg_max == qreg_depth)
+    {
+        print_err(E_MQX);               // Maximum Q-register depth exceeded
+    }
+
+    ++qreg_depth;
+
     struct qlocal *qlocal = alloc_mem((uint)sizeof(struct qlocal));
 
     qlocal->next = local_head;
@@ -501,6 +513,8 @@ void reset_qreg(void)
         free_mem(&savedq->qreg.text.buf);
         free_mem(&savedq);
     }
+
+    qreg_depth = 0;
 }
 
 

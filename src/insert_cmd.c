@@ -38,7 +38,9 @@
 #include "exec.h"
 
 
-static char insert_string[1024 + 1];    ///< Last string inserted in buffer
+#define INSERT_MAX      1024            ///< Max. length of insert string
+
+static char insert_string[INSERT_MAX + 1]; ///< Last string inserted in buffer
 
 
 ///
@@ -52,20 +54,17 @@ void exec_ctrl_i(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len != 0)
+    insert_string[0] = TAB;
+
+    int nbytes = snprintf(insert_string + 1, sizeof(insert_string) - 1, "%.*s",
+                          (int)cmd->text1.len, cmd->text1.buf);
+
+    if (nbytes >= (int)sizeof(insert_string) - 1)
     {
-        insert_string[0] = TAB;
-
-        assert(cmd->text1.len <= 1023); // FIXME!
-
-        sprintf(insert_string + 1, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
-
-        exec_insert(insert_string, 1 + cmd->text1.len);
+        print_err(E_MIX);               // Maximum insert string exceeded
     }
-    else
-    {
-        // TODO: print error or warning?
-    }
+
+    exec_insert(insert_string, 1 + cmd->text1.len);
 }
 
 
@@ -87,9 +86,13 @@ void exec_I(struct cmd *cmd)
 
     if (cmd->text1.len != 0)
     {
-        assert(cmd->text1.len <= 1024); // FIXME!
+        int nbytes = snprintf(insert_string, sizeof(insert_string), "%.*s",
+                              (int)cmd->text1.len, cmd->text1.buf);
 
-        sprintf(insert_string, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+        if (nbytes >= (int)sizeof(insert_string))
+        {
+            print_err(E_MIX);           // Maximum insert string exceeded
+        }
 
         exec_insert(insert_string, cmd->text1.len);
     }
@@ -98,10 +101,6 @@ void exec_I(struct cmd *cmd)
         char c = (char)cmd->n_arg;
 
         exec_insert(&c, 1);
-    }
-    else
-    {
-        // TODO: print error or warning?
     }
 }
 

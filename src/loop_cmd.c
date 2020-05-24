@@ -42,7 +42,8 @@
 
 #define INFINITE        (-1)            ///< Infinite loop count
 
-// TODO: add environment variable to limit loop depth?
+uint loop_depth = 0;                    ///< Nested loop depth
+uint loop_max = 0;                      ///< Max. loop depth (0 => infinite)
 
 ///  @struct loop
 ///  @brief  Linked list structure for loops
@@ -119,6 +120,10 @@ static void endloop(struct cmd *cmd)
     loop_head = loop->next;
 
     free_mem(&loop);
+
+    assert(loop_depth > 0);
+
+    --loop_depth;
 }
 
 
@@ -179,6 +184,10 @@ void exec_gt(struct cmd *cmd)
         loop_head = loop->next;
 
         free_mem(&loop);
+
+        assert(loop_depth > 0);
+
+        --loop_depth;
     }
 }
 
@@ -202,6 +211,13 @@ void exec_lt(struct cmd *cmd)
     }
     else
     {
+        if (loop_max != 0 && loop_max == loop_depth)
+        {
+            print_err(E_MLX);           // Maximum loop depth exceeded
+        }
+
+        ++loop_depth;
+
         struct loop *loop = alloc_mem((uint)sizeof(*loop));
 
         loop->count = count;
@@ -287,4 +303,6 @@ void reset_loop(void)
 
         free_mem(&loop);
     }
+
+    loop_depth = 0;
 }

@@ -57,7 +57,7 @@ bool append(bool n_set, int n_arg, bool colon_set)
         print_err(E_NFI);               // No file for input
     }
 
-    v.ff = false;                       // Assume no form feed
+    f.ctrl_e = false;                   // Assume not appending FF
 
     // Here if we have A, :A, or n:A
 
@@ -81,12 +81,9 @@ bool append(bool n_set, int n_arg, bool colon_set)
     }
     else if (!colon_set)                // A -> append entire page
     {
-        for (;;)                        // Append all we can
+        while (append_line())           // Append all we can
         {
-            if (!append_line())         // If we should stop
-            {
-                break;
-            }
+            ;
         }
     }
     else
@@ -119,36 +116,24 @@ bool append_line(void)
 
         if (c == FF && !f.e2.no_ff)     // If form feed, don't store it
         {
-            v.ff = true;                // But do flag it
+            f.ctrl_e = true;            // But do flag it
+
+            if (next != EOF)
+            {
+                (void)ungetc(next, ifile->fp);
+            }
 
             return false;               // And say we need to stop
         }
-        else if (c == LF)
-        {
-            if (f.e2.in_lfcr && next == CR)
-            {
-                ;
-            }
-            else if (!f.e2.in_lf)
-            {
-                continue;               // Ignore LF
-            }
-
-            (void)ungetc(next, ifile->fp); // Save chr. for next line
-        }
         else if (c == CR)
         {
-            if (f.e2.in_crlf && next == LF)
-            {
-                ;
-            }
-            else if (!f.e2.in_cr)
-            {
-                continue;               // Ignore CR
-            }
+            // If start of CR/LF sequence, but we only
+            // want to save LF, then skip the CR
 
-            (void)ungetc(next, ifile->fp); // Save chr. for next line
-            c = LF;                     // Store LF in buffer
+            if (next == LF && !f.e2.icrlf)
+            {
+                continue;
+            }
         }
             
         switch (add_ebuf(c))
@@ -157,6 +142,11 @@ bool append_line(void)
             case EDIT_OK:
                 if (c == LF || c == VT) // Done if line terminator found
                 {
+                    if (next != EOF)
+                    {
+                        (void)ungetc(next, ifile->fp);
+                    }
+
                     return true;
                 }
 
@@ -165,6 +155,11 @@ bool append_line(void)
             case EDIT_WARN:             // Set flag if buffer getting full
                 if (c == LF || c == VT)
                 {
+                    if (next != EOF)
+                    {
+                        (void)ungetc(next, ifile->fp);
+                    }
+
                     return false;
                 }
 
@@ -172,6 +167,11 @@ bool append_line(void)
 
             case EDIT_FULL:             // Stop if buffer is full
                 v.full = true;
+
+                if (next != EOF)
+                {
+                    (void)ungetc(next, ifile->fp);
+                }
 
                 return false;
         }

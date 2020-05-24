@@ -31,13 +31,13 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
 
-uint macro_depth = 0;                   ///< Current macro depth
-
-// TODO: add environment variable to control maximum depth of macros?
+uint macro_depth = 0;               ///< Current macro depth
+uint macro_max = 0;                 ///< Max. macro depth (0 => infinite)
 
 
 ///
@@ -119,6 +119,11 @@ void exec_M(struct cmd *cmd)
     if (save_local)
     {
         push_qlocal();
+    }
+
+    if (macro_max != 0 && macro_max == macro_depth)
+    {
+        print_err(E_MMX);           // Maximum macro depth exceeded
     }
 
     ++macro_depth;

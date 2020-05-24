@@ -168,6 +168,8 @@ extern void exec_FC(struct cmd *cmd);
 
 extern void exec_FD(struct cmd *cmd);
 
+extern void exec_FI(struct cmd *cmd);
+
 extern void exec_FK(struct cmd *cmd);
 
 extern void exec_FL(struct cmd *cmd);
@@ -286,6 +288,8 @@ extern void init_loop(void);
 
 extern bool next_page(int start, int end, bool ff, bool yank);
 
+extern bool next_yank(void);
+
 extern int read_indirect(void);
 
 extern void reset_if(void);
@@ -293,7 +297,5 @@ extern void reset_if(void);
 extern void reset_indirect(void);
 
 extern void reset_loop(void);
-
-extern bool next_yank(void);
 
 #endif  // _EXEC_H

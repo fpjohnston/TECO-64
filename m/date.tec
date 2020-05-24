@@ -1,1 +1,92 @@
-!DATE.TEC![M[D[Y[W[H[M[S[0[1^BU0(Q0/32)&15UM(Q0)&31UD(Q0/512)UYQDUWQM-2"=31%W|QM-3"=59%W|QM-4"=90%W|QM-5"=120%W|QM-6"=151%W|QM-7"=181%W|QM-8"=212%W|QM-9"=243%W|QM-10"=273%W|QM-11"=304%W|QM-12"=334%W'''''''''''QY&3"=QW-59">1%W''QY+QW+(QY-1/4)U1Q1-(Q1/7*7)U1Q1-0"=@^UW%Sunday%|Q1-1"=@^UW%Monday%|Q1-2"=@^UW%Tuesday%|Q1-3"=@^UW%Wednesday%|Q1-4"=@^UW%Thursday%|Q1-5"=@^UW%Friday%|Q1-6"=@^UW%Saturday%'''''''QM-1"=@^UM%January%|QM-2"=@^UM%February%|QM-3"=@^UM%March%|QM-4"=@^UM%April%|QM-5"=@^UM%May%|QM-6"=@^UM%June%|QM-7"=@^UM%July%|QM-8"=@^UM%August%|QM-9"=@^UM%September%|QM-10"=@^UM%October%|QM-11"=@^UM%November%|QM-12"=@^UM%December%''''''''''''^HUTQT/1000U0Q0/3600UHQH*3600U1(Q0-Q1)/60UN(Q0-Q1)-(QN*60)USQT-(Q0*1000)UX:GW44^T32^T:GM32^TQD:=44^T32^T1900+QY:=32^TQH-10"<48^T'QH:=58^TQN-10"<48^T'QN:=58^TQS-10"<48^T'QS:=46^TQX-100"<48^T'QX-10"<48^T'QX=]1]0]S]M]H]W]Y]D]Mex
+!DATE.TEC!
+! display the current date and time:                    !
+!   ^B == ((year-1900)*16+month)*32+day                 !
+!   ^H == (milliseconds since midnight)                 !
+
+EO-200 "L
+    @^A/%Macro requires TECO v200 or later/
+    13^T 10^T
+    ^C
+'
+
+                        ! Get MM/DD/YYYY in Q-reg's M,D,Y !
+^B U.0                  ! 0.num = encoded date            !
+(Q.0/32) & 15  U.M      ! M.num = month                   !
+(Q.0)    & 31  U.D      ! D.num = day                     !
+(Q.0/512)      U.Y      ! Y.num = year                    !
+
+                        ! Get day of week in Q-reg W      !
+Q.D U.W                 ! W.num = days this month         !
+Q.M-2  "=  31%.W |      ! add days before this month      !
+Q.M-3  "=  59%.W |
+Q.M-4  "=  90%.W |
+Q.M-5  "= 120%.W |
+Q.M-6  "= 151%.W |
+Q.M-7  "= 181%.W |
+Q.M-8  "= 212%.W |
+Q.M-9  "= 243%.W |
+Q.M-10 "= 273%.W |
+Q.M-11 "= 304%.W |
+Q.M-12 "= 334%.W '''''''''''
+Q.Y & 3 "=               ! correct for leap years          !
+  Q.W-59 ">
+    1%.W
+  '
+'
+Q.Y + Q.W + (Q.Y - 1 / 4) U.1
+{Q.1 // 7} U.1
+Q.1-0"= @^U.W%Sunday%    |
+Q.1-1"= @^U.W%Monday%    |
+Q.1-2"= @^U.W%Tuesday%   |
+Q.1-3"= @^U.W%Wednesday% |
+Q.1-4"= @^U.W%Thursday%  |
+Q.1-5"= @^U.W%Friday%    |
+Q.1-6"= @^U.W%Saturday%  '''''''
+
+Q.M-1"=  @^U.M%January%   | ! get name of month in Q-reg M !
+Q.M-2"=  @^U.M%February%  |
+Q.M-3"=  @^U.M%March%     |
+Q.M-4"=  @^U.M%April%     |
+Q.M-5"=  @^U.M%May%       |
+Q.M-6"=  @^U.M%June%      |
+Q.M-7"=  @^U.M%July%      |
+Q.M-8"=  @^U.M%August%    |
+Q.M-9"=  @^U.M%September% |
+Q.M-10"= @^U.M%October%   |
+Q.M-11"= @^U.M%November%  |
+Q.M-12"= @^U.M%December%  ''''''''''''
+
+                        ! Get HH:MM:SS in Q-reg's H,N,S   !
+^H U.T                  ! T.num = returned time           !
+E3&4 "E
+    Q.T * 2 U.0         ! 0.num = seconds since midnight  !
+|
+    Q.T / 1000    U.0 
+    {Q.T // 1000} U.X   ! X.num = milliseconds            !
+'
+Q.0 / 3600         U.H  ! H.num = hours                   !
+{Q.0 // 3600}      U.S  ! S.num = seconds                 !
+Q.S / 60           U.N  ! N.num = minutes                 !
+{Q.S // 60}        U.S  ! S.num = seconds                 !
+
+                        ! Display DAY MM/DD/YYYY          !
+:G.W                    ! display DAY                     !
+^^, ^T                  ! display ,                       !
+32^T                    ! display <SP>                    !
+:G.M                    ! display month                   !
+32^T                    ! display <SP>                    !
+Q.D :@=/%u, /           ! display day                     !
+1900 + Q.Y :@=/%u /     ! display year                    !
+
+                        ! Display HH:MM:DD                !
+Q.H :@=/%02u:/          ! display HH:                     !
+Q.N :@=/%02u:/          ! display MM:                     !
+Q.S :@=/%02u/           ! display SS                      !
+
+E3&4 "N                 ! Check for displaying  millisecs !
+    Q.X:@=/.%03u/       ! display milliseconds            !
+'
+
+13^T 10^T
+EX
+

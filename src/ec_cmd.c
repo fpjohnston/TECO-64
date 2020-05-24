@@ -33,8 +33,10 @@
 
 #include "teco.h"
 #include "editbuf.h"
+#include "eflags.h"
 #include "exec.h"
 #include "file.h"
+#include "page.h"
 
 
 ///
@@ -58,21 +60,19 @@ void exec_EC(struct cmd *cmd)
         return;
     }
 
-    FILE *fp;
     struct ifile *ifile = &ifiles[istream];
     struct ofile *ofile = &ofiles[ostream];
 
-    // Note that we call size_edit() for every call to next_page() because the
-    // size of the edit buffer can change every time we read in another page.
-
-    if ((fp = ofile->fp) != NULL)
+    if (ofile->fp != NULL)
     {
-        while (next_page(t.B, t.Z, v.ff, (bool)true))
+        while (next_page(t.B, t.Z, f.ctrl_e, (bool)true))
         {
             ;
         }
 
-        fclose(fp);
+        page_flush(ofile->fp);
+
+        fclose(ofile->fp);
 
         ofile->fp = NULL;
     }
@@ -82,9 +82,9 @@ void exec_EC(struct cmd *cmd)
     free_mem(&ofile->temp);
     free_mem(&ofile->name);
 
-    if ((fp = ifile->fp) != NULL)
+    if (ifile->fp != NULL)
     {
-        fclose(fp);
+        fclose(ifile->fp);
 
         ifile->fp = NULL;
     }

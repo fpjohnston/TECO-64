@@ -47,7 +47,6 @@
 ################################################################################
 
 GDB = 1                                 # TODO: only for development
-
 TARGET = teco
 
 CC = gcc
@@ -83,7 +82,6 @@ SOURCES = \
     estack.c       \
     file.c         \
     file_sys.c     \
-    gapbuf.c       \
     memory.c       \
     option_sys.c   \
     print_cmd.c    \
@@ -155,6 +153,62 @@ SOURCES = \
     w_cmd.c        \
     x_cmd.c        \
     yank_cmd.c     \
+
+#
+#  Check to see which buffer handler we should use
+#
+################################################################################
+
+ifeq (${TECO_BUFFER}, rope)
+
+$(error Rope buffer handler is not yet implemented)
+
+SOURCES += ropebuf.c
+
+else ifeq (${TECO_BUFFER}, gap)
+
+SOURCES += gapbuf.c
+
+else ifeq (${TECO_BUFFER}, )
+
+SOURCES += gapbuf.c
+
+else
+
+$(error Unknown buffer handler: ${TECO_BUFFER})
+
+endif
+
+#
+#  Check to see which paging handler we should use
+#
+################################################################################
+
+ifeq (${TECO_PAGING}, vm)
+
+SOURCES += page_vm.c
+
+$(warning Virtual memory paging is in development.)
+
+else ifeq (${TECO_PAGING}, file)
+
+$(error Holding file paging is not yet implemented)
+
+SOURCES += page_file.c
+
+else ifeq (${TECO_PAGING}, standard)
+
+SOURCES += page_std.c
+
+else ifeq (${TECO_PAGING}, )
+
+SOURCES += page_std.c
+
+else
+
+$(error Unknown paging handler: ${TECO_PAGING})
+
+endif
 
 ifdef   VERBOSE
 

@@ -33,13 +33,13 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
+#include "page.h"
 
 
 ///
@@ -99,11 +99,13 @@ void exec_P(struct cmd *cmd)
     {
         if ((count = cmd->n_arg) == 0)
         {
-            print_err(E_IPA);           // Negative argument to P
+            print_err(E_IPA);           // P argument cannot be zero
         }
         else if (count < 0)             // -nP?
         {
-            print_err(E_T32);           // Unimplemented TECO-32 feature
+            page_backward(ofile->fp, -count); // Try to read previous page(s)
+
+            return;
         }
 
         if (cmd->w_set)                 // Is it nPW?
@@ -112,7 +114,7 @@ void exec_P(struct cmd *cmd)
         }
         else                            // Must be nP or n:P
         {
-            ff = v.ff;
+            ff = f.ctrl_e;
             yank = true;
         }
     }
@@ -126,7 +128,7 @@ void exec_P(struct cmd *cmd)
         }
         else                            // Must be P or :P
         {
-            ff = v.ff;
+            ff = f.ctrl_e;
             yank = true;
         }
     }
@@ -161,63 +163,17 @@ void exec_P(struct cmd *cmd)
 
 
 ///
-///  @brief    Write out current page. If needed, add form feed, clear buffer,
-///            and read next page.
+///  @brief    Write current page and, if requested, read next page.
 ///
-///  @returns  true if more data, false if not.
+///  @returns  false if unable to read another page because already at EOF,
+///            else true (note that true can also mean that we were not
+///            asked to attempt to read another page).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 bool next_page(int start, int end, bool ff, bool yank)
 {
-    struct ofile *ofile = &ofiles[ostream];
-    int m = start - t.dot;
-    int n = end - t.dot;
-
-    assert(ofile != NULL && ofile->fp != NULL);
-
-    for (int i = m; i < n; ++i)
-    {
-        int c = getchar_ebuf(i);
-
-        if (c == LF)
-        {
-            switch (f.e2.out_lf)
-            {
-                default:
-                case OUT_CRLF:
-                    fputc(CR, ofile->fp);
-                    fputc(LF, ofile->fp);
-
-                    break;
-
-                case OUT_LFCR:
-                    fputc(LF, ofile->fp);
-                    fputc(CR, ofile->fp);
-
-                    break;
-
-                case OUT_CR:
-                    fputc(CR, ofile->fp);
-
-                    break;
-
-                case OUT_LF:
-                    fputc(LF, ofile->fp);
-
-                    break;
-            }
-
-            continue;
-        }
-
-        fputc(c, ofile->fp);
-    }
-
-    if (ff)                             // Add a form feed if necessary
-    {
-        fputc(FF, ofile->fp);
-    }
+    page_forward(ofiles[ostream].fp, start - t.dot, end - t.dot, ff);
 
     if (yank)                           // Yank next page if we need to
     {

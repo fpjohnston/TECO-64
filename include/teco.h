@@ -83,8 +83,8 @@ struct buffer
 };
 
 ///  @struct tstring
-///  @brief  Definition of TECO-string, which is a counted (not NUL-terminated)
-///          string.
+///  @brief  Definition of a TECO string, which is a counted string (not a
+///          NUL-terminated string, as used in languages such as C).
 
 struct tstring
 {
@@ -99,13 +99,18 @@ struct vars
 {
     int radix;                      ///< Current output radix
     int ctrl_s;                     ///< CTRL/S flag
-    bool ff;                        ///< Form feed flag
     bool trace;                     ///< true if trace mode is on
     bool warn;                      ///< true if edit buffer is almost full
     bool full;                      ///< true if edit buffer is full
 };
 
 // Global variables
+
+extern uint macro_max;
+
+extern uint loop_max;
+
+extern uint qreg_max;
 
 extern struct buffer *current;
 
@@ -149,7 +154,7 @@ extern void set_config(int argc, const char * const argv[]);
 
 extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 
-extern int teco_env(int n);
+extern int teco_env(int n, bool colon);
 
 // Command buffer functions
 

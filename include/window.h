@@ -42,6 +42,26 @@
 
 #endif
 
+///  @struct  tchar
+///  @brief   Terminal characteristics flag.
+
+union tchar
+{
+    uint flag;
+
+    struct
+    {
+        uint ansi_crt   : 1;        ///< Terminal is an ANSI CRT
+        uint edit_mode  : 1;        ///< Terminal has EDIT mode features
+        uint rev_scroll : 1;        ///< Terminal can do reverse scrolling
+        uint spec_graph : 1;        ///< Terminal has special graphics
+        uint rev_video  : 1;        ///< Terminal can do reverse video
+        uint term_width : 1;        ///< Terminal can change its width
+        uint scroll_reg : 1;        ///< Terminal has scrolling regions
+        uint end_of_scr : 1;        ///< Terminal can erase to end of screen
+    };
+};
+
 ///  @struct  watch
 ///  @brief   Watch scope variables (for controlling display).
 
@@ -54,7 +74,9 @@ struct watch
     int mark;                       ///< "Mark" status
     int hold;                       ///< Hold mode indicator
     int topdot;                     ///< Buffer position of upper left corner
-    int nscroll;                    ///< No. of scrolling lines
+    int nlines;                     ///< No. of scrolling lines
+    bool noscroll;                  ///< Disable scrolling regions
+    union tchar tchar;              ///< Terminal characteristics
 };
 
 extern struct watch w;

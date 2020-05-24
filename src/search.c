@@ -481,7 +481,7 @@ bool search_loop(struct search *s)
                         print_err(E_NFO); // No file for output
                     }
 
-                    if (!next_page(0, t.Z, v.ff, (bool)true))
+                    if (!next_page(0, t.Z, f.ctrl_e, (bool)true))
                     {
                         return false;
                     }

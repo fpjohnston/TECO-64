@@ -78,10 +78,14 @@ enum errors
     E_IUC,          ///< Illegal character "x" following ^
     E_MAP,          ///< Missing '
     E_MEM,          ///< Memory overflow
+    E_MIX,          ///< Maximum insert string exceeded
     E_MLA,          ///< Missing left angle bracket
+    E_MLX,          ///< Maximum loop depth exceeded
     E_MLP,          ///< Missing (
+    E_MMX,          ///< Maximum macro depth exceeded
     E_MNA,          ///< Missing n argument
     E_MOD,          ///< Invalid modifier
+    E_MQX,          ///< Maximum Q-register depth exceeded
     E_MRA,          ///< Missing right angle bracket
     E_MRP,          ///< Missing )
     E_MSC,          ///< Missing start of conditional
@@ -112,7 +116,6 @@ enum errors
     E_SYS,          ///< System error message
     E_TAG,          ///< Missing tag !x!
     E_T10,          ///< TECO-10 command not implemented
-    E_T32,          ///< TECO-32 command not implemented
     E_UCD,          ///< Unable to close and delete output file "x"
     E_UCI,          ///< Unable to close input file
     E_UCO,          ///< Unable to close output file

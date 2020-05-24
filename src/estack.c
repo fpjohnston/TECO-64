@@ -196,8 +196,6 @@ static bool reduce2(void)
     struct e_obj *e1 = &estack.obj[estack.level - 1];
     struct e_obj *e2 = &estack.obj[estack.level - 2];
 
-    // TODO: fix magic numbers
-
     // The following prevents double operators in expressions such as 1++2.
 
     if (f.e1.strict)
@@ -234,6 +232,8 @@ static bool reduce2(void)
         }
         else if (e2->type == EXPR_NOT)
         {
+            // Logical NOT yields either -1 for true or 0 for false.
+
             e2->value = !e1->value ? -1 : 0;
             e2->type = EXPR_VALUE;
 

@@ -1,6 +1,7 @@
 ///
-///  @file    yank_cmd.c
-///  @brief   Execute EY and Y commands.
+///  @file    page_std.c
+///  @brief   Standard paging functions (write pages to file immediately, no
+///           backwards paging allowed).
 ///
 ///  @bug     No known bugs.
 ///
@@ -28,109 +29,99 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
-#include "estack.h"
-#include "exec.h"
-#include "file.h"
 #include "page.h"
 
 
 ///
-///  @brief    Execute EY command: yank text into buffer (no protection).
+///  @brief    Read in previous page (invalid for standard paging).
+///
+///  @returns  Throws exception.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void page_backward(FILE *unused1, int unused2)
+{
+    print_err(E_IPA);                   // Illegal page argument
+}
+
+
+///
+///  @brief    Flush out remaining pages (no-op for standard paging).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EY(struct cmd *cmd)
+void page_flush(FILE *unused1)
 {
-    assert(cmd != NULL);
-
-    struct ifile *ifile = &ifiles[istream];
-
-    if (ifile->fp == NULL)
-    {
-        print_err(E_NFI);               // No file for input
-    }
-
-    int olddot = t.dot;                 // Save current buffer position
-
-    if (ifile->eof)
-    {
-        if (cmd->colon_set)
-        {
-            push_expr(TECO_FAILURE, EXPR_VALUE);
-
-            return;
-        }
-    }
-
-    if (cmd->n_set)
-    {
-        if (cmd->n_arg == -1)
-        {
-            yank_backward(ifile->fp);   // Try to yank previous page
-        }
-        else
-        {
-            print_err(E_NYA);           // Numeric argument with Y
-        }
-    }
-
-    (void)next_yank();
-
-    if (cmd->colon_set)
-    {
-        push_expr(TECO_SUCCESS, EXPR_VALUE);
-    }
-
-    setpos_ebuf(olddot);                // Restore buffer position
 }
 
 
 ///
-///  @brief    Execute Y command: yank text into buffer (with protection).
+///  @brief    Write out current page.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_Y(struct cmd *cmd)
+void page_forward(FILE *fp, int start, int end, bool ff)
 {
-    // If data in buffer and yank protection is enabled, then abort.
+    assert(fp != NULL);
 
-    if (t.Z && !f.ed.yank)
+    int last = NUL;
+
+    // First pass - calculate how many characters we'll need to output
+
+    for (int i = start; i < end; ++i)
     {
-        print_err(E_YCA);               // Y command aborted
+        int c = getchar_ebuf(i);
+
+        // Translate LF to CR/LF if needed, unless last chr. was CR
+
+        if (c == LF && last != CR && f.e2.ocrlf)
+        {
+            fputc(CR, fp);
+        }
+
+        fputc(c, fp);
+
+        last = c;
     }
 
-    exec_EY(cmd);
+    if (ff)                             // Add a form feed if necessary
+    {
+        fputc(FF, fp);
+    }
+}    
+
+
+///
+///  @brief    Reset all pages (no-op for standard paging)./
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_pages(void)
+{
 }
 
 
 ///
-///  @brief    Yank next page into buffer.
+///  @brief    Read in previous page, discarding current page (invalid for
+///            standard paging).
 ///
-///  @returns  true if buffer has data, else false.
+///  @returns  Throws exception.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool next_yank(void)
+void yank_backward(FILE *unused1)
 {
-    setpos_ebuf(t.B);
-
-    delete_ebuf((int)t.Z);              // Kill the whole buffer
-
-    while (append_line())               // Read what we can
-    {
-        ;
-    }
-
-    return (t.Z != 0) ? true : false;
+    print_err(E_NYA);                   // Numeric argument with Y
 }

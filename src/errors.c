@@ -41,6 +41,8 @@
 #include "window.h"
 
 
+#define ERR_BUF_SIZE    64      ///< Size of error buffer
+
 ///  @struct  err_table
 ///  @brief   Structure of error table.
 
@@ -87,10 +89,14 @@ static struct err_table err_table[] =
     [E_IUC] = { "IUC",  "Illegal character \"%s\" following ^" },
     [E_MAP] = { "MAP",  "Missing '" },
     [E_MEM] = { "MEM",  "Memory overflow" },
+    [E_MIX] = { "MIX",  "Maximum insert string exceeded" },
     [E_MLA] = { "MLA",  "Missing left angle bracket" },
+    [E_MLX] = { "MLX",  "Maximum loop depth exceeded" },
     [E_MLP] = { "MLP",  "Missing (" },
+    [E_MMX] = { "MMX",  "Maximum macro depth exceeded" },
     [E_MNA] = { "MNA",  "Missing n argument" },
     [E_MOD] = { "MOD",  "Invalid command modifier" },
+    [E_MQX] = { "MQX",  "Maximum Q-register depth exceeded" },
     [E_MRA] = { "MRA",  "Missing right angle bracket" },
     [E_MRP] = { "MRP",  "Missing )" },
     [E_MSC] = { "MSC",  "Missing start of conditional" },
@@ -121,7 +127,6 @@ static struct err_table err_table[] =
     [E_SYS] = { "SYS",  "%s" },
     [E_TAG] = { "TAG",  "Missing tag !%s!" },
     [E_T10] = { "T10",  "TECO-10 command not implemented" },
-    [E_T32] = { "T32",  "TECO-32 command not implemented" },
     [E_UCD] = { "UCD",  "Unable to close and delete output file \"%s\"" },
     [E_UCI] = { "UCI",  "Unable to close input file" },
     [E_UCO] = { "UCO",  "Unable to close output file" },
@@ -153,12 +158,13 @@ static const char *verbose[] =
               "iteration in a macro stored in a Q-register must be "
               "complete within the Q-register.)",
 
-    [E_BRC] = "TODO: fill this in",
+    [E_BRC] = "There is a close square bracket not matched by an open "
+              "square bracket somewhere to its left.",
 
-    [E_CHR] = "TODO: fill this in",
+    [E_CHR] = "A non-ASCII character preceded an EE command.",
 
     [E_CON] = "Conditionals, parenthesized arguments, and iterations must "
-              "be properly nested. The user problem used some construct "
+              "be properly nested. The user probably used some construct "
               "like: N\"E...(...' where an iteration or parenthesized "
               "argument is begin in a conditional but not terminated in "
               "the same conditional.",
@@ -356,8 +362,6 @@ static const char *verbose[] =
 
     [E_T10] = "A TECO-10 command cannot be or has not been implemented.",
 
-    [E_T32] = "A TECO-32 command cannot be or has not been implemented.",
-
     [E_UMA] = "An m argument was provided to a command which does not allow it.",
 
     [E_UNA] = "An n argument was provided to a command which does not allow it.",
@@ -391,9 +395,7 @@ static const char *verbose[] =
 
 int last_error = E_NUL;                 ///< Last error encountered
 
-// TODO: do something about magic number.
-
-static char err_buf[64];                ///< Buffer for error argument
+static char err_buf[ERR_BUF_SIZE];      ///< Buffer for error argument
 
 static const char *err_str = err_buf;   ///< Error message argument
 

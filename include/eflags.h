@@ -66,14 +66,6 @@ union e1_flag
     };
 };
 
-enum
-{
-    OUT_CR,
-    OUT_LFCR,
-    OUT_CRLF,                   ///< Convert LF to CRLF on output
-    OUT_LF                      ///< Convert LF to LF on output
-};
-
 ///  @struct  e2_flag
 ///  @brief   File format features.
 
@@ -83,11 +75,8 @@ union e2_flag
 
     struct
     {
-        uint in_crlf : 1;       ///< CR/LF is input delimiter
-        uint in_lf   : 1;       ///< LF is input delimiter
-        uint in_cr   : 1;
-        uint in_lfcr : 1;
-        uint out_lf  : 2;       ///< Output delimiter for LF
+        uint icrlf   : 1;       ///< Use CR/LF for input lines
+        uint ocrlf   : 1;       ///< Use CR/LF for output lines
         uint no_ff   : 1;       ///< FF is normal character on input
         uint dollar  : 1;       ///< $ is a valid symbol character
         uint ubar    : 1;       ///< _ is a valid symbol character
@@ -139,7 +128,7 @@ union ed_flag
         uint keepdot   : 1;     ///< Preserve dot if search fails
         uint escape    : 1;     ///< Enable immediate escape-sequence commands
         uint movedot   : 1;     ///< Move dot by one on multiple occurrence searches
-        uint norfrsh   : 1;     ///< Automatic refresh inhibit
+        uint norefr    : 1;     ///< Automatic refresh inhibit
     };
 };
 
@@ -176,7 +165,7 @@ union et_flag
         uint abort    : 1;      ///< Abort-on-error bit
         uint truncate : 1;      ///< Truncate output lines to terminal width
         uint scope    : 1;      ///< Terminal is a scope type
-        uint rscope   : 1;      ///< Terminal is a refresh scope
+        uint refresh  : 1;      ///< Terminal is a refresh scope
         uint          : 1;      ///< (unused)
         uint eightbit : 1;      ///< Can handle 8-bit characters
         uint accent   : 1;      ///< Accent grave is ESCAPE surrogate
@@ -190,6 +179,7 @@ union et_flag
 
 struct flags
 {
+    bool       ctrl_e;          ///< Form feed flag
     int        ctrl_x;          ///< Search mode flag
     struct e0_flag e0;          ///< Internal flags (not settable by user)
     union  e1_flag e1;          ///< Debugging flags

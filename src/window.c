@@ -71,6 +71,7 @@
 
 #define err_if_false(func, cond) if (func != cond) error_win()
 
+// TODO: add ability to specify colors at init time (and maybe run-time?)
 
 #define C_FG COLOR_BLUE                 ///< Default foreground color
 #define C_BG (COLOR_WHITE | A_BOLD)     ///< Default background color
@@ -177,7 +178,7 @@ void clear_win(void)
 
     ebuf_changed = true;
 
-    set_scroll(w.height, w.nscroll);
+    set_scroll(w.height, w.nlines);
 
     refresh_win();
 
@@ -331,7 +332,7 @@ void init_win(void)
         err_if_true(start_color(),                     ERR);
         err_if_true(assume_default_colors(C_FG, C_BG), ERR);
 
-        set_escdelay(0);
+        (void)set_escdelay(0);
 
         short color_bg = COLOR_WHITE;
 
@@ -735,7 +736,7 @@ void refresh_win(void)
 
 #if     defined(SCOPE)
 
-    if (f.e0.winact && w.nscroll != 0)
+    if (f.e0.winact && w.nlines != 0)
     {
         int line = getlines_ebuf(-1);   // Line number within buffer
         int row  = line % d.nrows;      // Relative row within screen
@@ -786,7 +787,7 @@ void set_nrows(void)
 
 #if     defined(SCOPE)
 
-    d.nrows = w.height - w.nscroll;
+    d.nrows = w.height - w.nlines;
 
     if (f.e1.winline)
     {
@@ -807,22 +808,22 @@ void set_nrows(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void set_scroll(int height, int nscroll)
+void set_scroll(int height, int nlines)
 {
 
 #if     defined(SCOPE)
 
-    if (f.e0.winact && w.nscroll != 0)
+    if (f.e0.winact && w.nlines != 0)
     {
         if (f.e1.cmdtop)
         {
             d.cmd.top  = 0;
-            d.cmd.bot  = nscroll - 1;
-            d.text.top = nscroll;
+            d.cmd.bot  = nlines - 1;
+            d.text.top = nlines;
         }
         else
         {
-            d.cmd.top  = height - nscroll;
+            d.cmd.top  = height - nlines;
             d.cmd.bot  = height - 1;
             d.text.top = 0;
         }

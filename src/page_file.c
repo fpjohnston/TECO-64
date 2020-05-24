@@ -1,6 +1,6 @@
 ///
-///  @file    x_cmd.c
-///  @brief   Execute X command.
+///  @file    page_vm.c
+///  @brief   Paging functions using virtual memory.
 ///
 ///  @bug     No known bugs.
 ///
@@ -28,87 +28,82 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
-#include "errors.h"
-#include "exec.h"
-#include "qreg.h"
+#include "eflags.h"
+#include "file.h"
+#include "page.h"
 
 
 ///
-///  @brief    Execute X command: copy lines to Q-register.
+///  @brief    Write out current page.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_X(struct cmd *cmd)
+void page_forward(FILE *fp, int start, int end, bool ff)
 {
-    assert(cmd != NULL);
+    assert(fp != NULL);
 
-    int n = 1;
-    int m;
+    struct page page;
+    int last = NUL;
 
-    if (cmd->n_set)                     // n argument?
-    {
-        n = cmd->n_arg;
-    }
+    page.size = 0;                      // No. of bytes in output page
 
-    if (cmd->m_set)                     // m argument too?
-    {
-        m = cmd->m_arg;
+    // First pass - calculate how many characters we'll need to output
 
-        if (m < 0 || m > t.Z || n < 0 || n > t.Z)
-        {
-            printc_err(E_POP, 'X');     // Pointer off page
-        }
-        else if (m == 0 && n == 0)
-        {
-            // Use of 0,0Xq is supposedly not valid, according to the May 1990
-            // manual; regardless, it is used in macros to delete Q-register
-            // text storage, so we've implemented it here.
-
-            delete_qtext(cmd->qname, cmd->qlocal);
-
-            return;
-        }
-        else if (m >= n || n == 0)
-        {
-            print_err(E_ARG);           // Invalid arguments
-        }
-
-        // Change absolute positions to relative positions.
-
-        m -= t.dot;
-        n -= t.dot;
-    }
-    else
-    {
-        int delta = getdelta_ebuf(n);
-
-        if (n <= 0)
-        {
-            m = delta;
-            n = 0;
-        }
-        else
-        {
-            m = 0;
-            n = delta;
-        }
-    }
-
-    if (!cmd->colon_set)                // Delete any text if not appending
-    {
-        delete_qtext(cmd->qname, cmd->qlocal);
-    }
-
-    for (int i = m; i < n; ++i)
+    for (int i = start; i < end; ++i)
     {
         int c = getchar_ebuf(i);
 
-        append_qchr(cmd->qname, cmd->qlocal, c);
+        // Translate LF to CR/LF if needed, unless last chr. was CR
+
+        if (c == LF && last != CR && f.e2.ocrlf)
+        {
+            ++page.size;
+        }
+
+        ++page.size;
+
+        last = c;
     }
-}
+
+    if (ff)                             // Add a form feed if necessary
+    {
+        ++page.size;
+    }
+
+    // Second pass - fill page and then output it
+
+    page.addr = alloc_mem((uint)page.size); // Allocate memory for page
+
+    char *p = page.addr;
+
+    for (int i = start; i < end; ++i)
+    {
+        int c = getchar_ebuf(i);
+
+        // Translate LF to CR/LF if needed, unless last chr. was CR
+
+        if (c == LF && last != CR && f.e2.ocrlf)
+        {
+            *p++ = CR;
+        }
+
+        *p++ = (char)c;
+    }
+
+    if (ff)                             // Add a form feed if necessary
+    {
+        *p++ = FF;
+    }
+
+    assert((uint)(p - page.addr) == page.size);
+
+    fwrite(page.addr, (size_t)page.size, 1uL, fp);
+
+    free_mem(&page.addr);
+}    

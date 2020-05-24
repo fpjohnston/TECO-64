@@ -1,6 +1,6 @@
 ///
-///  @file    ek_cmd.c
-///  @brief   Execute EK command.
+///  @file    page.h
+///  @brief   Header file for TECO paging functions.
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,56 +26,18 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#if     !defined(_PAGE_H)
 
-#include "teco.h"
-#include "errors.h"
-#include "exec.h"
-#include "file.h"
-#include "page.h"
+#define _PAGE_H
 
+extern void page_backward(FILE *fp, int count);
 
-///
-///  @brief    Execute EK command: kill current output file.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
+extern void page_flush(FILE *fp);
 
-void exec_EK(struct cmd *unused1)
-{
-    struct ofile *ofile = &ofiles[ostream];
-    const char *oname;
-    FILE *fp;
+extern void page_forward(FILE *fp, int start, int end, bool ff);
 
-    reset_pages();
+extern void reset_pages(void);
 
-    if ((fp = ofile->fp) != NULL)
-    {
-        fclose(fp);
+extern void yank_backward(FILE *fp);
 
-        ofile->fp = NULL;
-    }
-
-    if (ofile->temp != NULL)
-    {
-        oname = ofile->temp;
-    }
-    else
-    {
-        oname = ofile->name;
-    }
-
-    if (oname != NULL && remove(oname) != 0)
-    {
-        print_err(E_SYS);
-    }
-
-    free_mem(&ofile->name);
-    free_mem(&ofile->temp);
-
-    ofile->backup = false;
-}
+#endif  // !defined(_PAGE_H)

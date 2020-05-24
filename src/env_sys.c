@@ -26,6 +26,9 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
+#include <errno.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -34,11 +37,77 @@
 #include "eflags.h"
 #include "exec.h"
 #include "file.h"
+#include "term.h"
 
 
-#define TECO_HW         101             ///< x86 platform
+#if    0 // TODO: what to do with the following?
 
-#define TECO_OS           2             ///< Linux O/S
+enum
+{
+    HW_X86 = 1,                         ///< x86 processor
+    HW_PPC                              ///< PowerPC processor
+};
+
+enum
+{
+    BITS_32 = 32,                       ///< Word size is 32 bits
+    BITS_64 = 64                        ///< Word size is 64 bits
+};
+
+enum
+{
+    OS_LINUX = 1,                       ///< Linux
+    OS_WINDOWS,                         ///< Windows
+    OS_MAC                              ///< MacOS
+};
+
+enum
+{
+    ENV_NATIVE = 1,                     ///< Native environment
+    ENV_LINUX,                          ///< Linux emulator
+    ENV_WINDOWS                         ///< Windows emulator
+};
+f
+#endif
+
+#define TECO_HW          101            ///< x86 hardware
+
+#define TECO_OS          2              ///< Linux operating system
+
+// Local functions
+
+static void read_value(const char *var, uint *value);
+
+
+///
+///  @brief    Execute FI command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_FI(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->text1.len == 0)
+    {
+        print_str("FI: no keyword found\r\n");
+
+        return;
+    }    
+
+    if (cmd->text2.len == 0)
+    {
+        print_str("FI: no value found for keyword '%.*s'\r\n", cmd->text1.len,
+            cmd->text1.buf);
+
+        return;
+    }    
+
+    print_str("FI: %.*s = %.*s\r\n", cmd->text1.len, cmd->text1.buf,
+              cmd->text2.len, cmd->text2.buf);
+}
 
 
 ///
@@ -133,7 +202,12 @@ void init_env(int argc, const char * const argv[])
 
     const char *env;
 
-    // TODO: add more functionality here
+    if ((env = getenv("TECO_INIT")) != NULL)
+    {
+        printf("%%Ignoring TECO initialization file '%s'\r\n", env);
+
+        // TODO: add code to parse initialization file
+    }
 
     if ((env = getenv("TECO_PROMPT")) != NULL)
     {
@@ -143,6 +217,39 @@ void init_env(int argc, const char * const argv[])
     if (getenv("TECO_DEBUG") != NULL)
     {
         f.e0.dryrun = true;
+    }
+
+    read_value("TECO_MACRO_MAX", &macro_max);
+    read_value("TECO_LOOP_MAX",  &loop_max);
+    read_value("TECO_QREG_MAX",  &qreg_max);
+}
+
+
+///
+///  @brief    Read environment variable and set value if valid.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void read_value(const char *var, uint *value)
+{
+    assert(var != NULL);
+    assert(value != NULL);
+
+    const char *env;
+    char *endptr;
+    long n;
+
+    if ((env = getenv(var)) != NULL)
+    {
+        errno = 0;
+        n = strtol(env, &endptr, 10);
+
+        if (errno == 0 && n >= 0 && n != LONG_MAX)
+        {
+            *value = (uint)n;
+        }        
     }
 }
 
@@ -154,19 +261,33 @@ void init_env(int argc, const char * const argv[])
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int teco_env(int n_arg)
+int teco_env(int n_arg, bool colon)
 {
-    switch (n_arg)
+    if (n_arg == -1)
     {
-        case -1:
-            return (TECO_HW << 8) | TECO_OS;
+        if (colon)
+        {
+            print_str("Linux,x86,64-bit\r\n");
+        }
 
-        case 0:
-            return getpid();
+        return (TECO_HW << 8) | TECO_OS;
+    }
+    else if (n_arg == 0)
+    {
+        if (colon)
+        {
+            print_str("%u\r\n", (uint)getpid());
+        }
 
-        default:
-        case 1:
-        case 2:
-            return 0;
+        return getpid();
+    }
+    else
+    {
+        if (colon)
+        {
+            print_str("0\r\n");
+        }
+
+        return 0;
     }
 }

@@ -54,7 +54,19 @@ struct watch w =
     .mark      = 0,
     .hold      = 0,
     .topdot    = 0,
-    .nscroll   = 0,
+    .nlines    = 0,
+    .noscroll  = false,
+    .tchar     =
+    {
+        .ansi_crt   = true,
+        .edit_mode  = true,
+        .rev_scroll = true,
+        .spec_graph = true,
+        .rev_video  = true,
+        .term_width = true,
+        .scroll_reg = true,
+        .end_of_scr = true,
+    },
 };
 
 
@@ -84,7 +96,7 @@ static int get_w(int n)
             return w.width;
 
         case 2:
-            return w.height - w.nscroll;
+            return w.height - w.nlines;
 
         case 3:
             return w.seeall ? -1 : 0;
@@ -99,7 +111,13 @@ static int get_w(int n)
             return w.topdot;
 
         case 7:
-            return w.nscroll;
+            return w.nlines;
+
+        case 8:
+            return w.noscroll ? -1 : 0;
+
+        case 9:
+            return (int)w.tchar.flag;
     }
 }
 
@@ -219,10 +237,18 @@ static void set_w(int m, int n)
                 print_err(E_WIN);       // Window error
             }
 
-            w.nscroll = m;
+            w.nlines = m;
 
-            set_scroll(w.height, w.nscroll);
+            set_scroll(w.height, w.nlines);
 
+            break;
+
+        case 8:
+            w.noscroll = m ? true : false;
+
+            break;
+
+        case 9:                         // Flag not settable
             break;
 
         default:

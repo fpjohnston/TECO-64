@@ -32,11 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if     defined(__DECC)
-
-#include "getopt.h"
-
-#else
+#if     !defined(__DECC)
 
 #include <getopt.h>
 
@@ -45,6 +41,34 @@
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
+
+// TODO: the following conditional code is temporary until we figure
+//       out how to process command-line options with VMS C compiler.
+
+#if     defined(__DECC)
+
+static const int no_argument = 0;
+static const int required_argument = 1;
+static const int optional_argument = 2;
+
+struct option
+{
+    const char* name;
+    int has_arg;
+    int* flag;
+    int val;
+};
+
+static int getopt_long(int argc, char* const argv[],
+    const char* optstring, const struct option* longopts, int* longindex);
+
+static int getopt_long(int argc, char* const argv[],
+    const char* optstring, const struct option* longopts, int* longindex)
+{
+    return -1;
+}
+
+#endif
 
 
 ///  @enum     option_t

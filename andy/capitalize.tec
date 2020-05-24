@@ -1,6 +1,0 @@
-! CAPITALIZE.TEC - capitalize all words in the buffer (and downcase
-  remaining text).
-!
-1u1 j<.-z; 0au2 q2"a q1"n q2"v d q2-32ir' | q2"w d q2+32ir'' 0u1
-  | 1u1 ' c>
-
