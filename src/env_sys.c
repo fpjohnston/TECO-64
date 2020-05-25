@@ -200,7 +200,6 @@ void init_env(int argc, const char * const argv[])
 {
     set_config(argc, argv);             // Process command-line options
 
-    const char *eifile;
     const char *env;
 
     if ((env = getenv("TECO_PROMPT")) != NULL)
