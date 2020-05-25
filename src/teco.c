@@ -205,7 +205,7 @@ int main(int argc, const char * const argv[])
             default:
             case 2:                     // Error
                 reset_indirect();       // Close any indirect file
-                reset_tbuf();            // Reset terminal buffer
+                reset_tbuf();           // Reset terminal buffer
                 reset_cbuf();           // Reset the input buffer
                 reset_qreg();           // Free up Q-register storage
                 reset_if();             // Reset if statement depth
