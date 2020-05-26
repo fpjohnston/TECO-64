@@ -28,6 +28,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -289,7 +290,10 @@ static void read_memory(void)
 
     if ((fp = fopen(memory, "r")) == NULL)
     {
-        printf("%%Can't open memory file '%s'\r\n", memory);
+        if (errno != ENOENT && errno != ENODEV)
+        {
+            printf("%%Can't open memory file '%s'\r\n", memory);
+        }
 
         return;
     }
