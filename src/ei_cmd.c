@@ -46,7 +46,7 @@
 
 static void close_indirect(void);
 
-static int open_indirect(bool default_type);
+static bool open_indirect(void);
 
 
 ///
@@ -68,8 +68,19 @@ void exec_EI(struct cmd *cmd)
     {
         create_filename(&cmd->text1);
 
-        if (open_indirect((bool)false) == EXIT_FAILURE &&
-            open_indirect((bool)true)  == EXIT_FAILURE)
+        bool success = open_indirect();
+
+        if (!success)
+        {
+            if (strchr(filename_buf, '.') == NULL)
+            {
+                strcat(filename_buf, ".tec");
+
+                success = open_indirect();
+            }
+        }            
+
+        if (!success)
         {
             if (cmd->colon_set)
             {
@@ -118,22 +129,12 @@ static void close_indirect(void)
 ///
 ///  @brief    Open indirect file.
 ///
-///  @returns  Nothing.
+///  @returns  true if success, false if failure.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int open_indirect(bool default_type)
+static bool open_indirect(void)
 {
-    if (default_type)
-    {
-        assert(filename_buf != NULL);
-
-        if (strchr(filename_buf, '.') == NULL)
-        {
-            strcat(filename_buf, ".tec");
-        }
-    }
-
     if (open_input(filename_buf, IFILE_INDIRECT) == EXIT_SUCCESS)
     {
         return EXIT_SUCCESS;
