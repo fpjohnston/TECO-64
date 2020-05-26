@@ -134,15 +134,17 @@ int fetch_tbuf(void)
 
 static void free_tbuf(void)
 {
-    term_buf = NULL;
-
-    if (term_buf != NULL && term_buf->buf != NULL)
+    if (term_buf != NULL)
     {
+        if (term_buf->buf != NULL)
+        {
+            free_mem(&term_buf->buf);
+        }
+
         term_buf->size = 0;
         term_buf->pos  = 0;
         term_buf->len  = 0;
 
-        free_mem(&term_buf->buf);
         free_mem(&term_buf);
     }
 }
