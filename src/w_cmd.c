@@ -58,14 +58,16 @@ struct watch w =
     .noscroll  = false,
     .tchar     =
     {
-        .ansi_crt   = true,
-        .edit_mode  = true,
-        .rev_scroll = true,
-        .spec_graph = true,
-        .rev_video  = true,
-        .term_width = true,
-        .scroll_reg = true,
-        .end_of_scr = true,
+        {                               //lint !e708
+            .ansi_crt   = true,
+            .edit_mode  = true,
+            .rev_scroll = true,
+            .spec_graph = true,
+            .rev_video  = true,
+            .term_width = true,
+            .scroll_reg = true,
+            .end_of_scr = true,
+        }
     },
 };
 

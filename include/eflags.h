@@ -165,7 +165,7 @@ union et_flag
         uint abort    : 1;      ///< Abort-on-error bit
         uint truncate : 1;      ///< Truncate output lines to terminal width
         uint scope    : 1;      ///< Terminal is a scope type
-        uint refresh  : 1;      ///< Terminal is a refresh scope
+        uint rscope   : 1;      ///< Terminal is a refresh scope
         uint          : 1;      ///< (unused)
         uint eightbit : 1;      ///< Can handle 8-bit characters
         uint accent   : 1;      ///< Accent grave is ESCAPE surrogate

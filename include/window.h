@@ -47,8 +47,6 @@
 
 union tchar
 {
-    uint flag;
-
     struct
     {
         uint ansi_crt   : 1;        ///< Terminal is an ANSI CRT
@@ -60,6 +58,8 @@ union tchar
         uint scroll_reg : 1;        ///< Terminal has scrolling regions
         uint end_of_scr : 1;        ///< Terminal can erase to end of screen
     };
+
+    uint flag;
 };
 
 ///  @struct  watch
