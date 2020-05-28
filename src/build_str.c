@@ -199,7 +199,7 @@ uint build_string(char **dest, const char *src, uint len)
 
             if (qname == '*' && c == 'Q')
             {
-                store_str(filename_buf, (uint)strlen(filename_buf));
+                store_str(last_file, (uint)strlen(last_file));
 
                 continue;
             }

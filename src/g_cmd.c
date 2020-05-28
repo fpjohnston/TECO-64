@@ -60,7 +60,7 @@ void exec_G(struct cmd *cmd)
     {
         if (cmd->qname == '*')          // :G* -> print filename buffer
         {
-            print_str("%s", filename_buf);
+            print_str("%s", last_file);
         }
         else if (cmd->qname == '_')     // :G_ -> print search string buffer
         {
@@ -75,15 +75,15 @@ void exec_G(struct cmd *cmd)
     {
         if (cmd->qname == '*')          // G* -> copy filename to buffer
         {
-            if (filename_buf == NULL)
+            if (last_file == NULL)
             {
                 last_len = 0;
             }
             else
             {
-                exec_insert(filename_buf, (uint)strlen(filename_buf));
+                exec_insert(last_file, (uint)strlen(last_file));
 
-                last_len = (uint)strlen(filename_buf);
+                last_len = (uint)strlen(last_file);
             }
         }
         else if (cmd->qname == '_')     // G_ -> copy search string to buffer

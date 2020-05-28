@@ -62,54 +62,38 @@ static char **next_file;                ///< Next file in pglob
 ///            may have alternative methods of dealing with output files that
 ///            may need to be deleted, such as versioning on VMS.
 ///
-///  @returns  Name of file to open.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-const char *get_oname(struct ofile *ofile, uint nbytes, bool exists)
+void init_temp(char **otemp, const char *oname)
 {
-    assert(ofile != NULL);
-
+    assert(otemp != NULL);
+    assert(*otemp == NULL);
+    assert(oname != NULL);
+    
     struct stat file_stat;
-    const char *oname;
+    uint nbytes = (uint)strlen(oname);
     char scratch[nbytes + 1];
 
-    if (exists)                         // Does file already exist?
+    if (stat(oname, &file_stat) != 0)
     {
-        if (stat(last_file, &file_stat) != 0)
-        {
-            print_err(E_SYS);
-        }
-
-        ofile->name = alloc_mem(nbytes + 1);
-
-        memcpy(ofile->name, last_file, (size_t)nbytes + 1);
-        memcpy(scratch, last_file, (size_t)nbytes + 1);
-
-        char *dir = dirname(scratch);
-        char tempfile[] = "_teco-XXXXXX";
-        int fd = mkstemp(tempfile);
-
-        close(fd);
-
-        nbytes = (uint)(strlen(dir) + 1 + strlen(tempfile));
-
-        ofile->temp = alloc_mem(nbytes + 1);
-
-        sprintf(ofile->temp, "%s/%s", dir, tempfile);
-
-        oname = ofile->temp;
-    }
-    else                                // File does not exist
-    {
-        ofile->name = alloc_mem(nbytes + 1);
-
-        memcpy(ofile->name, last_file, (size_t)nbytes + 1);
-
-        oname = ofile->name;
+        print_err(E_SYS);
     }
 
-    return oname;
+    memcpy(scratch, oname, (size_t)nbytes + 1);
+
+    char tempfile[] = "_teco-XXXXXX";
+    char *dir = dirname(scratch);
+    int fd = mkstemp(tempfile);
+
+    close(fd);
+
+    nbytes = (uint)(strlen(dir) + 1 + strlen(tempfile));
+
+    *otemp = alloc_mem(nbytes + 1);
+
+    sprintf(*otemp, "%s/%s", dir, tempfile);
 }
 
 
@@ -140,7 +124,7 @@ int get_wild(void)
 
         if (S_ISREG(file_stat.st_mode))
         {
-            sprintf(filename_buf, "%s", filename);
+            last_file = filename;
 
             return EXIT_SUCCESS;
         }
@@ -167,8 +151,6 @@ void rename_output(struct ofile *ofile)
 
     if (ofile->temp != NULL)
     {
-        assert(ofile->name != NULL);
-
         if (ofile->backup)
         {
             char scratch[strlen(ofile->name) + 1 + 1];

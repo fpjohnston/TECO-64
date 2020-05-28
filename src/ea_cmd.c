@@ -47,6 +47,8 @@ void exec_EA(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    istream = IFILE_SECONDARY;
+    ostream = OFILE_SECONDARY;
+
+    last_file = ofiles[ostream].name;
 }
 

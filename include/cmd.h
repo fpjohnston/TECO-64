@@ -122,8 +122,6 @@ extern const uint cmd_f_count;
 
 // Miscellaneous functions
 
-extern int fopen_output(const struct cmd *cmd, uint stream);
-
 extern exec_func *next_cmd(struct cmd *cmd);
 
 extern void print_cmd(struct cmd *cmd);

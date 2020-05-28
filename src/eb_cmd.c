@@ -55,9 +55,18 @@ void exec_EB(struct cmd *cmd)
         print_err(E_NFI);               // No file for input
     }
 
-    create_filename(&cmd->text1);
+    if (ofiles[ostream].fp != NULL)
+    {
+        print_err(E_OFO);               // Output file already open
+    }
 
-    if (open_input(filename_buf, istream) == EXIT_FAILURE)
+    close_input(istream);               // Silently close any input file
+
+    struct ifile *ifile = &ifiles[istream];
+
+    init_filename(&ifile->name, cmd->text1.buf, cmd->text1.len);
+
+    if (open_input(ifile) == EXIT_FAILURE)
     {
         if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
         {
@@ -71,7 +80,17 @@ void exec_EB(struct cmd *cmd)
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
 
-    if (fopen_output(cmd, ostream) == EXIT_FAILURE)
+    struct ofile *ofile = &ofiles[istream];
+
+    if (ofile->name != NULL)
+    {
+        free_mem(&ofile->name);
+    }
+
+    ofile->name = ifile->name;
+    ofile->backup = true;
+
+    if (open_output(ofile, cmd->c2) == EXIT_FAILURE)
     {
         if (!cmd->colon_set)
         {

@@ -52,15 +52,20 @@ void exec_EW(struct cmd *cmd)
     if (cmd->text1.len == 0)            // EW`?
     {
         ostream = OFILE_PRIMARY;        // Yes, switch to primary output stream
+        last_file = ofiles[ostream].name;
 
         return;
     }
 
-    if (fopen_output(cmd, ostream) == EXIT_FAILURE)
+    struct ofile *ofile = &ofiles[ostream];
+
+    init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
+
+    if (open_output(ofile, cmd->c2) == EXIT_FAILURE)
     {
         if (!cmd->colon_set)
         {
-            prints_err(E_UFO, last_file);
+            prints_err(E_UFO, ofile->name);
         }
 
         push_expr(TECO_FAILURE, EXPR_VALUE);

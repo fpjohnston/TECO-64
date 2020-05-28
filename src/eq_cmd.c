@@ -59,9 +59,13 @@ void exec_EQ(struct cmd *cmd)
         return;
     }
 
-    create_filename(&cmd->text1);
+    close_input(istream);               // Close any open input file
 
-    if (open_input(filename_buf, IFILE_QREGISTER) == EXIT_FAILURE)
+    struct ifile *ifile = &ifiles[IFILE_QREGISTER];
+
+    init_filename(&ifile->name, cmd->text1.buf, cmd->text1.len);
+
+    if (open_input(ifile) == EXIT_FAILURE)
     {
         if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
         {
@@ -77,7 +81,7 @@ void exec_EQ(struct cmd *cmd)
 
     struct stat file_stat;
 
-    if (stat(filename_buf, &file_stat) == -1)
+    if (stat(last_file, &file_stat) == -1)
     {
         if (cmd->colon_set)
         {
@@ -86,7 +90,6 @@ void exec_EQ(struct cmd *cmd)
     }
 
     uint size = (uint)file_stat.st_size;
-    struct ifile *ifile = &ifiles[IFILE_QREGISTER];
     struct buffer text =
     {
         .len  = size,
@@ -103,9 +106,7 @@ void exec_EQ(struct cmd *cmd)
 
     store_qtext(cmd->qname, cmd->qlocal, &text);
 
-    fclose(ifile->fp);
-
-    ifile->fp = NULL;
+    close_input(IFILE_QREGISTER);
 
     if (cmd->colon_set)
     {

@@ -46,7 +46,7 @@
 
 static void close_indirect(void);
 
-static bool open_indirect(void);
+static bool open_indirect(struct ifile *ifile);
 
 
 ///
@@ -66,17 +66,27 @@ void exec_EI(struct cmd *cmd)
 
     if (cmd->text1.len != 0)
     {
-        create_filename(&cmd->text1);
+        struct ifile *ifile = &ifiles[IFILE_INDIRECT];
 
-        bool success = open_indirect();
+        init_filename(&ifile->name, cmd->text1.buf, cmd->text1.len);
+
+        bool success = open_indirect(ifile);
 
         if (!success)
         {
-            if (strchr(filename_buf, '.') == NULL)
+            if (strchr(ifile->name, '.') == NULL)
             {
-                strcat(filename_buf, ".tec");
+                uint len = (uint)strlen(ifile->name);
+                const char *ext = ".tec";
 
-                success = open_indirect();
+                ifile->name = expand_mem(ifile->name, len,
+                                         len + (uint)strlen(ext));
+
+                last_file = ifile->name;
+
+                strcat(ifile->name, ext);
+
+                success = open_indirect(ifile);
             }
         }            
 
@@ -88,7 +98,7 @@ void exec_EI(struct cmd *cmd)
             }
             else
             {
-                prints_err(E_FNF, filename_buf);
+                prints_err(E_FNF, last_file);
             }
         }
         else if (cmd->colon_set)
@@ -108,16 +118,7 @@ void exec_EI(struct cmd *cmd)
 
 static void close_indirect(void)
 {
-    struct ifile *stream = &ifiles[IFILE_INDIRECT];
-
-    if (stream->fp != NULL)
-    {
-        fclose(stream->fp);
-
-        stream->fp  = NULL;
-        stream->eof = true;
-        stream->cr  = false;
-    }
+    close_input(IFILE_INDIRECT);
 
     if (f.e0.exit)                      // Command-line option to exit?
     {
@@ -133,9 +134,9 @@ static void close_indirect(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool open_indirect(void)
+static bool open_indirect(struct ifile *ifile)
 {
-    if (open_input(filename_buf, IFILE_INDIRECT) == EXIT_SUCCESS)
+    if (open_input(ifile) == EXIT_SUCCESS)
     {
         return EXIT_SUCCESS;
     }
@@ -145,9 +146,9 @@ static bool open_indirect(void)
         return EXIT_FAILURE;
     }
 
-    // Here if error was something other than a simple file not found.
+    // Here if error was something other than a simple "file not found".
 
-    prints_err(E_FNF, filename_buf);
+    prints_err(E_FNF, last_file);
 }
 
 

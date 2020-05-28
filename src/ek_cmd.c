@@ -48,34 +48,18 @@
 void exec_EK(struct cmd *unused1)
 {
     struct ofile *ofile = &ofiles[ostream];
-    const char *oname;
-    FILE *fp;
 
     reset_pages();
 
-    if ((fp = ofile->fp) != NULL)
-    {
-        fclose(fp);
+    // Delete any file we created. Use the temp name if we have one. Note that
+    // this needs to be done before closing the file, because that will delete
+    // strings that we reference below.
 
-        ofile->fp = NULL;
-    }
-
-    if (ofile->temp != NULL)
-    {
-        oname = ofile->temp;
-    }
-    else
-    {
-        oname = ofile->name;
-    }
-
-    if (oname != NULL && remove(oname) != 0)
+    if ((ofile->temp != NULL && remove(ofile->temp) != 0) ||
+        (ofile->name != NULL && remove(ofile->name) != 0))
     {
         print_err(E_SYS);
     }
 
-    free_mem(&ofile->name);
-    free_mem(&ofile->temp);
-
-    ofile->backup = false;
+    close_output(ostream);
 }

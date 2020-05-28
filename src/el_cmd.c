@@ -60,7 +60,11 @@ void exec_EL(struct cmd *cmd)
         return;
     }
 
-    if (fopen_output(cmd, OFILE_LOG) == EXIT_FAILURE)
+    struct ofile *ofile = &ofiles[OFILE_LOG];
+
+    init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
+
+    if (open_output(ofile, cmd->c2) == EXIT_FAILURE)
     {
         if (!cmd->colon_set)
         {

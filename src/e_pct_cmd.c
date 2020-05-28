@@ -56,9 +56,11 @@ void exec_E_pct(struct cmd *cmd)
         return;
     }
 
-    create_filename(&cmd->text1);
+    struct ofile *ofile = &ofiles[OFILE_QREGISTER];
 
-    if (fopen_output(cmd, OFILE_QREGISTER) == EXIT_FAILURE)
+    init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
+
+    if (open_output(ofile, cmd->c2) == EXIT_FAILURE)
     {
         if (!cmd->colon_set)
         {
@@ -72,7 +74,6 @@ void exec_E_pct(struct cmd *cmd)
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
 
-    struct ofile *ofile = &ofiles[OFILE_QREGISTER];
     struct qreg *qreg = get_qreg(cmd->qname, cmd->qlocal);
 
     assert(qreg != NULL);
@@ -88,10 +89,7 @@ void exec_E_pct(struct cmd *cmd)
     }
 
     rename_output(ofile);
-
-    fclose(ofile->fp);
-
-    ofile->fp = NULL;
+    close_output(ostream);
 
     if (cmd->colon_set)
     {

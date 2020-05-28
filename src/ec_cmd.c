@@ -60,7 +60,6 @@ void exec_EC(struct cmd *cmd)
         return;
     }
 
-    struct ifile *ifile = &ifiles[istream];
     struct ofile *ofile = &ofiles[ostream];
 
     if (ofile->fp != NULL)
@@ -71,24 +70,9 @@ void exec_EC(struct cmd *cmd)
         }
 
         page_flush(ofile->fp);
-
-        fclose(ofile->fp);
-
-        ofile->fp = NULL;
     }
 
     rename_output(ofile);              // Handle any required file renaming
-
-    free_mem(&ofile->temp);
-    free_mem(&ofile->name);
-
-    if (ifile->fp != NULL)
-    {
-        fclose(ifile->fp);
-
-        ifile->fp = NULL;
-    }
-
-    ifile->eof = true;
-    ifile->cr  = false;
+    close_output(ostream);
+    close_input(istream);
 }

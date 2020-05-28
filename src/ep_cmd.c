@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute EP command (switch to secondary output stream).
+///  @brief    Execute EP command (switch to secondary input stream).
 ///
 ///  @returns  Nothing.
 ///
@@ -47,5 +47,7 @@ void exec_EP(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    ostream = OFILE_SECONDARY;
+    istream = IFILE_SECONDARY;
+
+    last_file = ifiles[istream].name;
 }

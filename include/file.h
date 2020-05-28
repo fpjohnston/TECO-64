@@ -48,6 +48,7 @@
 struct ifile
 {
     FILE *fp;                       ///< Input file stream
+    char *name;                     ///< Input file name
     bool eof;                       ///< End of file reached
     bool cr;                        ///< Last character was CR
 };
@@ -97,23 +98,25 @@ extern struct ofile ofiles[];
 
 extern uint istream, ostream;
 
-extern char *last_file;
+extern const char *last_file;
 
 // File functions
 
+extern void close_input(uint stream);
+
 extern void close_output(uint stream);
 
-extern void create_filename(const struct tstring *text);
+extern void init_filename(char **name, const char *buf, uint len);
 
-extern const char *get_oname(struct ofile *ofile, uint nbytes, bool exists);
+extern void init_temp(char **temp, const char *oname);
 
 extern int get_wild(void);
 
 extern void init_files(void);
 
-extern int open_input(const char *filespec, uint stream);
+extern int open_input(struct ifile *ifile);
 
-extern int open_output(struct ofile *ofile, int c, const char *name, uint nbytes);
+extern int open_output(struct ofile *ofile, int c);
 
 extern void rename_output(struct ofile *ofile);
 

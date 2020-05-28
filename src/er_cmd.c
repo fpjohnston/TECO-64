@@ -54,16 +54,22 @@ void exec_ER(struct cmd *cmd)
     {
         istream = IFILE_PRIMARY;
 
+        last_file = ifiles[istream].name;
+
         return;
     }
 
-    create_filename(&cmd->text1);
+    close_input(istream);               // Close any open input file
 
-    if (open_input(filename_buf, istream) == EXIT_FAILURE)
+    struct ifile *ifile = &ifiles[istream];
+
+    init_filename(&ifile->name, cmd->text1.buf, cmd->text1.len);
+
+    if (open_input(ifile) == EXIT_FAILURE)
     {
         if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
         {
-            prints_err(E_FNF, last_file);
+            prints_err(E_FNF, ifile->name);
         }
 
         push_expr(TECO_FAILURE, EXPR_VALUE);

@@ -29,15 +29,11 @@
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
+#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#if     !defined(__DECC)
-
-#include <getopt.h>
-
-#endif
+#include <unistd.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -288,6 +284,8 @@ static void read_memory(void)
     char file[128 + 1];                // TODO: magic number
     char command[128 + 8 + 1];         // TODO: magic numbers
 
+    assert(memory != NULL);
+
     if ((fp = fopen(memory, "r")) == NULL)
     {
         if (errno != ENOENT && errno != ENODEV)
@@ -298,7 +296,7 @@ static void read_memory(void)
         return;
     }
 
-    if (fgets(file, sizeof(file), fp) == NULL)
+    if (fgets(file, (int)sizeof(file), fp) == NULL)
     {
         printf("%%Can't read from memory file '%s'\r\n", memory);
     }
@@ -318,8 +316,6 @@ static void read_memory(void)
             store_cmd(command);
         }
     }
-
-    fprintf(fp, "%s\n", file);
 
     fclose(fp);
 
@@ -357,6 +353,8 @@ static void write_memory(const char *file)
 {
     const char *memory = getenv("TECO_MEMORY") ?: "teco.mem";
     FILE *fp;
+
+    assert(memory != NULL);
 
     if ((fp = fopen(memory, "w")) == NULL)
     {

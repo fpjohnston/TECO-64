@@ -36,7 +36,6 @@
 #include "teco.h"
 #include "eflags.h"
 #include "exec.h"
-#include "file.h"
 #include "term.h"
 
 
@@ -182,7 +181,7 @@ int find_eg(const char *buf, uint len)
         return 1;
     }
 
-    strcpy(filename_buf, result);
+    printf("TODO: result = %s\r\n", result);
 
     return -1;
 }
