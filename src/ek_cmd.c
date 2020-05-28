@@ -55,10 +55,19 @@ void exec_EK(struct cmd *unused1)
     // this needs to be done before closing the file, because that will delete
     // strings that we reference below.
 
-    if ((ofile->temp != NULL && remove(ofile->temp) != 0) ||
-        (ofile->name != NULL && remove(ofile->name) != 0))
+    if (ofile->temp != NULL)
     {
-        print_err(E_SYS);
+        if (remove(ofile->temp) != 0)
+        {
+            print_err(E_SYS);
+        }
+    }
+    else if (ofile->name != NULL)
+    {
+        if (remove(ofile->name) != 0)
+        {
+            print_err(E_SYS);
+        }
     }
 
     close_output(ostream);
