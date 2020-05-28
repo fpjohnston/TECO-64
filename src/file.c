@@ -49,7 +49,7 @@ uint istream = IFILE_PRIMARY;           ///< Current input stream
 
 uint ostream = OFILE_PRIMARY;           ///< Current output stream
 
-const char *last_file;                  ///< Last opened file
+const char *last_file = NULL;           ///< Last opened file
 
 // Local functions
 
@@ -289,7 +289,10 @@ int open_output(struct ofile *ofile, int c)
         return EXIT_FAILURE;
     }
 
-    canonical_name(&ofile->name);
+    if (!ofile->backup)
+    {
+        canonical_name(&ofile->name);
+    }
 
     if (c == 'L')                       // Immediately flush output to log file
     {
@@ -323,5 +326,5 @@ static void reset_files(void)
 
     istream = IFILE_PRIMARY;
 
-    last_file = "";
+    last_file = NULL;
 }
