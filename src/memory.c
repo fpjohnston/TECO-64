@@ -34,6 +34,65 @@
 #include "teco.h"
 #include "errors.h"
 
+#define MEM_CHECK
+
+#if     defined(MEM_CHECK)
+
+struct mblock
+{
+    struct mblock *prev;                ///< Previous block in linked list
+    struct mblock *next;                ///< Next block in linked list
+    const char *addr;                   ///< calloc'd memory block
+    unsigned int size;                  ///< Size of block in bytes
+};
+
+struct mblock *mroot = NULL;
+unsigned int msize = 0;
+
+// Local functions
+
+static void add_mblock(void *p1, uint size);
+
+static void delete_mblock(void *p1);
+
+static void reset_mblocks(void);
+
+#endif
+
+
+///
+///  @brief    Add memory block.
+///
+///  @returns  Nothing (error if memory allocation fails).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(MEM_CHECK)
+
+static void add_mblock(void *p1, uint size)
+{
+    assert(p1 != NULL);
+
+    struct mblock *mblock = calloc(1ul, sizeof(*mblock));
+
+    assert(mblock != NULL);
+
+    mblock->prev = NULL;
+    mblock->next = mroot;
+
+    if (mroot != NULL)
+    {
+        mroot->prev = mblock;
+    }
+    
+    mblock->addr = p1;
+    mblock->size = size;
+    msize += size;
+    mroot = mblock;
+}
+
+#endif
+
 
 ///
 ///  @brief    Get new memory.
@@ -44,15 +103,87 @@
 
 void *alloc_mem(uint size)
 {
-    void *ptr = calloc(1uL, (size_t)size);
+#if     defined(MEM_CHECK)
 
-    if (ptr == NULL)
+    static bool first_alloc = true;
+
+    if (first_alloc)
+    {
+        first_alloc = false;
+
+        (void)atexit(reset_mblocks);
+    }
+
+#endif
+    
+    void *p1 = calloc(1uL, (size_t)size);
+
+    if (p1 == NULL)
     {
         print_err(E_MEM);               // Memory overflow
     }
 
-    return ptr;
+#if     defined(MEM_CHECK)
+
+    add_mblock(p1, size);
+
+#endif
+
+    return p1;
 }
+
+
+///
+///  @brief    Delete memory block.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(MEM_CHECK)
+
+static void delete_mblock(void *p1)
+{
+    assert(p1 != NULL);
+
+    struct mblock *p = mroot;
+
+    while (p != NULL)
+    {
+        if (p1 == p->addr)
+        {
+//            printf("--- deallocating memory at %p: %u bytes\r\n", p->addr, p->size);
+            msize -= p->size;
+
+            if (p->prev != NULL)
+            {
+                p->prev->next = p->next;
+            }
+            else
+            {
+                mroot = p->next;
+            }
+
+            if (p->next != NULL)
+            {
+                p->next->prev = p->prev;
+            }
+
+            p->next = p->prev = NULL;
+            p->addr = NULL;
+            p->size = 0;
+            
+            free(p);
+            
+            return;
+        }
+        p = p->next;
+    }
+
+    printf("?Can't find memory block: %p\r\n", p1);
+}
+
+#endif
 
 
 ///
@@ -62,24 +193,37 @@ void *alloc_mem(uint size)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void *expand_mem(void *ptr, uint oldsize, uint newsize)
+void *expand_mem(void *p1, uint oldsize, uint newsize)
 {
-    assert(ptr != NULL);
+    assert(p1 != NULL);
+    assert(oldsize != 0);
     assert(oldsize != newsize);
     assert(oldsize < newsize);
 
-    char *newptr = realloc(ptr, (size_t)newsize);
+#if     defined(MEM_CHECK)
 
-    if (newptr == NULL)
+    delete_mblock(p1);
+
+#endif
+
+    char *p2 = realloc(p1, (size_t)newsize);
+
+    if (p2 == NULL)
     {
         print_err(E_MEM);               // Memory overflow
     }
 
+#if     defined(MEM_CHECK)
+
+    add_mblock(p2, newsize);
+
+#endif
+
     // Initialize the extra memory we just allocated.
 
-    memset(newptr + oldsize, '\0', (size_t)(newsize - oldsize));
+    memset(p2 + oldsize, '\0', (size_t)(newsize - oldsize));
 
-    return newptr;
+    return p2;
 }
 
 
@@ -98,11 +242,55 @@ void free_mem(void *p1)
 
     if (*p2 != NULL)
     {
+#if     defined(MEM_CHECK)
+
+        delete_mblock(*p2);
+   
+#endif
+
         free(*p2);
 
         *p2 = NULL;                     // Make sure we don't use this again
     }
 }
+
+
+///
+///  @brief    Reset memory blocks, and verify that everything was deallocated.
+///
+///  @returns  Nothing (error if memory allocation fails).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(MEM_CHECK)
+
+static void reset_mblocks(void)
+{
+    struct mblock *p = mroot;
+    struct mblock *next;
+
+    while (p != NULL)
+    {
+//        printf("+++ undeallocated memory at %p: %u bytes\r\n", p->addr, p->size);
+
+        next = p->next;
+        msize -= p->size;
+        p->next = p->prev = NULL;
+        p->addr = NULL;
+        p->size = 0;
+
+        free(p);
+
+        p = next;
+    }
+
+    if (msize != 0)
+    {
+        printf("+++ %u bytes allocated at exit\r\n", msize);
+    }
+}
+
+#endif
 
 
 ///
@@ -112,18 +300,31 @@ void free_mem(void *p1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void *shrink_mem(void *ptr, uint oldsize, uint newsize)
+void *shrink_mem(void *p1, uint oldsize, uint newsize)
 {
-    assert(ptr != NULL);
+    assert(p1 != NULL);
     assert(oldsize != newsize);
     assert(oldsize > newsize);
+    assert(newsize != 0);
 
-    void *newptr = realloc(ptr, (size_t)newsize);
+#if     defined(MEM_CHECK)
 
-    if (newptr == NULL)
+    delete_mblock(p1);
+
+#endif
+
+    void *p2 = realloc(p1, (size_t)newsize);
+
+    if (p2 == NULL)
     {
         print_err(E_MEM);               // Memory overflow
     }
 
-    return newptr;
+#if     defined(MEM_CHECK)
+
+    add_mblock(p2, newsize);
+
+#endif
+
+    return p2;
 }
