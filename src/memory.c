@@ -36,7 +36,23 @@
 
 #define MEM_CHECK
 
+// The following conditional code is used to check for memory leaks when we
+// exit. It is an early warning system to alert the user that there is a bug
+// that needs to be investigated and resolved, possibly with better tools such
+// as Valgrind.
+
 #if     defined(MEM_CHECK)
+
+///  @struct mblock
+///
+///  This structure defines a block that is used in a doubly-linked list to
+///  keep track of TECO memory allocations and deallocations. The mroot vari-
+///  able points to the first block in the list, which is also always the most
+///  recently added block. And the msize variable is the sum of the sizes of
+///  all currently allocated memory (excluding the blocks for this list). At
+///  program exit, the list should be empty, but if it is not, we will use the
+///  information in each block to print an error message with the address and
+///  size of the undeallocated memory.
 
 struct mblock
 {
@@ -46,8 +62,9 @@ struct mblock
     unsigned int size;                  ///< Size of block in bytes
 };
 
-struct mblock *mroot = NULL;
-unsigned int msize = 0;
+struct mblock *mroot = NULL;            ///< Root of memory block list
+
+unsigned int msize = 0;                 ///< Total memory allocated, in bytes
 
 // Local functions
 
@@ -72,6 +89,8 @@ static void reset_mblocks(void);
 static void add_mblock(void *p1, uint size)
 {
     assert(p1 != NULL);
+
+    // Note: We don't call alloc_mem() here, since it calls us.
 
     struct mblock *mblock = calloc(1ul, sizeof(*mblock));
 
@@ -152,7 +171,6 @@ static void delete_mblock(void *p1)
     {
         if (p1 == p->addr)
         {
-//            printf("--- deallocating memory at %p: %u bytes\r\n", p->addr, p->size);
             msize -= p->size;
 
             if (p->prev != NULL)
@@ -173,6 +191,8 @@ static void delete_mblock(void *p1)
             p->addr = NULL;
             p->size = 0;
             
+            // Note: We don't call free_mem() here, since it calls us.
+
             free(p);
             
             return;
@@ -269,9 +289,14 @@ static void reset_mblocks(void)
     struct mblock *p = mroot;
     struct mblock *next;
 
+    if (msize != 0)
+    {
+        printf("%%%u total bytes allocated at exit\r\n", msize);
+    }
+
     while (p != NULL)
     {
-//        printf("+++ undeallocated memory at %p: %u bytes\r\n", p->addr, p->size);
+        printf("%%%u bytes allocated at %p\r\n", p->size, p->addr);
 
         next = p->next;
         msize -= p->size;
@@ -282,11 +307,6 @@ static void reset_mblocks(void)
         free(p);
 
         p = next;
-    }
-
-    if (msize != 0)
-    {
-        printf("+++ %u bytes allocated at exit\r\n", msize);
     }
 }
 
