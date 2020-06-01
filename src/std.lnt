@@ -36,6 +36,7 @@ co-gcc.lnt   // Basic gcc configuration
 -esym(526,__builtin_constant_p)
 -esym(628,__builtin_constant_p)
 -esym(644,__v)
+-e606
 //-passes(4)
 
 -esym(526,__builtin_va_start)
