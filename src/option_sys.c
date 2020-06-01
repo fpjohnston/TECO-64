@@ -31,7 +31,6 @@
 #include <errno.h>
 #include <getopt.h>
 #include <limits.h>
-#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -201,7 +200,7 @@ static void finish_config(int argc, const char * const argv[]);
 
 static void read_memory(char *p, uint len);
 
-static void store_cmd(const char *str, ...);
+static void store_cmd(const char *str);
 
 
 ///
@@ -287,31 +286,39 @@ static void finish_config(int argc, const char * const argv[])
         exit(EXIT_FAILURE);
     }
 
-    if (config.flag.initial)
+    char scratch[PATH_MAX];
+    char *env;
+
+    //  Process --initial and --noinitial options.
+    //
+    //  --initial is the default if neither is specified.
+    //
+    //  If --initial=file, open specified initialization file.
+    //  If --initial, open initialization file specified by TECO_INIT.
+    //  If --noinitial, don't open an initialization file.
+    //
+    //  Note that if the environment variable value is enclosed in double
+    //  quotes, it is treated as a string of commands rather than a file name.
+   
+    if (config.arg.initial != NULL)
     {
-        if (config.arg.initial)
+        sprintf(scratch, "@EI|%s| ", config.arg.initial);
+        store_cmd(scratch);
+    }
+    else if (config.flag.initial && (env = getenv("TECO_INIT")) != NULL)
+    {
+        int len = (int)strlen(env);
+
+        if (len > 2 && env[0] == '"' && env[len - 1] == '"')
         {
-            store_cmd("@EI|", config.arg.initial, "|\r\n", NULL);
+            sprintf(scratch, "%.*s", len - 2, env + 1);
         }
         else
         {
-            char *env = getenv("TECO_INIT");
-
-            if (env != NULL)
-            {
-                uint len = (uint)strlen(env);
-
-                if (len > 2 && env[0] == '"' && env[len - 1] == '"')
-                {
-                    env[len - 1] = NUL;
-                    store_cmd(env + 1, NULL);
-                }
-                else
-                {
-                    store_cmd("@EI|", env, "|", NULL);
-                }
-            }
+            sprintf(scratch, "@EI|%s| ", env);
         }
+
+        store_cmd(scratch);
     }
 
     if (config.flag.dry_run)
@@ -321,32 +328,38 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.arg.log != NULL)
     {
-        store_cmd("@EL|", config.arg.log, "|", NULL);
+        sprintf(scratch, "@EL|%s|", config.arg.log);
+        store_cmd(scratch);
     }
 
     if (config.arg.execute != NULL)
     {
-        store_cmd("@EI|", config.arg.execute, "|", NULL);
+        sprintf(scratch, "@EI|%s|", config.arg.execute);
+        store_cmd(scratch);
     }
 
     if (config.arg.text != NULL)
     {
-        store_cmd("@I|", config.arg.text, "|", NULL);
+        sprintf(scratch, "@I|%s|", config.arg.text);
+        store_cmd(scratch);
     }
 
     if (config.flag.exit)
     {
-        store_cmd("EX", NULL);
+        sprintf(scratch, "EX");
+        store_cmd(scratch);
     }
 
     if (config.flag.window != 0)
     {
-        store_cmd("1W", NULL);
+        sprintf(scratch, "1W");
+        store_cmd(scratch);
     }
 
     if (config.arg.scroll != NULL)
     {
-        store_cmd(config.arg.scroll, ",7:W", NULL);
+        sprintf(scratch, "%s,7:W", config.arg.scroll);
+        store_cmd(scratch);
     }
 
     const char *file = NULL;
@@ -370,45 +383,38 @@ static void finish_config(int argc, const char * const argv[])
     {
         if (config.arg.output != NULL)
         {
-            store_cmd("@ER|", file, "| @EW|", config.arg.output, "| Y", NULL);
+            sprintf(scratch, "@ER|%s| @EW|%s| Y", file, config.arg.output);
         }
         else
         {
-            char path[PATH_MAX];
-            const char *mode = "ER";
-
-            if (realpath(file, path) != NULL)
+            if (realpath(file, scratch) != NULL)
             {
                 if (config.flag.readonly)
                 {
-                    printf("%%Inspecting file '%s'\r\n", file);
+                    sprintf(scratch, "@^A|%%Inspecting file '%s'| 13^T 10^T "
+                            "@ER|%s| Y ", file, file);
                 }
                 else
                 {
-                    printf("%%Editing file '%s'\r\n", file);
-                    mode = "EB";
+                    sprintf(scratch, "@^A|%%Editing file '%s'| 13^T 10^T "
+                            "@EB|%s| Y", file, file);
                 }
             }
-            else if (config.flag.create)
+            else if (config.flag.create && !config.flag.readonly)
             {
-                printf("%%Can't find file '%s'\r\n", file);
-                printf("%%Creating new file\r\n");
-
-                mode = "EW";
+                sprintf(scratch, "@^A|%%Can't find file '%s'| 13^T 10^T "
+                        "@^A|%%Creating new file| 13^T 10^T "
+                        "@EW|%s|", file, file);
             }
             else
             {
-                printf("?Can't find file '%s'\r\n", file);
-
-                exit(EXIT_FAILURE);
+                sprintf(scratch, "@^A|?Can't find file '%s'| 13^T 10^T EX",
+                        file);
             }
-              
-
-            store_cmd("@", mode, "|", file, "| Y", NULL);
         }
-    }
 
-//    exit(EXIT_SUCCESS);
+        store_cmd(scratch);
+    }
 }
 
 
@@ -640,30 +646,23 @@ static void read_memory(char *p, uint len)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void store_cmd(const char *str, ...)
+static void store_cmd(const char *cmd)
 {
+    assert(cmd != NULL);
+
     int c;
-    va_list ap;
-    va_start(ap, str);
 
-//    printf("    ");
+#define DEBUG_OPTIONS
+#if     defined(DEBUG_OPTIONS)
+    
+    printf("command: %s\r\n", cmd);
 
-    while (str != NULL)
+#endif
+
+    while ((c = *cmd++) != NUL)
     {
-//        fputs(str, stdout);
-
-        while ((c = *str++) != NUL)
-        {
-            store_cbuf(c);
-        }
-
-        str = va_arg(ap, const char *); //lint !e010 !e026 !e048 !e064
+        store_cbuf(c);
     }
-
-//    fputc(' ', stdout);
-//    printf("\r\n");
-
-    va_end(ap);
 }
 
 
