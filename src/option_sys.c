@@ -42,6 +42,8 @@
 
 // TODO: add --help option
 
+#define CTRL_A          "\x01"          ///< This is used for CTRL/A commands
+
 ///  @enum     option_t
 ///  case values for command-line options.
 
@@ -399,23 +401,26 @@ static void finish_config(int argc, const char * const argv[])
             }
             else if (config.flag.readonly)
             {
-                sprintf(command, "^A%%Inspecting file '%s'^A 13^T 10^T "
+                sprintf(command, "^A%%Inspecting file '%s'" CTRL_A " 13^T 10^T "
                         "ER%s\e Y ", file, file);
             }
             else
             {
-                sprintf(command, "^A%%Editing file '%s'^A 13^T 10^T "
+                sprintf(command, "^A%%Editing file '%s'" CTRL_A " 13^T 10^T "
                         "EB%s\e Y", file, file);
             }
         }
-        else if (config.flag.create && !config.flag.readonly && !config.flag.output)
+        else if (config.flag.create && !config.flag.readonly &&
+                 !config.flag.output)
         {
-            sprintf(command, "^A%%Can't find file '%s'^A 13^T 10^T "
-                    "^A%%Creating new file^A 13^T 10^T EW%s\e", file, file);
+            sprintf(command, "^A%%Can't find file '%s'" CTRL_A " 13^T 10^T "
+                    "^A%%Creating new file" CTRL_A " 13^T 10^T EW%s\e", file,
+                    file);
         }
         else
         {
-            sprintf(command, "^A?Can't find file '%s'^A 13^T 10^T EX", file);
+            sprintf(command, "^A?Can't find file '%s'" CTRL_A " 13^T 10^T EX",
+                    file);
         }
 
         store_cmd(command);
