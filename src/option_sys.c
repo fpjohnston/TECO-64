@@ -30,6 +30,8 @@
 #include <ctype.h>
 #include <errno.h>
 #include <getopt.h>
+#include <limits.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,87 +41,377 @@
 #include "ascii.h"
 #include "eflags.h"
 
-
-// TODO: the following conditional code is temporary until we figure
-//       out how to process command-line options with VMS C compiler.
-
-#if     defined(__DECC)
-
-static const int no_argument = 0;
-static const int required_argument = 1;
-static const int optional_argument = 2;
-
-struct option
-{
-    const char* name;
-    int has_arg;
-    int* flag;
-    int val;
-};
-
-static int getopt_long(int argc, char* const argv[],
-    const char* optstring, const struct option* longopts, int* longindex);
-
-static int getopt_long(int argc, char* const argv[],
-    const char* optstring, const struct option* longopts, int* longindex)
-{
-    return -1;
-}
-
-#endif
-
+// TODO: add --help option
 
 ///  @enum     option_t
 ///  case values for command-line options.
 
 enum option_t
 {
+    OPTION_C = 'C',
     OPTION_c = 'c',
-    OPTION_d = 'd',
-    OPTION_e = 'e',
-    OPTION_l = 'l',
+    OPTION_D = 'D',
+    OPTION_E = 'E',
+    OPTION_I = 'I',
+    OPTION_i = 'i',
+    OPTION_L = 'L',
+    OPTION_M = 'M',
     OPTION_m = 'm',
-    OPTION_n = 'n',
+    OPTION_R = 'R',
     OPTION_r = 'r',
-    OPTION_s = 's',
-    OPTION_w = 'w',
-    OPTION_x = 'x'
+    OPTION_O = 'O',
+    OPTION_o = 'o',
+    OPTION_S = 'S',
+    OPTION_T = 'T',
+    OPTION_W = 'W',
+    OPTION_X = 'X'
 };
 
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "cde:l:m:nrs:wx";
+static const char * const optstring = ":CcDE:I::iL:MmO:oRrS:T:WX";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
 
 static const struct option long_options[] =
 {
-    { "create",    no_argument,        NULL,  'c'    },
-    { "execute",   required_argument,  NULL,  'e'    },
-    { "log",       required_argument,  NULL,  'l'    },
-    { "dry-run",   no_argument,        NULL,  'd'    },
-    { "mung",      required_argument,  NULL,  'm'    },
-    { "nomemory",  no_argument,        NULL,  'n'    },
-    { "readonly",  no_argument,        NULL,  'r'    },
-    { "read_only", no_argument,        NULL,  'r'    },
-    { "ro",        no_argument,        NULL,  'r'    },
-    { "scroll",    required_argument,  NULL,  's'    },
-    { "window",    no_argument,        NULL,  'w'    },
-    { "exit",      no_argument,        NULL,  'x'    },
-    { NULL,        no_argument,        NULL,  0      },  // Markers for end of list
+    { "create",     no_argument,        NULL,  'C'    },
+    { "nocreate",   no_argument,        NULL,  'c'    },
+    { "dry-run",    no_argument,        NULL,  'D'    },
+    { "execute",    required_argument,  NULL,  'E'    },
+    { "initial",    optional_argument,  NULL,  'I'    },
+    { "noinitial",  no_argument,        NULL,  'i'    },
+    { "log",        required_argument,  NULL,  'L'    },
+    { "memory",     no_argument,        NULL,  'M'    },
+    { "nomemory",   no_argument,        NULL,  'm'    },
+    { "output",     required_argument,  NULL,  'O'    },
+    { "nooutput",   no_argument,        NULL,  'o'    },
+    { "readonly",   no_argument,        NULL,  'R'    },
+    { "noreadonly", no_argument,        NULL,  'r'    },
+    { "scroll",     required_argument,  NULL,  'S'    },
+    { "text",       required_argument,  NULL,  'T'    },
+    { "window",     no_argument,        NULL,  'W'    },
+    { "exit",       no_argument,        NULL,  'X'    },
+    { NULL,         no_argument,        NULL,  0      },  // Markers for end of list
 };
 
+//  TECO options
+//  ------------
+//  -C, --create
+//          Create a new file if the input file does not exist.
+//  -c, --nocreate
+//          Do not create a new file if no input file.
+//  -D, --dry-run
+//          Do not execute commands in indirect files.
+//  -E, --execute=file
+//          Executes TECO macro in file.
+//  -I, --initial=file (default file or commands specified by TECO_INIT).
+//          Specifies file to be executed at startup.
+//  -i, --noinitial
+//          Don't use a startup file (ignore TECO_INIT).
+//  -L, --log=file
+//          Saves input and output in log file.
+//  -M, --memory (default)
+//          Use TECO_MEMORY to get name of last file edited.
+//  -m, --nomemory
+//          Don't use TECO_MEMORY.
+//  -O, --output=file
+//          Specify name of output file.
+//  -o, --nooutput (default)
+//          Use same name for output file as input file.
+//  -R, --read-only
+//          Don't create output file.
+//  -r, --noread-only (default)
+//          Create an output file.
+//  -S, --scroll
+//          Enable scrolling region (implies --W).
+//  -W, --window
+//          Enable window mode.
+//  -X, --exit
+//          Exit TECO after indirect command file executed.
+
+///   @var    config
+///
+///   @brief  Structure for holding information on configuration options.
+///
+
+struct config
+{
+    struct
+    {
+        bool create;            ///< --create option seen
+        bool dry_run;           ///< --dry-run option seen
+        bool execute;           ///< --execute=file option seen
+        bool initial;           ///< --initial=file option seen
+        bool log;               ///< --log=file option seen
+        bool memory;            ///< --memory option seen
+        bool output;            ///< --output option seen
+        bool readonly;          ///< --readonly option seen
+        bool scroll;            ///< --scroll option seen
+        bool text;              ///< --text option seen
+        bool window;            ///< --window option seen
+        bool exit;              ///< --exit option seen
+    } flag;
+    struct
+    {
+        const char *execute;    ///< Argument for --execute option
+        const char *initial;    ///< Argument for --initial option
+        const char *log;        ///< Argument for --log option
+        const char *output;     ///< Argument for --output option
+        const char *scroll;     ///< Argument for --scroll option
+        const char *text;       ///< Argument for --text option
+    } arg;
+};
+
+struct config config =
+{
+    .flag =
+    {
+        .create   = true,
+        .dry_run  = false,
+        .execute  = false,
+        .initial  = true,
+        .log      = false,
+        .memory   = true,
+        .output   = false,
+        .readonly = false,
+        .scroll   = false,
+        .text     = false,
+        .window   = false,
+        .exit     = false,
+    },
+    .arg =
+    {
+        .execute = NULL,
+        .initial = NULL,
+        .log     = NULL,
+        .output  = NULL,
+        .scroll  = NULL,
+        .text    = NULL,
+    },
+};
+ 
 // Local functions
 
-static void read_memory(void);
-
-static void store_cmd(const char *p);
-
-static void write_memory(const char *file);
-
+static void check_config(void);
     
+static void finish_config(int argc, const char * const argv[]);
+
+static void read_memory(char *p, uint len);
+
+static void store_cmd(const char *str, ...);
+
+
+///
+///  @brief    Check configuration options requiring arguments. We do the check
+///            here rather than in set_config() in order to minimize duplication
+///            of effort for errors that can occur in multiple places.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void check_config(void)
+{
+    const char *option;
+
+    if (config.flag.execute && config.arg.execute == NULL)
+    {
+        option = "--execute";
+    }
+    else if (config.flag.log && config.arg.log == NULL)
+    {
+        option = "--log";
+    }
+    else if (config.flag.output && config.arg.output == NULL)
+    {
+        option = "--output";
+    }
+    else if (config.flag.scroll)
+    {
+        option = "--scroll";
+
+        if (config.arg.scroll != NULL)
+        {
+            char *endptr;
+
+            (void)strtoul(config.arg.scroll, &endptr, 10);
+
+            if (errno == 0)
+            {
+                if (*endptr == NUL)
+                {
+                    return;
+                }
+
+                errno = EINVAL;
+            }
+                    
+            printf("?%s for %s option\r\n", strerror(errno), option);
+
+            exit(EXIT_FAILURE);
+        }
+    }
+    else if (config.flag.text && config.arg.text == NULL)
+    {
+        option = "--text";
+    }
+    else
+    {
+        return;
+    }
+
+    printf("?Missing argument for %s option?\r\n", option);
+
+    exit(EXIT_FAILURE);
+}
+
+
+///
+///  @brief    Done reading configuration options; now process everything.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void finish_config(int argc, const char * const argv[])
+{
+    assert(argv != NULL);
+
+    if ((argc -= optind) > 1)
+    {
+        printf("?Too many non-option arguments\r\n");
+
+        exit(EXIT_FAILURE);
+    }
+
+    if (config.flag.initial)
+    {
+        if (config.arg.initial)
+        {
+            store_cmd("@EI|", config.arg.initial, "|\r\n", NULL);
+        }
+        else
+        {
+            char *env = getenv("TECO_INIT");
+
+            if (env != NULL)
+            {
+                uint len = (uint)strlen(env);
+
+                if (len > 2 && env[0] == '"' && env[len - 1] == '"')
+                {
+                    env[len - 1] = NUL;
+                    store_cmd(env + 1, NULL);
+                }
+                else
+                {
+                    store_cmd("@EI|", env, "|", NULL);
+                }
+            }
+        }
+    }
+
+    if (config.flag.dry_run)
+    {
+        f.e0.dryrun = true;
+    }
+
+    if (config.arg.log != NULL)
+    {
+        store_cmd("@EL|", config.arg.log, "|", NULL);
+    }
+
+    if (config.arg.execute != NULL)
+    {
+        store_cmd("@EI|", config.arg.execute, "|", NULL);
+    }
+
+    if (config.arg.text != NULL)
+    {
+        store_cmd("@I|", config.arg.text, "|", NULL);
+    }
+
+    if (config.flag.exit)
+    {
+        store_cmd("EX", NULL);
+    }
+
+    if (config.flag.window != 0)
+    {
+        store_cmd("1W", NULL);
+    }
+
+    if (config.arg.scroll != NULL)
+    {
+        store_cmd(config.arg.scroll, ",7:W", NULL);
+    }
+
+    const char *file = NULL;
+    char memory[PATH_MAX + 1];
+
+    if (argc == 1)
+    {
+        file = argv[optind];
+    }
+    else if (config.flag.memory)
+    {
+        read_memory(memory, (uint)sizeof(memory));
+
+        if (memory[0] != NUL)
+        {
+            file = memory;
+        }
+    }
+
+    if (file != NULL)                   // Do we have something to read?
+    {
+        if (config.arg.output != NULL)
+        {
+            store_cmd("@ER|", file, "| @EW|", config.arg.output, "| Y", NULL);
+        }
+        else
+        {
+            char path[PATH_MAX];
+            const char *mode = "ER";
+
+            if (realpath(file, path) != NULL)
+            {
+                if (config.flag.readonly)
+                {
+                    printf("%%Inspecting file '%s'\r\n", file);
+                }
+                else
+                {
+                    printf("%%Editing file '%s'\r\n", file);
+                    mode = "EB";
+                }
+            }
+            else if (config.flag.create)
+            {
+                printf("%%Can't find file '%s'\r\n", file);
+                printf("%%Creating new file\r\n");
+
+                mode = "EW";
+            }
+            else
+            {
+                printf("?Can't find file '%s'\r\n", file);
+
+                exit(EXIT_FAILURE);
+            }
+              
+
+            store_cmd("@", mode, "|", file, "| Y", NULL);
+        }
+    }
+
+//    exit(EXIT_SUCCESS);
+}
+
+
 ///
 ///  @brief    Process configuration options.
 ///
@@ -146,127 +438,157 @@ void set_config(
 
     int c;
     int idx = 0;
-    char command[64];
-    char edit = 'B';                    // Assume EB command
-    const char *error = NULL;
-    bool nomemory = false;
 
     optind = 0;                         // Reset from any previous calls
     opterr = 0;                         // Suppress any error messages
 
-    // If TECO_INIT is defined, then assume it has the name of our
-    // initialization file. If not defined, then use the default name.
-
-    const char *eifile = getenv("TECO_INIT") ?: "teco.ini";
-
-    sprintf(command, ":@EI|%s| ", eifile);
-    store_cmd(command);
-
     while ((c = getopt_long(argc, (char * const *)argv,
                             optstring, long_options, &idx)) != -1)
     {
-        command[0] = NUL;
-
         switch (c)
         {
+            case ':':
+                if (optopt == 'E')
+                {
+                    config.flag.execute = true;
+                }
+                else if (optopt == 'L')
+                {
+                    config.flag.log = true;
+                }
+                else if (optopt == 'O')
+                {
+                    config.flag.output = true;
+                }
+                else if (optopt == 'S')
+                {
+                    config.flag.scroll = true;
+                }
+                else if (optopt == 'T')
+                {
+                    config.flag.text = true;
+                }
+                break;
+
+            case OPTION_C:
             case OPTION_c:
-                edit = 'W';
-                error = "make";
+                config.flag.create = (c == 'C') ? true : false;
 
                 break;
 
-            case OPTION_d:
-                f.e0.dryrun = true;
+            case OPTION_D:
+                config.flag.dry_run = true;
 
                 break;
 
-            case OPTION_e:
-                sprintf(command, "%s ", optarg);
-                store_cmd(command);
+            case OPTION_E:
+                config.flag.execute = true;
+
+                if (optarg[0] != '-')
+                {
+                    config.arg.execute = optarg;
+                }
 
                 break;
 
-            case OPTION_l:
-                sprintf(command, "@EL/%s/ ", optarg);
-                store_cmd(command);
+            case OPTION_I:
+                config.flag.initial = true;
+
+                if (optarg != NULL && optarg[0] != '-')
+                {
+                    config.arg.initial = optarg;
+                }
+
+                break;
+ 
+            case OPTION_i:
+                config.flag.initial = false;
+
+                break;
+ 
+            case OPTION_L:
+                config.flag.log = true;
+
+                if (optarg[0] != '-')
+                {
+                    config.arg.log = optarg;
+                }
+
+                break;
+
+            case OPTION_M:
+                config.flag.memory = true;
 
                 break;
 
             case OPTION_m:
-                if (optarg[0] == '-')
-                {
-                    printf("?How can I mung nothing?\r\n");
+                config.flag.memory = false;
 
-                    exit(EXIT_FAILURE);
+                break;
+
+            case OPTION_O:
+                config.flag.output = true;
+
+                if (optarg[0] != '-')
+                if (optarg != NULL && optarg[0] != '-')
+                {
+                    config.arg.output = optarg;
                 }
 
-                sprintf(command, "@EI|%s| ", optarg);
-                store_cmd(command);
+                break;
+ 
+            case OPTION_o:
+                config.flag.output = false;
 
                 break;
-
-            case OPTION_n:
-                nomemory = true;
-
-                break;
-
+ 
+            case OPTION_R:
             case OPTION_r:
-                edit = 'R';
-                error = "inspect";
+                config.flag.readonly = (c == 'R') ? true : false;
 
                 break;
 
-            case OPTION_s:
-                sprintf(command, "1W %s,7:W ", optarg);
-                store_cmd(command);
+            case OPTION_S:
+                config.flag.scroll = true;
+                config.flag.window = true;                
+
+                if (optarg[0] != '-')
+                {
+                    config.arg.scroll = optarg;
+                }
 
                 break;
 
-            case OPTION_w:
-                strcpy(command, "1W ");
-                store_cmd(command);
+            case OPTION_T:
+                config.flag.text = true;
+
+                if (optarg[0] != '-')
+                {
+                    config.arg.text = optarg;
+                }
 
                 break;
 
-            case OPTION_x:
-                f.e0.exit = true;
+            case OPTION_W:
+                config.flag.window = true;
+
+                break;
+
+            case OPTION_X:
+                config.flag.exit = true;
 
                 break;
 
             default:
-                printf("%%Ignoring unknown option: '%s'\r\n", argv[optind - 1]);
+                printf("%%Unknown option '%s'\r\n", argv[optind - 1]);
 
-                break;
+                exit(EXIT_FAILURE);
         }
+
+        check_config();
     }
 
-    if ((argc -= optind) > 1)
-    {
-        printf("?Too many parameters\r\n");
-
-        exit(EXIT_FAILURE);
-    }
-    else if (argc == 1)                 // We have EB, ER, or EW w/ file
-    {
-        sprintf(command, "@E%c|%s| %c ", edit, argv[optind],
-                edit == 'R' ? 'Y' : 'P');
-        store_cmd(command);
-
-        if (edit != 'R')                // Save memory if EB or EW
-        {
-            write_memory(argv[optind]);
-        }
-    }
-    else if (error != NULL)             // Error if ER or EW w/o file
-    {
-        printf("?How can I %s nothing?\r\n", error);
-
-        exit(EXIT_FAILURE);
-    }
-    else if (!nomemory)
-    {
-        read_memory();
-    }
+    finish_config(argc, argv);
 }
 
 
@@ -277,48 +599,37 @@ void set_config(
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void read_memory(void)
+static void read_memory(char *p, uint len)
 {
-    const char *memory = getenv("TECO_MEMORY") ?: "teco.mem";
-    FILE *fp;
-    char file[128 + 1];                // TODO: magic number
-    char command[128 + 8 + 1];         // TODO: magic numbers
+    assert(p != NULL);
 
-    assert(memory != NULL);
+    const char *memory = getenv("TECO_MEMORY");
 
-    if ((fp = fopen(memory, "r")) == NULL)
+    if (memory != NULL)
     {
-        if (errno != ENOENT && errno != ENODEV)
+        FILE *fp = fopen(memory, "r");
+
+        if (fp == NULL)
         {
-            printf("%%Can't open memory file '%s'\r\n", memory);
+            if (errno != ENOENT && errno != ENODEV)
+            {
+                printf("%%Can't open memory file '%s'\r\n", memory);
+            }
         }
-
-        return;
-    }
-
-    if (fgets(file, (int)sizeof(file), fp) == NULL)
-    {
-        printf("%%Can't read from memory file '%s'\r\n", memory);
-    }
-    else
-    {
-        uint len = (uint)strlen(file);
-
-        while (len && iscntrl(file[len - 1]))
+        else
         {
-            file[--len] = '\0';
-        }
+            int c;
 
-        if (len != 0)
-        {
-            printf("%%Editing file '%s'\r\n", file);
-            sprintf(command, "@EB|%s| P ", file);
-            store_cmd(command);
+            while (--len > 0 && (c = fgetc(fp)) != EOF && isgraph(c))
+            {
+                *p++ = (char)c;
+            }
+
+            fclose(fp);
         }
     }
 
-    fclose(fp);
-
+    *p = NUL;
 }
 
 
@@ -329,16 +640,30 @@ static void read_memory(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void store_cmd(const char *p)
+static void store_cmd(const char *str, ...)
 {
-    assert(p != NULL);
-
     int c;
+    va_list ap;
+    va_start(ap, str);
 
-    while ((c = *p++) != NUL)
+//    printf("    ");
+
+    while (str != NULL)
     {
-        store_cbuf(c);
+//        fputs(str, stdout);
+
+        while ((c = *str++) != NUL)
+        {
+            store_cbuf(c);
+        }
+
+        str = va_arg(ap, const char *); //lint !e010 !e026 !e048 !e064
     }
+
+//    fputc(' ', stdout);
+//    printf("\r\n");
+
+    va_end(ap);
 }
 
 
@@ -349,12 +674,17 @@ static void store_cmd(const char *p)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void write_memory(const char *file)
+void write_memory(const char *file)
 {
-    const char *memory = getenv("TECO_MEMORY") ?: "teco.mem";
+    assert(file != NULL);
+    
+    const char *memory = getenv("TECO_MEMORY");
     FILE *fp;
 
-    assert(memory != NULL);
+    if (memory == NULL)
+    {
+        return;
+    }
 
     if ((fp = fopen(memory, "w")) == NULL)
     {

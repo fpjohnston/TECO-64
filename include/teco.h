@@ -176,4 +176,6 @@ extern void store_cbuf(int c);
 
 extern void unfetch_cbuf(int c);
 
+extern void write_memory(const char *file);
+
 #endif  // !defined(_TECO_H)

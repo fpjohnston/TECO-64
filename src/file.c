@@ -298,7 +298,11 @@ int open_output(struct ofile *ofile, int c)
     {
         (void)setvbuf(ofile->fp, NULL, _IONBF, 0uL);
     }
-
+    else if (c == 'B' || c == 'W')
+    {
+        write_memory(ofile->name);
+    }
+    
     return EXIT_SUCCESS;
 }
 
