@@ -638,7 +638,6 @@ static void store_cmd(const char *cmd)
 
     int c;
 
-#define DEBUG_OPTIONS
 #if     defined(DEBUG_OPTIONS)
 
     const char *p = cmd;
