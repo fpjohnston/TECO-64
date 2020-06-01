@@ -286,7 +286,7 @@ static void finish_config(int argc, const char * const argv[])
         exit(EXIT_FAILURE);
     }
 
-    char scratch[PATH_MAX];
+    char command[PATH_MAX];
     char *env;
 
     //  Process --initial and --noinitial options.
@@ -302,8 +302,8 @@ static void finish_config(int argc, const char * const argv[])
    
     if (config.arg.initial != NULL)
     {
-        sprintf(scratch, "@EI|%s| ", config.arg.initial);
-        store_cmd(scratch);
+        sprintf(command, "EI%s\e ", config.arg.initial);
+        store_cmd(command);
     }
     else if (config.flag.initial && (env = getenv("TECO_INIT")) != NULL)
     {
@@ -311,14 +311,14 @@ static void finish_config(int argc, const char * const argv[])
 
         if (len > 2 && env[0] == '"' && env[len - 1] == '"')
         {
-            sprintf(scratch, "%.*s", len - 2, env + 1);
+            sprintf(command, "%.*s", len - 2, env + 1);
         }
         else
         {
-            sprintf(scratch, "@EI|%s| ", env);
+            sprintf(command, "EI%s\e ", env);
         }
 
-        store_cmd(scratch);
+        store_cmd(command);
     }
 
     if (config.flag.dry_run)
@@ -328,38 +328,38 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.arg.log != NULL)
     {
-        sprintf(scratch, "@EL|%s|", config.arg.log);
-        store_cmd(scratch);
+        sprintf(command, "EL%s\e", config.arg.log);
+        store_cmd(command);
     }
 
     if (config.arg.execute != NULL)
     {
-        sprintf(scratch, "@EI|%s|", config.arg.execute);
-        store_cmd(scratch);
+        sprintf(command, "EI%s\e", config.arg.execute);
+        store_cmd(command);
     }
 
     if (config.arg.text != NULL)
     {
-        sprintf(scratch, "@I|%s|", config.arg.text);
-        store_cmd(scratch);
+        sprintf(command, "I%s\e", config.arg.text);
+        store_cmd(command);
     }
 
     if (config.flag.exit)
     {
-        sprintf(scratch, "EX");
-        store_cmd(scratch);
+        sprintf(command, "EX");
+        store_cmd(command);
     }
 
     if (config.flag.window != 0)
     {
-        sprintf(scratch, "1W");
-        store_cmd(scratch);
+        sprintf(command, "1W");
+        store_cmd(command);
     }
 
     if (config.arg.scroll != NULL)
     {
-        sprintf(scratch, "%s,7:W", config.arg.scroll);
-        store_cmd(scratch);
+        sprintf(command, "%s,7:W", config.arg.scroll);
+        store_cmd(command);
     }
 
     const char *file = NULL;
@@ -379,41 +379,46 @@ static void finish_config(int argc, const char * const argv[])
         }
     }
 
+    //  If a file was specified, then there are the following possibilities:
+    //
+    //  1. File exists and --output was seen, so we do separate ER and EW commands.
+    //  2. File exists and --readonly was seen, so we do an ER command.
+    //  3. File exists and --readonly was not seen, so we do an EB command.
+    //  4. File does not exist and --create was seen, so we do an EW command.
+    //  5. File does not exist and either --create was not seen, or --readonly
+    //     was seen, or --output was seen, in which case we print an error and exit.
+    //
+
     if (file != NULL)                   // Do we have something to read?
     {
-        if (config.arg.output != NULL)
+        if (access(file, F_OK) == 0)    // Does file exist?
         {
-            sprintf(scratch, "@ER|%s| @EW|%s| Y", file, config.arg.output);
-        }
-        else
-        {
-            if (realpath(file, scratch) != NULL)
+            if (config.arg.output != NULL)
             {
-                if (config.flag.readonly)
-                {
-                    sprintf(scratch, "@^A|%%Inspecting file '%s'| 13^T 10^T "
-                            "@ER|%s| Y ", file, file);
-                }
-                else
-                {
-                    sprintf(scratch, "@^A|%%Editing file '%s'| 13^T 10^T "
-                            "@EB|%s| Y", file, file);
-                }
+                sprintf(command, "ER%s\e EW%s\e Y", file, config.arg.output);
             }
-            else if (config.flag.create && !config.flag.readonly)
+            else if (config.flag.readonly)
             {
-                sprintf(scratch, "@^A|%%Can't find file '%s'| 13^T 10^T "
-                        "@^A|%%Creating new file| 13^T 10^T "
-                        "@EW|%s|", file, file);
+                sprintf(command, "^A%%Inspecting file '%s'^A 13^T 10^T "
+                        "ER%s\e Y ", file, file);
             }
             else
             {
-                sprintf(scratch, "@^A|?Can't find file '%s'| 13^T 10^T EX",
-                        file);
+                sprintf(command, "^A%%Editing file '%s'^A 13^T 10^T "
+                        "EB%s\e Y", file, file);
             }
         }
+        else if (config.flag.create && !config.flag.readonly && !config.flag.output)
+        {
+            sprintf(command, "^A%%Can't find file '%s'^A 13^T 10^T "
+                    "^A%%Creating new file^A 13^T 10^T EW%s\e", file, file);
+        }
+        else
+        {
+            sprintf(command, "^A?Can't find file '%s'^A 13^T 10^T EX", file);
+        }
 
-        store_cmd(scratch);
+        store_cmd(command);
     }
 }
 
@@ -654,8 +659,24 @@ static void store_cmd(const char *cmd)
 
 #define DEBUG_OPTIONS
 #if     defined(DEBUG_OPTIONS)
-    
-    printf("command: %s\r\n", cmd);
+
+    const char *p = cmd;
+
+    printf("command: ");
+
+    while ((c = *p++) != NUL)
+    {
+        if (iscntrl(c))
+        {
+            printf("[%02x]", c);
+        }
+        else
+        {
+            fputc(c, stdout);
+        }
+    }
+
+    printf("\r\n");
 
 #endif
 
