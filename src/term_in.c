@@ -265,24 +265,25 @@ static int read_chr(int c, bool accent)
 
 void read_cmd(void)
 {
-    int ei_status;
-
+    int c;
+    
     reset_tbuf();
 
-    if ((ei_status = read_indirect()) == -1)
+    switch (read_indirect())
     {
-        return;                         // Exit if we have a complete command
-    }
+        case -1:                        // Exit if we have a complete command
+            return;
 
-    int c;
+        case 1:
+            c = getc_term((bool)WAIT);  // Partial command - get another chr.
 
-    if (ei_status == 0)                 // If no EI command,
-    {
-        c = read_first();               //  check for immediate-mode commands
-    }
-    else
-    {
-        c = getc_term((bool)WAIT);      // else read another character
+            break;
+            
+        default:
+        case 0:
+            c = read_first();           // Start new command
+
+            break;
     }
 
     for (;;)
