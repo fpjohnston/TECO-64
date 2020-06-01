@@ -204,7 +204,7 @@ const struct cmd_table cmd_e_table[] =
     { exec_EI,      ": @ 1"   },
     { exec_EJ,      ": f m x" },
     { exec_EK,      ""        },
-    { exec_EL,      "@ 2"     },
+    { exec_EL,      "@ 1"     },
     { exec_EM,      ""        },
     { exec_EN,      ": @ 1"   },
     { exec_EO,      "f n x"   },
