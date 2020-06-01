@@ -27,6 +27,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <errno.h>
 #include <glob.h>                       // for glob()
 #include <libgen.h>                     // for dirname()
@@ -37,6 +38,7 @@
 #include <unistd.h>                     // for access()
 
 #include "teco.h"
+#include "ascii.h"
 #include "errors.h"
 #include "file.h"
 
@@ -135,6 +137,47 @@ int get_wild(void)
 
 
 ///
+///  @brief    Read file specification from memory file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void read_memory(char *p, uint len)
+{
+    assert(p != NULL);
+
+    const char *memory = getenv("TECO_MEMORY");
+
+    if (memory != NULL)
+    {
+        FILE *fp = fopen(memory, "r");
+
+        if (fp == NULL)
+        {
+            if (errno != ENOENT && errno != ENODEV)
+            {
+                printf("%%Can't open memory file '%s'\r\n", memory);
+            }
+        }
+        else
+        {
+            int c;
+
+            while (--len > 0 && (c = fgetc(fp)) != EOF && isgraph(c))
+            {
+                *p++ = (char)c;
+            }
+
+            fclose(fp);
+        }
+    }
+
+    *p = NUL;
+}
+
+
+///
 ///  @brief    Rename output file. This is system-dependent, because on Linux
 ///            we use a temporary name when opening the file, and we will need
 ///            to delete the original file and then rename the temporary file.
@@ -218,4 +261,37 @@ void set_wild(const char *filename)
     }
 
     next_file = &pglob.gl_pathv[0];
+}
+
+
+///
+///  @brief    Write EB or EW file to memory file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void write_memory(const char *file)
+{
+    assert(file != NULL);
+    
+    const char *memory = getenv("TECO_MEMORY");
+    FILE *fp;
+
+    if (memory == NULL)
+    {
+        return;
+    }
+
+    if ((fp = fopen(memory, "w")) == NULL)
+    {
+        printf("%%Can't open memory file '%s'\r\n", memory);
+
+        return;
+    }
+
+    fprintf(fp, "%s\n", file);
+
+    fclose(fp);
+
 }

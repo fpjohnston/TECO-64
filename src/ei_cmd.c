@@ -42,6 +42,9 @@
 #include "file.h"
 
 
+static struct buffer *ei_buf;
+static struct buffer *saved_buf;
+
 // Local functions
 
 static void close_indirect(void);
@@ -106,6 +109,19 @@ void exec_EI(struct cmd *cmd)
             push_expr(TECO_SUCCESS, EXPR_VALUE);
         }
     }
+
+    assert(saved_buf == NULL);
+    assert(ei_buf == NULL);
+
+    saved_buf = get_cbuf();
+    ei_buf = alloc_mem((uint)sizeof(struct buffer));
+
+    ei_buf->len  = 0;
+    ei_buf->pos  = 0;
+    ei_buf->size = STR_SIZE_INIT;
+    ei_buf->buf  = alloc_mem(ei_buf->size);
+
+    set_cbuf(ei_buf);
 }
 
 
@@ -119,6 +135,18 @@ void exec_EI(struct cmd *cmd)
 static void close_indirect(void)
 {
     close_input(IFILE_INDIRECT);
+
+    if (saved_buf != NULL)
+    {
+        set_cbuf(saved_buf);
+        saved_buf = NULL;
+    }
+
+    if (ei_buf != NULL)
+    {
+        free_mem(&ei_buf->buf);
+        free_mem(&ei_buf);
+    }
 
     if (f.e0.exit)                      // Command-line option to exit?
     {
@@ -169,11 +197,6 @@ int read_indirect(void)
         return 0;
     }
 
-    // If a file is open, then we may have data, so clear the command buffer,
-    // since we can only get here after the completion of a command string.
-
-    reset_cbuf();
-
     int c, last = EOF;                  // Current and previous characters read
     bool nbytes = false;                // true if we've read any data
 
@@ -194,7 +217,20 @@ int read_indirect(void)
 
     close_indirect();
 
-    return nbytes ? 1 : 0;
+    if (nbytes)
+    {
+        return 1;                       // Partial command pending
+    }
+    else if (current->len >= 2 &&
+             current->buf[current->len - 2] == ESC &&
+             current->buf[current->len - 1] == ESC)
+    {
+        return -1;                      // Complete command in buffer
+    }
+    else
+    {
+        return 0;                       // No command pending
+    }
 }
 
 

@@ -118,8 +118,12 @@ extern int open_input(struct ifile *ifile);
 
 extern int open_output(struct ofile *ofile, int c);
 
+extern void read_memory(char *p, uint len);
+
 extern void rename_output(struct ofile *ofile);
 
 extern void set_wild(const char *filename);
+
+extern void write_memory(const char *file);
 
 #endif  // !defined(_FILE_H)

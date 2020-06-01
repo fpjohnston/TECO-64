@@ -39,10 +39,8 @@
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
+#include "file.h"
 
-// TODO: add --help option
-
-#define CTRL_A          "\x01"          ///< This is used for CTRL/A commands
 
 ///  @enum     option_t
 ///  case values for command-line options.
@@ -78,24 +76,24 @@ static const char * const optstring = ":CcDE:I::iL:MmO:oRrS:T:WX";
 
 static const struct option long_options[] =
 {
-    { "create",     no_argument,        NULL,  'C'    },
-    { "nocreate",   no_argument,        NULL,  'c'    },
-    { "dry-run",    no_argument,        NULL,  'D'    },
-    { "execute",    required_argument,  NULL,  'E'    },
-    { "initial",    optional_argument,  NULL,  'I'    },
-    { "noinitial",  no_argument,        NULL,  'i'    },
-    { "log",        required_argument,  NULL,  'L'    },
-    { "memory",     no_argument,        NULL,  'M'    },
-    { "nomemory",   no_argument,        NULL,  'm'    },
-    { "output",     required_argument,  NULL,  'O'    },
-    { "nooutput",   no_argument,        NULL,  'o'    },
-    { "readonly",   no_argument,        NULL,  'R'    },
-    { "noreadonly", no_argument,        NULL,  'r'    },
-    { "scroll",     required_argument,  NULL,  'S'    },
-    { "text",       required_argument,  NULL,  'T'    },
-    { "window",     no_argument,        NULL,  'W'    },
-    { "exit",       no_argument,        NULL,  'X'    },
-    { NULL,         no_argument,        NULL,  0      },  // Markers for end of list
+    { "create",       no_argument,        NULL,  'C'    },
+    { "nocreate",     no_argument,        NULL,  'c'    },
+    { "dry-run",      no_argument,        NULL,  'D'    },
+    { "execute",      required_argument,  NULL,  'E'    },
+    { "initialize",   optional_argument,  NULL,  'I'    },
+    { "noinitialize", no_argument,        NULL,  'i'    },
+    { "log",          required_argument,  NULL,  'L'    },
+    { "memory",       no_argument,        NULL,  'M'    },
+    { "nomemory",     no_argument,        NULL,  'm'    },
+    { "output",       required_argument,  NULL,  'O'    },
+    { "nooutput",     no_argument,        NULL,  'o'    },
+    { "readonly",     no_argument,        NULL,  'R'    },
+    { "noreadonly",   no_argument,        NULL,  'r'    },
+    { "scroll",       required_argument,  NULL,  'S'    },
+    { "text",         required_argument,  NULL,  'T'    },
+    { "window",       no_argument,        NULL,  'W'    },
+    { "exit",         no_argument,        NULL,  'X'    },
+    { NULL,           no_argument,        NULL,  0      },  // Markers for end of list
 };
 
 //  TECO options
@@ -157,12 +155,12 @@ struct config
     } flag;
     struct
     {
-        const char *execute;    ///< Argument for --execute option
-        const char *initial;    ///< Argument for --initial option
-        const char *log;        ///< Argument for --log option
-        const char *output;     ///< Argument for --output option
-        const char *scroll;     ///< Argument for --scroll option
-        const char *text;       ///< Argument for --text option
+        char *execute;          ///< Argument for --execute option
+        char *initial;          ///< Argument for --initial option
+        char *log;              ///< Argument for --log option
+        char *output;           ///< Argument for --output option
+        char *scroll;           ///< Argument for --scroll option
+        char *text;             ///< Argument for --text option
     } arg;
 };
 
@@ -198,9 +196,9 @@ struct config config =
 
 static void check_config(void);
     
-static void finish_config(int argc, const char * const argv[]);
+static void copy_arg(char *buf, char *p);
 
-static void read_memory(char *p, uint len);
+static void finish_config(int argc, const char * const argv[]);
 
 static void store_cmd(const char *str);
 
@@ -271,7 +269,35 @@ static void check_config(void)
 
 
 ///
-///  @brief    Done reading configuration options; now process everything.
+///  @brief    Copy argument, which is either a command string, or a dollar sign
+///            followed by a file name.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void copy_arg(char *cmd, char *file)
+{
+    assert(cmd != NULL);
+    assert(file != NULL);
+
+    int len = (int)strlen(file);
+
+    if (len > 2 &&
+        ((file[0] == '"' && file[len - 1] == '"') ||
+         (file[0] == '"' && file[len - 1] == '"')))
+    {
+        sprintf(cmd, "%.*s", len - 2, file + 1);
+    }
+    else
+    {
+        sprintf(cmd, "EI%s\e ", file);
+    }
+}
+
+
+///
+///  @brief    Process the configuration options we just parsed.
 ///
 ///  @returns  Nothing.
 ///
@@ -309,17 +335,7 @@ static void finish_config(int argc, const char * const argv[])
     }
     else if (config.flag.initial && (env = getenv("TECO_INIT")) != NULL)
     {
-        int len = (int)strlen(env);
-
-        if (len > 2 && env[0] == '"' && env[len - 1] == '"')
-        {
-            sprintf(command, "%.*s", len - 2, env + 1);
-        }
-        else
-        {
-            sprintf(command, "EI%s\e ", env);
-        }
-
+        copy_arg(command, env);
         store_cmd(command);
     }
 
@@ -336,7 +352,7 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.arg.execute != NULL)
     {
-        sprintf(command, "EI%s\e", config.arg.execute);
+        copy_arg(command, config.arg.execute);
         store_cmd(command);
     }
 
@@ -348,14 +364,12 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.flag.exit)
     {
-        sprintf(command, "EX");
-        store_cmd(command);
+        store_cmd("EX");
     }
 
     if (config.flag.window != 0)
     {
-        sprintf(command, "1W");
-        store_cmd(command);
+        store_cmd("1W");
     }
 
     if (config.arg.scroll != NULL)
@@ -401,29 +415,32 @@ static void finish_config(int argc, const char * const argv[])
             }
             else if (config.flag.readonly)
             {
-                sprintf(command, "^A%%Inspecting file '%s'" CTRL_A " 13^T 10^T "
-                        "ER%s\e Y ", file, file);
+                sprintf(command, ":^A%%Inspecting file '%s'%c ER%s\e Y ",
+                        file, CTRL_A, file);
             }
             else
             {
-                sprintf(command, "^A%%Editing file '%s'" CTRL_A " 13^T 10^T "
-                        "EB%s\e Y", file, file);
+                sprintf(command, ":^A%%Editing file '%s'%c EB%s\e Y",
+                        file, CTRL_A, file);
             }
         }
         else if (config.flag.create && !config.flag.readonly &&
                  !config.flag.output)
         {
-            sprintf(command, "^A%%Can't find file '%s'" CTRL_A " 13^T 10^T "
-                    "^A%%Creating new file" CTRL_A " 13^T 10^T EW%s\e", file,
-                    file);
+            sprintf(command, ":^A%%Can't find file '%s'%c :^A%%Creating "
+                    "new file%c EW%s\e", file, CTRL_A, CTRL_A, file);
         }
         else
         {
-            sprintf(command, "^A?Can't find file '%s'" CTRL_A " 13^T 10^T EX",
-                    file);
+            sprintf(command, ":^A?Can't find file '%s'%c EX", file, CTRL_A);
         }
 
         store_cmd(command);
+    }
+
+    if (current->len != 0)              // Anything stored?
+    {
+        store_cmd("\e\e");              // If so, properly terminate command
     }
 }
 
@@ -609,47 +626,6 @@ void set_config(
 
 
 ///
-///  @brief    Read file specification from memory file.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_memory(char *p, uint len)
-{
-    assert(p != NULL);
-
-    const char *memory = getenv("TECO_MEMORY");
-
-    if (memory != NULL)
-    {
-        FILE *fp = fopen(memory, "r");
-
-        if (fp == NULL)
-        {
-            if (errno != ENOENT && errno != ENODEV)
-            {
-                printf("%%Can't open memory file '%s'\r\n", memory);
-            }
-        }
-        else
-        {
-            int c;
-
-            while (--len > 0 && (c = fgetc(fp)) != EOF && isgraph(c))
-            {
-                *p++ = (char)c;
-            }
-
-            fclose(fp);
-        }
-    }
-
-    *p = NUL;
-}
-
-
-///
 ///  @brief    Store command-line option in command string.
 ///
 ///  @returns  Nothing.
@@ -689,37 +665,4 @@ static void store_cmd(const char *cmd)
     {
         store_cbuf(c);
     }
-}
-
-
-///
-///  @brief    Write EB or EW file to memory file.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void write_memory(const char *file)
-{
-    assert(file != NULL);
-    
-    const char *memory = getenv("TECO_MEMORY");
-    FILE *fp;
-
-    if (memory == NULL)
-    {
-        return;
-    }
-
-    if ((fp = fopen(memory, "w")) == NULL)
-    {
-        printf("%%Can't open memory file '%s'\r\n", memory);
-
-        return;
-    }
-
-    fprintf(fp, "%s\n", file);
-
-    fclose(fp);
-
 }
