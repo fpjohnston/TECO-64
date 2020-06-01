@@ -138,12 +138,12 @@ static bool open_indirect(struct ifile *ifile)
 {
     if (open_input(ifile) == EXIT_SUCCESS)
     {
-        return EXIT_SUCCESS;
+        return true;
     }
 
     if (errno == ENOENT || errno == ENODEV)
     {
-        return EXIT_FAILURE;
+        return false;
     }
 
     // Here if error was something other than a simple "file not found".
