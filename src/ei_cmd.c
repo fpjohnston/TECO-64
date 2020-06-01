@@ -42,8 +42,11 @@
 #include "file.h"
 
 
-static struct buffer *ei_buf;
-static struct buffer *saved_buf;
+static struct buffer *ei_buf;           ///< Buffer for EI commands
+
+static struct buffer *saved_buf;        ///< Saved command buffer
+
+static bool atexit_flag = false;        ///< true if atexit registration done
 
 // Local functions
 
@@ -108,20 +111,27 @@ void exec_EI(struct cmd *cmd)
         {
             push_expr(TECO_SUCCESS, EXPR_VALUE);
         }
+
+        if (!atexit_flag)
+        {
+            atexit_flag = true;
+
+            (void)atexit(reset_indirect);
+        }
+
+        assert(saved_buf == NULL);
+        assert(ei_buf == NULL);
+
+        saved_buf = get_cbuf();
+        ei_buf = alloc_mem((uint)sizeof(struct buffer));
+
+        ei_buf->len  = 0;
+        ei_buf->pos  = 0;
+        ei_buf->size = STR_SIZE_INIT;
+        ei_buf->buf  = alloc_mem(ei_buf->size);
+
+        set_cbuf(ei_buf);
     }
-
-    assert(saved_buf == NULL);
-    assert(ei_buf == NULL);
-
-    saved_buf = get_cbuf();
-    ei_buf = alloc_mem((uint)sizeof(struct buffer));
-
-    ei_buf->len  = 0;
-    ei_buf->pos  = 0;
-    ei_buf->size = STR_SIZE_INIT;
-    ei_buf->buf  = alloc_mem(ei_buf->size);
-
-    set_cbuf(ei_buf);
 }
 
 
