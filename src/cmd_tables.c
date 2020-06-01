@@ -46,7 +46,7 @@
 const struct cmd_table cmd_table[] =
 {
     [NUL]         = { NULL,           ""          },
-    [CTRL_A]      = { exec_ctrl_a,    "@ 1"       },
+    [CTRL_A]      = { exec_ctrl_a,    ": @ 1"     },
     [CTRL_B]      = { exec_ctrl_b,    "x"         },
     [CTRL_C]      = { exec_ctrl_c,    ""          },
     [CTRL_D]      = { exec_ctrl_d,    ""          },
