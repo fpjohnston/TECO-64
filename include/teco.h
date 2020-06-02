@@ -1,6 +1,6 @@
 ///
 ///  @file    teco.h
-///  @brief   Main header file for TECO text editor.
+///  @brief   Main header file for TECO-64 text editor.
 ///
 ///  @bug     No known bugs.
 ///

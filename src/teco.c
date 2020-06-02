@@ -1,6 +1,6 @@
 ///
 ///  @file       teco.c
-///  @brief      Main program for TECO text editor.
+///  @brief      Main source file for TECO-64 text editor.
 ///
 ///  @bug        No known bugs.
 ///
@@ -24,10 +24,10 @@
 ///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 ///  THE SOFTWARE.
 ///
-///  @mainpage TECO 64 - TECO text editor for 64-bit environments.
+///  @mainpage TECO-64 - TECO text editor for 64-bit environments.
 ///
-///  This is an implementation in C of the TECO text editor for 64-bit operating
-///  environments.
+///  This is an implementation in C of the TECO text editor, for 64-bit
+///  operating environments.
 ///
 ///  It is a complete re-write of version 147 of TECO C, and is a work in
 ///  progress. Further documentation will be added later.
@@ -35,34 +35,6 @@
 ///  @version 200
 ///
 ///  @author   Franklin P. Johnston / Nowwith Treble Software
-///
-///  @remarks  Previous authors of TECO, who deserve credit for their work on
-///            TECO, and on whose the shoulders I stood to develop this version.
-///
-///  @remarks  Dan Murphy - Created TECO on a PDP-1 in 1963 at MIT.
-///
-///  @remarks  Mark Bramhall - Developed TECO-11.
-///
-///  @remarks  Stan Rabinowitz - Standardized features of TECO-8, TECO-10, and
-///                              TECO-11.
-///
-///  @remarks  Rick Murphy - Translated TECO-11 to TECO-32.
-///
-///  @remarks  Andy Goldstein - Developed TECO-11 and TECO-32.
-///
-///  @remarks  Pete Siemsen - Developed TECO C in 1983. The first TECO written
-///                           in a language other than assembler.
-///
-///  @remarks  Ben Mesander - ?
-///
-///  @remarks  Jerry Leichter - ?
-///
-///  @remarks  Tom Almy - Developed TECO C.
-///
-///  @remarks  Mark Henderson - Developed TECO C.
-///
-///  @remarks  Blake McBride - Developed version 147 of TECO C, the most recent
-///                            version as of October 2019.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -85,7 +57,7 @@
 #include "window.h"
 
 
-#define TECO_VERSION    200             ///< Our version of TECO
+#define TECO_VERSION    200             ///< Our TECO version
 
 #define EDIT_BUF_INIT   ( 8 * 1024)     ///< Edit buffer is initially 8K
 #define EDIT_BUF_MAX    (64 * 1024)     ///< Maximum edit buffer is 64K
@@ -131,7 +103,7 @@ jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
 
 ///
-///  @brief    Main program entry for TECO text editor.
+///  @brief    Main program entry for TECO-64 text editor.
 ///
 ///  @returns  The usual exit codes.
 ///
