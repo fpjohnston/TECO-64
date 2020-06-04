@@ -102,7 +102,7 @@ void exec_cmd(void)
 //            continue;
 //        }
 
-        if (f.e0.dryrun)
+        if (f.e0.dryrun && ei_active)
         {
             print_cmd(&cmd);            // Just print command
         }

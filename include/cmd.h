@@ -120,6 +120,8 @@ extern const uint cmd_e_count;
 
 extern const uint cmd_f_count;
 
+extern bool ei_active;
+
 // Miscellaneous functions
 
 extern exec_func *next_cmd(struct cmd *cmd);

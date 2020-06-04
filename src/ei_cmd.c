@@ -42,6 +42,8 @@
 #include "file.h"
 
 
+bool ei_active = false;                 ///< true to flag EI in progress
+
 static struct buffer *ei_buf;           ///< Buffer for EI commands
 
 static struct buffer *saved_buf;        ///< Saved command buffer
@@ -131,6 +133,8 @@ void exec_EI(struct cmd *cmd)
         ei_buf->buf  = alloc_mem(ei_buf->size);
 
         set_cbuf(ei_buf);
+
+        ei_active = true;
     }
 }
 
@@ -145,6 +149,8 @@ void exec_EI(struct cmd *cmd)
 static void close_indirect(void)
 {
     close_input(IFILE_INDIRECT);
+
+    ei_active = false;
 
     if (saved_buf != NULL)
     {
