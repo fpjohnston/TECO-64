@@ -208,7 +208,8 @@ static bool reduce2(void)
             }
         }
         else if (e1->type != EXPR_VALUE && e1->value == TYPE_OPER &&
-                 e2->type != EXPR_VALUE && e2->value == TYPE_OPER)
+                 e2->type != EXPR_VALUE && e2->value == TYPE_OPER &&
+                 e1->type != EXPR_MINUS)
         {
             print_err(E_IFE);           // Ill-formed numeric expression
         }
