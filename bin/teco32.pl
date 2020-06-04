@@ -31,9 +31,6 @@ while (<>)
     }
 
     $text =~ s/\?//g;
-
-    $text =~ s/<13>/^M/g;
-    $text =~ s/<10>/^J/g;
     $text =~ s/<(\d+)>/chr($1)/eg;
 
     $macro .= $text;
