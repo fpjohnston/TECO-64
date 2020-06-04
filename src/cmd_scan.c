@@ -277,7 +277,7 @@ exec_func *scan_cmd(struct cmd *cmd)
         cmd->qname = (char)c;           // Save the name
     }
 
-    if (cmd->c1 == '"')                 // " requires additional character
+    if (exec == exec_quote)             // " requires additional character
     {
         cmd->c2 = (char)fetch_cbuf(NOCMD_START);
     }
@@ -287,12 +287,12 @@ exec_func *scan_cmd(struct cmd *cmd)
     // value, and L and W are only part of an expression if a colon
     // modifier is specified.
 
-    if (cmd->c1 == CTRL_T && pop_expr(&cmd->n_arg))
+    if (exec == exec_ctrl_t && pop_expr(&cmd->n_arg))
     {
         scan.expr = false;              // n^T types out a value
         push_expr(cmd->n_arg, EXPR_VALUE);
     }
-    else if (toupper(cmd->c1) == 'A' && pop_expr(&cmd->n_arg))
+    else if (exec == exec_A && pop_expr(&cmd->n_arg))
     {
         if (cmd->colon_set)
         {
@@ -304,18 +304,22 @@ exec_func *scan_cmd(struct cmd *cmd)
             cmd->n_set = true;
         }
     }
-    else if (toupper(cmd->c1) == 'L' && !cmd->colon_set)
+    else if (exec == exec_L && !cmd->colon_set)
     {
         scan.expr = false;              // nL moves lines, n:L counts lines
     }
-    else if (toupper(cmd->c1) == 'W' && !cmd->colon_set)
+    else if (exec == exec_W && !cmd->colon_set)
     {
         scan.expr = false;              // nW sets scope stuff
     }
-    else if (cmd->c1 == '\\' && pop_expr(&cmd->n_arg))
+    else if (exec == exec_back && pop_expr(&cmd->n_arg))
     {
         scan.expr = false;              // n\ inserts value in buffer
         push_expr(cmd->n_arg, EXPR_VALUE);
+    }
+    else if (exec == exec_EJ)
+    {
+        ;                               // EJ takes value and returns value
     }
     else if (scan.flag && pop_expr(&cmd->n_arg))
     {

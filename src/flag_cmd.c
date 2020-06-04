@@ -439,19 +439,17 @@ void exec_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e0.dryrun)
-    {
-        return;
-    }
-
     int n = 0;                          // 0EJ is default command
 
-    if (cmd->n_set)
+    if (!f.e0.dryrun)
     {
-        n = cmd->n_arg;                 // Get whatever operand we can
-    }
+        if (cmd->n_set)
+        {
+            n = cmd->n_arg;             // Get whatever operand we can
+        }
 
-    n = teco_env(n, cmd->colon_set);    // Do the system-dependent part
+        n = teco_env(n, cmd->colon_set); // Do the system-dependent part
+    }
 
     push_expr(n, EXPR_VALUE);           // Now return the result
 }
