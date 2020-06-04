@@ -169,14 +169,20 @@ static void exec_search(struct cmd *cmd, bool replace)
             flag_print(f.es);
         }
 
-        if (cmd->colon_set)
+        // Return value if colon modifier, or we are in a loop
+        // and the next command is a semi-colon.
+
+        if (cmd->colon_set || (check_loop() && check_semi()))
         {
             push_expr(-1, EXPR_VALUE);
         }
     }
     else
     {
-        if (cmd->colon_set)
+        // Return value if colon modifier, or we are in a loop
+        // and the next command is a semi-colon.
+
+        if (cmd->colon_set || (check_loop() && check_semi()))
         {
             push_expr(0, EXPR_VALUE);
         }

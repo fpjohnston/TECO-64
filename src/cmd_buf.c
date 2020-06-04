@@ -36,6 +36,7 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "exec.h"
 #include "term.h"
 
 
@@ -46,6 +47,44 @@ static struct buffer *cmd_buf;          ///< Command string command buffer
 // Local functions
 
 static void free_cbuf(void);
+
+
+///
+///  @brief    Check to see if next command is ; or :;. Normally search commands
+///            return values only if preceded by a colon, but we need to do a
+///            lookahead here so that we can return a value if a semi-colon
+///            follows a search command.
+///
+///  @returns  true if next command is ; or :;, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool check_semi(void)
+{
+    bool colon = false;                 // Allow : before ;
+
+    // Check all remaining characters in command buffer.
+
+    for (uint i = current->pos; i < current->len; ++i)
+    {
+        int c = current->buf[i];
+
+        if (c == ';')                   // semi-colon found
+        {
+            return true;
+        }
+        else if (c == ':' && !colon)    // Allow colon if we haven't seen one
+        {
+            colon = true;
+        }
+        else if (c != NUL && c != LF && c != FF && c != CR && c != SPACE)
+        {
+            break;                      // Quit if any non-whitespace
+        }
+    }
+
+    return false;                       // Semi-colon not found
+}
 
 
 ///

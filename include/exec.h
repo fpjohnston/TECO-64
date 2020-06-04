@@ -38,6 +38,7 @@
 
 #include "cmd.h"
 
+
 // Functions that execute commands
 
 extern void exec_C(struct cmd *cmd);
@@ -279,6 +280,8 @@ extern void exec_Z(struct cmd *cmd);
 extern bool append(bool n_set, int n_arg, bool colon_set);
 
 extern bool append_line(void);
+
+extern bool check_semi(void);
 
 extern void exit_EG(void);
 
