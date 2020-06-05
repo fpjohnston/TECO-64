@@ -138,7 +138,7 @@ static void echo_chr(int c, void (*print)(int c))
     {
         switch (c)
         {
-            case BS:                    // TODO: is this correct?
+            case BS:
             case TAB:
             case LF:
             case CR:
