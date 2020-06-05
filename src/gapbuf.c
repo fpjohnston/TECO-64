@@ -589,13 +589,10 @@ int setsize_ebuf(int n)
         eb.buf = expand_mem(eb.buf, (uint)eb.size, (uint)n);
     }
 
-    t.dot     = 0;
-
-    // TODO: is this correct?
+    t.dot  = 0;
+    t.size = n;
 
     eb.size    = n;
-    t.size     = eb.size;
-
     eb.lowsize = eb.size - ((eb.size * eb.warn) / 100);
     eb.left    = 0;
     eb.gap     = eb.size;
