@@ -84,8 +84,6 @@ void exec_P(struct cmd *cmd)
     {
         assert(cmd->n_set == true);
 
-        // TODO: check whether this is correct
-
         if (cmd->m_arg < (int)start || cmd->m_arg >= (int)end ||
             cmd->n_arg < (int)start || cmd->n_arg >= (int)end)
         {

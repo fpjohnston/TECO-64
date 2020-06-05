@@ -170,7 +170,7 @@ int main(int argc, const char * const argv[])
 
             case 1:                     // CTRL/C typed
                 reset_tbuf();           // Reset terminal buffer
-                reset_cbuf();           // TODO: is this correct?
+                reset_cbuf();           // Reset command buffer
 
                 break;
 
