@@ -447,15 +447,8 @@ exec_func *next_cmd(struct cmd *cmd)
         cmd->n_set = true;
         cmd->n_arg = -1;
     }
-
-#if     0               // TODO: can we keep this?
     else if (f.e1.strict)
     {
-        if (estack.level != 0)
-        {
-            printf("expression stack warning\r\n"); // TODO: TBD
-        }
-
         if (cmd->n_set && !scan.n_opt)
         {
             print_err(E_UNA);           // Unused n argument
@@ -465,7 +458,6 @@ exec_func *next_cmd(struct cmd *cmd)
             print_err(E_UMA);           // Unused m argument
         }
     }
-#endif
 
     return exec;
 }
