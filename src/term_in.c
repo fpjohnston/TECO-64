@@ -579,7 +579,7 @@ static int read_first(void)
                 break;
 
             case '?':                   // Display erroneous command string
-                // TODO: make sure this prints correct string
+                // FIXME: immediate-action '?' command doesn't work.
                 if (last_error != E_NUL)
                 {
                     echo_in(c);
