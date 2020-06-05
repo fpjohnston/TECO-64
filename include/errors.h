@@ -122,8 +122,8 @@ enum errors
     E_UFI,          ///< Unable to open file "x" for input
     E_UFO,          ///< Unable to open file "x" for output
     E_UIT,          ///< Unable to initialize terminal
-    E_UMA,          ///< Useless m argument
-    E_UNA,          ///< Useless n argument
+    E_UMA,          ///< Unused m argument
+    E_UNA,          ///< Unused n argument
     E_URC,          ///< Unable to read character from terminal
     E_URE,          ///< Unable to read TECO command file
     E_URL,          ///< Unable to read line from input file
