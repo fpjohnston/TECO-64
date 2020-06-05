@@ -34,10 +34,14 @@
 #include <unistd.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "exec.h"
+#include "file.h"
 #include "term.h"
 
+
+static char *eg_result;                 ///< Result of EG command
 
 #if    0 // TODO: what to do with the following?
 
@@ -118,6 +122,8 @@ void exec_FI(struct cmd *cmd)
 
 void exit_EG(void)
 {
+    free_mem(&eg_result);
+
     if (eg_command != NULL)
     {
         if (execlp("/bin/sh", "sh", "-c", eg_command, NULL) == -1)
@@ -127,7 +133,6 @@ void exit_EG(void)
     }
 }
 
-extern int find_eg(const char *buf, uint len);
 
 ///
 ///  @brief    Find EG function.
@@ -136,53 +141,86 @@ extern int find_eg(const char *buf, uint len);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int find_eg(const char *buf, uint len)
+int find_eg(char *cmd, bool reset)
 {
-    char *cmd = alloc_mem(len + 1);
-    char *arg;
-    char *saveptr;
+    assert(cmd != NULL);
 
-    sprintf(cmd, "%.*s", (int)len, buf);
-
-    cmd = strtok_r(cmd, "\t\n\v\f\r ", &saveptr);
-    arg = strtok_r(NULL, "\t\n\v\f\r ", &saveptr);
+    char *arg = strchr(cmd, ' ');
+    const char *env;
 
     if (arg != NULL)
     {
-        return 0;
+        *arg++ = NUL;
+
+        while (*arg == ' ')
+        {
+            ++arg;
+        }
+
+        if (*arg == NUL)
+        {
+            reset = true;
+        }
     }
 
-    const char *name;
-    const char *result;
+    //
+    //  There are three possibilities here:
+    //
+    //  :EGcmd'      - Get environment variable 'cmd' and load Q-register *.
+    //  :EGcmd '     - Clears environment variable 'cmd'.
+    //  :EGcmd text' - Sets environment variable 'cmd' to 'text'.
+    //        
 
     if (!strcasecmp(cmd, "INI"))
     {
-        name = "TECO_INIT";
+        env = "TECO_INIT";
     }
-    if (!strcasecmp(cmd, "LIB"))
+    else if (!strcasecmp(cmd, "LIB"))
     {
-        name = "TECO_LIBRARY";
+        env = "TECO_LIBRARY";
     }
     else if (!strcasecmp(cmd, "MEM"))
     {
-        name = "TECO_MEMORY";
+        env = "TECO_MEMORY";
     }
     else if (!strcasecmp(cmd, "VTE"))
     {
-        name = "TECO_VTEDIT";
+        env = "TECO_VTEDIT";
     }
     else
     {
         return 0;
     }
 
-    if ((result = getenv(name)) == NULL)
+    if (reset)
     {
-        return 1;
+        (void)unsetenv(env);
     }
+    else if (arg != NULL)
+    {
+        if (setenv(env, arg, true) == -1)
+        {
+            return errno;
+        }
+    }
+    else
+    {
+        const char *result = getenv(env);
 
-    printf("TODO: result = %s\r\n", result);
+        if (result == NULL)
+        {
+            free_mem(&eg_result);
+        }
+        else
+        {
+            eg_result = alloc_mem((uint)strlen(result) + 1);
 
+            strcpy(eg_result, result);
+        }
+
+        last_file = eg_result;
+    }
+        
     return -1;
 }
 

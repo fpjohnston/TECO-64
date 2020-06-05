@@ -42,7 +42,6 @@
 
 char *eg_command;                       ///< EG command to be executed.
 
-extern int find_eg(const char *buf, uint len);
 
 ///
 ///  @brief    Execute EG command: execute system command.
@@ -55,9 +54,17 @@ void exec_EG(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->colon_set)
+    eg_command = alloc_mem(cmd->text1.len + 1);
+
+    sprintf(eg_command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+
+    if (cmd->colon_set || cmd->dcolon_set)
     {
-        int status = find_eg(cmd->text1.buf, cmd->text1.len);
+        sprintf(eg_command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+
+        int status = find_eg(eg_command, cmd->dcolon_set);
+
+        free_mem(&eg_command);
 
         push_expr(status, EXPR_VALUE);
 
@@ -71,16 +78,14 @@ void exec_EG(struct cmd *cmd)
 
     if (ofile->fp == NULL && t.Z != 0)
     {
+        free_mem(&eg_command);
+
         print_err(E_NFO);               // No file for output
     }
 
     exec_EC(cmd);
 
     // EG`, not :EG`, so get ready to exit
-
-    eg_command = alloc_mem(cmd->text1.len + 1);
-
-    sprintf(eg_command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
 
     exit(EXIT_SUCCESS);
 }
@@ -102,4 +107,3 @@ void init_EG(void)
         exit(EXIT_FAILURE);
     }
 }
-

@@ -285,6 +285,8 @@ extern bool check_semi(void);
 
 extern void exit_EG(void);
 
+extern int find_eg(char *buf, bool reset);
+
 extern void init_EG(void);
 
 extern void init_loop(void);
