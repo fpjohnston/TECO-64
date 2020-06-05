@@ -217,8 +217,7 @@ exec_func *scan_cmd(struct cmd *cmd)
 
     if (toupper(cmd->c1) == 'E' || toupper(cmd->c1) == 'F')
     {
-        // E and F commands may have whitespace before 2nd character. This
-        // seems to be a feature of TECO-32/TECO C (TODO: which one?)
+        // E and F commands may have whitespace before 2nd character.
 
         do
         {
