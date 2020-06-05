@@ -326,16 +326,6 @@ exec_func *scan_cmd(struct cmd *cmd)
         push_expr(cmd->n_arg, EXPR_VALUE);
     }
 
-#if     0 // TODO: what was this here for?
-    if (scan.expr && scan.n_opt && (cmd->m_set || cmd->n_set))
-    {
-        ;
-    }
-    else
-    {
-    }
-#endif
-
     // If character is part of an expression or a modifier, then process
     // it here and tell our caller that we're not done with the command.
 
@@ -594,7 +584,6 @@ static void set_opts(struct cmd *cmd, const char *opts)
                 break;
 
             default:
-//                assert(isspace(c));     // TODO: only for debugging
                 //lint -fallthrough
 
             case ',':
