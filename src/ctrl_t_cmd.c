@@ -77,8 +77,6 @@ void exec_ctrl_t(struct cmd *cmd)
         bool wait = f.et.nowait ? false : true;
         int c = getc_term(wait);
 
-        // TODO: check for CTRL/C?
-
         if (!f.et.noecho && c != -1)
         {
             echo_out(c);
