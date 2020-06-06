@@ -59,7 +59,7 @@ union tchar
         uint end_of_scr : 1;        ///< Terminal can erase to end of screen
     };
 
-    uint flag;
+    uint flag;                      ///< Combined above flags
 };
 
 ///  @struct  watch
@@ -102,6 +102,10 @@ extern int readkey_win(int c);
 extern void reset_win(void);
 
 extern void refresh_win(void);
+
+extern void reset_colors(void);
+
+extern void set_colors(const char *keyword, char *value);
 
 extern void set_nrows(void);
 

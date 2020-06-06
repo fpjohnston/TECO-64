@@ -53,7 +53,6 @@
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
-#include "exec.h"
 #include "term.h"
 #include "window.h"
 
@@ -97,6 +96,16 @@ struct region
     short bg;                           ///< Background color
 };
 
+// Define define colors for screen regions
+
+#define CMD_FG      COLOR_BLACK         ///< Default command foreground
+#define CMD_BG      COLOR_WHITE         ///< Default command background
+#define TEXT_FG     COLOR_BLACK         ///< Default text foreground
+#define TEXT_BG     COLOR_WHITE         ///< Default text background
+#define STATUS_FG   COLOR_WHITE         ///< Default status foreground
+#define STATUS_BG   COLOR_BLACK         ///< Default status background
+
+
 ///
 ///  @struct  display
 ///
@@ -118,9 +127,9 @@ static struct display
     .col = 0,
     .vcol = 0,
     .nrows = 0,
-    .cmd    = { .top = 0, .bot = 0, .fg = COLOR_BLUE,  .bg = COLOR_WHITE },
-    .text   = { .top = 0, .bot = 0, .fg = COLOR_GREEN, .bg = COLOR_WHITE },
-    .status = { .top = 0, .bot = 0, .fg = COLOR_WHITE, .bg = COLOR_BLACK },
+    .cmd    = { .top = 0, .bot = 0, .fg = 0, .bg = 0 },
+    .text   = { .top = 0, .bot = 0, .fg = 0, .bg = 0 },
+    .status = { .top = 0, .bot = 0, .fg = 0, .bg = 0 },
 };
 
 //
@@ -241,126 +250,6 @@ static void error_win(void)
 
 #endif
 
-
-///
-///  @brief    Execute E6 command: set window colors.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_E6(struct cmd *cmd)
-{
-
-#if     defined(SCOPE)
-
-    assert(cmd != NULL);
-
-    struct region *region;
-    char text1[cmd->text1.len + 1];
-    char text2[cmd->text2.len + 1];
-
-    sprintf(text1, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
-    sprintf(text2, "%.*s", (int)cmd->text2.len, cmd->text2.buf);
-
-    if (strlen(text1) == 0)
-    {
-        return;
-    }    
-
-    if (!strcasecmp(text1, "cmd"))
-    {
-        region = &d.cmd;
-    }
-    else if (!strcasecmp(text1, "text"))
-    {
-        region = &d.text;
-    }
-    else if (!strcasecmp(text1, "status"))
-    {
-        region = &d.status;
-    }
-    else
-    {
-        int color = find_color(text1);
-
-        if (color == -1)
-        {
-            print_err(E_WIN);
-        }
-
-        char *endptr;
-        uint permil;                    // Percent * 10
-
-        if (*text2 == NUL)              // Any percent specified?
-        {
-            permil = MAX_PERMIL;        // No, just use the maximum
-        }
-        else
-        {
-            permil = (uint)strtoul(text2, &endptr, 10);
-
-            if (errno != 0 || *endptr != NUL)
-            {
-                if (errno == 0)
-                {
-                    errno = EINVAL;
-                }
-
-                print_err(E_SYS);
-            }
-
-            if (permil > MAX_PERMIL)    // Make sure it's within range
-            {
-                permil = MAX_PERMIL;
-            }
-        }
-
-        // Adjust color saturation
-
-        short red   = (short)(color_table[color].red   * permil / MAX_PERMIL);
-        short green = (short)(color_table[color].green * permil / MAX_PERMIL);
-        short blue  = (short)(color_table[color].blue  * permil / MAX_PERMIL);
-
-        (void)init_color((short)color, red, green, blue);
-
-        return;
-    }
-
-    char *saveptr;
-    int fg = find_color(strtok_r(text2, " ,", &saveptr));
-    int bg = find_color(strtok_r(NULL,  " ,", &saveptr));
-
-    if (fg != -1)
-    {
-        region->fg = (short)fg;
-    }
-
-    if (bg != -1)
-    {
-        region->bg = (short)bg;
-    }
-
-    if (region == &d.cmd)
-    {
-        (void)assume_default_colors(d.cmd.fg, d.cmd.bg);
-    }
-    else if (region == &d.text)
-    {
-        (void)init_pair(TEXT, d.text.fg, d.text.bg);
-    }
-    else
-    {
-        (void)init_pair(STATUS, d.status.fg, d.status.bg);
-    }
-
-#else
-
-    print_err(E_WIN);
-
-#endif
-    
-}
 
 
 ///
@@ -504,35 +393,20 @@ void init_win(void)
 
         (void)initscr();
 
-        err_if_true(cbreak(),                                  ERR);
-        err_if_true(noecho(),                                  ERR);
-        err_if_true(nonl(),                                    ERR);
-        err_if_true(notimeout(stdscr, (bool)TRUE),             ERR);
-        err_if_true(idlok(stdscr,     (bool)TRUE),             ERR);
-        err_if_true(scrollok(stdscr,  (bool)TRUE),             ERR);
-        err_if_true(keypad(stdscr,    (bool)TRUE),             ERR);
-        err_if_true(has_colors(),                              FALSE);
-        err_if_true(start_color(),                             ERR);
+        err_if_true(cbreak(),                      ERR);
+        err_if_true(noecho(),                      ERR);
+        err_if_true(nonl(),                        ERR);
+        err_if_true(notimeout(stdscr, (bool)TRUE), ERR);
+        err_if_true(idlok(stdscr,     (bool)TRUE), ERR);
+        err_if_true(scrollok(stdscr,  (bool)TRUE), ERR);
+        err_if_true(keypad(stdscr,    (bool)TRUE), ERR);
+        err_if_true(has_colors(),                  FALSE);
+        err_if_true(start_color(),                 ERR);
 
-        if (can_change_color())         // Make colors as bright as possible
-        {
-            (void)init_color(COLOR_BLACK,      0,    0,    0);
-            (void)init_color(COLOR_RED,     1000,    0,    0);
-            (void)init_color(COLOR_GREEN,      0, 1000,    0);
-            (void)init_color(COLOR_YELLOW,  1000, 1000,    0);
-            (void)init_color(COLOR_BLUE,       0,    0, 1000);
-            (void)init_color(COLOR_MAGENTA, 1000,    0, 1000);
-            (void)init_color(COLOR_CYAN,       0, 1000, 1000);
-            (void)init_color(COLOR_WHITE,   1000, 1000, 1000);
-        }
-
-        err_if_true(assume_default_colors(d.cmd.fg, d.cmd.bg), ERR);
-
+        reset_colors();
         (void)set_escdelay(0);
 
-        (void)init_pair(TEXT, d.text.fg, d.text.bg);
-        (void)init_pair(STATUS, d.status.fg, d.status.bg);
-        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
+//        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
 
         set_nrows();
 
@@ -938,6 +812,46 @@ void refresh_win(void)
 
 
 ///
+///  @brief    Reset window colors to defaults.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_colors(void)
+{
+
+#if     defined(SCOPE)
+
+    if (can_change_color())             // Make colors as bright as possible
+    {
+        (void)init_color(COLOR_BLACK,      0,    0,    0);
+        (void)init_color(COLOR_RED,     1000,    0,    0);
+        (void)init_color(COLOR_GREEN,      0, 1000,    0);
+        (void)init_color(COLOR_YELLOW,  1000, 1000,    0);
+        (void)init_color(COLOR_BLUE,       0,    0, 1000);
+        (void)init_color(COLOR_MAGENTA, 1000,    0, 1000);
+        (void)init_color(COLOR_CYAN,       0, 1000, 1000);
+        (void)init_color(COLOR_WHITE,   1000, 1000, 1000);
+    }
+
+    d.cmd.fg    = CMD_FG;
+    d.cmd.bg    = CMD_BG;
+    d.text.fg   = TEXT_FG;
+    d.text.bg   = TEXT_BG;
+    d.status.fg = STATUS_FG;
+    d.status.bg = STATUS_BG;
+
+    (void)assume_default_colors(d.cmd.fg, d.cmd.bg);
+    (void)init_pair(TEXT, d.text.fg, d.text.bg);
+    (void)init_pair(STATUS, d.status.fg, d.status.bg);
+
+#endif
+
+}
+
+
+///
 ///  @brief    Terminate window display.
 ///
 ///  @returns  Nothing.
@@ -954,6 +868,114 @@ void reset_win(void)
         f.e0.winact = false;
 
         (void)endwin();
+    }
+
+#endif
+
+}
+
+
+///
+///  @brief    Set window colors.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void set_colors(const char *keyword, char *value)
+{
+
+#if     defined(SCOPE)
+
+    assert(keyword != NULL);
+    assert(value != NULL);
+
+    struct region *region;
+
+    if (!strcasecmp(keyword, "command"))
+    {
+        region = &d.cmd;
+    }
+    else if (!strcasecmp(keyword, "text"))
+    {
+        region = &d.text;
+    }
+    else if (!strcasecmp(keyword, "status"))
+    {
+        region = &d.status;
+    }
+    else                                // Not a region, so check colors.
+    {
+        int color = find_color(keyword);
+
+        if (color == -1)
+        {
+            print_err(E_WIN);
+        }
+
+        char *endptr;
+        uint permil;                    // Percent * 10
+
+        if (*value == NUL)              // Any percent specified?
+        {
+            permil = MAX_PERMIL;        // No, just use the maximum
+        }
+        else
+        {
+            permil = (uint)strtoul(value, &endptr, 10);
+
+            if (errno != 0 || *endptr != NUL)
+            {
+                if (errno == 0)
+                {
+                    errno = EINVAL;
+                }
+
+                print_err(E_SYS);
+            }
+
+            if (permil > MAX_PERMIL)    // Make sure it's within range
+            {
+                permil = MAX_PERMIL;
+            }
+        }
+
+        // Adjust color saturation
+
+        short red   = (short)(color_table[color].red   * permil / MAX_PERMIL);
+        short green = (short)(color_table[color].green * permil / MAX_PERMIL);
+        short blue  = (short)(color_table[color].blue  * permil / MAX_PERMIL);
+
+        (void)init_color((short)color, red, green, blue);
+
+        return;
+    }
+
+    char *saveptr;
+    int fg = find_color(strtok_r(value, " ,", &saveptr));
+    int bg = find_color(strtok_r(NULL,  " ,", &saveptr));
+
+    if (fg != -1)
+    {
+        region->fg = (short)fg;
+    }
+
+    if (bg != -1)
+    {
+        region->bg = (short)bg;
+    }
+
+    if (region == &d.cmd)
+    {
+        (void)assume_default_colors(d.cmd.fg, d.cmd.bg);
+    }
+    else if (region == &d.text)
+    {
+        (void)init_pair(TEXT, d.text.fg, d.text.bg);
+    }
+    else
+    {
+        (void)init_pair(STATUS, d.status.fg, d.status.bg);
     }
 
 #endif

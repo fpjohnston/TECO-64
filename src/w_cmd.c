@@ -31,6 +31,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"
@@ -77,6 +78,40 @@ struct watch w =
 static int get_w(int n);
 
 static void set_w(int m, int n);
+
+
+///
+///  @brief    Execute E6 command: set window colors.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_E6(struct cmd *cmd)
+{
+
+#if     defined(SCOPE)
+
+    assert(cmd != NULL);
+
+    char keyword[cmd->text1.len + 1];
+    char value[cmd->text2.len + 1];
+
+    sprintf(keyword, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+    sprintf(value,   "%.*s", (int)cmd->text2.len, cmd->text2.buf);
+
+    if (*keyword != NUL)                // Anything to parse?
+    {
+        set_colors(keyword, value);
+    }    
+
+#else
+
+    print_err(E_WIN);
+
+#endif
+
+}
 
 
 ///

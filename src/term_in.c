@@ -560,6 +560,14 @@ static int read_first(void)
 
                 break;
 
+            case CTRL_K:
+                echo_in(CTRL_K);
+                echo_in(CRLF);
+                reset_colors();
+                clear_win();
+
+                break;
+
             case CTRL_W:
                 echo_in(CTRL_W);
                 echo_in(CRLF);
