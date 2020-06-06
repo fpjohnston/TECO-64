@@ -169,8 +169,6 @@ extern void exec_FC(struct cmd *cmd);
 
 extern void exec_FD(struct cmd *cmd);
 
-extern void exec_FI(struct cmd *cmd);
-
 extern void exec_FK(struct cmd *cmd);
 
 extern void exec_FL(struct cmd *cmd);
@@ -244,6 +242,8 @@ extern void exec_E3(struct cmd *cmd);
 extern void exec_E4(struct cmd *cmd);
 
 extern void exec_E5(struct cmd *cmd);
+
+extern void exec_E6(struct cmd *cmd);
 
 extern void exec_ED(struct cmd *cmd);
 

@@ -27,6 +27,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <errno.h>
 
 #if     defined(SCOPE)
 
@@ -52,8 +53,13 @@
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
+#include "exec.h"
 #include "term.h"
 #include "window.h"
+
+
+#define MAX_PERMIL      1000            ///< Maximum percent * 10
+
 
 ///
 ///  @def    err_if_true
@@ -71,16 +77,9 @@
 
 #define err_if_false(func, cond) if (func != cond) error_win()
 
-// TODO: add ability to specify colors at init time (and maybe run-time?)
-
-#define C_FG COLOR_BLUE                 ///< Default foreground color
-#define C_BG (COLOR_WHITE | A_BOLD)     ///< Default background color
-
 #define CMD             0               ///< Command window colors
 #define TEXT            1               ///< Text window colors
-#define LINE            2               ///< Line separator colors
-
-#define BRIGHT_WHITE    16              ///< Bright white background
+#define STATUS          2               ///< Status line colors
 
 #if     defined(SCOPE)
 
@@ -94,8 +93,8 @@ struct region
 {
     int top;                            ///< Top of region
     int bot;                            ///< Bottom of region
-    int fg;                             ///< Foreground color
-    int bg;                             ///< Background color
+    short fg;                           ///< Foreground color
+    short bg;                           ///< Background color
 };
 
 ///
@@ -104,23 +103,56 @@ struct region
 ///  @brief   Display format
 ///
 
-struct display
+static struct display
 {
     int row;                            ///< Text row
     int col;                            ///< Text column
     int vcol;                           ///< Virtual column
     int nrows;                          ///< No. of text rows
-    struct region text;
-    struct region cmd;
-    struct region line;
+    struct region cmd;                  ///< Command window
+    struct region text;                 ///< Text window
+    struct region status;               ///< Status line
+} d =
+{
+    .row = 0,
+    .col = 0,
+    .vcol = 0,
+    .nrows = 0,
+    .cmd    = { .top = 0, .bot = 0, .fg = COLOR_BLUE,  .bg = COLOR_WHITE },
+    .text   = { .top = 0, .bot = 0, .fg = COLOR_GREEN, .bg = COLOR_WHITE },
+    .status = { .top = 0, .bot = 0, .fg = COLOR_WHITE, .bg = COLOR_BLACK },
 };
 
-static struct display d;                ///< Display format
+//
+//  @var    color_table
+//
+//  @brief  Table of colors
+//
+
+static const struct
+{
+    const char *name;
+    uint red;
+    uint green;
+    uint blue;
+} color_table[] =
+{
+    [COLOR_BLACK]   = { "BLACK",      0,    0,    0, },
+    [COLOR_RED]     = { "RED",     1000,    0,    0, },
+    [COLOR_GREEN]   = { "GREEN",      0, 1000,    0, },
+    [COLOR_YELLOW]  = { "YELLOW",  1000, 1000,    0, },
+    [COLOR_BLUE]    = { "BLUE",       0,    0, 1000, },
+    [COLOR_MAGENTA] = { "MAGENTA", 1000,    0, 1000, },
+    [COLOR_CYAN]    = { "CYAN",       0, 1000, 1000, },
+    [COLOR_WHITE]   = { "WHITE",   1000, 1000, 1000, },
+};
 
 
 // Local functions
 
 static void error_win(void);
+
+static int find_color(const char *token);
 
 static void mark_cursor(int row, int col);
 
@@ -205,6 +237,157 @@ static void error_win(void)
     init_term();
 
     print_err(E_WIN);                   // Window initialization
+}
+
+#endif
+
+
+///
+///  @brief    Execute E6 command: set window colors.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_E6(struct cmd *cmd)
+{
+
+#if     defined(SCOPE)
+
+    assert(cmd != NULL);
+
+    struct region *region;
+    char text1[cmd->text1.len + 1];
+    char text2[cmd->text2.len + 1];
+
+    sprintf(text1, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+    sprintf(text2, "%.*s", (int)cmd->text2.len, cmd->text2.buf);
+
+    if (strlen(text1) == 0)
+    {
+        return;
+    }    
+
+    if (!strcasecmp(text1, "cmd"))
+    {
+        region = &d.cmd;
+    }
+    else if (!strcasecmp(text1, "text"))
+    {
+        region = &d.text;
+    }
+    else if (!strcasecmp(text1, "status"))
+    {
+        region = &d.status;
+    }
+    else
+    {
+        int color = find_color(text1);
+
+        if (color == -1)
+        {
+            print_err(E_WIN);
+        }
+
+        char *endptr;
+        uint permil;                    // Percent * 10
+
+        if (*text2 == NUL)              // Any percent specified?
+        {
+            permil = MAX_PERMIL;        // No, just use the maximum
+        }
+        else
+        {
+            permil = (uint)strtoul(text2, &endptr, 10);
+
+            if (errno != 0 || *endptr != NUL)
+            {
+                if (errno == 0)
+                {
+                    errno = EINVAL;
+                }
+
+                print_err(E_SYS);
+            }
+
+            if (permil > MAX_PERMIL)    // Make sure it's within range
+            {
+                permil = MAX_PERMIL;
+            }
+        }
+
+        // Adjust color saturation
+
+        short red   = (short)(color_table[color].red   * permil / MAX_PERMIL);
+        short green = (short)(color_table[color].green * permil / MAX_PERMIL);
+        short blue  = (short)(color_table[color].blue  * permil / MAX_PERMIL);
+
+        (void)init_color((short)color, red, green, blue);
+
+        return;
+    }
+
+    char *saveptr;
+    int fg = find_color(strtok_r(text2, " ,", &saveptr));
+    int bg = find_color(strtok_r(NULL,  " ,", &saveptr));
+
+    if (fg != -1)
+    {
+        region->fg = (short)fg;
+    }
+
+    if (bg != -1)
+    {
+        region->bg = (short)bg;
+    }
+
+    if (region == &d.cmd)
+    {
+        (void)assume_default_colors(d.cmd.fg, d.cmd.bg);
+    }
+    else if (region == &d.text)
+    {
+        (void)init_pair(TEXT, d.text.fg, d.text.bg);
+    }
+    else
+    {
+        (void)init_pair(STATUS, d.status.fg, d.status.bg);
+    }
+
+#else
+
+    print_err(E_WIN);
+
+#endif
+    
+}
+
+
+///
+///  @brief    Find color specified by string.
+///
+///  @returns  Index into table, or -1 if no match.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(SCOPE)
+
+static int find_color(const char *token)
+{
+    if (token == NULL)
+    {
+        return -1;
+    }
+
+    for (int i = 0; i < (int)countof(color_table); ++i)
+    {
+        if (!strcasecmp(token, color_table[i].name))
+        {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 #endif
@@ -321,31 +504,34 @@ void init_win(void)
 
         (void)initscr();
 
-        err_if_true(cbreak(),                          ERR);
-        err_if_true(noecho(),                          ERR);
-        err_if_true(nonl(),                            ERR);
-        err_if_true(notimeout(stdscr, (bool)TRUE),     ERR);
-        err_if_true(idlok(stdscr,     (bool)TRUE),     ERR);
-        err_if_true(scrollok(stdscr,  (bool)TRUE),     ERR);
-        err_if_true(keypad(stdscr,    (bool)TRUE),     ERR);
-        err_if_true(has_colors(),                      FALSE);
-        err_if_true(start_color(),                     ERR);
-        err_if_true(assume_default_colors(C_FG, C_BG), ERR);
+        err_if_true(cbreak(),                                  ERR);
+        err_if_true(noecho(),                                  ERR);
+        err_if_true(nonl(),                                    ERR);
+        err_if_true(notimeout(stdscr, (bool)TRUE),             ERR);
+        err_if_true(idlok(stdscr,     (bool)TRUE),             ERR);
+        err_if_true(scrollok(stdscr,  (bool)TRUE),             ERR);
+        err_if_true(keypad(stdscr,    (bool)TRUE),             ERR);
+        err_if_true(has_colors(),                              FALSE);
+        err_if_true(start_color(),                             ERR);
+
+        if (can_change_color())         // Make colors as bright as possible
+        {
+            (void)init_color(COLOR_BLACK,      0,    0,    0);
+            (void)init_color(COLOR_RED,     1000,    0,    0);
+            (void)init_color(COLOR_GREEN,      0, 1000,    0);
+            (void)init_color(COLOR_YELLOW,  1000, 1000,    0);
+            (void)init_color(COLOR_BLUE,       0,    0, 1000);
+            (void)init_color(COLOR_MAGENTA, 1000,    0, 1000);
+            (void)init_color(COLOR_CYAN,       0, 1000, 1000);
+            (void)init_color(COLOR_WHITE,   1000, 1000, 1000);
+        }
+
+        err_if_true(assume_default_colors(d.cmd.fg, d.cmd.bg), ERR);
 
         (void)set_escdelay(0);
 
-        short color_bg = COLOR_WHITE;
-
-        if (can_change_color() && COLORS >= 16)
-        {
-            (void)init_color(BRIGHT_WHITE, 1000, 1000, 1000);
-
-            color_bg = BRIGHT_WHITE;
-        }
-
-        (void)init_pair(TEXT, COLOR_GREEN, color_bg);
-        (void)init_pair(LINE, BRIGHT_WHITE, COLOR_BLACK);
-//        (void)init_pair(LINE, COLOR_RED, color_bg);
+        (void)init_pair(TEXT, d.text.fg, d.text.bg);
+        (void)init_pair(STATUS, d.status.fg, d.status.bg);
         (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
 
         set_nrows();
@@ -830,18 +1016,18 @@ void set_scroll(int height, int nlines)
 
         (void)setscrreg(d.cmd.top, d.cmd.bot);
 
-        d.line.top = d.line.bot = -1;
+        d.status.top = d.status.bot = -1;
 
         if (f.e1.winline)
         {
             if (f.e1.cmdtop)
             {
-                d.line.top = d.line.bot = d.cmd.bot + 1;
+                d.status.top = d.status.bot = d.cmd.bot + 1;
                 ++d.text.top;
             }
             else
             {
-                d.line.top = d.line.bot = d.cmd.top - 1;
+                d.status.top = d.status.bot = d.cmd.top - 1;
             }
 
             update_status();
@@ -885,8 +1071,8 @@ static void update_status(void)
 
     getyx(stdscr, saved_row, saved_col);
 
-    (void)move(d.line.top, 0);
-    (void)attrset(COLOR_PAIR(LINE));    //lint !e835
+    (void)move(d.status.top, 0);
+    (void)attrset(COLOR_PAIR(STATUS));  //lint !e835
 
     if (f.e1.status)
     {

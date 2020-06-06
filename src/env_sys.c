@@ -83,37 +83,6 @@ static void read_value(const char *var, uint *value);
 
 
 ///
-///  @brief    Execute FI command.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_FI(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->text1.len == 0)
-    {
-        print_str("FI: no keyword found\r\n");
-
-        return;
-    }    
-
-    if (cmd->text2.len == 0)
-    {
-        print_str("FI: no value found for keyword '%.*s'\r\n", cmd->text1.len,
-            cmd->text1.buf);
-
-        return;
-    }    
-
-    print_str("FI: %.*s = %.*s\r\n", cmd->text1.len, cmd->text1.buf,
-              cmd->text2.len, cmd->text2.buf);
-}
-
-
-///
 ///  @brief    Final execution of EG command.
 ///
 ///  @returns  Nothing (returns to operating system).
