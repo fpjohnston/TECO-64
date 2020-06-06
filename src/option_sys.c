@@ -374,7 +374,7 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.arg.scroll != NULL)
     {
-        sprintf(command, "%s,7:W", config.arg.scroll);
+        sprintf(command, "%s,7:W\e", config.arg.scroll);
         store_cmd(command);
     }
 
