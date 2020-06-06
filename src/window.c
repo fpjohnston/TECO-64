@@ -57,7 +57,7 @@
 #include "window.h"
 
 
-#define MAX_PERMIL      1000            ///< Maximum percent * 10
+#define SATMAX      1000                ///< Maximum color saturation
 
 
 ///
@@ -146,14 +146,14 @@ static const struct
     uint blue;
 } color_table[] =
 {
-    [COLOR_BLACK]   = { "BLACK",      0,    0,    0, },
-    [COLOR_RED]     = { "RED",     1000,    0,    0, },
-    [COLOR_GREEN]   = { "GREEN",      0, 1000,    0, },
-    [COLOR_YELLOW]  = { "YELLOW",  1000, 1000,    0, },
-    [COLOR_BLUE]    = { "BLUE",       0,    0, 1000, },
-    [COLOR_MAGENTA] = { "MAGENTA", 1000,    0, 1000, },
-    [COLOR_CYAN]    = { "CYAN",       0, 1000, 1000, },
-    [COLOR_WHITE]   = { "WHITE",   1000, 1000, 1000, },
+    [COLOR_BLACK]   = { "BLACK",        0,      0,      0, },
+    [COLOR_RED]     = { "RED",     SATMAX,      0,      0, },
+    [COLOR_GREEN]   = { "GREEN",        0, SATMAX,      0, },
+    [COLOR_YELLOW]  = { "YELLOW",  SATMAX, SATMAX,      0, },
+    [COLOR_BLUE]    = { "BLUE",         0,      0, SATMAX, },
+    [COLOR_MAGENTA] = { "MAGENTA", SATMAX,      0, SATMAX, },
+    [COLOR_CYAN]    = { "CYAN",         0, SATMAX, SATMAX, },
+    [COLOR_WHITE]   = { "WHITE",   SATMAX, SATMAX, SATMAX, },
 };
 
 
@@ -406,7 +406,7 @@ void init_win(void)
         reset_colors();
         (void)set_escdelay(0);
 
-//        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
+        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
 
         set_nrows();
 
@@ -825,14 +825,14 @@ void reset_colors(void)
 
     if (can_change_color())             // Make colors as bright as possible
     {
-        (void)init_color(COLOR_BLACK,      0,    0,    0);
-        (void)init_color(COLOR_RED,     1000,    0,    0);
-        (void)init_color(COLOR_GREEN,      0, 1000,    0);
-        (void)init_color(COLOR_YELLOW,  1000, 1000,    0);
-        (void)init_color(COLOR_BLUE,       0,    0, 1000);
-        (void)init_color(COLOR_MAGENTA, 1000,    0, 1000);
-        (void)init_color(COLOR_CYAN,       0, 1000, 1000);
-        (void)init_color(COLOR_WHITE,   1000, 1000, 1000);
+        (void)init_color(COLOR_BLACK,        0,      0,      0);
+        (void)init_color(COLOR_RED,     SATMAX,      0,      0);
+        (void)init_color(COLOR_GREEN,        0, SATMAX,      0);
+        (void)init_color(COLOR_YELLOW,  SATMAX, SATMAX,      0);
+        (void)init_color(COLOR_BLUE,         0,      0, SATMAX);
+        (void)init_color(COLOR_MAGENTA, SATMAX,      0, SATMAX);
+        (void)init_color(COLOR_CYAN,         0, SATMAX, SATMAX);
+        (void)init_color(COLOR_WHITE,   SATMAX, SATMAX, SATMAX);
     }
 
     d.cmd.fg    = CMD_FG;
@@ -876,7 +876,14 @@ void reset_win(void)
 
 
 ///
-///  @brief    Set window colors.
+///  @brief    Set window colors. This is used for two purposes; one, to set the
+///            foreground and background colors for a region (command window,
+///            text window, and status line), and two, to set the saturation
+///            levels for the colors we use. ncurses allows these levels to
+///            range from 0 to 1000. Colors are defined with separate levels for
+///            red, green, and blue. Note that setting a level only makes sense
+///            for colors other than black, since black is defined as having
+///            red, green, and blue all 0.
 ///
 ///  @returns  Nothing.
 ///
@@ -914,15 +921,15 @@ void set_colors(const char *keyword, char *value)
         }
 
         char *endptr;
-        uint permil;                    // Percent * 10
+        uint saturation;                // Color saturation
 
-        if (*value == NUL)              // Any percent specified?
+        if (*value == NUL)              // Anything specified?
         {
-            permil = MAX_PERMIL;        // No, just use the maximum
+            saturation = SATMAX;        // No, just use the maximum
         }
         else
         {
-            permil = (uint)strtoul(value, &endptr, 10);
+            saturation = (uint)strtoul(value, &endptr, 10);
 
             if (errno != 0 || *endptr != NUL)
             {
@@ -934,17 +941,17 @@ void set_colors(const char *keyword, char *value)
                 print_err(E_SYS);
             }
 
-            if (permil > MAX_PERMIL)    // Make sure it's within range
+            if (saturation > SATMAX)    // Make sure it's within range
             {
-                permil = MAX_PERMIL;
+                saturation = SATMAX;
             }
         }
 
         // Adjust color saturation
 
-        short red   = (short)(color_table[color].red   * permil / MAX_PERMIL);
-        short green = (short)(color_table[color].green * permil / MAX_PERMIL);
-        short blue  = (short)(color_table[color].blue  * permil / MAX_PERMIL);
+        short red   = (short)(color_table[color].red   * saturation / SATMAX);
+        short green = (short)(color_table[color].green * saturation / SATMAX);
+        short blue  = (short)(color_table[color].blue  * saturation / SATMAX);
 
         (void)init_color((short)color, red, green, blue);
 
