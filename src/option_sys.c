@@ -131,9 +131,10 @@ static const struct option long_options[] =
 //  -X, --exit
 //          Exit TECO after indirect command file executed.
 
-///   @var    config
 ///
-///   @brief  Structure for holding information on configuration options.
+///   @struct  config
+///
+///   @brief   Structure for holding information on configuration options.
 ///
 
 struct config
@@ -152,7 +153,7 @@ struct config
         bool text;              ///< --text option seen
         bool window;            ///< --window option seen
         bool exit;              ///< --exit option seen
-    } flag;
+    } flag;                     ///< true/false flags
     struct
     {
         char *execute;          ///< Argument for --execute option
@@ -161,8 +162,14 @@ struct config
         char *output;           ///< Argument for --output option
         char *scroll;           ///< Argument for --scroll option
         char *text;             ///< Argument for --text option
-    } arg;
+    } arg;                      ///< String arguments
 };
+
+///
+///   @var     config
+///
+///   @brief   Current configuration options.
+///
 
 struct config config =
 {

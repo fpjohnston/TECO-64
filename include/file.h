@@ -90,8 +90,6 @@ enum otype
 
 // Global variables
 
-extern char *filename_buf;
-
 extern struct ifile ifiles[];
 
 extern struct ofile ofiles[];
