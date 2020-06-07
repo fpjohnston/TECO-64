@@ -88,43 +88,6 @@ bool check_semi(void)
 
 
 ///
-///  @brief    Create copy of current buffer and return it. This is used by the
-///            *x immediate-mode action command to save the command string in a
-///            Q-register.
-///
-///  @returns  String copy of buffer.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-struct buffer *copy_cbuf(void)
-{
-    assert(cmd_buf != NULL);
-    assert(cmd_buf->size != 0);
-
-    struct buffer *clone = alloc_mem((uint)sizeof(struct buffer));
-
-    clone->len  = cmd_buf->len;
-    clone->pos  = cmd_buf->pos;
-    clone->size = cmd_buf->size;
-    clone->buf  = alloc_mem(clone->size);
-
-    if (clone->len > 0 && cmd_buf->buf[clone->len - 1] == ESC)
-    {
-        --clone->len;
-    }
-
-    if (clone->len > 0 && cmd_buf->buf[clone->len - 1] == ESC)
-    {
-        --clone->len;
-    }
-
-    memcpy(clone->buf, cmd_buf->buf, (ulong)clone->len);
-
-    return clone;
-}
-
-
-///
 ///  @brief    Fetch next character from buffer.
 ///
 ///  @returns  Character fetched, or EOF if no character available.

@@ -37,7 +37,7 @@
 #include "term.h"
 
 
-static struct buffer *term_buf;         ///< Command buffer for terminal input
+struct buffer *term_buf;                ///< Command buffer for terminal input
 
 // Local functions
 

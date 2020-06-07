@@ -267,8 +267,6 @@ void read_cmd(void)
 {
     int c;
     
-    reset_tbuf();
-
     switch (read_indirect())
     {
         case -1:                        // Exit if we have a complete command
@@ -285,6 +283,11 @@ void read_cmd(void)
 
             break;
     }
+
+    // We don't reset the terminal buffer until we get here, so that we can
+    // use the *x command to save the previous contents in Q-register 'x'.
+
+    reset_tbuf();                       // Reset terminal buffer
 
     for (;;)
     {
@@ -316,6 +319,7 @@ void read_cmd(void)
         store_cbuf(c);
     }
 }
+
 
 
 ///
@@ -357,7 +361,6 @@ static void read_ctrl_c(int last)
         exit(EXIT_SUCCESS);             // Yes: clean up, reset, and exit
     }
 
-    reset_tbuf();
     print_prompt();
 }
 
@@ -379,11 +382,11 @@ static void read_ctrl_g(void)
 
     if (c == CTRL_G)                    // ^G^G
     {
+        reset_cbuf();
         print_echo(CRLF);               // Start new line
         put_bell();
-        reset_tbuf();
-        reset_cbuf();
-        print_prompt();
+
+        longjmp(jump_main, 1);
     }
     else if (c == SPACE)                // ^G<SPACE> - retype current line
     {
@@ -529,6 +532,8 @@ static int read_first(void)
     // Loop until we seen something other than an immediate-mode command.
 
     bool prompt_enabled = true;
+
+    reset_cbuf();
 
     for (;;)
     {
@@ -679,7 +684,20 @@ static void read_qname(int c)
 
     print_echo(CRLF);
 
-    store_qtext(qname, qdot, copy_cbuf());
+    assert(term_buf != NULL);
+
+    struct buffer qbuf =
+    {
+        .len  = term_buf->len,
+        .pos  = term_buf->pos,
+        .size = term_buf->size,
+    };
+
+    qbuf.buf  = alloc_mem(term_buf->len);
+
+    memcpy(qbuf.buf, term_buf->buf, (ulong)qbuf.len);
+
+    store_qtext(qname, qdot, &qbuf);
 }
 
 

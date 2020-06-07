@@ -119,6 +119,7 @@ int main(int argc, const char * const argv[])
     f.et.accent  = true;                // Use accent grave as delimiter
 
     f.e1.strict  = true;                // Strictly enforce syntax
+
     f.e1.winline = true;                // Line between text & command regions
     f.e1.status  = true;                // Display status on line
 
@@ -169,7 +170,6 @@ int main(int argc, const char * const argv[])
                 break;
 
             case 1:                     // CTRL/C typed
-                reset_tbuf();           // Reset terminal buffer
                 reset_cbuf();           // Reset command buffer
 
                 break;
@@ -177,7 +177,6 @@ int main(int argc, const char * const argv[])
             default:
             case 2:                     // Error
                 reset_indirect();       // Close any indirect file
-                reset_tbuf();           // Reset terminal buffer
                 reset_cbuf();           // Reset the input buffer
                 reset_qreg();           // Free up Q-register storage
                 reset_if();             // Reset if statement depth

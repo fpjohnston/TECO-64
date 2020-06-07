@@ -106,6 +106,8 @@ struct vars
 
 // Global variables
 
+extern struct buffer *term_buf;
+
 extern uint macro_max;
 
 extern uint loop_max;
