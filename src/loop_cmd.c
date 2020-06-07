@@ -36,8 +36,8 @@
 #include "exec.h"
 
 
-#define NO_POP      (bool)false
-#define POP_OK      (bool)true
+#define NO_POP      (bool)false         ///< Pop loop stack at end of loop
+#define POP_OK      (bool)true          ///< Don't pop loop stack at end of loop
 
 #define INFINITE        (-1)            ///< Infinite loop count
 

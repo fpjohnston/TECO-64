@@ -37,8 +37,8 @@
 #include "exec.h"
 
 
-#define NO_ELSE     (bool)false
-#define ELSE_OK     (bool)true
+#define NO_ELSE     (bool)false         ///< Don't execute | command
+#define ELSE_OK     (bool)true          ///< Execute | command if found
 
 uint if_depth = 0;                      ///< Nesting depth for if statements
 

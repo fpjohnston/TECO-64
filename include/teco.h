@@ -164,8 +164,6 @@ extern int teco_env(int n, bool colon);
 
 // Command buffer functions
 
-extern struct buffer *copy_cbuf(void);
-
 extern int fetch_cbuf(bool start);
 
 extern struct buffer *get_cbuf(void);
