@@ -218,7 +218,7 @@ void init_term(void)
 
 void put_bell(void)
 {
-//    print_chr(CTRL_G);
+    print_chr(CTRL_G);
 }
 
 
