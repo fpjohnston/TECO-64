@@ -374,7 +374,7 @@ static void scan_tail(struct cmd *cmd)
     {
         print_err(E_MRP);               // Missing right parenthesis
     }
-    else if (f.e1.strict)
+    else if (f.e0.strict)
     {
         if ((cmd->colon_set  && !scan.colon_opt ) ||
             (cmd->dcolon_set && !scan.dcolon_opt) ||

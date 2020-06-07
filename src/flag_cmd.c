@@ -161,7 +161,7 @@ void exec_ctrl_f(struct cmd *cmd)
 
     if (check_n_flag(cmd, &n))
     {
-        if (f.e1.strict)
+        if (f.e0.strict)
         {
             print_err(E_T10);           // TECO-10 command not implemented.
         }

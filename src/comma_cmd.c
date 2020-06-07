@@ -59,7 +59,7 @@ void exec_comma(struct cmd *cmd)
 
     if (!pop_expr(&cmd->m_arg))         // Any n argument specified?
     {
-        if (f.e1.strict)                // No -- should we issue error?
+        if (f.e0.strict)                // No -- should we issue error?
         {
             print_err(E_NAC);           // No argument before ,
         }

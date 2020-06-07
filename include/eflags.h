@@ -35,8 +35,9 @@
 #endif
 
 ///  @struct  e0_flag
-///  @brief   Definition of flags are used internally, and which cannot be read
-///           or set by the user.
+///
+///  @brief   Definition of flags are used internally, and which generally
+///           cannot be read or set by the user.
 
 struct e0_flag
 {
@@ -45,12 +46,14 @@ struct e0_flag
     uint lower  : 1;            ///< Force string arguments to lower case
     uint upper  : 1;            ///< Force string arguments to upper case
     uint exit   : 1;            ///< Exit when MUNG command is done
-    uint dryrun : 1;            ///< --dry-run: just display EI commands
+    uint strict : 1;            ///< --zero: zero-tolerance command parsing
+    uint dryrun : 1;            ///< --dry-run: don't execute EI commands
     uint window : 1;            ///< --window: enable window display
     uint winact : 1;            ///< Window display is active
 };
 
 ///  @struct  e1_flag
+///
 ///  @brief   Definition of debugging flags.
 
 union e1_flag
@@ -59,7 +62,6 @@ union e1_flag
 
     struct
     {
-        uint strict  : 1;       ///< Strictly enforce command syntax
         uint cmdtop  : 1;       ///< Put command window above text window
         uint winline : 1;       ///< Line between text and command window
         uint status  : 1;       ///< Display status on line
@@ -67,6 +69,7 @@ union e1_flag
 };
 
 ///  @struct  e2_flag
+///
 ///  @brief   File format features.
 
 union e2_flag
@@ -84,6 +87,7 @@ union e2_flag
 };
 
 ///  @struct  e3_flag
+///
 ///  @brief   Definition of extended features.
 
 union e3_flag
@@ -99,6 +103,7 @@ union e3_flag
 };
 
 ///  @struct  e4_flag
+///
 ///  @brief   Definition of file options.
 
 union e4_flag
@@ -113,6 +118,7 @@ union e4_flag
 };
 
 ///  @union   ed_flag
+///
 ///  @brief   Definition of flags that affect edit operations.
 
 union ed_flag
@@ -133,6 +139,7 @@ union ed_flag
 };
 
 ///  @union   eh_flag
+///
 ///  @brief   Definition of flags that affect output of help messages.
 
 union eh_flag
@@ -147,6 +154,7 @@ union eh_flag
 };
 
 ///  @union   et_flag
+///
 ///  @brief   Definition of flags that affect terminal input and output.
 
 union et_flag
@@ -175,6 +183,7 @@ union et_flag
 };
 
 ///  @struct  flags
+///
 ///  @brief   Master flag structure.
 
 struct flags

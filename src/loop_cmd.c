@@ -36,9 +36,8 @@
 #include "exec.h"
 
 
-// TODO: add code to handle termination of conditionals before end of loop
-//       (e.g., a command string like "< 1 "N > '".
-
+#define NO_POP      (bool)false
+#define POP_OK      (bool)true
 
 #define INFINITE        (-1)            ///< Infinite loop count
 
@@ -53,13 +52,18 @@ struct loop
     struct loop *next;                  ///< Next item in list
     int count;                          ///< Iteration count
     uint start;                         ///< Starting position
+    uint depth;                         ///< Depth of if statements
 };
 
 static struct loop *loop_head;          ///< Head of loop list
 
 // Local functions
 
-static void endloop(struct cmd *cmd);
+static void endloop(struct cmd *cmd, bool pop_ok);
+
+static void pop_loop(bool pop_ok);
+
+static void push_loop(int count);
 
 
 ///
@@ -89,7 +93,7 @@ bool check_loop(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void endloop(struct cmd *cmd)
+static void endloop(struct cmd *cmd, bool pop_ok)
 {
     assert(cmd != NULL);
 
@@ -97,11 +101,24 @@ static void endloop(struct cmd *cmd)
 
     do
     {
-        bool dryrun = f.e0.dryrun;
-
-        f.e0.dryrun = true;
         (void)next_cmd(cmd);
-        f.e0.dryrun = dryrun;
+
+        if (f.e0.strict)
+        {
+            if (cmd->c1 == '"')
+            {
+                ++if_depth;
+            }
+            else if (cmd->c1 == '\'')
+            {
+                --if_depth;
+            }
+
+            if (loop_head != NULL && loop_head->depth > if_depth)
+            {
+                printc_err(E_UTC, '<'); // Unterminated command
+            }
+        }
 
         if (cmd->c1 == '<')             // Start of a new loop?
         {
@@ -113,17 +130,7 @@ static void endloop(struct cmd *cmd)
         }
     } while (depth > 0);
 
-    struct loop *loop = loop_head;
-
-    assert(loop != NULL);
-
-    loop_head = loop->next;
-
-    free_mem(&loop);
-
-    assert(loop_depth > 0);
-
-    --loop_depth;
+    pop_loop(pop_ok);
 }
 
 
@@ -138,7 +145,7 @@ void exec_F_gt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    endloop(cmd);                       // Flow to end of loop
+    endloop(cmd, POP_OK);               // Flow to end of loop
 }
 
 
@@ -181,13 +188,7 @@ void exec_gt(struct cmd *cmd)
     }
     else
     {
-        loop_head = loop->next;
-
-        free_mem(&loop);
-
-        assert(loop_depth > 0);
-
-        --loop_depth;
+        pop_loop(POP_OK);
     }
 }
 
@@ -207,24 +208,11 @@ void exec_lt(struct cmd *cmd)
 
     if (cmd->n_set && (count = cmd->n_arg) <= 0)
     {
-        endloop(cmd);                   // End loop if count is <= 0
+        endloop(cmd, NO_POP);           // End loop if count is <= 0
     }
     else
     {
-        if (loop_max != 0 && loop_max == loop_depth)
-        {
-            print_err(E_MLX);           // Maximum loop depth exceeded
-        }
-
-        ++loop_depth;
-
-        struct loop *loop = alloc_mem((uint)sizeof(*loop));
-
-        loop->count = count;
-        loop->start = current->pos;
-        loop->next  = loop_head;
-
-        loop_head   = loop;
+        push_loop(count);
     }
 }
 
@@ -264,7 +252,7 @@ void exec_semi(struct cmd *cmd)
         }
     }
 
-    endloop(cmd);
+    endloop(cmd, POP_OK);
 }
 
 
@@ -277,12 +265,58 @@ void exec_semi(struct cmd *cmd)
 
 void init_loop(void)
 {
+    loop_depth = 0;
     loop_head = NULL;
 
     if (atexit(reset_loop) != 0)
     {
         exit(EXIT_FAILURE);
     }
+}
+
+
+///
+///  @brief    Pop loop block from linked list stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void pop_loop(bool pop_ok)
+{
+    struct loop *loop;
+
+    if (pop_ok && (loop = loop_head) != NULL)
+    {
+        loop_head = loop->next;
+
+        free_mem(&loop);
+    }
+
+    assert(loop_depth > 0);
+
+    --loop_depth;
+}
+
+
+///
+///  @brief    Push loop block onto linked list stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void push_loop(int count)
+{
+    struct loop *loop = alloc_mem((uint)sizeof(*loop));
+
+    loop->count = count;
+    loop->start = current->pos;
+    loop->next  = loop_head;
+
+    loop_head   = loop;
+
+    ++loop_depth;
 }
 
 

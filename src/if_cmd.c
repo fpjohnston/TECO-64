@@ -37,15 +37,31 @@
 #include "exec.h"
 
 
-// TODO: add code to handle termination of loop before end of conditional
-//       (e.g., a command string like "< 1 "N > '".
+#define NO_ELSE     (bool)false
+#define ELSE_OK     (bool)true
 
-static uint if_depth = 0;           ///< Current depth of conditionals
+uint if_depth = 0;                      ///< Nesting depth for if statements
 
+/// @struct  if_block
+///
+/// @brief   Block for keeping track of loop depth while processing
+///          conditional statements.
+
+struct if_block
+{
+    struct if_block *next;              ///< Next block
+    uint depth;                         ///< Loop depth
+};
+
+struct if_block *if_head = NULL;        ///< Linked list head for if blocks
 
 // Local functions
 
 static void endif(struct cmd *cmd, bool vbar);
+
+static void pop_if(void);
+
+static void push_if(void);
 
 
 ///
@@ -55,34 +71,47 @@ static void endif(struct cmd *cmd, bool vbar);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void endif(struct cmd *cmd, bool vbar)
+static void endif(struct cmd *cmd, bool else_ok)
 {
     assert(cmd != NULL);
 
-    uint start_depth = if_depth;
+    uint depth = if_depth;              // Starting depth
 
     do
     {
-        bool dryrun = f.e0.dryrun;
-
-        f.e0.dryrun = true;
         (void)next_cmd(cmd);
-        f.e0.dryrun = dryrun;
+
+        if (f.e0.strict)
+        {
+            if (cmd->c1 == '<')
+            {
+                ++loop_depth;
+            }
+            else if (cmd->c1 == '>')
+            {
+                --loop_depth;
+            }
+
+            if (if_head != NULL && if_head->depth > loop_depth)
+            {
+                printc_err(E_UTC, '"'); // Unterminated command
+            }
+        }
 
         if (cmd->c1 == '"')             // Start of a new conditional?
         {
-            ++if_depth;
+            push_if();
         }
         else if (cmd->c1 == '\'')       // End of conditional?
         {
-            --if_depth;
+            pop_if();
         }
-        else if (vbar && cmd->c1 == '|' && if_depth == start_depth)
+        else if (cmd->c1 != '|' || !else_ok)
         {
-            break;
+            continue;
         }
 
-    } while (if_depth >= start_depth);
+    } while (if_depth >= depth);
 }
 
 
@@ -95,9 +124,12 @@ static void endif(struct cmd *cmd, bool vbar)
 
 void exec_apos(struct cmd *unused1)
 {
-    if (if_depth > 0)
+    if (f.e0.strict)
     {
-        --if_depth;
+        if (if_head != NULL && if_head->depth > loop_depth)
+        {
+            printc_err(E_UTC, '"');     // Unterminated command
+        }
     }
 }
 
@@ -111,7 +143,7 @@ void exec_apos(struct cmd *unused1)
 
 void exec_F_apos(struct cmd *cmd)
 {
-    endif(cmd, (bool)false);
+    endif(cmd, NO_ELSE);                // Skip any else statement.
 }
 
 
@@ -124,7 +156,56 @@ void exec_F_apos(struct cmd *cmd)
 
 void exec_F_vbar(struct cmd *cmd)
 {
-    endif(cmd, (bool)true);
+    endif(cmd, ELSE_OK);
+}
+
+
+///
+///  @brief    End a conditional.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void pop_if(void)
+{
+    if (f.e0.strict)
+    {
+        struct if_block *if_block = if_head;
+
+        if (if_block != NULL)
+        {
+            if_head = if_block->next;
+
+            free_mem(&if_block);
+        }
+    }
+
+    assert(if_depth > 0);
+
+    --if_depth;
+}
+
+
+///
+///  @brief    Start a new conditional.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void push_if(void)
+{
+    if (f.e0.strict)
+    {
+        struct if_block *if_block = alloc_mem((uint)sizeof(*if_block));
+
+        if_block->next = if_head;
+        if_block->depth = loop_depth;    // Save current loop depth
+        if_head = if_block;
+    }
+
+    ++if_depth;
 }
 
 
@@ -162,9 +243,9 @@ void exec_quote(struct cmd *cmd)
         print_err(E_NAQ);               // No argument before "
     }
 
-    int c = cmd->n_arg;                 // Value to test
+    int c = cmd->n_arg;
 
-    ++if_depth;
+    push_if();
 
     switch (toupper(cmd->c2))
     {
@@ -248,14 +329,15 @@ void exec_quote(struct cmd *cmd)
             break;
 
         default:
-            --if_depth;
+            // Note: reset_if() will be called during error processing,
+            //       we don't need to call it here.
 
             print_err(E_IQC);           // Illegal quote character
     }
 
     // Here if the test was unsuccessful
 
-    endif(cmd, (bool)true);
+    endif(cmd, ELSE_OK);
 }
 
 
@@ -284,5 +366,17 @@ void exec_vbar(struct cmd *cmd)
 
 void reset_if(void)
 {
+    if (f.e0.strict)
+    {
+        struct if_block *if_block;
+
+        while ((if_block = if_head) != NULL)
+        {
+            if_head = if_block->next;
+
+            free_mem(&if_block);
+        }
+    }
+
     if_depth = 0;
 }

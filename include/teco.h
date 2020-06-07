@@ -108,6 +108,10 @@ struct vars
 
 extern struct buffer *term_buf;
 
+extern uint if_depth;
+
+extern uint loop_depth;
+
 extern uint macro_max;
 
 extern uint loop_max;

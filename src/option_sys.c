@@ -63,7 +63,8 @@ enum option_t
     OPTION_S = 'S',
     OPTION_T = 'T',
     OPTION_W = 'W',
-    OPTION_X = 'X'
+    OPTION_X = 'X',
+    OPTION_Z = 'Z'
 };
 
 ///  @var optstring
@@ -93,6 +94,7 @@ static const struct option long_options[] =
     { "text",         required_argument,  NULL,  'T'    },
     { "window",       no_argument,        NULL,  'W'    },
     { "exit",         no_argument,        NULL,  'X'    },
+    { "zero",         no_argument,        NULL,  'Z'    },
     { NULL,           no_argument,        NULL,  0      },  // Markers for end of list
 };
 
@@ -130,6 +132,8 @@ static const struct option long_options[] =
 //          Enable window mode.
 //  -X, --exit
 //          Exit TECO after indirect command file executed.
+//  -Z, --zero
+//          Strictly enforce command syntax (zero tolerance).
 
 ///
 ///   @struct  config
@@ -142,7 +146,6 @@ struct config
     struct
     {
         bool create;            ///< --create option seen
-        bool dry_run;           ///< --dry-run option seen
         bool execute;           ///< --execute=file option seen
         bool initial;           ///< --initial=file option seen
         bool log;               ///< --log=file option seen
@@ -176,7 +179,6 @@ struct config config =
     .flag =
     {
         .create   = true,
-        .dry_run  = false,
         .execute  = false,
         .initial  = true,
         .log      = false,
@@ -346,11 +348,6 @@ static void finish_config(int argc, const char * const argv[])
         store_cmd(command);
     }
 
-    if (config.flag.dry_run)
-    {
-        f.e0.dryrun = true;
-    }
-
     if (config.arg.log != NULL)
     {
         sprintf(command, "EL%s\e", config.arg.log);
@@ -517,7 +514,7 @@ void set_config(
                 break;
 
             case OPTION_D:
-                config.flag.dry_run = true;
+                f.e0.dryrun = true;
 
                 break;
 
@@ -616,6 +613,11 @@ void set_config(
 
             case OPTION_X:
                 config.flag.exit = true;
+
+                break;
+
+            case OPTION_Z:
+                f.e0.strict = true;
 
                 break;
 

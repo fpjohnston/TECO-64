@@ -127,9 +127,9 @@ enum errors
     E_URC,          ///< Unable to read character from terminal
     E_URE,          ///< Unable to read TECO command file
     E_URL,          ///< Unable to read line from input file
-    E_UTC,          ///< Unterminated command "x"
+    E_UTC,          ///< Unterminated command '%s'
     E_UTM,          ///< Unterminated macro
-    E_UTQ,          ///< Unterminated quote
+    E_UTS,          ///< Unterminated command string
     E_UWL,          ///< Unable to write line to output file
     E_UWC,          ///< Unable to write character to output file
     E_WIN,          ///< Window initialization error

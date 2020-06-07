@@ -198,7 +198,7 @@ static bool reduce2(void)
 
     // The following prevents double operators in expressions such as 1++2.
 
-    if (f.e1.strict)
+    if (f.e0.strict)
     {
         if (e1->type == EXPR_NOT)
         {
@@ -316,7 +316,7 @@ static bool reduce3(void)
         case EXPR_DIV:
             if (e1->value == 0)
             {
-                if (f.e1.strict && !f.e0.dryrun)
+                if (f.e0.strict && !f.e0.dryrun)
                 {
                     print_err(E_DIV);   // Division by zero
                 }

@@ -183,7 +183,7 @@ void exec_mod(struct cmd *cmd)
 
     if (cmd->c1 == '@')
     {
-        if (f.e1.strict && cmd->atsign_set)
+        if (f.e0.strict && cmd->atsign_set)
         {
             print_err(E_MOD);           // Two @'s are not allowed
         }
@@ -192,7 +192,7 @@ void exec_mod(struct cmd *cmd)
     }
     else if (cmd->c1 == ':')
     {
-        if (f.e1.strict && cmd->dcolon_set)
+        if (f.e0.strict && cmd->dcolon_set)
         {
             print_err(E_MOD);           // More than two :'s are not allowed
         }
@@ -447,7 +447,7 @@ exec_func *next_cmd(struct cmd *cmd)
         cmd->n_set = true;
         cmd->n_arg = -1;
     }
-    else if (f.e1.strict)
+    else if (f.e0.strict)
     {
         if (cmd->n_set && !scan.n_opt)
         {
