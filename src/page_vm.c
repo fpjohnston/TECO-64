@@ -90,7 +90,7 @@ void page_flush(FILE *fp)
         page_head = page->next;
         fwrite(page->addr, page->size, 1, fp);
         free_mem(&page->addr);
-        free_mem(&page);        
+        free_mem(&page);
     }
 }
 
@@ -110,7 +110,7 @@ void page_forward(FILE *fp, int start, int end, bool ff)
     {
         return;
     }
-            
+
     struct page *page = alloc_mem(sizeof(*page));
     int last = NUL;
 
@@ -184,7 +184,7 @@ void page_forward(FILE *fp, int start, int end, bool ff)
         page_tail->next = page;         // Last page -> new page
         page_tail = page;               // Tail -> new page
     }
-}    
+}
 
 
 ///
@@ -204,7 +204,7 @@ void reset_pages(void)
 
         page_head = page->next;
         free_mem(&page->addr);
-        free_mem(&page);        
+        free_mem(&page);
     }
 
     page_tail = NULL;

@@ -98,7 +98,7 @@ void page_forward(FILE *fp, int start, int end, bool ff)
     {
         fputc(FF, fp);
     }
-}    
+}
 
 
 ///

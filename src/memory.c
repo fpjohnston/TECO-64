@@ -103,7 +103,7 @@ static void add_mblock(void *p1, uint size)
     {
         mroot->prev = mblock;
     }
-    
+
     mblock->addr = p1;
     mblock->size = size;
     msize += size;
@@ -134,7 +134,7 @@ void *alloc_mem(uint size)
     }
 
 #endif
-    
+
     void *p1 = calloc(1uL, (size_t)size);
 
     if (p1 == NULL)
@@ -190,11 +190,11 @@ static void delete_mblock(void *p1)
             p->next = p->prev = NULL;
             p->addr = NULL;
             p->size = 0;
-            
+
             // Note: We don't call free_mem() here, since it calls us.
 
             free(p);
-            
+
             return;
         }
         p = p->next;
@@ -265,7 +265,7 @@ void free_mem(void *p1)
 #if     defined(DEBUG_MEMORY)
 
         delete_mblock(*p2);
-   
+
 #endif
 
         free(*p2);

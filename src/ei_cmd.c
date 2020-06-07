@@ -96,7 +96,7 @@ void exec_EI(struct cmd *cmd)
 
                 success = open_indirect(ifile);
             }
-        }            
+        }
 
         if (!success)
         {

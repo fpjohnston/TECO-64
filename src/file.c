@@ -302,7 +302,7 @@ int open_output(struct ofile *ofile, int c)
     {
         write_memory(ofile->name);
     }
-    
+
     return EXIT_SUCCESS;
 }
 

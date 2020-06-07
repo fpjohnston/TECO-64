@@ -135,7 +135,7 @@ bool append_line(void)
                 continue;
             }
         }
-            
+
         switch (add_ebuf(c))
         {
             default:

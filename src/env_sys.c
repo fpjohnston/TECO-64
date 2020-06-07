@@ -138,7 +138,7 @@ int find_eg(char *cmd, bool reset)
     //  :EGcmd'      - Get environment variable 'cmd' and load Q-register *.
     //  :EGcmd '     - Clears environment variable 'cmd'.
     //  :EGcmd text' - Sets environment variable 'cmd' to 'text'.
-    //        
+    //
 
     if (!strcasecmp(cmd, "INI"))
     {
@@ -189,7 +189,7 @@ int find_eg(char *cmd, bool reset)
 
         last_file = eg_result;
     }
-        
+
     return -1;
 }
 
@@ -248,7 +248,7 @@ static void read_value(const char *var, uint *value)
         if (errno == 0 && n >= 0 && n != LONG_MAX)
         {
             *value = (uint)n;
-        }        
+        }
     }
 }
 

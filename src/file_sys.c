@@ -73,7 +73,7 @@ void init_temp(char **otemp, const char *oname)
     assert(otemp != NULL);
     assert(*otemp == NULL);
     assert(oname != NULL);
-    
+
     struct stat file_stat;
     uint nbytes = (uint)strlen(oname);
     char scratch[nbytes + 1];
@@ -274,7 +274,7 @@ void set_wild(const char *filename)
 void write_memory(const char *file)
 {
     assert(file != NULL);
-    
+
     const char *memory = getenv("TECO_MEMORY");
     FILE *fp;
 

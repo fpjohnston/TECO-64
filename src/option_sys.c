@@ -200,11 +200,11 @@ struct config config =
         .text    = NULL,
     },
 };
- 
+
 // Local functions
 
 static void check_config(void);
-    
+
 static void copy_arg(char *buf, char *p);
 
 static void finish_config(int argc, const char * const argv[]);
@@ -256,7 +256,7 @@ static void check_config(void)
 
                 errno = EINVAL;
             }
-                    
+
             printf("?%s for %s option\r\n", strerror(errno), option);
 
             exit(EXIT_FAILURE);
@@ -336,7 +336,7 @@ static void finish_config(int argc, const char * const argv[])
     //
     //  Note that if the environment variable value is enclosed in double
     //  quotes, it is treated as a string of commands rather than a file name.
-   
+
     if (config.arg.initial != NULL)
     {
         sprintf(command, "EI%s\e ", config.arg.initial);
@@ -537,12 +537,12 @@ void set_config(
                 }
 
                 break;
- 
+
             case OPTION_i:
                 config.flag.initial = false;
 
                 break;
- 
+
             case OPTION_L:
                 config.flag.log = true;
 
@@ -573,12 +573,12 @@ void set_config(
                 }
 
                 break;
- 
+
             case OPTION_o:
                 config.flag.output = false;
 
                 break;
- 
+
             case OPTION_R:
             case OPTION_r:
                 config.flag.readonly = (c == 'R') ? true : false;
@@ -587,7 +587,7 @@ void set_config(
 
             case OPTION_S:
                 config.flag.scroll = true;
-                config.flag.window = true;                
+                config.flag.window = true;
 
                 if (optarg[0] != '-')
                 {

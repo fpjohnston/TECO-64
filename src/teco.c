@@ -95,7 +95,7 @@ int teco_version = TECO_VERSION;    ///< TECO version number (200+)
 ///         handling functions so that they don't attempt a longjmp() call
 ///         before initialization has been completed. If it hasn't, then any
 ///         error becomes fatal and causes an immediate exit.
-///         
+///
 
 bool main_active = false;
 

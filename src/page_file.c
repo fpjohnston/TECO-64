@@ -106,4 +106,4 @@ void page_forward(FILE *fp, int start, int end, bool ff)
     fwrite(page.addr, (size_t)page.size, 1uL, fp);
 
     free_mem(&page.addr);
-}    
+}

@@ -362,7 +362,7 @@ void exec_EE(struct cmd *cmd)
     assert(cmd != NULL);
 
     int n = f.ee;
-    
+
     if (check_n_flag(cmd, &n))
     {
         if (!isascii(n))                // Must be an ASCII character

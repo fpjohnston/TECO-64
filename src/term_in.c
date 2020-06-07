@@ -266,7 +266,7 @@ static int read_chr(int c, bool accent)
 void read_cmd(void)
 {
     int c;
-    
+
     switch (read_indirect())
     {
         case -1:                        // Exit if we have a complete command
@@ -276,7 +276,7 @@ void read_cmd(void)
             c = getc_term((bool)WAIT);  // Partial command - get another chr.
 
             break;
-            
+
         default:
         case 0:
             c = read_first();           // Start new command
@@ -557,7 +557,7 @@ static int read_first(void)
         {
             case BS:
                 read_bs_or_lf(t.B, -1);
-                
+
                 break;
 
             case LF:

@@ -26,7 +26,7 @@ co-gcc.lnt   // Basic gcc configuration
 -HF1
 -v
 
-// Local options 
+// Local options
 
 -d_Noreturn=
 -esym(379,unused*) // Ignore unused parameters if named unused???

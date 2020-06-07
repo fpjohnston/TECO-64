@@ -103,7 +103,7 @@ void exec_E6(struct cmd *cmd)
     if (*keyword != NUL)                // Anything to parse?
     {
         set_colors(keyword, value);
-    }    
+    }
 
 #else
 
@@ -255,7 +255,7 @@ static void set_w(int m, int n)
 
         case 4:
             w.mark = m;
-            
+
             break;
 
         case 5:

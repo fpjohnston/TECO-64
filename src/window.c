@@ -327,7 +327,7 @@ int getchar_win(bool wait)
         return getch();
     }
 
-#endif        
+#endif
 
     if (read(fileno(stdin), &c, 1uL) == -1)
     {
