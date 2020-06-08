@@ -116,7 +116,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 
             if (loop_head != NULL && loop_head->depth > if_depth)
             {
-                printc_err(E_UTC, '<'); // Unterminated command
+                print_err(E_UTQ);       // Unterminated quote
             }
         }
 
@@ -180,6 +180,14 @@ void exec_gt(struct cmd *cmd)
     if (loop == NULL)
     {
         print_err(E_BNI);               // Close bracket not in iteration
+    }
+
+    if (f.e0.strict)
+    {
+        if (loop->depth != if_depth)
+        {
+            print_err(E_UTQ);           // Unterminated quote
+        }
     }
 
     if (loop->count == INFINITE || --loop->count > 0)
@@ -313,6 +321,7 @@ static void push_loop(int count)
     loop->count = count;
     loop->start = current->pos;
     loop->next  = loop_head;
+    loop->depth = if_depth;
 
     loop_head   = loop;
 

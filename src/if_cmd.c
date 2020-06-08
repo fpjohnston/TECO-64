@@ -74,6 +74,8 @@ static void push_if(void);
 static void endif(struct cmd *cmd, bool else_ok)
 {
     assert(cmd != NULL);
+    assert(if_depth > 0);
+    assert(if_head != NULL);
 
     uint depth = if_depth;              // Starting depth
 
@@ -92,9 +94,9 @@ static void endif(struct cmd *cmd, bool else_ok)
                 --loop_depth;
             }
 
-            if (if_head != NULL && if_head->depth > loop_depth)
+            if (if_head->depth != loop_depth)
             {
-                printc_err(E_UTC, '"'); // Unterminated command
+                print_err(E_UTL);       // Unterminated loop
             }
         }
 
@@ -106,9 +108,17 @@ static void endif(struct cmd *cmd, bool else_ok)
         {
             pop_if();
         }
-        else if (cmd->c1 != '|' || !else_ok)
+        else if (cmd->c1 != '|')
         {
-            continue;
+            if (if_head->depth != loop_depth)
+            {
+                print_err(E_UTL);       // Unterminated loop
+            }
+
+            if (else_ok)
+            {
+                break;
+            }
         }
 
     } while (if_depth >= depth);
@@ -126,11 +136,13 @@ void exec_apos(struct cmd *unused1)
 {
     if (f.e0.strict)
     {
-        if (if_head != NULL && if_head->depth > loop_depth)
+        if (if_head != NULL && if_head->depth != loop_depth)
         {
-            printc_err(E_UTC, '"');     // Unterminated command
+            print_err(E_UTL);           // Unterminated loop
         }
     }
+
+    pop_if();
 }
 
 
@@ -352,6 +364,12 @@ void exec_quote(struct cmd *cmd)
 void exec_vbar(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    assert(if_head != NULL);
+
+    if (if_head->depth != loop_depth)
+    {
+        print_err(E_UTL);       // Unterminated loop
+    }
 
     endif(cmd, (bool)false);
 }

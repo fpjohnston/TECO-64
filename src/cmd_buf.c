@@ -112,7 +112,7 @@ int fetch_cbuf(bool start)
         }
         else
         {
-            print_err(E_UTS);           // Unterminated command string
+            print_err(E_UTC);           // Unterminated command
         }
     }
 

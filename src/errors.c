@@ -138,9 +138,10 @@ static struct err_table err_table[] =
     [E_URE] = { "URE",  "Unable to read TECO command file" },
     [E_URL] = { "URL",  "Unable to read line from input file" },
     [E_UWL] = { "UWL",  "Unable to write line to output file" },
-    [E_UTC] = { "UTC",  "Unterminated command '%s'" },
+    [E_UTC] = { "UTC",  "Unterminated command string" },
+    [E_UTL] = { "UTL",  "Unterminated loop" },
     [E_UTM] = { "UTM",  "Unterminated macro" },
-    [E_UTS] = { "UTS",  "Unterminated command string" },
+    [E_UTQ] = { "UTQ",  "Unterminated quote" },
     [E_WIN] = { "WIN",  "Window initialization error" },
     [E_XAB] = { "XAB",  "Execution aborted" },
     [E_YCA] = { "YCA",  "Y command aborted" },
@@ -366,10 +367,13 @@ static const char *verbose[] =
 
     [E_UNA] = "An n argument was provided to a command which does not allow it.",
 
-    [E_UTC] = "A command was not properly terminated. This includes such "
-              "errors as starting a conditional inside a loop, but "
-              "terminating it outside the loop, or starting a loop inside a "
-              "conditional, and terminating it outside the conditional.",
+    [E_UTC] = "This is a general error which is usually caused by an "
+              "unterminated insert, search, or filename argument, an "
+              "unterminated ^A message, an unterminated tag or comment "
+              "(i.e., unterminated ! construct), or a missing ' "
+              "character which closes a conditional execution command.",
+
+    [E_UTL] = "A loop was not properly terminated inside a conditional.",
 
     [E_UTM] = "This error is that same as the ?UTC error except that the "
               "unterminated command was executing from a Q-register "
@@ -377,11 +381,7 @@ static const char *verbose[] =
               "sequence stored in a q-register must be complete within "
               "the Q-register.)",
 
-    [E_UTS] = "This is a general error which is usually caused by an "
-              "unterminated insert, search, or filename argument, an "
-              "unterminated ^A message, an unterminated tag or comment "
-              "(i.e., unterminated ! construct), or a missing ' "
-              "character which closes a conditional execution command.",
+    [E_UTQ] = "A conditional was not properly terminated inside a loop.",
 
     [E_WIN] = "Window error occurred. More information is TBD.",
 
