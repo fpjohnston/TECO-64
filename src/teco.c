@@ -81,7 +81,6 @@ struct vars v =
 {
     .radix  = 10,                   ///< Current output radix
     .ctrl_s = 0,                    ///< CTRL/S flag
-    .trace  = false,                ///< Trace mode
     .warn   = false,                ///< Edit buffer is almost full
     .full   = false,                ///< Edit buffer is full
 };
@@ -151,9 +150,12 @@ int main(int argc, const char * const argv[])
         switch (setjmp(jump_main))
         {
             case 0:                     // Normal entry
-                f.e0.exec  = false;     // Not executing command
-                f.et.abort = false;     // Don't abort on error
-                v.trace    = false;     // Disable tracing
+                f.e0.trace  = false;    // Not tracing commands
+                f.e0.format = false;    // Not formatting trace commands
+                f.e0.dryrun = false;    // Executing traced commands
+                f.e0.exec   = false;    // Not executing command
+                f.et.abort  = false;    // Don't abort on error
+                v.trace     = false;    // Disable tracing
 
                 refresh_win();          // Refresh window if needed
 
@@ -167,6 +169,8 @@ int main(int argc, const char * const argv[])
                 init_expr();            // Initialize expression stack
                 exec_cmd();             // Execute what we have
 
+                f.e0.error = false;     // Command completed w/o error
+
                 break;
 
             case 1:                     // CTRL/C typed
@@ -176,6 +180,8 @@ int main(int argc, const char * const argv[])
 
             default:
             case 2:                     // Error
+                f.e0.error = true;      // Flag the error
+
                 reset_indirect();       // Close any indirect file
                 reset_cbuf();           // Reset the input buffer
                 reset_qreg();           // Free up Q-register storage

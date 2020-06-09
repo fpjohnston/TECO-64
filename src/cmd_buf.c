@@ -34,10 +34,8 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
-#include "errors.h"
 #include "exec.h"
-#include "term.h"
+#include "errors.h"
 
 
 struct buffer *current;                 ///< Current command string buffer
@@ -117,11 +115,6 @@ int fetch_cbuf(bool start)
     }
 
     int c = current->buf[current->pos++];
-
-    if (v.trace && !f.e0.dryrun)
-    {
-        echo_in(c);
-    }
 
     return c;
 }

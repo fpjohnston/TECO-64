@@ -29,6 +29,7 @@
 #include <assert.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "exec.h"
 
 
@@ -43,5 +44,23 @@ void exec_question(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    v.trace = !v.trace;
+    if (f.e0.trace)
+    {
+        f.e0.trace  = false;
+        f.e0.format = false;
+        f.e0.dryrun = false;
+    }
+    else
+    {
+        f.e0.trace = true;
+
+        if (cmd->colon_set)
+        {
+            f.e0.format = true;
+        }
+        else if (cmd->dcolon_set)
+        {
+            f.e0.format = f.e0.dryrun = true;
+        }
+    }
 }

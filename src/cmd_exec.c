@@ -42,6 +42,7 @@
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
+#include "term.h"
 
 
 ///  @var    null_cmd
@@ -97,16 +98,13 @@ void exec_cmd(void)
         {
             break;                      // Back to main loop if command done
         }
-//        else if (cmd.c1 == '!' && cmd.text1.len != 0 && cmd.text1.buf[0] == ' ')
-//        {
-//            continue;
-//        }
 
-        if (f.e0.dryrun && ei_active)
+        if (f.e0.trace && f.e0.format)
         {
             print_cmd(&cmd);            // Just print command
         }
-        else
+
+        if (!f.e0.dryrun)
         {
             (*exec)(&cmd);              // Execute command
         }
@@ -402,19 +400,32 @@ exec_func *next_cmd(struct cmd *cmd)
 
         if ((exec = scan_cmd(cmd)) != NULL)
         {
+            if (f.e0.trace && !f.e0.format)
+            {
+                const char *p = cmd->expr.buf;
+                int len = next_cbuf() - p;
+
+                if (len < 0)
+                {
+                    len = 1;            // FIXME: shouldn't be < 0
+                }
+
+                while (len-- > 0)
+                {
+                    echo_in(*p++);
+                }
+            }
+
             break;
         }
-
-//        cmd->m_set = cmd->n_set = false;
-//        start = NOCMD_START;
     }
 
     // If we have a tag and the accompanying text starts with the character
-    // defined in E4, then we skip it. This allows us to differentiate between
+    // defined in E5, then we skip it. This allows us to differentiate between
     // tags (which may the target of O commands) and comments (which aren't).
-    // So for example, E4 could be set to a SPACE character (ASCII 32), which
+    // So for example, E5 could be set to a SPACE character (ASCII 32), which
     // would mean that a comment could take the form ! comment !, and a tag
-    // could take the form !tag!. Note that the E4 character is only checked
+    // could take the form !tag!. Note that the E5 character is only checked
     // for the first character after the first !, and is not required to
     // precede the second !.
 

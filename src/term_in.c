@@ -592,15 +592,17 @@ static int read_first(void)
                 break;
 
             case '?':                   // Display erroneous command string
-                // FIXME: immediate-action '?' command doesn't work.
-                if (last_error != E_NUL)
+                if (!f.e0.error)        // If no error,
+                {
+                    return c;           //  then just return '?'
+                }
+                else
                 {
                     echo_in(c);
                     echo_tbuf(0);       // Echo command line
                     echo_in(c);
+                    echo_in(CRLF);
                 }
-
-                echo_in(CRLF);
 
                 break;
 

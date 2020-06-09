@@ -49,7 +49,6 @@ enum option_t
 {
     OPTION_C = 'C',
     OPTION_c = 'c',
-    OPTION_D = 'D',
     OPTION_E = 'E',
     OPTION_I = 'I',
     OPTION_i = 'i',
@@ -79,7 +78,6 @@ static const struct option long_options[] =
 {
     { "create",       no_argument,        NULL,  'C'    },
     { "nocreate",     no_argument,        NULL,  'c'    },
-    { "dry-run",      no_argument,        NULL,  'D'    },
     { "execute",      required_argument,  NULL,  'E'    },
     { "initialize",   optional_argument,  NULL,  'I'    },
     { "noinitialize", no_argument,        NULL,  'i'    },
@@ -104,8 +102,6 @@ static const struct option long_options[] =
 //          Create a new file if the input file does not exist.
 //  -c, --nocreate
 //          Do not create a new file if no input file.
-//  -D, --dry-run
-//          Do not execute commands in indirect files.
 //  -E, --execute=file
 //          Executes TECO macro in file.
 //  -I, --initial=file (default file or commands specified by TECO_INIT).
@@ -510,11 +506,6 @@ void set_config(
             case OPTION_C:
             case OPTION_c:
                 config.flag.create = (c == 'C') ? true : false;
-
-                break;
-
-            case OPTION_D:
-                f.e0.dryrun = true;
 
                 break;
 
