@@ -47,7 +47,6 @@ void exec_question(struct cmd *cmd)
     if (f.e0.trace)
     {
         f.e0.trace  = false;
-        f.e0.format = false;
         f.e0.dryrun = false;
     }
     else
@@ -56,11 +55,7 @@ void exec_question(struct cmd *cmd)
 
         if (cmd->colon_set)
         {
-            f.e0.format = true;
-        }
-        else if (cmd->dcolon_set)
-        {
-            f.e0.format = f.e0.dryrun = true;
+            f.e0.dryrun = true;
         }
     }
 }

@@ -151,8 +151,7 @@ int main(int argc, const char * const argv[])
         {
             case 0:                     // Normal entry
                 f.e0.trace  = false;    // Not tracing commands
-                f.e0.format = false;    // Not formatting trace commands
-                f.e0.dryrun = false;    // Executing traced commands
+                f.e0.dryrun = false;    // Not doing dry run
                 f.e0.exec   = false;    // Not executing command
                 f.et.abort  = false;    // Don't abort on error
                 v.trace     = false;    // Disable tracing

@@ -51,8 +51,7 @@ struct e0_flag
     uint window : 1;            ///< --window: enable window display
     uint winact : 1;            ///< Window display is active
     uint trace  : 1;            ///< Trace mode is active
-    uint format : 1;            ///< Format traced commands
-    uint dryrun : 1;            ///< Don't execute traced commands
+    uint dryrun : 1;            ///< Print but don't execute commands
 };
 
 ///  @struct  e1_flag

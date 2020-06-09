@@ -99,12 +99,11 @@ void exec_cmd(void)
             break;                      // Back to main loop if command done
         }
 
-        if (f.e0.trace && f.e0.format)
+        if (f.e0.dryrun && ei_active)
         {
             print_cmd(&cmd);            // Just print command
         }
-
-        if (!f.e0.dryrun)
+        else
         {
             (*exec)(&cmd);              // Execute command
         }
@@ -400,19 +399,23 @@ exec_func *next_cmd(struct cmd *cmd)
 
         if ((exec = scan_cmd(cmd)) != NULL)
         {
-            if (f.e0.trace && !f.e0.format)
+            // See if we're tracing commands; if so, echo them.
+
+            if (f.e0.trace && !f.e0.dryrun)
             {
-                const char *p = cmd->expr.buf;
-                int len = next_cbuf() - p;
-
-                if (len < 0)
+                if (cmd->c1 == ESC)
                 {
-                    len = 1;            // FIXME: shouldn't be < 0
+                    echo_in(cmd->c1);
                 }
-
-                while (len-- > 0)
+                else
                 {
-                    echo_in(*p++);
+                    const char *end = next_cbuf();
+
+                    assert(end != NULL);
+
+                    int len = end - cmd->expr.buf;
+
+                    print_str("%.*s", len, cmd->expr.buf);
                 }
             }
 
