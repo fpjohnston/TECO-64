@@ -423,17 +423,15 @@ exec_func *next_cmd(struct cmd *cmd)
         }
     }
 
-    // If we have a tag and the accompanying text starts with the character
-    // defined in E5, then we skip it. This allows us to differentiate between
-    // tags (which may the target of O commands) and comments (which aren't).
-    // So for example, E5 could be set to a SPACE character (ASCII 32), which
-    // would mean that a comment could take the form ! comment !, and a tag
-    // could take the form !tag!. Note that the E5 character is only checked
-    // for the first character after the first !, and is not required to
-    // precede the second !.
+    // If we have a tag with text that starts with the character defined in E5,
+    // then we ignore it. This allows us to differentiate between tags (which
+    // may be the target of O commands) and comments. For example, E5 could be
+    // set to a space character (ASCII 32), which would mean that any tags of
+    // the form ! tag ! would be treated as a comment and not processed. This
+    // can be used to save on storage requirements for keeping track of tags.
 
-    if (cmd->c1 == '!' && (cmd->text1.len == 0 ||
-                          (cmd->text1.len != 0 && cmd->text1.buf[0] == f.e5)))
+    if (cmd->c1 == '!' && f.e5 != NUL &&
+        cmd->text1.len != NUL && cmd->text1.buf[0] == f.e5)
     {
         return exec_dummy;              // Just ignore tag
     }
