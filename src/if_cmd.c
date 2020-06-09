@@ -371,7 +371,7 @@ void exec_vbar(struct cmd *cmd)
         print_err(E_UTL);       // Unterminated loop
     }
 
-    endif(cmd, (bool)false);
+    endif(cmd, NO_ELSE);
 }
 
 
