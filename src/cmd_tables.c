@@ -108,7 +108,7 @@ const struct cmd_table cmd_table[] =
     ['<']         = { exec_lt,        "b n"       },
     ['=']         = { exec_equals,    "b n : @ 1" },
     ['>']         = { exec_gt,        "b "        },
-    ['?']         = { exec_question,  "i"         },
+    ['?']         = { exec_question,  ": ::"      },
     ['@']         = { exec_mod,       "a"         },
     ['A']         = { exec_A,         "x n :"     },
     ['B']         = { exec_B,         "x"         },
