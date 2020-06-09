@@ -44,14 +44,17 @@ void exec_question(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e0.trace)
+    if (f.e0.trace)                     // If tracing is on, turn it off
     {
         f.e0.trace  = false;
         f.e0.dryrun = false;
     }
-    else
+    else                                // If tracing is off, turn it on
     {
         f.e0.trace = true;
+
+        // If :?, then set dry run mode. This is used to print commands
+        // in indirect command files, but not execute them.
 
         if (cmd->colon_set)
         {
