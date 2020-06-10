@@ -461,6 +461,7 @@ exec_func *next_cmd(struct cmd *cmd)
     }
     else if (f.e0.strict)
     {
+#if     0       // TODO: temporarily disabled
         if (cmd->n_set && !scan.n_opt)
         {
             print_err(E_UNA);           // Unused n argument
@@ -469,6 +470,7 @@ exec_func *next_cmd(struct cmd *cmd)
         {
             print_err(E_UMA);           // Unused m argument
         }
+#endif
     }
 
     return exec;
