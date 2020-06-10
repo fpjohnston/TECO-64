@@ -148,8 +148,12 @@ int main(int argc, const char * const argv[])
         switch (setjmp(jump_main))
         {
             case 0:                     // Normal entry
-                f.e0.trace  = false;    // Not tracing commands
-                f.e0.dryrun = false;    // Not doing dry run
+                if (!ei_active)         // Processing EI command?
+                {
+                    f.e0.trace  = false; // No, not tracing commands
+                    f.e0.dryrun = false; //  and not doing dry run
+                }
+
                 f.e0.exec   = false;    // Not executing command
                 f.et.abort  = false;    // Don't abort on error
 
