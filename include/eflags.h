@@ -56,7 +56,7 @@ struct e0_flag
 
 ///  @struct  e1_flag
 ///
-///  @brief   Definition of debugging flags.
+///  @brief   Window flags.
 
 union e1_flag
 {
@@ -197,7 +197,7 @@ struct flags
     union  e2_flag e2;          ///< Compatibility features
     union  e3_flag e3;          ///< Extended features
     union  e4_flag e4;          ///< File options
-    int            e5;          ///< Comment bypass flag
+    int            e5;          ///< Comment bypass character
     union  ed_flag ed;          ///< Edit level flags
     int            ee;          ///< ESCape surrogate
     union  eh_flag eh;          ///< Help message flags
