@@ -107,9 +107,6 @@ void close_input(uint stream)
         ifile->fp = NULL;
     }
 
-    free_mem(&ifile->name);
-
-    ifile->name = NULL;
     ifile->eof  = false;
     ifile->cr   = false;
 }
@@ -326,6 +323,12 @@ static void reset_files(void)
     for (uint i = 0; i < IFILE_MAX; ++i)
     {
         close_input(i);
+
+        struct ifile *ifile = &ifiles[i];
+
+        free_mem(&ifile->name);
+
+        ifile->name = NULL;
     }
 
     istream = IFILE_PRIMARY;
