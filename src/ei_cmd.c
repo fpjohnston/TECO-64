@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -75,30 +76,37 @@ void exec_EI(struct cmd *cmd)
     if (cmd->text1.len != 0)
     {
         struct ifile *ifile = &ifiles[IFILE_INDIRECT];
+        int len = (int)cmd->text1.len;
+        char name1[len + 1];
+        char name2[len + 4 + 1];
 
-        init_filename(&ifile->name, cmd->text1.buf, cmd->text1.len);
+        len = sprintf(name1, "%.*s", len, cmd->text1.buf);
 
-        bool success = open_indirect(ifile);
+        init_filename(&ifile->name, name1, (uint)len);
 
-        if (!success)
+        last_file = ifile->name;        // TODO: preserve file name
+
+        // Try to open file; if failure, and file name does
+        // not have a dot, then add ".tec" and try again.
+
+        if (access(name1, F_OK) != 0 && strchr(name1, '.') == NULL)
         {
-            if (strchr(ifile->name, '.') == NULL)
+            len = sprintf(name2, "%s%s", name1, ".tec");
+
+            if (access(name2, F_OK) == 0)
             {
-                uint len = (uint)strlen(ifile->name);
-                const char *ext = ".tec";
-
-                ifile->name = expand_mem(ifile->name, len,
-                                         len + (uint)strlen(ext));
-
-                last_file = ifile->name;
-
-                strcat(ifile->name, ext);
-
-                success = open_indirect(ifile);
+                init_filename(&ifile->name, name2, (uint)len);
             }
         }
 
-        if (!success)
+        if (open_indirect(ifile))
+        {
+            if (cmd->colon_set)
+            {
+                push_expr(TECO_SUCCESS, EXPR_VALUE);
+            }
+        }
+        else
         {
             if (cmd->colon_set)
             {
@@ -108,10 +116,6 @@ void exec_EI(struct cmd *cmd)
             {
                 prints_err(E_FNF, last_file);
             }
-        }
-        else if (cmd->colon_set)
-        {
-            push_expr(TECO_SUCCESS, EXPR_VALUE);
         }
 
         if (!atexit_flag)
