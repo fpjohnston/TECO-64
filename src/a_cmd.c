@@ -166,8 +166,6 @@ bool append_line(void)
                 break;
 
             case EDIT_FULL:             // Stop if buffer is full
-                v.full = true;
-
                 if (next != EOF)
                 {
                     (void)ungetc(next, ifile->fp);

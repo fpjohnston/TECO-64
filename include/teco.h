@@ -99,9 +99,6 @@ struct vars
 {
     int radix;                      ///< Current output radix
     int ctrl_s;                     ///< CTRL/S flag
-    bool trace;                     ///< true if trace mode is on
-    bool warn;                      ///< true if edit buffer is almost full
-    bool full;                      ///< true if edit buffer is full
 };
 
 // Global variables

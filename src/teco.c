@@ -81,8 +81,6 @@ struct vars v =
 {
     .radix  = 10,                   ///< Current output radix
     .ctrl_s = 0,                    ///< CTRL/S flag
-    .warn   = false,                ///< Edit buffer is almost full
-    .full   = false,                ///< Edit buffer is full
 };
 
 int teco_version = TECO_VERSION;    ///< TECO version number (200+)
@@ -154,7 +152,6 @@ int main(int argc, const char * const argv[])
                 f.e0.dryrun = false;    // Not doing dry run
                 f.e0.exec   = false;    // Not executing command
                 f.et.abort  = false;    // Don't abort on error
-                v.trace     = false;    // Disable tracing
 
                 refresh_win();          // Refresh window if needed
 
