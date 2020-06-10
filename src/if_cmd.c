@@ -108,14 +108,14 @@ static void endif(struct cmd *cmd, bool else_ok)
         {
             pop_if();
         }
-        else if (cmd->c1 != '|')
+        else if (cmd->c1 == '|')
         {
             if (if_head->depth != loop_depth)
             {
                 print_err(E_UTL);       // Unterminated loop
             }
 
-            if (else_ok)
+            if (else_ok && if_depth == depth)
             {
                 break;
             }
