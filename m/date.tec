@@ -4,8 +4,7 @@
 !   ^H == (milliseconds since midnight)                 !
 
 EO-200 "L
-    @^A/%Macro requires TECO v200 or later/
-    13^T 10^T
+    :@^A/%Macro requires TECO v200 or later/
     ^C
 '
 
