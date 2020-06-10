@@ -47,8 +47,10 @@
 
 enum option_t
 {
+    OPTION_B = 'B',
     OPTION_C = 'C',
     OPTION_c = 'c',
+    OPTION_D = 'D',
     OPTION_E = 'E',
     OPTION_I = 'I',
     OPTION_i = 'i',
@@ -76,8 +78,10 @@ static const char * const optstring = ":CcDE:I::iL:MmO:oRrS:T:WX";
 
 static const struct option long_options[] =
 {
+    { "buffer",       required_argument,  NULL,  'B'    },
     { "create",       no_argument,        NULL,  'C'    },
     { "nocreate",     no_argument,        NULL,  'c'    },
+    { "dry-run",      no_argument,        NULL,  'D'    },
     { "execute",      required_argument,  NULL,  'E'    },
     { "initialize",   optional_argument,  NULL,  'I'    },
     { "noinitialize", no_argument,        NULL,  'i'    },
@@ -89,7 +93,7 @@ static const struct option long_options[] =
     { "readonly",     no_argument,        NULL,  'R'    },
     { "noreadonly",   no_argument,        NULL,  'r'    },
     { "scroll",       required_argument,  NULL,  'S'    },
-    { "text",         required_argument,  NULL,  'T'    },
+    { "trace",        no_argument,        NULL,  'T'    },
     { "window",       no_argument,        NULL,  'W'    },
     { "exit",         no_argument,        NULL,  'X'    },
     { "zero",         no_argument,        NULL,  'Z'    },
@@ -98,10 +102,14 @@ static const struct option long_options[] =
 
 //  TECO options
 //  ------------
+//  -B, --buffer=text
+//          Specifies text to be inserted in edit buffer at startup.
 //  -C, --create
 //          Create a new file if the input file does not exist.
 //  -c, --nocreate
 //          Do not create a new file if no input file.
+//  -D, --dry-run
+//          Print but do not execute commands in macro (implies -T).
 //  -E, --execute=file
 //          Executes TECO macro in file.
 //  -I, --initial=file (default file or commands specified by TECO_INIT).
@@ -124,6 +132,8 @@ static const struct option long_options[] =
 //          Create an output file.
 //  -S, --scroll
 //          Enable scrolling region (implies --W).
+//  -T, --trace
+//          Trace commands as they are being executed.
 //  -W, --window
 //          Enable window mode.
 //  -X, --exit
@@ -141,7 +151,9 @@ struct config
 {
     struct
     {
+        bool buffer;            ///< --buffer option seen
         bool create;            ///< --create option seen
+        bool dryrun;            ///< --dryrun option seen
         bool execute;           ///< --execute=file option seen
         bool initial;           ///< --initial=file option seen
         bool log;               ///< --log=file option seen
@@ -149,18 +161,18 @@ struct config
         bool output;            ///< --output option seen
         bool readonly;          ///< --readonly option seen
         bool scroll;            ///< --scroll option seen
-        bool text;              ///< --text option seen
+        bool trace;             ///< --trace option seen
         bool window;            ///< --window option seen
         bool exit;              ///< --exit option seen
     } flag;                     ///< true/false flags
     struct
     {
+        char *buffer;           ///< Argument for --buffer option
         char *execute;          ///< Argument for --execute option
         char *initial;          ///< Argument for --initial option
         char *log;              ///< Argument for --log option
         char *output;           ///< Argument for --output option
         char *scroll;           ///< Argument for --scroll option
-        char *text;             ///< Argument for --text option
     } arg;                      ///< String arguments
 };
 
@@ -174,7 +186,9 @@ struct config config =
 {
     .flag =
     {
+        .buffer   = false,
         .create   = true,
+        .dryrun   = false,
         .execute  = false,
         .initial  = true,
         .log      = false,
@@ -182,18 +196,18 @@ struct config config =
         .output   = false,
         .readonly = false,
         .scroll   = false,
-        .text     = false,
+        .trace    = false,
         .window   = false,
         .exit     = false,
     },
     .arg =
     {
+        .buffer  = NULL,
         .execute = NULL,
         .initial = NULL,
         .log     = NULL,
         .output  = NULL,
         .scroll  = NULL,
-        .text    = NULL,
     },
 };
 
@@ -258,9 +272,9 @@ static void check_config(void)
             exit(EXIT_FAILURE);
         }
     }
-    else if (config.flag.text && config.arg.text == NULL)
+    else if (config.flag.buffer && config.arg.buffer == NULL)
     {
-        option = "--text";
+        option = "--buffer";
     }
     else
     {
@@ -350,15 +364,27 @@ static void finish_config(int argc, const char * const argv[])
         store_cmd(command);
     }
 
-    if (config.arg.execute != NULL)
+    if (config.arg.buffer != NULL)
     {
-        copy_arg(command, config.arg.execute);
+        sprintf(command, "I%s\e", config.arg.buffer);
         store_cmd(command);
     }
 
-    if (config.arg.text != NULL)
+    if (config.flag.trace)
     {
-        sprintf(command, "I%s\e", config.arg.text);
+        if (config.flag.dryrun)
+        {
+            store_cmd(":? ");
+        }
+        else
+        {
+            store_cmd("? ");
+        }
+    }
+
+    if (config.arg.execute != NULL)
+    {
+        copy_arg(command, config.arg.execute);
         store_cmd(command);
     }
 
@@ -481,7 +507,11 @@ void set_config(
         switch (c)
         {
             case ':':
-                if (optopt == 'E')
+                if (optopt == 'B')
+                {
+                    config.flag.buffer = true;
+                }
+                else if (optopt == 'E')
                 {
                     config.flag.execute = true;
                 }
@@ -497,15 +527,27 @@ void set_config(
                 {
                     config.flag.scroll = true;
                 }
-                else if (optopt == 'T')
+                break;
+
+            case OPTION_B:
+                config.flag.buffer = true;
+
+                if (optarg[0] != '-')
                 {
-                    config.flag.text = true;
+                    config.arg.buffer = optarg;
                 }
+
                 break;
 
             case OPTION_C:
             case OPTION_c:
                 config.flag.create = (c == 'C') ? true : false;
+
+                break;
+
+            case OPTION_D:
+                config.flag.dryrun = true;
+                config.flag.trace  = true;
 
                 break;
 
@@ -588,12 +630,7 @@ void set_config(
                 break;
 
             case OPTION_T:
-                config.flag.text = true;
-
-                if (optarg[0] != '-')
-                {
-                    config.arg.text = optarg;
-                }
+                config.flag.trace = true;
 
                 break;
 
