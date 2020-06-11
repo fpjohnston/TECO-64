@@ -87,7 +87,7 @@ static struct qlist *list_head = NULL;
 
 // Local functions
 
-static void free_qreg(void);
+static void exit_qreg(void);
 
 
 ///
@@ -143,13 +143,13 @@ void delete_qtext(int qname, bool qdot)
 
 
 ///
-///  @brief    Free Q-register storage.
+///  @brief    Clean up memory before we exit from TECO.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void free_qreg(void)
+static void exit_qreg(void)
 {
     // Free local Q-registers and reset the push-down list.
 
@@ -325,13 +325,10 @@ uint get_qsize(int qname, bool qdot)
 
 void init_qreg(void)
 {
+    register_exit(exit_qreg);
+
     list_head = NULL;
     local_head = alloc_mem((uint)sizeof(struct qlocal));
-
-    if (atexit(free_qreg) != 0)
-    {
-        exit(EXIT_FAILURE);
-    }
 }
 
 

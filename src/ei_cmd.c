@@ -49,13 +49,45 @@ static struct buffer *ei_buf;           ///< Buffer for EI commands
 
 static struct buffer *saved_buf;        ///< Saved command buffer
 
-static bool atexit_flag = false;        ///< true if atexit registration done
-
 // Local functions
 
 static void close_indirect(void);
 
 static bool open_indirect(struct ifile *ifile);
+
+static void exit_EI(void);
+
+
+///
+///  @brief    Close indirect command file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void close_indirect(void)
+{
+    close_input(IFILE_INDIRECT);
+
+    ei_active = false;
+
+    if (saved_buf != NULL)
+    {
+        set_cbuf(saved_buf);
+        saved_buf = NULL;
+    }
+
+    if (ei_buf != NULL)
+    {
+        free_mem(&ei_buf->buf);
+        free_mem(&ei_buf);
+    }
+
+    if (f.e0.exit)                      // Command-line option to exit?
+    {
+        exit(EXIT_SUCCESS);             // Yes, we're done
+    }
+}
 
 
 ///
@@ -118,13 +150,6 @@ void exec_EI(struct cmd *cmd)
             }
         }
 
-        if (!atexit_flag)
-        {
-            atexit_flag = true;
-
-            (void)atexit(reset_indirect);
-        }
-
         assert(saved_buf == NULL);
         assert(ei_buf == NULL);
 
@@ -144,34 +169,28 @@ void exec_EI(struct cmd *cmd)
 
 
 ///
-///  @brief    Close indirect command file.
+///  @brief    Clean up memory before we exit from TECO.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void close_indirect(void)
+static void exit_EI(void)
 {
-    close_input(IFILE_INDIRECT);
+    reset_indirect();
+}
 
-    ei_active = false;
 
-    if (saved_buf != NULL)
-    {
-        set_cbuf(saved_buf);
-        saved_buf = NULL;
-    }
+///
+///  @brief    Initialization for EI commands.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
 
-    if (ei_buf != NULL)
-    {
-        free_mem(&ei_buf->buf);
-        free_mem(&ei_buf);
-    }
-
-    if (f.e0.exit)                      // Command-line option to exit?
-    {
-        exit(EXIT_SUCCESS);             // Yes, we're done
-    }
+void init_EI(void)
+{
+    register_exit(exit_EI);
 }
 
 

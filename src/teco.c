@@ -48,6 +48,7 @@
 #include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
+#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
@@ -201,12 +202,14 @@ static void init_teco(int argc, const char * const argv[])
     f.e3.tilde   = true;                // Allow tilde operator
     f.e3.msec    = true;                // Return time in milliseconds
 
+    init_mem();                         // Initialize memory allocation
     init_term();                        // Initialize terminal
     init_tbuf();                        // Initialize terminal buffer
     init_cbuf();                        // Initialize command buffer
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams
-    init_EG();                          // Initialize EG command
+    init_EG();                          // EG command initialization
+    init_EI();                          // EI command initialization
     init_loop();                        // Initialize loop stack
     init_search();                      // Initialize search string
     init_env(argc, argv);               // Initialize environment
@@ -249,4 +252,22 @@ int isdelim(int c)
 void print_prompt(void)
 {
     print_str("%s", prompt);
+}
+
+
+///
+///  @brief    Register function to be called at program exit.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void register_exit(void (*func)(void))
+{
+    if (atexit(func) != 0)
+    {
+        printf("?Unable to register function with atexit()\r\n");
+
+        print_err(E_INI);               // Initialization error
+    }
 }

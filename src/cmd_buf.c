@@ -44,7 +44,7 @@ static struct buffer *cmd_buf;          ///< Command string command buffer
 
 // Local functions
 
-static void free_cbuf(void);
+static void exit_cbuf(void);
 
 
 ///
@@ -86,6 +86,29 @@ bool check_semi(void)
 
 
 ///
+///  @brief    Clean up memory before we exit from TECO.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exit_cbuf(void)
+{
+    current = NULL;
+
+    if (cmd_buf != NULL && cmd_buf->buf != NULL)
+    {
+        cmd_buf->size = 0;
+        cmd_buf->pos  = 0;
+        cmd_buf->len  = 0;
+
+        free_mem(&cmd_buf->buf);
+        free_mem(&cmd_buf);
+    }
+}
+
+
+///
 ///  @brief    Fetch next character from buffer.
 ///
 ///  @returns  Character fetched, or EOF if no character available.
@@ -121,31 +144,6 @@ int fetch_cbuf(bool start)
 
 
 ///
-///  @brief    Free up memory for command string. The only command level for
-///            which we need be concerned here is level 0; all other levels are
-///            for macros, which will be freed up by Q-register functions.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void free_cbuf(void)
-{
-    current = NULL;
-
-    if (cmd_buf != NULL && cmd_buf->buf != NULL)
-    {
-        cmd_buf->size = 0;
-        cmd_buf->pos  = 0;
-        cmd_buf->len  = 0;
-
-        free_mem(&cmd_buf->buf);
-        free_mem(&cmd_buf);
-    }
-}
-
-
-///
 ///  @brief    Get current command buffer.
 ///
 ///  @returns  Nothing.
@@ -167,6 +165,8 @@ struct buffer *get_cbuf(void)
 
 void init_cbuf(void)
 {
+    register_exit(exit_cbuf);
+
     cmd_buf = alloc_mem((uint)sizeof(struct buffer));
 
     cmd_buf->len  = 0;
@@ -175,11 +175,6 @@ void init_cbuf(void)
     cmd_buf->buf  = alloc_mem(cmd_buf->size);
 
     current = cmd_buf;
-
-    if (atexit(free_cbuf) != 0)         // Ensure we clean up on exit
-    {
-        exit(EXIT_FAILURE);
-    }
 }
 
 

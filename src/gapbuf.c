@@ -85,9 +85,9 @@ bool ebuf_changed;              ///< true if text buffer modified
 
 // Local functions
 
-static bool expand_ebuf(void);
+static void exit_ebuf(void);
 
-static void free_ebuf(void);
+static bool expand_ebuf(void);
 
 static int last_delim(int nlines);
 
@@ -208,6 +208,34 @@ void delete_ebuf(int n)
 
 
 ///
+///  @brief    Clean up memory before we exit from TECO.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exit_ebuf(void)
+{
+    free_mem(&eb.buf);
+
+    t.B         = 0;
+    t.Z         = 0;
+    t.dot       = 0;
+    t.size      = 0;
+
+    eb.size     = 0;
+    eb.minsize  = 0;
+    eb.maxsize  = 0;
+    eb.stepsize = 0;
+    eb.lowsize  = 0;
+    eb.warn     = 0;
+    eb.left     = 0;
+    eb.gap      = 0;
+    eb.right    = 0;
+}
+
+
+///
 ///  @brief    Expand edit buffer.
 ///
 ///  @returns  true if able to expand, else false.
@@ -247,34 +275,6 @@ static bool expand_ebuf(void)
     print_size(eb.size);
 
     return true;
-}
-
-
-///
-///  @brief    Free up memory for edit buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void free_ebuf(void)
-{
-    free_mem(&eb.buf);
-
-    t.B         = 0;
-    t.Z         = 0;
-    t.dot       = 0;
-    t.size      = 0;
-
-    eb.size     = 0;
-    eb.minsize  = 0;
-    eb.maxsize  = 0;
-    eb.stepsize = 0;
-    eb.lowsize  = 0;
-    eb.warn     = 0;
-    eb.left     = 0;
-    eb.gap      = 0;
-    eb.right    = 0;
 }
 
 
@@ -366,6 +366,8 @@ void init_ebuf(
 {
     assert(eb.buf == NULL);
 
+    register_exit(exit_ebuf);
+
     if (warn > 100)                     // Buffer can't be more than 100% full
     {
         warn = 100;
@@ -385,12 +387,6 @@ void init_ebuf(
     eb.left     = 0;
     eb.gap      = minsize;
     eb.right    = 0;
-
-    if (atexit(free_ebuf) != 0)         // Ensure we clean up on exit
-    {
-        exit(EXIT_FAILURE);
-    }
-
 }
 
 

@@ -102,8 +102,5 @@ void exec_EG(struct cmd *cmd)
 
 void init_EG(void)
 {
-    if (atexit(exit_EG) != 0)
-    {
-        exit(EXIT_FAILURE);
-    }
+    register_exit(exit_EG);
 }

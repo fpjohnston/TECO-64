@@ -71,7 +71,22 @@ static bool term_active = false;        ///< Are terminal settings active?
 
 // Local functions
 
+static void exit_term(void);
+
 static void sig_handler(int signal);
+
+
+///
+///  @brief    Reset terminal before we exit from TECO.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exit_term(void)
+{
+    reset_term();
+}
 
 
 ///
@@ -126,7 +141,8 @@ int getc_term(bool wait)
 
 
 ///
-///  @brief    Initialize terminal.
+///  @brief    Initialize terminal. Note that this function can be called more
+///            than once, because we can start and stop window/scope mode.
 ///
 ///  @returns  Nothing.
 ///
@@ -134,14 +150,16 @@ int getc_term(bool wait)
 
 void init_term(void)
 {
-    static bool term_oneshot = false;
+    static bool init_set = false;       // Initialization already done if true
 
     // The following only needs to be executed once, regardless
     // how many times terminal initialization is done.
 
-    if (!term_oneshot)
+    if (!init_set)
     {
-        term_oneshot = true;
+        init_set = true;
+
+        register_exit(exit_term);
 
 #if     !defined(__DECC)
 
@@ -167,8 +185,6 @@ void init_term(void)
         (void)sigaction(SIGWINCH, &sa, NULL);
 
         (void)setvbuf(stdout, NULL, _IONBF, 0uL);
-
-        (void)atexit(reset_term);
 
         f.et.rubout    = true;          // Process DEL and ^U in scope mode
         f.et.lower     = true;          // Terminal can read lower case

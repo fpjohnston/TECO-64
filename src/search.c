@@ -51,6 +51,8 @@ struct tstring last_search = { .len = 0 };
 
 // Local functions
 
+static void exit_search(void);
+
 static int isblankx(int c, struct search *s);
 
 static int isctrlx(int c, int match);
@@ -63,7 +65,18 @@ static bool match_chr(int c, struct search *s);
 
 static bool match_str(struct search *s);
 
-static void reset_search(void);
+
+///
+///  @brief    Clean up memory before we exit from TECO.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exit_search(void)
+{
+    free_mem(&last_search.buf);
+}
 
 
 ///
@@ -75,9 +88,9 @@ static void reset_search(void);
 
 void init_search(void)
 {
-    (void)atexit(reset_search);
+    register_exit(exit_search);
 }
-
+    
 
 ///
 ///  @brief    Check for multiple blanks (spaces or tabs) at current position.
@@ -345,19 +358,6 @@ static bool match_str(struct search *s)
     }
 
     return true;
-}
-
-
-///
-///  @brief    Reset search string.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void reset_search(void)
-{
-    free_mem(&last_search.buf);
 }
 
 

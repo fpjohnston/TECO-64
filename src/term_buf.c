@@ -41,7 +41,7 @@ struct buffer *term_buf;                ///< Command buffer for terminal input
 
 // Local functions
 
-static void free_tbuf(void);
+static void exit_tbuf(void);
 
 
 ///
@@ -104,6 +104,34 @@ bool empty_tbuf(void)
 
 
 ///
+///  @brief    Clean up memory before we exit from TECO. Note that the only
+///            command level for which we need be concerned here is level 0;
+///            all other levels are for macros, which will be freed up by
+///            Q-register functions.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exit_tbuf(void)
+{
+    if (term_buf != NULL)
+    {
+        if (term_buf->buf != NULL)
+        {
+            free_mem(&term_buf->buf);
+        }
+
+        term_buf->size = 0;
+        term_buf->pos  = 0;
+        term_buf->len  = 0;
+
+        free_mem(&term_buf);
+    }
+}
+
+
+///
 ///  @brief    Fetch next character from buffer.
 ///
 ///  @returns  Character fetched, or EOF if no character available.
@@ -124,33 +152,6 @@ int fetch_tbuf(void)
 
 
 ///
-///  @brief    Free up memory for command string. The only command level for
-///            which we need be concerned here is level 0; all other levels are
-///            for macros, which will be freed up by Q-register functions.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void free_tbuf(void)
-{
-    if (term_buf != NULL)
-    {
-        if (term_buf->buf != NULL)
-        {
-            free_mem(&term_buf->buf);
-        }
-
-        term_buf->size = 0;
-        term_buf->pos  = 0;
-        term_buf->len  = 0;
-
-        free_mem(&term_buf);
-    }
-}
-
-
-///
 ///  @brief    Initialize command buffer.
 ///
 ///  @returns  Nothing.
@@ -159,17 +160,14 @@ static void free_tbuf(void)
 
 void init_tbuf(void)
 {
+    register_exit(exit_tbuf);
+
     term_buf = alloc_mem((uint)sizeof(struct buffer));
 
     term_buf->len  = 0;
     term_buf->pos  = 0;
     term_buf->size = STR_SIZE_INIT;
     term_buf->buf  = alloc_mem(term_buf->size);
-
-    if (atexit(free_tbuf) != 0)         // Ensure we clean up on exit
-    {
-        exit(EXIT_FAILURE);
-    }
 }
 
 

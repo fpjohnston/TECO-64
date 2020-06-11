@@ -79,6 +79,7 @@ static struct err_table err_table[] =
     [E_IIA] = { "IIA",  "Illegal insert arg" },
     [E_ILL] = { "ILL",  "Illegal command '%s'" },
     [E_ILN] = { "ILN",  "Illegal number" },
+    [E_INI] = { "INI",  "Initialization error" },
     [E_INP] = { "INP",  "Input error" },
     [E_IPA] = { "IPA",  "Negative or 0 argument to P" },
     [E_IQC] = { "IQC",  "Illegal \" character" },
@@ -213,6 +214,8 @@ static const char *verbose[] =
 
     [E_ILN] = "An 8 or 9 has been entered when the radix of TECO is set "
               "to octal.",
+
+    [E_INI] = "A fatal error occurred during TECO initialization.",
 
     [E_INP] = NULL,
 

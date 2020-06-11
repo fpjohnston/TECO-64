@@ -149,6 +149,8 @@ extern void free_mem(void *ptr);
 
 extern void init_env(int argc, const char * const argv[]);
 
+extern void init_mem(void);
+
 extern int isdelim(int c);
 
 extern void flag_print(int flag);
@@ -168,6 +170,8 @@ extern struct buffer *get_cbuf(void);
 extern void init_cbuf(void);
 
 extern char *next_cbuf(void);
+
+extern void register_exit(void (*func)(void));
 
 extern void reset_cbuf(void);
 

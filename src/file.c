@@ -55,7 +55,7 @@ const char *last_file = NULL;           ///< Last opened file
 
 static void canonical_name(char **name);
 
-static void reset_files(void);
+static void exit_files(void);
 
 
 ///
@@ -145,6 +145,40 @@ void close_output(uint stream)
     ofile->backup = false;
 }
 
+
+///
+///  @brief    Clean up memory before we exit from TECO.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exit_files(void)
+{
+    for (uint i = 0; i < OFILE_MAX; ++i)
+    {
+        close_output(i);
+    }
+
+    ostream = OFILE_PRIMARY;
+
+    for (uint i = 0; i < IFILE_MAX; ++i)
+    {
+        close_input(i);
+
+        struct ifile *ifile = &ifiles[i];
+
+        free_mem(&ifile->name);
+
+        ifile->name = NULL;
+    }
+
+    istream = IFILE_PRIMARY;
+
+    last_file = NULL;
+}
+
+
 ///
 ///  @brief    Initialize file streams.
 ///
@@ -154,12 +188,10 @@ void close_output(uint stream)
 
 void init_files(void)
 {
-    reset_files();
+    register_exit(exit_files);
 
-    if (atexit(reset_files) != 0)
-    {
-        exit(EXIT_FAILURE);
-    }
+    istream = IFILE_PRIMARY;
+    ostream = OFILE_PRIMARY;
 }
 
 
@@ -301,37 +333,4 @@ int open_output(struct ofile *ofile, int c)
     }
 
     return EXIT_SUCCESS;
-}
-
-
-///
-///  @brief    Reset file streams.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void reset_files(void)
-{
-    for (uint i = 0; i < OFILE_MAX; ++i)
-    {
-        close_output(i);
-    }
-
-    ostream = OFILE_PRIMARY;
-
-    for (uint i = 0; i < IFILE_MAX; ++i)
-    {
-        close_input(i);
-
-        struct ifile *ifile = &ifiles[i];
-
-        free_mem(&ifile->name);
-
-        ifile->name = NULL;
-    }
-
-    istream = IFILE_PRIMARY;
-
-    last_file = NULL;
 }

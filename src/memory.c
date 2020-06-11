@@ -72,7 +72,7 @@ static void add_mblock(void *p1, uint size);
 
 static void delete_mblock(void *p1);
 
-static void reset_mblocks(void);
+static void exit_memory(void);
 
 #endif
 
@@ -122,19 +122,6 @@ static void add_mblock(void *p1, uint size)
 
 void *alloc_mem(uint size)
 {
-#if     defined(DEBUG_MEMORY)
-
-    static bool first_alloc = true;
-
-    if (first_alloc)
-    {
-        first_alloc = false;
-
-        (void)atexit(reset_mblocks);
-    }
-
-#endif
-
     void *p1 = calloc(1uL, (size_t)size);
 
     if (p1 == NULL)
@@ -201,6 +188,44 @@ static void delete_mblock(void *p1)
     }
 
     printf("?Can't find memory block: %p\r\n", p1);
+}
+
+#endif
+
+
+///
+///  @brief    Verify that all memory was deallocated before we exit from TECO.
+///
+///  @returns  Nothing (error if memory allocation fails).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DEBUG_MEMORY)
+
+static void exit_memory(void)
+{
+    struct mblock *p = mroot;
+    struct mblock *next;
+
+    if (msize != 0)
+    {
+        printf("%%%u total bytes allocated at exit\r\n", msize);
+    }
+
+    while (p != NULL)
+    {
+        printf("%%%u bytes allocated at %p\r\n", p->size, p->addr);
+
+        next = p->next;
+        msize -= p->size;
+        p->next = p->prev = NULL;
+        p->addr = NULL;
+        p->size = 0;
+
+        free(p);
+
+        p = next;
+    }
 }
 
 #endif
@@ -276,41 +301,20 @@ void free_mem(void *p1)
 
 
 ///
-///  @brief    Reset memory blocks, and verify that everything was deallocated.
+///  @brief    Initialize memory allocation functions.
 ///
-///  @returns  Nothing (error if memory allocation fails).
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+void init_mem(void)
+{
 #if     defined(DEBUG_MEMORY)
 
-static void reset_mblocks(void)
-{
-    struct mblock *p = mroot;
-    struct mblock *next;
-
-    if (msize != 0)
-    {
-        printf("%%%u total bytes allocated at exit\r\n", msize);
-    }
-
-    while (p != NULL)
-    {
-        printf("%%%u bytes allocated at %p\r\n", p->size, p->addr);
-
-        next = p->next;
-        msize -= p->size;
-        p->next = p->prev = NULL;
-        p->addr = NULL;
-        p->size = 0;
-
-        free(p);
-
-        p = next;
-    }
-}
+    register_exit(exit_memory);
 
 #endif
+}
 
 
 ///

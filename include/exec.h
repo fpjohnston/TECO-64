@@ -289,6 +289,8 @@ extern int find_eg(char *buf, bool reset);
 
 extern void init_EG(void);
 
+extern void init_EI(void);
+
 extern void init_loop(void);
 
 extern bool next_page(int start, int end, bool ff, bool yank);

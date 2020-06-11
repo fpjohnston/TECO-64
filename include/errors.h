@@ -68,6 +68,7 @@ enum errors
     E_IIA,          ///< Illegal insert arg
     E_ILL,          ///< Illegal command "x"
     E_ILN,          ///< Illegal number
+    E_INI,          ///< Initializaton error
     E_INP,          ///< Input error
     E_IPA,          ///< Negative or 0 argument to P
     E_IQC,          ///< Illegal " character

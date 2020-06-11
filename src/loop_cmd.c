@@ -61,6 +61,8 @@ static struct loop *loop_head;          ///< Head of loop list
 
 static void endloop(struct cmd *cmd, bool pop_ok);
 
+static void exit_loop(void);
+
 static void pop_loop(bool pop_ok);
 
 static void push_loop(int count);
@@ -265,6 +267,19 @@ void exec_semi(struct cmd *cmd)
 
 
 ///
+///  @brief    Clean up memory before we exit from TECO.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exit_loop(void)
+{
+    reset_loop();
+}
+
+
+///
 ///  @brief    Initialize loop structures.
 ///
 ///  @returns  Nothing.
@@ -273,13 +288,10 @@ void exec_semi(struct cmd *cmd)
 
 void init_loop(void)
 {
+    register_exit(exit_loop);
+
     loop_depth = 0;
     loop_head = NULL;
-
-    if (atexit(reset_loop) != 0)
-    {
-        exit(EXIT_FAILURE);
-    }
 }
 
 

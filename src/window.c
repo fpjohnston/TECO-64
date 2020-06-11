@@ -68,13 +68,6 @@
 
 #define err_if_true(func, cond) if (func == cond) error_win()
 
-///
-///  @def    err_if_false
-///
-///  @brief  Issue error if function does not return specified value.
-///
-
-#define err_if_false(func, cond) if (func != cond) error_win()
 
 #define CMD             0               ///< Command window colors
 #define TEXT            1               ///< Text window colors
@@ -160,6 +153,8 @@ static const struct
 // Local functions
 
 static void error_win(void);
+
+static void exit_win(void);
 
 static int find_color(const char *token);
 
@@ -250,6 +245,18 @@ static void error_win(void)
 
 #endif
 
+
+///
+///  @brief    Reset window before we exit from TECO.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exit_win(void)
+{
+    reset_win();
+}
 
 
 ///
@@ -379,13 +386,13 @@ void init_win(void)
     {
         f.e0.winact = true;
 
-        static bool end_set = false;
+        static bool exit_set = false;
 
-        if (!end_set)
+        if (!exit_set)
         {
-            end_set = true;
+            exit_set = true;
 
-            err_if_false(atexit(reset_win), 0);
+            register_exit(exit_win);
         }
 
         // Note that initscr() will print an error message and exit if it
