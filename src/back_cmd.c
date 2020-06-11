@@ -61,11 +61,11 @@ void exec_back(struct cmd *cmd)
         char string[MAX_DIGITS];
         const char *format = "%d";
 
-        if (v.radix == 8)
+        if (radix == 8)
         {
             format = "%o";
         }
-        else if (v.radix == 16)
+        else if (radix == 16)
         {
             format = "%x";
         }
@@ -108,14 +108,14 @@ void exec_back(struct cmd *cmd)
 
             int digit = dchar - dstr;
 
-            if ((v.radix == 8 && digit >= 8) || (v.radix == 10 && digit >= 10))
+            if ((radix == 8 && digit >= 8) || (radix == 10 && digit >= 10))
             {
                 break;
             }
 
             ++digits;
 
-            n *= v.radix;
+            n *= radix;
             n += digit;
 
             c = getchar_ebuf(pos++);

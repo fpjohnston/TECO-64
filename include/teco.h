@@ -92,16 +92,10 @@ struct tstring
     uint len;                       ///< No. of characters
 };
 
-///  @struct  vars
-///  @brief   Global variables that the user can display or set.
-
-struct vars
-{
-    int radix;                      ///< Current output radix
-    int ctrl_s;                     ///< CTRL/S flag
-};
 
 // Global variables
+
+extern int radix;
 
 extern struct buffer *term_buf;
 
@@ -130,8 +124,6 @@ extern bool main_active;
 extern const char *prompt;
 
 extern int teco_version;
-
-extern struct vars v;
 
 // Global functions
 

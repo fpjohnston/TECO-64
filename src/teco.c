@@ -65,24 +65,11 @@
 #define EDIT_BUF_STEP   EDIT_BUF_INIT   ///< Increase edit buffer by 8K
 #define EDIT_BUF_WARN   75              ///< Warn when edit buffer is 75% full
 
-///  @var     prompt
-///  @brief   Command-line prompt (usually '*').
+const char *prompt = "*";           ///< Command-line prompt (usually '*')
 
-const char *prompt = "*";
+struct flags f;                     ///< Global flag variables 
 
-///  @var     f
-///  @brief   Global flag variables.
-
-struct flags f;
-
-///  @var     v
-///  @brief   Global variables that the user can display or set.
-
-struct vars v =
-{
-    .radix  = 10,                   ///< Current output radix
-    .ctrl_s = 0,                    ///< CTRL/S flag
-};
+int radix = 10;                     ///< Current output radix
 
 int teco_version = TECO_VERSION;    ///< TECO version number (200+)
 

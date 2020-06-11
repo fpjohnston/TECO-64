@@ -86,7 +86,7 @@ void exec_ctrl_s(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr(v.ctrl_s, EXPR_VALUE);
+    push_expr(-(int)last_len, EXPR_VALUE);
 }
 
 
@@ -101,7 +101,7 @@ void exec_ctrl_y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr(t.dot + v.ctrl_s, EXPR_VALUE);
+    push_expr(t.dot - (int)last_len, EXPR_VALUE);
     push_expr(t.dot, EXPR_VALUE);
 }
 

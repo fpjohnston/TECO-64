@@ -50,7 +50,7 @@ void exec_digit(struct cmd *cmd)
 
     int c = cmd->c1;
 
-    if (v.radix == 8 && c > '7')        // If base 8 and digit is 8 or 9
+    if (radix == 8 && c > '7')          // If base 8 and digit is 8 or 9
     {
         print_err(E_ILN);               // Illegal number
     }
@@ -62,6 +62,6 @@ void exec_digit(struct cmd *cmd)
 
     scan.digits = true;
 
-    scan.sum *= (int)v.radix;           // Shift over existing digits
+    scan.sum *= (int)radix;             // Shift over existing digits
     scan.sum += c - '0';                // And add in the new one
 }

@@ -50,7 +50,7 @@ void exec_ctrl_d(struct cmd *cmd)
 
     if (!f.e0.dryrun)
     {
-        v.radix = 10;                   // Set radix to decimal
+        radix = 10;                     // Set radix to decimal
     }
 }
 
@@ -68,7 +68,7 @@ void exec_ctrl_o(struct cmd *cmd)
 
     if (!f.e0.dryrun)
     {
-        v.radix = 8;                    // Set radix to octal
+        radix = 8;                      // Set radix to octal
     }
 }
 
@@ -98,10 +98,10 @@ void exec_ctrl_r(struct cmd *cmd)
             print_err(E_IRA);           // Illegal radix argument
         }
 
-        v.radix = n;                    // Set the radix
+        radix = n;                      // Set the radix
     }
     else
     {
-        push_expr(v.radix, EXPR_VALUE); // No, just save what we have
+        push_expr(radix, EXPR_VALUE);   // No, just save what we have
     }
 }
