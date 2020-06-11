@@ -336,6 +336,13 @@ static void finish_config(int argc, const char * const argv[])
     char command[PATH_MAX];
     char *env;
 
+    // -X means to exit when done, but also abort on error.
+
+    if (config.flag.exit)
+    {
+        store_cmd("0,128ET ");
+    }
+
     //  Process --initial and --noinitial options.
     //
     //  --initial is the default if neither is specified.
@@ -360,13 +367,13 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.arg.log != NULL)
     {
-        sprintf(command, "EL%s\e", config.arg.log);
+        sprintf(command, "EL%s\e ", config.arg.log);
         store_cmd(command);
     }
 
     if (config.arg.buffer != NULL)
     {
-        sprintf(command, "I%s\e", config.arg.buffer);
+        sprintf(command, "I%s\e ", config.arg.buffer);
         store_cmd(command);
     }
 
@@ -388,19 +395,14 @@ static void finish_config(int argc, const char * const argv[])
         store_cmd(command);
     }
 
-    if (config.flag.exit)
-    {
-        store_cmd("EX");
-    }
-
     if (config.flag.window != 0)
     {
-        store_cmd("1W");
+        store_cmd("1W ");
     }
 
     if (config.arg.scroll != NULL)
     {
-        sprintf(command, "%s,7:W\e", config.arg.scroll);
+        sprintf(command, "%s,7:W \e", config.arg.scroll);
         store_cmd(command);
     }
 
@@ -437,7 +439,7 @@ static void finish_config(int argc, const char * const argv[])
         {
             if (config.arg.output != NULL)
             {
-                sprintf(command, "ER%s\e EW%s\e Y", file, config.arg.output);
+                sprintf(command, "ER%s\e EW%s\e Y ", file, config.arg.output);
             }
             else if (config.flag.readonly)
             {
@@ -446,7 +448,7 @@ static void finish_config(int argc, const char * const argv[])
             }
             else
             {
-                sprintf(command, ":^A%%Editing file '%s'%c EB%s\e Y",
+                sprintf(command, ":^A%%Editing file '%s'%c EB%s\e Y ",
                         file, CTRL_A, file);
             }
         }
@@ -454,14 +456,19 @@ static void finish_config(int argc, const char * const argv[])
                  !config.flag.output)
         {
             sprintf(command, ":^A%%Can't find file '%s'%c :^A%%Creating "
-                    "new file%c EW%s\e", file, CTRL_A, CTRL_A, file);
+                    "new file%c EW%s\e ", file, CTRL_A, CTRL_A, file);
         }
         else
         {
-            sprintf(command, ":^A?Can't find file '%s'%c EX", file, CTRL_A);
+            sprintf(command, ":^A?Can't find file '%s'%c EX ", file, CTRL_A);
         }
 
         store_cmd(command);
+    }
+
+    if (config.flag.exit)
+    {
+        store_cmd("EX ");
     }
 
     if (current->len != 0)              // Anything stored?
