@@ -99,6 +99,11 @@ bool main_active = false;
 jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
 
+//  Local functions
+
+static void init_teco(int argc, const char * const argv[]);
+
+
 ///
 ///  @brief    Main program entry for TECO-64 text editor.
 ///
@@ -108,39 +113,8 @@ jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
 int main(int argc, const char * const argv[])
 {
-    f.ctrl_x     = 0;                   // Searches are case-insensitive
+    init_teco(argc, argv);              // Initialize variables and things
 
-    f.eu         = -1;                  // No case flagging
-
-    f.et.abort   = true;                // Abort on error
-    f.et.accent  = true;                // Use accent grave as delimiter
-
-    f.e0.strict  = true;                // Strictly enforce syntax
-
-    f.e1.winline = true;                // Line between text & command regions
-    f.e1.status  = true;                // Display status on line
-
-    f.e2.icrlf   = true;                // Use CR/LF for input lines
-    f.e2.ocrlf   = true;                // Use CR/LF for output lines
-    f.e2.dollar  = true;                // Allow dollar signs in symbols
-    f.e2.ubar    = true;                // Allow underscores in symbols
-
-    f.e3.brace   = true;                // Allow braced expressions
-    f.e3.tilde   = true;                // Allow tilde operator
-    f.e3.msec    = true;                // Return time in milliseconds
-
-    init_term();                        // Initialize terminal
-    init_tbuf();                        // Initialize terminal buffer
-    init_cbuf();                        // Initialize command buffer
-    init_qreg();                        // Initialize Q-registers
-    init_files();                       // Initialize file streams
-    init_EG();                          // Initialize EG command
-    init_loop();                        // Initialize loop stack
-    init_search();                      // Initialize search string
-    init_env(argc, argv);               // Initialize environment
-
-    init_ebuf(EDIT_BUF_INIT, EDIT_BUF_MAX, EDIT_BUF_STEP, EDIT_BUF_WARN);
-                                        // Initialize edit buffer
     main_active = true;                 // Initialization is complete
 
     for (;;)                            // Loop forever
@@ -193,6 +167,51 @@ int main(int argc, const char * const argv[])
                 break;
         }
     }
+}
+
+
+///
+///  @brief    Initialize everything required to start TECO, and set some
+///            defaults.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void init_teco(int argc, const char * const argv[])
+{
+    f.ctrl_x     = 0;                   // Searches are case-insensitive
+
+    f.eu         = -1;                  // No case flagging
+
+    f.et.abort   = true;                // Abort on error
+    f.et.accent  = true;                // Use accent grave as delimiter
+
+    f.e0.strict  = true;                // Strictly enforce syntax
+
+    f.e1.winline = true;                // Line between text & command regions
+    f.e1.status  = true;                // Display status on line
+
+    f.e2.icrlf   = true;                // Use CR/LF for input lines
+    f.e2.ocrlf   = true;                // Use CR/LF for output lines
+    f.e2.dollar  = true;                // Allow dollar signs in symbols
+    f.e2.ubar    = true;                // Allow underscores in symbols
+
+    f.e3.brace   = true;                // Allow braced expressions
+    f.e3.tilde   = true;                // Allow tilde operator
+    f.e3.msec    = true;                // Return time in milliseconds
+
+    init_term();                        // Initialize terminal
+    init_tbuf();                        // Initialize terminal buffer
+    init_cbuf();                        // Initialize command buffer
+    init_qreg();                        // Initialize Q-registers
+    init_files();                       // Initialize file streams
+    init_EG();                          // Initialize EG command
+    init_loop();                        // Initialize loop stack
+    init_search();                      // Initialize search string
+    init_env(argc, argv);               // Initialize environment
+    init_ebuf(EDIT_BUF_INIT, EDIT_BUF_MAX, EDIT_BUF_STEP, EDIT_BUF_WARN);
+                                        // Initialize edit buffer
 }
 
 
