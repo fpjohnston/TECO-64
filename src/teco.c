@@ -131,6 +131,16 @@ int main(int argc, const char * const argv[])
                 init_expr();            // Initialize expression stack
                 exec_cmd();             // Execute what we have
 
+                if (if_depth != 0)
+                {
+                    print_err(E_UTQ);   // Unterminated quote
+                }
+
+                if (loop_depth != 0)
+                {
+                    print_err(E_UTL);   // Unterminated loop
+                }
+
                 f.e0.error = false;     // Command completed w/o error
 
                 break;
