@@ -35,6 +35,7 @@
 #include "teco.h"
 #include "eflags.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 
 
@@ -48,13 +49,31 @@ static void find_tag(struct cmd *cmd, const char *text, uint len);
 ///            anything, but it exists to ensure that the command is properly
 ///            scanned, so that tags can be found with the O and nO commands.
 ///
+///            Note that we pass through any numeric arguments, much like the [
+///            and ] commands. This allows comments to be inserted between two
+///            commands, the second of which uses the arguments resulting from
+///            the first, such as the following:
+///
+///            :@ER/foo/                ! Open input file !
+///            "U :@^A/?No file/ EX '   ! Print message and exit if error !
+///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bang(struct cmd *unused1)
+void exec_bang(struct cmd *cmd)
 {
+    assert(cmd != NULL);
 
+    if (cmd->n_set)                     // Pass through m and n arguments
+    {
+        if (cmd->m_set)
+        {
+            push_expr(cmd->m_arg, EXPR_VALUE);
+        }
+
+        push_expr(cmd->n_arg, EXPR_VALUE);
+    }
 }
 
 
