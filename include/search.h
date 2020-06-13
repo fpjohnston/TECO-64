@@ -74,8 +74,6 @@ extern struct tstring last_search;
 
 // Global functions
 
-extern uint build_string(char **dest, const char *src, uint len);
-
 extern void init_search(void);
 
 extern bool search_loop(struct search *s);

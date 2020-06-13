@@ -237,8 +237,9 @@ void init_filename(char **name, const char *buf, uint len)
         free_mem(name);
     }
 
-    last_file = *name = alloc_mem(ncopied + 1);
-    strcpy(*name, path);
+    // The following allows the use of string building characters in filenames.
+
+    (void)build_string(name, path, ncopied);
 }
 
 

@@ -136,12 +136,28 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
     assert(cmd != NULL);
     assert(text != NULL);
 
-    char tag[len + 1];                  // Tag we're looking for
-    int tag_pos = -1;                   // No tag found yet
+    int tag_pos = -1;                   // Position of tag in command string
 
-    (void)sprintf(tag, "%.*s", (int)len, text);
+    // The following creates a tag using string building characters, but then
+    // sets up a local copy so that we can free up the string that was allocated
+    // by build_string(). This is to avoid memory leaks.
+
+    char *tag1 = NULL;                  // Dynamically-allocated tag name
+
+    (void)build_string(&tag1, text, len);
+
+    len = (uint)strlen(tag1);
+
+    char tag2[len + 1];                 // Local copy of tag name
+
+    strcpy(tag2, tag1);
+
+    free_mem(&tag1);
 
     current->pos = 0;                   // Start at beginning of command
+
+    // Scan entire command string to verify that we have
+    // one and only one instance of the specified tag.
 
     while (current->pos < current->len)
     {
@@ -159,11 +175,11 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
         }
 
         if (cmd->text1.len == len &&
-            !memcmp(cmd->text1.buf, tag, (ulong)len))
+            !memcmp(cmd->text1.buf, tag2, (ulong)len))
         {
             if (tag_pos != -1)          // Found tag. Have we seen it already?
             {
-                prints_err(E_DUP, tag); // Duplicate tag
+                prints_err(E_DUP, tag2); // Duplicate tag
             }
 
             tag_pos = (int)current->pos; // Remember tag for later
@@ -172,7 +188,7 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
 
     if (tag_pos == -1)                  // Did we find the tag?
     {
-        prints_err(E_TAG, tag);         // Missing tag
+        prints_err(E_TAG, tag2);        // Missing tag
     }
 
     current->pos = (uint)tag_pos;       // Execute goto

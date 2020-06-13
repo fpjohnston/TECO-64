@@ -61,5 +61,10 @@ void exec_EX(struct cmd *cmd)
 
     exec_EC(cmd);                       // Close everything normally
 
+    // The following allow for the use of EX inside of a conditional or loop.
+
+    reset_if();
+    reset_loop();
+
     exit(EXIT_SUCCESS);
 }

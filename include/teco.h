@@ -129,6 +129,8 @@ extern int teco_version;
 
 extern void *alloc_mem(uint size);
 
+extern uint build_string(char **dest, const char *src, uint len);
+
 extern bool check_loop(void);
 
 extern bool check_macro(void);
