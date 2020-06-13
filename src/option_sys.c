@@ -336,13 +336,6 @@ static void finish_config(int argc, const char * const argv[])
     char command[PATH_MAX];
     char *env;
 
-    // -X means to exit when done, but also abort on error.
-
-    if (config.flag.exit)
-    {
-        store_cmd("0,128ET ");
-    }
-
     //  Process --initial and --noinitial options.
     //
     //  --initial is the default if neither is specified.
