@@ -115,6 +115,9 @@ int get_wild(void)
         return EXIT_FAILURE;
     }
 
+    // Loop through the remaining file specifications, skipping anything
+    // that's not a regular file (we can't open directories, for example).
+
     while ((filename = *next_file++) != NULL)
     {
         struct stat file_stat;
@@ -131,6 +134,8 @@ int get_wild(void)
             return EXIT_SUCCESS;
         }
     }
+
+    next_file = NULL;                   // Say we're all done
 
     return EXIT_FAILURE;
 }
