@@ -108,34 +108,34 @@ void init_temp(char **otemp, const char *oname)
 
 int get_wild(void)
 {
-    const char *filename;
-
-    if (next_file == NULL)
+    if (next_file != NULL)
     {
-        return EXIT_FAILURE;
-    }
+        // Loop through the remaining file specifications, skipping anything
+        // that's not a regular file (we can't open directories, for example).
 
-    // Loop through the remaining file specifications, skipping anything
-    // that's not a regular file (we can't open directories, for example).
+        const char *filename;
 
-    while ((filename = *next_file++) != NULL)
-    {
-        struct stat file_stat;
-
-        if (stat(filename, &file_stat) != 0)
+        while ((filename = *next_file++) != NULL)
         {
-            print_err(E_SYS);
+            struct stat file_stat;
+
+            if (stat(filename, &file_stat) != 0)
+            {
+                next_file = NULL;       // Make sure we can't repeat this
+
+                print_err(E_SYS);
+            }
+
+            if (S_ISREG(file_stat.st_mode))
+            {
+                last_file = filename;
+
+                return EXIT_SUCCESS;
+            }
         }
 
-        if (S_ISREG(file_stat.st_mode))
-        {
-            last_file = filename;
-
-            return EXIT_SUCCESS;
-        }
+        next_file = NULL;               // Say we're all done
     }
-
-    next_file = NULL;                   // Say we're all done
 
     return EXIT_FAILURE;
 }
