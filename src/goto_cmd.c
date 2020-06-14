@@ -54,8 +54,8 @@ static void find_tag(struct cmd *cmd, const char *text, uint len);
 ///            commands, the second of which uses the arguments resulting from
 ///            the first, such as the following:
 ///
-///            :@ER/foo/                ! Open input file !
-///            "U :@^A/?No file/ EX '   ! Print message and exit if error !
+///            @{ :@ER/foo/                ! Open input file ! @}
+///               "U :@^A/?No file/ EX '   ! Print message and exit if error !
 ///
 ///  @returns  Nothing.
 ///
