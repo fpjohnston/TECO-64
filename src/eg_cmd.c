@@ -39,8 +39,9 @@
 #include "exec.h"
 #include "file.h"
 
+#define MAX_EG      200                 ///< Max. length of EG command.
 
-char *eg_command;                       ///< EG command to be executed.
+char eg_command[MAX_EG + 1];            ///< EG command to be executed.
 
 
 ///
@@ -54,17 +55,16 @@ void exec_EG(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    eg_command = alloc_mem(cmd->text1.len + 1);
-
+    if (cmd->text1.len > MAX_EG)
+    {
+        print_err(E_EGC);               // EG command is too long
+    }
+    
     sprintf(eg_command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
 
     if (cmd->colon_set || cmd->dcolon_set)
     {
-        sprintf(eg_command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
-
         int status = find_eg(eg_command, cmd->dcolon_set);
-
-        free_mem(&eg_command);
 
         push_expr(status, EXPR_VALUE);
 
@@ -72,14 +72,12 @@ void exec_EG(struct cmd *cmd)
     }
 
     // The following ensures that we don't exit if we have nowhere to output
-    // the dat in the buffer to.
+    // the data in the buffer to.
 
     struct ofile *ofile = &ofiles[ostream];
 
     if (ofile->fp == NULL && t.Z != 0)
     {
-        free_mem(&eg_command);
-
         print_err(E_NFO);               // No file for output
     }
 

@@ -69,6 +69,7 @@ static struct err_table err_table[] =
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag !%s!" },
+    [E_EGC] = { "EGC",  "EG command is too long" },
     [E_FER] = { "FER",  "File error" },
     [E_FNF] = { "FNF",  "File not found '%s'" },
     [E_ICE] = { "ICE",  "Illegal ^E command in search argument" },
@@ -183,6 +184,8 @@ static const char *verbose[] =
               "within the current page.",
 
     [E_DUP] = "An O command found a duplicate tag within the command string.",
+
+    [E_EGC] = "An EG command was longer than 200 characters.",
 
     [E_FER] = "The file specified in an ER, EW, or EB command was not found.",
 

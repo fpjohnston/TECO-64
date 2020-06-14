@@ -199,13 +199,16 @@ static void init_teco(int argc, const char * const argv[])
     f.e3.tilde   = true;                // Allow tilde operator
     f.e3.msec    = true;                // Return time in milliseconds
 
+    // Note: this has to be first, since it will be the last called when we
+    //       exit, and it might execute a system command.
+
+    init_EG();                          // EG command initialization
     init_mem();                         // Initialize memory allocation
     init_term();                        // Initialize terminal
     init_tbuf();                        // Initialize terminal buffer
     init_cbuf();                        // Initialize command buffer
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams
-    init_EG();                          // EG command initialization
     init_EI();                          // EI command initialization
     init_loop();                        // Initialize loop stack
     init_search();                      // Initialize search string

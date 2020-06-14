@@ -93,7 +93,7 @@ void exit_EG(void)
 {
     free_mem(&eg_result);
 
-    if (eg_command != NULL)
+    if (eg_command[0] != NUL)
     {
         if (execlp("/bin/sh", "sh", "-c", eg_command, NULL) == -1)
         {

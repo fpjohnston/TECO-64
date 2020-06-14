@@ -58,6 +58,7 @@ enum errors
     E_DIV,          ///< Division by zero
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag "x"
+    E_EGC,          ///< EG command is too long
     E_FER,          ///< File error
     E_FNF,          ///< File not found "filespec"
     E_ICE,          ///< Illegal ^E command in search argument

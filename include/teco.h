@@ -111,7 +111,7 @@ extern uint qreg_max;
 
 extern struct buffer *current;
 
-extern char *eg_command;
+extern char eg_command[];
 
 extern jmp_buf jump_main;
 
