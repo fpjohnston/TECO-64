@@ -213,7 +213,7 @@ void print_chr(int c)
 
     display(c);
 
-    if (!f.e4.noout)
+    if (!f.e2.noout)
     {
         FILE *fp = ofiles[OFILE_LOG].fp;
 
@@ -251,7 +251,7 @@ void print_echo(int c)
         fputc(c, stdout);
     }
 
-    if (!f.e4.noin)
+    if (!f.e2.noin)
     {
         FILE *fp = ofiles[OFILE_LOG].fp;
 
@@ -290,7 +290,7 @@ void print_str(const char *fmt, ...)
         fputs(buf, stdout);
     }
 
-    if (!f.e4.noout)
+    if (!f.e2.noout)
     {
         FILE *fp = ofiles[OFILE_LOG].fp;
 

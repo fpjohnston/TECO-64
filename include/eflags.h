@@ -72,7 +72,7 @@ union e1_flag
 
 ///  @struct  e2_flag
 ///
-///  @brief   File format features.
+///  @brief   Features affecting I/O operations and file contents.
 
 union e2_flag
 {
@@ -80,17 +80,19 @@ union e2_flag
 
     struct
     {
-        uint icrlf   : 1;       ///< Use CR/LF for input lines
-        uint ocrlf   : 1;       ///< Use CR/LF for output lines
-        uint no_ff   : 1;       ///< FF is normal character on input
-        uint dollar  : 1;       ///< $ is a valid symbol character
-        uint ubar    : 1;       ///< _ is a valid symbol character
+        uint icrlf  : 1;        ///< Use CR/LF for input lines
+        uint ocrlf  : 1;        ///< Use CR/LF for output lines
+        uint no_ff  : 1;        ///< FF is normal character on input
+        uint dollar : 1;        ///< $ is a valid symbol character
+        uint ubar   : 1;        ///< _ is a valid symbol character
+        uint noin   : 1;        ///< Don't type input to log file
+        uint noout  : 1;        ///< Don't type output to log file
     };
 };
 
 ///  @struct  e3_flag
 ///
-///  @brief   Definition of extended features.
+///  @brief   Definitions of extended features
 
 union e3_flag
 {
@@ -106,7 +108,7 @@ union e3_flag
 
 ///  @struct  e4_flag
 ///
-///  @brief   Definition of file options.
+///  @brief   Definition of command restrictions.
 
 union e4_flag
 {
@@ -114,8 +116,17 @@ union e4_flag
 
     struct
     {
-        uint noin   : 1;        ///< Don't type input to log file
-        uint noout  : 1;        ///< Don't type output to log file
+        uint divby0 : 1;        ///< Error if division by zero
+        uint ctrl_f : 1;        ///< ^F command with argument (TECO-10 feature)
+        uint atsign : 1;        ///< More than one @ modifier
+        uint colon  : 1;        ///< More than two : modifiers
+        uint m_arg  : 1;        ///< Unused m argument
+        uint n_arg  : 1;        ///< Unused n argument
+        uint no_n   : 1;        ///< m argument without n argument
+        uint oper   : 1;        ///< Double operators in expressions
+        uint loop   : 1;        ///< Loop not complete within conditional
+        uint quote  : 1;        ///< Conditional not complete within loop
+        uint p_cmd  : 1;        ///< m,n:P or H:P or :PW
     };
 };
 
@@ -193,10 +204,10 @@ struct flags
     bool       ctrl_e;          ///< Form feed flag
     int        ctrl_x;          ///< Search mode flag
     struct e0_flag e0;          ///< Internal flags (not settable by user)
-    union  e1_flag e1;          ///< Debugging flags
-    union  e2_flag e2;          ///< Compatibility features
+    union  e1_flag e1;          ///< Window flags
+    union  e2_flag e2;          ///< File operation and content features
     union  e3_flag e3;          ///< Extended features
-    union  e4_flag e4;          ///< File options
+    union  e4_flag e4;          ///< Command restrictions
     int            e5;          ///< Comment bypass character
     union  ed_flag ed;          ///< Edit level flags
     int            ee;          ///< ESCape surrogate

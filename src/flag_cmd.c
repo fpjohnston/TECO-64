@@ -270,8 +270,8 @@ void exec_E4(struct cmd *cmd)
 
     if (cmd->text1.len == 0)
     {
-        f.e4.noin   = true;
-        f.e4.noout  = true;
+        f.e2.noin   = true;
+        f.e2.noout  = true;
 
         return;
     }
@@ -303,11 +303,11 @@ void exec_E4(struct cmd *cmd)
         {
             if (!strcasecmp(option, "noin"))
             {
-                f.e4.noin = true;
+                f.e2.noin = true;
             }
             else if (!strcasecmp(option, "noout"))
             {
-                f.e4.noout = true;
+                f.e2.noout = true;
             }
             else
             {
