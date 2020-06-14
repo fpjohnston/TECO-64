@@ -131,15 +131,8 @@ int main(int argc, const char * const argv[])
                 init_expr();            // Initialize expression stack
                 exec_cmd();             // Execute what we have
 
-                if (if_depth != 0)
-                {
-                    print_err(E_UTQ);   // Unterminated quote
-                }
-
-                if (loop_depth != 0)
-                {
-                    print_err(E_UTL);   // Unterminated loop
-                }
+                reset_if();             // Reset conditional stack
+                reset_loop();           // Reset loop stack
 
                 f.e0.error = false;     // Command completed w/o error
 
@@ -157,8 +150,6 @@ int main(int argc, const char * const argv[])
                 reset_indirect();       // Close any indirect file
                 reset_cbuf();           // Reset the input buffer
                 reset_qreg();           // Free up Q-register storage
-                reset_if();             // Reset if statement depth
-                reset_loop();           // Free up loop structures
 
                 macro_depth = 0;
 

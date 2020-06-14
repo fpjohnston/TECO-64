@@ -47,6 +47,7 @@
 
 enum option_t
 {
+    OPTION_A = 'A',
     OPTION_B = 'B',
     OPTION_C = 'C',
     OPTION_c = 'c',
@@ -78,6 +79,7 @@ static const char * const optstring = ":CcDE:I::iL:MmO:oRrS:T:WX";
 
 static const struct option long_options[] =
 {
+    { "argument",     required_argument,  NULL,  'A'    },
     { "buffer",       required_argument,  NULL,  'B'    },
     { "create",       no_argument,        NULL,  'C'    },
     { "nocreate",     no_argument,        NULL,  'c'    },
@@ -102,6 +104,8 @@ static const struct option long_options[] =
 
 //  TECO options
 //  ------------
+//  -A, --argument=n
+//          Specifies number to be stored in Q-register A.
 //  -B, --buffer=text
 //          Specifies text to be inserted in edit buffer at startup.
 //  -C, --create
@@ -130,7 +134,7 @@ static const struct option long_options[] =
 //          Don't create output file.
 //  -r, --noread-only (default)
 //          Create an output file.
-//  -S, --scroll
+//  -S, --scroll=n
 //          Enable scrolling region (implies --W).
 //  -T, --trace
 //          Trace commands as they are being executed.
@@ -151,6 +155,7 @@ struct config
 {
     struct
     {
+        bool argument;          ///< --argument option seen
         bool buffer;            ///< --buffer option seen
         bool create;            ///< --create option seen
         bool dryrun;            ///< --dryrun option seen
@@ -165,15 +170,18 @@ struct config
         bool window;            ///< --window option seen
         bool exit;              ///< --exit option seen
     } flag;                     ///< true/false flags
+
+    int n;                      ///< Numeric value for --argument option
+
     struct
     {
-        char *buffer;           ///< Argument for --buffer option
-        char *execute;          ///< Argument for --execute option
-        char *initial;          ///< Argument for --initial option
-        char *log;              ///< Argument for --log option
-        char *output;           ///< Argument for --output option
-        char *scroll;           ///< Argument for --scroll option
-    } arg;                      ///< String arguments
+        char *buffer;           ///< String argument for --buffer option
+        char *execute;          ///< String argument for --execute option
+        char *initial;          ///< String argument for --initial option
+        char *log;              ///< String argument for --log option
+        char *output;           ///< String argument for --output option
+        char *scroll;           ///< String argument for --scroll option
+    } str;                      ///< String arguments
 };
 
 ///
@@ -186,6 +194,7 @@ struct config config =
 {
     .flag =
     {
+        .argument = false,
         .buffer   = false,
         .create   = true,
         .dryrun   = false,
@@ -200,7 +209,10 @@ struct config config =
         .window   = false,
         .exit     = false,
     },
-    .arg =
+
+    .n = 0,
+
+    .str =
     {
         .buffer  = NULL,
         .execute = NULL,
@@ -235,15 +247,15 @@ static void check_config(void)
 {
     const char *option;
 
-    if (config.flag.execute && config.arg.execute == NULL)
+    if (config.flag.execute && config.str.execute == NULL)
     {
         option = "--execute";
     }
-    else if (config.flag.log && config.arg.log == NULL)
+    else if (config.flag.log && config.str.log == NULL)
     {
         option = "--log";
     }
-    else if (config.flag.output && config.arg.output == NULL)
+    else if (config.flag.output && config.str.output == NULL)
     {
         option = "--output";
     }
@@ -251,11 +263,11 @@ static void check_config(void)
     {
         option = "--scroll";
 
-        if (config.arg.scroll != NULL)
+        if (config.str.scroll != NULL)
         {
             char *endptr;
 
-            (void)strtoul(config.arg.scroll, &endptr, 10);
+            (void)strtoul(config.str.scroll, &endptr, 10);
 
             if (errno == 0)
             {
@@ -272,7 +284,7 @@ static void check_config(void)
             exit(EXIT_FAILURE);
         }
     }
-    else if (config.flag.buffer && config.arg.buffer == NULL)
+    else if (config.flag.buffer && config.str.buffer == NULL)
     {
         option = "--buffer";
     }
@@ -347,9 +359,9 @@ static void finish_config(int argc, const char * const argv[])
     //  Note that if the environment variable value is enclosed in double
     //  quotes, it is treated as a string of commands rather than a file name.
 
-    if (config.arg.initial != NULL)
+    if (config.str.initial != NULL)
     {
-        sprintf(command, "EI%s\e ", config.arg.initial);
+        sprintf(command, "EI%s\e ", config.str.initial);
         store_cmd(command);
     }
     else if (config.flag.initial && (env = getenv("TECO_INIT")) != NULL)
@@ -358,15 +370,15 @@ static void finish_config(int argc, const char * const argv[])
         store_cmd(command);
     }
 
-    if (config.arg.log != NULL)
+    if (config.str.log != NULL)
     {
-        sprintf(command, "EL%s\e ", config.arg.log);
+        sprintf(command, "EL%s\e ", config.str.log);
         store_cmd(command);
     }
 
-    if (config.arg.buffer != NULL)
+    if (config.str.buffer != NULL)
     {
-        sprintf(command, "I%s\e ", config.arg.buffer);
+        sprintf(command, "I%s\e ", config.str.buffer);
         store_cmd(command);
     }
 
@@ -382,9 +394,15 @@ static void finish_config(int argc, const char * const argv[])
         }
     }
 
-    if (config.arg.execute != NULL)
+    if (config.flag.argument)
     {
-        copy_arg(command, config.arg.execute);
+        sprintf(command, "%dUA ", config.n);
+        store_cmd(command);
+    }
+
+    if (config.str.execute != NULL)
+    {
+        copy_arg(command, config.str.execute);
         store_cmd(command);
     }
 
@@ -393,9 +411,9 @@ static void finish_config(int argc, const char * const argv[])
         store_cmd("1W ");
     }
 
-    if (config.arg.scroll != NULL)
+    if (config.str.scroll != NULL)
     {
-        sprintf(command, "%s,7:W \e", config.arg.scroll);
+        sprintf(command, "%s,7:W \e", config.str.scroll);
         store_cmd(command);
     }
 
@@ -430,9 +448,9 @@ static void finish_config(int argc, const char * const argv[])
     {
         if (access(file, F_OK) == 0)    // Does file exist?
         {
-            if (config.arg.output != NULL)
+            if (config.str.output != NULL)
             {
-                sprintf(command, "ER%s\e EW%s\e Y ", file, config.arg.output);
+                sprintf(command, "ER%s\e EW%s\e Y ", file, config.str.output);
             }
             else if (config.flag.readonly)
             {
@@ -529,12 +547,22 @@ void set_config(
                 }
                 break;
 
+            case OPTION_A:
+                config.flag.argument = true;
+
+                if (optarg[0] != '-')
+                {
+                    config.n = (int)strtol(optarg, NULL, 10);
+                }
+
+                break;
+
             case OPTION_B:
                 config.flag.buffer = true;
 
                 if (optarg[0] != '-')
                 {
-                    config.arg.buffer = optarg;
+                    config.str.buffer = optarg;
                 }
 
                 break;
@@ -556,7 +584,7 @@ void set_config(
 
                 if (optarg[0] != '-')
                 {
-                    config.arg.execute = optarg;
+                    config.str.execute = optarg;
                 }
 
                 break;
@@ -566,7 +594,7 @@ void set_config(
 
                 if (optarg != NULL && optarg[0] != '-')
                 {
-                    config.arg.initial = optarg;
+                    config.str.initial = optarg;
                 }
 
                 break;
@@ -581,7 +609,7 @@ void set_config(
 
                 if (optarg[0] != '-')
                 {
-                    config.arg.log = optarg;
+                    config.str.log = optarg;
                 }
 
                 break;
@@ -602,7 +630,7 @@ void set_config(
                 if (optarg[0] != '-')
                 if (optarg != NULL && optarg[0] != '-')
                 {
-                    config.arg.output = optarg;
+                    config.str.output = optarg;
                 }
 
                 break;
@@ -624,7 +652,7 @@ void set_config(
 
                 if (optarg[0] != '-')
                 {
-                    config.arg.scroll = optarg;
+                    config.str.scroll = optarg;
                 }
 
                 break;

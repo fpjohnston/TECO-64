@@ -37,6 +37,7 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "exec.h"
 #include "term.h"
 #include "window.h"
 
@@ -512,6 +513,9 @@ noreturn void print_err(int err_teco)
     }
 
     // Done printing error, now how are we supposed to get out of here?
+
+    reset_if();                         // Reset conditional stack
+    reset_loop();                       // Reset loop stack
 
     if (f.et.abort || !main_active)     // Abort on error, or no main loop?
     {
