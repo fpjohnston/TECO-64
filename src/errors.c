@@ -435,6 +435,10 @@ void help_err(int err_teco)
 
 noreturn void print_err(int err_teco)
 {
+    // Ensure that '?' command only prints line up to command with error.
+
+    term_buf->len = term_buf->pos = current->pos;
+
     // If CTRL/C and we're not executing a command, don't print error.
 
     if (err_teco != E_XAB || f.e0.exec)
