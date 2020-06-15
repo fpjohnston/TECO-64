@@ -51,7 +51,6 @@ enum errors
     E_ARG,          ///< Improper arguments
     E_BOA,          ///< O argument is out of range
     E_CHR,          ///< Invalid character for command
-    E_CON,          ///< Confused use of conditionals
     E_DIV,          ///< Division by zero
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag "!x!"

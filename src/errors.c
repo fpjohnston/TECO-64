@@ -63,7 +63,6 @@ static struct err_table err_table[] =
     [E_ARG] = { "ARG",  "Improper arguments" },
     [E_BOA] = { "BOA",  "O argument is out of range" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
-    [E_CON] = { "CON",  "Confused use of conditionals" },
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
@@ -144,12 +143,6 @@ static const char *verbose[] =
     [E_BOA] = "The argument for an O command was out of range",
 
     [E_CHR] = "A non-ASCII character preceded an EE command.",
-
-    [E_CON] = "Conditionals, parenthesized arguments, and iterations must "
-              "be properly nested. The user probably used some construct "
-              "like: N\"E...(...' where an iteration or parenthesized "
-              "argument is begun in a conditional but not terminated in "
-              "the same conditional.",
 
     [E_DIV] = "An attempt was made to divide a number by zero.",
 
