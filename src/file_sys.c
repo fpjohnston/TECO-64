@@ -250,13 +250,12 @@ void set_wild(const char *filename)
     switch (glob(filename, flags, NULL, &pglob))
     {
         case 0:                         // Success
+            next_file = &pglob.gl_pathv[0];
+
             break;
 
         case GLOB_NOSPACE:
             print_err(E_MEM);           // Ran out of memory
-
-        case GLOB_ABORTED:
-            print_err(E_FER);           // File error
 
         case GLOB_NOMATCH:
             prints_err(E_FNF, filename); // Can't find any matches
@@ -264,8 +263,6 @@ void set_wild(const char *filename)
         default:                        // Something unexpected
             print_err(E_SYS);
     }
-
-    next_file = &pglob.gl_pathv[0];
 }
 
 
