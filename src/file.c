@@ -234,7 +234,7 @@ void init_filename(char **name, const char *buf, uint len)
         }
         else
         {
-            *p++ = c;
+            *p++ = (char)c;
             ++ncopied;
         }
     }
