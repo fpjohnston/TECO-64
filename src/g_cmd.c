@@ -64,7 +64,10 @@ void exec_G(struct cmd *cmd)
         }
         else if (cmd->qname == '_')     // :G_ -> print search string buffer
         {
-            print_str("%.*s", (int)last_search.len, last_search.buf);
+            if (last_search.len != 0)
+            {
+                print_str("%.*s", (int)last_search.len, last_search.buf);
+            }
         }
         else                            // :Gq -> print Q-register
         {

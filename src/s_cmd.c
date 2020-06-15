@@ -106,6 +106,10 @@ static void exec_search(struct cmd *cmd, bool replace)
         last_search.len = build_string(&last_search.buf, cmd->text1.buf,
                                        cmd->text1.len);
     }
+    else if (last_search.len == 0)
+    {
+        prints_err(E_SRH, "");          // Nothing to search for
+    }
 
     struct search s;
 
