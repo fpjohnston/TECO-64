@@ -74,6 +74,7 @@ static struct err_table err_table[] =
     [E_IEC] = { "IEC",  "Illegal character '%s' after E" },
     [E_IFC] = { "IFC",  "Illegal character '%s' after F" },
     [E_IFE] = { "IFE",  "Ill-formed numeric expression" },
+    [E_IFN] = { "IFN",  "Illegal character '%s' in filename" },
     [E_IIA] = { "IIA",  "Illegal insert arg" },
     [E_ILL] = { "ILL",  "Illegal command '%s'" },
     [E_ILN] = { "ILN",  "Illegal number" },

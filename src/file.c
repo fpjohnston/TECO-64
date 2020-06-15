@@ -212,21 +212,30 @@ void init_filename(char **name, const char *buf, uint len)
     assert(buf != NULL);
     assert(len != 0);
 
-    // First, normalize the file name by removing all non-graphic chrs.
+    // Check the file name for invalid characters. Currently, this just means
+    // ignoring whitespace, and issuing an error for any other control or
+    // non-ASCII characters. Other characters could be checked, depending on
+    // what is valid for a specfic operating system.
 
     char path[len + 1], *p = path;
     uint ncopied = 0;
 
     while (len-- > 0)
     {
-        if (isgraph(*buf))
+        int c = *buf++;
+
+        if (isspace(c))
         {
-            *p++ = *buf++;
-            ++ncopied;
+            ;
+        }
+        else if (iscntrl(c) || !isascii(c))
+        {
+            printc_err(E_IFN, c);
         }
         else
         {
-            ++buf;
+            *p++ = c;
+            ++ncopied;
         }
     }
 

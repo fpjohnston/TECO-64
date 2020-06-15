@@ -318,7 +318,7 @@ static bool match_chr(int c, struct search *s)
 
         // TODO: maybe process ^EM, and ^E[a,b,c...]?
 
-        return false;
+        print_err(E_ICE);               // Illegal ^E command in search argument
     }
     else if (match == CTRL_N)
     {
