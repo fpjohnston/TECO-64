@@ -49,15 +49,12 @@ enum errors
 {
     E_NUL,          ///< No error
     E_ARG,          ///< Improper arguments
-    E_BNI,          ///< >not in iteration
-    E_BRC,          ///< Invalid braced expression
+    E_BOA,          ///< O argument is out of range
     E_CHR,          ///< Invalid character for command
     E_CON,          ///< Confused use of conditionals
-    E_CPQ,          ///< Can't pop into Q-register
-    E_DEV,          ///< Invalid device
     E_DIV,          ///< Division by zero
     E_DTB,          ///< Delete too big
-    E_DUP,          ///< Duplicate tag "x"
+    E_DUP,          ///< Duplicate tag "!x!"
     E_EGC,          ///< EG command is too long
     E_FER,          ///< File error
     E_FNF,          ///< File not found "filespec"
@@ -70,8 +67,6 @@ enum errors
     E_ILL,          ///< Illegal command "x"
     E_ILN,          ///< Illegal number
     E_INI,          ///< Initializaton error
-    E_INP,          ///< Input error
-    E_IPA,          ///< Negative or 0 argument to P
     E_IQC,          ///< Illegal " character
     E_IQN,          ///< Illegal Q-register name "x"
     E_IRA,          ///< Illegal radix argument to ^R
@@ -82,10 +77,8 @@ enum errors
     E_MEM,          ///< Memory overflow
     E_MIX,          ///< Maximum insert string exceeded
     E_MLA,          ///< Missing left angle bracket
-    E_MLX,          ///< Maximum loop depth exceeded
     E_MLP,          ///< Missing (
     E_MMX,          ///< Maximum macro depth exceeded
-    E_MNA,          ///< Missing n argument
     E_MOD,          ///< Invalid modifier
     E_MQX,          ///< Maximum Q-register depth exceeded
     E_MRA,          ///< Missing right angle bracket
@@ -101,43 +94,33 @@ enum errors
     E_NCA,          ///< Negative argument to ,
     E_NFI,          ///< No file for input
     E_NFO,          ///< No file for output
+    E_NOA,          ///< O argument is <= 0
+    E_NON,          ///< Missing n argument
+    E_NOT,          ///< O command has no tag
     E_NOW,          ///< Window support not enabled
-    E_NPA,          ///< Negative or 0 argument to P
-    E_NRO,          ///< No room for output
-    E_NTF,          ///< No tag found
+    E_NPA,          ///< P or PW argument is negative
     E_NYA,          ///< Numeric argument with Y
     E_NYI,          ///< Not yet implemented
     E_OFO,          ///< Output file already open
-    E_OUT,          ///< Output error
     E_PDO,          ///< Push-down list overflow
     E_PES,          ///< Attempt to pop empty stack
     E_POP,          ///< Attempt to move pointer off page with "x"
     E_SNI,          ///< ; not in iteration
     E_SRH,          ///< Search failure "text"
-    E_STL,          ///< String too long
     E_SYS,          ///< System error message
-    E_TAG,          ///< Missing tag !x!
+    E_TAG,          ///< Missing tag "!x!"
     E_T10,          ///< TECO-10 command not implemented
-    E_UCD,          ///< Unable to close and delete output file "x"
-    E_UCI,          ///< Unable to close input file
-    E_UCO,          ///< Unable to close output file
-    E_UFI,          ///< Unable to open file "x" for input
     E_UFO,          ///< Unable to open file "x" for output
-    E_UIT,          ///< Unable to initialize terminal
     E_UMA,          ///< Unused m argument
     E_UNA,          ///< Unused n argument
-    E_URC,          ///< Unable to read character from terminal
-    E_URE,          ///< Unable to read TECO command file
-    E_URL,          ///< Unable to read line from input file
     E_UTC,          ///< Unterminated command string
     E_UTL,          ///< Unterminated loop
     E_UTM,          ///< Unterminated macro
     E_UTQ,          ///< Unterminated quote
-    E_UWL,          ///< Unable to write line to output file
-    E_UWC,          ///< Unable to write character to output file
     E_WIN,          ///< Window initialization error
     E_XAB,          ///< Execution aborted
-    E_YCA           ///< Y command aborted
+    E_YCA,          ///< Y command aborted
+    E_ZPA           ///< P or PW argument is zero
 };
 
 extern void help_err(int err_teco);

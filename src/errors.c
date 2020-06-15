@@ -61,12 +61,9 @@ static struct err_table err_table[] =
 {
     [E_NUL] = { "---",  "Unknown error code" },
     [E_ARG] = { "ARG",  "Improper arguments" },
-    [E_BNI] = { "BNI",  "> not in iteration" },
-    [E_BRC] = { "BRC",  "Invalid braced expression" },
+    [E_BOA] = { "BOA",  "O argument is out of range" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
     [E_CON] = { "CON",  "Confused use of conditionals" },
-    [E_CPQ] = { "CPQ",  "Can't pop into Q-register" },
-    [E_DEV] = { "DEV",  "Invalid device" },
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
@@ -77,13 +74,10 @@ static struct err_table err_table[] =
     [E_IEC] = { "IEC",  "Illegal character '%s' after E" },
     [E_IFC] = { "IFC",  "Illegal character '%s' after F" },
     [E_IFE] = { "IFE",  "Ill-formed numeric expression" },
-    [E_IFN] = { "IFN",  "Illegal character '%s' in filename" },
     [E_IIA] = { "IIA",  "Illegal insert arg" },
     [E_ILL] = { "ILL",  "Illegal command '%s'" },
     [E_ILN] = { "ILN",  "Illegal number" },
     [E_INI] = { "INI",  "Initialization error" },
-    [E_INP] = { "INP",  "Input error" },
-    [E_IPA] = { "IPA",  "Negative or 0 argument to P" },
     [E_IQC] = { "IQC",  "Illegal \" character" },
     [E_IQN] = { "IQN",  "Illegal Q-register name '%s'" },
     [E_IRA] = { "IRA",  "Illegal radix argument to ^R" },
@@ -94,10 +88,8 @@ static struct err_table err_table[] =
     [E_MEM] = { "MEM",  "Memory overflow" },
     [E_MIX] = { "MIX",  "Maximum insert string exceeded" },
     [E_MLA] = { "MLA",  "Missing left angle bracket" },
-    [E_MLX] = { "MLX",  "Maximum loop depth exceeded" },
     [E_MLP] = { "MLP",  "Missing (" },
     [E_MMX] = { "MMX",  "Maximum macro depth exceeded" },
-    [E_MNA] = { "MNA",  "Missing n argument" },
     [E_MOD] = { "MOD",  "Invalid command modifier" },
     [E_MQX] = { "MQX",  "Maximum Q-register depth exceeded" },
     [E_MRA] = { "MRA",  "Missing right angle bracket" },
@@ -113,34 +105,25 @@ static struct err_table err_table[] =
     [E_NCA] = { "NCA",  "Negative argument to ," },
     [E_NFI] = { "NFI",  "No file for input" },
     [E_NFO] = { "NFO",  "No file for output" },
+    [E_NOA] = { "NOA",  "O argument is <= 0" },
+    [E_NON] = { "NON",  "Missing n argument after m argument" },
+    [E_NOT] = { "NOT",  "O command has no tag" },
     [E_NOW] = { "NOW",  "Window support not enabled" },
-    [E_NPA] = { "NPA",  "Negative or 0 argument to P" },
-    [E_NRO] = { "NRO",  "No room for output" },
-    [E_NTF] = { "NTF",  "No tag found" },
+    [E_NPA] = { "NPA",  "P or PW argument is negative" },
     [E_NYA] = { "NYA",  "Numeric argument with Y" },
     [E_NYI] = { "NYI",  "Not yet implemented" },
     [E_OFO] = { "OFO",  "Output file already open" },
-    [E_OUT] = { "OUT",  "Output error" },
     [E_PDO] = { "PDO",  "Push-down list overflow" },
-    [E_PES] = { "PES",  "Attempt to pop empty stack" },
+    [E_PES] = { "PES",  "Can't pop from empty push-down stack" },
     [E_POP] = { "POP",  "Attempt to move pointer off page with '%s'" },
     [E_SNI] = { "SNI",  "; not in iteration" },
     [E_SRH] = { "SRH",  "Search failure '%s'" },
-    [E_STL] = { "STL",  "String too long" },
     [E_SYS] = { "SYS",  "%s" },
     [E_TAG] = { "TAG",  "Missing tag '!%s!'" },
     [E_T10] = { "T10",  "TECO-10 command not implemented" },
-    [E_UCD] = { "UCD",  "Unable to close and delete output file '%s'" },
-    [E_UCI] = { "UCI",  "Unable to close input file" },
-    [E_UCO] = { "UCO",  "Unable to close output file" },
-    [E_UFI] = { "UFI",  "Unable to open file '%s' for input" },
     [E_UFO] = { "UFO",  "Unable to open file '%s' for output" },
     [E_UMA] = { "UMA",  "Unused m argument" },
     [E_UNA] = { "UNA",  "Unused n argument" },
-    [E_URC] = { "URC",  "Unable to read character from terminal" },
-    [E_URE] = { "URE",  "Unable to read TECO command file" },
-    [E_URL] = { "URL",  "Unable to read line from input file" },
-    [E_UWL] = { "UWL",  "Unable to write line to output file" },
     [E_UTC] = { "UTC",  "Unterminated command string" },
     [E_UTL] = { "UTL",  "Unterminated loop" },
     [E_UTM] = { "UTM",  "Unterminated macro" },
@@ -148,6 +131,7 @@ static struct err_table err_table[] =
     [E_WIN] = { "WIN",  "Window initialization error" },
     [E_XAB] = { "XAB",  "Execution aborted" },
     [E_YCA] = { "YCA",  "Y command aborted" },
+    [E_ZPA] = { "ZPA",  "P or PW argument is zero" },
 };
 
 ///  @var    verbose
@@ -157,27 +141,15 @@ static const char *verbose[] =
 {
     [E_ARG] = "Three arguments are given (a,b,c or H,c).",
 
-    [E_BNI] = "There is a close angle bracket not matched by an open "
-              "angle bracket somewhere to its left. (Note: an "
-              "iteration in a macro stored in a Q-register must be "
-              "complete within the Q-register.)",
-
-    [E_BRC] = "There is a close square bracket not matched by an open "
-              "square bracket somewhere to its left.",
+    [E_BOA] = "The argument for an O command was out of range",
 
     [E_CHR] = "A non-ASCII character preceded an EE command.",
 
     [E_CON] = "Conditionals, parenthesized arguments, and iterations must "
               "be properly nested. The user probably used some construct "
               "like: N\"E...(...' where an iteration or parenthesized "
-              "argument is begin in a conditional but not terminated in "
+              "argument is begun in a conditional but not terminated in "
               "the same conditional.",
-
-    [E_CPQ] = "A ] command has been executed and there is nothing saved on "
-              "the Q-register push down list.",
-
-    [E_DEV] = "A file specification string in an E command contains an "
-              "unknown device name.",
 
     [E_DIV] = "An attempt was made to divide a number by zero.",
 
@@ -208,8 +180,6 @@ static const char *verbose[] =
     [E_IFE] = "The numeric expression preceding a command doesn't make "
               "sense. For example, 5+ isn't a complete expression.",
 
-    [E_IFN] = NULL,
-
     [E_IIA] = "A command of the form \"nItext$\" was attempted. This "
               "combination of character and text insertion is illegal.",
 
@@ -220,10 +190,6 @@ static const char *verbose[] =
               "to octal.",
 
     [E_INI] = "A fatal error occurred during TECO initialization.",
-
-    [E_INP] = NULL,
-
-    [E_IPA] = "The argument preceding a P or PW command is negative or 0.",
 
     [E_IQC] = "One of the valid \" commands did not follow the \". Refer "
               "to Section 5.14 (conditional execution commands) for "
@@ -259,8 +225,6 @@ static const char *verbose[] =
 
     [E_MLP] = "There is a right parenthesis trhat is not matched by a "
               "corresponding left parenthesis.",
-
-    [E_MNA] = "An m argument was not followed by an n argument.",
 
     [E_MOD] = "A modifier (:, ::, or @) was specified that was invalid "
               "for a command, occurred in the middle of an expression, "
@@ -314,13 +278,13 @@ static const char *verbose[] =
               "it is necessary to open an output file by use of a "
               "command such as EW or EB.",
 
-    [E_NPA] = "A P command was issued with an argument that was zero "
-              "or negative.",
+    [E_NOA] = "The argument for an O command was <= 0.",
 
-    [E_NRO] = NULL,
+    [E_NON] = "An m argument was not followed by an n argument.",
 
-    [E_NTF] = "The O command did not include a tag, or an nO command "
-              "had a value that was zero, negative, or out of range.",
+    [E_NOT] = "No tag was found for an O command.",
+
+    [E_NPA] = "The argument preceding a P or PW command is negative.",
 
     [E_NYA] = "The Y command must not be preceded by either a numeric "
               "argument or a command that returns a numeric value.",
@@ -359,9 +323,6 @@ static const char *verbose[] =
               "necessary to close the output file and reopen it for "
               "continued editing.",
 
-    [E_STL] = "A search or file name string is too long. This is most "
-              "likely the result of a missing ESCAPE after the string.",
-
     [E_SYS] = "A system call failed. The error message text explains the error.",
 
     [E_TAG] = "The tag !tag! specified by an O command cannot be "
@@ -399,6 +360,8 @@ static const char *verbose[] =
               "command with an output file open, that would cause text "
               "in the text buffer to be erased without outputting it to "
               "the output file. The ED command controls this check.",
+
+    [E_ZPA] = "The argument preceding a P or PW command is zero.",
 };
 
 

@@ -448,6 +448,11 @@ exec_func *next_cmd(struct cmd *cmd)
         }
     }
 
+    if (cmd->m_set && !cmd->n_set)
+    {
+        print_err(E_NON);               // Missing n argument
+    }
+
     // If the only thing on the expression stack is a minus sign,
     // then say we have an n argument equal to -1. Otherwise check
     // for m and n arguments.

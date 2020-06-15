@@ -81,7 +81,10 @@ static void endif(struct cmd *cmd, bool else_ok)
 
     do
     {
-        (void)next_cmd(cmd);
+        if (next_cmd(cmd) == NULL)
+        {
+            print_err(E_MAP);           // Missing apostrophe
+        }
 
         if (f.e0.strict)
         {
@@ -134,6 +137,11 @@ static void endif(struct cmd *cmd, bool else_ok)
 
 void exec_apos(struct cmd *unused1)
 {
+    if (if_depth == 0)
+    {
+        print_err(E_MSC);               // Missing start of conditional
+    }
+
     if (f.e0.strict)
     {
         if (if_head != NULL && if_head->depth != loop_depth)

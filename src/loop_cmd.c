@@ -103,7 +103,10 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 
     do
     {
-        (void)next_cmd(cmd);
+        if (next_cmd(cmd) == NULL)
+        {
+            return;
+        }
 
         if (f.e0.strict)
         {
@@ -181,7 +184,7 @@ void exec_gt(struct cmd *cmd)
 
     if (loop == NULL)
     {
-        print_err(E_BNI);               // Close bracket not in iteration
+        print_err(E_MLA);               // Missing left angle bracket
     }
 
     if (f.e0.strict)

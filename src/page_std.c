@@ -47,7 +47,7 @@
 
 void page_backward(FILE *unused1, int unused2)
 {
-    print_err(E_IPA);                   // Illegal page argument
+    print_err(E_NPA);                   // P argument cannot be negative
 }
 
 

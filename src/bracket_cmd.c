@@ -80,7 +80,7 @@ void exec_rbracket(struct cmd *cmd)
     {
         if (!cmd->colon_set)
         {
-            print_err(E_CPQ);           // Push-down list is empty.
+            print_err(E_PES);           // Push-down stack is empty
         }
 
         push_expr(TECO_FAILURE, EXPR_VALUE);

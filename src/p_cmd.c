@@ -97,7 +97,7 @@ void exec_P(struct cmd *cmd)
     {
         if ((count = cmd->n_arg) == 0)
         {
-            print_err(E_IPA);           // P argument cannot be zero
+            print_err(E_ZPA);           // P argument cannot be zero
         }
         else if (count < 0)             // -nP?
         {

@@ -90,7 +90,7 @@ void exec_O(struct cmd *cmd)
 
     if (cmd->text1.len == 0)            // Is there a tag?
     {
-        prints_err(E_TAG, "\?\?\?");    // Missing tag
+        print_err(E_NOT);               // O command has no tag
     }
 
     // Here if we have a tag
@@ -106,13 +106,13 @@ void exec_O(struct cmd *cmd)
 
     if (cmd->n_arg <= 0)                // Is value non-positive?
     {
-        return;                         // Just ignore goto
+        print_err(E_NOA);               // O argument is <= 0
     }
 
     // Parse the comma-separated list of tags, looking for the one we want.
     // If the nth tag is null, or is out of range, then we do nothing.
 
-    char *taglist = alloc_mem(cmd->text1.len + 1);
+    char taglist[cmd->text1.len + 1];
     char *buf = taglist;
     char *saveptr;
     char *next;
@@ -135,11 +135,13 @@ void exec_O(struct cmd *cmd)
                 find_tag(cmd, next, len);
             }
 
-            break;
+            return;
         }
     }
 
-    free_mem(&taglist);
+    // Here if O argument is out of range of tag list
+
+    print_err(E_BOA);                   // O argument is out of range
 }
 
 
