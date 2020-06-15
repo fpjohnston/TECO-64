@@ -72,7 +72,7 @@ void exec_comma(struct cmd *cmd)
 
     if (cmd->m_arg < 0)
     {
-        print_err(E_NCA);           // Negative argument to ,
+        print_err(E_NCA);               // Negative argument to ,
     }
 
     cmd->m_set = true;                  // And say we have one
