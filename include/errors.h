@@ -63,36 +63,36 @@ enum errors
     E_IIA,          ///< Illegal insert arg
     E_ILL,          ///< Illegal command "x"
     E_ILN,          ///< Illegal number
-    E_INI,          ///< Initializaton error
+    E_INI,          ///< Initialization error
     E_INP,          ///< Error opening input file '%s'
-    E_IQC,          ///< Illegal " character
+    E_IQC,          ///< Illegal quote character
     E_IQN,          ///< Illegal Q-register name "x"
     E_IRA,          ///< Illegal radix argument to ^R
     E_ISA,          ///< Illegal search argument
     E_ISS,          ///< Illegal search string
     E_IUC,          ///< Illegal character "x" following ^
-    E_MAP,          ///< Missing '
+    E_MAP,          ///< Missing apostrophe
     E_MEM,          ///< Memory overflow
     E_MIX,          ///< Maximum insert string exceeded
     E_MLA,          ///< Missing left angle bracket
-    E_MLP,          ///< Missing (
+    E_MLP,          ///< Missing left parenthesis
     E_MMX,          ///< Maximum macro depth exceeded
     E_MOD,          ///< Invalid modifier
     E_MQX,          ///< Maximum Q-register depth exceeded
     E_MRA,          ///< Missing right angle bracket
-    E_MRP,          ///< Missing )
+    E_MRP,          ///< Missing right parenthesis
     E_MSC,          ///< Missing start of conditional
-    E_NAB,          ///< No arg before ^_
-    E_NAC,          ///< No arg before ,
-    E_NAE,          ///< No arg before =
-    E_NAP,          ///< No arg before )
-    E_NAQ,          ///< No arg before "
-    E_NAS,          ///< No arg before ;
-    E_NAU,          ///< No arg before U
-    E_NCA,          ///< Negative argument to ,
+    E_NAB,          ///< No argument before 1's complement operator
+    E_NAC,          ///< No argument before comma
+    E_NAE,          ///< No argument before equals sign
+    E_NAP,          ///< No argument before right parenthesis
+    E_NAQ,          ///< No argument before quote
+    E_NAS,          ///< No argument before semi-colon
+    E_NAU,          ///< No argument before U command
+    E_NCA,          ///< Negative argument to comma
     E_NFI,          ///< No file for input
     E_NFO,          ///< No file for output
-    E_NOA,          ///< O argument is <= 0
+    E_NOA,          ///< O argument is non-positive
     E_NON,          ///< Missing n argument
     E_NOT,          ///< O command has no tag
     E_NOW,          ///< Window support not enabled
@@ -104,7 +104,7 @@ enum errors
     E_PDO,          ///< Push-down list overflow
     E_PES,          ///< Attempt to pop empty stack
     E_POP,          ///< Attempt to move pointer off page with "x"
-    E_SNI,          ///< ; not in iteration
+    E_SNI,          ///< Semi-colon not in iteration
     E_SRH,          ///< Search failure "text"
     E_SYS,          ///< System error message
     E_TAG,          ///< Missing tag "!x!"
