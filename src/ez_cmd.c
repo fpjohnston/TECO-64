@@ -1,6 +1,6 @@
 ///
-///  @file    e_pct_cmd.c
-///  @brief   Execute E%q command.
+///  @file    ez_cmd.c
+///  @brief   Execute EZ command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -41,13 +41,13 @@
 
 
 ///
-///  @brief    Execute E%q command: write Q-register to file.
+///  @brief    Execute EZ command: write Q-register to file.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_pct(struct cmd *cmd)
+void exec_EZ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

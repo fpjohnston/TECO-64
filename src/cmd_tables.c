@@ -183,7 +183,6 @@ const uint cmd_count = countof(cmd_table); ///< No. of items in cmd_table[]
 
 const struct cmd_table cmd_e_table[] =
 {
-    { exec_E_pct,   ": @ q 1"  },
     { exec_E1,      "f m x"    },
     { exec_E2,      "f m x"    },
     { exec_E3,      "f m x"    },
@@ -218,7 +217,7 @@ const struct cmd_table cmd_e_table[] =
     { exec_EW,      ": @ 1"    },
     { exec_EX,      ""         },
     { exec_EY,      ":"        },
-    { NULL,         ""         },
+    { exec_EZ,      ": @ q 1"  },
     { exec_E_ubar,  "n : @ 1"  },
 };
 

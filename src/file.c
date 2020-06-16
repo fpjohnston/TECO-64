@@ -324,7 +324,7 @@ bool open_output(struct ofile *ofile, int c)
 {
     assert(ofile != NULL);
     assert(ofile->name != NULL);
-    assert(c == '%' || c == 'B' || c == 'W');
+    assert(c == 'B' || c == 'W' || c == 'Z');
 
     // If the output file already exists, then we create a temporary file and
     // open that instead. That allows us to make off any changes in the event

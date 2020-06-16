@@ -73,7 +73,7 @@ static exec_func *find_cmd(struct cmd *cmd)
 
     if (c == 'E')
     {
-        const char *e_cmds = "%123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+        const char *e_cmds = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
         const char *e_cmd  = strchr(e_cmds, toupper(cmd->c2));
 
         if (e_cmd == NULL)
