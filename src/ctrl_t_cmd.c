@@ -62,30 +62,39 @@ void exec_ctrl_t(struct cmd *cmd)
 
     if (cmd->n_set)                     // n argument?
     {
+        int m = 1;
         int n = cmd->n_arg;
 
-        if (cmd->colon_set || f.et.image)
+        if (cmd->m_set)
         {
-            if (n >= 0)
-            {
-                print_chr(n & 0xFF);
-            }
-            else
-            {
-                print_chr(CR);
-                print_chr(LF);
-            }
+            m = cmd->m_arg;
         }
-        else
+
+        for (int i = 0; i < m; ++i)
         {
-            if (n >= 0)
+            if (cmd->colon_set || f.et.image)
             {
-                echo_out(n & 0xFF);
+                if (n >= 0)
+                {
+                    print_chr(n & 0xFF);
+                }
+                else
+                {
+                    print_chr(CR);
+                    print_chr(LF);
+                }
             }
             else
             {
-                echo_out(CR);
-                echo_out(LF);
+                if (n >= 0)
+                {
+                    echo_out(n & 0xFF);
+                }
+                else
+                {
+                    echo_out(CR);
+                    echo_out(LF);
+                }
             }
         }
     }
