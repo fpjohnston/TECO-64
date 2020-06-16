@@ -72,7 +72,7 @@ void exec_EC(struct cmd *cmd)
         page_flush(ofile->fp);
     }
 
-    rename_output(ofile);              // Handle any required file renaming
-    close_output(ostream);
+    exec_EF(NULL);                      // Rename and close the output file
+
     close_input(istream);
 }

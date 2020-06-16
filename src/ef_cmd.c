@@ -45,6 +45,10 @@
 
 void exec_EF(struct cmd *unused1)
 {
+    struct ofile *ofile = &ofiles[ostream];
+
+    rename_output(ofile);              // Handle any required file renaming
+
     close_output(ostream);
 }
 
