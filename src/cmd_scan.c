@@ -415,18 +415,53 @@ static void scan_tail(struct cmd *cmd)
 
     if (cmd->atsign_set)                // @ modifier?
     {
-        cmd->delim = (char)fetch_cbuf(NOCMD_START); // Yes, next character is delimiter
+        int c;
+
+        while (isspace(c = fetch_cbuf(NOCMD_START)))
+        {
+            ;                           // Skip leading whitespace
+        }
+
+        cmd->delim = c;                 // Next character is delimiter
     }
 
+    int delim = cmd->delim;
+
     // Now get the text strings, if they're allowed for this command.
+    // Note that if f.e3.text is enabled and the delimiter is '{', then
+    // the text strings may be of the form {xxx}. This allows for such
+    // commands as @S {foo} or @FS {foo} {baz}.
 
     if (scan.t1_opt)
     {
-        scan_text(cmd->delim, &cmd->text1);
+        if (f.e3.text && cmd->delim == '{')
+        {
+            delim = '}';
+        }
+
+        scan_text(delim, &cmd->text1);
 
         if (scan.t2_opt)
         {
-            scan_text(cmd->delim, &cmd->text2);
+            delim = cmd->delim;
+
+            if (f.e3.text && cmd->delim == '{')
+            {
+                int c;
+
+                while (isspace(c = fetch_cbuf(NOCMD_START)))
+                {
+                    ;                   // Skip whitespace
+                }
+
+                unfetch_cbuf(c);
+
+                scan_text(delim, &cmd->text2);
+
+                delim = '}';
+            }
+
+            scan_text(delim, &cmd->text2);
         }
     }
 }

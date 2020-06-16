@@ -196,6 +196,7 @@ static void init_teco(int argc, const char * const argv[])
     f.e3.brace   = true;                // Allow braced expressions
     f.e3.tilde   = true;                // Allow tilde operator
     f.e3.msec    = true;                // Return time in milliseconds
+    f.e3.text    = true;                // Enable extended text strings
 
     // Note: this has to be first, since it will be the last called when we
     //       exit, and it might execute a system command.

@@ -103,6 +103,7 @@ union e3_flag
         uint brace  : 1;        ///< Enable braced expressions
         uint tilde  : 1;        ///< Enable tilde commands
         uint msec   : 1;        ///< Return time in milliseconds
+        uint text   : 1;        ///< Enable extended text strings
     };
 };
 
