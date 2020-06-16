@@ -146,7 +146,7 @@ void exec_EI(struct cmd *cmd)
             }
             else
             {
-                prints_err(E_FNF, last_file);
+                prints_err(E_INP, last_file);
             }
         }
 
@@ -215,7 +215,7 @@ static bool open_indirect(struct ifile *ifile)
 
     // Here if error was something other than a simple "file not found".
 
-    prints_err(E_FNF, last_file);
+    prints_err(E_INP, last_file);
 }
 
 

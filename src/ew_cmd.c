@@ -65,7 +65,7 @@ void exec_EW(struct cmd *cmd)
     {
         if (!cmd->colon_set)
         {
-            prints_err(E_UFO, ofile->name);
+            prints_err(E_OUT, ofile->name);
         }
 
         push_expr(TECO_FAILURE, EXPR_VALUE);

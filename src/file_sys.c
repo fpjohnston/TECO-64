@@ -258,7 +258,7 @@ void set_wild(const char *filename)
             print_err(E_MEM);           // Ran out of memory
 
         case GLOB_NOMATCH:
-            prints_err(E_FNF, filename); // Can't find any matches
+            prints_err(E_INP, filename); // Can't find any matches
 
         default:                        // Something unexpected
             print_err(E_SYS);

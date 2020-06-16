@@ -53,7 +53,7 @@ const char *last_file = NULL;           ///< Last opened file
 
 // Local functions
 
-static void canonical_name(char **name);
+static bool canonical_name(char **name);
 
 static void exit_files(void);
 
@@ -61,11 +61,12 @@ static void exit_files(void);
 ///
 ///  @brief    Make file name canonical.
 ///
-///  @returns  Nothing.
+///  @returns  true if name was successfully translated, else false (which may
+///            mean that the file does not exist).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void canonical_name(char **name)
+static bool canonical_name(char **name)
 {
     assert(name != NULL);
     assert(*name != NULL);
@@ -78,7 +79,9 @@ static void canonical_name(char **name)
 
     if (realpath(*name, path) == NULL)  // Get absolute path for file name
     {
-        print_err(E_SYS);
+        last_file = *name;
+
+        return false;
     }
 
     free_mem(name);                     // Deallocate previous file name
@@ -86,6 +89,8 @@ static void canonical_name(char **name)
     last_file = *name = alloc_mem((uint)strlen(path) + 1);
 
     strcpy(*name, path);
+
+    return true;
 }
 
 
@@ -264,12 +269,11 @@ int open_input(struct ifile *ifile)
     assert(ifile != NULL);
     assert(ifile->name != NULL);
 
-    if ((ifile->fp = fopen(ifile->name, "r")) == NULL)
+    if (!canonical_name(&ifile->name)
+        || ((ifile->fp = fopen(ifile->name, "r")) == NULL))
     {
         return EXIT_FAILURE;
     }
-
-    canonical_name(&ifile->name);
 
     ifile->eof = false;
     ifile->cr  = false;
@@ -289,6 +293,8 @@ int open_output(struct ofile *ofile, int c)
 {
     assert(ofile != NULL);
     assert(ofile->name != NULL);
+
+    (void)canonical_name(&ofile->name);
 
     const char *oname = ofile->name;
 
@@ -326,11 +332,6 @@ int open_output(struct ofile *ofile, int c)
     if ((ofile->fp = fopen(oname, "w")) == NULL)
     {
         return EXIT_FAILURE;
-    }
-
-    if (!ofile->backup)
-    {
-        canonical_name(&ofile->name);
     }
 
     if (c == 'L')                       // Immediately flush output to log file

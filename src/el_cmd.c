@@ -68,7 +68,7 @@ void exec_EL(struct cmd *cmd)
     {
         if (!cmd->colon_set)
         {
-            prints_err(E_UFO, last_file);
+            prints_err(E_OUT, last_file);
         }
 
         push_expr(TECO_FAILURE, EXPR_VALUE);

@@ -55,7 +55,7 @@ void exec_EN(struct cmd *cmd)
         {
             if (!cmd->colon_set)
             {
-                print_err(E_FNF);       // No more matches
+                prints_err(E_INP, "");  // No more matches
             }
 
             push_expr(TECO_FAILURE, EXPR_VALUE);

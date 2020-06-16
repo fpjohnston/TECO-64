@@ -55,7 +55,6 @@ enum errors
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag "!x!"
     E_EGC,          ///< EG command is too long
-    E_FNF,          ///< File not found "filespec"
     E_ICE,          ///< Illegal ^E command in search argument
     E_IEC,          ///< Illegal character "x" after E
     E_IFC,          ///< Illegal character "x" after F
@@ -65,6 +64,7 @@ enum errors
     E_ILL,          ///< Illegal command "x"
     E_ILN,          ///< Illegal number
     E_INI,          ///< Initializaton error
+    E_INP,          ///< Error opening input file '%s'
     E_IQC,          ///< Illegal " character
     E_IQN,          ///< Illegal Q-register name "x"
     E_IRA,          ///< Illegal radix argument to ^R
@@ -100,6 +100,7 @@ enum errors
     E_NYA,          ///< Numeric argument with Y
     E_NYI,          ///< Not yet implemented
     E_OFO,          ///< Output file already open
+    E_OUT,          ///< Error opening output file '%s'
     E_PDO,          ///< Push-down list overflow
     E_PES,          ///< Attempt to pop empty stack
     E_POP,          ///< Attempt to move pointer off page with "x"
@@ -108,7 +109,6 @@ enum errors
     E_SYS,          ///< System error message
     E_TAG,          ///< Missing tag "!x!"
     E_T10,          ///< TECO-10 command not implemented
-    E_UFO,          ///< Unable to open file "x" for output
     E_UMA,          ///< Unused m argument
     E_UNA,          ///< Unused n argument
     E_UTC,          ///< Unterminated command string

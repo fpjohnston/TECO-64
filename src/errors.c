@@ -67,7 +67,6 @@ static struct err_table err_table[] =
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
     [E_EGC] = { "EGC",  "EG command is too long" },
-    [E_FNF] = { "FNF",  "File not found '%s'" },
     [E_ICE] = { "ICE",  "Illegal ^E command in search argument" },
     [E_IEC] = { "IEC",  "Illegal character '%s' after E" },
     [E_IFC] = { "IFC",  "Illegal character '%s' after F" },
@@ -77,6 +76,7 @@ static struct err_table err_table[] =
     [E_ILL] = { "ILL",  "Illegal command '%s'" },
     [E_ILN] = { "ILN",  "Illegal number" },
     [E_INI] = { "INI",  "Initialization error" },
+    [E_INP] = { "INP",  "Error opening input file '%s'" },
     [E_IQC] = { "IQC",  "Illegal \" character" },
     [E_IQN] = { "IQN",  "Illegal Q-register name '%s'" },
     [E_IRA] = { "IRA",  "Illegal radix argument to ^R" },
@@ -112,6 +112,7 @@ static struct err_table err_table[] =
     [E_NYA] = { "NYA",  "Numeric argument with Y" },
     [E_NYI] = { "NYI",  "Not yet implemented" },
     [E_OFO] = { "OFO",  "Output file already open" },
+    [E_OUT] = { "OUT",  "Error opening output file '%s'" },
     [E_PDO] = { "PDO",  "Push-down list overflow" },
     [E_PES] = { "PES",  "Can't pop from empty push-down stack" },
     [E_POP] = { "POP",  "Attempt to move pointer off page with '%s'" },
@@ -120,7 +121,6 @@ static struct err_table err_table[] =
     [E_SYS] = { "SYS",  "%s" },
     [E_TAG] = { "TAG",  "Missing tag '!%s!'" },
     [E_T10] = { "T10",  "TECO-10 command not implemented" },
-    [E_UFO] = { "UFO",  "Unable to open file '%s' for output" },
     [E_UMA] = { "UMA",  "Unused m argument" },
     [E_UNA] = { "UNA",  "Unused n argument" },
     [E_UTC] = { "UTC",  "Unterminated command string" },
@@ -153,10 +153,6 @@ static const char *verbose[] =
 
     [E_EGC] = "An EG command was longer than 200 characters.",
 
-    [E_FNF] = "The requested input file could not be located. If this "
-              "occurred within a macro, the colon modified ER or EB "
-              "command may be necessary.",
-
     [E_ICE] = "A search argument contains a ^E command that is either "
               "not defined or incomplete. The only valid ^E commands "
               "in search arguments are: ^EA, ^ED, ^EV, ^EW, ^EL, ^ES, "
@@ -181,6 +177,8 @@ static const char *verbose[] =
               "to octal.",
 
     [E_INI] = "A fatal error occurred during TECO initialization.",
+
+    [E_INP] = "An error occurred while trying to open an input file.",
 
     [E_IQC] = "One of the valid \" commands did not follow the \". Refer "
               "to Section 5.14 (conditional execution commands) for "
@@ -287,6 +285,8 @@ static const char *verbose[] =
               "output file, but an output file currently is open. It "
               "is typically appropriate to use the EC or EK command as "
               "the situation calls for to close the output file.",
+
+    [E_OUT] = "An error occurred while trying to open an output file.",
 
     [E_PDO] = "The command string has become too complex. Simplify it.",
 

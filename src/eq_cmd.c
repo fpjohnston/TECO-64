@@ -69,7 +69,7 @@ void exec_EQ(struct cmd *cmd)
     {
         if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
         {
-            prints_err(E_FNF, last_file);
+            prints_err(E_INP, last_file);
         }
 
         push_expr(TECO_FAILURE, EXPR_VALUE);
