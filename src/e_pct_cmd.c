@@ -60,7 +60,7 @@ void exec_E_pct(struct cmd *cmd)
 
     init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
 
-    if (open_output(ofile, cmd->c2) == EXIT_FAILURE)
+    if (!open_output(ofile, toupper(cmd->c2)))
     {
         if (!cmd->colon_set)
         {

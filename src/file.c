@@ -84,7 +84,8 @@ static bool canonical_name(char **name)
         return false;
     }
 
-    free_mem(name);                     // Deallocate previous file name
+    free_mem(name);                     // Deallocate previous file names
+    free_mem(&last_file);
 
     last_file = *name = alloc_mem((uint)strlen(path) + 1);
 
@@ -114,6 +115,11 @@ void close_input(uint stream)
 
     ifile->eof  = false;
     ifile->cr   = false;
+
+    if (last_file != ifile->name)
+    {
+        free_mem(&ifile->name);
+    }
 }
 
 
@@ -140,7 +146,10 @@ void close_output(uint stream)
 
     if (!ofile->backup)
     {
-        free_mem(&ofile->name);
+        if (last_file != ofile->name)
+        {
+            free_mem(&ofile->name);
+        }
     }
 
     free_mem(&ofile->temp);
@@ -180,7 +189,7 @@ static void exit_files(void)
 
     istream = IFILE_PRIMARY;
 
-    last_file = NULL;
+    free_mem(&last_file);
 }
 
 
@@ -283,45 +292,57 @@ int open_input(struct ifile *ifile)
 
 
 ///
-///  @brief    Open file for output.
+///  @brief    Open log file.
 ///
-///  @returns  EXIT_SUCCESS or EXIT_FAILURE.
+///  @returns  true if success, false if failure.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int open_output(struct ofile *ofile, int c)
+bool open_log(struct ofile *ofile)
 {
     assert(ofile != NULL);
     assert(ofile->name != NULL);
 
+    if ((ofile->fp = fopen(ofile->name, "a")) == NULL)
+    {
+        return false;
+    }
+
     (void)canonical_name(&ofile->name);
+
+    // Write log output immediately and do not buffer.
+
+    (void)setvbuf(ofile->fp, NULL, _IONBF, 0uL);
+
+    return true;
+}
+
+
+///
+///  @brief    Open file for output.
+///
+///  @returns  true if success, false if failure.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool open_output(struct ofile *ofile, int c)
+{
+    assert(ofile != NULL);
+    assert(ofile->name != NULL);
+    assert(c == '%' || c == 'B' || c == 'W');
+
+    // If the output file already exists, then we create a temporary file and
+    // open that instead. That allows us to make off any changes in the event
+    // of an EK command. If the file is closed normally, we will rename the
+    // original, and then rename the temp file.
 
     const char *oname = ofile->name;
 
-    c = toupper(c);
-
-    if (ofile->fp != NULL)
-    {
-        if (c != 'L')                   // Can't reopen if not EL command
-        {
-            print_err(E_OFO);           // Output file is already open
-        }
-
-        close_output(OFILE_LOG);        // Re-opening a log file is okay
-    }
-    else
-    {
-        free_mem(&ofile->temp);
-    }
-
     if (access(oname, F_OK) == 0)       // Does file already exist?
     {
-        if (c != 'L')                   // Create temp file unless EL command
-        {
-            init_temp(&ofile->temp, oname);
+        init_temp(&ofile->temp, oname);
 
-            oname = ofile->temp;
-        }
+        oname = ofile->temp;
 
         if (c == 'W')                   // Issue warnings if EW command
         {
@@ -331,17 +352,15 @@ int open_output(struct ofile *ofile, int c)
 
     if ((ofile->fp = fopen(oname, "w")) == NULL)
     {
-        return EXIT_FAILURE;
+        return false;
     }
 
-    if (c == 'L')                       // Immediately flush output to log file
-    {
-        (void)setvbuf(ofile->fp, NULL, _IONBF, 0uL);
-    }
-    else if (c == 'B' || c == 'W')
+    (void)canonical_name(&ofile->name);
+
+    if (c == 'B' || c == 'W')           // Save file name for EB or EW
     {
         write_memory(ofile->name);
     }
 
-    return EXIT_SUCCESS;
+    return true;
 }

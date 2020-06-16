@@ -114,7 +114,9 @@ extern void init_files(void);
 
 extern int open_input(struct ifile *ifile);
 
-extern int open_output(struct ofile *ofile, int c);
+extern bool open_log(struct ofile *ofile);
+
+extern bool open_output(struct ofile *ofile, int c);
 
 extern void read_memory(char *p, uint len);
 

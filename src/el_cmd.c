@@ -62,9 +62,11 @@ void exec_EL(struct cmd *cmd)
 
     struct ofile *ofile = &ofiles[OFILE_LOG];
 
+    close_output(OFILE_LOG);            // Close any open file
+
     init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
 
-    if (open_output(ofile, cmd->c2) == EXIT_FAILURE)
+    if (!open_log(ofile))
     {
         if (!cmd->colon_set)
         {
