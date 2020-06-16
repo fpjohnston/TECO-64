@@ -32,6 +32,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "estack.h"
 #include "exec.h"
@@ -61,15 +62,31 @@ void exec_ctrl_t(struct cmd *cmd)
 
     if (cmd->n_set)                     // n argument?
     {
-        int n = cmd->n_arg & 0xFF;      // Limit value to 8 bits
+        int n = cmd->n_arg;
 
         if (cmd->colon_set || f.et.image)
         {
-            print_chr(n);
+            if (n >= 0)
+            {
+                print_chr(n & 0xFF);
+            }
+            else
+            {
+                print_chr(CR);
+                print_chr(LF);
+            }
         }
         else
         {
-            echo_out(n);
+            if (n >= 0)
+            {
+                echo_out(n & 0xFF);
+            }
+            else
+            {
+                echo_out(CR);
+                echo_out(LF);
+            }
         }
     }
     else
