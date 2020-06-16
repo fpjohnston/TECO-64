@@ -182,6 +182,11 @@ static void exit_files(void)
 
         struct ifile *ifile = &ifiles[i];
 
+        if (last_file == ifile->name)
+        {
+            last_file = NULL;
+        }
+
         free_mem(&ifile->name);
 
         ifile->name = NULL;
