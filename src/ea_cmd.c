@@ -49,6 +49,6 @@ void exec_EA(struct cmd *cmd)
 
     ostream = OFILE_SECONDARY;
 
-    last_file = ofiles[ostream].name;
+    set_last(ofiles[ostream].name);
 }
 

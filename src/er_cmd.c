@@ -54,7 +54,7 @@ void exec_ER(struct cmd *cmd)
     {
         istream = IFILE_PRIMARY;
 
-        last_file = ifiles[istream].name;
+        set_last(ifiles[istream].name);
 
         return;
     }

@@ -187,7 +187,7 @@ int find_eg(char *cmd, bool reset)
             strcpy(eg_result, result);
         }
 
-        last_file = eg_result;
+        set_last(eg_result);
     }
 
     return -1;

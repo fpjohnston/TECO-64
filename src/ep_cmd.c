@@ -49,5 +49,5 @@ void exec_EP(struct cmd *cmd)
 
     istream = IFILE_SECONDARY;
 
-    last_file = ifiles[istream].name;
+    set_last(ifiles[istream].name);
 }

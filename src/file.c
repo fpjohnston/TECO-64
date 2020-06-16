@@ -49,7 +49,7 @@ uint istream = IFILE_PRIMARY;           ///< Current input stream
 
 uint ostream = OFILE_PRIMARY;           ///< Current output stream
 
-const char *last_file = NULL;           ///< Last opened file
+char *last_file = NULL;                 ///< Last opened file
 
 // Local functions
 
@@ -79,17 +79,18 @@ static bool canonical_name(char **name)
 
     if (realpath(*name, path) == NULL)  // Get absolute path for file name
     {
-        last_file = *name;
+        set_last(*name);
 
         return false;
     }
 
-    free_mem(name);                     // Deallocate previous file names
-    free_mem(&last_file);
+    free_mem(name);                     // Deallocate previous file name
 
-    last_file = *name = alloc_mem((uint)strlen(path) + 1);
+    *name = alloc_mem((uint)strlen(path) + 1);
 
     strcpy(*name, path);
+
+    set_last(*name);
 
     return true;
 }
@@ -116,10 +117,7 @@ void close_input(uint stream)
     ifile->eof  = false;
     ifile->cr   = false;
 
-    if (last_file != ifile->name)
-    {
-        free_mem(&ifile->name);
-    }
+    free_mem(&ifile->name);
 }
 
 
@@ -146,10 +144,7 @@ void close_output(uint stream)
 
     if (!ofile->backup)
     {
-        if (last_file != ofile->name)
-        {
-            free_mem(&ofile->name);
-        }
+        free_mem(&ofile->name);
     }
 
     free_mem(&ofile->temp);
@@ -181,11 +176,6 @@ static void exit_files(void)
         close_input(i);
 
         struct ifile *ifile = &ifiles[i];
-
-        if (last_file == ifile->name)
-        {
-            last_file = NULL;
-        }
 
         free_mem(&ifile->name);
 
@@ -368,4 +358,25 @@ bool open_output(struct ofile *ofile, int c)
     }
 
     return true;
+}
+
+
+///
+///  @brief    Save name of last file opened.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void set_last(const char *name)
+{
+    assert(name != NULL);
+
+    free_mem(&last_file);
+
+    // Make copy of name of last file opened.
+
+    last_file = alloc_mem((uint)strlen(name) + 1);
+
+    strcpy(last_file, name);
 }

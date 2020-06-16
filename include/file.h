@@ -96,7 +96,7 @@ extern struct ofile ofiles[];
 
 extern uint istream, ostream;
 
-extern const char *last_file;
+extern char *last_file;
 
 // File functions
 
@@ -121,6 +121,8 @@ extern bool open_output(struct ofile *ofile, int c);
 extern void read_memory(char *p, uint len);
 
 extern void rename_output(struct ofile *ofile);
+
+extern void set_last(const char *name);
 
 extern void set_wild(const char *filename);
 

@@ -128,7 +128,7 @@ int get_wild(void)
 
             if (S_ISREG(file_stat.st_mode))
             {
-                last_file = filename;
+                set_last(filename);
 
                 return EXIT_SUCCESS;
             }

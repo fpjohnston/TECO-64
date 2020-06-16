@@ -116,7 +116,7 @@ void exec_EI(struct cmd *cmd)
 
         init_filename(&ifile->name, name1, (uint)len);
 
-        last_file = ifile->name;
+        set_last(ifile->name);
 
         // Try to open file; if failure, and file name does
         // not have a dot, then add ".tec" and try again.
