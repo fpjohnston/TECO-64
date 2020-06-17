@@ -21,22 +21,22 @@ int main(int argc, char *argv[])
 
         if (--argc)
         {
-            length = strtol(argv[2], NULL, 10);
+            ff = strtol(argv[2], NULL, 10);
 
-            if (length != 50 && length != 64)
+            if (ff < 0)
             {
-                printf("length must be 50 or 64\n");
+                printf("ff cannot be < 0\n");
 
                 return EXIT_FAILURE;
             }
 
             if (--argc)
             {
-                ff = strtol(argv[3], NULL, 10);
+                length = strtol(argv[3], NULL, 10);
 
-                if (ff < 0)
+                if (length != 50 && length != 64)
                 {
-                    printf("ff cannot be < 0\n");
+                    printf("length must be 50 or 64\n");
 
                     return EXIT_FAILURE;
                 }
@@ -46,8 +46,10 @@ int main(int argc, char *argv[])
 
     for (int i = 1; i <= count; ++i)
     {
-        printf("%03d: %.*s\n", i, length - 6,
-               "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        int nbytes = printf("Line %05d: ", i) + 1;
+
+        printf("%.*s\n", length - nbytes, "abcdefghijklmnopqrstuvwxyz "
+               "0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
         if (ff != 0 && !(i % ff))
         {
