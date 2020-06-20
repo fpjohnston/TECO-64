@@ -71,7 +71,6 @@ enum errors
     E_ISA,          ///< Illegal search argument
     E_ISS,          ///< Illegal search string
     E_IUC,          ///< Illegal character "x" following ^
-    E_MAP,          ///< Missing apostrophe
     E_MEM,          ///< Memory overflow
     E_MIX,          ///< Maximum insert string exceeded
     E_MLA,          ///< Missing left angle bracket
@@ -79,7 +78,6 @@ enum errors
     E_MMX,          ///< Maximum macro depth exceeded
     E_MOD,          ///< Invalid modifier
     E_MQX,          ///< Maximum Q-register depth exceeded
-    E_MRA,          ///< Missing right angle bracket
     E_MRP,          ///< Missing right parenthesis
     E_MSC,          ///< Missing start of conditional
     E_NAB,          ///< No argument before 1's complement operator
@@ -93,7 +91,7 @@ enum errors
     E_NFI,          ///< No file for input
     E_NFO,          ///< No file for output
     E_NOA,          ///< O argument is non-positive
-    E_NON,          ///< Missing n argument
+    E_NON,          ///< Missing n argument after m argument
     E_NOT,          ///< O command has no tag
     E_NOW,          ///< Window support not enabled
     E_NPA,          ///< P or PW argument is negative

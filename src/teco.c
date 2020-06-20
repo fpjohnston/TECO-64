@@ -131,16 +131,6 @@ int main(int argc, const char * const argv[])
                 init_expr();            // Initialize expression stack
                 exec_cmd();             // Execute what we have
 
-                if (loop_depth != 0)
-                {
-                    print_err(E_MRA);   // Missing right angle bracket
-                }
-
-                if (if_depth != 0)
-                {
-                    print_err(E_MAP);   // Missing apostrophe
-                }
-
                 f.e0.error = false;     // Command completed w/o error
 
                 break;

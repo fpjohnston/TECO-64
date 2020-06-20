@@ -83,7 +83,7 @@ static void endif(struct cmd *cmd, bool else_ok)
     {
         if (next_cmd(cmd) == NULL)
         {
-            print_err(E_MAP);           // Missing apostrophe
+            print_err(E_UTQ);           // Unterminated conditional
         }
 
         if (f.e0.strict)

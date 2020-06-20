@@ -83,7 +83,6 @@ static struct err_table err_table[] =
     [E_ISA] = { "ISA",  "Illegal search argument" },
     [E_ISS] = { "ISS",  "Illegal search string" },
     [E_IUC] = { "IUC",  "Illegal character '%s' following ^" },
-    [E_MAP] = { "MAP",  "Missing apostrophe" },
     [E_MEM] = { "MEM",  "Memory overflow" },
     [E_MIX] = { "MIX",  "Maximum insert string exceeded" },
     [E_MLA] = { "MLA",  "Missing left angle bracket" },
@@ -91,7 +90,6 @@ static struct err_table err_table[] =
     [E_MMX] = { "MMX",  "Maximum macro depth exceeded" },
     [E_MOD] = { "MOD",  "Invalid command modifier" },
     [E_MQX] = { "MQX",  "Maximum Q-register depth exceeded" },
-    [E_MRA] = { "MRA",  "Missing right angle bracket" },
     [E_MRP] = { "MRP",  "Missing right parenthesis" },
     [E_MSC] = { "MSC",  "Missing start of conditional" },
     [E_NAB] = { "NAB",  "No argument before 1's complement operator" },
@@ -200,9 +198,6 @@ static const char *verbose[] =
               "between 100 and 137 inclusive or between 141 and 172 "
               "inclusive.",
 
-    [E_MAP] = "Every conditional (opened with the \" command) must be "
-              "closed with the ' command.",
-
     [E_MEM] = "Insufficient memory available to complete the current "
               "command. Make sure the Q-register area does not contain "
               "much unnecessary text. Breaking up the text area into "
@@ -218,10 +213,6 @@ static const char *verbose[] =
     [E_MOD] = "A modifier (:, ::, or @) was specified that was invalid "
               "for a command, occurred in the middle of an expression, "
               "or duplicated another modifier.",
-
-    [E_MRA] = "There is a left angle bracket that has no matching right "
-              "angle bracket. An iteration must be complete within the "
-              "macro or command.",
 
     [E_MRP] = "There is a left parenthesis that is not matched by a "
               "corresponding right parenthesis.",
@@ -332,7 +323,9 @@ static const char *verbose[] =
               "(i.e., unterminated ! construct), or a missing ' "
               "character which closes a conditional execution command.",
 
-    [E_UTL] = "A loop was not properly terminated inside a conditional.",
+    [E_UTL] = "There is a right angle bracket that has no matching left "
+              "angle bracket. An iteration must be complete within the "
+              "macro or command.",
 
     [E_UTM] = "This error is that same as the ?UTC error except that the "
               "unterminated command was executing from a Q-register "
@@ -340,7 +333,8 @@ static const char *verbose[] =
               "sequence stored in a q-register must be complete within "
               "the Q-register.)",
 
-    [E_UTQ] = "A conditional was not properly terminated inside a loop.",
+    [E_UTQ] = "Every conditional started with the \" command must be "
+              "terminated with the ' command.",
 
     [E_WIN] = "Window error occurred. More information is TBD.",
 
