@@ -27,7 +27,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <errno.h>
 
 #if     defined(SCOPE)
 
@@ -55,9 +54,6 @@
 #include "errors.h"
 #include "term.h"
 #include "window.h"
-
-
-#define SATMAX      1000                ///< Maximum color saturation
 
 
 ///
@@ -131,13 +127,7 @@ static struct display
 //  @brief  Table of colors
 //
 
-static const struct
-{
-    const char *name;
-    uint red;
-    uint green;
-    uint blue;
-} color_table[] =
+const struct color_table color_table[] =
 {
     [COLOR_BLACK]   = { "BLACK",        0,      0,      0, },
     [COLOR_RED]     = { "RED",     SATMAX,      0,      0, },
@@ -155,8 +145,6 @@ static const struct
 static void error_win(void);
 
 static void exit_win(void);
-
-static int find_color(const char *token);
 
 static void mark_cursor(int row, int col);
 
@@ -268,7 +256,7 @@ static void exit_win(void)
 
 #if     defined(SCOPE)
 
-static int find_color(const char *token)
+int find_color(const char *token)
 {
     if (token == NULL)
     {
@@ -883,14 +871,8 @@ void reset_win(void)
 
 
 ///
-///  @brief    Set window colors. This is used for two purposes; one, to set the
-///            foreground and background colors for a region (command window,
-///            text window, and status line), and two, to set the saturation
-///            levels for the colors we use. ncurses allows these levels to
-///            range from 0 to 1000. Colors are defined with separate levels for
-///            red, green, and blue. Note that setting a level only makes sense
-///            for colors other than black, since black is defined as having
-///            red, green, and blue all 0.
+///  @brief    Set foreground and background colors for our three window
+///            regions: command, text, and status line).
 ///
 ///  @returns  Nothing.
 ///
@@ -918,51 +900,9 @@ void set_colors(const char *keyword, char *value)
     {
         region = &d.status;
     }
-    else                                // Not a region, so check colors.
+    else
     {
-        int color = find_color(keyword);
-
-        if (color == -1)
-        {
-            print_err(E_WIN);
-        }
-
-        char *endptr;
-        uint saturation;                // Color saturation
-
-        if (*value == NUL)              // Anything specified?
-        {
-            saturation = SATMAX;        // No, just use the maximum
-        }
-        else
-        {
-            saturation = (uint)strtoul(value, &endptr, 10);
-
-            if (errno != 0 || *endptr != NUL)
-            {
-                if (errno == 0)
-                {
-                    errno = EINVAL;
-                }
-
-                print_err(E_SYS);
-            }
-
-            if (saturation > SATMAX)    // Make sure it's within range
-            {
-                saturation = SATMAX;
-            }
-        }
-
-        // Adjust color saturation
-
-        short red   = (short)(color_table[color].red   * saturation / SATMAX);
-        short green = (short)(color_table[color].green * saturation / SATMAX);
-        short blue  = (short)(color_table[color].blue  * saturation / SATMAX);
-
-        (void)init_color((short)color, red, green, blue);
-
-        return;
+        print_err(E_WIN);
     }
 
     char *saveptr;

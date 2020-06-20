@@ -42,6 +42,8 @@
 
 #endif
 
+#define SATMAX      1000            ///< Maximum color saturation
+
 ///  @struct  tchar
 ///  @brief   Terminal characteristics flag.
 
@@ -81,11 +83,29 @@ struct watch
 
 extern struct watch w;
 
+//
+//  @var    color_table
+//
+//  @brief  Table of colors
+//
+
+struct color_table
+{
+    const char *name;
+    uint red;
+    uint green;
+    uint blue;
+};
+
+extern const struct color_table color_table[];
+
 // Window functions
 
 extern bool clear_eol(void);
 
 extern void clear_win(void);
+
+extern int find_color(const char *token);
 
 extern int getchar_win(bool wait);
 
