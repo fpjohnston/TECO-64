@@ -83,7 +83,8 @@ void exec_EB(struct cmd *cmd)
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
 
-    ofile->name = ifile->name;          // Output file name same as input
+    init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
+
     ofile->backup = true;
 
     if (!open_output(ofile, toupper(cmd->c2)))

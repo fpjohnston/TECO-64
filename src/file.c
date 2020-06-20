@@ -139,14 +139,7 @@ void close_output(uint stream)
         ofile->fp = NULL;
     }
 
-    // If we're here after an EB command, then the output name points to the
-    // same allocated string as the input name.
-
-    if (!ofile->backup)
-    {
-        free_mem(&ofile->name);
-    }
-
+    free_mem(&ofile->name);
     free_mem(&ofile->temp);
 
     ofile->name   = NULL;
