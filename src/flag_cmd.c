@@ -331,7 +331,21 @@ void exec_E5(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    (void)check_n_flag(cmd, &f.e5);
+    if (cmd->n_set)
+    {
+        if (cmd->n_arg == NUL || isgraph(cmd->n_arg))
+        {
+            f.e5 = cmd->n_arg;
+        }
+        else
+        {
+            print_err(E_ARG);           // Bad argument
+        }
+    }
+    else
+    {
+        f.e5 = NUL;
+    }
 }
 
 
