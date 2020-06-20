@@ -422,7 +422,7 @@ static void scan_tail(struct cmd *cmd)
             ;                           // Skip leading whitespace
         }
 
-        cmd->delim = c;                 // Next character is delimiter
+        cmd->delim = (char)c;           // Next character is delimiter
     }
 
     int delim = cmd->delim;
