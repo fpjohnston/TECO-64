@@ -120,6 +120,8 @@ extern const uint cmd_e_count;
 
 extern const uint cmd_f_count;
 
+extern char *eg_result;
+
 extern bool ei_active;
 
 // Miscellaneous functions

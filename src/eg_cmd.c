@@ -27,6 +27,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,9 +40,8 @@
 #include "exec.h"
 #include "file.h"
 
-#define MAX_EG      200                 ///< Max. length of EG command.
 
-char eg_command[MAX_EG + 1];            ///< EG command to be executed.
+char eg_command[PATH_MAX];              ///< EG command to be executed on exit.
 
 
 ///
@@ -55,21 +55,25 @@ void exec_EG(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len > MAX_EG)
+    if (cmd->text1.len > sizeof(eg_command) - 1)
     {
         print_err(E_EGC);               // EG command is too long
     }
     
-    sprintf(eg_command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
-
     if (cmd->colon_set || cmd->dcolon_set)
     {
-        int status = find_eg(eg_command, cmd->dcolon_set);
+        char command[PATH_MAX];         // Local command
+
+        sprintf(command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+
+        int status = find_eg(command, cmd->dcolon_set);
 
         push_expr(status, EXPR_VALUE);
 
         return;
     }
+
+    sprintf(eg_command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
 
     // The following ensures that we don't exit if we have nowhere to output
     // the data in the buffer to.

@@ -265,9 +265,9 @@ exec_func *scan_cmd(struct cmd *cmd)
 
         if (!isalnum(c))
         {
-            // The following allows use of G* and G_
+            // The following allows use of G* and G$ and G_
 
-            if (toupper(cmd->c1) != 'G' || (c != '*' && c != '_'))
+            if (toupper(cmd->c1) != 'G' || (c != '*' && c != '$' && c != '_'))
             {
                 printc_err(E_IQN, c);   // Illegal Q-register name
             }

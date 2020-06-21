@@ -32,6 +32,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "exec.h"
 #include "file.h"
@@ -62,6 +63,15 @@ void exec_G(struct cmd *cmd)
         {
             print_str("%s", last_file);
         }
+        else if (cmd->qname == '$')     // :G$ -> print command output
+        {
+            const char *p = eg_result;
+
+            while (*p != NUL)
+            {
+                print_chr(*p++);
+            }
+        }
         else if (cmd->qname == '_')     // :G_ -> print search string buffer
         {
             if (last_search.len != 0)
@@ -84,9 +94,22 @@ void exec_G(struct cmd *cmd)
             }
             else
             {
-                exec_insert(last_file, (uint)strlen(last_file));
-
                 last_len = (uint)strlen(last_file);
+
+                exec_insert(last_file, last_len);
+            }
+        }
+        else if (cmd->qname == '$')     // G* -> copy EG result to buffer
+        {
+            if (eg_result == NULL || strlen(eg_result) == 0)
+            {
+                last_len = 0;
+            }
+            else
+            {
+                last_len = (uint)strlen(eg_result);
+
+                exec_insert(eg_result, last_len);
             }
         }
         else if (cmd->qname == '_')     // G_ -> copy search string to buffer
@@ -97,9 +120,9 @@ void exec_G(struct cmd *cmd)
             }
             else
             {
-                exec_insert(last_search.buf, last_search.len);
-
                 last_len = last_search.len;
+
+                exec_insert(last_search.buf, last_len);
             }
         }
         else                           // Gq -> copy Q-register to buffer
@@ -110,9 +133,9 @@ void exec_G(struct cmd *cmd)
 
             if (qreg->text.size != 0)
             {
-                exec_insert(qreg->text.buf, qreg->text.len);
-
                 last_len = qreg->text.len;
+
+                exec_insert(qreg->text.buf, last_len);
             }
         }
     }

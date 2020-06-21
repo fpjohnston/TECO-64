@@ -41,7 +41,7 @@
 #include "term.h"
 
 
-static char *eg_result;                 ///< Result of EG command
+char *eg_result = NULL;
 
 #if    0 // TODO: what to do with the following?
 
@@ -79,6 +79,8 @@ f
 
 // Local functions
 
+static int get_cmd(char *cmd);
+
 static void read_value(const char *var, uint *value);
 
 
@@ -91,8 +93,6 @@ static void read_value(const char *var, uint *value);
 
 void exit_EG(void)
 {
-    free_mem(&eg_result);
-
     if (eg_command[0] != NUL)
     {
         if (execlp("/bin/sh", "sh", "-c", eg_command, NULL) == -1)
@@ -110,14 +110,23 @@ void exit_EG(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int find_eg(char *cmd, bool reset)
+int find_eg(char *cmd, bool dcolon)
 {
     assert(cmd != NULL);
 
-    char *arg = strchr(cmd, ' ');
+    if (dcolon)
+    {
+        return get_cmd(cmd);
+    }
+    
+    char buf[PATH_MAX];
     const char *env;
+    char *arg;
+    bool reset = false;
 
-    if (arg != NULL)
+    strcpy(buf, cmd);
+    
+    if ((arg = strchr(buf, ' ')) != NULL)
     {
         *arg++ = NUL;
 
@@ -140,19 +149,19 @@ int find_eg(char *cmd, bool reset)
     //  :EGcmd text' - Sets environment variable 'cmd' to 'text'.
     //
 
-    if (!strcasecmp(cmd, "INI"))
+    if (!strcasecmp(buf, "INI"))
     {
         env = "TECO_INIT";
     }
-    else if (!strcasecmp(cmd, "LIB"))
+    else if (!strcasecmp(buf, "LIB"))
     {
         env = "TECO_LIBRARY";
     }
-    else if (!strcasecmp(cmd, "MEM"))
+    else if (!strcasecmp(buf, "MEM"))
     {
         env = "TECO_MEMORY";
     }
-    else if (!strcasecmp(cmd, "VTE"))
+    else if (!strcasecmp(buf, "VTE"))
     {
         env = "TECO_VTEDIT";
     }
@@ -176,21 +185,66 @@ int find_eg(char *cmd, bool reset)
     {
         const char *result = getenv(env);
 
-        if (result == NULL)
-        {
-            free_mem(&eg_result);
-        }
-        else
-        {
-            eg_result = alloc_mem((uint)strlen(result) + 1);
-
-            strcpy(eg_result, result);
-        }
-
-        set_last(eg_result);
+        set_last(result);
     }
 
     return -1;
+}
+
+
+///
+///  @brief    Get command status and output from child process.
+///
+///  @returns  -1 = success, 0 = unsupported, 1 = failure.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int get_cmd(char *cmd)
+{
+    assert(cmd != NULL);
+
+    char buf[PATH_MAX];                 //< General purpose buffer
+    FILE *fp;                           //< File description for pipe
+    uint size = 0;                      //< Total no. of bytes read
+    uint nbytes;                        //< No. of bytes from last read
+
+    sprintf(buf, "%s 2>&1", cmd);       // Capture stderr as well as stdout
+
+    free_mem(&eg_result);
+
+    if ((fp = popen(buf, "r")) == NULL)
+    {
+        return 1;
+    }
+
+    while ((nbytes = (uint)fread(buf, 1uL, sizeof(buf), fp)) > 0)
+    {
+        if (size == 0)
+        {
+            eg_result = alloc_mem(nbytes + 1);
+        }
+        else
+        {
+            eg_result = expand_mem(eg_result, size + 1, size + nbytes + 1);
+        }
+
+        memcpy(eg_result + size, buf, (ulong)nbytes);
+
+        size += nbytes;
+    }
+
+    int retval = pclose(fp);            //< Close pipe and get status
+
+    if (retval == 0)
+    {
+        return -1;
+    }
+    else
+    {
+        free_mem(&eg_result);
+
+        return retval < 0 ? 1 : retval;
+    }
 }
 
 

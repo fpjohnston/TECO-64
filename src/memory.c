@@ -33,6 +33,7 @@
 
 #include "teco.h"
 #include "errors.h"
+#include "exec.h"
 
 #define DEBUG_MEMORY
 
@@ -204,6 +205,8 @@ static void delete_mblock(void *p1)
 
 static void exit_memory(void)
 {
+    free_mem(&eg_result);               // TODO: add comment to explain this
+
     struct mblock *p = mroot;
     struct mblock *next;
 
