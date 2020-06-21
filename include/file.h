@@ -124,7 +124,7 @@ extern void rename_output(struct ofile *ofile);
 
 extern void set_last(const char *name);
 
-extern void set_wild(const char *filename);
+extern bool set_wild(const char *filename);
 
 extern void write_memory(const char *file);
 

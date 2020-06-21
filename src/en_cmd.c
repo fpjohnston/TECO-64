@@ -80,11 +80,23 @@ void exec_EN(struct cmd *cmd)
 
         free_mem(&temp);
 
-        set_wild(filespec);
-
-        if (cmd->colon_set)
+        if (set_wild(filespec))
         {
-            push_expr(TECO_SUCCESS, EXPR_VALUE);
+            if (cmd->colon_set)
+            {
+                push_expr(TECO_SUCCESS, EXPR_VALUE);
+            }
+        }
+        else
+        {
+            if (cmd->colon_set)
+            {
+                push_expr(TECO_FAILURE, EXPR_VALUE);
+            }
+            else
+            {
+                prints_err(E_MAT, filespec); // No match found for file spec.
+            }
         }
     }
 }

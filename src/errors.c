@@ -83,6 +83,7 @@ static struct err_table err_table[] =
     [E_ISA] = { "ISA",  "Illegal search argument" },
     [E_ISS] = { "ISS",  "Illegal search string" },
     [E_IUC] = { "IUC",  "Illegal character '%s' following ^" },
+    [E_MAT] = { "MAT",  "No match for file specification" },
     [E_MEM] = { "MEM",  "Memory overflow" },
     [E_MIX] = { "MIX",  "Maximum insert string exceeded" },
     [E_MLA] = { "MLA",  "Missing left angle bracket" },
@@ -197,6 +198,9 @@ static const char *verbose[] =
     [E_IUC] = "The character following a ^ must have an ASCII value "
               "between 100 and 137 inclusive or between 141 and 172 "
               "inclusive.",
+
+    [E_MAT] = "No match was found for the file specification for an EN "
+              "command.",
 
     [E_MEM] = "Insufficient memory available to complete the current "
               "command. Make sure the Q-register area does not contain "

@@ -229,11 +229,11 @@ void rename_output(struct ofile *ofile)
 ///
 ///  @brief    Set wildcard filename buffer.
 ///
-///  @returns  Nothing.
+///  @returns  true if we found a match, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void set_wild(const char *filename)
+bool set_wild(const char *filename)
 {
     int flags;
 
@@ -252,13 +252,13 @@ void set_wild(const char *filename)
         case 0:                         // Success
             next_file = &pglob.gl_pathv[0];
 
-            break;
+            return true;
 
         case GLOB_NOSPACE:
             print_err(E_MEM);           // Ran out of memory
 
         case GLOB_NOMATCH:
-            prints_err(E_INP, filename); // Can't find any matches
+            return false;               // No matches
 
         default:                        // Something unexpected
             print_err(E_SYS);

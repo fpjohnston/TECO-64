@@ -71,6 +71,7 @@ enum errors
     E_ISA,          ///< Illegal search argument
     E_ISS,          ///< Illegal search string
     E_IUC,          ///< Illegal character "x" following ^
+    E_MAT,          ///< No matching files
     E_MEM,          ///< Memory overflow
     E_MIX,          ///< Maximum insert string exceeded
     E_MLA,          ///< Missing left angle bracket
