@@ -70,11 +70,22 @@ void exec_EN(struct cmd *cmd)
     }
     else                                // Have filespec, so must set it
     {
-        char scratch[cmd->text1.len + 1];
+        char *temp = NULL;
 
-        sprintf(scratch, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+        init_filename(&temp, cmd->text1.buf, cmd->text1.len);
 
-        set_wild(scratch);
+        char filespec[strlen(temp) + 1];
+
+        strcpy(filespec, temp);
+
+        free_mem(&temp);
+
+        set_wild(filespec);
+
+        if (cmd->colon_set)
+        {
+            push_expr(TECO_SUCCESS, EXPR_VALUE);
+        }
     }
 }
 
