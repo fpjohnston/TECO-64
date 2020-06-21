@@ -33,13 +33,11 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
-#include "term.h"
 
 
 // Local functions
@@ -254,98 +252,6 @@ void exec_E3(struct cmd *cmd)
     assert(cmd != NULL);
 
     (void)check_mn_flag(cmd, &f.e3.flag);
-}
-
-
-///
-///  @brief    Execute E4 command: set options for writing files.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_E4(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->text1.len == 0)
-    {
-        f.e2.noin   = true;
-        f.e2.noout  = true;
-
-        return;
-    }
-
-    // Parse the slash-separated list of options.
-
-    char *optlist = alloc_mem(cmd->text1.len + 1);
-    char *buf = optlist;
-    char *saveptr;
-    char *option;
-
-    sprintf(optlist, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
-
-    // Find all options.
-
-    while ((option = strtok_r(buf, "/", &saveptr)) != NULL)
-    {
-        buf = NULL;
-
-        uint len = (uint)strlen(option);
-        char *p = option + len - 1;
-
-        while (len-- > 0 && isspace(*p))
-        {
-            *p-- = NUL;
-        }
-
-        if (len)
-        {
-            if (!strcasecmp(option, "noin"))
-            {
-                f.e2.noin = true;
-            }
-            else if (!strcasecmp(option, "noout"))
-            {
-                f.e2.noout = true;
-            }
-            else
-            {
-                print_str("%%Skipping invalid option \"/%s\"\r\n", option);
-            }
-        }
-    }
-
-    free_mem(&optlist);
-}
-
-
-///
-///  @brief    Scan E5 command: set comment bypass character.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_E5(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->n_set)
-    {
-        if (cmd->n_arg == NUL || isgraph(cmd->n_arg))
-        {
-            f.e5 = cmd->n_arg;
-        }
-        else
-        {
-            print_err(E_ARG);           // Bad argument
-        }
-    }
-    else
-    {
-        f.e5 = NUL;
-    }
 }
 
 

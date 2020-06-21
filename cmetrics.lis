@@ -1,11 +1,11 @@
-Analysis of 98 files:
+Analysis of 101 files:
 
-Blank lines:    4,132 (20.5%)
-Comment lines:  5,628 (27.9%)
-Subtotal:       9,760 (48.4%)
+Blank lines:    4,150 (20.4%)
+Comment lines:  5,722 (28.2%)
+Subtotal:       9,872 (48.6%)
 
-Brace lines:    3,149 (15.6%)
-Code lines:     7,252 (36.0%)
-Subtotal:      10,401 (51.6%)
+Brace lines:    3,159 (15.6%)
+Code lines:     7,281 (35.8%)
+Subtotal:      10,440 (51.4%)
 
-Total lines:   20,161
+Total lines:   20,312

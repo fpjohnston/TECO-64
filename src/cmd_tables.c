@@ -186,12 +186,6 @@ const struct cmd_table cmd_e_table[] =
     { exec_E1,      "f m x"    },
     { exec_E2,      "f m x"    },
     { exec_E3,      "f m x"    },
-    { exec_E4,      "@ 1"      },
-    { exec_E5,      "n"        },
-    { exec_E6,      "n @ 2"    },
-    { NULL,         "n x"      },       // Placeholder for E7
-    { NULL,         "n x"      },       // Placeholder for E8
-    { NULL,         "n x"      },       // Placeholder for E9
     { exec_EA,      ""         },
     { exec_EB,      ": @ 1"    },
     { exec_EC,      "n"        },
@@ -230,6 +224,9 @@ const uint cmd_e_count = countof(cmd_e_table); ///< No. of items in cmd_e_table[
 const struct cmd_table cmd_f_table[] =
 {
     { exec_F_apos,  ""           },
+    { exec_F1,      "@ 1"        },
+    { exec_F2,      "n"          },
+    { exec_F3,      "n @ 2"      },
     { exec_F_lt,    ""           },
     { exec_F_gt,    ""           },
     { exec_FB,      "m : @ 1"    },

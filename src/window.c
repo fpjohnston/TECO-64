@@ -65,25 +65,7 @@
 #define err_if_true(func, cond) if (func == cond) error_win()
 
 
-#define CMD             0               ///< Command window colors
-#define TEXT            1               ///< Text window colors
-#define STATUS          2               ///< Status line colors
-
 #if     defined(SCOPE)
-
-///
-///  @struct  region
-///
-///  @brief   Characteristics of a screen region
-///
-
-struct region
-{
-    int top;                            ///< Top of region
-    int bot;                            ///< Bottom of region
-    short fg;                           ///< Foreground color
-    short bg;                           ///< Background color
-};
 
 // Define define colors for screen regions
 
@@ -101,42 +83,15 @@ struct region
 ///  @brief   Display format
 ///
 
-static struct display
+struct display d =
 {
-    int row;                            ///< Text row
-    int col;                            ///< Text column
-    int vcol;                           ///< Virtual column
-    int nrows;                          ///< No. of text rows
-    struct region cmd;                  ///< Command window
-    struct region text;                 ///< Text window
-    struct region status;               ///< Status line
-} d =
-{
-    .row = 0,
-    .col = 0,
-    .vcol = 0,
-    .nrows = 0,
+    .row    = 0,
+    .col    = 0,
+    .vcol   = 0,
+    .nrows  = 0,
     .cmd    = { .top = 0, .bot = 0, .fg = 0, .bg = 0 },
     .text   = { .top = 0, .bot = 0, .fg = 0, .bg = 0 },
     .status = { .top = 0, .bot = 0, .fg = 0, .bg = 0 },
-};
-
-//
-//  @var    color_table
-//
-//  @brief  Table of colors
-//
-
-const struct color_table color_table[] =
-{
-    [COLOR_BLACK]   = { "BLACK",        0,      0,      0, },
-    [COLOR_RED]     = { "RED",     SATMAX,      0,      0, },
-    [COLOR_GREEN]   = { "GREEN",        0, SATMAX,      0, },
-    [COLOR_YELLOW]  = { "YELLOW",  SATMAX, SATMAX,      0, },
-    [COLOR_BLUE]    = { "BLUE",         0,      0, SATMAX, },
-    [COLOR_MAGENTA] = { "MAGENTA", SATMAX,      0, SATMAX, },
-    [COLOR_CYAN]    = { "CYAN",         0, SATMAX, SATMAX, },
-    [COLOR_WHITE]   = { "WHITE",   SATMAX, SATMAX, SATMAX, },
 };
 
 
@@ -245,36 +200,6 @@ static void exit_win(void)
 {
     reset_win();
 }
-
-
-///
-///  @brief    Find color specified by string.
-///
-///  @returns  Index into table, or -1 if no match.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(SCOPE)
-
-int find_color(const char *token)
-{
-    if (token == NULL)
-    {
-        return -1;
-    }
-
-    for (int i = 0; i < (int)countof(color_table); ++i)
-    {
-        if (!strcasecmp(token, color_table[i].name))
-        {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-#endif
 
 
 ///
@@ -863,73 +788,6 @@ void reset_win(void)
         f.e0.winact = false;
 
         (void)endwin();
-    }
-
-#endif
-
-}
-
-
-///
-///  @brief    Set foreground and background colors for our three window
-///            regions: command, text, and status line).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void set_colors(const char *keyword, char *value)
-{
-
-#if     defined(SCOPE)
-
-    assert(keyword != NULL);
-    assert(value != NULL);
-
-    struct region *region;
-
-    if (!strcasecmp(keyword, "command"))
-    {
-        region = &d.cmd;
-    }
-    else if (!strcasecmp(keyword, "text"))
-    {
-        region = &d.text;
-    }
-    else if (!strcasecmp(keyword, "status"))
-    {
-        region = &d.status;
-    }
-    else
-    {
-        print_err(E_WIN);
-    }
-
-    char *saveptr;
-    int fg = find_color(strtok_r(value, " ,", &saveptr));
-    int bg = find_color(strtok_r(NULL,  " ,", &saveptr));
-
-    if (fg != -1)
-    {
-        region->fg = (short)fg;
-    }
-
-    if (bg != -1)
-    {
-        region->bg = (short)bg;
-    }
-
-    if (region == &d.cmd)
-    {
-        (void)assume_default_colors(d.cmd.fg, d.cmd.bg);
-    }
-    else if (region == &d.text)
-    {
-        (void)init_pair(TEXT, d.text.fg, d.text.bg);
-    }
-    else
-    {
-        (void)init_pair(STATUS, d.status.fg, d.status.bg);
     }
 
 #endif

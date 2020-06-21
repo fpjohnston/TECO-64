@@ -42,7 +42,46 @@
 
 #endif
 
+
 #define SATMAX      1000            ///< Maximum color saturation
+
+#define CMD         0               ///< Command window colors
+#define TEXT        1               ///< Text window colors
+#define STATUS      2               ///< Status line colors
+
+///
+///  @struct  region
+///
+///  @brief   Characteristics of a screen region
+///
+
+struct region
+{
+    int top;                        ///< Top of region
+    int bot;                        ///< Bottom of region
+    short fg;                       ///< Foreground color
+    short bg;                       ///< Background color
+};
+
+///
+///  @struct  display
+///
+///  @brief   Display format
+///
+
+struct display
+{
+    int row;                        ///< Text row
+    int col;                        ///< Text column
+    int vcol;                       ///< Virtual column
+    int nrows;                      ///< No. of text rows
+    struct region cmd;              ///< Command window
+    struct region text;             ///< Text window
+    struct region status;           ///< Status line
+};
+
+extern struct display d;
+
 
 ///  @struct  tchar
 ///  @brief   Terminal characteristics flag.
@@ -83,29 +122,11 @@ struct watch
 
 extern struct watch w;
 
-//
-//  @var    color_table
-//
-//  @brief  Table of colors
-//
-
-struct color_table
-{
-    const char *name;
-    uint red;
-    uint green;
-    uint blue;
-};
-
-extern const struct color_table color_table[];
-
 // Window functions
 
 extern bool clear_eol(void);
 
 extern void clear_win(void);
-
-extern int find_color(const char *token);
 
 extern int getchar_win(bool wait);
 
@@ -124,8 +145,6 @@ extern void reset_win(void);
 extern void refresh_win(void);
 
 extern void reset_colors(void);
-
-extern void set_colors(const char *keyword, char *value);
 
 extern void set_nrows(void);
 

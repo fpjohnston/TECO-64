@@ -30,14 +30,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if     defined(SCOPE)
-
-#include <ncurses.h>
-
-#endif
-
 #include "teco.h"
-#include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"
@@ -84,81 +77,6 @@ struct watch w =
 static int get_w(int n);
 
 static void set_w(int m, int n);
-
-
-///
-///  @brief    Execute E6 command: set window colors.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_E6(struct cmd *cmd)
-{
-
-#if     defined(SCOPE)
-
-    assert(cmd != NULL);
-
-    char keyword[cmd->text1.len + 1];
-
-    sprintf(keyword, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
-
-    if (cmd->n_set)
-    {
-        // Set the saturation for a specified color. ncurses allows these
-        // levels to range from 0 to 1000. Colors are defined with separate
-        // levels for red, green, and blue. Note that setting a level only
-        // makes sense for colors other than black, since black is defined
-        // as having red, green, and blue all 0.
-
-        int color = find_color(keyword);
-
-        if (color == -1)
-        {
-            print_err(E_WIN);
-        }
-
-        int n = cmd->n_arg;              // Color saturation
-
-        // Make sure it's in the range [0, SATMAX].
-
-        if (n < 0)
-        {
-            n = 0;
-        }
-        else if (n > SATMAX)
-        {
-            n = SATMAX;
-        }
-
-        // Adjust color saturation
-
-        short red   = (short)(color_table[color].red   * (uint)n / SATMAX);
-        short green = (short)(color_table[color].green * (uint)n / SATMAX);
-        short blue  = (short)(color_table[color].blue  * (uint)n / SATMAX);
-
-        (void)init_color((short)color, red, green, blue);
-    }
-    else
-    {
-        char value[cmd->text2.len + 1];
-
-        sprintf(value, "%.*s", (int)cmd->text2.len, cmd->text2.buf);
-
-        if (*keyword != NUL)                // Anything to parse?
-        {
-            set_colors(keyword, value);
-        }
-    }
-
-#else
-
-    print_err(E_WIN);
-
-#endif
-
-}
 
 
 ///

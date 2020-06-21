@@ -163,6 +163,12 @@ extern void exec_E_ubar(struct cmd *cmd);
 
 // Functions that handle F commands
 
+extern void exec_F1(struct cmd *cmd);
+
+extern void exec_F2(struct cmd *cmd);
+
+extern void exec_F3(struct cmd *cmd);
+
 extern void exec_FB(struct cmd *cmd);
 
 extern void exec_FC(struct cmd *cmd);
@@ -238,12 +244,6 @@ extern void exec_E1(struct cmd *cmd);
 extern void exec_E2(struct cmd *cmd);
 
 extern void exec_E3(struct cmd *cmd);
-
-extern void exec_E4(struct cmd *cmd);
-
-extern void exec_E5(struct cmd *cmd);
-
-extern void exec_E6(struct cmd *cmd);
 
 extern void exec_ED(struct cmd *cmd);
 

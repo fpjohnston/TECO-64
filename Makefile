@@ -127,6 +127,9 @@ SOURCES = \
     ew_cmd.c       \
     ex_cmd.c       \
     ez_cmd.c       \
+    f1_cmd.c       \
+    f2_cmd.c       \
+    f3_cmd.c       \
     fb_cmd.c       \
     fd_cmd.c       \
     fk_cmd.c       \
