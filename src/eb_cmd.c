@@ -71,16 +71,14 @@ void exec_EB(struct cmd *cmd)
 
     if (open_input(ifile) == EXIT_FAILURE)
     {
-        if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
+        if (cmd->colon_set && (errno == ENOENT && errno == ENODEV))
         {
-            prints_err(E_INP, last_file);
-        }
+            push_expr(TECO_FAILURE, EXPR_VALUE);
 
-        push_expr(TECO_FAILURE, EXPR_VALUE);
-    }
-    else if (cmd->colon_set)
-    {
-        push_expr(TECO_SUCCESS, EXPR_VALUE);
+            return;
+        }
+        
+        prints_err(E_INP, last_file);   // Input file error
     }
 
     init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
@@ -91,7 +89,7 @@ void exec_EB(struct cmd *cmd)
     {
         if (!cmd->colon_set)
         {
-            prints_err(E_OUT, last_file);
+            prints_err(E_OUT, last_file); // Output file error
         }
 
         push_expr(TECO_FAILURE, EXPR_VALUE);
