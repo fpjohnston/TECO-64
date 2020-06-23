@@ -43,12 +43,6 @@
 #include "file.h"
 
 
-bool ei_active = false;                 ///< true to flag EI in progress
-
-static struct buffer *ei_buf;           ///< Buffer for EI commands
-
-static struct buffer *saved_buf;        ///< Saved command buffer
-
 // Local functions
 
 static void close_indirect(void);
@@ -68,20 +62,6 @@ static void exit_EI(void);
 static void close_indirect(void)
 {
     close_input(IFILE_INDIRECT);
-
-    ei_active = false;
-
-    if (saved_buf != NULL)
-    {
-        set_cbuf(saved_buf);
-        saved_buf = NULL;
-    }
-
-    if (ei_buf != NULL)
-    {
-        free_mem(&ei_buf->buf);
-        free_mem(&ei_buf);
-    }
 
     if (f.e0.exit)                      // Command-line option to exit?
     {
@@ -149,21 +129,6 @@ void exec_EI(struct cmd *cmd)
                 prints_err(E_INP, last_file);
             }
         }
-
-        assert(saved_buf == NULL);
-        assert(ei_buf == NULL);
-
-        saved_buf = get_cbuf();
-        ei_buf = alloc_mem((uint)sizeof(struct buffer));
-
-        ei_buf->len  = 0;
-        ei_buf->pos  = 0;
-        ei_buf->size = STR_SIZE_INIT;
-        ei_buf->buf  = alloc_mem(ei_buf->size);
-
-        set_cbuf(ei_buf);
-
-        ei_active = true;
     }
 }
 

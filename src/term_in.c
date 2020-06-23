@@ -267,6 +267,11 @@ void read_cmd(void)
 {
     int c;
 
+    if (current->pos != current->len)
+    {
+        return;                         // Just process current command
+    }
+
     switch (read_indirect())
     {
         case -1:                        // Exit if we have a complete command

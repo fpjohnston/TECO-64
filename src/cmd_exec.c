@@ -99,7 +99,7 @@ void exec_cmd(void)
             break;                      // Back to main loop if command done
         }
 
-        if (f.e0.dryrun && ei_active)
+        if (f.e0.dryrun)
         {
             print_cmd(&cmd);            // Just print command
         }

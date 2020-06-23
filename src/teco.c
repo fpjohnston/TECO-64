@@ -110,24 +110,14 @@ int main(int argc, const char * const argv[])
         switch (setjmp(jump_main))
         {
             case 0:                     // Normal entry
-                if (!ei_active)         // Processing EI command?
-                {
-                    f.e0.trace  = false; // No, disable tracing,
-                    f.e0.dryrun = false; //  and disable dry run
-                }
-
-                f.e0.exec   = false;    // Not executing command
+                f.e0.trace  = false;    // Disable tracing
+                f.e0.dryrun = false;    // Disable dry run
+                f.e0.exec   = false;    // Command not active
                 f.et.abort  = false;    // Don't abort on error
 
                 refresh_win();          // Refresh window if needed
 
-                // If command buffer empty, read another command
-
-                if (current->pos == current->len)
-                {
-                    read_cmd();
-                }
-
+                read_cmd();             // Read the next command
                 init_expr();            // Initialize expression stack
                 exec_cmd();             // Execute what we have
 
