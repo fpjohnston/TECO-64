@@ -333,6 +333,7 @@ clean:
 .PHONY: clobber
 clobber: clean
 	-$(AT)rm -f CFLAGS $(NULL2) 
+	-$(AT)rm -rf html $(NULL2) 
 	-$(AT)cd obj && rm -f *.d *.lob $(NULL2)
 	-$(AT)cd src && rm -f *.bak $(NULL2)
 	-$(AT)cd $(INCDIR) && rm -f *.bak _*.h $(NULL2)
