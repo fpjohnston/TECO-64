@@ -63,9 +63,9 @@ struct mblock
     unsigned int size;                  ///< Size of block in bytes
 };
 
-struct mblock *mroot = NULL;            ///< Root of memory block list
+static struct mblock *mroot = NULL;     ///< Root of memory block list
 
-unsigned int msize = 0;                 ///< Total memory allocated, in bytes
+static unsigned int msize = 0;          ///< Total memory allocated, in bytes
 
 // Local functions
 

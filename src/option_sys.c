@@ -175,7 +175,7 @@ struct config
 ///   @brief   Current configuration options.
 ///
 
-struct config config =
+static struct config config =
 {
     .flag =
     {

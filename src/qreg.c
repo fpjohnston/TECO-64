@@ -40,7 +40,8 @@
 #include "term.h"
 
 
-uint qreg_depth = 0;                ///< Current Q-register depth
+static uint qreg_depth = 0;         ///< Current Q-register depth
+
 uint qreg_max = 0;                  ///< Max. Q-register depth (0 => infinite)
 
 ///  @var    qglobal

@@ -53,7 +53,7 @@ struct if_block
     uint depth;                         ///< Loop depth
 };
 
-struct if_block *if_head = NULL;        ///< Linked list head for if blocks
+static struct if_block *if_head = NULL; ///< Linked list head for if blocks
 
 // Local functions
 
