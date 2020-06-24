@@ -89,21 +89,6 @@ void echo_tbuf(int pos)
 
 
 ///
-///  @brief    Check if buffer is empty.
-///
-///  @returns  true if buffer is empty, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool empty_tbuf(void)
-{
-    assert(term_buf != NULL);
-
-    return (term_buf->len == term_buf->pos);
-}
-
-
-///
 ///  @brief    Clean up memory before we exit from TECO. Note that the only
 ///            command level for which we need be concerned here is level 0;
 ///            all other levels are for macros, which will be freed up by

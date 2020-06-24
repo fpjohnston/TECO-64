@@ -43,8 +43,6 @@ extern int delete_tbuf(void);
 
 extern void echo_tbuf(int pos);
 
-extern bool empty_tbuf(void);
-
 extern int fetch_tbuf(void);
 
 extern void init_tbuf(void);
