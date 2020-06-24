@@ -267,10 +267,10 @@ LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt \
              -e126 -e786 -e818 -e830 -e843 -e844 +fan +fas
 
 .PHONY: default 
-default: $(TARGET)
+default: lint $(TARGET)
 
 .PHONY: all
-all: lobs $(TARGET) doc
+all: lint $(TARGET) doc
 
 .PHONY: scratch
 scratch: clobber all
