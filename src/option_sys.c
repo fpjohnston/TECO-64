@@ -51,7 +51,6 @@ enum option_t
     OPTION_B = 'B',
     OPTION_C = 'C',
     OPTION_c = 'c',
-    OPTION_D = 'D',
     OPTION_E = 'E',
     OPTION_I = 'I',
     OPTION_i = 'i',
@@ -63,7 +62,6 @@ enum option_t
     OPTION_R = 'R',
     OPTION_r = 'r',
     OPTION_S = 'S',
-    OPTION_T = 'T',
     OPTION_W = 'W',
     OPTION_Z = 'Z'
 };
@@ -71,7 +69,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = ":A:B:CcDE:I::iL:MmO:oRrS:TWZ";
+static const char * const optstring = ":A:B:CcE:I::iL:MmO:oRrS:WZ";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -82,7 +80,6 @@ static const struct option long_options[] =
     { "buffer",       required_argument,  NULL,  'B'    },
     { "create",       no_argument,        NULL,  'C'    },
     { "nocreate",     no_argument,        NULL,  'c'    },
-    { "dry-run",      no_argument,        NULL,  'D'    },
     { "execute",      required_argument,  NULL,  'E'    },
     { "initialize",   optional_argument,  NULL,  'I'    },
     { "noinitialize", no_argument,        NULL,  'i'    },
@@ -94,7 +91,6 @@ static const struct option long_options[] =
     { "readonly",     no_argument,        NULL,  'R'    },
     { "noreadonly",   no_argument,        NULL,  'r'    },
     { "scroll",       required_argument,  NULL,  'S'    },
-    { "trace",        no_argument,        NULL,  'T'    },
     { "window",       no_argument,        NULL,  'W'    },
     { "zero",         no_argument,        NULL,  'Z'    },
     { NULL,           no_argument,        NULL,  0      },  // Markers for end of list
@@ -110,8 +106,6 @@ static const struct option long_options[] =
 //          Create a new file if the input file does not exist.
 //  -c, --nocreate
 //          Do not create a new file if no input file.
-//  -D, --dry-run
-//          Print but do not execute commands in macro (implies -T).
 //  -E, --execute=file
 //          Executes TECO macro in file.
 //  -I, --initial=file (default file or commands specified by TECO_INIT).
@@ -134,8 +128,6 @@ static const struct option long_options[] =
 //          Create an output file.
 //  -S, --scroll=n
 //          Enable scrolling region (implies --W).
-//  -T, --trace
-//          Trace commands as they are being executed.
 //  -W, --window
 //          Enable window mode.
 //  -Z, --zero
@@ -154,7 +146,6 @@ struct config
         bool argument;          ///< --argument option seen
         bool buffer;            ///< --buffer option seen
         bool create;            ///< --create option seen
-        bool dryrun;            ///< --dryrun option seen
         bool execute;           ///< --execute=file option seen
         bool initial;           ///< --initial=file option seen
         bool log;               ///< --log=file option seen
@@ -162,7 +153,6 @@ struct config
         bool output;            ///< --output option seen
         bool readonly;          ///< --readonly option seen
         bool scroll;            ///< --scroll option seen
-        bool trace;             ///< --trace option seen
         bool window;            ///< --window option seen
     } flag;                     ///< true/false flags
 
@@ -192,7 +182,6 @@ struct config config =
         .argument = false,
         .buffer   = false,
         .create   = true,
-        .dryrun   = false,
         .execute  = false,
         .initial  = true,
         .log      = false,
@@ -200,7 +189,6 @@ struct config config =
         .output   = false,
         .readonly = false,
         .scroll   = false,
-        .trace    = false,
         .window   = false,
     },
 
@@ -374,18 +362,6 @@ static void finish_config(int argc, const char * const argv[])
     {
         sprintf(command, "I%s\e ", config.str.buffer);
         store_cmd(command);
-    }
-
-    if (config.flag.trace)
-    {
-        if (config.flag.dryrun)
-        {
-            store_cmd(":? ");
-        }
-        else
-        {
-            store_cmd("? ");
-        }
     }
 
     if (config.flag.argument)
@@ -562,12 +538,6 @@ void set_config(
 
                 break;
 
-            case OPTION_D:
-                config.flag.dryrun = true;
-                config.flag.trace  = true;
-
-                break;
-
             case OPTION_E:
                 config.flag.execute = true;
 
@@ -643,11 +613,6 @@ void set_config(
                 {
                     config.str.scroll = optarg;
                 }
-
-                break;
-
-            case OPTION_T:
-                config.flag.trace = true;
 
                 break;
 
