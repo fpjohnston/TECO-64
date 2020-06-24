@@ -1,0 +1,31 @@
+! TECO-64 test for EB: open file for reading and writing !
+
+! Ensure that we abort on error !
+
+0,128ET
+
+@^A/EB test: /
+
+! Verify that a file name was specified with --buffer !
+
+Z "E :@^A/?No file specified/ @O/exit/ '
+
+! Copy file name to Q-register A !
+
+HXA HK
+
+! Open file, using name in Q-register A !
+
+QA-1 "E   EB^EQA    :@^A/PASSED/                  @O/exit/ '
+
+QA-2 "E  @EB/^EQA/    :@^A/PASSED/                  @O/exit/ '
+
+QA-3 "E :@EB/^EQA/ "S :@^A/PASSED/ | :@^A/FAILED/ ' @O/exit/ '
+
+:@^A/?Missing or invalid argument/
+
+!exit!
+
+EX
+
+

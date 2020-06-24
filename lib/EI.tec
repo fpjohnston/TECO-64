@@ -1,0 +1,31 @@
+! TECO-64 test for EI: open indirect command file !
+
+! Ensure that we abort on error !
+
+0,128ET
+
+@^A/EI test: /
+
+! Verify that a file name was specified with --buffer !
+
+Z "E :@^A/?No file specified/ @O/exit/ '
+
+! Copy file name to Q-register A !
+
+HXA HK
+
+! Open file, using name in Q-register A !
+
+QA-1 "E   EI^EQA    :@^A/PASSED/                  @O/exit/ '
+
+QA-2 "E  @EI/^EQA/    :@^A/PASSED/                  @O/exit/ '
+
+QA-3 "E :@EI/^EQA/ "S :@^A/PASSED/ | :@^A/FAILED/ ' @O/exit/ '
+
+:@^A/?Missing or invalid argument/
+
+!exit!
+
+EX
+
+

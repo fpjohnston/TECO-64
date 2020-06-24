@@ -1,0 +1,41 @@
+! TECO-64 test for EN: open a wildcard file spec !
+
+! Ensure that we abort on error !
+
+0,128ET
+
+@^A/EN test: /
+
+! Verify that a file name was specified with --buffer !
+
+Z "E :@^A/?No file(s) specified/ @O/exit/ '
+
+! Copy file name to Q-register A !
+
+HXA HK
+
+! Open input file, using name in Q-register A !
+
+QA-1 "E   EN^EQA    @O/success/ '
+
+QA-2 "E  @EN/^EQA/    @O/success/ '
+
+QA-3 "E :@EN/^EQA/ "S @O/success/ | :@^A/FAILED/ @O/exit/ '
+
+:@^A/?Missing or invalid argument/               @O/exit/
+
+!success!
+
+0UA < :@EN// ; %A >
+
+QA :@=/PASSED: %u file/
+
+QA-1 "N @^A/s/ '
+
+:@^A/ matched/
+
+!exit!
+
+EX
+
+
