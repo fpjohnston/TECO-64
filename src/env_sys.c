@@ -41,7 +41,7 @@
 #include "term.h"
 
 
-char *eg_result = NULL;
+char *eg_result = NULL;                 ///< Output from EG command
 
 #if    0 // TODO: what to do with the following?
 

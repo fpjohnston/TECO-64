@@ -44,25 +44,25 @@
 #include "window.h"
 
 
-//
-//  @struct color_table
-//
-//  @brief  Table of colors
-//
+///
+///  @struct color_table
+///
+///  @brief  Table of colors
+///
 
 struct color_table
 {
-    const char *name;
-    uint red;
-    uint green;
-    uint blue;
+    const char *name;               ///< Name of color
+    uint red;                       ///< Red saturation (0-1000)
+    uint green;                     ///< Green saturation (0-1000)
+    uint blue;                      ///< Blue saturation (0-1000)
 };
 
-//
-//  @var    color_table
-//
-//  @brief  Table of colors
-//
+///
+///  @var    color_table
+///
+///  @brief  Table of colors
+///
 
 static const struct color_table color_table[] =
 {
@@ -166,10 +166,11 @@ void exec_F3(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(SCOPE)
-
 static int find_color(const char *token)
 {
+
+#if     defined(SCOPE)
+
     if (token == NULL)
     {
         return -1;
@@ -183,10 +184,10 @@ static int find_color(const char *token)
         }
     }
 
+#endif
+
     return -1;
 }
-
-#endif
 
 
 ///

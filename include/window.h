@@ -80,7 +80,7 @@ struct display
     struct region status;           ///< Status line
 };
 
-extern struct display d;
+extern struct display d;            ///< Display variables
 
 
 ///  @struct  tchar

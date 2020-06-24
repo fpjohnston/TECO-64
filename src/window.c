@@ -78,7 +78,7 @@
 
 
 ///
-///  @struct  display
+///  @var     d
 ///
 ///  @brief   Display format
 ///
