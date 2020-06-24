@@ -58,21 +58,20 @@ enum option_t
     OPTION_L = 'L',
     OPTION_M = 'M',
     OPTION_m = 'm',
-    OPTION_R = 'R',
-    OPTION_r = 'r',
     OPTION_O = 'O',
     OPTION_o = 'o',
+    OPTION_R = 'R',
+    OPTION_r = 'r',
     OPTION_S = 'S',
     OPTION_T = 'T',
     OPTION_W = 'W',
-    OPTION_X = 'X',
     OPTION_Z = 'Z'
 };
 
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = ":CcDE:I::iL:MmO:oRrS:T:WX";
+static const char * const optstring = ":A:B:CcDE:I::iL:MmO:oRrS:TWZ";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -97,7 +96,6 @@ static const struct option long_options[] =
     { "scroll",       required_argument,  NULL,  'S'    },
     { "trace",        no_argument,        NULL,  'T'    },
     { "window",       no_argument,        NULL,  'W'    },
-    { "exit",         no_argument,        NULL,  'X'    },
     { "zero",         no_argument,        NULL,  'Z'    },
     { NULL,           no_argument,        NULL,  0      },  // Markers for end of list
 };
@@ -140,8 +138,6 @@ static const struct option long_options[] =
 //          Trace commands as they are being executed.
 //  -W, --window
 //          Enable window mode.
-//  -X, --exit
-//          Exit TECO after indirect command file executed.
 //  -Z, --zero
 //          Strictly enforce command syntax (zero tolerance).
 
@@ -168,7 +164,6 @@ struct config
         bool scroll;            ///< --scroll option seen
         bool trace;             ///< --trace option seen
         bool window;            ///< --window option seen
-        bool exit;              ///< --exit option seen
     } flag;                     ///< true/false flags
 
     int n;                      ///< Numeric value for --argument option
@@ -207,7 +202,6 @@ struct config config =
         .scroll   = false,
         .trace    = false,
         .window   = false,
-        .exit     = false,
     },
 
     .n = 0,
@@ -477,11 +471,6 @@ static void finish_config(int argc, const char * const argv[])
         store_cmd(command);
     }
 
-    if (config.flag.exit)
-    {
-        store_cmd("EX ");
-    }
-
     if (current->len != 0)              // Anything stored?
     {
         store_cmd("\e\e");              // If so, properly terminate command
@@ -664,11 +653,6 @@ void set_config(
 
             case OPTION_W:
                 config.flag.window = true;
-
-                break;
-
-            case OPTION_X:
-                config.flag.exit = true;
 
                 break;
 
