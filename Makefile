@@ -266,11 +266,8 @@ CFLAGS += -MMD -c $(INCLUDES) $(OPT_OPT) $(DFLAGS)
 LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt \
              -e126 -e786 -e818 -e830 -e843 -e844 +fan +fas
 
-.PHONY: default 
-default: lint $(TARGET)
-
 .PHONY: all
-all: lint $(TARGET) doc
+all: $(TARGET)
 
 .PHONY: scratch
 scratch: clobber all
@@ -278,14 +275,14 @@ scratch: clobber all
 .PHONY: help
 help:
 	@echo "Build targets:"
-	@echo "    all        lint + teco + doc [default]"
+	@echo "    all        Build TECO text editor [default]"
 	@echo "    clean      Clean object files."
 	@echo "    clobber    Clean everything."
 	@echo "    doc        doxygen"
 	@echo "    doxygen    Update Doxygen documentation."
 	@echo "    help       Print this message."
-	@echo "    lint       Lint source files."
-	@echo "    lobs       Build lint object files."
+	@echo "    lint       Lint .lob files."
+	@echo "    lobs       Lint .c files, generate .lob files."
 	@echo "    scratch    clobber + all"
 	@echo "    teco       Build TECO text editor."
 
