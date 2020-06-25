@@ -113,9 +113,7 @@ extern int get_wild(void);
 extern void init_files(void);
 
 extern struct ifile *open_input(const char *name, uint len, uint stream,
-                                int colon, int c);
-
-extern bool open_log(struct ofile *ofile);
+                                bool colon);
 
 extern struct ofile *open_output(const char *name, uint len, uint stream,
                                  bool colon, int c);

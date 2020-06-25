@@ -33,7 +33,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
@@ -53,26 +52,25 @@ void exec_EL(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)
-    {
-        close_output(OFILE_LOG);
+    const char *buf = cmd->text1.buf;
+    uint len = cmd->text1.len;
+    uint stream = OFILE_LOG;
 
+    close_output(stream);
+
+    if (len == 0)
+    {
         return;
     }
 
-    struct ofile *ofile = &ofiles[OFILE_LOG];
+    assert(buf != NULL);
 
-    close_output(OFILE_LOG);            // Close any open file
+    struct ofile *ofile = open_output(buf, len, stream, cmd->colon_set, 'L');
 
-    init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
+    // Note: open_output() only returns NULL for colon-modified command.
 
-    if (!open_log(ofile))
+    if (ofile == NULL)
     {
-        if (!cmd->colon_set)
-        {
-            prints_err(E_OUT, last_file);
-        }
-
         push_expr(TECO_FAILURE, EXPR_VALUE);
     }
     else if (cmd->colon_set)

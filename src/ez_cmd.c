@@ -53,6 +53,7 @@ void exec_EZ(struct cmd *cmd)
 
     const char *buf = cmd->text1.buf;
     uint len = cmd->text1.len;
+    uint stream = OFILE_QREGISTER;
 
     if (len == 0)                       // If no file name, then done
     {
@@ -61,8 +62,9 @@ void exec_EZ(struct cmd *cmd)
 
     assert(buf != NULL);
 
-    uint stream = OFILE_QREGISTER;
     struct ofile *ofile = open_output(buf, len, stream, cmd->colon_set, 'Z');
+
+    // Note: open_output() only returns NULL for colon-modified command.
 
     if (ofile == NULL)
     {

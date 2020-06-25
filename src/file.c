@@ -258,13 +258,11 @@ void init_filename(char **name, const char *buf, uint len)
 ///
 ///  @brief    Open file for input.
 ///
-///  @returns  Input file stream if success, NULL if failure. Note that a NULL
-///            can only be returned if colon is set.
+///  @returns  Input file stream if success, NULL if failure and a colon is set.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct ifile *open_input(const char *name, uint len, uint stream, int colon,
-                         int c)
+struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
 {
     assert(name != NULL);
 
@@ -277,7 +275,7 @@ struct ifile *open_input(const char *name, uint len, uint stream, int colon,
     if (!canonical_name(&ifile->name) ||
         ((ifile->fp = fopen(ifile->name, "r")) == NULL))
     {
-        if ((colon && (errno == ENOENT || errno == ENODEV)) || c == NUL)
+        if (colon && (errno == ENOENT || errno == ENODEV))
         {
             return NULL;
         }
@@ -293,33 +291,6 @@ struct ifile *open_input(const char *name, uint len, uint stream, int colon,
 
 
 ///
-///  @brief    Open log file.
-///
-///  @returns  true if success, false if failure.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool open_log(struct ofile *ofile)
-{
-    assert(ofile != NULL);
-    assert(ofile->name != NULL);
-
-    if ((ofile->fp = fopen(ofile->name, "a")) == NULL)
-    {
-        return false;
-    }
-
-    (void)canonical_name(&ofile->name);
-
-    // Write log output immediately and do not buffer.
-
-    (void)setvbuf(ofile->fp, NULL, _IONBF, 0uL);
-
-    return true;
-}
-
-
-///
 ///  @brief    Open file for output.
 ///
 ///  @returns  Output file stream if success, NULL if failure. Note that a NULL
@@ -331,9 +302,11 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
                           int c)
 {
     assert(name != NULL);
-    assert(c == 'B' || c == 'W' || c == 'Z');
+    assert(c == 'B' || c == 'L' || c == 'W' || c == 'Z');
 
     struct ofile *ofile = &ofiles[stream];
+
+    // Note: EL will always close its file before calling us.
 
     if (ofile->fp != NULL)
     {
@@ -348,8 +321,13 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
     // original, and then rename the temp file.
 
     const char *oname = ofile->name;
+    const char *mode = "w";
 
-    if (access(oname, F_OK) == 0)       // Does file already exist?
+    if (c == 'L')
+    {
+        mode = "a";                     // Open log files in append mode
+    }
+    else if (access(oname, F_OK) == 0)  // Does file already exist?
     {
         init_temp(&ofile->temp, oname);
 
@@ -361,7 +339,7 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
         }
     }
 
-    if ((ofile->fp = fopen(oname, "w")) == NULL)
+    if ((ofile->fp = fopen(oname, mode)) == NULL)
     {
         if (colon)
         {
@@ -376,6 +354,12 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
     if (c == 'B' || c == 'W')           // Save file name for EB or EW
     {
         write_memory(ofile->name);
+    }
+    else if (c == 'L')
+    {
+        // Write log output immediately and do not buffer.
+
+        (void)setvbuf(ofile->fp, NULL, _IONBF, 0uL);
     }
 
     return ofile;

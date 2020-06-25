@@ -55,6 +55,7 @@ void exec_EQ(struct cmd *cmd)
 
     const char *buf = cmd->text1.buf;
     uint len = cmd->text1.len;
+    const int stream = IFILE_QREGISTER;
 
     if (len == 0)                       // If no file name, then done
     {
@@ -63,8 +64,9 @@ void exec_EQ(struct cmd *cmd)
 
     assert(buf != NULL);
 
-    const int stream = IFILE_QREGISTER;
-    struct ifile *ifile = open_input(buf, len, stream, cmd->colon_set, 'Q');
+    struct ifile *ifile = open_input(buf, len, stream, cmd->colon_set);
+
+    // Note: open_input() only returns NULL for colon-modified command.
 
     if (ifile == NULL)
     {

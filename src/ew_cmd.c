@@ -64,6 +64,8 @@ void exec_EW(struct cmd *cmd)
 
     struct ofile *ofile = open_output(buf, len, ostream, cmd->colon_set, 'W');
 
+    // Note: open_output() only returns NULL for colon-modified command.
+
     if (ofile == NULL)
     {
         push_expr(TECO_FAILURE, EXPR_VALUE);

@@ -60,7 +60,9 @@ void exec_EB(struct cmd *cmd)
 
     assert(buf != NULL);
 
-    struct ifile *ifile = open_input(buf, len, istream, cmd->colon_set, 'B');
+    struct ifile *ifile = open_input(buf, len, istream, cmd->colon_set);
+
+    // Note: open_input() only returns NULL for colon-modified command.
 
     if (ifile == NULL)
     {
@@ -72,6 +74,8 @@ void exec_EB(struct cmd *cmd)
     struct ofile *ofile = open_output(buf, len, ostream, cmd->colon_set, 'B');
 
     ofile->backup = true;
+
+    // Note: open_output() only returns NULL for colon-modified command.
 
     if (ofile == NULL)
     {

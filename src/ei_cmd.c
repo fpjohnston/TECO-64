@@ -58,22 +58,28 @@ void exec_EI(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    close_input(IFILE_INDIRECT);        // Close any open file
+    const char *buf = cmd->text1.buf;
+    uint len = cmd->text1.len;
+    uint stream = IFILE_INDIRECT;
+    char name[len + 4 + 1];             // Allow room for possible '.tec'
 
-    if (cmd->text1.len == 0)            // If EI`, then we're done
+    close_input(stream);                // Close any open file
+
+    if (len == 0)
     {
         return;
     }
 
-    // If EIfile`, then try to open file
+    assert(buf != NULL);
 
-    uint stream = IFILE_INDIRECT;
-    uint len = cmd->text1.len;
-    char name[len + 4 + 1];             // Allow room for possible '.tec'
+    // Here if EIfile`, so try to open file.
 
-    len = (uint)sprintf(name, "%.*s", (int)len, cmd->text1.buf);
+    len = (uint)sprintf(name, "%.*s", (int)len, buf);
 
-    struct ifile *ifile = open_input(name, len, stream, cmd->colon_set, NUL);
+    // Treat first open as colon-modified to avoid error. This allows
+    // us to try a second open with .tec file type.
+
+    struct ifile *ifile = open_input(name, len, stream, (bool)true);
     
     if (ifile == NULL)
     {
@@ -81,13 +87,15 @@ void exec_EI(struct cmd *cmd)
         {
             len = (uint)sprintf(name, "%s.tec", last_file);
 
-            ifile = open_input(name, len, stream, cmd->colon_set, 'I');
+            ifile = open_input(name, len, stream, cmd->colon_set);
         }
         else if (!cmd->colon_set)
         {
             prints_err(E_INP, last_file); // Input file name
         }
     }
+
+    // Note: open_input() only returns NULL for colon-modified command.
 
     if (ifile == NULL)
     {

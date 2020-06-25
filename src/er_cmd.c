@@ -63,7 +63,9 @@ void exec_ER(struct cmd *cmd)
 
     assert(buf != NULL);
 
-    struct ifile *ifile = open_input(buf, len, istream, cmd->colon_set, 'R');
+    struct ifile *ifile = open_input(buf, len, istream, cmd->colon_set);
+
+    // Note: open_input() only returns NULL for colon-modified command.
 
     if (ifile == NULL)
     {
