@@ -28,7 +28,6 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,7 +35,6 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
@@ -45,29 +43,8 @@
 
 // Local functions
 
-static void close_indirect(void);
-
-static bool open_indirect(struct ifile *ifile);
 
 static void exit_EI(void);
-
-
-///
-///  @brief    Close indirect command file.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void close_indirect(void)
-{
-    close_input(IFILE_INDIRECT);
-
-    if (f.e0.exit)                      // Command-line option to exit?
-    {
-        exit(EXIT_SUCCESS);             // Yes, we're done
-    }
-}
 
 
 ///
@@ -81,54 +58,46 @@ void exec_EI(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    close_indirect();                   // Close any open file
+    close_input(IFILE_INDIRECT);        // Close any open file
+
+    if (cmd->text1.len == 0)            // If EI`, then we're done
+    {
+        return;
+    }
 
     // If EIfile`, then try to open file
 
-    if (cmd->text1.len != 0)
+    uint stream = IFILE_INDIRECT;
+
+    int len = (int)cmd->text1.len;
+    char name[len + 4 + 1];             // Allow room for possible '.tec'
+
+    len = sprintf(name, "%.*s", len, cmd->text1.buf);
+
+    struct ifile *ifile = open_input(name, (uint)len, stream, +1);
+    
+    if (ifile == NULL)
     {
-        struct ifile *ifile = &ifiles[IFILE_INDIRECT];
-        int len = (int)cmd->text1.len;
-        char name1[len + 1];
-        char name2[len + 4 + 1];
-
-        len = sprintf(name1, "%.*s", len, cmd->text1.buf);
-
-        init_filename(&ifile->name, name1, (uint)len);
-
-        set_last(ifile->name);
-
-        // Try to open file; if failure, and file name does
-        // not have a dot, then add ".tec" and try again.
-
-        if (access(name1, F_OK) != 0 && strchr(name1, '.') == NULL)
+        if (strchr(last_file, '.') == NULL)
         {
-            len = sprintf(name2, "%s%s", name1, ".tec");
+           len = sprintf(name, "%s.tec", last_file);
 
-            if (access(name2, F_OK) == 0)
-            {
-                init_filename(&ifile->name, name2, (uint)len);
-            }
+           ifile = open_input(name, (uint)len, stream, cmd->colon_set ? 0 : -1);
         }
+        else if (!cmd->colon_set)
+        {
+            prints_err(E_INP, last_file); // Input file name
+        }
+    }
 
-        if (open_indirect(ifile))
-        {
-            if (cmd->colon_set)
-            {
-                push_expr(TECO_SUCCESS, EXPR_VALUE);
-            }
-        }
-        else
-        {
-            if (cmd->colon_set)
-            {
-                push_expr(TECO_FAILURE, EXPR_VALUE);
-            }
-            else
-            {
-                prints_err(E_INP, last_file);
-            }
-        }
+    if (ifile == NULL)
+    {
+        push_expr(TECO_FAILURE, EXPR_VALUE);
+    }
+    else if (cmd->colon_set)
+    {
+        printf("name = %s, last_file = %s\r\n", name, last_file);
+        push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
 }
 
@@ -156,31 +125,6 @@ static void exit_EI(void)
 void init_EI(void)
 {
     register_exit(exit_EI);
-}
-
-
-///
-///  @brief    Open indirect file.
-///
-///  @returns  true if success, false if failure.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static bool open_indirect(struct ifile *ifile)
-{
-    if (open_input(ifile) == EXIT_SUCCESS)
-    {
-        return true;
-    }
-
-    if (errno == ENOENT || errno == ENODEV)
-    {
-        return false;
-    }
-
-    // Here if error was something other than a simple "file not found".
-
-    prints_err(E_INP, last_file);
 }
 
 
@@ -219,7 +163,7 @@ int read_indirect(void)
 
     // File ended without a double escape, so close it.
 
-    close_indirect();
+    close_input(IFILE_INDIRECT);
 
     if (nbytes)
     {
@@ -247,5 +191,5 @@ int read_indirect(void)
 
 void reset_indirect(void)
 {
-    close_indirect();
+    close_input(IFILE_INDIRECT);
 }

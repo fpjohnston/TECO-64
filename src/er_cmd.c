@@ -27,13 +27,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
@@ -59,19 +57,11 @@ void exec_ER(struct cmd *cmd)
         return;
     }
 
-    close_input(istream);               // Close any open input file
+    struct ifile *ifile = open_input(cmd->text1.buf, cmd->text1.len, istream,
+                                     cmd->colon_set ? 0 : -1);
 
-    struct ifile *ifile = &ifiles[istream];
-
-    init_filename(&ifile->name, cmd->text1.buf, cmd->text1.len);
-
-    if (open_input(ifile) == EXIT_FAILURE)
+    if (ifile == NULL)
     {
-        if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
-        {
-            prints_err(E_INP, last_file);
-        }
-
         push_expr(TECO_FAILURE, EXPR_VALUE);
     }
     else if (cmd->colon_set)

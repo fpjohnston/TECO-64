@@ -28,6 +28,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -257,25 +258,39 @@ void init_filename(char **name, const char *buf, uint len)
 ///
 ///  @brief    Open file for input.
 ///
-///  @returns  EXIT_SUCCESS or EXIT_FAILURE.
+///  @returns  Input file stream if success, NULL if failure;
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int open_input(struct ifile *ifile)
+struct ifile *open_input(const char *name, uint len, uint stream, int error)
 {
-    assert(ifile != NULL);
-    assert(ifile->name != NULL);
+    assert(name != NULL);
 
-    if (!canonical_name(&ifile->name)
-        || ((ifile->fp = fopen(ifile->name, "r")) == NULL))
+    close_input(stream);                // Close input file if open
+
+    struct ifile *ifile = &ifiles[stream];
+
+    init_filename(&ifile->name, name, len);
+
+    if (!canonical_name(&ifile->name) ||
+        ((ifile->fp = fopen(ifile->name, "r")) == NULL))
     {
-        return EXIT_FAILURE;
+        if (error > 0)
+        {
+            return NULL;
+        }
+        else if (error == 0 && (errno == ENOENT || errno == ENODEV))
+        {
+            return NULL;
+        }
+        
+        prints_err(E_INP, last_file);   // Input file error
     }
 
     ifile->eof = false;
     ifile->cr  = false;
 
-    return EXIT_SUCCESS;
+    return ifile;
 }
 
 

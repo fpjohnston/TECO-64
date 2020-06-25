@@ -28,7 +28,6 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -63,24 +62,6 @@ void exec_EB(struct cmd *cmd)
         print_err(E_OFO);               // Output file is already open
     }
 
-    close_input(istream);               // Silently close any input file
-
-    struct ifile *ifile = &ifiles[istream];
-
-    init_filename(&ifile->name, cmd->text1.buf, cmd->text1.len);
-
-    if (open_input(ifile) == EXIT_FAILURE)
-    {
-        if (cmd->colon_set && (errno == ENOENT && errno == ENODEV))
-        {
-            push_expr(TECO_FAILURE, EXPR_VALUE);
-
-            return;
-        }
-        
-        prints_err(E_INP, last_file);   // Input file error
-    }
-
     init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
 
     ofile->backup = true;
@@ -92,6 +73,14 @@ void exec_EB(struct cmd *cmd)
             prints_err(E_OUT, last_file); // Output file error
         }
 
+        push_expr(TECO_FAILURE, EXPR_VALUE);
+    }
+
+    struct ifile *ifile = open_input(cmd->text1.buf, cmd->text1.len, istream,
+                                     cmd->colon_set ? 0 : -1);
+
+    if (ifile == NULL)
+    {
         push_expr(TECO_FAILURE, EXPR_VALUE);
     }
     else if (cmd->colon_set)

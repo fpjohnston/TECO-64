@@ -28,7 +28,6 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -59,34 +58,22 @@ void exec_EQ(struct cmd *cmd)
         return;
     }
 
-    close_input(istream);               // Close any open input file
+    const int stream = IFILE_QREGISTER;
+    struct ifile *ifile = open_input(cmd->text1.buf, cmd->text1.len, stream,
+                                     cmd->colon_set ? 0 : -1);
 
-    struct ifile *ifile = &ifiles[IFILE_QREGISTER];
-
-    init_filename(&ifile->name, cmd->text1.buf, cmd->text1.len);
-
-    if (open_input(ifile) == EXIT_FAILURE)
+    if (ifile == NULL)
     {
-        if (!cmd->colon_set || (errno != ENOENT && errno != ENODEV))
-        {
-            prints_err(E_INP, last_file);
-        }
-
         push_expr(TECO_FAILURE, EXPR_VALUE);
-    }
-    else if (cmd->colon_set)
-    {
-        push_expr(TECO_SUCCESS, EXPR_VALUE);
+
+        return;
     }
 
     struct stat file_stat;
 
-    if (stat(last_file, &file_stat) == -1)
+    if (stat(last_file, &file_stat))
     {
-        if (cmd->colon_set)
-        {
-            push_expr(TECO_FAILURE, EXPR_VALUE);
-        }
+        print_err(E_SYS);               // Unexpected system error
     }
 
     uint size = (uint)file_stat.st_size;
@@ -106,7 +93,7 @@ void exec_EQ(struct cmd *cmd)
 
     store_qtext(cmd->qname, cmd->qlocal, &text);
 
-    close_input(IFILE_QREGISTER);
+    close_input(stream);
 
     if (cmd->colon_set)
     {
