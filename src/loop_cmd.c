@@ -100,6 +100,9 @@ static void endloop(struct cmd *cmd, bool pop_ok)
     assert(cmd != NULL);
 
     uint depth = 1;                     // Nesting depth
+    uint dryrun = f.e0.dryrun;          // Save current flag
+
+    f.e0.dryrun = true;                 // Just do dry run until end of loop
 
     do
     {
@@ -134,6 +137,8 @@ static void endloop(struct cmd *cmd, bool pop_ok)
             --depth;
         }
     } while (depth > 0);
+
+    f.e0.dryrun = dryrun;
 
     pop_loop(pop_ok);
 }

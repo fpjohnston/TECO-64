@@ -78,6 +78,9 @@ static void endif(struct cmd *cmd, bool else_ok)
     assert(if_head != NULL);
 
     uint depth = if_depth;              // Starting depth
+    uint dryrun = f.e0.dryrun;          // Save current flag
+
+    f.e0.dryrun = true;                 // Just do dry run until end of if
 
     do
     {
@@ -125,6 +128,8 @@ static void endif(struct cmd *cmd, bool else_ok)
         }
 
     } while (if_depth >= depth);
+
+    f.e0.dryrun = dryrun;
 }
 
 
