@@ -73,7 +73,7 @@ void exec_EB(struct cmd *cmd)
 
     struct ofile *ofile = open_output(buf, len, ostream, cmd->colon_set, 'B');
 
-    ofile->backup = true;
+    ofile->backup = true;               // Create backup file on close
 
     // Note: open_output() only returns NULL for colon-modified command.
 
