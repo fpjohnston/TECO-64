@@ -33,7 +33,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
@@ -50,7 +49,10 @@ void exec_EW(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)            // EW`?
+    const char *buf = cmd->text1.buf;
+    uint len = cmd->text1.len;
+
+    if (len == 0)                       // EW`?
     {
         ostream = OFILE_PRIMARY;        // Yes, switch to primary output stream
         set_last(ofiles[ostream].name);
@@ -58,22 +60,12 @@ void exec_EW(struct cmd *cmd)
         return;
     }
 
-    struct ofile *ofile = &ofiles[ostream];
+    assert(buf != NULL);
 
-    if (ofile->fp != NULL)
+    struct ofile *ofile = open_output(buf, len, ostream, cmd->colon_set, 'W');
+
+    if (ofile == NULL)
     {
-        print_err(E_OFO);               // Output file is already open
-    }
-
-    init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
-
-    if (!open_output(ofile, toupper(cmd->c2)))
-    {
-        if (!cmd->colon_set)
-        {
-            prints_err(E_OUT, ofile->name);
-        }
-
         push_expr(TECO_FAILURE, EXPR_VALUE);
     }
     else if (cmd->colon_set)

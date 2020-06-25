@@ -51,27 +51,24 @@ void exec_EZ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)            // If no file name, then done
+    const char *buf = cmd->text1.buf;
+    uint len = cmd->text1.len;
+
+    if (len == 0)                       // If no file name, then done
     {
         return;
     }
 
-    struct ofile *ofile = &ofiles[OFILE_QREGISTER];
+    assert(buf != NULL);
 
-    init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
+    uint stream = OFILE_QREGISTER;
+    struct ofile *ofile = open_output(buf, len, stream, cmd->colon_set, 'Z');
 
-    if (!open_output(ofile, toupper(cmd->c2)))
+    if (ofile == NULL)
     {
-        if (!cmd->colon_set)
-        {
-            prints_err(E_OUT, last_file);
-        }
-
         push_expr(TECO_FAILURE, EXPR_VALUE);
-    }
-    else if (cmd->colon_set)
-    {
-        push_expr(TECO_SUCCESS, EXPR_VALUE);
+
+        return;
     }
 
     struct qreg *qreg = get_qreg(cmd->qname, cmd->qlocal);
@@ -89,7 +86,7 @@ void exec_EZ(struct cmd *cmd)
     }
 
     rename_output(ofile);
-    close_output(ostream);
+    close_output(stream);
 
     if (cmd->colon_set)
     {

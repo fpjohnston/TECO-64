@@ -50,36 +50,30 @@ void exec_EB(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)
+    const char *buf = cmd->text1.buf;
+    uint len = cmd->text1.len;
+
+    if (len == 0)
     {
         print_err(E_NFI);               // No file for input
     }
 
-    struct ofile *ofile = &ofiles[ostream];
+    assert(buf != NULL);
 
-    if (ofile->fp != NULL)
+    struct ifile *ifile = open_input(buf, len, istream, cmd->colon_set, 'B');
+
+    if (ifile == NULL)
     {
-        print_err(E_OFO);               // Output file is already open
+        push_expr(TECO_FAILURE, EXPR_VALUE);
+
+        return;
     }
 
-    init_filename(&ofile->name, cmd->text1.buf, cmd->text1.len);
+    struct ofile *ofile = open_output(buf, len, ostream, cmd->colon_set, 'B');
 
     ofile->backup = true;
 
-    if (!open_output(ofile, toupper(cmd->c2)))
-    {
-        if (!cmd->colon_set)
-        {
-            prints_err(E_OUT, last_file); // Output file error
-        }
-
-        push_expr(TECO_FAILURE, EXPR_VALUE);
-    }
-
-    struct ifile *ifile = open_input(cmd->text1.buf, cmd->text1.len, istream,
-                                     cmd->colon_set ? 0 : -1);
-
-    if (ifile == NULL)
+    if (ofile == NULL)
     {
         push_expr(TECO_FAILURE, EXPR_VALUE);
     }

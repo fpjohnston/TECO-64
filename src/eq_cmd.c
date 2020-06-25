@@ -53,14 +53,18 @@ void exec_EQ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)            // If no file name, then done
+    const char *buf = cmd->text1.buf;
+    uint len = cmd->text1.len;
+
+    if (len == 0)                       // If no file name, then done
     {
         return;
     }
 
+    assert(buf != NULL);
+
     const int stream = IFILE_QREGISTER;
-    struct ifile *ifile = open_input(cmd->text1.buf, cmd->text1.len, stream,
-                                     cmd->colon_set ? 0 : -1);
+    struct ifile *ifile = open_input(buf, len, stream, cmd->colon_set, 'Q');
 
     if (ifile == NULL)
     {

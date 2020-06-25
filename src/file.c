@@ -258,11 +258,13 @@ void init_filename(char **name, const char *buf, uint len)
 ///
 ///  @brief    Open file for input.
 ///
-///  @returns  Input file stream if success, NULL if failure;
+///  @returns  Input file stream if success, NULL if failure. Note that a NULL
+///            can only be returned if colon is set.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct ifile *open_input(const char *name, uint len, uint stream, int error)
+struct ifile *open_input(const char *name, uint len, uint stream, int colon,
+                         int c)
 {
     assert(name != NULL);
 
@@ -275,16 +277,12 @@ struct ifile *open_input(const char *name, uint len, uint stream, int error)
     if (!canonical_name(&ifile->name) ||
         ((ifile->fp = fopen(ifile->name, "r")) == NULL))
     {
-        if (error > 0)
-        {
-            return NULL;
-        }
-        else if (error == 0 && (errno == ENOENT || errno == ENODEV))
+        if ((colon && (errno == ENOENT || errno == ENODEV)) || c == NUL)
         {
             return NULL;
         }
         
-        prints_err(E_INP, last_file);   // Input file error
+        prints_err(E_INP, ifile->name); // Input file error
     }
 
     ifile->eof = false;
@@ -324,15 +322,25 @@ bool open_log(struct ofile *ofile)
 ///
 ///  @brief    Open file for output.
 ///
-///  @returns  true if success, false if failure.
+///  @returns  Output file stream if success, NULL if failure. Note that a NULL
+///            can only be returned if the colon flag was set.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool open_output(struct ofile *ofile, int c)
+struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
+                          int c)
 {
-    assert(ofile != NULL);
-    assert(ofile->name != NULL);
+    assert(name != NULL);
     assert(c == 'B' || c == 'W' || c == 'Z');
+
+    struct ofile *ofile = &ofiles[stream];
+
+    if (ofile->fp != NULL)
+    {
+        print_err(E_OFO);               // Output file is already open
+    }
+
+    init_filename(&ofile->name, name, len);
 
     // If the output file already exists, then we create a temporary file and
     // open that instead. That allows us to make off any changes in the event
@@ -355,7 +363,12 @@ bool open_output(struct ofile *ofile, int c)
 
     if ((ofile->fp = fopen(oname, "w")) == NULL)
     {
-        return false;
+        if (colon)
+        {
+            return NULL;
+        }
+
+        prints_err(E_OUT, ofile->name);
     }
 
     (void)canonical_name(&ofile->name);
@@ -365,7 +378,7 @@ bool open_output(struct ofile *ofile, int c)
         write_memory(ofile->name);
     }
 
-    return true;
+    return ofile;
 }
 
 

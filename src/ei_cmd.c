@@ -68,21 +68,20 @@ void exec_EI(struct cmd *cmd)
     // If EIfile`, then try to open file
 
     uint stream = IFILE_INDIRECT;
-
-    int len = (int)cmd->text1.len;
+    uint len = cmd->text1.len;
     char name[len + 4 + 1];             // Allow room for possible '.tec'
 
-    len = sprintf(name, "%.*s", len, cmd->text1.buf);
+    len = (uint)sprintf(name, "%.*s", (int)len, cmd->text1.buf);
 
-    struct ifile *ifile = open_input(name, (uint)len, stream, +1);
+    struct ifile *ifile = open_input(name, len, stream, cmd->colon_set, NUL);
     
     if (ifile == NULL)
     {
         if (strchr(last_file, '.') == NULL)
         {
-           len = sprintf(name, "%s.tec", last_file);
+            len = (uint)sprintf(name, "%s.tec", last_file);
 
-           ifile = open_input(name, (uint)len, stream, cmd->colon_set ? 0 : -1);
+            ifile = open_input(name, len, stream, cmd->colon_set, 'I');
         }
         else if (!cmd->colon_set)
         {
@@ -96,7 +95,6 @@ void exec_EI(struct cmd *cmd)
     }
     else if (cmd->colon_set)
     {
-        printf("name = %s, last_file = %s\r\n", name, last_file);
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
 }

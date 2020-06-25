@@ -27,6 +27,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,7 +49,10 @@ void exec_ER(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)            // ER`?
+    const char *buf = cmd->text1.buf;
+    uint len = cmd->text1.len;
+
+    if (len == 0)                       // ER`?
     {
         istream = IFILE_PRIMARY;
 
@@ -57,8 +61,9 @@ void exec_ER(struct cmd *cmd)
         return;
     }
 
-    struct ifile *ifile = open_input(cmd->text1.buf, cmd->text1.len, istream,
-                                     cmd->colon_set ? 0 : -1);
+    assert(buf != NULL);
+
+    struct ifile *ifile = open_input(buf, len, istream, cmd->colon_set, 'R');
 
     if (ifile == NULL)
     {
