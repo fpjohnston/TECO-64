@@ -329,6 +329,11 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
     }
     else if (access(oname, F_OK) == 0)  // Does file already exist?
     {
+        if (access(oname, W_OK) != 0)   // Yes, but is it writeable?
+        {
+            prints_err(E_OUT, ofile->name); // Error opening output file
+        }
+
         init_temp(&ofile->temp, oname);
 
         oname = ofile->temp;
@@ -346,7 +351,7 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
             return NULL;
         }
 
-        prints_err(E_OUT, ofile->name);
+        prints_err(E_OUT, ofile->name); // Error opening output file
     }
 
     (void)canonical_name(&ofile->name);
