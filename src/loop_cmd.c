@@ -42,7 +42,6 @@
 #define INFINITE        (-1)            ///< Infinite loop count
 
 uint loop_depth = 0;                    ///< Nested loop depth
-uint loop_max = 0;                      ///< Max. loop depth (0 => infinite)
 
 ///  @struct loop
 ///  @brief  Linked list structure for loops

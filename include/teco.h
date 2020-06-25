@@ -103,19 +103,11 @@ extern uint if_depth;
 
 extern uint loop_depth;
 
-extern uint macro_max;
-
-extern uint loop_max;
-
-extern uint qreg_max;
-
 extern struct buffer *current;
 
 extern char eg_command[];
 
 extern jmp_buf jump_main;
-
-extern uint macro_depth;
 
 extern uint last_len;
 

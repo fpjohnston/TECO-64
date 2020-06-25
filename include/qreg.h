@@ -91,6 +91,8 @@ extern void push_qlocal(void);
 
 extern bool push_qreg(int qname, bool qlocal);
 
+extern void reset_macro(void);
+
 extern void reset_qreg(void);
 
 extern void store_qchr(int qname, bool qlocal, int c);

@@ -127,7 +127,7 @@ int fetch_cbuf(bool start)
         {
             return EOF;
         }
-        else if (macro_depth > 0)
+        else if (check_macro())
         {
             print_err(E_UTM);           // Unterminated macro
         }

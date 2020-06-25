@@ -31,13 +31,11 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
 
-uint macro_depth = 0;               ///< Current macro depth
-uint macro_max = 0;                 ///< Max. macro depth (0 => infinite)
+static uint macro_depth = 0;            ///< Current macro depth
 
 
 ///
@@ -121,11 +119,6 @@ void exec_M(struct cmd *cmd)
         push_qlocal();
     }
 
-    if (macro_max != 0 && macro_max == macro_depth)
-    {
-        print_err(E_MMX);           // Maximum macro depth exceeded
-    }
-
     ++macro_depth;
     exec_cmd();
     --macro_depth;
@@ -139,3 +132,18 @@ void exec_M(struct cmd *cmd)
 
     qreg->text.len = saved_put;
 }
+
+
+///
+///  @brief    Reset macro depth.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_macro(void)
+{
+    macro_depth = 0;
+}
+
+

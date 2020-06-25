@@ -137,8 +137,7 @@ int main(int argc, const char * const argv[])
                 reset_indirect();       // Close any indirect file
                 reset_cbuf();           // Reset the input buffer
                 reset_qreg();           // Free up Q-register storage
-
-                macro_depth = 0;
+                reset_macro();          // Reset macro stack
 
                 break;
         }

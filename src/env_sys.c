@@ -35,7 +35,6 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
 #include "exec.h"
 #include "file.h"
 #include "term.h"
@@ -80,8 +79,6 @@ f
 // Local functions
 
 static int get_cmd(char *cmd);
-
-static void read_value(const char *var, uint *value);
 
 
 ///
@@ -265,44 +262,6 @@ void init_env(int argc, const char * const argv[])
     if ((env = getenv("TECO_PROMPT")) != NULL)
     {
         prompt = env;                   // Change TECO prompt
-    }
-
-    if (getenv("TECO_DEBUG") != NULL)
-    {
-        f.e0.dryrun = true;
-    }
-
-    read_value("TECO_MACRO_MAX", &macro_max);
-    read_value("TECO_LOOP_MAX",  &loop_max);
-    read_value("TECO_QREG_MAX",  &qreg_max);
-}
-
-
-///
-///  @brief    Read environment variable and set value if valid.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_value(const char *var, uint *value)
-{
-    assert(var != NULL);
-    assert(value != NULL);
-
-    const char *env;
-    char *endptr;
-    long n;
-
-    if ((env = getenv(var)) != NULL)
-    {
-        errno = 0;
-        n = strtol(env, &endptr, 10);
-
-        if (errno == 0 && n >= 0 && n != LONG_MAX)
-        {
-            *value = (uint)n;
-        }
     }
 }
 
