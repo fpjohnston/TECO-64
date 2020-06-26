@@ -8,7 +8,7 @@
 
 ! Verify that a file name was specified with --buffer !
 
-Z "E :@^A/?No file specified/ @O/exit/ '
+Z "E :@^A/--buffer=file option required/ @O/exit/ '
 
 ! Copy file name to Q-register A !
 
@@ -22,7 +22,7 @@ QA-2 "E  @ER/^EQA/    :@^A/PASSED/                  @O/exit/ '
 
 QA-3 "E :@ER/^EQA/ "S :@^A/PASSED/ | :@^A/FAILED/ ' @O/exit/ '
 
-:@^A/?Missing or invalid argument/
+:@^A/--arg=n option required (n = [1,3])/
 
 !exit!
 
