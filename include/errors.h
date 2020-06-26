@@ -76,9 +76,7 @@ enum errors
     E_MIX,          ///< Maximum insert string exceeded
     E_MLA,          ///< Missing left angle bracket
     E_MLP,          ///< Missing left parenthesis
-    E_MMX,          ///< Maximum macro depth exceeded
     E_MOD,          ///< Invalid modifier
-    E_MQX,          ///< Maximum Q-register depth exceeded
     E_MRP,          ///< Missing right parenthesis
     E_MSC,          ///< Missing start of conditional
     E_NAB,          ///< No argument before 1's complement operator
