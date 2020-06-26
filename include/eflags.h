@@ -46,7 +46,6 @@ struct e0_flag
     uint ctrl_c : 1;            ///< CTRL/C seen
     uint lower  : 1;            ///< Force string arguments to lower case
     uint upper  : 1;            ///< Force string arguments to upper case
-    uint exit   : 1;            ///< Exit when MUNG command is done
     uint strict : 1;            ///< --zero: zero-tolerance command parsing
     uint window : 1;            ///< --window: enable window display
     uint winact : 1;            ///< Window display is active
