@@ -59,8 +59,6 @@ void exec_EY(struct cmd *cmd)
         print_err(E_NFI);               // No file for input
     }
 
-    int olddot = t.dot;                 // Save current buffer position
-
     if (ifile->eof)
     {
         if (cmd->colon_set)
@@ -90,7 +88,7 @@ void exec_EY(struct cmd *cmd)
         push_expr(TECO_SUCCESS, EXPR_VALUE);
     }
 
-    setpos_ebuf(olddot);                // Restore buffer position
+    setpos_ebuf(t.B);                   // Position to start of buffer
 }
 
 
