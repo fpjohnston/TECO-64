@@ -16,7 +16,7 @@ HXA HK
 
 ! Open input file, using name in Q-register A !
 
-QA-1 "E   ER^EQA    :@^A/PASSED/                  @O/exit/ '
+QA-1 "E   ER^EQA^[    :@^A/PASSED/                  @O/exit/ '
 
 QA-2 "E  @ER/^EQA/    :@^A/PASSED/                  @O/exit/ '
 
@@ -28,4 +28,4 @@ QA-3 "E :@ER/^EQA/ "S :@^A/PASSED/ | :@^A/FAILED/ ' @O/exit/ '
 
 EX
 
-
+^[^[
