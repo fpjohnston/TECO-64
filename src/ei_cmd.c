@@ -151,40 +151,72 @@ int read_indirect(void)
         return 0;
     }
 
-    int c, last = EOF;                  // Current and previous characters read
-    bool nbytes = false;                // true if we've read any data
+    int c = fgetc(stream->fp);          // Get first character
 
-    while ((c = fgetc(stream->fp)) != EOF)
+    if (c == EOF)                       // Anything?
     {
-        store_cbuf(c);
+        close_input(IFILE_INDIRECT);    // No, close file
 
-        if (c == ESC && last == ESC)
+        return 0;
+    }
+
+    do
+    {
+        store_cbuf(c);                  // Store command character
+    } while ((c = fgetc(stream->fp)) != EOF);
+
+    const char *buf = current->buf;
+    uint len = current->len;
+
+    // Start at end of command string, and back up until we find a
+    // non-whitespace character. This allows the use of such things
+    // as spaces or CRLFs after a double escape. Note that we don't
+    // skip TABs, since those are TECO commands.
+
+    while (len > 0)
+    {
+        c = buf[len - 1];
+
+        if (!isspace(c) || c == TAB)
         {
-            return -1;                  // Done if double escape seen
+            break;
         }
 
-        last = c;
-        nbytes = true;
+        --len;
     }
 
-    // File ended without a double escape, so close it.
+    // Check to see if buffer ends with a double ESCape, or some combination
+    // of an ESCape and its equivalent 2-chr. ASCII construct (i.e., ^[ ).
 
-    close_input(IFILE_INDIRECT);
+    int c1 = EOF, c2 = EOF, c3 = EOF, c4 = EOF;
 
-    if (nbytes)
+    if (len >= 2)                       // 2+ chrs. for ESC+ESC
     {
-        return 1;                       // Partial command pending
+        c1 = buf[len - 1];
+        c2 = buf[len - 2];
+
+        if (len >= 3)                   // 3+ chrs. for ESC+^[ or ^[+ESC
+        {
+            c3 = buf[len - 3];
+
+            if (len >= 4)               // 4+ chrs. for ^[ + ^[
+            {
+                c4 = buf[len - 4];
+            }
+        }
+
+        if ((c1 == ESC && c2 == ESC) ||
+            (c1 == ESC && c2 == '[' && c3 == '^') ||
+            (c1 == '[' && c2 == '^' && c3 == ESC) ||
+            (c1 == '[' && c2 == '^' && c3 == '[' && c4 == '^'))
+        {
+            return -1;                  // Say we have a complete command
+        }
     }
-    else if (current->len >= 2 &&
-             current->buf[current->len - 2] == ESC &&
-             current->buf[current->len - 1] == ESC)
-    {
-        return -1;                      // Complete command in buffer
-    }
-    else
-    {
-        return 0;                       // No command pending
-    }
+
+    close_input(IFILE_INDIRECT);        // Close file for partial command
+
+    return 1;                           // And tell the caller it's partial
 }
 
 
