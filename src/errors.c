@@ -362,6 +362,8 @@ static char err_buf[ERR_BUF_SIZE];      ///< Buffer for error argument
 
 static const char *err_str = err_buf;   ///< Error message argument
 
+static const char *file_str = NULL;     ///< File name for error msg., if any
+
 
 ///
 ///  @brief    Print verbose error message.
@@ -463,8 +465,13 @@ noreturn void print_err(int err_teco)
         {
             print_str("   ");
             print_str(text, err_str);
-        }
 
+            if (err_teco == E_SYS && file_str != NULL)
+            {
+                print_str(" for '%s'", file_str);
+            }
+        }
+        
         print_chr(CRLF);
 
         last_error = err_teco;
@@ -527,7 +534,14 @@ noreturn void printc_err(int err_teco, int c)
 
 noreturn void prints_err(int err_teco, const char *str)
 {
-    err_str = str;
+    if (err_teco == E_SYS)
+    {
+        file_str = str;
+    }
+    else
+    {
+        err_str = str;
+    }
 
     print_err(err_teco);                // Print error and return to main()
 }

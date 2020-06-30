@@ -83,7 +83,7 @@ void exec_EZ(struct cmd *cmd)
     {
         if (fwrite(qreg->text.buf, 1uL, (ulong)size, ofile->fp) != size)
         {
-            print_err(E_SYS);
+            prints_err(E_SYS, ofile->name); // Unexpected system error
         }
     }
 

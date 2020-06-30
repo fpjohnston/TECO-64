@@ -273,7 +273,7 @@ void getsize_win(void)
 
     if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
     {
-        print_err(E_SYS);
+        prints_err(E_SYS, NULL);        // Unexpected system error
     }
 
     w.width  = ts.ws_col;

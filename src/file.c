@@ -52,6 +52,10 @@ uint ostream = OFILE_PRIMARY;           ///< Current output stream
 
 char *last_file = NULL;                 ///< Last opened file
 
+#define ERR_FILE_SIZE   200             ///< Max. len. of file causing error
+
+char err_file[ERR_FILE_SIZE + 1];       ///< Name of file causing error
+
 // Local functions
 
 static bool canonical_name(char **name);
@@ -285,7 +289,7 @@ struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
             prints_err(E_FNF, ifile->name); // File not found
         }
         
-        prints_err(E_INP, ifile->name); // Input file error
+        prints_err(E_SYS, ifile->name);               // System error
     }
 
     ifile->eof = false;
@@ -336,7 +340,11 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
     {
         if (access(oname, W_OK) != 0)   // Yes, but is it writeable?
         {
-            prints_err(E_OUT, ofile->name); // Error opening output file
+            sprintf(err_file, "%.*s", ERR_FILE_SIZE, ofile->name);
+
+            close_output(ostream);      // Deallocate stream resources
+
+            prints_err(E_SYS, err_file); // Unexpected system error
         }
 
         init_temp(&ofile->temp, oname);
@@ -349,17 +357,20 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
         }
     }
 
-    if ((ofile->fp = fopen(oname, mode)) == NULL)
+    if ((ofile->fp = fopen(oname, mode)) == NULL ||
+        !canonical_name(&ofile->name))
     {
         if (colon)
         {
             return NULL;
         }
 
-        prints_err(E_OUT, ofile->name); // Error opening output file
-    }
+        sprintf(err_file, "%.*s", ERR_FILE_SIZE, ofile->name);
 
-    (void)canonical_name(&ofile->name);
+        close_output(ostream);          // Deallocate stream resources
+
+        prints_err(E_SYS, err_file);    // Unexpected system error
+    }
 
     if (c == 'B' || c == 'W')           // Save file name for EB or EW
     {
