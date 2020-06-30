@@ -275,9 +275,14 @@ struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
     if (!canonical_name(&ifile->name) ||
         ((ifile->fp = fopen(ifile->name, "r")) == NULL))
     {
-        if (colon && (errno == ENOENT || errno == ENODEV))
+        if (errno == ENOENT || errno == ENODEV)
         {
-            return NULL;
+            if (colon)
+            {
+                return NULL;
+            }
+        
+            prints_err(E_FNF, ifile->name); // File not found
         }
         
         prints_err(E_INP, ifile->name); // Input file error

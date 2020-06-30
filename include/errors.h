@@ -55,6 +55,7 @@ enum errors
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag "!x!"
     E_EGC,          ///< EG command is too long
+    E_FNF,          ///< File not found
     E_ICE,          ///< Illegal ^E command in search argument
     E_IEC,          ///< Illegal character "x" after E
     E_IFC,          ///< Illegal character "x" after F
