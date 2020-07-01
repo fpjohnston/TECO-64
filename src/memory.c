@@ -205,7 +205,12 @@ static void delete_mblock(void *p1)
 
 static void exit_memory(void)
 {
-    free_mem(&eg_result);               // TODO: add comment to explain this
+    // We free this memory here because exit_EG() has to be the last function
+    // called before exiting TECO, which means we have to run our memory check
+    // before that, and if we didn't free it here, then the code below would
+    // assume that there's a memory leak.
+
+    free_mem(&eg_result);
 
     struct mblock *p = mroot;
     struct mblock *next;
