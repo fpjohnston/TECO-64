@@ -186,6 +186,7 @@ const struct cmd_table cmd_e_table[] =
     { exec_E1,      "f m x"    },
     { exec_E2,      "f m x"    },
     { exec_E3,      "f m x"    },
+    { exec_E4,      "f m x"    },
     { exec_EA,      ""         },
     { exec_EB,      ": @ 1"    },
     { exec_EC,      "n"        },

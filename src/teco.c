@@ -157,20 +157,18 @@ static void init_teco(int argc, const char * const argv[])
     f.et.abort   = true;                // Abort on error
     f.et.accent  = true;                // Use accent grave as delimiter
 
-    f.e0.strict  = true;                // Strictly enforce syntax
+    f.e1.brace   = true;                // Allow braced expressions
+    f.e1.tilde   = true;                // Allow tilde operator
+    f.e1.msec    = true;                // Return time in milliseconds
+    f.e1.text    = true;                // Enable extended text strings
 
-    f.e1.winline = true;                // Line between text & command regions
-    f.e1.status  = true;                // Display status on line
+    f.e3.icrlf   = true;                // Use CR/LF for input lines
+    f.e3.ocrlf   = true;                // Use CR/LF for output lines
+    f.e3.dollar  = true;                // Allow dollar signs in symbols
+    f.e3.ubar    = true;                // Allow underscores in symbols
 
-    f.e2.icrlf   = true;                // Use CR/LF for input lines
-    f.e2.ocrlf   = true;                // Use CR/LF for output lines
-    f.e2.dollar  = true;                // Allow dollar signs in symbols
-    f.e2.ubar    = true;                // Allow underscores in symbols
-
-    f.e3.brace   = true;                // Allow braced expressions
-    f.e3.tilde   = true;                // Allow tilde operator
-    f.e3.msec    = true;                // Return time in milliseconds
-    f.e3.text    = true;                // Enable extended text strings
+    f.e4.winline = true;                // Line between text & command regions
+    f.e4.status  = true;                // Display status on line
 
     // Note: this has to be first, since it will be the last called when we
     //       exit, and it might execute a system command.

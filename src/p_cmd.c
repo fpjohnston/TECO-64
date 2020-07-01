@@ -68,7 +68,7 @@ void exec_P(struct cmd *cmd)
 
     // Use of a colon only makes sense for P and nP
 
-    if (f.e0.strict && cmd->colon_set)
+    if (f.e2.page && cmd->colon_set)
     {
         if (cmd->m_set || cmd->h_set || cmd->w_set)
         {

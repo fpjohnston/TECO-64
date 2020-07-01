@@ -157,13 +157,7 @@ void exec_ctrl_f(struct cmd *cmd)
 
     int n = 0;                          // Default value for CTRL/F
 
-    if (check_n_flag(cmd, &n))
-    {
-        if (f.e0.strict)
-        {
-            throw(E_T10);               // TECO-10 command not implemented.
-        }
-    }
+    (void)check_n_flag(cmd, &n);
 }
 
 
@@ -211,7 +205,7 @@ void exec_ctrl_x(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan E1 command: set debugging features.
+///  @brief    Scan E1 command: set extended features.
 ///
 ///  @returns  Nothing.
 ///
@@ -226,7 +220,7 @@ void exec_E1(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan E2 command: set compatibility features.
+///  @brief    Scan E2 command: set extended features.
 ///
 ///  @returns  Nothing.
 ///
@@ -241,7 +235,7 @@ void exec_E2(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan E3 command: set extended features.
+///  @brief    Scan E3 command: set I/O flags.
 ///
 ///  @returns  Nothing.
 ///
@@ -252,6 +246,21 @@ void exec_E3(struct cmd *cmd)
     assert(cmd != NULL);
 
     (void)check_mn_flag(cmd, &f.e3.flag);
+}
+
+
+///
+///  @brief    Scan E4 command: set window flags.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_E4(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    (void)check_mn_flag(cmd, &f.e4.flag);
 }
 
 

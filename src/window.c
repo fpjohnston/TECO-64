@@ -809,7 +809,7 @@ void set_nrows(void)
 
     d.nrows = w.height - w.nlines;
 
-    if (f.e1.winline)
+    if (f.e4.winline)
     {
         --d.nrows;
     }
@@ -835,7 +835,7 @@ void set_scroll(int height, int nlines)
 
     if (f.e0.winact && w.nlines != 0)
     {
-        if (f.e1.cmdtop)
+        if (f.e4.cmdtop)
         {
             d.cmd.top  = 0;
             d.cmd.bot  = nlines - 1;
@@ -852,9 +852,9 @@ void set_scroll(int height, int nlines)
 
         d.status.top = d.status.bot = -1;
 
-        if (f.e1.winline)
+        if (f.e4.winline)
         {
-            if (f.e1.cmdtop)
+            if (f.e4.cmdtop)
             {
                 d.status.top = d.status.bot = d.cmd.bot + 1;
                 ++d.text.top;
@@ -908,7 +908,7 @@ static void update_status(void)
     (void)move(d.status.top, 0);
     (void)attrset(COLOR_PAIR(STATUS));  //lint !e835
 
-    if (f.e1.status)
+    if (f.e4.status)
     {
         char status[w.width];
 

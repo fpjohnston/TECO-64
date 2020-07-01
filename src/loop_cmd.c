@@ -110,7 +110,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
             throw(E_UTL);               // Unterminated loop
         }
 
-        if (f.e0.strict)
+        if (f.e2.loop)
         {
             if (cmd->c1 == '"')
             {
@@ -191,7 +191,7 @@ void exec_gt(struct cmd *cmd)
         throw(E_MLA);                   // Missing left angle bracket
     }
 
-    if (f.e0.strict)
+    if (f.e2.loop)
     {
         if (loop->depth != if_depth)
         {

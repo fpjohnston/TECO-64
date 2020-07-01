@@ -48,7 +48,7 @@ void exec_brace(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e3.brace)
+    if (f.e1.brace)
     {
         exec_operator(cmd);
     }

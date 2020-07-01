@@ -46,7 +46,6 @@ struct e0_flag
     uint ctrl_c : 1;            ///< CTRL/C seen
     uint lower  : 1;            ///< Force string arguments to lower case
     uint upper  : 1;            ///< Force string arguments to upper case
-    uint strict : 1;            ///< --zero: zero-tolerance command parsing
     uint window : 1;            ///< --window: enable window display
     uint winact : 1;            ///< Window display is active
     uint trace  : 1;            ///< Trace mode is active
@@ -55,7 +54,7 @@ struct e0_flag
 
 ///  @struct  e1_flag
 ///
-///  @brief   Window flags.
+///  @brief   Definitions of extended features
 
 union e1_flag
 {
@@ -63,19 +62,44 @@ union e1_flag
 
     struct
     {
-        uint cmdtop  : 1;       ///< Put command window above text window
-        uint winline : 1;       ///< Line between text and command window
-        uint status  : 1;       ///< Display status on line
+        uint brace  : 1;        ///< Enable braced expressions
+        uint tilde  : 1;        ///< Enable tilde commands
+        uint msec   : 1;        ///< Return time in milliseconds
+        uint text   : 1;        ///< Enable extended text strings
     };
 };
 
 ///  @struct  e2_flag
 ///
-///  @brief   Features affecting I/O operations and file contents.
+///  @brief   Definition of command restrictions.
 
 union e2_flag
 {
     uint flag;                  ///< Entire E2 flag
+
+    struct
+    {
+        uint zero   : 1;        ///< Division by zero
+        uint oper   : 1;        ///< Double operators in expressions
+        uint atsign : 1;        ///< Invalid @, or more than one @
+        uint colon  : 1;        ///< Invalid :
+        uint dcolon : 1;        ///< Invalid ::, or more than two :'s
+        uint comma  : 1;        ///< No argument before ,
+        uint m_arg  : 1;        ///< Unused m argument
+        uint n_arg  : 1;        ///< Unused n argument
+        uint loop   : 1;        ///< Loop not complete within conditional
+        uint quote  : 1;        ///< Conditional not complete within loop
+        uint page   : 1;        ///< m,n:P or H:P or :PW
+    };
+};
+
+///  @struct  e3_flag
+///
+///  @brief   Features affecting I/O operations and file contents.
+
+union e3_flag
+{
+    uint flag;                  ///< Entire E3 flag
 
     struct
     {
@@ -89,26 +113,9 @@ union e2_flag
     };
 };
 
-///  @struct  e3_flag
-///
-///  @brief   Definitions of extended features
-
-union e3_flag
-{
-    uint flag;                  ///< Entire E3 flag
-
-    struct
-    {
-        uint brace  : 1;        ///< Enable braced expressions
-        uint tilde  : 1;        ///< Enable tilde commands
-        uint msec   : 1;        ///< Return time in milliseconds
-        uint text   : 1;        ///< Enable extended text strings
-    };
-};
-
 ///  @struct  e4_flag
 ///
-///  @brief   Definition of command restrictions.
+///  @brief   Window flags.
 
 union e4_flag
 {
@@ -116,17 +123,9 @@ union e4_flag
 
     struct
     {
-        uint divby0 : 1;        ///< Error if division by zero
-        uint ctrl_f : 1;        ///< ^F command with argument (TECO-10 feature)
-        uint atsign : 1;        ///< More than one @ modifier
-        uint colon  : 1;        ///< More than two : modifiers
-        uint m_arg  : 1;        ///< Unused m argument
-        uint n_arg  : 1;        ///< Unused n argument
-        uint no_n   : 1;        ///< m argument without n argument
-        uint oper   : 1;        ///< Double operators in expressions
-        uint loop   : 1;        ///< Loop not complete within conditional
-        uint quote  : 1;        ///< Conditional not complete within loop
-        uint p_cmd  : 1;        ///< m,n:P or H:P or :PW
+        uint cmdtop  : 1;       ///< Put command window above text window
+        uint winline : 1;       ///< Line between text and command window
+        uint status  : 1;       ///< Display status on line
     };
 };
 

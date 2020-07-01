@@ -73,7 +73,7 @@ static exec_func *find_cmd(struct cmd *cmd)
 
     if (c == 'E')
     {
-        const char *e_cmds = "123ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+        const char *e_cmds = "1234ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
         const char *e_cmd  = strchr(e_cmds, toupper(cmd->c2));
 
         if (e_cmd == NULL)
@@ -238,7 +238,7 @@ exec_func *scan_cmd(struct cmd *cmd)
 
     exec_func *exec = find_cmd(cmd);
 
-    if (f.e3.brace && scan.nbraces && scan.brace_opt)
+    if (f.e1.brace && scan.nbraces && scan.brace_opt)
     {
         scan.expr = true;
 
@@ -374,14 +374,11 @@ static void scan_tail(struct cmd *cmd)
     {
         throw(E_MRP);                   // Missing right parenthesis
     }
-    else if (f.e0.strict)
+    else if ((f.e2.colon && cmd->colon_set && !scan.colon_opt) ||
+             (f.e2.dcolon && cmd->dcolon_set && !scan.dcolon_opt) ||
+             (f.e2.atsign && cmd->atsign_set && !scan.atsign_opt))
     {
-        if ((cmd->colon_set  && !scan.colon_opt ) ||
-            (cmd->dcolon_set && !scan.dcolon_opt) ||
-            (cmd->atsign_set && !scan.atsign_opt))
-        {
-            throw(E_MOD);               // Invalid modifier for command
-        }
+        throw(E_MOD);                   // Invalid modifier for command
     }
 
     if (cmd->c1 == CTRL_A || cmd->c1 == '!')
@@ -428,13 +425,13 @@ static void scan_tail(struct cmd *cmd)
     int delim = cmd->delim;
 
     // Now get the text strings, if they're allowed for this command.
-    // Note that if f.e3.text is enabled and the delimiter is '{', then
+    // Note that if f.e1.text is enabled and the delimiter is '{', then
     // the text strings may be of the form {xxx}. This allows for such
     // commands as @S {foo} or @FS {foo} {baz}.
 
     if (scan.t1_opt)
     {
-        if (f.e3.text && cmd->delim == '{')
+        if (f.e1.text && cmd->delim == '{')
         {
             delim = '}';
         }
@@ -445,7 +442,7 @@ static void scan_tail(struct cmd *cmd)
         {
             delim = cmd->delim;
 
-            if (f.e3.text && cmd->delim == '{')
+            if (f.e1.text && cmd->delim == '{')
             {
                 int c;
 

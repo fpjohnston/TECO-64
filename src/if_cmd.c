@@ -89,7 +89,7 @@ static void endif(struct cmd *cmd, bool else_ok)
             throw(E_UTQ);               // Unterminated conditional
         }
 
-        if (f.e0.strict)
+        if (f.e2.quote)
         {
             if (cmd->c1 == '<')
             {
@@ -147,7 +147,7 @@ void exec_apos(struct cmd *unused1)
         throw(E_MSC);                   // Missing start of conditional
     }
 
-    if (f.e0.strict)
+    if (f.e2.quote)
     {
         if (if_head != NULL && if_head->depth != loop_depth)
         {
@@ -194,7 +194,7 @@ void exec_F_vbar(struct cmd *cmd)
 
 static void pop_if(void)
 {
-    if (f.e0.strict)
+    if (f.e2.quote)
     {
         struct if_block *if_block = if_head;
 
@@ -221,7 +221,7 @@ static void pop_if(void)
 
 static void push_if(void)
 {
-    if (f.e0.strict)
+    if (f.e2.quote)
     {
         struct if_block *if_block = alloc_mem((uint)sizeof(*if_block));
 
@@ -283,8 +283,8 @@ void exec_quote(struct cmd *cmd)
 
         case 'C':                       // Test for symbol constituent
             if (isalnum(c) || c == '.'  ||
-                (f.e2.ubar && c == '_') ||
-                (f.e2.dollar && c == '$'))
+                (f.e3.ubar && c == '_') ||
+                (f.e3.dollar && c == '$'))
             {
                 return;
             }
@@ -397,7 +397,7 @@ void exec_vbar(struct cmd *cmd)
 
 void reset_if(void)
 {
-    if (f.e0.strict)
+    if (f.e2.quote)
     {
         struct if_block *if_block;
 

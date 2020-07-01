@@ -180,18 +180,18 @@ void exec_mod(struct cmd *cmd)
 
     if (cmd->c1 == '@')
     {
-        if (f.e0.strict && cmd->atsign_set)
+        if (f.e2.atsign && cmd->atsign_set)
         {
-            throw(E_MOD);               // Two @'s are not allowed
+            throw(E_MOD);               // No more than one at sign
         }
 
         cmd->atsign_set = true;
     }
     else if (cmd->c1 == ':')
     {
-        if (f.e0.strict && cmd->dcolon_set)
+        if (f.e2.dcolon && cmd->dcolon_set)
         {
-            throw(E_MOD);               // More than two :'s are not allowed
+            throw(E_MOD);               // No more than two colons
         }
 
         if (cmd->colon_set)
@@ -264,7 +264,7 @@ void exec_operator(struct cmd *cmd)
             break;
 
         case '/':
-            if (f.e3.brace && scan.nbraces)
+            if (f.e1.brace && scan.nbraces)
             {
                 if ((c = fetch_cbuf(NOCMD_START)) == '/')
                 {
@@ -464,18 +464,13 @@ exec_func *next_cmd(struct cmd *cmd)
         cmd->n_set = true;
         cmd->n_arg = -1;
     }
-    else if (f.e0.strict)
+    else if (f.e2.n_arg && cmd->n_set && !scan.n_opt)
     {
-#if     0       // TODO: temporarily disabled
-        if (cmd->n_set && !scan.n_opt)
-        {
-            throw(E_UNA);               // Unused n argument
-        }
-        else if (cmd->m_set && !scan.m_opt)
-        {
-            throw(E_UMA);               // Unused m argument
-        }
-#endif
+        throw(E_UNA);                   // Unused n argument
+    }
+    else if (f.e2.m_arg && cmd->m_set && !scan.m_opt)
+    {
+        throw(E_UMA);                   // Unused m argument
     }
 
     return exec;

@@ -84,7 +84,7 @@ void page_forward(FILE *fp, int start, int end, bool ff)
 
         // Translate LF to CR/LF if needed, unless last chr. was CR
 
-        if (c == LF && last != CR && f.e2.ocrlf)
+        if (c == LF && last != CR && f.e3.ocrlf)
         {
             fputc(CR, fp);
         }

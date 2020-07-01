@@ -114,7 +114,7 @@ bool append_line(void)
     {
         next = fgetc(ifile->fp);
 
-        if (c == FF && !f.e2.no_ff)     // If form feed, don't store it
+        if (c == FF && !f.e3.no_ff)     // If form feed, don't store it
         {
             f.ctrl_e = true;            // But do flag it
 
@@ -130,7 +130,7 @@ bool append_line(void)
             // If start of CR/LF sequence, but we only
             // want to save LF, then skip the CR
 
-            if (next == LF && !f.e2.icrlf)
+            if (next == LF && !f.e3.icrlf)
             {
                 continue;
             }
