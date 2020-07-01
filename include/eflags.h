@@ -58,7 +58,7 @@ struct e0_flag
 
 union e1_flag
 {
-    uint flag;                  ///< Entire E1 flag
+    int flag;                   ///< Entire E1 flag
 
     struct
     {
@@ -75,7 +75,7 @@ union e1_flag
 
 union e2_flag
 {
-    uint flag;                  ///< Entire E2 flag
+    int flag;                   ///< Entire E2 flag
 
     struct
     {
@@ -99,7 +99,7 @@ union e2_flag
 
 union e3_flag
 {
-    uint flag;                  ///< Entire E3 flag
+    int flag;                   ///< Entire E3 flag
 
     struct
     {
@@ -119,7 +119,7 @@ union e3_flag
 
 union e4_flag
 {
-    uint flag;                  ///< Entire E4 flag
+    int flag;                   ///< Entire E4 flag
 
     struct
     {
@@ -135,7 +135,7 @@ union e4_flag
 
 union ed_flag
 {
-    uint flag;                  ///< Entire ED flag
+    int flag;                   ///< Entire ED flag
 
     struct
     {
@@ -156,7 +156,7 @@ union ed_flag
 
 union eh_flag
 {
-    uint flag;                  ///< Entire EH flag
+    int flag;                   ///< Entire EH flag
 
     struct
     {
@@ -171,7 +171,7 @@ union eh_flag
 
 union et_flag
 {
-    uint flag;                  ///< Entire ET flag
+    int flag;                   ///< Entire ET flag
 
     struct
     {

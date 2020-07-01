@@ -44,7 +44,7 @@
 
 static bool check_n_flag(struct cmd *cmd, int *flag);
 
-static bool check_mn_flag(struct cmd *cmd, uint *flag);
+static bool check_mn_flag(struct cmd *cmd, int *flag);
 
 
 ///
@@ -54,14 +54,14 @@ static bool check_mn_flag(struct cmd *cmd, uint *flag);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool check_mn_flag(struct cmd *cmd, uint *flag)
+static bool check_mn_flag(struct cmd *cmd, int *flag)
 {
     assert(cmd != NULL);
     assert(flag != NULL);
 
     if (!cmd->n_set)                    // n argument?
     {
-        push_expr((int)*flag, EXPR_VALUE); // Assume we're an operand
+        push_expr(*flag, EXPR_VALUE);  // Assume we're an operand
 
         return false;
     }
@@ -73,17 +73,17 @@ static bool check_mn_flag(struct cmd *cmd, uint *flag)
     {
         if (!cmd->m_set)                // m argument too?
         {
-            *flag = (uint)cmd->n_arg;   // No, so just set flag
+            *flag = cmd->n_arg;         // No, so just set flag
         }
         else                            // Both m and n were specified
         {
             if (cmd->m_arg != 0)        // Turn off m bits
             {
-                *flag &= ~(uint)cmd->m_arg;
+                *flag &= (int)~(uint)cmd->m_arg;
             }
             if (cmd->n_arg != 0)        // Turn on n bits
             {
-                *flag |= (uint)cmd->n_arg;
+                *flag |= cmd->n_arg;
             }
         }
     }
