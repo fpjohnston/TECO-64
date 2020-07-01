@@ -48,7 +48,7 @@ sub check_line
 
     foreach my $code (keys %codes)
     {
-        ++$codes{$code} if $line =~ /_err\($code/;
+        ++$codes{$code} if $line =~ /throw\($code/;
     }
 }
 

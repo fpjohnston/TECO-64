@@ -59,14 +59,14 @@ void exec_EK(struct cmd *unused1)
     {
         if (remove(ofile->temp) != 0)
         {
-            prints_err(E_SYS, ofile->temp);
+            throw(E_SYS, ofile->temp);
         }
     }
     else if (ofile->name != NULL)
     {
         if (remove(ofile->name) != 0)
         {
-            prints_err(E_SYS, ofile->name);
+            throw(E_SYS, ofile->name);
         }
     }
 

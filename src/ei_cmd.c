@@ -91,7 +91,7 @@ void exec_EI(struct cmd *cmd)
         }
         else if (!cmd->colon_set)
         {
-            prints_err(E_INP, last_file); // Input file name
+            throw(E_FNF, last_file);    // Input file name
         }
     }
 

@@ -53,7 +53,7 @@ void exec_ctrl_u(struct cmd *cmd)
     {
         if (cmd->text1.len != 0)        // Does it have a text string?
         {
-            print_err(E_MOD);           // Yes, that's an error
+            throw(E_MOD);               // Yes, that's an error
         }
 
         if (cmd->colon_set)             // n:^Uq`?
@@ -69,7 +69,7 @@ void exec_ctrl_u(struct cmd *cmd)
     {
         if (cmd->text1.len == 0)        // No text either?
         {
-            print_err(E_MOD);           // Yes, that's wrong
+            throw(E_MOD);               // Yes, that's wrong
         }
 
         if (cmd->colon_set)             // :^Utext`

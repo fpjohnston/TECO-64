@@ -47,7 +47,7 @@
 
 void page_backward(FILE *unused1, int unused2)
 {
-    print_err(E_NPA);                   // P argument cannot be negative
+    throw(E_NPA);                       // P argument cannot be negative
 }
 
 
@@ -123,5 +123,5 @@ void reset_pages(void)
 
 void yank_backward(FILE *unused1)
 {
-    print_err(E_NYA);                   // Numeric argument with Y
+    throw(E_NYA);                       // Numeric argument with Y
 }

@@ -54,14 +54,14 @@ void exec_comma(struct cmd *cmd)
 
     if (scan.comma_set || cmd->h_set)   // Already seen comma or H?
     {
-        print_err(E_ARG);               // Invalid arguments
+        throw(E_ARG);                   // Invalid arguments
     }
 
     if (!pop_expr(&cmd->m_arg))         // Any n argument specified?
     {
         if (f.e0.strict)                // No -- should we issue error?
         {
-            print_err(E_NAC);           // No argument before ,
+            throw(E_NAC);               // No argument before ,
         }
 
         return;
@@ -72,7 +72,7 @@ void exec_comma(struct cmd *cmd)
 
     if (cmd->m_arg < 0)
     {
-        print_err(E_NCA);               // Negative argument to ,
+        throw(E_NCA);                   // Negative argument to ,
     }
 
     cmd->m_set = true;                  // And say we have one

@@ -106,7 +106,7 @@ static void exec_case(struct cmd *cmd, bool lower)
 
             if (m < 0 || m > Z || n < 0 || n > Z || m > n)
             {
-                printc_err(E_POP, '?'); // Pointer off page
+                throw(E_POP, '?');      // Pointer off page
             }
 
             m -= dot;

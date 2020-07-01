@@ -80,7 +80,7 @@ void init_temp(char **otemp, const char *oname)
 
     if (stat(oname, &file_stat) != 0)
     {
-        prints_err(E_SYS, oname);       // Unexpected system call
+        throw(E_SYS, oname);      // Unexpected system call
     }
 
     memcpy(scratch, oname, (size_t)nbytes + 1);
@@ -123,7 +123,7 @@ int get_wild(void)
             {
                 next_file = NULL;       // Make sure we can't repeat this
 
-                prints_err(E_SYS, filename); // Unexpected system error
+                throw(E_SYS, filename);// Unexpected system error
             }
 
             if (S_ISREG(file_stat.st_mode))
@@ -207,17 +207,17 @@ void rename_output(struct ofile *ofile)
 
             if (rename(ofile->name, scratch) != 0)
             {
-                prints_err(E_SYS, ofile->name); // Unexpected system error
+                throw(E_SYS, ofile->name);// Unexpected system error
             }
         }
         else if (remove(ofile->name) != 0)
         {
-            prints_err(E_SYS, ofile->name); // Unexpected system error
+            throw(E_SYS, ofile->name);// Unexpected system error
         }
 
         if (rename(ofile->temp, ofile->name) != 0)
         {
-            prints_err(E_SYS, ofile->name); // Unexpected system error
+            throw(E_SYS, ofile->name);// Unexpected system error
         }
     }
 }
@@ -252,13 +252,13 @@ bool set_wild(const char *filename)
             return true;
 
         case GLOB_NOSPACE:
-            print_err(E_MEM);           // Ran out of memory
+            throw(E_MEM);          // Ran out of memory
 
         case GLOB_NOMATCH:
             return false;               // No matches
 
         default:                        // Something unexpected
-            prints_err(E_SYS, filename); // Unexpected system error
+            throw(E_SYS, filename);// Unexpected system error
     }
 }
 

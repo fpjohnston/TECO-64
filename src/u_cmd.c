@@ -50,7 +50,7 @@ void exec_U(struct cmd *cmd)
 
     if (!cmd->n_set)                    // n argument?
     {
-        print_err(E_NAU);               // No argument before U
+        throw(E_NAU);                   // No argument before U
     }
 
     store_qnum(cmd->qname, cmd->qlocal, cmd->n_arg);

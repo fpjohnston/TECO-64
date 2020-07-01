@@ -54,7 +54,7 @@ bool append(bool n_set, int n_arg, bool colon_set)
 
     if (ifile->fp == NULL)
     {
-        print_err(E_NFI);               // No file for input
+        throw(E_NFI);                   // No file for input
     }
 
     f.ctrl_e = false;                   // Assume not appending FF

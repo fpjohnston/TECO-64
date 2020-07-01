@@ -70,7 +70,7 @@ void exec_equals(struct cmd *cmd)
 
     if (!cmd->n_set)                    // If no operand, then complain
     {
-        print_err(E_NAE);               // No argument before =
+        throw(E_NAE);                   // No argument before =
     }
 
     int c;

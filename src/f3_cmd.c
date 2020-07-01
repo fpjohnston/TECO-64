@@ -114,7 +114,7 @@ void exec_F3(struct cmd *cmd)
 
         if (color == -1)
         {
-            print_err(E_WIN);
+            throw(E_WIN);
         }
 
         int n = cmd->n_arg;              // Color saturation
@@ -152,7 +152,7 @@ void exec_F3(struct cmd *cmd)
 
 #else
 
-    print_err(E_WIN);
+    throw(E_WIN);
 
 #endif
 
@@ -222,7 +222,7 @@ static void set_colors(const char *keyword, char *value)
     }
     else
     {
-        print_err(E_WIN);
+        throw(E_WIN);
     }
 
     char *saveptr;

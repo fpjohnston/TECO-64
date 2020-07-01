@@ -95,29 +95,29 @@ struct tstring
 
 // Global variables
 
-extern int radix;
-
-extern struct buffer *term_buf;
-
-extern uint if_depth;
-
-extern uint loop_depth;
-
 extern struct buffer *current;
 
 extern char eg_command[];
+
+extern uint if_depth;
 
 extern jmp_buf jump_main;
 
 extern uint last_len;
 
+extern uint loop_depth;
+
 extern bool main_active;
 
 extern const char *prompt;
 
+extern int radix;
+
 extern int teco_version;
 
-// Global functions
+extern struct buffer *term_buf;
+
+// General-purpose common functions
 
 extern void *alloc_mem(uint size);
 
@@ -141,6 +141,10 @@ extern int isdelim(int c);
 
 extern void flag_print(int flag);
 
+extern void register_exit(void (*func)(void));
+
+extern void reset(void);
+
 extern void set_config(int argc, const char * const argv[]);
 
 extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
@@ -156,8 +160,6 @@ extern struct buffer *get_cbuf(void);
 extern void init_cbuf(void);
 
 extern char *next_cbuf(void);
-
-extern void register_exit(void (*func)(void));
 
 extern void reset_cbuf(void);
 

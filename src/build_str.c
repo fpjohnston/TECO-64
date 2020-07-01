@@ -108,14 +108,14 @@ uint build_string(char **dest, const char *src, uint len)
         {
             if (len-- == 0)
             {
-                print_err(E_ISS);
+                throw(E_ISS);           // Illegal search string
             }
 
             c = *src++;
 
             if (toupper(c) < '@' || toupper(c) > '_')
             {
-                printc_err(E_IUC, c);
+                throw(E_IUC, c);        // Illegal uparrow character
             }
 
             c = toupper(c) & 0x1f;
@@ -168,7 +168,7 @@ uint build_string(char **dest, const char *src, uint len)
         {
             if (len-- == 0)             // Any more characters?
             {
-                print_err(E_ISS);       // Illegal search string
+                throw(E_ISS);           // Illegal search string
             }
 
             c = *src++;
@@ -190,7 +190,7 @@ uint build_string(char **dest, const char *src, uint len)
 
             if (len-- == 0)             // Q-register specified?
             {
-                printc_err(E_IQN, NUL); // Illegal Q-register
+                throw(E_IQN, NUL);      // Illegal Q-register
             }
 
             int qname = *src++;
@@ -209,7 +209,7 @@ uint build_string(char **dest, const char *src, uint len)
 
                 if (len-- == 0)         // Q-register specified?
                 {
-                    printc_err(E_IQN, NUL); // Illegal Q-register
+                    throw(E_IQN, NUL);  // Illegal Q-register
                 }
 
                 qname = *src++;

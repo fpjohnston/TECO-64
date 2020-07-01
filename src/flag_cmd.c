@@ -161,7 +161,7 @@ void exec_ctrl_f(struct cmd *cmd)
     {
         if (f.e0.strict)
         {
-            print_err(E_T10);           // TECO-10 command not implemented.
+            throw(E_T10);               // TECO-10 command not implemented.
         }
     }
 }
@@ -287,7 +287,7 @@ void exec_EE(struct cmd *cmd)
     {
         if (!isascii(n))                // Must be an ASCII character
         {
-            print_err(E_CHR);           // Invalid character for command
+            throw(E_CHR);               // Invalid character for command
         }
 
         f.ee = n;
@@ -390,7 +390,7 @@ void exec_EO(struct cmd *cmd)
 
     if (check_n_flag(cmd, &n))
     {
-        print_err(E_NYI);               // Not yet implemented
+        throw(E_NYI);                   // Not yet implemented
     }
 }
 

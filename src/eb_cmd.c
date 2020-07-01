@@ -55,7 +55,7 @@ void exec_EB(struct cmd *cmd)
 
     if (len == 0)
     {
-        print_err(E_NFI);               // No file for input
+        throw(E_NFI);                   // No file for input
     }
 
     assert(buf != NULL);

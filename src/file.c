@@ -237,7 +237,7 @@ void init_filename(char **name, const char *buf, uint len)
         }
         else if (iscntrl(c) || !isascii(c))
         {
-            printc_err(E_IFN, c);
+            throw(E_IFN, c);            // Illegal character in file name
         }
         else
         {
@@ -286,10 +286,10 @@ struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
                 return NULL;
             }
         
-            prints_err(E_FNF, ifile->name); // File not found
+            throw(E_FNF, ifile->name);  // File not found
         }
         
-        prints_err(E_SYS, ifile->name);               // System error
+        throw(E_SYS, ifile->name);      // Unexpected system error
     }
 
     ifile->eof = false;
@@ -319,7 +319,7 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
 
     if (ofile->fp != NULL)
     {
-        print_err(E_OFO);               // Output file is already open
+        throw(E_OFO);                   // Output file is already open
     }
 
     init_filename(&ofile->name, name, len);
@@ -344,7 +344,7 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
 
             close_output(ostream);      // Deallocate stream resources
 
-            prints_err(E_SYS, err_file); // Unexpected system error
+            throw(E_SYS, err_file);     // Unexpected system error
         }
 
         init_temp(&ofile->temp, oname);
@@ -369,7 +369,7 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
 
         close_output(ostream);          // Deallocate stream resources
 
-        prints_err(E_SYS, err_file);    // Unexpected system error
+        throw(E_SYS, err_file);         // Unexpected system error
     }
 
     if (c == 'B' || c == 'W')           // Save file name for EB or EW

@@ -50,7 +50,7 @@ void exec_lbracket(struct cmd *cmd)
 
     if (!push_qreg(cmd->qname, cmd->qlocal))
     {
-        print_err(E_PDO);               // Push-down list is full
+        throw(E_PDO);                   // Push-down list is full
     }
 
     if (cmd->n_set)                     // Pass through m and n arguments
@@ -80,7 +80,7 @@ void exec_rbracket(struct cmd *cmd)
     {
         if (!cmd->colon_set)
         {
-            print_err(E_PES);           // Push-down stack is empty
+            throw(E_PES);               // Push-down stack is empty
         }
 
         push_expr(TECO_FAILURE, EXPR_VALUE);

@@ -78,7 +78,7 @@ static exec_func *find_cmd(struct cmd *cmd)
 
         if (e_cmd == NULL)
         {
-            printc_err(E_IEC, cmd->c2); // Illegal E character
+            throw(E_IEC, cmd->c2);      // Illegal E character
         }
 
         uint i = (uint)(e_cmd - e_cmds);
@@ -94,7 +94,7 @@ static exec_func *find_cmd(struct cmd *cmd)
 
         if (f_cmd == NULL)
         {
-            printc_err(E_IFC, cmd->c2); // Illegal F character
+            throw(E_IFC, cmd->c2);      // Illegal F character
         }
 
         uint i = (uint)(f_cmd - f_cmds);
@@ -118,7 +118,7 @@ static exec_func *find_cmd(struct cmd *cmd)
 
             if (cmd->c1 <= NUL || cmd->c1 >= SPACE)
             {
-                printc_err(E_IUC, cmd->c1); // Illegal character following ^
+                throw(E_IUC, cmd->c1);  // Illegal character following ^
             }
 
             table = &cmd_table[(int)cmd->c1];
@@ -269,7 +269,7 @@ exec_func *scan_cmd(struct cmd *cmd)
 
             if (toupper(cmd->c1) != 'G' || (c != '*' && c != '$' && c != '_'))
             {
-                printc_err(E_IQN, c);   // Illegal Q-register name
+                throw(E_IQN, c);        // Illegal Q-register name
             }
         }
 
@@ -372,7 +372,7 @@ static void scan_tail(struct cmd *cmd)
 
     if (scan.nparens != 0)
     {
-        print_err(E_MRP);               // Missing right parenthesis
+        throw(E_MRP);                   // Missing right parenthesis
     }
     else if (f.e0.strict)
     {
@@ -380,7 +380,7 @@ static void scan_tail(struct cmd *cmd)
             (cmd->dcolon_set && !scan.dcolon_opt) ||
             (cmd->atsign_set && !scan.atsign_opt))
         {
-            print_err(E_MOD);           // Invalid modifier for command
+            throw(E_MOD);               // Invalid modifier for command
         }
     }
 

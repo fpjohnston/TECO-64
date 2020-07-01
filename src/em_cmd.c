@@ -46,6 +46,6 @@ void exec_EM(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    print_err(E_T10);                   // TECO-10 command not implemented
+    throw(E_T10);                       // TECO-10 command not implemented
 }
 

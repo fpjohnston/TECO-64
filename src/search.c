@@ -192,7 +192,7 @@ static int isqreg(int c, struct search *s)
 
     if (s->match_len-- == 0)
     {
-        print_err(E_IQN);
+        throw(E_IQN);                   // Illegal Q-register name
     }
 
     if ((qname = *s->match_buf++) == '.')
@@ -201,7 +201,7 @@ static int isqreg(int c, struct search *s)
 
         if (s->match_len-- == 0)
         {
-            print_err(E_IQN);
+            throw(E_IQN);               // Illegal Q-register name
         }
 
         qname = *s->match_buf++;
@@ -263,7 +263,7 @@ static bool match_chr(int c, struct search *s)
 
     if (s->match_len-- == 0)
     {
-        print_err(E_ISS);
+        throw(E_ISS);                   // Illegal search string
     }
 
     int match = *s->match_buf++;
@@ -272,7 +272,7 @@ static bool match_chr(int c, struct search *s)
     {
         if (s->match_len-- == 0)
         {
-            print_err(E_ISS);
+            throw(E_ISS);               // Illegal search string
         }
 
         match = toupper(*s->match_buf++);
@@ -318,7 +318,7 @@ static bool match_chr(int c, struct search *s)
 
         // TODO: maybe process ^EM, and ^E[a,b,c...]?
 
-        print_err(E_ICE);               // Illegal ^E command in search argument
+        throw(E_ICE);                   // Illegal ^E command in search argument
     }
     else if (match == CTRL_N)
     {
@@ -478,7 +478,7 @@ bool search_loop(struct search *s)
                 case SEARCH_N:
                     if (ofile->fp == NULL)
                     {
-                        print_err(E_NFO); // No file for output
+                        throw(E_NFO);   // No file for output
                     }
 
                     if (!next_page(0, t.Z, f.ctrl_e, (bool)true))
@@ -491,14 +491,14 @@ bool search_loop(struct search *s)
                 case SEARCH_U:
                     if (!f.ed.yank)
                     {
-                        print_err(E_YCA); // Y command aborted
+                        throw(E_YCA);   // Y command aborted
                     }
                     //lint -fallthrough
 
                 case SEARCH_E:
                     if (ifile->fp == NULL)
                     {
-                        print_err(E_NFI); // No file for input
+                        throw(E_NFI);   // No file for input
                     }
 
                     if (!next_yank())

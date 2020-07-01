@@ -129,19 +129,19 @@ int fetch_cbuf(bool start)
         }
         else if (check_macro())
         {
-            print_err(E_UTM);           // Unterminated macro
+            throw(E_UTM);               // Unterminated macro
         }
         else if (loop_depth != 0)
         {
-            print_err(E_UTL);           // Unterminated loop
+            throw(E_UTL);               // Unterminated loop
         }
         else if (if_depth != 0)
         {
-            print_err(E_UTQ);           // Unterminated conditional
+            throw(E_UTQ);               // Unterminated conditional
         }
         else
         {
-            print_err(E_UTC);           // Unterminated command
+            throw(E_UTC);               // Unterminated command
         }
     }
 

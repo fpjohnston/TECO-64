@@ -54,7 +54,7 @@ void exec_FD(struct cmd *cmd)
 
     if (cmd->n_set && cmd->n_arg == 0)  // 0FDtext` isn't allowed
     {
-        print_err(E_ISA);               // Illegal search argument
+        throw(E_ISA);              // Illegal search argument
     }
 
     if (!cmd->n_set)                    // FDtext` => 1FDtext`
@@ -114,7 +114,7 @@ void exec_FD(struct cmd *cmd)
 
             last_search.buf[last_search.len] = NUL;
 
-            prints_err(E_SRH, last_search.buf);
+            throw(E_SRH, last_search.buf);
         }
     }
 }

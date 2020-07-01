@@ -279,7 +279,7 @@ struct qreg *get_qreg(int qname, bool qdot)
 
     if (qchar == NULL)
     {
-        printc_err(E_IQN, qname);
+        throw(E_IQN, qname);            // Illegal Q-register name
     }
 
     uint qindex = (uint)(qchar - qchars);

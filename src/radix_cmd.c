@@ -95,7 +95,7 @@ void exec_ctrl_r(struct cmd *cmd)
     {
         if (n != 8 && n != 10 && n != 16)
         {
-            print_err(E_IRA);           // Illegal radix argument
+            throw(E_IRA);               // Illegal radix argument
         }
 
         radix = n;                      // Set the radix

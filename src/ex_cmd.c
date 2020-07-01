@@ -56,7 +56,7 @@ void exec_EX(struct cmd *cmd)
 
     if (ofile->fp == NULL && t.Z != 0)
     {
-        print_err(E_NFO);               // No file for output
+        throw(E_NFO);                   // No file for output
     }
 
     exec_EC(cmd);                       // Close everything normally

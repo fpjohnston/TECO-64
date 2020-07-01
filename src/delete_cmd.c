@@ -63,7 +63,7 @@ void exec_D(struct cmd *cmd)
 
         if (m < 0 || m > t.Z || n < 0 || n > t.Z || m > n)
         {
-            printc_err(E_POP, 'D');     // Pointer off page
+            throw(E_POP, 'D');          // Pointer off page
         }
 
         setpos_ebuf(m);                 // Go to first position
@@ -75,7 +75,7 @@ void exec_D(struct cmd *cmd)
     {
         if (!cmd->colon_set)
         {
-            print_err(E_DTB);           // Delete too big
+            throw(E_DTB);               // Delete too big
         }
 
         push_expr(TECO_FAILURE, EXPR_VALUE);
@@ -129,7 +129,7 @@ void exec_K(struct cmd *cmd)
 
         if (m < 0 || m > t.Z || n < 0 || n > t.Z || m > n)
         {
-            printc_err(E_POP, 'K');     // Pointer off page
+            throw(E_POP, 'K');          // Pointer off page
         }
 
         setpos_ebuf(m);                 // Go to first position

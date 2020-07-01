@@ -236,7 +236,7 @@ static void set_w(int m, int n)
         case 7:
             if (m <= 1 || w.height - m < 9)
             {
-                print_err(E_WIN);       // Window error
+                throw(E_WIN);           // Window error
             }
 
             w.nlines = m;
@@ -254,6 +254,6 @@ static void set_w(int m, int n)
             break;
 
         default:
-            print_err(E_ARG);
+            throw(E_ARG);
     }
 }

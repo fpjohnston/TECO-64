@@ -56,7 +56,7 @@ void exec_FK(struct cmd *cmd)
     {
         if (cmd->n_arg <= 0)            // 0FKtext` and -nFKtext` aren't allowed
         {
-            print_err(E_ISA);           // Illegal search argument
+            throw(E_ISA);               // Illegal search argument
         }
     }
     else                                // FKtext` => 1FKtext`
@@ -105,7 +105,7 @@ void exec_FK(struct cmd *cmd)
 
             last_search.buf[last_search.len] = NUL;
 
-            prints_err(E_SRH, last_search.buf);
+            throw(E_SRH, last_search.buf);
         }
     }
 }

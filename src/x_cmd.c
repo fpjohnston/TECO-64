@@ -62,7 +62,7 @@ void exec_X(struct cmd *cmd)
 
         if (m < 0 || m > t.Z || n < 0 || n > t.Z)
         {
-            printc_err(E_POP, 'X');     // Pointer off page
+            throw(E_POP, 'X');          // Pointer off page
         }
         else if (m == 0 && n == 0)
         {
@@ -76,7 +76,7 @@ void exec_X(struct cmd *cmd)
         }
         else if (m >= n || n == 0)
         {
-            print_err(E_ARG);           // Invalid arguments
+            throw(E_ARG);               // Invalid arguments
         }
 
         // Change absolute positions to relative positions.

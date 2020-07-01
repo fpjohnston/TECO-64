@@ -61,7 +61,7 @@ void exec_ctrl_i(struct cmd *cmd)
 
     if (nbytes >= (int)sizeof(insert_string) - 1)
     {
-        print_err(E_MIX);               // Maximum insert string exceeded
+        throw(E_MIX);                   // Maximum insert string exceeded
     }
 
     exec_insert(insert_string, 1 + cmd->text1.len);
@@ -81,7 +81,7 @@ void exec_I(struct cmd *cmd)
 
     if (cmd->n_set && cmd->text1.len != 0) // nItext`?
     {
-        print_err(E_IIA);               // Illegal insert argument
+        throw(E_IIA);                   // Illegal insert argument
     }
 
     if (cmd->text1.len != 0)
@@ -91,7 +91,7 @@ void exec_I(struct cmd *cmd)
 
         if (nbytes >= (int)sizeof(insert_string))
         {
-            print_err(E_MIX);           // Maximum insert string exceeded
+            throw(E_MIX);               // Maximum insert string exceeded
         }
 
         exec_insert(insert_string, cmd->text1.len);

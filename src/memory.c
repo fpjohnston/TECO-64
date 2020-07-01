@@ -127,7 +127,7 @@ void *alloc_mem(uint size)
 
     if (p1 == NULL)
     {
-        print_err(E_MEM);               // Memory overflow
+        throw(E_MEM);                   // Memory overflow
     }
 
 #if     defined(DEBUG_MEMORY)
@@ -258,7 +258,7 @@ void *expand_mem(void *p1, uint oldsize, uint newsize)
 
     if (p2 == NULL)
     {
-        print_err(E_MEM);               // Memory overflow
+        throw(E_MEM);                   // Memory overflow
     }
 
 #if     defined(DEBUG_MEMORY)
@@ -344,7 +344,7 @@ void *shrink_mem(void *p1, uint oldsize, uint newsize)
 
     if (p2 == NULL)
     {
-        print_err(E_MEM);               // Memory overflow
+        throw(E_MEM);                   // Memory overflow
     }
 
 #if     defined(DEBUG_MEMORY)

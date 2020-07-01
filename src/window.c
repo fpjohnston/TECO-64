@@ -183,7 +183,7 @@ static void error_win(void)
     reset_win();
     init_term();
 
-    print_err(E_WIN);                   // Window initialization
+    throw(E_WIN);                       // Window initialization
 }
 
 #endif
@@ -273,7 +273,7 @@ void getsize_win(void)
 
     if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
     {
-        prints_err(E_SYS, NULL);        // Unexpected system error
+        throw(E_SYS, NULL);             // Unexpected system error
     }
 
     w.width  = ts.ws_col;
@@ -335,7 +335,7 @@ void init_win(void)
 
 #else
 
-    print_err(E_NOW);                   // Window support not enabled
+    throw(E_NOW);                       // Window support not enabled
 
 #endif
 

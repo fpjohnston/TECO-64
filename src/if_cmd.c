@@ -86,7 +86,7 @@ static void endif(struct cmd *cmd, bool else_ok)
     {
         if (next_cmd(cmd) == NULL)
         {
-            print_err(E_UTQ);           // Unterminated conditional
+            throw(E_UTQ);               // Unterminated conditional
         }
 
         if (f.e0.strict)
@@ -102,7 +102,7 @@ static void endif(struct cmd *cmd, bool else_ok)
 
             if (if_head->depth != loop_depth)
             {
-                print_err(E_UTL);       // Unterminated loop
+                throw(E_UTL);           // Unterminated loop
             }
         }
 
@@ -118,7 +118,7 @@ static void endif(struct cmd *cmd, bool else_ok)
         {
             if (if_head->depth != loop_depth)
             {
-                print_err(E_UTL);       // Unterminated loop
+                throw(E_UTL);           // Unterminated loop
             }
 
             if (else_ok && if_depth == depth)
@@ -144,14 +144,14 @@ void exec_apos(struct cmd *unused1)
 {
     if (if_depth == 0)
     {
-        print_err(E_MSC);               // Missing start of conditional
+        throw(E_MSC);                   // Missing start of conditional
     }
 
     if (f.e0.strict)
     {
         if (if_head != NULL && if_head->depth != loop_depth)
         {
-            print_err(E_UTL);           // Unterminated loop
+            throw(E_UTL);               // Unterminated loop
         }
     }
 
@@ -265,7 +265,7 @@ void exec_quote(struct cmd *cmd)
 
     if (!cmd->n_set)                    // Did we see an argument?
     {
-        print_err(E_NAQ);               // No argument before "
+        throw(E_NAQ);                   // No argument before "
     }
 
     int c = cmd->n_arg;
@@ -357,7 +357,7 @@ void exec_quote(struct cmd *cmd)
             // Note: reset_if() will be called during error processing,
             //       we don't need to call it here.
 
-            print_err(E_IQC);           // Illegal quote character
+            throw(E_IQC);               // Illegal quote character
     }
 
     // Here if the test was unsuccessful
@@ -381,7 +381,7 @@ void exec_vbar(struct cmd *cmd)
 
     if (if_head->depth != loop_depth)
     {
-        print_err(E_UTL);       // Unterminated loop
+        throw(E_UTL);                   // Unterminated loop
     }
 
     endif(cmd, NO_ELSE);

@@ -85,7 +85,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
     if (cmd->n_set && cmd->n_arg == 0)  // 0Stext` isn't allowed
     {
-        print_err(E_ISA);               // Illegal search argument
+        throw(E_ISA);                   // Illegal search argument
     }
 
     if (!replace && cmd->dcolon_set)    // ::Stext` => 1,1:Stext`
@@ -108,7 +108,7 @@ static void exec_search(struct cmd *cmd, bool replace)
     }
     else if (last_search.len == 0)
     {
-        prints_err(E_SRH, "");          // Nothing to search for
+        throw(E_SRH, "");         // Nothing to search for
     }
 
     struct search s;
@@ -199,7 +199,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
             last_search.buf[last_search.len] = NUL;
 
-            prints_err(E_SRH, last_search.buf);
+            throw(E_SRH, last_search.buf);
         }
     }
 }

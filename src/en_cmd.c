@@ -55,7 +55,7 @@ void exec_EN(struct cmd *cmd)
         {
             if (!cmd->colon_set)
             {
-                prints_err(E_INP, "");  // No more matches
+                throw(E_FNF, "");       // No more matches
             }
 
             push_expr(TECO_FAILURE, EXPR_VALUE);
@@ -95,7 +95,7 @@ void exec_EN(struct cmd *cmd)
             }
             else
             {
-                prints_err(E_MAT, filespec); // No match found for file spec.
+                throw(E_MAT, filespec); // No match found for file spec.
             }
         }
     }

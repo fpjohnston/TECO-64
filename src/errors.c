@@ -29,6 +29,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -37,7 +38,6 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
-#include "exec.h"
 #include "term.h"
 #include "window.h"
 
@@ -76,8 +76,7 @@ static struct err_table err_table[] =
     [E_IIA] = { "IIA",  "Illegal insert arg" },
     [E_ILL] = { "ILL",  "Illegal command '%s'" },
     [E_ILN] = { "ILN",  "Illegal number" },
-    [E_INI] = { "INI",  "Initialization error" },
-    [E_INP] = { "INP",  "Error opening input file '%s'" },
+    [E_INI] = { "INI",  "%s" },
     [E_IQC] = { "IQC",  "Illegal quote character" },
     [E_IQN] = { "IQN",  "Illegal Q-register name '%s'" },
     [E_IRA] = { "IRA",  "Illegal radix argument to ^R" },
@@ -110,7 +109,6 @@ static struct err_table err_table[] =
     [E_NYA] = { "NYA",  "Numeric argument with Y" },
     [E_NYI] = { "NYI",  "Not yet implemented" },
     [E_OFO] = { "OFO",  "Output file already open" },
-    [E_OUT] = { "OUT",  "Error opening output file '%s'" },
     [E_PDO] = { "PDO",  "Push-down list overflow" },
     [E_PES] = { "PES",  "Can't pop from empty push-down stack" },
     [E_POP] = { "POP",  "Attempt to move pointer off page with '%s'" },
@@ -132,6 +130,7 @@ static struct err_table err_table[] =
 };
 
 ///  @var    verbose
+///
 ///  @brief  Verbose descriptions of TECO error messages.
 
 static const char *verbose[] =
@@ -178,8 +177,6 @@ static const char *verbose[] =
               "to octal.",
 
     [E_INI] = "A fatal error occurred during TECO initialization.",
-
-    [E_INP] = "An error occurred while trying to open an input file.",
 
     [E_IQC] = "One of the valid \" commands did not follow the \". Refer "
               "to Section 5.14 (conditional execution commands) for "
@@ -283,8 +280,6 @@ static const char *verbose[] =
               "is typically appropriate to use the EC or EK command as "
               "the situation calls for to close the output file.",
 
-    [E_OUT] = "An error occurred while trying to open an output file.",
-
     [E_PDO] = "The command string has become too complex. Simplify it.",
 
     [E_PES] = "A ] command (pop off q-register stack into a q-register) "
@@ -358,12 +353,6 @@ static const char *verbose[] =
 
 int last_error = E_NUL;                 ///< Last error encountered
 
-static char err_buf[ERR_BUF_SIZE];      ///< Buffer for error argument
-
-static const char *err_str = err_buf;   ///< Error message argument
-
-static const char *file_str = NULL;     ///< File name for error msg., if any
-
 
 ///
 ///  @brief    Print verbose error message.
@@ -372,14 +361,14 @@ static const char *file_str = NULL;     ///< File name for error msg., if any
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void help_err(int err_teco)
+void print_help(int error)
 {
-    if (err_teco <= 0 || (uint)err_teco > countof(verbose))
+    if (error <= 0 || (uint)error > countof(verbose))
     {
         return;
     }
 
-    const char *text = verbose[err_teco];
+    const char *text = verbose[error];
 
     if (text == NULL)
     {
@@ -389,7 +378,7 @@ void help_err(int err_teco)
     const char *start = text;
     const char *end = start;
     uint pos = 0;
-    uint maxlines = 20;
+    uint maxlines = 20;                 // TODO: magic number
 
     while (maxlines > 0)
     {
@@ -429,36 +418,133 @@ void help_err(int err_teco)
 
 
 ///
-///  @brief    Print error message and return to main().
+///  @brief    TECO exception handler. Can be called for one of the following
+///            conditions:
 ///
-///  @returns  Nothing.
+///            1. A bad command (e.g., an invalid Q-register name, or more than
+///               two numeric arguments).
+///
+///            2. A command which could not be successfully executed (e.g.,
+///               search string not found, or requested input file with no read
+///               permissions).
+///
+///            3. An unexpected event (e.g., out of memory).
+///
+///            Note that this function is not used for processor errors such as
+///            dereferencing an invalid pointer. 
+///
+///            The specific error code is used to determine what arguments (if
+///            any) have also been passed by the caller. There are four cases
+///            possible:
+///
+///            1. Errors that include a single character (e.g., E_POP) that is
+///               interpolated in the error message. If the character is a 7-bit
+///               printable character, it is output as is; if it is an 8-bit
+///               character, it is output as [xx]; if it is a control character,
+///               it is output as ^x.
+///
+///            3. The E_SYS error code, which includes a string that contains
+///               the name of a file (or which is NULL) that is appended after
+///               the error message.
+///
+///            3. Other error codes that include a string that is interpolated
+///               in the error message.
+///
+///            4. Error codes that do not require any special processing.
+///
+///            In addition to those four cases, E_XAB is treated specially if
+///            a command is not current being executed, and just causes a return
+///            to main program level without any message being printed.
+///
+///  @returns  n/a (longjmp back to main program).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-noreturn void print_err(int err_teco)
+noreturn void throw(int error, ...)
 {
-    // Ensure that '?' command only prints line up to command with error.
+    char err_buf[ERR_BUF_SIZE];
+    const char *file_str = NULL;
+    const char *err_str;
+    int c;
+
+    va_list args;
+
+    va_start(args, error);
+
+    switch (error)
+    {
+        case E_IEC:
+        case E_IFC:
+        case E_IFN:
+        case E_ILL:
+        case E_IQN:
+        case E_IUC:
+        case E_POP:
+            c = va_arg(args, int);
+
+            if (c >= DEL)               // DEL or 8-bit character?
+            {
+                uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "[%02x]", c);
+
+                assert(nbytes < sizeof(err_buf));
+            }
+            else if (isprint(c))        // Printable character?
+            {
+                uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "%c", c);
+
+                assert(nbytes < sizeof(err_buf));
+            }
+            else                        // Must be a control character
+            {
+                uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "^%c",
+                                             c + 'A' - 1);
+
+                assert(nbytes < sizeof(err_buf));
+            }
+
+            err_str = err_buf;
+
+            break;
+
+        case E_SYS:
+            err_str = strerror(errno);  // Convert errno to string
+            file_str = va_arg(args, const char *);
+
+            break;
+
+        case E_DUP:
+        case E_FNF:
+        case E_INI:
+        case E_SRH:
+        case E_TAG:
+            err_str = va_arg(args, const char *);
+
+            break;
+
+        default:
+            if ((uint)error > countof(err_table))
+            {
+                error = E_NUL;
+            }
+
+            err_str = NULL;
+
+            break;
+    }
+
+    va_end(args);
+
+    const char *code = err_table[error].code;
+    const char *text = err_table[error].text;
+
+    // Ensure that '?' command only prints command string up to error.
 
     term_buf->len = term_buf->pos = current->pos;
 
     // If CTRL/C and we're not executing a command, don't print error.
 
-    if (err_teco != E_XAB || f.e0.exec)
+    if (error != E_XAB || f.e0.exec)
     {
-        if (err_teco == E_SYS)
-        {
-            f.eh.verbose = 2;           // Force detail for system errors
-
-            err_str = strerror(errno);  // Convert errno to string
-        }
-        else if ((uint)err_teco > countof(err_table))
-        {
-            err_teco = E_NUL;
-        }
-
-        const char *code = err_table[err_teco].code;
-        const char *text = err_table[err_teco].text;
-
         print_str("?%s", code);         // Always print code
 
         if (f.eh.verbose != 1)          // Need to print more?
@@ -466,7 +552,7 @@ noreturn void print_err(int err_teco)
             print_str("   ");
             print_str(text, err_str);
 
-            if (err_teco == E_SYS && file_str != NULL)
+            if (error == E_SYS && file_str != NULL)
             {
                 print_str(" for '%s'", file_str);
             }
@@ -474,13 +560,13 @@ noreturn void print_err(int err_teco)
         
         print_chr(CRLF);
 
-        last_error = err_teco;
+        last_error = error;
     }
 
-    // Done printing error, now how are we supposed to get out of here?
+    // We reset here rather than in the main loop, since we might exit
+    // rather than return there.
 
-    reset_if();                         // Reset conditional stack
-    reset_loop();                       // Reset loop stack
+    reset();                            // Reset for next command
 
     if (f.et.abort || !main_active)     // Abort on error, or no main loop?
     {
@@ -488,60 +574,4 @@ noreturn void print_err(int err_teco)
     }
 
     longjmp(jump_main, 2);              // Back to the shadows again!
-}
-
-
-///
-///  @brief    Print error and jump back to main loop.
-///
-///  @returns  N/A
-///
-////////////////////////////////////////////////////////////////////////////////
-
-noreturn void printc_err(int err_teco, int c)
-{
-    if (isprint(c))
-    {
-        uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "%c", c);
-
-        assert(nbytes < sizeof(err_buf));
-    }
-    else if (!isascii(c))               // 8-bit character?
-    {
-        uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "[%02x]", c);
-
-        assert(nbytes < sizeof(err_buf));
-    }
-    else                                // Must be a control character
-    {
-        uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "^%c", c + 'A' - 1);
-
-        assert(nbytes < sizeof(err_buf));
-    }
-
-    err_str = err_buf;
-
-    print_err(err_teco);                // Print error and return to main()
-}
-
-
-///
-///  @brief    Print error message with string argument and return to main().
-///
-///  @returns  N/A
-///
-////////////////////////////////////////////////////////////////////////////////
-
-noreturn void prints_err(int err_teco, const char *str)
-{
-    if (err_teco == E_SYS)
-    {
-        file_str = str;
-    }
-    else
-    {
-        err_str = str;
-    }
-
-    print_err(err_teco);                // Print error and return to main()
 }

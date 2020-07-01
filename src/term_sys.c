@@ -123,7 +123,7 @@ int getc_term(bool wait)
             echo_in(CTRL_C);
             print_echo(CRLF);
 
-            print_err(E_XAB);           // Execution aborted
+            throw(E_XAB);               // Execution aborted
         }
     }
     else                                // Got a real character

@@ -126,18 +126,13 @@ int main(int argc, const char * const argv[])
                 break;
 
             case 1:                     // CTRL/C typed
-                reset_cbuf();           // Reset command buffer
+                reset();                // Reset for next command
 
                 break;
 
             default:
             case 2:                     // Error
                 f.e0.error = true;      // Flag the error
-
-                reset_indirect();       // Close any indirect file
-                reset_cbuf();           // Reset the input buffer
-                reset_qreg();           // Free up Q-register storage
-                reset_macro();          // Reset macro stack
 
                 break;
         }
@@ -244,8 +239,27 @@ void register_exit(void (*func)(void))
 {
     if (atexit(func) != 0)
     {
-        printf("?Unable to register function with atexit()\r\n");
-
-        print_err(E_INI);               // Initialization error
+        throw(E_INI, "Can't register exit function");
+                                        // Initialization error
     }
+}
+
+
+///
+///  @brief    Do a reset after an error or CTRL/C. This is mostly to do such
+///            as freeing up dynamically allocated memory, closing files, and
+///            the like.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset(void)
+{
+    reset_if();                         // Reset conditional stack
+    reset_loop();                       // Reset loop stack
+    reset_indirect();                   // Close any indirect file
+    reset_cbuf();                       // Reset the input buffer
+    reset_qreg();                       // Free up Q-register storage
+    reset_macro();                      // Reset macro stack
 }

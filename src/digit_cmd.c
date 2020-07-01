@@ -52,7 +52,7 @@ void exec_digit(struct cmd *cmd)
 
     if (radix == 8 && c > '7')          // If base 8 and digit is 8 or 9
     {
-        print_err(E_ILN);               // Illegal number
+        throw(E_ILN);                   // Illegal number
     }
 
     if (!scan.digits)                   // If first digit,

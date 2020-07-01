@@ -114,7 +114,7 @@ void exec_cmd(void)
         {
             f.e0.ctrl_c = false;
 
-            print_err(E_XAB);           // Execution aborted
+            throw(E_XAB);               // Execution aborted
         }
     }
 }
@@ -131,7 +131,7 @@ void exec_bad(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    printc_err(E_ILL, cmd->c1);
+    throw(E_ILL, cmd->c1);              // Illegal character
 }
 
 
@@ -182,7 +182,7 @@ void exec_mod(struct cmd *cmd)
     {
         if (f.e0.strict && cmd->atsign_set)
         {
-            print_err(E_MOD);           // Two @'s are not allowed
+            throw(E_MOD);               // Two @'s are not allowed
         }
 
         cmd->atsign_set = true;
@@ -191,7 +191,7 @@ void exec_mod(struct cmd *cmd)
     {
         if (f.e0.strict && cmd->dcolon_set)
         {
-            print_err(E_MOD);           // More than two :'s are not allowed
+            throw(E_MOD);               // More than two :'s are not allowed
         }
 
         if (cmd->colon_set)
@@ -232,11 +232,11 @@ void exec_operator(struct cmd *cmd)
         case ')':
             if (scan.nparens == 0)      // Can't have ) without (
             {
-                print_err(E_MLP);       // Missing left parenthesis
+                throw(E_MLP);           // Missing left parenthesis
             }
             else if (!pop_expr(NULL))   // Is there an operand available?
             {
-                print_err(E_NAP);       // No argument before )
+                throw(E_NAP);           // No argument before )
             }
             else
             {
@@ -251,11 +251,11 @@ void exec_operator(struct cmd *cmd)
         case '}':
             if (scan.nbraces == 0)      // Can't have ) without (
             {
-                print_err(E_MLP);       // Missing left brace
+                throw(E_MLP);           // Missing left brace
             }
             else if (!pop_expr(NULL))   // Is there an operand available?
             {
-                print_err(E_NAP);       // No argument before )
+                throw(E_NAP);           // No argument before )
             }
             else
             {
@@ -314,7 +314,7 @@ void exec_operator(struct cmd *cmd)
         case '=':
             if (fetch_cbuf(NOCMD_START) != '=')
             {
-                print_err(E_ARG);
+                throw(E_ARG);
             }
             break;
 
@@ -328,7 +328,7 @@ void exec_operator(struct cmd *cmd)
             break;
 
         default:
-            print_err(E_ARG);
+            throw(E_ARG);
     }
 
     if (strchr("(){}", type) != NULL)
@@ -392,7 +392,7 @@ exec_func *next_cmd(struct cmd *cmd)
         }
         else if (c < 0 || c >= (int)cmd_count)
         {
-            printc_err(E_ILL, c);       // Illegal character
+            throw(E_ILL, c);            // Illegal character
         }
 
         cmd->c1 = (char)c;
@@ -450,7 +450,7 @@ exec_func *next_cmd(struct cmd *cmd)
 
     if (cmd->m_set && !cmd->n_set)
     {
-        print_err(E_NON);               // Missing n argument
+        throw(E_NON);                   // Missing n argument
     }
 
     // If the only thing on the expression stack is a minus sign,
@@ -469,11 +469,11 @@ exec_func *next_cmd(struct cmd *cmd)
 #if     0       // TODO: temporarily disabled
         if (cmd->n_set && !scan.n_opt)
         {
-            print_err(E_UNA);           // Unused n argument
+            throw(E_UNA);               // Unused n argument
         }
         else if (cmd->m_set && !scan.m_opt)
         {
-            print_err(E_UMA);           // Unused m argument
+            throw(E_UMA);               // Unused m argument
         }
 #endif
     }

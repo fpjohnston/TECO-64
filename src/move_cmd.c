@@ -160,7 +160,7 @@ static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
     {
         if (!cmd->colon_set)
         {
-            printc_err(E_POP, chr);     // Pointer off page
+            throw(E_POP, chr);          // Pointer off page
         }
 
         push_expr(TECO_FAILURE, EXPR_VALUE);

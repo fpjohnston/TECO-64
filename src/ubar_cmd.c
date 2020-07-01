@@ -85,7 +85,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
     if (cmd->n_set && cmd->n_arg == 0)  // 0_text` isn't allowed
     {
-        print_err(E_ISA);               // Illegal search argument
+        throw(E_ISA);                   // Illegal search argument
     }
 
     if (!cmd->n_set)                    // _text` => 1_text`
@@ -157,7 +157,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
             last_search.buf[last_search.len] = NUL;
 
-            prints_err(E_SRH, last_search.buf);
+            throw(E_SRH, last_search.buf);
         }
     }
 }

@@ -54,7 +54,7 @@ void exec_E_ubar(struct cmd *cmd)
 
     if (cmd->n_set && cmd->n_arg == 0)  // 0E_text` isn't allowed
     {
-        print_err(E_ISA);               // Illegal search argument
+        throw(E_ISA);                   // Illegal search argument
     }
 
     if (!cmd->n_set)                    // E_text` => 1E_text`
@@ -114,7 +114,7 @@ void exec_E_ubar(struct cmd *cmd)
 
             last_search.buf[last_search.len] = NUL;
 
-            prints_err(E_SRH, last_search.buf);
+            throw(E_SRH, last_search.buf);
         }
     }
 }

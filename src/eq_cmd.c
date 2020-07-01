@@ -79,7 +79,7 @@ void exec_EQ(struct cmd *cmd)
 
     if (stat(ifile->name, &file_stat))
     {
-        prints_err(E_SYS, ifile->name); // Unexpected system error
+        throw(E_SYS, ifile->name);      // Unexpected system error
     }
 
     uint size = (uint)file_stat.st_size;
@@ -94,7 +94,7 @@ void exec_EQ(struct cmd *cmd)
 
     if (fread(text.buf, 1uL, (ulong)size, ifile->fp) != size)
     {
-        prints_err(E_SYS, ifile->name); // Unexpected system error
+        throw(E_SYS, ifile->name);      // Unexpected system error
     }
 
     store_qtext(cmd->qname, cmd->qlocal, &text);

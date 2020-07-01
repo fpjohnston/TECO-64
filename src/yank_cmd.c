@@ -56,7 +56,7 @@ void exec_EY(struct cmd *cmd)
 
     if (ifile->fp == NULL)
     {
-        print_err(E_NFI);               // No file for input
+        throw(E_NFI);                   // No file for input
     }
 
     if (ifile->eof)
@@ -77,7 +77,7 @@ void exec_EY(struct cmd *cmd)
         }
         else
         {
-            print_err(E_NYA);           // Numeric argument with Y
+            throw(E_NYA);               // Numeric argument with Y
         }
     }
 
@@ -105,7 +105,7 @@ void exec_Y(struct cmd *cmd)
 
     if (t.Z && !f.ed.yank)
     {
-        print_err(E_YCA);               // Y command aborted
+        throw(E_YCA);                   // Y command aborted
     }
 
     exec_EY(cmd);

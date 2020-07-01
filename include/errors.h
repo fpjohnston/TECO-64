@@ -65,7 +65,6 @@ enum errors
     E_ILL,          ///< Illegal command "x"
     E_ILN,          ///< Illegal number
     E_INI,          ///< Initialization error
-    E_INP,          ///< Error opening input file '%s'
     E_IQC,          ///< Illegal quote character
     E_IQN,          ///< Illegal Q-register name "x"
     E_IRA,          ///< Illegal radix argument to ^R
@@ -98,7 +97,6 @@ enum errors
     E_NYA,          ///< Numeric argument with Y
     E_NYI,          ///< Not yet implemented
     E_OFO,          ///< Output file already open
-    E_OUT,          ///< Error opening output file '%s'
     E_PDO,          ///< Push-down list overflow
     E_PES,          ///< Attempt to pop empty stack
     E_POP,          ///< Attempt to move pointer off page with "x"
@@ -119,12 +117,8 @@ enum errors
     E_ZPA           ///< P or PW argument is zero
 };
 
-extern void help_err(int err_teco);
+extern void print_help(int err_teco);
 
-extern noreturn void print_err(int err_teco);
-
-extern noreturn void printc_err(int err_teco, int c);
-
-extern noreturn void prints_err(int err_teco, const char *str);
+extern noreturn void throw(int err_teco, ...);
 
 #endif  // !defined(_ERRORS_H)

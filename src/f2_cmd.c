@@ -64,7 +64,7 @@ void exec_F2(struct cmd *cmd)
         }
         else
         {
-            print_err(E_ARG);           // Bad argument
+            throw(E_ARG);               // Bad argument
         }
     }
     else

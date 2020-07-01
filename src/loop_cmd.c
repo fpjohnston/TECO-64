@@ -107,7 +107,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
     {
         if (next_cmd(cmd) == NULL)
         {
-            print_err(E_UTL);           // Unterminated loop
+            throw(E_UTL);               // Unterminated loop
         }
 
         if (f.e0.strict)
@@ -123,7 +123,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 
             if (loop_head != NULL && loop_head->depth > if_depth)
             {
-                print_err(E_UTQ);       // Unterminated quote
+                throw(E_UTQ);           // Unterminated quote
             }
         }
 
@@ -188,14 +188,14 @@ void exec_gt(struct cmd *cmd)
 
     if (loop == NULL)
     {
-        print_err(E_MLA);               // Missing left angle bracket
+        throw(E_MLA);                   // Missing left angle bracket
     }
 
     if (f.e0.strict)
     {
         if (loop->depth != if_depth)
         {
-            print_err(E_UTQ);           // Unterminated quote
+            throw(E_UTQ);               // Unterminated quote
         }
     }
 
@@ -247,11 +247,11 @@ void exec_semi(struct cmd *cmd)
 
     if (loop_head == NULL)
     {
-        print_err(E_SNI);               // Semi-colon not in loop
+        throw(E_SNI);                   // Semi-colon not in loop
     }
     else if (!cmd->n_set)
     {
-        print_err(E_NAS);               // No argument before semi-colon
+        throw(E_NAS);                   // No argument before semi-colon
     }
 
     if (cmd->colon_set)                 // n:; command

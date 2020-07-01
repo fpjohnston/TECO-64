@@ -90,7 +90,7 @@ void exec_O(struct cmd *cmd)
 
     if (cmd->text1.len == 0)            // Is there a tag?
     {
-        print_err(E_NOT);               // O command has no tag
+        throw(E_NOT);                   // O command has no tag
     }
 
     // Here if we have a tag
@@ -106,7 +106,7 @@ void exec_O(struct cmd *cmd)
 
     if (cmd->n_arg <= 0)                // Is value non-positive?
     {
-        print_err(E_NOA);               // O argument is <= 0
+        throw(E_NOA);                   // O argument is <= 0
     }
 
     // Parse the comma-separated list of tags, looking for the one we want.
@@ -141,7 +141,7 @@ void exec_O(struct cmd *cmd)
 
     // Here if O argument is out of range of tag list
 
-    print_err(E_BOA);                   // O argument is out of range
+    throw(E_BOA);                       // O argument is out of range
 }
 
 
@@ -200,7 +200,7 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
         {
             if (tag_pos != -1)          // Found tag. Have we seen it already?
             {
-                prints_err(E_DUP, tag2); // Duplicate tag
+                throw(E_DUP, tag2);     // Duplicate tag
             }
 
             tag_pos = (int)current->pos; // Remember tag for later
@@ -209,7 +209,7 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
 
     if (tag_pos == -1)                  // Did we find the tag?
     {
-        prints_err(E_TAG, tag2);        // Missing tag
+        throw(E_TAG, tag2);             // Missing tag
     }
 
     current->pos = (uint)tag_pos;       // Execute goto

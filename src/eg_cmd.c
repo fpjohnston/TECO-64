@@ -57,7 +57,7 @@ void exec_EG(struct cmd *cmd)
 
     if (cmd->text1.len > sizeof(eg_command) - 1)
     {
-        print_err(E_EGC);               // EG command is too long
+        throw(E_EGC);                   // EG command is too long
     }
     
     if (cmd->colon_set || cmd->dcolon_set)
@@ -82,7 +82,7 @@ void exec_EG(struct cmd *cmd)
 
     if (ofile->fp == NULL && t.Z != 0)
     {
-        print_err(E_NFO);               // No file for output
+        throw(E_NFO);                   // No file for output
     }
 
     exec_EC(cmd);

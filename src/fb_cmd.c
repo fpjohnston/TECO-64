@@ -159,7 +159,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
             last_search.buf[last_search.len] = NUL;
 
-            prints_err(E_SRH, last_search.buf);
+            throw(E_SRH, last_search.buf);
         }
     }
 }

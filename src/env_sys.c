@@ -119,7 +119,7 @@ int find_eg(char *cmd, bool dcolon)
     char buf[PATH_MAX];
     const char *env;
     char *arg;
-    bool reset = false;
+    bool clear = false;
 
     strcpy(buf, cmd);
     
@@ -134,7 +134,7 @@ int find_eg(char *cmd, bool dcolon)
 
         if (*arg == NUL)
         {
-            reset = true;
+            clear = true;
         }
     }
 
@@ -167,7 +167,7 @@ int find_eg(char *cmd, bool dcolon)
         return 0;
     }
 
-    if (reset)
+    if (clear)
     {
         (void)unsetenv(env);
     }

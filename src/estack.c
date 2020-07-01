@@ -140,7 +140,7 @@ void push_expr(int value, enum expr_type type)
 {
     if (estack.level == EXPR_SIZE)
     {
-        print_err(E_PDO);               // Push-down list overflow
+        throw(E_PDO);                   // Push-down list overflow
     }
 
     estack.obj[estack.level].value = value;
@@ -173,7 +173,7 @@ static void reduce(void)
     {
         if (estack.level == 1 || estack.obj[estack.level - 2].type != EXPR_VALUE)
         {
-            print_err(E_NAB);           // No argument before ^_
+            throw(E_NAB);               // No argument before ^_
         }
     }
 }
@@ -204,14 +204,14 @@ static bool reduce2(void)
         {
             if (e2->type == EXPR_VALUE)
             {
-                print_err(E_IFE);       // Ill-formed numeric expression
+                throw(E_IFE);           // Ill-formed numeric expression
             }
         }
         else if (e1->type != EXPR_VALUE && e1->value == TYPE_OPER &&
                  e2->type != EXPR_VALUE && e2->value == TYPE_OPER &&
                  e1->type != EXPR_MINUS)
         {
-            print_err(E_IFE);           // Ill-formed numeric expression
+            throw(E_IFE);               // Ill-formed numeric expression
         }
     }
 
@@ -318,7 +318,7 @@ static bool reduce3(void)
             {
                 if (f.e0.strict && !f.e0.dryrun)
                 {
-                    print_err(E_DIV);   // Division by zero
+                    throw(E_DIV);       // Division by zero
                 }
 
                 e3->value = 0;
@@ -389,7 +389,7 @@ static bool reduce3(void)
             break;
 
         default:
-            print_err(E_ARG);           // Improper arguments
+            throw(E_ARG);               // Improper arguments
     }
 
     e3->type = EXPR_VALUE;
