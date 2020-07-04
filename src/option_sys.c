@@ -388,7 +388,7 @@ static void finish_config(int argc, const char * const argv[])
     }
 
     const char *file = NULL;
-    char memory[1024 + 1];              // TODO: is 1K enough?
+    char memory[PATH_MAX];              // File name from memory file
 
     if (argc == 1)
     {
