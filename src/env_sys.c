@@ -42,36 +42,6 @@
 
 char *eg_result = NULL;                 ///< Output from EG command
 
-#if    0 // TODO: what to do with the following?
-
-enum
-{
-    HW_X86 = 1,                         ///< x86 processor
-    HW_PPC                              ///< PowerPC processor
-};
-
-enum
-{
-    BITS_32 = 32,                       ///< Word size is 32 bits
-    BITS_64 = 64                        ///< Word size is 64 bits
-};
-
-enum
-{
-    OS_LINUX = 1,                       ///< Linux
-    OS_WINDOWS,                         ///< Windows
-    OS_MAC                              ///< MacOS
-};
-
-enum
-{
-    ENV_NATIVE = 1,                     ///< Native environment
-    ENV_LINUX,                          ///< Linux emulator
-    ENV_WINDOWS                         ///< Windows emulator
-};
-f
-#endif
-
 #define TECO_HW          101            ///< x86 hardware
 
 #define TECO_OS          2              ///< Linux operating system
