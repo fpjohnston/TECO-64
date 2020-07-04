@@ -42,7 +42,11 @@
 #include "window.h"
 
 
-#define ERR_BUF_SIZE    64      ///< Size of error buffer
+#define ERR_BUF_SIZE    64          ///< Size of error buffer
+
+#define MAX_LINES       20          ///< Max. lines in error message
+
+int last_error = E_NUL;             ///< Last error encountered
 
 ///  @struct  err_table
 ///  @brief   Structure of error table.
@@ -351,9 +355,6 @@ static const char *verbose[] =
 };
 
 
-int last_error = E_NUL;                 ///< Last error encountered
-
-
 ///
 ///  @brief    Print verbose error message.
 ///
@@ -378,7 +379,7 @@ void print_help(int error)
     const char *start = text;
     const char *end = start;
     uint pos = 0;
-    uint maxlines = 20;                 // TODO: magic number
+    uint maxlines = MAX_LINES;
 
     while (maxlines > 0)
     {
