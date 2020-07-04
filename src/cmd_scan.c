@@ -318,7 +318,10 @@ exec_func *scan_cmd(struct cmd *cmd)
     }
     else if (exec == exec_EJ)
     {
-        ;                               // EJ takes value and returns value
+        if (pop_expr(&cmd->n_arg))      // EJ takes value and returns value
+        {
+            cmd->n_set = true;
+        }
     }
     else if (scan.flag && pop_expr(&cmd->n_arg))
     {
