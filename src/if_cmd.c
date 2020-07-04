@@ -75,8 +75,12 @@ static void endif(struct cmd *cmd, bool else_ok)
 {
     assert(cmd != NULL);
     assert(if_depth > 0);
-    assert(if_head != NULL);
 
+    if (f.e2.quote && if_head == NULL)
+    {
+        throw(E_UTQ);                   // Unterminated quote
+    }
+        
     uint depth = if_depth;              // Starting depth
     uint dryrun = f.e0.dryrun;          // Save current flag
 
