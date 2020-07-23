@@ -61,7 +61,7 @@ void exec_pct(struct cmd *cmd)
     {
         n = cmd->n_arg;
     }
-    else if (cmd->colon_set)
+    else if (cmd->colon)
     {
         n = -1;
     }

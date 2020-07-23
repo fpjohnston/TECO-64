@@ -53,7 +53,7 @@ void exec_EN(struct cmd *cmd)
     {
         if (get_wild() == EXIT_FAILURE)
         {
-            if (!cmd->colon_set)
+            if (!cmd->colon)
             {
                 throw(E_FNF, "");       // No more matches
             }
@@ -62,7 +62,7 @@ void exec_EN(struct cmd *cmd)
         }
         else
         {
-            if (cmd->colon_set)
+            if (cmd->colon)
             {
                 push_expr(-1, EXPR_VALUE);
             }
@@ -82,14 +82,14 @@ void exec_EN(struct cmd *cmd)
 
         if (set_wild(filespec))
         {
-            if (cmd->colon_set)
+            if (cmd->colon)
             {
                 push_expr(-1, EXPR_VALUE);
             }
         }
         else
         {
-            if (cmd->colon_set)
+            if (cmd->colon)
             {
                 push_expr(0, EXPR_VALUE);
             }

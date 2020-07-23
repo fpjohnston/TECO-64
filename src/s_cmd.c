@@ -88,7 +88,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         throw(E_ISA);                   // Illegal search argument
     }
 
-    if (!replace && cmd->dcolon_set)    // ::Stext` => 1,1:Stext`
+    if (!replace && cmd->dcolon)        // ::Stext` => 1,1:Stext`
     {
         cmd->m_arg = cmd->n_arg = 1;
         cmd->m_set = cmd->n_set = true;
@@ -115,7 +115,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
     s.type = SEARCH_S;
 
-    if (cmd->dcolon_set)
+    if (cmd->dcolon)
     {
         s.search     = search_forward;
         s.count      = 1;
@@ -176,7 +176,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         // Return value if colon modifier, or we are in a loop
         // and the next command is a semi-colon.
 
-        if (cmd->colon_set || (check_loop() && check_semi()))
+        if (cmd->colon || (check_loop() && check_semi()))
         {
             push_expr(-1, EXPR_VALUE);
         }
@@ -186,7 +186,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         // Return value if colon modifier, or we are in a loop
         // and the next command is a semi-colon.
 
-        if (cmd->colon_set || (check_loop() && check_semi()))
+        if (cmd->colon || (check_loop() && check_semi()))
         {
             push_expr(0, EXPR_VALUE);
         }

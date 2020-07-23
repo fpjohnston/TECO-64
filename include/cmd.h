@@ -66,13 +66,12 @@ struct cmd
     int m_arg;                      ///< m argument
     bool n_set;                     ///< n argument is valid
     int n_arg;                      ///< n argument
-//TODO: remove '_set' from the following in next check-in
-    bool h_set;                         ///< H found
-    bool y_set;                    ///< CTRL/Y found
-    bool w_set;                         ///< W found
-    bool colon_set;                     ///< : found
-    bool dcolon_set;                    ///< :: found
-    bool atsign_set;                    ///< @ found
+    bool h;                         ///< H found
+    bool ctrl_y;                    ///< CTRL/Y found
+    bool w;                         ///< W found
+    bool colon;                     ///< : found
+    bool dcolon;                    ///< :: found
+    bool atsign;                    ///< @ found
     char delim;                     ///< Delimiter for @ modifier
     struct tstring expr;            ///< Expression string
     struct tstring text1;           ///< 1st text string

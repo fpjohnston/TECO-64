@@ -56,7 +56,7 @@ void exec_trace(struct cmd *cmd)
         // If :?, then set dry run mode. This is used to print commands
         // in indirect command files, but not execute them.
 
-        if (cmd->colon_set)
+        if (cmd->colon)
         {
             f.e0.dryrun = true;
         }

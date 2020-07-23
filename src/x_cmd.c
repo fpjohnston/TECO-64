@@ -100,7 +100,7 @@ void exec_X(struct cmd *cmd)
         }
     }
 
-    if (!cmd->colon_set)                // Delete any text if not appending
+    if (!cmd->colon)                    // Delete any text if not appending
     {
         delete_qtext(cmd->qname, cmd->qlocal);
     }

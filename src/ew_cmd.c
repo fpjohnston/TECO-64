@@ -62,7 +62,7 @@ void exec_EW(struct cmd *cmd)
 
     assert(buf != NULL);
 
-    struct ofile *ofile = open_output(buf, len, ostream, cmd->colon_set, 'W');
+    struct ofile *ofile = open_output(buf, len, ostream, cmd->colon, 'W');
 
     ofile->backup = true;               // Create backup file on close
 
@@ -72,7 +72,7 @@ void exec_EW(struct cmd *cmd)
     {
         push_expr(0, EXPR_VALUE);
     }
-    else if (cmd->colon_set)
+    else if (cmd->colon)
     {
         push_expr(-1, EXPR_VALUE);
     }

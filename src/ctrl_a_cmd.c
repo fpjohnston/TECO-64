@@ -61,7 +61,7 @@ void exec_ctrl_a(struct cmd *cmd)
         print_chr(*p++);
     }
 
-    if (cmd->colon_set)
+    if (cmd->colon)
     {
         print_chr(CR);
         print_chr(LF);

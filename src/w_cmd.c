@@ -135,7 +135,7 @@ void exec_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->colon_set)
+    if (cmd->colon)
     {
         int n;
 

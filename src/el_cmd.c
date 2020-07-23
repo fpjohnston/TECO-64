@@ -65,7 +65,7 @@ void exec_EL(struct cmd *cmd)
 
     assert(buf != NULL);
 
-    struct ofile *ofile = open_output(buf, len, stream, cmd->colon_set, 'L');
+    struct ofile *ofile = open_output(buf, len, stream, cmd->colon, 'L');
 
     // Note: open_output() only returns NULL for colon-modified command.
 
@@ -73,7 +73,7 @@ void exec_EL(struct cmd *cmd)
     {
         push_expr(0, EXPR_VALUE);
     }
-    else if (cmd->colon_set)
+    else if (cmd->colon)
     {
         push_expr(-1, EXPR_VALUE);
     }

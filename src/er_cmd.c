@@ -63,7 +63,7 @@ void exec_ER(struct cmd *cmd)
 
     assert(buf != NULL);
 
-    struct ifile *ifile = open_input(buf, len, istream, cmd->colon_set);
+    struct ifile *ifile = open_input(buf, len, istream, cmd->colon);
 
     // Note: open_input() only returns NULL for colon-modified command.
 
@@ -71,7 +71,7 @@ void exec_ER(struct cmd *cmd)
     {
         push_expr(0, EXPR_VALUE);
     }
-    else if (cmd->colon_set)
+    else if (cmd->colon)
     {
         push_expr(-1, EXPR_VALUE);
     }

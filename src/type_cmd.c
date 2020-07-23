@@ -59,7 +59,7 @@ void exec_T(struct cmd *cmd)
     int m;
     int n;
 
-    if (cmd->h_set)
+    if (cmd->h)
     {
         m = -t.dot;
         n = t.Z - t.dot;

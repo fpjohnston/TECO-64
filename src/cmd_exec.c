@@ -50,25 +50,25 @@
 
 static const struct cmd null_cmd =
 {
-    .m_set      = false,
-    .n_set      = false,
-    .h_set      = false,
-    .y_set      = false,
-    .w_set      = false,
-    .colon_set  = false,
-    .dcolon_set = false,
-    .atsign_set = false,
-    .c1         = NUL,
-    .c2         = NUL,
-    .c3         = NUL,
-    .m_arg      = 0,
-    .n_arg      = 0,
-    .delim      = ESC,
-    .qname      = NUL,
-    .qlocal     = false,
-    .expr       = { .buf = NULL, .len = 0 },
-    .text1      = { .buf = NULL, .len = 0 },
-    .text2      = { .buf = NULL, .len = 0 },
+    .m_set  = false,
+    .n_set  = false,
+    .h      = false,
+    .ctrl_y = false,
+    .w      = false,
+    .colon  = false,
+    .dcolon = false,
+    .atsign = false,
+    .c1     = NUL,
+    .c2     = NUL,
+    .c3     = NUL,
+    .m_arg  = 0,
+    .n_arg  = 0,
+    .delim  = ESC,
+    .qname  = NUL,
+    .qlocal = false,
+    .expr   = { .buf = NULL, .len = 0 },
+    .text1  = { .buf = NULL, .len = 0 },
+    .text2  = { .buf = NULL, .len = 0 },
 };
 
 
@@ -230,18 +230,18 @@ void exec_colon(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e2.colon && cmd->colon_set)   // Do we allow extra colons?
+    if (f.e2.colon && cmd->colon)       // Do we allow extra colons?
     {
         throw(E_MOD);                   // Invalid modifier
     }
 
-    cmd->colon_set = true;
+    cmd->colon = true;
 
     int c = fetch_cbuf(NOCMD_START);
 
     if (c == ':')
     {
-        cmd->dcolon_set = true;
+        cmd->dcolon = true;
     }
     else
     {
@@ -261,12 +261,12 @@ void exec_atsign(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e2.atsign && cmd->atsign_set)
+    if (f.e2.atsign && cmd->atsign)
     {
         throw(E_MOD);               // No more than one at sign
     }
 
-    cmd->atsign_set = true;
+    cmd->atsign = true;
 }
 
 

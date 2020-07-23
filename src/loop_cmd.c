@@ -254,7 +254,7 @@ void exec_semi(struct cmd *cmd)
         throw(E_NAS);                   // No argument before semi-colon
     }
 
-    if (cmd->colon_set)                 // n:; command
+    if (cmd->colon)                     // n:; command
     {
         if (cmd->n_arg >= 0)            // End loop if n < 0
         {

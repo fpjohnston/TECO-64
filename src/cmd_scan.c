@@ -71,7 +71,7 @@ void check_args(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->h_set || cmd->y_set)
+    if (cmd->h || cmd->ctrl_y)
     {
         throw(E_ARG);                   // Improper arguments
     }
@@ -98,7 +98,7 @@ static bool check_value(struct cmd *cmd, union cmd_opts opts)
     {
         return false;
     }
-    else if (opts.v && !cmd->colon_set)
+    else if (opts.v && !cmd->colon)
     {
         return false;
     }
@@ -324,15 +324,15 @@ void scan_cmd(struct cmd *cmd, int c)
 
     union cmd_opts opts = scan_opts(entry);
 
-    if (cmd->colon_set && !opts.c && cmd->c1 != '@')
+    if (cmd->colon && !opts.c && cmd->c1 != '@')
     {
         throw(E_ARG);                   // Improper arguments
     }
-    else if (cmd->dcolon_set && !opts.d && cmd->c1 != '@')
+    else if (cmd->dcolon && !opts.d && cmd->c1 != '@')
     {
         throw(E_ARG);                   // Improper arguments
     }
-    else if (cmd->atsign_set && !opts.a && cmd->c1 != ':')
+    else if (cmd->atsign && !opts.a && cmd->c1 != ':')
     {
         throw(E_ARG);                   // Improper arguments
     }
@@ -425,14 +425,14 @@ void scan_cmd(struct cmd *cmd, int c)
 
     if (!expr && !check_expr())
     {
-        cmd->h_set = false;
-        cmd->y_set = false;
+        cmd->h      = false;
+        cmd->ctrl_y = false;
 
         if (cmd->c1 != '[' && cmd->c1 != ']')
         {
-            cmd->colon_set  = false;
-            cmd->dcolon_set = false;
-            cmd->atsign_set = false;
+            cmd->colon  = false;
+            cmd->dcolon = false;
+            cmd->atsign = false;
         }
     }
 }
@@ -546,7 +546,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
             cmd->c3 = cmd->c2 = '=';
         }
 
-        if (!cmd->atsign_set)
+        if (!cmd->atsign)
         {
             return;
         }
@@ -565,7 +565,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 
         if (toupper(c) == 'W')
         {
-            cmd->w_set = true;
+            cmd->w = true;
         }
         else
         {
@@ -577,7 +577,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
     // between the command and the delimiter. Note that whitespace does not
     // include tabs, since those are TECO commands.
 
-    if (cmd->atsign_set)                // @ modifier?
+    if (cmd->atsign)                    // @ modifier?
     {
         while (isspace(c = fetch_cbuf(NOCMD_START)) && c != '\t')
         {

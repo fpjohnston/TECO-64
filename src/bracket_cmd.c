@@ -78,14 +78,14 @@ void exec_rbracket(struct cmd *cmd)
 
     if (!pop_qreg(cmd->qname, cmd->qlocal))
     {
-        if (!cmd->colon_set)
+        if (!cmd->colon)
         {
             throw(E_PES);               // Push-down stack is empty
         }
 
         push_expr(0, EXPR_VALUE);
     }
-    else if (cmd->colon_set)
+    else if (cmd->colon)
     {
         push_expr(-1, EXPR_VALUE);
     }

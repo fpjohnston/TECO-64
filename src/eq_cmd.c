@@ -64,7 +64,7 @@ void exec_EQ(struct cmd *cmd)
 
     assert(buf != NULL);
 
-    struct ifile *ifile = open_input(buf, len, stream, cmd->colon_set);
+    struct ifile *ifile = open_input(buf, len, stream, cmd->colon);
 
     // Note: open_input() only returns NULL for colon-modified command.
 
@@ -101,7 +101,7 @@ void exec_EQ(struct cmd *cmd)
 
     close_input(stream);
 
-    if (cmd->colon_set)
+    if (cmd->colon)
     {
         push_expr(-1, EXPR_VALUE);
     }

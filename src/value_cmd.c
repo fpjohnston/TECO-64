@@ -114,7 +114,7 @@ void exec_ctrl_y(struct cmd *cmd)
         throw(E_ARG);                   // Invalid arguments
     }
 
-    cmd->y_set = true;
+    cmd->ctrl_y = true;
     cmd->m_set = true;
     cmd->m_arg = t.dot - (int)last_len;
 
@@ -176,7 +176,7 @@ void exec_H(struct cmd *cmd)
         throw(E_ARG);                   // Invalid arguments
     }
 
-    cmd->h_set = true;
+    cmd->h = true;
     cmd->m_set = true;
     cmd->m_arg = t.B;
 

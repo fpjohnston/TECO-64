@@ -54,7 +54,7 @@ void exec_Q(struct cmd *cmd)
     {
         n = get_qchr(cmd->qname, cmd->qlocal, cmd->n_arg);
     }
-    else if (cmd->colon_set)            // :Qq
+    else if (cmd->colon)                // :Qq
     {
         n = (int)get_qsize(cmd->qname, cmd->qlocal);
     }

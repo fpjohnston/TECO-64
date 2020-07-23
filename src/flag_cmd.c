@@ -359,7 +359,7 @@ void exec_EJ(struct cmd *cmd)
             n = cmd->n_arg;             // Get whatever operand we can
         }
 
-        n = teco_env(n, cmd->colon_set); // Do the system-dependent part
+        n = teco_env(n, cmd->colon);    // Do the system-dependent part
     }
 
     push_expr(n, EXPR_VALUE);           // Now return the result

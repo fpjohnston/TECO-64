@@ -62,7 +62,7 @@ void exec_EZ(struct cmd *cmd)
 
     assert(buf != NULL);
 
-    struct ofile *ofile = open_output(buf, len, stream, cmd->colon_set, 'Z');
+    struct ofile *ofile = open_output(buf, len, stream, cmd->colon, 'Z');
 
     // Note: open_output() only returns NULL for colon-modified command.
 
@@ -90,7 +90,7 @@ void exec_EZ(struct cmd *cmd)
     rename_output(ofile);
     close_output(stream);
 
-    if (cmd->colon_set)
+    if (cmd->colon)
     {
         push_expr(-1, EXPR_VALUE);
     }

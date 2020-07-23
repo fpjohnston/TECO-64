@@ -56,7 +56,7 @@ void exec_ctrl_u(struct cmd *cmd)
             throw(E_MOD);               // Yes, that's an error
         }
 
-        if (cmd->colon_set)             // n:^Uq`?
+        if (cmd->colon)                 // n:^Uq`?
         {
             append_qchr(cmd->qname, cmd->qlocal, cmd->n_arg);
         }
@@ -72,7 +72,7 @@ void exec_ctrl_u(struct cmd *cmd)
             throw(E_MOD);               // Yes, that's wrong
         }
 
-        if (cmd->colon_set)             // :^Utext`
+        if (cmd->colon)                 // :^Utext`
         {
             const char *p = cmd->text1.buf;
 

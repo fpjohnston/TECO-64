@@ -116,14 +116,14 @@ void exec_L(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n = cmd->colon_set ? 0 : 1;
+    int n = cmd->colon ? 0 : 1;
 
     if (cmd->n_set)
     {
         n = cmd->n_arg;
     }
 
-    if (!cmd->colon_set)
+    if (!cmd->colon)
     {
         n = getdelta_ebuf(n);
 
@@ -158,7 +158,7 @@ static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
 
     if (cond)
     {
-        if (!cmd->colon_set)
+        if (!cmd->colon)
         {
             throw(E_POP, chr);          // Pointer off page
         }
@@ -170,7 +170,7 @@ static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
 
     setpos_ebuf(pos);
 
-    if (cmd->colon_set)
+    if (cmd->colon)
     {
         push_expr(-1, EXPR_VALUE);
     }

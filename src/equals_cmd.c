@@ -86,7 +86,7 @@ void exec_equals(struct cmd *cmd)
 
     char user_mode[cmd->text1.len + 1];
 
-    if (cmd->atsign_set && cmd->text1.len != 0)
+    if (cmd->atsign && cmd->text1.len != 0)
     {
         memcpy(user_mode, cmd->text1.buf, (ulong)cmd->text1.len);
 
@@ -100,7 +100,7 @@ void exec_equals(struct cmd *cmd)
 
     print_str(mode, cmd->n_arg);
 
-    if (!cmd->colon_set)                // Suppress CRLF?
+    if (!cmd->colon)                    // Suppress CRLF?
     {
         print_chr(CRLF);
     }

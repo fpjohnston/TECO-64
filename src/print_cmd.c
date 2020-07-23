@@ -150,15 +150,15 @@ void print_cmd(struct cmd *cmd)
         format_chr(SPACE);
     }
 
-    format_chr(cmd->colon_set ? ':' : NUL);
-    format_chr(cmd->dcolon_set ? ':' : NUL);
-    format_chr(cmd->atsign_set ? '@' : NUL);
+    format_chr(cmd->colon ? ':' : NUL);
+    format_chr(cmd->dcolon ? ':' : NUL);
+    format_chr(cmd->atsign ? '@' : NUL);
     format_chr(cmd->c1);
     format_chr(cmd->c2);
     format_chr(cmd->c3);
     format_chr(cmd->qlocal ? '.' : NUL);
     format_chr(cmd->qname);
-    format_chr(cmd->atsign_set ? cmd->delim : NUL);
+    format_chr(cmd->atsign ? cmd->delim : NUL);
     format_str(cmd->text1.buf, cmd->text1.len);
     format_chr(cmd->text1.buf != NULL ? cmd->delim : NUL);
     format_str(cmd->text2.buf, cmd->text2.len);

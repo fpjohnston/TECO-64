@@ -112,7 +112,7 @@ void exec_M(struct cmd *cmd)
     // If no colon modifier, and not a local Q-register, then save current
     // local Q-registers before executing macro, and restore them afterwards.
 
-    bool save_local = (!cmd->colon_set && !cmd->qlocal);
+    bool save_local = (!cmd->colon && !cmd->qlocal);
 
     if (save_local)
     {

@@ -84,7 +84,7 @@ static void exec_case(struct cmd *cmd, bool lower)
     int Z   = (int)t.Z;
     int m, n;
 
-    if (cmd->h_set)                     // HFU/HFL?
+    if (cmd->h)                         // HFU/HFL?
     {
         m = 0 - dot;
         n = Z - dot;

@@ -72,7 +72,7 @@ void exec_ctrl_t(struct cmd *cmd)
 
         for (int i = 0; i < m; ++i)
         {
-            if (cmd->colon_set || f.et.image)
+            if (cmd->colon || f.et.image)
             {
                 if (n >= 0)
                 {

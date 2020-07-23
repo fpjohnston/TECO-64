@@ -60,13 +60,13 @@ void exec_EG(struct cmd *cmd)
         throw(E_EGC);                   // EG command is too long
     }
     
-    if (cmd->colon_set || cmd->dcolon_set)
+    if (cmd->colon || cmd->dcolon)
     {
         char command[PATH_MAX];         // Local command
 
         sprintf(command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
 
-        int status = find_eg(command, cmd->dcolon_set);
+        int status = find_eg(command, cmd->dcolon);
 
         push_expr(status, EXPR_VALUE);
 

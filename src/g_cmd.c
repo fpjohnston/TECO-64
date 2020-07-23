@@ -57,7 +57,7 @@ void exec_G(struct cmd *cmd)
         return;
     }
 
-    if (cmd->colon_set)
+    if (cmd->colon)
     {
         if (cmd->qname == '*')          // :G* -> print filename buffer
         {

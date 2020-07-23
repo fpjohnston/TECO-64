@@ -48,7 +48,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool append(bool n_set, int n_arg, bool colon_set)
+bool append(bool n_set, int n_arg, bool colon)
 {
     struct ifile *ifile = &ifiles[istream];
 
@@ -79,7 +79,7 @@ bool append(bool n_set, int n_arg, bool colon_set)
             }
         }
     }
-    else if (!colon_set)                // A -> append entire page
+    else if (!colon)                    // A -> append entire page
     {
         while (append_line())           // Append all we can
         {
@@ -194,7 +194,7 @@ void exec_A(struct cmd *cmd)
 
     if (f.e0.dryrun)
     {
-        if (cmd->n_set && cmd->colon_set)
+        if (cmd->n_set && cmd->colon)
         {
             push_expr(0, EXPR_VALUE);
         }
@@ -202,9 +202,9 @@ void exec_A(struct cmd *cmd)
         return;
     }
 
-    if (cmd->colon_set)                 // :A or n:A command
+    if (cmd->colon)                     // :A or n:A command
     {
-        bool success = append(cmd->n_set, cmd->n_arg, cmd->colon_set);
+        bool success = append(cmd->n_set, cmd->n_arg, cmd->colon);
 
         push_expr(success ? -1 : 0, EXPR_VALUE);
     }
@@ -216,7 +216,7 @@ void exec_A(struct cmd *cmd)
     }
     else                                // A command
     {
-        (void)append(cmd->n_set, cmd->n_arg, cmd->colon_set);
+        (void)append(cmd->n_set, cmd->n_arg, cmd->colon);
     }
 }
 

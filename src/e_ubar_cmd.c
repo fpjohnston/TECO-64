@@ -94,14 +94,14 @@ void exec_E_ubar(struct cmd *cmd)
     {
         flag_print(f.es);
 
-        if (cmd->colon_set)
+        if (cmd->colon)
         {
             push_expr(-1, EXPR_VALUE);
         }
     }
     else
     {
-        if (cmd->colon_set)
+        if (cmd->colon)
         {
             push_expr(0, EXPR_VALUE);
         }

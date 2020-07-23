@@ -87,9 +87,9 @@ void exec_EI(struct cmd *cmd)
         {
             len = (uint)sprintf(name, "%s.tec", last_file);
 
-            ifile = open_input(name, len, stream, cmd->colon_set);
+            ifile = open_input(name, len, stream, cmd->colon);
         }
-        else if (!cmd->colon_set)
+        else if (!cmd->colon)
         {
             throw(E_FNF, last_file);    // Input file name
         }
@@ -101,7 +101,7 @@ void exec_EI(struct cmd *cmd)
     {
         push_expr(0, EXPR_VALUE);
     }
-    else if (cmd->colon_set)
+    else if (cmd->colon)
     {
         push_expr(-1, EXPR_VALUE);
     }

@@ -61,7 +61,7 @@ void exec_EY(struct cmd *cmd)
 
     if (ifile->eof)
     {
-        if (cmd->colon_set)
+        if (cmd->colon)
         {
             push_expr(0, EXPR_VALUE);
 
@@ -83,7 +83,7 @@ void exec_EY(struct cmd *cmd)
 
     (void)next_yank();
 
-    if (cmd->colon_set)
+    if (cmd->colon)
     {
         push_expr(-1, EXPR_VALUE);
     }

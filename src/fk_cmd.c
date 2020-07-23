@@ -85,14 +85,14 @@ void exec_FK(struct cmd *cmd)
     {
         delete_ebuf(-s.text_pos);
 
-        if (cmd->colon_set)
+        if (cmd->colon)
         {
             push_expr(-1, EXPR_VALUE);
         }
     }
     else
     {
-        if (cmd->colon_set)
+        if (cmd->colon)
         {
             push_expr(0, EXPR_VALUE);
         }

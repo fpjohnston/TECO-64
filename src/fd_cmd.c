@@ -94,14 +94,14 @@ void exec_FD(struct cmd *cmd)
     {
         delete_ebuf(-(int)last_len);
 
-        if (cmd->colon_set)
+        if (cmd->colon)
         {
             push_expr(-1, EXPR_VALUE);
         }
     }
     else
     {
-        if (cmd->colon_set)
+        if (cmd->colon)
         {
             push_expr(0, EXPR_VALUE);
         }

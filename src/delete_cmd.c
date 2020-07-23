@@ -73,7 +73,7 @@ void exec_D(struct cmd *cmd)
 
     if ((n < 0 && -n > t.dot) || (n > 0 && n > t.Z - t.dot))
     {
-        if (!cmd->colon_set)
+        if (!cmd->colon)
         {
             throw(E_DTB);               // Delete too big
         }
@@ -85,7 +85,7 @@ void exec_D(struct cmd *cmd)
 
     delete_ebuf(n);
 
-    if (cmd->colon_set)
+    if (cmd->colon)
     {
         push_expr(-1, EXPR_VALUE);
     }
@@ -103,7 +103,7 @@ void exec_K(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->h_set)                     // HK?
+    if (cmd->h)                         // HK?
     {
         if (t.Z != 0)
         {

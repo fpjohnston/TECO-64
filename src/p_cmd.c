@@ -68,15 +68,15 @@ void exec_P(struct cmd *cmd)
 
     // Use of a colon only makes sense for P and nP
 
-    if (f.e2.page && cmd->colon_set)
+    if (f.e2.page && cmd->colon)
     {
-        if (cmd->m_set || cmd->h_set || cmd->w_set)
+        if (cmd->m_set || cmd->h || cmd->w)
         {
             throw(E_MOD);               // Invalid modifier
         }
     }
 
-    if (cmd->h_set)                     // HPW, HP
+    if (cmd->h)                         // HPW, HP
     {
         ;                               // Just accept all presets above
     }
@@ -106,7 +106,7 @@ void exec_P(struct cmd *cmd)
             return;
         }
 
-        if (cmd->w_set)                 // Is it nPW?
+        if (cmd->w)                     // Is it nPW?
         {
             ff = true;
         }
@@ -120,7 +120,7 @@ void exec_P(struct cmd *cmd)
     {
         count = 1;
 
-        if (cmd->w_set)                 // Is it PW?
+        if (cmd->w)                     // Is it PW?
         {
             ff = true;
         }
@@ -135,7 +135,7 @@ void exec_P(struct cmd *cmd)
     {
         if (!next_page(start, end, ff, yank))
         {
-            if (cmd->colon_set)
+            if (cmd->colon)
             {
                 push_expr(0, EXPR_VALUE);
             }
@@ -153,7 +153,7 @@ void exec_P(struct cmd *cmd)
         }
     }
 
-    if (cmd->colon_set)
+    if (cmd->colon)
     {
         push_expr(-1, EXPR_VALUE);
     }
