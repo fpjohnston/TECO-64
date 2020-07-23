@@ -626,7 +626,6 @@ void set_config(
                 f.e2.oper   = 1;
                 f.e2.atsign = 1;
                 f.e2.colon  = 1;
-                f.e2.dcolon = 1;
                 f.e2.comma  = 1;
 //                f.e2.m_arg  = 1;
 //                f.e2.n_arg  = 1;

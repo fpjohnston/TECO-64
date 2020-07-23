@@ -42,6 +42,10 @@
 #include <teco.h>
 #endif
 
+#if     !defined(_CMD_H)
+#include "cmd.h"
+#endif
+
 
 ///  @struct  qreg
 ///  @brief   Definition of Q-register storage, which includes a string and a
@@ -72,6 +76,8 @@ extern void delete_qtext(int qname, bool qlocal);
 extern uint get_qall(void);
 
 extern int get_qchr(int qname, bool qlocal, int n);
+
+extern void get_qname(struct cmd *cmd, const char *extras);
 
 extern int get_qnum(int qname, bool qlocal);
 

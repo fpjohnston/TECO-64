@@ -50,9 +50,9 @@ void exec_Q(struct cmd *cmd)
 
     int n;
 
-    if (pop_expr(&n))                   // nQq
+    if (cmd->n_set)                     // nQq
     {
-        n = get_qchr(cmd->qname, cmd->qlocal, n);
+        n = get_qchr(cmd->qname, cmd->qlocal, cmd->n_arg);
     }
     else if (cmd->colon_set)            // :Qq
     {

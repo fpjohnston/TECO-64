@@ -54,7 +54,7 @@ char *last_file = NULL;                 ///< Last opened file
 
 #define ERR_FILE_SIZE   200             ///< Max. len. of file causing error
 
-char err_file[ERR_FILE_SIZE + 1];       ///< Name of file causing error
+static char err_file[ERR_FILE_SIZE + 1]; ///< Name of file causing error
 
 // Local functions
 

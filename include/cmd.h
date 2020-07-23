@@ -48,23 +48,6 @@ struct scan
 {
     uint nparens;                   ///< No. of unmatched left parentheses
     uint nbraces;                   ///< No. of unmatched left braces
-    int sum;                        ///< Accumulated sum of digits scanned
-    bool digits;                    ///< Accumulated sum is valid
-    bool expr;                      ///< Current command is part of expression
-    bool mod;                       ///< Command modifier seen
-    bool space;                     ///< Last chr. scanned was whitespace
-    bool flag;                      ///< Command is a mode control flag
-    bool brace_opt;                 ///< Command has alternate meaning in braces
-    bool comma_set;                 ///< Comma seen in expression
-    bool m_opt;                     ///< m argument allowed
-    bool n_opt;                     ///< n argument allowed
-    bool colon_opt;                 ///< Colon allowed in command
-    bool dcolon_opt;                ///< Double colon allowed in command
-    bool atsign_opt;                ///< At sign allowed in command
-    bool w_opt;                     ///< W allowed (for P)
-    bool q_register;                ///< Q-register required
-    bool t1_opt;                    ///< 1st text string allowed in command
-    bool t2_opt;                    ///< 2nd text string allowed in command
 };
 
 extern struct scan scan;
@@ -79,15 +62,17 @@ struct cmd
     char c3;                        ///< 3rd command character (or NUL)
     char qname;                     ///< Q-register name
     bool qlocal;                    ///< If true, Q-register is local
+    bool m_set;                     ///< m argument is valid
     int m_arg;                      ///< m argument
+    bool n_set;                     ///< n argument is valid
     int n_arg;                      ///< n argument
-    bool m_set;                     ///< m argument found
-    bool n_set;                     ///< n argument found
-    bool h_set;                     ///< H found
-    bool w_set;                     ///< W found
-    bool colon_set;                 ///< : found
-    bool dcolon_set;                ///< :: found
-    bool atsign_set;                ///< @ found
+//TODO: remove '_set' from the following in next check-in
+    bool h_set;                         ///< H found
+    bool y_set;                    ///< CTRL/Y found
+    bool w_set;                         ///< W found
+    bool colon_set;                     ///< : found
+    bool dcolon_set;                    ///< :: found
+    bool atsign_set;                    ///< @ found
     char delim;                     ///< Delimiter for @ modifier
     struct tstring expr;            ///< Expression string
     struct tstring text1;           ///< 1st text string
@@ -99,37 +84,66 @@ struct cmd
 
 typedef void (exec_func)(struct cmd *cmd);
 
+///  @struct cmd_opts
+///
+///  @brief  Command options and requirements.
+
+union cmd_opts
+{
+    struct
+    {
+        uint m  : 1;                ///< m argument allowed
+        uint n  : 1;                ///< n argument allowed
+        uint f  : 1;                ///< Command returns value if no n argument
+        uint c  : 1;                ///< : modifier allowed
+        uint v  : 1;                ///< Command returns value if : used
+        uint d  : 1;                ///< :: modifier allowed
+        uint a  : 1;                ///< @ modifier allowed
+        uint q  : 1;                ///< Q-register required
+        uint g  : 1;                ///< Q-register required for G command
+        uint w  : 1;                ///< W modifier allowed
+        uint t1 : 1;                ///< 1 text argument allowed
+        uint t2 : 1;                ///< 2 text arguments allowed
+        uint x  : 1;                ///< Terminal command (no value returned)
+    };
+
+    int bits;                       ///< All of the bits above
+};
+
 ///  @struct cmd_table
+///
 ///  @brief  Format of command tables used to parse and execute commands.
 
 struct cmd_table
 {
     exec_func *exec;                ///< Execution function
-    const char *opts;               ///< Command modifiers and options
+    const union cmd_opts *opts;     ///< Command options
 };
 
 extern const struct cmd_table cmd_table[];
 
-extern const struct cmd_table cmd_e_table[];
-
-extern const struct cmd_table cmd_f_table[];
-
 extern const uint cmd_count;
 
-extern const uint cmd_e_count;
+extern const struct cmd_table e_table[];
 
-extern const uint cmd_f_count;
+extern const uint e_count;
+
+extern const struct cmd_table f_table[];
+
+extern const uint f_count;
 
 extern char *eg_result;
 
 // Miscellaneous functions
 
-extern exec_func *next_cmd(struct cmd *cmd);
+extern void check_args(struct cmd *cmd);
+
+extern bool next_cmd(struct cmd *cmd);
 
 extern void print_cmd(struct cmd *cmd);
 
 extern void reset_scan(void);
 
-extern exec_func *scan_cmd(struct cmd *cmd);
+extern void scan_cmd(struct cmd *cmd, int c);
 
 #endif  // _CMD_H

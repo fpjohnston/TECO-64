@@ -53,6 +53,24 @@ static bool reduce3(void);
 
 
 ///
+///  @brief    Check to see if we have an operand on the top of the stack.
+///
+///  @returns  true if operand on top of stack, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool check_expr(void)
+{
+    if (estack.level == 0 || estack.obj[estack.level - 1].type != EXPR_VALUE)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+///
 ///  @brief    Initialize expression stack.
 ///
 ///  @returns  Nothing.
@@ -80,6 +98,8 @@ void init_expr(void)
 
 bool pop_expr(int *operand)
 {
+    assert(operand != NULL);
+
     if (estack.level == 0)              // Anything on stack?
     {
         return false;                   // No
@@ -87,10 +107,7 @@ bool pop_expr(int *operand)
 
     if (estack.obj[estack.level - 1].type == EXPR_VALUE)
     {
-        if (operand != NULL)
-        {
-            *operand = (int)estack.obj[--estack.level].value;
-        }
+        *operand = (int)estack.obj[--estack.level].value;
 
         return true;
     }
@@ -104,10 +121,7 @@ bool pop_expr(int *operand)
         {
             --estack.level;
 
-            if (operand != NULL)
-            {
-                *operand = -1;
-            }
+            *operand = -1;
 
             return true;
         }
@@ -378,12 +392,12 @@ static bool reduce3(void)
 
             break;
 
-        case EXPR_LEFT:
+        case EXPR_LSHIFT:
             e3->value = (int)((uint)e3->value << e1->value);
 
             break;
 
-        case EXPR_RIGHT:
+        case EXPR_RSHIFT:
             e3->value = (int)((uint)e3->value >> e1->value);
 
             break;

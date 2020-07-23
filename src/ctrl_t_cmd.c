@@ -60,7 +60,7 @@ void exec_ctrl_t(struct cmd *cmd)
         return;
     }
 
-    if (cmd->n_set)                     // n argument?
+    if (cmd->n_set)                     // n^T -> type out character
     {
         int m = 1;
         int n = cmd->n_arg;
@@ -98,7 +98,7 @@ void exec_ctrl_t(struct cmd *cmd)
             }
         }
     }
-    else
+    else                                // ^T -> read character from terminal
     {
         bool wait = f.et.nowait ? false : true;
         int c = getc_term(wait);

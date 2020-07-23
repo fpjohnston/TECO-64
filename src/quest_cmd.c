@@ -1,5 +1,5 @@
 ///
-///  @file    quest_cmd.c
+///  @file    trace_cmd.c
 ///  @brief   Execute ? (question mark) TECO command.
 ///
 ///  @bug     No known bugs.
@@ -40,7 +40,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_question(struct cmd *cmd)
+void exec_trace(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

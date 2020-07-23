@@ -88,12 +88,35 @@ static void endif(struct cmd *cmd, bool else_ok)
 
     do
     {
-        if (next_cmd(cmd) == NULL)
+        if (!next_cmd(cmd))
         {
             throw(E_UTQ);               // Unterminated conditional
         }
 
-        if (f.e2.quote)
+//++DEBUG
+#if 0
+        if (cmd->c1 != ' ' && cmd->c1 != 0)
+        {
+            printf("skipping: ");
+
+            if (iscntrl(cmd->c1))
+            {
+                printf("^%c\r\n", cmd->c1 + 'A' - 1);
+            }
+            else
+            {
+                printf("%c", cmd->c1);
+                if (cmd->c2 != 0)
+                {
+                    printf("%c", cmd->c2);
+                }
+                printf("\r\n");
+            }
+        }
+#endif
+//--DEBUG
+
+        if (if_head != NULL && f.e2.quote)
         {
             if (cmd->c1 == '<')
             {
@@ -120,7 +143,7 @@ static void endif(struct cmd *cmd, bool else_ok)
         }
         else if (cmd->c1 == '|')
         {
-            if (if_head->depth != loop_depth)
+            if (if_head != NULL && if_head->depth != loop_depth)
             {
                 throw(E_UTL);           // Unterminated loop
             }
@@ -381,11 +404,15 @@ void exec_quote(struct cmd *cmd)
 void exec_vbar(struct cmd *cmd)
 {
     assert(cmd != NULL);
-    assert(if_head != NULL);
 
-    if (if_head->depth != loop_depth)
+    if (f.e2.quote)
     {
-        throw(E_UTL);                   // Unterminated loop
+        assert(if_head != NULL);
+
+        if (if_head->depth != loop_depth)
+        {
+            throw(E_UTL);               // Unterminated loop
+        }
     }
 
     endif(cmd, NO_ELSE);

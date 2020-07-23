@@ -124,7 +124,7 @@ static bool check_n_flag(struct cmd *cmd, int *flag)
 
 
 ///
-///  @brief    Scan ^E (CTRL/E) command: read form feed flag.
+///  @brief    Scan ^E (CTRL/E) command: read or set form feed flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -140,24 +140,6 @@ void exec_ctrl_e(struct cmd *cmd)
     {
         f.ctrl_e = n ? true : false;
     }
-}
-
-
-///
-///  @brief    Scan ^F (CTRL/F) command: return value of console switch
-///            register, or terminal number of specified job.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctrl_f(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    int n = 0;                          // Default value for CTRL/F
-
-    (void)check_n_flag(cmd, &n);
 }
 
 

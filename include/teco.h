@@ -60,12 +60,6 @@ typedef unsigned long ulong;
 
 #endif
 
-enum
-{
-    TECO_FAILURE = 0,                   ///< TECO function failure
-    TECO_SUCCESS = -1                   ///< TECO function success
-};
-
 ///  @struct   buffer
 ///  @brief    Definition of general buffer, used both for the main command
 ///            string and for Q-register macros. This is dynamically allocated,

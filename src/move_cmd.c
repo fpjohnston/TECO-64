@@ -163,7 +163,7 @@ static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
             throw(E_POP, chr);          // Pointer off page
         }
 
-        push_expr(TECO_FAILURE, EXPR_VALUE);
+        push_expr(0, EXPR_VALUE);
 
         return;
     }
@@ -172,7 +172,7 @@ static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
 
     if (cmd->colon_set)
     {
-        push_expr(TECO_SUCCESS, EXPR_VALUE);
+        push_expr(-1, EXPR_VALUE);
     }
 }
 

@@ -82,8 +82,7 @@ union e2_flag
         uint zero   : 1;        ///< Division by zero
         uint oper   : 1;        ///< Double operators in expressions
         uint atsign : 1;        ///< Invalid @, or more than one @
-        uint colon  : 1;        ///< Invalid :
-        uint dcolon : 1;        ///< Invalid ::, or more than two :'s
+        uint colon  : 1;        ///< Invalid :, or more than two colons
         uint comma  : 1;        ///< No argument before ,
         uint m_arg  : 1;        ///< Unused m argument
         uint n_arg  : 1;        ///< Unused n argument

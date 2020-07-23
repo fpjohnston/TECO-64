@@ -33,12 +33,13 @@
 
 #include "teco.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 
 
 ///
-///  @brief    Scan digits in a command string. These can be decimal or octal,
-///            depending on the current radix.
+///  @brief    Scan a number in a command string, which can be decimal, octal,
+///            or hexadecimal, depending on the current radix.
 ///
 ///  @returns  Nothing.
 ///
@@ -48,20 +49,31 @@ void exec_digit(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    check_args(cmd);
+
+    if (check_expr())                   // Operand already on top of stack?
+    {
+        throw(E_ARG);                   // Invalid arguments
+    }
+
     int c = cmd->c1;
+    int n = 0;
 
-    if (radix == 8 && c > '7')          // If base 8 and digit is 8 or 9
+    do
     {
-        throw(E_ILN);                   // Illegal number
-    }
+        c -= '0';
 
-    if (!scan.digits)                   // If first digit,
-    {
-        scan.sum = 0;                   //  then start at zero
-    }
+        if (radix == 8 && c > 7)        // If base 8 and digit is 8 or 9
+        {
+            throw(E_ILN);               // Illegal number
+        }
 
-    scan.digits = true;
+        n *= (int)radix;                // Shift over existing digits
+        n += c;                         // And add in the new digit
+        
+    } while (isdigit(c = fetch_cbuf(NOCMD_START)));
 
-    scan.sum *= (int)radix;             // Shift over existing digits
-    scan.sum += c - '0';                // And add in the new one
+    unfetch_cbuf(c);                    // Put back last character
+
+    push_expr(n, EXPR_VALUE);
 }

@@ -36,6 +36,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "errors.h"
+#include "exec.h"
 #include "qreg.h"
 #include "term.h"
 
@@ -246,6 +247,35 @@ int get_qchr(int qname, bool qdot, int n)
     }
 
     return qreg->text.buf[n];
+}
+
+
+///
+///  @brief    Get Q-register name for command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void get_qname(struct cmd *cmd, const char *extras)
+{
+    assert(cmd != NULL);
+
+    int c = fetch_cbuf(NOCMD_START);    // Get Q-register
+
+    if (c == '.')                       // Is it local?
+    {
+        cmd->qlocal = true;             // Yes, mark it
+
+        c = fetch_cbuf(NOCMD_START);    // Get Q-register name
+    }
+
+    if (!isalnum(c) && (extras == NULL || strchr(extras, c) == NULL))
+    {
+        throw(E_IQN, c);                // Illegal Q-register name
+    }
+
+    cmd->qname = (char)c;               // Save the name
 }
 
 

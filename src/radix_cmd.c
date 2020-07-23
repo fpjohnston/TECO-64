@@ -48,10 +48,12 @@ void exec_ctrl_d(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!f.e0.dryrun)
+    if (f.e0.dryrun)
     {
-        radix = 10;                     // Set radix to decimal
+        return;
     }
+
+    radix = 10;                         // Set radix to decimal
 }
 
 
@@ -66,10 +68,12 @@ void exec_ctrl_o(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!f.e0.dryrun)
+    if (f.e0.dryrun)
     {
-        radix = 8;                      // Set radix to octal
+        return;
     }
+
+    radix = 8;                          // Set radix to octal
 }
 
 
@@ -84,21 +88,19 @@ void exec_ctrl_r(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n;
-
     if (f.e0.dryrun)
     {
         return;
     }
 
-    if (pop_expr(&n))                   // n^R?
+    if (cmd->n_set)                     // n^R?
     {
-        if (n != 8 && n != 10 && n != 16)
+        if (cmd->n_arg != 8 && cmd->n_arg != 10 && cmd->n_arg != 16)
         {
             throw(E_IRA);               // Illegal radix argument
         }
 
-        radix = n;                      // Set the radix
+        radix = cmd->n_arg;             // Set the radix
     }
     else
     {

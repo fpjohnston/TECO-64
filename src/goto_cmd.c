@@ -33,6 +33,7 @@
 #include <unistd.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"
@@ -54,7 +55,7 @@ static void find_tag(struct cmd *cmd, const char *text, uint len);
 ///            commands, the second of which uses the arguments resulting from
 ///            the first, such as the following:
 ///
-///            @{ :@ER/foo/                ! Open input file ! @}
+///            :ERfoo$                     ! Open input file !
 ///               "U :@^A/?No file/ EX '   ! Print message and exit if error !
 ///
 ///  @returns  Nothing.
@@ -64,6 +65,18 @@ static void find_tag(struct cmd *cmd, const char *text, uint len);
 void exec_bang(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    // If we have a tag with text that starts with the character defined in E5,
+    // then we ignore it. This allows us to differentiate between tags (which
+    // may be the target of O commands) and comments. For example, E5 could be
+    // set to a space character (ASCII 32), which would mean that any tags of
+    // the form ! tag ! would be treated as a comment and not processed. This
+    // can be used to save on storage requirements for keeping track of tags.
+
+    if (f.e5 != NUL && cmd->text1.len != NUL && cmd->text1.buf[0] == f.e5)
+    {
+        return;                         // Just ignore tag
+    }
 
     if (cmd->n_set)                     // Pass through m and n arguments
     {
@@ -186,7 +199,12 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
 
         f.e0.dryrun = true;
 
-        (void)next_cmd(cmd);            // Get next command
+        if (!next_cmd(cmd))             // Get next command
+        {
+            f.e0.dryrun = dryrun;       // Ensure we reset this
+
+            break;
+        }
 
         f.e0.dryrun = dryrun;
 

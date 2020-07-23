@@ -42,10 +42,10 @@
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
-#include "term.h"
 
 
 ///  @var    null_cmd
+///
 ///  @brief  Initial command block values.
 
 static const struct cmd null_cmd =
@@ -53,6 +53,7 @@ static const struct cmd null_cmd =
     .m_set      = false,
     .n_set      = false,
     .h_set      = false,
+    .y_set      = false,
     .w_set      = false,
     .colon_set  = false,
     .dcolon_set = false,
@@ -71,11 +72,6 @@ static const struct cmd null_cmd =
 };
 
 
-// Local functions
-
-static void exec_dummy(struct cmd *unused1);
-
-
 ///
 ///  @brief    Execute command string.
 ///
@@ -85,30 +81,22 @@ static void exec_dummy(struct cmd *unused1);
 
 void exec_cmd(void)
 {
-    struct cmd cmd;
-
     // Loop for all characters in command string.
+
+    reset_scan();
+    init_expr();                        // Reset expression stack
+    struct cmd cmd = null_cmd;
 
     for (;;)
     {
-        f.e0.exec = true;
-        exec_func *exec = next_cmd(&cmd);
+        f.e0.exec = true;               // Executing a command
 
-        if (exec == NULL)
+        if (!next_cmd(&cmd))
         {
-            break;                      // Back to main loop if command done
+            return;
         }
 
-        if (f.e0.dryrun)
-        {
-            print_cmd(&cmd);            // Just print command
-        }
-        else
-        {
-            (*exec)(&cmd);              // Execute command
-        }
-
-        f.e0.exec = false;
+        f.e0.exec = false;              // Done executing command
 
         if (f.e0.ctrl_c)                // If CTRL/C typed, return to main loop
         {
@@ -117,6 +105,39 @@ void exec_cmd(void)
             throw(E_XAB);               // Execution aborted
         }
     }
+}
+
+
+
+///
+///  @brief    Get next command.
+///
+///  @returns  true if there is another command, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool next_cmd(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int c;
+
+    // If we've reached the end of a command string, then make sure that
+    // all of the parentheses and braces were properly paired.
+
+    if ((c = fetch_cbuf(CMD_START)) == EOF)
+    {
+        if (scan.nparens || scan.nbraces)
+        {
+            throw(E_MRP);           // Missing right parenthesis/brace
+        }
+
+        return false;
+    }
+
+    scan_cmd(cmd, c);
+
+    return true;
 }
 
 
@@ -136,13 +157,13 @@ void exec_bad(struct cmd *cmd)
 
 
 ///
-///  @brief    Dummy function, used to ignore commands.
+///  @brief    Execute whitespace command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_dummy(struct cmd *unused1)
+void exec_space(struct cmd *unused1)
 {
 
 }
@@ -151,8 +172,8 @@ static void exec_dummy(struct cmd *unused1)
 ///
 ///  @brief    Execute ESCape command. Note that we're called here only for
 ///            escape characters between commands, or at the end of command
-///            strings, not for escapes used to delimit commands (such as is
-///            the case for a command such as "^Ahello, world!<ESC>").
+///            strings, not for escapes used to delimit commands (e.g., a
+///            command such as "^Ahello, world!<ESC>").
 ///
 ///  @returns  Nothing.
 ///
@@ -160,318 +181,159 @@ static void exec_dummy(struct cmd *unused1)
 
 void exec_escape(struct cmd *unused1)
 {
-    int n;
 
-    (void)pop_expr(&n);
-    (void)pop_expr(&n);
 }
 
 
 ///
-///  @brief    Execute : or @: command modifiers.
+///  @brief    Execute ctrl/^ (caret or uparrow) command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_mod(struct cmd *cmd)
+void exec_ctl_up(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->c1 == '@')
-    {
-        if (f.e2.atsign && cmd->atsign_set)
-        {
-            throw(E_MOD);               // No more than one at sign
-        }
+    check_args(cmd);
 
-        cmd->atsign_set = true;
-    }
-    else if (cmd->c1 == ':')
-    {
-        if (f.e2.dcolon && cmd->dcolon_set)
-        {
-            throw(E_MOD);               // No more than two colons
-        }
+    int c = fetch_cbuf(NOCMD_START);
 
-        if (cmd->colon_set)
-        {
-            cmd->colon_set = false;
-            cmd->dcolon_set = true;
-        }
-        else if (!cmd->dcolon_set)
-        {
-            cmd->colon_set = true;
-        }
-    }
+    push_expr(c, EXPR_VALUE);
 }
 
 
 ///
-///  @brief    Execute operator in expression. This may be any of the binary
-///            operators (+, -, *, /, &, #), the 1's complement operator (^_),
-///            or a left or right parenthesis.
+///  @brief    Execute ctrl/underscore command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_operator(struct cmd *cmd)
+void exec_ctl_ubar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int c;
-    int type = cmd->c1;
+    push_expr(TYPE_OPER, cmd->c1);
+}
 
-    switch (type)
+
+///
+///  @brief    Execute : or :: command modifiers.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_colon(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (f.e2.colon && cmd->colon_set)   // Do we allow extra colons?
     {
-        case '(':
-            ++scan.nparens;
-            break;
-
-        case ')':
-            if (scan.nparens == 0)      // Can't have ) without (
-            {
-                throw(E_MLP);           // Missing left parenthesis
-            }
-            else if (!pop_expr(NULL))   // Is there an operand available?
-            {
-                throw(E_NAP);           // No argument before )
-            }
-            else
-            {
-                --scan.nparens;
-            }
-            break;
-
-        case '{':
-            ++scan.nbraces;
-            break;
-
-        case '}':
-            if (scan.nbraces == 0)      // Can't have ) without (
-            {
-                throw(E_MLP);           // Missing left brace
-            }
-            else if (!pop_expr(NULL))   // Is there an operand available?
-            {
-                throw(E_NAP);           // No argument before )
-            }
-            else
-            {
-                --scan.nbraces;
-            }
-            break;
-
-        case '/':
-            if (f.e1.brace && scan.nbraces)
-            {
-                if ((c = fetch_cbuf(NOCMD_START)) == '/')
-                {
-                    type = EXPR_REM;
-                }
-                else
-                {
-                    unfetch_cbuf(c);
-                }
-            }
-            break;
-
-        case '<':
-            if ((c = fetch_cbuf(NOCMD_START)) == '=')
-            {
-                type = EXPR_LE;
-            }
-            else if (c == '>')
-            {
-                type = EXPR_NE;
-            }
-            else if (c == '<')
-            {
-                type = EXPR_LEFT;
-            }
-            else
-            {
-                unfetch_cbuf(c);
-            }
-            break;
-
-        case '>':
-            if ((c = fetch_cbuf(NOCMD_START)) == '=')
-            {
-                type = EXPR_GE;
-            }
-            else if (c == '>')
-            {
-                type = EXPR_RIGHT;
-            }
-            else
-            {
-                unfetch_cbuf(c);
-            }
-            break;
-
-        case '=':
-            if (fetch_cbuf(NOCMD_START) != '=')
-            {
-                throw(E_ARG);
-            }
-            break;
-
-        case '+':
-        case '-':
-        case '*':
-        case '&':
-        case '#':
-        case '~':
-        case '!':
-            break;
-
-        default:
-            throw(E_ARG);
+        throw(E_MOD);                   // Invalid modifier
     }
 
-    if (strchr("(){}", type) != NULL)
+    cmd->colon_set = true;
+
+    int c = fetch_cbuf(NOCMD_START);
+
+    if (c == ':')
     {
-        push_expr(TYPE_GROUP, type);
+        cmd->dcolon_set = true;
     }
     else
     {
-        push_expr(TYPE_OPER, type);
+        unfetch_cbuf(c);
     }
 }
 
 
 ///
-///  @brief    Get next command.
+///  @brief    Execute @ command modifier.
 ///
-///  @returns  Command block with options, or NULL if at end of command string.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-exec_func *next_cmd(struct cmd *cmd)
+void exec_atsign(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    *cmd = null_cmd;
-
-    // Pop m and n arguments (if any) from the expression stack
-
-    if (pop_expr(&cmd->n_arg))
+    if (f.e2.atsign && cmd->atsign_set)
     {
-        cmd->n_set = true;
-
-        if (pop_expr(&cmd->m_arg))
-        {
-            cmd->m_set = true;
-        }
+        throw(E_MOD);               // No more than one at sign
     }
 
-    reset_scan();
-    init_expr();                        // Reset expression stack
+    cmd->atsign_set = true;
+}
 
-    // Keep reading characters until we have a full command.
 
-    bool start = CMD_START;
-    exec_func *exec = NULL;
+///
+///  @brief    Execute left parenthesis.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
 
-    cmd->expr.buf = next_cbuf();
+void exec_lparen(struct cmd *cmd)
+{
+    assert(cmd != NULL);
 
-    for (;;)
+    ++scan.nparens;
+
+    push_expr(TYPE_GROUP, cmd->c1);
+}
+
+
+///
+///  @brief    Execute right parenthesis.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_rparen(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (scan.nparens == 0)              // Can't have ) without (
     {
-        int c;
-
-        if (!scan.mod)
-        {
-            cmd->expr.len = (uint)(next_cbuf() - cmd->expr.buf);
-        }
-
-        if ((c = fetch_cbuf(start)) == EOF)
-        {
-            break;
-        }
-        else if (c < 0 || c >= (int)cmd_count)
-        {
-            throw(E_ILL, c);            // Illegal character
-        }
-
-        cmd->c1 = (char)c;
-
-        if ((exec = scan_cmd(cmd)) != NULL)
-        {
-            // See if we're tracing commands; if so, echo them.
-
-            if (f.e0.trace && !f.e0.dryrun)
-            {
-                if (cmd->c1 == ESC)
-                {
-                    echo_in(cmd->c1);
-                }
-                else
-                {
-                    const char *end = next_cbuf();
-
-                    assert(end != NULL);
-
-                    int len = end - cmd->expr.buf;
-
-                    print_str("%.*s", len, cmd->expr.buf);
-                }
-            }
-
-            break;
-        }
+        throw(E_MLP);                   // Missing left parenthesis
+    }
+    else if (!check_expr())             // Is there an operand available?
+    {
+        throw(E_NAP);                   // No argument before )
+    }
+    else
+    {
+        --scan.nparens;
     }
 
-    // If we have a tag with text that starts with the character defined in E5,
-    // then we ignore it. This allows us to differentiate between tags (which
-    // may be the target of O commands) and comments. For example, E5 could be
-    // set to a space character (ASCII 32), which would mean that any tags of
-    // the form ! tag ! would be treated as a comment and not processed. This
-    // can be used to save on storage requirements for keeping track of tags.
+    push_expr(TYPE_GROUP, cmd->c1);
+}
 
-    if (cmd->c1 == '!' && f.e5 != NUL &&
-        cmd->text1.len != NUL && cmd->text1.buf[0] == f.e5)
-    {
-        return exec_dummy;              // Just ignore tag
-    }
 
-    // Pop m and n arguments (if any) from the expression stack
+///
+///  @brief    Execute general operator. This is called for the following:
+///
+///            +  addition
+///            -  subtraction
+///            *  multiplication
+///            /  division
+///            #  logical OR
+///            &  logical AND
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
 
-    if (pop_expr(&cmd->n_arg))
-    {
-        cmd->n_set = true;
+void exec_oper(struct cmd *cmd)
+{
+    assert(cmd != NULL);
 
-        if (pop_expr(&cmd->m_arg))
-        {
-            cmd->m_set = true;
-        }
-    }
+    check_args(cmd);
 
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);                   // Missing n argument
-    }
-
-    // If the only thing on the expression stack is a minus sign,
-    // then say we have an n argument equal to -1. Otherwise check
-    // for m and n arguments.
-
-    if (estack.level == 1 && estack.obj[0].type == EXPR_MINUS)
-    {
-        estack.level = 0;
-
-        cmd->n_set = true;
-        cmd->n_arg = -1;
-    }
-    else if (f.e2.n_arg && cmd->n_set && !scan.n_opt)
-    {
-        throw(E_UNA);                   // Unused n argument
-    }
-    else if (f.e2.m_arg && cmd->m_set && !scan.m_opt)
-    {
-        throw(E_UMA);                   // Unused m argument
-    }
-
-    return exec;
+    push_expr(TYPE_OPER, cmd->c1);
 }

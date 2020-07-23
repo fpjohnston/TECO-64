@@ -45,6 +45,8 @@ extern void exec_A(struct cmd *cmd);
 
 extern void exec_apos(struct cmd *cmd);
 
+extern void exec_atsign(struct cmd *cmd);
+
 extern void exec_B(struct cmd *cmd);
 
 extern void exec_bad(struct cmd *cmd);
@@ -53,11 +55,15 @@ extern void exec_back(struct cmd *cmd);
 
 extern void exec_bang(struct cmd *cmd);
 
-extern void exec_brace(struct cmd *cmd);
-
 extern void exec_C(struct cmd *cmd);
 
+extern void exec_colon(struct cmd *cmd);
+
 extern void exec_comma(struct cmd *cmd);
+
+extern void exec_ctl_ubar(struct cmd *cmd);
+
+extern void exec_ctl_up(struct cmd *cmd);
 
 extern void exec_ctrl_a(struct cmd *cmd);
 
@@ -68,8 +74,6 @@ extern void exec_ctrl_d(struct cmd *cmd);
 extern void exec_ctrl_b(struct cmd *cmd);
 
 extern void exec_ctrl_e(struct cmd *cmd);
-
-extern void exec_ctrl_f(struct cmd *cmd);
 
 extern void exec_ctrl_h(struct cmd *cmd);
 
@@ -104,6 +108,8 @@ extern void exec_D(struct cmd *cmd);
 extern void exec_digit(struct cmd *cmd);
 
 extern void exec_dot(struct cmd *cmd);
+
+extern const struct cmd_table *exec_E(struct cmd *cmd);
 
 extern void exec_E1(struct cmd *cmd);
 
@@ -171,6 +177,8 @@ extern void exec_EZ(struct cmd *cmd);
 
 extern void exec_E_ubar(struct cmd *cmd);
 
+extern const struct cmd_table *exec_F(struct cmd *cmd);
+
 extern void exec_F1(struct cmd *cmd);
 
 extern void exec_F2(struct cmd *cmd);
@@ -225,15 +233,15 @@ extern void exec_lt(struct cmd *cmd);
 
 extern void exec_lbracket(struct cmd *cmd);
 
-extern void exec_M(struct cmd *cmd);
+extern void exec_lparen(struct cmd *cmd);
 
-extern void exec_mod(struct cmd *cmd);
+extern void exec_M(struct cmd *cmd);
 
 extern void exec_N(struct cmd *cmd);
 
 extern void exec_O(struct cmd *cmd);
 
-extern void exec_operator(struct cmd *cmd);
+extern void exec_oper(struct cmd *cmd);
 
 extern void exec_P(struct cmd *cmd);
 
@@ -241,19 +249,23 @@ extern void exec_pct(struct cmd *cmd);
 
 extern void exec_Q(struct cmd *cmd);
 
-extern void exec_question(struct cmd *cmd);
-
 extern void exec_quote(struct cmd *cmd);
 
 extern void exec_R(struct cmd *cmd);
 
 extern void exec_rbracket(struct cmd *cmd);
 
+extern void exec_rparen(struct cmd *cmd);
+
 extern void exec_S(struct cmd *cmd);
 
 extern void exec_semi(struct cmd *cmd);
 
+extern void exec_space(struct cmd *cmd);
+
 extern void exec_T(struct cmd *cmd);
+
+extern void exec_trace(struct cmd *cmd);
 
 extern void exec_U(struct cmd *cmd);
 

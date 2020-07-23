@@ -73,26 +73,15 @@ void exec_equals(struct cmd *cmd)
         throw(E_NAE);                   // No argument before =
     }
 
-    int c;
-    const char *mode = "%d";
+    const char *mode = "%d";            // Assume we're printing decimal
 
-    if ((c = fetch_cbuf(NOCMD_START)) != '=')
+    if (cmd->c3 == '=')                 // Print hexadecimal if ===
     {
-        unfetch_cbuf(c);
-    }
-    else if ((c = fetch_cbuf(NOCMD_START)) != '=')
-    {
-        unfetch_cbuf(c);
-
-        cmd->c2 = '=';
-
-        mode = "%o";
-    }
-    else
-    {
-        cmd->c3 = cmd->c2 = '=';
-
         mode = "%x";
+    }
+    else if (cmd->c2 == '=')            // Print octal if ==
+    {
+        mode = "%o";
     }
 
     char user_mode[cmd->text1.len + 1];

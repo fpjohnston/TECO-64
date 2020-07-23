@@ -194,7 +194,7 @@ void exec_A(struct cmd *cmd)
 
     if (f.e0.dryrun)
     {
-        if (cmd->n_set && !cmd->colon_set)
+        if (cmd->n_set && cmd->colon_set)
         {
             push_expr(0, EXPR_VALUE);
         }
@@ -206,7 +206,7 @@ void exec_A(struct cmd *cmd)
     {
         bool success = append(cmd->n_set, cmd->n_arg, cmd->colon_set);
 
-        push_expr(success ? TECO_SUCCESS : TECO_FAILURE, EXPR_VALUE);
+        push_expr(success ? -1 : 0, EXPR_VALUE);
     }
     else if (cmd->n_set)                // nA command
     {

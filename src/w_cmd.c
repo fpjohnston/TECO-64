@@ -139,7 +139,7 @@ void exec_W(struct cmd *cmd)
     {
         int n;
 
-        if (!pop_expr(&cmd->n_arg))
+        if (!cmd->n_set)
         {
             cmd->n_arg = 0;             // :W = 0:W
         }

@@ -137,7 +137,7 @@ void exec_P(struct cmd *cmd)
         {
             if (cmd->colon_set)
             {
-                push_expr(TECO_FAILURE, EXPR_VALUE);
+                push_expr(0, EXPR_VALUE);
             }
 
             return;
@@ -155,7 +155,7 @@ void exec_P(struct cmd *cmd)
 
     if (cmd->colon_set)
     {
-        push_expr(TECO_SUCCESS, EXPR_VALUE);
+        push_expr(-1, EXPR_VALUE);
     }
 }
 

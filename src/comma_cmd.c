@@ -32,7 +32,6 @@
 #include "teco.h"
 #include "eflags.h"
 #include "errors.h"
-#include "estack.h"
 #include "exec.h"
 
 
@@ -52,16 +51,16 @@ void exec_comma(struct cmd *cmd)
         return;
     }
 
-    if (scan.comma_set || cmd->h_set)   // Already seen comma or H?
+    if (cmd->m_set)                     // Already seen m argument?
     {
         throw(E_ARG);                   // Invalid arguments
     }
 
-    if (!pop_expr(&cmd->m_arg))         // Any n argument specified?
+    if (!cmd->n_set)                    // Any n argument specified?
     {
         if (f.e2.comma)                 // No -- should we issue error?
         {
-            throw(E_NAC);               // No argument before ,
+            throw(E_NAC);               // No argument before comma
         }
 
         return;
@@ -70,13 +69,11 @@ void exec_comma(struct cmd *cmd)
     // If we've seen a comma, then what's on the expression is an "m" argument,
     // not an "n" argument (numeric arguments can take the form m,n).
 
-    if (cmd->m_arg < 0)
+    if ((cmd->m_arg = cmd->n_arg) < 0)
     {
-        throw(E_NCA);                   // Negative argument to ,
+        throw(E_NCA);                   // Negative argument to comma
     }
 
     cmd->m_set = true;                  // And say we have one
     cmd->n_set = false;                 // But forget about n argument
-
-    scan.comma_set = true;
 }

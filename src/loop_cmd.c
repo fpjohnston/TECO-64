@@ -105,7 +105,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 
     do
     {
-        if (next_cmd(cmd) == NULL)
+        if (!next_cmd(cmd))
         {
             throw(E_UTL);               // Unterminated loop
         }

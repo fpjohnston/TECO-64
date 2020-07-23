@@ -76,8 +76,8 @@ enum expr_type
     EXPR_NE     = 'N',              // Not equals (<>)
     EXPR_LE     = 'L',              // Less than or equal (<=)
     EXPR_GE     = 'G',              // Greater than or equal (>=)
-    EXPR_LEFT   = 'S',              // Left shift (<<)
-    EXPR_RIGHT  = 'U'               // Right shift (>>)
+    EXPR_LSHIFT = 'S',              // Left shift (<<)
+    EXPR_RSHIFT = 'U'               // Right shift (>>)
 };
 
 ///  @struct e_obj
@@ -103,6 +103,8 @@ struct estack
 extern struct estack estack;        ///< Expression stack
 
 // Expression stack functions
+
+extern bool check_expr(void);
 
 extern void init_expr(void);
 

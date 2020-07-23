@@ -61,13 +61,16 @@ void exec_B(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_q(struct cmd *unused1)
+void exec_ctrl_q(struct cmd *cmd )
 {
-    int nlines = 0;
+    assert(cmd != NULL);
 
-    (void)pop_expr(&nlines);
+    if (!cmd->n_set)
+    {
+        cmd->n_arg = 0;
+    }
 
-    int nchrs = getdelta_ebuf(nlines);
+    int nchrs = getdelta_ebuf(cmd->n_arg);
 
     push_expr(nchrs, EXPR_VALUE);
 }
@@ -101,7 +104,20 @@ void exec_ctrl_y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr(t.dot - (int)last_len, EXPR_VALUE);
+    uint i = estack.level;
+
+    // The following prevents expressions such as 123+^Y.
+
+    if (check_expr() || (i != 0 && estack.obj[i].value != TYPE_GROUP) ||
+        cmd->m_set)
+    {
+        throw(E_ARG);                   // Invalid arguments
+    }
+
+    cmd->y_set = true;
+    cmd->m_set = true;
+    cmd->m_arg = t.dot - (int)last_len;
+
     push_expr(t.dot, EXPR_VALUE);
 }
 
@@ -150,14 +166,20 @@ void exec_H(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (scan.comma_set || cmd->h_set)   // Already seen comma or H?
+    uint i = estack.level;
+
+    // The following prevents expressions such as 123+H.
+
+    if (check_expr() || (i != 0 && estack.obj[i].value != TYPE_GROUP) ||
+        cmd->m_set)
     {
         throw(E_ARG);                   // Invalid arguments
     }
 
     cmd->h_set = true;
+    cmd->m_set = true;
+    cmd->m_arg = t.B;
 
-    push_expr(t.B, EXPR_VALUE);
     push_expr((int)t.Z, EXPR_VALUE);
 }
 

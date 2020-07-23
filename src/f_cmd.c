@@ -1,6 +1,6 @@
 ///
-///  @file    pct_cmd.c
-///  @brief   Execute % command.
+///  @file    f_cmd.c
+///  @brief   Execute F commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -27,53 +27,44 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
-#include "eflags.h"
-#include "estack.h"
+#include "errors.h"
 #include "exec.h"
-#include "qreg.h"
 
 
 ///
-///  @brief    Scan % command: add value to Q-register, and read result.
+///  @brief    Execute F commands.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_pct(struct cmd *cmd)
+const struct cmd_table *exec_F(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e0.dryrun)
+    const char *f_cmds = "'123<>BCDKLNRSU_|";
+
+    int c = fetch_cbuf(NOCMD_START);
+
+    const char *f_cmd = strchr(f_cmds, toupper(c));
+
+    if (f_cmd == NULL)
     {
-        return;
+        throw(E_IFC, c);                // Illegal F character
     }
 
-    // %q with no argument increments by one, :%q decrements by one.
+    cmd->c2 = (char)c;
 
-    int n;
+    uint idx = (uint)(f_cmd - f_cmds);
 
-    if (cmd->n_set)
-    {
-        n = cmd->n_arg;
-    }
-    else if (cmd->colon_set)
-    {
-        n = -1;
-    }
-    else
-    {
-        n = 1;
-    }
+    assert(idx < f_count);
 
-    n += get_qnum(cmd->qname, cmd->qlocal);
-
-    store_qnum(cmd->qname, cmd->qlocal, n);
-
-    push_expr(n, EXPR_VALUE);
+    return &f_table[idx];
 }
 
