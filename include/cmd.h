@@ -37,9 +37,9 @@
 #endif
 
 
-#define CMD_START       (bool)true  ///< Read character at start of command
+#define START       (bool)true      ///< At start of command
 
-#define NOCMD_START     (bool)false ///< Read character in middle of command
+#define NOSTART     (bool)false     ///< Not at start of command
 
 ///  @struct  scan
 ///  @brief   Internal scanning state

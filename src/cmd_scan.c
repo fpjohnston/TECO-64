@@ -53,6 +53,8 @@ static bool check_value(struct cmd *cmd, union cmd_opts opts);
 
 static bool check_xoper(int c);
 
+static const struct cmd_table *get_entry(struct cmd *cmd);
+
 static union cmd_opts scan_opts(const struct cmd_table *entry);
 
 static void scan_tail(struct cmd *cmd, union cmd_opts opts);
@@ -128,7 +130,7 @@ static bool check_xoper(int c)
     switch (c)
     {
         case '>':                       // Check for >, >=, and >>
-            c = fetch_cbuf(NOCMD_START);
+            c = fetch_cbuf(NOSTART);
 
             if (c == '=')
             {
@@ -148,7 +150,7 @@ static bool check_xoper(int c)
             break;
 
         case '<':                       // Check for <, <=, <>, and <<
-            c = fetch_cbuf(NOCMD_START);
+            c = fetch_cbuf(NOSTART);
 
             if (c == '=')
             {
@@ -172,7 +174,7 @@ static bool check_xoper(int c)
             break;
 
         case '=':                       // Check for ==
-            c = fetch_cbuf(NOCMD_START);
+            c = fetch_cbuf(NOSTART);
 
             if (c != '=')
             {
@@ -182,7 +184,7 @@ static bool check_xoper(int c)
             break;
 
         case '/':                       // Check for //
-            c = fetch_cbuf(NOCMD_START);
+            c = fetch_cbuf(NOSTART);
 
             if (c != '/')
             {
@@ -229,6 +231,71 @@ static bool check_xoper(int c)
 
 
 ///
+///  @brief    Get table entry for command.
+///
+///  @returns  Table entry, or NULL if should return.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static const struct cmd_table *get_entry(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int c = toupper(cmd->c1);
+
+    if (check_xoper(c))                 // Check for extended operators
+    {
+        if (c != '{' && c != '}')
+        {
+            check_args(cmd);
+        }
+
+        return NULL;
+    }
+    else if (c == 'E')
+    {
+        return exec_E(cmd);
+    }
+    else if (c == 'F')
+    {
+        return exec_F(cmd);
+    }
+    else if (c < 0 || c >= (int)cmd_count)
+    {
+        throw(E_ILL, c);                // Illegal character
+    }
+    else if (c == '^')
+    {
+        check_args(cmd);
+
+        if ((c = fetch_cbuf(NOSTART)) == '^')
+        {
+            c = fetch_cbuf(NOSTART);
+
+            push_expr(c, EXPR_VALUE);
+
+            return NULL;
+        }
+
+        c -= 'A' - 1;
+
+        if (c <= NUL || c >= SPACE)
+        {
+            throw(E_IUC, c);            // Illegal character following ^
+        }
+
+        cmd->c1 = (char)c;
+    }
+    else
+    {
+        c = toupper(c);
+    }
+
+    return &cmd_table[c];
+}
+
+
+///
 ///  @brief    Reset internal variables for next scan.
 ///
 ///  @returns  Nothing.
@@ -265,61 +332,11 @@ void scan_cmd(struct cmd *cmd, int c)
     cmd->c2 = NUL;
     cmd->c3 = NUL;
 
-    c = toupper(c);
+    const struct cmd_table *entry = get_entry(cmd);
 
-    const struct cmd_table *entry;
-
-    if (check_xoper(c))                 // Check for extended operators
+    if (entry == NULL)
     {
-        if (c != '{' && c != '}')
-        {
-            check_args(cmd);
-        }
-
         return;
-    }
-    else if (c == 'E')
-    {
-        entry = exec_E(cmd);
-    }
-    else if (c == 'F')
-    {
-        entry = exec_F(cmd);
-    }
-    else if (c < 0 || c >= (int)cmd_count)
-    {
-        throw(E_ILL, c);                // Illegal character
-    }
-    else
-    {
-        if (c == '^')
-        {
-            check_args(cmd);
-
-            if ((c = fetch_cbuf(NOCMD_START)) == '^')
-            {
-                c = fetch_cbuf(NOCMD_START);
-
-                push_expr(c, EXPR_VALUE);
-
-                return;
-            }
-
-            c = (toupper(c) - 'A') + 1;
-
-            if (c <= NUL || c >= SPACE)
-            {
-                throw(E_IUC, c);        // Illegal character following ^
-            }
-
-            cmd->c1 = (char)c;
-        }
-        else
-        {
-            c = toupper(c);
-        }
-
-        entry = &cmd_table[c];
     }
 
     union cmd_opts opts = scan_opts(entry);
@@ -343,7 +360,8 @@ void scan_cmd(struct cmd *cmd, int c)
         {
             cmd->n_set = true;
         }
-        else if (estack.level == 1 && estack.obj[0].type == EXPR_MINUS)
+        else if (estack.level == estack.base + 1 &&
+                 estack.obj[0].type == EXPR_MINUS)
         {
             --estack.level;
 
@@ -359,9 +377,9 @@ void scan_cmd(struct cmd *cmd, int c)
         }
     }
 
-    if (cmd->m_set)
+    if (!opts.m && cmd->m_set)
     {
-        if (!opts.m && f.e2.m_arg && opts.bits != 0)
+        if (f.e2.m_arg && opts.bits != 0)
         {
             throw(E_UMA);               // Unused m argument
         }
@@ -371,14 +389,14 @@ void scan_cmd(struct cmd *cmd, int c)
 
     bool expr = check_value(cmd, opts);
 
-    if (!expr)
+    if (!expr && estack.base == 0)
     {
         if (scan.nparens || scan.nbraces)
         {
             throw(E_MRP);               // Missing right parenthesis/brace
         }
 
-        if (estack.level != 0)
+        if (estack.level != estack.base)
         {
             throw(E_ARG);               // Improper arguments
         }
@@ -393,7 +411,6 @@ void scan_cmd(struct cmd *cmd, int c)
         (*entry->exec)(cmd);
     }
 
-    cmd->m_set     = false;
     cmd->n_set     = false;
     cmd->qname     = NUL;
     cmd->qlocal    = false;
@@ -402,6 +419,7 @@ void scan_cmd(struct cmd *cmd, int c)
 
     if (!expr && !check_expr())
     {
+        cmd->m_set  = false;
         cmd->h      = false;
         cmd->ctrl_y = false;
 
@@ -508,11 +526,11 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
     }
     else if (cmd->c1 == '=')
     {
-        if ((c = fetch_cbuf(NOCMD_START)) != '=')
+        if ((c = fetch_cbuf(NOSTART)) != '=')
         {
             unfetch_cbuf(c);
         }
-        else if ((c = fetch_cbuf(NOCMD_START)) != '=')
+        else if ((c = fetch_cbuf(NOSTART)) != '=')
         {
             unfetch_cbuf(c);
 
@@ -530,7 +548,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
     }
     else if (cmd->c1 == '"')            // " requires additional character
     {
-        cmd->c2 = (char)fetch_cbuf(NOCMD_START);
+        cmd->c2 = (char)fetch_cbuf(NOSTART);
     }
     else if (opts.q)                    // Q-register required?
     {
@@ -538,7 +556,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
     }
     else if (opts.w)                    // Is W possible?
     {
-        c = fetch_cbuf(NOCMD_START);
+        c = fetch_cbuf(NOSTART);
 
         if (toupper(c) == 'W')
         {
@@ -556,7 +574,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 
     if (cmd->atsign)                    // @ modifier?
     {
-        while (isspace(c = fetch_cbuf(NOCMD_START)) && c != '\t')
+        while (isspace(c = fetch_cbuf(NOSTART)) && c != '\t')
         {
             ;                           // Skip leading whitespace
         }
@@ -586,7 +604,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 
             if (f.e1.text && cmd->delim == '{')
             {
-                while (isspace(c = fetch_cbuf(NOCMD_START)))
+                while (isspace(c = fetch_cbuf(NOSTART)))
                 {
                     ;                   // Skip whitespace
                 }
@@ -618,7 +636,7 @@ static void scan_text(int delim, struct tstring *text)
     text->len = 0;
     text->buf = next_cbuf();
 
-    int c = fetch_cbuf(NOCMD_START);
+    int c = fetch_cbuf(NOSTART);
 
     if (c == delim)
     {
@@ -649,5 +667,5 @@ static void scan_text(int delim, struct tstring *text)
 
         ++text->len;
 
-    } while ((c = fetch_cbuf(NOCMD_START)) != delim);
+    } while ((c = fetch_cbuf(NOSTART)) != delim);
 }

@@ -84,7 +84,6 @@ void exec_cmd(void)
     // Loop for all characters in command string.
 
     reset_scan();
-    init_expr();                        // Reset expression stack
     struct cmd cmd = null_cmd;
 
     for (;;)
@@ -125,7 +124,7 @@ bool next_cmd(struct cmd *cmd)
     // If we've reached the end of a command string, then make sure that
     // all of the parentheses and braces were properly paired.
 
-    if ((c = fetch_cbuf(CMD_START)) == EOF)
+    if ((c = fetch_cbuf(START)) == EOF)
     {
         if (scan.nparens || scan.nbraces)
         {
@@ -198,7 +197,7 @@ void exec_ctl_up(struct cmd *cmd)
 
     check_args(cmd);
 
-    int c = fetch_cbuf(NOCMD_START);
+    int c = fetch_cbuf(NOSTART);
 
     push_expr(c, EXPR_VALUE);
 }
@@ -237,7 +236,7 @@ void exec_colon(struct cmd *cmd)
 
     cmd->colon = true;
 
-    int c = fetch_cbuf(NOCMD_START);
+    int c = fetch_cbuf(NOSTART);
 
     if (c == ':')
     {

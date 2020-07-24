@@ -58,6 +58,7 @@ void exec_digit(struct cmd *cmd)
 
     int c = cmd->c1;
     int n = 0;
+    bool flag = check_macro() ? START : NOSTART;
 
     do
     {
@@ -71,9 +72,12 @@ void exec_digit(struct cmd *cmd)
         n *= (int)radix;                // Shift over existing digits
         n += c;                         // And add in the new digit
         
-    } while (isdigit(c = fetch_cbuf(NOCMD_START)));
+    } while (isdigit(c = fetch_cbuf(flag)));
 
-    unfetch_cbuf(c);                    // Put back last character
+    if (c != EOF)
+    {
+        unfetch_cbuf(c);                // Put back last character
+    }
 
     push_expr(n, EXPR_VALUE);
 }

@@ -118,9 +118,15 @@ static const union cmd_opts x1_opts     = {{ .t1=1, .x=1 }};
 ///
 ///          Note that to avoid duplication, lower-case letters can be omitted,
 ///          because we translate characters to upper-case before indexing into
-///          this table. Also, we handle E and F commands specially, as they
-///          involve a 2nd character.
+///          this table. Also, we handle E, F, and ^ commands specially, as they
+///          include a secondary character.
 ///
+
+//  Command characters may be categorized as one of the following:
+//
+//  1. Characters that are ignored (e.g., space).
+//  2. Characters that are part of an expression (e.g., digits or operators).
+//  3. 
 
 const struct cmd_table cmd_table[] =
 {

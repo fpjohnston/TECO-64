@@ -45,8 +45,6 @@ struct estack estack;
 
 // Local functions
 
-static void reduce(void);
-
 static bool reduce2(void);
 
 static bool reduce3(void);
@@ -61,7 +59,8 @@ static bool reduce3(void);
 
 bool check_expr(void)
 {
-    if (estack.level == 0 || estack.obj[estack.level - 1].type != EXPR_VALUE)
+    if (estack.level == estack.base ||
+        estack.obj[estack.level - 1].type != EXPR_VALUE)
     {
         return false;
     }
@@ -77,14 +76,15 @@ bool check_expr(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_expr(void)
+void init_expr(uint base)
 {
-    estack.level = 0;
-
-    for (int i = 0; i < EXPR_SIZE; ++i)
+    estack.base = base;
+#if 0
+    for (uint i = estack.level; i < EXPR_SIZE; ++i)
     {
         estack.obj[i].type = estack.obj[i].value = 0;
     }
+#endif
 }
 
 
@@ -100,7 +100,7 @@ bool pop_expr(int *operand)
 {
     assert(operand != NULL);
 
-    if (estack.level == 0)              // Anything on stack?
+    if (estack.level == estack.base)    // Anything on stack?
     {
         return false;                   // No
     }
@@ -115,7 +115,7 @@ bool pop_expr(int *operand)
     // A leading minus sign without a previous operand is treated as -1;
     // any other leading operator is an error.
 
-    if (estack.level == 1)
+    if (estack.level == estack.base + 1)
     {
         if (estack.obj[estack.level - 1].type == EXPR_MINUS)
         {
@@ -162,7 +162,7 @@ void push_expr(int value, enum expr_type type)
 
     ++estack.level;
 
-    reduce();                           // Reduce what we can
+    reduce_expr();                      // Reduce what we can
 }
 
 
@@ -173,9 +173,9 @@ void push_expr(int value, enum expr_type type)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void reduce(void)
+void reduce_expr(void)
 {
-    while (estack.level > 1)
+    while (estack.level > estack.base + 1)
     {
         if (!reduce3() && !reduce2())
         {
@@ -183,9 +183,11 @@ static void reduce(void)
         }
     }
 
-    if (estack.level >= 1 && estack.obj[estack.level - 1].type == '\x1F')
+    if (estack.level >= estack.base + 1 &&
+        estack.obj[estack.level - 1].type == '\x1F')
     {
-        if (estack.level == 1 || estack.obj[estack.level - 2].type != EXPR_VALUE)
+        if (estack.level == estack.base + 1 ||
+            estack.obj[estack.level - 2].type != EXPR_VALUE)
         {
             throw(E_NAB);               // No argument before ^_
         }
@@ -202,7 +204,7 @@ static void reduce(void)
 
 static bool reduce2(void)
 {
-    if (estack.level < 2)               // At least two items?
+    if (estack.level < estack.base + 2) // At least two items?
     {
         return false;                   // No
     }
@@ -276,7 +278,7 @@ static bool reduce2(void)
 
 static bool reduce3(void)
 {
-    if (estack.level < 3)               // At least three items?
+    if (estack.level < estack.base + 3) // At least three items?
     {
         return false;                   // No
     }

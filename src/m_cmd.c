@@ -119,10 +119,18 @@ void exec_M(struct cmd *cmd)
         push_qlocal();
     }
 
+    uint saved_base = estack.base;      // Save old base
+    init_expr(estack.level);            // Current level is new base
+
     ++macro_depth;
     exec_cmd();
     --macro_depth;
 
+    init_expr(saved_base);              // Restore old base
+
+    reduce_expr();                      // Try to reduce expression stack
+
+    printf("base = %u, level = %u\r\n", estack.base, estack.level);
     if (save_local)
     {
         pop_qlocal();

@@ -95,6 +95,7 @@ struct e_obj
 struct estack
 {
     uint level;                     ///< Expression stack level
+    uint base;                      ///< Expression stack base
     struct e_obj obj[EXPR_SIZE];    ///< Expression stack objects
 };
 
@@ -106,10 +107,12 @@ extern struct estack estack;        ///< Expression stack
 
 extern bool check_expr(void);
 
-extern void init_expr(void);
+extern void init_expr(uint base);
 
 extern bool pop_expr(int *operand);
 
 extern void push_expr(int c, enum expr_type type);
+
+extern void reduce_expr(void);
 
 #endif  // !defined(_ESTACK_H)
