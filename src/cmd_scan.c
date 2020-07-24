@@ -404,6 +404,8 @@ void scan_cmd(struct cmd *cmd, int c)
 
     scan_tail(cmd, opts);
 
+    // TODO: check dryrun in each command function.
+
     if (!f.e0.dryrun || expr)
     {
         assert(entry->exec != NULL);
