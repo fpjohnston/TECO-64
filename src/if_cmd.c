@@ -93,29 +93,6 @@ static void endif(struct cmd *cmd, bool else_ok)
             throw(E_UTQ);               // Unterminated conditional
         }
 
-//++DEBUG
-#if 0
-        if (cmd->c1 != ' ' && cmd->c1 != 0)
-        {
-            printf("skipping: ");
-
-            if (iscntrl(cmd->c1))
-            {
-                printf("^%c\r\n", cmd->c1 + 'A' - 1);
-            }
-            else
-            {
-                printf("%c", cmd->c1);
-                if (cmd->c2 != 0)
-                {
-                    printf("%c", cmd->c2);
-                }
-                printf("\r\n");
-            }
-        }
-#endif
-//--DEBUG
-
         if (if_head != NULL && f.e2.quote)
         {
             if (cmd->c1 == '<')

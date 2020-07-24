@@ -386,29 +386,6 @@ void scan_cmd(struct cmd *cmd, int c)
 
     scan_tail(cmd, opts);
 
-//++DEBUG
-#if 0
-    if (cmd->c1 != ' ')
-    {
-        printf("command: ");
-
-        if (iscntrl(cmd->c1))
-        {
-            printf("^%c\r\n", cmd->c1 + 'A' - 1);
-        }
-        else
-        {
-            printf("%c", cmd->c1);
-            if (cmd->c2 != NUL)
-            {
-                printf("%c", cmd->c2);
-            }
-            printf("\r\n");
-        }
-    }
-#endif
-//--DEBUG
-
     if (!f.e0.dryrun || expr)
     {
         assert(entry->exec != NULL);
