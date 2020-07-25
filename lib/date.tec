@@ -82,7 +82,7 @@ Q.H :@=/%02u:/          ! display HH:                     !
 Q.N :@=/%02u:/          ! display MM:                     !
 Q.S :@=/%02u/           ! display SS                      !
 
-E3&4 "N                 ! Check for displaying  millisecs !
+E1&4 "N                 ! Check for displaying  millisecs !
     Q.X:@=/.%03u/       ! display milliseconds            !
 '
 
