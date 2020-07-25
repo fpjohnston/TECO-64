@@ -57,7 +57,7 @@ Q.M-12"= @^U.M%December%  ''''''''''''
 
                         ! Get HH:MM:SS in Q-reg's H,N,S   !
 ^H U.T                  ! T.num = returned time           !
-E3&4 "E
+E1&4 "E
     Q.T * 2 U.0         ! 0.num = seconds since midnight  !
 |
     Q.T / 1000    U.0 
