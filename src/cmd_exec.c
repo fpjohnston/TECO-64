@@ -137,6 +137,11 @@ void exec_cmd(void)
         if (!f.e0.dryrun || cmd.c1 == '?')
         {
             (*exec)(&cmd);
+
+            if (command->len == 0)
+            {
+                break;
+            }
         }
 
         if (f.e0.ctrl_c)                // If CTRL/C typed, return to main loop
@@ -161,6 +166,20 @@ void exec_cmd(void)
 
 void exec_escape(struct cmd *unused1)
 {
+    int c;
+
+    while (command->pos < command->len)
+    {
+        c = fetch_cbuf(NOSTART);
+
+        if (!isspace(c) || c == TAB)
+        {
+            unfetch_cbuf(c);
+
+            break;
+        }
+    }
+
     if (command->pos == command->len)
     {
         command->pos = command->len = 0;
@@ -311,7 +330,7 @@ exec_func *next_cmd(struct cmd *cmd)
     // following the command.
 
     int c;
-    bool start = !check_expr();
+    bool start = true;
 
     *cmd = null_cmd;
 
@@ -369,11 +388,8 @@ exec_func *next_cmd(struct cmd *cmd)
             finish_cmd(cmd, opts);
 
 #if 0 // TODO: conditional code below is temporary
-            if (c != ESC)
-            {
-                printf("command: ");
-                print_cmd(cmd);
-            }
+            printf("command: ");
+            print_cmd(cmd);
 #endif
             return entry->exec;
         }
