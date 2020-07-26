@@ -41,17 +41,6 @@
 
 #define NOSTART     (bool)false     ///< Not at start of command
 
-///  @struct  scan
-///  @brief   Internal scanning state
-
-struct scan
-{
-    uint nparens;                   ///< No. of unmatched left parentheses
-    uint nbraces;                   ///< No. of unmatched left braces
-};
-
-extern struct scan scan;
-
 ///  @struct cmd
 ///  @brief  Command block structure.
 
@@ -128,6 +117,8 @@ extern const struct cmd_table f_table[];
 extern const uint f_count;
 
 extern char *eg_result;
+
+extern uint nparens;
 
 // Miscellaneous functions
 

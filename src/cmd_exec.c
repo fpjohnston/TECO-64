@@ -37,7 +37,7 @@
 #include "exec.h"
 #include "qreg.h"
 
-struct scan scan;                   ///< Internal scan variables
+uint nparens;                       ///< Parenthesis nesting count
 
 ///  @var    null_cmd
 ///
@@ -315,6 +315,19 @@ exec_func *next_cmd(struct cmd *cmd)
 
     *cmd = null_cmd;
 
+    if (check_macro())
+    {
+        if (pop_expr(&cmd->n_arg))
+        {
+            cmd->n_set = true;
+
+            if (pop_expr(&cmd->m_arg))
+            {
+                cmd->m_set = true;
+            }
+        }
+    }        
+
     while ((c = fetch_cbuf(start)) != EOF)
     {
         start = false;
@@ -382,14 +395,14 @@ exec_func *next_cmd(struct cmd *cmd)
         cmd->qlocal = false;
     }
 
-    // If we're not in a macro, then confirm that parentheses and braces were
-    // properly matched, and that there's nothing left on the expression stack.
+    // If we're not in a macro, then confirm that parentheses were properly
+    // matched, and that there's nothing left on the expression stack.
 
     if (!check_macro())
     {
         // Here if we've reached the end of the command string.
 
-        if (scan.nparens || scan.nbraces)
+        if (nparens)
         {
             throw(E_MRP);               // Missing right parenthesis/brace
         }
@@ -473,11 +486,13 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
     }
     else if (cmd->c1 == '=')
     {
-        if ((c = fetch_cbuf(NOSTART)) != '=')
+        bool start = check_macro() ? START : NOSTART;
+
+        if ((c = fetch_cbuf(start)) != '=')
         {
             unfetch_cbuf(c);
         }
-        else if ((c = fetch_cbuf(NOSTART)) != '=')
+        else if ((c = fetch_cbuf(start)) != '=')
         {
             unfetch_cbuf(c);
 
@@ -499,7 +514,9 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
     }
     else if (opts.w)                    // Is W possible?
     {
-        c = fetch_cbuf(NOSTART);
+        bool start = check_macro() ? START : NOSTART;
+
+        c = fetch_cbuf(start);
 
         if (toupper(c) == 'W')
         {

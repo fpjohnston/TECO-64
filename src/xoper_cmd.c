@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Check to see if command is an extended operator.
+///  @brief    Execute extended operator (if enabled).
 ///
 ///  @returns  true if extended operator found, else false.
 ///
@@ -45,7 +45,7 @@
 
 bool exec_xoper(int c)
 {
-    if (scan.nbraces == 0 && (c != '{' || !f.e1.brace))
+    if (nparens == 0 || !f.e1.xoper)
     {
         return false;                   // No extended operator possible
     }
@@ -122,25 +122,6 @@ bool exec_xoper(int c)
 
         case '!':
         case '~':
-            break;
-
-        case '{':
-            ++scan.nbraces;
-
-            break;
-
-        case '}':
-            if (scan.nbraces == 0)      // Can't have } without {
-            {
-                throw(E_MLP);           // Missing left brace
-            }
-            else if (!check_expr())     // Is there an operand available?
-            {
-                throw(E_NAP);           // No argument before }
-            }
-
-            --scan.nbraces;
-
             break;
 
         default:

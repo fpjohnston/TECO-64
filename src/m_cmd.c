@@ -97,18 +97,6 @@ void exec_M(struct cmd *cmd)
 
     set_cbuf(&qreg->text);
 
-    // If invoked with nMq or m,nMq, then pass argument(s) to macro.
-
-    if (cmd->n_set)
-    {
-        if (cmd->m_set)
-        {
-            push_expr(cmd->m_arg, EXPR_VALUE);
-        }
-
-        push_expr(cmd->n_arg, EXPR_VALUE);
-    }
-
     // If no colon modifier, and not a local Q-register, then save current
     // local Q-registers before executing macro, and restore them afterwards.
 
@@ -122,6 +110,16 @@ void exec_M(struct cmd *cmd)
     uint saved_base = estack.base;      // Save old base
     init_expr(estack.level);            // Current level is new base
 
+    if (cmd->n_set)
+    {
+        if (cmd->m_set)
+        {
+            push_expr(cmd->m_arg, EXPR_VALUE);
+        }
+
+        push_expr(cmd->n_arg, EXPR_VALUE);
+    }
+            
     ++macro_depth;
     exec_cmd();
     --macro_depth;

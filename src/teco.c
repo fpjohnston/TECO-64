@@ -114,8 +114,7 @@ int main(int argc, const char * const argv[])
                 f.e0.dryrun = false;    // Disable dry run
                 f.et.abort  = false;    // Don't abort on error
 
-                scan.nparens = 0;       // Reset count for parentheses
-                scan.nbraces = 0;       // Reset count for braces
+                nparens = 0;            // Reset parenthesis count
 
                 refresh_win();          // Refresh window if needed
 
@@ -164,7 +163,7 @@ static void init_teco(int argc, const char * const argv[])
     f.et.abort   = true;                // Abort on error
     f.et.accent  = true;                // Use accent grave as delimiter
 
-    f.e1.brace   = true;                // Allow braced expressions
+    f.e1.xoper   = true;                // Allow extended operators
     f.e1.tilde   = true;                // Allow tilde operator
     f.e1.msec    = true;                // Return time in milliseconds
     f.e1.text    = true;                // Enable extended text strings

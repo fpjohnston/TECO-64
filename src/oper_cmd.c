@@ -120,7 +120,7 @@ void exec_lparen(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    ++scan.nparens;
+    ++nparens;
 
     push_expr(TYPE_GROUP, cmd->c1);
 }
@@ -161,7 +161,7 @@ void exec_rparen(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (scan.nparens == 0)              // Can't have ) without (
+    if (nparens == 0)                   // Can't have ) without (
     {
         throw(E_MLP);                   // Missing left parenthesis
     }
@@ -171,7 +171,7 @@ void exec_rparen(struct cmd *cmd)
     }
     else
     {
-        --scan.nparens;
+        --nparens;
     }
 
     push_expr(TYPE_GROUP, cmd->c1);
