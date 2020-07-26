@@ -114,6 +114,9 @@ int main(int argc, const char * const argv[])
                 f.e0.dryrun = false;    // Disable dry run
                 f.et.abort  = false;    // Don't abort on error
 
+                scan.nparens = 0;       // Reset count for parentheses
+                scan.nbraces = 0;       // Reset count for braces
+
                 refresh_win();          // Refresh window if needed
 
                 read_cmd();             // Read the next command

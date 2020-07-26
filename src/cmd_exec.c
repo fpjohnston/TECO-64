@@ -123,9 +123,6 @@ void exec_cmd(void)
 {
     struct cmd cmd;                     // Command block
 
-    scan.nparens     = 0;
-    scan.nbraces     = 0;
-
     // Loop for all commands in command string.
 
     for (;;)
@@ -397,7 +394,7 @@ exec_func *next_cmd(struct cmd *cmd)
             throw(E_MRP);               // Missing right parenthesis/brace
         }
 
-        if (estack.level != 0)
+        if (estack.base != estack.level)
         {
             throw(E_ARG);               // Improper arguments
         }
