@@ -73,7 +73,6 @@ struct cmd
     bool dcolon;                    ///< :: found
     bool atsign;                    ///< @ found
     char delim;                     ///< Delimiter for @ modifier
-    struct tstring expr;            ///< Expression string
     struct tstring text1;           ///< 1st text string
     struct tstring text2;           ///< 2nd text string
 };
@@ -137,12 +136,8 @@ extern char *eg_result;
 
 extern void check_args(struct cmd *cmd);
 
-extern bool next_cmd(struct cmd *cmd);
+extern exec_func *next_cmd(struct cmd *cmd);
 
 extern void print_cmd(struct cmd *cmd);
-
-extern void reset_scan(void);
-
-extern void scan_cmd(struct cmd *cmd, int c);
 
 #endif  // _CMD_H

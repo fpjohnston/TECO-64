@@ -89,7 +89,7 @@ struct tstring
 
 // Global variables
 
-extern struct buffer *current;
+extern struct buffer *command;
 
 extern char eg_command[];
 

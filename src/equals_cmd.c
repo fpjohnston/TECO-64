@@ -34,7 +34,6 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 #include "term.h"
@@ -62,11 +61,6 @@ static bool check_format(const char *format);
 void exec_equals(struct cmd *cmd)
 {
     assert(cmd != NULL);
-
-    if (f.e0.dryrun)
-    {
-        return;
-    }
 
     if (!cmd->n_set)                    // If no operand, then complain
     {

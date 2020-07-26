@@ -165,8 +165,8 @@ int read_indirect(void)
         store_cbuf(c);                  // Store command character
     } while ((c = fgetc(stream->fp)) != EOF);
 
-    const char *buf = current->buf;
-    uint len = current->len;
+    const char *buf = command->buf;
+    uint len = command->len;
 
     // Start at end of command string, and back up until we find a
     // non-whitespace character. This allows the use of such things

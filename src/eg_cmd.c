@@ -62,11 +62,11 @@ void exec_EG(struct cmd *cmd)
     
     if (cmd->colon || cmd->dcolon)
     {
-        char command[PATH_MAX];         // Local command
+        char syscmd[PATH_MAX];          // System command
 
-        sprintf(command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+        sprintf(syscmd, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
 
-        int status = find_eg(command, cmd->dcolon);
+        int status = find_eg(syscmd, cmd->dcolon);
 
         push_expr(status, EXPR_VALUE);
 

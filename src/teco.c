@@ -112,15 +112,18 @@ int main(int argc, const char * const argv[])
             case 0:                     // Normal entry
                 f.e0.trace  = false;    // Disable tracing
                 f.e0.dryrun = false;    // Disable dry run
-                f.e0.exec   = false;    // Command not active
                 f.et.abort  = false;    // Don't abort on error
 
                 refresh_win();          // Refresh window if needed
 
                 read_cmd();             // Read the next command
                 init_expr(0);           // Initialize expression stack
+
+                f.e0.exec = true;       // Executing a command
+
                 exec_cmd();             // Execute what we have
 
+                f.e0.exec = false;      // Not executing a command
                 f.e0.error = false;     // Command completed w/o error
 
                 break;
@@ -132,6 +135,7 @@ int main(int argc, const char * const argv[])
 
             default:
             case 2:                     // Error
+                f.e0.exec = false;      // Not executing a command
                 f.e0.error = true;      // Flag the error
 
                 break;

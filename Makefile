@@ -75,7 +75,6 @@ SOURCES = \
     build_str.c    \
     cmd_buf.c      \
     cmd_exec.c     \
-    cmd_scan.c     \
     cmd_tables.c   \
     env_sys.c      \
     errors.c       \
@@ -144,6 +143,7 @@ SOURCES = \
     m_cmd.c        \
     move_cmd.c     \
     n_cmd.c        \
+    oper_cmd.c     \
     p_cmd.c        \
     pct_cmd.c      \
     q_cmd.c        \
@@ -153,9 +153,10 @@ SOURCES = \
     type_cmd.c     \
     ubar_cmd.c     \
     u_cmd.c        \
-    value_cmd.c    \
+    var_cmd.c      \
     w_cmd.c        \
     x_cmd.c        \
+    xoper_cmd.c    \
     yank_cmd.c     \
 
 #

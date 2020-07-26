@@ -540,7 +540,7 @@ noreturn void throw(int error, ...)
 
     // Ensure that '?' command only prints command string up to error.
 
-    term_buf->len = term_buf->pos = current->pos;
+    term_buf->len = term_buf->pos = command->pos;
 
     // If CTRL/C and we're not executing a command, don't print error.
 

@@ -31,7 +31,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "eflags.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
@@ -47,11 +46,6 @@
 void exec_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
-
-    if (f.e0.dryrun)
-    {
-        return;
-    }
 
     // %q with no argument increments by one, :%q decrements by one.
 

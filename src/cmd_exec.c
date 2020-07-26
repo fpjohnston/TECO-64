@@ -28,13 +28,6 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <setjmp.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -42,7 +35,9 @@
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
+#include "qreg.h"
 
+struct scan scan;                   ///< Internal scan variables
 
 ///  @var    null_cmd
 ///
@@ -50,98 +45,60 @@
 
 static const struct cmd null_cmd =
 {
+    .c1     = NUL,
+    .c2     = NUL,
+    .c3     = NUL,
+    .qname  = NUL,
+    .qlocal = false,
     .m_set  = false,
+    .m_arg  = 0,
     .n_set  = false,
+    .n_arg  = 0,
     .h      = false,
     .ctrl_y = false,
     .w      = false,
     .colon  = false,
     .dcolon = false,
     .atsign = false,
-    .c1     = NUL,
-    .c2     = NUL,
-    .c3     = NUL,
-    .m_arg  = 0,
-    .n_arg  = 0,
     .delim  = ESC,
-    .qname  = NUL,
-    .qlocal = false,
-    .expr   = { .buf = NULL, .len = 0 },
     .text1  = { .buf = NULL, .len = 0 },
     .text2  = { .buf = NULL, .len = 0 },
 };
 
 
+// Local functions
+
+static void finish_cmd(struct cmd *cmd, union cmd_opts opts);
+
+static const struct cmd_table *get_entry(struct cmd *cmd);
+
+static union cmd_opts scan_opts(const struct cmd_table *entry);
+
+static void scan_tail(struct cmd *cmd, union cmd_opts opts);
+
+static void scan_text(int delim, struct tstring *tstring);
+
+
 ///
-///  @brief    Execute command string.
+///  @brief    Check to see if we've already processed H or CTRL/Y.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_cmd(void)
-{
-    // Loop for all characters in command string.
-
-    reset_scan();
-    struct cmd cmd = null_cmd;
-
-    for (;;)
-    {
-        f.e0.exec = true;               // Executing a command
-
-        if (!next_cmd(&cmd))
-        {
-            return;
-        }
-
-        f.e0.exec = false;              // Done executing command
-
-        if (f.e0.ctrl_c)                // If CTRL/C typed, return to main loop
-        {
-            f.e0.ctrl_c = false;
-
-            throw(E_XAB);               // Execution aborted
-        }
-    }
-}
-
-
-
-///
-///  @brief    Get next command.
-///
-///  @returns  true if there is another command, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool next_cmd(struct cmd *cmd)
+void check_args(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int c;
-
-    // If we've reached the end of a command string, then make sure that
-    // all of the parentheses and braces were properly paired.
-
-    if ((c = fetch_cbuf(START)) == EOF)
+    if (cmd->h || cmd->ctrl_y)
     {
-        if (scan.nparens || scan.nbraces)
-        {
-            throw(E_MRP);           // Missing right parenthesis/brace
-        }
-
-        return false;
+        throw(E_ARG);                   // Improper arguments
     }
-
-    scan_cmd(cmd, c);
-
-    return true;
 }
 
 
 ///
-///  @brief    We've scanned an illegal character, so return to main loop.
+///  @brief    Execute illegal character command.
 ///
 ///  @returns  Nothing.
 ///
@@ -156,15 +113,42 @@ void exec_bad(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute whitespace command.
+///  @brief    Execute command string.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_space(struct cmd *unused1)
+void exec_cmd(void)
 {
+    struct cmd cmd;                     // Command block
 
+    scan.nparens     = 0;
+    scan.nbraces     = 0;
+
+    // Loop for all commands in command string.
+
+    for (;;)
+    {
+        exec_func *exec = next_cmd(&cmd);
+
+        if (exec == NULL)
+        {
+            break;
+        }
+
+        if (!f.e0.dryrun || cmd.c1 == '?')
+        {
+            (*exec)(&cmd);
+        }
+
+        if (f.e0.ctrl_c)                // If CTRL/C typed, return to main loop
+        {
+            f.e0.ctrl_c = false;
+
+            throw(E_XAB);               // Execution aborted
+        }
+    }
 }
 
 
@@ -180,159 +164,453 @@ void exec_space(struct cmd *unused1)
 
 void exec_escape(struct cmd *unused1)
 {
-
-}
-
-
-///
-///  @brief    Execute ctrl/^ (caret or uparrow) command.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctl_up(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    check_args(cmd);
-
-    int c = fetch_cbuf(NOSTART);
-
-    push_expr(c, EXPR_VALUE);
-}
-
-
-///
-///  @brief    Execute ctrl/underscore command.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctl_ubar(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    push_expr(TYPE_OPER, cmd->c1);
-}
-
-
-///
-///  @brief    Execute : or :: command modifiers.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_colon(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (f.e2.colon && cmd->colon)       // Do we allow extra colons?
+    if (command->pos == command->len)
     {
-        throw(E_MOD);                   // Invalid modifier
-    }
-
-    cmd->colon = true;
-
-    int c = fetch_cbuf(NOSTART);
-
-    if (c == ':')
-    {
-        cmd->dcolon = true;
-    }
-    else
-    {
-        unfetch_cbuf(c);
+        command->pos = command->len = 0;
     }
 }
 
 
 ///
-///  @brief    Execute @ command modifier.
+///  @brief    Finish non-simple command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_atsign(struct cmd *cmd)
+static void finish_cmd(struct cmd *cmd, union cmd_opts opts)
 {
     assert(cmd != NULL);
 
-    if (f.e2.atsign && cmd->atsign)
+    // Here when we've seen a command that is more than part of an expression.
+
+    // If command allows one numeric argument, check to see if we have one.
+    // If not, then check to see if the command was preceded by a minus
+    // sign, which is equivalent to an argument of -1. If no argument is
+    // allowed, but there is an operand on top of the stack, then issue an
+    // error.
+
+    if (opts.n)
     {
-        throw(E_MOD);               // No more than one at sign
+        if (pop_expr(&cmd->n_arg))
+        {
+            cmd->n_set = true;
+        }
+        else if (estack.level == estack.base + 1 &&
+                 estack.obj[0].type == EXPR_MINUS)
+        {
+            --estack.level;
+
+            cmd->n_set = true;
+            cmd->n_arg = -1;
+        }
+    }
+    else if (check_expr() && f.e2.n_arg)
+    {
+        throw(E_UNA);                   // Unused n argument
     }
 
-    cmd->atsign = true;
+    // If we've seen an 'm' argument, but the command doesn't allow it, then
+    // issue an error.
+
+    if (!opts.m && cmd->m_set)
+    {
+        if (f.e2.m_arg)
+        {
+            throw(E_UMA);               // Unused m argument
+        }
+
+        cmd->m_set = false;             // Just dump the argument
+    }
+
+    // Scan for text arguments and other post-command characters.
+
+    scan_tail(cmd, opts);
 }
 
 
 ///
-///  @brief    Execute left parenthesis.
+///  @brief    Get table entry for command.
 ///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_lparen(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    ++scan.nparens;
-
-    push_expr(TYPE_GROUP, cmd->c1);
-}
-
-
-///
-///  @brief    Execute right parenthesis.
-///
-///  @returns  Nothing.
+///  @returns  Table entry, or NULL if we're done with command.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_rparen(struct cmd *cmd)
+static const struct cmd_table *get_entry(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (scan.nparens == 0)              // Can't have ) without (
+    int c = toupper(cmd->c1);
+
+    if (exec_xoper(c))                  // Check for extended operators
     {
-        throw(E_MLP);                   // Missing left parenthesis
+        if (c != '{' && c != '}')
+        {
+            check_args(cmd);
+        }
+
+        return NULL;
     }
-    else if (!check_expr())             // Is there an operand available?
+    else if (c == 'E')
     {
-        throw(E_NAP);                   // No argument before )
+        return exec_E(cmd);
+    }
+    else if (c == 'F')
+    {
+        return exec_F(cmd);
+    }
+    else if (c < 0 || c >= (int)cmd_count)
+    {
+        throw(E_ILL, c);                // Illegal character
+    }
+    else if (c == '^')
+    {
+        check_args(cmd);
+
+        if ((c = fetch_cbuf(NOSTART)) == '^')
+        {
+            c = fetch_cbuf(NOSTART);
+
+            push_expr(c, EXPR_VALUE);
+
+            return NULL;
+        }
+
+        c -= 'A' - 1;
+
+        if (c <= NUL || c >= SPACE)
+        {
+            throw(E_IUC, c);            // Illegal character following ^
+        }
+
+        cmd->c1 = (char)c;
     }
     else
     {
-        --scan.nparens;
+        c = toupper(c);
     }
 
-    push_expr(TYPE_GROUP, cmd->c1);
+    return &cmd_table[c];
 }
 
 
 ///
-///  @brief    Execute general operator. This is called for the following:
+///  @brief    Scan command string for next command.
 ///
-///            +  addition
-///            -  subtraction
-///            *  multiplication
-///            /  division
-///            #  logical OR
-///            &  logical AND
+///  @returns  Command to execute, or NULL if at end of command string.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+exec_func *next_cmd(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    // Parse a command string, one character at a time. Although some commands
+    // only require a single character, most of them comprise multiple charac-
+    // ters, so we have to keep looping until we have found everything we need.
+    // As we continue, we store information in our command block to use when
+    // we're ready to actually execute the command. This includes such things
+    // as m and n arguments, modifiers such as : and @, and any text strings
+    // following the command.
+
+    int c;
+    bool start = !check_expr();
+
+    *cmd = null_cmd;
+
+    while ((c = fetch_cbuf(start)) != EOF)
+    {
+        start = false;
+
+        cmd->c1 = (char)c;
+        cmd->c2 = NUL;
+        cmd->c3 = NUL;
+
+        const struct cmd_table *entry = get_entry(cmd);
+
+        if (entry == NULL || entry->exec == NULL)
+        {
+            continue;
+        }
+
+        union cmd_opts opts = scan_opts(entry);
+
+        if (opts.q)                     // Q-register required?
+        {
+            get_qname(cmd, opts.g ? "*_$" : NULL);
+        }
+
+        if ((opts.f && !check_expr()) ||
+            (toupper(cmd->c1) == 'A' && cmd->n_set) ||
+            (toupper(cmd->c1) == 'Q'))
+        {
+            ;
+        }
+        else if (opts.bits != 0)
+        {
+            finish_cmd(cmd, opts);
+
+#if 0 // TODO: conditional code below is temporary
+            if (cmd->c1 != ESC)
+            {
+                printf("command: ");
+                print_cmd(cmd);
+            }
+#endif
+            return entry->exec;
+        }
+
+        // If we're strictly enforcing syntax for command modifiers, then
+        // @ can only be followed by :, and : can only be followed by @.
+
+        if ((f.e2.atsign && cmd->atsign && cmd->c1 != ':') ||
+            (f.e2.colon && cmd->colon && cmd->c1 != '@'))
+        {
+            throw(E_MOD);               // Invalid command modifier
+        }
+
+        (*entry->exec)(cmd);            // Execute expression command
+
+        cmd->qname  = NUL;
+        cmd->qlocal = false;
+    }
+
+    // Here if we've reached the end of the command string.
+
+    if (scan.nparens || scan.nbraces)
+    {
+        throw(E_MRP);                   // Missing right parenthesis/brace
+    }
+
+    if (estack.base == 0 && estack.level != 0)
+    {
+        throw(E_ARG);                   // Improper arguments
+    }
+
+    return NULL;
+}
+
+
+///
+///  @brief    Get the options for the current command.
+///
+///  @returns  Command options.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static union cmd_opts scan_opts(const struct cmd_table *entry)
+{
+    assert(entry != NULL);
+
+    union cmd_opts opts;
+
+    if (entry->opts == NULL)            // If no option block for command,
+    {
+        opts.bits = 0;                  //  then all options are disabled
+    }
+    else
+    {
+        opts = *entry->opts;
+
+        // m argument implies n argument, as does a flag command.
+
+        if (opts.m || opts.f)
+        {
+            opts.n = 1;
+        }
+
+        // Terminal command can accept m and n arguments, but ignores them.
+
+        if (opts.x)
+        {
+            opts.m = 1;
+            opts.n = 1;
+        }
+
+        // :: implies :, as does a colon-modified command that returns a value.
+
+        if (opts.d || opts.v)
+        {
+            opts.c = 1;
+        }
+
+        // Q-register set for G commands are a superset of regular Q-reg. set.
+
+        if (opts.g)
+        {
+            opts.q = 1;
+        }
+
+        // If 2nd text argument is allowed, so is 1st text argument.
+
+        if (opts.t2)
+        {
+            opts.t1 = 1;
+        }
+    }
+
+    return opts;
+}
+
+
+///
+///  @brief    Scan the rest of the command string. We enter here after scanning
+///            any expression, and any prefix modifiers.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_oper(struct cmd *cmd)
+static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 {
     assert(cmd != NULL);
 
-    check_args(cmd);
+    int c;
 
-    push_expr(TYPE_OPER, cmd->c1);
+    cmd->delim = ESC;                   // Assume standard delimiter
+
+    if (cmd->c1 == CTRL_A || cmd->c1 == '!')
+    {
+        cmd->delim = cmd->c1;           // Use special delimiter
+    }
+    else if (cmd->c1 == '=')
+    {
+        if ((c = fetch_cbuf(NOSTART)) != '=')
+        {
+            unfetch_cbuf(c);
+        }
+        else if ((c = fetch_cbuf(NOSTART)) != '=')
+        {
+            unfetch_cbuf(c);
+
+            cmd->c2 = '=';
+        }
+        else
+        {
+            cmd->c3 = cmd->c2 = '=';
+        }
+
+        if (!cmd->atsign)
+        {
+            return;
+        }
+    }
+    else if (cmd->c1 == '"')            // " requires additional character
+    {
+        cmd->c2 = (char)fetch_cbuf(NOSTART);
+    }
+    else if (opts.w)                    // Is W possible?
+    {
+        c = fetch_cbuf(NOSTART);
+
+        if (toupper(c) == 'W')
+        {
+            cmd->w = true;
+        }
+        else
+        {
+            unfetch_cbuf(c);
+        }
+    }
+
+    // If the user specified the at-sign modifier, then we allow whitespace
+    // between the command and the delimiter. Note that whitespace does not
+    // include tabs, since those are TECO commands.
+
+    if (cmd->atsign)                    // @ modifier?
+    {
+        while (isspace(c = fetch_cbuf(NOSTART)) && c != '\t')
+        {
+            ;                           // Skip leading whitespace
+        }
+
+        cmd->delim = (char)c;           // Next character is delimiter
+    }
+
+    int delim = cmd->delim;
+
+    // Now get the text strings, if they're allowed for this command.
+    // Note that if f.e1.text is enabled and the delimiter is '{', then
+    // the text strings may be of the form {xxx}. This allows for such
+    // commands as @S {foo} or @FS {foo} {baz}.
+
+    if (opts.t1)
+    {
+        if (f.e1.text && cmd->delim == '{')
+        {
+            delim = '}';
+        }
+
+        scan_text(delim, &cmd->text1);
+
+        if (opts.t2)
+        {
+            delim = cmd->delim;
+
+            if (f.e1.text && cmd->delim == '{')
+            {
+                while (isspace(c = fetch_cbuf(NOSTART)))
+                {
+                    ;                   // Skip whitespace
+                }
+
+                unfetch_cbuf(c);
+
+                scan_text(delim, &cmd->text2);
+
+                delim = '}';
+            }
+
+            scan_text(delim, &cmd->text2);
+        }
+    }
+}
+
+
+///
+///  @brief    Scan the text string following the command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void scan_text(int delim, struct tstring *text)
+{
+    assert(text != NULL);
+
+    text->len = 0;
+    text->buf = next_cbuf();
+
+    int c = fetch_cbuf(NOSTART);
+
+    if (c == delim)
+    {
+        return;
+    }
+
+    bool caret = false;                 // Flag for scanned uparrow character
+
+    // Scan text string, looking for the specified delimiter. This is usually
+    // ESCape, but may be other characters. If it is ESCape, then we also check
+    // to see if we encounter ^[, which we will treat as equivalent to ESCape.
+    // Only doing this when the delimiter is ESCape allows the use of ESCape
+    // characters in such situations as the use of at-sign modifiers.
+
+    do
+    {
+        if (delim == ESC)
+        {
+            if (caret && c == '[')
+            {
+                --text->len;            // Back off the ^ already counted
+
+                return;
+            }
+
+            caret = (c == '^');
+        }
+
+        ++text->len;
+
+    } while ((c = fetch_cbuf(NOSTART)) != delim);
 }

@@ -261,8 +261,6 @@ extern void exec_S(struct cmd *cmd);
 
 extern void exec_semi(struct cmd *cmd);
 
-extern void exec_space(struct cmd *cmd);
-
 extern void exec_T(struct cmd *cmd);
 
 extern void exec_trace(struct cmd *cmd);
@@ -278,6 +276,8 @@ extern void exec_vbar(struct cmd *cmd);
 extern void exec_W(struct cmd *cmd);
 
 extern void exec_X(struct cmd *cmd);
+
+extern bool exec_xoper(int c);
 
 extern void exec_Y(struct cmd *cmd);
 

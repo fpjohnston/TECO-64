@@ -32,7 +32,6 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
 #include "exec.h"
 #include "term.h"
 
@@ -48,11 +47,6 @@ void exec_ctrl_a(struct cmd *cmd)
 {
     assert(cmd != NULL);
     assert(cmd->text1.buf != NULL);
-
-    if (f.e0.dryrun)
-    {
-        return;
-    }
 
     const char *p = cmd->text1.buf;
 

@@ -46,11 +46,6 @@ void exec_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e0.dryrun)
-    {
-        return;
-    }
-
     if (cmd->m_set)                     // Already seen m argument?
     {
         throw(E_ARG);                   // Invalid arguments

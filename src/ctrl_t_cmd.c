@@ -55,11 +55,6 @@ void exec_ctrl_t(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e0.dryrun)
-    {
-        return;
-    }
-
     if (cmd->n_set)                     // n^T -> type out character
     {
         int m = 1;

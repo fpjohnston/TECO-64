@@ -327,7 +327,7 @@ static void finish_config(int argc, const char * const argv[])
         exit(EXIT_FAILURE);
     }
 
-    char command[PATH_MAX];
+    char cmdstring[PATH_MAX];
     char *env;
 
     //  Process --initial and --noinitial options.
@@ -343,37 +343,37 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.str.initial != NULL)
     {
-        sprintf(command, "EI%s\e ", config.str.initial);
-        store_cmd(command);
+        sprintf(cmdstring, "EI%s\e ", config.str.initial);
+        store_cmd(cmdstring);
     }
     else if (config.flag.initial && (env = getenv("TECO_INIT")) != NULL)
     {
-        copy_arg(command, env);
-        store_cmd(command);
+        copy_arg(cmdstring, env);
+        store_cmd(cmdstring);
     }
 
     if (config.str.log != NULL)
     {
-        sprintf(command, "EL%s\e ", config.str.log);
-        store_cmd(command);
+        sprintf(cmdstring, "EL%s\e ", config.str.log);
+        store_cmd(cmdstring);
     }
 
     if (config.str.buffer != NULL)
     {
-        sprintf(command, "I%s\e ", config.str.buffer);
-        store_cmd(command);
+        sprintf(cmdstring, "I%s\e ", config.str.buffer);
+        store_cmd(cmdstring);
     }
 
     if (config.flag.argument)
     {
-        sprintf(command, "%dUA ", config.n);
-        store_cmd(command);
+        sprintf(cmdstring, "%dUA ", config.n);
+        store_cmd(cmdstring);
     }
 
     if (config.str.execute != NULL)
     {
-        copy_arg(command, config.str.execute);
-        store_cmd(command);
+        copy_arg(cmdstring, config.str.execute);
+        store_cmd(cmdstring);
     }
 
     if (config.flag.window != 0)
@@ -383,8 +383,8 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.str.scroll != NULL)
     {
-        sprintf(command, "%s,7:W \e", config.str.scroll);
-        store_cmd(command);
+        sprintf(cmdstring, "%s,7:W \e", config.str.scroll);
+        store_cmd(cmdstring);
     }
 
     const char *file = NULL;
@@ -420,37 +420,48 @@ static void finish_config(int argc, const char * const argv[])
         {
             if (config.str.output != NULL)
             {
-                sprintf(command, "ER%s\e EW%s\e Y ", file, config.str.output);
+                sprintf(cmdstring, "ER%s\e EW%s\e Y ", file, config.str.output);
             }
             else if (config.flag.readonly)
             {
-                sprintf(command, ":^A%%Inspecting file '%s'%c ER%s\e Y ",
+                sprintf(cmdstring, ":^A%%Inspecting file '%s'%c ER%s\e Y ",
                         file, CTRL_A, file);
             }
             else
             {
-                sprintf(command, ":^A%%Editing file '%s'%c EB%s\e Y ",
+                sprintf(cmdstring, ":^A%%Editing file '%s'%c EB%s\e Y ",
                         file, CTRL_A, file);
             }
         }
         else if (config.flag.create && !config.flag.readonly &&
                  !config.flag.output)
         {
-            sprintf(command, ":^A%%Can't find file '%s'%c :^A%%Creating "
+            sprintf(cmdstring, ":^A%%Can't find file '%s'%c :^A%%Creating "
                     "new file%c EW%s\e ", file, CTRL_A, CTRL_A, file);
         }
         else
         {
-            sprintf(command, ":^A?Can't find file '%s'%c EX ", file, CTRL_A);
+            sprintf(cmdstring, ":^A?Can't find file '%s'%c EX ", file, CTRL_A);
         }
 
-        store_cmd(command);
+        store_cmd(cmdstring);
     }
 
-    if (current->len != 0)              // Anything stored?
+    if (command->len != 0)              // Anything stored?
     {
         store_cmd("\e\e");              // If so, properly terminate command
     }
+
+    // TODO: the following is for debugging.
+
+    f.e2.zero   = 1;
+    f.e2.oper   = 1;
+    f.e2.atsign = 1;
+    f.e2.colon  = 1;
+    f.e2.comma  = 1;
+    f.e2.loop   = 1;
+    f.e2.quote  = 1;
+    f.e2.page   = 1;
 }
 
 
@@ -627,8 +638,8 @@ void set_config(
                 f.e2.atsign = 1;
                 f.e2.colon  = 1;
                 f.e2.comma  = 1;
-//                f.e2.m_arg  = 1;
-//                f.e2.n_arg  = 1;
+                f.e2.m_arg  = 1;
+                f.e2.n_arg  = 1;
                 f.e2.loop   = 1;
                 f.e2.quote  = 1;
                 f.e2.page   = 1;

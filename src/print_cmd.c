@@ -111,43 +111,21 @@ void print_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // Skip any leading whitespace in expression
-
-    while (cmd->expr.len != 0)
+    if (cmd->m_set || cmd->n_set)
     {
-        if (isspace(cmd->expr.buf[0]))
-        {
-            ++cmd->expr.buf;
-            --cmd->expr.len;
-        }
-        else
-        {
-            break;
-        }
-    }
+        printf("(");
 
-    // Skip any trailing whitespace in expression
-
-    while (cmd->expr.len != 0)
-    {
-        if (isspace(cmd->expr.buf[cmd->expr.len - 1]))
+        if (cmd->m_set)
         {
-            --cmd->expr.len;
+            printf("%d,", cmd->m_arg);
         }
-        else
+
+        if (cmd->n_set)
         {
-            break;
+            printf("%d", cmd->n_arg);
         }
-    }
 
-    // Output the expression
-
-    if (cmd->expr.len != 0)
-    {
-        format_chr('(');
-        format_str(cmd->expr.buf, cmd->expr.len);
-        format_chr(')');
-        format_chr(SPACE);
+        printf(")");
     }
 
     format_chr(cmd->colon ? ':' : NUL);
@@ -160,9 +138,9 @@ void print_cmd(struct cmd *cmd)
     format_chr(cmd->qname);
     format_chr(cmd->atsign ? cmd->delim : NUL);
     format_str(cmd->text1.buf, cmd->text1.len);
-    format_chr(cmd->text1.buf != NULL ? cmd->delim : NUL);
+    format_chr(cmd->text1.len != 0 ? cmd->delim : NUL);
     format_str(cmd->text2.buf, cmd->text2.len);
-    format_chr(cmd->text2.buf != NULL ? cmd->delim : NUL);
+    format_chr(cmd->text2.len != 0 ? cmd->delim : NUL);
 
     print_chr(CRLF);
 }

@@ -99,13 +99,10 @@ static void endloop(struct cmd *cmd, bool pop_ok)
     assert(cmd != NULL);
 
     uint depth = 1;                     // Nesting depth
-    uint dryrun = f.e0.dryrun;          // Save current flag
-
-    f.e0.dryrun = true;                 // Just do dry run until end of loop
 
     do
     {
-        if (!next_cmd(cmd))
+        if (next_cmd(cmd) == NULL)
         {
             throw(E_UTL);               // Unterminated loop
         }
@@ -137,8 +134,6 @@ static void endloop(struct cmd *cmd, bool pop_ok)
         }
     } while (depth > 0);
 
-    f.e0.dryrun = dryrun;
-
     pop_loop(pop_ok);
 }
 
@@ -167,7 +162,7 @@ void exec_F_gt(struct cmd *cmd)
 
 void exec_F_lt(struct cmd *unused1)
 {
-    current->pos = loop_head->start;    // Just restart the loop
+    command->pos = loop_head->start;    // Just restart the loop
 
     return;
 }
@@ -201,7 +196,7 @@ void exec_gt(struct cmd *cmd)
 
     if (loop->count == INFINITE || --loop->count > 0)
     {
-        current->pos = loop->start;     // Go back to start of loop
+        command->pos = loop->start;     // Go back to start of loop
     }
     else
     {
@@ -338,7 +333,7 @@ static void push_loop(int count)
     struct loop *loop = alloc_mem((uint)sizeof(*loop));
 
     loop->count = count;
-    loop->start = current->pos;
+    loop->start = command->pos;
     loop->next  = loop_head;
     loop->depth = if_depth;
 

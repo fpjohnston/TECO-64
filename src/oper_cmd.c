@@ -1,6 +1,6 @@
 ///
-///  @file    value_cmd.c
-///  @brief   Execute commands that return values.
+///  @file    oper_cmd.c
+///  @brief   Execute operator commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -27,173 +27,152 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #include "teco.h"
-#include "editbuf.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
-#include "qreg.h"
 
 
 ///
-///  @brief    Scan B command: read first position in buffer (always 0).
+///  @brief    Execute @ command modifier.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_B(struct cmd *cmd)
+void exec_atsign(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_expr(t.B, EXPR_VALUE);
+    cmd->atsign = true;
 }
 
 
 ///
-///  @brief    Scan ^Q (CTRL/Q) command: get no. of characters between dot and
-///            nth line terminator. n may be negative.
+///  @brief    Execute : or :: command modifiers.
 ///
-///  @returns  nothing.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_q(struct cmd *cmd )
+void exec_colon(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)
+    cmd->colon = true;
+
+    int c = fetch_cbuf(NOSTART);
+
+    if (c == ':')
     {
-        cmd->n_arg = 0;
+        cmd->dcolon = true;
+    }
+    else
+    {
+        unfetch_cbuf(c);
+    }
+}
+
+
+///
+///  @brief    Execute ctrl/underscore command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_ctl_ubar(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    push_expr(TYPE_OPER, cmd->c1);
+}
+
+
+///
+///  @brief    Execute ctrl/^ (caret or uparrow) command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_ctl_up(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    check_args(cmd);
+
+    int c = fetch_cbuf(NOSTART);
+
+    push_expr(c, EXPR_VALUE);
+}
+
+
+///
+///  @brief    Execute left parenthesis.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_lparen(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    ++scan.nparens;
+
+    push_expr(TYPE_GROUP, cmd->c1);
+}
+
+
+///
+///  @brief    Execute general operator. This is called for the following:
+///
+///            +  addition
+///            -  subtraction
+///            *  multiplication
+///            /  division
+///            #  logical OR
+///            &  logical AND
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_oper(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    check_args(cmd);
+
+    push_expr(TYPE_OPER, cmd->c1);
+}
+
+
+///
+///  @brief    Execute right parenthesis.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_rparen(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (scan.nparens == 0)              // Can't have ) without (
+    {
+        throw(E_MLP);                   // Missing left parenthesis
+    }
+    else if (!check_expr())             // Is there an operand available?
+    {
+        throw(E_NAP);                   // No argument before )
+    }
+    else
+    {
+        --scan.nparens;
     }
 
-    int nchrs = getdelta_ebuf(cmd->n_arg);
-
-    push_expr(nchrs, EXPR_VALUE);
-}
-
-
-///
-///  @brief    Parse ^S (CTRL/S) command: return negative of last insert, string
-///            found, or string inserted with a G command, whichever occurred
-///            last.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctrl_s(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    push_expr(-(int)last_len, EXPR_VALUE);
-}
-
-
-///
-///  @brief    Scan ^Y (CTRL/Y) command: equivalent to .+^S,.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctrl_y(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    uint i = estack.level;
-
-    // The following prevents expressions such as 123+^Y.
-
-    if (check_expr() || (i != 0 && estack.obj[i].value != TYPE_GROUP) ||
-        cmd->m_set)
-    {
-        throw(E_ARG);                   // Invalid arguments
-    }
-
-    cmd->ctrl_y = true;
-    cmd->m_set = true;
-    cmd->m_arg = t.dot - (int)last_len;
-
-    push_expr(t.dot, EXPR_VALUE);
-}
-
-
-///
-///  @brief    Scan ^Z (CTRL/Z) command: get no. of chrs. in all Q-registers.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctrl_z(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    uint n = get_qall();
-
-    push_expr((int)n, EXPR_VALUE);
-}
-
-
-
-///
-///  @brief    Scan . (dot) command: get current position in buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_dot(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    push_expr((int)t.dot, EXPR_VALUE);
-}
-
-
-///
-///  @brief    Scan H command: equivalent to B,Z.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_H(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    uint i = estack.level;
-
-    // The following prevents expressions such as 123+H.
-
-    if (check_expr() || (i != 0 && estack.obj[i].value != TYPE_GROUP) ||
-        cmd->m_set)
-    {
-        throw(E_ARG);                   // Invalid arguments
-    }
-
-    cmd->h = true;
-    cmd->m_set = true;
-    cmd->m_arg = t.B;
-
-    push_expr((int)t.Z, EXPR_VALUE);
-}
-
-
-///
-///  @brief    Scan Z command: read last position in buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_Z(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    push_expr((int)t.Z, EXPR_VALUE);
+    push_expr(TYPE_GROUP, cmd->c1);
 }

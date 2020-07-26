@@ -61,30 +61,24 @@ static bool check_mn_flag(struct cmd *cmd, int *flag)
 
     if (!cmd->n_set)                    // n argument?
     {
-        push_expr(*flag, EXPR_VALUE);  // Assume we're an operand
+        push_expr(*flag, EXPR_VALUE);   // Assume we're an operand
 
         return false;
     }
 
-    // Here if there is a value preceding the flag, which
-    // means that the flag is not part of an expression.
-
-    if (!f.e0.dryrun)
+    if (!cmd->m_set)                    // m argument too?
     {
-        if (!cmd->m_set)                // m argument too?
+        *flag = cmd->n_arg;             // No, so just set flag
+    }
+    else                                // Both m and n were specified
+    {
+        if (cmd->m_arg != 0)            // Turn off m bits
         {
-            *flag = cmd->n_arg;         // No, so just set flag
+            *flag &= (int)~(uint)cmd->m_arg;
         }
-        else                            // Both m and n were specified
+        if (cmd->n_arg != 0)            // Turn on n bits
         {
-            if (cmd->m_arg != 0)        // Turn off m bits
-            {
-                *flag &= (int)~(uint)cmd->m_arg;
-            }
-            if (cmd->n_arg != 0)        // Turn on n bits
-            {
-                *flag |= cmd->n_arg;
-            }
+            *flag |= cmd->n_arg;
         }
     }
 
@@ -114,10 +108,7 @@ static bool check_n_flag(struct cmd *cmd, int *flag)
     // Here if there is a value preceding the flag, which
     // means that the flag is not part of an expression.
 
-    if (!f.e0.dryrun)
-    {
-        *flag = cmd->n_arg;
-    }
+    *flag = cmd->n_arg;
 
     return true;
 }
@@ -299,13 +290,17 @@ void exec_EH(struct cmd *cmd)
 
     if (check_mn_flag(cmd, &f.eh.flag))
     {
-        uint verbose = f.eh.verbose;
-        uint command = f.eh.command;
+        union eh_flag eh;
+
+        eh.flag = 0;
+
+        eh.verbose = f.eh.verbose;
+        eh.command = f.eh.command;
 
         f.eh.flag = 0;
 
-        f.eh.command = command;
-        f.eh.verbose = verbose;
+        f.eh.command = eh.command;
+        f.eh.verbose = eh.verbose;
     }
 }
 
@@ -352,15 +347,12 @@ void exec_EJ(struct cmd *cmd)
 
     int n = 0;                          // 0EJ is default command
 
-    if (!f.e0.dryrun)
+    if (cmd->n_set)
     {
-        if (cmd->n_set)
-        {
-            n = cmd->n_arg;             // Get whatever operand we can
-        }
-
-        n = teco_env(n, cmd->colon);    // Do the system-dependent part
+        n = cmd->n_arg;                 // Get whatever operand we can
     }
+
+    n = teco_env(n, cmd->colon);        // Do the system-dependent part
 
     push_expr(n, EXPR_VALUE);           // Now return the result
 }

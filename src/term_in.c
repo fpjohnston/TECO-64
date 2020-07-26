@@ -267,7 +267,7 @@ void read_cmd(void)
 {
     int c;
 
-    if (current->pos != current->len)
+    if (command->pos != command->len)
     {
         return;                         // Just process current command
     }

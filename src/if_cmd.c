@@ -82,13 +82,10 @@ static void endif(struct cmd *cmd, bool else_ok)
     }
         
     uint depth = if_depth;              // Starting depth
-    uint dryrun = f.e0.dryrun;          // Save current flag
-
-    f.e0.dryrun = true;                 // Just do dry run until end of if
 
     do
     {
-        if (!next_cmd(cmd))
+        if (next_cmd(cmd) == NULL)
         {
             throw(E_UTQ);               // Unterminated conditional
         }
@@ -132,8 +129,6 @@ static void endif(struct cmd *cmd, bool else_ok)
         }
 
     } while (if_depth >= depth);
-
-    f.e0.dryrun = dryrun;
 }
 
 

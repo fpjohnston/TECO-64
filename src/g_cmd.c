@@ -33,7 +33,6 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
 #include "exec.h"
 #include "file.h"
 #include "qreg.h"
@@ -51,11 +50,6 @@
 void exec_G(struct cmd *cmd)
 {
     assert(cmd != NULL);
-
-    if (f.e0.dryrun)
-    {
-        return;
-    }
 
     if (cmd->colon)
     {
