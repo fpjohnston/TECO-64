@@ -340,11 +340,19 @@ exec_func *next_cmd(struct cmd *cmd)
             get_qname(cmd, opts.g ? "*_$" : NULL);
         }
 
+        // If the character is a 'flag' command such as ET, then it returns a
+        // value if and only if there isn't an operand preceding it. Also, the
+        // 'A' command returns a value only if it is preceded by an operand.
+        // And the 'Q' command always returns a value.
+
         if ((opts.f && !check_expr()) ||
-            (toupper(cmd->c1) == 'A' && cmd->n_set) ||
+            (toupper(cmd->c1) == 'A' && check_expr()) ||
             (toupper(cmd->c1) == 'Q'))
         {
-            ;
+            if (pop_expr(&cmd->n_arg))
+            {
+                cmd->n_set = true;
+            }
         }
         else if (opts.bits != 0)
         {
@@ -370,6 +378,8 @@ exec_func *next_cmd(struct cmd *cmd)
         }
 
         (*entry->exec)(cmd);            // Execute expression command
+
+        // Reset any Q-register information so the next command doesn't use it.
 
         cmd->qname  = NUL;
         cmd->qlocal = false;
