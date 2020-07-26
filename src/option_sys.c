@@ -672,28 +672,6 @@ static void store_cmd(const char *cmd)
 
     int c;
 
-#if     defined(DEBUG_OPTIONS)
-
-    const char *p = cmd;
-
-    printf("command: ");
-
-    while ((c = *p++) != NUL)
-    {
-        if (iscntrl(c))
-        {
-            printf("[%02x]", c);
-        }
-        else
-        {
-            fputc(c, stdout);
-        }
-    }
-
-    printf("\r\n");
-
-#endif
-
     while ((c = *cmd++) != NUL)
     {
         store_cbuf(c);
