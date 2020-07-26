@@ -32,35 +32,31 @@
 
 //lint -save -e708 -e785
 
-static const union cmd_opts acnqx1_opts = {{ .a=1, .c=1, .n=1, .q=1, .t1=1, .x=1 }};
+static const union cmd_opts a1_opts     = {{ .a=1, .t1=1 }};
 
-static const union cmd_opts acnx1_opts  = {{ .a=1, .c=1, .n=1, .t1=1, .x=1 }};
+static const union cmd_opts ac1_opts    = {{ .a=1, .c=1, .t1=1 }};
+
+static const union cmd_opts acmq1_opts  = {{ .a=1, .c=1, .m=1, .q=1, .t1=1 }};
+
+static const union cmd_opts acn1_opts   = {{ .a=1, .c=1, .n=1, .t1=1 }};
 
 static const union cmd_opts acq1_opts   = {{ .a=1, .c=1, .q=1, .t1=1 }};
 
-static const union cmd_opts acx1_opts   = {{ .a=1, .c=1, .t1=1, .x=1 }};
+static const union cmd_opts adm1_opts   = {{ .a=1, .d=1, .m=1, .t1=1 }};
 
-static const union cmd_opts admv1_opts  = {{ .a=1, .d=1, .m=1, .t1=1, .v=1 }};
-
-static const union cmd_opts admv2_opts  = {{ .a=1, .d=1, .m=1, .t2=1, .v=1 }};
+static const union cmd_opts adm2_opts   = {{ .a=1, .d=1, .m=1, .t2=1 }};
 
 static const union cmd_opts ad1_opts    = {{ .a=1, .d=1, .t1=1 }};
 
-static const union cmd_opts amv1_opts   = {{ .a=1, .m=1, .t1=1, .v=1 }};
+static const union cmd_opts acm1_opts   = {{ .a=1, .c=1, .m=1, .t1=1 }};
 
-static const union cmd_opts amv2_opts   = {{ .a=1, .m=1, .t2=1, .v=1 }};
+static const union cmd_opts acm2_opts   = {{ .a=1, .c=1, .m=1, .t2=1 }};
 
-static const union cmd_opts anx1_opts   = {{ .a=1, .n=1, .t1=1, .x=1 }};
+static const union cmd_opts an1_opts    = {{ .a=1, .n=1, .t1=1 }};
 
-static const union cmd_opts anv1_opts   = {{ .a=1, .n=1, .t1=1, .v=1 }};
+static const union cmd_opts c_opts      = {{ .c=1 }};
 
-static const union cmd_opts aqv1_opts   = {{ .a=1, .q=1, .t1=1, .v=1 }};
-
-static const union cmd_opts a1_opts     = {{ .a=1, .t1=1 }};
-
-static const union cmd_opts av1_opts    = {{ .a=1, .t1=1, .v=1 }};
-
-static const union cmd_opts ax1_opts    = {{ .a=1, .t1=1, .x=1 }};
+static const union cmd_opts cf_opts     = {{ .c=1, .f=1 }};
 
 static const union cmd_opts cfq_opts    = {{ .c=1, .f=1, .q=1 }};
 
@@ -68,47 +64,23 @@ static const union cmd_opts cm_opts     = {{ .c=1, .m=1 }};
 
 static const union cmd_opts cmq_opts    = {{ .c=1, .m=1, .q=1 }};
 
-static const union cmd_opts cmqx_opts   = {{ .c=1, .m=1, .q=1, .x=1 }};
+static const union cmd_opts cmw_opts    = {{ .c=1, .m=1, .w=1 }};
 
-static const union cmd_opts cmx_opts    = {{ .c=1, .m=1, .x=1 }};
+static const union cmd_opts cn_opts     = {{ .c=1, .n=1 }};
 
 static const union cmd_opts cnq_opts    = {{ .c=1, .n=1, .q=1 }};
 
-static const union cmd_opts cnx_opts    = {{ .c=1, .n=1, .x=1 }};
-
-static const union cmd_opts cqx_opts    = {{ .c=1, .q=1, .x=1 }};
-
-static const union cmd_opts cx_opts     = {{ .c=1, .x=1 }};
-
 static const union cmd_opts f_opts      = {{ .f=1 }};
 
-static const union cmd_opts fv_opts     = {{ .f=1, .v=1 }};
+static const union cmd_opts m_opts      = {{ .m=1 }};
 
 static const union cmd_opts mq_opts     = {{ .m=1, .q=1 }};
-
-static const union cmd_opts mqv_opts    = {{ .m=1, .q=1, .v=1 }};
-
-static const union cmd_opts mqx_opts    = {{ .m=1, .q=1, .x=1 }};
-
-static const union cmd_opts mv_opts     = {{ .m=1, .v=1 }};
-
-static const union cmd_opts mvw_opts    = {{ .m=1, .v=1, .w=1 }};
-
-static const union cmd_opts mx_opts     = {{ .m=1, .x=1 }};
 
 static const union cmd_opts n_opts      = {{ .n=1 }};
 
 static const union cmd_opts n2_opts     = {{ .n=1, .t2=1 }};
 
-static const union cmd_opts nv_opts     = {{ .n=1, .v=1 }};
-
-static const union cmd_opts nx_opts     = {{ .n=1, .x=1 }};
-
-static const union cmd_opts v_opts      = {{ .v=1 }};
-
-static const union cmd_opts x_opts      = {{ .x=1 }};
-
-static const union cmd_opts x1_opts     = {{ .t1=1, .x=1 }};
+static const union cmd_opts t1_opts     = {{ .t1=1 }};
 
 //lint -restore
 
@@ -140,15 +112,15 @@ static const union cmd_opts x1_opts     = {{ .t1=1, .x=1 }};
 const struct cmd_table cmd_table[] =
 {
     [NUL]    = { NULL,           NULL          },
-    [CTRL_A] = { exec_ctrl_a,    &acx1_opts    },
+    [CTRL_A] = { exec_ctrl_a,    &acm1_opts    },
     [CTRL_B] = { exec_ctrl_b,    NULL          },
-    [CTRL_C] = { exec_ctrl_c,    &x_opts       },
+    [CTRL_C] = { exec_ctrl_c,    &m_opts       },
     [CTRL_D] = { exec_ctrl_d,    NULL          },
     [CTRL_E] = { exec_ctrl_e,    &f_opts       },
     [CTRL_F] = { exec_bad,       NULL          },
     [CTRL_G] = { exec_bad,       NULL          },
     [CTRL_H] = { exec_ctrl_h,    NULL          },
-    [CTRL_I] = { exec_ctrl_i,    &x1_opts      },
+    [CTRL_I] = { exec_ctrl_i,    &t1_opts      },
     [LF]     = { NULL,           NULL          },
     [VT]     = { exec_bad,       NULL          },
     [FF]     = { NULL,           NULL          },
@@ -160,25 +132,25 @@ const struct cmd_table cmd_table[] =
     [CTRL_R] = { exec_ctrl_r,    &f_opts       },
     [CTRL_S] = { exec_ctrl_s,    NULL          },
     [CTRL_T] = { exec_ctrl_t,    &cm_opts      },
-    [CTRL_U] = { exec_ctrl_u,    &acnqx1_opts  },
-    [CTRL_V] = { exec_ctrl_v,    &nx_opts      },
-    [CTRL_W] = { exec_ctrl_w,    &nx_opts      },
+    [CTRL_U] = { exec_ctrl_u,    &acmq1_opts   },
+    [CTRL_V] = { exec_ctrl_v,    &n_opts       },
+    [CTRL_W] = { exec_ctrl_w,    &n_opts       },
     [CTRL_X] = { exec_ctrl_x,    &f_opts       },
     [CTRL_Y] = { exec_ctrl_y,    NULL          },
     [CTRL_Z] = { exec_ctrl_z,    NULL          },
-    [ESC]    = { exec_escape,    &mx_opts      },
+    [ESC]    = { exec_escape,    &m_opts       },
     ['\x1C'] = { exec_bad,       NULL          },
     ['\x1D'] = { exec_bad,       NULL          },
     ['\x1E'] = { exec_ctl_up,    NULL          },
     ['\x1F'] = { exec_ctl_ubar,  NULL          },
     [SPACE]  = { NULL,           NULL          },
-    ['!']    = { exec_bang,      &ax1_opts     },
-    ['"']    = { exec_quote,     &nx_opts      },
+    ['!']    = { exec_bang,      &a1_opts      },
+    ['"']    = { exec_quote,     &n_opts       },
     ['#']    = { exec_oper,      NULL          },
     ['$']    = { exec_bad,       NULL          },
     ['%']    = { exec_pct,       &cnq_opts     },
     ['&']    = { exec_oper,      NULL          },
-    ['\'']   = { exec_apos,      &x_opts       },
+    ['\'']   = { exec_apos,      &n_opts       },
     ['(']    = { exec_lparen,    NULL          },
     [')']    = { exec_rparen,    NULL          },
     ['*']    = { exec_oper,      NULL          },
@@ -198,46 +170,46 @@ const struct cmd_table cmd_table[] =
     ['8']    = { exec_digit,     NULL          },
     ['9']    = { exec_digit,     NULL          },
     [':']    = { exec_colon,     NULL          },
-    [';']    = { exec_semi,      &cnx_opts     },
-    ['<']    = { exec_lt,        &nx_opts      },
-    ['=']    = { exec_equals,    &acnx1_opts   },
-    ['>']    = { exec_gt,        &x_opts       },
-    ['?']    = { exec_trace,     &cx_opts      },
+    [';']    = { exec_semi,      &cn_opts      },
+    ['<']    = { exec_lt,        &n_opts       },
+    ['=']    = { exec_equals,    &acn1_opts    },
+    ['>']    = { exec_gt,        &m_opts       },
+    ['?']    = { exec_trace,     &c_opts       },
     ['@']    = { exec_atsign,    NULL          },
-    ['A']    = { exec_A,         &fv_opts      },
+    ['A']    = { exec_A,         &cf_opts      },
     ['B']    = { exec_B,         NULL          },
-    ['C']    = { exec_C,         &nv_opts      },
-    ['D']    = { exec_D,         &mv_opts      },
+    ['C']    = { exec_C,         &cn_opts      },
+    ['D']    = { exec_D,         &cm_opts      },
     ['E']    = { NULL,           NULL          },
     ['F']    = { NULL,           NULL          },
-    ['G']    = { exec_G,         &cqx_opts     },
+    ['G']    = { exec_G,         &cnq_opts     },
     ['H']    = { exec_H,         NULL          },
-    ['I']    = { exec_I,         &anx1_opts    },
-    ['J']    = { exec_J,         &nv_opts      },
-    ['K']    = { exec_K,         &mx_opts      },
-    ['L']    = { exec_L,         &nv_opts      },
+    ['I']    = { exec_I,         &an1_opts     },
+    ['J']    = { exec_J,         &cn_opts      },
+    ['K']    = { exec_K,         &m_opts       },
+    ['L']    = { exec_L,         &cn_opts      },
     ['M']    = { exec_M,         &cmq_opts     },
-    ['N']    = { exec_N,         &anv1_opts    },
-    ['O']    = { exec_O,         &anx1_opts    },
-    ['P']    = { exec_P,         &mvw_opts     },
+    ['N']    = { exec_N,         &acn1_opts    },
+    ['O']    = { exec_O,         &an1_opts     },
+    ['P']    = { exec_P,         &cmw_opts     },
     ['Q']    = { exec_Q,         &cfq_opts     },
-    ['R']    = { exec_R,         &nv_opts      },
-    ['S']    = { exec_S,         &admv1_opts   },
-    ['T']    = { exec_T,         &cmx_opts     },
-    ['U']    = { exec_U,         &mqx_opts     },
-    ['V']    = { exec_V,         &mx_opts      },
+    ['R']    = { exec_R,         &cn_opts      },
+    ['S']    = { exec_S,         &adm1_opts    },
+    ['T']    = { exec_T,         &cm_opts      },
+    ['U']    = { exec_U,         &mq_opts      },
+    ['V']    = { exec_V,         &m_opts       },
     ['W']    = { exec_W,         &cm_opts      },
-    ['X']    = { exec_X,         &cmqx_opts    },
-    ['Y']    = { exec_Y,         &v_opts       },
+    ['X']    = { exec_X,         &cmq_opts     },
+    ['Y']    = { exec_Y,         &c_opts       },
     ['Z']    = { exec_Z,         NULL          },
     ['[']    = { exec_lbracket,  &mq_opts      },
     ['\\']   = { exec_back,      &n_opts       },
-    [']']    = { exec_rbracket,  &mqv_opts     },
+    [']']    = { exec_rbracket,  &cmq_opts     },
     ['^']    = { NULL,           NULL          },
-    ['_']    = { exec_ubar,      &anv1_opts    },
+    ['_']    = { exec_ubar,      &acn1_opts    },
     ['`']    = { exec_bad,       NULL          },
     ['{']    = { exec_bad,       NULL          },
-    ['|']    = { exec_vbar,      &x_opts       },
+    ['|']    = { exec_vbar,      &m_opts       },
     ['}']    = { exec_bad,       NULL          },
     ['~']    = { exec_bad,       NULL          },
     [DEL]    = { exec_bad,       NULL          },
@@ -255,32 +227,32 @@ const struct cmd_table e_table[] =
     { exec_E3,      &f_opts     },
     { exec_E4,      &f_opts     },
     { exec_EA,      NULL        },
-    { exec_EB,      &av1_opts   },
+    { exec_EB,      &ac1_opts   },
     { exec_EC,      &n_opts     },
     { exec_ED,      &f_opts     },
     { exec_EE,      &f_opts     },
     { exec_EF,      NULL        },
     { exec_EG,      &ad1_opts   },
     { exec_EH,      &f_opts     },
-    { exec_EI,      &av1_opts   },
-    { exec_EJ,      &mv_opts    },
+    { exec_EI,      &ac1_opts   },
+    { exec_EJ,      &cm_opts    },
     { exec_EK,      NULL        },
     { exec_EL,      &a1_opts    },
     { exec_EM,      NULL        },
-    { exec_EN,      &av1_opts   },
+    { exec_EN,      &ac1_opts   },
     { exec_EO,      &f_opts     },
     { exec_EP,      NULL        },
-    { exec_EQ,      &aqv1_opts  },
-    { exec_ER,      &av1_opts   },
+    { exec_EQ,      &acq1_opts  },
+    { exec_ER,      &ac1_opts   },
     { exec_ES,      &f_opts     },
     { exec_ET,      &f_opts     },
     { exec_EU,      &f_opts     },
     { exec_EV,      &f_opts     },
-    { exec_EW,      &av1_opts   },
+    { exec_EW,      &ac1_opts   },
     { exec_EX,      NULL        },
-    { exec_EY,      &v_opts     },
+    { exec_EY,      &c_opts     },
     { exec_EZ,      &acq1_opts  },
-    { exec_E_ubar,  &anv1_opts  },
+    { exec_E_ubar,  &acn1_opts  },
 };
 
 const uint e_count = countof(e_table); ///< No. of E commands
@@ -291,23 +263,23 @@ const uint e_count = countof(e_table); ///< No. of E commands
 
 const struct cmd_table f_table[] =
 {
-    { exec_F_apos,  &x_opts     },
+    { exec_F_apos,  &m_opts     },
     { exec_F1,      &a1_opts    },
     { exec_F2,      &n_opts     },
     { exec_F3,      &n2_opts    },
-    { exec_F_lt,    &x_opts     },
-    { exec_F_gt,    &x_opts     },
-    { exec_FB,      &amv1_opts  },
-    { exec_FC,      &amv2_opts  },
-    { exec_FD,      &anv1_opts  },
-    { exec_FK,      &anv1_opts  },
-    { exec_FL,      &mx_opts    },
-    { exec_FN,      &amv2_opts  },
-    { exec_FR,      &amv1_opts  },
-    { exec_FS,      &admv2_opts },
-    { exec_FU,      &mx_opts    },
-    { exec_F_ubar,  &amv2_opts  },
-    { exec_F_vbar,  &x_opts     },
+    { exec_F_lt,    &m_opts     },
+    { exec_F_gt,    &m_opts     },
+    { exec_FB,      &acm1_opts  },
+    { exec_FC,      &acm2_opts  },
+    { exec_FD,      &acn1_opts  },
+    { exec_FK,      &acn1_opts  },
+    { exec_FL,      &m_opts     },
+    { exec_FN,      &acm2_opts  },
+    { exec_FR,      &acm1_opts  },
+    { exec_FS,      &adm2_opts  },
+    { exec_FU,      &m_opts     },
+    { exec_F_ubar,  &acm2_opts  },
+    { exec_F_vbar,  &m_opts     },
 };
 
 const uint f_count = countof(f_table); ///< No. of F commands

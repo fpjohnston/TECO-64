@@ -130,7 +130,6 @@ void exec_M(struct cmd *cmd)
 
     reduce_expr();                      // Try to reduce expression stack
 
-    printf("base = %u, level = %u\r\n", estack.base, estack.level);
     if (save_local)
     {
         pop_qlocal();

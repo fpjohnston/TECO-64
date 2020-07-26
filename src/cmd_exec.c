@@ -326,6 +326,8 @@ exec_func *next_cmd(struct cmd *cmd)
         cmd->c2 = NUL;
         cmd->c3 = NUL;
 
+        c = toupper(c);
+
         const struct cmd_table *entry = get_entry(cmd);
 
         if (entry == NULL || entry->exec == NULL)
@@ -337,7 +339,7 @@ exec_func *next_cmd(struct cmd *cmd)
 
         if (opts.q)                     // Q-register required?
         {
-            get_qname(cmd, opts.g ? "*_$" : NULL);
+            get_qname(cmd, c == 'G' ? "*_$" : NULL);
         }
 
         // If the character is a 'flag' command such as ET, then it returns a
@@ -345,9 +347,7 @@ exec_func *next_cmd(struct cmd *cmd)
         // 'A' command returns a value only if it is preceded by an operand.
         // And the 'Q' command always returns a value.
 
-        if ((opts.f && !check_expr()) ||
-            (toupper(cmd->c1) == 'A' && check_expr()) ||
-            (toupper(cmd->c1) == 'Q'))
+        if ((opts.f && !check_expr()) || (c == 'A' && check_expr()) || c == 'Q')
         {
             if (pop_expr(&cmd->n_arg))
             {
@@ -359,7 +359,7 @@ exec_func *next_cmd(struct cmd *cmd)
             finish_cmd(cmd, opts);
 
 #if 0 // TODO: conditional code below is temporary
-            if (cmd->c1 != ESC)
+            if (c != ESC)
             {
                 printf("command: ");
                 print_cmd(cmd);
@@ -371,8 +371,8 @@ exec_func *next_cmd(struct cmd *cmd)
         // If we're strictly enforcing syntax for command modifiers, then
         // @ can only be followed by :, and : can only be followed by @.
 
-        if ((f.e2.atsign && cmd->atsign && cmd->c1 != ':') ||
-            (f.e2.colon && cmd->colon && cmd->c1 != '@'))
+        if ((f.e2.atsign && cmd->atsign && c != ':') ||
+            (f.e2.colon && cmd->colon && c != '@'))
         {
             throw(E_MOD);               // Invalid command modifier
         }
@@ -385,16 +385,22 @@ exec_func *next_cmd(struct cmd *cmd)
         cmd->qlocal = false;
     }
 
-    // Here if we've reached the end of the command string.
+    // If we're not in a macro, then confirm that parentheses and braces were
+    // properly matched, and that there's nothing left on the expression stack.
 
-    if (scan.nparens || scan.nbraces)
+    if (!check_macro())
     {
-        throw(E_MRP);                   // Missing right parenthesis/brace
-    }
+        // Here if we've reached the end of the command string.
 
-    if (estack.base == 0 && estack.level != 0)
-    {
-        throw(E_ARG);                   // Improper arguments
+        if (scan.nparens || scan.nbraces)
+        {
+            throw(E_MRP);               // Missing right parenthesis/brace
+        }
+
+        if (estack.level != 0)
+        {
+            throw(E_ARG);               // Improper arguments
+        }
     }
 
     return NULL;
@@ -429,26 +435,11 @@ static union cmd_opts scan_opts(const struct cmd_table *entry)
             opts.n = 1;
         }
 
-        // Terminal command can accept m and n arguments, but ignores them.
+        // :: implies :
 
-        if (opts.x)
-        {
-            opts.m = 1;
-            opts.n = 1;
-        }
-
-        // :: implies :, as does a colon-modified command that returns a value.
-
-        if (opts.d || opts.v)
+        if (opts.d)
         {
             opts.c = 1;
-        }
-
-        // Q-register set for G commands are a superset of regular Q-reg. set.
-
-        if (opts.g)
-        {
-            opts.q = 1;
         }
 
         // If 2nd text argument is allowed, so is 1st text argument.

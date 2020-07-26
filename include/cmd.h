@@ -94,15 +94,12 @@ union cmd_opts
         uint n  : 1;                ///< n argument allowed
         uint f  : 1;                ///< Command returns value if no n argument
         uint c  : 1;                ///< : modifier allowed
-        uint v  : 1;                ///< Command returns value if : used
         uint d  : 1;                ///< :: modifier allowed
         uint a  : 1;                ///< @ modifier allowed
         uint q  : 1;                ///< Q-register required
-        uint g  : 1;                ///< Q-register required for G command
         uint w  : 1;                ///< W modifier allowed
         uint t1 : 1;                ///< 1 text argument allowed
         uint t2 : 1;                ///< 2 text arguments allowed
-        uint x  : 1;                ///< Terminal command (no value returned)
     };
 
     int bits;                       ///< All of the bits above

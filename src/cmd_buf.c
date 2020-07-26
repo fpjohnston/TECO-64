@@ -36,6 +36,7 @@
 #include "ascii.h"
 #include "exec.h"
 #include "errors.h"
+#include "estack.h"
 
 
 struct buffer *command;                 ///< Current command string buffer
@@ -129,6 +130,11 @@ int fetch_cbuf(bool start)
         }
         else if (check_macro())
         {
+            if (check_expr())
+            {
+                return EOF;
+            }
+
             throw(E_UTM);               // Unterminated macro
         }
         else if (loop_depth != 0)
