@@ -422,7 +422,7 @@ exec_func *next_cmd(struct cmd *cmd)
 
         if (nparens)
         {
-            throw(E_MRP);               // Missing right parenthesis/brace
+            throw(E_MRP);               // Missing right parenthesis
         }
 
         if (estack.base != estack.level)
