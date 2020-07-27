@@ -321,18 +321,13 @@ exec_func *next_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // Parse a command string, one character at a time. Although some commands
-    // only require a single character, most of them comprise multiple charac-
-    // ters, so we have to keep looping until we have found everything we need.
-    // As we continue, we store information in our command block to use when
-    // we're ready to actually execute the command. This includes such things
-    // as m and n arguments, modifiers such as : and @, and any text strings
-    // following the command.
-
     int c;
     bool start = true;
 
     *cmd = null_cmd;
+
+    // If we in a macro, then check to see if we have n or m arguments
+    // on the stack, and if so, set the appropriate command variables.
 
     if (check_macro())
     {
@@ -346,6 +341,13 @@ exec_func *next_cmd(struct cmd *cmd)
             }
         }
     }        
+
+    // Start parsing the command string. We will stay in this loop as long as
+    // we are only finding simple commands that affect an expression, such as
+    // operands or operators that build up the m and n numeric arguments. Once
+    // we find a command that affects more than just an expression (opening a
+    // file, for instance), then we return to the caller to have the command
+    // executed.
 
     while ((c = fetch_cbuf(start)) != EOF)
     {
@@ -403,7 +405,7 @@ exec_func *next_cmd(struct cmd *cmd)
             throw(E_MOD);               // Invalid command modifier
         }
 
-        (*entry->exec)(cmd);            // Execute expression command
+        (*entry->exec)(cmd);            // Execute simple command
 
         // Reset any Q-register information so the next command doesn't use it.
 
