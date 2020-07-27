@@ -33,7 +33,7 @@ Q.Y & 3 "=               ! correct for leap years          !
   '
 '
 Q.Y + Q.W + (Q.Y - 1 / 4) U.1
-{Q.1 // 7} U.1
+(Q.1 // 7) U.1
 Q.1-0"= @^U.W%Sunday%    |
 Q.1-1"= @^U.W%Monday%    |
 Q.1-2"= @^U.W%Tuesday%   |
@@ -61,12 +61,12 @@ E1&4 "E
     Q.T * 2 U.0         ! 0.num = seconds since midnight  !
 |
     Q.T / 1000    U.0 
-    {Q.T // 1000} U.X   ! X.num = milliseconds            !
+    (Q.T // 1000) U.X   ! X.num = milliseconds            !
 '
 Q.0 / 3600         U.H  ! H.num = hours                   !
-{Q.0 // 3600}      U.S  ! S.num = seconds                 !
+(Q.0 // 3600)      U.S  ! S.num = seconds                 !
 Q.S / 60           U.N  ! N.num = minutes                 !
-{Q.S // 60}        U.S  ! S.num = seconds                 !
+(Q.S // 60)        U.S  ! S.num = seconds                 !
 
                         ! Display DAY MM/DD/YYYY          !
 :G.W                    ! display DAY                     !
