@@ -326,18 +326,15 @@ exec_func *next_cmd(struct cmd *cmd)
 
     *cmd = null_cmd;
 
-    // If we in a macro, then check to see if we have n or m arguments
-    // on the stack, and if so, set the appropriate command variables.
-
-    if (check_macro())
+    if (check_macro())                  // Are we in a macro
     {
-        if (pop_expr(&cmd->n_arg))
+        if (pop_expr(&cmd->n_arg))      // Yes. Operand on stack?
         {
-            cmd->n_set = true;
+            cmd->n_set = true;          // Yes, make that the n argument
 
-            if (pop_expr(&cmd->m_arg))
+            if (pop_expr(&cmd->m_arg))  // Do we have another operand?
             {
-                cmd->m_set = true;
+                cmd->m_set = true;      // Yes, make that the m argument
             }
         }
     }        
