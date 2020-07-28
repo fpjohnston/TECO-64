@@ -177,7 +177,7 @@ void push_expr(int value, enum expr_type type)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void reduce(void)
+static void reduce(void)
 {
     while (estack.level > estack.base + 1)
     {
