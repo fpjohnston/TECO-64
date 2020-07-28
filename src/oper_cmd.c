@@ -29,6 +29,7 @@
 #include <assert.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
@@ -72,6 +73,45 @@ void exec_colon(struct cmd *cmd)
     {
         unfetch_cbuf(c);
     }
+}
+
+
+///
+///  @brief    Process "," (comma argument separator).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_comma(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->m_set)                     // Already seen m argument?
+    {
+        throw(E_ARG);                   // Invalid arguments
+    }
+
+    if (!cmd->n_set)                    // Any n argument specified?
+    {
+        if (f.e2.comma)                 // No -- should we issue error?
+        {
+            throw(E_NAC);               // No argument before comma
+        }
+
+        return;
+    }
+
+    // If we've seen a comma, then what's on the expression is an "m" argument,
+    // not an "n" argument (numeric arguments can take the form m,n).
+
+    if ((cmd->m_arg = cmd->n_arg) < 0)
+    {
+        throw(E_NCA);                   // Negative argument to comma
+    }
+
+    cmd->m_set = true;                  // And say we have one
+    cmd->n_set = false;                 // But forget about n argument
 }
 
 

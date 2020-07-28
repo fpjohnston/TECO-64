@@ -46,7 +46,7 @@
 #
 ################################################################################
 
-#GDB = 1                                 # TODO: only for development
+GDB = 1                                 # TODO: only for development
 TARGET = teco
 
 CC = gcc
@@ -99,7 +99,6 @@ SOURCES = \
     back_cmd.c     \
     bracket_cmd.c  \
     case_cmd.c     \
-    comma_cmd.c    \
     ctrl_a_cmd.c   \
     ctrl_c_cmd.c   \
     ctrl_t_cmd.c   \
