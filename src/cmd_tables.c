@@ -32,53 +32,128 @@
 
 //lint -save -e708 -e785
 
+///  @var    a1_opts
+///  @brief  Options for commands that use @ and 1 text argument.
+
 static const union cmd_opts a1_opts     = {{ .a=1, .t1=1 }};
+
+///  @var    ac1_opts
+///  @brief  Options for commands that use @, :, and 1 text argument.
 
 static const union cmd_opts ac1_opts    = {{ .a=1, .c=1, .t1=1 }};
 
+///  @var    acmq1_opts
+///  @brief  Commands that use @, m, n, Q-registers, and 1 text argument.
+
 static const union cmd_opts acmq1_opts  = {{ .a=1, .c=1, .m=1, .q=1, .t1=1 }};
+
+///  @var    acn1_opts
+///  @brief  Commands that use :, n, and 1 text argument.
 
 static const union cmd_opts acn1_opts   = {{ .a=1, .c=1, .n=1, .t1=1 }};
 
+///  @var    acq1_opts
+///  @brief  Commands that use @, :, Q-registers, and 1 text argument.
+
 static const union cmd_opts acq1_opts   = {{ .a=1, .c=1, .q=1, .t1=1 }};
+
+///  @var    adm1_opts
+///  @brief  Commands that use @, :, ::, m, n, and 1 text argument.
 
 static const union cmd_opts adm1_opts   = {{ .a=1, .d=1, .m=1, .t1=1 }};
 
+///  @var    adm2_opts
+///  @brief  Commands that use @, :, ::, m, n, and 2 text argument3.
+
 static const union cmd_opts adm2_opts   = {{ .a=1, .d=1, .m=1, .t2=1 }};
+
+///  @var    ad1_opts
+///  @brief  Commands that use @, :, ::, and 1 text argument.
 
 static const union cmd_opts ad1_opts    = {{ .a=1, .d=1, .t1=1 }};
 
+///  @var    acm1_opts
+///  @brief  Commands that use @, :, m, n, and 1 text argument.
+
 static const union cmd_opts acm1_opts   = {{ .a=1, .c=1, .m=1, .t1=1 }};
+
+///  @var    acm2_opts
+///  @brief  Commands that use @, :, m, n, and 2 text arguments.
 
 static const union cmd_opts acm2_opts   = {{ .a=1, .c=1, .m=1, .t2=1 }};
 
+///  @var    an1_opts
+///  @brief  Commands that use @, n, and 1 text argument.
+
 static const union cmd_opts an1_opts    = {{ .a=1, .n=1, .t1=1 }};
+
+///  @var    c_opts
+///  @brief  Commands that use :.
 
 static const union cmd_opts c_opts      = {{ .c=1 }};
 
+///  @var    cf_opts
+///  @brief  Flag commands that use :.
+
 static const union cmd_opts cf_opts     = {{ .c=1, .f=1 }};
+
+///  @var    cfq_opts
+///  @brief  Flag commands that use : and Q-registers.
 
 static const union cmd_opts cfq_opts    = {{ .c=1, .f=1, .q=1 }};
 
+///  @var    cm_opts
+///  @brief  Commands that use :, m, and n.
+
 static const union cmd_opts cm_opts     = {{ .c=1, .m=1 }};
+
+///  @var    cmq_opts
+///  @brief  Commands that use :, m, n, and Q-registers.
 
 static const union cmd_opts cmq_opts    = {{ .c=1, .m=1, .q=1 }};
 
+///  @var    cmw_opts.
+///  @brief  Commands that use :, m, n, and W.
+
 static const union cmd_opts cmw_opts    = {{ .c=1, .m=1, .w=1 }};
+
+///  @var    cn_opts
+///  @brief  Commands that use : and n.
 
 static const union cmd_opts cn_opts     = {{ .c=1, .n=1 }};
 
+///  @var    cnq_opts
+///  @brief  Commands that use :, n, and Q-registers.
+
 static const union cmd_opts cnq_opts    = {{ .c=1, .n=1, .q=1 }};
+
+///  @var    f_opts
+///  @brief  Flag commands.
 
 static const union cmd_opts f_opts      = {{ .f=1 }};
 
+///  @var    m_opts
+///  @brief  Commands that use m and n.
+
 static const union cmd_opts m_opts      = {{ .m=1 }};
+
+///  @var    mq_opts
+///  @brief  Commands that use m, n, and Q-registers.
 
 static const union cmd_opts mq_opts     = {{ .m=1, .q=1 }};
 
+///  @var    n_opts
+///  @brief  Commands that use n.
+
 static const union cmd_opts n_opts      = {{ .n=1 }};
 
+///  @var    n2_opts
+///  @brief  Commands that use n, and 1 text argument.
+
 static const union cmd_opts n2_opts     = {{ .n=1, .t2=1 }};
+
+///  @var    t1_opts
+///  @brief  Commands that use 1 text argument.
 
 static const union cmd_opts t1_opts     = {{ .t1=1 }};
 
