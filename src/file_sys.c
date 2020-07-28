@@ -76,18 +76,18 @@ void init_temp(char **otemp, const char *oname)
 
     struct stat file_stat;
     uint nbytes = (uint)strlen(oname);
-    char scratch[nbytes + 1];
+    char scratch[nbytes + 1];           // Temporary scratch buffer
 
     if (stat(oname, &file_stat) != 0)
     {
-        throw(E_SYS, oname);      // Unexpected system call
+        throw(E_SYS, oname);            // Unexpected system call
     }
 
     memcpy(scratch, oname, (size_t)nbytes + 1);
 
-    char tempfile[] = "_teco-XXXXXX";
+    char tempfile[] = "_teco_XXXXXX.tmp";
     char *dir = dirname(scratch);
-    int fd = mkstemp(tempfile);
+    int fd = mkstemps(tempfile, 4);     // 4 = length of ".tmp"
 
     close(fd);
 
