@@ -45,6 +45,8 @@ struct estack estack;
 
 // Local functions
 
+static void reduce(void);
+
 static bool reduce2(void);
 
 static bool reduce3(void);
@@ -76,10 +78,12 @@ bool check_expr(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_expr(uint base)
+void init_expr(void)
 {
-    estack.base = base;
-#if 0
+    estack.base  = 0;
+    estack.level = 0;
+
+#if     0                           // TODO: temporary initialization code
     for (uint i = estack.level; i < EXPR_SIZE; ++i)
     {
         estack.obj[i].type = estack.obj[i].value = 0;
@@ -162,7 +166,7 @@ void push_expr(int value, enum expr_type type)
 
     ++estack.level;
 
-    reduce_expr();                      // Reduce what we can
+    reduce();                           // Reduce what we can
 }
 
 
@@ -173,7 +177,7 @@ void push_expr(int value, enum expr_type type)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void reduce_expr(void)
+void reduce(void)
 {
     while (estack.level > estack.base + 1)
     {
@@ -412,4 +416,36 @@ static bool reduce3(void)
     estack.level -= 2;
 
     return true;
+}
+
+
+///
+///  @brief    Reset base of expression stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_expr(uint base)
+{
+    estack.base = base;
+
+    reduce();
+}
+
+
+///
+///  @brief    Set base of expression stack.
+///
+///  @returns  Old base.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint set_expr(void)
+{
+    uint base = estack.base;
+
+    estack.base = estack.level;
+
+    return base;
 }

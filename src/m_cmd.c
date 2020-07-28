@@ -107,8 +107,7 @@ void exec_M(struct cmd *cmd)
         push_qlocal();
     }
 
-    uint saved_base = estack.base;      // Save old base
-    init_expr(estack.level);            // Current level is new base
+    uint saved_base = set_expr();       // Set temporary new base
 
     if (cmd->n_set)
     {
@@ -124,9 +123,7 @@ void exec_M(struct cmd *cmd)
     exec_cmd();
     --macro_depth;
 
-    init_expr(saved_base);              // Restore old base
-
-    reduce_expr();                      // Try to reduce expression stack
+    reset_expr(saved_base);             // Restore old base
 
     if (save_local)
     {

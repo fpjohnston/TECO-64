@@ -119,7 +119,7 @@ int main(int argc, const char * const argv[])
                 refresh_win();          // Refresh window if needed
 
                 read_cmd();             // Read the next command
-                init_expr(0);           // Initialize expression stack
+                init_expr();            // Initialize expression stack
 
                 f.e0.exec = true;       // Executing a command
 

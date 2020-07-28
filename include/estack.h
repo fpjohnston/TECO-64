@@ -107,12 +107,14 @@ extern struct estack estack;        ///< Expression stack
 
 extern bool check_expr(void);
 
-extern void init_expr(uint base);
+extern void init_expr(void);
 
 extern bool pop_expr(int *operand);
 
 extern void push_expr(int c, enum expr_type type);
 
-extern void reduce_expr(void);
+extern void reset_expr(uint base);
+
+extern uint set_expr(void);
 
 #endif  // !defined(_ESTACK_H)

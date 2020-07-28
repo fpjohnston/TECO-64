@@ -326,19 +326,6 @@ exec_func *next_cmd(struct cmd *cmd)
 
     *cmd = null_cmd;
 
-    if (check_macro())                  // Are we in a macro
-    {
-        if (pop_expr(&cmd->n_arg))      // Yes. Operand on stack?
-        {
-            cmd->n_set = true;          // Yes, make that the n argument
-
-            if (pop_expr(&cmd->m_arg))  // Do we have another operand?
-            {
-                cmd->m_set = true;      // Yes, make that the m argument
-            }
-        }
-    }        
-
     // Start parsing the command string. We will stay in this loop as long as
     // we are only finding simple commands that affect an expression, such as
     // operands or operators that build up the m and n numeric arguments. Once
