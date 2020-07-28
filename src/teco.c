@@ -168,8 +168,22 @@ static void init_teco(int argc, const char * const argv[])
     f.e1.msec    = true;                // Return time in milliseconds
     f.e1.text    = true;                // Enable extended text strings
 
-    f.e3.icrlf   = false;               // Use LF for input lines
-    f.e3.ocrlf   = false;               // Use LF for output lines
+#if     defined(__linux) || defined(__APPLE__)
+
+    f.e3.icrlf = false;                 // Use LF for input lines
+    f.e3.ocrlf = false;                 // Use LF for output lines
+
+#elif   defined(__win64) || defined(__vms)
+
+    f.e3.icrlf = true;                  // Use CR/LF for input lines
+    f.e3.ocrlf = true;                  // Use CR/LF for output lines
+
+#else
+
+#error  Unknown operating environment
+
+#endif
+
     f.e3.dollar  = true;                // Allow dollar signs in symbols
     f.e3.ubar    = true;                // Allow underscores in symbols
 
