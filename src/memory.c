@@ -35,7 +35,7 @@
 #include "errors.h"
 #include "exec.h"
 
-#define DEBUG_MEMORY
+#define DEBUG_MEMORY                    // TODO: this is temporary
 
 // The following conditional code is used to check for memory leaks when we
 // exit. It is an early warning system to alert the user that there is a bug
