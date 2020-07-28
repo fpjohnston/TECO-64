@@ -243,7 +243,11 @@ static void finish_config(int argc, const char * const argv[])
         exit(EXIT_FAILURE);
     }
 
-    char cmdstring[PATH_MAX];
+    // The following needs to be more than twice as big as the longest possible
+    // file name, because it might have to contain two copies of a file name in
+    // addition to other text.
+
+    char cmdstring[PATH_MAX * 2 + 100];
     char *env;
 
     if (config.f.help)

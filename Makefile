@@ -324,7 +324,7 @@ bin/$(TARGET): $(OBJECTS)
 $(OBJECTS): $(OPTIONS_H) CFLAGS
 
 $(OPTIONS_H): etc/options.xml
-	$(AT)src/options.pl -c $< -o $@ $(ENABLE_DEBUG)
+	$(AT)bin/options.pl -c $< -o $@ $(ENABLE_DEBUG)
 
 .PHONY: FORCE
 CFLAGS: FORCE

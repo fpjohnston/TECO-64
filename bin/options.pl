@@ -12,20 +12,17 @@
 #
 #  The output file, _options.h, specifically includes:
 #
-#  1. A string defining our program name.
-#  2. A string defining the program version.
-#  3. A string defining the entire help text.
-#  4. An enumerated list of values defining cases for each command-line option.
-#  5. A table of default command-line options.
-#  6. A string defining the short command-line options (including whether they
+#  1. A string defining the entire help text.
+#  2. An enumerated list of values defining cases for each command-line option.
+#  3. A string defining the short command-line options (including whether they
 #     have optional or required arguments), used by the getopt_long() function.
-#  7. A table of long options, used by the getopt_long() function.
+#  4. A table of long options, used by the getopt_long() function.
 #
 ################################################################################
 
 use strict;
 use warnings;
-use version; our $VERSION = '3.0.1';
+use version; our $VERSION = '1.0.0';
 
 use File::Basename;
 use File::Spec;
@@ -53,11 +50,8 @@ my %options = ();
 # Sections to output to header file
 
 my %header = (
-              name     => undef,    # Program name
-              version  => undef,    # Program version
               help     => undef,    # Help text
               enums    => undef,    # Cases for command-line options
-              defaults => undef,    # Default command-line options
               short    => undef,    # Short options for getopt_long()
               long     => undef,    # Long options for getopt_long()
 );
@@ -82,7 +76,6 @@ Readonly my $ENUM      => q{@} . 'enum';
 Readonly my $FILE      => q{@} . 'file';
 Readonly my $NAME      => q{@} . 'name';
 Readonly my $VAR       => q{@} . 'var';
-Readonly my $VER       => q{@} . 'version';
 
 my @comment_hdr =
 (
@@ -120,25 +113,6 @@ my @comment_tlr =
     '///  THE SOFTWARE.',
     '///',
     '////////////////////////////////////////////////////////////////////////////////',
-    q{},
-);
-
-my @defaults_hdr =
-(
-    "///  $BRIEF   Array of default options. Formatted like argv[], but the first",
-    '///           element (normally the program name) is skipped by the getopt_long()',
-    '///           function that parses the array, so we just set it to an empty',
-    '///           string. Last element must be a NULL string to terminate the parse.',
-    q{},
-    'static const char * const default_options[] =',
-    '{',
-    '    "",                                 // Program name (not used)',
-);
-
-my @defaults_tlr =
-(
-    '    NULL,                               // Marker for end of list',
-    '};',
     q{},
 );
 
@@ -201,30 +175,6 @@ my @short_tlr =
     q{},
 );
 
-my @name_hdr =
-(
-    "///  $VAR program_name",
-    '///  Name of our program.',
-    q{},
-);
-
-my @name_tlr =
-(
-    q{},
-);
-
-my @version_hdr =
-(
-    "///  $VAR program_version",
-    '///  Program name, version, and description.',
-    q{},
-);
-
-my @version_tlr =
-(
-    q{},
-);
-
 #
 #  Parse our command-line options
 #
@@ -260,7 +210,6 @@ sub build_strings
         my $long    = $option{long};
         my $debug   = $option{debug};
         my $argtype = $option{argtype};
-        my $default = $option{default};
         my $help    = $option{help};
 
         if (!length $long)
@@ -269,18 +218,6 @@ sub build_strings
         }
 
         next if ($debug && !$args{debug});
-
-        if (length $default)
-        {
-            if ($default eq q{ })
-            {
-                $default = q{};
-            }
-
-            $default = sprintf "\"--$long%s\"", length $default ? "=$default" : q{};
-            $header{defaults} .= sprintf "    $default,%-*s// $help\n",
-                                         $MAX_SPACES - length($default), q{};
-        }
 
         if ($debug)
         {
@@ -466,44 +403,40 @@ sub parse_options
 
     my $dom = XML::LibXML->load_xml(string => $xml, line_numbers => 1);
 
-    $header{name} = $dom->findnodes("/teco/$NAME");
-    $header{version} = $dom->findnodes("/teco/$VER");
+    my $name = $dom->findnodes("/teco/$NAME");
 
-    die "Can't find program name\n" if !$header{name};
-    die "Can't find program version\n" if !$header{version};
+    die "Can't find program name\n" unless $name;
 
     if ($pass == 2)
     {
-        $header{help} = "    \"Usage: $header{name} [options] [file]...\",\n"
+        $header{help} = "    \"Usage: $name [options] [file]...\",\n"
             . "    \"\",\n"
             . "    \"TECO (Text Editor and Corrector) is a character-oriented text\",\n"
             . "    \"editing language for reading and writing ASCII text files.\",\n"
             . "    \"\",\n"
             . "    \"Examples:\",\n"
             . "    \"\",\n"
-            . "    \"  teco abc               Open file 'abc' for input and output.\",\n"
-            . "    \"  teco -R abc            Open file 'abc' for input only.\",\n"
-            . "    \"  teco -O xyz abc        Open file 'abc' for input and file 'xyz' for output.\",\n"
-            . "    \"  teco -E abc            Execute file 'abc' as a TECO macro.\",\n"
+            . "    \"  teco abc           "
+            . "    Open file 'abc' for input and output.\",\n"
+            . "    \"  teco -R abc        "
+            . "    Open file 'abc' for input only.\",\n"
+            . "    \"  teco -O xyz abc    "
+            . "    Open file 'abc' for input and file 'xyz' for output.\",\n"
+            . "    \"  teco -E abc        "
+            . "    Execute file 'abc' as a TECO macro.\",\n"
             . "    \"\",\n"
             . "    \"Environment variables:\",\n"
             . "    \"\",\n"
-            . "    \"  TECO_INIT              Default initialization file, executed at startup.\",\n"
-            . "    \"  TECO_MEMORY            File that contains name of last file edited.\",\n";
+            . "    \"  TECO_INIT          "
+            . "    Default initialization file, executed at startup.\",\n"
+            . "    \"  TECO_MEMORY        "
+            . "    File that contains name of last file edited.\",\n";
     }
 
     foreach my $section ($dom->findnodes('/teco/section'))
     {
         my $line = $section->line_number();
         my $title = $section->getAttribute('title');
-
-        # We add one to the length for the colon delimiter:
-
-#        if ($pass == 1 && $max_length < 1 + length $title)
-#        {
-#            $max_length = 1 + length $title;
-#            print "length = $max_length: $title\n";
-#        }
 
         croak "Section element missing title at line $line" if !defined $title;
 
@@ -523,7 +456,6 @@ sub parse_options
                 short   => get_child($option, 'short_name', $line),
                 long    => get_child($option, 'long_name', $line),
                 argtype => get_argument($option, 'argument', $line),
-                default => get_child($option, 'default', $line),
                 help    => \@help,
             );
 
@@ -552,21 +484,13 @@ sub print_header
 {
     my ($fh) = @_;
 
-    my $name = "const char * const program_name = \"$header{name}\";\n";
-    my $version = sprintf 'static const char * const program_version = '
-                      . "\"$header{name} v$header{version}%s - "
-                      . "Text Editor and Corrector\\n\";\n",
-                      length $args{debug} ? ' (DEBUG)' : q{};
     my $timestamp = strftime '%a, %e %b %Y at %H:%M %Z', localtime;
 
     $timestamp = '///              ' . $timestamp . '. DO NOT MODIFY.' . "\n";
 
     print_section($fh, \@comment_hdr,  $timestamp,        \@comment_tlr);
-    print_section($fh, \@name_hdr,     $name,             \@name_tlr);
-    print_section($fh, \@version_hdr,  $version,          \@version_tlr);
     print_section($fh, \@help_hdr,     $header{help},     \@help_tlr);
     print_section($fh, \@enums_hdr,    $header{enums},    \@enums_tlr);
-    print_section($fh, \@defaults_hdr, $header{defaults}, \@defaults_tlr);
     print_section($fh, \@short_hdr,    $header{short},    \@short_tlr);
     print_section($fh, \@long_hdr,     $header{long},     \@long_tlr);
 
@@ -642,7 +566,6 @@ sub save_option
     my $short   = $option{short};
     my $long    = $option{long};
     my $argtype = $option{argtype};
-    my $default = $option{default};
     my @help    = @ { $option{help} };
 
     croak "Missing long option at line $line\n" if !length $long;
@@ -683,7 +606,7 @@ sub save_option
                       (.*)              # Remainder of text
                      }msx)
     {
-        $help = sprintf "$1%s$3", length $default ? $default : q{};
+        $help = sprintf "$1$3";
         $options = sprintf "%s--$long=$2", $debug ? q{} : "-$short, ";
     }
     else
@@ -719,7 +642,6 @@ sub save_option
         long    => $long,
         argtype => $argtype,
         help    => $help,
-        default => $default,
         debug   => $debug,
     };
 
