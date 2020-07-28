@@ -46,7 +46,7 @@
 #
 ################################################################################
 
-GDB = 1                                 # TODO: only for development
+#GDB = 1                                 # TODO: only for development
 TARGET = teco
 
 CC = gcc
@@ -149,9 +149,9 @@ SOURCES = \
     p_cmd.c        \
     pct_cmd.c      \
     q_cmd.c        \
-    quest_cmd.c    \
     radix_cmd.c    \
     s_cmd.c        \
+    trace_cmd.c    \
     type_cmd.c     \
     ubar_cmd.c     \
     u_cmd.c        \
