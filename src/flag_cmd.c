@@ -406,10 +406,15 @@ void exec_ET(struct cmd *cmd)
 
     if (check_mn_flag(cmd, &f.et.flag))
     {
+
+#if     defined(__vms)
+
         if (f.et.eightbit ^ saved.eightbit)
         {
             // TODO: tell operating system if user changed bit
         }
+
+#endif
 
         // The following are read-only bits and cannot be changed by the user.
 
