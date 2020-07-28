@@ -65,6 +65,8 @@ LINT_DEBUG = -D SCOPE
 OPT ?= 3
 OPT_OPT = -O$(OPT)
 
+OPTIONS_H = $(INCDIR)/_options.h
+
 INCLUDES = -I ../$(INCDIR)
 
 VPATH=src:obj:$(INCDIR)
@@ -319,7 +321,10 @@ bin/$(TARGET): $(OBJECTS)
 
 -include $(DFILES)
 
-$(OBJECTS): CFLAGS
+$(OBJECTS): $(OPTIONS_H) CFLAGS
+
+$(OPTIONS_H): etc/options.xml
+	$(AT)src/options.pl -c $< -o $@ $(ENABLE_DEBUG)
 
 .PHONY: FORCE
 CFLAGS: FORCE
@@ -339,10 +344,10 @@ clobber: clean
 	-$(AT)cd $(INCDIR) && rm -f *.bak _*.h $(NULL2)
 
 .PHONY: lobs
-lobs: $(LOBS)
+lobs: $(OPTIONS_H) $(LOBS)
 
 .PHONY: lint
-lint:   $(LOBS)
+lint:   $(OPTIONS_H) $(LOBS)
 	@echo Linting object files $(NULL)
 	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
 

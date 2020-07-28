@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="options.xsl"?>
+<teco name="teco" version="200">
+    <section title="Text file options">
+        <option>
+            <short_name>C</short_name>
+            <long_name>create</long_name>
+            <help>Create new file if file does not exist.</help>
+        </option>
+        <option>
+            <short_name>c</short_name>
+            <long_name>nocreate</long_name>
+            <help>Do not create new file if file does not exist.</help>
+        </option>
+        <option>
+            <short_name>O</short_name>
+            <long_name>output</long_name>
+            <argument>required</argument>
+            <help>Open file 'abc' for output.</help>
+        </option>
+        <option>
+            <short_name>o</short_name>
+            <long_name>nooutput</long_name>
+            <default/>
+            <help>Use same name for output file as input file.</help>
+        </option>
+        <option>
+            <short_name>R</short_name>
+            <long_name>read-only</long_name>
+            <help>Open file for input only.</help>
+        </option>
+        <option>
+            <short_name>r</short_name>
+            <long_name>noread-only</long_name>
+            <default/>
+            <help>Open file for input and output.</help>
+        </option>
+    </section>
+    <section title="Indirect command file options">
+        <option>
+            <short_name>A</short_name>
+            <long_name>argument</long_name>
+            <argument>required</argument>
+            <help>Store numeric value 'n' in Q-register A.</help>
+        </option>
+        <option>
+            <short_name>B</short_name>
+            <long_name>buffer</long_name>
+            <argument>required</argument>
+            <help>Store text 'xyz' in edit buffer.</help>
+        </option>
+        <option>
+            <short_name>E</short_name>
+            <long_name>execute</long_name>
+            <argument>required</argument>
+            <help>Execute TECO macro in file 'xyz'.</help>
+        </option>
+    </section>
+    <section title="Initialization options">
+        <option>
+            <short_name>I</short_name>
+            <long_name>initialize</long_name>
+            <argument>optional</argument>
+            <help>Use initialization file 'xyz' at startup.</help>
+        </option>
+        <option>
+            <short_name>i</short_name>
+            <long_name>noinitialize</long_name>
+            <help>Don't use an initialization file (ignore TECO_INIT).</help>
+        </option>
+        <option>
+            <short_name>M</short_name>
+            <long_name>memory</long_name>
+            <default/>
+            <help>Use TECO_MEMORY to get name of last file edited.</help>
+        </option>
+        <option>
+            <short_name>m</short_name>
+            <long_name>nomemory</long_name>
+            <help>Ignore TECO_MEMORY.</help>
+        </option>
+    </section>
+    <section title="Window options">
+        <option>
+            <short_name>S</short_name>
+            <long_name>scroll</long_name>
+            <argument>required</argument>
+            <help>Use 'n' lines for scrolling region (implies -W).</help>
+        </option>
+        <option>
+            <short_name>W</short_name>
+            <long_name>window</long_name>
+            <help>Enable window mode.</help>
+        </option>
+    </section>
+    <section title="Debug options">
+        <option>
+            <short_name>L</short_name>
+            <long_name>log</long_name>
+            <argument>required</argument>
+            <help>Saves input and output in log file 'xyz'.</help>
+        </option>
+        <option>
+            <short_name>Z</short_name>
+            <long_name>zero</long_name>
+            <help>Strictly enforce command syntax (zero tolerance).</help>
+        </option>
+    </section>
+    <section title="Miscellaneous options">
+        <option>
+            <short_name>H</short_name>
+            <long_name>help</long_name>
+            <help>Print this help message</help>
+        </option>
+    </section>
+</teco>

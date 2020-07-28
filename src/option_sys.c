@@ -41,6 +41,9 @@
 #include "eflags.h"
 #include "file.h"
 
+#include "_options.h"
+
+#if     0
 
 ///  @enum     option_t
 ///  case values for command-line options.
@@ -137,6 +140,70 @@ static const struct option long_options[] =
 //  -Z, --zero
 //          Strictly enforce command syntax (zero tolerance).
 
+// Help text
+
+static const char *help_text[] =
+{
+    "Usage: teco [OPTION...] [FILE]",
+    "",
+    "TECO (Text Editor and Corrector) is a character-oriented text",
+    "editing language for reading and writing ASCII text files.",
+    "",
+    "Examples:",
+    "",
+    "    teco file              Open file for input and output.",
+    "    teco -R file           Open file for input only.",
+    "    teco -O file2 file1    Open file1 for input and file2 for output.",
+    "    teco -E file>          Open file as a TECO macro.",
+    "",
+    "Environment variables:",
+    "",
+    "    TECO_INIT              Default initialization file, executed at startup.",
+    "    TECO_MEMORY            File that contains name of last file edited.",
+    "",
+    "Options:",
+    "",
+    "-A, --argument=n",
+    "          Specifies number to be stored in Q-register A.",
+    "-B, --buffer=text",
+    "          Specifies text to be inserted in edit buffer at startup.",
+    "-C, --create",
+    "          Create a new file if the input file does not exist.",
+    "-c, --nocreate",
+    "          Do not create a new file if no input file.",
+    "-E, --execute=file",
+    "          Executes TECO macro in file.",
+    "-H, --help",
+    "          Prints this help message.",
+    "-I, --initial=file (default file or commands specified by TECO_INIT)",
+    "          Specifies file to be executed at startup.",
+    "-i, --noinitial",
+    "          Don't use a startup file (ignore TECO_INIT).",
+    "-L, --log=file",
+    "          Saves input and output in log file.",
+    "-M, --memory (default)",
+    "          Use TECO_MEMORY to get name of last file edited.",
+    "-m, --nomemory",
+    "          Don't use TECO_MEMORY.",
+    "-O, --output=file",
+    "          Specify name of output file.",
+    "-o, --nooutput (default)",
+    "          Use same name for output file as input file.",
+    "-R, --read-only",
+    "          Don't create output file.",
+    "-r, --noread-only (default)",
+    "          Create an output file.",
+    "-S, --scroll=n",
+    "          Enable scrolling region (implies --W).",
+    "-W, --window",
+    "          Enable window mode.",
+    "-Z, --zero",
+    "          Strictly enforce command syntax (zero tolerance).",
+    NULL
+};
+
+#endif
+
 ///
 ///   @struct  config
 ///
@@ -209,68 +276,6 @@ static struct config config =
         .output  = NULL,
         .scroll  = NULL,
     },
-};
-
-// Help text
-
-static const char *help_text[] =
-{
-    "Usage: teco [OPTION...] [FILE]",
-    "",
-    "TECO (Text Editor and Corrector) is a character-oriented text",
-    "editing language for reading and writing ASCII text files.",
-    "",
-    "Examples:",
-    "",
-    "    teco file              Open file for input and output.",
-    "    teco -R file           Open file for input only.",
-    "    teco -O file2 file1    Open file1 for input and file2 for output.",
-    "    teco -E file>          Open file as a TECO macro.",
-    "",
-    "Environment variables:",
-    "",
-    "    TECO_INIT              Default initialization file, executed at startup.",
-    "    TECO_MEMORY            File that contains name of last file edited.",
-    "",
-    "Options:",
-    "",
-    "-A, --argument=n",
-    "          Specifies number to be stored in Q-register A.",
-    "-B, --buffer=text",
-    "          Specifies text to be inserted in edit buffer at startup.",
-    "-C, --create",
-    "          Create a new file if the input file does not exist.",
-    "-c, --nocreate",
-    "          Do not create a new file if no input file.",
-    "-E, --execute=file",
-    "          Executes TECO macro in file.",
-    "-H, --help",
-    "          Prints this help message.",
-    "-I, --initial=file (default file or commands specified by TECO_INIT)",
-    "          Specifies file to be executed at startup.",
-    "-i, --noinitial",
-    "          Don't use a startup file (ignore TECO_INIT).",
-    "-L, --log=file",
-    "          Saves input and output in log file.",
-    "-M, --memory (default)",
-    "          Use TECO_MEMORY to get name of last file edited.",
-    "-m, --nomemory",
-    "          Don't use TECO_MEMORY.",
-    "-O, --output=file",
-    "          Specify name of output file.",
-    "-o, --nooutput (default)",
-    "          Use same name for output file as input file.",
-    "-R, --read-only",
-    "          Don't create output file.",
-    "-r, --noread-only (default)",
-    "          Create an output file.",
-    "-S, --scroll=n",
-    "          Enable scrolling region (implies --W).",
-    "-W, --window",
-    "          Enable window mode.",
-    "-Z, --zero",
-    "          Strictly enforce command syntax (zero tolerance).",
-    NULL
 };
 
 
