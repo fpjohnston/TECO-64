@@ -202,10 +202,10 @@ struct flags
     bool       ctrl_e;          ///< Form feed flag
     int        ctrl_x;          ///< Search mode flag
     struct e0_flag e0;          ///< Internal flags (not settable by user)
-    union  e1_flag e1;          ///< Window flags
-    union  e2_flag e2;          ///< File operation and content features
-    union  e3_flag e3;          ///< Extended features
-    union  e4_flag e4;          ///< Command restrictions
+    union  e1_flag e1;          ///< Extended features
+    union  e2_flag e2;          ///< Command restrictions
+    union  e3_flag e3;          ///< File I/O features
+    union  e4_flag e4;          ///< Window flags
     int            e5;          ///< Comment bypass character
     union  ed_flag ed;          ///< Edit level flags
     int            ee;          ///< ESCape surrogate
