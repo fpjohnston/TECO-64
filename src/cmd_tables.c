@@ -132,6 +132,11 @@ static const union cmd_opts cnq_opts    = {{ .c=1, .n=1, .q=1 }};
 
 static const union cmd_opts f_opts      = {{ .f=1 }};
 
+///  @var    fm_opts
+///  @brief  Flag commands.
+
+static const union cmd_opts fm_opts      = {{ .f=1, .m=1 }};
+
 ///  @var    m_opts
 ///  @brief  Commands that use m and n.
 
@@ -230,7 +235,7 @@ const struct cmd_table cmd_table[] =
     [')']    = { exec_rparen,     NULL          },
     ['*']    = { exec_oper,       NULL          },
     ['+']    = { exec_oper,       NULL          },
-    [',']    = { exec_comma,      &n_opts       }, 
+    [',']    = { exec_comma,      NULL          },
     ['-']    = { exec_oper,       NULL          }, 
     ['.']    = { exec_dot,        NULL          }, 
     ['/']    = { exec_oper,       NULL          }, 
@@ -297,18 +302,18 @@ const uint cmd_count = countof(cmd_table); ///< No. of general commands
 
 const struct cmd_table e_table[] =
 {
-    { exec_E1,      &f_opts     },
-    { exec_E2,      &f_opts     },
-    { exec_E3,      &f_opts     },
-    { exec_E4,      &f_opts     },
+    { exec_E1,      &fm_opts    },
+    { exec_E2,      &fm_opts    },
+    { exec_E3,      &fm_opts    },
+    { exec_E4,      &fm_opts    },
     { exec_EA,      NULL        },
     { exec_EB,      &ac1_opts   },
     { exec_EC,      &n_opts     },
-    { exec_ED,      &f_opts     },
+    { exec_ED,      &fm_opts    },
     { exec_EE,      &f_opts     },
     { exec_EF,      NULL        },
     { exec_EG,      &ad1_opts   },
-    { exec_EH,      &f_opts     },
+    { exec_EH,      &fm_opts    },
     { exec_EI,      &ac1_opts   },
     { exec_EJ,      &cm_opts    },
     { exec_EK,      NULL        },
@@ -320,7 +325,7 @@ const struct cmd_table e_table[] =
     { exec_EQ,      &acq1_opts  },
     { exec_ER,      &ac1_opts   },
     { exec_ES,      &f_opts     },
-    { exec_ET,      &f_opts     },
+    { exec_ET,      &fm_opts    },
     { exec_EU,      &f_opts     },
     { exec_EV,      &f_opts     },
     { exec_EW,      &ac1_opts   },

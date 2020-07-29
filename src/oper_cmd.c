@@ -92,7 +92,7 @@ void exec_comma(struct cmd *cmd)
         throw(E_ARG);                   // Invalid arguments
     }
 
-    if (!cmd->n_set)                    // Any n argument specified?
+    if (!pop_expr(&cmd->m_arg))         // Any m argument specified?
     {
         if (f.e2.comma)                 // No -- should we issue error?
         {
@@ -102,16 +102,15 @@ void exec_comma(struct cmd *cmd)
         return;
     }
 
-    // If we've seen a comma, then what's on the expression is an "m" argument,
-    // not an "n" argument (numeric arguments can take the form m,n).
+    // If we've seen a comma, then what was on the expression stack was an "m"
+    // argument, not an "n" argument (numeric arguments can take the form m,n).
 
-    if ((cmd->m_arg = cmd->n_arg) < 0)
+    if (cmd->m_arg < 0)
     {
         throw(E_NCA);                   // Negative argument to comma
     }
 
-    cmd->m_set = true;                  // And say we have one
-    cmd->n_set = false;                 // But forget about n argument
+    cmd->m_set = true;
 }
 
 
