@@ -3,8 +3,8 @@
     <xsl:template match="/">
         <html>
             <body style="font-family:sans-serif;font-size:12pt;color:blue">
-                <h2 align="center">xdump command-line options</h2>
-                <xsl:for-each select="xdump/section">
+                <h2 align="center">TECO-64 command-line options</h2>
+                <xsl:for-each select="teco/section">
                     <xsl:if test="normalize-space(@title) = 'Data field options'">
                         <div style="page-break-before:always"/>
                     </xsl:if>

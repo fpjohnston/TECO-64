@@ -2,9 +2,15 @@
 ///  @file       _options.h
 ///
 ///  @brief      Header file for teco utility. Automatically generated on
-///              Tue, 28 Jul 2020 at 11:44 EDT. DO NOT MODIFY.
+///              Tue, 28 Jul 2020 at 18:19 EDT. DO NOT MODIFY.
+///
+///  @brief      External resources:
+///
+///  <a href="options.html">List of Command-line options</a>
 ///
 ///  @brief      Process command-line options for TECO editor.
+///
+///  @author     Franklin P. Johnston
 ///
 ///  @bug        No known bugs.
 ///

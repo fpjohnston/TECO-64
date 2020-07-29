@@ -351,9 +351,16 @@ lint:   $(OPTIONS_H) $(LOBS)
 	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
 
 .PHONY: doc
-doc: doxygen
+doc: doxygen html
 
 .PHONY: doxygen
 doxygen:
-	-$(AT)echo "Updating Doxygen documents" $(NULL)
+	-$(AT)echo "Making Doxygen documents" $(NULL)
 	-$(AT)doxygen Doxyfile
+
+.PHONY: html
+html: html/options.html
+
+html/options.html: etc/options.xml etc/options.xsl
+	-$(AT)echo "Making HTML options file" $(NULL)
+	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html

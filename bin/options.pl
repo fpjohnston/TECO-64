@@ -88,7 +88,13 @@ my @comment_hdr =
 my @comment_tlr =
 (
     '///',
+    "///  $BRIEF      External resources:",
+    '///',
+    '///  <a href="options.html">List of Command-line options</a>',
+    '///',
     "///  $BRIEF      Process command-line options for TECO editor.",
+    '///',
+    "///  $AUTHOR     Franklin P. Johnston",
     '///',
     "///  $BUG        No known bugs.",
     '///',
