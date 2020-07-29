@@ -61,47 +61,47 @@ extern void exec_colon(struct cmd *cmd);
 
 extern void exec_comma(struct cmd *cmd);
 
-extern void exec_ctrl_a(struct cmd *cmd);
+extern void exec_ctrl_A(struct cmd *cmd);
 
-extern void exec_ctrl_c(struct cmd *cmd);
+extern void exec_ctrl_C(struct cmd *cmd);
 
-extern void exec_ctrl_d(struct cmd *cmd);
+extern void exec_ctrl_D(struct cmd *cmd);
 
-extern void exec_ctrl_b(struct cmd *cmd);
+extern void exec_ctrl_B(struct cmd *cmd);
 
-extern void exec_ctrl_e(struct cmd *cmd);
+extern void exec_ctrl_E(struct cmd *cmd);
 
-extern void exec_ctrl_h(struct cmd *cmd);
+extern void exec_ctrl_H(struct cmd *cmd);
 
-extern void exec_ctrl_i(struct cmd *cmd);
+extern void exec_ctrl_I(struct cmd *cmd);
 
-extern void exec_ctrl_n(struct cmd *cmd);
+extern void exec_ctrl_N(struct cmd *cmd);
 
-extern void exec_ctrl_o(struct cmd *cmd);
+extern void exec_ctrl_O(struct cmd *cmd);
 
-extern void exec_ctrl_q(struct cmd *cmd);
+extern void exec_ctrl_Q(struct cmd *cmd);
 
-extern void exec_ctrl_r(struct cmd *cmd);
+extern void exec_ctrl_R(struct cmd *cmd);
 
-extern void exec_ctrl_s(struct cmd *cmd);
+extern void exec_ctrl_S(struct cmd *cmd);
 
-extern void exec_ctrl_t(struct cmd *cmd);
+extern void exec_ctrl_T(struct cmd *cmd);
 
-extern void exec_ctrl_u(struct cmd *cmd);
+extern void exec_ctrl_U(struct cmd *cmd);
 
 extern void exec_ctrl_ubar(struct cmd *cmd);
 
 extern void exec_ctrl_up(struct cmd *cmd);
 
-extern void exec_ctrl_v(struct cmd *cmd);
+extern void exec_ctrl_V(struct cmd *cmd);
 
-extern void exec_ctrl_w(struct cmd *cmd);
+extern void exec_ctrl_W(struct cmd *cmd);
 
-extern void exec_ctrl_x(struct cmd *cmd);
+extern void exec_ctrl_X(struct cmd *cmd);
 
-extern void exec_ctrl_y(struct cmd *cmd);
+extern void exec_ctrl_Y(struct cmd *cmd);
 
-extern void exec_ctrl_z(struct cmd *cmd);
+extern void exec_ctrl_Z(struct cmd *cmd);
 
 extern void exec_D(struct cmd *cmd);
 

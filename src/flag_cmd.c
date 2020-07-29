@@ -121,7 +121,7 @@ static bool check_n_flag(struct cmd *cmd, int *flag)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_e(struct cmd *cmd)
+void exec_ctrl_E(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -142,7 +142,7 @@ void exec_ctrl_e(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_n(struct cmd *cmd)
+void exec_ctrl_N(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -159,7 +159,7 @@ void exec_ctrl_n(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_x(struct cmd *cmd)
+void exec_ctrl_X(struct cmd *cmd)
 {
     if (check_n_flag(cmd, &f.ctrl_x))
     {

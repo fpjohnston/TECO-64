@@ -51,7 +51,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_b(struct cmd *cmd)
+void exec_ctrl_B(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -74,7 +74,7 @@ void exec_ctrl_b(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_h(struct cmd *cmd)
+void exec_ctrl_H(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

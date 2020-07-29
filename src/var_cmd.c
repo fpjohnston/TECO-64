@@ -61,7 +61,7 @@ void exec_B(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_q(struct cmd *cmd )
+void exec_ctrl_Q(struct cmd *cmd )
 {
     assert(cmd != NULL);
 
@@ -85,7 +85,7 @@ void exec_ctrl_q(struct cmd *cmd )
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_s(struct cmd *cmd)
+void exec_ctrl_S(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -100,7 +100,7 @@ void exec_ctrl_s(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_y(struct cmd *cmd)
+void exec_ctrl_Y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -129,7 +129,7 @@ void exec_ctrl_y(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_z(struct cmd *cmd)
+void exec_ctrl_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

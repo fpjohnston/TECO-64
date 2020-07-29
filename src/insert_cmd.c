@@ -50,7 +50,7 @@ static char insert_string[INSERT_MAX + 1]; ///< Last string inserted in buffer
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_i(struct cmd *cmd)
+void exec_ctrl_I(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

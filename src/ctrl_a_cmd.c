@@ -43,7 +43,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_a(struct cmd *cmd)
+void exec_ctrl_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
     assert(cmd->text1.buf != NULL);

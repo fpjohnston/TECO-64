@@ -41,7 +41,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_c(struct cmd *unused1)
+void exec_ctrl_C(struct cmd *unused1)
 {
     if (f.et.abort)
     {

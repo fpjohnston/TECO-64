@@ -45,7 +45,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_u(struct cmd *cmd)
+void exec_ctrl_U(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
