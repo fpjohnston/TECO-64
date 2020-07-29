@@ -61,10 +61,6 @@ extern void exec_colon(struct cmd *cmd);
 
 extern void exec_comma(struct cmd *cmd);
 
-extern void exec_ctl_ubar(struct cmd *cmd);
-
-extern void exec_ctl_up(struct cmd *cmd);
-
 extern void exec_ctrl_a(struct cmd *cmd);
 
 extern void exec_ctrl_c(struct cmd *cmd);
@@ -92,6 +88,10 @@ extern void exec_ctrl_s(struct cmd *cmd);
 extern void exec_ctrl_t(struct cmd *cmd);
 
 extern void exec_ctrl_u(struct cmd *cmd);
+
+extern void exec_ctrl_ubar(struct cmd *cmd);
+
+extern void exec_ctrl_up(struct cmd *cmd);
 
 extern void exec_ctrl_v(struct cmd *cmd);
 

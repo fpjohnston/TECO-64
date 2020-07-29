@@ -122,7 +122,7 @@ void exec_comma(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctl_ubar(struct cmd *cmd)
+void exec_ctrl_ubar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -137,7 +137,7 @@ void exec_ctl_ubar(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctl_up(struct cmd *cmd)
+void exec_ctrl_up(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
