@@ -476,6 +476,12 @@ void set_config(
                     config.s.execute = optarg;
                 }
 
+                // TECO_MEMORY is used to determine the name of a file to edit
+                // if none is specified on the command line. Ensure that we
+                // don't use it if we are executing an indirect command file.
+
+                unsetenv("TECO_MEMORY");
+
                 break;
 
             case OPTION_H:
