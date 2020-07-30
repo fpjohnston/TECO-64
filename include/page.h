@@ -30,6 +30,9 @@
 
 #define _PAGE_H
 
+#include <stdbool.h>            //lint !e451 !e537
+#include <stdio.h>              //lint !e451 !e537
+
 extern void page_backward(FILE *fp, int count);
 
 extern void page_flush(FILE *fp);

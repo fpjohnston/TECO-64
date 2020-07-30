@@ -30,17 +30,10 @@
 
 #define _FILE_H
 
-#if     !defined(_STDBOOL_H)
-#include <stdbool.h>
-#endif
+#include <stdio.h>              //lint !e451 !e537
+#include <stdbool.h>            //lint !e451 !e537
+#include <sys/types.h>          //lint !e451 !e537
 
-//#if     !defined(_STDIO_H)
-//#include <stdio.h>
-//#endif
-
-#if     !defined(_SYS_TYPES_H)
-#include <sys/types.h>
-#endif
 
 ///  @struct  ifile
 ///  @brief   Definition of variables used to keep track of input files.

@@ -27,15 +27,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #if     !defined(_TERM_H)
+
 #define _TERM_H
 
-#if     !defined(_STDBOOL_H)
-#include <stdbool.h>
-#endif
+#include <stdbool.h>            //lint !e451 !e537
+#include <sys/types.h>          //lint !e451 !e537
 
-#if     !defined(_SYS_TYPES_H)
-#include <sys/types.h>
-#endif
 
 // Terminal buffer functions
 

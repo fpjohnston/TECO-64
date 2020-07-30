@@ -29,17 +29,10 @@
 #if     !defined(_SEARCH_H)
 #define _SEARCH_H
 
-#if     !defined(_STDBOOL_H)
-#include <stdbool.h>
-#endif
+#include <stdbool.h>            //lint !e451 !e537
+#include <sys/types.h>          //lint !e451 !e537
 
-#if     !defined(_SYS_TYPES_H)
-#include <sys/types.h>
-#endif
-
-#if     !defined(_TECO_H)
-#include "teco.h"
-#endif
+#include "teco.h"               //lint !e451 !e537
 
 
 ///  @enum   search_type

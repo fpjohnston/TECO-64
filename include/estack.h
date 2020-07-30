@@ -30,13 +30,9 @@
 
 #define _ESTACK_H
 
-#if     !defined(_STDBOOL_H)
-#include <stdbool.h>
-#endif
+#include <stdbool.h>            //lint !e451 !e537
+#include <sys/types.h>          //lint !e451 !e537
 
-#if     !defined(_SYS_TYPES_H)
-#include <sys/types.h>
-#endif
 
 #define EXPR_SIZE            64         ///< Size of expression stack
 

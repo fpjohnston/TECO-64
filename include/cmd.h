@@ -30,11 +30,7 @@
 
 #define _CMD_H
 
-#if     !defined(_TECO_H)
-
-#include "teco.h"
-
-#endif
+#include "teco.h"               //lint !e451 !e537
 
 
 #define START       (bool)true      ///< At start of command
@@ -128,4 +124,4 @@ extern exec_func *next_cmd(struct cmd *cmd);
 
 extern void print_cmd(struct cmd *cmd);
 
-#endif  // _CMD_H
+#endif  // !defined(_CMD_H)

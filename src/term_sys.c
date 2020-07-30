@@ -29,19 +29,8 @@
 #include <assert.h>
 #include <ctype.h>
 #include <signal.h>
-
-#if     !defined(_STDBOOL_H)
-
 #include <stdbool.h>
-
-#endif
-
-#if     !defined(_STDIO_H)
-
 #include <stdio.h>
-
-#endif
-
 #include <stdlib.h>
 #include <string.h>
 

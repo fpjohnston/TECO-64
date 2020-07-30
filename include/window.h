@@ -30,17 +30,9 @@
 
 #define _WINDOW_H
 
-#if     !defined(_TECO_H)
+#include <stdbool.h>            //lint !e451 !e537
 
-#include "teco.h"
-
-#endif
-
-#if     !defined(_STDBOOL_H)
-
-#include <stdbool.h>
-
-#endif
+#include "teco.h"               //lint !e451 !e537
 
 
 #define SATMAX      1000            ///< Maximum color saturation
@@ -150,4 +142,4 @@ extern void set_nrows(void);
 
 extern void set_scroll(int height, int nscroll);
 
-#endif  // _EXEC_H
+#endif  // !defined(_WINDOW_H)

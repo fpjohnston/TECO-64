@@ -30,12 +30,7 @@
 
 #define _EXEC_H
 
-#if     !defined(_TECO_H)
-
-#include "teco.h"
-
-#endif
-
+#include "teco.h"               //lint !e451 !e537
 #include "cmd.h"
 
 
@@ -313,4 +308,4 @@ extern void reset_indirect(void);
 
 extern void reset_loop(void);
 
-#endif  // _EXEC_H
+#endif  // !defined(_EXEC_H)

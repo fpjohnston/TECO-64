@@ -30,9 +30,9 @@
 
 #define _EFLAGS_H
 
-#if     !defined(_STDINT_H)
-#include <stdint.h>
-#endif
+#include <stdbool.h>            //lint !e451 !e537
+#include <sys/types.h>          //lint !e451 !e537
+
 
 ///  @struct  e0_flag
 ///
@@ -227,4 +227,4 @@ struct flags
 
 extern struct flags f;
 
-#endif  // !defined(_EXEC_H)
+#endif  // !defined(_EFLAGS_H)

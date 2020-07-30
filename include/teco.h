@@ -27,23 +27,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #if     !defined(_TECO_H)
+
 #define _TECO_H
 
-#if     !defined(_SETJMP_H)
-#include <setjmp.h>
-#endif
+#include <setjmp.h>             //lint !e451 !e537
+#include <stdbool.h>            //lint !e451 !e537
+#include <stdio.h>              //lint !e451 !e537
+#include <sys/types.h>          //lint !e451 !e537
 
-#if     !defined(_STDBOOL_H)
-#include <stdbool.h>
-#endif
-
-#if     !defined(_STDIO_H)
-#include <stdio.h>
-#endif
-
-#if     !defined(_SYS_TYPES_H)
-#include <sys/types.h>
-#endif
 
 /// @def    countof(array)
 /// @brief  Returns the number of elements in an array.

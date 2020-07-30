@@ -27,15 +27,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #if     !defined(_EDITBUF_H)
+
 #define _EDITBUF_H
 
-#if     !defined(_STDBOOL_H)
-#include <stdbool.h>
-#endif
+#include <stdbool.h>            //lint !e451 !e537
+#include <sys/types.h>          //lint !e451 !e537
 
-#if     !defined(_SYS_TYPES_H)
-#include <sys/types.h>
-#endif
 
 /// @brief  Return status when inserting characters in buffer.
 
@@ -129,4 +126,4 @@ extern void setpos_ebuf(int n);
 
 extern int setsize_ebuf(int n);
 
-#endif
+#endif  // !defined(_EDITBUF_H)
