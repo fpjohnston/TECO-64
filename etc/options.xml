@@ -103,6 +103,7 @@
         <option>
             <short_name>Z</short_name>
             <long_name>zero</long_name>
+            <argument>optional</argument>
             <help>Strictly enforce command syntax (zero tolerance).</help>
         </option>
     </section>

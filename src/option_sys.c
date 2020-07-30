@@ -376,17 +376,6 @@ static void finish_config(int argc, const char * const argv[])
     {
         store_cmd("\e\e");              // If so, properly terminate command
     }
-
-    // TODO: the following is for debugging.
-
-    f.e2.zero   = 1;
-    f.e2.oper   = 1;
-    f.e2.atsign = 1;
-    f.e2.colon  = 1;
-    f.e2.comma  = 1;
-    f.e2.loop   = 1;
-    f.e2.quote  = 1;
-    f.e2.page   = 1;
 }
 
 
@@ -453,29 +442,6 @@ void set_config(
     {
         switch (c)
         {
-            case ':':
-                if (optopt == 'B')
-                {
-                    config.f.buffer = true;
-                }
-                else if (optopt == 'E')
-                {
-                    config.f.execute = true;
-                }
-                else if (optopt == 'L')
-                {
-                    config.f.log = true;
-                }
-                else if (optopt == 'O')
-                {
-                    config.f.output = true;
-                }
-                else if (optopt == 'S')
-                {
-                    config.f.scroll = true;
-                }
-                break;
-
             case OPTION_A:
                 config.f.argument = true;
 
@@ -590,16 +556,14 @@ void set_config(
                 break;
 
             case OPTION_Z:
-                f.e2.zero   = 1;
-                f.e2.oper   = 1;
-                f.e2.atsign = 1;
-                f.e2.colon  = 1;
-                f.e2.comma  = 1;
-                f.e2.m_arg  = 1;
-                f.e2.n_arg  = 1;
-                f.e2.loop   = 1;
-                f.e2.quote  = 1;
-                f.e2.page   = 1;
+                if (optarg != NULL)
+                {
+                    f.e2.flag = (int)strtol(optarg, NULL, 10);
+                }
+                else
+                {
+                    f.e2.flag = -1;
+                }
 
                 break;
 

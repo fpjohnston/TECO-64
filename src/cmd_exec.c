@@ -198,45 +198,35 @@ static void finish_cmd(struct cmd *cmd, union cmd_opts opts)
 {
     assert(cmd != NULL);
 
-    // Here when we've seen a command that is more than part of an expression.
+    // See if we have an n argument. If not, then check to see if the command
+    // was preceded by a minus sign, which is equivalent to an argument of -1.
 
-    // If command allows one numeric argument, check to see if we have one.
-    // If not, then check to see if the command was preceded by a minus
-    // sign, which is equivalent to an argument of -1. If no argument is
-    // allowed, but there is an operand on top of the stack, then issue an
-    // error.
-
-    if (opts.n)
+    if (pop_expr(&cmd->n_arg))          // Do we have an n argument?
     {
-        if (pop_expr(&cmd->n_arg))
-        {
-            cmd->n_set = true;
-        }
-        else if (estack.level == estack.base + 1 &&
-                 estack.obj[0].type == EXPR_MINUS)
-        {
-            --estack.level;
-
-            cmd->n_set = true;
-            cmd->n_arg = -1;
-        }
+        cmd->n_set = true;
     }
-    else if (check_expr() && f.e2.n_arg)
+    else if (estack.level == estack.base + 1 &&
+             estack.obj[0].type == EXPR_MINUS)
     {
-        throw(E_UNA);                   // Unused n argument
+        --estack.level;
+
+        cmd->n_set = true;
+        cmd->n_arg = -1;
     }
 
-    // If we've seen an 'm' argument, but the command doesn't allow it, then
-    // issue an error.
+    // If we have an m argument, verify that it is valid for this command, and
+    // that it is followed by an n argument.
 
-    if (!opts.m && cmd->m_set)
+    if (cmd->m_set)
     {
-        if (f.e2.m_arg)
+        if (f.e2.m_arg && !opts.m)
         {
-            throw(E_UMA);               // Unused m argument
+            throw(E_IMA);               // Illegal m argument
         }
-
-        cmd->m_set = false;             // Just dump the argument
+        else if (!cmd->n_set)
+        {
+            throw(E_MNA);               // Missing n argument
+        }
     }
 
     // Scan for text arguments and other post-command characters.

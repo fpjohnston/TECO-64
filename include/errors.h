@@ -64,6 +64,7 @@ enum errors
     E_IIA,          ///< Illegal insert arg
     E_ILL,          ///< Illegal command "x"
     E_ILN,          ///< Illegal number
+    E_IMA,          ///< Illegal m argument
     E_INI,          ///< Initialization error
     E_IQC,          ///< Illegal quote character
     E_IQN,          ///< Illegal Q-register name "x"
@@ -76,6 +77,7 @@ enum errors
     E_MIX,          ///< Maximum insert string exceeded
     E_MLA,          ///< Missing left angle bracket
     E_MLP,          ///< Missing left parenthesis
+    E_MNA,          ///< Missing n argument
     E_MOD,          ///< Invalid modifier
     E_MRP,          ///< Missing right parenthesis
     E_MSC,          ///< Missing start of conditional
@@ -90,7 +92,6 @@ enum errors
     E_NFI,          ///< No file for input
     E_NFO,          ///< No file for output
     E_NOA,          ///< O argument is non-positive
-    E_NON,          ///< Missing n argument after m argument
     E_NOT,          ///< O command has no tag
     E_NOW,          ///< Window support not enabled
     E_NPA,          ///< P or PW argument is negative
@@ -105,8 +106,6 @@ enum errors
     E_SYS,          ///< System error message
     E_TAG,          ///< Missing tag "!x!"
     E_T10,          ///< TECO-10 command not implemented
-    E_UMA,          ///< Unused m argument
-    E_UNA,          ///< Unused n argument
     E_UTC,          ///< Unterminated command string
     E_UTL,          ///< Unterminated loop
     E_UTM,          ///< Unterminated macro

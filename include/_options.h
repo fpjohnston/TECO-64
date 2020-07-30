@@ -2,7 +2,7 @@
 ///  @file       _options.h
 ///
 ///  @brief      Header file for teco utility. Automatically generated on
-///              Tue, 28 Jul 2020 at 18:19 EDT. DO NOT MODIFY.
+///              Thu, 30 Jul 2020 at 09:19 EDT. DO NOT MODIFY.
 ///
 ///  @brief      External resources:
 ///
@@ -123,7 +123,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "A:B:CE:HI::L:MO:RS:WZcimor";
+static const char * const optstring = "A:B:CE:HI::L:MO:RS:WZ::cimor";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -142,7 +142,7 @@ static const struct option long_options[] =
     { "read-only",      no_argument,        NULL,  'R'    },
     { "scroll",         required_argument,  NULL,  'S'    },
     { "window",         no_argument,        NULL,  'W'    },
-    { "zero",           no_argument,        NULL,  'Z'    },
+    { "zero",           optional_argument,  NULL,  'Z'    },
     { "nocreate",       no_argument,        NULL,  'c'    },
     { "noinitialize",   no_argument,        NULL,  'i'    },
     { "nomemory",       no_argument,        NULL,  'm'    },

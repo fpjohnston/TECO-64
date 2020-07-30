@@ -80,6 +80,7 @@ static struct err_table err_table[] =
     [E_IIA] = { "IIA",  "Illegal insert arg" },
     [E_ILL] = { "ILL",  "Illegal command '%s'" },
     [E_ILN] = { "ILN",  "Illegal number" },
+    [E_IMA] = { "IMA",  "Illegal m argument" },
     [E_INI] = { "INI",  "%s" },
     [E_IQC] = { "IQC",  "Illegal quote character" },
     [E_IQN] = { "IQN",  "Illegal Q-register name '%s'" },
@@ -92,6 +93,7 @@ static struct err_table err_table[] =
     [E_MIX] = { "MIX",  "Maximum insert string exceeded" },
     [E_MLA] = { "MLA",  "Missing left angle bracket" },
     [E_MLP] = { "MLP",  "Missing left parenthesis" },
+    [E_MNA] = { "NON",  "Missing n argument after m argument" },
     [E_MOD] = { "MOD",  "Invalid command modifier" },
     [E_MRP] = { "MRP",  "Missing right parenthesis" },
     [E_MSC] = { "MSC",  "Missing start of conditional" },
@@ -106,7 +108,6 @@ static struct err_table err_table[] =
     [E_NFI] = { "NFI",  "No file for input" },
     [E_NFO] = { "NFO",  "No file for output" },
     [E_NOA] = { "NOA",  "O argument is non-positive" },
-    [E_NON] = { "NON",  "Missing n argument after m argument" },
     [E_NOT] = { "NOT",  "O command has no tag" },
     [E_NOW] = { "NOW",  "Window support not enabled" },
     [E_NPA] = { "NPA",  "P or PW argument is negative" },
@@ -121,8 +122,6 @@ static struct err_table err_table[] =
     [E_SYS] = { "SYS",  "%s" },
     [E_TAG] = { "TAG",  "Missing tag '!%s!'" },
     [E_T10] = { "T10",  "TECO-10 command not implemented" },
-    [E_UMA] = { "UMA",  "Unused m argument" },
-    [E_UNA] = { "UNA",  "Unused n argument" },
     [E_UTC] = { "UTC",  "Unterminated command string" },
     [E_UTL] = { "UTL",  "Unterminated loop" },
     [E_UTM] = { "UTM",  "Unterminated macro" },
@@ -180,6 +179,8 @@ static const char *verbose[] =
     [E_ILN] = "An 8 or 9 has been entered when the radix of TECO is set "
               "to octal.",
 
+    [E_IMA] = "An m argument was provided to a command which does not allow it.",
+
     [E_INI] = "A fatal error occurred during TECO initialization.",
 
     [E_IQC] = "One of the valid \" commands did not follow the \". Refer "
@@ -216,6 +217,8 @@ static const char *verbose[] =
 
     [E_MLP] = "There is a right parenthesis trhat is not matched by a "
               "corresponding left parenthesis.",
+
+    [E_MNA] = "An m argument was not followed by an n argument.",
 
     [E_MOD] = "A modifier (:, ::, or @) was specified that was invalid "
               "for a command, occurred in the middle of an expression, "
@@ -267,8 +270,6 @@ static const char *verbose[] =
 
     [E_NOA] = "The argument for an O command was <= 0.",
 
-    [E_NON] = "An m argument was not followed by an n argument.",
-
     [E_NOT] = "No tag was found for an O command.",
 
     [E_NPA] = "The argument preceding a P or PW command is negative.",
@@ -317,10 +318,6 @@ static const char *verbose[] =
               "O command referencing it.",
 
     [E_T10] = "A TECO-10 command cannot be or has not been implemented.",
-
-    [E_UMA] = "An m argument was provided to a command which does not allow it.",
-
-    [E_UNA] = "An n argument was provided to a command which does not allow it.",
 
     [E_UTC] = "This is a general error which is usually caused by an "
               "unterminated insert, search, or filename argument, an "
