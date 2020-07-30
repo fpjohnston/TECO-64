@@ -444,21 +444,13 @@ void set_config(
         {
             case OPTION_A:
                 config.f.argument = true;
-
-                if (optarg[0] != '-')
-                {
-                    config.n = (int)strtol(optarg, NULL, 10);
-                }
+                config.n = (int)strtol(optarg, NULL, 10);
 
                 break;
 
             case OPTION_B:
                 config.f.buffer = true;
-
-                if (optarg[0] != '-')
-                {
-                    config.s.buffer = optarg;
-                }
+                config.s.buffer = optarg;
 
                 break;
 
@@ -470,11 +462,7 @@ void set_config(
 
             case OPTION_E:
                 config.f.execute = true;
-
-                if (optarg[0] != '-')
-                {
-                    config.s.execute = optarg;
-                }
+                config.s.execute = optarg;
 
                 // TECO_MEMORY is used to determine the name of a file to edit
                 // if none is specified on the command line. Ensure that we
@@ -506,11 +494,7 @@ void set_config(
 
             case OPTION_L:
                 config.f.log = true;
-
-                if (optarg[0] != '-')
-                {
-                    config.s.log = optarg;
-                }
+                config.s.log = optarg;
 
                 break;
 
@@ -526,11 +510,7 @@ void set_config(
 
             case OPTION_O:
                 config.f.output = true;
-
-                if (optarg != NULL && optarg[0] != '-')
-                {
-                    config.s.output = optarg;
-                }
+                config.s.output = optarg;
 
                 break;
 
@@ -547,14 +527,8 @@ void set_config(
 
             case OPTION_S:
                 config.f.scroll = true;
-                config.f.window = true;
-
-                if (optarg[0] != '-')
-                {
-                    config.s.scroll = optarg;
-                }
-
-                break;
+                config.s.scroll = optarg;
+                //lint -fallthrough
 
             case OPTION_W:
                 config.f.window = true;
