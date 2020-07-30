@@ -468,7 +468,7 @@ void set_config(
                 // if none is specified on the command line. Ensure that we
                 // don't use it if we are executing an indirect command file.
 
-                unsetenv("TECO_MEMORY");
+                (void)unsetenv("TECO_MEMORY");
 
                 break;
 
