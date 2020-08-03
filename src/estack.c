@@ -83,12 +83,10 @@ void init_expr(void)
     estack.base  = 0;
     estack.level = 0;
 
-#if     0                           // TODO: temporary initialization code
     for (uint i = estack.level; i < EXPR_SIZE; ++i)
     {
         estack.obj[i].type = estack.obj[i].value = 0;
     }
-#endif
 }
 
 
