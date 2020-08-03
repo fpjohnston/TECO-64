@@ -175,19 +175,21 @@ static const union cmd_opts t1_opts     = {{ .t1=1 }};
 ///          this table. Also, we handle E, F, and ^ commands specially, as they
 ///          include a secondary character.
 ///
-
-//  TODO: complete the following.
-//
-//  Commands may be categorized as one of the following:
-//
-//  1. Commands that are ignored (e.g., space).
-//  2. Commands that are part of an expression (e.g., digits or operators).
-//  3. Commands that never return a value.
-//  4. Commands that always return a value.
-//  5. Commands that return a value if colon-modified.
-//  6. Commands that return a value unless preceded by an expression.
-//  7. Commands that allow but ignore expressions.
-//  8. Commands that pass expressions through to next command.
+///          Commands may be categorized as one of the following:
+///
+///          1. Commands that are ignored (e.g., space).
+///          2. Commands that are part of an expression (e.g., digits or
+///             operators).
+///          3. Commands that never return a value.
+///          4. Commands that always return a value.
+///          5. Commands that might return a value (e.g., M).
+///          6. Commands that return a value if colon-modified.
+///          7. Commands that return a value unless preceded by an expression
+///             (e.g., ET).
+///          8. Commands that allow but ignore expressions (e.g., <ESC>).
+///          9. Commands that pass expressions through to next command
+///             (e.g., [ or ]).
+///
 
 const struct cmd_table cmd_table[] =
 {
