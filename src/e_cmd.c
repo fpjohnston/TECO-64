@@ -48,7 +48,7 @@ const struct cmd_table *exec_E(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    const char *e_cmds = "1234ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    const char *e_cmds = "12345ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
     int c = fetch_cbuf(NOSTART);
 

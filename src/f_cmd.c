@@ -48,7 +48,7 @@ const struct cmd_table *exec_F(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    const char *f_cmds = "'23<>BCDKLNRSU_|";
+    const char *f_cmds = "'3<>BCDKLNRSU_|";
 
     int c = fetch_cbuf(NOSTART);
 

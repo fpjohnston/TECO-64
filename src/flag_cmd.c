@@ -33,6 +33,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"
@@ -234,6 +235,41 @@ void exec_E4(struct cmd *cmd)
     assert(cmd != NULL);
 
     (void)check_mn_flag(cmd, &f.e4.flag);
+}
+
+
+///
+///  @brief    Scan E5 command: set comment bypass character. Any graphic ASCII
+///            character can be used, except for '!', which is required to end
+///            comment or tag.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_E5(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)
+    {
+        if (cmd->n_arg == '!')
+        {
+            f.e5 = NUL;
+        }
+        else if (cmd->n_arg == NUL || isgraph(cmd->n_arg))
+        {
+            f.e5 = cmd->n_arg;
+        }
+        else
+        {
+            throw(E_ARG);               // Bad argument
+        }
+    }
+    else
+    {
+        f.e5 = NUL;
+    }
 }
 
 

@@ -308,6 +308,7 @@ const struct cmd_table e_table[] =
     { exec_E2,      &fm_opts    },
     { exec_E3,      &fm_opts    },
     { exec_E4,      &fm_opts    },
+    { exec_E5,      &n_opts     },
     { exec_EA,      NULL        },
     { exec_EB,      &ac1_opts   },
     { exec_EC,      &n_opts     },
@@ -346,7 +347,6 @@ const uint e_count = countof(e_table); ///< No. of E commands
 const struct cmd_table f_table[] =
 {
     { exec_F_apos,  &m_opts     },
-    { exec_F2,      &n_opts     },
     { exec_F3,      &n2_opts    },
     { exec_F_lt,    &m_opts     },
     { exec_F_gt,    &m_opts     },
