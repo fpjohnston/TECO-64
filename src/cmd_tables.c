@@ -186,7 +186,7 @@ static const union cmd_opts t1_opts     = {{ .t1=1 }};
 ///          6. Commands that return a value if colon-modified.
 ///          7. Commands that return a value unless preceded by an expression
 ///             (e.g., ET).
-///          8. Commands that allow but ignore expressions (e.g., <ESC>).
+///          8. Commands that allow but ignore expressions (e.g., ESCape).
 ///          9. Commands that pass expressions through to next command
 ///             (e.g., [ or ]).
 ///
