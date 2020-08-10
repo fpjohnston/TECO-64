@@ -56,7 +56,7 @@ CFLAGS += -D SCOPE
 
 DFLAGS =
 
-ENABLE_DEBUG =
+OPTIONS_DEBUG =
 
 INCDIR = include
 
@@ -231,7 +231,7 @@ endif
 ifdef   DEBUG
 
 CFLAGS += -D DEBUG
-ENABLE_DEBUG += -d
+OPTIONS_DEBUG += -d
 LINT_DEBUG += -DDEBUG
 
 endif
@@ -321,7 +321,7 @@ bin/$(TARGET): $(OBJECTS)
 $(OBJECTS): $(OPTIONS_H) CFLAGS
 
 $(OPTIONS_H): etc/options.xml
-	$(AT)bin/options.pl -c $< -o $@ $(ENABLE_DEBUG)
+	$(AT)bin/options.pl -c $< -o $@ $(OPTIONS_BUG)
 
 .PHONY: FORCE
 CFLAGS: FORCE

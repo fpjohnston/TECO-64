@@ -35,14 +35,13 @@
 #include "errors.h"
 #include "exec.h"
 
-#define DEBUG_MEMORY                    // TODO: this is temporary
 
 // The following conditional code is used to check for memory leaks when we
 // exit. It is an early warning system to alert the user that there is a bug
 // that needs to be investigated and resolved, possibly with better tools such
 // as Valgrind.
 
-#if     defined(DEBUG_MEMORY)
+#if     defined(DEBUG)
 
 ///  @struct mblock
 ///
@@ -85,7 +84,7 @@ static void exit_memory(void);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DEBUG_MEMORY)
+#if     defined(DEBUG)
 
 static void add_mblock(void *p1, uint size)
 {
@@ -130,7 +129,7 @@ void *alloc_mem(uint size)
         throw(E_MEM);                   // Memory overflow
     }
 
-#if     defined(DEBUG_MEMORY)
+#if     defined(DEBUG)
 
     add_mblock(p1, size);
 
@@ -147,7 +146,7 @@ void *alloc_mem(uint size)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DEBUG_MEMORY)
+#if     defined(DEBUG)
 
 static void delete_mblock(void *p1)
 {
@@ -201,7 +200,7 @@ static void delete_mblock(void *p1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DEBUG_MEMORY)
+#if     defined(DEBUG)
 
 static void exit_memory(void)
 {
@@ -253,7 +252,7 @@ void *expand_mem(void *p1, uint oldsize, uint newsize)
     assert(oldsize != newsize);
     assert(oldsize < newsize);
 
-#if     defined(DEBUG_MEMORY)
+#if     defined(DEBUG)
 
     delete_mblock(p1);
 
@@ -266,7 +265,7 @@ void *expand_mem(void *p1, uint oldsize, uint newsize)
         throw(E_MEM);                   // Memory overflow
     }
 
-#if     defined(DEBUG_MEMORY)
+#if     defined(DEBUG)
 
     add_mblock(p2, newsize);
 
@@ -295,7 +294,7 @@ void free_mem(void *p1)
 
     if (*p2 != NULL)
     {
-#if     defined(DEBUG_MEMORY)
+#if     defined(DEBUG)
 
         delete_mblock(*p2);
 
@@ -317,7 +316,7 @@ void free_mem(void *p1)
 
 void init_mem(void)
 {
-#if     defined(DEBUG_MEMORY)
+#if     defined(DEBUG)
 
     register_exit(exit_memory);
 
@@ -339,7 +338,7 @@ void *shrink_mem(void *p1, uint oldsize, uint newsize)
     assert(oldsize > newsize);
     assert(newsize != 0);
 
-#if     defined(DEBUG_MEMORY)
+#if     defined(DEBUG)
 
     delete_mblock(p1);
 
@@ -352,7 +351,7 @@ void *shrink_mem(void *p1, uint oldsize, uint newsize)
         throw(E_MEM);                   // Memory overflow
     }
 
-#if     defined(DEBUG_MEMORY)
+#if     defined(DEBUG)
 
     add_mblock(p2, newsize);
 
