@@ -67,6 +67,8 @@
 
 #if     defined(SCOPE)
 
+#define MAX_POSITION    30          ///< Max. size of position string
+
 ///
 ///  @var     d
 ///
@@ -904,19 +906,19 @@ static void update_status(void)
         int row   = getlines_ebuf(-1);
         int nrows = getlines_ebuf(0);
         int col   = -getdelta_ebuf(0);
-        char pos[20 + 1];
+        char position[MAX_POSITION + 1];
 
         if (row < nrows)
         {
-            sprintf(pos, "row=%d  col=%d", row + 1, col);
+            sprintf(position, "row=%d  col=%d", row + 1, col);
         }
         else
         {
-            strcpy(pos, "<EOF>");
+            strcpy(position, "<EOF>");
         }
         
         int nbytes = sprintf(status, ".=%d  Z=%d  %s  nrows=%d  mem=%d",
-                             t.dot, t.Z, pos, nrows, t.size);
+                             t.dot, t.Z, position, nrows, t.size);
 
         status[nbytes] = SPACE;         // Replace NUL character with space
 
