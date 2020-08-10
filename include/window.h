@@ -37,9 +37,9 @@
 
 #define SATMAX      1000            ///< Maximum color saturation
 
-#define CMD         0               ///< Command window colors
-#define TEXT        1               ///< Text window colors
-#define STATUS      2               ///< Status line colors
+#define CMD         1               ///< Command window colors
+#define TEXT        2               ///< Text window colors
+#define STATUS      3               ///< Status line colors
 
 ///
 ///  @struct  region
@@ -51,8 +51,6 @@ struct region
 {
     int top;                        ///< Top of region
     int bot;                        ///< Bottom of region
-    short fg;                       ///< Foreground color
-    short bg;                       ///< Background color
 };
 
 ///

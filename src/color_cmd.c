@@ -1,6 +1,6 @@
 ///
-///  @file    f3_cmd.c
-///  @brief   Execute F3 command.
+///  @file    color_cmd.c
+///  @brief   Execute commands that set window colors (F1, F2, F3).
 ///
 ///  @bug     No known bugs.
 ///
@@ -38,11 +38,12 @@
 #endif
 
 #include "teco.h"
-#include "ascii.h"
 #include "errors.h"
 #include "exec.h"
 #include "window.h"
 
+
+#if     defined(SCOPE)
 
 ///
 ///  @struct color_table
@@ -81,11 +82,60 @@ static const struct color_table color_table[] =
 
 static int find_color(const char *token);
 
-static void set_colors(const char *keyword, char *value);
+static void set_color(const char *buf, uint len, int sat, short color);
+
+static void set_colors(const struct cmd *cmd, short pair);
+
+#endif
 
     
 ///
-///  @brief    Execute F3 command: set window colors.
+///  @brief    Execute F1 command: set colors for command window.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_F1(struct cmd *cmd)
+{
+
+#if     defined(SCOPE)
+
+    set_colors(cmd, CMD);
+
+#else
+
+    throw(E_WIN);
+
+#endif
+
+}
+
+
+///
+///  @brief    Execute F2 command: set colors for text window.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_F2(struct cmd *cmd)
+{
+
+#if     defined(SCOPE)
+
+    set_colors(cmd, TEXT);
+
+#else
+
+    throw(E_WIN);
+
+#endif
+
+}
+
+///
+///  @brief    Execute F3 command: set colors for status line.
 ///
 ///  @returns  Nothing.
 ///
@@ -96,59 +146,7 @@ void exec_F3(struct cmd *cmd)
 
 #if     defined(SCOPE)
 
-    assert(cmd != NULL);
-
-    char keyword[cmd->text1.len + 1];
-
-    sprintf(keyword, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
-
-    if (cmd->n_set)
-    {
-        // Set the saturation for a specified color. ncurses allows these
-        // levels to range from 0 to 1000. Colors are defined with separate
-        // levels for red, green, and blue. Note that setting a level only
-        // makes sense for colors other than black, since black is defined
-        // as having red, green, and blue all 0.
-
-        int color = find_color(keyword);
-
-        if (color == -1)
-        {
-            throw(E_WIN);
-        }
-
-        int n = cmd->n_arg;              // Color saturation
-
-        // Make sure it's in the range [0, SATMAX].
-
-        if (n < 0)
-        {
-            n = 0;
-        }
-        else if (n > SATMAX)
-        {
-            n = SATMAX;
-        }
-
-        // Adjust color saturation
-
-        short red   = (short)(color_table[color].red   * (uint)n / SATMAX);
-        short green = (short)(color_table[color].green * (uint)n / SATMAX);
-        short blue  = (short)(color_table[color].blue  * (uint)n / SATMAX);
-
-        (void)init_color((short)color, red, green, blue);
-    }
-    else
-    {
-        char value[cmd->text2.len + 1];
-
-        sprintf(value, "%.*s", (int)cmd->text2.len, cmd->text2.buf);
-
-        if (*keyword != NUL)                // Anything to parse?
-        {
-            set_colors(keyword, value);
-        }
-    }
+    set_colors(cmd, STATUS);
 
 #else
 
@@ -166,11 +164,10 @@ void exec_F3(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int find_color(const char *token)
-{
-
 #if     defined(SCOPE)
 
+static int find_color(const char *token)
+{
     if (token == NULL)
     {
         return -1;
@@ -184,10 +181,60 @@ static int find_color(const char *token)
         }
     }
 
-#endif
-
     return -1;
 }
+
+#endif
+
+
+///
+///  @brief    Initialize saturation levels for a specified color.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(SCOPE)
+
+static void set_color(const char *buf, uint len, int sat, short color)
+{
+    assert(buf != NULL);
+
+    char keyword[len + 1];
+
+    sprintf(keyword, "%.*s", (int)len, buf);
+
+    // Adjust color saturation, which ncurses allows to range from 0 to 1000.
+    // Colors are defined with separate levels for red, green, and blue. Note
+    // that setting a level only makes sense for colors other than black, since
+    // black is defined as having red, green, and blue all 0.
+
+    if (sat < 0)
+    {
+        sat = 0;
+    }
+    else if (sat > 100)
+    {
+        sat = 100;
+    }
+
+    sat *= 10;
+
+    int i = find_color(keyword);        // Get color index
+
+    if (i == -1)
+    {
+        throw(E_WIN);
+    }
+
+    short red   = (short)(color_table[i].red   * (uint)sat / SATMAX);
+    short green = (short)(color_table[i].green * (uint)sat / SATMAX);
+    short blue  = (short)(color_table[i].blue  * (uint)sat / SATMAX);
+
+    (void)init_color((short)color, red, green, blue);
+}
+
+#endif
 
 
 ///
@@ -198,60 +245,36 @@ static int find_color(const char *token)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void set_colors(const char *keyword, char *value)
-{
-
 #if     defined(SCOPE)
 
-    assert(keyword != NULL);
-    assert(value != NULL);
+static void set_colors(const struct cmd *cmd, short pair)
+{
+    assert(cmd != NULL);
 
-    struct region *region;
+    int fg_sat = 100;
+    int bg_sat = 100;
 
-    if (!strcasecmp(keyword, "command"))
+    if (cmd->n_set)
     {
-        region = &d.cmd;
-    }
-    else if (!strcasecmp(keyword, "text"))
-    {
-        region = &d.text;
-    }
-    else if (!strcasecmp(keyword, "status"))
-    {
-        region = &d.status;
-    }
-    else
-    {
-        throw(E_WIN);
+        if (cmd->m_set)
+        {
+            fg_sat = cmd->m_arg;
+            bg_sat = cmd->n_arg;
+        }
+        else
+        {
+            fg_sat = cmd->n_arg;
+        }
     }
 
-    char *saveptr;
-    int fg = find_color(strtok_r(value, " ,", &saveptr));
-    int bg = find_color(strtok_r(NULL,  " ,", &saveptr));
+#define COLOR_BASE  16
 
-    if (fg != -1)
-    {
-        region->fg = (short)fg;
-    }
+    short color = (short)(COLOR_BASE + ((pair - 1) * 2));
 
-    if (bg != -1)
-    {
-        region->bg = (short)bg;
-    }
+    set_color(cmd->text1.buf, cmd->text1.len, fg_sat, color);
+    set_color(cmd->text2.buf, cmd->text2.len, bg_sat, color + 1);
 
-    if (region == &d.cmd)
-    {
-        (void)assume_default_colors(d.cmd.fg, d.cmd.bg);
-    }
-    else if (region == &d.text)
-    {
-        (void)init_pair(TEXT, d.text.fg, d.text.bg);
-    }
-    else
-    {
-        (void)init_pair(STATUS, d.status.fg, d.status.bg);
-    }
+    (void)init_pair(pair, color, color + 1);
+}
 
 #endif
-
-}

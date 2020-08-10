@@ -142,6 +142,11 @@ static const union cmd_opts fm_opts      = {{ .f=1, .m=1 }};
 
 static const union cmd_opts m_opts      = {{ .m=1 }};
 
+///  @var    m2_opts
+///  @brief  Commands that use m and n, and 2 text arguments.
+
+static const union cmd_opts m2_opts      = {{ .m=1, .t2=1 }};
+
 ///  @var    mq_opts
 ///  @brief  Commands that use m, n, and Q-registers.
 
@@ -151,11 +156,6 @@ static const union cmd_opts mq_opts     = {{ .m=1, .q=1 }};
 ///  @brief  Commands that use n.
 
 static const union cmd_opts n_opts      = {{ .n=1 }};
-
-///  @var    n2_opts
-///  @brief  Commands that use n, and 1 text argument.
-
-static const union cmd_opts n2_opts     = {{ .n=1, .t2=1 }};
 
 ///  @var    t1_opts
 ///  @brief  Commands that use 1 text argument.
@@ -347,7 +347,9 @@ const uint e_count = countof(e_table); ///< No. of E commands
 const struct cmd_table f_table[] =
 {
     { exec_F_apos,  &m_opts     },
-    { exec_F3,      &n2_opts    },
+    { exec_F1,      &m2_opts    },
+    { exec_F2,      &m2_opts    },
+    { exec_F3,      &m2_opts    },
     { exec_F_lt,    &m_opts     },
     { exec_F_gt,    &m_opts     },
     { exec_FB,      &acm1_opts  },

@@ -176,6 +176,10 @@ extern void exec_E_ubar(struct cmd *cmd);
 
 extern const struct cmd_table *exec_F(struct cmd *cmd);
 
+extern void exec_F1(struct cmd *cmd);
+
+extern void exec_F2(struct cmd *cmd);
+
 extern void exec_F3(struct cmd *cmd);
 
 extern void exec_FB(struct cmd *cmd);

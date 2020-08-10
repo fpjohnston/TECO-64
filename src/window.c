@@ -67,16 +67,6 @@
 
 #if     defined(SCOPE)
 
-// Define define colors for screen regions
-
-#define CMD_FG      COLOR_BLACK         ///< Default command foreground
-#define CMD_BG      COLOR_WHITE         ///< Default command background
-#define TEXT_FG     COLOR_BLACK         ///< Default text foreground
-#define TEXT_BG     COLOR_WHITE         ///< Default text background
-#define STATUS_FG   COLOR_WHITE         ///< Default status foreground
-#define STATUS_BG   COLOR_BLACK         ///< Default status background
-
-
 ///
 ///  @var     d
 ///
@@ -89,9 +79,9 @@ struct display d =
     .col    = 0,
     .vcol   = 0,
     .nrows  = 0,
-    .cmd    = { .top = 0, .bot = 0, .fg = 0, .bg = 0 },
-    .text   = { .top = 0, .bot = 0, .fg = 0, .bg = 0 },
-    .status = { .top = 0, .bot = 0, .fg = 0, .bg = 0 },
+    .cmd    = { .top = 0, .bot = 0 },
+    .text   = { .top = 0, .bot = 0 },
+    .status = { .top = 0, .bot = 0 },
 };
 
 
@@ -755,16 +745,11 @@ void reset_colors(void)
         (void)init_color(COLOR_WHITE,   SATMAX, SATMAX, SATMAX);
     }
 
-    d.cmd.fg    = CMD_FG;
-    d.cmd.bg    = CMD_BG;
-    d.text.fg   = TEXT_FG;
-    d.text.bg   = TEXT_BG;
-    d.status.fg = STATUS_FG;
-    d.status.bg = STATUS_BG;
+    (void)assume_default_colors(COLOR_BLACK, COLOR_WHITE);
 
-    (void)assume_default_colors(d.cmd.fg, d.cmd.bg);
-    (void)init_pair(TEXT, d.text.fg, d.text.bg);
-    (void)init_pair(STATUS, d.status.fg, d.status.bg);
+    (void)init_pair(CMD,    COLOR_BLACK, COLOR_WHITE);
+    (void)init_pair(TEXT,   COLOR_BLACK, COLOR_WHITE);
+    (void)init_pair(STATUS, COLOR_WHITE, COLOR_BLACK);
 
 #endif
 
@@ -919,8 +904,19 @@ static void update_status(void)
         int row   = getlines_ebuf(-1);
         int nrows = getlines_ebuf(0);
         int col   = -getdelta_ebuf(0);
-        int nbytes = sprintf(status, ".=%d, Z=%d/%d, row=%d/%d, col=%d",
-                             t.dot, t.Z, t.size, row, nrows, col);
+        char pos[20 + 1];
+
+        if (row < nrows)
+        {
+            sprintf(pos, "row=%d  col=%d", row + 1, col);
+        }
+        else
+        {
+            strcpy(pos, "<EOF>");
+        }
+        
+        int nbytes = sprintf(status, ".=%d  Z=%d  %s  nrows=%d  mem=%d",
+                             t.dot, t.Z, pos, nrows, t.size);
 
         status[nbytes] = SPACE;         // Replace NUL character with space
 

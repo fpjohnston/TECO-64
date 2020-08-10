@@ -99,6 +99,7 @@ SOURCES = \
     back_cmd.c     \
     bracket_cmd.c  \
     case_cmd.c     \
+    color_cmd.c    \
     ctrl_a_cmd.c   \
     ctrl_c_cmd.c   \
     ctrl_t_cmd.c   \
@@ -128,7 +129,6 @@ SOURCES = \
     ex_cmd.c       \
     ez_cmd.c       \
     f_cmd.c        \
-    f3_cmd.c       \
     fb_cmd.c       \
     fd_cmd.c       \
     fk_cmd.c       \
