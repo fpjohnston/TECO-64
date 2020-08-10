@@ -363,10 +363,6 @@ exec_func *next_cmd(struct cmd *cmd)
         {
             finish_cmd(cmd, opts);
 
-#if 0 // TODO: conditional code below is temporary
-            printf("command: ");
-            print_cmd(cmd);
-#endif
             return entry->exec;
         }
 
