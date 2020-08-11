@@ -37,41 +37,12 @@
 
 #define SATMAX      1000            ///< Maximum color saturation
 
-#define CMD         1               ///< Command window colors
-#define TEXT        2               ///< Text window colors
-#define STATUS      3               ///< Status line colors
-
-///
-///  @struct  region
-///
-///  @brief   Characteristics of a screen region
-///
-
-struct region
+enum window_pair
 {
-    int top;                        ///< Top of region
-    int bot;                        ///< Bottom of region
+    CMD = 1,                        ///< Command window
+    TEXT,                           ///< Text window
+    STATUS                          ///< Status line window
 };
-
-///
-///  @struct  display
-///
-///  @brief   Display format
-///
-
-struct display
-{
-    int row;                        ///< Text row
-    int col;                        ///< Text column
-    int vcol;                       ///< Virtual column
-    int nrows;                      ///< No. of text rows
-    struct region cmd;              ///< Command window
-    struct region text;             ///< Text window
-    struct region status;           ///< Status line
-};
-
-extern struct display d;            ///< Display variables
-
 
 ///  @struct  tchar
 ///  @brief   Terminal characteristics flag.

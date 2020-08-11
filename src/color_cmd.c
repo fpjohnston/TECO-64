@@ -45,6 +45,8 @@
 
 #if     defined(SCOPE)
 
+#define COLOR_BASE  16              ///< Starting base for new colors
+
 ///
 ///  @struct color_table
 ///
@@ -84,7 +86,7 @@ static int find_color(const char *token);
 
 static void set_color(const char *buf, uint len, int sat, short color);
 
-static void set_colors(const struct cmd *cmd, short pair);
+static void set_colors(const struct cmd *cmd, enum window_pair pair);
 
 #endif
 
@@ -247,7 +249,7 @@ static void set_color(const char *buf, uint len, int sat, short color)
 
 #if     defined(SCOPE)
 
-static void set_colors(const struct cmd *cmd, short pair)
+static void set_colors(const struct cmd *cmd, enum window_pair pair)
 {
     assert(cmd != NULL);
 
@@ -267,14 +269,26 @@ static void set_colors(const struct cmd *cmd, short pair)
         }
     }
 
-#define COLOR_BASE  16
+    // The following is used to set up new colors, whose saturation we can vary
+    // without affecting the use of the same colors by other windows. That is,
+    // the text window could use a white background at 100% while the command
+    // window could use one at 80%. If they both used the standard colors, then
+    // changing the saturation for one window would change the other.
+    //
+    // The colors have the following values:
+    //
+    // Window  Foreground  Background
+    // ------  ----------  ----------
+    // CMD         16          17
+    // TEXT        18          19
+    // STATUS      20          21
 
     short color = (short)(COLOR_BASE + ((pair - 1) * 2));
 
     set_color(cmd->text1.buf, cmd->text1.len, fg_sat, color);
     set_color(cmd->text2.buf, cmd->text2.len, bg_sat, color + 1);
 
-    (void)init_pair(pair, color, color + 1);
+    (void)init_pair((short)pair, color, color + 1);
 }
 
 #endif

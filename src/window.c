@@ -70,12 +70,41 @@
 #define MAX_POSITION    30          ///< Max. size of position string
 
 ///
+///  @struct  region
+///
+///  @brief   Characteristics of a screen region
+///
+
+struct region
+{
+    int top;                        ///< Top of region
+    int bot;                        ///< Bottom of region
+};
+
+///
+///  @struct  display
+///
+///  @brief   Display format
+///
+
+struct display
+{
+    int row;                        ///< Text row
+    int col;                        ///< Text column
+    int vcol;                       ///< Virtual column
+    int nrows;                      ///< No. of text rows
+    struct region cmd;              ///< Command window
+    struct region text;             ///< Text window
+    struct region status;           ///< Status line
+};
+
+///
 ///  @var     d
 ///
 ///  @brief   Display format
 ///
 
-struct display d =
+static struct display d =
 {
     .row    = 0,
     .col    = 0,
