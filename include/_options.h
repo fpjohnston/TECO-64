@@ -1,8 +1,8 @@
 ///
 ///  @file       _options.h
 ///
-///  @brief      Header file for teco utility. Automatically generated on
-///              Mon, 10 Aug 2020 at 12:46 EDT. DO NOT MODIFY.
+///  @brief      Header file for teco utility.
+///              *** Automatically generated file. DO NOT MODIFY. ***
 ///
 ///  @brief      External resources:
 ///
@@ -10,11 +10,11 @@
 ///
 ///  @brief      Process command-line options for TECO editor.
 ///
-///  @author     Franklin P. Johnston
+///  @author     Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  @bug        No known bugs.
 ///
-///  @copyright  2019-2020 Franklin P. Johnston
+///  @copyright  2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a
 ///  copy of this software and associated documentation files (the "Software"),

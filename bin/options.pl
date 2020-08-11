@@ -77,16 +77,13 @@ Readonly my $FILE      => q{@} . 'file';
 Readonly my $NAME      => q{@} . 'name';
 Readonly my $VAR       => q{@} . 'var';
 
-my @comment_hdr =
+my @file_hdr =
 (
     '///',
     "///  $FILE       _options.h",
     '///',
-    "///  $BRIEF      Header file for teco utility. Automatically generated on",
-);
-
-my @comment_tlr =
-(
+    "///  $BRIEF      Header file for teco utility.",
+    "///              *** Automatically generated file. DO NOT MODIFY. ***",
     '///',
     "///  $BRIEF      External resources:",
     '///',
@@ -94,11 +91,11 @@ my @comment_tlr =
     '///',
     "///  $BRIEF      Process command-line options for TECO editor.",
     '///',
-    "///  $AUTHOR     Franklin P. Johnston",
+    "///  $AUTHOR     Franklin P. Johnston / Nowwith Treble Software",
     '///',
     "///  $BUG        No known bugs.",
     '///',
-    "///  $COPYRIGHT  2019-2020 Franklin P. Johnston",
+    "///  $COPYRIGHT  2019-2020 Franklin P. Johnston / Nowwith Treble Software",
     '///',
     '///  Permission is hereby granted, free of charge, to any person obtaining a',
     '///  copy of this software and associated documentation files (the "Software"),',
@@ -490,11 +487,11 @@ sub print_header
 {
     my ($fh) = @_;
 
-    my $timestamp = strftime '%a, %e %b %Y at %H:%M %Z', localtime;
+    foreach my $line (@file_hdr)
+    {
+        print {$fh} "$line\n" or croak $ERRNO;
+    }
 
-    $timestamp = '///              ' . $timestamp . '. DO NOT MODIFY.' . "\n";
-
-    print_section($fh, \@comment_hdr,  $timestamp,        \@comment_tlr);
     print_section($fh, \@help_hdr,     $header{help},     \@help_tlr);
     print_section($fh, \@enums_hdr,    $header{enums},    \@enums_tlr);
     print_section($fh, \@short_hdr,    $header{short},    \@short_tlr);
