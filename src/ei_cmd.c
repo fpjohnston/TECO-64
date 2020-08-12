@@ -239,7 +239,7 @@ int read_indirect(void)
         }
     }
 
-    return 1;                           // And tell the caller it's partial
+    return 1;                           // We only have a partial command
 }
 
 
