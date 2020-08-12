@@ -164,7 +164,6 @@ static void init_teco(int argc, const char * const argv[])
     f.et.accent  = true;                // Use accent grave as delimiter
 
     f.e1.xoper   = true;                // Allow extended operators
-    f.e1.tilde   = true;                // Allow tilde operator
     f.e1.msec    = true;                // Return time in milliseconds
     f.e1.text    = true;                // Enable extended text strings
 

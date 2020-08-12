@@ -63,7 +63,6 @@ union e1_flag
     struct
     {
         uint xoper  : 1;        ///< Enable extended operators
-        uint tilde  : 1;        ///< Enable tilde commands
         uint msec   : 1;        ///< Return time in milliseconds
         uint text   : 1;        ///< Enable extended text strings
     };
