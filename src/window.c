@@ -635,10 +635,13 @@ int readkey_win(int key)
     }
     else if (key == KEY_LEFT || key == KEY_RIGHT)
     {
-       int dot = (int)t.dot + (key == KEY_LEFT ? -1 : 1);
+        int dot = (int)t.dot + (key == KEY_LEFT ? -1 : 1);
 
-       setpos_ebuf(dot);
-       refresh_win();
+        if (dot >= t.B && dot <= t.Z)
+        {
+            setpos_ebuf(dot);
+            refresh_win();
+        }
     }
 
     return EOF;
