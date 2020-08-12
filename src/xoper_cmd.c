@@ -45,11 +45,6 @@
 
 bool exec_xoper(int c)
 {
-    if (nparens == 0 || !f.e1.xoper)
-    {
-        return false;                   // No extended operator possible
-    }
-
     switch (c)
     {
         case '>':                       // Check for >, >=, and >>

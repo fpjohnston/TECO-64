@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -40,9 +41,9 @@
 #include "exec.h"
 #include "file.h"
 
+static struct buffer ei_data;
 
 // Local functions
-
 
 static void exit_EI(void);
 
@@ -105,6 +106,56 @@ void exec_EI(struct cmd *cmd)
     {
         push_expr(-1, EXPR_VALUE);
     }
+
+    struct stat file_stat;
+
+    if (stat(last_file, &file_stat))
+    {
+        throw(E_SYS, last_file);        // Unexpected system error
+    }
+
+    uint size = (uint)file_stat.st_size;
+
+    free_mem(&ei_data.buf);
+
+    // If there's data in the file, then allocate a buffer for it.
+
+    if (size != 0)
+    {
+        ei_data.len  = size;
+        ei_data.pos  = 0;
+        ei_data.size = size;
+        ei_data.buf  = alloc_mem(size);
+
+        if (fread(ei_data.buf, 1uL, (ulong)size, ifile->fp) != size)
+        {
+            throw(E_SYS, ifile->name);  // Unexpected system error
+        }
+
+        // Start at end of command string, and back up until we find a
+        // non-whitespace character. This allows the use of such things
+        // as spaces or CRLFs after a double escape. Note that we don't
+        // skip TABs, since those are TECO commands.
+
+        while (ei_data.len > 0)
+        {
+            int c = ei_data.buf[ei_data.len - 1];
+
+            if (!isspace(c) || c == TAB)
+            {
+                break;
+            }
+
+            --ei_data.len;
+        }
+
+        if (ei_data.len == 0)           // Any data left?
+        {
+            free_mem(&ei_data.buf);     // No, discard allocated memory
+        }
+    }
+
+    close_input(IFILE_INDIRECT);
 }
 
 
@@ -144,64 +195,31 @@ void init_EI(void)
 
 int read_indirect(void)
 {
-    struct ifile *stream = &ifiles[IFILE_INDIRECT];
-
-    if (stream->fp == NULL)
+    if (ei_data.buf == NULL)
     {
         return 0;
     }
 
-    int c = fgetc(stream->fp);          // Get first character
-
-    if (c == EOF)                       // Anything?
-    {
-        close_input(IFILE_INDIRECT);    // No, close file
-
-        return 0;
-    }
-
-    do
-    {
-        store_cbuf(c);                  // Store command character
-    } while ((c = fgetc(stream->fp)) != EOF);
-
-    const char *buf = command->buf;
-    uint len = command->len;
-
-    // Start at end of command string, and back up until we find a
-    // non-whitespace character. This allows the use of such things
-    // as spaces or CRLFs after a double escape. Note that we don't
-    // skip TABs, since those are TECO commands.
-
-    while (len > 0)
-    {
-        c = buf[len - 1];
-
-        if (!isspace(c) || c == TAB)
-        {
-            break;
-        }
-
-        --len;
-    }
+    set_cbuf(&ei_data);                 // Use command string we allocated
 
     // Check to see if buffer ends with a double ESCape, or some combination
     // of an ESCape and its equivalent 2-chr. ASCII construct (i.e., ^[ ).
 
+    uint len = command->len;
     int c1 = EOF, c2 = EOF, c3 = EOF, c4 = EOF;
 
     if (len >= 2)                       // 2+ chrs. for ESC+ESC
     {
-        c1 = buf[len - 1];
-        c2 = buf[len - 2];
+        c1 = command->buf[len - 1];
+        c2 = command->buf[len - 2];
 
         if (len >= 3)                   // 3+ chrs. for ESC+^[ or ^[+ESC
         {
-            c3 = buf[len - 3];
+            c3 = command->buf[len - 3];
 
             if (len >= 4)               // 4+ chrs. for ^[ + ^[
             {
-                c4 = buf[len - 4];
+                c4 = command->buf[len - 4];
             }
         }
 
@@ -213,8 +231,6 @@ int read_indirect(void)
             return -1;                  // Say we have a complete command
         }
     }
-
-    close_input(IFILE_INDIRECT);        // Close file for partial command
 
     return 1;                           // And tell the caller it's partial
 }
@@ -229,5 +245,7 @@ int read_indirect(void)
 
 void reset_indirect(void)
 {
+    free_mem(&ei_data);
+
     close_input(IFILE_INDIRECT);
 }

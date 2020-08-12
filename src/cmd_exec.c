@@ -37,6 +37,10 @@
 #include "exec.h"
 #include "qreg.h"
 
+
+#undef toupper
+#define toupper(c) (c >= 'a' && c <= 'z') ? c - 'a' + 'A' : c
+
 uint nparens;                       ///< Parenthesis nesting count
 
 ///  @var    null_cmd
@@ -248,7 +252,7 @@ static const struct cmd_table *get_entry(struct cmd *cmd)
 
     int c = toupper(cmd->c1);
 
-    if (exec_xoper(c))                  // Check for extended operators
+    if (nparens != 0 && f.e1.xoper && exec_xoper(c))
     {
         if (c != '{' && c != '}')
         {
@@ -290,10 +294,6 @@ static const struct cmd_table *get_entry(struct cmd *cmd)
         }
 
         cmd->c1 = (char)c;
-    }
-    else
-    {
-        c = toupper(c);
     }
 
     return &cmd_table[c];
