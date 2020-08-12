@@ -193,26 +193,6 @@ void init_cbuf(void)
 
 
 ///
-///  @brief    Get pointer to next character in buffer.
-///
-///  @returns  Pointer to next character.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-char *next_cbuf(void)
-{
-    assert(command != NULL);
-
-    if (command->pos == command->len)
-    {
-        return NULL;
-    }
-
-    return command->buf + command->pos;
-}
-
-
-///
 ///  @brief    Reset command buffer.
 ///
 ///  @returns  Nothing.

@@ -144,8 +144,6 @@ extern struct buffer *get_cbuf(void);
 
 extern void init_cbuf(void);
 
-extern char *next_cbuf(void);
-
 extern void reset_cbuf(void);
 
 extern void set_cbuf(struct buffer *buf);

@@ -101,6 +101,8 @@ void exec_EI(struct cmd *cmd)
     if (ifile == NULL)
     {
         push_expr(0, EXPR_VALUE);
+
+        return;
     }
     else if (cmd->colon)
     {

@@ -50,7 +50,9 @@ const struct cmd_table *exec_F(struct cmd *cmd)
 
     const char *f_cmds = "'123<>BCDKLNRSU_|";
 
-    int c = fetch_cbuf(NOSTART);
+    check_end();
+    
+    int c = command->buf[command->pos++];
 
     const char *f_cmd = strchr(f_cmds, toupper(c));
 

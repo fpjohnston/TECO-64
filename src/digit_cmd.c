@@ -58,9 +58,8 @@ void exec_digit(struct cmd *cmd)
 
     int c = cmd->c1;
     int n = 0;
-    bool flag = check_macro() ? START : NOSTART;
 
-    do
+    for (;;)
     {
         c -= '0';
 
@@ -71,12 +70,17 @@ void exec_digit(struct cmd *cmd)
 
         n *= (int)radix;                // Shift over existing digits
         n += c;                         // And add in the new digit
-        
-    } while (isdigit(c = fetch_cbuf(flag)));
 
-    if (c != EOF)
-    {
-        unfetch_cbuf(c);                // Put back last character
+        // If we've reached the end of the command string, or
+        // we've encountered a non-digit, then we're done.
+
+        if (command->pos == command->len ||
+            !isdigit(c = command->buf[command->pos]))
+        {
+            break;
+        }
+
+        ++command->pos;
     }
 
     push_expr(n, EXPR_VALUE);

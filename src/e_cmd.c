@@ -50,7 +50,9 @@ const struct cmd_table *exec_E(struct cmd *cmd)
 
     const char *e_cmds = "12345ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
-    int c = fetch_cbuf(NOSTART);
+    check_end();
+    
+    int c = command->buf[command->pos++];
 
     const char *e_cmd = strchr(e_cmds, toupper(c));
 

@@ -39,7 +39,7 @@
 
 
 #undef toupper
-#define toupper(c) (c >= 'a' && c <= 'z') ? c - 'a' + 'A' : c
+#define toupper(c) ((c >= 'a' && c <= 'z') ? c - ('a' - 'A') : c)
 
 uint nparens;                       ///< Parenthesis nesting count
 
@@ -76,8 +76,6 @@ static void finish_cmd(struct cmd *cmd, union cmd_opts opts);
 
 static const struct cmd_table *get_entry(struct cmd *cmd);
 
-static union cmd_opts scan_opts(const struct cmd_table *entry);
-
 static void scan_tail(struct cmd *cmd, union cmd_opts opts);
 
 static void scan_text(int delim, struct tstring *tstring);
@@ -97,6 +95,30 @@ void check_args(struct cmd *cmd)
     if (cmd->h || cmd->ctrl_y)
     {
         throw(E_ARG);                   // Improper arguments
+    }
+}
+
+
+///
+///  @brief    Verify that we're not prematurely at end of command; if we are,
+///            then throw an exception.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void check_end(void)
+{
+    if (command->pos == command->len)
+    {
+        if (check_macro())
+        {
+            throw(E_UTM);           // Unterminated macro
+        }
+        else
+        {
+            throw(E_UTC);           // Unterminated command
+        }
     }
 }
 
@@ -311,9 +333,6 @@ exec_func *next_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int c;
-    bool start = true;
-
     *cmd = null_cmd;
 
     // Start parsing the command string. We will stay in this loop as long as
@@ -323,9 +342,9 @@ exec_func *next_cmd(struct cmd *cmd)
     // file, for instance), then we return to the caller to have the command
     // executed.
 
-    while ((c = fetch_cbuf(start)) != EOF)
+    while (command->pos < command->len)
     {
-        start = false;
+        int c = command->buf[command->pos++];
 
         cmd->c1 = (char)c;
         cmd->c2 = NUL;
@@ -340,7 +359,9 @@ exec_func *next_cmd(struct cmd *cmd)
             continue;
         }
 
-        union cmd_opts opts = scan_opts(entry);
+        assert(entry->opts != NULL);
+
+        union cmd_opts opts = *entry->opts;
 
         if (opts.q)                     // Q-register required?
         {
@@ -383,6 +404,15 @@ exec_func *next_cmd(struct cmd *cmd)
         cmd->qlocal = false;
     }
 
+    if (loop_depth != 0)
+    {
+        throw(E_UTL);                   // Unterminated loop
+    }
+    else if (if_depth != 0)
+    {
+        throw(E_UTQ);                   // Unterminated conditional
+    }
+
     // If we're not in a macro, then confirm that parentheses were properly
     // matched, and that there's nothing left on the expression stack.
 
@@ -406,53 +436,6 @@ exec_func *next_cmd(struct cmd *cmd)
 
 
 ///
-///  @brief    Get the options for the current command.
-///
-///  @returns  Command options.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static union cmd_opts scan_opts(const struct cmd_table *entry)
-{
-    assert(entry != NULL);
-
-    union cmd_opts opts;
-
-    if (entry->opts == NULL)            // If no option block for command,
-    {
-        opts.bits = 0;                  //  then all options are disabled
-    }
-    else
-    {
-        opts = *entry->opts;
-
-        // m argument implies n argument, as does a flag command.
-
-        if (opts.m || opts.f)
-        {
-            opts.n = 1;
-        }
-
-        // :: implies :
-
-        if (opts.d)
-        {
-            opts.c = 1;
-        }
-
-        // If 2nd text argument is allowed, so is 1st text argument.
-
-        if (opts.t2)
-        {
-            opts.t1 = 1;
-        }
-    }
-
-    return opts;
-}
-
-
-///
 ///  @brief    Scan the rest of the command string. We enter here after scanning
 ///            any expression, and any prefix modifiers.
 ///
@@ -464,108 +447,141 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 {
     assert(cmd != NULL);
 
-    int c;
-
-    cmd->delim = ESC;                   // Assume standard delimiter
-
-    if (cmd->c1 == CTRL_A || cmd->c1 == '!')
+    if (cmd->c1 == '=')                 // Might have =, ==, or ===
     {
-        cmd->delim = cmd->c1;           // Use special delimiter
-    }
-    else if (cmd->c1 == '=')
-    {
-        bool start = check_macro() ? START : NOSTART;
+        if (command->pos < command->len && command->buf[command->pos] == '=')
+        {
+            ++command->pos;
 
-        if ((c = fetch_cbuf(start)) != '=')
-        {
-            unfetch_cbuf(c);
-        }
-        else if ((c = fetch_cbuf(start)) != '=')
-        {
-            unfetch_cbuf(c);
+            cmd->c2 = cmd->c1;
+            
+            if (command->pos < command->len && command->buf[command->pos] == '=')
+            {
+                ++command->pos;
 
-            cmd->c2 = '=';
-        }
-        else
-        {
-            cmd->c3 = cmd->c2 = '=';
+                cmd->c3 = cmd->c1;
+            }
         }
 
-        if (!cmd->atsign)
+        if (!cmd->atsign)               // Done unless at-sign seen
         {
             return;
         }
     }
     else if (cmd->c1 == '"')            // " requires additional character
     {
-        cmd->c2 = (char)fetch_cbuf(NOSTART);
+        check_end();
+
+        cmd->c2 = command->buf[command->pos++];
+
+        return;
     }
-    else if (opts.w)                    // Is W possible?
+    else if (opts.w)                    // Is W possible (for P)?
     {
-        bool start = check_macro() ? START : NOSTART;
-
-        c = fetch_cbuf(start);
-
-        if (toupper(c) == 'W')
+        if (command->pos != command->len)
         {
-            cmd->w = true;
+            int c = command->buf[command->pos];
+            
+            if (toupper(c) == 'W')
+            {
+                cmd->w = true;
+                ++command->pos;
+            }
         }
-        else
-        {
-            unfetch_cbuf(c);
-        }
+
+        return;
     }
 
-    // If the user specified the at-sign modifier, then we allow whitespace
-    // between the command and the delimiter. Note that whitespace does not
-    // include tabs, since those are TECO commands.
+    // If command doesn't allow any text arguments, then just return, but throw
+    // an exception if we've seen an at-sign.
+
+    if (!opts.t1)
+    {
+        if (cmd->atsign)
+        {
+            throw(E_MOD);               // Invalid modifier
+        }
+
+        return;
+    }
+
+    // Here to check for text arguments. The standard delimiter is ESCape,
+    // except for CTRL/A and ! commands. If an at-sign was specified, then
+    // the (non-whitespace) delimiter follows the command.
+
+    if (cmd->c1 == CTRL_A || cmd->c1 == '!')
+    {
+        cmd->delim = cmd->c1;           // Use special delimiter
+    }
+    else
+    {
+        cmd->delim = ESC;               // Standard delimiter
+    }
+
+    // If the user specified the at-sign modifier, then skip any whitespace
+    // between the command and the delimiter. This does not include tabs,
+    // since those are TECO commands.
 
     if (cmd->atsign)                    // @ modifier?
     {
-        while (isspace(c = fetch_cbuf(NOSTART)) && c != '\t')
+        while (command->pos < command->len)
         {
-            ;                           // Skip leading whitespace
+            int c = command->buf[command->pos];
+
+            if (!isspace(c) || c == '\t')
+            {
+                break;
+            }
+
+            ++command->pos;
         }
 
-        cmd->delim = (char)c;           // Next character is delimiter
+        check_end();                    // Must have at least 1 more character
+
+        // The next character has to be the delimiter.
+
+        cmd->delim = command->buf[command->pos++];
     }
 
-    int delim = cmd->delim;
+    int delim = cmd->delim;             // Temporary copy of delimiter
 
-    // Now get the text strings, if they're allowed for this command.
-    // Note that if f.e1.text is enabled and the delimiter is '{', then
-    // the text strings may be of the form {xxx}. This allows for such
-    // commands as @S {foo} or @FS {foo} {baz}.
+    // Now get the text strings. If f.e1.text is enabled and the delimiter is
+    // '{', then the text strings may be of the form {xxx}. This allows for
+    // commands such as @S {foo} or @FS {foo} {baz}.
 
-    if (opts.t1)
+    if (f.e1.text && cmd->delim == '{')
     {
+        delim = '}';
+    }
+
+    scan_text(delim, &cmd->text1);
+
+    if (opts.t2)
+    {
+        delim = cmd->delim;
+
         if (f.e1.text && cmd->delim == '{')
         {
+            while (command->pos < command->len)
+            {
+                int c = command->buf[command->pos];
+
+                if (!isspace(c) || c == '\t')
+                {
+                    break;
+                }
+
+                ++command->pos;
+            }
+
+            check_end();
+
+            scan_text(delim, &cmd->text2);
+
             delim = '}';
         }
 
-        scan_text(delim, &cmd->text1);
-
-        if (opts.t2)
-        {
-            delim = cmd->delim;
-
-            if (f.e1.text && cmd->delim == '{')
-            {
-                while (isspace(c = fetch_cbuf(NOSTART)))
-                {
-                    ;                   // Skip whitespace
-                }
-
-                unfetch_cbuf(c);
-
-                scan_text(delim, &cmd->text2);
-
-                delim = '}';
-            }
-
-            scan_text(delim, &cmd->text2);
-        }
+        scan_text(delim, &cmd->text2);
     }
 }
 
@@ -582,14 +598,7 @@ static void scan_text(int delim, struct tstring *text)
     assert(text != NULL);
 
     text->len = 0;
-    text->buf = next_cbuf();
-
-    int c = fetch_cbuf(NOSTART);
-
-    if (c == delim)
-    {
-        return;
-    }
+    text->buf = command->buf + command->pos;
 
     bool caret = false;                 // Flag for scanned uparrow character
 
@@ -599,9 +608,15 @@ static void scan_text(int delim, struct tstring *text)
     // Only doing this when the delimiter is ESCape allows the use of ESCape
     // characters in such situations as the use of at-sign modifiers.
 
-    do
+    while (command->pos < command->len)
     {
-        if (delim == ESC)
+        int c = command->buf[command->pos++];
+
+        if (c == delim)
+        {
+            return;
+        }
+        else if (delim == ESC)
         {
             if (caret && c == '[')
             {
@@ -614,6 +629,9 @@ static void scan_text(int delim, struct tstring *text)
         }
 
         ++text->len;
+    }
 
-    } while ((c = fetch_cbuf(NOSTART)) != delim);
+    // Here if we reached end of command string before we saw a delimiter.
+
+    check_end();
 }
