@@ -197,6 +197,11 @@ void init_EI(void)
 
 int read_indirect(void)
 {
+    if (ei_data.len == 0)
+    {
+        free_mem(&ei_data.buf);
+    }
+
     if (ei_data.buf == NULL)
     {
         return 0;
