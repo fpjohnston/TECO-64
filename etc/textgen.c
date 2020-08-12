@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 
     for (int i = 1; i <= count; ++i)
     {
-        int nbytes = printf("Line %05d: ", i) + 1;
+        int nbytes = printf("Line %07d: ", i) + 1;
 
         printf("%.*s\n", length - nbytes, "abcdefghijklmnopqrstuvwxyz "
                "0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZ");
