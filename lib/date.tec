@@ -1,8 +1,9 @@
 !DATE.TEC!
-! display the current date and time:                    !
-!   ^B == ((year-1900)*16+month)*32+day                 !
-!   ^H == (milliseconds since midnight)                 !
+! display the current date and time:                      !
+!   ^B == ((year-1900)*16+month)*32+day                   !
+!   ^H == (milliseconds since midnight)                   !
 
+0,128ET                 ! Abort on error                  !
 EO-200 "L
     :@^A/%Macro requires TECO v200 or later/
     ^C
