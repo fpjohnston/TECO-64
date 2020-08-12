@@ -28,6 +28,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -39,7 +40,7 @@
 
 
 #undef toupper
-#define toupper(c) ((c >= 'a' && c <= 'z') ? c - ('a' - 'A') : c)
+#define toupper(c) ((c >= 'a' && c <= 'z') ? c - ('a' - 'A') : c) //lint !e652
 
 uint nparens;                       ///< Parenthesis nesting count
 
@@ -75,6 +76,10 @@ static const struct cmd null_cmd =
 static void finish_cmd(struct cmd *cmd, union cmd_opts opts);
 
 static const struct cmd_table *get_entry(struct cmd *cmd);
+
+static const struct cmd_table *scan_ef(struct cmd *cmd, const char *cmds,
+                                       const struct cmd_table *table,
+                                       uint count, int error);
 
 static void scan_tail(struct cmd *cmd, union cmd_opts opts);
 
@@ -285,11 +290,15 @@ static const struct cmd_table *get_entry(struct cmd *cmd)
     }
     else if (c == 'E')
     {
-        return exec_E(cmd);
+        static const char *e_cmds = "12345ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+
+        return scan_ef(cmd, e_cmds, e_table, e_count, E_IEC);
     }
     else if (c == 'F')
     {
-        return exec_F(cmd);
+        static const char *f_cmds = "'123<>BCDKLNRSU_|";
+
+        return scan_ef(cmd, f_cmds, f_table, f_count, E_IFC);
     }
     else if (c < 0 || c >= (int)cmd_count)
     {
@@ -432,6 +441,42 @@ exec_func *next_cmd(struct cmd *cmd)
     }
 
     return NULL;
+}
+
+
+///
+///  @brief    Scan 2nd character for E or F command.
+///
+///  @returns  Table entry.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static const struct cmd_table *scan_ef(struct cmd *cmd, const char *cmds,
+                                       const struct cmd_table *table,
+                                       uint count, int error)
+{
+    assert(cmd != NULL);
+    assert(cmds != NULL);
+    assert(table != NULL);
+
+    check_end();
+
+    int c = command->buf[command->pos++];
+
+    const char *p = strchr(cmds, toupper(c));
+
+    if (p == NULL)
+    {
+        throw(error, c);                // Illegal E character
+    }
+
+    cmd->c2 = (char)c;
+
+    uint idx = (uint)(p - cmds);
+
+    assert(idx < count);
+
+    return &table[idx];
 }
 
 

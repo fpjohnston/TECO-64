@@ -104,8 +104,6 @@ extern void exec_digit(struct cmd *cmd);
 
 extern void exec_dot(struct cmd *cmd);
 
-extern const struct cmd_table *exec_E(struct cmd *cmd);
-
 extern void exec_E1(struct cmd *cmd);
 
 extern void exec_E2(struct cmd *cmd);
@@ -173,8 +171,6 @@ extern void exec_EY(struct cmd *cmd);
 extern void exec_EZ(struct cmd *cmd);
 
 extern void exec_E_ubar(struct cmd *cmd);
-
-extern const struct cmd_table *exec_F(struct cmd *cmd);
 
 extern void exec_F1(struct cmd *cmd);
 

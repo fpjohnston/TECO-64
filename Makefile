@@ -108,7 +108,6 @@ SOURCES = \
     datetime_cmd.c \
     delete_cmd.c   \
     digit_cmd.c    \
-    e_cmd.c        \
     ea_cmd.c       \
     eb_cmd.c       \
     ec_cmd.c       \
@@ -127,7 +126,6 @@ SOURCES = \
     ew_cmd.c       \
     ex_cmd.c       \
     ez_cmd.c       \
-    f_cmd.c        \
     fb_cmd.c       \
     fd_cmd.c       \
     fk_cmd.c       \
