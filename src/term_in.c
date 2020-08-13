@@ -724,7 +724,7 @@ static void rubout_chr(int c)
 
 static void rubout_chrs(uint n)
 {
-    for (uint i = 0; i < n; ++i)
+    while (n-- > 0)
     {
         print_echo(BS);
         print_echo(SPACE);
