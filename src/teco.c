@@ -183,8 +183,8 @@ static void init_teco(int argc, const char * const argv[])
 
 #endif
 
-    f.e3.dollar  = true;                // Allow dollar signs in symbols
-    f.e3.ubar    = true;                // Allow underscores in symbols
+    f.e1.dollar  = true;                // Allow dollar signs in symbols
+    f.e1.ubar    = true;                // Allow underscores in symbols
 
     f.e4.winline = true;                // Line between text & command regions
     f.e4.status  = true;                // Display status on line

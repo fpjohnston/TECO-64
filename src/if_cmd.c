@@ -282,8 +282,8 @@ void exec_quote(struct cmd *cmd)
 
         case 'C':                       // Test for symbol constituent
             if (isalnum(c) || c == '.'  ||
-                (f.e3.ubar && c == '_') ||
-                (f.e3.dollar && c == '$'))
+                (f.e1.ubar && c == '_') ||
+                (f.e1.dollar && c == '$'))
             {
                 return;
             }

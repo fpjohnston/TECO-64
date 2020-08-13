@@ -64,6 +64,8 @@ union e1_flag
         uint xoper  : 1;        ///< Enable extended operators
         uint msec   : 1;        ///< Return time in milliseconds
         uint text   : 1;        ///< Enable extended text strings
+        uint dollar : 1;        ///< $ is a valid symbol character
+        uint ubar   : 1;        ///< _ is a valid symbol character
     };
 };
 
@@ -102,8 +104,6 @@ union e3_flag
         uint icrlf  : 1;        ///< Use CR/LF for input lines
         uint ocrlf  : 1;        ///< Use CR/LF for output lines
         uint no_ff  : 1;        ///< FF is normal character on input
-        uint dollar : 1;        ///< $ is a valid symbol character
-        uint ubar   : 1;        ///< _ is a valid symbol character
         uint noin   : 1;        ///< Don't type input to log file
         uint noout  : 1;        ///< Don't type output to log file
     };

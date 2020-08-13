@@ -238,8 +238,8 @@ static int isqreg(int c, struct search *s)
 static int issymbol(int c)
 {
     if (isalnum(c)   || c == '.' ||
-        (f.e3.dollar && c == '$') ||
-        (f.e3.ubar   && c == '_'))
+        (f.e1.dollar && c == '$') ||
+        (f.e1.ubar   && c == '_'))
     {
         return 1;
     }
