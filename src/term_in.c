@@ -395,6 +395,8 @@ static void read_ctrl_g(void)
     }
     else if (c == SPACE)                // ^G<SPACE> - retype current line
     {
+        print_echo(CRLF);
+
         if (start_tbuf() == 0)          // First line?
         {
             print_prompt();             // Yes, we need the prompt
