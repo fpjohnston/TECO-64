@@ -131,9 +131,9 @@ static int isblankx(int c, struct search *s)
 ///  @brief    Check for case-insensitive match, depending on the setting of
 ///            the CTRL/X flag:
 ///
-///            -1: Case-sensitive match.
-///             0: Case-insensitive match.
-///             1: Old case-insensitive match. Not only matches alphabetic
+///             1: Case-insensitive match.
+///
+///             0: Old case-insensitive match. Not only matches alphabetic
 ///                characters, but additionally the following pairs.
 ///
 ///                @ (64) and ` (96)
@@ -141,6 +141,8 @@ static int isblankx(int c, struct search *s)
 ///                | (92) and \ (124)
 ///                ] (93) and } (125)
 ///                ^ (94) and ~ (126)
+///
+///            -1: Case-sensitive match.
 ///
 ///            Note that we return 1/0 instead of true/false for compatibility
 ///            with the ANSI isxxx() functions.
@@ -153,11 +155,6 @@ static int isctrlx(int c, int match)
 {
     if (f.ctrl_x == 0)
     {
-        c = toupper(c);
-        match = toupper(match);
-    }
-    else if (f.ctrl_x == 1)
-    {
         if (c >= '@' && c <= '^')
         {
             c += 'a' - 'A';
@@ -167,6 +164,11 @@ static int isctrlx(int c, int match)
         {
             match += 'a' - 'A';
         }
+    }
+    else if (f.ctrl_x == 1)
+    {
+        c = toupper(c);
+        match = toupper(match);
     }
 
     return (c == match) ? 1 : 0;
