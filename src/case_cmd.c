@@ -123,8 +123,16 @@ static void exec_case(struct cmd *cmd, bool lower)
                 n = 1;
             }
 
-            m = 0;
-            n = getdelta_ebuf(n);
+            if (n < 1)
+            {
+                m = getdelta_ebuf(n);
+                n = 0;
+            }
+            else
+            {
+                m = 0;
+                n = getdelta_ebuf(n);
+            }
         }
     }
 
@@ -152,6 +160,4 @@ static void exec_case(struct cmd *cmd, bool lower)
             }
         }
     }
-
-    setpos_ebuf(dot + n);
 }
