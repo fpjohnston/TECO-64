@@ -79,6 +79,11 @@ static void read_qname(int c);
 
 static void read_vt(void);
 
+static void rubout_chr(int c);
+
+static void rubout_chrs(uint n);
+
+static void rubout_line(void);
 
 
 ///
@@ -96,9 +101,7 @@ static void read_bs(void)
     {
         if (f.et.rubout)
         {
-            print_echo(BS);
-            print_echo(SPACE);
-            print_echo(BS);
+            rubout_chr(c);
         }
         else
         {
@@ -123,27 +126,7 @@ static void read_bs_or_lf(int pos, int line)
     }
     else if (f.et.rubout)
     {
-        int c;
-        int nbytes = (int)strlen(prompt);
-
-        while ((c = delete_tbuf()) != EOF)
-        {
-            if (isdelim(c))
-            {
-                store_tbuf(c);
-
-                break;
-            }
-
-            ++nbytes;
-        }
-
-        for (int i = 0; i < nbytes; ++i)
-        {
-            print_echo(BS);
-            print_echo(SPACE);
-            print_echo(BS);
-        }
+        rubout_line();
     }
     else
     {
@@ -438,27 +421,7 @@ static void read_ctrl_u(void)
     }
     else if (f.et.rubout)
     {
-        int c;
-        int nbytes = (int)strlen(prompt);
-
-        while ((c = delete_tbuf()) != EOF)
-        {
-            if (isdelim(c))
-            {
-                store_tbuf(c);
-
-                break;
-            }
-
-            ++nbytes;
-        }
-
-        for (int i = 0; i < nbytes; ++i)
-        {
-            print_echo(BS);
-            print_echo(SPACE);
-            print_echo(BS);
-        }
+        rubout_line();
     }
     else
     {
@@ -731,4 +694,67 @@ static void read_vt(void)
     }
 
     store_tbuf(VT);
+}
+
+
+///
+///  @brief    Rubout single echoed character.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void rubout_chr(int c)
+{
+    // Echoed input is normally only a single character, but if we're not
+    // in image mode, then control characters require an extra RUBOUT.
+
+    uint n = iscntrl(c) && !f.et.image ? 2 : 1;
+
+    rubout_chrs(n);
+}
+    
+
+///
+///  @brief    Rubout multiple echoed characters.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void rubout_chrs(uint n)
+{
+    for (uint i = 0; i < n; ++i)
+    {
+        print_echo(BS);
+        print_echo(SPACE);
+        print_echo(BS);
+    }
+}
+
+
+///
+///  @brief    Rubout entire line (including the prompt).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void rubout_line(void)
+{
+    int c;
+
+    while ((c = delete_tbuf()) != EOF)
+    {
+        if (isdelim(c))                 // Delimiter for previous line?
+        {
+            store_tbuf(c);              // Yes, put it back
+
+            break;
+        }
+
+        rubout_chr(c);
+    }
+
+    rubout_chrs((uint)strlen(prompt));
 }
