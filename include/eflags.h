@@ -46,7 +46,6 @@ struct e0_flag
     uint ctrl_c : 1;            ///< CTRL/C seen
     uint lower  : 1;            ///< Force string arguments to lower case
     uint upper  : 1;            ///< Force string arguments to upper case
-    uint window : 1;            ///< --window: enable window display
     uint winact : 1;            ///< Window display is active
     uint trace  : 1;            ///< Trace mode is active
     uint dryrun : 1;            ///< Print but don't execute commands

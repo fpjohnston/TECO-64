@@ -389,7 +389,11 @@ static void read_ctrl_g(void)
     {
         reset_cbuf();
         print_echo(CRLF);               // Start new line
-        put_bell();
+
+        if (!f.e0.winact)               // Don't ring bell if window active
+        {
+            put_bell();
+        }
 
         longjmp(jump_main, 1);
     }
