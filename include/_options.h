@@ -71,6 +71,7 @@ static const char * const help_text[] =
     "  -A, --argument=n       Store numeric value 'n' in Q-register A.",
     "  -B, --buffer=xyz       Store text 'xyz' in edit buffer.",
     "  -E, --execute=xyz      Execute TECO macro in file 'xyz'.",
+    "  -X, --exit             Exit from TECO when indirect command file is closed.",
     "",
     "Initialization options:",
     "",
@@ -112,6 +113,7 @@ enum option_t
     OPTION_R = 'R',
     OPTION_S = 'S',
     OPTION_W = 'W',
+    OPTION_X = 'X',
     OPTION_Z = 'Z',
     OPTION_c = 'c',
     OPTION_i = 'i',
@@ -123,7 +125,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "A:B:CE:HI::L:MO:RS:WZ::cimor";
+static const char * const optstring = "A:B:CE:HI::L:MO:RS:WXZ::cimor";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -142,6 +144,7 @@ static const struct option long_options[] =
     { "read-only",      no_argument,        NULL,  'R'    },
     { "scroll",         required_argument,  NULL,  'S'    },
     { "window",         no_argument,        NULL,  'W'    },
+    { "exit",           no_argument,        NULL,  'X'    },
     { "zero",           optional_argument,  NULL,  'Z'    },
     { "nocreate",       no_argument,        NULL,  'c'    },
     { "noinitialize",   no_argument,        NULL,  'i'    },

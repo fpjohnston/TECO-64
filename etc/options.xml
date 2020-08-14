@@ -55,6 +55,11 @@
             <argument>required</argument>
             <help>Execute TECO macro in file 'xyz'.</help>
         </option>
+        <option>
+            <short_name>X</short_name>
+            <long_name>exit</long_name>
+            <help>Exit from TECO when indirect command file is closed.</help>
+        </option>
     </section>
     <section title="Initialization options">
         <option>

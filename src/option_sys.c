@@ -535,6 +535,11 @@ void set_config(
 
                 break;
 
+            case OPTION_X:
+                f.e0.exit = true;
+
+                break;
+
             case OPTION_Z:
                 if (optarg != NULL)
                 {

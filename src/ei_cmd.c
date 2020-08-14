@@ -36,6 +36,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
@@ -126,8 +127,8 @@ void exec_EI(struct cmd *cmd)
     {
         ei_data.len  = size;
         ei_data.pos  = 0;
-        ei_data.size = size;
-        ei_data.buf  = alloc_mem(size);
+        ei_data.size = size + 2;        // +2 for possible CTRL/C's
+        ei_data.buf  = alloc_mem(ei_data.size);
 
         if (fread(ei_data.buf, 1uL, (ulong)size, ifile->fp) != size)
         {
@@ -235,6 +236,17 @@ int read_indirect(void)
             (c1 == '[' && c2 == '^' && c3 == ESC) ||
             (c1 == '[' && c2 == '^' && c3 == '[' && c4 == '^'))
         {
+            // If --exit option was used, then insert a couple of CTRL/C's
+            // at the end of the command string to ensure that we exit TECO.
+
+            if (f.e0.exit)
+            {
+                command->len += 2;
+
+                command->buf[len - 2] = CTRL_C;
+                command->buf[len - 1] = CTRL_C;
+            }
+
             return -1;                  // Say we have a complete command
         }
     }
