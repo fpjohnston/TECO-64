@@ -290,7 +290,7 @@ static const struct cmd_table *get_entry(struct cmd *cmd)
     }
     else if (c == 'E')
     {
-        static const char *e_cmds = "12345ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+        static const char *e_cmds = "12345ABCDEFGHIJKLMNOPQRSTUVWXY_";
 
         return scan_ef(cmd, e_cmds, e_table, e_count, E_IEC);
     }

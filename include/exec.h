@@ -168,8 +168,6 @@ extern void exec_EX(struct cmd *cmd);
 
 extern void exec_EY(struct cmd *cmd);
 
-extern void exec_EZ(struct cmd *cmd);
-
 extern void exec_E_ubar(struct cmd *cmd);
 
 extern void exec_F1(struct cmd *cmd);
@@ -270,11 +268,11 @@ extern void exec_W(struct cmd *cmd);
 
 extern void exec_X(struct cmd *cmd);
 
+extern void exec_Z(struct cmd *cmd);
+
 extern bool exec_xoper(int c);
 
 extern void exec_Y(struct cmd *cmd);
-
-extern void exec_Z(struct cmd *cmd);
 
 // Helper functions for executing commands
 

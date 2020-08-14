@@ -326,7 +326,7 @@ const struct cmd_table e_table[] =
     { exec_EJ,      &cm_opts    },
     { exec_EK,      &z_opts     },
     { exec_EL,      &a1_opts    },
-    { exec_EM,      &z_opts     },
+    { exec_EM,      &acq1_opts  },
     { exec_EN,      &ac1_opts   },
     { exec_EO,      &f_opts     },
     { exec_EP,      &z_opts     },
@@ -339,7 +339,6 @@ const struct cmd_table e_table[] =
     { exec_EW,      &ac1_opts   },
     { exec_EX,      &z_opts     },
     { exec_EY,      &c_opts     },
-    { exec_EZ,      &acq1_opts  },
     { exec_E_ubar,  &acn1_opts  },
 };
 

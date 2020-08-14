@@ -1,6 +1,6 @@
 ///
-///  @file    ez_cmd.c
-///  @brief   Execute EZ command.
+///  @file    em_cmd.c
+///  @brief   Execute EM command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -41,13 +41,13 @@
 
 
 ///
-///  @brief    Execute EZ command: write Q-register to file.
+///  @brief    Execute EM command: write Q-register to file.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EZ(struct cmd *cmd)
+void exec_EM(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
