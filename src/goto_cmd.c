@@ -33,7 +33,6 @@
 #include <unistd.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"
@@ -65,18 +64,6 @@ static void find_tag(struct cmd *cmd, const char *text, uint len);
 void exec_bang(struct cmd *cmd)
 {
     assert(cmd != NULL);
-
-    // If we have a tag with text that starts with the character defined in E5,
-    // then we ignore it. This allows us to differentiate between tags (which
-    // may be the target of O commands) and comments. For example, E5 could be
-    // set to a space character (ASCII 32), which would mean that any tags of
-    // the form ! tag ! would be treated as a comment and not processed. This
-    // can be used to save on storage requirements for keeping track of tags.
-
-    if (f.e5 != NUL && cmd->text1.len != NUL && cmd->text1.buf[0] == f.e5)
-    {
-        return;                         // Just ignore tag
-    }
 
     if (cmd->n_set)                     // Pass through m and n arguments
     {

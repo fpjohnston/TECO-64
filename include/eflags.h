@@ -203,7 +203,6 @@ struct flags
     union  e2_flag e2;          ///< Command restrictions
     union  e3_flag e3;          ///< File I/O features
     union  e4_flag e4;          ///< Window flags
-    int            e5;          ///< Comment bypass character
     union  ed_flag ed;          ///< Edit level flags
     int            ee;          ///< ESCape surrogate
     union  eh_flag eh;          ///< Help message flags

@@ -313,7 +313,6 @@ const struct cmd_table e_table[] =
     { exec_E2,      &fm_opts    },
     { exec_E3,      &fm_opts    },
     { exec_E4,      &fm_opts    },
-    { exec_E5,      &n_opts     },
     { exec_EA,      &z_opts     },
     { exec_EB,      &ac1_opts   },
     { exec_EC,      &n_opts     },
