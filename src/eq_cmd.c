@@ -56,6 +56,7 @@ void exec_EQ(struct cmd *cmd)
     const char *buf = cmd->text1.buf;
     uint len = cmd->text1.len;
     const int stream = IFILE_QREGISTER;
+    char name[len + 4 + 1];             // Allow room for possible '.tec'
 
     if (len == 0)                       // If no file name, then done
     {
@@ -64,7 +65,28 @@ void exec_EQ(struct cmd *cmd)
 
     assert(buf != NULL);
 
-    struct ifile *ifile = open_input(buf, len, stream, cmd->colon);
+    // Here if we have a file name, so try to open file.
+
+    len = (uint)sprintf(name, "%.*s", (int)len, buf);
+
+    // Treat first open as colon-modified to avoid error. This allows
+    // us to try a second open with .tec file type.
+
+    struct ifile *ifile = open_input(buf, len, stream, (bool)true);
+
+    if (ifile == NULL)
+    {
+        if (strchr(last_file, '.') == NULL)
+        {
+            len = (uint)sprintf(name, "%s.tec", last_file);
+
+            ifile = open_input(name, len, stream, cmd->colon);
+        }
+        else if (!cmd->colon)
+        {
+            throw(E_FNF, last_file);    // Input file name
+        }
+    }
 
     // Note: open_input() only returns NULL for colon-modified command.
 
