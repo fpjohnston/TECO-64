@@ -26,6 +26,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_DEBUG)
+
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -37,7 +39,6 @@
 #include "eflags.h"
 #include "exec.h"
 #include "term.h"
-
 
 // Local functions
 
@@ -144,3 +145,5 @@ void print_cmd(struct cmd *cmd)
 
     print_chr(CRLF);
 }
+
+#endif  // defined(TECO_DEBUG)

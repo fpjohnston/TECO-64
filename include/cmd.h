@@ -122,6 +122,10 @@ extern void check_args(struct cmd *cmd);
 
 extern exec_func *next_cmd(struct cmd *cmd);
 
+#if     defined(TECO_DEBUG)
+
 extern void print_cmd(struct cmd *cmd);
+
+#endif
 
 #endif  // !defined(_CMD_H)
