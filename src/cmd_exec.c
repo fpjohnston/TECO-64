@@ -77,9 +77,9 @@ static const struct cmd null_cmd =
 
 // Local functions
 
-static void finish_cmd(struct cmd *cmd, union cmd_opts opts);
+static const struct cmd_table *find_cmd(struct cmd *cmd);
 
-static const struct cmd_table *get_entry(struct cmd *cmd);
+static void finish_cmd(struct cmd *cmd, union cmd_opts opts);
 
 static const struct cmd_table *scan_ef(struct cmd *cmd, const char *cmds,
                                        const struct cmd_table *table,
@@ -223,61 +223,13 @@ void exec_escape(struct cmd *unused1)
 
 
 ///
-///  @brief    Finish non-simple command.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void finish_cmd(struct cmd *cmd, union cmd_opts opts)
-{
-    assert(cmd != NULL);
-
-    // See if we have an n argument. If not, then check to see if the command
-    // was preceded by a minus sign, which is equivalent to an argument of -1.
-
-    if (pop_expr(&cmd->n_arg))          // Do we have an n argument?
-    {
-        cmd->n_set = true;
-    }
-    else if (estack.level == estack.base + 1 &&
-             estack.obj[0].type == EXPR_MINUS)
-    {
-        --estack.level;
-
-        cmd->n_set = true;
-        cmd->n_arg = -1;
-    }
-
-    // If we have an m argument, verify that it is valid for this command, and
-    // that it is followed by an n argument.
-
-    if (cmd->m_set)
-    {
-        if (f.e2.m_arg && !opts.m)
-        {
-            throw(E_IMA);               // Illegal m argument
-        }
-        else if (!cmd->n_set)
-        {
-            throw(E_MNA);               // Missing n argument
-        }
-    }
-
-    // Scan for text arguments and other post-command characters.
-
-    scan_tail(cmd, opts);
-}
-
-
-///
-///  @brief    Get table entry for command.
+///  @brief    Find table entry for command.
 ///
 ///  @returns  Table entry, or NULL if we're done with command.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static const struct cmd_table *get_entry(struct cmd *cmd)
+static const struct cmd_table *find_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -336,6 +288,54 @@ static const struct cmd_table *get_entry(struct cmd *cmd)
 
 
 ///
+///  @brief    Finish non-simple command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void finish_cmd(struct cmd *cmd, union cmd_opts opts)
+{
+    assert(cmd != NULL);
+
+    // See if we have an n argument. If not, then check to see if the command
+    // was preceded by a minus sign, which is equivalent to an argument of -1.
+
+    if (pop_expr(&cmd->n_arg))          // Do we have an n argument?
+    {
+        cmd->n_set = true;
+    }
+    else if (estack.level == estack.base + 1 &&
+             estack.obj[0].type == EXPR_MINUS)
+    {
+        --estack.level;
+
+        cmd->n_set = true;
+        cmd->n_arg = -1;
+    }
+
+    // If we have an m argument, verify that it is valid for this command, and
+    // that it is followed by an n argument.
+
+    if (cmd->m_set)
+    {
+        if (f.e2.m_arg && !opts.m)
+        {
+            throw(E_IMA);               // Illegal m argument
+        }
+        else if (!cmd->n_set)
+        {
+            throw(E_MNA);               // Missing n argument
+        }
+    }
+
+    // Scan for text arguments and other post-command characters.
+
+    scan_tail(cmd, opts);
+}
+
+
+///
 ///  @brief    Scan command string for next command.
 ///
 ///  @returns  Command to execute, or NULL if at end of command string.
@@ -365,7 +365,7 @@ exec_func *next_cmd(struct cmd *cmd)
 
         c = toupper(c);
 
-        const struct cmd_table *entry = get_entry(cmd);
+        const struct cmd_table *entry = find_cmd(cmd);
 
         if (entry == NULL || entry->exec == NULL)
         {
