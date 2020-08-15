@@ -44,9 +44,7 @@ static struct buffer ei_data;           ///< EI command string
 
 static const char ex_cmd[] = "EX";      ///< EX command
 
-// @var    Size of EX command in bytes (ignoring trailing NUL)
-
-#define EX_SIZE     (sizeof(ex_cmd) - 1)
+#define EX_SIZE  (sizeof(ex_cmd) - 1)   ///< No. of bytes for EX command
 
 // Local functions
 

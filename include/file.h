@@ -87,7 +87,9 @@ extern struct ifile ifiles[];
 
 extern struct ofile ofiles[];
 
-extern uint istream, ostream;
+extern uint istream;
+
+extern uint ostream;
 
 extern char *last_file;
 

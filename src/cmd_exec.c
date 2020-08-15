@@ -40,6 +40,10 @@
 
 
 #undef toupper
+
+/// @def    toupper(c)
+/// @brief  Converts character from lower case to upper case.
+
 #define toupper(c) ((c >= 'a' && c <= 'z') ? c - ('a' - 'A') : c) //lint !e652
 
 uint nparens;                       ///< Parenthesis nesting count

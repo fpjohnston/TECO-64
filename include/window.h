@@ -37,6 +37,9 @@
 
 #define SATMAX      1000            ///< Maximum color saturation
 
+///  @enum   window_pair
+///  @brief  Values of foreground/background pairs for defined windows.
+
 enum window_pair
 {
     CMD = 1,                        ///< Command window
