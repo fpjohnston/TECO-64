@@ -34,10 +34,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include "teco.h"
 #include "ascii.h"
 #include "errors.h"
+#include "estack.h"
 #include "file.h"
 #include "term.h"
 
@@ -256,6 +258,101 @@ void init_filename(char **name, const char *buf, uint len)
     // The following allows the use of string building characters in filenames.
 
     (void)build_string(name, path, ncopied);
+}
+
+
+///
+///  @brief    Open file which may have an implicit .tec file type/extension. We
+///            try to open the file as specified, but if that fails, we append
+///            .tec (assuming no period in the file name), and try again.
+///
+///  @returns  true if file opened and it has data, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool open_implicit(const char *buf, uint len, uint stream, bool colon,
+                   struct buffer *text)
+{
+    if (len == 0)                       // Any file to open?
+    {
+        return false;
+    }
+
+    assert(buf != NULL);
+    assert(text != NULL);
+
+    char name[len + 4 + 1];             // Allow room for possible '.tec'
+
+    assert(buf != NULL);
+
+    // Here if we have a file name, so try to open file.
+
+    len = (uint)sprintf(name, "%.*s", (int)len, buf);
+
+    // Treat first open as colon-modified to avoid error. This allows
+    // us to try a second open with .tec file type.
+
+    struct ifile *ifile = open_input(name, len, stream, (bool)true);
+
+    if (ifile == NULL)
+    {
+        if (strchr(last_file, '.') == NULL)
+        {
+            len = (uint)sprintf(name, "%s.tec", last_file);
+
+            ifile = open_input(name, len, stream, colon);
+        }
+        else if (!colon)
+        {
+            throw(E_FNF, last_file);    // Input file name
+        }
+    }
+
+    // If there was no colon, then we've already thrown an exception.
+    // So if ifile is NULL here, then a colon must have been present.
+
+    if (ifile == NULL)
+    {
+        push_expr(0, EXPR_VALUE);
+
+        return false;
+    }
+    else if (colon)
+    {
+        push_expr(-1, EXPR_VALUE);
+    }
+
+    struct stat file_stat;
+
+    if (stat(last_file, &file_stat) != 0)
+    {
+        close_input(stream);
+
+        throw(E_SYS, last_file);        // Unexpected system error
+    }
+
+    uint size = (uint)file_stat.st_size;
+
+    free_mem(&text->buf);               // Free any previous storage
+
+    // If there's data in the file, then allocate a buffer for it.
+
+    if (size != 0)
+    {
+        text->len   = size;
+        text->pos   = 0;
+        text->size += size;             // Caller may have preset this
+        text->buf   = alloc_mem(text->size);
+
+        if (fread(text->buf, 1uL, (ulong)size, ifile->fp) != size)
+        {
+            throw(E_SYS, ifile->name); // Unexpected system error
+        }
+    }
+
+    close_input(stream);
+
+    return true;
 }
 
 

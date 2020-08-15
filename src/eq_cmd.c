@@ -32,10 +32,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/stat.h>
 
 #include "teco.h"
-#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
@@ -55,76 +53,18 @@ void exec_EQ(struct cmd *cmd)
 
     const char *buf = cmd->text1.buf;
     uint len = cmd->text1.len;
-    const int stream = IFILE_QREGISTER;
-    char name[len + 4 + 1];             // Allow room for possible '.tec'
+    uint stream = IFILE_QREGISTER;
 
-    if (len == 0)                       // If no file name, then done
-    {
-        return;
-    }
-
-    assert(buf != NULL);
-
-    // Here if we have a file name, so try to open file.
-
-    len = (uint)sprintf(name, "%.*s", (int)len, buf);
-
-    // Treat first open as colon-modified to avoid error. This allows
-    // us to try a second open with .tec file type.
-
-    struct ifile *ifile = open_input(buf, len, stream, (bool)true);
-
-    if (ifile == NULL)
-    {
-        if (strchr(last_file, '.') == NULL)
-        {
-            len = (uint)sprintf(name, "%s.tec", last_file);
-
-            ifile = open_input(name, len, stream, cmd->colon);
-        }
-        else if (!cmd->colon)
-        {
-            throw(E_FNF, last_file);    // Input file name
-        }
-    }
-
-    // Note: open_input() only returns NULL for colon-modified command.
-
-    if (ifile == NULL)
-    {
-        push_expr(0, EXPR_VALUE);
-
-        return;
-    }
-
-    struct stat file_stat;
-
-    if (stat(ifile->name, &file_stat))
-    {
-        throw(E_SYS, ifile->name);      // Unexpected system error
-    }
-
-    uint size = (uint)file_stat.st_size;
     struct buffer text =
     {
-        .len  = size,
+        .len  = 0,
         .pos  = 0,
-        .size = size,
+        .size = 0,
+        .buf  = NULL,
     };
-
-    text.buf = alloc_mem(size);
-
-    if (fread(text.buf, 1uL, (ulong)size, ifile->fp) != size)
+    
+    if (open_implicit(buf, len, stream, cmd->colon, &text))
     {
-        throw(E_SYS, ifile->name);      // Unexpected system error
-    }
-
-    store_qtext(cmd->qname, cmd->qlocal, &text);
-
-    close_input(stream);
-
-    if (cmd->colon)
-    {
-        push_expr(-1, EXPR_VALUE);
+        store_qtext(cmd->qname, cmd->qlocal, &text);
     }
 }

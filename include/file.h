@@ -105,6 +105,9 @@ extern int get_wild(void);
 
 extern void init_files(void);
 
+extern bool open_implicit(const char *buf, uint len, uint stream, bool colon,
+                          struct buffer *text);
+
 extern struct ifile *open_input(const char *name, uint len, uint stream,
                                 bool colon);
 

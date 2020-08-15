@@ -32,17 +32,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/stat.h>
 
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
-#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
 
-static struct buffer ei_data;
+static struct buffer ei_data;           ///< EI command string
+
+static const char ex_cmd[] = "EX";      ///< EX command
+
+// @var    Size of EX command in bytes (ignoring trailing NUL)
+
+#define EX_SIZE     (sizeof(ex_cmd) - 1)
 
 // Local functions
 
@@ -63,83 +67,13 @@ void exec_EI(struct cmd *cmd)
     const char *buf = cmd->text1.buf;
     uint len = cmd->text1.len;
     uint stream = IFILE_INDIRECT;
-    char name[len + 4 + 1];             // Allow room for possible '.tec'
 
     close_input(stream);                // Close any open file
 
-    if (len == 0)
+    ei_data.size = EX_SIZE;             // Add room for possible EX command
+
+    if (open_implicit(buf, len, stream, cmd->colon, &ei_data))
     {
-        return;
-    }
-
-    assert(buf != NULL);
-
-    // Here if EIfile`, so try to open file.
-
-    len = (uint)sprintf(name, "%.*s", (int)len, buf);
-
-    // Treat first open as colon-modified to avoid error. This allows
-    // us to try a second open with .tec file type.
-
-    struct ifile *ifile = open_input(name, len, stream, (bool)true);
-    
-    if (ifile == NULL)
-    {
-        if (strchr(last_file, '.') == NULL)
-        {
-            len = (uint)sprintf(name, "%s.tec", last_file);
-
-            ifile = open_input(name, len, stream, cmd->colon);
-        }
-        else if (!cmd->colon)
-        {
-            throw(E_FNF, last_file);    // Input file name
-        }
-    }
-
-    // Note: open_input() only returns NULL for colon-modified command.
-
-    if (ifile == NULL)
-    {
-        push_expr(0, EXPR_VALUE);
-
-        return;
-    }
-    else if (cmd->colon)
-    {
-        push_expr(-1, EXPR_VALUE);
-    }
-
-    struct stat file_stat;
-
-    if (stat(last_file, &file_stat))
-    {
-        throw(E_SYS, last_file);        // Unexpected system error
-    }
-
-    uint size = (uint)file_stat.st_size;
-
-    free_mem(&ei_data.buf);
-
-    // If there's data in the file, then allocate a buffer for it.
-
-    if (size != 0)
-    {
-        ei_data.len  = size;
-        ei_data.pos  = 0;
-        ei_data.size = size + 2;        // +2 for possible CTRL/C's
-        ei_data.buf  = alloc_mem(ei_data.size);
-
-        if (fread(ei_data.buf, 1uL, (ulong)size, ifile->fp) != size)
-        {
-            throw(E_SYS, ifile->name);  // Unexpected system error
-        }
-
-        // Start at end of command string, and back up until we find a
-        // non-whitespace character. This allows the use of such things
-        // as spaces or CRLFs after a double escape. Note that we don't
-        // skip TABs, since those are TECO commands.
-
         while (ei_data.len > 0)
         {
             int c = ei_data.buf[ei_data.len - 1];
@@ -157,8 +91,6 @@ void exec_EI(struct cmd *cmd)
             free_mem(&ei_data.buf);     // No, discard allocated memory
         }
     }
-
-    close_input(IFILE_INDIRECT);
 }
 
 
@@ -214,37 +146,51 @@ int read_indirect(void)
     // of an ESCape and its equivalent 2-chr. ASCII construct (i.e., ^[ ).
 
     uint len = command->len;
-    int c1 = EOF, c2 = EOF, c3 = EOF, c4 = EOF;
+    char *endbuf = command->buf + len;
+    uint nbytes = 0;                    // No. of bytes terminating string
 
     if (len >= 2)                       // 2+ chrs. for ESC+ESC
     {
-        c1 = command->buf[len - 1];
-        c2 = command->buf[len - 2];
+        int c1 = *--endbuf;
+        int c2 = *--endbuf;
 
-        if (len >= 3)                   // 3+ chrs. for ESC+^[ or ^[+ESC
+        if (c1 == ESC && c2 == ESC)
         {
-            c3 = command->buf[len - 3];
+            nbytes = 2;
+        }
 
-            if (len >= 4)               // 4+ chrs. for ^[ + ^[
+        if (len >= 3 && nbytes == 0)    // 3+ chrs. for ESC+^[ or ^[+ESC
+        {
+            int c3 = *--endbuf;
+
+            if ((c1 == ESC && c2 == '[' && c3 == '^') ||
+                (c1 == '[' && c2 == '^' && c3 == ESC))
             {
-                c4 = command->buf[len - 4];
+                nbytes = 3;
+            }
+
+            if (len >= 4 && nbytes == 0) // 4+ chrs. for ^[ + ^[
+            {
+                int c4 = *--endbuf;
+
+                if (c1 == '[' && c2 == '^' && c3 == '[' && c4 == '^')
+                {
+                    nbytes = 4;
+                }
             }
         }
 
-        if ((c1 == ESC && c2 == ESC) ||
-            (c1 == ESC && c2 == '[' && c3 == '^') ||
-            (c1 == '[' && c2 == '^' && c3 == ESC) ||
-            (c1 == '[' && c2 == '^' && c3 == '[' && c4 == '^'))
+        if (nbytes != 0)                // Did we find end of command?
         {
-            // If --exit option was used, then insert a couple of CTRL/C's
-            // at the end of the command string to ensure that we exit TECO.
+            // If --exit option was used, then insert EX command before the
+            // the end of the command string to ensure that we exit TECO.
 
             if (f.e0.exit)
             {
-                command->len += 2;
+                memmove(endbuf + nbytes, endbuf, EX_SIZE);
+                memcpy(endbuf, ex_cmd, EX_SIZE);
 
-                command->buf[len - 2] = CTRL_C;
-                command->buf[len - 1] = CTRL_C;
+                command->len += EX_SIZE; // Add in length of EX command
             }
 
             return -1;                  // Say we have a complete command
