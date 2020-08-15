@@ -645,32 +645,13 @@ static void scan_text(int delim, struct tstring *text)
     text->len = 0;
     text->buf = command->buf + command->pos;
 
-    bool caret = false;                 // Flag for scanned uparrow character
-
-    // Scan text string, looking for the specified delimiter. This is usually
-    // ESCape, but may be other characters. If it is ESCape, then we also check
-    // to see if we encounter ^[, which we will treat as equivalent to ESCape.
-    // Only doing this when the delimiter is ESCape allows the use of ESCape
-    // characters in such situations as the use of at-sign modifiers.
+    // Scan text string, looking for the specified delimiter (usually ESCape).
 
     while (command->pos < command->len)
     {
-        int c = command->buf[command->pos++];
-
-        if (c == delim)
+        if (command->buf[command->pos++] == delim)
         {
             return;
-        }
-        else if (delim == ESC)
-        {
-            if (caret && c == '[')
-            {
-                --text->len;            // Back off the ^ already counted
-
-                return;
-            }
-
-            caret = (c == '^');
         }
 
         ++text->len;
