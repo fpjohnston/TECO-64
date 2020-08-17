@@ -81,7 +81,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd);
 
 static void finish_cmd(struct cmd *cmd, union cmd_opts opts);
 
-static const struct cmd_table *scan_ef(struct cmd *cmd, const char *cmds,
+static const struct cmd_table *scan_ef(struct cmd *cmd,
                                        const struct cmd_table *table,
                                        uint count, int error);
 
@@ -246,17 +246,13 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
     }
     else if (c == 'E')
     {
-        static const char *e_cmds = "1234ABCDEFGHIJKLMNOPQRSTUVWXY_";
-
-        return scan_ef(cmd, e_cmds, e_table, e_count, E_IEC);
+        return scan_ef(cmd, e_table, e_max, E_IEC);
     }
     else if (c == 'F')
     {
-        static const char *f_cmds = "'123<>BCDKLNRSU_|";
-
-        return scan_ef(cmd, f_cmds, f_table, f_count, E_IFC);
+        return scan_ef(cmd, f_table, f_max, E_IFC);
     }
-    else if (c < 0 || c >= (int)cmd_count)
+    else if (c < 0 || c >= (int)cmd_max)
     {
         throw(E_ILL, c);                // Illegal character
     }
@@ -455,32 +451,26 @@ exec_func *next_cmd(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static const struct cmd_table *scan_ef(struct cmd *cmd, const char *cmds,
+static const struct cmd_table *scan_ef(struct cmd *cmd,
                                        const struct cmd_table *table,
                                        uint count, int error)
 {
     assert(cmd != NULL);
-    assert(cmds != NULL);
     assert(table != NULL);
 
-    check_end();
+    check_end();                        // Must have at least one more chr.
 
     int c = command->buf[command->pos++];
+    uint idx = (uint)toupper(c);        // Index into table
 
-    const char *p = strchr(cmds, toupper(c));
-
-    if (p == NULL)
+    if (idx > count || table[idx].exec == NULL)
     {
-        throw(error, c);                // Illegal E character
+        throw(error, c);                // Illegal E or F character
     }
 
     cmd->c2 = (char)c;
 
-    uint idx = (uint)(p - cmds);
-
-    assert(idx < count);
-
-    return &table[idx];
+    return &table[c];
 }
 
 

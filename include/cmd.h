@@ -102,15 +102,15 @@ struct cmd_table
 
 extern const struct cmd_table cmd_table[];
 
-extern const uint cmd_count;
+extern const uint cmd_max;
 
 extern const struct cmd_table e_table[];
 
-extern const uint e_count;
+extern const uint e_max;
 
 extern const struct cmd_table f_table[];
 
-extern const uint f_count;
+extern const uint f_max;
 
 extern char *eg_result;
 

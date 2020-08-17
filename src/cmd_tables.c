@@ -302,46 +302,47 @@ const struct cmd_table cmd_table[] =
     [DEL]    = { exec_bad,        &z_opts       },
 };
 
-const uint cmd_count = countof(cmd_table); ///< No. of general commands
+const uint cmd_max = countof(cmd_table); ///< Maximum command
+
 
 ///  @var    e_table
 ///  @brief  Table for all commands starting with E.
 
 const struct cmd_table e_table[] =
 {
-    { exec_E1,      &fm_opts    },
-    { exec_E2,      &fm_opts    },
-    { exec_E3,      &fm_opts    },
-    { exec_E4,      &fm_opts    },
-    { exec_EA,      &z_opts     },
-    { exec_EB,      &ac1_opts   },
-    { exec_EC,      &n_opts     },
-    { exec_ED,      &fm_opts    },
-    { exec_EE,      &f_opts     },
-    { exec_EF,      &z_opts     },
-    { exec_EG,      &ad1_opts   },
-    { exec_EH,      &fm_opts    },
-    { exec_EI,      &ac1_opts   },
-    { exec_EJ,      &cm_opts    },
-    { exec_EK,      &z_opts     },
-    { exec_EL,      &a1_opts    },
-    { exec_EM,      &acq1_opts  },
-    { exec_EN,      &ac1_opts   },
-    { exec_EO,      &f_opts     },
-    { exec_EP,      &z_opts     },
-    { exec_EQ,      &acq1_opts  },
-    { exec_ER,      &ac1_opts   },
-    { exec_ES,      &f_opts     },
-    { exec_ET,      &fm_opts    },
-    { exec_EU,      &f_opts     },
-    { exec_EV,      &f_opts     },
-    { exec_EW,      &ac1_opts   },
-    { exec_EX,      &z_opts     },
-    { exec_EY,      &c_opts     },
-    { exec_E_ubar,  &acn1_opts  },
+    ['1'] = { exec_E1,      &fm_opts    },
+    ['2'] = { exec_E2,      &fm_opts    },
+    ['3'] = { exec_E3,      &fm_opts    },
+    ['4'] = { exec_E4,      &fm_opts    },
+    ['A'] = { exec_EA,      &z_opts     },
+    ['B'] = { exec_EB,      &ac1_opts   },
+    ['C'] = { exec_EC,      &n_opts     },
+    ['D'] = { exec_ED,      &fm_opts    },
+    ['E'] = { exec_EE,      &f_opts     },
+    ['F'] = { exec_EF,      &z_opts     },
+    ['G'] = { exec_EG,      &ad1_opts   },
+    ['H'] = { exec_EH,      &fm_opts    },
+    ['I'] = { exec_EI,      &ac1_opts   },
+    ['J'] = { exec_EJ,      &cm_opts    },
+    ['K'] = { exec_EK,      &z_opts     },
+    ['L'] = { exec_EL,      &a1_opts    },
+    ['M'] = { exec_EM,      &acq1_opts  },
+    ['N'] = { exec_EN,      &ac1_opts   },
+    ['O'] = { exec_EO,      &f_opts     },
+    ['P'] = { exec_EP,      &z_opts     },
+    ['Q'] = { exec_EQ,      &acq1_opts  },
+    ['R'] = { exec_ER,      &ac1_opts   },
+    ['S'] = { exec_ES,      &f_opts     },
+    ['T'] = { exec_ET,      &fm_opts    },
+    ['U'] = { exec_EU,      &f_opts     },
+    ['V'] = { exec_EV,      &f_opts     },
+    ['W'] = { exec_EW,      &ac1_opts   },
+    ['X'] = { exec_EX,      &z_opts     },
+    ['Y'] = { exec_EY,      &c_opts     },
+    ['_'] = { exec_E_ubar,  &acn1_opts  },
 };
 
-const uint e_count = countof(e_table); ///< No. of E commands
+const uint e_max = countof(e_table); ///< Maximum E command
 
 
 ///  @var    f_table
@@ -349,23 +350,23 @@ const uint e_count = countof(e_table); ///< No. of E commands
 
 const struct cmd_table f_table[] =
 {
-    { exec_F_apos,  &m_opts     },
-    { exec_F1,      &m2_opts    },
-    { exec_F2,      &m2_opts    },
-    { exec_F3,      &m2_opts    },
-    { exec_F_lt,    &m_opts     },
-    { exec_F_gt,    &m_opts     },
-    { exec_FB,      &acm1_opts  },
-    { exec_FC,      &acm2_opts  },
-    { exec_FD,      &acn1_opts  },
-    { exec_FK,      &acn1_opts  },
-    { exec_FL,      &m_opts     },
-    { exec_FN,      &acm2_opts  },
-    { exec_FR,      &acm1_opts  },
-    { exec_FS,      &adm2_opts  },
-    { exec_FU,      &m_opts     },
-    { exec_F_ubar,  &acm2_opts  },
-    { exec_F_vbar,  &m_opts     },
+    ['\''] = { exec_F_apos,  &m_opts     },
+    ['1']  = { exec_F1,      &m2_opts    },
+    ['2']  = { exec_F2,      &m2_opts    },
+    ['3']  = { exec_F3,      &m2_opts    },
+    ['<']  = { exec_F_lt,    &m_opts     },
+    ['>']  = { exec_F_gt,    &m_opts     },
+    ['B']  = { exec_FB,      &acm1_opts  },
+    ['C']  = { exec_FC,      &acm2_opts  },
+    ['D']  = { exec_FD,      &acn1_opts  },
+    ['K']  = { exec_FK,      &acn1_opts  },
+    ['L']  = { exec_FL,      &m_opts     },
+    ['N']  = { exec_FN,      &acm2_opts  },
+    ['R']  = { exec_FR,      &acm1_opts  },
+    ['S']  = { exec_FS,      &adm2_opts  },
+    ['U']  = { exec_FU,      &m_opts     },
+    ['_']  = { exec_F_ubar,  &acm2_opts  },
+    ['|']  = { exec_F_vbar,  &m_opts     },
 };
 
-const uint f_count = countof(f_table); ///< No. of F commands
+const uint f_max = countof(f_table); ///< Maximum F command
