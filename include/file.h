@@ -99,11 +99,9 @@ extern void close_input(uint stream);
 
 extern void close_output(uint stream);
 
-extern void init_filename(char **name, const char *buf, uint len);
-
-extern void init_temp(char **temp, const char *oname);
-
 extern int get_wild(void);
+
+extern void init_filename(char **name, const char *buf, uint len);
 
 extern void init_files(void);
 
@@ -115,6 +113,8 @@ extern struct ifile *open_input(const char *name, uint len, uint stream,
 
 extern struct ofile *open_output(const char *name, uint len, uint stream,
                                  bool colon, int c);
+
+extern FILE *open_temp(char **temp, const char *oname);
 
 extern void read_memory(char *p, uint len);
 

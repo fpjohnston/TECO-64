@@ -43,61 +43,15 @@
 #include "file.h"
 
 
+#define TEMP_NAME   "_teco_XXXXXX"      ///< Template for temp file name
+#define TEMP_TYPE   ".tmp"              ///< Temp file type/extension
+
+#define SIZE_NAME   (sizeof(TEMP_NAME) - 1) ///< Size of temp file name
+#define SIZE_TYPE   (sizeof(TEMP_TYPE) - 1) ///< Size of temp file type
+
 static glob_t pglob;                    ///< Saved list of wildcard files
 
 static char **next_file;                ///< Next file in pglob
-
-
-///
-///  @brief    Get output file name. We are passed the output file name the
-///            user specified, but we can't use it if we are opening it for
-///            output, because that might supercede and truncate an existing
-///            file. So if a file exists, we create a temporary name to use for
-///            the actual open, and then when we close the output stream, we
-///            will delete (or, if a backup copy was requested, rename) the
-///            original file, and then rename the temporary file. This allows
-///            for the situation where the user decides to kill the output file
-///            with an EK command, in which we can simply close and delete the
-///            temporary file and leave the original intact.
-///
-///            This function is system-dependent because some operating environ-
-///            may have alternative methods of dealing with output files that
-///            may need to be deleted, such as versioning on VMS.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void init_temp(char **otemp, const char *oname)
-{
-    assert(otemp != NULL);
-    assert(*otemp == NULL);
-    assert(oname != NULL);
-
-    struct stat file_stat;
-    uint nbytes = (uint)strlen(oname);
-    char scratch[nbytes + 1];           // Temporary scratch buffer
-
-    if (stat(oname, &file_stat) != 0)
-    {
-        throw(E_SYS, oname);            // Unexpected system call
-    }
-
-    memcpy(scratch, oname, (size_t)nbytes + 1);
-
-    char tempfile[] = "_teco_XXXXXX.tmp";
-    char *dir = dirname(scratch);
-    int fd = mkstemps(tempfile, 4);     // 4 = length of ".tmp"
-
-    close(fd);
-    (void)remove(tempfile);             // Got the name, so delete the file
-
-    nbytes = (uint)(strlen(dir) + 1 + strlen(tempfile));
-
-    *otemp = alloc_mem(nbytes + 1);
-
-    sprintf(*otemp, "%s/%s", dir, tempfile);
-}
 
 
 ///
@@ -139,6 +93,64 @@ int get_wild(void)
     }
 
     return EXIT_FAILURE;
+}
+
+
+///
+///  @brief    Open temp file name. We are passed the output file name the
+///            user specified, but we can't use it if we are opening it for
+///            output, because that might supercede and truncate an existing
+///            file. So if a file exists, we create a temporary name to use for
+///            the actual open, and then when we close the output stream, we
+///            will delete (or, if a backup copy was requested, rename) the
+///            original file, and then rename the temporary file. This allows
+///            for the situation where the user decides to kill the output file
+///            with an EK command, in which we can simply close and delete the
+///            temporary file and leave the original intact.
+///
+///            This function is system-dependent because some operating environ-
+///            may have alternative methods of dealing with output files that
+///            may need to be deleted, such as versioning on VMS.
+///
+///  @returns  File pointer to temp file.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+FILE *open_temp(char **otemp, const char *oname)
+{
+    assert(otemp != NULL);
+    assert(*otemp == NULL);
+    assert(oname != NULL);
+
+    struct stat file_stat;
+
+    if (stat(oname, &file_stat) != 0)
+    {
+        throw(E_SYS, oname);            // Unexpected system call
+    }
+
+    uint nbytes = (uint)strlen(oname);
+    char outfile[nbytes + 1];           // Copy of output file name
+
+    strcpy(outfile, oname);
+
+    char *dir = dirname(outfile);       // Extract the directory/path
+    char tempfile[strlen(dir) + 1 + SIZE_NAME + SIZE_TYPE + 1];
+
+    nbytes = sprintf(tempfile, "%s/%s%s", dir, TEMP_NAME, TEMP_TYPE);
+
+    int fd = mkstemps(tempfile, (int)SIZE_TYPE);
+
+    if (fd == -1)
+    {
+        throw(E_SYS, tempfile);         // Unexpected system error
+    }
+
+    *otemp = alloc_mem(nbytes + 1);
+
+    strcpy(*otemp, tempfile);
+
+    return fdopen(fd, "w+");
 }
 
 

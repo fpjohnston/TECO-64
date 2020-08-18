@@ -426,16 +426,13 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
     // of an EK command. If the file is closed normally, we will rename the
     // original, and then rename the temp file.
 
-    const char *oname = ofile->name;
-    const char *mode = "w";
-
     if (c == 'L')
     {
-        mode = "a";                     // Open log files in append mode
+        ofile->fp = fopen(ofile->name, "a+");
     }
-    else if (access(oname, F_OK) == 0)  // Does file already exist?
+    else if (access(ofile->name, F_OK) == 0) // Does file already exist?
     {
-        if (access(oname, W_OK) != 0)   // Yes, but is it writeable?
+        if (access(ofile->name, W_OK) != 0) // Yes, but is it writeable?
         {
             sprintf(err_file, "%.*s", ERR_FILE_SIZE, ofile->name);
 
@@ -444,18 +441,19 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
             throw(E_SYS, err_file);     // Unexpected system error
         }
 
-        init_temp(&ofile->temp, oname);
-
-        oname = ofile->temp;
+        ofile->fp = open_temp(&ofile->temp, ofile->name);
 
         if (c == 'W')                   // Issue warnings if EW command
         {
             print_str("%s", "%Superseding existing file\r\n");
         }
     }
+    else
+    {
+        ofile->fp = fopen(ofile->name, "w+");
+    }      
 
-    if ((ofile->fp = fopen(oname, mode)) == NULL ||
-        !canonical_name(&ofile->name))
+    if (ofile->fp == NULL || !canonical_name(&ofile->name))
     {
         if (colon)
         {
