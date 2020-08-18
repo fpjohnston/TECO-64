@@ -39,13 +39,6 @@
 #include "qreg.h"
 
 
-#undef toupper
-
-/// @def    toupper(c)
-/// @brief  Converts character from lower case to upper case.
-
-#define toupper(c) ((c >= 'a' && c <= 'z') ? c - ('a' - 'A') : c) //lint !e652
-
 uint nparens;                       ///< Parenthesis nesting count
 
 ///  @var    null_cmd
@@ -233,7 +226,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int c = toupper(cmd->c1);
+    int c = cmd->c1;
 
     if (nparens != 0 && f.e1.xoper && exec_xoper(c))
     {
@@ -244,11 +237,11 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
 
         return NULL;
     }
-    else if (c == 'E')
+    else if (c == 'E' || c == 'e')
     {
         return scan_ef(cmd, e_table, e_max, E_IEC);
     }
-    else if (c == 'F')
+    else if (c == 'F' || c == 'f')
     {
         return scan_ef(cmd, f_table, f_max, E_IFC);
     }
@@ -359,8 +352,6 @@ exec_func *next_cmd(struct cmd *cmd)
         cmd->c2 = NUL;
         cmd->c3 = NUL;
 
-        c = toupper(c);
-
         const struct cmd_table *entry = find_cmd(cmd);
 
         if (entry == NULL || entry->exec == NULL)
@@ -374,7 +365,7 @@ exec_func *next_cmd(struct cmd *cmd)
 
         if (opts.q)                     // Q-register required?
         {
-            get_qname(cmd, c == 'G' ? "*_$" : NULL);
+            get_qname(cmd, c == 'G' || c == 'g' ? "*_$" : NULL);
         }
 
         // If the character is a 'flag' command such as ET, then it returns a
@@ -382,7 +373,8 @@ exec_func *next_cmd(struct cmd *cmd)
         // 'A' command returns a value only if it is preceded by an operand.
         // And the 'Q' command always returns a value.
 
-        if ((opts.f && !check_expr()) || (c == 'A' && check_expr()) || c == 'Q')
+        if ((opts.f && !check_expr()) || (c == 'Q' || c == 'q') ||
+            ((c == 'A' || c == 'a') && check_expr()))
         {
             if (pop_expr(&cmd->n_arg))
             {
@@ -461,9 +453,8 @@ static const struct cmd_table *scan_ef(struct cmd *cmd,
     check_end();                        // Must have at least one more chr.
 
     int c = command->buf[command->pos++];
-    uint idx = (uint)toupper(c);        // Index into table
 
-    if (idx > count || table[idx].exec == NULL)
+    if (c < 0 || (uint)c > count || table[c].exec == NULL)
     {
         throw(error, c);                // Illegal E or F character
     }
@@ -521,7 +512,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
         {
             int c = command->buf[command->pos];
             
-            if (toupper(c) == 'W')
+            if (c == 'W' || c == 'w')
             {
                 cmd->w = true;
                 ++command->pos;

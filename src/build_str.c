@@ -111,14 +111,16 @@ uint build_string(char **dest, const char *src, uint len)
                 throw(E_ISS);           // Illegal search string
             }
 
-            c = *src++;
+            int orig = *src++;
 
-            if (toupper(c) < '@' || toupper(c) > '_')
+            c = toupper(orig);
+
+            if (c < '@' || c > '_')
             {
-                throw(E_IUC, c);        // Illegal uparrow character
+                throw(E_IUC, orig);     // Illegal uparrow character
             }
 
-            c = toupper(c) & 0x1f;
+            c &= 0x1f;
         }
 
         if (c == CTRL_Q || c == CTRL_R)
@@ -171,20 +173,20 @@ uint build_string(char **dest, const char *src, uint len)
                 throw(E_ISS);           // Illegal search string
             }
 
-            c = *src++;
+            int orig = *src++;
+
+            c = toupper(orig);
 
             // If neither <CTRL/E>Q nor <CTRL/E>U, then it's probably a match
             // control construct; in any case, just copy it and continue.
 
-            if (toupper(c) != 'Q' && toupper(c) != 'U')
+            if (c != 'Q' && c != 'U')
             {
                 store_chr(CTRL_E);
-                store_chr(c);
+                store_chr(orig);
 
                 continue;
             }
-
-            c = toupper(c);
 
             // Here for <CTRL/E>Q or <CTRL/E>U
 
