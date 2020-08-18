@@ -90,6 +90,7 @@ void init_temp(char **otemp, const char *oname)
     int fd = mkstemps(tempfile, 4);     // 4 = length of ".tmp"
 
     close(fd);
+    (void)remove(tempfile);             // Got the name, so delete the file
 
     nbytes = (uint)(strlen(dir) + 1 + strlen(tempfile));
 
