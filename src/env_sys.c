@@ -175,7 +175,8 @@ static int get_cmd(char *cmd)
     uint size = 0;                      //< Total no. of bytes read
     uint nbytes;                        //< No. of bytes from last read
 
-    sprintf(buf, "%s 2>&1", cmd);       // Capture stderr as well as stdout
+    snprintf(buf, (ulong)PATH_MAX, "%s 2>&1", cmd);
+                                        // Capture stderr as well as stdout
 
     free_mem(&eg_result);
 

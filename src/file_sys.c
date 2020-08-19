@@ -137,7 +137,8 @@ FILE *open_temp(char **otemp, const char *oname)
     char *dir = dirname(outfile);       // Extract the directory/path
     char tempfile[strlen(dir) + 1 + SIZE_NAME + SIZE_TYPE + 1];
 
-    nbytes = sprintf(tempfile, "%s/%s%s", dir, TEMP_NAME, TEMP_TYPE);
+    nbytes = (uint)snprintf(tempfile, (ulong)sizeof(tempfile), "%s/%s%s", dir,
+                            TEMP_NAME, TEMP_TYPE);
 
     int fd = mkstemps(tempfile, (int)SIZE_TYPE);
 
@@ -216,7 +217,7 @@ void rename_output(struct ofile *ofile)
         {
             char scratch[strlen(ofile->name) + 1 + 1];
 
-            sprintf(scratch, "%s~", ofile->name);
+            snprintf(scratch, sizeof(scratch), "%s~", ofile->name);
 
             if (rename(ofile->name, scratch) != 0)
             {

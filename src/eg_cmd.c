@@ -64,7 +64,8 @@ void exec_EG(struct cmd *cmd)
     {
         char syscmd[PATH_MAX];          // System command
 
-        sprintf(syscmd, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+        snprintf(syscmd, (ulong)PATH_MAX, "%.*s", (int)cmd->text1.len,
+                 cmd->text1.buf);
 
         int status = find_eg(syscmd, cmd->dcolon);
 
@@ -73,7 +74,8 @@ void exec_EG(struct cmd *cmd)
         return;
     }
 
-    sprintf(eg_command, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+    snprintf(eg_command, (ulong)PATH_MAX, "%.*s", (int)cmd->text1.len,
+             cmd->text1.buf);
 
     // The following ensures that we don't exit if we have nowhere to output
     // the data in the buffer to.

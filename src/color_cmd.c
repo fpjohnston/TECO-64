@@ -204,7 +204,7 @@ static void set_color(const char *buf, uint len, int sat, short color)
 
     char keyword[len + 1];
 
-    sprintf(keyword, "%.*s", (int)len, buf);
+    snprintf(keyword, (ulong)len, "%s", buf);
 
     // Adjust color saturation, which ncurses allows to range from 0 to 1000.
     // Colors are defined with separate levels for red, green, and blue. Note

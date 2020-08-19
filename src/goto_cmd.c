@@ -118,7 +118,8 @@ void exec_O(struct cmd *cmd)
     char *next;
     uint ntags = 0;
 
-    sprintf(taglist, "%.*s", (int)cmd->text1.len, cmd->text1.buf);
+    snprintf(taglist, sizeof(taglist), "%.*s", (int)cmd->text1.len,
+             cmd->text1.buf);
 
     // Find all tags, looking for the one matching the n argument.
 

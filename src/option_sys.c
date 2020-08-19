@@ -123,7 +123,7 @@ static struct config config =
 
 static void check_config(void);
 
-static void copy_arg(char *buf, char *p);
+static void copy_arg(char *buf, ulong size, char *p);
 
 static void finish_config(int argc, const char * const argv[]);
 
@@ -205,7 +205,7 @@ static void check_config(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void copy_arg(char *cmd, char *file)
+static void copy_arg(char *cmd, ulong size, char *file)
 {
     assert(cmd != NULL);
     assert(file != NULL);
@@ -216,11 +216,11 @@ static void copy_arg(char *cmd, char *file)
         ((file[0] == '"' && file[len - 1] == '"') ||
          (file[0] == '"' && file[len - 1] == '"')))
     {
-        sprintf(cmd, "%.*s", len - 2, file + 1);
+        snprintf(cmd, size, "%.*s", len - 2, file + 1);
     }
     else
     {
-        sprintf(cmd, "EI%s\e ", file);
+        snprintf(cmd, size, "EI%s\e ", file);
     }
 }
 
@@ -268,36 +268,36 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.s.initial != NULL)
     {
-        sprintf(cmdstring, "EI%s\e ", config.s.initial);
+        snprintf(cmdstring, sizeof(cmdstring), "EI%s\e ", config.s.initial);
         store_cmd(cmdstring);
     }
     else if (config.f.initial && (env = getenv("TECO_INIT")) != NULL)
     {
-        copy_arg(cmdstring, env);
+        copy_arg(cmdstring, sizeof(cmdstring), env);
         store_cmd(cmdstring);
     }
 
     if (config.s.log != NULL)
     {
-        sprintf(cmdstring, "EL%s\e ", config.s.log);
+        snprintf(cmdstring, sizeof(cmdstring), "EL%s\e ", config.s.log);
         store_cmd(cmdstring);
     }
 
     if (config.s.buffer != NULL)
     {
-        sprintf(cmdstring, "I%s\e ", config.s.buffer);
+        snprintf(cmdstring, sizeof(cmdstring), "I%s\e ", config.s.buffer);
         store_cmd(cmdstring);
     }
 
     if (config.f.argument)
     {
-        sprintf(cmdstring, "%dUA ", config.n);
+        snprintf(cmdstring, sizeof(cmdstring), "%dUA ", config.n);
         store_cmd(cmdstring);
     }
 
     if (config.s.execute != NULL)
     {
-        copy_arg(cmdstring, config.s.execute);
+        copy_arg(cmdstring, sizeof(cmdstring), config.s.execute);
         store_cmd(cmdstring);
     }
 
@@ -308,7 +308,7 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.s.scroll != NULL)
     {
-        sprintf(cmdstring, "%s,7:W \e", config.s.scroll);
+        snprintf(cmdstring, sizeof(cmdstring), "%s,7:W \e", config.s.scroll);
         store_cmd(cmdstring);
     }
 
@@ -345,28 +345,33 @@ static void finish_config(int argc, const char * const argv[])
         {
             if (config.s.output != NULL)
             {
-                sprintf(cmdstring, "ER%s\e EW%s\e Y ", file, config.s.output);
+                snprintf(cmdstring, sizeof(cmdstring), "ER%s\e EW%s\e Y ",
+                         file, config.s.output);
             }
             else if (config.f.readonly)
             {
-                sprintf(cmdstring, ":^A%%Inspecting file '%s'%c ER%s\e Y ",
+                snprintf(cmdstring, sizeof(cmdstring),
+                         ":^A%%Inspecting file '%s'%c ER%s\e Y ",
                         file, CTRL_A, file);
             }
             else
             {
-                sprintf(cmdstring, ":^A%%Editing file '%s'%c EB%s\e Y ",
+                snprintf(cmdstring, sizeof(cmdstring),
+                         ":^A%%Editing file '%s'%c EB%s\e Y ",
                         file, CTRL_A, file);
             }
         }
         else if (config.f.create && !config.f.readonly &&
                  !config.f.output)
         {
-            sprintf(cmdstring, ":^A%%Can't find file '%s'%c :^A%%Creating "
+            snprintf(cmdstring, sizeof(cmdstring),
+                    ":^A%%Can't find file '%s'%c :^A%%Creating "
                     "new file%c EW%s\e ", file, CTRL_A, CTRL_A, file);
         }
         else
         {
-            sprintf(cmdstring, ":^A?Can't find file '%s'%c EX ", file, CTRL_A);
+            snprintf(cmdstring, sizeof(cmdstring),
+                     ":^A?Can't find file '%s'%c EX ", file, CTRL_A);
         }
 
         store_cmd(cmdstring);

@@ -287,7 +287,7 @@ bool open_implicit(const char *buf, uint len, uint stream, bool colon,
 
     // Here if we have a file name, so try to open file.
 
-    len = (uint)sprintf(name, "%.*s", (int)len, buf);
+    len = (uint)snprintf(name, sizeof(name), "%.*s", (int)len, buf);
 
     // Treat first open as colon-modified to avoid error. This allows
     // us to try a second open with .tec file type.
@@ -298,7 +298,7 @@ bool open_implicit(const char *buf, uint len, uint stream, bool colon,
     {
         if (strchr(last_file, '.') == NULL)
         {
-            len = (uint)sprintf(name, "%s.tec", last_file);
+            len = (uint)snprintf(name, sizeof(name), "%s.tec", last_file);
 
             ifile = open_input(name, len, stream, colon);
         }
@@ -434,7 +434,8 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
     {
         if (access(ofile->name, W_OK) != 0) // Yes, but is it writeable?
         {
-            sprintf(err_file, "%.*s", ERR_FILE_SIZE, ofile->name);
+            snprintf(err_file, sizeof(err_file), "%.*s", ERR_FILE_SIZE,
+                     ofile->name);
 
             close_output(ostream);      // Deallocate stream resources
 
@@ -460,7 +461,8 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
             return NULL;
         }
 
-        sprintf(err_file, "%.*s", ERR_FILE_SIZE, ofile->name);
+        snprintf(err_file, sizeof(err_file), "%.*s", ERR_FILE_SIZE,
+                 ofile->name);
 
         close_output(ostream);          // Deallocate stream resources
 

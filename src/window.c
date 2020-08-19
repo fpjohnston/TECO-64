@@ -942,14 +942,16 @@ static void update_status(void)
 
         if (row < nrows)
         {
-            sprintf(position, "row=%d  col=%d", row + 1, col);
+            snprintf(position, sizeof(position), "row=%d  col=%d",
+                     row + 1, col);
         }
         else
         {
             strcpy(position, "<EOF>");
         }
         
-        int nbytes = sprintf(status, ".=%d  Z=%d  %s  nrows=%d  mem=%d",
+        int nbytes = snprintf(status, sizeof(status),
+                              ".=%d  Z=%d  %s  nrows=%d  mem=%d",
                              t.dot, t.Z, position, nrows, t.size);
 
         status[nbytes] = SPACE;         // Replace NUL character with space
