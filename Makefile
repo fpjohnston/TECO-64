@@ -350,7 +350,7 @@ doc: doxygen html
 .PHONY: doxygen
 doxygen:
 	-$(AT)echo "Making Doxygen documents" $(NULL)
-	-$(AT)doxygen doc/Doxyfile
+	-$(AT)doxygen etc/Doxyfile
 
 .PHONY: html
 html: html/options.html
