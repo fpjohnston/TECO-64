@@ -92,8 +92,6 @@ extern uint last_len;
 
 extern uint loop_depth;
 
-extern bool main_active;
-
 extern const char *prompt;
 
 extern int radix;

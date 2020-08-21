@@ -34,6 +34,14 @@
 #include <sys/types.h>          //lint !e451 !e537
 
 
+#define EDIT_BUF_INIT   ( 8 * 1024)     ///< Edit buffer is initially 8K
+
+#define EDIT_BUF_MAX    (64 * 1024)     ///< Maximum edit buffer is 64K
+
+#define EDIT_BUF_STEP   EDIT_BUF_INIT   ///< Increase edit buffer by 8K
+
+#define EDIT_BUF_WARN   75              ///< Warn when edit buffer is 75% full
+
 /// @brief  Return status when inserting characters in buffer.
 
 typedef enum

@@ -58,12 +58,7 @@
 #include "window.h"
 
 
-#define TECO_VERSION    200             ///< Our TECO version
-
-#define EDIT_BUF_INIT   ( 8 * 1024)     ///< Edit buffer is initially 8K
-#define EDIT_BUF_MAX    (64 * 1024)     ///< Maximum edit buffer is 64K
-#define EDIT_BUF_STEP   EDIT_BUF_INIT   ///< Increase edit buffer by 8K
-#define EDIT_BUF_WARN   75              ///< Warn when edit buffer is 75% full
+#define TECO_VERSION    200         ///< Our version of TECO
 
 const char *prompt = "*";           ///< Command-line prompt (usually '*')
 
@@ -72,17 +67,6 @@ struct flags f;                     ///< Global flag variables
 int radix = 10;                     ///< Current output radix
 
 int teco_version = TECO_VERSION;    ///< TECO version number (200+)
-
-/// @var    main_active
-///
-/// @brief  This flag specifies whether a call to setjmp() has been issued,
-///         and that the main loop is fully active. This is used by the error-
-///         handling functions so that they don't attempt a longjmp() call
-///         before initialization has been completed. If it hasn't, then any
-///         error becomes fatal and causes an immediate exit.
-///
-
-bool main_active = false;
 
 jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
@@ -102,8 +86,6 @@ static void init_teco(int argc, const char * const argv[]);
 int main(int argc, const char * const argv[])
 {
     init_teco(argc, argv);              // Initialize variables and things
-
-    main_active = true;                 // Initialization is complete
 
     for (;;)                            // Loop forever
     {
@@ -160,14 +142,8 @@ static void init_teco(int argc, const char * const argv[])
 
     f.eu         = -1;                  // No case flagging
 
-    f.et.abort   = true;                // Abort on error
+    f.et.abort   = true;                // Abort on error during initialization
     f.et.accent  = true;                // Use accent grave as delimiter
-
-    f.e1.xoper   = true;                // Allow extended operators
-    f.e1.msec    = true;                // Return time in milliseconds
-    f.e1.text    = true;                // Enable extended text strings
-    f.e1.dollar  = true;                // Allow dollar signs in symbols
-    f.e1.ubar    = true;                // Allow underscores in symbols
 
 #if     defined(__linux) || defined(__APPLE__)
 

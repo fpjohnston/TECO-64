@@ -562,7 +562,7 @@ noreturn void throw(int error, ...)
 
     reset();                            // Reset for next command
 
-    if (f.et.abort || !main_active)     // Abort on error, or no main loop?
+    if (f.et.abort)                     // Abort on error?
     {
         exit(EXIT_FAILURE);             // Yes, we're all done here
     }
