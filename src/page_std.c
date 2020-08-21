@@ -72,7 +72,7 @@ void page_flush(FILE *unused1)
 
 void page_forward(FILE *fp, int start, int end, bool ff)
 {
-    assert(fp != NULL);
+    assert(fp != NULL);                 // Error if no file block
 
     int last = NUL;
 

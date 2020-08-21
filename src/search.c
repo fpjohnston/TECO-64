@@ -104,7 +104,7 @@ void init_search(void)
 
 static int isblankx(int c, struct search *s)
 {
-    assert(s != NULL);
+    assert(s != NULL);                  // Error if no search block
 
     if (!isblank(c))
     {
@@ -187,7 +187,7 @@ static int isctrlx(int c, int match)
 
 static int isqreg(int c, struct search *s)
 {
-    assert(s != NULL);
+    assert(s != NULL);                  // Error if no search block
 
     int qname;
     bool qlocal = false;
@@ -261,7 +261,7 @@ static int issymbol(int c)
 
 static bool match_chr(int c, struct search *s)
 {
-    assert(s != NULL);
+    assert(s != NULL);                  // Error if no search block
 
     if (s->match_len-- == 0)
     {
@@ -345,7 +345,7 @@ static bool match_chr(int c, struct search *s)
 
 static bool match_str(struct search *s)
 {
-    assert(s != NULL);
+    assert(s != NULL);                  // Error if no search block
 
     while (s->match_len > 0)
     {
@@ -372,7 +372,7 @@ static bool match_str(struct search *s)
 
 bool search_backward(struct search *s)
 {
-    assert(s != NULL);
+    assert(s != NULL);                  // Error if no search block
 
     // Start search at current position and see if we can get a match. If not,
     // decrement position by one, and try again. If we reach the end of the
@@ -406,7 +406,7 @@ bool search_backward(struct search *s)
 
 bool search_forward(struct search *s)
 {
-    assert(s != NULL);
+    assert(s != NULL);                  // Error if no search block
 
     // Start search at current position and see if we can get a match. If not,
     // increment position by one, and try again. If we reach the end of the
@@ -455,7 +455,7 @@ bool search_forward(struct search *s)
 
 bool search_loop(struct search *s)
 {
-    assert(s != NULL);
+    assert(s != NULL);                  // Error if no search block
 
     struct ifile *ifile = &ifiles[istream];
     struct ofile *ofile = &ofiles[ostream];

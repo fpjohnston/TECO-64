@@ -73,8 +73,8 @@ static void push_if(void);
 
 static void endif(struct cmd *cmd, bool else_ok)
 {
-    assert(cmd != NULL);
-    assert(if_depth > 0);
+    assert(cmd != NULL);                // Error if no command block
+    assert(if_depth > 0);               // Error if not in conditional
 
     if (f.e2.quote && if_head == NULL)
     {
@@ -205,7 +205,7 @@ static void pop_if(void)
         }
     }
 
-    assert(if_depth > 0);
+    assert(if_depth > 0);               // Error if not in conditional
 
     --if_depth;
 }
@@ -260,7 +260,7 @@ static void push_if(void)
 
 void exec_quote(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (!cmd->n_set)                    // Did we see an argument?
     {
@@ -375,11 +375,11 @@ void exec_quote(struct cmd *cmd)
 
 void exec_vbar(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (f.e2.quote)
     {
-        assert(if_head != NULL);
+        assert(if_head != NULL);        // Error if no conditional active
 
         if (if_head->depth != loop_depth)
         {

@@ -49,7 +49,7 @@
 
 void exec_EM(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     const char *buf = cmd->text1.buf;
     uint len = cmd->text1.len;
@@ -60,7 +60,7 @@ void exec_EM(struct cmd *cmd)
         return;
     }
 
-    assert(buf != NULL);
+    assert(buf != NULL);                // Error if no buffer
 
     struct ofile *ofile = open_output(buf, len, stream, cmd->colon, 'Z');
 
@@ -75,7 +75,7 @@ void exec_EM(struct cmd *cmd)
 
     struct qreg *qreg = get_qreg(cmd->qname, cmd->qlocal);
 
-    assert(qreg != NULL);
+    assert(qreg != NULL);               // Error if no Q-register
 
     uint size = qreg->text.len;
 

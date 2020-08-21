@@ -34,6 +34,8 @@
 #include <sys/types.h>          //lint !e451 !e537
 
 
+extern struct buffer *term_block;
+
 // Terminal buffer functions
 
 extern int delete_tbuf(void);

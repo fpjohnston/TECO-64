@@ -46,7 +46,7 @@
 
 void page_forward(FILE *fp, int start, int end, bool ff)
 {
-    assert(fp != NULL);
+    assert(fp != NULL);                 // Error if no file block
 
     struct page page;
     int last = NUL;
@@ -101,7 +101,7 @@ void page_forward(FILE *fp, int start, int end, bool ff)
         *p++ = FF;
     }
 
-    assert((uint)(p - page.addr) == page.size);
+    assert((uint)(p - page.addr) == page.size); // Verify no. of output bytes
 
     fwrite(page.addr, (size_t)page.size, 1uL, fp);
 

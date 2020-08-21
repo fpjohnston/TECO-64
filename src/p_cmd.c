@@ -51,7 +51,7 @@
 
 void exec_P(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     struct ofile *ofile = &ofiles[ostream];
 
@@ -80,10 +80,8 @@ void exec_P(struct cmd *cmd)
     {
         ;                               // Just accept all presets above
     }
-    else if (cmd->m_set)
+    else if (cmd->m_set)                // We assume n was also set
     {
-        assert(cmd->n_set == true);
-
         if (cmd->m_arg < (int)start || cmd->m_arg >= (int)end ||
             cmd->n_arg < (int)start || cmd->n_arg >= (int)end)
         {

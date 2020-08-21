@@ -81,7 +81,7 @@ void exec_FN(struct cmd *cmd)
 
 static void exec_search(struct cmd *cmd, bool replace)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->n_set && cmd->n_arg == 0)  // 0Ntext` isn't allowed
     {

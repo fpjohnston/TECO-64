@@ -51,10 +51,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_B(struct cmd *cmd)
+void exec_ctrl_B(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     time_t t = time(NULL);
     struct tm tm;
 
@@ -74,10 +72,8 @@ void exec_ctrl_B(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_H(struct cmd *cmd)
+void exec_ctrl_H(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     time_t t = time(NULL);
     struct tm tm;
 

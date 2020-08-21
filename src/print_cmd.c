@@ -110,7 +110,7 @@ static void format_str(const char *p, uint n)
 
 void print_cmd(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->m_set || cmd->n_set)
     {

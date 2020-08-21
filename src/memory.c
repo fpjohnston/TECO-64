@@ -88,13 +88,13 @@ static void exit_memory(void);
 
 static void add_mblock(void *p1, uint size)
 {
-    assert(p1 != NULL);
+    assert(p1 != NULL);                 // Error if no memory block
 
     // Note: We don't call alloc_mem() here, since it calls us.
 
     struct mblock *mblock = calloc(1ul, sizeof(*mblock));
 
-    assert(mblock != NULL);
+    assert(mblock != NULL);             // Error if calloc() failed
 
     mblock->prev = NULL;
     mblock->next = mroot;
@@ -150,7 +150,7 @@ void *alloc_mem(uint size)
 
 static void delete_mblock(void *p1)
 {
-    assert(p1 != NULL);
+    assert(p1 != NULL);                 // Error if NULL memory block
 
     struct mblock *p = mroot;
 
@@ -247,10 +247,10 @@ static void exit_memory(void)
 
 void *expand_mem(void *p1, uint oldsize, uint newsize)
 {
-    assert(p1 != NULL);
-    assert(oldsize != 0);
-    assert(oldsize != newsize);
-    assert(oldsize < newsize);
+    assert(p1 != NULL);                 // Error if NULL memory block
+    assert(oldsize != 0);               // Error if old size is 0
+    assert(oldsize != newsize);         // Error if size didn't change
+    assert(oldsize < newsize);          // Error if trying to make smaller
 
 #if     defined(TECO_DEBUG)
 
@@ -288,7 +288,7 @@ void *expand_mem(void *p1, uint oldsize, uint newsize)
 
 void free_mem(void *p1)
 {
-    assert(p1 != NULL);                 // Make sure pointer to pointer is real
+    assert(p1 != NULL);                 // Error if NULL pointer
 
     char **p2 = p1;                     // Make it something we can dereference
 
@@ -333,10 +333,10 @@ void init_mem(void)
 
 void *shrink_mem(void *p1, uint oldsize, uint newsize)
 {
-    assert(p1 != NULL);
-    assert(oldsize != newsize);
-    assert(oldsize > newsize);
-    assert(newsize != 0);
+    assert(p1 != NULL);                 // Error if NULL memory block
+    assert(oldsize != newsize);         // Error if size didn't change
+    assert(oldsize > newsize);          // Error if trying to make larger
+    assert(newsize != 0);               // Error if new size is 0
 
 #if     defined(TECO_DEBUG)
 

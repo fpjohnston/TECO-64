@@ -1,5 +1,5 @@
 ///
-///  @file    back_cmd.c
+///  @file    bslash_cmd.c
 ///  @brief   Execute \ (backslash) command.
 ///
 ///  @bug     No known bugs.
@@ -52,9 +52,9 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_back(struct cmd *cmd)
+void exec_bslash(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->n_set)                     // n\`?
     {
@@ -72,7 +72,7 @@ void exec_back(struct cmd *cmd)
 
         uint nbytes = (uint)snprintf(string, sizeof(string), format, cmd->n_arg);
 
-        assert(nbytes < sizeof(string));
+        assert(nbytes < sizeof(string)); // Error if string was truncated
 
         exec_insert(string, nbytes);
 

@@ -46,7 +46,7 @@
 
 void exec_X(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     int n = 1;
     int m;

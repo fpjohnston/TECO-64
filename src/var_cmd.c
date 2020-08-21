@@ -47,7 +47,7 @@
 
 void exec_B(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     push_expr(t.B, EXPR_VALUE);
 }
@@ -63,7 +63,7 @@ void exec_B(struct cmd *cmd)
 
 void exec_ctrl_Q(struct cmd *cmd )
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (!cmd->n_set)
     {
@@ -87,7 +87,7 @@ void exec_ctrl_Q(struct cmd *cmd )
 
 void exec_ctrl_S(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     push_expr(-(int)last_len, EXPR_VALUE);
 }
@@ -102,7 +102,7 @@ void exec_ctrl_S(struct cmd *cmd)
 
 void exec_ctrl_Y(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     uint i = estack.level;
 
@@ -131,7 +131,7 @@ void exec_ctrl_Y(struct cmd *cmd)
 
 void exec_ctrl_Z(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     uint n = get_qall();
 
@@ -149,7 +149,7 @@ void exec_ctrl_Z(struct cmd *cmd)
 
 void exec_dot(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     push_expr((int)t.dot, EXPR_VALUE);
 }
@@ -164,7 +164,7 @@ void exec_dot(struct cmd *cmd)
 
 void exec_H(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     uint i = estack.level;
 
@@ -193,7 +193,7 @@ void exec_H(struct cmd *cmd)
 
 void exec_Z(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     push_expr((int)t.Z, EXPR_VALUE);
 }

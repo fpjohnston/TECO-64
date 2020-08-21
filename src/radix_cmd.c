@@ -43,10 +43,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_D(struct cmd *cmd)
+void exec_ctrl_D(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     radix = 10;                         // Set radix to decimal
 }
 
@@ -58,10 +56,8 @@ void exec_ctrl_D(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_O(struct cmd *cmd)
+void exec_ctrl_O(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     radix = 8;                          // Set radix to octal
 }
 
@@ -75,7 +71,7 @@ void exec_ctrl_O(struct cmd *cmd)
 
 void exec_ctrl_R(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->n_set)                     // n^R?
     {

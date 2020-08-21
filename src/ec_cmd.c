@@ -48,7 +48,7 @@
 
 void exec_EC(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->n_set)                     // nEC?
     {

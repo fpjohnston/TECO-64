@@ -47,7 +47,7 @@
 
 void exec_digit(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     check_args(cmd);
 

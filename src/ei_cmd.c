@@ -60,7 +60,7 @@ static void exit_EI(void);
 
 void exec_EI(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     const char *buf = cmd->text1.buf;
     uint len = cmd->text1.len;

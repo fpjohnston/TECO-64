@@ -46,7 +46,7 @@
 
 void exec_Q(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     int n;
 

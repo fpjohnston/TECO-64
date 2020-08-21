@@ -100,7 +100,7 @@ void echo_out(int c)
 
 static void echo_chr(int c, void (*print)(int c))
 {
-    assert(print != NULL);
+    assert(print != NULL);              // Error if no function to call
 
     if (c == ESC)
     {
@@ -130,7 +130,7 @@ static void echo_chr(int c, void (*print)(int c))
 
             uint nbytes = (uint)snprintf(chrbuf, sizeof(chrbuf), "[%02x]", c);
 
-            assert(nbytes < sizeof(chrbuf));
+            assert(nbytes < sizeof(chrbuf)); // Error if snprintf() failed
         }
     }
     else                                // Must be a control character
@@ -273,7 +273,7 @@ void print_echo(int c)
 
 void print_str(const char *fmt, ...)
 {
-    assert(fmt != NULL);
+    assert(fmt != NULL);                // Error if no format
 
     char buf[256];
 

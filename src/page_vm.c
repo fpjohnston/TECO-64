@@ -61,8 +61,8 @@ static struct page *page_tail = NULL;   ///< Tail of page list
 ////////////////////////////////////////////////////////////////////////////////
 
 void page_backward(FILE *fp, int count)
-{
-    assert(fp != NULL);
+{ 
+    assert(fp != NULL);                 // Error if no file block
 
     // Save current page in queue, retrieve previous page.
 }
@@ -77,7 +77,7 @@ void page_backward(FILE *fp, int count)
 
 void page_flush(FILE *fp)
 {
-    assert(fp != NULL);
+    assert(fp != NULL);                 // Error if no file block
 
     struct page *page;
 
@@ -104,7 +104,7 @@ void page_flush(FILE *fp)
 
 void page_forward(FILE *fp, int start, int end, bool ff)
 {
-    assert(fp != NULL);
+    assert(fp != NULL);                 // Error if no file block
 
     if (start == end)
     {
@@ -170,7 +170,7 @@ void page_forward(FILE *fp, int start, int end, bool ff)
         *p++ = FF;
     }
 
-    assert((uint)(p - page->addr) == page->size);
+    assert((uint)(p - page.addr) == page.size); // Verify no. of output bytes
 
     print_str("storing page at %p with %d bytes\r\n", page->addr, page->size);
 
@@ -220,7 +220,7 @@ void reset_pages(void)
 
 void yank_backward(FILE *fp)
 {
-    assert(fp != NULL);
+    assert(fp != NULL);                 // Error if no file block
 
     // Discard current page, retrieve previous page from queue.
 }

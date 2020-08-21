@@ -60,7 +60,7 @@ static bool check_format(const char *format);
 
 void exec_equals(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (!cmd->n_set)                    // If no operand, then complain
     {
@@ -114,7 +114,7 @@ void exec_equals(struct cmd *cmd)
 
 static bool check_format(const char *format)
 {
-    assert(format != NULL);
+    assert(format != NULL);             // Error if format is NULL
 
     int c;
     bool is_numeric = false;            // No numeric format seen yet

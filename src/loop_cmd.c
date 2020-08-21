@@ -96,7 +96,7 @@ bool check_loop(void)
 
 static void endloop(struct cmd *cmd, bool pop_ok)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     uint depth = 1;                     // Nesting depth
 
@@ -147,7 +147,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 
 void exec_F_gt(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     endloop(cmd, POP_OK);               // Flow to end of loop
 }
@@ -177,7 +177,7 @@ void exec_F_lt(struct cmd *unused1)
 
 void exec_gt(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     struct loop *loop = loop_head;
 
@@ -214,7 +214,7 @@ void exec_gt(struct cmd *cmd)
 
 void exec_lt(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     int count = INFINITE;               // Assume infinite loop
 
@@ -238,7 +238,7 @@ void exec_lt(struct cmd *cmd)
 
 void exec_semi(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (loop_head == NULL)
     {
@@ -315,7 +315,7 @@ static void pop_loop(bool pop_ok)
         free_mem(&loop);
     }
 
-    assert(loop_depth > 0);
+    assert(loop_depth > 0);             // Error if not in loop
 
     --loop_depth;
 }

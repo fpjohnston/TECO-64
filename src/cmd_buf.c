@@ -118,7 +118,7 @@ static void exit_cbuf(void)
 
 int fetch_cbuf(bool start)
 {
-    assert(command != NULL);
+    assert(command != NULL);            // Verify command string
 
     if (command->pos == command->len)
     {
@@ -201,7 +201,7 @@ void init_cbuf(void)
 
 void reset_cbuf(void)
 {
-    assert(cmd_buf != NULL);
+    assert(cmd_buf != NULL);            // Verify default command buffer
 
     command = cmd_buf;
 
@@ -219,7 +219,7 @@ void reset_cbuf(void)
 
 void set_cbuf(struct buffer *buf)
 {
-    assert(buf != NULL);
+    assert(buf != NULL);                // Verify non-NULL buffer
 
     command = buf;
 }
@@ -239,12 +239,12 @@ void store_cbuf(int c)
     // calling realloc(). Note that this may move the block, so we have to
     // reinitialize all of our pointers.
 
-    assert(command != NULL);
-    assert(command->buf != NULL);
+    assert(command != NULL);            // Verify command string
+    assert(command->buf != NULL);       // Verify command buffer
 
-    if (command->len == command->size)    // Has buffer filled up?
+    if (command->len == command->size)  // Has buffer filled up?
     {
-        assert(command->size != 0);
+        assert(command->size != 0);     // Verify non-zero size
 
         // Round up size to a multiple of STR_SIZE_INIT
 
@@ -273,7 +273,7 @@ void store_cbuf(int c)
 
 void unfetch_cbuf(int c)
 {
-    assert(command != NULL);
+    assert(command != NULL);            // Verify command string
 
     if (command->pos != 0)
     {

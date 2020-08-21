@@ -47,7 +47,7 @@
 
 void exec_EX(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     // The following ensures that we don't exit if we have nowhere to output
     // the dat in the buffer to.

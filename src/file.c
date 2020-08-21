@@ -75,8 +75,8 @@ static void exit_files(void);
 
 static bool canonical_name(char **name)
 {
-    assert(name != NULL);
-    assert(*name != NULL);
+    assert(name != NULL);               // Error if no file name
+    assert(*name != NULL);              // Error if file name is a null string
 
     char path[PATH_MAX];
 
@@ -217,9 +217,9 @@ void init_files(void)
 
 void init_filename(char **name, const char *buf, uint len)
 {
-    assert(name != NULL);
-    assert(buf != NULL);
-    assert(len != 0);
+    assert(name != NULL);               // Error if no output file name
+    assert(buf != NULL);                // Error if no input file name
+    assert(len != 0);                   // Error if input name is a null string
 
     // Check the file name for invalid characters. Currently, this just means
     // ignoring whitespace, and issuing an error for any other control or
@@ -278,12 +278,10 @@ bool open_implicit(const char *buf, uint len, uint stream, bool colon,
         return false;
     }
 
-    assert(buf != NULL);
-    assert(text != NULL);
+    assert(buf != NULL);                // Error if no input file name
+    assert(text != NULL);               // Error if no text buffer
 
     char name[len + 4 + 1];             // Allow room for possible '.tec'
-
-    assert(buf != NULL);
 
     // Here if we have a file name, so try to open file.
 
@@ -365,7 +363,7 @@ bool open_implicit(const char *buf, uint len, uint stream, bool colon,
 
 struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
 {
-    assert(name != NULL);
+    assert(name != NULL);               // Error if no input file name
 
     close_input(stream);                // Close input file if open
 
@@ -397,7 +395,8 @@ struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
 
 
 ///
-///  @brief    Open file for output.
+///  @brief    Open file for output. We are called to handle opens for EB, EL,
+///            EW, and EZ commands.
 ///
 ///  @returns  Output file stream if success, NULL if failure. Note that a NULL
 ///            can only be returned if the colon flag was set.
@@ -407,8 +406,8 @@ struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
 struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
                           int c)
 {
-    assert(name != NULL);
-    assert(c == 'B' || c == 'L' || c == 'W' || c == 'Z');
+    assert(name != NULL);               // Error if no output file name
+    assert(strchr("BLWZ", c) != NULL);  // Error if unexpected command
 
     struct ofile *ofile = &ofiles[stream];
 
@@ -493,7 +492,7 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
 
 void set_last(const char *name)
 {
-    assert(name != NULL);
+    assert(name != NULL);               // Error if no file name
 
     free_mem(&last_file);
 

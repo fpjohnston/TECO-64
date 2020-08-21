@@ -29,7 +29,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
 #include "exec.h"
@@ -43,10 +42,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EA(struct cmd *cmd)
+void exec_EA(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     ostream = OFILE_SECONDARY;
 
     set_last(ofiles[ostream].name);

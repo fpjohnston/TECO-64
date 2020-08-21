@@ -56,8 +56,8 @@ static bool check_mn_flag(struct cmd *cmd, int *flag);
 
 static bool check_mn_flag(struct cmd *cmd, int *flag)
 {
-    assert(cmd != NULL);
-    assert(flag != NULL);
+    assert(cmd != NULL);                // Error if no command block
+    assert(flag != NULL);               // Error if no flag bits
 
     if (!cmd->n_set)                    // n argument?
     {
@@ -95,8 +95,8 @@ static bool check_mn_flag(struct cmd *cmd, int *flag)
 
 static bool check_n_flag(struct cmd *cmd, int *flag)
 {
-    assert(cmd != NULL);
-    assert(flag != NULL);
+    assert(cmd != NULL);                // Error if no command block
+    assert(flag != NULL);               // Error if no flag bits
 
     if (!cmd->n_set)
     {
@@ -123,8 +123,6 @@ static bool check_n_flag(struct cmd *cmd, int *flag)
 
 void exec_ctrl_E(struct cmd *cmd)
 {
-    assert(cmd != NULL);
-
     int n = f.ctrl_e ? -1 : 0;          // Reading flag returns 0 or -1
 
     if (check_n_flag(cmd, &n))
@@ -142,10 +140,8 @@ void exec_ctrl_E(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_N(struct cmd *cmd)
+void exec_ctrl_N(struct cmd *unused1)
 {
-    assert(cmd != NULL);
-
     struct ifile *ifile = &ifiles[istream];
 
     push_expr(ifile->eof, EXPR_VALUE);
@@ -186,8 +182,6 @@ void exec_ctrl_X(struct cmd *cmd)
 
 void exec_E1(struct cmd *cmd)
 {
-    assert(cmd != NULL);
-
     (void)check_mn_flag(cmd, &f.e1.flag);
 }
 
@@ -201,8 +195,6 @@ void exec_E1(struct cmd *cmd)
 
 void exec_E2(struct cmd *cmd)
 {
-    assert(cmd != NULL);
-
     (void)check_mn_flag(cmd, &f.e2.flag);
 }
 
@@ -216,8 +208,6 @@ void exec_E2(struct cmd *cmd)
 
 void exec_E3(struct cmd *cmd)
 {
-    assert(cmd != NULL);
-
     (void)check_mn_flag(cmd, &f.e3.flag);
 }
 
@@ -231,8 +221,6 @@ void exec_E3(struct cmd *cmd)
 
 void exec_E4(struct cmd *cmd)
 {
-    assert(cmd != NULL);
-
     (void)check_mn_flag(cmd, &f.e4.flag);
 }
 
@@ -246,8 +234,6 @@ void exec_E4(struct cmd *cmd)
 
 void exec_ED(struct cmd *cmd)
 {
-    assert(cmd != NULL);
-
     (void)check_mn_flag(cmd, &f.ed.flag);
 }
 
@@ -261,8 +247,6 @@ void exec_ED(struct cmd *cmd)
 
 void exec_EE(struct cmd *cmd)
 {
-    assert(cmd != NULL);
-
     int n = f.ee;
 
     if (check_n_flag(cmd, &n))
@@ -286,8 +270,6 @@ void exec_EE(struct cmd *cmd)
 
 void exec_EH(struct cmd *cmd)
 {
-    assert(cmd != NULL);
-
     if (check_mn_flag(cmd, &f.eh.flag))
     {
         union eh_flag eh;
@@ -343,7 +325,7 @@ void exec_EH(struct cmd *cmd)
 
 void exec_EJ(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     int n = 0;                          // 0EJ is default command
 
@@ -367,7 +349,7 @@ void exec_EJ(struct cmd *cmd)
 
 void exec_EO(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     int n = teco_version;
 
@@ -400,8 +382,6 @@ void exec_ES(struct cmd *cmd)
 
 void exec_ET(struct cmd *cmd)
 {
-    assert(cmd != NULL);
-
     union et_flag saved = { .flag = f.et.flag };
 
     if (check_mn_flag(cmd, &f.et.flag))

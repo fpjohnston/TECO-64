@@ -95,8 +95,8 @@ SOURCES = \
     window.c       \
                    \
     a_cmd.c        \
-    back_cmd.c     \
     bracket_cmd.c  \
+    bslash_cmd.c   \
     case_cmd.c     \
     color_cmd.c    \
     ctrl_a_cmd.c   \

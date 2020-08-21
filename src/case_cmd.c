@@ -78,7 +78,7 @@ void exec_FU(struct cmd *cmd)
 
 static void exec_case(struct cmd *cmd, bool lower)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     int dot = (int)t.dot;
     int Z   = (int)t.Z;

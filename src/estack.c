@@ -100,7 +100,7 @@ void init_expr(void)
 
 bool pop_expr(int *operand)
 {
-    assert(operand != NULL);
+    assert(operand != NULL);            // Error if NULL operand
 
     if (estack.level == estack.base)    // Anything on stack?
     {

@@ -833,7 +833,7 @@ void set_nrows(void)
         --d.nrows;
     }
 
-    assert(d.nrows > 0);
+    assert(d.nrows > 0);                // Verify that we have at least 1 row
 
 #endif
 
@@ -964,7 +964,7 @@ static void update_status(void)
 
         nbytes = (int)strftime(tbuf, sizeof(tbuf),
                                "%a, %e %b %Y, %H:%M %Z", tm);
-        assert(nbytes != 0);
+        assert(nbytes != 0);            // Verify that we got some data
 
         memcpy(status + w.width - nbytes, tbuf, (size_t)(uint)nbytes);
 

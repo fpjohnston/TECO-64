@@ -200,7 +200,7 @@ static int find_color(const char *token)
 
 static void set_color(const char *buf, uint len, int sat, short color)
 {
-    assert(buf != NULL);
+    assert(buf != NULL);                // Error if no input string
 
     char keyword[len + 1];
 
@@ -251,7 +251,7 @@ static void set_color(const char *buf, uint len, int sat, short color)
 
 static void set_colors(const struct cmd *cmd, enum window_pair pair)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     int fg_sat = 100;
     int bg_sat = 100;

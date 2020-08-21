@@ -44,7 +44,7 @@
 
 void exec_atsign(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     cmd->atsign = true;
 }
@@ -59,7 +59,7 @@ void exec_atsign(struct cmd *cmd)
 
 void exec_colon(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     cmd->colon = true;
 
@@ -85,7 +85,7 @@ void exec_colon(struct cmd *cmd)
 
 void exec_comma(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->m_set)                     // Already seen m argument?
     {
@@ -123,7 +123,7 @@ void exec_comma(struct cmd *cmd)
 
 void exec_ctrl_ubar(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     push_expr(TYPE_OPER, cmd->c1);
 }
@@ -138,7 +138,7 @@ void exec_ctrl_ubar(struct cmd *cmd)
 
 void exec_ctrl_up(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     check_args(cmd);
 
@@ -157,7 +157,7 @@ void exec_ctrl_up(struct cmd *cmd)
 
 void exec_lparen(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     ++nparens;
 
@@ -181,7 +181,7 @@ void exec_lparen(struct cmd *cmd)
 
 void exec_oper(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     check_args(cmd);
 
@@ -198,7 +198,7 @@ void exec_oper(struct cmd *cmd)
 
 void exec_rparen(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (nparens == 0)                   // Can't have ) without (
     {

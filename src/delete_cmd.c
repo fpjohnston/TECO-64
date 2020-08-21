@@ -47,7 +47,7 @@
 
 void exec_D(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     int n = 1;
     int m;
@@ -101,7 +101,7 @@ void exec_D(struct cmd *cmd)
 
 void exec_K(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->h)                         // HK?
     {

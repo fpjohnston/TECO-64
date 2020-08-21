@@ -45,7 +45,7 @@
 
 void exec_pct(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     // %q with no argument increments by one, :%q decrements by one.
 

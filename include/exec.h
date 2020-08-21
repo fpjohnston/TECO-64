@@ -46,7 +46,7 @@ extern void exec_B(struct cmd *cmd);
 
 extern void exec_bad(struct cmd *cmd);
 
-extern void exec_back(struct cmd *cmd);
+extern void exec_bslash(struct cmd *cmd);
 
 extern void exec_bang(struct cmd *cmd);
 

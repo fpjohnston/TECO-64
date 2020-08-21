@@ -48,7 +48,7 @@
 
 void exec_EB(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     const char *buf = cmd->text1.buf;
     uint len = cmd->text1.len;
@@ -58,7 +58,7 @@ void exec_EB(struct cmd *cmd)
         throw(E_NFI);                   // No file for input
     }
 
-    assert(buf != NULL);
+    assert(buf != NULL);                // Error if no buffer
 
     struct ifile *ifile = open_input(buf, len, istream, cmd->colon);
 

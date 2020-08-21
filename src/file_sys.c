@@ -118,9 +118,9 @@ int get_wild(void)
 
 FILE *open_temp(char **otemp, const char *oname)
 {
-    assert(otemp != NULL);
-    assert(*otemp == NULL);
-    assert(oname != NULL);
+    assert(otemp != NULL);              // Error if NULL pointer to temp file
+    assert(*otemp == NULL);             // Error if NULL temp file
+    assert(oname != NULL);              // Error if NULL output file
 
     struct stat file_stat;
 
@@ -164,7 +164,7 @@ FILE *open_temp(char **otemp, const char *oname)
 
 void read_memory(char *p, uint len)
 {
-    assert(p != NULL);
+    assert(p != NULL);                  // Error if no place to store data
 
     const char *memory = getenv("TECO_MEMORY");
 
@@ -209,7 +209,7 @@ void read_memory(char *p, uint len)
 
 void rename_output(struct ofile *ofile)
 {
-    assert(ofile != NULL);
+    assert(ofile != NULL);              // Error if no output file
 
     if (ofile->temp != NULL)
     {
@@ -286,7 +286,7 @@ bool set_wild(const char *filename)
 
 void write_memory(const char *file)
 {
-    assert(file != NULL);
+    assert(file != NULL);               // Error if no output file
 
     const char *memory = getenv("TECO_MEMORY");
     FILE *fp;

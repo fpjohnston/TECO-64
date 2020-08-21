@@ -79,8 +79,8 @@ static void store_str(const char *buf, uint len);
 
 uint build_string(char **dest, const char *src, uint len)
 {
-    assert(dest != NULL);
-    assert(src != NULL);
+    assert(dest != NULL);               // Error if no destination string
+    assert(src != NULL);                // Error if no source string
 
     bool literal    = false;
     bool lower_next = false;
@@ -298,7 +298,7 @@ static void store_chr(int c)
 
 static void store_str(const char *buf, uint len)
 {
-    assert(buf != NULL);
+    assert(buf != NULL);                // Error if no input string
 
     while (len-- > 0)
     {

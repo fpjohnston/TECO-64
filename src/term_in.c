@@ -660,18 +660,18 @@ static void read_qname(int c)
 
     print_echo(CRLF);
 
-    assert(term_buf != NULL);
+    assert(term_block != NULL);         // Error if no terminal block
 
     struct buffer qbuf =
     {
-        .len  = term_buf->len,
-        .pos  = term_buf->pos,
-        .size = term_buf->size,
+        .len  = term_block->len,
+        .pos  = term_block->pos,
+        .size = term_block->size,
     };
 
-    qbuf.buf  = alloc_mem(term_buf->len);
+    qbuf.buf  = alloc_mem(term_block->len);
 
-    memcpy(qbuf.buf, term_buf->buf, (ulong)qbuf.len);
+    memcpy(qbuf.buf, term_block->buf, (ulong)qbuf.len);
 
     store_qtext(qname, qdot, &qbuf);
 }

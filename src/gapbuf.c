@@ -109,7 +109,7 @@ static void shift_right(int nbytes);
 
 int add_ebuf(int c)
 {
-    assert(eb.buf != NULL);
+    assert(eb.buf != NULL);             // Error if no edit buffer
 
     if (eb.gap == 0)
     {
@@ -364,7 +364,7 @@ void init_ebuf(
     int stepsize,                       ///< Incremental increase, in bytes
     int warn)                           ///< Warning threshold (0-100)
 {
-    assert(eb.buf == NULL);
+    assert(eb.buf == NULL);             // Error if no edit buffer
 
     register_exit(exit_ebuf);
 

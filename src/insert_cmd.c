@@ -52,7 +52,7 @@ static char insert_string[INSERT_MAX + 1]; ///< Last string inserted in buffer
 
 void exec_ctrl_I(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     insert_string[0] = TAB;
 
@@ -77,7 +77,7 @@ void exec_ctrl_I(struct cmd *cmd)
 
 void exec_I(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->n_set && cmd->text1.len != 0) // nItext`?
     {
@@ -114,12 +114,7 @@ void exec_I(struct cmd *cmd)
 
 void exec_insert(const char *buf, uint len)
 {
-    if (buf == NULL)
-    {
-        printf("buffer is NULL\r\n");
-    }
-
-    assert(buf != NULL);
+    assert(buf != NULL);                // Error if no buffer
 
     for (uint i = 0; i < len; ++i)
     {

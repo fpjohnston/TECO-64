@@ -92,7 +92,7 @@ static void scan_text(int delim, struct tstring *tstring);
 
 void check_args(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->h || cmd->ctrl_y)
     {
@@ -134,7 +134,7 @@ void check_end(void)
 
 void exec_bad(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     throw(E_ILL, cmd->c1);              // Illegal character
 }
@@ -224,7 +224,7 @@ void exec_escape(struct cmd *unused1)
 
 static const struct cmd_table *find_cmd(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     int c = cmd->c1;
 
@@ -285,7 +285,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
 
 static void finish_cmd(struct cmd *cmd, union cmd_opts opts)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     // See if we have an n argument. If not, then check to see if the command
     // was preceded by a minus sign, which is equivalent to an argument of -1.
@@ -333,7 +333,7 @@ static void finish_cmd(struct cmd *cmd, union cmd_opts opts)
 
 exec_func *next_cmd(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     *cmd = null_cmd;
 
@@ -359,7 +359,7 @@ exec_func *next_cmd(struct cmd *cmd)
             continue;
         }
 
-        assert(entry->opts != NULL);
+        assert(entry->opts != NULL);    // Error if missing pointer to options
 
         union cmd_opts opts = *entry->opts;
 
@@ -447,8 +447,8 @@ static const struct cmd_table *scan_ef(struct cmd *cmd,
                                        const struct cmd_table *table,
                                        uint count, int error)
 {
-    assert(cmd != NULL);
-    assert(table != NULL);
+    assert(cmd != NULL);                // Error if no command block
+    assert(table != NULL);              // Error if no command table pointer
 
     check_end();                        // Must have at least one more chr.
 
@@ -475,7 +475,7 @@ static const struct cmd_table *scan_ef(struct cmd *cmd,
 
 static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->c1 == '=')                 // Might have =, ==, or ===
     {
@@ -625,7 +625,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 
 static void scan_text(int delim, struct tstring *text)
 {
-    assert(text != NULL);
+    assert(text != NULL);               // Error if no text string buffer
 
     text->len = 0;
     text->buf = command->buf + command->pos;

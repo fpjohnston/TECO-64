@@ -207,8 +207,8 @@ static void check_config(void)
 
 static void copy_arg(char *cmd, ulong size, char *file)
 {
-    assert(cmd != NULL);
-    assert(file != NULL);
+    assert(cmd != NULL);                // Error if no command block
+    assert(file != NULL);               // Error if no file name
 
     int len = (int)strlen(file);
 
@@ -234,7 +234,7 @@ static void copy_arg(char *cmd, ulong size, char *file)
 
 static void finish_config(int argc, const char * const argv[])
 {
-    assert(argv != NULL);
+    assert(argv != NULL);               // Error if no argument list
 
     if ((argc -= optind) > 1)
     {
@@ -427,14 +427,14 @@ void set_config(
     int argc,                           ///< No. of arguments
     const char *const argv[])           ///< List of arguments
 {
-    assert(argv != NULL);
-    assert(argv[0] != NULL);
+    assert(argv != NULL);               // Error if no argument list
+    assert(argv[0] != NULL);            // Error if no strings in list
 
     // These two assertions confirm the standard behavior of getopt_long()
     // regarding the ordering of option and non-option arguments.
 
-    assert(optstring[0] != '+' && optstring[0] != '-');
-    assert(getenv("POSIXLY_CORRECT") == NULL);
+    assert(optstring[0] != '+' && optstring[0] != '-'); // Verify assumptions
+    assert(getenv("POSIXLY_CORRECT") == NULL); // Verify assumptions
 
     int c;
     int idx = 0;
@@ -580,7 +580,7 @@ void set_config(
 
 static void store_cmd(const char *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     int c;
 

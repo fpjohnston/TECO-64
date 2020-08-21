@@ -133,7 +133,7 @@ static int get_w(int n)
 
 void exec_W(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->colon)
     {

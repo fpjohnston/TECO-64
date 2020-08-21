@@ -100,8 +100,6 @@ extern int radix;
 
 extern int teco_version;
 
-extern struct buffer *term_buf;
-
 // General-purpose common functions
 
 extern void *alloc_mem(uint size);

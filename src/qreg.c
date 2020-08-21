@@ -156,8 +156,8 @@ static void exit_qreg(void)
     // The prompt level set of local Q-registers is not freed by reset_qreg(),
     // so we have to do that ourselves.
 
-    assert(local_head != NULL);
-    assert(local_head->next == NULL);
+    assert(local_head != NULL);         // Error if no local Q-registers
+    assert(local_head->next == NULL);   // Error if more than one set
 
     for (uint i = 0; i < QREG_SIZE; ++i)
     {
@@ -259,7 +259,7 @@ int get_qchr(int qname, bool qdot, int n)
 
 void get_qname(struct cmd *cmd, const char *extras)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     check_end();
 
@@ -581,8 +581,8 @@ void store_qnum(int qname, bool qdot, int n)
 
 void store_qtext(int qname, bool qdot, struct buffer *text)
 {
-    assert(text != NULL);
-    assert(text->size != 0);
+    assert(text != NULL);               // Error if no place to store text
+    assert(text->size != 0);            // Error if no data for text
 
     struct qreg *qreg = get_qreg(qname, qdot);
 

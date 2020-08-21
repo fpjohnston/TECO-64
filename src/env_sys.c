@@ -79,7 +79,7 @@ void exit_EG(void)
 
 int find_eg(char *cmd, bool dcolon)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (dcolon)
     {
@@ -168,7 +168,7 @@ int find_eg(char *cmd, bool dcolon)
 
 static int get_cmd(char *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     char buf[PATH_MAX];                 //< General purpose buffer
     FILE *fp;                           //< File description for pipe

@@ -49,7 +49,7 @@
 
 void exec_G(struct cmd *cmd)
 {
-    assert(cmd != NULL);
+    assert(cmd != NULL);                // Error if no command block
 
     if (cmd->colon)
     {
@@ -119,11 +119,11 @@ void exec_G(struct cmd *cmd)
                 exec_insert(last_search.buf, last_len);
             }
         }
-        else                           // Gq -> copy Q-register to buffer
+        else                            // Gq -> copy Q-register to buffer
         {
             struct qreg *qreg = get_qreg(cmd->qname, cmd->qlocal);
 
-            assert(qreg != NULL);
+            assert(qreg != NULL);       // Error if no Q-register
 
             if (qreg->text.size != 0)
             {

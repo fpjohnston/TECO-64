@@ -464,6 +464,7 @@ noreturn void throw(int error, ...)
     const char *file_str = NULL;
     const char *err_str;
     int c;
+    int nbytes;
 
     va_list args;
 
@@ -482,23 +483,18 @@ noreturn void throw(int error, ...)
 
             if (c >= DEL)               // DEL or 8-bit character?
             {
-                uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "[%02x]", c);
-
-                assert(nbytes < sizeof(err_buf));
+                nbytes = snprintf(err_buf, sizeof(err_buf), "[%02x]", c);
             }
             else if (isprint(c))        // Printable character?
             {
-                uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "%c", c);
-
-                assert(nbytes < sizeof(err_buf));
+                nbytes = snprintf(err_buf, sizeof(err_buf), "%c", c);
             }
             else                        // Must be a control character
             {
-                uint nbytes = (uint)snprintf(err_buf, sizeof(err_buf), "^%c",
-                                             c + 'A' - 1);
-
-                assert(nbytes < sizeof(err_buf));
+                nbytes = snprintf(err_buf, sizeof(err_buf), "^%c", c + 'A' - 1);
             }
+
+            assert((uint)nbytes < sizeof(err_buf)); // Error if snprintf() failed
 
             err_str = err_buf;
 
@@ -537,7 +533,7 @@ noreturn void throw(int error, ...)
 
     // Ensure that '?' command only prints command string up to error.
 
-    term_buf->len = term_buf->pos = command->pos;
+    term_block->len = term_block->pos = command->pos;
 
     // If CTRL/C and we're not executing a command, don't print error.
 
