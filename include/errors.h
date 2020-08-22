@@ -105,7 +105,6 @@ enum errors
     E_SRH,          ///< Search failure "text"
     E_SYS,          ///< System error message
     E_TAG,          ///< Missing tag "!x!"
-    E_T10,          ///< TECO-10 command not implemented
     E_UTC,          ///< Unterminated command string
     E_UTL,          ///< Unterminated loop
     E_UTM,          ///< Unterminated macro

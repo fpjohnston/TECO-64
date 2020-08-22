@@ -121,7 +121,6 @@ static struct err_table err_table[] =
     [E_SRH] = { "SRH",  "Search failure '%s'" },
     [E_SYS] = { "SYS",  "%s" },
     [E_TAG] = { "TAG",  "Missing tag '!%s!'" },
-    [E_T10] = { "T10",  "TECO-10 command not implemented" },
     [E_UTC] = { "UTC",  "Unterminated command string" },
     [E_UTL] = { "UTL",  "Unterminated loop" },
     [E_UTM] = { "UTM",  "Unterminated macro" },
@@ -316,8 +315,6 @@ static const char *verbose[] =
     [E_TAG] = "The tag !tag! specified by an O command cannot be "
               "found. This tag must be in the same macro level as the "
               "O command referencing it.",
-
-    [E_T10] = "A TECO-10 command cannot be or has not been implemented.",
 
     [E_UTC] = "This is a general error which is usually caused by an "
               "unterminated insert, search, or filename argument, an "
