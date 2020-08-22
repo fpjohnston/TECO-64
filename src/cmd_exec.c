@@ -385,6 +385,11 @@ exec_func *next_cmd(struct cmd *cmd)
         {
             finish_cmd(cmd, opts);
 
+            if (f.e0.trace)
+            {
+                print_cmd(cmd);
+            }
+
             return entry->exec;
         }
 
@@ -395,6 +400,11 @@ exec_func *next_cmd(struct cmd *cmd)
             (f.e2.colon && cmd->colon && c != '@'))
         {
             throw(E_MOD);               // Invalid command modifier
+        }
+
+        if (f.e0.trace)
+        {
+            print_cmd(cmd);
         }
 
         (*entry->exec)(cmd);            // Execute simple command

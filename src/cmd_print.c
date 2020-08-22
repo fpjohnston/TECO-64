@@ -1,6 +1,6 @@
 ///
-///  @file    print_cmd.c
-///  @brief   Print current command (used in dry runs).
+///  @file    cmd_print.c
+///  @brief   Print current command (used for tracing and dry runs).
 ///
 ///  @bug     No known bugs.
 ///
@@ -26,8 +26,6 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DEBUG)
-
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -48,7 +46,7 @@ static void format_str(const char *p, uint nbytes);
 
 
 ///
-///  @brief    Format character for dry run print out.
+///  @brief    Format character for trace or dry run print out.
 ///
 ///  @returns  Nothing.
 ///
@@ -83,7 +81,7 @@ static void format_chr(int c)
 
 
 ///
-///  @brief    Format string for dry run print out.
+///  @brief    Format string for trace or dry run print out.
 ///
 ///  @returns  Nothing.
 ///
@@ -143,7 +141,8 @@ void print_cmd(struct cmd *cmd)
     format_str(cmd->text2.buf, cmd->text2.len);
     format_chr(cmd->text2.len != 0 ? cmd->delim : NUL);
 
-    print_chr(CRLF);
+    if (f.e0.dryrun)
+    {
+        print_chr(CRLF);
+    }
 }
-
-#endif  // defined(TECO_DEBUG)

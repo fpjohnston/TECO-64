@@ -76,15 +76,15 @@ SOURCES = \
     build_str.c    \
     cmd_buf.c      \
     cmd_exec.c     \
+    cmd_expr.c     \
+    cmd_print.c    \
     cmd_tables.c   \
     env_sys.c      \
     errors.c       \
-    estack.c       \
     file.c         \
     file_sys.c     \
     memory.c       \
     option_sys.c   \
-    print_cmd.c    \
     qreg.c         \
     search.c       \
     teco.c         \
