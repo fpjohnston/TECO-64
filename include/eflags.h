@@ -176,7 +176,7 @@ union et_flag
         uint rubout   : 1;      ///< Process DEL and ^U in scope mode
         uint lower    : 1;      ///< Read lower case
         uint noecho   : 1;      ///< Disable echo for ^T commands
-        uint cancel   : 1;      ///< Cancel ^O on type out
+        uint ctrl_o   : 1;      ///< Cancel ^O on type out
         uint nowait   : 1;      ///< Read with no wait
         uint detach   : 1;      ///< Detach flag
         uint abort    : 1;      ///< Abort-on-error bit
