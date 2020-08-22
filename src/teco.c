@@ -95,10 +95,6 @@ int main(int argc, const char * const argv[])
                 f.e0.trace  = false;    // Disable tracing
                 f.e0.dryrun = false;    // Disable dry run
 
-                f.et.image  = false;    // Disable image output
-                f.et.noecho = false;    // Enable echo for CTRL/T
-                f.et.ctrl_o = false;    // Disable CTRL/O
-                f.et.nowait = false;    // Enable wait for CTRL/T
                 f.et.abort  = false;    // Don't abort on error
 
                 nparens = 0;            // Reset parenthesis count
@@ -126,6 +122,11 @@ int main(int argc, const char * const argv[])
             case 2:                     // Error
                 f.e0.exec = false;      // Not executing a command
                 f.e0.error = true;      // Flag the error
+
+                f.et.image  = false;    // Disable image output
+                f.et.noecho = false;    // Enable echo for CTRL/T
+                f.et.ctrl_o = false;    // Disable CTRL/O
+                f.et.nowait = false;    // Enable wait for CTRL/T
 
                 break;
         }
