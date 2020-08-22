@@ -5,9 +5,13 @@
 
 0,128ET                 ! Abort on error                  !
 EO-200 "L
-    :@^A/%Macro requires TECO v200 or later/
+    @^A/%Macro requires TECO v200 or later/
+    13^T 10^T
     ^C
 '
+
+-1E1                    ! Enable all extended features !
+-1E2                    ! Enable all command restrictions !
 
                         ! Get MM/DD/YYYY in Q-reg's M,D,Y !
 ^B U.0                  ! 0.num = encoded date            !
