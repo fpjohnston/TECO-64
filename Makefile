@@ -51,7 +51,7 @@ TARGET = teco
 CC = gcc
 
 CFLAGS = -std=gnu18 -Wall -Wextra -Wno-unused-parameter -fshort-enums
-CFLAGS += -D SCOPE
+CFLAGS += -D TECO_WINDOWS
 
 DFLAGS =
 
@@ -59,7 +59,7 @@ OPTIONS_DEBUG =
 
 INCDIR = include
 
-LINT_DEBUG = -D SCOPE
+LINT_DEBUG = -D TECO_WINDOWS
 
 OPT ?= 3
 OPT_OPT = -O$(OPT)

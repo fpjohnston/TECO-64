@@ -42,6 +42,9 @@
 #define DEFAULT_HEIGHT          24      ///< Default terminal rows
 #define DEFAULT_WIDTH           80      ///< Default terminal columns
 
+#define MIN_HEIGHT              10      ///< Minimum no. of rows
+#define MIN_WIDTH               10      ///< Minimum no. of columns
+
 ///  @var    w
 ///  @brief  Variables to read and control scope display.
 
@@ -160,12 +163,20 @@ void exec_W(struct cmd *cmd)
         return;                         // No
     }
 
-    if (cmd->n_set)
+    if (!cmd->n_set)                    // Was it W with no argument?
+    {
+        if (f.e0.winact)
+        {
+            reset_win();
+            init_term();
+        }
+    }
+    else if (cmd->n_arg == -1)          // Was it -1W?
     {
         if (!f.e0.winact)
         {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
             reset_term();               // Don't reset if no window support
 
@@ -175,14 +186,8 @@ void exec_W(struct cmd *cmd)
             clear_win();
         }
     }
-    else
-    {
-        if (f.e0.winact)
-        {
-            reset_win();
-            init_term();
-        }
-    }
+
+    // Note that we ignore any other W commands including a numeric argument.
 }
 
 
@@ -203,13 +208,19 @@ static void set_w(int m, int n)
             break;
 
         case 1:
-            w.width = m;
+            if (m >= MIN_WIDTH)
+            {
+                w.width = m;
+            }
 
             break;
 
         case 2:
-            w.height = m;
-            set_nrows();
+            if (m >= MIN_HEIGHT)
+            {
+                w.height = m;
+                set_nrows();
+            }
 
             break;
 

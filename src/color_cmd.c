@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 #include <ncurses.h>
 
@@ -43,7 +43,7 @@
 #include "window.h"
 
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 #define COLOR_BASE  16              ///< Starting base for new colors
 
@@ -101,7 +101,7 @@ static void set_colors(const struct cmd *cmd, enum window_pair pair);
 void exec_F1(struct cmd *cmd)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     set_colors(cmd, CMD);
 
@@ -124,7 +124,7 @@ void exec_F1(struct cmd *cmd)
 void exec_F2(struct cmd *cmd)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     set_colors(cmd, TEXT);
 
@@ -146,7 +146,7 @@ void exec_F2(struct cmd *cmd)
 void exec_F3(struct cmd *cmd)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     set_colors(cmd, STATUS);
 
@@ -166,7 +166,7 @@ void exec_F3(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 static int find_color(const char *token)
 {
@@ -196,7 +196,7 @@ static int find_color(const char *token)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 static void set_color(const char *buf, uint len, int sat, short color)
 {
@@ -247,7 +247,7 @@ static void set_color(const char *buf, uint len, int sat, short color)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 static void set_colors(const struct cmd *cmd, enum window_pair pair)
 {

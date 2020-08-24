@@ -28,7 +28,7 @@
 
 #include <assert.h>
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 #include <ncurses.h>
 
@@ -65,7 +65,7 @@
 #define err_if_true(func, cond) if (func == cond) error_win()
 
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 #define MAX_POSITION    30          ///< Max. size of position string
 
@@ -145,7 +145,7 @@ static void update_status(void);
 bool clear_eol(void)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     if (f.et.scope && f.e0.winact)
     {
@@ -172,7 +172,7 @@ bool clear_eol(void)
 void clear_win(void)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     (void)clear();
 
@@ -197,7 +197,7 @@ void clear_win(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 static void error_win(void)
 {
@@ -234,7 +234,7 @@ int getchar_win(bool wait)
 {
     int c = 0;                          // Ensure that high bits are clear
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     if (f.e0.winact)
     {
@@ -300,7 +300,7 @@ void getsize_win(void)
     w.width  = ts.ws_col;
     w.height = ts.ws_row;
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     (void)resizeterm(w.height, w.width);
 
@@ -320,7 +320,7 @@ void getsize_win(void)
 void init_win(void)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     if (!f.e0.winact)
     {
@@ -376,7 +376,7 @@ void init_win(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 static void mark_cursor(int row, int col)
 {
@@ -426,7 +426,7 @@ static void mark_cursor(int row, int col)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 static void move_down(void)
 {
@@ -493,7 +493,7 @@ static void move_down(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 static void move_up(void)
 {
@@ -564,7 +564,7 @@ static void move_up(void)
 bool putc_win(int c)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     if (f.e0.winact)
     {
@@ -593,7 +593,7 @@ bool putc_win(int c)
 bool puts_win(const char *buf)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     if (f.e0.winact)
     {
@@ -620,7 +620,7 @@ bool puts_win(const char *buf)
 int readkey_win(int key)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     if (key < KEY_MIN || key > KEY_MAX)
     {
@@ -668,7 +668,7 @@ int readkey_win(int key)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 static void repaint(int row, int col, int pos)
 {
@@ -744,7 +744,7 @@ static void repaint(int row, int col, int pos)
 void refresh_win(void)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     if (f.e0.winact && w.nlines != 0)
     {
@@ -771,7 +771,7 @@ void refresh_win(void)
 void reset_colors(void)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     if (can_change_color())             // Make colors as bright as possible
     {
@@ -806,7 +806,7 @@ void reset_colors(void)
 void reset_win(void)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     if (f.e0.winact)
     {
@@ -830,7 +830,7 @@ void reset_win(void)
 void set_nrows(void)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     d.nrows = w.height - w.nlines;
 
@@ -856,7 +856,7 @@ void set_nrows(void)
 void set_scroll(int height, int nlines)
 {
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
     if (f.e0.winact && w.nlines != 0)
     {
@@ -920,7 +920,7 @@ void set_scroll(int height, int nlines)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(SCOPE)
+#if     defined(TECO_WINDOWS)
 
 static void update_status(void)
 {
