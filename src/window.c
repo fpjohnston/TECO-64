@@ -300,6 +300,12 @@ void getsize_win(void)
     w.width  = ts.ws_col;
     w.height = ts.ws_row;
 
+#if     defined(SCOPE)
+
+    (void)resizeterm(w.height, w.width);
+
+#endif
+
     set_nrows();
 }
 
