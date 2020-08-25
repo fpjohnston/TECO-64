@@ -304,7 +304,7 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.f.window != 0)
     {
-        store_cmd("1W ");
+        store_cmd("-1W ");
     }
 
     if (config.s.scroll != NULL)
