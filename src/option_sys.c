@@ -198,8 +198,9 @@ static void check_config(void)
 
 
 ///
-///  @brief    Copy argument, which is either a command string, or a dollar sign
-///            followed by a file name.
+///  @brief    Copy argument, which is either a file name which we will open
+///            with an EI command, or a command string in single or double
+///            quotes.
 ///
 ///  @returns  Nothing.
 ///
@@ -268,7 +269,7 @@ static void finish_config(int argc, const char * const argv[])
 
     if (config.s.initial != NULL)
     {
-        snprintf(cmdstring, sizeof(cmdstring), "EI%s\e ", config.s.initial);
+        copy_arg(cmdstring, sizeof(cmdstring), config.s.initial);
         store_cmd(cmdstring);
     }
     else if (config.f.initial && (env = getenv("TECO_INIT")) != NULL)
