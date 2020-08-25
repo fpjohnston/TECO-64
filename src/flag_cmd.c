@@ -327,6 +327,11 @@ void exec_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    if (cmd->m_set)                     // Did user specify m,nEJ?
+    {
+        throw(E_NYI);                   // Not yet implemented
+    }
+
     int n = 0;                          // 0EJ is default command
 
     if (cmd->n_set)
