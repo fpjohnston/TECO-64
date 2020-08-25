@@ -105,8 +105,8 @@ extern void init_filename(char **name, const char *buf, uint len);
 
 extern void init_files(void);
 
-extern bool open_implicit(const char *buf, uint len, uint stream, bool colon,
-                          struct buffer *text);
+extern bool open_command(const char *buf, uint len, uint stream, bool colon,
+                         struct buffer *text);
 
 extern struct ifile *open_input(const char *name, uint len, uint stream,
                                 bool colon);

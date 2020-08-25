@@ -262,16 +262,17 @@ void init_filename(char **name, const char *buf, uint len)
 
 
 ///
-///  @brief    Open file which may have an implicit .tec file type/extension. We
-///            try to open the file as specified, but if that fails, we append
-///            .tec (assuming no period in the file name), and try again.
+///  @brief    Open indirect command file which may have an implicit .tec file
+///            type/extension. We try to open the file as specified, but if
+///            that fails, we append .tec to the name (assuming there was no
+///            period in the name), and try again.
 ///
 ///  @returns  true if file opened and it has data, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool open_implicit(const char *buf, uint len, uint stream, bool colon,
-                   struct buffer *text)
+bool open_command(const char *buf, uint len, uint stream, bool colon,
+                  struct buffer *text)
 {
     if (len == 0)                       // Any file to open?
     {

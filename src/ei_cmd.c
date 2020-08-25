@@ -70,7 +70,7 @@ void exec_EI(struct cmd *cmd)
 
     ei_data.size = EX_SIZE;             // Add room for possible EX command
 
-    if (open_implicit(buf, len, stream, cmd->colon, &ei_data))
+    if (open_command(buf, len, stream, cmd->colon, &ei_data))
     {
         while (ei_data.len > 0)
         {
