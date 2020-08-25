@@ -246,7 +246,7 @@ void init_env(int argc, const char * const argv[])
 
 int teco_env(int n_arg, bool colon)
 {
-    if (n_arg == -1)
+    if (n_arg == -1)                    // -1EJ
     {
         if (colon)
         {
@@ -255,22 +255,19 @@ int teco_env(int n_arg, bool colon)
 
         return (TECO_HW << 8) | TECO_OS;
     }
-    else if (n_arg == 0)
+    else if (n_arg == 0)                // 0EJ
     {
         if (colon)
         {
-            print_str("%u\r\n", (uint)getpid());
+            return getppid();           // Parent process ID
         }
-
-        return getpid();
+        else
+        {
+            return getpid();            // Process ID
+        }
     }
     else
     {
-        if (colon)
-        {
-            print_str("0\r\n");
-        }
-
-        return 0;
+        return 0;                       // Any other EJ
     }
 }
