@@ -1,5 +1,5 @@
-! Sample initialization file for TECO-64                 !
-! Use EXPORT TECO_INIT=teco.ini or --initialize=teco.ini !
+! Initialize TECO-64, with standard command-line      !
+! Use TECO_INIT=window.tec or --initialize=window.tec !
 
 0,128ET                 ! Abort on error !
 
@@ -10,9 +10,5 @@ EO-200 "L
 
 -1E1                    ! Enable all extended features !
 -1E2                    ! Enable all command restrictions !
-1W                      ! Enable editing window !
-9,7:W ^[                ! Allow 9 lines for command window !
-@f1/green/black/        ! Command window is green on black !
-@f2/blue/white/         ! Text window is blue on white !
-@f3/yellow/red/         ! Status line is yellow on red !
+
 ^[^[

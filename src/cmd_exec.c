@@ -183,10 +183,9 @@ void exec_cmd(void)
 
 
 ///
-///  @brief    Execute ESCape command. Note that we're called here only for
-///            escape characters between commands, or at the end of command
-///            strings, not for escapes used to delimit commands (e.g., a
-///            command such as "^Ahello, world!<ESC>").
+///  @brief    Execute ESCape command. We're called here only for ESCapes
+///            between commands, or at the end of command strings, not for
+///            ESCapes used to delimit text arguments after commands.
 ///
 ///  @returns  Nothing.
 ///
@@ -194,19 +193,21 @@ void exec_cmd(void)
 
 void exec_escape(struct cmd *unused1)
 {
-    int c;
+    // Skip past any whitespace after the ESCape.
 
     while (command->pos < command->len)
     {
-        c = fetch_cbuf(NOSTART);
+        int c = command->buf[command->pos];
 
-        if (!isspace(c) || c == TAB)
+        if (!isspace(c) || c == TAB)    // Whitespace?
         {
-            unfetch_cbuf(c);
-
-            break;
+            break;                      // No, so we're done skipping chrs.
         }
+
+        ++command->pos;
     }
+
+    // If we've read all characters in command string, then reset for next time.
 
     if (command->pos == command->len)
     {
@@ -252,10 +253,13 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
     else if (c == '^')
     {
         check_args(cmd);
+        check_end();                    // Must have at least one more chr.
 
-        if ((c = fetch_cbuf(NOSTART)) == '^')
+        if ((c = command->buf[command->pos++]) == '^')
         {
-            c = fetch_cbuf(NOSTART);
+            check_end();                // Must have at least one more chr.
+
+            c = command->buf[command->pos++];
 
             push_expr(c, EXPR_VALUE);
 
