@@ -42,7 +42,7 @@
 
 static void format_chr(int c);
 
-static void format_str(const char *p, uint nbytes);
+static void format_str(const char *p, uint n);
 
 
 ///
