@@ -35,7 +35,6 @@
 #include "teco.h"
 #include "ascii.h"
 #include "exec.h"
-#include "errors.h"
 #include "estack.h"
 
 
@@ -110,67 +109,6 @@ static void exit_cbuf(void)
 
 
 ///
-///  @brief    Fetch next character from buffer.
-///
-///  @returns  Character fetched, or EOF if no character available.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int fetch_cbuf(bool start)
-{
-    assert(command != NULL);            // Verify command string
-
-    if (command->pos == command->len)
-    {
-        // End of buffer if we're at the start of a command
-
-        if (start)
-        {
-            return EOF;
-        }
-        else if (check_macro())
-        {
-            if (check_expr())
-            {
-                return EOF;
-            }
-
-            throw(E_UTM);               // Unterminated macro
-        }
-        else if (loop_depth != 0)
-        {
-            throw(E_UTL);               // Unterminated loop
-        }
-        else if (if_depth != 0)
-        {
-            throw(E_UTQ);               // Unterminated conditional
-        }
-        else
-        {
-            throw(E_UTC);               // Unterminated command
-        }
-    }
-
-    int c = command->buf[command->pos++];
-
-    return c;
-}
-
-
-///
-///  @brief    Get current command buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-struct buffer *get_cbuf(void)
-{
-    return command;
-}
-
-
-///
 ///  @brief    Initialize command buffer.
 ///
 ///  @returns  Nothing.
@@ -211,21 +149,6 @@ void reset_cbuf(void)
 
 
 ///
-///  @brief    Set command buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void set_cbuf(struct buffer *buf)
-{
-    assert(buf != NULL);                // Verify non-NULL buffer
-
-    command = buf;
-}
-
-
-///
 ///  @brief    Store new character in buffer.
 ///
 ///  @returns  Nothing.
@@ -261,22 +184,4 @@ void store_cbuf(int c)
 
     command->buf[command->len++] = (char)c;
     command->buf[command->len] = NUL;
-}
-
-
-///
-///  @brief    Returns previously fetched character to buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void unfetch_cbuf(int c)
-{
-    assert(command != NULL);            // Verify command string
-
-    if (command->pos != 0)
-    {
-        command->buf[--command->pos] = (char)c;
-    }
 }

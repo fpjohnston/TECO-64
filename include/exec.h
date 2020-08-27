@@ -166,6 +166,8 @@ extern void exec_EX(struct cmd *cmd);
 
 extern void exec_EY(struct cmd *cmd);
 
+extern void exec_EZ(struct cmd *cmd);
+
 extern void exec_E_ubar(struct cmd *cmd);
 
 extern void exec_F1(struct cmd *cmd);
@@ -281,6 +283,8 @@ extern bool append_line(void);
 extern void check_end(void);
 
 extern bool check_semi(void);
+
+extern void exec_cmd(void);
 
 extern void exit_EG(void);
 

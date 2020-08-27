@@ -74,13 +74,12 @@ void exec_digit(struct cmd *cmd)
         // If we've reached the end of the command string, or
         // we've encountered a non-digit, then we're done.
 
-        if (command->pos == command->len ||
-            !isdigit(c = command->buf[command->pos]))
+        if (empty_cbuf() || !isdigit(c = peek_cbuf()))
         {
             break;
         }
 
-        ++command->pos;
+        next_cbuf();
     }
 
     push_expr(n, EXPR_VALUE);

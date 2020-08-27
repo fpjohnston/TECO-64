@@ -34,8 +34,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>                   // for stat()
 #include <unistd.h>                     // for access()
+
+#include <sys/stat.h>                   // for stat()
 
 #include "teco.h"
 #include "ascii.h"
@@ -46,12 +47,86 @@
 #define TEMP_NAME   "_teco_XXXXXX"      ///< Template for temp file name
 #define TEMP_TYPE   ".tmp"              ///< Temp file type/extension
 
-#define SIZE_NAME   (sizeof(TEMP_NAME) - 1) ///< Size of temp file name
-#define SIZE_TYPE   (sizeof(TEMP_TYPE) - 1) ///< Size of temp file type
+#define SIZE_NAME   (uint)(sizeof(TEMP_NAME) - 1) ///< Size of temp file name
+#define SIZE_TYPE   (uint)(sizeof(TEMP_TYPE) - 1) ///< Size of temp file type
+
+#define TEC_NAME    ".tec"              ///< Command file extension
+#define TEC_SIZE    (uint)(sizeof(TEC_NAME) - 1) ///< Size of file extension
 
 static glob_t pglob;                    ///< Saved list of wildcard files
 
 static char **next_file;                ///< Next file in pglob
+
+// Local functions
+
+static uint parse_file(const char *file, char *dir, char *base);
+
+
+///
+///  @brief    Find command file by looking in user-specified directory, and
+///            then if necessary in library directory.
+///
+///  @returns  File pointer, or NULL if all opens failed and colon modifier was
+///            present.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+struct ifile *find_command(char *file, uint len, uint stream, bool colon,
+                           const char *libdir)
+{
+    assert(file != NULL);
+
+    // Now split the file spec into a directory and a base name.
+
+    char dir[len + 1];
+    char base[len + 1];
+    const char *type = "";
+
+    len = parse_file(file, dir, base);
+
+    char *p = strrchr(base, '.');       // Is there a dot in the file name?
+
+    if (p == NULL || strcasecmp(p, TEC_NAME))
+    {
+        len += TEC_SIZE;
+        type = TEC_NAME;
+    }
+
+    char name[len + 1];                 // Directory, name, and type
+
+    len = (uint)snprintf(name, sizeof(name), "%s%s%s", dir, base, type);
+
+    struct ifile *ifile = open_input(name, len, stream, (bool)true);
+
+    if (ifile != NULL)
+    {
+        return ifile;
+    }
+
+    // If we have a relative path and a library directory, then try again.
+
+    if (dir[0] != '/' && libdir != NULL)
+    {
+        uint libsize = (uint)strlen(libdir);
+        char libname[libsize + 1 + (uint)strlen(name) + 1];
+
+        len = (uint)snprintf(libname, sizeof(libname), "%s/%s", libdir, name);
+
+        ifile = open_input(libname, len, stream, (bool)true);
+
+        if (ifile != NULL)
+        {
+            return ifile;
+        }
+    }
+
+    if (colon)
+    {
+        return NULL;
+    }
+    
+    throw(E_FNF, file);                 // File not found
+}
 
 
 ///
@@ -129,13 +204,9 @@ FILE *open_temp(char **otemp, const char *oname)
         throw(E_SYS, oname);            // Unexpected system call
     }
 
-    uint nbytes = (uint)strlen(oname);
-    char outfile[nbytes + 1];           // Copy of output file name
-
-    strcpy(outfile, oname);
-
-    char *dir = dirname(outfile);       // Extract the directory/path
-    char tempfile[strlen(dir) + 1 + SIZE_NAME + SIZE_TYPE + 1];
+    char dir[(uint)strlen(oname) + 1];
+    uint nbytes = parse_file(oname, dir, NULL);
+    char tempfile[nbytes + 1 + SIZE_NAME + SIZE_TYPE + 1];
 
     nbytes = (uint)snprintf(tempfile, (ulong)sizeof(tempfile), "%s/%s%s", dir,
                             TEMP_NAME, TEMP_TYPE);
@@ -152,6 +223,66 @@ FILE *open_temp(char **otemp, const char *oname)
     strcpy(*otemp, tempfile);
 
     return fdopen(fd, "w+");
+}
+
+
+///
+///  @brief    Parse file name, separating the device/directory from the
+///            name/type.
+///
+///  @returns  Total bytes for directory and name.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static uint parse_file(const char *file, char *dir, char *base)
+{
+    assert(file != NULL);
+    assert(base != NULL || dir != NULL);
+
+    const char *slash = strrchr(file, '/');
+    uint len = 0;
+
+    // Split file name into directory and base name. We don't use dirname() or
+    // basename() here, since we don't like how they handle corner cases.
+
+    if (slash == NULL)
+    {
+        if (file[0] == NUL || !strcmp(file, "..") || !strcmp(file, "."))
+        {
+            throw(E_FNF, file);         // File not found
+        }
+        else
+        {
+            if (base != NULL)
+            {
+                len = (uint)sprintf(base, "%s", file);
+            }
+
+            if (dir != NULL)
+            {
+                dir[0] = NUL;
+            }
+        }
+    }
+    else                                // We found a slash
+    {
+        if (slash[1] == NUL)
+        {
+            throw(E_FNF, file);         // File not found
+        }
+
+        if (base != NULL)
+        {
+            len = (uint)sprintf(base, "%s", slash + 1);
+        }
+
+        if (dir != NULL)
+        {
+            len += (uint)sprintf(dir, "%.*s", (int)(slash + 1 - file), file);
+        }
+    }
+
+    return len;
 }
 
 

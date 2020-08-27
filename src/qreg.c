@@ -263,7 +263,7 @@ void get_qname(struct cmd *cmd, const char *extras)
 
     check_end();
 
-    int c = command->buf[command->pos++]; // Get Q-register
+    int c = fetch_cbuf();               // Get Q-register (or dot)
 
     if (c == '.')                       // Is it local?
     {
@@ -271,7 +271,7 @@ void get_qname(struct cmd *cmd, const char *extras)
 
         check_end();
 
-        c = command->buf[command->pos++]; // Get Q-register name
+        c = fetch_cbuf();               // Get Q-register name for real
     }
 
     if (!isalnum(c) && (extras == NULL || strchr(extras, c) == NULL))

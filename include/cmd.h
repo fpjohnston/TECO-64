@@ -32,10 +32,35 @@
 
 #include "teco.h"               //lint !e451 !e537
 
+/// @def    empty_cbuf()
+/// @brief  Returns true if all data in command string has been read, else false.
 
-#define START       (bool)true      ///< At start of command
+#define empty_cbuf()    (command->pos == command->len)
 
-#define NOSTART     (bool)false     ///< Not at start of command
+/// @def    fetch_cbuf()
+/// @brief  Returns the next character in the command string.
+
+#define fetch_cbuf()    command->buf[command->pos++]
+
+/// @def    get_cbuf()
+/// @brief  Returns the current command string.
+
+#define get_cbuf()      command
+
+/// @def    next_cbuf()
+/// @brief  Skip to next character in command string.
+
+#define next_cbuf()     ++command->pos
+
+/// @def    peek_cbuf()
+/// @brief  Peeks at next character in command string.
+
+#define peek_cbuf()     command->buf[command->pos]
+
+/// @def    set_cbuf()
+/// @brief  Sets the current command string.
+
+#define set_cbuf(p)     (command = (p))
 
 ///  @struct cmd
 ///  @brief  Command block structure.
@@ -115,6 +140,14 @@ extern const uint f_max;
 extern char *eg_result;
 
 extern uint nparens;
+
+// Command buffer functions
+
+extern void init_cbuf(void);
+
+extern void reset_cbuf(void);
+
+extern void store_cbuf(int c);
 
 // Miscellaneous functions
 

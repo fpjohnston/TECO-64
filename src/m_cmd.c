@@ -93,9 +93,9 @@ void exec_M(struct cmd *cmd)
     qreg->text.pos = 0;
 
     uint saved_put = qreg->text.len;
-    struct buffer *saved_buf = get_cbuf();
+    struct buffer *saved_cbuf = command;
 
-    set_cbuf(&qreg->text);
+    command = &qreg->text;
 
     // If no colon modifier, and not a local Q-register, then save current
     // local Q-registers before executing macro, and restore them afterwards.
@@ -130,7 +130,7 @@ void exec_M(struct cmd *cmd)
         pop_qlocal();
     }
 
-    set_cbuf(saved_buf);
+    command = saved_cbuf;
 
     qreg->text.len = saved_put;
 }

@@ -63,15 +63,15 @@ void exec_colon(struct cmd *cmd)
 
     cmd->colon = true;
 
-    int c = fetch_cbuf(NOSTART);
+    check_end();                        // Must have at least one more chr.
 
-    if (c == ':')
+    int c = peek_cbuf();
+
+    if (c == ':')                       // Double colon?
     {
-        cmd->dcolon = true;
-    }
-    else
-    {
-        unfetch_cbuf(c);
+        next_cbuf();                    // Yes, count it
+
+        cmd->dcolon = true;             // And flag it
     }
 }
 
@@ -141,8 +141,9 @@ void exec_ctrl_up(struct cmd *cmd)
     assert(cmd != NULL);                // Error if no command block
 
     check_args(cmd);
-
-    int c = fetch_cbuf(NOSTART);
+    check_end();                        // Must have at least one more chr.
+    
+    int c = fetch_cbuf();
 
     push_expr(c, EXPR_VALUE);
 }

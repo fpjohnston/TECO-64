@@ -99,6 +99,9 @@ extern void close_input(uint stream);
 
 extern void close_output(uint stream);
 
+extern struct ifile *find_command(char *base, uint len, uint stream,
+                                  bool colon, const char *libdir);
+
 extern int get_wild(void);
 
 extern void init_filename(char **name, const char *buf, uint len);
@@ -106,7 +109,7 @@ extern void init_filename(char **name, const char *buf, uint len);
 extern void init_files(void);
 
 extern bool open_command(const char *buf, uint len, uint stream, bool colon,
-                         struct buffer *text);
+                         const char *libdir, struct buffer *text);
 
 extern struct ifile *open_input(const char *name, uint len, uint stream,
                                 bool colon);

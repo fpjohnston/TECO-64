@@ -108,9 +108,9 @@ extern bool check_loop(void);
 
 extern bool check_macro(void);
 
-extern void exec_cmd(void);
-
 extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
+
+extern void flag_print(int flag);
 
 extern void free_mem(void *ptr);
 
@@ -119,8 +119,6 @@ extern void init_env(int argc, const char * const argv[]);
 extern void init_mem(void);
 
 extern int isdelim(int c);
-
-extern void flag_print(int flag);
 
 extern void register_exit(void (*func)(void));
 
@@ -131,21 +129,5 @@ extern void set_config(int argc, const char * const argv[]);
 extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 
 extern int teco_env(int n, bool colon);
-
-// Command buffer functions
-
-extern int fetch_cbuf(bool start);
-
-extern struct buffer *get_cbuf(void);
-
-extern void init_cbuf(void);
-
-extern void reset_cbuf(void);
-
-extern void set_cbuf(struct buffer *buf);
-
-extern void store_cbuf(int c);
-
-extern void unfetch_cbuf(int c);
 
 #endif  // !defined(_TECO_H)

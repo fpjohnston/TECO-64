@@ -111,7 +111,7 @@ void check_args(struct cmd *cmd)
 
 void check_end(void)
 {
-    if (command->pos == command->len)
+    if (empty_cbuf())
     {
         if (check_macro())
         {
@@ -195,21 +195,21 @@ void exec_escape(struct cmd *unused1)
 {
     // Skip past any whitespace after the ESCape.
 
-    while (command->pos < command->len)
+    while (!empty_cbuf())
     {
-        int c = command->buf[command->pos];
+        int c = peek_cbuf();
 
         if (!isspace(c) || c == TAB)    // Whitespace?
         {
             break;                      // No, so we're done skipping chrs.
         }
 
-        ++command->pos;
+        next_cbuf();
     }
 
     // If we've read all characters in command string, then reset for next time.
 
-    if (command->pos == command->len)
+    if (empty_cbuf())
     {
         command->pos = command->len = 0;
     }
@@ -255,11 +255,11 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
         check_args(cmd);
         check_end();                    // Must have at least one more chr.
 
-        if ((c = command->buf[command->pos++]) == '^')
+        if ((c = fetch_cbuf()) == '^')
         {
             check_end();                // Must have at least one more chr.
 
-            c = command->buf[command->pos++];
+            c = fetch_cbuf();
 
             push_expr(c, EXPR_VALUE);
 
@@ -348,9 +348,9 @@ exec_func *next_cmd(struct cmd *cmd)
     // file, for instance), then we return to the caller to have the command
     // executed.
 
-    while (command->pos < command->len)
+    while (!empty_cbuf())
     {
-        int c = command->buf[command->pos++];
+        int c = fetch_cbuf();
 
         cmd->c1 = (char)c;
         cmd->c2 = NUL;
@@ -466,7 +466,7 @@ static const struct cmd_table *scan_ef(struct cmd *cmd,
 
     check_end();                        // Must have at least one more chr.
 
-    int c = command->buf[command->pos++];
+    int c = fetch_cbuf();
 
     if (c < 0 || (uint)c > count || table[c].exec == NULL)
     {
@@ -493,15 +493,15 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 
     if (cmd->c1 == '=')                 // Might have =, ==, or ===
     {
-        if (command->pos < command->len && command->buf[command->pos] == '=')
+        if (!empty_cbuf() && peek_cbuf() == '=')
         {
-            ++command->pos;
+            next_cbuf();
 
             cmd->c2 = cmd->c1;
             
-            if (command->pos < command->len && command->buf[command->pos] == '=')
+            if (!empty_cbuf() && peek_cbuf() == '=')
             {
-                ++command->pos;
+                next_cbuf();
 
                 cmd->c3 = cmd->c1;
             }
@@ -516,20 +516,21 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
     {
         check_end();
 
-        cmd->c2 = command->buf[command->pos++];
+        cmd->c2 = fetch_cbuf();
 
         return;
     }
     else if (opts.w)                    // Is W possible (for P)?
     {
-        if (command->pos != command->len)
+        if (!empty_cbuf())
         {
-            int c = command->buf[command->pos];
+            int c = peek_cbuf();
             
             if (c == 'W' || c == 'w')
             {
+                next_cbuf();
+
                 cmd->w = true;
-                ++command->pos;
             }
         }
 
@@ -568,23 +569,23 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 
     if (cmd->atsign)                    // @ modifier?
     {
-        while (command->pos < command->len)
+        while (!empty_cbuf())
         {
-            int c = command->buf[command->pos];
+            int c = peek_cbuf();
 
             if (!isspace(c) || c == '\t')
             {
                 break;
             }
 
-            ++command->pos;
+            next_cbuf();
         }
 
-        check_end();                    // Must have at least 1 more character
+        check_end();                    // Must have at least one more chr.
 
         // The next character has to be the delimiter.
 
-        cmd->delim = command->buf[command->pos++];
+        cmd->delim = fetch_cbuf();
     }
 
     int delim = cmd->delim;             // Temporary copy of delimiter
@@ -606,16 +607,16 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 
         if (f.e1.text && cmd->delim == '{')
         {
-            while (command->pos < command->len)
+            while (!empty_cbuf())
             {
-                int c = command->buf[command->pos];
+                int c = peek_cbuf();
 
                 if (!isspace(c) || c == '\t')
                 {
                     break;
                 }
 
-                ++command->pos;
+                next_cbuf();
             }
 
             check_end();
@@ -646,9 +647,9 @@ static void scan_text(int delim, struct tstring *text)
 
     // Scan text string, looking for the specified delimiter (usually ESCape).
 
-    while (command->pos < command->len)
+    while (!empty_cbuf())
     {
-        if (command->buf[command->pos++] == delim)
+        if (fetch_cbuf() == delim)
         {
             return;
         }

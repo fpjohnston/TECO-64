@@ -71,6 +71,7 @@ static struct err_table err_table[] =
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
     [E_EGC] = { "EGC",  "EG command is too long" },
+    [E_FIL] = { "FIL",  "Illegal file '%s'" },
     [E_FNF] = { "FNF",  "File not found '%s'" },
     [E_ICE] = { "ICE",  "Illegal ^E command in search argument" },
     [E_IEC] = { "IEC",  "Illegal character '%s' after E" },
@@ -151,6 +152,9 @@ static const char *verbose[] =
     [E_DUP] = "An O command found a duplicate tag within the command string.",
 
     [E_EGC] = "An EG command was longer than 200 characters.",
+
+    [E_FIL] = "An attempt was made to open a directory, FIFO, socket, or "
+              "similar file specification instead of a regular file. ",
 
     [E_FNF] = "The requested input file could not be located. If this occurred "
               "within a macro, the colon-modified command may be necessary.",
@@ -504,6 +508,7 @@ noreturn void throw(int error, ...)
             break;
 
         case E_DUP:
+        case E_FIL:
         case E_FNF:
         case E_INI:
         case E_SRH:

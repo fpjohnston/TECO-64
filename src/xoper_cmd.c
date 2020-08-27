@@ -48,51 +48,63 @@ bool exec_xoper(int c)
     switch (c)
     {
         case '>':                       // Check for >, >=, and >>
-            c = fetch_cbuf(NOSTART);
+            check_end();                // Must have at least one more chr.
+
+            c = peek_cbuf();
 
             if (c == '=')
             {
+                next_cbuf();
+
                 c = EXPR_GE;
             }
             else if (c == '>')
             {
+                next_cbuf();
+
                 c = EXPR_RSHIFT;
             }
             else
             {
-                unfetch_cbuf(c);
-
                 c = EXPR_GT;
             }
 
             break;
 
         case '<':                       // Check for <, <=, <>, and <<
-            c = fetch_cbuf(NOSTART);
+            check_end();                // Must have at least one more chr.
+
+            c = peek_cbuf();
 
             if (c == '=')
             {
+                next_cbuf();
+
                 c = EXPR_LE;
             }
             else if (c == '>')
             {
+                next_cbuf();
+
                 c = EXPR_NE;
             }
             else if (c == '<')
             {
+                next_cbuf();
+
                 c = EXPR_LSHIFT;
             }
             else
             {
-                unfetch_cbuf(c);
-
                 c = EXPR_LT;
             }
 
             break;
 
         case '=':                       // Check for ==
-            c = fetch_cbuf(NOSTART);
+            check_end();                // Must have at least one more chr.
+
+            c = fetch_cbuf();
 
             if (c != '=')
             {
@@ -102,14 +114,16 @@ bool exec_xoper(int c)
             break;
 
         case '/':                       // Check for //
-            c = fetch_cbuf(NOSTART);
+            check_end();                // Must have at least one more chr.
+
+            c = peek_cbuf();
 
             if (c != '/')
             {
-                unfetch_cbuf(c);
-
                 return false;
             }
+
+            next_cbuf();
 
             c = EXPR_REM;
 

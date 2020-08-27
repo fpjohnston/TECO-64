@@ -304,23 +304,23 @@ bin/$(TARGET): $(OBJECTS)
 	@echo Making $@ $(NULL)
 	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
 
-#%.d: %.c CFLAGS
+#%.d: %.c obj/CFLAGS
 #	@echo Making $@ $(NULL)
-#	$(AT)cd obj && $(CC) @../CFLAGS ../$<
+#	$(AT)cd obj && $(CC) @../obj/CFLAGS ../$<
 
 %.o: %.c
 	@echo Making $@ $(NULL)
-	$(AT)cd obj && $(CC) @../CFLAGS ../$<
+	$(AT)cd obj && $(CC) @../obj/CFLAGS ../$<
 
 -include $(DFILES)
 
-$(OBJECTS): $(OPTIONS_H) CFLAGS
+$(OBJECTS): $(OPTIONS_H) obj/CFLAGS
 
 $(OPTIONS_H): etc/options.xml
 	$(AT)bin/options.pl -c $< -o $@ $(OPTIONS_BUG)
 
 .PHONY: FORCE
-CFLAGS: FORCE
+obj/CFLAGS: FORCE
 	-$(AT)echo '$(CFLAGS)' | cmp -s - $@ || echo '$(CFLAGS)' > $@
 
 .PHONY: clean
@@ -330,7 +330,7 @@ clean:
 
 .PHONY: clobber
 clobber: clean
-	-$(AT)rm -f CFLAGS $(NULL2) 
+	-$(AT)rm -f obj/CFLAGS $(NULL2) 
 	-$(AT)rm -rf html $(NULL2) 
 	-$(AT)cd obj && rm -f *.d *.lob $(NULL2)
 	-$(AT)cd src && rm -f *.bak $(NULL2)

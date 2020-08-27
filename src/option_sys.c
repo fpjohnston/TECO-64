@@ -38,10 +38,19 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cmd.h"
 #include "eflags.h"
 #include "file.h"
 
 #include "_options.h"
+
+const char *teco_init = NULL;
+
+const char *teco_memory = NULL;
+
+const char *teco_library = NULL;
+
+const char *teco_vtedit = NULL;
 
 
 ///
@@ -123,7 +132,7 @@ static struct config config =
 
 static void check_config(void);
 
-static void copy_arg(char *buf, ulong size, char *p);
+static void copy_arg(char *buf, ulong size, const char *p);
 
 static void finish_config(int argc, const char * const argv[]);
 
@@ -206,7 +215,7 @@ static void check_config(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void copy_arg(char *cmd, ulong size, char *file)
+static void copy_arg(char *cmd, ulong size, const char *file)
 {
     assert(cmd != NULL);                // Error if no command block
     assert(file != NULL);               // Error if no file name
@@ -249,7 +258,6 @@ static void finish_config(int argc, const char * const argv[])
     // addition to other text.
 
     char cmdstring[PATH_MAX * 2 + 100];
-    char *env;
 
     if (config.f.help)
     {
@@ -272,9 +280,9 @@ static void finish_config(int argc, const char * const argv[])
         copy_arg(cmdstring, sizeof(cmdstring), config.s.initial);
         store_cmd(cmdstring);
     }
-    else if (config.f.initial && (env = getenv("TECO_INIT")) != NULL)
+    else if (config.f.initial && teco_init != NULL)
     {
-        copy_arg(cmdstring, sizeof(cmdstring), env);
+        copy_arg(cmdstring, sizeof(cmdstring), teco_init);
         store_cmd(cmdstring);
     }
 
@@ -431,6 +439,11 @@ void set_config(
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
 
+    teco_init    = getenv("TECO_INIT");
+    teco_memory  = getenv("TECO_MEMORY");
+    teco_library = getenv("TECO_LIBRARY");
+    teco_vtedit  = getenv("TECO_VTEDIT");
+    
     // These two assertions confirm the standard behavior of getopt_long()
     // regarding the ordering of option and non-option arguments.
 

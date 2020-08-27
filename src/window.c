@@ -217,10 +217,14 @@ static void error_win(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_WINDOWS)
+
 static void exit_win(void)
 {
     reset_win();
 }
+
+#endif
 
 
 ///

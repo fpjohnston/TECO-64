@@ -62,10 +62,10 @@ void exec_EZ(struct cmd *cmd)
 
     qreg->text.pos = 0;
 
-    struct buffer *saved_buf = get_cbuf();
+    struct buffer *saved_cbuf = command;
     uint saved_base = set_expr();       // Set temporary new base
 
-    set_cbuf(&qreg->text);
+    command = &qreg->text;
 
     int comment = NUL;
 
@@ -79,6 +79,7 @@ void exec_EZ(struct cmd *cmd)
 
     uint pos = command->pos;
     bool saved_dryrun = f.e0.dryrun;
+    uint total = 0;
 
     f.e0.dryrun = true;
 
@@ -90,10 +91,6 @@ void exec_EZ(struct cmd *cmd)
         if (c != '!' || (cmd->text1.len != 0 && comment != NUL &&
                          cmd->text1.buf[0] != comment))
         {
-            extern void format_str(const char *p, uint nbytes);
-
-            printf("command: ");
-
             while (pos < command->pos)
             {
                 c = *p++;
@@ -106,16 +103,22 @@ void exec_EZ(struct cmd *cmd)
                 ++pos;
             }
 
-            format_str(command->buf + pos, command->pos - pos);
-            printf("\r\n");
+            uint nbytes = command->pos - pos;
+
+            total += nbytes;
+
+            printf("command: \"%.*s\", %u bytes\r\n", (int)nbytes,
+                   command->buf + pos, nbytes);
         }
 
         pos = command->pos;
     }
 
+    printf("size change from %u to %u\r\n", command->len, total);
+
     f.e0.dryrun = saved_dryrun;
 
     reset_expr(saved_base);             // Restore old base
 
-    set_cbuf(saved_buf);
+    command = saved_cbuf;
 }

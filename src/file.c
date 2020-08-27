@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 #include <sys/stat.h>
 
 #include "teco.h"
@@ -79,10 +80,6 @@ static bool canonical_name(char **name)
     assert(*name != NULL);              // Error if file name is a null string
 
     char path[PATH_MAX];
-
-    // This function is only called after a successful fopen() (for either
-    // reading or writing), so the call to realpath() shouldn't fail because
-    // a non-existent file.
 
     if (realpath(*name, path) == NULL)  // Get absolute path for file name
     {
@@ -272,7 +269,7 @@ void init_filename(char **name, const char *buf, uint len)
 ////////////////////////////////////////////////////////////////////////////////
 
 bool open_command(const char *buf, uint len, uint stream, bool colon,
-                  struct buffer *text)
+                  const char *libdir, struct buffer *text)
 {
     if (len == 0)                       // Any file to open?
     {
@@ -282,30 +279,11 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
     assert(buf != NULL);                // Error if no input file name
     assert(text != NULL);               // Error if no text buffer
 
-    char name[len + 4 + 1];             // Allow room for possible '.tec'
+    char name[len + 1];                 // NUL-terminated file name
 
-    // Here if we have a file name, so try to open file.
+    (void)snprintf(name, sizeof(name), "%.*s", (int)len, buf);
 
-    len = (uint)snprintf(name, sizeof(name), "%.*s", (int)len, buf);
-
-    // Treat first open as colon-modified to avoid error. This allows
-    // us to try a second open with .tec file type.
-
-    struct ifile *ifile = open_input(name, len, stream, (bool)true);
-
-    if (ifile == NULL)
-    {
-        if (strchr(last_file, '.') == NULL)
-        {
-            len = (uint)snprintf(name, sizeof(name), "%s.tec", last_file);
-
-            ifile = open_input(name, len, stream, colon);
-        }
-        else if (!colon)
-        {
-            throw(E_FNF, last_file);    // Input file name
-        }
-    }
+    struct ifile *ifile = find_command(name, len, stream, colon, libdir);
 
     // If there was no colon, then we've already thrown an exception.
     // So if ifile is NULL here, then a colon must have been present.
@@ -372,19 +350,33 @@ struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
 
     init_filename(&ifile->name, name, len);
 
+    struct stat file_stat;
+
+    if (stat(ifile->name, &file_stat) != 0)
+    {
+        if (colon)
+        {
+            return NULL;
+        }
+
+        throw(E_FNF, ifile->name);      // File not found
+    }
+
+    if (!S_ISREG(file_stat.st_mode))
+    {
+        throw(E_FIL, ifile->name);      // Illegal file
+    }
+
+    if (access(ifile->name, R_OK) != 0) // Is file readable?
+    {
+        errno = EPERM;
+
+        throw(E_SYS, ifile->name);      // System error
+    }
+
     if (!canonical_name(&ifile->name) ||
         ((ifile->fp = fopen(ifile->name, "r")) == NULL))
     {
-        if (errno == ENOENT || errno == ENODEV)
-        {
-            if (colon)
-            {
-                return NULL;
-            }
-        
-            throw(E_FNF, ifile->name);  // File not found
-        }
-        
         throw(E_SYS, ifile->name);      // Unexpected system error
     }
 

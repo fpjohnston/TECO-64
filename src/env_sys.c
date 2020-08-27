@@ -77,6 +77,11 @@ void exit_EG(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+extern const char *teco_init;
+extern const char *teco_library;
+extern const char *teco_memory;
+extern const char *teco_vtedit;
+
 int find_eg(char *cmd, bool dcolon)
 {
     assert(cmd != NULL);                // Error if no command block
@@ -116,21 +121,27 @@ int find_eg(char *cmd, bool dcolon)
     //  :EGcmd text' - Sets environment variable 'cmd' to 'text'.
     //
 
+    const char **p;
+
     if (!strcasecmp(buf, "INI"))
     {
         env = "TECO_INIT";
+        p = &teco_init;
     }
     else if (!strcasecmp(buf, "LIB"))
     {
-        env = "TECO_LIBRARY";
+        env = "TECO_LIBRARY"; 
+        p = &teco_library;
     }
     else if (!strcasecmp(buf, "MEM"))
     {
         env = "TECO_MEMORY";
+        p = &teco_memory;
     }
     else if (!strcasecmp(buf, "VTE"))
     {
         env = "TECO_VTEDIT";
+        p = &teco_vtedit;
     }
     else
     {
@@ -150,7 +161,7 @@ int find_eg(char *cmd, bool dcolon)
     }
     else
     {
-        const char *result = getenv(env);
+        const char *result = *p = getenv(env);
 
         set_last(result);
     }
