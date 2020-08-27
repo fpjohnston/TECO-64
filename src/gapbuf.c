@@ -255,9 +255,9 @@ static bool expand_ebuf(void)
 
     // Buffer: [left + right][gap]
 
-    uint addsize = (eb.size * eb.stepsize) / 100;
+    int addsize = (eb.size * eb.stepsize) / 100;
 
-    eb.buf   = expand_mem(eb.buf, (uint)eb.size, eb.size + addsize);
+    eb.buf   = expand_mem(eb.buf, (uint)eb.size, (uint)(eb.size + addsize));
     eb.size += addsize;
     t.size  += eb.size;
 
