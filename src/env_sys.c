@@ -77,11 +77,6 @@ void exit_EG(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-extern const char *teco_init;
-extern const char *teco_library;
-extern const char *teco_memory;
-extern const char *teco_vtedit;
-
 int find_eg(char *cmd, bool dcolon)
 {
     assert(cmd != NULL);                // Error if no command block

@@ -70,8 +70,6 @@ void exec_EI(struct cmd *cmd)
 
     ei_data.size = EX_SIZE;             // Add room for possible EX command
 
-    extern const char *teco_library; // FIXME!
-
     if (open_command(buf, len, stream, cmd->colon, teco_library, &ei_data))
     {
         while (ei_data.len > 0)
