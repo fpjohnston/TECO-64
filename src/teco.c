@@ -151,6 +151,8 @@ static void init_teco(int argc, const char * const argv[])
     f.et.abort   = true;                // Abort on error during initialization
     f.et.accent  = true;                // Use accent grave as delimiter
 
+    f.e3.smart   = true;                // Enable smart line detection (TODO!)
+
 #if     defined(__linux) || defined(__APPLE__)
 
     f.e3.icrlf = false;                 // Use LF for input lines

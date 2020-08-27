@@ -102,9 +102,10 @@ union e3_flag
 
     struct
     {
+        uint no_ff  : 1;        ///< FF is normal character on input
+        uint smart  : 1;        ///< Smart mode for line terminators
         uint icrlf  : 1;        ///< Use CR/LF for input lines
         uint ocrlf  : 1;        ///< Use CR/LF for output lines
-        uint no_ff  : 1;        ///< FF is normal character on input
         uint noin   : 1;        ///< Don't type input to log file
         uint noout  : 1;        ///< Don't type output to log file
     };

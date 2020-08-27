@@ -107,6 +107,7 @@ bool append(bool n_set, int n_arg, bool colon)
 bool append_line(void)
 {
     struct ifile *ifile = &ifiles[istream];
+    bool first_line = (ftell(ifile->fp) == 0);
     int next = fgetc(ifile->fp);
     int c;
 
@@ -127,12 +128,30 @@ bool append_line(void)
         }
         else if (c == CR)
         {
-            // If start of CR/LF sequence, but we only
-            // want to save LF, then skip the CR
+            // Check for discarding CR if start of CR/LF sequence.
 
-            if (next == LF && !f.e3.icrlf)
+            if (next == LF)
             {
-                continue;
+                if (f.e3.smart && first_line)
+                {
+                    first_line = false;
+                    f.e3.icrlf = true;
+                    f.e3.ocrlf = true;
+                }
+
+                if (!f.e3.icrlf)
+                {
+                    continue;
+                }
+            }
+        }
+        else if (c == LF)
+        {
+            if (f.e3.smart && first_line)
+            {
+                first_line = false;
+                f.e3.icrlf = false;
+                f.e3.ocrlf = false;
             }
         }
 
