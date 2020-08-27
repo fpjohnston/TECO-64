@@ -52,10 +52,7 @@ void exec_EC(struct cmd *cmd)
 
     if (cmd->n_set)                     // nEC?
     {
-        if (cmd->n_arg > 0)
-        {
-            (void)setsize_ebuf(cmd->n_arg);
-        }
+        (void)setsize_ebuf(cmd->n_arg);
 
         return;
     }

@@ -61,7 +61,7 @@ static struct
     int size;                   ///< Current size of buffer, in bytes
     int minsize;                ///< Initial and minimum size, in bytes
     int maxsize;                ///< Maximum size, in bytes
-    int stepsize;               ///< Increment size, as a percentage
+    int stepsize;               ///< How much to increment size (percent)
     int lowsize;                ///< Low water mark for gap
     int warn;                   ///< Warning threshold (0-100%)
     int left;                   ///< No. of bytes before gap
@@ -490,7 +490,7 @@ static void print_size(int size)
 
     if (size > 1024)
     {
-        if ((size /= 1024) > 1024)
+        if ((size /= 1024) >= 1024)
         {
             size /= 1024;
             type = "M";
@@ -568,15 +568,24 @@ int setsize_ebuf(int n)
 {
     n *= 1024;                          // Make it K bytes
 
-    if (n < eb.minsize || n < eb.left + eb.right || n == eb.size)
+    int minsize = ((eb.left + eb.right) * 110) / 100;
+    
+    if (n < minsize)
     {
-        return eb.size;
+        if ((n = minsize) == eb.size)
+        {
+            return eb.size;
+        }
+    }
+    else if (n > eb.maxsize)
+    {
+        if ((n = eb.maxsize) == eb.size)
+        {
+            return eb.size;
+        }
     }
 
-    if (eb.maxsize != 0 && n > eb.maxsize)
-    {
-        n = eb.maxsize;
-    }
+    shift_left(eb.right);               // Remove the gap
 
     if (n < eb.size)
     {
@@ -587,14 +596,14 @@ int setsize_ebuf(int n)
         eb.buf = expand_mem(eb.buf, (uint)eb.size, (uint)n);
     }
 
+    shift_right(eb.right);              // Restore the gap
+
     t.dot  = 0;
     t.size = n;
 
     eb.size    = n;
     eb.lowsize = eb.size - ((eb.size * eb.warn) / 100);
-    eb.left    = 0;
-    eb.gap     = eb.size;
-    eb.right   = 0;
+    eb.gap     = eb.size - (eb.left + eb.right);
 
     print_size(eb.size);
 
