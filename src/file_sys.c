@@ -208,7 +208,7 @@ FILE *open_temp(char **otemp, const char *oname)
     uint nbytes = parse_file(oname, dir, NULL);
     char tempfile[nbytes + 1 + SIZE_NAME + SIZE_TYPE + 1];
 
-    nbytes = (uint)snprintf(tempfile, (ulong)sizeof(tempfile), "%s/%s%s", dir,
+    nbytes = (uint)snprintf(tempfile, (ulong)sizeof(tempfile), "%s%s%s", dir,
                             TEMP_NAME, TEMP_TYPE);
 
     int fd = mkstemps(tempfile, (int)SIZE_TYPE);

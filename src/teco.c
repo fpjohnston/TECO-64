@@ -184,7 +184,7 @@ static void init_teco(int argc, const char * const argv[])
     init_loop();                        // Initialize loop stack
     init_search();                      // Initialize search string
     init_env(argc, argv);               // Initialize environment
-    init_ebuf(EDIT_BUF_INIT, EDIT_BUF_MAX, EDIT_BUF_STEP, EDIT_BUF_WARN);
+    init_ebuf(EDITBUF_INIT, EDITBUF_MAX, EDITBUF_STEP, EDITBUF_WARN);
                                         // Initialize edit buffer
 }
 

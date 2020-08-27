@@ -61,7 +61,7 @@ static struct
     int size;                   ///< Current size of buffer, in bytes
     int minsize;                ///< Initial and minimum size, in bytes
     int maxsize;                ///< Maximum size, in bytes
-    int stepsize;               ///< Increment size, in bytes
+    int stepsize;               ///< Increment size, as a percentage
     int lowsize;                ///< Low water mark for gap
     int warn;                   ///< Warning threshold (0-100%)
     int left;                   ///< No. of bytes before gap
@@ -255,8 +255,10 @@ static bool expand_ebuf(void)
 
     // Buffer: [left + right][gap]
 
-    eb.buf   = expand_mem(eb.buf, (uint)eb.size, (uint)(eb.size + eb.stepsize));
-    eb.size += eb.stepsize;
+    uint addsize = (eb.size * eb.stepsize) / 100;
+
+    eb.buf   = expand_mem(eb.buf, (uint)eb.size, eb.size + addsize);
+    eb.size += addsize;
     t.size  += eb.size;
 
     if (eb.size > eb.maxsize)
@@ -270,7 +272,7 @@ static bool expand_ebuf(void)
 
     // Buffer: [left][gap][right]
 
-    eb.gap += eb.stepsize;
+    eb.gap += addsize;
 
     print_size(eb.size);
 

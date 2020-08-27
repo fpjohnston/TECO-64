@@ -34,13 +34,13 @@
 #include <sys/types.h>          //lint !e451 !e537
 
 
-#define EDIT_BUF_INIT   ( 8 * 1024)     ///< Edit buffer is initially 8K
+#define EDITBUF_INIT    (64 * 1024)     ///< Edit buffer is initially 64 KB
 
-#define EDIT_BUF_MAX    (64 * 1024)     ///< Maximum edit buffer is 64K
+#define EDITBUF_MAX     (1024 * 1024)   ///< Maximum edit buffer is 1 MB
 
-#define EDIT_BUF_STEP   EDIT_BUF_INIT   ///< Increase edit buffer by 8K
+#define EDITBUF_STEP    25              ///< Increase edit buffer by 25%
 
-#define EDIT_BUF_WARN   75              ///< Warn when edit buffer is 75% full
+#define EDITBUF_WARN    95              ///< Warn when edit buffer is 95% full
 
 /// @brief  Return status when inserting characters in buffer.
 
