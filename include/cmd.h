@@ -35,32 +35,32 @@
 /// @def    empty_cbuf()
 /// @brief  Returns true if all data in command string has been read, else false.
 
-#define empty_cbuf()    (command->pos == command->len)
+#define empty_cbuf()    (cbuf->text.pos == cbuf->text.len)
 
 /// @def    fetch_cbuf()
 /// @brief  Returns the next character in the command string.
 
-#define fetch_cbuf()    command->buf[command->pos++]
+#define fetch_cbuf()    cbuf->text.data[cbuf->text.pos++]
 
 /// @def    get_cbuf()
 /// @brief  Returns the current command string.
 
-#define get_cbuf()      command
+#define get_cbuf()      cbuf
 
 /// @def    next_cbuf()
 /// @brief  Skip to next character in command string.
 
-#define next_cbuf()     ++command->pos
+#define next_cbuf()     ++cbuf->text.pos
 
 /// @def    peek_cbuf()
 /// @brief  Peeks at next character in command string.
 
-#define peek_cbuf()     command->buf[command->pos]
+#define peek_cbuf()     cbuf->text.data[cbuf->text.pos]
 
 /// @def    set_cbuf()
 /// @brief  Sets the current command string.
 
-#define set_cbuf(p)     (command = (p))
+#define set_cbuf(p)     (cbuf = (p))
 
 ///  @struct cmd
 ///  @brief  Command block structure.
@@ -124,6 +124,19 @@ struct cmd_table
     exec_func *exec;                ///< Execution function
     const union cmd_opts *opts;     ///< Command options
 };
+
+///  @struct cbuf
+///
+///  @brief  Command block for storing linked command strings.
+
+struct cbuf
+{
+    struct cbuf *next;              ///< Next command block
+    bool free;                      ///< Deallocate block when empty
+    struct buffer text;             ///< Text buffer
+};
+
+extern struct cbuf *cbuf;
 
 extern const struct cmd_table cmd_table[];
 

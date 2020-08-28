@@ -75,7 +75,7 @@ static bool match_str(struct search *s);
 
 static void exit_search(void)
 {
-    free_mem(&last_search.buf);
+    free_mem(&last_search.data);
 }
 
 
@@ -213,7 +213,7 @@ static int isqreg(int c, struct search *s)
 
     for (uint i = 0; i < qreg->text.len; ++i)
     {
-        if (c == qreg->text.buf[i])
+        if (c == qreg->text.data[i])
         {
             return 1;
         }
@@ -383,7 +383,7 @@ bool search_backward(struct search *s)
     {
         s->text_pos  = s->text_start--; // Start at current position
         s->match_len = last_search.len; // No. of characters left to match
-        s->match_buf = last_search.buf; // Start of match characters
+        s->match_buf = last_search.data; // Start of match characters
 
         if (match_str(s))
         {
@@ -417,7 +417,7 @@ bool search_forward(struct search *s)
     {
         s->text_pos  = s->text_start++; // Start at current position
         s->match_len = last_search.len; // No. of characters left to match
-        s->match_buf = last_search.buf; // Start of match characters
+        s->match_buf = last_search.data; // Start of match characters
 
         if (match_str(s))
         {

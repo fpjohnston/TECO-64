@@ -99,12 +99,12 @@ void append_qchr(int qname, bool qdot, int c)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    if (qreg->text.buf == NULL)
+    if (qreg->text.data == NULL)
     {
         qreg->text.pos  = 0;
         qreg->text.len  = 0;
         qreg->text.size = STR_SIZE_INIT;
-        qreg->text.buf  = alloc_mem(qreg->text.size);
+        qreg->text.data  = alloc_mem(qreg->text.size);
     }
     else
     {
@@ -114,12 +114,13 @@ void append_qchr(int qname, bool qdot, int c)
         {
             nbytes += STR_SIZE_INIT;
 
-            qreg->text.buf = expand_mem(qreg->text.buf, qreg->text.size, nbytes);
+            qreg->text.data = expand_mem(qreg->text.data, qreg->text.size,
+                                         nbytes);
             qreg->text.size = nbytes;
         }
     }
 
-    qreg->text.buf[qreg->text.len++] = (char)c;
+    qreg->text.data[qreg->text.len++] = (char)c;
 }
 
 
@@ -134,7 +135,7 @@ void delete_qtext(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    free_mem(&qreg->text.buf);
+    free_mem(&qreg->text.data);
 
     qreg->text.len = 0;
 }
@@ -161,9 +162,9 @@ static void exit_qreg(void)
 
     for (uint i = 0; i < QREG_SIZE; ++i)
     {
-        if (local_head->qreg[i].text.buf != NULL)
+        if (local_head->qreg[i].text.data != NULL)
         {
-            free_mem(&local_head->qreg[i].text.buf);
+            free_mem(&local_head->qreg[i].text.data);
         }
     }
 
@@ -175,7 +176,7 @@ static void exit_qreg(void)
     {
         struct qreg *qreg = &qglobal[i];
 
-        free_mem(&qreg->text.buf);
+        free_mem(&qreg->text.data);
     }
 }
 
@@ -246,7 +247,7 @@ int get_qchr(int qname, bool qdot, int n)
         return EOF;                     // Yes
     }
 
-    return qreg->text.buf[n];
+    return qreg->text.data[n];
 }
 
 
@@ -359,7 +360,7 @@ void init_qreg(void)
     register_exit(exit_qreg);
 
     list_head = NULL;
-    local_head = alloc_mem((uint)sizeof(struct qlocal));
+    local_head = alloc_mem((uint)sizeof(*local_head));
 }
 
 
@@ -378,9 +379,9 @@ void pop_qlocal(void)
 
     for (uint i = 0; i < QREG_SIZE; ++i)
     {
-        if (saved_set->qreg[i].text.buf != NULL)
+        if (saved_set->qreg[i].text.data != NULL)
         {
-            free_mem(&saved_set->qreg[i].text.buf);
+            free_mem(&saved_set->qreg[i].text.data);
         }
     }
 
@@ -408,9 +409,9 @@ bool pop_qreg(int qname, bool qdot)
 
     list_head = savedq->next;
 
-    if (qreg->text.buf != NULL && qreg->text.buf != savedq->qreg.text.buf)
+    if (qreg->text.data != NULL && qreg->text.data != savedq->qreg.text.data)
     {
-        free_mem(&qreg->text.buf);
+        free_mem(&qreg->text.data);
     }
 
     *qreg = savedq->qreg;
@@ -434,7 +435,7 @@ void print_qreg(int qname, bool qdot)
 
     for (uint i = 0; i < qreg->text.len; ++i)
     {
-        int c = qreg->text.buf[i];
+        int c = qreg->text.data[i];
 
         if (c == LF)
         {
@@ -457,7 +458,7 @@ void print_qreg(int qname, bool qdot)
 
 void push_qlocal(void)
 {
-    struct qlocal *qlocal = alloc_mem((uint)sizeof(struct qlocal));
+    struct qlocal *qlocal = alloc_mem((uint)sizeof(*qlocal));
 
     qlocal->next = local_head;
 
@@ -475,15 +476,16 @@ void push_qlocal(void)
 bool push_qreg(int qname, bool qdot)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
-    struct qlist *savedq = alloc_mem((uint)sizeof(struct qlist));
+    struct qlist *savedq = alloc_mem((uint)sizeof(*savedq));
 
     savedq->qreg.n         = qreg->n;
     savedq->qreg.text.size = qreg->text.size;
     savedq->qreg.text.pos  = qreg->text.pos;
     savedq->qreg.text.len  = qreg->text.len;
-    savedq->qreg.text.buf  = alloc_mem(savedq->qreg.text.size);
+    savedq->qreg.text.data  = alloc_mem(savedq->qreg.text.size);
 
-    memcpy(savedq->qreg.text.buf, qreg->text.buf, (ulong)savedq->qreg.text.size);
+    memcpy(savedq->qreg.text.data, qreg->text.data,
+           (ulong)savedq->qreg.text.size);
 
     savedq->next = list_head;
 
@@ -512,9 +514,9 @@ void reset_qreg(void)
 
         for (uint i = 0; i < QREG_SIZE; ++i)
         {
-            if (saved_set->qreg[i].text.buf != NULL)
+            if (saved_set->qreg[i].text.data != NULL)
             {
-                free_mem(&saved_set->qreg[i].text.buf);
+                free_mem(&saved_set->qreg[i].text.data);
             }
         }
 
@@ -529,7 +531,7 @@ void reset_qreg(void)
     {
         list_head = savedq->next;
 
-        free_mem(&savedq->qreg.text.buf);
+        free_mem(&savedq->qreg.text.data);
         free_mem(&savedq);
     }
 }
@@ -546,14 +548,14 @@ void store_qchr(int qname, bool qdot, int c)
 {
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    free_mem(&qreg->text.buf);
+    free_mem(&qreg->text.data);
 
     qreg->text.pos  = 0;
     qreg->text.len  = 0;
     qreg->text.size = STR_SIZE_INIT;
-    qreg->text.buf  = alloc_mem(qreg->text.size);
+    qreg->text.data  = alloc_mem(qreg->text.size);
 
-    qreg->text.buf[qreg->text.len++] = (char)c;
+    qreg->text.data[qreg->text.len++] = (char)c;
 }
 
 
@@ -586,7 +588,7 @@ void store_qtext(int qname, bool qdot, struct buffer *text)
 
     struct qreg *qreg = get_qreg(qname, qdot);
 
-    free_mem(&qreg->text.buf);
+    free_mem(&qreg->text.data);
 
     qreg->text = *text;
 }

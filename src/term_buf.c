@@ -60,7 +60,7 @@ int delete_tbuf(void)
         return EOF;                     // No
     }
 
-    return term_block->buf[--term_block->len]; // Delete character and return it
+    return term_block->data[--term_block->len]; // Delete character and return it
 }
 
 
@@ -82,7 +82,7 @@ void echo_tbuf(int pos)
 
     for (uint i = (uint)pos; i < term_block->len; ++i)
     {
-        echo_out(term_block->buf[i]);
+        echo_out(term_block->data[i]);
     }
 }
 
@@ -101,9 +101,9 @@ static void exit_tbuf(void)
 {
     if (term_block != NULL)
     {
-        if (term_block->buf != NULL)
+        if (term_block->data != NULL)
         {
-            free_mem(&term_block->buf);
+            free_mem(&term_block->data);
         }
 
         term_block->size = 0;
@@ -131,7 +131,7 @@ int fetch_tbuf(void)
         return EOF;
     }
 
-    return term_block->buf[term_block->pos++];
+    return term_block->data[term_block->pos++];
 }
 
 
@@ -146,12 +146,12 @@ void init_tbuf(void)
 {
     register_exit(exit_tbuf);
 
-    term_block = alloc_mem((uint)sizeof(struct buffer));
+    term_block = alloc_mem((uint)sizeof(*term_block));
 
     term_block->len  = 0;
     term_block->pos  = 0;
     term_block->size = STR_SIZE_INIT;
-    term_block->buf  = alloc_mem(term_block->size);
+    term_block->data  = alloc_mem(term_block->size);
 }
 
 
@@ -186,7 +186,7 @@ uint start_tbuf(void)
     {
         // Back up on line until we find a line terminator.
 
-        int c = term_block->buf[i];
+        int c = term_block->data[i];
 
         if (isdelim(c))
         {
@@ -215,7 +215,7 @@ void store_tbuf(int c)
     // reinitialize all of our pointers.
 
     assert(term_block != NULL);         // Error if no terminal block
-    assert(term_block->buf != NULL);    // Error if no buffer in block
+    assert(term_block->data != NULL);   // Error if no buffer in block
 
     if (term_block->len == term_block->size) // Has buffer filled up?
     {
@@ -228,12 +228,12 @@ void store_tbuf(int c)
         term_block->size *= STR_SIZE_INIT;
 
         uint newsize = term_block->size + STR_SIZE_INIT;
-        char *newbuf = expand_mem(term_block->buf, term_block->size, newsize);
+        char *newbuf = expand_mem(term_block->data, term_block->size, newsize);
 
         term_block->size = newsize;
-        term_block->buf  = newbuf;
+        term_block->data  = newbuf;
     }
 
-    term_block->buf[term_block->len++] = (char)c;
-    term_block->buf[term_block->len] = NUL;
+    term_block->data[term_block->len++] = (char)c;
+    term_block->data[term_block->len] = NUL;
 }

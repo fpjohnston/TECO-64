@@ -221,7 +221,7 @@ uint build_string(char **dest, const char *src, uint len)
 
             if (c == 'Q')               // <CTRL/E>Qq
             {
-                store_str(qreg->text.buf, qreg->text.len);
+                store_str(qreg->text.data, qreg->text.len);
             }
             else if (c == 'U')          // <CTRL/E>Uq
             {

@@ -38,9 +38,9 @@
 #include "estack.h"
 
 
-struct buffer *command;                 ///< Current command string buffer
+struct cbuf *cbuf;                  ///< Current command string buffer
 
-static struct buffer *cmd_buf;          ///< Command string command buffer
+static struct cbuf *root;           ///< Command string buffer root
 
 // Local functions
 
@@ -63,9 +63,9 @@ bool check_semi(void)
 
     // Check all remaining characters in command buffer.
 
-    for (uint i = command->pos; i < command->len; ++i)
+    for (uint i = cbuf->text.pos; i < cbuf->text.len; ++i)
     {
-        int c = command->buf[i];
+        int c = cbuf->text.data[i];
 
         if (c == ';')                   // semi-colon found
         {
@@ -94,16 +94,16 @@ bool check_semi(void)
 
 static void exit_cbuf(void)
 {
-    command = NULL;
+    cbuf = NULL;
 
-    if (cmd_buf != NULL && cmd_buf->buf != NULL)
+    if (root != NULL && root->text.data != NULL)
     {
-        cmd_buf->size = 0;
-        cmd_buf->pos  = 0;
-        cmd_buf->len  = 0;
+        root->text.size = 0;
+        root->text.pos  = 0;
+        root->text.len  = 0;
 
-        free_mem(&cmd_buf->buf);
-        free_mem(&cmd_buf);
+        free_mem(&root->text.data);
+        free_mem(&root);
     }
 }
 
@@ -119,14 +119,14 @@ void init_cbuf(void)
 {
     register_exit(exit_cbuf);
 
-    cmd_buf = alloc_mem((uint)sizeof(struct buffer));
+    root = alloc_mem((uint)sizeof(*root));
 
-    cmd_buf->len  = 0;
-    cmd_buf->pos  = 0;
-    cmd_buf->size = STR_SIZE_INIT;
-    cmd_buf->buf  = alloc_mem(cmd_buf->size);
+    root->text.len  = 0;
+    root->text.pos  = 0;
+    root->text.size = STR_SIZE_INIT;
+    root->text.data = alloc_mem(root->text.size);
 
-    command = cmd_buf;
+    cbuf = root;
 }
 
 
@@ -139,12 +139,12 @@ void init_cbuf(void)
 
 void reset_cbuf(void)
 {
-    assert(cmd_buf != NULL);            // Verify default command buffer
+    assert(root != NULL);               // Verify default command buffer
 
-    command = cmd_buf;
+    cbuf = root;
 
-    command->pos = 0;
-    command->len = 0;
+    cbuf->text.pos = 0;
+    cbuf->text.len = 0;
 }
 
 
@@ -162,26 +162,26 @@ void store_cbuf(int c)
     // calling realloc(). Note that this may move the block, so we have to
     // reinitialize all of our pointers.
 
-    assert(command != NULL);            // Verify command string
-    assert(command->buf != NULL);       // Verify command buffer
+    assert(cbuf != NULL);               // Verify command string
+    assert(cbuf->text.data != NULL);    // Verify command buffer
 
-    if (command->len == command->size)  // Has buffer filled up?
+    if (cbuf->text.len == cbuf->text.size) // Has buffer filled up?
     {
-        assert(command->size != 0);     // Verify non-zero size
+        assert(cbuf->text.size != 0);   // Verify non-zero size
 
         // Round up size to a multiple of STR_SIZE_INIT
 
-        command->size += STR_SIZE_INIT - 1;
-        command->size /= STR_SIZE_INIT;
-        command->size *= STR_SIZE_INIT;
+        cbuf->text.size += STR_SIZE_INIT - 1;
+        cbuf->text.size /= STR_SIZE_INIT;
+        cbuf->text.size *= STR_SIZE_INIT;
 
-        uint newsize = command->size + STR_SIZE_INIT;
-        char *newbuf = expand_mem(command->buf, command->size, newsize);
+        uint newsize = cbuf->text.size + STR_SIZE_INIT;
+        char *newbuf = expand_mem(cbuf->text.data, cbuf->text.size, newsize);
 
-        command->size = newsize;
-        command->buf  = newbuf;
+        cbuf->text.size = newsize;
+        cbuf->text.data  = newbuf;
     }
 
-    command->buf[command->len++] = (char)c;
-    command->buf[command->len] = NUL;
+    cbuf->text.data[cbuf->text.len++] = (char)c;
+    cbuf->text.data[cbuf->text.len] = NUL;
 }

@@ -250,7 +250,7 @@ void read_cmd(void)
 {
     int c;
 
-    if (command->pos != command->len)
+    if (cbuf->text.pos != cbuf->text.len)
     {
         return;                         // Just process current command
     }
@@ -669,9 +669,9 @@ static void read_qname(int c)
         .size = term_block->size,
     };
 
-    qbuf.buf  = alloc_mem(term_block->len);
+    qbuf.data  = alloc_mem(term_block->len);
 
-    memcpy(qbuf.buf, term_block->buf, (ulong)qbuf.len);
+    memcpy(qbuf.data, term_block->data, (ulong)qbuf.len);
 
     store_qtext(qname, qdot, &qbuf);
 }

@@ -52,7 +52,7 @@ void exec_EL(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    const char *buf = cmd->text1.buf;
+    const char *buf = cmd->text1.data;
     uint len = cmd->text1.len;
     uint stream = OFILE_LOG;
 

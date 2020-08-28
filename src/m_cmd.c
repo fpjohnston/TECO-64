@@ -92,10 +92,14 @@ void exec_M(struct cmd *cmd)
 
     qreg->text.pos = 0;
 
-    uint saved_put = qreg->text.len;
-    struct buffer *saved_cbuf = command;
+    struct cbuf *saved_cbuf = cbuf;
+    struct cbuf *macro = alloc_mem((uint)sizeof(*macro));
 
-    command = &qreg->text;
+    macro->next = NULL;
+    macro->free = false;
+    macro->text = qreg->text;
+
+    cbuf = macro;
 
     // If no colon modifier, and not a local Q-register, then save current
     // local Q-registers before executing macro, and restore them afterwards.
@@ -130,9 +134,9 @@ void exec_M(struct cmd *cmd)
         pop_qlocal();
     }
 
-    command = saved_cbuf;
+    cbuf = saved_cbuf;
 
-    qreg->text.len = saved_put;
+    free(macro);
 }
 
 

@@ -57,7 +57,7 @@ void exec_ctrl_I(struct cmd *cmd)
     insert_string[0] = TAB;
 
     int nbytes = snprintf(insert_string + 1, sizeof(insert_string) - 1, "%.*s",
-                          (int)cmd->text1.len, cmd->text1.buf);
+                          (int)cmd->text1.len, cmd->text1.data);
 
     if (nbytes >= (int)sizeof(insert_string) - 1)
     {
@@ -87,7 +87,7 @@ void exec_I(struct cmd *cmd)
     if (cmd->text1.len != 0)
     {
         int nbytes = snprintf(insert_string, sizeof(insert_string), "%.*s",
-                              (int)cmd->text1.len, cmd->text1.buf);
+                              (int)cmd->text1.len, cmd->text1.data);
 
         if (nbytes >= (int)sizeof(insert_string))
         {

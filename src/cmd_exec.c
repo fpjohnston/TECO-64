@@ -63,8 +63,8 @@ static const struct cmd null_cmd =
     .dcolon = false,
     .atsign = false,
     .delim  = ESC,
-    .text1  = { .buf = NULL, .len = 0 },
-    .text2  = { .buf = NULL, .len = 0 },
+    .text1  = { .data = NULL, .len = 0 },
+    .text2  = { .data = NULL, .len = 0 },
 };
 
 
@@ -166,7 +166,7 @@ void exec_cmd(void)
         {
             (*exec)(&cmd);
 
-            if (command->len == 0)
+            if (cbuf->text.len == 0)
             {
                 break;
             }
@@ -211,7 +211,7 @@ void exec_escape(struct cmd *unused1)
 
     if (empty_cbuf())
     {
-        command->pos = command->len = 0;
+        cbuf->text.pos = cbuf->text.len = 0;
     }
 }
 
@@ -642,8 +642,8 @@ static void scan_text(int delim, struct tstring *text)
 {
     assert(text != NULL);               // Error if no text string buffer
 
-    text->len = 0;
-    text->buf = command->buf + command->pos;
+    text->len  = 0;
+    text->data = cbuf->text.data + cbuf->text.pos;
 
     // Scan text string, looking for the specified delimiter (usually ESCape).
 

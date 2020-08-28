@@ -61,7 +61,7 @@ typedef unsigned long ulong;
 
 struct buffer
 {
-    char *buf;                      ///< Start of buffer
+    char *data;                     ///< Buffer data
     uint size;                      ///< Total size of buffer in bytes
     uint len;                       ///< Current length stored
     uint pos;                       ///< Position of next character
@@ -73,14 +73,12 @@ struct buffer
 
 struct tstring
 {
-    char *buf;                      ///< Start of string
+    char *data;                     ///< String data
     uint len;                       ///< No. of characters
 };
 
 
 // Global variables
-
-extern struct buffer *command;
 
 extern char eg_command[];
 

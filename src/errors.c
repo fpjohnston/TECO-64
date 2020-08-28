@@ -36,6 +36,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cmd.h"
 #include "eflags.h"
 #include "errors.h"
 #include "term.h"
@@ -535,7 +536,7 @@ noreturn void throw(int error, ...)
 
     // Ensure that '?' command only prints command string up to error.
 
-    term_block->len = term_block->pos = command->pos;
+    term_block->len = term_block->pos = cbuf->text.pos;
 
     // If CTRL/C and we're not executing a command, don't print error.
 

@@ -72,7 +72,7 @@ void exec_EN(struct cmd *cmd)
     {
         char *temp = NULL;
 
-        init_filename(&temp, cmd->text1.buf, cmd->text1.len);
+        init_filename(&temp, cmd->text1.data, cmd->text1.len);
 
         char filespec[strlen(temp) + 1];
 

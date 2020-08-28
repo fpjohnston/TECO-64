@@ -46,9 +46,9 @@
 void exec_ctrl_A(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
-    assert(cmd->text1.buf != NULL);     // Error if no text buffer
+    assert(cmd->text1.data != NULL);    // Error if no text buffer
 
-    const char *p = cmd->text1.buf;
+    const char *p = cmd->text1.data;
 
     for (unsigned int i = 0; i < cmd->text1.len; ++i)
     {

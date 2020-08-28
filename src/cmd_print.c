@@ -136,9 +136,9 @@ void print_cmd(struct cmd *cmd)
     format_chr(cmd->qlocal ? '.' : NUL);
     format_chr(cmd->qname);
     format_chr(cmd->atsign ? cmd->delim : NUL);
-    format_str(cmd->text1.buf, cmd->text1.len);
+    format_str(cmd->text1.data, cmd->text1.len);
     format_chr(cmd->text1.len != 0 ? cmd->delim : NUL);
-    format_str(cmd->text2.buf, cmd->text2.len);
+    format_str(cmd->text2.data, cmd->text2.len);
     format_chr(cmd->text2.len != 0 ? cmd->delim : NUL);
 
     if (f.e0.dryrun)

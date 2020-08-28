@@ -285,8 +285,8 @@ static void set_colors(const struct cmd *cmd, enum window_pair pair)
 
     short color = (short)(COLOR_BASE + ((pair - 1) * 2));
 
-    set_color(cmd->text1.buf, cmd->text1.len, fg_sat, color);
-    set_color(cmd->text2.buf, cmd->text2.len, bg_sat, color + 1);
+    set_color(cmd->text1.data, cmd->text1.len, fg_sat, color);
+    set_color(cmd->text2.data, cmd->text2.len, bg_sat, color + 1);
 
     (void)init_pair((short)pair, color, color + 1);
 }

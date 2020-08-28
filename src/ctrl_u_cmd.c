@@ -74,7 +74,7 @@ void exec_ctrl_U(struct cmd *cmd)
 
         if (cmd->colon)                 // :^Utext`
         {
-            const char *p = cmd->text1.buf;
+            const char *p = cmd->text1.data;
 
             for (uint i = 0; i < cmd->text1.len; ++i)
             {
@@ -88,9 +88,9 @@ void exec_ctrl_U(struct cmd *cmd)
             text.len  = cmd->text1.len;
             text.pos  = 0;
             text.size = cmd->text1.len;
-            text.buf  = alloc_mem(text.size);
+            text.data = alloc_mem(text.size);
 
-            memcpy(text.buf, cmd->text1.buf, (ulong)text.size);
+            memcpy(text.data, cmd->text1.data, (ulong)text.size);
 
             store_qtext(cmd->qname, cmd->qlocal, &text);
         }

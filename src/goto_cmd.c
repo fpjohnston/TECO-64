@@ -97,7 +97,7 @@ void exec_O(struct cmd *cmd)
 
     if (!cmd->n_set)                    // Is it Otag` or nOtag1,tag,tag3`?
     {
-        find_tag(cmd, cmd->text1.buf, cmd->text1.len);
+        find_tag(cmd, cmd->text1.data, cmd->text1.len);
 
         return;
     }
@@ -119,7 +119,7 @@ void exec_O(struct cmd *cmd)
     uint ntags = 0;
 
     snprintf(taglist, sizeof(taglist), "%.*s", (int)cmd->text1.len,
-             cmd->text1.buf);
+             cmd->text1.data);
 
     // Find all tags, looking for the one matching the n argument.
 
@@ -176,12 +176,12 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
 
     free_mem(&tag1);
 
-    command->pos = 0;                   // Start at beginning of command
+    cbuf->text.pos = 0;                 // Start at beginning of command
 
     // Scan entire command string to verify that we have
     // one and only one instance of the specified tag.
 
-    while (command->pos < command->len)
+    while (cbuf->text.pos < cbuf->text.len)
     {
         if (next_cmd(cmd) == NULL)      // Get next command
         {
@@ -194,14 +194,14 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
         }
 
         if (cmd->text1.len == len &&
-            !memcmp(cmd->text1.buf, tag2, (ulong)len))
+            !memcmp(cmd->text1.data, tag2, (ulong)len))
         {
             if (tag_pos != -1)          // Found tag. Have we seen it already?
             {
                 throw(E_DUP, tag2);     // Duplicate tag
             }
 
-            tag_pos = (int)command->pos; // Remember tag for later
+            tag_pos = (int)cbuf->text.pos; // Remember tag for later
         }
     }
 
@@ -210,5 +210,5 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
         throw(E_TAG, tag2);             // Missing tag
     }
 
-    command->pos = (uint)tag_pos;       // Execute goto
+    cbuf->text.pos = (uint)tag_pos;     // Execute goto
 }

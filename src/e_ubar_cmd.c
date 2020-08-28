@@ -65,9 +65,9 @@ void exec_E_ubar(struct cmd *cmd)
 
     if (cmd->text1.len != 0)
     {
-        free_mem(&last_search.buf);
+        free_mem(&last_search.data);
 
-        last_search.len = build_string(&last_search.buf, cmd->text1.buf,
+        last_search.len = build_string(&last_search.data, cmd->text1.data,
                                        cmd->text1.len);
     }
 
@@ -112,9 +112,9 @@ void exec_E_ubar(struct cmd *cmd)
                 setpos_ebuf(0);
             }
 
-            last_search.buf[last_search.len] = NUL;
+            last_search.data[last_search.len] = NUL;
 
-            throw(E_SRH, last_search.buf);
+            throw(E_SRH, last_search.data);
         }
     }
 }

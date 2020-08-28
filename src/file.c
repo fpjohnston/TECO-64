@@ -305,12 +305,12 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
     {
         close_input(stream);
 
-        throw(E_SYS, last_file);        // Unexpected system error
+        throw(E_SYS, last_file);       // Unexpected system error
     }
 
     uint size = (uint)file_stat.st_size;
 
-    free_mem(&text->buf);               // Free any previous storage
+    free_mem(&text->data);             // Free any previous storage
 
     // If there's data in the file, then allocate a buffer for it.
 
@@ -318,10 +318,10 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
     {
         text->len   = size;
         text->pos   = 0;
-        text->size += size;             // Caller may have preset this
-        text->buf   = alloc_mem(text->size);
+        text->size += size;            // Caller may have preset this
+        text->data  = alloc_mem(text->size);
 
-        if (fread(text->buf, 1uL, (ulong)size, ifile->fp) != size)
+        if (fread(text->data, 1uL, (ulong)size, ifile->fp) != size)
         {
             throw(E_SYS, ifile->name); // Unexpected system error
         }

@@ -51,7 +51,7 @@ void exec_EM(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    const char *buf = cmd->text1.buf;
+    const char *buf = cmd->text1.data;
     uint len = cmd->text1.len;
     uint stream = OFILE_QREGISTER;
 
@@ -81,7 +81,7 @@ void exec_EM(struct cmd *cmd)
 
     if (size != 0)
     {
-        if (fwrite(qreg->text.buf, 1uL, (ulong)size, ofile->fp) != size)
+        if (fwrite(qreg->text.data, 1uL, (ulong)size, ofile->fp) != size)
         {
             throw(E_SYS, ofile->name);  // Unexpected system error
         }

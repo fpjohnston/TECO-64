@@ -96,9 +96,9 @@ static void exec_search(struct cmd *cmd, bool replace)
 
     if (cmd->text1.len != 0)
     {
-        free_mem(&last_search.buf);
+        free_mem(&last_search.data);
 
-        last_search.len = build_string(&last_search.buf, cmd->text1.buf,
+        last_search.len = build_string(&last_search.data, cmd->text1.data,
                                        cmd->text1.len);
     }
 
@@ -129,7 +129,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
             if (cmd->text2.len)
             {
-                exec_insert(cmd->text2.buf, cmd->text2.len);
+                exec_insert(cmd->text2.data, cmd->text2.len);
             }
         }
         else
@@ -155,9 +155,9 @@ static void exec_search(struct cmd *cmd, bool replace)
                 setpos_ebuf(0);
             }
 
-            last_search.buf[last_search.len] = NUL;
+            last_search.data[last_search.len] = NUL;
 
-            throw(E_SRH, last_search.buf);
+            throw(E_SRH, last_search.data);
         }
     }
 }

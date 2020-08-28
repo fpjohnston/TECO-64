@@ -70,7 +70,7 @@ void exec_G(struct cmd *cmd)
         {
             if (last_search.len != 0)
             {
-                print_str("%.*s", (int)last_search.len, last_search.buf);
+                print_str("%.*s", (int)last_search.len, last_search.data);
             }
         }
         else                            // :Gq -> print Q-register
@@ -108,7 +108,7 @@ void exec_G(struct cmd *cmd)
         }
         else if (cmd->qname == '_')     // G_ -> copy search string to buffer
         {
-            if (last_search.buf == NULL)
+            if (last_search.data == NULL)
             {
                 last_len = 0;
             }
@@ -116,7 +116,7 @@ void exec_G(struct cmd *cmd)
             {
                 last_len = last_search.len;
 
-                exec_insert(last_search.buf, last_len);
+                exec_insert(last_search.data, last_len);
             }
         }
         else                            // Gq -> copy Q-register to buffer
@@ -129,7 +129,7 @@ void exec_G(struct cmd *cmd)
             {
                 last_len = qreg->text.len;
 
-                exec_insert(qreg->text.buf, last_len);
+                exec_insert(qreg->text.data, last_len);
             }
         }
     }
