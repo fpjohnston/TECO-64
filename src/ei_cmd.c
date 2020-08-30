@@ -54,7 +54,17 @@ static uint trim_white(struct buffer *buf);
 
 
 ///
-///  @brief    Execute EI command: read TECO command file.
+///  @brief    Execute EI command: read TECO command file. This is handled in
+///            one of two ways: preset where input is read from after execution
+///            of the current command string has completed, as DEC TECOs have
+///            done, or immediately execute the contents of the file as though
+///            it were a macro, as TECO C has done. Which behavior is used
+///            depends on the eimacro bit in the E1 extended features flag. By
+///            default, this bit is enabled.
+///
+///            N.B.: the eimacro bit should not be changed after TECO starts
+///            up. Changing it in the midst of executing EI commands could have
+///            unpredictable and undesirable results.
 ///
 ///  @returns  Nothing.
 ///
