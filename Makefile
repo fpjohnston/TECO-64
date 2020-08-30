@@ -261,7 +261,7 @@ DFILES = $(SOURCES:.c=.d)
 
 CFLAGS += -MMD -c $(INCLUDES) $(OPT_OPT) $(DFLAGS)
 
-LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) std.lnt \
+LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) ../etc/std.lnt \
              -e126 -e786 -e818 -e830 -e843 -e844 +fan +fas
 
 .PHONY: all
@@ -318,7 +318,7 @@ bin/$(TARGET): $(OBJECTS)
 $(OBJECTS): $(OPTIONS_H) obj/CFLAGS
 
 $(OPTIONS_H): etc/options.xml
-	$(AT)bin/options.pl -c $< -o $@ $(OPTIONS_BUG)
+	$(AT)etc/options.pl -c $< -o $@ $(OPTIONS_BUG)
 
 .PHONY: FORCE
 obj/CFLAGS: FORCE

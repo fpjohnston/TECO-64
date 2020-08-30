@@ -1,0 +1,354 @@
+        .TITLE  SCROLL  Interactive Scope Scroller for TECO "Watch"
+        .SBTTL  Interactive Scope Scroller for TECO "Watch"
+        .IDENT  /V40.18/
+
+;****************************************************************************
+;*                                                                          *
+;*  COPYRIGHT (c) 1978, 1980, 1982, 1984, 1985, 1986 BY                     *
+;*  DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASSACHUSETTS.                  *
+;*  ALL RIGHTS RESERVED.                                                    *
+;*                                                                          *
+;*  THIS SOFTWARE IS FURNISHED UNDER A LICENSE AND MAY BE USED AND COPIED   *
+;*  ONLY IN  ACCORDANCE WITH  THE  TERMS  OF  SUCH  LICENSE  AND WITH THE   *
+;*  INCLUSION OF THE ABOVE COPYRIGHT NOTICE. THIS SOFTWARE OR  ANY  OTHER   *
+;*  COPIES THEREOF MAY NOT BE PROVIDED OR OTHERWISE MADE AVAILABLE TO ANY   *
+;*  OTHER PERSON.  NO TITLE TO AND OWNERSHIP OF  THE  SOFTWARE IS  HEREBY   *
+;*  TRANSFERRED.                                                            *
+;*                                                                          *
+;*  THE INFORMATION IN THIS SOFTWARE IS  SUBJECT TO CHANGE WITHOUT NOTICE   *
+;*  AND  SHOULD  NOT  BE  CONSTRUED AS  A COMMITMENT BY DIGITAL EQUIPMENT   *
+;*  CORPORATION.                                                            *
+;*                                                                          *
+;*  DIGITAL ASSUMES NO RESPONSIBILITY FOR THE USE  OR  RELIABILITY OF ITS   *
+;*  SOFTWARE ON EQUIPMENT WHICH IS NOT SUPPLIED BY DIGITAL.                 *
+;*                                                                          *
+;*                                                                          *
+;****************************************************************************
+
+
+;++
+;
+; FACILITY:  VAX-11 TECO Text Editor
+;
+; ABSTRACT:
+;
+;       This module contains the split screen scrolling display logic.
+;
+;--
+;
+; AUTHOR:  Richard H. Murphy, CREATION DATE:  29-Jan-1985
+;
+; MODIFIED BY:
+;
+;       V40.18  ACG0642         Andrew C. Goldstein,    5-Dec-1997  10:17
+;               Fix AST atomicity problems in TECO terminal output.
+;               On VAX, ASTs are instruction-atomic, and so read-modify-
+;               write instructions are AST-safe. This is not true on Alpha,
+;               since VAX instructions are decomposed into multiple Alpha
+;               instructions. As a result, shared variables modified by
+;               the terminal AST routines need to be reorganized:
+;               o  Move TECO_V_STOP out of FLAGS into a separate quadword,
+;                  to avoid having to fix all references to FLAGS.
+;
+;       V40.17  ACG0602         Andrew C. Goldstein,    29-Nov-1993  17:46
+;               Fix misplaced branch in screen invalidate processing
+;
+;       V40.16  ACG0600         Andrew C. Goldstein,    12-Nov-1993  17:30
+;               Add markers for mechanical generation of HIF file
+;
+;       V40.15  RHM4016         Rick Murphy,            24-Jul-1987  13:58
+;               Correct video attributes before exiting when mark region
+;               is used
+;
+;       V40.14  RHM4015         Rick Murphy,            24-Jul-1987  10:08
+;               Correct losing mark context during immediate mode
+;               control-W
+;
+;       V40.13  ACG0538         Andrew C. Goldstein,    30-Jun-1987  17:56
+;               Remove option for two character cell cursor
+;
+;       V40.12  RHM4014         Rick Murphy,            6-May-1987
+;               Store scroll area size before changing screen length
+;
+;       V40.11  ACG0532         Andrew C. Goldstein     21-Oct-1986  14:00
+;               Integrate into VMS system build
+;
+; LAST EDIT ON 02-JUN-83 BY MARK BRAMHALL
+; Edited for VAX Native mode 30-JAN-1985 by Rick Murphy
+;--
+
+
+        _TECODEF
+
+.SBTTL  SCOPE "WATCH" ROUTINE MODIFIED FOR SCROLLING
+
+;+
+; SCREEN - SCOPE "WATCH" ROUTINE MODIFIED FOR SCROLLING.
+;
+; IF NFLG(R11) >= 0 THEN "W" COMMAND
+;
+;       R2 =  N OF "NW" IF "NW"
+;             NWATCH(R11) IF "W"
+;
+; IF NFLG(R11) < 0 THEN ":W" COMMAND
+;
+;       R2 =  N OF "N:W" OR "M,N:W"
+;
+;       IF CFLG(R11) <> -1 THEN "N:W" COMMAND
+;
+;       IF CFLG(R11) = -1 THEN "M,N:W" COMMAND
+;
+;               M(R11) = M OF "M,N:W"
+;
+;       CALLS/G WATCH
+;
+;       R0 =  RETURNED VALUE
+;-
+
+.PSECT  TECO$CODE       RD, NOWRT, PIC, SHR, EXE, QUAD, GBL, NOVEC
+
+.ENABL  LSB
+
+;**     HIF-MARKER      callentry
+        .ENTRY  WATCH, ^M<R2,R3,R4,R5,R6,R7,R8,R9,R10>
+        MOVL    4(AP), R2       ; Get calling argument
+        BBC     #TECO_V_ET$IAS,-; Is the scope available?
+                ETYPE(R11),1$   ; Nope, quickly exit...
+        BBC     #TECO_V_NFLG,-
+                FLAGS(R11), 10$ ; What type of call is this?
+        BSBW    DOPARM          ;":w" command, go off to parameter handling
+1$:     RET
+
+
+.SBTTL  HANDLE W COMMANDS (SCOPE UPDATE) MODIFIED FOR SCROLLING
+
+;+
+; HANDLE W COMMANDS (SCOPE UPDATE) MODIFIED FOR SCROLLING.
+;
+;            W  UPDATE SCOPE SCREEN LESS SCROLLED LINES IF SCROLLING; ELSE NOP
+;           0W  SET DEFAULT CURSOR LINE; FORGET EVERYTHING
+;          +NW  SET CURSOR LINE TO N; FORGET EVERYTHING
+;          -1W  UPDATE SCOPE SCREEN LESS SCROLLED LINES IF SCROLLING
+;          -NW  FORGET TOP N-1 LINES OF SCREEN
+;       -1000W  FORGET THAT OUTPUT WAS DONE
+;-
+
+10$:    TSTW    R2              ; Check out the argument's sign
+        BLSS    30$             ; Arg <0, go process a real call
+        CMPW    R2,NWATCH(R11)  ; Arg >=0, is it the default value?
+        BEQL    50$             ; It's the default, call scroller if active
+        TSTL    R2              ; Not the default, is arg=0?
+        BNEQ    FORGET          ; Non-zero, non-default => forget everything
+        BSBB    70$             ; Zero, non-default => call scroller if active
+;**     HIF-MARKER      branchentry
+FORGET: CLRL    INITFL(R10)     ; Forget the entire screen
+        CLRL    MRKFLG(R10)     ; Clear any set "mark"
+        CLRL    TOPDOT(R10)     ; Clear last starting position
+        MOVW    #SPACE,SEEALL(R10); Reset "seeing all" flag
+        CLRL    HLDFLG(R10)     ; Reset "hold screen" flag
+        BBCC    #TECO_V_OUTDNE,-
+                FLAGS2(R11),20$ ; Forget that output was done
+20$:    MOVL    R2, R0          ; Set return value
+        RET
+
+30$:    CMPW    R2,#-1          ; Is this a normal scope update call?
+        BNEQ    40$             ; Nope, a "forget" type call
+        BSBB    70$             ; Yep, check for calling the scroller
+40$:    BSBW    SCRUPD          ; Process a real call
+        MOVZWL  NWATCH(R11), R0 ; Get return value
+        RET
+
+50$:    TSTL    SCROLN(R10)     ; Just exit if the scroller's not active
+        BEQL    20$             ;  inactive, exit.
+60$:    BSBB    DOSCRL          ;  call the scroller
+        MOVZWL  NWATCH(R11), R0 ; Get return value
+        RET                     ; exit
+
+70$:    TSTL    SCROLN(R10)     ; Is the scroller active?
+        BEQL    80$             ; Nope...
+        TSTL    (SP)+           ; Junk return
+        BRB     60$             ; Call scroller
+80$:    RSB
+.DSABL  LSB
+
+
+.SBTTL  START PROCESSING A SCROLLING CALL
+
+;**     HIF-MARKER      jsbentry
+DOSCRL: CMPW    R2,NWATCH(R11)  ; Is the argument the default?
+        BEQL    10$             ; Yes, do a scrolling style screen update
+        TSTL    R2              ; No, is this a trapped "-1w" call?
+        BGEQ    20$             ; Not that, must be explicit "0w"
+10$:    BSBB    30$             ; Go do the initial set up
+;**     HIF-MARKER      branchentry
+        BSBW    DOUPDT          ; Go do a scope update, fix cursor, etc.
+;**     HIF-MARKER      branchentry
+        BSBW    SCRSAV          ; Binary output
+;**     HIF-MARKER      jsbentry
+        MOVL    RCUR(R10),R5    ; Set sequence to restore cursor
+        BSBW    DOTYPE          ;  and go do it
+        RSB
+
+20$:    MOVL    #7,R2           ; Set scrolled region parameter action (+7)
+        BBCS    #TECO_V_CFLG, FLAGS(R11),-
+                21$             ; Say we're changing the scrolled region
+21$:    CLRL    M(R11)          ;  and it will become zero (i.e., turned off)
+        BSBB    DOPARM          ; Go do the parameter alterations
+;**     HIF-MARKER      branchentry
+        MOVL    4(AP),R2        ; (re-)set the calling argument
+        BRB     FORGET          ;  then forget everything & exit
+        
+30$:    BSBW    SCRINI          ; Set the scope up, etc.
+        MOVL    SCUR(R10),R5    ; Set sequence to save the cursor
+        BSBW    DOTYPE          ;  and go do it
+;**     HIF-MARKER      jsbentry
+SETNON: MOVL    VTSIZE(R10),R4  ; Get non-scrolled screen size
+        CLRL    R3              ;  and start it at the top
+        BSBW    SETSCR          ; Go set the scrolling region & exit
+        MOVL    4(AP), R2       ;  restore original calling argument
+        RSB
+
+
+.SBTTL  PROCESS A PARAMETER READ/WRITE CALL
+
+;**     HIF-MARKER      jsbentry
+DOPARM: BBC     #TECO_V_CFLG,-  ; Is this call to alter anything?
+                FLAGS(R11),20$  ; No, just reading, it's always o.k.
+        CMPL    R2,#7           ; Is call for scrolling region (+7)?
+        BNEQ    20$             ; Nope
+        MOVL    M(R11),-(SP)    ; Save new scrolled region size
+        CMPL    (SP),SCROLN(R10); Is this call really changing anything?
+        BEQL    10$             ; Nope, just go read the old value...
+        CMPL    (SP),#1         ; Is the new size one?
+        BEQL    10$             ; Yep, that's an error
+        BBC     #TECO_V_TC$CURSOR,-; Does the feature exist?
+                T_FLAGS(R10),10$; Nope, we can't do it
+        MOVL    VTSIZE(R10),R2  ; Get current screen height
+        ADDL    SCROLN(R10),R2  ;  and form real total screen height
+        SUBL    (SP),R2         ; Find new non-scrolled size
+        CMPW    R2, #255        ; Too big?
+        BGTR    10$             ; Yes, don't bother.
+        CMPW    R2, #10         ; Too small?
+        BLSS    10$             ; Yes, don't bother.
+        MOVL    R2,M(R11)       ; Set new size for non-scrolled area
+        MOVL    #2,4(AP)        ; The calling argument is 2 for height change
+        MOVL    (SP),SCROLN(R10); Set the new scrolled size
+        BSBW    SCRPRM          ; Now go change the screen's height
+;**     HIF-MARKER      branchentry
+        CMPL    R0,M(R11)       ; Did we get what we asked for?
+        BNEQ    10$             ; Nope
+        BSBB    30$             ; Go set up the screen
+;**     HIF-MARKER      branchentry
+        TSTL    (SP)            ; Is the scrolled region now off?
+        BEQL    10$             ; Yep, we're done...
+        BSBB    40$             ; Nope, do a screen update
+10$:    TSTL    (SP)+           ; Pop saved new scrolling region size
+        MOVL    #7,4(AP)        ; Restore calling argument
+        BBSC    #TECO_V_CFLG,-
+                FLAGS(R11),20$  ;  and indicate a read parameter call
+20$:    BSBW    SCRPRM          ; Go off to real parameter handling
+;**     HIF-MARKER      branchentry
+        RSB                     ;  and exit
+30$:    BSBB    SCRINI          ; Set the scope up, etc.
+;**     HIF-MARKER      branchentry
+        BSBB    SETNON          ; Go set non-scrolled area
+;**     HIF-MARKER      branchentry
+        TSTL    SCROLN(R10)     ; Did we really turn off the scroller?
+        BEQL    SCREOS          ; It's now off, position to screen's bottom
+        RSB                     ; It's now on, just exit
+
+40$:    BSBW    DOUPDT          ; Go do a scope update, fix cursor, etc.
+;**     HIF-MARKER      jsbentry
+SCREOS::BSBW    SCRSAV          ; Make sure binary output on
+;**     HIF-MARKER      jsbentry
+        MOVL    VTSIZ1(R10),R2  ; We want the last line (row) of screen
+        ADDL    SCROLN(R10),R2  ;  which is both sizes added together
+        CLRL    R4              ; We also want the left hand margin
+        MOVL    #-1000.,PRELIN(R10) ; Ensure use of
+        MOVL    #-1000.,PRECOL(R10) ;  direct cursor addressing
+        BSBW    DIRECT          ; Move the cursor to there
+;**     HIF-MARKER      branchentry
+        RSB                     ; And exit
+
+.SBTTL  INITIALIZE THE SCOPE
+
+;+
+; SCRINI - INITIALIZE THE SCOPE.
+;
+;
+;       R2 =  UNDEFINED
+;       R3 =  UNDEFINED
+;       R4 =  UNDEFINED
+;       R5 =  UNDEFINED
+;       R6 =  UNDEFINED
+;       SP -> FORCE I/O, CLEAN UP, SAVED "ET", 'SAVREG' SAVED REGISTERS...
+;                                                       W/ SAVED R2 UNDEFINED
+;-
+
+;**     HIF-MARKER      jsbentry
+SCRINI: MOVL    (SP)+,R2        ; Move the real return address to r2
+        BSBW    SCRSAV          ; Save registers, set clean up, etc.
+;**     HIF-MARKER      jsbentry
+        PUSHL   R2              ;  set return to caller
+        PUSHAL  SCRDNE          ;  and to force out i/o
+        BSBW    NOCTLO          ; Cancel any control/o effect
+        TSTL    INITFL(R10)     ; Known screen state?
+        BLSS    10$             ; Yep
+        MOVL    SEQFIX(R10),R5  ; Nope, set sequence to fix up terminal
+        BSBW    DOTYPE          ;  and go do it
+        MNEGL   #2,INITFL(R10)  ; Still unknown, but all fixed now
+10$:    RSB                     ; Take an exit...
+
+
+.SBTTL  DO A SCREEN UPDATE, FIX UP CURSOR CHARACTER AND SCROLLED REGION
+
+;+
+; DOUPDT - DO A SCREEN UPDATE, FIX UP CURSOR CHARACTER AND SCROLLED REGION.
+;
+;       JSR     PC,DOUPDT
+;
+;       R2 =  UNDEFINED
+;       R3 =  UNDEFINED
+;       R4 =  UNDEFINED
+;       R5 =  UNDEFINED
+;       R6 =  UNDEFINED
+;       SP -> FORCE I/O, CLEAN UP, SAVED "ET", 'SAVREG' SAVED REGISTERS...
+;                                                       W/ SAVED R2 UNDEFINED
+;-
+
+;**     HIF-MARKER      jsbentry
+DOUPDT: MNEGL   #1,R2           ; Set argument to do a scope update
+        BSBW    SCRUPD          ;  and go do it
+;**     HIF-MARKER      branchentry
+        BSBW    SCRSAV          ; Save registers, set clean up, etc.
+;**     HIF-MARKER      jsbentry
+        PUSHAL  SCRDNE          ;  then set return to force out i/o
+        TSTL    STOP(R11)       ; Did the "stop soon" (control/c) flag come on?
+        BEQL    10$             ; Nope
+        CLRL    INITFL(R10)     ; Yep, forget what's on the screen...
+10$:    BSBW    NOCTLO          ; Ensure control/o is turned off
+        MOVL    CURABS(R10),R3  ; Did we find the cursor?
+        BEQL    40$             ; Nope
+        MOVL    SEQCON(R10),R5  ; Set sequence for cursor display on
+        BSBW    DOTYPE          ;  and go do it
+        BSBW    SCROLL_OUT      ; Go output it
+;**     HIF-MARKER      branchentry
+        BBCC    #TECO_V_TC$GRPON,-
+                T_FLAGS(R10),20$; Branch if graphics off
+        MOVL    SEQGOF(R10), R5 ; Set sequence for graphics off
+        BSBW    DOTYPE          ;  and go do it
+20$:    BBCC    #TECO_V_TC$MRKON,-
+                T_FLAGS(R10),30$; Branch if mark off
+        MOVL    SEQMOF(R10), R5 ; Set sequence for mark off
+        BSBW    DOTYPE          ;  and go do it
+30$:    MOVL    SEQCOF(R10),R5  ; Set sequence for cursor display off
+        BSBW    DOTYPE          ;  and go do it
+        CLRB    (R3)            ;  and "forget" character under cursor
+        CLRL    OLD_HASH[R8]    ;  and zap the hash
+40$:    MOVL    SCROLN(R10),R4  ; Set scrolled region size
+        MOVL    VTSIZE(R10),R3  ;  and start it after non-scrolled area
+        BSBW    SETSCR          ; Go set the scrolling region
+        RSB                     ; Take an exit
+
+.END
+
