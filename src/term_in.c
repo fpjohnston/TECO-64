@@ -250,7 +250,7 @@ void read_cmd(void)
 {
     int c;
 
-    if (cbuf->text.pos != cbuf->text.len)
+    if (!empty_cbuf())
     {
         return;                         // Just process current command
     }

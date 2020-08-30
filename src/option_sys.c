@@ -386,7 +386,7 @@ static void finish_config(int argc, const char * const argv[])
         store_cmd(cmdstring);
     }
 
-    if (cbuf->text.len != 0)            // Anything stored?
+    if (cbuf->len != 0)                 // Anything stored?
     {
         store_cmd("\e\e");              // If so, properly terminate command
     }

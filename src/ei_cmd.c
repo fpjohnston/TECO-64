@@ -40,7 +40,7 @@
 #include "exec.h"
 #include "file.h"
 
-static struct cbuf ebuf;                ///< EI command string
+static struct buffer ei_cmd;            ///< EI command string
 
 static const char ex_cmd[] = "EX";      ///< EX command
 
@@ -49,6 +49,8 @@ static const char ex_cmd[] = "EX";      ///< EX command
 // Local functions
 
 static void exit_EI(void);
+
+static uint trim_white(struct buffer *buf);
 
 
 ///
@@ -62,31 +64,33 @@ void exec_EI(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    const char *buf = cmd->text1.data;
-    uint len = cmd->text1.len;
-    uint stream = IFILE_INDIRECT;
+    const char *buf     = cmd->text1.data;
+    uint len            = cmd->text1.len;
+    uint stream         = IFILE_INDIRECT;
+    struct buffer macro =
+    {
+        .data = NULL,
+        .size = EX_SIZE,
+        .len  = 0,
+        .pos  = 0
+    };
 
     close_input(stream);                // Close any open file
 
-    ebuf.text.size = EX_SIZE;           // Add room for possible EX command
-
-    if (open_command(buf, len, stream, cmd->colon, teco_library, &ebuf.text))
+    if (open_command(buf, len, stream, cmd->colon, teco_library, &macro))
     {
-        while (ebuf.text.len > 0)
+        if (trim_white(&macro) == 0)    // Any file data to process?
         {
-            int c = ebuf.text.data[ebuf.text.len - 1];
-
-            if (!isspace(c) || c == TAB)
-            {
-                break;
-            }
-
-            --ebuf.text.len;
+            free_mem(&macro.data);      // Discard allocated memory
         }
-
-        if (ebuf.text.len == 0)           // Any data left?
+        else if (f.e1.eimacro)          // EI command is executed as macro
         {
-            free_mem(&ebuf.text.data);    // No, discard allocated memory
+            exec_macro(&macro);         // Execute it like a macro
+            free_mem(&macro.data);      // Discard allocated memory
+        }
+        else                            // EI command presets input
+        {
+            ei_cmd = macro;             // Copy data for read_indirect()
         }
     }
 }
@@ -128,29 +132,34 @@ void init_EI(void)
 
 int read_indirect(void)
 {
-    if (ebuf.text.len == 0)
-    {
-        free_mem(&ebuf.text.data);
-    }
-
-    if (ebuf.text.data == NULL)
+    if (f.e1.eimacro)
     {
         return 0;
     }
 
-    set_cbuf(&ebuf);                    // Use command string we allocated
+    if (ei_cmd.len == 0)
+    {
+        free_mem(&ei_cmd.data);
+    }
+
+    if (ei_cmd.data == NULL)
+    {
+        return 0;
+    }
+
+    set_cbuf(&ei_cmd);                  // Use our command string
 
     // Check to see if buffer ends with a double ESCape, or some combination
     // of an ESCape and its equivalent 2-chr. ASCII construct (i.e., ^[ ).
 
-    uint len = cbuf->text.len;
-    char *endbuf = cbuf->text.data + len;
+    uint len = cbuf->len;
+    char *end = cbuf->data + len;
     uint nbytes = 0;                    // No. of bytes terminating string
 
     if (len >= 2)                       // 2+ chrs. for ESC+ESC
     {
-        int c1 = *--endbuf;
-        int c2 = *--endbuf;
+        int c1 = *--end;
+        int c2 = *--end;
 
         if (c1 == ESC && c2 == ESC)
         {
@@ -159,7 +168,7 @@ int read_indirect(void)
 
         if (len >= 3 && nbytes == 0)    // 3+ chrs. for ESC+^[ or ^[+ESC
         {
-            int c3 = *--endbuf;
+            int c3 = *--end;
 
             if ((c1 == ESC && c2 == '[' && c3 == '^') ||
                 (c1 == '[' && c2 == '^' && c3 == ESC))
@@ -169,7 +178,7 @@ int read_indirect(void)
 
             if (len >= 4 && nbytes == 0) // 4+ chrs. for ^[ + ^[
             {
-                int c4 = *--endbuf;
+                int c4 = *--end;
 
                 if (c1 == '[' && c2 == '^' && c3 == '[' && c4 == '^')
                 {
@@ -185,10 +194,10 @@ int read_indirect(void)
 
             if (f.e0.exit)
             {
-                memmove(endbuf + nbytes, endbuf, EX_SIZE);
-                memcpy(endbuf, ex_cmd, EX_SIZE);
+                memmove(end + nbytes, end, EX_SIZE);
+                memcpy(end, ex_cmd, EX_SIZE);
 
-                cbuf->text.len += EX_SIZE; // Add in length of EX command
+                cbuf->len += EX_SIZE;   // Add in length of EX command
             }
 
             return -1;                  // Say we have a complete command
@@ -208,7 +217,35 @@ int read_indirect(void)
 
 void reset_indirect(void)
 {
-    free_mem(&ebuf);
+    free_mem(&ei_cmd.data);
+}
 
-    close_input(IFILE_INDIRECT);
+
+///
+///  @brief    Delete any whitespace at end of buffer.
+///
+///  @returns  No. of bytes left in buffer.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static uint trim_white(struct buffer *buf)
+{
+    assert(buf != NULL);
+    assert(buf->data != NULL);
+
+    // Delete any whitespace at end of command string.
+
+    while (buf->len > 0)
+    {
+        int c = buf->data[buf->len - 1];
+
+        if (!isspace(c) || c == TAB)
+        {
+            break;
+        }
+
+        --buf->len;
+    }
+
+    return buf->len;
 }

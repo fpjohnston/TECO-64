@@ -90,29 +90,6 @@ void exec_M(struct cmd *cmd)
         return;
     }
 
-    qreg->text.pos = 0;
-
-    struct cbuf *saved_cbuf = cbuf;
-    struct cbuf *macro = alloc_mem((uint)sizeof(*macro));
-
-    macro->next = NULL;
-    macro->free = false;
-    macro->text = qreg->text;
-
-    cbuf = macro;
-
-    // If no colon modifier, and not a local Q-register, then save current
-    // local Q-registers before executing macro, and restore them afterwards.
-
-    bool save_local = (!cmd->colon && !cmd->qlocal);
-
-    if (save_local)
-    {
-        push_qlocal();
-    }
-
-    uint saved_base = set_expr();       // Set temporary new base
-
     if (cmd->n_set)
     {
         if (cmd->m_set)
@@ -123,20 +100,57 @@ void exec_M(struct cmd *cmd)
         push_expr(cmd->n_arg, EXPR_VALUE);
     }
             
+    // If no colon modifier, and not a local Q-register, then save current
+    // local Q-registers before executing macro, and restore them afterwards.
+
+    if (!cmd->colon && !cmd->qlocal)
+    {
+        push_qlocal();
+
+        exec_macro(&qreg->text);
+
+        pop_qlocal();
+    }
+    else
+    {
+        exec_macro(&qreg->text);
+    }
+}
+
+
+///
+///  @brief    Execute macro. Called for M and EI commands.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_macro(struct buffer *macro)
+{
+    assert(macro != NULL);
+    assert(macro->data != NULL);
+
+    struct buffer *saved_cbuf = get_cbuf();
+
+    uint saved_pos = macro->pos;
+
+    macro->pos = 0;                     // Start scanning at start of string
+
+    set_cbuf(macro);                    // Switch command strings
+
+    uint saved_base = set_expr();       // Set temporary new base
+
     ++macro_depth;
+
     exec_cmd();
+
     --macro_depth;
 
     reset_expr(saved_base);             // Restore old base
 
-    if (save_local)
-    {
-        pop_qlocal();
-    }
+    set_cbuf(saved_cbuf);               // Restore previous command string
 
-    cbuf = saved_cbuf;
-
-    free(macro);
+    macro->pos = saved_pos;
 }
 
 

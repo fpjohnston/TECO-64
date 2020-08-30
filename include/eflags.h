@@ -62,11 +62,12 @@ union e1_flag
 
     struct
     {
-        uint xoper  : 1;        ///< Enable extended operators
-        uint msec   : 1;        ///< Return time in milliseconds
-        uint text   : 1;        ///< Enable extended text strings
-        uint dollar : 1;        ///< $ is a valid symbol character
-        uint ubar   : 1;        ///< _ is a valid symbol character
+        uint xoper   : 1;       ///< Enable extended operators
+        uint msec    : 1;       ///< Return time in milliseconds
+        uint text    : 1;       ///< Enable extended text strings
+        uint dollar  : 1;       ///< $ is a valid symbol character
+        uint ubar    : 1;       ///< _ is a valid symbol character
+        uint eimacro : 1;       ///< Execute EI commands as macros
     };
 };
 

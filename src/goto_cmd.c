@@ -176,12 +176,12 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
 
     free_mem(&tag1);
 
-    cbuf->text.pos = 0;                 // Start at beginning of command
+    cbuf->pos = 0;                      // Start at beginning of command
 
     // Scan entire command string to verify that we have
     // one and only one instance of the specified tag.
 
-    while (cbuf->text.pos < cbuf->text.len)
+    while (cbuf->pos < cbuf->len)
     {
         if (next_cmd(cmd) == NULL)      // Get next command
         {
@@ -201,7 +201,7 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
                 throw(E_DUP, tag2);     // Duplicate tag
             }
 
-            tag_pos = (int)cbuf->text.pos; // Remember tag for later
+            tag_pos = (int)cbuf->pos;   // Remember tag for later
         }
     }
 
@@ -210,5 +210,5 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
         throw(E_TAG, tag2);             // Missing tag
     }
 
-    cbuf->text.pos = (uint)tag_pos;     // Execute goto
+    cbuf->pos = (uint)tag_pos;          // Execute goto
 }

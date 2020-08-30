@@ -38,9 +38,9 @@
 #include "estack.h"
 
 
-struct cbuf *cbuf;                  ///< Current command string buffer
+struct buffer *cbuf;                    ///< Current command string buffer
 
-static struct cbuf *root;           ///< Command string buffer root
+static struct buffer *root;             ///< Command string buffer root
 
 // Local functions
 
@@ -63,9 +63,9 @@ bool check_semi(void)
 
     // Check all remaining characters in command buffer.
 
-    for (uint i = cbuf->text.pos; i < cbuf->text.len; ++i)
+    for (uint i = cbuf->pos; i < cbuf->len; ++i)
     {
-        int c = cbuf->text.data[i];
+        int c = cbuf->data[i];
 
         if (c == ';')                   // semi-colon found
         {
@@ -96,13 +96,13 @@ static void exit_cbuf(void)
 {
     cbuf = NULL;
 
-    if (root != NULL && root->text.data != NULL)
+    if (root != NULL && root->data != NULL)
     {
-        root->text.size = 0;
-        root->text.pos  = 0;
-        root->text.len  = 0;
+        root->size = 0;
+        root->pos  = 0;
+        root->len  = 0;
 
-        free_mem(&root->text.data);
+        free_mem(&root->data);
         free_mem(&root);
     }
 }
@@ -121,10 +121,10 @@ void init_cbuf(void)
 
     root = alloc_mem((uint)sizeof(*root));
 
-    root->text.len  = 0;
-    root->text.pos  = 0;
-    root->text.size = STR_SIZE_INIT;
-    root->text.data = alloc_mem(root->text.size);
+    root->len  = 0;
+    root->pos  = 0;
+    root->size = STR_SIZE_INIT;
+    root->data = alloc_mem(root->size);
 
     cbuf = root;
 }
@@ -143,8 +143,8 @@ void reset_cbuf(void)
 
     cbuf = root;
 
-    cbuf->text.pos = 0;
-    cbuf->text.len = 0;
+    cbuf->pos = 0;
+    cbuf->len = 0;
 }
 
 
@@ -163,25 +163,25 @@ void store_cbuf(int c)
     // reinitialize all of our pointers.
 
     assert(cbuf != NULL);               // Verify command string
-    assert(cbuf->text.data != NULL);    // Verify command buffer
+    assert(cbuf->data != NULL);         // Verify command buffer
 
-    if (cbuf->text.len == cbuf->text.size) // Has buffer filled up?
+    if (cbuf->len == cbuf->size)        // Has buffer filled up?
     {
-        assert(cbuf->text.size != 0);   // Verify non-zero size
+        assert(cbuf->size != 0);        // Verify non-zero size
 
         // Round up size to a multiple of STR_SIZE_INIT
 
-        cbuf->text.size += STR_SIZE_INIT - 1;
-        cbuf->text.size /= STR_SIZE_INIT;
-        cbuf->text.size *= STR_SIZE_INIT;
+        cbuf->size += STR_SIZE_INIT - 1;
+        cbuf->size /= STR_SIZE_INIT;
+        cbuf->size *= STR_SIZE_INIT;
 
-        uint newsize = cbuf->text.size + STR_SIZE_INIT;
-        char *newbuf = expand_mem(cbuf->text.data, cbuf->text.size, newsize);
+        uint newsize = cbuf->size + STR_SIZE_INIT;
+        char *newbuf = expand_mem(cbuf->data, cbuf->size, newsize);
 
-        cbuf->text.size = newsize;
-        cbuf->text.data  = newbuf;
+        cbuf->size = newsize;
+        cbuf->data  = newbuf;
     }
 
-    cbuf->text.data[cbuf->text.len++] = (char)c;
-    cbuf->text.data[cbuf->text.len] = NUL;
+    cbuf->data[cbuf->len++] = (char)c;
+    cbuf->data[cbuf->len] = NUL;
 }

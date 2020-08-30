@@ -166,7 +166,7 @@ void exec_cmd(void)
         {
             (*exec)(&cmd);
 
-            if (cbuf->text.len == 0)
+            if (cbuf->len == 0)
             {
                 break;
             }
@@ -211,7 +211,7 @@ void exec_escape(struct cmd *unused1)
 
     if (empty_cbuf())
     {
-        cbuf->text.pos = cbuf->text.len = 0;
+        cbuf->pos = cbuf->len = 0;
     }
 }
 
@@ -643,7 +643,7 @@ static void scan_text(int delim, struct tstring *text)
     assert(text != NULL);               // Error if no text string buffer
 
     text->len  = 0;
-    text->data = cbuf->text.data + cbuf->text.pos;
+    text->data = cbuf->data + cbuf->pos;
 
     // Scan text string, looking for the specified delimiter (usually ESCape).
 

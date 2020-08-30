@@ -286,6 +286,8 @@ extern bool check_semi(void);
 
 extern void exec_cmd(void);
 
+extern void exec_macro(struct buffer *macro);
+
 extern void exit_EG(void);
 
 extern int find_eg(char *buf, bool reset);

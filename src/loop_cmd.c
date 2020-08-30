@@ -162,7 +162,7 @@ void exec_F_gt(struct cmd *cmd)
 
 void exec_F_lt(struct cmd *unused1)
 {
-    cbuf->text.pos = loop_head->start; // Just restart the loop
+    cbuf->pos = loop_head->start;       // Just restart the loop
 
     return;
 }
@@ -196,7 +196,7 @@ void exec_gt(struct cmd *cmd)
 
     if (loop->count == INFINITE || --loop->count > 0)
     {
-        cbuf->text.pos = loop->start;   // Go back to start of loop
+        cbuf->pos = loop->start;        // Go back to start of loop
     }
     else
     {
@@ -333,7 +333,7 @@ static void push_loop(int count)
     struct loop *loop = alloc_mem((uint)sizeof(*loop));
 
     loop->count = count;
-    loop->start = cbuf->text.pos;
+    loop->start = cbuf->pos;
     loop->next  = loop_head;
     loop->depth = if_depth;
 
