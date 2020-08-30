@@ -74,6 +74,7 @@ struct config
         bool output;            ///< --output option seen
         bool readonly;          ///< --readonly option seen
         bool scroll;            ///< --scroll option seen
+        bool vtedit;            ///< --vtedit option seen
         bool window;            ///< --window option seen
     } f;                        ///< true/false flags
 
@@ -87,6 +88,7 @@ struct config
         char *log;              ///< String argument for --log option
         char *output;           ///< String argument for --output option
         char *scroll;           ///< String argument for --scroll option
+        char *vtedit;           ///< String argument for --vtedit option
     } s;                        ///< String arguments
 };
 
@@ -111,6 +113,7 @@ static struct config config =
         .output   = false,
         .readonly = false,
         .scroll   = false,
+        .vtedit   = true,
         .window   = false,
     },
 
@@ -124,6 +127,7 @@ static struct config config =
         .log     = NULL,
         .output  = NULL,
         .scroll  = NULL,
+        .vtedit  = NULL,
     },
 };
 
@@ -315,6 +319,17 @@ static void finish_config(int argc, const char * const argv[])
         store_cmd("-1W ");
     }
 
+    if (config.s.vtedit != NULL)
+    {
+        copy_arg(cmdstring, sizeof(cmdstring), config.s.vtedit);
+        store_cmd(cmdstring);
+    }
+    else if (config.f.vtedit && teco_vtedit != NULL)
+    {
+        copy_arg(cmdstring, sizeof(cmdstring), teco_vtedit);
+        store_cmd(cmdstring);
+    }
+
     if (config.s.scroll != NULL)
     {
         snprintf(cmdstring, sizeof(cmdstring), "%s,7:W \e", config.s.scroll);
@@ -443,7 +458,7 @@ void set_config(
     teco_memory  = getenv("TECO_MEMORY");
     teco_library = getenv("TECO_LIBRARY");
     teco_vtedit  = getenv("TECO_VTEDIT");
-    
+
     // These two assertions confirm the standard behavior of getopt_long()
     // regarding the ordering of option and non-option arguments.
 
@@ -549,7 +564,22 @@ void set_config(
                 config.s.scroll = optarg;
                 //lint -fallthrough
 
-            case OPTION_W:
+            case OPTION_V:
+                config.f.vtedit = true;
+
+                if (optarg != NULL && optarg[0] != '-')
+                {
+                    config.s.vtedit = optarg;
+                }
+
+                break;
+ 
+            case OPTION_v:
+                config.f.vtedit = false;
+
+                break;
+
+           case OPTION_W:
                 config.f.window = true;
 
                 break;

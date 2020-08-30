@@ -71,7 +71,7 @@
         <option>
             <short_name>i</short_name>
             <long_name>noinitialize</long_name>
-            <help>Don't use an initialization file (ignore TECO_INIT).</help>
+            <help>Ignore TECO_INIT environment variable.</help>
         </option>
         <option>
             <short_name>M</short_name>
@@ -82,7 +82,7 @@
         <option>
             <short_name>m</short_name>
             <long_name>nomemory</long_name>
-            <help>Ignore TECO_MEMORY.</help>
+            <help>Ignore TECO_MEMORY environment variable.</help>
         </option>
     </section>
     <section title="Window options">
@@ -96,6 +96,17 @@
             <short_name>W</short_name>
             <long_name>window</long_name>
             <help>Enable window mode.</help>
+        </option>
+        <option>
+            <short_name>V</short_name>
+            <long_name>vtedit</long_name>
+            <argument>required</argument>
+            <help>Use macro in file 'xyz' to initialize window.</help>
+        </option>
+        <option>
+            <short_name>v</short_name>
+            <long_name>novtedit</long_name>
+            <help>Ignore TECO_VTEDIT environment variable.</help>
         </option>
     </section>
     <section title="Debug options">

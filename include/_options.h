@@ -55,7 +55,9 @@ static const char * const help_text[] =
     "Environment variables:",
     "",
     "  TECO_INIT              Default initialization file, executed at startup.",
+    "  TECO_LIBRARY           Directory of library for TECO macros.",
     "  TECO_MEMORY            File that contains name of last file edited.",
+    "  TECO_VTEDIT            Default file for initialization of window mode.",
     "",
     "Text file options:",
     "",
@@ -76,14 +78,16 @@ static const char * const help_text[] =
     "Initialization options:",
     "",
     "  -I, --initialize=xyz   Use initialization file 'xyz' at startup.",
-    "  -i, --noinitialize     Don't use an initialization file (ignore TECO_INIT).",
+    "  -i, --noinitialize     Ignore TECO_INIT environment variable.",
     "  -M, --memory           Use TECO_MEMORY to get name of last file edited.",
-    "  -m, --nomemory         Ignore TECO_MEMORY.",
+    "  -m, --nomemory         Ignore TECO_MEMORY environment variable.",
     "",
     "Window options:",
     "",
     "  -S, --scroll=n         Use 'n' lines for scrolling region (implies -W).",
     "  -W, --window           Enable window mode.",
+    "  -V, --vtedit=xyz       Use macro in file 'xyz' to initialize window.",
+    "  -v, --novtedit         Ignore TECO_VTEDIT environment variable.",
     "",
     "Debug options:",
     "",
@@ -112,6 +116,7 @@ enum option_t
     OPTION_O = 'O',
     OPTION_R = 'R',
     OPTION_S = 'S',
+    OPTION_V = 'V',
     OPTION_W = 'W',
     OPTION_X = 'X',
     OPTION_Z = 'Z',
@@ -119,13 +124,14 @@ enum option_t
     OPTION_i = 'i',
     OPTION_m = 'm',
     OPTION_o = 'o',
-    OPTION_r = 'r'
+    OPTION_r = 'r',
+    OPTION_v = 'v'
 };
 
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "A:B:CE:HI::L:MO:RS:WXZ::cimor";
+static const char * const optstring = "A:B:CE:HI::L:MO:RS:V:WXZ::cimorv";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -143,6 +149,7 @@ static const struct option long_options[] =
     { "output",         required_argument,  NULL,  'O'    },
     { "read-only",      no_argument,        NULL,  'R'    },
     { "scroll",         required_argument,  NULL,  'S'    },
+    { "vtedit",         required_argument,  NULL,  'V'    },
     { "window",         no_argument,        NULL,  'W'    },
     { "exit",           no_argument,        NULL,  'X'    },
     { "zero",           optional_argument,  NULL,  'Z'    },
@@ -151,6 +158,7 @@ static const struct option long_options[] =
     { "nomemory",       no_argument,        NULL,  'm'    },
     { "nooutput",       no_argument,        NULL,  'o'    },
     { "noread-only",    no_argument,        NULL,  'r'    },
+    { "novtedit",       no_argument,        NULL,  'v'    },
     { NULL,             no_argument,        NULL,  0      },  // Markers for end of list
 };
 

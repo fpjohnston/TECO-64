@@ -1,5 +1,5 @@
-! Initialize TECO-64, with standard command-line      !
-! Use TECO_INIT=window.tec or --initialize=window.tec !
+! Initialize TECO-64 !
+! Use TECO_INIT=init or --initialize=init !
 
 0,128ET                 ! Abort on error !
 
