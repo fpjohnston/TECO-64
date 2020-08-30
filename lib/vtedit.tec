@@ -1,0 +1,17 @@
+! Window mode initialization for TECO-64 !
+
+0,128ET                ! Abort on error !
+
+EO-200 "L
+    :@^A/?Initialization file requires TECO-64 v200+/
+    ^C
+'
+
+-1W
+9,7:W ^[
+
+@f1/green/black/       ! Command window colors !
+@f2/blue/white/        ! Text window colors !
+@f3/yellow/red/        ! Status line colors !
+
+^[^[
