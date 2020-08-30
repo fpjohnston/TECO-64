@@ -1,0 +1,1 @@
+-std=gnu18 -Wall -Wextra -Wno-unused-parameter -fshort-enums -D TECO_WINDOWS -MMD -c -I ../include -O3 
