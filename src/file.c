@@ -329,7 +329,7 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
 
     close_input(stream);
 
-    return true;
+    return (size != 0) ? true : false;
 }
 
 
