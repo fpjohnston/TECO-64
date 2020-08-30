@@ -63,7 +63,7 @@ void exec_EQ(struct cmd *cmd)
         .data = NULL,
     };
     
-    if (open_command(buf, len, stream, cmd->colon, NULL, &text))
+    if (open_command(buf, len, stream, cmd->colon, &text))
     {
         store_qtext(cmd->qname, cmd->qlocal, &text);
     }

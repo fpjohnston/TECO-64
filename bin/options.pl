@@ -432,8 +432,12 @@ sub parse_options
             . "    \"\",\n"
             . "    \"  TECO_INIT          "
             . "    Default initialization file, executed at startup.\",\n"
+            . "    \"  TECO_LIBRARY       "
+            . "    Directory of library for TECO macros.\",\n"
             . "    \"  TECO_MEMORY        "
-            . "    File that contains name of last file edited.\",\n";
+            . "    File that contains name of last file edited.\",\n"
+            . "    \"  TECO_VTEDIT        "
+            . "    Default file for initialization of window mode.\",\n";
     }
 
     foreach my $section ($dom->findnodes('/teco/section'))

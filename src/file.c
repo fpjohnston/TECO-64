@@ -269,7 +269,7 @@ void init_filename(char **name, const char *buf, uint len)
 ////////////////////////////////////////////////////////////////////////////////
 
 bool open_command(const char *buf, uint len, uint stream, bool colon,
-                  const char *libdir, struct buffer *text)
+                  struct buffer *text)
 {
     if (len == 0)                       // Any file to open?
     {
@@ -283,7 +283,7 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
 
     (void)snprintf(name, sizeof(name), "%.*s", (int)len, buf);
 
-    struct ifile *ifile = find_command(name, len, stream, colon, libdir);
+    struct ifile *ifile = find_command(name, len, stream, colon);
 
     // If there was no colon, then we've already thrown an exception.
     // So if ifile is NULL here, then a colon must have been present.

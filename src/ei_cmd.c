@@ -87,7 +87,7 @@ void exec_EI(struct cmd *cmd)
 
     close_input(stream);                // Close any open file
 
-    if (open_command(buf, len, stream, cmd->colon, teco_library, &macro))
+    if (open_command(buf, len, stream, cmd->colon, &macro))
     {
         if (trim_white(&macro) == 0)    // Any file data to process?
         {

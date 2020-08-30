@@ -71,8 +71,7 @@ static uint parse_file(const char *file, char *dir, char *base);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct ifile *find_command(char *file, uint len, uint stream, bool colon,
-                           const char *libdir)
+struct ifile *find_command(char *file, uint len, uint stream, bool colon)
 {
     assert(file != NULL);
 
@@ -105,12 +104,13 @@ struct ifile *find_command(char *file, uint len, uint stream, bool colon,
 
     // If we have a relative path and a library directory, then try again.
 
-    if (dir[0] != '/' && libdir != NULL)
+    if (dir[0] != '/' && teco_library != NULL)
     {
-        uint libsize = (uint)strlen(libdir);
+        uint libsize = (uint)strlen(teco_library);
         char libname[libsize + 1 + (uint)strlen(name) + 1];
 
-        len = (uint)snprintf(libname, sizeof(libname), "%s/%s", libdir, name);
+        len = (uint)snprintf(libname, sizeof(libname), "%s/%s", teco_library,
+                             name);
 
         ifile = open_input(libname, len, stream, (bool)true);
 
