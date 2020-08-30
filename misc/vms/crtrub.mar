@@ -1,0 +1,967 @@
+        .TITLE  CRTRUB  Scope Type Determination, Tables, Sequences
+        .SBTTL  Scope Type Determination, Tables, Sequences
+        .IDENT  /V40.13/
+
+;****************************************************************************
+;*                                                                          *
+;*  COPYRIGHT (c) 1978, 1980, 1982, 1984, 1985, 1986 BY                     *
+;*  DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASSACHUSETTS.                  *
+;*  ALL RIGHTS RESERVED.                                                    *
+;*                                                                          *
+;*  THIS SOFTWARE IS FURNISHED UNDER A LICENSE AND MAY BE USED AND COPIED   *
+;*  ONLY IN  ACCORDANCE WITH  THE  TERMS  OF  SUCH  LICENSE  AND WITH THE   *
+;*  INCLUSION OF THE ABOVE COPYRIGHT NOTICE. THIS SOFTWARE OR  ANY  OTHER   *
+;*  COPIES THEREOF MAY NOT BE PROVIDED OR OTHERWISE MADE AVAILABLE TO ANY   *
+;*  OTHER PERSON.  NO TITLE TO AND OWNERSHIP OF  THE  SOFTWARE IS  HEREBY   *
+;*  TRANSFERRED.                                                            *
+;*                                                                          *
+;*  THE INFORMATION IN THIS SOFTWARE IS  SUBJECT TO CHANGE WITHOUT NOTICE   *
+;*  AND  SHOULD  NOT  BE  CONSTRUED AS  A COMMITMENT BY DIGITAL EQUIPMENT   *
+;*  CORPORATION.                                                            *
+;*                                                                          *
+;*  DIGITAL ASSUMES NO RESPONSIBILITY FOR THE USE  OR  RELIABILITY OF ITS   *
+;*  SOFTWARE ON EQUIPMENT WHICH IS NOT SUPPLIED BY DIGITAL.                 *
+;*                                                                          *
+;*                                                                          *
+;****************************************************************************
+
+
+;++
+;
+; FACILITY:  VAX-11 TECO Text Editor
+;
+; ABSTRACT:
+;
+;       This module contains the control sequence needed to operate
+;       the various supported display terminals, as well as type
+;       determination routines.
+;
+;--
+;
+; AUTHOR:  Richard H. Murphy, CREATION DATE:  29-Jan-1985
+;
+; MODIFIED BY:
+;
+;       V40.13  ACG0601         Andrew C. Goldstein,    24-Nov-1993  15:25
+;               Fix stack alignment
+;
+;       V40.12  ACG0600         Andrew C. Goldstein,    12-Nov-1993  17:29
+;               Add markers for mechanical generation of HIF file
+;
+;       V40.11  ACG0532         Andrew C. Goldstein     21-Oct-1986  14:00
+;               Integrate into VMS system build
+;
+; LAST EDIT ON 02-JUN-83 BY MARK BRAMHALL
+; Converted to VAX-11 MACRO By Rick Murphy
+;--
+
+
+        $TTDEF
+        $TT2DEF
+        _TECODEF
+
+
+.PSECT  TECO$CODE       RD, NOWRT, PIC, SHR, EXE, QUAD, GBL, CON, NOVEC
+
+.SBTTL  DETERMINE SCOPE TYPE
+
+;+
+; CRTSET - DETERMINE SCOPE TYPE.
+;
+;       R6 -> SENSEMODE INFORMATION BUFFER @ +2 (DEVBUFSIZ) OF SCOPE TERMINAL
+;       CRTYPE(R11) = 0 (I.E., PRE-SET FOR DEFAULT SCOPE SUPPORT)
+;
+;       CALLS/G CRTSET
+;
+;       CRTYPE(R11) = 0. FOR SCOPE SUPPORT TYPE #1 (VT52)
+;                     2. FOR SCOPE SUPPORT TYPE #2 (VT100 IN VT52 MODE)
+;                     4. FOR SCOPE SUPPORT TYPE #3 (VT100 IN ANSI MODE)
+;                     6. FOR SCOPE SUPPORT TYPE #4 (VT05)
+;                     8. FOR SCOPE SUPPORT TYPE #5 (VT102)
+;                    10. FOR SCOPE SUPPORT TYPE #6 (VK100)
+;       CRTYP2(R11) = Twice scope type
+;       VTSIZE(R10) = VERTICAL SIZE IF "WATCH" SUPPORT (10.-127.)
+;       HTSIZE(R10) = HORIZONTAL SIZE IF "WATCH" SUPPORT (10.-254.&EVEN)
+;       SCROLN(R10) = 0 (NO SCROLLING INITIALLY)
+;       "ET$CRT" SET IN "ETYPE(R11)" IF SCOPE SUPPORTED FOR RUBOUT & CONTROL/U
+;       "ET$IAS" SET IN "ETYPE(R11)" IF SCOPE SUPPORTED FOR "WATCH"
+;-
+
+CRTMAX  ==      10.             ; Maximum legal scope type is 10.
+
+.MACRO  CRTTBL  LIST            ; Macro to build crtype pointer tables
+$$$$$$  =       .
+.IRP    ENTRY,<LIST>
+        .LONG   ENTRY-$$$$$$
+.ENDR   ;ENTRY,<LIST>
+.ENDM   CRTTBL
+.MACRO  CRTVAL  LIST            ; Macro to build crtype value tables
+$$$$$$  =       .
+.IRP    ENTRY,<LIST>
+        .LONG   ENTRY
+.ENDR   ;ENTRY,<LIST>
+.ENDM   CRTVAL
+        .MACRO  SETPTR  SEQ_NAME
+        MOVAL   W^'SEQ_NAME'SEQ, R0
+        ADDL3   R0, R2, R1
+        ADDL3   R0, (R1),SEQ'SEQ_NAME(R10)
+        .ENDM   SETPTR
+
+;**     HIF-MARKER      callentry
+        .ENTRY  CRTSET,^M<R2>
+
+        MOVL    #CRTMAX,R2      ; Preset scope type to maximum
+;
+;        0-2(R6) [BYTE] = DEVCLASS
+;        1-2(R6) [BYTE] = DEVTYPE
+;        2-2(R6) [WORD] = DEVBUFSIZ (WIDTH)
+;        4-2(R6) [LONG] = DEVDEPEND
+;        7-2(R6) [BYTE] = PAGE LENGTH
+;        8-2(R6) [LONG] = DEVDEPEND2
+        CMPB    1-2(R6),#TT$_VT05       ; Is scope a vt05?
+        BEQL    40$                     ; Yes
+        BITL    <8-2>(R6),#TT2$M_EDIT   ; 'edit' functions?
+        BNEQ    50$                     ; Yes, call it a vt102
+        BITL    <8-2>(R6),#TT2$M_DECCRT ; A 'dec crt'?
+        BNEQ    30$                     ; Yes, call it a vt100 in ansi mode
+        BITL    <8-2>(R6),#TT2$M_ANSICRT; An 'ansi crt'?
+        BNEQ    60$                     ; Yes, call it a vk100
+        CMPB    1-2(R6),#TT$_VT52       ; Is it a VT52?
+        BEQL    10$                     ; Yup..
+        RET                             ; Can't figure it out
+10$:    CLRL    R2              ; Change scope type to  0. (vt52)
+        BRB     60$
+20$:    MOVL    #2, R2          ; Change scope type to  2. (vt100 in vt52 mode)
+        BRB     60$
+30$:    MOVL    #4, R2          ; Change scope type to  4. (vt100 in ansi mode)
+        BRB     60$
+40$:    MOVL    #6, R2          ; Change scope type to  6. (vt05)
+        BRB     60$
+50$:    MOVL    #8,R2           ; Change scope type to  8. (vt102)
+60$:                            ; Leave  scope type as 10. (vk100)
+70$:    MOVB    R2,CRTYPE(R11)  ; Set the scope type
+        ADDB3   R2,R2,CRTYP2(R11); And extended type
+        BISW    #TECO_M_ET$CRT,-
+                ETYPE(R11)      ;  and enable scope rubout support
+        MOVZBL  7-2(R6),-
+                VTSIZE(R10)     ;  set vertical size
+        BNEQ    80$             ; It's OK
+        MOVZBL  #24, VTSIZE(R10); Assume 24 lines.
+80$:    MOVZWL  2-2(R6),-
+                HTSIZE(R10)     ;  set horizontal size
+        BNEQ    90$             ; The horizontal size is explicit
+        MOVZBL  #80.,HTSIZE(R10); Jam all others to be simply 80 columns
+90$:    BSBB    SET_POINTERS    ;  set up string pointers
+        CLRL    SCROLN(R10)     ; Set not scrolling initially
+        BISW    #TECO_M_ET$IAS,-
+                ETYPE(R11)      ; Enable "watch" support
+        RET                     ;  and exit
+
+.SBTTL SET UP SCREEN CONTROL POINTERS
+;**     HIF-MARKER      jsbentry
+SET_POINTERS::
+        PUSHL   R2
+        MOVZBL  CRTYP2(R11), R2
+        SETPTR  FIX
+        SETPTR  HOM
+        SETPTR  EOL
+        SETPTR  EOS
+        SETPTR  SCU
+        SETPTR  SCD
+        SETPTR  GON
+        SETPTR  GOF
+        SETPTR  MON
+        SETPTR  MOF
+        SETPTR  CON
+        SETPTR  COF
+        SETPTR  ERC
+        SETPTR  ERL
+        SETPTR  CLF
+        SETPTR  CRT
+        SETPTR  CUP
+        SETPTR  CDN
+        SETPTR  DCA
+        MOVAL   W^SAVCUR, R0
+        ADDL3   R0, R2, R1
+        ADDL3   R0, (R1),SCUR(R10)
+        MOVAL   W^RESCUR, R0
+        ADDL3   R0, R2, R1
+        ADDL3   R0, (R1), RCUR(R10)
+        MOVAL   W^GRPTBL, R0
+        ADDL3   R0, R2, R1
+        ADDL3   R0, (R1), GRAPH(R10)
+        MOVAL   W^CAPABILITIES, R0
+        ADDL3   R0, R2, R1
+        MOVL    (R1), T_FLAGS(R10)
+        POPL    R2
+        RSB
+
+.SBTTL  NECESSARY SUBROUTINES FOR "WATCH" SUPPORT
+
+;+
+; NWIDTH - A NEW HORIZONTAL SIZE (WIDTH) WAS SET.
+;
+;       R5 =  OLD WIDTH
+;       HTSIZE(R10) = NEW WIDTH
+;
+;       JSR     PC,NWIDTH
+;
+;       R2 =  UNDEFINED
+;       R4 =  UNDEFINED
+;       R5 =  UNDEFINED
+;-
+;**     HIF-MARKER      jsbentry
+NWIDTH::                        ; A new width was set
+        BSBW    TECO_WIDTH      ; Let the terminal driver know the new width
+        BBC     #TECO_V_TC$WIDTH,-
+                T_FLAGS(R10),30$; Branch if can't change width...
+        BSBB    20$             ; Get sequence pointer for old width
+        MOVL    R5,-(SP)        ;  and save it
+        MOVL    HTSIZE(R10),R5  ; Get the new width
+        BSBB    20$             ; Get new width's sequence pointer
+        CMPL    R5,(SP)+        ; Are the sequences the same?
+        BEQL    30$             ; Yes, no need to emit the sequence
+        BSBW    DOTYPE          ; No, go emit sequence to change the width
+        TSTL    SCROLN(R10)     ; Is scrolling enabled?
+        BEQL    10$             ; Nope
+        BSBW    SCREOS          ; Yep, position to bottom of screen
+10$:    BRW     TYPEBC          ; Force out any partial buffer & exit
+
+20$:    MOVAL   W^COL80SEQ, R0  ; Get pointer to 80 col sequences
+        CMPW    R5,#80.+1       ; Is width 81 columns or greater?
+        BLSS    25$             ; Good guess?
+        MOVAL   W^COL132SEQ,R0  ; Set sequence pointer for 132 column mode
+25$:    MOVZBL  CRTYP2(R11), R1 ; For offset
+        ADDL    R0, R1          ; Offset it...
+        ADDL    (R1), R0        ; And get sequence pointer
+30$:    MOVL    R0, R5          ; Return sequence pointer
+        RSB                     ; Exit
+
+;+
+; USRSET - SET A USER CONTROLLED PARAMETER.
+;
+;       R2 =  USER PARAMETER NUMBER (256.<=X<=32767.)
+;       R6 =  NEW USER PARAMETER VALUE
+;
+;       JSR     PC,USRSET
+;-
+
+;**     HIF-MARKER      jsbentry
+USRSET::                        ; Set a user controlled parameter
+        RSB
+
+;+
+; USRPRM - READ A USER CONTROLLED PARAMETER.
+;
+;       R2 =  0
+;       R6 =  USER PARAMETER NUMBER (256.<=X<=32767.)
+;
+;       JSR     PC,USRPRM
+;
+;       R2 =  USER PARAMETER VALUE
+;-
+
+;**     HIF-MARKER      jsbentry
+USRPRM::                        ; Read a user controlled parameter
+        RSB
+
+;+
+; DIGITS - OUTPUT ASCII DIGITS.
+;
+;       R3 =  NUMBER TO OUTPUT, 0 BASED
+;
+;       JSR     PC,DIGITS
+;
+;       R2 =  UNDEFINED
+;       R3 =  UNDEFINED
+;-
+
+;**     HIF-MARKER      jsbentry
+DIGITS::INCL    R3              ; Ansi wants number "1" based
+10$:    MOVL    R3, R0          ; Make the number a quadword in
+        CLRL    R1              ; R1:R0
+        EDIV    #10, R0,-       ; Get a digit into R3
+                R3, -(SP)       ;   remainder to stack
+        TSTL    R3              ; Done dividing?
+        BNEQ    10$             ; Nope, another pass
+20$:    MOVL    (SP)+, R2       ; Get a digit
+        CMPL    R2, #15         ; Done yet?
+        BGTRU   40$             ; Yes - exit now
+        BSBB    30$             ; Output the digit
+        BRB     20$             ; Get the next
+30$:    ADDL    #^A/0/,R2       ; Make into an ascii digit
+        BRW     TYPEBF          ; Output character
+40$:    JMP     (R2)            ; Return
+
+;+
+; DIRECT - DO DIRECT CURSOR ADDRESSING.
+;
+;       R2 =  DESIRED LINE NUMBER (ROW), 0 BASED
+;       R4 =  DESIRED COLUMN NUMBER, 0 BASED
+;       PRELIN(R10) = CURRENT CURSOR LINE NUMBER (ROW), 0 BASED
+;       PRECOL(R10) = CURRENT CURSOR COLUMN NUMBER, 0 BASED
+;
+;       JSR     PC,DIRECT
+;
+;       R2 =  UNDEFINED
+;       R5 =  UNDEFINED
+;-
+
+;**     HIF-MARKER      jsbentry
+DIRECT::MOVL    R3,-(SP)        ; Save r3
+        MOVZBL  CRTYP2(R11), R3 ; Get the scope type
+        MOVL    R2,-(SP)        ; Copy desired line number (row)
+        SUBL    PRELIN(R10),(SP);  and find # lines (rows) to move
+        BEQL    40$             ; None, line (row) is already correct
+        CMPL    (SP),#1         ; Some, are we only going to the next line?
+        BNEQ    10$             ; Nope, we must go further than that...
+        TSTL    R4              ; Are we going to the next line's first column?
+        BEQL    20$             ; Yes, a simple <cr><lf> will do that
+10$:    CMPL    R4,PRECOL(R10)  ; Is column number already correct?
+        BNEQ    90$             ; Nope, do direct cursor addressing
+        MOVL    SEQCDN(R10),R5  ; Set sequence for cursor down (& up)
+        TSTL    (SP)            ; Check that movement direction
+        BGEQ    60$
+        MOVL    SEQCUP(R10), R5 ;  set for up
+        MNEGL   (SP), (SP)      ; Correct movement amount
+        BRB     70$             ;  and go use it
+
+20$:
+;       MOVZBL  #CR,R2          ; Set character to <cr>
+        MOVZBL  #LF,R2          ; Set character to <lf>
+        BSBW    TYPEBF          ;  and go output it
+
+30$:    TSTL    (SP)+           ; Junk that movement amount
+        MOVL    #CR-32,R2       ; Set final character to <cr> (less 32)
+        BRB     110$            ;  and go exit outputting final
+
+40$:    TSTL    R3              ; Check for vt52 (0.) scope type
+        BNEQ    50$             ; Not a vt52
+        MOVL    #24.,R2         ; This is to help stop vt52 from flicker...
+50$:    MOVL    SEQCRT(R10),R5  ; Set sequence for cursor right (& left)
+        MOVL    R4,(SP)         ; Copy desired column number
+        BEQL    30$             ; Going to first column, treat specially
+        SUBL2   PRECOL(R10),(SP); Else find # columns to move
+60$:    BGEQ    70$             ; We need to move the cursor right
+        MNEGL   (SP),(SP)       ; Correct for a positive movement amount
+        MOVL    SEQCLF(R10), R5 ;  correct for cursor left
+70$:    MOVAL   W^CUR_RANGE, R0 ; Get pointer to range array
+        ADDL    R3, R0
+        CMPL    (SP),(R0)       ; Within the maximum range?
+        BGEQ    90$             ; Nope, do direct cursor addressing
+        MOVL    (SP)+,R2        ; Yep, put the count into a register
+        BLBS    T_FLAGS(R10), 130$; Ansi mode? Do differently.
+        assume  teco_v_tc$ansi eq 0
+80$:    BSBW    DOTYPE          ; Do 1 cursor down/up -or- right/left
+        SOBGTR  R2,80$          ;  and loop...
+        MOVL    (SP)+,R3        ; Restore r3
+        RSB                     ;  and exit
+
+90$:    TSTL    (SP)+           ; Junk that movement amount
+        MOVL    SEQDCA(R10),R5  ; Set sequence for direct cursor addressing
+        BSBW    DOTYPE          ;  and start direct cursor addressing
+        BLBS    T_FLAGS(R10),140$; If ansi, do differently
+        BSBB    120$            ; No, adjust and output line number (row)
+        BBC     #TECO_V_TC$FILL,-;VT05 Needing Fill?
+                T_FLAGS(R10),100$;NOPE.
+        MOVAL   W^VT52_FILL,R5  ; Yep, set filler sequence
+        BSBW    DOTYPE          ;  and go do it
+100$:   MOVL    R4,R2           ; Now set column number
+110$:   MOVL    (SP)+,R3        ; Restore r3
+120$:   ADDL    #32,R2          ; Adjust line (row) or column number
+        BRW     TYPEBF          ; Output character, then exit
+
+130$:   SUBL3   #32, 2(R5),-(SP); Stack the final character (less 32)
+        MOVL    SEQDCA(R10),R5  ; Set start of move sequence
+        BSBW    DOTYPE          ;  and go do it
+        MOVL    R2,R3           ; Copy the move count
+        DECL    R3              ;  making it 0 based
+        BRB     160$            ; Now go do it
+
+140$:   PUSHL   ANSSEQ          ; Set final character (less 32)
+        MOVL    R2,R3           ; Copy the line number (row)
+        BEQL    150$            ; No need for output if would be "1"
+        BSBW    DIGITS          ; Else output as ascii digits
+150$:   MOVZBL  #^A/;/,R2       ;set the seperator
+        BSBW    TYPEBF          ;  and output it
+        MOVL    R4,R3           ; Copy the column number
+160$:   BEQL    170$            ; No need for output if would be "1"
+        BSBW    DIGITS          ; Else output as ascii digits
+170$:   MOVL    (SP)+,R2        ; Set the final character (less 32)
+        BRB     110$            ;  and go exit outputting final
+
+;+
+; SETSCR - SET SCROLLING REGION.
+;
+;       R3 = STARTING LINE NUMBER (ROW) OF SCROLLING REGION, 0 BASED
+;       R4 = SIZE OF SCROLLING REGION
+;
+;       JSR     PC,SETSCR
+;
+;       R2 =  UNDEFINED
+;       R3 =  UNDEFINED
+;       R4 =  UNDEFINED
+;       R5 =  UNDEFINED
+;-
+
+;**     HIF-MARKER      jsbentry
+SETSCR::MOVAL   ANSI,R5         ; Set sequence to start the operation
+        BSBW    DOTYPE          ;  and go do it
+        TSTL    R3              ; From start?
+        ADDL    R3,R4           ; Calculate the ending scrolled line (row) +1
+        BNEQ    1$              ; Nope.
+        CMPL    R4, VTSIZE(R10) ; To the end?
+        BEQL    2$              ; Yup, no need for start;end.
+1$:     BSBW    DIGITS          ; Emit the starting line (row) as digits
+        MOVB    #^A/;/,R2       ; Set the ";" separator
+        BSBW    TYPEBF          ;  and output it
+        MOVL    R4,R3           ; Set the ending scrolled line (row) +1
+        DECL    R3              ;  then correct it
+        BSBW    DIGITS          ; Emit ending line (row) as digits
+2$:     MOVAL   ENDSCRL,R5      ; Set sequence to end the operation
+        BSBW    DOTYPE          ;  and go do it
+        CLRL    PRELIN(R10)     ; Cursor is now at home
+        CLRL    PRECOL(R10)
+        RSB
+
+.SBTTL  NECESSARY SUBROUTINE FOR IMMEDIATE MODE COMMAND SUPPORT
+
+;**     HIF-MARKER      jsbentry
+TECOLS::TSTW    QPNTR(R11)      ; Is this the first input request?
+        BNEQ    10$             ; Nope, can't be immediate mode command
+        BBC     #TECO_V_ED$IMD,-
+                EDIT(R11),-     ; Are immediate mode commands allowed?
+                10$             ; Nope, quit right now
+        TSTL    INDIR(R11)      ; An indirect command file active?
+        BNEQ    10$             ; Yep, no immediate commands wanted here
+        MOVAL   20$,-(SP)       ; There's enough space, check for immediates
+10$:    BRW     LISTEN          ; Go call the real 'listen' routine
+
+;**     HIF-MARKER      branchentry
+20$:    BSBB    DECODE          ; Go possibly decode a sequence
+        BLBC    R0,60$          ; No sequence was decoded...
+        MOVZBL  R2,-(SP)        ; Save the sequence final code/value
+        MOVZBL  R3,-(SP)        ; Save the sequence type code
+        BBC     #TECO_V_ET$CRT, ETYPE(R11),-
+                30$             ; Scope type terminal?
+        BSBW    TECO_DELLN      ; Yes, erase teco's prompt
+        MOVB    #LF,R2          ; Set a "deleted" character of <lf>
+        BSBW    TECO_DELCH      ;  to move the cursor up a line
+30$:    CLRL    ERRPOS(R11)     ; No error position if storing
+        CLRL    QLCMD(R11)      ; No last command if storing anything
+        MOVL    #CMDQRG, R2     ; Reference the command q-register
+        BSBW    QREFR2
+        MOVL    #PROTO_LEN, R2  ; We need this much
+        MOVL    R2, QPNTR(R11)  ; Set end pointer
+        BSBW    QADJ            ;  and adjust it's size
+        MOVL    R4, R3          ;  save it's pointer
+        MOVAL   70$,R4          ; Get pointer to the command string layout
+40$:    MOVB    (R4)+,(R3)+     ; Store next command string character
+        BNEQ    50$             ; It's a regular character
+        CVTLB   (SP)+,-1(R3)    ; Set type code first, character code second
+50$:    TSTB    (R4)            ; Just stored the final <escape>?
+        BGEQ    40$             ; Nope, loop...
+        MOVB    -(R3),R2        ; Yep, set to return with an <escape>
+        MOVB    R2,TEMP(R11)    ; Save character last stored (the <escape>)
+60$:    RSB                     ; Return
+
+;**     HIF-MARKER      dataentry
+70$:    .BYTE   30,0            ; ^^type
+        .ASCII  /,/             ; ,
+        .BYTE   30,0            ; ^^val
+        .ASCII  /MA/<ESC>       ; MA
+        PROTO_LEN = .-70$
+        .BYTE   -1              ; Prototype command
+;**     HIF-MARKER      enddata
+
+.SBTTL  NECESSARY SUBROUTINE FOR :^T COMMAND SUPPORT
+
+;**     HIF-MARKER      jsbentry
+TECOLT::BSBW    TLISTN          ; Get the first character
+        CLRL    R3              ; Set code 0 for normal character
+        BITB    R2,#^C<^X9F>    ; A control character?
+        BNEQ    10$             ; Nope, go exit with code 0
+        INCL    R3              ; Set code 1 for control character
+        CMPB    R2,#CR          ; Is it <cr>?
+        BEQL    20$             ; Yes, go read the <lf> after the <cr>
+        BSBB    DECODE          ; Go possibly decode a sequence
+        BLBC    R0,10$          ; No sequence decoded...
+        ADDL    #2, R3          ; Bias the sequence type code by two
+10$:    RSB
+
+20$:    BSBW    TLISTN          ; Read the <lf> after the <cr>
+        MOVL    #CR,R2          ; Restore returned code as <cr>
+        RSB                     ;  and exit
+
+;+
+; DECODE - DECODE ESCAPE/SS3/CSI SEQUENCE IF NEEDED.
+;
+;       R2 =  ORIGINAL CHARACTER (<ESCAPE>, <SS3>, OR <CSI> => DECODE)
+;
+;       JSR     PC,DECODE
+;
+; IF NO DECODE (NOT <ESCAPE>, <SS3>, OR <CSI>) THEN
+;
+;       R0 = 0
+;       R2 =  ORIGINAL CHARACTER
+;
+; IF DECODED (<ESCAPE>, <SS3>, OR <CSI>) THEN
+;
+;       R0 = 1
+;       R2 =  SEQUENCE FINAL CODE/VALUE
+;       R3 =  SEQUENCE TYPE CODE:
+;               0 => <ESCAPE><CTRL-CHAR>
+;               1 => <ESCAPE><CHAR>
+;                    <ESCAPE><O><UC-CHAR>
+;                    <SS3><UC-CHAR>              
+;                    <ESCAPE><[><CHAR>
+;                    <CSI><CHAR>
+;               2 => <ESCAPE><?><CHAR>
+;                    <ESCAPE><O><LC-CHAR>
+;                    <SS3><LC-CHAR>
+;               3 => <ESCAPE><[><DIGIT(S)><TILDE>
+;                    <CSI><DIGIT(S)><TILDE>
+;       R4 =  UNDEFINED
+;-
+
+;**     HIF-MARKER      jsbentry
+DECODE: CLRL    R0              ; Assume no sequence
+        CMPB    R2,#ESC         ; Is it <escape>?
+        BEQL    10$             ; Yes, so go decode
+        CMPB    R2,#SS3         ; Is it <ss3>?
+        BEQL    10$             ; Yes, so go decode
+        CMPB    R2,#CSI         ; Is it <csi>?
+        BNEQ    80$             ; None of the above, go exit.
+
+10$:    MOVZWL  ETYPE(R11),-(SP); Save original "et" flag
+        BISW    #TECO_M_ET$CC!TECO_M_ET$LC,-
+                ETYPE(R11)      ;  control/c trap, enable lower case
+        BICW    #TECO_M_ET$CKE,ETYPE(R11) ; Always stall
+        CLRL    R3              ; Set code for <escape><ctrl-char> (0)
+        TSTB    R2              ; Was initial character <ss3> or <csi>?
+        BLSS    90$             ; Yep, do special processing...
+        BSBW    TLISTN          ; Read the next character
+        BITB    R2,#^C<^X9F>    ; A control character?
+        BEQL    60$             ; Yep, that's code 0
+        INCL    R3              ; Nope, set code for <escape><char> (1)
+        CMPB    R2,#^A/[/       ; Is it <escape><[><char>?
+        BEQL    100$            ; Yes, we must do further checking...
+        CMPB    R2,#^A/?/       ; Is it <escape><?><char>?
+        BEQL    30$             ; Yes, that's code 2 on the next character
+        CMPB    R2,#^A/O/       ; Is it <escape><o><char>?
+        BNEQ    50$             ; None of the above, it's code 1
+20$:    BSBW    TLISTN          ; We need the next character at this point
+        CMPB    R2,#^A/A/       ; Is it upper case alphabetic?
+        BLSSU   40$             ; Nope, use code 2
+        CMPB    R2,#^A/Z/       ; Really upper case alphabetic?
+        BGTRU   40$             ; Nope, use code 2
+        BRB     50$             ; Yep, it's code 1
+
+30$:    BSBW    TLISTN          ; Read the final character
+40$:    INCL    R3              ; Set code for <escape><?><char> (2)
+50$:    BICB    #^C<^X1F>,R2    ; Trim character to 5 bits
+60$:    TSTW    ETYPE(R11)      ; Is control/c trap still on?
+        BLSS    70$             ; Yes
+        BICW    #TECO_M_ET$CC,(SP); No, ensure it stays off
+70$:    BICW    #^C<TECO_M_ET$CC!TECO_M_ET$CKE!TECO_M_ET$LC>,-
+                (SP)            ; Trim saved "etype"
+        BICW    #TECO_M_ET$CC!TECO_M_ET$CKE!TECO_M_ET$LC,-
+                ETYPE(R11)      ; Turn off our bits
+        BISL    (SP)+,ETYPE(R11); Then restore original "etype"
+        MOVL    #1,R0           ; Set r0=1 for decoded sequence
+80$:    RSB                     ; Exit
+
+90$:    INCL    R3              ; Set code for <escape><char> (1)
+        CMPB    R2,#SS3         ; Was initial character <ss3>?
+        BEQL    20$             ; Yep, go check the next character...
+100$:   BSBW    TLISTN          ; Get character following <escape><[>
+        BSBB    120$            ; Check for digit (0-9) range
+        BGTRU   50$             ; Not a digit, it's code 1
+        CLRL    R3              ; Else zero our sequence value
+110$:   MOVL    R3,R2           ; Save old value *1
+        MULL2   #10, R3         ; Old value *10
+        ADDL    R4,R3           ; Add new digit to old value
+        BSBW    TLISTN          ; Get the next character
+        BSBB    120$            ; Check for still digit (0-9) range
+        BLEQU   110$            ; A digit, loop...
+        MOVL    R3,R2           ; Else move sequence value to here
+        MOVL    #3,R3           ; Code for <escape><[><digit(s)><tilde> (3)
+        BRB     60$             ; Go exit
+
+120$:   MOVL    R2,R4           ; Copy the character
+        SUBL    #^A/0/,R4       ;  and convert (possible) digit to binary
+        CMPL    R4,#9.          ; Compare against highest valid binary digit
+        RSB                     ;  and exit w/ cc's set ('bhi' => non-digit)
+
+;**     HIF-MARKER      callentry
+        .ENTRY  INSMODE,^m<R2,R3,R4,R5,R6,R7,R8,R9,R10,R11>
+        MOVAL   R11SET, R11
+        MOVAL   R10SET, R10
+        TSTL    4(AP)
+        BEQL    10$
+        BBSS    #TECO_V_TC$INSERT,-
+                T_FLAGS(R10), 20$       ; No seq if set already.
+        MOVAL   SETINS, R5
+        BSBW    DOTYPE
+        BSBW    TYPEBC
+        BBCC    #TECO_V_OUTDNE,-
+                FLAGS2(R11), 20$
+        RET
+10$:    BBCC    #TECO_V_TC$INSERT,-
+                T_FLAGS(R10), 20$       ; Also nothing if clear already.
+        MOVAL   CLRINS, R5
+        BSBW    DOTYPE
+        BSBW    TYPEBC
+        BBCC    #TECO_V_OUTDNE,-
+                FLAGS2(R11), 20$
+20$:    RET
+;**     HIF-MARKER      dataentry
+SETINS: .ASCII  <ESC>/[4h/<128>
+CLRINS: .ASCII  <ESC>/[4l/<128>
+
+        .SBTTL  CRT Control Sequences
+.SBTTL  NECESSARY SEQUENCES FOR RUBOUT AND CONTROL/U
+ERCSEQ: CRTTBL  <10$,10$,10$,10$,10$,10$> ; Erase character sequence pointers
+
+10$:                            ;ALL TYPES =>
+        .ASCII  <BS><32><BS><128>; Backspace, space, backspace
+
+ERLSEQ: CRTTBL  <10$,10$,40$,70$,40$,40$> ;<CR><ERASE LINE> SEQUENCE POINTERS
+
+10$:                            ;VT52 & VT100(VT52) =>
+        .BYTE   <CR>            ;       ENSURE LEFT MARGIN
+        .ASCII  <ESC>/K/        ;       <ESC><K>
+        .ASCII  <CR><128>       ;       ENSURE LEFT MARGIN
+
+40$:                            ;VT100(ANSI), VT102, & VK100 =>
+        .BYTE   <CR>            ;       ENSURE LEFT MARGIN
+        .ASCII  <ESC>/\/        ;       ENSURE END OF DCS STRING (IF ANY)
+        .ASCII  <ESC>/</        ;       ENSURE ANSI MODE
+        .ASCII  <ESC>/[K/       ;       <ESC><[><K>
+        .ASCII  <CR><128>       ;       ENSURE LEFT MARGIN
+
+70$:                            ;VT05 =>
+        .BYTE   <CR>,158        ;       Left margin, EOL
+        .BYTE   <CR>,128        ;       ENSURE LEFT MARGIN
+
+.SBTTL  NECESSARY TABLES AND SEQUENCES FOR "WATCH" SUPPORT
+
+; POSTBL - TABLE OF NUMBER OF CHARACTERS NEEDED TO POSITION CURSOR.
+;
+;       THIS TABLE IS USED FOR A CURSOR MOVEMENT OPTIMIZATION:
+;       IF THE NUMBER OF PLACES TO MOVE THE CURSOR RIGHT (ON THE
+;       SAME LINE) IS LESS THAN THIS TABLE'S ENTRY, THEN THE
+;       PRECEEDING TEXT CHARACTERS ARE OUTPUT INSTEAD. THIS ENSURES
+;       THAT WE ARE ALWAYS SENDING THE MINIMAL NUMBER OF CHARACTERS
+;       TO THE SCREEN.
+
+POSTBL::.WORD   1+1+1+1         ;<ESC><Y><LINE #><COLUMN #>
+        .WORD   1+1+1+1         ;<ESC><Y><LINE #><COLUMN #>
+        .WORD   1+1+1+1         ;<ESC><[><# MOVES><C>
+        .WORD   1+1+4+1         ;<CTRL/N><LINE #><4 FILL'S><COLUMN #>
+        .WORD   1+1+1+1         ;<ESC><[><# MOVES><C>
+        .WORD   1+1+1+1         ;<ESC><[><# MOVES><C>
+
+; FIXSEQ - CLEAN UP MODES.
+;       NULL => NO FIXING UP IS NEEDED
+
+.ENABL  LSB
+
+FIXSEQ::CRTTBL  <10$,10$,20$,NULL,20$,30$> ;CLEAN UP MODES (IF ANY)
+
+10$:    .ASCII  <ESC>/[?2l/             ;ENSURE VT52 MODE
+        .ASCII  <ESC>/\/                ;EXIT HOLD SCREEN MODE (IF ON)
+        .ASCII  <BS><BS><BS>/   /       ;CLEAN UP THE "?2L" JUNK...
+V52GOF: .ASCII  <ESC>/G/<128>           ;EXIT GRAPHICS MODE (IF ON)
+
+20$:    .ASCII  <ESC>/\/                ;ENSURE END OF DCS STRING (IF ANY)
+        .ASCII  <ESC>/</                ;ENSURE ANSI MODE
+        .ASCII  <ESC>/7/                ;SAVE CURSOR POSITION
+        .ASCII  <ESC>/[?6;7l/           ;ENSURE ORIGIN MOD AND AUTO WRAP ARE OFF
+        .ASCII  <ESC>/8/                ;RESTORE CURSOR POSITION
+30$:    .ASCII  <ESC>/\/                ;ENSURE END OF DCS STRING (IF ANY)
+        .ASCII  <ESC>/</                ;ENSURE ANSI MODE
+        .ASCII  <ESC>/[4l/              ;ENSURE REPLACE (NOT INSERT) MODE
+        .ASCII  <ESC>/[m/               ;TURN OFF ALL CHARACTER ATTRIBUTES
+        .ASCII  <ESC>/)0/               ;SET GRAPHICS MODE TO GRAPHICS CHARACTER SET
+ANSGOF: .BYTE   15,128                  ;EXIT GRAPHICS MODE (IF ON)
+.DSABL  LSB
+
+; HOMSEQ - GO TO HOME.
+
+HOMSEQ::CRTTBL  <10$,10$,20$,30$,20$,20$> ;GO TO HOME
+
+10$:    .ASCII  <ESC>/H/<128>           ;VT52 GO TO HOME
+
+20$:    .ASCII  <ESC>/[H/<128>          ;ANSI GO TO HOME
+
+30$:    .BYTE   29                      ;VT05 GO TO HOME
+FILL4:  .BYTE   000,000,000,000         ;4 FILL'S
+NULL:   .BYTE   128                     ;NULL SEQUENCE
+
+; EOLSEQ - ERASE FROM CURSOR TO END OF LINE.
+
+EOLSEQ::CRTTBL  <10$,10$,20$,40$,20$,30$> ;ERASE FROM CURSOR TO END OF LINE
+
+10$:    .ASCII  <ESC>/K/<128>           ;VT52 ERASE FROM CURSOR TO END OF LINE
+
+20$:    .ASCII  <ESC>/#5/               ;ANSI ENSURE A NORMAL HEIGHT/WIDTH LINE
+30$:    .ASCII  <ESC>/[K/               ;ERASE FROM CURSOR TO END OF LINE
+        .BYTE   128
+
+40$:    .BYTE   30,128                  ;VT05 ERASE FROM CURSOR TO END OF LINE
+
+; EOSSEQ - ERASE FROM CURSOR TO END OF SCREEN.
+;       NULL => USE MULTIPLE EOLSEQ'S (DUE TO VARIABLE SCROLLING REGION)
+
+EOSSEQ::CRTTBL  <10$,10$,20$,30$,20$,20$> ;ERASE FROM CURSOR TO END OF SCREEN
+
+10$:    .ASCII  <ESC>/J/<128>           ;VT52 ERASE FROM CURSOR TO END OF SCREEN
+
+20$:    .ASCII  <ESC>/[J/<128>          ;ANSI ERASE FROM CURSOR TO END OF SCREEN
+
+30$:    .BYTE   31                      ;VT05 ERASE FROM CURSOR TO END OF SCREEN
+        .BYTE   000,000,000,000         ;4 FILL'S
+        .BYTE   128
+
+; SCUSEQ - SCROLL SCREEN UP (WITH CURSOR AT LOWER LEFT).
+
+SCUSEQ::CRTTBL  <10$,10$,10$,VT05LF,10$,10$> ;SCROLL SCREEN UP
+
+10$:    .BYTE   <LF>,128                ;SCROLL SCREEN UP
+        .BYTE   128
+
+VT05LF: .BYTE   <LF>                    ;VT05 SCROLL SCREEN UP
+        .BYTE   000,000,000,000         ;4 FILL'S
+        .BYTE   128
+
+
+; SCDSEQ - SCROLL SCREEN DOWN (WITH CURSOR AT UPPER LEFT).
+;       NULL => FEATURE IS NOT AVAILABLE
+
+SCDSEQ::CRTTBL  <10$,10$,20$,NULL,20$,20$> ;SCROLL SCREEN DOWN
+
+10$:    .ASCII  <ESC>/I/<128>           ;VT52 SCROLL SCREEN DOWN
+
+20$:    .ASCII  <ESC>/M/<128>           ;ANSI SCROLL SCREEN DOWN
+
+; GONSEQ - TURN ON GRAPHICS MODE.
+;       NULL => FEATURE IS NOT AVAILABLE
+
+GONSEQ::CRTTBL  <10$,10$,20$,NULL,20$,20$> ;TURN ON GRAPHICS MODE
+
+10$:    .ASCII  <ESC>/F/<128>           ;VT52 TURN ON GRAPHICS MODE
+
+20$:    .BYTE   14,128                  ;ANSI TURN ON GRAPHICS MODE
+
+
+; GOFSEQ - TURN OFF GRAPHICS MODE.
+;       NULL => FEATURE IS NOT AVAILABLE
+
+GOFSEQ::CRTTBL  <V52GOF,V52GOF,ANSGOF,NULL,ANSGOF,ANSGOF> ;GRAPHICS MODE OFF
+
+; MONSEQ - TURN ON MARK'D REGION MODE.
+;       NULL => FEATURE IS NOT AVAILABLE
+
+MONSEQ::CRTTBL  <NULL,NULL,10$,NULL,10$,10$> ;TURN ON MARK'D REGION MODE
+
+10$:    .ASCII  <ESC>/[7m/<128>         ;ANSI SET REVERSE VIDEO ATTRIBUTE
+
+; MOFSEQ - TURN OFF MARK'D REGION MODE.
+;       NULL => FEATURE IS NOT AVAILABLE
+
+MOFSEQ::CRTTBL  <NULL,NULL,10$,NULL,10$,10$> ;TURN OFF MARK'D REGION MODE
+
+10$:    .ASCII  <ESC>/[m/<128>          ;ANSI CLEAR ALL ATTRIBUTES
+
+
+; GRPTBL - TABLE OF GRAPHICS MODE CHARACTERS.
+;
+;       EACH TABLE CONTAINS 15. BYTES CORRESPONDING TO THE GRAPHICS
+;       MODE CHARACTERS FOR:
+;
+;                1) A LINE WHICH OVERFLOWS THE SCREEN'S WIDTH
+;                2) CURSOR POSITIONED ON <LF> IMMEDIATELY AFTER <CR>
+;                   ALSO, "SEE ALL" MODE SYMBOL FOR <LF>
+;                3) "SEE ALL" MODE SYMBOL FOR CONTROL CHARACTER FLAG
+;                4) "SEE ALL" MODE SYMBOL FOR <VT>
+;                5) AT END OF BUFFER ENDING WITHOUT <FF>
+;                6) AT END OF BUFFER ENDING WITH <FF>
+;                   ALSO, "SEE ALL" MODE SYMBOL FOR <FF>
+;                7) "SEE ALL" MODE SYMBOL FOR <HT>
+;                8) "SEE ALL" MODE SYMBOL FOR NULL SPACING
+;                9) "SEE ALL" MODE SYMBOL FOR <CR>
+;               10) "SEE ALL" MODE SYMBOL FOR OVERPRINT <CR>
+;               11) "SEE ALL" MODE SYMBOL FOR HEX PAIR START
+;               12) "SEE ALL" MODE SYMBOL FOR COMPOSE SEQUENCE START
+;               13) "SEE ALL" MODE SYMBOL FOR HEX PAIR END
+;               14) "SEE ALL" MODE SYMBOL FOR COMPOSE SEQUENCE END
+;               15) "SEE ALL" MODE SYMBOL FOR <ESC>
+
+GRPTBL::CRTTBL  <10$,20$,20$,30$,20$,20$> ;TABLE OF GRAPHICS CHARACTERS
+
+10$:    .ASCII  /h/             ;RIGHT ARROW
+        .ASCII  /k/             ;DOWN ARROW
+        .ASCII  /g/             ;PLUS OR MINUS
+        .ASCII  /j/             ;DIVIDED BY
+        .ASCII  /~/             ;PARAGRAPH
+        .ASCII  /a/             ;SOLID RECTANGLE
+        .ASCII  /f/             ;DEGREES
+        .ASCII  /i/             ;ELIPSIS
+        .ASCII  /`/             ;"CD"
+        .ASCII  /d/             ;"5/"
+        .ASCII  /[/             ;NO SPECIAL GRAPHIC...
+        .ASCII  /</             ;NO SPECIAL GRAPHIC...
+        .ASCII  /]/             ;NO SPECIAL GRAPHIC...
+        .ASCII  />/             ;NO SPECIAL GRAPHIC...
+        .ASCII  /c/             ;"3/"
+
+20$:    .ASCII  /h/             ;"NL"
+        .ASCII  /e/             ;"LF"
+        .ASCII  /g/             ;PLUS OR MINUS
+        .ASCII  /i/             ;"VT"
+        .ASCII  /`/             ;DIAMOND
+        .ASCII  /c/             ;"FF"
+        .ASCII  /b/             ;"HT"
+        .ASCII  /~/             ;CENTERED DOT
+        .ASCII  /d/             ;"CR"
+        .ASCII  /|/             ;NOT EQUALS
+        .ASCII  /m/             ;LOWER LEFT CORNER
+        .ASCII  /y/             ;LESS THAN OR EQUAL TO
+        .ASCII  /j/             ;LOWER RIGHT CORNER
+        .ASCII  /z/             ;GREATER THAN OR EQUAL TO
+        .ASCII  /{/             ;PI
+
+30$:    .ASCII  /+/             ;+
+        .ASCII  /'/             ;'
+        .ASCII  /^/             ;NO GRAPHICS...
+        .ASCII  / /             ;NO GRAPHICS...
+        .ASCII  /%/             ;%
+        .ASCII  /@/             ;@
+        .ASCII  / /             ;NO GRAPHICS...
+        .ASCII  / /             ;NO GRAPHICS...
+        .ASCII  / /             ;NO GRAPHICS...
+        .ASCII  / /             ;NO GRAPHICS...
+        .ASCII  /[/             ;NO GRAPHICS...
+        .ASCII  /</             ;NO GRAPHICS...
+        .ASCII  /]/             ;NO GRAPHICS...
+        .ASCII  />/             ;NO GRAPHICS...
+        .ASCII  /$/             ;NO GRAPHICS...
+
+
+.SBTTL  NECESSARY SEQUENCES FOR SCROLLING SUPPORT
+
+; CONSEQ - TURN ON CURSOR CHARACTER ATTRIBUTES.
+;       NULL => FEATURE IS NOT AVAILABLE
+
+CONSEQ::CRTTBL  <NULL,NULL,10$,NULL,10$,NULL> ;CURSOR CHARACTER ATTRIBUTES ON
+
+10$:    .ASCII  <ESC>/[1;7m/<128>    ;ANSI SET BOLD AND REVERSE VIDEO ATTRIBUTES
+
+; COFSEQ - TURN OFF CURSOR CHARACTER ATTRIBUTES.
+;       NULL => FEATURE IS NOT AVAILABLE
+
+COFSEQ::CRTTBL  <NULL,NULL,10$,NULL,10$,NULL> ;CURSOR CHARACTER ATTRIBUTES OFF
+
+10$:    .ASCII  <ESC>/[m/               ;CLEAR ALL ATTRIBUTES
+        .BYTE   15,128                  ;TURN OFF GRAPHICS MODE
+
+
+; SAVCUR - SAVE CURSOR POSITION AND ATTRIBUTES.
+;       NULL => FEATURE IS NOT AVAILABLE
+
+SAVCUR::CRTTBL  <NULL,NULL,10$,NULL,10$,NULL> ;SAVE CURSOR POSITION/ATTRIBUTES
+
+10$:    .ASCII  <ESC>/7/<128>           ;SAVE CURSOR POSITION AND ATTRIBUTES
+
+; RESCUR - RESTORE CURSOR POSITION AND ATTRIBUTES.
+;       NULL => FEATURE IS NOT AVAILABLE
+
+RESCUR::CRTTBL  <NULL,NULL,10$,NULL,10$,NULL> ;RESTORE POSITION/ATTRIBUTES
+
+10$:    .ASCII  <ESC>/8/<128>           ;RESTORE CURSOR POSITION AND ATTRIBUTES
+
+        .ENABLE LSB
+COL80SEQ:CRTTBL <NULL,NULL,60$,NULL,60$,NULL> ;80 COLUMN MODE
+
+COL132SEQ:CRTTBL <NULL,NULL,70$,NULL,70$,NULL> ;132 COLUMN MODE
+
+60$:    .ASCII  <ESC>/[?3l/<128>        ;CLEAR 132 COLUMN MODE
+
+70$:    .ASCII  <ESC>/[?3h/<128>        ;SET 132 COLUMN MODE
+        .DISABLE        LSB
+
+        .ENABLE LSB
+CDNSEQ:  CRTTBL <240$,240$,241$,VT05LF,241$,241$>       ; CURSOR DOWN
+
+CUPSEQ:  CRTTBL <250$,250$,251$,260$,251$,251$>         ; CURSOR UP
+
+CRTSEQ:  CRTTBL <270$,270$,271$,280$,271$,271$>         ; CURSOR RIGHT
+
+CLFSEQ:  CRTTBL <290$,290$,291$,300$,291$,291$>         ; CURSOR LEFT
+
+CUR_RANGE:.LONG <2+1+0+1>/2     ;<ESC><Y><L><C> VS. N*(<ESC><B/A/C/D>)
+        .LONG   <2+1+0+1>/2     ;<ESC><Y><L><C> VS. N*(<ESC><B/A/C/D>)
+        .LONG   -1              ;<ESC><[><L><;><C><H> VS. <ESC><[><N><B/A/C/D>
+        .LONG   <1+1+4+1>/1     ;<^N><L><0><0><0><0><C> VS. N*(<^X/BS>)
+        .LONG   -1              ;<ESC><[><L><;><C><H> VS. <ESC><[><N><B/A/C/D>
+        .LONG   -1              ;<ESC><[><L><;><C><H> VS. <ESC><[><N><B/A/C/D>
+
+ANSSEQ:  .BYTE  ^A/H/-32        ; ANSI MODE 'DCA' FINAL (-32)
+
+DCASEQ:  CRTTBL <310$,310$, ANSI,320$, ANSI, ANSI> ;START 'DCA' SEQUENCE
+
+VT52_FILL:CRTTBL        <NULL,NULL,NULL,FILL4,NULL,NULL> ;FILL AS REQUIRED
+
+240$:   .ASCII  <ESC>/B/<128>   ;VT52 & VT100(VT52) => <ESC><B>
+
+241$:   .ASCII  <ESC>/[B/<128>  ;ANSI
+
+250$:   .ASCII  <ESC>/A/<128>   ;VT52 & VT100(VT52) => <ESC><A>
+
+251$:   .ASCII  <ESC>/[A/<128>
+
+260$:   .BYTE   26              ;VT05 => <CTRL/Z>
+        .BYTE   000,000,000,000 ; & 4 FILL'S
+        .BYTE   128
+
+270$:   .ASCII  <ESC>/C/<128>   ;VT52 & VT100(VT52) => <ESC><C>
+
+271$:   .ASCII  <ESC>/[C/<128>
+
+280$:   .BYTE   24,128          ;VT05 => <CTRL/X>
+
+290$:   .ASCII  <ESC>/D/<128>   ;VT52 & VT100(VT52) => <ESC><D>
+
+291$:   .ASCII  <ESC>/[D/<128>
+
+300$:   .BYTE   BS,128          ;VT05 => <BS>
+
+310$:   .ASCII  <ESC>/Y/<128>   ;VT52 & VT100(VT52) => <ESC><Y>
+
+320$:   .BYTE   14,128          ;VT05 => <CTRL/N>
+
+ANSI::  .ASCII  <ESC>/[/<128>   ;VT100(ANSI), VT102, & VK100 => <ESC><[>
+        .DISABLE        LSB
+
+ENDSCRL::.ASCII /r/<128>        ;END THE ANSI SCROLLING REGION SEQUENCE
+INSLINE::.ASCII /L/<128>        ; End of insert line sequence
+DELLINE::.ASCII /M/<128>        ; End of delete line sequence
+DELCHAR::.ASCII /P/<128>        ; End of delete char sequence
+CAPABILITIES::
+        generic_ansi = <TECO_m_tc$scd!TECO_m_tc$graph!-
+                        TECO_m_tc$mark!TECO_m_tc$ansi>  ; ANSI
+        CRTVAL  <       <TECO_m_tc$eos!TECO_m_tc$scd!-
+                         TECO_m_tc$graph>,-             ; VT52
+                        <TECO_m_tc$eos!TECO_m_tc$scd!-
+                         TECO_m_tc$graph>,-             ; VT100/52 Mode
+                        <generic_ansi!TECO_m_tc$cursor!-
+                         TECO_m_tc$save!TECO_m_tc$width!-
+                         TECO_m_tc$scroll>,-            ; ANSI VT100
+                        <TECO_m_tc$eos!TECO_m_tc$fill>,-; VT05
+                        <generic_ansi!TECO_m_tc$cursor!-
+                         TECO_m_tc$save!TECO_m_tc$width!-
+                         TECO_m_tc$scroll!TECO_m_tc$edit>,-; VT102
+                        <generic_ansi!TECO_m_tc$eos>>   ; VK100
+;**     HIF-MARKER      enddata
+.END

@@ -1,0 +1,2260 @@
+        .TITLE  SCREEN  Scope "Watch" for TECO
+        .SBTTL  SCOPE "Watch" for TECO
+        .IDENT  /V40.18/
+
+;****************************************************************************
+;*                                                                          *
+;*  COPYRIGHT (c) 1978, 1980, 1982, 1984, 1985, 1986  BY                    *
+;*  DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASSACHUSETTS.                  *
+;*  ALL RIGHTS RESERVED.                                                    *
+;*                                                                          *
+;*  THIS SOFTWARE IS FURNISHED UNDER A LICENSE AND MAY BE USED AND COPIED   *
+;*  ONLY IN  ACCORDANCE WITH  THE  TERMS  OF  SUCH  LICENSE  AND WITH THE   *
+;*  INCLUSION OF THE ABOVE COPYRIGHT NOTICE. THIS SOFTWARE OR  ANY  OTHER   *
+;*  COPIES THEREOF MAY NOT BE PROVIDED OR OTHERWISE MADE AVAILABLE TO ANY   *
+;*  OTHER PERSON.  NO TITLE TO AND OWNERSHIP OF  THE  SOFTWARE IS  HEREBY   *
+;*  TRANSFERRED.                                                            *
+;*                                                                          *
+;*  THE INFORMATION IN THIS SOFTWARE IS  SUBJECT TO CHANGE WITHOUT NOTICE   *
+;*  AND  SHOULD  NOT  BE  CONSTRUED AS  A COMMITMENT BY DIGITAL EQUIPMENT   *
+;*  CORPORATION.                                                            *
+;*                                                                          *
+;*  DIGITAL ASSUMES NO RESPONSIBILITY FOR THE USE  OR  RELIABILITY OF ITS   *
+;*  SOFTWARE ON EQUIPMENT WHICH IS NOT SUPPLIED BY DIGITAL.                 *
+;*                                                                          *
+;*                                                                          *
+;****************************************************************************
+
+
+;++
+;
+; FACILITY:  VAX-11 TECO Text Editor
+;
+; ABSTRACT:
+;
+;       This module contains the general purpose screen update routines.
+;
+;--
+;
+; AUTHOR:  Richard H. Murphy, CREATION DATE:  29-Jan-1985
+;
+; MODIFIED BY:
+;
+;       V40.18  ACG0603         Andrew C. Goldstein,    20-Dec-1993  16:44
+;               Fix display of control characters (missing stack alignment).
+;
+;       V40.17  ACG0601         Andrew C. Goldstein,    24-Nov-1993  15:47
+;               Fix stack alignment
+;
+;       V40.16  ACG0600         Andrew C. Goldstein,    15-Nov-1993  17:29
+;               Add markers for mechanical generation of HIF file
+;
+;       V40.15  ACG0546         Andrew C. Goldstein,    5-Nov-1987  19:13
+;               Remove SCROLN from SETREG's cleared area
+;
+;       V40.14  RHM4014         Rick Murphy              6-MAY-1987
+;               Ensure that line pointer is set up prior to setting
+;               cursor position
+;
+;       V40.13  RHM4012         Rick Murphy              5-MAY-1987
+;               Sense change of page length and use a SETMODE
+;               to inform the terminal driver
+;
+;       V40.12  RHM4011         Rick Murphy              5-MAY-1987
+;               Fixed cursor position optimization losing
+;               video attributes
+;
+;       V40.11  ACG0532         Andrew C. Goldstein     21-Oct-1986  14:00
+;               Integrate into VMS system build
+;
+; LAST EDIT ON 02-JUN-83 BY MARK BRAMHALL
+; Changed to VAX Native mode 29-JAN-1985 Rick Murphy
+;--
+
+
+        _TECODEF
+
+.SBTTL  GRAPHIC SYMBOL DEFINITIONS
+
+OVRSYM  =        1.     ;A LINE WHICH OVERFLOWS THE SCREEN'S WIDTH
+LFDSYM  =        2.     ;CURSOR POSITIONED ON <LF> IMMEDIATELY AFTER <CR>
+                        ;ALSO, "SEE ALL" MODE SYMBOL FOR <LF>
+CTLSYM  =        3.     ;"SEE ALL" MODE SYMBOL FOR CONTROL CHARACTER FLAG
+VTBSYM  =        4.     ;"SEE ALL" MODE SYMBOL FOR <VT>
+EOBSYM  =        5.     ;AT END OF BUFFER ENDING WITHOUT <FF>
+FFDSYM  =        6.     ;AT END OF BUFFER ENDING WITH <FF>
+                        ;ALSO, "SEE ALL" MODE SYMBOL FOR <FF>
+TABSYM  =        7.     ;"SEE ALL" MODE SYMBOL FOR <HT>
+NULSYM  =        8.     ;"SEE ALL" MODE SYMBOL FOR NULL SPACING
+RETSYM  =        9.     ;"SEE ALL" MODE SYMBOL FOR <CR>
+OVPSYM  =       10.     ;"SEE ALL" MODE SYMBOL FOR OVERPRINT <CR>
+HXSSYM  =       11.     ;"SEE ALL" MODE SYMBOL FOR HEX PAIR START
+COSSYM  =       12.     ;"SEE ALL" MODE SYMBOL FOR COMPOSE SEQUENCE START
+HXESYM  =       13.     ;"SEE ALL" MODE SYMBOL FOR HEX PAIR END
+COESYM  =       14.     ;"SEE ALL" MODE SYMBOL FOR COMPOSE SEQUENCE END
+ESCSYM  =       15.     ;"SEE ALL" MODE SYMBOL FOR <ESC>
+
+.SBTTL  START PROCESSING A REAL CALL
+
+.PSECT  TECO$IMPURE     WRT, NOPIC, NOSHR, NOEXE, QUAD
+
+SETCUR_CTR:     .BLKL   1                       ; Counter used by set cursor
+
+.PSECT  TECO$CODE       RD, NOWRT, PIC, SHR, EXE, QUAD, GBL, NOVEC
+
+.ENABL  LSB
+
+;**     HIF-MARKER      branchentry
+SCRUPD::BSBW    SCRSAV          ; Save registers, set return, etc.
+;**     HIF-MARKER      jsbentry
+        CVTWL   R2,R2           ; Sign extend it
+        MCOML   R2,R2           ; Make count of changed lines positive
+        BEQL    DOIT            ; Branch if no special screen mods
+        CMPL    R2,#1000.-1     ; Special case (<= -1000.)?
+        BGEQ    10$             ; Yes, just reset the output done flag
+        MOVL    VTSIZE(R10),R3  ; Maximum legal count
+        CMPL    R2,R3           ; Is argument over maximum?
+        BGTR    CLRSCN          ; Yes, use maximum
+        MOVL    R2,R3           ; No, use argument
+;**     HIF-MARKER      jsbentry
+CLRSCN: PUSHL   R3              ; Save line count
+        ASHL    #2, (SP), R3    ; Hash table byte count
+        MOVC5   #0,#0,#0,R3,OLD_HASH
+        ADDL3   (SP),(SP),R3    ; Word count
+        MOVC5   #0,#0,#-1,R3,OLD_SIZES
+        MULL3   (SP)+,HTSIZE(R10),-
+                R3              ; Multiply line count to get bytes
+        MOVC5   #0,#0,#0,R3,-
+                @MAPPTR(R10)    ; to zap the buffer
+10$:    MOVL    #-1000.,PRELIN(R10) ; Clobber last known cursor
+        BSBW    TYPEBC          ; Purge terminal output buffer
+        BBCC    #TECO_V_OUTDNE,-
+                FLAGS2(R11),20$ ; Clear terminal output flag
+20$:    RSB                     ;  and exit
+
+.DSABL  LSB
+
+
+.SBTTL  START SCREEN UPDATE, CHECK FOR HOLDING SCREEN
+
+;**     HIF-MARKER      dataentry
+FTRANS: .LONG   FCHAR-FTRANS
+        .LONG   FBLNK-FTRANS
+
+BTRANS: .LONG   CCHAR-BTRANS
+        .LONG   CLREOL-BTRANS
+;**     HIF-MARKER      enddata
+
+;**     HIF-MARKER      branchentry
+DOIT:   MOVAL   FTRANS, R0
+        BSBW    SETJSR          ; Set up for
+                                ;  counting lines
+        MOVL    P(R11),R6       ; Get current pointer
+        PUSHL   R6              ;  and save it
+        PUSHAL  SCROUT          ; Guess at valid screen "hold"
+        TSTL    HLDFLG(R10)     ; Try to "hold" the screen?
+        BEQL    FCURLN          ;  nope
+        SUBL3   #1,TOPDOT(R10),R2; Yep, get top-of-screen position
+        CMPL    R2,ZZ(R11)      ; Is top position outside of buffer?
+        BGTRU   FCURLN          ; Yes, forget holding the screen this time...
+        MOVL    R2,P(R11)       ; Else set top-of-screen as current pointer
+        CLRL    R2              ; Set the argument for "0L"
+        BSBW    .VVV.V          ; Do 0L (start of top-of-screen line)
+        MOVL    R3,LINPTR(R10)  ; Save result in case we use it
+        MOVL    R6,P(R11)       ; Restore real current pointer
+        CMPL    R6,R3           ; Is current pointer below top position?
+        BLSSU   FCURLN          ; Yes, don't hold screen this time...
+        ADDL    TXSTOR(R11),R6  ; Make current pointer absolute
+        MOVL    R6,CURPOS(R10)  ;  and set it
+        INCL    BUINDX(R10)     ; Set fake non-zero map pointer
+        MOVL    R3,R6           ; Set start of the top-of-screen line
+        MOVL    ZZ(R11),R3      ; Get total size of text buffer
+        SUBL    R6,R3           ; Find size to end of buffer
+        CALLS   #0,COUNT_LINES  ;  and span lines in that text
+        TSTL    CURABS(R10)     ; Did we span the cursor location?
+        BEQL    20$             ; Nope, can't hold this time...
+        MOVL    HLDFLG(R10),R4  ; Yep, get "hold" flag again
+        BLSS    10$             ; Flag <0 => always hold screen if possible
+        CMPB    CURLIN(R10),R4  ; Else check for too far up on screen
+        BLSSU   20$             ; Too far up, don't hold the screen
+        MOVL    VTSIZE(R10),R5  ; Get screen's size
+        SUBL    R4,R5           ;  and find first illegal bottom line
+        CMPB    CURLIN(R10),R5  ; Check for too far down on screen
+        BGEQU   20$             ; Out of range.
+10$:    PUSHAL  SCROUT          ; Routine to call
+        BRB     CHKSCN          ; So do it..
+
+20$:    MOVAL   FTRANS, R0
+        BSBW    SETJSR          ; Can't hold, re-set up for
+                                ;  counting lines
+
+
+.SBTTL  LOCATE CURSOR LINE
+
+;**     HIF-MARKER      branchentry
+FCURLN: CLRL    R2              ; Set the argument for "0L"
+        BSBW    .VVV.V          ; Do 0L (start of cursor line)
+        MOVL    R3,R6           ; Set start of the cursor line
+        MOVL    ZZ(R11),R3      ; Get total size of text buffer
+        SUBL    R6,R3           ;  and find size to end of buffer
+        CALLS   #0, COUNT_LINES ; Now count lines in that text
+        MOVL    VTSIZE(R10),R2  ; Set the screen's size
+        MOVZWL  NWATCH(R11),(SP); Get the standard cursor line number
+        BEQL    10$             ; Zero, make it valid
+        CMPL    R2,(SP)         ; Might be valid, check upper limit
+        BGTRU   20$             ; It is valid, use it
+10$:    DIVL3   #3, R2, (SP)    ; Screen size / 3
+        ADDL    (SP), (SP)      ; Finally form 2/3rd's of size
+20$:    SUBL    BUSTRT(R10),R2  ; Calc line number of cursor line
+        CMPL    R2,(SP)         ; Should we use the calculated value?
+        BLEQU   30$             ; Nope, use standard
+        MOVL    R2,(SP)         ; Yep, use calculated
+30$:    PUSHAL  FSCRLN          ; Set for full screen adjustment
+
+.ENABL  LSB
+
+;**     HIF-MARKER      branchentry
+CHKSCN::INCL    INITFL(R10)     ; Known screen state?
+        BLSS    20$             ; Unknown, but all fixed up (was -2)
+        BNEQ    10$             ; Nope (wasn't -1)
+        BBCC    #TECO_V_OUTDNE,-
+                FLAGS2(R11),30$ ; Branch if no output done
+10$:    MOVL    SEQFIX(R10),R5  ; Set sequence to fix up terminal
+        BSBW    DOTYPE          ;  and go do it
+20$:    MOVL    VTSIZE(R10),R3  ; Set the full screen length
+        BSBW    CLRSCN          ;  and go clear out the screen map, etc.
+30$:    TSTL    PRELIN(R10)     ; Do we know where the cursor is now?
+        BGEQ    40$             ; Yes
+;**     HIF-MARKER      branchentry
+SCRHOM::MOVL    SEQHOM(R10),R5  ; No, set sequence to home
+        BSBW    DOTYPE          ;  and go do it
+        CLRL    PRELIN(R10)     ; Cursor line is now zero
+        CLRL    PRECOL(R10)     ; Cursor column is now zero
+40$:    RSB                     ; Off to whoever...
+
+.DSABL  LSB
+
+
+.SBTTL  FIND LINES FOR SCREEN
+
+;**     HIF-MARKER      branchentry
+FTOPLN: MOVL    #12.,R2         ; Set for 12L
+        BSBW    .VVV.V          ;  and go use TECO's mover
+;**     HIF-MARKER      branchentry
+FSCRLN: MOVAL   FTRANS, R0
+        BSBW    SETJSR          ; Set up for
+                                ;  finding cursor line
+10$:    MOVAL   FTRANS, R0
+        BSBW    SETJSR          ; Re-set up for
+                                ;  finding cursor line
+        MOVL    R4,-(R5)        ;   re-saving that "BUSTRT" value
+        MOVL    P(R11),-
+                LINPTR(R10)     ; Save old line index
+        BEQL    SCROUT          ; Branch if at top of buffer
+        MNEGL   #1,R2           ; Get to start of previous text line
+        BSBW    .VVV.V          ;  using TECO's mover
+        MOVL    R3, R6          ; Get text pointer
+        SUBL    LINPTR(R10), R3 ; Make R3 contain only
+        MNEGL   R3, R3          ;  contain chars in -1L
+        MOVL    BUSTRT(R10),-
+                SVSTRT(R10)     ; Save starting value
+        CALLS   #0, COUNT_LINES ; 'Format' that line
+        MOVL    BUSTRT(R10),R2  ; Get finishing line number
+        CMPL    R2,(SP)         ; Would we be at top?
+        BLSSU   10$             ; Branch if not
+        MOVL    SVSTRT(R10),-
+                BUSTRT(R10)     ; Restore correct value
+
+.SBTTL  FIND MARK'D REGION, OUTPUT SCREEN IMAGE
+
+;**     HIF-MARKER      branchentry
+SCROUT::TSTL    (SP)+           ; Pop that junk stack item
+        MOVAL   BTRANS, R0      ; Set up for just building the map
+        BSBW    SETJSR          ; Set pointers now
+        MOVL    LINPTR(R10),R6  ; Get starting point of text
+        MOVL    R6,TOPDOT(R10)  ;  and save it
+        INCL    TOPDOT(R10)     ;   making it starting point +1
+        MOVL    ZZ(R11),R3      ; Get end of text
+        SUBL    R6,R3           ;  and find amount of text to do
+        MOVL    MAPPTR(R10),-
+                BUINDX(R10)     ; Init index into the map
+        MOVL    (SP),P(R11)     ; Finally refix pointer
+        ADDL    TXSTOR(R11),(SP); Compute cursor pointer
+        BBC     #TECO_V_TC$MARK,-; Does the mark'd region feature exist?
+                T_FLAGS(R10),20$; Nope, so don't try for it...
+        MOVL    MRKFLG(R10),R2  ; Get "mark" if any
+        BEQL    20$             ; None
+        ADDL    TXSTOR(R11),R2  ; Make absolute
+        MOVL    R2,MRKLOW(R10)  ; Save as low limit
+        ADDL3   #1,(SP), MRKHGH(R10) ; Set high limit of mark'd region
+        CMPL    R2,MRKHGH(R10)  ; Was that really the high limit?
+        BLEQU   20$             ; Yes
+        MOVL    MRKHGH(R10),-
+                MRKLOW(R10)     ; Backwards
+        MOVL    R2,MRKHGH(R10)  ; No, this is the high limit
+
+20$:    MOVL    (SP),CURPOS(R10); Set position of cursor
+        MOVL    NEWMAP(R10),-
+                BUINDX(R10)     ; Init map index to copy
+        ADDL3   MAPLNG(R10), NEWMAP(R10), MAPEND(R10)
+        PUSHL   R3              ; Save R3
+        PUSHL   R6              ; And R6
+        CALLS   #0, DOTEXT      ; Format some text into new map
+30$:    CALLS   #0, TRY_MOVE    ; Try moves to fix screen
+        MOVAL   VTCHAR, OUTCHR(R10) ; Set up for screen output
+        MOVAL   VTBLNK, OUTBLN(R10)
+40$:    MOVL    MAPPTR(R10),-
+                BUINDX(R10)     ; Init map index again
+        ADDL3   MAPLNG(R10), MAPPTR(R10), MAPEND(R10)
+        POPL    R6              ; Restore text pointer/count
+        POPL    R3
+        MOVL    (SP), CURPOS(R10); Repoint to cursor
+        TSTL    CURABS(R10)     ; Did we find the cursor?
+        BEQL    50$             ; Nope.
+        SUBL    NEWMAP(R10),-
+                CURABS(R10)     ; Get cursor offset in new map
+        ADDL    MAPPTR(R10),-
+                CURABS(R10)     ; And make it point to screen map
+50$:    CALLS   #0, OUT_SCREEN  ; Now really update the screen
+60$:    MOVL    (SP)+,R6        ; Get cursor position in text buffer
+        MOVL    VTSIZ1(R10),BUSTRT(R10) ; Preset cursor at lower
+        MOVL    HTSIZ1(R10),R4  ;  right of screen
+        MOVL    CURABS(R10),R3  ; Did we find the cursor?
+        BEQL    70$             ; No
+        MOVZBL  CURLIN(R10),BUSTRT(R10) ; Set the line for cursor
+        MOVZBL  CURCOL(R10),R4  ;  and set the column
+        TSTL    P(R11)          ; Cursor at start of text buffer?
+        BEQL    70$             ; Yes, can't be between <CR><LF> (no prior)
+        CMPL    P(R11),ZZ(R11)  ; Cursor at end of text buffer?
+        BGEQU   70$             ; Yes, can't be between <CR><LF> (no current)
+        CMPB    (R6),#LF        ; Else check for current being a <LF>
+        BNEQ    70$             ; Not true
+        CMPB    -(R6),#CR       ; True, check for prior being a <CR>
+        BNEQ    70$             ; Not true either
+        TSTB    (R6)+           ; All true, correct text pointer
+        MOVB    #LFDSYM,R2      ; Set between <CR> and <LF> symbol
+        MOVZBL  CURLIN(R10),R8  ; Line for mark checking
+        BSBW    VTCHAR          ;  and go output that symbol
+        DECL    R4              ; Back up the column number
+        INCW    OLD_SIZES[R8]   ;  and make sure the size is right
+70$:    BSBW    SETCUR          ; Set the final cursor position
+
+
+.SBTTL  ALL DONE, FINISH UP
+
+;**     HIF-MARKER      branchentry
+FINISH: BBCC    #TECO_V_TC$GRPON,-
+                T_FLAGS(R10),10$; Did we leave graphic mode turned on?
+        MOVL    SEQGOF(R10),R5  ; Yes, set sequence to turn it off
+        BSBW    DOTYPE          ;  and go do it
+10$:    BBCC    #TECO_V_TC$MRKON,-
+                T_FLAGS(R10),20$; Did we leave mark'd region turned on?
+        MOVL    SEQMOF(R10),R5  ; Yes, set sequence to turn it off
+        BSBW    DOTYPE          ;  and go do it
+20$:    MNEGL   #1,INITFL(R10)  ; Now we know what's on the screen
+;**     HIF-MARKER      branchentry
+SCRDNE::BSBW    TYPEBC          ; Force out any partial buffer
+        BBCC    #TECO_V_OUTDNE,-
+                FLAGS2(R11), 25$; Clear terminal output flag
+25$:    RSB                     ; Finally we can exit
+
+.SBTTL  Attempt screen scrolling
+;+
+;       This routine tries to align the screen image
+;       with scrolling. It searches for changes where lines
+;       have been deleted or inserted and scrolls the screen
+;       up or down to cover the changes.
+;-
+;**     HIF-MARKER      callentry
+        .ENTRY  TRY_MOVE,^M<R2,R3,R4,R5,R6,R7,R8,R9>
+        MOVL    NEWPTR(R10), R6 ; Point to new map array
+        MOVL    OLDPTR(R10), R7 ; Point to old map array
+        MOVL    HTSIZE(R10), R5 ; Get line size for matches
+;+
+;       Begin comparing the maps.
+;-
+        CLRL    MATCH_COUNT     ; And say no good lines
+        CLRL    R8              ; Starting at top of screen...
+10$:    PUSHL   (R6)[R8]        ; Pointer to line
+        MOVZWL  LINE_SIZES[R8],-(SP) ; Size of line
+        PUSHL   R8              ; Line number
+        CALLS   #3, HASH_LINE   ; Compute the line hash value
+        CMPL    OLD_HASH[R8],-
+                NEW_HASH[R8]    ; Hashed the same?
+        BNEQ    20$             ; Nope.
+        CMPW    OLD_MARK[R8],-
+                NEW_MARK[R8]    ; Mark setup the same?
+        BNEQ    20$             ; Nope...
+        INCL    MATCH_COUNT     ; Say we have another good line.
+20$:    AOBLSS  VTSIZE(R10), R8, 10$
+        CMPL    MATCH_COUNT,-
+                VTSIZE(R10)     ; Whole thing OK?
+        BNEQ    40$             ; Nope.
+        MOVL    #1,R0           ; Say whole screen is OK
+30$:    RET                     ; All done screen.
+40$:    CALLS   #0, CALC_COST   ; Calculate cost array
+        CLRL    -(SP)           ; start with no inserts
+        PUSHL   VTSIZE(R10)     ; and at end of
+        PUSHL   VTSIZE(R10)     ; terminal screen array
+        CALLS   #3, FIND_EDITS  ; Find insert/deletes
+        CLRL    R0              ; Still work to do
+        RET                     ; So return
+
+        .SBTTL  HASH_LINE - Compute line hash value
+;+
+;       HASH_LINE computes a hash value for a screen line for
+;       speeding up the compares. The hash code has two important
+;       properties:
+;       1. It is independent of the number of leading/trailing blanks
+;       2. It will never be zero.
+;       INPUTS:
+;       LINE            Line number
+;       SIZE            Line length
+;       PTR             Line pointer
+;       OUTPUTS:
+;       Hash value, stored in NEW_HASH array
+;       Line redraw cost, stored in LINE_COST Array
+;-
+;**     HIF-MARKER      callentry
+        .ENTRY  HASH_LINE, ^M<R2,R3,R4,R5>
+        CLRL    R5                      ; Hash accumulator
+        MOVL    12(AP), R0              ; Point to line
+        MOVL    8(AP), R1               ; Size of line
+        ADDL3   R0, R1, R2              ; Point to end of line
+        MOVL    4(AP), R3               ; Line index
+        CLRL    LINE_COST[R3]           ; Clear cost value
+        MOVL    #1,NEW_HASH[R3]         ; and hash
+;+
+;       Skip trailing spaces
+;-
+10$:    CMPB    -(R2), #^A/ /           ; Is it a space?
+        BNEQ    20$                     ; Nope.
+        SOBGTR  R1, 10$                 ; Keep backing up
+        RET                             ; only spaces!
+;+
+;       Skip leading spaces
+;-
+20$:    CMPB    (R0)+, #^A/ /           ; Space?
+        BNEQ    30$                     ; Nope, done skipping
+        SOBGTR  R1, 20$                 ; and skip along
+        RET                             ; Only spaces (?)
+;+
+;       Here when first non-space.
+;       store line draw cost.
+;-
+30$:    MOVL    R1, LINE_COST[R3]       ; Store the cost
+;+
+;       Now, R1 has size of the line as truncated.
+;       Begin computing the hash value.
+;       Hash is computed by
+;       HASH = (HASH shifted 5) + HASH + CHARACTER
+;-
+40$:    MOVZBL  (R0)+, R4               ; Get a character
+        ROTL    #5, R5, R2              ; Shift old hash
+        ADDL    R2, R5                  ; Add it in
+        ADDL    R4, R5                  ; Plus the character
+        SOBGTR  R1, 40$                 ; Keep skipping
+        MOVL    R5, NEW_HASH[R3]        ; Store the hash value
+        BNEQ    50$
+        INCL    NEW_HASH[R3]            ; Make sure non-zero
+50$:    RET                             ; And return
+
+
+        .SBTTL  CALC_COST - Calculate update cost array
+;+
+; This routine examines the line hash values, draw cost values, and
+; line sizes to build a matrix used to find the best sequence of update
+; operations to change the OLD screen into the NEW screen.
+; The array is sized 256x256, with three elements per entry:
+        DCOST = 0               ; Word, cost of updating the line
+        FROMI = 2               ; byte, optimal move I value
+        FROMJ = 3               ; byte, optimal move J value
+;        1   2   3   4   ....     Each element represents the minumum cost of
+;      +---+---+---+---+-----     rearranging the first i lines to map onto
+;    1 |   |   |   |   |          the first j lines (the j direction
+;      +---+---+---+---+-----     represents the desired contents of a line,
+;    2 |   |  \| ^ |   |          i the current contents).  The algorithm
+;      +---+---\-|-+---+-----     used is a dynamic programming one, where
+;    3 |   | <-+Cost(i,j)         cost(i,j) = min( cost(i-1,j),
+;      +---+---+---+---+-----                 cost(i,j-1)+redraw cost for j,2
+;    4 |   |   |   |   |                      cost(i-1,j-1)+the cost of
+;      +---+---+---+---+-----                 converting line i to line j);
+;    . |   |   |   |   |          Line i can be converted to line j by either
+;    .                            just drawing j, or if they match, by moving
+;    .                            line i to line j (with insert/delete line)
+;
+;-
+;**     HIF-MARKER      callentry
+        .ENTRY  CALC_COST,^M<R2,R3,R4,R5,R6,R7,R8,R9,R10,R11>
+        ADDL3   VTSIZE(R10),-
+                HTSIZE(R10), R9 ; Calculate line move cost -
+        ASHL    #-3, R9, R9     ; (height+width)/8
+        MOVL    COST(R10), R11  ; Point to cost array
+        CLRL    R8              ; Move stopper for non-scroll
+        BBS     #TECO_V_TC$SCROLL,-
+                T_FLAGS(R10), 1$; ..is zero for scrollers
+        ADDL3   #1,VTSIZE(R10),R8; But is large for
+        ASHL    #8, R8, R8      ;    terms that can't scroll
+1$:     CLRQ    R0              ; cost=0, movecost =0
+;+
+;       Loop, I = 0 to screen vertical size
+;       setting the top row and first column up,
+;       as well as the diagonal. The first row/column are set up
+;       with line cost, and diagonal is set up for converting
+;       the line to itself.
+;-
+        MOVL    VTSIZE(R10), R7 ; Get size
+        CLRL    R2              ; I
+10$:    ASHL    #10,R2,R3       ; Index for (I,0)
+        MOVAB   (R11)[R3],R6    ; Pointer to COST(I,0)
+        ASHL    #2,R2,R4        ; Index for (0,I)
+        MOVAB   (R6)[R4],R3     ; Pointer to COST(I,I)
+        CLRW    DCOST(R3)       ; DCOST(I,I) = 0
+        ADDL3   R1,R0,R5        ; DRAWCOST + MOVECOST
+        MOVAB   (R11)[R4],R3    ; Pointer to COST(0,I)
+        MOVW    R5,(R3)         ; DCOST(0,I) = DRAWCOST + MOVECOST
+        MOVW    R1,(R6)         ; DCOST(I,0) = MOVECOST
+        CLRB    FROMI(R11)[R4]  ; FROMI(0,I) = 0
+        SUBL3   #1,R2,R3        ; I-1
+        MOVB    R3,FROMJ(R6)[R4]; FROMJ(I,I) = I-1
+        MOVB    R3,FROMJ(R11)[R4]; FROMJ(0,I) = I-1
+        MOVB    R3,FROMI(R6)[R4]; FROMI(I,I) = I-1
+        MOVB    R3,FROMI(R6)    ; FROMI(0,I) = I-1
+        CLRB    FROMJ(R6)       ; FROMI(I,0) = 0
+20$:    ADDL2   R9, R1          ; Add cost of move to MOVECOST
+        CMPL    R2, R7          ; I GEQ VTSIZE?
+        BGEQ    30$             ; yes, no cost for next line.
+        ADDL2   LINE_COST[R2], R0 ; Add cost of line to DRAWCOST
+30$:    AOBLEQ  R7, R2, 10$     ; Loop on I
+
+;+
+;       Now, loop thru the screen lines, comparing hash values
+;       and filling in the rest of the array.
+;-
+        MOVL    VTSIZE(R10),AP  ; Size for fast compares
+50$:    MOVL    #1,R1           ; I = 1
+60$:    ASHL    #10,R1,R2       ; index for (I,0)
+        MOVAB   (R11)[R2],R5    ; pointer to COST(I,0)
+        MOVL    #1,R0           ; J = 1
+80$:    TSTL    (R5)+           ; Point to (I,J)
+        CLRL    R3              ; Additional cost for line
+        MOVL    LINE_COST-4[R0],R3; Get cost of line J
+90$:    MOVL    R3,R2           ; assume this is correct cost
+        MOVL    R2,R7           ; and save as draw cost of line
+        TSTL    OLD_HASH-4[R1]  ; Hash valid?
+        BEQL    100$            ; Nope.
+        CMPL    OLD_HASH-4[R1],-
+                NEW_HASH-4[R0]  ; line hash values match?
+        BNEQ    100$            ; branch if no
+        CLRL    R2              ; if match, change cost is null.
+100$:   MOVZWL  -1024(R5),R4    ; cost(I-1,J)
+        CLRL    R6              ; assume no line
+        CMPL    R0,AP           ; line J on screen?
+        BEQL    120$            ; branch if no
+        ADDL3   R9,R8,R6        ; insert/delete cost
+120$:   ADDL3   R6,R4,R3        ; calculate update cost for this one
+;+
+;       First, assume delete line [FROMJ(I,J) = J]
+;-
+        SUBB3   #1,R1,FROMI(R5) ; fromi(I,J) = I-1
+        MOVB    R0,FROMJ(R5)    ; fromj(I,J) = J
+        MOVZWL  -4(R5),R4       ; get cost(I,J-1)
+        CMPL    R1,AP           ; line I on screen?
+        BEQL    130$            ; branch if no
+        ADDL2   R9, R4          ; Add in insert/delete cost
+        ADDL    R8,R4           ; insert/delete cost
+130$:   ADDL2   R4,R7           ; add redraw cost
+;+
+;       Else, try insert line [FROMI(I,J) = I]
+;-
+        CMPL    R7,R3           ; is this better than move cost?
+        BGEQ    140$            ; branch if no.
+        MOVL    R7,R3           ; use movecost for cost
+        MOVB    R1,FROMI(R5)    ; FROMI(I,J) = I
+        SUBB3   #1,R0,FROMJ(R5) ; FROMJ(I,J) = J-1
+140$:   MOVZWL  -1028(R5),R4    ; COST(I-1,J-1)
+        ADDL2   R4,R2           ; add to drawcost
+        CMPL    R2,R3           ; is moving better?
+        BGEQ    150$            ; nope.
+;+
+;       Redraw at this point is better; link the pointers backward.
+;-
+        MOVL    R2,R3           ; use this as move cost
+        SUBB3   #1,R1,FROMI(R5) ; FROMI(I,J) = I-1
+        SUBB3   #1,R0,FROMJ(R5) ; FROMJ(I,J) = J-1
+150$:   MOVW    R3,DCOST(R5)    ; Finally, COST(I,J) gets best cost found.
+        ACBL    AP, #1, R0, 80$ ; J Loop end
+        ACBL    AP, #1, R1, 60$ ; I loop end
+        RET                     ; Done!
+
+        .SBTTL  FIND_EDITS - Locate screen moves
+;+
+;       This routine follows the pointers in the COST array
+;       built by the CALC_COST routine.
+;       It calls itself recursively, following the pointers
+;       to locate edit possibilities.
+;       [For example, with no screen changes found, the pointers
+;       follow the diagonal].
+;       INPUTS:
+;       I,J     Index into the array; first called with I=J=VTSIZE.
+;       INSERTS Count of inserts desired.
+;-
+;**     HIF-MARKER      callentry
+        .ENTRY  FIND_EDITS,^M<R2,R3,R4,R5,R6,R7,R8>
+        MOVL    COST(R10),R8            ; Point to COST array
+        MOVL    4(AP),R3                ; I value passed
+        MOVL    8(AP),R2                ; J value passed
+        ASHL    #10,R3,R5               ; (I,0) index
+        ASHL    #2,R2,R4                ; (0,J) index
+        ADDL2   R5,R4                   ; (I,J) index
+        MOVAB   DCOST(R8)[R4],R0        ; pointer to COST(I,J)
+        TSTL    R3                      ; I = 0 (end of chain?)
+        BGTR    10$                     ; branch if no.
+        TSTL    R2                      ; J = 0 also?
+        BGTR    10$                     ; Branch if no.
+        BRW     80$                     ; All done, begin unwinding calls.
+10$:    MOVZBL  FROMI(R0),r5            ; Get FROMI(I,J)
+        MOVZBL  FROMJ(R0),r4            ;  and FROMJ(I,J)
+        CMPL    R5,R3                   ; I = FROMI(I,J)?
+        BNEQ    30$                     ; Nope, check J.
+        CLRL    R7                      ; assume no inserts to pass.
+        CMPL    R3,VTSIZE(R10)          ; Yes, may be insert - I = VTSIZE?
+        BEQL    20$
+        ADDL3   #1,12(AP),R7            ; I is on screen, one more insert.
+20$:    PUSHL   R7                      ; Follow the insert chain with
+        PUSHL   R4                      ;  one more insert, and FROMI,
+        PUSHL   R5                      ;   fromJ as pointers.
+        CALLS   #3,FIND_EDITS
+        CLRL    12(AP)                  ; Now, no more inserts wanted.
+        BRB     80$
+;
+;       Check for line deletes (J = FROMJ).
+;
+30$:    CMPL    R4,R2                   ; J = FROMJ?
+        BNEQ    70$                     ; nope, continue.
+        CMPL    R2,VTSIZE(R10)          ; but is J in range?
+        BEQL    60$                     ; nope.
+        MOVL    #1,R6                   ; delete counter
+        TSTL    R5                      ; FROMI = 0 now?
+        BEQL    50$                     ; yup, no more to do.
+40$:    ASHL    #10,R5,R1               ; index for COST(FROMI,FROMJ)
+        ASHL    #2,R4,R0
+        ADDL2   R1,R0
+        MOVAB   (R8)[R0],R0             ; point to it.
+        MOVZBL  FROMI(R0),R1            ; follow the chain
+        MOVZBL  FROMJ(R0),R0
+        CMPL    R0,R4                   ; FROMJ still = J?
+        BNEQ    50$                     ; nope, quit loop.
+        INCL    R6                      ; one more delete
+        MOVL    R1,R5                   ; follow the chain
+        BNEQ    40$                     ; and loop again
+50$:    PUSHL   R6                      ; now, delete that many lines
+        SUBL3   R6,4(AP),-(SP)          ; at position I
+        CALLS   #2,DELETE_LINES
+60$:    PUSHL   #0                      ; Call back with no inserts,
+        PUSHL   R4                      ;  fromi
+        PUSHL   R5                      ;   and fromj
+        CALLS   #3,FIND_EDITS
+        BRB     80$                     ; and start returning
+;+
+; here if no match (I <> FROMI, J <> FROMJ). Just follow the
+; chain with insert count = 0.
+;-
+70$:    PUSHL   #0
+        PUSHL   R4
+        PUSHL   R5
+        CALLS   #3,FIND_EDITS
+;+
+; here when all the work has been done. Start doing the line
+; insert operations stored in the stack context, and unwind
+; the stack.
+;-
+80$:    TSTL    12(AP)                  ; inserts desired this time?
+        BEQL    90$                     ; branch if no.
+        PUSHL   12(AP)                  ; insert this many
+        PUSHL   8(AP)                   ; line position
+        CALLS   #2,INSERT_LINES
+90$:    RET                             ; finally return.
+
+        .SBTTL  INSERT_LINES - Insert lines on screen
+;**     HIF-MARKER      callentry
+        .ENTRY  INSERT_LINES,^m<R2,R3,R4,R5,R6,R7,R8,R9,R10,R11>
+;+
+;       This routine is called to move the screen and
+;       the screen image down.
+;       Arguments:
+;       4(ap) - position
+;       8(ap) - count
+;-
+        CMPL    8(AP), VTSIZ1(R10)      ; Size OK?
+        BLSS    1$
+        RET
+1$:     MOVL    4(AP), R9               ; Moving from here
+        ADDL3   8(AP), 4(AP), R8        ; end of fix
+        MOVL    8(AP),R1                ; line count
+        MOVAL   R11SET, R11             ; impure pointer
+        MOVAL   R10SET, R10
+        MOVL    OLDPTR(R10), R7         ; point to screen arrays
+        MOVL    NEWPTR(R10), R6
+        MOVL    (R7)[R9], R1            ; Point to line to move
+        MOVL    (R7)[R8], R2            ; Point to place to move to
+        ADDL3   MAPLNG(R10),MAPPTR(R10),R0; Point to end of map
+        SUBL3   R2, R0,R4               ; Size to end of map
+        PUSHL   R1                      ; Save line pointer for zapping later
+        MOVC3   R4, (R1), (R2)          ; Move the text down
+        MULL3   8(AP), HTSIZE(R10), R0  ; Size of 'lost' text
+        MOVC5   #0,#0,#^A/ /,-          ; Zap the moved text
+                R0,@(SP)+               ; to spaces
+;+
+;       Now, move the hash and mark arrays
+;-
+        MOVL    VTSIZ1(R10), R1         ; Moving to
+        SUBL3   8(AP), R1, R0           ; Moving from
+10$:    MOVL    OLD_HASH[R0],-
+                OLD_HASH[R1]            ; Move the hash
+        MOVW    OLD_MARK[R0],-
+                OLD_MARK[R1]            ; and mark status
+        MOVW    OLD_SIZES[R0],-
+                OLD_SIZES[R1]
+        DECL    R0                      ; Bump old
+        DECL    R1
+        CMPL    R0, 4(AP)               ; Up to old line yet?
+        BGEQ    10$                     ; No, keep going
+20$:    CLRL    OLD_HASH[R1]            ; New lines
+        CLRW    OLD_MARK[R1]            ; New lines
+        CLRW    OLD_SIZES[R1]           ; And zero size
+        DECL    R1                      ; Back up
+        CMPL    R1, 4(AP)               ; Up to old line yet?
+        BGEQ    20$                     ; Nope
+        CLRL    R4                      ; Column zero
+        MOVL    4(AP), R2               ; Get line # to start at
+        BEQL    50$                     ; Use scroll if inserting at top.
+        BBC     #TECO_V_TC$EDIT,-
+                T_FLAGS(R10), 50$       ; Use scroll region if not /EDIT
+30$:    BSBW    CURSE                   ; Send the cursor there
+        MOVAL   ANSI, R5                ; Ansi start sequence
+        BSBW    DOTYPE
+        MOVL    8(AP), R3               ; Get sequence count
+        DECL    R3                      ; DIGITS will increment...
+        BEQL    40$                     ; No need to output a 1
+        BSBW    DIGITS                  ; Output sequence count
+40$:    MOVAL   INSLINE, R5             ; Insert line sequence
+        BSBW    DOTYPE                  ; Send it
+        RET
+50$:    TSTL    R2                      ; At top?
+        BEQL    51$                     ; Yup, no need to use region
+        MOVL    R2, R3                  ; Top of region
+        SUBL3   R2, VTSIZE(R10), R4     ; Size of region
+        BSBW    SETSCR                  ; Set it up
+        CLRL    R4                      ; Column
+        MOVL    4(AP), R2               ; Line
+51$:    BSBW    CURSE                   ; Send the cursor
+        MOVL    8(AP), R9               ; Sequence count
+        MOVL    SEQSCD(R10), R5         ; Scroll down
+60$:    BSBW    DOTYPE                  ; send it
+        SOBGTR  R9, 60$                 ; enough times.
+        TSTL    4(AP)                   ; At the top?
+        BEQL    61$                     ; Yup, don't need to clear
+        CLRL    R3                      ; Reset, top to bottom
+        MOVL    VTSIZE(R10), R4
+        BSBW    SETSCR                  ; Set the region
+61$:    RET
+
+        .SBTTL  DELETE_LINES - Delete lines on screen
+;+
+;       This routine moves the screen image up.
+;       4(AP) - Line position
+;       8(AP) - Move count
+;-
+;**     HIF-MARKER      callentry
+        .ENTRY  DELETE_LINES,^m<R2,R3,R4,R5,R6,R7,R8,R9,R10,R11>
+        MOVAL   R11SET, R11             ; Point to impure area
+        MOVAL   R10SET, R10
+        CMPL    4(AP), VTSIZ1(R10)      ; Position in range?
+        BLSS    10$                     ; Yup.
+        RET                             ; Nope, all is OK.
+10$:    MOVL    OLDPTR(R10), R7         ; Set up pointers to
+        MOVL    NEWPTR(R10), R6         ;  line pointer arrays
+        MOVZWL  4(AP), r8               ; Line moving to
+        MOVZBL  8(AP), R1               ; Line offset
+        ADDL3   R1, R8, R9              ; Line moving from
+        MOVL    (R7)[R9], R1            ; Point to line to move
+        MOVL    (R7)[R8], R2            ; Point to place to move to
+        ADDL3   MAPLNG(R10),MAPPTR(R10),R0; Point to end of map
+        SUBL3   R1, R0,R3               ; Size to end of map
+        SUBL3   R2, R0,R4               ; Size to end of map
+        MOVC5   R3, (R1), #^A/ /,-
+                R4, (R2)                ; Move 'em
+;+
+;       Now, move the hash and mark arrays
+;-
+        MOVL    4(AP), R1               ; Moving to
+        ADDL3   8(AP), R1, R0           ; Moving from
+20$:    MOVL    OLD_HASH[R0],-
+                OLD_HASH[R1]            ; Move the hash
+        MOVW    OLD_MARK[R0],-
+                OLD_MARK[R1]            ; and mark status
+        MOVW    OLD_SIZES[R0],-
+                OLD_SIZES[R1]
+        INCL    R0                      ; Bump old
+        AOBLSS  VTSIZ1(R10), R1, 20$    ; Do next
+30$:    CLRL    OLD_HASH[R1]            ; New lines
+        CLRW    OLD_MARK[R1]            ; New lines
+        CLRW    OLD_SIZES[R1]           ; And zero length
+        AOBLSS  VTSIZ1(R10), R1, 30$    ; Clear number being done
+;+
+;       Now, fix the screen
+;-
+        CLRL    R4                      ; Column zero
+        MOVL    R8, R2                  ; Line of start
+        BEQL    60$                     ; Deleting at top, use scroll up.
+        BBC     #TECO_V_TC$EDIT,-
+                T_FLAGS(R10), 60$       ; If not /EDIT, use scroll regions
+40$:    BSBW    CURSE
+        MOVAL   ANSI, R5                ; Start with ansi leadin
+        BSBW    DOTYPE                  ; And send it
+        MOVL    8(AP), R3               ; Line count
+        DECL    R3                      ; DIGITS will increment it...
+        BEQL    50$                     ; No need to send.
+        BSBW    DIGITS                  ; Line count
+50$:    MOVAL   DELLINE, R5             ; Delete line trailer
+        BSBW    DOTYPE                  ; Do it...
+        RET
+60$:    TSTL    R2
+        BEQL    61$                     ; No need to set region - whole screen.
+        MOVL    R2, R3
+        SUBL3   R3, VTSIZE(R10), R4     ; Size of region
+        BSBW    SETSCR                  ; Set it up
+        CLRL    R4                      ; Col 0
+61$:    MOVL    VTSIZ1(R10), R2         ; Move to bottom
+        BSBW    CURSE
+        MOVL    SEQSCU(R10), R5         ; Move up sequence
+        MOVL    8(AP), R9               ; Seq count
+70$:    BSBW    DOTYPE                  ; Send it
+        SOBGTR  R9, 70$                 ; That many times
+        TSTL    4(AP)                   ; Whole screen?
+        BEQL    71$                     ; Yup.
+        CLRL    R3                      ; Reset, top
+        MOVL    VTSIZE(R10), R4         ;  to bottom
+        BSBW    SETSCR
+71$:    RET
+
+.SBTTL  OUTPUT SOME TEXT
+
+;+
+; DOTEXT - OUTPUT SOME TEXT.
+;
+;       R3 =  CHARACTER COUNT
+;       R6 -> TEXT BUFFER (RELATIVE "TXSTOR")
+;
+;-                        
+        .ENABLE LSB
+;**     HIF-MARKER      callentry
+        .ENTRY  DOTEXT,^M<R7,R8,R9>
+        ADDL    TXSTOR(R11),R6  ; Make text pointer absolute
+        MOVL    CURPOS(R10),R7  ; Get cursor position for compare
+        MOVL    HTSIZ2(R10),R8  ; Get line size
+        MOVAL   LINE_SIZES, R0  ; Get pointer to size array
+        MOVAW   NEW_MARK, R9    ; Point to line marking array
+        CLRL    R1              ; Index
+10$:    CLRW    (R0)[R1]        ; Clear length
+        CLRW    (R9)+           ; And clear mark status
+        AOBLSS  VTSIZE(R10), R1, 10$
+        MOVAW   NEW_MARK, R9    ; Point to line marking array
+        CLRL    R4              ; start column zero
+        PUSHL   R3              ; Save the character count
+        CLRL    R0              ; Set r0=0 for not overprint
+        MOVL    BUINDX(R10), R3 ; Get map pointer
+        TSTL    (SP)            ; Any characters?
+        BEQL    80$             ; Nope, do end of screen
+20$:    CMPL    R6, R7          ; Cursor found?
+        BEQL    130$            ; Yes, save it
+30$:    CMPL    R4, R8          ; Line overflow?
+        BGEQ    110$            ; Yes.
+40$:    MOVB    (R6)+, R2       ; Get a byte
+        BLSS    100$            ; Compose/hex pair
+50$:    CMPB    R2, #DEL        ; Delete?
+        BEQL    120$            ; Yes, handle it
+        CMPB    R2, #^A/ /      ; Control character?
+        BLSS    140$            ; Yes.
+60$:    BSBW    CCHAR           ; Output the character to map
+70$:    SOBGTR  (SP), 20$       ; Do the next
+80$:    CMPL    R6, R7          ; Cursor found here?
+        BNEQ    90$             ; Nope
+        BSBW    SAVE_CURSOR     ; Save position
+90$:    BRW     590$            ; Handle end of screen
+
+100$:   BRW     250$            ; Compose sequence
+110$:   BRW     280$
+120$:   BRW     560$
+130$:   BSBW    SAVE_CURSOR     ; Save cursor pos
+        BRB     30$             ; And rejoin
+
+;+
+;       Control character dispatch
+;-
+140$:   CASEB   R2, #0, #31     ; Case special characters
+150$:   .WORD   560$-150$       ; Null
+        .WORD   560$-150$       ; ^A
+        .WORD   560$-150$       ; ^B
+        .WORD   560$-150$       ; ^C
+        .WORD   560$-150$       ; ^D
+        .WORD   560$-150$       ; ^E
+        .WORD   560$-150$       ; ^F
+        .WORD   560$-150$       ; ^G
+        .WORD   560$-150$       ; BS
+        .WORD   510$-150$       ; Tab
+        .WORD   390$-150$       ; L/F
+        .WORD   400$-150$       ; V/T
+        .WORD   410$-150$       ; F/F
+        .WORD   160$-150$       ; C/R
+        .WORD   560$-150$       ; ^N
+        .WORD   560$-150$       ; ^O
+        .WORD   560$-150$       ; ^P
+        .WORD   560$-150$       ; ^Q
+        .WORD   560$-150$       ; ^R
+        .WORD   560$-150$       ; ^S
+        .WORD   560$-150$       ; ^T
+        .WORD   560$-150$       ; ^U
+        .WORD   560$-150$       ; ^V
+        .WORD   560$-150$       ; ^W
+        .WORD   560$-150$       ; ^X
+        .WORD   560$-150$       ; ^Y
+        .WORD   560$-150$       ; ^Z
+        .WORD   550$-150$       ; ESC
+        .WORD   560$-150$       ; ^\
+        .WORD   560$-150$       ; ^]
+        .WORD   560$-150$       ; ^^
+        .WORD   560$-150$       ; ^_
+        BRW     560$            ; Must be regular control char
+
+;+
+;       RETURN character
+;-
+160$:   MOVB    #RETSYM,R2      ; Assume SEEALL, set the <CR> symbol
+        SUBL3   #1,(SP),-(SP)   ; More characters coming? (And save flag)
+        BNEQ    180$            ; Yup, check for <LF> next
+;       CMPL    R6, R7          ; Found the cursor?
+;       BNEQ    170$            ; Nope, ok to fudge text pointer now.
+;       BSBW    SAVE_CURSOR     ; Yup, save cursor position.
+170$:   SUBL3   TXSTOR(R11),R6,R1; Get relative text pointer
+        CMPL    R1,ZZ(R11)      ; Are we at the end of the buffer?
+        BLSSU   200$            ; Not at end, so no overprint.
+        BRB     190$            ; At end of buffer, call it overprint
+
+180$:   CMPB    (R6),#LF        ; Is next char a <LF> ?
+        BEQL    200$            ; It is <LF>, all is OK
+190$:   INCL    R2              ; Not <LF>, set the overprint symbol
+.IIF    NE      RETSYM+1-OVPSYM, .ERROR ;THE ABOVE WON'T WORK
+        MCOML   (SP),(SP)       ; And flag the overprint
+200$:   TSTW    SEEALL(R10)     ; Really seeing all?
+        BGEQ    210$            ; Nope.
+        BSBW    640$            ; Go output [overprint] <CR> symbol if we can
+210$:   BSBW    650$            ; Go set highest column number
+        CLRL    R4              ; Reset column
+        TSTL    (SP)+           ; Pop/test flag
+        BLSS    220$            ; Branch if overprint
+        BRW     70$             ; Else continue
+
+220$:   MOVL    BUINDX(R10),R3  ; Reset map pointer
+        TSTW    SEEALL(R10)     ; It is overprint, seeing all?
+        BGEQ    230$            ; Branch if no
+        BRW     470$            ; Yes, go to a new line
+230$:   TSTW    OVRPOS(R10)     ; Else is this a continuation overflow line?
+        BGEQ    240$            ; Nope, just continue
+        MOVB    #OVRSYM,R2      ; Set ovrflow symbol for continuation line
+        BSBW    CCHAR           ; and go output it
+        MOVB    SEEALL(R10),R2  ; Follow it with <SPACE> or <NUL> symbol
+        BSBW    CCHAR           ; And output that
+240$:   BRW     70$             ; Continue
+
+;+
+;       Compose sequence/hex pair
+;-
+250$:   MOVZBL  R2, R2          ; Zero extend to make sure
+        MOVW    CNV8BT-256[R2], R0 ; Get character rep.
+        BLSS    260$            ; It's a hex pair.
+        BBC     #TECO_V_ET$8BT,-
+                ETYPE(R11),260$ ; Branch if can't do it.
+        BRW     60$             ; Can be output as normal.
+260$:   ADDW3   #4-2, R4, R1    ; Get the current column
+                                ; and fudge for a 4 character representation
+        CMPB    R1,R8           ; About to overflow?
+        BLSSU   310$            ; Nope.
+270$:   DECL    R6              ; Yep, back up so we see the character again
+280$:   CMPB    (R6),#CR        ; Avoid sequence if overflow on <CR>
+        BNEQ    290$
+        BRW     40$             ; Branch if <CR>
+290$:   MOVB    #OVRSYM,R2      ; else set the overflow symbol
+        BBC     #TECO_V_ET$TRU,-
+                ETYPE(R11),-    ; Truncating overflow lines?
+                350$            ; No, display overflow on next line
+        INCL    R6              ; Yes, eat the character
+        BSBW    640$            ; Output overflow symbol if needed
+        CMPW    R4,OVRPOS(R10)  ; A new OVRSYM position?
+        BLEQU   300$            ; Nope, just continue
+        MOVW    R4,OVRPOS(R10)  ; Yep, set the new higher position
+300$:   BRW     70$             ; Then continue
+;+
+;       Output the Compose sequence/Hex pair
+;-
+310$:   MOVL    #^A/<>/@16,-(SP) ; Set trailing/leading for compose sequence
+        MOVW    R0,(SP)         ; Get the conversion character pair
+        BBCC    #15, (SP), 320$ ; It is a compose sequence pair
+        MOVW    #^A/[]/,2(SP)   ; Set trailing/leading for hex pair
+320$:   MOVB    2(SP),R2        ; Get the leading character
+        BSBB    330$            ; and go output it
+        MOVB    (SP),R2         ; Get the first character of the pair
+        BSBW    CCHAR           ; and go output it
+        MOVB    1(SP),R2        ; Get the second character of the pair
+        BSBW    CCHAR           ; and go output it
+        MOVB    3(SP),R2        ; Get the trailing character
+        ADDL    #4,SP           ; clean the stack
+        BSBB    330$            ; and go output it
+        BRW     70$             ; And continue
+
+330$:   TSTW    SEEALL(R10)     ; Seeing all?
+        BGEQ    340$            ; No
+        BICL    #^C<^O17>,R2    ; Yes, convert to the "see all" symbol
+340$:   BSBW    CCHAR           ; Go output the character
+        RSB                     ; And exit
+;+
+;       Compose sequence overflow
+;-
+350$:   INCL    (SP)            ; Remember to get the character again
+        TSTW    SEEALL(R10)     ; Seeing all?
+        BGEQ    360$            ; No
+        BSBW    CCHAR           ; Yes, put overflow symbol at line's end
+360$:   BSBW    650$            ; Go set highest column number
+        CLRL    R4              ; Simulate carriage return
+        BSBW    NEWLIN          ; and go to the next line
+        CLRW    (R9)            ; Clear mark array entry
+        BLBS    R0, 490$        ; Branch if at bottom of screen
+370$:   DECW    OVRPOS(R10)     ; Indicate continuation overflow line
+380$:   MOVB    #OVRSYM,R2      ; Set ovrflow symbol for continuation line
+        BSBW    CCHAR           ; and go output it
+        MOVB    SEEALL(R10),R2  ; follow it with <SPACE> or <NUL> symbol
+        BRW     60$             ; and output that
+
+;+
+;       Line feed/Vertical Tab/Form feed come here
+;-
+390$:   CLRB    R2              ; Set up for LF
+.IIF    NE      LFDSYM-2, .ERROR ;THE ABOVE WON'T WORK
+        ADDL3   #1, R7, R0      ; R6 already updated, so...
+        CMPL    R0, R6          ; Is the cursor here?
+        BNEQ    420$
+        MOVL    BUINDX(R10),-
+                CURABS(R10)     ; Yes, say it's at start of line
+        BRB     420$
+400$:   MOVB    #2, R2          ; Set up for VT
+.IIF    NE      VTBSYM-4, .ERROR ;THE ABOVE WON'T WORK
+        BRB     420$
+410$:   MOVB    #4, R2          ; Set up for FF
+.IIF    NE      FFDSYM-6, .ERROR ;THE ABOVE WON'T WORK
+420$:   TSTW    SEEALL(R10)     ; Seeing all?
+        BGEQ    480$            ; No
+        ADDB    #2, R2          ; Yes, R2=2 for <LF>, 4 for <VT>, 6 for <FF>
+        PUSHL   R4              ; At left margin (and save current column)?
+        BNEQ    450$            ; Nope, try to output the symbol
+        TSTB    RTMOST(R10)     ; Yep, was anything output on this line?
+        BEQL    450$            ; Nothing ever output, so try the symbol
+        CMPB    R2,#LFDSYM      ; Something output, is it <LF>?
+        BEQL    460$            ; Just go to the new line if <LF>
+        BSBW    NEWLIN          ; <VT> or <FF>, go to the next line
+        CLRW    (R9)            ;  and clear mark status
+        POPL    R4              ; Restore correct current column (a zero...)
+        BLBC    R0,440$
+430$:   BRW     610$            ; Branch if at bottom of screen
+440$:   PUSHL   R4              ; Re-save correct current column (a zero...)
+450$:   BSBW    640$            ; Go output the symbol if we can
+        BSBW    650$            ; Go set highest column number
+460$:   POPL    R4              ; Restore to correct current column
+470$:   CLRL    R2              ; Only do a single new line
+480$:   BSBW    NEWLIN          ; Handle a new scope line
+        CLRW    (R9)            ;  and clear new line's status
+490$:   BLBS    R0,430$         ; Branch if at bottom of screen
+        DECB    R2              ; Keep count for <VT>'s and <FF>'s
+        BGEQ    480$            ; Continue
+500$:   BRW     70$             ; Branch if done with char
+
+;+
+;       TAB character
+;-
+510$:   MOVW    SEEALL(R10),R2  ; Get starting <SPACE> & check seeing all
+        BGEQ    520$            ; Not seeing all, use the <SPACE>
+        MOVB    #TABSYM,R2      ; Seeing all, use <HT> symbol initially
+520$:   BSBW    CCHAR           ; Output the character
+        BITB    R4,#7           ; At a tab stop?
+        BEQL    500$            ; Done with the tab if so
+530$:   CMPB    R4,R8           ; Else about to overflow line?
+        BGEQU   500$            ; Yes, quit
+540$:   MOVB    SEEALL(R10),R2  ; Follow with <SPACE> or <NUL> symbol
+        BRB     520$            ; And loop...
+;+
+;       ESCAPE
+;-
+550$:   MOVZBL  #^A/$/,-(SP)    ; Guess at <ESC> (use "$")
+        TSTW    SEEALL(R10)     ; Seeing all?
+        BGEQ    580$            ; No
+        MOVB    #ESCSYM,(SP)    ; Yes, use this symbol for <ESC>
+        BRB     580$
+;+
+;       Control characters
+;-
+560$:   ADDB    #^O100,R2       ; Put character into range
+        BICB    #^C<^O177>,R2   ;  and mask it for safety (<DEL> case)
+        MOVZBL  R2,-(SP)        ; Save modified character
+        MOVB    #^A/^/,R2       ; Set up arrow as control character flag
+        TSTW    SEEALL(R10)     ; Seeing all?
+        BGEQ    570$            ; No
+        MOVB    #CTLSYM,R2      ; Yes, use the control char flag symbol
+570$:   BSBW    CCHAR           ; Output control character flag
+580$:   MOVL    (SP)+,R2        ; Get the character back
+        BRW     60$             ;  And continue with modified character
+
+;+
+;       End of text
+;-
+590$:   SUBL    TXSTOR(R11),R6  ; Make text pointer relative again
+        CMPL    R6,ZZ(R11)      ; At end of buffer now?
+        BLSSU   610$            ; Nope
+        MOVB    #EOBSYM,R2      ; Yep, set end of buffer w/o <FF> symbol
+        BBC     #TECO_V_FFFLAG,-
+                FLAGS2(R11),-   ; Does buffer end with a <FF>?
+                600$            ; No
+        INCL    R2              ; Yes, set end of buffer w/ <FF> symbol
+.IIF    NE      EOBSYM+1-FFDSYM, .ERROR ;THE ABOVE WON'T WORK
+
+600$:   BSBB    640$            ; Go output end of buffer symbol if we can
+        BBC     #TECO_V_EOFLAG,-
+                FLAGS2(R11),-   ; At end of file now?
+                610$            ; Nope
+        MOVB    #EOBSYM,R2      ; Yep, set end of buffer symbol
+        BSBB    640$            ;  and go output it if we can
+610$:   MOVL    BUSTRT(R10),(SP); Save ending line # (over char count)
+        BSBB    650$            ; Set size for this one..
+620$:   MOVL    BUSTRT(R10),R0  ; Line pointer
+        MOVW    RTMOST(R10), R4 ; Length of line.
+        MOVW    R4, LINE_SIZES[R0] ; Size of last line..
+        BSBW    NEWLIX          ; Call to blank one line
+        CLRL    R4              ; No more here..
+        CLRL    RTMOST(R10)     ; And here..
+        BLBC    R0,620$         ; Loop if more to do...
+        POPL    BUSTRT(R10)     ; Done, restore original ending line #
+        RET                     ; and exit
+
+640$:   MOVL    OVRPOS(R10),R5  ; Get current "ovrsym" position +1
+        DECL    R5              ; Find real position (none & continuation <0)
+        CMPL    R4,R5           ; Are we at or past "ovrsym"?
+        BGEQU   660$            ; Yes, can't output more on this line
+        BRW     CCHAR           ; No, output the character, then exit
+
+650$:   CMPB    R4,RTMOST(R10)  ; Check rightmost column on line
+        BLEQU   660$            ; Branch if not at it
+        MOVZBL  R4,RTMOST(R10)  ; Else save highest for clearing remainder
+660$:   RSB                     ; Exit
+        .DISABLE        LSB
+
+;**     HIF-MARKER      jsbentry
+SAVE_CURSOR:
+        MOVL    R3,CURABS(R10)  ; Save the map position
+        MOVL    BUSTRT(R10),-
+                CURLIN(R10)     ; Save the line number
+        MOVZBL  R4,CURCOL(R10)  ; Save the column number
+        CMPB    R4,HTSIZE(R10)  ; Is the column number illegal?
+        BLSSU   10$             ; Nope
+        MOVL    HTSIZ1(R10),-
+                CURCOL(R10)     ; Yep, so fix it
+10$:    RSB
+
+        .SBTTL  COUNT_LINES - Count lines in text block
+;+
+;       This routine is used rather than DOTEXT to fake
+;       formatting text for the purposes of counting
+;       lines and characters in text blocks.
+;
+;       R3 =  CHARACTER COUNT
+;       R6 -> TEXT BUFFER (RELATIVE "TXSTOR")
+;
+;-
+        .ENABLE  LSB
+;**     HIF-MARKER      callentry
+        .ENTRY  COUNT_LINES, ^M<R7,R8,R9>
+        MOVL    HTSIZ2(R10),R8  ; Get line size
+        CLRL    R0              ; Set r0=0 for not overprint
+        MNEGL   #1, CURABS(R10) ; Fake cursor for test
+        ADDL    TXSTOR(R11),R6  ; Make text pointer absolute
+        MOVL    CURPOS(R10),R7  ; Get cursor position for compare
+        BNEQ    10$             ; No fixup.
+        PUSHL   R3              ; Char count
+        CLRL    -(SP)           ; And zap
+        BRB     15$
+;+
+;       Compute char count until CURPOS
+;-
+10$:    SUBL3   R6, R7, -(SP)   ; Save on stack
+        PUSHL   (SP)            ; Make room for post count
+        SUBL3   (SP), R3, 4(SP) ; And count after that.
+15$:    MOVL    (SP), R9        ; Get char count
+        BRB     90$             ;  and go start doing that text...
+;
+;       Compose seq/hex pair
+;
+20$:    BBC     #TECO_V_ET$8BT,-
+                ETYPE(R11), 30$ ; No eightbit - always 4 chars
+        MOVZBL  R2, R2          ; Zero extend to make sure
+        TSTW    CNV8BT-256[R2]  ; Check the hex flag
+        BGTR    40$             ; It's a "normal" character - one cell.
+30$:    ADDL    #3, R4          ; Takes 4 characters
+40$:    INCL    R4              ;  or one if /EIGHT and not hex.
+        BRW     240$            ; Continue with character
+
+;+
+;       Return
+;-
+50$:    CLRL    R0              ; Assume no overprint
+        MOVL    R9,-(SP)        ; More character(s) coming (& save >=0 flag)?
+        BNEQ    60$             ; Yep, check for <lf> next
+        MOVL    R6,-(SP)        ; Nope, copy current character +1 pointer
+        SUBL    TXSTOR(R11),(SP);  and make it relative
+        CMPL    (SP)+,ZZ(R11)   ; Are we at the end of the buffer?
+        BLSSU   80$             ; Not at end, so no overprint
+        BRB     70$             ; At end, call it overprint
+
+60$:    CMPB    (R6),#LF        ; Is next a <lf>?
+        BEQL    80$             ; It is <lf>, all is o.k.
+70$:    MOVL    #1,R0           ; Not <LF>, Set overprint flag
+        MCOML   (SP),(SP)       ;  and flag overprint with <0 flag
+80$:    BSBW    470$            ; Go set highest column number
+        TSTL    (SP)+
+90$:    CLRL    R4              ; Reset column counter
+        MOVL    BUINDX(R10),R3  ; Reset map pointer
+        BLBC    R0,240$
+        TSTW    SEEALL(R10)     ; It is overprint, seeing all?
+        BGEQ    100$
+        BRW     370$            ; Yes, go to a new line
+100$:   TSTW    OVRPOS(R10)     ; Else is this a continuation overflow line?
+        BGEQ    240$            ; Nope, just continue
+        BRB     180$            ; Yep, start the line with "ovrsym" again...
+
+110$:   ADDW3   #4-2, R4, R1    ; Get the current column
+                                ;  and fudge for a 4 character representation
+        CMPB    R1,R8           ; About to overflow?
+        BLSSU   20$             ; Nope
+        DECL    R6              ; Yep, back up so we see the character again
+120$:   CMPB    (R6),#CR        ; Avoid sequence if overflow on <cr>
+        BEQL    200$            ; Branch if <cr>
+        BBC     #TECO_V_ET$TRU,ETYPE(R11),- ; Truncating overflow lines?
+                150$            ; No, display overflow on next line
+        INCL    R6              ; Yes, eat the character
+        BSBW    460$            ; Output overflow symbol if needed
+        CMPW    R4,OVRPOS(R10)  ; A new "ovrsym" position?
+        BLEQU   240$            ; Nope, just continue
+        MOVW    R4,OVRPOS(R10)  ; Yep, set the new higher position
+        BRB     240$            ;  then continue
+
+;+
+;       Branch helpers for main character path.
+;       allows main flow to avoid branches
+;-
+130$:   BRW     390$
+
+150$:   INCL    R9              ; Remember to get the character again
+        TSTW    SEEALL(R10)     ; Seeing all?
+        BGEQ    160$            ; No
+        INCL    R4              ; Yes, put overflow symbol at line's end
+160$:   BSBW    470$            ; Go set highest column number
+        CLRL    R4              ; Simulate carriage return
+        BSBW    FAKE_NEWLIN     ;  and go to the next line
+        BLBS    R0, 130$
+170$:   DECW    OVRPOS(R10)     ; Indicate continuation overflow line
+180$:   INCL    R4
+        BRB     240$
+190$:   CMPL    R4,R8           ; About to overflow?
+        BGEQ    120$            ; Branch if true
+200$:   MOVB    (R6)+,R2        ; Get a byte of text
+        BLSS    110$            ; Branch if 'negative'
+210$:   CMPB    R2, #127        ; Delete?
+        BEQL    180$            ; Yup.
+        CMPB    R2, #^A/ /      ; Space or greater?
+        BLSS    280$            ; Nope, special
+220$:   INCL    R4              ; Count a character
+240$:   SOBGEQ  R9, 190$        ; Knock down character count
+250$:   TSTL    CURABS(R10)     ; All done?
+        BGEQ    260$            ; Yup.
+        MOVL    4(SP),R9        ; Set post-cursor count
+        CMPL    R6, R7          ; Found the cursor?
+        BNEQ    270$            ; Nope, no save.
+        BSBW    SAVE_CURSOR     ; Save the cursor pos
+        BRB     240$            ; And continue
+260$:   BRW     440$            ; End of screen.
+270$:   CLRL    CURABS(R10)     ; Say no cursor
+        BRB     240$
+        BRB     250$            ; Branch if no more, go do end of screen
+
+280$:   MOVB    R2, R0          ; Save character
+        CASEB   R2, #0, #31     ; Case special characters
+290$:   .WORD   180$-290$       ; Null
+        .WORD   180$-290$       ; ^A
+        .WORD   180$-290$       ; ^B
+        .WORD   180$-290$       ; ^C
+        .WORD   180$-290$       ; ^D
+        .WORD   180$-290$       ; ^E
+        .WORD   180$-290$       ; ^F
+        .WORD   180$-290$       ; ^G
+        .WORD   180$-290$       ; BS
+        .WORD   410$-290$       ; Tab
+        .WORD   300$-290$       ; L/F
+        .WORD   310$-290$       ; V/T
+        .WORD   320$-290$       ; F/F
+        .WORD   50$-290$        ; C/R
+        .WORD   180$-290$       ; ^N
+        .WORD   180$-290$       ; ^O
+        .WORD   180$-290$       ; ^P
+        .WORD   180$-290$       ; ^Q
+        .WORD   180$-290$       ; ^R
+        .WORD   180$-290$       ; ^S
+        .WORD   180$-290$       ; ^T
+        .WORD   180$-290$       ; ^U
+        .WORD   180$-290$       ; ^V
+        .WORD   180$-290$       ; ^W
+        .WORD   180$-290$       ; ^X
+        .WORD   180$-290$       ; ^Y
+        .WORD   180$-290$       ; ^Z
+        .WORD   220$-290$       ; ESC
+        .WORD   180$-290$       ; ^\
+        .WORD   180$-290$       ; ^]
+        .WORD   180$-290$       ; ^^
+        .WORD   180$-290$       ; ^_
+
+300$:   CLRB    R2              ; Set up for LF
+        BRB     330$
+310$:   MOVB    #2, R2          ; Set up for VT
+        BRB     330$
+320$:   MOVB    #4, R2          ; Set up for FF
+330$:   TSTW    SEEALL(R10)     ; Seeing all?
+        BGEQ    380$            ; No
+        PUSHL   R4              ; At left margin (and save current column)?
+        BNEQ    350$            ; Nope, try to output the symbol
+        TSTB    RTMOST(R10)     ; Yep, was anything output on this line?
+        BEQL    350$            ; Nothing ever output, so try the symbol
+        CMPB    R0,#LF          ; Something output, is it <lf>?
+        BEQL    360$            ; Just go to the new line if <lf>
+        BSBW    FAKE_NEWLIN     ; <vt> or <ff>, go to the next line
+        POPL    R4              ; Restore correct current column (a zero...)
+        BLBS    R0,440$         ; Branch if at bottom of screen
+340$:   PUSHL   R4              ; Re-save correct current column (a zero...)
+350$:   BSBB    460$            ; Go output the symbol if we can
+        BSBB    470$            ; Go set highest column number
+360$:   POPL    R4              ; Restore to correct current column
+370$:   CLRL    R2
+380$:   BSBW    FAKE_NEWLIN     ; Handle a new scope line
+390$:   BLBS    R0,440$         ; Branch if at bottom of screen
+        DECB    R2              ; Keep count for <vt>'s and <ff>'s
+        BGEQ    380$            ; Continue
+400$:   BRW     240$            ; Branch if done with char
+
+
+410$:   INCL    R4              ; Output the character
+        BITB    R4,#7           ; At a tab stop?
+        BEQL    430$            ; Done with the tab if so
+420$:   CMPB    R4,R8           ; Else about to overflow line?
+        BLSSU   410$            ; No, loop
+430$:   BRW     240$            ; Yes, quit
+
+
+440$:   TSTL    CURABS(R10)     ; Cursor found?
+        BGEQ    450$            ; Yup.
+        CLRL    CURABS(R10)     ; Nope, say so.
+450$:   MOVL    MAPEND(R10), R2 ;  point to end of screen map
+        RET
+
+460$:   SUBL3   #1, OVRPOS(R10),R5; Get current "ovrsym" position
+        CMPL    R4,R5           ; Are we at or past "ovrsym"?
+        BGEQU   480$            ; Yes, can't output more on this line
+        INCL    R4              ; No, output the character, then exit
+        RSB
+
+470$:   CMPB    R4,RTMOST(R10)  ; Check rightmost column on line
+        BLEQU   480$            ; Branch if not at it
+        MOVZBL  R4,RTMOST(R10)  ; Else save highest for clearing remainder
+480$:   RSB                     ; Exit
+        .DISABLE LSB
+
+;+
+; NEWLIX - SPECIAL PROCESS END OF LINE FOR BLANKING REST OF SCREEN.
+;
+;       R4 =  COLUMN #
+;
+;       JSR     PC,NEWLIX
+;
+;       R3 -> NEW LINE IN MAP
+;       R4 =  0 (COLUMN #)
+;       R5 =  UNDEFINED
+;
+;       IF R0=0 THEN NOT BEYOND BOTTOM OF SCREEN
+;       IF R0=1 THEN BEYOND BOTTOM OF SCREEN
+;-
+.ENABL  LSB
+
+;**     HIF-MARKER      jsbentry
+NEWLIX: PUSHL   R2              ; Save r2
+        CLRL    -(SP)           ; New next column # is zero
+        BRB     10$             ; Now go do it
+
+.SBTTL  GO TO A NEW LINE
+
+;+
+; NEWLIN - PROCESS END OF LINE, GO TO THE NEXT LINE.
+;
+;       R4 =  COLUMN #
+;
+;       JSB/BSB NEWLIN
+;
+;       R3 -> NEW LINE IN MAP
+;       R5 =  UNDEFINED
+;
+;       IF R0=0 THEN NOT BEYOND BOTTOM OF SCREEN
+;       IF R0=1 THEN BEYOND BOTTOM OF SCREEN
+;-
+
+
+;**     HIF-MARKER      jsbentry
+NEWLIN: PUSHL   R2              ; Save r2
+        PUSHL   R4              ; Save r4 (column #)
+        CMPL    R4, RTMOST(R10) ; Is rightmost OK?
+        BLSS    10$
+        MOVL    R4, RTMOST(R10) ; Nope, set it.
+10$:    MOVL    BUSTRT(R10), R0 ; Get line number
+        MOVW    RTMOST(R10),-   ; Store length of line
+                LINE_SIZES[R0]  ;  in size array
+        TSTW    (R9)+           ; Point to next mark array entry
+        ADDL3   BUINDX(R10),-   ; Calculate end of
+                HTSIZE(R10),R2  ;  line pointer
+        CMPL    R2,MAPEND(R10)  ; Are we off end of screen map?
+        BLEQU   20$             ; Nope
+        MOVL    MAPEND(R10),R2  ; Yep, reset to within map
+20$:    MOVL    SEQEOL(R10),R5  ; Set sequence to clear only this line
+        JSB     @OUTBLN(R10)    ;  and erase the remainder of line if any
+        MOVL    R2,BUINDX(R10)  ; Update to new line in map
+        INCL    BUSTRT(R10)     ;  and go to next line #
+        MOVL    R2,R3           ; Set new line's map pointer
+        CLRW    OVRPOS(R10)     ; No "ovrsym" on new line yet
+        CLRL    RTMOST(R10)     ; Clear rightmost column for new line
+        CLRL    R4              ;  and start from column 0
+30$:    CMPB    R4,(SP)         ; Up to old column position?
+        BLSSU   60$             ; Nope, output some fill.
+40$:    POPL    R4              ; Restore r4 (column #)
+        POPL    R2              ; Restore r2
+        CLRL    R0              ; Init flag
+        CMPB    VTSIZ1(R10),BUSTRT(R10) ; Cmp (#lines-1) vs (line#)
+        BGEQU   50$             ; Not off screen, exit r0=0
+        MOVB    #1, R0          ; Off screen, exit r0=1
+50$:    RSB                     ; Exit with indication
+60$:    CMPB    VTSIZ1(R10),-
+                BUSTRT(R10)     ; Already off screen?
+        BLSSU   40$             ; Yes, forget it.
+        MOVB    SEEALL(R10), R2 ; Get <SPACE> or <NUL> symbol
+        JSB     @OUTCHR(R10)    ; And output it
+        BRB     30$             ; Go check again
+
+;**     HIF-MARKER      jsbentry
+FAKE_NEWLIN:
+        PUSHL   R2              ; Save r2
+        PUSHL   R4              ; Save r4 (column #)
+        ADDL3   BUINDX(R10),-   ; Calculate end of
+                HTSIZE(R10),R2  ;  line pointer
+        CMPL    R2,MAPEND(R10)  ; Are we off end of screen map?
+        BLEQU   70$             ; Nope
+        MOVL    MAPEND(R10),R2  ; Yep, reset to within map
+70$:    MOVL    R2,BUINDX(R10)  ; Update to new line in map
+        INCL    BUSTRT(R10)     ;  and go to next line #
+        MOVL    R2,R3           ; Set new line's map pointer
+        CLRW    OVRPOS(R10)     ; No "OVRSYM" on new line yet
+        CLRL    RTMOST(R10)     ; Clear rightmost column for new line
+        POPL    R4              ; Restore r4 (column #)
+        POPL    R2              ; Restore r2
+        CLRL    R0              ; Init flag
+        CMPB    VTSIZ1(R10),-
+                BUSTRT(R10)     ; Cmp (#lines-1) vs (line#)
+        BGEQU   80$             ; Not off screen, exit r0=0
+        MOVB    #1, R0          ; Off screen, exit r0=1
+80$:    RSB                     ; Exit with indication
+.DSABL  LSB
+
+.SBTTL  OUTPUT THE SCREEN
+;+
+;       This routine actually outputs the screen image.
+;-
+;**     HIF-MARKER      callentry
+        .ENTRY  OUT_SCREEN,^M<R3,R4,R5,R6,R7,R8,R9>
+        MOVL    NEWPTR(R10), R6 ; Point to new screen map
+        MOVL    MAPPTR(R10), R3 ; Point to old screen map
+        MOVAL   NEW_MARK, R9    ; Point to mark array
+        CLRL    R8              ; Line pointer
+10$:    MOVL    R8, BUSTRT(R10) ; Set line number
+        MOVL    (R6)[R8], R7    ; New line ptr
+        CLRL    R4              ; Column number = 0
+        MOVL    R3, BUINDX(R10) ; Save pointer
+        MOVZWL  LINE_SIZES[R8],AP; Get size
+        MOVL    AP,-(SP)        ; Save line size
+        MOVZWL  OLD_SIZES[R8], R1 ; Old length
+        MOVL    NEW_HASH[R8],-
+                OLD_HASH[R8]    ; Save the hash value
+        MOVL    AP, RTMOST(R10) ; Set end column
+        BLEQ    30$             ; Null line.
+        CMPW    R1, #-1         ; Old line unknown?
+        BEQL    20$             ; Yup.
+        CMPW    (R9),OLD_MARK[R8]; Marks the same?
+        BNEQ    20$             ; Nope, do it the hard way.
+        CMPC3   AP, (R7), (R3)  ; Lines the same?
+        BEQL    30$             ; Nope.
+        SUBL3   R0, AP, R4      ; Column position.
+        MOVL    R0, AP          ; Characters left.
+        MOVL    R1, R7          ; Start of mismatch in new screen
+20$:    MOVB    (R7)+, R2       ; Get character
+        BSBB    VTCHAR          ; Output it
+        SOBGTR  AP, 20$         ; Next character
+30$:    CLRL    R4              ; Target col is zero
+        BSBW    NEWLIN          ; Next line
+40$:    CVTLW   (SP)+, OLD_SIZES[R8]
+        MOVW    NEW_MARK[R8],-
+                OLD_MARK[R8]    ; Save mark context too.
+        ACBL    VTSIZ1(R10), #1, R8, 10$
+        RET
+
+.SBTTL  OUTPUT A CHARACTER
+
+;+
+; VTCHAR - REAL OUTPUT OF A CHARACTER.
+;
+;       R2 =  CHARACTER
+;       R3 -> MAP
+;       R4 =  COLUMN #
+;       R6 -> TEXT (+1)
+;
+;       BSB/JSB VTCHAR
+;
+;       R2 =  UNDEFINED
+;       R3 -> MAP (UPDATED)
+;       R4 =  COLUMN # (UPDATED)
+;       R5 =  UNDEFINED
+;-
+        .ENABLE LSB
+
+;**     HIF-MARKER      jsbentry
+VTCHAR: 
+10$:    MOVZBL  R2, R2          ; Zero extend it
+        MOVZBL  (R3)+, R5       ; Get old character
+        CMPB    R2, R5          ; Same?
+        BNEQ    40$             ; Nope, have work to do.
+        MOVAW   NEW_MARK[R8], R0; Get mark context
+        TSTW    (R0)            ; No mark?
+        BEQL    20$             ; Nope.
+        CMPB    R4, (R0)        ; Below mark?
+        BLSSU   20$             ; Yup, don't mark it.
+        ADDB3   (R0),1(R0),R1   ; End of mark
+        CMPB    R4, R1          ; Past end?
+        BGEQU   20$             ; Yup.
+        BBCS    #15, R2, 20$    ; Flag it.
+20$:    MOVAW   OLD_MARK[R8], R0; Old mark context
+        TSTW    (R0)            ; No mark?
+        BEQL    30$             ; Nope.
+        CMPB    R4, (R0)        ; Below mark?
+        BLSSU   30$             ; Yup, don't mark it.
+        ADDB3   (R0),1(R0), R1  ; end of mark
+        CMPB    R4, R1          ; Past end?
+        BGEQU   30$             ; Yup.
+        BBCS    #15, R5, 30$    ; Flag it
+30$:    CMPW    R2,R5           ; Are characters the same?
+        BNEQ    40$             ; nope.
+        INCL    R4              ; If yes, don't send it - advance column number
+        RSB                     ;  then exit
+40$:    CMPB    BUSTRT(R10),PRELIN(R10) ; At correct line?
+        BNEQ    70$             ; No, do direct cursor addressing
+        MOVL    R4,R5           ; Yes, get desired column #
+        SUBL    PRECOL(R10),R5  ;  and find delta change
+        BEQL    80$             ; Absolutely correct, just do character output
+        PUSHL   R3              ; Else save bumped map position
+        MOVZBL  CRTYPE(R11),R3  ; Get the scope type
+        CMPB    R5,W^POSTBL[R3] ; Within range for the speed-up?
+        BGTRU   60$             ; No, do direct addressing
+        MOVL    (SP),R3         ; Yes, get back bumped map position
+        MOVB    R2,-(R3)        ;  and store character in the map
+        MOVZBL  R5, R5          ; Zero extend it
+        SUBL    R5,R4           ; Back up the column number
+        SUBL    R5,R3           ; Back up the map pointer
+50$:    MOVZBL  (R3)+,R2        ; Get back a character from map
+        CMPL    R3,(SP)         ; Up to our position yet?
+        BGEQU   60$             ; Yes, done
+        BSBB    OUT_CHAR        ; No, go output the character
+;**     HIF-MARKER      branchentry
+        BRB     50$             ;  and loop...
+
+60$:    POPL    R3              ; Restore bumped map position
+70$:    BSBW    SETCUR          ; Position the cursor
+80$:
+;       BRB     OUT_CHAR
+        .DISABLE LSB
+
+        .ENABLE LSB
+;**     HIF-MARKER      jsbentry
+OUT_CHAR:
+        MOVB    R2,-1(R3)       ; Store the character
+        TSTW    NEW_MARK[R8]    ; Marking this one?
+        BEQL    10$             ; Nope.
+        MOVAW   NEW_MARK[R8], R0; Get mark context
+1$:     CMPB    R4, (R0)        ; Below mark?
+        BLSSU   10$             ; Yup, don't mark it.
+        ADDB3   (R0),1(R0),R1   ; End of mark
+        CMPB    R4, R1          ; Past end?
+        BGEQU   10$             ; Yup.
+        BISW    #^X8000, R2     ; Flag it.
+10$:    TSTW    R2              ; Character flagged?
+        BGEQ    20$             ; Nope.
+        BBSS    #TECO_V_TC$MRKON,-
+                T_FLAGS(R10),40$; Branch if mark is already OK
+        MOVL    SEQMON(R10), R5 ; Want it on
+        BRB     30$             ; So go do it
+;**     HIF-MARKER      branchentry
+OUT_ONE:
+20$:    BBCC    #TECO_V_TC$MRKON,-
+                T_FLAGS(R10),40$; Branch if mark is already off
+        MOVL    SEQMOF(R10),R5  ; Mark'd region now on, set to turn it off
+30$:    BSBW    DOTYPE          ; Go output the mark'd region on/off sequence
+40$:    CMPB    R2,#SPACE       ; Normal character?
+        BGEQU   50$             ; Yes
+        MOVZBL  R2, R2          ; Trim the byte
+        ADDL    GRAPH(R10), R2  ; Get table pointer
+        MOVB    -(R2),R2        ; Get the correct graphics character
+        BBSS    #TECO_V_TC$GRPON,-
+                T_FLAGS(R10),70$; Branch if graphics on already
+        MOVL    SEQGON(R10), R5 ; Sequence to turn it on
+        BRB     60$             ; So go do it.
+50$:    BBCC    #TECO_V_TC$GRPON,-
+                T_FLAGS(R10),70$; Branch if graphics off
+        MOVL    SEQGOF(R10),R5  ; Sequence for turning off graphics
+60$:    BSBW    DOTYPE          ; Go output the graphics on/off sequence
+70$:    BSBW    TYPEBF          ; Send the character
+;**     HIF-MARKER      branchentry
+        INCB    PRECOL(R10)     ; Indicate cursor moved 1 to the right
+        INCL    R4
+        RSB
+;**     HIF-MARKER      jsbentry
+SCROLL_OUT::
+        MOVZBL  (R3),R2         ; Get character under the cursor
+        MOVL    CURLIN(R10), R8 ; Get line pointer
+        MOVL    CURCOL(R10), R4 ; Get column
+        CMPW    R4, OLD_SIZES[R8]; Cursor within old line contents?
+        BLSS    80$             ; Not at end of line
+        MNEGW   #1,OLD_SIZES[R8]; make sure we do EOL erase later.
+80$:    MOVAW   OLD_MARK[R8], R0; Mark context
+        TSTW    (R0)            ; Marking line?
+        BEQL    90$             ; Nope.
+        BRW     1$              ; Yup, check the mark
+90$:    BRW     10$
+        .DISABLE LSB
+;+
+; FCHAR - FAKE OUTPUT OF A CHARACTER.
+;
+;       R4 =  COLUMN #
+;
+;       JSR     PC,FCHAR
+;
+;       R4 =  COLUMN # (UPDATED)
+;-
+
+;**     HIF-MARKER      branchentry
+FCHAR:  INCL    R4              ; Advance column number
+        RSB                     ;  then exit
+
+;+
+; CCHAR - BUFFER ALIGNMENT OUTPUT OF A CHARACTER.
+;
+;       R2 =  CHARACTER
+;       R3 -> CHECKING BUFFER
+;       R4 =  COLUMN #
+;
+;       JSR     PC,CCHAR
+;
+;       R3 -> CHECKING BUFFER (UPDATED)
+;       R4 =  COLUMN # (UPDATED)
+;-
+
+;**     HIF-MARKER      branchentry
+CCHAR:  MOVB    R2,(R3)+        ; Save character in checking buffer
+        INCL    R4              ;  advance column and exit
+        TSTL    MRKFLG(R10)     ; Marking?
+        BNEQ    10$             ; Yes, have to check.
+        RSB
+10$:    CMPL    R6, MRKLOW(R10) ; Below mark?
+        BLSSU   30$             ; Yes.
+        CMPL    R6, MRKHGH(R10) ; Above mark?
+        BGEQU   30$             ; Yes.
+        TSTW    (R9)            ; Already saved column?
+        BNEQ    20$             ; Yes.
+        SUBB3   #1, R4, (R9)    ; No, save it.
+20$:    INCB    1(R9)           ; And add one more marked char
+30$:    RSB
+
+                     
+;+
+; CLREOL- BLANK REST OF LINE (In map).
+;
+;       R2 =  MAP ADDRESS TO STOP AT
+;       R4 =  COLUMN #
+;       BSB/JSB CLREOL
+;-
+
+;**     HIF-MARKER      jsbentry
+CLREOL: PUSHR   #^M<R2,R3,R4>   ; Save work regs
+        CMPB    R4,RTMOST(R10)  ; Check for rightmost used column
+        BGEQU   10$             ; R4 is right
+        MOVZBL  RTMOST(R10),R4  ; Else update r4
+10$:    ADDL3   BUINDX(R10),R4,R3; Point to where we are in buffer
+        SUBL    R3, R2          ; Get number of characters to do
+        BLEQ    20$             ; None to do.
+        MOVC5   #0, #0, #^A/ /, R2, (R3)
+20$:    POPR    #^M<R2,R3,R4>   ; Restore work regs
+        RSB                     ; EXIT
+
+;+
+; VTBLNK - REAL OUTPUT BLANK REST OF LINE.
+;
+;       R2 =  MAP ADDRESS TO STOP AT
+;       R4 =  COLUMN #
+;       R5 -> CLEARING SEQUENCE
+;
+;       JSR     PC,VTBLNK
+;-
+
+;**     HIF-MARKER      jsbentry
+VTBLNK: PUSHR   #^M<R2,R3,R4,R6>; Save work regs
+        CMPB    R4,RTMOST(R10)  ; Check for rightmost used column
+        BGEQU   10$             ; R4 is right
+        MOVZBL  RTMOST(R10),R4  ; Else update r4
+10$:    ADDL3   BUINDX(R10),R4,R3; Point to where we are in buffer
+        CMPB    VTSIZ1(R10),BUSTRT(R10) ; Really off the screen?
+        BLSSU   40$             ; Yes.
+20$:    SUBL    R3, R2          ; Get number of characters to do
+        BLEQ    40$             ; Already at end
+        CMPW    R4, OLD_SIZES[R8]; Is this line shorter?
+        BGEQU   40$             ; Nope, longer. It's OK.
+30$:    BSBB    DOSEQ           ; Clear line or screen...
+        MOVC5   #0,#0,#^A/ /,R2,(R3); Zap the line
+40$:    POPR    #^M<R2,R3,R4,R6>; Restore work regs
+        RSB                     ; Exit
+
+;+
+; FBLNK - FAKE BLANK REST OF LINE (FOR BUFFER ALIGNMENT).
+;
+;       JSR     PC,FBLNK
+;-
+
+;**     HIF-MARKER      jsbentry
+FBLNK:  MOVAL   FCHAR,OUTCHR(R10) ; Reset to fake output routine
+        RSB                     ;  and exit
+
+.SBTTL  SET SUBROUTINE ADDRESSES, ETC.
+
+;+
+; SETJSR - SET SUBROUTINE ADDRESSES, ETC.
+;
+;       R0 = Pointer to translation table
+;       R4 =  ORIGINAL "BUSTRT" VALUE
+;       R5 -> INTO "BUSTRT"
+;-
+
+;**     HIF-MARKER      jsbentry
+SETJSR: MOVAL   OUTCHR(R10),R5  ; Get address of first vector
+        MOVL    R0, R1          ; Save vector pointer
+        ADDL3   R1,(R0)+,(R5)+  ; Set "output a character" routine
+        ADDL3   R1,(R0)+,(R5)+  ; Set "process end of line" routine
+        MOVQ    R2,-(SP)        ;  save registers
+        MOVC5   #0,#0,#0,#JSREND-JSRSRT,(R5)
+        MOVQ    (SP)+,R2
+        MOVAL   BUSTRT(R10),R5  ; Reset register
+        MOVL    (R5),R4         ; Save original "bustrt" value
+        CLRL    (R5)+           ;  then clear current line number
+        RSB                     ; Exit
+
+.SBTTL  DO SEQUENCES
+
+;+
+; DOSEQ - DO SOME SEQUENCE AFTER POSITIONING CURSOR.
+;
+;       R4 =  COLUMN #
+;       R5 -> SEQUENCE
+;
+;       JSR     PC,DOSEQ
+;-
+
+;**     HIF-MARKER      jsbentry
+DOSEQ:  BSBB    SETCUR          ; Set up the cursor
+
+;+
+; DOTYPE - DO SOME SEQUENCE.
+;
+;       R5 -> SEQUENCE
+;
+;       JSR     PC,DOTYPE
+;-
+
+.ENABL  LSB
+
+;**     HIF-MARKER      jsbentry
+DOTYPE::PUSHL   R2              ; Save r2
+        PUSHL   R5              ;  and r5
+        MOVZWL  ETYPE(R11),-(SP); Save initial ET flag
+        BISW    #TECO_M_ET$BIN,-
+                ETYPE(R11)      ; Force binary
+10$:    MOVB    (R5)+,R2        ; Get a character
+        CMPB    R2,#^O200       ; The ending 200?
+        BEQL    20$             ; Yes
+        BSBW    TYPEBF          ; Else buffer it
+;**     HIF-MARKER      branchentry
+        BRB     10$             ;  and continue
+20$:    BITL    (SP)+,-
+                #TECO_M_ET$BIN  ; Do we need to clear image output
+        BNEQ    30$             ; No, was set on entry
+        BICW    #TECO_M_ET$BIN,-
+                ETYPE(R11)      ; Clear it now
+30$:    POPL    R5              ; Restore r5
+        POPL    R2              ; Restore r2
+        BBCC    #TECO_V_OUTDNE,-
+                FLAGS2(R11),35$ ; Say no output done
+35$:    RSB                     ;  then exit
+
+
+.SBTTL  POSITION THE CURSOR
+
+;+
+; SETCUR - POSITION THE CURSOR.
+;
+;       BUSTRT(R10) =  Line #
+;       R4          =  Column #
+; CURSE -  Position the cursor
+;       R2          =  Line #
+;       R4          =  Column #
+;-
+;**     HIF-MARKER      jsbentry
+CURSE:  MOVL    R2, BUSTRT(R10) ; Say where we want to go
+;**     HIF-MARKER      jsbentry
+SETCUR: PUSHR   #^M<R0,R1,R2,R3,R5,R8>
+        MOVL    BUSTRT(R10),R2  ; Get line (row) number
+        MOVL    R2, R8          ; Out_Char uses this one
+        CMPB    R2,PRELIN(R10)  ; Is this the right line?
+        BNEQ    70$             ; Branch if not, must set cursor
+        MOVL    R4, R5          ; Get desired column #
+        SUBL    PRECOL(R10), R5 ; Find delta change
+        BEQL    90$             ; Branch if ok, no need to position
+        BLSS    50$             ; Moving backwards...
+        MOVZBL  CRTYPE(R11), R3 ; Index speed-up table
+        CMPB    R5, W^POSTBL[R3]; Within range?
+        BGTRU   70$             ; Nope, have to go direct.
+        MOVL    OLDPTR(R10), R3 ; Pointers to screen lines
+        MOVL    (R3)[R2], R3    ; Now have pointer to line
+        MOVL    PRECOL(R10), R4 ; Point to old column
+        ADDL    R4, R3          ; Now have pointer to cursor character
+        MOVL    R5, SETCUR_CTR  ; Char counter
+40$:    MOVZBL  (R3)+, R2       ; Get char
+        BSBW    OUT_CHAR        ; send it
+        SOBGTR  SETCUR_CTR, 40$ ; Go for it!
+        BRB     80$             ; And finish up
+50$:    MNEGL   R5, R5          ; Make it positive
+        MOVZBL  CRTYPE(R11), R3 ; Table index
+        CMPB    R5,W^POSTBL[R3] ; Within range?
+        BGTRU   70$             ; Nope, go direct
+        MOVL    R5, SETCUR_CTR  ; Counter
+60$:    MOVZBL  #BS, R2         ; Can backspace there
+        BSBW    TYPEBF          ; so go back
+        SOBGTR  SETCUR_CTR, 60$ ; Go for it!
+        BRB     80$             ; And finish up
+70$:    BSBW    DIRECT          ; Call for direct cursor addressing
+80$:    MOVZBL  BUSTRT(R10),PRELIN(R10) ; Save cursor pos on screen
+        MOVZBL  R4,PRECOL(R10)  ;  both line (row) and column
+90$:    POPR    #^M<R0,R1,R2,R3,R5,R8>
+        RSB                     ;  then exit
+
+.DSABL  LSB
+
+.SBTTL  HANDLE :W COMMANDS (PARAMETER READ/SET)
+
+.ENABL  LSB
+
+10$:    JMP     SCRINS          ; Off to insert processing...
+
+20$:    MOVL    R6,TOPDOT(R10)  ; Setting "top" (+6)
+        BRB     90$             ;  and go exit
+
+30$:    MOVL    R6,HLDFLG(R10)  ; Set the "hold" flag (+5)
+        BRB     90$             ;  and go exit
+
+40$:    MOVL    R6,MRKFLG(R10)  ; Set the "mark" position (+4)
+        BRB     90$             ;  and go exit
+
+50$:    MOVW    #SPACE,SEEALL(R10) ; Guess at reseting "seeall" flag
+        TSTL    R6              ; Good guess?
+        BEQL    90$             ; Yes, go exit
+        MOVW    #NULSYM!^X8000,SEEALL(R10) ; No, set "seeall" flag
+60$:    BRB     90$             ;  and go exit
+
+
+;+
+; SCRPRM - HANDLE :W COMMANDS (PARAMETER READ/SET).
+;
+;              0:W      RETURN SCOPE TYPE
+;              1:W      RETURN HORIZONTAL SIZE
+;              2:W      RETURN VERTICAL SIZE
+;              3:W      RETURN "SEEALL" FLAG
+;              4:W      RETURN ANY ACTIVE "MARK"
+;              5:W      RETURN "HOLDING SCREEN" FLAG
+;              6:W      RETURN LAST TOP-OF-SCREEN POSITION
+;              7:W      RETURN SIZE OF SCROLLED REGION
+;              8:W      RETURN "SCROLL INHIBIT" FLAG
+;              9:W      RETURN TERMINAL FLAGS WORD
+;             10:W      START OF *RESERVED* (RETURN 0)...
+;            256:W      START OF USER CONTROLLED (RETURN WHATEVER)...
+;         -256+N:W      PROCESS INSERTS UNTIL CONTROL CHARACTER, ETC.
+;
+;            X,0:W      SET SCOPE TYPE TO X (X=0, 2, 4, ... CRTMAX)
+;            X,1:W      SET HORIZONTAL SIZE (10.<=X<=254. AND EVEN)
+;            X,2:W      SET VERTICAL SIZE (10.<=X<=127.)
+;            X,3:W      SET "SEEALL" FLAG (X=0 OR X<>0)
+;            X,4:W      SET ACTIVE "MARK" (X=0 => NONE, X<>0 => MARK @ X-1)
+;            X,5:W      SET "HOLDING SCREEN" FLAG (X=0 OR X<>0)
+;            X,6:W      SET TOP-OF-SCREEN (X=0 => NONE, X<>0 => TOP @ X-1)
+;            X,7:W      SET SIZE OF SCROLLED REGION (X=0 => NONE, 2.<=X)
+;            X,8:W      SET "SCROLL INHIBIT" FLAG (X=0 NONE, X<> 0 SET).
+;            X,9:W      SET TERMINAL FLAGS
+;           X,10:W      START OF *RESERVED* (NOP)...
+;          X,256:W      START OF USER CONTROLLED (SET WHATEVER)...
+;       X,-256+N:W      PROCESS INSERTS UNTIL CONTROL CHARACTER, ETC.
+;-
+
+;**     HIF-MARKER      jsbentry
+SCRPRM::MOVL    4(AP), R2       ; Get argument
+        TSTW    R2              ; Insert processing?
+        BLSS    10$             ; Yes, so go do it
+        BSBW    SCRSAV          ; Save registers, set return, etc.
+;**     HIF-MARKER      jsbentry
+        BBSC    #TECO_V_CFLG, FLAGS(R11), 70$
+        BRW     170$            ; No comma, we are reading
+
+70$:    MOVL    M(R11),R6       ; Comma, we are setting, get the new value
+        MOVL    HTSIZE(R10),R4  ; Get old horizontal size
+        MOVL    VTSIZE(R10),R3  ; Get old vertical size
+        CASEB   R2, #0, #9
+80$:    .WORD   100$-80$        ; 0 - type
+        .WORD   120$-80$        ; 1 - width
+        .WORD   125$-80$        ; 2 - height
+        .WORD   50$-80$         ; 3 - seeall
+        .WORD   40$-80$         ; 4 - mark
+        .WORD   30$-80$         ; 5 - hold
+        .WORD   20$-80$         ; 6 - top
+        .WORD   90$-80$         ; 7 - scrolled region
+        .WORD   91$-80$         ; 8 - scroll inhibit
+        .WORD   170$-80$        ; 9 - terminal flags
+
+        CMPW    R2,#256.        ; A user controlled parameter (>=+256.)?
+        BLSSU   90$             ; No, *reserved* (+10. to +255.)
+        BSBW    USRSET          ; Yes, go set user controlled parameter
+90$:    BRW     170$            ;  and go exit
+
+91$:    BBCC    #TECO_V_TC$SCROLL,-
+                T_FLAGS(R10),92$; Assume we're disabling
+92$:    MOVW    R6, SCRLFG(R10) ; Set new flag
+        BEQL    93$             ; Branch if enabling
+        BBC     #TECO_V_TC$EDIT,-
+                T_FLAGS(R10),130$; Branch if not /EDIT; already turned off.
+        BBCS    #TECO_V_TC$SCROLL,-
+                T_FLAGS(R10),130$; Set the flag and exit.
+93$:    MOVZBL  CRTYP2(R11), R0 ; Get CRT Type
+        MOVAB   CAPABILITIES[R0],R0 ; Point to initial capability mask
+        BBC     #TECO_V_TC$SCROLL,-
+                (R0), 130$      ; Branch if can't do it
+        BBCS    #TECO_V_TC$SCROLL,-
+                T_FLAGS(R10),130$; Re-set.
+        BRB     130$
+        
+100$:   BLBS    R6,110$         ; Setting scope type (+0), must be even.
+        CMPW    R6,#CRTMAX      ; Is new thing within valid index range?
+        BGTRU   110$            ; Invalid, so no change...
+        BRB     140$            ;  and go set new parameters
+110$:   BRW     170$
+
+120$:   BLBS    R6, 110$        ; Odd? no change...
+        CMPW    R6, #255        ; Within range?
+        BGTR    110$            ; Nope, no change.
+        CMPW    R6,#10.         ; Is new size under the very minimum?
+        BLSS    110$            ; No change if so...
+        MOVZWL  R6,R4           ; New horizontal size
+        BRB     130$
+
+125$:   CMPW    R6, #255        ; Within range?
+        BGTR    110$            ; No, so no change.
+        CMPW    R6,#10.         ; Is new size under the very minimum?
+        BLSS    110$            ; No change if so...
+        MOVZWL  R6, R3          ; Setting vertical size
+
+130$:   MOVZBL  CRTYPE(R11),R6  ; Get old scope type
+140$:   MOVZBL  CRTYPE(R11),-(SP); Save old scope type
+        MOVB    R6,CRTYPE(R11)  ;  then set new scope type
+        ADDB3   R6, R6, CRTYP2(R11)
+        MOVL    VTSIZE(R10),-(SP) ; Save old vertical size
+        MOVL    R3,VTSIZE(R10)  ;  then set new vertical size
+        MOVL    HTSIZE(R10),R5  ; Save old horizontal size
+        MOVL    R4,HTSIZE(R10)  ;  then set new horizontal size
+        MOVL    MAPSIZ(R10),R2  ; Get old -(screen map size)
+        SUBL    R5,R2           ;  then form old -(size of dynamic region - 2)
+        MOVL    SEEALL(R10),-(SP) ; Save "seeall" flag and "scroll" flag
+        MOVL    MRKFLG(R10),-(SP) ; Save "mark" position
+        MOVL    HLDFLG(R10),-(SP) ; Save "hold" flag
+        MOVL    SCROLN(R10),-(SP) ; Save "scrolling region" size
+        CALLS   #0,SETREG       ; Go modify the read/write regions
+        MOVL    (SP)+,SCROLN(R10) ; Restore "scrolling region" size
+        MOVL    (SP)+,HLDFLG(R10) ; Restore "hold" flag
+        MOVL    (SP)+,MRKFLG(R10) ; Restore "mark" position
+        MOVL    (SP)+,SEEALL(R10) ; Restore "seeall" flag and "scroll" flag
+        BLBS    R0,150$         ; All o.k.
+        MOVL    R5,HTSIZE(R10)  ; Failed, restore old horizontal size
+        MOVL    (SP)+,VTSIZE(R10) ; Restore old vertical size
+        CVTLB   (SP)+,CRTYPE(R11) ; Restore old scope type
+        ADDB3   CRTYPE(R11),CRTYPE(R11),CRTYP2(R11)
+        BRB     170$            ;  then go exit
+
+150$:   CMPL    (SP)+,(SP)+     ; Pop saved old scope type & vertical size
+        TSTB    4(AP)           ; Was the type changed?
+        BNEQ    160$
+        BSBW    SET_POINTERS    ; Yes, change the screen handling pointers
+160$:   CMPL    4(AP),#1        ; Was it the width we just changed (+1)?
+        BNEQ    165$            ; Nope
+        BSBW    NWIDTH          ; Yep, go inform terminal specific code
+        BRB     170$
+165$:   CMPL    4(AP),#2        ; Was it the height we just changed (+2)?
+        BNEQ    170$            ; Nope
+        BSBW    TECO_HEIGHT     ; Yep, tell the terminal driver
+
+170$:   MOVL    4(AP),R6        ; And get the original n of the n:w command
+        CASEB   R6, #0, #9
+180$:   .WORD   260$-180$       ; 0 - type
+        .WORD   190$-180$       ; 1 - width
+        .WORD   200$-180$       ; 2 - height
+        .WORD   250$-180$       ; 3 - seeall
+        .WORD   210$-180$       ; 4 - mark
+        .WORD   240$-180$       ; 5 - hold
+        .WORD   220$-180$       ; 6 - top
+        .WORD   230$-180$       ; 7 - scroll region
+        .WORD   222$-180$       ; 8 - scroll inhibit
+        .WORD   223$-180$       ; 9 - terminal flags
+
+        CLRL    R2              ; Now guess at *reserved* (+10. to +255.)
+        CMPL    R6,#256.        ; Good guess?
+        BLSSU   270$            ; Yes
+        BSBW    USRPRM          ; No, get user controlled parameter (>=+256.)
+        BRB     270$            ;  and go exit with it
+190$:   MOVL    HTSIZE(R10),R2  ; Horizontal size (+1)
+        BRB     270$
+200$:   MOVL    VTSIZE(R10),R2  ; Vertical position (+2)
+        BRB     270$
+210$:   MOVL    MRKFLG(R10),R2  ; Set "mark" (+4)
+        BRB     270$
+220$:   MOVL    TOPDOT(R10),R2  ; "Top" position (+6)
+        BRB     270$
+230$:   MOVL    SCROLN(R10),R2  ; Get "scrolled region" size
+        BRB     270$            ;  and go exit with it
+240$:   MOVL    HLDFLG(R10),R2  ; Get "hold screen" flag
+        BRB     270$            ;  and go exit with it
+
+222$:   CVTWL   SCRLFG(R10), R2 ; Get "scroll inhibit" flag
+        BRB     270$            ;  and go exit with it
+
+223$:   MOVZBL  T_FLAGS(R10), R2; Get terminal flags
+        BRB     270$            ;  and go exit with it
+
+250$:   CLRL    R2              ; Guess at "seeing all" reset
+        TSTW    SEEALL(R10)     ; Good guess?
+        BGEQ    270$            ; Yes, go exit with it
+        MCOML   R2,R2           ; No, say "seeall" is set
+        BRB     270$            ;  and go exit with it
+
+260$:   MOVZBL  CRTYPE(R11),R2  ; Set the scope type
+270$:   MOVL    R2,R0           ; Set the returned value
+        RSB                     ;  and exit
+
+.DSABL  LSB
+
+
+.SBTTL  SET UP THE READ/WRITE REGIONS
+
+;+
+; SETREG - SET UP THE READ/WRITE REGIONS.
+;
+;
+;       JSR     PC,SETREG
+;
+;       R2 =  NEW -(SIZE OF SCREEN MAP)
+;       R3 =  UNDEFINED
+;       R4 =  UNDEFINED
+;       R6 =  UNDEFINED
+;
+;       IF r0=1 THEN DYNAMIC REGION ALLOCATED
+;       IF r0=0 THEN DYNAMIC REGION FAILED TO ALLOCATE
+;-
+
+;**     HIF-MARKER      callentry
+        .ENTRY  SETREG,^M<R2,R3,R4,R5,R6>
+        MULL3   HTSIZE(R10),-
+                VTSIZE(R10),R3  ; Find size of screen map
+        PUSHL   R3              ; Save size of screen map for later...
+        CMPL    MAPLNG(R10), R3 ; Are the maps the same?
+        BEQL    10$             ; Yes, just return sizes
+        BSBB    GET_NEW_MAPS    ; No, Allocate maps
+;+
+;       Clear screen flag area
+;-
+10$:    MOVC5   #0, #0, #0,-
+                #SETREG_CLREND-SETREG_CLRSRT,-
+                SETREG_CLRSRT(R10)
+        MOVAB   SEEALL(R10), R6 ; Point past end
+        MOVW    #SPACE,(R6)+    ; Reset the "seeing all" flag
+        TSTW    (R6)+           ; Skip the "scroll" flag
+        MOVL    (R6)+,R3        ; Get the vertical size
+        MOVL    (R6)+,R4        ; Get the horizontal size
+        MOVL    R3,(R6)         ; Put vertical size here
+        DECL    (R6)+           ;  and make it vertical size minus 1
+        MOVL    R4,(R6)         ; Put horizontal size here
+        DECL    (R6)            ;  and make it horizontal size minus 1
+        MOVL    (R6)+,(R6)      ; Move horizontal size -1 to here
+        DECL    (R6)+           ;  and make it horizontal size minus 2
+        MNEGL   (SP),R2         ;  get -(size of screen map)
+        MOVL    R2,(R6)         ; Set that into its save spot
+        MOVL    #1, R0          ; Exit r0=1 for all o.k.
+30$:    RET                     ; Exit r0 SUCCESS/ERROR INDICATION
+
+.SBTTL Allocate new screen map
+;**     HIF-MARKER      jsbentry
+GET_NEW_MAPS:
+        TSTL    COST(R10)               ; Cost array there?
+        BNEQ    10$                     ; Yup, all set
+        PUSHAL  COST(R10)
+        PUSHL   #256*256*4              ; Array is 256x256 longwords.
+        CALLS   #2,GET_VM               ; Go get it
+10$:    TSTL    MAPLNG(R10)             ; Is there a map?
+        BEQL    20$                     ; Nope, no deallocate
+;+
+;       Deallocate the old screen maps
+;-
+        PUSHAL  MAPPTR(R10)             ; Pointer to map
+        PUSHL   MAPLNG(R10)             ; Old map size
+        CALLS   #2, FREE_VM             ; Free it
+        PUSHAL  NEWMAP(R10)             ; Deallocate second map too
+        PUSHL   MAPLNG(R10)             ; Old map size
+        CALLS   #2, FREE_VM             ; Free it
+        PUSHAL  NEWPTR(R10)             ; Pointer array
+        PUSHL   PTR_SIZE                ; Size of pointer arrays
+        CALLS   #2,FREE_VM
+        PUSHAL  OLDPTR(R10)             ; Pointer array
+        PUSHL   PTR_SIZE                ; Size of pointer arrays
+        CALLS   #2,FREE_VM              ; Free it
+;+
+;       Allocate a new screen map
+;-
+20$:    PUSHAL  MAPPTR(R10)             ; Return address
+        PUSHL   R3                      ; Size to get
+        CALLS   #2, GET_VM              ; Get some memory
+        PUSHAL  NEWMAP(R10)             ; Return address
+        PUSHL   R3                      ; Size to get
+        CALLS   #2, GET_VM              ; Get it
+        MOVL    R3, MAPLNG(R10)         ;
+        MNEGL   R3, MAPSIZ(R10)         ; Set size of maps
+        ADDL3   MAPLNG(R10),-
+                MAPPTR(R10),-
+                MAPEND(R10)             ; Store end pointer
+;+
+;       Allocate new pointer arrays
+;-
+        PUSHAL  NEWPTR(R10)             ; Where to return it
+        MULL3   #4, VTSIZE(R10),-(SP)   ; Size of array
+        MOVL    (SP), PTR_SIZE          ; Save the size
+        CALLS   #2, GET_VM              ; Get it
+        PUSHAL  OLDPTR(R10)             ; but here instead.
+        PUSHL   PTR_SIZE                ; Another, same size.
+        CALLS   #2, GET_VM
+        BSBB    FILL_ARRAYS             ; Fill the pointer arrays
+        MOVL    VTSIZE(R10), R3         ; Clear the whole thing
+        BSBW    CLRSCN
+        RSB                             ; And return
+
+;**     HIF-MARKER      callentry
+        .ENTRY  GET_VM, ^M<>            ; Internal routine for allocating VM
+        PUSHL   8(AP)                   ; Where to return address
+        PUSHAL  4(AP)                   ; Size to get
+        CALLS   #2, G^LIB$GET_VM
+        BLBS    R0, 10$
+        PUSHL   R0
+        CALLS   #1,G^LIB$SIGNAL
+10$:    RET
+;**     HIF-MARKER      callentry
+        .ENTRY  FREE_VM,^M<>
+        PUSHL   8(AP)
+        PUSHAL  4(AP)
+        CALLS   #2,G^LIB$GET_VM
+        BLBS    R0, 10$
+        PUSHL   R0
+        CALLS   #1,G^LIB$SIGNAL
+10$:    RET
+
+;**     HIF-MARKER      jsbentry
+FILL_ARRAYS:
+        PUSHR   #^M<R0,R1,R2,R3,R4,R5>  ; Save regs
+        MOVL    OLDPTR(R10), R0         ; Get pointer
+        MOVL    NEWPTR(R10), R1         ;  to arrays
+        MOVL    MAPPTR(R10), R2         ; Get screen pointers
+        MOVL    NEWMAP(R10), R3
+        CLRL    R4                      ; Counter
+10$:    MOVL    R2, (R0)+
+        MOVL    R3, (R1)+
+        ADDL    HTSIZE(R10), R2         ; Go to next line
+        ADDL    HTSIZE(R10), R3
+        AOBLSS  VTSIZE(R10), R4, 10$
+        POPR    #^M<R0,R1,R2,R3,R4,R5>  ; restore
+        RSB                             ; Done
+
+.SBTTL  SAVE REGISTERS, SET RETURN, ETC.
+
+;+
+; SCRSAV - SAVE REGISTERS, SET RETURN, ETC.
+;
+;       JSB/BSB SCRSAV
+;
+;       R3 =  UNDEFINED
+;       R4 =  UNDEFINED
+;       R5 =  UNDEFINED
+;       R6 =  UNDEFINED
+;-
+
+;**     HIF-MARKER      jsbentry
+SCRSAV::POPL    R0              ; Get return address
+        MOVZWL  ETYPE(R11),-(SP); Save initial "et" flag value
+        PUSHL   R0              ;  restore return
+        TSTL    MAPSIZ(R10)     ; Has the screen map been allocated?
+        BNEQ    10$             ;  yup.
+        CALLS   #0,SETREG       ;  go set up the read/write regions
+        BLBC    R0,30$          ; Error allocating map, go die
+10$:    BISW    #TECO_M_ET$BIN,-
+                ETYPE(R11)      ; Ensure image mode output
+        JSB     @(SP)+          ; Do a co-routine call back
+;**     HIF-MARKER      branchentry
+        BITL    (SP)+,-
+                #TECO_M_ET$BIN  ; Do we need to clear image output?
+        BNEQ    20$             ; Nope, it was set on entry
+        BICW    #TECO_M_ET$BIN,-
+                ETYPE(R11)      ; Yep, so clear it already
+20$:    RSB                     ; Finally we can really exit
+
+30$:    PUSHL   #TECO$_MEM      ; Memory overflow error
+        CALLS   #1, G^LIB$SIGNAL;  allocation failed, sorry...
+        .END
+
