@@ -99,21 +99,23 @@ void exec_M(struct cmd *cmd)
 
         push_expr(cmd->n_arg, EXPR_VALUE);
     }
-            
-    // If no colon modifier, and not a local Q-register, then save current
-    // local Q-registers before executing macro, and restore them afterwards.
 
-    if (!cmd->colon && !cmd->qlocal)
+    // We make a private copy of the Q-register, since some of the structure
+    // members can get modified while processing the macro (esp. len).
+
+    struct buffer macro = qreg->text;
+
+    if (cmd->colon)                     // :Mq?
+    {
+        exec_macro(&macro);             // Yes, don't save local Q-registers
+    }
+    else                                // No, must save local Q-registers
     {
         push_qlocal();
 
-        exec_macro(&qreg->text);
+        exec_macro(&macro);
 
         pop_qlocal();
-    }
-    else
-    {
-        exec_macro(&qreg->text);
     }
 }
 
