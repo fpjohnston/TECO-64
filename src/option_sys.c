@@ -230,7 +230,7 @@ static void copy_arg(char *cmd, ulong size, const char *file)
     }
     else
     {
-        snprintf(cmd, size, "EI%s\e ", file);
+        snprintf(cmd, size, "EQ.A%s\e M.A \e ", file);
     }
 }
 
