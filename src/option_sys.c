@@ -76,6 +76,7 @@ struct config
         bool scroll;            ///< --scroll option seen
         bool vtedit;            ///< --vtedit option seen
         bool window;            ///< --window option seen
+        bool exit;              ///< --exit option seen
     } f;                        ///< true/false flags
 
     int n;                      ///< Numeric value for --argument option
@@ -115,6 +116,7 @@ static struct config config =
         .scroll   = false,
         .vtedit   = true,
         .window   = false,
+        .exit     = false,
     },
 
     .n = 0,
@@ -401,6 +403,11 @@ static void finish_config(int argc, const char * const argv[])
         store_cmd(cmdstring);
     }
 
+    if (config.f.exit)
+    {
+        store_cmd("EX ");
+    }
+
     if (cbuf->len != 0)                 // Anything stored?
     {
         store_cmd("\e\e");              // If so, properly terminate command
@@ -585,7 +592,7 @@ void set_config(
                 break;
 
             case OPTION_X:
-                f.e0.exit = true;
+                config.f.exit = true;
 
                 break;
 

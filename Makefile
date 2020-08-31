@@ -77,7 +77,6 @@ SOURCES = \
     cmd_buf.c      \
     cmd_exec.c     \
     cmd_expr.c     \
-    cmd_print.c    \
     cmd_tables.c   \
     env_sys.c      \
     errors.c       \
@@ -125,7 +124,6 @@ SOURCES = \
     e_ubar_cmd.c   \
     ew_cmd.c       \
     ex_cmd.c       \
-    ez_cmd.c       \
     fb_cmd.c       \
     fd_cmd.c       \
     fk_cmd.c       \

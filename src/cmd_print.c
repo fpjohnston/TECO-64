@@ -106,30 +106,16 @@ static void format_str(const char *p, uint n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+extern char teco_comment;
+
 void print_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if (cmd->m_set || cmd->n_set)
-    {
-        printf("(");
-
-        if (cmd->m_set)
-        {
-            printf("%d,", cmd->m_arg);
-        }
-
-        if (cmd->n_set)
-        {
-            printf("%d", cmd->n_arg);
-        }
-
-        printf(")");
-    }
-
     format_chr(cmd->colon ? ':' : NUL);
     format_chr(cmd->dcolon ? ':' : NUL);
     format_chr(cmd->atsign ? '@' : NUL);
+
     format_chr(cmd->c1);
     format_chr(cmd->c2);
     format_chr(cmd->c3);

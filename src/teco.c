@@ -93,7 +93,6 @@ int main(int argc, const char * const argv[])
         {
             case 0:                     // Normal entry
                 f.e0.trace  = false;    // Disable tracing
-                f.e0.dryrun = false;    // Disable dry run
 
                 f.et.abort  = false;    // Don't abort on error
 

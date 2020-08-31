@@ -34,8 +34,11 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
+#include "errors.h"
 #include "exec.h"
 #include "estack.h"
+#include "term.h"
 
 
 struct buffer *cbuf;                    ///< Current command string buffer
@@ -105,6 +108,47 @@ static void exit_cbuf(void)
         free_mem(&root->data);
         free_mem(&root);
     }
+}
+
+
+///
+///  @brief    Fetch next character from command string. Issues error if no
+///            character available.
+///
+///  @returns  Command character.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int fetch_cbuf(void)
+{
+    if (empty_cbuf())
+    {
+        if (loop_depth != 0)
+        {
+            throw(E_UTL);               // Unterminated loop
+        }
+        else if (if_depth != 0)
+        {
+            throw(E_UTQ);               // Unterminated conditional
+        }
+        else if (check_macro())
+        {
+            throw(E_UTM);               // Unterminated macro
+        }
+        else
+        {
+            throw(E_UTC);               // Unterminated command
+        }
+    }
+
+    int c = cbuf->data[cbuf->pos++];
+
+    if (f.e0.trace)
+    {
+        echo_in(c);
+    }
+
+    return c;
 }
 
 

@@ -42,10 +42,6 @@
 
 static struct buffer ei_cmd;            ///< EI command string
 
-static const char ex_cmd[] = "EX";      ///< EX command
-
-#define EX_SIZE  (sizeof(ex_cmd) - 1)   ///< No. of bytes for EX command
-
 // Local functions
 
 static void exit_EI(void);
@@ -80,7 +76,7 @@ void exec_EI(struct cmd *cmd)
     struct buffer macro =
     {
         .data = NULL,
-        .size = EX_SIZE,
+        .size = 0,
         .len  = 0,
         .pos  = 0
     };
@@ -199,17 +195,6 @@ int read_indirect(void)
 
         if (nbytes != 0)                // Did we find end of command?
         {
-            // If --exit option was used, then insert EX command before the
-            // the end of the command string to ensure that we exit TECO.
-
-            if (f.e0.exit)
-            {
-                memmove(end + nbytes, end, EX_SIZE);
-                memcpy(end, ex_cmd, EX_SIZE);
-
-                cbuf->len += EX_SIZE;   // Add in length of EX command
-            }
-
             return -1;                  // Say we have a complete command
         }
     }

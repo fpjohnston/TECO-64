@@ -48,8 +48,6 @@ struct e0_flag
     uint upper  : 1;            ///< Force string arguments to upper case
     uint winact : 1;            ///< Window display is active
     uint trace  : 1;            ///< Trace mode is active
-    uint dryrun : 1;            ///< Print but don't execute commands
-    uint exit   : 1;            ///< Exit when EI command is done
 };
 
 ///  @struct  e1_flag

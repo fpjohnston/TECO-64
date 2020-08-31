@@ -38,6 +38,9 @@
 #include "exec.h"
 #include "qreg.h"
 
+char teco_comment;
+
+
 ///
 ///  @brief    Execute EZ command: compress text in Q-register.
 ///
@@ -47,7 +50,6 @@
 
 void exec_EZ(struct cmd *cmd)
 {
-#if     0
     assert(cmd != NULL);                // Error if no command block
 
     struct qreg *qreg = get_qreg(cmd->qname, cmd->qlocal);
@@ -63,64 +65,27 @@ void exec_EZ(struct cmd *cmd)
 
     qreg->text.pos = 0;
 
-    struct cbuf *saved_cbuf = cbuf;
-    uint saved_base = set_expr();       // Set temporary new base
+    struct buffer *oldcbuf = get_cbuf();
+    uint oldexpr = set_expr();          // Set temporary new base
 
-    cbuf = &qreg->text;
+    set_cbuf(&qreg->text);
 
-    int comment = NUL;
+    teco_comment = NUL;
 
     if (cmd->n_set)
     {
         if (isprint(cmd->n_arg) && cmd->n_arg != '!')
         {
-            comment = cmd->n_arg;
+            teco_comment = (char)cmd->n_arg;
         }
     }
-
-    uint pos = cbuf->text.pos;
-    bool saved_dryrun = f.e0.dryrun;
-    uint total = 0;
-
-    f.e0.dryrun = true;
 
     while (next_cmd(cmd) != NULL)
     {
-        int c = cmd->c1;
-        const char *p = cbuf->text.data + pos;
-
-        if (c != '!' || (cmd->text1.len != 0 && comment != NUL &&
-                         cmd->text1.data[0] != comment))
-        {
-            while (pos < cbuf->text.pos)
-            {
-                c = *p++;
-
-                if (c != NUL && (!isspace(c) || c == TAB))
-                {
-                    break;
-                }
-
-                ++pos;
-            }
-
-            uint nbytes = cbuf->text.pos - pos;
-
-            total += nbytes;
-
-            printf("command: \"%.*s\", %u bytes\r\n", (int)nbytes,
-                   cbuf->text.data + pos, nbytes);
-        }
-
-        pos = cbuf->text.pos;
+        ;
     }
 
-    printf("size change from %u to %u\r\n", cbuf->text.len, total);
+    reset_expr(oldexpr);                // Restore old base
 
-    f.e0.dryrun = saved_dryrun;
-
-    reset_expr(saved_base);             // Restore old base
-
-    cbuf = saved_cbuf;
-#endif
+    set_cbuf(oldcbuf);
 }

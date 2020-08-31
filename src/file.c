@@ -316,10 +316,10 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
 
     if (size != 0)
     {
-        text->len   = size;
-        text->pos   = 0;
-        text->size += size;            // Caller may have preset this
-        text->data  = alloc_mem(text->size);
+        text->len  = size;
+        text->pos  = 0;
+        text->size = size;
+        text->data = alloc_mem(text->size);
 
         if (fread(text->data, 1uL, (ulong)size, ifile->fp) != size)
         {

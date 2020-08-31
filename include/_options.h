@@ -73,7 +73,6 @@ static const char * const help_text[] =
     "  -A, --argument=n       Store numeric value 'n' in Q-register A.",
     "  -B, --buffer=xyz       Store text 'xyz' in edit buffer.",
     "  -E, --execute=xyz      Execute TECO macro in file 'xyz'.",
-    "  -X, --exit             Exit from TECO when indirect command file is closed.",
     "",
     "Initialization options:",
     "",
@@ -97,6 +96,7 @@ static const char * const help_text[] =
     "Miscellaneous options:",
     "",
     "  -H, --help             Print this help message",
+    "  -X, --exit             Exit from TECO after executing all command-line options.",
     NULL
 };
 

@@ -48,19 +48,17 @@ bool exec_xoper(int c)
     switch (c)
     {
         case '>':                       // Check for >, >=, and >>
-            check_end();                // Must have at least one more chr.
-
             c = peek_cbuf();
 
             if (c == '=')
             {
-                next_cbuf();
+                (void)fetch_cbuf();
 
                 c = EXPR_GE;
             }
             else if (c == '>')
             {
-                next_cbuf();
+                (void)fetch_cbuf();
 
                 c = EXPR_RSHIFT;
             }
@@ -72,25 +70,23 @@ bool exec_xoper(int c)
             break;
 
         case '<':                       // Check for <, <=, <>, and <<
-            check_end();                // Must have at least one more chr.
-
             c = peek_cbuf();
 
             if (c == '=')
             {
-                next_cbuf();
+                (void)fetch_cbuf();
 
                 c = EXPR_LE;
             }
             else if (c == '>')
             {
-                next_cbuf();
+                (void)fetch_cbuf();
 
                 c = EXPR_NE;
             }
             else if (c == '<')
             {
-                next_cbuf();
+                (void)fetch_cbuf();
 
                 c = EXPR_LSHIFT;
             }
@@ -102,8 +98,6 @@ bool exec_xoper(int c)
             break;
 
         case '=':                       // Check for ==
-            check_end();                // Must have at least one more chr.
-
             c = fetch_cbuf();
 
             if (c != '=')
@@ -114,8 +108,6 @@ bool exec_xoper(int c)
             break;
 
         case '/':                       // Check for //
-            check_end();                // Must have at least one more chr.
-
             c = peek_cbuf();
 
             if (c != '/')
@@ -123,7 +115,7 @@ bool exec_xoper(int c)
                 return false;
             }
 
-            next_cbuf();
+            (void)fetch_cbuf();
 
             c = EXPR_REM;
 

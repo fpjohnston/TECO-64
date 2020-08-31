@@ -157,11 +157,6 @@ static const union cmd_opts mq_opts     = {{ .m=1, .n=1, .q=1 }};
 
 static const union cmd_opts n_opts      = {{ .n=1 }};
 
-///  @var    nq_opts
-///  @brief  Commands that use n and Q-registers.
-
-static const union cmd_opts nq_opts     = {{ .n=1, .q=1 }};
-
 ///  @var    t1_opts
 ///  @brief  Commands that use 1 text argument.
 
@@ -395,8 +390,6 @@ const struct cmd_table e_table[] =
     ['x'] = { exec_EX,      &z_opts     },
     ['Y'] = { exec_EY,      &c_opts     },
     ['y'] = { exec_EY,      &c_opts     },
-    ['Z'] = { exec_EZ,      &nq_opts    },
-    ['z'] = { exec_EZ,      &nq_opts    },
     ['_'] = { exec_E_ubar,  &acn1_opts  },
 };
 

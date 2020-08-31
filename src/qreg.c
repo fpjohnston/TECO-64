@@ -262,15 +262,11 @@ void get_qname(struct cmd *cmd, const char *extras)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_end();
-
     int c = fetch_cbuf();               // Get Q-register (or dot)
 
     if (c == '.')                       // Is it local?
     {
         cmd->qlocal = true;             // Yes, mark it
-
-        check_end();
 
         c = fetch_cbuf();               // Get Q-register name for real
     }

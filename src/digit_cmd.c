@@ -79,7 +79,7 @@ void exec_digit(struct cmd *cmd)
             break;
         }
 
-        next_cbuf();
+        (void)fetch_cbuf();
     }
 
     push_expr(n, EXPR_VALUE);

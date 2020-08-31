@@ -47,18 +47,9 @@ void exec_trace(struct cmd *cmd)
     if (f.e0.trace)                     // If tracing is on, turn it off
     {
         f.e0.trace  = false;
-        f.e0.dryrun = false;
     }
     else                                // If tracing is off, turn it on
     {
         f.e0.trace = true;
-
-        // If :?, then set dry run mode. This is used to print commands
-        // in indirect command files, but not execute them.
-
-        if (cmd->colon)
-        {
-            f.e0.dryrun = true;
-        }
     }
 }

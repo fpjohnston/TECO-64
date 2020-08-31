@@ -37,6 +37,7 @@
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
+#include "term.h"
 
 
 uint nparens;                       ///< Parenthesis nesting count
@@ -102,30 +103,6 @@ void check_args(struct cmd *cmd)
 
 
 ///
-///  @brief    Verify that we're not prematurely at end of command; if we are,
-///            then throw an exception.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void check_end(void)
-{
-    if (empty_cbuf())
-    {
-        if (check_macro())
-        {
-            throw(E_UTM);           // Unterminated macro
-        }
-        else
-        {
-            throw(E_UTC);           // Unterminated command
-        }
-    }
-}
-
-
-///
 ///  @brief    Execute illegal character command.
 ///
 ///  @returns  Nothing.
@@ -162,14 +139,11 @@ void exec_cmd(void)
             break;
         }
 
-        if (!f.e0.dryrun || cmd.c1 == '?')
-        {
-            (*exec)(&cmd);
+        (*exec)(&cmd);
 
-            if (cbuf->len == 0)
-            {
-                break;
-            }
+        if (cbuf->len == 0)
+        {
+            break;
         }
 
         if (f.e0.ctrl_c)                // If CTRL/C typed, return to main loop
@@ -204,7 +178,7 @@ void exec_escape(struct cmd *unused1)
             break;                      // No, so we're done skipping chrs.
         }
 
-        next_cbuf();
+        (void)fetch_cbuf();
     }
 
     // If we've read all characters in command string, then reset for next time.
@@ -253,12 +227,9 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
     else if (c == '^')
     {
         check_args(cmd);
-        check_end();                    // Must have at least one more chr.
 
         if ((c = fetch_cbuf()) == '^')
         {
-            check_end();                // Must have at least one more chr.
-
             c = fetch_cbuf();
 
             push_expr(c, EXPR_VALUE);
@@ -389,11 +360,6 @@ exec_func *next_cmd(struct cmd *cmd)
         {
             finish_cmd(cmd, opts);
 
-            if (f.e0.trace)
-            {
-                print_cmd(cmd);
-            }
-
             return entry->exec;
         }
 
@@ -406,26 +372,12 @@ exec_func *next_cmd(struct cmd *cmd)
             throw(E_MOD);               // Invalid command modifier
         }
 
-        if (f.e0.trace)
-        {
-            print_cmd(cmd);
-        }
-
         (*entry->exec)(cmd);            // Execute simple command
 
         // Reset any Q-register information so the next command doesn't use it.
 
         cmd->qname  = NUL;
         cmd->qlocal = false;
-    }
-
-    if (loop_depth != 0)
-    {
-        throw(E_UTL);                   // Unterminated loop
-    }
-    else if (if_depth != 0)
-    {
-        throw(E_UTQ);                   // Unterminated conditional
     }
 
     // If we're not in a macro, then confirm that parentheses were properly
@@ -464,8 +416,6 @@ static const struct cmd_table *scan_ef(struct cmd *cmd,
     assert(cmd != NULL);                // Error if no command block
     assert(table != NULL);              // Error if no command table pointer
 
-    check_end();                        // Must have at least one more chr.
-
     int c = fetch_cbuf();
 
     if (c < 0 || (uint)c > count || table[c].exec == NULL)
@@ -495,13 +445,13 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
     {
         if (!empty_cbuf() && peek_cbuf() == '=')
         {
-            next_cbuf();
+            (void)fetch_cbuf();
 
             cmd->c2 = cmd->c1;
             
             if (!empty_cbuf() && peek_cbuf() == '=')
             {
-                next_cbuf();
+                (void)fetch_cbuf();
 
                 cmd->c3 = cmd->c1;
             }
@@ -514,9 +464,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
     }
     else if (cmd->c1 == '"')            // " requires additional character
     {
-        check_end();
-
-        cmd->c2 = fetch_cbuf();
+        cmd->c2 = (char)fetch_cbuf();
 
         return;
     }
@@ -528,7 +476,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
             
             if (c == 'W' || c == 'w')
             {
-                next_cbuf();
+                (void)fetch_cbuf();
 
                 cmd->w = true;
             }
@@ -578,14 +526,12 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
                 break;
             }
 
-            next_cbuf();
+            (void)fetch_cbuf();
         }
-
-        check_end();                    // Must have at least one more chr.
 
         // The next character has to be the delimiter.
 
-        cmd->delim = fetch_cbuf();
+        cmd->delim = (char)fetch_cbuf();
     }
 
     int delim = cmd->delim;             // Temporary copy of delimiter
@@ -616,10 +562,8 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
                     break;
                 }
 
-                next_cbuf();
+                (void)fetch_cbuf();
             }
-
-            check_end();
 
             scan_text(delim, &cmd->text2);
 
@@ -647,7 +591,7 @@ static void scan_text(int delim, struct tstring *text)
 
     // Scan text string, looking for the specified delimiter (usually ESCape).
 
-    while (!empty_cbuf())
+    for (;;)
     {
         if (fetch_cbuf() == delim)
         {
@@ -656,8 +600,4 @@ static void scan_text(int delim, struct tstring *text)
 
         ++text->len;
     }
-
-    // Here if we reached end of command string before we saw a delimiter.
-
-    check_end();
 }

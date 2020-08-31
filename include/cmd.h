@@ -37,20 +37,10 @@
 
 #define empty_cbuf()    (cbuf->pos == cbuf->len)
 
-/// @def    fetch_cbuf()
-/// @brief  Returns the next character in the command string.
-
-#define fetch_cbuf()    cbuf->data[cbuf->pos++]
-
 /// @def    get_cbuf()
 /// @brief  Returns the current command string.
 
 #define get_cbuf()      cbuf
-
-/// @def    next_cbuf()
-/// @brief  Skip to next character in command string.
-
-#define next_cbuf()     ++cbuf->pos
 
 /// @def    peek_cbuf()
 /// @brief  Peeks at next character in command string.
@@ -145,6 +135,8 @@ extern uint nparens;
 
 // Command buffer functions
 
+extern int fetch_cbuf(void);
+
 extern void init_cbuf(void);
 
 extern void reset_cbuf(void);
@@ -156,7 +148,5 @@ extern void store_cbuf(int c);
 extern void check_args(struct cmd *cmd);
 
 extern exec_func *next_cmd(struct cmd *cmd);
-
-extern void print_cmd(struct cmd *cmd);
 
 #endif  // !defined(_CMD_H)
