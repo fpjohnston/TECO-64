@@ -16,7 +16,7 @@ HXA HK
 
 ! Open file, using name in Q-register A !
 
-QA-1 "E   EB^EQA^[    :@^A/PASSED/                  @O/exit/ '
+QA-1 "E   EB^EQA     :@^A/PASSED/                  @O/exit/ '
 
 QA-2 "E  @EB/^EQA/    :@^A/PASSED/                  @O/exit/ '
 

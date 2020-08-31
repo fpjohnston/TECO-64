@@ -16,7 +16,7 @@ HXA HK
 
 ! Open input file, using name in Q-register A !
 
-QA-1 "E   EN^EQA^[    @O/success/ '
+QA-1 "E   EN^EQA     @O/success/ '
 
 QA-2 "E  @EN/^EQA/    @O/success/ '
 
