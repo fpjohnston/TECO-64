@@ -68,7 +68,6 @@ my $max_length = 0;
 #  from perlcritic if something like '@foo' appears in single quotes.
 #
 
-Readonly my $AUTHOR    => q{@} . 'author';
 Readonly my $BRIEF     => q{@} . 'brief';
 Readonly my $BUG       => q{@} . 'bug';
 Readonly my $COPYRIGHT => q{@} . 'copyright';
@@ -90,8 +89,6 @@ my @file_hdr =
     '///  <a href="options.html">List of Command-line options</a>',
     '///',
     "///  $BRIEF      Process command-line options for TECO editor.",
-    '///',
-    "///  $AUTHOR     Franklin P. Johnston / Nowwith Treble Software",
     '///',
     "///  $BUG        No known bugs.",
     '///',

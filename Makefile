@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  Makefile for TECO - Text editor
+#  Makefile for TECO-64 text editor
 #
-#  Copyright (C) tbd
+#  Copyright (C) 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,19 @@
 #
 #  make targets:
 #
-#      all        lint + teco + doc [default]
+#      all        Equivalent to 'teco' target [default].
 #      clean      Clean object files.
 #      clobber    Clean everything.
-#      doc        doxygen
+#      doc        Equivalent to 'doxygen' target.
 #      doxygen    Update Doxygen documentation.
 #      help       Print help message.
-#      lint       Lint source files.
-#      lobs       Build lint object files.
-#      options    Print list of makefile options.
-#      scratch    clobber + all
-#      teco       Build TECO text editor
+#      lint       Lint .c and .lob files (requires PC-lint).
+#      lobs       Lint .c files (requires PC-lint).
+#      options    Print build options.
+#      scratch    Equivalent to 'clobber' and 'all' targets.
+#      teco       Build TECO-64 text editor.
 #
-#  Configuration options:
+#  Build options:
 #
 #      DEBUG=1    Enable debugging features.
 #      GDB=1      Enable use of GDB debugger.
@@ -271,16 +271,17 @@ scratch: clobber all
 .PHONY: help
 help:
 	@echo "Build targets:"
-	@echo "    all        Build TECO text editor [default]"
+	@echo "    all        Equivalent to 'teco' target [default]."
 	@echo "    clean      Clean object files."
 	@echo "    clobber    Clean everything."
-	@echo "    doc        doxygen"
+	@echo "    doc        Equivalent to 'doxygen' target."
 	@echo "    doxygen    Update Doxygen documentation."
 	@echo "    help       Print this message."
-	@echo "    lint       Lint .lob files."
-	@echo "    lobs       Lint .c files, generate .lob files."
-	@echo "    scratch    clobber + all"
-	@echo "    teco       Build TECO text editor."
+	@echo "    lint       Lint .c and .lob files (requires PC-lint)."
+	@echo "    lobs       Lint .c files (requires PC-lint)."
+	@echo "    options    Print build options."
+	@echo "    scratch    Equivalent to 'clobber' and 'all' targets."
+	@echo "    teco       Build TECO-64 text editor."
 
 .PHONY: options
 options:
@@ -302,10 +303,6 @@ bin/$(TARGET): $(OBJECTS)
 %.lob: %.c
 	@echo Making $@ $(NULL)
 	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
-
-#%.d: %.c obj/CFLAGS
-#	@echo Making $@ $(NULL)
-#	$(AT)cd obj && $(CC) @../obj/CFLAGS ../$<
 
 %.o: %.c
 	@echo Making $@ $(NULL)
