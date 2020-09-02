@@ -1,0 +1,6 @@
+Please refer to the PDF files in the doc/ directory for more complete
+documentation regarding the TECO-64 text editor.
+
+The makefile included with this distribution is intended to be used
+with the GNU toolchain. To build TECO, just type 'make' or 'make teco'.
+To obtain a list of other targets, type 'make help'.
