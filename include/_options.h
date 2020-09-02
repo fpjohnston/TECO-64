@@ -10,8 +10,6 @@
 ///
 ///  @brief      Process command-line options for TECO editor.
 ///
-///  @author     Franklin P. Johnston / Nowwith Treble Software
-///
 ///  @bug        No known bugs.
 ///
 ///  @copyright  2019-2020 Franklin P. Johnston / Nowwith Treble Software
