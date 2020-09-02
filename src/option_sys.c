@@ -184,7 +184,7 @@ static void check_config(void)
                 errno = EINVAL;
             }
 
-            printf("?%s for %s option\r\n", strerror(errno), option);
+            tprintf("?%s for %s option", strerror(errno), option);
 
             exit(EXIT_FAILURE);
         }
@@ -198,7 +198,7 @@ static void check_config(void)
         return;
     }
 
-    printf("?Missing argument for %s option?\r\n", option);
+    tprintf("?Missing argument for %s option?", option);
 
     exit(EXIT_FAILURE);
 }
@@ -246,7 +246,7 @@ static void finish_config(int argc, const char * const argv[])
 
     if ((argc -= optind) > 1)
     {
-        printf("?Too many non-option arguments\r\n");
+        tprintf("?Too many non-option arguments");
 
         exit(EXIT_FAILURE);
     }
@@ -421,7 +421,7 @@ static void print_help(void)
 
     while ((p = help_text[i++]) != NULL)
     {
-        printf("%s\r\n", p);
+        tprintf("%s", p);
     }
 
     exit(EXIT_SUCCESS);
@@ -490,6 +490,8 @@ void set_config(
                 // don't use it if we are executing an indirect command file.
 
                 (void)unsetenv("TECO_MEMORY");
+
+                teco_memory = NULL;
 
                 break;
 
@@ -589,8 +591,8 @@ void set_config(
                 break;
 
             default:
-                printf("%%Unknown option '%s': use --help for list of "
-                       "options\r\n", argv[optind - 1]);
+                tprintf("%%Unknown option '%s': use --help for list of "
+                        "options", argv[optind - 1]);
 
                 exit(EXIT_FAILURE);
         }

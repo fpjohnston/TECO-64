@@ -297,17 +297,15 @@ void read_memory(char *p, uint len)
 {
     assert(p != NULL);                  // Error if no place to store data
 
-    const char *memory = getenv("TECO_MEMORY");
-
-    if (memory != NULL)
+    if (teco_memory != NULL)
     {
-        FILE *fp = fopen(memory, "r");
+        FILE *fp = fopen(teco_memory, "r");
 
         if (fp == NULL)
         {
             if (errno != ENOENT && errno != ENODEV)
             {
-                printf("%%Can't open memory file '%s'\r\n", memory);
+                tprintf("%%Can't open memory file '%s'", teco_memory);
             }
         }
         else
@@ -419,17 +417,16 @@ void write_memory(const char *file)
 {
     assert(file != NULL);               // Error if no output file
 
-    const char *memory = getenv("TECO_MEMORY");
     FILE *fp;
 
-    if (memory == NULL)
+    if (teco_memory == NULL)
     {
         return;
     }
 
-    if ((fp = fopen(memory, "w")) == NULL)
+    if ((fp = fopen(teco_memory, "w")) == NULL)
     {
-        printf("%%Can't open memory file '%s'\r\n", memory);
+        tprintf("%%Can't open memory file '%s'", teco_memory);
 
         return;
     }

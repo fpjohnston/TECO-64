@@ -96,9 +96,9 @@ extern int teco_version;
 
 extern const char *teco_init;
 
-extern const char *teco_memory;
-
 extern const char *teco_library;
+
+extern const char *teco_memory;
 
 extern const char *teco_prompt;
 
@@ -135,5 +135,7 @@ extern void set_config(int argc, const char * const argv[]);
 extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 
 extern int teco_env(int n, bool colon);
+
+void tprintf(const char *format, ...);
 
 #endif  // !defined(_TECO_H)

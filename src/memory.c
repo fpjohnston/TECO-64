@@ -187,7 +187,7 @@ static void delete_mblock(void *p1)
         p = p->next;
     }
 
-    printf("?Can't find memory block: %p\r\n", p1);
+    tprintf("?Can't find memory block: %p", p1);
 }
 
 #endif
@@ -216,12 +216,12 @@ static void exit_memory(void)
 
     if (msize != 0)
     {
-        printf("%%%u total bytes allocated at exit\r\n", msize);
+        tprintf("%%%u total bytes allocated at exit", msize);
     }
 
     while (p != NULL)
     {
-        printf("%%%u bytes allocated at %p\r\n", p->size, p->addr);
+        tprintf("%%%u bytes allocated at %p", p->size, p->addr);
 
         next = p->next;
         msize -= p->size;

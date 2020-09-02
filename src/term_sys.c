@@ -56,7 +56,7 @@ static struct termios saved_mode;       ///< Saved terminal mode
 
 #endif
 
-static bool term_active = false;        ///< Are terminal settings active?
+bool term_active = false;               ///< Are terminal settings active?
 
 // Local functions
 
