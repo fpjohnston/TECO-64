@@ -90,8 +90,6 @@ extern uint last_len;
 
 extern uint loop_depth;
 
-extern const char *prompt;
-
 extern int radix;
 
 extern int teco_version;
@@ -101,6 +99,8 @@ extern const char *teco_init;
 extern const char *teco_memory;
 
 extern const char *teco_library;
+
+extern const char *teco_prompt;
 
 extern const char *teco_vtedit;
 

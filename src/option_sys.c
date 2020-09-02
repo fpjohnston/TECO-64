@@ -44,14 +44,6 @@
 
 #include "_options.h"
 
-const char *teco_init = NULL;
-
-const char *teco_memory = NULL;
-
-const char *teco_library = NULL;
-
-const char *teco_vtedit = NULL;
-
 
 ///
 ///   @struct  config
@@ -426,17 +418,10 @@ static void print_help(void)
 {
     const char *p;
     uint i = 0;
-    int c;
 
     while ((p = help_text[i++]) != NULL)
     {
-        while ((c = *p++) != NUL)
-        {
-            fputc(c, stdout);
-        }
-
-        fputc(CR, stdout);
-        fputc(LF, stdout);
+        printf("%s\r\n", p);
     }
 
     exit(EXIT_SUCCESS);
@@ -460,11 +445,6 @@ void set_config(
 {
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
-
-    teco_init    = getenv("TECO_INIT");
-    teco_memory  = getenv("TECO_MEMORY");
-    teco_library = getenv("TECO_LIBRARY");
-    teco_vtedit  = getenv("TECO_VTEDIT");
 
     // These two assertions confirm the standard behavior of getopt_long()
     // regarding the ordering of option and non-option arguments.

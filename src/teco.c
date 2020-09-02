@@ -60,8 +60,6 @@
 
 #define TECO_VERSION    200         ///< Our version of TECO
 
-const char *prompt = "*";           ///< Command-line prompt (usually '*')
-
 struct flags f;                     ///< Global flag variables 
 
 int radix = 10;                     ///< Current output radix
@@ -223,7 +221,7 @@ int isdelim(int c)
 
 void print_prompt(void)
 {
-    print_str("%s", prompt);
+    print_str("%s", teco_prompt);
 }
 
 

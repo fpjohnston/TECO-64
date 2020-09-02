@@ -40,6 +40,16 @@
 #include "term.h"
 
 
+const char *teco_init = NULL;           ///< Name of initialization macro
+
+const char *teco_memory = NULL;         ///< Name of memory file
+
+const char *teco_library = NULL;        ///< Location of macro library
+
+const char *teco_prompt = "*";          ///< TECO's prompt
+
+const char *teco_vtedit = NULL;         ///< Name of VTEDIT macro
+
 char *eg_result = NULL;                 ///< Output from EG command
 
 #define TECO_HW          101            ///< x86 hardware
@@ -232,14 +242,19 @@ static int get_cmd(char *cmd)
 
 void init_env(int argc, const char * const argv[])
 {
-    set_config(argc, argv);             // Process command-line options
+    teco_init    = getenv("TECO_INIT");
+    teco_memory  = getenv("TECO_MEMORY");
+    teco_library = getenv("TECO_LIBRARY");
+    teco_vtedit  = getenv("TECO_VTEDIT");
 
     const char *env;
 
     if ((env = getenv("TECO_PROMPT")) != NULL)
     {
-        prompt = env;                   // Change TECO prompt
+        teco_prompt = env;              // Change TECO prompt
     }
+
+    set_config(argc, argv);             // Process command-line options
 }
 
 

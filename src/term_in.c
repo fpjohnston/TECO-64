@@ -756,5 +756,5 @@ static void rubout_line(void)
         rubout_chr(c);
     }
 
-    rubout_chrs((uint)strlen(prompt));
+    rubout_chrs((uint)strlen(teco_prompt));
 }
