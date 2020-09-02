@@ -356,7 +356,8 @@ exec_func *next_cmd(struct cmd *cmd)
                 cmd->n_set = true;
             }
         }
-        else if (opts.bits != 0)
+
+        if (opts.bits != 0)
         {
             finish_cmd(cmd, opts);
 
