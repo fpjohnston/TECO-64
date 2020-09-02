@@ -110,9 +110,9 @@ void exec_insert(const char *buf, uint len)
             continue;
         }
 
-        int estatus = add_ebuf(c);
+        int retval = add_ebuf(c);
 
-        if (estatus == EDIT_FULL || estatus == EDIT_ERROR)
+        if (retval == EDIT_FULL || retval == EDIT_ERROR)
         {
             break;
         }
