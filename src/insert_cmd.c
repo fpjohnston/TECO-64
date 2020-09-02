@@ -34,13 +34,9 @@
 #include "teco.h"
 #include "ascii.h"
 #include "editbuf.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
-
-
-#define INSERT_MAX      1024            ///< Max. length of insert string
-
-static char insert_string[INSERT_MAX + 1]; ///< Last string inserted in buffer
 
 
 ///
@@ -54,17 +50,12 @@ void exec_ctrl_I(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    insert_string[0] = TAB;
+    char c = TAB;
 
-    int nbytes = snprintf(insert_string + 1, sizeof(insert_string) - 1, "%.*s",
-                          (int)cmd->text1.len, cmd->text1.data);
+    exec_insert(&c, (uint)sizeof(c));
+    exec_insert(cmd->text1.data, cmd->text1.len);
 
-    if (nbytes >= (int)sizeof(insert_string) - 1)
-    {
-        throw(E_MIX);                   // Maximum insert string exceeded
-    }
-
-    exec_insert(insert_string, 1 + cmd->text1.len);
+    ++last_len;                         // Correct count for added TAB
 }
 
 
@@ -86,21 +77,13 @@ void exec_I(struct cmd *cmd)
 
     if (cmd->text1.len != 0)
     {
-        int nbytes = snprintf(insert_string, sizeof(insert_string), "%.*s",
-                              (int)cmd->text1.len, cmd->text1.data);
-
-        if (nbytes >= (int)sizeof(insert_string))
-        {
-            throw(E_MIX);               // Maximum insert string exceeded
-        }
-
-        exec_insert(insert_string, cmd->text1.len);
+        exec_insert(cmd->text1.data, cmd->text1.len);
     }
     else if (cmd->n_set)
     {
         char c = (char)cmd->n_arg;
 
-        exec_insert(&c, 1);
+        exec_insert(&c, (uint)sizeof(c));
     }
 }
 
@@ -116,26 +99,24 @@ void exec_insert(const char *buf, uint len)
 {
     assert(buf != NULL);                // Error if no buffer
 
+    last_len = 0;
+
     for (uint i = 0; i < len; ++i)
     {
         int c = *buf++;
 
-        if (c == CR)
+        if (c == CR && !f.e3.icrlf)
         {
             continue;
         }
 
-        switch (add_ebuf(c))
+        int estatus = add_ebuf(c);
+
+        if (estatus == EDIT_FULL || estatus == EDIT_ERROR)
         {
-            case EDIT_FULL:
-            case EDIT_ERROR:
-                return;
-
-            case EDIT_WARN:
-            default:
-                break;
+            break;
         }
-    }
 
-    last_len = len;
+        ++last_len;
+    }
 }

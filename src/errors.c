@@ -92,7 +92,6 @@ static struct err_table err_table[] =
     [E_IUC] = { "IUC",  "Illegal character '%s' following ^" },
     [E_MAT] = { "MAT",  "No match for file specification" },
     [E_MEM] = { "MEM",  "Memory overflow" },
-    [E_MIX] = { "MIX",  "Maximum insert string exceeded" },
     [E_MLA] = { "MLA",  "Missing left angle bracket" },
     [E_MLP] = { "MLP",  "Missing left parenthesis" },
     [E_MNA] = { "NON",  "Missing n argument after m argument" },
