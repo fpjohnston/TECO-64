@@ -83,9 +83,7 @@ struct ifile *find_command(char *file, uint len, uint stream, bool colon)
 
     len = parse_file(file, dir, base);
 
-    char *p = strrchr(base, '.');       // Is there a dot in the file name?
-
-    if (p == NULL || strcasecmp(p, TEC_NAME))
+    if (strchr(base, '.') == NULL)      // If no file type, add .tec
     {
         len += TEC_SIZE;
         type = TEC_NAME;
