@@ -86,7 +86,7 @@ void exec_I(struct cmd *cmd)
 
         if (cmd->m_set && cmd->m_arg > 0)
         {
-            n = cmd->m_arg;
+            n = (uint)cmd->m_arg;
         }
 
         while (n-- > 0)
