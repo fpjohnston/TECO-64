@@ -71,7 +71,7 @@ static const struct cmd null_cmd =
 
 // Local functions
 
-static const struct cmd_table *find_cmd(struct cmd *cmd);
+static const struct cmd_table *find_cmd(struct cmd *cmd, bool skip);
 
 static void end_cmd(struct cmd *cmd, const union cmd_opts opts);
 
@@ -197,6 +197,11 @@ void exec_cmd(struct cmd *macro)
 
         cmd = null_cmd;
 
+        // Check for commands that allow numeric arguments to be passed
+        // through to subsequent commands. This includes [ and ], but
+        // also !, because it's sometimes useful to interpose comments
+        // between two commands.
+
         if (strchr("![]", cmd.c1) != NULL)
         {
             cmd.n_set = pop_expr(&cmd.n_arg);
@@ -259,13 +264,13 @@ void exec_escape(struct cmd *unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static const struct cmd_table *find_cmd(struct cmd *cmd)
+static const struct cmd_table *find_cmd(struct cmd *cmd, bool skip)
 {
     assert(cmd != NULL);                // Error if no command block
 
     int c = cmd->c1;
 
-    if (nparens != 0 && f.e1.xoper && exec_xoper(c))
+    if (nparens != 0 && f.e1.xoper && exec_xoper(c, skip))
     {
         if (c != '{' && c != '}')
         {
@@ -286,15 +291,18 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
     {
         throw(E_ILL, c);                // Illegal character
     }
-    else if (c == '^')
+    else if (c == '^' || c == '\x1E')
     {
         check_args(cmd);
 
-        if ((c = fetch_cbuf()) == '^')
+        if (c == '\x1E' || (c = fetch_cbuf()) == '^')
         {
             c = fetch_cbuf();
 
-            push_expr(c, EXPR_VALUE);
+            if (!skip)
+            {
+                push_expr(c, EXPR_VALUE);
+            }
 
             return NULL;
         }
@@ -319,9 +327,10 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
 ///            other commands, we will continue looping here until we have a
 ///            complete command.
 ///
-///            The skip parameter determines whether we ignore any command other
-///            than the one(s) specified. This is used by commands that affect
-///            program flow, such as ", F>, or O.
+///            The skip parameter determines whether we just ignore commands
+///            until we find one that matches one of the characters in the
+///            string, at which time we return to the caller. This is used for
+///            commands that affect program flow, such as ", F>, or O.
 ///
 ///  @returns  Command function to execute, or NULL if at end of command string.
 ///
@@ -334,7 +343,6 @@ exec_func *next_cmd(struct cmd *cmd, const char *skip)
     while (!empty_cbuf())
     {
         int c = fetch_cbuf();
-        const struct cmd_table *entry;
 
         cmd->c1        = (char)c;
         cmd->c2        = NUL;
@@ -347,7 +355,9 @@ exec_func *next_cmd(struct cmd *cmd, const char *skip)
         // Skip commands such as LF or SPACE that do nothing, as well as
         // commands that were already processed in find_cmd().
 
-        if ((entry = find_cmd(cmd)) == NULL || entry->exec == NULL)
+        const struct cmd_table *entry = find_cmd(cmd, skip != NULL);
+
+        if (entry == NULL || entry->exec == NULL)
         {
             continue;
         }
@@ -571,8 +581,7 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
         return;
     }
 
-    // If command doesn't allow any text arguments, then just return, but throw
-    // an exception if we've seen an at-sign.
+    // If command doesn't allow any text arguments, then just return.
 
     if (!opts.t1)
     {
@@ -583,9 +592,24 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
     // except for CTRL/A and ! commands. If an at-sign was specified, then
     // the (non-whitespace) delimiter follows the command.
 
-    if (cmd->c1 == CTRL_A || cmd->c1 == '!')
+    if (cmd->c1 == CTRL_A)
     {
-        cmd->delim = cmd->c1;           // Use special delimiter
+        cmd->delim = CTRL_A;            // ^A normally ends with ^A
+    }
+    else if (cmd->c1 == '!')
+    {
+        // If feature enabled, !! starts a comment that ends with LF.
+
+        if (f.e1.bang && !empty_cbuf() && peek_cbuf() == '!')
+        {
+            (void)fetch_cbuf();
+
+            cmd->delim = LF;            // Tag goes to end of line
+        }
+        else
+        {
+            cmd->delim = '!';           // ! normally ends with !
+        }
     }
     else
     {

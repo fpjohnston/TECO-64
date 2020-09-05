@@ -268,7 +268,7 @@ extern void exec_X(struct cmd *cmd);
 
 extern void exec_Z(struct cmd *cmd);
 
-extern bool exec_xoper(int c);
+extern bool exec_xoper(int c, bool skip);
 
 extern void exec_Y(struct cmd *cmd);
 
