@@ -92,7 +92,7 @@ union cmd_opts
     {
         uint m  : 1;                ///< m argument allowed
         uint n  : 1;                ///< n argument allowed
-        uint f  : 1;                ///< Command returns value if no n argument
+        uint f  : 1;                ///< Flag argument (returns value if no n)
         uint c  : 1;                ///< : modifier allowed
         uint d  : 1;                ///< :: modifier allowed
         uint a  : 1;                ///< @ modifier allowed
@@ -100,6 +100,7 @@ union cmd_opts
         uint w  : 1;                ///< W modifier allowed
         uint t1 : 1;                ///< 1 text argument allowed
         uint t2 : 1;                ///< 2 text arguments allowed
+        uint z  : 1;                ///< No arguments allowed
     };
 
     int bits;                       ///< All of the bits above
@@ -113,6 +114,13 @@ struct cmd_table
 {
     exec_func *exec;                ///< Execution function
     const union cmd_opts *opts;     ///< Command options
+
+#if     defined(TECO_TRACE)
+
+    const char *name;               ///< Command function name
+
+#endif
+
 };
 
 extern struct buffer *cbuf;
@@ -146,7 +154,5 @@ extern void store_cbuf(int c);
 // Miscellaneous functions
 
 extern void check_args(struct cmd *cmd);
-
-extern exec_func *next_cmd(struct cmd *cmd);
 
 #endif  // !defined(_CMD_H)

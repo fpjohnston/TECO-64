@@ -67,11 +67,6 @@ void exec_ctrl_U(struct cmd *cmd)
     }
     else                                // No n argument
     {
-        if (cmd->text1.len == 0)        // No text either?
-        {
-            throw(E_MOD);               // Yes, that's wrong
-        }
-
         if (cmd->colon)                 // :^Utext`
         {
             const char *p = cmd->text1.data;
@@ -85,14 +80,21 @@ void exec_ctrl_U(struct cmd *cmd)
         {
             struct buffer text;
 
-            text.len  = cmd->text1.len;
-            text.pos  = 0;
-            text.size = cmd->text1.len;
-            text.data = alloc_mem(text.size);
+            if (cmd->text1.len == 0)
+            {
+                store_qtext(cmd->qname, cmd->qlocal, NULL);
+            }
+            else
+            {
+                text.len  = cmd->text1.len;
+                text.pos  = 0;
+                text.size = cmd->text1.len;
+                text.data = alloc_mem(text.size);
 
-            memcpy(text.data, cmd->text1.data, (ulong)text.size);
+                memcpy(text.data, cmd->text1.data, (ulong)text.size);
 
-            store_qtext(cmd->qname, cmd->qlocal, &text);
+                store_qtext(cmd->qname, cmd->qlocal, &text);
+            }
         }
     }
 }

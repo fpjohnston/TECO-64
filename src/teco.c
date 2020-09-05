@@ -91,9 +91,9 @@ int main(int argc, const char * const argv[])
         switch (setjmp(jump_main))
         {
             case 0:                     // Normal entry
-                f.e0.trace  = false;    // Disable tracing
+                f.e0.trace = false;     // Disable tracing
 
-                f.et.abort  = false;    // Don't abort on error
+                f.et.abort = false;     // Don't abort on error
 
                 nparens = 0;            // Reset parenthesis count
 
@@ -104,9 +104,9 @@ int main(int argc, const char * const argv[])
 
                 f.e0.exec = true;       // Executing a command
 
-                exec_cmd();             // Execute what we have
+                exec_cmd(NULL);         // Execute what we have
 
-                f.e0.exec = false;      // Not executing a command
+                f.e0.exec  = false;     // Not executing a command
                 f.e0.error = false;     // Command completed w/o error
 
                 break;

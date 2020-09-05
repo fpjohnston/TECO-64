@@ -42,11 +42,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_atsign(struct cmd *cmd)
+void exec_atsign(struct cmd *unused1)
 {
-    assert(cmd != NULL);                // Error if no command block
-
-    cmd->atsign = true;
 }
 
 
@@ -57,20 +54,8 @@ void exec_atsign(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_colon(struct cmd *cmd)
+void exec_colon(struct cmd *unused1)
 {
-    assert(cmd != NULL);                // Error if no command block
-
-    cmd->colon = true;
-
-    int c = peek_cbuf();
-
-    if (c == ':')                       // Double colon?
-    {
-        (void)fetch_cbuf();             // Yes, count it
-
-        cmd->dcolon = true;             // And flag it
-    }
 }
 
 

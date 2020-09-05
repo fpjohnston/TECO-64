@@ -183,15 +183,12 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
 
     while (cbuf->pos < cbuf->len)
     {
-        if (next_cmd(cmd) == NULL)      // Get next command
+        if (next_cmd(cmd, "!") == NULL) // Get next tag
         {
             break;
         }
 
-        if (cmd->c1 != '!')             // Is this a tag?
-        {
-            continue;                   // No
-        }
+        assert(cmd->c1 == '!');
 
         if (cmd->text1.len == len &&
             !memcmp(cmd->text1.data, tag2, (ulong)len))

@@ -73,11 +73,13 @@ static const struct cmd null_cmd =
 
 static const struct cmd_table *find_cmd(struct cmd *cmd);
 
-static void finish_cmd(struct cmd *cmd, union cmd_opts opts);
+static void end_cmd(struct cmd *cmd, const union cmd_opts opts);
 
 static const struct cmd_table *scan_ef(struct cmd *cmd,
                                        const struct cmd_table *table,
                                        uint count, int error);
+
+static void scan_mod(struct cmd *cmd, const union cmd_opts opts);
 
 static void scan_tail(struct cmd *cmd, union cmd_opts opts);
 
@@ -95,9 +97,48 @@ void check_args(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if (cmd->h || cmd->ctrl_y)
+    if (f.e2.args && (cmd->h || cmd->ctrl_y))
     {
         throw(E_ARG);                   // Improper arguments
+    }
+}
+
+
+///
+///  @brief    Check for modifiers and text strings after command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void end_cmd(struct cmd *cmd, const union cmd_opts opts)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    // See if we have an n argument. If not, then check to see if the command
+    // was preceded by a minus sign, which is equivalent to an argument of -1.
+
+    cmd->n_set = pop_expr(&cmd->n_arg);
+
+    if (cmd->n_set == false && unary_expr())
+    {
+        cmd->n_set = true;
+        cmd->n_arg = -1;
+    }
+
+    // If we have an m argument, verify that it is valid for this command, and
+    // that it is followed by an n argument.
+
+    if (cmd->m_set)
+    {
+        if (f.e2.m_arg && !opts.m)
+        {
+            throw(E_IMA);               // Illegal m argument
+        }
+        else if (!cmd->n_set)
+        {
+            throw(E_MNA);               // Missing n argument
+        }
     }
 }
 
@@ -124,15 +165,28 @@ void exec_bad(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_cmd(void)
+void exec_cmd(struct cmd *macro)
 {
-    struct cmd cmd;                     // Command block
+    struct cmd cmd = null_cmd;
+
+    // If we were called from a macro, then copy any numeric arguments.
+
+    if (macro != NULL)
+    {
+        if (macro->n_set)
+        {
+            push_expr(macro->n_arg, EXPR_VALUE);
+        }
+
+        cmd.m_set = macro->m_set;
+        cmd.m_arg = macro->m_arg;
+    }    
 
     // Loop for all commands in command string.
 
-    for (;;)
+    while (cbuf->len != 0)
     {
-        exec_func *exec = next_cmd(&cmd);
+        exec_func *exec = next_cmd(&cmd, NULL);
 
         if (exec == NULL)
         {
@@ -141,9 +195,17 @@ void exec_cmd(void)
 
         (*exec)(&cmd);
 
-        if (cbuf->len == 0)
+        cmd = null_cmd;
+
+        if (strchr("![]", cmd.c1) != NULL)
         {
-            break;
+            cmd.n_set = pop_expr(&cmd.n_arg);
+            cmd.m_set = pop_expr(&cmd.m_arg);
+
+            if (cmd.n_set)
+            {
+                push_expr(cmd.n_arg, EXPR_VALUE);
+            }
         }
 
         if (f.e0.ctrl_c)                // If CTRL/C typed, return to main loop
@@ -252,133 +314,97 @@ static const struct cmd_table *find_cmd(struct cmd *cmd)
 
 
 ///
-///  @brief    Finish non-simple command.
+///  @brief    Scan command string for next command. Since many commands are
+///            used only to create expressions (such as numeric arguments) for
+///            other commands, we will continue looping here until we have a
+///            complete command.
 ///
-///  @returns  Nothing.
+///            The skip parameter determines whether we ignore any command other
+///            than the one(s) specified. This is used by commands that affect
+///            program flow, such as ", F>, or O.
 ///
-////////////////////////////////////////////////////////////////////////////////
-
-static void finish_cmd(struct cmd *cmd, union cmd_opts opts)
-{
-    assert(cmd != NULL);                // Error if no command block
-
-    // See if we have an n argument. If not, then check to see if the command
-    // was preceded by a minus sign, which is equivalent to an argument of -1.
-
-    if (pop_expr(&cmd->n_arg))          // Do we have an n argument?
-    {
-        cmd->n_set = true;
-    }
-    else if (estack.level == estack.base + 1 &&
-             estack.obj[0].type == EXPR_MINUS)
-    {
-        --estack.level;
-
-        cmd->n_set = true;
-        cmd->n_arg = -1;
-    }
-
-    // If we have an m argument, verify that it is valid for this command, and
-    // that it is followed by an n argument.
-
-    if (cmd->m_set)
-    {
-        if (f.e2.m_arg && !opts.m)
-        {
-            throw(E_IMA);               // Illegal m argument
-        }
-        else if (!cmd->n_set)
-        {
-            throw(E_MNA);               // Missing n argument
-        }
-    }
-
-    // Scan for text arguments and other post-command characters.
-
-    scan_tail(cmd, opts);
-}
-
-
-///
-///  @brief    Scan command string for next command.
-///
-///  @returns  Command to execute, or NULL if at end of command string.
+///  @returns  Command function to execute, or NULL if at end of command string.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-exec_func *next_cmd(struct cmd *cmd)
+exec_func *next_cmd(struct cmd *cmd, const char *skip)
 {
     assert(cmd != NULL);                // Error if no command block
-
-    *cmd = null_cmd;
-
-    // Start parsing the command string. We will stay in this loop as long as
-    // we are only finding simple commands that affect an expression, such as
-    // operands or operators that build up the m and n numeric arguments. Once
-    // we find a command that affects more than just an expression (opening a
-    // file, for instance), then we return to the caller to have the command
-    // executed.
 
     while (!empty_cbuf())
     {
         int c = fetch_cbuf();
+        const struct cmd_table *entry;
 
-        cmd->c1 = (char)c;
-        cmd->c2 = NUL;
-        cmd->c3 = NUL;
+        cmd->c1        = (char)c;
+        cmd->c2        = NUL;
+        cmd->c3        = NUL;
+        cmd->qname     = NUL;
+        cmd->qlocal    = false;
+        cmd->text1.len = 0;
+        cmd->text2.len = 0;
 
-        const struct cmd_table *entry = find_cmd(cmd);
+        // Skip commands such as LF or SPACE that do nothing, as well as
+        // commands that were already processed in find_cmd().
 
-        if (entry == NULL || entry->exec == NULL)
+        if ((entry = find_cmd(cmd)) == NULL || entry->exec == NULL)
         {
             continue;
         }
 
-        assert(entry->opts != NULL);    // Error if missing pointer to options
+        assert(entry->opts != NULL);
 
-        union cmd_opts opts = *entry->opts;
+        // Scan for text arguments and other post-command characters.
 
-        if (opts.q)                     // Q-register required?
+        scan_tail(cmd, *entry->opts);
+        scan_mod(cmd, *entry->opts);    // Scan for @ and : modifiers
+
+        if (skip != NULL && strchr(skip, c) == NULL)
         {
-            get_qname(cmd, c == 'G' || c == 'g' ? "*_$" : NULL);
-        }
 
-        // If the character is a 'flag' command such as ET, then it returns a
-        // value if and only if there isn't an operand preceding it. Also, the
-        // 'A' command returns a value only if it is preceded by an operand.
-        // And the 'Q' command always returns a value.
+#if     defined(TECO_TRACE)
 
-        if ((opts.f && !check_expr()) || (c == 'Q' || c == 'q') ||
-            ((c == 'A' || c == 'a') && check_expr()))
-        {
-            if (pop_expr(&cmd->n_arg))
+            if (entry->exec != exec_bang)
             {
-                cmd->n_set = true;
+                tprintf("*** skipping %s() at %u", entry->name, cbuf->pos);
             }
+
+#endif
+
+            if (c != '@' && c != ':')
+            {
+                cmd->atsign = cmd->colon = cmd->dcolon = false;
+            }
+
+            continue;                   // Ignore command if need to skip
         }
 
-        if (opts.bits != 0)
+        if (entry->opts->bits != 0)     // Simple command?
         {
-            finish_cmd(cmd, opts);
+            end_cmd(cmd, *entry->opts); // Make sure everything is copacetic
 
-            return entry->exec;
+#if     defined(TECO_TRACE)
+
+            if (entry->exec != exec_bang)
+            {
+                tprintf("+++ executing %s() at %u", entry->name, cbuf->pos);
+            }
+
+#endif
+
+            return entry->exec;         // No, so let caller execute it
         }
 
-        // If we're strictly enforcing syntax for command modifiers, then
-        // @ can only be followed by :, and : can only be followed by @.
+#if     defined(TECO_TRACE)
 
-        if ((f.e2.atsign && cmd->atsign && c != ':') ||
-            (f.e2.colon && cmd->colon && c != '@'))
+        if (entry->exec != exec_bang)
         {
-            throw(E_MOD);               // Invalid command modifier
+            tprintf("--- executing %s() at %u", entry->name, cbuf->pos);
         }
+
+#endif
 
         (*entry->exec)(cmd);            // Execute simple command
-
-        // Reset any Q-register information so the next command doesn't use it.
-
-        cmd->qname  = NUL;
-        cmd->qlocal = false;
     }
 
     // If we're not in a macro, then confirm that parentheses were properly
@@ -393,7 +419,7 @@ exec_func *next_cmd(struct cmd *cmd)
             throw(E_MRP);               // Missing right parenthesis
         }
 
-        if (estack.base != estack.level)
+        if (f.e2.args && estack.base != estack.level)
         {
             throw(E_ARG);               // Improper arguments
         }
@@ -431,6 +457,60 @@ static const struct cmd_table *scan_ef(struct cmd *cmd,
 
 
 ///
+///  @brief    Scan for @, :, or :: modifiers, and make sure that they're valid
+///            for the command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void scan_mod(struct cmd *cmd, const union cmd_opts opts)
+{
+    assert(cmd != NULL);
+    
+    if (cmd->c1 == '@')
+    {
+        if (cmd->atsign && f.e2.atsign)
+        {
+            throw(E_MOD);               // Invalid modifier
+        }
+
+        cmd->atsign = true;
+    }
+    else if (cmd->c1 == ':')
+    {
+        if (cmd->colon & f.e2.colon)
+        {
+            throw(E_MOD);               // Invalid modifier
+        }
+
+        cmd->colon = true;
+
+        if (peek_cbuf() == ':')         // Double colon?
+        {
+            (void)fetch_cbuf();         // Yes, count it
+
+            if (cmd->dcolon && f.e2.colon)
+            {
+                throw(E_MOD);           // Invalid modifier
+            }
+
+            cmd->dcolon = true;         // And flag it
+        }
+    }
+    else
+    {
+        if ((cmd->atsign && f.e2.atsign && !opts.a) ||
+            (cmd->colon && f.e2.colon && !opts.c) ||
+            (cmd->dcolon && f.e2.colon && !opts.d))
+        {
+            throw(E_MOD);               // Illegal @, :, or ::
+        }
+    }
+}
+
+
+///
 ///  @brief    Scan the rest of the command string. We enter here after scanning
 ///            any expression, and any prefix modifiers.
 ///
@@ -441,6 +521,11 @@ static const struct cmd_table *scan_ef(struct cmd *cmd,
 static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 {
     assert(cmd != NULL);                // Error if no command block
+
+    if (opts.q)                         // Get Q-register if required
+    {
+        get_qname(cmd);
+    }
 
     if (cmd->c1 == '=')                 // Might have =, ==, or ===
     {
@@ -491,11 +576,6 @@ static void scan_tail(struct cmd *cmd, union cmd_opts opts)
 
     if (!opts.t1)
     {
-        if (cmd->atsign)
-        {
-            throw(E_MOD);               // Invalid modifier
-        }
-
         return;
     }
 

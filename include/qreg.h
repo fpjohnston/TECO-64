@@ -67,7 +67,7 @@ extern uint get_qall(void);
 
 extern int get_qchr(int qname, bool qlocal, int n);
 
-extern void get_qname(struct cmd *cmd, const char *extras);
+extern void get_qname(struct cmd *cmd);
 
 extern int get_qnum(int qname, bool qlocal);
 

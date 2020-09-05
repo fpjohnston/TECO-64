@@ -447,3 +447,24 @@ uint set_expr(void)
 
     return base;
 }
+
+
+///
+///  @brief    See if top of stack is a minus sign, which may mean a command
+///            argument of -1.
+///
+///  @returns  true if minus sign found, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool unary_expr(void)
+{
+    if (estack.level != estack.base + 1 || estack.obj[0].type != EXPR_MINUS)
+    {
+        return false;
+    }
+    
+    --estack.level;
+
+    return true;
+}

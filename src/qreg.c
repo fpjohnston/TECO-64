@@ -104,7 +104,7 @@ void append_qchr(int qname, bool qdot, int c)
         qreg->text.pos  = 0;
         qreg->text.len  = 0;
         qreg->text.size = STR_SIZE_INIT;
-        qreg->text.data  = alloc_mem(qreg->text.size);
+        qreg->text.data = alloc_mem(qreg->text.size);
     }
     else
     {
@@ -137,7 +137,9 @@ void delete_qtext(int qname, bool qdot)
 
     free_mem(&qreg->text.data);
 
-    qreg->text.len = 0;
+    qreg->text.size = 0;
+    qreg->text.len  = 0;
+    qreg->text.pos  = 0;
 }
 
 
@@ -258,7 +260,7 @@ int get_qchr(int qname, bool qdot, int n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void get_qname(struct cmd *cmd, const char *extras)
+void get_qname(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
@@ -271,7 +273,9 @@ void get_qname(struct cmd *cmd, const char *extras)
         c = fetch_cbuf();               // Get Q-register name for real
     }
 
-    if (!isalnum(c) && (extras == NULL || strchr(extras, c) == NULL))
+    const char *extras = (toupper(cmd->c1) == 'G') ? "*_$" : "";
+
+    if (!isalnum(c) && strchr(extras, c) == NULL)
     {
         throw(E_IQN, c);                // Illegal Q-register name
     }
@@ -549,7 +553,7 @@ void store_qchr(int qname, bool qdot, int c)
     qreg->text.pos  = 0;
     qreg->text.len  = 0;
     qreg->text.size = STR_SIZE_INIT;
-    qreg->text.data  = alloc_mem(qreg->text.size);
+    qreg->text.data = alloc_mem(qreg->text.size);
 
     qreg->text.data[qreg->text.len++] = (char)c;
 }
@@ -571,7 +575,7 @@ void store_qnum(int qname, bool qdot, int n)
 
 
 ///
-///  @brief    Store text in Q-register.
+///  @brief    Store (or free) text in Q-register.
 ///
 ///  @returns  Nothing.
 ///
@@ -579,12 +583,20 @@ void store_qnum(int qname, bool qdot, int n)
 
 void store_qtext(int qname, bool qdot, struct buffer *text)
 {
-    assert(text != NULL);               // Error if no place to store text
-    assert(text->size != 0);            // Error if no data for text
-
     struct qreg *qreg = get_qreg(qname, qdot);
 
     free_mem(&qreg->text.data);
 
-    qreg->text = *text;
+    if (text == NULL)
+    {
+        qreg->text.size = 0;
+        qreg->text.len  = 0;
+        qreg->text.pos  = 0;
+    }
+    else
+    {
+        assert(text->size != 0);        // Error if no data for text
+
+        qreg->text = *text;
+    }
 }

@@ -113,4 +113,6 @@ extern void reset_expr(uint base);
 
 extern uint set_expr(void);
 
+extern bool unary_expr(void);
+
 #endif  // !defined(_ESTACK_H)

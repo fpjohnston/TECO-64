@@ -40,7 +40,13 @@
 #include "exec.h"
 #include "file.h"
 
-static struct buffer ei_cmd;            ///< EI command string
+struct ei_list
+{
+    struct ei_list *next;           ///< Next EI block
+    struct buffer buf;              ///< EI command string buffer
+};
+
+static struct ei_list *current = NULL;  ///< Current EI command string
 
 // Local functions
 
@@ -73,32 +79,60 @@ void exec_EI(struct cmd *cmd)
     const char *buf     = cmd->text1.data;
     uint len            = cmd->text1.len;
     uint stream         = IFILE_INDIRECT;
-    struct buffer macro =
-    {
-        .data = NULL,
-        .size = 0,
-        .len  = 0,
-        .pos  = 0
-    };
 
     close_input(stream);                // Close any open file
 
-    if (open_command(buf, len, stream, cmd->colon, &macro))
+    if (len == 0)                       // @EI//?
     {
-        if (trim_white(&macro) == 0)    // Any file data to process?
+        if (current != NULL && current->buf.data == cbuf->data)
         {
-            free_mem(&macro.data);      // Discard allocated memory
+//            current->buf.pos = current->buf.len = 0;
+//            cbuf->pos = cbuf->len = 0;
         }
-        else if (f.e1.eimacro)          // EI command is executed as macro
+
+        return;
+    }
+
+    struct ei_list *ei_cmd = alloc_mem((uint)sizeof(*ei_cmd));
+
+    ei_cmd->buf.data = alloc_mem((uint)sizeof(ei_cmd->buf));
+    ei_cmd->buf.size = 0;
+    ei_cmd->buf.len  = 0;
+    ei_cmd->buf.pos  = 0;
+
+    if (cmd->dcolon)
+    {
+        cmd->colon = false; // FIXME!
+    }
+
+    if (open_command(buf, len, stream, cmd->colon, &ei_cmd->buf))
+    {
+        if (trim_white(&ei_cmd->buf) == 0) // Any file data to process?
         {
-            exec_macro(&macro);         // Execute it like a macro
-            free_mem(&macro.data);      // Discard allocated memory
+            ;
         }
-        else                            // EI command presets input
+        else if (f.e1.eimacro || cmd->dcolon)
+        {                               // EI command is executed as macro
+            ei_cmd->next = (current != NULL) ? current->next : NULL;
+
+            current = ei_cmd;
+
+            exec_macro(&ei_cmd->buf, NULL);
+
+            current = ei_cmd->next;
+        }
+        else
         {
-            ei_cmd = macro;             // Copy data for read_indirect()
+            ei_cmd->next = (current != NULL) ? current->next : NULL;
+
+            current = ei_cmd;
+
+            return;
         }
     }
+
+    free_mem(&ei_cmd->buf.data);
+    free_mem(&ei_cmd);
 }
 
 
@@ -138,22 +172,27 @@ void init_EI(void)
 
 int read_indirect(void)
 {
-    if (f.e1.eimacro)
+    if (f.e1.eimacro || current == NULL)
     {
         return 0;
     }
 
-    if (ei_cmd.len == 0)
+    if (current->buf.len == 0)
     {
-        free_mem(&ei_cmd.data);
+        struct ei_list *ei_block = current;
+
+        current = ei_block->next;
+
+        free_mem(&ei_block->buf.data);
+        free_mem(&ei_block);
     }
 
-    if (ei_cmd.data == NULL)
+    if (current == NULL || current->buf.data == NULL)
     {
         return 0;
     }
 
-    set_cbuf(&ei_cmd);                  // Use our command string
+    set_cbuf(&current->buf);              // Use our command string
 
     // Check to see if buffer ends with a double ESCape, or some combination
     // of an ESCape and its equivalent 2-chr. ASCII construct (i.e., ^[ ).
@@ -212,7 +251,15 @@ int read_indirect(void)
 
 void reset_indirect(void)
 {
-    free_mem(&ei_cmd.data);
+    struct ei_list *ei;
+
+    while ((ei = current) != NULL)
+    {
+        current = ei->next;
+
+        free_mem(&ei->buf.data);
+        free_mem(&ei);
+    }
 }
 
 

@@ -90,15 +90,11 @@ void exec_M(struct cmd *cmd)
         return;
     }
 
-    if (cmd->n_set)
-    {
-        if (cmd->m_set)
-        {
-            push_expr(cmd->m_arg, EXPR_VALUE);
-        }
+#if     defined(TECO_TRACE)
 
-        push_expr(cmd->n_arg, EXPR_VALUE);
-    }
+    tprintf("*** Q-register %s%c", cmd->qlocal ? "." : "", cmd->qname); // FIXME!
+
+#endif
 
     // We make a private copy of the Q-register, since some of the structure
     // members can get modified while processing the macro (esp. len).
@@ -107,13 +103,13 @@ void exec_M(struct cmd *cmd)
 
     if (cmd->colon)                     // :Mq?
     {
-        exec_macro(&macro);             // Yes, don't save local Q-registers
+        exec_macro(&macro, cmd);        // Yes, don't save local Q-registers
     }
     else                                // No, must save local Q-registers
     {
         push_qlocal();
 
-        exec_macro(&macro);
+        exec_macro(&macro, cmd);
 
         pop_qlocal();
     }
@@ -127,7 +123,7 @@ void exec_M(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_macro(struct buffer *macro)
+void exec_macro(struct buffer *macro, struct cmd *cmd)
 {
     assert(macro != NULL);
     assert(macro->data != NULL);
@@ -144,7 +140,7 @@ void exec_macro(struct buffer *macro)
 
     ++macro_depth;
 
-    exec_cmd();
+    exec_cmd(cmd);
 
     --macro_depth;
 

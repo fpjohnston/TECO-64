@@ -100,8 +100,6 @@ extern void exec_ctrl_Z(struct cmd *cmd);
 
 extern void exec_D(struct cmd *cmd);
 
-extern void exec_digit(struct cmd *cmd);
-
 extern void exec_dot(struct cmd *cmd);
 
 extern void exec_E1(struct cmd *cmd);
@@ -228,6 +226,8 @@ extern void exec_M(struct cmd *cmd);
 
 extern void exec_N(struct cmd *cmd);
 
+extern void exec_number(struct cmd *cmd);
+
 extern void exec_O(struct cmd *cmd);
 
 extern void exec_oper(struct cmd *cmd);
@@ -280,9 +280,9 @@ extern bool append_line(void);
 
 extern bool check_semi(void);
 
-extern void exec_cmd(void);
+extern void exec_cmd(struct cmd *cmd);
 
-extern void exec_macro(struct buffer *macro);
+extern void exec_macro(struct buffer *macro, struct cmd *cmd);
 
 extern void exit_EG(void);
 
@@ -293,6 +293,8 @@ extern void init_EG(void);
 extern void init_EI(void);
 
 extern void init_loop(void);
+
+extern exec_func *next_cmd(struct cmd *cmd, const char *skip);
 
 extern bool next_page(int start, int end, bool ff, bool yank);
 

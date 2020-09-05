@@ -42,6 +42,7 @@
 #      GDB=1      Enable use of GDB debugger.
 #      GPROF=1    Enable use of GPROF profiler.
 #      NDEBUG=1   Disable run-time assertions.
+#      TRACE=1    Enable tracing of commands.
 #      VERBOSE=1  Enable verbosity during build.
 #
 ################################################################################
@@ -106,7 +107,6 @@ SOURCES = \
     ctrl_w_cmd.c   \
     datetime_cmd.c \
     delete_cmd.c   \
-    digit_cmd.c    \
     ea_cmd.c       \
     eb_cmd.c       \
     ec_cmd.c       \
@@ -137,6 +137,7 @@ SOURCES = \
     m_cmd.c        \
     move_cmd.c     \
     n_cmd.c        \
+    number_cmd.c   \
     oper_cmd.c     \
     p_cmd.c        \
     pct_cmd.c      \
@@ -251,6 +252,13 @@ CFLAGS += -DNDEBUG
 
 endif
 
+ifdef   TRACE
+
+CFLAGS += -D TECO_TRACE
+LINT_DEBUG += -DTECO_TRACE
+
+endif
+
 LOBS = $(SOURCES:.c=.lob)
 
 OBJECTS = $(SOURCES:.c=.o)
@@ -290,6 +298,7 @@ options:
 	@echo "    GDB=1      Enable use of GDB debugger."
 	@echo "    GPROF=1    Enable use of GPROF profiler."
 	@echo "    NDEBUG=1   Disable run-time assertions."
+	@echo "    TRACE=1    Enable tracing of commands."
 	@echo "    VERBOSE=1  Enable verbosity during build."
 
 

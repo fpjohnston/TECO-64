@@ -29,6 +29,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "teco.h"
 #include "eflags.h"
@@ -102,7 +103,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 
     do
     {
-        if (next_cmd(cmd) == NULL)
+        if (next_cmd(cmd, "\"'<>") == NULL)
         {
             throw(E_UTL);               // Unterminated loop
         }

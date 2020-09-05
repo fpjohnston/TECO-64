@@ -1,6 +1,6 @@
 ///
-///  @file    digit_cmd.c
-///  @brief   Execute digit commands.
+///  @file    number_cmd.c
+///  @brief   Execute numeric digit commands.
 ///
 ///  @bug     No known bugs.
 ///
@@ -38,14 +38,14 @@
 
 
 ///
-///  @brief    Scan a number in a command string, which can be decimal, octal,
-///            or hexadecimal, depending on the current radix.
+///  @brief    Scan a number in a command string, which can be decimal or octal,
+///            depending on the current radix.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_digit(struct cmd *cmd)
+void exec_number(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 

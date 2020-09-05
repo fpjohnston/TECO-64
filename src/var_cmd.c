@@ -32,6 +32,7 @@
 
 #include "teco.h"
 #include "editbuf.h"
+#include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
@@ -61,7 +62,7 @@ void exec_B(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_Q(struct cmd *cmd )
+void exec_ctrl_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
@@ -108,8 +109,8 @@ void exec_ctrl_Y(struct cmd *cmd)
 
     // The following prevents expressions such as 123+^Y.
 
-    if (check_expr() || (i != 0 && estack.obj[i].value != TYPE_GROUP) ||
-        cmd->m_set)
+    if (f.e2.args && (check_expr() || cmd->m_set ||
+                      (i != 0 && estack.obj[i].value != TYPE_GROUP)))
     {
         throw(E_ARG);                   // Invalid arguments
     }
@@ -170,8 +171,8 @@ void exec_H(struct cmd *cmd)
 
     // The following prevents expressions such as 123+H.
 
-    if (check_expr() || (i != 0 && estack.obj[i].value != TYPE_GROUP) ||
-        cmd->m_set)
+    if (f.e2.args && (check_expr() || cmd->m_set ||
+                      (i != 0 && estack.obj[i].value != TYPE_GROUP)))
     {
         throw(E_ARG);                   // Invalid arguments
     }

@@ -88,6 +88,7 @@ union e2_flag
         uint loop   : 1;        ///< Loop not complete within conditional
         uint quote  : 1;        ///< Conditional not complete within loop
         uint page   : 1;        ///< m,n:P or H:P or :PW
+        uint args   : 1;        ///< Too many arguments for command
     };
 };
 
