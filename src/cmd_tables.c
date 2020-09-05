@@ -82,6 +82,11 @@ static const union cmd_opts acm2_opts = {{ .a=1, .c=1, .m=1, .n=1, .t1=1, .t2=1 
 
 static const union cmd_opts adm1_opts = {{ .a=1, .c=1, .d=1, .m=1, .n=1, .t1=1 }};
 
+///  @var    am1_opts
+///  @brief  Commands that use @, m, n, and 1 text argument.
+
+static const union cmd_opts am1_opts = {{ .a=1, .m=1, .n=1, .t1=1 }};
+
 ///  @var    an1_opts
 ///  @brief  Commands that use @, n, and 1 text argument.
 
@@ -174,6 +179,7 @@ static const union cmd_opts z_opts = {{ .z=1 }};
 static const union cmd_opts null_opts = { .bits=0 };
 
 //lint -restore
+
 
 ///
 ///  @var    cmd_table
@@ -295,8 +301,8 @@ const struct cmd_table cmd_table[] =
     ENTRY('g',     exec_G,         cnq_opts),
     ENTRY('H',     exec_H,         null_opts),
     ENTRY('h',     exec_H,         null_opts),
-    ENTRY('I',     exec_I,         an1_opts),
-    ENTRY('i',     exec_I,         an1_opts),
+    ENTRY('I',     exec_I,         am1_opts),
+    ENTRY('i',     exec_I,         am1_opts),
     ENTRY('J',     exec_J,         cn_opts),
     ENTRY('j',     exec_J,         cn_opts),
     ENTRY('K',     exec_K,         m_opts),

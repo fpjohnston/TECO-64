@@ -77,7 +77,6 @@ enum errors
     E_MEM,          ///< Memory overflow
     E_MLA,          ///< Missing left angle bracket
     E_MLP,          ///< Missing left parenthesis
-    E_MNA,          ///< Missing n argument
     E_MOD,          ///< Invalid modifier
     E_MRP,          ///< Missing right parenthesis
     E_MSC,          ///< Missing start of conditional
@@ -92,6 +91,7 @@ enum errors
     E_NFI,          ///< No file for input
     E_NFO,          ///< No file for output
     E_NOA,          ///< O argument is non-positive
+    E_NON,          ///< No n argument after m argument
     E_NOT,          ///< O command has no tag
     E_NOW,          ///< Window support not enabled
     E_NPA,          ///< P or PW argument is negative

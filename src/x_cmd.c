@@ -74,7 +74,7 @@ void exec_X(struct cmd *cmd)
 
             return;
         }
-        else if (m >= n || n == 0)
+        else if (m > n)
         {
             throw(E_ARG);               // Invalid arguments
         }

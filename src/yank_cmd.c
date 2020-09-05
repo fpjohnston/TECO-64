@@ -59,7 +59,7 @@ void exec_EY(struct cmd *cmd)
         throw(E_NFI);                   // No file for input
     }
 
-    if (ifile->eof)
+    if (feof(ifile->fp))
     {
         if (cmd->colon)
         {

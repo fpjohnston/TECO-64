@@ -71,6 +71,8 @@ static const struct cmd null_cmd =
 
 // Local functions
 
+static void exec_null(struct cmd *cmd);
+
 static const struct cmd_table *find_cmd(struct cmd *cmd, bool skip);
 
 static void end_cmd(struct cmd *cmd, const union cmd_opts opts);
@@ -137,7 +139,7 @@ static void end_cmd(struct cmd *cmd, const union cmd_opts opts)
         }
         else if (!cmd->n_set)
         {
-            throw(E_MNA);               // Missing n argument
+            throw(E_NON);               // No n argument after m argument
         }
     }
 }
@@ -258,9 +260,22 @@ void exec_escape(struct cmd *unused1)
 
 
 ///
+///  @brief    Dummy function for command dispatch.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_null(struct cmd *unused1)
+{
+
+}
+
+
+///
 ///  @brief    Find table entry for command.
 ///
-///  @returns  Table entry, or NULL if we're done with command.
+///  @returns  Table entry for function.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -277,7 +292,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd, bool skip)
             check_args(cmd);
         }
 
-        return NULL;
+        return &cmd_table[NUL];         // Execute dummy function
     }
     else if (c == 'E' || c == 'e')
     {
@@ -304,9 +319,8 @@ static const struct cmd_table *find_cmd(struct cmd *cmd, bool skip)
                 push_expr(c, EXPR_VALUE);
             }
 
-            return NULL;
+            return &cmd_table[NUL];     // Execute dummy function
         }
-
         c -= 'A' - 1;
 
         if (c <= NUL || c >= SPACE)
@@ -340,6 +354,10 @@ exec_func *next_cmd(struct cmd *cmd, const char *skip)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    cmd->atsign = false;
+    cmd->colon  = false;
+    cmd->dcolon = false;
+
     while (!empty_cbuf())
     {
         int c = fetch_cbuf();
@@ -352,69 +370,69 @@ exec_func *next_cmd(struct cmd *cmd, const char *skip)
         cmd->text1.len = 0;
         cmd->text2.len = 0;
 
-        // Skip commands such as LF or SPACE that do nothing, as well as
-        // commands that were already processed in find_cmd().
+        const struct cmd_table *entry = find_cmd(cmd, (bool)(skip != NULL));
 
-        const struct cmd_table *entry = find_cmd(cmd, skip != NULL);
+        assert(entry->opts != NULL);
 
-        if (entry == NULL || entry->exec == NULL)
+        const union cmd_opts opts = *entry->opts;
+
+        if (entry->exec == NULL)
         {
             continue;
         }
 
-        assert(entry->opts != NULL);
+        if (opts.bits != 0)
+        {
+            scan_tail(cmd, opts);       // Scan for post-command characters
+        }
 
-        // Scan for text arguments and other post-command characters.
+        scan_mod(cmd, opts);            // Scan for @ and : modifiers
 
-        scan_tail(cmd, *entry->opts);
-        scan_mod(cmd, *entry->opts);    // Scan for @ and : modifiers
+        bool simple = (opts.bits == 0); // Simple command if true
+
+        if (c == 'A' || c == 'a')
+        {
+            if (check_expr() && !cmd->colon)
+            {
+                end_cmd(cmd, opts);     // Do final check for correctness
+
+                simple = true;
+            }
+        }
+        else if (cmd->c1 == CTRL_Q)
+        {
+            if (check_expr())
+            {
+                end_cmd(cmd, opts);     // Do final check for correctness
+            }
+
+            simple = true;
+        }
+        else if (opts.f && !check_expr())
+        {
+            simple = true;
+        }
 
         if (skip != NULL && strchr(skip, c) == NULL)
         {
-
-#if     defined(TECO_TRACE)
-
-            if (entry->exec != exec_bang)
+            if (simple)
             {
-                tprintf("*** skipping %s() at %u", entry->name, cbuf->pos);
+                continue;
             }
 
-#endif
-
-            if (c != '@' && c != ':')
-            {
-                cmd->atsign = cmd->colon = cmd->dcolon = false;
-            }
-
-            continue;                   // Ignore command if need to skip
+            return exec_null;           // Tell caller there's nothing to do
         }
 
-        if (entry->opts->bits != 0)     // Simple command?
+        if (simple)                     // Simple command?
         {
-            end_cmd(cmd, *entry->opts); // Make sure everything is copacetic
-
-#if     defined(TECO_TRACE)
-
-            if (entry->exec != exec_bang)
-            {
-                tprintf("+++ executing %s() at %u", entry->name, cbuf->pos);
-            }
-
-#endif
-
-            return entry->exec;         // No, so let caller execute it
+            (*entry->exec)(cmd);        // Yes, execute and continue
         }
-
-#if     defined(TECO_TRACE)
-
-        if (entry->exec != exec_bang)
+        else                            // Complex command
         {
-            tprintf("--- executing %s() at %u", entry->name, cbuf->pos);
+            end_cmd(cmd, opts);         // Do final check for correctness
+
+            return entry->exec;         // Tell caller what to do
         }
-
-#endif
-
-        (*entry->exec)(cmd);            // Execute simple command
     }
 
     // If we're not in a macro, then confirm that parentheses were properly

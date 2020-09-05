@@ -144,7 +144,7 @@ void exec_ctrl_N(struct cmd *unused1)
 {
     struct ifile *ifile = &ifiles[istream];
 
-    push_expr(ifile->eof, EXPR_VALUE);
+    push_expr(feof(ifile->fp), EXPR_VALUE);
 }
 
 

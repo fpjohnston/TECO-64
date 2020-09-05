@@ -90,12 +90,6 @@ void exec_M(struct cmd *cmd)
         return;
     }
 
-#if     defined(TECO_TRACE)
-
-    tprintf("*** Q-register %s%c", cmd->qlocal ? "." : "", cmd->qname); // FIXME!
-
-#endif
-
     // We make a private copy of the Q-register, since some of the structure
     // members can get modified while processing the macro (esp. len).
 

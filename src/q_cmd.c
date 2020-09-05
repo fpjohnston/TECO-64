@@ -48,12 +48,6 @@ void exec_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-#if     defined(TECO_TRACE)
-
-    tprintf("*** Q-register %s%c", cmd->qlocal ? "." : "", cmd->qname); // FIXME!
-
-#endif
-
     int n;
 
     if (cmd->n_set)                     // nQq

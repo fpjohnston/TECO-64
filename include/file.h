@@ -42,7 +42,6 @@ struct ifile
 {
     FILE *fp;                       ///< Input file stream
     char *name;                     ///< Input file name
-    bool eof;                       ///< End of file reached
     bool cr;                        ///< Last character was CR
 };
 

@@ -187,11 +187,12 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
         {
             break;
         }
+        else if (cmd->c1 != '!')
+        {
+            continue;
+        }
 
-        assert(cmd->c1 == '!');
-
-        if (cmd->text1.len == len &&
-            !memcmp(cmd->text1.data, tag2, (ulong)len))
+        if (cmd->text1.len == len && !memcmp(cmd->text1.data, tag2, (ulong)len))
         {
             if (tag_pos != -1)          // Found tag. Have we seen it already?
             {

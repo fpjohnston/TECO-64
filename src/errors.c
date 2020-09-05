@@ -94,7 +94,6 @@ static struct err_table err_table[] =
     [E_MEM] = { "MEM",  "Memory overflow" },
     [E_MLA] = { "MLA",  "Missing left angle bracket" },
     [E_MLP] = { "MLP",  "Missing left parenthesis" },
-    [E_MNA] = { "MNA",  "Missing n argument after m argument" },
     [E_MOD] = { "MOD",  "Invalid command modifier" },
     [E_MRP] = { "MRP",  "Missing right parenthesis" },
     [E_MSC] = { "MSC",  "Missing start of conditional" },
@@ -109,6 +108,7 @@ static struct err_table err_table[] =
     [E_NFI] = { "NFI",  "No file for input" },
     [E_NFO] = { "NFO",  "No file for output" },
     [E_NOA] = { "NOA",  "O argument is non-positive" },
+    [E_NON] = { "NON",  "No n argument after m argument" },
     [E_NOT] = { "NOT",  "O command has no tag" },
     [E_NOW] = { "NOW",  "Window support not enabled" },
     [E_NPA] = { "NPA",  "P or PW argument is negative" },
@@ -221,8 +221,6 @@ static const char *verbose[] =
     [E_MLP] = "There is a right parenthesis trhat is not matched by a "
               "corresponding left parenthesis.",
 
-    [E_MNA] = "An m argument was not followed by an n argument.",
-
     [E_MOD] = "A modifier (:, ::, or @) was specified that was invalid "
               "for a command, occurred in the middle of an expression, "
               "or duplicated another modifier.",
@@ -272,6 +270,8 @@ static const char *verbose[] =
               "command such as EW or EB.",
 
     [E_NOA] = "The argument for an O command was <= 0.",
+
+    [E_NON] = "An m argument was not followed by an n argument.",
 
     [E_NOT] = "No tag was found for an O command.",
 

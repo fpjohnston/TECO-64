@@ -118,7 +118,6 @@ void close_input(uint stream)
         ifile->fp = NULL;
     }
 
-    ifile->eof  = false;
     ifile->cr   = false;
 
     free_mem(&ifile->name);
@@ -380,7 +379,6 @@ struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
         throw(E_SYS, ifile->name);      // Unexpected system error
     }
 
-    ifile->eof = false;
     ifile->cr  = false;
 
     return ifile;

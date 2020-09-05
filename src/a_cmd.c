@@ -65,7 +65,7 @@ bool append(bool n_set, int n_arg, bool colon)
 
     setpos_ebuf(t.Z);                   // Go to end of buffer
 
-    if (ifile->eof)                     // Already at EOF?
+    if (feof(ifile->fp))                // Already at EOF?
     {
         return false;
     }
@@ -193,8 +193,6 @@ bool append_line(void)
                 return false;
         }
     }
-
-    ifile->eof = true;
 
     return false;
 }

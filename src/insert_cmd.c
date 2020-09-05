@@ -82,8 +82,17 @@ void exec_I(struct cmd *cmd)
     else if (cmd->n_set)
     {
         char c = (char)cmd->n_arg;
+        uint n = 1;
 
-        exec_insert(&c, (uint)sizeof(c));
+        if (cmd->m_set && cmd->m_arg > 0)
+        {
+            n = cmd->m_arg;
+        }
+
+        while (n-- > 0)
+        {
+            exec_insert(&c, (uint)sizeof(c));
+        }
     }
 }
 
