@@ -53,7 +53,7 @@ void exec_ctrl_U(struct cmd *cmd)
     {
         if (cmd->text1.len != 0)        // Does it have a text string?
         {
-            throw(E_MOD);               // Yes, that's an error
+            throw(E_NAT);               // Illegal n argument and text string
         }
 
         if (cmd->colon)                 // n:^Uq`?

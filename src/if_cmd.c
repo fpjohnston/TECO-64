@@ -75,7 +75,7 @@ static void endif(struct cmd *cmd, bool else_ok)
 
     do
     {
-        if (next_cmd(cmd, "\"'<>|") == NULL)
+        if (!skip_cmd(cmd, "\"'<>|"))
         {
             throw(E_UTQ);               // Unterminated conditional
         }

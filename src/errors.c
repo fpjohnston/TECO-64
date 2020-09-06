@@ -66,8 +66,10 @@ static struct err_table err_table[] =
 {
     [E_NUL] = { "---",  "Unknown error code" },
     [E_ARG] = { "ARG",  "Improper arguments" },
+    [E_ATS] = { "ATS",  "Illegal at-sign, or too many at-signs" },
     [E_BOA] = { "BOA",  "O argument is out of range" },
-    [E_CHR] = { "CHR",  "Invalid character for command" },
+    [E_CHR] = { "CHR",  "Invalid character for command" }, 
+    [E_COL] = { "COL",  "Illegal colon, or too many colons" },
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
@@ -94,7 +96,6 @@ static struct err_table err_table[] =
     [E_MEM] = { "MEM",  "Memory overflow" },
     [E_MLA] = { "MLA",  "Missing left angle bracket" },
     [E_MLP] = { "MLP",  "Missing left parenthesis" },
-    [E_MOD] = { "MOD",  "Invalid command modifier" },
     [E_MRP] = { "MRP",  "Missing right parenthesis" },
     [E_MSC] = { "MSC",  "Missing start of conditional" },
     [E_NAB] = { "NAB",  "No argument before 1's complement operator" },
@@ -103,6 +104,7 @@ static struct err_table err_table[] =
     [E_NAP] = { "NAP",  "No argument before right parenthesis" },
     [E_NAQ] = { "NAQ",  "No argument before quote" },
     [E_NAS] = { "NAS",  "No argument before semi-colon" },
+    [E_NAT] = { "NAT",  "Cannot have n argument and text string" },
     [E_NAU] = { "NAU",  "No argument before U command" },
     [E_NCA] = { "NCA",  "Negative argument to comma" },
     [E_NFI] = { "NFI",  "No file for input" },
@@ -140,9 +142,15 @@ static const char *verbose[] =
 {
     [E_ARG] = "Three arguments are given (a,b,c or H,c).",
 
+    [E_ATS] = "An at-sign preceded a command that does not allow at-signs, "
+              "or there were too many at-signs specified for the command.",
+
     [E_BOA] = "The argument for an O command was out of range",
 
     [E_CHR] = "A non-ASCII character preceded an EE command.",
+
+    [E_COL] = "A colon preceded a command that does not allow colons, " 
+              "or there were too many colons specified for the command.",
 
     [E_DIV] = "An attempt was made to divide a number by zero.",
 
@@ -221,10 +229,6 @@ static const char *verbose[] =
     [E_MLP] = "There is a right parenthesis trhat is not matched by a "
               "corresponding left parenthesis.",
 
-    [E_MOD] = "A modifier (:, ::, or @) was specified that was invalid "
-              "for a command, occurred in the middle of an expression, "
-              "or duplicated another modifier.",
-
     [E_MRP] = "There is a left parenthesis that is not matched by a "
               "corresponding right parenthesis.",
 
@@ -254,6 +258,9 @@ static const char *verbose[] =
     [E_NAS] = "The , command must be preceded by a single numeric "
               "argument on which the decision to execute the following "
               "commands or skip to the matching > is based.",
+
+    [E_NAT] = "Both an n argument and a string were specified for a command " 
+              "which does not allow more than one.",
 
     [E_NAU] = "The U comand must be preceded by either a specific "
               "numeric argument or a command that returns a numeric "

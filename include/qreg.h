@@ -67,8 +67,6 @@ extern uint get_qall(void);
 
 extern int get_qchr(int qname, bool qlocal, int n);
 
-extern void get_qname(struct cmd *cmd);
-
 extern int get_qnum(int qname, bool qlocal);
 
 extern struct qreg *get_qreg(int qname, bool qlocal);

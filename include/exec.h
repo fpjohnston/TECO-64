@@ -44,8 +44,6 @@ extern void exec_atsign(struct cmd *cmd);
 
 extern void exec_B(struct cmd *cmd);
 
-extern void exec_bad(struct cmd *cmd);
-
 extern void exec_bslash(struct cmd *cmd);
 
 extern void exec_bang(struct cmd *cmd);
@@ -268,7 +266,7 @@ extern void exec_X(struct cmd *cmd);
 
 extern void exec_Z(struct cmd *cmd);
 
-extern bool exec_xoper(int c, bool skip);
+extern bool exec_xoper(int c);
 
 extern void exec_Y(struct cmd *cmd);
 
@@ -294,8 +292,6 @@ extern void init_EI(void);
 
 extern void init_loop(void);
 
-extern exec_func *next_cmd(struct cmd *cmd, const char *skip);
-
 extern bool next_page(int start, int end, bool ff, bool yank);
 
 extern bool next_yank(void);
@@ -307,5 +303,7 @@ extern void reset_if(void);
 extern void reset_indirect(void);
 
 extern void reset_loop(void);
+
+extern bool skip_cmd(struct cmd *cmd, const char *skip);
 
 #endif  // !defined(_EXEC_H)

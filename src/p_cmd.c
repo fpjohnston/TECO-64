@@ -72,7 +72,7 @@ void exec_P(struct cmd *cmd)
     {
         if (cmd->m_set || cmd->h || cmd->w)
         {
-            throw(E_MOD);               // Invalid modifier
+            throw(E_COL);               // Illegal colon
         }
     }
 

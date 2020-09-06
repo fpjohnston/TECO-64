@@ -82,28 +82,22 @@ struct cmd
 
 typedef void (exec_func)(struct cmd *cmd);
 
-///  @struct cmd_opts
-///
-///  @brief  Command options and requirements.
+///  @enum   cmd_opts
+///  @brief  Options defined for each command.
 
-union cmd_opts
+enum cmd_opts
 {
-    struct
-    {
-        uint m  : 1;                ///< m argument allowed
-        uint n  : 1;                ///< n argument allowed
-        uint f  : 1;                ///< Flag argument (returns value if no n)
-        uint c  : 1;                ///< : modifier allowed
-        uint d  : 1;                ///< :: modifier allowed
-        uint a  : 1;                ///< @ modifier allowed
-        uint q  : 1;                ///< Q-register required
-        uint w  : 1;                ///< W modifier allowed
-        uint t1 : 1;                ///< 1 text argument allowed
-        uint t2 : 1;                ///< 2 text arguments allowed
-        uint z  : 1;                ///< No arguments allowed
-    };
-
-    int bits;                       ///< All of the bits above
+    OPT_M  = 1 << 0,        //lint !e835
+    OPT_N  = 1 << 1,
+    OPT_F  = 1 << 2,
+    OPT_C  = 1 << 3,
+    OPT_D  = 1 << 4,
+    OPT_A  = 1 << 5,
+    OPT_Q  = 1 << 6,
+    OPT_T1 = 1 << 7,
+    OPT_T2 = 1 << 8,
+    OPT_S  = 1 << 9,
+    OPT_B  = 1 << 10
 };
 
 ///  @struct cmd_table
@@ -113,7 +107,7 @@ union cmd_opts
 struct cmd_table
 {
     exec_func *exec;                ///< Execution function
-    const union cmd_opts *opts;     ///< Command options
+    enum cmd_opts opts;             ///< Command options
 
 #if     defined(TECO_TRACE)
 

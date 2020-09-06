@@ -254,37 +254,6 @@ int get_qchr(int qname, bool qdot, int n)
 
 
 ///
-///  @brief    Get Q-register name for command.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void get_qname(struct cmd *cmd)
-{
-    assert(cmd != NULL);                // Error if no command block
-
-    int c = fetch_cbuf();               // Get Q-register (or dot)
-
-    if (c == '.')                       // Is it local?
-    {
-        cmd->qlocal = true;             // Yes, mark it
-
-        c = fetch_cbuf();               // Get Q-register name for real
-    }
-
-    const char *extras = (toupper(cmd->c1) == 'G') ? "*_$" : "";
-
-    if (!isalnum(c) && strchr(extras, c) == NULL)
-    {
-        throw(E_IQN, c);                // Illegal Q-register name
-    }
-
-    cmd->qname = (char)c;               // Save the name
-}
-
-
-///
 ///  @brief    Get number in Q-register.
 ///
 ///  @returns  Q-register number.

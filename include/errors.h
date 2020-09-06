@@ -49,8 +49,10 @@ enum errors
 {
     E_NUL,          ///< No error
     E_ARG,          ///< Improper arguments
+    E_ATS,          ///< Illegal at-sign, or too many at-signs
     E_BOA,          ///< O argument is out of range
     E_CHR,          ///< Invalid character for command
+    E_COL,          ///< Illegal colon, or too many colons
     E_DIV,          ///< Division by zero
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag "!x!"
@@ -77,7 +79,6 @@ enum errors
     E_MEM,          ///< Memory overflow
     E_MLA,          ///< Missing left angle bracket
     E_MLP,          ///< Missing left parenthesis
-    E_MOD,          ///< Invalid modifier
     E_MRP,          ///< Missing right parenthesis
     E_MSC,          ///< Missing start of conditional
     E_NAB,          ///< No argument before 1's complement operator
@@ -86,6 +87,7 @@ enum errors
     E_NAP,          ///< No argument before right parenthesis
     E_NAQ,          ///< No argument before quote
     E_NAS,          ///< No argument before semi-colon
+    E_NAT,          ///< Cannot have n argument and text string
     E_NAU,          ///< No argument before U command
     E_NCA,          ///< Negative argument to comma
     E_NFI,          ///< No file for input

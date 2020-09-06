@@ -43,7 +43,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool exec_xoper(int c, bool skip)
+bool exec_xoper(int c)
 {
     switch (c)
     {
@@ -129,10 +129,7 @@ bool exec_xoper(int c, bool skip)
             return false;
     }
 
-    if (!skip)
-    {
-        push_expr(TYPE_OPER, c);
-    }
+    push_expr(TYPE_OPER, c);
 
     return true;
 }

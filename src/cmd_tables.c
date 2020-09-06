@@ -30,155 +30,136 @@
 #include "ascii.h"
 #include "exec.h"
 
-//lint -save -e708 -e785
 
-///  @var    a1_opts
-///  @brief  Options for commands that use @ and 1 text argument.
+///  @def    a1_opts
+///  @brief  Commands that use @ and 1 text argument.
 
-static const union cmd_opts a1_opts = {{ .a=1, .t1=1 }};
+#define a1_opts     (OPT_A | OPT_T1)
 
-///  @var    ac1_opts
-///  @brief  Options for commands that use @, :, and 1 text argument.
+///  @def    ac1_opts
+///  @brief  Command options.
 
-static const union cmd_opts ac1_opts = {{ .a=1, .c=1, .t1=1 }};
+#define ac1_opts    (OPT_A | OPT_C | OPT_T1)
 
-///  @var    acmq1_opts
-///  @brief  Commands that use @, m, n, Q-registers, and 1 text argument.
+///  @def    acmq1_opts
+///  @brief  Command options.
 
-static const union cmd_opts acmq1_opts = {{ .a=1, .c=1, .m=1, .n=1, .q=1, .t1=1 }};
+#define acmq1_opts  (OPT_A | OPT_C | OPT_M | OPT_N | OPT_Q | OPT_T1)
 
-///  @var    acn1_opts
-///  @brief  Commands that use :, n, and 1 text argument.
+///  @def    acn1_opts
+///  @brief  Command options.
 
-static const union cmd_opts acn1_opts = {{ .a=1, .c=1, .n=1, .t1=1 }};
+#define acn1_opts   (OPT_A | OPT_C | OPT_N | OPT_T1)
 
-///  @var    acq1_opts
-///  @brief  Commands that use @, :, Q-registers, and 1 text argument.
+///  @def    acq1_opts
+///  @brief  Command options.
 
-static const union cmd_opts acq1_opts = {{ .a=1, .c=1, .q=1, .t1=1 }};
+#define acq1_opts   (OPT_A | OPT_C | OPT_Q | OPT_T1)
 
-///  @var    adm2_opts
-///  @brief  Commands that use @, :, ::, m, n, and 2 text argument3.
+///  @def    adm2_opts
+///  @brief  Command options.
 
-static const union cmd_opts adm2_opts = {{ .a=1, .c=1, .d=1, .m=1, .n=1, .t1=1, .t2=1 }};
+#define adm2_opts   (OPT_A | OPT_C | OPT_D | OPT_M | OPT_N | OPT_T1 | OPT_T2)
 
-///  @var    ad1_opts
-///  @brief  Commands that use @, :, ::, and 1 text argument.
+///  @def    ad1_opts
+///  @brief  Command options.
 
-static const union cmd_opts ad1_opts = {{ .a=1, .c=1, .d=1, .t1=1 }};
+#define ad1_opts    (OPT_A | OPT_C | OPT_D | OPT_T1)
 
-///  @var    acm1_opts
-///  @brief  Commands that use @, :, m, n, and 1 text argument.
+///  @def    acm1_opts
+///  @brief  Command options.
 
-static const union cmd_opts acm1_opts = {{ .a=1, .c=1, .m=1, .n=1, .t1=1 }};
+#define acm1_opts   (OPT_A | OPT_C | OPT_M | OPT_N | OPT_T1)
 
-///  @var    acm2_opts
-///  @brief  Commands that use @, :, m, n, and 2 text arguments.
+///  @def    acm2_opts
+///  @brief  Command options.
 
-static const union cmd_opts acm2_opts = {{ .a=1, .c=1, .m=1, .n=1, .t1=1, .t2=1 }};
+#define acm2_opts   (OPT_A | OPT_C | OPT_M | OPT_N | OPT_T1 | OPT_T2)
 
-///  @var    adm1_opts
-///  @brief  Commands that use @, :, ::, m, n, and 1 text argument.
+///  @def    adm1_opts
+///  @brief  Command options.
 
-static const union cmd_opts adm1_opts = {{ .a=1, .c=1, .d=1, .m=1, .n=1, .t1=1 }};
+#define adm1_opts   (OPT_A | OPT_C | OPT_D | OPT_M | OPT_N | OPT_T1)
 
-///  @var    am1_opts
-///  @brief  Commands that use @, m, n, and 1 text argument.
+///  @def    am1_opts
+///  @brief  Command options.
 
-static const union cmd_opts am1_opts = {{ .a=1, .m=1, .n=1, .t1=1 }};
+#define am1_opts    (OPT_A | OPT_M | OPT_N | OPT_T1)
 
-///  @var    an1_opts
-///  @brief  Commands that use @, n, and 1 text argument.
+///  @def    an1_opts
+///  @brief  Command options.
 
-static const union cmd_opts an1_opts = {{ .a=1, .n=1, .t1=1 }};
+#define an1_opts    (OPT_A | OPT_N | OPT_T1)
 
-///  @var    c_opts
-///  @brief  Commands that use :.
+///  @def    c_opts
+///  @brief  Command options.
 
-static const union cmd_opts c_opts = {{ .c=1 }};
+#define c_opts      (OPT_C)
 
-///  @var    cf_opts
-///  @brief  Flag commands that use :.
+///  @def    cf_opts
+///  @brief  Command options.
 
-static const union cmd_opts cf_opts = {{ .c=1, .f=1, .n=1 }};
+#define cf_opts     (OPT_C | OPT_F | OPT_N)
 
-///  @var    cfq_opts
-///  @brief  Flag commands that use : and Q-registers.
+///  @def    cfq_opts
+///  @brief  Command options.
 
-static const union cmd_opts cfq_opts = {{ .c=1, .f=1, .n=1, .q=1 }};
+#define cfq_opts    (OPT_C | OPT_F | OPT_N | OPT_Q)
 
-///  @var    cm_opts
-///  @brief  Commands that use :, m, and n.
+///  @def    cm_opts
+///  @brief  Command options.
 
-static const union cmd_opts cm_opts = {{ .c=1, .m=1, .n=1 }};
+#define cm_opts     (OPT_C | OPT_M | OPT_N)
 
-///  @var    cmq_opts
-///  @brief  Commands that use :, m, n, and Q-registers.
+///  @def    cmq_opts
+///  @brief  Command options.
 
-static const union cmd_opts cmq_opts = {{ .c=1, .m=1, .n=1, .q=1 }};
+#define cmq_opts    (OPT_C | OPT_M | OPT_N | OPT_Q)
 
-///  @var    cmw_opts.
-///  @brief  Commands that use :, m, n, and W.
+///  @def    cn_opts
+///  @brief  Command options.
 
-static const union cmd_opts cmw_opts = {{ .c=1, .m=1, .n=1, .w=1 }};
+#define cn_opts     (OPT_C | OPT_N)
 
-///  @var    cn_opts
-///  @brief  Commands that use : and n.
+///  @def    cnq_opts
+///  @brief  Command options.
 
-static const union cmd_opts cn_opts = {{ .c=1, .n=1 }};
+#define cnq_opts    (OPT_C | OPT_N | OPT_Q)
 
-///  @var    cnq_opts
-///  @brief  Commands that use :, n, and Q-registers.
+///  @def    f_opts
+///  @brief  Command options.
 
-static const union cmd_opts cnq_opts = {{ .c=1, .n=1, .q=1 }};
+#define f_opts      (OPT_F | OPT_N)
 
-///  @var    f_opts
-///  @brief  Flag commands.
+///  @def    fm_opts
+///  @brief  Command options.
 
-static const union cmd_opts f_opts = {{ .f=1, .n=1 }};
+#define fm_opts     (OPT_F | OPT_M | OPT_N)
 
-///  @var    fm_opts
-///  @brief  Flag commands.
+///  @def    m_opts
+///  @brief  Command options.
 
-static const union cmd_opts fm_opts = {{ .f=1, .m=1, .n=1 }};
+#define m_opts      (OPT_M | OPT_N)
 
-///  @var    m_opts
-///  @brief  Commands that use m and n.
+///  @def    m2_opts
+///  @brief  Command options.
 
-static const union cmd_opts m_opts = {{ .m=1, .n=1 }};
+#define m2_opts     (OPT_M | OPT_N | OPT_T1 | OPT_T2)
 
-///  @var    m2_opts
-///  @brief  Commands that use m and n, and 2 text arguments.
+///  @def    mq_opts
+///  @brief  Command options.
 
-static const union cmd_opts m2_opts = {{ .m=1, .n=1, .t1=1, .t2=1 }};
+#define mq_opts     (OPT_M | OPT_N | OPT_Q)
 
-///  @var    mq_opts
-///  @brief  Commands that use m, n, and Q-registers.
+///  @def    n_opts
+///  @brief  Command options.
 
-static const union cmd_opts mq_opts = {{ .m=1, .n=1, .q=1 }};
+#define n_opts      (OPT_N)
 
-///  @var    n_opts
-///  @brief  Commands that use n.
+///  @def    t1_opts
+///  @brief  Command options.
 
-static const union cmd_opts n_opts = {{ .n=1 }};
-
-///  @var    t1_opts
-///  @brief  Commands that use 1 text argument.
-
-static const union cmd_opts t1_opts = {{ .t1=1 }};
-
-///  @var    z_opts
-///  @brief  Commands that use no arguments (but which need to be
-///          executed as though they did, such as EX).
-
-static const union cmd_opts z_opts = {{ .z=1 }};
-
-///  @var    null_opts
-///  @brief  Commands such as operators that don't use arguments.
-
-static const union cmd_opts null_opts = { .bits=0 };
-
-//lint -restore
+#define t1_opts     (OPT_T1)
 
 
 ///
@@ -213,97 +194,97 @@ static const union cmd_opts null_opts = { .bits=0 };
 
 #if     defined(TECO_TRACE)
 
-#define ENTRY(chr, func, opts) [chr] = { func, &opts, #func }
+#define ENTRY(chr, func, opts) [chr] = { func, opts, #func }
 
 #else
 
-#define ENTRY(chr, func, opts) [chr] = { func, &opts }
+#define ENTRY(chr, func, opts) [chr] = { func, opts }
 
 #endif
 
 const struct cmd_table cmd_table[] =
 {
-    ENTRY(NUL,     NULL,           null_opts),
+    ENTRY(NUL,     NULL,           0),
     ENTRY(CTRL_A,  exec_ctrl_A,    acm1_opts),
-    ENTRY(CTRL_B,  exec_ctrl_B,    null_opts),
+    ENTRY(CTRL_B,  exec_ctrl_B,    OPT_S),
     ENTRY(CTRL_C,  exec_ctrl_C,    m_opts),
-    ENTRY(CTRL_D,  exec_ctrl_D,    z_opts),
+    ENTRY(CTRL_D,  exec_ctrl_D,    0),
     ENTRY(CTRL_E,  exec_ctrl_E,    f_opts),
-    ENTRY(CTRL_F,  exec_bad,       null_opts),
-    ENTRY(CTRL_G,  exec_bad,       null_opts),
-    ENTRY(CTRL_H,  exec_ctrl_H,    null_opts),
+    ENTRY(CTRL_F,  NULL,           OPT_B),
+    ENTRY(CTRL_G,  NULL,           OPT_B),
+    ENTRY(CTRL_H,  exec_ctrl_H,    OPT_S),
     ENTRY(CTRL_I,  exec_ctrl_I,    t1_opts),
-    ENTRY(LF,      NULL,           null_opts),
-    ENTRY(VT,      exec_bad,       null_opts),
-    ENTRY(FF,      NULL,           null_opts),
-    ENTRY(CR,      NULL,           null_opts),
+    ENTRY(LF,      NULL,           0),
+    ENTRY(VT,      NULL,           OPT_B),
+    ENTRY(FF,      NULL,           0),
+    ENTRY(CR,      NULL,           0),
     ENTRY(CTRL_N,  exec_ctrl_N,    n_opts),
-    ENTRY(CTRL_O,  exec_ctrl_O,    z_opts),
-    ENTRY(CTRL_P,  exec_bad,       null_opts),
+    ENTRY(CTRL_O,  exec_ctrl_O,    0),
+    ENTRY(CTRL_P,  NULL,           OPT_B),
     ENTRY(CTRL_Q,  exec_ctrl_Q,    n_opts),
     ENTRY(CTRL_R,  exec_ctrl_R,    f_opts),
-    ENTRY(CTRL_S,  exec_ctrl_S,    null_opts),
+    ENTRY(CTRL_S,  exec_ctrl_S,    OPT_S),
     ENTRY(CTRL_T,  exec_ctrl_T,    cm_opts),
     ENTRY(CTRL_U,  exec_ctrl_U,    acmq1_opts),
     ENTRY(CTRL_V,  exec_ctrl_V,    n_opts),
     ENTRY(CTRL_W,  exec_ctrl_W,    n_opts),
     ENTRY(CTRL_X,  exec_ctrl_X,    f_opts),
-    ENTRY(CTRL_Y,  exec_ctrl_Y,    null_opts),
-    ENTRY(CTRL_Z,  exec_ctrl_Z,    null_opts),
+    ENTRY(CTRL_Y,  exec_ctrl_Y,    OPT_S),
+    ENTRY(CTRL_Z,  exec_ctrl_Z,    OPT_S),
     ENTRY(ESC,     exec_escape,    m_opts),
-    ENTRY('\x1C',  exec_bad,       null_opts),
-    ENTRY('\x1D',  exec_bad,       null_opts),
-    ENTRY('\x1E',  exec_ctrl_up,   null_opts),
-    ENTRY('\x1F',  exec_ctrl_ubar, null_opts),
-    ENTRY(SPACE,   NULL,           null_opts),
+    ENTRY('\x1C',  NULL,           OPT_B),
+    ENTRY('\x1D',  NULL,           OPT_B),
+    ENTRY('\x1E',  exec_ctrl_up,   OPT_S),
+    ENTRY('\x1F',  exec_ctrl_ubar, OPT_S),
+    ENTRY(SPACE,   NULL,           0),
     ENTRY('!',     exec_bang,      a1_opts),
     ENTRY('"',     exec_quote,     n_opts),
-    ENTRY('#',     exec_oper,      null_opts),
-    ENTRY('$',     exec_bad,       null_opts),
+    ENTRY('#',     exec_oper,      OPT_S),
+    ENTRY('$',     NULL,           OPT_B),
     ENTRY('%',     exec_pct,       cnq_opts),
-    ENTRY('&',     exec_oper,      null_opts),
+    ENTRY('&',     exec_oper,      OPT_S),
     ENTRY('\'',    exec_apos,      n_opts),
-    ENTRY('(',     exec_lparen,    null_opts),
-    ENTRY(')',     exec_rparen,    null_opts),
-    ENTRY('*',     exec_oper,      null_opts),
-    ENTRY('+',     exec_oper,      null_opts),
-    ENTRY(',',     exec_comma,     null_opts),
-    ENTRY('-',     exec_oper,      null_opts), 
-    ENTRY('.',     exec_dot,       null_opts), 
-    ENTRY('/',     exec_oper,      null_opts), 
-    ENTRY('0',     exec_number,    null_opts), 
-    ENTRY('1',     exec_number,    null_opts),
-    ENTRY('2',     exec_number,    null_opts),
-    ENTRY('3',     exec_number,    null_opts),
-    ENTRY('4',     exec_number,    null_opts),
-    ENTRY('5',     exec_number,    null_opts),
-    ENTRY('6',     exec_number,    null_opts),
-    ENTRY('7',     exec_number,    null_opts),
-    ENTRY('8',     exec_number,    null_opts),
-    ENTRY('9',     exec_number,    null_opts),
-    ENTRY(':',     exec_colon,     null_opts),
+    ENTRY('(',     exec_lparen,    OPT_S),
+    ENTRY(')',     exec_rparen,    OPT_S),
+    ENTRY('*',     exec_oper,      OPT_S),
+    ENTRY('+',     exec_oper,      OPT_S),
+    ENTRY(',',     exec_comma,     OPT_S),
+    ENTRY('-',     exec_oper,      OPT_S), 
+    ENTRY('.',     exec_dot,       OPT_S), 
+    ENTRY('/',     exec_oper,      OPT_S), 
+    ENTRY('0',     exec_number,    OPT_S), 
+    ENTRY('1',     exec_number,    OPT_S),
+    ENTRY('2',     exec_number,    OPT_S),
+    ENTRY('3',     exec_number,    OPT_S),
+    ENTRY('4',     exec_number,    OPT_S),
+    ENTRY('5',     exec_number,    OPT_S),
+    ENTRY('6',     exec_number,    OPT_S),
+    ENTRY('7',     exec_number,    OPT_S),
+    ENTRY('8',     exec_number,    OPT_S),
+    ENTRY('9',     exec_number,    OPT_S),
+    ENTRY(':',     exec_colon,     OPT_S),
     ENTRY(';',     exec_semi,      cn_opts),
     ENTRY('<',     exec_lt,        n_opts),
     ENTRY('=',     exec_equals,    acn1_opts),
     ENTRY('>',     exec_gt,        m_opts),
     ENTRY('?',     exec_trace,     c_opts),
-    ENTRY('@',     exec_atsign,    null_opts),
+    ENTRY('@',     exec_atsign,    OPT_S),
     ENTRY('A',     exec_A,         cf_opts),
     ENTRY('a',     exec_A,         cf_opts),
-    ENTRY('B',     exec_B,         null_opts),
-    ENTRY('b',     exec_B,         null_opts),
+    ENTRY('B',     exec_B,         OPT_S),
+    ENTRY('b',     exec_B,         OPT_S),
     ENTRY('C',     exec_C,         cn_opts),
     ENTRY('c',     exec_C,         cn_opts),
     ENTRY('D',     exec_D,         cm_opts),
     ENTRY('d',     exec_D,         cm_opts),
-    ENTRY('E',     NULL,           null_opts),
-    ENTRY('e',     NULL,           null_opts),
-    ENTRY('F',     NULL,           null_opts),
-    ENTRY('f',     NULL,           null_opts),
+    ENTRY('E',     NULL,           0),
+    ENTRY('e',     NULL,           0),
+    ENTRY('F',     NULL,           0),
+    ENTRY('f',     NULL,           0),
     ENTRY('G',     exec_G,         cnq_opts),
     ENTRY('g',     exec_G,         cnq_opts),
-    ENTRY('H',     exec_H,         null_opts),
-    ENTRY('h',     exec_H,         null_opts),
+    ENTRY('H',     exec_H,         OPT_S),
+    ENTRY('h',     exec_H,         OPT_S),
     ENTRY('I',     exec_I,         am1_opts),
     ENTRY('i',     exec_I,         am1_opts),
     ENTRY('J',     exec_J,         cn_opts),
@@ -318,8 +299,8 @@ const struct cmd_table cmd_table[] =
     ENTRY('n',     exec_N,         acn1_opts),
     ENTRY('O',     exec_O,         an1_opts),
     ENTRY('o',     exec_O,         an1_opts),
-    ENTRY('P',     exec_P,         cmw_opts),
-    ENTRY('p',     exec_P,         cmw_opts),
+    ENTRY('P',     exec_P,         cm_opts),
+    ENTRY('p',     exec_P,         cm_opts),
     ENTRY('Q',     exec_Q,         cfq_opts),
     ENTRY('q',     exec_Q,         cfq_opts),
     ENTRY('R',     exec_R,         cn_opts),
@@ -338,19 +319,19 @@ const struct cmd_table cmd_table[] =
     ENTRY('x',     exec_X,         cmq_opts),
     ENTRY('Y',     exec_Y,         c_opts),
     ENTRY('y',     exec_Y,         c_opts),
-    ENTRY('Z',     exec_Z,         null_opts),
-    ENTRY('z',     exec_Z,         null_opts),
+    ENTRY('Z',     exec_Z,         OPT_S),
+    ENTRY('z',     exec_Z,         OPT_S),
     ENTRY('[',     exec_lbracket,  mq_opts),
     ENTRY('\\',    exec_bslash,    n_opts),
     ENTRY(']',     exec_rbracket,  cmq_opts),
-    ENTRY('^',     NULL,           null_opts),
+    ENTRY('^',     NULL,           OPT_B),
     ENTRY('_',     exec_ubar,      acn1_opts),
-    ENTRY('`',     exec_bad,       null_opts),
-    ENTRY('{',     exec_bad,       null_opts),
+    ENTRY('`',     NULL,           OPT_B),
+    ENTRY('{',     NULL,           OPT_B),
     ENTRY('|',     exec_vbar,      m_opts),
-    ENTRY('}',     exec_bad,       null_opts),
-    ENTRY('~',     exec_bad,       null_opts),
-    ENTRY(DEL,     exec_bad,       null_opts),
+    ENTRY('}',     NULL,           OPT_B),
+    ENTRY('~',     NULL,           OPT_B),
+    ENTRY(DEL,     NULL,           OPT_B),
 };
 
 const uint cmd_max = countof(cmd_table); ///< Maximum command
@@ -365,8 +346,8 @@ const struct cmd_table e_table[] =
     ENTRY('2',  exec_E2,      fm_opts),
     ENTRY('3',  exec_E3,      fm_opts),
     ENTRY('4',  exec_E4,      fm_opts),
-    ENTRY('A',  exec_EA,      z_opts),
-    ENTRY('a',  exec_EA,      z_opts),
+    ENTRY('A',  exec_EA,      0),
+    ENTRY('a',  exec_EA,      0),
     ENTRY('B',  exec_EB,      ac1_opts),
     ENTRY('b',  exec_EB,      ac1_opts),
     ENTRY('C',  exec_EC,      n_opts),
@@ -375,8 +356,8 @@ const struct cmd_table e_table[] =
     ENTRY('d',  exec_ED,      fm_opts),
     ENTRY('E',  exec_EE,      f_opts),
     ENTRY('e',  exec_EE,      f_opts),
-    ENTRY('F',  exec_EF,      z_opts),
-    ENTRY('f',  exec_EF,      z_opts),
+    ENTRY('F',  exec_EF,      0),
+    ENTRY('f',  exec_EF,      0),
     ENTRY('G',  exec_EG,      ad1_opts),
     ENTRY('g',  exec_EG,      ad1_opts),
     ENTRY('H',  exec_EH,      fm_opts),
@@ -385,8 +366,8 @@ const struct cmd_table e_table[] =
     ENTRY('i',  exec_EI,      ad1_opts),
     ENTRY('J',  exec_EJ,      cm_opts),
     ENTRY('j',  exec_EJ,      cm_opts),
-    ENTRY('K',  exec_EK,      z_opts),
-    ENTRY('k',  exec_EK,      z_opts),
+    ENTRY('K',  exec_EK,      0),
+    ENTRY('k',  exec_EK,      0),
     ENTRY('L',  exec_EL,      a1_opts),
     ENTRY('l',  exec_EL,      a1_opts),
     ENTRY('M',  exec_EM,      acq1_opts),
@@ -395,8 +376,8 @@ const struct cmd_table e_table[] =
     ENTRY('n',  exec_EN,      ac1_opts),
     ENTRY('O',  exec_EO,      f_opts),
     ENTRY('o',  exec_EO,      f_opts),
-    ENTRY('P',  exec_EP,      z_opts),
-    ENTRY('p',  exec_EP,      z_opts),
+    ENTRY('P',  exec_EP,      0),
+    ENTRY('p',  exec_EP,      0),
     ENTRY('Q',  exec_EQ,      acq1_opts),
     ENTRY('q',  exec_EQ,      acq1_opts),
     ENTRY('R',  exec_ER,      ac1_opts),
@@ -411,8 +392,8 @@ const struct cmd_table e_table[] =
     ENTRY('v',  exec_EV,      f_opts),
     ENTRY('W',  exec_EW,      ac1_opts),
     ENTRY('w',  exec_EW,      ac1_opts),
-    ENTRY('X',  exec_EX,      z_opts),
-    ENTRY('x',  exec_EX,      z_opts),
+    ENTRY('X',  exec_EX,      0),
+    ENTRY('x',  exec_EX,      0),
     ENTRY('Y',  exec_EY,      c_opts),
     ENTRY('y',  exec_EY,      c_opts),
     ENTRY('_',  exec_E_ubar,  acn1_opts),
