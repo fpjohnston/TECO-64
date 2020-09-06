@@ -42,9 +42,9 @@
 
 uint if_depth = 0;                      ///< Nesting depth for if statements
 
-#define MAX_IF      1024
+#define MAX_IF      1024                ///< Maximum nesting depth
 
-static uint loop_level[MAX_IF];
+static uint loop_level[MAX_IF];         ///< Loop depth for each conditional
 
 // Local functions
 

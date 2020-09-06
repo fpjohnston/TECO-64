@@ -208,6 +208,9 @@ static const union cmd_opts null_opts = { .bits=0 };
 ///             (e.g., [ or ]).
 ///
 
+/// @def    ENTRY(chr, func, opts)
+/// @brief  Defines entries in command table.
+
 #if     defined(TECO_TRACE)
 
 #define ENTRY(chr, func, opts) [chr] = { func, &opts, #func }

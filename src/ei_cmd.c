@@ -40,6 +40,9 @@
 #include "exec.h"
 #include "file.h"
 
+///  @struct ei_list
+///  @brief  Linked list structure for EI command strings.
+
 struct ei_list
 {
     struct ei_list *next;           ///< Next EI block
