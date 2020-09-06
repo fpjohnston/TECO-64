@@ -580,13 +580,8 @@ static void scan_text(int delim, struct tstring *text)
 
     // Scan text string, looking for the specified delimiter (usually ESCape).
 
-    for (;;)
+    while (fetch_cbuf() != delim)
     {
-        if (fetch_cbuf() == delim)
-        {
-            return;
-        }
-
         ++text->len;
     }
 }
