@@ -82,11 +82,18 @@ void exec_I(struct cmd *cmd)
     else if (cmd->n_set)
     {
         char c = (char)cmd->n_arg;
-        uint n = 1;
+        uint n = 1;                     // Default: insert 1 character
 
-        if (cmd->m_set && cmd->m_arg > 0)
+        if (cmd->m_set)
         {
-            n = (uint)cmd->m_arg;
+            if (cmd->m_arg < 0)
+            {
+                throw(E_IIA);           // Illegal insert argument
+            }
+            else if ((n = (uint)cmd->m_arg) == 0)
+            {
+                return;                 // Don't insert if count is 0
+            }
         }
 
         while (n-- > 0)
