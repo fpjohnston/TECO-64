@@ -442,7 +442,7 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
     else
     {
         ofile->fp = fopen(ofile->name, "w+");
-    }      
+    }
 
     if (ofile->fp == NULL || !canonical_name(&ofile->name))
     {

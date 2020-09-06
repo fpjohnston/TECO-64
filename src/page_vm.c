@@ -61,7 +61,7 @@ static struct page *page_tail = NULL;   ///< Tail of page list
 ////////////////////////////////////////////////////////////////////////////////
 
 void page_backward(FILE *fp, int count)
-{ 
+{
     assert(fp != NULL);                 // Error if no file block
 
     // Save current page in queue, retrieve previous page.

@@ -59,7 +59,7 @@ void exec_EG(struct cmd *cmd)
     {
         throw(E_EGC);                   // EG command is too long
     }
-    
+
     if (cmd->colon || cmd->dcolon)
     {
         char syscmd[PATH_MAX];          // System command

@@ -90,7 +90,7 @@ static void set_colors(const struct cmd *cmd, enum window_pair pair);
 
 #endif
 
-    
+
 ///
 ///  @brief    Execute F1 command: set colors for command window.
 ///

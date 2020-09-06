@@ -122,7 +122,7 @@ struct ifile *find_command(char *file, uint len, uint stream, bool colon)
     {
         return NULL;
     }
-    
+
     throw(E_FNF, file);                 // File not found
 }
 

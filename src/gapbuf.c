@@ -569,7 +569,7 @@ int setsize_ebuf(int n)
     n *= 1024;                          // Make it K bytes
 
     int minsize = ((eb.left + eb.right) * 110) / 100;
-    
+
     if (n < minsize)
     {
         if ((n = minsize) == eb.size)

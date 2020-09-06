@@ -713,7 +713,7 @@ static void rubout_chr(int c)
 
     rubout_chrs(n);
 }
-    
+
 
 ///
 ///  @brief    Rubout multiple echoed characters.

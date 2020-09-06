@@ -61,7 +61,7 @@
 
 #define TECO_VERSION    200         ///< Our version of TECO
 
-struct flags f;                     ///< Global flag variables 
+struct flags f;                     ///< Global flag variables
 
 int radix = 10;                     ///< Current output radix
 
@@ -309,6 +309,6 @@ void tprintf(
     }
 
     fputc('\n', stdout);
-    
+
     va_end(argptr);
 }

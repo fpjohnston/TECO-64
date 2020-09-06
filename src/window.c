@@ -959,7 +959,7 @@ static void update_status(void)
         {
             strcpy(position, "<EOF>");
         }
-        
+
         int nbytes = snprintf(status, sizeof(status),
                               ".=%d  Z=%d  %s  nrows=%d  mem=%d",
                              t.dot, t.Z, position, nrows, t.size);

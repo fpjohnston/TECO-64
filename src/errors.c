@@ -68,7 +68,7 @@ static struct err_table err_table[] =
     [E_ARG] = { "ARG",  "Improper arguments" },
     [E_ATS] = { "ATS",  "Illegal at-sign, or too many at-signs" },
     [E_BOA] = { "BOA",  "O argument is out of range" },
-    [E_CHR] = { "CHR",  "Invalid character for command" }, 
+    [E_CHR] = { "CHR",  "Invalid character for command" },
     [E_COL] = { "COL",  "Illegal colon, or too many colons" },
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DTB] = { "DTB",  "Delete too big" },
@@ -149,7 +149,7 @@ static const char *verbose[] =
 
     [E_CHR] = "A non-ASCII character preceded an EE command.",
 
-    [E_COL] = "A colon preceded a command that does not allow colons, " 
+    [E_COL] = "A colon preceded a command that does not allow colons, "
               "or there were too many colons specified for the command.",
 
     [E_DIV] = "An attempt was made to divide a number by zero.",
@@ -259,7 +259,7 @@ static const char *verbose[] =
               "argument on which the decision to execute the following "
               "commands or skip to the matching > is based.",
 
-    [E_NAT] = "Both an n argument and a string were specified for a command " 
+    [E_NAT] = "Both an n argument and a string were specified for a command "
               "which does not allow more than one.",
 
     [E_NAU] = "The U comand must be preceded by either a specific "
@@ -437,7 +437,7 @@ void print_help(int error)
 ///            3. An unexpected event (e.g., out of memory).
 ///
 ///            Note that this function is not used for processor errors such as
-///            dereferencing an invalid pointer. 
+///            dereferencing an invalid pointer.
 ///
 ///            The specific error code is used to determine what arguments (if
 ///            any) have also been passed by the caller. There are four cases
@@ -560,7 +560,7 @@ noreturn void throw(int error, ...)
                 print_str(" for '%s'", file_str);
             }
         }
-        
+
         print_chr(CRLF);
 
         last_error = error;

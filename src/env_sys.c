@@ -95,14 +95,14 @@ int find_eg(char *cmd, bool dcolon)
     {
         return get_cmd(cmd);
     }
-    
+
     char buf[PATH_MAX];
     const char *env;
     char *arg;
     bool clear = false;
 
     strcpy(buf, cmd);
-    
+
     if ((arg = strchr(buf, ' ')) != NULL)
     {
         *arg++ = NUL;
@@ -135,7 +135,7 @@ int find_eg(char *cmd, bool dcolon)
     }
     else if (!strcasecmp(buf, "LIB"))
     {
-        env = "TECO_LIBRARY"; 
+        env = "TECO_LIBRARY";
         p = &teco_library;
     }
     else if (!strcasecmp(buf, "MEM"))

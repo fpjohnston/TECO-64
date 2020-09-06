@@ -122,7 +122,7 @@ static void check_qreg(const struct cmd_table *entry, struct cmd *cmd)
     {
         return;                         // No
     }
-    
+
     int c = fetch_cbuf();               // Get Q-register (or dot)
 
     if (c == '.')                       // Is it local?
@@ -218,7 +218,7 @@ void exec_cmd(struct cmd *macro)
 
         cmd.m_set = macro->m_set;
         cmd.m_arg = macro->m_arg;
-    }    
+    }
 
     // Loop for all commands in command string.
 
@@ -454,7 +454,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
             (void)fetch_cbuf();
 
             cmd->c2 = cmd->c1;
-            
+
             if (!empty_cbuf() && peek_cbuf() == '=')
             {
                 (void)fetch_cbuf();
@@ -756,7 +756,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
             *cmd = null_cmd;            //  then reset
         }
     }
- 
+
     estack.level = saved_level;
 
     return false;

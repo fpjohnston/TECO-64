@@ -562,7 +562,7 @@ void set_config(
                 }
 
                 break;
- 
+
             case OPTION_v:
                 config.f.vtedit = false;
 

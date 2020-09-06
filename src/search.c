@@ -90,7 +90,7 @@ void init_search(void)
 {
     register_exit(exit_search);
 }
-    
+
 
 ///
 ///  @brief    Check for multiple blanks (spaces or tabs) at current position.
