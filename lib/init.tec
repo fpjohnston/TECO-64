@@ -8,7 +8,4 @@ EO-200 "L
     ^C
 '
 
--1E1                    ! Enable all extended features !
--1E2                    ! Enable all command restrictions !
-
 ^[^[
