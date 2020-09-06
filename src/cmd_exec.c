@@ -285,16 +285,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd, bool skip)
 
     int c = cmd->c1;
 
-    if (nparens != 0 && f.e1.xoper && exec_xoper(c, skip))
-    {
-        if (c != '{' && c != '}')
-        {
-            check_args(cmd);
-        }
-
-        return &cmd_table[NUL];         // Execute dummy function
-    }
-    else if (c == 'E' || c == 'e')
+    if (c == 'E' || c == 'e')
     {
         return scan_ef(cmd, e_table, e_max, E_IEC);
     }
@@ -305,6 +296,15 @@ static const struct cmd_table *find_cmd(struct cmd *cmd, bool skip)
     else if (c < 0 || c >= (int)cmd_max)
     {
         throw(E_ILL, c);                // Illegal character
+    }
+    else if (nparens != 0 && f.e1.xoper && exec_xoper(c, skip))
+    {
+        if (c != '{' && c != '}')
+        {
+            check_args(cmd);
+        }
+
+        return &cmd_table[NUL];         // Execute dummy function
     }
     else if (c == '^' || c == '\x1E')
     {
@@ -321,6 +321,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd, bool skip)
 
             return &cmd_table[NUL];     // Execute dummy function
         }
+
         c -= 'A' - 1;
 
         if (c <= NUL || c >= SPACE)
@@ -344,7 +345,7 @@ static const struct cmd_table *find_cmd(struct cmd *cmd, bool skip)
 ///            The skip parameter determines whether we just ignore commands
 ///            until we find one that matches one of the characters in the
 ///            string, at which time we return to the caller. This is used for
-///            commands that affect program flow, such as ", F>, or O.
+///            branch and loop commands such as ", F>, and O.
 ///
 ///  @returns  Command function to execute, or NULL if at end of command string.
 ///
@@ -372,14 +373,14 @@ exec_func *next_cmd(struct cmd *cmd, const char *skip)
 
         const struct cmd_table *entry = find_cmd(cmd, (bool)(skip != NULL));
 
-        assert(entry->opts != NULL);
-
-        const union cmd_opts opts = *entry->opts;
-
         if (entry->exec == NULL)
         {
             continue;
         }
+
+        assert(entry->opts != NULL);
+
+        const union cmd_opts opts = *entry->opts;
 
         if (opts.bits != 0)
         {
@@ -388,34 +389,40 @@ exec_func *next_cmd(struct cmd *cmd, const char *skip)
 
         scan_mod(cmd, opts);            // Scan for @ and : modifiers
 
-        bool simple = (opts.bits == 0); // Simple command if true
+        bool basic = (opts.bits == 0);  // Basic command if true
+
+        // Handle commands that require special cases. These include A, which
+        // is a basic command if it's preceded by an expression, but not a
+        // colon, ^Q, which is a basic command if preceded by an expression,
+        // and 'flag' commands (e.g, ET), which are basic commands if they
+        // are NOT preceded by an expression.
 
         if (c == 'A' || c == 'a')
         {
             if (check_expr() && !cmd->colon)
             {
-                end_cmd(cmd, opts);     // Do final check for correctness
+                end_cmd(cmd, opts);     // Do final check
 
-                simple = true;
+                basic = true;
             }
         }
         else if (cmd->c1 == CTRL_Q)
         {
             if (check_expr())
             {
-                end_cmd(cmd, opts);     // Do final check for correctness
+                end_cmd(cmd, opts);     // Do final check
             }
 
-            simple = true;
+            basic = true;
         }
         else if (opts.f && !check_expr())
         {
-            simple = true;
+            basic = true;
         }
 
         if (skip != NULL && strchr(skip, c) == NULL)
         {
-            if (simple)
+            if (basic)
             {
                 continue;
             }
@@ -423,13 +430,13 @@ exec_func *next_cmd(struct cmd *cmd, const char *skip)
             return exec_null;           // Tell caller there's nothing to do
         }
 
-        if (simple)                     // Simple command?
+        if (basic)                      // Basic command?
         {
             (*entry->exec)(cmd);        // Yes, execute and continue
         }
         else                            // Complex command
         {
-            end_cmd(cmd, opts);         // Do final check for correctness
+            end_cmd(cmd, opts);         // Do final check
 
             return entry->exec;         // Tell caller what to do
         }
@@ -529,8 +536,8 @@ static void scan_mod(struct cmd *cmd, const union cmd_opts opts)
     else
     {
         if ((cmd->atsign && f.e2.atsign && !opts.a) ||
-            (cmd->colon && f.e2.colon && !opts.c) ||
-            (cmd->dcolon && f.e2.colon && !opts.d))
+            (cmd->colon  && f.e2.colon  && !opts.c) ||
+            (cmd->dcolon && f.e2.colon  && !opts.d))
         {
             throw(E_MOD);               // Illegal @, :, or ::
         }
