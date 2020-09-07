@@ -313,31 +313,14 @@ static exec_func *next_cmd(struct cmd *cmd)
 
     while (!empty_cbuf())
     {
-        int c = fetch_cbuf();
-
-        if (c == SPACE || c == LF || c == CR || c == FF || c == NUL)
-        {
-            continue;                   // Skip no-op commands
-        }
-
-        // Reset the fields that can change from command to command.
-
-        cmd->c1     = (char)c;
-        cmd->c2     = NUL;
-        cmd->c3     = NUL;
-        cmd->qname  = NUL;
-        cmd->qlocal = false;
-
         const struct cmd_table *entry = scan_cmd(cmd);
 
-        assert(entry != NULL);
-
-        enum cmd_opts opts = entry->opts;
-
-        if (entry->exec == NULL)
+        if (entry == NULL || entry->exec == NULL)
         {
             continue;
         }
+
+        enum cmd_opts opts = entry->opts;
 
         if (opts & OPT_T1)
         {
@@ -350,7 +333,7 @@ static exec_func *next_cmd(struct cmd *cmd)
         // and 'flag' commands (e.g, ET), which are simple commands if they
         // are NOT preceded by an expression.
 
-        if (c == 'A' || c == 'a')
+        if (cmd->c1 == 'A' || cmd->c1 == 'a')
         {
             if (check_expr() && !cmd->colon)
             {
@@ -408,7 +391,7 @@ static exec_func *next_cmd(struct cmd *cmd)
 ///
 ///  @brief    Find table entry for command.
 ///
-///  @returns  Table entry for function.
+///  @returns  Table entry for function, or NULL if nothing to do.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -416,7 +399,21 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    int c = cmd->c1;
+    int c = fetch_cbuf();
+
+    if (c == SPACE || c == LF || c == CR || c == FF || c == NUL)
+    {
+        return NULL;
+    }
+
+    cmd->c1 = (char)c;
+
+    // Reset the fields that can change from command to command.
+
+    cmd->c2     = NUL;
+    cmd->c3     = NUL;
+    cmd->qname  = NUL;
+    cmd->qlocal = false;
 
     if (c == 'E' || c == 'e')
     {
@@ -477,7 +474,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
 
             push_expr(c, EXPR_VALUE);
 
-            return &cmd_table[NUL];     // Execute dummy function
+            return NULL;
         }
 
         c -= 'A' - 1;
@@ -521,7 +518,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
             check_args(cmd);
         }
 
-        return &cmd_table[NUL];         // Execute dummy function
+        return NULL;
     }
 
     const struct cmd_table *entry = &cmd_table[c];
@@ -721,20 +718,9 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
 
     while (!empty_cbuf())
     {
-        int c = fetch_cbuf();
-
-        if (c == SPACE || c == LF || c == CR || c == FF || c == NUL)
-        {
-            continue;                   // Skip no-op commands
-        }
-
-        cmd->c1 = (char)c;
-
         const struct cmd_table *entry = scan_cmd(cmd);
 
-        assert(entry != NULL);
-
-        if (entry->exec == NULL)
+        if (entry == NULL || entry->exec == NULL)
         {
             continue;
         }
@@ -744,7 +730,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
             scan_texts(cmd, entry->opts); // Scan for text strings
         }
 
-        if (strchr(skip, c) != NULL)
+        if (strchr(skip, cmd->c1) != NULL)
         {
             estack.level = saved_level;
 
