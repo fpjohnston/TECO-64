@@ -72,8 +72,6 @@ extern void print_prompt(void);
 
 extern void print_str(const char *fmt, ...);
 
-extern void put_bell(void);
-
 extern void read_cmd(void);
 
 extern void reset_term(void);

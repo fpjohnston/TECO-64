@@ -362,25 +362,21 @@ static void read_ctrl_c(int last)
 
 static void read_ctrl_g(void)
 {
-    echo_in(CTRL_G);
+    echo_in(CTRL_G);                    // Echo ^G
 
     int c = getc_term((bool)WAIT);      // Get next character
 
-    echo_in(c);                         // Echo it
+    echo_in(c);                         // And echo it
 
     if (c == CTRL_G)                    // ^G^G
     {
         reset_cbuf();
         print_echo(CRLF);               // Start new line
 
-        if (!f.e0.winact)               // Don't ring bell if window active
-        {
-            put_bell();
-        }
-
         longjmp(jump_main, 1);
     }
-    else if (c == SPACE)                // ^G<SPACE> - retype current line
+
+    if (c == SPACE)                     // ^G<SPACE> - retype current line
     {
         print_echo(CRLF);
 

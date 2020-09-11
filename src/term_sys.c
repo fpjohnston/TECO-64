@@ -213,21 +213,6 @@ void init_term(void)
 
 
 ///
-///  @brief    Output bell (CTRL/G) to terminal. This has a separate function
-///            because in some operating environments we may choose to flash
-///            something on a screen.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void put_bell(void)
-{
-    print_chr(CTRL_G);
-}
-
-
-///
 ///  @brief    Reset terminal characteristics.
 ///
 ///  @returns  Nothing.
