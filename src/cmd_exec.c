@@ -83,7 +83,7 @@ static const struct cmd_table *scan_ef(struct cmd *cmd,
                                        const struct cmd_table *table,
                                        uint count, int error);
 
-static void scan_text(int delim, struct tstring *tstring);
+static void scan_text(int delim, struct tstring *text);
 
 static void scan_texts(struct cmd *cmd, enum cmd_opts opts);
 
@@ -313,6 +313,15 @@ static exec_func *next_cmd(struct cmd *cmd)
 
     while (!empty_cbuf())
     {
+        int c = fetch_cbuf();
+
+        if (c == SPACE || c == LF || c == CR || c == FF || c == NUL)
+        {
+            continue;                   // Just skip the no-op commands
+        }
+
+        cmd->c1 = (char)c;
+
         const struct cmd_table *entry = scan_cmd(cmd);
 
         if (entry == NULL || entry->exec == NULL)
@@ -333,7 +342,7 @@ static exec_func *next_cmd(struct cmd *cmd)
         // and 'flag' commands (e.g, ET), which are simple commands if they
         // are NOT preceded by an expression.
 
-        if (cmd->c1 == 'A' || cmd->c1 == 'a')
+        if (c == 'A' || c == 'a')
         {
             if (check_expr() && !cmd->colon)
             {
@@ -342,7 +351,7 @@ static exec_func *next_cmd(struct cmd *cmd)
                 opts |= OPT_S;
             }
         }
-        else if (cmd->c1 == CTRL_Q)
+        else if (c == CTRL_Q)
         {
             if (check_expr())
             {
@@ -399,14 +408,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    int c = fetch_cbuf();
-
-    if (c == SPACE || c == LF || c == CR || c == FF || c == NUL)
-    {
-        return NULL;
-    }
-
-    cmd->c1 = (char)c;
+    int c = (char)cmd->c1;
 
     // Reset the fields that can change from command to command.
 
@@ -570,17 +572,28 @@ static const struct cmd_table *scan_ef(struct cmd *cmd,
 
 static void scan_text(int delim, struct tstring *text)
 {
-    assert(text != NULL);               // Error if no text string buffer
+    assert(text != NULL);
 
-    text->len  = 0;
     text->data = cbuf->data + cbuf->pos;
 
-    // Scan text string, looking for the specified delimiter (usually ESCape).
+    uint n = cbuf->len - cbuf->pos;
+    char *end = memchr(text->data, delim, (ulong)n);
 
-    while (fetch_cbuf() != delim)
+    if (end == NULL)
     {
-        ++text->len;
+        if (check_macro())
+        {
+            throw(E_UTM);               // Unterminated macro
+        }
+        else
+        {
+            throw(E_UTC);               // Unterminated command
+        }
     }
+
+    text->len = (uint)(end - text->data);
+
+    cbuf->pos += text->len + 1;
 }
 
 
@@ -624,66 +637,53 @@ static void scan_texts(struct cmd *cmd, enum cmd_opts opts)
     }
 
     // If the user specified the at-sign modifier, then skip any whitespace
-    // between the command and the delimiter. This does not include tabs,
-    // since those are TECO commands.
+    // between the command and the delimiter.
 
     if (cmd->atsign)                    // @ modifier?
     {
-        while (!empty_cbuf())
+        while (!empty_cbuf() && isspace(peek_cbuf()))
         {
-            int c = peek_cbuf();
-
-            if (!isspace(c) || c == '\t')
-            {
-                break;
-            }
-
             (void)fetch_cbuf();
         }
 
-        // The next character has to be the delimiter.
+        // Treat first non-whitespace character as text delimiter.
 
         cmd->delim = (char)fetch_cbuf();
     }
 
-    int delim = cmd->delim;             // Temporary copy of delimiter
-
-    // Now get the text strings. If f.e1.text is enabled and the delimiter is
-    // '{', then the text strings may be of the form {xxx}. This allows for
-    // commands such as @S {foo} or @FS {foo} {baz}.
-
-    if (f.e1.text && cmd->delim == '{')
+    if (cmd->delim != '{' || !f.e1.text)
     {
-        delim = '}';
-    }
+        scan_text(cmd->delim, &cmd->text1);
 
-    scan_text(delim, &cmd->text1);
-
-    if (opts & OPT_T2)
-    {
-        delim = cmd->delim;
-
-        if (f.e1.text && cmd->delim == '{')
+        if (opts & OPT_T2)
         {
-            while (!empty_cbuf())
-            {
-                int c = peek_cbuf();
-
-                if (!isspace(c) || c == '\t')
-                {
-                    break;
-                }
-
-                (void)fetch_cbuf();
-            }
-
-            scan_text(delim, &cmd->text2);
-
-            delim = '}';
+            scan_text(cmd->delim, &cmd->text2);
         }
 
-        scan_text(delim, &cmd->text2);
+        return;
     }
+
+    // Here if user wants to delimit text string(s) with braces. This means
+    // the text strings may be of the form {xxx}, and may include whitespace.
+    // This allows for commands such as @S {foo} or @FS {foo} {baz}.
+
+    scan_text('}', &cmd->text1);
+
+    if (!(opts & OPT_T2))
+    {
+        return;
+    }
+
+    // Skip any whitespace after '}'
+
+    while (!empty_cbuf() && isspace(peek_cbuf()))
+    {
+        (void)fetch_cbuf();
+    }
+
+    int c = fetch_cbuf();
+
+    scan_text(c == '{' ? '}' : c, &cmd->text2);
 }
 
 
@@ -718,6 +718,15 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
 
     while (!empty_cbuf())
     {
+        int c = fetch_cbuf();
+
+        if (c == SPACE || c == LF || c == CR || c == FF || c == NUL)
+        {
+            continue;                   // Just skip the no-op commands
+        }
+
+        cmd->c1 = (char)c;
+
         const struct cmd_table *entry = scan_cmd(cmd);
 
         if (entry == NULL || entry->exec == NULL)
