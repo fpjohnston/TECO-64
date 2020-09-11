@@ -132,8 +132,6 @@ extern void exec_EK(struct cmd *cmd);
 
 extern void exec_EL(struct cmd *cmd);
 
-extern void exec_EM(struct cmd *cmd);
-
 extern void exec_EN(struct cmd *cmd);
 
 extern void exec_EO(struct cmd *cmd);
@@ -161,6 +159,8 @@ extern void exec_EW(struct cmd *cmd);
 extern void exec_EX(struct cmd *cmd);
 
 extern void exec_EY(struct cmd *cmd);
+
+extern void exec_E_pct(struct cmd *cmd);
 
 extern void exec_E_ubar(struct cmd *cmd);
 

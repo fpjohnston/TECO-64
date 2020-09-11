@@ -1,6 +1,6 @@
 ///
-///  @file    em_cmd.c
-///  @brief   Execute EM command.
+///  @file    e_pct_cmd.c
+///  @brief   Execute E% command.
 ///
 ///  @bug     No known bugs.
 ///
@@ -41,13 +41,13 @@
 
 
 ///
-///  @brief    Execute EM command: write Q-register to file.
+///  @brief    Execute E% command: write Q-register to file.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EM(struct cmd *cmd)
+void exec_E_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 

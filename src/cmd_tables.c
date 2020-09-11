@@ -342,6 +342,7 @@ const uint cmd_max = countof(cmd_table); ///< Maximum command
 
 const struct cmd_table e_table[] =
 {
+    ENTRY('%',  exec_E_pct,   acq1_opts),
     ENTRY('1',  exec_E1,      fm_opts),
     ENTRY('2',  exec_E2,      fm_opts),
     ENTRY('3',  exec_E3,      fm_opts),
@@ -370,8 +371,6 @@ const struct cmd_table e_table[] =
     ENTRY('k',  exec_EK,      0),
     ENTRY('L',  exec_EL,      a1_opts),
     ENTRY('l',  exec_EL,      a1_opts),
-    ENTRY('M',  exec_EM,      acq1_opts),
-    ENTRY('m',  exec_EM,      acq1_opts),
     ENTRY('N',  exec_EN,      ac1_opts),
     ENTRY('n',  exec_EN,      ac1_opts),
     ENTRY('O',  exec_EO,      f_opts),
