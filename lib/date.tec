@@ -1,27 +1,27 @@
-!DATE.TEC!
-! display the current date and time:                      !
-!   ^B == ((year-1900)*16+month)*32+day                   !
-!   ^H == (milliseconds since midnight)                   !
+!DATE.TEC - display the current date and time !
 
-0,128ET                 ! Abort on error                  !
+0,128ET                 ! Abort on error !
+
 EO-200 "L
-    @^A/%Macro requires TECO v200 or later/
+    @^A/?TECO macro requires TECO-64 v200+/
     13^T 10^T
     ^C
 '
 
--1E1                    ! Enable all extended features !
--1E2                    ! Enable all command restrictions !
+-1E2                    !! Enable all command restrictions
 
-                        ! Get MM/DD/YYYY in Q-reg's M,D,Y !
-^B U.0                  ! 0.num = encoded date            !
-(Q.0/32) & 15  U.M      ! M.num = month                   !
-(Q.0)    & 31  U.D      ! D.num = day                     !
-(Q.0/512)      U.Y      ! Y.num = year                    !
+!!   ^B == ((year-1900)*16+month)*32+day
+!!   ^H == (milliseconds since midnight)
 
-                        ! Get day of week in Q-reg W      !
-Q.D U.W                 ! W.num = days this month         !
-Q.M-2  "=  31%.W |      ! add days before this month      !
+                        !! Get MM/DD/YYYY in Q-reg's M,D,Y
+^B U.0                  !! 0.num = encoded date
+(Q.0/32) & 15  U.M      !! M.num = month
+(Q.0)    & 31  U.D      !! D.num = day
+(Q.0/512)      U.Y      !! Y.num = year
+
+                        !! Get day of week in Q-reg W
+Q.D U.W                 !! W.num = days this month
+Q.M-2  "=  31%.W |      !! add days before this month
 Q.M-3  "=  59%.W |
 Q.M-4  "=  90%.W |
 Q.M-5  "= 120%.W |
@@ -32,7 +32,7 @@ Q.M-9  "= 243%.W |
 Q.M-10 "= 273%.W |
 Q.M-11 "= 304%.W |
 Q.M-12 "= 334%.W '''''''''''
-Q.Y & 3 "=               ! correct for leap years          !
+Q.Y & 3 "=               !! correct for leap years
   Q.W-59 ">
     1%.W
   '
@@ -47,7 +47,7 @@ Q.1-4"= @^U.W%Thursday%  |
 Q.1-5"= @^U.W%Friday%    |
 Q.1-6"= @^U.W%Saturday%  '''''''
 
-Q.M-1"=  @^U.M%January%   | ! get name of month in Q-reg M !
+Q.M-1"=  @^U.M%January%   | !! get name of month in Q-reg M
 Q.M-2"=  @^U.M%February%  |
 Q.M-3"=  @^U.M%March%     |
 Q.M-4"=  @^U.M%April%     |
@@ -60,35 +60,35 @@ Q.M-10"= @^U.M%October%   |
 Q.M-11"= @^U.M%November%  |
 Q.M-12"= @^U.M%December%  ''''''''''''
 
-                        ! Get HH:MM:SS in Q-reg's H,N,S   !
-^H U.T                  ! T.num = returned time           !
+                        !! Get HH:MM:SS in Q-reg's H,N,S
+^H U.T                  !! T.num = returned time
 E1&4 "E
-    Q.T * 2 U.0         ! 0.num = seconds since midnight  !
+    Q.T * 2 U.0         !! 0.num = seconds since midnight
 |
     Q.T / 1000    U.0 
-    (Q.T // 1000) U.X   ! X.num = milliseconds            !
+    (Q.T // 1000) U.X   !! X.num = milliseconds
 '
-Q.0 / 3600         U.H  ! H.num = hours                   !
-(Q.0 // 3600)      U.S  ! S.num = seconds                 !
-Q.S / 60           U.N  ! N.num = minutes                 !
-(Q.S // 60)        U.S  ! S.num = seconds                 !
+Q.0 / 3600         U.H  !! H.num = hours
+(Q.0 // 3600)      U.S  !! S.num = seconds
+Q.S / 60           U.N  !! N.num = minutes
+(Q.S // 60)        U.S  !! S.num = seconds
 
-                        ! Display DAY MM/DD/YYYY          !
-:G.W                    ! display DAY                     !
-^^, ^T                  ! display ,                       !
-32^T                    ! display <SP>                    !
-:G.M                    ! display month                   !
-32^T                    ! display <SP>                    !
-Q.D :@=/%u, /           ! display day                     !
-1900 + Q.Y :@=/%u /     ! display year                    !
+                        !! Display DAY MM/DD/YYYY
+:G.W                    !! display DAY
+^^, ^T                  !! display ,
+32^T                    !! display <SP>
+:G.M                    !! display month
+32^T                    !! display <SP>
+Q.D :@=/%u, /           !! display day
+1900 + Q.Y :@=/%u /     !! display year
 
-                        ! Display HH:MM:DD                !
-Q.H :@=/%02u:/          ! display HH:                     !
-Q.N :@=/%02u:/          ! display MM:                     !
-Q.S :@=/%02u/           ! display SS                      !
+                        !! Display HH:MM:DD
+Q.H :@=/%02u:/          !! display HH:
+Q.N :@=/%02u:/          !! display MM:
+Q.S :@=/%02u/           !! display SS
 
-E1&4 "N                 ! Check for displaying  millisecs !
-    Q.X:@=/.%03u/       ! display milliseconds            !
+E1&4 "N                 !! Check for displaying  millisecs
+    Q.X:@=/.%03u/       !! display millisecond
 '
 
 -1^T

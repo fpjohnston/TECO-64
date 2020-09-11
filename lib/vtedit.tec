@@ -1,17 +1,18 @@
-! Window mode initialization for TECO-64 !
+!VTEDIT.TEC - window initialization for TECO-64 !
 
-0,128ET                ! Abort on error !
+0,128ET                 ! Abort on error !
 
 EO-200 "L
-    :@^A/?Initialization file requires TECO-64 v200+/
+    @^A/?TECO macro requires TECO-64 v200+/
+    13^T 10^T
     ^C
 '
 
 -1W
 9,7:W ^[
 
-@f1/green/black/       ! Command window colors !
-@f2/blue/white/        ! Text window colors !
-@f3/yellow/red/        ! Status line colors !
+@f1/green/black/       !! Command window colors
+@f2/blue/white/        !! Text window colors
+@f3/yellow/red/        !! Status line colors
 
 ^[^[
