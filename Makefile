@@ -76,8 +76,8 @@ LIBS =
 SOURCES = \
     build_str.c    \
     cmd_buf.c      \
+    cmd_estack.c   \
     cmd_exec.c     \
-    cmd_expr.c     \
     cmd_tables.c   \
     env_sys.c      \
     errors.c       \

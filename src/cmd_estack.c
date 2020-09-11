@@ -1,5 +1,5 @@
 ///
-///  @file    cmd_expr.c
+///  @file    cmd_estack.c
 ///  @brief   Functions that handle the expression stack.
 ///
 ///  @bug     No known bugs.
