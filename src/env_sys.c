@@ -2,8 +2,6 @@
 ///  @file    env_sys.c
 ///  @brief   System-specific environment functions for Linux.
 ///
-///  @bug     No known bugs.
-///
 ///  @copyright  2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a

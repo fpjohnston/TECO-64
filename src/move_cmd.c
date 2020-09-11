@@ -2,8 +2,6 @@
 ///  @file    move_cmd.c
 ///  @brief   Execute C, J, L, and R commands.
 ///
-///  @bug     No known bugs.
-///
 ///  @copyright  2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a

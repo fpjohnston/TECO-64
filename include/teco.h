@@ -2,8 +2,6 @@
 ///  @file    teco.h
 ///  @brief   Main header file for TECO-64 text editor.
 ///
-///  @bug     No known bugs.
-///
 ///  @copyright  2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a

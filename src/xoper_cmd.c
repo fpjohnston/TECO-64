@@ -2,8 +2,6 @@
 ///  @file    xoper_cmd.c
 ///  @brief   Execute extended operator commands.
 ///
-///  @bug     No known bugs.
-///
 ///  @copyright  2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a

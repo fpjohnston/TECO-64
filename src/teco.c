@@ -1,8 +1,6 @@
 ///
-///  @file       teco.c
-///  @brief      Main source file for TECO-64 text editor.
-///
-///  @bug        No known bugs.
+///  @file    teco.c
+///  @brief   Main source file for TECO-64 text editor.
 ///
 ///  @copyright  2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///

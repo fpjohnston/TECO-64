@@ -2,8 +2,6 @@
 ///  @file    term_out.c
 ///  @brief   System-independent functions to output to user's terminal.
 ///
-///  @bug     No known bugs.
-///
 ///  @copyright  2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a

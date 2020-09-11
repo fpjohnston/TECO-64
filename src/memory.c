@@ -1,8 +1,6 @@
 ///
-///  @file       memory.c
-///  @brief      Memory allocation & deallocation functions.
-///
-///  @bug        No known bugs.
+///  @file    memory.c
+///  @brief   Memory allocation & deallocation functions.
 ///
 ///  @copyright  2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///

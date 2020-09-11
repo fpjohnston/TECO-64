@@ -69,7 +69,6 @@ my $max_length = 0;
 #
 
 Readonly my $BRIEF     => q{@} . 'brief';
-Readonly my $BUG       => q{@} . 'bug';
 Readonly my $COPYRIGHT => q{@} . 'copyright';
 Readonly my $ENUM      => q{@} . 'enum';
 Readonly my $FILE      => q{@} . 'file';
@@ -89,8 +88,6 @@ my @file_hdr =
     '///  <a href="options.html">List of Command-line options</a>',
     '///',
     "///  $BRIEF      Process command-line options for TECO editor.",
-    '///',
-    "///  $BUG        No known bugs.",
     '///',
     "///  $COPYRIGHT  2019-2020 Franklin P. Johnston / Nowwith Treble Software",
     '///',
