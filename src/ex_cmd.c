@@ -57,6 +57,8 @@ void exec_EX(struct cmd *cmd)
         throw(E_NFO);                   // No file for output
     }
 
+    cmd->n_set = false;                 // Don't pass n through to EC
+
     exec_EC(cmd);                       // Close everything normally
 
     // The following allow for the use of EX inside of a conditional or loop.

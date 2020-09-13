@@ -48,7 +48,7 @@ void exec_EC(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if (cmd->n_set)                     // nEC?
+    if (cmd->n_set && cmd->n_arg != 0)  // nEC?
     {
         (void)setsize_ebuf(cmd->n_arg);
 
