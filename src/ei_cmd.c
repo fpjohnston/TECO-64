@@ -62,12 +62,12 @@ static uint trim_white(struct buffer *buf);
 ///            of the current command string has completed, as DEC TECOs have
 ///            done, or immediately execute the contents of the file as though
 ///            it were a macro, as TECO C has done. Which behavior is used
-///            depends on the eimacro bit in the E1 extended features flag. By
+///            depends on the alt_ei bit in the E1 extended features flag. By
 ///            default, this bit is enabled.
 ///
-///            N.B.: the eimacro bit should not be changed after TECO starts
-///            up. Changing it in the midst of executing EI commands could have
-///            unpredictable and undesirable results.
+///            N.B.: the alt_ei bit should not be changed after TECO starts up,
+///            or while executing EI commands, as this could have unpredictable
+///            and undesirable results.
 ///
 ///  @returns  Nothing.
 ///
@@ -77,9 +77,9 @@ void exec_EI(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    const char *buf     = cmd->text1.data;
-    uint len            = cmd->text1.len;
-    uint stream         = IFILE_INDIRECT;
+    const char *buf = cmd->text1.data;
+    uint len        = cmd->text1.len;
+    uint stream     = IFILE_INDIRECT;
 
     close_input(stream);                // Close any open file
 
@@ -87,12 +87,30 @@ void exec_EI(struct cmd *cmd)
     {
         if (current != NULL && current->buf.data == cbuf->data)
         {
-//            current->buf.pos = current->buf.len = 0;
-//            cbuf->pos = cbuf->len = 0;
+            current->buf.pos = current->buf.len = 0;
+            cbuf->pos = cbuf->len = 0;
         }
 
         return;
     }
+
+    // The following exists to ensure proper handling of old-style EI commands
+    // inside of macros. Since such EI commands just switch where input is read
+    // from, then we ensure that we reset any buffers in use before we create
+    // a new one.
+
+    if (current != NULL && !f.e1.alt_ei && !cmd->dcolon)
+    {
+        free_mem(&current->buf.data);
+        free_mem(&current);
+
+        cbuf->pos = cbuf->len = 0;
+    }
+
+    // Allocate an EI block, to process the macro we are about to read in, and
+    // make it the current one. We do it this way in order to avoid any memory
+    // leaks in the event an error occurs in one of the functions we call to
+    // open the indirect command file.
 
     struct ei_list *ei_cmd = alloc_mem((uint)sizeof(*ei_cmd));
 
@@ -100,11 +118,9 @@ void exec_EI(struct cmd *cmd)
     ei_cmd->buf.size = 0;
     ei_cmd->buf.len  = 0;
     ei_cmd->buf.pos  = 0;
+    ei_cmd->next     = current;
 
-    if (cmd->dcolon)
-    {
-        cmd->colon = false; // FIXME!
-    }
+    current = ei_cmd;
 
     if (open_command(buf, len, stream, cmd->colon, &ei_cmd->buf))
     {
@@ -112,25 +128,20 @@ void exec_EI(struct cmd *cmd)
         {
             ;
         }
-        else if (f.e1.eimacro || cmd->dcolon)
+        else if (f.e1.alt_ei || cmd->dcolon)
         {                               // EI command is executed as macro
-            ei_cmd->next = (current != NULL) ? current->next : NULL;
-
-            current = ei_cmd;
-
             exec_macro(&ei_cmd->buf, NULL);
-
-            current = ei_cmd->next;
         }
-        else
+        else                            // Old-style EI command
         {
-            ei_cmd->next = (current != NULL) ? current->next : NULL;
-
-            current = ei_cmd;
-
             return;
         }
     }
+
+    // Here after processing new-style EI command, or
+    // if there is no real data to process in EI file.
+
+    current = ei_cmd->next;
 
     free_mem(&ei_cmd->buf.data);
     free_mem(&ei_cmd);
@@ -173,7 +184,7 @@ void init_EI(void)
 
 int read_indirect(void)
 {
-    if (f.e1.eimacro || current == NULL)
+    if (f.e1.alt_ei || current == NULL)
     {
         return 0;
     }
