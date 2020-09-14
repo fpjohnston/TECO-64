@@ -4,7 +4,7 @@
 
 0,128ET
 
-@^A/EI test: /
+@^A/EI test #1: /
 
 ! Verify that a file name was specified with --buffer !
 
@@ -16,7 +16,7 @@ HXA HK
 
 ! Open file, using name in Q-register A !
 
-QA-1 "E   EI^EQA     :@^A/PASSED/                  @O/exit/ '
+QA-1 "E   EI^EQA    :@^A/PASSED/                  @O/exit/ '
 
 QA-2 "E  @EI/^EQA/    :@^A/PASSED/                  @O/exit/ '
 

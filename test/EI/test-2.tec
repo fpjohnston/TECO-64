@@ -1,0 +1,15 @@
+! TECO-64 test for EI: open indirect command file !
+
+! Ensure that we abort on error !
+
+0,128ET
+
+:@^A/EI test #2: /
+
+:@^A/entering test-2/
+
+@EI/test-2a/
+
+:@^A/exiting test-2/
+
+
