@@ -46,6 +46,7 @@ struct e0_flag
     uint upper  : 1;            ///< Force string arguments to upper case
     uint winact : 1;            ///< Window display is active
     uint trace  : 1;            ///< Trace mode is active
+    uint init   : 1;            ///< TECO is initializing
 };
 
 ///  @struct  e1_flag
@@ -63,7 +64,7 @@ union e1_flag
         uint text   : 1;        ///< Enable extended text strings
         uint dollar : 1;        ///< $ is a valid symbol character
         uint ubar   : 1;        ///< _ is a valid symbol character
-        uint alt_ei : 1;        ///< Execute EI commands as macros
+        uint new_ei : 1;        ///< Use new-style EI commands
         uint bang   : 1;        ///< !! starts end-of-line comment
     };
 };

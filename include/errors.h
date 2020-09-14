@@ -58,6 +58,7 @@ enum errors
     E_FIL,          ///< Illegal file "x"
     E_FNF,          ///< File not found "x"
     E_ICE,          ///< Illegal ^E command in search argument
+    E_IE1,          ///< Illegal E1 command
     E_IEC,          ///< Illegal character "x" after E
     E_IFC,          ///< Illegal character "x" after F
     E_IFE,          ///< Ill-formed numeric expression

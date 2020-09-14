@@ -180,7 +180,41 @@ void exec_ctrl_X(struct cmd *cmd)
 
 void exec_E1(struct cmd *cmd)
 {
+    union e1_flag saved = { .flag = f.e1.flag };
+
     (void)check_mn_flag(cmd, &f.e1.flag);
+
+    if (f.e0.init)                      // Initializing?
+    {
+        return;                         // Yes, don't worry about E1 changes
+    }
+            
+    if (f.e1.new_ei ^ saved.new_ei)     // Did EI bit change?
+    {
+        switch (check_EI())
+        {
+            case 1:                     // Processing new-style EI
+                if (f.e1.new_ei)        // Did we just set flag?
+                {
+                    return;             // Yes, that's okay
+                }
+
+                break;                  // Not okay
+                        
+            case -1:                    // Processing old-style EI
+                if (!f.e1.new_ei)       // Did we just clear flag?
+                {
+                    return;             // Yes, that's okay
+                }
+
+                break;                  // Not okay
+                        
+            default:                    // No change
+                return;
+        }
+
+        throw(E_IE1);                   // Illegal E1 command
+    }
 }
 
 

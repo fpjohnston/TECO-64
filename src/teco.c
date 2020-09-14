@@ -126,6 +126,8 @@ int main(int argc, const char * const argv[])
 
                 break;
         }
+
+        f.e0.init = false;              // No initialization in progress
     }
 }
 
@@ -140,6 +142,8 @@ int main(int argc, const char * const argv[])
 
 static void init_teco(int argc, const char * const argv[])
 {
+    f.e0.init    = true;                // Initialization is in progress
+
     f.ctrl_x     = 0;                   // Searches are case-insensitive
 
     f.eu         = -1;                  // No case flagging
@@ -154,7 +158,7 @@ static void init_teco(int argc, const char * const argv[])
     f.e1.text   = true;                 // Enable extended text strings
     f.e1.dollar = true;                 // $ is a valid symbol character
     f.e1.ubar   = true;                 // _ is a valid symbol character
-    f.e1.alt_ei = true;                 // Enable alternate EI commands
+    f.e1.new_ei = true;                 // Enable new-style EI commands
     f.e1.bang   = true;                 // !! starts end-of-line comment
 
     // Default settings for E2

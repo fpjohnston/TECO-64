@@ -38,28 +38,60 @@
 #include "exec.h"
 #include "file.h"
 
-///  @struct ei_list
+///  @var    ei_old
+///  @brief  Buffer for old-style EI commands
+
+static struct buffer ei_old;
+
+///  @struct ei_block
 ///  @brief  Linked list structure for EI command strings.
 
-struct ei_list
+struct ei_block
 {
-    struct ei_list *next;           ///< Next EI block
+    struct ei_block *next;          ///< Next EI block
     struct buffer buf;              ///< EI command string buffer
 };
 
-static struct ei_list *current = NULL;  ///< Current EI command string
+///   @var    ei_new
+///   @brief  Linked list for new-style EI commands
+
+static struct ei_block *ei_new = NULL;
 
 // Local functions
 
 static void exit_EI(void);
 
-static uint trim_white(struct buffer *buf);
+///
+///  @brief    Check to see if any EI commands are active.
+///
+///  @returns  +1 -> New-style EI command is active.
+///            -1 -> Old-style EI command is active.
+///             0 -> No EI command is active.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int check_EI(void)
+{
+    if (cbuf != NULL)
+    {
+        if (ei_new != NULL && cbuf->data == ei_new->buf.data)
+        {
+            return 1;
+        }
+        else if (cbuf->data == ei_old.data)
+        {
+            return -1;
+        }
+    }
+
+    return 0;
+}
 
 
 ///
 ///  @brief    Execute EI command: read TECO command file. This is handled in
 ///            one of two ways: preset where input is read from after execution
-///            of the current command string has completed, as DEC TECOs have
+///            of the ehead command string has completed, as DEC TECOs have
 ///            done, or immediately execute the contents of the file as though
 ///            it were a macro, as TECO C has done. Which behavior is used
 ///            depends on the alt_ei bit in the E1 extended features flag. By
@@ -83,68 +115,69 @@ void exec_EI(struct cmd *cmd)
 
     close_input(stream);                // Close any open file
 
-    if (len == 0)                       // @EI//?
+    if (f.e0.init || f.e1.new_ei)
     {
-        if (current != NULL && current->buf.data == cbuf->data)
+        struct ei_block *ei_cmd;
+
+        if (len != 0)
         {
-            current->buf.pos = current->buf.len = 0;
-            cbuf->pos = cbuf->len = 0;
+            ei_cmd           = alloc_mem((uint)sizeof(*ei_cmd));
+            ei_cmd->buf.data = alloc_mem((uint)sizeof(ei_cmd->buf));
+            ei_cmd->buf.size = 0;
+            ei_cmd->buf.len  = 0;
+            ei_cmd->buf.pos  = 0;
+            ei_cmd->next     = ei_new;
+
+            ei_new = ei_cmd;
+
+            if (open_command(buf, len, stream, cmd->colon, &ei_new->buf))
+            {
+                exec_macro(&ei_new->buf, NULL);
+
+                return;
+            }
         }
 
-        return;
-    }
-
-    // The following exists to ensure proper handling of old-style EI commands
-    // inside of macros. Since such EI commands just switch where input is read
-    // from, then we ensure that we reset any buffers in use before we create
-    // a new one.
-
-    if (current != NULL && !f.e1.alt_ei && !cmd->dcolon)
-    {
-        free_mem(&current->buf.data);
-        free_mem(&current);
-
-        cbuf->pos = cbuf->len = 0;
-    }
-
-    // Allocate an EI block, to process the macro we are about to read in, and
-    // make it the current one. We do it this way in order to avoid any memory
-    // leaks in the event an error occurs in one of the functions we call to
-    // open the indirect command file.
-
-    struct ei_list *ei_cmd = alloc_mem((uint)sizeof(*ei_cmd));
-
-    ei_cmd->buf.data = alloc_mem((uint)sizeof(ei_cmd->buf));
-    ei_cmd->buf.size = 0;
-    ei_cmd->buf.len  = 0;
-    ei_cmd->buf.pos  = 0;
-    ei_cmd->next     = current;
-
-    current = ei_cmd;
-
-    if (open_command(buf, len, stream, cmd->colon, &ei_cmd->buf))
-    {
-        if (trim_white(&ei_cmd->buf) == 0) // Any file data to process?
+        if ((ei_cmd = ei_new) != NULL)
         {
-            ;
-        }
-        else if (f.e1.alt_ei || cmd->dcolon)
-        {                               // EI command is executed as macro
-            exec_macro(&ei_cmd->buf, NULL);
-        }
-        else                            // Old-style EI command
-        {
-            return;
+            if (cbuf != NULL && cbuf->data == ei_cmd->buf.data)
+            {
+                cbuf->len = 0;
+                cbuf->pos = 0;
+            }
+
+            ei_new = ei_cmd->next;
+            
+            ei_cmd->buf.size = 0;
+            ei_cmd->buf.len  = 0;
+            ei_cmd->buf.pos  = 0;
+
+            free_mem(&ei_cmd->buf.data);
+            free_mem(&ei_cmd);
         }
     }
+    else
+    {
+        if (len != 0)
+        {
+            if (open_command(buf, len, stream, cmd->colon, &ei_old))
+            {
+                return;
+            }
+        }
 
-    // Here after processing new-style EI command, or
-    // if there is no real data to process in EI file.
+        if (cbuf != NULL && cbuf->data == ei_old.data)
+        {
+            cbuf->len = 0;
+            cbuf->pos = 0;
+        }
 
-    current = ei_cmd->next;
+        ei_old.size = 0;
+        ei_old.len  = 0;
+        ei_old.pos  = 0;
 
-    free_mem(&ei_cmd->buf.data);
-    free_mem(&ei_cmd);
+        free_mem(&ei_old);
+    }
 }
 
 
@@ -184,27 +217,17 @@ void init_EI(void)
 
 int read_indirect(void)
 {
-    if (f.e1.alt_ei || current == NULL)
+    if (ei_old.data == NULL || ei_old.pos == ei_old.len)
     {
+        ei_old.len = 0;
+        ei_old.pos = 0;
+
+        free_mem(&ei_old);
+
         return 0;
     }
 
-    if (current->buf.len == 0)
-    {
-        struct ei_list *ei_block = current;
-
-        current = ei_block->next;
-
-        free_mem(&ei_block->buf.data);
-        free_mem(&ei_block);
-    }
-
-    if (current == NULL || current->buf.data == NULL)
-    {
-        return 0;
-    }
-
-    set_cbuf(&current->buf);              // Use our command string
+    set_cbuf(&ei_old);                  // Use our command string
 
     // Check to see if buffer ends with a double ESCape, or some combination
     // of an ESCape and its equivalent 2-chr. ASCII construct (i.e., ^[ ).
@@ -263,43 +286,23 @@ int read_indirect(void)
 
 void reset_indirect(void)
 {
-    struct ei_list *ei;
+    ei_old.size = 0;
+    ei_old.len  = 0;
+    ei_old.pos  = 0;
 
-    while ((ei = current) != NULL)
+    free_mem(&ei_old);
+
+    struct ei_block *ei_cmd;
+
+    while ((ei_cmd = ei_new) != NULL)
     {
-        current = ei->next;
+        ei_new = ei_cmd->next;
 
-        free_mem(&ei->buf.data);
-        free_mem(&ei);
+        ei_cmd->buf.size = 0;
+        ei_cmd->buf.len  = 0;
+        ei_cmd->buf.pos  = 0;
+
+        free_mem(&ei_cmd->buf);
+        free_mem(&ei_cmd);
     }
-}
-
-
-///
-///  @brief    Delete any whitespace at end of buffer.
-///
-///  @returns  No. of bytes left in buffer.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static uint trim_white(struct buffer *buf)
-{
-    assert(buf != NULL);
-    assert(buf->data != NULL);
-
-    // Delete any whitespace at end of command string.
-
-    while (buf->len > 0)
-    {
-        int c = buf->data[buf->len - 1];
-
-        if (!isspace(c) || c == TAB)
-        {
-            break;
-        }
-
-        --buf->len;
-    }
-
-    return buf->len;
 }

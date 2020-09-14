@@ -226,7 +226,7 @@ static void copy_arg(char *cmd, ulong size, const char *file)
     }
     else
     {
-        snprintf(cmd, size, "::EI%s\e ", file);
+        snprintf(cmd, size, "EI%s\e ", file);
     }
 }
 

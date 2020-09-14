@@ -311,9 +311,8 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
 
     // If there's data in the file, then allocate a buffer for it.
 
-    if (size != 0)
+    if ((text->len = size) != 0)
     {
-        text->len  = size;
         text->pos  = 0;
         text->size = size;
         text->data = alloc_mem(text->size);
@@ -322,11 +321,25 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
         {
             throw(E_SYS, ifile->name); // Unexpected system error
         }
+
+        // Delete any trailing whitespace.
+
+        while (text->len > 0)
+        {
+            int c = text->data[text->len - 1];
+
+            if (!isspace(c) || c == TAB)
+            {
+                break;
+            }
+
+            --text->len;
+        }
     }
 
     close_input(stream);
 
-    return (size != 0) ? true : false;
+    return (text->len != 0) ? true : false;
 }
 
 

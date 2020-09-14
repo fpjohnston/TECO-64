@@ -75,6 +75,7 @@ static struct err_table err_table[] =
     [E_FIL] = { "FIL",  "Illegal file '%s'" },
     [E_FNF] = { "FNF",  "File not found '%s'" },
     [E_ICE] = { "ICE",  "Illegal ^E command in search argument" },
+    [E_IE1] = { "IE1",  "Illegal E1 command during EI command" },
     [E_IEC] = { "IEC",  "Illegal character '%s' after E" },
     [E_IFC] = { "IFC",  "Illegal character '%s' after F" },
     [E_IFE] = { "IFE",  "Ill-formed numeric expression" },
@@ -169,6 +170,10 @@ static const char *verbose[] =
               "not defined or incomplete. The only valid ^E commands "
               "in search arguments are: ^EA, ^ED, ^EV, ^EW, ^EL, ^ES, "
               "^E<nnn> and ^E[a,b,c...]",
+
+    [E_IE1] = "An invalid E1 command has been executed. The E1&32 bit may not "
+              "be set while executing an old-style EI command, and may not be "
+              "reset while executing a new-style EI command.",
 
     [E_IEC] = "An invalid E command has been executed. The E character "
               "must be followed by an alphabetic to form a legal E "
