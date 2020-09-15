@@ -60,7 +60,7 @@ static void exit_cbuf(void);
 
 bool check_semi(void)
 {
-    int saved_pos = cbuf->pos;
+    uint saved_pos = cbuf->pos;
     struct cmd cmd;
 
     while (cbuf->pos < cbuf->len)
