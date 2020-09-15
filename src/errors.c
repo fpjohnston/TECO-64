@@ -65,6 +65,7 @@ static struct err_table err_table[] =
     [E_NUL] = { "---",  "Unknown error code" },
     [E_ARG] = { "ARG",  "Improper arguments" },
     [E_ATS] = { "ATS",  "Illegal at-sign, or too many at-signs" },
+    [E_BNI] = { "BNI",  "> not in iteration" },
     [E_BOA] = { "BOA",  "O argument is out of range" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
     [E_COL] = { "COL",  "Illegal colon, or too many colons" },
@@ -84,17 +85,20 @@ static struct err_table err_table[] =
     [E_ILL] = { "ILL",  "Illegal command '%s'" },
     [E_ILN] = { "ILN",  "Illegal number" },
     [E_IMA] = { "IMA",  "Illegal m argument" },
+    [E_INA] = { "INA",  "Illegal n argument" },
     [E_INI] = { "INI",  "%s" },
+    [E_IOA] = { "IOA",  "Illegal O argument" },
     [E_IQC] = { "IQC",  "Illegal quote character" },
     [E_IQN] = { "IQN",  "Illegal Q-register name '%s'" },
     [E_IRA] = { "IRA",  "Illegal radix argument to ^R" },
     [E_ISA] = { "ISA",  "Illegal search argument" },
     [E_ISS] = { "ISS",  "Illegal search string" },
     [E_IUC] = { "IUC",  "Illegal character '%s' following ^" },
+    [E_MAP] = { "MAP",  "Missing '" },
     [E_MAT] = { "MAT",  "No match for file specification" },
     [E_MEM] = { "MEM",  "Memory overflow" },
-    [E_MLA] = { "MLA",  "Missing left angle bracket" },
     [E_MLP] = { "MLP",  "Missing left parenthesis" },
+    [E_MRA] = { "MRA",  "Missing right angle bracket" },
     [E_MRP] = { "MRP",  "Missing right parenthesis" },
     [E_MSC] = { "MSC",  "Missing start of conditional" },
     [E_NAB] = { "NAB",  "No argument before 1's complement operator" },
@@ -108,7 +112,6 @@ static struct err_table err_table[] =
     [E_NCA] = { "NCA",  "Negative argument to comma" },
     [E_NFI] = { "NFI",  "No file for input" },
     [E_NFO] = { "NFO",  "No file for output" },
-    [E_NOA] = { "NOA",  "O argument is non-positive" },
     [E_NON] = { "NON",  "No n argument after m argument" },
     [E_NOT] = { "NOT",  "O command has no tag" },
     [E_NOW] = { "NOW",  "Window support not enabled" },
@@ -124,13 +127,10 @@ static struct err_table err_table[] =
     [E_SYS] = { "SYS",  "%s" },
     [E_TAG] = { "TAG",  "Missing tag '!%s!'" },
     [E_UTC] = { "UTC",  "Unterminated command string" },
-    [E_UTL] = { "UTL",  "Unterminated loop" },
     [E_UTM] = { "UTM",  "Unterminated macro" },
-    [E_UTQ] = { "UTQ",  "Unterminated quote" },
     [E_WIN] = { "WIN",  "Window initialization error" },
     [E_XAB] = { "XAB",  "Execution aborted" },
     [E_YCA] = { "YCA",  "Y command aborted" },
-    [E_ZPA] = { "ZPA",  "P or PW argument is zero" },
 };
 
 ///  @var    verbose
@@ -143,6 +143,10 @@ static const char *verbose[] =
 
     [E_ATS] = "An at-sign preceded a command that does not allow at-signs, "
               "or there were too many at-signs specified for the command.",
+
+    [E_BNI] = "There is a close angle bracket not matched by an open angle "
+              "bracket somewhere to its left. (Note: an iteration in a macro "
+              "stored in a Q-register must be complete within the Q-register.)",
 
     [E_BOA] = "The argument for an O command was out of range",
 
@@ -195,7 +199,11 @@ static const char *verbose[] =
 
     [E_IMA] = "An m argument was provided to a command which does not allow it.",
 
+    [E_INA] = "An n argument was provided to a command which does not allow it.",
+
     [E_INI] = "A fatal error occurred during TECO initialization.",
+
+    [E_IOA] = "The argument for an O command was <= 0.",
 
     [E_IQC] = "One of the valid \" commands did not follow the \". Refer "
               "to Section 5.14 (conditional execution commands) for "
@@ -217,6 +225,9 @@ static const char *verbose[] =
               "between 100 and 137 inclusive or between 141 and 172 "
               "inclusive.",
 
+    [E_MAP] = "Every conditional (opened with the \" command) must be "
+              "closed with the ' command.",
+
     [E_MAT] = "No match was found for the file specification for an EN "
               "command.",
 
@@ -225,12 +236,12 @@ static const char *verbose[] =
               "much unnecessary text. Breaking up the text area into "
               "multiple pages might be useful.",
 
-    [E_MLA] = "There is a right angle bracket that has no matching left "
-              "angle bracket. An iteration must be complete within the "
-              "macro or command.",
-
     [E_MLP] = "There is a right parenthesis trhat is not matched by a "
               "corresponding left parenthesis.",
+
+    [E_MRA] = "There is a left angle bracket that has no matching right "
+              "angle bracket. An iteration must be complete within the "
+              "macro or command.",
 
     [E_MRP] = "There is a left parenthesis that is not matched by a "
               "corresponding right parenthesis.",
@@ -279,13 +290,11 @@ static const char *verbose[] =
               "it is necessary to open an output file by use of a "
               "command such as EW or EB.",
 
-    [E_NOA] = "The argument for an O command was <= 0.",
-
     [E_NON] = "An m argument was not followed by an n argument.",
 
     [E_NOT] = "No tag was found for an O command.",
 
-    [E_NPA] = "The argument preceding a P or PW command is negative.",
+    [E_NPA] = "The argument preceding a P or PW command is zero or negative.",
 
     [E_NYA] = "The Y command must not be preceded by either a numeric "
               "argument or a command that returns a numeric value.",
@@ -336,18 +345,11 @@ static const char *verbose[] =
               "(i.e., unterminated ! construct), or a missing ' "
               "character which closes a conditional execution command.",
 
-    [E_UTL] = "There is a right angle bracket that has no matching left "
-              "angle bracket. An iteration must be complete within the "
-              "macro or command.",
-
     [E_UTM] = "This error is that same as the ?UTC error except that the "
               "unterminated command was executing from a Q-register "
               "(i.e., it was a macro). (Note: An entire command "
               "sequence stored in a q-register must be complete within "
               "the Q-register.)",
-
-    [E_UTQ] = "Every conditional started with the \" command must be "
-              "terminated with the ' command.",
 
     [E_WIN] = "Window error occurred. More information is TBD.",
 
@@ -358,8 +360,6 @@ static const char *verbose[] =
               "command with an output file open, that would cause text "
               "in the text buffer to be erased without outputting it to "
               "the output file. The ED command controls this check.",
-
-    [E_ZPA] = "The argument preceding a P or PW command is zero.",
 };
 
 

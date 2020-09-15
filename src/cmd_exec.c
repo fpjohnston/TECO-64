@@ -191,6 +191,13 @@ static void end_cmd(struct cmd *cmd, enum cmd_opts opts)
             throw(E_NON);               // No n argument after m argument
         }
     }
+    else if (cmd->n_set)
+    {
+        if (f.e2.n_arg && !(opts & OPT_N))
+        {
+            throw(E_INA);               // Illegal n argument
+        }
+    }
 }
 
 

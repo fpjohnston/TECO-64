@@ -48,6 +48,7 @@ enum errors
     E_NUL,          ///< No error
     E_ARG,          ///< Improper arguments
     E_ATS,          ///< Illegal at-sign, or too many at-signs
+    E_BNI,          ///< Right angle bracket not in iterationx
     E_BOA,          ///< O argument is out of range
     E_CHR,          ///< Invalid character for command
     E_COL,          ///< Illegal colon, or too many colons
@@ -67,17 +68,20 @@ enum errors
     E_ILL,          ///< Illegal command "x"
     E_ILN,          ///< Illegal number
     E_IMA,          ///< Illegal m argument
+    E_INA,          ///< Illegal n argument
     E_INI,          ///< Initialization error
+    E_IOA,          ///< Illegal O argument
     E_IQC,          ///< Illegal quote character
     E_IQN,          ///< Illegal Q-register name "x"
     E_IRA,          ///< Illegal radix argument to ^R
     E_ISA,          ///< Illegal search argument
     E_ISS,          ///< Illegal search string
     E_IUC,          ///< Illegal character "x" following ^
+    E_MAP,          ///< Missing apostrophe
     E_MAT,          ///< No matching files
     E_MEM,          ///< Memory overflow
-    E_MLA,          ///< Missing left angle bracket
     E_MLP,          ///< Missing left parenthesis
+    E_MRA,          ///< Missing right angle bracket
     E_MRP,          ///< Missing right parenthesis
     E_MSC,          ///< Missing start of conditional
     E_NAB,          ///< No argument before 1's complement operator
@@ -91,7 +95,6 @@ enum errors
     E_NCA,          ///< Negative argument to comma
     E_NFI,          ///< No file for input
     E_NFO,          ///< No file for output
-    E_NOA,          ///< O argument is non-positive
     E_NON,          ///< No n argument after m argument
     E_NOT,          ///< O command has no tag
     E_NOW,          ///< Window support not enabled
@@ -107,13 +110,10 @@ enum errors
     E_SYS,          ///< System error message
     E_TAG,          ///< Missing tag "!x!"
     E_UTC,          ///< Unterminated command string
-    E_UTL,          ///< Unterminated loop
     E_UTM,          ///< Unterminated macro
-    E_UTQ,          ///< Unterminated quote
     E_WIN,          ///< Window initialization error
     E_XAB,          ///< Execution aborted
     E_YCA,          ///< Y command aborted
-    E_ZPA           ///< P or PW argument is zero
 };
 
 extern void print_help(int err_teco);

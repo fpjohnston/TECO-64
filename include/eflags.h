@@ -85,6 +85,7 @@ union e2_flag
         uint colon  : 1;        ///< Invalid :, or more than two colons
         uint comma  : 1;        ///< No argument before ,
         uint m_arg  : 1;        ///< Illegal m argument
+        uint n_arg  : 1;        ///< Illegal n argument
         uint loop   : 1;        ///< Loop not complete within conditional
         uint quote  : 1;        ///< Conditional not complete within loop
         uint page   : 1;        ///< m,n:P or H:P or :PW

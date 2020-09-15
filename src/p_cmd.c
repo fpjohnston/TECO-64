@@ -93,7 +93,7 @@ void exec_P(struct cmd *cmd)
     {
         if ((count = cmd->n_arg) == 0)
         {
-            throw(E_ZPA);               // P argument cannot be zero
+            throw(E_NPA);               // Negative or zero argument to P or PW
         }
         else if (count < 0)             // -nP?
         {

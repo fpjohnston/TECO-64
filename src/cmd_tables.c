@@ -241,7 +241,7 @@ const struct cmd_table cmd_table[] =
     ENTRY('$',     NULL,           OPT_B),
     ENTRY('%',     exec_pct,       cnq_opts),
     ENTRY('&',     exec_oper,      OPT_S),
-    ENTRY('\'',    exec_apos,      n_opts),
+    ENTRY('\'',    exec_apos,      m_opts),
     ENTRY('(',     exec_lparen,    OPT_S),
     ENTRY(')',     exec_rparen,    OPT_S),
     ENTRY('*',     exec_oper,      OPT_S),

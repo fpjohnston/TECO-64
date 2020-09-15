@@ -103,7 +103,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
     {
         if (!skip_cmd(cmd, "\"'<>"))
         {
-            throw(E_UTL);               // Unterminated loop
+            throw(E_MRA);               // Missing right angle bracket
         }
 
         if (f.e2.loop)
@@ -119,7 +119,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 
             if (loop_head != NULL && loop_head->depth > if_depth)
             {
-                throw(E_UTQ);           // Unterminated quote
+                throw(E_MAP);           // Missing apostrophe
             }
         }
 
@@ -182,14 +182,14 @@ void exec_gt(struct cmd *cmd)
 
     if (loop == NULL)
     {
-        throw(E_MLA);                   // Missing left angle bracket
+        throw(E_BNI);                   // Right angle bracket not in iteration
     }
 
     if (f.e2.loop)
     {
         if (loop->depth != if_depth)
         {
-            throw(E_UTQ);               // Unterminated quote
+            throw(E_MAP);               // Missing apostrophe
         }
     }
 

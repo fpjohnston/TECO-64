@@ -66,7 +66,7 @@ static void endif(struct cmd *cmd, bool else_ok)
 
     if (if_depth == 0)
     {
-        throw(E_UTQ);                   // Unterminated quote
+        throw(E_MAP);                   // Missing apostrophe
     }
 
     const uint start_if = if_depth;     // Initial conditional depth
@@ -75,7 +75,7 @@ static void endif(struct cmd *cmd, bool else_ok)
     {
         if (!skip_cmd(cmd, "\"'<>|"))
         {
-            throw(E_UTQ);               // Unterminated conditional
+            throw(E_MAP);               // Missing apostrophe
         }
 
         //  The following code ensures that a loop begun after a " command ends
@@ -103,7 +103,7 @@ static void endif(struct cmd *cmd, bool else_ok)
 
             if (f.e2.quote && loop_depth < loop_level[if_depth - 1])
             {
-                throw(E_UTL);           // Unterminated loop
+                throw(E_MRA);           // Missing right angle bracket
             }
         }
         else if (cmd->c1 == '"')        // Conditional start
@@ -118,7 +118,7 @@ static void endif(struct cmd *cmd, bool else_ok)
         {
             if (f.e2.quote && loop_depth != loop_level[if_depth - 1])
             {
-                throw(E_UTL);           // Unterminated loop
+                throw(E_MRA);           // Missing right angle bracket
             }
 
             if (else_ok && if_depth == start_if)
@@ -147,7 +147,7 @@ void exec_apos(struct cmd *unused1)
 
     if (f.e2.quote && loop_depth != loop_level[if_depth - 1])
     {
-        throw(E_UTL);                   // Unterminated loop
+        throw(E_MRA);                   // Missing right angle bracket
     }
 
     pop_if();
@@ -324,13 +324,16 @@ void exec_vbar(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    assert(if_depth != 0); // FIXME!
+    if (if_depth == 0)
+    {
+        throw(E_MSC);                   // Missing start of conditional
+    }
 
     if (f.e2.quote)
     {
         if (loop_depth != loop_level[if_depth])
         {
-            throw(E_UTL);               // Unterminated loop
+            throw(E_MRA);               // Missing right angle bracket
         }
     }
 

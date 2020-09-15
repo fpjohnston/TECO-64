@@ -104,7 +104,7 @@ void exec_O(struct cmd *cmd)
 
     if (cmd->n_arg <= 0)                // Is value non-positive?
     {
-        throw(E_NOA);                   // O argument is <= 0
+        throw(E_IOA);                   // Illegal O argument
     }
 
     // Parse the comma-separated list of tags, looking for the one we want.
