@@ -139,7 +139,7 @@ extern int fetch_cbuf(void);
 
 extern void init_cbuf(void);
 
-extern void reset_cbuf(void);
+extern void reset_cbuf(bool noerror);
 
 extern void store_cbuf(int c);
 

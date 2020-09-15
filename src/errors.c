@@ -545,6 +545,8 @@ noreturn void throw(int error, ...)
 
     // Ensure that '?' command only prints command string up to error.
 
+    reset_cbuf((bool)false);
+
     term_block->len = term_block->pos = cbuf->pos;
 
     // If CTRL/C and we're not executing a command, don't print error.

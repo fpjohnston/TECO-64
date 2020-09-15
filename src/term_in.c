@@ -368,7 +368,7 @@ static void read_ctrl_g(void)
 
     if (c == CTRL_G)                    // ^G^G
     {
-        reset_cbuf();
+        reset_cbuf((bool)true);
         print_echo(CRLF);               // Start new line
 
         longjmp(jump_main, 1);
@@ -501,7 +501,7 @@ static int read_first(void)
 
     bool prompt_enabled = true;
 
-    reset_cbuf();
+    reset_cbuf((bool)true);
 
     for (;;)
     {

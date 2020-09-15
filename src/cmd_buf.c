@@ -176,14 +176,17 @@ void init_cbuf(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void reset_cbuf(void)
+void reset_cbuf(bool noerror)
 {
     assert(root != NULL);               // Verify default command buffer
 
     cbuf = root;
 
-    cbuf->pos = 0;
-    cbuf->len = 0;
+    if (noerror)
+    {
+        cbuf->pos = 0;
+        cbuf->len = 0;
+    }
 }
 
 

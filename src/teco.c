@@ -275,7 +275,7 @@ void reset(void)
     reset_if();                         // Reset conditional stack
     reset_loop();                       // Reset loop stack
     reset_indirect();                   // Close any indirect file
-    reset_cbuf();                       // Reset the input buffer
+    reset_cbuf((bool)true);             // Reset the input buffer
     reset_qreg();                       // Free up Q-register storage
     reset_macro();                      // Reset macro stack
 }
