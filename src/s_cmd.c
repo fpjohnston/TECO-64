@@ -184,7 +184,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         // Return value if colon modifier, or we are in a loop
         // and the next command is a semi-colon.
 
-        if (cmd->colon || (check_loop() && check_semi()))
+        if (cmd->colon)
         {
             push_expr(0, EXPR_VALUE);
         }
@@ -195,9 +195,16 @@ static void exec_search(struct cmd *cmd, bool replace)
                 setpos_ebuf(0);
             }
 
-            last_search.data[last_search.len] = NUL;
+            if (check_loop() && check_semi())
+            {
+                push_expr(0, EXPR_VALUE);
+            }
+            else
+            {
+                last_search.data[last_search.len] = NUL;
 
-            throw(E_SRH, last_search.data);
+                throw(E_SRH, last_search.data);
+            }
         }
     }
 }

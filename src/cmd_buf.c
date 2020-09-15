@@ -54,35 +54,32 @@ static void exit_cbuf(void);
 ///            lookahead here so that we can return a value if a semi-colon
 ///            follows a search command.
 ///
-///  @returns  true if next command is ; or :;, else false.
+///  @returns  true if next command is ;, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 bool check_semi(void)
 {
-    bool colon = false;                 // Allow : before ;
+    int saved_pos = cbuf->pos;
+    struct cmd cmd;
 
-    // Check all remaining characters in command buffer.
-
-    for (uint i = cbuf->pos; i < cbuf->len; ++i)
+    while (cbuf->pos < cbuf->len)
     {
-        int c = cbuf->data[i];
+        if (!skip_cmd(&cmd, ";"))
+        {
+            break;                      // No more commands, so quit
+        }
 
-        if (c == ';')                   // semi-colon found
-        {
-            return true;
-        }
-        else if (c == ':' && !colon)    // Allow colon if we haven't seen one
-        {
-            colon = true;
-        }
-        else if (c != NUL && c != LF && c != FF && c != CR && c != SPACE)
-        {
-            break;                      // Quit if any non-whitespace
-        }
+        assert(cmd.c1 == ';');
+
+        cbuf->pos = saved_pos;
+
+        return true;
     }
 
-    return false;                       // Semi-colon not found
+    cbuf->pos = saved_pos;
+
+    return false;
 }
 
 
