@@ -400,7 +400,7 @@ void print_help(int error)
 
             if (len > (uint)w.width)
             {
-                print_str("%.s", (end - start) - 1, start);
+                print_str("%.*s", (end - start) - 1, start);
                 print_chr(CRLF);
 
                 --maxlines;
