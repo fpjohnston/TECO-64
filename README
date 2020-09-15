@@ -1,8 +1,17 @@
-README file for TECO-64 version 200.
+README file for the TECO-64 version 200 text editor.
 
-Please refer to the PDF files in the doc/ directory for more complete
-documentation regarding the TECO-64 text editor.
+Please refer to the following PDF files in the doc/ directory for more complete
+documentation:
 
-The makefile included with this distribution is intended to be used
-with the GNU toolchain. To build TECO, type 'make' or 'make teco'.
+    Introduction.pdf - History and overview of TECO.
+    Options.pdf      - Command-line options.
+    Enhancements.pdf - New and enhanced features.
+    Omissions.pdf    - Unimplemented features.
+    Differences.pdf  - TECO C comparison.
+
+The makefile included with this distribution is intended to be used with the GNU
+toolchain.
+
+To build TECO, type 'make' or 'make teco'.
+
 To obtain a list of other targets, type 'make help'.
