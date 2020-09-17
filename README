@@ -1,4 +1,38 @@
-README file for the TECO-64 version 200 text editor.
+README file for version 200 of the TECO-64 text editor.
+
+The makefile included with this distribution is intended to be used with the GNU
+toolchain. To build TECO, go to the main directory and type
+
+    make
+
+or
+
+    make teco
+
+An executable image will be created in the bin/ directory, and can then be used
+to print a list of command-line options by typing
+
+    bin/teco --help    
+
+If Doxygen is installed, documentation may be created in the html/ directory by
+typing
+
+    make doc
+
+or
+
+    make doxygen
+
+To print a list of other targets, type
+
+    make help
+
+To print a list of build options, type
+
+    make options
+
+Note that the lint options require the use of PC-lint, which was used for
+debugging, but which is not distributed with TECO-64.
 
 Please refer to the following PDF files in the doc/ directory for more complete
 documentation:
@@ -9,9 +43,3 @@ documentation:
     Omissions.pdf    - Unimplemented features.
     Differences.pdf  - TECO C comparison.
 
-The makefile included with this distribution is intended to be used with the GNU
-toolchain.
-
-To build TECO, type 'make' or 'make teco'.
-
-To obtain a list of other targets, type 'make help'.
