@@ -113,7 +113,7 @@ enum errors
     E_UTM,          ///< Unterminated macro
     E_WIN,          ///< Window initialization error
     E_XAB,          ///< Execution aborted
-    E_YCA,          ///< Y command aborted
+    E_YCA           ///< Y command aborted
 };
 
 extern void print_help(int err_teco);
