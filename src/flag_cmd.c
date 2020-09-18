@@ -188,7 +188,7 @@ void exec_E1(struct cmd *cmd)
     {
         return;                         // Yes, don't worry about E1 changes
     }
-            
+
     if (f.e1.new_ei ^ saved.new_ei)     // Did EI bit change?
     {
         switch (check_EI())
@@ -200,7 +200,7 @@ void exec_E1(struct cmd *cmd)
                 }
 
                 break;                  // Not okay
-                        
+
             case -1:                    // Processing old-style EI
                 if (!f.e1.new_ei)       // Did we just clear flag?
                 {
@@ -208,7 +208,7 @@ void exec_E1(struct cmd *cmd)
                 }
 
                 break;                  // Not okay
-                        
+
             default:                    // No change
                 return;
         }

@@ -147,7 +147,7 @@ void exec_EI(struct cmd *cmd)
             }
 
             ei_new = ei_cmd->next;
-            
+
             ei_cmd->buf.size = 0;
             ei_cmd->buf.len  = 0;
             ei_cmd->buf.pos  = 0;
