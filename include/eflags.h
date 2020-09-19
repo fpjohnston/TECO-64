@@ -103,7 +103,7 @@ union e3_flag
 
     struct
     {
-        uint no_ff  : 1;        ///< FF is normal character on input
+        uint nopage : 1;        ///< Don't use FF as page delimiter
         uint smart  : 1;        ///< Smart mode for line terminators
         uint icrlf  : 1;        ///< Use CR/LF for input lines
         uint ocrlf  : 1;        ///< Use CR/LF for output lines

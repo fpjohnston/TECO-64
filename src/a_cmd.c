@@ -113,9 +113,9 @@ bool append_line(void)
     {
         next = fgetc(ifile->fp);
 
-        if (c == FF && !f.e3.no_ff)     // If form feed, don't store it
+        if (c == FF && !f.e3.nopage)    // Is it FF, and is it a page delimiter?
         {
-            f.ctrl_e = true;            // But do flag it
+            f.ctrl_e = true;            // Yes, flag it, but don't store it
 
             if (next != EOF)
             {

@@ -167,7 +167,17 @@ static void init_teco(int argc, const char * const argv[])
 
     // Default settings for E3
 
-    f.e3.smart   = true;                // Enable smart line detection
+#if   defined(__vms)
+
+    f.e3.nopage = false;                // FF is page delimiter
+
+#else
+
+    f.e3.nopage = true;                 // FF is normal character
+
+#endif
+
+    f.e3.smart = true;                  // Enable smart line detection
 
 #if     defined(__linux) || defined(__APPLE__)
 

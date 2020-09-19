@@ -104,7 +104,7 @@ void exec_P(struct cmd *cmd)
 
         if (cmd->w)                     // Is it nPW?
         {
-            ff = true;
+            ff = !f.e3.nopage;
         }
         else                            // Must be nP or n:P
         {
@@ -118,7 +118,7 @@ void exec_P(struct cmd *cmd)
 
         if (cmd->w)                     // Is it PW?
         {
-            ff = true;
+            ff = !f.e3.nopage;
         }
         else                            // Must be P or :P
         {
