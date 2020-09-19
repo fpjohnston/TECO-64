@@ -182,7 +182,7 @@ static void check_config(void)
                 errno = EINVAL;
             }
 
-            tprintf("?%s for %s option", strerror(errno), option);
+            tprint("?%s for %s option", strerror(errno), option);
 
             exit(EXIT_FAILURE);
         }
@@ -196,7 +196,7 @@ static void check_config(void)
         return;
     }
 
-    tprintf("?Missing argument for %s option?", option);
+    tprint("?Missing argument for %s option?", option);
 
     exit(EXIT_FAILURE);
 }
@@ -244,7 +244,7 @@ static void finish_config(int argc, const char * const argv[])
 
     if ((argc -= optind) > 1)
     {
-        tprintf("?Too many non-option arguments");
+        tprint("?Too many non-option arguments");
 
         exit(EXIT_FAILURE);
     }
@@ -419,7 +419,7 @@ static void print_help(void)
 
     while ((p = help_text[i++]) != NULL)
     {
-        tprintf("%s", p);
+        tprint("%s", p);
     }
 
     exit(EXIT_SUCCESS);
@@ -589,7 +589,7 @@ void set_config(
                 break;
 
             default:
-                tprintf("%%Unknown option '%s': use --help for list of "
+                tprint("%%Unknown option '%s': use --help for list of "
                         "options", argv[optind - 1]);
 
                 exit(EXIT_FAILURE);

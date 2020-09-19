@@ -299,7 +299,7 @@ void reset(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void tprintf(
+void tprint(
     const char *format,                 ///< printf() format string
     ...)                                ///< Remaining arguments for printf()
 {
