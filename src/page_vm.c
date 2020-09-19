@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -44,25 +45,202 @@ struct page
     struct page *prev;                  ///< Previous page in queue
     char *addr;                         ///< Address of page
     uint size;                          ///< Size of page in bytes
+    uint cr;                            ///< No. of added CRs in page
+    bool ocrlf;                         ///< Copy of f.e3.ocrlf
     bool ff;                            ///< Append form feed to page
 };
 
 static struct page *page_head = NULL;   ///< Head of page list
 static struct page *page_tail = NULL;   ///< Tail of page list
+static struct page *page_stack = NULL;  ///< Saved page stack
+
+
+// Local functions
+
+static void copy_page(struct page *page);
+
+static void link_page(struct page *page);
+
+static bool pop_page(void);
+
+static void push_page(struct page *page);
+
+static struct page *unlink_page(void);
+
+static void write_page(FILE *fp, struct page *page);
 
 
 ///
-///  @brief    Read in previous page.
+///  @brief    Copy data in page to edit buffer, and then delete it.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void page_backward(FILE *fp, int count)
+static void copy_page(struct page *page)
 {
-    assert(fp != NULL);                 // Error if no file block
+    assert(page != NULL);
+    
+    kill_ebuf();                        // Delete all data in edit buffer
 
-    // Save current page in queue, retrieve previous page.
+    // If there is a form feed in the page (because the user added it while
+    // editing), then we have to treat it as an end of page marker, and only
+    // return the data after the form feed. We also reduce the count for the
+    // current page and add it back onto the list.
+
+    bool split = false;                 // true if we split the page
+    uint nbytes = page->size;           // No. of bytes to copy to edit buffer
+    char *p;
+
+    if (!f.e3.nopage && (p = strrchr(page->addr, '\f')) != NULL)
+    {
+        split       = true;
+        *p++        = NUL;              // Make sure we don't match next time
+        nbytes     -= (uint)(p - page->addr);
+        page->size -= nbytes + 1;
+        page->ff    = true;
+    }
+    else
+    {
+        p = page->addr;
+    }
+
+    // Copy page data to edit buffer. Since this data originated in the edit
+    // buffer, we assume it will fit, and therefore don't bother to check for
+    // warnings or errors.
+
+    while (nbytes-- != 0)
+    {
+        (void)add_ebuf(*p++);
+    }
+
+    setpos_ebuf(t.B);                   // Reset to start of buffer
+
+    if (split)
+    {
+        link_page(page);
+    }
+    else
+    {
+        f.ctrl_e = page->ff;
+
+        free_mem(&page->addr);
+        free_mem(&page);
+    }
+}
+
+
+///
+///  @brief    Add page to tail of linked list.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void link_page(struct page *page)
+{
+    assert(page != NULL);
+
+    if (page_head == NULL)
+    {
+        page_head = page;               // Head -> new page
+    }
+    else
+    {
+        page->prev      = page_tail;    // New page -> last page
+        page_tail->next = page;         // Last page -> new page
+    }
+
+    page_tail = page;                   // Tail -> new page
+}
+
+
+///
+///  @brief    Create page with data from text buffer.
+///
+///  @returns  Pointer to page we created.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static struct page *make_page(int start, int end, bool ff)
+{
+    struct page *page = alloc_mem((uint)sizeof(*page));
+ 
+    page->next  = page->prev = NULL;
+    page->size  = (uint)t.Z;             // No. of bytes in edit buffer
+    page->cr    = 0;
+    page->ocrlf = f.e3.ocrlf;
+    page->ff    = ff;
+    page->addr  = alloc_mem((uint)page->size);
+
+    char *p  = page->addr;
+    char last = NUL;
+
+    for (int i = start; i < end; ++i)
+    {
+        int c = getchar_ebuf(i);
+
+        assert(c != EOF);
+        
+        if (c == LF && last != CR && page->ocrlf)
+        {
+            ++page->cr;
+        }
+
+        *p++ = last = (char)c;
+    }
+
+    assert((uint)(p - page->addr) == page->size);
+
+    return page;
+}
+
+
+///
+///  @brief    Read in previous page.
+///
+///  @returns  true if we have a new page, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool page_backward(int count, bool ff)
+{
+    assert(count < 0);
+
+    // Create a new page with data from edit buffer and push it on the stack.
+
+    struct page *page;
+
+    if (t.Z != 0)
+    {
+        setpos_ebuf(t.B);
+
+        page = make_page(t.B, t.Z, ff);
+
+        kill_ebuf();
+
+        push_page(page);
+    }
+
+    // Now unlink pages from linked list and push them on the stack, until we
+    // find the one we want (which will then be popped off the stack).
+
+    while (count++ < 0)
+    {
+        if ((page = unlink_page()) == NULL)
+        {
+            break;
+        }
+
+        push_page(page);                // Then push it on stack
+
+        if (count == 0)
+        {
+            return pop_page();
+        }
+    }
+
+    return f.ctrl_e = false;
 }
 
 
@@ -83,12 +261,16 @@ void page_flush(FILE *fp)
 
     while ((page = page_head) != NULL)
     {
-        print_str("writing page at %p with %d bytes\r\n", page->addr, page->size);
-
         page_head = page->next;
-        fwrite(page->addr, page->size, 1, fp);
-        free_mem(&page->addr);
-        free_mem(&page);
+
+        write_page(fp, page);
+    }
+
+    while ((page = page_stack) != NULL)
+    {
+        page_stack = page->next;
+
+        write_page(fp, page);
     }
 }
 
@@ -96,92 +278,61 @@ void page_flush(FILE *fp)
 ///
 ///  @brief    Write out current page.
 ///
+///  @returns  true if already have buffer data, false if not.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool page_forward(FILE *unused1, int start, int end, bool ff)
+{
+    if (start != end)
+    {
+        struct page *page = make_page(start, end, ff);
+
+        link_page(page);
+    }
+
+    return pop_page();
+}
+
+
+///
+///  @brief    Pop page from stack, and copy to edit buffer.
+///
+///  @returns  true if there was a page on stack, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static bool pop_page(void)
+{
+    struct page *page = page_stack;
+
+    if (page == NULL)
+    {
+        return false;
+    }
+
+    page_stack = page->next;
+
+    copy_page(page);
+
+    return true;
+}
+
+
+///
+///  @brief    Push page onto stack.
+///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void page_forward(FILE *fp, int start, int end, bool ff)
+static void push_page(struct page *page)
 {
-    assert(fp != NULL);                 // Error if no file block
+    assert(page != NULL);
 
-    if (start == end)
-    {
-        return;
-    }
+    page->next = page_stack;
 
-    struct page *page = alloc_mem(sizeof(*page));
-    int last = NUL;
-
-    page->next = page->prev = NULL;
-    page->size = 0;                      // No. of bytes in output page
-    page->ff = ff;
-
-    // First pass - calculate how many characters we'll need to output
-
-    for (int i = start; i < end; ++i)
-    {
-        int c = getchar_ebuf(i);
-
-        // Translate LF to CR/LF if needed, unless last chr. was CR
-
-        if (c == LF && last != CR && f.e3.ocrlf)
-        {
-            ++page->size;
-        }
-
-        ++page->size;
-
-        last = c;
-    }
-
-    if (page->ff)                       // Add a form feed if necessary
-    {
-        ++page->size;
-    }
-
-    // Second pass - fill page and then output it
-
-    page->addr = alloc_mem((uint)page->size); // Allocate memory for page
-
-    char *p = page->addr;
-
-    last = NUL;
-
-    for (int i = start; i < end; ++i)
-    {
-        int c = getchar_ebuf(i);
-
-        // Translate LF to CR/LF if needed, unless last chr. was CR
-
-        if (c == LF && last != CR && f.e3.ocrlf)
-        {
-            *p++ = CR;
-        }
-
-        *p++ = (char)c;
-
-        last = c;
-    }
-
-    if (page->ff)                       // Add a form feed if necessary
-    {
-        *p++ = FF;
-    }
-
-    assert((uint)(p - page.addr) == page.size); // Verify no. of output bytes
-
-    print_str("storing page at %p with %d bytes\r\n", page->addr, page->size);
-
-    if (page_head == NULL)
-    {
-        page_head = page_tail = page;
-    }
-    else
-    {
-        page->prev = page_tail;         // New page -> last page
-        page_tail->next = page;         // Last page -> new page
-        page_tail = page;               // Tail -> new page
-    }
+    page_stack = page;
 }
 
 
@@ -198,14 +349,92 @@ void reset_pages(void)
 
     while ((page = page_head) != NULL)
     {
-        print_str("resetting page at %p with %d bytes\r\n", page->addr, page->size);
-
         page_head = page->next;
+
         free_mem(&page->addr);
         free_mem(&page);
     }
 
     page_tail = NULL;
+}
+
+
+///
+///  @brief    Write page to file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void write_page(FILE *fp, struct page *page)
+{
+    assert(fp != NULL);
+    assert(page != NULL);
+
+    char last   = NUL;
+    uint nbytes = page->size + page->cr + (page->ff ? 1 : 0);
+    char *src   = page->addr;
+    char *dst   = alloc_mem(nbytes);
+    char *p     = dst;
+
+    while (page->size-- > 0)
+    {
+        char c = *src++;
+
+        if (c == LF && last != CR && page->ocrlf)
+        {
+            *p++ = CR;
+        }
+
+        *p++ = last = c;
+    }
+
+    if (page->ff)
+    {
+        *p++ = FF;
+    }
+
+    fwrite(dst, (ulong)nbytes, 1uL, fp);
+
+    free_mem(&dst);
+    free_mem(&page->addr);
+    free_mem(&page);
+}
+
+
+///
+///  @brief    Unlink page from end of linked list.
+///
+///  @returns  Returned page, or NULL if list is empty.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static struct page *unlink_page(void)
+{
+    struct page *page;
+
+    if ((page = page_tail) == NULL)
+    {
+        return NULL;
+    }
+
+    assert(page->next == NULL);
+
+    if (page->prev == NULL)             // Only page in list?
+    {
+        page_head = NULL;
+        page_tail = NULL;
+    }
+    else
+    {
+        page_tail        = page->prev;
+
+        page->prev->next = NULL;
+        page->prev       = NULL;
+        page->next       = NULL;
+    }
+
+    return page;
 }
 
 
@@ -216,9 +445,19 @@ void reset_pages(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void yank_backward(FILE *fp)
+void yank_backward(FILE *unused1)
 {
-    assert(fp != NULL);                 // Error if no file block
+    if (pop_page())
+    {
+        return;
+    }
 
-    // Discard current page, retrieve previous page from queue.
+    struct page *page = unlink_page();
+
+    if (page == NULL)
+    {
+        return;
+    }
+
+    copy_page(page);
 }

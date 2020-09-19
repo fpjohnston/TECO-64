@@ -188,8 +188,6 @@ ifeq (${TECO_PAGING}, vm)
 
 SOURCES += page_vm.c
 
-$(warning Virtual memory paging is in development.)
-
 else ifeq (${TECO_PAGING}, file)
 
 $(error Holding file paging is not yet implemented)

@@ -391,6 +391,20 @@ void init_ebuf(
 
 
 ///
+///  @brief    Kill the entire edit buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void kill_ebuf(void)
+{
+    setpos_ebuf(t.B);
+    delete_ebuf(t.Z);
+}
+
+
+///
 ///  @brief    Scan backward n lines in edit buffer.
 ///
 ///  @returns  Position following line terminator.

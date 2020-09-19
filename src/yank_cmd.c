@@ -78,8 +78,10 @@ void exec_EY(struct cmd *cmd)
             throw(E_NYA);               // Numeric argument with Y
         }
     }
-
-    (void)next_yank();
+    else
+    {
+        (void)next_yank();
+    }
 
     if (cmd->colon)
     {
@@ -119,9 +121,7 @@ void exec_Y(struct cmd *cmd)
 
 bool next_yank(void)
 {
-    setpos_ebuf(t.B);
-
-    delete_ebuf((int)t.Z);              // Kill the whole buffer
+    kill_ebuf();
 
     while (append_line())               // Read what we can
     {

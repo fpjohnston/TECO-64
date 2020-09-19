@@ -43,7 +43,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void page_backward(FILE *unused1, int unused2)
+bool page_backward(int unused1, bool unused2)
 {
     throw(E_NPA);                       // P argument cannot be negative
 }
@@ -64,11 +64,11 @@ void page_flush(FILE *unused1)
 ///
 ///  @brief    Write out current page.
 ///
-///  @returns  Nothing.
+///  @returns  false (edit buffer does not already have data).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void page_forward(FILE *fp, int start, int end, bool ff)
+bool page_forward(FILE *fp, int start, int end, bool ff)
 {
     assert(fp != NULL);                 // Error if no file block
 
@@ -96,6 +96,8 @@ void page_forward(FILE *fp, int start, int end, bool ff)
     {
         fputc(FF, fp);
     }
+
+    return false;
 }
 
 

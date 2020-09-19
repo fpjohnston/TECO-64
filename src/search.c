@@ -37,6 +37,7 @@
 #include "errors.h"
 #include "exec.h"
 #include "file.h"
+#include "page.h"
 #include "qreg.h"
 #include "search.h"
 #include "term.h"
@@ -479,7 +480,16 @@ bool search_loop(struct search *s)
                         throw(E_NFO);   // No file for output
                     }
 
-                    if (!next_page(0, t.Z, f.ctrl_e, (bool)true))
+                    if (s->search == search_backward)
+                    {
+                        if (!page_backward(-1, f.ctrl_e))
+                        {
+                            return false;
+                        }
+                        
+                        setpos_ebuf(t.Z); // Go to end of buffer
+                    }
+                    else if (!next_page(0, t.Z, f.ctrl_e, (bool)true))
                     {
                         return false;
                     }
@@ -515,8 +525,16 @@ bool search_loop(struct search *s)
 
             // Here with a new page, so reinitialize pointers
 
-            s->text_start = 0;
-            s->text_end   = t.Z;
+            if (s->search == search_backward)
+            {
+                s->text_start = -1;
+                s->text_end   = -t.Z;
+            }
+            else
+            {
+                s->text_start = 0;
+                s->text_end   = t.Z;
+            }
         }
     }
 

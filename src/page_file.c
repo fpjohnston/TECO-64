@@ -38,11 +38,11 @@
 ///
 ///  @brief    Write out current page.
 ///
-///  @returns  Nothing.
+///  @returns  true if already have buffer data, false if not.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void page_forward(FILE *fp, int start, int end, bool ff)
+bool page_forward(FILE *fp, int start, int end, bool ff)
 {
     assert(fp != NULL);                 // Error if no file block
 

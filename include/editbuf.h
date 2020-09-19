@@ -117,6 +117,10 @@ extern int getlines_ebuf(int n);
 
 extern void init_ebuf(int minsize, int maxsize, int stepsize, int warn);
 
+//  Delete all of the text in the edit buffer.
+
+extern void kill_ebuf(void);
+
 // Replace ASCII value of character in buffer at position relative to dot.
 //
 // Returns: original character, or EOF (-1) if attempt was made to go beyond

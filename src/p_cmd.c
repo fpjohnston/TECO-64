@@ -60,9 +60,9 @@ void exec_P(struct cmd *cmd)
 
     int start = t.B;
     int end   = t.Z;
-    int count  = 1;
-    bool ff    = false;
-    bool yank  = false;
+    int count = 1;
+    bool ff   = false;
+    bool yank = false;
 
     // Use of a colon only makes sense for P and nP
 
@@ -95,12 +95,6 @@ void exec_P(struct cmd *cmd)
         {
             throw(E_NPA);               // Negative or zero argument to P or PW
         }
-        else if (count < 0)             // -nP?
-        {
-            page_backward(ofile->fp, -count); // Try to read previous page(s)
-
-            return;
-        }
 
         if (cmd->w)                     // Is it nPW?
         {
@@ -109,6 +103,17 @@ void exec_P(struct cmd *cmd)
         else                            // Must be nP or n:P
         {
             ff = f.ctrl_e;
+        }
+
+        if (count < 0)                  // -nP?
+        {
+            (void)page_backward(count, ff); // Try to read previous page(s)
+
+            return;
+        }
+
+        if (!cmd->w)                    // Is it nPW?
+        {
             yank = true;
         }
     }
@@ -167,19 +172,18 @@ void exec_P(struct cmd *cmd)
 
 bool next_page(int start, int end, bool ff, bool yank)
 {
-    page_forward(ofiles[ostream].fp, start - t.dot, end - t.dot, ff);
-
-    if (yank)                           // Yank next page if we need to
+    if (!page_forward(ofiles[ostream].fp, start - t.dot, end - t.dot, ff))
     {
-        setpos_ebuf(t.B);
-
-        delete_ebuf(t.Z);               // Kill the whole buffer
-
-        struct ifile *ifile = &ifiles[istream];
-
-        if (ifile->fp == NULL || !append((bool)false, 0, (bool)false))
+        if (yank)                       // Yank next page if we need to
         {
-            return false;               // False if no more data
+            kill_ebuf();
+
+            struct ifile *ifile = &ifiles[istream];
+
+            if (ifile->fp == NULL || !append((bool)false, 0, (bool)false))
+            {
+                return false;           // False if no more data
+            }
         }
     }
 

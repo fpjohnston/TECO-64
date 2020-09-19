@@ -31,11 +31,11 @@
 #include <stdbool.h>            //lint !e451 !e537
 #include <stdio.h>              //lint !e451 !e537
 
-extern void page_backward(FILE *fp, int count);
+extern bool page_backward(int count, bool ff);
 
 extern void page_flush(FILE *fp);
 
-extern void page_forward(FILE *fp, int start, int end, bool ff);
+extern bool page_forward(FILE *fp, int start, int end, bool ff);
 
 extern void reset_pages(void);
 
