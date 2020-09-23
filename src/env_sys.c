@@ -50,9 +50,9 @@ const char *teco_vtedit = NULL;         ///< Name of VTEDIT macro
 
 char *eg_result = NULL;                 ///< Output from EG command
 
-#define TECO_HW          101            ///< x86 hardware
+#define TECO_HW          10             ///< x86 hardware
 
-#define TECO_OS          2              ///< Linux operating system
+#define TECO_OS          1              ///< Linux operating system
 
 // Local functions
 
@@ -259,34 +259,45 @@ void init_env(int argc, const char * const argv[])
 ///
 ///  @brief    Get information environment about our environment.
 ///
+///            -1EJ - The processor and operating system upon which TECO is
+///                   running. This is equivalent to (-3EJ * 256) + -2EJ.
+///
+///            -2EJ - The operating system upon which TECO is running.
+///                   This is currently 1 for Linux.
+///
+///            -3EJ - The processor upon which TECO is running. This is
+///                   currently 10 for x86.
+///
+///            -4EJ - The number of bits in the word on the the processor
+///                   upon which TECO is currently running.
+///
+///             0EJ - Process ID
+///            0:EJ - Parent process ID
+///
 ///  @returns  Result for requested value.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 int teco_env(int n_arg, bool colon)
 {
-    if (n_arg == -1)                    // -1EJ
+    switch (n_arg)
     {
-        if (colon)
-        {
-            print_str("Linux,x86,64-bit\r\n");
-        }
+        case 0:
+            return colon ? getppid() : getpid();
 
-        return (TECO_HW << 8) | TECO_OS;
-    }
-    else if (n_arg == 0)                // 0EJ
-    {
-        if (colon)
-        {
-            return getppid();           // Parent process ID
-        }
-        else
-        {
-            return getpid();            // Process ID
-        }
-    }
-    else
-    {
-        return 0;                       // Any other EJ
+        case -1:
+            return (TECO_HW << 8) + TECO_OS;
+
+        case -2:
+            return TECO_OS;
+
+        case -3:
+            return TECO_HW;
+
+        case -4:
+            return sizeof(int *) * CHAR_BIT;
+
+        default:
+            return 0;                       // Any other EJ
     }
 }

@@ -646,7 +646,7 @@ static void scan_texts(struct cmd *cmd, enum cmd_opts opts)
 
     if (cmd->atsign)                    // @ modifier?
     {
-        while (!empty_cbuf() && isspace(peek_cbuf()))
+        while (!empty_cbuf() && peek_cbuf() == ' ')
         {
             (void)fetch_cbuf();
         }
@@ -654,6 +654,11 @@ static void scan_texts(struct cmd *cmd, enum cmd_opts opts)
         // Treat first non-whitespace character as text delimiter.
 
         cmd->delim = (char)fetch_cbuf();
+
+        if (!isgraph(cmd->delim))
+        {
+            throw(E_ATS);               // Illegal delimiter
+        }
     }
 
     if (cmd->delim != '{' || !f.e1.text)
