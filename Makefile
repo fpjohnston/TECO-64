@@ -163,15 +163,15 @@ ifeq (${TECO_BUFFER}, rope)
 
 $(error Rope buffer handler is not yet implemented)
 
-SOURCES += ropebuf.c
+SOURCES += rope_buf.c
 
 else ifeq (${TECO_BUFFER}, gap)
 
-SOURCES += gapbuf.c
+SOURCES += gap_buf.c
 
 else ifeq (${TECO_BUFFER}, )
 
-SOURCES += gapbuf.c
+SOURCES += gap_buf.c
 
 else
 
