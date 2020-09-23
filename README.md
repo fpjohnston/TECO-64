@@ -85,12 +85,22 @@ Doxygen must be installed in order to use the *doc* target.
 
 ### Additional Documentation
 
+The following documents describe features of TECO-64, as well as the
+differences between with other TECOs.
+
 [Command-Line Options](doc/options.md)
 
 [New and Enhanced Features](doc/enhancements.md)
 
 [Unimplemented Features](doc/omissions.md)
 
-[Differences with TECO C](doc/differences.md)
+[TECO C Differences](doc/differences.md)
 
 [Internals Notes](doc/internals.md)
+
+The following document provides the best introduction to TECO, even
+though it is 30 years old and would certainly benefit from being
+updated and corrected. It is hoped that this may happen with a future
+release of TECO-64.
+
+[DEC Standard TECO](doc/DEC_Standard_TECO.pdf)
