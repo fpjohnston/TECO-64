@@ -238,6 +238,11 @@ void exec_cmd(struct cmd *macro)
 
         int c = cmd.c1;
 
+        if (cmd.m_set && cmd.m_arg < 0 && toupper(c) != 'W')
+        {
+            throw(E_NCA);               // Negative argument to comma
+        }
+
         (*exec)(&cmd);
 
         cmd = null_cmd;

@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 
 #include "teco.h"
 #include "eflags.h"
@@ -85,11 +86,6 @@ void exec_comma(struct cmd *cmd)
 
     // If we've seen a comma, then what was on the expression stack was an "m"
     // argument, not an "n" argument (numeric arguments can take the form m,n).
-
-    if (cmd->m_arg < 0)
-    {
-        throw(E_NCA);                   // Negative argument to comma
-    }
 
     cmd->m_set = true;
 }
