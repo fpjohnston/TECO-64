@@ -115,7 +115,7 @@ void exec_EI(struct cmd *cmd)
 
     close_input(stream);                // Close any open file
 
-    if (f.e0.init || f.e1.new_ei)
+    if (f.e0.init || f.e1.new_ei)       // New-style EI
     {
         struct ei_block *ei_cmd;
 
@@ -156,7 +156,7 @@ void exec_EI(struct cmd *cmd)
             free_mem(&ei_cmd);
         }
     }
-    else
+    else                                // Old-style EI
     {
         if (len != 0)
         {
@@ -165,18 +165,6 @@ void exec_EI(struct cmd *cmd)
                 return;
             }
         }
-
-        if (cbuf != NULL && cbuf->data == ei_old.data)
-        {
-            cbuf->len = 0;
-            cbuf->pos = 0;
-        }
-
-        ei_old.size = 0;
-        ei_old.len  = 0;
-        ei_old.pos  = 0;
-
-        free_mem(&ei_old);
     }
 }
 
