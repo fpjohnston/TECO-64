@@ -39,116 +39,116 @@ being returned if the open succeeded, and 0 if it failed.
 
 ### Commands
 
-[^A - Print text](cmd/ctrl_A.md)
+[^A - Print text](cmds/ctrl_A.md)
 - Added colon modifier for adding CR/LF after text.
 
-[^E - Match control constructs](cmd/ctrl_E.md)
+[^E - Match control constructs](cmds/ctrl_E.md)
 - Added ^E*nnn*. (TECO-10)
 
-[^K - Reset window colors](cmd/ctrl_K.md)
+[^K - Reset window colors](cmds/ctrl_K.md)
 
-[^Q - Convert line numbers to character values](cmd/ctrl_Q.md) (TECO-10)
+[^Q - Convert line numbers to character values](cmds/ctrl_Q.md) (TECO-10)
 
-[^T - Type character](cmd/ctrl_T.md)
+[^T - Type character](cmds/ctrl_T.md)
 - Added repeat count.
 - Allowed -1 for printing CR/LF.
 
-[^U - Add/Delete Q-register text](cmd/ctrl_U.md)
+[^U - Add/Delete Q-register text](cmds/ctrl_U.md)
 - Added ability to delete text.
 
-[^V - Lower case text](cmd/ctrl_V.md) (TECO-10)
+[^V - Lower case text](cmds/ctrl_V.md) (TECO-10)
 
-[^W - Upper case text](cmd/ctrl_W.md) (TECO-10)
+[^W - Upper case text](cmds/ctrl_W.md) (TECO-10)
 
-[^X- Search mode flag](cmd/ctrl_X.md)
+[^X- Search mode flag](cmds/ctrl_X.md)
 - Flag may be set to 1, in addition to 0 and -1.
 
-[; - Branch out of current iteration](cmd/semi.md)
+[; - Branch out of current iteration](cmds/semi.md)
 - Allowed whitespace preceding semi-colon.
 
-[= - Print numeric value](cmd/equals.md)
+[= - Print numeric value](cmds/equals.md)
 - Added ability to use *printf()* format string.
 
-[@ - Text argument modifier](cmd/atsign.md)
+[@ - Text argument modifier](cmds/atsign.md)
 - Restricted delimiters to graphic ASCII characters.
 - Allowed whitespace between command and delimiter.
 
-[C - Move Pointer Forward](cmd/C.md)
+[C - Move Pointer Forward](cmds/C.md)
 - Added colon modifier to return success/failure value. (TECO-10)
 
-[D - Delete Characters](cmd/D.md)
+[D - Delete Characters](cmds/D.md)
 - Added colon modifier to return success/failure value. (TECO-10)
 
-[E% - Write file from Q-register](cmd/E_pct.md) (TECO-10)
+[E% - Write file from Q-register](cmds/E_pct.md) (TECO-10)
 
-[E1 - Extended Features Flag](cmd/E1.md)
+[E1 - Extended Features Flag](cmds/E1.md)
 
-[E2 - Command Restrictions Flag](cmd/E2.md)
+[E2 - Command Restrictions Flag](cmds/E2.md)
 
-[E3 - File Operations Flag](cmd/E3.md)
+[E3 - File Operations Flag](cmds/E3.md)
 
-[E4 - Window Features Flag](cmd/E4.md)
+[E4 - Window Features Flag](cmds/E4.md)
 
-[EC - Set Memory Size](cmd/EC.md) (TECO-10)
+[EC - Set Memory Size](cmds/EC.md) (TECO-10)
 
-[EI - Indirect File Command](cmd/EI.md)
+[EI - Indirect File Command](cmds/EI.md)
 - Added colon modifier to return success/failure value.
 
-[EJ - Get environment information](cmd/EJ.md)
+[EJ - Get environment information](cmds/EJ.md)
 - Changed returned values, and added new ones.
 
-[EL - Open/close log file](cmd/EL.md) (TECO-10)
+[EL - Open/close log file](cmds/EL.md) (TECO-10)
 
-[EO - TECO version number](cmd/EO.md)
+[EO - TECO version number](cmds/EO.md)
 - Updated version number of 200.
 
-[EQ - Read file to Q-register](cmd/EQ.md) (TECO-10)
+[EQ - Read file to Q-register](cmds/EQ.md) (TECO-10)
 
-[EW - Open output file](cmd/EW.md)
+[EW - Open output file](cmds/EW.md)
 - Added colon modifier to return success/failure value.
 
-[EY - Yank backwards](cmd/EY.md)
+[EY - Yank backwards](cmds/EY.md)
 - Added optional code to allow backwards paging (TECO-32).
 
-[F1 - Set command window colors](cmd/F1.md)
+[F1 - Set command window colors](cmds/F1.md)
 
-[F2 - Set text window colors](cmd/F2.md)
+[F2 - Set text window colors](cmds/F2.md)
 
-[F3 - Set status line colors](cmd/F3.md)
+[F3 - Set status line colors](cmds/F3.md)
 
-[FD - Search and delete](cmd/FD.md) (TECO-10)
+[FD - Search and delete](cmds/FD.md) (TECO-10)
 
-[FK - Search and delete](cmd/FK.md) (TECO-10)
+[FK - Search and delete](cmds/FK.md) (TECO-10)
 
-[FL - Lower case text](cmd/FL.md)
+[FL - Lower case text](cmds/FL.md)
 
-[FU - Upper case text](cmd/FU.md)
+[FU - Upper case text](cmds/FU.md)
 
-[I - Insert string](cmd/I.md)
+[I - Insert string](cmds/I.md)
 - Added repeat count.
 
-[J - Jump to position](cmd/J.md)
+[J - Jump to position](cmds/J.md)
 - Added colon modifier to return success/failure value. (TECO-10)
 
-[L - Line count](cmd/L.md)
+[L - Line count](cmds/L.md)
 - Added colon modifier to return line count.
 
-[N - Non-stop search](cmd/N.md)
+[N - Non-stop search](cmds/N.md)
 - Allowed backwards searching if virtual memory code included. (TECO-32)
 
-[P - Write page to file](cmd/P.md)
+[P - Write page to file](cmds/P.md)
 - Allowed backwards paging if virtual memory code included. (TECO-32)
 
-[R - Move pointer backward](cmd/R.md)
+[R - Move pointer backward](cmds/R.md)
 - Added colon modifier to return success/failure value. (TECO-10)
 
-[X - Load Q-register from text buffer](cmd/X.md)
+[X - Load Q-register from text buffer](cmds/X.md)
 - Added ability to delete text from Q-register.
 
-[Y - Yank page](cmd/Y.md)
+[Y - Yank page](cmds/Y.md)
 - Allowed backwards yanking if virtual memory code included. (TECO-32)
 
-[{} - Braced text arguments](cmd/braces.md)
+[{} - Braced text arguments](cmds/braces.md)
 
 ### Error Messages
 
