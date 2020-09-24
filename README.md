@@ -34,7 +34,7 @@ Pete Siemsen's TECO C. Its command set is backwards-compatible with TECO C,
 as well as other TECOs. TECO-64 was written from scratch to take full
 advantage of current features of the C language and run-time library.
 
-### How To Build
+### Building TECO
 
 To compile and link TECO, type
 
@@ -86,15 +86,15 @@ Doxygen must be installed in order to use the *doc* target.
 ### Additional Documentation
 
 The following documents describe features of TECO-64, as well as the
-differences between with other TECOs.
+differences between it and other TECOs.
 
-[Command-Line Options](doc/options.md)
+[Running TECO](doc/running.md)
 
-[New and Enhanced Features](doc/enhancements.md)
+[New Features](doc/new.md)
 
-[Unimplemented Features](doc/omissions.md)
+[Missing Features](doc/missing.md)
 
-[TECO C Differences](doc/differences.md)
+[TECO C Changes](doc/changes.md)
 
 [Internals Notes](doc/internals.md)
 

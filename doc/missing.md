@@ -1,6 +1,6 @@
-﻿### TECO-64  – Unimplemented Features
+﻿## TECO-64 – Unimplemented Features
 
-#### Overview
+### Overview
 
 Some features of other TECOs have not been included in this
 version of TECO-64 for one or more of the following reasons:
@@ -9,7 +9,7 @@ version of TECO-64 for one or more of the following reasons:
 - Implementation requires definition of how features should work in the supported operating environments.
 - Implementation makes no sense for obsolete or irrelevant features.
 
-#### File Specification Switches
+### File Specification Switches
 
 General command-line options for TECO are described in other
 documentation, but no options for special file modes or file
@@ -17,7 +17,7 @@ formats have been implemented to specify such things as output
 file cluster sizes, non-standard open modes, BASIC-PLUS-2 line
 continuation, or FORTRAN carriage control.
 
-#### Unimplemented Commands
+### Unimplemented Commands
 
 ^T - Read ASCII character
 - :^T - Reads and decodes the next keystroke typed at the terminal.

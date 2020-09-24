@@ -1,4 +1,4 @@
-## Command-Line Options
+## TECO-64 - Running TECO
 
 ### Overview
 

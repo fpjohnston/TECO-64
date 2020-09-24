@@ -1,12 +1,12 @@
-﻿### TECO-64 - TECO C Differences
+﻿## TECO-64 - Changes from TECO C
 
-#### Overview
+### Overview
 
 The following describes the known differences in behavior between TECO-64
 version 200 and TECO C version 147 (not including the new or enhanced
 commands described in other documentation).
 
-#### Features Omitted
+### Features Omitted
 
 - ^P command, used to set debugging parameters.
 - EZ command, used to read or set mode control bits. Most bits have not
@@ -18,12 +18,12 @@ in TECO-64 (note also E4&4 to include status).
     - EZ&256 - Use Unix-style newline terminators. See description of E3&2,
 E3&4, and E3&8 in TECO-64 to achieve the same behavior.
 
-#### Features Added
+### Features Added
 
 - EE command.
 - MLP and MRP errors, for missing left and right parentheses, respectively.
 
-#### Features Changed
+### Features Changed
 
 - Use of an EI command inside of an indirect command file is now allowed and does not cause a crash.
 - 0EJ returns the process ID, not the parent process ID. 0:EJ has been

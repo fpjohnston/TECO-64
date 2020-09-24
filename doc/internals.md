@@ -1,12 +1,12 @@
-﻿### TECO-64 Internals
+﻿## TECO-64 Internals Notes
 
-#### Overview
+### Overview
 
 This document is a work in progress. It provides a description of the
 design of TECO-64 for the benefit of those who maintain or enhance it,
 as well as those who are curious about how it is structured.
 
-#### History
+### History
 
 TECO-64 development began in October 2019, and was primarily done on Linux
 (Ubuntu), using gcc and other GNU tools. It has been successfully executed
@@ -14,7 +14,7 @@ on Linux, Windows 10, and MacOS. It has also been successfully compiled
 on VMS, but requires addititional run-time library support to be fully
 executable.
 
-#### Development
+### Development
 
 The general guidelines used during development were:
 
@@ -34,7 +34,7 @@ numerous unrelated functions, and don’t duplicate code.
 This has made it possible to have more than one method for handling data
 in the text buffer, and more than one method for handling paging.
 
-#### Testing & Debugging
+### Testing & Debugging
 
 - *assert()* statements have been extensively used to verify assumptions
 at run-time, especially regarding function parameters.
@@ -47,7 +47,7 @@ library calls.
 - The use of *assert()* statements, PC-lint, *gdb*, and *gprof* were
 facilitated by makefile options.
 
-#### Documentation
+### Documentation
 
 - Doxygen comments were included to provide in-line documentation.
 - XML and XSL files are used to create documentation as well as code
@@ -55,7 +55,7 @@ defining TECO command-line options.
 - Markdown files were created for the README file, and to provide
 release notes.
 
-#### Directory Names
+### Directory Names
 
 - ./ - Contains the makefile used to build TECO, and the README.md file.
 - ./bin - Contains the TECO-64 executable.
@@ -70,7 +70,7 @@ one file, *_options.h*, that is generated during the build process.
 - ./src - Contains the .c source files used to build TECO, and a configuration
 file used by PC-Lint.
 
-#### File Names
+### File Names
 
 - cmd_*.c - Files that perform general processing of TECO commands.
 - *_cmd.c - Files that perform a specific TECO command (e.g., er_cmd.c
@@ -96,7 +96,7 @@ virtual memory is used to store pages, which allows for backwards paging.
 Code in all other files should be system-independent, but this is subject
 to change during further testing.
 
-#### Function Names
+### Function Names
 
 - cmd_*() - Functions that perform general command processing.
 - exec_*() - Functions that execute individual commands.
