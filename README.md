@@ -1,4 +1,4 @@
-## TECO-64 text editor
+## TECO-64 - Introduction
     
 ### Description
 
