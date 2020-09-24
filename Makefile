@@ -22,28 +22,31 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
 #
-#  make targets:
+#  Build targets:
 #
-#      all        Equivalent to 'teco' target [default].
-#      clean      Clean object files.
-#      clobber    Clean everything.
-#      doc        Equivalent to 'doxygen' target.
-#      doxygen    Update Doxygen documentation.
-#      help       Print help message.
-#      lint       Lint .c and .lob files (requires PC-lint).
-#      lobs       Lint .c files (requires PC-lint).
-#      options    Print build options.
-#      scratch    Equivalent to 'clobber' and 'all' targets.
-#      teco       Build TECO-64 text editor.
+#      all      Equivalent to 'teco' target. [default]"
+#      clean    Clean object files."
+#      clobber  Clean everything."
+#      doc      Equivalent to 'doxygen' target."
+#      doxygen  Update Doxygen documentation."
+#      help     Print help message."
+#      lint     Lint .c and .lob files (requires PC-lint)."
+#      lobs     Lint .c files (requires PC-lint)."
+#      scratch  Equivalent to 'clobber' and 'all' targets."
+#      teco     Build TECO-64 text editor."
 #
 #  Build options:
 #
-#      DEBUG=1    Enable debugging features.
-#      GDB=1      Enable use of GDB debugger.
-#      GPROF=1    Enable use of GPROF profiler.
-#      NDEBUG=1   Disable run-time assertions.
-#      TRACE=1    Enable tracing of commands.
-#      VERBOSE=1  Enable verbosity during build.
+#      BUFFER=gap  Use gap buffer for editing text. [default]"
+#      DEBUG=1     Enable debugging features."
+#      GDB=1       Enable use of GDB debugger."
+#      GPROF=1     Enable use of GPROF profiler."
+#      NDEBUG=1    Disable run-time assertions."
+#      PAGING=std  Use standard paging. [default]"
+#      PAGING=vm   Use virtual memory paging."
+#      TRACE=1     Enable tracing of commands."
+#      VERBOSE=1   Enable verbosity during build."
+#      WINDOWS=1   Enable windows commands."
 #
 ################################################################################
 
@@ -52,15 +55,12 @@ TARGET = teco
 CC = gcc
 
 CFLAGS = -std=gnu18 -Wall -Wextra -Wno-unused-parameter -fshort-enums
-CFLAGS += -D TECO_WINDOWS
 
 DFLAGS =
 
 OPTIONS_DEBUG =
 
 INCDIR = include
-
-LINT_DEBUG = -D TECO_WINDOWS
 
 OPT ?= 3
 OPT_OPT = -O$(OPT)
@@ -155,27 +155,39 @@ SOURCES = \
     yank_cmd.c     \
 
 #
+#  Check to see if we should include windows support
+#
+################################################################################
+
+ifdef   WINDOWS
+
+CFLAGS     += -D TECO_WINDOWS
+LINT_DEBUG += -D TECO_WINDOWS
+
+endif
+
+#
 #  Check to see which buffer handler we should use
 #
 ################################################################################
 
-ifeq (${TECO_BUFFER}, rope)
+ifeq (${BUFFER}, rope)
 
 $(error Rope buffer handler is not yet implemented)
 
 SOURCES += rope_buf.c
 
-else ifeq (${TECO_BUFFER}, gap)
+else ifeq (${BUFFER}, gap)
 
 SOURCES += gap_buf.c
 
-else ifeq (${TECO_BUFFER}, )
+else ifeq (${BUFFER}, )
 
 SOURCES += gap_buf.c
 
 else
 
-$(error Unknown buffer handler: ${TECO_BUFFER})
+$(error Unknown buffer handler: ${BUFFER})
 
 endif
 
@@ -184,27 +196,27 @@ endif
 #
 ################################################################################
 
-ifeq (${TECO_PAGING}, vm)
+ifeq (${PAGING}, vm)
 
 SOURCES += page_vm.c
 
-else ifeq (${TECO_PAGING}, file)
+else ifeq (${PAGING}, file)
 
 $(error Holding file paging is not yet implemented)
 
 SOURCES += page_file.c
 
-else ifeq (${TECO_PAGING}, standard)
+else ifeq (${PAGING}, standard)
 
 SOURCES += page_std.c
 
-else ifeq (${TECO_PAGING}, )
+else ifeq (${PAGING}, )
 
 SOURCES += page_std.c
 
 else
 
-$(error Unknown paging handler: ${TECO_PAGING})
+$(error Unknown paging handler: ${PAGING})
 
 endif
 
@@ -277,28 +289,31 @@ scratch: clobber all
 .PHONY: help
 help:
 	@echo "Build targets:"
-	@echo "    all        Equivalent to 'teco' target [default]."
-	@echo "    clean      Clean object files."
-	@echo "    clobber    Clean everything."
-	@echo "    doc        Equivalent to 'doxygen' target."
-	@echo "    doxygen    Update Doxygen documentation."
-	@echo "    help       Print this message."
-	@echo "    lint       Lint .c and .lob files (requires PC-lint)."
-	@echo "    lobs       Lint .c files (requires PC-lint)."
-	@echo "    options    Print build options."
-	@echo "    scratch    Equivalent to 'clobber' and 'all' targets."
-	@echo "    teco       Build TECO-64 text editor."
-
-.PHONY: options
-options:
+	@echo ""
+	@echo "    all      Equivalent to 'teco' target. [default]"
+	@echo "    clean    Clean object files."
+	@echo "    clobber  Clean everything."
+	@echo "    doc      Equivalent to 'doxygen' target."
+	@echo "    doxygen  Update Doxygen documentation."
+	@echo "    help     Print this message."
+	@echo "    lint     Lint .c and .lob files (requires PC-lint)."
+	@echo "    lobs     Lint .c files (requires PC-lint)."
+	@echo "    options  Print build options."
+	@echo "    scratch  Equivalent to 'clobber' and 'all' targets."
+	@echo "    teco     Build TECO-64 text editor."
+	@echo ""
 	@echo "Build options:"
-	@echo "    DEBUG=1    Enable debugging features."
-	@echo "    GDB=1      Enable use of GDB debugger."
-	@echo "    GPROF=1    Enable use of GPROF profiler."
-	@echo "    NDEBUG=1   Disable run-time assertions."
-	@echo "    TRACE=1    Enable tracing of commands."
-	@echo "    VERBOSE=1  Enable verbosity during build."
-
+	@echo ""
+	@echo "    BUFFER=gap  Use gap buffer for editing text. [default]"
+	@echo "    DEBUG=1     Enable debugging features."
+	@echo "    GDB=1       Enable use of GDB debugger."
+	@echo "    GPROF=1     Enable use of GPROF profiler."
+	@echo "    NDEBUG=1    Disable run-time assertions."
+	@echo "    PAGING=std  Use standard paging. [default]"
+	@echo "    PAGING=vm   Use virtual memory paging."
+	@echo "    TRACE=1     Enable tracing of commands."
+	@echo "    VERBOSE=1   Enable verbosity during build."
+	@echo "    WINDOWS=1   Enable windows commands."
 
 .PHONY: $(TARGET) 
 $(TARGET): bin/$(TARGET)

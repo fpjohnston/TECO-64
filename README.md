@@ -44,22 +44,22 @@ or
 
     make teco
 
-An executable image will be created in the *bin/* directory, and can then be used
+An executable image will be created in the *bin/* directory, which can then be used
 to print a list of command-line options by typing
 
     bin/teco --help    
 
-Documentation may be created in the *html/* directory by typing
+To build TECO with windows support, type
 
-    make doc
+    make WINDOWS=1
 
-To print a list of other targets, type
+To build TECO with virtual memory paging, type
+
+    make PAGING=vm
+
+To print a list of all targets and options, type
 
     make help
-
-To print a list of build options, type
-
-    make options
 
 #### Caveats
 
