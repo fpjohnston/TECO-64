@@ -38,12 +38,16 @@
 ///  @enum   window_pair
 ///  @brief  Values of foreground/background pairs for defined windows.
 
+#if     defined(TECO_WINDOWS)
+
 enum window_pair
 {
     CMD = 1,                        ///< Command window
     TEXT,                           ///< Text window
     STATUS                          ///< Status line window
 };
+
+#endif
 
 ///  @struct  tchar
 ///  @brief   Terminal characteristics flag.

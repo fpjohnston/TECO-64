@@ -60,6 +60,12 @@ bool term_active = false;               ///< Are terminal settings active?
 
 static void exit_term(void);
 
+#if     !defined(TECO_WINDOWS)
+
+static void reset_term(void);
+
+#endif
+
 static void sig_handler(int signal);
 
 
@@ -217,7 +223,16 @@ void init_term(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_WINDOWS)
+
 void reset_term(void)
+
+#else
+
+static void reset_term(void)
+
+#endif
+
 {
     if (term_active)
     {

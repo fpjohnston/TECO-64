@@ -65,7 +65,11 @@ struct text
 
 extern struct text t;
 
+#if     defined(TECO_WINDOWS)
+
 extern bool ebuf_changed;
+
+#endif
 
 // Add one character to buffer at current position of dot.
 //

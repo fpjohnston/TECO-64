@@ -72,6 +72,10 @@ extern void print_str(const char *fmt, ...);
 
 extern void read_cmd(void);
 
+#if     defined(TECO_WINDOWS)
+
 extern void reset_term(void);
+
+#endif
 
 #endif  // !defined(_TERM_H)

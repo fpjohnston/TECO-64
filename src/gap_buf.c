@@ -79,7 +79,11 @@ static struct
     .right    = 0,
 };
 
+#if     defined(TECO_WINDOWS)
+
 bool ebuf_changed;              ///< true if text buffer modified
+
+#endif
 
 // Local functions
 
@@ -125,7 +129,11 @@ int add_ebuf(int c)
 
     eb.buf[eb.left++] = (char)c;
 
+#if     defined(TECO_WINDOWS)
+
     ebuf_changed = true;
+
+#endif
 
     ++t.dot;
     ++t.Z;
@@ -201,7 +209,12 @@ void delete_ebuf(int n)
 
     t.Z = eb.left + eb.right;
 
+#if     defined(TECO_WINDOWS)
+
     ebuf_changed = true;
+
+#endif
+
 }
 
 
@@ -542,7 +555,11 @@ int putchar_ebuf(int n, int c)
 
         eb.buf[i] = (char)c;
 
+#if     defined(TECO_WINDOWS)
+
         ebuf_changed = true;
+
+#endif
 
         return orig;
     }
@@ -564,7 +581,12 @@ void setpos_ebuf(int n)
     {
         t.dot = n;
 
+#if     defined(TECO_WINDOWS)
+
         ebuf_changed = true;
+
+#endif
+
     }
 }
 
