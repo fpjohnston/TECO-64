@@ -46,7 +46,13 @@
 #include <sys/ioctl.h>
 
 #include "teco.h"
+
+#if     defined(TECO_WINDOWS)
+
 #include "ascii.h"
+
+#endif
+
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
@@ -60,10 +66,9 @@
 ///  @brief  Issue error if function returns specified value.
 ///
 
-#define err_if_true(func, cond) if (func == cond) error_win()
-
-
 #if     defined(TECO_WINDOWS)
+
+#define err_if_true(func, cond) if (func == cond) error_win()
 
 #define MAX_POSITION    30          ///< Max. size of position string
 
@@ -232,7 +237,16 @@ static void exit_win(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_WINDOWS)
+
 int getchar_win(bool wait)
+
+#else
+
+int getchar_win(bool unused1)
+
+#endif
+
 {
     int c = 0;                          // Ensure that high bits are clear
 
@@ -306,9 +320,9 @@ void getsize_win(void)
 
     (void)resizeterm(w.height, w.width);
 
-#endif
-
     set_nrows();
+
+#endif
 }
 
 
@@ -563,7 +577,16 @@ static void move_up(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_WINDOWS)
+
 bool putc_win(int c)
+
+#else
+
+bool putc_win(int unused1)
+
+#endif
+
 {
 
 #if     defined(TECO_WINDOWS)
@@ -592,7 +615,16 @@ bool putc_win(int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_WINDOWS)
+
 bool puts_win(const char *buf)
+
+#else
+
+bool puts_win(const char *unused1)
+
+#endif
+
 {
 
 #if     defined(TECO_WINDOWS)
@@ -855,7 +887,16 @@ void set_nrows(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_WINDOWS)
+
 void set_scroll(int height, int nlines)
+
+#else
+
+void set_scroll(int unused1, int unused2)
+
+#endif
+
 {
 
 #if     defined(TECO_WINDOWS)

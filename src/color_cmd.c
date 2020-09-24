@@ -27,11 +27,11 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #if     defined(TECO_WINDOWS)
 
 #include <ncurses.h>
+#include <string.h>
 
 #endif
 
@@ -96,7 +96,16 @@ static void set_colors(const struct cmd *cmd, enum window_pair pair);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_WINDOWS)
+
 void exec_F1(struct cmd *cmd)
+
+#else
+
+void exec_F1(struct cmd *unused1)
+
+#endif
+
 {
 
 #if     defined(TECO_WINDOWS)
@@ -119,7 +128,16 @@ void exec_F1(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_WINDOWS)
+
 void exec_F2(struct cmd *cmd)
+
+#else
+
+void exec_F2(struct cmd *unused1)
+
+#endif
+
 {
 
 #if     defined(TECO_WINDOWS)
@@ -141,7 +159,16 @@ void exec_F2(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_WINDOWS)
+
 void exec_F3(struct cmd *cmd)
+
+#else
+
+void exec_F3(struct cmd *unused1)
+
+#endif
+
 {
 
 #if     defined(TECO_WINDOWS)
