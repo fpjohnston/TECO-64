@@ -1,5 +1,5 @@
 ///
-///  @file    gapbuf.c
+///  @file    gap_buf.c
 ///  @brief   Text buffer functions.
 ///
 ///  @copyright  2019-2020 Franklin P. Johnston / Nowwith Treble Software
