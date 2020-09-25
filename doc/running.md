@@ -53,7 +53,7 @@ TECO_VTEDIT
  - This specifies the path for a file containing commands to be
 used for editing in window mode.
 
-### Basic Invocation
+### Starting TECO
 
 teco *foo*
  - Open *foo* for input and output (using the EB command), then read in first page.
