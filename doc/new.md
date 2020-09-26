@@ -100,7 +100,7 @@ being returned if the open succeeded, and 0 if it failed.
 [EL - Open/close log file](cmds/EL.md) (TECO-10)
 
 [EO - TECO version number](cmds/EO.md)
-- Updated version number of 200.
+- Updated version number of 200, and added minor and patch versions.
 
 [EQ - Read file to Q-register](cmds/EQ.md) (TECO-10)
 

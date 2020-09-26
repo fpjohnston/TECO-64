@@ -61,13 +61,7 @@ To print a list of all targets and options, type
 
     make help
 
-#### Caveats
-
-The *Makefile* includes *lobs* and *lint* targets, which were used during
-development, but these require the use of PC-lint, a proprietary software
-product which is not included with the TECO-64 distribution.
-
-### System requirements
+### System Requirements
 
 Version 200 of TECO-64 was primarily developed on Linux, using the GNU
 toolchain. It has been also successfully compiled and run on Windows and
@@ -82,6 +76,23 @@ memory support, but TECO can be used as a simple pipeline editor on systems
 without virtual memory.
 
 Doxygen must be installed in order to use the *doc* target.
+
+PC-lint must be installed in order to use the *lint* and *lobs* targets.
+
+### Notes on Versioning
+
+At the time TECO C was created, the highest version of any DEC TECO was
+about 36. In order to avoid any conflict with future versions (since some
+TECO macros use obtain the version number with the EO command to determine
+what features are available), the initial version of TECO C was set to 100,
+with subsequent versions eventually reaching 147.
+
+For similar reasons, a baseline version number of 200 was chosen for
+TECO-64. This is the major version. For the benefit of *github*, a minor
+version and patch version also exist, and will be modified per their
+guidelines. All three versions can be accessed via the EO command,
+although only the major version is likely to be significant for TECO
+macros.
 
 ### Additional Documentation
 

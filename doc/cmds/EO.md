@@ -1,6 +1,10 @@
 ### EO - TECO Version Number
 
-EO
-- Equivalent to the version number of the version of TECO
-which is currently being run. This documentation describes
-TECO-64 version 200.
+EO, 0:EO, :EO
+- Major version. Currently 200.
+
+-1:EO
+- Minor version. Currently 0.
+
+-2:EO
+- Patch version. Currently 0.
