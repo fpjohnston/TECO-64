@@ -349,26 +349,6 @@ void exec_EJ(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan EO command: read or set TECO version number.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_EO(struct cmd *cmd)
-{
-    assert(cmd != NULL);                // Error if no command block
-
-    int n = teco_version;
-
-    if (check_n_flag(cmd, &n))
-    {
-        throw(E_NYI);                   // Not yet implemented
-    }
-}
-
-
-///
 ///  @brief    Scan ES command: read search verification flag.
 ///
 ///  @returns  Nothing.

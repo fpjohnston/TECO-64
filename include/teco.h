@@ -33,6 +33,11 @@
 #include <stdio.h>              //lint !e451 !e537
 #include <sys/types.h>          //lint !e451 !e537
 
+// Define TECO version numbers
+
+#define MAJOR_VERSION    200    ///< Major version
+#define MINOR_VERSION      0    ///< Minor version
+#define PATCH_VERSION      0    ///< Patch version
 
 /// @def    countof(array)
 /// @brief  Returns the number of elements in an array.

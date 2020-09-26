@@ -57,13 +57,9 @@
 #include "window.h"
 
 
-#define TECO_VERSION    200         ///< Our version of TECO
-
 struct flags f;                     ///< Global flag variables
 
 int radix = 10;                     ///< Current output radix
-
-int teco_version = TECO_VERSION;    ///< TECO version number (200+)
 
 jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 

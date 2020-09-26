@@ -383,6 +383,16 @@ static exec_func *next_cmd(struct cmd *cmd)
         }
 
         (*entry->exec)(cmd);            // Execute and continue
+
+        if (opts & OPT_C)
+        {
+            cmd->colon = cmd->dcolon = false;
+        }
+
+        if (opts & OPT_A)
+        {
+            cmd->atsign = false;
+        }
     }
 
     // If we're not in a macro, then confirm that parentheses were properly
