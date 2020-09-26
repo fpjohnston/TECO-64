@@ -35,6 +35,14 @@
 ///
 ///  @brief    Scan EO command: read or set TECO version number.
 ///
+///               EO - Major version.
+///              :EO - Same as EO.
+///             0:EO - Same as EO.
+///            -1:EO - Minor version.
+///            -2:EO - Patch version.
+///
+///            nEO - Error (not currently possible to set version number).
+///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,6 +64,11 @@ void exec_EO(struct cmd *cmd)
 
     if (!cmd->colon)                    // :EO?
     {
+        if (cmd->n_arg == MAJOR_VERSION)
+        {
+            return;                     // Setting current version is okay
+        }
+
         throw(E_NYI);                   // Not yet implemented
     }        
 
