@@ -60,13 +60,13 @@
 #include "window.h"
 
 
+#if     defined(TECO_WINDOWS)
+
 ///
 ///  @def    err_if_true
 ///
 ///  @brief  Issue error if function returns specified value.
 ///
-
-#if     defined(TECO_WINDOWS)
 
 #define err_if_true(func, cond) if (func == cond) error_win()
 

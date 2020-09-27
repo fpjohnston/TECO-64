@@ -95,8 +95,6 @@ extern uint loop_depth;
 
 extern int radix;
 
-extern int teco_version;
-
 extern const char *teco_init;
 
 extern const char *teco_library;

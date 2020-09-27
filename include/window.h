@@ -35,10 +35,10 @@
 
 #define SATMAX      1000            ///< Maximum color saturation
 
+#if     defined(TECO_WINDOWS)
+
 ///  @enum   window_pair
 ///  @brief  Values of foreground/background pairs for defined windows.
-
-#if     defined(TECO_WINDOWS)
 
 enum window_pair
 {
