@@ -35,30 +35,6 @@
 
 
 ///
-///  @brief    Execute @ command modifier.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_atsign(struct cmd *unused1)
-{
-}
-
-
-///
-///  @brief    Execute : or :: command modifiers.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_colon(struct cmd *unused1)
-{
-}
-
-
-///
 ///  @brief    Process "," (comma argument separator).
 ///
 ///  @returns  Nothing.

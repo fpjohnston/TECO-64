@@ -38,8 +38,6 @@ extern void exec_A(struct cmd *cmd);
 
 extern void exec_apos(struct cmd *cmd);
 
-extern void exec_atsign(struct cmd *cmd);
-
 extern void exec_B(struct cmd *cmd);
 
 extern void exec_bslash(struct cmd *cmd);
@@ -47,8 +45,6 @@ extern void exec_bslash(struct cmd *cmd);
 extern void exec_bang(struct cmd *cmd);
 
 extern void exec_C(struct cmd *cmd);
-
-extern void exec_colon(struct cmd *cmd);
 
 extern void exec_comma(struct cmd *cmd);
 

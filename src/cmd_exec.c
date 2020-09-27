@@ -155,17 +155,6 @@ static void end_cmd(struct cmd *cmd, enum cmd_opts opts)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if ((cmd->atsign && f.e2.atsign && !(opts & OPT_A)))
-    {
-        throw(E_ATS);                   // Illegal at-sign
-    }
-
-    if ((cmd->colon  && f.e2.colon  && !(opts & OPT_C)) ||
-        (cmd->dcolon && f.e2.colon  && !(opts & OPT_D)))
-    {
-        throw(E_COL);                   // Illegal colon
-    }
-
     // See if we have an n argument. If not, then check to see if the command
     // was preceded by a minus sign, which is equivalent to an argument of -1.
 
@@ -341,6 +330,17 @@ static exec_func *next_cmd(struct cmd *cmd)
 
         enum cmd_opts opts = entry->opts;
 
+        if ((cmd->atsign && f.e2.atsign && !(opts & OPT_A)))
+        {
+            throw(E_ATS);               // Illegal at-sign
+        }
+
+        if ((cmd->colon  && f.e2.colon  && !(opts & OPT_C)) ||
+            (cmd->dcolon && f.e2.colon  && !(opts & OPT_D)))
+        {
+            throw(E_COL);               // Illegal colon
+        }
+
         if (opts & OPT_T1)
         {
             scan_texts(cmd, opts);      // Scan for text strings
@@ -370,28 +370,32 @@ static exec_func *next_cmd(struct cmd *cmd)
 
             opts |= OPT_S;
         }
-        else if ((entry->opts & OPT_F) && !check_expr())
+        else if ((opts & OPT_F) && !check_expr())
         {
             opts |= OPT_S;
         }
 
         if (!(opts & OPT_S))            // Simple command?
         {
-            end_cmd(cmd, entry->opts);  // Do final check
+            end_cmd(cmd, opts);         // Do final check
 
             return entry->exec;         // Tell caller to execute
         }
 
         (*entry->exec)(cmd);            // Execute and continue
 
-        if (opts & OPT_C)
-        {
-            cmd->colon = cmd->dcolon = false;
-        }
+        // If command allowed @, ensure we don't pass it to next command
 
         if (opts & OPT_A)
         {
             cmd->atsign = false;
+        }
+
+        // If command allowed :, ensure we don't pass it to next command
+
+        if (opts & OPT_C)
+        {
+            cmd->colon = cmd->dcolon = false;
         }
     }
 
@@ -512,10 +516,12 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
     {
         if (cmd->atsign && f.e2.atsign)
         {
-            throw(E_ATS);               // Illegal at-sign
+            throw(E_ATS);               // Too many at-signs
         }
 
         cmd->atsign = true;
+
+        return NULL;
     }
     else if (cmd->c1 == ':')
     {
@@ -525,13 +531,15 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
 
             if (cmd->dcolon && f.e2.colon)
             {
-                throw(E_COL);           // Illegal colon
+                throw(E_COL);           // Too many colons
             }
 
             cmd->dcolon = true;         // And flag it
         }
 
         cmd->colon = true;              // Flag the first colon
+
+        return NULL;
     }
     else if (nparens != 0 && f.e1.xoper && exec_xoper(c))
     {
