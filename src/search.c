@@ -486,7 +486,7 @@ bool search_loop(struct search *s)
                         {
                             return false;
                         }
-                        
+
                         setpos_ebuf(t.Z); // Go to end of buffer
                     }
                     else if (!next_page(0, t.Z, f.ctrl_e, (bool)true))

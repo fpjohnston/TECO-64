@@ -70,7 +70,7 @@ void exec_EO(struct cmd *cmd)
         }
 
         throw(E_NYI);                   // Not yet implemented
-    }        
+    }
 
     // Here if we have n:EO - figure out which version to return
 

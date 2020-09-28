@@ -80,7 +80,7 @@ static void write_page(FILE *fp, struct page *page);
 static void copy_page(struct page *page)
 {
     assert(page != NULL);
-    
+
     kill_ebuf();                        // Delete all data in edit buffer
 
     // If there is a form feed in the page (because the user added it while
@@ -165,7 +165,7 @@ static void link_page(struct page *page)
 static struct page *make_page(int start, int end, bool ff)
 {
     struct page *page = alloc_mem((uint)sizeof(*page));
- 
+
     page->next  = page->prev = NULL;
     page->size  = (uint)t.Z;             // No. of bytes in edit buffer
     page->cr    = 0;
@@ -181,7 +181,7 @@ static struct page *make_page(int start, int end, bool ff)
         int c = getchar_ebuf(i);
 
         assert(c != EOF);
-        
+
         if (c == LF && last != CR && page->ocrlf)
         {
             ++page->cr;
