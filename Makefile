@@ -316,6 +316,17 @@ help:
 	@echo "    VERBOSE=1   Enable verbosity during build."
 	@echo "    WINDOWS=1   Enable windows commands."
 
+.PHONY: init
+
+init: bin obj
+	$(AT)chmod ugo+x etc/options.pl
+
+bin:
+	$(AT)mkdir -p bin
+
+obj:
+	$(AT)mkdir -p obj
+
 .PHONY: $(TARGET) 
 $(TARGET): bin/$(TARGET)
 
