@@ -5,12 +5,12 @@
 #
 #  This script reads data from options.xml to determine command-line options and
 #  program information for the teco utility. This data is output to a C header
-#  file, _options.h, which in turn is subsequently #included by options.c. The
+#  file, options.h, which in turn is subsequently #included by options.c. The
 #  purpose for doing this is to ensure tight coupling between data used in mul-
 #  tiple tables, macros, and strings in teco, thus reducing possible errors due
 #  to subsequent modifications or enhancements.
 #
-#  The output file, _options.h, specifically includes:
+#  The output file, options.h, specifically includes:
 #
 #  1. A string defining the entire help text.
 #  2. An enumerated list of values defining cases for each command-line option.
@@ -60,7 +60,7 @@ use Carp;
 my %args = (
             config => undef,        # XML configuration file (usually options.xml)
             debug  => undef,        # Enable processing of debugging options
-            output => undef,        # Output header file (usually _options.h)
+            output => undef,        # Output header file (usually options.h)
 );
 
 # Configuration options read from XML file
@@ -98,7 +98,7 @@ Readonly my $VAR       => q{@} . 'var';
 my @file_hdr =
 (
     '///',
-    "///  $FILE       _options.h",
+    "///  $FILE       options.h",
     '///',
     "///  $BRIEF      Header file for teco utility.",
     "///              *** Automatically generated file. DO NOT MODIFY. ***",

@@ -54,7 +54,7 @@ TARGET = teco
 
 CC = gcc
 
-CFLAGS = -std=gnu18 -Wall -Wextra -Wno-unused-parameter -fshort-enums
+CFLAGS = -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums
 
 DFLAGS =
 
@@ -65,7 +65,7 @@ INCDIR = include
 OPT ?= 3
 OPT_OPT = -O$(OPT)
 
-OPTIONS_H = $(INCDIR)/_options.h
+OPTIONS_H = $(INCDIR)/options.h
 
 INCLUDES = -I ../$(INCDIR)
 
@@ -364,7 +364,7 @@ clobber: clean
 	-$(AT)rm -rf html $(NULL2) 
 	-$(AT)cd obj && rm -f *.d *.lob $(NULL2)
 	-$(AT)cd src && rm -f *.bak $(NULL2)
-	-$(AT)cd $(INCDIR) && rm -f *.bak _*.h $(NULL2)
+	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL2)
 
 .PHONY: lobs
 lobs: $(OPTIONS_H) $(LOBS)

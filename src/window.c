@@ -356,15 +356,15 @@ void init_win(void)
 
         (void)initscr();
 
-        err_if_true(cbreak(),                      ERR);
-        err_if_true(noecho(),                      ERR);
-        err_if_true(nonl(),                        ERR);
-        err_if_true(notimeout(stdscr, (bool)TRUE), ERR);
-        err_if_true(idlok(stdscr,     (bool)TRUE), ERR);
-        err_if_true(scrollok(stdscr,  (bool)TRUE), ERR);
-        err_if_true(keypad(stdscr,    (bool)TRUE), ERR);
-        err_if_true(has_colors(),                  FALSE);
-        err_if_true(start_color(),                 ERR);
+        err_if_true(cbreak(),                       ERR);
+        err_if_true(noecho(),                       ERR);
+        err_if_true(nonl(),                         ERR);
+        err_if_true(notimeout(stdscr, (bool)TRUE),  ERR);
+        err_if_true(idlok(stdscr,     (bool)TRUE),  ERR);
+        err_if_true(scrollok(stdscr,  (bool)TRUE),  ERR);
+        err_if_true(keypad(stdscr,    (bool)FALSE), ERR);
+        err_if_true(has_colors(),                   FALSE);
+        err_if_true(start_color(),                  ERR);
 
         reset_colors();
         (void)set_escdelay(0);

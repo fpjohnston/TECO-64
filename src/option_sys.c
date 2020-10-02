@@ -40,7 +40,7 @@
 #include "eflags.h"
 #include "file.h"
 
-#include "_options.h"
+#include "options.h"
 
 
 ///
@@ -549,7 +549,9 @@ void set_config(
             case OPTION_S:
                 config.f.scroll = true;
                 config.s.scroll = optarg;
-                //lint -fallthrough
+                config.f.window = true;
+
+                break;
 
             case OPTION_V:
                 config.f.vtedit = true;
@@ -566,7 +568,7 @@ void set_config(
 
                 break;
 
-           case OPTION_W:
+            case OPTION_W:
                 config.f.window = true;
 
                 break;
