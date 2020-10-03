@@ -868,7 +868,7 @@ void set_nrows(void)
 
     d.nrows = w.height - w.nlines;
 
-    if (f.e4.winline)
+    if (f.e4.line)
     {
         --d.nrows;
     }
@@ -903,7 +903,7 @@ void set_scroll(int unused1, int unused2)
 
     if (f.e0.winact && w.nlines != 0)
     {
-        if (f.e4.cmdtop)
+        if (f.e4.invert)
         {
             d.cmd.top  = 0;
             d.cmd.bot  = nlines - 1;
@@ -920,9 +920,9 @@ void set_scroll(int unused1, int unused2)
 
         d.status.top = d.status.bot = -1;
 
-        if (f.e4.winline)
+        if (f.e4.line)
         {
-            if (f.e4.cmdtop)
+            if (f.e4.invert)
             {
                 d.status.top = d.status.bot = d.cmd.bot + 1;
                 ++d.text.top;

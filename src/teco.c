@@ -191,7 +191,7 @@ static void init_teco(int argc, const char * const argv[])
 
 #endif
 
-    f.e4.winline = true;                // Line between text & command regions
+    f.e4.line = true;                   // Line between text & command regions
     f.e4.status  = true;                // Display status on line
 
     // Note: this has to be first, since it will be the last called when we
