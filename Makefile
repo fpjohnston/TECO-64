@@ -24,16 +24,16 @@
 #
 #  Build targets:
 #
-#      all      Equivalent to 'teco' target. [default]"
-#      clean    Clean object files."
-#      clobber  Clean everything."
-#      doc      Equivalent to 'doxygen' target."
-#      doxygen  Update Doxygen documentation."
-#      help     Print help message."
-#      lint     Lint .c and .lob files (requires PC-lint)."
-#      lobs     Lint .c files (requires PC-lint)."
-#      scratch  Equivalent to 'clobber' and 'all' targets."
-#      teco     Build TECO-64 text editor."
+#      all          Equivalent to 'teco' target. [default]"
+#      clean        Clean object files and executables."
+#      distclean    Clean everything."
+#      doc          Create or update documentation."
+#      help         Print help message."
+#      lint         Lint .c and .lob files (requires PC-lint)."
+#      lobs         Lint .c files (requires PC-lint)."
+#      mostlyclean  Clean object files."
+#      scratch      Equivalent to 'distclean' and 'all' targets."
+#      teco         Build TECO-64 text editor."
 #
 #  Build options:
 #
@@ -285,23 +285,23 @@ LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) ../etc/std.lnt \
 all: $(TARGET)
 
 .PHONY: scratch
-scratch: clobber all
+scratch: distclean all
 
 .PHONY: help
 help:
 	@echo "Build targets:"
 	@echo ""
-	@echo "    all      Equivalent to 'teco' target. [default]"
-	@echo "    clean    Clean object files."
-	@echo "    clobber  Clean everything."
-	@echo "    doc      Equivalent to 'doxygen' target."
-	@echo "    doxygen  Update Doxygen documentation."
-	@echo "    help     Print this message."
-	@echo "    lint     Lint .c and .lob files (requires PC-lint)."
-	@echo "    lobs     Lint .c files (requires PC-lint)."
-	@echo "    options  Print build options."
-	@echo "    scratch  Equivalent to 'clobber' and 'all' targets."
-	@echo "    teco     Build TECO-64 text editor."
+	@echo "    all          Equivalent to 'teco' target. [default]"
+	@echo "    clean        Clean object files and executables."
+	@echo "    distclean    Clean everything."
+	@echo "    doc          Create or update documentation."
+	@echo "    help         Print this message."
+	@echo "    lint         Lint .c and .lob files (requires PC-lint)."
+	@echo "    lobs         Lint .c files (requires PC-lint)."
+	@echo "    mostlyclean  Clean object files."
+	@echo "    options      Print build options."
+	@echo "    scratch      Equivalent to 'distclean' and 'all' targets."
+	@echo "    teco         Build TECO-64 text editor."
 	@echo ""
 	@echo "Build options:"
 	@echo ""
@@ -315,11 +315,6 @@ help:
 	@echo "    TRACE=1     Enable tracing of commands."
 	@echo "    VERBOSE=1   Enable verbosity during build."
 	@echo "    WINDOWS=1   Enable windows commands."
-
-.PHONY: init
-
-init: bin obj
-	$(AT)chmod ugo+x etc/options.pl
 
 bin:
 	$(AT)mkdir -p bin
@@ -354,31 +349,18 @@ obj/CFLAGS: FORCE
 	-$(AT)echo '$(CFLAGS)' | cmp -s - $@ || echo '$(CFLAGS)' > $@
 
 .PHONY: clean
-clean:
+clean: mostlyclean
 	-$(AT)cd bin && rm -f $(TARGET) $(TARGET).map $(NULL2)
-	-$(AT)cd obj && rm -f *.o $(NULL2)
 
-.PHONY: clobber
-clobber: clean
+.PHONY: distclean
+distclean: mostlyclean clean
 	-$(AT)rm -f obj/CFLAGS $(NULL2) 
 	-$(AT)rm -rf html $(NULL2) 
-	-$(AT)cd obj && rm -f *.d *.lob $(NULL2)
 	-$(AT)cd src && rm -f *.bak $(NULL2)
 	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL2)
 
-.PHONY: lobs
-lobs: $(OPTIONS_H) $(LOBS)
-
-.PHONY: lint
-lint:   $(OPTIONS_H) $(LOBS)
-	@echo Linting object files $(NULL)
-	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
-
 .PHONY: doc
-doc: doxygen html
-
-.PHONY: doxygen
-doxygen:
+doc: html
 	-$(AT)echo "Making Doxygen documents" $(NULL)
 	-$(AT)doxygen etc/Doxyfile
 
@@ -388,3 +370,16 @@ html: html/options.html
 html/options.html: etc/options.xml etc/options.xsl
 	-$(AT)echo "Making HTML options file" $(NULL)
 	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html
+
+.PHONY: lobs
+lobs: $(OPTIONS_H) $(LOBS)
+
+.PHONY: lint
+lint:   $(OPTIONS_H) $(LOBS)
+	@echo Linting object files $(NULL)
+	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
+
+.PHONY: mostlyclean
+mostlyclean:
+	-$(AT)cd obj && rm -f *.o *.d *.lob $(NULL2)
+
