@@ -636,6 +636,13 @@ static void scan_texts(struct cmd *cmd, enum cmd_opts opts)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    // Only at-sign form of '=' command only allows text arguments.
+
+    if (cmd->c1 == '=' && !cmd->atsign)
+    {
+        return;
+    }
+
     // Here to check for text arguments. The standard delimiter is ESCape,
     // except for CTRL/A and ! commands. If an at-sign was specified, then
     // the (non-whitespace) delimiter follows the command.
