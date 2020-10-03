@@ -53,7 +53,10 @@ void exec_G(struct cmd *cmd)
     {
         if (cmd->qname == '*')          // :G* -> print filename buffer
         {
-            print_str("%s", last_file);
+            if (last_file != NULL)
+            {
+                print_str("%s", last_file);
+            }
         }
         else if (cmd->qname == '$')     // :G$ -> print command output
         {
