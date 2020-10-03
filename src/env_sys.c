@@ -166,6 +166,11 @@ int find_eg(char *cmd, bool dcolon)
     {
         const char *result = *p = getenv(env);
 
+        if (result == NULL)
+        {
+            return 1;
+        }
+
         set_last(result);
     }
 
