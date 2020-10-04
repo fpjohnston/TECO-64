@@ -34,14 +34,6 @@ Pete Siemsen's TECO C. Its command set is backwards-compatible with TECO C,
 as well as other TECOs. TECO-64 was written from scratch to take full
 advantage of current features of the C language and run-time library.
 
-### Initializing TECO
-
-After downloading TECO, type the following to initialize directories and files:
-
-    make init
-
-Note that this only needs to be done once per download, not once per build.
-
 ### Building TECO
 
 To compile and link TECO, type
