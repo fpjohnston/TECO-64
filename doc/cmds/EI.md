@@ -1,7 +1,7 @@
 ### EI - Indirect File Commands
 
-EI*filespec*$
-- Opens a file as an indirect command file, so that any further
+EI*mung*$
+- Opens *mung* as an indirect command file, so that any further
 TECO requests for terminal input will come from this file. At
 end-of-file, or upon TECO’s receipt of any error message, the
 indirect command file will be closed and terminal input will be
@@ -36,15 +36,15 @@ and then return to the indirect file at the point following the
 <DELIM> can be other than ESCape only in commands typed
 at the terminal.)
 
-@EI/*filespec*/
-- Equivalent to EI*filespec*$
+@EI/*mung*/
+- Equivalent to EI*mung*$
 
-:EI*filespec*$
-- Equivalent to EI*filespec*$, but returns -1 if the file could be opened,
+:EI*mung*$
+- Equivalent to EI*mung*$, but returns -1 if the file could be opened,
 and 0 if it could not be opened.
 
-:@EI/*filespec*/
-- Equivalent to :EI*filespec*$
+:@EI/*mung*/
+- Equivalent to :EI*mung*$
 
 EI$
 - If an indirect command file is active, this command will close it

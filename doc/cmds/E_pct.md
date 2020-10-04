@@ -1,4 +1,4 @@
-### E% - Write File From Q-Register
+### E% - Write Q-Register to File
 
 Write the contents of a Q-register directly to a specified file.
 

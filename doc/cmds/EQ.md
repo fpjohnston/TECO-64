@@ -1,4 +1,4 @@
-### EQ - Read File To Q-Register
+### EQ - Read File to Q-Register
 
 EQ*qfilespec*$
 - Read specified file into Q-register *q*.
