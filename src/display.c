@@ -722,16 +722,20 @@ static void repaint(int row, int col, int pos)
         (void)attrset(COLOR_PAIR(TEXT)); //lint !e835
 
         int c;
-        int nrows = d.nrows;
+        int nrows = 0;
 
         while ((c = getchar_ebuf(pos++)) != -1)
         {
-            if (c != CR)
+            if (c == LF)
+            {
+                (void)move(d.text.top + nrows + 1, 0);
+            }
+            else if (c != CR)
             {
                 (void)addch((uint)c);
             }
 
-            if (isdelim(c) && --nrows == 0)
+            if (isdelim(c) && ++nrows == d.nrows)
             {
                 break;
             }
