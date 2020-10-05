@@ -220,8 +220,21 @@ void init_filename(char **name, const char *buf, uint len)
     // non-ASCII characters. Other characters could be checked, depending on
     // what is valid for a specfic operating system.
 
-    char path[len + 1], *p = path;
+    const char *home = getenv("HOME");
+    uint homelen = (home != NULL) ? (uint)strlen(home) : 0;
+    char path[homelen + len + 1], *p = path;
     uint ncopied = 0;
+
+    // Replace initial tilde (~) with home directory.
+
+    if (buf[0] == '~' && home != NULL)
+    {
+        ++buf;
+        --len;
+
+        ncopied = (uint)sprintf(path, "%s", home);
+        p += ncopied;
+    }
 
     while (len-- > 0)
     {
