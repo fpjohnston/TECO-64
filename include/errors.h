@@ -53,6 +53,7 @@ enum errors
     E_CHR,          ///< Invalid character for command
     E_COL,          ///< Illegal colon, or too many colons
     E_DIV,          ///< Division by zero
+    E_DPY,          ///< Display mode initialization error
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag "!x!"
     E_EGC,          ///< EG command is too long
@@ -95,9 +96,9 @@ enum errors
     E_NCA,          ///< Negative argument to comma
     E_NFI,          ///< No file for input
     E_NFO,          ///< No file for output
+    E_NOD,          ///< Display mode support not enabled
     E_NON,          ///< No n argument after m argument
     E_NOT,          ///< O command has no tag
-    E_NOW,          ///< Window support not enabled
     E_NPA,          ///< P or PW argument is negative
     E_NYA,          ///< Numeric argument with Y
     E_NYI,          ///< Not yet implemented
@@ -111,7 +112,6 @@ enum errors
     E_TAG,          ///< Missing tag "!x!"
     E_UTC,          ///< Unterminated command string
     E_UTM,          ///< Unterminated macro
-    E_WIN,          ///< Window initialization error
     E_XAB,          ///< Execution aborted
     E_YCA           ///< Y command aborted
 };

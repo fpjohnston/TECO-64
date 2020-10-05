@@ -60,12 +60,12 @@ is not informed.
 W - Video Terminal Watch Commands
 
 These commands facilitated screen updates that are now handled by the
-*ncurses* library. Other than -1W and W, for enabling and disabling window
+*ncurses* library. Other than -1W and W, for enabling and disabling display
 mode, respectively, and 7:W, for setting the size of a scrolling region,
 they appear to be largely unnecessary. 1:W and 2:W may be used to determine
 the terminal width and height, respectively, but should not be necessary
 for setting either since TECO determines the terminal size automatically
-at start-up and whenever the window is resized.
+at start-up and whenever the display is resized.
 
 - -1W - Refresh the terminal’s screen to show the contents of the text buffer.
 - -nW - Ignored.
@@ -75,8 +75,8 @@ at start-up and whenever the window is resized.
 - -1000W - Ignored.
 - 0:W - Can be read or set, but is otherwise ignored.
 - :W - Equivalent to 0:W.
-- 1:W - Read or set the horizontal size of the user’s editing window.
-- 2:W - Read or set the vertical size of the user’s editing window.
+- 1:W - Read or set the horizontal size of the user’s editing display.
+- 2:W - Read or set the vertical size of the user’s editing display.
 - 3:W - Read or set SEEALL mode. This is currently not used, but may be
 added in a future release.
 - 4:W - Can be read or set, but is otherwise ignored.

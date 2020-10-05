@@ -1,6 +1,6 @@
 ///
-///  @file    window.h
-///  @brief   Header file for window support functions.
+///  @file    display.h
+///  @brief   Header file for display mode functions.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -24,9 +24,9 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     !defined(_WINDOW_H)
+#if     !defined(_DISPLAY_H)
 
-#define _WINDOW_H
+#define _DISPLAY_H
 
 #include <stdbool.h>            //lint !e451 !e537
 
@@ -35,7 +35,7 @@
 
 #define SATMAX      1000            ///< Maximum color saturation
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 ///  @enum   window_pair
 ///  @brief  Values of foreground/background pairs for defined windows.
@@ -92,23 +92,23 @@ extern struct watch w;
 
 extern bool clear_eol(void);
 
-extern void clear_win(void);
+extern void clear_dpy(void);
 
-extern int getchar_win(bool wait);
+extern int getchar_dpy(bool wait);
 
-extern void getsize_win(void);
+extern void getsize_dpy(void);
 
-extern void init_win(void);
+extern void init_dpy(void);
 
-extern bool putc_win(int c);
+extern bool putc_dpy(int c);
 
-extern bool puts_win(const char *buf);
+extern bool puts_dpy(const char *buf);
 
-extern int readkey_win(int c);
+extern int readkey_dpy(int c);
 
-extern void reset_win(void);
+extern void reset_dpy(void);
 
-extern void refresh_win(void);
+extern void refresh_dpy(void);
 
 extern void reset_colors(void);
 
@@ -116,4 +116,4 @@ extern void set_nrows(void);
 
 extern void set_scroll(int height, int nscroll);
 
-#endif  // !defined(_WINDOW_H)
+#endif  // !defined(_DISPLAY_H)

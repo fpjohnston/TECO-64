@@ -51,7 +51,7 @@ standard asterisk prompt).
 
 TECO_VTEDIT
  - This specifies the path for a file containing commands to be
-used for editing in window mode.
+used for editing in display mode.
 
 ### Starting TECO
 
@@ -83,6 +83,9 @@ This is effectively a *make* command in other versions of TECO.
 
 -c, --nocreate
  - If the specified file does not exist, then issue an error and exit.
+
+-D, --display
+ - Start TECO in display mode (using the 1W command).
 
 -E*command*, --execute=*command*
  - Execute *command* as an indirect command file (using the EI command) which is
@@ -135,11 +138,8 @@ output (using EW command), then read in first page.
  - Open specified file for input and output (using the EB command).
 
 -S*nn*, --scroll=*nn*
- - Start TECO in split-screen window mode, with *nn* lines for a scrolling
+ - Start TECO in split-screen display mode, with *nn* lines for a scrolling
 region (using the 1W and nn,7:W commands).
-
--W, --window
- - Start TECO in window mode (using the 1W command).
 
 -X, --exit
  - Used with -E to exit from TECO (using the EX command) once the indirect

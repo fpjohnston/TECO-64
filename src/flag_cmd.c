@@ -245,7 +245,7 @@ void exec_E3(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan E4 command: set window flags.
+///  @brief    Scan E4 command: set display flags.
 ///
 ///  @returns  Nothing.
 ///

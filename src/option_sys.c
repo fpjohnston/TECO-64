@@ -56,6 +56,7 @@ struct config
         bool argument;          ///< --argument option seen
         bool buffer;            ///< --buffer option seen
         bool create;            ///< --create option seen
+        bool display;           ///< --display option seen
         bool execute;           ///< --execute=file option seen
         bool help;              ///< --help option seen
         bool initial;           ///< --initial=file option seen
@@ -65,7 +66,6 @@ struct config
         bool readonly;          ///< --readonly option seen
         bool scroll;            ///< --scroll option seen
         bool vtedit;            ///< --vtedit option seen
-        bool window;            ///< --window option seen
         bool exit;              ///< --exit option seen
     } f;                        ///< true/false flags
 
@@ -96,6 +96,7 @@ static struct config config =
         .argument = false,
         .buffer   = false,
         .create   = true,
+        .display  = false,
         .execute  = false,
         .help     = false,
         .initial  = true,
@@ -105,7 +106,6 @@ static struct config config =
         .readonly = false,
         .scroll   = false,
         .vtedit   = true,
-        .window   = false,
         .exit     = false,
     },
 
@@ -306,7 +306,7 @@ static void finish_config(int argc, const char * const argv[])
         store_cmd(cmdstring);
     }
 
-    if (config.f.window != 0)
+    if (config.f.display != 0)
     {
         store_cmd("-1W ");
     }
@@ -479,6 +479,11 @@ void set_config(
 
                 break;
 
+            case OPTION_D:
+                config.f.display = true;
+
+                break;
+
             case OPTION_E:
                 config.f.execute = true;
                 config.s.execute = optarg;
@@ -547,9 +552,9 @@ void set_config(
                 break;
 
             case OPTION_S:
-                config.f.scroll = true;
-                config.s.scroll = optarg;
-                config.f.window = true;
+                config.f.scroll  = true;
+                config.s.scroll  = optarg;
+                config.f.display = true;
 
                 break;
 
@@ -565,11 +570,6 @@ void set_config(
 
             case OPTION_v:
                 config.f.vtedit = false;
-
-                break;
-
-            case OPTION_W:
-                config.f.window = true;
 
                 break;
 

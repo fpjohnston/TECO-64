@@ -35,10 +35,10 @@
 #include "teco.h"
 #include "ascii.h"
 #include "cmd.h"
+#include "display.h"
 #include "eflags.h"
 #include "errors.h"
 #include "term.h"
-#include "window.h"
 
 
 #define ERR_BUF_SIZE    64          ///< Size of error buffer
@@ -70,6 +70,7 @@ static struct err_table err_table[] =
     [E_CHR] = { "CHR",  "Invalid character for command" },
     [E_COL] = { "COL",  "Illegal colon, or too many colons" },
     [E_DIV] = { "DIV",  "Division by zero" },
+    [E_DPY] = { "DPY",  "Display mode initialization error" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
     [E_EGC] = { "EGC",  "EG command is too long" },
@@ -112,9 +113,9 @@ static struct err_table err_table[] =
     [E_NCA] = { "NCA",  "Negative argument to comma" },
     [E_NFI] = { "NFI",  "No file for input" },
     [E_NFO] = { "NFO",  "No file for output" },
+    [E_NOD] = { "NOD",  "Display mode support not enabled" },
     [E_NON] = { "NON",  "No n argument after m argument" },
     [E_NOT] = { "NOT",  "O command has no tag" },
-    [E_NOW] = { "NOW",  "Window support not enabled" },
     [E_NPA] = { "NPA",  "P or PW argument is negative" },
     [E_NYA] = { "NYA",  "Numeric argument with Y" },
     [E_NYI] = { "NYI",  "Not yet implemented" },
@@ -128,7 +129,6 @@ static struct err_table err_table[] =
     [E_TAG] = { "TAG",  "Missing tag '!%s!'" },
     [E_UTC] = { "UTC",  "Unterminated command string" },
     [E_UTM] = { "UTM",  "Unterminated macro" },
-    [E_WIN] = { "WIN",  "Window initialization error" },
     [E_XAB] = { "XAB",  "Execution aborted" },
     [E_YCA] = { "YCA",  "Y command aborted" },
 };
@@ -154,6 +154,8 @@ static const char *verbose[] =
 
     [E_COL] = "A colon preceded a command that does not allow colons, "
               "or there were too many colons specified for the command.",
+
+    [E_DPY] = "An error occurred during initialization of display mode.",
 
     [E_DIV] = "An attempt was made to divide a number by zero.",
 
@@ -351,8 +353,6 @@ static const char *verbose[] =
               "sequence stored in a q-register must be complete within "
               "the Q-register.)",
 
-    [E_WIN] = "Window error occurred. More information is TBD.",
-
     [E_XAB] = "Execution of TECO was aborted. This is usually due to the "
               "typing of <CTRL/C>.",
 
@@ -475,7 +475,6 @@ noreturn void throw(int error, ...)
     const char *file_str = NULL;
     const char *err_str;
     int c;
-    int nbytes;
 
     va_list args;
 
@@ -494,18 +493,52 @@ noreturn void throw(int error, ...)
 
             if (c >= DEL)               // DEL or 8-bit character?
             {
-                nbytes = snprintf(err_buf, sizeof(err_buf), "[%02x]", c);
+                (void)sprintf(err_buf, "[%02x]", c);
             }
             else if (isprint(c))        // Printable character?
             {
-                nbytes = snprintf(err_buf, sizeof(err_buf), "%c", c);
+                (void)sprintf(err_buf, "%c", c);
             }
             else                        // Must be a control character
             {
-                nbytes = snprintf(err_buf, sizeof(err_buf), "^%c", c + 'A' - 1);
-            }
+                switch (c)
+                {
+                    case TAB:
+                        strcpy(err_buf, "<TAB>");
 
-            assert((uint)nbytes < sizeof(err_buf)); // Error if snprintf() failed
+                        break;
+
+                    case LF:
+                        strcpy(err_buf, "<LF>");
+
+                        break;
+
+                    case VT:
+                        strcpy(err_buf, "<VT>");
+
+                        break;
+
+                    case FF:
+                        strcpy(err_buf, "<FF>");
+
+                        break;
+
+                    case CR:
+                        strcpy(err_buf, "<CR>");
+
+                        break;
+
+                    case ESC:
+                        strcpy(err_buf, "<ESC>");
+
+                        break;
+
+                    default:
+                        (void)sprintf(err_buf, "<^%c>", c + 'A' - 1);
+
+                        break;
+                }
+            }
 
             err_str = err_buf;
 

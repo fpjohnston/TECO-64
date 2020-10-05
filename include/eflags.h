@@ -39,14 +39,14 @@
 
 struct e0_flag
 {
-    uint exec   : 1;            ///< Executing command
-    uint error  : 1;            ///< Last command caused error
-    uint ctrl_c : 1;            ///< CTRL/C seen
-    uint lower  : 1;            ///< Force string arguments to lower case
-    uint upper  : 1;            ///< Force string arguments to upper case
-    uint winact : 1;            ///< Window display is active
-    uint trace  : 1;            ///< Trace mode is active
-    uint init   : 1;            ///< TECO is initializing
+    uint exec    : 1;           ///< Executing command
+    uint error   : 1;           ///< Last command caused error
+    uint ctrl_c  : 1;           ///< CTRL/C seen
+    uint lower   : 1;           ///< Force string arguments to lower case
+    uint upper   : 1;           ///< Force string arguments to upper case
+    uint display : 1;           ///< Display mode is active
+    uint trace   : 1;           ///< Trace mode is active
+    uint init    : 1;           ///< TECO is initializing
 };
 
 ///  @struct  e1_flag
@@ -114,7 +114,7 @@ union e3_flag
 
 ///  @struct  e4_flag
 ///
-///  @brief   Window flags.
+///  @brief   Display flags.
 
 union e4_flag
 {

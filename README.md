@@ -49,9 +49,9 @@ to print a list of command-line options by typing
 
     bin/teco --help    
 
-To build TECO with windows support, type
+To build TECO with display mode support, type
 
-    make WINDOWS=1
+    make DISPLAY=1
 
 To build TECO with virtual memory paging, type
 
@@ -68,7 +68,7 @@ toolchain. It has been also successfully compiled and run on Windows and
 MacOS, although these have not yet been extensively tested, nor have any
 compilers other than *gcc* yet been tested.
 
-*ncurses* is required in order to use TECO in window mode, although it
+*ncurses* is required in order to use TECO in display mode, although it
 can be built without *ncurses*.
 
 The commands that implement backwards paging and searching require virtual

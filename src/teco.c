@@ -45,6 +45,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
@@ -54,7 +55,6 @@
 #include "qreg.h"
 #include "search.h"
 #include "term.h"
-#include "window.h"
 
 
 struct flags f;                     ///< Global flag variables
@@ -91,7 +91,7 @@ int main(int argc, const char * const argv[])
 
                 nparens = 0;            // Reset parenthesis count
 
-                refresh_win();          // Refresh window if needed
+                refresh_dpy();          // Refresh display if needed
 
                 read_cmd();             // Read the next command
                 init_expr();            // Initialize expression stack

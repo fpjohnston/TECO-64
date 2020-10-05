@@ -65,7 +65,7 @@ struct text
 
 extern struct text t;
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 extern bool ebuf_changed;
 

@@ -72,7 +72,7 @@ extern void print_str(const char *fmt, ...);
 
 extern void read_cmd(void);
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 extern void reset_term(void);
 

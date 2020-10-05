@@ -32,10 +32,10 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "display.h"
 #include "eflags.h"
 #include "file.h"
 #include "term.h"
-#include "window.h"
 
 
 // Local functions
@@ -46,7 +46,7 @@ static void echo_chr(int c, void (*print)(int c));
 
 
 ///
-///  @brief    Display character on terminal or in window.
+///  @brief    Output character to terminal or display.
 ///
 ///  @returns  Nothing.
 ///
@@ -54,7 +54,7 @@ static void echo_chr(int c, void (*print)(int c));
 
 static void display(int c)
 {
-    if (putc_win(c))
+    if (putc_dpy(c))
     {
         return;
     }
@@ -243,7 +243,7 @@ void print_echo(int c)
         return;
     }
 
-    if (!putc_win(c))
+    if (!putc_dpy(c))
     {
         fputc(c, stdout);
     }
@@ -282,7 +282,7 @@ void print_str(const char *fmt, ...)
 
     va_end(argptr);
 
-    if (!puts_win(buf))
+    if (!puts_dpy(buf))
     {
         fputs(buf, stdout);
     }

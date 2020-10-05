@@ -80,23 +80,23 @@
             <help>Ignore TECO_MEMORY environment variable.</help>
         </option>
     </section>
-    <section title="Window options">
+    <section title="Display options">
+        <option>
+            <short_name>D</short_name>
+            <long_name>display</long_name>
+            <help>Enable display mode.</help>
+        </option>
         <option>
             <short_name>S</short_name>
             <long_name>scroll</long_name>
             <argument>required</argument>
-            <help>Use 'n' lines for scrolling region (implies -W).</help>
-        </option>
-        <option>
-            <short_name>W</short_name>
-            <long_name>window</long_name>
-            <help>Enable window mode.</help>
+            <help>Use 'n' lines for scrolling region (implies -D).</help>
         </option>
         <option>
             <short_name>V</short_name>
             <long_name>vtedit</long_name>
             <argument>required</argument>
-            <help>Use macro in file 'xyz' to initialize window.</help>
+            <help>Use macro in file 'xyz' to initialize display.</help>
         </option>
         <option>
             <short_name>v</short_name>

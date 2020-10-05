@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 #include <ncurses.h>
 #include <string.h>
@@ -36,12 +36,12 @@
 #endif
 
 #include "teco.h"
+#include "display.h"
 #include "errors.h"
 #include "exec.h"
-#include "window.h"
 
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 #define COLOR_BASE  16              ///< Starting base for new colors
 
@@ -96,7 +96,7 @@ static void set_colors(const struct cmd *cmd, enum window_pair pair);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 void exec_F1(struct cmd *cmd)
 
@@ -108,13 +108,13 @@ void exec_F1(struct cmd *unused1)
 
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
     set_colors(cmd, CMD);
 
 #else
 
-    throw(E_WIN);
+    throw(E_DPY);
 
 #endif
 
@@ -128,7 +128,7 @@ void exec_F1(struct cmd *unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 void exec_F2(struct cmd *cmd)
 
@@ -140,13 +140,13 @@ void exec_F2(struct cmd *unused1)
 
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
     set_colors(cmd, TEXT);
 
 #else
 
-    throw(E_WIN);
+    throw(E_DPY);
 
 #endif
 
@@ -159,7 +159,7 @@ void exec_F2(struct cmd *unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 void exec_F3(struct cmd *cmd)
 
@@ -171,13 +171,13 @@ void exec_F3(struct cmd *unused1)
 
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
     set_colors(cmd, STATUS);
 
 #else
 
-    throw(E_WIN);
+    throw(E_DPY);
 
 #endif
 
@@ -191,7 +191,7 @@ void exec_F3(struct cmd *unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 static int find_color(const char *token)
 {
@@ -221,7 +221,7 @@ static int find_color(const char *token)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 static void set_color(const char *buf, uint len, int sat, short color)
 {
@@ -251,7 +251,7 @@ static void set_color(const char *buf, uint len, int sat, short color)
 
     if (i == -1)
     {
-        throw(E_WIN);
+        throw(E_DPY);
     }
 
     short red   = (short)(color_table[i].red   * (uint)sat / SATMAX);
@@ -272,7 +272,7 @@ static void set_color(const char *buf, uint len, int sat, short color)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 static void set_colors(const struct cmd *cmd, enum window_pair pair)
 {

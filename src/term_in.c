@@ -33,13 +33,13 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 #include "qreg.h"
 #include "term.h"
-#include "window.h"
 
 
 #define FF_LINES    40                  ///< No. of lines to print for FF
@@ -519,7 +519,7 @@ static int read_first(void)
 
         int c = getc_term((bool)WAIT);
 
-        c = readkey_win(c);             // See if it's a window key
+        c = readkey_dpy(c);             // See if it's a display key
 
         switch (c)
         {
@@ -537,14 +537,14 @@ static int read_first(void)
                 echo_in(CTRL_K);
                 echo_in(CRLF);
                 reset_colors();
-                clear_win();
+                clear_dpy();
 
                 break;
 
             case CTRL_W:
                 echo_in(CTRL_W);
                 echo_in(CRLF);
-                clear_win();
+                clear_dpy();
 
                 break;
 
@@ -594,7 +594,7 @@ static int read_first(void)
 
                 break;
 
-            case EOF:                   // Window key we already processed
+            case EOF:                   // Display key we already processed
                 prompt_enabled = false;
 
                 break;

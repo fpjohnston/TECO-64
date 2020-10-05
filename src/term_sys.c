@@ -40,12 +40,12 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 #include "term.h"
-#include "window.h"
 
 
 #if     !defined(__DECC)
@@ -60,7 +60,7 @@ bool term_active = false;               ///< Are terminal settings active?
 
 static void exit_term(void);
 
-#if     !defined(TECO_WINDOWS)
+#if     !defined(TECO_DISPLAY)
 
 static void reset_term(void);
 
@@ -100,7 +100,7 @@ int getc_term(bool wait)
         return LF;
     }
 
-    int c = getchar_win(wait);
+    int c = getchar_dpy(wait);
 
     if (c == -1)
     {
@@ -135,7 +135,7 @@ int getc_term(bool wait)
 
 ///
 ///  @brief    Initialize terminal. Note that this function can be called more
-///            than once, because we can start and stop window/scope mode.
+///            than once, because we can start and stop display mode.
 ///
 ///  @returns  Nothing.
 ///
@@ -184,13 +184,13 @@ void init_term(void)
         f.et.scope     = true;          // Terminal is a scope
         f.et.eightbit  = true;          // Terminal can use 8-bit characters
 
-        getsize_win();
+        getsize_dpy();
     }
 
-    // The following is needed only if there is no window active and we haven't
+    // The following is needed only if there is no display active and we haven't
     // already initialized the terminal mode.
 
-    if (!f.e0.winact && !term_active)
+    if (!f.e0.display && !term_active)
     {
         term_active = true;
 
@@ -223,7 +223,7 @@ void init_term(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 void reset_term(void)
 
@@ -249,7 +249,7 @@ static void reset_term(void)
 
 
 ///
-///  @brief    Signal handler for CTRL/C and window size changes.
+///  @brief    Signal handler for CTRL/C and display size changes.
 ///
 ///  @returns  Nothing.
 ///
@@ -282,7 +282,7 @@ static void sig_handler(int signum)
             break;
 
         case SIGWINCH:
-            getsize_win();
+            getsize_dpy();
 
             break;
 

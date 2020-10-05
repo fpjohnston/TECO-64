@@ -1,6 +1,6 @@
 ///
-///  @file    window.c
-///  @brief   Window functions.
+///  @file    display.c
+///  @brief   Display mode functions.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -26,7 +26,7 @@
 
 #include <assert.h>
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 #include <ncurses.h>
 
@@ -47,22 +47,22 @@
 
 #include "teco.h"
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 #include "ascii.h"
 
 #endif
 
+#include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "term.h"
-#include "window.h"
 
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-const int tabsize = 8;              ///< Standard tab size
+static const int tabsize = 8;       ///< Standard tab size
 
 ///
 ///  @def    err_if_true
@@ -70,7 +70,7 @@ const int tabsize = 8;              ///< Standard tab size
 ///  @brief  Issue error if function returns specified value.
 ///
 
-#define err_if_true(func, cond) if (func == cond) error_win()
+#define err_if_true(func, cond) if (func == cond) error_dpy()
 
 #define MAX_POSITION    30          ///< Max. size of position string
 
@@ -123,9 +123,9 @@ static struct display d =
 
 // Local functions
 
-static void error_win(void);
+static void error_dpy(void);
 
-static void exit_win(void);
+static void exit_dpy(void);
 
 static void mark_cursor(int row, int col);
 
@@ -150,9 +150,9 @@ static void update_status(void);
 bool clear_eol(void)
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-    if (f.et.scope && f.e0.winact)
+    if (f.et.scope && f.e0.display)
     {
         (void)printw("\r");
         (void)clrtoeol();
@@ -168,16 +168,16 @@ bool clear_eol(void)
 
 
 ///
-///  @brief    Clear screen and redraw window.
+///  @brief    Clear screen and redraw display.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void clear_win(void)
+void clear_dpy(void)
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
     (void)clear();
 
@@ -185,7 +185,7 @@ void clear_win(void)
 
     set_scroll(w.height, w.nlines);
 
-    refresh_win();
+    refresh_dpy();
 
 #endif
 
@@ -193,40 +193,40 @@ void clear_win(void)
 
 
 ///
-///  @brief    Reset window and issue error. When TECO starts, we either try to
-///            initialize for a window display, or initialize terminal settings.
-///            So if window initialization fails, we have to ensure that the
+///  @brief    Reset display and issue error. When TECO starts, we either try
+///            to initialize for display mode, or initialize terminal settings.
+///            So if display initialization fails, we have to ensure that the
 ///            terminal is set up correctly.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-static void error_win(void)
+static void error_dpy(void)
 {
-    reset_win();
+    reset_dpy();
     init_term();
 
-    throw(E_WIN);                       // Window initialization
+    throw(E_DPY);                       // Display mode initialization
 }
 
 #endif
 
 
 ///
-///  @brief    Reset window before we exit from TECO.
+///  @brief    Reset display mode prior to exiting from TECO.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-static void exit_win(void)
+static void exit_dpy(void)
 {
-    reset_win();
+    reset_dpy();
 }
 
 #endif
@@ -239,22 +239,22 @@ static void exit_win(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-int getchar_win(bool wait)
+int getchar_dpy(bool wait)
 
 #else
 
-int getchar_win(bool unused1)
+int getchar_dpy(bool unused1)
 
 #endif
 
 {
     int c = 0;                          // Ensure that high bits are clear
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-    if (f.e0.winact)
+    if (f.e0.display)
     {
         if (!wait)
         {
@@ -276,10 +276,10 @@ int getchar_win(bool unused1)
         return c;
     }
 
-    // If windows support isn't compiled in, or it's not currently active,
-    // then read a character through alternate means. Note that if windows
-    // are inactive, getch() always returns immediately, which is why we
-    // usually call read() to get a single character.
+    // If display mode support isn't compiled in, or it's not currently
+    // active, then read a character through alternate means. Note that
+    // if display mode is active, getch() always returns immediately,
+    // which is why we usually call read() to get a single character.
 
     if (!wait)
     {
@@ -306,7 +306,7 @@ int getchar_win(bool unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void getsize_win(void)
+void getsize_dpy(void)
 {
     struct winsize ts;
 
@@ -318,7 +318,7 @@ void getsize_win(void)
     w.width  = ts.ws_col;
     w.height = ts.ws_row;
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
     (void)resizeterm(w.height, w.width);
 
@@ -329,20 +329,20 @@ void getsize_win(void)
 
 
 ///
-///  @brief    Initialize for window display.
+///  @brief    Initialize for display mode.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_win(void)
+void init_dpy(void)
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-    if (!f.e0.winact)
+    if (!f.e0.display)
     {
-        f.e0.winact = true;
+        f.e0.display = true;
 
         static bool exit_set = false;
 
@@ -350,7 +350,7 @@ void init_win(void)
         {
             exit_set = true;
 
-            register_exit(exit_win);
+            register_exit(exit_dpy);
         }
 
         // Note that initscr() will print an error message and exit if it
@@ -380,7 +380,7 @@ void init_win(void)
 
 #else
 
-    throw(E_NOW);                       // Window support not enabled
+    throw(E_NOD);                       // Display mode not enabled
 
 #endif
 
@@ -394,7 +394,7 @@ void init_win(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 static void mark_cursor(int row, int col)
 {
@@ -444,7 +444,7 @@ static void mark_cursor(int row, int col)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 static void move_down(void)
 {
@@ -511,7 +511,7 @@ static void move_down(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 static void move_up(void)
 {
@@ -566,7 +566,7 @@ static void move_up(void)
 
 
 ///
-///  @brief    Output character to window. We do not output CR because ncurses
+///  @brief    Output character to display. We do not output CR because ncurses
 ///            does the following when processing LF:
 ///
 ///            1. Clear to end of line.
@@ -575,25 +575,25 @@ static void move_up(void)
 ///            So, not only is CR not necessary, but if it preceded LF, this
 ///            would result in the current line getting blanked.
 ///
-///  @returns  true if character output, false if window not active.
+///  @returns  true if character output, false if display not active.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-bool putc_win(int c)
+bool putc_dpy(int c)
 
 #else
 
-bool putc_win(int unused1)
+bool putc_dpy(int unused1)
 
 #endif
 
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-    if (f.e0.winact)
+    if (f.e0.display)
     {
         if (c != CR)
         {
@@ -611,30 +611,30 @@ bool putc_win(int unused1)
 
 
 ///
-///  @brief    Output string to window.
+///  @brief    Output string to display.
 ///
-///  @returns  true if character output, false if window not active.
+///  @returns  true if character output, false if display not active.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-bool puts_win(const char *buf)
+bool puts_dpy(const char *buf)
 
 #else
 
-bool puts_win(const char *unused1)
+bool puts_dpy(const char *unused1)
 
 #endif
 
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-    if (f.e0.winact)
+    if (f.e0.display)
     {
         (void)addstr(buf);
-        refresh_win();
+        refresh_dpy();
 
         return true;
     }
@@ -647,16 +647,16 @@ bool puts_win(const char *unused1)
 
 
 ///
-///  @brief    Read window key.
+///  @brief    Read display key.
 ///
 ///  @returns  Character to process, or EOF if already processed.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int readkey_win(int key)
+int readkey_dpy(int key)
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
     if (key < KEY_MIN || key > KEY_MAX)
     {
@@ -682,7 +682,7 @@ int readkey_win(int key)
         if (dot >= t.B && dot <= t.Z)
         {
             setpos_ebuf(dot);
-            refresh_win();
+            refresh_dpy();
         }
     }
 
@@ -704,7 +704,7 @@ int readkey_win(int key)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 static void repaint(int row, int col, int pos)
 {
@@ -751,9 +751,7 @@ static void repaint(int row, int col, int pos)
 
         while (pos < 0)
         {
-            int c = getchar_ebuf(pos);
-
-            if (c == TAB)
+            if (getchar_ebuf(pos) == TAB)
             {
                 col += tabsize - (col % tabsize);
             }
@@ -798,12 +796,12 @@ static void repaint(int row, int col, int pos)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void refresh_win(void)
+void refresh_dpy(void)
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-    if (f.e0.winact && w.nlines != 0)
+    if (f.e0.display && w.nlines != 0)
     {
         int line = getlines_ebuf(-1);   // Line number within buffer
         int row  = line % d.nrows;      // Relative row within screen
@@ -828,7 +826,7 @@ void refresh_win(void)
 void reset_colors(void)
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
     if (can_change_color())             // Make colors as bright as possible
     {
@@ -854,20 +852,20 @@ void reset_colors(void)
 
 
 ///
-///  @brief    Terminate window display.
+///  @brief    Terminate display mode.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void reset_win(void)
+void reset_dpy(void)
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-    if (f.e0.winact)
+    if (f.e0.display)
     {
-        f.e0.winact = false;
+        f.e0.display = false;
 
         (void)endwin();
     }
@@ -887,7 +885,7 @@ void reset_win(void)
 void set_nrows(void)
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
     d.nrows = w.height - w.nlines;
 
@@ -910,7 +908,7 @@ void set_nrows(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 void set_scroll(int height, int nlines)
 
@@ -922,9 +920,9 @@ void set_scroll(int unused1, int unused2)
 
 {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-    if (f.e0.winact && w.nlines != 0)
+    if (f.e0.display && w.nlines != 0)
     {
         if (f.e4.invert)
         {
@@ -986,7 +984,7 @@ void set_scroll(int unused1, int unused2)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
 static void update_status(void)
 {

@@ -29,12 +29,12 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "display.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "term.h"
-#include "window.h"
 
 
 #define DEFAULT_HEIGHT          24      ///< Default terminal rows
@@ -126,7 +126,7 @@ static int get_w(int n)
 
 
 ///
-///  @brief    Scan W command: process window functions.
+///  @brief    Scan W command: process display functions.
 ///
 ///  @returns  Nothing.
 ///
@@ -163,25 +163,25 @@ void exec_W(struct cmd *cmd)
 
     if (!cmd->n_set)                    // Was it W with no argument?
     {
-        if (f.e0.winact)
+        if (f.e0.display)
         {
-            reset_win();
+            reset_dpy();
             init_term();
         }
     }
     else if (cmd->n_arg == -1)          // Was it -1W?
     {
-        if (!f.e0.winact)
+        if (!f.e0.display)
         {
 
-#if     defined(TECO_WINDOWS)
+#if     defined(TECO_DISPLAY)
 
-            reset_term();               // Don't reset if no window support
+            reset_term();               // Reset if display mode support
 
 #endif
 
-            init_win();
-            clear_win();
+            init_dpy();
+            clear_dpy();
         }
     }
 
@@ -245,7 +245,7 @@ static void set_w(int m, int n)
         case 7:
             if (m <= 1 || w.height - m < 9)
             {
-                throw(E_WIN);           // Window error
+                throw(E_DPY);           // Display error
             }
 
             w.nlines = m;

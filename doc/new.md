@@ -45,7 +45,7 @@ being returned if the open succeeded, and 0 if it failed.
 [^E - Match control constructs](cmds/ctrl_E.md)
 - Added ^E*nnn*. (TECO-10)
 
-[^K - Reset window colors](cmds/ctrl_K.md)
+[^K - Reset display colors](cmds/ctrl_K.md)
 
 [^Q - Convert line numbers to character values](cmds/ctrl_Q.md) (TECO-10)
 
@@ -87,7 +87,7 @@ being returned if the open succeeded, and 0 if it failed.
 
 [E3 - File Operations Flag](cmds/E3.md)
 
-[E4 - Window Features Flag](cmds/E4.md)
+[E4 - Display Mode Flag](cmds/E4.md)
 
 [EC - Set Memory Size](cmds/EC.md) (TECO-10)
 
@@ -155,21 +155,22 @@ being returned if the open succeeded, and 0 if it failed.
 The following error messages have been added:
 
 - ATS - Illegal at-sign, or too many at-signs
-- BOA - Numeric argument for O command is out of range.
-- CHR - Invalid character for command.
-- COL - Illegal colon, or too many colons.
-- DIV - Division by zero.
-- DUP - Duplicate tag.
-- EGC - EG command is too long.
-- FIL - Illegal file.
-- IE1 - Illegal E1 command.
-- IFE - Ill-formed numeric expression.
-- IMA - Illegal m argument.
-- INA - Illegal n argument.
-- INI - Initialization error.
-- IOA - Illegal O argument.
-- MAT - No matching files.
-- NAT - Illegal n argument with text string.
-- NON - No n argument after m argument.
-- SYS - System error.
-- WIN - Window initialization error.
+- BOA - Numeric argument for O command is out of range
+- CHR - Invalid character for command
+- COL - Illegal colon, or too many colons
+- DIV - Division by zero
+- DPY - Display mode initialization error
+- DUP - Duplicate tag
+- EGC - EG command is too long
+- FIL - Illegal file
+- IE1 - Illegal E1 command
+- IFE - Ill-formed numeric expression
+- IMA - Illegal m argument
+- INA - Illegal n argument
+- INI - Initialization error
+- IOA - Illegal O argument
+- MAT - No matching files
+- NAT - Illegal n argument with text string
+- NOD - Display mode not enabled
+- NON - No n argument after m argument
+- SYS - System error

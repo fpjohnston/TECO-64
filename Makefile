@@ -39,6 +39,7 @@
 #
 #      BUFFER=gap  Use gap buffer for editing text. [default]"
 #      DEBUG=1     Enable debugging features."
+#      DISPLAY=1   Enable display mode."
 #      GDB=1       Enable use of GDB debugger."
 #      GPROF=1     Enable use of GPROF profiler."
 #      NDEBUG=1    Disable run-time assertions."
@@ -46,7 +47,6 @@
 #      PAGING=vm   Use virtual memory paging."
 #      TRACE=1     Enable tracing of commands."
 #      VERBOSE=1   Enable verbosity during build."
-#      WINDOWS=1   Enable windows commands."
 #
 ################################################################################
 
@@ -79,6 +79,7 @@ SOURCES = \
     cmd_estack.c   \
     cmd_exec.c     \
     cmd_tables.c   \
+    display.c      \
     env_sys.c      \
     errors.c       \
     file.c         \
@@ -92,7 +93,6 @@ SOURCES = \
     term_in.c      \
     term_out.c     \
     term_sys.c     \
-    window.c       \
                    \
     a_cmd.c        \
     bracket_cmd.c  \
@@ -156,14 +156,14 @@ SOURCES = \
     yank_cmd.c     \
 
 #
-#  Check to see if we should include windows support
+#  Check to see if we should enable display mode.
 #
 ################################################################################
 
-ifdef   WINDOWS
+ifdef   DISPLAY
 
-CFLAGS     += -D TECO_WINDOWS
-LINT_DEBUG += -D TECO_WINDOWS
+CFLAGS     += -D TECO_DISPLAY
+LINT_DEBUG += -D TECO_DISPLAY
 
 endif
 
@@ -307,6 +307,7 @@ help:
 	@echo ""
 	@echo "    BUFFER=gap  Use gap buffer for editing text. [default]"
 	@echo "    DEBUG=1     Enable debugging features."
+	@echo "    DISPLAY=1   Enable display mode."
 	@echo "    GDB=1       Enable use of GDB debugger."
 	@echo "    GPROF=1     Enable use of GPROF profiler."
 	@echo "    NDEBUG=1    Disable run-time assertions."
@@ -314,7 +315,6 @@ help:
 	@echo "    PAGING=vm   Use virtual memory paging."
 	@echo "    TRACE=1     Enable tracing of commands."
 	@echo "    VERBOSE=1   Enable verbosity during build."
-	@echo "    WINDOWS=1   Enable windows commands."
 
 bin:
 	$(AT)mkdir -p bin
@@ -360,12 +360,9 @@ distclean: mostlyclean clean
 	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL2)
 
 .PHONY: doc
-doc: html
+doc: html/options.html
 	-$(AT)echo "Making Doxygen documents" $(NULL)
 	-$(AT)doxygen etc/Doxyfile
-
-.PHONY: html
-html: html/options.html
 
 html/options.html: etc/options.xml etc/options.xsl
 	-$(AT)echo "Making HTML options file" $(NULL)

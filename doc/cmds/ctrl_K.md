@@ -1,4 +1,4 @@
-### CTRL/K - Reset Window Colors
+### CTRL/K - Reset Display Colors
 
 CTRL/K
 - When used immediately after a TECO prompt, resets the foreground and

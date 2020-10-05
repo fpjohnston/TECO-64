@@ -1,5 +1,5 @@
 ///
-///  @file       _options.h
+///  @file       options.h
 ///
 ///  @brief      Header file for teco utility.
 ///              *** Automatically generated file. DO NOT MODIFY. ***
@@ -77,11 +77,11 @@ static const char * const help_text[] =
     "  -M, --memory           Use TECO_MEMORY to get name of last file edited.",
     "  -m, --nomemory         Ignore TECO_MEMORY environment variable.",
     "",
-    "Window options:",
+    "Display options:",
     "",
-    "  -S, --scroll=n         Use 'n' lines for scrolling region (implies -W).",
-    "  -W, --window           Enable window mode.",
-    "  -V, --vtedit=xyz       Use macro in file 'xyz' to initialize window.",
+    "  -D, --display          Enable display mode.",
+    "  -S, --scroll=n         Use 'n' lines for scrolling region (implies -D).",
+    "  -V, --vtedit=xyz       Use macro in file 'xyz' to initialize display.",
     "  -v, --novtedit         Ignore TECO_VTEDIT environment variable.",
     "",
     "Debug options:",
@@ -104,6 +104,7 @@ enum option_t
     OPTION_A = 'A',
     OPTION_B = 'B',
     OPTION_C = 'C',
+    OPTION_D = 'D',
     OPTION_E = 'E',
     OPTION_H = 'H',
     OPTION_I = 'I',
@@ -113,7 +114,6 @@ enum option_t
     OPTION_R = 'R',
     OPTION_S = 'S',
     OPTION_V = 'V',
-    OPTION_W = 'W',
     OPTION_X = 'X',
     OPTION_Z = 'Z',
     OPTION_c = 'c',
@@ -127,7 +127,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "A:B:CE:HI::L:MO:RS:V:WXZ::cimorv";
+static const char * const optstring = "A:B:CDE:HI::L:MO:RS:V:XZ::cimorv";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -137,6 +137,7 @@ static const struct option long_options[] =
     { "argument",       required_argument,  NULL,  'A'    },
     { "buffer",         required_argument,  NULL,  'B'    },
     { "create",         no_argument,        NULL,  'C'    },
+    { "display",        no_argument,        NULL,  'D'    },
     { "execute",        required_argument,  NULL,  'E'    },
     { "help",           no_argument,        NULL,  'H'    },
     { "initialize",     optional_argument,  NULL,  'I'    },
@@ -146,7 +147,6 @@ static const struct option long_options[] =
     { "read-only",      no_argument,        NULL,  'R'    },
     { "scroll",         required_argument,  NULL,  'S'    },
     { "vtedit",         required_argument,  NULL,  'V'    },
-    { "window",         no_argument,        NULL,  'W'    },
     { "exit",           no_argument,        NULL,  'X'    },
     { "zero",           optional_argument,  NULL,  'Z'    },
     { "nocreate",       no_argument,        NULL,  'c'    },

@@ -102,4 +102,4 @@ to change during further testing.
 - exec_*() - Functions that execute individual commands.
 - *_ebuf() - Functions that provide an interface to the edit (or text) buffer.
 - *_tbuf() - Functions that manipulate the terminal buffer.
-- *_win() - Functions that manipulate the editing window.
+- *_dpy() - Functions that manipulate the display window.
