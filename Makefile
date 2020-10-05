@@ -364,7 +364,10 @@ doc: html/options.html
 	-$(AT)echo "Making Doxygen documents" $(NULL)
 	-$(AT)doxygen etc/Doxyfile
 
-html/options.html: etc/options.xml etc/options.xsl
+html:
+	-$(AT)mkdir html
+
+html/options.html: html etc/options.xml etc/options.xsl
 	-$(AT)echo "Making HTML options file" $(NULL)
 	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html
 
