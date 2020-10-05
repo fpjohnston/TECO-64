@@ -62,6 +62,8 @@
 
 #if     defined(TECO_WINDOWS)
 
+const int tabsize = 8;              ///< Standard tab size
+
 ///
 ///  @def    err_if_true
 ///
@@ -742,6 +744,27 @@ static void repaint(int row, int col, int pos)
             (void)addch('\n');
         }
 
+        // Calculate visible column on screen, allowing for TABs.
+
+        col = 0;
+        pos = getdelta_ebuf(0);
+
+        while (pos < 0)
+        {
+            int c = getchar_ebuf(pos);
+
+            if (c == TAB)
+            {
+                col += tabsize - (col % tabsize);
+            }
+            else
+            {
+                ++col;
+            }
+
+            ++pos;
+        }
+        
         // Highlight our current position in text window
 
         (void)move(d.text.top + row, col);
