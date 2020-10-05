@@ -62,7 +62,7 @@
 
 #if     defined(TECO_WINDOWS)
 
-const int tabsize = 8;              ///< Standard tab size
+static const int tabsize = 8;       ///< Standard tab size
 
 ///
 ///  @def    err_if_true
@@ -751,9 +751,7 @@ static void repaint(int row, int col, int pos)
 
         while (pos < 0)
         {
-            int c = getchar_ebuf(pos);
-
-            if (c == TAB)
+            if (getchar_ebuf(pos) == TAB)
             {
                 col += tabsize - (col % tabsize);
             }
