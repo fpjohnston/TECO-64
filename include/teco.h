@@ -36,8 +36,8 @@
 // Define TECO version numbers
 
 #define MAJOR_VERSION    200    ///< Major version
-#define MINOR_VERSION      0    ///< Minor version
-#define PATCH_VERSION      2    ///< Patch version
+#define MINOR_VERSION      1    ///< Minor version
+#define PATCH_VERSION      0    ///< Patch version
 
 /// @def    countof(array)
 /// @brief  Returns the number of elements in an array.
