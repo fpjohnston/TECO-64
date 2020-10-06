@@ -1,4 +1,4 @@
-### Y - Yank Page
+### Y - Yank Page w/ Protection
 
 Y
 - Clears the text buffer and then reads the next page of the input

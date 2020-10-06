@@ -1,4 +1,4 @@
-### EY - Yank Page w/o Yank Protection
+### EY - Yank Page w/o Protection
 
 EY
 - Same as the Y command, but its action is always permitted
