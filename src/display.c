@@ -722,7 +722,18 @@ static void repaint(int row, int col, int pos)
         (void)attrset(COLOR_PAIR(TEXT)); //lint !e835
 
         int c;
-        int nrows = 0;
+        int nrows = d.nrows;
+
+        // Erase the current text window
+
+        while (nrows-- > 0)
+        {
+            (void)addch('\n');
+        }
+
+        nrows = 0;
+
+        (void)move(d.text.top, 0);      // Back to the top
 
         while ((c = getchar_ebuf(pos++)) != -1)
         {
@@ -739,13 +750,6 @@ static void repaint(int row, int col, int pos)
             {
                 break;
             }
-        }
-
-        // Blank out the rest of the lines if nothing to display
-
-        while (nrows-- > 0)
-        {
-            (void)addch('\n');
         }
 
         // Calculate visible column on screen, allowing for TABs.
