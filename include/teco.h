@@ -37,7 +37,7 @@
 
 #define MAJOR_VERSION    200    ///< Major version
 #define MINOR_VERSION      2    ///< Minor version
-#define PATCH_VERSION      0    ///< Patch version
+#define PATCH_VERSION      1    ///< Patch version
 
 /// @def    countof(array)
 /// @brief  Returns the number of elements in an array.
