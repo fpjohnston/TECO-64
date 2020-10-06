@@ -37,6 +37,7 @@
 #include "file.h"
 #include "term.h"
 
+static int term_pos = 0;            ///< Horizontal position
 
 // Local functions
 
@@ -54,12 +55,22 @@ static void echo_chr(int c, void (*print)(int c));
 
 static void display(int c)
 {
-    if (putc_dpy(c))
+    if (!putc_dpy(c))
     {
-        return;
-    }
+        if (!f.et.truncate || term_pos < w.width)
+        {
+            fputc(c, stdout);
+        }
 
-    fputc(c, stdout);
+        if (c == LF || c == VT || c == FF)
+        {
+            term_pos = 0;
+        }
+        else
+        {
+            ++term_pos;
+        }
+    }
 }
 
 
@@ -238,15 +249,11 @@ void print_echo(int c)
     else if (c == CRLF)
     {
         print_echo(CR);
-        print_echo(LF);
 
-        return;
+        c = LF;
     }
 
-    if (!putc_dpy(c))
-    {
-        fputc(c, stdout);
-    }
+    display(c);
 
     if (!f.e3.noin)
     {
@@ -262,23 +269,25 @@ void print_echo(int c)
 
 ///
 ///  @brief    Output NUL-terminated string to terminal, and possibly also to
-///            log file. Note that this function is not used to output anything
-///            to the text buffer window.
+///            log file.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void print_str(const char *fmt, ...)
+void tprint(
+    const char *format,                 ///< printf() format string
+    ...)                                ///< Remaining arguments for printf()
 {
-    assert(fmt != NULL);                // Error if no format
+    assert(format != NULL);             // Error if no format
 
-    char buf[256];
+    char buf[STR_SIZE_INIT];
 
     va_list argptr;
-    va_start(argptr, fmt);
+    va_start(argptr, format);
+    FILE *fp;
 
-    (void)vsnprintf(buf, sizeof(buf), fmt, argptr);
+    (void)vsnprintf(buf, sizeof(buf), format, argptr);
 
     va_end(argptr);
 
@@ -287,50 +296,10 @@ void print_str(const char *fmt, ...)
         fputs(buf, stdout);
     }
 
-    if (!f.e3.noout)
+    if (!f.e3.noout && (fp = ofiles[OFILE_LOG].fp) != NULL)
     {
-        FILE *fp = ofiles[OFILE_LOG].fp;
-
-        if (fp != NULL)
-        {
-            va_start(argptr, fmt);
-            (void)vfprintf(fp, fmt, argptr);
-            va_end(argptr);
-        }
+        va_start(argptr, format);
+        (void)vfprintf(fp, format, argptr);
+        va_end(argptr);
     }
-}
-
-
-///
-///  @brief    TECO printf() - like printf(), but adds LF or CR/LF at end,
-///            depending on our terminal status.
-///
-///  @returns  Program exit.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void tprint(
-    const char *format,                 ///< printf() format string
-    ...)                                ///< Remaining arguments for printf()
-{
-    assert(format != NULL);             // Make sure format is valid
-
-    va_list argptr;
-
-    //lint -esym(530,argptr)
-
-    va_start(argptr, format);
-
-    //lint -esym(534,vfprintf)
-
-    vfprintf(stdout, format, argptr);   // Now add the message text
-
-    if (term_active)
-    {
-        fputc('\r', stdout);
-    }
-
-    fputc('\n', stdout);
-
-    va_end(argptr);
 }

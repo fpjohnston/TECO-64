@@ -55,7 +55,7 @@ void exec_G(struct cmd *cmd)
         {
             if (last_file != NULL)
             {
-                print_str("%s", last_file);
+                tprint("%s", last_file);
             }
         }
         else if (cmd->qname == '$')     // :G$ -> print command output
@@ -71,7 +71,7 @@ void exec_G(struct cmd *cmd)
         {
             if (last_search.len != 0)
             {
-                print_str("%.*s", (int)last_search.len, last_search.data);
+                tprint("%.*s", (int)last_search.len, last_search.data);
             }
         }
         else                            // :Gq -> print Q-register

@@ -68,8 +68,6 @@ extern void print_echo(int c);
 
 extern void print_prompt(void);
 
-extern void print_str(const char *fmt, ...);
-
 extern void read_cmd(void);
 
 #if     defined(TECO_DISPLAY)

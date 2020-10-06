@@ -400,7 +400,7 @@ void print_help(int error)
 
             if (len > (uint)w.width)
             {
-                print_str("%.*s", (end - start) - 1, start);
+                tprint("%.*s", (end - start) - 1, start);
                 print_chr(CRLF);
 
                 --maxlines;
@@ -417,7 +417,7 @@ void print_help(int error)
         {
             len = (uint)strlen(start);
 
-            print_str("%.*s", (int)len, start);
+            tprint("%.*s", (int)len, start);
             print_chr(CRLF);
 
             break;
@@ -586,16 +586,16 @@ noreturn void throw(int error, ...)
 
     if (error != E_XAB || f.e0.exec)
     {
-        print_str("?%s", code);         // Always print code
+        tprint("?%s", code);         // Always print code
 
         if (f.eh.verbose != 1)          // Need to print more?
         {
-            print_str("   ");
-            print_str(text, err_str);
+            tprint("   ");
+            tprint(text, err_str);
 
             if (error == E_SYS && file_str != NULL)
             {
-                print_str(" for '%s'", file_str);
+                tprint(" for '%s'", file_str);
             }
         }
 

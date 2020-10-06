@@ -40,6 +40,7 @@
 #include "ascii.h"
 #include "errors.h"
 #include "file.h"
+#include "term.h"
 
 
 #define TEMP_NAME   "_teco_XXXXXX"      ///< Template for temp file name
@@ -301,7 +302,7 @@ void read_memory(char *p, uint len)
         {
             if (errno != ENOENT && errno != ENODEV)
             {
-                tprint("%%Can't open memory file '%s'", teco_memory);
+                tprint("%%Can't open memory file '%s'\r\n", teco_memory);
             }
         }
         else
@@ -422,7 +423,7 @@ void write_memory(const char *file)
 
     if ((fp = fopen(teco_memory, "w")) == NULL)
     {
-        tprint("%%Can't open memory file '%s'", teco_memory);
+        tprint("%%Can't open memory file '%s'\r\n", teco_memory);
 
         return;
     }

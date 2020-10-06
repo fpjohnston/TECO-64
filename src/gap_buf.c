@@ -526,7 +526,7 @@ static void print_size(int size)
         }
     }
 
-    print_str("[%d%s bytes]", size, type);
+    tprint("[%d%s bytes]", size, type);
     print_chr(CRLF);
 }
 

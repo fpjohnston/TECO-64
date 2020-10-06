@@ -90,7 +90,7 @@ void exec_equals(struct cmd *cmd)
         }
     }
 
-    print_str(mode, cmd->n_arg);
+    tprint(mode, cmd->n_arg);
 
     if (!cmd->colon)                    // Suppress CRLF?
     {

@@ -246,7 +246,7 @@ int isdelim(int c)
 
 void print_prompt(void)
 {
-    print_str("%s", teco_prompt);
+    tprint("%s", teco_prompt);
 }
 
 

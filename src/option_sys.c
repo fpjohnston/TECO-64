@@ -39,6 +39,7 @@
 #include "cmd.h"
 #include "eflags.h"
 #include "file.h"
+#include "term.h"
 
 #include "options.h"
 
@@ -182,7 +183,7 @@ static void check_config(void)
                 errno = EINVAL;
             }
 
-            tprint("?%s for %s option", strerror(errno), option);
+            tprint("?%s for %s option\r\n", strerror(errno), option);
 
             exit(EXIT_FAILURE);
         }
@@ -196,7 +197,7 @@ static void check_config(void)
         return;
     }
 
-    tprint("?Missing argument for %s option?", option);
+    tprint("?Missing argument for %s option\r\n", option);
 
     exit(EXIT_FAILURE);
 }
@@ -244,7 +245,7 @@ static void finish_config(int argc, const char * const argv[])
 
     if ((argc -= optind) > 1)
     {
-        tprint("?Too many non-option arguments");
+        tprint("?Too many non-option arguments\r\n");
 
         exit(EXIT_FAILURE);
     }
@@ -419,7 +420,7 @@ static void print_help(void)
 
     while ((p = help_text[i++]) != NULL)
     {
-        tprint("%s", p);
+        tprint("%s\r\n", p);
     }
 
     exit(EXIT_SUCCESS);
@@ -592,7 +593,7 @@ void set_config(
 
             default:
                 tprint("%%Unknown option '%s': use --help for list of "
-                        "options", argv[optind - 1]);
+                        "options\r\n", argv[optind - 1]);
 
                 exit(EXIT_FAILURE);
         }
