@@ -285,38 +285,3 @@ void reset(void)
     reset_qreg();                       // Free up Q-register storage
     reset_macro();                      // Reset macro stack
 }
-
-
-///
-///  @brief    TECO printf() - like printf(), but adds LF or CR/LF at end,
-///            depending on our terminal status.
-///
-///  @returns  Program exit.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void tprint(
-    const char *format,                 ///< printf() format string
-    ...)                                ///< Remaining arguments for printf()
-{
-    assert(format != NULL);             // Make sure format is valid
-
-    va_list argptr;
-
-    //lint -esym(530,argptr)
-
-    va_start(argptr, format);
-
-    //lint -esym(534,vfprintf)
-
-    vfprintf(stdout, format, argptr);   // Now add the message text
-
-    if (term_active)
-    {
-        fputc('\r', stdout);
-    }
-
-    fputc('\n', stdout);
-
-    va_end(argptr);
-}

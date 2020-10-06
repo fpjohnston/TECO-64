@@ -137,6 +137,4 @@ extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 
 extern int teco_env(int n, bool colon);
 
-void tprint(const char *format, ...);
-
 #endif  // !defined(_TECO_H)
