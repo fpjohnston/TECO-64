@@ -37,6 +37,12 @@
 #include "exec.h"
 #include "file.h"
 
+#if     defined(TECO_DISPLAY)
+
+#include "display.h"
+
+#endif
+
 
 // Local functions
 
@@ -266,7 +272,23 @@ void exec_E4(struct cmd *cmd)
 
 void exec_ED(struct cmd *cmd)
 {
+#if    defined(TECO_DISPLAY)
+
+    union ed_flag saved = { .flag = f.ed.flag };
+
+#endif
+
     (void)check_mn_flag(cmd, &f.ed.flag);
+
+#if    defined(TECO_DISPLAY)
+
+    check_escape((uint)saved.escape);
+
+#else
+
+    f.ed.escape = false;
+
+#endif
 }
 
 

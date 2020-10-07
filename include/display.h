@@ -90,6 +90,8 @@ extern struct watch w;
 
 // Window functions
 
+extern void check_escape(uint escape);
+
 extern bool clear_eol(void);
 
 extern void clear_dpy(void);

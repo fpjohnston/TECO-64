@@ -26,7 +26,6 @@ The colon-modified command is used to detect ESCape sequences.
 
 ED - Edit Level Flag
 - ED&4 - Expand memory as much as possible.
-- ED&32 - Enable immediate-mode ESCape-sequence commands.
 - ED&128 - Automatic refresh inhibit.
 
 EG - Exit and Go Command

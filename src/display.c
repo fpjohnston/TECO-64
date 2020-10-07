@@ -141,6 +141,26 @@ static void update_status(void);
 
 
 ///
+///  @brief    Check to see if escape sequences werte enabled or disabled.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(TECO_DISPLAY)
+
+void check_escape(uint escape)
+{
+    if (f.ed.escape ^ escape)           // Any change?
+    {
+        (void)keypad(stdscr, f.ed.escape ? (bool)TRUE : (bool)FALSE);
+    }
+}
+
+#endif
+
+
+///
 ///  @brief    Clear to end of line.
 ///
 ///  @returns  true if success, false if we couldn't.
@@ -364,9 +384,10 @@ void init_dpy(void)
         err_if_true(notimeout(stdscr, (bool)TRUE),  ERR);
         err_if_true(idlok(stdscr,     (bool)TRUE),  ERR);
         err_if_true(scrollok(stdscr,  (bool)TRUE),  ERR);
-        err_if_true(keypad(stdscr,    (bool)FALSE), ERR);
         err_if_true(has_colors(),                   FALSE);
         err_if_true(start_color(),                  ERR);
+
+        err_if_true(keypad(stdscr, f.ed.escape ? (bool)TRUE : (bool)FALSE), ERR);
 
         reset_colors();
         (void)set_escdelay(0);
