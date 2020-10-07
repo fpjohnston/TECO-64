@@ -1,18 +1,18 @@
 ### C - Move Pointer Forward
 
 C
-- Advances the pointer forward across one character.
+- Advances *dot* forward across one character.
 
-nC
-- Executes the C command n times. If n is positive, the pointer
-is moved forward across n characters. If n is negative, the
-pointer is moved backward across n characters. If n is zero,
-the pointer position is not changed.
+*n*C
+- Executes the C command *n* times, as follows:
+    - *n* > 0 - *dot* is moved forward across *n* characters.
+    - *n* < 0 - *dot* is moved backward across *n* characters.
+    - *n* = 0 - *dot* is not changed.
 
-n:C
-- Same as nC except that a value is returned. If the command
-succeeded, -1 is returned. If the command failed, the pointer
-does not move and a value of 0 is returned.
+*n*:C
+- Equivalent to *n*C except that -1 is returned if the
+command succeeded. If the command failed, 0 is returned and *dot*
+is not changed.
 
 :C
 - Equivalent to 1:C.

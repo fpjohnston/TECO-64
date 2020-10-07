@@ -1,22 +1,22 @@
 ### J - Jump to Position
 
-nJ
-- Moves the pointer to a position immediately following the nth
-character in the buffer.
+*n*J
+- Moves *dot* to a position immediately following the *n*th
+character in the buffer. *n* must be non-negative.
 
 J
-- Moves the pointer to a position immediately preceding the first
+- Moves *dot* to a position immediately preceding the first
 character in the buffer. Equivalent to 0J.
 
 ZJ
-- Moves the pointer to a position immediately following the last
+- Moves *dot* to a position immediately following the last
 character in the buffer.
 
 n:J
-- Same as the nJ command except that if pointer position n is
-outside of the buffer, the pointer does not move and a value
-of 0 is returned. If the command succeeded, a value of -1 is
-returned.
+- Same as the *n*J command except that -1 is
+returned if new position of *dot* is inside the buffer. If the new
+position of *dot* is outside the buffer, 0 is returned and *dot*
+is not changed.
 
 :J
 - Equivalent to 0:J.
