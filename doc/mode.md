@@ -19,6 +19,8 @@ represents any of the flags listed below.
 
 [ED - Edit level flag](cmds/ED.md)
 
+[EE - Alternate command delimiter](cmds/EE.md)
+
 [EH - Help level flag](cmds/EH.md)
 
 [ES - Search verification flag](cmds/ES.md)
