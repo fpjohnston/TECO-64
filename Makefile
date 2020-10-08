@@ -56,10 +56,6 @@ CC = gcc
 
 CFLAGS = -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums
 
-DFLAGS =
-
-OPTIONS_DEBUG =
-
 INCDIR = include
 
 OPT ?= 3
@@ -162,8 +158,8 @@ SOURCES = \
 
 ifdef   DISPLAY
 
-CFLAGS     += -D TECO_DISPLAY
-LINT_DEBUG += -D TECO_DISPLAY
+DEFINES += -D TECO_DISPLAY
+DOXYGEN +=    TECO_DISPLAY
 
 endif
 
@@ -237,9 +233,9 @@ endif
 
 ifdef   DEBUG
 
-CFLAGS += -D TECO_DEBUG
+DEFINES += -D TECO_DEBUG
+DOXYGEN +=    TECO_DEBUG
 OPTIONS_DEBUG += -d
-LINT_DEBUG += -DTECO_DEBUG
 
 endif
 
@@ -259,14 +255,15 @@ endif
 
 ifdef   NDEBUG
 
-CFLAGS += -DNDEBUG
+DEFINES += -D NDEBUG
+DOXYGEN +=    NDEBUG
 
 endif
 
 ifdef   TRACE
 
-CFLAGS += -D TECO_TRACE
-LINT_DEBUG += -DTECO_TRACE
+DEFINES += -D TECO_TRACE
+DOXYGEN +=    TECO_TRACE
 
 endif
 
@@ -276,9 +273,9 @@ OBJECTS = $(SOURCES:.c=.o)
 
 DFILES = $(SOURCES:.c=.d)
 
-CFLAGS += -MMD -c $(INCLUDES) $(OPT_OPT) $(DFLAGS)
+CFLAGS += -MMD -c $(INCLUDES) $(OPT_OPT) $(DFLAGS) $(DEFINES)
 
-LINT = flint -b -zero -i$(HOME)/flint/lnt $(LINT_DEBUG) ../etc/std.lnt \
+LINT = flint -b -zero -i$(HOME)/flint/lnt $(DEFINES) ../etc/std.lnt \
              -e126 -e786 -e818 -e830 -e843 -e844 +fan +fas
 
 .PHONY: all
@@ -354,7 +351,7 @@ clean: mostlyclean
 
 .PHONY: distclean
 distclean: mostlyclean clean
-	-$(AT)rm -f obj/CFLAGS $(NULL2) 
+	-$(AT)rm -f obj/CFLAGS obj/Doxyfile $(NULL2) 
 	-$(AT)rm -rf html $(NULL2) 
 	-$(AT)cd src && rm -f *.bak $(NULL2)
 	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL2)
@@ -362,7 +359,9 @@ distclean: mostlyclean clean
 .PHONY: doc
 doc: html/options.html
 	-$(AT)echo "Making Doxygen documents" $(NULL)
-	-$(AT)doxygen etc/Doxyfile
+	-$(AT)cp etc/Doxyfile obj/Doxyfile
+	-$(AT)echo "PREDEFINED = $(DOXYGEN)" >>obj/Doxyfile
+	-$(AT)doxygen obj/Doxyfile
 
 html:
 	-$(AT)mkdir html
