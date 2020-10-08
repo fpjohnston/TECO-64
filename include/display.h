@@ -90,7 +90,11 @@ extern struct watch w;
 
 // Window functions
 
+#if     defined(TECO_DISPLAY)
+
 extern void check_escape(uint escape);
+
+#endif
 
 extern bool clear_eol(void);
 

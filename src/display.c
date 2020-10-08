@@ -140,14 +140,14 @@ static void update_status(void);
 #endif
 
 
+#if     defined(TECO_DISPLAY)
+
 ///
 ///  @brief    Check to see if escape sequences werte enabled or disabled.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(TECO_DISPLAY)
 
 void check_escape(uint escape)
 {
