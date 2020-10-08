@@ -139,7 +139,7 @@ static struct err_table err_table[] =
 
 static const char *verbose[] =
 {
-    [E_ARG] = "Three arguments are given (a,b,c or H,c).",
+    [E_ARG] = "Three or more numeric arguments are given (a,b,c or H,c).",
 
     [E_ATS] = "An at-sign preceded a command that does not allow at-signs, "
               "or there were too many at-signs specified for the command.",
@@ -148,16 +148,16 @@ static const char *verbose[] =
               "bracket somewhere to its left. (Note: an iteration in a macro "
               "stored in a Q-register must be complete within the Q-register.)",
 
-    [E_BOA] = "The argument for an O command was out of range",
+    [E_BOA] = "The argument for an O command was out of range.",
 
     [E_CHR] = "A non-ASCII character preceded an EE command.",
 
     [E_COL] = "A colon preceded a command that does not allow colons, "
               "or there were too many colons specified for the command.",
 
-    [E_DPY] = "An error occurred during initialization of display mode.",
-
     [E_DIV] = "An attempt was made to divide a number by zero.",
+
+    [E_DPY] = "An error occurred during initialization of display mode.",
 
     [E_DTB] = "An nD command has been attempted which is not contained "
               "within the current page.",
@@ -292,6 +292,9 @@ static const char *verbose[] =
               "it is necessary to open an output file by use of a "
               "command such as EW or EB.",
 
+    [E_NOD] = "It was not possible to enable display mode, because TECO "
+              "was not compiled to include support for it.",
+
     [E_NON] = "An m argument was not followed by an n argument.",
 
     [E_NOT] = "No tag was found for an O command.",
@@ -398,9 +401,9 @@ void print_help(int error)
         {
             len = (uint)(next - start);
 
-            if (len > (uint)w.width)
+            if (len > (uint)w.width - 4)
             {
-                tprint("%.*s", (end - start) - 1, start);
+                tprint("    %.*s", (end - start) - 1, start);
                 print_chr(CRLF);
 
                 --maxlines;
@@ -417,7 +420,7 @@ void print_help(int error)
         {
             len = (uint)strlen(start);
 
-            tprint("%.*s", (int)len, start);
+            tprint("    %.*s", (int)len, start);
             print_chr(CRLF);
 
             break;
@@ -586,7 +589,9 @@ noreturn void throw(int error, ...)
 
     if (error != E_XAB || f.e0.exec)
     {
-        tprint("?%s", code);         // Always print code
+        tprint("?%s", code);            // Always print code
+
+        last_error = error;
 
         if (f.eh.verbose != 1)          // Need to print more?
         {
@@ -597,11 +602,23 @@ noreturn void throw(int error, ...)
             {
                 tprint(" for '%s'", file_str);
             }
+
+            print_chr(CRLF);
+
+            if (f.eh.verbose == 3)
+            {
+                print_help(last_error);
+            }
+        }
+        else
+        {
+            print_chr(CRLF);
         }
 
-        print_chr(CRLF);
-
-        last_error = error;
+        if (f.eh.command)
+        {
+            echo_tbuf(0);
+        }
     }
 
     // We reset here rather than in the main loop, since we might exit
