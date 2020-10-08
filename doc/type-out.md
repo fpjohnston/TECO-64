@@ -4,10 +4,23 @@ The commands used to type out part or all of the contents of
 the buffer for examination are listed below.
 These commands do not move *dot*.
 
-[T - Type buffer contents](cmds/T.md)
-
-[^T - Output character](cmds/ctrl_T.md)
-
-[V - Type buffer lines](cmds/V.md)
-
-[^A - Type text](cmds/ctrl_A.md)
+| Command | Function |
+| ------- | -------- |
+| \^A*text*\<CTRL/A\> | Types *text* on the terminal. While the command may begin with \<CTRL/A\> or \^A, closing character must be a \<CTRL/A\>. |
+| @^A/*text*/ | Equivalent to \^A*text*\<CTRL/A\>. |
+| :\^A*text*\<CTRL/A\> | Equivalent to \^A*text*\<CTRL/A\> 13\^T 10\^T. |
+| :@\^A/*text*/ | Equivalent to \^A/*text*/ 13\^T 10\^T. |
+| *n*^T | Types out to the terminal the character whose ASCII value is *n*. Whatever normal type-out conversions may currently be in effect and applicable (such as translation of control characters to up-arrow format) are done. The value of *n* is used modulo 256 (except if it is -1; see below). |
+| *n*:^T | Outputs to the terminal the character whose ASCII value is *n*. Output is done in "one-shot" binary mode; no type-out translations are done. The value of *n* is used modulo 256 (except if it is -1; see below). |
+| -1^T | Types CR/LF. Equivalent to 13^T 10^T. |
+| *m*,*n*^T | Specifies a repeat count of *m* for the character whose ASCII value is *n*. *n* may be -1. |
+| T | Types out the contents of the buffer from the current position of *dot* through and including the next line terminator character. |
+| *n*T | Types *n* lines, as follows: <br><br>If *n* \> 0, types the *n* lines following the current position of *dot*. <br><br>If *n* \< 0, types the *n* lines preceding *dot*. <br><br>If *n* = 0, types the contents of the buffer from the beginning of the line on which *dot* is located up to *dot*. |
+| -T | Equivalent to -1T. |
+| *m*,*n*T | Types out the contents of the buffer between pointer positions *m* and *n*. |
+| .,.+*n*T | Types out the *n* characters immediately following *dot*. *n* should be greater than zero. |
+| .-*n*,.T | Types the *n* characters immediately preceding *dot*. *n* should be greater than zero. |
+| HT | Types out the entire contents of the buffer. |
+| V | Types out the current line. Equivalent to 0TT. |
+| *n*V | Types out *n*-1 lines on each side of the current line. Equivalent to 1-*n*T*n*T. |
+| *m*,*n*V | Types out *m*-1 lines before and *n*-1 lines after the current line. |
