@@ -5,7 +5,7 @@ question mark (\?). A short description of the error optionally follows
 (dependent on the current value of the EH flag). Typing \?
 immediately after an error message printout causes the command string to be
 printed up to and including the character which causes the error message. Typing
-\?*q*) immediately after an error message printout saves
+\?*q*) immediately after an error message is printed saves
 the entire command string in Q-register *q*. This is especially useful for
 recovering mistyped insert commands. Both the ? and ?*q* facilities may be used
 when an error occurs.
@@ -14,15 +14,14 @@ TECO also produces warning messages. These messages do not abort the
 command and execution continues.
 
 | Error message | Description |
+| ------------- | ----------- |
 | \%Superseding existing file | Indicates that the file to be created as the result of an EW command already exists. If the output file is closed the old copy of the file will be deleted. The EK command may be used to reverse the EW command. |
-| \%Search fail in iter | Indicates that a search command has failed inside iteration
-brackets. A ; (semi-colon) command immediately following the search command can typically be used to suppress this message. After printing the message, the iteration is
-terminated, i.e., TECO simulates a 0; command. |
+| \%Search fail in iter | Indicates that a search command has failed inside iteration brackets. A ; (semi-colon) command immediately following the search command can typically be used to suppress this message. After printing the message, the iteration is terminated, i.e., TECO simulates a 0; command. |
 
 The following error messages are listed alphabetically by their three-letter
 code.
 
-| Error code | Short message      | Explanation |
+| Error code | Message            | Explanation |
 | ---------- | ------------------ | ----------- |
 | ARG        | Improper Arguments | Three or more numeric arguments were specified (e.g., a,b,c or H,c). |
 | ATS        | Illegal at-sign, or too many at-signs | An at-sign preceded a command that does not allow at-signs, or there were too many at-signs specified for the command." |

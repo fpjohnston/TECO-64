@@ -1,4 +1,4 @@
-### Move Pointer Commands
+### Dot Commands
 
 The following list all of the commands that move the buffer pointer (*dot*).
 These commands may be used to move *dot* to a position between any two

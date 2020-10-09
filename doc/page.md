@@ -1,4 +1,4 @@
-### Page Manipulation Commands
+### Page Commands
 
 The following commands permit text to be read into the text buffer from
 an input file or written from the buffer onto an output file.
