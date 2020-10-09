@@ -1,4 +1,4 @@
-### Arithmetic Operators and Expressions
+### TECO-64 - Arithmetic Operators and Expressions
 
 The numeric argument of a TECO command may consist of a single integer, any
 of the characters listed in (TBD), the numeric contents of any Q-register,

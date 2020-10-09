@@ -1,4 +1,4 @@
-### Special Numeric Values
+### TECO-64 - Special Numeric Values
 
 TECO maintains several state variables, which may be used as numeric
 arguments to TECO commands. When the command is executed, the current value

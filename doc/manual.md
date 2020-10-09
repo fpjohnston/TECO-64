@@ -36,13 +36,15 @@ Command String Editing
 
 - Conditional Commands
 
-- Iteration Commands
+- [Looping Commands](loops.md)
 
-- GOTO Commands
+- Branching Commands
 
 - [Q-Register Commands](qregister.md)
 
 - [Environment Commands](env.md)
+
+- Display Mode Commands
 
 [Error Messages](errors.md)
 

@@ -1,4 +1,4 @@
-### Mode Control Flags
+### TECO-64 - Mode Control Flags
 
 TECO has flags which control various aspects of its operation. You can find a
 flag’s current setting by executing its command name without an argument; the

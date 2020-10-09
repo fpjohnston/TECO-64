@@ -1,4 +1,4 @@
-### Type-Out Commands
+### TECO-64 - Type-Out Commands
 
 The commands are used to type out part or all of the contents of
 the buffer for examination are listed below.

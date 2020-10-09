@@ -1,4 +1,4 @@
-### Introduction
+### TECO-64 - Introduction
 
 TECO is a powerful text editing language. It may be used to edit any form
 of ASCII text: program sources, command procedures, or manuscripts, for

@@ -1,4 +1,4 @@
-### Q-Register Manipulation
+### TECO-64 - Q-Register Commands
 
 TECO provides data storage registers, called Q-registers, each of which may be
 used to store an integral numeric value and, simultaneously, an ASCII character

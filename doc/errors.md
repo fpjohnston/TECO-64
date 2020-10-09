@@ -1,4 +1,4 @@
-### Error Messages
+### TECO-64 - Error Messages
 
 TECO error messages consist of a three letter message preceded by a
 question mark (\?). A short description of the error optionally follows

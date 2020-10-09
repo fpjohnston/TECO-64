@@ -1,4 +1,4 @@
-### Basics of TECO
+### TECO-64 - Basics of TECO
 
 TECO may be called from command level by typing the appropriate command,
 followed by a carriage return. TECO will respond by printing an asterisk

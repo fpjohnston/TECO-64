@@ -1,4 +1,4 @@
-### Search Commands
+### TECO-64 - Search Commands
 
 In many cases, the easiest way to position the buffer pointer is by means of a
 character string search. Search commands cause TECO to scan through text

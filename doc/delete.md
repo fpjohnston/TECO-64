@@ -1,4 +1,4 @@
-### Deletion Commands
+### TECO-64 - Deletion Commands
 
 The following summarizes the text deletion commands, which permit deletion of
 single characters, groups of adjacent characters, single lines, or groups of

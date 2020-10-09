@@ -1,4 +1,4 @@
-### File Commands
+### TECO-64 - File Commands
 
 You must specify an input file whenever you want TECO to accept text from any
 source other than the terminal. You must specify an output file whenever you
