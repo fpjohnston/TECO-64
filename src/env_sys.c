@@ -94,87 +94,39 @@ int find_eg(char *cmd, bool dcolon)
         return get_cmd(cmd);
     }
 
-    char buf[PATH_MAX];
-    const char *env;
-    char *arg;
-    bool clear = false;
+    //  Get environment variable and load Q-register *.
 
-    strcpy(buf, cmd);
+    const char *result;
 
-    if ((arg = strchr(buf, ' ')) != NULL)
+    if (!strcasecmp(cmd, "INI"))
     {
-        *arg++ = NUL;
-
-        while (*arg == ' ')
-        {
-            ++arg;
-        }
-
-        if (*arg == NUL)
-        {
-            clear = true;
-        }
+        result = teco_init = getenv("TECO_INIT");
     }
-
-    //
-    //  There are three possibilities here:
-    //
-    //  :EGcmd'      - Get environment variable 'cmd' and load Q-register *.
-    //  :EGcmd '     - Clears environment variable 'cmd'.
-    //  :EGcmd text' - Sets environment variable 'cmd' to 'text'.
-    //
-
-    const char **p;
-
-    if (!strcasecmp(buf, "INI"))
+    else if (!strcasecmp(cmd, "LIB"))
     {
-        env = "TECO_INIT";
-        p = &teco_init;
+        result = teco_library = getenv("TECO_LIBRARY");
     }
-    else if (!strcasecmp(buf, "LIB"))
+    else if (!strcasecmp(cmd, "MEM"))
     {
-        env = "TECO_LIBRARY";
-        p = &teco_library;
+        result = teco_memory = getenv("TECO_MEMORY");
     }
-    else if (!strcasecmp(buf, "MEM"))
+    else if (!strcasecmp(cmd, "VTE"))
     {
-        env = "TECO_MEMORY";
-        p = &teco_memory;
-    }
-    else if (!strcasecmp(buf, "VTE"))
-    {
-        env = "TECO_VTEDIT";
-        p = &teco_vtedit;
+        result = teco_vtedit = getenv("TECO_VTEDIT");
     }
     else
     {
-        return 0;
+        return 0;                       // Invalid environment var.
     }
 
-    if (clear)
+    if (result == NULL)
     {
-        (void)unsetenv(env);
-    }
-    else if (arg != NULL)
-    {
-        if (setenv(env, arg, true) == -1)
-        {
-            return errno;
-        }
-    }
-    else
-    {
-        const char *result = *p = getenv(env);
-
-        if (result == NULL)
-        {
-            return 1;
-        }
-
-        set_last(result);
+        return 1;                       // Valid env. var., but undefined
     }
 
-    return -1;
+    set_last(result);
+
+    return -1;                          // Environment variable is defined
 }
 
 

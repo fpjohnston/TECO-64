@@ -38,6 +38,74 @@
 #include "term.h"
 
 
+// Local functions
+
+static void copy_G(struct cmd *cmd);
+
+static void type_G(struct cmd *cmd);
+
+
+///
+///  @brief    Copy Q-register or special string to text buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void copy_G(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    const char *p;
+    struct qreg *qreg;
+
+    switch (cmd->qname)
+    {
+        case '*':                       // Copy filespec string
+            p = last_file;
+
+            if (p != NULL && (last_len = (uint)strlen(p)) != 0)
+            {
+                exec_insert(p, last_len);
+            }
+
+            break;
+
+        case '+':                       // Copy EG result
+            p = eg_result;
+
+            if (p != NULL && (last_len = (uint)strlen(p)) != 0)
+            {
+                exec_insert(p, last_len);
+            }
+
+            break;
+
+        case '_':                       // Copy search result
+            if ((last_len = last_search.len) != 0)
+            {
+                exec_insert(last_search.data, last_len);
+            }
+
+            break;
+
+        default:                        // Copy Q-register
+            qreg = get_qreg(cmd->qname, cmd->qlocal);
+
+            assert(qreg != NULL);       // Error if no Q-register
+
+            if (qreg->text.size != 0)
+            {
+                last_len = qreg->text.len;
+
+                exec_insert(qreg->text.data, last_len);
+            }
+
+            break;
+    }
+}
+
+
 ///
 ///  @brief    Execute G command: print Q-register contents, or copy to buffer.
 ///
@@ -51,88 +119,61 @@ void exec_G(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        if (cmd->qname == '*')          // :G* -> print filename buffer
-        {
+        type_G(cmd);
+    }
+    else
+    {
+        copy_G(cmd);
+    }
+}
+
+
+///
+///  @brief    Type out Q-register or special string to text buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void type_G(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    const char *p;
+
+    switch (cmd->qname)
+    {
+        case '*':                       // Print filespec string
             if (last_file != NULL)
             {
                 tprint("%s", last_file);
             }
-        }
-        else if (cmd->qname == '$')     // :G$ -> print command output
-        {
-            const char *p = eg_result;
 
-            while (*p != NUL)
+            break;
+
+        case '+':                       // Print EG result
+            if ((p = eg_result) != NULL && (last_len = (uint)strlen(p)) != 0)
             {
-                print_chr(*p++);
+                while (*p != NUL)
+                {
+                    print_chr(*p++);
+                }
             }
-        }
-        else if (cmd->qname == '_')     // :G_ -> print search string buffer
-        {
-            if (last_search.len != 0)
+
+            break;
+
+        case '_':                       // Print search result
+            if ((last_len = last_search.len) != 0)
             {
                 tprint("%.*s", (int)last_search.len, last_search.data);
             }
-        }
-        else                            // :Gq -> print Q-register
-        {
+
+            break;
+
+        default:                        // Print Q-register
             print_qreg(cmd->qname, cmd->qlocal);
-        }
-    }
-    else
-    {
-        if (cmd->qname == '*')          // G* -> copy filename to buffer
-        {
-            if (last_file == NULL)
-            {
-                last_len = 0;
-            }
-            else
-            {
-                last_len = (uint)strlen(last_file);
 
-                exec_insert(last_file, last_len);
-            }
-        }
-        else if (cmd->qname == '$')     // G* -> copy EG result to buffer
-        {
-            if (eg_result == NULL || strlen(eg_result) == 0)
-            {
-                last_len = 0;
-            }
-            else
-            {
-                last_len = (uint)strlen(eg_result);
-
-                exec_insert(eg_result, last_len);
-            }
-        }
-        else if (cmd->qname == '_')     // G_ -> copy search string to buffer
-        {
-            if (last_search.data == NULL)
-            {
-                last_len = 0;
-            }
-            else
-            {
-                last_len = last_search.len;
-
-                exec_insert(last_search.data, last_len);
-            }
-        }
-        else                            // Gq -> copy Q-register to buffer
-        {
-            struct qreg *qreg = get_qreg(cmd->qname, cmd->qlocal);
-
-            assert(qreg != NULL);       // Error if no Q-register
-
-            if (qreg->text.size != 0)
-            {
-                last_len = qreg->text.len;
-
-                exec_insert(qreg->text.data, last_len);
-            }
-        }
+            break;
     }
 }
 

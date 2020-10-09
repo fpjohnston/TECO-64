@@ -130,11 +130,11 @@ static void check_qreg(const struct cmd_table *entry, struct cmd *cmd)
         c = fetch_cbuf();               // Get Q-register name for real
     }
 
-    // Q-registers must be alphanumeric. G commands also allow *, _, and $.
+    // Q-registers must be alphanumeric. G commands also allow *, _, and +.
 
     if (!isalnum(c))
     {
-        if (toupper(cmd->c1) != 'G' || strchr("*_$", c) == NULL)
+        if (toupper(cmd->c1) != 'G' || strchr("*_+", c) == NULL)
         {
             throw(E_IQN, c);            // Illegal Q-register name
         }

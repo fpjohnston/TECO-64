@@ -791,7 +791,7 @@ static void repaint(int row, int col, int pos)
 
             ++pos;
         }
-        
+
         // Highlight our current position in text window
 
         (void)move(d.text.top + row, col);
