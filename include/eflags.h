@@ -66,6 +66,7 @@ union e1_flag
         uint ubar   : 1;        ///< _ is a valid symbol character
         uint new_ei : 1;        ///< Use new-style EI commands
         uint bang   : 1;        ///< !! starts end-of-line comment
+        uint prompt : 1;        ///< Add CR/LF before prompt if needed
     };
 };
 

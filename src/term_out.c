@@ -268,6 +268,25 @@ void print_echo(int c)
 
 
 ///
+///  @brief    Print the TECO prompt (this may be the standard asterisk, or
+///            something else specified by the user).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void print_prompt(void)
+{
+    if (f.e1.prompt && term_pos != 0)
+    {
+        tprint("%s", "\r\n");
+    }
+
+    tprint("%s", teco_prompt);
+}
+
+
+///
 ///  @brief    Output NUL-terminated string to terminal, and possibly also to
 ///            log file.
 ///

@@ -236,20 +236,6 @@ int isdelim(int c)
 
 
 ///
-///  @brief    Print the TECO prompt (this may be the standard asterisk, or
-///            something else specified by the user).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void print_prompt(void)
-{
-    tprint("%s", teco_prompt);
-}
-
-
-///
 ///  @brief    Register function to be called at program exit.
 ///
 ///  @returns  Nothing.
