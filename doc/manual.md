@@ -32,13 +32,11 @@ Command String Editing
 
 - [Search Commands](search.md)
 
-- Search Arguments
-
-- Conditional Commands
+- [Conditional Commands](ifthen.md)
 
 - [Looping Commands](loops.md)
 
-- Branching Commands
+- [Branching Commands](branching.md)
 
 - [Q-Register Commands](qregister.md)
 

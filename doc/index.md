@@ -8,22 +8,21 @@
 | ^C             | [Stop execution](cmds/ctrl_C.md) |
 | ^D             | [Set radix to decimal](cmds/ctrl_D.md) |
 | ^E             | [Form feed flag](values.md) |
-| ^E<*n*>        | (Match char) Match ASCII code *n* |
-| ^EA            | (Match char) Match alphabetics |
-| ^EB            | (Match char) Match separator character |
-| ^EC            | (Match char) Match Symbol Constituent |
-| ^ED            | (Match char) Match numerics |
-| ^EG*q*         | (Match char) Match contents of Q-register *q* |
-| ^EL            | (Match char) Match line terminators |
-| ^EM*x*         | (Match char) Match any number of *x* |
-| ^EQ*q*         | (String char) Use contents of Q-register *q* |
-| ^ER            | (Match char) Match alphanumerics |
-| ^ES            | (Match char) Match non-null space/tab |
-| ^EU*q*         | (String char) Use ASCII code in Q-register *q* |
-| ^EV            | (Match char) Match lower case alphabetic |
-| ^EW            | (Match char) Match upper case alphabetic |
-| ^EX            | (Match char) Match any character |
-| ^E\[ \]        | (Match char) Match one of list |
+| ^E<*n*>        | [(Match char) Match ASCII code *n*](search.md) |
+| ^EA            | [(Match char) Match alphabetics](search.md) |
+| ^EB            | [(Match char) Match separator character](search.md) |
+| ^EC            | [(Match char) Match Symbol Constituent](search.md) |
+| ^ED            | [(Match char) Match numerics](search.md) |
+| ^EG*q*         | [(Match char) Match contents of Q-register *q*](search.md) |
+| ^EL            | [(Match char) Match line terminators](search.md) |
+| ^EM*x*         | [(Match char) Match any number of *x*](search.md) |
+| ^EQ*q*         | [(String char) Use contents of Q-register *q*](search.md) |
+| ^ER            | [(Match char) Match alphanumerics](search.md) |
+| ^ES            | [(Match char) Match non-null space/tab](search.md) |
+| ^EU*q*         | [(String char) Use ASCII code in Q-register *q*](search.md) |
+| ^EV            | [(Match char) Match lower case alphabetic](search.md) |
+| ^EW            | [(Match char) Match upper case alphabetic](search.md) |
+| ^EX            | [(Match char) Match any character](search.md) |
 | ^F             | Not a TECO command |
 | ^G             | [Kill command string](cmds/ctrl_G.md) |
 | ^G\<space\>    | [Retype current command line](cmds/ctrl_G.md) |
@@ -73,21 +72,47 @@
 | SPACE          | Ignored in commands |
 | !tag!          | [Define label](branch.md) |
 | !              | [Logical NOT](oper.md) |
+| "              | [Start conditional](ifthen.md)
+| *n*"<          | [Test for less than zero](ifthen.md) |
+| *n*"=          | [Test for equal to zero](ifthen.md) |
+| *n*">          | [Test for greater than zero](ifthen.md) |
+| *n*"A          | [Test for alphabetic](ifthen.md) |
+| *n*"C          | [Test for symbol constituent](ifthen.md) |
+| *n*"D          | [Test for numeric](ifthen.md) |
+| *n*"E          | [Test for equal to zero](ifthen.md) |
+| *n*"F          | [Test for false](ifthen.md) |
+| *n*"G          | [Test for greater than zero](ifthen.md) |
+| *n*"L          | [Test for less than zero](ifthen.md) |
+| *n*"N          | [Test for not equal to zero](ifthen.md) |
+| *n*"R          | [Test for alphanumeric](ifthen.md) |
+| *n*"S          | [Test for successful](ifthen.md) |
+| *n*"T          | [Test for true](ifthen.md) |
+| *n*"U          | [Test for unsuccessful](ifthen.md) |
+| *n*"V          | [Test for lower case](ifthen.md) |
+| *n*"W          | [Test for upper case](ifthen.md) |
 | \#             | [Logical OR](oper.md) |
+| $              | Separate TECO commands |
+| *n*%*q*        | [Add *n* to Q-register *q* and return result](qregister.md) |
 | \&             | [Logical AND](oper.md) |
+| '              | [End conditional](ifthen.md) |
+| (              | [Expression grouping](oper.md) |
+| )              | [Expression grouping](oper.md) |
 | \*             | [Multiplication](oper.md) |
+| \**q*          | [Save last command in Q-register *q*](qregister.md) |
 | \+             | [Addition](oper.md) |
+| ,              | Argument separator |
 | \-             | [Subtraction or negation](oper.md) |
 | .              | [Current pointer position](values.md) |
 | /              | [Division yielding quotient](oper.md) |
+| /              | Type detailed explanation of error |
 | //             | [Division yielding remainder](oper.md) |
 | 0-9            | Digit |
 | :              | Modify next command |
-| ;              | Exit iteration on search failure |
-| *n*;           | Exit iteration if *n* is positive |
-| :;             | Exit iteration on search success |
-| *n*:;          | Exit iteration if *n* is negative |
-| *n*\<          | Iterate n times |
+| ;              | [Exit iteration on search failure](branching.md) |
+| *n*;           | [Exit iteration if *n* is positive](branching.md) |
+| :;             | [Exit iteration on search success](branching.md) |
+| *n*:;          | [Exit iteration if *n* is negative](branching.md) |
+| *n*\<          | [Iterate n times](branching.md) |
 | \<             | [Relational comparison for less than](oper.md) |
 | \<=            | [Relational comparison for less than or equal](oper.md) |
 | \<\<           | [Arithmetic left shift](oper.md) |
@@ -99,6 +124,7 @@
 | :=             | [Type in decimal, no CR/LF](oper.md) |
 | :==            | [Type in octal, no CR/LF](oper.md) |
 | :===           | [Type in hexadecimal, no CR/LF](oper.md) |
+| \>             | [End loop](branches.md) |
 | \>             | [Relational comparison for greater than](oper.md) |
 | \<=            | [Relational comparisson for greater than or equal](oper.md) |
 | \>\>           | [Arithmetic right shift](oper.md) |
@@ -146,26 +172,26 @@
 | EX             | [Exit TECO](file.md) |
 | EY             | [Yank w/o yank protection](page.md) |
 | E_             | [Search w/o yank protection](search.md) |
-| F'             | Flow to end of conditional |
-| F\<            | Flow to start of iteration |
-| F\>            | Flow to end of iteration |
-| F\|            | Flow to ELSE part of conditional |
-| *m*,*n*FB      | Search between positions *m* and *n* |
-| *n*FB          | Search, bounded by *n* lines |
-| *m*,*n*FC      | Search and replace between *m* and *n* |
-| *n*FC          | Search and replace over *n* lines |
+| F'             | [Flow to end of conditional](branching.md) |
+| F\<            | [Flow to start of iteration](branching.md) |
+| F\>            | [Flow to end of iteration](branching.md) |
+| F\|            | [Flow to ELSE part of conditional](branching.md) |
+| *m*,*n*FB      | [Search between positions *m* and *n*](search.md) |
+| *n*FB          | [Search, bounded by *n* lines](search.md) |
+| *m*,*n*FC      | [Search and replace between *m* and *n*](search.md) |
+| *n*FC          | [Search and replace over *n* lines](search.md) |
 | *n*FD          | [Search and delete string](delete.md) |
 | FK             | [Search and delete intervening text](delete.md) |
-| *n*FN          | Global string replace |
+| *n*FN          | [Global string replace](search.md) |
 | FR             | [Replace last string](delete.md) |
-| *n*FS          | Local string replace |
-| *n*F_          | Destructive search and replace |
-| G*q*           | Copy string from Q-register *q* into buffer |
-| G\*            | Copy last filespec string into buffer |
-| G_             | Copy last search string into buffer |
-| :G*q*          | Type Q-register *q* |
-| :G*            | Type last filespec string |
-| :G_            | Type last search string |
+| *n*FS          | [Local string replace](search.md) |
+| *n*F_          | [Destructive search and replace](search.md) |
+| G*q*           | [Copy string from Q-register *q* into buffer](qregister.md) |
+| G\*            | [Copy last filespec string into buffer](qregister.md) |
+| G_             | [Copy last search string into buffer](qregister.md) |
+| :G*q*          | [Type Q-register *q*](qregister.md) |
+| :G*            | [Type last filespec string](qregister.md) |
+| :G_            | [Type last search string](qregister.md) |
 | H              | [Equivalent to "B,Z"](values.md) |
 | I              | [Insert text](insert.md) |
 | *n*I           | [Insert character](insert.md) |
@@ -177,8 +203,8 @@
 | M*q*           | [Returned value from macro](values.md) |
 | M*q*           | [Execute string in Q-register *q*](qregister.md) |
 | *n*N           | [Global search](search.md) |
-| O              | Go to label |
-| *n*O           | Computed *goto* |
+| O              | [Go to label](branching.md) |
+| *n*O           | [Computed *goto*](branching.md) |
 | *n*P           | [Advance or back up *n* pages](page.md) |
 | *m*,*n*P       | [Write out chars from positions *m* to *n*](page.md) |
 | *n*PW          | [Write buffer *n* times](page.md) |
@@ -211,7 +237,7 @@
 | \`             | Alternative command delimiter |
 | a-z            | Equivalent to upper case A-Z commands |
 | {              | Alternative text argument delimiter |
-| \|             | Start ELSE part of conditional |
+| \|             | [Start ELSE part of conditional](ifthen.md) |
 | }              | Alternative text argument delimiter |
 | \~             | [Logical XOR](oper.md) |
 | DEL            | Delete last character typed |

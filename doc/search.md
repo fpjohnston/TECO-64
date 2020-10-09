@@ -64,3 +64,56 @@ with *text2*.
 | FN*text1*\`*text2*`    | N*text1*`      |
 | *n*FN*text1*\`*text2*` | *n*N*text1*`   |
 | F_*text1*\`*text2*`    | _*text1*`      |
+
+#### Search String Building
+
+TECO builds the search string by loading its search string buffer from the
+supplied search command argument. To help you enter special characters or
+frequently used character sequences, the argument may contain special string
+building characters. The table below  lists the string building characters
+and their functions.
+
+Note that, as explained in (TBD), a caret (up-arrow) may be used to indicate
+that the character following it is to be treated as a control character. Any of the
+commands below may be entered using the caret. This function of the caret can
+be disabled by using the ED flag.
+
+| Command | Function |
+| ------- | -------- |
+| \<CTRL/Q\> | Specifies that the character following the \<CTRL/Q\> is to be used literally rather than as a match control character. |
+| \<CTRL/R\> | Equivalent to \<CTRL/Q\>. |
+| \<CTRL/V\> | Specifies that the character following the \<CTRL/V\> is to be used as the equivalent character in the lower case ASCII range (i.e., 64 to 95 is treated as 96 to 127). |
+| \<CTRL/V\>\<CTRL/V\> | Specifies that all following alphabetic characters in this string are to be converted to lower case unless an explicit ^W is given to override this state. This state continues until the end of the string or until a ^W^W construct is encountered. |
+| \<CTRL/W\> | Specifies that the character following the \<CTRL/W\> is to be used as the equivalent character in the upper case ASCII range (i.e., 64 to 95 is treated as 96 to 127).
+| \<CTRL/W\>\<CTRL/W\> | Specifies that all following alphabetic characters in this string are to be converted to upper case unless an explicit ^V is encountered to override this state. This state continues until the end of the string or until a ^V^V construct is encountered. |
+| \<CTRL/E\>Q*q* | Specifies that the string stored in Q-register *q* is to be used in the position occupied by the ^EQ*q* in the search string. |
+| \<CTRL/E\>U*q* | Specifies that the character whose ASCII code is specified by the numeric storage area of Q-register *q* is to be used in the position occupied by the ^EU*q* in the search string. |
+
+String build characters are also permitted inside the string arguments
+of the O, EB, ER, EW, and EG commands.
+
+#### Match Control Characters
+
+TECO executes a search command by attempting to match the search command
+argument character-by-character with some portion of the input file. There
+are several special control characters that may be used in search command
+arguments to alter the usual matching process. The following table
+lists these match control characters and their functions.
+
+| Command | Function |
+| ------- | -------- |
+| \<CTRL/X\> | Specifies that this position in the character string may be any character. TECO accepts any character as a match for \<CTRL/X\>. |
+| \<CTRL/S\> | Specifies that any separator character is acceptable in this position. TECO accepts any character that is not a letter (upper or lower case A to Z) or a digit (0 to 9) as a match for \<CTRL/S\>. |
+| \<CTRL/N\>x | TECO accepts any character as a match for the \<CTRL/N\>x combination EXCEPT the character which follows the \<CTRL/N\>. \<CTRL/N\> can be combined with other special characters. For example, the combination \<CTRL/N\>\<CTRL/E\>D means match anything except a digit in this position. |
+| \<CTRL/E\>A | Specifies that any alphabetic character (upper or lower case A to Z) is acceptable in this position.|
+| \<CTRL/E\>B | Equivalent to \<CTRL/S\>. |
+| \<CTRL/E\>C | Specifies that any character that is legal as part of a symbol constituent is acceptable in this position. TECO accepts any letter (upper or lower case A to Z), any digit (0 to 9), a dot (.), or a dollar sign ($) as a match for \<CTRL/E\>C. Additional characters may be matched depending upon the operating system; consult the appropriate appendix. |
+| \<CTRL/E\>D | Specifies that any digit (0 to 9) is acceptable in this position. |
+| \<CTRL/E\>G*q* | Specifies that any character contained in Qregister *q* is acceptable in this position. For example, if Q-register A contains "A\*:" then TECO accepts either A, \*, or : as a match for \<CTRL/E\>GA. |
+| \<CTRL/E\>L | Specifies that any line terminator (line feed, vertical tab, or form feed) is acceptable in the position occupied by \<CTRL/E\>L in the search string. |
+| \<CTRL/E\>R | Specifies that any alphanumeric character (letter or digit as defined above) is acceptable in this position. |
+| \<CTRL/E\>S | Specifies that any non-null string of spaces and/or tabs is acceptable in the position occupied by \<CTRL/E\>S. |
+| \<CTRL/E\>V | Specifies that any lower case alphabetic character is acceptable in this position. |
+| \<CTRL/E\>W | Specifies that any upper case alphabetic character is acceptable in this position. |
+| \<CTRL/E\>X | Equivalent to \<CTRL/X\>. |
+| \<CTRL/E\>\<*nnn*\> | Specifies that the character whose ASCII octal code is *nnn* is acceptable in this position. |
