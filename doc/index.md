@@ -110,38 +110,39 @@
 | *n*C           | [Advance *n* characters](move.md) |
 | *n*D           | [Delete *n* characters](delete.md) |
 | *m*,*n*D       | [Delete between positions *m* and *n*](delete.md) |
-| E%             | [Write file from Q-register](cmds/E_pct.md) |
-| E1             | [Extended features flag](cmds/E1.md) |
-| E2             | [Command restrictions flag](cmds/E2.md) |
-| E3             | [File operations flag](cmds/E3.md) |
-| E4             | [Display mode flag](cmds/E4.md) |
-| EA             | [Switch to secondary output stream](cmds/EA.md) |
-| EB             | [Edit backup](cmds/EB.md) |
-| EC             | [Close input and output files](cmds/EC.md) |
-| ED             | [TBD](cmds/ED.md) |
-| EE             | [TBD](cmds/EE.md) |
-| EF             | [Close output file](cmds/EF.md) |
-| EG             | [Exit and Go](cmds/EG.md) |
-| EH             | [TBD](cmds/EH.md) |
-| EI             | [Execute indirect file](cmds/EI.md) |
+| E%             | [Write file from Q-register](file.md) |
+| E1             | [Extended features flag](flags.md) |
+| E2             | [Command restrictions flag](flags.md) |
+| E3             | [File operations flag](flags.md) |
+| E4             | [Display mode flag](flags.md) |
+| EA             | [Switch to secondary output stream](file.md) |
+| EB             | [Edit backup](file.md) |
+| EC             | [Close input and output files](file.md) |
+| ED             | [Edit level flag](flags.md) |
+| EE             | [Alternate command delimiter](flags.md) |
+| EF             | [Close output file](file.md) |
+| EG             | [Exit and Go](file.md) |
+| :EG            | Get or set environment characteristics |
+| EH             | [Edit help flag](flags.md) |
+| EI             | [Execute indirect file](file.md) |
 | EJ             | [Get environment information](cmds/EJ.md) |
-| EK             | [Kill output file](cmds/EK.md) |
-| EL             | [Open/close log file](cmds/EL.md) |
-| EN             | [Find next file](cmds/EN.md) |
+| EK             | [Kill output file](file.md) |
+| EL             | [Open/close log file](file.md) |
+| EN             | [Find next file](file.md) |
 | EO             | [TECO version number](values.md) |
-| EP             | [Switch to secondary input stream](cmds/EP.md) |
-| EQ             | [Read file to Q-register](cmds/EQ.md) |
-| ER             | [Edit read](cmds/ER.md) |
-|                | [Switch to primary input stream](cmds/ER.md) |
-| ES             | [TBD](cmds/ES.md) |
-| ET             | [TBD](cmds/ET.md) |
-| EU             | [TBD](cmds/EU.md) |
-| EV             | [TBD](cmds/EV.md) |
-| EW             | [Edit write](cmds/EW.md) |
-|                | [Switch to primary output stream](cmds/EW.md) |
-| EX             | [Exit TECO](cmds/EX.md) |
-| EY             | [TBD](cmds/EY.md) |
-| E_             | [TBD](cmds/E_ubar.md) |
+| EP             | [Switch to secondary input stream](file.md) |
+| EQ             | [Read file to Q-register](file.md) |
+| ER             | [Edit read](file.md) |
+|                | [Switch to primary input stream](file.md) |
+| ES             | [Edit search flag](flags.md) |
+| ET             | [Terminal flag](flags.md) |
+| EU             | [Upper/lower case flag](flags.md) |
+| EV             | [Edit verify flag](flags.md) |
+| EW             | [Edit write](file.md) |
+|                | [Switch to primary output stream](file.md) |
+| EX             | [Exit TECO](file.md) |
+| EY             | [Yank w/o yank protection](page.md) |
+| E_             | [Search w/o yank protection](search.md) |
 | F'             | Flow to end of conditional |
 | F\<            | Flow to start of iteration |
 | F\>            | Flow to end of iteration |
@@ -211,4 +212,3 @@
 | }              | Alternative text argument delimiter |
 | \~             | [Logical XOR](oper.md) |
 | DEL            | Delete last character typed |
-
