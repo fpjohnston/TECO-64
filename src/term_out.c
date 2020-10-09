@@ -312,7 +312,7 @@ void tprint(
     if (!puts_dpy(buf))
     {
         fputs(buf, stdout);
-        term_pos += (uint)nbytes;
+        term_pos += nbytes;
     }
 
     if (!f.e3.noout && (fp = ofiles[OFILE_LOG].fp) != NULL)
