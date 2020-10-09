@@ -51,11 +51,11 @@
 | ^T             | [Read and decode next keystroke typed](cmds/ctrl_T.md) |
 | *n*^T          | [Type ASCII character of value *n*](type-out.md) |
 | *n*:^T         | [Output binary byte of value n](type-out.md) |
-| ^U             | [Kill command line](cmds/ctrl_U.md) |
-| ^U*q*          | [Put string into Q-register *q*](cmds/ctrl_U.md) |
-| :^U*q*         | [Append string to Q-register *q*](cmds/ctrl_U.md) |
-| n^U*q*         | [Put ASCII char. *n* to Q-register *q*](cmds/ctrl_U.md) |
-| :n^U*q*        | [Append ASCII char. *n* to Q-register *q*](cmds/ctrl_U.md) |
+| ^U             | [Kill command line](qregister.md) |
+| ^U*q*          | [Put string into Q-register *q*](qregister.md) |
+| :^U*q*         | [Append string to Q-register *q*](qregister.md) |
+| n^U*q*         | [Put ASCII char. *n* to Q-register *q*](qregister.md) |
+| :n^U*q*        | [Append ASCII char. *n* to Q-register *q*](qregister.md) |
 | ^V             | [Enable lower case conversion](cmds/ctrl_V.md) |
 | ^V*x*          | [(String char.) Force *x* to lower case](cmds/ctrl_V.md) |
 | ^W             | [Enable upper case conversion](cmds/ctrl_W.md) |
@@ -105,7 +105,9 @@
 | ?              | Toggle trace mode |
 | ?              | Type out command string in error |
 | @              | Modify next text argument |
+| A              | [Append to buffer](page.md) |
 | *n*A           | [ASCII value of *n*th character in buffer](values.md) |
+| *n*:A          | [Append *n* lines to buffer](page.md) |
 | B              | [Beginning of buffer](values.md) |
 | *n*C           | [Advance *n* characters](move.md) |
 | *n*D           | [Delete *n* characters](delete.md) |
@@ -172,39 +174,39 @@
 | *n*L           | [Advance *n* lines](move.md) |
 | *n*:L          | [Count of buffer lines](values.md) |
 | M*q*           | [Returned value from macro](values.md) |
-| M*q*           | Execute string in Q-register *q* |
-| *n*N           | Global search |
+| M*q*           | [Execute string in Q-register *q*](qregister.md) |
+| *n*N           | [Global search](search.md) |
 | O              | Go to label |
 | *n*O           | Computed *goto* |
-| *n*P           | Advance or back up *n* pages |
-| *m*,*n*P       | Write out chars from positions *m* to *n* |
-| *n*PW          | Write buffer *n* times |
-| *m*,*n*PW      | Write out chars from positions *m* to *n* |
+| *n*P           | [Advance or back up *n* pages](page.md) |
+| *m*,*n*P       | [Write out chars from positions *m* to *n*](page.md) |
+| *n*PW          | [Write buffer *n* times](page.md) |
+| *m*,*n*PW      | [Write out chars from positions *m* to *n*](page.md) |
 | Q*q*           | [Number in Q-register *q*](values.md) |
 | :Q*q*          | [Size of text in Q-register *q*](values.md) |
 | *n*R           | [Back up *n* characters](move.md) |
-| *n*S           | Local search |
-| *m*,*n*S       | Search for *n*th occurrence within *m* characters |
-| ::S            | Compare string 5.7 |
+| *n*S           | [Local search](search.md) |
+| *m*,*n*S       | [Search for *n*th occurrence within *m* characters](search.md) |
+| ::S            | [Compare string](search.md) |
 | *n*T           | [Type *n* lines](type-out.md) |
 | *m*,*n*T       | [Type from positions *m* to *n*](type-out.md) |
-| *n*U*q*        | Put number *n* into Q-register *q* |
+| *n*U*q*        | [Put number *n* into Q-register *q*](qregister.md) |
 | *n*V           | [Type *n* current lines](type-out.md) |
 | *m*,*n*V       | [Type lines before and after current line](type-out.md) |
 | W              | Display mode |
 | *n*:W          | Return display mode characteristics |
 | *m*,*n*:W      | Set display mode characteristics |
-| *n*X*q*        | Put *n* lines into Q-register *q* |
-| *m*,*n*X*q*    | Put characters *m* to *n* into Q-register *q* |
-| *n*:X*q*       | Append *n* lines to Q-register *q* |
-| *m*,*n*:X*q*   | Append characters *m* to *n* into Q-register q |
-| Y              | Read into buffer |
+| *n*X*q*        | Put *n* lines into Q-register *q*](qregister.md) |
+| *m*,*n*X*q*    | [Put characters *m* to *n* into Q-register *q*](qregister.md) |
+| *n*:X*q*       | [Append *n* lines to Q-register *q*](qregister.md) |
+| *m*,*n*:X*q*   | [Append characters *m* to *n* into Q-register *q*](qregister.md) |
+| Y              | [Read into buffer](page.md) |
 | Z              | [End of buffer value](values.md) |
-| [*q*           | Push Q-register *q* onto stack |
+| [*q*           | [Push Q-register *q* onto stack](qregister.md) |
 | \\             | [Value of digit string in buffer](values.md) |
 | *n*\\          | Convert *n* to digits in buffer |
-| ]*q*           | Pop from stack into Q-register *q* |
-| *n*_           | Global search without output |
+| ]*q*           | [Pop from stack into Q-register *q*](qregister.md) |
+| *n*_           | [Global search without output](search.md) |
 | \`             | Alternative command delimiter |
 | a-z            | Equivalent to upper case A-Z commands |
 | {              | Alternative text argument delimiter |
