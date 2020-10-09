@@ -305,14 +305,14 @@ void tprint(
     va_list argptr;
     va_start(argptr, format);
     FILE *fp;
-
-    (void)vsnprintf(buf, sizeof(buf), format, argptr);
+    int nbytes = vsnprintf(buf, sizeof(buf), format, argptr);
 
     va_end(argptr);
 
     if (!puts_dpy(buf))
     {
         fputs(buf, stdout);
+        term_pos += (uint)nbytes;
     }
 
     if (!f.e3.noout && (fp = ofiles[OFILE_LOG].fp) != NULL)

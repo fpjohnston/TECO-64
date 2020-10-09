@@ -155,6 +155,7 @@ static void init_teco(int argc, const char * const argv[])
     f.e1.ubar   = true;                 // _ is a valid symbol character
     f.e1.new_ei = true;                 // Enable new-style EI commands
     f.e1.bang   = true;                 // !! starts end-of-line comment
+    f.e1.prompt = true;                 // Ensure prompt starts in 1st column
 
     // Default settings for E2
 
