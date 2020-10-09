@@ -124,10 +124,11 @@
 | EE             | [Alternate command delimiter](flags.md) |
 | EF             | [Close output file](file.md) |
 | EG             | [Exit and Go](file.md) |
-| :EG            | Get or set environment characteristics |
+| :EG            | [Read environment variables](env.md) |
+| ::EG           | [Execute system command](env.md) |
 | EH             | [Edit help flag](flags.md) |
 | EI             | [Execute indirect file](file.md) |
-| EJ             | [Get environment information](cmds/EJ.md) |
+| EJ             | [Get environment information](env.md) |
 | EK             | [Kill output file](file.md) |
 | EL             | [Open/close log file](file.md) |
 | EN             | [Find next file](file.md) |
