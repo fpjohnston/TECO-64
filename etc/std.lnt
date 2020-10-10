@@ -36,6 +36,7 @@ co-gcc.lnt   // Basic gcc configuration
 -esym(379,unused*) // Ignore unused parameters if named unused???
 -esym(715,unused*) // Ignore unused parameters if named unused???
 -esym(818,unused*) // Ignore unused parameters if named unused???
+-esym(123,refresh)
 -esym(516,__builtin_constant_p)
 -esym(526,__builtin_constant_p)
 -esym(628,__builtin_constant_p)
