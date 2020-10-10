@@ -146,7 +146,7 @@ union ed_flag
         uint keepdot   : 1;     ///< Preserve dot if search fails
         uint escape    : 1;     ///< Enable immediate escape-sequence commands
         uint movedot   : 1;     ///< Move dot by one on multiple occurrence searches
-        uint norefr    : 1;     ///< Automatic refresh inhibit
+        uint noauto    : 1;     ///< Automatic refresh inhibit
     };
 };
 
@@ -184,8 +184,8 @@ union et_flag
         uint detach   : 1;      ///< Detach flag
         uint abort    : 1;      ///< Abort-on-error bit
         uint truncate : 1;      ///< Truncate output lines to terminal width
-        uint scope    : 1;      ///< Terminal is a scope type
-        uint rscope   : 1;      ///< Terminal is a refresh scope
+        uint scope    : 1;      ///< Terminal is a scope
+        uint refresh  : 1;      ///< Terminal is a refresh scope
         uint          : 1;      ///< (unused)
         uint eightbit : 1;      ///< Can handle 8-bit characters
         uint accent   : 1;      ///< Accent grave is ESCAPE surrogate
