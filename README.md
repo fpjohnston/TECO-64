@@ -1,4 +1,4 @@
-## TECO-64 - Introduction
+## TECO-64 - README
     
 ### Description
 
@@ -64,12 +64,10 @@ To print a list of all targets and options, type
 ### System Requirements
 
 Version 200 of TECO-64 was primarily developed on Linux, using the GNU
-toolchain. It has been also successfully compiled and run on Windows and
-MacOS, although these have not yet been extensively tested, nor have any
-compilers other than *gcc* yet been tested.
+toolchain. It has been also compiled and run on Windows and MacOS.
 
-*ncurses* is required in order to use TECO in display mode, although it
-can be built without *ncurses*.
+TECO can be used in a command-line mode, as well as a display mode
+using *ncurses*.
 
 The commands that implement backwards paging and searching require virtual
 memory support, but TECO can be used as a simple pipeline editor on systems
@@ -96,22 +94,25 @@ macros.
 
 ### Additional Documentation
 
-The following documents describe features of TECO-64, as well as the
-differences between it and other TECOs.
+[DEC Standard TECO](doc/DEC_Standard_TECO.pdf) - this document is
+30 years old and is in many ways archaic, incomplete, and
+erroneous, but it also provides information about TECO not
+available elsewhere.
 
-[Running TECO](doc/running.md)
+[TECO-64 Manual](doc/manual.md) - this is adapted from the previous
+document, and is a work in progress that will eventually replace it.
 
-[New Features](doc/new.md)
+[Running TECO](doc/running.md) - describes how to start TECO-64 from
+the command line.
 
-[Missing Features](doc/missing.md)
+[New Features](doc/new.md) - describes what features
+TECO-64 has compared with other TECOs.
 
-[TECO C Changes](doc/changes.md)
+[Missing Features](doc/missing.md) - describes what features
+TECO-64 is missing compared with other TECOs.
 
-[Internals Notes](doc/internals.md)
+[TECO C Changes](doc/changes.md) - describes how TECO-64
+differs from TECO C.
 
-The following document provides the best introduction to TECO, even
-though it is 30 years old and would certainly benefit from being
-updated and corrected. It is hoped that this may happen with a future
-release of TECO-64.
-
-[DEC Standard TECO](doc/DEC_Standard_TECO.pdf)
+[Internals Notes](doc/internals.md) - provides information
+about the development and internal structure of TECO-64.

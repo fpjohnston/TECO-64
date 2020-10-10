@@ -29,13 +29,13 @@ ED - Edit Level Flag
 - ED&128 - Automatic refresh inhibit.
 
 EG - Exit and Go Command
-- :EGINI$ - Can be used to read the TECO_INIT environment variable,
+- :@EG/INI/ - Can be used to read the TECO_INIT environment variable,
 but not to set or clear it.
-- :EGLIB$ - Can be used to read the TECO_LIBRARY environment variable,
+- :@EG/LIB/ - Can be used to read the TECO_LIBRARY environment variable,
 but not to set or clear it.
-- :EGMEM$ - Can be used to read the TECO_MEMORY environment variable,
+- :@EG/MEM/ - Can be used to read the TECO_MEMORY environment variable,
 but not to set or clear it.
-- :EGVTE$ - Can be used to read the TECO_VTEDIT environment variable,
+- :@EG/VTE/ - Can be used to read the TECO_VTEDIT environment variable,
 but not to set or clear it.
 
 EJ - Get Environment Information
