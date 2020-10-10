@@ -51,11 +51,11 @@ to print a list of command-line options by typing
 
 To build TECO with display mode support, type
 
-    make DISPLAY=1
+    make display=1
 
 To build TECO with virtual memory paging, type
 
-    make PAGING=vm
+    make paging=vm
 
 To print a list of all targets and options, type
 

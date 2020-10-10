@@ -37,16 +37,16 @@
 #
 #  Build options:
 #
-#      BUFFER=gap  Use gap buffer for editing text. [default]"
-#      DEBUG=1     Enable debugging features."
-#      DISPLAY=1   Enable display mode."
-#      GDB=1       Enable use of GDB debugger."
-#      GPROF=1     Enable use of GPROF profiler."
-#      NDEBUG=1    Disable run-time assertions."
-#      PAGING=std  Use standard paging. [default]"
-#      PAGING=vm   Use virtual memory paging."
-#      TRACE=1     Enable tracing of commands."
-#      VERBOSE=1   Enable verbosity during build."
+#      buffer=gap  Use gap buffer for editing text. [default]"
+#      debug=1     Enable debugging features."
+#      display=1   Enable display mode."
+#      gdb=1       Enable use of GDB debugger."
+#      gprof=1     Enable use of GPROF profiler."
+#      ndebug=1    Disable run-time assertions."
+#      paging=std  Use standard paging. [default]"
+#      paging=vm   Use virtual memory paging."
+#      trace=1     Enable tracing of commands."
+#      verbose=1   Enable verbosity during build."
 #
 ################################################################################
 
@@ -156,7 +156,7 @@ SOURCES = \
 #
 ################################################################################
 
-ifdef   DISPLAY
+ifdef   display
 
 DEFINES += -D TECO_DISPLAY
 DOXYGEN +=    TECO_DISPLAY
@@ -168,23 +168,23 @@ endif
 #
 ################################################################################
 
-ifeq (${BUFFER}, rope)
+ifeq (${buffer}, rope)
 
 $(error Rope buffer handler is not yet implemented)
 
 SOURCES += rope_buf.c
 
-else ifeq (${BUFFER}, gap)
+else ifeq (${buffer}, gap)
 
 SOURCES += gap_buf.c
 
-else ifeq (${BUFFER}, )
+else ifeq (${buffer}, )
 
 SOURCES += gap_buf.c
 
 else
 
-$(error Unknown buffer handler: ${BUFFER})
+$(error Unknown buffer handler: ${buffer})
 
 endif
 
@@ -193,31 +193,31 @@ endif
 #
 ################################################################################
 
-ifeq (${PAGING}, vm)
+ifeq (${paging}, vm)
 
 SOURCES += page_vm.c
 
-else ifeq (${PAGING}, file)
+else ifeq (${paging}, file)
 
 $(error Holding file paging is not yet implemented)
 
 SOURCES += page_file.c
 
-else ifeq (${PAGING}, standard)
+else ifeq (${paging}, standard)
 
 SOURCES += page_std.c
 
-else ifeq (${PAGING}, )
+else ifeq (${paging}, )
 
 SOURCES += page_std.c
 
 else
 
-$(error Unknown paging handler: ${PAGING})
+$(error Unknown paging handler: ${paging})
 
 endif
 
-ifdef   VERBOSE
+ifdef   verbose
 
 AT =
 NULL = >/dev/null 2>&1
@@ -231,36 +231,36 @@ NULL2 = >/dev/null 2>&1
 
 endif
 
-ifdef   DEBUG
+ifdef   debug
 
-DEFINES += -D TECO_DEBUG
-DOXYGEN +=    TECO_DEBUG
-OPTIONS_DEBUG += -d
+DEFINES += -D TECO_debug
+DOXYGEN +=    TECO_debug
+OPTIONS_debug += -d
 
 endif
 
-ifdef   GDB
+ifdef   gdb
 
 DFLAGS += -g
 OPT_OPT = -O0
 
 endif
 
-ifdef   GPROF
+ifdef   gprof
 
 DFLAGS += -pg
 OPT_OPT = -O0
 
 endif
 
-ifdef   NDEBUG
+ifdef   ndebug
 
 DEFINES += -D NDEBUG
 DOXYGEN +=    NDEBUG
 
 endif
 
-ifdef   TRACE
+ifdef   trace
 
 DEFINES += -D TECO_TRACE
 DOXYGEN +=    TECO_TRACE
@@ -302,16 +302,16 @@ help:
 	@echo ""
 	@echo "Build options:"
 	@echo ""
-	@echo "    BUFFER=gap  Use gap buffer for editing text. [default]"
-	@echo "    DEBUG=1     Enable debugging features."
-	@echo "    DISPLAY=1   Enable display mode."
-	@echo "    GDB=1       Enable use of GDB debugger."
-	@echo "    GPROF=1     Enable use of GPROF profiler."
-	@echo "    NDEBUG=1    Disable run-time assertions."
-	@echo "    PAGING=std  Use standard paging. [default]"
-	@echo "    PAGING=vm   Use virtual memory paging."
-	@echo "    TRACE=1     Enable tracing of commands."
-	@echo "    VERBOSE=1   Enable verbosity during build."
+	@echo "    buffer=gap  Use gap buffer for editing text. [default]"
+	@echo "    debug=1     Enable debugging features."
+	@echo "    display=1   Enable display mode."
+	@echo "    gdb=1       Enable use of GDB debugger."
+	@echo "    gprof=1     Enable use of GPROF profiler."
+	@echo "    ndebug=1    Disable run-time assertions."
+	@echo "    paging=std  Use standard paging. [default]"
+	@echo "    paging=vm   Use virtual memory paging."
+	@echo "    trace=1     Enable tracing of commands."
+	@echo "    verbose=1   Enable verbosity during build."
 
 bin:
 	$(AT)mkdir -p bin
