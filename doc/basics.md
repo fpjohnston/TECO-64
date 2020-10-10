@@ -7,10 +7,10 @@ at the left margin to indicate that it is ready to accept user commands.
 A TECO command consists of one or two characters which cause a specific
 operation to be performed. Some TECO commands may be preceded or followed
 by arguments. Arguments may be either numeric or textual. A numeric
-argument is simply an integer value which can be used to indicate, for example,
-the number of times a command should be executed. A text argument is a
-string of ASCII characters which might be, for example, words of text or a file
-specification.
+argument is simply an integer value which can be used to indicate, for
+example, the number of times a command should be executed. A text argument
+is a string of ASCII characters which might be, for example, words of text
+or a file specification.
 
 If a command requires a numeric argument, the numeric argument always
 precedes the command. If a command requires a text argument, the text
@@ -26,11 +26,11 @@ support user-selectable ESCape surrogates - see sections on ET and EE flags).
 
 When you type the character you have designated as \<DELIM\>, TECO receives
 an ESCape character, and an \` (accent grave) is echoed. (If you are not using
-an ESCape surrogate — that is, you are actually pressing an ESCape key — a dollar
-sign is echoed.) The accent grave character is used in examples throughout
-this manual to represent typed \<DELIM\>s. Note that the carriage return
-character has no special significance to TECO; only the \<DELIM\>\<DELIM\>
-forces execution of the command string.
+an ESCape surrogate — that is, you are actually pressing an ESCape key —
+a dollar sign is echoed.) The accent grave character is used in examples
+throughout this manual to represent typed \<DELIM\>s. Note that the carriage
+ returncharacter has no special significance to TECO; only the
+\<DELIM\>\<DELIM\> forces execution of the command string.
 
 TECO executes command strings from left to right until either all commands
 have been executed or a command error is recognized. It then prints an
@@ -42,10 +42,10 @@ error messages are of the form:
 
 ?XXX Message
 
-where XXX is an error code and the message is a description of the error. Some
-error messages mention the specific character or string of characters in error. In
-these error messages, TECO represents the non-printing special characters as
-follows:
+where XXX is an error code and the message is a description of the error.
+Some error messages mention the specific character or string of characters
+in error. In these error messages, TECO represents the non-printing special
+characters as follows:
 
 | ASCII character       | Form Displayed |
 | --------------------- | -------------- |
@@ -57,56 +57,59 @@ follows:
 | 27 (ESCape)           | \<ESC\>        |
 | (other control chrs.) | \<^x\>         |
 
-Every error message is followed by an asterisk at the left margin, indicating that
-TECO is ready to accept additional commands. If you type a single question
-mark character after a TECO-generated error message, TECO will print the
-erroneous command string up to and including the character which caused the
-error message. This helps you to find errors in long command strings and to
-determine how much of a command string was executed before the error was
-encountered.
+Every error message is followed by an asterisk at the left margin,
+indicating that TECO is ready to accept additional commands. If you
+type a single question mark character after a TECO-generated error
+message, TECO will print the erroneous command string up to and
+including the character which caused the error message. This helps
+you to find errors in long command strings and to determine how much
+of a command string was executed before the error was encountered.
 
-You can correct typing errors by hitting the DELETE key, which may be labeled
-DEL or RUBOUT or \<x on your keyboard. Each depression of the DELETE key
-deletes one character and echoes it on your terminal, beginning with the last
-character typed. If you have a display terminal, TECO will actually erase the deleted
-character from the screen. You can delete an entire command string this way, if
-necessary. To delete an entire line of commands, enter the character \<CTRL/U\>,
-typed by holding down the CTRL key while depressing the "U" key.
+You can correct typing errors by hitting the DELETE key, which may be
+labeled DEL or RUBOUT or \<x on your keyboard. Each depression of the
+DELETE key deletes one character and echoes it on your terminal,
+beginning with the last character typed. If you have a display terminal,
+TECO will actually erase the deleted character from the screen. You can
+delete an entire command string this way, if necessary. To delete an
+entire line of commands, enter the character \<CTRL/U\>, typed by
+holding down the CTRL key while depressing the "U" key.
 When you are done editing, use the EX command to exit TECO.
 
 #### Data Structure Fundamentals
 
-TECO considers any string of ASCII codes to be text. Text is broken down into
-units of characters, lines, and pages. A character is one ASCII code. A line
-of text is a string of ASCII codes including one line terminator (usually a line
-feed) as the last character on the line. A page of text is a string of ASCII codes
-including one form feed character as the last character on the page.
+TECO considers any string of ASCII codes to be **text**. Text is broken
+down into units of **characters**, **lines**, and **pages**. A character
+is one ASCII code. A line of text is a string of ASCII codes including
+one line terminator (usually a line feed) as the last character on the
+line. A page of text is a string of ASCII codes including one form feed
+character as the last character on the page.
 
-TECO maintains a text buffer in which text is stored. The buffer usually
-contains one page of text, but the terminating form feed character never appears
-in the buffer. TECO also maintains a text buffer pointer. The pointer is a
-movable position indicator which is never located directly on a character, but is
-always between characters: between two characters in the buffer, before the
-first character in the buffer, or after the last character in the buffer.
+TECO maintains a **text buffer** in which text is stored. The buffer usually
+contains one page of text, but the terminating form feed character never
+appears in the buffer. TECO also maintains a text buffer **pointer**, called
+*dot*. *dot* is a movable position indicator which is never located directly
+on a character, but is always **between** characters: between two characters
+in the buffer, before the first character in the buffer, or after the
+last character in the buffer.
 
 Line feed and form feed characters are inserted automatically by TECO. A line
 feed is automatically appended to every carriage return typed to TECO and a
 form feed is appended to the contents of the buffer by certain output commands.
-Additional line feed and form feed characters may be entered into the buffer as
-text. If a form feed character is entered into the buffer, it will cause a page break
-upon output; text following the form feed will begin a new page.
+Additional line feed and form feed characters may be entered into the buffer
+as text. If a form feed character is entered into the buffer, it will cause
+a page break upon output; text following the form feed will begin a new page.
 
-Finally, TECO maintains an input file and an output file, both of which are
-selected by the user through file specification commands. The input file may be
-on any device from which text may be accepted. The output file may be on any
-device on which edited text may be written.
+Finally, TECO maintains an *input file* and an *output file*, both of which
+are selected by the user through file specification commands. The input file
+may be on any device from which text may be accepted. The output file may be
+on any device on which edited text may be written.
 
-TECO functions as a pipeline editor. Text is read from the input file into the
-text buffer, and is written from the buffer onto the output file. In the VAX/VMS
-implementation, it is possible to "back up" as well as page forward in the file
-being edited. In other implementations, once text has been written to the output
-file, it cannot be accessed again without closing the output file and reopening it
-as an input file.
+TECO functions as a **pipeline** editor. Text is read from the input file
+into the text buffer, and is written from the buffer onto the output file.
+If virtual memory paging support is enabled, it is possible to "back up"
+as well as page forward in the file being edited. In other implementations,
+once text has been written to the output file, it cannot be accessed again
+without closing the output file and reopening it as an input file.
 
 #### File Selection Commands
 
@@ -264,8 +267,7 @@ used type out commands. Each one consists of a single character, and must be
 the very first character typed after TECO prints its prompting asterisk. Each
 of these commands takes effect immediately; there is no need to follow any of
 these commands by any <DELIM> character. For this reason, these commands
-are known as "immediate" commands (see Chapter 4 for more information on
-immediate commands).
+are known as "immediate" commands.
 
 | Command | Function |
 | ------- | -------- |
@@ -325,10 +327,9 @@ search.
 
 The rest of this manual is a description of TECO in all its glory. TECO is a
 complex editor and has many features because it has been under development for
-a long time. (TECO is older than some of the readers of this manual!) Do not try
-to understand everything the first time through. If you find that what you are
-reading seems hopelessly obscure, or makes no sense whatsoever, skip to the next
-section and come back to it some time later. It will be a while before you need all
-of TECO’s features.
+a long time. Do not try to understand everything the first time through.
+If you find that what you are reading seems hopelessly obscure, or makes no
+sense whatsoever, skip to the next section and come back to it some time later.
+It will be a while before you need all of TECO’s features.
 
 This manual is meant to be a reference manual and not a tutorial.

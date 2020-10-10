@@ -6,7 +6,7 @@
 
 Invoking TECO
 
-Conventions & Structures
+[Conventions & Structures](conventions.md)
 
 Command String Editing
 
