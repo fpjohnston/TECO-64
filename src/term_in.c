@@ -525,9 +525,18 @@ static int read_first(void)
 
         c = readkey_dpy(c);             // See if it's a display key
 
+        // If first character is an ESCape, or ESCape surrogate, then
+        // treat it like LF.
+
+        if (c == ESC || (c == ACCENT && f.et.accent) || (c == f.ee && c != NUL))
+        {
+            c = LF;
+        }
+
         switch (c)
         {
             case BS:
+            case DEL:
                 read_bs_or_lf(t.B, -1);
 
                 break;
@@ -590,11 +599,6 @@ static int read_first(void)
                 }
 
                 read_qname(c);
-
-                break;
-
-            case DEL:
-                echo_in(CRLF);
 
                 break;
 

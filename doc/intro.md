@@ -5,9 +5,9 @@ of ASCII text: program sources, command procedures, or manuscripts, for
 example. TECO is a character-oriented editor, and also offers a number
 of facilities for dealing with lines of text.
 
-Because TECO is an interpreter, you can use it interactively, issuing
-commands which are to be executed as soon as they are typed in.
-In this mode, TECO can be used for tasks ranging from simple to complex.
+TECO can be used interactively, where commands are executed as soon as
+they are typed in. In this mode, TECO can be used for tasks ranging
+from simple to complex.
 
 You can also write sequences of commands called macros, which can be
 stored internally and then invoked by short commands.
@@ -54,7 +54,7 @@ the text buffer on the remainder of the screen. The 7:W command is described
 (TBD).)
 
 This manual is intended to be used for reference, and except for the section
-titled Basics of TECO, is not a tutorial. After Chapter 1, it is assumed that
+titled Basics of TECO, is not a tutorial. After (TBD), it is assumed that
 the reader has a general familiarity with TECO and is referring to this manual
 to find detailed information.
 
@@ -88,7 +88,8 @@ as its delimiter. As it may be desirable to use function or cursor keys
 that generate ESCape sequences, TECO is capable of recognizing a surrogate
 (some other, user-specified) character as signifying an ESCape when typed
 at the terminal. Such a character echoes as accent grave — you see an \`
-character, and TECO receives an ESCape character. (Note that TECO programs,
-command files, and macros cannot use the surrogate, since it is translated
-to ESCape only when you type it at the terminal.) For details on enabling
-a surrogate for ESCape, see the EE flag or the 8192 ET bit.
+(ASCII 96) character, and TECO receives an ESCape character. (Note that
+TECO programs, command files, and macros cannot use the surrogate, since
+it is translated to ESCape only when you type it at the terminal.) For
+details on enabling a surrogate for ESCape, see the EE flag or the
+ET&8192 flag bit.
