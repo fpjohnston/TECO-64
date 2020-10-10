@@ -287,6 +287,10 @@ void read_cmd(void)
             accent = true;
             c = ESC;                    // Process it as ESCape.
         }
+        else if ((f.et.accent || f.ee != NUL) && c == ESC)
+        {
+            accent = true;
+        }
 
         if (read_chr(c, accent) == EOF)
         {
