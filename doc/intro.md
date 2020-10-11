@@ -48,9 +48,9 @@ introduced, and then duplicate the examples on their computer.
 
 (If a video terminal which supports split-screen scrolling is available,
 and the TECO being used supports it, seeing both your commands and their
-effects in the text buffer simultaneously can make learning easier. A
+effects in the edit buffer simultaneously can make learning easier. A
 command such as "5,7:W" allows 5 lines for command dialogue, while watching
-the text buffer on the remainder of the screen. The 7:W command is described
+the edit buffer on the remainder of the screen. The 7:W command is described
 (TBD).)
 
 This manual is intended to be used for reference, and except for the section

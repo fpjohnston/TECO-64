@@ -60,16 +60,16 @@ Q-registers.
 | Command | Function |
 | ------- | -------- |
 | Q*q* | Use the integer stored in the number storage area of Q-register *q* as the argument of the next command. |
-| *n*Q*q* | Return the ASCII value of the (*n*+1)th character in Q-register *q*. The argument *n* must be between 0 and the Q-register’s size minus 1. If *n* is out of range, a value of -1 is returned. Characters within a Q-register are numbered the same way that characters in the text buffer are numbered. The initial character is at character position 0, the next character is at character position 1, etc. Therefore, if Q-register A contains "xyz", then 0QA will return the ASCII code for "x" and 1QA will return the ASCII code for "y". |
+| *n*Q*q* | Return the ASCII value of the (*n*+1)th character in Q-register *q*. The argument *n* must be between 0 and the Q-register’s size minus 1. If *n* is out of range, a value of -1 is returned. Characters within a Q-register are numbered the same way that characters in the edit buffer are numbered. The initial character is at character position 0, the next character is at character position 1, etc. Therefore, if Q-register A contains "xyz", then 0QA will return the ASCII code for "x" and 1QA will return the ASCII code for "y". |
 | :Q*q* | Use the number of characters stored in the text storage area of Q-register *q* as the argument of the next command. |
 | G*q* | Copy the contents of the text storage area of Q-register *q* into the buffer at the current position of the buffer pointer, leaving the pointer positioned after the last character copied. |
-| :G*q* | Print the contents of the text storage area of Q-register *q* on the terminal. Neither the text buffer nor the buffer pointer is changed by this command. |
+| :G*q* | Print the contents of the text storage area of Q-register *q* on the terminal. Neither the edit buffer nor the buffer pointer is changed by this command. |
 | G\* | Copy the last filename specification into the buffer at the current position of the buffer pointer, leaving the pointer positioned after the last character copied. |
-| :G\* | Print the last filename specification on the terminal. Neither the text buffer nor the buffer pointer is changed by this command. |
+| :G\* | Print the last filename specification on the terminal. Neither the edit buffer nor the buffer pointer is changed by this command. |
 | G_ | Copy the last search string into the buffer at the current position of the buffer pointer, leaving the pointer positioned after the last character copied. |
-| :G_ | Print the search string on the terminal. Neither the text buffer nor the buffer pointer is changed by this command. |
+| :G_ | Print the search string on the terminal. Neither the edit buffer nor the buffer pointer is changed by this command. |
 | G+ | Copy the output of the last ::EG command into the buffer at the current position of the buffer pointer, leaving the pointer positioned after the last character copied. |
-| :G+ | Print the output of the last ::EG command on the terminal. Neither the text buffer nor the buffer pointer is changed by this command. |
+| :G+ | Print the output of the last ::EG command on the terminal. Neither the edit buffer nor the buffer pointer is changed by this command. |
 | [*q* | Copy the contents of the numeric and text storage areas of Q-register *q* into the Q-register push-down list. This command does not alter either the numeric or text storage areas of Qregister *q*. It does not use or affect numeric values. Numeric values are passed through this command transparently, allowing macros to save temporary Q-registers and still accept numeric values. (Note, however, macros written to use local Q-registers may be able to avoid saving and restoring Q-registers via the the pushdown list.) The command sequence [A ]B replicates the text string and numeric value from Q-register A into Q-register B. |
 
 #### Macro Invocation Commands

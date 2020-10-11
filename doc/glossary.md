@@ -18,7 +18,7 @@ whenever TECO issues its prompt.
 A search (S) or search and replace (FS) command that is preceded by a double
 colon (::). This indicates that the search must match the characters
 immediately following the current pointer position. If these characters do
-not match, no further searching is performed and the text buffer pointer
+not match, no further searching is performed and the edit buffer pointer
 does not move.
 
 **Argument pair**
@@ -64,13 +64,13 @@ A search that proceeds in the backwards direction. If the string being looked fo
 does not occur at the current pointer position, the pointer position is moved back
 one character and the search is tried again. This continues until the string is
 found or until the boundary of the search has been reached or until the beginning
-of the current text buffer has been reached. Backward searches are initiated by
+of the current edit buffer has been reached. Backward searches are initiated by
 using a negative argument to a search command or by using an argument pair
 m,n with m greater than n to an FB or FC command.
 
 **Bounded searches**
 
-A search command that requires searching only a portion of the text buffer. Of
+A search command that requires searching only a portion of the edit buffer. Of
 particular importance is the case where you only want to search the current line
 for a given string. Bounded searches are accomplished using the FB command.
 
@@ -152,12 +152,12 @@ the user’s terminal to abort execution of the current command string.
 
 **Current character**
 
-The character immediately following the current text buffer pointer position.
+The character immediately following the current edit buffer pointer position.
 
 **Cursor**
 
 A visible pattern on a display terminal (usually blinking) that would specify
-to a true scope editor (like VTEDIT) the current location of the text buffer
+to a true scope editor (like VTEDIT) the current location of the edit buffer
 pointer, or which would specify the location where subsequently typed
 characters would be displayed.
 
@@ -180,12 +180,12 @@ _ command.
 
 **Display**
 
-The portion of the text buffer that is currently being displayed on the user’s
+The portion of the edit buffer that is currently being displayed on the user’s
 terminal or auxiliary display device.
 
 **Dot**
 
-A mnemonic for "the current text buffer pointer position". Stems from the fact
+A mnemonic for "the current edit buffer pointer position". Stems from the fact
 that the . (dot, or period) TECO command returns this number as its value.
 
 **E command**
@@ -279,7 +279,7 @@ match the exact case (upper case or lower case) of characters specified.
 
 A protective feature of TECO that prevents a user from exiting TECO if a
 potential los of data is imminent. The EX and EG commands are aborted (with
-the ?NFO error message) if there is text in the text buffer, but no output file is
+the ?NFO error message) if there is text in the edit buffer, but no output file is
 open.
 
 **F command**
@@ -302,7 +302,7 @@ character. The flow commands are F\<, F\>, F’, and F | .
 
 A read-only flag, referenced by the ^E command that specifies whether the
 previous append from the input file terminated because of encountering a form
-feed character in the input file, or because the text buffer became nearly full. The
+feed character in the input file, or because the edit buffer became nearly full. The
 value of this flag is automatically set to -1 by TECO if input is terminated by the
 presence of a form feed character in the input file.
 
@@ -315,7 +315,7 @@ Q-Registers.
 **Global search**
 
 A type of search that continues through the entire input file until the specified
-characters are found. Successive pages of the file are read into the text buffer
+characters are found. Successive pages of the file are read into the edit buffer
 and then written out into the output file (if the string is not located). Global
 searches in TECO are initiated via the N command.
 
@@ -372,7 +372,7 @@ enclosing the commands in angle brackets.
 **Line**
 
 A portion of text delimited by \<LF\>, \<VT\>, \<FF\>, or the beginning or end of the
-text buffer. The final delimiter is considered to be part of the line.
+edit buffer. The final delimiter is considered to be part of the line.
 
 **Line-oriented editor**
 
@@ -456,19 +456,19 @@ by setting the 8ET flag bit. Opposite of echo mode.
 
 A portion of text delimited by form feeds. The form feeds are not considered to
 be part of the page. Sometimes the term ’page’ is used to refer to all the text
-currently in the text buffer.
+currently in the edit buffer.
 
 **Pipeline editor**
 
 An editor which only makes sequential edits to a file. The file to be edited is
-read into the text buffer one piece at a time. Each piece is edited and then
+read into the edit buffer one piece at a time. Each piece is edited and then
 written out. Once a piece has been written out, further editing to that piece is
 not possible unless the output file is re-opened in a later edit as a new file to be
 edited. TECOs are pipeline editors.
 
 **Pointer preservation mode**
 
-A mode of operation in which the text buffer pointer will not change after a
+A mode of operation in which the edit buffer pointer will not change after a
 failing search. This mode is controlled by the 16ED flag bit.
 
 **Primary input stream**
@@ -509,7 +509,7 @@ bit.
 A form of TECO operation available on display terminals capable of supporting
 split-screen operation. The bottom n lines are used for TECO’s asterisk prompt
 and the usual typed command lines; the remaining lines above are used for an
-automatically-updated window into the text buffer. A valuable training aid: one
+automatically-updated window into the edit buffer. A valuable training aid: one
 can experiment with TECO commands and immediately observe their effects.
 Controlled by the n,7:W command.
 
@@ -589,10 +589,10 @@ The main buffer used by TECO to hold the text to be edited.
 
 **Text buffer pointer**
 
-A pointer that marks the position within the text buffer where TECO is currently
+A pointer that marks the position within the edit buffer where TECO is currently
 ’at’. This pointer always points to positions between characters; it never points at
 a character. The current character is considred to be the character immediately
-to the right of the current position of the text buffer pointer.
+to the right of the current position of the edit buffer pointer.
 
 **Then-clause**
 
@@ -653,6 +653,6 @@ mode is particularly useful to novices and particularly obnoxious to experts.
 A feature of TECO wherein any Y, _, or F_ command that will potentially destroy
 valid data is aborted. This mode is normally enabled and will cause any of the
 aforementioned commands to abort with the ?YCA error message if there is text
-in the text buffer and an output file is open. This feature can be disabled by
+in the edit buffer and an output file is open. This feature can be disabled by
 turning off the 2ED flag bit.
 

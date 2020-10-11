@@ -29,7 +29,7 @@ E3&4, and E3&8 in TECO-64 to achieve the same behavior.
 - 0EJ returns the process ID, not the parent process ID. 0:EJ has been
 added to return the parent process ID.
 - The EG and EX commands implement file protection by issuing an error
-to prevent loss of data if the text buffer is not empty.
+to prevent loss of data if the edit buffer is not empty.
 - The setting of the EU flag does not affect the output of echoed
 characters in commands.
 - Commands that do not use numeric values (e.g., apostrophe) do not pass

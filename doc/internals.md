@@ -32,7 +32,7 @@ soup of acronyms). And as much as possible, use names that include verbs
 numerous unrelated functions, and don’t duplicate code.
 - Modularity – Hide details of functions and modules as much as possible.
 This has made it possible to have more than one method for handling data
-in the text buffer, and more than one method for handling paging.
+in the edit buffer, and more than one method for handling paging.
 
 ### Testing & Debugging
 

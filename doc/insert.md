@@ -1,7 +1,7 @@
 ### TECO-64 - Insertion Commands
 
 The following lists all of the text insertion commands. These commands cause the
-character or characters specified in the command to be inserted into the text buffer
+character or characters specified in the command to be inserted into the edit buffer
 at the current position of the buffer pointer. Following execution of an insertion
 command, the pointer will be positioned immediately after the last character of
 the insertion.
@@ -16,7 +16,7 @@ should be avoided.
 As explained in (TBD), certain characters are filtered out by the
 operating system and/or may perform special functions, and some characters are
 immediate action commands and have special effect. If you want to insert such
-characters into the text buffer, use the *n*I\` command described in the following
+characters into the edit buffer, use the *n*I\` command described in the following
 table. It will insert any ASCII character into the buffer, including the special
 characters that could not ordinarily be typed at a terminal.
 

@@ -142,7 +142,7 @@ being returned if the open succeeded, and 0 if it failed.
 [R - Move pointer backward](cmds/R.md)
 - Added colon modifier to return success/failure value. (TECO-10)
 
-[X - Load Q-register from text buffer](cmds/X.md)
+[X - Load Q-register from edit buffer](cmds/X.md)
 - Added ability to delete text from Q-register.
 
 [Y - Yank page](cmds/Y.md)

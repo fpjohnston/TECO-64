@@ -6,7 +6,7 @@ TECO accepts the full 8-bit ASCII character set. For more information on
 TECO’s handling of 8-bit characters (including on terminals capable of
 displaying only 7-bit data), see the description of the 4096 ET bit.
 
-When TECO is maintaining a window into the text buffer, a special facility (called
+When TECO is maintaining a window into the edit buffer, a special facility (called
 "SEEALL" or "View All" mode) is available to explicitly show certain characters
 which normally do not print, such as \<CR\>, \<FF\>, and \<TAB\>. This mode is
 controlled by the 3:W flag, which is described in Section 5.17.
@@ -233,15 +233,15 @@ formatting of type out and the logical division of data.
 
 ##### Text Buffer
 
-The main storage of TECO is the text buffer. The text buffer stores a single
-character string that TECO edits. A text buffer pointer is used to address text
-in the buffer; it is moved about by many TECO commands. The text buffer
+The main storage of TECO is the edit buffer. The edit buffer stores a single
+character string that TECO edits. A edit buffer pointer is used to address text
+in the buffer; it is moved about by many TECO commands. The edit buffer
 pointer never points to characters in the buffer; it is always pointing at pointer
-positions (between characters). The available pointer positions in the text buffer
+positions (between characters). The available pointer positions in the edit buffer
 are sequentially numbered beginning with 0. Pointer position 0 is the position
 at the start of the buffer, just to the left of the first character. Pointer position 1
 is the next position, just to the right of the first character, etc. As an example,
-suppose the text buffer contains the string FOOBAR. Then seven text buffer
+suppose the edit buffer contains the string FOOBAR. Then seven edit buffer
 pointer positions are determined as shown by the arrows in the following figure:
 
  F O O B A R
@@ -252,22 +252,22 @@ Note that there are 6 characters in the buffer and that the highest numbered
 pointer position is 6. The pointer position number is equal to the number of
 characters preceding that position.
 
-Useful definitions of "current" objects are made with respect to the text buffer
+Useful definitions of "current" objects are made with respect to the edit buffer
 pointer as follows:
 
-- The current character of the text buffer is the character just to the right of
-the pointer. If the pointer is at the end of the text buffer, there is no character
+- The current character of the edit buffer is the character just to the right of
+the pointer. If the pointer is at the end of the edit buffer, there is no character
 to the right of the buffer pointer, and the current character does not exist.
-- The current line of the text buffer is the TECO line that contains the current
+- The current line of the edit buffer is the TECO line that contains the current
 character. In the special case that the pointer is at the end of the buffer,
 the current line is everything back to (but not including) the last end-of-line
 character.
-- The current page of the text buffer is the TECO page that contains the
+- The current page of the edit buffer is the TECO page that contains the
 current character. In the special case that the pointer is at the end of the
 buffer, the current page is everything back to (but not including) the last form
 feed character (or the beginning of the buffer).
 
-When the text buffer pointer is at the end of the text buffer and the last character
+When the edit buffer pointer is at the end of the edit buffer and the last character
 of the buffer is an end-of-line character, then the current line is an empty string
 according to the definition just given. In this case, TECO performs the required
 operation on this empty string. For example, if the pointer is at the end of the
@@ -326,5 +326,5 @@ pushdown list.
 ##### Numeric Values and Flags
 
 TECO has many special numeric values and flags which are accessible through
-TECO commands. Some of these values, such as the text buffer pointer, reflect
+TECO commands. Some of these values, such as the edit buffer pointer, reflect
 the state of TECO. Others control TECO’s behavior in various ways.

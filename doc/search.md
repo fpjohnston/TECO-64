@@ -14,7 +14,7 @@ If a search command is specified with a null search string argument, the last
 explicitly defined search string will be used. This saves having to retype a
 complex or lengthy search string on successive search commands.
 Normally searches are "unbounded" - they search from the current position to the
-end of the text buffer (or in the case of backwards searches, until the beginning of
+end of the edit buffer (or in the case of backwards searches, until the beginning of
 the buffer). A bounded search, however, will only search from the current position
 to the specified bound limit. If the search string is found within the bound limits,
 the pointer is positioned immediately after the last character in the string. If the
@@ -23,7 +23,7 @@ string cannot be found, the pointer is left unchanged.
 A special case of the bounded search occurs when the upper and lower bound
 limits are the same. In such a case, the search command is called an anchored
 search, and is used to compare the search argument against the character string
-immediately following the text buffer pointer.
+immediately following the edit buffer pointer.
 
 | Command | Function |
 | ------- | -------- |
@@ -36,7 +36,7 @@ immediately following the text buffer pointer.
 | -N*text*` | Performs the same function as the -S command except that the search is continued (backwards) across page boundaries, if necessary, until the character string is found or the beginning of the file being edited is reached. |
 | -*n*N*text*` | This command searches (backwards) for the *n*th occurrence of the specified character string. It is identical to the -N command in other respects. |
 | _*text*` | The underscore command is identical to the N command except that the search is continued across page boundaries by executing effective Y commands instead of P commands, so that no output is generated. Since an underscore search can result in the loss of data, it is aborted under the same circumstances as the Y command (see the ED flag). |
-| n_*text*` | This command searches for the *n*th occurrence of the specified character string, where *n* must be greater than zero. It is identical to the _ command in other respects. *n* can be negative, in which case the search proceeds backwards through each text buffer and through the file being edited. It terminates upon the correct search string match and/or beginning of file. A -*n*:_ command returns 0 at beginning of file. |
+| n_*text*` | This command searches for the *n*th occurrence of the specified character string, where *n* must be greater than zero. It is identical to the _ command in other respects. *n* can be negative, in which case the search proceeds backwards through each edit buffer and through the file being edited. It terminates upon the correct search string match and/or beginning of file. A -*n*:_ command returns 0 at beginning of file. |
 | E_*text*` | Same as _*text*` command except that effective EY (rather than Y) commands are used. Thus, this command is never aborted and is not controlled by the Yank protection bit in the ED flag. Remember that Yank DESTROYS the current buffer; there’s no way to get it back! |
 | nE_*text*` | Same as *n*_*text*` command except that effective EY (rather than Y) commands are used. |
 

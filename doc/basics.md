@@ -134,9 +134,9 @@ one line terminator (usually a line feed) as the last character on the
 line. A page of text is a string of ASCII codes including one form feed
 character as the last character on the page.
 
-TECO maintains a **text buffer** in which text is stored. The buffer usually
+TECO maintains a **edit buffer** in which text is stored. The buffer usually
 contains one page of text, but the terminating form feed character never
-appears in the buffer. TECO also maintains a text buffer **pointer**, called
+appears in the buffer. TECO also maintains a edit buffer **pointer**, called
 *dot*. *dot* is a movable position indicator which is never located directly
 on a character, but is always **between** characters: between two characters
 in the buffer, before the first character in the buffer, or after the
@@ -155,7 +155,7 @@ may be on any device from which text may be accepted. The output file may be
 on any device on which edited text may be written.
 
 TECO functions as a **pipeline** editor. Text is read from the input file
-into the text buffer, and is written from the buffer onto the output file.
+into the edit buffer, and is written from the buffer onto the output file.
 If virtual memory paging support is enabled, it is possible to "back up"
 as well as page forward in the file being edited. In other implementations,
 once text has been written to the output file, it cannot be accessed again
@@ -189,7 +189,7 @@ teco *filespec*
 
 This command starts up TECO and opens the specified file for editing while
 preserving the original file (as a backup file). It also automatically
-brings the first page of the file into the text buffer. These functions
+brings the first page of the file into the edit buffer. These functions
 simulate the EB command.
 
 If any of the above commands do not seem to work on your operating system,
@@ -203,7 +203,7 @@ input device may be specified by the text string supplied in the ER command (and
 which, like any text argument, is terminated by a \<DELIM\> character). The ER
 command causes TECO to open the specified file or print an error message if the
 file is not found. This command does not cause any portion of the file to be read
-into the text buffer, however. The following examples illustrate use of the ER
+into the edit buffer, however. The following examples illustrate use of the ER
 command.
 
 | Command | Function |
@@ -217,7 +217,7 @@ specify a new file.
 
 It is not always necessary to specify an input file. If you want to create a file
 without using any previously edited text as input, you may type commands to
-insert the necessary text directly into the text buffer from the keyboard and, at
+insert the necessary text directly into the edit buffer from the keyboard and, at
 the end of each page, write the contents of the buffer onto an output file. Since
 all input is supplied from the keyboard, no input file is necessary.
 
@@ -238,20 +238,20 @@ following examples illustrate use of the EW command.
 
 You do not need to specify an output file if you only want to examine an input
 file, without making permanent changes or corrections. In this case, the contents
-of the input file may be read into the text buffer page by page and examined at
+of the input file may be read into the edit buffer page by page and examined at
 the terminal. Since all output is printed on the user terminal, no output file is
 needed.
 
 ##### Closing Files (EX command)
 
 When you are finished editing a file, use the EX command to close out the file
-and exit from TECO. The current contents of the text buffer and any portion of
+and exit from TECO. The current contents of the edit buffer and any portion of
 the input file that has not been read yet are copied to the output file before TECO
 exits. The EX command takes no arguments.
 
 | Command | Function |
 | ------- | -------- |
-| EX\`\` |  Write the text buffer to the current output file, move the remainder of the current input file to the current output file, close the output file, then return to the operating system. |
+| EX\`\` |  Write the edit buffer to the current output file, move the remainder of the current input file to the current output file, close the output file, then return to the operating system. |
 | ERinput.c\` EWoutput.c\` EX\`\` | Open an input file input.c and open an output file named output.c, then copy all the text in the input file to the output file, close the output file, and exit from TECO. |
 
 #### Input and Output Commands
@@ -259,12 +259,12 @@ exits. The EX command takes no arguments.
 The following commands permit pages of text to be read into the TECO text
 buffer from an input file or written from the buffer onto an output file. Once a
 page of text has been written onto the output file, it cannot be recalled into the
-text buffer unless the output file is closed and reopened as an input file.
+edit buffer unless the output file is closed and reopened as an input file.
 
 | Command | Function |
 | ------- | -------- |
-| Y | Clear the text buffer, then read the next page of the input file into the buffer. Since the Y command causes the contents of the text buffer to be lost, it is not permitted if an output file is open and there is text in the buffer. |
-| P | Write the contents of the text buffer onto the next page of the output file, then clear the buffer and read the next page of the input file into the buffer. |
+| Y | Clear the edit buffer, then read the next page of the input file into the buffer. Since the Y command causes the contents of the edit buffer to be lost, it is not permitted if an output file is open and there is text in the buffer. |
+| P | Write the contents of the edit buffer onto the next page of the output file, then clear the buffer and read the next page of the input file into the buffer. |
 | *n*P | Execute the P command *n* times. If *n* is not specified, a value of 1 is assumed. |
 
 After each Y, P, or nP command, TECO positions the pointer before the first
@@ -305,9 +305,9 @@ pointer.
 
 | Command | Function |
 | ------- | -------- |
-| T | Type the contents of the text buffer from the current position of the pointer through and including the next line feed character. 
+| T | Type the contents of the edit buffer from the current position of the pointer through and including the next line feed character. 
 | *nT | Type *n* lines, where *n* is a signed integer. A positive value of *n* causes the *n* lines following the pointer to be typed. A negative value of *n* causes the *n* lines preceding the pointer to be typed. If *n* is zero, the contents of the buffer from the beginning of the line on which the pointer is located up to the pointer is typed. This is useful for verifying the location of the buffer pointer. |
-| HT | Type the entire contents of the text buffer. |
+| HT | Type the entire contents of the edit buffer. |
 | V | Type the current line. Equivalent to the sequence "0TT". |
 
 #### Immediate Inspection Commands
@@ -335,9 +335,9 @@ You can insert or delete text from the buffer using the following commands:
 | Command | Function |
 | ------- | -------- |
 | I*text*` | Where *text* is a string of ASCII characters terminated by a \<DELIM\> character. The specified text is inserted into the buffer at the current position of the pointer. The pointer is positioned immediately after the last character of the insertion.
-| K | Delete the contents of the text buffer from the current position of the pointer up to and including the next line feed character. |
+| K | Delete the contents of the edit buffer from the current position of the pointer up to and including the next line feed character. |
 | *n*K | Execute the K command *n* times, where *n* is a signed integer. A positive value of *n* causes the *n* lines following the pointer to be deleted. A negative value of *n* causes the *n* lines preceding the pointer to be deleted. If *n* is zero, the contents of the buffer from the beginning of the line on which the pointer is located up to the pointer is deleted. |
-| HK | Delete the entire contents of the text buffer. |
+| HK | Delete the entire contents of the edit buffer. |
 | D | Delete the character following the buffer pointer. |
 | *n*D | Execute the D command *n* times, where *n* is a signed integer. A positive value of *n* causes the *n* characters following the pointer to be deleted. A negative value of *n* causes the *n* characters preceding the pointer to be deleted. If *n* is zero, the command is ignored. |
 
@@ -357,7 +357,7 @@ Command Function
 
 | Command | Function |
 | ------- | -------- |
-| S*text*` | Where *text* is a string of ASCII characters terminated by a \<DELIM\> character. This command searches the text buffer for the next occurrence of the specified character string following the current pointer position. If the string is found, the pointer is positioned after the last character on the string. If it is not found, the pointer is positioned immediately before the first character in the buffer and an error message is printed. |
+| S*text*` | Where *text* is a string of ASCII characters terminated by a \<DELIM\> character. This command searches the edit buffer for the next occurrence of the specified character string following the current pointer position. If the string is found, the pointer is positioned after the last character on the string. If it is not found, the pointer is positioned immediately before the first character in the buffer and an error message is printed. |
 | N*text*` | Performs the same function as the S command except that the search is continued across page boundaries, if necessary, until the character string is found or the end of the input file is reached. If the end of the input file is reached, an error message is printed. If virtual paging support has been enabled, you can "back up" into the file and continue editing, although doing so uses TECO features beyond those introduced here. Using only basic features, you must close the output file and reopen it as an input file before you can edit the file further. |
 
 Both the S command and the N command begin searching for the specified

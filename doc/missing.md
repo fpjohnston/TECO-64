@@ -65,7 +65,7 @@ the terminal width and height, respectively, but should not be necessary
 for setting either since TECO determines the terminal size automatically
 at start-up and whenever the display is resized.
 
-- -1W - Refresh the terminal’s screen to show the contents of the text buffer.
+- -1W - Refresh the terminal’s screen to show the contents of the edit buffer.
 - -nW - Ignored.
 - nW - Ignored.
 - 0W - Ignored.

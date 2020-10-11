@@ -74,7 +74,7 @@ passed to TECO.
 Normally used in conjunction with the –execute option.
 
 -B*string*, --buffer=*string*
- - Insert *string* into text buffer before TECO starts (using the I command).
+ - Insert *string* into edit buffer before TECO starts (using the I command).
 Normally used in conjunction with the –execute option.
 
 -C, --create (default)
