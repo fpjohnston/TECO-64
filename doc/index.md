@@ -5,8 +5,8 @@
 | NUL            | Discarded on input; ignored in command |
 | ^A             | [Output message to terminal](type-out.md) |
 | ^B             | [Current date](values.md) |
-| ^C             | [Stop execution](cmds/ctrl_C.md) |
-| ^D             | [Set radix to decimal](cmds/ctrl_D.md) |
+| ^C             | Stop execution |
+| ^D             | Set radix to decimal |
 | ^E             | [Form feed flag](values.md) |
 | ^E<*n*>        | [(Match char) Match ASCII code *n*](search.md) |
 | ^EA            | [(Match char) Match alphabetics](search.md) |
@@ -24,30 +24,30 @@
 | ^EW            | [(Match char) Match upper case alphabetic](search.md) |
 | ^EX            | [(Match char) Match any character](search.md) |
 | ^F             | Not a TECO command |
-| ^G             | [Kill command string](cmds/ctrl_G.md) |
-| ^G\<space\>    | [Retype current command line](cmds/ctrl_G.md) |
-| ^G\*           | [Retype current command input](cmds/ctrl_G.md) |
+| ^G             | Kill command string |
+| ^G\<space\>    | Retype current command line |
+| ^G\*           | Retype current command input |
 | ^H             | [Current time of day](values.md) |
-| BS             | [Back up and type one line](cmds/ctrl_H.md) |
+| BS             | Back up and type one line |
 | TAB            | [Insert tab and text](insert.md) |
-| LF             | [Advance and type one line](cmds/LF.md) |
-| LF             | [Line terminator](cmds/LF.md) |
-| VT             | [Line terminator](cmds/VT.md) |
-| FF             | [Page terminator](cmds/FF.md) |
-| CR             | [End input line](cmds/CR.md) |
+| LF             | Advance and type one line |
+| LF             | Line terminator |
+| VT             | Line terminator |
+| FF             | Page terminator |
+| CR             | End input line |
 | ^N             | [End of file flag](values.md) |
-| ^N*x*          | [(Match char.) Match all but *x*](cmds/ctrl_N.md) |
-| ^O             | [Set radix to octal](cmds/ctrl_O.md) |
+| ^N*x*          | [(Match char.) Match all but *x*](search.md) |
+| ^O             | Set radix to octal |
 | ^P             | Not a TECO command |
-| ^Q             | [Convert line argument to character argument](cmds/ctrl_Q.md) |
-| ^Q*x*          | [Use *x* literally in search string](cmds/ctrl_Q.md) |
+| ^Q             | [Convert line argument to character argument](values.md) |
+| ^Q*x*          | [Use *x* literally in search string](search.md) |
 | ^R             | [Value of current radix](values.md) |
-| *n*^R          | [Set radix to *n*](cmds/ctrl_R.md) |
-| ^R*x*          | [Use *x* literally in search string](cmds/ctrl_Q.md) |
+| *n*^R          | Set radix to *n |
+| ^R*x*          | [Use *x* literally in search string](search.md) |
 | ^S             | [-(length) of last referenced string](values.md) |
-| ^S             | [(Match char.) Match separator character](cmds/ctrl_S.md) |
+| ^S             | [(Match char.) Match separator character](search.md) |
 | ^T             | [ASCII value of next character typed](values.md) |
-| ^T             | [Read and decode next keystroke typed](cmds/ctrl_T.md) |
+| ^T             | Read and decode next keystroke typed |
 | *n*^T          | [Type ASCII character of value *n*](type-out.md) |
 | *n*:^T         | [Output binary byte of value n](type-out.md) |
 | ^U             | [Kill command line](qregister.md) |
@@ -55,16 +55,16 @@
 | :^U*q*         | [Append string to Q-register *q*](qregister.md) |
 | n^U*q*         | [Put ASCII char. *n* to Q-register *q*](qregister.md) |
 | :n^U*q*        | [Append ASCII char. *n* to Q-register *q*](qregister.md) |
-| ^V             | [Enable lower case conversion](cmds/ctrl_V.md) |
-| ^V*x*          | [(String char.) Force *x* to lower case](cmds/ctrl_V.md) |
-| ^W             | [Enable upper case conversion](cmds/ctrl_W.md) |
-| ^W*x*          | [(String char.) Force *x* to upper case](cmds/ctrl_W.md) |
-| ^X             | [Search mode flag](cmds/ctrl_X.md) |
-| ^X             | [(Match char) Match any character](cmds/ctrl_X.md) |
+| ^V             | Enable lower case conversion |
+| ^V*x*          | (String char.) Force *x* to lower case |
+| ^W             | Enable upper case conversion |
+| ^W*x*          | (String char.) Force *x* to upper case |
+| ^X             | [Search mode flag](flags.md) |
+| ^X             | [(Match char) Match any character](search.md) |
 | ^Y             | [Equivalent to ".+^S,."](values.md) |
 | ^Z             | [Size of text in all Q-registers](values.md) |
-| ESC            | [String and command terminator](cmds/ESC.md) |
-| ^[             | [String and command terminator](cmds/ESC.md) |
+| ESC            | String and command terminator |
+| ^[             | String and command terminator |
 | ^\\            | Not a TECO command |
 | ^]             | Not a TECO command |
 | ^^*x*          | [ASCII value of *x*](values.md) |
