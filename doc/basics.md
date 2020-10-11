@@ -1,8 +1,58 @@
 ### TECO-64 - Basics of TECO
 
-TECO may be called from command level by typing the appropriate command,
-followed by a carriage return. TECO will respond by printing an asterisk
-at the left margin to indicate that it is ready to accept user commands.
+When invoked, TECO prints a command prompt -- usually an asterisk (\*),
+unless the TECO_PROMPT environment variable is defined -- indicating
+that is ready to accept one or more commands. Execution of these commands
+occurs once the user enters two successive \<DELIM\> characters.
+
+#### Command delimiters
+
+**\<DELIM\>** refers to any character which is used as a command delimiter
+in an input command string. Historically, this was the **ESC**ape
+character [ASCII 27], but later versions of TECO allowed users to specify
+an alternate delimiter (often **accent grave** [ASCII 96]), either with the
+ET&8192 flag bit, or the EE flag.
+
+If an alternate delimiter has been defined, then it will always be echoed
+as an accent grave. And any input ESCape will be echoed as accent grave if
+an alternate delimiter has been defined, and as a dollar sign ($) if not.
+
+Since an alternate delimiter can be user-defined, and since there can
+be as many as three delimiters in effect at a given time, \<DELIM\> is
+used throughout this documentation to refer to any character that may
+be in use as a command delimiter. Also, whenever an example command is
+shown, accent grave (\`) is used to refer to any command delimiter that
+may be in effect, whether accent grave, ESCape, or another character.
+
+Note that although alternate delimiters may be used when typing in TECO
+commands, they may not be used in macros or indirect command files. In
+those cases, the only delimiter is allowed is ESCape.
+
+#### Command Format
+
+The general format for a TECO command is as follows:
+
+[[*m*,]*n*] [:[:]] [@] command [*q*] [*text1*[[\<DELIM\>]*text2*]] [\<DELIM\>]
+
+The fields in brackets are either optional, or are dependent on the
+command being executed. These are for illustration only; none of TECO's
+commands use all of these fields.
+
+| Field | Description | Example |
+| ----- | ----------- | ------- |
+| *m*   | A numeric argument or expression, which may include one or more TECO variables. Separated from the following *n* argument with a comma. | 10,20K |
+| *n*   | A numeric argument or expression, which may include one or more TECO variables. | 42C |
+| : | Modifies the behavior of the following command, often in order to return a value indicating success or failure of the command rather than aborting execution and issuing an error. | \:ERinput.c\` |
+| :: | Also modifies the behavior of the following command, but differently than :. Often used for "anchored" searches. | \:\:Sbaz\` |
+| @ | Specifies an alternate form for delimiting any text arguments that follow the command. | \@^A/hello/ |
+| command | The TECO command to be executed. It will consist of one, two, or three characters. | V |
+| *q* | The name of the Q-register that the command will use. | 1XA |
+| *text1* | The first (or only) text argument for the command. | Ifoobaz\` |
+| *text2* | The second text argument for the command. | FSfoo\`baz\` |
+| \<DELIM\> | The command delimiter. Typically only required when the at-sign modifier is not used for commands that take text arguments. Also, not required between text arguments if an at-sign modifier is used. | EWoutput.c\` |
+
+Note that if a command allows both colon and at-sign modifiers, they
+may be specified in either order.
 
 A TECO command consists of one or two characters which cause a specific
 operation to be performed. Some TECO commands may be preceded or followed
