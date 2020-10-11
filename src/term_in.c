@@ -137,7 +137,11 @@ static void read_bs_or_lf(int pos, int line)
 
         setpos_ebuf(n + t.dot);
 
-        if (f.ev)
+        if (f.e0.display)
+        {
+            ;
+        }
+        else if (f.ev)
         {
             flag_print(f.ev);
         }
