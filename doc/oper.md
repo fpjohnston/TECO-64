@@ -51,7 +51,9 @@ If the E1&1 bit is set, then there are additional operators that can be used, as
 | *n*= | This command causes the value of *n* to be output at the terminal in decimal followed by a carriage return and line feed. Decimal numeric conversion is signed. TECO's radix is unaltered. |
 | *n*== | This command causes the value of *n* to be output at the terminal in octal (base 8) followed by a carriage return and line feed. Octal numeric conversion is unsigned. TECO’s radix is unaltered. |
 | *n*=== | This command causes the value of *n* to be output at the t erminal in hexadecimal (base 16) followed by a CR/LF. Hexadecimal output is unsigned. radix is unaltered. |
-*n*:= *n*:== *n*:=== | These commands are equivalent to *n*=, *n*==, and *n*===, respectively, except that no CR/LF is output. |
+*n*:=, *n*:==, and *n*:=== | These commands are equivalent to *n*=, *n*==, and *n*===, respectively, except that no CR/LF is output. |
+| *n*@=/*format*/ | Output the value of *n* using *format* as a *printf()* format string, followed by a CR/LF. Any string for *printf()* may be used, as long as it contains at most one numeric conversion specifier. Non-numeric specifiers such as %s, or multiple numeric specifiers, are not allowed. However, %% may be used to print a percent sign. Also, the output format is used regardless whether =, ==, or === is specified. |
+| *n*:@=/*format*/ | Equivalent to *n*@=/*format*/, except that no CR/LF is added. |
 | ^O | \<CTRL/O\> causes all subsequent numeric input to be accepted as octal numbers. Numeric conversions using the \\ or *n*\\ commands will also be octal. The digits 8 and 9 become illegal as numeric characters. The octal radix will continue to be used until the next ^D command is executed or until TECO’s radix is changed by an *n*^R command. |
 | ^D | \<CTRL/D\> causes all subsequent numeric input to be accepted as decimal numbers. This is the initial setting. |
 | ^R | This command returns the binary value of TECO’s current radix. |
