@@ -41,11 +41,11 @@
 
 #if     defined(TECO_LONG)
 
-typedef long INT;
+typedef long INT;               ///< Size of m and n arguments
 
 #else
 
-typedef int INT;
+typedef int INT;                ///< Size of m and n arguments
 
 #endif
 

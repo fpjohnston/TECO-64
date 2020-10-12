@@ -39,15 +39,15 @@
 
 #if     defined(TECO_LONG)
 
-#define FORMAT_DEC      "%ld"
-#define FORMAT_HEX      "%lx"
-#define FORMAT_OCT      "%lo"
+#define FORMAT_DEC      "%ld"       ///< Decimal format
+#define FORMAT_HEX      "%lx"       ///< Hexadecimal format
+#define FORMAT_OCT      "%lo"       ///< Octal format
 
 #else
 
-#define FORMAT_DEC      "%d"
-#define FORMAT_HEX      "%x"
-#define FORMAT_OCT      "%o"
+#define FORMAT_DEC      "%d"        ///< Decimal format
+#define FORMAT_HEX      "%x"        ///< Hexadecimal format
+#define FORMAT_OCT      "%o"        ///< Octal format
 
 #endif
 
