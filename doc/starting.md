@@ -1,4 +1,4 @@
-## TECO-64 - Running TECO
+## TECO-64 - Starting TECO
 
 ### Overview
 
@@ -24,10 +24,9 @@ TECO_INIT
 to be executed at start-up. This is often used to set editing desired features.
 
  - If TECO_INIT translates to a string in single or double quotes, that string
-is executed as a series of TECO commands at start-up.
-
-- Note that the quotes, and possibly also other characters, may need to be
-escaped so that the shell or command interpreter properly passes them to TECO.
+is executed as a series of TECO commands at start-up. Note that the quotes,
+and possibly also other characters, may need to be escaped so that the shell
+or command interpreter properly passes them to TECO.
 
 TECO_LIBRARY
  - This specifies the path of a library of TECO macros (i.e.,
@@ -54,6 +53,19 @@ TECO_VTEDIT
 used for editing in display mode.
 
 ### Starting TECO
+
+To start TECO, type *teco* (possibly also specifying its location),
+optionally followed by a file name and any desired command-line
+options. Assuming no errors occur, TECO will process those options
+and open any specified file name before printing its prompt. This is
+usually an asterisk (\*), unless a different prompt has been defined
+using the TECO_PROMPT environment described above.
+
+teco
+ - Start TECO without opening any files. If the TECO_MEMORY environment
+variable is defined, and if a file was previously edited, typing this
+command will cause TECO to edit that file as though it had been
+explicitly specified on the command line.
 
 teco *foo*
  - Open *foo* for input and output (using the EB command), then read in first page.

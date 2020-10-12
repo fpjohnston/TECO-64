@@ -1,14 +1,31 @@
 ### TECO-64 - Error Messages
 
-TECO error messages consist of a three letter message preceded by a
-question mark (\?). A short description of the error optionally follows
-(dependent on the current value of the EH flag). Typing \?
-immediately after an error message printout causes the command string to be
-printed up to and including the character which causes the error message. Typing
-\?*q*) immediately after an error message is printed saves
-the entire command string in Q-register *q*. This is especially useful for
-recovering mistyped insert commands. Both the ? and ?*q* facilities may be used
-when an error occurs.
+If TECO encounters an erroneous command, it aborts execution of the
+command, prints an error message, ignores all following commands,
+resets its state, and prints its prompt to indicate that the user
+can enter new commands.
+
+All error messages are of the form:
+
+?XXX *message*
+
+where XXX is an error code and *message* is a description of the error.
+Depending on the setting of the EH flag, more information may also be
+printed.
+
+Some error messages mention the specific character or string of characters
+in error. In these error messages, TECO represents the non-printing special
+characters as follows:
+
+| ASCII character       | Form Displayed |
+| --------------------- | -------------- |
+| 9 (horizontal tab)    | \<TAB\>        |
+| 10 (line feed)        | \<LF\>         |
+| 11 (vertical tab)     | \<VT\>         |
+| 12 (form feed)        | \<FF\>         |
+| 13 (carriage return)  | \<CR\>         |
+| 27 (ESCape)           | \<ESC\>        |
+| (other control chrs.) | \<^x\>         |
 
 TECO also produces warning messages. These messages do not abort the
 command and execution continues.

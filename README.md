@@ -101,18 +101,3 @@ available elsewhere.
 
 [TECO-64 Manual](doc/manual.md) - this is adapted from the previous
 document, and is a work in progress that will eventually replace it.
-
-[Running TECO](doc/running.md) - describes how to start TECO-64 from
-the command line.
-
-[New Features](doc/new.md) - describes what features
-TECO-64 has compared with other TECOs.
-
-[Missing Features](doc/missing.md) - describes what features
-TECO-64 is missing compared with other TECOs.
-
-[TECO C Changes](doc/changes.md) - describes how TECO-64
-differs from TECO C.
-
-[Internals Notes](doc/internals.md) - provides information
-about the development and internal structure of TECO-64.

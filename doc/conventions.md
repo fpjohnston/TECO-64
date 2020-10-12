@@ -2,24 +2,6 @@
 
 #### TECO character set
 
-TECO accepts the full 8-bit ASCII character set. For more information on
-TECO’s handling of 8-bit characters (including on terminals capable of
-displaying only 7-bit data), see the description of the 4096 ET bit.
-
-When TECO is maintaining a window into the edit buffer, a special facility (called
-"SEEALL" or "View All" mode) is available to explicitly show certain characters
-which normally do not print, such as \<CR\>, \<FF\>, and \<TAB\>. This mode is
-controlled by the 3:W flag, which is described in Section 5.17.
-
-TECO command strings may be entered using upper case characters (as shown
-throughout this manual) or lower case characters. For example, the commands
-MQ, mQ, Mq, and mq are executed identically. A file containing upper and
-lower case text can be edited in the same way as a file containing upper case
-only, although this may be clumsy to do from an upper case only terminal.
-TECO can be set to convert lower case alphabetics to upper case as they are
-typed in; commands to enable or disable lower case type-in will be presented in
-Section 5.16.
-
 Control characters are generally echoed by TECO as a caret or up-arrow followed
 by the character. Some control characters, such as \<CTRL/L\> (form feed) and
 \<CTRL/G\> (bell) echo as the function they perform. In many cases, you can type

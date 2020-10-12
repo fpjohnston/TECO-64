@@ -2,13 +2,15 @@
 
 [Introduction to TECO](intro.md)
 
+[Starting TECO](starting.md)
+
+[Document Notation](notation.md)
+
+[Conventions](conventions.md)
+
 [Basics of TECO](basics.md)
 
-Invoking TECO
-
-[Conventions & Structures](conventions.md)
-
-Command String Editing
+[Immediate Commands](immediate.md)
 
 #### Command Descriptions
 
@@ -44,9 +46,15 @@ Command String Editing
 
 - Display Mode Commands
 
+[Glossary of Terms](glossary.md)
+
+[New Features](new.md)
+
+[Missing Features](missing.md)
+
+[Internals Notes](internals.md)
+
 [Error Messages](errors.md)
 
 [Index of Commands](index.md)
-
-[Glossary of Terms](glossary.md)
 

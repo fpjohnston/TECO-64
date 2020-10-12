@@ -1,90 +1,35 @@
 ### TECO-64 - Basics of TECO
 
-When invoked, TECO prints a command prompt -- usually an asterisk (\*),
-unless the TECO_PROMPT environment variable is defined -- indicating
-that is ready to accept one or more commands. Execution of these commands
-occurs once the user enters two successive \<DELIM\> characters.
-
-#### Command delimiters
-
-**\<DELIM\>** refers to any character which is used as a command delimiter
-in an input command string. Historically, this was the **ESC**ape
-character [ASCII 27], but later versions of TECO allowed users to specify
-an alternate delimiter (often **accent grave** [ASCII 96]), either with the
-ET&8192 flag bit, or the EE flag.
-
-If an alternate delimiter has been defined, then it will always be echoed
-as an accent grave. And any input ESCape will be echoed as accent grave if
-an alternate delimiter has been defined, and as a dollar sign ($) if not.
-
-Since an alternate delimiter can be user-defined, and since there can
-be as many as three delimiters in effect at a given time, \<DELIM\> is
-used throughout this documentation to refer to any character that may
-be in use as a command delimiter. Also, whenever an example command is
-shown, accent grave (\`) is used to refer to any command delimiter that
-may be in effect, whether accent grave, ESCape, or another character.
-
-Note that although alternate delimiters may be used when typing in TECO
-commands, they may not be used in macros or indirect command files. In
-those cases, the only delimiter is allowed is ESCape.
+When invoked, TECO prints a command prompt - usually an asterisk (\*),
+unless the TECO_PROMPT environment variable is defined - indicating
+that it is ready to accept one or more commands. Execution of these
+commands occurs once the user enters two successive \<DELIM\> characters.
 
 #### Command Format
 
 The general format for a TECO command is as follows:
 
-[[*m*,]*n*] [:[:]] [@] command [*q*] [*text1*[[\<DELIM\>]*text2*]] [\<DELIM\>]
+[[ *m* ,] *n* ] [ : [ : ]] [ @ ] command [ *q* ] [ *text1* [ \<DELIM\> ][ *text2* [ \<DELIM\> ]]]
 
 The fields in brackets are either optional, or are dependent on the
 command being executed. These are for illustration only; none of TECO's
 commands use all of these fields.
 
-| Field | Description | Example |
-| ----- | ----------- | ------- |
-| *m*   | A numeric argument or expression, which may include one or more TECO variables. Separated from the following *n* argument with a comma. | 10,20K |
-| *n*   | A numeric argument or expression, which may include one or more TECO variables. | 42C |
+| Field | Description | Example(s) |
+| ----- | ----------- | ---------- |
+| *m*   | A numeric argument. If specified, then it must be followed by an *n* argument, and separated with a comma. | 10,20K |
+| *n*   | A numeric argument. | 42R |
 | : | Modifies the behavior of the following command, often in order to return a value indicating success or failure of the command rather than aborting execution and issuing an error. | \:ERinput.c\` |
 | :: | Also modifies the behavior of the following command, but differently than :. Often used for "anchored" searches. | \:\:Sbaz\` |
-| @ | Specifies an alternate form for delimiting any text arguments that follow the command. | \@^A/hello/ |
-| command | The TECO command to be executed. It will consist of one, two, or three characters. | V |
+| @ | Specifies an alternative delimiter will be used for text arguments that follow the command, using a matched pair of characters. | \@^A/hello/ @FC/baz/foo/ |
+| command | The TECO command to be executed. It will consist of one, two, or three characters. No whitespace is allowed between multi-character commands. Commands may be either upper or lower case. | V, c |
 | *q* | The name of the Q-register that the command will use. | 1XA |
-| *text1* | The first (or only) text argument for the command. | Ifoobaz\` |
-| *text2* | The second text argument for the command. | FSfoo\`baz\` |
-| \<DELIM\> | The command delimiter. Typically only required when the at-sign modifier is not used for commands that take text arguments. Also, not required between text arguments if an at-sign modifier is used. | EWoutput.c\` |
+| *text1* | The first text argument for the command. If the at-sign modifier is used, the argument is delimited by a matched pair of characters, instead of by \<DELIM\>. | I*foobaz*\' |
+| *text2* | The second text argument for the command. If the at-sign modifier is used, the argument is followed by the same character used to delimit the first text argument, instead of by \<DELIM\>. | FSfoo\`baz\` |
+| \<DELIM\> | The command delimiter. Only required for commands that allow text arguments when there is no at-sign modifier. | EWoutput.c\` |
 
 Note that if a command allows both colon and at-sign modifiers, they
 may be specified in either order.
-
-A TECO command consists of one or two characters which cause a specific
-operation to be performed. Some TECO commands may be preceded or followed
-by arguments. Arguments may be either numeric or textual. A numeric
-argument is simply an integer value which can be used to indicate, for
-example, the number of times a command should be executed. A text argument
-is a string of ASCII characters which might be, for example, words of text
-or a file specification.
-
-If a command requires a numeric argument, the numeric argument always
-precedes the command. If a command requires a text argument, the text
-argument always follows the command. Each text argument is terminated by
-a special character (usually a \<DELIM\> character, which TECO hears as an
-ESCape - see Introduction). This indicates to TECO that the next character
-typed will be the first character of a new command.
-
-TECO accumulates commands as they are typed in a command string, and
-executes commands upon receipt of two consecutive \<DELIM\> characters.
-\<DELIM\> may be any character you select (if your TECO and operating system
-support user-selectable ESCape surrogates - see sections on ET and EE flags).
-
-When you type the character you have designated as \<DELIM\>, TECO receives
-an ESCape character, and an \` (accent grave) is echoed. (If you are not using
-an ESCape surrogate — that is, you are actually pressing an ESCape key —
-a dollar sign is echoed.) The accent grave character is used in examples
-throughout this manual to represent typed \<DELIM\>s. Note that the carriage
- returncharacter has no special significance to TECO; only the
-\<DELIM\>\<DELIM\> forces execution of the command string.
-
-TECO executes command strings from left to right until either all commands
-have been executed or a command error is recognized. It then prints an
-asterisk to signal that additional commands may be entered.
 
 If TECO encounters an erroneous command, it prints an error message and
 ignores the erroneous command as well as all commands which follow it. All
@@ -309,24 +254,6 @@ pointer.
 | *nT | Type *n* lines, where *n* is a signed integer. A positive value of *n* causes the *n* lines following the pointer to be typed. A negative value of *n* causes the *n* lines preceding the pointer to be typed. If *n* is zero, the contents of the buffer from the beginning of the line on which the pointer is located up to the pointer is typed. This is useful for verifying the location of the buffer pointer. |
 | HT | Type the entire contents of the edit buffer. |
 | V | Type the current line. Equivalent to the sequence "0TT". |
-
-#### Immediate Inspection Commands
-
-In addition, there are available as a convenience abbreviations of two frequently
-used type out commands. Each one consists of a single character, and must be
-the very first character typed after TECO prints its prompting asterisk. Each
-of these commands takes effect immediately; there is no need to follow any of
-these commands by any <DELIM> character. For this reason, these commands
-are known as "immediate" commands.
-
-| Command | Function |
-| ------- | -------- |
-| \<LF\> | Immediately execute an LT command. This command is issued by typing the line feed key as the first keystroke after TECO’s prompt. It causes TECO to move the pointer ahead one line and then type out the new line. On terminals without a line feed key, typing \<CTRL/J\> has the same effect. (See also the next command.) |
-| \<DELIM\> | Immediately execute an LT command. (Action identical to that of the command above.) This command is available when an ESCape surrogate is active, and causes TECO to move the pointer ahead one line and then type out the new line when a \<DELIM\> is the first thing typed after TECO’s prompting asterisk. |
-| \<BS\> | Immediately execute a –LT command. This command is issued by typing the backspace key as the first keystroke after TECO’s prompt. It causes TECO to move the pointer back one line and then type the line just moved over on the terminal. On terminals without a backspace key, typing \<CTRL/H\> has the same effect. |
-
-These commands are useful for "walking through" a file, examining and/or
-modifying lines one at a time.
 
 #### Text Modification Commands
 

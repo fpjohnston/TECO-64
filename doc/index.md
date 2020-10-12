@@ -5,8 +5,8 @@
 | NUL            | Discarded on input; ignored in command |
 | ^A             | [Output message to terminal](type-out.md) |
 | ^B             | [Current date](values.md) |
-| ^C             | Stop execution |
-| ^D             | Set radix to decimal |
+| ^C             | [Stop execution](immediate.md) |
+| ^D             | [Set radix to decimal](oper.md) |
 | ^E             | [Form feed flag](values.md) |
 | ^E<*n*>        | [(Match char) Match ASCII code *n*](search.md) |
 | ^EA            | [(Match char) Match alphabetics](search.md) |
@@ -24,30 +24,31 @@
 | ^EW            | [(Match char) Match upper case alphabetic](search.md) |
 | ^EX            | [(Match char) Match any character](search.md) |
 | ^F             | Not a TECO command |
-| ^G             | Kill command string |
-| ^G\<space\>    | Retype current command line |
-| ^G\*           | Retype current command input |
+| ^G^G           | [Delete entire command string](immediate.md) |
+| ^G\<SPACE\>    | [Retype current command line](immediate.md) |
+| ^G\*           | [Retype current command input](immediate.md) |
 | ^H             | [Current time of day](values.md) |
-| BS             | Back up and type one line |
+| BS             | [Back up and type one line](immediate.md) |
 | TAB            | [Insert tab and text](insert.md) |
-| LF             | Advance and type one line |
+| LF             | [Advance and type one line](immediate.md) |
 | LF             | Line terminator |
+| \<CTRL/K\>     | [Reset display colors](immediate.md) |
 | VT             | Line terminator |
 | FF             | Page terminator |
 | CR             | End input line |
 | ^N             | [End of file flag](values.md) |
 | ^N*x*          | [(Match char.) Match all but *x*](search.md) |
-| ^O             | Set radix to octal |
+| ^O             | [Set radix to octal](oper.md) |
 | ^P             | Not a TECO command |
 | ^Q             | [Convert line argument to character argument](values.md) |
 | ^Q*x*          | [Use *x* literally in search string](search.md) |
 | ^R             | [Value of current radix](values.md) |
-| *n*^R          | Set radix to *n |
+| *n*^R          | [Set radix to *n](oper.md) |
 | ^R*x*          | [Use *x* literally in search string](search.md) |
 | ^S             | [-(length) of last referenced string](values.md) |
 | ^S             | [(Match char.) Match separator character](search.md) |
 | ^T             | [ASCII value of next character typed](values.md) |
-| ^T             | Read and decode next keystroke typed |
+| :^T            | Read and decode next keystroke typed |
 | *n*^T          | [Type ASCII character of value *n*](type-out.md) |
 | *n*:^T         | [Output binary byte of value n](type-out.md) |
 | ^U             | [Kill command line](qregister.md) |
@@ -57,14 +58,15 @@
 | :n^U*q*        | [Append ASCII char. *n* to Q-register *q*](qregister.md) |
 | ^V             | Enable lower case conversion |
 | ^V*x*          | (String char.) Force *x* to lower case |
+| \<CTRL/W\>     | [Repaint display](immediate.md) |
 | ^W             | Enable upper case conversion |
 | ^W*x*          | (String char.) Force *x* to upper case |
 | ^X             | [Search mode flag](flags.md) |
 | ^X             | [(Match char) Match any character](search.md) |
 | ^Y             | [Equivalent to ".+^S,."](values.md) |
 | ^Z             | [Size of text in all Q-registers](values.md) |
-| ESC            | String and command terminator |
-| ^[             | String and command terminator |
+| ESC            | [String and command terminator](immediate.md) |
+| ^[             | [String and command terminator](immediate.md) |
 | ^\\            | Not a TECO command |
 | ^]             | Not a TECO command |
 | ^^*x*          | [ASCII value of *x*](values.md) |
@@ -104,10 +106,10 @@
 | \-             | [Subtraction or negation](oper.md) |
 | .              | [Current pointer position](values.md) |
 | /              | [Division yielding quotient](oper.md) |
-| /              | Type detailed explanation of error |
+| /              | [Type detailed explanation of error](immediate.md) |
 | //             | [Division yielding remainder](oper.md) |
 | 0-9            | Digit |
-| :              | Modify next command |
+| :              | [Modify next command](basics.md) |
 | ;              | [Exit iteration on search failure](branching.md) |
 | *n*;           | [Exit iteration if *n* is positive](branching.md) |
 | :;             | [Exit iteration on search success](branching.md) |
@@ -129,8 +131,8 @@
 | \<=            | [Relational comparisson for greater than or equal](oper.md) |
 | \>\>           | [Arithmetic right shift](oper.md) |
 | ?              | Toggle trace mode |
-| ?              | Type out command string in error |
-| @              | Modify next text argument |
+| ?              | [Type out command string in error](immediate.md) |
+| @              | [Modify next text argument](basics.md) |
 | A              | [Append to buffer](page.md) |
 | *n*A           | [ASCII value of *n*th character in buffer](values.md) |
 | *n*:A          | [Append *n* lines to buffer](page.md) |
@@ -223,7 +225,7 @@
 | W              | Display mode |
 | *n*:W          | Return display mode characteristics |
 | *m*,*n*:W      | Set display mode characteristics |
-| *n*X*q*        | Put *n* lines into Q-register *q*](qregister.md) |
+| *n*X*q*        | [Put *n* lines into Q-register *q*](qregister.md) |
 | *m*,*n*X*q*    | [Put characters *m* to *n* into Q-register *q*](qregister.md) |
 | *n*:X*q*       | [Append *n* lines to Q-register *q*](qregister.md) |
 | *m*,*n*:X*q*   | [Append characters *m* to *n* into Q-register *q*](qregister.md) |
@@ -231,10 +233,10 @@
 | Z              | [End of buffer value](values.md) |
 | [*q*           | [Push Q-register *q* onto stack](qregister.md) |
 | \\             | [Value of digit string in buffer](values.md) |
-| *n*\\          | Convert *n* to digits in buffer |
+| *n*\\          | [Convert *n* to digits in buffer](values.md) |
 | ]*q*           | [Pop from stack into Q-register *q*](qregister.md) |
 | *n*_           | [Global search without output](search.md) |
-| \`             | Alternative command delimiter |
+| \`             | Not a TECO command |
 | a-z            | Equivalent to upper case A-Z commands |
 | {              | Alternative text argument delimiter |
 | \|             | [Start ELSE part of conditional](ifthen.md) |
