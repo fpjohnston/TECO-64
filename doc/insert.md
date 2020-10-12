@@ -1,4 +1,4 @@
-### TECO-64 - Insertion Commands
+## TECO-64 - Insertion Commands
 
 The following lists all of the text insertion commands. These commands cause the
 character or characters specified in the command to be inserted into the edit buffer

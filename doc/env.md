@@ -1,6 +1,6 @@
-### TECO-64 - Environment Commands
+## TECO-64 - Environment Commands
 
-#### Alternate Command Forms
+### Alternate Command Forms
 
 The :EG and ::EG commands can be modified with at-signs, as shown in the
 table below, using :EG as an example.
@@ -13,7 +13,7 @@ table below, using :EG as an example.
 In the descriptions below, the at-sign form of :EG and ::EGcommands will be used
 for clarity.
 
-#### :EG - Read environment variables
+### :EG - Read environment variables
 
 This command reads an environment variable and returns a value as follows:
 
@@ -34,13 +34,13 @@ There are four environment variables that can be read using the :EG command:
 
 Other TECOs have sometimes provided the ability to set or clear environment variables or equivalent information. This is not generally possible on operating systems such as Linux, Windows, and MacOS, so TECO-64 currently only supports reading such variables.
 
-#### ::EG - Execute system command
+### ::EG - Execute system command
 
 | Command | Function |
 | ------- | -------- |
 | ::@EG/*cmd*/ | Executes *cmd* and loads Q-register + with the output of the system command, which may then be accessed with the G+ and :G+ commands. ::EG performs the same function as EG, but does not exit TECO. |
 
-#### EJ - Get environment information
+### EJ - Get environment information
 
 | Command | Function |
 | ------- | -------- |

@@ -1,9 +1,9 @@
-### TECO-64 - Error Messages
+## TECO-64 - Error Messages
 
-If TECO encounters an erroneous command, it aborts execution of the
-command, prints an error message, ignores all following commands,
-resets its state, and prints its prompt to indicate that the user
-can enter new commands.
+If TECO is unable to execute a command, either because of a syntax,
+system, or other error, it aborts execution of the command, prints an
+error message, ignores all following commands, resets its state, and
+prints its prompt to indicate that the user can enter new commands.
 
 All error messages are of the form:
 
@@ -13,22 +13,12 @@ where XXX is an error code and *message* is a description of the error.
 Depending on the setting of the EH flag, more information may also be
 printed.
 
-Some error messages mention the specific character or string of characters
-in error. In these error messages, TECO represents the non-printing special
-characters as follows:
+Some messages mention a specific character or string of characters
+associated with the error. In these error messages, TECO represents
+any non-printing special characters as described in (TBD).
 
-| ASCII character       | Form Displayed |
-| --------------------- | -------------- |
-| 9 (horizontal tab)    | \<TAB\>        |
-| 10 (line feed)        | \<LF\>         |
-| 11 (vertical tab)     | \<VT\>         |
-| 12 (form feed)        | \<FF\>         |
-| 13 (carriage return)  | \<CR\>         |
-| 27 (ESCape)           | \<ESC\>        |
-| (other control chrs.) | \<^x\>         |
-
-TECO also produces warning messages. These messages do not abort the
-command and execution continues.
+TECO can also print warning messages. These messages do not abort the
+command being executed.
 
 | Error message | Description |
 | ------------- | ----------- |

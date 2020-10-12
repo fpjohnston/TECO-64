@@ -1,9 +1,9 @@
-﻿### TECO-64 – New & Enhanced Features
+﻿## TECO-64 – New & Enhanced Features
 
 This document describes the features that are either new to TECO-64,
 or which have been copied or enhanced from earlier TECOs.
 
-#### General syntax changes
+### General syntax changes
 
 Whitespace may be used to make TECO-64 commands more readable. However,
 unlike previous versions of TECO, whitespace may not occur within
@@ -40,7 +40,7 @@ argument. Multiple commas are not allowed.
 Colons are allowed for all commands that open files, and will result in -1
 being returned if the open succeeded, and 0 if it failed.
 
-#### Commands
+### Commands
 
 [^A - Print text](typeout.md)
 - Added colon modifier for adding CR/LF after text.

@@ -1,18 +1,57 @@
-### TECO-64 - Q-Register Commands
+## TECO-64 - Q-Register Commands
 
-TECO provides data storage registers, called Q-registers, each of which may be
-used to store an integral numeric value and, simultaneously, an ASCII character
-string. Q-registers are described in (TBD); this section describes the
-commands used to load values into and retrieve values from Q-registers.
+### Q-Register Overview
 
-An important kind of character string which may be stored in the text portion of
-a Q-register is a TECO command string. Such a command is known as a macro,
-and is available for execution via the Mq command, described in the tabvle below.
-(See also (TBD), Immediate ESCape Sequence Commands,
-for a keypad method of macro invocation, and (TBD) for the \*q command
-which saves the last-typed command for possible editing or re-execution.)
+TECO provides data storage registers, called Q-registers, each of
+which may be used to store both a signed integer and a character
+string that can be loaded, stored, and used by the commands
+described below.
 
-#### Alternate Command Forms
+### Macros
+
+A character string stored in a Q-register is called a *macro*, which
+allows it to be called by other commands as a subroutine, using the
+M command. Numeric arguments may be passed to and returned from macros,
+and macros may be nested.
+
+When TECO is executing a command typed at the prompt, it is at
+macro level 0. When an M command is then executed, TECO is at
+macro level 1, and if that macro calls itself or another macro,
+the macro level is further incremented. This is relevant in the
+discussion of the global and local Q-registers below.
+
+### Global Q-Registers
+
+There are 36 global Q-registers, of which has a one-character name,
+A through Z, and 0 through 9. Lower case names may also be used and
+are equivalent to the corresponding upper case names. Global
+Q-registers are available at all macro levels.
+
+### Local Q-Registers
+
+There are additionally 36 local Q-registers, each of which has a
+two-character name: .A through .Z and .0 through .9. Effectively,
+there is a complete and unique set of local Q-registers available
+to each and every macro level, including prompt level.
+
+TECO automatically saves and restores a given macro level’s local
+Q-registers whenever a new macro is invoked, by saving the current
+local Q-registers and and creating a new set for the next macro
+level. When that macro exits, its local Q-registers are destroyed
+and those of the calling macro level are restored. (If a fatal error
+occurs and TECO returns to prompt level, local Q-registers from all
+macro levels are destroyed and prompt level’s set is restored.)
+
+### Q-Register Push-Down List
+
+The Q-register pushdown list is a stack that permits the numeric
+and text storage areas of Q-registers to be saved (using the "[" command)
+and restored (using the "]" command). The command string "[A ]B" replicates
+the text string and numeric value from Q-register A into Q-register
+B. Note that macros may be able to avoid the use of the push-down
+list through the use of local Q-registers.
+
+### Alternate Command Forms
 
 The ^U commands can be modified with at-signs, as shown in the table below.
 
@@ -24,7 +63,7 @@ The ^U commands can be modified with at-signs, as shown in the table below.
 In the descriptions below, the at-sign form of ^U commands will be used
 for clarity.
 
-#### Q-Register Loading Commands
+### Q-Register Loading Commands
 
 The table below lists the commands which permit numbers and strings to be
 loaded into Q-registers.
@@ -34,7 +73,7 @@ loaded into Q-registers.
 | *n*U*q*   | Put *n* in the numeric storage area of Q-register q. |
 | *m*,*n*U*q* | Equivalent to "*n*U*qm*". That is, this command puts the number *n* into the numeric storage area of Q-register *q* and then returns the number *m* as a value. The command "UA UB" is useful at the beginning of a macro to save the two arguments specified on the macro call. (See the *m*,*n*M*q* command below.) |
 | *n*%*q* | Add *n* to the contents of the number storage area of Q-register *q*. The updated contents of Q-register *q* are also returned as a value to be passed to the next command. If your intent is only to update the Q-register, good programming practice suggests following the "*n*%*q*" command with a \<DELIM\> or ^[ to prevent the returned value from unintentionally affecting the following command. |
-| *n*%*q*` | Same as *n*%*q* but discards the value returned. |
+| *n*%*q*` | Same as *n*%*q* but discards the value returned. This is sometimes desirable to avoid passing the returned value to the next command. Note that the "^[" sequence may be substituted for a delimiter in this situation. |
 | %*q* | Equivalent to 1%*q*. |
 | @^U*q*/*text*/ | This command inserts character string *text* into the text storage area of Q-register *q*. When entering a command string from the terminal, you must specify ^U using the caret/U format, since the <CTRL/U> character is the line erase immediate action command. |
 | :@^U*q*/*text*/ | This command appends character string *text* to the text storage area of Q-register *q*. |
@@ -52,7 +91,7 @@ loaded into Q-registers.
 | :]*q* | Execute the ]*q* command and return a numeric value. A -1 indicates that there was another item on the Q-register push-down list to be popped. A 0 indicates that the Q-register push-down list was empty, so Q-register *q* was not modified. |
 | \**q* | Save last-typed command string in Q-register *q*. See (TBD) |
 
-#### Q-Register Retrieval Commands
+### Q-Register Retrieval Commands
 
 The table below lists the commands which permit data to be retrieved from
 Q-registers.
@@ -72,7 +111,7 @@ Q-registers.
 | :G+ | Print the output of the last ::EG command on the terminal. Neither the edit buffer nor the buffer pointer is changed by this command. |
 | [*q* | Copy the contents of the numeric and text storage areas of Q-register *q* into the Q-register push-down list. This command does not alter either the numeric or text storage areas of Qregister *q*. It does not use or affect numeric values. Numeric values are passed through this command transparently, allowing macros to save temporary Q-registers and still accept numeric values. (Note, however, macros written to use local Q-registers may be able to avoid saving and restoring Q-registers via the the pushdown list.) The command sequence [A ]B replicates the text string and numeric value from Q-register A into Q-register B. |
 
-#### Macro Invocation Commands
+### Macro Invocation Commands
 
 The table below lists the commands which cause macros (strings stored in
 Q-registers) to be executed. Macro invocations can be nested recursively;

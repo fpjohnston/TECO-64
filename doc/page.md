@@ -1,4 +1,4 @@
-### TECO-64 Page Commands
+## TECO-64 Page Commands
 
 The following commands permit text to be read into the edit buffer from
 an input file or written from the buffer onto an output file.
@@ -11,7 +11,7 @@ the buffer until a line feed is encountered when the buffer is about 3/4
 full. Special techniques for handling pages larger than the buffer
 capacity will be presented later in this chapter.
 
-#### Append Commands
+### Append Commands
 
 | Command | Function |
 | ------- | -------- |
@@ -19,7 +19,7 @@ capacity will be presented later in this chapter.
 | :A | Executes the A command, but also returns -1 if the append succeeded, and zero if the append failed because end-of-file for the input file had previously been reached (\^N flag is -1 at start of this command). |
 | *n*:A | Appends *n* lines of text from the input file to the contents of the edit buffer. The value of *n* must not be negative. -1 is returned if the command succeeded, and zero is returned if end-of-file on the input file was encountered before all *n* lines were read in. Note that the command can succeed and yet read in fewer than *n* lines in the case that the edit buffer fills up. |
 
-#### Page Commands
+### Page Commands
 
 | Command | Function |
 | ------- | -------- |
@@ -34,7 +34,7 @@ capacity will be presented later in this chapter.
 | HPW | Equivalent to the PW command except that a form feed character is not appended to the output. |
 | HP | Equivalent to HPW. |
 
-#### Yank Commands
+### Yank Commands
 
 | Command | Function |
 | ------- | -------- |
@@ -47,7 +47,7 @@ capacity will be presented later in this chapter.
 | -EY | Same as the -Y command, but its action is always permitted. |
 | -:EY | Same as the -:Y command, but its action is always permitted. |
 
-#### Memory Commands
+### Memory Commands
 
 | Command | Function |
 | ------- | -------- |

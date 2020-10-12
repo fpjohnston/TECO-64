@@ -1,4 +1,4 @@
-### TECO-64 - Index of Commands and Special Characters
+## TECO-64 - Index of Commands and Special Characters
 
 | Character(s)   | Description |
 | -------------- | ----------- |

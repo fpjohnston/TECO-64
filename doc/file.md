@@ -1,4 +1,4 @@
-### TECO-64 - File Commands
+## TECO-64 - File Commands
 
 You must specify an input file whenever you want TECO to accept text from any
 source other than the terminal. You must specify an output file whenever you
@@ -22,7 +22,7 @@ and/or output stream.
 The following sections list all of the file specification commands. Unless otherwise
 noted, all of these commands leave the edit buffer unchanged.
 
-#### Alternate Command Forms
+### Alternate Command Forms
 
 All of the commands that open files, and use text arguments to specify
 a file name, can be modified with both at-signs and colons, as shown in the
@@ -42,7 +42,7 @@ Note that although the EG command may also use an at-sign to delimit its
 text argument, the :EG command is a completely different command and is
 documented elsewhere.
 
-#### File Open Commands
+### File Open Commands
 
 The following commands are used to open files for input and output:
 
@@ -52,7 +52,7 @@ The following commands are used to open files for input and output:
 | @ER/*foo*/ | Opens the specified file (*foo* in the example here) for input on the currently selected input stream. |
 | @EW/*foo*/ | Opens the specified file (*foo* in the example here) for output on the currently selected output stream. Any existing file is overwritten (this can be undone with an EK command before the file is closed). |
 
-#### File Close and Exit Commands
+### File Close and Exit Commands
 
 The following commands are used to close files and exit from TECO:
 
@@ -64,7 +64,7 @@ The following commands are used to close files and exit from TECO:
 | EK | Kill the current output file on the currently selected output stream. This command, which purges the output file without closing it, is useful to abort an undesired edit. Executing the EK command after an EW which is superseding an existing file leaves the old file intact. The EK command also "undoes" an EB command. |
 | EX |  Performs the same function as the EC command, but then exits from TECO. For safety reasons, this command is aborted if there is text in the edit buffer but no output file is open. To exit TECO after inspecting a file, use the command string HK EX. To exit TECO without making any changes if an output file is open, use the command string EK HK EX. 
 
-#### Secondary Stream Commands
+### Secondary Stream Commands
 
 TECO provides secondary input and output streams. These permit the user
 to have two input and two output files open at the same time, and to switch
@@ -83,7 +83,7 @@ The following commands manipulate the secondary input and output streams:
 | EA | Switches the output to the secondary output stream. Use the EW\' command to switch back to the primary output stream. |
 | @EW// | Switch to primary output stream. This is only needed after an EA command has been executed to switch to the secondary output stream.  |
 
-#### Indirect File Commands
+### Indirect File Commands
 
 | Command | Function |
 | ------- | -------- |
@@ -92,7 +92,7 @@ The following commands manipulate the secondary input and output streams:
 | | All commands encountered in the indirect file will have their normal TECO meaning (as opposed to any immediate action meaning). For example, a \<CTRL/U\> encountered in an indirect file will not erase the command line in which it occurs. Instead, it will be treated as the TECO ^Uqtext$ command. The only exception to this rule is the \<ESC\>\<ESC\> command, which directs TECO to execute the preceding command string and then return to the indirect file at the point following the \<ESC\>\<ESC\>. (We can say \<ESC\> explicitly here, because \<DELIM\> can be other than ESCape only in commands typed at the terminal.) |
 | @EI// | If an indirect command file is active, this command will close it and resume terminal input from the terminal. Any portion of the file after a double \<DELIM\> which has not yet been read is discarded. This command has no effect if no indirect file is already open. |
 
-#### Wildcard Commands
+### Wildcard Commands
 
 TECO supports wild card file processing with a set of special commands, to
 allow operation on a set of files.
@@ -102,7 +102,7 @@ allow operation on a set of files.
 | @EN/*foo*/ | This command presets the "wildcard" lookup file specification (shown in the example here as *foo*). It is only a preset; it does not open, close, or try to find any file. The "wildcard" lookup is the only file specification command that  can contain any wildcard notations. |
 | @EN// | Once the wild card lookup file specification has been preset, executing this command will find the next file that matches the preset wild card lookup filespec and will load the filespec buffer with that file’s name. The G\* command can be used to retrieve the fully expanded file specification. When no more occurences of the wildcard filespec exist, the ?FNF error is returned. |
 
-#### Direct I/O to Q-Registers
+### Direct I/O to Q-Registers
 
 TECO provides commands to do I/O directly to and from the Q-registers,
 allowing I/O to bypass the edit buffer.
@@ -112,7 +112,7 @@ allowing I/O to bypass the edit buffer.
 | @EQ*q*/*filespec*/ | Read specified file from *filespec* into Q-register *q*. |
 | @E%*q*/*filespec*/ | Write the contents of Q-register *q* to *filespec*. |
 
-#### Log TECO Commands to File
+### Log TECO Commands to File
 
 | Command | Function |
 | ------- | -------- |

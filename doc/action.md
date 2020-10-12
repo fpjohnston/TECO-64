@@ -1,6 +1,6 @@
-### Immediate Commands
+## Immediate Action Commands
 
-#### Editing Commands
+### Editing Commands
 
 These commands may be used while entering a command string, in order
 to edit the string, to print some or all of the string, to start command
@@ -17,7 +17,7 @@ execution, or abort input and return to the command prompt.
 | \<DEL\> | Deletes the last character typed. |
 | <nobr>\<*delim*\>\<*delim*\></nobr> | Causes TECO to begin execution of the command string. The two \<*delim*\>s must be typed successively without any intervening characters. |
 
-#### Type-Out Commands
+### Type-Out Commands
 
 These commands only work as described if they are entered immediately
 after TECO's prompt, and perform different functions if they are not.
@@ -29,7 +29,7 @@ after TECO's prompt, and perform different functions if they are not.
 | \<DEL\> | Equivalent to the \<BS\> command. |
 | \<*delim*\> | Equivalent to the \<LF\> command. |
 
-#### Error Commands
+### Error Commands
 
 These commands only work as described if they are entered immediately
 after TECO's prompt, and perform different functions if they are not.
@@ -40,7 +40,7 @@ after TECO's prompt, and perform different functions if they are not.
 | / | Causes TECO to print a more detailed explanation of the error just printed. |
 | \**q* | Causes TECO to copy the last command string into Q-register *q*. Often useful after an error, to allow a command string to be fixed. | 
 
-#### Display Commands
+### Display Commands
 
 These commands only work as described if they are entered immediately
 after TECO's prompt, and perform different functions if they are not.

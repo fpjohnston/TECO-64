@@ -1,4 +1,4 @@
-### TECO-64 - Looping Commands
+## TECO-64 - Looping Commands
 
 Command strings in TECO may be iterated by placing them within angle
 brackets to create a command loop. Loops may be nested so that one command

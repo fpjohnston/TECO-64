@@ -1,4 +1,4 @@
-### TECO-64 - Arithmetic Operators and Expressions
+## TECO-64 - Arithmetic Operators and Expressions
 
 The numeric argument of a TECO command may consist of a single integer, any
 of the characters listed in (TBD), the numeric contents of any Q-register,
@@ -12,7 +12,7 @@ parentheses. Parentheses may be nested, in which case the innermost expression
 contained by parentheses will be evaluated first. The table below lists all of
 the arithmetic operators that may be used in arithmetic expressions.
 
-#### Arithmetic Operators
+### Arithmetic Operators
 
 | Command | Example | Function |
 | ------- | --------| -------- |
@@ -26,7 +26,7 @@ the arithmetic operators that may be used in arithmetic expressions.
 | \# | 12#10=14 | Bitwise logical OR. |
 | \^_ | 5\^_=-6 | Unary one’s complement. Note that it is used *after* an expression. |
 
-#### Extended Operators
+### Extended Operators
 
 If the E1&1 bit is set, then there are additional operators that can be used, as long as they are within parentheses (to avoid confusion with commands that may use the same characters). Note that any of the multi-character operators must be entered as a single token, with no intervening whitespace.
 
@@ -44,7 +44,7 @@ If the E1&1 bit is set, then there are additional operators that can be used, as
 | \<\<    | (1<<3)=8    | Arithmetic left shift. |
 | \>\>    | (16>>2)=4   | Arithmetic right shift. |
 
-#### Conversion and Radix Control Commands
+### Conversion and Radix Control Commands
 
 | Command | Function |
 | ------- | -------- |

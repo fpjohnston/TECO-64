@@ -1,4 +1,4 @@
-### TECO-64 - Special Numeric Values
+## TECO-64 - Special Numeric Values
 
 TECO maintains several state variables, which may be used as numeric
 arguments to TECO commands. When the command is executed, the current value
@@ -41,7 +41,7 @@ it represents.
 | \^Z | \<CTRL/Z\> is equivalent to the total space occupied by text in the Q-registers (including the command line currently being executed). |
 | \^\^x | The combination of the Control-caret (double caret or double up-arrow) followed by any character is equivalent to the value of the ASCII code for that character. The "x" in this example may be any character that can be typed in to TECO. |
 
-#### Mode Control Flags
+### Mode Control Flags
 
 The following mode control flags return numeric values. The use of these flags is
 described in (TBD).

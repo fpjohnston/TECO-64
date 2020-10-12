@@ -1,48 +1,43 @@
 ## TECO-64 - Introduction
 
-TECO is:
+TECO is a text editor for editing ASCII files. It can be executed
+either interactively, using a simple command-line interface, or with
+a display mode that includes the ability to define separate regions
+in a window for both an edit buffer and TECO commands.
 
-- A powerful text editor, able to edit any form of ASCII text, such
-as program sources, command procedures, or manuscripts.
-- Able to be used for tasks ranging from simple to complex.
-- A character-oriented editor which provides many commands for
-processing text.
-- Able to be used interactively, where commands are executed as soon as
-they are typed in.
-- Allows the creation of command sequences called macros, which can
-be either stored internally and then invoked by short commands, or
-stored in files to be executed at a later time.
-- An implementation language that provides powerful primitive
-functions for text processing, screen handling, and keyboard
-management.
+TECO is also a programming or scripting language that allows users to
+create *macros* for processing text or files, using a terse syntax
+designed to minimize keystrokes, that makes it possible to:
 
-TECO correctly handles most sequential ASCII formats supported by the
-operating systems upon which it runs. It provides flexible pattern-matching
-constructs for text searching, and file wildcarding.
-A split screen scrolling feature allows command dialogue to share the
-screen with an automatically-updated window into an edit buffer that
-displays the text to be modified.
+- Read, write, and find files.
+- Insert and delete characters, strings, and numbers.
+- Search for text, optionally using pattern matching constructs
+(similar to regular expressions).
+- Search for and replace text.
+- Control execution with subroutines, looping constructs, and
+unconditional (*goto*) and conditional (*if-then-else*) branches.
+- Calculate numeric values using expressions that can make use of a
+wide variety of arithmetic operators.
+- Print messages on the user's terminal containing both strings and
+numbers.
+- Function as both a floor wax *AND* a dessert topping (just kidding!)
 
-TECO’s syntax is terse; commands are designed to minimize keystrokes.
-Also, the versatility of TECO makes it complex. However, just a few
-commands suffice to get real work done, and a novice TECO user can begin
-creating and editing text files after a brief instruction. More
-powerful features can be learned at leisure.
+As a consequence, the ability to use and combine these and other
+features provides TECO macros the versatility to be used for tasks
+ranging from simple to complex. These macros may either be saved
+internally in TECO, or stored in files that can be subsequently
+executed as stand-alone programs.
 
-This manual presents TECO in two stages. The first part contains basic
-information and introduces a simple set of commands.
+However, it is also possible with just a few commands to get real
+work done, and a novice TECO user can begin creating and editing
+text files after a brief instruction. More powerful features can
+be learned at leisure.
 
-Subsequent chapters describe the full TECO command set, including a review
-of the those commands presented in (TBD). These section also introduce
-the concept of TECO as a programming language and explain how basic editing
-commands may be combined into programs sophisticated enough to handle the
-most complicated editing tasks.
+This manual presents TECO in two stages. First, it provides basic
+information and introduces a simple set of commands. Then subsequent
+sections describe the full TECO command set, including a more complete
+description of the commands initially presented. These sections also
+introduce the concept of TECO as a programming language and explain
+how basic editing commands may be combined into programs sophisticated
+enough to handle even complicated editing tasks.
 
-The early sections of this manual include few specific examples of commands,
-since all TECO commands have a consistent, logical format which will quickly
-become apparent to the beginning user.
-
-This manual is intended to be used for reference, and except for the section
-titled Basics of TECO, is not a tutorial. It is subsequently assumed that
-the reader has a general familiarity with TECO and is referring to this manual
-to find detailed information.

@@ -21,7 +21,7 @@ be defined prior to invoking TECO.
 
 TECO_INIT
  - This specifies the path of a file containing TECO commands
-to be executed at start-up. This is often used to set editing desired features.
+to be executed at start-up. It is often used to configure editing features.
 
  - If TECO_INIT translates to a string in single or double quotes, that string
 is executed as a series of TECO commands at start-up. Note that the quotes,
@@ -45,8 +45,8 @@ name directly; with others (such as Linux, Windows, and MacOS), it contains the
 name of a file that in turn specifies the last file edited.
 
 TECO_PROMPT
- - This specifies a string used for TECO’s prompt (instead of the
-standard asterisk prompt).
+ - The default TECO prompt is just a single asterisk (\*), but this
+environment variable can be used to define an alternate prompt.
 
 TECO_VTEDIT
  - This specifies the path for a file containing commands to be
@@ -57,9 +57,7 @@ used for editing in display mode.
 To start TECO, type *teco* (possibly also specifying its location),
 optionally followed by a file name and any desired command-line
 options. Assuming no errors occur, TECO will process those options
-and open any specified file name before printing its prompt. This is
-usually an asterisk (\*), unless a different prompt has been defined
-using the TECO_PROMPT environment described above.
+and open any specified file name before printing its prompt.
 
 teco
  - Start TECO without opening any files. If the TECO_MEMORY environment

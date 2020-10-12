@@ -1,4 +1,4 @@
-### TECO-64 - Glossary of Terms
+## TECO-64 - Glossary of Terms
 
 **Accent grave**
 
@@ -185,8 +185,14 @@ terminal or auxiliary display device.
 
 **Dot**
 
-A mnemonic for "the current edit buffer pointer position". Stems from the fact
-that the . (dot, or period) TECO command returns this number as its value.
+A short-hand way to refer to the current position of the edit buffer
+pointer, so called because the TECO command "." returns that position
+as its value.
+
+*dot* always points to positions between characters; it never points
+at a character. The current character is considered to be the
+one immediately to the right of the edit buffer position represented
+by *dot*.
 
 **E command**
 
@@ -201,6 +207,15 @@ This mode is controlled by the 8ET flag bit. (0 means no-echo mode.)
 **ED flag**
 
 The edit level flag.
+
+**Edit buffer**
+
+The main buffer used by TECO to hold the text to be edited. Sometimes
+referred to as the text buffer.
+
+**Edit buffer pointer**
+
+Equivalent to *dot*.
 
 **Edit level flag**
 
@@ -582,17 +597,6 @@ commands.
 A bit-encoded flag, referenced via the ET command, that contains information
 about the user’s terminal terminal and specifies in what manner TECO should
 support it.
-
-**Text buffer**
-
-The main buffer used by TECO to hold the text to be edited.
-
-**Text buffer pointer**
-
-A pointer that marks the position within the edit buffer where TECO is currently
-’at’. This pointer always points to positions between characters; it never points at
-a character. The current character is considred to be the character immediately
-to the right of the current position of the edit buffer pointer.
 
 **Then-clause**
 

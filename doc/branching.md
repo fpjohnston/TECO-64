@@ -1,4 +1,4 @@
-### TECO-64 - Branching Commands
+## TECO-64 - Branching Commands
 
 TECO provides an unconditional branch command and a set of conditional
 execution commands. To branch within a command string, you must be able to

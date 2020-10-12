@@ -1,4 +1,4 @@
-### TECO-64 - Search Commands
+## TECO-64 - Search Commands
 
 In many cases, the easiest way to position the buffer pointer is by means of a
 character string search. Search commands cause TECO to scan through text
@@ -40,7 +40,7 @@ immediately following the edit buffer pointer.
 | E_*text*` | Same as _*text*` command except that effective EY (rather than Y) commands are used. Thus, this command is never aborted and is not controlled by the Yank protection bit in the ED flag. Remember that Yank DESTROYS the current buffer; there’s no way to get it back! |
 | nE_*text*` | Same as *n*_*text*` command except that effective EY (rather than Y) commands are used. |
 
-#### Bounded Search Commands
+### Bounded Search Commands
 
 | Command | Function |
 | ------- | -------- |
@@ -51,7 +51,7 @@ immediately following the edit buffer pointer.
 | -FB*text*` | Equivalent to -1FB*text*`. |
 | ::S*text*` | Compare command. The ::S command is not a true search. If the characters in the buffer immediately following the current pointer position match the search string, the pointer is moved to the end of the string and the command returns a value of -1; i.e., the next command is executed with an argument of -1. If the characters in the buffer do not match the string, the pointer is not moved and the command returns a value of 0. Identical to ".,.:FB*text*`". |
 
-#### Search and Replace Commands
+### Search and Replace Commands
 
 The search and replace commands listed below perform equivalent functions to
 the search commands listed next to them, but then delete *text1* and replace it
@@ -65,7 +65,7 @@ with *text2*.
 | *n*FN*text1*\`*text2*` | *n*N*text1*`   |
 | F_*text1*\`*text2*`    | _*text1*`      |
 
-#### Search String Building
+### Search String Building
 
 TECO builds the search string by loading its search string buffer from the
 supplied search command argument. To help you enter special characters or
@@ -92,7 +92,7 @@ be disabled by using the ED flag.
 String build characters are also permitted inside the string arguments
 of the O, EB, ER, EW, and EG commands.
 
-#### Match Control Characters
+### Match Control Characters
 
 TECO executes a search command by attempting to match the search command
 argument character-by-character with some portion of the input file. There

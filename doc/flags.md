@@ -1,4 +1,4 @@
-### TECO-64 - Mode Control Flags
+## TECO-64 - Mode Control Flags
 
 TECO has flags which control various aspects of its operation. You can find a
 flag’s current setting by executing its command name without an argument; the
@@ -17,7 +17,7 @@ represents any of the flags listed below.
 | 0,*n*\<flag\> | Turn on the bits in the flag specified by *n*. |
 | *m*,0\<flag\> | Turn off the bits in the flag specified by *m*. |
 
-#### E1 - Extended Features Flag
+### E1 - Extended Features Flag
 
 The E1 flag controls whether certain new and extended features are enabled
 in TECO. By default, all of the bits below are set, but an initialization
@@ -34,7 +34,7 @@ file may be used to customize which bits are set or cleared.
 | E1&64 | If set, "!!" may be used start a comment that extends to the next line terminator (LF, VT, or FF). |
 | E1&128 | If set, CR/LF will be output if needed to ensure that TECO's prompt is printed at the start of a new line. |
 
-#### E2 - Command Restrictions Flag
+### E2 - Command Restrictions Flag
 
 The E2 flag controls how strictly TECO enforces command syntax. For
 compatibility with older TECO macros, none of the bits below are set
@@ -55,7 +55,7 @@ are set or cleared.
 | E2&512 | If set, issue NAT error for m,n:P or H:P or :PW. |
 | E2&1024 | If set, issue ARG error if command has too many arguments. |
 
-#### E3 - File Operations Flag
+### E3 - File Operations Flag
 
 | Bit | Function |
 | --- | -------- |
@@ -66,7 +66,7 @@ are set or cleared.
 | E3&16 | This bit affects the behavior of echoed input to log files (opened with the EL command). If the bit is set, echoed input is not written to the log file. If the bit is clear, all echoed input is written to the log file. |
 | E3&32 | This bit affects the behavior of output messages to log files (opened with the EL command). If the bit is set, output is not written to the log file. If the bit is clear, all output is written to the log file. |
 
-#### E4 - Display Mode Flag
+### E4 - Display Mode Flag
 
 | Bit | Function |
 | --- | -------- |
@@ -74,7 +74,7 @@ are set or cleared.
 | E4&2 | Controls whether there should be a line between the text and command windows. If this bit is set, there is a line separating the text and command windows. If this bit is clear, no line is displayed. |
 | E4&4 | Controls whether status information should be included on the status line. If the bit is set, then information about the position within the file as well as the date and time are included. If the bit is clear, there is no information displayed. |
 
-#### ED - Edit Level Flag
+### ED - Edit Level Flag
 
 The edit level flag is a bit-encoded word that controls TECO’s
 behavior in various respects. Any combination of the individual
@@ -95,7 +95,7 @@ functions:
 The initial value of ED&1 is system dependent. The initial value of the other
 bits in the ED flag is 0.
 
-#### EE - Alternate Command Delimiter
+### EE - Alternate Command Delimiter
 
 | Command | Function |
 | ------- | -------- |
@@ -103,7 +103,7 @@ bits in the ED flag is 0.
 
 The EE flag is initially zero.
 
-#### EH - Help Level Flag
+### EH - Help Level Flag
 
 The help level flag controls the printing of error
 messages and failed commands. (See also the / command.)
@@ -115,7 +115,7 @@ messages and failed commands. (See also the / command.)
 
 The initial value of the EH flag is 0 which is equivalent to a value of 2.
 
-#### ES - Search Verification Flag
+### ES - Search Verification Flag
 
 The search verification flag controls whether any text is typed out
 after searches.
@@ -132,7 +132,7 @@ out.
 
 The initial value of the ES flag is 0.
 
-#### ET - Terminal Flag
+### ET - Terminal Flag
 
 The ET flag is a bit-encoded word controlling TECO’s
 treatment of the terminal. Any combination of the individual
@@ -161,7 +161,7 @@ When TECO is initialized, ET&2, ET&4, ET&512, ET&4096, and ET&8192 are set,
 and all other bits are clear. Furthermore, ET&128 and ET&32768 are always
 cleared before each prompt.
 
-#### EU - Upper/Lower Case Flag
+### EU - Upper/Lower Case Flag
 
 This flag controls flagging of upper or lower characters. This flag is primarily historical, and was created to handle terminals or monitors that were unable to display both upper and lower case characters.
 
@@ -173,7 +173,7 @@ This flag controls flagging of upper or lower characters. This flag is primarily
 
 The initial value of the EU flag is -1.
 
-#### EV - Edit Verify Flag
+### EV - Edit Verify Flag
 
 Before TECO prints its prompt, it checks its prompt to determine whether any lines
 should be output to the terminal, according to the table below.

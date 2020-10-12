@@ -1,4 +1,4 @@
-### TECO-64 - Dot Commands
+## TECO-64 - Dot Commands
 
 The following list all of the commands that move the buffer pointer (*dot*).
 These commands may be used to move *dot* to a position between any two
@@ -9,7 +9,7 @@ ignored and an error message is printed. If any L command attempts to exceed
 the buffer boundaries, *dot* is positioned at the boundary which would
 have been exceeded and no error message is printed.
 
-#### Character commands
+### Character commands
 
 | Command | Function |
 | ------- | -------- |
@@ -19,7 +19,7 @@ have been exceeded and no error message is printed.
 | *n*:C | Equivalent to *n*C except that -1 is returned if the command succeeded. If the command failed, 0 is returned and *dot* is not changed. |
 | :C | Equivalent to 1:C. |
 
-#### Jump commands
+### Jump commands
 
 | Command | Function |
 | ------- | -------- |
@@ -29,7 +29,7 @@ have been exceeded and no error message is printed.
 | *n*:J | Same as the *n*J command except that -1 is returned if new position of *dot* is inside the buffer. If the new position of *dot* is outside the buffer, 0 is returned and *dot* is not changed. |
 | :J | Equivalent to 0:J. |
 
-#### Line commands
+### Line commands
 
 | Command | Function |
 | ------- | -------- |
@@ -37,7 +37,7 @@ have been exceeded and no error message is printed.
 | *n*L | Executes the L command *n* times, as follows: <br><br>If *n* \> 0, *dot* is moved forward *n* lines. <br><br>If *n* \< 0, *dot* is moved backward *n* lines. <br><br>If *n* = 0, *dot* is moved to the beginning of the line on which it is currently positioned. |
 | -L | Equivalent to -1L. |
 
-#### Reverse commands
+### Reverse commands
 
 | Command | Function |
 | ------- | -------- |

@@ -1,18 +1,18 @@
-## TECO-64 Manual
+# TECO-64 Manual
 
 [Introduction to TECO](intro.md)
 
 [Starting TECO](starting.md)
 
-[Document Notation](notation.md)
+[Conventions & Notations](conventions.md)
 
-[Conventions](conventions.md)
+[Command Basics](basics.md)
 
-[Basics of TECO](basics.md)
+[Immediate Action Commands](action.md)
 
-[Immediate Commands](immediate.md)
+[Simple Commands](simple.md)
 
-#### Command Descriptions
+## Command Reference
 
 - [File Commands](file.md)
 

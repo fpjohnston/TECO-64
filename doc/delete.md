@@ -1,10 +1,10 @@
-### TECO-64 - Deletion Commands
+## TECO-64 - Deletion Commands
 
 The following summarizes the text deletion commands, which permit deletion of
 single characters, groups of adjacent characters, single lines, or groups of
 adjacent lines.
 
-#### Delete commands
+### Delete commands
 
 | Command | Function |
 | ------- | -------- |
@@ -17,7 +17,7 @@ adjacent lines.
 | @FD/*text*/ | Equivalent to 1@FD/*text*/. |
 | @FR// | Equivalent to -*n*D where *n*  is the length of the last insert, get or search command. See the description of the @FR/*text*/ command for more details. |
 
-#### Kill commands
+### Kill commands
 
 | Command | Function |
 | ------- | -------- |
