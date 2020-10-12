@@ -1,8 +1,8 @@
-## TECO-64 - Notations and Conventions
+## TECO-64 - Conventions and Notations
 
-Before proceeding with a description of TECO syntax and commands, the
-following is presented to enumerate the special notations and conventions
-used throughout this manual.
+Before proceeding with a description of TECO syntax and commands,
+the following is presented to enumerate the special conventions and
+notations used throughout this manual.
 
 ### Command Case
 

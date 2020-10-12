@@ -99,5 +99,5 @@ macros.
 erroneous, but it also provides information about TECO not
 available elsewhere.
 
-[TECO-64 Manual](doc/manual.md) - this is adapted from the previous
+[TECO-64 Manual](doc/TECO.md) - this is adapted from the previous
 document, and is a work in progress that will eventually replace it.
