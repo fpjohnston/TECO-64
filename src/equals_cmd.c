@@ -37,6 +37,20 @@
 #include "term.h"
 
 
+#if     defined(TECO_LONG)
+
+#define FORMAT_DEC      "%ld"
+#define FORMAT_HEX      "%lx"
+#define FORMAT_OCT      "%lo"
+
+#else
+
+#define FORMAT_DEC      "%d"
+#define FORMAT_HEX      "%x"
+#define FORMAT_OCT      "%o"
+
+#endif
+
 // Local functions
 
 static bool check_format(const char *format);
@@ -65,15 +79,15 @@ void exec_equals(struct cmd *cmd)
         throw(E_NAE);                   // No argument before =
     }
 
-    const char *mode = "%d";            // Assume we're printing decimal
+    const char *mode = FORMAT_DEC;      // Assume we're printing decimal
 
     if (cmd->c3 == '=')                 // Print hexadecimal if ===
     {
-        mode = "%x";
+        mode = FORMAT_HEX;
     }
     else if (cmd->c2 == '=')            // Print octal if ==
     {
-        mode = "%o";
+        mode = FORMAT_OCT;
     }
 
     char user_mode[cmd->text1.len + 1];

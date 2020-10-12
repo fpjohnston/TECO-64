@@ -498,7 +498,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
         {
             c = fetch_cbuf();
 
-            push_expr(c, EXPR_VALUE);
+            push_expr((INT)c, EXPR_VALUE);
 
             return NULL;
         }

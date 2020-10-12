@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "teco.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"
@@ -96,7 +97,7 @@ void init_expr(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool pop_expr(int *operand)
+bool pop_expr(INT *operand)
 {
     assert(operand != NULL);            // Error if NULL operand
 
@@ -150,7 +151,7 @@ bool pop_expr(int *operand)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void push_expr(int value, enum expr_type type)
+void push_expr(INT value, enum expr_type type)
 {
     if (estack.level == EXPR_SIZE)
     {

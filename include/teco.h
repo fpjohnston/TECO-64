@@ -39,6 +39,16 @@
 #define MINOR_VERSION      3    ///< Minor version
 #define PATCH_VERSION      2    ///< Patch version
 
+#if     defined(TECO_LONG)
+
+typedef long INT;
+
+#else
+
+typedef int INT;
+
+#endif
+
 /// @def    countof(array)
 /// @brief  Returns the number of elements in an array.
 

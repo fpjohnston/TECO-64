@@ -300,13 +300,13 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
 
     if (ifile == NULL)
     {
-        push_expr(0, EXPR_VALUE);
+        push_expr((INT)0, EXPR_VALUE);
 
         return false;
     }
     else if (colon)
     {
-        push_expr(-1, EXPR_VALUE);
+        push_expr((INT)-1, EXPR_VALUE);
     }
 
     struct stat file_stat;

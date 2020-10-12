@@ -46,7 +46,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool append(bool n_set, int n_arg, bool colon)
+bool append(bool n_set, INT n_arg, bool colon)
 {
     struct ifile *ifile = &ifiles[istream];
 
@@ -69,7 +69,7 @@ bool append(bool n_set, int n_arg, bool colon)
     }
     else if (n_set)                     // n:A -> append n lines
     {
-        for (int i = 0; i < n_arg; ++i)
+        for (INT i = 0; i < n_arg; ++i)
         {
             if (!append_line())         // If we should stop
             {
@@ -207,15 +207,19 @@ void exec_A(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if (cmd->colon)                     // :A or n:A command
+    if (cmd->n_arg < 0)
+    {
+        throw(E_ARG);                   // Invalid arguments
+    }
+    else if (cmd->colon)                // :A or n:A command
     {
         bool success = append(cmd->n_set, cmd->n_arg, cmd->colon);
 
-        push_expr(success ? -1 : 0, EXPR_VALUE);
+        push_expr(success ? (INT)-1 : (INT)0, EXPR_VALUE);
     }
     else if (cmd->n_set)                // nA command
     {
-        int n = getchar_ebuf(cmd->n_arg);
+        INT n = getchar_ebuf(cmd->n_arg);
 
         push_expr(n, EXPR_VALUE);
     }

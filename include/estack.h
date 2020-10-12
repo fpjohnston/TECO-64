@@ -79,7 +79,7 @@ enum expr_type
 
 struct e_obj
 {
-    long value;                     ///< Operand value (if type = EXPR_VALUE)
+    INT value;                      ///< Operand value (if type = EXPR_VALUE)
     enum expr_type type;            ///< Value type (operand/operator)
 };
 
@@ -103,9 +103,9 @@ extern bool check_expr(void);
 
 extern void init_expr(void);
 
-extern bool pop_expr(int *operand);
+extern bool pop_expr(INT *operand);
 
-extern void push_expr(int c, enum expr_type type);
+extern void push_expr(INT value, enum expr_type type);
 
 extern void reset_expr(uint base);
 

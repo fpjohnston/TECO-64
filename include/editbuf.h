@@ -57,10 +57,10 @@ typedef enum
 
 struct text
 {
-    int B;                      ///< First position in buffer
-    int Z;                      ///< Last position in buffer
-    int dot;                    ///< Current position in buffer
-    int size;                   ///< Size of buffer in bytes
+    INT B;                      ///< First position in buffer
+    INT Z;                      ///< Last position in buffer
+    INT dot;                    ///< Current position in buffer
+    INT size;                   ///< Size of buffer in bytes
 };
 
 extern struct text t;
@@ -95,15 +95,15 @@ extern void delete_ebuf(int n);
 // Returns: character found, or EOF (-1) if attempt was made to go beyond the
 //          beginning or end of buffer.
 
-extern int getchar_ebuf(int n);
+extern int getchar_ebuf(INT n);
 
 //  Get the number of chars between current dot and nth line terminator.
 
-extern int getdelta_ebuf(int n);
+extern int getdelta_ebuf(INT n);
 
 //  Get the number of lines between current dot and start/end of text buffer.
 
-extern int getlines_ebuf(int n);
+extern int getlines_ebuf(INT n);
 
 //
 //  Initialize buffer.

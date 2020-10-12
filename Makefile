@@ -42,6 +42,7 @@
 #      display=1   Enable display mode."
 #      gdb=1       Enable use of GDB debugger."
 #      gprof=1     Enable use of GPROF profiler."
+#      long=1      Use 64-bit integers."
 #      ndebug=1    Disable run-time assertions."
 #      paging=std  Use standard paging. [default]"
 #      paging=vm   Use virtual memory paging."
@@ -217,6 +218,13 @@ $(error Unknown paging handler: ${paging})
 
 endif
 
+ifdef   long
+
+CFLAGS  += -D TECO_LONG
+DOXYGEN +=    TECO_LONG
+
+endif
+
 ifdef   verbose
 
 AT =
@@ -233,8 +241,8 @@ endif
 
 ifdef   debug
 
-DEFINES += -D TECO_debug
-DOXYGEN +=    TECO_debug
+DEFINES += -D TECO_DEBUG
+DOXYGEN +=    TECO_DEBUG
 OPTIONS_debug += -d
 
 endif
@@ -307,6 +315,7 @@ help:
 	@echo "    display=1   Enable display mode."
 	@echo "    gdb=1       Enable use of GDB debugger."
 	@echo "    gprof=1     Enable use of GPROF profiler."
+	@echo "    long=1      Use 64-bit integers."
 	@echo "    ndebug=1    Disable run-time assertions."
 	@echo "    paging=std  Use standard paging. [default]"
 	@echo "    paging=vm   Use virtual memory paging."

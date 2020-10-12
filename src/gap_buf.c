@@ -298,9 +298,9 @@ static bool expand_ebuf(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int getchar_ebuf(int n)
+int getchar_ebuf(INT n)
 {
-    int pos = t.dot + n;
+    INT pos = t.dot + n;
 
     if (pos < eb.left + eb.right)
     {
@@ -323,7 +323,7 @@ int getchar_ebuf(int n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int getdelta_ebuf(int n)
+int getdelta_ebuf(INT n)
 {
     if (n > 0)
     {
@@ -344,7 +344,7 @@ int getdelta_ebuf(int n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int getlines_ebuf(int n)
+int getlines_ebuf(INT n)
 {
     int start = (n > 0) ? 0 : -t.dot;
     int end   = (n < 0) ? 0 :  eb.left + eb.right;
