@@ -287,7 +287,7 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
     }
 
     assert(buf != NULL);                // Error if no input file name
-    assert(text != NULL);               // Error if no text buffer
+    assert(text != NULL);               // Error if no edit buffer
 
     char name[len + 1];                 // NUL-terminated file name
 

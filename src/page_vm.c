@@ -156,7 +156,7 @@ static void link_page(struct page *page)
 
 
 ///
-///  @brief    Create page with data from text buffer.
+///  @brief    Create page with data from edit buffer.
 ///
 ///  @returns  Pointer to page we created.
 ///

@@ -250,7 +250,7 @@ static int issymbol(int c)
 
 
 ///
-///  @brief    Check for a match on the current character in the text buffer,
+///  @brief    Check for a match on the current character in the edit buffer,
 ///            allowing for the use of match control constructs in the search
 ///            string. Note that we can be called recursively.
 ///
@@ -361,7 +361,7 @@ static bool match_str(struct search *s)
 
 
 ///
-///  @brief    Search backward through text buffer to find next instance of
+///  @brief    Search backward through edit buffer to find next instance of
 ///            string in search buffer.
 ///
 ///  @returns  true if string found (text_pos will contain the buffer position
@@ -375,7 +375,7 @@ bool search_backward(struct search *s)
 
     // Start search at current position and see if we can get a match. If not,
     // decrement position by one, and try again. If we reach the end of the
-    // text buffer without a match, then return failure, otherwise update our
+    // edit buffer without a match, then return failure, otherwise update our
     // position and return success.
 
     while (s->text_start > s->text_end) // Search to beginning of buffer
@@ -395,7 +395,7 @@ bool search_backward(struct search *s)
 
 
 ///
-///  @brief    Search forward through text buffer to find next instance of
+///  @brief    Search forward through edit buffer to find next instance of
 ///            string in search buffer.
 ///
 ///  @returns  true if string found (text_pos will contain the buffer position
@@ -409,7 +409,7 @@ bool search_forward(struct search *s)
 
     // Start search at current position and see if we can get a match. If not,
     // increment position by one, and try again. If we reach the end of the
-    // text buffer without a match, then return failure, otherwise update our
+    // edit buffer without a match, then return failure, otherwise update our
     // position and return success.
 
     while (s->text_start < s->text_end) // Search to end of buffer
@@ -444,7 +444,7 @@ bool search_forward(struct search *s)
 
 
 ///
-///  @brief    Search forward through text buffer to find next instance of
+///  @brief    Search forward through edit buffer to find next instance of
 ///            string in search buffer.
 ///
 ///  @returns  true if string found (text_pos will contain the buffer position
@@ -461,7 +461,7 @@ bool search_loop(struct search *s)
 
     // Start search at current position and see if we can get a match. If not,
     // increment position by one, and try again. If we reach the end of the
-    // text buffer without a match, then return failure, otherwise update our
+    // edit buffer without a match, then return failure, otherwise update our
     // position and return success.
 
     while (s->count > 0)

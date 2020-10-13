@@ -46,7 +46,7 @@ static void type_G(struct cmd *cmd);
 
 
 ///
-///  @brief    Copy Q-register or special string to text buffer.
+///  @brief    Copy Q-register or special string to edit buffer.
 ///
 ///  @returns  Nothing.
 ///
@@ -129,7 +129,7 @@ void exec_G(struct cmd *cmd)
 
 
 ///
-///  @brief    Type out Q-register or special string to text buffer.
+///  @brief    Type out Q-register or special string to edit buffer.
 ///
 ///  @returns  Nothing.
 ///

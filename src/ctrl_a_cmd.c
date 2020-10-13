@@ -44,7 +44,7 @@
 void exec_ctrl_A(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
-    assert(cmd->text1.data != NULL);    // Error if no text buffer
+    assert(cmd->text1.data != NULL);    // Error if no edit buffer
 
     const char *p = cmd->text1.data;
 

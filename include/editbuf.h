@@ -101,7 +101,7 @@ extern int getchar_ebuf(INT n);
 
 extern int getdelta_ebuf(INT n);
 
-//  Get the number of lines between current dot and start/end of text buffer.
+//  Get the number of lines between current dot and start/end of edit buffer.
 
 extern int getlines_ebuf(INT n);
 

@@ -361,7 +361,7 @@ static const char *verbose[] =
 
     [E_YCA] = "An attempt has been made to execute a Y or _ search "
               "command with an output file open, that would cause text "
-              "in the text buffer to be erased without outputting it to "
+              "in the edit buffer to be erased without outputting it to "
               "the output file. The ED command controls this check.",
 };
 

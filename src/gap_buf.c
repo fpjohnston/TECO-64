@@ -81,7 +81,7 @@ static struct
 
 #if     defined(TECO_DISPLAY)
 
-bool ebuf_changed;              ///< true if text buffer modified
+bool ebuf_changed;              ///< true if edit buffer modified
 
 #endif
 
