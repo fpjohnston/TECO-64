@@ -39,7 +39,7 @@
 | ^N             | [End of file flag](values.md) |
 | ^N*x*          | [(Match char.) Match all but *x*](search.md) |
 | ^O             | [Set radix to octal](oper.md) |
-| ^P             | Not a TECO command |
+| ^P             | [Current page number](values.md) |
 | ^Q             | [Convert line argument to character argument](values.md) |
 | ^Q*x*          | [Use *x* literally in search string](search.md) |
 | ^R             | [Value of current radix](values.md) |

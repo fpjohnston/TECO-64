@@ -36,6 +36,8 @@
 #include "page.h"
 #include "term.h"
 
+uint page_count = 1;                ///< Current page number
+
 ///  @struct   page
 ///  @brief    Descriptor for storing a linked list of pages in memory.
 
@@ -53,7 +55,6 @@ struct page
 static struct page *page_head = NULL;   ///< Head of page list
 static struct page *page_tail = NULL;   ///< Tail of page list
 static struct page *page_stack = NULL;  ///< Saved page stack
-
 
 // Local functions
 
@@ -156,7 +157,11 @@ static void link_page(struct page *page)
 
 
 ///
-///  @brief    Create page with data from edit buffer.
+///  @brief    Create page with data from edit buffer. Note that if we're
+///            treating form feeds as a page delimiter, then we have to adjust
+///            the page count for any form feeds that the user may have added
+///            to the current page. This is to handle the situation where the
+///            user subsequently executes -P commands.
 ///
 ///  @returns  Pointer to page we created.
 ///
@@ -185,6 +190,10 @@ static struct page *make_page(int start, int end, bool ff)
         if (c == LF && last != CR && page->ocrlf)
         {
             ++page->cr;
+        }
+        else if (ff && c == FF)
+        {
+            ++page_count;
         }
 
         *p++ = last = (char)c;
@@ -236,8 +245,20 @@ bool page_backward(int count, bool ff)
 
         if (count == 0)
         {
-            return pop_page();
+            bool havedata = pop_page();
+
+            if (havedata)
+            {
+                --page_count;
+            }
+
+            return havedata;
         }
+    }
+
+    if (page_count > 0)
+    {
+        --page_count;
     }
 
     return f.ctrl_e = false;
@@ -272,6 +293,8 @@ void page_flush(FILE *fp)
 
         write_page(fp, page);
     }
+
+    page_count = 1;
 }
 
 
@@ -290,6 +313,8 @@ bool page_forward(FILE *unused1, int start, int end, bool ff)
 
         link_page(page);
     }
+
+    ++page_count;
 
     return pop_page();
 }
@@ -360,6 +385,42 @@ void reset_pages(void)
 
 
 ///
+///  @brief    Unlink page from end of linked list.
+///
+///  @returns  Returned page, or NULL if list is empty.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static struct page *unlink_page(void)
+{
+    struct page *page;
+
+    if ((page = page_tail) == NULL)
+    {
+        return NULL;
+    }
+
+    assert(page->next == NULL);
+
+    if (page->prev == NULL)             // Only page in list?
+    {
+        page_head = NULL;
+        page_tail = NULL;
+    }
+    else
+    {
+        page_tail        = page->prev;
+
+        page->prev->next = NULL;
+        page->prev       = NULL;
+        page->next       = NULL;
+    }
+
+    return page;
+}
+
+
+///
 ///  @brief    Write page to file.
 ///
 ///  @returns  Nothing.
@@ -403,42 +464,6 @@ static void write_page(FILE *fp, struct page *page)
 
 
 ///
-///  @brief    Unlink page from end of linked list.
-///
-///  @returns  Returned page, or NULL if list is empty.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static struct page *unlink_page(void)
-{
-    struct page *page;
-
-    if ((page = page_tail) == NULL)
-    {
-        return NULL;
-    }
-
-    assert(page->next == NULL);
-
-    if (page->prev == NULL)             // Only page in list?
-    {
-        page_head = NULL;
-        page_tail = NULL;
-    }
-    else
-    {
-        page_tail        = page->prev;
-
-        page->prev->next = NULL;
-        page->prev       = NULL;
-        page->next       = NULL;
-    }
-
-    return page;
-}
-
-
-///
 ///  @brief    Read in previous page, discarding current page.
 ///
 ///  @returns  Nothing.
@@ -447,17 +472,22 @@ static struct page *unlink_page(void)
 
 void yank_backward(FILE *unused1)
 {
-    if (pop_page())
+    struct page *page;
+
+    if (!pop_page())
     {
-        return;
+        if ((page = unlink_page()) == NULL)
+        {
+            kill_ebuf();
+        }
+        else
+        {
+            copy_page(page);
+        }
     }
 
-    struct page *page = unlink_page();
-
-    if (page == NULL)
+    if (page_count > 0)
     {
-        return;
+        --page_count;
     }
-
-    copy_page(page);
 }

@@ -62,7 +62,7 @@ static void display(int c)
             fputc(c, stdout);
         }
 
-        if (c == LF || c == VT || c == FF)
+        if (isdelim(c))
         {
             term_pos = 0;
         }
@@ -309,10 +309,20 @@ void tprint(
 
     va_end(argptr);
 
+    if (nbytes == 0)
+    {
+        return;
+    }
+
     if (!puts_dpy(buf))
     {
         fputs(buf, stdout);
         term_pos += nbytes;
+
+        if (nbytes > 1 && isdelim(buf[nbytes - 1]))
+        {
+            term_pos = 0;
+        }
     }
 
     if (!f.e3.noout && (fp = ofiles[OFILE_LOG].fp) != NULL)

@@ -33,7 +33,7 @@
 
 
 ///
-///  @brief    Scan EO command: read or set TECO version number.
+///  @brief    Execute EO command: read or set TECO version number.
 ///
 ///               EO - Major version.
 ///              :EO - Same as EO.

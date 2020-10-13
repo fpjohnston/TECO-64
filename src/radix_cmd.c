@@ -61,7 +61,7 @@ void exec_ctrl_O(struct cmd *unused1)
 
 
 ///
-///  @brief    Scan ^R (CTRL/R) command: read current radix.
+///  @brief    Execute ^R (CTRL/R) command: read current radix.
 ///
 ///  @returns  nothing.
 ///

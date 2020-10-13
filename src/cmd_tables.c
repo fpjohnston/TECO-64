@@ -218,7 +218,7 @@ const struct cmd_table cmd_table[] =
     ENTRY(CR,      NULL,           0),
     ENTRY(CTRL_N,  exec_ctrl_N,    n_opts),
     ENTRY(CTRL_O,  exec_ctrl_O,    0),
-    ENTRY(CTRL_P,  NULL,           OPT_B),
+    ENTRY(CTRL_P,  exec_ctrl_P,    0),
     ENTRY(CTRL_Q,  exec_ctrl_Q,    n_opts),
     ENTRY(CTRL_R,  exec_ctrl_R,    f_opts),
     ENTRY(CTRL_S,  exec_ctrl_S,    OPT_S),

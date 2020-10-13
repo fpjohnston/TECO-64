@@ -35,8 +35,8 @@
 
 
 ///
-///  @brief    Scan Q command: return numeric value of Q-register, or size of
-///            text string.
+///  @brief    Execute Q command: return numeric value of Q-register, or size
+///            of text string.
 ///
 ///  @returns  Nothing.
 ///

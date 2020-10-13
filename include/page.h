@@ -31,6 +31,8 @@
 #include <stdbool.h>            //lint !e451 !e537
 #include <stdio.h>              //lint !e451 !e537
 
+extern uint page_count;
+
 extern bool page_backward(int count, bool ff);
 
 extern void page_flush(FILE *fp);

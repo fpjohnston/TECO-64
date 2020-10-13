@@ -66,6 +66,8 @@ extern void exec_ctrl_N(struct cmd *cmd);
 
 extern void exec_ctrl_O(struct cmd *cmd);
 
+extern void exec_ctrl_P(struct cmd *cmd);
+
 extern void exec_ctrl_Q(struct cmd *cmd);
 
 extern void exec_ctrl_R(struct cmd *cmd);

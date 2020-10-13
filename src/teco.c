@@ -214,7 +214,7 @@ static void init_teco(int argc, const char * const argv[])
 
 
 ///
-///  @brief    Check for delimiter (LF, VT, or FF) at current position.
+///  @brief    Check for line delimiter (LF, VT, or FF) at current position.
 ///
 ///            Note that we return 1/0 instead of true/false for compatibility
 ///            with the ANSI isxxx() functions.

@@ -34,7 +34,9 @@
 #include "eflags.h"
 #include "errors.h"
 #include "page.h"
+#include "term.h"
 
+uint page_count = 1;                ///< Current page number
 
 ///
 ///  @brief    Read in previous page (invalid for standard paging).
@@ -58,6 +60,7 @@ bool page_backward(int unused1, bool unused2)
 
 void page_flush(FILE *unused1)
 {
+    page_count = 0;
 }
 
 
@@ -96,6 +99,8 @@ bool page_forward(FILE *fp, int start, int end, bool ff)
     {
         fputc(FF, fp);
     }
+
+    ++page_count;
 
     return false;
 }
