@@ -31,7 +31,7 @@ code.
 | Error code | Message            | Explanation |
 | ---------- | ------------------ | ----------- |
 | ARG        | Improper Arguments | Three or more numeric arguments were specified (e.g., a,b,c or H,c). |
-| ATS        | Illegal at-sign, or too many at-signs | An at-sign preceded a command that does not allow at-signs, or there were too many at-signs specified for the command." |
+| ATS        | Illegal at sign, or too many at signs | An at sign preceded a command that does not allow at signs, or there were too many at signs specified for the command." |
 | BNI        | \> not in iteration | There is a close angle bracket not matched by an open angle bracket somewhere to its left. (Note: an iteration in a macro stored in a Q-register must be complete within the Q-register.) |
 | BOA        | O argument is out of range | The argument for an O command was out of range. |
 | CHR        | Invalid character for command | A non-ASCII character preceded an EE command. |

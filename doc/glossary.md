@@ -35,7 +35,7 @@ A command that is preceded by an @-sign modifier.
 
 **@-sign modifier**
 
-An at-sign (@) that proceeds a command. It indicates to TECO that the string
+An at sign (@) that proceeds a command. It indicates to TECO that the string
 argument to the command is to delimited on both sides by a user-supplied
 delimiter rather than to be delimited only at the end by a TECO-designated
 delimiter (normally \<ESCAPE\>).

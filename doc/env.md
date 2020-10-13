@@ -2,7 +2,7 @@
 
 ### Alternate Command Forms
 
-The :EG and ::EG commands can be modified with at-signs, as shown in the
+The :EG and ::EG commands can be modified with at signs, as shown in the
 table below, using :EG as an example.
 
 | Command | Description |
@@ -10,7 +10,7 @@ table below, using :EG as an example.
 | :EG/text/ | Classic form of command, using accent grave (or possibly ESCape) as a delimiter for the file name. |
 | :@EG/*text*/ | Equivalent to :EG/*text*/, except that a pair of slashes are used to delimit the file name. Other characters may be used instead of slashes, as long as they match. If the E1&4 flag bit is set, then the text string may be enclosed in paired braces (e.g., :@EG\{*text*\}). |
 
-In the descriptions below, the at-sign form of :EG and ::EGcommands will be used
+In the descriptions below, the at sign form of :EG and ::EGcommands will be used
 for clarity.
 
 ### :EG - Read environment variables

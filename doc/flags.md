@@ -45,7 +45,7 @@ are set or cleared.
 | --- | -------- |
 | E2&1 | If set, issue DIV error if attempt is made to divide by zero. |
 | E2&2 | If set, issue IFE error if double operators are used in expressions (for example, 2**3). |
-| E2&4 | If set, issue ATS error if command does not allow an at-sign modifier, or if more than one at-sign modifier is seen. |
+| E2&4 | If set, issue ATS error if command does not allow an at sign modifier, or if more than one at sign modifier is seen. |
 | E2&8 | If set, issue COL error if command does not allow a colon modifier, or if more than two colon modifiers are seen. |
 | E2&16 | If set, issue MCA error if missing m argument before comma command. |
 | E2&32 | If set, issue IMA error if command does not allow an m argument. |

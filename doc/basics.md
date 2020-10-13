@@ -65,15 +65,15 @@ treated as whitespace.
 | *n*   | A numeric argument. | 42R |
 | : | Colon modifier. Affects the behavior of the following command, often in order to return a value indicating success or failure of the command rather than aborting execution and issuing an error. | \:ERinput.c\` |
 | :: | Double colon modifier. Affects the behavior of the following command, but differently than :. Often used for "anchored" searches. | \:\:Sbaz\` |
-| @ | At-signed modifier. Specifies an alternative delimiter will be used for text arguments that follow the command, using a matched pair of characters. | \@^A/hello/ @FC/baz/foo/ |
+| @ | At signed modifier. Specifies an alternative delimiter will be used for text arguments that follow the command, using a matched pair of characters. | \@^A/hello/ @FC/baz/foo/ |
 | command | The TECO command to be executed. It will consist of one, two, or three characters. No whitespace is allowed between multi-character commands. Commands may be either upper or lower case. | V, ET, === |
 | *q* | The name of the Q-register that the command will use. | 1XA |
 | *text1* | The first text argument for the command. See description below. | Ifoobaz\` |
 | *text2* | The second text argument for the command. See description below. | FSfoo\`baz\` |
-| \<*delim*\> | The command delimiter. Only required for commands that allow text arguments when there is no at-sign modifier. | EWoutput.c\` |
+| \<*delim*\> | The command delimiter. Only required for commands that allow text arguments when there is no at sign modifier. | EWoutput.c\` |
 
 Note that if a command allows both the colon (including double colon)
-and at-sign modifiers, they may be specified in either order.
+and at sign modifiers, they may be specified in either order.
 
 ### Numeric Arguments
 
@@ -153,7 +153,7 @@ Commands that allow text arguments are normally delimited as follows:
 | <nobr>^Ahello, world!\<CTRL/A\></nobr> | The type-out command may start with a CTRL/A or literal ^A, but it must be terminated by a CTRL/A.
 | !tag! | Any tag or comment must be start and end with an exclamation mark. |
 
-At-sign modifiers are used to allow an alternate form of delimiting
+At sign modifiers are used to allow an alternate form of delimiting
 text arguments that follow a command, by specifying that they will
 instead be delimited by a pair of matching characters:
 
@@ -166,6 +166,6 @@ Examples:
 If both text arguments are used, then only one delimiter is required
 between them.
 
-Delimiters used with an at-sign modifier may be any graphic ASCII
+Delimiters used with an at sign modifier may be any graphic ASCII
 character (ASCII 33 through 126, inclusive). Control characters and
 spaces are not allowed as delimiters.

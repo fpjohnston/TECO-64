@@ -56,5 +56,9 @@
 
 [Error Messages](errors.md)
 
+[Colon-Modified Commands](colon.md)
+
+[At Sign-Modified Commands](atsign.md)
+
 [Index of Commands](index.md)
 

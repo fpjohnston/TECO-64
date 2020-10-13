@@ -23,8 +23,8 @@ NAS error if they did not. So the following are now valid:
 
 If the E2&4 flag bit is set, an error will result if the following occurs:
 
-- An at-sign is used to modify a command that does not allow it.
-- More than one at-sign is used to modify a command.
+- An at sign is used to modify a command that does not allow it.
+- More than one at sign is used to modify a command.
 
 If the E2&8 flag bit is set, an error will result if the following occurs:
 

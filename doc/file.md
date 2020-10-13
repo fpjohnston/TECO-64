@@ -25,7 +25,7 @@ noted, all of these commands leave the edit buffer unchanged.
 ### Alternate Command Forms
 
 All of the commands that open files, and use text arguments to specify
-a file name, can be modified with both at-signs and colons, as shown in the
+a file name, can be modified with both at signs and colons, as shown in the
 table below, using ER as an illustration.
 
 | Command | Description |
@@ -35,10 +35,10 @@ table below, using ER as an illustration.
 | :ER*foo*\` | Equivalent to ER*foo*\`, except that -1 is returned if the file was successfully opened, and 0 if it could not be opened. Reasons for failure include the file not being found, not being a device, directory, pipe, or anything other than a regular file, or lacking the required read or write permissions. |
 | :@ER/foo/ | Equivalent to :ER*foo*\`. |
 
-In the descriptions below, the at-sign form of each command will be used
+In the descriptions below, the at sign form of each command will be used
 for clarity.
 
-Note that although the EG command may also use an at-sign to delimit its
+Note that although the EG command may also use an at sign to delimit its
 text argument, the :EG command is a completely different command and is
 documented elsewhere.
 
