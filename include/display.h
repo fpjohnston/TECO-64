@@ -40,7 +40,7 @@
 ///  @enum   region_pair
 ///  @brief  Values of foreground/background pairs for defined regions.
 
-enum window_pair
+enum region_pair
 {
     CMD = 1,                        ///< Command region
     EDIT,                           ///< Edit region
@@ -69,7 +69,7 @@ union tchar
     uint flag;                      ///< Combined above flags
 };
 
-///  @struct  w
+///  @struct  watch
 ///  @brief   Display mode variables
 
 struct watch
@@ -88,7 +88,7 @@ struct watch
 
 extern struct watch w;
 
-// Window functions
+// Display functions
 
 #if     defined(TECO_DISPLAY)
 

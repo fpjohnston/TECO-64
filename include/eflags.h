@@ -123,8 +123,8 @@ union e4_flag
 
     struct
     {
-        uint invert  : 1;       ///< Put command window above text window
-        uint line    : 1;       ///< Line between text and command window
+        uint invert  : 1;       ///< Put command region above text region
+        uint line    : 1;       ///< Line between text and command regions
         uint status  : 1;       ///< Display status on line
     };
 };
@@ -206,7 +206,7 @@ struct flags
     union  e1_flag e1;          ///< Extended features
     union  e2_flag e2;          ///< Command restrictions
     union  e3_flag e3;          ///< File I/O features
-    union  e4_flag e4;          ///< Window flags
+    union  e4_flag e4;          ///< Display mode flags
     union  ed_flag ed;          ///< Edit level flags
     int            ee;          ///< ESCape surrogate
     union  eh_flag eh;          ///< Help message flags

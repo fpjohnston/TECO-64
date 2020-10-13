@@ -53,7 +53,7 @@ static const char * const help_text[] =
     "  TECO_INIT              Default initialization file, executed at startup.",
     "  TECO_LIBRARY           Directory of library for TECO macros.",
     "  TECO_MEMORY            File that contains name of last file edited.",
-    "  TECO_VTEDIT            Default file for initialization of window mode.",
+    "  TECO_VTEDIT            Default file for initialization of display mode.",
     "",
     "Text file options:",
     "",
