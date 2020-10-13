@@ -1,6 +1,6 @@
 ///
 ///  @file    color_cmd.c
-///  @brief   Execute commands that set window colors (F1, F2, F3).
+///  @brief   Execute commands that set display colors (F1, F2, F3).
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -84,13 +84,13 @@ static int find_color(const char *token);
 
 static void set_color(const char *buf, uint len, int sat, short color);
 
-static void set_colors(const struct cmd *cmd, enum window_pair pair);
+static void set_colors(const struct cmd *cmd, enum region_pair pair);
 
 #endif
 
 
 ///
-///  @brief    Execute F1 command: set colors for command window.
+///  @brief    Execute F1 command: set colors for command region.
 ///
 ///  @returns  Nothing.
 ///
@@ -122,7 +122,7 @@ void exec_F1(struct cmd *unused1)
 
 
 ///
-///  @brief    Execute F2 command: set colors for text window.
+///  @brief    Execute F2 command: set colors for edit region.
 ///
 ///  @returns  Nothing.
 ///
@@ -142,7 +142,7 @@ void exec_F2(struct cmd *unused1)
 
 #if     defined(TECO_DISPLAY)
 
-    set_colors(cmd, TEXT);
+    set_colors(cmd, EDIT);
 
 #else
 
@@ -265,8 +265,8 @@ static void set_color(const char *buf, uint len, int sat, short color)
 
 
 ///
-///  @brief    Set foreground and background colors for our three window
-///            regions: command, text, and status line).
+///  @brief    Set foreground and background colors for our three display
+///            regions: command, edit, and status line).
 ///
 ///  @returns  Nothing.
 ///
@@ -274,7 +274,7 @@ static void set_color(const char *buf, uint len, int sat, short color)
 
 #if     defined(TECO_DISPLAY)
 
-static void set_colors(const struct cmd *cmd, enum window_pair pair)
+static void set_colors(const struct cmd *cmd, enum region_pair pair)
 {
     assert(cmd != NULL);                // Error if no command block
 
@@ -295,17 +295,17 @@ static void set_colors(const struct cmd *cmd, enum window_pair pair)
     }
 
     // The following is used to set up new colors, whose saturation we can vary
-    // without affecting the use of the same colors by other windows. That is,
-    // the text window could use a white background at 100% while the command
-    // window could use one at 80%. If they both used the standard colors, then
-    // changing the saturation for one window would change the other.
+    // without affecting the use of the same colors by other regions. That is,
+    // the edit region could use a white background at 100% while the command
+    // region could use one at 80%. If they both used the standard colors, then
+    // changing the saturation for one region would change the other.
     //
     // The colors have the following values:
     //
-    // Window  Foreground  Background
+    // Region  Foreground  Background
     // ------  ----------  ----------
     // CMD         16          17
-    // TEXT        18          19
+    // EDIT        18          19
     // STATUS      20          21
 
     short color = (short)(COLOR_BASE + ((pair - 1) * 2));

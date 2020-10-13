@@ -94,12 +94,12 @@ struct region
 
 struct display
 {
-    int row;                        ///< Text row
-    int col;                        ///< Text column
+    int row;                        ///< Edit row
+    int col;                        ///< Edit column
     int vcol;                       ///< Virtual column
-    int nrows;                      ///< No. of text rows
-    struct region cmd;              ///< Command window
-    struct region text;             ///< Text window
+    int nrows;                      ///< No. of edit rows
+    struct region cmd;              ///< Command region
+    struct region edit;             ///< Edit region
     struct region status;           ///< Status line
 };
 
@@ -116,7 +116,7 @@ static struct display d =
     .vcol   = 0,
     .nrows  = 0,
     .cmd    = { .top = 0, .bot = 0 },
-    .text   = { .top = 0, .bot = 0 },
+    .edit   = { .top = 0, .bot = 0 },
     .status = { .top = 0, .bot = 0 },
 };
 
@@ -426,11 +426,11 @@ static void mark_cursor(int row, int col)
 
     getyx(stdscr, saved_row, saved_col);
 
-    (void)attrset(COLOR_PAIR(TEXT));    //lint !e835
+    (void)attrset(COLOR_PAIR(EDIT));    //lint !e835
 
     // Go to old cursor position
 
-    (void)move(d.text.top + d.row, d.col);
+    (void)move(d.edit.top + d.row, d.col);
 
     c = inch() & A_CHARTEXT;            //lint !e835
 
@@ -442,7 +442,7 @@ static void mark_cursor(int row, int col)
     d.row = row;
     d.col = col;
 
-    (void)move(d.text.top + d.row, d.col);
+    (void)move(d.edit.top + d.row, d.col);
 
     c = inch() | A_REVERSE;
 
@@ -452,7 +452,7 @@ static void mark_cursor(int row, int col)
     // Restore old position and color
 
     (void)attrset(COLOR_PAIR(CMD));     //lint !e835 !e845
-    (void)move(d.text.top + saved_row, saved_col);
+    (void)move(d.edit.top + saved_row, saved_col);
 }
 
 #endif
@@ -737,15 +737,15 @@ static void repaint(int row, int col, int pos)
 
         int saved_row, saved_col;
 
-        getyx(stdscr, saved_row, saved_col); // Save position in command window
+        getyx(stdscr, saved_row, saved_col); // Save position in command region
 
-        (void)move(d.text.top, 0);      // Switch to text window
-        (void)attrset(COLOR_PAIR(TEXT)); //lint !e835
+        (void)move(d.edit.top, 0);      // Switch to edit region
+        (void)attrset(COLOR_PAIR(EDIT)); //lint !e835
 
         int c;
         int nrows = d.nrows;
 
-        // Erase the current text window
+        // Erase the current edit region
 
         while (nrows-- > 0)
         {
@@ -754,13 +754,13 @@ static void repaint(int row, int col, int pos)
 
         nrows = 0;
 
-        (void)move(d.text.top, 0);      // Back to the top
+        (void)move(d.edit.top, 0);      // Back to the top
 
         while ((c = getchar_ebuf(pos++)) != -1)
         {
             if (c == LF)
             {
-                (void)move(d.text.top + nrows + 1, 0);
+                (void)move(d.edit.top + nrows + 1, 0);
             }
             else if (c != CR)
             {
@@ -792,9 +792,9 @@ static void repaint(int row, int col, int pos)
             ++pos;
         }
 
-        // Highlight our current position in text window
+        // Highlight our current position in edit region
 
-        (void)move(d.text.top + row, col);
+        (void)move(d.edit.top + row, col);
 
         d.row = row;
         d.col = col;
@@ -804,7 +804,7 @@ static void repaint(int row, int col, int pos)
         (void)delch();
         (void)insch((uint)c | A_REVERSE);
 
-        // Restore position in command window
+        // Restore position in command region
 
         (void)move(saved_row, saved_col);
         (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
@@ -846,7 +846,7 @@ void refresh_dpy(void)
 
 
 ///
-///  @brief    Reset window colors to defaults.
+///  @brief    Reset region colors to defaults.
 ///
 ///  @returns  Nothing.
 ///
@@ -872,7 +872,7 @@ void reset_colors(void)
     (void)assume_default_colors(COLOR_BLACK, COLOR_WHITE);
 
     (void)init_pair(CMD,    COLOR_BLACK, COLOR_WHITE);
-    (void)init_pair(TEXT,   COLOR_BLACK, COLOR_WHITE);
+    (void)init_pair(EDIT,   COLOR_BLACK, COLOR_WHITE);
     (void)init_pair(STATUS, COLOR_WHITE, COLOR_BLACK);
 
 #endif
@@ -957,13 +957,13 @@ void set_scroll(int unused1, int unused2)
         {
             d.cmd.top  = 0;
             d.cmd.bot  = nlines - 1;
-            d.text.top = nlines;
+            d.edit.top = nlines;
         }
         else
         {
             d.cmd.top  = height - nlines;
             d.cmd.bot  = height - 1;
-            d.text.top = 0;
+            d.edit.top = 0;
         }
 
         (void)setscrreg(d.cmd.top, d.cmd.bot);
@@ -975,7 +975,7 @@ void set_scroll(int unused1, int unused2)
             if (f.e4.invert)
             {
                 d.status.top = d.status.bot = d.cmd.bot + 1;
-                ++d.text.top;
+                ++d.edit.top;
             }
             else
             {
@@ -1017,7 +1017,7 @@ void set_scroll(int unused1, int unused2)
 
 static void update_status(void)
 {
-    // Draw line between text window and command window
+    // Draw line between edit region and command region
 
     int saved_row, saved_col;
 

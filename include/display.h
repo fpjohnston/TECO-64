@@ -37,14 +37,14 @@
 
 #if     defined(TECO_DISPLAY)
 
-///  @enum   window_pair
-///  @brief  Values of foreground/background pairs for defined windows.
+///  @enum   region_pair
+///  @brief  Values of foreground/background pairs for defined regions.
 
 enum window_pair
 {
-    CMD = 1,                        ///< Command window
-    TEXT,                           ///< Text window
-    STATUS                          ///< Status line window
+    CMD = 1,                        ///< Command region
+    EDIT,                           ///< Edit region
+    STATUS                          ///< Status line
 };
 
 #endif
@@ -69,8 +69,8 @@ union tchar
     uint flag;                      ///< Combined above flags
 };
 
-///  @struct  watch
-///  @brief   Watch scope variables (for controlling display).
+///  @struct  w
+///  @brief   Display mode variables
 
 struct watch
 {
@@ -82,7 +82,7 @@ struct watch
     int hold;                       ///< Hold mode indicator
     int topdot;                     ///< Buffer position of upper left corner
     int nlines;                     ///< No. of scrolling lines
-    bool noscroll;                  ///< Disable scrolling regions
+    bool noscroll;                  ///< Disable scrolling region
     union tchar tchar;              ///< Terminal characteristics
 };
 
