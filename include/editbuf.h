@@ -51,11 +51,11 @@ typedef enum
 } estatus;
 
 
-///  @struct  text
+///  @struct  edit
 ///
-///  @brief   Text buffer
+///  @brief   Edit buffer
 
-struct text
+struct edit
 {
     INT B;                      ///< First position in buffer
     INT Z;                      ///< Last position in buffer
@@ -63,7 +63,7 @@ struct text
     INT size;                   ///< Size of buffer in bytes
 };
 
-extern struct text t;
+extern struct edit t;
 
 #if     defined(TECO_DISPLAY)
 

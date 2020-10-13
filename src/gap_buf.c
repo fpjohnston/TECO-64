@@ -39,9 +39,9 @@
 
 ///  @var    t
 ///
-///  @brief  Text data buffer (external)
+///  @brief  Edit buffer (external)
 
-struct text t =
+struct edit t =
 {
     .B        = 0,
     .Z        = 0,
