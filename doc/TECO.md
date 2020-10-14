@@ -10,7 +10,7 @@
 
 [Immediate Action Commands](action.md)
 
-[Simple Commands](simple.md)
+[Novice Commands](novice.md)
 
 ## Command Reference
 
@@ -44,7 +44,9 @@
 
 - [Environment Commands](env.md)
 
-- Display Mode Commands
+- [Display Mode Commands](display.md)
+
+- Miscellaneous Commands
 
 [Glossary of Terms](glossary.md)
 

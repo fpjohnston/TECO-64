@@ -36,8 +36,8 @@
 // Define TECO version numbers
 
 #define MAJOR_VERSION    200    ///< Major version
-#define MINOR_VERSION      3    ///< Minor version
-#define PATCH_VERSION      2    ///< Patch version
+#define MINOR_VERSION      4    ///< Minor version
+#define PATCH_VERSION      0    ///< Patch version
 
 #if     defined(TECO_LONG)
 

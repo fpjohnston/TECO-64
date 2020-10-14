@@ -156,6 +156,8 @@ void exec_W(struct cmd *cmd)
         return;
     }
 
+#if     defined(TECO_DISPLAY)
+
     if (!f.et.scope)                    // Scope mode allowed?
     {
         return;                         // No
@@ -173,17 +175,13 @@ void exec_W(struct cmd *cmd)
     {
         if (!f.e0.display)
         {
-
-#if     defined(TECO_DISPLAY)
-
             reset_term();               // Reset if display mode support
-
-#endif
-
             init_dpy();
             clear_dpy();
         }
     }
+
+#endif
 
     // Note that we ignore any other W commands including a numeric argument.
 }

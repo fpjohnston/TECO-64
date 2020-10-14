@@ -560,12 +560,17 @@ void set_config(
                 break;
 
             case OPTION_V:
+
+#if     defined(TECO_DISPLAY)                
+
                 config.f.vtedit = true;
 
                 if (optarg != NULL && optarg[0] != '-')
                 {
                     config.s.vtedit = optarg;
                 }
+
+#endif
 
                 break;
 

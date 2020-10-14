@@ -175,19 +175,24 @@
 | EY             | [Yank w/o yank protection](page.md) |
 | E_             | [Search w/o yank protection](search.md) |
 | F'             | [Flow to end of conditional](branching.md) |
+| F1             | [Set command region colors](display.md) |
+| F2             | [Set edit region colors](display.md) |
+| F3             | [Set status line colors](display.md) |
 | F\<            | [Flow to start of iteration](branching.md) |
 | F\>            | [Flow to end of iteration](branching.md) |
-| F\|            | [Flow to ELSE part of conditional](branching.md) |
 | *m*,*n*FB      | [Search between positions *m* and *n*](search.md) |
 | *n*FB          | [Search, bounded by *n* lines](search.md) |
 | *m*,*n*FC      | [Search and replace between *m* and *n*](search.md) |
 | *n*FC          | [Search and replace over *n* lines](search.md) |
 | *n*FD          | [Search and delete string](delete.md) |
 | FK             | [Search and delete intervening text](delete.md) |
+| FL             | Convert to lower case |
 | *n*FN          | [Global string replace](search.md) |
 | FR             | [Replace last string](delete.md) |
 | *n*FS          | [Local string replace](search.md) |
+| FU             | Convert to upper case |
 | *n*F_          | [Destructive search and replace](search.md) |
+| F\|            | [Flow to ELSE part of conditional](branching.md) |
 | G*q*           | [Copy string from Q-register *q* into buffer](qregister.md) |
 | G\*            | [Copy last filespec string into buffer](qregister.md) |
 | G_             | [Copy last search string into buffer](qregister.md) |
@@ -222,9 +227,9 @@
 | *n*U*q*        | [Put number *n* into Q-register *q*](qregister.md) |
 | *n*V           | [Type *n* current lines](type-out.md) |
 | *m*,*n*V       | [Type lines before and after current line](type-out.md) |
-| W              | Display mode |
-| *n*:W          | Return display mode characteristics |
-| *m*,*n*:W      | Set display mode characteristics |
+| W              | [Enable or disable display mode](display.md) |
+| *n*:W          | [Read display mode characteristics](display.md) |
+| *m*,*n*:W      | [Set display mode characteristics](display.md) |
 | *n*X*q*        | [Put *n* lines into Q-register *q*](qregister.md) |
 | *m*,*n*X*q*    | [Put characters *m* to *n* into Q-register *q*](qregister.md) |
 | *n*:X*q*       | [Append *n* lines to Q-register *q*](qregister.md) |
