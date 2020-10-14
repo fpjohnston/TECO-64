@@ -1,4 +1,4 @@
-## TECO-64 - Conventions and Notations
+## TECO-64 - Document Conventions
 
 Before proceeding with a description of TECO syntax and commands,
 the following is presented to enumerate the special conventions and
@@ -44,4 +44,30 @@ the ESCape character at that position.
 | \`              | 96            | Accent grave. Used in example code in this manual to indicate a general delimiter, whether ESCape, accent grave, or other character. |
 | \<DEL\>         | 127           | Delete |
 | \<*delim*\>     | \-            | Refers to any character which is used as a delimiter for a command or command string. Originally, TECO only used \<ESC\>, but later versions allowed users to specify an alternate delimiter (often accent grave), either with the ET&8192 flag bit, or the EE flag. <br><br>If an alternate delimiter has been defined, then it will always be echoed as an accent grave, as will ESCape. If no alternate delimiter has been defined, ESCape will echo as a dollar sign ($). <br><br>Since an alternate delimiter can be user-defined, and since there can be as many as three delimiters in effect at a given time, \<*delim*\> is used throughout this manual to refer to any character that may be in use as a command delimiter. <br><br>Note that although alternate delimiters may be used when typing in TECO commands, they may not be used in macros or indirect command files. In those cases, the only delimiter allowed is ESCape. |
+
+### Digit Strings
+
+Numbers may be specified as a string of digits in either decimal or octal.
+The ^D, ^O, and ^R commands are used to set the current radix. If the radix
+is octal, the digits 8 and 9 are illegal and will result in a ILN error.
+
+If the radix is hexadecimal, only digits 0 through 9 may be used; there is
+no way to specify hex digits A through F, as those could be interpreted as
+TECO commands.
+
+### Whitespace
+
+\<LF\>, \<VT\>, \<FF\>, \<CR\>, and \<SPACE\> are ignored in command strings,
+except when they appear as part of a text argument. Numeric values are not
+affected. These characters may be inserted between any two TECO commands,
+or between fields in a TECO command, to lend clarity to a long command string
+without affecting its execution.
+
+Whitespace does not include \<TAB\>, since that is a TECO command.
+
+Also, whitespace may not occur between characters of a multi-character
+command (e.g., the local search and replace command must always be
+specified as "FS" and not "F S"), nor between digits of a digit string.
+This is a change from earlier TECOs.
+
 

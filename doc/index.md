@@ -2,12 +2,12 @@
 
 | Character(s)   | Description |
 | -------------- | ----------- |
-| NUL            | Discarded on input; ignored in command |
+| NUL            | [Discarded on input; ignored in command](misc.md) |
 | ^A             | [Output message to terminal](type-out.md) |
-| ^B             | [Current date](values.md) |
+| ^B             | [Current date](variables.md) |
 | ^C             | [Stop execution](immediate.md) |
-| ^D             | [Set radix to decimal](oper.md) |
-| ^E             | [Form feed flag](values.md) |
+| ^D             | [Set radix to decimal](radix.md) |
+| ^E             | [Form feed flag](variables.md) |
 | ^E<*n*>        | [(Match char) Match ASCII code *n*](search.md) |
 | ^EA            | [(Match char) Match alphabetics](search.md) |
 | ^EB            | [(Match char) Match separator character](search.md) |
@@ -27,27 +27,27 @@
 | ^G^G           | [Delete entire command string](immediate.md) |
 | ^G\<SPACE\>    | [Retype current command line](immediate.md) |
 | ^G\*           | [Retype current command input](immediate.md) |
-| ^H             | [Current time of day](values.md) |
+| ^H             | [Current time of day](variables.md) |
 | BS             | [Back up and type one line](immediate.md) |
 | TAB            | [Insert tab and text](insert.md) |
 | LF             | [Advance and type one line](immediate.md) |
-| LF             | Line terminator |
+| LF             | [Line terminator](conventions.md) |
 | \<CTRL/K\>     | [Reset display colors](immediate.md) |
-| VT             | Line terminator |
-| FF             | Page terminator |
-| CR             | End input line |
-| ^N             | [End of file flag](values.md) |
+| VT             | [Line terminator](conventions.md) |
+| FF             | [Page terminator](conventions.md) |
+| CR             | [End input line](conventions.md) |
+| ^N             | [End of file flag](variables.md) |
 | ^N*x*          | [(Match char.) Match all but *x*](search.md) |
-| ^O             | [Set radix to octal](oper.md) |
-| ^P             | [Current page number](values.md) |
-| ^Q             | [Convert line argument to character argument](values.md) |
+| ^O             | [Set radix to octal](radix.md) |
+| ^P             | [Current page number](variables.md) |
+| ^Q             | [Convert line argument to character argument](variables.md) |
 | ^Q*x*          | [Use *x* literally in search string](search.md) |
-| ^R             | [Value of current radix](values.md) |
-| *n*^R          | [Set radix to *n](oper.md) |
+| ^R             | [Value of current radix](variables.md) |
+| *n*^R          | [Set radix to *n*](radix.md) |
 | ^R*x*          | [Use *x* literally in search string](search.md) |
-| ^S             | [-(length) of last referenced string](values.md) |
+| ^S             | [-(length) of last referenced string](variables.md) |
 | ^S             | [(Match char.) Match separator character](search.md) |
-| ^T             | [ASCII value of next character typed](values.md) |
+| ^T             | [ASCII value of next character typed](variables.md) |
 | :^T            | Read and decode next keystroke typed |
 | *n*^T          | [Type ASCII character of value *n*](type-out.md) |
 | *n*:^T         | [Output binary byte of value n](type-out.md) |
@@ -56,22 +56,22 @@
 | :^U*q*         | [Append string to Q-register *q*](qregister.md) |
 | n^U*q*         | [Put ASCII char. *n* to Q-register *q*](qregister.md) |
 | :n^U*q*        | [Append ASCII char. *n* to Q-register *q*](qregister.md) |
-| ^V             | Enable lower case conversion |
-| ^V*x*          | (String char.) Force *x* to lower case |
+| ^V             | [Enable lower case conversion](misc.md) |
+| ^V*x*          | [(String char.) Force *x* to lower case](search.md) |
 | \<CTRL/W\>     | [Repaint display](immediate.md) |
-| ^W             | Enable upper case conversion |
-| ^W*x*          | (String char.) Force *x* to upper case |
+| ^W             | [Enable upper case conversion](misc.md) |
+| ^W*x*          | [(String char.) Force *x* to upper case](search.md) |
 | ^X             | [Search mode flag](flags.md) |
 | ^X             | [(Match char) Match any character](search.md) |
-| ^Y             | [Equivalent to ".+^S,."](values.md) |
-| ^Z             | [Size of text in all Q-registers](values.md) |
+| ^Y             | [Equivalent to ".+^S,."](variables.md) |
+| ^Z             | [Size of text in all Q-registers](variables.md) |
 | ESC            | [String and command terminator](immediate.md) |
 | ^[             | [String and command terminator](immediate.md) |
 | ^\\            | Not a TECO command |
 | ^]             | Not a TECO command |
-| ^^*x*          | [ASCII value of *x*](values.md) |
+| ^^*x*          | [ASCII value of *x*](variables.md) |
 | ^_             | [One's complement (logical NOT)](oper.md) |
-| SPACE          | Ignored in commands |
+| SPACE          | [Ignored in commands](conventions.md) |
 | !tag!          | [Define label](branch.md) |
 | !              | [Logical NOT](oper.md) |
 | "              | [Start conditional](ifthen.md)
@@ -93,7 +93,7 @@
 | *n*"V          | [Test for lower case](ifthen.md) |
 | *n*"W          | [Test for upper case](ifthen.md) |
 | \#             | [Logical OR](oper.md) |
-| $              | Separate TECO commands |
+| $              | Not a TECO command |
 | *n*%*q*        | [Add *n* to Q-register *q* and return result](qregister.md) |
 | \&             | [Logical AND](oper.md) |
 | '              | [End conditional](ifthen.md) |
@@ -102,13 +102,13 @@
 | \*             | [Multiplication](oper.md) |
 | \**q*          | [Save last command in Q-register *q*](qregister.md) |
 | \+             | [Addition](oper.md) |
-| ,              | Argument separator |
+| ,              | [Argument separator](basics.md) |
 | \-             | [Subtraction or negation](oper.md) |
-| .              | [Current pointer position](values.md) |
+| .              | [Current pointer position](variables.md) |
 | /              | [Division yielding quotient](oper.md) |
 | /              | [Type detailed explanation of error](immediate.md) |
 | //             | [Division yielding remainder](oper.md) |
-| 0-9            | Digit |
+| 0-9            | [Digit](conventions.md) |
 | :              | [Modify next command](basics.md) |
 | ;              | [Exit iteration on search failure](branching.md) |
 | *n*;           | [Exit iteration if *n* is positive](branching.md) |
@@ -130,13 +130,13 @@
 | \>             | [Relational comparison for greater than](oper.md) |
 | \<=            | [Relational comparisson for greater than or equal](oper.md) |
 | \>\>           | [Arithmetic right shift](oper.md) |
-| ?              | Toggle trace mode |
+| ?              | [Toggle trace mode](misc.md) |
 | ?              | [Type out command string in error](immediate.md) |
 | @              | [Modify next text argument](basics.md) |
 | A              | [Append to buffer](page.md) |
-| *n*A           | [ASCII value of *n*th character in buffer](values.md) |
+| *n*A           | [ASCII value of *n*th character in buffer](variables.md) |
 | *n*:A          | [Append *n* lines to buffer](page.md) |
-| B              | [Beginning of buffer](values.md) |
+| B              | [Beginning of buffer](variables.md) |
 | *n*C           | [Advance *n* characters](move.md) |
 | *n*D           | [Delete *n* characters](delete.md) |
 | *m*,*n*D       | [Delete between positions *m* and *n*](delete.md) |
@@ -160,7 +160,7 @@
 | EK             | [Kill output file](file.md) |
 | EL             | [Open/close log file](file.md) |
 | EN             | [Find next file](file.md) |
-| EO             | [TECO version number](values.md) |
+| EO             | [TECO version number](variables.md) |
 | EP             | [Switch to secondary input stream](file.md) |
 | EQ             | [Read file to Q-register](file.md) |
 | ER             | [Edit read](file.md) |
@@ -186,11 +186,11 @@
 | *n*FC          | [Search and replace over *n* lines](search.md) |
 | *n*FD          | [Search and delete string](delete.md) |
 | FK             | [Search and delete intervening text](delete.md) |
-| FL             | Convert to lower case |
+| FL             | [Convert to lower case](misc.md) |
 | *n*FN          | [Global string replace](search.md) |
 | FR             | [Replace last string](delete.md) |
 | *n*FS          | [Local string replace](search.md) |
-| FU             | Convert to upper case |
+| FU             | [Convert to upper case](misc.md) |
 | *n*F_          | [Destructive search and replace](search.md) |
 | F\|            | [Flow to ELSE part of conditional](branching.md) |
 | G*q*           | [Copy string from Q-register *q* into buffer](qregister.md) |
@@ -199,15 +199,15 @@
 | :G*q*          | [Type Q-register *q*](qregister.md) |
 | :G*            | [Type last filespec string](qregister.md) |
 | :G_            | [Type last search string](qregister.md) |
-| H              | [Equivalent to "B,Z"](values.md) |
+| H              | [Equivalent to "B,Z"](variables.md) |
 | I              | [Insert text](insert.md) |
 | *n*I           | [Insert character](insert.md) |
 | *n*J           | [Move pointer](move.md) |
 | *n*K           | [Kill *n* lines](delete.md) |
 | *m*,*n*K       | [Delete between *m* and *n*](delete.md) |
 | *n*L           | [Advance *n* lines](move.md) |
-| *n*:L          | [Count of buffer lines](values.md) |
-| M*q*           | [Returned value from macro](values.md) |
+| *n*:L          | [Count of buffer lines](variables.md) |
+| M*q*           | [Returned value from macro](variables.md) |
 | M*q*           | [Execute string in Q-register *q*](qregister.md) |
 | *n*N           | [Global search](search.md) |
 | O              | [Go to label](branching.md) |
@@ -216,8 +216,8 @@
 | *m*,*n*P       | [Write out chars from positions *m* to *n*](page.md) |
 | *n*PW          | [Write buffer *n* times](page.md) |
 | *m*,*n*PW      | [Write out chars from positions *m* to *n*](page.md) |
-| Q*q*           | [Number in Q-register *q*](values.md) |
-| :Q*q*          | [Size of text in Q-register *q*](values.md) |
+| Q*q*           | [Number in Q-register *q*](variables.md) |
+| :Q*q*          | [Size of text in Q-register *q*](variables.md) |
 | *n*R           | [Back up *n* characters](move.md) |
 | *n*S           | [Local search](search.md) |
 | *m*,*n*S       | [Search for *n*th occurrence within *m* characters](search.md) |
@@ -235,16 +235,16 @@
 | *n*:X*q*       | [Append *n* lines to Q-register *q*](qregister.md) |
 | *m*,*n*:X*q*   | [Append characters *m* to *n* into Q-register *q*](qregister.md) |
 | Y              | [Read into buffer](page.md) |
-| Z              | [End of buffer value](values.md) |
+| Z              | [End of buffer value](variables.md) |
 | [*q*           | [Push Q-register *q* onto stack](qregister.md) |
-| \\             | [Value of digit string in buffer](values.md) |
-| *n*\\          | [Convert *n* to digits in buffer](values.md) |
+| \\             | [Value of digit string in buffer](variables.md) |
+| *n*\\          | [Insert digit string in buffer](insert.md) |
 | ]*q*           | [Pop from stack into Q-register *q*](qregister.md) |
 | *n*_           | [Global search without output](search.md) |
 | \`             | Not a TECO command |
 | a-z            | Equivalent to upper case A-Z commands |
-| {              | Alternative text argument delimiter |
+| {              | [Alternative text argument delimiter](basics.md) |
 | \|             | [Start ELSE part of conditional](ifthen.md) |
-| }              | Alternative text argument delimiter |
+| }              | [Alternative text argument delimiter](basics.md) |
 | \~             | [Logical XOR](oper.md) |
-| DEL            | Delete last character typed |
+| DEL            | [Delete last character typed](immediate.md) |

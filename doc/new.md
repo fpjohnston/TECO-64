@@ -50,7 +50,7 @@ being returned if the open succeeded, and 0 if it failed.
 
 [^K - Reset display colors](immediate.md)
 
-[^Q - Convert line numbers to character values](values.md) (TECO-10)
+[^Q - Convert line numbers to character values](variables.md) (TECO-10)
 
 [^T - Type character](typeout.md)
 - Added repeat count.
@@ -102,7 +102,7 @@ being returned if the open succeeded, and 0 if it failed.
 
 [EL - Open/close log file](file.md) (TECO-10)
 
-[EO - TECO version number](values.md)
+[EO - TECO version number](variables.md)
 - Updated version number of 200, and added minor and patch versions.
 
 [EQ - Read file to Q-register](file.md) (TECO-10)
@@ -113,11 +113,11 @@ being returned if the open succeeded, and 0 if it failed.
 [EY - Yank backwards](page.md)
 - Added optional code to allow backwards paging (TECO-32).
 
-[F1 - Set command window colors](cmds/F1.md)
+[F1 - Set command window colors](display.md)
 
-[F2 - Set text window colors](cmds/F2.md)
+[F2 - Set text window colors](display.md)
 
-[F3 - Set status line colors](cmds/F3.md)
+[F3 - Set status line colors](display.md)
 
 [FD - Search and delete](search.md) (TECO-10)
 
@@ -133,7 +133,7 @@ being returned if the open succeeded, and 0 if it failed.
 [J - Jump to position](move.md)
 - Added colon modifier to return success/failure value. (TECO-10)
 
-[L - Line count](values.md)
+[L - Line count](variables.md)
 - Added colon modifier to return line count.
 
 [N - Non-stop search](search.md)
@@ -151,4 +151,4 @@ being returned if the open succeeded, and 0 if it failed.
 [Y - Yank page](page.md)
 - Allowed backwards yanking if virtual memory code included. (TECO-32)
 
-[{} - Braced text arguments](cmds/braces.md)
+[{} - Braced text arguments](basics.md)

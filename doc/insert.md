@@ -35,3 +35,4 @@ characters that could not ordinarily be typed at a terminal.
 | *n*@FR/*text*/ | Equivalent to *n*FR*text*\`. |
 | *m*,*n*FR*text*\` | Equivalent to *m*,*n*DI*text*\`. The characters between buffer positions m and n are deleted and replaced with *text*. The buffer pointer is left positioned immediately after *text* upon completion of this command. |
 | *m*,*n*@FR/*text*/ | Equivalent to *m*,*n*FR*text*\`. |
+| *n*\\ | The backslash command preceded by an argument inserts the value of *n* into the edit buffer at the current position of the pointer, leaving the pointer positioned after the last digit of the insertion. The insertion is either signed decimal, unsigned octal, or unsigned hexadecimal. Note that \\ is a "bidirectional" command. *n*\\ inserts a string into text while \\ without a numeric argument returns a numeric result. |

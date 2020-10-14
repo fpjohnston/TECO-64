@@ -82,10 +82,10 @@ be disabled by using the ED flag.
 | ------- | -------- |
 | \<CTRL/Q\> | Specifies that the character following the \<CTRL/Q\> is to be used literally rather than as a match control character. |
 | \<CTRL/R\> | Equivalent to \<CTRL/Q\>. |
-| \<CTRL/V\> | Specifies that the character following the \<CTRL/V\> is to be used as the equivalent character in the lower case ASCII range (i.e., 64 to 95 is treated as 96 to 127). |
-| \<CTRL/V\>\<CTRL/V\> | Specifies that all following alphabetic characters in this string are to be converted to lower case unless an explicit ^W is given to override this state. This state continues until the end of the string or until a ^W^W construct is encountered. |
-| \<CTRL/W\> | Specifies that the character following the \<CTRL/W\> is to be used as the equivalent character in the upper case ASCII range (i.e., 64 to 95 is treated as 96 to 127).
-| \<CTRL/W\>\<CTRL/W\> | Specifies that all following alphabetic characters in this string are to be converted to upper case unless an explicit ^V is encountered to override this state. This state continues until the end of the string or until a ^V^V construct is encountered. |
+| \<CTRL/V\>\<CTRL/V\> | Convert all following alphabetic characters in this string are to be converted to lower case unless an explicit \<CTRL/W\> is given to temporarily override this state. This state continues until the end of the string or until a \<CTRL/W\> construct is encountered. |
+| \<CTRL/V\>*x* | Convert *x* to lower case. |
+| \<CTRL/W\>\<CTRL/W\> | Convert all following alphabetic characters in this string to upper case unless an explicit \<CTRL/V\> is encountered to temporarily override this state. This state continues until the end of the string or until a \<CTRL/V\>\<CTRL/V\> construct is encountered. |
+| \<CTRL/W\>*x* | Convert *x* to upper case. |
 | \<CTRL/E\>Q*q* | Specifies that the string stored in Q-register *q* is to be used in the position occupied by the ^EQ*q* in the search string. |
 | \<CTRL/E\>U*q* | Specifies that the character whose ASCII code is specified by the numeric storage area of Q-register *q* is to be used in the position occupied by the ^EU*q* in the search string. |
 

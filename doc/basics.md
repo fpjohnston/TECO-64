@@ -53,20 +53,15 @@ The fields in brackets are either optional, or are dependent on the
 command being executed. These are for illustration only; none of TECO's
 commands use all of these fields.
 
-Also, whitespace may be used between fields to improve legibility of
-the command being input without affecting its execution.
-Whitespace in TECO includes \<SPACE\>, \<LF\>, \<VT\>, \<FF\>, and
-\<CR\>, but not \<TAB\>, since that is a TECO command and is never
-treated as whitespace.
-
 | Field | Description | Examples |
 | ----- | ----------- | -------- |
-| *m*   | A numeric argument. If specified, then it must be followed by a comma and an *n* argument. | 10,20K |
-| *n*   | A numeric argument. | 42R |
+| *m*   | First numeric argument. | 10,20K |
+| , | Separator between *m* and *n* arguments. | 0,8192ET |
+| *n*   | Second (or only) numeric argument. | 42R |
 | : | Colon modifier. Affects the behavior of the following command, often in order to return a value indicating success or failure of the command rather than aborting execution and issuing an error. | \:ERinput.c\` |
 | :: | Double colon modifier. Affects the behavior of the following command, but differently than :. Often used for "anchored" searches. | \:\:Sbaz\` |
 | @ | At signed modifier. Specifies an alternative delimiter will be used for text arguments that follow the command, using a matched pair of characters. | \@^A/hello/ @FC/baz/foo/ |
-| command | The TECO command to be executed. It will consist of one, two, or three characters. No whitespace is allowed between multi-character commands. Commands may be either upper or lower case. | V, ET, === |
+| command | The TECO command to be executed. | V, ET, === |
 | *q* | The name of the Q-register that the command will use. | 1XA |
 | *text1* | The first text argument for the command. See description below. | Ifoobaz\` |
 | *text2* | The second text argument for the command. See description below. | FSfoo\`baz\` |
@@ -127,25 +122,7 @@ the command being executed. The string may not include a \<*delim*\>,
 since this would terminate the string prematurely, but it may
 include any other character.
 
-| Example | Description |
-| ------- | ----------- |
-| Sabc\`  | Search for the string "abc" |
-| ^UAhello, world!\` | Insert the text "hello, world!" into Q-register A |
-| OBEGIN\` | Branch to the tag specified by the string "BEGIN" |
-
-Depending on the command, it may also be possible to use a "null" text
-argument by terminating the command with a \<*delim*\>. Using the
-example of the search command above, if that was followed by "S\'",
-then TECO would search for the next occurrence of "abc".
-
-Some TECO commands allow or require two text arguments. Each argument
-must be followed by a \<*delim*\> character, as follows:
-
-FSabc\`def\` Replace string "abc" by "def"
-
-### At-Sign Modifier
-
-Commands that allow text arguments are normally delimited as follows:
+Commands that allow a single text argument are normally delimited as follows:
 
 | Command | Description |
 | ------- | ----------- |
@@ -153,19 +130,60 @@ Commands that allow text arguments are normally delimited as follows:
 | <nobr>^Ahello, world!\<CTRL/A\></nobr> | The type-out command may start with a CTRL/A or literal ^A, but it must be terminated by a CTRL/A.
 | !tag! | Any tag or comment must be start and end with an exclamation mark. |
 
+| Example | Description |
+| ------- | ----------- |
+| Sabc\`  | Search for the string "abc" |
+| ^UAhello, world!\` | Insert the text "hello, world!" into Q-register A |
+| OBEGIN\` | Branch to the tag specified by the string "BEGIN" |
+
+Depending on the command, it may also be possible to use a "null" text
+argument by terminating the command with a \<*delim*\>. The effect of
+doing so is dependent on the specific command, but using the
+example of the S command above, if that was followed by an " S\' " command,
+that would cause TECO to search for the next occurrence of "abc".
+
+Some TECO commands allow or require two text arguments. Each argument
+must be followed by a \<*delim*\> character, as shown below:
+
+```FSabc`def` ```
+
+### At Sign Modifier
+
 At sign modifiers are used to allow an alternate form of delimiting
 text arguments that follow a command, by specifying that they will
 instead be delimited by a pair of matching characters:
 
-Examples:
+```@FS/foo/baz/```
 
-@FS/foo/baz/
-
-@^A+hello, world!+
+```@^A+hello, world!+```
 
 If both text arguments are used, then only one delimiter is required
 between them.
 
+Also, when an at sign modifier is used, whitespace is allowed between
+the command and the first delimiter:
+
+```@S /abc/ ```
+
 Delimiters used with an at sign modifier may be any graphic ASCII
 character (ASCII 33 through 126, inclusive). Control characters and
-spaces are not allowed as delimiters.
+spaces are not allowed as delimiters. This is a change from earlier
+TECOs that would allow any character as a delimiter.
+
+If the E1&4 flag bit is set, then paired braces may additionally be
+used to delimit text arguments. This also has the advantage of allowing
+whitespace, not only before the first delimiter, but between the
+text arguments.
+
+```@S{foo}```
+
+```@FN{foo}{baz}```
+
+```@FS {foo} {baz}```
+
+If text arguments are delimited using this form, then commands such
+as the following are no longer valid:
+
+```@^A{hello{```
+
+```@^A}goodbye}```

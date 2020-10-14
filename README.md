@@ -94,10 +94,8 @@ macros.
 
 ### Additional Documentation
 
-[DEC Standard TECO](doc/DEC_Standard_TECO.pdf) - this document is
-30 years old and is in many ways archaic, incomplete, and
-erroneous, but it also provides information about TECO not
-available elsewhere.
-
-[TECO-64 Manual](doc/TECO.md) - this is adapted from the previous
-document, and is a work in progress that will eventually replace it.
+[TECO-64 Reference Manual](doc/TECO.md) - this is a work in progress
+that has been adapted, corrected, and updated from a user's guide and
+language reference manual titled *Standard TECO Text Editor and
+Corrector for the VAX, PDP-11, PDP-10, and PDP-8*, published by
+Digital Equipment Corporation in May 1990.

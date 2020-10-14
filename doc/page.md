@@ -46,9 +46,3 @@ capacity will be presented later in this chapter.
 | :EY | Same as the :Y command, but its action is always permitted regardless of the value of the Yank protection bit in the ED flag. Remember that Yank DESTROYS the current buffer; there’s no way to get it back! |
 | -EY | Same as the -Y command, but its action is always permitted. |
 | -:EY | Same as the -:Y command, but its action is always permitted. |
-
-### Memory Commands
-
-| Command | Function |
-| ------- | -------- |
-| *n*EC | *n*EC tells TECO to expand or contract until it uses *n*K bytes of memory for its edit buffer. If this is not possible, then TECO’s memory usage does not change. The 0EC command tells TECO to use the least amount of memory possible. |

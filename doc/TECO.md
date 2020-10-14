@@ -1,10 +1,10 @@
-# TECO-64 Manual
+# TECO-64 Reference Manual
 
 [Introduction to TECO](intro.md)
 
-[Starting TECO](starting.md)
+[Starting TECO](start.md)
 
-[Conventions & Notations](conventions.md)
+[Document Conventions](conventions.md)
 
 [Command Basics](basics.md)
 
@@ -18,7 +18,7 @@
 
 - [Arithmetic and Expressions](oper.md)
 
-- [Special Numeric Values](values.md)
+- [Numeric Variables](variables.md)
 
 - [Mode Control Flags](flags.md)
 
@@ -46,7 +46,7 @@
 
 - [Display Mode Commands](display.md)
 
-- Miscellaneous Commands
+- [Miscellaneous Commands](misc.md)
 
 [Glossary of Terms](glossary.md)
 
