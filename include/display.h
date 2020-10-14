@@ -104,7 +104,11 @@ extern int getchar_dpy(bool wait);
 
 extern void getsize_dpy(void);
 
+#if     defined(TECO_DISPLAY)
+
 extern void init_dpy(void);
+
+#endif
 
 extern bool putc_dpy(int c);
 
@@ -112,7 +116,11 @@ extern bool puts_dpy(const char *buf);
 
 extern int readkey_dpy(int c);
 
+#if     defined(TECO_DISPLAY)
+
 extern void reset_dpy(void);
+
+#endif
 
 extern void refresh_dpy(void);
 

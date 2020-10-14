@@ -355,11 +355,10 @@ void getsize_dpy(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_dpy(void)
-{
-
 #if     defined(TECO_DISPLAY)
 
+void init_dpy(void)
+{
     if (!f.e0.display)
     {
         f.e0.display = true;
@@ -398,14 +397,9 @@ void init_dpy(void)
 
         d.vcol = 0;
     }
-
-#else
-
-    throw(E_NOD);                       // Display mode not enabled
+}
 
 #endif
-
-}
 
 
 ///
@@ -887,21 +881,19 @@ void reset_colors(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void reset_dpy(void)
-{
-
 #if     defined(TECO_DISPLAY)
 
+void reset_dpy(void)
+{
     if (f.e0.display)
     {
         f.e0.display = false;
 
         (void)endwin();
     }
+}
 
 #endif
-
-}
 
 
 ///
