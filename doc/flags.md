@@ -184,3 +184,14 @@ should be output to the terminal, according to the table below.
 | *n*ES | If *n* is between 1 and 31, the current line is typed out with a line feed immediately following the position of the pointer to identify its position. If *n* is between 32 and 126, the current line is typed out with the ASCII character corresponding to the value of n immediately following the position of the pointer to identify its position. If you want to see more than one line of type out, use the form *m*\*256+*n*. The *n* is the same as above. The *m* is the number of lines of view. For example, 3\*256+^^! would give two lines on either side of the current line, and the current line with the character "!" at the pointer’s position. |
 
 The initial value of the EV flag is 0.
+
+### ^X - Search Mode Flag
+
+| Command | Function |
+| ------- | -------- |
+| 0^X | The text argument in a search command will match text in the text buffer independent of case in either the search argument or the text buffer. The lower case alphabetics match the upper case alphabetics, and "`", "{", " | ", "}", "~" match "@", "[", "\ ", "]", "^" respectively. |
+| -1^X | The search will succeed only if the text argument is identical to text in the text buffer. (This means that lower case does NOT match upper case). |
+| 1^X | The text argument in a search command will match text in the text buffer independent of case in either the search argument or the text buffer. |
+
+The initial value of the ^X flag is 1. (For control of caret or
+uparrow treatment in search strings, see the ED&1 flag bit.)
