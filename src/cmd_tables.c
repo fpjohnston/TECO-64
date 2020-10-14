@@ -84,6 +84,11 @@
 
 #define am1_opts    (OPT_A | OPT_M | OPT_N | OPT_T1)
 
+///  @def    am2_opts
+///  @brief  Command options.
+
+#define am2_opts    (OPT_A | OPT_M | OPT_N | OPT_T1 | OPT_T2)
+
 ///  @def    an1_opts
 ///  @brief  Command options.
 
@@ -138,11 +143,6 @@
 ///  @brief  Command options.
 
 #define m_opts      (OPT_M | OPT_N)
-
-///  @def    m2_opts
-///  @brief  Command options.
-
-#define m2_opts     (OPT_M | OPT_N | OPT_T1 | OPT_T2)
 
 ///  @def    mq_opts
 ///  @brief  Command options.
@@ -405,9 +405,9 @@ const uint e_max = countof(e_table); ///< Maximum E command
 const struct cmd_table f_table[] =
 {
     ENTRY('\'',  exec_F_apos,  m_opts),
-    ENTRY('1',   exec_F1,      m2_opts),
-    ENTRY('2',   exec_F2,      m2_opts),
-    ENTRY('3',   exec_F3,      m2_opts),
+    ENTRY('1',   exec_F1,      am2_opts),
+    ENTRY('2',   exec_F2,      am2_opts),
+    ENTRY('3',   exec_F3,      am2_opts),
     ENTRY('<',   exec_F_lt,    m_opts),
     ENTRY('>',   exec_F_gt,    m_opts),
     ENTRY('B',   exec_FB,      acm1_opts),
