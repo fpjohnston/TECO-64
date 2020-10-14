@@ -48,19 +48,21 @@
 
 - [Miscellaneous Commands](misc.md)
 
-[Glossary of Terms](glossary.md)
+## Appendices
 
-[New Features](new.md)
+- [Glossary of Terms](glossary.md)
 
-[Missing Features](missing.md)
+- [New Features](new.md)
 
-[Internals Notes](internals.md)
+- [Missing Features](missing.md)
 
-[Error Messages](errors.md)
+- [Internals Notes](internals.md)
 
-[Colon-Modified Commands](colon.md)
+- [Error Messages](errors.md)
 
-[At Sign-Modified Commands](atsign.md)
+- [Colon-Modified Commands](colon.md)
 
-[Index of Commands](index.md)
+- [At Sign-Modified Commands](atsign.md)
+
+- [Index of Commands](index.md)
 
