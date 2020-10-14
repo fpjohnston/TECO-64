@@ -293,6 +293,8 @@ static void sig_handler(int signum)
 
         case SIGWINCH:
             getsize_dpy();
+            clear_dpy();
+            print_prompt();
 
             break;
 
