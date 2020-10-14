@@ -204,13 +204,13 @@ $(error Holding file paging is not yet implemented)
 
 SOURCES += page_file.c
 
-else ifeq (${paging}, standard)
+else ifeq (${paging}, std)
 
 SOURCES += page_std.c
 
 else ifeq (${paging}, )
 
-SOURCES += page_std.c
+SOURCES += page_vm.c
 
 else
 
