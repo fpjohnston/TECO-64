@@ -104,6 +104,7 @@ SOURCES = \
     ctrl_w_cmd.c   \
     datetime_cmd.c \
     delete_cmd.c   \
+    dollar_cmd.c   \
     ea_cmd.c       \
     eb_cmd.c       \
     ec_cmd.c       \

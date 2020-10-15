@@ -129,6 +129,11 @@
 
 #define cnq_opts    (OPT_C | OPT_N | OPT_Q)
 
+///  @def    cq1_opts
+///  @brief  Command options.
+
+#define cq1_opts    (OPT_C | OPT_Q | OPT_T1)
+
 ///  @def    f_opts
 ///  @brief  Command options.
 
@@ -238,7 +243,7 @@ const struct cmd_table cmd_table[] =
     ENTRY('!',     exec_bang,      a1_opts),
     ENTRY('"',     exec_quote,     n_opts),
     ENTRY('#',     exec_oper,      OPT_S),
-    ENTRY('$',     NULL,           OPT_B),
+    ENTRY('$',     exec_dollar,    cq1_opts),
     ENTRY('%',     exec_pct,       cnq_opts),
     ENTRY('&',     exec_oper,      OPT_S),
     ENTRY('\'',    exec_apos,      m_opts),

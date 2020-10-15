@@ -100,6 +100,12 @@ extern bool clear_eol(void);
 
 extern void clear_dpy(void);
 
+#if     defined(TECO_DISPLAY)
+
+extern bool exec_key(int key);
+
+#endif
+
 extern int getchar_dpy(bool wait);
 
 extern void getsize_dpy(void);

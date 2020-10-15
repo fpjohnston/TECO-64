@@ -77,6 +77,7 @@ enum errors
     E_ISA,          ///< Illegal search argument
     E_ISS,          ///< Illegal search string
     E_IUC,          ///< Illegal character "x" following ^
+    E_KEY,          ///< Key "%s" not found
     E_MAP,          ///< Missing apostrophe
     E_MAT,          ///< No matching files
     E_MEM,          ///< Memory overflow

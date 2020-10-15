@@ -94,6 +94,8 @@ extern void exec_ctrl_Z(struct cmd *cmd);
 
 extern void exec_D(struct cmd *cmd);
 
+extern void exec_dollar(struct cmd *cmd);
+
 extern void exec_dot(struct cmd *cmd);
 
 extern void exec_E1(struct cmd *cmd);

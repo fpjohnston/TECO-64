@@ -94,6 +94,7 @@ static struct err_table err_table[] =
     [E_ISA] = { "ISA",  "Illegal search argument" },
     [E_ISS] = { "ISS",  "Illegal search string" },
     [E_IUC] = { "IUC",  "Illegal character '%s' following ^" },
+    [E_KEY] = { "KEY",  "Key '%s' not found" },
     [E_MAP] = { "MAP",  "Missing '" },
     [E_MAT] = { "MAT",  "No match for file specification" },
     [E_MEM] = { "MEM",  "Memory overflow" },
@@ -226,6 +227,8 @@ static const char *verbose[] =
     [E_IUC] = "The character following a ^ must have an ASCII value "
               "between 100 and 137 inclusive or between 141 and 172 "
               "inclusive.",
+
+    [E_KEY] = "An invalid key was specified for a key/macro definition.",
 
     [E_MAP] = "Every conditional (opened with the \" command) must be "
               "closed with the ' command.",
@@ -573,6 +576,7 @@ noreturn void throw(int error, ...)
         case E_FIL:
         case E_FNF:
         case E_INI:
+        case E_KEY:
         case E_SRH:
         case E_TAG:
             err_str = va_arg(args, const char *);
