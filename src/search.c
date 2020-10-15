@@ -35,6 +35,7 @@
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 #include "file.h"
 #include "page.h"
@@ -75,6 +76,70 @@ static bool match_str(struct search *s);
 static void exit_search(void)
 {
     free_mem(&last_search.data);
+}
+
+
+///
+///  @brief    Check to see if we need to print anything after a successful
+///            search, or before a prompt.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void flag_print(int flag)
+{
+    int m    = flag / 256;
+    int n    = flag % 256;
+    int mark = 0;
+
+    // Never print anything if we're in a loop or a macro.
+
+    if (check_loop() || check_macro() || n == 0)
+    {
+        return;
+    }
+
+    if (n > NUL && n < SPACE)
+    {
+        mark = LF;
+    }
+    else if (n >= SPACE && n < DEL)
+    {
+        mark = n;
+    }
+    else
+    {
+        mark = -1;
+    }
+
+    if (m == 0)
+    {
+        n = getdelta_ebuf(1);
+        m = getdelta_ebuf(0);
+    }
+    else
+    {
+        n = getdelta_ebuf(m);
+        m = getdelta_ebuf(1 - m);
+    }
+
+    for (int i = m; i < n; ++i)
+    {
+        if (i == 0 && mark != -1)
+        {
+            echo_out(mark);
+        }
+
+        int c = getchar_ebuf(i);
+
+        if (c == LF)
+        {
+            echo_out(CR);
+        }
+
+        echo_out(c);
+    }
 }
 
 
@@ -395,6 +460,50 @@ bool search_backward(struct search *s)
 
 
 ///
+///  @brief    Process failure of any search command. If the command was colon-
+///            modified, then we can just return a value. If not, but we are
+///            in a loop, then we exit using a "F>" command. Otherwise, throw
+///            an exception.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void search_failure(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->colon)
+    {
+        push_expr(0, EXPR_VALUE);
+    }
+    else
+    {
+        if (!f.ed.keepdot)
+        {
+            setpos_ebuf(0);
+        }
+
+        if (check_loop())
+        {
+            if (!check_semi())
+            {
+                tprint("%%Search failure in loop\r\n");
+            }
+
+            exec_F_gt(cmd);
+        }
+        else
+        {
+            last_search.data[last_search.len] = NUL;
+
+            throw(E_SRH, last_search.data);
+        }
+    }
+}
+
+
+///
 ///  @brief    Search forward through edit buffer to find next instance of
 ///            string in search buffer.
 ///
@@ -545,64 +654,18 @@ bool search_loop(struct search *s)
 
 
 ///
-///  @brief    Check to see if we need to print anything after a successful
-///            search, or before a prompt.
+///  @brief    Process success of any search command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void flag_print(int flag)
+void search_success(struct cmd *cmd)
 {
-    int m    = flag / 256;
-    int n    = flag % 256;
-    int mark = 0;
+    assert(cmd != NULL);
 
-    // Never print anything if we're in a loop or a macro.
-
-    if (check_loop() || check_macro() || n == 0)
+    if (cmd->colon || (check_loop() && check_semi()))
     {
-        return;
-    }
-
-    if (n > NUL && n < SPACE)
-    {
-        mark = LF;
-    }
-    else if (n >= SPACE && n < DEL)
-    {
-        mark = n;
-    }
-    else
-    {
-        mark = -1;
-    }
-
-    if (m == 0)
-    {
-        n = getdelta_ebuf(1);
-        m = getdelta_ebuf(0);
-    }
-    else
-    {
-        n = getdelta_ebuf(m);
-        m = getdelta_ebuf(1 - m);
-    }
-
-    for (int i = m; i < n; ++i)
-    {
-        if (i == 0 && mark != -1)
-        {
-            echo_out(mark);
-        }
-
-        int c = getchar_ebuf(i);
-
-        if (c == LF)
-        {
-            echo_out(CR);
-        }
-
-        echo_out(c);
+        push_expr(-1, EXPR_VALUE);
     }
 }

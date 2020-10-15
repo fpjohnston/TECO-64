@@ -30,7 +30,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
@@ -135,27 +134,10 @@ static void exec_search(struct cmd *cmd, bool replace)
             flag_print(f.es);
         }
 
-        if (cmd->colon)
-        {
-            push_expr(-1, EXPR_VALUE);
-        }
+        search_success(cmd);
     }
     else
     {
-        if (cmd->colon)
-        {
-            push_expr(0, EXPR_VALUE);
-        }
-        else
-        {
-            if (!f.ed.keepdot)
-            {
-                setpos_ebuf(0);
-            }
-
-            last_search.data[last_search.len] = NUL;
-
-            throw(E_SRH, last_search.data);
-        }
+        search_failure(cmd);
     }
 }

@@ -30,13 +30,13 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "search.h"
+#include "term.h"
 
 
 // Local functions
@@ -171,40 +171,10 @@ static void exec_search(struct cmd *cmd, bool replace)
             flag_print(f.es);
         }
 
-        // Return value if colon modifier, or we are in a loop
-        // and the next command is a semi-colon.
-
-        if (cmd->colon || (check_loop() && check_semi()))
-        {
-            push_expr(-1, EXPR_VALUE);
-        }
+        search_success(cmd);
     }
     else
     {
-        // Return value if colon modifier, or we are in a loop
-        // and the next command is a semi-colon.
-
-        if (cmd->colon)
-        {
-            push_expr(0, EXPR_VALUE);
-        }
-        else
-        {
-            if (!f.ed.keepdot)
-            {
-                setpos_ebuf(0);
-            }
-
-            if (check_loop() && check_semi())
-            {
-                push_expr(0, EXPR_VALUE);
-            }
-            else
-            {
-                last_search.data[last_search.len] = NUL;
-
-                throw(E_SRH, last_search.data);
-            }
-        }
+        search_failure(cmd);
     }
 }

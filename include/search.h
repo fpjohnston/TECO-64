@@ -31,6 +31,7 @@
 #include <sys/types.h>          //lint !e451 !e537
 
 #include "teco.h"               //lint !e451 !e537
+#include "cmd.h"                //lint !e451 !e537
 
 
 ///  @enum   search_type
@@ -71,6 +72,10 @@ extern bool search_loop(struct search *s);
 
 extern bool search_backward(struct search *s);
 
+extern void search_failure(struct cmd *cmd);
+
 extern bool search_forward(struct search *s);
+
+extern void search_success(struct cmd *cmd);
 
 #endif  // !defined(_SEARCH_H)
