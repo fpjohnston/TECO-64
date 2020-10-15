@@ -36,18 +36,21 @@ tagged location preceding the command loop. However, it is always possible to
 branch out of a command loop to a location which follows the command loop and
 then branch to the desired tag.
 
-The string argument in the O command has the same format as the string
-arguments in the search and E commands. String build characters such as ^EQq
-can be embedded within the string. Also, the O command may be @-sign modified.
-In that case, the syntax of the command would be @O/*tag*/.
+The text argument in the O command has the same format as the text
+arguments in the search and E commands. String building characters such
+as ^EQq can be embedded within the string. Also, the O command may be
+@-sign modified. In that case, the syntax of the command would be @O/*tag*/.
 
 Branching into a conditional poses no problems, but branching into a command
 loop will causes unpredictable results.
 
-Although tags may contain any sequence of ASCII characters, good programming
-practice dictates that tags should not contain unusual characters (such as space,
-comma, ESCape, etc.) and that they should be mnemonic for the piece of code to
-which they refer.
+Tags may contain any character sequence that does not include control
+characters. This is also true for O command text arguments, except
+that commas are not allowed, since those are required for computed GOTOs.
+However, to allow for improved legibility, leading and trailing spaces
+are allowed for tags in computed GOTO lists. A consequence of this is
+that it is not possible to branch to a tag that has any spaces in it.
+This is one way that tags can be distinguish from comments.
 
 There are many other branching commands. Most of these are considerably
 faster than the O command and should be used wherever convenient. They are
@@ -58,7 +61,7 @@ all described in the table below.
 | ------- | -------- |
 | @O*tag*\` | Causes TECO to branch to the first occurrence of the specified label *tag* in the current macro level. Branching to the left of the start of the current iteration is not permitted, and this command will only look for an occurrence of the specified tag following the \< of the current iteration, if you are in an iteration. In any case, branching out of an iteration is poor programming practice. Command execution resumes at the first character after the delimiter terminating the specified tag. Using this syntax, any character except \<ESC\> is permitted in the tag specification. The usual string build characters are permitted when specifying the tag. |
 | @O/*tag*/ | Equivalent to O*tag*`. The usual string build characters are permitted when specifying the tag. |
-| *n*O*tag0*,*tag1*, *tag2*,...\` | Causes TECO to branch to the tag specified by the *n*th tag in the accompanying list. The string argument to this command consists of a sequence of tags separated by commas. The tags may contain any characters other than comma or \<ESC>; however, good programming practice suggests that the tags should consist only of letters and digits. There must be no intervening spaces since these would be considered part of the tag. If *n* is out of range, or if *n* selects a null tag, then command execution continues with the first command following the \<DELIM\> that delimits this command. (A null tag would be signified in the list by two adjacent commas.) |
+| *n*O*tag0*,*tag1*, *tag2*,...\` | Causes TECO to branch to the tag specified by the *n*th tag in the accompanying list. The string argument to this command consists of a sequence of tags separated by commas. The tags may contain any characters other than comma or \<ESC>; however, good programming practice suggests that the tags should consist only of letters and digits. If *n* is out of range, or if *n* selects a null tag (signified by two adjacent commas), then command execution continues with the first command following the \<DELIM\> that delimits this command. |
 | *n*O/*tag0*,*tag1*, *tag2*,.../ | Same as the preceding command except that the list of tags is bracketed by a delimiter shown here as "/". The delimiter can be any character other than comma that does not appear within the list of tags. |
 | \; | Causes TECO to branch out of the current iteration, if the immediately preceding search (or search and replace) command failed. In that case, control resumes at the character following the matching \> at the end of the current iteration. On the other hand, if the preceding search succeeded, command execution continues with the character following the ;. If this command is encountered from outside of an iteration (in the current macro level), then the ?SNI error message is issued. |
 | n; | Causes TECO to branch out of the current iteration if the value of *n* is greater than or equal to 0. In that case, command execution resumes at the character following the matching \> at the end of the current iteration. On the other hand, if *n* is less than 0, command execution continues with the character following the ;. If this command is encountered from outside of an iteration (in the current macro level), then the ?SNI error message is issued. |

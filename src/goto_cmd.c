@@ -25,21 +25,29 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <unistd.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
+#include "term.h"
 
 
 // Local functions
 
-static void find_tag(struct cmd *cmd, const char *text, uint len);
+static void find_tag(struct cmd *cmd, const char *tag);
+
+static void find_taglist(struct cmd *cmd, const char *taglist);
+
+static void verify_tag(const char *tag);
 
 
 ///
@@ -91,56 +99,29 @@ void exec_O(struct cmd *cmd)
         throw(E_NOT);                   // O command has no tag
     }
 
-    // Here if we have a tag
+    char tag[cmd->text1.len + 1];
 
-    if (!cmd->n_set)                    // Is it Otag` or nOtag1,tag,tag3`?
-    {
-        find_tag(cmd, cmd->text1.data, cmd->text1.len);
-
-        return;
-    }
-
-    // Here if the command was nO (computed goto).
-
-    if (cmd->n_arg <= 0)                // Is value non-positive?
-    {
-        throw(E_IOA);                   // Illegal O argument
-    }
-
-    // Parse the comma-separated list of tags, looking for the one we want.
-    // If the nth tag is null, or is out of range, then we do nothing.
-
-    char taglist[cmd->text1.len + 1];
-    char *buf = taglist;
-    char *saveptr;
-    char *next;
-    uint ntags = 0;
-
-    snprintf(taglist, sizeof(taglist), "%.*s", (int)cmd->text1.len,
+    snprintf(tag, sizeof(tag), "%.*s", (int)cmd->text1.len,
              cmd->text1.data);
 
-    // Find all tags, looking for the one matching the n argument.
+    verify_tag(tag);
 
-    while ((next = strtok_r(buf, ",", &saveptr)) != NULL)
+    // Here when we have a valid tag or taglist, consisting only
+    // of printable characters (including spaces).
+
+    if (cmd->n_set)                     // Computed GOTO
     {
-        buf = NULL;
-
-        if (++ntags == (uint)cmd->n_arg) // Is this the tag we want?
-        {
-            uint len = (uint)strlen(next);
-
-            if (len != 0)
-            {
-                find_tag(cmd, next, len);
-            }
-
-            return;
-        }
+        find_taglist(cmd, tag);
     }
+    else                                // Simple GOTO
+    {
+        if (strchr(tag, ',') != NULL)
+        {
+            throw(E_BAT, tag);
+        }
 
-    // Here if O argument is out of range of tag list
-
-    throw(E_BOA);                       // O argument is out of range
+        find_tag(cmd, tag);
+    }
 }
 
 
@@ -151,10 +132,10 @@ void exec_O(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void find_tag(struct cmd *cmd, const char *text, uint len)
+static void find_tag(struct cmd *cmd, const char *tag)
 {
     assert(cmd != NULL);                // Error if no command block
-    assert(text != NULL);               // Error if no tag string
+    assert(tag != NULL);                // Error if no tag string
 
     int tag_pos = -1;                   // Position of tag in command string
 
@@ -164,10 +145,9 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
 
     char *tag1 = NULL;                  // Dynamically-allocated tag name
 
-    (void)build_string(&tag1, text, len);
+    (void)build_string(&tag1, tag, (uint)strlen(tag));
 
-    len = (uint)strlen(tag1);
-
+    uint len = (uint)strlen(tag1);
     char tag2[len + 1];                 // Local copy of tag name
 
     strcpy(tag2, tag1);
@@ -205,4 +185,81 @@ static void find_tag(struct cmd *cmd, const char *text, uint len)
     }
 
     cbuf->pos = (uint)tag_pos;          // Execute goto
+}
+    
+
+///
+///  @brief    Search a taglist for a specific tag.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void find_taglist(struct cmd *cmd, const char *taglist)
+{
+    assert(cmd != NULL);
+    assert(taglist != NULL);
+        
+    // Here to handle a computed GOTO.
+
+    const char *start = taglist, *end;
+    int ntags = 0;
+
+    // Find all tags, looking for the one matching the n argument.
+
+    while (++ntags <= cmd->n_arg)
+    {
+        start += strspn(start, " ");    // Skip leading whitespace
+        end = start + strcspn(start, " ,"); // Find end of tag
+
+        char tag[(end - start) + 1];
+
+        snprintf(tag, sizeof(tag), "%.*s", (int)(end - start), start);
+
+        if (ntags == cmd->n_arg)
+        {
+            find_tag(cmd, tag);
+
+            break;
+        }
+
+        start = end + strspn(end, " "); // Skip trailing whitespace
+
+        if (*start == ',')
+        {
+            ++start;
+        }
+        else if (*start == NUL)         // This catches embedded spaces
+        {
+            break;
+        }
+        else
+        {
+            throw(E_BAT, tag);          // Bad tag
+        }
+    }
+}
+
+
+///
+///  @brief    Verify that tag (or tag list) contains no control characters.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void verify_tag(const char *tag)
+{
+    assert(tag != NULL);
+
+    int c;
+    const char *p = tag;
+
+    while ((c = *p++) != NUL)
+    {
+        if (iscntrl(c))
+        {
+            throw(E_BAT, tag);          // Bad tag
+        }
+    }
 }

@@ -48,8 +48,8 @@ enum errors
     E_NUL,          ///< No error
     E_ARG,          ///< Improper arguments
     E_ATS,          ///< Illegal at-sign, or too many at-signs
+    E_BAT,          ///< Bad tag "!tag!"
     E_BNI,          ///< Right angle bracket not in iterationx
-    E_BOA,          ///< O argument is out of range
     E_CHR,          ///< Invalid character for command
     E_COL,          ///< Illegal colon, or too many colons
     E_DIV,          ///< Division by zero
@@ -71,7 +71,6 @@ enum errors
     E_IMA,          ///< Illegal m argument
     E_INA,          ///< Illegal n argument
     E_INI,          ///< Initialization error
-    E_IOA,          ///< Illegal O argument
     E_IQC,          ///< Illegal quote character
     E_IQN,          ///< Illegal Q-register name "x"
     E_IRA,          ///< Illegal radix argument to ^R

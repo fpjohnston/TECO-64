@@ -65,8 +65,8 @@ static struct err_table err_table[] =
     [E_NUL] = { "---",  "Unknown error code" },
     [E_ARG] = { "ARG",  "Improper arguments" },
     [E_ATS] = { "ATS",  "Illegal at-sign, or too many at-signs" },
+    [E_BAT] = { "BAT",  "Bad tag '!%s!'" },
     [E_BNI] = { "BNI",  "> not in iteration" },
-    [E_BOA] = { "BOA",  "O argument is out of range" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
     [E_COL] = { "COL",  "Illegal colon, or too many colons" },
     [E_DIV] = { "DIV",  "Division by zero" },
@@ -88,7 +88,6 @@ static struct err_table err_table[] =
     [E_IMA] = { "IMA",  "Illegal m argument" },
     [E_INA] = { "INA",  "Illegal n argument" },
     [E_INI] = { "INI",  "%s" },
-    [E_IOA] = { "IOA",  "Illegal O argument" },
     [E_IQC] = { "IQC",  "Illegal quote character" },
     [E_IQN] = { "IQN",  "Illegal Q-register name '%s'" },
     [E_IRA] = { "IRA",  "Illegal radix argument to ^R" },
@@ -144,11 +143,14 @@ static const char *verbose[] =
     [E_ATS] = "An at-sign preceded a command that does not allow at-signs, "
               "or there were too many at-signs specified for the command.",
 
+    [E_BAT] = "An O command was specified with an invalid tag. Tags may only "
+              "contain graphic ASCII characters other than commas (which are  "
+              "reserved for computed GOTOs). Leading and trailing spaces are "
+              "ignored, but embedded spaces are not allowed.",
+
     [E_BNI] = "There is a close angle bracket not matched by an open angle "
               "bracket somewhere to its left. (Note: an iteration in a macro "
               "stored in a Q-register must be complete within the Q-register.)",
-
-    [E_BOA] = "The argument for an O command was out of range.",
 
     [E_CHR] = "A non-ASCII character preceded an EE command.",
 
@@ -204,8 +206,6 @@ static const char *verbose[] =
     [E_INA] = "An n argument was provided to a command which does not allow it.",
 
     [E_INI] = "A fatal error occurred during TECO initialization.",
-
-    [E_IOA] = "The argument for an O command was <= 0.",
 
     [E_IQC] = "One of the valid \" commands did not follow the \". Refer "
               "to Section 5.14 (conditional execution commands) for "
@@ -366,6 +366,70 @@ static const char *verbose[] =
 };
 
 
+// Local functions
+
+static void convert(char *buf, uint bufsize, const char *err_str, uint len);
+
+
+///
+///  @brief    Convert string to canonical format by making control characters
+///            visible.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void convert(char *buf, uint bufsize, const char *err_str, uint len)
+{
+    assert(buf != NULL);
+    assert(err_str != NULL);
+
+    while (bufsize-- > 0 && len-- > 0)
+    {
+        int c = *err_str++;
+
+        if (isprint(c))                 // Printable character?
+        {
+            *buf++ = c;
+        }
+        else if (c == TAB)
+        {
+            buf += sprintf(buf, "%s", "<TAB>");
+        }
+        else if (c == LF)
+        { 
+            buf += sprintf(buf, "<LF>");
+        }
+        else if (c == VT)
+        {
+            buf += sprintf(buf, "<VT>");
+        }
+        else if (c == FF)
+        {
+            buf += sprintf(buf, "<FF>");
+        }
+        else if (c == CR)
+        {
+            buf += sprintf(buf, "<CR>");
+        }
+        else if (c == ESC)
+        {
+            buf += sprintf(buf, "<ESC>");
+        }
+        else if (c >= DEL)              // DEL or 8-bit character?
+        {
+            buf += sprintf(buf, "[%02x]", c);
+        }
+        else
+        {
+            buf += sprintf(buf, "<^%c>", c + 'A' - 1);
+        }
+    }
+
+    *buf = NUL;
+}
+
+
 ///
 ///  @brief    Print verbose error message.
 ///
@@ -474,10 +538,10 @@ void print_help(int error)
 
 noreturn void throw(int error, ...)
 {
-    char err_buf[ERR_BUF_SIZE];
     const char *file_str = NULL;
     const char *err_str;
-    int c;
+    char err_buf[ERR_BUF_SIZE];
+    char c[1];
 
     va_list args;
 
@@ -492,57 +556,8 @@ noreturn void throw(int error, ...)
         case E_IQN:
         case E_IUC:
         case E_POP:
-            c = va_arg(args, int);
-
-            if (c >= DEL)               // DEL or 8-bit character?
-            {
-                (void)sprintf(err_buf, "[%02x]", c);
-            }
-            else if (isprint(c))        // Printable character?
-            {
-                (void)sprintf(err_buf, "%c", c);
-            }
-            else                        // Must be a control character
-            {
-                switch (c)
-                {
-                    case TAB:
-                        strcpy(err_buf, "<TAB>");
-
-                        break;
-
-                    case LF:
-                        strcpy(err_buf, "<LF>");
-
-                        break;
-
-                    case VT:
-                        strcpy(err_buf, "<VT>");
-
-                        break;
-
-                    case FF:
-                        strcpy(err_buf, "<FF>");
-
-                        break;
-
-                    case CR:
-                        strcpy(err_buf, "<CR>");
-
-                        break;
-
-                    case ESC:
-                        strcpy(err_buf, "<ESC>");
-
-                        break;
-
-                    default:
-                        (void)sprintf(err_buf, "<^%c>", c + 'A' - 1);
-
-                        break;
-                }
-            }
-
+            c[0] = va_arg(args, int);
+            convert(err_buf, sizeof(err_buf), c, 1);
             err_str = err_buf;
 
             break;
@@ -553,6 +568,7 @@ noreturn void throw(int error, ...)
 
             break;
 
+        case E_BAT:
         case E_DUP:
         case E_FIL:
         case E_FNF:
@@ -560,6 +576,8 @@ noreturn void throw(int error, ...)
         case E_SRH:
         case E_TAG:
             err_str = va_arg(args, const char *);
+            convert(err_buf, sizeof(err_buf), err_str, strlen(err_str));
+            err_str = err_buf;
 
             break;
 
