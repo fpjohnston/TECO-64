@@ -49,9 +49,34 @@ const char *teco_vtedit = NULL;         ///< Name of VTEDIT macro
 
 char *eg_result = NULL;                 ///< Output from EG command
 
-#define TECO_HW          10             ///< x86 hardware
+// Define operating system
 
-#define TECO_OS          1              ///< Linux operating system
+#if     defined(__linux)
+
+#define TECO_OS          10             ///< Linux
+#define TECO_HW          10             ///< x86
+
+#elif   defined(__win64)
+
+#define TECO_OS          20             ///< Windows
+#define TECO_HW          10             ///< x86
+
+#elif   defined(__APPLE__)
+
+#define TECO_OS          30             ///< MacOS
+#define TECO_HW          20             ///< x86
+
+#elif   defined(__vms)
+
+#define TECO_OS          40             ///< VMS
+#define TECO_HW          30             ///< Alpha
+
+#elif
+
+#define TECO_OS          -1             ///< Unknown
+#define TECO_HW          -1             ///< Unknown
+
+#endif
 
 // Local functions
 
@@ -215,17 +240,15 @@ void init_env(int argc, const char * const argv[])
 ///
 ///  @brief    Get information environment about our environment.
 ///
-///            -1EJ - The processor and operating system upon which TECO is
-///                   running. This is equivalent to (-3EJ * 256) + -2EJ.
-///
-///            -2EJ - The operating system upon which TECO is running.
+///            -1EJ - The operating system upon which TECO is running.
 ///                   This is currently 1 for Linux.
 ///
-///            -3EJ - The processor upon which TECO is running. This is
+///            -2EJ - The processor upon which TECO is running. This is
 ///                   currently 10 for x86.
 ///
-///            -4EJ - The number of bits in the word on the the processor
-///                   upon which TECO is currently running.
+///            -3EJ - The processor word size in bits.
+///
+///            -4EJ - The size of numeric arguments in bits.
 ///
 ///             0EJ - Process ID
 ///            0:EJ - Parent process ID
@@ -242,16 +265,16 @@ int teco_env(int n_arg, bool colon)
             return colon ? getppid() : getpid();
 
         case -1:
-            return (TECO_HW << 8) + TECO_OS;
-
-        case -2:
             return TECO_OS;
 
-        case -3:
+        case -2:
             return TECO_HW;
 
+        case -3:
+            return sizeof(size_t) * CHAR_BIT;
+
         case -4:
-            return sizeof(int *) * CHAR_BIT;
+            return sizeof(INT) * CHAR_BIT;
 
         default:
             return 0;                       // Any other EJ
