@@ -390,7 +390,7 @@ static void convert(char *buf, uint bufsize, const char *err_str, uint len)
 
         if (isprint(c))                 // Printable character?
         {
-            *buf++ = c;
+            *buf++ = (char)c;
         }
         else if (c == TAB)
         {
@@ -556,8 +556,8 @@ noreturn void throw(int error, ...)
         case E_IQN:
         case E_IUC:
         case E_POP:
-            c[0] = va_arg(args, int);
-            convert(err_buf, sizeof(err_buf), c, 1);
+            c[0] = (char)va_arg(args, int);
+            convert(err_buf, (uint)sizeof(err_buf), c, 1);
             err_str = err_buf;
 
             break;
@@ -576,7 +576,8 @@ noreturn void throw(int error, ...)
         case E_SRH:
         case E_TAG:
             err_str = va_arg(args, const char *);
-            convert(err_buf, sizeof(err_buf), err_str, strlen(err_str));
+            convert(err_buf, (uint)sizeof(err_buf), err_str,
+                    (uint)strlen(err_str));
             err_str = err_buf;
 
             break;
