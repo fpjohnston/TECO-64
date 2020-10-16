@@ -134,3 +134,17 @@ Elsewhere in this manual, "q" indicates either a global or local Q-register name
 | :M.*q* | Execute the contents of the text storage area of local Q-register .*q* as a command string. No new set of local Q-registers is created. |
 | *n*:M.*q* | Execute the :M.*q* command as above, using *n* as a numeric argument for the first command contained in local Q-register .*q*. No new set of local Q-registers is created. |
 | *m*,*n*:M.*q* | Execute the :M.*q* command as above, using *m*,*n* as numeric arguments for the first command contained in local Q-register .*q*. No new set of local Q-registers is created. |
+
+### Mapping Keys to Q-Registers
+
+If display support has been enabled, and the ED&32 flag bit is set, then it
+is possible to map function, cursor, and other special keys to Q-registers,
+such that when those keys are subsequently input as immediate action
+commands, the associated Q-registers are executed as macros (as though an
+M command had been entered), without having to enter any delimiters. More
+than one key may be mapped to the same Q-register.
+
+| Command | Function |
+| ------- | -------- |
+| $*qkey* | Map the specified key to Q-register *q*. |
+| :$*qkey* | Unmap the specified key from Q-register *q*. |

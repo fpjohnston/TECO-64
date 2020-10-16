@@ -678,7 +678,7 @@ int readkey_dpy(int key)
         return key;
     }
 
-    if (!execkey(key))
+    if (!exec_key(key))
     {
         if (key == KEY_BACKSPACE)
         {

@@ -93,7 +93,7 @@
 | *n*"V          | [Test for lower case](ifthen.md) |
 | *n*"W          | [Test for upper case](ifthen.md) |
 | \#             | [Logical OR](oper.md) |
-| $              | Not a TECO command |
+| $*q*           | [Map key to Q-register *q*](qregister.md) |
 | *n*%*q*        | [Add *n* to Q-register *q* and return result](qregister.md) |
 | \&             | [Logical AND](oper.md) |
 | '              | [End conditional](ifthen.md) |

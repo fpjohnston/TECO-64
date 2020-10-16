@@ -28,8 +28,6 @@
 #include <ctype.h>
 #include <ncurses.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 #include "teco.h"
 #include "display.h"
@@ -40,7 +38,8 @@
 #if     defined(TECO_DISPLAY)
 
 #include "ascii.h"
-
+#include <string.h>
+#include <unistd.h>
 
 #define KEY_F1          (KEY_F(1))      ///< Key definition
 #define KEY_F2          (KEY_F(2))      ///< Key definition
@@ -257,7 +256,7 @@ static struct keys
 
 
 ///
-///  @brief    Execute $ command: map key to Q-register.
+///  @brief    Execute $ command: map key to Q-register (global only).
 ///
 ///             @$q/key/ - Map key to Q-register.
 ///            :@$q/key/ - Unmap key.
@@ -266,15 +265,20 @@ static struct keys
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_DISPLAY)
+
 void exec_dollar(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    if (cmd->qlocal)                    // Local Q-register?
+    {
+        throw(E_IQN, '.');              // Yes, that's an error
+    }
+
     char key[cmd->text1.len + 1];
 
     sprintf(key, "%.*s", (int)cmd->text1.len, cmd->text1.data);
-
-#if     defined(TECO_DISPLAY)
 
     for (uint i = 0; i < countof(keys); ++i)
     {
@@ -293,10 +297,17 @@ void exec_dollar(struct cmd *cmd)
         }
     }
 
-#endif
-
     throw(E_KEY, key);                  // Bad key
 }
+
+#else
+
+void exec_dollar(struct cmd *unused1)
+{
+    throw(E_NOD);                       // Display mode support not enabled
+}
+
+#endif
 
 
 ///

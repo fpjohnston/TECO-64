@@ -49,3 +49,24 @@ after TECO's prompt, and perform different functions if they are not.
 | ------- | -------- |
 | \<CTRL/W\> | If display mode is active, causes TECO to re-paint the display. |
 | \<CTRL/K\> | If display mode is active, changes the edit and command region to a black foreground on a white background, and the status line (if any) to a white foreground on a black background. This command is intended to remedy the situation where a user inadvertently sets the same foreground and background colors for a region, thus rendering it unreadable. |
+
+### User-Defined Immediate Commands
+
+Most terminals have function, cursor, or other special keys. TECO provides
+a facility by which you can cause the pressing of one of these keys at
+the prompting asterisk to be interpreted as an immediate command. When this
+facility is enabled, a key such as one of the cursor control keys can cause TECO
+to execute a macro in a Q-register.
+
+In order for this to happen, the following are required:
+
+- Display mode support must be enabled.
+- The ED&32 flag bit must be set, to enable ESCape sequences and other
+special characters.
+- A function, cursor, or other special key must have been mapped to a
+Q-register with the $ command.
+- The special key must be entered directly after TECO's command prompt.
+
+If all of these conditions have been met, then when such a special key
+has been input, the associated Q-register is immediately executed as
+though an M*q*\<*delim*\>\<*delim*\> command had been entered.

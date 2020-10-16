@@ -139,13 +139,6 @@ static void init_teco(int argc, const char * const argv[])
 {
     f.e0.init    = true;                // Initialization is in progress
 
-    f.ctrl_x     = 0;                   // Searches are case-insensitive
-
-    f.eu         = -1;                  // No case flagging
-
-    f.et.abort   = true;                // Abort on error during initialization
-    f.et.accent  = true;                // Use accent grave as delimiter
-
     // Default settings for E1
 
     f.e1.xoper  = true;                 // Enable extended operators
@@ -191,8 +184,25 @@ static void init_teco(int argc, const char * const argv[])
 
 #endif
 
-    f.e4.line = true;                   // Line between text & command regions
-    f.e4.status  = true;                // Display status on line
+    f.e4.line   = true;                 // Line between text & command regions
+    f.e4.status = true;                 // Display status on line
+
+#if     defined(TECO_DISPLAY)
+
+    f.ed.escape  = true;                // Enable ESCape-sequences
+
+#else
+
+    f.ed.escape  = false;               // Disable ESCape-sequences
+
+#endif
+
+    f.et.abort   = true;                // Abort on error during initialization
+    f.et.accent  = true;                // Use accent grave as delimiter
+
+    f.eu         = -1;                  // No case flagging
+
+    f.ctrl_x     = 0;                   // Searches are case-insensitive
 
     // Note: this has to be first, since it will be the last called when we
     //       exit, and it might execute a system command.
