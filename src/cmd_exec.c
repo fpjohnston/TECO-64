@@ -37,6 +37,11 @@
 #include "qreg.h"
 #include "term.h"
 
+#if     defined(TECO_DISPLAY)
+#define STATIC                      ///< null_cmd has global scope
+#else
+#define STATIC static               ///< null_cmd has local scope
+#endif
 
 uint nparens;                       ///< Parenthesis nesting count
 
@@ -44,7 +49,7 @@ uint nparens;                       ///< Parenthesis nesting count
 ///
 ///  @brief  Initial command block values.
 
-const struct cmd null_cmd =
+STATIC const struct cmd null_cmd =
 {
     .c1     = NUL,
     .c2     = NUL,

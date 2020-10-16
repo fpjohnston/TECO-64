@@ -133,7 +133,11 @@ extern char *eg_result;
 
 extern uint nparens;
 
+#if     defined(TECO_DISPLAY)
+
 extern const struct cmd null_cmd;
+
+#endif
 
 // Command buffer functions
 
