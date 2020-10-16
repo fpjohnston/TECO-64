@@ -828,7 +828,7 @@ void refresh_dpy(void)
 
 #if     defined(TECO_DISPLAY)
 
-    if (f.e0.display && w.nlines != 0)
+    if (f.e0.display && w.nlines != 0 && !w.noscroll)
     {
         int line = getlines_ebuf(-1);   // Line number within buffer
         int row  = line % d.nrows;      // Relative row within screen
@@ -947,7 +947,7 @@ void set_scroll(int unused1, int unused2)
 
 #if     defined(TECO_DISPLAY)
 
-    if (f.e0.display && w.nlines != 0)
+    if (f.e0.display && w.nlines != 0 && !w.noscroll)
     {
         if (f.e4.invert)
         {
