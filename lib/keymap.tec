@@ -1,0 +1,27 @@
+! keymap.tec - Demonstration of mapping keys to Q-registers !
+
+0,128ET                 ! Abort on error !
+
+EO-200 "L
+    :@^A/?TECO macro requires TECO-64 v200+/
+    ^C
+'
+
+@^UA/:@^A\F1\/    @FQA/F1/
+@^UB/:@^A\F2\/    @FQB/F2/
+@^UC/:@^A\F3\/    @FQC/F3/
+@^UD/:@^A\F4\/    @FQD/F4/
+@^UE/:@^A\F5\/    @FQE/F5/
+@^UF/:@^A\F6\/    @FQF/F6/
+@^UG/:@^A\F7\/    @FQG/F7/
+@^UH/:@^A\F8\/    @FQH/F8/
+@^UI/:@^A\IC\/    @FQI/IC/
+@^UJ/:@^A\DC\/    @FQJ/DC/
+@^UK/:@^A\HOME\/  @FQK/HOME/
+@^UL/:@^A\END\/   @FQL/END/
+@^UM/:@^A\NPAGE\/ @FQM/NPAGE/
+@^UN/:@^A\PPAGE\/ @FQN/PPAGE/
+
+:@^A/Mapped keys to Q-registers A through N/
+
+^[^[

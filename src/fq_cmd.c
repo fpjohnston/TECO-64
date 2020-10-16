@@ -1,6 +1,6 @@
 ///
-///  @file    dollar_cmd.c
-///  @brief   Execute $ command.
+///  @file    fq_cmd.c
+///  @brief   Execute FQ command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -256,10 +256,10 @@ static struct keys
 
 
 ///
-///  @brief    Execute $ command: map key to Q-register (global only).
+///  @brief    Execute FQ command: map key to Q-register (global only).
 ///
-///             @$q/key/ - Map key to Q-register.
-///            :@$q/key/ - Unmap key.
+///             @FQq/key/ - Map key to Q-register.
+///            :@FQq/key/ - Unmap key.
 ///
 ///  @returns  Nothing.
 ///
@@ -267,7 +267,7 @@ static struct keys
 
 #if     defined(TECO_DISPLAY)
 
-void exec_dollar(struct cmd *cmd)
+void exec_FQ(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
@@ -302,7 +302,7 @@ void exec_dollar(struct cmd *cmd)
 
 #else
 
-void exec_dollar(struct cmd *unused1)
+void exec_FQ(struct cmd *unused1)
 {
     throw(E_NOD);                       // Display mode support not enabled
 }

@@ -50,19 +50,19 @@
 
 ## Appendices
 
+- [Error Messages](errors.md)
+
 - [Glossary of Terms](glossary.md)
+
+- [Colon-Modified Commands](colon.md)
+
+- [At Sign-Modified Commands](atsign.md)
 
 - [New Features](new.md)
 
 - [Missing Features](missing.md)
 
 - [Internals Notes](internals.md)
-
-- [Error Messages](errors.md)
-
-- [Colon-Modified Commands](colon.md)
-
-- [At Sign-Modified Commands](atsign.md)
 
 - [Index of Commands](index.md)
 

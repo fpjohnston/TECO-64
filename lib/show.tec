@@ -1,0 +1,140 @@
+! show.tec - List TECO-64 variables !
+
+0,128ET                 ! Abort on error !
+
+EO-200 "L
+    @^A\?Macro file requires TECO-64 v200+\ 13^T 10^T
+    ^C
+'
+
+! At this point we know we're running version 200+, but we still want to !
+! avoid using any of the extended features that depend on the E1 flag,   !
+! since we shouldn't presume that any of them are enabled.               !
+
+@^A\TECO version \
+     0:EO:= ^^.^T -1:EO:= ^^.^T -2:EO=
+
+-1^T
+
+:@^A\Operating Environment:\ -1^T
+
+@^A\  Process ID: \  0EJ=
+@^A\   Parent ID: \ 0:EJ=
+@^A\    O/S type: \ -1EJ=
+@^A\    H/W type: \ -2EJ=
+@^A\   Word size: \ -3EJ=
+@^A\    m/n size: \ -4EJ=
+@^A\   TECO_INIT: \ :@EG\INI\ "L :G* | @^A"(n/a)" ' -1^T
+@^A\TECO_LIBRARY: \ :@EG\LIB\ "L :G* | @^A"(n/a)" ' -1^T
+@^A\ TECO_MEMORY: \ :@EG\MEM\ "L :G* | @^A"(n/a)" ' -1^T
+@^A\ TECO_VTEDIT: \ :@EG\VTE\ "L :G* | @^A"(n/a)" ' -1^T
+
+-1^T
+
+@^A\B = \ B:= @^A\, dot = \ .:= @^A\, Z = \ Z=
+@^A\Radix = \ ^R=
+@^A\^E = \ ^E=
+@^A\^Q = \ ^Q=
+@^A\^S = \ ^S=
+@^A\^X = \ ^X=
+@^A\^Z = \ ^Z=
+
+@^A\E1 = \ E1:=== @^A\: \
+    E1&128 "N @^A\prompt \ '
+    E1&64  "N @^A\bang \ '
+    E1&32  "N @^A\new_ei \ '
+    E1&16  "N @^A\ubar \ '
+    E1&8   "N @^A\dollar \ '
+    E1&4   "N @^A\text \ '
+    E1&2   "N @^A\msec \ '
+    E1&1   "N @^A\xoper \ '
+    -1^T
+
+@^A\E2 = \ E2:=== @^A\: \
+    E2&1024 "N @^A\args \ '
+    E2&512  "N @^A\page \ '
+    E2&256  "N @^A\quote \ '
+    E2&128  "N @^A\loop \ '
+    E2&64   "N @^A\n_arg \ '
+    E2&32   "N @^A\m_arg \ '
+    E2&16   "N @^A\comma \ '
+    E2&8    "N @^A\colon \ '
+    E2&4    "N @^A\atsign \ '
+    E2&2    "N @^A\oper \ '
+    E2&1    "N @^A\zero \ '
+    -1^T
+
+@^A\E3 = \ E3:=== @^A\: \
+    E3&32 "N @^A\noout \ '
+    E3&16 "N @^A\noin \ '
+    E3&8  "N @^A\ocrlf \ '
+    E3&4  "N @^A\icrlf \ '
+    E3&2  "N @^A\smart \ '
+    E3&1  "N @^A\nopage \ '
+    -1^T
+
+@^A\E4 = \ E4:=== @^A\: \
+    E4&4 "N @^A\status \ '
+    E4&2 "N @^A\line \ '
+    E4&1 "N @^A\invert \ '
+    -1^T
+
+@^A\ED = \ ED:=== @^A\: \
+    ED&128 "N @^A\noauto \ ' 
+    ED&64  "N @^A\movedot \ '
+    ED&32  "N @^A\escape \ '
+    ED&16  "N @^A\keepdot \ '
+    ED&4   "N @^A\memory \ '
+    ED&2   "N @^A\yank \ '
+    ED&1   "N @^A\caret \ '
+    -1^T
+
+@^A\EE = \ EE=
+
+@^A\EH = \ EH:=== @^A\: \
+    EH&4 "N @^A\command\ '
+    EH&3 :@=\verbose=%d \
+    -1^T
+
+@^A\ES = \ ES=
+
+@^A\ET = \ ET:=== @^A\: \
+    ET&32768 "N @^A\ctrl_c \ '
+    ET&16384 "N @^A\vt200 \ '
+    ET&8192  "N @^A\accent \ '
+    ET&4096  "N @^A\eightbit \ '
+    ET&1024  "N @^A\refresh \ '
+    ET&512   "N @^A\scope \ '
+    ET&256   "N @^A\truncate \ '
+    ET&128   "N @^A\abort \ '
+    ET&64    "N @^A\detach \ '
+    ET&32    "N @^A\nowait \ '
+    ET&16    "N @^A\ctrl_o \ '
+    ET&8     "N @^A\noecho \ '
+    ET&4     "N @^A\lower \ '
+    ET&2     "N @^A\rubout \ '
+    E1&1     "N @^A\image \ '
+    -1^T
+
+@^A\EU = \ EU=
+
+@^A\EV = \ EV=
+
+@^A\Display parameters:\ -1^T
+    @^A\    Terminal: type=\ 0:W:= @^A\, characteristics=\ 9:W:===
+        @^A\, width = \ 1:W:= @^A\, height = \ 2:W=
+    @^A\    SEEALL: \ 3:W "E @^A\disabled\ | @^A\enabled\ '
+    @^A\, mark = \ 4:W:=
+    @^A\, hold = \ 5:W:=
+    @^A\, top dot = \ 6:W:=
+    @^A\, scrolling: \
+        7:W
+        "N 7:W:= @^A\ lines \
+            8:W
+            "N @^A\(disabled)\ | @^A\(enabled)\ '
+        |
+            @^A\disabled\
+        '
+        -1^T
+
+^[^[

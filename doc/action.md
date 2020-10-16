@@ -64,9 +64,9 @@ In order for this to happen, the following are required:
 - The ED&32 flag bit must be set, to enable ESCape sequences and other
 special characters.
 - A function, cursor, or other special key must have been mapped to a
-Q-register with the $ command.
+Q-register with the FQ command.
 - The special key must be entered directly after TECO's command prompt.
 
-If all of these conditions have been met, then when such a special key
+If all of these conditions have been met, then when such a key
 has been input, the associated Q-register is immediately executed as
 though an M*q*\<*delim*\>\<*delim*\> command had been entered.

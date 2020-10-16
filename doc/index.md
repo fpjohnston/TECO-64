@@ -93,7 +93,7 @@
 | *n*"V          | [Test for lower case](ifthen.md) |
 | *n*"W          | [Test for upper case](ifthen.md) |
 | \#             | [Logical OR](oper.md) |
-| $*q*           | [Map key to Q-register *q*](qregister.md) |
+| $              | Not a TECO command. |
 | *n*%*q*        | [Add *n* to Q-register *q* and return result](qregister.md) |
 | \&             | [Logical AND](oper.md) |
 | '              | [End conditional](ifthen.md) |
@@ -188,6 +188,7 @@
 | FK             | [Search and delete intervening text](delete.md) |
 | FL             | [Convert to lower case](misc.md) |
 | *n*FN          | [Global string replace](search.md) |
+| FQ*q*          | [Map key to Q-register *q*](qregister.md) |
 | FR             | [Replace last string](delete.md) |
 | *n*FS          | [Local string replace](search.md) |
 | FU             | [Convert to upper case](misc.md) |

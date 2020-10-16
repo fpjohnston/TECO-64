@@ -59,9 +59,9 @@ being returned if the open succeeded, and 0 if it failed.
 [^U - Add/Delete Q-register text](qregister.md)
 - Added ability to delete text.
 
-[^V - Lower case text](cmds/ctrl_V.md) (TECO-10)
+[^V - Lower case text](misc.md) (TECO-10)
 
-[^W - Upper case text](cmds/ctrl_W.md) (TECO-10)
+[^W - Upper case text](misc.md) (TECO-10)
 
 [^X- Search mode flag](flags.md)
 - Flag may be set to 1, in addition to 0 and -1.
@@ -92,7 +92,7 @@ being returned if the open succeeded, and 0 if it failed.
 
 [E4 - Display Mode Flag](flags.md)
 
-[EC - Set Memory Size](page.md) (TECO-10)
+[EC - Set Memory Size](misc.md) (TECO-10)
 
 [EI - Indirect File Command](file.md)
 - Added colon modifier to return success/failure value.
@@ -123,9 +123,11 @@ being returned if the open succeeded, and 0 if it failed.
 
 [FK - Search and delete](search.md) (TECO-10)
 
-[FL - Lower case text](cmds/FL.md)
+[FL - Lower case text](misc.md)
 
-[FU - Upper case text](cmds/FU.md)
+[FQ - Map keys to Q-registers](qregisters.md)
+
+[FU - Upper case text](misc.md)
 
 [I - Insert string](insert.md)
 - Added repeat count.

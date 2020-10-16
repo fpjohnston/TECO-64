@@ -1,10 +1,9 @@
-!DATE.TEC - display the current date and time !
+! date.tec - display the current date and time !
 
 0,128ET                 ! Abort on error !
 
 EO-200 "L
-    @^A/?TECO macro requires TECO-64 v200+/
-    13^T 10^T
+    @^A/?TECO macro requires TECO-64 v200+/ 13^T 10^T
     ^C
 '
 

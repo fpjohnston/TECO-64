@@ -1,2 +1,12 @@
+! hello.tec - Demonstation TECO macro !
+
+0,128ET                 ! Abort on error !
+
+EO-200 "L
+    @^A/?TECO macro requires TECO-64 v200+/ 13^T 10^T
+    ^C
+'
+
 :@^A/hello, world!/
+
 
