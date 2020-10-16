@@ -133,6 +133,8 @@ extern char *eg_result;
 
 extern uint nparens;
 
+extern const struct cmd null_cmd;
+
 // Command buffer functions
 
 extern int fetch_cbuf(void);

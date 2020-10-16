@@ -52,7 +52,7 @@ after TECO's prompt, and perform different functions if they are not.
 
 ### User-Defined Immediate Commands
 
-Most terminals have function, cursor, or other special keys. TECO provides
+Most terminals have function, cursor, keypad, or other special keys. TECO provides
 a facility by which you can cause the pressing of one of these keys at
 the prompting asterisk to be interpreted as an immediate command. When this
 facility is enabled, a key such as one of the cursor control keys can cause TECO
@@ -70,3 +70,6 @@ Q-register with the FM command.
 If all of these conditions have been met, then when such a key
 has been input, the associated Q-register is immediately executed as
 though an M*q*\<*delim*\>\<*delim*\> command had been entered.
+
+If a special key is input which has no defined meaning, then TECO will signal
+the error by outputtng a CTRL/G to ring the terminal's bell.

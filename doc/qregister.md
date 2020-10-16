@@ -148,3 +148,6 @@ than one key may be mapped to the same Q-register.
 | ------- | -------- |
 | FM*qkey* | Map the specified key to Q-register *q*. |
 | :FM*qkey* | Unmap the specified key from Q-register *q*. |
+
+Take care when mapping a key to a local Q-register, since each macro level
+normally gets an entirely new set of local Q-registers when it is invoked.

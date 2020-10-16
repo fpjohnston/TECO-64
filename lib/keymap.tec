@@ -7,20 +7,20 @@ EO-200 "L
     ^C
 '
 
-@^UA/@^A+F1 +/    @FMA/F1/
-@^UB/@^A+F2 +/    @FMB/F2/
-@^UC/@^A+F3 +/    @FMC/F3/
-@^UD/@^A+F4 +/    @FMD/F4/
-@^UE/@^A+F5 +/    @FME/F5/
-@^UF/@^A+F6 +/    @FMF/F6/
-@^UG/@^A+F7 +/    @FMG/F7/
-@^UH/@^A+F8 +/    @FMH/F8/
-@^UI/@^A+IC +/    @FMI/IC/
-@^UJ/@^A+DC +/    @FMJ/DC/
-@^UK/@^A+HOME +/  @FMK/HOME/
-@^UL/@^A+END +/   @FML/END/
-@^UM/@^A+NPAGE +/ @FMM/NPAGE/
-@^UN/@^A+PPAGE +/ @FMN/PPAGE/
+@^UA/@^A+F1 +/     @FMA/F1/
+@^UB/@^A+F2 +/     @FMB/F2/
+@^UC/@^A+F3 +/     @FMC/F3/
+@^UD/@^A+F4 +/     @FMD/F4/
+@^UE/@^A+F5 +/     @FME/F5/
+@^UF/@^A+F6 +/     @FMF/F6/
+@^UG/@^A+F7 +/     @FMG/F7/
+@^UH/@^A+F8 +/     @FMH/F8/
+@^UI/@^A+INSERT +/ @FMI/INSERT/
+@^UJ/@^A+DELETE +/ @FMJ/DELETE/
+@^UK/@^A+HOME +/   @FMK/HOME/
+@^UL/@^A+END +/    @FML/END/
+@^UM/@^A+PGDN +/   @FMM/PGDN/
+@^UN/@^A+PGUP +/   @FMN/PGUP/
 
 :@^A/Mapped keys to Q-registers A through N/
 

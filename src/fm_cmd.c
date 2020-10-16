@@ -51,48 +51,70 @@
 #define KEY_F7          (KEY_F(7))      ///< Key definition
 #define KEY_F8          (KEY_F(8))      ///< Key definition
 #define KEY_F9          (KEY_F(9))      ///< Key definition
-#define KEY_F10         (KEY_F(10))     ///< Key definition
-#define KEY_F11         (KEY_F(11))     ///< Key definition
-#define KEY_F12         (KEY_F(12))     ///< Key definition
 
-#define KEY_SF1         (KEY_F(1)  + 12) ///< Key definition
-#define KEY_SF2         (KEY_F(2)  + 12) ///< Key definition
-#define KEY_SF3         (KEY_F(3)  + 12) ///< Key definition
-#define KEY_SF4         (KEY_F(4)  + 12) ///< Key definition
-#define KEY_SF5         (KEY_F(5)  + 12) ///< Key definition
-#define KEY_SF6         (KEY_F(6)  + 12) ///< Key definition
-#define KEY_SF7         (KEY_F(7)  + 12) ///< Key definition
-#define KEY_SF8         (KEY_F(8)  + 12) ///< Key definition
-#define KEY_SF9         (KEY_F(9)  + 12) ///< Key definition
-#define KEY_SF10        (KEY_F(10) + 12) ///< Key definition
-#define KEY_SF11        (KEY_F(11) + 12) ///< Key definition
-#define KEY_SF12        (KEY_F(12) + 12) ///< Key definition
+#define KEY_S_F1        (KEY_F(1)  + 12) ///< Key definition
+#define KEY_S_F2        (KEY_F(2)  + 12) ///< Key definition
+#define KEY_S_F3        (KEY_F(3)  + 12) ///< Key definition
+#define KEY_S_F4        (KEY_F(4)  + 12) ///< Key definition
+#define KEY_S_F5        (KEY_F(5)  + 12) ///< Key definition
+#define KEY_S_F6        (KEY_F(6)  + 12) ///< Key definition
+#define KEY_S_F7        (KEY_F(7)  + 12) ///< Key definition
+#define KEY_S_F8        (KEY_F(8)  + 12) ///< Key definition
+#define KEY_S_F9        (KEY_F(9)  + 12) ///< Key definition
     
-#define KEY_CF1         (KEY_F(1)  + 24) ///< Key definition
-#define KEY_CF2         (KEY_F(2)  + 24) ///< Key definition
-#define KEY_CF3         (KEY_F(3)  + 24) ///< Key definition
-#define KEY_CF4         (KEY_F(4)  + 24) ///< Key definition
-#define KEY_CF5         (KEY_F(5)  + 24) ///< Key definition
-#define KEY_CF6         (KEY_F(6)  + 24) ///< Key definition
-#define KEY_CF7         (KEY_F(7)  + 24) ///< Key definition
-#define KEY_CF8         (KEY_F(8)  + 24) ///< Key definition
-#define KEY_CF9         (KEY_F(9)  + 24) ///< Key definition
-#define KEY_CF10        (KEY_F(10) + 24) ///< Key definition
-#define KEY_CF11        (KEY_F(11) + 24) ///< Key definition
-#define KEY_CF12        (KEY_F(12) + 24) ///< Key definition
+#define KEY_C_F1        (KEY_F(1)  + 24) ///< Key definition
+#define KEY_C_F2        (KEY_F(2)  + 24) ///< Key definition
+#define KEY_C_F3        (KEY_F(3)  + 24) ///< Key definition
+#define KEY_C_F4        (KEY_F(4)  + 24) ///< Key definition
+#define KEY_C_F5        (KEY_F(5)  + 24) ///< Key definition
+#define KEY_C_F6        (KEY_F(6)  + 24) ///< Key definition
+#define KEY_C_F7        (KEY_F(7)  + 24) ///< Key definition
+#define KEY_C_F8        (KEY_F(8)  + 24) ///< Key definition
+#define KEY_C_F9        (KEY_F(9)  + 24) ///< Key definition
 
-#define KEY_CSF1        (KEY_F(1)  + 36) ///< Key definition
-#define KEY_CSF2        (KEY_F(2)  + 36) ///< Key definition
-#define KEY_CSF3        (KEY_F(3)  + 36) ///< Key definition
-#define KEY_CSF4        (KEY_F(4)  + 36) ///< Key definition
-#define KEY_CSF5        (KEY_F(5)  + 36) ///< Key definition
-#define KEY_CSF6        (KEY_F(6)  + 36) ///< Key definition
-#define KEY_CSF7        (KEY_F(7)  + 36) ///< Key definition
-#define KEY_CSF8        (KEY_F(8)  + 36) ///< Key definition
-#define KEY_CSF9        (KEY_F(9)  + 36) ///< Key definition
-#define KEY_CSF10       (KEY_F(10) + 36) ///< Key definition
-#define KEY_CSF11       (KEY_F(11) + 36) ///< Key definition
-#define KEY_CSF12       (KEY_F(12) + 36) ///< Key definition
+#define KEY_S_LEFT      KEY_SLEFT       ///< Key definition
+#define KEY_C_LEFT      0x221           ///< Key definition
+#define KEY_A_LEFT      0x21f           ///< Key definition
+
+#define KEY_S_RIGHT     KEY_SRIGHT      ///< Key definition
+#define KEY_C_RIGHT     0x230           ///< Key definition
+#define KEY_A_RIGHT     0x22e           ///< Key definition
+
+#define KEY_S_UP        KEY_SR          ///< Key definition
+#define KEY_C_UP        0x236           ///< Key definition
+#define KEY_A_UP        0x234           ///< Key definition
+
+#define KEY_S_DOWN      KEY_SF          ///< Key definition
+#define KEY_C_DOWN      0x20d           ///< Key definition
+#define KEY_A_DOWN      0x20b           ///< Key definition
+
+#define KEY_S_HOME      KEY_SHOME       ///< Key definition
+#define KEY_C_HOME      0x217           ///< Key definition
+#define KEY_A_HOME      0x215           ///< Key definition
+
+#define KEY_S_END       KEY_SEND        ///< Key definition
+#define KEY_C_END       0x212           ///< Key definition
+#define KEY_A_END       0x210           ///< Key definition
+
+#define KEY_PGUP        KEY_PPAGE       ///< Key definition
+#define KEY_S_PGUP      KEY_SPREVIOUS   ///< Key definition
+#define KEY_C_PGUP      0x22b           ///< Key definition
+#define KEY_A_PGUP      0x229           ///< Key definition
+
+#define KEY_PGDN        KEY_NPAGE       ///< Key definition
+#define KEY_S_PGDN      KEY_SNEXT       ///< Key definition
+#define KEY_C_PGDN      0x226           ///< Key definition
+#define KEY_A_PGDN      0x224           ///< Key definition
+
+#define KEY_DELETE      KEY_DC          ///< Key definition
+#define KEY_S_DELETE    KEY_SDC         ///< Key definition
+#define KEY_C_DELETE    0x205           ///< Key definition
+#define KEY_A_DELETE    0x207           ///< Key definition
+
+#define KEY_INSERT      KEY_IC          ///< Key definition
+#define KEY_A_INSERT    0x21A           ///< Key definition
+
+#define KEY_S_TAB       KEY_BTAB        ///< Key definition
 
 /// @def    _
 ///
@@ -113,153 +135,35 @@ struct keys
 
 static struct keys keys[] =         ///< List of mappable keys
 {
-    _(BREAK),
-    _(SRESET),
-    _(RESET),
-    _(DOWN),
-    _(UP),
-    _(LEFT),
-    _(RIGHT),
-    _(HOME),
-    _(BACKSPACE),
-    _(F0),
-    _(F1),
-    _(F2),
-    _(F3),
-    _(F4),
-    _(F5),
-    _(F6),
-    _(F7),
-    _(F8),
-    _(F9),
-    _(F10),
-    _(F11),
-    _(F12),
-    _(SF1),
-    _(SF2),
-    _(SF3),
-    _(SF4),
-    _(SF5),
-    _(SF6),
-    _(SF7),
-    _(SF8),
-    _(SF9),
-    _(SF10),
-    _(SF11),
-    _(SF12),
-    _(CF1),
-    _(CF2),
-    _(CF3),
-    _(CF4),
-    _(CF5),
-    _(CF6),
-    _(CF7),
-    _(CF8),
-    _(CF9),
-    _(CF10),
-    _(CF11),
-    _(CF12),
-    _(CSF1),
-    _(CSF2),
-    _(CSF3),
-    _(CSF4),
-    _(CSF5),
-    _(CSF6),
-    _(CSF7),
-    _(CSF8),
-    _(CSF9),
-    _(CSF10),
-    _(CSF11),
-    _(CSF12),
-    _(DL),
-    _(IL),
-    _(DC),
-    _(IC),
-    _(EIC),
-    _(CLEAR),
-    _(EOS),
-    _(EOL),
-    _(SF),
-    _(SR),
-    _(NPAGE),
-    _(PPAGE),
-    _(STAB),
-    _(CTAB),
-    _(CATAB),
-    _(ENTER),
-    _(PRINT),
-    _(LL),
-    _(A1),
-    _(A3),
-    _(B2),
-    _(C1),
-    _(C3),
-    _(BTAB),
-    _(BEG),
-    _(CANCEL),
-    _(CLOSE),
-    _(COMMAND),
-    _(COPY),
-    _(CREATE),
-    _(END),
-    _(EXIT),
-    _(FIND),
-    _(HELP),
-    _(MARK),
-    _(MESSAGE),
-    _(MOVE),
-    _(NEXT),
-    _(OPEN),
-    _(OPTIONS),
-    _(PREVIOUS),
-    _(REDO),
-    _(REFERENCE),
-    _(REFRESH),
-    _(REPLACE),
-    _(RESTART),
-    _(RESUME),
-    _(SAVE),
-    _(SBEG),
-    _(SCANCEL),
-    _(SCOMMAND),
-    _(SCOPY),
-    _(SCREATE),
-    _(SDC),
-    _(SDL),
-    _(SELECT),
-    _(SEND),
-    _(SEOL),
-    _(SEXIT),
-    _(SFIND),
-    _(SHELP),
-    _(SHOME),
-    _(SIC),
-    _(SLEFT),
-    _(SMESSAGE),
-    _(SMOVE),
-    _(SNEXT),
-    _(SOPTIONS),
-    _(SPREVIOUS),
-    _(SPRINT),
-    _(SREDO),
-    _(SREPLACE),
-    _(SRIGHT),
-    _(SRSUME),
-    _(SSAVE),
-    _(SSUSPEND),
-    _(SUNDO),
-    _(SUSPEND),
-    _(UNDO),
-    _(MOUSE),
-    _(RESIZE),
-    _(EVENT),
+    // Key      Shift + key   Ctrl + key    Alt + key
+
+    _(LEFT),    _(S_LEFT),    _(C_LEFT),    _(A_LEFT),
+    _(RIGHT),   _(S_RIGHT),   _(C_RIGHT),   _(A_RIGHT),
+    _(UP),      _(S_UP),      _(C_UP),      _(A_UP),
+    _(DOWN),    _(S_DOWN),    _(C_DOWN),    _(A_DOWN),
+    _(HOME),    _(S_HOME),    _(C_HOME),    _(A_HOME),
+    _(END),     _(S_END),     _(C_END),     _(A_END),
+    _(PGUP),    _(S_PGUP),    _(C_PGUP),    _(A_PGUP),
+    _(PGDN),    _(S_PGDN),    _(C_PGDN),    _(A_PGDN),
+    _(DELETE),  _(S_DELETE),  _(C_DELETE),  _(A_DELETE),
+    _(INSERT),                              _(A_INSERT),
+                _(S_TAB),
+    _(F1),      _(S_F1),      _(C_F1),
+    _(F2),      _(S_F2),      _(C_F2),
+    _(F3),      _(S_F3),      _(C_F3),
+    _(F4),      _(S_F4),      _(C_F4),
+    _(F5),      _(S_F5),      _(C_F5),
+    _(F6),      _(S_F6),      _(C_F6),
+    _(F7),      _(S_F7),      _(C_F7),
+    _(F8),      _(S_F8),      _(C_F8),
+    _(F9),      _(S_F9),      _(C_F9),
 };
 
 #endif
 
 
 ///
-///  @brief    Execute FM command: map key to Q-register (global only).
+///  @brief    Execute FM command: map key to Q-register.
 ///
 ///             @FMq/key/ - Map key to Q-register.
 ///            :@FMq/key/ - Unmap key.
@@ -327,9 +231,7 @@ bool exec_key(int key)
     {
         if (p->qname != NUL)
         {
-            struct cmd cmd;
-
-            memset(&cmd, NUL, sizeof(cmd));
+            struct cmd cmd = null_cmd;
 
             cmd.c1     = 'M';
             cmd.qname  = p->qname;

@@ -44,7 +44,7 @@ uint nparens;                       ///< Parenthesis nesting count
 ///
 ///  @brief  Initial command block values.
 
-static const struct cmd null_cmd =
+const struct cmd null_cmd =
 {
     .c1     = NUL,
     .c2     = NUL,
