@@ -258,7 +258,7 @@ static int isqreg(int c, struct search *s)
 
     if (s->match_len-- == 0)
     {
-        throw(E_IQN);                   // Illegal Q-register name
+        throw(E_IQN, NUL);              // Illegal Q-register name
     }
 
     if ((qname = *s->match_buf++) == '.')
@@ -267,7 +267,7 @@ static int isqreg(int c, struct search *s)
 
         if (s->match_len-- == 0)
         {
-            throw(E_IQN);               // Illegal Q-register name
+            throw(E_IQN, NUL);          // Illegal Q-register name
         }
 
         qname = *s->match_buf++;
