@@ -37,7 +37,7 @@
 
 #define MAJOR_VERSION    200    ///< Major version
 #define MINOR_VERSION      5    ///< Minor version
-#define PATCH_VERSION      0    ///< Patch version
+#define PATCH_VERSION      1    ///< Patch version
 
 #if     defined(TECO_LONG)
 
