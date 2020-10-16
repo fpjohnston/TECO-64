@@ -176,9 +176,9 @@ extern void exec_FK(struct cmd *cmd);
 
 extern void exec_FL(struct cmd *cmd);
 
-extern void exec_FN(struct cmd *cmd);
+extern void exec_FM(struct cmd *cmd);
 
-extern void exec_FQ(struct cmd *cmd);
+extern void exec_FN(struct cmd *cmd);
 
 extern void exec_FR(struct cmd *cmd);
 

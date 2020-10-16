@@ -146,5 +146,5 @@ than one key may be mapped to the same Q-register.
 
 | Command | Function |
 | ------- | -------- |
-| FQ*qkey* | Map the specified key to Q-register *q*. |
-| :FQ*qkey* | Unmap the specified key from Q-register *q*. |
+| FM*qkey* | Map the specified key to Q-register *q*. |
+| :FM*qkey* | Unmap the specified key from Q-register *q*. |

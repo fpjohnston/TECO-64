@@ -1,6 +1,6 @@
 ///
-///  @file    fq_cmd.c
-///  @brief   Execute FQ command.
+///  @file    fm_cmd.c
+///  @brief   Execute FM command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -98,7 +98,7 @@
 ///
 /// @brief  Helper macro to set up table of keys.
 
-#define _(key) [KEY_ ## key] = { .kname = #key, .qname = NUL }
+#define _(key) [KEY_ ## key] = { .kname = #key, .qname = NUL, .qlocal = false }
 
 /// @struct  keys
 ///
@@ -106,11 +106,12 @@
 
 struct keys
 {
-    const char *kname;                  ///< Key name
-    char qname;                         ///< Mapped Q-register
+    const char *kname;              ///< Key name
+    char qname;                     ///< Mapped Q-register
+    bool qlocal;                    ///< true if local Q-register
 };
 
-static struct keys keys[] =             ///< List of mappable keys
+static struct keys keys[] =         ///< List of mappable keys
 {
     _(BREAK),
     _(SRESET),
@@ -258,10 +259,10 @@ static struct keys keys[] =             ///< List of mappable keys
 
 
 ///
-///  @brief    Execute FQ command: map key to Q-register (global only).
+///  @brief    Execute FM command: map key to Q-register (global only).
 ///
-///             @FQq/key/ - Map key to Q-register.
-///            :@FQq/key/ - Unmap key.
+///             @FMq/key/ - Map key to Q-register.
+///            :@FMq/key/ - Unmap key.
 ///
 ///  @returns  Nothing.
 ///
@@ -269,14 +270,9 @@ static struct keys keys[] =             ///< List of mappable keys
 
 #if     defined(TECO_DISPLAY)
 
-void exec_FQ(struct cmd *cmd)
+void exec_FM(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
-
-    if (cmd->qlocal)                    // Local Q-register?
-    {
-        throw(E_IQN, '.');              // Yes, that's an error
-    }
 
     char key[cmd->text1.len + 1];
 
@@ -289,10 +285,12 @@ void exec_FQ(struct cmd *cmd)
             if (cmd->colon)
             {
                 keys[i].qname  = NUL;
+                keys[i].qlocal = false;
             }
             else
             {
                 keys[i].qname  = cmd->qname;
+                keys[i].qlocal = cmd->qlocal;
             }
 
             return;
@@ -304,7 +302,7 @@ void exec_FQ(struct cmd *cmd)
 
 #else
 
-void exec_FQ(struct cmd *unused1)
+void exec_FM(struct cmd *unused1)
 {
     throw(E_NOD);                       // Display mode support not enabled
 }
@@ -333,8 +331,10 @@ bool exec_key(int key)
 
             memset(&cmd, NUL, sizeof(cmd));
 
-            cmd.c1 = 'M';
-            cmd.qname = p->qname;
+            cmd.c1     = 'M';
+            cmd.qname  = p->qname;
+            cmd.qlocal = p->qlocal;
+            cmd.colon  = true;          // Keep local Q-registers
 
             exec_M(&cmd);
 

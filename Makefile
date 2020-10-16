@@ -126,7 +126,7 @@ SOURCES = \
     fd_cmd.c       \
     fk_cmd.c       \
     flag_cmd.c     \
-    fq_cmd.c       \
+    fm_cmd.c       \
     fr_cmd.c       \
     g_cmd.c        \
     goto_cmd.c     \
