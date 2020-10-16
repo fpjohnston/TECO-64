@@ -37,9 +37,10 @@
 
 #if     defined(TECO_DISPLAY)
 
-#include "ascii.h"
 #include <string.h>
 #include <unistd.h>
+
+#include "ascii.h"
 
 #define KEY_F1          (KEY_F(1))      ///< Key definition
 #define KEY_F2          (KEY_F(2))      ///< Key definition
@@ -93,22 +94,23 @@
 #define KEY_CSF11       (KEY_F(11) + 36) ///< Key definition
 #define KEY_CSF12       (KEY_F(12) + 36) ///< Key definition
 
-/// @var    _
+/// @def    _
 ///
 /// @brief  Helper macro to set up table of keys.
 
-#define _(key) [KEY_ ## key] = { .string = #key, .qname = NUL }
+#define _(key) [KEY_ ## key] = { .kname = #key, .qname = NUL }
 
 /// @struct  keys
 ///
-/// @brief   Table of function, cursor, and other special keys.
-///
+/// @brief   Key-to-Q-register mapping.
 
-static struct keys
+struct keys
 {
-    const char *string;
-    char qname;
-} keys[] =
+    const char *kname;                  ///< Key name
+    char qname;                         ///< Mapped Q-register
+};
+
+static struct keys keys[] =             ///< List of mappable keys
 {
     _(BREAK),
     _(SRESET),
@@ -282,7 +284,7 @@ void exec_FQ(struct cmd *cmd)
 
     for (uint i = 0; i < countof(keys); ++i)
     {
-        if (keys[i].string != NULL && !strcasecmp(key, keys[i].string))
+        if (keys[i].kname != NULL && !strcasecmp(key, keys[i].kname))
         {
             if (cmd->colon)
             {
@@ -323,7 +325,7 @@ bool exec_key(int key)
 {
     const struct keys *p = &keys[key];
 
-    if ((uint)key < countof(keys) && p->string != NULL)
+    if ((uint)key < countof(keys) && p->kname != NULL)
     {
         if (p->qname != NUL)
         {
