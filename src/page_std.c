@@ -36,7 +36,7 @@
 #include "page.h"
 #include "term.h"
 
-uint page_count = 1;                ///< Current page number
+uint page_count = 0;                ///< Current page number
 
 ///
 ///  @brief    Read in previous page (invalid for standard paging).

@@ -36,7 +36,7 @@
 #include "page.h"
 #include "term.h"
 
-uint page_count = 1;                ///< Current page number
+uint page_count = 0;                ///< Current page number
 
 ///  @struct   page
 ///  @brief    Descriptor for storing a linked list of pages in memory.
@@ -294,7 +294,7 @@ void page_flush(FILE *fp)
         write_page(fp, page);
     }
 
-    page_count = 1;
+    page_count = 0;
 }
 
 

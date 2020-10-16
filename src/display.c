@@ -40,7 +40,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <unistd.h>
 
 #include <sys/ioctl.h>
@@ -57,6 +56,7 @@
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
+#include "page.h"
 #include "term.h"
 
 
@@ -1051,17 +1051,13 @@ static void update_status(void)
 
         status[nbytes] = SPACE;         // Replace NUL character with space
 
-        // Now add in date and time on the right side of status line
+        // Now add in page number on right side.
 
-        time_t now = time(NULL);
-        struct tm *tm = localtime(&now);
-        char tbuf[w.width];
+        char page[w.width];
 
-        nbytes = (int)strftime(tbuf, sizeof(tbuf),
-                               "%a, %e %b %Y, %H:%M %Z", tm);
-        assert(nbytes != 0);            // Verify that we got some data
+        nbytes = sprintf(page, "Page %u", page_count);
 
-        memcpy(status + w.width - nbytes, tbuf, (size_t)(uint)nbytes);
+        memcpy(status + w.width - nbytes, page, (size_t)(uint)nbytes);
 
         for (int i = 0; i < w.width; ++i)
         {

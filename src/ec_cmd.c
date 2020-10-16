@@ -67,6 +67,8 @@ void exec_EC(struct cmd *cmd)
         page_flush(ofile->fp);
     }
 
+    page_count = 0;
+
     exec_EF(NULL);                      // Rename and close the output file
 
     close_input(istream);

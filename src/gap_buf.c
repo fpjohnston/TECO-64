@@ -34,6 +34,7 @@
 #include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
+#include "page.h"
 #include "term.h"
 
 
@@ -128,6 +129,11 @@ int add_ebuf(int c)
     }
 
     eb.buf[eb.left++] = (char)c;
+
+    if (page_count == 0)
+    {
+        ++page_count;
+    }
 
 #if     defined(TECO_DISPLAY)
 
