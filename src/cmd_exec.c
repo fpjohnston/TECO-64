@@ -453,7 +453,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
     {
         const struct cmd_table *entry = scan_ef(cmd, f_table, f_max, E_IFC);
 
-        //check_qreg(entry, cmd);       // (F commands don't allow Q-registers)
+        check_qreg(entry, cmd);
 
         return entry;
     }

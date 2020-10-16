@@ -680,9 +680,7 @@ int readkey_dpy(int key)
 
     if (exec_key(key))
     {
-        clear_dpy();
-
-        print_prompt();
+        ;
     }
     else if (key == KEY_BACKSPACE)
     {
