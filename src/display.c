@@ -678,29 +678,32 @@ int readkey_dpy(int key)
         return key;
     }
 
-    if (!exec_key(key))
+    if (exec_key(key))
     {
-        if (key == KEY_BACKSPACE)
-        {
-            return BS;
-        }
-        else if (key == KEY_UP)
-        {
-            move_up();
-        }
-        else if (key == KEY_DOWN)
-        {
-            move_down();
-        }
-        else if (key == KEY_LEFT || key == KEY_RIGHT)
-        {
-            int dot = (int)t.dot + (key == KEY_LEFT ? -1 : 1);
+        clear_dpy();
 
-            if (dot >= t.B && dot <= t.Z)
-            {
-                setpos_ebuf(dot);
-                refresh_dpy();
-            }
+        print_prompt();
+    }
+    else if (key == KEY_BACKSPACE)
+    {
+        return BS;
+    }
+    else if (key == KEY_UP)
+    {
+        move_up();
+    }
+    else if (key == KEY_DOWN)
+    {
+        move_down();
+    }
+    else if (key == KEY_LEFT || key == KEY_RIGHT)
+    {
+        int dot = (int)t.dot + (key == KEY_LEFT ? -1 : 1);
+
+        if (dot >= t.B && dot <= t.Z)
+        {
+            setpos_ebuf(dot);
+            refresh_dpy();
         }
     }
 
