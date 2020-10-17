@@ -83,7 +83,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
     if (cmd->n_set && cmd->n_arg == 0)  // 0Stext` isn't allowed
     {
-        throw(E_ISA);                   // Illegal search argument
+        throw(E_ISA);                   // Invalid search argument
     }
 
     if (!replace && cmd->dcolon)        // ::Stext` => 1,1:Stext`

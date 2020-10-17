@@ -303,7 +303,7 @@ void exec_quote(struct cmd *cmd)
             // Note: reset_if() will be called during error processing,
             //       so we don't need to call it here.
 
-            throw(E_IQC);               // Illegal quote character
+            throw(E_IQC);               // Invalid quote character
     }
 
     // Here if the test was unsuccessful

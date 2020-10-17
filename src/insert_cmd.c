@@ -70,7 +70,7 @@ void exec_I(struct cmd *cmd)
 
     if (cmd->n_set && cmd->text1.len != 0) // nItext`?
     {
-        throw(E_IIA);                   // Illegal insert argument
+        throw(E_IIA);                   // Invalid insert argument
     }
 
     if (cmd->text1.len != 0)
@@ -86,7 +86,7 @@ void exec_I(struct cmd *cmd)
         {
             if (cmd->m_arg < 0)
             {
-                throw(E_IIA);           // Illegal insert argument
+                throw(E_IIA);           // Invalid insert argument
             }
             else if ((n = (uint)cmd->m_arg) == 0)
             {

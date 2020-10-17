@@ -258,7 +258,7 @@ static int isqreg(int c, struct search *s)
 
     if (s->match_len-- == 0)
     {
-        throw(E_IQN, NUL);              // Illegal Q-register name
+        throw(E_IQN, NUL);              // Invalid Q-register name
     }
 
     if ((qname = *s->match_buf++) == '.')
@@ -267,7 +267,7 @@ static int isqreg(int c, struct search *s)
 
         if (s->match_len-- == 0)
         {
-            throw(E_IQN, NUL);          // Illegal Q-register name
+            throw(E_IQN, NUL);          // Invalid Q-register name
         }
 
         qname = *s->match_buf++;
@@ -329,7 +329,7 @@ static bool match_chr(int c, struct search *s)
 
     if (s->match_len-- == 0)
     {
-        throw(E_ISS);                   // Illegal search string
+        throw(E_ISS);                   // Invalid search string
     }
 
     int match = *s->match_buf++;
@@ -338,7 +338,7 @@ static bool match_chr(int c, struct search *s)
     {
         if (s->match_len-- == 0)
         {
-            throw(E_ISS);               // Illegal search string
+            throw(E_ISS);               // Invalid search string
         }
 
         match = toupper(*s->match_buf++);
@@ -382,7 +382,7 @@ static bool match_chr(int c, struct search *s)
             return (c == n) ? true : false;
         }
 
-        throw(E_ICE);                   // Illegal ^E command in search argument
+        throw(E_ICE);                   // Invalid ^E command in search argument
     }
     else if (match == CTRL_N)
     {

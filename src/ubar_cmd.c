@@ -82,7 +82,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
     if (cmd->n_set && cmd->n_arg == 0)  // 0_text` isn't allowed
     {
-        throw(E_ISA);                   // Illegal search argument
+        throw(E_ISA);                   // Invalid search argument
     }
 
     if (!cmd->n_set)                    // _text` => 1_text`

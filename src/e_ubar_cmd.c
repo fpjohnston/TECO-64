@@ -51,7 +51,7 @@ void exec_E_ubar(struct cmd *cmd)
 
     if (cmd->n_set && cmd->n_arg == 0)  // 0E_text` isn't allowed
     {
-        throw(E_ISA);                   // Illegal search argument
+        throw(E_ISA);                   // Invalid search argument
     }
 
     if (!cmd->n_set)                    // E_text` => 1E_text`

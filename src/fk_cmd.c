@@ -53,7 +53,7 @@ void exec_FK(struct cmd *cmd)
     {
         if (cmd->n_arg <= 0)            // 0FKtext` and -nFKtext` aren't allowed
         {
-            throw(E_ISA);               // Illegal search argument
+            throw(E_ISA);               // Invalid search argument
         }
     }
     else                                // FKtext` => 1FKtext`

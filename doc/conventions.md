@@ -49,7 +49,7 @@ the ESCape character at that position.
 
 Numbers may be specified as a string of digits in either decimal or octal.
 The ^D, ^O, and ^R commands are used to set the current radix. If the radix
-is octal, the digits 8 and 9 are illegal and will result in a ILN error.
+is octal, the digits 8 and 9 are invalid and will result in a ILN error.
 
 If the radix is hexadecimal, only digits 0 through 9 may be used; there is
 no way to specify hex digits A through F, as those could be interpreted as

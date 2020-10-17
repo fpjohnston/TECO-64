@@ -47,36 +47,36 @@ enum errors
 {
     E_NUL,          ///< No error
     E_ARG,          ///< Improper arguments
-    E_ATS,          ///< Illegal or extraneous at-sign
+    E_ATS,          ///< Invalid or extraneous at-sign
     E_BAT,          ///< Bad tag "!tag!"
     E_BNI,          ///< Right angle bracket not in iterationx
     E_CHR,          ///< Invalid character for command
-    E_COL,          ///< Illegal or extraneous colon
+    E_COL,          ///< Invalid or extraneous colon
     E_DIV,          ///< Division by zero
     E_DPY,          ///< Display mode initialization error
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag "!x!"
     E_EGC,          ///< EG command is too long
-    E_FIL,          ///< Illegal file "x"
+    E_FIL,          ///< Invalid file "x"
     E_FNF,          ///< File not found "x"
-    E_ICE,          ///< Illegal ^E command in search argument
-    E_IE1,          ///< Illegal E1 command
-    E_IEC,          ///< Illegal character "x" after E
-    E_IFC,          ///< Illegal character "x" after F
+    E_ICE,          ///< Invalid ^E command in search argument
+    E_IE1,          ///< Invalid E1 command
+    E_IEC,          ///< Invalid character "x" after E
+    E_IFC,          ///< Invalid character "x" after F
     E_IFE,          ///< Ill-formed numeric expression
-    E_IFN,          ///< Illegal character "x" in filename
-    E_IIA,          ///< Illegal insert arg
-    E_ILL,          ///< Illegal command "x"
-    E_ILN,          ///< Illegal number
-    E_IMA,          ///< Illegal m argument
-    E_INA,          ///< Illegal n argument
+    E_IFN,          ///< Invalid character "x" in filename
+    E_IIA,          ///< Invalid insert arg
+    E_ILL,          ///< Invalid command "x"
+    E_ILN,          ///< Invalid number
+    E_IMA,          ///< Invalid m argument
+    E_INA,          ///< Invalid n argument
     E_INI,          ///< Initialization error
-    E_IQC,          ///< Illegal quote character
-    E_IQN,          ///< Illegal Q-register name "x"
-    E_IRA,          ///< Illegal radix argument to ^R
-    E_ISA,          ///< Illegal search argument
-    E_ISS,          ///< Illegal search string
-    E_IUC,          ///< Illegal character "x" following ^
+    E_IQC,          ///< Invalid quote character
+    E_IQN,          ///< Invalid Q-register name "x"
+    E_IRA,          ///< Invalid radix argument to ^R
+    E_ISA,          ///< Invalid search argument
+    E_ISS,          ///< Invalid search string
+    E_IUC,          ///< Invalid character "x" following ^
     E_KEY,          ///< Key "%s" not found
     E_MAP,          ///< Missing apostrophe
     E_MAT,          ///< No matching files

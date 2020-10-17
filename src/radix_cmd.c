@@ -75,7 +75,7 @@ void exec_ctrl_R(struct cmd *cmd)
     {
         if (cmd->n_arg != 8 && cmd->n_arg != 10 && cmd->n_arg != 16)
         {
-            throw(E_IRA);               // Illegal radix argument
+            throw(E_IRA);               // Invalid radix argument
         }
 
         radix = cmd->n_arg;             // Set the radix

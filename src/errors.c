@@ -64,36 +64,36 @@ static struct err_table err_table[] =
 {
     [E_NUL] = { "---",  "Unknown error code" },
     [E_ARG] = { "ARG",  "Improper arguments" },
-    [E_ATS] = { "ATS",  "Illegal or extraneous at-sign" },
+    [E_ATS] = { "ATS",  "Invalid or extraneous at-sign" },
     [E_BAT] = { "BAT",  "Bad tag '!%s!'" },
     [E_BNI] = { "BNI",  "> not in iteration" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
-    [E_COL] = { "COL",  "Illegal or extraneous colon" },
+    [E_COL] = { "COL",  "Invalid or extraneous colon" },
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DPY] = { "DPY",  "Display mode initialization error" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
     [E_EGC] = { "EGC",  "EG command is too long" },
-    [E_FIL] = { "FIL",  "Illegal file '%s'" },
+    [E_FIL] = { "FIL",  "Invalid file '%s'" },
     [E_FNF] = { "FNF",  "File not found '%s'" },
-    [E_ICE] = { "ICE",  "Illegal ^E command in search argument" },
-    [E_IE1] = { "IE1",  "Illegal E1 command during EI command" },
-    [E_IEC] = { "IEC",  "Illegal character '%s' after E" },
-    [E_IFC] = { "IFC",  "Illegal character '%s' after F" },
+    [E_ICE] = { "ICE",  "Invalid ^E command in search argument" },
+    [E_IE1] = { "IE1",  "Invalid E1 command during EI command" },
+    [E_IEC] = { "IEC",  "Invalid character '%s' after E" },
+    [E_IFC] = { "IFC",  "Invalid character '%s' after F" },
     [E_IFE] = { "IFE",  "Ill-formed numeric expression" },
-    [E_IFN] = { "IFN",  "Illegal character '%s' in filename" },
-    [E_IIA] = { "IIA",  "Illegal insert arg" },
-    [E_ILL] = { "ILL",  "Illegal command '%s'" },
-    [E_ILN] = { "ILN",  "Illegal number" },
-    [E_IMA] = { "IMA",  "Illegal m argument" },
-    [E_INA] = { "INA",  "Illegal n argument" },
+    [E_IFN] = { "IFN",  "Invalid character '%s' in filename" },
+    [E_IIA] = { "IIA",  "Invalid insert arg" },
+    [E_ILL] = { "ILL",  "Invalid command '%s'" },
+    [E_ILN] = { "ILN",  "Invalid number" },
+    [E_IMA] = { "IMA",  "Invalid m argument" },
+    [E_INA] = { "INA",  "Invalid n argument" },
     [E_INI] = { "INI",  "%s" },
-    [E_IQC] = { "IQC",  "Illegal quote character" },
-    [E_IQN] = { "IQN",  "Illegal Q-register name '%s'" },
-    [E_IRA] = { "IRA",  "Illegal radix argument to ^R" },
-    [E_ISA] = { "ISA",  "Illegal search argument" },
-    [E_ISS] = { "ISS",  "Illegal search string" },
-    [E_IUC] = { "IUC",  "Illegal character '%s' following ^" },
+    [E_IQC] = { "IQC",  "Invalid quote character" },
+    [E_IQN] = { "IQN",  "Invalid Q-register name '%s'" },
+    [E_IRA] = { "IRA",  "Invalid radix argument to ^R" },
+    [E_ISA] = { "ISA",  "Invalid search argument" },
+    [E_ISS] = { "ISS",  "Invalid search string" },
+    [E_IUC] = { "IUC",  "Invalid character '%s' following ^" },
     [E_KEY] = { "KEY",  "Key '%s' not found" },
     [E_MAP] = { "MAP",  "Missing '" },
     [E_MAT] = { "MAT",  "No match for file specification" },
@@ -188,13 +188,13 @@ static const char *verbose[] =
               "must be followed by an alphabetic to form a legal E "
               "command (i.e. ER or EX).",
 
-    [E_IFC] = "An illegal F command has been executed.",
+    [E_IFC] = "An invalid F command has been executed.",
 
     [E_IFE] = "The numeric expression preceding a command doesn't make "
               "sense. For example, 5+ isn't a complete expression.",
 
     [E_IIA] = "A command of the form \"nItext$\" was attempted. This "
-              "combination of character and text insertion is illegal.",
+              "combination of character and text insertion is invalid.",
 
     [E_ILL] = "An attempt has been made to execute an invalid TECO "
               "command.",
@@ -212,7 +212,7 @@ static const char *verbose[] =
               "to Section 5.14 (conditional execution commands) for "
               "the legal set of commands.",
 
-    [E_IQN] = "An illegal Q-register name was specified in one of the "
+    [E_IQN] = "An invalid Q-register name was specified in one of the "
               "Q-register commands.",
 
     [E_IRA] = "The argument to a ^R radix command must be 8, 10 or 16.",

@@ -63,7 +63,7 @@ void exec_number(struct cmd *cmd)
 
         if (radix == 8 && c > 7)        // If base 8 and digit is 8 or 9
         {
-            throw(E_ILN);               // Illegal number
+            throw(E_ILN);               // Invalid number
         }
 
         n *= (int)radix;                // Shift over existing digits

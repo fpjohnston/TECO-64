@@ -246,7 +246,7 @@ void init_filename(char **name, const char *buf, uint len)
         }
         else if (iscntrl(c) || !isascii(c))
         {
-            throw(E_IFN, c);            // Illegal character in file name
+            throw(E_IFN, c);            // Invalid character in file name
         }
         else
         {
@@ -387,7 +387,7 @@ struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
 
     if (!S_ISREG(file_stat.st_mode))
     {
-        throw(E_FIL, ifile->name);      // Illegal file
+        throw(E_FIL, ifile->name);      // Invalid file
     }
 
     if (access(ifile->name, R_OK) != 0) // Is file readable?

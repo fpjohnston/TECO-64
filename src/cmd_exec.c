@@ -141,7 +141,7 @@ static void check_qreg(const struct cmd_table *entry, struct cmd *cmd)
     {
         if (toupper(cmd->c1) != 'G' || strchr("*_+", c) == NULL)
         {
-            throw(E_IQN, c);            // Illegal Q-register name
+            throw(E_IQN, c);            // Invalid Q-register name
         }
     }
 
@@ -178,7 +178,7 @@ static void end_cmd(struct cmd *cmd, enum cmd_opts opts)
     {
         if (f.e2.m_arg && !(opts & OPT_M))
         {
-            throw(E_IMA);               // Illegal m argument
+            throw(E_IMA);               // Invalid m argument
         }
         else if (!cmd->n_set)
         {
@@ -189,7 +189,7 @@ static void end_cmd(struct cmd *cmd, enum cmd_opts opts)
     {
         if (f.e2.n_arg && !(opts & OPT_N))
         {
-            throw(E_INA);               // Illegal n argument
+            throw(E_INA);               // Invalid n argument
         }
     }
 }
@@ -337,13 +337,13 @@ static exec_func *next_cmd(struct cmd *cmd)
 
         if ((cmd->atsign && f.e2.atsign && !(opts & OPT_A)))
         {
-            throw(E_ATS);               // Illegal at-sign
+            throw(E_ATS);               // Invalid at-sign
         }
 
         if ((cmd->colon  && f.e2.colon  && !(opts & OPT_C)) ||
             (cmd->dcolon && f.e2.colon  && !(opts & OPT_D)))
         {
-            throw(E_COL);               // Illegal colon
+            throw(E_COL);               // Invalid colon
         }
 
         if (opts & OPT_T1)
@@ -473,7 +473,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
     }
     else if (c < 0 || c >= (int)cmd_max)
     {
-        throw(E_ILL, c);                // Illegal character
+        throw(E_ILL, c);                // Invalid character
     }
     else if (c == '=')                  // Allow for =, ==, and ===
     {
@@ -512,7 +512,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
 
         if (c <= NUL || c >= SPACE)
         {
-            throw(E_IUC, c);            // Illegal character following ^
+            throw(E_IUC, c);            // Invalid character following ^
         }
 
         cmd->c1 = (char)c;
@@ -560,7 +560,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
 
     if (entry->opts & OPT_B)
     {
-        throw(E_ILL, c);                // Illegal character
+        throw(E_ILL, c);                // Invalid character
     }
 
     check_qreg(entry, cmd);
@@ -587,7 +587,7 @@ static const struct cmd_table *scan_ef(struct cmd *cmd,
 
     if (c < 0 || (uint)c > count || table[c].exec == NULL)
     {
-        throw(error, c);                // Illegal E or F character
+        throw(error, c);                // Invalid E or F character
     }
 
     cmd->c2 = (char)c;
@@ -692,7 +692,7 @@ static void scan_texts(struct cmd *cmd, enum cmd_opts opts)
 
         if (!isgraph(cmd->delim))
         {
-            throw(E_ATS);               // Illegal delimiter
+            throw(E_ATS);               // Invalid delimiter
         }
     }
 

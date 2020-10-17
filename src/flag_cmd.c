@@ -219,7 +219,7 @@ void exec_E1(struct cmd *cmd)
                 return;
         }
 
-        throw(E_IE1);                   // Illegal E1 command
+        throw(E_IE1);                   // Invalid E1 command
     }
 }
 
