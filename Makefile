@@ -244,7 +244,7 @@ ifdef   debug
 
 DEFINES += -D TECO_DEBUG
 DOXYGEN +=    TECO_DEBUG
-OPTIONS_debug += -d
+OPTIONS_DEBUG += -d
 
 endif
 
@@ -349,7 +349,7 @@ bin/$(TARGET): $(OBJECTS)
 $(OBJECTS): $(OPTIONS_H) obj/CFLAGS
 
 $(OPTIONS_H): etc/options.xml
-	$(AT)etc/options.pl -c $< -o $@ $(OPTIONS_BUG)
+	$(AT)etc/options.pl -c $< -o $@ $(OPTIONS_DEBUG)
 
 .PHONY: FORCE
 obj/CFLAGS: FORCE
