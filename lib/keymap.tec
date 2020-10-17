@@ -1,31 +1,24 @@
-! keymap.tec - Demonstration of mapping keys to Q-registers !
+!! keymap.tec - demonstration macro for TECO-64 to show how to map keys
 
-!!0,128ET                 ! Abort on error !
+0,128ET                 !! Abort on error
 
-EO-200 "L
-    @^A/?TECO macro requires TECO-64 v200+/ 13^T 10^T
-    ^C
-'
-
-@^UA/@^A%F1 %/     @FMA/F1/
-@^UB/@^A%F2 %/     @FMB/F2/
-@^UC/@^A%F3 %/     @FMC/F3/
-@^UD/@^A%F4 %/     @FMD/F4/
-@^UE/@^A%F5 %/     @FME/F5/
-@^UF/@^A%F6 %/     @FMF/F6/
-@^UG/@^A%F7 %/     @FMG/F7/
-@^UH/@^A%F8 %/     @FMH/F8/
-@^UI/@^A%INSERT %/ @FMI/INSERT/
-@^UJ/@^A%DELETE %/ @FMJ/DELETE/
-@^UK/@^A%HOME %/   @FMK/HOME/
-@^UL/@^A%END %/    @FML/END/
-@^UM/@^A%PGDN %/   @FMM/PGDN/
-@^UN/@^A%PGUP %/   @FMN/PGUP/
-@^UO/@^A%UP %/     @FMO/UP/
-@^UP/@^A%DOWN %/   @FMP/DOWN/
-@^UQ/@^A%RIGHT %/  @FMQ/RIGHT/
-@^UR/@^A%LEFT %/   @FMR/LEFT/
-
-:@^A/Mapped keys to Q-registers A through R/
+@^UA/@^A%F1 %/     @FMA/F1/        :@^A/Mapped F1 key to Q-register A/
+@^UB/@^A%F2 %/     @FMB/F2/        :@^A/Mapped F2 key to Q-register B/
+@^UC/@^A%F3 %/     @FMC/F3/        :@^A/Mapped F3 key to Q-register C/
+@^UD/@^A%F4 %/     @FMD/F4/        :@^A/Mapped F4 key to Q-register D/
+@^UE/@^A%F5 %/     @FME/F5/        :@^A/Mapped F5 key to Q-register E/
+@^UF/@^A%F6 %/     @FMF/F6/        :@^A/Mapped F6 key to Q-register F/
+@^UG/@^A%F7 %/     @FMG/F7/        :@^A/Mapped F7 key to Q-register G/
+@^UH/@^A%F8 %/     @FMH/F8/        :@^A/Mapped F8 key to Q-register H/
+@^UI/@^A%INSERT %/ @FMI/INSERT/    :@^A/Mapped Insert key to Q-register I/
+@^UJ/@^A%DELETE %/ @FMJ/DELETE/    :@^A/Mapped Delete key to Q-register J/
+@^UK/@^A%HOME %/   @FMK/HOME/      :@^A/Mapped Home key to Q-register K/
+@^UL/@^A%END %/    @FML/END/       :@^A/Mapped End key to Q-register L/
+@^UM/@^A%PGDN %/   @FMM/PGDN/      :@^A/Mapped PgDn key to Q-register M/
+@^UN/@^A%PGUP %/   @FMN/PGUP/      :@^A/Mapped PgUp key to Q-register N/
+@^UO/@^A%UP %/     @FMO/UP/        :@^A/Mapped Up key to Q-register O/
+@^UP/@^A%DOWN %/   @FMP/DOWN/      :@^A/Mapped Down key to Q-register P/
+@^UQ/@^A%RIGHT %/  @FMQ/RIGHT/     :@^A/Mapped Right key to Q-register Q/
+@^UR/@^A%LEFT %/   @FMR/LEFT/      :@^A/Mapped Left key to Q-register R/
 
 ^[^[

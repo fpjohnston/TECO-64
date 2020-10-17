@@ -1,5 +1,6 @@
 !! init.tec - sample initialization macro for TECO-64
-!! Use TECO_INIT=init or --initialize=init
+
+!! Invoke by setting TECO_INIT=init or use --initialize=init option
 
 0,128ET                 !! Abort on error
 
