@@ -220,14 +220,13 @@ Equivalent to *dot*.
 **Edit level flag**
 
 A bit-encoded flag, referenced by the ED command, that describes how TECO
-should behave with reference to certain features. See Section 5.16 for more
-details.
+should behave with reference to certain features.
 
 **Edit verify flag**
 
 A flag that describes how TECO should act after processing of a command string.
 This flag can be set so that TECO will display the line just edited on the terminal
-after each command. See Section 5.16 for more details.
+after each command.
 
 **EH flag **
 
@@ -362,13 +361,13 @@ TECO command string currently being typed in.
 Single-character commands which can be typed as the very first character
 after TECO’s prompting asterisk, and which cause the current location counter
 to be moved by one line and the new current line to be typed out. Examples are
-\<LF\> and \<BS\>. See Section 1.6.1.
+\<LF\> and \<BS\>.
 
 **Immediate action commands**
 
 Commands which may be typed right after TECO’s prompting asterisk,
 such as the \*q to save the previously-typed command in a Q-register or the ^W to
-re-display a scrolling buffer window. See Section 4.2.
+re-display a scrolling buffer window.
 
 **Immediate ESCape sequence commands**
 
@@ -558,7 +557,7 @@ by use of the EP command.
 **Secondary output stream**
 
 A term used by TECO-11 to refer to an auxiliary output "channel" that was
-formed by use of the EA command. See Section 5.1.4 for details.
+formed by use of the EA command.
 
 **Scope editing mode**
 

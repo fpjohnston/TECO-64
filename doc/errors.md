@@ -55,7 +55,7 @@ code.
 | <nobr>?IMA</nobr> | <nobr>Invalid m argument</nobr> | An m argument was provided to a command which does not allow it. |
 | <nobr>?INA</nobr> | <nobr>Invalid n argument</nobr> | An n argument was provided to a command which does not allow it. |
 | <nobr>?INI</nobr> | <nobr>Initialization error</nobr> | A fatal error occurred during TECO initialization. |
-| <nobr>?IQC</nobr> | <nobr>Invalid " character</nobr> | One of the valid " commands did not follow the ". Refer to Section 5.14, Conditional Execution Commands, for the legal set of commands. |
+| <nobr>?IQC</nobr> | <nobr>Invalid " character</nobr> | One of the valid " commands did not follow the quote character. |
 | <nobr>?IQN</nobr> | <nobr>Invalid Q-register name 'x'</nobr> | An invalid Q-register name was specified in one of the Q-register commands. |
 | <nobr>?IRA</nobr> | <nobr>Invalid radix argument to ^R</nobr> | The argument to a ^R radix command must be 8, 10, or 16. |
 | <nobr>?ISA</nobr> | <nobr>Invalid search arg</nobr> | The argument preceding a search command is 0. This argument must not be 0. |
