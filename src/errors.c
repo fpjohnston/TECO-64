@@ -64,11 +64,11 @@ static struct err_table err_table[] =
 {
     [E_NUL] = { "---",  "Unknown error code" },
     [E_ARG] = { "ARG",  "Improper arguments" },
-    [E_ATS] = { "ATS",  "Illegal at-sign, or too many at-signs" },
+    [E_ATS] = { "ATS",  "Illegal or extraneous at-sign" },
     [E_BAT] = { "BAT",  "Bad tag '!%s!'" },
     [E_BNI] = { "BNI",  "> not in iteration" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
-    [E_COL] = { "COL",  "Illegal colon, or too many colons" },
+    [E_COL] = { "COL",  "Illegal or extraneous colon" },
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DPY] = { "DPY",  "Display mode initialization error" },
     [E_DTB] = { "DTB",  "Delete too big" },

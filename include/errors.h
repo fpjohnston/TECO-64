@@ -47,11 +47,11 @@ enum errors
 {
     E_NUL,          ///< No error
     E_ARG,          ///< Improper arguments
-    E_ATS,          ///< Illegal at-sign, or too many at-signs
+    E_ATS,          ///< Illegal or extraneous at-sign
     E_BAT,          ///< Bad tag "!tag!"
     E_BNI,          ///< Right angle bracket not in iterationx
     E_CHR,          ///< Invalid character for command
-    E_COL,          ///< Illegal colon, or too many colons
+    E_COL,          ///< Illegal or extraneous colon
     E_DIV,          ///< Division by zero
     E_DPY,          ///< Display mode initialization error
     E_DTB,          ///< Delete too big
