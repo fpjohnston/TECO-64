@@ -451,7 +451,7 @@ sub parse_options
             . "    \"  TECO_MEMORY        "
             . "    File that contains name of last file edited.\",\n"
             . "    \"  TECO_VTEDIT        "
-            . "    Default file for initialization of window mode.\",\n";
+            . "    Default file for initialization of display mode.\",\n";
     }
 
     foreach my $section ($dom->findnodes('/teco/section'))
