@@ -1,17 +1,10 @@
-! vtedit.tec - window initialization for TECO-64 !
+!! vtedit.tec - sample window initialization macro for TECO-64
 
-0,128ET                 ! Abort on error !
-
-EO-200 "L
-    @^A/?TECO macro requires TECO-64 v200+/ 13^T 10^T
-    ^C
-'
-
--1W
-9,7:W ^[
-
-@f1/green/black/       !! Command window colors
-@f2/blue/white/        !! Text window colors
-@f3/yellow/red/        !! Status line colors
+0,128ET                 !! Abort on error
+-1W                     !! Enable display mode
+9,7:W ^[                !! Enable scrolling region with 9 lines
+@f1/green/black/        !! Set command window colors
+@f2/blue/white/         !! Set text window colors
+@f3/yellow/red/         !! Set status line colors
 
 ^[^[

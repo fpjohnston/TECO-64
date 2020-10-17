@@ -1,12 +1,6 @@
-! date.tec - display the current date and time !
+!! date.tec - display the current date and time
 
-0,128ET                 ! Abort on error !
-
-EO-200 "L
-    @^A/?TECO macro requires TECO-64 v200+/ 13^T 10^T
-    ^C
-'
-
+0,128ET                 !! Abort on error
 -1E2                    !! Enable all command restrictions
 
 !!   ^B == ((year-1900)*16+month)*32+day

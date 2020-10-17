@@ -1,13 +1,8 @@
-! init.tec - Initialize TECO-64 !
-! Use TECO_INIT=init or --initialize=init !
+!! init.tec - sample initialization macro for TECO-64
+!! Use TECO_INIT=init or --initialize=init
 
-0,128ET                 ! Abort on error !
+0,128ET                 !! Abort on error
 
-EO-200 "L
-    @^A/?Initialization file requires TECO-64 v200+/ 13^T 10^T
-    ^C
-'
-
-!! Add initialization commands here.
+!! Add more initialization commands here
 
 ^[^[

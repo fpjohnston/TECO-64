@@ -1,11 +1,7 @@
-! goodbye.tec - Demonstration TECO macro !
+!! goodbye.tec - demonstration macro for TECO-64
 
-0,128ET                 ! Abort on error !
+0,128ET                 !! Abort on error
 
-EO-200 "L
-    @^A/?TECO macro requires TECO-64 v200+/ 13^T 10^T
-    ^C
-'
 :@^A/goodbye, cruel world!/
 
 

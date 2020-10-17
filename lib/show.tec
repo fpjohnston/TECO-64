@@ -1,15 +1,9 @@
-! show.tec - List TECO-64 variables !
+! show.tec - List internal variables for TECO-64 !
+
+! Note that we avoid using any of the extended features that depend !
+! on the E1 flag, since we shouldn't presume that they are enabled. !
 
 0,128ET                 ! Abort on error !
-
-EO-200 "L
-    @^A\?Macro file requires TECO-64 v200+\ 13^T 10^T
-    ^C
-'
-
-! At this point we know we're running version 200+, but we still want to !
-! avoid using any of the extended features that depend on the E1 flag,   !
-! since we shouldn't presume that any of them are enabled.               !
 
 @^A\TECO version \
      0:EO:= ^^.^T -1:EO:= ^^.^T -2:EO=
