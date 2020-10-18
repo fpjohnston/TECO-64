@@ -76,136 +76,28 @@ my %header = (
               long     => undef,    # Long options for getopt_long()
 );
 
-Readonly my $MAX_SPACES => 35;
-Readonly my $MAX_STARS => 78;
-Readonly my $MIN_CTRL => 1;
-Readonly my $MAX_CTRL => 31;
+Readonly my $MIN_CTRL   => 1;
+Readonly my $MAX_CTRL   => 31;
+Readonly my $NAME       => q{@} . 'name';
 
 my $max_length = 0;
-
-#
-#  N.B.: the only reason we need to define the following is to avoid warnings
-#  from perlcritic if something like '@foo' appears in single quotes.
-#
-
-Readonly my $BRIEF     => q{@} . 'brief';
-Readonly my $COPYRIGHT => q{@} . 'copyright';
-Readonly my $ENUM      => q{@} . 'enum';
-Readonly my $FILE      => q{@} . 'file';
-Readonly my $NAME      => q{@} . 'name';
-Readonly my $VAR       => q{@} . 'var';
-
-my @file_hdr =
-(
-    '///',
-    "///  $FILE       options.h",
-    '///',
-    "///  $BRIEF      Header file for teco utility.",
-    "///              *** Automatically generated file. DO NOT MODIFY. ***",
-    '///',
-    "///  $BRIEF      External resources:",
-    '///',
-    '///  <a href="options.html">List of Command-line options</a>',
-    '///',
-    "///  $BRIEF      Process command-line options for TECO editor.",
-    '///',
-    "///  $COPYRIGHT 2019-2020 Franklin P. Johnston / Nowwith Treble Software",
-    '///',
-    '///  Permission is hereby granted, free of charge, to any person obtaining a',
-    '///  copy of this software and associated documentation files (the "Software"),',
-    '///  to deal in the Software without restriction, including without limitation',
-    '///  the rights to use, copy, modify, merge, publish, distribute, sublicense,',
-    '///  and/or sell copies of the Software, and to permit persons to whom the',
-    '///  Software is furnished to do so, subject to the following conditions:',
-    '///',
-    '///  The above copyright notice and this permission notice shall be included in',
-    '///  all copies or substantial portions of the Software.',
-    '///',
-    '///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR',
-    '///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,',
-    '///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE',
-    '///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIA-',
-    '///  BILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,',
-    '///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN',
-    '///  THE SOFTWARE.',
-    '///',
-    '////////////////////////////////////////////////////////////////////////////////',
-    q{},
-);
-
-my @enums_hdr =
-(
-    "///  $ENUM     option_t",
-    '///  case values for command-line options.',
-    q{},
-    'enum option_t',
-    '{',
-);
-
-my @enums_tlr =
-(
-   '};',
-   q{},
-);
-
-my @long_hdr =
-(
-    "///  $VAR    long_options[]",
-    "///  $BRIEF  Table of command-line options parsed by getopt_long().",
-    q{},
-    'static const struct option long_options[] =',
-    '{',
-);
-
-my @long_tlr =
-(
-    '    { NULL,             no_argument,        NULL,  0      },  '
-    . '// Markers for end of list',
-    '};',
-    q{},
-);
-
-my @help_hdr =
-(
-    "///  $BRIEF  Help text string.",
-    q{},
-    "static const char * const help_text[] =",
-    "{",
-);
-
-my @help_tlr =
-(
-    "    NULL",
-    "};",
-    q{},
-);
-
-my @short_hdr =
-(
-    "///  $VAR optstring",
-    '///  String of short options parsed by getopt_long().',
-    q{},
-);
-
-my @short_tlr =
-(
-    q{},
-);
 
 #
 #  Parse our command-line options
 #
 
-GetOptions('config=s' => \$args{config},
-           'debug'    => \$args{debug},
-           'output=s' => \$args{output});
+GetOptions('config=s'   => \$args{config},
+           'template=s' => \$args{template},
+           'debug'      => \$args{debug},
+           'output=s'   => \$args{output});
 
-check_file($args{config}, 'r', '-c');
-check_file($args{output}, 'w', '-o');
+check_file($args{config},   'r', '-c');
+check_file($args{template}, 'r', '-t');
+check_file($args{output},   'w', '-o');
 
 read_xml();                             # Parse command-line options
 build_strings();                        # Build data strings for header file
-create_header();                        # Create new header file
+make_options_h();                        # Create new header file
 
 exit;
 
@@ -216,8 +108,6 @@ exit;
 
 sub build_strings
 {
-    $header{short} = 'static const char * const optstring = "';
-
     my $debug_enums = q{};
 
     foreach my $short (sort keys %options)
@@ -261,15 +151,12 @@ sub build_strings
                                  "\"$long\",", "$argtype,"
     }
 
-    $header{short} .= "\";\n";
     $header{enums} .= $debug_enums;
 
-    # Remove trailing newline and comma from last enum variable,
-    # then add newline back.
-
+    chomp $header{help};
+    chomp $header{long};
     chomp $header{enums};
     chop $header{enums};
-    $header{enums} .= "\n";
 
     return;
 }
@@ -309,31 +196,6 @@ sub check_option
 
     croak "No help text found for option '$option' at line $line\n"
           if $max_help < 0;
-
-    return;
-}
-
-
-#
-#  Create header file.
-#
-
-sub create_header
-{
-    if ($args{output})
-    {
-        my $fh;
-
-        print {*STDERR} "Creating header file $args{output}\n";
-        open $fh, '>', $args{output};
-        print_header($fh);
-        close $fh;
-    }
-    else
-    {
-        print {*STDERR} "Printing header file\n";
-        print_header(*STDOUT);
-    }
 
     return;
 }
@@ -408,6 +270,26 @@ sub get_help
 
 
 #
+#  Create options.h (or equivalent).
+#
+
+sub make_options_h
+{
+    my $fh;
+    my $template = read_file($args{template});
+    my $result = sprintf $template, $header{help}, $header{enums},
+        $header{short}, $header{long};
+
+    print {*STDERR} "Creating header file $args{output}\n";
+    open $fh, '>', $args{output};
+    print {$fh} $result;
+    close $fh;
+
+    return;
+}
+
+
+#
 #  parse_options() - Find all options in XML data.
 #
 #  Note that this subroutine is called twice: once to calculate the spacing
@@ -423,36 +305,6 @@ sub parse_options
     my $name = $dom->findnodes("/teco/$NAME");
 
     die "Can't find program name\n" unless $name;
-
-    if ($pass == 2)
-    {
-        $header{help} = "    \"Usage: $name [options] [file]...\",\n"
-            . "    \"\",\n"
-            . "    \"TECO (Text Editor and Corrector) is a character-oriented text\",\n"
-            . "    \"editing language for reading and writing ASCII text files.\",\n"
-            . "    \"\",\n"
-            . "    \"Examples:\",\n"
-            . "    \"\",\n"
-            . "    \"  teco abc           "
-            . "    Open file 'abc' for input and output.\",\n"
-            . "    \"  teco -R abc        "
-            . "    Open file 'abc' for input only.\",\n"
-            . "    \"  teco -O xyz abc    "
-            . "    Open file 'abc' for input and file 'xyz' for output.\",\n"
-            . "    \"  teco -E abc        "
-            . "    Execute file 'abc' as a TECO macro.\",\n"
-            . "    \"\",\n"
-            . "    \"Environment variables:\",\n"
-            . "    \"\",\n"
-            . "    \"  TECO_INIT          "
-            . "    Default initialization file, executed at startup.\",\n"
-            . "    \"  TECO_LIBRARY       "
-            . "    Directory of library for TECO macros.\",\n"
-            . "    \"  TECO_MEMORY        "
-            . "    File that contains name of last file edited.\",\n"
-            . "    \"  TECO_VTEDIT        "
-            . "    Default file for initialization of display mode.\",\n";
-    }
 
     foreach my $section ($dom->findnodes('/teco/section'))
     {
@@ -491,63 +343,6 @@ sub parse_options
         croak "No options found in $args{config}\n" if ($options == 0);
 
         printf "...%u option%s found\n", $options, $options == 1 ? q{} : 's';
-    }
-
-    return;
-}
-
-
-#
-#  print_header() - Print section header.
-#
-
-sub print_header
-{
-    my ($fh) = @_;
-
-    foreach my $line (@file_hdr)
-    {
-        print {$fh} "$line\n" or croak $ERRNO;
-    }
-
-    print_section($fh, \@help_hdr,     $header{help},     \@help_tlr);
-    print_section($fh, \@enums_hdr,    $header{enums},    \@enums_tlr);
-    print_section($fh, \@short_hdr,    $header{short},    \@short_tlr);
-    print_section($fh, \@long_hdr,     $header{long},     \@long_tlr);
-
-    return;
-}
-
-
-#
-#  Output next section of header file.
-#
-
-sub print_section
-{
-    my ($fh, $hdr, $section, $tlr) = @_;
-    my @hdr = @ { $hdr };
-    my @tlr = @ { $tlr };
-
-    print_strings($fh, @hdr);
-    print {$fh} $section or croak $ERRNO;
-    print_strings($fh, @tlr);
-
-    return;
-}
-
-
-#
-#  Output an array of strings.
-#
-
-sub print_strings
-{
-    my ($fh, @strings) = @_;
-
-    foreach my $string (@strings)
-    {
-        print {$fh} "$string\n" or croak $ERRNO;
     }
 
     return;

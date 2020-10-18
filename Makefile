@@ -351,8 +351,8 @@ bin/$(TARGET): $(OBJECTS)
 
 $(OBJECTS): $(OPTIONS_H) $(ERRCODES_H) $(ERRTABLES_H) obj/CFLAGS
 
-$(OPTIONS_H): etc/options.pl etc/options.xml
-	$(AT)etc/options.pl -c $< -o $@ $(OPTIONS_DEBUG)
+$(OPTIONS_H): etc/options.xml etc/options.template etc/options.pl
+	$(AT)etc/options.pl -c $< -t etc/options.template -o $@ $(OPTIONS_DEBUG)
 
 $(ERRCODES_H): etc/errors.xml etc/errcodes.template etc/errors.pl
 	$(AT)etc/errors.pl -i $< -t etc/errcodes.template -o $@
