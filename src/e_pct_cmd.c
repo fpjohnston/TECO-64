@@ -31,7 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
-#include "errors.h"
+#include "errcodes.h"
 #include "exec.h"
 #include "estack.h"
 #include "file.h"

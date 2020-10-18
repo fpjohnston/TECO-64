@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="options.xsl"?>
+<teco name="teco" version="200">
+    <section title="errors">
+        <error>
+            <code>ARG</code>
+            <message>Improper arguments</message>
+            <detail>Three or more numeric arguments are given</detail>
+            <detail>(e.g., 1,2,3D or H,cT).</detail>
+        </error>
+        <error>
+            <code>ATS</code>
+            <message>Invalid or extraneous at-sign</message>
+            <detail>At sign not allowed for command, or more than</detail>
+            <detail>one at sign specififed.</detail>
+        </error>
+        <error>
+            <code>BAT</code>
+            <message>Bad tag &apos;!%s!&apos;</message>
+            <detail>An O command was specified with an invalid tag.</detail>
+            <detail>Tags may only contain graphic ASCII characters</detail>
+            <detail>(excluding commas which are reserved for computed</detail>
+            <detail>GOTOs). Leading and trailing spaces are ignored,</detail>
+            <detail>but embedded spaces are not allowed.</detail>
+        </error>
+        <error>
+            <code>BNI</code>
+            <message>Right angle bracket not in iteration</message>
+            <detail>A right angle bracket was not matched by a left</detail>
+            <detail>angle bracket (Note: a loop in a Q-register</detail>
+            <detail>macro must be complete within the macro.)</detail>
+        </error>
+        <error>
+            <code>CHR</code>
+            <message>Invalid character for command</message>
+            <detail>The numeric argument to an EE command was</detail>
+            <detail>not an ASCII character.</detail>
+        </error>
+        <error>
+            <code>COL</code>
+            <message>Invalid or extraneous colon</message>
+            <detail>A colon preceded a command that does not allow</detail>
+            <detail>colons, or there were too many colons specified</detail>
+            <detail>for the command.</detail>
+        </error>
+        <error>
+            <code>DIV</code>
+            <message>Division by zero</message>
+            <detail>An expression tried to divide a number by zero.</detail>
+        </error>
+        <error>
+            <code>DPY</code>
+            <message>Display mode initialization error</message>
+            <detail>An error occurred during initialization of</detail>
+            <detail>display mode.</detail>
+        </error>
+        <error>
+            <code>DTB</code>
+            <message>Delete too big</message>
+            <detail>A D command attempted to delete text outside</detail>
+            <detail>the current page.</detail>
+        </error>
+        <error>
+            <code>DUP</code>
+            <message>Duplicate tag &apos;!%s!&apos;</message>
+            <detail>An O command found a duplicate tag within the</detail>
+            <detail>command string.</detail>
+        </error>
+        <error>
+            <code>EGC</code>
+            <message>EG command is too long</message>
+            <detail>An EG command was longer than 200 characters.</detail>
+        </error>
+        <error>
+            <code>FIL</code>
+            <message>Invalid file &apos;%s&apos;</message>
+            <detail>An attempt was made to open a directory, FIFO,</detail>
+            <detail>socket, or similar file specification instead</detail>
+            <detail>of a regular file.</detail>
+        </error>
+        <error>
+            <code>FNF</code>
+            <message>File not found &apos;%s&apos;</message>
+            <detail>The requested input file could not be located.</detail>
+            <detail>If this occurred within a macro, the</detail>
+            <detail>colon-modified command may be necessary.</detail>
+        </error>
+        <error>
+            <code>ICE</code>
+            <message>Invalid ^E command in search argument</message>
+            <detail>A search argument contains a ^E command that</detail>
+            <detail>is either not defined or incomplete.</detail>
+        </error>
+        <error>
+            <code>IE1</code>
+            <message>Invalid E1 command</message>
+            <detail>An invalid E1 command has been executed. The</detail>
+            <detail>E1&amp;32 flag bit may not be set while executing</detail>
+            <detail>an old-style EI command, and may not be reset</detail>
+            <detail>while executing a new-style EI command.</detail>
+        </error>
+        <error>
+            <code>IEC</code>
+            <message>Invalid character &apos;%c&apos; after E</message>
+            <detail>An invalid E command has been executed.</detail>
+        </error>
+        <error>
+            <code>IFC</code>
+            <message>Invalid character &apos;%c&apos; after F</message>
+            <detail>An invalid F command has been executed.</detail>
+        </error>
+        <error>
+            <code>IFE</code>
+            <message>Ill-formed numeric expression</message>
+            <detail>The numeric expression preceding a command</detail>
+            <detail>doesn&apos;t make sense. For example, 5+</detail>
+            <detail>isn&apos;t a complete expression.</detail>
+        </error>
+        <error>
+            <code>IFN</code>
+            <message>Invalid character &apos;%c&apos; in filename</message>
+            <detail>A file name contained one or more invalid</detail>
+            <detail>characters. Check your operating system</detail>
+            <detail>documentation to determine what characters</detail>
+            <detail>are valid for file names.</detail>
+        </error>
+        <error>
+            <code>IIA</code>
+            <message>Invalid insert arg</message>
+            <detail>A command of the form "nItext`" was attempted.</detail>
+            <detail>This combination of character and text</detail>
+            <detail>insertion is invalid.</detail>
+        </error>
+        <error>
+            <code>ILL</code>
+            <message>Invalid command &apos;%c&apos;</message>
+            <detail>An attempt has been made to execute an invalid</detail>
+            <detail>TECO command.</detail>
+        </error>
+        <error>
+            <code>ILN</code>
+            <message>Invalid number</message>
+            <detail>An 8 or 9 has been used in a digit string when</detail>
+            <detail>the radix is set to octal.</detail>
+        </error>
+        <error>
+            <code>IMA</code>
+            <message>Invalid m argument</message>
+            <detail>An m argument was provided to a command which</detail>
+            <detail>does not allow it.</detail>
+        </error>
+        <error>
+            <code>INA</code>
+            <message>Invalid n argument</message>
+            <detail>An n argument was provided to a command which</detail>
+            <detail>does not allow it.</detail>
+        </error>
+        <error>
+            <code>INI</code>
+            <message>Initialization error</message>
+            <detail>A fatal error occurred during TECO initialization.</detail>
+        </error>
+        <error>
+            <code>IQC</code>
+            <message>Invalid quote character</message>
+            <detail>One of the valid &quot; qualifiers did not</detail>
+            <detail>follow the quote character.</detail>
+        </error>
+        <error>
+            <code>IQN</code>
+            <message>Invalid Q-register name &apos;%c&apos;</message>
+            <detail>An invalid Q-register name was specified in one</detail>
+            <detail>of the Q-register commands.</detail>
+        </error>
+        <error>
+            <code>IRA</code>
+            <message>Invalid radix argument to ^R</message>
+            <detail>The argument to a ^R radix command must be 8, 10</detail>
+            <detail>or 16.</detail>
+        </error>
+        <error>
+            <code>ISA</code>
+            <message>Invalid search argument</message>
+            <detail>The argument preceding a search command is 0.</detail>
+            <detail>This argument must not be 0.</detail>
+        </error>
+        <error>
+            <code>ISS</code>
+            <message>Invalid search string</message>
+            <detail>One of the search string special characters</detail>
+            <detail>(^Q, ^V, ^W, etc.) would have modified the</detail>
+           <detail>search string delimiter (usually &lt;ESC&gt;).</detail>
+        </error>
+        <error>
+            <code>IUC</code>
+            <message>Invalid character &apos;%c&apos; following ^</message>
+            <detail>The character following a ^ must have an ASCII</detail>
+            <detail>value between 64 and 95 inclusive, or between</detail>
+            <detail>141 and 172 inclusive.</detail>
+        </error>
+        <error>
+            <code>KEY</code>
+            <message>Key &apos;%s&apos; not found</message>
+            <detail>An invalid key was specified for an FM command.</detail>
+        </error>
+        <error>
+            <code>MAP</code>
+            <message>Missing apostrophe</message>
+            <detail>Every conditional (opened with the &quot;</detail>
+            <detail>command) must be closed with the &apos; command.</detail>
+        </error>
+        <error>
+            <code>MAT</code>
+            <message>No matching files</message>
+            <detail>No match was found for the file specification</detail>
+            <detail>for an EN command.</detail>
+        </error>
+        <error>
+            <code>MEM</code>
+            <message>Memory overflow</message>
+            <detail>Insufficient memory available to complete the</detail>
+            <detail>current command.</detail>
+        </error>
+        <error>
+            <code>MLP</code>
+            <message>Missing left parenthesis</message>
+            <detail>There is a right parenthesis trhat is not matched</detail>
+            <detail>by a corresponding left parenthesis.</detail>
+        </error>
+        <error>
+            <code>MRA</code>
+            <message>Missing right angle bracket</message>
+            <detail>There is a left angle bracket that has no matching</detail>
+            <detail>right angle bracket. A loop must be complete</detail>
+            <detail>within a macro or command string.</detail>
+        </error>
+        <error>
+            <code>MRP</code>
+            <message>Missing right parenthesis</message>
+            <detail>There is a left parenthesis that is not matched by</detail>
+            <detail>a corresponding right parenthesis.</detail>
+        </error>
+        <error>
+            <code>MSC</code>
+            <message>Missing start of conditional</message>
+            <detail>A &apos; command (end of conditional) was</detail>
+            <detail>encountered. Every &apos; command must be</detail>
+            <detail>matched by a preceding &quot; (start of a</detail>
+            <detail>conditional) command.</detail>
+        </error>
+        <error>
+            <code>NAB</code>
+            <message>No argument before 1&apos;s complement operator</message>
+            <detail>The ^_ command must be preceded by either a</detail>
+            <detail>specific numeric argument or a command that</detail>
+            <detail>returns a numeric value.</detail>
+        </error>
+        <error>
+            <code>NAC</code>
+            <message>No argument before comma</message>
+            <detail>A command has been executed in which a , is</detail>
+            <detail>not preceded by a numeric argument.</detail>
+        </error>
+        <error>
+            <code>NAE</code>
+            <message>No argument before equals sign</message>
+            <detail>The =, ==, or === command must be preceded by</detail>
+            <detail>either a specific numeric argument or a command</detail>
+            <detail>that returns a numeric value.</detail>
+        </error>
+        <error>
+            <code>NAP</code>
+            <message>No argument before right parenthesis</message>
+            <detail>A right parenthesis has been encountered and</detail>
+            <detail>is not properly preceded by a specific numeric</detail>
+            <detail>argument or a command that returns a numeric value.</detail>
+        </error>
+        <error>
+            <code>NAQ</code>
+            <message>No argument before quote</message>
+            <detail>The &quot; commands must be preceded by a single</detail>
+            <detail>numeric argument on which the decision to</detail>
+            <detail>execute the following commands or skip to</detail>
+            <detail>the matching &apos; is based.</detail>
+        </error>
+        <error>
+            <code>NAS</code>
+            <message>No argument before semi-colon</message>
+            <detail>The ; command must be preceded by a single</detail>
+            <detail>numeric argument on which the decision to</detail>
+            <detail>execute the following commands or skip to</detail>
+            <detail>the matching > is based.</detail>
+        </error>
+        <error>
+            <code>NAT</code>
+            <message>Cannot have n argument and text string</message>
+            <detail>Both an n argument and a string were specified for</detail>
+            <detail>a command which does not allow more than one.</detail>
+        </error>
+        <error>
+            <code>NAU</code>
+            <message>No argument before U command</message>
+            <detail>The U comand must be preceded by either a specific</detail>
+            <detail>numeric argument or a command that returns a</detail>
+            <detail>numeric value.</detail>
+        </error>
+        <error>
+            <code>NCA</code>
+            <message>Negative argument to comma</message>
+            <detail>A comma was preceded by a negative number.</detail>
+        </error>
+        <error>
+            <code>NFI</code>
+            <message>No file for input</message>
+            <detail>Before issuing an input command, such as Y, it</detail>
+            <detail>is necessary to open an input file by use of a</detail>
+            <detail>command such as ER or EB.</detail>
+        </error>
+        <error>
+            <code>NFO</code>
+            <message>No file for output</message>
+            <detail>Before issuing an output command, such as N or</detail>
+            <detail>or P, it is necessary to open an output file with</detail>
+            <detail>a command such as EW or EB.</detail>
+        </error>
+        <error>
+            <code>NOD</code>
+            <message>Display mode support not enabled</message>
+            <detail>It was not possible to enable display mode,</detail>
+            <detail>because TECO was not compiled to include</detail>
+            <detail>support for it.</detail>
+        </error>
+        <error>
+            <code>NON</code>
+            <message>No n argument after m argument</message>
+            <detail>An m argument was not followed by an n argument.</detail>
+        </error>
+        <error>
+            <code>NOT</code>
+            <message>O command has no tag</message>
+            <detail>No tag was found for an O command.</detail>
+        </error>
+        <error>
+            <code>NPA</code>
+            <message>P or PW argument is negative</message>
+            <detail>The argument preceding a P or PW command is</detail>
+            <detail>zero or negative.</detail>
+        </error>
+        <error>
+            <code>NYA</code>
+            <message>Numeric argument with Y</message>
+            <detail>The Y command must not be preceded by either a</detail>
+            <detail>numeric argument or a command that returns a</detail>
+            <detail>numeric value.</detail>
+        </error>
+        <error>
+            <code>NYI</code>
+            <message>Not yet implemented</message>
+            <detail>A command was issued that is not yet implemented</detail>
+            <detail>in this version of TECO.</detail>
+        </error>
+        <error>
+            <code>OFO</code>
+            <message>Output file already open</message>
+            <detail>A command has been executed which tried to</detail>
+            <detail>create an output file, but an output file</detail>
+            <detail>currently is open. It is typically appropriate</detail>
+            <detail>to use the EC or EK command as the situation</detail>
+            <detail>calls for to close the output file.</detail>
+        </error>
+        <error>
+            <code>PDO</code>
+            <message>Push-down list overflow</message>
+            <detail>The command string has become too complex.</detail>
+            <detail>Simplify it.</detail>
+        </error>
+        <error>
+            <code>PES</code>
+            <message>Attempt to pop empty stack</message>
+            <detail>A ] command (pop off Q-register stack into a</detail>
+            <detail>Q-register) was encountered when there was</detail>
+            <detail>nothing on the Q-register stack.</detail>
+        </error>
+        <error>
+            <code>POP</code>
+            <message>Attempt to move pointer off page with &apos;%c&apos;</message>
+            <detail>A J, C or R command has been executed which</detail>
+            <detail>attempted to move the pointer off the page.</detail>
+            <detail>The result of executing one of these commands</detail>
+            <detail>must leave the pointer between 0 and Z,</detail>
+            <detail>The characters referenced by a D or nA</detail>
+            <detail>command must also be within the buffer limits.</detail>
+        </error>
+        <error>
+            <code>SNI</code>
+            <message>Semi-colon not in iteration</message>
+            <detail>A ; command has been executed outside of a</detail>
+            <detail>loop.</detail>
+        </error>
+        <error>
+            <code>SRH</code>
+            <message>Search failure: &apos;%s&apos;</message>
+            <detail>A search command not preceded by a colon</detail>
+            <detail>modifier and not within an iteration has</detail>
+            <detail>failed to find the specified &quot; command.</detail>
+            <detail>After an S search fails the pointer is</detail>
+            <detail>left at the beginning of the buffer.</detail>
+            <detail>After an N or _ search fails the last</detail>
+            <detail>page of the input file has been input</detail>
+            <detail>and, in the case of N, output, and the</detail>
+            <detail>buffer is cleared. In the case of an N</detail>
+            <detail>search it is usually necessary to close</detail>
+            <detail>the output file and reopen it.</detail>
+        </error>
+        <error>
+            <code>SYS</code>
+            <message>System error: &apos;%s&apos;</message>
+            <detail>A system call failed. The error message</detail>
+            <detail>text explains the error.</detail>
+        </error>
+        <error>
+            <code>TAG</code>
+            <message>Missing tag: &apos;!%s!&apos;</message>
+            <detail>The tag specified by an O command cannot</detail>
+            <detail>be found. This tag must be in the same macro</detail>
+            <detail>level as the O command referencing it.</detail>
+        </error>
+        <error>
+            <code>UTC</code>
+            <message>Unterminated command string</message>
+            <detail>This is a general error which is usually</detail>
+            <detail>caused by an unterminated insert, search,</detail>
+            <detail>or filename argument, an unterminated ^A</detail>
+            <detail>message, an unterminated tag or comment</detail>
+            <detail>(i.e., unterminated ! construct), or a</detail>
+            <detail>missing &apos; character which closes a</detail>
+            <detail>conditional execution command.</detail>
+        </error>
+        <error>
+            <code>UTM</code>
+            <message>Unterminated macro</message>
+            <detail>This error is that same as the ?UTC error</detail>
+            <detail>except that the unterminated command was</detail>
+            <detail>executing from a Q-register (i.e., it was</detail>
+            <detail>a macro). (Note: An entire command sequence</detail>
+            <detail>stored in a Q-register must be complete within</detail>
+            <detail>the Q-register.)</detail>
+        </error>
+        <error>
+            <code>XAB</code>
+            <message>Execution aborted</message>
+            <detail>Execution of TECO was aborted. This is usually</detail>
+            <detail>due to the typing of &lt;CTRL/C&gt;.</detail>
+        </error>
+        <error>
+            <code>YCA</code>
+            <message>Y command aborted</message>
+            <detail>An attempt has been made to execute a Y</detail>
+            <detail>or _ search command with an output file</detail>
+            <detail>open, that would cause text in the edit</detail>
+            <detail>buffer to be erased without outputting it</detail>
+            <detail>to the output file. The ED command controls</detail>
+            <detail>this check.</detail>
+        </error>
+    </section>
+</teco>

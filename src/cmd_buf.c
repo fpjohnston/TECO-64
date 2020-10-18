@@ -33,7 +33,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "eflags.h"
-#include "errors.h"
+#include "errcodes.h"
 #include "exec.h"
 #include "estack.h"
 #include "term.h"

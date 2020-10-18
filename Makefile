@@ -63,6 +63,9 @@ OPT ?= 3
 OPT_OPT = -O$(OPT)
 
 OPTIONS_H = $(INCDIR)/options.h
+ERRCODES_H = $(INCDIR)/errcodes.h
+ERRTABLES_H = $(INCDIR)/errtables.h
+ERRORS_MD = doc/errors.md
 
 INCLUDES = -I ../$(INCDIR)
 
@@ -346,10 +349,16 @@ bin/$(TARGET): $(OBJECTS)
 
 -include $(DFILES)
 
-$(OBJECTS): $(OPTIONS_H) obj/CFLAGS
+$(OBJECTS): $(OPTIONS_H) $(ERRCODES_H) $(ERRTABLES_H) obj/CFLAGS
 
 $(OPTIONS_H): etc/options.xml
 	$(AT)etc/options.pl -c $< -o $@ $(OPTIONS_DEBUG)
+
+$(ERRCODES_H): etc/errors.xml etc/errcodes.template
+	$(AT)etc/errors.pl -i $< -t etc/errcodes.template -o $@
+
+$(ERRTABLES_H): etc/errors.xml etc/errtables.template
+	$(AT)etc/errors.pl -i $< -t etc/errtables.template -o $@
 
 .PHONY: FORCE
 obj/CFLAGS: FORCE
@@ -367,7 +376,7 @@ distclean: mostlyclean clean
 	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL2)
 
 .PHONY: doc
-doc: html/options.html
+doc: html/options.html $(ERRORS_MD)
 	-$(AT)echo "Making Doxygen documents" $(NULL)
 	-$(AT)cp etc/Doxyfile obj/Doxyfile
 	-$(AT)echo "PREDEFINED = $(DOXYGEN)" >>obj/Doxyfile
@@ -379,6 +388,9 @@ html:
 html/options.html: html etc/options.xml etc/options.xsl
 	-$(AT)echo "Making HTML options file" $(NULL)
 	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html
+
+$(ERRORS_MD): etc/errors.xml etc/errors.template
+	$(AT)etc/errors.pl -i $< -t etc/errors.template -o $@
 
 .PHONY: lobs
 lobs: $(OPTIONS_H) $(LOBS)

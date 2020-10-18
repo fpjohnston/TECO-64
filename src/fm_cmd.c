@@ -31,7 +31,7 @@
 
 #include "teco.h"
 #include "display.h"
-#include "errors.h"
+#include "errcodes.h"
 #include "exec.h"
 #include "term.h"
 

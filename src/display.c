@@ -55,7 +55,7 @@
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
-#include "errors.h"
+#include "errcodes.h"
 #include "page.h"
 #include "term.h"
 

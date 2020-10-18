@@ -31,7 +31,7 @@
 
 #include "teco.h"
 #include "eflags.h"
-#include "errors.h"
+#include "errcodes.h"
 #include "exec.h"
 
 

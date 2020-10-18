@@ -29,7 +29,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "errors.h"
+#include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 

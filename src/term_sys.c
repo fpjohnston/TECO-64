@@ -43,7 +43,7 @@
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
-#include "errors.h"
+#include "errcodes.h"
 #include "exec.h"
 #include "term.h"
 

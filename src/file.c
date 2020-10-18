@@ -37,7 +37,7 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "errors.h"
+#include "errcodes.h"
 #include "estack.h"
 #include "file.h"
 #include "term.h"

@@ -1,7 +1,9 @@
 ///
-///  @file    u_cmd.c
-///  @brief   Execute U command.
+///  @file    errcodes.h
+///  @brief   TECO error codes
 ///
+%s
+///  
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a
@@ -24,39 +26,34 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
+#if     !defined(_ERRCODES_H)
 
-#include "teco.h"
-#include "errcodes.h"
-#include "estack.h"
-#include "exec.h"
-#include "qreg.h"
+#define _ERRCODES_H
 
+#if     defined(__DECC)
 
-///
-///  @brief    Execute U command: store number in Q-register.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
+#define noreturn
 
-void exec_U(struct cmd *cmd)
+#else
+
+#include <stdnoreturn.h>
+
+#endif
+
+extern int last_error;
+
+///  @enum   errcodes
+///  @brief  Definitions of TECO error messages.
+
+enum errcodes
 {
-    assert(cmd != NULL);                // Error if no command block
+    E_NUL,          ///< No error
+%s
+    E_MAX           ///< Error count
+};
 
-    if (!cmd->n_set)                    // n argument?
-    {
-        throw(E_NAU);                   // No argument before U
-    }
+extern void print_help(int err_teco);
 
-    store_qnum(cmd->qname, cmd->qlocal, cmd->n_arg);
+extern noreturn void throw(int err_teco, ...);
 
-    // Pass through m argument as n argument for next command.
-
-    if (cmd->m_set)
-    {
-        push_expr(cmd->m_arg, EXPR_VALUE);
-    }
-}
+#endif  // !defined(_ERRCODES_H)

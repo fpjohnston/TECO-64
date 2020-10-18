@@ -33,7 +33,7 @@
 #include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
-#include "errors.h"
+#include "errcodes.h"
 #include "exec.h"
 #include "term.h"
 
@@ -66,7 +66,7 @@ void exec_T(struct cmd *cmd)
     {
         if (cmd->m_arg > t.Z || cmd->n_arg > t.Z)
         {
-            throw(E_POP, 'T');          // Pointer off page
+            throw(E_POP, "T");          // Pointer off page
         }
 
         if (cmd->m_arg > cmd->n_arg)

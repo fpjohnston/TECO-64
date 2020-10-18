@@ -33,7 +33,7 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "errors.h"
+#include "errcodes.h"
 #include "exec.h"
 #include "qreg.h"
 #include "term.h"

@@ -1,6 +1,8 @@
 ///
-///  @file    u_cmd.c
-///  @brief   Execute U command.
+///  @file    errtables.h
+///  @brief   TECO error tables
+///
+%s
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -24,39 +26,30 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
+///  @struct  errlist
+///  @brief   Structure of error message
 
-#include "teco.h"
-#include "errcodes.h"
-#include "estack.h"
-#include "exec.h"
-#include "qreg.h"
-
-
-///
-///  @brief    Execute U command: store number in Q-register.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_U(struct cmd *cmd)
+struct errlist
 {
-    assert(cmd != NULL);                // Error if no command block
+    const char *code;           ///< Three-letter error code
+    const char *text;           ///< Short description of error
+};
 
-    if (!cmd->n_set)                    // n argument?
-    {
-        throw(E_NAU);                   // No argument before U
-    }
+///  @struct  errlist
+///  @var     errlist
+///
+///  @brief   TECO error messages
 
-    store_qnum(cmd->qname, cmd->qlocal, cmd->n_arg);
+static struct errlist errlist[] =
+{
+%s
+};
 
-    // Pass through m argument as n argument for next command.
+///  @var    errhelp
+///
+///  @brief  Detailed help for TECO errors.
 
-    if (cmd->m_set)
-    {
-        push_expr(cmd->m_arg, EXPR_VALUE);
-    }
-}
+static const char *errhelp[] =
+{
+%s
+};
