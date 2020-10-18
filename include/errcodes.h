@@ -50,36 +50,36 @@ enum errcodes
     E_NUL,          ///< No error
     E_ARG,          ///< Improper arguments
     E_ATS,          ///< Invalid or extraneous at-sign
-    E_BAT,          ///< Bad tag '!%s!'
+    E_BAT,          ///< Bad tag '!foo!'
     E_BNI,          ///< Right angle bracket not in iteration
     E_CHR,          ///< Invalid character for command
     E_COL,          ///< Invalid or extraneous colon
     E_DIV,          ///< Division by zero
     E_DPY,          ///< Display mode initialization error
     E_DTB,          ///< Delete too big
-    E_DUP,          ///< Duplicate tag '!%s!'
+    E_DUP,          ///< Duplicate tag '!foo!'
     E_EGC,          ///< EG command is too long
-    E_FIL,          ///< Invalid file '%s'
-    E_FNF,          ///< File not found '%s'
+    E_FIL,          ///< Invalid file 'foo'
+    E_FNF,          ///< File not found 'foo'
     E_ICE,          ///< Invalid ^E command in search argument
     E_IE1,          ///< Invalid E1 command
-    E_IEC,          ///< Invalid character '%c' after E
-    E_IFC,          ///< Invalid character '%c' after F
+    E_IEC,          ///< Invalid character 'x' after E
+    E_IFC,          ///< Invalid character 'x' after F
     E_IFE,          ///< Ill-formed numeric expression
-    E_IFN,          ///< Invalid character '%c' in filename
+    E_IFN,          ///< Invalid character 'x' in filename
     E_IIA,          ///< Invalid insert arg
-    E_ILL,          ///< Invalid command '%c'
+    E_ILL,          ///< Invalid command 'x'
     E_ILN,          ///< Invalid number
     E_IMA,          ///< Invalid m argument
     E_INA,          ///< Invalid n argument
     E_INI,          ///< Initialization error
     E_IQC,          ///< Invalid quote character
-    E_IQN,          ///< Invalid Q-register name '%c'
+    E_IQN,          ///< Invalid Q-register name 'x'
     E_IRA,          ///< Invalid radix argument to ^R
     E_ISA,          ///< Invalid search argument
     E_ISS,          ///< Invalid search string
-    E_IUC,          ///< Invalid character '%c' following ^
-    E_KEY,          ///< Key '%s' not found
+    E_IUC,          ///< Invalid character 'x' following ^
+    E_KEY,          ///< Key 'foo' not found
     E_MAP,          ///< Missing apostrophe
     E_MAT,          ///< No matching files
     E_MEM,          ///< Memory overflow
@@ -107,11 +107,11 @@ enum errcodes
     E_OFO,          ///< Output file already open
     E_PDO,          ///< Push-down list overflow
     E_PES,          ///< Attempt to pop empty stack
-    E_POP,          ///< Attempt to move pointer off page with '%c'
+    E_POP,          ///< Attempt to move pointer off page with 'x'
     E_SNI,          ///< Semi-colon not in iteration
-    E_SRH,          ///< Search failure: '%s'
-    E_SYS,          ///< System error: '%s'
-    E_TAG,          ///< Missing tag: '!%s!'
+    E_SRH,          ///< Search failure: 'foo'
+    E_SYS,          ///< System error: 'foo'
+    E_TAG,          ///< Missing tag: '!foo!'
     E_UTC,          ///< Unterminated command string
     E_UTM,          ///< Unterminated macro
     E_XAB,          ///< Execution aborted

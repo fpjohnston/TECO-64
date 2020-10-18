@@ -351,13 +351,13 @@ bin/$(TARGET): $(OBJECTS)
 
 $(OBJECTS): $(OPTIONS_H) $(ERRCODES_H) $(ERRTABLES_H) obj/CFLAGS
 
-$(OPTIONS_H): etc/options.xml
+$(OPTIONS_H): etc/options.pl etc/options.xml
 	$(AT)etc/options.pl -c $< -o $@ $(OPTIONS_DEBUG)
 
-$(ERRCODES_H): etc/errors.xml etc/errcodes.template
+$(ERRCODES_H): etc/errors.xml etc/errcodes.template etc/errors.pl
 	$(AT)etc/errors.pl -i $< -t etc/errcodes.template -o $@
 
-$(ERRTABLES_H): etc/errors.xml etc/errtables.template
+$(ERRTABLES_H): etc/errors.xml etc/errtables.template etc/errors.pl
 	$(AT)etc/errors.pl -i $< -t etc/errtables.template -o $@
 
 .PHONY: FORCE
@@ -389,7 +389,7 @@ html/options.html: html etc/options.xml etc/options.xsl
 	-$(AT)echo "Making HTML options file" $(NULL)
 	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html
 
-$(ERRORS_MD): etc/errors.xml etc/errors.template
+$(ERRORS_MD): etc/errors.xml etc/errors.template etc/errors.pl
 	$(AT)etc/errors.pl -i $< -t etc/errors.template -o $@
 
 .PHONY: lobs

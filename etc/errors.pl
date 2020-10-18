@@ -169,8 +169,13 @@ sub make_errcodes_h
 
     foreach my $code (sort keys %errors)
     {
+        my $message = $errors{$code}{message};
+
+        $message =~ s/%s/foo/g;
+        $message =~ s/%c/x/g;
+
         $errcodes .= sprintf "    E_%s,          ///< %s\n", $code,
-                             $errors{$code}{message};
+                             $message;
     }
 
     printf {$fh} $template, $warning, $errcodes;
