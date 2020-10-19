@@ -1,24 +1,28 @@
-!! keymap.tec - demonstration macro for TECO-64 to show how to map keys
+!! keymap.tec - TECO-64 macro to demonstrate two ways of mapping keys.
 
-0,128ET                 !! Abort on error
+!!0,128ET                 !! Abort on error
 
-@^UA/@^A%F1 %/     @FMA/F1/        :@^A/Mapped F1 key to Q-register A/
-@^UB/@^A%F2 %/     @FMB/F2/        :@^A/Mapped F2 key to Q-register B/
-@^UC/@^A%F3 %/     @FMC/F3/        :@^A/Mapped F3 key to Q-register C/
-@^UD/@^A%F4 %/     @FMD/F4/        :@^A/Mapped F4 key to Q-register D/
-@^UE/@^A%F5 %/     @FME/F5/        :@^A/Mapped F5 key to Q-register E/
-@^UF/@^A%F6 %/     @FMF/F6/        :@^A/Mapped F6 key to Q-register F/
-@^UG/@^A%F7 %/     @FMG/F7/        :@^A/Mapped F7 key to Q-register G/
-@^UH/@^A%F8 %/     @FMH/F8/        :@^A/Mapped F8 key to Q-register H/
-@^UI/@^A%INSERT %/ @FMI/INSERT/    :@^A/Mapped Insert key to Q-register I/
-@^UJ/@^A%DELETE %/ @FMJ/DELETE/    :@^A/Mapped Delete key to Q-register J/
-@^UK/@^A%HOME %/   @FMK/HOME/      :@^A/Mapped Home key to Q-register K/
-@^UL/@^A%END %/    @FML/END/       :@^A/Mapped End key to Q-register L/
-@^UM/@^A%PGDN %/   @FMM/PGDN/      :@^A/Mapped PgDn key to Q-register M/
-@^UN/@^A%PGUP %/   @FMN/PGUP/      :@^A/Mapped PgUp key to Q-register N/
-@^UO/@^A%UP %/     @FMO/UP/        :@^A/Mapped Up key to Q-register O/
-@^UP/@^A%DOWN %/   @FMP/DOWN/      :@^A/Mapped Down key to Q-register P/
-@^UQ/@^A%RIGHT %/  @FMQ/RIGHT/     :@^A/Mapped Right key to Q-register Q/
-@^UR/@^A%LEFT %/   @FMR/LEFT/      :@^A/Mapped Left key to Q-register R/
+@^uA/:@^a%F1 %/ @fqA/F1/   :@^a/Mapped F1 to Q-register A/
+@^uB/:@^a%F2 %/ @fqB/F2/   :@^a/Mapped F2 to Q-register B/
+@^uC/:@^a%F3 %/ @fqC/F3/   :@^a/Mapped F3 to Q-register C/
+@^uD/:@^a%F4 %/ @fqD/F4/   :@^a/Mapped F4 to Q-register D/
+@^uE/:@^a%F5 %/ @fqE/F5/   :@^a/Mapped F5 to Q-register E/
+@^uF/:@^a%F6 %/ @fqF/F6/   :@^a/Mapped F6 to Q-register F/
+@^uG/:@^a%F7 %/ @fqG/F7/   :@^a/Mapped F7 to Q-register G/
+@^uH/:@^a%F8 %/ @fqH/F8/   :@^a/Mapped F8 to Q-register H/
+
+@fm/S_F1/:@^a%Shift F1%/   :@^a/Mapped Shift F1 to macro/
+@fm/S_F2/:@^a%Shift F2%/   :@^a/Mapped Shift F2 to macro/
+@fm/S_F3/:@^a%Shift F3%/   :@^a/Mapped Shift F3 to macro/
+@fm/S_F4/:@^a%Shift F4%/   :@^a/Mapped Shift F4 to macro/
+@fm/S_F5/:@^a%Shift F5%/   :@^a/Mapped Shift F5 to macro/
+@fm/S_F6/:@^a%Shift F6%/   :@^a/Mapped Shift F6 to macro/
+@fm/S_F7/:@^a%Shift F7%/   :@^a/Mapped Shift F7 to macro/
+@fm/S_F8/:@^a%Shift F8%/   :@^a/Mapped Shift F8 to macro/
+
+@fm/PGDN/40L/              :@^a/Mapped PgDn to macro/
+@fm/S_PGDN/20L/            :@^a/Mapped Shift PgDn to macro/
+@fm/PGUP/-40L/             :@^a/Mapped PgUp to macro/
+@fm/S_PGUP/-20L/           :@^a/Mapped Shift PgUp to macro/
 
 ^[^[

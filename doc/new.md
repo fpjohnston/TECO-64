@@ -125,7 +125,9 @@ being returned if the open succeeded, and 0 if it failed.
 
 [FL - Lower case text](misc.md)
 
-[FM - Map keys to Q-registers](qregisters.md)
+[FM - Map keys to macros](display.md)
+
+[FQ - Map keys to Q-registers](display.md)
 
 [FU - Upper case text](misc.md)
 

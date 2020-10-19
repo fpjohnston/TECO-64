@@ -34,6 +34,11 @@
 
 #define a1_opts     (OPT_A | OPT_T1)
 
+///  @def    a2_opts
+///  @brief  Commands that use @ and 2 text arguments.
+
+#define a2_opts     (OPT_A | OPT_T1 | OPT_T2)
+
 ///  @def    ac1_opts
 ///  @brief  Command options.
 
@@ -93,6 +98,11 @@
 ///  @brief  Command options.
 
 #define an1_opts    (OPT_A | OPT_N | OPT_T1)
+
+///  @def    aq1_opts
+///  @brief  Command options.
+
+#define aq1_opts    (OPT_A | OPT_Q | OPT_T1)
 
 ///  @def    c_opts
 ///  @brief  Command options.
@@ -420,10 +430,12 @@ const struct cmd_table f_table[] =
     ENTRY('k',   exec_FK,      acn1_opts),
     ENTRY('L',   exec_FL,      m_opts),
     ENTRY('l',   exec_FL,      m_opts),
-    ENTRY('M',   exec_FM,      acq1_opts),
-    ENTRY('m',   exec_FM,      acq1_opts),
+    ENTRY('M',   exec_FM,      a2_opts),
+    ENTRY('m',   exec_FM,      a2_opts),
     ENTRY('N',   exec_FN,      acm2_opts),
     ENTRY('n',   exec_FN,      acm2_opts),
+    ENTRY('Q',   exec_FQ,      aq1_opts),
+    ENTRY('q',   exec_FQ,      aq1_opts),
     ENTRY('R',   exec_FR,      acm1_opts),
     ENTRY('r',   exec_FR,      acm1_opts),
     ENTRY('S',   exec_FS,      adm2_opts),

@@ -73,3 +73,24 @@ the same color.
 | 70,80F2blue\`white\` | Set the foreground color for the edit window to blue, at 70% saturation, and set the background color to white, at 80% saturation. |
 | 60F3yellow\`red\` | Set the foreground color for the status line to yellow, at 60% saturation, and set the background color to red (at a default saturation of 100%). |
 
+### Mapping Commands
+
+If display support has been enabled, and the ED&32 flag bit is set, then it
+is possible to map function, cursor, and other special keys to Q-registers
+or internal macros, such that when those keys are subsequently input as
+immediate action commands, the associated Q-registers or internal
+macros are executed (as though an M command had been entered), without
+having to enter any delimiters.
+
+| Command | Function |
+| ------- | -------- |
+| @FM/*key*/*macro*/ | Map *key* (e.g., F1, Home) to the command string *macro*. |
+| :@FM/*key*/*macro*/ | Same as previous command, but do not refresh the display after execution. |
+| @FM/*key*// | Unmap *key*. Used to undo previous FM commands as well as previous FQ commands. |
+| @FM///      | Unmap all keys. |
+| @FQ*q*/*key*/ | Map *key* to Q-register *q*. More than one key may be mapped to the same Q-register. |
+| :@FQ*q*/*key*/ | Same as previous command, but do not refresh the display after execution. |
+| @FQ*q*// | Ignored. Use the FM command to unmap a key from a Q-register. |
+
+Take care when mapping a key to a local Q-register, since each macro level
+normally gets an entirely new set of local Q-registers when it is invoked.

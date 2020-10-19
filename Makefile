@@ -129,7 +129,6 @@ SOURCES = \
     fd_cmd.c       \
     fk_cmd.c       \
     flag_cmd.c     \
-    fm_cmd.c       \
     fr_cmd.c       \
     g_cmd.c        \
     goto_cmd.c     \
@@ -137,6 +136,7 @@ SOURCES = \
     insert_cmd.c   \
     loop_cmd.c     \
     m_cmd.c        \
+    map_cmd.c      \
     move_cmd.c     \
     n_cmd.c        \
     number_cmd.c   \
