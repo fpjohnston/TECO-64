@@ -187,7 +187,7 @@
 | *n*FD          | [Search and delete string](delete.md) |
 | FK             | [Search and delete intervening text](delete.md) |
 | FL             | [Convert to lower case](misc.md) |
-| FM             | [Map key to macro](display.md) |
+| FM             | [Map key to command string](display.md) |
 | *n*FN          | [Global string replace](search.md) |
 | FQ*q*          | [Map key to Q-register *q*](display.md) |
 | FR             | [Replace last string](delete.md) |

@@ -86,7 +86,7 @@ enum mapkeys
 
 #define _(key) [KEY_ ## key] = \
     { .kname = #key, .qname = NUL, .qlocal = false, .colon = false, \
-      .macro = { .data = NULL, .size = 0, .len = 0, .pos = 0 } }
+      .cmds = { .data = NULL, .size = 0, .len = 0, .pos = 0 } }
 
 /// @struct  keys
 ///
@@ -98,7 +98,7 @@ struct keys
     char qname;                     ///< Mapped Q-register
     bool qlocal;                    ///< true if local Q-register
     bool colon;                     ///< Command was :FM or :FQ
-    struct buffer macro;            ///< Macro string
+    struct buffer cmds;             ///< Command string
 };
 
 static struct keys keys[] =         ///< List of mappable keys
@@ -133,11 +133,11 @@ static void unmap_key(uint key);
 
 
 ///
-///  @brief    Execute FM command: map key to internal macro, or unmap key.
+///  @brief    Execute FM command: map key to command string, or unmap key.
 ///
-///            @FM/key/macro/ - Map key to macro.
-///            @FM/key//      - Unmap key.
-///            @FM///         - Unmap all keys.
+///            @FM/key/cmds/ - Map key to command string.
+///            @FM/key//     - Unmap key.
+///            @FM///        - Unmap all keys.
 ///
 ///  @returns  Nothing.
 ///
@@ -159,7 +159,7 @@ void exec_FM(struct cmd *cmd)
         return;
     }
 
-    // Here to map a key to a macro.
+    // Here to map a key to a command string.
 
     char key[size + 1];
 
@@ -176,14 +176,14 @@ void exec_FM(struct cmd *cmd)
                 size = cmd->text2.len;
 
                 keys[i].colon      = cmd->colon;
-                keys[i].macro.data = alloc_mem(size + 1);
-                keys[i].macro.size = size;
-                keys[i].macro.len  = size;
-                keys[i].macro.pos  = 0;
+                keys[i].cmds.data = alloc_mem(size + 1);
+                keys[i].cmds.size = size;
+                keys[i].cmds.len  = size;
+                keys[i].cmds.pos  = 0;
 
-                memcpy(keys[i].macro.data, cmd->text2.data, (size_t)size);
+                memcpy(keys[i].cmds.data, cmd->text2.data, (size_t)size);
 
-                keys[i].macro.data[size] = NUL;
+                keys[i].cmds.data[size] = NUL;
             }
 
             return;
@@ -232,7 +232,7 @@ void exec_FQ(struct cmd *cmd)
 
 
 ///
-///  @brief    Check input key and execute any macro it's mapped to.
+///  @brief    Check input key and execute anything it's mapped to.
 ///
 ///  @returns  true if key was mapped, else false.
 ///
@@ -246,9 +246,9 @@ bool exec_key(int key)
 
     if ((uint)key < countof(keys) && p->kname != NULL)
     {
-        if (p->macro.data != NULL)      // Mapped to internal macro?
+        if (p->cmds.data != NULL)       // Mapped to command string?
         {
-            exec_macro(&p->macro, NULL);
+            exec_macro(&p->cmds, NULL);
         }
         else if (p->qname != NUL)       // Mapped to Q-register?
         {
@@ -289,11 +289,11 @@ bool exec_key(int key)
 
 static void unmap_key(uint key)
 {
-    free_mem(&keys[key].macro.data);
+    free_mem(&keys[key].cmds.data);
 
-    keys[key].macro.size = 0;
-    keys[key].macro.len  = 0;
-    keys[key].macro.pos  = 0;
+    keys[key].cmds.size = 0;
+    keys[key].cmds.len  = 0;
+    keys[key].cmds.pos  = 0;
 
     keys[key].qname  = false;
     keys[key].qlocal = false;

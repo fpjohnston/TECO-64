@@ -75,17 +75,17 @@ the same color.
 
 ### Mapping Commands
 
-If display support has been enabled, and the ED&32 flag bit is set, then it
-is possible to map function, cursor, and other special keys to Q-registers
-or internal macros, such that when those keys are subsequently input as
-immediate action commands, the associated Q-registers or internal
-macros are executed (as though an M command had been entered), without
-having to enter any delimiters.
+If display support has been enabled, and the ED&32 flag bit is set, then
+it is possible to map function, cursor, and other special keys to command
+strings or Q-register macros, such that when those keys are subsequently
+input as immediate action commands, the associated command strings or
+macros are executed. It is not necessary that the macros or command strings
+be terminated with \<*delim*\>\<*delim*\>.
 
 | Command | Function |
 | ------- | -------- |
-| @FM/*key*/*macro*/ | Map *key* (e.g., F1, Home) to the command string *macro*. |
-| :@FM/*key*/*macro*/ | Same as previous command, but do not refresh the display after execution. |
+| @FM/*key*/*cmds*/ | Map *key* (e.g., F1, Home) to the command string *cmds*. |
+| :@FM/*key*/*cmds*/ | Same as previous command, but do not refresh the display after execution. |
 | @FM/*key*// | Unmap *key*. Used to undo previous FM commands as well as previous FQ commands. |
 | @FM///      | Unmap all keys. |
 | @FQ*q*/*key*/ | Map *key* to Q-register *q*. More than one key may be mapped to the same Q-register. |
