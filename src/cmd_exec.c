@@ -508,7 +508,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
             return NULL;
         }
 
-        c -= 'A' - 1;
+        c = 1 + toupper(c) - 'A';
 
         if (c <= NUL || c >= SPACE)
         {
