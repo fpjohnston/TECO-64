@@ -84,9 +84,8 @@ enum mapkeys
 ///
 /// @brief  Helper macro to set up table of keys.
 
-#define _(key) [KEY_ ## key] = \
-    { .kname = #key, .qname = NUL, .qlocal = false, .colon = false, \
-      .cmds = { .data = NULL, .size = 0, .len = 0, .pos = 0 } }
+#define _(key) [KEY_ ## key] = { .kname = #key, .qname = NUL, .qlocal = false, \
+                                 .macro = NULL, .colon = false }
 
 /// @struct  keys
 ///
@@ -97,8 +96,8 @@ struct keys
     const char *kname;              ///< Key name
     char qname;                     ///< Mapped Q-register
     bool qlocal;                    ///< true if local Q-register
+    char *macro;                    ///< Command string
     bool colon;                     ///< Command was :FM or :FQ
-    struct buffer cmds;             ///< Command string
 };
 
 static struct keys keys[] =         ///< List of mappable keys
@@ -175,15 +174,12 @@ void exec_FM(struct cmd *cmd)
             {
                 size = cmd->text2.len;
 
-                keys[i].colon      = cmd->colon;
-                keys[i].cmds.data = alloc_mem(size + 1);
-                keys[i].cmds.size = size;
-                keys[i].cmds.len  = size;
-                keys[i].cmds.pos  = 0;
+                keys[i].colon = cmd->colon;
+                keys[i].macro = alloc_mem(size + 1);
 
-                memcpy(keys[i].cmds.data, cmd->text2.data, (size_t)size);
+                memcpy(keys[i].macro, cmd->text2.data, (size_t)size);
 
-                keys[i].cmds.data[size] = NUL;
+                keys[i].macro[size] = NUL;
             }
 
             return;
@@ -223,6 +219,10 @@ void exec_FQ(struct cmd *cmd)
         {
             unmap_key(i);
 
+            keys[i].colon  = cmd->colon;
+            keys[i].qname  = cmd->qname;
+            keys[i].qlocal = cmd->qlocal;
+            
             return;
         }
     }
@@ -246,9 +246,16 @@ bool exec_key(int key)
 
     if ((uint)key < countof(keys) && p->kname != NULL)
     {
-        if (p->cmds.data != NULL)       // Mapped to command string?
+        if (p->macro != NULL)           // Mapped to command string?
         {
-            exec_macro(&p->cmds, NULL);
+            struct buffer buf;
+
+            buf.data = p->macro;
+            buf.size = strlen(p->macro);
+            buf.len  = buf.size;
+            buf.pos  = 0;
+
+            exec_macro(&buf, NULL);
         }
         else if (p->qname != NUL)       // Mapped to Q-register?
         {
@@ -289,11 +296,7 @@ bool exec_key(int key)
 
 static void unmap_key(uint key)
 {
-    free_mem(&keys[key].cmds.data);
-
-    keys[key].cmds.size = 0;
-    keys[key].cmds.len  = 0;
-    keys[key].cmds.pos  = 0;
+    free_mem(&keys[key].macro);
 
     keys[key].qname  = false;
     keys[key].qlocal = false;
