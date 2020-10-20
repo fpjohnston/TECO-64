@@ -272,7 +272,7 @@ extern void exec_Y(struct cmd *cmd);
 
 // Helper functions for executing commands
 
-extern bool append(bool n_set, INT n_arg, bool colon_set);
+extern bool append(bool n_set, int_t n_arg, bool colon_set);
 
 extern bool append_line(void);
 

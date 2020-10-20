@@ -59,8 +59,8 @@ struct cmd
     char c2;                        ///< 2nd command character (or NUL)
     char c3;                        ///< 3rd command character (or NUL)
     char qname;                     ///< Q-register name
-    INT m_arg;                      ///< m argument
-    INT n_arg;                      ///< n argument
+    int_t m_arg;                      ///< m argument
+    int_t n_arg;                      ///< n argument
     bool qlocal;                    ///< If true, Q-register is local
     bool m_set;                     ///< m argument is valid
     bool n_set;                     ///< n argument is valid

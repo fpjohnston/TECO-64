@@ -97,7 +97,7 @@ void init_expr(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool pop_expr(INT *operand)
+bool pop_expr(int_t *operand)
 {
     assert(operand != NULL);            // Error if NULL operand
 
@@ -151,7 +151,7 @@ bool pop_expr(INT *operand)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void push_expr(INT value, enum expr_type type)
+void push_expr(int_t value, enum expr_type type)
 {
     if (estack.level == EXPR_SIZE)
     {

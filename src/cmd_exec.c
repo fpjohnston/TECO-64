@@ -503,7 +503,7 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd)
         {
             c = fetch_cbuf();
 
-            push_expr((INT)c, EXPR_VALUE);
+            push_expr((int_t)c, EXPR_VALUE);
 
             return NULL;
         }

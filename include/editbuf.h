@@ -57,10 +57,10 @@ typedef enum
 
 struct edit
 {
-    INT B;                      ///< First position in buffer
-    INT Z;                      ///< Last position in buffer
-    INT dot;                    ///< Current position in buffer
-    INT size;                   ///< Size of buffer in bytes
+    int_t B;                      ///< First position in buffer
+    int_t Z;                      ///< Last position in buffer
+    int_t dot;                    ///< Current position in buffer
+    int_t size;                   ///< Size of buffer in bytes
 };
 
 extern struct edit t;
@@ -95,15 +95,15 @@ extern void delete_ebuf(int n);
 // Returns: character found, or EOF (-1) if attempt was made to go beyond the
 //          beginning or end of buffer.
 
-extern int getchar_ebuf(INT n);
+extern int getchar_ebuf(int_t n);
 
 //  Get the number of chars between current dot and nth line terminator.
 
-extern int getdelta_ebuf(INT n);
+extern int getdelta_ebuf(int_t n);
 
 //  Get the number of lines between current dot and start/end of edit buffer.
 
-extern int getlines_ebuf(INT n);
+extern int getlines_ebuf(int_t n);
 
 //
 //  Initialize buffer.

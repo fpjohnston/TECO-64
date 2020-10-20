@@ -274,7 +274,7 @@ int teco_env(int n_arg, bool colon)
             return sizeof(size_t) * CHAR_BIT;
 
         case -4:
-            return sizeof(INT) * CHAR_BIT;
+            return sizeof(int_t) * CHAR_BIT;
 
         default:
             return 0;                       // Any other EJ
