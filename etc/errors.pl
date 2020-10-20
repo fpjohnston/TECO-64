@@ -230,6 +230,9 @@ sub make_errtables_h
     foreach my $code (sort keys %errors)
     {
         my $message = $errors{$code}{message};
+
+        $message =~ s/%c/%s/g;
+
         my @details = @ { $errors{$code}{details} };
 
         for my $i (0 .. $#details)
