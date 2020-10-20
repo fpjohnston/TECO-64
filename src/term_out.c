@@ -38,7 +38,7 @@
 #include "term.h"
 
 
-///  @var    Horizontal position
+///  @var    term_pos
 ///
 ///  @brief  This is used to determine whether to truncate an output line, and
 ///          also whether to output a CR/LF before printing TECO's prompt.
