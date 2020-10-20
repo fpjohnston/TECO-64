@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <ncurses.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -715,7 +716,16 @@ static void rubout_chr(int c)
     // Echoed input is normally only a single character, but if we're not
     // in image mode, then control characters require an extra RUBOUT.
 
-    uint n = iscntrl(c) && !f.et.image ? 2 : 1;
+    uint n;
+
+    if (f.e0.display)
+    {
+        n = (uint)strlen(unctrl(c));
+    }
+    else
+    {
+        n = iscntrl(c) && !f.et.image ? 2 : 1;
+    }
 
     rubout_chrs(n);
 }
