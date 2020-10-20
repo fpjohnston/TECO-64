@@ -752,7 +752,10 @@ void refresh_dpy(void)
                         continue;
                     }
 
-                    ++nrows;
+                    if (++nrows == d.nrows)
+                    {
+                        break;
+                    }
 
                     term_pos = 0;
 
