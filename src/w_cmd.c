@@ -99,7 +99,7 @@ static int get_w(int n)
             return w.width;
 
         case 2:
-            return w.height - w.nlines;
+            return w.height - w.nlines - (f.e4.line ? 1 : 0);
 
         case 3:
             return w.seeall ? -1 : 0;
