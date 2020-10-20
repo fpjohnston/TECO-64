@@ -40,7 +40,7 @@
 
 
 ///
-///  @brief    Append to edit buffer.
+///  @brief    Append to edit buffer (A, :A, and n:A commands).
 ///
 ///  @returns  true if success, else false.
 ///
@@ -55,9 +55,12 @@ bool append(bool n_set, INT n_arg, bool colon)
         throw(E_NFI);                   // No file for input
     }
 
-    f.ctrl_e = false;                   // Assume not appending FF
+    if (n_set && n_arg < 0)
+    {
+        throw(E_ARG);                   // Invalid arguments
+    }
 
-    // Here if we have A, :A, or n:A
+    f.ctrl_e = false;                   // Assume not appending FF
 
     int olddot = t.dot;
 
@@ -207,11 +210,7 @@ void exec_A(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if (cmd->n_arg < 0)
-    {
-        throw(E_ARG);                   // Invalid arguments
-    }
-    else if (cmd->colon)                // :A or n:A command
+    if (cmd->colon)                     // :A or n:A command
     {
         bool success = append(cmd->n_set, cmd->n_arg, cmd->colon);
 
@@ -225,7 +224,7 @@ void exec_A(struct cmd *cmd)
     }
     else                                // A command
     {
-        (void)append(cmd->n_set, cmd->n_arg, cmd->colon);
+        (void)append((bool)false, 0, cmd->colon);
     }
 }
 
