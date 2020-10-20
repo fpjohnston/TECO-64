@@ -20,9 +20,9 @@
 @fm/S_F7/:@^a%Shift F7%/   :@^a/Mapped Shift F7 to macro/
 @fm/S_F8/:@^a%Shift F8%/   :@^a/Mapped Shift F8 to macro/
 
-@fm/PGDN/40L/              :@^a/Mapped PgDn to macro/
-@fm/S_PGDN/20L/            :@^a/Mapped Shift PgDn to macro/
-@fm/PGUP/-40L/             :@^a/Mapped PgUp to macro/
-@fm/S_PGUP/-20L/           :@^a/Mapped Shift PgUp to macro/
+@fm'PGDN'(2:W)L'           :@^a/Mapped PgDn to macro/
+@fm'S_PGDN'(2:W)/2L'       :@^a/Mapped Shift PgDn to macro/
+@fm'PGUP'-(2:W)L'          :@^a/Mapped PgUp to macro/
+@fm'S_PGUP'-(2:W)/2L'      :@^a/Mapped Shift PgUp to macro/
 
 ^[^[
