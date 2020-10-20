@@ -84,12 +84,12 @@ be terminated with \<*delim*\>\<*delim*\>.
 
 | Command | Function |
 | ------- | -------- |
-| @FM/*key*/*cmds*/ | Map *key* (e.g., F1, Home) to the command string *cmds*. |
-| :@FM/*key*/*cmds*/ | Same as previous command, but do not refresh the display after execution. |
-| @FM/*key*// | Unmap *key*. Used to undo previous FM commands as well as previous FQ commands. |
-| @FM///      | Unmap all keys. |
-| @FQ*q*/*key*/ | Map *key* to Q-register *q*. More than one key may be mapped to the same Q-register. |
-| :@FQ*q*/*key*/ | Same as previous command, but do not refresh the display after execution. |
+| FM*key*\`*cmds*\` | Map *key* (e.g., F1, Home) to the command string *cmds*. |
+| :FM*key*\`*cmds*\` | Same as previous command, but do not refresh the display after execution. |
+| @FM/*key*// | Unmap *key*. Used to undo previous FM commands as well as previous FQ commands. The at sign form of this command is recommended, since the second text argument is omitted. |
+| @FM///      | Unmap all keys. The at sign form of this command is recommended, since both text arguments are omitted. |
+| FQ*q**key*\` | Map *key* to Q-register *q*. More than one key may be mapped to the same Q-register. |
+| :FQ*q*\`*key*\` | Same as previous command, but do not refresh the display after execution. |
 | @FQ*q*// | Ignored. Use the FM command to unmap a key from a Q-register. |
 
 Take care when mapping a key to a local Q-register, since each macro level
