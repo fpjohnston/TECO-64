@@ -27,8 +27,8 @@
 #include <assert.h>
 #include <ctype.h>
 #include <ncurses.h>
-#include <stdbool.h>
-#include <stdio.h>
+#include <stdbool.h>                    //lint !e537
+#include <stdio.h>                      //lint !e537
 #include <stdlib.h>
 #include <string.h>
 
@@ -720,7 +720,7 @@ static void rubout_chr(int c)
 
     if (f.e0.display)
     {
-        n = (uint)strlen(unctrl(c));
+        n = (uint)strlen(unctrl((uint)c));
     }
     else
     {
