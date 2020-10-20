@@ -62,8 +62,6 @@
 
 #if     defined(TECO_DISPLAY)
 
-static const int tabsize = 8;       ///< Standard tab size
-
 ///
 ///  @def    err_if_true
 ///
@@ -132,8 +130,6 @@ static void mark_cursor(int row, int col);
 static void move_down(void);
 
 static void move_up(void);
-
-static void repaint(int row, int col, int pos);
 
 static void update_status(void);
 
@@ -513,7 +509,7 @@ static void move_down(void)
 
     update_status();
 
-    (void)refresh();
+    refresh_dpy();
 }
 
 #endif
@@ -574,7 +570,7 @@ static void move_up(void)
 
     update_status();
 
-    (void)refresh();
+    refresh_dpy();
 }
 
 #endif
@@ -681,32 +677,15 @@ void refresh_dpy(void)
 
 #if     defined(TECO_DISPLAY)
 
-    if (f.e0.display && w.nlines != 0 && !w.noscroll)
+    if (!f.e0.display || w.nlines == 0 || w.noscroll)
     {
-        int line = getlines_ebuf(-1);   // Line number within buffer
-        int row  = line % d.nrows;      // Relative row within screen
-        int col  = -getdelta_ebuf(0);   // Offset within row
-        int pos  = getdelta_ebuf(-row); // First character to output
-
-        repaint(row, col, pos);
+        return;
     }
 
-#endif
+    int line = getlines_ebuf(-1);       // Line number within buffer
+    int row  = line % d.nrows;          // Relative row within screen
+    int pos  = getdelta_ebuf(-row);     // First character to output
 
-}
-
-
-///
-///  @brief    Repaint screen.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(TECO_DISPLAY)
-
-static void repaint(int row, int col, int pos)
-{
     if (ebuf_changed)
     {
         ebuf_changed = false;
@@ -718,6 +697,9 @@ static void repaint(int row, int col, int pos)
         getyx(stdscr, saved_row, saved_col); // Save position in command region
 
         (void)move(d.edit.top, 0);      // Switch to edit region
+
+        getyx(stdscr, d.row, d.col);    // Get starting position
+
         (void)attrset(COLOR_PAIR(EDIT)); //lint !e835
 
         int c;
@@ -734,48 +716,70 @@ static void repaint(int row, int col, int pos)
 
         (void)move(d.edit.top, 0);      // Back to the top
 
-        while ((c = getchar_ebuf(pos++)) != -1)
+        uint term_pos = 0;
+
+        while ((c = getchar_ebuf(pos)) != -1)
         {
-            if (c == LF)
+            if (pos++ <= 0)
             {
-                (void)move(d.edit.top + nrows + 1, 0);
-            }
-            else if (c != CR)
-            {
-                (void)addch((uint)c);
+                getyx(stdscr, d.row, d.col);
             }
 
-            if (isdelim(c) && ++nrows == d.nrows)
+            if (c == CR)
             {
-                break;
+                continue;
             }
-        }
 
-        // Calculate visible column on screen, allowing for TABs.
-
-        col = 0;
-        pos = getdelta_ebuf(0);
-
-        while (pos < 0)
-        {
-            if (getchar_ebuf(pos) == TAB)
+            if (isdelim(c))
             {
-                col += tabsize - (col % tabsize);
+                if (++nrows == d.nrows)
+                {
+                    break;
+                }
+
+                (void)move(d.edit.top + nrows, 0);
+                
+                term_pos = 0;
             }
             else
             {
-                ++col;
-            }
+                term_pos += (uint)strlen(unctrl((uint)c));
 
-            ++pos;
+                if (term_pos > (uint)w.width)
+                {
+                    if (f.et.truncate)
+                    {
+                        continue;
+                    }
+
+                    ++nrows;
+
+                    term_pos = 0;
+
+                    (void)move(d.edit.top + nrows, 0);
+                }
+
+                (void)addch((uint)c);
+            }
+        }
+
+        // If at end of edit buffer, adjust cursor
+
+        if (pos == 0)
+        {
+            getyx(stdscr, d.row, d.col);
+        }
+
+        // If at end of buffer, add diamond
+
+        if (getchar_ebuf(pos) == -1)
+        {
+            (void)addch(A_ALTCHARSET | 0x60);
         }
 
         // Highlight our current position in edit region
 
-        (void)move(d.edit.top + row, col);
-
-        d.row = row;
-        d.col = col;
+        (void)move(d.row, d.col);
 
         c = (int)inch();
 
@@ -784,16 +788,17 @@ static void repaint(int row, int col, int pos)
 
         // Restore position in command region
 
-        (void)move(saved_row, saved_col);
+        (void)move(saved_row, saved_col); 
         (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
     }
 
     update_status();
 
     (void)refresh();
-}
 
 #endif
+
+}
 
 
 ///
