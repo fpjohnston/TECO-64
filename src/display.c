@@ -971,6 +971,11 @@ void set_scroll(int unused1, int unused2)
 
 static void update_status(void)
 {
+    if (!f.e4.line)
+    {
+        return;
+    }
+
     // Draw line between edit region and command region
 
     int saved_row, saved_col;
