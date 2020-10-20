@@ -47,8 +47,7 @@
 | ^R*x*          | [Use *x* literally in search string](search.md) |
 | ^S             | [-(length) of last referenced string](variables.md) |
 | ^S             | [(Match char.) Match separator character](search.md) |
-| ^T             | [ASCII value of next character typed](variables.md) |
-| :^T            | Read and decode next keystroke typed |
+| ^T             | [ASCII value of next input character](variables.md) |
 | *n*^T          | [Type ASCII character of value *n*](type-out.md) |
 | *n*:^T         | [Output binary byte of value n](type-out.md) |
 | ^U             | [Kill command line](qregister.md) |
