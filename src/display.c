@@ -717,6 +717,33 @@ int readkey_dpy(int key)
 
 
 ///
+///  @brief    Refresh screen.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void refresh_dpy(void)
+{
+
+#if     defined(TECO_DISPLAY)
+
+    if (f.e0.display && w.nlines != 0 && !w.noscroll)
+    {
+        int line = getlines_ebuf(-1);   // Line number within buffer
+        int row  = line % d.nrows;      // Relative row within screen
+        int col  = -getdelta_ebuf(0);   // Offset within row
+        int pos  = getdelta_ebuf(-row); // First character to output
+
+        repaint(row, col, pos);
+    }
+
+#endif
+
+}
+
+
+///
 ///  @brief    Repaint screen.
 ///
 ///  @returns  Nothing.
@@ -814,33 +841,6 @@ static void repaint(int row, int col, int pos)
 }
 
 #endif
-
-
-///
-///  @brief    Refresh screen.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void refresh_dpy(void)
-{
-
-#if     defined(TECO_DISPLAY)
-
-    if (f.e0.display && w.nlines != 0 && !w.noscroll)
-    {
-        int line = getlines_ebuf(-1);   // Line number within buffer
-        int row  = line % d.nrows;      // Relative row within screen
-        int col  = -getdelta_ebuf(0);   // Offset within row
-        int pos  = getdelta_ebuf(-row); // First character to output
-
-        repaint(row, col, pos);
-    }
-
-#endif
-
-}
 
 
 ///
