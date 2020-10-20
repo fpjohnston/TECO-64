@@ -81,6 +81,8 @@ int main(int argc, const char * const argv[])
 
     for (;;)                            // Loop forever
     {
+        refresh_dpy();                  // Update any active display
+
         switch (setjmp(jump_main))
         {
             case 0:                     // Normal entry

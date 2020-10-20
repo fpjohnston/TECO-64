@@ -597,68 +597,21 @@ static void move_up(void)
 #if     defined(TECO_DISPLAY)
 
 bool putc_dpy(int c)
-
-#else
-
-bool putc_dpy(int unused1)
-
-#endif
-
 {
-
-#if     defined(TECO_DISPLAY)
-
     if (f.e0.display)
     {
         if (c != CR)
         {
             (void)addch((uint)c);
-            (void)refresh();
         }
 
         return true;
     }
 
-#endif
-
     return false;
 }
 
-
-///
-///  @brief    Output string to display.
-///
-///  @returns  true if character output, false if display not active.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(TECO_DISPLAY)
-
-bool puts_dpy(const char *buf)
-
-#else
-
-bool puts_dpy(const char *unused1)
-
 #endif
-
-{
-
-#if     defined(TECO_DISPLAY)
-
-    if (f.e0.display)
-    {
-        (void)addstr(buf);
-        refresh_dpy();
-
-        return true;
-    }
-
-#endif
-
-    return false;
-
-}
 
 
 ///

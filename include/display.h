@@ -114,11 +114,9 @@ extern void getsize_dpy(void);
 
 extern void init_dpy(void);
 
-#endif
-
 extern bool putc_dpy(int c);
 
-extern bool puts_dpy(const char *buf);
+#endif
 
 extern int readkey_dpy(int c);
 

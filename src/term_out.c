@@ -37,41 +37,19 @@
 #include "file.h"
 #include "term.h"
 
-static int term_pos = 0;            ///< Horizontal position
+
+///  @var    Horizontal position
+///
+///  @brief  This is used to determine whether to truncate an output line, and
+///          also whether to output a CR/LF before printing TECO's prompt.
+
+static int term_pos = 0;
 
 // Local functions
 
-static void display(int c);
+static void tputc(int c);
 
 static void echo_chr(int c, void (*print)(int c));
-
-
-///
-///  @brief    Output character to terminal or display.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void display(int c)
-{
-    if (!putc_dpy(c))
-    {
-        if (!f.et.truncate || term_pos < w.width)
-        {
-            fputc(c, stdout);
-        }
-
-        if (isdelim(c))
-        {
-            term_pos = 0;
-        }
-        else
-        {
-            ++term_pos;
-        }
-    }
-}
 
 
 ///
@@ -213,13 +191,13 @@ void print_chr(int c)
     {
         if ((f.eu == 0 && islower(c)) || (f.eu == 1 && isupper(c)))
         {
-            display('\'');
+            tputc('\'');
         }
 
         c = toupper(c);
     }
 
-    display(c);
+    tputc(c);
 
     if (!f.e3.noout)
     {
@@ -253,7 +231,7 @@ void print_echo(int c)
         c = LF;
     }
 
-    display(c);
+    tputc(c);
 
     if (!f.e3.noin)
     {
@@ -314,15 +292,9 @@ void tprint(
         return;
     }
 
-    if (!puts_dpy(buf))
+    for (int i = 0; i < nbytes; ++i)
     {
-        fputs(buf, stdout);
-        term_pos += nbytes;
-
-        if (nbytes > 1 && isdelim(buf[nbytes - 1]))
-        {
-            term_pos = 0;
-        }
+        tputc(buf[i]);
     }
 
     if (!f.e3.noout && (fp = ofiles[OFILE_LOG].fp) != NULL)
@@ -330,5 +302,39 @@ void tprint(
         va_start(argptr, format);
         (void)vfprintf(fp, format, argptr);
         va_end(argptr);
+    }
+}
+
+
+///
+///  @brief    Output character to terminal or display.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void tputc(int c)
+{
+    if (isdelim(c))
+    {
+        term_pos = 0;
+    }
+    else
+    {
+        ++term_pos;
+    }
+
+#if     defined(TECO_DISPLAY)
+
+    if (putc_dpy(c))
+    {
+        return;
+    }
+
+#endif
+
+    if (!f.et.truncate || term_pos < w.width)
+    {
+        fputc(c, stdout);
     }
 }
