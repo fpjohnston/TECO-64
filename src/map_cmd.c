@@ -251,7 +251,7 @@ bool exec_key(int key)
             struct buffer buf;
 
             buf.data = p->macro;
-            buf.size = strlen(p->macro);
+            buf.size = (uint)strlen(p->macro);
             buf.len  = buf.size;
             buf.pos  = 0;
 
