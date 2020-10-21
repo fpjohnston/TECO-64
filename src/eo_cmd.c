@@ -30,6 +30,7 @@
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
+#include "version.h"
 
 
 ///

@@ -33,12 +33,6 @@
 #include <stdio.h>              //lint !e451 !e537
 #include <sys/types.h>          //lint !e451 !e537
 
-// Define TECO version numbers
-
-#define MAJOR_VERSION    200    ///< Major version
-#define MINOR_VERSION      7    ///< Minor version
-#define PATCH_VERSION      3    ///< Patch version
-
 #if     defined(TECO_LONG)
 
 typedef long int_t;               ///< Size of m and n arguments
