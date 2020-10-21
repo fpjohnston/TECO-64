@@ -26,9 +26,9 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <errno.h>
 #include <getopt.h>
 #include <limits.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -52,36 +52,22 @@
 
 struct config
 {
-    struct
-    {
-        bool argument;          ///< --argument option seen
-        bool buffer;            ///< --buffer option seen
-        bool create;            ///< --create option seen
-        bool display;           ///< --display option seen
-        bool execute;           ///< --execute=file option seen
-        bool help;              ///< --help option seen
-        bool initial;           ///< --initial=file option seen
-        bool log;               ///< --log=file option seen
-        bool memory;            ///< --memory option seen
-        bool output;            ///< --output option seen
-        bool readonly;          ///< --readonly option seen
-        bool scroll;            ///< --scroll option seen
-        bool vtedit;            ///< --vtedit option seen
-        bool exit;              ///< --exit option seen
-    } f;                        ///< true/false flags
-
-    int n;                      ///< Numeric value for --argument option
-
-    struct
-    {
-        char *buffer;           ///< String argument for --buffer option
-        char *execute;          ///< String argument for --execute option
-        char *initial;          ///< String argument for --initial option
-        char *log;              ///< String argument for --log option
-        char *output;           ///< String argument for --output option
-        char *scroll;           ///< String argument for --scroll option
-        char *vtedit;           ///< String argument for --vtedit option
-    } s;                        ///< String arguments
+    int n_arg;              ///< --argument value
+    bool n_set;             ///< --argument flag
+    char *buffer;           ///< --buffer
+    bool create;            ///< --create
+    bool display;           ///< --display
+    char *execute;          ///< --execute
+    bool exit;              ///< --exit
+    bool help;              ///< --help
+    const char *initial;    ///< --initial
+    char *log;              ///< --log
+    const char *memory;     ///< --memory
+    char *output;           ///< --output
+    const char *scroll;     ///< --scroll
+    bool readonly;          ///< --readonly
+    const char *vtedit;     ///< --vtedit
+    const char *zero;       ///< --zero
 };
 
 ///
@@ -92,142 +78,82 @@ struct config
 
 static struct config config =
 {
-    .f =
-    {
-        .argument = false,
-        .buffer   = false,
-        .create   = true,
-        .display  = false,
-        .execute  = false,
-        .help     = false,
-        .initial  = true,
-        .log      = false,
-        .memory   = true,
-        .output   = false,
-        .readonly = false,
-        .scroll   = false,
-        .vtedit   = true,
-        .exit     = false,
-    },
-
-    .n = 0,
-
-    .s =
-    {
-        .buffer  = NULL,
-        .execute = NULL,
-        .initial = NULL,
-        .log     = NULL,
-        .output  = NULL,
-        .scroll  = NULL,
-        .vtedit  = NULL,
-    },
+    .n_arg    = 0,
+    .n_set    = false,
+    .buffer   = NULL,
+    .create   = true,
+    .display  = false,
+    .execute  = NULL,
+    .exit     = false,
+    .help     = false,
+    .initial  = NULL,
+    .log      = NULL,
+    .memory   = NULL,
+    .output   = NULL,
+    .readonly = false,
+    .scroll   = NULL,
+    .vtedit   = NULL,
+    .zero     = NULL,
 };
 
 
 // Local functions
 
-static void check_config(void);
+static void add_cmd(const char *format, ...);
 
-static void copy_arg(char *buf, ulong size, const char *p);
-
-static void finish_config(int argc, const char * const argv[]);
+static void exec_config(int argc, const char * const argv[]);
 
 static void print_help(void);
 
-static void store_cmd(const char *str);
-
 
 ///
-///  @brief    Check configuration options requiring arguments. We do the check
-///            here rather than in set_config() in order to minimize duplication
-///            of effort for errors that can occur in multiple places.
+///  @brief    Add command to command string.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void check_config(void)
+static void add_cmd(const char *format, ...)
 {
-    const char *option;
+    // The following needs to be more than twice as big as the longest
+    // possible file name, because it might have to contain two copies
+    // of a file name in addition to other text.
 
-    if (config.f.execute && config.s.execute == NULL)
-    {
-        option = "--execute";
-    }
-    else if (config.f.log && config.s.log == NULL)
-    {
-        option = "--log";
-    }
-    else if (config.f.output && config.s.output == NULL)
-    {
-        option = "--output";
-    }
-    else if (config.f.scroll)
-    {
-        option = "--scroll";
+    char cmd[PATH_MAX * 2 + 100];
+    size_t size = sizeof(cmd);
+    va_list args;
 
-        if (config.s.scroll != NULL)
+    va_start(args, format);
+
+    if (format == NULL)
+    {
+        const char *p = va_arg(args, const char *);
+        int len = (int)strlen(p);
+
+        if (len > 2 &&
+            ((p[0] == '"' && p[len - 1] == '"') ||
+             (p[0] == '"' && p[len - 1] == '"')))
         {
-            char *endptr;
-
-            (void)strtoul(config.s.scroll, &endptr, 10);
-
-            if (errno == 0)
-            {
-                if (*endptr == NUL)
-                {
-                    return;
-                }
-
-                errno = EINVAL;
-            }
-
-            tprint("?%s for %s option\r\n", strerror(errno), option);
-
-            exit(EXIT_FAILURE);
+            snprintf(cmd, size, "%.*s", len - 2, p + 1);
+        }
+        else
+        {
+            snprintf(cmd, size, "EI%s\e ", p);
         }
     }
-    else if (config.f.buffer && config.s.buffer == NULL)
-    {
-        option = "--buffer";
-    }
     else
     {
-        return;
+        (void)vsnprintf(cmd, size, format, args);
     }
 
-    tprint("?Missing argument for %s option\r\n", option);
+    va_end(args);
 
-    exit(EXIT_FAILURE);
-}
+    int c;
+    const char *p = cmd;
 
-
-///
-///  @brief    Copy argument, which is either a file name which we will open
-///            with an EI command, or a command string in single or double
-///            quotes.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void copy_arg(char *cmd, ulong size, const char *file)
-{
-    assert(cmd != NULL);                // Error if no command block
-    assert(file != NULL);               // Error if no file name
-
-    int len = (int)strlen(file);
-
-    if (len > 2 &&
-        ((file[0] == '"' && file[len - 1] == '"') ||
-         (file[0] == '"' && file[len - 1] == '"')))
+    while ((c = *p++) != NUL)
     {
-        snprintf(cmd, size, "%.*s", len - 2, file + 1);
-    }
-    else
-    {
-        snprintf(cmd, size, "EI%s\e ", file);
+        store_cbuf(c);
     }
 }
 
@@ -239,169 +165,90 @@ static void copy_arg(char *cmd, ulong size, const char *file)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void finish_config(int argc, const char * const argv[])
+static void exec_config(int argc, const char * const argv[])
 {
     assert(argv != NULL);               // Error if no argument list
 
-    if ((argc -= optind) > 1)
-    {
-        tprint("?Too many non-option arguments\r\n");
-
-        exit(EXIT_FAILURE);
-    }
-
-    // The following needs to be more than twice as big as the longest possible
-    // file name, because it might have to contain two copies of a file name in
-    // addition to other text.
-
-    char cmdstring[PATH_MAX * 2 + 100];
-
-    if (config.f.help)
+    if (config.help)
     {
         print_help();
     }
 
-    //  Process --initial and --noinitial options.
-    //
-    //  --initial is the default if neither is specified.
-    //
-    //  If --initial=file, open specified initialization file.
-    //  If --initial, open initialization file specified by TECO_INIT.
-    //  If --noinitial, don't open an initialization file.
-    //
-    //  Note that if the environment variable value is enclosed in double
-    //  quotes, it is treated as a string of commands rather than a file name.
+    // Process commands that don't open a file for editing.
 
-    if (config.s.initial != NULL)
-    {
-        copy_arg(cmdstring, sizeof(cmdstring), config.s.initial);
-        store_cmd(cmdstring);
-    }
-    else if (config.f.initial && teco_init != NULL)
-    {
-        copy_arg(cmdstring, sizeof(cmdstring), teco_init);
-        store_cmd(cmdstring);
-    }
+    if (config.initial)  add_cmd(NULL,        config.initial);
+    if (config.zero)     add_cmd("%sE2",      config.zero);
+    if (config.log)      add_cmd("EL%s\e ",   config.log);
+    if (config.buffer)   add_cmd("I%s\e ",    config.buffer);
+    if (config.n_set)    add_cmd("%dUA",      config.n_arg);
+    if (config.execute)  add_cmd(NULL,        config.execute);
+    if (config.display)  add_cmd("-1W ",      NULL);
+    if (config.vtedit)   add_cmd(NULL,        config.vtedit);
+    if (config.scroll)   add_cmd("%s,7:W \e", config.scroll);
 
-    if (config.s.log != NULL)
-    {
-        snprintf(cmdstring, sizeof(cmdstring), "EL%s\e ", config.s.log);
-        store_cmd(cmdstring);
-    }
+    // file1 may be an input or output file, depending on the options used.
+    // file2 is always an output file.
 
-    if (config.s.buffer != NULL)
-    {
-        snprintf(cmdstring, sizeof(cmdstring), "I%s\e ", config.s.buffer);
-        store_cmd(cmdstring);
-    }
-
-    if (config.f.argument)
-    {
-        snprintf(cmdstring, sizeof(cmdstring), "%dUA ", config.n);
-        store_cmd(cmdstring);
-    }
-
-    if (config.s.execute != NULL)
-    {
-        copy_arg(cmdstring, sizeof(cmdstring), config.s.execute);
-        store_cmd(cmdstring);
-    }
-
-    if (config.f.display != 0)
-    {
-        store_cmd("-1W ");
-    }
-
-    if (config.s.vtedit != NULL)
-    {
-        copy_arg(cmdstring, sizeof(cmdstring), config.s.vtedit);
-        store_cmd(cmdstring);
-    }
-    else if (config.f.vtedit && teco_vtedit != NULL)
-    {
-        copy_arg(cmdstring, sizeof(cmdstring), teco_vtedit);
-        store_cmd(cmdstring);
-    }
-
-    if (config.s.scroll != NULL)
-    {
-        snprintf(cmdstring, sizeof(cmdstring), "%s,7:W \e", config.s.scroll);
-        store_cmd(cmdstring);
-    }
-
-    const char *file = NULL;
+    const char *file1 = NULL;
+    const char *file2 = config.output ?: NULL;
     char memory[PATH_MAX];              // File name from memory file
 
-    if (argc == 1)
+    if (optind < argc - 1)
     {
-        file = argv[optind];
+        tprint("%%Too many file arguments\r\n");
+
+        exit(EXIT_FAILURE);
     }
-    else if (config.f.memory)
+    else if (optind < argc)
+    {
+        file1 = argv[optind];
+    }
+    else if (config.memory != NULL)
     {
         read_memory(memory, (uint)sizeof(memory));
 
         if (memory[0] != NUL)
         {
-            file = memory;
+            file1 = memory;
         }
     }
 
-    //  If a file was specified, then there are the following possibilities:
-    //
-    //  1. File exists and --output was seen, so we do separate ER and EW commands.
-    //  2. File exists and --readonly was seen, so we do an ER command.
-    //  3. File exists and --readonly was not seen, so we do an EB command.
-    //  4. File does not exist and --create was seen, so we do an EW command.
-    //  5. File does not exist and either --create was not seen, or --readonly
-    //     was seen, or --output was seen, in which case we print an error and exit.
-    //
+    // Here to figure out which file commands to use. Note that if a file
+    // open fails, the rest of the command string will be aborted, which
+    // means that the subsequent CTRL/A command won't be executed.
 
-    if (file != NULL)                   // Do we have something to read?
+    if (file1 != NULL)
     {
-        if (access(file, F_OK) == 0)    // Does file exist?
+        if (file2 != NULL || config.readonly)
         {
-            if (config.s.output != NULL)
-            {
-                snprintf(cmdstring, sizeof(cmdstring), "ER%s\e EW%s\e Y ",
-                         file, config.s.output);
-            }
-            else if (config.f.readonly)
-            {
-                snprintf(cmdstring, sizeof(cmdstring),
-                         ":^A%%Inspecting file '%s'%c ER%s\e Y ",
-                        file, CTRL_A, file);
-            }
-            else
-            {
-                snprintf(cmdstring, sizeof(cmdstring),
-                         ":^A%%Editing file '%s'%c EB%s\e Y ",
-                        file, CTRL_A, file);
-            }
+            add_cmd("ER%s\e Y ", file1);
+            add_cmd(":^A%%Inspecting file: %s\1 ", file1);
         }
-        else if (config.f.create && !config.f.readonly &&
-                 !config.f.output)
+        else if (access(file1, F_OK) == 0 || !config.create)
         {
-            snprintf(cmdstring, sizeof(cmdstring),
-                    ":^A%%Can't find file '%s'%c :^A%%Creating "
-                    "new file%c EW%s\e ", file, CTRL_A, CTRL_A, file);
+            add_cmd("EB%s\e Y ", file1);
+            add_cmd(":^A%%Editing file: %s\1 ", file1);
         }
         else
         {
-            snprintf(cmdstring, sizeof(cmdstring),
-                     ":^A?Can't find file '%s'%c EX ", file, CTRL_A);
+            file2 = file1;
         }
-
-        store_cmd(cmdstring);
     }
 
-    if (config.f.exit)
+    if (file2 != NULL)
     {
-        store_cmd("EX ");
+        add_cmd("EW%s\e ", file2);
+        add_cmd(":^A%%Creating file: %s\1 ", file2);
+    }
+
+    if (config.exit)                    // Should we exit at end of commands?
+    {
+        add_cmd("EX ");
     }
 
     if (cbuf->len != 0)                 // Anything stored?
     {
-        store_cmd("\e\e");              // If so, properly terminate command
+        add_cmd("\e\e");
     }
 }
 
@@ -445,6 +292,10 @@ void set_config(
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
 
+    config.initial = teco_init;
+    config.memory  = teco_memory;
+    config.vtedit  = teco_vtedit;
+
     // These two assertions confirm the standard behavior of getopt_long()
     // regarding the ordering of option and non-option arguments.
 
@@ -463,135 +314,166 @@ void set_config(
         switch (c)
         {
             case OPTION_A:
-                config.f.argument = true;
-                config.n = (int)strtol(optarg, NULL, 10);
+                config.n_set = true;
+                config.n_arg = (int)strtol(optarg, NULL, 10);
 
                 break;
 
             case OPTION_B:
-                config.f.buffer = true;
-                config.s.buffer = optarg;
+                if (optarg != NULL)
+                {
+                    config.buffer = optarg;
+                }
+                else
+                {
+                    config.buffer = NULL;
+                }
 
                 break;
 
             case OPTION_C:
             case OPTION_c:
-                config.f.create = (c == 'C') ? true : false;
+                config.create = (c == 'C') ? true : false;
 
                 break;
 
             case OPTION_D:
-                config.f.display = true;
+                config.display = true;
 
                 break;
 
             case OPTION_E:
-                config.f.execute = true;
-                config.s.execute = optarg;
+                if (optarg != NULL && optarg[0] != '-')
+                {
+                    config.execute = optarg;
+                }
+                else
+                {
+                    config.execute = NULL;
+                }
 
-                // TECO_MEMORY is used to determine the name of a file to edit
-                // if none is specified on the command line. Ensure that we
-                // don't use it if we are executing an indirect command file.
-
-                (void)unsetenv("TECO_MEMORY");
-
-                teco_memory = NULL;
+                teco_memory = NULL;     // TODO: is this necessary?
 
                 break;
 
             case OPTION_H:
-                config.f.help = true;
+                config.help = true;
 
                 break;
 
             case OPTION_I:
-                config.f.initial = true;
-
                 if (optarg != NULL && optarg[0] != '-')
                 {
-                    config.s.initial = optarg;
+                    config.initial = optarg;
+                }
+                else
+                {
+                    config.initial = teco_init;
                 }
 
                 break;
 
             case OPTION_i:
-                config.f.initial = false;
+                config.initial = NULL;
 
                 break;
 
             case OPTION_L:
-                config.f.log = true;
-                config.s.log = optarg;
+                if (optarg != NULL && optarg[0] != '-')
+                {
+                    config.log = optarg;
+                }
+                else
+                {
+                    config.log = NULL;
+                }
 
                 break;
 
             case OPTION_M:
-                config.f.memory = true;
+                if (optarg != NULL)
+                {
+                    config.memory = optarg;
+                }
+                else
+                {
+                    config.memory = teco_memory;
+                }
 
                 break;
 
             case OPTION_m:
-                config.f.memory = false;
+                config.memory = NULL;
 
                 break;
 
             case OPTION_O:
-                config.f.output = true;
-                config.s.output = optarg;
+                if (optarg != NULL && optarg[0] != '-')
+                {
+                    config.output = optarg;
+                }
+                else
+                {
+                    config.output = NULL;
+                }
 
                 break;
 
             case OPTION_o:
-                config.f.output = false;
+                config.output = NULL;
 
                 break;
 
             case OPTION_R:
             case OPTION_r:
-                config.f.readonly = (c == 'R') ? true : false;
+                config.readonly = (c == 'R') ? true : false;
 
                 break;
 
             case OPTION_S:
-                config.f.scroll  = true;
-                config.s.scroll  = optarg;
-                config.f.display = true;
+                if (optarg != NULL && optarg[0] != '-')
+                {
+                    config.scroll = optarg;
+                }
+                else
+                {
+                    config.scroll = NULL;
+                }
+
+                config.display = true;
 
                 break;
 
             case OPTION_V:
-
-#if     defined(TECO_DISPLAY)                
-
-                config.f.vtedit = true;
-
-                if (optarg != NULL && optarg[0] != '-')
+                if (optarg != NULL)
                 {
-                    config.s.vtedit = optarg;
+                    config.vtedit = optarg;
                 }
-
-#endif
+                else
+                {
+                    config.vtedit = teco_vtedit;
+                }
 
                 break;
 
             case OPTION_v:
-                config.f.vtedit = false;
+                config.vtedit = NULL;
 
                 break;
 
             case OPTION_X:
-                config.f.exit = true;
+                config.exit = true;
 
                 break;
 
             case OPTION_Z:
                 if (optarg != NULL)
                 {
-                    f.e2.flag = (int)strtol(optarg, NULL, 10);
+                    config.zero = optarg;
                 }
                 else
                 {
-                    f.e2.flag = -1;
+                    config.zero = "-1";
                 }
 
                 break;
@@ -602,29 +484,7 @@ void set_config(
 
                 exit(EXIT_FAILURE);
         }
-
-        check_config();
     }
 
-    finish_config(argc, argv);
-}
-
-
-///
-///  @brief    Store command-line option in command string.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void store_cmd(const char *cmd)
-{
-    assert(cmd != NULL);                // Error if no command block
-
-    int c;
-
-    while ((c = *cmd++) != NUL)
-    {
-        store_cbuf(c);
-    }
+    exec_config(argc, argv);
 }
