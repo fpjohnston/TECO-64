@@ -38,23 +38,14 @@
 
 
 ///
-///  @brief    Execute EC command: copy input to output and close file.
+///  @brief    Close open input and output files.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EC(struct cmd *cmd)
+void close_files(void)
 {
-    assert(cmd != NULL);                // Error if no command block
-
-    if (cmd->n_set && cmd->n_arg != 0)  // nEC?
-    {
-        (void)setsize_ebuf(cmd->n_arg);
-
-        return;
-    }
-
     struct ofile *ofile = &ofiles[ostream];
 
     if (ofile->fp != NULL)
@@ -72,4 +63,26 @@ void exec_EC(struct cmd *cmd)
     exec_EF(NULL);                      // Rename and close the output file
 
     close_input(istream);
+}
+
+
+///
+///  @brief    Execute EC command: copy input to output and close file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_EC(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    if (!cmd->n_set)
+    {
+        close_files();
+    }
+    else if (cmd->n_arg >= 0)           // nEC?
+    {
+        (void)setsize_ebuf(cmd->n_arg);
+    }
 }

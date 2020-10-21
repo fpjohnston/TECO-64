@@ -85,7 +85,7 @@ void exec_EG(struct cmd *cmd)
         throw(E_NFO);                   // No file for output
     }
 
-    exec_EC(cmd);
+    close_files();
 
     // EG`, not :EG`, so get ready to exit
 

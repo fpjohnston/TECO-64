@@ -37,18 +37,15 @@
 
 
 ///
-///  @brief    Execute EX command (close file and exit).
+///  @brief    Execute EX command: close files and exit.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EX(struct cmd *cmd)
+void exec_EX(struct cmd *unused1)
 {
-    assert(cmd != NULL);                // Error if no command block
-
-    // The following ensures that we don't exit if we have nowhere to output
-    // the dat in the buffer to.
+    assert(unused1 != NULL);            // Error if no command block
 
     struct ofile *ofile = &ofiles[ostream];
 
@@ -57,9 +54,7 @@ void exec_EX(struct cmd *cmd)
         throw(E_NFO);                   // No file for output
     }
 
-    cmd->n_set = false;                 // Don't pass n through to EC
-
-    exec_EC(cmd);                       // Close everything normally
+    close_files();                      // Close everything normally
 
     // The following allow for the use of EX inside of a conditional or loop.
 

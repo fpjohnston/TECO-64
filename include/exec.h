@@ -280,6 +280,8 @@ extern int check_EI(void);
 
 extern bool check_semi(void);
 
+extern void close_files(void);
+
 extern void exec_cmd(struct cmd *cmd);
 
 extern void exec_macro(struct buffer *macro, struct cmd *cmd);
