@@ -95,7 +95,7 @@
         <option>
             <short_name>V</short_name>
             <long_name>vtedit</long_name>
-            <argument>required</argument>
+            <argument>optional</argument>
             <help>Use macro in file 'xyz' to initialize display.</help>
         </option>
         <option>

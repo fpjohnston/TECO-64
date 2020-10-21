@@ -127,7 +127,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "A:B:CDE:HI::L:MO:RS:V:XZ::cimorv";
+static const char * const optstring = "A:B:CDE:HI::L:MO:RS:V::XZ::cimorv";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -146,7 +146,7 @@ static const struct option long_options[] =
     { "output",         required_argument,  NULL,  'O'    },
     { "read-only",      no_argument,        NULL,  'R'    },
     { "scroll",         required_argument,  NULL,  'S'    },
-    { "vtedit",         required_argument,  NULL,  'V'    },
+    { "vtedit",         optional_argument,  NULL,  'V'    },
     { "exit",           no_argument,        NULL,  'X'    },
     { "zero",           optional_argument,  NULL,  'Z'    },
     { "nocreate",       no_argument,        NULL,  'c'    },
