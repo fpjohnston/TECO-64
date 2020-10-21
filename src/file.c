@@ -460,7 +460,7 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
 
         if (c == 'W')                   // Issue warnings if EW command
         {
-            tprint("%s", "%Superseding existing file\r\n");
+            tprint("%%Superseding existing file '%s'\r\n", ofile->name);
         }
     }
     else
