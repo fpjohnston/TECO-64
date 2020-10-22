@@ -50,6 +50,8 @@ being returned if the open succeeded, and 0 if it failed.
 
 [^K - Reset display colors](immediate.md)
 
+[^P - Current page number](variables.md) (TECO-10)
+
 [^Q - Convert line numbers to character values](variables.md) (TECO-10)
 
 [^T - Type character](typeout.md)
@@ -94,6 +96,8 @@ being returned if the open succeeded, and 0 if it failed.
 
 [EC - Set Memory Size](misc.md) (TECO-10)
 
+[::EG - Execute system command w/o exiting](env.md)
+
 [EI - Indirect File Command](file.md)
 - Added colon modifier to return success/failure value.
 
@@ -130,6 +134,8 @@ being returned if the open succeeded, and 0 if it failed.
 [FQ - Map keys to Q-registers](display.md)
 
 [FU - Upper case text](misc.md)
+
+[G+ - Results of last ::EG command](qregisters.md)
 
 [I - Insert string](insert.md)
 - Added repeat count.
