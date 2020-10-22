@@ -38,7 +38,7 @@
 
 
 ///
-///  @brief    Scan ^T (CTRL/T) command.
+///  @brief    Execute "^T" (CTRL/T) command:
 ///
 ///              ^T  Read and decode next character typed.
 ///              ^T= Type ASCII value of next character.
