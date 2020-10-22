@@ -42,8 +42,9 @@
 
 
 ///
-///  @brief    Scan ^B (CTRL/B) command. We return the current date encoded
-///            in the following way: ((year - 1900) * 16 + month) * 32 + day.
+///  @brief    Execute "^B" (CTRL/B): return current date encoded as follows:
+///
+///            ((year - 1900) * 16 + month) * 32 + day
 ///
 ///  @returns  Nothing.
 ///
@@ -56,46 +57,37 @@ void exec_ctrl_B(struct cmd *unused1)
 
     (void)localtime_r(&t, &tm);
 
-    int teco_date = ((tm.tm_year) * 16 + tm.tm_mon+1) * 32 + tm.tm_mday;
+    int n = ((tm.tm_year) * 16 + tm.tm_mon + 1) * 32 + tm.tm_mday;
 
-    push_expr(teco_date, EXPR_VALUE);
+    push_expr(n, EXPR_VALUE);
 }
 
 
 ///
-///  @brief    Scan ^H (CTRL/H) command. This returns the current time as
-///            milliseconds since midnight.
+///  @brief    Execute "^H" (CTRL/H): return current time as milliseconds
+///            since midnight.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_H(struct cmd *unused1)
+void exec_ctrl_H(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     time_t t = time(NULL);
     struct tm tm;
+    struct timeval tv = { .tv_usec = 0 };
 
     (void)localtime_r(&t, &tm);
+    (void)gettimeofday(&tv, NULL);
 
-    int teco_time = tm.tm_hour * MINUTES_PER_HOUR + tm.tm_min;
+    int n = tm.tm_hour * MINUTES_PER_HOUR + tm.tm_min;
 
-    teco_time *= SECONDS_PER_MINUTE;
-    teco_time += tm.tm_sec;
+    n *= SECONDS_PER_MINUTE;
+    n += tm.tm_sec;
+    n *= 1000;
+    n += (int)(tv.tv_usec / 1000);
 
-    if (f.e1.msec)                      // Return time in milliseconds?
-    {
-        struct timeval tv = { .tv_usec = 0 };
-
-        (void)gettimeofday(&tv, NULL);
-
-        teco_time *= 1000;
-        teco_time += (int)(tv.tv_usec / 1000);
-    }
-    else                                // RT-11, RSX-11, and VMS format
-    {
-        teco_time /= 2;                 // (seconds since midnight) / 2
-    }
-
-    push_expr(teco_time, EXPR_VALUE);
+    push_expr(n, EXPR_VALUE);
 }
-

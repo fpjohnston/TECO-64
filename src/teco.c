@@ -144,7 +144,6 @@ static void init_teco(int argc, const char * const argv[])
     // Default settings for E1
 
     f.e1.xoper  = true;                 // Enable extended operators
-    f.e1.msec   = true;                 // Return time in milliseconds
     f.e1.text   = true;                 // Enable extended text strings
     f.e1.dollar = true;                 // $ is a valid symbol character
     f.e1.ubar   = true;                 // _ is a valid symbol character
