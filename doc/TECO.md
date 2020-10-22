@@ -43,7 +43,7 @@ introduce the concept of TECO as a programming language and explain
 how basic editing commands may be combined into programs sophisticated
 enough to handle even complicated editing tasks.
 
-- [Starting TECO](start.md)
+- [Starting TECO](starting.md)
 
 - [Document Conventions](conventions.md)
 
@@ -101,7 +101,7 @@ These provide supplementary information to assist in using certain TECO commands
 
 - [Colon-Modified Commands](colon.md)
 
-- [Sign-Modified Commands](atsign.md)
+- [At Sign-Modified Commands](atsign.md)
 
 - [User-Definable Keys](keys.md)
 
