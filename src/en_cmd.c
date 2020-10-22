@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute EN command (wildcard filename lookup).
+///  @brief    Execute "EN" command: wildcard filename lookup.
 ///
 ///  @returns  Nothing.
 ///

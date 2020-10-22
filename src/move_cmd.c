@@ -44,7 +44,7 @@ static void exec_move(struct cmd *cmd, int pos, bool cond, int chr);
 
 
 ///
-///  @brief    Execute C command: move to relative position forward in buffer.
+///  @brief    Execute "C" command: move to relative position forward in buffer.
 ///
 ///  @returns  Nothing.
 ///
@@ -82,7 +82,7 @@ static void exec_c_r(struct cmd *cmd, int sign, int chr)
 
 
 ///
-///  @brief    Execute J command: move to absolute position in buffer.
+///  @brief    Execute "J" command: move to absolute position in buffer.
 ///
 ///  @returns  Nothing.
 ///
@@ -104,7 +104,7 @@ void exec_J(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute L command: move n lines forwards or backwards.
+///  @brief    Execute "L" command: move n lines forwards or backwards.
 ///
 ///  @returns  Nothing.
 ///
@@ -176,7 +176,7 @@ static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
 
 
 ///
-///  @brief    Execute R command: move to relative position backward in buffer.
+///  @brief    Execute "R" command: move to relative position backward in buffer.
 ///
 ///  @returns  Nothing.
 ///

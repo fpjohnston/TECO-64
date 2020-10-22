@@ -1,6 +1,6 @@
 ///
 ///  @file    bslash_cmd.c
-///  @brief   Execute \ (backslash) command.
+///  @brief   Execute backslash command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -44,7 +44,7 @@
 
 
 ///
-///  @brief    Scan \ (backslash) command: read digit string.
+///  @brief    Execute "\" (backslash) command: read digit string.
 ///
 ///  @returns  nothing.
 ///

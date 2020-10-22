@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute EL command (open or close log file). Format is:
+///  @brief    Execute "EL" command: open or close log file.
 ///
 ///            ELfile`         - open log file for write.
 ///            EL`             - close log file.

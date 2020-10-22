@@ -1,6 +1,6 @@
 ///
 ///  @file    ctrl_t_cmd.c
-///  @brief   Execute ^T (CTRL/T) command.
+///  @brief   Execute CTRL/T command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -38,7 +38,7 @@
 
 
 ///
-///  @brief    Execute "^T" (CTRL/T) command:
+///  @brief    Execute "^T" (CTRL/T) command: read input or type character.
 ///
 ///              ^T  Read and decode next character typed.
 ///              ^T= Type ASCII value of next character.

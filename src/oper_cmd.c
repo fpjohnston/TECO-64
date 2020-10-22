@@ -35,7 +35,7 @@
 
 
 ///
-///  @brief    Process "," (comma argument separator).
+///  @brief    Execute "," (comma) command.
 ///
 ///  @returns  Nothing.
 ///
@@ -68,7 +68,7 @@ void exec_comma(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute ctrl/underscore command.
+///  @brief    Execute "^_" (ctrl/underscore) command.
 ///
 ///  @returns  Nothing.
 ///
@@ -83,7 +83,7 @@ void exec_ctrl_ubar(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute ctrl/^ (caret or uparrow) command.
+///  @brief    Execute "^^" (ctrl/^) command.
 ///
 ///  @returns  Nothing.
 ///
@@ -102,7 +102,7 @@ void exec_ctrl_up(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute left parenthesis.
+///  @brief    Execute "(" (left parenthesis) command.
 ///
 ///  @returns  Nothing.
 ///
@@ -119,7 +119,7 @@ void exec_lparen(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute general operator. This is called for the following:
+///  @brief    Execute operator commands. This is called for the following:
 ///
 ///            +  addition
 ///            -  subtraction
@@ -143,7 +143,7 @@ void exec_oper(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute right parenthesis.
+///  @brief    Execute ")" (right parenthesis) command.
 ///
 ///  @returns  Nothing.
 ///

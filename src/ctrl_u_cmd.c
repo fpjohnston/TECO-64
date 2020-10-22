@@ -1,6 +1,6 @@
 ///
 ///  @file    ctrl_u_cmd.c
-///  @brief   Execute ^U (CTRL/U) command.
+///  @brief   Execute CTRL/U command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute ^U (CTRL/U) command: store/append string/character in
+///  @brief    Execute "^U" (CTRL/U) command: store/append string/character in
 ///            Q-register.
 ///
 ///  @returns  Nothing.

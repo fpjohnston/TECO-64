@@ -44,7 +44,7 @@ static void exec_type(int m, int n);
 
 
 ///
-///  @brief    Execute T command: type line(s).
+///  @brief    Execute "T" command: type line(s).
 ///
 ///  @returns  Nothing.
 ///
@@ -136,7 +136,7 @@ static void exec_type(int m, int n)
 
 
 ///
-///  @brief    Execute V command: type line(s).
+///  @brief    Execute "V" command: type line(s).
 ///
 ///  @returns  Nothing.
 ///

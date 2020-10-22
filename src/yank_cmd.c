@@ -40,7 +40,7 @@
 
 
 ///
-///  @brief    Execute EY command: yank text into buffer (no protection).
+///  @brief    Execute "EY" command: yank text into buffer (no protection).
 ///
 ///  @returns  Nothing.
 ///
@@ -93,7 +93,7 @@ void exec_EY(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute Y command: yank text into buffer (with protection).
+///  @brief    Execute "Y" command: yank text into buffer (with protection).
 ///
 ///  @returns  Nothing.
 ///

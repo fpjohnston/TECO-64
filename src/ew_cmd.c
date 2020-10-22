@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute EW command (open file for output)
+///  @brief    Execute "EW" command: open file for output.
 ///
 ///  @returns  Nothing.
 ///

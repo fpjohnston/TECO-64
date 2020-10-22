@@ -107,7 +107,7 @@ static void copy_G(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute G command: print Q-register contents, or copy to buffer.
+///  @brief    Execute "G" command: print Q-register text, or copy to buffer.
 ///
 ///  @returns  Nothing.
 ///

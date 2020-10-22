@@ -132,7 +132,7 @@ static void unmap_key(uint key);
 
 
 ///
-///  @brief    Execute FM command: map key to command string, or unmap key.
+///  @brief    Execute "FM" command: map key to command string, or unmap key.
 ///
 ///            @FM/key/cmds/ - Map key to command string.
 ///            @FM/key//     - Unmap key.
@@ -191,10 +191,10 @@ void exec_FM(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute FQ command: map key to Q-register.
+///  @brief    Execute "FQ" command: map key to Q-register.
 ///
-///             @FQq/key/ - Map key to Q-register.
-///             @FQq//    - Ignored (does not unmap).
+///            @FQq/key/ - Map key to Q-register.
+///            @FQq//    - Ignored (does not unmap).
 ///
 ///  @returns  Nothing.
 ///

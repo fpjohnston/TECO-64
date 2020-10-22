@@ -34,8 +34,8 @@
 
 
 ///
-///  @brief    Execute EF command: close output file without writing out current
-///            buffer.
+///  @brief    Execute "EF" command: close output file without writing out
+///            current buffer.
 ///
 ///  @returns  Nothing.
 ///

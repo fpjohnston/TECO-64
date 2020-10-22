@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute [ command - Push Q-register onto push-down list.
+///  @brief    Execute "[" command - Push Q-register onto push-down list.
 ///
 ///  @returns  Nothing.
 ///
@@ -64,7 +64,7 @@ void exec_lbracket(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute ] command: pop Q-register from push-down list.
+///  @brief    Execute "]" command: pop Q-register from push-down list.
 ///
 ///  @returns  Nothing.
 ///

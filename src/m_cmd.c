@@ -57,7 +57,7 @@ bool check_macro(void)
 
 
 ///
-///  @brief    Execute M command: invoke macro in Q-register.
+///  @brief    Execute "M" command: invoke macro in Q-register.
 ///
 ///                Mq -> Execute Q-register q as a command string.
 ///               nMq -> Same as Mq; use n as numeric argument.

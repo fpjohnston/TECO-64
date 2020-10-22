@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute FK command: forward search and delete.
+///  @brief    Execute "FK" command: forward search and delete.
 ///
 ///  @returns  Nothing.
 ///

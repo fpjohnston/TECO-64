@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute FD command: search and delete.
+///  @brief    Execute "FD" command: search and delete.
 ///
 ///  @returns  Nothing.
 ///

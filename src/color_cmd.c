@@ -90,7 +90,7 @@ static void set_colors(const struct cmd *cmd, enum region_pair pair);
 
 
 ///
-///  @brief    Execute F1 command: set colors for command region.
+///  @brief    Execute "F1" command: set colors for command region.
 ///
 ///  @returns  Nothing.
 ///
@@ -122,7 +122,7 @@ void exec_F1(struct cmd *unused1)
 
 
 ///
-///  @brief    Execute F2 command: set colors for edit region.
+///  @brief    Execute "F2" command: set colors for edit region.
 ///
 ///  @returns  Nothing.
 ///
@@ -153,7 +153,7 @@ void exec_F2(struct cmd *unused1)
 }
 
 ///
-///  @brief    Execute F3 command: set colors for status line.
+///  @brief    Execute "F3" command: set colors for status line.
 ///
 ///  @returns  Nothing.
 ///

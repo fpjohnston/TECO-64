@@ -32,7 +32,7 @@
 
 
 ///
-///  @brief    Execute ? (question mark) command: toggle trace mode.
+///  @brief    Execute "?" command: toggle trace mode.
 ///
 ///  @returns  Nothing.
 ///

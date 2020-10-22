@@ -44,7 +44,7 @@ static void exec_search(struct cmd *cmd, bool replace);
 
 
 ///
-///  @brief    Execute N command: global search.
+///  @brief    Execute "N" command: global search.
 ///
 ///  @returns  Nothing.
 ///
@@ -57,7 +57,7 @@ void exec_N(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute FN command: global search and replace.
+///  @brief    Execute "FN" command: global search and replace.
 ///
 ///  @returns  Nothing.
 ///

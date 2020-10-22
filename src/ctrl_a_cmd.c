@@ -1,6 +1,6 @@
 ///
 ///  @file    ctrl_a_cmd.c
-///  @brief   Execute ^A (CTRL/A) command.
+///  @brief   Execute CTRL/A command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -35,7 +35,7 @@
 
 
 ///
-///  @brief    Execute ^A (CTRL/A) command.
+///  @brief    Execute "^A" (CTRL/A) command: type out string.
 ///
 ///  @returns  Nothing.
 ///

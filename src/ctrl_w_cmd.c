@@ -1,6 +1,6 @@
 ///
 ///  @file    ctrl_w_cmd.c
-///  @brief   Execute ^W (CTRL/W) command.
+///  @brief   Execute CTRL/W command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -34,7 +34,7 @@
 
 
 ///
-///  @brief    Execute ^W (CTRL/W) command: force conversion to upper case.
+///  @brief    Execute "^W" (CTRL/W) command: force conversion to upper case.
 ///
 ///             ^W -> enable upper-case conversion.
 ///            0^W -> disable upper-case conversion.

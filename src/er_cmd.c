@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute ER command: open file for input.
+///  @brief    Execute "ER" command: open file for input.
 ///
 ///  @returns  Nothing.
 ///

@@ -1,6 +1,6 @@
 ///
 ///  @file    ctrl_c_cmd.c
-///  @brief   Execute ^C (CTRL/C) command.
+///  @brief   Execute CTRL/C command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -33,7 +33,7 @@
 
 
 ///
-///  @brief    Execute ^C (CTRL/C) command: return control to main loop.
+///  @brief    Execute "^C" (CTRL/C) command: return control to main loop.
 ///
 ///  @returns  Nothing.
 ///

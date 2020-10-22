@@ -51,9 +51,9 @@ static void verify_tag(const char *tag);
 
 
 ///
-///  @brief    Execute ! command: comment/tag. This function doesn't actually do
-///            anything, but it exists to ensure that the command is properly
-///            scanned, so that tags can be found with the O and nO commands.
+///  @brief    Execute "!" command: comment/tag. This function doesn't actually
+///            do anything, but it exists to ensure that the command is properly
+///            parsed, so that tags can be found with the O and nO commands.
 ///
 ///            Note that we pass through any numeric arguments, much like the [
 ///            and ] commands. This allows comments to be inserted between two
@@ -84,7 +84,7 @@ void exec_bang(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute O command: goto and computed goto.
+///  @brief    Execute "O" command: goto and computed goto.
 ///
 ///  @returns  Nothing.
 ///

@@ -35,7 +35,7 @@
 
 
 ///
-///  @brief    Execute ^D (CTRL/D) command: switch radix to decimal.
+///  @brief    Execute "^D" (CTRL/D) command: switch radix to decimal.
 ///
 ///  @returns  Nothing.
 ///
@@ -48,7 +48,7 @@ void exec_ctrl_D(struct cmd *unused1)
 
 
 ///
-///  @brief    Execute ^O (CTRL/O) command: switch radix to octal.
+///  @brief    Execute "^O" (CTRL/O) command: switch radix to octal.
 ///
 ///  @returns  Nothing.
 ///
@@ -61,7 +61,7 @@ void exec_ctrl_O(struct cmd *unused1)
 
 
 ///
-///  @brief    Execute ^R (CTRL/R) command: read current radix.
+///  @brief    Execute "^R" (CTRL/R) command: read current radix.
 ///
 ///  @returns  nothing.
 ///

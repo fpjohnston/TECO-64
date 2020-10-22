@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute E_ command: search without yank protection.
+///  @brief    Execute "E_" command: search without yank protection.
 ///
 ///  @returns  Nothing.
 ///

@@ -133,7 +133,7 @@ static int get_w(int n)
 
 
 ///
-///  @brief    Scan W command: process display functions.
+///  @brief    Execute "W" command: process display functions.
 ///
 ///  @returns  Nothing.
 ///

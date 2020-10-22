@@ -1,6 +1,6 @@
 ///
 ///  @file    a_cmd.c
-///  @brief   Execute A command.
+///  @brief   Execute "A" command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///

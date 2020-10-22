@@ -132,7 +132,7 @@ static void endif(struct cmd *cmd, bool else_ok)
 
 
 ///
-///  @brief    Execute ' (apostrophe) command: end conditional statement.
+///  @brief    Execute "'" (apostrophe) command: end conditional statement.
 ///
 ///  @returns  Nothing.
 ///
@@ -155,7 +155,7 @@ void exec_apos(struct cmd *unused1)
 
 
 ///
-///  @brief    Execute F' command: flow to end of conditional statement.
+///  @brief    Execute "F'" command: flow to end of conditional statement.
 ///
 ///  @returns  Nothing.
 ///
@@ -168,7 +168,7 @@ void exec_F_apos(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute F| command: flow to else clause of conditional statement.
+///  @brief    Execute "F|" command: flow to else clause of conditional statement.
 ///
 ///  @returns  Nothing.
 ///
@@ -181,7 +181,7 @@ void exec_F_vbar(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute quote command: if/then/else statement.
+///  @brief    Execute '"' (quote) command: if/then/else statement.
 ///
 ///            n"<    Text for less than zero
 ///            n"=    Test for equal to zero
@@ -313,7 +313,7 @@ void exec_quote(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute | (vertical bar) command: else clause of conditional
+///  @brief    Execute "|" (vertical bar) command: else clause of conditional
 ///            statement.
 ///
 ///  @returns  Nothing.

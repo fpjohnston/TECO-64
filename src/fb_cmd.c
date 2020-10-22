@@ -43,7 +43,7 @@ static void exec_search(struct cmd *cmd, bool replace);
 
 
 ///
-///  @brief    Execute FB command: bounded search.
+///  @brief    Execute "FB" command: bounded search.
 ///
 ///  @returns  Nothing.
 ///
@@ -56,7 +56,7 @@ void exec_FB(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute FC command: bounded search and replace.
+///  @brief    Execute "FC" command: bounded search and replace.
 ///
 ///  @returns  Nothing.
 ///

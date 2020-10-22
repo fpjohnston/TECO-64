@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute U command: store number in Q-register.
+///  @brief    Execute "U" command: store number in Q-register.
 ///
 ///  @returns  Nothing.
 ///

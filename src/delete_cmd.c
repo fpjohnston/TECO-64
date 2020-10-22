@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute D command: delete characters at dot.
+///  @brief    Execute "D" command: delete characters at dot.
 ///
 ///  @returns  Nothing.
 ///
@@ -91,7 +91,7 @@ void exec_D(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute K command: kill (delete) lines.
+///  @brief    Execute "K" command: kill (delete) lines.
 ///
 ///  @returns  Nothing.
 ///

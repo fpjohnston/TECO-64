@@ -42,7 +42,7 @@ uint last_len;
 
 
 ///
-///  @brief    Execute FR command: delete and replace.
+///  @brief    Execute "FR" command: delete and replace.
 ///
 ///  @returns  Nothing.
 ///

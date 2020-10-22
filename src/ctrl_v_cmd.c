@@ -1,6 +1,6 @@
 ///
 ///  @file    ctrl_v_cmd.c
-///  @brief   Execute ^V (CTRL/V) command.
+///  @brief   Execute CTRL/V command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -34,7 +34,7 @@
 
 
 ///
-///  @brief    Execute ^V (CTRL/V) command: force conversion to lower case.
+///  @brief    Execute "^V" (CTRL/V) command: force conversion to lower case.
 ///
 ///             ^V -> enable lower-case conversion.
 ///            0^V -> disable lower-case conversion.

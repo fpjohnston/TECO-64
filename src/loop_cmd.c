@@ -138,7 +138,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 
 
 ///
-///  @brief    Execute F> command: flow to end of loop.
+///  @brief    Execute "F>" command: flow to end of loop.
 ///
 ///  @returns  Nothing.
 ///
@@ -153,7 +153,7 @@ void exec_F_gt(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute F< command: flow to start of loop.
+///  @brief    Execute "F<" command: flow to start of loop.
 ///
 ///  @returns  Nothing.
 ///
@@ -168,7 +168,7 @@ void exec_F_lt(struct cmd *unused1)
 
 
 ///
-///  @brief    Execute > command: end of loop.
+///  @brief    Execute ">" command: end of loop.
 ///
 ///  @returns  Nothing.
 ///
@@ -205,7 +205,7 @@ void exec_gt(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute < command: start of loop.
+///  @brief    Execute "<" command: start of loop.
 ///
 ///  @returns  Nothing.
 ///
@@ -229,7 +229,7 @@ void exec_lt(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute ; (semi-colon) command: exit loop.
+///  @brief    Execute ";" (semi-colon) command: exit loop.
 ///
 ///  @returns  Nothing.
 ///

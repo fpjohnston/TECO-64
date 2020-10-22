@@ -43,7 +43,7 @@ char eg_command[PATH_MAX];              ///< EG command to be executed on exit.
 
 
 ///
-///  @brief    Execute EG command: execute system command.
+///  @brief    Execute "EG" command: execute system command.
 ///
 ///  @returns  Nothing.
 ///

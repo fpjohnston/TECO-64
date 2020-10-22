@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute EQ command: read file into Q-register.
+///  @brief    Execute "EQ" command: read file into Q-register.
 ///
 ///  @returns  Nothing.
 ///

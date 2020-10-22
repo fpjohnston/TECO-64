@@ -34,7 +34,7 @@
 
 
 ///
-///  @brief    Execute EA command (switch to secondary output stream).
+///  @brief    Execute "EA" command: switch to secondary output stream.
 ///
 ///  @returns  Nothing.
 ///

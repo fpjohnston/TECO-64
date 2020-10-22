@@ -42,7 +42,7 @@ static void exec_case(struct cmd *cmd, bool lower);
 
 
 ///
-///  @brief    Execute FL command: convert characters to lower case.
+///  @brief    Execute "FL" command: convert characters to lower case.
 ///
 ///  @returns  Nothing.
 ///
@@ -55,7 +55,7 @@ void exec_FL(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute FU command: convert characters to upper case.
+///  @brief    Execute "FU" command: convert characters to upper case.
 ///
 ///  @returns  Nothing.
 ///

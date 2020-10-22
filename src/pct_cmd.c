@@ -35,7 +35,8 @@
 
 
 ///
-///  @brief    Scan % command: add value to Q-register, and read result.
+///  @brief    Execute "%" (percent) command: add value to Q-register, and
+///            read result.
 ///
 ///  @returns  Nothing.
 ///

@@ -41,7 +41,7 @@
 
 
 ///
-///  @brief    Execute P command (write out buffer, and read next page).
+///  @brief    Execute "P" command (write out buffer, and read next page).
 ///
 ///  @returns  Nothing.
 ///

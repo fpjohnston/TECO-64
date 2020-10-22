@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute X command: copy lines to Q-register.
+///  @brief    Execute "X" command: copy lines to Q-register.
 ///
 ///  @returns  Nothing.
 ///

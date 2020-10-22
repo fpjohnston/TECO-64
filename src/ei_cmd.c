@@ -89,7 +89,7 @@ int check_EI(void)
 
 
 ///
-///  @brief    Execute EI command: read TECO command file. This is handled in
+///  @brief    Execute "EI" command: read TECO command file. This is handled in
 ///            one of two ways: preset where input is read from after execution
 ///            of the ehead command string has completed, as DEC TECOs have
 ///            done, or immediately execute the contents of the file as though

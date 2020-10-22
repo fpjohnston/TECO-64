@@ -44,7 +44,7 @@ static void exec_search(struct cmd *cmd, bool replace);
 
 
 ///
-///  @brief    Execute F_ command: search and replace with yank protection.
+///  @brief    Execute "F_" command: search and replace with yank protection.
 ///
 ///  @returns  Nothing.
 ///
@@ -57,7 +57,7 @@ void exec_F_ubar(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute _ (underscore) command: search with yank protection.
+///  @brief    Execute "_" (underscore) command: search with yank protection.
 ///
 ///  @returns  Nothing.
 ///

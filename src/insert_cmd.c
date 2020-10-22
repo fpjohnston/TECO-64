@@ -38,7 +38,7 @@
 
 
 ///
-///  @brief    Execute ^I (CTRL/I) command (insert text).
+///  @brief    Execute "^I" (CTRL/I) command: insert text.
 ///
 ///  @returns  Nothing.
 ///
@@ -58,7 +58,7 @@ void exec_ctrl_I(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute I command (insert text).
+///  @brief    Execute "I" command: insert text.
 ///
 ///  @returns  Nothing.
 ///
