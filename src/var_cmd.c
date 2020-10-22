@@ -39,22 +39,7 @@
 
 
 ///
-///  @brief    Execute B command: read first position in buffer (always 0).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_B(struct cmd *cmd)
-{
-    assert(cmd != NULL);                // Error if no command block
-
-    push_expr(t.B, EXPR_VALUE);
-}
-
-
-///
-///  @brief    Execute ^P (CTRL/P) command: get current page number.
+///  @brief    Execute "^P" (CTRL/P) command: get current page number.
 ///
 ///  @returns  Nothing.
 ///
@@ -67,8 +52,8 @@ void exec_ctrl_P(struct cmd *unused1)
 
 
 ///
-///  @brief    Execute ^Q (CTRL/Q) command: get no. of characters between dot and
-///            nth line terminator. n may be negative.
+///  @brief    Execute "^Q" (CTRL/Q) command: get no. of characters between
+///            dot and nth line terminator. n may be negative.
 ///
 ///  @returns  nothing.
 ///
@@ -90,9 +75,9 @@ void exec_ctrl_Q(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse ^S (CTRL/S) command: return negative of last insert, string
-///            found, or string inserted with a G command, whichever occurred
-///            last.
+///  @brief    Execute "^S" (CTRL/S) command: return negative of last insert,
+///            string found, or string inserted with a G command, whichever
+///            occurred last.
 ///
 ///  @returns  Nothing.
 ///
@@ -107,7 +92,7 @@ void exec_ctrl_S(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute ^Y (CTRL/Y) command: equivalent to .+^S,.
+///  @brief    Execute "^Y" (CTRL/Y) command: equivalent to .+^S,.
 ///
 ///  @returns  Nothing.
 ///
@@ -136,7 +121,8 @@ void exec_ctrl_Y(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute ^Z (CTRL/Z) command: get no. of chrs. in all Q-registers.
+///  @brief    Execute "^Z" (CTRL/Z) command: get no. of chrs. in all
+///            Q-registers.
 ///
 ///  @returns  Nothing.
 ///
@@ -153,7 +139,7 @@ void exec_ctrl_Z(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute . (dot) command: get current position in buffer.
+///  @brief    Execute "." (dot) command: get current position in buffer.
 ///
 ///  @returns  Nothing.
 ///
@@ -168,7 +154,22 @@ void exec_dot(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute H command: equivalent to B,Z.
+///  @brief    Execute "B" command: read first position in buffer (always 0).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_B(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    push_expr(t.B, EXPR_VALUE);
+}
+
+
+///
+///  @brief    Execute "H" command: equivalent to B,Z.
 ///
 ///  @returns  Nothing.
 ///
@@ -197,7 +198,7 @@ void exec_H(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute Z command: read last position in buffer.
+///  @brief    Execute "Z" command: read last position in buffer.
 ///
 ///  @returns  Nothing.
 ///
