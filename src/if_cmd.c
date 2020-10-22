@@ -132,7 +132,7 @@ static void endif(struct cmd *cmd, bool else_ok)
 
 
 ///
-///  @brief    Execute "'" (apostrophe) command: end conditional statement.
+///  @brief    Execute "'" command: end conditional statement.
 ///
 ///  @returns  Nothing.
 ///
@@ -313,8 +313,7 @@ void exec_quote(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "|" (vertical bar) command: else clause of conditional
-///            statement.
+///  @brief    Execute "|" command: else clause of conditional statement.
 ///
 ///  @returns  Nothing.
 ///

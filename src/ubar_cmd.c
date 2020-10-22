@@ -57,7 +57,7 @@ void exec_F_ubar(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "_" (underscore) command: search with yank protection.
+///  @brief    Execute "_" command: search with yank protection.
 ///
 ///  @returns  Nothing.
 ///

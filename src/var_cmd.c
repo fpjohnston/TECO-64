@@ -139,7 +139,7 @@ void exec_ctrl_Z(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "." (dot) command: get current position in buffer.
+///  @brief    Execute "." command: get current position in buffer.
 ///
 ///  @returns  Nothing.
 ///

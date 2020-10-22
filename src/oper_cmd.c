@@ -35,7 +35,7 @@
 
 
 ///
-///  @brief    Execute "," (comma) command.
+///  @brief    Execute "," command: separate m and n arguments.
 ///
 ///  @returns  Nothing.
 ///
@@ -68,7 +68,7 @@ void exec_comma(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "^_" (ctrl/underscore) command.
+///  @brief    Execute "^_" (CTRL/_) command: 1's complement operator.
 ///
 ///  @returns  Nothing.
 ///
@@ -83,7 +83,7 @@ void exec_ctrl_ubar(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "^^" (ctrl/^) command.
+///  @brief    Execute "^^" (CTRL/^) command: literal value of next character.
 ///
 ///  @returns  Nothing.
 ///
@@ -102,7 +102,7 @@ void exec_ctrl_up(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "(" (left parenthesis) command.
+///  @brief    Execute "(" command: expression grouping.
 ///
 ///  @returns  Nothing.
 ///
@@ -143,7 +143,7 @@ void exec_oper(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute ")" (right parenthesis) command.
+///  @brief    Execute ")" command: expression grouping.
 ///
 ///  @returns  Nothing.
 ///

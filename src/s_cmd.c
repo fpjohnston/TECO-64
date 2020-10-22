@@ -45,7 +45,7 @@ static void exec_search(struct cmd *cmd, bool replace);
 
 
 ///
-///  @brief    Execute "S" command (local search).
+///  @brief    Execute "S" command: local search.
 ///
 ///  @returns  Nothing.
 ///

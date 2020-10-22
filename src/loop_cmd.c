@@ -229,7 +229,7 @@ void exec_lt(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute ";" (semi-colon) command: exit loop.
+///  @brief    Execute ";" command: exit loop.
 ///
 ///  @returns  Nothing.
 ///

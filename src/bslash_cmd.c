@@ -44,7 +44,7 @@
 
 
 ///
-///  @brief    Execute "\" (backslash) command: read digit string.
+///  @brief    Execute "\" command: read digit string.
 ///
 ///  @returns  nothing.
 ///
