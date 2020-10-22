@@ -37,7 +37,7 @@ code.
 | <nobr>?CHR</nobr> | <nobr>Invalid character for command</nobr> | The numeric argument to an EE command was not an ASCII character. |
 | <nobr>?COL</nobr> | <nobr>Invalid or extraneous colon</nobr> | A colon preceded a command that does not allow colons, or there were too many colons specified for the command. |
 | <nobr>?DIV</nobr> | <nobr>Division by zero</nobr> | An expression tried to divide a number by zero. |
-| <nobr>?DPY</nobr> | <nobr>Display mode initialization error</nobr> | An error occurred during initialization of display mode. |
+| <nobr>?DPY</nobr> | <nobr>Display mode error</nobr> | Display mode support is either missing or disabled. |
 | <nobr>?DTB</nobr> | <nobr>Delete too big</nobr> | A D command attempted to delete text outside the current page. |
 | <nobr>?DUP</nobr> | <nobr>Duplicate tag '!*foo*!'</nobr> | An O command found a duplicate tag within the command string. |
 | <nobr>?EGC</nobr> | <nobr>EG command is too long</nobr> | An EG command was longer than 200 characters. |
@@ -80,7 +80,6 @@ code.
 | <nobr>?NCA</nobr> | <nobr>Negative argument to comma</nobr> | A comma was preceded by a negative number. |
 | <nobr>?NFI</nobr> | <nobr>No file for input</nobr> | Before issuing an input command, such as Y, it is necessary to open an input file by use of a command such as ER or EB. |
 | <nobr>?NFO</nobr> | <nobr>No file for output</nobr> | Before issuing an output command, such as N or or P, it is necessary to open an output file with a command such as EW or EB. |
-| <nobr>?NOD</nobr> | <nobr>Display mode support not enabled</nobr> | It was not possible to enable display mode, because TECO was not compiled to include support for it. |
 | <nobr>?NON</nobr> | <nobr>No n argument after m argument</nobr> | An m argument was not followed by an n argument. |
 | <nobr>?NOT</nobr> | <nobr>O command has no tag</nobr> | No tag was found for an O command. |
 | <nobr>?NPA</nobr> | <nobr>P or PW argument is negative</nobr> | The argument preceding a P or PW command is zero or negative. |
