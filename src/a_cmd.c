@@ -200,7 +200,7 @@ bool append_line(void)
 
 
 ///
-///  @brief    Parse A command: get value of character in buffer.
+///  @brief    Execute "A" command: get value of character in buffer.
 ///
 ///  @returns  Nothing.
 ///
