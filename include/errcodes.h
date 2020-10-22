@@ -55,7 +55,7 @@ enum errcodes
     E_CHR,          ///< Invalid character for command
     E_COL,          ///< Invalid or extraneous colon
     E_DIV,          ///< Division by zero
-    E_DPY,          ///< Display mode initialization error
+    E_DPY,          ///< Display mode error
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag '!foo!'
     E_EGC,          ///< EG command is too long
@@ -98,7 +98,6 @@ enum errcodes
     E_NCA,          ///< Negative argument to comma
     E_NFI,          ///< No file for input
     E_NFO,          ///< No file for output
-    E_NOD,          ///< Display mode support not enabled
     E_NON,          ///< No n argument after m argument
     E_NOT,          ///< O command has no tag
     E_NPA,          ///< P or PW argument is negative

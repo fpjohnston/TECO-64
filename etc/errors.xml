@@ -50,9 +50,8 @@
         </error>
         <error>
             <code>DPY</code>
-            <message>Display mode initialization error</message>
-            <detail>An error occurred during initialization of</detail>
-            <detail>display mode.</detail>
+            <message>Display mode error</message>
+            <detail>Display mode support is either missing or disabled.</detail>
         </error>
         <error>
             <code>DTB</code>
@@ -322,13 +321,6 @@
             <detail>Before issuing an output command, such as N or</detail>
             <detail>or P, it is necessary to open an output file with</detail>
             <detail>a command such as EW or EB.</detail>
-        </error>
-        <error>
-            <code>NOD</code>
-            <message>Display mode support not enabled</message>
-            <detail>It was not possible to enable display mode,</detail>
-            <detail>because TECO was not compiled to include</detail>
-            <detail>support for it.</detail>
         </error>
         <error>
             <code>NON</code>

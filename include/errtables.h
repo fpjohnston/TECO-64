@@ -49,7 +49,7 @@ static struct errlist errlist[] =
     [E_CHR] = { "CHR",  "Invalid character for command" },
     [E_COL] = { "COL",  "Invalid or extraneous colon" },
     [E_DIV] = { "DIV",  "Division by zero" },
-    [E_DPY] = { "DPY",  "Display mode initialization error" },
+    [E_DPY] = { "DPY",  "Display mode error" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
     [E_EGC] = { "EGC",  "EG command is too long" },
@@ -92,7 +92,6 @@ static struct errlist errlist[] =
     [E_NCA] = { "NCA",  "Negative argument to comma" },
     [E_NFI] = { "NFI",  "No file for input" },
     [E_NFO] = { "NFO",  "No file for output" },
-    [E_NOD] = { "NOD",  "Display mode support not enabled" },
     [E_NON] = { "NON",  "No n argument after m argument" },
     [E_NOT] = { "NOT",  "O command has no tag" },
     [E_NPA] = { "NPA",  "P or PW argument is negative" },
@@ -137,8 +136,7 @@ static const char *errhelp[] =
               "colons, or there were too many colons specified " 
               "for the command.",
     [E_DIV] = "An expression tried to divide a number by zero.",
-    [E_DPY] = "An error occurred during initialization of " 
-              "display mode.",
+    [E_DPY] = "Display mode support is either missing or disabled.",
     [E_DTB] = "A D command attempted to delete text outside " 
               "the current page.",
     [E_DUP] = "An O command found a duplicate tag within the " 
@@ -240,9 +238,6 @@ static const char *errhelp[] =
     [E_NFO] = "Before issuing an output command, such as N or " 
               "or P, it is necessary to open an output file with " 
               "a command such as EW or EB.",
-    [E_NOD] = "It was not possible to enable display mode, " 
-              "because TECO was not compiled to include " 
-              "support for it.",
     [E_NON] = "An m argument was not followed by an n argument.",
     [E_NOT] = "No tag was found for an O command.",
     [E_NPA] = "The argument preceding a P or PW command is " 
