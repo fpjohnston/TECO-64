@@ -99,7 +99,14 @@ static int get_w(int n)
             return w.width;
 
         case 2:
-            return w.height - (w.nlines + f.e4.line ? 1 : 0);
+            n = w.height - w.nlines;
+
+            if (f.e0.display && f.e4.line)
+            {
+                --n;
+            }
+
+            return n;
 
         case 3:
             return w.seeall ? -1 : 0;
