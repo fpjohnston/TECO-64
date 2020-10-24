@@ -139,7 +139,7 @@
         <command name='E3'       format='m,nX!'       exec='exec_E3'        />
         <command name='E4'       format='m,nX!'       exec='exec_E4'        />
         <command name='EA'       format='X'           exec='exec_EA'        />
-        <command name='EB'       format=':@Xq//'      exec='exec_EB'        />
+        <command name='EB'       format=':@X//'       exec='exec_EB'        />
         <command name='EC'       format='nX'          exec='exec_EC'        />
         <command name='ED'       format='m,nX!'       exec='exec_ED'        />
         <command name='EE'       format='nX!'         exec='exec_EE'        />
