@@ -31,7 +31,7 @@
 #include <sys/types.h>          //lint !e451 !e537
 
 #include "teco.h"               //lint !e451 !e537
-#include "cmd.h"                //lint !e451 !e537
+#include "exec.h"               //lint !e451 !e537
 
 
 ///  @enum   search_type

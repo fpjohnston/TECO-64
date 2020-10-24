@@ -37,6 +37,13 @@
 #include "qreg.h"
 #include "term.h"
 
+// This prototype is here to avoid errors defining the command tables.
+
+static void exec_escape(struct cmd *unused1);
+
+#include "commands.h"
+
+
 #if     defined(TECO_DISPLAY)
 #define STATIC                      ///< null_cmd has global scope
 #else
@@ -80,7 +87,7 @@ static void end_cmd(struct cmd *cmd, enum cmd_opts opts);
 
 static exec_func *next_cmd(struct cmd *cmd);
 
-static const struct cmd_table *scan_cmd(struct cmd *cmd);
+static const struct cmd_table *scan_cmd(struct cmd *cmd, int c);
 
 static const struct cmd_table *scan_ef(struct cmd *cmd,
                                        const struct cmd_table *table,
@@ -120,11 +127,6 @@ static void check_qreg(const struct cmd_table *entry, struct cmd *cmd)
 {
     assert(entry != NULL);
     assert(cmd != NULL);
-
-    if (!(entry->opts & OPT_Q))         // Does command require Q-register?
-    {
-        return;                         // No
-    }
 
     int c = fetch_cbuf();               // Get Q-register (or dot)
 
@@ -276,7 +278,7 @@ void exec_cmd(struct cmd *macro)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_escape(struct cmd *unused1)
+static void exec_escape(struct cmd *unused1)
 {
     // Skip past any whitespace after the ESCape.
 
@@ -319,16 +321,14 @@ static exec_func *next_cmd(struct cmd *cmd)
     {
         int c = fetch_cbuf();
 
-        if (c == SPACE || c == LF || c == CR || c == FF || c == NUL)
+        if (c == SPACE || c == LF || c == VT || c == FF || c == CR)
         {
-            continue;                   // Just skip the no-op commands
+            continue;                   // Just skip whitespace
         }
 
-        cmd->c1 = (char)c;
+        const struct cmd_table *entry = scan_cmd(cmd, c);
 
-        const struct cmd_table *entry = scan_cmd(cmd);
-
-        if (entry == NULL || entry->exec == NULL)
+        if (entry == NULL)
         {
             continue;
         }
@@ -346,16 +346,21 @@ static exec_func *next_cmd(struct cmd *cmd)
             throw(E_COL);               // Invalid colon
         }
 
-        if (opts & OPT_T1)
+        if (opts & OPT_Q)               // Check for any required Q-register
         {
-            scan_texts(cmd, opts);      // Scan for text strings
+            check_qreg(entry, cmd);
+        }
+
+        if (opts & OPT_T1)              // Check for optional text arguments
+        {
+            scan_texts(cmd, opts);
         }
 
         // Handle commands that require special cases. These include A, which
-        // is a simple command if it's preceded by an expression, but not a
-        // colon, ^Q, which is a simple command if preceded by an expression,
-        // and 'flag' commands (e.g, ET), which are simple commands if they
-        // are NOT preceded by an expression.
+        // is a operand command if it's preceded by an expression, but not a
+        // colon, ^Q, which is a operand if preceded by an expression, and
+        // 'flag' commands (e.g, ET), which are operands if they are NOT
+        // preceded by an expression.
 
         if (c == 'A' || c == 'a')
         {
@@ -363,7 +368,7 @@ static exec_func *next_cmd(struct cmd *cmd)
             {
                 end_cmd(cmd, opts);     // Do final check
 
-                opts |= OPT_S;
+                opts |= OPT_O;
             }
         }
         else if (c == CTRL_Q)
@@ -373,14 +378,14 @@ static exec_func *next_cmd(struct cmd *cmd)
                 end_cmd(cmd, opts);     // Do final check
             }
 
-            opts |= OPT_S;
+            opts |= OPT_O;
         }
         else if ((opts & OPT_F) && !check_expr())
         {
-            opts |= OPT_S;
+            opts |= OPT_O;
         }
 
-        if (!(opts & OPT_S))            // Simple command?
+        if (!(opts & OPT_O))            // Operator or operand?
         {
             end_cmd(cmd, opts);         // Do final check
 
@@ -433,137 +438,141 @@ static exec_func *next_cmd(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static const struct cmd_table *scan_cmd(struct cmd *cmd)
+static const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    int c = (char)cmd->c1;
-
     // Reset the fields that can change from command to command.
 
+    cmd->c1     = (char)c;
     cmd->c2     = NUL;
     cmd->c3     = NUL;
     cmd->qname  = NUL;
     cmd->qlocal = false;
 
-    if (c == 'E' || c == 'e')
+    if (c < 0 || c >= (int)cmd_max)
     {
-        const struct cmd_table *entry = scan_ef(cmd, e_table, e_max, E_IEC);
-
-        check_qreg(entry, cmd);
-
-        return entry;
-    }
-    else if (c == 'F' || c == 'f')
-    {
-        const struct cmd_table *entry = scan_ef(cmd, f_table, f_max, E_IFC);
-
-        check_qreg(entry, cmd);
-
-        return entry;
-    }
-    else if (c == 'P' || c == 'p')      // P may be followed by W
-    {
-        if (!empty_cbuf() && toupper(peek_cbuf()) == 'W')
-        {
-            (void)fetch_cbuf();
-
-            cmd->w = true;
-        }
-    }
-    else if (c < 0 || c >= (int)cmd_max)
-    {
-        throw(E_ILL, c);                // Invalid character
-    }
-    else if (c == '=')                  // Allow for =, ==, and ===
-    {
-        if (!empty_cbuf() && peek_cbuf() == '=')
-        {
-            (void)fetch_cbuf();
-
-            cmd->c2 = cmd->c1;
-
-            if (!empty_cbuf() && peek_cbuf() == '=')
-            {
-                (void)fetch_cbuf();
-
-                cmd->c3 = cmd->c1;
-            }
-        }
-    }
-    else if (c == '"')                  // " requires additional character
-    {
-        cmd->c2 = (char)fetch_cbuf();
-    }
-    else if (c == '^' || c == '\x1E')
-    {
-        check_args(cmd);
-
-        if (c == '\x1E' || (c = fetch_cbuf()) == '^')
-        {
-            c = fetch_cbuf();
-
-            push_expr((int_t)c, EXPR_VALUE);
-
-            return NULL;
-        }
-
-        c = 1 + toupper(c) - 'A';
-
-        if (c <= NUL || c >= SPACE)
-        {
-            throw(E_IUC, c);            // Invalid character following ^
-        }
-
-        cmd->c1 = (char)c;
-    }
-    else if (c == '@')
-    {
-        if (cmd->atsign && f.e2.atsign)
-        {
-            throw(E_ATS);               // Too many at-signs
-        }
-
-        cmd->atsign = true;
-
-        return NULL;
-    }
-    else if (cmd->c1 == ':')
-    {
-        if (peek_cbuf() == ':')         // Double colon?
-        {
-            (void)fetch_cbuf();         // Yes, count it
-
-            if (cmd->dcolon && f.e2.colon)
-            {
-                throw(E_COL);           // Too many colons
-            }
-
-            cmd->dcolon = true;         // And flag it
-        }
-
-        cmd->colon = true;              // Flag the first colon
-
-        return NULL;
-    }
-    else if (nparens != 0 && f.e1.xoper && exec_xoper(c))
-    {
-        if (c != '{' && c != '}')
-        {
-            check_args(cmd);
-        }
-
-        return NULL;
+        throw(E_ILL, c);                // Illegal command
     }
 
     const struct cmd_table *entry = &cmd_table[c];
 
-    if (entry->opts & OPT_B)
+    switch (c)
     {
-        throw(E_ILL, c);                // Invalid character
+        case '"':
+            cmd->c2 = (char)fetch_cbuf();
+
+            return entry;
+
+        case '=':
+            if (!empty_cbuf() && peek_cbuf() == '=')
+            {
+                (void)fetch_cbuf();
+
+                cmd->c2 = cmd->c1;
+
+                if (!empty_cbuf() && peek_cbuf() == '=')
+                {
+                    (void)fetch_cbuf();
+
+                    cmd->c3 = cmd->c1;
+                }
+            }
+
+            return entry;
+
+        case ':':
+            if (peek_cbuf() == ':')     // Double colon?
+            {
+                (void)fetch_cbuf();     // Yes, count it
+
+                if (cmd->dcolon && f.e2.colon)
+                {
+                    throw(E_COL);       // Too many colons
+                }
+
+                cmd->dcolon = true;     // And flag it
+            }
+
+            cmd->colon = true;          // Flag the first colon
+
+            return NULL;
+
+        case '@':
+            if (cmd->atsign && f.e2.atsign)
+            {
+                throw(E_ATS);           // Too many at signs
+            }
+
+            cmd->atsign = true;
+
+            return NULL;
+
+        case 'E':
+        case 'e':
+            entry = scan_ef(cmd, e_table, e_max, E_IEC);
+
+            break;
+
+        case 'F':
+        case 'f':
+            entry = scan_ef(cmd, f_table, f_max, E_IFC);
+
+            break;
+
+        case 'P':
+        case 'p':
+            if (!empty_cbuf() && toupper(peek_cbuf()) == 'W')
+            {
+                (void)fetch_cbuf();
+
+                cmd->w = true;
+            }
+
+            break;
+
+        case '^':
+        case '\x1E':
+            check_args(cmd);
+
+            if (c == '\x1E' || (c = fetch_cbuf()) == '^')
+            {
+                c = fetch_cbuf();
+
+                push_expr((int_t)c, EXPR_VALUE);
+
+                return NULL;
+            }
+
+            c = 1 + toupper(c) - 'A';
+
+            if (c <= NUL || c >= SPACE)
+            {
+                throw(E_IUC, c);        // Invalid character following ^
+            }
+
+            cmd->c1 = (char)c;
+
+            entry = &cmd_table[c];
+
+            break;
+
+        default:
+            if (nparens != 0 && f.e1.xoper && exec_xoper(c))
+            {
+                if (c != '{' && c != '}')
+                {
+                    check_args(cmd);
+                }
+
+                return NULL;
+            }
     }
 
-    check_qreg(entry, cmd);
+    if (entry->exec == NULL)
+    {
+        throw(E_ILL, c);                // Illegal command
+    }
 
     return entry;
 }
@@ -765,23 +774,28 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     {
         int c = fetch_cbuf();
 
-        if (c == SPACE || c == LF || c == CR || c == FF || c == NUL)
+        if (c == SPACE || c == LF || c == VT || c == FF || c == CR)
         {
-            continue;                   // Just skip the no-op commands
+            continue;                   // Just skip whitespace
         }
 
-        cmd->c1 = (char)c;
+        const struct cmd_table *entry = scan_cmd(cmd, c);
 
-        const struct cmd_table *entry = scan_cmd(cmd);
-
-        if (entry == NULL || entry->exec == NULL)
+        if (entry == NULL)
         {
             continue;
         }
 
-        if (entry->opts & OPT_T1)
+        enum cmd_opts opts = entry->opts;
+
+        if (opts & OPT_Q)               // Check for any required Q-register
         {
-            scan_texts(cmd, entry->opts); // Scan for text strings
+            check_qreg(entry, cmd);
+        }
+
+        if (opts & OPT_T1)              // Check for optional text arguments
+        {
+            scan_texts(cmd, opts);
         }
 
         if (strchr(skip, cmd->c1) != NULL)
@@ -791,7 +805,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
             return true;                // Found what we were looking for
         }
 
-        if (!(entry->opts & OPT_S))     // If not simple command,
+        if (!(opts & OPT_O))            // If not operator or operand,
         {
             *cmd = null_cmd;            //  then reset
         }

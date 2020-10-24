@@ -34,7 +34,6 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "cmd.h"
 #include "display.h"
 #include "eflags.h"
 #include "errcodes.h"

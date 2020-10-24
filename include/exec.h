@@ -2,6 +2,8 @@
 ///  @file    exec.h
 ///  @brief   Header file for parsing and executing TECO commands.
 ///
+///  *** Automatically generated file. DO NOT MODIFY. ***
+///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a
@@ -29,72 +31,55 @@
 #define _EXEC_H
 
 #include "teco.h"               //lint !e451 !e537
-#include "cmd.h"
 
+///  @struct cmd
+///  @brief  Command block structure.
+
+struct cmd
+{
+    char c1;                        ///< 1st command character
+    char c2;                        ///< 2nd command character (or NUL)
+    char c3;                        ///< 3rd command character (or NUL)
+    char qname;                     ///< Q-register name
+    int_t m_arg;                    ///< m argument
+    int_t n_arg;                    ///< n argument
+    bool qlocal;                    ///< If true, Q-register is local
+    bool m_set;                     ///< m argument is valid
+    bool n_set;                     ///< n argument is valid
+    bool h;                         ///< H found
+    bool ctrl_y;                    ///< CTRL/Y found
+    bool w;                         ///< W found
+    bool colon;                     ///< : found
+    bool dcolon;                    ///< :: found
+    bool atsign;                    ///< @ found
+    char delim;                     ///< Delimiter for @ modifier
+    struct tstring text1;           ///< 1st text string
+    struct tstring text2;           ///< 2nd text string
+};
+
+// Global variables
+
+extern char eg_command[];
+
+extern char *eg_result;
+
+extern uint nparens;
+
+#if     defined(TECO_DISPLAY)
+
+extern const struct cmd null_cmd;
+
+#endif
 
 // Functions that directly execute commands
 
 extern void exec_A(struct cmd *cmd);
 
-extern void exec_apos(struct cmd *cmd);
-
 extern void exec_B(struct cmd *cmd);
-
-extern void exec_bslash(struct cmd *cmd);
-
-extern void exec_bang(struct cmd *cmd);
 
 extern void exec_C(struct cmd *cmd);
 
-extern void exec_comma(struct cmd *cmd);
-
-extern void exec_ctrl_A(struct cmd *cmd);
-
-extern void exec_ctrl_C(struct cmd *cmd);
-
-extern void exec_ctrl_D(struct cmd *cmd);
-
-extern void exec_ctrl_B(struct cmd *cmd);
-
-extern void exec_ctrl_E(struct cmd *cmd);
-
-extern void exec_ctrl_H(struct cmd *cmd);
-
-extern void exec_ctrl_I(struct cmd *cmd);
-
-extern void exec_ctrl_N(struct cmd *cmd);
-
-extern void exec_ctrl_O(struct cmd *cmd);
-
-extern void exec_ctrl_P(struct cmd *cmd);
-
-extern void exec_ctrl_Q(struct cmd *cmd);
-
-extern void exec_ctrl_R(struct cmd *cmd);
-
-extern void exec_ctrl_S(struct cmd *cmd);
-
-extern void exec_ctrl_T(struct cmd *cmd);
-
-extern void exec_ctrl_U(struct cmd *cmd);
-
-extern void exec_ctrl_ubar(struct cmd *cmd);
-
-extern void exec_ctrl_up(struct cmd *cmd);
-
-extern void exec_ctrl_V(struct cmd *cmd);
-
-extern void exec_ctrl_W(struct cmd *cmd);
-
-extern void exec_ctrl_X(struct cmd *cmd);
-
-extern void exec_ctrl_Y(struct cmd *cmd);
-
-extern void exec_ctrl_Z(struct cmd *cmd);
-
 extern void exec_D(struct cmd *cmd);
-
-extern void exec_dot(struct cmd *cmd);
 
 extern void exec_E1(struct cmd *cmd);
 
@@ -136,13 +121,9 @@ extern void exec_EP(struct cmd *cmd);
 
 extern void exec_EQ(struct cmd *cmd);
 
-extern void exec_equals(struct cmd *cmd);
-
 extern void exec_ER(struct cmd *cmd);
 
 extern void exec_ES(struct cmd *cmd);
-
-extern void exec_escape(struct cmd *cmd);
 
 extern void exec_ET(struct cmd *cmd);
 
@@ -190,9 +171,9 @@ extern void exec_FU(struct cmd *cmd);
 
 extern void exec_F_apos(struct cmd *cmd);
 
-extern void exec_F_lt(struct cmd *cmd);
-
 extern void exec_F_gt(struct cmd *cmd);
+
+extern void exec_F_lt(struct cmd *cmd);
 
 extern void exec_F_ubar(struct cmd *cmd);
 
@@ -200,13 +181,9 @@ extern void exec_F_vbar(struct cmd *cmd);
 
 extern void exec_G(struct cmd *cmd);
 
-extern void exec_gt(struct cmd *cmd);
-
 extern void exec_H(struct cmd *cmd);
 
 extern void exec_I(struct cmd *cmd);
-
-extern void exec_insert(const char *buf, uint len);
 
 extern void exec_J(struct cmd *cmd);
 
@@ -214,67 +191,124 @@ extern void exec_K(struct cmd *cmd);
 
 extern void exec_L(struct cmd *cmd);
 
-extern void exec_lt(struct cmd *cmd);
-
-extern void exec_lbracket(struct cmd *cmd);
-
-extern void exec_lparen(struct cmd *cmd);
-
 extern void exec_M(struct cmd *cmd);
 
 extern void exec_N(struct cmd *cmd);
 
-extern void exec_number(struct cmd *cmd);
-
 extern void exec_O(struct cmd *cmd);
-
-extern void exec_oper(struct cmd *cmd);
 
 extern void exec_P(struct cmd *cmd);
 
-extern void exec_pct(struct cmd *cmd);
-
 extern void exec_Q(struct cmd *cmd);
-
-extern void exec_quote(struct cmd *cmd);
 
 extern void exec_R(struct cmd *cmd);
 
-extern void exec_rbracket(struct cmd *cmd);
-
-extern void exec_rparen(struct cmd *cmd);
-
 extern void exec_S(struct cmd *cmd);
-
-extern void exec_semi(struct cmd *cmd);
 
 extern void exec_T(struct cmd *cmd);
 
-extern void exec_trace(struct cmd *cmd);
-
 extern void exec_U(struct cmd *cmd);
 
-extern void exec_ubar(struct cmd *cmd);
-
 extern void exec_V(struct cmd *cmd);
-
-extern void exec_vbar(struct cmd *cmd);
 
 extern void exec_W(struct cmd *cmd);
 
 extern void exec_X(struct cmd *cmd);
 
+extern void exec_Y(struct cmd *cmd);
+
 extern void exec_Z(struct cmd *cmd);
 
-extern bool exec_xoper(int c);
+extern void exec_apos(struct cmd *cmd);
 
-extern void exec_Y(struct cmd *cmd);
+extern void exec_bang(struct cmd *cmd);
+
+extern void exec_bslash(struct cmd *cmd);
+
+extern void exec_comma(struct cmd *cmd);
+
+extern void exec_ctrl_A(struct cmd *cmd);
+
+extern void exec_ctrl_B(struct cmd *cmd);
+
+extern void exec_ctrl_C(struct cmd *cmd);
+
+extern void exec_ctrl_D(struct cmd *cmd);
+
+extern void exec_ctrl_E(struct cmd *cmd);
+
+extern void exec_ctrl_H(struct cmd *cmd);
+
+extern void exec_ctrl_I(struct cmd *cmd);
+
+extern void exec_ctrl_N(struct cmd *cmd);
+
+extern void exec_ctrl_O(struct cmd *cmd);
+
+extern void exec_ctrl_P(struct cmd *cmd);
+
+extern void exec_ctrl_Q(struct cmd *cmd);
+
+extern void exec_ctrl_R(struct cmd *cmd);
+
+extern void exec_ctrl_S(struct cmd *cmd);
+
+extern void exec_ctrl_T(struct cmd *cmd);
+
+extern void exec_ctrl_U(struct cmd *cmd);
+
+extern void exec_ctrl_V(struct cmd *cmd);
+
+extern void exec_ctrl_W(struct cmd *cmd);
+
+extern void exec_ctrl_X(struct cmd *cmd);
+
+extern void exec_ctrl_Y(struct cmd *cmd);
+
+extern void exec_ctrl_Z(struct cmd *cmd);
+
+extern void exec_ctrl_ubar(struct cmd *cmd);
+
+extern void exec_dot(struct cmd *cmd);
+
+extern void exec_equals(struct cmd *cmd);
+
+extern void exec_gt(struct cmd *cmd);
+
+extern void exec_lbracket(struct cmd *cmd);
+
+extern void exec_lparen(struct cmd *cmd);
+
+extern void exec_lt(struct cmd *cmd);
+
+extern void exec_number(struct cmd *cmd);
+
+extern void exec_oper(struct cmd *cmd);
+
+extern void exec_pct(struct cmd *cmd);
+
+extern void exec_quote(struct cmd *cmd);
+
+extern void exec_rbracket(struct cmd *cmd);
+
+extern void exec_rparen(struct cmd *cmd);
+
+extern void exec_semi(struct cmd *cmd);
+
+extern void exec_trace(struct cmd *cmd);
+
+extern void exec_ubar(struct cmd *cmd);
+
+extern void exec_vbar(struct cmd *cmd);
+
 
 // Helper functions for executing commands
 
 extern bool append(bool n_set, int_t n_arg, bool colon_set);
 
 extern bool append_line(void);
+
+extern void check_args(struct cmd *cmd);
 
 extern int check_EI(void);
 
@@ -287,6 +321,10 @@ extern void exec_cmd(struct cmd *cmd);
 extern void exec_macro(struct buffer *macro, struct cmd *cmd);
 
 extern void exit_EG(void);
+
+extern void exec_insert(const char *buf, uint len);
+
+extern bool exec_xoper(int c);
 
 extern int find_eg(char *buf, bool reset);
 

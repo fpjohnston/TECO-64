@@ -84,10 +84,42 @@ struct tstring
     uint len;                       ///< No. of characters
 };
 
+// Command buffer variables and functions
+
+extern struct buffer *cbuf;
+
+/// @def    empty_cbuf()
+/// @brief  Returns true if all data in command string has been read, else false.
+
+#define empty_cbuf()    (cbuf->pos == cbuf->len)
+
+/// @def    get_cbuf()
+/// @brief  Returns the current command string.
+
+#define get_cbuf()      cbuf
+
+/// @def    peek_cbuf()
+/// @brief  Peeks at next character in command string.
+
+#define peek_cbuf()     cbuf->data[cbuf->pos]
+
+/// @def    set_cbuf()
+/// @brief  Sets the current command string.
+
+#define set_cbuf(p)     (cbuf = (p))
+
+// Command buffer functions
+
+extern int fetch_cbuf(void);
+
+extern void init_cbuf(void);
+
+extern void reset_cbuf(bool noerror);
+
+extern void store_cbuf(int c);
+
 
 // Global variables
-
-extern char eg_command[];
 
 extern uint if_depth;
 

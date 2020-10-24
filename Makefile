@@ -62,10 +62,13 @@ INCDIR = include
 OPT ?= 3
 OPT_OPT = -O$(OPT)
 
-OPTIONS_H = $(INCDIR)/options.h
-ERRCODES_H = $(INCDIR)/errcodes.h
+COMMANDS_H  = $(INCDIR)/commands.h
+OPTIONS_H   = $(INCDIR)/options.h
+ERRCODES_H  = $(INCDIR)/errcodes.h
 ERRTABLES_H = $(INCDIR)/errtables.h
-ERRORS_MD = doc/errors.md
+EXEC_H      = $(INCDIR)/exec.h
+
+ERRORS_MD   = doc/errors.md
 
 INCLUDES = -I ../$(INCDIR)
 
@@ -78,7 +81,6 @@ SOURCES = \
     cmd_buf.c      \
     cmd_estack.c   \
     cmd_exec.c     \
-    cmd_tables.c   \
     display.c      \
     env_sys.c      \
     errors.c       \
@@ -349,16 +351,22 @@ bin/$(TARGET): $(OBJECTS)
 
 -include $(DFILES)
 
-$(OBJECTS): $(OPTIONS_H) $(ERRCODES_H) $(ERRTABLES_H) obj/CFLAGS
+$(OBJECTS): $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) obj/CFLAGS
 
-$(OPTIONS_H): etc/options.xml etc/options.template etc/options.pl
-	$(AT)etc/options.pl -c $< -t etc/options.template -o $@ $(OPTIONS_DEBUG)
+$(COMMANDS_H): etc/commands.xml etc/commands.template etc/commands.pl
+	$(AT)etc/commands.pl -i $< -t etc/commands.template -o $@
 
 $(ERRCODES_H): etc/errors.xml etc/errcodes.template etc/errors.pl
 	$(AT)etc/errors.pl -i $< -t etc/errcodes.template -o $@
 
 $(ERRTABLES_H): etc/errors.xml etc/errtables.template etc/errors.pl
 	$(AT)etc/errors.pl -i $< -t etc/errtables.template -o $@
+
+$(EXEC_H): etc/commands.xml etc/exec.template etc/commands.pl
+	$(AT)etc/commands.pl -i $< -t etc/exec.template -o $@
+
+$(OPTIONS_H): etc/options.xml etc/options.template etc/options.pl
+	$(AT)etc/options.pl -c $< -t etc/options.template -o $@ $(OPTIONS_DEBUG)
 
 .PHONY: FORCE
 obj/CFLAGS: FORCE
