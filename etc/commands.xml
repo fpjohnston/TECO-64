@@ -8,18 +8,10 @@
              Format attribute defines command modifiers and arguments. "X"
              stands for the specific command (e.g., ^A or FS).
 
-             Exec attribute defines function to be called for the command.
+             Exec attribute defines the function to be called for the command.
 
-             If both attributes are omitted, then command is ignored (or is
-             a modifier or special character that is processed separately).
-
-             Commented-out or undefined commands will be treated as invalid.
-
-             If format is "X" without an exec function, the command will be
-             ignored.
-
-             If format ix "X" with an exec function, the command is an
-             operator or simple operand.
+             If format is not defined, the command is an operator or simple
+             operand.
 
              If format ends with "!", that signifies a command that returns
              a value if and only if it is not preceded by an expression.
