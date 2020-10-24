@@ -83,25 +83,6 @@ void exec_ctrl_ubar(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "^^" (CTRL/^) command: literal value of next character.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctrl_up(struct cmd *cmd)
-{
-    assert(cmd != NULL);                // Error if no command block
-
-    check_args(cmd);
-
-    int c = fetch_cbuf();
-
-    push_expr(c, EXPR_VALUE);
-}
-
-
-///
 ///  @brief    Execute "(" command: expression grouping.
 ///
 ///  @returns  Nothing.
