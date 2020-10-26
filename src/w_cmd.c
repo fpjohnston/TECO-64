@@ -48,16 +48,16 @@
 
 struct watch w =
 {
-    .type      = 8,                     // VT102 in ANSI mode
-    .width     = DEFAULT_WIDTH,
-    .height    = DEFAULT_HEIGHT,
-    .seeall    = false,
-    .mark      = 0,
-    .hold      = 0,
-    .topdot    = 0,
-    .nlines    = 0,
-    .noscroll  = false,
-    .tchar     =
+    .type     = 8,                      // VT102 in ANSI mode
+    .width    = DEFAULT_WIDTH,
+    .height   = DEFAULT_HEIGHT,
+    .seeall   = false,
+    .mark     = 0,
+    .hold     = 0,
+    .topdot   = 0,
+    .nlines   = 0,
+    .noscroll = false,
+    .tchar    =
     {
         {                               //lint !e708
             .ansi_crt   = true,
@@ -242,9 +242,7 @@ static void set_w(int m, int n)
 
             break;
 
-        case 6:
-            w.topdot = m;
-
+        case 6:                         // Flag not settable
             break;
 
         case 7:
