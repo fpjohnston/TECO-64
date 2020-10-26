@@ -152,7 +152,7 @@ static void check_qreg(const struct cmd_table *entry, struct cmd *cmd)
 
 
 ///
-///  @brief    Check for modifiers and text strings after command.
+///  @brief    Check numeric arguments.
 ///
 ///  @returns  Nothing.
 ///
@@ -171,6 +171,14 @@ static void end_cmd(struct cmd *cmd, enum cmd_opts opts)
     {
         cmd->n_set = true;
         cmd->n_arg = -1;
+    }
+
+    // See if command consumes numeric arguments.
+
+    if (opts & OPT_E)
+    {
+        cmd->m_set = cmd->n_set = false;
+        cmd->m_arg = cmd->n_arg = 0;
     }
 
     // If we have an m argument, verify that it is valid for this command, and
