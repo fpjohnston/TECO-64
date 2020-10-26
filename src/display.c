@@ -56,11 +56,19 @@
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
+#include "estack.h"
+#include "exec.h"
 #include "page.h"
 #include "term.h"
 
 
+static int botdot = 0;              ///< Value of FZ flag
+
 #if     defined(TECO_DISPLAY)
+
+static uint n_home = 0;             ///< No. of consecutive Home keys
+
+static uint n_end = 0;              ///< No. of consecutive End keys
 
 ///
 ///  @def    err_if_true
@@ -123,6 +131,8 @@ static struct display d =
 
 static void error_dpy(void);
 
+static void exec_commands(const char *string);
+
 static void exit_dpy(void);
 
 static void mark_cursor(int row, int col);
@@ -136,14 +146,14 @@ static void update_status(void);
 #endif
 
 
-#if     defined(TECO_DISPLAY)
-
 ///
 ///  @brief    Check to see if escape sequences werte enabled or disabled.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(TECO_DISPLAY)
 
 void check_escape(uint escape)
 {
@@ -229,6 +239,84 @@ static void error_dpy(void)
 }
 
 #endif
+
+
+///
+///  @brief    Execute command string.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(TECO_DISPLAY)
+
+static void exec_commands(const char *commands)
+{
+    assert(commands != NULL);
+
+    uint nbytes = (uint)strlen(commands);
+    char text[nbytes + 1];
+
+    strcpy(text, commands);
+
+    struct buffer buf;
+
+    buf.data = text;
+    buf.size = nbytes;
+    buf.len  = buf.size;
+    buf.pos  = 0;
+
+    exec_macro(&buf, NULL);
+
+    refresh_dpy();
+}
+
+#endif
+
+
+///
+///  @brief    Execute "F0" command: return position for top left corner.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_F0(struct cmd *unused1)
+{
+    push_expr(w.topdot, EXPR_VALUE);
+}
+
+
+///
+///  @brief    Execute "FH" command: equivalent to F0,FZ.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_FH(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    cmd->n_set = true;
+    cmd->n_arg = w.topdot;
+    cmd->h     = true;
+
+    push_expr(botdot, EXPR_VALUE);
+}
+
+
+///
+///  @brief    Execute "FZ" command: return position for bottom right corner.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_FZ(struct cmd *unused1)
+{
+    push_expr(botdot, EXPR_VALUE);
+}
 
 
 ///
@@ -624,6 +712,8 @@ int readkey_dpy(int key)
 
     if (key < KEY_MIN || key > KEY_MAX)
     {
+        n_home = n_end = 0;
+
         return key;
     }
 
@@ -631,9 +721,57 @@ int readkey_dpy(int key)
     {
         ;
     }
-    else if (key == KEY_BACKSPACE)
+    else if (key == KEY_HOME)
     {
-        return BS;
+        n_end = 0;
+
+        if (++n_home == 1)              // Beginning of line
+        {
+            exec_commands("0L");
+        }
+        else if (n_home == 2)           // Beginning of window
+        {
+            exec_commands("F0J");
+        }
+        else                            // Beginning of file
+        {
+            exec_commands("0J");
+        }
+
+        return EOF;
+    }
+    else if (key == KEY_END)
+    {
+        n_home = 0;
+
+        if (++n_end == 1)               // End of line
+        {
+            // We effectively execute "LR" to get to the end of a line that
+            // ends with LF, and execute "L2R" for a line that ends with CR/LF.
+            // The commands below, which include a test to see if the character
+            // before the LF is a CR, take care of this regardless of the file
+            // format.
+
+            exec_commands("L (-2A-13)\"E 2R | R '");
+        }
+        else if (n_end == 2)            // End of window
+        {
+            exec_commands("(FZ-1)J");
+        }
+        else                            // End of file
+        {
+            exec_commands("ZJ");
+        }
+
+        return EOF;
+    }
+    else if (key == KEY_PPAGE)
+    {
+        exec_commands("-(2:W)L");
+    }
+    else if (key == KEY_NPAGE)
+    {
+        exec_commands("(2:W)L");
     }
     else if (key == KEY_UP)
     {
@@ -653,6 +791,8 @@ int readkey_dpy(int key)
             refresh_dpy();
         }
     }
+
+    n_home = n_end = 0;
 
     return EOF;
 
@@ -718,6 +858,8 @@ void refresh_dpy(void)
 
         uint term_pos = 0;
 
+        w.topdot = botdot = t.dot + pos;
+
         while ((c = getchar_ebuf(pos)) != -1)
         {
             if (pos++ <= 0)
@@ -727,11 +869,15 @@ void refresh_dpy(void)
 
             if (c == CR)
             {
+                ++botdot;
+
                 continue;
             }
 
             if (isdelim(c))
             {
+                ++botdot;
+
                 if (++nrows == d.nrows)
                 {
                     break;
@@ -749,6 +895,8 @@ void refresh_dpy(void)
                 {
                     if (f.et.truncate)
                     {
+                        ++botdot;
+
                         continue;
                     }
 
@@ -761,6 +909,8 @@ void refresh_dpy(void)
 
                     (void)move(d.edit.top + nrows, 0);
                 }
+
+                ++botdot;
 
                 (void)addch((uint)c);
             }

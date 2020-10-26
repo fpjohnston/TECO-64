@@ -159,6 +159,7 @@
         <!-- F commands -->
 
         <command name='F&apos;'  format='X$'          exec='exec_F_apos'    />
+        <command name='F0'                            exec='exec_F0'        />
         <command name='F1'       format='m,n@X///'    exec='exec_F1'        />
         <command name='F2'       format='m,n@X///'    exec='exec_F2'        />
         <command name='F3'       format='m,n@X///'    exec='exec_F3'        />
@@ -167,6 +168,7 @@
         <command name='FB'       format='m,n:@X//'    exec='exec_FB'        />
         <command name='FC'       format='m,n:@X///'   exec='exec_FC'        />
         <command name='FD'       format='n:@X//'      exec='exec_FD'        />
+        <command name='FH'                            exec='exec_FH'        />
         <command name='FK'       format='n:@X//'      exec='exec_FK'        />
         <command name='FL'       format='m,nX'        exec='exec_FL'        />
         <command name='FM'       format='@X///'       exec='exec_FM'        />
@@ -175,6 +177,7 @@
         <command name='FR'       format='m,n:@X//'    exec='exec_FR'        />
         <command name='FS'       format='m,n::@X///'  exec='exec_FS'        />
         <command name='FU'       format='m,nX'        exec='exec_FU'        />
+        <command name='FZ'                            exec='exec_FZ'        />
         <command name='F_'       format='m,n:@X///'   exec='exec_F_ubar'    />
         <command name='F|'       format='X$'          exec='exec_F_vbar'    />
     </section>

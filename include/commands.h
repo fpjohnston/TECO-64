@@ -269,6 +269,7 @@ static const uint e_max = countof(e_table); ///< Maximum E command
 static const struct cmd_table f_table[] =
 {
     ENTRY('\'',    exec_F_apos,     OPT_M|OPT_N|OPT_E),
+    ENTRY('0',     exec_F0,         OPT_O),
     ENTRY('1',     exec_F1,         OPT_M|OPT_N|OPT_A|OPT_T1|OPT_T2),
     ENTRY('2',     exec_F2,         OPT_M|OPT_N|OPT_A|OPT_T1|OPT_T2),
     ENTRY('3',     exec_F3,         OPT_M|OPT_N|OPT_A|OPT_T1|OPT_T2),
@@ -280,6 +281,8 @@ static const struct cmd_table f_table[] =
     ENTRY('c',     exec_FC,         OPT_M|OPT_N|OPT_C|OPT_A|OPT_T1|OPT_T2),
     ENTRY('D',     exec_FD,         OPT_N|OPT_C|OPT_A|OPT_T1),
     ENTRY('d',     exec_FD,         OPT_N|OPT_C|OPT_A|OPT_T1),
+    ENTRY('H',     exec_FH,         OPT_O),
+    ENTRY('h',     exec_FH,         OPT_O),
     ENTRY('K',     exec_FK,         OPT_N|OPT_C|OPT_A|OPT_T1),
     ENTRY('k',     exec_FK,         OPT_N|OPT_C|OPT_A|OPT_T1),
     ENTRY('L',     exec_FL,         OPT_M|OPT_N),
@@ -296,6 +299,8 @@ static const struct cmd_table f_table[] =
     ENTRY('s',     exec_FS,         OPT_M|OPT_N|OPT_C|OPT_D|OPT_A|OPT_T1|OPT_T2),
     ENTRY('U',     exec_FU,         OPT_M|OPT_N),
     ENTRY('u',     exec_FU,         OPT_M|OPT_N),
+    ENTRY('Z',     exec_FZ,         OPT_O),
+    ENTRY('z',     exec_FZ,         OPT_O),
     ENTRY('_',     exec_F_ubar,     OPT_M|OPT_N|OPT_C|OPT_A|OPT_T1|OPT_T2),
     ENTRY('|',     exec_F_vbar,     OPT_M|OPT_N|OPT_E),
 };

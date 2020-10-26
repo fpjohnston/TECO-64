@@ -117,6 +117,8 @@ being returned if the open succeeded, and 0 if it failed.
 [EY - Yank backwards](page.md)
 - Added optional code to allow backwards paging (TECO-32).
 
+[F0 - Edit buffer position at start of window](variables.md) (TECO-10)
+
 [F1 - Set command window colors](display.md)
 
 [F2 - Set text window colors](display.md)
@@ -124,6 +126,8 @@ being returned if the open succeeded, and 0 if it failed.
 [F3 - Set status line colors](display.md)
 
 [FD - Search and delete](search.md) (TECO-10)
+
+[FH - Equivalent to F0,FZ](variables.md) (TECO-10)
 
 [FK - Search and delete](search.md) (TECO-10)
 
@@ -134,6 +138,8 @@ being returned if the open succeeded, and 0 if it failed.
 [FQ - Map keys to Q-registers](display.md)
 
 [FU - Upper case text](misc.md)
+
+[FZ - Edit buffer position at end of window](variables.md) (TECO-10)
 
 [G+ - Results of last ::EG command](qregisters.md)
 

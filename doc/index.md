@@ -174,6 +174,7 @@
 | EY             | [Yank w/o yank protection](page.md) |
 | E_             | [Search w/o yank protection](search.md) |
 | F'             | [Flow to end of conditional](branching.md) |
+| F0             | [Edit buffer position at start of window](variables.md) |
 | F1             | [Set command region colors](display.md) |
 | F2             | [Set edit region colors](display.md) |
 | F3             | [Set status line colors](display.md) |
@@ -184,6 +185,7 @@
 | *m*,*n*FC      | [Search and replace between *m* and *n*](search.md) |
 | *n*FC          | [Search and replace over *n* lines](search.md) |
 | *n*FD          | [Search and delete string](delete.md) |
+| FH             | [Equivalent to "F0,FZ"](variables.md) |
 | FK             | [Search and delete intervening text](delete.md) |
 | FL             | [Convert to lower case](misc.md) |
 | FM             | [Map key to command string](display.md) |
@@ -192,6 +194,7 @@
 | FR             | [Replace last string](delete.md) |
 | *n*FS          | [Local string replace](search.md) |
 | FU             | [Convert to upper case](misc.md) |
+| FZ             | [Edit buffer position at end of window](variables.md) |
 | *n*F_          | [Destructive search and replace](search.md) |
 | F\|            | [Flow to ELSE part of conditional](branching.md) |
 | G*q*           | [Copy string from Q-register *q* into buffer](qregister.md) |
