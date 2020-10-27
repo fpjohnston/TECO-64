@@ -46,7 +46,7 @@ being returned if the open succeeded, and 0 if it failed.
 - Added colon modifier for adding CR/LF after text.
 
 [^E - Match control constructs](search.md)
-- Added ^E*nnn*. (TECO-10)
+- Added ^E*nnn*.
 
 [^K - Reset display colors](immediate.md)
 

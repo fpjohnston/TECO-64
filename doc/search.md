@@ -116,4 +116,4 @@ lists these match control characters and their functions.
 | \<CTRL/E\>V | Specifies that any lower case alphabetic character is acceptable in this position. |
 | \<CTRL/E\>W | Specifies that any upper case alphabetic character is acceptable in this position. |
 | \<CTRL/E\>X | Equivalent to \<CTRL/X\>. |
-| \<CTRL/E\>\<*nnn*\> | Specifies that the character whose ASCII octal code is *nnn* is acceptable in this position. |
+| <nobr>\<CTRL/E\>\<*nnn*\></nobr> | Specifies that the character whose ASCII decimal code is *nnn* is acceptable in this position. |

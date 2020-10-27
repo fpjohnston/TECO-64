@@ -358,24 +358,24 @@ static bool match_chr(int c, struct search *s)
             return true;
         }
 
-        // <CTRL/E>nnn matches character whose octal value is nnn.
+        // <CTRL/E>nnn matches character whose decimal value is nnn.
 
-        if (match >= '0' && match <= '7')
+        if (match >= '0' && match <= '9')
         {
             int n = match - '0';
 
-            // Loop until we run out of octal digits
+            // Loop until we run out of decimal digits
 
             while (s->match_len > 0)
             {
-                if (*s->match_buf < '0' && *s->match_buf > '7')
+                if (!isdigit(*s->match_buf))
                 {
                     break;
                 }
 
                 --s->match_len;
 
-                n *= 8;                 // Shift digit over
+                n *= 10;                // Shift digit over
                 n += *s->match_buf++ - '0'; // Add in new digit
             }
 
