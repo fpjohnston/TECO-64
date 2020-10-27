@@ -710,13 +710,6 @@ int readkey_dpy(int key)
 
 #if     defined(TECO_DISPLAY)
 
-    if (key < KEY_MIN || key > KEY_MAX)
-    {
-        n_home = n_end = 0;
-
-        return key;
-    }
-
     if (exec_key(key))
     {
         ;
@@ -790,6 +783,22 @@ int readkey_dpy(int key)
             setpos_ebuf(dot);
             refresh_dpy();
         }
+    }
+    else if (key == LF || key == ESC ||
+             (key == ACCENT && f.et.accent) ||
+             (key != NUL && key == f.ee))
+    {
+        exec_commands("L");
+    }
+    else if (key == BS || key == DEL)
+    {
+        exec_commands("-L");
+    }
+    else
+    {
+        n_home = n_end = 0;
+
+        return key;
     }
 
     n_home = n_end = 0;
