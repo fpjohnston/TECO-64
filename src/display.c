@@ -857,6 +857,7 @@ void refresh_dpy(void)
         (void)move(d.edit.top, 0);      // Back to the top
 
         uint term_pos = 0;
+        bool filled = false;            // Is edit region full?
 
         w.topdot = botdot = t.dot + pos;
 
@@ -880,6 +881,8 @@ void refresh_dpy(void)
 
                 if (++nrows == d.nrows)
                 {
+                    filled = true;
+
                     break;
                 }
 
@@ -902,12 +905,14 @@ void refresh_dpy(void)
 
                     if (++nrows == d.nrows)
                     {
+                        filled = true;
+
                         break;
                     }
 
-                    term_pos = 0;
-
                     (void)move(d.edit.top + nrows, 0);
+
+                    term_pos = 0;
                 }
 
                 ++botdot;
@@ -923,9 +928,9 @@ void refresh_dpy(void)
             getyx(stdscr, d.row, d.col);
         }
 
-        // If at end of buffer, add diamond
+        // If at end of buffer, and if room for it, add marker
 
-        if (getchar_ebuf(pos) == -1)
+        if (!filled && getchar_ebuf(pos) == -1)
         {
             (void)addch(A_ALTCHARSET | 0x60);
         }
