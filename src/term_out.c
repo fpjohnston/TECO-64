@@ -33,6 +33,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "display.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "file.h"
 #include "term.h"
@@ -246,6 +247,89 @@ void print_echo(int c)
 
 
 ///
+///  @brief    Check to see if we need to print anything after a successful
+///            search, or before a prompt.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void flag_print(int flag)
+{
+    // Don't print anything if we're in a loop or a macro.
+
+    if (check_loop() || check_macro())
+    {
+        return;
+    }
+
+    int m, n;
+    int mark;
+        
+    if (flag == -1)
+    {
+        m = getdelta_ebuf(0);
+        n = getdelta_ebuf(1);
+        mark = -1;
+    }
+    else
+    {
+        m = flag / 256;
+        n = flag % 256;
+
+        if (n == 0)
+        {
+            return;
+        }
+        else if (n > NUL && n < SPACE)
+        {
+            mark = LF;
+        }
+        else if (n >= SPACE && n < DEL)
+        {
+            mark = n;
+        }
+        else
+        {
+            mark = -1;
+        }
+
+        if (m == 0)
+        {
+            m = getdelta_ebuf(0);
+            n = getdelta_ebuf(1);
+        }
+        else
+        {
+            m = getdelta_ebuf(1 - m);
+            n = getdelta_ebuf(m);
+        }
+    }
+
+    int last = NUL;
+
+    for (int i = m; i < n; ++i)
+    {
+        if (i == 0 && mark != -1)
+        {
+            echo_out(mark);
+        }
+
+        int c = getchar_ebuf(i);
+
+        if (c == LF && last != CR)
+        {
+            echo_out(CR);
+        }
+
+        echo_out(c);
+
+        last = c;
+    }
+}
+
+
+///
 ///  @brief    Print the TECO prompt (this may be the standard asterisk, or
 ///            something else specified by the user).
 ///
@@ -319,9 +403,17 @@ static void tputc(int c)
     {
         term_pos = 0;
     }
-    else
+    else if (c == CR)
+    {
+        term_pos = 0;
+    }
+    else if (c != BS)
     {
         ++term_pos;
+    }
+    else if (term_pos > 0)
+    {
+        --term_pos;
     }
 
 #if     defined(TECO_DISPLAY)
