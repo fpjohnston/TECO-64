@@ -198,8 +198,9 @@ void init_EI(void)
 ///
 ///  @brief    Read input from indirect file if one is open.
 ///
-///  @returns  -1 if we have a complete command, 1 if we have a partial
-///            command, 0 if no data is available.
+///  @returns  -1 -> Complete command
+///             1 -> Partial command
+///             0 -> No data is available.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
