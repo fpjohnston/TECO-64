@@ -32,7 +32,7 @@
 #include <sys/types.h>          //lint !e451 !e537
 
 
-extern struct buffer *term_block;
+extern struct buffer *term_buf;
 
 // Terminal buffer functions
 

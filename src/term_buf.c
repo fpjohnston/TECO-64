@@ -35,7 +35,7 @@
 #include "term.h"
 
 
-struct buffer *term_block;              ///< Terminal input block
+struct buffer *term_buf;                ///< Terminal input block
 
 // Local functions
 
@@ -51,14 +51,14 @@ static void exit_tbuf(void);
 
 int delete_tbuf(void)
 {
-    assert(term_block != NULL);         // Error if no terminal buffer
+    assert(term_buf != NULL);           // Error if no terminal buffer
 
-    if (term_block->len == 0)           // Anything in buffer?
+    if (term_buf->len == 0)             // Anything in buffer?
     {
         return EOF;                     // No
     }
 
-    return term_block->data[--term_block->len]; // Delete character and return it
+    return term_buf->data[--term_buf->len]; // Delete character and return it
 }
 
 
@@ -71,16 +71,16 @@ int delete_tbuf(void)
 
 void echo_tbuf(int pos)
 {
-    assert(term_block != NULL);           // Error if no terminal buffer
-    assert((uint)pos <= term_block->len); // Error if no data overrun
+    assert(term_buf != NULL);           // Error if no terminal buffer
+    assert((uint)pos <= term_buf->len); // Error if no data overrun
 
     // Just echo everything we're supposed to print. Note that this is not the
     // same as typing out what's in a buffer, so things such as the settings of
     // the EU flag don't matter here.
 
-    for (uint i = (uint)pos; i < term_block->len; ++i)
+    for (uint i = (uint)pos; i < term_buf->len; ++i)
     {
-        echo_out(term_block->data[i]);
+        echo_out(term_buf->data[i]);
     }
 }
 
@@ -97,18 +97,18 @@ void echo_tbuf(int pos)
 
 static void exit_tbuf(void)
 {
-    if (term_block != NULL)
+    if (term_buf != NULL)
     {
-        if (term_block->data != NULL)
+        if (term_buf->data != NULL)
         {
-            free_mem(&term_block->data);
+            free_mem(&term_buf->data);
         }
 
-        term_block->size = 0;
-        term_block->pos  = 0;
-        term_block->len  = 0;
+        term_buf->size = 0;
+        term_buf->pos  = 0;
+        term_buf->len  = 0;
 
-        free_mem(&term_block);
+        free_mem(&term_buf);
     }
 }
 
@@ -122,14 +122,14 @@ static void exit_tbuf(void)
 
 int fetch_tbuf(void)
 {
-    assert(term_block != NULL);         // Error if no terminal buffer
+    assert(term_buf != NULL);           // Error if no terminal buffer
 
-    if (term_block->pos == term_block->len)
+    if (term_buf->pos == term_buf->len)
     {
         return EOF;
     }
 
-    return term_block->data[term_block->pos++];
+    return term_buf->data[term_buf->pos++];
 }
 
 
@@ -144,12 +144,12 @@ void init_tbuf(void)
 {
     register_exit(exit_tbuf);
 
-    term_block = alloc_mem((uint)sizeof(*term_block));
+    term_buf = alloc_mem((uint)sizeof(*term_buf));
 
-    term_block->len  = 0;
-    term_block->pos  = 0;
-    term_block->size = STR_SIZE_INIT;
-    term_block->data  = alloc_mem(term_block->size);
+    term_buf->len  = 0;
+    term_buf->pos  = 0;
+    term_buf->size = STR_SIZE_INIT;
+    term_buf->data  = alloc_mem(term_buf->size);
 }
 
 
@@ -162,10 +162,10 @@ void init_tbuf(void)
 
 void reset_tbuf(void)
 {
-    assert(term_block != NULL);         // Error if no terminal buffer
+    assert(term_buf != NULL);           // Error if no terminal buffer
 
-    term_block->pos = 0;
-    term_block->len = 0;
+    term_buf->pos = 0;
+    term_buf->len = 0;
 }
 
 
@@ -178,13 +178,13 @@ void reset_tbuf(void)
 
 uint start_tbuf(void)
 {
-    uint i = term_block->len;
+    uint i = term_buf->len;
 
     while (i > 0)
     {
         // Back up on line until we find a line terminator.
 
-        int c = term_block->data[i];
+        int c = term_buf->data[i];
 
         if (isdelim(c))
         {
@@ -212,26 +212,26 @@ void store_tbuf(int c)
     // calling realloc(). Note that this may move the block, so we have to
     // reinitialize all of our pointers.
 
-    assert(term_block != NULL);         // Error if no terminal block
-    assert(term_block->data != NULL);   // Error if no buffer in block
+    assert(term_buf != NULL);           // Error if no terminal block
+    assert(term_buf->data != NULL);     // Error if no buffer in block
 
-    if (term_block->len == term_block->size) // Has buffer filled up?
+    if (term_buf->len == term_buf->size) // Has buffer filled up?
     {
-        assert(term_block->size != 0);  // Error if no data
+        assert(term_buf->size != 0);    // Error if no data
 
         // Round up size to a multiple of STR_SIZE_INIT
 
-        term_block->size += STR_SIZE_INIT - 1;
-        term_block->size /= STR_SIZE_INIT;
-        term_block->size *= STR_SIZE_INIT;
+        term_buf->size += STR_SIZE_INIT - 1;
+        term_buf->size /= STR_SIZE_INIT;
+        term_buf->size *= STR_SIZE_INIT;
 
-        uint newsize = term_block->size + STR_SIZE_INIT;
-        char *newbuf = expand_mem(term_block->data, term_block->size, newsize);
+        uint newsize = term_buf->size + STR_SIZE_INIT;
+        char *newbuf = expand_mem(term_buf->data, term_buf->size, newsize);
 
-        term_block->size = newsize;
-        term_block->data  = newbuf;
+        term_buf->size = newsize;
+        term_buf->data  = newbuf;
     }
 
-    term_block->data[term_block->len++] = (char)c;
-    term_block->data[term_block->len] = NUL;
+    term_buf->data[term_buf->len++] = (char)c;
+    term_buf->data[term_buf->len] = NUL;
 }

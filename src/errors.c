@@ -286,7 +286,7 @@ noreturn void throw(int error, ...)
 
     reset_cbuf((bool)false);
 
-    term_block->len = term_block->pos = cbuf->pos;
+    term_buf->len = term_buf->pos = cbuf->pos;
 
     // If CTRL/C and we're not executing a command, don't print error.
 

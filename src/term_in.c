@@ -95,7 +95,7 @@ static void exec_BS(void)
         print_echo(c);
     }
 
-    if (term_block->len == 0)           // Is terminal buffer empty now?
+    if (term_buf->len == 0)             // Is terminal buffer empty now?
     {
         longjmp(jump_input, 2);         // Yes, restart terminal input
     }
@@ -267,18 +267,18 @@ static void exec_star(void)
 
     print_echo(CRLF);
 
-    assert(term_block != NULL);         // Error if no terminal block
+    assert(term_buf != NULL);           // Error if no terminal block
 
     struct buffer qbuf =
     {
-        .len  = term_block->len,
-        .pos  = term_block->pos,
-        .size = term_block->size,
+        .len  = term_buf->len,
+        .pos  = term_buf->pos,
+        .size = term_buf->size,
     };
 
-    qbuf.data  = alloc_mem(term_block->len);
+    qbuf.data  = alloc_mem(term_buf->len);
 
-    memcpy(qbuf.data, term_block->data, (ulong)qbuf.len);
+    memcpy(qbuf.data, term_buf->data, (ulong)qbuf.len);
 
     store_qtext(qname, qdot, &qbuf);
 }

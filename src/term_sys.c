@@ -123,7 +123,7 @@ int getc_term(bool wait)
     {
         f.e0.ctrl_c = false;
 
-        if (c == CR && term_block->len != 0)
+        if (c == CR && term_buf->len != 0)
         {
             LF_pending = true;
         }
