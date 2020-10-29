@@ -24,8 +24,8 @@ after TECO's prompt, and perform different functions if they are not.
 
 | Command | Function |
 | ------- | -------- |
-| \<BS\> | Causes TECO to execute a "-LT" command. This lets you walk backwards through a file when display mode is disabled. If you are already positioned at the start of the edit buffer, this command does nothing. <br><br>If the EV flag is non-zero, then the T portion of this command is redundant and is not performed. |
-| \<LF\> | Causes TECO to execute an "LT" command. This lets you walk forwards through a file when display mode is disabled. If you are already positioned at the end of the edit buffer, this command does nothing. <br><br>If the EV flag is non-zero, then the T portion of this command is redundant and is not performed. |
+| \<BS\> | Causes TECO to execute a "-LT" command. This lets you walk backwards through a file when display mode is disabled. If you are already positioned at the start of the edit buffer, this command does nothing. <br><br>If the EV flag is non-zero, then the T portion of this command is redundant and is not executed.<br/><br/>If scrolling is enabled in display mode, changes are shown immediately in the edit region, so the T portion of this command is not executed. |
+| \<LF\> | Causes TECO to execute an "LT" command. This lets you walk forwards through a file when display mode is disabled. If you are already positioned at the end of the edit buffer, this command does nothing. <br><br>If the EV flag is non-zero, then the T portion of this command is redundant and is not executed. <br/><br/>If scrolling is enabled in display mode, changes are shown immediately in the edit region, so the T portion of the command is not executed. |
 | \<DEL\> | Equivalent to the \<BS\> command. |
 | \<*delim*\> | Equivalent to the \<LF\> command. |
 
@@ -42,21 +42,30 @@ after TECO's prompt, and perform different functions if they are not.
 
 ### Display Commands
 
-These commands only work as described if they are entered immediately
-after TECO's prompt, and perform different functions if they are not.
+If TECO is in display mode, and scrolling is enabled, then the following
+commands may be used. These functions may be overridden with the FM or
+FQ commands, described below.
 
 | Command | Function |
 | ------- | -------- |
-| \<CTRL/W\> | If display mode is active, causes TECO to re-paint the display. |
-| \<CTRL/K\> | If display mode is active, changes the edit and command region to a black foreground on a white background, and the status line (if any) to a white foreground on a black background. This command is intended to remedy the situation where a user inadvertently sets the same foreground and background colors for a region, thus rendering it unreadable. |
+| \<CTRL/W\> | Re-paints the display. |
+| \<CTRL/K\> | Changes the edit and command region to a black foreground on a white background, and the status line (if any) to a white foreground on a black background. This command is intended to remedy the situation where a user inadvertently sets the same foreground and background colors for a region, thus rendering it unreadable. |
+| \<End\> | Go to end of line. |
+| \<End\>\<End\> | Go to end of window. |
+| <nobr>\<End\>\<End\>\<End\></nobr> | Go to end of file. |
+| \<Home\> | Go to start of line. |
+| \<Home\>\<Home\> | Go to start of window. |
+| <nobr>\<Home\>\<Home\>\<Home\></nobr> | Go to start of file. |
+| \<PgDn\> | Go to next window. |
+| \<PgUp\> | Go to previous window. |
 
-### User-Defined Immediate Commands
+### User-Definable Keys
 
 Most terminals have function, cursor, keypad, or other special keys. TECO provides
 a facility by which you can cause the pressing of one of these keys at
 the prompting asterisk to be interpreted as an immediate command. When this
 facility is enabled, a key such as one of the cursor control keys can cause TECO
-to execute a macro in a Q-register.
+to execute a command string or Q-register macro.
 
 In order for this to happen, the following are required:
 
@@ -64,12 +73,12 @@ In order for this to happen, the following are required:
 - The ED&32 flag bit must be set, to enable ESCape sequences and other
 special characters.
 - A function, cursor, or other special key must have been mapped to a
-Q-register with the FM command.
+command string with the FM command, or a Q-register with the FQ command.
 - The special key must be entered directly after TECO's command prompt.
 
-If all of these conditions have been met, then when such a key
-has been input, the associated Q-register is immediately executed as
-though an M*q*\<*delim*\>\<*delim*\> command had been entered.
+If all of these conditions have been met, then typing the key causes the
+the associated command string or Q-register macro to be immediately
+executed.
 
 If a special key is input which has no defined meaning, then TECO will signal
 the error by outputtng a CTRL/G to ring the terminal's bell.
