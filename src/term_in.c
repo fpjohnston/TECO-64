@@ -148,37 +148,34 @@ static void exec_ctrl_G(void)
     echo_in(CTRL_G);                    // Echo ^G
 
     int c = getc_term((bool)WAIT);      // Get next character
+    int pos = (c == SPACE) ? (int)start_tbuf() : 0;
 
-    echo_in(c);                         // And echo it
+    echo_in(c);                         // Echo next character
 
-    if (c == CTRL_G)                    // ^G^G
+    switch (c)
     {
-        reset_cbuf((bool)true);
-        print_echo(CRLF);               // Start new line
+        case CTRL_G:                    // ^G^G - cancel all input
+            reset_cbuf((bool)true);
+            print_echo(CRLF);
 
-        longjmp(jump_input, 1);
-    }
+            longjmp(jump_input, 1);
 
-    if (c == SPACE)                     // ^G<SPACE> - retype current line
-    {
-        int pos = (int)start_tbuf();
+        case SPACE:                     // ^G<SPACE> - retype current line
+        case '*':                       // ^G* - retype all input lines
+            if (pos == 0)
+            {
+                print_prompt();
+            }
 
-        if (pos == 0)                   // First line?
-        {
-            print_prompt();             // Yes, we need the prompt
-        }
+            echo_tbuf(pos);
 
-        echo_tbuf(pos);
-    }
-    else if (c == '*')                  // ^G* - retype all input lines
-    {
-        print_prompt();
-        echo_tbuf(0);
-    }
-    else                                // Not special CTRL/G sequence
-    {
-        store_tbuf(CTRL_G);
-        store_tbuf(c);                  // Regular character, so just store it
+            break;
+
+        default:                        // Not special ^G command
+            store_tbuf(CTRL_G);
+            store_tbuf(c);              // Regular character, so just store it
+
+            break;
     }
 }
 
