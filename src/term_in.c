@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <ncurses.h>
+#include <setjmp.h>
 #include <stdbool.h>                    //lint !e537
 #include <stdio.h>                      //lint !e537
 #include <stdlib.h>
@@ -43,40 +44,21 @@
 #include "term.h"
 
 
-#define FF_LINES    40                  ///< No. of lines to print for FF
-
-#define VT_LINES    4                   ///< No. of lines to print for VT
-
-static int last_in = EOF;               ///< Last character read
-
+static jmp_buf jump_input;              ///< longjmp() to reset terminal input
 
 // Local functions
 
-static void read_bs(void);
+static void exec_BS(void);
 
-static void read_bs_or_lf(int pos, int line);
+static void exec_cancel(void);
 
-static int read_chr(int c, bool accent);
+static void exec_ctrl_G(void);
 
-static void read_cr(void);
+static void exec_inspect(int pos, int line);
 
-static void read_ctrl_c(int last);
-
-static void read_ctrl_g(void);
-
-static void read_ctrl_u(void);
-
-static void read_ctrl_z(void);
-
-static void read_ff(void);
+static void exec_star(void);
 
 static int read_first(void);
-
-static void read_lf(void);
-
-static void read_qname(int c);
-
-static void read_vt(void);
 
 static void rubout_chr(int c);
 
@@ -86,44 +68,143 @@ static void rubout_line(void);
 
 
 ///
-///  @brief    Process backspace.
+///  @brief    Execute "BS": delete last character typed. We should normally
+///            only get here if there is actually something to delete; if the
+///            terminal buffer is empty, then BS is executed as an immediate-
+///            action command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void read_bs(void)
+static void exec_BS(void)
 {
     int c = delete_tbuf();
 
-    if (c != EOF)
+    if (c == EOF)                       // This should never happen,
     {
-        if (f.et.rubout)
-        {
-            rubout_chr(c);
-        }
-        else
-        {
-            print_echo(c);
-        }
+        return;                         //  but ignore it if it does
+    }
+
+    if (f.et.rubout)
+    {
+        rubout_chr(c);
+    }
+    else
+    {
+        print_echo(c);
+    }
+
+    if (term_block->len == 0)           // Is terminal buffer empty now?
+    {
+        longjmp(jump_input, 2);         // Yes, restart terminal input
     }
 }
 
 
 ///
-///  @brief    Process immediate-mode BS or LF character.
+///  @brief    Execute CTRL/U: delete to start of current line.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void read_bs_or_lf(int pos, int line)
+static void exec_cancel(void)
 {
+
+#if     defined(TECO_DISPLAY)
+
     if (clear_eol())                    // Can we clear to end of line?
     {
         ;                               // If so, we're done
     }
-    else if (f.et.rubout)
+    else
+
+#endif
+
+    if (f.et.rubout)
+    {
+        rubout_line();
+    }
+    else
+    {
+        echo_in(CTRL_U);
+        print_echo(CRLF);
+    }
+
+    longjmp(jump_input, 1);
+}
+
+
+///
+///  @brief    Execute CTRL/G: ^G^G, ^G{SPACE}, and ^G*.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_ctrl_G(void)
+{
+    echo_in(CTRL_G);                    // Echo ^G
+
+    int c = getc_term((bool)WAIT);      // Get next character
+
+    echo_in(c);                         // And echo it
+
+    if (c == CTRL_G)                    // ^G^G
+    {
+        reset_cbuf((bool)true);
+        print_echo(CRLF);               // Start new line
+
+        longjmp(jump_input, 1);
+    }
+
+    if (c == SPACE)                     // ^G<SPACE> - retype current line
+    {
+        int pos = (int)start_tbuf();
+
+        if (pos == 0)                   // First line?
+        {
+            print_prompt();             // Yes, we need the prompt
+        }
+
+        echo_tbuf(pos);
+    }
+    else if (c == '*')                  // ^G* - retype all input lines
+    {
+        print_prompt();
+        echo_tbuf(0);
+    }
+    else                                // Not special CTRL/G sequence
+    {
+        store_tbuf(CTRL_G);
+        store_tbuf(c);                  // Regular character, so just store it
+    }
+}
+
+
+///
+///  @brief    Execute "BS" or "LF": immediate-action commands to go to next or
+///            previous lines in file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_inspect(int pos, int line)
+{
+
+#if     defined(TECO_DISPLAY)
+
+    if (clear_eol())                    // Can we clear to end of line?
+    {
+        ;                               // If so, we're done
+    }
+    else
+
+#endif
+
+    if (f.et.rubout)
     {
         rubout_line();
     }
@@ -155,95 +236,59 @@ static void read_bs_or_lf(int pos, int line)
 
 
 ///
-///  @brief    Read next character.
+///  @brief    Execute "*": immediate-action command to store last command
+///            string in Q-register.
 ///
-///  @returns  Character processed, or EOF if double escape seen.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int read_chr(int c, bool accent)
+static void exec_star(void)
 {
-    switch (c)
+    echo_in('*');
+
+    int c = getc_term((bool)WAIT);      // Get Q-register name
+    bool qdot = (c == '.');
+
+    if (qdot)                           // Local Q-register?
     {
-        case BS:
-        case DEL:
-            read_bs();
+        echo_in('.');                   // Yes, echo the dot
 
-            break;
-
-        case FF:
-            read_ff();
-
-            break;
-
-        case CR:
-            read_cr();
-
-            break;
-
-        case CTRL_C:
-            read_ctrl_c(last_in);
-
-            break;
-
-        case CTRL_G:
-            read_ctrl_g();
-
-            break;
-
-        case CTRL_U:
-            read_ctrl_u();
-
-            break;
-
-        case CTRL_Z:
-            read_ctrl_z();
-
-            break;
-
-        case ESC:
-            echo_in(accent ? '`' : '$');
-            store_tbuf(c);
-
-            if (last_in == ESC)
-            {
-                last_in = EOF;
-
-                print_echo(CRLF);
-
-                return EOF;             // Done reading command
-            }
-
-            break;
-
-        case LF:
-            read_lf();
-
-            break;
-
-        case VT:
-            read_vt();
-
-            break;
-
-        default:
-            if (!f.et.lower)
-            {
-                c = toupper(c);
-            }
-
-            echo_in(c);
-            store_tbuf(c);
-
-            break;
+        c = getc_term((bool)WAIT);      // And get next character
     }
 
-    return c;
+    echo_in(c);                         // Echo Q-register name
+
+    if (!isalnum(c))                    // If invalid Q-register,
+    {
+        echo_in('?');                   //  say indicate error,
+
+        longjmp(jump_input, 1);         //   and reset command string
+    }
+
+    int qname = c;
+
+    print_echo(CRLF);
+
+    assert(term_block != NULL);         // Error if no terminal block
+
+    struct buffer qbuf =
+    {
+        .len  = term_block->len,
+        .pos  = term_block->pos,
+        .size = term_block->size,
+    };
+
+    qbuf.data  = alloc_mem(term_block->len);
+
+    memcpy(qbuf.data, term_block->data, (ulong)qbuf.len);
+
+    store_qtext(qname, qdot, &qbuf);
 }
 
 
 ///
-///  @brief    Read next character from terminal.
+///  @brief    Read command string from terminal or indirect command file.
 ///
 ///  @returns  Nothing.
 ///
@@ -251,254 +296,132 @@ static int read_chr(int c, bool accent)
 
 void read_cmd(void)
 {
-    int c;
+    static int last_in = EOF;           // Last character read
 
     if (!empty_cbuf())
     {
         return;                         // Just process current command
     }
 
-    switch (read_indirect())
+    int status;
+    int c;
+
+    switch (setjmp(jump_input))
     {
-        case -1:                        // Exit if we have a complete command
-            return;
+        case 0:                         // Normal entry
+            if ((status = read_indirect()) == -1)
+            {
+                return;
+            }
+            else if (status == 1)
+            {
+                c = getc_term((bool)WAIT); // Partial command - get another chr.
 
-        case 1:
-            c = getc_term((bool)WAIT);  // Partial command - get another chr.
-
-            break;
+                break;
+            }
+            //lint -fallthrough
 
         default:
-        case 0:
+        case 1:
+            print_prompt();
+            //lint -fallthrough
+
+        case 2:
+            last_in = EOF;              // No previous character
+            reset_cbuf((bool)true);     // Clear the command buffer
             c = read_first();           // Start new command
 
             break;
     }
 
-    // We don't reset the terminal buffer until we get here, so that we can
-    // use the *x command to save the previous contents in Q-register 'x'.
+    // We don't reset the terminal buffer until we get here, because the user
+    // might enter a "*q" immediate-action command to save the contents of the
+    // terminal buffer in a Q-register.
 
     reset_tbuf();                       // Reset terminal buffer
 
+    // Read characters until we have a complete command string.
+
     for (;;)
     {
-        // If the character is an accent grave and and the et.accent bit is set,
-        // or it matches a non-NUL EE flag, then treat it as an ESCape.
-
-        bool accent = false;
-
-        if ((f.et.accent && c == ACCENT) || f.ee == c)
+        if ((c == ACCENT && f.et.accent) || (c == f.ee) ||
+            (c == ESC && (f.et.accent || f.ee != -1)))
         {
-            accent = true;
-            c = ESC;                    // Process it as ESCape.
+            echo_in('`');               // Echo delimiter as accent grave
+            c = ESC;                    //  but treat it as ESCape
         }
-        else if ((f.et.accent || f.ee != NUL) && c == ESC)
+        else if (c == ESC)
         {
-            accent = true;
+            echo_in('$');               // Echo ESCape as dollar sign
         }
 
-        if (read_chr(c, accent) == EOF)
+        if (c == CTRL_C)
         {
-            break;
+            echo_in(CTRL_C);
+            store_tbuf(CTRL_C);
+            print_echo(CRLF);
+
+            if (f.et.abort)             // Should we abort?
+            {
+                exit(EXIT_FAILURE);     // Yes (exit with error)
+            }
+            else if (last_in == CTRL_C) // Second CTRL/C?
+            {
+                exit(EXIT_SUCCESS);     // Yes, user wants out
+            }
+
+            longjmp(jump_input, 1);     // Restart command input
+        }
+        else if (c == BS || c == DEL)
+        {
+            exec_BS();
+        }
+        else if (c == CTRL_G)
+        {
+            exec_ctrl_G();
+        }
+        else if (c == CTRL_U)
+        {
+            exec_cancel();
+        }
+        else if (c != ESC)
+        {
+            if (!f.et.lower)
+            {
+                c = toupper(c);
+            }
+
+            echo_in(c);
+            store_tbuf(c);
+        }
+        else
+        {
+            store_tbuf(ESC);
+
+            if (last_in == ESC)
+            {
+                print_echo(CRLF);
+
+                while ((c = fetch_tbuf()) != EOF)
+                {
+                    store_cbuf(c);      // Copy command string
+                }
+
+                return;                 // Return to execute it
+            }
         }
 
-        last_in = c;
-
-        c = getc_term((bool)WAIT);
-    }
-
-    // Copy everything to command buffer.
-
-    while ((c = fetch_tbuf()) != EOF)
-    {
-        store_cbuf(c);
-    }
-}
-
-
-
-///
-///  @brief    Process carriage return.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_cr(void)
-{
-    print_echo(CR);
-
-    store_tbuf(CR);
-}
-
-
-///
-///  @brief    Process CTRL/C.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_ctrl_c(int last)
-{
-    echo_in(CTRL_C);
-
-    if (f.et.abort)
-    {
-        exit(EXIT_FAILURE);
-    }
-
-    store_tbuf(CTRL_C);
-    print_echo(CRLF);
-
-    if (last == CTRL_C)                 // Second CTRL/C?
-    {
-        exit(EXIT_SUCCESS);             // Yes: clean up, reset, and exit
-    }
-
-    print_prompt();
-}
-
-
-///
-///  @brief    Process CTRL/G, looking for ^G^G, ^G{SPACE}, and ^G*.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_ctrl_g(void)
-{
-    echo_in(CTRL_G);                    // Echo ^G
-
-    int c = getc_term((bool)WAIT);      // Get next character
-
-    echo_in(c);                         // And echo it
-
-    if (c == CTRL_G)                    // ^G^G
-    {
-        reset_cbuf((bool)true);
-        print_echo(CRLF);               // Start new line
-
-        longjmp(jump_main, 1);
-    }
-
-    if (c == SPACE)                     // ^G<SPACE> - retype current line
-    {
-        print_echo(CRLF);
-
-        if (start_tbuf() == 0)          // First line?
-        {
-            print_prompt();             // Yes, we need the prompt
-        }
-
-        echo_tbuf((int)start_tbuf());
-    }
-    else if (c == '*')                  // ^G* - retype all input lines
-    {
-        print_echo(CRLF);
-        print_prompt();
-
-        echo_tbuf(0);
-    }
-    else                                // Not special CTRL/G sequence
-    {
-        store_tbuf(CTRL_G);
-        store_tbuf(c);                  // Regular character, so just store it
+        last_in = c;                    // Save last character
+        c = getc_term((bool)WAIT);      // And get new character
     }
 }
 
 
 ///
-///  @brief    Process CTRL/U: delete to start of current line.
+///  @brief    Read and execute immediate-action characters, which must be
+///            input immediately a prompt.
 ///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_ctrl_u(void)
-{
-    if (clear_eol())                    // Can we clear to end of line?
-    {
-        ;                               // If so, we're done
-    }
-    else if (f.et.rubout)
-    {
-        rubout_line();
-    }
-    else
-    {
-        echo_in(CTRL_U);
-        print_echo(CRLF);
-    }
-
-    print_prompt();
-}
-
-
-///
-///  @brief    Process input CTRL/Z.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_ctrl_z(void)
-{
-    echo_in(CTRL_Z);
-    store_tbuf(CTRL_Z);
-
-    int c = getc_term((bool)WAIT);
-
-    echo_in(CTRL_Z);
-
-    if (c == CTRL_Z)                    // Two CTRL/Z's?
-    {
-        exit(EXIT_SUCCESS);             // Clean up, reset, and exit
-    }
-
-    store_tbuf(c);                      // Normal character
-}
-
-
-///
-///  @brief    Process input form feed.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_ff(void)
-{
-    print_echo(CR);
-
-    for (int i = 0; i < FF_LINES; ++i)
-    {
-        print_echo(LF);
-    }
-
-    store_tbuf(FF);
-}
-
-
-///
-///  @brief    Read first character from command string. This is required if
-///            special handling is needed, especially for the following immedi-
-///            ate-mode commands, which are processed without destroying the
-///            previous command buffer:
-///
-///            ?    Display previous command string up to erroneous command
-///            /    Display verbose explanation of last error
-///            *{q} Copy last command string to q-register {q}.
-///
-///            Once we return, the previous command string and error are con-
-///            sidered lost. Our caller then overwrites the old command string
-///            with a new one.
-///
-///            Note that although LF and BS are immediate-mode commands, we do
-///            not deal with them here to avoid a situation such as a LF or BS
-///            being typed following a CTRL/U used to delete a command string.
-///            For this reason, these commands must be handled by our caller.
+///            Once we return, the previous terminal buffer and error are lost.
 ///
 ///  @returns  Character to be processed.
 ///
@@ -506,11 +429,7 @@ static void read_ff(void)
 
 static int read_first(void)
 {
-    // Loop until we seen something other than an immediate-mode command.
-
-    bool prompt_enabled = true;
-
-    reset_cbuf((bool)true);
+    // Loop until we've seen something other than an immediate-action command.
 
     for (;;)
     {
@@ -519,21 +438,17 @@ static int read_first(void)
             flag_print(f.ev);
         }
 
-        if (prompt_enabled)
-        {
-            print_prompt();
-        }
-
-        prompt_enabled = true;
-
         int c = getc_term((bool)WAIT);
 
-        c = readkey_dpy(c);             // See if it's a display key
-
+        if ((c = readkey_dpy(c)) == EOF)
+        {
+            continue;
+        }
+        
         // If first character is an ESCape, or ESCape surrogate, then
         // treat it like LF.
 
-        if (c == ESC || (c == ACCENT && f.et.accent) || (c == f.ee && c != NUL))
+        if (c == ESC || (c == ACCENT && f.et.accent) || c == f.ee)
         {
             c = LF;
         }
@@ -542,25 +457,33 @@ static int read_first(void)
         {
             case BS:
             case DEL:
-                read_bs_or_lf(t.B, -1);
+                if (t.dot != t.B)
+                {
+                    exec_inspect(t.B, -1);
+                }
 
                 break;
 
+            case CR:
             case LF:
-                read_bs_or_lf(t.Z, 1);
+                if (t.dot != t.Z)
+                {
+                    exec_inspect(t.Z, 1);
+
+                    if (t.dot == t.Z)
+                    {
+                        print_prompt();
+                    }
+                }
 
                 break;
 
             case CTRL_K:
-                echo_in(CTRL_K);
-                echo_in(CRLF);
                 reset_colors();
-                clear_dpy();
-
-                break;
+                //lint -fallthrough
 
             case CTRL_W:
-                echo_in(CTRL_W);
+                echo_in(c);
                 echo_in(CRLF);
                 clear_dpy();
 
@@ -593,114 +516,16 @@ static int read_first(void)
                 break;
 
             case '*':                   // Store last command in Q-register
-                echo_in(c);
-                c = getc_term((bool)WAIT); // Get Q-register name
-
-                if (f.e0.ctrl_c)
-                {
-                    f.e0.ctrl_c = false;
-
-                    return CTRL_C;
-                }
-
-                read_qname(c);
-
-                break;
-
-            case EOF:                   // Display key we already processed
-                prompt_enabled = false;
+                exec_star();
 
                 break;
 
             default:
                 return c;
         }
+
+        print_prompt();
     }
-}
-
-
-///
-///  @brief    Process input line feed.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_lf(void)
-{
-    print_echo(LF);
-    store_tbuf(LF);
-}
-
-
-///
-///  @brief    Get Q-register name and store command string.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_qname(int c)
-{
-    if (c == CR)
-    {
-        return;
-    }
-    else if (c == BS || c == DEL || c == CTRL_U)
-    {
-        print_echo(CR);
-
-        return;
-    }
-
-    int qname = c;
-    bool qdot = (qname == '.');
-
-    if (qdot)                           // Local Q-register?
-    {
-        echo_in(c);                     // Yes, echo the dot
-
-        qname = getc_term((bool)WAIT);  // And get next character
-    }
-
-    echo_in(qname);                     // Echo Q-register name
-
-    print_echo(CRLF);
-
-    assert(term_block != NULL);         // Error if no terminal block
-
-    struct buffer qbuf =
-    {
-        .len  = term_block->len,
-        .pos  = term_block->pos,
-        .size = term_block->size,
-    };
-
-    qbuf.data  = alloc_mem(term_block->len);
-
-    memcpy(qbuf.data, term_block->data, (ulong)qbuf.len);
-
-    store_qtext(qname, qdot, &qbuf);
-}
-
-
-///
-///  @brief    Process input vertical tab.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void read_vt(void)
-{
-    print_echo(CR);
-
-    for (int i = 0; i < VT_LINES; ++i)
-    {
-        print_echo(LF);
-    }
-
-    store_tbuf(VT);
 }
 
 
@@ -772,5 +597,8 @@ static void rubout_line(void)
         rubout_chr(c);
     }
 
-    rubout_chrs((uint)strlen(teco_prompt));
+    uint n = (uint)strlen(teco_prompt);
+
+    rubout_chrs(n);
 }
+

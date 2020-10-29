@@ -173,11 +173,10 @@ void check_escape(uint escape)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool clear_eol(void)
-{
-
 #if     defined(TECO_DISPLAY)
 
+bool clear_eol(void)
+{
     if (f.et.scope && f.e0.display)
     {
         (void)printw("\r");
@@ -187,10 +186,10 @@ bool clear_eol(void)
         return true;
     }
 
-#endif
-
     return false;
 }
+
+#endif
 
 
 ///
@@ -710,7 +709,11 @@ int readkey_dpy(int key)
 
 #if     defined(TECO_DISPLAY)
 
-    if (exec_key(key))
+    if (!f.e0.display)
+    {
+        return key;
+    }
+    else if (exec_key(key))
     {
         ;
     }
@@ -784,15 +787,28 @@ int readkey_dpy(int key)
             refresh_dpy();
         }
     }
-    else if (key == LF || key == ESC ||
-             (key == ACCENT && f.et.accent) ||
-             (key != NUL && key == f.ee))
+    else if (key == CR || key == LF || key == ESC ||
+            (key == ACCENT && f.et.accent) || key == f.ee)
     {
-        exec_commands("L");
+        if (w.nlines == 0 || w.noscroll)
+        {
+            exec_commands(".-Z \"N L T '");
+        }
+        else
+        {
+            exec_commands("L");
+        }
     }
     else if (key == BS || key == DEL)
     {
-        exec_commands("-L");
+        if (w.nlines == 0 || w.noscroll)
+        {
+            exec_commands(".-B \"N -L T '");
+        }
+        else
+        {
+            exec_commands("-L");
+        }
     }
     else
     {
