@@ -38,6 +38,10 @@
 #include "exec.h"
 #include "term.h"
 
+
+static bool exit_set = false;           ///< Flag for setting exit function
+
+
 ///  @enum   mapkeys
 ///
 ///  @brief  Define the keys that can be mapped.
@@ -128,6 +132,10 @@ static struct keys keys[] =         ///< List of mappable keys
 
 // Local functions
 
+static void exit_map(void);
+
+static void reset_map(void);
+
 static void unmap_key(uint key);
 
 
@@ -146,14 +154,18 @@ void exec_FM(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    if (!exit_set)
+    {
+        exit_set = true;
+
+        register_exit(exit_map);
+    }
+
     uint size = cmd->text1.len;
 
     if (size == 0)                      // Unmap all keys?
     {
-        for (uint i = 0; i < countof(keys); ++i)
-        {
-            unmap_key(i);
-        }
+        reset_map();
 
         return;
     }
@@ -285,6 +297,35 @@ bool exec_key(int key)
 }
 
 #endif
+
+
+///
+///  @brief    Reset everything on exit.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exit_map(void)
+{
+    reset_map();
+}
+
+
+///
+///  @brief    Reset all mapped keys.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void reset_map(void)
+{
+    for (uint i = 0; i < countof(keys); ++i)
+    {
+        unmap_key(i);
+    }
+}
 
 
 ///
