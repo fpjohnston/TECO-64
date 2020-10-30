@@ -35,11 +35,37 @@
 #include "term.h"
 
 
-struct buffer *term_buf;                ///< Terminal input block
+static struct buffer *term_buf;         ///< Terminal input block
 
 // Local functions
 
 static void exit_tbuf(void);
+
+
+///
+///  @brief    Create copy of terminal buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+struct buffer copy_tbuf(void)
+{
+    assert(term_buf != NULL);           // Error if no terminal block
+
+    struct buffer buf =
+    {
+        .len  = term_buf->len,
+        .pos  = term_buf->pos,
+        .size = term_buf->size,
+    };
+
+    buf.data  = alloc_mem(term_buf->len);
+
+    memcpy(buf.data, term_buf->data, (ulong)buf.len);
+
+    return buf;
+}
 
 
 ///
@@ -134,6 +160,19 @@ int fetch_tbuf(void)
 
 
 ///
+///  @brief    Get current length of terminal buffer.
+///
+///  @returns  Buffer length.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int getlen_tbuf(void)
+{
+    return (int)term_buf->len;
+}
+
+
+///
 ///  @brief    Initialize command buffer.
 ///
 ///  @returns  Nothing.
@@ -149,7 +188,7 @@ void init_tbuf(void)
     term_buf->len  = 0;
     term_buf->pos  = 0;
     term_buf->size = STR_SIZE_INIT;
-    term_buf->data  = alloc_mem(term_buf->size);
+    term_buf->data = alloc_mem(term_buf->size);
 }
 
 
@@ -166,6 +205,20 @@ void reset_tbuf(void)
 
     term_buf->pos = 0;
     term_buf->len = 0;
+}
+
+
+///
+///  @brief    Set current length of terminal buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void setlen_tbuf(int len)
+{
+    term_buf->len = (uint)len;
+    term_buf->pos = 0;
 }
 
 

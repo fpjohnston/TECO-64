@@ -95,7 +95,7 @@ static void exec_BS(void)
         print_echo(c);
     }
 
-    if (term_buf->len == 0)             // Is terminal buffer empty now?
+    if (getlen_tbuf() == 0)             // Is terminal buffer empty now?
     {
         longjmp(jump_input, 2);         // Yes, restart terminal input
     }
@@ -244,41 +244,28 @@ static void exec_star(void)
 {
     echo_in('*');
 
-    int c = getc_term((bool)WAIT);      // Get Q-register name
-    bool qdot = (c == '.');
+    int qname = getc_term((bool)WAIT);  // Get Q-register name
+    bool qdot = (qname == '.');
 
     if (qdot)                           // Local Q-register?
     {
         echo_in('.');                   // Yes, echo the dot
 
-        c = getc_term((bool)WAIT);      // And get next character
+        qname = getc_term((bool)WAIT);  // Get Q-register name for real
     }
 
-    echo_in(c);                         // Echo Q-register name
+    echo_in(qname);                     // Echo Q-register name
 
-    if (!isalnum(c))                    // If invalid Q-register,
+    if (!isalnum(qname))                // If invalid Q-register,
     {
-        echo_in('?');                   //  say indicate error,
+        echo_in('?');                   //  alert the user to the error,
 
         longjmp(jump_input, 1);         //   and reset command string
     }
 
-    int qname = c;
-
     print_echo(CRLF);
 
-    assert(term_buf != NULL);           // Error if no terminal block
-
-    struct buffer qbuf =
-    {
-        .len  = term_buf->len,
-        .pos  = term_buf->pos,
-        .size = term_buf->size,
-    };
-
-    qbuf.data  = alloc_mem(term_buf->len);
-
-    memcpy(qbuf.data, term_buf->data, (ulong)qbuf.len);
+    struct buffer qbuf = copy_tbuf();
 
     store_qtext(qname, qdot, &qbuf);
 }

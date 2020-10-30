@@ -32,9 +32,9 @@
 #include <sys/types.h>          //lint !e451 !e537
 
 
-extern struct buffer *term_buf;
-
 // Terminal buffer functions
+
+extern struct buffer copy_tbuf(void);
 
 extern int delete_tbuf(void);
 
@@ -42,9 +42,13 @@ extern void echo_tbuf(int pos);
 
 extern int fetch_tbuf(void);
 
+extern int getlen_tbuf(void);
+
 extern void init_tbuf(void);
 
 extern void reset_tbuf(void);
+
+extern void setlen_tbuf(int len);
 
 extern uint start_tbuf(void);
 
