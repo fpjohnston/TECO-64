@@ -296,13 +296,13 @@ void flag_print(int flag)
 
         if (m == 0)
         {
-            m = getdelta_ebuf(0);
             n = getdelta_ebuf(1);
+            m = getdelta_ebuf(0);
         }
         else
         {
-            m = getdelta_ebuf(1 - m);
             n = getdelta_ebuf(m);
+            m = getdelta_ebuf(1 - m);
         }
     }
 
