@@ -180,7 +180,7 @@ should be output to the terminal, according to the table below.
 | Command | Function |
 | ------- | -------- |
 | 0EV | Do not print any lines before the prompt. |
-| *n*ES | If *n* is between 1 and 31, the current line is typed out with a line feed immediately following the position of the pointer to identify its position. If *n* is between 32 and 126, the current line is typed out with the ASCII character corresponding to the value of n immediately following the position of the pointer to identify its position. If you want to see more than one line of type out, use the form *m*\*256+*n*. The *n* is the same as above. The *m* is the number of lines of view. For example, 3\*256+^^! would give two lines on either side of the current line, and the current line with the character "!" at the pointer’s position. |
+| *n*EV | If *n* is between 1 and 31, the current line is typed out with a line feed immediately following the position of the pointer to identify its position. If *n* is between 32 and 126, the current line is typed out with the ASCII character corresponding to the value of n immediately following the position of the pointer to identify its position. If you want to see more than one line of type out, use the form *m*\*256+*n*. The *n* is the same as above. The *m* is the number of lines of view. For example, 3\*256+^^! would give two lines on either side of the current line, and the current line with the character "!" at the pointer’s position. |
 
 The initial value of the EV flag is 0.
 
