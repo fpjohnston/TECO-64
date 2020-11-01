@@ -385,7 +385,7 @@ void exec_ES(struct cmd *cmd)
     if (cmd->m_set)
     {
         cmd->n_arg &= 0xFF;
-        cmd->n_arg += (cmd->m_arg + 1) << 8;
+        cmd->n_arg += (cmd->m_arg + 1) * 256;
     }
 
     (void)check_n_flag(cmd, &f.es);
@@ -450,7 +450,7 @@ void exec_EV(struct cmd *cmd)
     if (cmd->m_set)
     {
         cmd->n_arg &= 0xFF;
-        cmd->n_arg += (cmd->m_arg + 1) << 8;
+        cmd->n_arg += (cmd->m_arg + 1) * 256;
     }
 
     (void)check_n_flag(cmd, &f.ev);
