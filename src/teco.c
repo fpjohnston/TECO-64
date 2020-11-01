@@ -77,35 +77,33 @@ static void init_teco(int argc, const char * const argv[]);
 
 int main(int argc, const char * const argv[])
 {
+    f.e0.init = true;                   // Starting TECO
     init_teco(argc, argv);              // Initialize variables and things
+    f.e0.init = (cbuf->pos != cbuf->len); // Reset if no initial command string
 
     for (;;)                            // Loop forever
     {
-        f.e0.exec  = false;             // Not executing a command
-        reset();                        // Reset for new command
-        refresh_dpy();                  // Update display if needed
-
         switch (setjmp(jump_main))
         {
             case 0:                     // Normal entry
+                refresh_dpy();          // Update display if needed
+
                 f.e0.trace = false;     // Disable tracing
 
                 f.et.abort = false;     // Don't abort on error
 
                 nparens = 0;            // Reset parenthesis count
 
-                refresh_dpy();          // Refresh display if needed
-
-                if (!read_EI())         // Any input from indirect file?
+                if (!f.e0.init && !read_EI())
                 {
-                    read_cmd();         // No, so just read from terminal
+                    read_cmd();         // Read input from terminal
                 }
 
                 init_expr();            // Initialize expression stack
 
-                f.e0.exec = true;       // Executing a command
-
+                f.e0.exec = true;       // Command is in progress
                 exec_cmd(NULL);         // Execute what we have
+                f.e0.exec = false;      // Command is done
 
                 f.e0.error = false;     // Command completed w/o error
 
@@ -128,7 +126,8 @@ int main(int argc, const char * const argv[])
                 break;
         }
 
-        f.e0.init = false;              // No initialization in progress
+        f.e0.init = false;              // Not initializing now
+        reset();                        // Reset for new command
     }
 }
 
@@ -143,8 +142,6 @@ int main(int argc, const char * const argv[])
 
 static void init_teco(int argc, const char * const argv[])
 {
-    f.e0.init    = true;                // Initialization is in progress
-
     // Default settings for E1
 
     f.e1.xoper  = true;                 // Enable extended operators
