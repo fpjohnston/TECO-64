@@ -58,6 +58,7 @@ struct config
     bool display;           ///< --display
     char *execute;          ///< --execute
     bool exit;              ///< --exit
+    bool formfeed;          ///< --formfeed
     bool help;              ///< --help
     const char *initial;    ///< --initial
     char *log;              ///< --log
@@ -84,6 +85,7 @@ static struct config config =
     .display  = false,
     .execute  = NULL,
     .exit     = false,
+    .formfeed = false,
     .help     = false,
     .initial  = NULL,
     .log      = NULL,
@@ -184,6 +186,7 @@ static void exec_config(int argc, const char * const argv[])
     if (config.display)  add_cmd("-1W ",      NULL);
     if (config.vtedit)   add_cmd(NULL,        config.vtedit);
     if (config.scroll)   add_cmd("%s,7:W \e", config.scroll);
+    if (config.formfeed) add_cmd("0,1E3 ",    NULL);
 
     // file1 may be an input or output file, depending on the options used.
     // file2 is always an output file.
@@ -352,6 +355,12 @@ void set_config(
                 }
 
                 teco_memory = NULL;     // TODO: is this necessary?
+
+                break;
+
+            case OPTION_F:
+            case OPTION_f:
+                config.formfeed = (c == 'F') ? true : false;
 
                 break;
 

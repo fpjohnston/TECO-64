@@ -106,6 +106,16 @@
     </section>
     <section title="Debug options">
         <option>
+            <short_name>F</short_name>
+            <long_name>formfeed</long_name>
+            <help>Enables FF as a page delimiter.</help>
+        </option>
+        <option>
+            <short_name>f</short_name>
+            <long_name>noformfeed</long_name>
+            <help>Disables FF as a page delimiter.</help>
+        </option>
+        <option>
             <short_name>L</short_name>
             <long_name>log</long_name>
             <argument>required</argument>
@@ -115,7 +125,7 @@
             <short_name>Z</short_name>
             <long_name>zero</long_name>
             <argument>optional</argument>
-            <help>Strictly enforce command syntax (zero tolerance).</help>
+            <help>Enable syntax restrictions by setting E2 to 'n'.</help>
         </option>
     </section>
     <section title="Miscellaneous options">

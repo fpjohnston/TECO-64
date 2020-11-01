@@ -86,8 +86,10 @@ static const char * const help_text[] =
     "",
     "Debug options:",
     "",
+    "  -F, --formfeed         Enables FF as a page delimiter.",
+    "  -f, --noformfeed       Disables FF as a page delimiter.",
     "  -L, --log=xyz          Saves input and output in log file 'xyz'.",
-    "  -Z, --zero             Strictly enforce command syntax (zero tolerance).",
+    "  -Z, --zero=n           Enable syntax restrictions by setting E2 to 'n'.",
     "",
     "Miscellaneous options:",
     "",
@@ -106,6 +108,7 @@ enum option_t
     OPTION_C = 'C',
     OPTION_D = 'D',
     OPTION_E = 'E',
+    OPTION_F = 'F',
     OPTION_H = 'H',
     OPTION_I = 'I',
     OPTION_L = 'L',
@@ -117,6 +120,7 @@ enum option_t
     OPTION_X = 'X',
     OPTION_Z = 'Z',
     OPTION_c = 'c',
+    OPTION_f = 'f',
     OPTION_i = 'i',
     OPTION_m = 'm',
     OPTION_o = 'o',
@@ -127,7 +131,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "A:B:CDE:HI::L:MO:RS:V::XZ::cimorv";
+static const char * const optstring = "A:B:CDE:FHI::L:MO:RS:V::XZ::cfimorv";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -139,6 +143,7 @@ static const struct option long_options[] =
     { "create",         no_argument,        NULL,  'C'    },
     { "display",        no_argument,        NULL,  'D'    },
     { "execute",        required_argument,  NULL,  'E'    },
+    { "formfeed",       no_argument,        NULL,  'F'    },
     { "help",           no_argument,        NULL,  'H'    },
     { "initialize",     optional_argument,  NULL,  'I'    },
     { "log",            required_argument,  NULL,  'L'    },
@@ -150,6 +155,7 @@ static const struct option long_options[] =
     { "exit",           no_argument,        NULL,  'X'    },
     { "zero",           optional_argument,  NULL,  'Z'    },
     { "nocreate",       no_argument,        NULL,  'c'    },
+    { "noformfeed",     no_argument,        NULL,  'f'    },
     { "noinitialize",   no_argument,        NULL,  'i'    },
     { "nomemory",       no_argument,        NULL,  'm'    },
     { "nooutput",       no_argument,        NULL,  'o'    },
