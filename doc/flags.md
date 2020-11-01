@@ -123,7 +123,8 @@ after searches.
 | ------- | -------- |
 | 0ES  | Nothing is typed out after searches. |
 | -1ES | The current line is typed out when a successful search at top level is completed (i.e., a V command is done automatically). |
-| *n*ES | If *n* is between 1 and 31, the current line is typed out with a line feed immediately following the position of the pointer to identify its position. If *n* is between 32 and 126, the current line is typed out with the ASCII character corresponding to the value of n immediately following the position of the pointer to identify its position. If you want to see more than one line of type out, use the form *m*\*256+*n*. The *n* is the same as above. The *m* is the number of lines of view. For example, 3\*256+^^! would give two lines on either side of the found line, and the found line with the character "!" at the pointer’s position. |
+| *n*ES | If *n* is between 1 and 31, the current line is typed out with a line feed immediately following the position of the pointer to identify its position. If *n* is between 32 and 126, the current line is typed out with the ASCII character corresponding to the value of n immediately following the position of the pointer to identify its position. |
+| *m*,*n*ES | Same as *n*ES, but prints *m* lines before and after the current line. <br><br>For compatibility with older TECOs, this command may also be specified in the form (*m*+1)\*256+*n*ES. |
 
 The ES flag does not apply to searches executed inside iterations or
 macros; lines found inside iterations or macros are never typed
@@ -180,7 +181,8 @@ should be output to the terminal, according to the table below.
 | Command | Function |
 | ------- | -------- |
 | 0EV | Do not print any lines before the prompt. |
-| *n*EV | If *n* is between 1 and 31, the current line is typed out with a line feed immediately following the position of the pointer to identify its position. If *n* is between 32 and 126, the current line is typed out with the ASCII character corresponding to the value of n immediately following the position of the pointer to identify its position. If you want to see more than one line of type out, use the form *m*\*256+*n*. The *n* is the same as above. The *m* is the number of lines of view. For example, 3\*256+^^! would give two lines on either side of the current line, and the current line with the character "!" at the pointer’s position. |
+| *n*EV | If *n* is between 1 and 31, the current line is typed out with a line feed immediately following the position of the pointer to identify its position. If *n* is between 32 and 126, the current line is typed out with the ASCII character corresponding to the value of n immediately following the position of the pointer to identify its position. |
+| *m*,*n*EV | Same as *n*EV, but prints *m* lines before and after the current line. <br><br>For compatibility with older TECOs, this command may also be specified in the form (*m*+1)\*256+*n*EV. |
 
 The initial value of the EV flag is 0.
 

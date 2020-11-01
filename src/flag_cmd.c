@@ -380,6 +380,14 @@ void exec_EJ(struct cmd *cmd)
 
 void exec_ES(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
+    if (cmd->m_set)
+    {
+        cmd->n_arg &= 0xFF;
+        cmd->n_arg += (cmd->m_arg + 1) << 8;
+    }
+
     (void)check_n_flag(cmd, &f.es);
 }
 
@@ -437,5 +445,13 @@ void exec_EU(struct cmd *cmd)
 
 void exec_EV(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
+    if (cmd->m_set)
+    {
+        cmd->n_arg &= 0xFF;
+        cmd->n_arg += (cmd->m_arg + 1) << 8;
+    }
+
     (void)check_n_flag(cmd, &f.ev);
 }

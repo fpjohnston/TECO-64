@@ -147,10 +147,10 @@
         <command name='EP'       format='X'           exec='exec_EP'        />
         <command name='EQ'       format=':@Xq//'      exec='exec_EQ'        />
         <command name='ER'       format=':@X//'       exec='exec_ER'        />
-        <command name='ES'       format='nX!'         exec='exec_ES'        />
+        <command name='ES'       format='m,nX!'       exec='exec_ES'        />
         <command name='ET'       format='m,nX!'       exec='exec_ET'        />
         <command name='EU'       format='nX!'         exec='exec_EU'        />
-        <command name='EV'       format='nX!'         exec='exec_EV'        />
+        <command name='EV'       format='m,nX!'       exec='exec_EV'        />
         <command name='EW'       format=':@X//'       exec='exec_EW'        />
         <command name='EX'       format='X'           exec='exec_EX'        />
         <command name='EY'       format=':X'          exec='exec_EY'        />
