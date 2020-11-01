@@ -295,6 +295,7 @@ void read_cmd(void)
         case 0:
         case 1:
             print_prompt();
+
             break;
 
         default:
@@ -315,7 +316,7 @@ void read_cmd(void)
 
     for (;;)
     {
-        if ((c == ACCENT && f.et.accent) || (c == f.ee) ||
+        if ((c == ACCENT && f.et.accent) || (c == f.ee && c != NUL) ||
             (c == ESC && (f.et.accent || f.ee != -1)))
         {
             echo_in('`');               // Echo delimiter as accent grave
@@ -414,7 +415,7 @@ static int read_first(void)
         // If first character is an ESCape, or ESCape surrogate, then
         // treat it like LF.
 
-        if (c == ESC || (c == ACCENT && f.et.accent) || c == f.ee)
+        if (c == ESC || (c == ACCENT && f.et.accent) || (c == f.ee && c != NUL))
         {
             c = LF;
         }
