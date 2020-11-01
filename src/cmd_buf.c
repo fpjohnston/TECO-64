@@ -39,7 +39,7 @@
 #include "term.h"
 
 
-struct buffer *cbuf;                    ///< Current command string buffer
+volatile struct buffer *cbuf;           ///< Current command string buffer
 
 static struct buffer *root;             ///< Command string buffer root
 

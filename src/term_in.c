@@ -44,7 +44,7 @@
 #include "term.h"
 
 
-static jmp_buf jump_input;              ///< longjmp() to reset terminal input
+static jmp_buf jump_first;              ///< longjmp() to reset terminal input
 
 // Local functions
 
@@ -97,7 +97,7 @@ static void exec_BS(void)
 
     if (getlen_tbuf() == 0)             // Is terminal buffer empty now?
     {
-        longjmp(jump_input, 2);         // Yes, restart terminal input
+        longjmp(jump_first, 2);         // Yes, restart w/o prompt
     }
 }
 
@@ -132,7 +132,7 @@ static void exec_cancel(void)
         print_echo(CRLF);
     }
 
-    longjmp(jump_input, 1);
+    longjmp(jump_first, 1);             // Restart w/ prompt
 }
 
 
@@ -158,7 +158,7 @@ static void exec_ctrl_G(void)
             reset_cbuf((bool)true);
             print_echo(CRLF);
 
-            longjmp(jump_input, 1);
+            longjmp(jump_first, 1);     // Restart w/ prompt
 
         case SPACE:                     // ^G<SPACE> - retype current line
         case '*':                       // ^G* - retype all input lines
@@ -260,7 +260,7 @@ static void exec_star(void)
     {
         echo_in('?');                   //  alert the user to the error,
 
-        longjmp(jump_input, 1);         //   and reset command string
+        longjmp(jump_first, 1);         //   and reset command string
     }
 
     print_echo(CRLF);
@@ -280,43 +280,30 @@ static void exec_star(void)
 
 void read_cmd(void)
 {
-    static int last_in = EOF;           // Last character read
+    static int last_in;                 // Last character read
 
-    if (!empty_cbuf())
+    if (f.ev)                           // Is edit verify flag set?
     {
-        return;                         // Just process current command
+        flag_print(f.ev);
     }
 
-    int status;
-    int c;
+    // This allows commands, such as ^C, ^U, and ^G^G, that clear the terminal
+    // buffer, to restart input and put us back in immediate-action mode.
 
-    switch (setjmp(jump_input))
+    switch (setjmp(jump_first))
     {
-        case 0:                         // Normal entry
-            if ((status = read_indirect()) == -1)
-            {
-                return;
-            }
-            else if (status == 1)
-            {
-                c = getc_term((bool)WAIT); // Partial command - get another chr.
-
-                break;
-            }
-            //lint -fallthrough
-
-        default:
+        case 0:
         case 1:
             print_prompt();
-            //lint -fallthrough
+            break;
 
-        case 2:
-            last_in = EOF;              // No previous character
-            reset_cbuf((bool)true);     // Clear the command buffer
-            c = read_first();           // Start new command
-
+        default:
             break;
     }
+
+    int c = read_first();               // Get the first non-immediate command
+
+    last_in = EOF;
 
     // We don't reset the terminal buffer until we get here, because the user
     // might enter a "*q" immediate-action command to save the contents of the
@@ -354,7 +341,7 @@ void read_cmd(void)
                 exit(EXIT_SUCCESS);     // Yes, user wants out
             }
 
-            longjmp(jump_input, 1);     // Restart command input
+            longjmp(jump_first, 1);     // Restart w/ prompt
         }
         else if (c == BS || c == DEL)
         {
@@ -417,11 +404,6 @@ static int read_first(void)
 
     for (;;)
     {
-        if (f.ev)                       // Is edit verify flag set?
-        {
-            flag_print(f.ev);
-        }
-
         int c = getc_term((bool)WAIT);
 
         if ((c = readkey_dpy(c)) == EOF)

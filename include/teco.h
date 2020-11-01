@@ -86,7 +86,7 @@ struct tstring
 
 // Command buffer variables and functions
 
-extern struct buffer *cbuf;
+extern volatile struct buffer *cbuf;
 
 /// @def    empty_cbuf()
 /// @brief  Returns true if all data in command string has been read, else false.

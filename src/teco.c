@@ -81,7 +81,9 @@ int main(int argc, const char * const argv[])
 
     for (;;)                            // Loop forever
     {
-        refresh_dpy();                  // Update any active display
+        f.e0.exec  = false;             // Not executing a command
+        reset();                        // Reset for new command
+        refresh_dpy();                  // Update display if needed
 
         switch (setjmp(jump_main))
         {
@@ -94,32 +96,34 @@ int main(int argc, const char * const argv[])
 
                 refresh_dpy();          // Refresh display if needed
 
-                read_cmd();             // Read the next command
+                if (!read_EI())         // Any input from indirect file?
+                {
+                    read_cmd();         // No, so just read from terminal
+                }
+
                 init_expr();            // Initialize expression stack
 
                 f.e0.exec = true;       // Executing a command
 
                 exec_cmd(NULL);         // Execute what we have
 
-                f.e0.exec  = false;     // Not executing a command
                 f.e0.error = false;     // Command completed w/o error
 
                 break;
 
-            case 1:                     // CTRL/C typed
-                reset();                // Reset for next command
-
-                break;
-
-            default:
             case 2:                     // Error
-                f.e0.exec = false;      // Not executing a command
                 f.e0.error = true;      // Flag the error
 
                 f.et.image  = false;    // Disable image output
                 f.et.noecho = false;    // Enable echo for CTRL/T
                 f.et.ctrl_o = false;    // Disable CTRL/O
                 f.et.nowait = false;    // Enable wait for CTRL/T
+                f.et.ctrl_c = false;    // Disable CTRL/C trap
+                //lint -fallthrough
+
+            default:
+            case 1:                     // CTRL/C typed
+                reset();                // Reset everything
 
                 break;
         }
@@ -265,9 +269,8 @@ void register_exit(void (*func)(void))
 
 
 ///
-///  @brief    Do a reset after an error or CTRL/C. This is mostly to do such
-///            as freeing up dynamically allocated memory, closing files, and
-///            the like.
+///  @brief    Reset everything before starting a new command. This frees up
+///            allocated, closes files, etc.
 ///
 ///  @returns  Nothing.
 ///
@@ -277,8 +280,8 @@ void reset(void)
 {
     reset_if();                         // Reset conditional stack
     reset_loop();                       // Reset loop stack
-    reset_indirect();                   // Close any indirect file
     reset_cbuf((bool)true);             // Reset the input buffer
+    reset_indirect();                   // Reset indirect command file
     reset_qreg();                       // Free up Q-register storage
     reset_macro();                      // Reset macro stack
 }

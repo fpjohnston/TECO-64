@@ -120,7 +120,7 @@ void exec_macro(struct buffer *macro, struct cmd *cmd)
     assert(macro != NULL);
     assert(macro->data != NULL);
 
-    struct buffer *saved_cbuf = get_cbuf();
+    volatile struct buffer *saved_cbuf = get_cbuf();
 
     uint saved_pos = macro->pos;
 

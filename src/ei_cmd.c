@@ -32,7 +32,6 @@
 #include <unistd.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "eflags.h"
 #include "estack.h"
 #include "exec.h"
@@ -61,6 +60,9 @@ static struct ei_block *ei_new = NULL;
 
 static void exit_EI(void);
 
+static struct ei_block *reset_new(void);
+
+
 ///
 ///  @brief    Check to see if any EI commands are active.
 ///
@@ -72,32 +74,31 @@ static void exit_EI(void);
 
 int check_EI(void)
 {
-    if (cbuf != NULL)
+    if (ei_new != NULL && cbuf == &ei_new->buf)
     {
-        if (ei_new != NULL && cbuf->data == ei_new->buf.data)
-        {
-            return 1;
-        }
-        else if (cbuf->data == ei_old.data)
-        {
-            return -1;
-        }
+        return 1;
     }
-
-    return 0;
+    else if (cbuf == &ei_old)
+    {
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 
 ///
 ///  @brief    Execute "EI" command: read TECO command file. This is handled in
 ///            one of two ways: preset where input is read from after execution
-///            of the ehead command string has completed, as DEC TECOs have
-///            done, or immediately execute the contents of the file as though
-///            it were a macro, as TECO C has done. Which behavior is used
-///            depends on the alt_ei bit in the E1 extended features flag. By
-///            default, this bit is enabled.
+///            of the command string has completed, as DEC TECOs have done, or
+///            immediately execute the contents of the file as though it were a
+///            as TECO C has done. Which behavior is used depends on the new_ei
+///            bit in the E1 extended features flag. By default, this bit is
+///            enabled.
 ///
-///            N.B.: the alt_ei bit should not be changed after TECO starts up,
+///            N.B.: the new_ei bit should not be changed after TECO starts up,
 ///            or while executing EI commands, as this could have unpredictable
 ///            and undesirable results.
 ///
@@ -117,11 +118,14 @@ void exec_EI(struct cmd *cmd)
 
     if (f.e0.init || f.e1.new_ei)       // New-style EI
     {
-        struct ei_block *ei_cmd;
-
-        if (len != 0)
+        if (len == 0)
         {
-            ei_cmd           = alloc_mem((uint)sizeof(*ei_cmd));
+            ei_new = reset_new();
+        }
+        else
+        {
+            struct ei_block *ei_cmd = alloc_mem((uint)sizeof(*ei_cmd));
+
             ei_cmd->buf.data = alloc_mem((uint)sizeof(ei_cmd->buf));
             ei_cmd->buf.size = 0;
             ei_cmd->buf.len  = 0;
@@ -133,37 +137,18 @@ void exec_EI(struct cmd *cmd)
             if (open_command(buf, len, stream, cmd->colon, &ei_new->buf))
             {
                 exec_macro(&ei_new->buf, NULL);
-
-                return;
             }
-        }
-
-        if ((ei_cmd = ei_new) != NULL)
-        {
-            if (cbuf != NULL && cbuf->data == ei_cmd->buf.data)
-            {
-                cbuf->len = 0;
-                cbuf->pos = 0;
-            }
-
-            ei_new = ei_cmd->next;
-
-            ei_cmd->buf.size = 0;
-            ei_cmd->buf.len  = 0;
-            ei_cmd->buf.pos  = 0;
-
-            free_mem(&ei_cmd->buf.data);
-            free_mem(&ei_cmd);
         }
     }
     else                                // Old-style EI
     {
-        if (len != 0)
+        if (len == 0)                   // @EI//?
         {
-            if (open_command(buf, len, stream, cmd->colon, &ei_old))
-            {
-                return;
-            }
+            longjmp(jump_main, 1);      // Yes, act like CTRL/C typed
+        }
+        else
+        {
+            (void)open_command(buf, len, stream, cmd->colon, &ei_old);
         }
     }
 }
@@ -198,71 +183,22 @@ void init_EI(void)
 ///
 ///  @brief    Read input from indirect file if one is open.
 ///
-///  @returns  -1 -> Complete command
-///             1 -> Partial command
-///             0 -> No data is available.
+///  @returns  true if have command to execute, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int read_indirect(void)
+bool read_EI(void)
 {
     if (ei_old.data == NULL || ei_old.pos == ei_old.len)
     {
-        ei_old.len = 0;
-        ei_old.pos = 0;
-
-        free_mem(&ei_old);
-
-        return 0;
+        return false;
     }
-
-    set_cbuf(&ei_old);                  // Use our command string
-
-    // Check to see if buffer ends with a double ESCape, or some combination
-    // of an ESCape and its equivalent 2-chr. ASCII construct (i.e., ^[ ).
-
-    uint len = cbuf->len;
-    char *end = cbuf->data + len;
-    uint nbytes = 0;                    // No. of bytes terminating string
-
-    if (len >= 2)                       // 2+ chrs. for ESC+ESC
+    else
     {
-        int c1 = *--end;
-        int c2 = *--end;
+        set_cbuf(&ei_old);              // Use our command string
 
-        if (c1 == ESC && c2 == ESC)
-        {
-            nbytes = 2;
-        }
-
-        if (len >= 3 && nbytes == 0)    // 3+ chrs. for ESC+^[ or ^[+ESC
-        {
-            int c3 = *--end;
-
-            if ((c1 == ESC && c2 == '[' && c3 == '^') ||
-                (c1 == '[' && c2 == '^' && c3 == ESC))
-            {
-                nbytes = 3;
-            }
-
-            if (len >= 4 && nbytes == 0) // 4+ chrs. for ^[ + ^[
-            {
-                int c4 = *--end;
-
-                if (c1 == '[' && c2 == '^' && c3 == '[' && c4 == '^')
-                {
-                    nbytes = 4;
-                }
-            }
-        }
-
-        if (nbytes != 0)                // Did we find end of command?
-        {
-            return -1;                  // Say we have a complete command
-        }
+        return true;
     }
-
-    return 1;                           // We only have a partial command
 }
 
 
@@ -279,19 +215,37 @@ void reset_indirect(void)
     ei_old.len  = 0;
     ei_old.pos  = 0;
 
-    free_mem(&ei_old);
-
-    struct ei_block *ei_cmd;
-
-    while ((ei_cmd = ei_new) != NULL)
+    free_mem(&ei_old.data);
+ 
+    while ((ei_new = reset_new()) != NULL)
     {
-        ei_new = ei_cmd->next;
-
-        ei_cmd->buf.size = 0;
-        ei_cmd->buf.len  = 0;
-        ei_cmd->buf.pos  = 0;
-
-        free_mem(&ei_cmd->buf);
-        free_mem(&ei_cmd);
+        ;
     }
+}
+
+
+///
+///  @brief    Reset buffer for new-style EI command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static struct ei_block *reset_new(void)
+{
+    if (ei_new == NULL)
+    {
+        return NULL;
+    }
+
+    struct ei_block *ei_cmd = ei_new->next;
+
+    ei_new->buf.size = 0;
+    ei_new->buf.len  = 0;
+    ei_new->buf.pos  = 0;
+
+    free_mem(&ei_new->buf.data);
+    free_mem(&ei_new);
+
+    return ei_cmd;
 }

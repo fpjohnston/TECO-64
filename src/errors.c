@@ -323,15 +323,12 @@ noreturn void throw(int error, ...)
         }
     }
 
-    // We reset here rather than in the main loop, since we might exit
-    // rather than return there.
-
-    reset();                            // Reset for next command
-
     if (f.et.abort)                     // Abort on error?
     {
-        exit(EXIT_FAILURE);             // Yes, we're all done here
+        reset();                        // Clean things up
+
+        exit(EXIT_FAILURE);
     }
 
-    longjmp(jump_main, 2);              // Back to the shadows again!
+    longjmp(jump_main, 1);              // Back to the shadows again!
 }
