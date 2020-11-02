@@ -48,11 +48,11 @@ static jmp_buf jump_first;              ///< longjmp() to reset terminal input
 
 // Local functions
 
-static void exec_BS(void);
-
 static void exec_cancel(void);
 
 static void exec_ctrl_G(void);
+
+static void exec_DEL(void);
 
 static void exec_inspect(int pos, int line);
 
@@ -65,41 +65,6 @@ static void rubout_chr(int c);
 static void rubout_chrs(uint n);
 
 static void rubout_line(void);
-
-
-///
-///  @brief    Execute "BS": delete last character typed. We should normally
-///            only get here if there is actually something to delete; if the
-///            terminal buffer is empty, then BS is executed as an immediate-
-///            action command.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void exec_BS(void)
-{
-    int c = delete_tbuf();
-
-    if (c == EOF)                       // This should never happen,
-    {
-        return;                         //  but ignore it if it does
-    }
-
-    if (f.et.rubout)
-    {
-        rubout_chr(c);
-    }
-    else
-    {
-        echo_in(c);
-    }
-
-    if (getlen_tbuf() == 0)             // Is terminal buffer empty now?
-    {
-        longjmp(jump_first, 2);         // Yes, restart w/o prompt
-    }
-}
 
 
 ///
@@ -150,6 +115,20 @@ static void exec_ctrl_G(void)
     int c = getc_term((bool)WAIT);      // Get next character
     int pos = (c == SPACE) ? (int)start_tbuf() : 0;
 
+    if (c == DEL)
+    {
+        store_tbuf(CTRL_G);             // Store CTRL/G so it can be deleted
+        exec_DEL();
+
+        return;
+    }
+    else if (c == CTRL_U)
+    {
+        exec_cancel();
+
+        return;
+    }
+
     echo_in(c);                         // Echo next character
 
     switch (c)
@@ -176,6 +155,41 @@ static void exec_ctrl_G(void)
             store_tbuf(c);              // Regular character, so just store it
 
             break;
+    }
+}
+
+
+///
+///  @brief    Execute "DEL": delete last character typed. We should normally
+///            only get here if there is actually something to delete; if the
+///            terminal buffer is empty, then BS is executed as an immediate-
+///            action command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_DEL(void)
+{
+    int c = delete_tbuf();
+
+    if (c == EOF)                       // This should never happen,
+    {
+        return;                         //  but ignore it if it does
+    }
+
+    if (f.et.rubout)
+    {
+        rubout_chr(c);
+    }
+    else
+    {
+        echo_in(c);
+    }
+
+    if (getlen_tbuf() == 0)             // Is terminal buffer empty now?
+    {
+        longjmp(jump_first, 2);         // Yes, restart w/o prompt
     }
 }
 
@@ -346,7 +360,7 @@ void read_cmd(void)
         }
         else if (c == BS || c == DEL)
         {
-            exec_BS();
+            exec_DEL();
         }
         else if (c == CTRL_G)
         {
@@ -505,18 +519,44 @@ static int read_first(void)
 
 static void rubout_chr(int c)
 {
-    // Echoed input is normally only a single character, but if we're not
-    // in image mode, then control characters require an extra RUBOUT.
+    // Echoed input is normally only a single character, but control characters
+    // may require more (or fewer) RUBOUTs.
 
-    uint n;
+    uint n = 1;
 
     if (f.e0.display)
     {
         n = (uint)strlen(unctrl((uint)c));
     }
-    else
+    else if (iscntrl(c))
     {
-        n = iscntrl(c) && !f.et.image ? 2 : 1;
+        switch (c)
+        {
+            case LF:
+                ++n;                    // Add extra for CR
+
+                break;
+
+            case BS:
+            case TAB:
+            case VT:
+            case FF:
+            case CR:
+            case ESC:
+                break;
+
+            case DEL:                   // DEL doesn't echo
+                return;
+
+            default:                    // Generic control sequence
+                ++n;
+
+                break;
+        }
+    }
+    else if (!isascii(c))
+    {
+        n += 3;                         // 8-bit chrs. are printed as [xx]
     }
 
     rubout_chrs(n);

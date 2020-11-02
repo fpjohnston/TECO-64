@@ -50,12 +50,6 @@ static int term_pos = 0;
 
 static void tputc(int c, int input);
 
-static void print_chr(int c, void (*print)(int c));
-
-static void print_echo(int c);
-
-static void print_out(int c);
-
 
 ///
 ///  @brief    Echo input character.
@@ -66,60 +60,47 @@ static void print_out(int c);
 
 void echo_in(int c)
 {
-    print_chr(c, print_echo);
-}
+    c &= 0xFF;                          // Ensure we only print 8 bits
 
-
-///
-///  @brief    Echo character in a printable form, either as c, ^c, or [c].
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void print_chr(int c, void (*print)(int c))
-{
-    assert(print != NULL);              // Error if no function to call
-
-    if (c == ESC && (f.et.accent || f.ee != NUL))
+    if (c == f.ee && c != NUL)          // Alternative delimiter?
     {
-        c = '`';
+        c = '`';                        // Yes, always echo as accent grave
     }
 
-    if (f.et.image && print == print_out)
+    if (isprint(c))
     {
-        tputc(c, false);
+        tputc(c, true);
     }
-    else if (isprint(c))
-    {
-        (print)(c);
-    }
-    else if (!isascii(c))               // 8-bit character?
-    {
-        if (f.et.eightbit)              // Can terminal display it?
-        {
-            (print)(c);
-        }
-        else                            // No, make it printable
-        {
-            char chrbuf[5];             // [xx] + NUL
-
-            uint nbytes = (uint)snprintf(chrbuf, sizeof(chrbuf), "[%02x]", c);
-
-            assert(nbytes < sizeof(chrbuf)); // Error if snprintf() failed
-        }
-    }
-    else                                // Must be a control character
+    else if (iscntrl(c))
     {
         switch (c)
         {
+            case LF:
+                tputc(CR, true);
+                //lint -fallthrough
+
             case BS:
             case TAB:
-            case LF:
-            case VT:
-            case FF:
             case CR:
-                (print)(c);
+                tputc(c, true);
+
+                break;
+
+            case VT:
+                for (uint i = 0; i < 4; ++i)
+                {
+                    tputc(CR, true);
+                    tputc(LF, true);
+                }
+
+                break;
+
+            case FF:
+                for (uint i = 0; i < 8; ++i)
+                {
+                    tputc(CR, true);
+                    tputc(LF, true);
+                }
 
                 break;
 
@@ -127,41 +108,34 @@ static void print_chr(int c, void (*print)(int c))
                 break;
 
             case ESC:
-                (print)('$');
+                if (f.et.accent || f.ee != NUL)
+                {
+                    tputc('`', false);
+                }
+                else
+                {
+                    tputc('$', false);
+                }
 
                 break;
 
             default:                    // Display as ^c
-                (print)('^');
-                (print)(c + 'A' - 1);
+                tputc('^', true);
+                tputc(c + 'A' - 1, true);
 
                 break;
          }
     }
-}
-
-
-///
-///  @brief    Echo character to terminal, and possibly to log file.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void print_echo(int c)
-{
-    if (c == LF && !f.et.image)
+    else
     {
-        tputc(CR, true);                // Convert LF to CR/LF
+        tprint("[%02X]");
     }
-
-    tputc(c, true);
 }
 
 
 ///
-///  @brief    Check to see if we need to print anything after a successful
-///            search, or before a prompt.
+///  @brief    Called to print one or more lines after a successful search, or
+///            before a prompt.
 ///
 ///  @returns  Nothing.
 ///
@@ -239,48 +213,6 @@ void print_flag(int flag)
 
         last = c;
     }
-}
-
-
-///
-///  @brief    Output character to terminal, and possibly to log file.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void print_out(int c)
-{
-    if (c == LF && !f.et.image)
-    {
-        tputc(CR, false);               // Convert LF to CR/LF
-    }
-
-    switch (f.eu)
-    {
-        case 0:
-            if (islower(c))
-            {
-                tputc('\'', false);
-
-                c = toupper(c);
-            }
-
-            break;
-
-        case 1: 
-            if (isupper(c))
-            {
-                tputc('\'', false);
-            }
-
-            break;
-
-        default:
-            break;
-    }
-
-    tputc(c, false);
 }
 
 
@@ -395,7 +327,7 @@ static void tputc(int c, int input)
 
 
 ///
-///  @brief    Print output character.
+///  @brief    Type output character.
 ///
 ///  @returns  Nothing.
 ///
@@ -403,5 +335,71 @@ static void tputc(int c, int input)
 
 void type_out(int c)
 {
-    print_chr(c, print_out);
+    c &= 0xFF;                          // Ensure we only print 8 bits
+
+    if (f.et.image)
+    {
+        tputc(c, false);
+    }
+    else if (islower(c) && f.eu != -1)
+    {
+        if (f.eu == 0)
+        {
+            tputc('\'', false);
+        }
+
+        tputc(toupper(c), false);
+    }
+    else if (isupper(c) && f.eu == 1)
+    {
+        tputc('\'', false);
+        tputc(c, false);
+    }
+    else if (isprint(c))
+    {
+        tputc(c, false);
+    }
+    else if (iscntrl(c))                // ASCII character?
+    {
+        switch (c)
+        {
+            case LF:
+                if (!f.et.image)
+                {
+                    tputc(CR, false);   // Convert LF to CR/LF
+                }
+                //lint -fallthrough
+
+            case BS:
+            case TAB:
+            case VT:
+            case FF:
+            case CR:
+                tputc(c, false);
+
+                break;
+
+            case DEL:
+                break;
+
+            case ESC:
+                tputc('$', false);
+
+                break;
+
+            default:                    // Display as ^c
+                tputc('^', false);
+                tputc(c + 'A' - 1, false);
+
+                break;
+         }
+    }
+    else if (f.et.eightbit)             // Can terminal display it?
+    {
+        tputc(c, false);
+    }
+    else                                // No, make it printable
+    {
+        tprint("[%02X]");
+    }
 }
