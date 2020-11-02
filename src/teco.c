@@ -126,8 +126,12 @@ int main(int argc, const char * const argv[])
                 break;
         }
 
-        f.e0.init = false;              // Not initializing now
-        reset();                        // Reset for new command
+        if (f.e0.init)
+        {
+            f.e0.init = false;          // Not initializing now
+
+            reset();
+        }
     }
 }
 
