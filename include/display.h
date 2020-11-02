@@ -94,9 +94,9 @@ extern struct watch w;
 
 extern void check_escape(uint escape);
 
-#endif
-
 extern bool clear_eol(void);
+
+#endif
 
 extern void clear_dpy(void);
 
