@@ -89,7 +89,7 @@ void exec_E_ubar(struct cmd *cmd)
 
     if (search_loop(&s))
     {
-        flag_print(f.es);
+        print_flag(f.es);
 
         search_success(cmd);
     }

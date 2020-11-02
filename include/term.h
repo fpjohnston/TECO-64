@@ -58,15 +58,9 @@ extern void store_tbuf(int c);
 
 extern void echo_in(int c);
 
-extern void echo_out(int c);
-
 extern int getc_term(bool nowait);
 
 extern void init_term(void);
-
-extern void print_chr(int c);
-
-extern void print_echo(int c);
 
 extern void print_prompt(void);
 
@@ -79,5 +73,7 @@ extern void reset_term(void);
 #endif
 
 extern void tprint(const char *format, ...);
+
+extern void type_out(int c);
 
 #endif  // !defined(_TERM_H)

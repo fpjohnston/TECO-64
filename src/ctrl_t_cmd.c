@@ -65,30 +65,21 @@ void exec_ctrl_T(struct cmd *cmd)
 
         for (int i = 0; i < m; ++i)
         {
-            if (cmd->colon || f.et.image)
+            bool saved_image = f.et.image;
+
+            f.et.image = cmd->colon;
+
+            if (n >= 0)
             {
-                if (n >= 0)
-                {
-                    print_chr(n & 0xFF);
-                }
-                else
-                {
-                    print_chr(CR);
-                    print_chr(LF);
-                }
+                type_out(n & 0xFF);
             }
             else
             {
-                if (n >= 0)
-                {
-                    echo_out(n & 0xFF);
-                }
-                else
-                {
-                    echo_out(CR);
-                    echo_out(LF);
-                }
+                type_out(CR);
+                type_out(LF);
             }
+
+            f.et.image = saved_image;
         }
     }
     else                                // ^T -> read character from terminal
@@ -98,7 +89,7 @@ void exec_ctrl_T(struct cmd *cmd)
 
         if (!f.et.noecho && c != -1)
         {
-            echo_out(c);
+            type_out(c);
         }
 
         push_expr(c, EXPR_VALUE);

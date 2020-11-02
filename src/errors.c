@@ -151,7 +151,7 @@ void print_help(int error)
             if (len > (uint)w.width - 4)
             {
                 tprint("    %.*s", (end - start) - 1, start);
-                print_chr(CRLF);
+                type_out(LF);
 
                 --maxlines;
 
@@ -168,7 +168,7 @@ void print_help(int error)
             len = (uint)strlen(start);
 
             tprint("    %.*s", (int)len, start);
-            print_chr(CRLF);
+            type_out(LF);
 
             break;
         }
@@ -305,7 +305,7 @@ noreturn void throw(int error, ...)
                 tprint(" for '%s'", file_str);
             }
 
-            print_chr(CRLF);
+            type_out(LF);
 
             if (f.eh.verbose == 3)
             {
@@ -314,7 +314,7 @@ noreturn void throw(int error, ...)
         }
         else
         {
-            print_chr(CRLF);
+            type_out(LF);
         }
 
         if (f.eh.command)

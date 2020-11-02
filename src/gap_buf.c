@@ -533,7 +533,7 @@ static void print_size(int size)
     }
 
     tprint("[%d%s bytes]", size, type);
-    print_chr(CRLF);
+    type_out(LF);
 }
 
 

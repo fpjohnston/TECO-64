@@ -153,7 +153,7 @@ extern bool check_macro(void);
 
 extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
 
-extern void flag_print(int flag);
+extern void print_flag(int flag);
 
 extern void free_mem(void *ptr);
 

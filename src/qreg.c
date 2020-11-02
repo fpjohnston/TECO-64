@@ -32,7 +32,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "errcodes.h"
 #include "exec.h"
 #include "qreg.h"
@@ -404,14 +403,7 @@ void print_qreg(int qname, bool qdot)
     {
         int c = qreg->text.data[i];
 
-        if (c == LF)
-        {
-            print_chr(CRLF);
-        }
-        else
-        {
-            echo_out(c);
-        }
+        type_out(c);
     }
 }
 

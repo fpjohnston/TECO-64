@@ -92,7 +92,7 @@ static void exec_BS(void)
     }
     else
     {
-        print_echo(c);
+        echo_in(c);
     }
 
     if (getlen_tbuf() == 0)             // Is terminal buffer empty now?
@@ -129,7 +129,7 @@ static void exec_cancel(void)
     else
     {
         echo_in(CTRL_U);
-        print_echo(CRLF);
+        echo_in(LF);
     }
 
     longjmp(jump_first, 1);             // Restart w/ prompt
@@ -156,7 +156,7 @@ static void exec_ctrl_G(void)
     {
         case CTRL_G:                    // ^G^G - cancel all input
             reset_cbuf((bool)true);
-            print_echo(CRLF);
+            echo_in(LF);
 
             longjmp(jump_first, 1);     // Restart w/ prompt
 
@@ -207,7 +207,7 @@ static void exec_inspect(int pos, int line)
     }
     else
     {
-        print_echo(CR);
+        echo_in(CR);
     }
 
     if (t.dot != pos)
@@ -222,11 +222,11 @@ static void exec_inspect(int pos, int line)
         }
         else if (f.ev)
         {
-            flag_print(f.ev);
+            print_flag(f.ev);
         }
         else
         {
-            flag_print(-1);
+            print_flag(-1);
         }
     }
 }
@@ -263,7 +263,7 @@ static void exec_star(void)
         longjmp(jump_first, 1);         //   and reset command string
     }
 
-    print_echo(CRLF);
+    echo_in(LF);
 
     struct buffer qbuf = copy_tbuf();
 
@@ -284,7 +284,7 @@ void read_cmd(void)
 
     if (f.ev)                           // Is edit verify flag set?
     {
-        flag_print(f.ev);
+        print_flag(f.ev);
     }
 
     // This allows commands, such as ^C, ^U, and ^G^G, that clear the terminal
@@ -330,8 +330,8 @@ void read_cmd(void)
         if (c == CTRL_C)
         {
             echo_in(CTRL_C);
+            echo_in(LF);
             store_tbuf(CTRL_C);
-            print_echo(CRLF);
 
             if (f.et.abort)             // Should we abort?
             {
@@ -372,7 +372,7 @@ void read_cmd(void)
 
             if (last_in == ESC)
             {
-                print_echo(CRLF);
+                echo_in(LF);
 
                 while ((c = fetch_tbuf()) != EOF)
                 {
@@ -451,7 +451,7 @@ static int read_first(void)
 
             case CTRL_W:
                 echo_in(c);
-                echo_in(CRLF);
+                echo_in(LF);
                 clear_dpy();
 
                 break;
@@ -461,7 +461,7 @@ static int read_first(void)
 
                 if (last_error != E_NUL)
                 {
-                    echo_in(CRLF);
+                    echo_in(LF);
                     print_help(last_error);
                 }
 
@@ -477,7 +477,7 @@ static int read_first(void)
                     echo_in(c);
                     echo_tbuf(0);       // Echo command line
                     echo_in(c);
-                    echo_in(CRLF);
+                    echo_in(LF);
                 }
 
                 break;
@@ -534,9 +534,9 @@ static void rubout_chrs(uint n)
 {
     while (n-- > 0)
     {
-        print_echo(BS);
-        print_echo(SPACE);
-        print_echo(BS);
+        echo_in(BS);
+        echo_in(SPACE);
+        echo_in(BS);
     }
 }
 

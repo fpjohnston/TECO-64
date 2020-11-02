@@ -50,12 +50,11 @@ void exec_ctrl_A(struct cmd *cmd)
 
     for (unsigned int i = 0; i < cmd->text1.len; ++i)
     {
-        print_chr(*p++);
+        type_out(*p++);
     }
 
     if (cmd->colon)
     {
-        print_chr(CR);
-        print_chr(LF);
+        type_out(LF);
     }
 }

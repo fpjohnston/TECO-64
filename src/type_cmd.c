@@ -30,7 +30,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -118,19 +117,7 @@ static void exec_type(int m, int n)
     {
         int c = getchar_ebuf(i);
 
-        if (f.et.image)
-        {
-            print_chr(c);
-        }
-        else
-        {
-            if (c == LF)
-            {
-                echo_out(CR);
-            }
-
-            echo_out(c);
-        }
+        type_out(c);
     }
 }
 

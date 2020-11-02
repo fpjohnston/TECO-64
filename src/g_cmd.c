@@ -156,7 +156,7 @@ static void type_G(struct cmd *cmd)
             {
                 while (*p != NUL)
                 {
-                    print_chr(*p++);
+                    type_out(*p++);
                 }
             }
 

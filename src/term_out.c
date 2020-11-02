@@ -48,13 +48,17 @@ static int term_pos = 0;
 
 // Local functions
 
-static void tputc(int c);
+static void tputc(int c, int input);
 
-static void echo_chr(int c, void (*print)(int c));
+static void print_chr(int c, void (*print)(int c));
+
+static void print_echo(int c);
+
+static void print_out(int c);
 
 
 ///
-///  @brief    Echo character in a printable form, either as c, ^c, or [c].
+///  @brief    Echo input character.
 ///
 ///  @returns  Nothing.
 ///
@@ -62,7 +66,7 @@ static void echo_chr(int c, void (*print)(int c));
 
 void echo_in(int c)
 {
-    echo_chr(c, print_echo);
+    print_chr(c, print_echo);
 }
 
 
@@ -73,36 +77,20 @@ void echo_in(int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void echo_out(int c)
-{
-    echo_chr(c, print_chr);
-}
-
-
-///
-///  @brief    Echo character in a printable form, either as c, ^c, or [c].
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void echo_chr(int c, void (*print)(int c))
+static void print_chr(int c, void (*print)(int c))
 {
     assert(print != NULL);              // Error if no function to call
 
-    if (c == ESC)
+    if (c == ESC && (f.et.accent || f.ee != NUL))
     {
-        if (f.et.accent)
-        {
-            c = '`';
-        }
-        else if (f.ee != NUL)
-        {
-            c = f.ee;
-        }
+        c = '`';
     }
 
-    if (isprint(c))
+    if (f.et.image && print == print_out)
+    {
+        tputc(c, false);
+    }
+    else if (isprint(c))
     {
         (print)(c);
     }
@@ -128,6 +116,8 @@ static void echo_chr(int c, void (*print)(int c))
             case BS:
             case TAB:
             case LF:
+            case VT:
+            case FF:
             case CR:
                 (print)(c);
 
@@ -141,73 +131,12 @@ static void echo_chr(int c, void (*print)(int c))
 
                 break;
 
-            case FF:
-//                (print)('\r');
-                //lint -fallthrough
-
-            case VT:
-//                (print)('\n');
-//                (print)('\n');
-//                (print)('\n');
-//                (print)('\n');
-
-                //lint -fallthrough
-
-            case CTRL_G:
-//                (print)(CTRL_G);
-//                break;
-                //lint -fallthrough
-
-            default:                    // Display as +^c
-//                (print)(c);
+            default:                    // Display as ^c
                 (print)('^');
                 (print)(c + 'A' - 1);
 
                 break;
          }
-    }
-}
-
-
-///
-///  @brief    Output character to terminal, and possibly to log file.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void print_chr(int c)
-{
-    if (c == LF && !f.et.image)
-    {
-        print_chr(CR);
-    }
-    else if (c == CRLF)
-    {
-        print_chr(CR);
-
-        c = LF;
-    }
-    else if (f.eu != -1)
-    {
-        if ((f.eu == 0 && islower(c)) || (f.eu == 1 && isupper(c)))
-        {
-            tputc('\'');
-        }
-
-        c = toupper(c);
-    }
-
-    tputc(c);
-
-    if (!f.e3.noout)
-    {
-        FILE *fp = ofiles[OFILE_LOG].fp;
-
-        if (fp != NULL)
-        {
-            fputc(c, fp);
-        }
     }
 }
 
@@ -219,30 +148,14 @@ void print_chr(int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void print_echo(int c)
+static void print_echo(int c)
 {
     if (c == LF && !f.et.image)
     {
-        print_echo(CR);
-    }
-    else if (c == CRLF)
-    {
-        print_echo(CR);
-
-        c = LF;
+        tputc(CR, true);                // Convert LF to CR/LF
     }
 
-    tputc(c);
-
-    if (!f.e3.noin)
-    {
-        FILE *fp = ofiles[OFILE_LOG].fp;
-
-        if (fp != NULL)
-        {
-            fputc(c, fp);
-        }
-    }
+    tputc(c, true);
 }
 
 
@@ -254,7 +167,7 @@ void print_echo(int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void flag_print(int flag)
+void print_flag(int flag)
 {
     // Don't print anything if we're in a loop or a macro.
 
@@ -312,20 +225,62 @@ void flag_print(int flag)
     {
         if (i == 0 && mark != -1)
         {
-            echo_out(mark);
+            type_out(mark);
         }
 
         int c = getchar_ebuf(i);
 
         if (c == LF && last != CR)
         {
-            echo_out(CR);
+            type_out(CR);
         }
 
-        echo_out(c);
+        type_out(c);
 
         last = c;
     }
+}
+
+
+///
+///  @brief    Output character to terminal, and possibly to log file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void print_out(int c)
+{
+    if (c == LF && !f.et.image)
+    {
+        tputc(CR, false);               // Convert LF to CR/LF
+    }
+
+    switch (f.eu)
+    {
+        case 0:
+            if (islower(c))
+            {
+                tputc('\'', false);
+
+                c = toupper(c);
+            }
+
+            break;
+
+        case 1: 
+            if (isupper(c))
+            {
+                tputc('\'', false);
+            }
+
+            break;
+
+        default:
+            break;
+    }
+
+    tputc(c, false);
 }
 
 
@@ -378,7 +333,7 @@ void tprint(
 
     for (int i = 0; i < nbytes; ++i)
     {
-        tputc(buf[i]);
+        tputc(buf[i], false);
     }
 
     if (!f.e3.noout && (fp = ofiles[OFILE_LOG].fp) != NULL)
@@ -397,7 +352,7 @@ void tprint(
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void tputc(int c)
+static void tputc(int c, int input)
 {
     if (isdelim(c))
     {
@@ -428,5 +383,25 @@ static void tputc(int c)
     if (!f.et.truncate || term_pos < w.width)
     {
         fputc(c, stdout);
+
+        FILE *fp = ofiles[OFILE_LOG].fp;
+
+        if (fp != NULL && ((input && !f.e3.noin) || (!input && !f.e3.noout)))
+        {
+            fputc(c, fp);
+        }
     }
+}
+
+
+///
+///  @brief    Print output character.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void type_out(int c)
+{
+    print_chr(c, print_out);
 }

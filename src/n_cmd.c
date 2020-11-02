@@ -131,7 +131,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         }
         else
         {
-            flag_print(f.es);
+            print_flag(f.es);
         }
 
         search_success(cmd);

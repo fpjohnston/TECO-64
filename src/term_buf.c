@@ -106,7 +106,7 @@ void echo_tbuf(int pos)
 
     for (uint i = (uint)pos; i < term_buf->len; ++i)
     {
-        echo_out(term_buf->data[i]);
+        type_out(term_buf->data[i]);
     }
 }
 

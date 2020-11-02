@@ -108,7 +108,7 @@ void exec_equals(struct cmd *cmd)
 
     if (!cmd->colon)                    // Suppress CRLF?
     {
-        print_chr(CRLF);
+        type_out(LF);
     }
 }
 

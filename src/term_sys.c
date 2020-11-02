@@ -114,7 +114,7 @@ int getc_term(bool wait)
             }
 
             echo_in(CTRL_C);
-            print_echo(CRLF);
+            echo_in(LF);
 
             throw(E_XAB);               // Execution aborted
         }
@@ -273,7 +273,7 @@ static void sig_handler(int signum)
             if (f.et.abort || f.e0.ctrl_c) // Should CTRL/C cause abort?
             {
                 echo_in(CTRL_C);
-                print_chr(CRLF);
+                echo_in(LF);
 
                 exec_EK(NULL);          // Kill any current edit
 
