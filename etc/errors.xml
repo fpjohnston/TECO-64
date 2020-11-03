@@ -30,6 +30,13 @@
             <detail>macro must be complete within the macro.)</detail>
         </error>
         <error>
+            <code>CFG</code>
+            <message>Command not configured</message>
+            <detail>A command was input that has not been configured.</detail>
+            <detail>Modify config.h to include this command, and then</detail>
+            <detail>rebuild TECO.</detail>
+        </error>
+        <error>
             <code>CHR</code>
             <message>Invalid character for command</message>
             <detail>The numeric argument to an EE command was</detail>

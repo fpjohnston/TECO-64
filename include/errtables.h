@@ -46,6 +46,7 @@ static struct errlist errlist[] =
     [E_ATS] = { "ATS",  "Invalid or extraneous at-sign" },
     [E_BAT] = { "BAT",  "Bad tag '!%s!'" },
     [E_BNI] = { "BNI",  "Right angle bracket not in iteration" },
+    [E_CFG] = { "CFG",  "Command not configured" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
     [E_COL] = { "COL",  "Invalid or extraneous colon" },
     [E_DIV] = { "DIV",  "Division by zero" },
@@ -130,6 +131,9 @@ static const char *errhelp[] =
     [E_BNI] = "A right angle bracket was not matched by a left " 
               "angle bracket (Note: a loop in a Q-register " 
               "macro must be complete within the macro.)",
+    [E_CFG] = "A command was input that has not been configured. " 
+              "Modify config.h to include this command, and then " 
+              "rebuild TECO.",
     [E_CHR] = "The numeric argument to an EE command was " 
               "not an ASCII character.",
     [E_COL] = "A colon preceded a command that does not allow " 

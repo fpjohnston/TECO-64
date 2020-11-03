@@ -52,6 +52,7 @@ enum errcodes
     E_ATS,          ///< Invalid or extraneous at-sign
     E_BAT,          ///< Bad tag '!foo!'
     E_BNI,          ///< Right angle bracket not in iteration
+    E_CFG,          ///< Command not configured
     E_CHR,          ///< Invalid character for command
     E_COL,          ///< Invalid or extraneous colon
     E_DIV,          ///< Division by zero

@@ -34,6 +34,7 @@ code.
 | <nobr>?ATS</nobr> | <nobr>Invalid or extraneous at-sign</nobr> | At sign not allowed for command, or more than one at sign specififed. |
 | <nobr>?BAT</nobr> | <nobr>Bad tag '!*foo*!'</nobr> | An O command was specified with an invalid tag. Tags may only contain graphic ASCII characters (excluding commas which are reserved for computed GOTOs). Leading and trailing spaces are ignored, but embedded spaces are not allowed. |
 | <nobr>?BNI</nobr> | <nobr>Right angle bracket not in iteration</nobr> | A right angle bracket was not matched by a left angle bracket (Note: a loop in a Q-register macro must be complete within the macro.) |
+| <nobr>?CFG</nobr> | <nobr>Command not configured</nobr> | A command was input that has not been configured. Modify config.h to include this command, and then rebuild TECO. |
 | <nobr>?CHR</nobr> | <nobr>Invalid character for command</nobr> | The numeric argument to an EE command was not an ASCII character. |
 | <nobr>?COL</nobr> | <nobr>Invalid or extraneous colon</nobr> | A colon preceded a command that does not allow colons, or there were too many colons specified for the command. |
 | <nobr>?DIV</nobr> | <nobr>Division by zero</nobr> | An expression tried to divide a number by zero. |
