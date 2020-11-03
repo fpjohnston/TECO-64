@@ -206,7 +206,11 @@ static void init_teco(int argc, const char * const argv[])
     f.et.abort   = true;                // Abort on error during initialization
     f.et.accent  = true;                // Use accent grave as delimiter
 
+#if     defined(TECO_EU)
+
     f.eu         = -1;                  // No case flagging
+
+#endif
 
     f.ctrl_x     = 0;                   // Searches are case-insensitive
 

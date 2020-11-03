@@ -163,7 +163,7 @@ cleared before each prompt.
 
 ### EU - Upper/Lower Case Flag
 
-This flag controls flagging of upper or lower characters. This flag is primarily historical, and was created to handle terminals or monitors that were unable to display both upper and lower case characters.
+This flag controls whether certain characters are marked when output. It was originally intended for terminals or monitors that were unable to display both upper and lower case characters, and its use is primarily historical. By default, it is not enabled in TECO-64, but can be configured if desired. If it is not configured, any attempt to execute the command will result in a ?CFG error.
 
 | Command | Function |
 | ------- | -------- |

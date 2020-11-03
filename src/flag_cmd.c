@@ -430,10 +430,21 @@ void exec_ET(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(TECO_EU)
+
 void exec_EU(struct cmd *cmd)
 {
     (void)check_n_flag(cmd, &f.eu);
 }
+
+#else
+
+void exec_EU(struct cmd *unused1)
+{
+    throw(E_CFG);                       // Command not configured
+}
+
+#endif
 
 
 ///

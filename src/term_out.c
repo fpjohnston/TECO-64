@@ -341,6 +341,9 @@ void type_out(int c)
     {
         tputc(c, false);
     }
+
+#if     defined(TECO_EU)
+
     else if (islower(c) && f.eu != -1)
     {
         if (f.eu == 0)
@@ -355,6 +358,9 @@ void type_out(int c)
         tputc('\'', false);
         tputc(c, false);
     }
+
+#endif
+
     else if (isprint(c))
     {
         tputc(c, false);
