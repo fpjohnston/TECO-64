@@ -33,6 +33,8 @@
 #include <stdio.h>              //lint !e451 !e537
 #include <sys/types.h>          //lint !e451 !e537
 
+#include "config.h"
+
 #if     defined(TECO_LONG)
 
 typedef long int_t;               ///< Size of m and n arguments
