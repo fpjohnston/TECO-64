@@ -112,6 +112,8 @@ void exec_ctrl_Y(struct cmd *cmd)
         throw(E_ARG);                   // Invalid arguments
     }
 
+    (void)pop_expr(&cmd->n_arg);
+
     cmd->ctrl_y = true;
     cmd->m_set = true;
     cmd->m_arg = t.dot - (int)last_len;
@@ -188,6 +190,8 @@ void exec_H(struct cmd *cmd)
     {
         throw(E_ARG);                   // Invalid arguments
     }
+
+    (void)pop_expr(&cmd->n_arg);
 
     cmd->h = true;
     cmd->m_set = true;
