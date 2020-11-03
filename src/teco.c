@@ -212,7 +212,7 @@ static void init_teco(int argc, const char * const argv[])
 
 #endif
 
-    f.ctrl_x     = 0;                   // Searches are case-insensitive
+    f.ctrl_x     = 1;                   // Searches are case-insensitive
 
     // Note: this has to be first, since it will be the last called when we
     //       exit, and it might execute a system command.
