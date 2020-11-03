@@ -153,22 +153,23 @@ static int isblankx(int c, struct search *s)
 
 static int isctrlx(int c, int match)
 {
-    if (f.ctrl_x == 0)
+    if (f.ctrl_x != -1)
     {
-        if (c >= '@' && c <= '^')
-        {
-            c += 'a' - 'A';
-        }
-
-        if (match >= '@' && c <= '^')
-        {
-            match += 'a' - 'A';
-        }
-    }
-    else if (f.ctrl_x == 1)
-    {
-        c = toupper(c);
+        c     = toupper(c);
         match = toupper(match);
+
+        if (f.ctrl_x == 0)
+        {
+            if (strchr("`{\\}~", c) != NULL)
+            {
+                c -= 'a' - 'A';
+            }
+
+            if (strchr("`{\\}~", match) != NULL)
+            {
+                match -= 'a' - 'A';
+            }
+        }
     }
 
     return (c == match) ? 1 : 0;
