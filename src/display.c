@@ -1184,7 +1184,7 @@ static void update_status(void)
         if (row < nrows)
         {
             snprintf(position, sizeof(position), "row=%d  col=%d",
-                     row + 1, col);
+                     row + 1, col + 1);
         }
         else
         {
