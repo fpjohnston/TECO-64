@@ -56,7 +56,7 @@ struct edit t =
 
 static struct
 {
-    char *buf;                  ///< Start of buffer
+    uchar *buf;                 ///< Start of buffer
     int size;                   ///< Current size of buffer, in bytes
     int minsize;                ///< Initial and minimum size, in bytes
     int maxsize;                ///< Maximum size, in bytes
@@ -128,7 +128,7 @@ int add_ebuf(int c)
         shift_left(t.dot - eb.left);
     }
 
-    eb.buf[eb.left++] = (char)c;
+    eb.buf[eb.left++] = (uchar)c;
 
     if (page_count == 0)
     {
@@ -559,7 +559,7 @@ int putchar_ebuf(int n, int c)
 
         int orig = eb.buf[i];
 
-        eb.buf[i] = (char)c;
+        eb.buf[i] = (uchar)c;
 
 #if     defined(TECO_DISPLAY)
 
@@ -660,8 +660,8 @@ int setsize_ebuf(int n)
 
 static void shift_left(int nbytes)
 {
-    char *src   = eb.buf + eb.size - eb.right;
-    char *dst   = eb.buf + eb.left;
+    uchar *src = eb.buf + eb.size - eb.right;
+    uchar *dst = eb.buf + eb.left;
 
     eb.left  += nbytes;
     eb.right -= nbytes;
@@ -682,8 +682,8 @@ static void shift_right(int nbytes)
     eb.left  -= nbytes;
     eb.right += nbytes;
 
-    char *src   = eb.buf + eb.left;
-    char *dst   = eb.buf + eb.size - eb.right;
+    uchar *src = eb.buf + eb.left;
+    uchar *dst = eb.buf + eb.size - eb.right;
 
     memmove(dst, src, (size_t)(uint)nbytes);
 }
