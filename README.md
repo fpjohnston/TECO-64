@@ -53,9 +53,11 @@ To build TECO with display mode support, type
 
     make display=1
 
-To build TECO with virtual memory paging, type
+TECO normally includes virtual memory paging, which is required for commands
+such as -P and -N. To disable this feature and use TECO as a simple pipeline
+editor, type
 
-    make paging=vm
+    make paging=std
 
 To print a list of all targets and options, type
 
