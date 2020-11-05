@@ -138,7 +138,7 @@
         <command name='EF'       format='X'           exec='exec_EF'        />
         <command name='EG'       format='::@X//'      exec='exec_EG'        />
         <command name='EH'       format='m,nX!'       exec='exec_EH'        />
-        <command name='EI'       format=':@X//'       exec='exec_EI'        />
+        <command name='EI'       format='m,n:@X//'    exec='exec_EI'        />
         <command name='EJ'       format='m,n:X'       exec='exec_EJ'        />
         <command name='EK'       format='X'           exec='exec_EK'        />
         <command name='EL'       format=':@X//'       exec='exec_EL'        />

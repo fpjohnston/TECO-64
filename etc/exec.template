@@ -111,7 +111,7 @@ extern bool next_page(int start, int end, bool ff, bool yank);
 
 extern bool next_yank(void);
 
-extern int read_indirect(void);
+extern bool read_EI(void);
 
 extern void reset_if(void);
 

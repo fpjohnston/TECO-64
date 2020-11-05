@@ -136,7 +136,7 @@ void exec_EI(struct cmd *cmd)
 
             if (open_command(buf, len, stream, cmd->colon, &ei_new->buf))
             {
-                exec_macro(&ei_new->buf, NULL);
+                exec_macro(&ei_new->buf, cmd);
             }
         }
     }
