@@ -643,6 +643,16 @@ static void scan_text(int delim, struct tstring *text)
 
     text->len = (uint)(end - text->data);
 
+    if (f.e0.trace)
+    {
+        const char *p = text->data;
+
+        for (uint i = 0; i < text->len + 1; ++i)
+        {
+            echo_in(*p++);
+        }
+    }
+
     cbuf->pos += text->len + 1;
 }
 
