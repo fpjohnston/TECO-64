@@ -334,20 +334,6 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
         {
             throw(E_SYS, ifile->name); // Unexpected system error
         }
-
-        // Delete any trailing whitespace.
-
-        while (text->len > 0)
-        {
-            int c = text->data[text->len - 1];
-
-            if (!isspace(c) || c == TAB)
-            {
-                break;
-            }
-
-            --text->len;
-        }
     }
 
     close_input(stream);
