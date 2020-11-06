@@ -108,11 +108,16 @@ void echo_in(int c)
                 break;
 
             case ESC:
+
+#if     defined(CONFIG_ACCENT)
+
                 if (f.et.accent || f.ee != NUL)
                 {
                     tputc('`', false);
                 }
                 else
+
+#endif
                 {
                     tputc('$', false);
                 }
@@ -342,7 +347,7 @@ void type_out(int c)
         tputc(c, false);
     }
 
-#if     defined(TECO_EU)
+#if     defined(CONFIG_EU)
 
     else if (islower(c) && f.eu != -1)
     {

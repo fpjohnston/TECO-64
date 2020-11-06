@@ -214,7 +214,7 @@ struct flags
     int            es;          ///< Search verification flag
     union  et_flag et;          ///< Terminal flags
 
-#if     defined(TECO_EU)
+#if     defined(CONFIG_EU)
 
     int            eu;          ///< Upper/lower case flag
 

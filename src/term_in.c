@@ -330,12 +330,22 @@ void read_cmd(void)
 
     for (;;)
     {
-        if ((c == ACCENT && f.et.accent) || (c == f.ee && c != NUL) ||
-            (c == ESC && (f.et.accent || f.ee != -1)))
+        if ((c == ACCENT && f.et.accent && f.ee == NUL) ||
+            (c == f.ee && f.ee != NUL))
         {
             echo_in('`');               // Echo delimiter as accent grave
             c = ESC;                    //  but treat it as ESCape
         }
+
+#if     defined(CONFIG_ACCENT)
+
+        else if (c == ESC && (f.et.accent || f.ee != NUL))
+        {
+            echo_in('`');               // Echo delimiter as accent grave
+        }
+
+#endif
+
         else if (c == ESC)
         {
             echo_in('$');               // Echo ESCape as dollar sign
@@ -429,7 +439,8 @@ static int read_first(void)
         // If first character is an ESCape, or ESCape surrogate, then
         // treat it like LF.
 
-        if (c == ESC || (c == ACCENT && f.et.accent) || (c == f.ee && c != NUL))
+        if (c == ESC || (c == ACCENT && f.et.accent && f.ee == NUL) ||
+            (c == f.ee && c != NUL))
         {
             c = LF;
         }

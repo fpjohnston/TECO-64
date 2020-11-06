@@ -28,6 +28,8 @@
 
 #define _CONFIG_H
 
-#define TECO_EU                     // Enable EU command if defined
+//#define CONFIG_EU                       // Enable EU command
+
+//#define CONFIG_ACCENT                   // Echo ESCape as accent grave
 
 #endif  // !defined(_CONFIG_H)
