@@ -106,10 +106,10 @@
     ET&8     "N @^A\noecho \ '
     ET&4     "N @^A\lower \ '
     ET&2     "N @^A\rubout \ '
-    E1&1     "N @^A\image \ '
+    ET&1     "N @^A\image \ '
     -1^T
 
-@^A\EU = \ EU=
+!!@^A\EU = \ EU=
 
 @^A\EV = \ EV=
 
