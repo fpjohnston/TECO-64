@@ -83,6 +83,11 @@ void exec_EC(struct cmd *cmd)
     }
     else if (cmd->n_arg >= 0)           // nEC?
     {
+        if (cmd->n_arg == 0)            // Set minimum size?
+        {
+            cmd->n_arg = 1;             // Yes, so use 1K
+        }
+
         (void)setsize_ebuf(cmd->n_arg);
     }
 }
