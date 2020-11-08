@@ -26,15 +26,11 @@ a \<DELIM\>. When an O command is executed, the next command to be executed
 will be the one that follows the tag referenced by the O command. Command
 execution continues normally from this point.
 
-Use of the O command is subject to two restrictions. First, if an O command is
-stored in a Q-register as part of a command string which is to be executed by
-an M command, the tag referenced by the O command must reside in the same
-Q-register.
-
-Second, an O command which is inside a command loop may not branch to a
-tagged location preceding the command loop. However, it is always possible to
-branch out of a command loop to a location which follows the command loop and
-then branch to the desired tag.
+Use of the O command is subject to two restrictions. First, the tag referenced
+by the command must be in the same command string, Q-register, or indirect
+command file as the command itself. Second, the tag must occur only once.
+This only applies to tags referenced by O commands; tags that are simply
+comments may be duplicated without causing an error.
 
 The text argument in the O command has the same format as the text
 arguments in the search and E commands. String building characters such
@@ -42,7 +38,7 @@ as ^EQq can be embedded within the string. Also, the O command may be
 @-sign modified. In that case, the syntax of the command would be @O/*tag*/.
 
 Branching into a conditional poses no problems, but branching into a command
-loop will causes unpredictable results.
+loop will cause unpredictable results.
 
 Tags may contain any character sequence that does not include control
 characters. This is also true for O command text arguments, except
