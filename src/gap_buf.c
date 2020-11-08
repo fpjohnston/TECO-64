@@ -96,7 +96,7 @@ static int last_delim(int nlines);
 
 static int next_delim(int nlines);
 
-static void print_size(int size);
+static void print_size(int newsize, int oldsize);
 
 static void shift_left(int nbytes);
 
@@ -273,16 +273,20 @@ static bool expand_ebuf(void)
     // Buffer: [left + right][gap]
 
     int addsize = (eb.size * eb.stepsize) / 100;
+    int oldsize = eb.size;
 
-    eb.buf   = expand_mem(eb.buf, (uint)eb.size, (uint)(eb.size + addsize));
-    eb.size += addsize;
-    t.size  += eb.size;
-
-    if (eb.size > eb.maxsize)
+    if ((eb.size += addsize) > eb.maxsize)
     {
         eb.size = eb.maxsize;
     }
 
+    if (eb.size == oldsize)
+    {
+        return false;
+    }
+
+    eb.buf   = expand_mem(eb.buf, (uint)oldsize, (uint)eb.size);
+    t.size  += eb.size;
     eb.lowsize = eb.size - ((eb.size * eb.warn) / 100);
 
     shift_right(eb.right);
@@ -291,7 +295,7 @@ static bool expand_ebuf(void)
 
     eb.gap += addsize;
 
-    print_size(eb.size);
+    print_size(eb.size - addsize, eb.size);
 
     return true;
 }
@@ -510,7 +514,7 @@ static int next_delim(int nlines)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void print_size(int size)
+static void print_size(int oldsize, int newsize)
 {
     if (f.et.abort)                     // Is abort bit set?
     {
@@ -519,11 +523,16 @@ static void print_size(int size)
 
     const char *type = "";
 
-    if (size > 1024)
+    if (newsize > 1024)
     {
-        if ((size /= 1024) >= 1024)
+        newsize /= 1024;
+        oldsize /= 1024;
+
+        if (newsize >= 1024)
         {
-            size /= 1024;
+            newsize /= 1024;
+            oldsize /= 1024;
+
             type = "M";
         }
         else
@@ -532,8 +541,11 @@ static void print_size(int size)
         }
     }
 
-    tprint("[%d%s bytes]", size, type);
-    type_out(LF);
+    if (newsize != oldsize)
+    {
+        tprint("[%d%s bytes]", newsize, type);
+        type_out(LF);
+    }
 }
 
 
@@ -625,6 +637,11 @@ int setsize_ebuf(int n)
         }
     }
 
+    if (n == eb.size)
+    {
+        return eb.size;
+    }
+
     shift_left(eb.right);               // Remove the gap
 
     if (n < eb.size)
@@ -641,11 +658,13 @@ int setsize_ebuf(int n)
     t.dot  = 0;
     t.size = n;
 
+    int oldsize = eb.size;
+
     eb.size    = n;
     eb.lowsize = eb.size - ((eb.size * eb.warn) / 100);
     eb.gap     = eb.size - (eb.left + eb.right);
 
-    print_size(eb.size);
+    print_size(oldsize, eb.size);
 
     return eb.size;
 }
