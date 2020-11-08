@@ -66,6 +66,8 @@ static int botdot = 0;              ///< Value of FZ flag
 
 #if     defined(TECO_DISPLAY)
 
+static int rowbias = 0;             ///< Row adjustment
+
 static uint n_home = 0;             ///< No. of consecutive Home keys
 
 static uint n_end = 0;              ///< No. of consecutive End keys
@@ -557,9 +559,7 @@ static void move_down(void)
 
     if (row == d.nrows - 1)
     {
-        // TODO: scroll up
-
-        return;
+        ++rowbias;
     }
 
     ++row;
@@ -624,8 +624,7 @@ static void move_up(void)
 
     if (row == 0)
     {
-        // TODO: scroll lines down
-        return;
+        --rowbias;
     }
 
     --row;
@@ -848,7 +847,13 @@ void refresh_dpy(void)
     }
 
     int line = getlines_ebuf(-1);       // Line number within buffer
-    int row  = line % d.nrows;          // Relative row within screen
+
+    if (line == 0)
+    {
+        rowbias = 0;
+    }
+
+    int row  = (line - rowbias) % d.nrows; // Relative row within screen
     int pos  = getdelta_ebuf(-row);     // First character to output
 
     if (ebuf_changed)
