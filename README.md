@@ -79,20 +79,19 @@ Doxygen must be installed in order to use the *doc* target.
 
 PC-lint must be installed in order to use the *lint* and *lobs* targets.
 
-### Notes on Versioning
+### Version Numbers
 
-At the time TECO C was created, the highest version of any DEC TECO was
-about 36. In order to avoid any conflict with future versions (since some
-TECO macros use obtain the version number with the EO command to determine
-what features are available), the initial version of TECO C was set to 100,
-with subsequent versions eventually reaching 147.
+The highest version of any DEC TECO (TECO-11 and TECO-32) was 40. To avoid
+any conflict with those TECOs, since TECO macros sometimes obtain the version
+number (using the EO command) in order to determine what features are
+available, the initial version of TECO C was set to 100, with subsequent
+versions eventually reaching 147.
 
 For similar reasons, a baseline version number of 200 was chosen for
-TECO-64. This is the major version. For the benefit of *github*, a minor
-version and patch version also exist, and will be modified per their
-guidelines. All three versions can be accessed via the EO command,
-although only the major version is likely to be significant for TECO
-macros.
+TECO-64. This is the major version. A minor version and patch version
+also exist, per *github*'s guidelines. Values for all three can be
+accessed via the EO command, although only the major version is likely
+to be significant for TECO macros.
 
 ### Additional Documentation
 
