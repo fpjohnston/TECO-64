@@ -67,6 +67,8 @@ extern struct edit t;
 
 #if     defined(TECO_DISPLAY)
 
+extern bool dot_changed;
+
 extern bool ebuf_changed;
 
 #endif

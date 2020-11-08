@@ -82,7 +82,9 @@ static struct
 
 #if     defined(TECO_DISPLAY)
 
-bool ebuf_changed;              ///< true if edit buffer modified
+bool dot_changed = false;       ///< true if dot changed
+
+bool ebuf_changed = false;      ///< true if edit buffer modified
 
 #endif
 
@@ -138,6 +140,7 @@ int add_ebuf(int c)
 #if     defined(TECO_DISPLAY)
 
     ebuf_changed = true;
+    dot_changed = true;
 
 #endif
 
@@ -218,6 +221,7 @@ void delete_ebuf(int n)
 #if     defined(TECO_DISPLAY)
 
     ebuf_changed = true;
+    dot_changed = true;
 
 #endif
 
@@ -602,6 +606,7 @@ void setpos_ebuf(int n)
 #if     defined(TECO_DISPLAY)
 
         ebuf_changed = true;
+        dot_changed = true;
 
 #endif
 

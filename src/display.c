@@ -80,7 +80,7 @@ static uint n_end = 0;              ///< No. of consecutive End keys
 
 #define err_if_true(func, cond) if (func == cond) error_dpy()
 
-#define MAX_POSITION    30          ///< Max. size of position string
+#define MAX_POSITION    40          ///< Max. size of position string
 
 ///
 ///  @struct  region
@@ -137,9 +137,15 @@ static void exec_commands(const char *string);
 
 static void exit_dpy(void);
 
+static void getedit(char *buf, ulong size, uint bytes);
+
 static void mark_cursor(int row, int col);
 
 static void move_down(void);
+
+static void move_left(void);
+
+static void move_right(void);
 
 static void move_up(void);
 
@@ -405,6 +411,66 @@ int getchar_dpy(bool unused1)
 
 
 ///
+///  @brief    Get size of edit buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(TECO_DISPLAY)
+
+static void getedit(char *buf, ulong size, uint bytes)
+{
+    assert(buf != NULL);
+
+    const uint K = 1024;
+
+    if (bytes < K)
+    {
+        snprintf(buf, size, "%u", bytes);
+    }
+    else
+    {
+        uint kbytes = (bytes + K - 1) / K;
+
+        if (kbytes < 10)
+        {
+            snprintf(buf, size, "%.1fK", bytes / (float)K);
+
+            if (!strcmp(buf, "10.0K"))
+            {
+                strcpy(buf, "10K");
+            }
+        }
+        else if (kbytes < K)
+        {
+            snprintf(buf, size, "%uK", kbytes);
+        }
+        else
+        {
+            uint mbytes = (kbytes + K - 1) / K;
+
+            if (mbytes < 10)
+            {
+                snprintf(buf, size, "%.1fM", kbytes / (float)K);
+
+                if (!strcmp(buf, "10.0M"))
+                {
+                    strcpy(buf, "10M");
+                }
+            }
+            else
+            {
+                snprintf(buf, size, "%uM", mbytes);
+            }
+        }
+    }
+}
+
+#endif
+
+
+///
 ///  @brief    Get terminal height and width.
 ///
 ///  @returns  Nothing.
@@ -479,8 +545,6 @@ void init_dpy(void)
         (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
 
         set_nrows();
-
-        d.vcol = 0;
     }
 }
 
@@ -568,12 +632,10 @@ static void move_down(void)
     int len = getdelta_ebuf(2) - next;  // Length of next line
     int dot = t.dot + next;
 
-    if (d.vcol < col)
+    if (d.vcol > col)
     {
-        d.vcol = col;
+        col = d.vcol;                   // Use virtual column if we can
     }
-
-    col = d.vcol;
 
     if (len < col)
     {
@@ -594,9 +656,80 @@ static void move_down(void)
 
     setpos_ebuf(dot);
 
+    dot_changed = false;                // Force this off for down arrow
+
     update_status();
 
     refresh_dpy();
+
+    if (d.vcol < d.col)
+    {
+        d.vcol = d.col;
+    }
+}
+
+#endif
+
+
+///
+///  @brief    Move cursor left.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(TECO_DISPLAY)
+
+static void move_left(void)
+{
+    int dot = t.dot - 1;
+
+    if (dot >= t.B)
+    {
+        int line = getlines_ebuf(-1);
+        int row = (line - rowbias) % d.nrows;
+
+        setpos_ebuf(dot);
+
+        if (row == 0 && line != getlines_ebuf(-1))
+        {
+            --rowbias;
+        }
+
+        refresh_dpy();
+    }
+}
+
+#endif
+
+
+///
+///  @brief    Move cursor right.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(TECO_DISPLAY)
+
+static void move_right(void)
+{
+    int dot = t.dot + 1;
+
+    if (dot <= t.Z)
+    {
+        int line = getlines_ebuf(-1);
+        int row = (line - rowbias) % d.nrows;
+
+        setpos_ebuf(dot);
+
+        if (row == d.nrows - 1 && line != getlines_ebuf(-1))
+        {
+            ++rowbias;
+        }
+
+        refresh_dpy();
+    }
 }
 
 #endif
@@ -633,12 +766,10 @@ static void move_up(void)
     int len = prev - col;               // Length of previous line
     int dot = t.dot - prev;
 
-    if (d.vcol < col)
+    if (d.vcol > col)
     {
-        d.vcol = col;
+        col = d.vcol;                   // Use virtual column if we can
     }
-
-    col = d.vcol;
 
     if (len < col)
     {
@@ -654,9 +785,16 @@ static void move_up(void)
 
     setpos_ebuf(dot);
 
+    dot_changed = false;                // Force this off for up arrow
+
     update_status();
 
     refresh_dpy();
+
+    if (d.vcol < d.col)
+    {
+        d.vcol = d.col;
+    }
 }
 
 #endif
@@ -776,15 +914,13 @@ int readkey_dpy(int key)
     {
         move_down();
     }
-    else if (key == KEY_LEFT || key == KEY_RIGHT)
+    else if (key == KEY_LEFT)
     {
-        int dot = (int)t.dot + (key == KEY_LEFT ? -1 : 1);
-
-        if (dot >= t.B && dot <= t.Z)
-        {
-            setpos_ebuf(dot);
-            refresh_dpy();
-        }
+        move_left();
+    }
+    else if (key == KEY_RIGHT)
+    {
+        move_right();
     }
     else if (key == CR || key == LF || key == ESC ||
             (key == ACCENT && f.et.accent) || key == f.ee)
@@ -860,7 +996,12 @@ void refresh_dpy(void)
     {
         ebuf_changed = false;
 
-        d.vcol = 0;
+        if (dot_changed)
+        {
+            dot_changed = false;
+
+            d.vcol = 0;
+        }
 
         int saved_row, saved_col;
 
@@ -1185,6 +1326,7 @@ static void update_status(void)
         int nrows = getlines_ebuf(0);
         int col   = -getdelta_ebuf(0);
         char position[MAX_POSITION + 1];
+        char buf[w.width];
 
         if (row < nrows)
         {
@@ -1196,19 +1338,19 @@ static void update_status(void)
             strcpy(position, "<EOF>");
         }
 
+        getedit(buf, sizeof(buf), (uint)t.size);
+
         int nbytes = snprintf(status, sizeof(status),
-                              ".=%d  Z=%d  %s  nrows=%d  mem=%d",
-                             t.dot, t.Z, position, nrows, t.size);
+                              ".=%d  Z=%d  %s  nrows=%d  mem=%s",
+                              t.dot, t.Z, position, nrows, buf);
 
         status[nbytes] = SPACE;         // Replace NUL character with space
 
         // Now add in page number on right side.
 
-        char page[w.width];
+        nbytes = sprintf(buf, "Page %u", page_count);
 
-        nbytes = sprintf(page, "Page %u", page_count);
-
-        memcpy(status + w.width - nbytes, page, (size_t)(uint)nbytes);
+        memcpy(status + w.width - nbytes, buf, (size_t)(uint)nbytes);
 
         for (int i = 0; i < w.width; ++i)
         {
