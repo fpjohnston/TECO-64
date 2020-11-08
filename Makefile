@@ -24,30 +24,30 @@
 #
 #  Build targets:
 #
-#      all          Equivalent to 'teco' target. [default]"
-#      clean        Clean object files and executables."
-#      distclean    Clean everything."
-#      doc          Create or update documentation."
-#      help         Print help message."
-#      lint         Lint .c and .lob files (requires PC-lint)."
-#      lobs         Lint .c files (requires PC-lint)."
-#      mostlyclean  Clean object files."
-#      scratch      Equivalent to 'distclean' and 'all' targets."
-#      teco         Build TECO-64 text editor."
+#      all          Equivalent to 'teco' target. [default]
+#      clean        Clean object files and executables.
+#      distclean    Clean everything.
+#      doc          Create or update documentation.
+#      help         Print help message.
+#      lint         Lint .c and .lob files (requires PC-lint).
+#      lobs         Lint .c files (requires PC-lint).
+#      mostlyclean  Clean object files.
+#      scratch      Equivalent to 'distclean' and 'all' targets.
+#      teco         Build TECO-64 text editor.
 #
 #  Build options:
 #
-#      buffer=gap  Use gap buffer for editing text. [default]"
-#      debug=1     Enable debugging features."
-#      display=1   Enable display mode."
-#      gdb=1       Enable use of GDB debugger."
-#      gprof=1     Enable use of GPROF profiler."
-#      long=1      Use 64-bit integers."
-#      ndebug=1    Disable run-time assertions."
-#      paging=std  Use standard paging. [default]"
-#      paging=vm   Use virtual memory paging."
-#      trace=1     Enable tracing of commands."
-#      verbose=1   Enable verbosity during build."
+#      buffer=gap  Use gap buffer for editing text. [default]
+#      debug=1     Enable debugging features.
+#      display=1   Enable display mode.
+#      gdb=1       Enable use of GDB debugger.
+#      gprof=1     Enable use of GPROF profiler.
+#      long=1      Use 64-bit integers.
+#      ndebug=1    Disable run-time assertions.
+#      paging=std  Use standard paging. [default]
+#      paging=vm   Use virtual memory paging.
+#      trace=1     Enable tracing of commands.
+#      verbose=1   Enable verbosity during build.
 #
 ################################################################################
 
