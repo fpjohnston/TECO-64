@@ -181,7 +181,7 @@ int get_wild(void)
 ///            temporary file and leave the original intact.
 ///
 ///            This function is system-dependent because some operating environ-
-///            may have alternative methods of dealing with output files that
+///            ments have alternative methods of dealing with output files that
 ///            may need to be deleted, such as versioning on VMS.
 ///
 ///  @returns  File pointer to temp file.
@@ -194,11 +194,11 @@ FILE *open_temp(char **otemp, const char *oname)
     assert(*otemp == NULL);             // Error if NULL temp file
     assert(oname != NULL);              // Error if NULL output file
 
-    struct stat file_stat;
+    struct stat statbuf;
 
-    if (stat(oname, &file_stat) != 0)
+    if (stat(oname, &statbuf) != 0)
     {
-        throw(E_SYS, oname);            // Unexpected system call
+        throw(E_SYS, oname);            // Unexpected system error
     }
 
     char dir[(uint)strlen(oname) + 1];
@@ -214,6 +214,8 @@ FILE *open_temp(char **otemp, const char *oname)
     {
         throw(E_SYS, tempfile);         // Unexpected system error
     }
+
+    (void)fchmod(fd, statbuf.st_mode);  // Use same permissions as old file
 
     *otemp = alloc_mem(nbytes + 1);
 
