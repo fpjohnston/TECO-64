@@ -20,9 +20,9 @@ QA-1 "E   EN^EQA     @O/success/ '
 
 QA-2 "E  @EN/^EQA/    @O/success/ '
 
-QA-3 "E :@EN/^EQA/ "S @O/success/ | :@^A/FAILED/ @O/exit/ '
+QA-3 "E :@EN/^EQA/ "S @O/success/ | :@^A/FAILED/ @O/exit/ ' '
 
-:@^A/--arg=n option required (n = [1,3])/
+:@^A/--arg=n option required (n = [1,3])/ @O/exit/
 
 !success!
 
