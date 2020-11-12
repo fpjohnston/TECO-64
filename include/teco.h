@@ -50,17 +50,25 @@ typedef int int_t;                ///< Size of m and n arguments
 
 #define countof(array) (sizeof(array) / sizeof(array[0]))
 
-#define WAIT                 true       ///< Wait for terminal input
+#define WAIT             true       ///< Wait for terminal input
 
-#define STR_SIZE_INIT        1024       ///< Initial string size
+#define STR_SIZE_INIT    1024       ///< Initial string size
 
-typedef unsigned char uchar;            ///< Unsigned character type
+typedef unsigned char uchar;        ///< Unsigned character type
 
 #if     defined(__clang__)
 
 typedef unsigned long ulong;
 
 #endif
+
+enum
+{
+    MAIN_NORMAL,                    ///< Normal main loop entry
+    MAIN_ERROR,                     ///< Error entry
+    MAIN_CTRLC                      ///< CTRL/C or abort entry
+};
+
 
 ///  @struct   buffer
 ///  @brief    Definition of general buffer, used both for the main command

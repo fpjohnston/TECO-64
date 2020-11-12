@@ -85,7 +85,7 @@ int main(int argc, const char * const argv[])
     {
         switch (setjmp(jump_main))
         {
-            case 0:                     // Normal entry
+            case MAIN_NORMAL:           // Normal entry
                 refresh_dpy();          // Update display if needed
 
                 f.e0.trace = false;     // Disable tracing
@@ -103,13 +103,12 @@ int main(int argc, const char * const argv[])
 
                 f.e0.exec = true;       // Command is in progress
                 exec_cmd(NULL);         // Execute what we have
-                f.e0.exec = false;      // Command is done
 
                 f.e0.error = false;     // Command completed w/o error
 
                 break;
 
-            case 2:                     // Error
+            case MAIN_ERROR:            // Error
                 f.e0.error = true;      // Flag the error
 
                 f.et.image  = false;    // Disable image output
@@ -119,12 +118,16 @@ int main(int argc, const char * const argv[])
                 f.et.ctrl_c = false;    // Disable CTRL/C trap
                 //lint -fallthrough
 
-            default:
-            case 1:                     // CTRL/C typed
+            case MAIN_CTRLC:            // CTRL/C typed
                 reset();                // Reset everything
 
                 break;
+
+            default:
+                break;
         }
+
+        f.e0.exec = false;              // No command active
 
         if (f.e0.init)
         {

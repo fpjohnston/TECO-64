@@ -144,7 +144,7 @@ void exec_EI(struct cmd *cmd)
     {
         if (len == 0)                   // @EI//?
         {
-            longjmp(jump_main, 1);      // Yes, act like CTRL/C typed
+            longjmp(jump_main, MAIN_CTRLC); // Yes, act like CTRL/C typed
         }
         else
         {

@@ -43,6 +43,13 @@
 #include "qreg.h"
 #include "term.h"
 
+enum
+{
+    FIRST_NORMAL,                   ///< Normal entry for reading input
+    FIRST_PROMPT,                   ///< Restart input w/ prompt
+    FIRST_NOPROMPT                  ///< Restart input w/o prompt
+};
+
 
 static jmp_buf jump_first;              ///< longjmp() to reset terminal input
 
@@ -97,7 +104,7 @@ static void exec_cancel(void)
         echo_in(LF);
     }
 
-    longjmp(jump_first, 1);             // Restart w/ prompt
+    longjmp(jump_first, FIRST_PROMPT);  // Restart w/ prompt
 }
 
 
@@ -137,7 +144,7 @@ static void exec_ctrl_G(void)
             reset_cbuf((bool)true);
             echo_in(LF);
 
-            longjmp(jump_first, 1);     // Restart w/ prompt
+            longjmp(jump_first, FIRST_PROMPT); // Restart w/ prompt
 
         case SPACE:                     // ^G<SPACE> - retype current line
         case '*':                       // ^G* - retype all input lines
@@ -189,7 +196,7 @@ static void exec_DEL(void)
 
     if (getlen_tbuf() == 0)             // Is terminal buffer empty now?
     {
-        longjmp(jump_first, 2);         // Yes, restart w/o prompt
+        longjmp(jump_first, FIRST_NOPROMPT); // Yes, restart w/o prompt
     }
 }
 
@@ -274,7 +281,7 @@ static void exec_star(void)
     {
         echo_in('?');                   //  alert the user to the error,
 
-        longjmp(jump_first, 1);         //   and reset command string
+        longjmp(jump_first, FIRST_PROMPT); //   and reset command string
     }
 
     echo_in(LF);
@@ -306,13 +313,14 @@ void read_cmd(void)
 
     switch (setjmp(jump_first))
     {
-        case 0:
-        case 1:
+        default:
+        case FIRST_NORMAL:
+        case FIRST_PROMPT:
             print_prompt();
 
             break;
 
-        default:
+        case FIRST_NOPROMPT:
             break;
     }
 
@@ -325,6 +333,7 @@ void read_cmd(void)
     // terminal buffer in a Q-register.
 
     reset_tbuf();                       // Reset terminal buffer
+    f.e0.error = false;                 // And say we have no error to print
 
     // Read characters until we have a complete command string.
 
@@ -337,7 +346,7 @@ void read_cmd(void)
             c = ESC;                    //  but treat it as ESCape
         }
 
-#if     defined(CONFIG_ACCENT)
+#if     !defined(CONFIG_DOLLAR)
 
         else if (c == ESC && (f.et.accent || f.ee != NUL))
         {
@@ -366,7 +375,7 @@ void read_cmd(void)
                 exit(EXIT_SUCCESS);     // Yes, user wants out
             }
 
-            longjmp(jump_first, 1);     // Restart w/ prompt
+            longjmp(jump_first, FIRST_PROMPT); // Restart w/ prompt
         }
         else if (c == BS || c == DEL)
         {

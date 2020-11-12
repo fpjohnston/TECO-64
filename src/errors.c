@@ -330,5 +330,5 @@ noreturn void throw(int error, ...)
         exit(EXIT_FAILURE);
     }
 
-    longjmp(jump_main, 1);              // Back to the shadows again!
+    longjmp(jump_main, MAIN_ERROR);     // Back to the shadows again!
 }

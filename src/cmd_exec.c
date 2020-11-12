@@ -83,6 +83,8 @@ STATIC const struct cmd null_cmd =
 
 static void check_qreg(const struct cmd_table *entry, struct cmd *cmd);
 
+static void end_check(void);
+
 static void end_cmd(struct cmd *cmd, enum cmd_opts opts);
 
 static exec_func *next_cmd(struct cmd *cmd);
@@ -152,6 +154,27 @@ static void check_qreg(const struct cmd_table *entry, struct cmd *cmd)
 
 
 ///
+///  @brief    Check at end of a command string or macro to make sure we're not
+///            still inside a conditional or loop.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void end_check(void)
+{
+    if (loop_depth != 0)
+    {
+        throw(E_MRA);                   // Missing right angle bracket
+    }
+    else if (if_depth != 0)
+    {
+        throw(E_MAP);                   // Missing apostrophe
+    }
+}
+
+
+///
 ///  @brief    Check numeric arguments.
 ///
 ///  @returns  Nothing.
@@ -215,6 +238,7 @@ static void end_cmd(struct cmd *cmd, enum cmd_opts opts)
 void exec_cmd(struct cmd *macro)
 {
     struct cmd cmd = null_cmd;
+    exec_func *exec;
 
     // If we were called from a macro, then copy any numeric arguments.
 
@@ -231,15 +255,8 @@ void exec_cmd(struct cmd *macro)
 
     // Loop for all commands in command string.
 
-    while (cbuf->len != 0)
+    while ((exec = next_cmd(&cmd)) != NULL)
     {
-        exec_func *exec = next_cmd(&cmd);
-
-        if (exec == NULL)
-        {
-            break;
-        }
-
         int c = cmd.c1;
 
         if (cmd.m_set && cmd.m_arg < 0 && toupper(c) != 'W')
@@ -301,6 +318,8 @@ static void exec_escape(struct cmd *unused1)
 
         (void)fetch_cbuf();
     }
+
+    end_check();
 
     // If we've read all characters in command string, then reset for next time.
 
@@ -416,6 +435,8 @@ static exec_func *next_cmd(struct cmd *cmd)
             cmd->colon = cmd->dcolon = false;
         }
     }
+
+    end_check();
 
     // If we're not in a macro, then confirm that parentheses were properly
     // matched, and that there's nothing left on the expression stack.

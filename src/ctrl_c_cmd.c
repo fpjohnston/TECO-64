@@ -46,5 +46,5 @@ void exec_ctrl_C(struct cmd *unused1)
         exit(EXIT_FAILURE);
     }
 
-    longjmp(jump_main, 1);
+    longjmp(jump_main, MAIN_CTRLC);
 }

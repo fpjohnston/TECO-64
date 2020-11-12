@@ -118,15 +118,7 @@ int fetch_cbuf(void)
 {
     if (empty_cbuf())
     {
-        if (loop_depth != 0)
-        {
-            throw(E_MRA);               // Missing right angle bracket
-        }
-        else if (if_depth != 0)
-        {
-            throw(E_MAP);               // Missing apostrophe
-        }
-        else if (check_macro())
+        if (check_macro())
         {
             throw(E_UTM);               // Unterminated macro
         }

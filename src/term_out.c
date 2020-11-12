@@ -109,7 +109,7 @@ void echo_in(int c)
 
             case ESC:
 
-#if     defined(CONFIG_ACCENT)
+#if     !defined(CONFIG_DOLLAR)
 
                 if (f.et.accent || f.ee != NUL)
                 {
@@ -394,7 +394,19 @@ void type_out(int c)
                 break;
 
             case ESC:
-                tputc('$', false);
+
+#if     !defined(CONFIG_DOLLAR)
+
+                if (f.et.accent || f.ee != NUL)
+                {
+                    tputc('`', false);
+                }
+                else
+
+#endif
+                {
+                    tputc('$', false);
+                }
 
                 break;
 

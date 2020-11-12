@@ -30,6 +30,6 @@
 
 //#define CONFIG_EU                       // Enable EU command
 
-//#define CONFIG_ACCENT                   // Echo ESCape as accent grave
+//#define CONFIG_DOLLAR                   // Echo ESCape as dollar sign
 
 #endif  // !defined(_CONFIG_H)
