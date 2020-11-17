@@ -250,6 +250,7 @@ sub parse_commands
                 if ($name =~ /^\[(.)\]/)
                 {
                     $name = $1;
+                    $scan = 'NULL';
                 }
 
                 $cmds .= make_entry($name, $scan, $exec);
@@ -283,7 +284,10 @@ sub make_entry
         $scan = 'scan_nop';
     }
 
-    $scan_funcs{$scan} = 1;
+    if ($scan ne 'NULL')
+    {
+        $scan_funcs{$scan} = 1;
+    }
 
     if (defined $exec)
     {
