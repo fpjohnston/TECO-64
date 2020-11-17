@@ -41,7 +41,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_D(struct cmd *unused1)
+void exec_ctrl_D(struct cmd *unused)
 {
     radix = 10;                         // Set radix to decimal
 }
@@ -54,7 +54,7 @@ void exec_ctrl_D(struct cmd *unused1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_O(struct cmd *unused1)
+void exec_ctrl_O(struct cmd *unused)
 {
     radix = 8;                          // Set radix to octal
 }

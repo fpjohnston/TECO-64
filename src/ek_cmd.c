@@ -43,7 +43,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EK(struct cmd *unused1)
+void exec_EK(struct cmd *unused)
 {
     struct ofile *ofile = &ofiles[ostream];
 

@@ -141,4 +141,3 @@ static void exec_search(struct cmd *cmd, bool replace)
         search_failure(cmd);
     }
 }
-

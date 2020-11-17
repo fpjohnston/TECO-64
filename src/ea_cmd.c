@@ -40,7 +40,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EA(struct cmd *unused1)
+void exec_EA(struct cmd *unused)
 {
     ostream = OFILE_SECONDARY;
 

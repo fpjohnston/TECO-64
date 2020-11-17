@@ -305,7 +305,7 @@ void page_flush(FILE *fp)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool page_forward(FILE *unused1, int start, int end, bool ff)
+bool page_forward(FILE *unused, int start, int end, bool ff)
 {
     if (start != end)
     {
@@ -470,7 +470,7 @@ static void write_page(FILE *fp, struct page *page)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void yank_backward(FILE *unused1)
+void yank_backward(FILE *unused)
 {
     struct page *page;
 

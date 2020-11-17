@@ -40,7 +40,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EP(struct cmd *unused1)
+void exec_EP(struct cmd *unused)
 {
     istream = IFILE_SECONDARY;
 

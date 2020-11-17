@@ -43,10 +43,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EX(struct cmd *unused1)
+void exec_EX(struct cmd *unused)
 {
-    assert(unused1 != NULL);            // Error if no command block
-
     struct ofile *ofile = &ofiles[ostream];
 
     if (ofile->fp == NULL && t.Z != 0)

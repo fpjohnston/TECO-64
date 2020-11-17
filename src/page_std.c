@@ -58,7 +58,7 @@ bool page_backward(int unused1, bool unused2)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void page_flush(FILE *unused1)
+void page_flush(FILE *unused)
 {
     page_count = 0;
 }
@@ -126,7 +126,7 @@ void reset_pages(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void yank_backward(FILE *unused1)
+void yank_backward(FILE *unused)
 {
     throw(E_NYA);                       // Numeric argument with Y
 }

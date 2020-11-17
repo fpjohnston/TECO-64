@@ -66,5 +66,3 @@ void exec_FR(struct cmd *cmd)
     delete_ebuf(n);
     exec_insert(cmd->text1.data, cmd->text1.len);
 }
-
-

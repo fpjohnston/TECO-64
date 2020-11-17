@@ -84,4 +84,3 @@ void exec_EB(struct cmd *cmd)
         push_expr(-1, EXPR_VALUE);
     }
 }
-
