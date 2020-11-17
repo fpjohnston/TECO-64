@@ -115,7 +115,13 @@ void exec_cmds(struct cmd *cmd)
         {
             continue;
         }
-        
+
+#if     defined(TECO_TRACE)
+
+        tprint("+++ %s\r\n", entry->exec_name);
+
+#endif
+
         (*entry->exec)(cmd);
 
         if (f.e0.ctrl_c)
@@ -272,6 +278,13 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd)
             cmd->n_arg = -1;
         }
     }
+
+#if     defined(TECO_TRACE)
+
+    if (entry->scan != scan_nop)
+        tprint("--- %s\r\n", entry->scan_name);
+
+#endif
 
     if ((*entry->scan)(cmd) || entry->exec == NULL)
     {
