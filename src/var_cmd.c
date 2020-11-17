@@ -1,6 +1,6 @@
 ///
 ///  @file    var_cmd.c
-///  @brief   Execute commands that are simple variables.
+///  @brief   Scan commands that are simple variables.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -39,27 +39,29 @@
 
 
 ///
-///  @brief    Execute "^P" (CTRL/P) command: get current page number.
+///  @brief    Scan "^P" (CTRL/P) command: get current page number.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_P(struct cmd *unused1)
+bool scan_ctrl_P(struct cmd *unused)
 {
     push_expr((int)page_count, EXPR_VALUE);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "^Q" (CTRL/Q) command: get no. of characters between
+///  @brief    Scan "^Q" (CTRL/Q) command: get no. of characters between
 ///            dot and nth line terminator. n may be negative.
 ///
-///  @returns  nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_Q(struct cmd *cmd)
+bool scan_ctrl_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
@@ -71,34 +73,38 @@ void exec_ctrl_Q(struct cmd *cmd)
     int nchrs = getdelta_ebuf(cmd->n_arg);
 
     push_expr(nchrs, EXPR_VALUE);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "^S" (CTRL/S) command: return negative of last insert,
+///  @brief    Scan "^S" (CTRL/S) command: return negative of last insert,
 ///            string found, or string inserted with a G command, whichever
 ///            occurred last.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_S(struct cmd *cmd)
+bool scan_ctrl_S(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
     push_expr(-(int)last_len, EXPR_VALUE);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "^Y" (CTRL/Y) command: equivalent to .+^S,.
+///  @brief    Scan "^Y" (CTRL/Y) command: equivalent to .+^S,.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_Y(struct cmd *cmd)
+bool scan_ctrl_Y(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
@@ -119,65 +125,92 @@ void exec_ctrl_Y(struct cmd *cmd)
     cmd->m_arg = t.dot - (int)last_len;
 
     push_expr(t.dot, EXPR_VALUE);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "^Z" (CTRL/Z) command: get no. of chrs. in all
+///  @brief    Scan "^Z" (CTRL/Z) command: get no. of chrs. in all
 ///            Q-registers.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_Z(struct cmd *cmd)
+bool scan_ctrl_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
     uint n = get_qall();
 
     push_expr((int)n, EXPR_VALUE);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "." command: get current position in buffer.
+///  @brief    Scan "^^" command: get literal value of next character
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_dot(struct cmd *cmd)
+bool scan_ctrl_up(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int c = fetch_cbuf();
+
+    push_expr(c, EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "." command: get current position in buffer.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_dot(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
     push_expr((int)t.dot, EXPR_VALUE);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "B" command: read first position in buffer (always 0).
+///  @brief    Scan "B" command: read first position in buffer (always 0).
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_B(struct cmd *cmd)
+bool scan_B(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
     push_expr(t.B, EXPR_VALUE);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "H" command: equivalent to B,Z.
+///  @brief    Scan "H" command: equivalent to B,Z.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_H(struct cmd *cmd)
+bool scan_H(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
@@ -198,19 +231,23 @@ void exec_H(struct cmd *cmd)
     cmd->m_arg = t.B;
 
     push_expr((int)t.Z, EXPR_VALUE);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "Z" command: read last position in buffer.
+///  @brief    Scan "Z" command: read last position in buffer.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_Z(struct cmd *cmd)
+bool scan_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
     push_expr((int)t.Z, EXPR_VALUE);
+
+    return true;
 }

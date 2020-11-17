@@ -210,7 +210,14 @@ static int isqreg(int c, struct search *s)
         qname = *s->match_buf++;
     }
 
-    struct qreg *qreg = get_qreg(qname, qlocal);
+    int qindex = get_qindex(qname, qlocal);
+
+    if (qindex == -1)
+    {
+        throw(E_IQN, qname);            // Invalid Q-register name
+    }
+
+    struct qreg *qreg = get_qreg(qindex);
 
     for (uint i = 0; i < qreg->text.len; ++i)
     {

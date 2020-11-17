@@ -77,7 +77,7 @@ void exec_M(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    struct qreg *qreg = get_qreg(cmd->qname, cmd->qlocal);
+    struct qreg *qreg = get_qreg(cmd->qindex);
 
     assert(qreg != NULL);               // Error if no Q-register
 
@@ -118,6 +118,7 @@ void exec_M(struct cmd *cmd)
 void exec_macro(struct buffer *macro, struct cmd *cmd)
 {
     assert(macro != NULL);
+    assert(cmd != NULL);
     assert(macro->data != NULL);
 
     volatile struct buffer *saved_cbuf = get_cbuf();
@@ -132,7 +133,12 @@ void exec_macro(struct buffer *macro, struct cmd *cmd)
 
     ++macro_depth;
 
-    exec_cmd(cmd);
+    if (cmd->n_set)
+    {
+        push_expr(cmd->n_arg, EXPR_VALUE);
+    }
+
+    exec_cmds(cmd);
 
     --macro_depth;
 
@@ -155,5 +161,3 @@ void reset_macro(void)
 {
     macro_depth = 0;
 }
-
-

@@ -56,7 +56,8 @@ my $cmds;
 my $e_cmds;
 my $f_cmds;
 my %commands;
-my %externs;
+my %exec_funcs;
+my %scan_funcs;
 
 #
 #  Parse our command-line options
@@ -181,22 +182,27 @@ sub make_commands_h
 sub make_exec_h
 {
     my $fh;
-    my $extern;
+    my $scan_list;
+    my $exec_list;
 
-    foreach my $key (sort keys %externs)
+    foreach my $key (sort keys %scan_funcs)
     {
-        if ($key ne 'exec_escape')
-        {
-            $extern .= "extern void $key(struct cmd *cmd);\n\n";
-        }
+        $scan_list .= "extern bool $key(struct cmd *cmd);\n\n";
     }
 
-    chomp $extern;
+    chomp $scan_list;
+
+    foreach my $key (sort keys %exec_funcs)
+    {
+        $exec_list .= "extern void $key(struct cmd *cmd);\n\n";
+    }
+
+    chomp $exec_list;
 
     print {*STDERR} "Creating $args{output}\n";
     open $fh, '>', $args{output};
 
-    printf {$fh} $template, $warning, $extern;
+    printf {$fh} $template, $warning, $scan_list, $exec_list;
 
     close $fh;
 
@@ -227,31 +233,27 @@ sub parse_commands
 
         foreach my $command ($section->findnodes('./command'))
         {
-            my $name = $command->getAttribute('name');
-            my $format = $command->getAttribute('format');
-            my $exec = $command->getAttribute('exec');
+            my $name    = $command->getAttribute('name');
+            my $scan    = $command->getAttribute('scan');
+            my $exec    = $command->getAttribute('exec');
 
-            if ($exec)
+            if ($name =~ /^E(.)$/)
             {
-                if ($exec =~ /^exec_E/)
-                {
-                    $name =~ s/^E//;
-
-                    $e_cmds .= make_entry($name, $format, $exec);
-
-                    next;
-                }
-                elsif ($exec =~ /^exec_F/)
-                {
-                    $name =~ s/^F//;
-
-                    $f_cmds .= make_entry($name, $format, $exec);
-
-                    next;
-                }
+                $e_cmds .= make_entry($1, $scan, $exec);
             }
+            elsif ($name ne 'FF' && $name =~ /^F(.)$/)
+            {
+                $f_cmds .= make_entry($1, $scan, $exec);
+            }
+            else
+            {
+                if ($name =~ /^\[(.)\]/)
+                {
+                    $name = $1;
+                }
 
-            $cmds .= make_entry($name, $format, $exec);
+                $cmds .= make_entry($name, $scan, $exec);
+            }
         }
     }
 
@@ -262,8 +264,7 @@ sub parse_commands
             
 sub make_entry
 {
-    my ($name, $format, $exec) = @_;
-    my $options;
+    my ($name, $scan, $exec) = @_;
 
     if ($name eq '\'' || $name eq '\\')
     {
@@ -274,97 +275,34 @@ sub make_entry
         $name = "'$name'";
     }
 
-    my $orig = $format;
-
-    if ($format)
-    {
-        if ($format =~ s/^m,(.*)/$1/)
-        {
-            $options .= "OPT_M|";
-        }
-
-        if ($format =~ s/^n(.*)/$1/)
-        {
-            $options .= "OPT_N|";
-        }
-
-        if ($format =~ s/^::(.*)/$1/)
-        {
-            $options .= "OPT_C|OPT_D|";
-        }
-        elsif ($format =~ s/^:(.*)/$1/)
-        {
-            $options .= "OPT_C|";
-        }
-
-        if ($format =~ s/^@(.*)/$1/)
-        {
-            $options .= "OPT_A|";
-        }
-
-        if ($format =~ s{^X(.*)}{$1})
-        {
-        }
-
-        if ($format =~ s/^q(.*)/$1/)
-        {
-            $options .= "OPT_Q|";
-        }
-
-        if ($format =~ s{^///(.*)}{$1})
-        {
-            $options .= "OPT_T1|OPT_T2|";
-        }
-        elsif ($format =~ s{^//(.*)}{$1})
-        {
-            $options .= "OPT_T1|";
-        }
-
-        if ($format =~ s{!(.*)}{$1})
-        {
-            $options .= "OPT_F|";
-        }
-
-        if ($format =~ s{\$(.*)}{$1})
-        {
-            $options .= "OPT_M|OPT_N|OPT_E|";
-        }
-
-        if ($format)
-        {
-            print "Invalid format $orig for $name command\n";
-
-            exit;
-        }
-
-        if ($options)
-        {
-            chop $options;
-#            $options = "($options)";
-        }
-        else
-        {
-            $options = "0";
-        }
-    }
-    elsif ($exec)
-    {
-        $options = "OPT_O";
-    }
-
     $name .= ",";
     $name = sprintf("%-7s", $name);
 
-    $externs{$exec} = 1;
+    if (!defined $scan)
+    {
+        $scan = 'scan_nop';
+    }
 
-    $exec .= ",";
+    $scan_funcs{$scan} = 1;
+
+    if (defined $exec)
+    {
+        $exec_funcs{$exec} = 1;
+    }
+    else
+    {
+        $exec = 'NULL';
+    }
+
+    $scan .= ",";
+    $scan = sprintf("%-15s", $scan);
     $exec = sprintf("%-15s", $exec);
 
-    my $entry = sprintf "%s", "    ENTRY($name  $exec  $options),\n";
+    my $entry = sprintf "%s", "    ENTRY($name  $scan  $exec),\n";
 
     if ($name =~ s/^('[A-Z]',)/\L$1/)
     {
-        $entry .= sprintf "%s", "    ENTRY($name  $exec  $options),\n";
+        $entry .= sprintf "%s", "    ENTRY($name  $scan  $exec),\n";
     }
 
     return $entry;

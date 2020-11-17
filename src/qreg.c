@@ -32,16 +32,19 @@
 #include <string.h>
 
 #include "teco.h"
-#include "errcodes.h"
 #include "exec.h"
 #include "qreg.h"
 #include "term.h"
 
+///  @def    QREGISTER
+///  @brief  Get pointer to Q-register data structure.
+
+#define QREGISTER(i) (i >= QCOUNT ? &local_head->qreg[i - QCOUNT] : &qglobal[i])
 
 ///  @var    qglobal
 ///  @brief  Global Q-registers.
 
-static struct qreg qglobal[QREG_SIZE];
+static struct qreg qglobal[QCOUNT];
 
 ///  @struct qlocal
 ///  @brief  Local Q-register set.
@@ -49,7 +52,7 @@ static struct qreg qglobal[QREG_SIZE];
 struct qlocal
 {
     struct qlocal *next;                ///< Next item in list
-    struct qreg qreg[QREG_SIZE];        ///< Local Q-register set
+    struct qreg qreg[QCOUNT];           ///< Local Q-register set
 };
 
 ///  @var    local_head
@@ -92,9 +95,9 @@ static void exit_qreg(void);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void append_qchr(int qname, bool qdot, int c)
+void append_qchr(int qindex, int c)
 {
-    struct qreg *qreg = get_qreg(qname, qdot);
+    struct qreg *qreg = QREGISTER(qindex);
 
     if (qreg->text.data == NULL)
     {
@@ -128,9 +131,9 @@ void append_qchr(int qname, bool qdot, int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void delete_qtext(int qname, bool qdot)
+void delete_qtext(int qindex)
 {
-    struct qreg *qreg = get_qreg(qname, qdot);
+    struct qreg *qreg = QREGISTER(qindex);
 
     free_mem(&qreg->text.data);
 
@@ -159,7 +162,7 @@ static void exit_qreg(void)
     assert(local_head != NULL);         // Error if no local Q-registers
     assert(local_head->next == NULL);   // Error if more than one set
 
-    for (uint i = 0; i < QREG_SIZE; ++i)
+    for (uint i = 0; i < QCOUNT; ++i)
     {
         if (local_head->qreg[i].text.data != NULL)
         {
@@ -171,7 +174,7 @@ static void exit_qreg(void)
 
     // Free the global Q-registers
 
-    for (uint i = 0; i < QREG_SIZE; ++i)
+    for (uint i = 0; i < QCOUNT; ++i)
     {
         struct qreg *qreg = &qglobal[i];
 
@@ -194,7 +197,7 @@ uint get_qall(void)
 
     // Get count of all text in global Q-registers
 
-    for (uint i = 0; i < QREG_SIZE; ++i)
+    for (uint i = 0; i < QCOUNT; ++i)
     {
         qreg = &qglobal[i];
         n += qreg->text.len;
@@ -206,7 +209,7 @@ uint get_qall(void)
 
     while (qnext != NULL)
     {
-        for (uint i = 0; i < QREG_SIZE; ++i)
+        for (uint i = 0; i < QCOUNT; ++i)
         {
             qreg = &qnext->qreg[i];
             n += qreg->text.len;
@@ -237,9 +240,9 @@ uint get_qall(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int get_qchr(int qname, bool qdot, int n)
+int get_qchr(int qindex, int n)
 {
-    struct qreg *qreg = get_qreg(qname, qdot);
+    struct qreg *qreg = QREGISTER(qindex);
 
     if (n < 0 || (uint)n >= qreg->text.len) // Out of range?
     {
@@ -251,51 +254,64 @@ int get_qchr(int qname, bool qdot, int n)
 
 
 ///
+///  @brief    Get index into Q-register array, given its name.
+///
+///  @returns  Index, or -1 if not found.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int get_qindex(int qname, bool qlocal)
+{
+    static const char *qchars = QNAMES "abcdefghijklmnopqrstuvwxyz";
+
+    const char *qchar = strchr(qchars, qname);
+
+    if (qchar == NULL)
+    {
+        return -1;
+    }
+
+    int qindex  = qchar - qchars;
+
+    qindex -= (qindex >= QCOUNT) ? QCOUNT : 0;
+    qindex += (qlocal)           ? QCOUNT : 0;
+
+    return qindex;
+}
+
+
+///
 ///  @brief    Get number in Q-register.
 ///
 ///  @returns  Q-register number.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int get_qnum(int qname, bool qdot)
+int get_qnum(int qindex)
 {
-    struct qreg *qreg = get_qreg(qname, qdot);
+    struct qreg *qreg = QREGISTER(qindex);
 
     return qreg->n;
 }
 
 
 ///
-///  @brief    Get pointer to Q-register storage.
+///  @brief    Get Q-register entry.
 ///
-///  @returns  Q-register pointer (error if invalid Q-register).
+///  @returns  Q-register entry.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct qreg *get_qreg(int qname, bool qdot)
+struct qreg *get_qreg(int qindex)
 {
-    static const char *qchars = QCHARS;
-
-    const char *qchar = strchr(qchars, toupper(qname));
-
-    if (qchar == NULL)
+    if (qindex >= QCOUNT)
     {
-        throw(E_IQN, qname);            // Invalid Q-register name
-    }
-
-    uint qindex = (uint)(qchar - qchars);
-    struct qreg *qreg;
-
-    if (qdot)                           // Local Q-register?
-    {
-        qreg = &local_head->qreg[qindex];
+        return &local_head->qreg[qindex - QCOUNT];
     }
     else
     {
-        qreg = &qglobal[qindex];        // Set global Q-register
+        return &qglobal[qindex];
     }
-
-    return qreg;
 }
 
 
@@ -306,9 +322,9 @@ struct qreg *get_qreg(int qname, bool qdot)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-uint get_qsize(int qname, bool qdot)
+uint get_qsize(int qindex)
 {
-    struct qreg *qreg = get_qreg(qname, qdot);
+    struct qreg *qreg = QREGISTER(qindex);
 
     return qreg->text.len;
 }
@@ -343,7 +359,7 @@ void pop_qlocal(void)
 
     local_head = saved_set->next;
 
-    for (uint i = 0; i < QREG_SIZE; ++i)
+    for (uint i = 0; i < QCOUNT; ++i)
     {
         if (saved_set->qreg[i].text.data != NULL)
         {
@@ -362,9 +378,9 @@ void pop_qlocal(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool pop_qreg(int qname, bool qdot)
+bool pop_qreg(int qindex)
 {
-    struct qreg *qreg = get_qreg(qname, qdot);
+    struct qreg *qreg = QREGISTER(qindex);
 
     if (list_head == NULL)
     {
@@ -395,9 +411,9 @@ bool pop_qreg(int qname, bool qdot)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void print_qreg(int qname, bool qdot)
+void print_qreg(int qindex)
 {
-    struct qreg *qreg = get_qreg(qname, qdot);
+    struct qreg *qreg = QREGISTER(qindex);
 
     for (uint i = 0; i < qreg->text.len; ++i)
     {
@@ -432,16 +448,16 @@ void push_qlocal(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool push_qreg(int qname, bool qdot)
+bool push_qreg(int qindex)
 {
-    struct qreg *qreg = get_qreg(qname, qdot);
+    struct qreg *qreg    = QREGISTER(qindex);
     struct qlist *savedq = alloc_mem((uint)sizeof(*savedq));
 
     savedq->qreg.n         = qreg->n;
     savedq->qreg.text.size = qreg->text.size;
     savedq->qreg.text.pos  = qreg->text.pos;
     savedq->qreg.text.len  = qreg->text.len;
-    savedq->qreg.text.data  = alloc_mem(savedq->qreg.text.size);
+    savedq->qreg.text.data = alloc_mem(savedq->qreg.text.size);
 
     memcpy(savedq->qreg.text.data, qreg->text.data,
            (ulong)savedq->qreg.text.size);
@@ -471,7 +487,7 @@ void reset_qreg(void)
 
         local_head = saved_set->next;
 
-        for (uint i = 0; i < QREG_SIZE; ++i)
+        for (uint i = 0; i < QCOUNT; ++i)
         {
             if (saved_set->qreg[i].text.data != NULL)
             {
@@ -497,15 +513,53 @@ void reset_qreg(void)
 
 
 ///
+///  @brief    Scan Q-register following command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_qreg(struct cmd *cmd)
+{
+    static const char *qnames = QNAMES "abcdefghijklmnopqrstuvwxyz";
+
+    assert(cmd != NULL);
+
+    const char *qname;
+    int c = fetch_cbuf();    
+
+    if (c == '.')                       // Local Q-register?
+    {
+        cmd->qlocal = true;             // Yes, mark it
+
+        c = fetch_cbuf();
+    }
+
+    cmd->qname = (char)c;               // Save the name
+
+    if ((qname = strchr(qnames, cmd->qname)) == NULL)
+    {
+        cmd->qindex = -1;
+    }
+    else
+    {
+        cmd->qindex  = qname - qnames;
+        cmd->qindex -= (cmd->qindex >= QCOUNT) ? QCOUNT : 0;
+        cmd->qindex += (cmd->qlocal)           ? QCOUNT : 0;
+    }
+}
+
+
+///
 ///  @brief    Store character in Q-register.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void store_qchr(int qname, bool qdot, int c)
+void store_qchr(int qindex, int c)
 {
-    struct qreg *qreg = get_qreg(qname, qdot);
+    struct qreg *qreg = QREGISTER(qindex);
 
     free_mem(&qreg->text.data);
 
@@ -525,9 +579,9 @@ void store_qchr(int qname, bool qdot, int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void store_qnum(int qname, bool qdot, int n)
+void store_qnum(int qindex, int n)
 {
-    struct qreg *qreg = get_qreg(qname, qdot);
+    struct qreg *qreg = QREGISTER(qindex);
 
     qreg->n = n;
 }
@@ -540,9 +594,9 @@ void store_qnum(int qname, bool qdot, int n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void store_qtext(int qname, bool qdot, struct buffer *text)
+void store_qtext(int qindex, struct buffer *text)
 {
-    struct qreg *qreg = get_qreg(qname, qdot);
+    struct qreg *qreg = get_qreg(qindex);
 
     free_mem(&qreg->text.data);
 

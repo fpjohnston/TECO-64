@@ -68,7 +68,7 @@ void exec_X(struct cmd *cmd)
             // manual; regardless, it is used in macros to delete Q-register
             // text storage, so we've implemented it here.
 
-            delete_qtext(cmd->qname, cmd->qlocal);
+            delete_qtext(cmd->qindex);
 
             return;
         }
@@ -100,13 +100,13 @@ void exec_X(struct cmd *cmd)
 
     if (!cmd->colon)                    // Delete any text if not appending
     {
-        delete_qtext(cmd->qname, cmd->qlocal);
+        delete_qtext(cmd->qindex);
     }
 
     for (int i = m; i < n; ++i)
     {
         int c = getchar_ebuf(i);
 
-        append_qchr(cmd->qname, cmd->qlocal, c);
+        append_qchr(cmd->qindex, c);
     }
 }

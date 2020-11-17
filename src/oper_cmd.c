@@ -1,6 +1,6 @@
 ///
 ///  @file    oper_cmd.c
-///  @brief   Execute operator commands.
+///  @brief   Scan operator commands.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -35,13 +35,13 @@
 
 
 ///
-///  @brief    Execute "," command: separate m and n arguments.
+///  @brief    Scan "," command: separate m and n arguments.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_comma(struct cmd *cmd)
+bool scan_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
@@ -57,50 +57,88 @@ void exec_comma(struct cmd *cmd)
             throw(E_NAC);               // No argument before comma
         }
 
-        return;
+        return true;
     }
 
     // If we've seen a comma, then what was on the expression stack was an "m"
     // argument, not an "n" argument (numeric arguments can take the form m,n).
 
     cmd->m_set = true;
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "^_" (CTRL/_) command: 1's complement operator.
+///  @brief    Scan "^_" (CTRL/_) command: 1's complement operator.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_ubar(struct cmd *cmd)
+bool scan_ctrl_ubar(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
     push_expr(TYPE_OPER, cmd->c1);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "(" command: expression grouping.
+///  @brief    Scan "/" command: division operator.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_lparen(struct cmd *cmd)
+bool scan_div(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    check_args(cmd);
+
+    int c = cmd->c1;
+
+    // Check for double slash remainder operator.
+
+    if (f.e1.xoper && nparens != 0 && peek_cbuf() == '/')
+    {
+        (void)fetch_cbuf();
+
+        cmd->c2 = '/';
+
+        c = EXPR_REM;
+    }
+    
+    push_expr(TYPE_OPER, c);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "(" command: expression grouping.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_lparen(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
     ++nparens;
 
     push_expr(TYPE_GROUP, cmd->c1);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute operator commands. This is called for the following:
+///  @brief    Scan operator commands. This is called for the following:
 ///
 ///            +  addition
 ///            -  subtraction
@@ -109,28 +147,30 @@ void exec_lparen(struct cmd *cmd)
 ///            #  logical OR
 ///            &  logical AND
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_oper(struct cmd *cmd)
+bool scan_oper(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
     check_args(cmd);
 
     push_expr(TYPE_OPER, cmd->c1);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute ")" command: expression grouping.
+///  @brief    Scan ")" command: expression grouping.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_rparen(struct cmd *cmd)
+bool scan_rparen(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
@@ -148,4 +188,30 @@ void exec_rparen(struct cmd *cmd)
     }
 
     push_expr(TYPE_GROUP, cmd->c1);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "~" command: exclusive OR operator.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_tilde(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    check_args(cmd);
+
+    if (!f.e1.xoper || nparens == 0)
+    {
+        throw(E_ILL, cmd->c1);          // Illegal command
+    }
+    
+    push_expr(TYPE_OPER, cmd->c1);
+
+    return true;
 }

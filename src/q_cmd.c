@@ -1,6 +1,6 @@
 ///
 ///  @file    q_cmd.c
-///  @brief   Execute Q command.
+///  @brief   Scan Q command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -29,38 +29,44 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
 
 
 ///
-///  @brief    Execute "Q" command: return numeric value of Q-register, or size
+///  @brief    Scan "Q" command: return numeric value of Q-register, or size
 ///            of text string.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_Q(struct cmd *cmd)
+bool scan_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
+
+    check_m_arg(cmd);
+    check_dcolon(cmd);
+    scan_qreg(cmd);
 
     int n;
 
     if (cmd->n_set)                     // nQq
     {
-        n = get_qchr(cmd->qname, cmd->qlocal, cmd->n_arg);
+        n = get_qchr(cmd->qindex, cmd->n_arg);
     }
     else if (cmd->colon)                // :Qq
     {
-        n = (int)get_qsize(cmd->qname, cmd->qlocal);
+        n = (int)get_qsize(cmd->qindex);
     }
     else                                // Qq
     {
-        n = get_qnum(cmd->qname, cmd->qlocal);
+        n = get_qnum(cmd->qindex);
     }
 
     push_expr(n, EXPR_VALUE);
-}
 
+    return true;
+}

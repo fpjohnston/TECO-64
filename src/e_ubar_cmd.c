@@ -98,4 +98,3 @@ void exec_E_ubar(struct cmd *cmd)
         search_failure(cmd);
     }
 }
-

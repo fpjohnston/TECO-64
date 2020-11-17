@@ -31,6 +31,34 @@
 #define _EXEC_H
 
 #include "teco.h"               //lint !e451 !e537
+#include "errcodes.h"           //lint !e451 !e537
+#include "exec.h"               //lint !e451 !e537
+
+///  @def    check_atsign
+///  @brief  Issue error if at sign and command doesn't allow it.
+
+#define check_atsign(cmd)  if (cmd->atsign && f.e2.atsign)     throw(E_ATS)
+
+///  @def    check_colon
+///  @brief  Issue error if colon and command doesn't allow it.
+
+#define check_colon(cmd)   if (cmd->colon  && f.e2.colon)      throw(E_COL)
+
+///  @def    check_dcolon
+///  @brief  Issue error if dcolon and command doesn't allow it.
+
+#define check_dcolon(cmd)  if (cmd->dcolon && f.e2.colon)      throw(E_COL)
+
+///  @def    check_m_arg
+///  @brief  Issue error if m argument and command doesn't allow it.
+
+#define check_m_arg(cmd)   if (cmd->m_set && f.e2.m_arg)       throw(E_IMA)
+
+///  @def    check_n_arg
+///  @brief  Issue error if n argument and command doesn't allow it.
+
+#define check_n_arg(cmd)   if (cmd->n_set && f.e2.n_arg)       throw(E_INA)
+
 
 ///  @struct cmd
 ///  @brief  Command block structure.
@@ -38,17 +66,17 @@
 struct cmd
 {
     char c1;                        ///< 1st command character
-    char c2;                        ///< 2nd command character (or NUL)
-    char c3;                        ///< 3rd command character (or NUL)
+    char c2;                        ///< 2nd command character
+    char c3;                        ///< 3rd command character
     char qname;                     ///< Q-register name
-    int_t m_arg;                    ///< m argument
-    int_t n_arg;                    ///< n argument
-    bool qlocal;                    ///< If true, Q-register is local
+    bool qlocal;                    ///< Q-register is local
+    int qindex;                     ///< Q-register index (if not -1)
     bool m_set;                     ///< m argument is valid
+    int_t m_arg;                    ///< m argument
     bool n_set;                     ///< n argument is valid
+    int_t n_arg;                    ///< n argument
     bool h;                         ///< H found
     bool ctrl_y;                    ///< CTRL/Y found
-    bool w;                         ///< W found
     bool colon;                     ///< : found
     bool dcolon;                    ///< :: found
     bool atsign;                    ///< @ found
@@ -65,13 +93,13 @@ extern char *eg_result;
 
 extern uint nparens;
 
-#if     defined(TECO_DISPLAY)
-
 extern const struct cmd null_cmd;
 
-#endif
+// Functions that scan commands
 
-// Functions that directly execute commands
+%s
+
+// Functions that execute commands
 
 %s
 
@@ -89,15 +117,13 @@ extern bool check_semi(void);
 
 extern void close_files(void);
 
-extern void exec_cmd(struct cmd *cmd);
+extern void exec_cmds(struct cmd *cmd);
 
 extern void exec_macro(struct buffer *macro, struct cmd *cmd);
 
 extern void exit_EG(void);
 
 extern void exec_insert(const char *buf, uint len);
-
-extern bool exec_xoper(int c);
 
 extern int find_eg(char *buf, bool reset);
 
@@ -113,6 +139,8 @@ extern bool next_yank(void);
 
 extern bool read_EI(void);
 
+extern void reset_args(struct cmd *cmd);
+
 extern void reset_if(void);
 
 extern void reset_indirect(void);
@@ -120,5 +148,7 @@ extern void reset_indirect(void);
 extern void reset_loop(void);
 
 extern bool skip_cmd(struct cmd *cmd, const char *skip);
+
+extern void scan_texts(struct cmd *cmd, int ntexts);
 
 #endif  // !defined(_EXEC_H)

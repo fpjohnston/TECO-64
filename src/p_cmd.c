@@ -68,7 +68,7 @@ void exec_P(struct cmd *cmd)
 
     if (f.e2.page && cmd->colon)
     {
-        if (cmd->m_set || cmd->h || cmd->w)
+        if (cmd->m_set || cmd->h || cmd->c2 == 'W')
         {
             throw(E_COL);               // Invalid colon
         }
@@ -96,7 +96,7 @@ void exec_P(struct cmd *cmd)
             throw(E_NPA);               // Negative or zero argument to P or PW
         }
 
-        if (cmd->w)                     // Is it nPW?
+        if (cmd->c2 == 'W')             // Is it nPW?
         {
             ff = !f.e3.nopage;
         }
@@ -112,7 +112,7 @@ void exec_P(struct cmd *cmd)
             return;
         }
 
-        if (!cmd->w)                    // Is it nPW?
+        if (cmd->c2 != 'W')            // Is it nPW?
         {
             yank = true;
         }
@@ -121,7 +121,7 @@ void exec_P(struct cmd *cmd)
     {
         count = 1;
 
-        if (cmd->w)                     // Is it PW?
+        if (cmd->c2 == 'W')             // Is it PW?
         {
             ff = !f.e3.nopage;
         }
@@ -188,4 +188,40 @@ bool next_page(int start, int end, bool ff, bool yank)
     }
 
     return true;
+}
+
+
+///
+///  @brief    Scan "P" command, which may have an optional postfix W.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_P(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    if (cmd->m_set)
+    {
+        if (cmd->m_arg < 0)
+        {
+            throw(E_NCA);
+        }
+        else if (!cmd->n_set)
+        {
+            throw(E_NON);
+        }
+    }
+
+    int c = peek_cbuf();
+
+    if (c == 'W' || c == 'w')
+    {
+        (void)fetch_cbuf();
+
+        cmd->c2 = 'W';
+    }
+
+    return false;
 }

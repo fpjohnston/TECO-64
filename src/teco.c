@@ -83,6 +83,8 @@ int main(int argc, const char * const argv[])
 
     for (;;)                            // Loop forever
     {
+        struct cmd cmd = null_cmd;      // Command block
+
         switch (setjmp(jump_main))
         {
             case MAIN_NORMAL:           // Normal entry
@@ -102,7 +104,7 @@ int main(int argc, const char * const argv[])
                 init_expr();            // Initialize expression stack
 
                 f.e0.exec = true;       // Command is in progress
-                exec_cmd(NULL);         // Execute what we have
+                exec_cmds(&cmd);        // Execute command string
 
                 f.e0.error = false;     // Command completed w/o error
 

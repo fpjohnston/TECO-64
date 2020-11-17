@@ -42,6 +42,35 @@
 
 #define MAX_DIGITS      22
 
+///  @var    xdigits
+///  @brief  Convert ASCII character to hex digit.
+
+static const char xdigits[] =
+{
+    ['0'] = 0,
+    ['1'] = 1,
+    ['2'] = 2,
+    ['3'] = 3,
+    ['4'] = 4,
+    ['5'] = 5,
+    ['6'] = 6,
+    ['7'] = 7,
+    ['8'] = 8,
+    ['9'] = 9,
+    ['A'] = 10,
+    ['a'] = 10,
+    ['B'] = 11,
+    ['b'] = 11,
+    ['C'] = 12,
+    ['c'] = 12,
+    ['D'] = 13,
+    ['d'] = 13,
+    ['E'] = 14,
+    ['e'] = 14,
+    ['F'] = 15,
+    ['f'] = 15,
+};
+
 
 ///
 ///  @brief    Execute "\" command: read digit string.
@@ -96,15 +125,12 @@ void exec_bslash(struct cmd *cmd)
 
         while (c != -1)
         {
-            const char *dstr = "0123456789abcdef";
-            const char *dchar = strchr(dstr, tolower(c));
-
-            if (dchar == NULL)
+            if (!isxdigit(c))
             {
                 break;
             }
 
-            int digit = dchar - dstr;
+            int digit = xdigits[c];
 
             if ((radix == 8 && digit >= 8) || (radix == 10 && digit >= 10))
             {

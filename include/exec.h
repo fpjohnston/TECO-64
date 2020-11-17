@@ -31,6 +31,34 @@
 #define _EXEC_H
 
 #include "teco.h"               //lint !e451 !e537
+#include "errcodes.h"           //lint !e451 !e537
+#include "exec.h"               //lint !e451 !e537
+
+///  @def    check_atsign
+///  @brief  Issue error if at sign and command doesn't allow it.
+
+#define check_atsign(cmd)  if (cmd->atsign && f.e2.atsign)     throw(E_ATS)
+
+///  @def    check_colon
+///  @brief  Issue error if colon and command doesn't allow it.
+
+#define check_colon(cmd)   if (cmd->colon  && f.e2.colon)      throw(E_COL)
+
+///  @def    check_dcolon
+///  @brief  Issue error if dcolon and command doesn't allow it.
+
+#define check_dcolon(cmd)  if (cmd->dcolon && f.e2.colon)      throw(E_COL)
+
+///  @def    check_m_arg
+///  @brief  Issue error if m argument and command doesn't allow it.
+
+#define check_m_arg(cmd)   if (cmd->m_set && f.e2.m_arg)       throw(E_IMA)
+
+///  @def    check_n_arg
+///  @brief  Issue error if n argument and command doesn't allow it.
+
+#define check_n_arg(cmd)   if (cmd->n_set && f.e2.n_arg)       throw(E_INA)
+
 
 ///  @struct cmd
 ///  @brief  Command block structure.
@@ -38,17 +66,17 @@
 struct cmd
 {
     char c1;                        ///< 1st command character
-    char c2;                        ///< 2nd command character (or NUL)
-    char c3;                        ///< 3rd command character (or NUL)
+    char c2;                        ///< 2nd command character
+    char c3;                        ///< 3rd command character
     char qname;                     ///< Q-register name
-    int_t m_arg;                    ///< m argument
-    int_t n_arg;                    ///< n argument
-    bool qlocal;                    ///< If true, Q-register is local
+    bool qlocal;                    ///< Q-register is local
+    int qindex;                     ///< Q-register index (if not -1)
     bool m_set;                     ///< m argument is valid
+    int_t m_arg;                    ///< m argument
     bool n_set;                     ///< n argument is valid
+    int_t n_arg;                    ///< n argument
     bool h;                         ///< H found
     bool ctrl_y;                    ///< CTRL/Y found
-    bool w;                         ///< W found
     bool colon;                     ///< : found
     bool dcolon;                    ///< :: found
     bool atsign;                    ///< @ found
@@ -65,17 +93,162 @@ extern char *eg_result;
 
 extern uint nparens;
 
-#if     defined(TECO_DISPLAY)
-
 extern const struct cmd null_cmd;
 
-#endif
+// Functions that scan commands
 
-// Functions that directly execute commands
+extern bool scan_A(struct cmd *cmd);
+
+extern bool scan_B(struct cmd *cmd);
+
+extern bool scan_E1(struct cmd *cmd);
+
+extern bool scan_E2(struct cmd *cmd);
+
+extern bool scan_E3(struct cmd *cmd);
+
+extern bool scan_E4(struct cmd *cmd);
+
+extern bool scan_ED(struct cmd *cmd);
+
+extern bool scan_EE(struct cmd *cmd);
+
+extern bool scan_EH(struct cmd *cmd);
+
+extern bool scan_EJ(struct cmd *cmd);
+
+extern bool scan_ES(struct cmd *cmd);
+
+extern bool scan_ET(struct cmd *cmd);
+
+extern bool scan_EU(struct cmd *cmd);
+
+extern bool scan_EV(struct cmd *cmd);
+
+extern bool scan_F0(struct cmd *cmd);
+
+extern bool scan_FH(struct cmd *cmd);
+
+extern bool scan_FZ(struct cmd *cmd);
+
+extern bool scan_G(struct cmd *cmd);
+
+extern bool scan_H(struct cmd *cmd);
+
+extern bool scan_P(struct cmd *cmd);
+
+extern bool scan_Q(struct cmd *cmd);
+
+extern bool scan_Z(struct cmd *cmd);
+
+extern bool scan_atsign(struct cmd *cmd);
+
+extern bool scan_bad(struct cmd *cmd);
+
+extern bool scan_bang(struct cmd *cmd);
+
+extern bool scan_colon(struct cmd *cmd);
+
+extern bool scan_comma(struct cmd *cmd);
+
+extern bool scan_ctrl_B(struct cmd *cmd);
+
+extern bool scan_ctrl_E(struct cmd *cmd);
+
+extern bool scan_ctrl_H(struct cmd *cmd);
+
+extern bool scan_ctrl_N(struct cmd *cmd);
+
+extern bool scan_ctrl_P(struct cmd *cmd);
+
+extern bool scan_ctrl_Q(struct cmd *cmd);
+
+extern bool scan_ctrl_S(struct cmd *cmd);
+
+extern bool scan_ctrl_X(struct cmd *cmd);
+
+extern bool scan_ctrl_Y(struct cmd *cmd);
+
+extern bool scan_ctrl_Z(struct cmd *cmd);
+
+extern bool scan_ctrl_ubar(struct cmd *cmd);
+
+extern bool scan_ctrl_up(struct cmd *cmd);
+
+extern bool scan_div(struct cmd *cmd);
+
+extern bool scan_dot(struct cmd *cmd);
+
+extern bool scan_equals(struct cmd *cmd);
+
+extern bool scan_fmt_a1(struct cmd *cmd);
+
+extern bool scan_fmt_a2(struct cmd *cmd);
+
+extern bool scan_fmt_aq1(struct cmd *cmd);
+
+extern bool scan_fmt_c(struct cmd *cmd);
+
+extern bool scan_fmt_ca1(struct cmd *cmd);
+
+extern bool scan_fmt_caq1(struct cmd *cmd);
+
+extern bool scan_fmt_da1(struct cmd *cmd);
+
+extern bool scan_fmt_m(struct cmd *cmd);
+
+extern bool scan_fmt_ma1(struct cmd *cmd);
+
+extern bool scan_fmt_ma2(struct cmd *cmd);
+
+extern bool scan_fmt_mc(struct cmd *cmd);
+
+extern bool scan_fmt_mca1(struct cmd *cmd);
+
+extern bool scan_fmt_mca2(struct cmd *cmd);
+
+extern bool scan_fmt_mcaq1(struct cmd *cmd);
+
+extern bool scan_fmt_mcq(struct cmd *cmd);
+
+extern bool scan_fmt_mda1(struct cmd *cmd);
+
+extern bool scan_fmt_mda2(struct cmd *cmd);
+
+extern bool scan_fmt_mq(struct cmd *cmd);
+
+extern bool scan_fmt_n(struct cmd *cmd);
+
+extern bool scan_fmt_na1(struct cmd *cmd);
+
+extern bool scan_fmt_nc(struct cmd *cmd);
+
+extern bool scan_fmt_nca1(struct cmd *cmd);
+
+extern bool scan_gt(struct cmd *cmd);
+
+extern bool scan_lparen(struct cmd *cmd);
+
+extern bool scan_lt(struct cmd *cmd);
+
+extern bool scan_nop(struct cmd *cmd);
+
+extern bool scan_number(struct cmd *cmd);
+
+extern bool scan_oper(struct cmd *cmd);
+
+extern bool scan_pct(struct cmd *cmd);
+
+extern bool scan_quote(struct cmd *cmd);
+
+extern bool scan_rparen(struct cmd *cmd);
+
+extern bool scan_tilde(struct cmd *cmd);
+
+
+// Functions that execute commands
 
 extern void exec_A(struct cmd *cmd);
-
-extern void exec_B(struct cmd *cmd);
 
 extern void exec_C(struct cmd *cmd);
 
@@ -106,8 +279,6 @@ extern void exec_EG(struct cmd *cmd);
 extern void exec_EH(struct cmd *cmd);
 
 extern void exec_EI(struct cmd *cmd);
-
-extern void exec_EJ(struct cmd *cmd);
 
 extern void exec_EK(struct cmd *cmd);
 
@@ -141,8 +312,6 @@ extern void exec_E_pct(struct cmd *cmd);
 
 extern void exec_E_ubar(struct cmd *cmd);
 
-extern void exec_F0(struct cmd *cmd);
-
 extern void exec_F1(struct cmd *cmd);
 
 extern void exec_F2(struct cmd *cmd);
@@ -154,8 +323,6 @@ extern void exec_FB(struct cmd *cmd);
 extern void exec_FC(struct cmd *cmd);
 
 extern void exec_FD(struct cmd *cmd);
-
-extern void exec_FH(struct cmd *cmd);
 
 extern void exec_FK(struct cmd *cmd);
 
@@ -173,8 +340,6 @@ extern void exec_FS(struct cmd *cmd);
 
 extern void exec_FU(struct cmd *cmd);
 
-extern void exec_FZ(struct cmd *cmd);
-
 extern void exec_F_apos(struct cmd *cmd);
 
 extern void exec_F_gt(struct cmd *cmd);
@@ -186,8 +351,6 @@ extern void exec_F_ubar(struct cmd *cmd);
 extern void exec_F_vbar(struct cmd *cmd);
 
 extern void exec_G(struct cmd *cmd);
-
-extern void exec_H(struct cmd *cmd);
 
 extern void exec_I(struct cmd *cmd);
 
@@ -205,8 +368,6 @@ extern void exec_O(struct cmd *cmd);
 
 extern void exec_P(struct cmd *cmd);
 
-extern void exec_Q(struct cmd *cmd);
-
 extern void exec_R(struct cmd *cmd);
 
 extern void exec_S(struct cmd *cmd);
@@ -223,19 +384,13 @@ extern void exec_X(struct cmd *cmd);
 
 extern void exec_Y(struct cmd *cmd);
 
-extern void exec_Z(struct cmd *cmd);
-
 extern void exec_apos(struct cmd *cmd);
 
 extern void exec_bang(struct cmd *cmd);
 
 extern void exec_bslash(struct cmd *cmd);
 
-extern void exec_comma(struct cmd *cmd);
-
 extern void exec_ctrl_A(struct cmd *cmd);
-
-extern void exec_ctrl_B(struct cmd *cmd);
 
 extern void exec_ctrl_C(struct cmd *cmd);
 
@@ -243,21 +398,11 @@ extern void exec_ctrl_D(struct cmd *cmd);
 
 extern void exec_ctrl_E(struct cmd *cmd);
 
-extern void exec_ctrl_H(struct cmd *cmd);
-
 extern void exec_ctrl_I(struct cmd *cmd);
-
-extern void exec_ctrl_N(struct cmd *cmd);
 
 extern void exec_ctrl_O(struct cmd *cmd);
 
-extern void exec_ctrl_P(struct cmd *cmd);
-
-extern void exec_ctrl_Q(struct cmd *cmd);
-
 extern void exec_ctrl_R(struct cmd *cmd);
-
-extern void exec_ctrl_S(struct cmd *cmd);
 
 extern void exec_ctrl_T(struct cmd *cmd);
 
@@ -269,35 +414,21 @@ extern void exec_ctrl_W(struct cmd *cmd);
 
 extern void exec_ctrl_X(struct cmd *cmd);
 
-extern void exec_ctrl_Y(struct cmd *cmd);
-
-extern void exec_ctrl_Z(struct cmd *cmd);
-
-extern void exec_ctrl_ubar(struct cmd *cmd);
-
-extern void exec_dot(struct cmd *cmd);
-
 extern void exec_equals(struct cmd *cmd);
+
+extern void exec_escape(struct cmd *cmd);
 
 extern void exec_gt(struct cmd *cmd);
 
 extern void exec_lbracket(struct cmd *cmd);
 
-extern void exec_lparen(struct cmd *cmd);
-
 extern void exec_lt(struct cmd *cmd);
-
-extern void exec_number(struct cmd *cmd);
-
-extern void exec_oper(struct cmd *cmd);
 
 extern void exec_pct(struct cmd *cmd);
 
 extern void exec_quote(struct cmd *cmd);
 
 extern void exec_rbracket(struct cmd *cmd);
-
-extern void exec_rparen(struct cmd *cmd);
 
 extern void exec_semi(struct cmd *cmd);
 
@@ -322,15 +453,13 @@ extern bool check_semi(void);
 
 extern void close_files(void);
 
-extern void exec_cmd(struct cmd *cmd);
+extern void exec_cmds(struct cmd *cmd);
 
 extern void exec_macro(struct buffer *macro, struct cmd *cmd);
 
 extern void exit_EG(void);
 
 extern void exec_insert(const char *buf, uint len);
-
-extern bool exec_xoper(int c);
 
 extern int find_eg(char *buf, bool reset);
 
@@ -346,6 +475,8 @@ extern bool next_yank(void);
 
 extern bool read_EI(void);
 
+extern void reset_args(struct cmd *cmd);
+
 extern void reset_if(void);
 
 extern void reset_indirect(void);
@@ -353,5 +484,7 @@ extern void reset_indirect(void);
 extern void reset_loop(void);
 
 extern bool skip_cmd(struct cmd *cmd, const char *skip);
+
+extern void scan_texts(struct cmd *cmd, int ntexts);
 
 #endif  // !defined(_EXEC_H)

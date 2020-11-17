@@ -46,29 +46,22 @@
 
 // Local functions
 
-static bool check_n_flag(struct cmd *cmd, int *flag);
+static void check_n_flag(struct cmd *cmd, int *flag);
 
-static bool check_mn_flag(struct cmd *cmd, int *flag);
+static void check_mn_flag(struct cmd *cmd, int *flag);
 
 
 ///
 ///  @brief    Check flag variable that takes one or two arguments.
 ///
-///  @returns  true if flag has a value, otherwise false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool check_mn_flag(struct cmd *cmd, int *flag)
+static void check_mn_flag(struct cmd *cmd, int *flag)
 {
     assert(cmd != NULL);                // Error if no command block
     assert(flag != NULL);               // Error if no flag bits
-
-    if (!cmd->n_set)                    // n argument?
-    {
-        push_expr(*flag, EXPR_VALUE);   // Assume we're an operand
-
-        return false;
-    }
 
     if (!cmd->m_set)                    // m argument too?
     {
@@ -85,36 +78,25 @@ static bool check_mn_flag(struct cmd *cmd, int *flag)
             *flag |= cmd->n_arg;
         }
     }
-
-    return true;
 }
 
 
 ///
 ///  @brief    Check flag variable that takes one argument.
 ///
-///  @returns  true if flag has a value, otherwise false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool check_n_flag(struct cmd *cmd, int *flag)
+static void check_n_flag(struct cmd *cmd, int *flag)
 {
     assert(cmd != NULL);                // Error if no command block
     assert(flag != NULL);               // Error if no flag bits
-
-    if (!cmd->n_set)
-    {
-        push_expr(*flag, EXPR_VALUE);
-
-        return false;
-    }
 
     // Here if there is a value preceding the flag, which
     // means that the flag is not part of an expression.
 
     *flag = cmd->n_arg;
-
-    return true;
 }
 
 
@@ -129,26 +111,9 @@ void exec_ctrl_E(struct cmd *cmd)
 {
     int n = f.ctrl_e ? -1 : 0;          // Reading flag returns 0 or -1
 
-    if (check_n_flag(cmd, &n))
-    {
-        f.ctrl_e = n ? true : false;
-    }
-}
+    check_n_flag(cmd, &n);
 
-
-///
-///  @brief    Execute "^N" (CTRL/N) command: read end of file flag for current
-///            input stream.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_ctrl_N(struct cmd *unused1)
-{
-    struct ifile *ifile = &ifiles[istream];
-
-    push_expr(feof(ifile->fp), EXPR_VALUE);
+    f.ctrl_e = n ? true : false;
 }
 
 
@@ -161,18 +126,17 @@ void exec_ctrl_N(struct cmd *unused1)
 
 void exec_ctrl_X(struct cmd *cmd)
 {
-    if (check_n_flag(cmd, &f.ctrl_x))
-    {
-        // Make sure that the flag only has the values -1, 0, or 1.
+    check_n_flag(cmd, &f.ctrl_x);
 
-        if (f.ctrl_x < 0)
-        {
-            f.ctrl_x = -1;
-        }
-        else if (f.ctrl_x > 0)
-        {
-            f.ctrl_x = 1;
-        }
+    // Make sure that the flag only has the values -1, 0, or 1.
+
+    if (f.ctrl_x < 0)
+    {
+        f.ctrl_x = -1;
+    }
+    else if (f.ctrl_x > 0)
+    {
+        f.ctrl_x = 1;
     }
 }
 
@@ -188,7 +152,7 @@ void exec_E1(struct cmd *cmd)
 {
     union e1_flag saved = { .flag = f.e1.flag };
 
-    (void)check_mn_flag(cmd, &f.e1.flag);
+    check_mn_flag(cmd, &f.e1.flag);
 
     if (f.e0.init)                      // Initializing?
     {
@@ -233,7 +197,7 @@ void exec_E1(struct cmd *cmd)
 
 void exec_E2(struct cmd *cmd)
 {
-    (void)check_mn_flag(cmd, &f.e2.flag);
+    check_mn_flag(cmd, &f.e2.flag);
 }
 
 
@@ -246,7 +210,7 @@ void exec_E2(struct cmd *cmd)
 
 void exec_E3(struct cmd *cmd)
 {
-    (void)check_mn_flag(cmd, &f.e3.flag);
+    check_mn_flag(cmd, &f.e3.flag);
 }
 
 
@@ -259,7 +223,7 @@ void exec_E3(struct cmd *cmd)
 
 void exec_E4(struct cmd *cmd)
 {
-    (void)check_mn_flag(cmd, &f.e4.flag);
+    check_mn_flag(cmd, &f.e4.flag);
 }
 
 
@@ -272,13 +236,14 @@ void exec_E4(struct cmd *cmd)
 
 void exec_ED(struct cmd *cmd)
 {
+
 #if    defined(TECO_DISPLAY)
 
     union ed_flag saved = { .flag = f.ed.flag };
 
 #endif
 
-    (void)check_mn_flag(cmd, &f.ed.flag);
+    check_mn_flag(cmd, &f.ed.flag);
 
 #if    defined(TECO_DISPLAY)
 
@@ -303,15 +268,14 @@ void exec_EE(struct cmd *cmd)
 {
     int n = f.ee;
 
-    if (check_n_flag(cmd, &n))
-    {
-        if (!isascii(n))                // Must be an ASCII character
-        {
-            throw(E_CHR);               // Invalid character for command
-        }
+    check_n_flag(cmd, &n);
 
-        f.ee = n;
+    if (!isascii(n))                    // Must be an ASCII character
+    {
+        throw(E_CHR);                   // Invalid character for command
     }
+
+    f.ee = n;
 }
 
 
@@ -324,50 +288,19 @@ void exec_EE(struct cmd *cmd)
 
 void exec_EH(struct cmd *cmd)
 {
-    if (check_mn_flag(cmd, &f.eh.flag))
-    {
-        union eh_flag eh;
+    check_mn_flag(cmd, &f.eh.flag);
 
-        eh.flag = 0;
+    union eh_flag eh;
 
-        eh.verbose = f.eh.verbose;
-        eh.command = f.eh.command;
+    eh.flag = 0;
 
-        f.eh.flag = 0;
+    eh.verbose = f.eh.verbose;
+    eh.command = f.eh.command;
 
-        f.eh.command = eh.command;
-        f.eh.verbose = eh.verbose;
-    }
-}
+    f.eh.flag = 0;
 
-
-///
-///  @brief    Execute "EJ" command: read or set operating environment
-///            information.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_EJ(struct cmd *cmd)
-{
-    assert(cmd != NULL);                // Error if no command block
-
-    if (cmd->m_set)                     // Did user specify m,nEJ?
-    {
-        throw(E_NYI);                   // Not yet implemented
-    }
-
-    int n = 0;                          // 0EJ is default command
-
-    if (cmd->n_set)
-    {
-        n = cmd->n_arg;                 // Get whatever operand we can
-    }
-
-    n = teco_env(n, cmd->colon);        // Do the system-dependent part
-
-    push_expr(n, EXPR_VALUE);           // Now return the result
+    f.eh.command = eh.command;
+    f.eh.verbose = eh.verbose;
 }
 
 
@@ -388,7 +321,7 @@ void exec_ES(struct cmd *cmd)
         cmd->n_arg += (cmd->m_arg + 1) * 256;
     }
 
-    (void)check_n_flag(cmd, &f.es);
+    check_n_flag(cmd, &f.es);
 }
 
 
@@ -403,23 +336,21 @@ void exec_ET(struct cmd *cmd)
 {
     union et_flag saved = { .flag = f.et.flag };
 
-    if (check_mn_flag(cmd, &f.et.flag))
-    {
+    check_mn_flag(cmd, &f.et.flag);
 
 #if     defined(__vms)
 
-        if (f.et.eightbit ^ saved.eightbit)
-        {
-            // TODO: tell operating system if user changed bit
-        }
+    if (f.et.eightbit ^ saved.eightbit)
+    {
+        // TODO: tell operating system if user changed bit
+    }
 
 #endif
 
-        // The following are read-only bits and cannot be changed by the user.
+    // The following are read-only bits and cannot be changed by the user.
 
-        f.et.scope   = saved.scope;
-        f.et.refresh = saved.refresh;
-    }
+    f.et.scope   = saved.scope;
+    f.et.refresh = saved.refresh;
 }
 
 
@@ -434,12 +365,12 @@ void exec_ET(struct cmd *cmd)
 
 void exec_EU(struct cmd *cmd)
 {
-    (void)check_n_flag(cmd, &f.eu);
+    check_n_flag(cmd, &f.eu);
 }
 
 #else
 
-void exec_EU(struct cmd *unused1)
+void exec_EU(struct cmd *unused)
 {
     throw(E_CFG);                       // Command not configured
 }
@@ -464,5 +395,365 @@ void exec_EV(struct cmd *cmd)
         cmd->n_arg += (cmd->m_arg + 1) * 256;
     }
 
-    (void)check_n_flag(cmd, &f.ev);
+    check_n_flag(cmd, &f.ev);
 }
+
+
+///
+///  @brief    Scan "^E" (CTRL/E) command: read or set form feed flag.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ctrl_E(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    int n = f.ctrl_e ? -1 : 0;          // Reading flag returns 0 or -1
+
+    push_expr(n, EXPR_VALUE);           // Assume we're an operand
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "^N" (CTRL/N) command: read end of file flag for current
+///            input stream.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ctrl_N(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    struct ifile *ifile = &ifiles[istream];
+
+    push_expr(feof(ifile->fp), EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "^X" (CTRL/X) command: read or set search mode flag.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ctrl_X(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.ctrl_x, EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "E1" command: read or set extended features.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_E1(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.e1.flag, EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "E2" command: read or set extended features.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_E2(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.e2.flag, EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "E3" command: read or set I/O flags.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_E3(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.e3.flag, EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "E4" command: read or set display flags.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_E4(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.e4.flag, EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "ED" command: read or set mode flags.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ED(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.ed.flag, EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "EE" command: read or set alternate delimiter.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_EE(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.ee, EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "EH" command: read or set help flag.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_EH(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.eh.flag, EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "EJ" command: read or set operating environment
+///            information.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_EJ(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    check_dcolon(cmd);
+    check_atsign(cmd);
+
+    if (cmd->m_set)                     // Did user specify m,nEJ?
+    {
+        throw(E_NYI);                   // Not yet implemented
+    }
+
+    int n = 0;                          // 0EJ is default command
+
+    if (cmd->n_set)
+    {
+        n = cmd->n_arg;                 // Get whatever operand we can
+    }
+
+    n = teco_env(n, cmd->colon);        // Do the system-dependent part
+
+    push_expr(n, EXPR_VALUE);           // Now return the result
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "ES" command: read or set search verification flag.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ES(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.es, EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "ET" command: read or set terminal mode flag.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ET(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.et.flag, EXPR_VALUE);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "EU" command: read or set upper/lower case flag.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(CONFIG_EU)
+
+bool scan_EU(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.eu, EXPR_VALUE);
+
+    return true;
+}
+
+#else
+
+bool scan_EU(struct cmd *unused)
+{
+    throw(E_CFG);                       // Command not configured
+}
+
+#endif
+
+
+///
+///  @brief    Scan "EV" command: read or set edit verify flag.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_EV(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    push_expr(f.ev, EXPR_VALUE);
+
+    return true;
+}
+

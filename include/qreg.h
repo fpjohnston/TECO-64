@@ -44,52 +44,58 @@ struct qreg
     struct buffer text;             ///< Q-register text storage
 };
 
-///  @var     QCHARS
-///  @brief   List of (global) Q-registers.
+///  @var     QNAMES
+///  @brief   List of Q-register names. Note that in order to properly fold
+///           lower case names to upper case, the alphabetic names must precede
+///           the numeric names.
 
-#define QCHARS          "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+#define QNAMES      "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-///  @def     QREG_SIZE
-///  @brief   No. of Q-registers in each set.
+///  @def     QCOUNT
+///  @brief   No. of Q-registers in each set (global and local).
 
-#define QREG_SIZE       (uint)(sizeof(QCHARS) - 1)
+#define QCOUNT      (int)(sizeof(QNAMES) - 1)
 
 // Q-register functions
 
-extern void append_qchr(int qname, bool qlocal, int c);
+extern void append_qchr(int qindex, int c);
 
-extern void delete_qtext(int qname, bool qlocal);
+extern void delete_qtext(int qindex);
 
 extern uint get_qall(void);
 
-extern int get_qchr(int qname, bool qlocal, int n);
+extern int get_qchr(int qindex, int n);
 
-extern int get_qnum(int qname, bool qlocal);
+extern int get_qindex(int qname, bool qlocal);
 
-extern struct qreg *get_qreg(int qname, bool qlocal);
+extern int get_qnum(int qindex);
 
-extern uint get_qsize(int qname, bool qlocal);
+extern struct qreg *get_qreg(int qindex);
+
+extern uint get_qsize(int qindex);
 
 extern void init_qreg(void);
 
 extern void pop_qlocal(void);
 
-extern bool pop_qreg(int qname, bool qlocal);
+extern bool pop_qreg(int qindex);
 
-extern void print_qreg(int qname, bool qlocal);
+extern void print_qreg(int qindex);
 
 extern void push_qlocal(void);
 
-extern bool push_qreg(int qname, bool qlocal);
+extern bool push_qreg(int qindex);
 
 extern void reset_macro(void);
 
 extern void reset_qreg(void);
 
-extern void store_qchr(int qname, bool qlocal, int c);
+extern void scan_qreg(struct cmd *cmd);
 
-extern void store_qnum(int qname, bool qlocal, int n);
+extern void store_qchr(int qindex, int c);
 
-extern void store_qtext(int qname, bool qlocal, struct buffer *text);
+extern void store_qnum(int qindex, int n);
+
+extern void store_qtext(int qindex, struct buffer *text);
 
 #endif  // !defined(_QREG_H)

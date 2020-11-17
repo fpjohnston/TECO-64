@@ -93,6 +93,7 @@ struct estack
     struct e_obj obj[EXPR_SIZE];    ///< Expression stack objects
 };
 
+
 // Global variables
 
 extern struct estack estack;        ///< Expression stack

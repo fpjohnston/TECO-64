@@ -282,26 +282,28 @@ static void exec_commands(const char *commands)
 
 
 ///
-///  @brief    Execute "F0" command: return position for top left corner.
+///  @brief    Scan "F0" command: return position for top left corner.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_F0(struct cmd *unused1)
+bool scan_F0(struct cmd *unused)
 {
     push_expr(w.topdot, EXPR_VALUE);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "FH" command: equivalent to F0,FZ.
+///  @brief    Scan "FH" command: equivalent to F0,FZ.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_FH(struct cmd *cmd)
+bool scan_FH(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -310,19 +312,23 @@ void exec_FH(struct cmd *cmd)
     cmd->h     = true;
 
     push_expr(botdot, EXPR_VALUE);
+
+    return true;
 }
 
 
 ///
-///  @brief    Execute "FZ" command: return position for bottom right corner.
+///  @brief    Scan "FZ" command: return position for bottom right corner.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_FZ(struct cmd *unused1)
+bool scan_FZ(struct cmd *unused)
 {
     push_expr(botdot, EXPR_VALUE);
+
+    return true;
 }
 
 
@@ -356,7 +362,7 @@ int getchar_dpy(bool wait)
 
 #else
 
-int getchar_dpy(bool unused1)
+int getchar_dpy(bool unused)
 
 #endif
 

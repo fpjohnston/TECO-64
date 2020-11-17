@@ -63,6 +63,6 @@ void exec_EQ(struct cmd *cmd)
 
     if (open_command(buf, len, stream, cmd->colon, &text))
     {
-        store_qtext(cmd->qname, cmd->qlocal, &text);
+        store_qtext(cmd->qindex, &text);
     }
 }

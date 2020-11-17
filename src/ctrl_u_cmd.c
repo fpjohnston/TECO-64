@@ -56,11 +56,11 @@ void exec_ctrl_U(struct cmd *cmd)
 
         if (cmd->colon)                 // n:^Uq`?
         {
-            append_qchr(cmd->qname, cmd->qlocal, cmd->n_arg);
+            append_qchr(cmd->qindex, cmd->n_arg);
         }
         else                            // n^Uq`
         {
-            store_qchr(cmd->qname, cmd->qlocal, cmd->n_arg);
+            store_qchr(cmd->qindex, cmd->n_arg);
         }
     }
     else                                // No n argument
@@ -71,7 +71,7 @@ void exec_ctrl_U(struct cmd *cmd)
 
             for (uint i = 0; i < cmd->text1.len; ++i)
             {
-                append_qchr(cmd->qname, cmd->qlocal, *p++);
+                append_qchr(cmd->qindex, *p++);
             }
         }
         else                            // ^Uqtext`
@@ -80,7 +80,7 @@ void exec_ctrl_U(struct cmd *cmd)
 
             if (cmd->text1.len == 0)
             {
-                store_qtext(cmd->qname, cmd->qlocal, NULL);
+                store_qtext(cmd->qindex, NULL);
             }
             else
             {
@@ -91,9 +91,8 @@ void exec_ctrl_U(struct cmd *cmd)
 
                 memcpy(text.data, cmd->text1.data, (ulong)text.size);
 
-                store_qtext(cmd->qname, cmd->qlocal, &text);
+                store_qtext(cmd->qindex, &text);
             }
         }
     }
 }
-

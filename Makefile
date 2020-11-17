@@ -81,6 +81,7 @@ SOURCES = \
     cmd_buf.c      \
     cmd_estack.c   \
     cmd_exec.c     \
+    cmd_scan.c     \
     display.c      \
     env_sys.c      \
     errors.c       \
@@ -123,6 +124,7 @@ SOURCES = \
     eq_cmd.c       \
     equals_cmd.c   \
     er_cmd.c       \
+    esc_cmd.c      \
     e_pct_cmd.c    \
     e_ubar_cmd.c   \
     ew_cmd.c       \
@@ -155,7 +157,6 @@ SOURCES = \
     var_cmd.c      \
     w_cmd.c        \
     x_cmd.c        \
-    xoper_cmd.c    \
     yank_cmd.c     \
 
 #

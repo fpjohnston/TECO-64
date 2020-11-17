@@ -1,6 +1,6 @@
 ///
 ///  @file    pct_cmd.c
-///  @brief   Execute % command.
+///  @brief   Scan and execute "%" command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -29,6 +29,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
@@ -44,28 +45,43 @@
 void exec_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
+    assert(cmd->n_set);
 
-    // %q with no argument increments by one, :%q decrements by one.
-
-    int n;
-
-    if (cmd->n_set)
-    {
-        n = cmd->n_arg;
-    }
-    else if (cmd->colon)
-    {
-        n = -1;
-    }
-    else
-    {
-        n = 1;
-    }
-
-    n += get_qnum(cmd->qname, cmd->qlocal);
-
-    store_qnum(cmd->qname, cmd->qlocal, n);
-
-    push_expr(n, EXPR_VALUE);
+    store_qnum(cmd->qindex, cmd->n_arg);
 }
 
+
+///
+///  @brief    Scan "%" command with format "n:Xq".
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_pct(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    check_m_arg(cmd);
+    check_dcolon(cmd);
+    scan_qreg(cmd);
+
+    if (cmd->n_set)                     // n%q adds to Q-register q
+    {
+        cmd->n_arg += get_qnum(cmd->qindex);
+    }
+    else if (cmd->colon)                // :%q decrements Q-register q
+    {
+        cmd->n_arg = get_qnum(cmd->qindex) - 1;
+    }
+    else                                // %q increments Q-register q
+    {
+        cmd->n_arg = get_qnum(cmd->qindex) + 1;
+    }
+
+    cmd->n_set = true;
+
+    push_expr(cmd->n_arg, EXPR_VALUE);
+
+    return false;
+}

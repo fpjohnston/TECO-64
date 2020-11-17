@@ -215,7 +215,14 @@ uint build_string(char **dest, const char *src, uint len)
                 qname = *src++;
             }
 
-            struct qreg *qreg = get_qreg(qname, qlocal);
+            int qindex = get_qindex(qname, qlocal);
+
+            if (qindex == -1)
+            {
+                throw(E_IQN, qname);    // Invalid Q-register name
+            }
+            
+            struct qreg *qreg = get_qreg(qindex);
 
             if (c == 'Q')               // <CTRL/E>Qq
             {

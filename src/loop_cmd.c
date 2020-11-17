@@ -32,6 +32,7 @@
 #include "teco.h"
 #include "eflags.h"
 #include "errcodes.h"
+#include "estack.h"
 #include "exec.h"
 
 
@@ -149,6 +150,8 @@ void exec_F_gt(struct cmd *cmd)
     assert(cmd != NULL);                // Error if no command block
 
     endloop(cmd, POP_OK);               // Flow to end of loop
+
+    reset_args(cmd);
 }
 
 
@@ -159,9 +162,13 @@ void exec_F_gt(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_F_lt(struct cmd *unused1)
+void exec_F_lt(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     cbuf->pos = loop_head->start;       // Just restart the loop
+
+    reset_args(cmd);
 
     return;
 }
@@ -201,6 +208,8 @@ void exec_gt(struct cmd *cmd)
     {
         pop_loop(POP_OK);
     }
+
+    reset_args(cmd);
 }
 
 
@@ -264,6 +273,8 @@ void exec_semi(struct cmd *cmd)
     }
 
     endloop(cmd, POP_OK);
+
+    reset_args(cmd);
 }
 
 
@@ -361,4 +372,111 @@ void reset_loop(void)
     }
 
     loop_depth = 0;
+}
+
+
+///
+///  @brief    Scan ">" command: relational operator.
+///
+///  @returns  true if extended operator found, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_gt(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    if (!f.e1.xoper || nparens == 0)
+    {
+        return false;
+    }
+
+    int c = peek_cbuf();
+
+    if (c == '=')                       // >= operator
+    {
+        (void)fetch_cbuf();
+
+        cmd->c2 = (char)c;
+
+        c = EXPR_GE;
+    }
+    else if (c == '>')                  // >> operator
+    {
+        (void)fetch_cbuf();
+
+        cmd->c2 = (char)c;
+
+        c = EXPR_RSHIFT;
+    }
+    else                                // > operator
+    {
+        cmd->c2 = (char)c;
+
+        c = EXPR_GT;
+    }
+    
+    push_expr(TYPE_OPER, c);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "<" command: relational operator or start of loop.
+///
+///  @returns  true if extended operator found, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_lt(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    // "<" is a relational operator only if it's in parentheses; otherwise,
+    // it's the start of a loop.
+
+    if (!f.e1.xoper || nparens == 0)
+    {
+        check_m_arg(cmd);
+        check_colon(cmd);
+        check_atsign(cmd);
+
+        return false;
+    }
+
+    int c = peek_cbuf();
+
+    if (c == '=')                       // <= operator
+    {
+        (void)fetch_cbuf();
+
+        cmd->c2 = (char)c;
+
+        c = EXPR_LE;
+    }
+    else if (c == '>')                  // <> operator
+    {
+        (void)fetch_cbuf();
+
+        cmd->c2 = (char)c;
+
+        c = EXPR_NE;
+    }
+    else if (c == '<')                  // << operator
+    {
+        (void)fetch_cbuf();
+
+        c = EXPR_LSHIFT;
+    }
+    else                                // < operator
+    {
+        cmd->c2 = (char)c;
+
+        c = EXPR_LT;
+    }
+    
+    push_expr(TYPE_OPER, c);
+
+    return true;
 }

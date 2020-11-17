@@ -200,7 +200,7 @@ bool append_line(void)
 
 
 ///
-///  @brief    Execute "A" command: get value of character in buffer.
+///  @brief    Execute "A" command: append lines to buffer.
 ///
 ///  @returns  Nothing.
 ///
@@ -216,15 +216,36 @@ void exec_A(struct cmd *cmd)
 
         push_expr(success ? (int_t)-1 : (int_t)0, EXPR_VALUE);
     }
-    else if (cmd->n_set)                // nA command
-    {
-        int_t n = getchar_ebuf(cmd->n_arg);
-
-        push_expr(n, EXPR_VALUE);
-    }
-    else                                // A command
+    else if (!cmd->n_set)               // A command
     {
         (void)append((bool)false, 0, cmd->colon);
     }
 }
 
+
+///
+///  @brief    Scan "A" command: get value of character in buffer.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_A(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    check_m_arg(cmd);
+    check_dcolon(cmd);
+    check_atsign(cmd);
+
+    if (!cmd->n_set || cmd->colon)      // A, :A, or n:A command
+    {
+        return false;
+    }
+
+    int_t n = getchar_ebuf(cmd->n_arg);
+
+    push_expr(n, EXPR_VALUE);
+
+    return true;
+}

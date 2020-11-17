@@ -31,6 +31,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "exec.h"
 #include "file.h"
 #include "qreg.h"
@@ -90,7 +91,7 @@ static void copy_G(struct cmd *cmd)
             break;
 
         default:                        // Copy Q-register
-            qreg = get_qreg(cmd->qname, cmd->qlocal);
+            qreg = get_qreg(cmd->qindex);
 
             assert(qreg != NULL);       // Error if no Q-register
 
@@ -125,6 +126,31 @@ void exec_G(struct cmd *cmd)
     {
         copy_G(cmd);
     }
+}
+
+
+///
+///  @brief    Scan "G" command with format "Xq" (plus special Q-registers).
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_G(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    check_m_arg(cmd);
+    check_n_arg(cmd);
+    check_dcolon(cmd);
+    scan_qreg(cmd);
+
+    if (cmd->qindex == -1 && strchr("*_+", cmd->qname) == NULL)
+    {
+        throw(E_IQN, cmd->qname);       // Invalid Q-register name
+    }
+
+    return false;
 }
 
 
@@ -171,9 +197,8 @@ static void type_G(struct cmd *cmd)
             break;
 
         default:                        // Print Q-register
-            print_qreg(cmd->qname, cmd->qlocal);
+            print_qreg(cmd->qindex);
 
             break;
     }
 }
-

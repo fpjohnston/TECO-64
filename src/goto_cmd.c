@@ -242,6 +242,48 @@ static void find_taglist(struct cmd *cmd, const char *taglist)
 
 
 ///
+///  @brief    Scan ! command with format "m,n@X/text1/" (with special
+///            delimiters).
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_bang(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    if (f.e1.xoper && nparens != 0)     // Check for ! operator
+    {
+        check_args(cmd);
+
+        push_expr(TYPE_OPER, cmd->c1);
+
+        return true;
+    }
+    
+    check_colon(cmd);
+
+    // If feature enabled, !! starts a comment that ends with LF.
+
+    if (f.e1.bang && peek_cbuf() == '!')
+    {
+        (void)fetch_cbuf();
+
+        cmd->delim = LF;                // Tag goes to end of line
+    }
+    else
+    {
+        cmd->delim = '!';               // ! normally ends with !
+    }
+
+    scan_texts(cmd, 1);
+
+    return false;
+}
+
+
+///
 ///  @brief    Verify that tag (or tag list) contains no control characters.
 ///
 ///  @returns  Nothing.

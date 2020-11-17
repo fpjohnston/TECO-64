@@ -71,7 +71,7 @@ void exec_E_pct(struct cmd *cmd)
         return;
     }
 
-    struct qreg *qreg = get_qreg(cmd->qname, cmd->qlocal);
+    struct qreg *qreg = get_qreg(cmd->qindex);
 
     assert(qreg != NULL);               // Error if no Q-register
 
@@ -93,4 +93,3 @@ void exec_E_pct(struct cmd *cmd)
         push_expr(-1, EXPR_VALUE);
     }
 }
-

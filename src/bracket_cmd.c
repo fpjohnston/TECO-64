@@ -46,7 +46,7 @@ void exec_lbracket(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if (!push_qreg(cmd->qname, cmd->qlocal))
+    if (!push_qreg(cmd->qindex))
     {
         throw(E_PDO);                   // Push-down list is full
     }
@@ -74,7 +74,7 @@ void exec_rbracket(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if (!pop_qreg(cmd->qname, cmd->qlocal))
+    if (!pop_qreg(cmd->qindex))
     {
         if (!cmd->colon)
         {

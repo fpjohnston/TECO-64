@@ -102,7 +102,7 @@ void exec_F1(struct cmd *cmd)
 
 #else
 
-void exec_F1(struct cmd *unused1)
+void exec_F1(struct cmd *unused)
 
 #endif
 
@@ -134,7 +134,7 @@ void exec_F2(struct cmd *cmd)
 
 #else
 
-void exec_F2(struct cmd *unused1)
+void exec_F2(struct cmd *unused)
 
 #endif
 
@@ -165,7 +165,7 @@ void exec_F3(struct cmd *cmd)
 
 #else
 
-void exec_F3(struct cmd *unused1)
+void exec_F3(struct cmd *unused)
 
 #endif
 

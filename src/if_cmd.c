@@ -60,8 +60,11 @@ static void push_if(void);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void endif(struct cmd *cmd, bool else_ok)
+static void endif(struct cmd *unused, bool else_ok)
 {
+    struct cmd cmdblock;
+    struct cmd *cmd = &cmdblock;
+
     assert(cmd != NULL);                // Error if no command block
 
     if (if_depth == 0)
@@ -138,8 +141,10 @@ static void endif(struct cmd *cmd, bool else_ok)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_apos(struct cmd *unused1)
+void exec_apos(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     if (if_depth == 0)
     {
         throw(E_MSC);                   // Missing start of conditional
@@ -151,6 +156,8 @@ void exec_apos(struct cmd *unused1)
     }
 
     pop_if();
+
+    reset_args(cmd);
 }
 
 
@@ -164,6 +171,8 @@ void exec_apos(struct cmd *unused1)
 void exec_F_apos(struct cmd *cmd)
 {
     endif(cmd, NO_ELSE);                // Skip any else statement.
+
+    reset_args(cmd);
 }
 
 
@@ -177,6 +186,8 @@ void exec_F_apos(struct cmd *cmd)
 void exec_F_vbar(struct cmd *cmd)
 {
     endif(cmd, ELSE_OK);
+
+    reset_args(cmd);
 }
 
 
@@ -209,18 +220,14 @@ void exec_quote(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if (!cmd->n_set)                    // Did we see an argument?
-    {
-        throw(E_NAQ);                   // No argument before "
-    }
-
     int c = cmd->n_arg;
 
     push_if();
 
-    switch (toupper(cmd->c2))
+    switch (cmd->c2)
     {
         case 'A':                       // Test for alphabetic
+        case 'a':                       // Test for alphabetic
             if (isalpha(c))
             {
                 return;
@@ -228,6 +235,7 @@ void exec_quote(struct cmd *cmd)
             break;
 
         case 'C':                       // Test for symbol constituent
+        case 'c':                       // Test for symbol constituent
             if (isalnum(c) || c == '.'  ||
                 (f.e1.ubar && c == '_') ||
                 (f.e1.dollar && c == '$'))
@@ -237,6 +245,7 @@ void exec_quote(struct cmd *cmd)
             break;
 
         case 'D':                       // Test for numeric
+        case 'd':                       // Test for numeric
             if (isdigit(c))
             {
                 return;
@@ -245,8 +254,11 @@ void exec_quote(struct cmd *cmd)
 
         case '=':                       // Test for equal to zero
         case 'E':                       // Test for equal to zero
+        case 'e':                       // Test for equal to zero
         case 'F':                       // Test for false
+        case 'f':                       // Test for false
         case 'U':                       // Test for unsuccessful
+        case 'u':                       // Test for unsuccessful
             if (c == 0)
             {
                 return;
@@ -255,6 +267,7 @@ void exec_quote(struct cmd *cmd)
 
         case '>':                       // Test for greater than zero
         case 'G':                       // Test for greater than zero
+        case 'g':                       // Test for greater than zero
             if (c > 0)
             {
                 return;
@@ -263,8 +276,11 @@ void exec_quote(struct cmd *cmd)
 
         case '<':                       // Test for less than zero
         case 'L':                       // Test for less than zero
+        case 'l':                       // Test for less than zero
         case 'S':                       // Test for successful
+        case 's':                       // Test for successful
         case 'T':                       // Test for true
+        case 't':                       // Test for true
             if (c < 0)
             {
                 return;
@@ -272,6 +288,7 @@ void exec_quote(struct cmd *cmd)
             break;
 
         case 'N':                       // Test for not equal to zero
+        case 'n':                       // Test for not equal to zero
             if (c != 0)
             {
                 return;
@@ -279,6 +296,7 @@ void exec_quote(struct cmd *cmd)
             break;
 
         case 'R':                       // Test for alphanumeric
+        case 'r':                       // Test for alphanumeric
             if (isalnum(c))
             {
                 return;
@@ -286,6 +304,7 @@ void exec_quote(struct cmd *cmd)
             break;
 
         case 'V':                       // Test for lower case
+        case 'v':                       // Test for lower case
             if (islower(c))
             {
                 return;
@@ -293,6 +312,7 @@ void exec_quote(struct cmd *cmd)
             break;
 
         case 'W':                       // Test for upper case
+        case 'w':                       // Test for upper case
             if (isupper(c))
             {
                 return;
@@ -309,6 +329,8 @@ void exec_quote(struct cmd *cmd)
     // Here if the test was unsuccessful
 
     endif(cmd, ELSE_OK);
+
+    reset_args(cmd);
 }
 
 
@@ -337,6 +359,8 @@ void exec_vbar(struct cmd *cmd)
     }
 
     endif(cmd, NO_ELSE);
+
+    reset_args(cmd);
 }
 
 
@@ -378,4 +402,31 @@ static void push_if(void)
 void reset_if(void)
 {
     if_depth = 0;
+}
+
+
+///
+///  @brief    Scan quote command.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_quote(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    check_m_arg(cmd);
+
+    if (!cmd->n_set)                    // Did we see an argument?
+    {
+        throw(E_NAQ);                   // No argument before "
+    }
+
+    check_dcolon(cmd);
+    check_atsign(cmd);
+
+    cmd->c2 = (char)fetch_cbuf();       // Get test condition
+
+    return false;
 }

@@ -35,6 +35,7 @@
 
 #include "config.h"
 
+
 #if     defined(TECO_LONG)
 
 typedef long int_t;               ///< Size of m and n arguments
@@ -100,6 +101,11 @@ struct tstring
 
 extern volatile struct buffer *cbuf;
 
+/// @def    check_cbuf()
+/// @brief  Issue error if command buffer has no more characters.
+
+#define check_cbuf() if (empty_cbuf()) throw(check_macro() ? E_UTM : E_UTC)
+
 /// @def    empty_cbuf()
 /// @brief  Returns true if all data in command string has been read, else false.
 
@@ -110,15 +116,30 @@ extern volatile struct buffer *cbuf;
 
 #define get_cbuf()      cbuf
 
+/// @def    next_cbuf()
+/// @brief  Increments counter for next character
+
+#define next_cbuf()     ++cbuf->pos
+
 /// @def    peek_cbuf()
 /// @brief  Peeks at next character in command string.
 
-#define peek_cbuf()     cbuf->data[cbuf->pos]
+#define peek_cbuf()     (empty_cbuf() ? -1 : cbuf->data[cbuf->pos])
+
+/// @def    read_cbuf()
+/// @brief  Reads next character in command string.
+
+#define read_cbuf()     cbuf->data[cbuf->pos++]
 
 /// @def    set_cbuf()
 /// @brief  Sets the current command string.
 
 #define set_cbuf(p)     (cbuf = (p))
+
+/// @def    trace_cbuf()
+/// @brief  Echo current character if we're tracing
+
+#define trace_cbuf(c)   if (f.e0.trace) echo_in((int)c)
 
 // Command buffer functions
 

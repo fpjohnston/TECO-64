@@ -1,6 +1,6 @@
 ///
 ///  @file    number_cmd.c
-///  @brief   Execute numeric digit commands.
+///  @brief   Scan numeric digit commands.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -30,20 +30,22 @@
 #include <string.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
+#include "term.h"
 
 
 ///
 ///  @brief    Scan a number in a command string, which can be decimal or octal,
 ///            depending on the current radix.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_number(struct cmd *cmd)
+bool scan_number(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
@@ -77,8 +79,12 @@ void exec_number(struct cmd *cmd)
             break;
         }
 
-        (void)fetch_cbuf();
+        next_cbuf();
+        trace_cbuf(c);
+//        (void)fetch_cbuf();
     }
 
     push_expr(n, EXPR_VALUE);
+
+    return true;
 }

@@ -32,7 +32,9 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "errcodes.h"
+#include "estack.h"
 #include "exec.h"
 #include "term.h"
 
@@ -54,63 +56,6 @@
 // Local functions
 
 static bool check_format(const char *format);
-
-
-///
-///  @brief    Execute "=", "==", and "===" commands (and with ":" modifiers).
-///
-///             n=     Display n in decimal, + CRLF
-///             n==    Display n in octal, + CRLF
-///             n===   Display n in hexadecimal, + CRLF
-///             n:=    Display n in decimal, no CRLF
-///             n:==   Display n in octal, no CRLF
-///             n:===  Display n in hexadecimal, no CRLF
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_equals(struct cmd *cmd)
-{
-    assert(cmd != NULL);                // Error if no command block
-
-    if (!cmd->n_set)                    // If no operand, then complain
-    {
-        throw(E_NAE);                   // No argument before =
-    }
-
-    const char *mode = FORMAT_DEC;      // Assume we're printing decimal
-
-    if (cmd->c3 == '=')                 // Print hexadecimal if ===
-    {
-        mode = FORMAT_HEX;
-    }
-    else if (cmd->c2 == '=')            // Print octal if ==
-    {
-        mode = FORMAT_OCT;
-    }
-
-    char user_mode[cmd->text1.len + 1];
-
-    if (cmd->atsign && cmd->text1.len != 0)
-    {
-        memcpy(user_mode, cmd->text1.data, (ulong)cmd->text1.len);
-
-        user_mode[cmd->text1.len] = NUL;
-
-        if (check_format(user_mode))
-        {
-            mode = user_mode;
-        }
-    }
-
-    tprint(mode, cmd->n_arg);
-
-    if (!cmd->colon)                    // Suppress CRLF?
-    {
-        type_out(LF);
-    }
-}
 
 
 ///
@@ -182,4 +127,114 @@ static bool check_format(const char *format)
     }
 
     return is_numeric;
+}
+
+
+///
+///  @brief    Execute "=", "==", and "===" commands (and with ":" modifiers).
+///
+///             n=     Display n in decimal, + CRLF
+///             n==    Display n in octal, + CRLF
+///             n===   Display n in hexadecimal, + CRLF
+///             n:=    Display n in decimal, no CRLF
+///             n:==   Display n in octal, no CRLF
+///             n:===  Display n in hexadecimal, no CRLF
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_equals(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    if (!cmd->n_set)                    // If no operand, then complain
+    {
+        throw(E_NAE);                   // No argument before =
+    }
+
+    const char *mode = FORMAT_DEC;      // Assume we're printing decimal
+
+    if (cmd->c3 == '=')                 // Print hexadecimal if ===
+    {
+        mode = FORMAT_HEX;
+    }
+    else if (cmd->c2 == '=')            // Print octal if ==
+    {
+        mode = FORMAT_OCT;
+    }
+
+    char user_mode[cmd->text1.len + 1];
+
+    if (cmd->atsign && cmd->text1.len != 0)
+    {
+        memcpy(user_mode, cmd->text1.data, (ulong)cmd->text1.len);
+
+        user_mode[cmd->text1.len] = NUL;
+
+        if (check_format(user_mode))
+        {
+            mode = user_mode;
+        }
+    }
+
+    tprint(mode, cmd->n_arg);
+
+    if (!cmd->colon)                    // Suppress CRLF?
+    {
+        type_out(LF);
+    }
+}
+
+
+///
+///  @brief    Scan command with format "n:@X/text1/".
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_equals(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    // An equals sign inside parentheses might be an extended operator.
+
+    if (nparens != 0 && f.e1.xoper)
+    {
+        int c = fetch_cbuf();
+
+        if (c != '=')
+        {
+            throw(E_ARG);
+        }
+
+        push_expr(TYPE_OPER, c);
+
+        return true;
+    }
+    
+    check_m_arg(cmd);
+    check_dcolon(cmd);
+
+    if (peek_cbuf() == '=')
+    {
+        cmd->c2 = (char)fetch_cbuf();
+
+        if (peek_cbuf() == '=')
+        {
+            cmd->c3 = (char)fetch_cbuf();
+        }
+    }
+
+    // We only allow text arguments if the at sign modifier is used. This
+    // is to maintain backward compatibility with macros for other TECOs
+    // that don't expect text arguments after the command.
+
+    if (cmd->atsign)
+    {
+        scan_texts(cmd, 1);
+    }
+
+    return false;
 }

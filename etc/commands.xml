@@ -5,181 +5,171 @@
         <!-- General commands -->
 
         <!--
-             Format attribute defines command modifiers and arguments. "X"
-             stands for the specific command (e.g., ^A or FS).
+             Scan attribute defines the scanning function.
 
-             Exec attribute defines the function to be called for the command.
-
-             If format is not defined, the command is an operator or simple
-             operand.
-
-             If format ends with "!", that signifies a command that returns
-             a value if and only if it is not preceded by an expression.
-
-             If format ends with "$", that signifies a command that accepts
-             m and n arguments, but neither uses them nor passes them through.
+             Exec attribute defines the execution function.
         -->
 
-        <!--     name='NUL'      (illegal command)    -->
-        <command name='CTRL_A'   format='m,n:@X//'    exec='exec_ctrl_A'    />
-        <command name='CTRL_B'                        exec='exec_ctrl_B'    />
-        <command name='CTRL_C'   format='X$'          exec='exec_ctrl_C'    />
-        <command name='CTRL_D'   format='X'           exec='exec_ctrl_D'    />
-        <command name='CTRL_E'   format='m,nX!'       exec='exec_ctrl_E'    />
-        <!--     name='CTRL_F'   (illegal command)    -->
-        <!--     name='CTRL_G'   (illegal command)    -->
-        <command name='CTRL_H'                        exec='exec_ctrl_H'    />
-        <command name='CTRL_I'   format='X//'         exec='exec_ctrl_I'    />
-        <!--     name='LF'       (whitespace)         -->
-        <!--     name='VT'       (whitespace)         -->
-        <!--     name='FF'       (whitespace)         -->
-        <!--     name='CR'       (whitespace)         -->
-        <command name='CTRL_N'   format='nX'          exec='exec_ctrl_N'    />
-        <command name='CTRL_O'   format='X'           exec='exec_ctrl_O'    />
-        <command name='CTRL_P'                        exec='exec_ctrl_P'    />
-        <command name='CTRL_Q'   format='nX'          exec='exec_ctrl_Q'    />
-        <command name='CTRL_R'   format='nX!'         exec='exec_ctrl_R'    />
-        <command name='CTRL_S'                        exec='exec_ctrl_S'    />
-        <command name='CTRL_T'   format='m,n:X'       exec='exec_ctrl_T'    />
-        <command name='CTRL_U'   format='m,n:@Xq//'   exec='exec_ctrl_U'    />
-        <command name='CTRL_V'   format='nX'          exec='exec_ctrl_V'    />
-        <command name='CTRL_W'   format='nX'          exec='exec_ctrl_W'    />
-        <command name='CTRL_X'   format='nX!'         exec='exec_ctrl_X'    />
-        <command name='CTRL_Y'                        exec='exec_ctrl_Y'    />
-        <command name='CTRL_Z'                        exec='exec_ctrl_Z'    />
-        <command name='ESC'      format='X$'          exec='exec_escape'    />
-        <!--     name='\x1C'     (illegal command)    -->
-        <!--     name='\x1D'     (illegal command)    -->
-        <!--     name='\x1E'     (special character)  -->
-        <command name='\x1F'                          exec='exec_ctrl_ubar' />
-        <!--     name='SPACE'    (whitespace)         -->
-        <command name='!'        format='m,n@X//'     exec='exec_bang'      />
-        <command name='"'        format='nX'          exec='exec_quote'     />
-        <command name='#'                             exec='exec_oper'      />
-        <!--     name='$'        (illegal command)    -->
-        <command name='%'        format='n:Xq'        exec='exec_pct'       />
-        <command name='&amp;'                         exec='exec_oper'      />
-        <command name='&apos;'   format='X$'          exec='exec_apos'      />
-        <command name='('                             exec='exec_lparen'    />
-        <command name=')'                             exec='exec_rparen'    />
-        <command name='*'                             exec='exec_oper'      />
-        <command name='+'                             exec='exec_oper'      />
-        <command name=','                             exec='exec_comma'     />
-        <command name='-'                             exec='exec_oper'      />
-        <command name='.'                             exec='exec_dot'       />
-        <command name='/'                             exec='exec_oper'      />
-        <command name='0'                             exec='exec_number'    />
-        <command name='1'                             exec='exec_number'    />
-        <command name='2'                             exec='exec_number'    />
-        <command name='3'                             exec='exec_number'    />
-        <command name='4'                             exec='exec_number'    />
-        <command name='5'                             exec='exec_number'    />
-        <command name='6'                             exec='exec_number'    />
-        <command name='7'                             exec='exec_number'    />
-        <command name='8'                             exec='exec_number'    />
-        <command name='9'                             exec='exec_number'    />
-        <!--     name=':'        (command modifier)   -->
-        <command name=';'        format='n:X'         exec='exec_semi'      />
-        <command name='&lt;'     format='nX'          exec='exec_lt'        />
-        <command name='='        format='n:@X//'      exec='exec_equals'    />
-        <command name='&gt;'     format='X$'          exec='exec_gt'        />
-        <command name='?'        format='X'           exec='exec_trace'     />
-        <!--     name='@'        (command modifier)   -->
-        <command name='A'        format='n:X'         exec='exec_A'         />
-        <command name='B'                             exec='exec_B'         />
-        <command name='C'        format='n:X'         exec='exec_C'         />
-        <command name='D'        format='m,n:X'       exec='exec_D'         />
-        <!--     name='E'        (E commands)         -->
-        <!--     name='F'        (F commands)         -->
-        <command name='G'        format='n:Xq'        exec='exec_G'         />
-        <command name='H'                             exec='exec_H'         />
-        <command name='I'        format='m,n@X//'     exec='exec_I'         />
-        <command name='J'        format='n:X'         exec='exec_J'         />
-        <command name='K'        format='m,nX'        exec='exec_K'         />
-        <command name='L'        format='n:X'         exec='exec_L'         />
-        <command name='M'        format='m,n:Xq'      exec='exec_M'         />
-        <command name='N'        format='n:@X//'      exec='exec_N'         />
-        <command name='O'        format='n@X//'       exec='exec_O'         />
-        <command name='P'        format='m,n:X'       exec='exec_P'         />
-        <command name='Q'        format='n:Xq'        exec='exec_Q'         />
-        <command name='R'        format='n:X'         exec='exec_R'         />
-        <command name='S'        format='m,n::@X//'   exec='exec_S'         />
-        <command name='T'        format='m,n:X'       exec='exec_T'         />
-        <command name='U'        format='m,nXq'       exec='exec_U'         />
-        <command name='V'        format='m,nX'        exec='exec_V'         />
-        <command name='W'        format='m,n:X'       exec='exec_W'         />
-        <command name='X'        format='m,n:Xq'      exec='exec_X'         />
-        <command name='Y'        format=':X'          exec='exec_Y'         />
-        <command name='Z'                             exec='exec_Z'         />
-        <command name='['        format='m,nX'        exec='exec_lbracket'  />
-        <command name='\'        format='nX'          exec='exec_bslash'    />
-        <command name=']'        format='m,n:X'       exec='exec_rbracket'  />
-        <!--     name='^'        (special character)  -->
-        <command name='_'        format='n:@X//'      exec='exec_ubar'      />
-        <!--     name='`'        (illegal command)    -->
-        <!--     name='{'        (illegal command)    -->
-        <command name='|'        format='X$'          exec='exec_vbar'      />
-        <!--     name='}'        (illegal command)    -->
-        <!--     name='~'        (illegal command)    -->
-        <!--     name=DEL        (illegal command)    -->
+        <command name='NUL'      scan='scan_bad'                              />
+        <command name='CTRL_A'   scan='scan_fmt_mca1'   exec='exec_ctrl_A'    />
+        <command name='CTRL_B'   scan='scan_ctrl_B'                           />
+        <command name='CTRL_C'                          exec='exec_ctrl_C'    />
+        <command name='CTRL_D'                          exec='exec_ctrl_D'    />
+        <command name='CTRL_E'   scan='scan_ctrl_E'     exec='exec_ctrl_E'    />
+        <command name='CTRL_F'   scan='scan_bad'                              />
+        <command name='CTRL_G'   scan='scan_bad'                              />
+        <command name='CTRL_H'   scan='scan_ctrl_H'                           />
+        <command name='CTRL_I'   scan='scan_fmt_a1'     exec='exec_ctrl_I'    />
+        <command name='LF'                                                    />
+        <command name='VT'                                                    />
+        <command name='FF'                                                    />
+        <command name='CR'                                                    />
+        <command name='CTRL_N'   scan='scan_ctrl_N'                           />
+        <command name='CTRL_O'                          exec='exec_ctrl_O'    />
+        <command name='CTRL_P'   scan='scan_ctrl_P'                           />
+        <command name='CTRL_Q'   scan='scan_ctrl_Q'                           />
+        <command name='CTRL_R'   scan='scan_fmt_n'      exec='exec_ctrl_R'    />
+        <command name='CTRL_S'   scan='scan_ctrl_S'                           />
+        <command name='CTRL_T'   scan='scan_fmt_mc'     exec='exec_ctrl_T'    />
+        <command name='CTRL_U'   scan='scan_fmt_mcaq1'  exec='exec_ctrl_U'    />
+        <command name='CTRL_V'   scan='scan_fmt_n'      exec='exec_ctrl_V'    />
+        <command name='CTRL_W'   scan='scan_fmt_n'      exec='exec_ctrl_W'    />
+        <command name='CTRL_X'   scan='scan_ctrl_X'     exec='exec_ctrl_X'    />
+        <command name='CTRL_Y'   scan='scan_ctrl_Y'                           />
+        <command name='CTRL_Z'   scan='scan_ctrl_Z'                           />
+        <command name='ESC'                             exec='exec_escape'    />
+        <command name='\x1C'     scan='scan_bad'                              />
+        <command name='\x1D'     scan='scan_bad'                              />
+        <command name='\x1E'     scan='scan_ctrl_up'                          />
+        <command name='\x1F'     scan='scan_ctrl_ubar'                        />
+        <command name='SPACE'                                                 />
+        <command name='!'        scan='scan_bang'       exec='exec_bang'      />
+        <command name='"'        scan='scan_quote'      exec='exec_quote'     />
+        <command name='#'        scan='scan_oper'                             />
+        <command name='$'        scan='scan_bad'                              />
+        <command name='%'        scan='scan_pct'        exec='exec_pct'       />
+        <command name='&amp;'    scan='scan_oper'                             />
+        <command name='&apos;'                          exec='exec_apos'      />
+        <command name='('        scan='scan_lparen'                           />
+        <command name=')'        scan='scan_rparen'                           />
+        <command name='*'        scan='scan_oper'                             />
+        <command name='+'        scan='scan_oper'                             />
+        <command name=','        scan='scan_comma'                            />
+        <command name='-'        scan='scan_oper'                             />
+        <command name='.'        scan='scan_dot'                              />
+        <command name='/'        scan='scan_div'                              />
+        <command name='0'        scan='scan_number'                           />
+        <command name='1'        scan='scan_number'                           />
+        <command name='2'        scan='scan_number'                           />
+        <command name='3'        scan='scan_number'                           />
+        <command name='4'        scan='scan_number'                           />
+        <command name='5'        scan='scan_number'                           />
+        <command name='6'        scan='scan_number'                           />
+        <command name='7'        scan='scan_number'                           />
+        <command name='8'        scan='scan_number'                           />
+        <command name='9'        scan='scan_number'                           />
+        <command name=':'        scan='scan_colon'                            />
+        <command name=';'        scan='scan_fmt_n'      exec='exec_semi'      />
+        <command name='&lt;'     scan='scan_lt'         exec='exec_lt'        />
+        <command name='='        scan='scan_equals'     exec='exec_equals'    />
+        <command name='&gt;'     scan='scan_gt'         exec='exec_gt'        />
+        <command name='?'                               exec='exec_trace'     />
+        <command name='@'        scan='scan_atsign'                           />
+        <command name='A'        scan='scan_A'          exec='exec_A'         />
+        <command name='B'        scan='scan_B'                                />
+        <command name='C'        scan='scan_fmt_nc'     exec='exec_C'         />
+        <command name='D'        scan='scan_fmt_mc'     exec='exec_D'         />
+        <command name='[E]'                                                   />
+        <command name='[F]'                                                   />
+        <command name='G'        scan='scan_G'          exec='exec_G'         />
+        <command name='H'        scan='scan_H'                                />
+        <command name='I'        scan='scan_fmt_ma1'    exec='exec_I'         />
+        <command name='J'        scan='scan_fmt_nc'     exec='exec_J'         />
+        <command name='K'        scan='scan_fmt_m'      exec='exec_K'         />
+        <command name='L'        scan='scan_fmt_nc'     exec='exec_L'         />
+        <command name='M'        scan='scan_fmt_mcq'    exec='exec_M'         />
+        <command name='N'        scan='scan_fmt_nca1'   exec='exec_N'         />
+        <command name='O'        scan='scan_fmt_na1'    exec='exec_O'         />
+        <command name='P'        scan='scan_P'          exec='exec_P'         />
+        <command name='Q'        scan='scan_Q'                                />
+        <command name='R'        scan='scan_fmt_nc'     exec='exec_R'         />
+        <command name='S'        scan='scan_fmt_mda1'   exec='exec_S'         />
+        <command name='T'        scan='scan_fmt_mc'     exec='exec_T'         />
+        <command name='U'        scan='scan_fmt_mq'     exec='exec_U'         />
+        <command name='V'        scan='scan_fmt_m'      exec='exec_V'         />
+        <command name='W'        scan='scan_fmt_mc'     exec='exec_W'         />
+        <command name='X'        scan='scan_fmt_mcq'    exec='exec_X'         />
+        <command name='Y'        scan='scan_fmt_c'      exec='exec_Y'         />
+        <command name='Z'        scan='scan_Z'                                />
+        <command name='['        scan='scan_fmt_m'      exec='exec_lbracket'  />
+        <command name='\'        scan='scan_fmt_n'      exec='exec_bslash'    />
+        <command name=']'        scan='scan_fmt_mc'     exec='exec_rbracket'  />
+        <command name='[^]'                                                   />
+        <command name='_'        scan='scan_fmt_nca1'   exec='exec_ubar'      />
+        <command name='`'        scan='scan_bad'                              />
+        <command name='{'        scan='scan_bad'                              />
+        <command name='|'                               exec='exec_vbar'      />
+        <command name='}'        scan='scan_bad'                              />
+        <command name='~'        scan='scan_tilde'                            />
+        <command name='DEL'      scan='scan_bad'                              />
 
         <!-- E commands -->
 
-        <command name='E%'       format=':@Xq//'      exec='exec_E_pct'     />
-        <command name='E1'       format='m,nX!'       exec='exec_E1'        />
-        <command name='E2'       format='m,nX!'       exec='exec_E2'        />
-        <command name='E3'       format='m,nX!'       exec='exec_E3'        />
-        <command name='E4'       format='m,nX!'       exec='exec_E4'        />
-        <command name='EA'       format='X'           exec='exec_EA'        />
-        <command name='EB'       format=':@X//'       exec='exec_EB'        />
-        <command name='EC'       format='nX'          exec='exec_EC'        />
-        <command name='ED'       format='m,nX!'       exec='exec_ED'        />
-        <command name='EE'       format='nX!'         exec='exec_EE'        />
-        <command name='EF'       format='X'           exec='exec_EF'        />
-        <command name='EG'       format='::@X//'      exec='exec_EG'        />
-        <command name='EH'       format='m,nX!'       exec='exec_EH'        />
-        <command name='EI'       format='m,n:@X//'    exec='exec_EI'        />
-        <command name='EJ'       format='m,n:X'       exec='exec_EJ'        />
-        <command name='EK'       format='X'           exec='exec_EK'        />
-        <command name='EL'       format=':@X//'       exec='exec_EL'        />
-        <command name='EN'       format=':@X//'       exec='exec_EN'        />
-        <command name='EO'       format='n:X!'        exec='exec_EO'        />
-        <command name='EP'       format='X'           exec='exec_EP'        />
-        <command name='EQ'       format=':@Xq//'      exec='exec_EQ'        />
-        <command name='ER'       format=':@X//'       exec='exec_ER'        />
-        <command name='ES'       format='m,nX!'       exec='exec_ES'        />
-        <command name='ET'       format='m,nX!'       exec='exec_ET'        />
-        <command name='EU'       format='nX!'         exec='exec_EU'        />
-        <command name='EV'       format='m,nX!'       exec='exec_EV'        />
-        <command name='EW'       format=':@X//'       exec='exec_EW'        />
-        <command name='EX'       format='X'           exec='exec_EX'        />
-        <command name='EY'       format=':X'          exec='exec_EY'        />
-        <command name='E_'       format='n:@X//'      exec='exec_E_ubar'    />
+        <command name='E%'       scan='scan_fmt_caq1'   exec='exec_E_pct'     />
+        <command name='E1'       scan='scan_E1'         exec='exec_E1'        />
+        <command name='E2'       scan='scan_E2'         exec='exec_E2'        />
+        <command name='E3'       scan='scan_E3'         exec='exec_E3'        />
+        <command name='E4'       scan='scan_E4'         exec='exec_E4'        />
+        <command name='EA'                              exec='exec_EA'        />
+        <command name='EB'       scan='scan_fmt_ca1'    exec='exec_EB'        />
+        <command name='EC'       scan='scan_fmt_n'      exec='exec_EC'        />
+        <command name='ED'       scan='scan_ED'         exec='exec_ED'        />
+        <command name='EE'       scan='scan_EE'         exec='exec_EE'        />
+        <command name='EF'                              exec='exec_EF'        />
+        <command name='EG'       scan='scan_fmt_da1'    exec='exec_EG'        />
+        <command name='EH'       scan='scan_EH'         exec='exec_EH'        />
+        <command name='EI'       scan='scan_fmt_mca1'   exec='exec_EI'        />
+        <command name='EJ'       scan='scan_EJ'                               />
+        <command name='EK'                              exec='exec_EK'        />
+        <command name='EL'       scan='scan_fmt_ca1'    exec='exec_EL'        />
+        <command name='EN'       scan='scan_fmt_ca1'    exec='exec_EN'        />
+        <command name='EO'       scan='scan_fmt_nc'     exec='exec_EO'        />
+        <command name='EP'                              exec='exec_EP'        />
+        <command name='EQ'       scan='scan_fmt_caq1'   exec='exec_EQ'        />
+        <command name='ER'       scan='scan_fmt_ca1'    exec='exec_ER'        />
+        <command name='ES'       scan='scan_ES'         exec='exec_ES'        />
+        <command name='ET'       scan='scan_ET'         exec='exec_ET'        />
+        <command name='EU'       scan='scan_EU'         exec='exec_EU'        />
+        <command name='EV'       scan='scan_EV'         exec='exec_EV'        />
+        <command name='EW'       scan='scan_fmt_ca1'    exec='exec_EW'        />
+        <command name='EX'                              exec='exec_EX'        />
+        <command name='EY'       scan='scan_fmt_c'      exec='exec_EY'        />
+        <command name='E_'       scan='scan_fmt_nca1'   exec='exec_E_ubar'    />
 
         <!-- F commands -->
 
-        <command name='F&apos;'  format='X$'          exec='exec_F_apos'    />
-        <command name='F0'                            exec='exec_F0'        />
-        <command name='F1'       format='m,n@X///'    exec='exec_F1'        />
-        <command name='F2'       format='m,n@X///'    exec='exec_F2'        />
-        <command name='F3'       format='m,n@X///'    exec='exec_F3'        />
-        <command name='F&lt;'    format='X$'          exec='exec_F_lt'      />
-        <command name='F&gt;'    format='X$'          exec='exec_F_gt'      />
-        <command name='FB'       format='m,n:@X//'    exec='exec_FB'        />
-        <command name='FC'       format='m,n:@X///'   exec='exec_FC'        />
-        <command name='FD'       format='n:@X//'      exec='exec_FD'        />
-        <command name='FH'                            exec='exec_FH'        />
-        <command name='FK'       format='n:@X//'      exec='exec_FK'        />
-        <command name='FL'       format='m,nX'        exec='exec_FL'        />
-        <command name='FM'       format='@X///'       exec='exec_FM'        />
-        <command name='FN'       format='m,n:@X///'   exec='exec_FN'        />
-        <command name='FQ'       format='@Xq//'       exec='exec_FQ'        />
-        <command name='FR'       format='m,n:@X//'    exec='exec_FR'        />
-        <command name='FS'       format='m,n::@X///'  exec='exec_FS'        />
-        <command name='FU'       format='m,nX'        exec='exec_FU'        />
-        <command name='FZ'                            exec='exec_FZ'        />
-        <command name='F_'       format='m,n:@X///'   exec='exec_F_ubar'    />
-        <command name='F|'       format='X$'          exec='exec_F_vbar'    />
+        <command name='F&apos;'                         exec='exec_F_apos'    />
+        <command name='F0'       scan='scan_F0'                               />
+        <command name='F1'       scan='scan_fmt_ma2'    exec='exec_F1'        />
+        <command name='F2'       scan='scan_fmt_ma2'    exec='exec_F2'        />
+        <command name='F3'       scan='scan_fmt_ma2'    exec='exec_F3'        />
+        <command name='F&lt;'                           exec='exec_F_lt'      />
+        <command name='F&gt;'                           exec='exec_F_gt'      />
+        <command name='FB'       scan='scan_fmt_mca1'   exec='exec_FB'        />
+        <command name='FC'       scan='scan_fmt_mca2'   exec='exec_FC'        />
+        <command name='FD'       scan='scan_fmt_nca1'   exec='exec_FD'        />
+        <command name='FH'       scan='scan_FH'                               />
+        <command name='FK'       scan='scan_fmt_nca1'   exec='exec_FK'        />
+        <command name='FL'       scan='scan_fmt_m'      exec='exec_FL'        />
+        <command name='FM'       scan='scan_fmt_a2'     exec='exec_FM'        />
+        <command name='FN'       scan='scan_fmt_mca2'   exec='exec_FN'        />
+        <command name='FQ'       scan='scan_fmt_aq1'    exec='exec_FQ'        />
+        <command name='FR'       scan='scan_fmt_mca1'   exec='exec_FR'        />
+        <command name='FS'       scan='scan_fmt_mda2'   exec='exec_FS'        />
+        <command name='FU'       scan='scan_fmt_m'      exec='exec_FU'        />
+        <command name='FZ'       scan='scan_FZ'                               />
+        <command name='F_'       scan='scan_fmt_mca2'   exec='exec_F_ubar'    />
+        <command name='F|'                              exec='exec_F_vbar'    />
     </section>
 </teco>
 

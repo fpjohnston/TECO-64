@@ -44,8 +44,6 @@ struct estack estack;
 
 // Local functions
 
-static void reduce(void);
-
 static bool reduce2(void);
 
 static bool reduce3(void);
@@ -161,27 +159,23 @@ void push_expr(int_t value, enum expr_type type)
     estack.obj[estack.level].value = value;
     estack.obj[estack.level].type = type;
 
-    ++estack.level;
-
-    reduce();                           // Reduce what we can
-}
-
-
-///
-///  @brief    Reduce expression stack if possible.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void reduce(void)
-{
-    while (estack.level > estack.base + 1)
+    if (++estack.level == 1)
     {
-        if (!reduce3() && !reduce2())
-        {
-            break;
-        }
+        return;
+    }
+
+    // Try to reduce the expression stack if 3 or more items
+    
+    while (estack.level >= estack.base + 3 && reduce3())
+    {
+        ;
+    }
+
+    // Try to reduce the expression stack if 2 or more items
+    
+    while (estack.level >= estack.base + 2 && reduce2())
+    {
+        ;
     }
 
     if (estack.level >= estack.base + 1 &&
@@ -205,11 +199,6 @@ static void reduce(void)
 
 static bool reduce2(void)
 {
-    if (estack.level < estack.base + 2) // At least two items?
-    {
-        return false;                   // No
-    }
-
     struct e_obj *e1 = &estack.obj[estack.level - 1];
     struct e_obj *e2 = &estack.obj[estack.level - 2];
 
@@ -270,6 +259,7 @@ static bool reduce2(void)
     return true;
 }
 
+
 ///
 ///  @brief    Reduce top three items on expression stack if possible.
 ///
@@ -279,11 +269,6 @@ static bool reduce2(void)
 
 static bool reduce3(void)
 {
-    if (estack.level < estack.base + 3) // At least three items?
-    {
-        return false;                   // No
-    }
-
     struct e_obj *e1 = &estack.obj[estack.level - 1];
     struct e_obj *e2 = &estack.obj[estack.level - 2];
     struct e_obj *e3 = &estack.obj[estack.level - 3];
@@ -427,7 +412,31 @@ void reset_expr(uint base)
 {
     estack.base = base;
 
-    reduce();
+    while (estack.level >= estack.base + 3) // At least three items?
+    {
+        if (!reduce3())
+        {
+            break;
+        }
+    }
+
+    while (estack.level >= estack.base + 2) // At least two items?
+    {
+        if (!reduce2())
+        {
+            break;
+        }
+    }
+
+    if (estack.level >= estack.base + 1 &&
+        estack.obj[estack.level - 1].type == '\x1F')
+    {
+        if (estack.level == estack.base + 1 ||
+            estack.obj[estack.level - 2].type != EXPR_VALUE)
+        {
+            throw(E_NAB);               // No argument before ^_
+        }
+    }
 }
 
 

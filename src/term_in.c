@@ -266,9 +266,10 @@ static void exec_star(void)
     echo_in('*');
 
     int qname = getc_term((bool)WAIT);  // Get Q-register name
-    bool qdot = (qname == '.');
+    bool qlocal = (qname == '.');
+    int qindex;
 
-    if (qdot)                           // Local Q-register?
+    if (qlocal)                         // Local Q-register?
     {
         echo_in('.');                   // Yes, echo the dot
 
@@ -277,18 +278,18 @@ static void exec_star(void)
 
     echo_in(qname);                     // Echo Q-register name
 
-    if (!isalnum(qname))                // If invalid Q-register,
+    if ((qindex = get_qindex(qname, qlocal)) == -1)
     {
         echo_in('?');                   //  alert the user to the error,
 
-        longjmp(jump_first, FIRST_PROMPT); //   and reset command string
+        longjmp(jump_first, FIRST_PROMPT); // and reset command string
     }
 
     echo_in(LF);
 
     struct buffer qbuf = copy_tbuf();
 
-    store_qtext(qname, qdot, &qbuf);
+    store_qtext(qindex, &qbuf);
 }
 
 
