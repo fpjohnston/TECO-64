@@ -139,6 +139,8 @@ extern bool scan_P(struct cmd *cmd);
 
 extern bool scan_Q(struct cmd *cmd);
 
+extern bool scan_W(struct cmd *cmd);
+
 extern bool scan_Z(struct cmd *cmd);
 
 extern bool scan_atsign(struct cmd *cmd);
@@ -423,6 +425,8 @@ extern void exec_gt(struct cmd *cmd);
 extern void exec_lbracket(struct cmd *cmd);
 
 extern void exec_lt(struct cmd *cmd);
+
+extern void exec_nop(struct cmd *cmd);
 
 extern void exec_pct(struct cmd *cmd);
 

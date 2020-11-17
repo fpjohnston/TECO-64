@@ -143,23 +143,8 @@ void exec_W(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if (cmd->colon)
+    if (cmd->colon)                     // n:W already processed
     {
-        int n;
-
-        if (!cmd->n_set)
-        {
-            cmd->n_arg = 0;             // :W = 0:W
-        }
-        else if (cmd->m_set)            // If m,n:W, then do set before read
-        {
-            set_w(cmd->m_arg, cmd->n_arg);
-        }
-
-        n = get_w(cmd->n_arg);
-
-        push_expr(n, EXPR_VALUE);
-
         return;
     }
 
@@ -190,7 +175,49 @@ void exec_W(struct cmd *cmd)
 
 #endif
 
-    // Note that we ignore any other W commands including a numeric argument.
+}
+
+
+///
+///  @brief    Scan "W" command: process display functions.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_W(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    check_atsign(cmd);                  // @W/text1/ is invalid
+
+    if (!cmd->colon)
+    {
+        check_m_arg(cmd);               // m,nW is invalid
+
+        return false;
+    }
+
+    check_dcolon(cmd);                  // n::W and m,n::W are invalid
+
+    if (!cmd->n_set)
+    {
+        cmd->n_set = true;
+        cmd->n_arg = 0;                 // :W = 0:W
+    }
+
+    if (cmd->m_set)                     // m,n:W
+    {
+        set_w(cmd->m_arg, cmd->n_arg);
+    }
+
+    int n = get_w(cmd->n_arg);
+
+    push_expr(n, EXPR_VALUE);
+
+    cmd->colon = false;                 // Reset for next command
+
+    return true;
 }
 
 
@@ -222,13 +249,14 @@ static void set_w(int m, int n)
             if (m >= MIN_HEIGHT)
             {
                 w.height = m;
+
                 set_nrows();
             }
 
             break;
 
         case 3:
-            w.seeall = (n == -1) ? true : false;
+            w.seeall = (m == -1) ? true : false;
 
             break;
 
@@ -242,18 +270,13 @@ static void set_w(int m, int n)
 
             break;
 
-        case 6:                         // Flag not settable
-            break;
-
         case 7:
-            if (m <= 1 || w.height - m < 9)
+            if (m > 1 && w.height - m >= 9)
             {
-                throw(E_DPY);           // Display error
+                w.nlines = m;
+
+                set_scroll(w.height, w.nlines);
             }
-
-            w.nlines = m;
-
-            set_scroll(w.height, w.nlines);
 
             break;
 
@@ -262,10 +285,7 @@ static void set_w(int m, int n)
 
             break;
 
-        case 9:                         // Flag not settable
-            break;
-
         default:
-            throw(E_ARG);
+            break;
     }
 }

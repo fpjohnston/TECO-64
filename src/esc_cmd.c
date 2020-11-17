@@ -52,3 +52,15 @@ void exec_escape(struct cmd *cmd)
         cbuf->pos = cbuf->len = 0;
     }
 }
+
+
+///
+///  @brief    Execute no-op command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_nop(struct cmd *unused)
+{
+}

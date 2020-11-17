@@ -288,6 +288,8 @@ void exec_EE(struct cmd *cmd)
 
 void exec_EH(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     check_mn_flag(cmd, &f.eh.flag);
 
     union eh_flag eh;
@@ -410,6 +412,8 @@ bool scan_ctrl_E(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    check_m_arg(cmd);
+
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
@@ -435,10 +439,10 @@ bool scan_ctrl_N(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // n argument?
-    {
-        return false;                   // Yes, not an operand
-    }
+    check_colon(cmd);
+    check_atsign(cmd);
+    check_m_arg(cmd);
+    check_n_arg(cmd);
 
     struct ifile *ifile = &ifiles[istream];
 
@@ -458,6 +462,10 @@ bool scan_ctrl_N(struct cmd *cmd)
 bool scan_ctrl_X(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    check_colon(cmd);
+    check_atsign(cmd);
+    check_m_arg(cmd);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -481,6 +489,9 @@ bool scan_E1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    check_colon(cmd);
+    check_atsign(cmd);
+
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
@@ -502,6 +513,9 @@ bool scan_E1(struct cmd *cmd)
 bool scan_E2(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    check_colon(cmd);
+    check_atsign(cmd);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -525,6 +539,9 @@ bool scan_E3(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    check_colon(cmd);
+    check_atsign(cmd);
+
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
@@ -546,6 +563,9 @@ bool scan_E3(struct cmd *cmd)
 bool scan_E4(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    check_colon(cmd);
+    check_atsign(cmd);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -569,6 +589,9 @@ bool scan_ED(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    check_colon(cmd);
+    check_atsign(cmd);
+
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
@@ -590,6 +613,10 @@ bool scan_ED(struct cmd *cmd)
 bool scan_EE(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    check_colon(cmd);
+    check_atsign(cmd);
+    check_m_arg(cmd);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -636,13 +663,9 @@ bool scan_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_dcolon(cmd);
+    check_colon(cmd);
     check_atsign(cmd);
-
-    if (cmd->m_set)                     // Did user specify m,nEJ?
-    {
-        throw(E_NYI);                   // Not yet implemented
-    }
+    check_m_arg(cmd);
 
     int n = 0;                          // 0EJ is default command
 
@@ -654,6 +677,8 @@ bool scan_EJ(struct cmd *cmd)
     n = teco_env(n, cmd->colon);        // Do the system-dependent part
 
     push_expr(n, EXPR_VALUE);           // Now return the result
+
+    cmd->colon = false;
 
     return true;
 }
@@ -669,6 +694,9 @@ bool scan_EJ(struct cmd *cmd)
 bool scan_ES(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    check_colon(cmd);
+    check_atsign(cmd);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -691,6 +719,9 @@ bool scan_ES(struct cmd *cmd)
 bool scan_ET(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    check_colon(cmd);
+    check_atsign(cmd);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -715,6 +746,10 @@ bool scan_ET(struct cmd *cmd)
 bool scan_EU(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    check_colon(cmd);
+    check_atsign(cmd);
+    check_m_arg(cmd);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -746,6 +781,9 @@ bool scan_EU(struct cmd *unused)
 bool scan_EV(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    check_colon(cmd);
+    check_atsign(cmd);
 
     if (cmd->n_set)                     // n argument?
     {

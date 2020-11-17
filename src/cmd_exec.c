@@ -109,6 +109,21 @@ void exec_cmds(struct cmd *cmd)
 
     while (!empty_cbuf())
     {
+        int c = cmd->c1 = read_cbuf();
+
+        trace_cbuf(c);
+
+        // The following is an optimization that was determined through
+        // experimentation to make a significant difference for most
+        // TECO macros. Note that adding tests for other no-op characters
+        // such as LF was found to be counter-productive, so we've chosen
+        // to keep things simple here.
+
+        if (c == SPACE)
+        {
+            continue;
+        }
+
         const struct cmd_table *entry = scan_cmd(cmd);
         
         if (entry == NULL)
@@ -191,13 +206,11 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int c = cmd->c1 = read_cbuf();
-
-    trace_cbuf(c);
+    int c = cmd->c1;
 
     if ((uint)c >= cmd_max)
     {
-        throw(E_ILL, c);            // Illegal command
+        throw(E_ILL, c);                // Illegal command
     }
 
     const struct cmd_table *entry = &cmd_table[c];
@@ -281,8 +294,10 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd)
 
 #if     defined(TECO_TRACE)
 
-    if (entry->scan != scan_nop)
+    if (entry->scan != scan_nop || !f.e0.exec)
+    {
         tprint("--- %s\r\n", entry->scan_name);
+    }
 
 #endif
 
@@ -445,9 +460,25 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
 
     uint saved_level = estack.level;
     bool match = false;                 // Assume failure
+    bool saved_exec = f.e0.exec;
+
+    f.e0.exec = false;
 
     while (!empty_cbuf())
     {
+        int c = cmd->c1 = read_cbuf();
+
+        // The following is an optimization that was determined through
+        // experimentation to make a significant difference for most
+        // TECO macros. Note that adding tests for other no-op characters
+        // such as LF was found to be counter-productive, so we've chosen
+        // to keep things simple here.
+
+        if (c == SPACE)
+        {
+            continue;
+        }
+
         const struct cmd_table *entry = scan_cmd(cmd);
         
         if (entry == NULL)
@@ -467,6 +498,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
         *cmd = null_cmd;
     }
 
+    f.e0.exec = saved_exec;
     estack.level = saved_level;
 
     return match;

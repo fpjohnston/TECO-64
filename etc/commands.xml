@@ -97,7 +97,7 @@
         <command name='T'        scan='scan_fmt_mc'     exec='exec_T'         />
         <command name='U'        scan='scan_fmt_mq'     exec='exec_U'         />
         <command name='V'        scan='scan_fmt_m'      exec='exec_V'         />
-        <command name='W'        scan='scan_fmt_mc'     exec='exec_W'         />
+        <command name='W'        scan='scan_W'          exec='exec_W'         />
         <command name='X'        scan='scan_fmt_mcq'    exec='exec_X'         />
         <command name='Y'        scan='scan_fmt_c'      exec='exec_Y'         />
         <command name='Z'        scan='scan_Z'                                />
@@ -129,7 +129,7 @@
         <command name='EG'       scan='scan_fmt_da1'    exec='exec_EG'        />
         <command name='EH'       scan='scan_EH'         exec='exec_EH'        />
         <command name='EI'       scan='scan_fmt_mca1'   exec='exec_EI'        />
-        <command name='EJ'       scan='scan_EJ'                               />
+        <command name='EJ'       scan='scan_EJ'         exec='exec_nop'       />
         <command name='EK'                              exec='exec_EK'        />
         <command name='EL'       scan='scan_fmt_ca1'    exec='exec_EL'        />
         <command name='EN'       scan='scan_fmt_ca1'    exec='exec_EN'        />
@@ -149,7 +149,7 @@
         <!-- F commands -->
 
         <command name='F&apos;'                         exec='exec_F_apos'    />
-        <command name='F0'       scan='scan_F0'                               />
+        <command name='F0'       scan='scan_F0'         exec='exec_nop'       />
         <command name='F1'       scan='scan_fmt_ma2'    exec='exec_F1'        />
         <command name='F2'       scan='scan_fmt_ma2'    exec='exec_F2'        />
         <command name='F3'       scan='scan_fmt_ma2'    exec='exec_F3'        />
@@ -158,7 +158,7 @@
         <command name='FB'       scan='scan_fmt_mca1'   exec='exec_FB'        />
         <command name='FC'       scan='scan_fmt_mca2'   exec='exec_FC'        />
         <command name='FD'       scan='scan_fmt_nca1'   exec='exec_FD'        />
-        <command name='FH'       scan='scan_FH'                               />
+        <command name='FH'       scan='scan_FH'         exec='exec_nop'       />
         <command name='FK'       scan='scan_fmt_nca1'   exec='exec_FK'        />
         <command name='FL'       scan='scan_fmt_m'      exec='exec_FL'        />
         <command name='FM'       scan='scan_fmt_a2'     exec='exec_FM'        />
@@ -167,7 +167,7 @@
         <command name='FR'       scan='scan_fmt_mca1'   exec='exec_FR'        />
         <command name='FS'       scan='scan_fmt_mda2'   exec='exec_FS'        />
         <command name='FU'       scan='scan_fmt_m'      exec='exec_FU'        />
-        <command name='FZ'       scan='scan_FZ'                               />
+        <command name='FZ'       scan='scan_FZ'         exec='exec_nop'       />
         <command name='F_'       scan='scan_fmt_mca2'   exec='exec_F_ubar'    />
         <command name='F|'                              exec='exec_F_vbar'    />
     </section>
