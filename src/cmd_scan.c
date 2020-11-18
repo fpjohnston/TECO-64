@@ -625,7 +625,7 @@ bool scan_fmt_nc(struct cmd *cmd)
     assert(cmd != NULL);                // Error if no command block
 
     check_m_arg(cmd);
-    check_n_arg(cmd);
+    check_dcolon(cmd);
     check_atsign(cmd);
 
     return false;
