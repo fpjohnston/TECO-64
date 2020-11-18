@@ -32,6 +32,7 @@
 
 #include "teco.h"
 #include "eflags.h"
+#include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 
@@ -50,8 +51,14 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_ctrl_B(struct cmd *unused)
+bool scan_ctrl_B(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
+    check_n_arg(cmd);
+    check_colon(cmd);
+    check_atsign(cmd);
+
     time_t t = time(NULL);
     struct tm tm;
 
@@ -76,6 +83,10 @@ bool scan_ctrl_B(struct cmd *unused)
 bool scan_ctrl_H(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    check_n_arg(cmd);
+    check_colon(cmd);
+    check_atsign(cmd);
 
     time_t t = time(NULL);
     struct tm tm;

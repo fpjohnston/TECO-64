@@ -49,6 +49,8 @@ bool scan_number(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    check_colon(cmd);
+    check_atsign(cmd);
     check_args(cmd);
 
     if (check_expr())                   // Operand already on top of stack?

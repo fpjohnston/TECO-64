@@ -164,6 +164,11 @@ void push_expr(int_t value, enum expr_type type)
         return;
     }
 
+    if (estack.obj[estack.level - 2].type == estack.obj[estack.level - 1].type)
+    {
+        throw(E_IFE);                   // Ill-formed expression
+    }
+
     // Try to reduce the expression stack if 3 or more items
     
     while (estack.level >= estack.base + 3 && reduce3())

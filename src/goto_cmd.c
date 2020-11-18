@@ -253,6 +253,11 @@ bool scan_bang(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    if (cmd->m_set && !cmd->n_set)
+    {
+        throw(E_NON);
+    }
+
     if (f.e1.xoper && nparens != 0)     // Check for ! operator
     {
         check_args(cmd);
@@ -261,7 +266,7 @@ bool scan_bang(struct cmd *cmd)
 
         return true;
     }
-    
+
     check_colon(cmd);
 
     // If feature enabled, !! starts a comment that ends with LF.

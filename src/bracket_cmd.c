@@ -29,6 +29,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
@@ -96,4 +97,50 @@ void exec_rbracket(struct cmd *cmd)
 
         push_expr(cmd->n_arg, EXPR_VALUE);
     }
+}
+
+
+///
+///  @brief    Scan "[" command - Push Q-register onto push-down list.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_lbracket(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    if (cmd->m_set && !cmd->n_set)
+    {
+        throw(E_NON);
+    }
+
+    check_colon(cmd);
+    check_atsign(cmd);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "]" command: pop Q-register from push-down list.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_rbracket(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    if (cmd->m_set && !cmd->n_set)
+    {
+        throw(E_NON);
+    }
+
+    check_dcolon(cmd);
+    check_atsign(cmd);
+
+    return true;
 }

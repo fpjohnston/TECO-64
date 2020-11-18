@@ -198,13 +198,18 @@ bool scan_W(struct cmd *cmd)
         return false;
     }
 
-    check_dcolon(cmd);                  // n::W and m,n::W are invalid
-
     if (!cmd->n_set)
     {
+        if (cmd->m_set)
+        {
+            throw(E_NON);
+        }
+
         cmd->n_set = true;
         cmd->n_arg = 0;                 // :W = 0:W
     }
+
+    check_dcolon(cmd);                  // n::W and m,n::W are invalid
 
     if (cmd->m_set)                     // m,n:W
     {

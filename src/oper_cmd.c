@@ -45,6 +45,9 @@ bool scan_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    check_colon(cmd);
+    check_atsign(cmd);
+
     if (cmd->m_set)                     // Already seen m argument?
     {
         throw(E_ARG);                   // Invalid arguments
@@ -80,6 +83,10 @@ bool scan_ctrl_ubar(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    check_m_arg(cmd);
+    check_colon(cmd);
+    check_atsign(cmd);
+
     push_expr(TYPE_OPER, cmd->c1);
 
     return true;
@@ -97,6 +104,9 @@ bool scan_div(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    check_m_arg(cmd);
+    check_colon(cmd);
+    check_atsign(cmd);
     check_args(cmd);
 
     int c = cmd->c1;
@@ -155,6 +165,9 @@ bool scan_oper(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    check_m_arg(cmd);
+    check_colon(cmd);
+    check_atsign(cmd);
     check_args(cmd);
 
     push_expr(TYPE_OPER, cmd->c1);
@@ -173,6 +186,10 @@ bool scan_oper(struct cmd *cmd)
 bool scan_rparen(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
+
+    check_m_arg(cmd);
+    check_colon(cmd);
+    check_atsign(cmd);
 
     if (nparens == 0)                   // Can't have ) without (
     {
@@ -204,6 +221,9 @@ bool scan_tilde(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
+    check_m_arg(cmd);
+    check_colon(cmd);
+    check_atsign(cmd);
     check_args(cmd);
 
     if (!f.e1.xoper || nparens == 0)

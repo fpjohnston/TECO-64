@@ -28,6 +28,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "errcodes.h"
 #include "eflags.h"
 #include "exec.h"
 #include "qreg.h"
@@ -262,8 +263,8 @@ bool scan_fmt_m(struct cmd *cmd)
         }
     }
 
-    check_atsign(cmd);
     check_colon(cmd);
+    check_atsign(cmd);
 
     return false;
 }
