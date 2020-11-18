@@ -31,8 +31,6 @@
 #define _EXEC_H
 
 #include "teco.h"               //lint !e451 !e537
-#include "errcodes.h"           //lint !e451 !e537
-#include "exec.h"               //lint !e451 !e537
 
 ///  @def    check_atsign
 ///  @brief  Issue error if at sign and command doesn't allow it.
