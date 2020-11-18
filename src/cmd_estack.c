@@ -164,11 +164,6 @@ void push_expr(int_t value, enum expr_type type)
         return;
     }
 
-    if (estack.obj[estack.level - 2].type == estack.obj[estack.level - 1].type)
-    {
-        throw(E_IFE);                   // Ill-formed expression
-    }
-
     // Try to reduce the expression stack if 3 or more items
     
     while (estack.level >= estack.base + 3 && reduce3())
@@ -208,6 +203,7 @@ static bool reduce2(void)
     struct e_obj *e2 = &estack.obj[estack.level - 2];
 
     // The following prevents double operators in expressions such as 1++2.
+    // It also prevents double operands such as BZ.
 
     if (f.e2.oper)
     {
@@ -217,6 +213,10 @@ static bool reduce2(void)
             {
                 throw(E_IFE);           // Ill-formed numeric expression
             }
+        }
+        else if (e1->type == EXPR_VALUE && e2->type == EXPR_VALUE)
+        {
+            throw(E_IFE);               // Ill-formed numeric expression
         }
         else if (e1->type != EXPR_VALUE && e1->value == TYPE_OPER &&
                  e2->type != EXPR_VALUE && e2->value == TYPE_OPER &&
