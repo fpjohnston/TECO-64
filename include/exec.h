@@ -227,6 +227,8 @@ extern bool scan_fmt_nca1(struct cmd *cmd);
 
 extern bool scan_gt(struct cmd *cmd);
 
+extern bool scan_lbracket(struct cmd *cmd);
+
 extern bool scan_lparen(struct cmd *cmd);
 
 extern bool scan_lt(struct cmd *cmd);
@@ -240,6 +242,8 @@ extern bool scan_oper(struct cmd *cmd);
 extern bool scan_pct(struct cmd *cmd);
 
 extern bool scan_quote(struct cmd *cmd);
+
+extern bool scan_rbracket(struct cmd *cmd);
 
 extern bool scan_rparen(struct cmd *cmd);
 

@@ -101,9 +101,9 @@
         <command name='X'        scan='scan_fmt_mcq'    exec='exec_X'         />
         <command name='Y'        scan='scan_fmt_c'      exec='exec_Y'         />
         <command name='Z'        scan='scan_Z'                                />
-        <command name='['        scan='scan_fmt_m'      exec='exec_lbracket'  />
+        <command name='['        scan='scan_lbracket'   exec='exec_lbracket'  />
         <command name='\'        scan='scan_fmt_n'      exec='exec_bslash'    />
-        <command name=']'        scan='scan_fmt_mc'     exec='exec_rbracket'  />
+        <command name=']'        scan='scan_rbracket'   exec='exec_rbracket'  />
         <command name='[^]'                                                   />
         <command name='_'        scan='scan_fmt_nca1'   exec='exec_ubar'      />
         <command name='`'        scan='scan_bad'                              />
