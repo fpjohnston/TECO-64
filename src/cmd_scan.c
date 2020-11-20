@@ -495,6 +495,7 @@ bool parse_flag1(struct cmd *cmd)
                 default:
                     break;
             }
+            break;
 
         default:
             break;
