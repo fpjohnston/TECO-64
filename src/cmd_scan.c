@@ -25,12 +25,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-
+ 
 #include "teco.h"
 #include "ascii.h"
 #include "errcodes.h"
 #include "eflags.h"
+#include "estack.h"
 #include "exec.h"
+#include "file.h"
 #include "qreg.h"
 
 
@@ -432,13 +434,84 @@ bool parse_escape(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse command with format "m,nX".
+///  @brief    Parse "flag" command with format "nX".
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool parse_m(struct cmd *cmd)
+bool parse_flag1(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd);
+    reject_colon(cmd);
+    reject_atsign(cmd);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    switch (cmd->c1)
+    {
+        case CTRL_E:
+            push_x(f.ctrl_e ? -1 : 0, X_OPERAND);
+
+            return true;
+
+        case CTRL_N:
+        {
+            reject_n(cmd);
+
+            struct ifile *ifile = &ifiles[istream];
+
+            push_x(feof(ifile->fp), X_OPERAND);
+
+            return true;
+        }
+
+        case CTRL_X:
+            push_x(f.ctrl_x, X_OPERAND);
+
+            return true;
+
+        case 'E':
+        case 'e':
+            switch (cmd->c2)
+            {
+                case 'E':
+                case 'e':
+                    push_x(f.ee, X_OPERAND);
+
+                    return true;
+
+                case 'O':
+                case 'o':
+                    push_x(f.eo, X_OPERAND);
+
+                    return true;
+
+                default:
+                    break;
+            }
+
+        default:
+            break;
+    }
+
+    throw(E_ILL, cmd->c1);              // Should never get here!
+}
+
+
+///
+///  @brief    Parse "flag" command with format "m,nX".
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool parse_flag2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -446,7 +519,76 @@ bool parse_m(struct cmd *cmd)
     reject_colon(cmd);
     reject_atsign(cmd);
 
-    return false;
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    assert(cmd->c1 == 'E' || cmd->c1 == 'e');
+
+    switch (cmd->c2)
+    {
+        case '1':
+            push_x(f.e1.flag, X_OPERAND);
+
+            return true;
+
+        case '2':
+            push_x(f.e2.flag, X_OPERAND);
+
+            return true;
+
+        case '3':
+            push_x(f.e3.flag, X_OPERAND);
+
+            return true;
+
+        case '4':
+            push_x(f.e4.flag, X_OPERAND);
+
+            return true;
+
+        case 'D':
+        case 'd':
+            push_x(f.ed.flag, X_OPERAND);
+
+            return true;
+
+        case 'H':
+        case 'h':
+            push_x(f.eh.flag, X_OPERAND);
+
+            return true;
+
+        case 'S':
+        case 's':
+            push_x(f.es, X_OPERAND);
+
+            return true;
+
+        case 'T':
+        case 't':
+            push_x(f.et.flag, X_OPERAND);
+
+            return true;
+
+        case 'U':
+        case 'u':
+            push_x(f.eu, X_OPERAND);
+
+            return true;
+
+        case 'V':
+        case 'v':
+            push_x(f.ev, X_OPERAND);
+
+            return true;
+
+        default:
+            break;
+    }
+
+    throw(E_ILL, cmd->c1);              // Should never get here!
 }
 
 

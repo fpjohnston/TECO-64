@@ -216,13 +216,7 @@ struct flags
     int            es;          ///< Search verification flag
     union  et_flag et;          ///< Terminal flags
     int         radix;          ///< Current input radix
-
-#if     defined(CONFIG_EU)
-
     int            eu;          ///< Upper/lower case flag
-
-#endif
-
     int            ev;          ///< Edit verify flag
 };
 

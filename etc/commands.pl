@@ -356,6 +356,24 @@ sub make_parse
         return $name;
     }
 
+    if ($format eq '!!X')
+    {
+        $name .= 'flag2';
+        $macro .= '  reject_colon  reject_atsign';
+        $macros{$name} = $macro;
+
+        return $name;
+    }
+
+    if ($format eq '!X')
+    {
+        $name .= 'flag1';
+        $macro .= '  reject_colon  reject_atsign';
+        $macros{$name} = $macro;
+
+        return $name;
+    }
+
     if ($format eq 'X' || !length $format)
     {
         $name .= 'X';

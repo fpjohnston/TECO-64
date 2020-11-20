@@ -401,47 +401,6 @@ void exec_EV(struct cmd *cmd)
 }
 
 
-///
-///  @brief    Scan "^E" (CTRL/E) command: read or set form feed flag.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_ctrl_E(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_m(cmd);
-
-    if (cmd->n_set)                     // n argument?
-    {
-        return false;                   // Yes, not an operand
-    }
-
-    int n = f.ctrl_e ? -1 : 0;          // Reading flag returns 0 or -1
-
-    push_x(n, X_OPERAND);               // Assume we're an operand
-
-    return true;
-}
-
-
-///
-///  @brief    Scan "^N" (CTRL/N) command: read end of file flag for current
-///            input stream.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_ctrl_N(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    struct ifile *ifile = &ifiles[istream];
-
-    push_x(feof(ifile->fp), X_OPERAND);
 
     return true;
 }
@@ -462,8 +421,6 @@ bool scan_ctrl_X(struct cmd *cmd)
     {
         return false;                   // Yes, not an operand
     }
-
-    push_x(f.ctrl_x, X_OPERAND);
 
     return true;
 }

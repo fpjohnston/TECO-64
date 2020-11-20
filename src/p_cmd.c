@@ -202,7 +202,6 @@ bool scan_P(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    reject_m(cmd);
     require_n(cmd);
     reject_dcolon(cmd);
     reject_atsign(cmd);
