@@ -139,7 +139,7 @@ void exec_L(struct cmd *cmd)
 
     int nlines = getlines_ebuf(n);
 
-    push_expr(nlines, EXPR_VALUE);
+    push_x(nlines, X_OPERAND);
 }
 
 
@@ -161,7 +161,7 @@ static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
             throw(E_POP, chr);          // Pointer off page
         }
 
-        push_expr(0, EXPR_VALUE);
+        push_x(0, X_OPERAND);
 
         return;
     }
@@ -170,7 +170,7 @@ static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
 
     if (cmd->colon)
     {
-        push_expr(-1, EXPR_VALUE);
+        push_x(-1, X_OPERAND);
     }
 }
 

@@ -63,6 +63,13 @@ typedef unsigned long ulong;
 
 #endif
 
+
+/// @def    isdelim(c)
+/// @brief  Check character to see if it's a line delimiter.
+
+#define isdelim(c)  (c == LF || c == VT || c == FF)
+
+
 enum
 {
     MAIN_NORMAL,                    ///< Normal main loop entry
@@ -162,8 +169,6 @@ extern uint last_len;
 
 extern uint loop_depth;
 
-extern int radix;
-
 extern const char *teco_init;
 
 extern const char *teco_library;
@@ -193,8 +198,6 @@ extern void free_mem(void *ptr);
 extern void init_env(int argc, const char * const argv[]);
 
 extern void init_mem(void);
-
-extern int isdelim(int c);
 
 extern void register_exit(void (*func)(void));
 

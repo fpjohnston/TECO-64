@@ -138,7 +138,7 @@ void exec_P(struct cmd *cmd)
         {
             if (cmd->colon)
             {
-                push_expr(0, EXPR_VALUE);
+                push_x(0, X_OPERAND);
             }
 
             return;
@@ -156,7 +156,7 @@ void exec_P(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_expr(-1, EXPR_VALUE);
+        push_x(-1, X_OPERAND);
     }
 }
 
@@ -202,17 +202,10 @@ bool scan_P(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if (cmd->m_set)
-    {
-        if (cmd->m_arg < 0)
-        {
-            throw(E_NCA);
-        }
-        else if (!cmd->n_set)
-        {
-            throw(E_NON);
-        }
-    }
+    reject_m(cmd);
+    require_n(cmd);
+    reject_dcolon(cmd);
+    reject_atsign(cmd);
 
     int c = peek_cbuf();
 

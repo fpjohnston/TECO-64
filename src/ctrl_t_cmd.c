@@ -92,7 +92,7 @@ void exec_ctrl_T(struct cmd *cmd)
             type_out(c);
         }
 
-        push_expr(c, EXPR_VALUE);
+        push_x(c, X_OPERAND);
     }
 }
 

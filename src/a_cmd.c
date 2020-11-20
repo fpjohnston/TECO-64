@@ -214,7 +214,7 @@ void exec_A(struct cmd *cmd)
     {
         bool success = append(cmd->n_set, cmd->n_arg, cmd->colon);
 
-        push_expr(success ? (int_t)-1 : (int_t)0, EXPR_VALUE);
+        push_x(success ? (int_t)-1 : (int_t)0, X_OPERAND);
     }
     else if (!cmd->n_set)               // A command
     {
@@ -234,10 +234,6 @@ bool scan_A(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_m_arg(cmd);
-    check_dcolon(cmd);
-    check_atsign(cmd);
-
     if (!cmd->n_set || cmd->colon)      // A, :A, or n:A command
     {
         return false;
@@ -245,7 +241,7 @@ bool scan_A(struct cmd *cmd)
 
     int_t n = getchar_ebuf(cmd->n_arg);
 
-    push_expr(n, EXPR_VALUE);
+    push_x(n, X_OPERAND);
 
     return true;
 }

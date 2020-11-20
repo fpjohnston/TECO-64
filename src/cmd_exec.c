@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "teco.h"
@@ -75,25 +76,6 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd);
 
 static void scan_text(int delim, struct tstring *text);
 
-
-///
-///  @brief    Check to see if we've already processed H or CTRL/Y.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void check_args(struct cmd *cmd)
-{
-    assert(cmd != NULL);                // Error if no command block
-
-    if (f.e2.args && (cmd->h || cmd->ctrl_y))
-    {
-        throw(E_ARG);                   // Improper arguments
-    }
-}
-
-
 ///
 ///  @brief    Execute command string.
 ///
@@ -110,6 +92,7 @@ void exec_cmds(struct cmd *cmd)
     while (!empty_cbuf())
     {
         int c = cmd->c1 = read_cbuf();
+        const struct cmd_table *entry;
 
         trace_cbuf(c);
 
@@ -124,9 +107,7 @@ void exec_cmds(struct cmd *cmd)
             continue;
         }
 
-        const struct cmd_table *entry = scan_cmd(cmd);
-        
-        if (entry == NULL)
+        if ((entry = scan_cmd(cmd)) == NULL)
         {
             continue;
         }
@@ -141,19 +122,26 @@ void exec_cmds(struct cmd *cmd)
 
         if (f.e0.ctrl_c)
         {
-            f.e0.ctrl_c = false;
+            if (f.et.ctrl_c)
+            {
+                f.et.ctrl_c = false;
+            }
+            else
+            {
+                f.e0.ctrl_c = false;
 
-            throw(E_XAB);               // Execution aborted
+                throw(E_XAB);
+            }
         }
 
         *cmd = null_cmd;
     }
 
-    if (loop_depth != 0)
+    if (f.e2.loop && loop_depth != 0)
     {
         throw(E_MRA);                   // Missing right angle bracket
     }
-    else if (if_depth != 0)
+    else if (f.e2.quote && if_depth != 0)
     {
         throw(E_MAP);                   // Missing apostrophe
     }
@@ -170,28 +158,11 @@ void exec_cmds(struct cmd *cmd)
             throw(E_MRP);               // Missing right parenthesis
         }
 
-        if (f.e2.args && estack.base != estack.level)
+        if (f.e2.args && x.base != x.level)
         {
             throw(E_ARG);               // Improper arguments
         }
     }
-}
-
-
-///
-///  @brief    Reset m and n arguments. Used by commands that don't prohibit
-///            arguments, but don't pass them through either.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void reset_args(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    cmd->m_set = cmd->n_set = false;
-    cmd->m_arg = cmd->n_arg = 0;
 }
 
 
@@ -228,7 +199,7 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd)
         {
             if ((c = fetch_cbuf()) == '^')
             {
-                push_expr(fetch_cbuf(), EXPR_VALUE);
+                push_x(fetch_cbuf(), X_OPERAND);
 
                 return NULL;
             }
@@ -283,9 +254,9 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd)
 
     if (entry->exec != NULL)
     {
-        cmd->n_set = pop_expr(&cmd->n_arg);
+        cmd->n_set = pop_x(&cmd->n_arg);
 
-        if (!cmd->n_set && unary_expr())
+        if (!cmd->n_set && unary_x())
         {
             cmd->n_set = true;
             cmd->n_arg = -1;
@@ -294,14 +265,22 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd)
 
 #if     defined(TECO_TRACE)
 
-    if (entry->scan != scan_nop || !f.e0.exec)
+    if (entry->scan != scan_nop && entry->scan != NULL)
     {
         tprint("--- %s\r\n", entry->scan_name);
     }
 
 #endif
 
-    if ((*entry->scan)(cmd) || entry->exec == NULL)
+    if (entry->parse != NULL && (*entry->parse)(cmd))
+    {
+        if (entry->scan == NULL)
+        {
+            return NULL;
+        }
+    }
+
+    if ((entry->scan != NULL && (*entry->scan)(cmd)) || entry->exec == NULL)
     {
         return NULL;
     }
@@ -361,9 +340,11 @@ static void scan_text(int delim, struct tstring *text)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_texts(struct cmd *cmd, int ntexts)
+void scan_texts(struct cmd *cmd, int ntexts, int delim)
 {
     assert(cmd != NULL);                // Error if no command block
+
+    cmd->delim = (char)delim;
 
     // If the user specified the at-sign modifier, then skip any whitespace
     // between the command and the delimiter.
@@ -458,7 +439,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     // we just reset the expression stack when we return. If an error occurs,
     // the entire stack will be reset elsewhere.
 
-    uint saved_level = estack.level;
+    uint saved_level = x.level;
     bool match = false;                 // Assume failure
     bool saved_exec = f.e0.exec;
 
@@ -499,7 +480,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     }
 
     f.e0.exec = saved_exec;
-    estack.level = saved_level;
+    x.level = saved_level;
 
     return match;
 }

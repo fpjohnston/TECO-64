@@ -43,7 +43,6 @@
 #include <stdlib.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
@@ -57,8 +56,6 @@
 
 
 struct flags f;                     ///< Global flag variables
-
-int radix = 10;                     ///< Current output radix
 
 jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
@@ -101,7 +98,7 @@ int main(int argc, const char * const argv[])
                     read_cmd();         // Read input from terminal
                 }
 
-                init_expr();            // Initialize expression stack
+                init_x();               // Initialize expression stack
 
                 f.e0.exec = true;       // Command is in progress
                 exec_cmds(&cmd);        // Execute command string
@@ -218,6 +215,7 @@ static void init_teco(int argc, const char * const argv[])
 #endif
 
     f.ctrl_x     = 1;                   // Searches are case-insensitive
+    f.radix      = 10;                  // Use decimal radix
 
     // Note: this has to be first, since it will be the last called when we
     //       exit, and it might execute a system command.
@@ -235,29 +233,6 @@ static void init_teco(int argc, const char * const argv[])
     init_env(argc, argv);               // Initialize environment
     init_ebuf(EDITBUF_INIT, EDITBUF_MAX, EDITBUF_STEP, EDITBUF_WARN);
                                         // Initialize edit buffer
-}
-
-
-///
-///  @brief    Check for line delimiter (LF, VT, or FF) at current position.
-///
-///            Note that we return 1/0 instead of true/false for compatibility
-///            with the ANSI isxxx() functions.
-///
-///  @returns  1 if a delimiter found, else 0.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int isdelim(int c)
-{
-    if (c == LF || c == VT || c == FF)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
 }
 
 

@@ -24,94 +24,82 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     !defined(_ESTACK_H)
+#if     !defined(_XSTACK_H)
 
-#define _ESTACK_H
+#define _XSTACK_H
 
 #include <stdbool.h>            //lint !e451 !e537
 #include <sys/types.h>          //lint !e451 !e537
 
 
-#define EXPR_SIZE            64         ///< Size of expression stack
+#define XSTACK_SIZE          64     ///< Size of expression stack
 
-///  @enum   oper_type
-///  @brief  Type of operator stored on expression stack
-
-enum oper_type
-{
-    TYPE_GROUP = 1,                 // Group command (,),{,}
-    TYPE_OPER  = 2                  // Operator command
-};
-
-///  @enum   expr_type
+///  @enum   x_type
 ///  @brief  Type of item stored on expression stack.
 
-enum expr_type
+enum x_type
 {
-    EXPR_NONE   = 0,
-    EXPR_VALUE  = '0',              // General value
-    EXPR_LPAREN = '(',              // Left parenthesis
-    EXPR_RPAREN = ')',              // Right parenthesis
-    EXPR_LBRACE = '{',              // Left brace
-    EXPR_RBRACE = '}',              // Right brace
-    EXPR_COMP   = '\x1F',           // 1's complement
-    EXPR_OR     = '#',              // Bitwise OR
-    EXPR_AND    = '&',              // Bitwise AND
-    EXPR_XOR    = '~',              // Bitwise XOR
-    EXPR_MUL    = '*',              // Multiplication
-    EXPR_PLUS   = '+',              // Addition and unary plus
-    EXPR_MINUS  = '-',              // Subtraction and unary minus
-    EXPR_DIV    = '/',              // Division w/ quotient
-    EXPR_REM    = '%',              // Division w/ remainder (//)
-    EXPR_NOT    = '!',              // Logical NOT
-    EXPR_LT     = '<',              // Less than
-    EXPR_GT     = '>',              // Greater than
-    EXPR_EQ     = '=',              // Equals (==)
-    EXPR_NE     = 'N',              // Not equals (<>)
-    EXPR_LE     = 'L',              // Less than or equal (<=)
-    EXPR_GE     = 'G',              // Greater than or equal (>=)
-    EXPR_LSHIFT = 'S',              // Left shift (<<)
-    EXPR_RSHIFT = 'U'               // Right shift (>>)
+    X_LPAREN  = -2,                 // Left parenthesis
+    X_RPAREN  = -1,                 // Right parenthesis
+    X_OPERAND = 0,                  // Operand
+    X_1S_COMP = '\x1F',             // 1's complement
+    X_OR      = '#',                // Bitwise OR
+    X_AND     = '&',                // Bitwise AND
+    X_XOR     = '~',                // Bitwise XOR
+    X_MUL     = '*',                // Multiplication
+    X_PLUS    = '+',                // Addition and unary plus
+    X_MINUS   = '-',                // Subtraction and unary minus
+    X_DIV     = '/',                // Division w/ quotient
+    X_REM     = '%',                // Division w/ remainder (//)
+    X_NOT     = '!',                // Logical NOT
+    X_LT      = '<',                // Less than
+    X_GT      = '>',                // Greater than
+    X_EQ      = '=',                // Equals (==)
+    X_NE      = 'N',                // Not equals (<>)
+    X_LE      = 'L',                // Less than or equal (<=)
+    X_GE      = 'G',                // Greater than or equal (>=)
+    X_LSHIFT  = 'S',                // Left shift (<<)
+    X_RSHIFT  = 'U'                 // Right shift (>>)
 };
 
-///  @struct e_obj
+///  @struct x_obj
 ///  @brief  Definition of objects on expression stack.
 
-struct e_obj
+struct x_obj
 {
-    int_t value;                      ///< Operand value (if type = EXPR_VALUE)
-    enum expr_type type;            ///< Value type (operand/operator)
+    int_t operand;                  ///< Operand value (if type = X_OPERAND)
+    enum x_type type;               ///< Operator type (or operand flag)
 };
 
-///  @struct estack
+///  @struct xstack
 ///  @brief  Definition of expression stack.
 
-struct estack
+struct xstack
 {
     uint level;                     ///< Expression stack level
     uint base;                      ///< Expression stack base
-    struct e_obj obj[EXPR_SIZE];    ///< Expression stack objects
+    bool operand;                   ///< Top of stack is an operand
+    struct x_obj obj[XSTACK_SIZE];  ///< Expression stack objects
 };
 
+#define check_x() x.operand         ///< true if expression stack top is operand
 
 // Global variables
 
-extern struct estack estack;        ///< Expression stack
+extern struct xstack x;             ///< Expression stack
 
 // Expression stack functions
 
-extern bool check_expr(void);
+extern void init_x(void);
 
-extern void init_expr(void);
+extern bool pop_x(int_t *operand);
 
-extern bool pop_expr(int_t *operand);
+extern void push_x(int_t value, enum x_type type);
 
-extern void push_expr(int_t value, enum expr_type type);
+extern void reset_x(uint base);
 
-extern void reset_expr(uint base);
+extern uint set_x(void);
 
-extern uint set_expr(void);
+extern bool unary_x(void);
 
-extern bool unary_expr(void);
-
-#endif  // !defined(_ESTACK_H)
+#endif  // !defined(_XSTACK_H)

@@ -419,7 +419,7 @@ void search_failure(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_expr(0, EXPR_VALUE);
+        push_x(0, X_OPERAND);
     }
     else
     {
@@ -610,6 +610,6 @@ void search_success(struct cmd *cmd)
 
     if (cmd->colon || (check_loop() && check_semi()))
     {
-        push_expr(-1, EXPR_VALUE);
+        push_x(-1, X_OPERAND);
     }
 }

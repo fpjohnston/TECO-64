@@ -30,7 +30,6 @@
 
 #include "teco.h"
 #include "eflags.h"
-#include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
@@ -63,10 +62,6 @@ bool scan_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_m_arg(cmd);
-    check_dcolon(cmd);
-    scan_qreg(cmd);
-
     if (cmd->n_set)                     // n%q adds to Q-register q
     {
         cmd->n_arg += get_qnum(cmd->qindex);
@@ -82,7 +77,7 @@ bool scan_pct(struct cmd *cmd)
 
     cmd->n_set = true;
 
-    push_expr(cmd->n_arg, EXPR_VALUE);
+    push_x(cmd->n_arg, X_OPERAND);
 
     return false;
 }

@@ -57,6 +57,6 @@ void exec_U(struct cmd *cmd)
 
     if (cmd->m_set)
     {
-        push_expr(cmd->m_arg, EXPR_VALUE);
+        push_x(cmd->m_arg, X_OPERAND);
     }
 }

@@ -32,7 +32,6 @@
 
 #include "teco.h"
 #include "eflags.h"
-#include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 
@@ -55,10 +54,6 @@ bool scan_ctrl_B(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_n_arg(cmd);
-    check_colon(cmd);
-    check_atsign(cmd);
-
     time_t t = time(NULL);
     struct tm tm;
 
@@ -66,7 +61,7 @@ bool scan_ctrl_B(struct cmd *cmd)
 
     int n = ((tm.tm_year) * 16 + tm.tm_mon + 1) * 32 + tm.tm_mday;
 
-    push_expr(n, EXPR_VALUE);
+    push_x(n, X_OPERAND);
 
     return true;
 }
@@ -84,10 +79,6 @@ bool scan_ctrl_H(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_n_arg(cmd);
-    check_colon(cmd);
-    check_atsign(cmd);
-
     time_t t = time(NULL);
     struct tm tm;
     struct timeval tv = { .tv_usec = 0 };
@@ -102,7 +93,7 @@ bool scan_ctrl_H(struct cmd *cmd)
     n *= 1000;
     n += (int)(tv.tv_usec / 1000);
 
-    push_expr(n, EXPR_VALUE);
+    push_x(n, X_OPERAND);
 
     return true;
 }

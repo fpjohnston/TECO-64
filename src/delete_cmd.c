@@ -76,7 +76,7 @@ void exec_D(struct cmd *cmd)
             throw(E_DTB);               // Delete too big
         }
 
-        push_expr(0, EXPR_VALUE);
+        push_x(0, X_OPERAND);
 
         return;
     }
@@ -85,7 +85,7 @@ void exec_D(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_expr(-1, EXPR_VALUE);
+        push_x(-1, X_OPERAND);
     }
 }
 

@@ -156,8 +156,6 @@ void exec_apos(struct cmd *cmd)
     }
 
     pop_if();
-
-    reset_args(cmd);
 }
 
 
@@ -171,8 +169,6 @@ void exec_apos(struct cmd *cmd)
 void exec_F_apos(struct cmd *cmd)
 {
     endif(cmd, NO_ELSE);                // Skip any else statement.
-
-    reset_args(cmd);
 }
 
 
@@ -186,8 +182,6 @@ void exec_F_apos(struct cmd *cmd)
 void exec_F_vbar(struct cmd *cmd)
 {
     endif(cmd, ELSE_OK);
-
-    reset_args(cmd);
 }
 
 
@@ -329,8 +323,6 @@ void exec_quote(struct cmd *cmd)
     // Here if the test was unsuccessful
 
     endif(cmd, ELSE_OK);
-
-    reset_args(cmd);
 }
 
 
@@ -359,8 +351,6 @@ void exec_vbar(struct cmd *cmd)
     }
 
     endif(cmd, NO_ELSE);
-
-    reset_args(cmd);
 }
 
 
@@ -416,15 +406,10 @@ bool scan_quote(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_m_arg(cmd);
-
     if (!cmd->n_set)                    // Did we see an argument?
     {
         throw(E_NAQ);                   // No argument before "
     }
-
-    check_dcolon(cmd);
-    check_atsign(cmd);
 
     cmd->c2 = (char)fetch_cbuf();       // Get test condition
 

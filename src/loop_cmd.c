@@ -109,13 +109,16 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 
         if (f.e2.loop)
         {
-            if (cmd->c1 == '"')
+            if (f.e2.quote)
             {
-                ++if_depth;
-            }
-            else if (cmd->c1 == '\'')
-            {
-                --if_depth;
+                if (cmd->c1 == '"')
+                {
+                    ++if_depth;
+                }
+                else if (cmd->c1 == '\'')
+                {
+                    --if_depth;
+                }
             }
 
             if (loop_head != NULL && loop_head->depth > if_depth)
@@ -150,8 +153,6 @@ void exec_F_gt(struct cmd *cmd)
     assert(cmd != NULL);                // Error if no command block
 
     endloop(cmd, POP_OK);               // Flow to end of loop
-
-    reset_args(cmd);
 }
 
 
@@ -167,8 +168,6 @@ void exec_F_lt(struct cmd *cmd)
     assert(cmd != NULL);
 
     cbuf->pos = loop_head->start;       // Just restart the loop
-
-    reset_args(cmd);
 
     return;
 }
@@ -208,8 +207,6 @@ void exec_gt(struct cmd *cmd)
     {
         pop_loop(POP_OK);
     }
-
-    reset_args(cmd);
 }
 
 
@@ -273,8 +270,6 @@ void exec_semi(struct cmd *cmd)
     }
 
     endloop(cmd, POP_OK);
-
-    reset_args(cmd);
 }
 
 
@@ -399,7 +394,7 @@ bool scan_gt(struct cmd *cmd)
 
         cmd->c2 = (char)c;
 
-        c = EXPR_GE;
+        push_x(0, X_GE);
     }
     else if (c == '>')                  // >> operator
     {
@@ -407,17 +402,15 @@ bool scan_gt(struct cmd *cmd)
 
         cmd->c2 = (char)c;
 
-        c = EXPR_RSHIFT;
+        push_x(0, X_RSHIFT);
     }
     else                                // > operator
     {
         cmd->c2 = (char)c;
 
-        c = EXPR_GT;
+        push_x(0, X_GT);
     }
     
-    push_expr(TYPE_OPER, c);
-
     return true;
 }
 
@@ -438,9 +431,9 @@ bool scan_lt(struct cmd *cmd)
 
     if (!f.e1.xoper || nparens == 0)
     {
-        check_m_arg(cmd);
-        check_colon(cmd);
-        check_atsign(cmd);
+        reject_m(cmd);
+        reject_colon(cmd);
+        reject_atsign(cmd);
 
         return false;
     }
@@ -453,7 +446,7 @@ bool scan_lt(struct cmd *cmd)
 
         cmd->c2 = (char)c;
 
-        c = EXPR_LE;
+        push_x(0, X_LE);
     }
     else if (c == '>')                  // <> operator
     {
@@ -461,22 +454,20 @@ bool scan_lt(struct cmd *cmd)
 
         cmd->c2 = (char)c;
 
-        c = EXPR_NE;
+        push_x(0, X_NE);
     }
     else if (c == '<')                  // << operator
     {
         (void)fetch_cbuf();
 
-        c = EXPR_LSHIFT;
+        push_x(0, X_LSHIFT);
     }
     else                                // < operator
     {
         cmd->c2 = (char)c;
 
-        c = EXPR_LT;
+        push_x(0, X_LT);
     }
     
-    push_expr(TYPE_OPER, c);
-
     return true;
 }

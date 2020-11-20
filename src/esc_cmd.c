@@ -43,8 +43,6 @@ void exec_escape(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reset_args(cmd);
-
     // If we've read all characters in command string, then reset for next time.
 
     if (empty_cbuf())

@@ -45,15 +45,12 @@ bool scan_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (cmd->m_set)                     // Already seen m argument?
     {
         throw(E_ARG);                   // Invalid arguments
     }
 
-    if (!pop_expr(&cmd->m_arg))         // Any m argument specified?
+    if (!pop_x(&cmd->m_arg))            // Any m argument specified?
     {
         if (f.e2.comma)                 // No -- should we issue error?
         {
@@ -83,11 +80,7 @@ bool scan_ctrl_ubar(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_m_arg(cmd);
-    check_colon(cmd);
-    check_atsign(cmd);
-
-    push_expr(TYPE_OPER, cmd->c1);
+    push_x(0, X_1S_COMP);
 
     return true;
 }
@@ -104,13 +97,6 @@ bool scan_div(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_m_arg(cmd);
-    check_colon(cmd);
-    check_atsign(cmd);
-    check_args(cmd);
-
-    int c = cmd->c1;
-
     // Check for double slash remainder operator.
 
     if (f.e1.xoper && nparens != 0 && peek_cbuf() == '/')
@@ -119,10 +105,12 @@ bool scan_div(struct cmd *cmd)
 
         cmd->c2 = '/';
 
-        c = EXPR_REM;
+        push_x(0, X_REM);
     }
-    
-    push_expr(TYPE_OPER, c);
+    else
+    {
+        push_x(0, X_DIV);
+    }
 
     return true;
 }
@@ -141,7 +129,7 @@ bool scan_lparen(struct cmd *cmd)
 
     ++nparens;
 
-    push_expr(TYPE_GROUP, cmd->c1);
+    push_x(0, X_LPAREN);
 
     return true;
 }
@@ -165,12 +153,10 @@ bool scan_oper(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_m_arg(cmd);
-    check_colon(cmd);
-    check_atsign(cmd);
-    check_args(cmd);
+    // The following takes advantage of the fact that the operators have the
+    // same value as the equivalent expression types (e.g., X_MUL == '*').
 
-    push_expr(TYPE_OPER, cmd->c1);
+    push_x(0, cmd->c1);
 
     return true;
 }
@@ -187,15 +173,11 @@ bool scan_rparen(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_m_arg(cmd);
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (nparens == 0)                   // Can't have ) without (
     {
         throw(E_MLP);                   // Missing left parenthesis
     }
-    else if (!check_expr())             // Is there an operand available?
+    else if (!check_x())                // Is there an operand available?
     {
         throw(E_NAP);                   // No argument before )
     }
@@ -204,7 +186,7 @@ bool scan_rparen(struct cmd *cmd)
         --nparens;
     }
 
-    push_expr(TYPE_GROUP, cmd->c1);
+    push_x(0, X_RPAREN);
 
     return true;
 }
@@ -221,17 +203,12 @@ bool scan_tilde(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_m_arg(cmd);
-    check_colon(cmd);
-    check_atsign(cmd);
-    check_args(cmd);
-
     if (!f.e1.xoper || nparens == 0)
     {
         throw(E_ILL, cmd->c1);          // Illegal command
     }
     
-    push_expr(TYPE_OPER, cmd->c1);
+    push_x(0, X_XOR);
 
     return true;
 }

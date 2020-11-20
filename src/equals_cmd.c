@@ -202,6 +202,11 @@ bool scan_equals(struct cmd *cmd)
 
     if (nparens != 0 && f.e1.xoper)
     {
+        reject_m(cmd);
+        reject_m(cmd);
+        reject_colon(cmd);
+        reject_atsign(cmd);
+
         int c = fetch_cbuf();
 
         if (c != '=')
@@ -209,13 +214,13 @@ bool scan_equals(struct cmd *cmd)
             throw(E_ARG);
         }
 
-        push_expr(TYPE_OPER, c);
+        push_x(0, X_EQ);
 
         return true;
     }
     
-    check_m_arg(cmd);
-    check_dcolon(cmd);
+    reject_m(cmd);
+    reject_dcolon(cmd);
 
     if (peek_cbuf() == '=')
     {
@@ -233,7 +238,7 @@ bool scan_equals(struct cmd *cmd)
 
     if (cmd->atsign)
     {
-        scan_texts(cmd, 1);
+        scan_texts(cmd, 1, ESC);
     }
 
     return false;

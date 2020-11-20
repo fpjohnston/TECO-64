@@ -189,27 +189,24 @@ bool scan_W(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_atsign(cmd);                  // @W/text1/ is invalid
+    reject_atsign(cmd);                  // @W/text1/ is invalid
 
     if (!cmd->colon)
     {
-        check_m_arg(cmd);               // m,nW is invalid
+        reject_m(cmd);               // m,nW is invalid
 
         return false;
     }
 
+    require_n(cmd);
+
     if (!cmd->n_set)
     {
-        if (cmd->m_set)
-        {
-            throw(E_NON);
-        }
-
         cmd->n_set = true;
         cmd->n_arg = 0;                 // :W = 0:W
     }
 
-    check_dcolon(cmd);                  // n::W and m,n::W are invalid
+    reject_dcolon(cmd);                  // n::W and m,n::W are invalid
 
     if (cmd->m_set)                     // m,n:W
     {
@@ -218,7 +215,7 @@ bool scan_W(struct cmd *cmd)
 
     int n = get_w(cmd->n_arg);
 
-    push_expr(n, EXPR_VALUE);
+    push_x(n, X_OPERAND);
 
     cmd->colon = false;                 // Reset for next command
 

@@ -30,7 +30,6 @@
 
 #include "teco.h"
 #include "eflags.h"
-#include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
@@ -48,10 +47,6 @@ bool scan_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_m_arg(cmd);
-    check_dcolon(cmd);
-    scan_qreg(cmd);
-
     int n;
 
     if (cmd->n_set)                     // nQq
@@ -67,7 +62,7 @@ bool scan_Q(struct cmd *cmd)
         n = get_qnum(cmd->qindex);
     }
 
-    push_expr(n, EXPR_VALUE);
+    push_x(n, X_OPERAND);
 
     return true;
 }

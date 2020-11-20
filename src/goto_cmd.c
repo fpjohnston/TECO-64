@@ -75,10 +75,10 @@ void exec_bang(struct cmd *cmd)
     {
         if (cmd->m_set)
         {
-            push_expr(cmd->m_arg, EXPR_VALUE);
+            push_x(cmd->m_arg, X_OPERAND);
         }
 
-        push_expr(cmd->n_arg, EXPR_VALUE);
+        push_x(cmd->n_arg, X_OPERAND);
     }
 }
 
@@ -253,21 +253,21 @@ bool scan_bang(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);
-    }
+    reject_colon(cmd);
 
     if (f.e1.xoper && nparens != 0)     // Check for ! operator
     {
-        check_args(cmd);
+        reject_m(cmd);
+        reject_n(cmd);
+        reject_colon(cmd);
+        reject_atsign(cmd);
 
-        push_expr(TYPE_OPER, cmd->c1);
+        push_x(0, X_NOT);
 
         return true;
     }
 
-    check_colon(cmd);
+    require_n(cmd);
 
     // If feature enabled, !! starts a comment that ends with LF.
 
@@ -275,14 +275,12 @@ bool scan_bang(struct cmd *cmd)
     {
         (void)fetch_cbuf();
 
-        cmd->delim = LF;                // Tag goes to end of line
+        scan_texts(cmd, 1, LF);
     }
     else
     {
-        cmd->delim = '!';               // ! normally ends with !
+        scan_texts(cmd, 1, '!');
     }
-
-    scan_texts(cmd, 1);
 
     return false;
 }

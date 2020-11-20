@@ -141,11 +141,6 @@ bool scan_G(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_m_arg(cmd);
-    check_n_arg(cmd);
-    check_dcolon(cmd);
-    scan_qreg(cmd);
-
     if (cmd->qindex == -1 && strchr("*_+", cmd->qname) == NULL)
     {
         throw(E_IQN, cmd->qname);       // Invalid Q-register name

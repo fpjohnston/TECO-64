@@ -56,13 +56,13 @@ void exec_EN(struct cmd *cmd)
                 throw(E_FNF, "");       // No more matches
             }
 
-            push_expr(0, EXPR_VALUE);
+            push_x(0, X_OPERAND);
         }
         else
         {
             if (cmd->colon)
             {
-                push_expr(-1, EXPR_VALUE);
+                push_x(-1, X_OPERAND);
             }
         }
     }
@@ -82,14 +82,14 @@ void exec_EN(struct cmd *cmd)
         {
             if (cmd->colon)
             {
-                push_expr(-1, EXPR_VALUE);
+                push_x(-1, X_OPERAND);
             }
         }
         else
         {
             if (cmd->colon)
             {
-                push_expr(0, EXPR_VALUE);
+                push_x(0, X_OPERAND);
             }
             else
             {

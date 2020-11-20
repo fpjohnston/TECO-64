@@ -66,6 +66,7 @@ union e1_flag
         uint new_ei : 1;        ///< Use new-style EI commands
         uint bang   : 1;        ///< !! starts end-of-line comment
         uint prompt : 1;        ///< Add CR/LF before prompt if needed
+        uint radix  : 1;        ///< Automatically determine number radix
     };
 };
 
@@ -90,6 +91,7 @@ union e2_flag
         uint quote  : 1;        ///< Conditional not complete within loop
         uint page   : 1;        ///< m,n:P or H:P or :PW
         uint args   : 1;        ///< Too many arguments for command
+        uint escape : 1;        ///< Disallow "escape"-like commands
     };
 };
 
@@ -213,6 +215,7 @@ struct flags
     int            eo;          ///< TECO version number
     int            es;          ///< Search verification flag
     union  et_flag et;          ///< Terminal flags
+    int         radix;          ///< Current input radix
 
 #if     defined(CONFIG_EU)
 

@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
@@ -37,9 +38,142 @@
 #include "term.h"
 
 
+///  @var    MAX_DIGITS
+///  @brief  Maximum length of digit string. Note that this is big enough to
+///          hold a 64-bit octal number.
+
+#define MAX_DIGITS      22
+
+///  @var    digits
+///  @brief  Convert ASCII character to hex digit.
+
+static const char digits[] =
+{
+    ['0'] = 0,
+    ['1'] = 1,
+    ['2'] = 2,
+    ['3'] = 3,
+    ['4'] = 4,
+    ['5'] = 5,
+    ['6'] = 6,
+    ['7'] = 7,
+    ['8'] = 8,
+    ['9'] = 9,
+    ['A'] = 10,
+    ['a'] = 10,
+    ['B'] = 11,
+    ['b'] = 11,
+    ['C'] = 12,
+    ['c'] = 12,
+    ['D'] = 13,
+    ['d'] = 13,
+    ['E'] = 14,
+    ['e'] = 14,
+    ['F'] = 15,
+    ['f'] = 15,
+};
+
+
+///
+///  @brief    Execute "\" command: read digit string.
+///
+///  @returns  nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_bslash(struct cmd *cmd)
+{
+    assert(cmd != NULL);                // Error if no command block
+
+    if (cmd->n_set)                     // n\`?
+    {
+        char string[MAX_DIGITS];
+        const char *format = "%d";
+
+        if (f.radix == 8)
+        {
+            format = "%o";
+        }
+        else if (f.radix == 16)
+        {
+            format = "%x";
+        }
+
+        uint nbytes = (uint)snprintf(string, sizeof(string), format, cmd->n_arg);
+
+        assert(nbytes < sizeof(string)); // Error if string was truncated
+
+        exec_insert(string, nbytes);
+
+        last_len = nbytes;
+    }
+    else
+    {
+        bool minus = false;
+        int pos = 0;
+        uint ndigits = 0;
+        int n = 0;
+        int c = getchar_ebuf(pos++);
+
+        if (c == '+')
+        {
+            c = getchar_ebuf(pos++);
+        }
+        else if (c == '-')
+        {
+            c = getchar_ebuf(pos++);
+            minus = true;
+        }
+
+        while (c != -1)
+        {
+            if (!isxdigit(c))
+            {
+                break;
+            }
+
+            int digit = digits[c];
+
+            if ((f.radix == 8 && digit >= 8) || (f.radix == 10 && digit >= 10))
+            {
+                break;
+            }
+
+            ++ndigits;
+
+            n *= f.radix;
+            n += digit;
+
+            c = getchar_ebuf(pos++);
+        }
+
+        if (ndigits != 0)
+        {
+            if (minus)
+            {
+                n = -n;
+            }
+
+            setpos_ebuf(t.dot + pos - 1);
+        }
+
+        push_x(n, X_OPERAND);
+    }
+}
+
+
 ///
 ///  @brief    Scan a number in a command string, which can be decimal or octal,
 ///            depending on the current radix.
+///
+///            If f.e1.radix is set, then we allow the radix to be specified in
+///            string, per C conventions:
+///
+///            If it starts with 1-9, it's a decimal number.
+///
+///            Else if it starts with 0x or 0X, it's a hexadecimal number.
+///
+///            Else it's an octal number (which starts with 0).
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -49,44 +183,71 @@ bool scan_number(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    check_colon(cmd);
-    check_atsign(cmd);
-    check_args(cmd);
-
-    if (check_expr())                   // Operand already on top of stack?
-    {
-        throw(E_ARG);                   // Invalid arguments
-    }
-
     int c = cmd->c1;
-    int n = 0;
+    int radix;
 
-    for (;;)
+    if (!f.e1.radix)                    // Auto-detect radix?
     {
-        c -= '0';
+        radix = f.radix;                // No - use default
+    }
+    else if (c != '0')                  // First digit 0?
+    {
+        radix = 10;                     // No, must be base 10
+    }
+    else if (!empty_cbuf() && ((c = peek_cbuf()) == 'x' || c == 'X'))
+    {
+        (void)fetch_cbuf();
 
-        if (radix == 8 && c > 7)        // If base 8 and digit is 8 or 9
+        c = fetch_cbuf();               // Get the first digit for base 16
+
+        if (!isxdigit(c))               // Anything after 0x or 0X?
         {
             throw(E_ILN);               // Invalid number
         }
 
-        n *= (int)radix;                // Shift over existing digits
-        n += c;                         // And add in the new digit
+        radix = 16;
+    }
+    else                                // Must be base 8
+    {
+        radix = 8;
+    }
 
-        // If we've reached the end of the command string, or
-        // we've encountered a non-digit, then we're done.
+    int n = digits[c];                  // Store 1st digit
 
-        if (empty_cbuf() || !isdigit(c = peek_cbuf()))
+    for (;;)
+    {
+        if (empty_cbuf() || (c = peek_cbuf()) < '0')
+        {
+            break;                      // Buffer empty, or non-digit
+        }
+
+        if (radix == 10)
+        {
+            if (c > '9')
+            {
+                break;
+            }
+        }
+        else if (radix == 16 && !isxdigit(c))
+        {
+            break;                      // Non-digit for decimal or hex number
+        }
+        else if (c > '9')               // Must be octal
         {
             break;
         }
+        else                            // Must be 7 or 8
+        {
+            throw(E_ILN);               // Invalid octal number
+        }
 
-        next_cbuf();
-        trace_cbuf(c);
-//        (void)fetch_cbuf();
+        (void)fetch_cbuf();             // Accept the next digit
+
+        n *= radix;                     // Shift over existing digits
+        n += digits[c];                 // And add in the new digit
     }
 
-    push_expr(n, EXPR_VALUE);
+    push_x(n, X_OPERAND);
 
     return true;
 }

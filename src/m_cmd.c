@@ -129,20 +129,20 @@ void exec_macro(struct buffer *macro, struct cmd *cmd)
 
     set_cbuf(macro);                    // Switch command strings
 
-    uint saved_base = set_expr();       // Set temporary new base
+    uint saved_base = set_x();          // Set temporary new base
 
     ++macro_depth;
 
     if (cmd->n_set)
     {
-        push_expr(cmd->n_arg, EXPR_VALUE);
+        push_x(cmd->n_arg, X_OPERAND);
     }
 
     exec_cmds(cmd);
 
     --macro_depth;
 
-    reset_expr(saved_base);             // Restore old base
+    reset_x(saved_base);                // Restore old base
 
     set_cbuf(saved_cbuf);               // Restore previous command string
 

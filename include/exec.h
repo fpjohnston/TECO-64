@@ -32,31 +32,60 @@
 
 #include "teco.h"               //lint !e451 !e537
 
-///  @def    check_atsign
-///  @brief  Issue error if at sign and command doesn't allow it.
+#if 1 // TODO!
 
-#define check_atsign(cmd)  if (cmd->atsign && f.e2.atsign)     throw(E_ATS)
+///  @def    reject_atsign
+///  @brief  Error if at sign and command doesn't allow it.
 
-///  @def    check_colon
-///  @brief  Issue error if colon and command doesn't allow it.
+#define reject_atsign(cmd) if (f.e2.atsign && cmd->atsign) throw(E_ATS)
 
-#define check_colon(cmd)   if (cmd->colon  && f.e2.colon)      throw(E_COL)
+///  @def    reject_colon
+///  @brief  Error if colon and command doesn't allow it.
 
-///  @def    check_dcolon
-///  @brief  Issue error if dcolon and command doesn't allow it.
+#define reject_colon(cmd)  if (f.e2.colon && cmd->colon) throw(E_COL)
 
-#define check_dcolon(cmd)  if (cmd->dcolon && f.e2.colon)      throw(E_COL)
+///  @def    reject_dcolon
+///  @brief  Error if dcolon and command doesn't allow it.
 
-///  @def    check_m_arg
-///  @brief  Issue error if m argument and command doesn't allow it.
+#define reject_dcolon(cmd) if (f.e2.colon && cmd->dcolon) throw(E_COL)
 
-#define check_m_arg(cmd)   if (cmd->m_set && f.e2.m_arg)       throw(E_IMA)
+///  @def    reject_m
+///  @brief  Error if m argument and command doesn't allow it.
 
-///  @def    check_n_arg
-///  @brief  Issue error if n argument and command doesn't allow it.
+#define reject_m(cmd)  if (f.e2.m_arg && cmd->m_set) throw(E_IMA)
 
-#define check_n_arg(cmd)   if (cmd->n_set && f.e2.n_arg)       throw(E_INA)
+///  @def    reject_neg_m
+///  @brief  Error if m argument is negative.
 
+#define reject_neg_m(cmd)  if (cmd->m_set && cmd->m_arg < 0) throw(E_NCA)
+
+///  @def    reject_neg_n
+///  @brief  Error if n argument is negative.
+
+#define reject_neg_n(cmd)  if (cmd->n_set && cmd->n_arg < 0) throw(E_NCA)
+
+///  @def    reject_n
+///  @brief  Error if n argument and command doesn't allow it.
+
+#define reject_n(cmd)  if (f.e2.n_arg && cmd->n_set) throw(E_INA)
+
+///  @def    require_n
+///  @brief  Error if m argument not followed by n argument.
+
+#define require_n(cmd)  if (cmd->m_set && !cmd->n_set) throw(E_NON)
+
+#else
+
+#define reject_atsign(cmd)
+#define reject_colon(cmd)
+#define reject_dcolon(cmd)
+#define reject_m(cmd)
+#define reject_neg_m(cmd)
+#define reject_neg_n(cmd)
+#define reject_n(cmd)
+#define require_n(cmd)
+
+#endif
 
 ///  @struct cmd
 ///  @brief  Command block structure.
@@ -94,6 +123,68 @@ extern uint nparens;
 extern const struct cmd null_cmd;
 
 // Functions that scan commands
+
+extern bool parse_1(struct cmd *cmd);
+
+extern bool parse_2(struct cmd *cmd);
+
+extern bool parse_M(struct cmd *cmd);
+
+extern bool parse_M1(struct cmd *cmd);
+
+extern bool parse_Mc(struct cmd *cmd);
+
+extern bool parse_Mc1(struct cmd *cmd);
+
+extern bool parse_Mc2(struct cmd *cmd);
+
+extern bool parse_Mcq(struct cmd *cmd);
+
+extern bool parse_Mcq1(struct cmd *cmd);
+
+extern bool parse_N1(struct cmd *cmd);
+
+extern bool parse_X(struct cmd *cmd);
+
+extern bool parse_c(struct cmd *cmd);
+
+extern bool parse_c1(struct cmd *cmd);
+
+extern bool parse_cq1(struct cmd *cmd);
+
+extern bool parse_d1(struct cmd *cmd);
+
+extern bool parse_escape(struct cmd *cmd);
+
+extern bool parse_m(struct cmd *cmd);
+
+extern bool parse_m2(struct cmd *cmd);
+
+extern bool parse_mc(struct cmd *cmd);
+
+extern bool parse_mc1(struct cmd *cmd);
+
+extern bool parse_mc2(struct cmd *cmd);
+
+extern bool parse_mcq(struct cmd *cmd);
+
+extern bool parse_md1(struct cmd *cmd);
+
+extern bool parse_md2(struct cmd *cmd);
+
+extern bool parse_mq(struct cmd *cmd);
+
+extern bool parse_n(struct cmd *cmd);
+
+extern bool parse_nc(struct cmd *cmd);
+
+extern bool parse_nc1(struct cmd *cmd);
+
+extern bool parse_ncq(struct cmd *cmd);
+
+extern bool parse_oper(struct cmd *cmd);
+
+extern bool parse_q1(struct cmd *cmd);
 
 extern bool scan_A(struct cmd *cmd);
 
@@ -181,53 +272,7 @@ extern bool scan_dot(struct cmd *cmd);
 
 extern bool scan_equals(struct cmd *cmd);
 
-extern bool scan_fmt_a1(struct cmd *cmd);
-
-extern bool scan_fmt_a2(struct cmd *cmd);
-
-extern bool scan_fmt_aq1(struct cmd *cmd);
-
-extern bool scan_fmt_c(struct cmd *cmd);
-
-extern bool scan_fmt_ca1(struct cmd *cmd);
-
-extern bool scan_fmt_caq1(struct cmd *cmd);
-
-extern bool scan_fmt_da1(struct cmd *cmd);
-
-extern bool scan_fmt_m(struct cmd *cmd);
-
-extern bool scan_fmt_ma1(struct cmd *cmd);
-
-extern bool scan_fmt_ma2(struct cmd *cmd);
-
-extern bool scan_fmt_mc(struct cmd *cmd);
-
-extern bool scan_fmt_mca1(struct cmd *cmd);
-
-extern bool scan_fmt_mca2(struct cmd *cmd);
-
-extern bool scan_fmt_mcaq1(struct cmd *cmd);
-
-extern bool scan_fmt_mcq(struct cmd *cmd);
-
-extern bool scan_fmt_mda1(struct cmd *cmd);
-
-extern bool scan_fmt_mda2(struct cmd *cmd);
-
-extern bool scan_fmt_mq(struct cmd *cmd);
-
-extern bool scan_fmt_n(struct cmd *cmd);
-
-extern bool scan_fmt_na1(struct cmd *cmd);
-
-extern bool scan_fmt_nc(struct cmd *cmd);
-
-extern bool scan_fmt_nca1(struct cmd *cmd);
-
 extern bool scan_gt(struct cmd *cmd);
-
-extern bool scan_lbracket(struct cmd *cmd);
 
 extern bool scan_lparen(struct cmd *cmd);
 
@@ -242,8 +287,6 @@ extern bool scan_oper(struct cmd *cmd);
 extern bool scan_pct(struct cmd *cmd);
 
 extern bool scan_quote(struct cmd *cmd);
-
-extern bool scan_rbracket(struct cmd *cmd);
 
 extern bool scan_rparen(struct cmd *cmd);
 
@@ -451,8 +494,6 @@ extern bool append(bool n_set, int_t n_arg, bool colon_set);
 
 extern bool append_line(void);
 
-extern void check_args(struct cmd *cmd);
-
 extern int check_EI(void);
 
 extern bool check_semi(void);
@@ -481,8 +522,6 @@ extern bool next_yank(void);
 
 extern bool read_EI(void);
 
-extern void reset_args(struct cmd *cmd);
-
 extern void reset_if(void);
 
 extern void reset_indirect(void);
@@ -491,6 +530,6 @@ extern void reset_loop(void);
 
 extern bool skip_cmd(struct cmd *cmd, const char *skip);
 
-extern void scan_texts(struct cmd *cmd, int ntexts);
+extern void scan_texts(struct cmd *cmd, int ntexts, int delim);
 
 #endif  // !defined(_EXEC_H)

@@ -47,7 +47,7 @@
 
 bool scan_ctrl_P(struct cmd *unused)
 {
-    push_expr((int)page_count, EXPR_VALUE);
+    push_x((int)page_count, X_OPERAND);
 
     return true;
 }
@@ -72,7 +72,7 @@ bool scan_ctrl_Q(struct cmd *cmd)
 
     int nchrs = getdelta_ebuf(cmd->n_arg);
 
-    push_expr(nchrs, EXPR_VALUE);
+    push_x(nchrs, X_OPERAND);
 
     return true;
 }
@@ -91,7 +91,7 @@ bool scan_ctrl_S(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    push_expr(-(int)last_len, EXPR_VALUE);
+    push_x(-(int)last_len, X_OPERAND);
 
     return true;
 }
@@ -108,23 +108,20 @@ bool scan_ctrl_Y(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    uint i = estack.level;
-
     // The following prevents expressions such as 123+^Y.
 
-    if (f.e2.args && (check_expr() || cmd->m_set ||
-                      (i != 0 && estack.obj[i].value != TYPE_GROUP)))
+    if (f.e2.args && (check_x() || cmd->m_set))
     {
         throw(E_ARG);                   // Invalid arguments
     }
 
-    (void)pop_expr(&cmd->n_arg);
+    (void)pop_x(&cmd->n_arg);
 
     cmd->ctrl_y = true;
     cmd->m_set = true;
     cmd->m_arg = t.dot - (int)last_len;
 
-    push_expr(t.dot, EXPR_VALUE);
+    push_x(t.dot, X_OPERAND);
 
     return true;
 }
@@ -144,7 +141,7 @@ bool scan_ctrl_Z(struct cmd *cmd)
 
     uint n = get_qall();
 
-    push_expr((int)n, EXPR_VALUE);
+    push_x((int)n, X_OPERAND);
 
     return true;
 }
@@ -163,7 +160,7 @@ bool scan_ctrl_up(struct cmd *cmd)
 
     int c = fetch_cbuf();
 
-    push_expr(c, EXPR_VALUE);
+    push_x(c, X_OPERAND);
 
     return true;
 }
@@ -180,7 +177,7 @@ bool scan_dot(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    push_expr((int)t.dot, EXPR_VALUE);
+    push_x((int)t.dot, X_OPERAND);
 
     return true;
 }
@@ -197,7 +194,7 @@ bool scan_B(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    push_expr(t.B, EXPR_VALUE);
+    push_x(t.B, X_OPERAND);
 
     return true;
 }
@@ -214,23 +211,20 @@ bool scan_H(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    uint i = estack.level;
-
     // The following prevents expressions such as 123+H.
 
-    if (f.e2.args && (check_expr() || cmd->m_set ||
-                      (i != 0 && estack.obj[i].value != TYPE_GROUP)))
+    if (f.e2.args && (check_x() || cmd->m_set))
     {
         throw(E_ARG);                   // Invalid arguments
     }
 
-    (void)pop_expr(&cmd->n_arg);
+    (void)pop_x(&cmd->n_arg);
 
     cmd->h = true;
     cmd->m_set = true;
     cmd->m_arg = t.B;
 
-    push_expr((int)t.Z, EXPR_VALUE);
+    push_x((int)t.Z, X_OPERAND);
 
     return true;
 }
@@ -247,7 +241,7 @@ bool scan_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);                // Error if no command block
 
-    push_expr((int)t.Z, EXPR_VALUE);
+    push_x((int)t.Z, X_OPERAND);
 
     return true;
 }

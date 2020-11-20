@@ -64,7 +64,7 @@ void exec_EB(struct cmd *cmd)
 
     if (ifile == NULL)
     {
-        push_expr(0, EXPR_VALUE);
+        push_x(0, X_OPERAND);
 
         return;
     }
@@ -77,10 +77,10 @@ void exec_EB(struct cmd *cmd)
 
     if (ofile == NULL)
     {
-        push_expr(0, EXPR_VALUE);
+        push_x(0, X_OPERAND);
     }
     else if (cmd->colon)
     {
-        push_expr(-1, EXPR_VALUE);
+        push_x(-1, X_OPERAND);
     }
 }

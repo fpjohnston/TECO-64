@@ -287,7 +287,7 @@ static void sig_handler(int signum)
                 exit(EXIT_FAILURE);     // Cleanup, reset, and exit
             }
 
-            f.e0.ctrl_c = true;         // Say we've seen CTRL/C
+            f.e0.ctrl_c = true;         // Set flag saying we saw CTRL/C
 
             break;
 

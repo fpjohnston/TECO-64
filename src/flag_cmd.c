@@ -412,7 +412,7 @@ bool scan_ctrl_E(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_m_arg(cmd);
+    reject_m(cmd);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -421,7 +421,7 @@ bool scan_ctrl_E(struct cmd *cmd)
 
     int n = f.ctrl_e ? -1 : 0;          // Reading flag returns 0 or -1
 
-    push_expr(n, EXPR_VALUE);           // Assume we're an operand
+    push_x(n, X_OPERAND);            // Assume we're an operand
 
     return true;
 }
@@ -439,14 +439,9 @@ bool scan_ctrl_N(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_colon(cmd);
-    check_atsign(cmd);
-    check_m_arg(cmd);
-    check_n_arg(cmd);
-
     struct ifile *ifile = &ifiles[istream];
 
-    push_expr(feof(ifile->fp), EXPR_VALUE);
+    push_x(feof(ifile->fp), X_OPERAND);
 
     return true;
 }
@@ -463,16 +458,12 @@ bool scan_ctrl_X(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_colon(cmd);
-    check_atsign(cmd);
-    check_m_arg(cmd);
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.ctrl_x, EXPR_VALUE);
+    push_x(f.ctrl_x, X_OPERAND);
 
     return true;
 }
@@ -489,20 +480,12 @@ bool scan_E1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);
-    }
-
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.e1.flag, EXPR_VALUE);
+    push_x(f.e1.flag, X_OPERAND);
 
     return true;
 }
@@ -519,20 +502,12 @@ bool scan_E2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);
-    }
-
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.e2.flag, EXPR_VALUE);
+    push_x(f.e2.flag, X_OPERAND);
 
     return true;
 }
@@ -549,20 +524,12 @@ bool scan_E3(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);
-    }
-
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.e3.flag, EXPR_VALUE);
+    push_x(f.e3.flag, X_OPERAND);
 
     return true;
 }
@@ -579,20 +546,12 @@ bool scan_E4(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);
-    }
-
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.e4.flag, EXPR_VALUE);
+    push_x(f.e4.flag, X_OPERAND);
 
     return true;
 }
@@ -609,20 +568,12 @@ bool scan_ED(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);
-    }
-
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.ed.flag, EXPR_VALUE);
+    push_x(f.ed.flag, X_OPERAND);
 
     return true;
 }
@@ -639,16 +590,12 @@ bool scan_EE(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_m_arg(cmd);
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.ee, EXPR_VALUE);
+    push_x(f.ee, X_OPERAND);
 
     return true;
 }
@@ -665,17 +612,12 @@ bool scan_EH(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);
-    }
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.eh.flag, EXPR_VALUE);
+    push_x(f.eh.flag, X_OPERAND);
 
     return true;
 }
@@ -693,10 +635,6 @@ bool scan_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_m_arg(cmd);
-    check_colon(cmd);
-    check_atsign(cmd);
-
     int n = 0;                          // 0EJ is default command
 
     if (cmd->n_set)
@@ -706,7 +644,7 @@ bool scan_EJ(struct cmd *cmd)
 
     n = teco_env(n, cmd->colon);        // Do the system-dependent part
 
-    push_expr(n, EXPR_VALUE);           // Now return the result
+    push_x(n, X_OPERAND);               // Now return the result
 
     cmd->colon = false;
 
@@ -725,15 +663,12 @@ bool scan_ES(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.es, EXPR_VALUE);
+    push_x(f.es, X_OPERAND);
 
     return true;
 }
@@ -750,20 +685,12 @@ bool scan_ET(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);
-    }
-
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.et.flag, EXPR_VALUE);
+    push_x(f.et.flag, X_OPERAND);
 
     return true;
 }
@@ -782,16 +709,12 @@ bool scan_EU(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_m_arg(cmd);
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.eu, EXPR_VALUE);
+    push_x(f.eu, X_OPERAND);
 
     return true;
 }
@@ -817,20 +740,12 @@ bool scan_EV(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);
-    }
-
-    check_colon(cmd);
-    check_atsign(cmd);
-
     if (cmd->n_set)                     // n argument?
     {
         return false;                   // Yes, not an operand
     }
 
-    push_expr(f.ev, EXPR_VALUE);
+    push_x(f.ev, X_OPERAND);
 
     return true;
 }

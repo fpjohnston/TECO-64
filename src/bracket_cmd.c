@@ -56,10 +56,10 @@ void exec_lbracket(struct cmd *cmd)
     {
         if (cmd->m_set)
         {
-            push_expr(cmd->m_arg, EXPR_VALUE);
+            push_x(cmd->m_arg, X_OPERAND);
         }
 
-        push_expr(cmd->n_arg, EXPR_VALUE);
+        push_x(cmd->n_arg, X_OPERAND);
     }
 }
 
@@ -82,65 +82,19 @@ void exec_rbracket(struct cmd *cmd)
             throw(E_PES);               // Push-down stack is empty
         }
 
-        push_expr(0, EXPR_VALUE);
+        push_x(0, X_OPERAND);
     }
     else if (cmd->colon)
     {
-        push_expr(-1, EXPR_VALUE);
+        push_x(-1, X_OPERAND);
     }
     else if (cmd->n_set)                // Pass through m and n arguments
     {
         if (cmd->m_set)
         {
-            push_expr(cmd->m_arg, EXPR_VALUE);
+            push_x(cmd->m_arg, X_OPERAND);
         }
 
-        push_expr(cmd->n_arg, EXPR_VALUE);
+        push_x(cmd->n_arg, X_OPERAND);
     }
-}
-
-
-///
-///  @brief    Scan "[" command - Push Q-register onto push-down list.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_lbracket(struct cmd *cmd)
-{
-    assert(cmd != NULL);                // Error if no command block
-
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);
-    }
-
-    check_colon(cmd);
-    check_atsign(cmd);
-
-    return true;
-}
-
-
-///
-///  @brief    Scan "]" command: pop Q-register from push-down list.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_rbracket(struct cmd *cmd)
-{
-    assert(cmd != NULL);                // Error if no command block
-
-    if (cmd->m_set && !cmd->n_set)
-    {
-        throw(E_NON);
-    }
-
-    check_dcolon(cmd);
-    check_atsign(cmd);
-
-    return true;
 }

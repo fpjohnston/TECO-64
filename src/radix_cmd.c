@@ -29,6 +29,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
@@ -43,7 +44,7 @@
 
 void exec_ctrl_D(struct cmd *unused)
 {
-    radix = 10;                         // Set radix to decimal
+    f.radix = 10;                       // Set radix to decimal
 }
 
 
@@ -56,7 +57,7 @@ void exec_ctrl_D(struct cmd *unused)
 
 void exec_ctrl_O(struct cmd *unused)
 {
-    radix = 8;                          // Set radix to octal
+    f.radix = 8;                        // Set radix to octal
 }
 
 
@@ -78,10 +79,10 @@ void exec_ctrl_R(struct cmd *cmd)
             throw(E_IRA);               // Invalid radix argument
         }
 
-        radix = cmd->n_arg;             // Set the radix
+        f.radix = cmd->n_arg;           // Set the radix
     }
     else
     {
-        push_expr(radix, EXPR_VALUE);   // No, just save what we have
+        push_x(f.radix, X_OPERAND);     // No, just save what we have
     }
 }

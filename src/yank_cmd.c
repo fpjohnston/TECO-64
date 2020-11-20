@@ -61,7 +61,7 @@ void exec_EY(struct cmd *cmd)
     {
         if (cmd->colon)
         {
-            push_expr(0, EXPR_VALUE);
+            push_x(0, X_OPERAND);
 
             return;
         }
@@ -85,7 +85,7 @@ void exec_EY(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_expr(-1, EXPR_VALUE);
+        push_x(-1, X_OPERAND);
     }
 
     setpos_ebuf(t.B);                   // Position to start of buffer

@@ -290,7 +290,7 @@ static void exec_commands(const char *commands)
 
 bool scan_F0(struct cmd *unused)
 {
-    push_expr(w.topdot, EXPR_VALUE);
+    push_x(w.topdot, X_OPERAND);
 
     return true;
 }
@@ -311,7 +311,7 @@ bool scan_FH(struct cmd *cmd)
     cmd->n_arg = w.topdot;
     cmd->h     = true;
 
-    push_expr(botdot, EXPR_VALUE);
+    push_x(botdot, X_OPERAND);
 
     return true;
 }
@@ -326,7 +326,7 @@ bool scan_FH(struct cmd *cmd)
 
 bool scan_FZ(struct cmd *unused)
 {
-    push_expr(botdot, EXPR_VALUE);
+    push_x(botdot, X_OPERAND);
 
     return true;
 }

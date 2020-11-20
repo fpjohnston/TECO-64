@@ -99,7 +99,6 @@ SOURCES = \
                    \
     a_cmd.c        \
     bracket_cmd.c  \
-    bslash_cmd.c   \
     case_cmd.c     \
     color_cmd.c    \
     ctrl_a_cmd.c   \
@@ -264,7 +263,7 @@ endif
 ifdef   gprof
 
 DFLAGS += -pg
-OPT_OPT = -O0
+OPT_OPT = -O3
 
 endif
 
