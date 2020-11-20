@@ -5,9 +5,9 @@
         <!-- General commands -->
 
         <!--
-             Scan attribute defines the scanning function.
-
-             Exec attribute defines the execution function.
+             Parse attribute defines how to parse the command.
+             Scan attribute defines the scanning function (if any).
+             Exec attribute defines the execution function (if any).
         -->
 
         <command name='NUL'                           scan='scan_bad'                              />
