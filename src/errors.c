@@ -80,7 +80,7 @@ static void convert(char *buf, uint bufsize, const char *err_str, uint len)
             buf += sprintf(buf, "%s", "<TAB>");
         }
         else if (c == LF)
-        { 
+        {
             buf += sprintf(buf, "<LF>");
         }
         else if (c == VT)

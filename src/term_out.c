@@ -157,7 +157,7 @@ void print_flag(int flag)
 
     int m, n;
     int mark;
-        
+
     if (flag == -1)
     {
         m = getdelta_ebuf(0);

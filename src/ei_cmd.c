@@ -217,7 +217,7 @@ void reset_indirect(void)
     ei_old.pos  = 0;
 
     free_mem(&ei_old.data);
- 
+
     while ((ei_new = reset_new()) != NULL)
     {
         ;

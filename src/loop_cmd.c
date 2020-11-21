@@ -410,7 +410,7 @@ bool scan_gt(struct cmd *cmd)
 
         push_x(0, X_GT);
     }
-    
+
     return true;
 }
 
@@ -468,6 +468,6 @@ bool scan_lt(struct cmd *cmd)
 
         push_x(0, X_LT);
     }
-    
+
     return true;
 }

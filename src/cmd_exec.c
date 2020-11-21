@@ -443,7 +443,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
         {
             continue;
         }
-        
+
         // If this command matches what we're looking for, then exit.
 
         if (strchr(skip, cmd->c1) != NULL)

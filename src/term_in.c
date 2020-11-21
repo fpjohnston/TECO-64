@@ -445,7 +445,7 @@ static int read_first(void)
         {
             continue;
         }
-        
+
         // If first character is an ESCape, or ESCape surrogate, then
         // treat it like LF.
 

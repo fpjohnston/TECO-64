@@ -109,7 +109,7 @@ void exec_FM(struct cmd *cmd)
                 keys[i].macro[size] = NUL;
             }
 
-            
+
             return;
         }
     }
@@ -153,7 +153,7 @@ void exec_FQ(struct cmd *cmd)
             keys[i].colon  = cmd->colon;
             keys[i].qname  = cmd->qname;
             keys[i].qlocal = cmd->qlocal;
-            
+
             return;
         }
     }

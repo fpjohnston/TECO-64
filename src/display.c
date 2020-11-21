@@ -1064,7 +1064,7 @@ void refresh_dpy(void)
                 }
 
                 (void)move(d.edit.top + nrows, 0);
-                
+
                 term_pos = 0;
             }
             else
@@ -1123,7 +1123,7 @@ void refresh_dpy(void)
 
         // Restore position in command region
 
-        (void)move(saved_row, saved_col); 
+        (void)move(saved_row, saved_col);
         (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
     }
 

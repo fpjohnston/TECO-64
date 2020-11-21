@@ -221,7 +221,7 @@ uint build_string(char **dest, const char *src, uint len)
             {
                 throw(E_IQN, qname);    // Invalid Q-register name
             }
-            
+
             struct qreg *qreg = get_qreg(qindex);
 
             if (c == 'Q')               // <CTRL/E>Qq

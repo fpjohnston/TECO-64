@@ -59,7 +59,7 @@ enum
     KEY_S_F9     = (KEY_F(9)  + 12),
     KEY_S_F11    = (KEY_F(11) + 12),
     KEY_S_F12    = (KEY_F(12) + 12),
-    
+
     KEY_C_F1     = (KEY_F(1)  + 24),
     KEY_C_F2     = (KEY_F(2)  + 24),
     KEY_C_F3     = (KEY_F(3)  + 24),
@@ -72,7 +72,7 @@ enum
     KEY_C_F10    = (KEY_F(10) + 24),
     KEY_C_F11    = (KEY_F(11) + 24),
     KEY_C_F12    = (KEY_F(12) + 24),
-    
+
     KEY_S_UP     = KEY_SR,
     KEY_S_DOWN   = KEY_SF,
     KEY_S_LEFT   = KEY_SLEFT,

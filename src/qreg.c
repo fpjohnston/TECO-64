@@ -526,7 +526,7 @@ void scan_qreg(struct cmd *cmd)
     assert(cmd != NULL);
 
     const char *qname;
-    int c = fetch_cbuf();    
+    int c = fetch_cbuf();
 
     if (c == '.')                       // Local Q-register?
     {

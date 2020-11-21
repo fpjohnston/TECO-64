@@ -186,7 +186,7 @@ static void find_tag(struct cmd *cmd, const char *tag)
 
     cbuf->pos = (uint)tag_pos;          // Execute goto
 }
-    
+
 
 ///
 ///  @brief    Search a taglist for a specific tag.
@@ -199,7 +199,7 @@ static void find_taglist(struct cmd *cmd, const char *taglist)
 {
     assert(cmd != NULL);
     assert(taglist != NULL);
-        
+
     // Here to handle a computed GOTO.
 
     const char *start = taglist, *end;

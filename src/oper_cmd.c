@@ -207,7 +207,7 @@ bool scan_tilde(struct cmd *cmd)
     {
         throw(E_ILL, cmd->c1);          // Illegal command
     }
-    
+
     push_x(0, X_XOR);
 
     return true;

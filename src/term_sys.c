@@ -182,7 +182,7 @@ void init_term(void)
         f.et.rubout    = true;          // Process DEL and ^U in scope mode
         f.et.lower     = true;          // Terminal can read lower case
 
-#if     defined(TECO_DISPLAY)        
+#if     defined(TECO_DISPLAY)
 
         f.et.scope     = true;          // Terminal is a scope
 

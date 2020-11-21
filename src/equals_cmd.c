@@ -218,7 +218,7 @@ bool scan_equals(struct cmd *cmd)
 
         return true;
     }
-    
+
     reject_m(cmd);
     reject_dcolon(cmd);
 

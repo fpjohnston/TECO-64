@@ -173,7 +173,7 @@ static inline void reduce(void)
     }
 
     // Try to reduce the expression stack if 2 or more items
-    
+
     while (x.level >= x.base + 2 && reduce2())
     {
         ;
