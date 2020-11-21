@@ -133,7 +133,7 @@ static void add_cmd(const char *format, ...)
 
         if (len > 2 &&
             ((p[0] == '"' && p[len - 1] == '"') ||
-             (p[0] == '"' && p[len - 1] == '"')))
+             (p[0] == '\'' && p[len - 1] == '\'')))
         {
             snprintf(cmd, size, "%.*s", len - 2, p + 1);
         }
