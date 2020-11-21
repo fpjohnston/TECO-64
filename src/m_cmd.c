@@ -138,7 +138,7 @@ void exec_macro(struct buffer *macro, struct cmd *cmd)
         push_x(cmd->n_arg, X_OPERAND);
     }
 
-    exec_cmds(cmd);
+    exec_cmd(cmd);
 
     --macro_depth;
 

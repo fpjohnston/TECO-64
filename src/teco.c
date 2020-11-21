@@ -101,7 +101,7 @@ int main(int argc, const char * const argv[])
                 init_x();               // Initialize expression stack
 
                 f.e0.exec = true;       // Command is in progress
-                exec_cmds(&cmd);        // Execute command string
+                exec_cmd(&cmd);         // Execute command string
 
                 f.e0.error = false;     // Command completed w/o error
 
@@ -157,6 +157,7 @@ static void init_teco(int argc, const char * const argv[])
     f.e1.new_ei = true;                 // Enable new-style EI commands
     f.e1.bang   = true;                 // !! starts end-of-line comment
     f.e1.prompt = true;                 // Ensure prompt starts in 1st column
+    f.e1.radix  = true;                 // Allow in-line radix control
 
     // Default settings for E2
 

@@ -72,7 +72,7 @@ const struct cmd null_cmd =
 
 // Local functions
 
-static inline const struct cmd_table *scan_cmd(struct cmd *cmd);
+static inline exec_func *scan_cmd(struct cmd *cmd);
 
 static void scan_text(int delim, struct tstring *text);
 
@@ -83,7 +83,7 @@ static void scan_text(int delim, struct tstring *text);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_cmds(struct cmd *cmd)
+void exec_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -92,22 +92,11 @@ void exec_cmds(struct cmd *cmd)
     while (!empty_cbuf())
     {
         int c = cmd->c1 = read_cbuf();
-        const struct cmd_table *entry;
+        exec_func *exec;
 
         trace_cbuf(c);
 
-        // The following is an optimization that was determined through
-        // experimentation to make a significant difference for most
-        // TECO macros. Note that adding tests for other no-op characters
-        // such as LF was found to be counter-productive, so we've chosen
-        // to keep things simple here.
-
-        if (c == SPACE)
-        {
-            continue;
-        }
-
-        if ((entry = scan_cmd(cmd)) == NULL)
+        if (c == SPACE || (exec = scan_cmd(cmd)) == NULL)
         {
             continue;
         }
@@ -118,7 +107,7 @@ void exec_cmds(struct cmd *cmd)
 
 #endif
 
-        (*entry->exec)(cmd);
+        (*exec)(cmd);
 
         if (f.e0.ctrl_c)
         {
@@ -169,11 +158,11 @@ void exec_cmds(struct cmd *cmd)
 ///
 ///  @brief    Scan for secondary commands (E, F, and ^).
 ///
-///  @returns  Nothing.
+///  @returns  Table entry if need to execute command, NULL if done scanning.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline const struct cmd_table *scan_cmd(struct cmd *cmd)
+static inline exec_func *scan_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -272,20 +261,21 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd)
 
 #endif
 
-    if (entry->parse != NULL && (*entry->parse)(cmd))
+    if (entry->parse != NULL)
     {
-        if (entry->scan == NULL)
+        (void)(*entry->parse)(cmd);
+
+        if ((*entry->scan)(cmd))
         {
             return NULL;
         }
     }
-
-    if ((entry->scan != NULL && (*entry->scan)(cmd)) || entry->exec == NULL)
+    else if (entry->scan != NULL && (*entry->scan)(cmd))
     {
         return NULL;
     }
 
-    return entry;
+    return entry->exec;
 }
 
 
@@ -449,20 +439,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     {
         int c = cmd->c1 = read_cbuf();
 
-        // The following is an optimization that was determined through
-        // experimentation to make a significant difference for most
-        // TECO macros. Note that adding tests for other no-op characters
-        // such as LF was found to be counter-productive, so we've chosen
-        // to keep things simple here.
-
-        if (c == SPACE)
-        {
-            continue;
-        }
-
-        const struct cmd_table *entry = scan_cmd(cmd);
-        
-        if (entry == NULL)
+        if (c == SPACE || scan_cmd(cmd) == NULL)
         {
             continue;
         }

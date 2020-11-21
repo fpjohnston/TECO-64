@@ -298,9 +298,15 @@ sub make_entry
     $scan_funcs{$parse} = 1 unless $parse eq 'NULL';
     $scan_funcs{$scan} = 1 unless $scan eq 'NULL';
 
+    if ($scan eq 'NULL')
+    {
+        $scan = $parse;
+        $parse = 'NULL';
+    }
+
     if (!defined $parse)
     {
-        $exec = 'NULL';
+        $parse = 'NULL';
     }
 
     if (defined $exec)

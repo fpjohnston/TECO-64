@@ -32,8 +32,6 @@
 
 #include "teco.h"               //lint !e451 !e537
 
-#if 1 // TODO!
-
 ///  @def    reject_atsign
 ///  @brief  Error if at sign and command doesn't allow it.
 
@@ -73,19 +71,6 @@
 ///  @brief  Error if m argument not followed by n argument.
 
 #define require_n(cmd)  if (cmd->m_set && !cmd->n_set) throw(E_NON)
-
-#else
-
-#define reject_atsign(cmd)
-#define reject_colon(cmd)
-#define reject_dcolon(cmd)
-#define reject_m(cmd)
-#define reject_neg_m(cmd)
-#define reject_neg_n(cmd)
-#define reject_n(cmd)
-#define require_n(cmd)
-
-#endif
 
 ///  @struct cmd
 ///  @brief  Command block structure.
@@ -474,7 +459,7 @@ extern bool check_semi(void);
 
 extern void close_files(void);
 
-extern void exec_cmds(struct cmd *cmd);
+extern void exec_cmd(struct cmd *cmd);
 
 extern void exec_macro(struct buffer *macro, struct cmd *cmd);
 

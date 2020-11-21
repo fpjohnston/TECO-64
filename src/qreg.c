@@ -543,9 +543,17 @@ void scan_qreg(struct cmd *cmd)
     }
     else
     {
-        cmd->qindex  = qname - qnames;
-        cmd->qindex -= (cmd->qindex >= QCOUNT) ? QCOUNT : 0;
-        cmd->qindex += (cmd->qlocal)           ? QCOUNT : 0;
+        cmd->qindex = qname - qnames;
+
+        if (cmd->qindex >= QCOUNT)
+        {
+            cmd->qindex -= QCOUNT;
+        }
+
+        if (cmd->qlocal)
+        {
+            cmd->qindex += QCOUNT;
+        }
     }
 }
 
