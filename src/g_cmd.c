@@ -131,26 +131,6 @@ void exec_G(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "G" command with format "Xq" (plus special Q-registers).
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_G(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->qindex == -1 && strchr("*_+", cmd->qname) == NULL)
-    {
-        throw(E_IQN, cmd->qname);       // Invalid Q-register name
-    }
-
-    return false;
-}
-
-
-///
 ///  @brief    Type out Q-register or special string to edit buffer.
 ///
 ///  @returns  Nothing.

@@ -32,6 +32,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "errcodes.h"
 #include "exec.h"
 #include "qreg.h"
 #include "term.h"
@@ -537,11 +538,7 @@ void scan_qreg(struct cmd *cmd)
 
     cmd->qname = (char)c;               // Save the name
 
-    if ((qname = strchr(qnames, cmd->qname)) == NULL)
-    {
-        cmd->qindex = -1;
-    }
-    else
+    if ((qname = strchr(qnames, cmd->qname)) != NULL)
     {
         cmd->qindex = qname - qnames;
 
@@ -554,6 +551,15 @@ void scan_qreg(struct cmd *cmd)
         {
             cmd->qindex += QCOUNT;
         }
+    }
+    else if ((cmd->c1 != 'G' && cmd->c1 != 'g') ||
+             strchr("*_+", cmd->qname) == NULL)
+    {
+        throw(E_IQN, cmd->qname);       // Invalid Q-register name
+    }
+    else
+    {
+        cmd->qindex = -1;
     }
 }
 

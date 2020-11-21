@@ -185,8 +185,6 @@ extern bool scan_FH(struct cmd *cmd);
 
 extern bool scan_FZ(struct cmd *cmd);
 
-extern bool scan_G(struct cmd *cmd);
-
 extern bool scan_H(struct cmd *cmd);
 
 extern bool scan_P(struct cmd *cmd);

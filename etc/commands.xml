@@ -81,7 +81,7 @@
         <command name='D'        parse='+m,n:X'                              exec='exec_D'         />
         <command name='[E]'                                                                        />
         <command name='[F]'                                                                        />
-        <command name='G'        parse='n:Xq'         scan='scan_G'          exec='exec_G'         />
+        <command name='G'        parse='n:Xq'                                exec='exec_G'         />
         <command name='H'        parse='X='           scan='scan_H'                                />
         <command name='I'        parse='+m,n@X//'                            exec='exec_I'         />
         <command name='J'        parse='n:X'                                 exec='exec_J'         />
