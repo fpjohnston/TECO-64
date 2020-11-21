@@ -216,15 +216,7 @@ bool parse_Mc1(struct cmd *cmd)
     reject_neg_m(cmd);
     require_n(cmd);
     reject_dcolon(cmd);
-
-    if (cmd->c1 == CTRL_A)
-    {
-        scan_texts(cmd, 1, CTRL_A);
-    }
-    else
-    {
-        scan_texts(cmd, 1, ESC);
-    }
+    scan_texts(cmd, 1, ESC);
 
     return false;
 }

@@ -334,7 +334,14 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 {
     assert(cmd != NULL);
 
-    cmd->delim = (char)delim;
+    if (cmd->c1 == CTRL_A)
+    {
+        cmd->delim = CTRL_A;
+    }
+    else
+    {
+        cmd->delim = (char)delim;
+    }
 
     // If the user specified the at-sign modifier, then skip any whitespace
     // between the command and the delimiter.
