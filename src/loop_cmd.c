@@ -96,7 +96,7 @@ bool check_loop(void)
 
 static void endloop(struct cmd *cmd, bool pop_ok)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     uint depth = 1;                     // Nesting depth
 
@@ -150,7 +150,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 
 void exec_F_gt(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     endloop(cmd, POP_OK);               // Flow to end of loop
 }
@@ -182,7 +182,7 @@ void exec_F_lt(struct cmd *cmd)
 
 void exec_gt(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     struct loop *loop = loop_head;
 
@@ -219,7 +219,7 @@ void exec_gt(struct cmd *cmd)
 
 void exec_lt(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     int count = INFINITE;               // Assume infinite loop
 
@@ -243,7 +243,7 @@ void exec_lt(struct cmd *cmd)
 
 void exec_semi(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (loop_head == NULL)
     {
@@ -379,7 +379,7 @@ void reset_loop(void)
 
 bool scan_gt(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (!f.e1.xoper || nparens == 0)
     {
@@ -424,7 +424,7 @@ bool scan_gt(struct cmd *cmd)
 
 bool scan_lt(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     // "<" is a relational operator only if it's in parentheses; otherwise,
     // it's the start of a loop.

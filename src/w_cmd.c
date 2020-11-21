@@ -141,7 +141,7 @@ static int get_w(int n)
 
 void exec_W(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->colon)                     // n:W already processed
     {
@@ -187,7 +187,7 @@ void exec_W(struct cmd *cmd)
 
 bool scan_W(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     reject_atsign(cmd);                  // @W/text1/ is invalid
 

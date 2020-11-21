@@ -69,7 +69,7 @@ static void verify_tag(const char *tag);
 
 void exec_bang(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->n_set)                     // Pass through m and n arguments
     {
@@ -92,7 +92,7 @@ void exec_bang(struct cmd *cmd)
 
 void exec_O(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->text1.len == 0)            // Is there a tag?
     {
@@ -134,7 +134,7 @@ void exec_O(struct cmd *cmd)
 
 static void find_tag(struct cmd *cmd, const char *tag)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
     assert(tag != NULL);                // Error if no tag string
 
     int tag_pos = -1;                   // Position of tag in command string
@@ -251,7 +251,7 @@ static void find_taglist(struct cmd *cmd, const char *taglist)
 
 bool scan_bang(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     reject_colon(cmd);
 

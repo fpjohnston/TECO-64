@@ -83,7 +83,7 @@ static const char digits[] =
 
 void exec_bslash(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->n_set)                     // n\`?
     {
@@ -181,7 +181,7 @@ void exec_bslash(struct cmd *cmd)
 
 bool scan_number(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     int c = cmd->c1;
     int radix;

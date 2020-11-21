@@ -47,7 +47,7 @@
 
 void exec_FD(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->n_set && cmd->n_arg == 0)  // 0FDtext` isn't allowed
     {

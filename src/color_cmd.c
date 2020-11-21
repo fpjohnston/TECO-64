@@ -276,7 +276,7 @@ static void set_color(const char *buf, uint len, int sat, short color)
 
 static void set_colors(const struct cmd *cmd, enum region_pair pair)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     int fg_sat = 100;
     int bg_sat = 100;

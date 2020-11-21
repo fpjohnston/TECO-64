@@ -40,7 +40,7 @@
 
 void exec_trace(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (f.e0.trace)                     // If tracing is on, turn it off
     {

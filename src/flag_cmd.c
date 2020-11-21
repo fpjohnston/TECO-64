@@ -60,7 +60,7 @@ static void check_mn_flag(struct cmd *cmd, int *flag);
 
 static void check_mn_flag(struct cmd *cmd, int *flag)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
     assert(flag != NULL);               // Error if no flag bits
 
     if (!cmd->m_set)                    // m argument too?
@@ -90,7 +90,7 @@ static void check_mn_flag(struct cmd *cmd, int *flag)
 
 static void check_n_flag(struct cmd *cmd, int *flag)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
     assert(flag != NULL);               // Error if no flag bits
 
     // Here if there is a value preceding the flag, which

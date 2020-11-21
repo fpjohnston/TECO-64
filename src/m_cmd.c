@@ -75,7 +75,7 @@ bool check_macro(void)
 
 void exec_M(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     struct qreg *qreg = get_qreg(cmd->qindex);
 

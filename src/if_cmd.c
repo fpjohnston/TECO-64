@@ -65,7 +65,7 @@ static void endif(struct cmd *unused, bool else_ok)
     struct cmd cmdblock;
     struct cmd *cmd = &cmdblock;
 
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (if_depth == 0)
     {
@@ -212,7 +212,7 @@ void exec_F_vbar(struct cmd *cmd)
 
 void exec_quote(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     int c = cmd->n_arg;
 
@@ -335,7 +335,7 @@ void exec_quote(struct cmd *cmd)
 
 void exec_vbar(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (if_depth == 0)
     {

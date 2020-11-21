@@ -208,7 +208,7 @@ bool append_line(void)
 
 void exec_A(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->colon)                     // :A or n:A command
     {
@@ -232,7 +232,7 @@ void exec_A(struct cmd *cmd)
 
 bool scan_A(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (!cmd->n_set || cmd->colon)      // A, :A, or n:A command
     {

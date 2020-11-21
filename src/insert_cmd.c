@@ -46,7 +46,7 @@
 
 void exec_ctrl_I(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     char c = TAB;
 
@@ -66,7 +66,7 @@ void exec_ctrl_I(struct cmd *cmd)
 
 void exec_I(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->n_set && cmd->text1.len != 0) // nItext`?
     {

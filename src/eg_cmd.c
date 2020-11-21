@@ -51,7 +51,7 @@ char eg_command[PATH_MAX];              ///< EG command to be executed on exit.
 
 void exec_EG(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->text1.len > sizeof(eg_command) - 1)
     {

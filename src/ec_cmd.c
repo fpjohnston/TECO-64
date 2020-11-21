@@ -75,7 +75,7 @@ void close_files(void)
 
 void exec_EC(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (!cmd->n_set)
     {

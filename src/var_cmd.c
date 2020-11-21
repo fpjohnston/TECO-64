@@ -63,7 +63,7 @@ bool scan_ctrl_P(struct cmd *unused)
 
 bool scan_ctrl_Q(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (!cmd->n_set)
     {
@@ -89,7 +89,7 @@ bool scan_ctrl_Q(struct cmd *cmd)
 
 bool scan_ctrl_S(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     push_x(-(int)last_len, X_OPERAND);
 
@@ -106,7 +106,7 @@ bool scan_ctrl_S(struct cmd *cmd)
 
 bool scan_ctrl_Y(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     // The following prevents expressions such as 123+^Y.
 
@@ -137,7 +137,7 @@ bool scan_ctrl_Y(struct cmd *cmd)
 
 bool scan_ctrl_Z(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     uint n = get_qall();
 
@@ -175,7 +175,7 @@ bool scan_ctrl_up(struct cmd *cmd)
 
 bool scan_dot(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     push_x((int)t.dot, X_OPERAND);
 
@@ -192,7 +192,7 @@ bool scan_dot(struct cmd *cmd)
 
 bool scan_B(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     push_x(t.B, X_OPERAND);
 
@@ -209,7 +209,7 @@ bool scan_B(struct cmd *cmd)
 
 bool scan_H(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     // The following prevents expressions such as 123+H.
 
@@ -239,7 +239,7 @@ bool scan_H(struct cmd *cmd)
 
 bool scan_Z(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     push_x((int)t.Z, X_OPERAND);
 

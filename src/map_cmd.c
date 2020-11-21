@@ -64,7 +64,7 @@ static void unmap_key(uint key);
 
 void exec_FM(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (!exit_set)
     {
@@ -130,7 +130,7 @@ void exec_FM(struct cmd *cmd)
 
 void exec_FQ(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->text1.len == 0)
     {

@@ -45,7 +45,7 @@
 
 void exec_ctrl_U(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->n_set)                     // n^Uq`?
     {

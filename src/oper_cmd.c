@@ -43,7 +43,7 @@
 
 bool scan_comma(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->m_set)                     // Already seen m argument?
     {
@@ -78,7 +78,7 @@ bool scan_comma(struct cmd *cmd)
 
 bool scan_ctrl_ubar(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     push_x(0, X_1S_COMP);
 
@@ -95,7 +95,7 @@ bool scan_ctrl_ubar(struct cmd *cmd)
 
 bool scan_div(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     // Check for double slash remainder operator.
 
@@ -125,7 +125,7 @@ bool scan_div(struct cmd *cmd)
 
 bool scan_lparen(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     ++nparens;
 
@@ -151,7 +151,7 @@ bool scan_lparen(struct cmd *cmd)
 
 bool scan_oper(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     // The following takes advantage of the fact that the operators have the
     // same value as the equivalent expression types (e.g., X_MUL == '*').
@@ -171,7 +171,7 @@ bool scan_oper(struct cmd *cmd)
 
 bool scan_rparen(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (nparens == 0)                   // Can't have ) without (
     {
@@ -201,7 +201,7 @@ bool scan_rparen(struct cmd *cmd)
 
 bool scan_tilde(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (!f.e1.xoper || nparens == 0)
     {

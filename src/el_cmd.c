@@ -48,7 +48,7 @@
 
 void exec_EL(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     const char *buf = cmd->text1.data;
     uint len = cmd->text1.len;

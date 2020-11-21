@@ -45,7 +45,7 @@
 
 void exec_EN(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->text1.len == 0)            // Was it EN`?
     {

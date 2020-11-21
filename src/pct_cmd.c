@@ -44,7 +44,7 @@
 
 void exec_pct(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
     assert(cmd->n_set);
 
     store_qnum(cmd->qindex, cmd->n_arg);
@@ -60,7 +60,7 @@ void exec_pct(struct cmd *cmd)
 
 bool scan_pct(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->n_set)                     // n%q adds to Q-register q
     {

@@ -51,7 +51,7 @@
 
 void exec_ctrl_T(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->n_set)                     // n^T -> type out character
     {

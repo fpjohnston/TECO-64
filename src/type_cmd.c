@@ -51,7 +51,7 @@ static void exec_type(int m, int n);
 
 void exec_T(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     int m;
     int n;
@@ -131,7 +131,7 @@ static void exec_type(int m, int n)
 
 void exec_V(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     int m;
     int n;

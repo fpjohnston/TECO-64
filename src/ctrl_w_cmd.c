@@ -46,7 +46,7 @@
 
 void exec_ctrl_W(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->n_set && cmd->n_arg == 0)
     {

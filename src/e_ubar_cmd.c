@@ -47,7 +47,7 @@
 
 void exec_E_ubar(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->n_set && cmd->n_arg == 0)  // 0E_text` isn't allowed
     {

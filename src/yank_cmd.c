@@ -48,7 +48,7 @@
 
 void exec_EY(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     struct ifile *ifile = &ifiles[istream];
 

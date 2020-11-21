@@ -65,7 +65,7 @@ void exec_C(struct cmd *cmd)
 
 static void exec_c_r(struct cmd *cmd, int sign, int chr)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     int n = 1;                          // Default move argument
 
@@ -90,7 +90,7 @@ static void exec_c_r(struct cmd *cmd, int sign, int chr)
 
 void exec_J(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     int n = t.B;
 
@@ -112,7 +112,7 @@ void exec_J(struct cmd *cmd)
 
 void exec_L(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     int n = cmd->colon ? 0 : 1;
 
@@ -152,7 +152,7 @@ void exec_L(struct cmd *cmd)
 
 static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cond)
     {

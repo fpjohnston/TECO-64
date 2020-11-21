@@ -45,7 +45,7 @@
 
 bool scan_Q(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     int n;
 

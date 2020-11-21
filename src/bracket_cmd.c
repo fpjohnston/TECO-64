@@ -45,7 +45,7 @@
 
 void exec_lbracket(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (!push_qreg(cmd->qindex))
     {
@@ -73,7 +73,7 @@ void exec_lbracket(struct cmd *cmd)
 
 void exec_rbracket(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (!pop_qreg(cmd->qindex))
     {

@@ -50,7 +50,7 @@
 
 void exec_EO(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     // If not trying to set value, then just return major version
 

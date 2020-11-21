@@ -146,7 +146,7 @@ static bool check_format(const char *format)
 
 void exec_equals(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (!cmd->n_set)                    // If no operand, then complain
     {
@@ -196,7 +196,7 @@ void exec_equals(struct cmd *cmd)
 
 bool scan_equals(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     // An equals sign inside parentheses might be an extended operator.
 

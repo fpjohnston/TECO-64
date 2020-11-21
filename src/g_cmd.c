@@ -56,7 +56,7 @@ static void type_G(struct cmd *cmd);
 
 static void copy_G(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     const char *p;
     struct qreg *qreg;
@@ -117,7 +117,7 @@ static void copy_G(struct cmd *cmd)
 
 void exec_G(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->colon)
     {
@@ -139,7 +139,7 @@ void exec_G(struct cmd *cmd)
 
 bool scan_G(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->qindex == -1 && strchr("*_+", cmd->qname) == NULL)
     {
@@ -159,7 +159,7 @@ bool scan_G(struct cmd *cmd)
 
 static void type_G(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     const char *p;
 

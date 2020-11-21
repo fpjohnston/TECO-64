@@ -49,7 +49,7 @@
 
 void exec_P(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     struct ofile *ofile = &ofiles[ostream];
 
@@ -200,7 +200,7 @@ bool next_page(int start, int end, bool ff, bool yank)
 
 bool scan_P(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     require_n(cmd);
     reject_dcolon(cmd);

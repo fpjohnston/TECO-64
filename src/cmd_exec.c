@@ -332,7 +332,7 @@ static void scan_text(int delim, struct tstring *text)
 
 void scan_texts(struct cmd *cmd, int ntexts, int delim)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     cmd->delim = (char)delim;
 

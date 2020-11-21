@@ -79,7 +79,7 @@ void exec_FS(struct cmd *cmd)
 
 static void exec_search(struct cmd *cmd, bool replace)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     if (cmd->n_set && cmd->n_arg == 0)  // 0Stext` isn't allowed
     {

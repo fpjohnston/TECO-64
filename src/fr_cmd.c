@@ -50,7 +50,7 @@ uint last_len;
 
 void exec_FR(struct cmd *cmd)
 {
-    assert(cmd != NULL);                // Error if no command block
+    assert(cmd != NULL);
 
     int n;
 
