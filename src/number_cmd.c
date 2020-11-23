@@ -186,7 +186,7 @@ bool scan_number(struct cmd *cmd)
     int c = cmd->c1;
     int radix;
 
-    if (!f.e1.radix)                    // Auto-detect radix?
+    if (!f.e1.radix || nparens == 0)    // Auto-detect radix?
     {
         radix = f.radix;                // No - use default
     }
@@ -194,8 +194,7 @@ bool scan_number(struct cmd *cmd)
     {
         radix = 10;                     // No, must be base 10
     }
-    else if (nparens != 0 && !empty_cbuf() &&
-             ((c = peek_cbuf()) == 'x' || c == 'X'))
+    else if (!empty_cbuf() && ((c = peek_cbuf()) == 'x' || c == 'X'))
     {
         (void)fetch_cbuf();
 
@@ -229,15 +228,14 @@ bool scan_number(struct cmd *cmd)
                 break;
             }
         }
-        else if (radix == 16 && !isxdigit(c))
+        else if (radix == 16)
         {
-            break;                      // Non-digit for decimal or hex number
+            if (!isxdigit(c))
+            {
+                break;                  // Not a hex number
+            }
         }
-        else if (c > '9')               // Must be octal
-        {
-            break;
-        }
-        else                            // Must be 7 or 8
+        else if (c > '7')               // Must be octal
         {
             throw(E_ILN);               // Invalid octal number
         }
