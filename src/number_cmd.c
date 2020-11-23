@@ -194,7 +194,8 @@ bool scan_number(struct cmd *cmd)
     {
         radix = 10;                     // No, must be base 10
     }
-    else if (!empty_cbuf() && ((c = peek_cbuf()) == 'x' || c == 'X'))
+    else if (nparens != 0 && !empty_cbuf() &&
+             ((c = peek_cbuf()) == 'x' || c == 'X'))
     {
         (void)fetch_cbuf();
 
