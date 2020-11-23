@@ -241,7 +241,7 @@ void init_env(int argc, const char * const argv[])
 ///  @brief    Get information environment about our environment.
 ///
 ///            -1EJ - The operating system upon which TECO is running.
-///                   This is currently 1 for Linux.
+///                   This is currently 10 for Linux.
 ///
 ///            -2EJ - The processor upon which TECO is running. This is
 ///                   currently 10 for x86.
