@@ -91,12 +91,13 @@ void exec_cmd(struct cmd *cmd)
 
     while (!empty_cbuf())
     {
-        int c = cmd->c1 = read_cbuf();
         exec_func *exec;
 
-        trace_cbuf(c);
+        cmd->c1 = read_cbuf();
 
-        if (c == SPACE || (exec = scan_cmd(cmd)) == NULL)
+        trace_cbuf(cmd->c1);
+
+        if (cmd->c1 == SPACE || (exec = scan_cmd(cmd)) == NULL)
         {
             continue;
         }
@@ -447,9 +448,9 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
 
     while (!empty_cbuf())
     {
-        int c = cmd->c1 = read_cbuf();
+        cmd->c1 = read_cbuf();
 
-        if (c == SPACE || scan_cmd(cmd) == NULL)
+        if (cmd->c1 == SPACE || scan_cmd(cmd) == NULL)
         {
             continue;
         }
