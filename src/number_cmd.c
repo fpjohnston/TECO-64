@@ -196,7 +196,7 @@ bool scan_number(struct cmd *cmd)
     }
     else if (!empty_cbuf() && ((c = peek_cbuf()) == 'x' || c == 'X'))
     {
-        (void)fetch_cbuf();
+        (void)fetch_cbuf();             // Discard the x or X
 
         c = fetch_cbuf();               // Get the first digit for base 16
 
