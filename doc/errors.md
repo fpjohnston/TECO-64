@@ -52,7 +52,7 @@ code.
 | <nobr>?IFN</nobr> | <nobr>Invalid character '*x*' in filename</nobr> | A file name contained one or more invalid characters. Check your operating system documentation to determine what characters are valid for file names. |
 | <nobr>?IIA</nobr> | <nobr>Invalid insert arg</nobr> | A command of the form "nItext`" was attempted. This combination of character and text insertion is invalid. |
 | <nobr>?ILL</nobr> | <nobr>Invalid command '*x*'</nobr> | An attempt has been made to execute an invalid TECO command. |
-| <nobr>?ILN</nobr> | <nobr>Invalid number</nobr> | An 8 or 9 has been used in a digit string when the radix is set to octal. |
+| <nobr>?ILN</nobr> | <nobr>Invalid number</nobr> | An 8 or 9 was used in a digit string for an octal number, or a 0x or 0X prefix was not followed by a hexadecimal number. |
 | <nobr>?IMA</nobr> | <nobr>Invalid m argument</nobr> | An m argument was provided to a command which does not allow it. |
 | <nobr>?INA</nobr> | <nobr>Invalid n argument</nobr> | An n argument was provided to a command which does not allow it. |
 | <nobr>?INI</nobr> | <nobr>Initialization error</nobr> | A fatal error occurred during TECO initialization. |
