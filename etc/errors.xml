@@ -145,8 +145,9 @@
         <error>
             <code>ILN</code>
             <message>Invalid number</message>
-            <detail>An 8 or 9 has been used in a digit string when</detail>
-            <detail>the radix is set to octal.</detail>
+            <detail>An 8 or 9 was used in a digit string for an</detail>
+            <detail>octal number, or a 0x or 0X prefix was not</detail>
+            <detail>followed by a hexadecimal number.</detail>
         </error>
         <error>
             <code>IMA</code>

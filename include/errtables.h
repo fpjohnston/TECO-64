@@ -172,8 +172,9 @@ static const char *errhelp[] =
               "insertion is invalid.",
     [E_ILL] = "An attempt has been made to execute an invalid " 
               "TECO command.",
-    [E_ILN] = "An 8 or 9 has been used in a digit string when " 
-              "the radix is set to octal.",
+    [E_ILN] = "An 8 or 9 was used in a digit string for an " 
+              "octal number, or a 0x or 0X prefix was not " 
+              "followed by a hexadecimal number.",
     [E_IMA] = "An m argument was provided to a command which " 
               "does not allow it.",
     [E_INA] = "An n argument was provided to a command which " 
