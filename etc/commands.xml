@@ -15,7 +15,7 @@
         <command name='CTRL_B'   parse='X='           scan='scan_ctrl_B'                           />
         <command name='CTRL_C'   parse='X$'                                  exec='exec_ctrl_C'    />
         <command name='CTRL_D'   parse='X'                                   exec='exec_ctrl_D'    />
-        <command name='CTRL_E'   parse='!X'                                  exec='exec_ctrl_E'    />
+        <command name='CTRL_E'   parse='nX!'                                 exec='exec_ctrl_E'    />
         <command name='CTRL_F'                        scan='scan_bad'                              />
         <command name='CTRL_G'                        scan='scan_bad'                              />
         <command name='CTRL_H'   parse='X='           scan='scan_ctrl_H'                           />
@@ -24,7 +24,7 @@
         <command name='VT'                            scan='scan_nop'                              />
         <command name='FF'                            scan='scan_nop'                              />
         <command name='CR'                            scan='scan_nop'                              />
-        <command name='CTRL_N'   parse='!X'                                                        />
+        <command name='CTRL_N'   parse='nX!'                                                       />
         <command name='CTRL_O'   parse='X'                                   exec='exec_ctrl_O'    />
         <command name='CTRL_P'   parse='X='           scan='scan_ctrl_P'                           />
         <command name='CTRL_Q'   parse='X='           scan='scan_ctrl_Q'                           />
@@ -34,7 +34,7 @@
         <command name='CTRL_U'   parse='+m,n:@Xq//'                          exec='exec_ctrl_U'    />
         <command name='CTRL_V'   parse='nX'                                  exec='exec_ctrl_V'    />
         <command name='CTRL_W'   parse='nX'                                  exec='exec_ctrl_W'    />
-        <command name='CTRL_X'   parse='!X'                                  exec='exec_ctrl_X'    />
+        <command name='CTRL_X'   parse='nX!'                                 exec='exec_ctrl_X'    />
         <command name='CTRL_Y'   parse='X='           scan='scan_ctrl_Y'                           />
         <command name='CTRL_Z'   parse='X='           scan='scan_ctrl_Z'                           />
         <command name='ESC'      parse='X$'                                  exec='exec_escape'    />
@@ -116,18 +116,18 @@
         <!-- E commands -->
 
         <command name='E%'       parse=':@Xq//'                              exec='exec_E_pct'     />
-        <command name='E1'       parse='!!X'                                 exec='exec_E1'        />
-        <command name='E2'       parse='!!X'                                 exec='exec_E2'        />
-        <command name='E3'       parse='!!X'                                 exec='exec_E3'        />
-        <command name='E4'       parse='!!X'                                 exec='exec_E4'        />
+        <command name='E1'       parse='m,nX!'                               exec='exec_E1'        />
+        <command name='E2'       parse='m,nX!'                               exec='exec_E2'        />
+        <command name='E3'       parse='m,nX!'                               exec='exec_E3'        />
+        <command name='E4'       parse='m,nX!'                               exec='exec_E4'        />
         <command name='EA'       parse='X'                                   exec='exec_EA'        />
         <command name='EB'       parse=':@X//'                               exec='exec_EB'        />
         <command name='EC'       parse='nX'                                  exec='exec_EC'        />
-        <command name='ED'       parse='!!X'                                 exec='exec_ED'        />
-        <command name='EE'       parse='!X'                                  exec='exec_EE'        />
+        <command name='ED'       parse='m,nX!'                               exec='exec_ED'        />
+        <command name='EE'       parse='nX!'                                 exec='exec_EE'        />
         <command name='EF'       parse='X'                                   exec='exec_EF'        />
         <command name='EG'       parse='::@X//'                              exec='exec_EG'        />
-        <command name='EH'       parse='!!X'                                 exec='exec_EH'        />
+        <command name='EH'       parse='m,nX!'                               exec='exec_EH'        />
         <command name='EI'       parse='m,n:@X//'                            exec='exec_EI'        />
         <command name='EJ'       parse='m,n:X'        scan='scan_EJ'         exec='exec_nop'       />
         <command name='EK'       parse='X'                                   exec='exec_EK'        />
@@ -137,10 +137,10 @@
         <command name='EP'       parse='X'                                   exec='exec_EP'        />
         <command name='EQ'       parse=':@Xq//'                              exec='exec_EQ'        />
         <command name='ER'       parse=':@X//'                               exec='exec_ER'        />
-        <command name='ES'       parse='!!X'                                 exec='exec_ES'        />
-        <command name='ET'       parse='!!X'                                 exec='exec_ET'        />
-        <command name='EU'       parse='!X'                                  exec='exec_EU'        />
-        <command name='EV'       parse='!!X'                                 exec='exec_EV'        />
+        <command name='ES'       parse='m,nX!'                               exec='exec_ES'        />
+        <command name='ET'       parse='m,nX!'                               exec='exec_ET'        />
+        <command name='EU'       parse='nX!'                                 exec='exec_EU'        />
+        <command name='EV'       parse='m,nX!'                               exec='exec_EV'        />
         <command name='EW'       parse=':@X//'                               exec='exec_EW'        />
         <command name='EX'       parse='X'                                   exec='exec_EX'        />
         <command name='EY'       parse=':X'                                  exec='exec_EY'        />

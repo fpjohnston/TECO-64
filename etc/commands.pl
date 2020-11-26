@@ -362,7 +362,7 @@ sub make_parse
         return $name;
     }
 
-    if ($format eq '!!X')
+    if ($format eq 'm,nX!')
     {
         $name .= 'flag2';
         $macro .= '  reject_colon  reject_atsign';
@@ -371,7 +371,7 @@ sub make_parse
         return $name;
     }
 
-    if ($format eq '!X')
+    if ($format eq 'nX!')
     {
         $name .= 'flag1';
         $macro .= '  reject_colon  reject_atsign';
