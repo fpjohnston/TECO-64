@@ -141,7 +141,7 @@ static void exec_ctrl_G(void)
     switch (c)
     {
         case CTRL_G:                    // ^G^G - cancel all input
-            reset_cbuf((bool)true);
+            reset_cbuf();
             echo_in(LF);
 
             longjmp(jump_first, FIRST_PROMPT); // Restart w/ prompt
@@ -503,17 +503,10 @@ static int read_first(void)
                 break;
 
             case '?':                   // Display erroneous command string
-                if (!f.e0.error)        // If no error,
-                {
-                    return c;           //  then just return '?'
-                }
-                else
-                {
-                    echo_in(c);
-                    echo_tbuf(0);       // Echo command line
-                    echo_in(c);
-                    echo_in(LF);
-                }
+                echo_in('?');
+                print_error();
+                echo_in('?');
+                echo_in(LF);
 
                 break;
 

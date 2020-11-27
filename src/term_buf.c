@@ -209,20 +209,6 @@ void reset_tbuf(void)
 
 
 ///
-///  @brief    Set current length of terminal buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void setlen_tbuf(int len)
-{
-    term_buf->len = (uint)len;
-    term_buf->pos = 0;
-}
-
-
-///
 ///  @brief    Get start of line.
 ///
 ///  @returns  Index of start of line.

@@ -120,6 +120,8 @@ enum errcodes
     E_MAX           ///< Error count
 };
 
+extern void print_error(void);
+
 extern void print_help(int err_teco);
 
 extern noreturn void throw(int err_teco, ...);

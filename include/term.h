@@ -48,8 +48,6 @@ extern void init_tbuf(void);
 
 extern void reset_tbuf(void);
 
-extern void setlen_tbuf(int len);
-
 extern uint start_tbuf(void);
 
 extern void store_tbuf(int c);

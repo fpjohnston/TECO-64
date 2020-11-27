@@ -48,10 +48,14 @@
 
 int last_error = E_NUL;             ///< Last error encountered
 
+static char *last_command;          ///< Command string for last error
+
 
 // Local functions
 
 static void convert(char *buf, uint bufsize, const char *err_str, uint len);
+
+static void exit_error(void);
 
 
 ///
@@ -110,6 +114,50 @@ static void convert(char *buf, uint bufsize, const char *err_str, uint len)
     }
 
     *buf = NUL;
+}
+
+
+///
+///  @brief    Free up any memory we may have allocated.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exit_error(void)
+{
+    if (last_command != NULL)
+    {
+        free_mem(&last_command);
+    }
+}
+
+
+///
+///  @brief    Print last command string that caused an error.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void print_error(void)
+{
+    if (last_command != NULL)
+    {
+        const char *p = last_command;
+
+        for (;;)
+        {
+            int c = *p++;
+
+            if (c == NUL)
+            {
+                break;
+            }
+            
+            type_out(c);
+        }
+    }
 }
 
 
@@ -212,8 +260,8 @@ void print_help(int error)
 ///            4. Error codes that do not require any special processing.
 ///
 ///            In addition to those four cases, E_XAB is treated specially if
-///            a command is not current being executed, and just causes a return
-///            to main program level without any message being printed.
+///            a command is not currently being executed, and just causes a
+///            return to main program level without any message being printed.
 ///
 ///  @returns  n/a (longjmp back to main program).
 ///
@@ -282,11 +330,16 @@ noreturn void throw(int error, ...)
     const char *code = errlist[error].code;
     const char *text = errlist[error].text;
 
-    // Ensure that '?' command only prints command string up to error.
+    // Save copy of current command string, up to point of error.
 
-    reset_cbuf((bool)false);
-    setlen_tbuf((int)cbuf->pos);
-
+    if (error != E_XAB)
+    {
+        register_exit(exit_error);
+        free_mem(&last_command);
+        last_command = alloc_mem(cbuf->pos + 1);
+        sprintf(last_command, "%.*s", (int)cbuf->pos, cbuf->data);
+    }
+    
     // If CTRL/C and we're not executing a command, don't print error.
 
     if (error != E_XAB || f.e0.exec)
