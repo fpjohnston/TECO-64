@@ -245,7 +245,19 @@ sub parse_commands
             my $scan    = $command->getAttribute('scan');
             my $exec    = $command->getAttribute('exec');
 
-            $scan = 'NULL' unless defined $scan;
+            if (defined $scan)
+            {
+                $scan = "scan_$scan";
+            }
+            else
+            {
+                $scan = 'NULL';
+            }
+
+            if (defined $exec)
+            {
+                $exec = "exec_$exec";
+            }
 
             my $parse = 'NULL';
 
