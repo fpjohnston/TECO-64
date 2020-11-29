@@ -352,10 +352,13 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
     if (cmd->atsign)                    // @ modifier?
     {
-        while (!empty_cbuf() && peek_cbuf() == ' ')
+        int c;
+
+        while (!empty_cbuf() && ((c = peek_cbuf()) == TAB || !isspace(c)))
         {
-            next_cbuf();
-            trace_cbuf(' ');
+            (void)fetch_cbuf();         // Skip whitespace character
+
+            trace_cbuf(c);              // But echo it if needed
         }
 
         // Treat first non-whitespace character as text delimiter.
@@ -395,19 +398,12 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
     int c;
 
-    while (!empty_cbuf())
+    while (!empty_cbuf() && ((c = peek_cbuf()) == TAB || !isspace(c)))
     {
-        c = peek_cbuf();
-
-        if (c == TAB || !isspace(c))
-        {
-            break;
-        }
-
-        (void)fetch_cbuf();
+        (void)fetch_cbuf();             // Skip whitespace character
     }
 
-    c = fetch_cbuf();
+    c = fetch_cbuf();                   // Get text string delimiter
 
     scan_text(c == '{' ? '}' : c, &cmd->text2);
 }
