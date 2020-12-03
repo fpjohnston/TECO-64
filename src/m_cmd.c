@@ -29,6 +29,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
@@ -121,32 +122,40 @@ void exec_macro(struct buffer *macro, struct cmd *cmd)
     assert(cmd != NULL);
     assert(macro->data != NULL);
 
-    volatile struct buffer *saved_cbuf = get_cbuf();
+    // Save current state
 
-    uint saved_pos = macro->pos;
+    uint saved_base           = set_x(); // Save expression stack level
+    uint saved_loop           = loop_depth;
+    uint saved_if             = if_depth;
+    uint saved_nparens        = nparens;
+    uint saved_pos            = macro->pos;
+    struct buffer *saved_cbuf = cbuf;
 
-    macro->pos = 0;                     // Start scanning at start of string
+    // Initialize for new command string
 
-    set_cbuf(macro);                    // Switch command strings
-
-    uint saved_base = set_x();          // Set temporary new base
-
-    ++macro_depth;
+    loop_depth = 0;
+    if_depth   = 0;
+    nparens    = 0;
+    macro->pos = 0;
+    cbuf       = macro;                 // Switch command strings
 
     if (cmd->n_set)
     {
         push_x(cmd->n_arg, X_OPERAND);
     }
 
+    ++macro_depth;
     exec_cmd(cmd);
-
     --macro_depth;
 
-    reset_x(saved_base);                // Restore old base
+    // Restore previous state
 
-    set_cbuf(saved_cbuf);               // Restore previous command string
-
+    cbuf       = saved_cbuf;            // Restore previous command string
     macro->pos = saved_pos;
+    nparens    = saved_nparens;
+    if_depth   = saved_if;
+    loop_depth = saved_loop;
+    reset_x(saved_base);                // Restore expression stack level
 }
 
 
