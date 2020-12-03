@@ -74,25 +74,23 @@ void exec_ctrl_U(struct cmd *cmd)
                 append_qchr(cmd->qindex, *p++);
             }
         }
+        else if (cmd->text1.len == 0)   // ^Uq`
+        {
+            store_qtext(cmd->qindex, NULL);
+        }
         else                            // ^Uqtext`
         {
-            struct buffer text;
-
-            if (cmd->text1.len == 0)
+            uint len = cmd->text1.len;
+            struct buffer text =
             {
-                store_qtext(cmd->qindex, NULL);
-            }
-            else
-            {
-                text.len  = cmd->text1.len;
-                text.pos  = 0;
-                text.size = cmd->text1.len;
-                text.data = alloc_mem(text.size);
+                .data = alloc_mem(len),
+                .size = len,
+                .pos  = 0,
+                .len  = len,
+            };
 
-                memcpy(text.data, cmd->text1.data, (ulong)text.size);
-
-                store_qtext(cmd->qindex, &text);
-            }
+            memcpy(text.data, cmd->text1.data, (ulong)text.size);
+            store_qtext(cmd->qindex, &text);
         }
     }
 }
