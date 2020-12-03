@@ -50,8 +50,8 @@ void exec_EQ(struct cmd *cmd)
     assert(cmd != NULL);
 
     const char *buf = cmd->text1.data;
-    uint len = cmd->text1.len;
-    uint stream = IFILE_QREGISTER;
+    uint len        = cmd->text1.len;
+    uint stream     = IFILE_QREGISTER;
 
     struct buffer text =
     {

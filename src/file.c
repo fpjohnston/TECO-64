@@ -315,7 +315,7 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
     {
         close_input(stream);
 
-        throw(E_SYS, last_file);       // Unexpected system error
+        throw(E_SYS, last_file);        // Unexpected system error
     }
 
     uint size = (uint)file_stat.st_size;
