@@ -32,6 +32,7 @@
 #include <unistd.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "estack.h"
 #include "exec.h"
@@ -196,7 +197,7 @@ bool read_EI(void)
     }
     else
     {
-        set_cbuf(&ei_old);              // Use our command string
+        cbuf = &ei_old;                 // Use our command string
 
         return true;
     }
