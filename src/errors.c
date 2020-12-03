@@ -162,13 +162,13 @@ void print_error(void)
 
 
 ///
-///  @brief    Print verbose error message.
+///  @brief    Print verbose error message after immediate action "/" command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void print_help(int error)
+void print_verbose(int error)
 {
     if (error <= 0 || (uint)error > countof(errhelp))
     {
@@ -362,7 +362,7 @@ noreturn void throw(int error, ...)
 
             if (f.eh.verbose == 3)
             {
-                print_help(last_error);
+                print_verbose(last_error);
             }
         }
         else

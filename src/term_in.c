@@ -497,7 +497,7 @@ static int read_first(void)
                 if (last_error != E_NUL)
                 {
                     echo_in(LF);
-                    print_help(last_error);
+                    print_verbose(last_error);
                 }
 
                 break;

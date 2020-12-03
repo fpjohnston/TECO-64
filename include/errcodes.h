@@ -30,16 +30,6 @@
 
 #define _ERRCODES_H
 
-#if     defined(__DECC)
-
-#define noreturn
-
-#else
-
-#include <stdnoreturn.h>
-
-#endif
-
 extern int last_error;
 
 ///  @enum   errcodes
@@ -122,7 +112,7 @@ enum errcodes
 
 extern void print_error(void);
 
-extern void print_help(int err_teco);
+extern void print_verbose(int err_teco);
 
 extern noreturn void throw(int err_teco, ...);
 
