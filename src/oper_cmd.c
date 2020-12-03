@@ -51,20 +51,19 @@ bool scan_comma(struct cmd *cmd)
         throw(E_ARG);                   // Invalid arguments
     }
 
-    if (!pop_x(&cmd->m_arg))            // Any m argument specified?
+    if (check_x())                      // Any m argument specified?
     {
-        if (f.e2.comma)                 // No -- should we issue error?
-        {
-            throw(E_NAC);               // No argument before comma
-        }
+        // If we've seen a comma, then what was on the expression stack was
+        // an "m" argument, not an "n" argument (numeric arguments can take
+        // the form m,n).
 
-        return true;
+        cmd->m_set = true;
+        cmd->m_arg = pop_x();
     }
-
-    // If we've seen a comma, then what was on the expression stack was an "m"
-    // argument, not an "n" argument (numeric arguments can take the form m,n).
-
-    cmd->m_set = true;
+    else if (f.e2.comma)                // No m arg. - is that an error?
+    {
+        throw(E_NAC);                   // No argument before comma
+    }
 
     return true;
 }

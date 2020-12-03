@@ -111,12 +111,17 @@ bool scan_ctrl_Y(struct cmd *cmd)
 
     // The following prevents expressions such as 123+^Y.
 
-    if (f.e2.args && (check_x() || cmd->m_set))
+    if (f.e2.args)
     {
-        throw(E_ARG);                   // Invalid arguments
+        if (check_x() || cmd->m_set)
+        {
+            throw(E_ARG);                   // Invalid arguments
+        }
     }
-
-    (void)pop_x(&cmd->n_arg);
+    else if (check_x())
+    {
+        (void)pop_x();                  // Ignore any existing operand
+    }
 
     cmd->ctrl_y = true;
     cmd->m_set = true;
@@ -214,12 +219,17 @@ bool scan_H(struct cmd *cmd)
 
     // The following prevents expressions such as 123+H.
 
-    if (f.e2.args && (check_x() || cmd->m_set))
+    if (f.e2.args)
     {
-        throw(E_ARG);                   // Invalid arguments
+        if (check_x() || cmd->m_set)
+        {
+            throw(E_ARG);               // Invalid arguments
+        }
     }
-
-    (void)pop_x(&cmd->n_arg);
+    else if (check_x())
+    {
+        (void)pop_x();                  // Ignore any existing operand
+    }
 
     cmd->h = true;
     cmd->m_set = true;

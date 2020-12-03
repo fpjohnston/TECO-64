@@ -227,9 +227,12 @@ static inline exec_func *scan_cmd(struct cmd *cmd, int c)
 
     if (entry->exec != NULL)
     {
-        cmd->n_set = pop_x(&cmd->n_arg);
-
-        if (!cmd->n_set && unary_x())
+        if (check_x())
+        {
+            cmd->n_set = true;
+            cmd->n_arg = pop_x();
+        }
+        else if (!cmd->n_set && unary_x())
         {
             cmd->n_set = true;
             cmd->n_arg = -1;

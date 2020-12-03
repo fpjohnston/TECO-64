@@ -38,6 +38,81 @@
 #include "qreg.h"
 #include "term.h"
 
+///  @var    qtable
+///  @brief  Table to convert a Q-register name to the corresponding index.
+
+static char qtable[] =
+{
+    ['0'] = 1 + 0,                  //lint !e835
+    ['1'] = 1 + 1,
+    ['2'] = 1 + 2,
+    ['3'] = 1 + 3,
+    ['4'] = 1 + 4,
+    ['5'] = 1 + 5,
+    ['6'] = 1 + 6,
+    ['7'] = 1 + 7,
+    ['8'] = 1 + 8,
+    ['9'] = 1 + 9,
+    ['A'] = 1 + 10,
+    ['a'] = 1 + 10,
+    ['B'] = 1 + 11,
+    ['b'] = 1 + 11,
+    ['C'] = 1 + 12,
+    ['c'] = 1 + 12,
+    ['D'] = 1 + 13,
+    ['d'] = 1 + 13,
+    ['E'] = 1 + 14,
+    ['e'] = 1 + 14,
+    ['F'] = 1 + 15,
+    ['f'] = 1 + 15,
+    ['G'] = 1 + 16,
+    ['g'] = 1 + 16,
+    ['H'] = 1 + 17,
+    ['h'] = 1 + 17,
+    ['I'] = 1 + 18,
+    ['i'] = 1 + 18,
+    ['J'] = 1 + 19,
+    ['j'] = 1 + 19,
+    ['K'] = 1 + 20,
+    ['k'] = 1 + 20,
+    ['L'] = 1 + 21,
+    ['l'] = 1 + 21,
+    ['M'] = 1 + 22,
+    ['m'] = 1 + 22,
+    ['N'] = 1 + 23,
+    ['n'] = 1 + 23,
+    ['O'] = 1 + 24,
+    ['o'] = 1 + 24,
+    ['P'] = 1 + 25,
+    ['p'] = 1 + 25,
+    ['Q'] = 1 + 26,
+    ['q'] = 1 + 26,
+    ['R'] = 1 + 27,
+    ['r'] = 1 + 27,
+    ['S'] = 1 + 28,
+    ['s'] = 1 + 28,
+    ['T'] = 1 + 29,
+    ['t'] = 1 + 29,
+    ['U'] = 1 + 30,
+    ['u'] = 1 + 30,
+    ['V'] = 1 + 31,
+    ['v'] = 1 + 31,
+    ['W'] = 1 + 32,
+    ['w'] = 1 + 32,
+    ['X'] = 1 + 33,
+    ['x'] = 1 + 33,
+    ['Y'] = 1 + 34,
+    ['y'] = 1 + 34,
+    ['Z'] = 1 + 35,
+    ['z'] = 1 + 35,
+
+    // The following are special for G commands
+
+    ['+'] = -1,
+    ['*'] = -1,
+    ['_'] = -1,
+};
+
 
 ///  @def    QREGISTER
 ///  @brief  Get pointer to Q-register data structure.
@@ -265,21 +340,18 @@ int get_qchr(int qindex, int n)
 
 int get_qindex(int qname, bool qlocal)
 {
-    static const char *qchars = QNAMES "abcdefghijklmnopqrstuvwxyz";
+    int qindex;
 
-    const char *qchar = strchr(qchars, qname);
-
-    if (qchar == NULL)
+    if ((uint)qname > countof(qtable) || (qindex = qtable[qname]) <= 0)
     {
         return -1;
     }
+    else if (qlocal)
+    {
+        qindex += QCOUNT;
+    }
 
-    int qindex  = qchar - qchars;
-
-    qindex -= (qindex >= QCOUNT) ? QCOUNT : 0;
-    qindex += (qlocal)           ? QCOUNT : 0;
-
-    return qindex;
+    return --qindex;                    // Make it zero-based
 }
 
 
@@ -524,11 +596,8 @@ void reset_qreg(void)
 
 void scan_qreg(struct cmd *cmd)
 {
-    static const char *qnames = QNAMES "abcdefghijklmnopqrstuvwxyz";
-
     assert(cmd != NULL);
 
-    const char *qname;
     int c = require_cbuf();
 
     if (c == '.')                       // Local Q-register?
@@ -540,29 +609,26 @@ void scan_qreg(struct cmd *cmd)
 
     cmd->qname = (char)c;               // Save the name
 
-    if ((qname = strchr(qnames, cmd->qname)) != NULL)
-    {
-        cmd->qindex = qname - qnames;
-
-        if (cmd->qindex >= QCOUNT)
-        {
-            cmd->qindex -= QCOUNT;
-        }
-
-        if (cmd->qlocal)
-        {
-            cmd->qindex += QCOUNT;
-        }
-    }
-    else if ((cmd->c1 != 'G' && cmd->c1 != 'g') ||
-             strchr("*_+", cmd->qname) == NULL)
+    if ((uint)c > countof(qtable) || (cmd->qindex = qtable[c]) == 0)
     {
         throw(E_IQN, cmd->qname);       // Invalid Q-register name
-    }
-    else
+    }       
+
+    if (cmd->qindex == -1)              // Special Q-registers?
     {
-        cmd->qindex = -1;
+        if (toupper(cmd->c1) == 'G')    // Yes, is this a G command?
+        {
+            return;                     // Yes
+        }
+
+        throw(E_IQN, cmd->qname);       // Invalid Q-register name
     }
+    else if (cmd->qlocal)
+    {
+        cmd->qindex += QCOUNT;
+    }
+
+    --cmd->qindex;                      // Make it zero-based
 }
 
 

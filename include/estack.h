@@ -62,15 +62,6 @@ enum x_type
     X_RSHIFT  = 'U'                 // Right shift (>>)
 };
 
-///  @struct x_obj
-///  @brief  Definition of objects on expression stack.
-
-struct x_obj
-{
-    int_t operand;                  ///< Operand value (if type = X_OPERAND)
-    enum x_type type;               ///< Operator type (or operand flag)
-};
-
 ///  @struct xstack
 ///  @brief  Definition of expression stack.
 
@@ -78,11 +69,14 @@ struct xstack
 {
     uint level;                     ///< Expression stack level
     uint base;                      ///< Expression stack base
-    bool operand;                   ///< Top of stack is an operand
-    struct x_obj obj[XSTACK_SIZE];  ///< Expression stack objects
+    bool opflag;                    ///< Top of stack is an operand
+    int_t *operand;                 ///< Next operand
+    enum x_type *type;              ///< Next type
+    int_t operands[XSTACK_SIZE];    ///< Expression operands
+    enum x_type types[XSTACK_SIZE]; ///< Expression types
 };
 
-#define check_x() x.operand         ///< true if expression stack top is operand
+#define check_x() x.opflag          ///< true if expression stack top is operand
 
 // Global variables
 
@@ -92,7 +86,7 @@ extern struct xstack x;             ///< Expression stack
 
 extern void init_x(void);
 
-extern bool pop_x(int_t *operand);
+extern int_t pop_x(void);
 
 extern void push_x(int_t value, enum x_type type);
 

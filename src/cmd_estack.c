@@ -29,7 +29,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
 #include "eflags.h"
@@ -62,59 +61,55 @@ void init_x(void)
 {
     x.base    = 0;
     x.level   = 0;
-    x.operand = false;
+    x.opflag  = false;
+    x.operand = x.operands;
+    x.type    = x.types;
 
-    for (uint i = x.level; i < XSTACK_SIZE; ++i)
+    int_t *p1       = x.operand;
+    enum x_type *p2 = x.type;
+    uint count      = XSTACK_SIZE;
+
+    while (count-- > 0)
     {
-        x.obj[i].type = x.obj[i].operand = 0;
+        *p1++ = 0;
+        *p2++ = 0;
     }
 }
 
 
 ///
-///  @brief    Return whether the top of the expression stack is an operand.
-///            Note: if the stack is empty, then there's obviously no operand.
+///  @brief    Fetch operand from top of stack. Note that we presume that the
+///            caller confirmed that an operand is available, using check_x().
 ///
-///  @returns  true if an operand, else false.
+///  @returns  Returned operand.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool pop_x(int_t *operand)
+int_t pop_x(void)
 {
-    assert(operand != NULL);            // Error if NULL operand
+    x.opflag = false;                   // No operand on top after we return
 
-    x.operand = false;
+    // A leading minus sign without a previous operand is equivalent
+    // to an operand of -1; any other leading operator is an error.
 
-    if (x.level == x.base)              // Anything on stack?
+    if (x.level == x.base + 1 && x.type[-1] == X_MINUS)
     {
-        return false;                   // No
-    }
+        --x.operand;
+        --x.type;
+        --x.level;
 
-    if (x.obj[x.level - 1].type == X_OPERAND)
+        return -1;
+    }
+    else                                // Must be operand
     {
-        *operand = (int)x.obj[--x.level].operand;
+        assert(x.level != x.base);
+        assert(x.type[-1] == X_OPERAND);
 
-        return true;
+        --x.type;
+        --x.level;
+
+        return *--x.operand;
     }
-
-    // A leading minus sign without a previous operand is treated as -1;
-    // any other leading operator is an error.
-
-    if (x.level == x.base + 1)
-    {
-        if (x.obj[x.level - 1].type == X_MINUS)
-        {
-            --x.level;
-
-            *operand = -1;
-
-            return true;
-        }
-    }
-
-    // Here if we have a partial expression with no operand on top
-
-    return false;
 }
 
 
@@ -135,24 +130,38 @@ bool pop_x(int_t *operand)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void push_x(int_t value, enum x_type type)
+void push_x(int_t operand, enum x_type type)
 {
     if (x.level == XSTACK_SIZE)
     {
         throw(E_PDO);                   // Push-down list overflow
     }
 
-    x.obj[x.level].operand = value;
-    x.obj[x.level++].type  = type;
+    *x.operand++ = operand;
+    *x.type++    = type;
 
-    if (x.level == 1)
+    if (++x.level == x.base + 1)
     {
-        x.operand = (type == X_OPERAND);
-
-        return;
+        x.opflag = (type == X_OPERAND);
     }
+    else
+    {
+        reduce();
 
-    reduce();
+        // Set flag based on whether the top stack item is an operand
+        // (or a minus sign if it's the only item on the stack).
+
+        if (x.level != x.base &&
+            (x.type[-1] == X_OPERAND ||
+             (x.type[-1] == X_MINUS && x.level == x.base + 1)))
+        {
+            x.opflag = true;
+        }
+        else
+        {
+            x.opflag = false;
+        }
+    }
 }
 
 
@@ -182,17 +191,13 @@ static inline void reduce(void)
     // If the top of the expression stack is a 1's complement operator,
     // and there's no operand preceding it, that's an error.
 
-    if (x.level >= x.base + 1 && x.obj[x.level - 1].type == X_1S_COMP)
+    if (x.level >= x.base + 1 && x.type[-1] == X_1S_COMP)
     {
-        if (x.level == x.base + 1 || x.obj[x.level - 2].type != X_OPERAND)
+        if (x.level == x.base + 1 || x.type[-1] != X_OPERAND)
         {
             throw(E_NAB);               // No argument before ^_
         }
     }
-
-    // Set flag based on whether the top stack item is an operand
-
-    x.operand = (x.level != x.base && x.obj[x.level - 1].type == X_OPERAND);
 }
 
 
@@ -205,9 +210,6 @@ static inline void reduce(void)
 
 static inline bool reduce2(void)
 {
-    struct x_obj *p1 = &x.obj[x.level - 1];
-    struct x_obj *p2 = &x.obj[x.level - 2];
-
     // The following prevents expressions such as these:
     //
     //     12!34   (use of logical NOT following an operand)
@@ -222,35 +224,41 @@ static inline bool reduce2(void)
 
     if (f.e2.oper)
     {
-        if ((p1->type == X_NOT     && p2->type == X_OPERAND) ||
-            (p1->type == X_OPERAND && p2->type == X_OPERAND) ||
-            (p1->type > X_OPERAND  && p2->type > X_OPERAND))
+        if ((x.type[-1] == X_NOT     && x.type[-2] == X_OPERAND) ||
+            (x.type[-1] == X_OPERAND && x.type[-2] == X_OPERAND) ||
+            (x.type[-1] >  X_OPERAND && x.type[-2] >  X_OPERAND))
         {
             throw(E_IFE);               // Ill-formed numeric expression
         }
     }
 
-    if (p1->type == X_OPERAND && p2->type == X_PLUS)
+    if (x.type[-1] == X_OPERAND && x.type[-2] == X_PLUS)
     {
-        p2->operand = p1->operand;
-        p2->type = X_OPERAND;
+        x.operand[-2] = x.operand[-1];
+        x.type[-2] = X_OPERAND;
 
+        --x.operand;
+        --x.type;
         --x.level;
     }
-    else if (p1->type == X_OPERAND && p2->type == X_MINUS)
+    else if (x.type[-1] == X_OPERAND && x.type[-2] == X_MINUS)
     {
-        p2->operand = -p1->operand;
-        p2->type = X_OPERAND;
+        x.operand[-2] = -x.operand[-1];
+        x.type[-2] = X_OPERAND;
 
+        --x.operand;
+        --x.type;
         --x.level;
     }
-    else if (p1->type == X_OPERAND && p2->type == X_NOT)
+    else if (x.type[-1] == X_OPERAND && x.type[-2] == X_NOT)
     {
         // Logical NOT yields -1 for true and 0 for false.
 
-        p2->operand = !p1->operand ? -1 : 0;
-        p2->type = X_OPERAND;
+        x.operand[-2] = !x.operand[-1] ? -1 : 0;
+        x.type[-2] = X_OPERAND;
 
+        --x.operand;
+        --x.type;
         --x.level;
     }
     else
@@ -271,120 +279,120 @@ static inline bool reduce2(void)
 
 static inline bool reduce3(void)
 {
-    struct x_obj *p1 = &x.obj[x.level - 1];
-    struct x_obj *p2 = &x.obj[x.level - 2];
-    struct x_obj *p3 = &x.obj[x.level - 3];
-
     // Reduce (x) to x
 
-    if (p3->type == X_LPAREN && p1->type == X_RPAREN && p2->type == X_OPERAND)
+    if (x.type[-3] == X_LPAREN && x.type[-2] == X_OPERAND &&
+        x.type[-1] == X_RPAREN)
     {
-        p3->operand = p2->operand;
-        p3->type = X_OPERAND;
+        x.operand[-3] = x.operand[-2];
+        x.type[-3]    = X_OPERAND;
 
-        x.level -= 2;
+        x.operand -= 2;
+        x.type    -= 2;
+        x.level   -= 2;
 
         return true;
     }
 
     // Anything else has to be of the form x <operator> y.
 
-    if (p3->type != X_OPERAND || p2->type == X_OPERAND || p1->type != X_OPERAND)
+    if (x.type[-3] != X_OPERAND || x.type[-2] == X_OPERAND ||
+        x.type[-1] != X_OPERAND)
     {
         return false;
     }
 
     // Here to process arithmetic and logical operators
 
-    switch ((int)p2->type)
+    switch ((int)x.type[-2])
     {
         case X_PLUS:
-            p3->operand += p1->operand;
+            x.operand[-3] += x.operand[-1];
 
             break;
 
         case X_MINUS:
-            p3->operand -= p1->operand;
+            x.operand[-3] -= x.operand[-1];
 
             break;
 
         case X_MUL:
-            p3->operand *= p1->operand;
+            x.operand[-3] *= x.operand[-1];
 
             break;
 
         case X_DIV:
-            if (p1->operand == 0)
+            if (x.operand[-1] == 0)
             {
                 if (f.e2.zero)
                 {
                     throw(E_DIV);       // Division by zero
                 }
 
-                p3->operand = 0;
+                x.operand[-3] = 0;
             }
             else
             {
-                p3->operand /= p1->operand;
+                x.operand[-3] /= x.operand[-1];
             }
 
             break;
 
         case X_AND:
-            p3->operand &= p1->operand;
+            x.operand[-3] &= x.operand[-1];
 
             break;
 
         case X_OR:
-            p3->operand |= p1->operand;
+            x.operand[-3] |= x.operand[-1];
 
             break;
 
         case X_XOR:
-            p3->operand ^= p1->operand;
+            x.operand[-3] ^= x.operand[-1];
             break;
 
         case X_REM:
-            p3->operand %= p1->operand;
+            x.operand[-3] %= x.operand[-1];
             break;
 
         case X_EQ:
-            p3->operand = (p3->operand == p1->operand) ? -1 : 0;
+            x.operand[-3] = (x.operand[-3] == x.operand[-1]) ? -1 : 0;
 
             break;
 
         case X_NE:
-            p3->operand = (p3->operand != p1->operand) ? -1 : 0;
+            x.operand[-3] = (x.operand[-3] != x.operand[-1]) ? -1 : 0;
 
             break;
 
         case X_LT:
-            p3->operand = (p3->operand < p1->operand) ? -1 : 0;
+            x.operand[-3] = (x.operand[-3] < x.operand[-1]) ? -1 : 0;
 
             break;
 
         case X_LE:
-            p3->operand = (p3->operand <= p1->operand) ? -1 : 0;
+            x.operand[-3] = (x.operand[-3] <= x.operand[-1]) ? -1 : 0;
 
             break;
 
         case X_GT:
-            p3->operand = (p3->operand > p1->operand) ? -1 : 0;
+            x.operand[-3] = (x.operand[-3] > x.operand[-1]) ? -1 : 0;
 
             break;
 
         case X_GE:
-            p3->operand = (p3->operand >= p1->operand) ? -1 : 0;
+            x.operand[-3] = (x.operand[-3] >= x.operand[-1]) ? -1 : 0;
 
             break;
 
         case X_LSHIFT:
-            p3->operand = (int)((uint)p3->operand << p1->operand);
+            x.operand[-3] = (int)((uint)x.operand[-3] << x.operand[-1]);
 
             break;
 
         case X_RSHIFT:
-            p3->operand = (int)((uint)p3->operand >> p1->operand);
+            x.operand[-3] = (int)((uint)x.operand[-3] >> x.operand[-1]);
 
             break;
 
@@ -392,8 +400,10 @@ static inline bool reduce3(void)
             throw(E_ARG);               // Improper arguments
     }
 
-    p3->type = X_OPERAND;
-    x.level -= 2;
+    x.type[-3] = X_OPERAND;
+    x.operand -= 2;
+    x.type    -= 2;
+    x.level   -= 2;
 
     return true;
 }
@@ -425,8 +435,8 @@ uint set_x(void)
 {
     uint base = x.base;
 
-    x.base = x.level;
-    x.operand = false;
+    x.base   = x.level;
+    x.opflag = false;
 
     return base;
 }
@@ -442,11 +452,13 @@ uint set_x(void)
 
 bool unary_x(void)
 {
-    if (x.level != x.base + 1 || x.obj[0].type != X_MINUS)
+    if (x.level != x.base + 1 || x.type[0] != X_MINUS)
     {
         return false;
     }
 
+    --x.operand;
+    --x.type;
     --x.level;
 
     return true;

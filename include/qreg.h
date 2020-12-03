@@ -46,11 +46,9 @@ struct qreg
 };
 
 ///  @var     QNAMES
-///  @brief   List of Q-register names. Note that in order to properly fold
-///           lower case names to upper case, the alphabetic names must precede
-///           the numeric names.
+///  @brief   List of Q-register names.
 
-#define QNAMES      "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+#define QNAMES      "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 ///  @def     QCOUNT
 ///  @brief   No. of Q-registers in each set (global and local).
