@@ -246,7 +246,6 @@ uint start_tbuf(void)
 
 void store_tbuf(int c)
 {
-    // If we haven't yet allocated space for the command string, do so now.
     // If we have filled up the current command string, try to increase it by
     // calling realloc(). Note that this may move the block, so we have to
     // reinitialize all of our pointers.
@@ -258,19 +257,12 @@ void store_tbuf(int c)
     {
         assert(term_buf->size != 0);    // Error if no data
 
-        // Round up size to a multiple of STR_SIZE_INIT
-
-        term_buf->size += STR_SIZE_INIT - 1;
-        term_buf->size /= STR_SIZE_INIT;
-        term_buf->size *= STR_SIZE_INIT;
-
         uint newsize = term_buf->size + STR_SIZE_INIT;
         char *newbuf = expand_mem(term_buf->data, term_buf->size, newsize);
 
         term_buf->size = newsize;
-        term_buf->data  = newbuf;
+        term_buf->data = newbuf;
     }
 
     term_buf->data[term_buf->len++] = (char)c;
-    term_buf->data[term_buf->len] = NUL;
 }
