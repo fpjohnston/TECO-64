@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -210,7 +211,7 @@ bool scan_P(struct cmd *cmd)
 
     if (c == 'W' || c == 'w')
     {
-        (void)fetch_cbuf();
+        next_cbuf();      
 
         cmd->c2 = 'W';
     }

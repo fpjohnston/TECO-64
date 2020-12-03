@@ -34,6 +34,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
@@ -273,7 +274,7 @@ bool scan_bang(struct cmd *cmd)
 
     if (f.e1.bang && peek_cbuf() == '!')
     {
-        (void)fetch_cbuf();
+        next_cbuf();      
 
         scan_texts(cmd, 1, LF);
     }

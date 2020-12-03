@@ -36,6 +36,16 @@
 #include "config.h"
 
 
+#if     defined(__DECC)
+
+#define noreturn
+
+#else
+
+#include <stdnoreturn.h>
+
+#endif
+
 #if     defined(TECO_LONG)
 
 typedef long int_t;               ///< Size of m and n arguments
@@ -103,51 +113,6 @@ struct tstring
     char *data;                     ///< String data
     uint len;                       ///< No. of characters
 };
-
-// Command buffer variables and functions
-
-extern volatile struct buffer *cbuf;
-
-/// @def    empty_cbuf()
-/// @brief  Returns true if all data in command string has been read, else false.
-
-#define empty_cbuf()    (cbuf->pos == cbuf->len)
-
-/// @def    get_cbuf()
-/// @brief  Returns the current command string.
-
-#define get_cbuf()      cbuf
-
-/// @def    peek_cbuf()
-/// @brief  Peeks at next character in command string.
-
-#define peek_cbuf()     (empty_cbuf() ? -1 : cbuf->data[cbuf->pos])
-
-/// @def    read_cbuf()
-/// @brief  Reads next character in command string.
-
-#define read_cbuf()     cbuf->data[cbuf->pos++]
-
-/// @def    set_cbuf()
-/// @brief  Sets the current command string.
-
-#define set_cbuf(p)     (cbuf = (p))
-
-/// @def    trace_cbuf()
-/// @brief  Echo current character if we're tracing
-
-#define trace_cbuf(c)   if (f.e0.trace) echo_in((int)c)
-
-// Command buffer functions
-
-extern int fetch_cbuf(void);
-
-extern void init_cbuf(void);
-
-extern void reset_cbuf(void);
-
-extern void store_cbuf(int c);
-
 
 // Global variables
 

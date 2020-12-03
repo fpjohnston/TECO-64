@@ -28,6 +28,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cbuf.h"
 #include "errcodes.h"
 #include "eflags.h"
 #include "estack.h"
@@ -86,7 +87,7 @@ bool scan_colon(struct cmd *cmd)
 
     if (peek_cbuf() == ':')             // Double colon?
     {
-        (void)fetch_cbuf();             // Yes, count it
+        next_cbuf();                   // Yes, count it
 
         if (cmd->dcolon && f.e2.colon)
         {

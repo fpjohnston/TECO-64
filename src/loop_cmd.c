@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
@@ -390,7 +391,7 @@ bool scan_gt(struct cmd *cmd)
 
     if (c == '=')                       // >= operator
     {
-        (void)fetch_cbuf();
+        next_cbuf();      
 
         cmd->c2 = (char)c;
 
@@ -398,7 +399,7 @@ bool scan_gt(struct cmd *cmd)
     }
     else if (c == '>')                  // >> operator
     {
-        (void)fetch_cbuf();
+        next_cbuf();      
 
         cmd->c2 = (char)c;
 
@@ -442,7 +443,7 @@ bool scan_lt(struct cmd *cmd)
 
     if (c == '=')                       // <= operator
     {
-        (void)fetch_cbuf();
+        next_cbuf();      
 
         cmd->c2 = (char)c;
 
@@ -450,7 +451,7 @@ bool scan_lt(struct cmd *cmd)
     }
     else if (c == '>')                  // <> operator
     {
-        (void)fetch_cbuf();
+        next_cbuf();      
 
         cmd->c2 = (char)c;
 
@@ -458,7 +459,7 @@ bool scan_lt(struct cmd *cmd)
     }
     else if (c == '<')                  // << operator
     {
-        (void)fetch_cbuf();
+        next_cbuf();      
 
         push_x(0, X_LSHIFT);
     }

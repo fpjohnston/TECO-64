@@ -29,6 +29,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -158,7 +159,7 @@ bool scan_ctrl_up(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int c = fetch_cbuf();
+    int c = require_cbuf();
 
     push_x(c, X_OPERAND);
 

@@ -47,7 +47,7 @@ co-gcc.lnt   // Basic gcc configuration
 -esym(526,__builtin_va_start)
 -esym(628,__builtin_va_start)
 
--function(exit, throw, execlp)
+-function(exit, abort_cbuf, throw, execlp)
 
 // Ensure that prototypes are in scope before functions are defined
 

@@ -32,10 +32,12 @@
 #include <string.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "errcodes.h"
 #include "exec.h"
 #include "qreg.h"
 #include "term.h"
+
 
 ///  @def    QREGISTER
 ///  @brief  Get pointer to Q-register data structure.
@@ -527,13 +529,13 @@ void scan_qreg(struct cmd *cmd)
     assert(cmd != NULL);
 
     const char *qname;
-    int c = fetch_cbuf();
+    int c = require_cbuf();
 
     if (c == '.')                       // Local Q-register?
     {
         cmd->qlocal = true;             // Yes, mark it
 
-        c = fetch_cbuf();
+        c = require_cbuf();
     }
 
     cmd->qname = (char)c;               // Save the name

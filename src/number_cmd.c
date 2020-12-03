@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -184,6 +185,7 @@ bool scan_number(struct cmd *cmd)
     assert(cmd != NULL);
 
     int c = cmd->c1;
+    int cx;
     int radix;
 
     if (!f.e1.radix || nparens == 0)    // Auto-detect radix?
@@ -194,13 +196,13 @@ bool scan_number(struct cmd *cmd)
     {
         radix = 10;                     // No, must be base 10
     }
-    else if (!empty_cbuf() && ((c = peek_cbuf()) == 'x' || c == 'X'))
+    else if ((cx = peek_cbuf()) != EOF && (cx == 'x' || cx == 'X'))
     {
-        (void)fetch_cbuf();             // Discard the x or X
+        next_cbuf();                    // Discard the x or X
 
-        c = fetch_cbuf();               // Get the first digit for base 16
+        c = require_cbuf();             // Get the first digit for base 16
 
-        if (!isxdigit(c))               // Anything after 0x or 0X?
+        if (!isxdigit(c))               // At least one valid hex digit?
         {
             throw(E_ILN);               // Invalid number
         }
@@ -216,7 +218,7 @@ bool scan_number(struct cmd *cmd)
 
     for (;;)
     {
-        if (empty_cbuf() || (c = peek_cbuf()) < '0')
+        if ((c = peek_cbuf()) == -1 || c < '0')
         {
             break;                      // Buffer empty, or non-digit
         }
@@ -225,22 +227,27 @@ bool scan_number(struct cmd *cmd)
         {
             if (c > '9')
             {
-                break;
+                break;                  // Not a decimal digit
             }
         }
         else if (radix == 16)
         {
             if (!isxdigit(c))
             {
-                break;                  // Not a hex number
+                break;                  // Not a hex digit
             }
         }
         else if (c > '7')               // Must be octal
         {
+            if (c > '9')                // Non-digit?
+            {
+                break;                  // Not an octal digit
+            }
+
             throw(E_ILN);               // Invalid octal number
         }
 
-        (void)fetch_cbuf();             // Accept the next digit
+        next_cbuf();                    // Accept the next digit
 
         n *= radix;                     // Shift over existing digits
         n += digits[c];                 // And add in the new digit

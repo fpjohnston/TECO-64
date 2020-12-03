@@ -43,6 +43,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"

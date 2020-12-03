@@ -35,6 +35,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cbuf.h"
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"

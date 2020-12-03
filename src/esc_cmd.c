@@ -27,6 +27,7 @@
 #include <assert.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "exec.h"
 
 
@@ -43,9 +44,9 @@ void exec_escape(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // If we've read all characters in command string, then reset for next time.
+    // If no more characters in command string, then reset for next time.
 
-    if (empty_cbuf())
+    if (cbuf->pos == cbuf->len)
     {
         cbuf->pos = cbuf->len = 0;
     }

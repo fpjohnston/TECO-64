@@ -32,20 +32,41 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
+#include "cbuf.h"
 #include "errcodes.h"
+#include "eflags.h"
 #include "exec.h"
 #include "estack.h"
 #include "term.h"
 
 
-volatile struct buffer *cbuf;           ///< Current command string buffer
+struct buffer *cbuf;                    ///< Current command string buffer
 
 static struct buffer *root;             ///< Command string buffer root
 
 // Local functions
 
 static void exit_cbuf(void);
+
+
+///
+///  @brief    Throw exception because of premature end of command string.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+noreturn void abort_cbuf(void)
+{
+    if (check_macro())
+    {
+        throw(E_UTM);
+    }
+    else
+    {
+        throw(E_UTC);
+    }
+}
 
 
 ///
@@ -103,39 +124,6 @@ static void exit_cbuf(void)
         free_mem(&root->data);
         free_mem(&root);
     }
-}
-
-
-///
-///  @brief    Fetch next character from command string. Issues error if no
-///            character available.
-///
-///  @returns  Command character.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int fetch_cbuf(void)
-{
-    if (empty_cbuf())
-    {
-        if (check_macro())
-        {
-            throw(E_UTM);               // Unterminated macro
-        }
-        else
-        {
-            throw(E_UTC);               // Unterminated command
-        }
-    }
-
-    int c = cbuf->data[cbuf->pos++];
-
-    if (f.e0.trace)
-    {
-        echo_in(c);
-    }
-
-    return c;
 }
 
 

@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "exec.h"
@@ -411,7 +412,9 @@ bool scan_quote(struct cmd *cmd)
         throw(E_NAQ);                   // No argument before "
     }
 
-    cmd->c2 = (char)fetch_cbuf();       // Get test condition
+    int c = require_cbuf();             // Get test condition
+
+    cmd->c2 = (char)c;
 
     return false;
 }

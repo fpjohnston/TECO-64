@@ -28,6 +28,7 @@
 #include <ctype.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
@@ -101,7 +102,7 @@ bool scan_div(struct cmd *cmd)
 
     if (f.e1.xoper && nparens != 0 && peek_cbuf() == '/')
     {
-        (void)fetch_cbuf();
+        next_cbuf();      
 
         cmd->c2 = '/';
 

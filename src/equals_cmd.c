@@ -32,6 +32,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
@@ -207,7 +208,7 @@ bool scan_equals(struct cmd *cmd)
         reject_colon(cmd);
         reject_atsign(cmd);
 
-        int c = fetch_cbuf();
+        int c = require_cbuf();
 
         if (c != '=')
         {

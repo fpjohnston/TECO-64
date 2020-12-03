@@ -31,6 +31,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
@@ -72,7 +73,7 @@ const struct cmd null_cmd =
 
 // Local functions
 
-static inline exec_func *scan_cmd(struct cmd *cmd);
+static inline exec_func *scan_cmd(struct cmd *cmd, int c);
 
 static void scan_text(int delim, struct tstring *text);
 
@@ -89,15 +90,16 @@ void exec_cmd(struct cmd *cmd)
 
     // Loop for all commands in command string.
 
-    while (!empty_cbuf())
+    int c;
+
+    while ((c = fetch_cbuf()) != EOF)
     {
         exec_func *exec;
 
-        cmd->c1 = read_cbuf();
+        // The specific check for a space is an optimization which was found
+        // through testing to make a noticeable difference with some macros.
 
-        trace_cbuf(cmd->c1);
-
-        if (cmd->c1 == SPACE || (exec = scan_cmd(cmd)) == NULL)
+        if (c == SPACE || (exec = scan_cmd(cmd, c)) == NULL)
         {
             continue;
         }
@@ -121,31 +123,20 @@ void exec_cmd(struct cmd *cmd)
         *cmd = null_cmd;
     }
 
-    if (f.e2.loop && loop_depth != 0)
-    {
-        throw(E_MRA);                   // Missing right angle bracket
-    }
-    else if (f.e2.quote && if_depth != 0)
+    // Here to make sure that all conditionals, loops, and parenthetical
+    // expressions were complete within the command string just executed.
+
+    if (if_depth != 0)
     {
         throw(E_MAP);                   // Missing apostrophe
     }
-
-    // If we're not in a macro, then confirm that parentheses were properly
-    // matched, and that there's nothing left on the expression stack.
-
-    if (!check_macro())
+    else if (loop_depth != 0)
     {
-        // Here if we've reached the end of the command string.
-
-        if (nparens)
-        {
-            throw(E_MRP);               // Missing right parenthesis
-        }
-
-        if (f.e2.args && x.base != x.level)
-        {
-            throw(E_ARG);               // Improper arguments
-        }
+        throw(E_MRA);                   // Missing right angle bracket
+    }
+    else if (nparens != 0)
+    {
+        throw(E_MRP);                   // Missing right parenthesis
     }
 }
 
@@ -157,16 +148,16 @@ void exec_cmd(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline exec_func *scan_cmd(struct cmd *cmd)
+static inline exec_func *scan_cmd(struct cmd *cmd, int c)
 {
     assert(cmd != NULL);
-
-    int c = cmd->c1;
 
     if ((uint)c >= cmd_max)
     {
         throw(E_ILL, c);                // Illegal command
     }
+
+    cmd->c1 = (char)c;
 
     const struct cmd_table *entry = &cmd_table[c];
 
@@ -181,34 +172,32 @@ static inline exec_func *scan_cmd(struct cmd *cmd)
 
         if (c == '^')
         {
-            if ((c = fetch_cbuf()) == '^')
+            if ((c = require_cbuf()) == '^')
             {
-                push_x(fetch_cbuf(), X_OPERAND);
+                push_x(require_cbuf(), X_OPERAND);
 
                 return NULL;
             }
-            else
+
+            c = 1 + toupper(c) - 'A';
+
+            if (c <= NUL || c >= SPACE)
             {
-                c = 1 + toupper(c) - 'A';
-
-                if (c <= NUL || c >= SPACE)
-                {
-                    throw(E_IUC, c);        // Invalid character following ^
-                }
-
-                cmd->c1 = (char)c;
-
-                entry = &cmd_table[c];
+                throw(E_IUC, c);        // Invalid character following ^
             }
+
+            cmd->c1 = (char)c;
+
+            entry = &cmd_table[c];
         }
         else if (c == 'E' || c == 'e')
         {
-            c = fetch_cbuf();
+            c = require_cbuf();
 
             if ((uint)c > e_max || (e_table[c].scan == NULL &&
                                     e_table[c].exec == NULL))
             {
-                throw(E_IEC, c);            // Invalid E character
+                throw(E_IEC, c);        // Invalid E character
             }
 
             cmd->c2 = (char)c;
@@ -217,12 +206,12 @@ static inline exec_func *scan_cmd(struct cmd *cmd)
         }
         else if (c == 'F' || c == 'f')
         {
-            c = fetch_cbuf();
+            c = require_cbuf();
 
             if ((uint)c > f_max || (f_table[c].scan == NULL &&
                                     f_table[c].exec == NULL))
             {
-                throw(E_IFC, c);            // Invalid F character
+                throw(E_IFC, c);        // Invalid F character
             }
 
             cmd->c2 = (char)c;
@@ -294,21 +283,14 @@ static void scan_text(int delim, struct tstring *text)
 {
     assert(text != NULL);
 
-    text->data = cbuf->data + cbuf->pos;
+    text->data = cbuf->data;
 
     uint n = cbuf->len - cbuf->pos;
     char *end = memchr(text->data, delim, (ulong)n);
 
     if (end == NULL)
     {
-        if (check_macro())
-        {
-            throw(E_UTM);               // Unterminated macro
-        }
-        else
-        {
-            throw(E_UTC);               // Unterminated command
-        }
+        abort_cbuf();
     }
 
     text->len = (uint)(end - text->data);
@@ -354,21 +336,17 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
     {
         int c;
 
-        while (!empty_cbuf() && ((c = peek_cbuf()) == TAB || !isspace(c)))
+        while ((c = require_cbuf()) != TAB && isspace(c))
         {
-            (void)fetch_cbuf();         // Skip whitespace character
-
-            trace_cbuf(c);              // But echo it if needed
+            ;
         }
 
-        // Treat first non-whitespace character as text delimiter.
-
-        cmd->delim = (char)fetch_cbuf();
-
-        if (!isgraph(cmd->delim))
+        if (!isgraph(c))
         {
             throw(E_ATS);               // Invalid delimiter
         }
+
+        cmd->delim = (char)c;
     }
 
     if (cmd->delim != '{' || !f.e1.text)
@@ -398,12 +376,12 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
     int c;
 
-    while (!empty_cbuf() && ((c = peek_cbuf()) == TAB || !isspace(c)))
+    while ((c = peek_cbuf()) != EOF && isspace(c) && c != TAB)
     {
-        (void)fetch_cbuf();             // Skip whitespace character
+        next_cbuf();                    // Skip whitespace character
     }
 
-    c = fetch_cbuf();                   // Get text string delimiter
+    c = require_cbuf();                 // Get text string delimiter
 
     scan_text(c == '{' ? '}' : c, &cmd->text2);
 }
@@ -439,21 +417,23 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     uint saved_level = x.level;
     bool match = false;                 // Assume failure
     bool saved_exec = f.e0.exec;
+    int c;
 
     f.e0.exec = false;
 
-    while (!empty_cbuf())
+    while ((c = fetch_cbuf()) != EOF)
     {
-        cmd->c1 = read_cbuf();
+        // The specific check for a space is an optimization which was found
+        // through testing to make a noticeable difference with some macros.
 
-        if (cmd->c1 == SPACE || scan_cmd(cmd) == NULL)
+        if (c == SPACE || scan_cmd(cmd, c) == NULL)
         {
             continue;
         }
 
         // If this command matches what we're looking for, then exit.
 
-        if (strchr(skip, cmd->c1) != NULL)
+        if (strchr(skip, c) != NULL)
         {
             match = true;
 
