@@ -283,7 +283,7 @@ static void scan_text(int delim, struct tstring *text)
 {
     assert(text != NULL);
 
-    text->data = cbuf->data;
+    text->data = cbuf->data + cbuf->pos;
 
     uint n = cbuf->len - cbuf->pos;
     char *end = memchr(text->data, delim, (ulong)n);
