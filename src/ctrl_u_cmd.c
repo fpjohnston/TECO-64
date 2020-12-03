@@ -81,9 +81,11 @@ void exec_ctrl_U(struct cmd *cmd)
         else                            // ^Uqtext`
         {
             uint len = cmd->text1.len;
+            void *buf = alloc_mem(len);
+
             struct buffer text =
             {
-                .data = alloc_mem(len),
+                .data = buf,
                 .size = len,
                 .pos  = 0,
                 .len  = len,
