@@ -32,6 +32,8 @@
 
 #include "teco.h"               //lint !e451 !e537
 
+// Comment out the following to relax syntax checking and improve speed.
+
 #define TECO_STRICT             ///< Enable syntax checking macros
 
 #if     defined(TECO_STRICT)
