@@ -522,57 +522,57 @@ bool parse_flag2(struct cmd *cmd)
 
     switch (cmd->c2)
     {
-        case '1':
+        case '1':                       // E1
             push_x(f.e1.flag, X_OPERAND);
 
             return true;
 
-        case '2':
+        case '2':                       // E2
             push_x(f.e2.flag, X_OPERAND);
 
             return true;
 
-        case '3':
+        case '3':                       // E3
             push_x(f.e3.flag, X_OPERAND);
 
             return true;
 
-        case '4':
+        case '4':                       // E4
             push_x(f.e4.flag, X_OPERAND);
 
             return true;
 
-        case 'D':
+        case 'D':                       // ED
         case 'd':
             push_x(f.ed.flag, X_OPERAND);
 
             return true;
 
-        case 'H':
+        case 'H':                       // EH
         case 'h':
             push_x(f.eh.flag, X_OPERAND);
 
             return true;
 
-        case 'S':
+        case 'S':                       // ES
         case 's':
             push_x(f.es, X_OPERAND);
 
             return true;
 
-        case 'T':
+        case 'T':                       // ET
         case 't':
             push_x(f.et.flag, X_OPERAND);
 
             return true;
 
-        case 'U':
+        case 'U':                       // EU
         case 'u':
             push_x(f.eu, X_OPERAND);
 
             return true;
 
-        case 'V':
+        case 'V':                       // EV
         case 'v':
             push_x(f.ev, X_OPERAND);
 
