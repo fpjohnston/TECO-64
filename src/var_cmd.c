@@ -113,12 +113,12 @@ bool scan_ctrl_Y(struct cmd *cmd)
 
     if (f.e2.args)
     {
-        if (check_x() || cmd->m_set)
+        if (isoperand() || cmd->m_set)
         {
             throw(E_ARG);                   // Invalid arguments
         }
     }
-    else if (check_x())
+    else if (isoperand())
     {
         (void)pop_x();                  // Ignore any existing operand
     }
@@ -221,12 +221,12 @@ bool scan_H(struct cmd *cmd)
 
     if (f.e2.args)
     {
-        if (check_x() || cmd->m_set)
+        if (isoperand() || cmd->m_set)
         {
             throw(E_ARG);               // Invalid arguments
         }
     }
-    else if (check_x())
+    else if (isoperand())
     {
         (void)pop_x();                  // Ignore any existing operand
     }

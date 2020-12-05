@@ -79,7 +79,7 @@ void init_x(void)
 
 ///
 ///  @brief    Fetch operand from top of stack. Note that we presume that the
-///            caller confirmed that an operand is available, using check_x().
+///            caller confirmed that an operand is available, using isoperand().
 ///
 ///  @returns  Returned operand.
 ///

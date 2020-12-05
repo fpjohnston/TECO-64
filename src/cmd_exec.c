@@ -227,7 +227,7 @@ static inline exec_func *scan_cmd(struct cmd *cmd, int c)
 
     if (entry->exec != NULL)
     {
-        if (check_x())
+        if (isoperand())
         {
             cmd->n_set = true;
             cmd->n_arg = pop_x();

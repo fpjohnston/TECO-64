@@ -76,7 +76,7 @@ struct xstack
     enum x_type types[XSTACK_SIZE]; ///< Expression types
 };
 
-#define check_x() x.opflag          ///< true if expression stack top is operand
+#define isoperand() x.opflag        ///< true if expression stack top is operand
 
 // Global variables
 

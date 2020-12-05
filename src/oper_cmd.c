@@ -51,7 +51,7 @@ bool scan_comma(struct cmd *cmd)
         throw(E_ARG);                   // Invalid arguments
     }
 
-    if (check_x())                      // Any m argument specified?
+    if (isoperand())                    // Any m argument specified?
     {
         // If we've seen a comma, then what was on the expression stack was
         // an "m" argument, not an "n" argument (numeric arguments can take
@@ -177,7 +177,7 @@ bool scan_rparen(struct cmd *cmd)
     {
         throw(E_MLP);                   // Missing left parenthesis
     }
-    else if (!check_x())                // Is there an operand available?
+    else if (!isoperand())              // Is there an operand available?
     {
         throw(E_NAP);                   // No argument before )
     }
