@@ -32,11 +32,18 @@
 
 #include "teco.h"               //lint !e451 !e537
 
-// Comment out the following to relax syntax checking and improve speed.
+#if     defined(TECO_NOSTRICT)  // Disable strict syntax checking
 
-#define TECO_STRICT             ///< Enable syntax checking macros
+#define reject_atsign(cmd)
+#define reject_colon(cmd)
+#define reject_dcolon(cmd)
+#define reject_m(cmd)
+#define reject_neg_m(cmd)
+#define reject_neg_n(cmd)
+#define reject_n(cmd)
+#define require_n(cmd)
 
-#if     defined(TECO_STRICT)
+#else
 
 ///  @def    reject_atsign
 ///  @brief  Error if at sign and command doesn't allow it.
@@ -77,17 +84,6 @@
 ///  @brief  Error if m argument not followed by n argument.
 
 #define require_n(cmd)  if (cmd->m_set && !cmd->n_set) throw(E_NON)
-
-#else
-
-#define reject_atsign(cmd)
-#define reject_colon(cmd)
-#define reject_dcolon(cmd)
-#define reject_m(cmd)
-#define reject_neg_m(cmd)
-#define reject_neg_n(cmd)
-#define reject_n(cmd)
-#define require_n(cmd)
 
 #endif
 
