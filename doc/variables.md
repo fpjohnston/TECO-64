@@ -50,7 +50,7 @@ it represents.
 ### Mode Control Flags
 
 The following mode control flags return numeric values. The use of these flags is
-described in (TBD).
+described [here](flags.md).
 
 | Flag | Function |
 | ---- | -------- |

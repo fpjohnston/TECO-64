@@ -100,3 +100,7 @@ that has been adapted, corrected, and updated from a user's guide and
 language reference manual titled *Standard TECO Text Editor and
 Corrector for the VAX, PDP-11, PDP-10, and PDP-8*, published by
 Digital Equipment Corporation in May 1990.
+
+### Contact Information
+
+Any questions or comments regarding TECO-64 may be sent to NowwithTreble@gmail.com.

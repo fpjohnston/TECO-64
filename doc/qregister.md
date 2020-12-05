@@ -87,9 +87,9 @@ loaded into Q-registers.
 | .-*n*,.X*q* | Copy the *n* characters immediately preceeding the buffer pointer into the text storage area of Q-register *q*. *n* should be greater than zero. |
 | *n*:X*q* | Append *n* lines to Q-register *q*, where *n* is a signed integer with the same functions as *n* in the nX*q* command above. The pointer is not moved. <br><br>The colon construct for appending to a Q-register can be used with all forms of the X command. |
 | 0,0X*q* | Delete any text string in Q-register *q*. |
-| ]*q* | Pop from the Q-register push-down list into Q-register *q*. Any previous contents of Q-register *q* are destroyed. Both the numeric and text parts of the Q-register are loaded by this command. The Q-register push-down list is a last-in first-out (LIFO) storage area. (See (TBD) for a description of the push-down list.) This command does not use or affect numeric values. Numeric values are passed through this command transparently. This allows macros to restore Q-registers and still return numeric values. |
+| ]*q* | Pop from the Q-register push-down list into Q-register *q*. Any previous contents of Q-register *q* are destroyed. Both the numeric and text parts of the Q-register are loaded by this command. The Q-register push-down list is a last-in first-out (LIFO) storage area. (See above for a description of the push-down list.) This command does not use or affect numeric values. Numeric values are passed through this command transparently. This allows macros to restore Q-registers and still return numeric values. |
 | :]*q* | Execute the ]*q* command and return a numeric value. A -1 indicates that there was another item on the Q-register push-down list to be popped. A 0 indicates that the Q-register push-down list was empty, so Q-register *q* was not modified. |
-| \**q* | Save last-typed command string in Q-register *q*. See (TBD) |
+| \**q* | Save last-typed command string in Q-register *q*, as described [here](action.md). |
 
 ### Q-Register Retrieval Commands
 

@@ -187,3 +187,9 @@ as the following are no longer valid:
 ```@^A{hello{```
 
 ```@^A}goodbye}```
+
+### Numeric Values and Flags
+
+TECO has many special numeric values and flags which are accessible through
+TECO commands. Some of these values, such as the text buffer pointer, reflect
+the state of TECO. Others control TECO’s behavior in various ways.

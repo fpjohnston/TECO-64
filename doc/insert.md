@@ -13,7 +13,7 @@ character that is typed. Attempting to enter too many characters into
 the current command string causes unpredictible results to occur and
 should be avoided.
 
-As explained in (TBD), certain characters are filtered out by the
+As explained [here](action.md), certain characters are filtered out by the
 operating system and/or may perform special functions, and some characters are
 immediate action commands and have special effect. If you want to insert such
 characters into the edit buffer, use the *n*I\` command described in the following

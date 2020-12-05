@@ -73,10 +73,10 @@ frequently used character sequences, the argument may contain special string
 building characters. The table below  lists the string building characters
 and their functions.
 
-Note that, as explained in (TBD), a caret (up-arrow) may be used to indicate
-that the character following it is to be treated as a control character. Any of the
-commands below may be entered using the caret. This function of the caret can
-be disabled by using the ED flag.
+Note that, as explained [here](conventions.md), a caret (up-arrow) may be used
+to indicate that the character following it is to be treated as a control
+character. Any of the commands below may be entered using the caret. This
+function of the caret can be disabled by using the ED flag.
 
 | Command | Function |
 | ------- | -------- |
