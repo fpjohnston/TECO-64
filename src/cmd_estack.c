@@ -452,7 +452,7 @@ uint set_x(void)
 
 bool unary_x(void)
 {
-    if (x.level != x.base + 1 || x.type[0] != X_MINUS)
+    if (x.level != x.base + 1 || x.type[-1] != X_MINUS)
     {
         return false;
     }
