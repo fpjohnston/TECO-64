@@ -44,6 +44,7 @@
 #      gprof=1     Enable use of GPROF profiler.
 #      long=1      Use 64-bit integers.
 #      ndebug=1    Disable run-time assertions.
+#      nostrict=1  Relax run-time syntax checking.
 #      paging=std  Use standard paging. [default]
 #      paging=vm   Use virtual memory paging.
 #      trace=1     Enable tracing of commands.
@@ -274,6 +275,12 @@ DOXYGEN +=    NDEBUG
 
 endif
 
+ifdef   nostrict
+
+DEFINES += -D TECO_NOSTRICT
+
+endif
+
 ifdef   trace
 
 DEFINES += -D TECO_TRACE
@@ -323,6 +330,7 @@ help:
 	@echo "    gprof=1     Enable use of GPROF profiler."
 	@echo "    long=1      Use 64-bit integers."
 	@echo "    ndebug=1    Disable run-time assertions."
+	@echo "    nostrict=1  Relax run-time syntax checking."
 	@echo "    paging=std  Use standard paging. [default]"
 	@echo "    paging=vm   Use virtual memory paging."
 	@echo "    trace=1     Enable tracing of commands."
