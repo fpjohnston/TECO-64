@@ -25,16 +25,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
+
+#include "cbuf.h"
 
 
 #define NO_POP      (bool)false         ///< Pop loop stack at end of loop

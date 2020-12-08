@@ -26,17 +26,15 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
 #include "teco.h"
-#include "cbuf.h"
 #include "errcodes.h"
 #include "exec.h"
 #include "qreg.h"
 #include "term.h"
+
+#include "cbuf.h"
 
 ///  @var    qtable
 ///  @brief  Table to convert a Q-register name to the corresponding index.

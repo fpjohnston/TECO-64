@@ -25,14 +25,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 
 #include "teco.h"
-#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
+
+#include "cbuf.h"
 
 
 ///

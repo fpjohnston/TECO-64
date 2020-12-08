@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <getopt.h>
 #include <limits.h>
 #include <stdarg.h>
@@ -36,11 +35,11 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "cbuf.h"
 #include "eflags.h"
 #include "file.h"
 #include "term.h"
 
+#include "cbuf.h"
 #include "options.h"
 
 

@@ -25,19 +25,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
 #include "cbuf.h"
 #include "errcodes.h"
-#include "eflags.h"
 #include "exec.h"
-#include "estack.h"
-#include "term.h"
 
 
 struct buffer *cbuf;                    ///< Current command string buffer

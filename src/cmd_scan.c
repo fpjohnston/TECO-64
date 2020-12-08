@@ -28,13 +28,13 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "cbuf.h"
 #include "errcodes.h"
 #include "eflags.h"
 #include "estack.h"
-#include "exec.h"
 #include "file.h"
 #include "qreg.h"
+
+#include "cbuf.h"
 
 
 ///

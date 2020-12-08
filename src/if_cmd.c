@@ -26,14 +26,13 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "exec.h"
+
+#include "cbuf.h"
 
 
 #define NO_ELSE     (bool)false         ///< Don't execute | command

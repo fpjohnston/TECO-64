@@ -25,11 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #include "teco.h"
-#include "cbuf.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -37,6 +34,8 @@
 #include "exec.h"
 #include "page.h"
 #include "qreg.h"
+
+#include "cbuf.h"
 
 
 ///

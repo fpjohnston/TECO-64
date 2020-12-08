@@ -28,18 +28,17 @@
 #include <ctype.h>
 #include <errno.h>
 #include <stdarg.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
-#include "cbuf.h"
 #include "display.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "term.h"
 
+#include "cbuf.h"
 #include "errtables.h"
 
 

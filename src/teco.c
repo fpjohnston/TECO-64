@@ -39,11 +39,9 @@
 #include <assert.h>
 #include <setjmp.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "teco.h"
-#include "cbuf.h"
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
@@ -53,7 +51,8 @@
 #include "file.h"
 #include "qreg.h"
 #include "search.h"
-#include "term.h"
+
+#include "cbuf.h"
 
 
 struct flags f;                     ///< Global flag variables

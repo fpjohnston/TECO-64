@@ -26,16 +26,16 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <ncurses.h>
 #include <setjmp.h>
-#include <stdbool.h>                    //lint !e537
-#include <stdio.h>                      //lint !e537
+#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include <ncurses.h>
+
 #include "teco.h"
 #include "ascii.h"
-#include "cbuf.h"
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
@@ -43,6 +43,9 @@
 #include "exec.h"
 #include "qreg.h"
 #include "term.h"
+
+#include "cbuf.h"
+
 
 enum
 {
@@ -330,12 +333,7 @@ void read_cmd(void)
 
     last_in = EOF;
 
-    // We don't reset the terminal buffer until we get here, because the user
-    // might enter a "*q" immediate-action command to save the contents of the
-    // terminal buffer in a Q-register.
-
     reset_tbuf();                       // Reset terminal buffer
-    f.e0.error = false;                 // And say we have no error to print
 
     // Read characters until we have a complete command string.
 
@@ -504,6 +502,11 @@ static int read_first(void)
                 break;
 
             case '?':                   // Display erroneous command string
+                if (!f.e0.error)        // But if no error message to print,
+                {
+                    return c;           //  then treat it as a normal character
+                }
+
                 echo_in('?');
                 print_error();
                 echo_in('?');

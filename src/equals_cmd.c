@@ -26,18 +26,16 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
-#include "cbuf.h"
-#include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 #include "term.h"
+
+#include "cbuf.h"
 
 
 #if     defined(TECO_LONG)

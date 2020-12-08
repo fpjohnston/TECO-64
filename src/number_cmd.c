@@ -26,17 +26,15 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <stdbool.h>
-#include <string.h>
 
 #include "teco.h"
-#include "cbuf.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
-#include "term.h"
+
+#include "cbuf.h"
 
 
 ///  @var    MAX_DIGITS
