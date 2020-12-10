@@ -263,6 +263,14 @@ uint build_string(char **dest, const char *src, uint len)
         store_chr(c);
     }
 
+    // We terminate the string with a NUL character for the benefit of file
+    // functions that use the string for C library functions, but we don't
+    // want to count the NUL if we were called by any search functions.
+
+    store_chr(NUL);                     // Ensure it's NUL-terminated
+
+    --build_len;                        // But don't count the NUL
+
     *dest = build_str;
 
     last_len = build_len;

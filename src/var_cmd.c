@@ -27,6 +27,7 @@
 #include <assert.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -34,8 +35,7 @@
 #include "exec.h"
 #include "page.h"
 #include "qreg.h"
-
-#include "cbuf.h"
+#include "term.h"
 
 
 ///
@@ -164,6 +164,8 @@ bool scan_ctrl_up(struct cmd *cmd)
     assert(cmd != NULL);
 
     int c = require_cbuf();
+
+    trace_cbuf(c);
 
     push_x(c, X_OPERAND);
 

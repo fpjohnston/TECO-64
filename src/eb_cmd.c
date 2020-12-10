@@ -58,7 +58,13 @@ void exec_EB(struct cmd *cmd)
 
     assert(buf != NULL);                // Error if no buffer
 
-    struct ifile *ifile = open_input(buf, len, istream, cmd->colon);
+    char *name = init_filename(buf, len, cmd->colon);
+    struct ifile *ifile = NULL;
+
+    if (name != NULL)
+    {
+        ifile = open_input(name, istream, cmd->colon);
+    }
 
     // Note: open_input() only returns NULL for colon-modified command.
 
@@ -69,7 +75,7 @@ void exec_EB(struct cmd *cmd)
         return;
     }
 
-    struct ofile *ofile = open_output(buf, len, ostream, cmd->colon, 'B');
+    struct ofile *ofile = open_output(name, ostream, cmd->colon, 'B');
 
     ofile->backup = true;               // Create backup file on close
 

@@ -61,7 +61,13 @@ void exec_ER(struct cmd *cmd)
 
     assert(buf != NULL);                // Error if no buffer
 
-    struct ifile *ifile = open_input(buf, len, istream, cmd->colon);
+    char *name = init_filename(buf, len, cmd->colon);
+    struct ifile *ifile = NULL;
+
+    if (name != NULL)
+    {
+        ifile = open_input(name, istream, cmd->colon);
+    }
 
     // Note: open_input() only returns NULL for colon-modified command.
 

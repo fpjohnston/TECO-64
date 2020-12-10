@@ -27,12 +27,12 @@
 #include <assert.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
-
-#include "cbuf.h"
+#include "term.h"
 
 
 #define NO_POP      (bool)false         ///< Pop loop stack at end of loop
@@ -382,22 +382,38 @@ bool scan_gt(struct cmd *cmd)
 
     if (!f.e1.xoper || nparens == 0)
     {
+        (void)parse_escape(cmd);
+
         return false;
     }
 
-    int c = peek_cbuf();
+    (void)parse_oper(cmd);
 
-    if (c == '=')                       // >= operator
+    // The following is necessary to handle the situation where a '>' command
+    // is a relational operator (or part therefore) and not the end of a loop.
+
+    if (cmd->n_set)
+    {
+        cmd->n_set = false;
+
+        push_x(cmd->n_arg, X_OPERAND);
+    }
+
+    int c;
+
+    if ((c = peek_cbuf()) == '=')       // >= operator
     {
         next_cbuf();      
+        trace_cbuf(c);
 
         cmd->c2 = (char)c;
 
         push_x(0, X_GE);
     }
-    else if (c == '>')                  // >> operator
+    else if ((c = peek_cbuf()) == '>')  // >> operator
     {
         next_cbuf();      
+        trace_cbuf(c);
 
         cmd->c2 = (char)c;
 
@@ -405,8 +421,6 @@ bool scan_gt(struct cmd *cmd)
     }
     else                                // > operator
     {
-        cmd->c2 = (char)c;
-
         push_x(0, X_GT);
     }
 
@@ -437,11 +451,22 @@ bool scan_lt(struct cmd *cmd)
         return false;
     }
 
+    // The following is necessary to handle the situation where a '<' command
+    // is a relational operator (or part therefore) and not the start of a loop.
+
+    if (cmd->n_set)
+    {
+        cmd->n_set = false;
+
+        push_x(cmd->n_arg, X_OPERAND);
+    }
+
     int c = peek_cbuf();
 
     if (c == '=')                       // <= operator
     {
         next_cbuf();      
+        trace_cbuf(c);
 
         cmd->c2 = (char)c;
 
@@ -450,6 +475,7 @@ bool scan_lt(struct cmd *cmd)
     else if (c == '>')                  // <> operator
     {
         next_cbuf();      
+        trace_cbuf(c);
 
         cmd->c2 = (char)c;
 
@@ -458,13 +484,14 @@ bool scan_lt(struct cmd *cmd)
     else if (c == '<')                  // << operator
     {
         next_cbuf();      
+        trace_cbuf(c);
+
+        cmd->c2 = (char)c;
 
         push_x(0, X_LSHIFT);
     }
     else                                // < operator
     {
-        cmd->c2 = (char)c;
-
         push_x(0, X_LT);
     }
 

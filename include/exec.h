@@ -185,6 +185,8 @@ extern bool parse_nc1(struct cmd *cmd);
 
 extern bool parse_ncq(struct cmd *cmd);
 
+extern bool parse_nq(struct cmd *cmd);
+
 extern bool parse_oper(struct cmd *cmd);
 
 extern bool parse_q1(struct cmd *cmd);
@@ -303,6 +305,8 @@ extern void exec_EI(struct cmd *cmd);
 extern void exec_EK(struct cmd *cmd);
 
 extern void exec_EL(struct cmd *cmd);
+
+extern void exec_EM(struct cmd *cmd);
 
 extern void exec_EN(struct cmd *cmd);
 

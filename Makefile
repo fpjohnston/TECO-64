@@ -118,6 +118,7 @@ SOURCES = \
     ei_cmd.c       \
     ek_cmd.c       \
     el_cmd.c       \
+    em_cmd.c       \
     en_cmd.c       \
     eo_cmd.c       \
     ep_cmd.c       \

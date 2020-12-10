@@ -88,13 +88,13 @@ struct ifile *find_command(char *file, uint len, uint stream, bool colon)
         type = TEC_NAME;
     }
 
-    char name[len + 1];                 // Directory, name, and type
+    char *name = alloc_mem(len + 1);
+    int nbytes = snprintf(name, (ulong)len + 1, "%s%s%s", dir, base, type);
+    struct ifile *ifile;
 
-    len = (uint)snprintf(name, sizeof(name), "%s%s%s", dir, base, type);
+    assert((uint)nbytes < len + 1);
 
-    struct ifile *ifile = open_input(name, len, stream, (bool)true);
-
-    if (ifile != NULL)
+    if ((ifile = open_input(name, stream, (bool)true)) != NULL)
     {
         return ifile;
     }
@@ -103,15 +103,15 @@ struct ifile *find_command(char *file, uint len, uint stream, bool colon)
 
     if (dir[0] != '/' && teco_library != NULL)
     {
-        uint libsize = (uint)strlen(teco_library);
-        char libname[libsize + 1 + (uint)strlen(name) + 1];
+        len = (uint)(strlen(teco_library) + 1 + strlen(name));
 
-        len = (uint)snprintf(libname, sizeof(libname), "%s/%s", teco_library,
-                             name);
+        char *libname = alloc_mem(len + 1);
 
-        ifile = open_input(libname, len, stream, (bool)true);
+        nbytes = snprintf(libname, (ulong)len + 1, "%s/%s", teco_library, name);
 
-        if (ifile != NULL)
+        assert((uint)nbytes < len + 1);
+
+        if ((ifile = open_input(libname, stream, (bool)true)) != NULL)
         {
             return ifile;
         }

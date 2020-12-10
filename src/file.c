@@ -116,7 +116,7 @@ void close_input(uint stream)
         ifile->fp = NULL;
     }
 
-    ifile->cr   = false;
+    ifile->cr = false;
 
     free_mem(&ifile->name);
 }
@@ -200,47 +200,71 @@ void init_files(void)
 
 ///
 ///  @brief    Create a file name specification in file name buffer. We copy
-///            from the specified text string, skipping any characters, such as
+///            from the specified text string, skipping any characters such as
 ///            spaces or control characters, that aren't normal graphic char-
 ///            acters. We also ensure that the file name ends with a NUL, since
 ///            that's the required format for library calls such as fopen().
 ///
-///  @returns  Nothing.
+///  @returns  Pointer to translated file name.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_filename(char **name, const char *buf, uint len)
+char *init_filename(const char *buf, uint len, bool colon)
 {
-    assert(name != NULL);               // Error if no output file name
-    assert(buf != NULL);                // Error if no input file name
-    assert(len != 0);                   // Error if input name is a null string
+    assert(buf != NULL);                // Error if no file name
+    assert(len != 0);                   // Error if name is a null string
 
-    // Check the file name for invalid characters. Currently, this just means
-    // ignoring whitespace, and issuing an error for any other control or
-    // non-ASCII characters. Other characters could be checked, depending on
-    // what is valid for a specfic operating system.
+    // First, replace an initial "~" (tilde) with the user's home directory.
+    // This is the only change we make that increases the length of the file
+    // specification, other than the call to build_string().
 
     const char *home = getenv("HOME");
     uint homelen = (home != NULL) ? (uint)strlen(home) : 0;
-    char path[homelen + len + 1], *p = path;
-    uint ncopied = 0;
+    char path[homelen + len + 1];
+    char *name, *src, *dst;
+
+    // Skip any leading whitespace
+
+    while (len > 0 && isspace(*buf))
+    {
+        ++buf;
+        --len;
+    }
 
     // Replace initial tilde (~) with home directory.
 
     if (buf[0] == '~' && home != NULL)
     {
-        ++buf;
-        --len;
-
-        ncopied = (uint)sprintf(path, "%s", home);
-        p += ncopied;
+        len = (uint)snprintf(path, sizeof(path), "%s%.*s", home, len - 1,
+                             buf + 1);
+    }
+    else
+    {
+        len = (uint)snprintf(path, sizeof(path), "%.*s", len, buf);
     }
 
-    while (len-- > 0)
-    {
-        int c = *buf++;
+    assert((int)len > 0);
+    assert(len < sizeof(path));
 
-        if (isspace(c))
+    // Next, translate any match control characters in the file specification.
+    // Note that the allocated string includes a terminating NUL, but it is
+    // not included in the returned length.
+
+    len = build_string(&name, path, len);
+
+    // Finally, discard any NUL or whitespace characters, and ensure that the
+    // file spec. doesn't have any other control or non-ASCII characters. This
+    // means the resultant string will be the same length or shorter than we
+    // started with, but never longer. Hencequently, we are able to copy it in
+    // place and don't need to allocate another buffer.
+
+    src = dst = name;
+
+    for (uint i = 0; i < len; ++i)
+    {
+        int c = *src++;
+
+        if (isspace(c) || c == NUL)
         {
             ;
         }
@@ -250,21 +274,31 @@ void init_filename(char **name, const char *buf, uint len)
         }
         else
         {
-            *p++ = (char)c;
-            ++ncopied;
+            *dst++ = (char)c;
         }
     }
 
-    *p = NUL;
+    *dst = NUL;
 
-    if (*name != NULL)                  // Deallocate any existing name
+    if (*name == NUL)
     {
-        free_mem(name);
+        free_mem(&name);
+
+        if (colon)
+        {
+            return NULL;
+        }
+
+        char file[len + 1];
+
+        sprintf(file, "%.*s", (int)len, buf);
+
+        throw(E_FNF, file);
     }
-
-    // The following allows the use of string building characters in filenames.
-
-    (void)build_string(name, path, ncopied);
+    else
+    {
+        return name;
+    }
 }
 
 
@@ -278,7 +312,7 @@ void init_filename(char **name, const char *buf, uint len)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool open_command(const char *buf, uint len, uint stream, bool colon,
+bool open_command(char *name, uint len, uint stream, bool colon,
                   struct buffer *text)
 {
     if (len == 0)                       // Any file to open?
@@ -286,12 +320,8 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
         return false;
     }
 
-    assert(buf != NULL);                // Error if no input file name
+    assert(name != NULL);               // Error if no input file name
     assert(text != NULL);               // Error if no edit buffer
-
-    char name[len + 1];                 // NUL-terminated file name
-
-    (void)snprintf(name, sizeof(name), "%.*s", (int)len, buf);
 
     struct ifile *ifile = find_command(name, len, stream, colon);
 
@@ -349,7 +379,7 @@ bool open_command(const char *buf, uint len, uint stream, bool colon,
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
+struct ifile *open_input(char *name, uint stream, bool colon)
 {
     assert(name != NULL);               // Error if no input file name
 
@@ -357,7 +387,7 @@ struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
 
     struct ifile *ifile = &ifiles[stream];
 
-    init_filename(&ifile->name, name, len);
+    ifile->name = name;
 
     struct stat file_stat;
 
@@ -397,18 +427,17 @@ struct ifile *open_input(const char *name, uint len, uint stream, bool colon)
 
 ///
 ///  @brief    Open file for output. We are called to handle opens for EB, EL,
-///            EW, and EZ commands.
+///            EW, and E% commands.
 ///
 ///  @returns  Output file stream if success, NULL if failure. Note that a NULL
 ///            can only be returned if the colon flag was set.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
-                          int c)
+struct ofile *open_output(char *name, uint stream, bool colon, int c)
 {
     assert(name != NULL);               // Error if no output file name
-    assert(strchr("BLWZ", c) != NULL);  // Error if unexpected command
+    assert(strchr("BLW%", c) != NULL);  // Ensure it's EB, EL, EW, or E%
 
     struct ofile *ofile = &ofiles[stream];
 
@@ -419,7 +448,7 @@ struct ofile *open_output(const char *name, uint len, uint stream, bool colon,
         throw(E_OFO);                   // Output file is already open
     }
 
-    init_filename(&ofile->name, name, len);
+    ofile->name = name;
 
     // If the output file already exists, then we create a temporary file and
     // open that instead. That allows us to make off any changes in the event

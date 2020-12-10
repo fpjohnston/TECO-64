@@ -33,6 +33,7 @@
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
+#include "term.h"
 
 #include "cbuf.h"
 #include "commands.h"
@@ -69,9 +70,95 @@ const struct cmd null_cmd =
 
 // Local functions
 
+static bool echo_cmd(int c);
+
 static inline exec_func *scan_cmd(struct cmd *cmd, int c);
 
 static void scan_text(int delim, struct tstring *text);
+
+
+///
+///  @brief    Check to see if we want to echo current command/character.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static bool echo_cmd(int c)
+{
+    if (c == SPACE)
+    {
+        if (f.trace.nospace)            // Skipping spaces?
+        {
+            return false;               // Don't execute space
+        }
+    }
+    else if (c == LF)
+    {
+        if (f.trace.noblank)
+        {
+            uint pos = cbuf->pos;       // Save start of next line
+
+            while ((c = peek_cbuf()) != EOF)
+            {
+                if (c == TAB || !isspace(c))
+                {
+                    cbuf->pos = pos;    // Reset to start of line
+
+                    return true;        // Execute non-blank line
+                }
+
+                if (c == LF)
+                {
+                    pos = cbuf->pos + 1; // Skip blank line
+                }
+
+                next_cbuf();
+            }
+
+            return false;               // Don't execute blank lines
+        }
+        else if (f.trace.nowhite)
+        {
+            return false;
+        }
+    }
+    else if (c == CR || c == VT || c == FF)
+    {
+        if (f.trace.nowhite)            // Echoing line delimiters?
+        {
+            return false;               // Don't execute line delimiter
+        }
+    }
+    else if (c == '!')                  // Check for echoing comments
+    {
+        if (f.trace.nobang && peek_cbuf() == ' ')
+        {
+            do
+            {
+                next_cbuf();
+            } while (peek_cbuf() != '!');
+
+            next_cbuf();
+
+            return false;               // Don't execute comment
+        }
+        else if (f.trace.nobang2 && peek_cbuf() == '!' && f.e1.bang)
+        {
+            do
+            {
+                next_cbuf();
+            } while (peek_cbuf() != LF);
+
+            return false;               // Don't execute comment
+        }
+    }
+
+    echo_in(c);
+
+    return true;                        // Execute command
+}
+
 
 ///
 ///  @brief    Execute command string.
@@ -90,6 +177,11 @@ void exec_cmd(struct cmd *cmd)
 
     while ((c = fetch_cbuf()) != EOF)
     {
+        if (f.trace.flag != 0 && !echo_cmd(c))
+        {
+            continue;
+        }
+
         exec_func *exec;
 
         // The specific check for a space is an optimization which was found
@@ -100,7 +192,10 @@ void exec_cmd(struct cmd *cmd)
             continue;
         }
 
-        (*exec)(cmd);
+        if (f.e0.exec)
+        {
+            (*exec)(cmd);
+        }
 
         if (f.e0.ctrl_c)
         {
@@ -168,14 +263,22 @@ static inline exec_func *scan_cmd(struct cmd *cmd, int c)
 
         if (c == '^')
         {
-            if ((c = require_cbuf()) == '^')
+            c = require_cbuf();
+
+            trace_cbuf(c);
+
+            if (c == '^')               // Command is ^^x
             {
-                push_x(require_cbuf(), X_OPERAND);
+                c = require_cbuf();
+
+                trace_cbuf(c);
+
+                push_x(c, X_OPERAND);
 
                 return NULL;
             }
 
-            c = 1 + toupper(c) - 'A';
+            c = 1 + toupper(c) - 'A';   // Change ^x to equivalent control chr.
 
             if (c <= NUL || c >= SPACE)
             {
@@ -188,7 +291,9 @@ static inline exec_func *scan_cmd(struct cmd *cmd, int c)
         }
         else if (c == 'E' || c == 'e')
         {
-            c = require_cbuf();
+            c = require_cbuf();         // Get 2nd chr. in E command
+
+            trace_cbuf(c);
 
             if ((uint)c > e_max || (e_table[c].scan == NULL &&
                                     e_table[c].exec == NULL))
@@ -202,7 +307,9 @@ static inline exec_func *scan_cmd(struct cmd *cmd, int c)
         }
         else if (c == 'F' || c == 'f')
         {
-            c = require_cbuf();
+            c = require_cbuf();         // Get 2nd chr. in F command
+
+            trace_cbuf(c);
 
             if ((uint)c > f_max || (f_table[c].scan == NULL &&
                                     f_table[c].exec == NULL))
@@ -294,7 +401,7 @@ static void scan_text(int delim, struct tstring *text)
 
     text->len = (uint)(end - text->data);
 
-    if (f.e0.trace)
+    if (f.trace.enable)
     {
         const char *p = text->data;
 
@@ -335,15 +442,19 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
     {
         int c;
 
-        while ((c = require_cbuf()) != TAB && isspace(c))
+        while ((c = peek_cbuf()) != TAB && isspace(c))
         {
-            ;
+            next_cbuf();                // Skip the whitespace character
         }
+
+        c = require_cbuf();             // Get text string delimiter
 
         if (!isgraph(c))
         {
             throw(E_ATS);               // Invalid delimiter
         }
+
+        trace_cbuf(c);
 
         cmd->delim = (char)c;
     }
@@ -375,13 +486,19 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
     int c;
 
-    while ((c = peek_cbuf()) != EOF && isspace(c) && c != TAB)
+    while ((c = peek_cbuf()) != TAB && isspace(c))
     {
-        next_cbuf();                    // Skip whitespace character
+        next_cbuf();                    // Skip the whitespace character
     }
 
     c = require_cbuf();                 // Get text string delimiter
 
+    if (!isgraph(c))
+    {
+        throw(E_ATS);                   // Invalid delimiter
+    }
+
+    trace_cbuf(c);
     scan_text(c == '{' ? '}' : c, &cmd->text2);
 }
 

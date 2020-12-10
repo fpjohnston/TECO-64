@@ -42,12 +42,5 @@ void exec_trace(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (f.e0.trace)                     // If tracing is on, turn it off
-    {
-        f.e0.trace  = false;
-    }
-    else                                // If tracing is off, turn it on
-    {
-        f.e0.trace = true;
-    }
+    f.trace.enable = !f.trace.enable;   // Invert current tracing state
 }

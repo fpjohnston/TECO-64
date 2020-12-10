@@ -60,9 +60,15 @@ void exec_EW(struct cmd *cmd)
 
     assert(buf != NULL);                // Error if no buffer
 
-    struct ofile *ofile = open_output(buf, len, ostream, cmd->colon, 'W');
+    char *name = init_filename(buf, len, cmd->colon);
+    struct ofile *ofile = NULL;
 
-    ofile->backup = true;               // Create backup file on close
+    if (name != NULL)
+    {
+        ofile = open_output(name, ostream, cmd->colon, 'W');
+
+        ofile->backup = true;           // Create backup file on close
+    }
 
     // Note: open_output() only returns NULL for colon-modified command.
 

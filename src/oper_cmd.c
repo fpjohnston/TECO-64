@@ -27,12 +27,12 @@
 #include <assert.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
-
-#include "cbuf.h"
+#include "term.h"
 
 
 ///
@@ -99,11 +99,14 @@ bool scan_div(struct cmd *cmd)
 
     // Check for double slash remainder operator.
 
-    if (f.e1.xoper && nparens != 0 && peek_cbuf() == '/')
+    int c;
+
+    if (f.e1.xoper && nparens != 0 && (c = peek_cbuf()) == '/')
     {
         next_cbuf();      
+        trace_cbuf(c);
 
-        cmd->c2 = '/';
+        cmd->c2 = (char)c;
 
         push_x(0, X_REM);
     }

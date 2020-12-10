@@ -42,6 +42,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
@@ -51,8 +52,7 @@
 #include "file.h"
 #include "qreg.h"
 #include "search.h"
-
-#include "cbuf.h"
+#include "term.h"
 
 
 struct flags f;                     ///< Global flag variables
@@ -74,6 +74,7 @@ static void init_teco(int argc, const char * const argv[]);
 
 int main(int argc, const char * const argv[])
 {
+    f.e0.flag = 0;
     f.e0.init = true;                   // Starting TECO
     init_teco(argc, argv);              // Initialize variables and things
     f.e0.init = (cbuf->pos != cbuf->len); // Reset if no initial command string
@@ -87,8 +88,7 @@ int main(int argc, const char * const argv[])
             case MAIN_NORMAL:           // Normal entry
                 refresh_dpy();          // Update display if needed
 
-                f.e0.trace = false;     // Disable tracing
-
+                f.trace.flag = 0;       // Switch off all tracing bits
                 f.et.abort = false;     // Don't abort on error
 
                 nparens = 0;            // Reset parenthesis count

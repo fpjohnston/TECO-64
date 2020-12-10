@@ -27,11 +27,10 @@
 #include <assert.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
-
-#include "cbuf.h"
 
 
 static uint macro_depth = 0;            ///< Current macro depth

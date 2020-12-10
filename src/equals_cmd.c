@@ -30,12 +30,12 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cbuf.h"
+#include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 #include "term.h"
-
-#include "cbuf.h"
 
 
 #if     defined(TECO_LONG)
@@ -197,6 +197,8 @@ bool scan_equals(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    int c;
+
     // An equals sign inside parentheses might be an extended operator.
 
     if (nparens != 0 && f.e1.xoper)
@@ -206,13 +208,12 @@ bool scan_equals(struct cmd *cmd)
         reject_colon(cmd);
         reject_atsign(cmd);
 
-        int c = require_cbuf();
-
-        if (c != '=')
+        if (require_cbuf() != '=')
         {
             throw(E_ARG);
         }
 
+        trace_cbuf('=');
         push_x(0, X_EQ);
 
         return true;
@@ -221,13 +222,19 @@ bool scan_equals(struct cmd *cmd)
     reject_m(cmd);
     reject_dcolon(cmd);
 
-    if (peek_cbuf() == '=')
+    if ((c = peek_cbuf()) == '=')
     {
-        cmd->c2 = (char)fetch_cbuf();
+        next_cbuf();
+        trace_cbuf(c);
 
-        if (peek_cbuf() == '=')
+        cmd->c2 = (char)c;
+
+        if ((c = peek_cbuf()) == '=')
         {
-            cmd->c3 = (char)fetch_cbuf();
+            next_cbuf();
+            trace_cbuf(c);
+
+            cmd->c3 = (char)c;
         }
     }
 

@@ -61,8 +61,29 @@ void exec_EQ(struct cmd *cmd)
         .data = NULL,
     };
 
-    if (open_command(buf, len, stream, cmd->colon, &text))
+    char *name = init_filename(buf, len, cmd->colon);
+
+    if (name == NULL)
+    {
+        push_x(0, X_OPERAND);
+
+        return;
+    }
+
+    if (open_command(name, len, stream, cmd->colon, &text))
     {
         store_qtext(cmd->qindex, &text);
+
+        if (cmd->colon)
+        {
+            push_x(-1, X_OPERAND);
+        }
+    }
+    else
+    {
+        if (cmd->colon)
+        {
+            push_x(0, X_OPERAND);
+        }
     }
 }

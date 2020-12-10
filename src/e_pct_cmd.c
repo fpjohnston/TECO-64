@@ -60,7 +60,13 @@ void exec_E_pct(struct cmd *cmd)
 
     assert(buf != NULL);                // Error if no buffer
 
-    struct ofile *ofile = open_output(buf, len, stream, cmd->colon, 'Z');
+    char *name = init_filename(buf, len, cmd->colon);
+    struct ofile *ofile = NULL;
+
+    if (name != NULL)
+    {
+        ofile = open_output(name, stream, cmd->colon, '%');
+    }
 
     // Note: open_output() only returns NULL for colon-modified command.
 

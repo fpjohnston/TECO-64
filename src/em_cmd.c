@@ -1,6 +1,6 @@
 ///
-///  @file    el_cmd.c
-///  @brief   Execute EL command.
+///  @file    em_cmd.c
+///  @brief   Execute EM command.
 ///
 ///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -25,60 +25,60 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "teco.h"
-#include "estack.h"
+#include "eflags.h"
 #include "exec.h"
-#include "file.h"
+#include "qreg.h"
 
 
 ///
-///  @brief    Execute "EL" command: open or close log file.
-///
-///            ELfile`         - open log file for write.
-///            EL`             - close log file.
+///  @brief    Execute "EM" command: echo macro in Q-register according to bits
+///            set in specified Q-register. Used to "squish" macros.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EL(struct cmd *cmd)
+void exec_EM(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    const char *buf = cmd->text1.data;
-    uint len = cmd->text1.len;
-    uint stream = OFILE_LOG;
+    struct qreg *qreg = get_qreg(cmd->qindex);
 
-    close_output(stream);
+    assert(qreg != NULL);               // Error if no Q-register
 
-    if (len == 0)
+    if (qreg->text.len == 0)            // Nothing to do if no text
     {
         return;
     }
 
-    assert(buf != NULL);                // Error if no buffer
+    f.trace.nospace = false;
+    f.trace.noblank = false;
+    f.trace.nowhite = false;
+    f.trace.nobang  = false;
 
-    char *name = init_filename(buf, len, cmd->colon);
-    struct ofile *ofile = NULL;
-
-    if (name != NULL)
+    if (cmd->n_set)
     {
-        ofile = open_output(name, stream, cmd->colon, 'L');
+        f.trace.nospace = (cmd->n_arg & 1)  ? true : false;
+        f.trace.noblank = (cmd->n_arg & 2)  ? true : false;
+        f.trace.nowhite = (cmd->n_arg & 4)  ? true : false;
+        f.trace.nobang  = (cmd->n_arg & 8)  ? true : false;
+        f.trace.nobang2 = (cmd->n_arg & 16) ? true : false;
     }
 
-    // Note: open_output() only returns NULL for colon-modified command.
+    // We make a private copy of the Q-register, since some of the structure
+    // members can get modified while processing the macro (esp. len).
 
-    if (ofile == NULL)
-    {
-        push_x(0, X_OPERAND);
-    }
-    else if (cmd->colon)
-    {
-        push_x(-1, X_OPERAND);
-    }
+    struct buffer macro = qreg->text;
+    bool trace = f.trace.enable;
+    bool exec = f.e0.exec;
+
+    f.trace.enable = true;
+    f.e0.exec = false;
+
+    exec_macro(&macro, cmd);
+
+    f.e0.exec = exec;
+    f.trace.enable = trace;
 }

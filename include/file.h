@@ -101,18 +101,16 @@ extern struct ifile *find_command(char *base, uint len, uint stream,
 
 extern int get_wild(void);
 
-extern void init_filename(char **name, const char *buf, uint len);
+extern char *init_filename(const char *buf, uint len, bool colon);
 
 extern void init_files(void);
 
-extern bool open_command(const char *buf, uint len, uint stream, bool colon,
+extern bool open_command(char *buf, uint len, uint stream, bool colon,
                          struct buffer *text);
 
-extern struct ifile *open_input(const char *name, uint len, uint stream,
-                                bool colon);
+extern struct ifile *open_input(char *name, uint stream, bool colon);
 
-extern struct ofile *open_output(const char *name, uint len, uint stream,
-                                 bool colon, int c);
+extern struct ofile *open_output(char *name, uint stream, bool colon, int c);
 
 extern FILE *open_temp(char **temp, const char *oname);
 

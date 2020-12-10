@@ -28,11 +28,11 @@
 #include <ctype.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "exec.h"
-
-#include "cbuf.h"
+#include "term.h"
 
 
 #define NO_ELSE     (bool)false         ///< Don't execute | command
@@ -412,6 +412,8 @@ bool scan_quote(struct cmd *cmd)
     }
 
     int c = require_cbuf();             // Get test condition
+
+    trace_cbuf(c);
 
     cmd->c2 = (char)c;
 

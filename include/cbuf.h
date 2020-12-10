@@ -28,13 +28,6 @@
 
 #define _CBUF_H
 
-#include "eflags.h"                 //lint !e537
-#include "term.h"                   //lint !e537
-
-///  @def    trace_cbuf
-///  @brief  Echo input character if tracing is enabled.
-
-#define trace_cbuf(c)  if (f.e0.trace) echo_in(c)
 
 // Command buffer variable
 
@@ -70,8 +63,6 @@ static inline int fetch_cbuf(void)
 
     int c = cbuf->data[cbuf->pos++];
 
-    trace_cbuf(c);
-
     return c;
 }
 
@@ -87,9 +78,7 @@ static inline void next_cbuf(void)
 {
     if (cbuf->pos < cbuf->len)
     {
-        int c = cbuf->data[cbuf->pos++];
-
-        trace_cbuf(c);
+        ++cbuf->pos;
     }
 }
 
@@ -129,10 +118,17 @@ static inline int require_cbuf(void)
 
     int c = cbuf->data[cbuf->pos++];
 
-    trace_cbuf(c);
-
     return c;
 }
 
+
+///
+///  @brief    Echo character if tracing.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#define trace_cbuf(c) if (f.trace.enable) echo_in(c)
 
 #endif  // !defined(_CBUF_H)

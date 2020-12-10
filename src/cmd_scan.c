@@ -33,6 +33,7 @@
 #include "estack.h"
 #include "file.h"
 #include "qreg.h"
+#include "term.h"
 
 #include "cbuf.h"
 
@@ -85,14 +86,17 @@ bool scan_colon(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (peek_cbuf() == ':')             // Double colon?
-    {
-        next_cbuf();                   // Yes, count it
+    int c;
 
+    if ((c = peek_cbuf()) == ':')       // Double colon?
+    {
         if (cmd->dcolon && f.e2.colon)
         {
             throw(E_COL);               // Too many colons
         }
+
+        next_cbuf();                    // Yes, count it
+        trace_cbuf(c);
 
         cmd->dcolon = true;             // And flag it
     }
@@ -106,7 +110,7 @@ bool scan_colon(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "@X/text1/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -126,7 +130,7 @@ bool parse_1(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "@X/text1/text2/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -146,7 +150,7 @@ bool parse_2(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "+m,nX".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -166,7 +170,7 @@ bool parse_M(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "+m,n@X/text1/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -186,7 +190,7 @@ bool parse_M1(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "+m,n:X".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -206,7 +210,7 @@ bool parse_Mc(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "+m,n:@X/text1/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -226,7 +230,7 @@ bool parse_Mc1(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "+m,n:@X/text1/text2/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -246,7 +250,7 @@ bool parse_Mc2(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "+m,n:Xq".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -267,7 +271,7 @@ bool parse_Mcq(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "+m,n:Xq".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -287,8 +291,8 @@ bool parse_Mcq1(struct cmd *cmd)
 
 ///
 ///  @brief    Parse command with format "+n@X/text1/".
-///
-///  @returns  true if command is an operand or operator, else false.
+////
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -307,7 +311,7 @@ bool parse_N1(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "X" (no arguments).
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -327,7 +331,7 @@ bool parse_X(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format ":X".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -347,7 +351,7 @@ bool parse_c(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format ":@X/text1/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -367,7 +371,7 @@ bool parse_c1(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format ":@Xq/text1/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -388,7 +392,7 @@ bool parse_cq1(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "::@X/text1/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -409,7 +413,7 @@ bool parse_d1(struct cmd *cmd)
 ///            accept m and n arguments, but just consume them without using
 ///            them.
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -589,7 +593,7 @@ bool parse_flag2(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "m,n@X/text1/text2/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -608,7 +612,7 @@ bool parse_m2(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format " m,n:X".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -627,7 +631,7 @@ bool parse_mc(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "m,n:@X/text1/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -646,7 +650,7 @@ bool parse_mc1(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "m,n:@X/text1/text2/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -665,7 +669,7 @@ bool parse_mc2(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "m,n:Xq".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -684,7 +688,7 @@ bool parse_mcq(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "m,n::@X/text1/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -702,7 +706,7 @@ bool parse_md1(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "m,n::@X/text1/text2/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -720,7 +724,7 @@ bool parse_md2(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "m,nXq".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -740,7 +744,7 @@ bool parse_mq(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "nX".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -759,7 +763,7 @@ bool parse_n(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "n:X".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -778,7 +782,7 @@ bool parse_nc(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "n:@X/text1/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -797,7 +801,7 @@ bool parse_nc1(struct cmd *cmd)
 ///
 ///  @brief    Parse command with format "n:Xq".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -815,9 +819,29 @@ bool parse_ncq(struct cmd *cmd)
 
 
 ///
+///  @brief    Parse command with format "nXq".
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool parse_nq(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd);
+    reject_colon(cmd);
+    reject_atsign(cmd);
+    scan_qreg(cmd);
+
+    return false;
+}
+
+
+///
 ///  @brief    Parse operand or operator.
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  true (command is an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -828,15 +852,14 @@ bool parse_oper(struct cmd *cmd)
     reject_colon(cmd);
     reject_atsign(cmd);
 
-    return false;
-
+    return true;
 }
 
 
 ///
 ///  @brief    Parse command with format "@Xq/text1/".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -857,7 +880,7 @@ bool parse_q1(struct cmd *cmd)
 ///
 ///  @brief    Scan nothing.
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

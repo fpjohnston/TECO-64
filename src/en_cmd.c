@@ -68,15 +68,12 @@ void exec_EN(struct cmd *cmd)
     }
     else                                // Have filespec, so must set it
     {
-        char *temp = NULL;
+        char *name = init_filename(cmd->text1.data, cmd->text1.len, cmd->colon);
+        char filespec[strlen(name) + 1];
 
-        init_filename(&temp, cmd->text1.data, cmd->text1.len);
+        strcpy(filespec, name);
 
-        char filespec[strlen(temp) + 1];
-
-        strcpy(filespec, temp);
-
-        free_mem(&temp);
+        free_mem(&name);
 
         if (set_wild(filespec))
         {

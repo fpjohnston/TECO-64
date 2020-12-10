@@ -27,6 +27,7 @@
 #include <assert.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -34,8 +35,7 @@
 #include "exec.h"
 #include "file.h"
 #include "page.h"
-
-#include "cbuf.h"
+#include "term.h"
 
 
 ///
@@ -208,7 +208,8 @@ bool scan_P(struct cmd *cmd)
 
     if (c == 'W' || c == 'w')
     {
-        next_cbuf();      
+        next_cbuf();
+        trace_cbuf(c);
 
         cmd->c2 = 'W';
     }

@@ -30,8 +30,10 @@
 #include "teco.h"
 #include "ascii.h"
 #include "cbuf.h"
+#include "eflags.h"
 #include "errcodes.h"
 #include "exec.h"
+#include "term.h"
 
 
 struct buffer *cbuf;                    ///< Current command string buffer

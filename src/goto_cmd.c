@@ -30,12 +30,13 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
-
-#include "cbuf.h"
+#include "file.h"
+#include "term.h"
 
 
 // Local functions
@@ -138,13 +139,10 @@ static void find_tag(struct cmd *cmd, const char *tag)
 
     // The following creates a tag using string building characters, but then
     // sets up a local copy so that we can free up the string that was allocated
-    // by build_string(). This is to avoid memory leaks.
+    // by build_string(). This is to avoid memory leaks in the event of errors.
 
     char *tag1 = NULL;                  // Dynamically-allocated tag name
-
-    (void)build_string(&tag1, tag, (uint)strlen(tag));
-
-    uint len = (uint)strlen(tag1);
+    uint len = build_string(&tag1, tag, (uint)strlen(tag));
     char tag2[len + 1];                 // Local copy of tag name
 
     strcpy(tag2, tag1);
@@ -266,13 +264,19 @@ bool scan_bang(struct cmd *cmd)
 
     require_n(cmd);
 
-    // If feature enabled, !! starts a comment that ends with LF.
+    // If feature enabled, !! starts a comment that ends with LF
+    // (but note that the LF is not counted as part of the command).
 
-    if (f.e1.bang && peek_cbuf() == '!')
+    int c;
+
+    if (f.e1.bang && (c = peek_cbuf()) == '!')
     {
         next_cbuf();      
+        trace_cbuf(c);
 
         scan_texts(cmd, 1, LF);
+
+        --cmd->text1.len;               // Back off the LF
     }
     else
     {

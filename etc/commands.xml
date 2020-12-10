@@ -72,7 +72,7 @@
         <command name=';'       parse='n:X'                         exec='semi'     />
         <command name='&lt;'    parse='nX'         scan='lt'        exec='lt'       />
         <command name='='                          scan='equals'    exec='equals'   />
-        <command name='&gt;'    parse='X$'         scan='gt'        exec='gt'       />
+        <command name='&gt;'    parse='X'          scan='gt'        exec='gt'       />
         <command name='?'       parse='X'                           exec='trace'    />
         <command name='@'                          scan='atsign'                    />
         <command name='A'                          scan='A'         exec='A'        />
@@ -132,6 +132,7 @@
         <command name='EJ'      parse='m,n:X'      scan='EJ'        exec='nop'      />
         <command name='EK'      parse='X'                           exec='EK'       />
         <command name='EL'      parse=':@X//'                       exec='EL'       />
+        <command name='EM'      parse='nXq'                         exec='EM'       />
         <command name='EN'      parse=':@X//'                       exec='EN'       />
         <command name='EO'      parse='n:X'                         exec='EO'       />
         <command name='EP'      parse='X'                           exec='EP'       />

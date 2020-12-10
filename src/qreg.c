@@ -29,6 +29,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errcodes.h"
 #include "exec.h"
 #include "qreg.h"
@@ -598,11 +599,15 @@ void scan_qreg(struct cmd *cmd)
 
     int c = require_cbuf();
 
+    trace_cbuf(c);
+
     if (c == '.')                       // Local Q-register?
     {
         cmd->qlocal = true;             // Yes, mark it
 
         c = require_cbuf();
+
+        trace_cbuf(c);
     }
 
     cmd->qname = (char)c;               // Save the name

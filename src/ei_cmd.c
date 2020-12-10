@@ -111,6 +111,7 @@ void exec_EI(struct cmd *cmd)
     const char *buf = cmd->text1.data;
     uint len        = cmd->text1.len;
     uint stream     = IFILE_INDIRECT;
+    char *name;
 
     close_input(stream);                // Close any open file
 
@@ -132,7 +133,14 @@ void exec_EI(struct cmd *cmd)
 
             ei_new = ei_cmd;
 
-            if (open_command(buf, len, stream, cmd->colon, &ei_new->buf))
+            if ((name = init_filename(buf, len, cmd->colon)) == NULL)
+            {
+                push_x(0, X_OPERAND);
+
+                return;
+            }
+
+            if (open_command(name, len, stream, cmd->colon, &ei_new->buf))
             {
                 exec_macro(&ei_new->buf, cmd);
             }
@@ -146,7 +154,14 @@ void exec_EI(struct cmd *cmd)
         }
         else
         {
-            (void)open_command(buf, len, stream, cmd->colon, &ei_old);
+            if ((name = init_filename(buf, len, cmd->colon)) == NULL)
+            {
+                push_x(0, X_OPERAND);
+
+                return;
+            }
+
+            (void)open_command(name, len, stream, cmd->colon, &ei_old);
         }
     }
 }

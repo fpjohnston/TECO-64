@@ -37,16 +37,20 @@
 ///  @brief   Definition of flags are used internally, and which generally
 ///           cannot be read or set by the user.
 
-struct e0_flag
+union e0_flag
 {
-    uint exec    : 1;           ///< Executing command
-    uint error   : 1;           ///< Last command caused error
-    uint ctrl_c  : 1;           ///< CTRL/C seen
-    uint lower   : 1;           ///< Force string arguments to lower case
-    uint upper   : 1;           ///< Force string arguments to upper case
-    uint display : 1;           ///< Display mode is active
-    uint trace   : 1;           ///< Trace mode is active
-    uint init    : 1;           ///< TECO is initializing
+    int flag;                   ///< Entire E0 flag
+
+    struct
+    {
+        uint exec    : 1;       ///< Executing command
+        uint error   : 1;       ///< Last command caused error
+        uint ctrl_c  : 1;       ///< CTRL/C seen
+        uint lower   : 1;       ///< Force string arguments to lower case
+        uint upper   : 1;       ///< Force string arguments to upper case
+        uint display : 1;       ///< Display mode is active
+        uint init    : 1;       ///< TECO is initializing
+    };
 };
 
 ///  @struct  e1_flag
@@ -195,6 +199,26 @@ union et_flag
     };
 };
 
+///  @struct  trace
+///
+///  @brief   Definition of flags that are used to handle the tracing of
+///           commands during execution.
+
+union trace
+{
+    int flag;                   ///< Entire trace flag
+
+    struct
+    {
+        uint enable  : 1;       ///< Enable tracing
+        uint nospace : 1;       ///< Don't trace spaces
+        uint noblank : 1;       ///< Don't trace blank lines
+        uint nowhite : 1;       ///< Don't trace LF, VT, FF, or CR
+        uint nobang  : 1;       ///< Don't trace tags starting with "! "
+        uint nobang2 : 1;       ///< Don't trace tags starting with "!!"
+    };
+};
+
 ///  @struct  flags
 ///
 ///  @brief   Master flag structure.
@@ -203,7 +227,7 @@ struct flags
 {
     bool       ctrl_e;          ///< Form feed flag
     int        ctrl_x;          ///< Search mode flag
-    struct e0_flag e0;          ///< Internal flags (not settable by user)
+    union  e0_flag e0;          ///< Internal flags (not settable by user)
     union  e1_flag e1;          ///< Extended features
     union  e2_flag e2;          ///< Command restrictions
     union  e3_flag e3;          ///< File I/O features
@@ -215,9 +239,10 @@ struct flags
     int            eo;          ///< TECO version number
     int            es;          ///< Search verification flag
     union  et_flag et;          ///< Terminal flags
-    int         radix;          ///< Current input radix
     int            eu;          ///< Upper/lower case flag
     int            ev;          ///< Edit verify flag
+    int         radix;          ///< Current input radix
+    union trace trace;          ///< Command trace flag
 };
 
 ///  @var    f
