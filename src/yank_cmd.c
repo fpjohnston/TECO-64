@@ -101,9 +101,10 @@ void exec_EY(struct cmd *cmd)
 
 void exec_Y(struct cmd *cmd)
 {
-    // If data in buffer and yank protection is enabled, then abort.
+    // If data in buffer and yank protection is enabled, and an output file
+    // is open, then abort.
 
-    if (t.Z && !f.ed.yank)
+    if (t.Z && !f.ed.yank && ofiles[ostream].fp != NULL)
     {
         throw(E_YCA);                   // Y command aborted
     }

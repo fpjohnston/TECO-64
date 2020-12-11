@@ -550,7 +550,7 @@ bool search_loop(struct search *s)
                     break;
 
                 case SEARCH_U:
-                    if (!f.ed.yank)
+                    if (!f.ed.yank && ofiles[ostream].fp != NULL)
                     {
                         throw(E_YCA);   // Y command aborted
                     }
