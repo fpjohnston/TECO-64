@@ -615,7 +615,7 @@ void scan_qreg(struct cmd *cmd)
     if ((uint)c > countof(qtable) || (cmd->qindex = qtable[c]) == 0)
     {
         throw(E_IQN, cmd->qname);       // Invalid Q-register name
-    }       
+    }
 
     if (cmd->qindex == -1)              // Special Q-registers?
     {

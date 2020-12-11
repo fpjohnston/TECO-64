@@ -278,7 +278,7 @@ bool scan_bang(struct cmd *cmd)
 
     if (f.e1.bang && (c = peek_cbuf()) == '!')
     {
-        next_cbuf();      
+        next_cbuf();
         trace_cbuf(c);
 
         scan_texts(cmd, 1, LF);

@@ -154,7 +154,7 @@ void print_error(void)
             {
                 break;
             }
-            
+
             type_out(c);
         }
     }
@@ -339,7 +339,7 @@ noreturn void throw(int error, ...)
         last_command = alloc_mem(cbuf->pos + 1);
         sprintf(last_command, "%.*s", (int)cbuf->pos, cbuf->data);
     }
-    
+
     // If CTRL/C and we're not executing a command, don't print error.
 
     if (error != E_XAB || f.e0.exec)

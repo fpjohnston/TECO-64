@@ -103,7 +103,7 @@ bool scan_div(struct cmd *cmd)
 
     if (f.e1.xoper && nparens != 0 && (c = peek_cbuf()) == '/')
     {
-        next_cbuf();      
+        next_cbuf();
         trace_cbuf(c);
 
         cmd->c2 = (char)c;

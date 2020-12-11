@@ -403,7 +403,7 @@ bool scan_gt(struct cmd *cmd)
 
     if ((c = peek_cbuf()) == '=')       // >= operator
     {
-        next_cbuf();      
+        next_cbuf();
         trace_cbuf(c);
 
         cmd->c2 = (char)c;
@@ -412,7 +412,7 @@ bool scan_gt(struct cmd *cmd)
     }
     else if ((c = peek_cbuf()) == '>')  // >> operator
     {
-        next_cbuf();      
+        next_cbuf();
         trace_cbuf(c);
 
         cmd->c2 = (char)c;
@@ -465,7 +465,7 @@ bool scan_lt(struct cmd *cmd)
 
     if (c == '=')                       // <= operator
     {
-        next_cbuf();      
+        next_cbuf();
         trace_cbuf(c);
 
         cmd->c2 = (char)c;
@@ -474,7 +474,7 @@ bool scan_lt(struct cmd *cmd)
     }
     else if (c == '>')                  // <> operator
     {
-        next_cbuf();      
+        next_cbuf();
         trace_cbuf(c);
 
         cmd->c2 = (char)c;
@@ -483,7 +483,7 @@ bool scan_lt(struct cmd *cmd)
     }
     else if (c == '<')                  // << operator
     {
-        next_cbuf();      
+        next_cbuf();
         trace_cbuf(c);
 
         cmd->c2 = (char)c;

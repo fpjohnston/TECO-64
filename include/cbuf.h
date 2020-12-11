@@ -98,7 +98,7 @@ static inline int peek_cbuf(void)
     }
 
     return cbuf->data[cbuf->pos];
-}    
+}
 
 
 ///
