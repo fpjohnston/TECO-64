@@ -530,12 +530,14 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     // we just reset the expression stack when we return. If an error occurs,
     // the entire stack will be reset elsewhere.
 
-    uint saved_level = x.level;
     bool match = false;                 // Assume failure
+    uint saved_level = x.level;
     bool saved_exec = f.e0.exec;
+    int saved_trace = f.trace.flag;
     int c;
 
     f.e0.exec = false;
+    f.trace.flag = 0;
 
     while ((c = fetch_cbuf()) != EOF)
     {
@@ -559,6 +561,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
         *cmd = null_cmd;
     }
 
+    f.trace.flag = saved_trace;
     f.e0.exec = saved_exec;
     x.level = saved_level;
 
