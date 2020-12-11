@@ -15,7 +15,7 @@ printed.
 
 Some messages mention a specific character or string of characters
 associated with the error. In these error messages, TECO represents
-any non-printing special characters as described in (TBD).
+any non-printing special characters as described [here](conventions.md).
 
 TECO can also print warning messages. These do not abort the
 command being executed.
