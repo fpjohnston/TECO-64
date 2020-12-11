@@ -115,6 +115,11 @@ static void endif(struct cmd *unused, bool else_ok)
         }
         else if (cmd->c1 == '\'')       // Conditional end
         {
+            if (f.trace.enable && if_depth == start_if)
+            {
+                echo_in(cmd->c1);
+            }
+
             pop_if();
         }
         else if (cmd->c1 == '|')        // Conditional else
@@ -126,6 +131,11 @@ static void endif(struct cmd *unused, bool else_ok)
 
             if (else_ok && if_depth == start_if)
             {
+                if (f.trace.enable)
+                {
+                    echo_in(cmd->c1);
+                }
+
                 break;
             }
         }
