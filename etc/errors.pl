@@ -240,7 +240,7 @@ sub make_errtables_h
             $details[$i] =~ s/"/\\"/g;
         }
 
-        my $details = join(" \" \n              \"", @details);
+        my $details = join(" \"\n              \"", @details);
 
         $errlist .= sprintf "    [E_%s] = { \"%s\",  \"%s\" },\n", $code,
                             $code, $message;

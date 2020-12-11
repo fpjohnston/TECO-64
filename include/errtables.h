@@ -119,193 +119,193 @@ static struct errlist errlist[] =
 
 static const char *errhelp[] =
 {
-    [E_ARG] = "Three or more numeric arguments are given " 
+    [E_ARG] = "Three or more numeric arguments are given "
               "(e.g., 1,2,3D or H,cT).",
-    [E_ATS] = "At sign not allowed for command, or more than " 
+    [E_ATS] = "At sign not allowed for command, or more than "
               "one at sign specififed.",
-    [E_BAT] = "An O command was specified with an invalid tag. " 
-              "Tags may only contain graphic ASCII characters " 
-              "(excluding commas which are reserved for computed " 
-              "GOTOs). Leading and trailing spaces are ignored, " 
+    [E_BAT] = "An O command was specified with an invalid tag. "
+              "Tags may only contain graphic ASCII characters "
+              "(excluding commas which are reserved for computed "
+              "GOTOs). Leading and trailing spaces are ignored, "
               "but embedded spaces are not allowed.",
-    [E_BNI] = "A right angle bracket was not matched by a left " 
-              "angle bracket (Note: a loop in a Q-register " 
+    [E_BNI] = "A right angle bracket was not matched by a left "
+              "angle bracket (Note: a loop in a Q-register "
               "macro must be complete within the macro.)",
-    [E_CFG] = "A command was input that has not been configured. " 
-              "Modify config.h to include this command, and then " 
+    [E_CFG] = "A command was input that has not been configured. "
+              "Modify config.h to include this command, and then "
               "rebuild TECO.",
-    [E_CHR] = "The numeric argument to an EE command was " 
+    [E_CHR] = "The numeric argument to an EE command was "
               "not an ASCII character.",
-    [E_COL] = "A colon preceded a command that does not allow " 
-              "colons, or there were too many colons specified " 
+    [E_COL] = "A colon preceded a command that does not allow "
+              "colons, or there were too many colons specified "
               "for the command.",
     [E_DIV] = "An expression tried to divide a number by zero.",
     [E_DPY] = "Display mode support is either missing or disabled.",
-    [E_DTB] = "A D command attempted to delete text outside " 
+    [E_DTB] = "A D command attempted to delete text outside "
               "the current page.",
-    [E_DUP] = "An O command found a duplicate tag within the " 
+    [E_DUP] = "An O command found a duplicate tag within the "
               "command string.",
     [E_EGC] = "An EG command was longer than 200 characters.",
-    [E_FIL] = "An attempt was made to open a directory, FIFO, " 
-              "socket, or similar file specification instead " 
+    [E_FIL] = "An attempt was made to open a directory, FIFO, "
+              "socket, or similar file specification instead "
               "of a regular file.",
-    [E_FNF] = "The requested input file could not be located. " 
-              "If this occurred within a macro, the " 
+    [E_FNF] = "The requested input file could not be located. "
+              "If this occurred within a macro, the "
               "colon-modified command may be necessary.",
-    [E_ICE] = "A search argument contains a ^E command that " 
+    [E_ICE] = "A search argument contains a ^E command that "
               "is either not defined or incomplete.",
-    [E_IE1] = "An invalid E1 command has been executed. The " 
-              "E1&32 flag bit may not be set while executing " 
-              "an old-style EI command, and may not be reset " 
+    [E_IE1] = "An invalid E1 command has been executed. The "
+              "E1&32 flag bit may not be set while executing "
+              "an old-style EI command, and may not be reset "
               "while executing a new-style EI command.",
     [E_IEC] = "An invalid E command has been executed.",
     [E_IFC] = "An invalid F command has been executed.",
-    [E_IFE] = "The numeric expression preceding a command " 
-              "doesn't make sense. For example, 5+ " 
+    [E_IFE] = "The numeric expression preceding a command "
+              "doesn't make sense. For example, 5+ "
               "isn't a complete expression.",
-    [E_IFN] = "A file name contained one or more invalid " 
-              "characters. Check your operating system " 
-              "documentation to determine what characters " 
+    [E_IFN] = "A file name contained one or more invalid "
+              "characters. Check your operating system "
+              "documentation to determine what characters "
               "are valid for file names.",
-    [E_IIA] = "A command of the form \"nItext`\" was attempted. " 
-              "This combination of character and text " 
+    [E_IIA] = "A command of the form \"nItext`\" was attempted. "
+              "This combination of character and text "
               "insertion is invalid.",
-    [E_ILL] = "An attempt has been made to execute an invalid " 
+    [E_ILL] = "An attempt has been made to execute an invalid "
               "TECO command.",
-    [E_ILN] = "An 8 or 9 was used in a digit string for an " 
-              "octal number, or a 0x or 0X prefix was not " 
+    [E_ILN] = "An 8 or 9 was used in a digit string for an "
+              "octal number, or a 0x or 0X prefix was not "
               "followed by a hexadecimal number.",
-    [E_IMA] = "An m argument was provided to a command which " 
+    [E_IMA] = "An m argument was provided to a command which "
               "does not allow it.",
-    [E_INA] = "An n argument was provided to a command which " 
+    [E_INA] = "An n argument was provided to a command which "
               "does not allow it.",
     [E_INI] = "A fatal error occurred during TECO initialization.",
-    [E_IQC] = "One of the valid \" qualifiers did not " 
+    [E_IQC] = "One of the valid \" qualifiers did not "
               "follow the quote character.",
-    [E_IQN] = "An invalid Q-register name was specified in one " 
+    [E_IQN] = "An invalid Q-register name was specified in one "
               "of the Q-register commands.",
-    [E_IRA] = "The argument to a ^R radix command must be 8, 10 " 
+    [E_IRA] = "The argument to a ^R radix command must be 8, 10 "
               "or 16.",
-    [E_ISA] = "The argument preceding a search command is 0. " 
+    [E_ISA] = "The argument preceding a search command is 0. "
               "This argument must not be 0.",
-    [E_ISS] = "One of the search string special characters " 
-              "(^Q, ^V, ^W, etc.) would have modified the " 
+    [E_ISS] = "One of the search string special characters "
+              "(^Q, ^V, ^W, etc.) would have modified the "
               "search string delimiter (usually <ESC>).",
-    [E_IUC] = "The character following a ^ must have an ASCII " 
-              "value between 64 and 95 inclusive, or between " 
+    [E_IUC] = "The character following a ^ must have an ASCII "
+              "value between 64 and 95 inclusive, or between "
               "141 and 172 inclusive.",
     [E_KEY] = "An invalid key was specified for an FM command.",
-    [E_MAP] = "Every conditional (opened with the \" " 
+    [E_MAP] = "Every conditional (opened with the \" "
               "command) must be closed with the ' command.",
-    [E_MAT] = "No match was found for the file specification " 
+    [E_MAT] = "No match was found for the file specification "
               "for an EN command.",
-    [E_MEM] = "Insufficient memory available to complete the " 
+    [E_MEM] = "Insufficient memory available to complete the "
               "current command.",
-    [E_MLP] = "There is a right parenthesis trhat is not matched " 
+    [E_MLP] = "There is a right parenthesis trhat is not matched "
               "by a corresponding left parenthesis.",
-    [E_MRA] = "There is a left angle bracket that has no matching " 
-              "right angle bracket. A loop must be complete " 
+    [E_MRA] = "There is a left angle bracket that has no matching "
+              "right angle bracket. A loop must be complete "
               "within a macro or command string.",
-    [E_MRP] = "There is a left parenthesis that is not matched by " 
+    [E_MRP] = "There is a left parenthesis that is not matched by "
               "a corresponding right parenthesis.",
-    [E_MSC] = "A ' command (end of conditional) was " 
-              "encountered. Every ' command must be " 
-              "matched by a preceding \" (start of a " 
+    [E_MSC] = "A ' command (end of conditional) was "
+              "encountered. Every ' command must be "
+              "matched by a preceding \" (start of a "
               "conditional) command.",
-    [E_NAB] = "The ^_ command must be preceded by either a " 
-              "specific numeric argument or a command that " 
+    [E_NAB] = "The ^_ command must be preceded by either a "
+              "specific numeric argument or a command that "
               "returns a numeric value.",
-    [E_NAC] = "A command has been executed in which a , is " 
+    [E_NAC] = "A command has been executed in which a , is "
               "not preceded by a numeric argument.",
-    [E_NAE] = "The =, ==, or === command must be preceded by " 
-              "either a specific numeric argument or a command " 
+    [E_NAE] = "The =, ==, or === command must be preceded by "
+              "either a specific numeric argument or a command "
               "that returns a numeric value.",
-    [E_NAP] = "A right parenthesis has been encountered and " 
-              "is not properly preceded by a specific numeric " 
+    [E_NAP] = "A right parenthesis has been encountered and "
+              "is not properly preceded by a specific numeric "
               "argument or a command that returns a numeric value.",
-    [E_NAQ] = "The \" commands must be preceded by a single " 
-              "numeric argument on which the decision to " 
-              "execute the following commands or skip to " 
+    [E_NAQ] = "The \" commands must be preceded by a single "
+              "numeric argument on which the decision to "
+              "execute the following commands or skip to "
               "the matching ' is based.",
-    [E_NAS] = "The ; command must be preceded by a single " 
-              "numeric argument on which the decision to " 
-              "execute the following commands or skip to " 
+    [E_NAS] = "The ; command must be preceded by a single "
+              "numeric argument on which the decision to "
+              "execute the following commands or skip to "
               "the matching > is based.",
-    [E_NAT] = "Both an n argument and a string were specified for " 
+    [E_NAT] = "Both an n argument and a string were specified for "
               "a command which does not allow more than one.",
-    [E_NAU] = "The U comand must be preceded by either a specific " 
-              "numeric argument or a command that returns a " 
+    [E_NAU] = "The U comand must be preceded by either a specific "
+              "numeric argument or a command that returns a "
               "numeric value.",
     [E_NCA] = "A comma was preceded by a negative number.",
-    [E_NFI] = "Before issuing an input command, such as Y, it " 
-              "is necessary to open an input file by use of a " 
+    [E_NFI] = "Before issuing an input command, such as Y, it "
+              "is necessary to open an input file by use of a "
               "command such as ER or EB.",
-    [E_NFO] = "Before issuing an output command, such as N or " 
-              "or P, it is necessary to open an output file with " 
+    [E_NFO] = "Before issuing an output command, such as N or "
+              "or P, it is necessary to open an output file with "
               "a command such as EW or EB.",
     [E_NON] = "An m argument was not followed by an n argument.",
     [E_NOT] = "No tag was found for an O command.",
-    [E_NPA] = "The argument preceding a P or PW command is " 
+    [E_NPA] = "The argument preceding a P or PW command is "
               "zero or negative.",
-    [E_NYA] = "The Y command must not be preceded by either a " 
-              "numeric argument or a command that returns a " 
+    [E_NYA] = "The Y command must not be preceded by either a "
+              "numeric argument or a command that returns a "
               "numeric value.",
-    [E_NYI] = "A command was issued that is not yet implemented " 
+    [E_NYI] = "A command was issued that is not yet implemented "
               "in this version of TECO.",
-    [E_OFO] = "A command has been executed which tried to " 
-              "create an output file, but an output file " 
-              "currently is open. It is typically appropriate " 
-              "to use the EC or EK command as the situation " 
+    [E_OFO] = "A command has been executed which tried to "
+              "create an output file, but an output file "
+              "currently is open. It is typically appropriate "
+              "to use the EC or EK command as the situation "
               "calls for to close the output file.",
-    [E_PDO] = "The command string has become too complex. " 
+    [E_PDO] = "The command string has become too complex. "
               "Simplify it.",
-    [E_PES] = "A ] command (pop off Q-register stack into a " 
-              "Q-register) was encountered when there was " 
+    [E_PES] = "A ] command (pop off Q-register stack into a "
+              "Q-register) was encountered when there was "
               "nothing on the Q-register stack.",
-    [E_POP] = "A J, C or R command has been executed which " 
-              "attempted to move the pointer off the page. " 
-              "The result of executing one of these commands " 
-              "must leave the pointer between 0 and Z, " 
-              "The characters referenced by a D or nA " 
+    [E_POP] = "A J, C or R command has been executed which "
+              "attempted to move the pointer off the page. "
+              "The result of executing one of these commands "
+              "must leave the pointer between 0 and Z, "
+              "The characters referenced by a D or nA "
               "command must also be within the buffer limits.",
-    [E_SNI] = "A ; command has been executed outside of a " 
+    [E_SNI] = "A ; command has been executed outside of a "
               "loop.",
-    [E_SRH] = "A search command not preceded by a colon " 
-              "modifier and not within an iteration has " 
-              "failed to find the specified \" command. " 
-              "After an S search fails the pointer is " 
-              "left at the beginning of the buffer. " 
-              "After an N or _ search fails the last " 
-              "page of the input file has been input " 
-              "and, in the case of N, output, and the " 
-              "buffer is cleared. In the case of an N " 
-              "search it is usually necessary to close " 
+    [E_SRH] = "A search command not preceded by a colon "
+              "modifier and not within an iteration has "
+              "failed to find the specified \" command. "
+              "After an S search fails the pointer is "
+              "left at the beginning of the buffer. "
+              "After an N or _ search fails the last "
+              "page of the input file has been input "
+              "and, in the case of N, output, and the "
+              "buffer is cleared. In the case of an N "
+              "search it is usually necessary to close "
               "the output file and reopen it.",
-    [E_SYS] = "A system call failed. The error message " 
+    [E_SYS] = "A system call failed. The error message "
               "text explains the error.",
-    [E_TAG] = "The tag specified by an O command cannot " 
-              "be found. This tag must be in the same macro " 
+    [E_TAG] = "The tag specified by an O command cannot "
+              "be found. This tag must be in the same macro "
               "level as the O command referencing it.",
-    [E_UTC] = "This is a general error which is usually " 
-              "caused by an unterminated insert, search, " 
-              "or filename argument, an unterminated ^A " 
-              "message, an unterminated tag or comment " 
-              "(i.e., unterminated ! construct), or a " 
-              "missing ' character which closes a " 
+    [E_UTC] = "This is a general error which is usually "
+              "caused by an unterminated insert, search, "
+              "or filename argument, an unterminated ^A "
+              "message, an unterminated tag or comment "
+              "(i.e., unterminated ! construct), or a "
+              "missing ' character which closes a "
               "conditional execution command.",
-    [E_UTM] = "This error is that same as the ?UTC error " 
-              "except that the unterminated command was " 
-              "executing from a Q-register (i.e., it was " 
-              "a macro). (Note: An entire command sequence " 
-              "stored in a Q-register must be complete within " 
+    [E_UTM] = "This error is that same as the ?UTC error "
+              "except that the unterminated command was "
+              "executing from a Q-register (i.e., it was "
+              "a macro). (Note: An entire command sequence "
+              "stored in a Q-register must be complete within "
               "the Q-register.)",
-    [E_XAB] = "Execution of TECO was aborted. This is usually " 
+    [E_XAB] = "Execution of TECO was aborted. This is usually "
               "due to the typing of <CTRL/C>.",
-    [E_YCA] = "An attempt has been made to execute a Y " 
-              "or _ search command with an output file " 
-              "open, that would cause text in the edit " 
-              "buffer to be erased without outputting it " 
-              "to the output file. The ED command controls " 
+    [E_YCA] = "An attempt has been made to execute a Y "
+              "or _ search command with an output file "
+              "open, that would cause text in the edit "
+              "buffer to be erased without outputting it "
+              "to the output file. The ED command controls "
               "this check.",
 
 };
