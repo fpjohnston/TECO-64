@@ -147,20 +147,6 @@ void push_x(int_t operand, enum x_type type)
     else
     {
         reduce();
-
-        // Set flag based on whether the top stack item is an operand
-        // (or a minus sign if it's the only item on the stack).
-
-        if (x.level != x.base &&
-            (x.type[-1] == X_OPERAND ||
-             (x.type[-1] == X_MINUS && x.level == x.base + 1)))
-        {
-            x.opflag = true;
-        }
-        else
-        {
-            x.opflag = false;
-        }
     }
 }
 
@@ -197,6 +183,20 @@ static inline void reduce(void)
         {
             throw(E_NAB);               // No argument before ^_
         }
+    }
+
+    // Set flag based on whether the top stack item is an operand
+    // (or a minus sign if it's the only item on the stack).
+
+    if (x.level != x.base &&
+        (x.type[-1] == X_OPERAND ||
+         (x.type[-1] == X_MINUS && x.level == x.base + 1)))
+    {
+        x.opflag = true;
+    }
+    else
+    {
+        x.opflag = false;
     }
 }
 
