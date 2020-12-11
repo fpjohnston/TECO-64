@@ -163,6 +163,13 @@ static void find_tag(struct cmd *cmd, const char *tag)
 
         assert(cmd->c1 == '!');
 
+        // If tracing is enabled, print tag (unless it's a comment)
+
+        if (f.trace.enable && cmd->c2 != '!')
+        {
+            tprint("!%.*s!", cmd->text1.len, cmd->text1.data);
+        }
+
         if (cmd->text1.len == len && !memcmp(cmd->text1.data, tag2, (ulong)len))
         {
             if (tag_pos != -1)          // Found tag. Have we seen it already?
@@ -277,6 +284,7 @@ bool scan_bang(struct cmd *cmd)
         scan_texts(cmd, 1, LF);
 
         --cmd->text1.len;               // Back off the LF
+        cmd->c2 = '!';                  // And flag it as a comment
     }
     else
     {
