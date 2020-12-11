@@ -163,11 +163,9 @@ static void find_tag(struct cmd *cmd, const char *tag)
 
         assert(cmd->c1 == '!');
 
-        // If tracing is enabled, print tag (unless it's a comment)
-
-        if (f.trace.enable && cmd->c2 != '!')
+        if (cmd->c2 == '!')             // Comment?
         {
-            tprint("!%.*s!", cmd->text1.len, cmd->text1.data);
+            continue;                   // Yes, can't go to a comment
         }
 
         if (cmd->text1.len == len && !memcmp(cmd->text1.data, tag2, (ulong)len))
@@ -175,6 +173,13 @@ static void find_tag(struct cmd *cmd, const char *tag)
             if (tag_pos != -1)          // Found tag. Have we seen it already?
             {
                 throw(E_DUP, tag2);     // Duplicate tag
+            }
+
+            // We found the tag, so print it if tracing.
+
+            if (f.trace.enable)
+            {
+                tprint("!%.*s!", cmd->text1.len, cmd->text1.data);
             }
 
             tag_pos = (int)cbuf->pos;   // Remember tag for later
