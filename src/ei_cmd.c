@@ -111,7 +111,6 @@ void exec_EI(struct cmd *cmd)
     const char *buf = cmd->text1.data;
     uint len        = cmd->text1.len;
     uint stream     = IFILE_INDIRECT;
-    char *name;
 
     close_input(stream);                // Close any open file
 
@@ -120,29 +119,38 @@ void exec_EI(struct cmd *cmd)
         if (len == 0)
         {
             ei_new = reset_new();
-        }
-        else
-        {
-            struct ei_block *ei_cmd = alloc_mem((uint)sizeof(*ei_cmd));
 
-            ei_cmd->buf.data = alloc_mem((uint)sizeof(ei_cmd->buf));
-            ei_cmd->buf.size = 0;
-            ei_cmd->buf.len  = 0;
-            ei_cmd->buf.pos  = 0;
-            ei_cmd->next     = ei_new;
-
-            ei_new = ei_cmd;
-
-            if ((name = init_filename(buf, len, cmd->colon)) == NULL)
+            if (cmd->colon)
             {
-                push_x(0, X_OPERAND);
-
-                return;
+                push_x(-1, X_OPERAND);
             }
 
+            return;
+        }
+
+        char *name = init_filename(buf, len, cmd->colon);
+        struct ei_block *ei_cmd = alloc_mem((uint)sizeof(*ei_cmd));
+
+        ei_cmd->buf.data = alloc_mem((uint)sizeof(ei_cmd->buf));
+        ei_cmd->buf.size = 0;
+        ei_cmd->buf.len  = 0;
+        ei_cmd->buf.pos  = 0;
+        ei_cmd->next     = ei_new;
+
+        ei_new = ei_cmd;
+
+        if (name != NULL)
+        {
             if (open_command(name, len, stream, cmd->colon, &ei_new->buf))
             {
+                if (cmd->colon)
+                {
+                    push_x(-1, X_OPERAND);
+                }
+
                 exec_macro(&ei_new->buf, cmd);
+
+                return;
             }
         }
     }
@@ -152,17 +160,26 @@ void exec_EI(struct cmd *cmd)
         {
             longjmp(jump_main, MAIN_CTRLC); // Yes, act like CTRL/C typed
         }
-        else
+
+        char *name = init_filename(buf, len, cmd->colon);
+
+        if (name != NULL)
         {
-            if ((name = init_filename(buf, len, cmd->colon)) == NULL)
+            if (open_command(name, len, stream, cmd->colon, &ei_old))
             {
-                push_x(0, X_OPERAND);
+                if (cmd->colon)
+                {
+                    push_x(-1, X_OPERAND);
+                }
 
                 return;
             }
-
-            (void)open_command(name, len, stream, cmd->colon, &ei_old);
         }
+    }
+
+    if (cmd->colon)
+    {
+        push_x(0, X_OPERAND);
     }
 }
 

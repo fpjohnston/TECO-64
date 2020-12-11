@@ -38,7 +38,6 @@
 #include "teco.h"
 #include "ascii.h"
 #include "errcodes.h"
-#include "estack.h"
 #include "file.h"
 #include "term.h"
 
@@ -326,17 +325,11 @@ bool open_command(char *name, uint len, uint stream, bool colon,
     struct ifile *ifile = find_command(name, len, stream, colon);
 
     // If there was no colon, then we've already thrown an exception.
-    // So if ifile is NULL here, then a colon must have been present.
+    // Therefore, if ifile is NULL, a colon must have been present.
 
     if (ifile == NULL)
     {
-        push_x((int_t)0, X_OPERAND);
-
         return false;
-    }
-    else if (colon)
-    {
-        push_x((int_t)-1, X_OPERAND);
     }
 
     struct stat file_stat;
