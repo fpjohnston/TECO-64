@@ -258,7 +258,6 @@ void tprint(
 
     va_list argptr;
     va_start(argptr, format);
-    FILE *fp;
     int nbytes = vsnprintf(buf, sizeof(buf), format, argptr);
 
     va_end(argptr);
@@ -271,13 +270,6 @@ void tprint(
     for (int i = 0; i < nbytes; ++i)
     {
         tputc(buf[i], false);
-    }
-
-    if (!f.e3.noout && (fp = ofiles[OFILE_LOG].fp) != NULL)
-    {
-        va_start(argptr, format);
-        (void)vfprintf(fp, format, argptr);
-        va_end(argptr);
     }
 }
 
