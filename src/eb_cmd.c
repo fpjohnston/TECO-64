@@ -75,6 +75,10 @@ void exec_EB(struct cmd *cmd)
         return;
     }
 
+    name = strdup(ifile->name);
+
+    assert(name != NULL);
+
     struct ofile *ofile = open_output(name, ostream, cmd->colon, 'B');
 
     ofile->backup = true;               // Create backup file on close
