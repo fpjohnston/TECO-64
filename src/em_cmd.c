@@ -53,10 +53,15 @@ void exec_EM(struct cmd *cmd)
         return;
     }
 
+    struct buffer macro = qreg->text;
+    int trace = f.trace.flag;
+
+    f.trace.enable  = true;
     f.trace.nospace = false;
     f.trace.noblank = false;
     f.trace.nowhite = false;
     f.trace.nobang  = false;
+    f.trace.nobang2 = false;
 
     if (cmd->n_set)
     {
@@ -67,18 +72,12 @@ void exec_EM(struct cmd *cmd)
         f.trace.nobang2 = (cmd->n_arg & 16) ? true : false;
     }
 
-    // We make a private copy of the Q-register, since some of the structure
-    // members can get modified while processing the macro (esp. len).
-
-    struct buffer macro = qreg->text;
-    bool trace = f.trace.enable;
     bool exec = f.e0.exec;
 
-    f.trace.enable = true;
     f.e0.exec = false;
 
     exec_macro(&macro, cmd);
 
     f.e0.exec = exec;
-    f.trace.enable = trace;
+    f.trace.flag = trace;
 }
