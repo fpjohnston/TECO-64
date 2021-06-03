@@ -29,8 +29,8 @@ and possibly also other characters, may need to be escaped so that the shell
 or command interpreter properly passes them to TECO.
 
 TECO_LIBRARY
- - This specifies the path of a library of TECO macros (i.e.,
-*.tec* files) that is searched by the EI command if the specified indirect file
+ - This specifies the path of a library of TECO macros (i.e., *.tec* files)
+that is searched by the EI command if the specified indirect file
 is not found in the local directory.
 
  - If the file specification includes a relative path, that will be appended
