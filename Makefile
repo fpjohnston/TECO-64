@@ -318,7 +318,6 @@ help:
 	@echo "    lint         Lint .c and .lob files (requires PC-lint)."
 	@echo "    lobs         Lint .c files (requires PC-lint)."
 	@echo "    mostlyclean  Clean object files."
-	@echo "    options      Print build options."
 	@echo "    scratch      Equivalent to 'distclean' and 'all' targets."
 	@echo "    teco         Build TECO-64 text editor."
 	@echo ""
