@@ -266,6 +266,7 @@ static void exec_commands(const char *commands)
 
     strcpy(text, commands);
 
+    struct cmd cmd = null_cmd;
     struct buffer buf;
 
     buf.data = text;
@@ -273,7 +274,7 @@ static void exec_commands(const char *commands)
     buf.len  = buf.size;
     buf.pos  = 0;
 
-    exec_macro(&buf, NULL);
+    exec_macro(&buf, &cmd);
 
     refresh_dpy();
 }

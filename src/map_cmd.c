@@ -177,6 +177,8 @@ bool exec_key(int key)
 
     if ((uint)key < countof(keys) && p->kname != NULL)
     {
+        struct cmd cmd = null_cmd;
+
         if (p->macro != NULL)           // Mapped to command string?
         {
             struct buffer buf;
@@ -186,12 +188,10 @@ bool exec_key(int key)
             buf.len  = buf.size;
             buf.pos  = 0;
 
-            exec_macro(&buf, NULL);
+            exec_macro(&buf, &cmd);
         }
         else if (p->qname != NUL)       // Mapped to Q-register?
         {
-            struct cmd cmd = null_cmd;
-
             cmd.c1     = 'M';
             cmd.qname  = p->qname;
             cmd.qlocal = p->qlocal;

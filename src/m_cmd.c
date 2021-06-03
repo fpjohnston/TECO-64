@@ -28,6 +28,7 @@
 
 #include "teco.h"
 #include "cbuf.h"
+#include "eflags.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
@@ -123,6 +124,7 @@ void exec_macro(struct buffer *macro, struct cmd *cmd)
 
     // Save current state
 
+    bool exec                 = f.e0.exec;
     uint saved_base           = set_x(); // Save expression stack level
     uint saved_loop           = loop_depth;
     uint saved_if             = if_depth;
@@ -143,12 +145,15 @@ void exec_macro(struct buffer *macro, struct cmd *cmd)
         push_x(cmd->n_arg, X_OPERAND);
     }
 
+    f.e0.exec = true;                   // Force execution
+
     ++macro_depth;
     exec_cmd(cmd);
     --macro_depth;
 
     // Restore previous state
 
+    f.e0.exec  = exec;                  // Restore previous flag
     cbuf       = saved_cbuf;            // Restore previous command string
     macro->pos = saved_pos;
     nparens    = saved_nparens;
