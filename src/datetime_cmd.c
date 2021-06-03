@@ -2,7 +2,7 @@
 ///  @file    datetime_cmd.c
 ///  @brief   Scan date and time commands.
 ///
-///  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
+///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a
 ///  copy of this software and associated documentation files (the "Software"),

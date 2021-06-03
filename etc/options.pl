@@ -18,7 +18,7 @@
 #     have optional or required arguments), used by the getopt_long() function.
 #  4. A table of long options, used by the getopt_long() function.
 #
-#  @copyright 2019-2020 Franklin P. Johnston / Nowwith Treble Software
+#  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a
 #  copy of this software and associated documentation files (the "Software"),

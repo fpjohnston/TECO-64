@@ -2,7 +2,7 @@
 ///  @file    config.h
 ///  @brief   TECO configuration options.
 ///
-///  @copyright 2020 Franklin P. Johnston / Nowwith Treble Software
+///  @copyright 2020-2021 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a
 ///  copy of this software and associated documentation files (the "Software"),
