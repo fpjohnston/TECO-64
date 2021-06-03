@@ -283,57 +283,6 @@ static void exec_commands(const char *commands)
 
 
 ///
-///  @brief    Scan "F0" command: return position for top left corner.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_F0(struct cmd *unused)
-{
-    push_x(w.topdot, X_OPERAND);
-
-    return true;
-}
-
-
-///
-///  @brief    Scan "FH" command: equivalent to F0,FZ.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_FH(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    cmd->n_set = true;
-    cmd->n_arg = w.topdot;
-    cmd->h     = true;
-
-    push_x(botdot, X_OPERAND);
-
-    return true;
-}
-
-
-///
-///  @brief    Scan "FZ" command: return position for bottom right corner.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_FZ(struct cmd *unused)
-{
-    push_x(botdot, X_OPERAND);
-
-    return true;
-}
-
-
-///
 ///  @brief    Reset display mode prior to exiting from TECO.
 ///
 ///  @returns  Nothing.
@@ -1192,6 +1141,57 @@ void reset_dpy(void)
 }
 
 #endif
+
+
+///
+///  @brief    Scan "F0" command: return position for top left corner.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_F0(struct cmd *unused)
+{
+    push_x(w.topdot, X_OPERAND);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "FH" command: equivalent to F0,FZ.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FH(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    cmd->n_set = true;
+    cmd->n_arg = w.topdot;
+    cmd->h     = true;
+
+    push_x(botdot, X_OPERAND);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan "FZ" command: return position for bottom right corner.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FZ(struct cmd *unused)
+{
+    push_x(botdot, X_OPERAND);
+
+    return true;
+}
 
 
 ///
