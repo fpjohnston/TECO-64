@@ -32,6 +32,6 @@
 
 #define MAJOR_VERSION    200    ///< Major version
 #define MINOR_VERSION     12    ///< Minor version
-#define PATCH_VERSION      6    ///< Patch version
+#define PATCH_VERSION      7    ///< Patch version
 
 #endif  // !defined(_VERSION_H)
