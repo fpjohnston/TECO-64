@@ -7,4 +7,6 @@
 @f2/blue/white/         !! Set text window colors
 @f3/yellow/red/         !! Set status line colors
 
+@fm/A_DELETE/EK HK EX/  !! Cancel edit and exit
+
 ^[^[
