@@ -54,7 +54,8 @@ void exec_EM(struct cmd *cmd)
     }
 
     struct buffer macro = qreg->text;
-    int trace = f.trace.flag;
+    int saved_trace = f.trace.flag;
+    bool saved_exec = f.e0.exec;
 
     f.trace.enable  = true;
     f.trace.nospace = false;
@@ -72,12 +73,10 @@ void exec_EM(struct cmd *cmd)
         f.trace.nobang2 = (cmd->n_arg & 16) ? true : false;
     }
 
-    bool exec = f.e0.exec;
-
-    f.e0.exec = false;
+    f.e0.exec = false;                  // Don't actually execute commands
 
     exec_macro(&macro, cmd);
 
-    f.e0.exec = exec;
-    f.trace.flag = trace;
+    f.e0.exec = saved_exec;
+    f.trace.flag = saved_trace;
 }
