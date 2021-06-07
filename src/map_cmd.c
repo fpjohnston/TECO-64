@@ -34,6 +34,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "display.h"
+#include "eflags.h"
 #include "errcodes.h"
 #include "exec.h"
 #include "keys.h"
@@ -178,6 +179,7 @@ bool exec_key(int key)
     if ((uint)key < countof(keys) && p->kname != NULL)
     {
         struct cmd cmd = null_cmd;
+        bool saved_exec = f.e0.exec;
 
         if (p->macro != NULL)           // Mapped to command string?
         {
@@ -188,6 +190,8 @@ bool exec_key(int key)
             buf.len  = buf.size;
             buf.pos  = 0;
 
+            f.e0.exec = true;           // Force execution
+
             exec_macro(&buf, &cmd);
         }
         else if (p->qname != NUL)       // Mapped to Q-register?
@@ -197,12 +201,16 @@ bool exec_key(int key)
             cmd.qlocal = p->qlocal;
             cmd.colon  = true;          // Keep local Q-registers
 
+            f.e0.exec = true;           // Force execution
+
             exec_M(&cmd);
         }
         else
         {
             return false;
         }
+
+        f.e0.exec  = saved_exec;        // Restore previous flag
 
         if (!p->colon)                  // No refresh if :FM or :FQ
         {

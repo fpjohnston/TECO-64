@@ -274,7 +274,19 @@ static void exec_commands(const char *commands)
     buf.len  = buf.size;
     buf.pos  = 0;
 
+    bool saved_exec = f.e0.exec;
+
+    // The reason for the next line is that we are called from readkey_dpy(),
+    // which in turn is called when we are processing character input. So the
+    // execution flag isn't on at this point, but we need to temporarily force
+    // it in order to process an immediate-mode command string initiated by a
+    // special key such as Page Up or Page Down.
+
+    f.e0.exec = true;                   // Force execution
+
     exec_macro(&buf, &cmd);
+
+    f.e0.exec = saved_exec;             // Restore previous state
 
     refresh_dpy();
 }
