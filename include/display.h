@@ -35,8 +35,6 @@
 
 #define SATMAX      1000            ///< Maximum color saturation
 
-#if     defined(TECO_DISPLAY)
-
 ///  @enum   region_pair
 ///  @brief  Values of foreground/background pairs for defined regions.
 
@@ -46,8 +44,6 @@ enum region_pair
     EDIT,                           ///< Edit region
     STATUS                          ///< Status line
 };
-
-#endif
 
 ///  @struct  tchar
 ///  @brief   Terminal characteristics flag.

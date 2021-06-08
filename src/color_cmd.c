@@ -37,11 +37,13 @@
 
 #include "teco.h"
 #include "display.h"
-#include "errcodes.h"
 #include "exec.h"
 
 
 #if     defined(TECO_DISPLAY)
+
+#include "errcodes.h"
+
 
 #define COLOR_BASE  16              ///< Starting base for new colors
 
@@ -86,6 +88,10 @@ static void set_color(const char *buf, uint len, int sat, short color);
 
 static void set_colors(const struct cmd *cmd, enum region_pair pair);
 
+#else
+
+static void set_colors(void *unused1, int unused2);
+
 #endif
 
 
@@ -96,28 +102,9 @@ static void set_colors(const struct cmd *cmd, enum region_pair pair);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
-
 void exec_F1(struct cmd *cmd)
-
-#else
-
-void exec_F1(struct cmd *unused)
-
-#endif
-
 {
-
-#if     defined(TECO_DISPLAY)
-
     set_colors(cmd, CMD);
-
-#else
-
-    throw(E_DPY);
-
-#endif
-
 }
 
 
@@ -128,29 +115,11 @@ void exec_F1(struct cmd *unused)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
-
 void exec_F2(struct cmd *cmd)
-
-#else
-
-void exec_F2(struct cmd *unused)
-
-#endif
-
 {
-
-#if     defined(TECO_DISPLAY)
-
     set_colors(cmd, EDIT);
-
-#else
-
-    throw(E_DPY);
-
-#endif
-
 }
+
 
 ///
 ///  @brief    Execute "F3" command: set colors for status line.
@@ -159,28 +128,9 @@ void exec_F2(struct cmd *unused)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
-
 void exec_F3(struct cmd *cmd)
-
-#else
-
-void exec_F3(struct cmd *unused)
-
-#endif
-
 {
-
-#if     defined(TECO_DISPLAY)
-
     set_colors(cmd, STATUS);
-
-#else
-
-    throw(E_DPY);
-
-#endif
-
 }
 
 
@@ -314,6 +264,12 @@ static void set_colors(const struct cmd *cmd, enum region_pair pair)
     set_color(cmd->text2.data, cmd->text2.len, bg_sat, color + 1);
 
     (void)init_pair((short)pair, color, color + 1);
+}
+
+#else
+
+static void set_colors(void *unused1, int unused2)
+{
 }
 
 #endif
