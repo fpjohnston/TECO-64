@@ -32,6 +32,8 @@
 #include <sys/types.h>          //lint !e451 !e537
 
 
+extern int term_pos;
+
 // Terminal buffer functions
 
 extern struct buffer copy_tbuf(void);

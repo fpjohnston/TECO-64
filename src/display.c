@@ -995,7 +995,7 @@ void refresh_dpy(void)
 
         (void)move(d.edit.top, 0);      // Back to the top
 
-        uint term_pos = 0;
+        uint line_pos = 0;              // Line position
         bool filled = false;            // Is edit region full?
 
         w.topdot = botdot = t.dot + pos;
@@ -1027,13 +1027,13 @@ void refresh_dpy(void)
 
                 (void)move(d.edit.top + nrows, 0);
 
-                term_pos = 0;
+                line_pos = 0;
             }
             else
             {
-                term_pos += (uint)strlen(unctrl((uint)c));
+                line_pos += (uint)strlen(unctrl((uint)c));
 
-                if (term_pos > (uint)w.width)
+                if (line_pos > (uint)w.width)
                 {
                     if (f.et.truncate)
                     {

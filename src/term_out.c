@@ -44,7 +44,7 @@
 ///  @brief  This is used to determine whether to truncate an output line, and
 ///          also whether to output a CR/LF before printing TECO's prompt.
 
-static int term_pos = 0;
+int term_pos = 0;
 
 // Local functions
 
