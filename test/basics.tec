@@ -1,0 +1,38 @@
+!! TECO-64: test of basic commands
+!!
+!! Commands tested: ^A ^EQ ^T ^U ! . : = @ B D G H I K
+!!                  EB EC ER EW EX FS M N R T X Y Z ^^
+
+:@^A/TECO-64: Test Basic Commands/
+
+:@^A/[Executing ^UA]/   @^UA"_teco_test_"
+:@^A/[Executing ^UB]/   @^UB"@^A/ result: /"
+:@^A/[Executing I]/     @I"@^A/ (.=/ .:= @^A/, Z=/ Z:= ^^)^T"
+:@^A/[Executing HXC]/   HXC
+:@^A/[Executing HK]/    HK
+ @^A/[Executing :GC]/   MB :GC -1^T
+:@^A/[Executing EW]/    :@EW/^EQA1.tmp/ "E :@^A/EW command failed/ EX '
+:@^A/[Executing I]/     :@I/This is a test/ 10@I//
+ @^A/[Executing HT]/    MC MB HT
+:@^A/[Executing EC]/    EC
+ @^A/[Executing HT]/    MC MB HT -1^T
+:@^A/[Executing ER]/    :@ER/^EQA1.tmp/ "E :@^A/ER command failed/ EX ' Y
+ @^A/[Executing HT]/    MC MB HT
+:@^A/[Executing FS]/    @FS/a test/not a test/
+ @^A/[Executing HT]/    MC MB HT
+:@^A/[Executing R]/     4R
+:@^A/[Executing I]/     @I/really big /
+ @^A/[Executing HT]/    MC MB HT
+:@^A/[Executing D]/     4D
+ @^A/[Executing HT]/    MC MB HT
+:@^A/[Executing EW]/    :@EW/^EQA2.tmp/ "E :@^A/EW command failed/ EX '
+:@^A/[Executing EC]/    EC
+:@^A/[Executing EB]/    :@EB/^EQA2.tmp/ "E :@^A/EB command failed/ EX '
+:@^A/[Executing N]/     @N/really big /
+:@^A/[Executing I]/     @I/deal/
+ @^A/[Executing HT]/    MC MB HT
+:@^A/[Executing B,ZD]/  B,ZD
+ @^A/[Executing HT]/    MC MB HT -1^T
+ @^A/[Executing EK]/    EK -1^T
+ @^A/[Executing ::EG]/  :@^A/ (to delete temporary files)/ ::@EG/rm -f _teco_test_*.tmp*/
+:@^A/[Executing EX]/    EX
