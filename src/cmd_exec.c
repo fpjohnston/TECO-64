@@ -92,35 +92,39 @@ static bool echo_cmd(int c)
         {
             return false;               // Don't execute space
         }
-    }
-    else if (c == LF)
-    {
-        if (f.trace.noblank)
+        else if (f.trace.noblank)       // Skipping blank lines?
         {
-            uint pos = cbuf->pos;       // Save start of next line
+            uint pos = cbuf->pos;       // Save start of line
 
             while ((c = peek_cbuf()) != EOF)
             {
-                if (c == TAB || !isspace(c))
+                if (isspace(c) || c == TAB)
                 {
                     cbuf->pos = pos;    // Reset to start of line
 
                     return true;        // Execute non-blank line
                 }
 
-                if (c == LF)
-                {
-                    pos = cbuf->pos + 1; // Skip blank line
-                }
-
                 next_cbuf();
+
+                if (c == LF)            // At end of blank line?
+                {
+                    break;
+                }
             }
 
-            return false;               // Don't execute blank lines
-        }
-        else if (f.trace.nowhite)
-        {
             return false;
+        }
+    }
+    else if (c == LF)
+    {
+        if (f.trace.nowhite)            // Echoing line delimiters?
+        {
+            return false;               // Don't execute line delimiter
+        }
+        else if (f.trace.noblank && term_pos == 0)
+        {
+            return false;               // Don't execute blank line
         }
     }
     else if (c == CR || c == VT || c == FF)
@@ -400,6 +404,11 @@ static void scan_text(int delim, struct tstring *text)
     }
 
     text->len = (uint)(end - text->data);
+
+    // Echo text string or comment if tracing. In order to ensure that this will
+    // work when executing an EM command, note that we must echo the LF that
+    // terminates a comment; otherwise, what follows would then become part of
+    // the comment.
 
     if (f.trace.enable)
     {

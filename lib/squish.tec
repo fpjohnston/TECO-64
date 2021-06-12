@@ -1,0 +1,25 @@
+!! TECO-64 macro to squish macros
+
+!! Ensure that we abort on error
+
+0,128ET
+
+!! Verify that a file name was specified with --buffer
+
+Z "E :@^A/--buffer=file option required/ @O/exit/ '
+
+!! Copy file name to Q-register B
+
+HXB HK
+
+!! Load file into Q-register A
+
+@EQA/^EQB/
+
+!! Squish file in Q-register A
+
+QA EMA
+
+!exit!
+
+^[^[

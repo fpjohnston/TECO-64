@@ -158,6 +158,7 @@
 | EJ             | [Get environment information](env.md) |
 | EK             | [Kill output file](file.md) |
 | EL             | [Open/close log file](file.md) |
+| EM*q*          | [Echo macro in Q-register *q*](misc.md) |
 | EN             | [Find next file](file.md) |
 | EO             | [TECO version number](variables.md) |
 | EP             | [Switch to secondary input stream](file.md) |

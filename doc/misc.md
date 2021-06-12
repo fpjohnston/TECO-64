@@ -74,6 +74,26 @@ causes TECO to print all subsequent commands at the terminal as they are
 executed. Commands will be printed as they are executed until another question
 mark character is encountered or the command string terminates.
 
+#### EM Command
+
+| Command | Function |
+| ------- | -------- |
+| *n*EM*q* | EM basically traces the command string in Q-register *q*, except that it only echoes commands and does not executes them, and it allows the user to suppress tracing of certain commands. This feature can be used to delete extraneous characters and create a new macro which executes more efficiently (although at the expense of readability). The original macro is left unchanged. It is functionally similar to the original TECO *squ.tec* macro, and as with that macro, it allows some customization of its behavior through use of the *n* argument, which is bit-encoded as follows: |
+
+| Bit | Function |
+| --- | -------- |
+| *n*&1 |  If set, don't trace spaces unless they are part of an argument to a command. | 
+| *n*&2 | If set, don't trace blank lines (containing zero or more spaces, terminated by an LF character). |
+| *n*&4 | If set, don't trace VT, FF, or CR characters. |
+| *n*&8 | If set, don't trace tags (starting with "! "). |
+| *n*&16 | If set, don't trace comments (starting with "!!"). |
+
+These bits may be OR'd together. If *n* is -1, this is equivalent to setting all bits. If *n* is 0, or if *n* is not specified, then the macro will be echoed unchanged.
+
+The *squish.tec* indirect command file may be used to squish macros, as in the following example in which the *n* to the EM command is set by the -A option:
+
+mung *squish* -B *macro.tec* -A -1 -X >*newmacro.tec*
+
 ### Convenience Characters
 
 | Command | Function |

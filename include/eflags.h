@@ -212,8 +212,8 @@ union trace
     {
         uint enable  : 1;       ///< Enable tracing
         uint nospace : 1;       ///< Don't trace spaces
-        uint noblank : 1;       ///< Don't trace blank lines
-        uint nowhite : 1;       ///< Don't trace LF, VT, FF, or CR
+        uint noblank : 1;       ///< Don't trace blank lines (ending w/ LF)
+        uint nowhite : 1;       ///< Don't trace VT, FF, or CR
         uint nobang  : 1;       ///< Don't trace tags starting with "! "
         uint nobang2 : 1;       ///< Don't trace tags starting with "!!"
     };
