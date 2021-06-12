@@ -224,6 +224,11 @@ void exec_quote(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    if (!cmd->n_set)                    // Did we see an argument?
+    {
+        throw(E_NAQ);                   // No argument before "
+    }
+
     int c = cmd->n_arg;
 
     push_if();
@@ -415,11 +420,6 @@ void reset_if(void)
 bool scan_quote(struct cmd *cmd)
 {
     assert(cmd != NULL);
-
-    if (!cmd->n_set)                    // Did we see an argument?
-    {
-        throw(E_NAQ);                   // No argument before "
-    }
 
     int c = require_cbuf();             // Get test condition
 
