@@ -90,9 +90,9 @@ mark character is encountered or the command string terminates.
 
 These bits may be OR'd together. If *n* is -1, this is equivalent to setting all bits. If *n* is 0, or if *n* is not specified, then the macro will be echoed unchanged.
 
-The *squish.tec* indirect command file may be used to squish macros, as in the following example in which the *n* to the EM command is set by the -A option:
+The *squish.tec* indirect command file may be used to squish macros, as in the following example, in which the *n* argument is set by the -A command-line option:
 
-mung *squish* -B *macro.tec* -A -1 -X >*newmacro.tec*
+teco -E *squish* -B *macro.tec* -A -1 -X >*newmacro.tec*
 
 ### Convenience Characters
 
