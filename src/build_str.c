@@ -190,7 +190,7 @@ uint build_string(char **dest, const char *src, uint len)
 
             if (len-- == 0)             // Q-register specified?
             {
-                throw(E_IQN, NUL);      // Invalid Q-register
+                throw(E_MQN);           // Missing Q-register name
             }
 
             int qname = *src++;
@@ -209,7 +209,7 @@ uint build_string(char **dest, const char *src, uint len)
 
                 if (len-- == 0)         // Q-register specified?
                 {
-                    throw(E_IQN, NUL);  // Invalid Q-register
+                    throw(E_MQN);       // Missing Q-register name
                 }
 
                 qname = *src++;

@@ -29,6 +29,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "exec.h"
@@ -614,7 +615,14 @@ void scan_qreg(struct cmd *cmd)
 
     if ((uint)c > countof(qtable) || (cmd->qindex = qtable[c]) == 0)
     {
-        throw(E_IQN, cmd->qname);       // Invalid Q-register name
+        if (cmd->qname == ESC)          // ESCape means no Q-register
+        {
+            throw(E_MQN);               // Missing Q-register name
+        }
+        else
+        {
+            throw(E_IQN, cmd->qname);   // Invalid Q-register name
+        }
     }
 
     if (cmd->qindex == -1)              // Special Q-registers?

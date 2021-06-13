@@ -195,7 +195,7 @@ static int isqreg(int c, struct search *s)
 
     if (s->match_len-- == 0)
     {
-        throw(E_IQN, NUL);              // Invalid Q-register name
+        throw(E_MQN);                   // Missing Q-register name
     }
 
     if ((qname = *s->match_buf++) == '.')
@@ -204,7 +204,7 @@ static int isqreg(int c, struct search *s)
 
         if (s->match_len-- == 0)
         {
-            throw(E_IQN, NUL);          // Invalid Q-register name
+            throw(E_MQN);               // Missing Q-register name
         }
 
         qname = *s->match_buf++;

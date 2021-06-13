@@ -79,6 +79,7 @@ static struct errlist errlist[] =
     [E_MAT] = { "MAT",  "No matching files" },
     [E_MEM] = { "MEM",  "Memory overflow" },
     [E_MLP] = { "MLP",  "Missing left parenthesis" },
+    [E_MQN] = { "MQN",  "Missing Q-register name" },
     [E_MRA] = { "MRA",  "Missing right angle bracket" },
     [E_MRP] = { "MRP",  "Missing right parenthesis" },
     [E_MSC] = { "MSC",  "Missing start of conditional" },
@@ -203,6 +204,8 @@ static const char *errhelp[] =
               "current command.",
     [E_MLP] = "There is a right parenthesis trhat is not matched "
               "by a corresponding left parenthesis.",
+    [E_MQN] = "A command or match control construct did not "
+              "include a required Q-register name.",
     [E_MRA] = "There is a left angle bracket that has no matching "
               "right angle bracket. A loop must be complete "
               "within a macro or command string.",

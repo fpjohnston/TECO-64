@@ -75,6 +75,7 @@ enum errcodes
     E_MAT,          ///< No matching files
     E_MEM,          ///< Memory overflow
     E_MLP,          ///< Missing left parenthesis
+    E_MQN,          ///< Missing Q-register name
     E_MRA,          ///< Missing right angle bracket
     E_MRP,          ///< Missing right parenthesis
     E_MSC,          ///< Missing start of conditional
