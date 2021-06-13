@@ -178,7 +178,7 @@
             <detail>An invalid Q-register name was specified in one</detail>
             <detail>of the Q-register commands.</detail>
         </error>
-7        <error>
+        <error>
             <code>IRA</code>
             <message>Invalid radix argument to ^R</message>
             <detail>The argument to a ^R radix command must be 8, 10</detail>
