@@ -20,10 +20,10 @@ especially those using DEC (Digital Equipment Corporation) hardware,
 notably VMS, RSTS/E, TOPS, RSX-11, and RT-11. All of these implementations
 were written in hardware-specific assembler language.
 
-TECO C was created by Pete Siemsen in 1983, and subsequently developed by many
-others, most recently by Tom Almy and Blake McBride. This implementation made
-it possible for TECO to be ported to non-DEC operating systems such as Linux
-and Windows.
+TECO C was a version created by Pete Siemsen in 1983, and subsequently developed
+by him and many others, most recently by Tom Almy and Blake McBride. This
+implementation made it possible for TECO to be ported to non-DEC operating
+systems such as Linux and Windows.
 
 And although six decades old, it remains in use today.
 
