@@ -269,7 +269,7 @@ bool parse_Mcq(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse command with format "+m,n:Xq".
+///  @brief    Parse command with format "+m,n:Xq//".
 ///
 ///  @returns  false (command is not an operand or operator).
 ///
@@ -431,7 +431,7 @@ bool parse_escape(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse "flag" command with format "nX".
+///  @brief    Parse "flag" command with format "nX!".
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -503,7 +503,7 @@ bool parse_flag1(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse "flag" command with format "m,nX".
+///  @brief    Parse "flag" command with format "m,nX!".
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -610,7 +610,7 @@ bool parse_m2(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse command with format " m,n:X".
+///  @brief    Parse command with format "m,n:X".
 ///
 ///  @returns  false (command is not an operand or operator).
 ///
