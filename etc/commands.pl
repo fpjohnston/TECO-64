@@ -57,6 +57,42 @@ my $e_cmds;
 my $f_cmds;
 my %scan_funcs;
 my %exec_funcs;
+my %parse_table =
+    (
+        '@X//'       => { parse => 'parse_1',      count => 0 },
+        '@X///'      => { parse => 'parse_2',      count => 0 },
+        '+m,nX'      => { parse => 'parse_M',      count => 0 },
+        '+m,n@X//'   => { parse => 'parse_M1',     count => 0 },
+        '+m,n:X'     => { parse => 'parse_Mc',     count => 0 },
+        '+m,n:@X//'  => { parse => 'parse_Mc1',    count => 0 },
+        '+m,n:@X///' => { parse => 'parse_Mc2',    count => 0 },
+        '+m,n:Xq'    => { parse => 'parse_Mcq',    count => 0 },
+        '+m,n:@Xq//' => { parse => 'parse_Mcq1',   count => 0 },
+        '+n@X//'     => { parse => 'parse_N1',     count => 0 },
+        'X',         => { parse => 'parse_X',      count => 0 },
+        ':X',        => { parse => 'parse_c',      count => 0 },
+        ':@X//'      => { parse => 'parse_c1',     count => 0 },
+        ':@Xq//'     => { parse => 'parse_cq1',    count => 0 },
+        '::@X//'     => { parse => 'parse_d1',     count => 0 },
+        'X$',        => { parse => 'parse_escape', count => 0 },
+        'nX!'        => { parse => 'parse_flag1',  count => 0 },
+        'm,nX!',     => { parse => 'parse_flag2',  count => 0 },
+        'm,n@X///'   => { parse => 'parse_m2',     count => 0 },
+        'm,n:X'      => { parse => 'parse_mc',     count => 0 },
+        'm,n:@X//'   => { parse => 'parse_mc1',    count => 0 },
+        'm,n:@X///'  => { parse => 'parse_mc2',    count => 0 },
+        'm,n:Xq'     => { parse => 'parse_mcq',    count => 0 },
+        'm,n::@X//'  => { parse => 'parse_md1',    count => 0 },
+        'm,n::@X///' => { parse => 'parse_md2',    count => 0 },
+        'm,nXq'      => { parse => 'parse_mq',     count => 0 },
+        'nX'         => { parse => 'parse_n',      count => 0 },
+        'n:X'        => { parse => 'parse_nc',     count => 0 },
+        'n:@X//'     => { parse => 'parse_nc1',    count => 0 },
+        'n:Xq'       => { parse => 'parse_ncq',    count => 0 },
+        'nXq'        => { parse => 'parse_nq',     count => 0 },
+        'X='         => { parse => 'parse_oper',   count => 0 },
+        '@Xq//'      => { parse => 'parse_q1',     count => 0 },
+   );
 
 #
 #  Parse our command-line options
@@ -156,134 +192,54 @@ sub get_details
 
 
 #
+#  Translate parse code in XML file to parse function.
+#
+
+sub get_parse
+{
+    my ($format) = @_;
+
+    if (!length $format)
+    {
+        $format = 'X';
+    }
+
+    if (exists $parse_table{$format})
+    {
+        ++$parse_table{$format}{count};
+
+        return $parse_table{$format}{parse};
+    }
+
+    croak "Invalid format $format\n";
+}
+
+
+#
 #  Create commands.h (or equivalent)
 #
 
 sub make_commands_h
 {
     my $fh;
+    my $file = $args{output};
 
-    print {*STDERR} "Creating $args{output}\n" or croak;
-    open $fh, '>', $args{output};
+    print {*STDERR} "Creating $file\n" or croak;
 
-    printf {$fh} $template, $warning, $cmds, $e_cmds, $f_cmds;
+    open $fh, '>', $file or croak "Can't open $file\n";
 
-    close $fh;
+    printf {$fh} $template, $warning, $cmds, $e_cmds, $f_cmds
+        or croak "Can't print to $file\n";
 
-    return;
-}
-
-
-#
-#  Create exec.h (or equivalent)
-#
-
-sub make_exec_h
-{
-    my $fh;
-    my $scan_list;
-    my $exec_list;
-
-    foreach my $key (sort keys %scan_funcs)
-    {
-        $scan_list .= "extern bool $key(struct cmd *cmd);\n\n";
-    }
-
-    chomp $scan_list;
-
-    foreach my $key (sort keys %exec_funcs)
-    {
-        $exec_list .= "extern void $key(struct cmd *cmd);\n\n";
-    }
-
-    chomp $exec_list;
-
-    print {*STDERR} "Creating $args{output}\n" or croak;
-    open $fh, '>', $args{output};
-
-    printf {$fh} $template, $warning, $scan_list, $exec_list;
-
-    close $fh;
+    close $fh or croak "Can't close $file\n";
 
     return;
 }
 
 
 #
-#  parse_commands() - Find all TECO commands in XML data.
+#  Create macro line for each command defined in commands.h
 #
-
-sub parse_commands
-{
-    my ($xml) = @_;
-
-    my $dom = XML::LibXML->load_xml(string => $xml, line_numbers => 1);
-
-    my $teco = $dom->findnodes("/teco/$NAME");
-
-    die "Can't find program name\n" if !$teco;
-
-    foreach my $section ($dom->findnodes('/teco/section'))
-    {
-        my $line = $section->line_number();
-        my $title = $section->getAttribute('title');
-
-        croak "Section element missing title at line $line" if !defined $title;
-
-        foreach my $command ($section->findnodes('./command'))
-        {
-            my $name    = $command->getAttribute('name');
-            my $format  = $command->getAttribute('parse');
-            my $scan    = $command->getAttribute('scan');
-            my $exec    = $command->getAttribute('exec');
-
-            if (defined $scan)
-            {
-                $scan = "scan_$scan";
-            }
-            else
-            {
-                $scan = 'NULL';
-            }
-
-            if (defined $exec)
-            {
-                $exec = "exec_$exec";
-            }
-
-            my $parse = 'NULL';
-
-            if (defined $format)
-            {
-                $parse = make_parse($format);
-            }
-
-            if ($name =~ /^E(.)$/msx)
-            {
-                $e_cmds .= make_entry($1, $parse, $scan, $exec);
-            }
-            elsif ($name ne 'FF' && $name =~ /^F(.)$/msx)
-            {
-                $f_cmds .= make_entry($1, $parse, $scan, $exec);
-            }
-            else
-            {
-                if ($name =~ /^\[(.)\]/msx)
-                {
-                    $name = $1;
-                }
-
-                $cmds .= make_entry($name, $parse, $scan, $exec);
-            }
-        }
-    }
-
-    chomp $cmds;
-    chomp $e_cmds;
-    chomp $f_cmds;
-
-    return;
-}
 
 sub make_entry
 {
@@ -347,58 +303,126 @@ sub make_entry
 }
 
 
-sub make_parse
+#
+#  Create exec.h (or equivalent)
+#
+
+sub make_exec_h
 {
-    my ($format) = @_;
+    my $fh;
+    my $file = $args{output};
+    my $scan_list;
+    my $exec_list;
 
-    if (!length $format)
+    foreach my $key (sort keys %scan_funcs)
     {
-        $format = 'X';
+        $scan_list .= "extern bool $key(struct cmd *cmd);\n\n";
     }
 
-    my %parse_table =
-        (
-            '@X//'       => 'parse_1',
-            '@X///'      => 'parse_2',
-            '+m,nX'      => 'parse_M',
-            '+m,n@X//'   => 'parse_M1',
-            '+m,n:X'     => 'parse_Mc',
-            '+m,n:@X//'  => 'parse_Mc1',
-            '+m,n:@X///' => 'parse_Mc2',
-            '+m,n:Xq'    => 'parse_Mcq',
-            '+m,n:@Xq//' => 'parse_Mcq1',
-            '+n@X//'     => 'parse_N1',
-            'X',         => 'parse_X',
-            ':X',        => 'parse_c',
-            ':@X//'      => 'parse_c1',
-            ':@Xq//'     => 'parse_cq1',
-            '::@X//'     => 'parse_d1',
-            'X$',        => 'parse_escape',
-            'nX!'        => 'parse_flag1',
-            'm,nX!',     => 'parse_flag2',
-            'm,n@X///'   => 'parse_m2',
-            'm,n:X'      => 'parse_mc',
-            'm,n:@X//'   => 'parse_mc1',
-            'm,n:@X///'  => 'parse_mc2',
-            'm,n:Xq'     => 'parse_mcq',
-            'm,n::@X//'  => 'parse_md1',
-            'm,n::@X///' => 'parse_md2',
-            'm,nXq'      => 'parse_mq',
-            'nX'         => 'parse_n',
-            'n:X'        => 'parse_nc',
-            'n:@X//'     => 'parse_nc1',
-            'n:Xq'       => 'parse_ncq',
-            'nXq'        => 'parse_nq',
-            'X='         => 'parse_oper',
-            '@Xq//'      => 'parse_q1',
-        );
+    chomp $scan_list;
 
-    if (exists $parse_table{$format})
+    foreach my $key (sort keys %exec_funcs)
     {
-        return $parse_table{$format};
+        $exec_list .= "extern void $key(struct cmd *cmd);\n\n";
     }
 
-    croak "Invalid format $format\n";
+    chomp $exec_list;
+
+    print {*STDERR} "Creating $file\n" or croak;
+
+    open $fh, '>', $file or croak "Can't open $file\n";
+
+    printf {$fh} $template, $warning, $scan_list, $exec_list
+        or croak "Can't print to $file\n";
+
+    close $fh or croak "Can't close $file\n";
+
+    return;
+}
+
+
+#
+#  parse_commands() - Find all TECO commands in XML data.
+#
+
+sub parse_commands
+{
+    my ($xml) = @_;
+
+    my $dom = XML::LibXML->load_xml(string => $xml, line_numbers => 1);
+
+    my $teco = $dom->findnodes("/teco/$NAME");
+
+    die "Can't find program name\n" if !$teco;
+
+    foreach my $section ($dom->findnodes('/teco/section'))
+    {
+        my $line = $section->line_number();
+        my $title = $section->getAttribute('title');
+
+        croak "Section element missing title at line $line" if !defined $title;
+
+        foreach my $command ($section->findnodes('./command'))
+        {
+            my $name    = $command->getAttribute('name');
+            my $format  = $command->getAttribute('parse');
+            my $scan    = $command->getAttribute('scan');
+            my $exec    = $command->getAttribute('exec');
+
+            if (defined $scan)
+            {
+                $scan = "scan_$scan";
+            }
+            else
+            {
+                $scan = 'NULL';
+            }
+
+            if (defined $exec)
+            {
+                $exec = "exec_$exec";
+            }
+
+            my $parse = 'NULL';
+
+            if (defined $format)
+            {
+                $parse = get_parse($format);
+            }
+
+            if ($name =~ /^E(.)$/msx)
+            {
+                $e_cmds .= make_entry($1, $parse, $scan, $exec);
+            }
+            elsif ($name ne 'FF' && $name =~ /^F(.)$/msx)
+            {
+                $f_cmds .= make_entry($1, $parse, $scan, $exec);
+            }
+            else
+            {
+                if ($name =~ /^\[(.)\]/msx)
+                {
+                    $name = $1;
+                }
+
+                $cmds .= make_entry($name, $parse, $scan, $exec);
+            }
+        }
+    }
+
+    foreach my $format (keys %parse_table)
+    {
+        if ($parse_table{$format}->{count} == 0)
+        {
+            croak "Unknown format: $format";
+        }
+    }
+
+    chomp $cmds;
+    chomp $e_cmds;
+    chomp $f_cmds;
+
+    return;
 }
 
 
