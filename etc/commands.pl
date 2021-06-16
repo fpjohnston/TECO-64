@@ -51,13 +51,10 @@ my %args = (
 
 Readonly my $NAME => q{@} . 'name';
 
-my $warning = "///  *** Automatically generated file. DO NOT MODIFY. ***";
+my $warning = '///  *** Automatically generated file. DO NOT MODIFY. ***';
 my $cmds;
 my $e_cmds;
 my $f_cmds;
-my %commands;
-my %parse_funcs;
-my %macros;
 my %scan_funcs;
 my %exec_funcs;
 
@@ -77,11 +74,11 @@ read_xml();                             # Parse XML file
 
 my $template = read_file($args{template});
 
-if ($args{output} =~ /commands.h/)
+if ($args{output} =~ /commands.h/msx)
 {
     make_commands_h();
 }
-elsif ($args{output} =~ /exec.h/)
+elsif ($args{output} =~ /exec.h/msx)
 {
     make_exec_h();
 }
@@ -112,7 +109,7 @@ sub check_file
     return;
 }
 
- 
+
 #
 #  Get child element of current node, and validate it.
 #
@@ -166,7 +163,7 @@ sub make_commands_h
 {
     my $fh;
 
-    print {*STDERR} "Creating $args{output}\n";
+    print {*STDERR} "Creating $args{output}\n" or croak;
     open $fh, '>', $args{output};
 
     printf {$fh} $template, $warning, $cmds, $e_cmds, $f_cmds;
@@ -189,11 +186,6 @@ sub make_exec_h
 
     foreach my $key (sort keys %scan_funcs)
     {
-#        print "$key -> $macros{$key}\n" if ($key =~ /^parse_/);
-    }
-
-    foreach my $key (sort keys %scan_funcs)
-    {
         $scan_list .= "extern bool $key(struct cmd *cmd);\n\n";
     }
 
@@ -206,7 +198,7 @@ sub make_exec_h
 
     chomp $exec_list;
 
-    print {*STDERR} "Creating $args{output}\n";
+    print {*STDERR} "Creating $args{output}\n" or croak;
     open $fh, '>', $args{output};
 
     printf {$fh} $template, $warning, $scan_list, $exec_list;
@@ -227,9 +219,9 @@ sub parse_commands
 
     my $dom = XML::LibXML->load_xml(string => $xml, line_numbers => 1);
 
-    my $name = $dom->findnodes("/teco/$NAME");
+    my $teco = $dom->findnodes("/teco/$NAME");
 
-    die "Can't find program name\n" unless $name;
+    die "Can't find program name\n" if !$teco;
 
     foreach my $section ($dom->findnodes('/teco/section'))
     {
@@ -266,17 +258,17 @@ sub parse_commands
                 $parse = make_parse($format);
             }
 
-            if ($name =~ /^E(.)$/)
+            if ($name =~ /^E(.)$/msx)
             {
                 $e_cmds .= make_entry($1, $parse, $scan, $exec);
             }
-            elsif ($name ne 'FF' && $name =~ /^F(.)$/)
+            elsif ($name ne 'FF' && $name =~ /^F(.)$/msx)
             {
                 $f_cmds .= make_entry($1, $parse, $scan, $exec);
             }
             else
             {
-                if ($name =~ /^\[(.)\]/)
+                if ($name =~ /^\[(.)\]/msx)
                 {
                     $name = $1;
                 }
@@ -289,28 +281,36 @@ sub parse_commands
     chomp $cmds;
     chomp $e_cmds;
     chomp $f_cmds;
+
+    return;
 }
-            
+
 sub make_entry
 {
     my ($name, $parse, $scan, $exec) = @_;
 
-    if ($name eq '\'' || $name eq '\\')
+    if ($name eq q{'} || $name eq q{\\})
     {
         $name = "'\\$name'";
     }
-    elsif (length $name == 1 || $name =~ /^\\x..$/)
+    elsif (length $name == 1 || $name =~ /^\\x..$/msx)
     {
         $name = "'$name'";
     }
 
-    $name .= ",";
-    $name = sprintf("%-7s", $name);
+    $name .= q{,};
+    $name = sprintf '%-7s', $name;
 
-    $scan_funcs{$parse} = 1 unless $parse eq 'NULL';
-    $scan_funcs{$scan} = 1 unless $scan eq 'NULL';
+    if ($parse ne 'NULL')
+    {
+        $scan_funcs{$parse} = 1;
+    }
 
-    if ($scan eq 'NULL')
+    if ($scan ne 'NULL')
+    {
+        $scan_funcs{$scan} = 1;
+    }
+    else
     {
         $scan = $parse;
         $parse = 'NULL';
@@ -330,17 +330,17 @@ sub make_entry
         $exec = 'NULL';
     }
 
-    $parse .= ',';
-    $parse = sprintf("%-15s", $parse);
-    $scan .= ',';
-    $scan = sprintf("%-15s", $scan);
-    $exec = sprintf("%-15s", $exec);
+    $parse .= q{,};
+    $parse = sprintf '%-15s', $parse;
+    $scan .= q{,};
+    $scan = sprintf '%-15s', $scan;
+    $exec = sprintf '%-15s', $exec;
 
-    my $entry = sprintf "%s", "    ENTRY($name  $parse  $scan  $exec),\n";
+    my $entry = sprintf '%s', "    ENTRY($name  $parse  $scan  $exec),\n";
 
-    if ($name =~ s/^('[A-Z]',)/\L$1/)
+    if ($name =~ s/^('[[:upper:]]',)/\L$1/msx)
     {
-        $entry .= sprintf "%s", "    ENTRY($name  $parse  $scan  $exec),\n";
+        $entry .= sprintf '%s', "    ENTRY($name  $parse  $scan  $exec),\n";
     }
 
     return $entry;
@@ -351,130 +351,54 @@ sub make_parse
 {
     my ($format) = @_;
 
-    my $orig = $format;
-    my $macro;
-    my $name = 'parse_';
-    my $atsign;
-
-    if ($format eq 'X=')
+    if (!length $format)
     {
-        $name .= 'oper';
-        $macro .= '  reject_colon  reject_atsign';
-        $macros{$name} = $macro;
-
-        return $name;
+        $format = 'X';
     }
 
-    if ($format eq 'X$')
-    {
-        $name .= 'escape';
-        $macro .= '  reject_colon  reject_atsign';
-        $macros{$name} = $macro;
+    my %parse_table =
+        (
+            '@X//'       => 'parse_1',
+            '@X///'      => 'parse_2',
+            '+m,nX'      => 'parse_M',
+            '+m,n@X//'   => 'parse_M1',
+            '+m,n:X'     => 'parse_Mc',
+            '+m,n:@X//'  => 'parse_Mc1',
+            '+m,n:@X///' => 'parse_Mc2',
+            '+m,n:Xq'    => 'parse_Mcq',
+            '+m,n:@Xq//' => 'parse_Mcq1',
+            '+n@X//'     => 'parse_N1',
+            'X',         => 'parse_X',
+            ':X',        => 'parse_c',
+            ':@X//'      => 'parse_c1',
+            ':@Xq//'     => 'parse_cq1',
+            '::@X//'     => 'parse_d1',
+            'X$',        => 'parse_escape',
+            'nX!'        => 'parse_flag1',
+            'm,nX!',     => 'parse_flag2',
+            'm,n@X///'   => 'parse_m2',
+            'm,n:X'      => 'parse_mc',
+            'm,n:@X//'   => 'parse_mc1',
+            'm,n:@X///'  => 'parse_mc2',
+            'm,n:Xq'     => 'parse_mcq',
+            'm,n::@X//'  => 'parse_md1',
+            'm,n::@X///' => 'parse_md2',
+            'm,nXq'      => 'parse_mq',
+            'nX'         => 'parse_n',
+            'n:X'        => 'parse_nc',
+            'n:@X//'     => 'parse_nc1',
+            'n:Xq'       => 'parse_ncq',
+            'nXq'        => 'parse_nq',
+            'X='         => 'parse_oper',
+            '@Xq//'      => 'parse_q1',
+        );
 
-        return $name;
-    }
-
-    if ($format eq 'm,nX!')
+    if (exists $parse_table{$format})
     {
-        $name .= 'flag2';
-        $macro .= '  reject_colon  reject_atsign';
-        $macros{$name} = $macro;
-
-        return $name;
-    }
-
-    if ($format eq 'nX!')
-    {
-        $name .= 'flag1';
-        $macro .= '  reject_colon  reject_atsign';
-        $macros{$name} = $macro;
-
-        return $name;
-    }
-
-    if ($format eq 'X' || !length $format)
-    {
-        $name .= 'X';
-    }
-
-    if ($format =~ s[^\+m,n][])
-    {
-        $name .= 'M';
-        $macro .= '  reject_neg_m';
-        $macro .= '  require_n';
-    }
-    elsif ($format =~ s[^m,n][])
-    {
-        $name .= 'm';
-        $macro .= '  require_n';
-    }
-    elsif ($format =~ s[^\+n][])
-    {
-        $name .= 'N';
-        $macro .= '  reject_neg_n';
-        $macro .= '  require_n';
-    }
-    elsif ($format =~ s[^n][])
-    {
-        $name .= 'n';
-        $macro .= '  reject_m';
-    }
-    else
-    {
-        $macro .= '  reject_m';
-        $macro .= '  reject_n';
+        return $parse_table{$format};
     }
 
-    if ($format =~ s[^::][])
-    {
-        $name .= 'd';
-    }
-    elsif ($format =~ s[^:][])
-    {
-        $name .= 'c';
-        $macro .= '  reject_dcolon';
-    }
-    else
-    {
-        $macro .= '  reject_colon';
-    }
-
-    if ($format =~ s[^@][])
-    {
-        $atsign = 1;
-    }
-
-    $format =~ s[^X][];
-
-    if ($format =~ s[^q][])
-    {
-        $name .= 'q';
-        $macro .= '  scan_qreg';
-    }
-
-    if ($format =~ s[^///][])
-    {
-        $name .= '2';
-        $macro .= '  scan_text(2)';
-    }
-    elsif ($format =~ s[^//][])
-    {
-        $name .= '1';
-        $macro .= '  scan_text(1)';
-    }
-    elsif (defined $atsign)
-    {
-        croak "Invalid format $orig\n";
-    }
-    else
-    {
-        $macro .= '  reject_atsign';
-    }
-
-    $format =~ s[^\$][];
-    $macros{$name} = $macro;
-
-    return $name;
+    croak "Invalid format $format\n";
 }
 
 
@@ -484,7 +408,7 @@ sub make_parse
 
 sub read_xml
 {
-    print {*STDERR} "Reading configuration file $args{input}...\n";
+    print {*STDERR} "Reading configuration file $args{input}...\n" or croak;
 
     # Read entire input file into string.
 

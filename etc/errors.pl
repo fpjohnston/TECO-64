@@ -51,7 +51,7 @@ my %args = (
 
 Readonly my $NAME => q{@} . 'name';
 
-my $warning = "///  *** Automatically generated file. DO NOT MODIFY. ***";
+my $warning = '///  *** Automatically generated file. DO NOT MODIFY. ***';
 my %errors;
 
 #
@@ -70,15 +70,15 @@ read_xml();                             # Parse XML file
 
 my $template = read_file($args{template});
 
-if ($args{output} =~ /errcodes.h/)
+if ($args{output} =~ /errcodes.h/msx)
 {
     make_errcodes_h();
 }
-elsif ($args{output} =~ /errors.md/)
+elsif ($args{output} =~ /errors.md/msx)
 {
     make_errors_md();
 }
-elsif ($args{output} =~ /errtables.h/)
+elsif ($args{output} =~ /errtables.h/msx)
 {
     make_errtables_h();
 }
@@ -109,7 +109,7 @@ sub check_file
     return;
 }
 
- 
+
 #
 #  Get child element of current node, and validate it.
 #
@@ -164,21 +164,23 @@ sub make_errcodes_h
     my $fh;
     my $errcodes;
 
-    print {*STDERR} "Creating $args{output}\n";
-    open $fh, '>', $args{output};
-
     foreach my $code (sort keys %errors)
     {
         my $message = $errors{$code}{message};
 
-        $message =~ s/%s/foo/g;
-        $message =~ s/%c/x/g;
+        $message =~ s/%s/foo/gmsx;
+        $message =~ s/%c/x/gmsx;
 
         $errcodes .= sprintf "    E_%s,          ///< %s\n", $code,
                              $message;
     }
 
+    print {*STDERR} "Creating $args{output}\n" or croak;
+
+    open $fh, '>', $args{output};
+
     printf {$fh} $template, $warning, $errcodes;
+
     close $fh;
 
     return;
@@ -194,24 +196,26 @@ sub make_errors_md
     my $fh;
     my $errors;
 
-    print {*STDERR} "Creating $args{output}\n";
-    open $fh, '>', $args{output};
-
     foreach my $code (sort keys %errors)
     {
         my $message = $errors{$code}{message};
 
-        $message =~ s/%s/*foo*/g;
-        $message =~ s/%c/*x*/g;
+        $message =~ s/%s/*foo*/msxg;
+        $message =~ s/%c/*x*/msxg;
 
         my @details = @ { $errors{$code}{details} };
-        my $details = join(' ', @details);
+        my $details = join q{ }, @details;
 
         $errors .= sprintf "| <nobr>?%s</nobr> | <nobr>%s</nobr> | %s |\n",
                            $code, $message, $details;
     }
 
+    print {*STDERR} "Creating $args{output}\n" or croak;
+
+    open $fh, '>', $args{output};
+
     printf {$fh} $template, $errors;
+
     close $fh;
 
     return;
@@ -224,31 +228,32 @@ sub make_errtables_h
     my $errlist;
     my $errhelp;
 
-    print {*STDERR} "Creating $args{output}\n";
-    open $fh, '>', $args{output};
-
     foreach my $code (sort keys %errors)
     {
         my $message = $errors{$code}{message};
 
-        $message =~ s/%c/%s/g;
+        $message =~ s/%c/%s/msxg;
 
         my @details = @ { $errors{$code}{details} };
 
         for my $i (0 .. $#details)
         {
-            $details[$i] =~ s/"/\\"/g;
+            $details[$i] =~ s/"/\\"/msxg;
         }
 
-        my $details = join(" \"\n              \"", @details);
+        my $details = join " \"\n              \"", @details;
 
         $errlist .= sprintf "    [E_%s] = { \"%s\",  \"%s\" },\n", $code,
                             $code, $message;
         $errhelp .= sprintf "    [E_%s] = \"%s\",\n", $code, $details;
     }
 
+    print {*STDERR} "Creating $args{output}\n" or croak;
+
+    open $fh, '>', $args{output};
+
     printf {$fh} $template, $warning, $errlist, $errhelp;
- 
+
     close $fh;
 
     return;
@@ -267,7 +272,7 @@ sub parse_errors
 
     my $name = $dom->findnodes("/teco/$NAME");
 
-    die "Can't find program name\n" unless $name;
+    die "Can't find program name\n" if !$name;
 
     foreach my $section ($dom->findnodes('/teco/section'))
     {
@@ -302,7 +307,7 @@ sub parse_errors
 
 sub read_xml
 {
-    print {*STDERR} "Reading configuration file $args{input}...\n";
+    print {*STDERR} "Reading configuration file $args{input}...\n" or croak;
 
     # Read entire input file into string.
 

@@ -275,15 +275,19 @@ sub get_help
 
 sub make_options_h
 {
+    my $file = $args{output};
     my $fh;
     my $template = read_file($args{template});
     my $result = sprintf $template, $header{help}, $header{enums},
         $header{short}, $header{long};
 
-    print {*STDERR} "Creating header file $args{output}\n";
-    open $fh, '>', $args{output};
-    print {$fh} $result;
-    close $fh;
+    print {*STDERR} "Creating header file $file\n" or croak;
+
+    open $fh, '>', $file or croak "Can't open $file: $OS_ERROR";
+
+    print {$fh} $result  or croak "Can't open $file: $OS_ERROR";
+
+    close $fh            or croak "Can't close $file: $OS_ERROR";
 
     return;
 }
@@ -304,7 +308,7 @@ sub parse_options
 
     my $name = $dom->findnodes("/teco/$NAME");
 
-    die "Can't find program name\n" unless $name;
+    die "Can't find program name\n" if !$name;
 
     foreach my $section ($dom->findnodes('/teco/section'))
     {
@@ -355,7 +359,7 @@ sub parse_options
 
 sub read_xml
 {
-    print {*STDERR} "Reading configuration file $args{config}...\n";
+    print {*STDERR} "Reading configuration file $args{config}...\n" or croak;
 
     # Read entire input file into string.
 
