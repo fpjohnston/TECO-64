@@ -11,6 +11,7 @@ use version; our $VERSION = qv('1.0.0');
 use Carp;
 use English qw { -no_match_vars };
 use Readonly;
+use Fatal qw { print };
 
 # Main program starts here
 
@@ -44,8 +45,13 @@ sub print_lines
 {
     my ($chr) = @_;
 
-    for my $i (1..20)
+    const my MAX = 20;
+    const my $REPEAT = 25;
+
+    for my $i ( 1 .. $MAX )
     {
-        printf "line %02d: %s\n", $i, $chr x 25;
+        printf "line %02d: %s\n", $i, $chr x $REPEAT;
     }
+
+    return;
 }
