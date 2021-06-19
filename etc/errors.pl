@@ -11,10 +11,10 @@
 #  the rights to use, copy, modify, merge, publish, distribute, sublicense,
 #  and/or sell copies of the Software, and to permit persons to whom the
 #  Software is furnished to do so, subject to the following conditions:
-# 
+#
 #  The above copyright notice and this permission notice shall be included in
 #  all copies or substantial portions of the Software.
-# 
+#
 #  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 #  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 #  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -43,11 +43,10 @@ use Carp;
 # Command-line arguments
 
 my %args = (
-            input    => undef,      # Input file (usually errors.xml)
-            template => undef,      # Template file
-            output   => undef,      # Output file
+    input    => undef,    # Input file (usually errors.xml)
+    template => undef,    # Template file
+    output   => undef,    # Output file
 );
-
 
 Readonly my $NAME => q{@} . 'name';
 
@@ -58,27 +57,29 @@ my %errors;
 #  Parse our command-line options
 #
 
-GetOptions('input=s'    => \$args{input},
-           'template=s' => \$args{template},
-           'output=s'   => \$args{output});
+GetOptions(
+    'input=s'    => \$args{input},
+    'template=s' => \$args{template},
+    'output=s'   => \$args{output}
+);
 
-check_file($args{input},    'r', '-e');
-check_file($args{template}, 'r', '-t');
-check_file($args{output},   'w', '-o');
+check_file( $args{input},    'r', '-e' );
+check_file( $args{template}, 'r', '-t' );
+check_file( $args{output},   'w', '-o' );
 
-read_xml();                             # Parse XML file
+read_xml();    # Parse XML file
 
-my $template = read_file($args{template});
+my $template = read_file( $args{template} );
 
-if ($args{output} =~ /errcodes.h/msx)
+if ( $args{output} =~ /errcodes.h/msx )
 {
     make_errcodes_h();
 }
-elsif ($args{output} =~ /errors.md/msx)
+elsif ( $args{output} =~ /errors.md/msx )
 {
     make_errors_md();
 }
-elsif ($args{output} =~ /errtables.h/msx)
+elsif ( $args{output} =~ /errtables.h/msx )
 {
     make_errtables_h();
 }
@@ -96,19 +97,18 @@ exit;
 
 sub check_file
 {
-    my ($file, $mode, $option) = @_;
+    my ( $file, $mode, $option ) = @_;
 
     croak "No file specified for $option option\n" if !$file;
 
     return if $mode eq 'w';
 
-    croak "File $file does not exist" if !-e $file;
-    croak "File $file is not readable" if !-r $file;
+    croak "File $file does not exist"      if !-e $file;
+    croak "File $file is not readable"     if !-r $file;
     croak "File $file is not a plain file" if !-f $file;
 
     return;
 }
-
 
 #
 #  Get child element of current node, and validate it.
@@ -116,12 +116,12 @@ sub check_file
 
 sub get_child
 {
-    my ($tag, $child, $lineno) = @_;
+    my ( $tag, $child, $lineno ) = @_;
 
     my @child = $tag->findnodes("./$child");
 
     croak "Only one <$child> tag allowed for error at line $lineno"
-          if ($#child > 0);
+      if ( $#child > 0 );
 
     return q{} if $#child < 0;
 
@@ -130,19 +130,18 @@ sub get_child
     return $child[0]->textContent;
 }
 
-
 #
 #  Get 'detail' child elements of current node, and validate it.
 #
 
 sub get_details
 {
-    my ($tag, $child, $lineno) = @_;
+    my ( $tag, $child, $lineno ) = @_;
 
     my @child = $tag->findnodes("./$child");
 
     croak "Missing <$child> tag for error at line $lineno"
-          if ($#child < 0);
+      if ( $#child < 0 );
 
     my @details = ();
 
@@ -154,7 +153,6 @@ sub get_details
     return @details;
 }
 
-
 #
 #  Create errcodes.h (or equivalent)
 #
@@ -164,15 +162,14 @@ sub make_errcodes_h
     my $fh;
     my $errcodes;
 
-    foreach my $code (sort keys %errors)
+    foreach my $code ( sort keys %errors )
     {
         my $message = $errors{$code}{message};
 
         $message =~ s/%s/foo/gmsx;
         $message =~ s/%c/x/gmsx;
 
-        $errcodes .= sprintf "    E_%s,          ///< %s\n", $code,
-                             $message;
+        $errcodes .= sprintf "    E_%s,          ///< %s\n", $code, $message;
     }
 
     print {*STDERR} "Creating $args{output}\n" or croak;
@@ -190,7 +187,6 @@ sub make_errcodes_h
     return;
 }
 
-
 #
 #  Create errors.md (or equivalent)
 #
@@ -200,18 +196,18 @@ sub make_errors_md
     my $fh;
     my $errors;
 
-    foreach my $code (sort keys %errors)
+    foreach my $code ( sort keys %errors )
     {
         my $message = $errors{$code}{message};
 
         $message =~ s/%s/*foo*/msxg;
         $message =~ s/%c/*x*/msxg;
 
-        my @details = @ { $errors{$code}{details} };
+        my @details = @{ $errors{$code}{details} };
         my $details = join q{ }, @details;
 
         $errors .= sprintf "| <nobr>?%s</nobr> | <nobr>%s</nobr> | %s |\n",
-                           $code, $message, $details;
+          $code, $message, $details;
     }
 
     print {*STDERR} "Creating $args{output}\n" or croak;
@@ -229,22 +225,21 @@ sub make_errors_md
     return;
 }
 
-
 sub make_errtables_h
 {
     my $fh;
     my $errlist;
     my $errhelp;
 
-    foreach my $code (sort keys %errors)
+    foreach my $code ( sort keys %errors )
     {
         my $message = $errors{$code}{message};
 
         $message =~ s/%c/%s/msxg;
 
-        my @details = @ { $errors{$code}{details} };
+        my @details = @{ $errors{$code}{details} };
 
-        for my $i (0 .. $#details)
+        for my $i ( 0 .. $#details )
         {
             $details[$i] =~ s/"/\\"/msxg;
         }
@@ -252,7 +247,7 @@ sub make_errtables_h
         my $details = join " \"\n              \"", @details;
 
         $errlist .= sprintf "    [E_%s] = { \"%s\",  \"%s\" },\n", $code,
-                            $code, $message;
+          $code, $message;
         $errhelp .= sprintf "    [E_%s] = \"%s\",\n", $code, $details;
     }
 
@@ -271,7 +266,6 @@ sub make_errtables_h
     return;
 }
 
-
 #
 #  parse_errors() - Find all error messages in XML data.
 #
@@ -280,30 +274,30 @@ sub parse_errors
 {
     my ($xml) = @_;
 
-    my $dom = XML::LibXML->load_xml(string => $xml, line_numbers => 1);
+    my $dom = XML::LibXML->load_xml( string => $xml, line_numbers => 1 );
 
     my $name = $dom->findnodes("/teco/$NAME");
 
     die "Can't find program name\n" if !$name;
 
-    foreach my $section ($dom->findnodes('/teco/section'))
+    foreach my $section ( $dom->findnodes('/teco/section') )
     {
-        my $line = $section->line_number();
+        my $line  = $section->line_number();
         my $title = $section->getAttribute('title');
 
         croak "Section element missing title at line $line" if !defined $title;
 
-        foreach my $error ($section->findnodes('./error'))
+        foreach my $error ( $section->findnodes('./error') )
         {
-            my @details = get_details($error, 'detail', $line);
+            my @details = get_details( $error, 'detail', $line );
 
-            my $code    = get_child($error, 'code', $line);
-            my $message = get_child($error, 'message', $line);
+            my $code    = get_child( $error, 'code',    $line );
+            my $message = get_child( $error, 'message', $line );
 
-            croak "Missing error code at line $line\n" if !length $code;
+            croak "Missing error code at line $line\n"    if !length $code;
             croak "Missing error message at line $line\n" if !length $message;
 
-            $errors{$code}{line} = $line;
+            $errors{$code}{line}    = $line;
             $errors{$code}{message} = $message;
             $errors{$code}{details} = \@details;
         }
@@ -311,7 +305,6 @@ sub parse_errors
 
     return;
 }
-
 
 #
 #  read_xml() - Read XML file and extract data for each name.
@@ -323,7 +316,7 @@ sub read_xml
 
     # Read entire input file into string.
 
-    my $xml = do { local(@ARGV, $RS) = $args{input}; <> };
+    my $xml = do { local ( @ARGV, $RS ) = $args{input}; <> };
 
     parse_errors($xml);
 

@@ -11,10 +11,10 @@
 #  the rights to use, copy, modify, merge, publish, distribute, sublicense,
 #  and/or sell copies of the Software, and to permit persons to whom the
 #  Software is furnished to do so, subject to the following conditions:
-# 
+#
 #  The above copyright notice and this permission notice shall be included in
 #  all copies or substantial portions of the Software.
-# 
+#
 #  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 #  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 #  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -43,11 +43,10 @@ use Carp;
 # Command-line arguments
 
 my %args = (
-            input    => undef,      # Input file (usually errors.xml)
-            template => undef,      # Template file
-            output   => undef,      # Output file
+    input    => undef,    # Input file (usually errors.xml)
+    template => undef,    # Template file
+    output   => undef,    # Output file
 );
-
 
 Readonly my $NAME => q{@} . 'name';
 
@@ -57,68 +56,69 @@ my $e_cmds;
 my $f_cmds;
 my %scan_funcs;
 my %exec_funcs;
-my %parse_table =
-    (
-        ## no critic (RequireInterpolationOfMetachars)
+my %parse_table = (
+    ## no critic (RequireInterpolationOfMetachars)
 
-        '@X//'       => { parse => 'parse_1',      count => 0 },
-        '@X///'      => { parse => 'parse_2',      count => 0 },
-        '+m,nX'      => { parse => 'parse_M',      count => 0 },
-        '+m,n@X//'   => { parse => 'parse_M1',     count => 0 },
-        '+m,n:X'     => { parse => 'parse_Mc',     count => 0 },
-        '+m,n:@X//'  => { parse => 'parse_Mc1',    count => 0 },
-        '+m,n:@X///' => { parse => 'parse_Mc2',    count => 0 },
-        '+m,n:Xq'    => { parse => 'parse_Mcq',    count => 0 },
-        '+m,n:@Xq//' => { parse => 'parse_Mcq1',   count => 0 },
-        '+n@X//'     => { parse => 'parse_N1',     count => 0 },
-        'X',         => { parse => 'parse_X',      count => 0 },
-        ':X',        => { parse => 'parse_c',      count => 0 },
-        ':@X//'      => { parse => 'parse_c1',     count => 0 },
-        ':@Xq//'     => { parse => 'parse_cq1',    count => 0 },
-        '::@X//'     => { parse => 'parse_d1',     count => 0 },
-        'X$',        => { parse => 'parse_escape', count => 0 },
-        'nX!'        => { parse => 'parse_flag1',  count => 0 },
-        'm,nX!',     => { parse => 'parse_flag2',  count => 0 },
-        'm,n@X///'   => { parse => 'parse_m2',     count => 0 },
-        'm,n:X'      => { parse => 'parse_mc',     count => 0 },
-        'm,n:@X//'   => { parse => 'parse_mc1',    count => 0 },
-        'm,n:@X///'  => { parse => 'parse_mc2',    count => 0 },
-        'm,n:Xq'     => { parse => 'parse_mcq',    count => 0 },
-        'm,n::@X//'  => { parse => 'parse_md1',    count => 0 },
-        'm,n::@X///' => { parse => 'parse_md2',    count => 0 },
-        'm,nXq'      => { parse => 'parse_mq',     count => 0 },
-        'nX'         => { parse => 'parse_n',      count => 0 },
-        'n:X'        => { parse => 'parse_nc',     count => 0 },
-        'n:@X//'     => { parse => 'parse_nc1',    count => 0 },
-        'n:Xq'       => { parse => 'parse_ncq',    count => 0 },
-        'nXq'        => { parse => 'parse_nq',     count => 0 },
-        'X='         => { parse => 'parse_oper',   count => 0 },
-        '@Xq//'      => { parse => 'parse_q1',     count => 0 },
+    '@X//'       => { parse => 'parse_1',      count => 0 },
+    '@X///'      => { parse => 'parse_2',      count => 0 },
+    '+m,nX'      => { parse => 'parse_M',      count => 0 },
+    '+m,n@X//'   => { parse => 'parse_M1',     count => 0 },
+    '+m,n:X'     => { parse => 'parse_Mc',     count => 0 },
+    '+m,n:@X//'  => { parse => 'parse_Mc1',    count => 0 },
+    '+m,n:@X///' => { parse => 'parse_Mc2',    count => 0 },
+    '+m,n:Xq'    => { parse => 'parse_Mcq',    count => 0 },
+    '+m,n:@Xq//' => { parse => 'parse_Mcq1',   count => 0 },
+    '+n@X//'     => { parse => 'parse_N1',     count => 0 },
+    'X',         => { parse => 'parse_X',      count => 0 },
+    ':X',        => { parse => 'parse_c',      count => 0 },
+    ':@X//'      => { parse => 'parse_c1',     count => 0 },
+    ':@Xq//'     => { parse => 'parse_cq1',    count => 0 },
+    '::@X//'     => { parse => 'parse_d1',     count => 0 },
+    'X$',        => { parse => 'parse_escape', count => 0 },
+    'nX!'        => { parse => 'parse_flag1',  count => 0 },
+    'm,nX!',     => { parse => 'parse_flag2',  count => 0 },
+    'm,n@X///'   => { parse => 'parse_m2',     count => 0 },
+    'm,n:X'      => { parse => 'parse_mc',     count => 0 },
+    'm,n:@X//'   => { parse => 'parse_mc1',    count => 0 },
+    'm,n:@X///'  => { parse => 'parse_mc2',    count => 0 },
+    'm,n:Xq'     => { parse => 'parse_mcq',    count => 0 },
+    'm,n::@X//'  => { parse => 'parse_md1',    count => 0 },
+    'm,n::@X///' => { parse => 'parse_md2',    count => 0 },
+    'm,nXq'      => { parse => 'parse_mq',     count => 0 },
+    'nX'         => { parse => 'parse_n',      count => 0 },
+    'n:X'        => { parse => 'parse_nc',     count => 0 },
+    'n:@X//'     => { parse => 'parse_nc1',    count => 0 },
+    'n:Xq'       => { parse => 'parse_ncq',    count => 0 },
+    'nXq'        => { parse => 'parse_nq',     count => 0 },
+    'X='         => { parse => 'parse_oper',   count => 0 },
+    '@Xq//'      => { parse => 'parse_q1',     count => 0 },
 
-        ## use critic
-    );
+    ## use critic
+);
 
 #
 #  Parse our command-line options
 #
 
-GetOptions('input=s'    => \$args{input},
-           'template=s' => \$args{template},
-           'output=s'   => \$args{output});
+GetOptions(
+    'input=s'    => \$args{input},
+    'template=s' => \$args{template},
+    'output=s'   => \$args{output}
+);
 
-check_file($args{input},    'r', '-e');
-check_file($args{template}, 'r', '-t');
-check_file($args{output},   'w', '-o');
+check_file( $args{input},    'r', '-e' );
+check_file( $args{template}, 'r', '-t' );
+check_file( $args{output},   'w', '-o' );
 
-read_xml();                             # Parse XML file
+read_xml();    # Parse XML file
 
-my $template = read_file($args{template});
+my $template = read_file( $args{template} );
 
-if ($args{output} =~ /commands.h/msx)
+if ( $args{output} =~ /commands.h/msx )
 {
     make_commands_h();
 }
-elsif ($args{output} =~ /exec.h/msx)
+elsif ( $args{output} =~ /exec.h/msx )
 {
     make_exec_h();
 }
@@ -136,19 +136,18 @@ exit;
 
 sub check_file
 {
-    my ($file, $mode, $option) = @_;
+    my ( $file, $mode, $option ) = @_;
 
     croak "No file specified for $option option\n" if !$file;
 
     return if $mode eq 'w';
 
-    croak "File $file does not exist" if !-e $file;
-    croak "File $file is not readable" if !-r $file;
+    croak "File $file does not exist"      if !-e $file;
+    croak "File $file is not readable"     if !-r $file;
     croak "File $file is not a plain file" if !-f $file;
 
     return;
 }
-
 
 #
 #  Get child element of current node, and validate it.
@@ -156,12 +155,12 @@ sub check_file
 
 sub get_child
 {
-    my ($tag, $child, $lineno) = @_;
+    my ( $tag, $child, $lineno ) = @_;
 
     my @child = $tag->findnodes("./$child");
 
     croak "Only one <$child> tag allowed for error at line $lineno"
-          if ($#child > 0);
+      if ( $#child > 0 );
 
     return q{} if $#child < 0;
 
@@ -170,19 +169,18 @@ sub get_child
     return $child[0]->textContent;
 }
 
-
 #
 #  Get 'detail' child elements of current node, and validate it.
 #
 
 sub get_details
 {
-    my ($tag, $child, $lineno) = @_;
+    my ( $tag, $child, $lineno ) = @_;
 
     my @child = $tag->findnodes("./$child");
 
     croak "Missing <$child> tag for error at line $lineno"
-          if ($#child < 0);
+      if ( $#child < 0 );
 
     my @details = ();
 
@@ -194,7 +192,6 @@ sub get_details
     return @details;
 }
 
-
 #
 #  Translate parse code in XML file to parse function.
 #
@@ -203,12 +200,12 @@ sub get_parse
 {
     my ($format) = @_;
 
-    if (!length $format)
+    if ( !length $format )
     {
         $format = 'X';
     }
 
-    if (exists $parse_table{$format})
+    if ( exists $parse_table{$format} )
     {
         ++$parse_table{$format}{count};
 
@@ -217,7 +214,6 @@ sub get_parse
 
     croak "Invalid format $format\n";
 }
-
 
 #
 #  Create commands.h (or equivalent)
@@ -235,7 +231,7 @@ sub make_commands_h
     open $fh, '>', $file or croak "Can't open $file\n";
 
     printf {$fh} $template, $warning, $cmds, $e_cmds, $f_cmds
-        or croak "Can't print to $file\n";
+      or croak "Can't print to $file\n";
 
     close $fh or croak "Can't close $file\n";
 
@@ -244,20 +240,19 @@ sub make_commands_h
     return;
 }
 
-
 #
 #  Create macro line for each command defined in commands.h
 #
 
 sub make_entry
 {
-    my ($name, $parse, $scan, $exec) = @_;
+    my ( $name, $parse, $scan, $exec ) = @_;
 
-    if ($name eq q{'} || $name eq q{\\})
+    if ( $name eq q{'} || $name eq q{\\} )
     {
         $name = "'\\$name'";
     }
-    elsif (length $name == 1 || $name =~ /^\\x..$/msx)
+    elsif ( length $name == 1 || $name =~ /^\\x..$/msx )
     {
         $name = "'$name'";
     }
@@ -265,27 +260,27 @@ sub make_entry
     $name .= q{,};
     $name = sprintf '%-7s', $name;
 
-    if ($parse ne 'NULL')
+    if ( $parse ne 'NULL' )
     {
         $scan_funcs{$parse} = 1;
     }
 
-    if ($scan ne 'NULL')
+    if ( $scan ne 'NULL' )
     {
         $scan_funcs{$scan} = 1;
     }
     else
     {
-        $scan = $parse;
+        $scan  = $parse;
         $parse = 'NULL';
     }
 
-    if (!defined $parse)
+    if ( !defined $parse )
     {
         $parse = 'NULL';
     }
 
-    if (defined $exec)
+    if ( defined $exec )
     {
         $exec_funcs{$exec} = 1;
     }
@@ -302,14 +297,13 @@ sub make_entry
 
     my $entry = sprintf '%s', "    ENTRY($name  $parse  $scan  $exec),\n";
 
-    if ($name =~ s/^('[[:upper:]]',)/\L$1/msx)
+    if ( $name =~ s/^('[[:upper:]]',)/\L$1/msx )
     {
         $entry .= sprintf '%s', "    ENTRY($name  $parse  $scan  $exec),\n";
     }
 
     return $entry;
 }
-
 
 #
 #  Create exec.h (or equivalent)
@@ -322,14 +316,14 @@ sub make_exec_h
     my $scan_list;
     my $exec_list;
 
-    foreach my $key (sort keys %scan_funcs)
+    foreach my $key ( sort keys %scan_funcs )
     {
         $scan_list .= "extern bool $key(struct cmd *cmd);\n\n";
     }
 
     chomp $scan_list;
 
-    foreach my $key (sort keys %exec_funcs)
+    foreach my $key ( sort keys %exec_funcs )
     {
         $exec_list .= "extern void $key(struct cmd *cmd);\n\n";
     }
@@ -343,7 +337,7 @@ sub make_exec_h
     open $fh, '>', $file or croak "Can't open $file\n";
 
     printf {$fh} $template, $warning, $scan_list, $exec_list
-        or croak "Can't print to $file\n";
+      or croak "Can't print to $file\n";
 
     close $fh or croak "Can't close $file\n";
 
@@ -351,7 +345,6 @@ sub make_exec_h
 
     return;
 }
-
 
 #
 #  parse_commands() - Find all TECO commands in XML data.
@@ -361,27 +354,27 @@ sub parse_commands
 {
     my ($xml) = @_;
 
-    my $dom = XML::LibXML->load_xml(string => $xml, line_numbers => 1);
+    my $dom = XML::LibXML->load_xml( string => $xml, line_numbers => 1 );
 
     my $teco = $dom->findnodes("/teco/$NAME");
 
     die "Can't find program name\n" if !$teco;
 
-    foreach my $section ($dom->findnodes('/teco/section'))
+    foreach my $section ( $dom->findnodes('/teco/section') )
     {
-        my $line = $section->line_number();
+        my $line  = $section->line_number();
         my $title = $section->getAttribute('title');
 
         croak "Section element missing title at line $line" if !defined $title;
 
-        foreach my $command ($section->findnodes('./command'))
+        foreach my $command ( $section->findnodes('./command') )
         {
-            my $name    = $command->getAttribute('name');
-            my $format  = $command->getAttribute('parse');
-            my $scan    = $command->getAttribute('scan');
-            my $exec    = $command->getAttribute('exec');
+            my $name   = $command->getAttribute('name');
+            my $format = $command->getAttribute('parse');
+            my $scan   = $command->getAttribute('scan');
+            my $exec   = $command->getAttribute('exec');
 
-            if (defined $scan)
+            if ( defined $scan )
             {
                 $scan = "scan_$scan";
             }
@@ -390,41 +383,41 @@ sub parse_commands
                 $scan = 'NULL';
             }
 
-            if (defined $exec)
+            if ( defined $exec )
             {
                 $exec = "exec_$exec";
             }
 
             my $parse = 'NULL';
 
-            if (defined $format)
+            if ( defined $format )
             {
                 $parse = get_parse($format);
             }
 
-            if ($name =~ /^E(.)$/msx)
+            if ( $name =~ /^E(.)$/msx )
             {
-                $e_cmds .= make_entry($1, $parse, $scan, $exec);
+                $e_cmds .= make_entry( $1, $parse, $scan, $exec );
             }
-            elsif ($name ne 'FF' && $name =~ /^F(.)$/msx)
+            elsif ( $name ne 'FF' && $name =~ /^F(.)$/msx )
             {
-                $f_cmds .= make_entry($1, $parse, $scan, $exec);
+                $f_cmds .= make_entry( $1, $parse, $scan, $exec );
             }
             else
             {
-                if ($name =~ /^\[(.)\]/msx)
+                if ( $name =~ /^\[(.)\]/msx )
                 {
                     $name = $1;
                 }
 
-                $cmds .= make_entry($name, $parse, $scan, $exec);
+                $cmds .= make_entry( $name, $parse, $scan, $exec );
             }
         }
     }
 
-    foreach my $format (keys %parse_table)
+    foreach my $format ( keys %parse_table )
     {
-        if ($parse_table{$format}->{count} == 0)
+        if ( $parse_table{$format}->{count} == 0 )
         {
             croak "Unknown format: $format";
         }
@@ -437,7 +430,6 @@ sub parse_commands
     return;
 }
 
-
 #
 #  read_xml() - Read XML file and extract data for each name.
 #
@@ -448,7 +440,7 @@ sub read_xml
 
     # Read entire input file into string.
 
-    my $xml = do { local(@ARGV, $RS) = $args{input}; <> };
+    my $xml = do { local ( @ARGV, $RS ) = $args{input}; <> };
 
     parse_commands($xml);
 
