@@ -177,11 +177,15 @@ sub make_errcodes_h
 
     print {*STDERR} "Creating $args{output}\n" or croak;
 
+    ## no critic (RequireBriefOpen)
+
     open $fh, '>', $args{output};
 
     printf {$fh} $template, $warning, $errcodes;
 
     close $fh;
+
+    # use critic
 
     return;
 }
@@ -212,11 +216,15 @@ sub make_errors_md
 
     print {*STDERR} "Creating $args{output}\n" or croak;
 
+    ## no critic (RequireBriefOpen)
+
     open $fh, '>', $args{output};
 
     printf {$fh} $template, $errors;
 
     close $fh;
+
+    ## use critic
 
     return;
 }
@@ -250,11 +258,15 @@ sub make_errtables_h
 
     print {*STDERR} "Creating $args{output}\n" or croak;
 
+    ## no critic (RequireBriefOpen)
+
     open $fh, '>', $args{output};
 
     printf {$fh} $template, $warning, $errlist, $errhelp;
 
     close $fh;
+
+    ## use critic
 
     return;
 }

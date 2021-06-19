@@ -59,6 +59,8 @@ my %scan_funcs;
 my %exec_funcs;
 my %parse_table =
     (
+        ## no critic (RequireInterpolationOfMetachars)
+
         '@X//'       => { parse => 'parse_1',      count => 0 },
         '@X///'      => { parse => 'parse_2',      count => 0 },
         '+m,nX'      => { parse => 'parse_M',      count => 0 },
@@ -92,7 +94,9 @@ my %parse_table =
         'nXq'        => { parse => 'parse_nq',     count => 0 },
         'X='         => { parse => 'parse_oper',   count => 0 },
         '@Xq//'      => { parse => 'parse_q1',     count => 0 },
-   );
+
+        ## use critic
+    );
 
 #
 #  Parse our command-line options
@@ -226,12 +230,16 @@ sub make_commands_h
 
     print {*STDERR} "Creating $file\n" or croak;
 
+    ## no critic (RequireBriefOpen)
+
     open $fh, '>', $file or croak "Can't open $file\n";
 
     printf {$fh} $template, $warning, $cmds, $e_cmds, $f_cmds
         or croak "Can't print to $file\n";
 
     close $fh or croak "Can't close $file\n";
+
+    ## use critic
 
     return;
 }
@@ -330,12 +338,16 @@ sub make_exec_h
 
     print {*STDERR} "Creating $file\n" or croak;
 
+    ## no critic (RequireBriefOpen)
+
     open $fh, '>', $file or croak "Can't open $file\n";
 
     printf {$fh} $template, $warning, $scan_list, $exec_list
         or croak "Can't print to $file\n";
 
     close $fh or croak "Can't close $file\n";
+
+    ## use critic
 
     return;
 }

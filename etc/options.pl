@@ -283,11 +283,15 @@ sub make_options_h
 
     print {*STDERR} "Creating header file $file\n" or croak;
 
+    ## no critic (RequireBriefOpen)
+
     open $fh, '>', $file or croak "Can't open $file: $OS_ERROR";
 
     print {$fh} $result  or croak "Can't open $file: $OS_ERROR";
 
     close $fh            or croak "Can't close $file: $OS_ERROR";
+
+    ## use critic
 
     return;
 }
