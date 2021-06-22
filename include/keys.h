@@ -30,6 +30,11 @@
 
 #include <stdbool.h>                //lint !e537
 
+// Key values changed between versions of Ubuntu/gcc/ncurses. Not sure where
+// or why. So we define the following offset to allow us to revert to the
+// older value if we need to.
+
+#define OFFSET      1
 
 //  @enum
 //
@@ -78,15 +83,15 @@ enum
     KEY_S_LEFT   = KEY_SLEFT,
     KEY_S_RIGHT  = KEY_SRIGHT,
 
-    KEY_C_UP     = 566,
-    KEY_C_DOWN   = 525,
-    KEY_C_LEFT   = 545,
-    KEY_C_RIGHT  = 560,
+    KEY_C_UP     = 566 + OFFSET,
+    KEY_C_DOWN   = 525 + OFFSET,
+    KEY_C_LEFT   = 545 + OFFSET,
+    KEY_C_RIGHT  = 560 + OFFSET,
 
-    KEY_A_UP     = 564,
-    KEY_A_DOWN   = 523,
-    KEY_A_LEFT   = 543,
-    KEY_A_RIGHT  = 558,
+    KEY_A_UP     = 564 + OFFSET,
+    KEY_A_DOWN   = 523 + OFFSET,
+    KEY_A_LEFT   = 543 + OFFSET,
+    KEY_A_RIGHT  = 558 + OFFSET,
 
     KEY_PGUP     = KEY_PPAGE,
     KEY_PGDN     = KEY_NPAGE,
@@ -99,16 +104,16 @@ enum
     KEY_S_END    = KEY_SEND,
     KEY_S_DELETE = KEY_SDC,
 
-    KEY_C_HOME   = 535,
-    KEY_C_END    = 530,
-    KEY_C_DELETE = 519,
+    KEY_C_HOME   = 535 + OFFSET,
+    KEY_C_END    = 530 + OFFSET,
+    KEY_C_DELETE = 519 + OFFSET,
 
-    KEY_A_HOME   = 533,
-    KEY_A_END    = 528,
-    KEY_A_INSERT = 538,
-    KEY_A_DELETE = 517,
-    KEY_A_PGUP   = 553,
-    KEY_A_PGDN   = 548
+    KEY_A_HOME   = 533 + OFFSET,
+    KEY_A_END    = 528 + OFFSET,
+    KEY_A_INSERT = 538 + OFFSET,
+    KEY_A_DELETE = 517 + OFFSET,
+    KEY_A_PGUP   = 553 + OFFSET,
+    KEY_A_PGDN   = 548 + OFFSET
 };
 
 
