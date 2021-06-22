@@ -67,6 +67,7 @@ code.
 | <nobr>?MAT</nobr> | <nobr>No matching files</nobr> | No match was found for the file specification for an EN command. |
 | <nobr>?MEM</nobr> | <nobr>Memory overflow</nobr> | Insufficient memory available to complete the current command. |
 | <nobr>?MLP</nobr> | <nobr>Missing left parenthesis</nobr> | There is a right parenthesis trhat is not matched by a corresponding left parenthesis. |
+| <nobr>?MQN</nobr> | <nobr>Missing Q-register name</nobr> | A command or match control construct did not include a required Q-register name. |
 | <nobr>?MRA</nobr> | <nobr>Missing right angle bracket</nobr> | There is a left angle bracket that has no matching right angle bracket. A loop must be complete within a macro or command string. |
 | <nobr>?MRP</nobr> | <nobr>Missing right parenthesis</nobr> | There is a left parenthesis that is not matched by a corresponding right parenthesis. |
 | <nobr>?MSC</nobr> | <nobr>Missing start of conditional</nobr> | A ' command (end of conditional) was encountered. Every ' command must be matched by a preceding " (start of a conditional) command. |
