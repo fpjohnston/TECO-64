@@ -155,7 +155,7 @@ static void update_status(void);
 
 
 ///
-///  @brief    Check to see if escape sequences werte enabled or disabled.
+///  @brief    Check to see if escape sequences were enabled or disabled.
 ///
 ///  @returns  Nothing.
 ///
