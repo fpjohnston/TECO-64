@@ -28,6 +28,10 @@
 
 #define _KEYS_H
 
+#if     !defined(__NCURSES_H)
+#include <ncurses.h>
+#endif
+
 #include <stdbool.h>                //lint !e537
 
 // NOTE: some key codes changed when upgrading to Ubuntu 21.04, which may have
@@ -40,7 +44,7 @@
 
 //lint -save -e835
 
-#define OFFSET      1                   ///< Modify as needed
+#define OFFSET      1               ///< Modify as needed
 
 //  @enum
 //
