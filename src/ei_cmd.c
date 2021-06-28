@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <string.h>
 
 #include "teco.h"
 #include "eflags.h"
@@ -128,7 +129,6 @@ void exec_EI(struct cmd *cmd)
             return;
         }
 
-        char *name = init_filename(buf, len, cmd->colon);
         struct ei_block *ei_cmd = alloc_mem((uint)sizeof(*ei_cmd));
 
         ei_cmd->buf.data = alloc_mem((uint)sizeof(ei_cmd->buf));
@@ -139,8 +139,16 @@ void exec_EI(struct cmd *cmd)
 
         ei_new = ei_cmd;
 
-        if (name != NULL)
+        char *temp = init_filename(buf, len, cmd->colon);
+
+        if (temp != NULL)
         {
+            char name[strlen(temp) + 1];
+
+            strcpy(name, temp);
+
+            free_mem(&temp);
+
             if (open_command(name, len, stream, cmd->colon, &ei_new->buf))
             {
                 if (cmd->colon)
@@ -161,10 +169,16 @@ void exec_EI(struct cmd *cmd)
             longjmp(jump_main, MAIN_CTRLC); // Yes, act like CTRL/C typed
         }
 
-        char *name = init_filename(buf, len, cmd->colon);
+        char *temp = init_filename(buf, len, cmd->colon);
 
-        if (name != NULL)
+        if (temp != NULL)
         {
+            char name[strlen(temp) + 1];
+
+            strcpy(name, temp);
+
+            free_mem(&temp);
+
             if (open_command(name, len, stream, cmd->colon, &ei_old))
             {
                 if (cmd->colon)

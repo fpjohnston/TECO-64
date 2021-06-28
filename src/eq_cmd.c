@@ -61,10 +61,16 @@ void exec_EQ(struct cmd *cmd)
         .data = NULL,
     };
 
-    char *name = init_filename(buf, len, cmd->colon);
+    char *temp = init_filename(buf, len, cmd->colon);
 
-    if (name != NULL)
+    if (temp != NULL)
     {
+        char name[strlen(temp) + 1];
+
+        strcpy(name, temp);
+
+        free_mem(&temp);
+
         if (open_command(name, len, stream, cmd->colon, &text))
         {
             store_qtext(cmd->qindex, &text);
