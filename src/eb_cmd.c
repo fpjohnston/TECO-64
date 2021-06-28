@@ -75,7 +75,7 @@ void exec_EB(struct cmd *cmd)
         return;
     }
 
-    name = strdup(ifile->name);
+    name = strdup_mem(ifile->name);
 
     assert(name != NULL);
 

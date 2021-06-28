@@ -115,7 +115,7 @@ static void add_mblock(void *p1, uint size)
 ///
 ///  @brief    Get new memory.
 ///
-///  @returns  Nothing (error if memory allocation fails).
+///  @returns  Pointer to new memory.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -357,4 +357,32 @@ void *shrink_mem(void *p1, uint oldsize, uint newsize)
 #endif
 
     return p2;
+}
+
+
+///
+///  @brief    Duplicate string. Performs the same function as strdup(), but
+///            ensures we add a tracking block if we're debugging memory
+///            allocations.
+///
+///  @returns  Pointer to new memory.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+char *strdup_mem(const char *p)
+{
+    void *p1 = strdup(p);
+
+    if (p1 == NULL)
+    {
+        throw(E_MEM);                   // Memory overflow
+    }
+
+#if     defined(TECO_DEBUG)
+
+    add_mblock(p1, (uint)strlen(p1) + 1);
+
+#endif
+
+    return p1;
 }

@@ -162,6 +162,8 @@ extern void set_config(int argc, const char * const argv[]);
 
 extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 
+extern char *strdup_mem(const char *ptr);
+
 extern int teco_env(int n, bool colon);
 
 #endif  // !defined(_TECO_H)
