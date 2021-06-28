@@ -30,11 +30,17 @@
 
 #include <stdbool.h>                //lint !e537
 
-// Key values changed between versions of Ubuntu/gcc/ncurses. Not sure where
-// or why. So we define the following offset to allow us to revert to the
-// older value if we need to.
+// NOTE: some key codes changed when upgrading to Ubuntu 21.04, which may have
+// involved consequent changes to the C library, ncurses, or other components.
+// Bottom line: not sure what changed or why. All of the changes involved keypad
+// characters combined with either Ctrl or Alt (e.g., Ctrl-Home, or Alt-Delete)
+// which aren't explicitly defined in ncurses.h. All of the changed values are
+// 1 higher than before. So the following offset is employed to facilitate
+// reverting to the older values if needed with builds on other systems.
 
-#define OFFSET      1
+//lint -save -e835
+
+#define OFFSET      1                   ///< Modify as needed
 
 //  @enum
 //
@@ -107,6 +113,8 @@ enum
     KEY_C_HOME   = 535 + OFFSET,
     KEY_C_END    = 530 + OFFSET,
     KEY_C_DELETE = 519 + OFFSET,
+    KEY_C_PGUP   = 555 + OFFSET,
+    KEY_C_PGDN   = 550 + OFFSET,
 
     KEY_A_HOME   = 533 + OFFSET,
     KEY_A_END    = 528 + OFFSET,
@@ -116,6 +124,7 @@ enum
     KEY_A_PGDN   = 548 + OFFSET
 };
 
+//lint -restore
 
 /// @def    _
 ///
@@ -148,8 +157,8 @@ static struct keys keys[] =         ///< List of mappable keys
 
     _(HOME),    _(S_HOME),    _(C_HOME),    _(A_HOME),
     _(END),     _(S_END),     _(C_END),     _(A_END),
-    _(PGUP),    _(S_PGUP),                  _(A_PGUP),
-    _(PGDN),    _(S_PGDN),                  _(A_PGDN),
+    _(PGUP),    _(S_PGUP),    _(C_PGUP),    _(A_PGUP),
+    _(PGDN),    _(S_PGDN),    _(C_PGDN),    _(A_PGDN),
     _(DELETE),  _(S_DELETE),  _(C_DELETE),  _(A_DELETE),
     _(INSERT),                              _(A_INSERT),
 
