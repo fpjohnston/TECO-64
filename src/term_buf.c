@@ -37,10 +37,6 @@
 
 static struct buffer *term_buf;         ///< Terminal input block
 
-// Local functions
-
-static void exit_tbuf(void);
-
 
 ///
 ///  @brief    Create copy of terminal buffer.
@@ -121,7 +117,7 @@ void echo_tbuf(int pos)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exit_tbuf(void)
+void exit_tbuf(void)
 {
     if (term_buf != NULL)
     {
@@ -181,8 +177,6 @@ int getlen_tbuf(void)
 
 void init_tbuf(void)
 {
-    register_exit(exit_tbuf);
-
     term_buf = alloc_mem((uint)sizeof(*term_buf));
 
     term_buf->len  = 0;

@@ -135,8 +135,6 @@ static void error_dpy(void);
 
 static void exec_commands(const char *string);
 
-static void exit_dpy(void);
-
 static void getedit(char *buf, ulong size, uint bytes);
 
 static void mark_cursor(int row, int col);
@@ -303,7 +301,7 @@ static void exec_commands(const char *commands)
 
 #if     defined(TECO_DISPLAY)
 
-static void exit_dpy(void)
+void exit_dpy(void)
 {
     reset_dpy();
 }
@@ -481,15 +479,6 @@ void init_dpy(void)
     if (!f.e0.display)
     {
         f.e0.display = true;
-
-        static bool exit_set = false;
-
-        if (!exit_set)
-        {
-            exit_set = true;
-
-            register_exit(exit_dpy);
-        }
 
         // Note that initscr() will print an error message and exit if it
         // fails to initialize, so there is no error return to check for.

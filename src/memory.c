@@ -71,8 +71,6 @@ static void add_mblock(void *p1, uint size);
 
 static void delete_mblock(void *p1);
 
-static void exit_memory(void);
-
 #endif
 
 
@@ -201,7 +199,7 @@ static void delete_mblock(void *p1)
 
 #if     defined(TECO_DEBUG)
 
-static void exit_memory(void)
+void exit_mem(void)
 {
     // We free this memory here because exit_EG() has to be the last function
     // called before exiting TECO, which means we have to run our memory check
@@ -303,23 +301,6 @@ void free_mem(void *p1)
 
         *p2 = NULL;                     // Make sure we don't use this again
     }
-}
-
-
-///
-///  @brief    Initialize memory allocation functions.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void init_mem(void)
-{
-#if     defined(TECO_DEBUG)
-
-    register_exit(exit_memory);
-
-#endif
 }
 
 

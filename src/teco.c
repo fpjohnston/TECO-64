@@ -62,6 +62,8 @@ jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
 //  Local functions
 
+static void exit_teco(void);
+
 static void init_teco(int argc, const char * const argv[]);
 
 
@@ -137,6 +139,49 @@ int main(int argc, const char * const argv[])
     }
 }
 
+
+///
+///  @brief    Exit TECO, after calling cleanup functions. Note that the
+///            ordering of the first two or three function calls, as well as
+///            the last two function calls, is significant, but the remaining
+///            function calls isn't especially required.
+///
+///  @returns  Nothing (also, it may not return, depending on whether an EG
+///            command was issued).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exit_teco(void)
+{
+
+#if     defined(TECO_DISPLAY)
+
+    exit_dpy();                         // Disable display first
+
+#endif
+
+    exit_term();                        // Restore terminal settings next
+    exit_files();                       // Close any open files
+
+    exit_tbuf();                        // Deallocate memory for terminal buffer
+    exit_cbuf();                        // Deallocate memory for command buffer
+    exit_ebuf();                        // Deallocate memory for edit buffer
+    exit_map();                         // Deallocate memory for key mapping
+    exit_error();                       // Deallocate memory for errors
+    exit_search();                      // Deallocate memory for searches
+    exit_loop();                        // Deallocate memory for loops
+    exit_EI();                          // Deallocate memory for EI commands
+    exit_qreg();                        // Deallocate memory for Q-registers
+
+#if     defined(TECO_DEBUG)
+
+    exit_mem();                         // Deallocate memory blocks
+
+#endif
+
+    exit_EG();                          // Check for possible system command
+}
+    
 
 ///
 ///  @brief    Initialize everything required to start TECO, and set some
@@ -218,35 +263,17 @@ static void init_teco(int argc, const char * const argv[])
     f.ctrl_x     = 1;                   // Searches are case-insensitive
     f.radix      = 10;                  // Use decimal radix
 
-    // Note: this has to be first, since it will be the last called when we
-    //       exit, and it might execute a system command.
-
-    init_EG();                          // EG command initialization
-    init_mem();                         // Initialize memory allocation
     init_term();                        // Initialize terminal
     init_tbuf();                        // Initialize terminal buffer
     init_cbuf();                        // Initialize command buffer
     init_qreg();                        // Initialize Q-registers
     init_files();                       // Initialize file streams
-    init_EI();                          // EI command initialization
     init_loop();                        // Initialize loop stack
-    init_search();                      // Initialize search string
     init_env(argc, argv);               // Initialize environment
     init_ebuf(EDITBUF_INIT, EDITBUF_MAX, EDITBUF_STEP, EDITBUF_WARN);
                                         // Initialize edit buffer
-}
 
-
-///
-///  @brief    Register function to be called at program exit.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void register_exit(void (*func)(void))
-{
-    if (atexit(func) != 0)
+    if (atexit(exit_teco) != 0)
     {
         throw(E_INI, "Can't register exit function");
                                         // Initialization error

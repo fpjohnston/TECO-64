@@ -90,8 +90,6 @@ bool ebuf_changed = false;      ///< true if edit buffer modified
 
 // Local functions
 
-static void exit_ebuf(void);
-
 static bool expand_ebuf(void);
 
 static int last_delim(int nlines);
@@ -235,7 +233,7 @@ void delete_ebuf(int n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exit_ebuf(void)
+void exit_ebuf(void)
 {
     free_mem(&eb.buf);
 
@@ -392,8 +390,6 @@ void init_ebuf(
     int warn)                           ///< Warning threshold (0-100)
 {
     assert(eb.buf == NULL);             // Error if no edit buffer
-
-    register_exit(exit_ebuf);
 
     if (warn > 100)                     // Buffer can't be more than 100% full
     {

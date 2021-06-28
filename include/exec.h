@@ -481,15 +481,9 @@ extern void exec_cmd(struct cmd *cmd);
 
 extern void exec_macro(struct buffer *macro, struct cmd *cmd);
 
-extern void exit_EG(void);
-
 extern void exec_insert(const char *buf, uint len);
 
 extern int find_eg(char *buf, bool reset);
-
-extern void init_EG(void);
-
-extern void init_EI(void);
 
 extern void init_loop(void);
 

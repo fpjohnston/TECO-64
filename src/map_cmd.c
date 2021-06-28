@@ -41,11 +41,7 @@
 #include "term.h"
 
 
-static bool exit_set = false;           ///< Flag for setting exit function
-
 // Local functions
-
-static void exit_map(void);
 
 static void reset_map(void);
 
@@ -66,13 +62,6 @@ static void unmap_key(uint key);
 void exec_FM(struct cmd *cmd)
 {
     assert(cmd != NULL);
-
-    if (!exit_set)
-    {
-        exit_set = true;
-
-        register_exit(exit_map);
-    }
 
     uint size = cmd->text1.len;
 
@@ -233,7 +222,7 @@ bool exec_key(int key)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exit_map(void)
+void exit_map(void)
 {
     reset_map();
 }

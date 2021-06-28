@@ -60,8 +60,6 @@ static char err_file[ERR_FILE_SIZE + 1]; ///< Name of file causing error
 
 static bool canonical_name(char **name);
 
-static void exit_files(void);
-
 
 ///
 ///  @brief    Make file name canonical.
@@ -155,7 +153,7 @@ void close_output(uint stream)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exit_files(void)
+void exit_files(void)
 {
     for (uint i = 0; i < OFILE_MAX; ++i)
     {
@@ -190,8 +188,6 @@ static void exit_files(void)
 
 void init_files(void)
 {
-    register_exit(exit_files);
-
     istream = IFILE_PRIMARY;
     ostream = OFILE_PRIMARY;
 }

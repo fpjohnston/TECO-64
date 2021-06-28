@@ -57,8 +57,6 @@ static struct ei_block *ei_new = NULL;
 
 // Local functions
 
-static void exit_EI(void);
-
 static struct ei_block *reset_new(void);
 
 
@@ -205,22 +203,9 @@ void exec_EI(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exit_EI(void)
+void exit_EI(void)
 {
     reset_indirect();
-}
-
-
-///
-///  @brief    Initialization for EI commands.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void init_EI(void)
-{
-    register_exit(exit_EI);
 }
 
 

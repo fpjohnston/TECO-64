@@ -58,8 +58,6 @@ static bool term_active = false;        ///< Are terminal settings active?
 
 // Local functions
 
-static void exit_term(void);
-
 #if     !defined(TECO_DISPLAY)
 
 static void reset_term(void);
@@ -76,7 +74,7 @@ static void sig_handler(int signal);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exit_term(void)
+void exit_term(void)
 {
     reset_term();
 }
@@ -151,8 +149,6 @@ void init_term(void)
     if (!init_set)
     {
         init_set = true;
-
-        register_exit(exit_term);
 
 #if     !defined(__DECC)
 

@@ -51,8 +51,6 @@ struct tstring last_search = { .len = 0 };
 
 // Local functions
 
-static void exit_search(void);
-
 static int isblankx(int c, struct search *s);
 
 static int isctrlx(int c, int match);
@@ -73,22 +71,9 @@ static bool match_str(struct search *s);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exit_search(void)
+void exit_search(void)
 {
     free_mem(&last_search.data);
-}
-
-
-///
-///  @brief    Initialize search string.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void init_search(void)
-{
-    register_exit(exit_search);
 }
 
 

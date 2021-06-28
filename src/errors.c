@@ -55,8 +55,6 @@ static char *last_command;          ///< Command string for last error
 
 static void convert(char *buf, uint bufsize, const char *err_str, uint len);
 
-static void exit_error(void);
-
 
 ///
 ///  @brief    Convert string to canonical format by making control characters
@@ -124,7 +122,7 @@ static void convert(char *buf, uint bufsize, const char *err_str, uint len)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exit_error(void)
+void exit_error(void)
 {
     if (last_command != NULL)
     {
@@ -334,7 +332,6 @@ noreturn void throw(int error, ...)
 
     if (error != E_XAB)
     {
-        register_exit(exit_error);
         free_mem(&last_command);
         last_command = alloc_mem(cbuf->pos + 1);
         sprintf(last_command, "%.*s", (int)cbuf->pos, cbuf->data);

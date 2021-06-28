@@ -59,8 +59,6 @@ static struct loop *loop_head;          ///< Head of loop list
 
 static void endloop(struct cmd *cmd, bool pop_ok);
 
-static void exit_loop(void);
-
 static void pop_loop(bool pop_ok);
 
 static void push_loop(int count);
@@ -279,7 +277,7 @@ void exec_semi(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exit_loop(void)
+void exit_loop(void)
 {
     reset_loop();
 }
@@ -294,8 +292,6 @@ static void exit_loop(void)
 
 void init_loop(void)
 {
-    register_exit(exit_loop);
-
     loop_depth = 0;
     loop_head = NULL;
 }

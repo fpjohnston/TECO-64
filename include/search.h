@@ -66,8 +66,6 @@ extern struct tstring last_search;
 
 // Global functions
 
-extern void init_search(void);
-
 extern bool search_loop(struct search *s);
 
 extern bool search_backward(struct search *s);

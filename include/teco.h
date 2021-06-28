@@ -148,13 +148,45 @@ extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
 
 extern void print_flag(int flag);
 
+extern void exit_cbuf(void);
+
+#if     defined(TECO_DISPLAY)
+
+extern void exit_dpy(void);
+
+#endif
+
+extern void exit_ebuf(void);
+
+extern void exit_EG(void);
+
+extern void exit_EI(void);
+
+extern void exit_error(void);
+
+extern void exit_files(void);
+
+extern void exit_loop(void);
+
+extern void exit_map(void);
+
+#if     defined(TECO_DEBUG)
+
+extern void exit_mem(void);
+
+#endif
+
+extern void exit_qreg(void);
+
+extern void exit_search(void);
+
+extern void exit_tbuf(void);
+
+extern void exit_term(void);
+
 extern void free_mem(void *ptr);
 
 extern void init_env(int argc, const char * const argv[]);
-
-extern void init_mem(void);
-
-extern void register_exit(void (*func)(void));
 
 extern void reset(void);
 

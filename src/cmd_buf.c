@@ -40,10 +40,6 @@ struct buffer *cbuf;                    ///< Current command string buffer
 
 static struct buffer *root;             ///< Command string buffer root
 
-// Local functions
-
-static void exit_cbuf(void);
-
 
 ///
 ///  @brief    Throw exception because of premature end of command string.
@@ -107,7 +103,7 @@ bool check_semi(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exit_cbuf(void)
+void exit_cbuf(void)
 {
     cbuf = NULL;
 
@@ -132,8 +128,6 @@ static void exit_cbuf(void)
 
 void init_cbuf(void)
 {
-    register_exit(exit_cbuf);
-
     root = alloc_mem((uint)sizeof(*root));
 
     root->len  = 0;

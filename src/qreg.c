@@ -161,11 +161,6 @@ struct qlist
 static struct qlist *list_head = NULL;
 
 
-// Local functions
-
-static void exit_qreg(void);
-
-
 ///
 ///  @brief    Append character to Q-register.
 ///
@@ -228,7 +223,7 @@ void delete_qtext(int qindex)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exit_qreg(void)
+void exit_qreg(void)
 {
     // Free local Q-registers and reset the push-down list.
 
@@ -414,8 +409,6 @@ uint get_qsize(int qindex)
 
 void init_qreg(void)
 {
-    register_exit(exit_qreg);
-
     list_head = NULL;
     local_head = alloc_mem((uint)sizeof(*local_head));
 }
