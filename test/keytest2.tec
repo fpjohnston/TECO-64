@@ -32,9 +32,11 @@
 @^UA/A_END/     MB
 @^UA/PGUP/      MB
 @^UA/S_PGUP/    MB
+@^UA/C_PGUP/    MB
 @^UA/A_PGUP/    MB
 @^UA/PGDN/      MB
 @^UA/S_PGDN/    MB
+@^UA/C_PGDN/    MB
 @^UA/A_PGDN/    MB
 @^UA/DELETE/    MB
 @^UA/S_DELETE/  MB
