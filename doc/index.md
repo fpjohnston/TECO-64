@@ -3,7 +3,7 @@
 | Character(s)   | Description |
 | -------------- | ----------- |
 | NUL            | [Discarded on input; ignored in command](misc.md) |
-| ^A             | [Output message to terminal](type-out.md) |
+| ^A             | [Output message to terminal](typeout.md) |
 | ^B             | [Current date](variables.md) |
 | ^C             | [Stop execution](immediate.md) |
 | ^D             | [Set radix to decimal](radix.md) |
@@ -48,8 +48,8 @@
 | ^S             | [-(length) of last referenced string](variables.md) |
 | ^S             | [(Match char.) Match separator character](search.md) |
 | ^T             | [ASCII value of next input character](variables.md) |
-| *n*^T          | [Type ASCII character of value *n*](type-out.md) |
-| *n*:^T         | [Output binary byte of value n](type-out.md) |
+| *n*^T          | [Type ASCII character of value *n*](typeout.md) |
+| *n*:^T         | [Output binary byte of value n](typeout.md) |
 | ^U             | [Kill command line](qregister.md) |
 | ^U*q*          | [Put string into Q-register *q*](qregister.md) |
 | :^U*q*         | [Append string to Q-register *q*](qregister.md) |
@@ -227,11 +227,11 @@
 | *n*S           | [Local search](search.md) |
 | *m*,*n*S       | [Search for *n*th occurrence within *m* characters](search.md) |
 | ::S            | [Compare string](search.md) |
-| *n*T           | [Type *n* lines](type-out.md) |
-| *m*,*n*T       | [Type from positions *m* to *n*](type-out.md) |
+| *n*T           | [Type *n* lines](typeout.md) |
+| *m*,*n*T       | [Type from positions *m* to *n*](typeout.md) |
 | *n*U*q*        | [Put number *n* into Q-register *q*](qregister.md) |
-| *n*V           | [Type *n* current lines](type-out.md) |
-| *m*,*n*V       | [Type lines before and after current line](type-out.md) |
+| *n*V           | [Type *n* current lines](typeout.md) |
+| *m*,*n*V       | [Type lines before and after current line](typeout.md) |
 | W              | [Enable or disable display mode](display.md) |
 | *n*:W          | [Read display mode characteristics](display.md) |
 | *m*,*n*:W      | [Set display mode characteristics](display.md) |
