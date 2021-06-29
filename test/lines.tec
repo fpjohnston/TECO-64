@@ -1,0 +1,16 @@
+! lines.tec - TECO-64 macro to display line counts for file  !
+
+EO-200 "L :@^A/Macro requires TECO version 200 or higher./ ^C '
+
+0,128ET                 !! Abort on error
+
+!! Define macro to print formatted value, followed by the string
+!! "line", optionally followed by "s" if value is not equal to 1.
+
+@^U.A { U.A Q.A :@=/%6u/ @^A/ line/ Q.A-1 "N @^A/s/ ' }
+
+ 0:L M.A :@^A/ in page/
+-1:L M.A :@^A/ preceding dot/
+ 1:L M.A :@^A/ following dot/
+
+^[^[
