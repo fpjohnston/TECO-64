@@ -1,6 +1,7 @@
 !! date.tec - display the current date and time
 
 0,128ET                 !! Abort on error
+E2 U.A                  !! Save E2 flag
 -1E2                    !! Enable all command restrictions
 
 !!   ^B == ((year - 1900) * 16 + month) * 32 + day
@@ -79,5 +80,7 @@ Q.S :@=/%02u/           !! display SS
 E1&4 "N                 !! Check for displaying  millisecs
     Q.X:@=/.%03u/       !! display millisecond
 '
+
+Q.A E2
 
 -1^T
