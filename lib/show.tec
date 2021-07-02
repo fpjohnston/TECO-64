@@ -35,12 +35,12 @@
 
 @^A\E1 = \ E1:=== @^A\: \
     E1&64 "N @^A\prompt \ '
-    E1&32  "N @^A\bang \ '
-    E1&16  "N @^A\new_ei \ '
+    E1&32 "N @^A\bang \ '
+    E1&16 "N @^A\new_ei \ '
     E1&8  "N @^A\ubar \ '
-    E1&4   "N @^A\dollar \ '
-    E1&2   "N @^A\text \ '
-    E1&1   "N @^A\xoper \ '
+    E1&4  "N @^A\dollar \ '
+    E1&2  "N @^A\text \ '
+    E1&1  "N @^A\xoper \ '
     -1^T
 
 @^A\E2 = \ E2:=== @^A\: \
