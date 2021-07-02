@@ -179,6 +179,8 @@ extern bool parse_mq(struct cmd *cmd);
 
 extern bool parse_n(struct cmd *cmd);
 
+extern bool parse_n1(struct cmd *cmd);
+
 extern bool parse_nc(struct cmd *cmd);
 
 extern bool parse_nc1(struct cmd *cmd);
@@ -348,6 +350,8 @@ extern void exec_FC(struct cmd *cmd);
 
 extern void exec_FD(struct cmd *cmd);
 
+extern void exec_FF(struct cmd *cmd);
+
 extern void exec_FK(struct cmd *cmd);
 
 extern void exec_FL(struct cmd *cmd);
@@ -478,6 +482,8 @@ extern bool check_semi(void);
 extern void close_files(void);
 
 extern void exec_cmd(struct cmd *cmd);
+
+extern bool exec_ctrl_F(int key);
 
 extern void exec_macro(struct buffer *macro, struct cmd *cmd);
 

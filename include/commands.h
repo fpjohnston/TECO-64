@@ -302,6 +302,8 @@ static const struct cmd_table f_table[] =
     ENTRY('c',     NULL,            parse_Mc2,       exec_FC        ),
     ENTRY('D',     NULL,            parse_nc1,       exec_FD        ),
     ENTRY('d',     NULL,            parse_nc1,       exec_FD        ),
+    ENTRY('F',     NULL,            parse_n1,        exec_FF        ),
+    ENTRY('f',     NULL,            parse_n1,        exec_FF        ),
     ENTRY('H',     parse_X,         scan_FH,         exec_nop       ),
     ENTRY('h',     parse_X,         scan_FH,         exec_nop       ),
     ENTRY('K',     NULL,            parse_nc1,       exec_FK        ),

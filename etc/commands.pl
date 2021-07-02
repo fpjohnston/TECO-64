@@ -86,6 +86,7 @@ my %parse_table = (
     'm,n::@X//' => { parse => 'parse_md2',    count => 0 },
     'm,nXq'     => { parse => 'parse_mq',     count => 0 },
     'nX'        => { parse => 'parse_n',      count => 0 },
+    'n@X/'      => { parse => 'parse_n1',     count => 0 },
     'n:X'       => { parse => 'parse_nc',     count => 0 },
     'n:@X/'     => { parse => 'parse_nc1',    count => 0 },
     'n:Xq'      => { parse => 'parse_ncq',    count => 0 },
@@ -360,6 +361,8 @@ sub parse_commands
 
     die "Can't find program name\n" if !$teco;
 
+    my $e_cmd;
+
     foreach my $section ( $dom->findnodes('/teco/section') )
     {
         my $line  = $section->line_number();
@@ -395,11 +398,16 @@ sub parse_commands
                 $parse = get_parse($format);
             }
 
+            # Note the use of a flag variable to mark when we've started parsing
+            # E commands. This allows us to distinguish the 1-character FF (form
+            # feed) command from the 2-character FF command.
+
             if ( $name =~ /^E(.)$/msx )
             {
                 $e_cmds .= make_entry( $1, $parse, $scan, $exec );
+                $e_cmd = 1;
             }
-            elsif ( $name ne 'FF' && $name =~ /^F(.)$/msx )
+            elsif ( $name =~ /^F(.)$/msx && $e_cmd )
             {
                 $f_cmds .= make_entry( $1, $parse, $scan, $exec );
             }

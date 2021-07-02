@@ -761,6 +761,25 @@ bool parse_n(struct cmd *cmd)
 
 
 ///
+///  @brief    Parse command with format "n@X/text1/".
+////
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool parse_n1(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+    reject_m(cmd);
+    require_n(cmd);
+    reject_colon(cmd);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
+}
+
+
+///
 ///  @brief    Parse command with format "n:X".
 ///
 ///  @returns  false (command is not an operand or operator).

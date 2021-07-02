@@ -23,7 +23,7 @@
 | ^EV            | [(Match char) Match lower case alphabetic](search.md) |
 | ^EW            | [(Match char) Match upper case alphabetic](search.md) |
 | ^EX            | [(Match char) Match any character](search.md) |
-| ^F             | Not a TECO command |
+| ^F             | (Reserved) |
 | ^G^G           | [Delete entire command string](immediate.md) |
 | ^G\<SPACE\>    | [Retype current command line](immediate.md) |
 | ^G\*           | [Retype current command input](immediate.md) |

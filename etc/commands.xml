@@ -159,6 +159,7 @@
         <command name='FB'      parse='+m,n:@X/'                    exec='FB'       />
         <command name='FC'      parse='+m,n:@X//'                   exec='FC'       />
         <command name='FD'      parse='n:@X/'                       exec='FD'       />
+        <command name='FF'      parse='n@X/'                        exec='FF'       />
         <command name='FH'      parse='X'          scan='FH'        exec='nop'      />
         <command name='FK'      parse='n:@X/'                       exec='FK'       />
         <command name='FL'      parse='+m,nX'                       exec='FL'       />

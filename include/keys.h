@@ -134,8 +134,14 @@ enum
 ///
 /// @brief  Helper macro to set up table of keys.
 
-#define _(key) [KEY_ ## key] = { .kname = #key, .qname = NUL, .qlocal = false, \
-                                 .macro = NULL, .colon = false }
+#define _(key) [KEY_ ## key - KEY_MIN] = \
+    { \
+        .kname  = #key,  \
+        .qname  = NUL,   \
+        .qlocal = false, \
+        .macro  = NULL,  \
+        .colon  = false  \
+    }
 
 /// @struct  keys
 ///

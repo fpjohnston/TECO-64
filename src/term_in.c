@@ -479,6 +479,30 @@ static int read_first(void)
 
                 break;
 
+            case CTRL_F:
+                echo_in(CTRL_F);
+
+                c = getc_term((bool)WAIT);
+
+                echo_in(c);
+
+                // Current format is: CTRL/F followed by a digit, or another
+                // CTRL/F. Anything else is an error.
+
+                if (c == CTRL_F || isdigit(c))
+                {
+                    echo_in(LF);
+
+                    (void)exec_ctrl_F(c);
+                }
+                else
+                {
+                    echo_in('?');
+                    echo_in(LF);
+                }
+
+                break;
+
             case CTRL_K:
                 reset_colors();
                 //lint -fallthrough
