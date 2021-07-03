@@ -314,7 +314,7 @@ int getchar_ebuf(int_t n)
 {
     int_t pos = t.dot + n;
 
-    if (pos < eb.left + eb.right)
+    if (pos >= 0 && pos < eb.left + eb.right)
     {
         if (pos >= eb.left)
         {
