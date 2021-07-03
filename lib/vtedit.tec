@@ -7,6 +7,12 @@
 @f2/blue/white/         !! Set text window colors
 @f3/yellow/red/         !! Set status line colors
 
+@fm/S_PGDN/P/           !! Next page
+@fm/S_PGUP/-P/          !! Previous page
+@fm/F1/FL L/            !! Downcase line, advance to next
+@fm/S_F1/FL/            !! Downcase line
+@fm/F2/FU L/            !! Upcase line, advance to next
+@fm/S_F2/FU/            !! Upcase line
 @fm/A_DELETE/EK HK EX/  !! Cancel edit and exit
 
 ^[^[
