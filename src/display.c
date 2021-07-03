@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 
 #if     defined(TECO_DISPLAY)
 
@@ -80,8 +81,6 @@ static uint n_end = 0;              ///< No. of consecutive End keys
 
 #define err_if_true(func, cond) if (func == cond) error_dpy()
 
-#define MAX_POSITION    40          ///< Max. size of position string
-
 ///
 ///  @struct  region
 ///
@@ -135,7 +134,7 @@ static void error_dpy(void);
 
 static void exec_commands(const char *string);
 
-static void getedit(char *buf, ulong size, uint bytes);
+static int geteditsize(char *buf, ulong size, uint bytes);
 
 static void mark_cursor(int row, int col);
 
@@ -146,6 +145,8 @@ static void move_left(void);
 static void move_right(void);
 
 static void move_up(void);
+
+static int print_ebuf(char *buf, int width, int nbytes, int pos);
 
 static void update_status(void);
 
@@ -379,13 +380,13 @@ int getchar_dpy(bool unused)
 ///
 ///  @brief    Get size of edit buffer.
 ///
-///  @returns  Nothing.
+///  @returns  No. of bytes written to buffer.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 #if     defined(TECO_DISPLAY)
 
-static void getedit(char *buf, ulong size, uint bytes)
+static int geteditsize(char *buf, ulong size, uint bytes)
 {
     assert(buf != NULL);
 
@@ -431,6 +432,8 @@ static void getedit(char *buf, ulong size, uint bytes)
             }
         }
     }
+
+    return (int)strlen(buf);
 }
 
 #endif
@@ -751,6 +754,45 @@ static void move_up(void)
     if (d.vcol < d.col)
     {
         d.vcol = d.col;
+    }
+}
+
+#endif
+
+
+///
+///  @brief    Output formatted description of edit buffer character.
+///
+///  @returns  No. of characters written to buffer.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(TECO_DISPLAY)
+
+static int print_ebuf(char *buf, int width, int nbytes, int pos)
+{
+    assert(buf != NULL);
+
+    int c = getchar_ebuf(pos);
+    size_t size = (uint)(width - nbytes);
+
+    buf += nbytes;
+
+    if (c == -1)
+    {
+        return snprintf(buf, size, "%dA=(n/a)  ", pos);
+    } 
+    else if (isgraph(c))
+    {
+        return snprintf(buf, size, "%dA='%c'  ", pos, c);
+    }
+    else if (c > NUL && c < SPACE)
+    {
+        return snprintf(buf, size, "%dA='^%c'  ", pos, c + '@');
+    }
+    else
+    {
+        return snprintf(buf, size, "%dA=%u  ", pos, c);
     }
 }
 
@@ -1333,29 +1375,38 @@ static void update_status(void)
         int row   = getlines_ebuf(-1);
         int nrows = getlines_ebuf(0);
         int col   = -getdelta_ebuf(0);
-        char position[MAX_POSITION + 1];
-        char buf[w.width];
+        int nbytes = snprintf(status, sizeof(status), ".=%d  Z=%d  ", t.dot, t.Z);
+        size_t size = sizeof(status);   // Remaining bytes available in line
+
+        nbytes += print_ebuf(status, w.width, nbytes, -1);
+        nbytes += print_ebuf(status, w.width, nbytes, 0);
+
+        size -= (uint)nbytes;
 
         if (row < nrows)
         {
-            snprintf(position, sizeof(position), "row=%d  col=%d",
-                     row + 1, col + 1);
+            nbytes += snprintf(status + nbytes, size,
+                               "row=%d  col=%d  ", row + 1, col + 1);
         }
         else
         {
-            strcpy(position, "<EOF>");
+            nbytes += snprintf(status + nbytes, size, "<EOF>  ");
         }
 
-        getedit(buf, sizeof(buf), (uint)t.size);
+        size -= (uint)nbytes;
 
-        int nbytes = snprintf(status, sizeof(status),
-                              ".=%d  Z=%d  %s  nrows=%d  mem=%s",
-                              t.dot, t.Z, position, nrows, buf);
+        nbytes += snprintf(status + nbytes, size, "nrows=%d  mem=", nrows);
+
+        size -= (uint)nbytes;
+
+        nbytes += geteditsize(status + nbytes, size, (uint)t.size);
 
         status[nbytes] = SPACE;         // Replace NUL character with space
 
         // Now add in page number on right side.
 
+        char buf[w.width];
+        
         nbytes = sprintf(buf, "Page %u", page_count);
 
         memcpy(status + w.width - nbytes, buf, (size_t)(uint)nbytes);
