@@ -781,7 +781,7 @@ static int print_ebuf(char *buf, int width, int nbytes, int pos)
     if (c == -1)
     {
         return snprintf(buf, size, "%dA=(n/a)  ", pos);
-    } 
+    }
     else if (isgraph(c))
     {
         return snprintf(buf, size, "%dA='%c'  ", pos, c);
@@ -1406,7 +1406,8 @@ static void update_status(void)
         // Now add in page number on right side.
 
         char buf[w.width];
-        
+
+
         nbytes = sprintf(buf, "Page %u", page_count);
 
         memcpy(status + w.width - nbytes, buf, (size_t)(uint)nbytes);

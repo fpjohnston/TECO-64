@@ -1,4 +1,4 @@
- ///
+///
 ///  @file    map_cmd.c
 ///  @brief   Execute commands that map keys.
 ///

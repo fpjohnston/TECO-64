@@ -181,7 +181,7 @@ static void exit_teco(void)
 
     exit_EG();                          // Check for possible system command
 }
-    
+
 
 ///
 ///  @brief    Initialize everything required to start TECO, and set some
