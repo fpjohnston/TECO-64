@@ -789,7 +789,7 @@ static int print_ebuf(char *buf, int width, int nbytes, int c)
 
     if (c == -1)
     {
-        return snprintf(buf, size, "N/A ");
+        return snprintf(buf, size, "----");
     } 
     else if (isprint(c))
     {
@@ -1399,14 +1399,15 @@ static void update_status(void)
         nbytes += snprintf(status + nbytes, size, ")  Z=%-*d  ", width, t.Z);
         width = WIDTH(nrows);
 
-        if (row < nrows)
+        if (t.dot >= t.Z)
         {
             nbytes += snprintf(status + nbytes, size,
-                               "row=%-*d  col=%-3d  ", width, row + 1, col + 1);
+                               "row=%-*d   <EOF>   ", width, row + 1);
         }
         else
         {
-            nbytes += snprintf(status + nbytes, size, " (End of File)    ");
+            nbytes += snprintf(status + nbytes, size,
+                               "row=%-*d  col=%-3d  ", width, row + 1, col + 1);
         }
 
         size -= (uint)nbytes;
