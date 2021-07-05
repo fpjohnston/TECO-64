@@ -70,12 +70,15 @@ struct watch w =
             .end_of_scr = true,
         }
     },
+    .maxx = DEFAULT_WIDTH,              // Max. width of window
+    .maxy = DEFAULT_HEIGHT,             // Max. height of window
+
 };
 
 
 // Local functions
 
-static int get_w(int n);
+static int get_w(int n, bool dcolon);
 
 static void set_w(int m, int n);
 
@@ -87,7 +90,7 @@ static void set_w(int m, int n);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int get_w(int n)
+static int get_w(int n, bool dcolon)
 {
     switch (n)
     {
@@ -96,17 +99,31 @@ static int get_w(int n)
             return w.type;
 
         case 1:
-            return w.width;
-
-        case 2:
-            n = w.height - w.nlines;
-
-            if (f.e0.display && f.e4.line)
+            if (dcolon)
             {
-                --n;
+                return w.maxx;
+            }
+            else
+            {
+                return w.width;
             }
 
-            return n;
+        case 2:
+            if (dcolon)
+            {
+                return w.maxy;
+            }
+            else
+            {
+                n = w.height - w.nlines;
+
+                if (f.e0.display && f.e4.line)
+                {
+                    --n;
+                }
+
+                return n;
+            }
 
         case 3:
             return w.seeall ? -1 : 0;
@@ -189,11 +206,11 @@ bool scan_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_atsign(cmd);                  // @W/text1/ is invalid
+    reject_atsign(cmd);                 // @W/text1/ is invalid
 
     if (!cmd->colon)
     {
-        reject_m(cmd);               // m,nW is invalid
+        reject_m(cmd);                  // m,nW is invalid
 
         return false;
     }
@@ -206,14 +223,17 @@ bool scan_W(struct cmd *cmd)
         cmd->n_arg = 0;                 // :W = 0:W
     }
 
-    reject_dcolon(cmd);                  // n::W and m,n::W are invalid
+    if (cmd->n_arg != 1 && cmd->n_arg != 2)
+    {
+        reject_dcolon(cmd);             // n::W and m,n::W are invalid
+    }
 
-    if (cmd->m_set)                     // m,n:W
+    if (cmd->m_set && !cmd->dcolon)     // m,n:W
     {
         set_w(cmd->m_arg, cmd->n_arg);
     }
 
-    int n = get_w(cmd->n_arg);
+    int n = get_w(cmd->n_arg, cmd->dcolon);
 
     push_x(n, X_OPERAND);
 
@@ -235,7 +255,7 @@ static void set_w(int m, int n)
     switch (n)
     {
         case 0:
-            w.type = m;
+            w.type = n;
 
             break;
 

@@ -347,7 +347,7 @@ $(TARGET): bin/$(TARGET)
 
 bin/$(TARGET): $(OBJECTS)
 	@echo Making $(@F) $(NULL)
-	$(AT)cd obj && $(CC) $(DFLAGS) -o ../$@ $(OBJECTS) $(LIBS) -lncurses
+	$(AT)cd obj && $(CC) $(DFLAGS) -o ../$@ $(OBJECTS) $(LIBS) -lncurses -lm
 
 %.lob: %.c
 	@echo Making $@ $(NULL)

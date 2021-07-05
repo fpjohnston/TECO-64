@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <math.h>
 
 #if     defined(TECO_DISPLAY)
 
@@ -72,6 +73,14 @@ static int rowbias = 0;             ///< Row adjustment
 static uint n_home = 0;             ///< No. of consecutive Home keys
 
 static uint n_end = 0;              ///< No. of consecutive End keys
+
+///
+///  @def    WIDTH
+///
+///  @brief  Get decimal width of a number (used to print status line values).
+///
+
+#define WIDTH(x) (((x == 0) ? 0 : (int)log10((double)x)) + 1)
 
 ///
 ///  @def    err_if_true
@@ -146,7 +155,7 @@ static void move_right(void);
 
 static void move_up(void);
 
-static int print_ebuf(char *buf, int width, int nbytes, int pos);
+static int print_ebuf(char *buf, int width, int nbytes, int c);
 
 static void update_status(void);
 
@@ -465,6 +474,7 @@ void getsize_dpy(void)
     set_nrows();
 
 #endif
+
 }
 
 
@@ -769,30 +779,29 @@ static void move_up(void)
 
 #if     defined(TECO_DISPLAY)
 
-static int print_ebuf(char *buf, int width, int nbytes, int pos)
+static int print_ebuf(char *buf, int width, int nbytes, int c)
 {
     assert(buf != NULL);
 
-    int c = getchar_ebuf(pos);
     size_t size = (uint)(width - nbytes);
 
     buf += nbytes;
 
     if (c == -1)
     {
-        return snprintf(buf, size, "%dA=(n/a)  ", pos);
-    }
-    else if (isgraph(c))
+        return snprintf(buf, size, "N/A ");
+    } 
+    else if (isprint(c))
     {
-        return snprintf(buf, size, "%dA='%c'  ", pos, c);
+        return snprintf(buf, size, "'%c' ", c);
     }
     else if (c > NUL && c < SPACE)
     {
-        return snprintf(buf, size, "%dA='^%c'  ", pos, c + '@');
+        return snprintf(buf, size, "'^%c'", c + '@');
     }
     else
     {
-        return snprintf(buf, size, "%dA=%u  ", pos, c);
+        return snprintf(buf, size, "% 4d", c);
     }
 }
 
@@ -1258,6 +1267,8 @@ void set_nrows(void)
 
     assert(d.nrows > 0);                // Verify that we have at least 1 row
 
+    getmaxyx(stdscr, w.maxy, w.maxx);   // Get max. height & width
+
 #endif
 
 }
@@ -1372,30 +1383,36 @@ static void update_status(void)
 
         // Add some file status to the left side of the status line
 
-        int row   = getlines_ebuf(-1);
-        int nrows = getlines_ebuf(0);
-        int col   = -getdelta_ebuf(0);
-        int nbytes = snprintf(status, sizeof(status), ".=%d  Z=%d  ", t.dot, t.Z);
+        int row     = getlines_ebuf(-1);
+        int nrows   = getlines_ebuf(0);
+        int col     = -getdelta_ebuf(0);
+        int width   = WIDTH(t.Z);
+        int nbytes  = snprintf(status, sizeof(status), ".=%-*d (", width, t.dot);
         size_t size = sizeof(status);   // Remaining bytes available in line
 
-        nbytes += print_ebuf(status, w.width, nbytes, -1);
-        nbytes += print_ebuf(status, w.width, nbytes, 0);
+        nbytes += print_ebuf(status, w.width, nbytes, getchar_ebuf(-1));
+        nbytes += snprintf(status + nbytes, size, ",");
+        nbytes += print_ebuf(status, w.width, nbytes, getchar_ebuf(0));
 
         size -= (uint)nbytes;
+
+        nbytes += snprintf(status + nbytes, size, ")  Z=%-*d  ", width, t.Z);
+        width = WIDTH(nrows);
 
         if (row < nrows)
         {
             nbytes += snprintf(status + nbytes, size,
-                               "row=%d  col=%d  ", row + 1, col + 1);
+                               "row=%-*d  col=%-3d  ", width, row + 1, col + 1);
         }
         else
         {
-            nbytes += snprintf(status + nbytes, size, "<EOF>  ");
+            nbytes += snprintf(status + nbytes, size, " (End of File)    ");
         }
 
         size -= (uint)nbytes;
 
-        nbytes += snprintf(status + nbytes, size, "nrows=%d  mem=", nrows);
+        nbytes += snprintf(status + nbytes, size, "nrows=%-*d  mem=", width,
+                           nrows);
 
         size -= (uint)nbytes;
 
