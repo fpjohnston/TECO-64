@@ -113,3 +113,11 @@ These describe TECO-64 features that may be of interest to veterans of TECO.
 
 - [Internals Notes](internals.md)
 
+## Future Plans
+
+TECO-64 has so far been compiled with *gcc* and run on Linux, Windows, and
+MacOS. Time and resources permitting, it will eventually be tested with other
+compilers, and on other operating systems. Requests are welcomed, with the
+understanding that the development to date has strictly been a labor of love,
+and therefore more mundane but also necessary tasks may at times claim higher
+priority.
