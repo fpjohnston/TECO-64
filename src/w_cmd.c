@@ -255,7 +255,7 @@ static void set_w(int m, int n)
     switch (n)
     {
         case 0:
-            w.type = n;
+            w.type = m;
 
             break;
 
