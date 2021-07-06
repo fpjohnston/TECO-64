@@ -1091,7 +1091,7 @@ void refresh_dpy(void)
 
                     (void)move(d.edit.top + nrows, 0);
 
-                    term_pos = 0;
+                    line_pos = 0;
                 }
 
                 ++botdot;
