@@ -263,6 +263,13 @@ static void init_teco(int argc, const char * const argv[])
     f.ctrl_x     = 1;                   // Searches are case-insensitive
     f.radix      = 10;                  // Use decimal radix
 
+
+    if (atexit(exit_teco) != 0)
+    {
+        throw(E_INI, "Can't register exit function");
+                                        // Initialization error
+    }
+
     init_term();                        // Initialize terminal
     init_tbuf();                        // Initialize terminal buffer
     init_cbuf();                        // Initialize command buffer
@@ -272,12 +279,6 @@ static void init_teco(int argc, const char * const argv[])
     init_env(argc, argv);               // Initialize environment
     init_ebuf(EDITBUF_INIT, EDITBUF_MAX, EDITBUF_STEP, EDITBUF_WARN);
                                         // Initialize edit buffer
-
-    if (atexit(exit_teco) != 0)
-    {
-        throw(E_INI, "Can't register exit function");
-                                        // Initialization error
-    }
 }
 
 
