@@ -355,7 +355,11 @@ int getchar_dpy(bool unused)
             (void)nodelay(stdscr, (bool)FALSE);
         }
 
-        if (c == KEY_BACKSPACE)
+        if (c == KEY_RESIZE)            // This is handled by a signal
+        {
+            return -1;
+        }
+        else if (c == KEY_BACKSPACE)
         {
             return DEL;
         }
