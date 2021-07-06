@@ -133,7 +133,7 @@ void echo_in(int c)
     }
     else
     {
-        tprint("[%02X]");
+        tprint("[%02X]", c);
     }
 }
 
@@ -415,6 +415,6 @@ void type_out(int c)
     }
     else                                // No, make it printable
     {
-        tprint("[%02X]");
+        tprint("[%02X]", c);
     }
 }
