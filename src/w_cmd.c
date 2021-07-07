@@ -70,15 +70,12 @@ struct watch w =
             .end_of_scr = true,
         }
     },
-    .maxx = DEFAULT_WIDTH,              // Max. width of window
-    .maxy = DEFAULT_HEIGHT,             // Max. height of window
-
 };
 
 
 // Local functions
 
-static int get_w(int n, bool dcolon);
+static int get_w(int n);
 
 static void set_w(int m, int n);
 
@@ -90,7 +87,7 @@ static void set_w(int m, int n);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int get_w(int n, bool dcolon)
+static int get_w(int n)
 {
     switch (n)
     {
@@ -99,31 +96,17 @@ static int get_w(int n, bool dcolon)
             return w.type;
 
         case 1:
-            if (dcolon)
-            {
-                return w.maxx;
-            }
-            else
-            {
-                return w.width;
-            }
+            return w.width;
 
         case 2:
-            if (dcolon)
-            {
-                return w.maxy;
-            }
-            else
-            {
-                n = w.height - w.nlines;
+            n = w.height - w.nlines;
 
-                if (f.e0.display && f.e4.line)
-                {
-                    --n;
-                }
-
-                return n;
+            if (f.e0.display && f.e4.line)
+            {
+                --n;
             }
+
+            return n;
 
         case 3:
             return w.seeall ? -1 : 0;
@@ -223,17 +206,14 @@ bool scan_W(struct cmd *cmd)
         cmd->n_arg = 0;                 // :W = 0:W
     }
 
-    if (cmd->n_arg != 1 && cmd->n_arg != 2)
-    {
-        reject_dcolon(cmd);             // n::W and m,n::W are invalid
-    }
+    reject_dcolon(cmd);                 // n::W and m,n::W are invalid
 
-    if (cmd->m_set && !cmd->dcolon)     // m,n:W
+    if (cmd->m_set)                     // m,n:W
     {
         set_w(cmd->m_arg, cmd->n_arg);
     }
 
-    int n = get_w(cmd->n_arg, cmd->dcolon);
+    int n = get_w(cmd->n_arg);
 
     push_x(n, X_OPERAND);
 

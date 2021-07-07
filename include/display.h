@@ -80,8 +80,6 @@ struct watch
     int nlines;                     ///< No. of scrolling lines
     bool noscroll;                  ///< Disable scrolling region
     union tchar tchar;              ///< Terminal characteristics
-    int maxx;                       ///< Max. no. of columns in window
-    int maxy;                       ///< Max. no. of rows in window
 };
 
 extern struct watch w;
