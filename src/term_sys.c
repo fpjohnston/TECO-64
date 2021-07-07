@@ -38,6 +38,8 @@
 
 #endif
 
+#include <sys/ioctl.h>
+
 #include "teco.h"
 #include "ascii.h"
 #include "display.h"
@@ -63,6 +65,8 @@ static bool term_active = false;        ///< Are terminal settings active?
 static void reset_term(void);
 
 #endif
+
+static void getsize(void);
 
 static void sig_handler(int signal);
 
@@ -132,6 +136,27 @@ int getc_term(bool wait)
 
 
 ///
+///  @brief    Get current size of window (if display mode is not active).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void getsize(void)
+{
+    struct winsize ts;
+
+    if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
+    {
+        throw(E_SYS, NULL);             // Unexpected system error
+    }
+
+    w.width  = ts.ws_col;
+    w.height = ts.ws_row;
+}
+
+
+///
 ///  @brief    Initialize terminal. Note that this function can be called more
 ///            than once, because we can start and stop display mode.
 ///
@@ -189,9 +214,9 @@ void init_term(void)
 #endif
 
         f.et.eightbit  = true;          // Terminal can use 8-bit characters
-
-        getsize_dpy();
     }
+
+    getsize();
 
     // The following is needed only if there is no display active and we haven't
     // already initialized the terminal mode.
@@ -288,9 +313,13 @@ static void sig_handler(int signum)
             break;
 
         case SIGWINCH:
-            getsize_dpy();
-            clear_dpy();
-            print_prompt();
+            getsize();
+
+#if     defined(TECO_DISPLAY)
+
+            resize_dpy();
+
+#endif
 
             break;
 

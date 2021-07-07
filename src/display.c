@@ -44,20 +44,18 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <sys/ioctl.h>
-
 #include "teco.h"
 
 #if     defined(TECO_DISPLAY)
 
 #include "ascii.h"
+#include "errcodes.h"
 
 #endif
 
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
-#include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 #include "page.h"
@@ -220,6 +218,8 @@ void clear_dpy(void)
 
 #if     defined(TECO_DISPLAY)
 
+    term_pos = 0;
+
     (void)clear();
 
     ebuf_changed = true;
@@ -355,8 +355,12 @@ int getchar_dpy(bool unused)
             (void)nodelay(stdscr, (bool)FALSE);
         }
 
-        if (c == KEY_RESIZE)            // This is handled by a signal
+        if (c == KEY_RESIZE)
         {
+            set_nrows();
+            clear_dpy();
+            print_prompt();
+
             return -1;
         }
         else if (c == KEY_BACKSPACE)
@@ -450,36 +454,6 @@ static int geteditsize(char *buf, ulong size, uint bytes)
 }
 
 #endif
-
-
-///
-///  @brief    Get terminal height and width.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void getsize_dpy(void)
-{
-    struct winsize ts;
-
-    if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
-    {
-        throw(E_SYS, NULL);             // Unexpected system error
-    }
-
-    w.width  = ts.ws_col;
-    w.height = ts.ws_row;
-
-#if     defined(TECO_DISPLAY)
-
-    (void)resizeterm(w.height, w.width);
-
-    set_nrows();
-
-#endif
-
-}
 
 
 ///
@@ -1200,6 +1174,27 @@ void reset_dpy(void)
 
 
 ///
+///  @brief    Resize window for display mode.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(TECO_DISPLAY)
+
+void resize_dpy(void)
+{
+    if (f.e0.display)
+    {
+        (void)resizeterm(w.height, w.width);
+        getmaxyx(stdscr, w.height, w.width);
+    }
+}
+
+#endif
+
+
+///
 ///  @brief    Scan "F0" command: return position for top left corner.
 ///
 ///  @returns  true if command is an operand or operator, else false.
@@ -1270,8 +1265,6 @@ void set_nrows(void)
     }
 
     assert(d.nrows > 0);                // Verify that we have at least 1 row
-
-    getmaxyx(stdscr, w.maxy, w.maxx);   // Get max. height & width
 
 #endif
 

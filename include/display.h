@@ -106,8 +106,6 @@ extern bool exec_key(int key);
 
 extern int getchar_dpy(bool wait);
 
-extern void getsize_dpy(void);
-
 #if     defined(TECO_DISPLAY)
 
 extern void init_dpy(void);
@@ -118,15 +116,17 @@ extern bool putc_dpy(int c);
 
 extern int readkey_dpy(int c);
 
+extern void refresh_dpy(void);
+
+extern void reset_colors(void);
+
 #if     defined(TECO_DISPLAY)
 
 extern void reset_dpy(void);
 
+extern void resize_dpy(void);
+
 #endif
-
-extern void refresh_dpy(void);
-
-extern void reset_colors(void);
 
 extern void set_nrows(void);
 
