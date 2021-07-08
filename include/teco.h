@@ -142,9 +142,7 @@ extern bool check_loop(void);
 
 extern bool check_macro(void);
 
-extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
-
-extern void print_flag(int flag);
+extern void exec_options(int argc, const char * const argv[]);
 
 extern void exit_cbuf(void);
 
@@ -158,13 +156,9 @@ extern void exit_ebuf(void);
 
 extern void exit_EG(void);
 
-extern void exit_EI(void);
-
 extern void exit_error(void);
 
 extern void exit_files(void);
-
-extern void exit_loop(void);
 
 extern void exit_map(void);
 
@@ -182,13 +176,15 @@ extern void exit_tbuf(void);
 
 extern void exit_term(void);
 
+extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
+
 extern void free_mem(void *ptr);
 
-extern void init_env(int argc, const char * const argv[]);
+extern void init_env(void);
 
-extern void reset(void);
+extern void init_options(int argc, const char * const argv[]);
 
-extern void set_config(int argc, const char * const argv[]);
+extern void print_flag(int flag);
 
 extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
 

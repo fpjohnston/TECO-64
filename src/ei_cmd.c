@@ -197,19 +197,6 @@ void exec_EI(struct cmd *cmd)
 
 
 ///
-///  @brief    Clean up memory before we exit from TECO.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exit_EI(void)
-{
-    reset_indirect();
-}
-
-
-///
 ///  @brief    Read input from indirect file if one is open.
 ///
 ///  @returns  true if have command to execute, else false.

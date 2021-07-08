@@ -44,12 +44,12 @@
 
 
 ///
-///   @struct  config
+///   @struct  options
 ///
 ///   @brief   Structure for holding information on configuration options.
 ///
 
-struct config
+struct options
 {
     int n_arg;              ///< --argument value
     bool n_set;             ///< --argument flag
@@ -59,7 +59,6 @@ struct config
     char *execute;          ///< --execute
     bool exit;              ///< --exit
     bool formfeed;          ///< --formfeed
-    bool help;              ///< --help
     const char *initial;    ///< --initial
     char *log;              ///< --log
     const char *memory;     ///< --memory
@@ -71,12 +70,12 @@ struct config
 };
 
 ///
-///   @var     config
+///   @var     options
 ///
 ///   @brief   Current configuration options.
 ///
 
-static struct config config =
+static struct options options =
 {
     .n_arg    = 0,
     .n_set    = false,
@@ -86,7 +85,6 @@ static struct config config =
     .execute  = NULL,
     .exit     = false,
     .formfeed = false,
-    .help     = false,
     .initial  = NULL,
     .log      = NULL,
     .memory   = NULL,
@@ -101,10 +99,6 @@ static struct config config =
 // Local functions
 
 static void add_cmd(const char *format, ...);
-
-static void exec_config(int argc, const char * const argv[]);
-
-static void print_help(void);
 
 
 ///
@@ -166,33 +160,28 @@ static void add_cmd(const char *format, ...)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_config(int argc, const char * const argv[])
+void exec_options(int argc, const char * const argv[])
 {
     assert(argv != NULL);               // Error if no argument list
 
-    if (config.help)
-    {
-        print_help();
-    }
-
     // Process commands that don't open a file for editing.
 
-    if (config.initial)  add_cmd(NULL,        config.initial);
-    if (config.zero)     add_cmd("%sE2",      config.zero);
-    if (config.log)      add_cmd("EL%s\e ",   config.log);
-    if (config.buffer)   add_cmd("I%s\e ",    config.buffer);
-    if (config.n_set)    add_cmd("%dUA",      config.n_arg);
-    if (config.execute)  add_cmd(NULL,        config.execute);
-    if (config.display)  add_cmd("-1W ",      NULL);
-    if (config.vtedit)   add_cmd(NULL,        config.vtedit);
-    if (config.scroll)   add_cmd("%s,7:W \e", config.scroll);
-    if (config.formfeed) add_cmd("0,1E3 ",    NULL);
+    if (options.initial)  add_cmd(NULL,        options.initial);
+    if (options.zero)     add_cmd("%sE2",      options.zero);
+    if (options.log)      add_cmd("EL%s\e ",   options.log);
+    if (options.buffer)   add_cmd("I%s\e ",    options.buffer);
+    if (options.n_set)    add_cmd("%dUA",      options.n_arg);
+    if (options.execute)  add_cmd(NULL,        options.execute);
+    if (options.display)  add_cmd("-1W ",      NULL);
+    if (options.vtedit)   add_cmd(NULL,        options.vtedit);
+    if (options.scroll)   add_cmd("%s,7:W \e", options.scroll);
+    if (options.formfeed) add_cmd("0,1E3 ",    NULL);
 
     // file1 may be an input or output file, depending on the options used.
     // file2 is always an output file.
 
     const char *file1 = NULL;
-    const char *file2 = config.output ?: NULL;
+    const char *file2 = options.output ?: NULL;
     char memory[PATH_MAX];              // File name from memory file
 
     if (optind < argc - 1)
@@ -205,7 +194,7 @@ static void exec_config(int argc, const char * const argv[])
     {
         file1 = argv[optind];
     }
-    else if (config.memory != NULL)
+    else if (options.memory != NULL)
     {
         read_memory(memory, (uint)sizeof(memory));
 
@@ -221,12 +210,12 @@ static void exec_config(int argc, const char * const argv[])
 
     if (file1 != NULL)
     {
-        if (file2 != NULL || config.readonly)
+        if (file2 != NULL || options.readonly)
         {
             add_cmd("ER%s\e Y ", file1);
             add_cmd(":^A%%Inspecting file: %s\1 ", file1);
         }
-        else if (access(file1, F_OK) == 0 || !config.create)
+        else if (access(file1, F_OK) == 0 || !options.create)
         {
             add_cmd("EB%s\e Y ", file1);
             add_cmd(":^A%%Editing file: %s\1 ", file1);
@@ -243,7 +232,7 @@ static void exec_config(int argc, const char * const argv[])
         add_cmd(":^A%%Creating file: %s\1 ", file2);
     }
 
-    if (config.exit)                    // Should we exit at end of commands?
+    if (options.exit)                    // Should we exit at end of commands?
     {
         add_cmd("EX ");
     }
@@ -252,27 +241,6 @@ static void exec_config(int argc, const char * const argv[])
     {
         add_cmd("\e\e");
     }
-}
-
-
-///
-///  @brief    Print help message.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void print_help(void)
-{
-    const char *p;
-    uint i = 0;
-
-    while ((p = help_text[i++]) != NULL)
-    {
-        tprint("%s\r\n", p);
-    }
-
-    exit(EXIT_SUCCESS);
 }
 
 
@@ -287,16 +255,16 @@ static void print_help(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void set_config(
+void init_options(
     int argc,                           ///< No. of arguments
     const char *const argv[])           ///< List of arguments
 {
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
 
-    config.initial = teco_init;
-    config.memory  = teco_memory;
-    config.vtedit  = teco_vtedit;
+    options.initial = teco_init;
+    options.memory  = teco_memory;
+    options.vtedit  = teco_vtedit;
 
     // These two assertions confirm the standard behavior of getopt_long()
     // regarding the ordering of option and non-option arguments.
@@ -316,42 +284,42 @@ void set_config(
         switch (c)
         {
             case OPTION_A:
-                config.n_set = true;
-                config.n_arg = (int)strtol(optarg, NULL, 10);
+                options.n_set = true;
+                options.n_arg = (int)strtol(optarg, NULL, 10);
 
                 break;
 
             case OPTION_B:
                 if (optarg != NULL)
                 {
-                    config.buffer = optarg;
+                    options.buffer = optarg;
                 }
                 else
                 {
-                    config.buffer = NULL;
+                    options.buffer = NULL;
                 }
 
                 break;
 
             case OPTION_C:
             case OPTION_c:
-                config.create = (c == 'C') ? true : false;
+                options.create = (c == 'C') ? true : false;
 
                 break;
 
             case OPTION_D:
-                config.display = true;
+                options.display = true;
 
                 break;
 
             case OPTION_E:
                 if (optarg != NULL && optarg[0] != '-')
                 {
-                    config.execute = optarg;
+                    options.execute = optarg;
                 }
                 else
                 {
-                    config.execute = NULL;
+                    options.execute = NULL;
                 }
 
                 teco_memory = NULL;     // TODO: is this necessary?
@@ -360,40 +328,48 @@ void set_config(
 
             case OPTION_F:
             case OPTION_f:
-                config.formfeed = (c == 'F') ? true : false;
+                options.formfeed = (c == 'F') ? true : false;
 
                 break;
 
             case OPTION_H:
-                config.help = true;
+            {
+                const char *p;
+                uint i = 0;
 
-                break;
+                while ((p = help_text[i++]) != NULL)
+                {
+                    printf("%s\n", p);
+                }
+
+                exit(EXIT_SUCCESS);
+            }
 
             case OPTION_I:
                 if (optarg != NULL && optarg[0] != '-')
                 {
-                    config.initial = optarg;
+                    options.initial = optarg;
                 }
                 else
                 {
-                    config.initial = teco_init;
+                    options.initial = teco_init;
                 }
 
                 break;
 
             case OPTION_i:
-                config.initial = NULL;
+                options.initial = NULL;
 
                 break;
 
             case OPTION_L:
                 if (optarg != NULL && optarg[0] != '-')
                 {
-                    config.log = optarg;
+                    options.log = optarg;
                 }
                 else
                 {
-                    config.log = NULL;
+                    options.log = NULL;
                 }
 
                 break;
@@ -401,87 +377,87 @@ void set_config(
             case OPTION_M:
                 if (optarg != NULL)
                 {
-                    config.memory = optarg;
+                    options.memory = optarg;
                 }
                 else
                 {
-                    config.memory = teco_memory;
+                    options.memory = teco_memory;
                 }
 
                 break;
 
             case OPTION_m:
-                config.memory = NULL;
+                options.memory = NULL;
 
                 break;
 
             case OPTION_O:
                 if (optarg != NULL && optarg[0] != '-')
                 {
-                    config.output = optarg;
+                    options.output = optarg;
                 }
                 else
                 {
-                    config.output = NULL;
+                    options.output = NULL;
                 }
 
                 break;
 
             case OPTION_o:
-                config.output = NULL;
+                options.output = NULL;
 
                 break;
 
             case OPTION_R:
             case OPTION_r:
-                config.readonly = (c == 'R') ? true : false;
+                options.readonly = (c == 'R') ? true : false;
 
                 break;
 
             case OPTION_S:
                 if (optarg != NULL && optarg[0] != '-')
                 {
-                    config.scroll = optarg;
+                    options.scroll = optarg;
                 }
                 else
                 {
-                    config.scroll = NULL;
+                    options.scroll = NULL;
                 }
 
-                config.display = true;
+                options.display = true;
 
                 break;
 
             case OPTION_V:
                 if (optarg != NULL)
                 {
-                    config.vtedit = optarg;
+                    options.vtedit = optarg;
                 }
                 else
                 {
-                    config.vtedit = teco_vtedit;
+                    options.vtedit = teco_vtedit;
                 }
 
                 break;
 
             case OPTION_v:
-                config.vtedit = NULL;
+                options.vtedit = NULL;
 
                 break;
 
             case OPTION_X:
-                config.exit = true;
+                options.exit = true;
 
                 break;
 
             case OPTION_Z:
                 if (optarg != NULL)
                 {
-                    config.zero = optarg;
+                    options.zero = optarg;
                 }
                 else
                 {
-                    config.zero = "-1";
+                    options.zero = "-1";
                 }
 
                 break;
@@ -493,6 +469,4 @@ void set_config(
                 exit(EXIT_FAILURE);
         }
     }
-
-    exec_config(argc, argv);
 }

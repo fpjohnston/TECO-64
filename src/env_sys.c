@@ -212,14 +212,14 @@ static int get_cmd(char *cmd)
 
 
 ///
-///  @brief    Initialize environment (read environment variables, logical names,
-///            etc.)
+///  @brief    Initialize environment (read environment variables,
+///            logical names, etc.)
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_env(int argc, const char * const argv[])
+void init_env(void)
 {
     teco_init    = getenv("TECO_INIT");
     teco_memory  = getenv("TECO_MEMORY");
@@ -232,8 +232,6 @@ void init_env(int argc, const char * const argv[])
     {
         teco_prompt = env;              // Change TECO prompt
     }
-
-    set_config(argc, argv);             // Process command-line options
 }
 
 

@@ -42,11 +42,11 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "cbuf.h"
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
-#include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
@@ -54,8 +54,86 @@
 #include "search.h"
 #include "term.h"
 
+//lint -save -e10 -e65 -e133 -e485 -e651
 
-struct flags f;                     ///< Global flag variables
+struct flags f =                    ///< Global flag variables
+{
+    .ctrl_e = 0,                    // Don't append form feed on output
+    .ctrl_x = 1,                    // Searches are case-insensitive
+
+    .e0.flag = 0,                   // All bits off in E0 flag
+
+    .e1.xoper  = true,              // Enable extended operators
+    .e1.text   = true,              // Enable extended text strings
+    .e1.dollar = true,              // $ is a valid symbol character
+    .e1.ubar   = true,              // _ is a valid symbol character
+    .e1.new_ei = true,              // Enable new-style EI commands
+    .e1.bang   = true,              // !! starts end-of-line comment
+    .e1.prompt = true,              // Ensure prompt starts in 1st column
+    .e1.radix  = true,              // Allow in-line radix control
+
+    .e2.flag = 0,                   // All bits off in E2 flag
+
+#if     defined(__vms)
+
+    .e3.nopage = false,             // FF is page delimiter
+
+#else
+
+    .e3.nopage = true,              // FF is normal character
+
+#endif
+
+    .e3.smart = true,               // Enable smart line detection
+
+#if     defined(__linux) || defined(__APPLE__)
+
+    .e3.icrlf = false,              // Use LF for input lines
+    .e3.ocrlf = false,              // Use LF for output lines
+
+#elif   defined(__win64) || defined(__vms)
+
+    .e3.icrlf = true,               // Use CR/LF for input lines
+    .e3.ocrlf = true,               // Use CR/LF for output lines
+
+#else
+#error  Unknown operating environment
+#endif
+
+    .e4.line   = true,              // Line between text & command regions
+    .e4.status = true,              // Display status on line
+
+
+#if     defined(TECO_DISPLAY)
+
+    .ed.escape  = true,             // Enable ESCape-sequences
+
+#else
+
+    .ed.escape  = false,            // Disable ESCape-sequences
+
+#endif
+
+    .ee = NUL,                      // No ESCape surrogate
+    .eh.verbose = 2,                // Help message flags
+    .ej = 0,                        // Operating system type
+    .eo = 0,                        // TECO version number
+    .es = 0,                        // Search verification flag
+    .et.accent  = true,             // Use accent grave as delimiter
+
+#if     defined(CONFIG_EU)
+
+    .eu = -1,                       // No case flagging
+
+#endif
+
+    .ev = 0,                        // Don't print any lines before prompt
+    .radix = 10,                    // Use decimal radix
+    .trace.flag = 0,                // All trace bits off
+
+};
+
+//lint -restore
 
 jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
@@ -65,6 +143,8 @@ jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 static void exit_teco(void);
 
 static void init_teco(int argc, const char * const argv[]);
+
+static void reset_teco(void);
 
 
 ///
@@ -76,9 +156,14 @@ static void init_teco(int argc, const char * const argv[]);
 
 int main(int argc, const char * const argv[])
 {
-    f.e0.flag = 0;
-    f.e0.init = true;                   // Starting TECO
     init_teco(argc, argv);              // Initialize variables and things
+
+    // After initialization is complete, we can "execute" the command-line
+    // options we found, which usually consists of creating a string of
+    // commands and inserting them into the command buffer.
+
+    exec_options(argc, argv);           // Execute command-line options
+
     f.e0.init = (cbuf->pos != cbuf->len); // Reset if no initial command string
 
     for (;;)                            // Loop forever
@@ -120,7 +205,7 @@ int main(int argc, const char * const argv[])
                 //lint -fallthrough
 
             case MAIN_CTRLC:            // CTRL/C typed
-                reset();                // Reset everything
+                reset_teco();           // Reset everything
 
                 break;
 
@@ -134,7 +219,7 @@ int main(int argc, const char * const argv[])
         {
             f.e0.init = false;          // Not initializing now
 
-            reset();
+            reset_teco();
         }
     }
 }
@@ -163,15 +248,16 @@ static void exit_teco(void)
     exit_term();                        // Restore terminal settings next
     exit_files();                       // Close any open files
 
-    exit_tbuf();                        // Deallocate memory for terminal buffer
-    exit_cbuf();                        // Deallocate memory for command buffer
-    exit_ebuf();                        // Deallocate memory for edit buffer
+    reset_loop();                       // Deallocate memory for loops
+    reset_indirect();                   // Deallocate memory for EI commands
+
+    exit_search();                      // Deallocate memory for searches
     exit_map();                         // Deallocate memory for key mapping
     exit_error();                       // Deallocate memory for errors
-    exit_search();                      // Deallocate memory for searches
-    exit_loop();                        // Deallocate memory for loops
-    exit_EI();                          // Deallocate memory for EI commands
     exit_qreg();                        // Deallocate memory for Q-registers
+    exit_ebuf();                        // Deallocate memory for edit buffer
+    exit_cbuf();                        // Deallocate memory for command buffer
+    exit_tbuf();                        // Deallocate memory for terminal buffer
 
 #if     defined(TECO_DEBUG)
 
@@ -184,8 +270,7 @@ static void exit_teco(void)
 
 
 ///
-///  @brief    Initialize everything required to start TECO, and set some
-///            defaults.
+///  @brief    Initialize everything required to start TECO.
 ///
 ///  @returns  Nothing.
 ///
@@ -193,92 +278,30 @@ static void exit_teco(void)
 
 static void init_teco(int argc, const char * const argv[])
 {
-    // Default settings for E1
-
-    f.e1.xoper  = true;                 // Enable extended operators
-    f.e1.text   = true;                 // Enable extended text strings
-    f.e1.dollar = true;                 // $ is a valid symbol character
-    f.e1.ubar   = true;                 // _ is a valid symbol character
-    f.e1.new_ei = true;                 // Enable new-style EI commands
-    f.e1.bang   = true;                 // !! starts end-of-line comment
-    f.e1.prompt = true;                 // Ensure prompt starts in 1st column
-    f.e1.radix  = true;                 // Allow in-line radix control
-
-    // Default settings for E2
-
-    f.e2.flag    = 0;                   // All bits off
-
-    // Default settings for E3
-
-#if   defined(__vms)
-
-    f.e3.nopage = false;                // FF is page delimiter
-
-#else
-
-    f.e3.nopage = true;                 // FF is normal character
-
-#endif
-
-    f.e3.smart = true;                  // Enable smart line detection
-
-#if     defined(__linux) || defined(__APPLE__)
-
-    f.e3.icrlf = false;                 // Use LF for input lines
-    f.e3.ocrlf = false;                 // Use LF for output lines
-
-#elif   defined(__win64) || defined(__vms)
-
-    f.e3.icrlf = true;                  // Use CR/LF for input lines
-    f.e3.ocrlf = true;                  // Use CR/LF for output lines
-
-#else
-
-#error  Unknown operating environment
-
-#endif
-
-    f.e4.line   = true;                 // Line between text & command regions
-    f.e4.status = true;                 // Display status on line
-
-#if     defined(TECO_DISPLAY)
-
-    f.ed.escape  = true;                // Enable ESCape-sequences
-
-#else
-
-    f.ed.escape  = false;               // Disable ESCape-sequences
-
-#endif
-
-    f.et.abort   = true;                // Abort on error during initialization
-    f.et.accent  = true;                // Use accent grave as delimiter
-
-#if     defined(CONFIG_EU)
-
-    f.eu         = -1;                  // No case flagging
-
-#endif
-
-    f.ctrl_x     = 1;                   // Searches are case-insensitive
-    f.radix      = 10;                  // Use decimal radix
-
+    f.e0.init = true;                   // TECO initialization is in progress
+    f.et.abort = true;                  // Abort on error during initialization
 
     if (atexit(exit_teco) != 0)
     {
-        throw(E_INI, "Can't register exit function");
-                                        // Initialization error
+        printf("%s(): atexit() failure\n", __func__);
+
+        exit(EXIT_FAILURE);             // Initialization error
     }
 
-    init_term();                        // Initialize terminal
+    init_env();                         // Initialize environment variables
+    init_options(argc, argv);           // Initialize command-line options
+
+    // Allocate memory that we'll need when executing commands.
+
     init_tbuf();                        // Initialize terminal buffer
     init_cbuf();                        // Initialize command buffer
-    init_qreg();                        // Initialize Q-registers
-    init_files();                       // Initialize file streams
-    init_loop();                        // Initialize loop stack
-    init_env(argc, argv);               // Initialize environment
     init_ebuf(EDITBUF_INIT, EDITBUF_MAX, EDITBUF_STEP, EDITBUF_WARN);
                                         // Initialize edit buffer
+    init_qreg();                        // Initialize Q-registers
+
+    // Change terminal characteristics and set signal handlers.
+
+    init_term();                        // Initialize terminal settings
 }
 
 
@@ -290,7 +313,7 @@ static void init_teco(int argc, const char * const argv[])
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void reset(void)
+static void reset_teco(void)
 {
     reset_if();                         // Reset conditional stack
     reset_loop();                       // Reset loop stack

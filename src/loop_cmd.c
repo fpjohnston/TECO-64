@@ -53,7 +53,7 @@ struct loop
     uint depth;                         ///< Depth of if statements
 };
 
-static struct loop *loop_head;          ///< Head of loop list
+static struct loop *loop_head = NULL;   ///< Head of loop list
 
 // Local functions
 
@@ -267,33 +267,6 @@ void exec_semi(struct cmd *cmd)
     }
 
     endloop(cmd, POP_OK);
-}
-
-
-///
-///  @brief    Clean up memory before we exit from TECO.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exit_loop(void)
-{
-    reset_loop();
-}
-
-
-///
-///  @brief    Initialize loop structures.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void init_loop(void)
-{
-    loop_depth = 0;
-    loop_head = NULL;
 }
 
 

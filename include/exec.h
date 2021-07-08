@@ -491,8 +491,6 @@ extern void exec_insert(const char *buf, uint len);
 
 extern int find_eg(char *buf, bool reset);
 
-extern void init_loop(void);
-
 extern bool next_page(int start, int end, bool ff, bool yank);
 
 extern bool next_yank(void);

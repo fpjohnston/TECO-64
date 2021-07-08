@@ -232,18 +232,20 @@ void exit_qreg(void)
     // The prompt level set of local Q-registers is not freed by reset_qreg(),
     // so we have to do that ourselves.
 
-    assert(local_head != NULL);         // Error if no local Q-registers
-    assert(local_head->next == NULL);   // Error if more than one set
-
-    for (uint i = 0; i < QCOUNT; ++i)
+    if (local_head != NULL)
     {
-        if (local_head->qreg[i].text.data != NULL)
-        {
-            free_mem(&local_head->qreg[i].text.data);
-        }
-    }
+        assert(local_head->next == NULL); // Error if more than one set
 
-    free_mem(&local_head);
+        for (uint i = 0; i < QCOUNT; ++i)
+        {
+            if (local_head->qreg[i].text.data != NULL)
+            {
+                free_mem(&local_head->qreg[i].text.data);
+            }
+        }
+
+        free_mem(&local_head);
+    }
 
     // Free the global Q-registers
 
@@ -549,21 +551,24 @@ void reset_qreg(void)
 {
     // Free the local Q-registers
 
-    while (local_head->next != NULL)
+    if (local_head != NULL)
     {
-        struct qlocal *saved_set = local_head;
-
-        local_head = saved_set->next;
-
-        for (uint i = 0; i < QCOUNT; ++i)
+        while (local_head->next != NULL)
         {
-            if (saved_set->qreg[i].text.data != NULL)
-            {
-                free_mem(&saved_set->qreg[i].text.data);
-            }
-        }
+            struct qlocal *saved_set = local_head;
 
-        free_mem(&saved_set);
+            local_head = saved_set->next;
+
+            for (uint i = 0; i < QCOUNT; ++i)
+            {
+                if (saved_set->qreg[i].text.data != NULL)
+                {
+                    free_mem(&saved_set->qreg[i].text.data);
+                }
+            }
+
+            free_mem(&saved_set);
+        }
     }
 
     // Free up what's on the Q-register push-down list.

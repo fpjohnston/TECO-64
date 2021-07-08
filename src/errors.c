@@ -375,8 +375,6 @@ noreturn void throw(int error, ...)
 
     if (f.et.abort)                     // Abort on error?
     {
-        reset();                        // Clean things up
-
         exit(EXIT_FAILURE);
     }
 

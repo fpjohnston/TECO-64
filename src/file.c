@@ -180,20 +180,6 @@ void exit_files(void)
 
 
 ///
-///  @brief    Initialize file streams.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void init_files(void)
-{
-    istream = IFILE_PRIMARY;
-    ostream = OFILE_PRIMARY;
-}
-
-
-///
 ///  @brief    Create a file name specification in file name buffer. We copy
 ///            from the specified text string, skipping any characters such as
 ///            spaces or control characters, that aren't normal graphic char-
