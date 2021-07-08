@@ -292,17 +292,12 @@ void exec_EH(struct cmd *cmd)
 
     check_mn_flag(cmd, &f.eh.flag);
 
-    union eh_flag eh;
+    f.eh.flag &= 7;                     // Clear all but low 3 bits
 
-    eh.flag = 0;
-
-    eh.verbose = f.eh.verbose;
-    eh.command = f.eh.command;
-
-    f.eh.flag = 0;
-
-    f.eh.command = eh.command;
-    f.eh.verbose = eh.verbose;
+    if (f.eh.verbose == 0)              // 0 is equivalent to 2 for EH
+    {
+        f.eh.verbose = 2;
+    }
 }
 
 
