@@ -226,6 +226,24 @@ $(error Unknown paging handler: ${paging})
 
 endif
 
+# Always enable ESCape as dollar sign regardless of alternate delimiter
+
+ifdef   CONFIG_DOLLAR
+
+CFLAGS  += -D CONFIG_DOLLAR
+DOXYGEN +=    CONFIG_DOLLAR
+
+endif
+
+# Enable obsolete EU command
+
+ifdef   CONFIG_EU
+
+CFLAGS  += -D CONFIG_EU
+DOXYGEN +=    CONFIG_EU
+
+endif
+
 ifdef   long
 
 CFLAGS  += -D TECO_LONG

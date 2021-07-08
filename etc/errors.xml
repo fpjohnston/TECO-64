@@ -33,7 +33,7 @@
             <code>CFG</code>
             <message>Command not configured</message>
             <detail>A command was input that has not been configured.</detail>
-            <detail>Modify config.h to include this command, and then</detail>
+            <detail>Modify makefile to include this command, and then</detail>
             <detail>rebuild TECO.</detail>
         </error>
         <error>

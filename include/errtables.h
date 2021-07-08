@@ -133,7 +133,7 @@ static const char *errhelp[] =
               "angle bracket (Note: a loop in a Q-register "
               "macro must be complete within the macro.)",
     [E_CFG] = "A command was input that has not been configured. "
-              "Modify config.h to include this command, and then "
+              "Modify makefile to include this command, and then "
               "rebuild TECO.",
     [E_CHR] = "The numeric argument to an EE command was "
               "not an ASCII character.",
