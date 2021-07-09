@@ -516,7 +516,7 @@ static int next_delim(int nlines)
 
 static void print_size(int oldsize, int newsize)
 {
-    if (f.et.abort)                     // Is abort bit set?
+    if (f.e0.display || f.et.abort)     // Display mode on or abort bit set?
     {
         return;                         // Yes, don't print messages then
     }
