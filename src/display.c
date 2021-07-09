@@ -1422,7 +1422,6 @@ static void update_status(void)
 
         char buf[w.width];
 
-
         nbytes = sprintf(buf, "Page %u", page_count);
 
         memcpy(status + w.width - nbytes, buf, (size_t)(uint)nbytes);
