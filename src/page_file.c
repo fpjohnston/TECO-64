@@ -1,6 +1,6 @@
 ///
-///  @file    page_vm.c
-///  @brief   Paging functions using virtual memory.
+///  @file    page_file.c
+///  @brief   Paging functions using holding file.
 ///
 ///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
 ///
