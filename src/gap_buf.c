@@ -279,6 +279,7 @@ static bool expand_ebuf(void)
 
     if ((eb.size += addsize) > eb.maxsize)
     {
+        addsize = eb.maxsize - oldsize;
         eb.size = eb.maxsize;
     }
 
@@ -287,8 +288,8 @@ static bool expand_ebuf(void)
         return false;
     }
 
-    eb.buf   = expand_mem(eb.buf, (uint)oldsize, (uint)eb.size);
-    t.size  += eb.size;
+    eb.buf     = expand_mem(eb.buf, (uint)oldsize, (uint)eb.size);
+    t.size    += eb.size;
     eb.lowsize = eb.size - ((eb.size * eb.warn) / 100);
 
     shift_right(eb.right);
@@ -297,7 +298,7 @@ static bool expand_ebuf(void)
 
     eb.gap += addsize;
 
-    print_size(eb.size - addsize, eb.size);
+    print_size(oldsize, eb.size);
 
     return true;
 }
