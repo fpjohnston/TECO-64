@@ -263,7 +263,7 @@ void exit_ebuf(void)
 
 static bool expand_ebuf(void)
 {
-    if (eb.stepsize == 0 || eb.size >= eb.maxsize)
+    if (eb.stepsize == 0 || (eb.maxsize != 0 && eb.size >= eb.maxsize))
     {
         return false;
     }
@@ -277,7 +277,9 @@ static bool expand_ebuf(void)
     int addsize = (eb.size * eb.stepsize) / 100;
     int oldsize = eb.size;
 
-    if ((eb.size += addsize) > eb.maxsize)
+    eb.size += addsize;
+    
+    if (eb.maxsize != 0 && eb.size > eb.maxsize)
     {
         addsize = eb.maxsize - oldsize;
         eb.size = eb.maxsize;
@@ -631,7 +633,7 @@ int setsize_ebuf(int n)
             return eb.size;
         }
     }
-    else if (n > eb.maxsize)
+    else if (eb.maxsize != 0 && n > eb.maxsize)
     {
         if ((n = eb.maxsize) == eb.size)
         {

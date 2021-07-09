@@ -205,6 +205,8 @@ endif
 ifeq (${paging}, vm)
 
 SOURCES += page_vm.c
+CFLAGS  += -D CONFIG_PAGE_VM
+DOXYGEN +=    CONFIG_PAGE_VM
 
 else ifeq (${paging}, file)
 
@@ -219,6 +221,8 @@ SOURCES += page_std.c
 else ifeq (${paging}, )
 
 SOURCES += page_vm.c
+CFLAGS  += -D CONFIG_PAGE_VM
+DOXYGEN +=    CONFIG_PAGE_VM
 
 else
 

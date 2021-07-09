@@ -34,7 +34,15 @@
 
 #define EDITBUF_INIT    (64 * 1024)     ///< Edit buffer is initially 64 KB
 
+#if     defined(CONFIG_PAGE_VM)
+
+#define EDITBUF_MAX     0               ///< No maximum edit buffer
+
+#else
+
 #define EDITBUF_MAX     (1024 * 1024)   ///< Maximum edit buffer is 1 MB
+
+#endif
 
 #define EDITBUF_STEP    25              ///< Increase edit buffer by 25%
 
