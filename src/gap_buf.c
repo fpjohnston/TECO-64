@@ -291,7 +291,7 @@ static bool expand_ebuf(void)
     }
 
     eb.buf     = expand_mem(eb.buf, (uint)oldsize, (uint)eb.size);
-    t.size    += eb.size;
+    t.size     = eb.size;
     eb.lowsize = eb.size - ((eb.size * eb.warn) / 100);
 
     shift_right(eb.right);
