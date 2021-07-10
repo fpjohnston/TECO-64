@@ -61,6 +61,8 @@ enum
     KEY_F7       = (KEY_F(7)),
     KEY_F8       = (KEY_F(8)),
     KEY_F9       = (KEY_F(9)),
+    KEY_F10      = (KEY_F(10)),
+    KEY_F11      = (KEY_F(11)),
     KEY_F12      = (KEY_F(12)),
 
     KEY_S_F1     = (KEY_F(1)  + 12),
@@ -72,6 +74,7 @@ enum
     KEY_S_F7     = (KEY_F(7)  + 12),
     KEY_S_F8     = (KEY_F(8)  + 12),
     KEY_S_F9     = (KEY_F(9)  + 12),
+    KEY_S_F10    = (KEY_F(10) + 12),
     KEY_S_F11    = (KEY_F(11) + 12),
     KEY_S_F12    = (KEY_F(12) + 12),
 
@@ -181,8 +184,8 @@ static struct keys keys[] =         ///< List of mappable keys
     _(F7),      _(S_F7),      _(C_F7),
     _(F8),      _(S_F8),      _(C_F8),
     _(F9),      _(S_F9),      _(C_F9),
-                              _(C_F10),
-                _(S_F11),     _(C_F11),
+    _(F10),     _(S_F10),     _(C_F10),
+    _(F11),     _(S_F11),     _(C_F11),
     _(F12),     _(S_F12),     _(C_F12),
 };
 
