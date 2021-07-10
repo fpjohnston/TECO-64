@@ -1391,7 +1391,7 @@ static void update_status(void)
         nbytes += snprintf(status + nbytes, size, ",");
         nbytes += print_ebuf(status, w.width, nbytes, getchar_ebuf(0));
 
-        size = sizeof(status) - nbytes;
+        size = sizeof(status) - (uint)nbytes;
 
         nbytes += snprintf(status + nbytes, size, ")  Z=%-*d  ", width, t.Z);
         width = WIDTH(nrows);
@@ -1407,12 +1407,12 @@ static void update_status(void)
                                "row=%-*d  col=%-3d  ", width, row + 1, col + 1);
         }
 
-        size = sizeof(status) - nbytes;
+        size = sizeof(status) - (uint)nbytes;
 
         nbytes += snprintf(status + nbytes, size, "nrows=%-*d  mem=", width,
                            nrows);
 
-        size = sizeof(status) - nbytes;
+        size = sizeof(status) - (uint)nbytes;
 
         nbytes += geteditsize(status + nbytes, size, (uint)t.size);
 
