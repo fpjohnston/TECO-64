@@ -234,8 +234,10 @@ void exec_FM(struct cmd *cmd)
 
 #else
 
-void exec_FM(struct cmd *unused1)
+void exec_FM(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     if (cmd->colon)
     {
         push_x(0, X_OPERAND);           // Command failed
@@ -313,8 +315,10 @@ void exec_FQ(struct cmd *cmd)
 
 #else
 
-void exec_FQ(struct cmd *unused1)
+void exec_FQ(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     if (cmd->colon)
     {
         push_x(0, X_OPERAND);           // Command failed
