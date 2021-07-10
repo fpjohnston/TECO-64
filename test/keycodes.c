@@ -37,6 +37,8 @@ int main(void)
 
         if (c >= KEY_MIN)
         {
+            c -= KEY_MIN;
+
             if (c < countof(keys) && keys[c].kname != NULL)
             {
                 printf("%s", keys[c].kname);
