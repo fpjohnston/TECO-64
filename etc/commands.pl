@@ -60,7 +60,6 @@ my %parse_table = (
     ## no critic (RequireInterpolationOfMetachars)
 
     '@X/'       => { parse => 'parse_1',      count => 0 },
-    '@X//'      => { parse => 'parse_2',      count => 0 },
     '+m,nX'     => { parse => 'parse_M',      count => 0 },
     '+m,n@X/'   => { parse => 'parse_M1',     count => 0 },
     '+m,n:X'    => { parse => 'parse_Mc',     count => 0 },
@@ -72,6 +71,7 @@ my %parse_table = (
     'X',        => { parse => 'parse_X',      count => 0 },
     ':X',       => { parse => 'parse_c',      count => 0 },
     ':@X/'      => { parse => 'parse_c1',     count => 0 },
+    ':@X//'     => { parse => 'parse_c2',     count => 0 },
     ':@Xq/'     => { parse => 'parse_cq1',    count => 0 },
     '::@X/'     => { parse => 'parse_d1',     count => 0 },
     'X$',       => { parse => 'parse_escape', count => 0 },
@@ -92,7 +92,6 @@ my %parse_table = (
     'n:Xq'      => { parse => 'parse_ncq',    count => 0 },
     'nXq'       => { parse => 'parse_nq',     count => 0 },
     'X='        => { parse => 'parse_oper',   count => 0 },
-    '@Xq/'      => { parse => 'parse_q1',     count => 0 },
 
     ## use critic
 );
@@ -427,7 +426,7 @@ sub parse_commands
     {
         if ( $parse_table{$format}->{count} == 0 )
         {
-            croak "Unknown format: $format";
+            croak "Unused format: $format";
         }
     }
 

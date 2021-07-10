@@ -127,8 +127,6 @@ extern const struct cmd null_cmd;
 
 extern bool parse_1(struct cmd *cmd);
 
-extern bool parse_2(struct cmd *cmd);
-
 extern bool parse_M(struct cmd *cmd);
 
 extern bool parse_M1(struct cmd *cmd);
@@ -150,6 +148,8 @@ extern bool parse_X(struct cmd *cmd);
 extern bool parse_c(struct cmd *cmd);
 
 extern bool parse_c1(struct cmd *cmd);
+
+extern bool parse_c2(struct cmd *cmd);
 
 extern bool parse_cq1(struct cmd *cmd);
 
@@ -190,8 +190,6 @@ extern bool parse_ncq(struct cmd *cmd);
 extern bool parse_nq(struct cmd *cmd);
 
 extern bool parse_oper(struct cmd *cmd);
-
-extern bool parse_q1(struct cmd *cmd);
 
 extern bool scan_A(struct cmd *cmd);
 

@@ -163,9 +163,9 @@
         <command name='FH'      parse='X'          scan='FH'        exec='nop'      />
         <command name='FK'      parse='n:@X/'                       exec='FK'       />
         <command name='FL'      parse='+m,nX'                       exec='FL'       />
-        <command name='FM'      parse='@X//'                        exec='FM'       />
+        <command name='FM'      parse=':@X//'                       exec='FM'       />
         <command name='FN'      parse='n:@X/'                       exec='FN'       />
-        <command name='FQ'      parse='@Xq/'                        exec='FQ'       />
+        <command name='FQ'      parse=':@Xq/'                       exec='FQ'       />
         <command name='FR'      parse='+m,n:@X/'                    exec='FR'       />
         <command name='FS'      parse='m,n::@X//'                   exec='FS'       />
         <command name='FU'      parse='+m,nX'                       exec='FU'       />

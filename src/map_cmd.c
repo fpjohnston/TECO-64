@@ -36,6 +36,7 @@
 #include "display.h"
 #include "eflags.h"
 #include "errcodes.h"
+#include "estack.h"
 #include "exec.h"
 
 #if     defined(TECO_DISPLAY)
@@ -177,6 +178,11 @@ void exec_FM(struct cmd *cmd)
     {
         reset_map();
 
+        if (cmd->colon)
+        {
+            push_x(-1, X_OPERAND);      // Command succeeded
+        }
+
         return;
     }
 
@@ -207,19 +213,33 @@ void exec_FM(struct cmd *cmd)
                 keys[i].macro[size] = NUL;
             }
 
+            if (cmd->colon)
+            {
+                push_x(-1, X_OPERAND);  // Command succeeded
+            }
 
             return;
         }
     }
 
-    throw(E_KEY, key);                  // Key 'key' not found
+    if (cmd->colon)
+    {
+        push_x(0, X_OPERAND);           // Command failed
+    }
+    else
+    {
+        throw(E_KEY, key);              // Key 'key' not found
+    }
 }
 
 #else
 
 void exec_FM(struct cmd *unused1)
 {
-
+    if (cmd->colon)
+    {
+        push_x(0, X_OPERAND);           // Command failed
+    }
 }
 
 #endif
@@ -247,6 +267,11 @@ void exec_FQ(struct cmd *cmd)
 
     if (cmd->text1.len == 0)
     {
+        if (cmd->colon)
+        {
+            push_x(-1, X_OPERAND);      // Command succeeded
+        }
+
         return;
     }
 
@@ -267,18 +292,33 @@ void exec_FQ(struct cmd *cmd)
             keys[i].qname  = cmd->qname;
             keys[i].qlocal = cmd->qlocal;
 
+            if (cmd->colon)
+            {
+                push_x(-1, X_OPERAND);  // Command succeeded
+            }
+
             return;
         }
     }
 
-    throw(E_KEY, key);                  // Key 'key' not found
+    if (cmd->colon)
+    {
+        push_x(0, X_OPERAND);           // Command failed
+    }
+    else
+    {
+        throw(E_KEY, key);              // Key 'key' not found
+    }
 }
 
 #else
 
 void exec_FQ(struct cmd *unused1)
 {
-
+    if (cmd->colon)
+    {
+        push_x(0, X_OPERAND);           // Command failed
+    }
 }
 
 #endif
