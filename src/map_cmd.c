@@ -378,6 +378,8 @@ bool exec_key(int key)
 
         f.e0.exec  = saved_exec;        // Restore previous flag
 
+        refresh_dpy();                  // Update display
+
         return true;
     }
 
