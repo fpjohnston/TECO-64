@@ -358,7 +358,7 @@ void exec_ET(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(CONFIG_EU)
+#if     defined(TECO_EU)
 
 void exec_EU(struct cmd *cmd)
 {

@@ -241,10 +241,10 @@ endif
 
 # Enable obsolete EU command
 
-ifdef   CONFIG_EU
+ifdef   eu
 
-CFLAGS  += -D CONFIG_EU
-DOXYGEN +=    CONFIG_EU
+CFLAGS  += -D TECO_EU
+DOXYGEN +=    TECO_EU
 
 endif
 

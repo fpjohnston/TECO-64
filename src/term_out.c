@@ -339,7 +339,7 @@ void type_out(int c)
         tputc(c, false);
     }
 
-#if     defined(CONFIG_EU)
+#if     defined(TECO_EU)
 
     else if (islower(c) && f.eu != -1)
     {
