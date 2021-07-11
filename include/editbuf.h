@@ -34,7 +34,7 @@
 
 #define EDITBUF_INIT    (64 * 1024)     ///< Edit buffer is initially 64 KB
 
-#if     defined(CONFIG_PAGE_VM)
+#if     defined(TECO_VM)
 
 #define EDITBUF_MAX     0               ///< No maximum edit buffer
 
