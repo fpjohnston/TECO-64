@@ -143,7 +143,6 @@ enum
         .qname  = NUL,   \
         .qlocal = false, \
         .macro  = NULL,  \
-        .colon  = false  \
     }
 
 /// @struct  keys
@@ -156,7 +155,6 @@ struct keys
     char qname;                     ///< Mapped Q-register
     bool qlocal;                    ///< true if local Q-register
     char *macro;                    ///< Command string
-    bool colon;                     ///< Command was :FM or :FQ
 };
 
 static struct keys keys[] =         ///< List of mappable keys

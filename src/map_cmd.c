@@ -205,7 +205,6 @@ void exec_FM(struct cmd *cmd)
             {
                 size = cmd->text2.len;
 
-                keys[i].colon = cmd->colon;
                 keys[i].macro = alloc_mem(size + 1);
 
                 memcpy(keys[i].macro, cmd->text2.data, (size_t)size);
@@ -234,8 +233,10 @@ void exec_FM(struct cmd *cmd)
 
 #else
 
-void exec_FM(struct cmd *unused1)
+void exec_FM(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     if (cmd->colon)
     {
         push_x(0, X_OPERAND);           // Command failed
@@ -288,7 +289,6 @@ void exec_FQ(struct cmd *cmd)
         {
             unmap_key(i);
 
-            keys[i].colon  = cmd->colon;
             keys[i].qname  = cmd->qname;
             keys[i].qlocal = cmd->qlocal;
 
@@ -313,8 +313,10 @@ void exec_FQ(struct cmd *cmd)
 
 #else
 
-void exec_FQ(struct cmd *unused1)
+void exec_FQ(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     if (cmd->colon)
     {
         push_x(0, X_OPERAND);           // Command failed
@@ -375,11 +377,6 @@ bool exec_key(int key)
         }
 
         f.e0.exec  = saved_exec;        // Restore previous flag
-
-        if (!p->colon)                  // No refresh if :FM or :FQ
-        {
-            refresh_dpy();
-        }
 
         return true;
     }
@@ -448,7 +445,6 @@ static void unmap_key(uint key)
 
     keys[key].qname  = false;
     keys[key].qlocal = false;
-    keys[key].colon  = false;
 }
 
 #endif
