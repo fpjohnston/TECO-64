@@ -109,7 +109,7 @@ void echo_in(int c)
 
             case ESC:
 
-#if     !defined(CONFIG_DOLLAR)
+#if     !defined(TECO_DOLLAR)
 
                 if (f.et.accent || f.ee != NUL)
                 {
@@ -387,7 +387,7 @@ void type_out(int c)
 
             case ESC:
 
-#if     !defined(CONFIG_DOLLAR)
+#if     !defined(TECO_DOLLAR)
 
                 if (f.et.accent || f.ee != NUL)
                 {
