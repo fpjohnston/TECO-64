@@ -232,7 +232,7 @@ endif
 
 # Always enable ESCape as dollar sign regardless of alternate delimiter
 
-ifdef   TECO_DOLLAR
+ifdef   dollar
 
 CFLAGS  += -D TECO_DOLLAR
 DOXYGEN +=    TECO_DOLLAR
