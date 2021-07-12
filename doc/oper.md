@@ -36,7 +36,7 @@ used in arithmetic expressions.
 
 ### Extended Operators
 
-If the E1&1 bit is set, then there are additional operators that can be used, as long as they are within parentheses (to avoid confusion with commands that may use the same characters). Note that any of the multi-character operators must be entered as a single token, with no intervening whitespace.
+If the E1&1 flag bit is set, then there are additional operators that can be used, as long as they are within parentheses (to avoid confusion with commands that may use the same characters). Note that any of the multi-character operators must be entered as a single token, with no intervening whitespace.
 
 | Command | Example | Function |
 | ------- | --------| -------- |

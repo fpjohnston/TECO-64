@@ -115,10 +115,9 @@ void exec_M(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_macro(struct buffer *macro, struct cmd *cmd)
+void exec_macro(struct buffer *macro, struct cmd *oldcmd)
 {
     assert(macro != NULL);
-    assert(cmd != NULL);
     assert(macro->data != NULL);
 
     // Save current state
@@ -138,13 +137,23 @@ void exec_macro(struct buffer *macro, struct cmd *cmd)
     macro->pos = 0;
     cbuf       = macro;                 // Switch command strings
 
-    if (cmd->n_set)
-    {
-        push_x(cmd->n_arg, X_OPERAND);
-    }
+    struct cmd cmd = null_cmd;          // Initialize new command
 
+    // If we were passed the previous command, then copy any m and n arguments.
+
+    if (oldcmd != NULL)
+    {
+        cmd.m_set = oldcmd->m_set;
+        cmd.m_arg = oldcmd->m_arg;
+
+        if (oldcmd->n_set)
+        {
+            push_x(oldcmd->n_arg, X_OPERAND);
+        }
+    }
+        
     ++macro_depth;
-    exec_cmd(cmd);
+    exec_cmd(&cmd);
     --macro_depth;
 
     // Restore previous state

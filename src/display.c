@@ -274,7 +274,6 @@ static void exec_commands(const char *commands)
 
     strcpy(text, commands);
 
-    struct cmd cmd = null_cmd;
     struct buffer buf;
 
     buf.data = text;
@@ -292,7 +291,7 @@ static void exec_commands(const char *commands)
 
     f.e0.exec = true;                   // Force execution
 
-    exec_macro(&buf, &cmd);
+    exec_macro(&buf, NULL);
 
     f.e0.exec = saved_exec;             // Restore previous state
 

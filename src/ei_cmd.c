@@ -154,21 +154,6 @@ void exec_EI(struct cmd *cmd)
                     push_x(-1, X_OPERAND);
                 }
 
-                // Save any m and n arguments, but initialize the rest of the
-                // command block for the command string we're about to parse.
-
-                bool m_set = cmd->m_set;
-                bool n_set = cmd->n_set;
-                int m_arg = cmd->m_arg;
-                int n_arg = cmd->n_arg;
-
-                *cmd = null_cmd;
-
-                cmd->m_set = m_set;
-                cmd->n_set = n_set;
-                cmd->m_arg = m_arg;
-                cmd->n_arg = n_arg;
-
                 exec_macro(&ei_new->buf, cmd);
 
                 return;

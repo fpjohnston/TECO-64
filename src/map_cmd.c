@@ -88,7 +88,6 @@ bool exec_ctrl_F(int c)
         return false;
     }
 
-    struct cmd cmd = null_cmd;
     struct buffer buf;
 
     buf.data = ctrl_f_cmd[i];
@@ -100,7 +99,7 @@ bool exec_ctrl_F(int c)
 
     f.e0.exec = true;                   // Force execution
 
-    exec_macro(&buf, &cmd);
+    exec_macro(&buf, NULL);
 
     f.e0.exec = saved_exec;
 
@@ -344,7 +343,6 @@ bool exec_key(int key)
 
     if ((uint)key - KEY_MIN < countof(keys) && p->kname != NULL)
     {
-        struct cmd cmd = null_cmd;
         bool saved_exec = f.e0.exec;
 
         if (p->macro != NULL)           // Mapped to command string?
@@ -358,10 +356,12 @@ bool exec_key(int key)
 
             f.e0.exec = true;           // Force execution
 
-            exec_macro(&buf, &cmd);
+            exec_macro(&buf, NULL);
         }
         else if (p->qname != NUL)       // Mapped to Q-register?
         {
+            struct cmd cmd = null_cmd;
+
             cmd.c1     = 'M';
             cmd.qname  = p->qname;
             cmd.qlocal = p->qlocal;

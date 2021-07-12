@@ -75,7 +75,7 @@ void exec_EM(struct cmd *cmd)
 
     f.e0.exec = false;                  // Don't actually execute commands
 
-    exec_macro(&macro, cmd);
+    exec_macro(&macro, NULL);
 
     f.e0.exec = saved_exec;
     f.trace.flag = saved_trace;
