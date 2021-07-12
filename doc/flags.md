@@ -32,6 +32,8 @@ file may be used to customize which bits are set or cleared.
 | E1&16 | If set, EI commands are executed immediately, rather than being executed after completion of the current command string. |
 | E1&32 | If set, "!!" may be used start a comment that extends to the next line terminator (LF, VT, or FF). |
 | E1&64 | If set, CR/LF will be output if needed to ensure that TECO's prompt is printed at the start of a new line. |
+| E1&128 | If set, the radix of an input number will be determined as follows: if the first  two characters are 0x or 0X, the number is assumed to be decimal; if the first character is 1-9, it is assumed to be decimal; and if the first character is 0, it is assumed to be octal. |
+| E1&256 | If set, a :U*q* command will load a default value of -1 into the Q-register if the command is not preceded by a numeric value. If this flag is not set, or if the U command is executed without a colon modifier, then a missing numeric value will result in an NAU error. |
 
 ### E2 - Command Restrictions Flag
 

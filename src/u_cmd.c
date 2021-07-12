@@ -29,6 +29,7 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
@@ -48,7 +49,14 @@ void exec_U(struct cmd *cmd)
 
     if (!cmd->n_set)                    // n argument?
     {
-        throw(E_NAU);                   // No argument before U
+        if (cmd->colon && f.e1.dflt_u)  // :Uq and default enabled?
+        {
+            cmd->n_arg = -1;            // Use -1 as default argument
+        }
+        else
+        {
+            throw(E_NAU);               // No argument before U
+        }
     }
 
     store_qnum(cmd->qindex, cmd->n_arg);

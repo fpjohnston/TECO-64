@@ -71,7 +71,9 @@ loaded into Q-registers.
 | Command | Function |
 | ------- | -------- |
 | *n*U*q*   | Put *n* in the numeric storage area of Q-register q. |
-| *m*,*n*U*q* | Equivalent to "*n*U*qm*". That is, this command puts the number *n* into the numeric storage area of Q-register *q* and then returns the number *m* as a value. The command "UA UB" is useful at the beginning of a macro to save the two arguments specified on the macro call. (See the *m*,*n*M*q* command below.) |
+| *n*:U*q*   | Equivalent to *n*U*q*, but uses a default of -1 if *n* is not provided. This requires that the E1&256 flag bit also be set. This can be used in macros to determine whether an *n* argument was specified by the caller. |
+| *m*,*n*U*q* | Equivalent to *n*U*qm*. That is, this command puts the number *n* into the numeric storage area of Q-register *q* and then returns the number *m* as a value. The command "UA UB" is useful at the beginning of a macro to save the two arguments specified on the macro call. (See the *m*,*n*M*q* command below.) |
+| *m*,*n*:U*q* | Equivalent to *m*,*n*U*q*, but uses a default of -1 if *n* is not provided. This requires that the E1&256 flag bit also be set. This can be used in macros to determine whether an *n* argument was specified by the caller. |
 | *n*%*q* | Add *n* to the contents of the number storage area of Q-register *q*. The updated contents of Q-register *q* are also returned as a value to be passed to the next command. If your intent is only to update the Q-register, good programming practice suggests following the "*n*%*q*" command with a \<DELIM\> or ^[ to prevent the returned value from unintentionally affecting the following command. |
 | *n*%*q*` | Same as *n*%*q* but discards the value returned. This is sometimes desirable to avoid passing the returned value to the next command. Note that the "^[" sequence may be substituted for a delimiter in this situation. |
 | %*q* | Equivalent to 1%*q*. |

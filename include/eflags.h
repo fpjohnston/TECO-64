@@ -71,6 +71,7 @@ union e1_flag
         uint bang   : 1;        ///< !! starts end-of-line comment
         uint prompt : 1;        ///< Add CR/LF before prompt if needed
         uint radix  : 1;        ///< Automatically determine number radix
+        uint dflt_u : 1;        ///< Use 0 as default U argument
     };
 };
 

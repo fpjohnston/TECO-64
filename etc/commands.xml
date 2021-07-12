@@ -95,7 +95,7 @@
         <command name='R'       parse='n:X'                         exec='R'        />
         <command name='S'       parse='m,n::@X/'                    exec='S'        />
         <command name='T'       parse='+m,n:X'                      exec='T'        />
-        <command name='U'       parse='m,nXq'                       exec='U'        />
+        <command name='U'       parse='m,n:Xq'                      exec='U'        />
         <command name='V'       parse='+m,nX'                       exec='V'        />
         <command name='W'       parse='m,n:X'      scan='W'         exec='W'        />
         <command name='X'       parse='+m,n:Xq'                     exec='X'        />
