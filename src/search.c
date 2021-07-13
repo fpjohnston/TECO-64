@@ -98,9 +98,11 @@ static int isblankx(int c, struct search *s)
 
     while (s->text_pos < s->text_end)
     {
-        c = getchar_ebuf(s->text_pos++);
-
-        if (!isblank(c))
+        if ((c = getchar_ebuf(s->text_pos++)) == EOF)
+        {
+            break;
+        }
+        else if (!isblank(c))
         {
             --s->text_pos;
 
@@ -344,7 +346,7 @@ static bool match_str(struct search *s)
     {
         int c = getchar_ebuf(s->text_pos++);
 
-        if (!match_chr(c, s))
+        if (c == EOF || !match_chr(c, s))
         {
             return false;
         }
@@ -565,12 +567,12 @@ bool search_loop(struct search *s)
 
             if (s->search == search_backward)
             {
-                s->text_start = -1;
+                s->text_start = -1;     // Start at previous character
                 s->text_end   = -t.Z;
             }
             else
             {
-                s->text_start = 0;
+                s->text_start = 0;      // Start at current character
                 s->text_end   = t.Z;
             }
         }

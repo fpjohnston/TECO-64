@@ -124,7 +124,7 @@ void exec_bslash(struct cmd *cmd)
             minus = true;
         }
 
-        while (c != -1)
+        while (c != EOF)
         {
             if (!isxdigit(c))
             {
@@ -219,7 +219,7 @@ bool scan_number(struct cmd *cmd)
 
     for (;;)
     {
-        if ((c = peek_cbuf()) == -1 || c < '0')
+        if ((c = peek_cbuf()) == EOF || c < '0')
         {
             break;                      // Buffer empty, or non-digit
         }

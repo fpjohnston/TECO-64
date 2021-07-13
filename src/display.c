@@ -360,7 +360,7 @@ int getchar_dpy(bool unused)
             clear_dpy();
             print_prompt();
 
-            return -1;
+            return EOF;
         }
         else if (c == KEY_BACKSPACE)
         {
@@ -384,7 +384,7 @@ int getchar_dpy(bool unused)
 
     if (read(fileno(stdin), &c, 1uL) == -1)
     {
-        return -1;
+        return EOF;
     }
     else
     {
@@ -764,7 +764,7 @@ static int print_ebuf(char *buf, int width, int nbytes, int c)
 
     buf += nbytes;
 
-    if (c == -1)
+    if (c == EOF)
     {
         return snprintf(buf, size, "----");
     } 
@@ -1017,7 +1017,7 @@ void refresh_dpy(void)
 
         w.topdot = botdot = t.dot + pos;
 
-        while ((c = getchar_ebuf(pos)) != -1)
+        while ((c = getchar_ebuf(pos)) != EOF)
         {
             if (pos++ <= 0)
             {
@@ -1086,7 +1086,7 @@ void refresh_dpy(void)
 
         // If at end of buffer, and if room for it, add marker
 
-        if (!filled && getchar_ebuf(pos) == -1)
+        if (!filled && getchar_ebuf(pos) == EOF)
         {
             (void)addch(A_ALTCHARSET | 0x60);
         }

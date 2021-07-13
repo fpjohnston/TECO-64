@@ -87,7 +87,7 @@ void exit_term(void)
 ///
 ///  @brief    Get single character from terminal.
 ///
-///  @returns  Character read, or -1 if none available.
+///  @returns  Character read, or EOF if none available.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -104,7 +104,7 @@ int getc_term(bool wait)
 
     int c = getchar_dpy(wait);
 
-    if (c == -1)
+    if (c == EOF)
     {
         if (f.e0.ctrl_c)                // Error caused by CTRL/C?
         {

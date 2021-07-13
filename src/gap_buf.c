@@ -309,7 +309,7 @@ static bool expand_ebuf(void)
 ///
 ///  @brief    Get ASCII value of nth character before or after dot.
 ///
-///  @returns  ASCII value, or -1 if character outside of edit buffer.
+///  @returns  ASCII value, or EOF if character outside of edit buffer.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -327,7 +327,7 @@ int getchar_ebuf(int_t n)
         return eb.buf[pos];
     }
 
-    return -1;
+    return EOF;
 }
 
 

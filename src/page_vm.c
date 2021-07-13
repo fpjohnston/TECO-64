@@ -185,7 +185,10 @@ static struct page *make_page(int start, int end, bool ff)
     {
         int c = getchar_ebuf(i);
 
-        assert(c != EOF);
+        if (c == EOF)
+        {
+            break;
+        }
 
         if (c == LF && last != CR && page->ocrlf)
         {

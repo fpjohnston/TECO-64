@@ -241,7 +241,7 @@ bool scan_A(struct cmd *cmd)
 
     int_t n = getchar_ebuf(cmd->n_arg);
 
-    push_x(n, X_OPERAND);
+    push_x(n, X_OPERAND);               // Note: n may be EOF (-1)
 
     return true;
 }

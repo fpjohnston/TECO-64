@@ -135,7 +135,7 @@ static void find_tag(struct cmd *cmd, const char *tag)
     assert(cmd != NULL);
     assert(tag != NULL);                // Error if no tag string
 
-    int tag_pos = -1;                   // Position of tag in command string
+    int tag_pos = EOF;                  // Position of tag in command string
 
     // The following creates a tag using string building characters, but then
     // sets up a local copy so that we can free up the string that was allocated
@@ -170,7 +170,7 @@ static void find_tag(struct cmd *cmd, const char *tag)
 
         if (cmd->text1.len == len && !memcmp(cmd->text1.data, tag2, (ulong)len))
         {
-            if (tag_pos != -1)          // Found tag. Have we seen it already?
+            if (tag_pos != EOF)         // Found tag. Have we seen it already?
             {
                 throw(E_DUP, tag2);     // Duplicate tag
             }
@@ -186,7 +186,7 @@ static void find_tag(struct cmd *cmd, const char *tag)
         }
     }
 
-    if (tag_pos == -1)                  // Did we find the tag?
+    if (tag_pos == EOF)                 // Did we find the tag?
     {
         throw(E_TAG, tag2);             // Missing tag
     }

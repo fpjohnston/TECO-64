@@ -57,6 +57,11 @@ bool page_forward(FILE *fp, int start, int end, bool ff)
     {
         int c = getchar_ebuf(i);
 
+        if (c == EOF)
+        {
+            break;
+        }
+
         // Translate LF to CR/LF if needed, unless last chr. was CR
 
         if (c == LF && last != CR && f.e3.ocrlf)
@@ -83,6 +88,11 @@ bool page_forward(FILE *fp, int start, int end, bool ff)
     for (int i = start; i < end; ++i)
     {
         int c = getchar_ebuf(i);
+
+        if (c == EOF)
+        {
+            break;
+        }
 
         // Translate LF to CR/LF if needed, unless last chr. was CR
 

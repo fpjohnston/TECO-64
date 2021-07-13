@@ -117,6 +117,11 @@ static void exec_type(int m, int n)
     {
         int c = getchar_ebuf(i);
 
+        if (c == EOF)
+        {
+            break;
+        }
+
         type_out(c);
     }
 }

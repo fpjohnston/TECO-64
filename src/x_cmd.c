@@ -107,6 +107,11 @@ void exec_X(struct cmd *cmd)
     {
         int c = getchar_ebuf(i);
 
+        if (c == EOF)
+        {
+            break;
+        }
+
         append_qchr(cmd->qindex, c);
     }
 }

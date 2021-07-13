@@ -209,7 +209,11 @@ void print_flag(int flag)
 
         int c = getchar_ebuf(i);
 
-        if (c == LF && last != CR)
+        if (c == EOF)
+        {
+            break;
+        }
+        else if (c == LF && last != CR)
         {
             type_out(CR);
         }
