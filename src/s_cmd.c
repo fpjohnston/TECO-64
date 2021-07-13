@@ -117,14 +117,14 @@ static void exec_search(struct cmd *cmd, bool replace)
     {
         s.search     = search_forward;
         s.count      = 1;
-        s.text_start = 0;
+        s.text_start = 0;               // Start at current character
         s.text_end   = 0;
     }
     else if (cmd->n_arg < 0)
     {
         s.search     = search_backward;
         s.count      = -cmd->n_arg;
-        s.text_start = -1;
+        s.text_start = -1;              // Start at previous character
         s.text_end   = -(int)t.dot;
 
         if (cmd->m_set && cmd->m_arg != 0)

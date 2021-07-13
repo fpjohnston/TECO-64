@@ -106,7 +106,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         s.type       = SEARCH_N;
         s.search     = search_backward;
         s.count      = -cmd->n_arg;
-        s.text_start = -1;
+        s.text_start = -1;              // Start at previous character
         s.text_end   = -(int)t.dot;
     }
     else
@@ -114,7 +114,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         s.type       = SEARCH_N;
         s.search     = search_forward;
         s.count      = cmd->n_arg;
-        s.text_start = 0;
+        s.text_start = 0;               // Start at current character
         s.text_end   = (int)(t.Z - t.dot);
     }
 

@@ -75,7 +75,7 @@ void exec_E_ubar(struct cmd *cmd)
         s.type       = SEARCH_S;
         s.search     = search_backward;
         s.count      = -cmd->n_arg;
-        s.text_start = -1;
+        s.text_start = -1;              // Start at previous character
         s.text_end   = -t.dot;
     }
     else
@@ -83,7 +83,7 @@ void exec_E_ubar(struct cmd *cmd)
         s.type       = SEARCH_E;
         s.search     = search_forward;
         s.count      = cmd->n_arg;
-        s.text_start = 0;
+        s.text_start = 0;               // Start at current character
         s.text_end   = (int)(t.Z - t.dot);
     }
 
