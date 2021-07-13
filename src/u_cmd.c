@@ -51,7 +51,7 @@ void exec_U(struct cmd *cmd)
     {
         if (cmd->colon && f.e1.dflt_u)  // :Uq and default enabled?
         {
-            cmd->n_arg = -1;            // Use -1 as default argument
+            cmd->n_arg = 0;             // Use 0 as default argument
         }
         else
         {

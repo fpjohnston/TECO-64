@@ -1,5 +1,7 @@
 !! mapall.tec - TECO-64 macro to map all possible keys usable in display mode.
 
+:U0                     !! Get flag argument
+
 0,128ET                 !! Abort on error
 
 0 U1                    !! No. of mapped keys
@@ -16,17 +18,18 @@
         @I\]'"\                     !! Insert end of ^A command
         0,.X3                       !! Copy everything to Q-register 3
         0,.D                        !! Delete what we added to edit buffer
-        M3                          !! Execute macro
-        "N                          !! Success or failure?
-            %1                      !! Count another success
-            @^A"Mapped key ["       !! And announce it
-        |   %2                      !! Count another failure
-            @^A"Undefined key ["    !! And announce it
-        '                           !! End conditional
-        :G1                         !! Print name of key
-        ^^]^T                       !! Terminate the announcement
-        -1^T                        !! Add a CRLF
-        ^[                          !! And an ESCape
+        M3 U3                       !! Execute macro and save result
+        Q0&1 "E                     !! Don't print results if bit 0 is set
+            Q3 "N                   !! Success or failure?
+                %1                  !! Count another success
+                @^A"Mapped key ["   !! And announce it
+            |   %2                  !! Count another failure
+                @^A"Undefined key [" !! And announce it
+            '                       !! End conditional
+            :G1                     !! Print name of key
+            ^^]^T                   !! Terminate the announcement
+            -1^T                    !! Add a CRLF
+        '
     /                               !! Q-register 2 is complete now
 
 !! Q-register 1 contains the name of each key we're trying to map
@@ -56,7 +59,20 @@
 @^U1/F10/ M2    @^U1/S_F11/ M2    @^U1/C_F11/ M2
 @^U1/F12/ M2    @^U1/S_F12/ M2    @^U1/C_F12/ M2
 
-Q1 :@=/%d key/ Q1-1 "N ^^s^T ' @^A/ mapped, /
-Q2 :@=/%d key/ Q2-1 "N ^^s^T ' :@^A/ undefined/
+Q0&2 "N                             !! Unmap standard keys if bit 1 is set
+    @FM/UP//
+    @FM/DOWN//
+    @FM/LEFT//
+    @FM/RIGHT//
+    @FM/HOME//
+    @FM/END//
+    @FM/PGUP//
+    @FM/PGDN//
+'
+
+Q0&1 "E                             !! Don't print results if bit 0 is set
+    Q1 :@=/%d key/ Q1-1 "N ^^s^T ' @^A/ mapped, /
+    Q2 :@=/%d key/ Q2-1 "N ^^s^T ' :@^A/ undefined/
+'
 
 ^[^[
