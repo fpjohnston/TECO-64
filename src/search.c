@@ -404,7 +404,7 @@ void search_failure(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(0, X_OPERAND);
+        push_x(TECO_FAILURE, X_OPERAND);
     }
     else
     {
@@ -595,6 +595,6 @@ void search_success(struct cmd *cmd)
 
     if (cmd->colon || (check_loop() && check_semi()))
     {
-        push_x(-1, X_OPERAND);
+        push_x(TECO_SUCCESS, X_OPERAND);
     }
 }

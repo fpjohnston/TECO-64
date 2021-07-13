@@ -179,7 +179,7 @@ void exec_FM(struct cmd *cmd)
 
         if (cmd->colon)
         {
-            push_x(-1, X_OPERAND);      // Command succeeded
+            push_x(TECO_SUCCESS, X_OPERAND); // Command succeeded
         }
 
         return;
@@ -213,7 +213,7 @@ void exec_FM(struct cmd *cmd)
 
             if (cmd->colon)
             {
-                push_x(-1, X_OPERAND);  // Command succeeded
+                push_x(TECO_SUCCESS, X_OPERAND); // Command succeeded
             }
 
             return;
@@ -222,7 +222,7 @@ void exec_FM(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(0, X_OPERAND);           // Command failed
+        push_x(TECO_FAILURE, X_OPERAND); // Command failed
     }
     else
     {
@@ -238,7 +238,7 @@ void exec_FM(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(0, X_OPERAND);           // Command failed
+        push_x(TECO_FAILURE, X_OPERAND); // Command failed
     }
 }
 
@@ -269,7 +269,7 @@ void exec_FQ(struct cmd *cmd)
     {
         if (cmd->colon)
         {
-            push_x(-1, X_OPERAND);      // Command succeeded
+            push_x(TECO_SUCCESS, X_OPERAND); // Command succeeded
         }
 
         return;
@@ -293,7 +293,7 @@ void exec_FQ(struct cmd *cmd)
 
             if (cmd->colon)
             {
-                push_x(-1, X_OPERAND);  // Command succeeded
+                push_x(TECO_SUCCESS, X_OPERAND); // Command succeeded
             }
 
             return;
@@ -302,7 +302,7 @@ void exec_FQ(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(0, X_OPERAND);           // Command failed
+        push_x(TECO_FAILURE, X_OPERAND); // Command failed
     }
     else
     {
@@ -318,7 +318,7 @@ void exec_FQ(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(0, X_OPERAND);           // Command failed
+        push_x(TECO_FAILURE, X_OPERAND); // Command failed
     }
 }
 

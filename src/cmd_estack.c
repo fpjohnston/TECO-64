@@ -254,7 +254,7 @@ static inline bool reduce2(void)
     {
         // Logical NOT yields -1 for true and 0 for false.
 
-        x.operand[-2] = !x.operand[-1] ? -1 : 0;
+        x.operand[-2] = !x.operand[-1] ? TECO_SUCCESS : TECO_FALSE;
         x.type[-2] = X_OPERAND;
 
         --x.operand;

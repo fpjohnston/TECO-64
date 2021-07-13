@@ -82,11 +82,11 @@ void exec_rbracket(struct cmd *cmd)
             throw(E_PES);               // Push-down stack is empty
         }
 
-        push_x(0, X_OPERAND);
+        push_x(TECO_FAILURE, X_OPERAND);
     }
     else if (cmd->colon)
     {
-        push_x(-1, X_OPERAND);
+        push_x(TECO_SUCCESS, X_OPERAND);
     }
     else if (cmd->n_set)                // Pass through m and n arguments
     {

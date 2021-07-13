@@ -78,6 +78,9 @@ typedef unsigned long ulong;
 #define isdelim(c)  (c == LF || c == VT || c == FF)
 
 
+#define TECO_SUCCESS    ((int_t)-1) ///< Command succeeded
+#define TECO_FAILURE    ((int_t)0)  ///< Command failed
+
 enum
 {
     MAIN_NORMAL,                    ///< Normal main loop entry
