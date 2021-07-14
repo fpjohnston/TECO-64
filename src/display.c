@@ -66,6 +66,16 @@ static int botdot = 0;              ///< Value of FZ flag
 
 #if     defined(TECO_DISPLAY)
 
+#if     defined(TECO_LONG)
+
+#define DEC_FMT "%-*ld"             ///< Left-justified decimal format
+
+#else
+
+#define DEC_FMT "%-*d"              ///< Left-justified decimal format
+
+#endif
+
 static int rowbias = 0;             ///< Row adjustment
 
 static uint n_home = 0;             ///< No. of consecutive Home keys
@@ -1383,7 +1393,8 @@ static void update_status(void)
         int nrows   = getlines_ebuf(0);
         int col     = -getdelta_ebuf(0);
         int width   = WIDTH(t.Z);
-        int nbytes  = snprintf(status, sizeof(status), ".=%-*d (", width, t.dot);
+        int nbytes  = snprintf(status, sizeof(status), ".=" DEC_FMT " (",
+                               width, t.dot);
         size_t size = sizeof(status);   // Remaining bytes available in line
 
         nbytes += print_ebuf(status, w.width, nbytes, getchar_ebuf(-1));
@@ -1392,7 +1403,8 @@ static void update_status(void)
 
         size = sizeof(status) - (uint)nbytes;
 
-        nbytes += snprintf(status + nbytes, size, ")  Z=%-*d  ", width, t.Z);
+        nbytes += snprintf(status + nbytes, size, ")  Z=" DEC_FMT " ",
+                           width, t.Z);
         width = WIDTH(nrows);
 
         if (t.dot >= t.Z)
