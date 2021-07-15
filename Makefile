@@ -313,7 +313,7 @@ endif
 
 ifdef   nostrict
 
-DEFINES += -D TECO_NOSTRICT
+DEFINES += -D NOSTRICT
 
 endif
 

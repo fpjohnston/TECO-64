@@ -32,7 +32,7 @@
 
 #include "teco.h"               //lint !e451 !e537
 
-#if     defined(TECO_NOSTRICT)  // Disable strict syntax checking
+#if     defined(NOSTRICT)       // Disable strict syntax checking
 
 #define reject_atsign(cmd)
 #define reject_colon(cmd)
