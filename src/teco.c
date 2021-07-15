@@ -260,7 +260,7 @@ static void exit_teco(void)
     exit_cbuf();                        // Deallocate memory for command buffer
     exit_tbuf();                        // Deallocate memory for terminal buffer
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
     exit_mem();                         // Deallocate memory blocks
 

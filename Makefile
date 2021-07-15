@@ -282,10 +282,10 @@ NULL2 = >/dev/null 2>&1
 
 endif
 
-ifdef   debug
+ifdef   memory
 
-DEFINES += -D TECO_DEBUG
-DOXYGEN +=    TECO_DEBUG
+DEFINES += -D DEBUG_MEMORY
+DOXYGEN +=    DEBUG_MEMORY
 OPTIONS_DEBUG += -d
 
 endif

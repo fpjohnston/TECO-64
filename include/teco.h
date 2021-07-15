@@ -165,7 +165,7 @@ extern void exit_files(void);
 
 extern void exit_map(void);
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
 extern void exit_mem(void);
 

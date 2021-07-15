@@ -40,7 +40,7 @@
 // that needs to be investigated and resolved, possibly with better tools such
 // as Valgrind.
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
 ///  @struct mblock
 ///
@@ -81,7 +81,7 @@ static void delete_mblock(void *p1);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
 static void add_mblock(void *p1, uint size)
 {
@@ -126,7 +126,7 @@ void *alloc_mem(uint size)
         throw(E_MEM);                   // Memory overflow
     }
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
     add_mblock(p1, size);
 
@@ -143,7 +143,7 @@ void *alloc_mem(uint size)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
 static void delete_mblock(void *p1)
 {
@@ -197,7 +197,7 @@ static void delete_mblock(void *p1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
 void exit_mem(void)
 {
@@ -249,7 +249,7 @@ void *expand_mem(void *p1, uint oldsize, uint newsize)
     assert(oldsize != newsize);         // Error if size didn't change
     assert(oldsize < newsize);          // Error if trying to make smaller
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
     delete_mblock(p1);
 
@@ -262,7 +262,7 @@ void *expand_mem(void *p1, uint oldsize, uint newsize)
         throw(E_MEM);                   // Memory overflow
     }
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
     add_mblock(p2, newsize);
 
@@ -291,7 +291,7 @@ void free_mem(void *p1)
 
     if (*p2 != NULL)
     {
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
         delete_mblock(*p2);
 
@@ -318,7 +318,7 @@ void *shrink_mem(void *p1, uint oldsize, uint newsize)
     assert(oldsize > newsize);          // Error if trying to make larger
     assert(newsize != 0);               // Error if new size is 0
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
     delete_mblock(p1);
 
@@ -331,7 +331,7 @@ void *shrink_mem(void *p1, uint oldsize, uint newsize)
         throw(E_MEM);                   // Memory overflow
     }
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
     add_mblock(p2, newsize);
 
@@ -359,7 +359,7 @@ char *strdup_mem(const char *p)
         throw(E_MEM);                   // Memory overflow
     }
 
-#if     defined(TECO_DEBUG)
+#if     defined(DEBUG_MEMORY)
 
     add_mblock(p1, (uint)strlen(p1) + 1);
 
