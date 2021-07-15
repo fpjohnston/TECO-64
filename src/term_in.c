@@ -346,7 +346,7 @@ void read_cmd(void)
             c = ESC;                    //  but treat it as ESCape
         }
 
-#if     !defined(TECO_DOLLAR)
+#if     !defined(DOLLAR_ESC)
 
         else if (c == ESC && (f.et.accent || f.ee != NUL))
         {

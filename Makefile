@@ -243,8 +243,8 @@ endif
 
 ifdef   dollar
 
-CFLAGS  += -D TECO_DOLLAR
-DOXYGEN +=    TECO_DOLLAR
+CFLAGS  += -D DOLLAR_ESC
+DOXYGEN +=    DOLLAR_ESC
 
 endif
 
