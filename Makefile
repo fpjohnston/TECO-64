@@ -241,6 +241,8 @@ DOXYGEN +=    DEFAULT_U
 
 endif
 
+# Always echo ESCape as dollar sign, regardless of alternate delimiters
+
 ifdef   dollar
 
 CFLAGS  += -D DOLLAR_ESC
@@ -257,10 +259,12 @@ DOXYGEN +=    EU_COMMAND
 
 endif
 
+# Use 64-bit long integers
+
 ifdef   long
 
-CFLAGS  += -D TECO_LONG
-DOXYGEN +=    TECO_LONG
+CFLAGS  += -D LONG_64
+DOXYGEN +=    LONG_64
 
 endif
 

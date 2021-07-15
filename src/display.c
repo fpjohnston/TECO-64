@@ -66,7 +66,7 @@ static int botdot = 0;              ///< Value of FZ flag
 
 #if     defined(TECO_DISPLAY)
 
-#if     defined(TECO_LONG)
+#if     defined(LONG_64)
 
 #define DEC_FMT "%-*ld"             ///< Left-justified decimal format
 

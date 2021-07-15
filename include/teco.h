@@ -44,7 +44,7 @@
 
 #endif
 
-#if     defined(TECO_LONG)
+#if     defined(LONG_64)
 
 typedef long int_t;               ///< Size of m and n arguments
 
