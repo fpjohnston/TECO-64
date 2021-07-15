@@ -391,6 +391,14 @@ void init_options(
 
                 break;
 
+            case OPTION_n:
+                options.create  = false;
+                options.initial = NULL;
+                options.memory  = NULL;
+                options.vtedit  = NULL;
+
+                break;
+
             case OPTION_O:
                 if (optarg != NULL && optarg[0] != '-')
                 {

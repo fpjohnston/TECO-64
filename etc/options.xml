@@ -130,9 +130,14 @@
     </section>
     <section title="Miscellaneous options">
         <option>
+            <short_name>n</short_name>
+            <long_name>nodefaults</long_name>
+            <help>Disable all defaults (equivalent to -c -i -m -v).</help>
+        </option>
+        <option>
             <short_name>H</short_name>
             <long_name>help</long_name>
-            <help>Print this help message</help>
+            <help>Print this help message.</help>
         </option>
         <option>
             <short_name>X</short_name>

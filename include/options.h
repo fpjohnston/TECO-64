@@ -93,7 +93,8 @@ static const char * const help_text[] =
     "",
     "Miscellaneous options:",
     "",
-    "  -H, --help             Print this help message",
+    "  -n, --nodefaults       Disable all defaults (equivalent to -c -i -m -v).",
+    "  -H, --help             Print this help message.",
     "  -X, --exit             Exit from TECO after executing all command-line options.",
     NULL
 };
@@ -123,6 +124,7 @@ enum option_t
     OPTION_f = 'f',
     OPTION_i = 'i',
     OPTION_m = 'm',
+    OPTION_n = 'n',
     OPTION_o = 'o',
     OPTION_r = 'r',
     OPTION_v = 'v'
@@ -131,7 +133,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "A:B:CDE:FHI::L:MO:RS:V::XZ::cfimorv";
+static const char * const optstring = "A:B:CDE:FHI::L:MO:RS:V::XZ::cfimnorv";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -158,6 +160,7 @@ static const struct option long_options[] =
     { "noformfeed",     no_argument,        NULL,  'f'    },
     { "noinitialize",   no_argument,        NULL,  'i'    },
     { "nomemory",       no_argument,        NULL,  'm'    },
+    { "nodefaults",     no_argument,        NULL,  'n'    },
     { "nooutput",       no_argument,        NULL,  'o'    },
     { "noread-only",    no_argument,        NULL,  'r'    },
     { "novtedit",       no_argument,        NULL,  'v'    },
