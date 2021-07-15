@@ -205,8 +205,8 @@ endif
 ifeq (${paging}, vm)
 
 SOURCES += page_vm.c
-CFLAGS  += -D TECO_VM
-DOXYGEN +=    TECO_VM
+CFLAGS  += -D PAGE_VM
+DOXYGEN +=    PAGE_VM
 
 else ifeq (${paging}, file)
 
@@ -221,8 +221,8 @@ SOURCES += page_std.c
 else ifeq (${paging}, )
 
 SOURCES += page_vm.c
-CFLAGS  += -D TECO_VM
-DOXYGEN +=    TECO_VM
+CFLAGS  += -D PAGE_VM
+DOXYGEN +=    PAGE_VM
 
 else
 

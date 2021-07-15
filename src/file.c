@@ -397,7 +397,7 @@ struct ifile *open_input(char *name, uint stream, bool colon)
 
     ifile->cr  = false;
 
-#if     defined(TECO_VM)
+#if     defined(PAGE_VM)
 
     // If using virtual paging, then we can try to read in the entire file.
     // So set the size of the edit buffer to 110% of the file size (to allow
