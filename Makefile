@@ -252,8 +252,8 @@ endif
 
 ifdef   eu
 
-CFLAGS  += -D TECO_EU
-DOXYGEN +=    TECO_EU
+CFLAGS  += -D EU_COMMAND
+DOXYGEN +=    EU_COMMAND
 
 endif
 

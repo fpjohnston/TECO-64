@@ -122,7 +122,7 @@ struct flags f =                    ///< Global flag variables
     .es = 0,                        // Search verification flag
     .et.accent  = true,             // Use accent grave as delimiter
 
-#if     defined(TECO_EU)
+#if     defined(EU_COMMAND)
 
     .eu = -1,                       // No case flagging
 

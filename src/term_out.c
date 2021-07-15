@@ -343,7 +343,7 @@ void type_out(int c)
         tputc(c, false);
     }
 
-#if     defined(TECO_EU)
+#if     defined(EU_COMMAND)
 
     else if (islower(c) && f.eu != -1)
     {
