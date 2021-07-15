@@ -86,7 +86,7 @@ extern struct watch w;
 
 // Display functions
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 extern void check_escape(uint escape);
 
@@ -96,7 +96,7 @@ extern bool clear_eol(void);
 
 extern void clear_dpy(void);
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 extern bool exec_key(int key);
 
@@ -104,7 +104,7 @@ extern bool exec_key(int key);
 
 extern int getchar_dpy(bool wait);
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 extern void init_dpy(void);
 
@@ -118,7 +118,7 @@ extern void refresh_dpy(void);
 
 extern void reset_colors(void);
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 extern void reset_dpy(void);
 

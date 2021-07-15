@@ -105,7 +105,7 @@ struct flags f =                    ///< Global flag variables
     .e4.status = true,              // Display status on line
 
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     .ed.escape  = true,             // Enable ESCape-sequences
 
@@ -240,7 +240,7 @@ int main(int argc, const char * const argv[])
 static void exit_teco(void)
 {
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     exit_dpy();                         // Disable display first
 

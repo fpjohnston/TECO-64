@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 #include <ncurses.h>
 #include <string.h>
@@ -40,7 +40,7 @@
 #include "exec.h"
 
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 #include "errcodes.h"
 
@@ -141,7 +141,7 @@ void exec_F3(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static int find_color(const char *token)
 {
@@ -171,7 +171,7 @@ static int find_color(const char *token)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void set_color(const char *buf, uint len, int sat, short color)
 {
@@ -222,7 +222,7 @@ static void set_color(const char *buf, uint len, int sat, short color)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void set_colors(const struct cmd *cmd, enum region_pair pair)
 {

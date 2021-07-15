@@ -73,7 +73,7 @@ struct edit
 
 extern struct edit t;
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 extern bool dot_changed;
 

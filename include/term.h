@@ -66,7 +66,7 @@ extern void print_prompt(void);
 
 extern void read_cmd(void);
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 extern void reset_term(void);
 

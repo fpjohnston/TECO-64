@@ -304,7 +304,7 @@ static void tputc(int c, int input)
         --term_pos;
     }
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     if (putc_dpy(c))
     {

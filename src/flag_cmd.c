@@ -37,7 +37,7 @@
 #include "exec.h"
 #include "file.h"
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 #include "display.h"
 
@@ -237,7 +237,7 @@ void exec_E4(struct cmd *cmd)
 void exec_ED(struct cmd *cmd)
 {
 
-#if    defined(TECO_DISPLAY)
+#if    defined(DISPLAY_MODE)
 
     union ed_flag saved = { .flag = f.ed.flag };
 
@@ -245,7 +245,7 @@ void exec_ED(struct cmd *cmd)
 
     check_mn_flag(cmd, &f.ed.flag);
 
-#if    defined(TECO_DISPLAY)
+#if    defined(DISPLAY_MODE)
 
     check_escape((uint)saved.escape);
 

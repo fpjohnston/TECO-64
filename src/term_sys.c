@@ -60,7 +60,7 @@ static bool term_active = false;        ///< Are terminal settings active?
 
 // Local functions
 
-#if     !defined(TECO_DISPLAY)
+#if     !defined(DISPLAY_MODE)
 
 static void reset_term(void);
 
@@ -203,7 +203,7 @@ void init_term(void)
         f.et.rubout    = true;          // Process DEL and ^U in scope mode
         f.et.lower     = true;          // Terminal can read lower case
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
         f.et.scope     = true;          // Terminal is a scope
 
@@ -254,7 +254,7 @@ void init_term(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 void reset_term(void)
 
@@ -315,7 +315,7 @@ static void sig_handler(int signum)
         case SIGWINCH:
             getsize();
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
             resize_dpy();
 

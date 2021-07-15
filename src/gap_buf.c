@@ -80,7 +80,7 @@ static struct
     .right    = 0,
 };
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 bool dot_changed = false;       ///< true if dot changed
 
@@ -135,7 +135,7 @@ int add_ebuf(int c)
         ++page_count;
     }
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     ebuf_changed = true;
     dot_changed = true;
@@ -216,7 +216,7 @@ void delete_ebuf(int n)
 
     t.Z = eb.left + eb.right;
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     ebuf_changed = true;
     dot_changed = true;
@@ -576,7 +576,7 @@ int putchar_ebuf(int n, int c)
 
         eb.buf[i] = (uchar)c;
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
         ebuf_changed = true;
 
@@ -602,7 +602,7 @@ void setpos_ebuf(int n)
     {
         t.dot = n;
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
         ebuf_changed = true;
         dot_changed = true;

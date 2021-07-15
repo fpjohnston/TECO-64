@@ -149,7 +149,7 @@ extern void exec_options(int argc, const char * const argv[]);
 
 extern void exit_cbuf(void);
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 extern void exit_dpy(void);
 

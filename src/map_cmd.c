@@ -39,7 +39,7 @@
 #include "estack.h"
 #include "exec.h"
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 #include "keys.h"
 
@@ -53,7 +53,7 @@ static char *ctrl_f_cmd[MAX_CTRL_F];    ///< Command strings for CTRL/F
 
 // Local functions
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void reset_map(void);
 
@@ -165,7 +165,7 @@ void exec_FF(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 void exec_FM(struct cmd *cmd)
 {
@@ -259,7 +259,7 @@ void exec_FM(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 void exec_FQ(struct cmd *cmd)
 {
@@ -335,7 +335,7 @@ void exec_FQ(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 bool exec_key(int key)
 {
@@ -399,7 +399,7 @@ bool exec_key(int key)
 void exit_map(void)
 {
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     reset_map();
 
@@ -419,7 +419,7 @@ void exit_map(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void reset_map(void)
 {
@@ -439,7 +439,7 @@ static void reset_map(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void unmap_key(uint key)
 {

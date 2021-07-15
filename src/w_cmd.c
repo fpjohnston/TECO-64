@@ -148,7 +148,7 @@ void exec_W(struct cmd *cmd)
         return;
     }
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     if (!f.et.scope)                    // Scope mode allowed?
     {

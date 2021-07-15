@@ -28,7 +28,7 @@
 #include <ctype.h>
 #include <math.h>
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 #include <ncurses.h>
 
@@ -46,7 +46,7 @@
 
 #include "teco.h"
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 #include "ascii.h"
 #include "errcodes.h"
@@ -64,7 +64,7 @@
 
 static int botdot = 0;              ///< Value of FZ flag
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 #if     defined(LONG_64)
 
@@ -177,7 +177,7 @@ static void update_status(void);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 void check_escape(uint escape)
 {
@@ -197,7 +197,7 @@ void check_escape(uint escape)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 bool clear_eol(void)
 {
@@ -226,7 +226,7 @@ bool clear_eol(void)
 void clear_dpy(void)
 {
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     term_pos = 0;
 
@@ -253,7 +253,7 @@ void clear_dpy(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void error_dpy(void)
 {
@@ -273,7 +273,7 @@ static void error_dpy(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void exec_commands(const char *commands)
 {
@@ -318,7 +318,7 @@ static void exec_commands(const char *commands)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 void exit_dpy(void)
 {
@@ -335,7 +335,7 @@ void exit_dpy(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 int getchar_dpy(bool wait)
 
@@ -348,7 +348,7 @@ int getchar_dpy(bool unused)
 {
     int c = 0;                          // Ensure that high bits are clear
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     if (f.e0.display)
     {
@@ -410,7 +410,7 @@ int getchar_dpy(bool unused)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static int geteditsize(char *buf, ulong size, uint bytes)
 {
@@ -472,7 +472,7 @@ static int geteditsize(char *buf, ulong size, uint bytes)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 void init_dpy(void)
 {
@@ -515,7 +515,7 @@ void init_dpy(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void mark_cursor(int row, int col)
 {
@@ -565,7 +565,7 @@ static void mark_cursor(int row, int col)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void move_down(void)
 {
@@ -635,7 +635,7 @@ static void move_down(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void move_left(void)
 {
@@ -667,7 +667,7 @@ static void move_left(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void move_right(void)
 {
@@ -699,7 +699,7 @@ static void move_right(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void move_up(void)
 {
@@ -764,7 +764,7 @@ static void move_up(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static int print_ebuf(char *buf, int width, int nbytes, int c)
 {
@@ -809,7 +809,7 @@ static int print_ebuf(char *buf, int width, int nbytes, int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 bool putc_dpy(int c)
 {
@@ -839,7 +839,7 @@ bool putc_dpy(int c)
 int readkey_dpy(int key)
 {
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     if (!f.e0.display)
     {
@@ -970,7 +970,7 @@ int readkey_dpy(int key)
 void refresh_dpy(void)
 {
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     if (!f.e0.display || w.nlines == 0 || w.noscroll)
     {
@@ -1135,7 +1135,7 @@ void refresh_dpy(void)
 void reset_colors(void)
 {
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     if (can_change_color())             // Make colors as bright as possible
     {
@@ -1167,7 +1167,7 @@ void reset_colors(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 void reset_dpy(void)
 {
@@ -1189,7 +1189,7 @@ void reset_dpy(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 void resize_dpy(void)
 {
@@ -1264,7 +1264,7 @@ bool scan_FZ(struct cmd *unused)
 void set_nrows(void)
 {
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     d.nrows = w.height - w.nlines;
 
@@ -1287,7 +1287,7 @@ void set_nrows(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 void set_scroll(int height, int nlines)
 
@@ -1299,7 +1299,7 @@ void set_scroll(int unused1, int unused2)
 
 {
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     if (f.e0.display && w.nlines != 0 && !w.noscroll)
     {
@@ -1363,7 +1363,7 @@ void set_scroll(int unused1, int unused2)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
 static void update_status(void)
 {

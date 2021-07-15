@@ -88,7 +88,7 @@ static void rubout_line(void);
 static void exec_cancel(void)
 {
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     if (clear_eol())                    // Can we clear to end of line?
     {
@@ -216,7 +216,7 @@ static void exec_DEL(void)
 static void exec_inspect(int pos, int line)
 {
 
-#if     defined(TECO_DISPLAY)
+#if     defined(DISPLAY_MODE)
 
     if (clear_eol())                    // Can we clear to end of line?
     {
