@@ -36,6 +36,13 @@
 #include "qreg.h"
 
 
+#if     !defined(DEFAULT_U)
+
+#define DEFAULT_U       0           ///< Default argument for :U (if enabled)
+
+#endif
+
+
 ///
 ///  @brief    Execute "U" command: store number in Q-register.
 ///
@@ -47,16 +54,17 @@ void exec_U(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!cmd->n_set)                    // n argument?
+    if (cmd->n_set)                     // n argument?
     {
-        if (cmd->colon && f.e1.dflt_u)  // :Uq and default enabled?
-        {
-            cmd->n_arg = 0;             // Use 0 as default argument
-        }
-        else
-        {
-            throw(E_NAU);               // No argument before U
-        }
+        reject_colon(cmd);
+    }
+    else if (f.e1.colon_u && cmd->colon) // No n, but :Uq and colon allowed?
+    {
+        cmd->n_arg = DEFAULT_U;         // Yes, use default argument
+    }
+    else
+    {
+        throw(E_NAU);                   // No argument before U
     }
 
     store_qnum(cmd->qindex, cmd->n_arg);

@@ -232,6 +232,15 @@ endif
 
 # Always enable ESCape as dollar sign regardless of alternate delimiter
 
+# Change default for :U command
+
+ifdef   default_u
+
+CFLAGS  += -D DEFAULT_U=$(default_u)
+DOXYGEN +=    DEFAULT_U
+
+endif
+
 ifdef   dollar
 
 CFLAGS  += -D TECO_DOLLAR

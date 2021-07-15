@@ -63,15 +63,15 @@ union e1_flag
 
     struct
     {
-        uint xoper  : 1;        ///< Enable extended operators
-        uint text   : 1;        ///< Enable extended text strings
-        uint dollar : 1;        ///< $ is a valid symbol character
-        uint ubar   : 1;        ///< _ is a valid symbol character
-        uint new_ei : 1;        ///< Use new-style EI commands
-        uint bang   : 1;        ///< !! starts end-of-line comment
-        uint prompt : 1;        ///< Add CR/LF before prompt if needed
-        uint radix  : 1;        ///< Automatically determine number radix
-        uint dflt_u : 1;        ///< Use 0 as default U argument
+        uint xoper   : 1;       ///< Enable extended operators
+        uint text    : 1;       ///< Enable extended text strings
+        uint dollar  : 1;       ///< $ is a valid symbol character
+        uint ubar    : 1;       ///< _ is a valid symbol character
+        uint new_ei  : 1;       ///< Use new-style EI commands
+        uint bang    : 1;       ///< !! starts end-of-line comment
+        uint prompt  : 1;       ///< Add CR/LF before prompt if needed
+        uint radix   : 1;       ///< Automatically determine number radix
+        uint colon_u : 1;       ///< Allow :U (w/ default arg. of 0)
     };
 };
 
