@@ -76,7 +76,7 @@ void exec_D(struct cmd *cmd)
             throw(E_DTB);               // Delete too big
         }
 
-        push_x(TECO_FAILURE, X_OPERAND);
+        push_x(FAILURE, X_OPERAND);
 
         return;
     }
@@ -85,7 +85,7 @@ void exec_D(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(TECO_SUCCESS, X_OPERAND);
+        push_x(SUCCESS, X_OPERAND);
     }
 }
 

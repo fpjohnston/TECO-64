@@ -214,7 +214,7 @@ void exec_A(struct cmd *cmd)
     {
         bool success = append(cmd->n_set, cmd->n_arg, cmd->colon);
 
-        push_x(success ? TECO_SUCCESS : TECO_FAILURE, X_OPERAND);
+        push_x(success ? SUCCESS : FAILURE, X_OPERAND);
     }
     else if (!cmd->n_set)               // A command
     {

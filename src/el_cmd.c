@@ -75,10 +75,10 @@ void exec_EL(struct cmd *cmd)
 
     if (ofile == NULL)
     {
-        push_x(TECO_FAILURE, X_OPERAND);
+        push_x(FAILURE, X_OPERAND);
     }
     else if (cmd->colon)
     {
-        push_x(TECO_SUCCESS, X_OPERAND);
+        push_x(SUCCESS, X_OPERAND);
     }
 }

@@ -453,7 +453,7 @@ bool parse_flag1(struct cmd *cmd)
     switch (cmd->c1)
     {
         case CTRL_E:
-        push_x(f.ctrl_e ? TECO_SUCCESS : TECO_FAILURE, X_OPERAND);
+        push_x(f.ctrl_e ? SUCCESS : FAILURE, X_OPERAND);
 
             return true;
 
