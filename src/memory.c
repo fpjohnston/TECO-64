@@ -42,6 +42,8 @@
 
 #if     defined(MEMCHECK)
 
+#define plural(x) ((x) == 1) ? "" : "s" ///< Check for plural/non-plural no.
+
 ///  @struct mblock
 ///
 ///  This structure defines a block that is used in a doubly-linked list to
@@ -64,6 +66,10 @@ struct mblock
 static struct mblock *mroot = NULL;     ///< Root of memory block list
 
 static unsigned int msize = 0;          ///< Total memory allocated, in bytes
+
+static unsigned int nblocks = 0;        ///< No. of blocks currently allocated
+
+static unsigned int maxblocks = 0;      ///< High-water mark for allocated blocks
 
 // Local functions
 
@@ -105,6 +111,11 @@ static void add_mblock(void *p1, uint size)
     mblock->size = size;
     msize += size;
     mroot = mblock;
+
+    if (maxblocks < ++nblocks)
+    {
+        maxblocks = nblocks;
+    }
 }
 
 #endif
@@ -179,8 +190,11 @@ static void delete_mblock(void *p1)
 
             free(p);
 
+            --nblocks;
+
             return;
         }
+
         p = p->next;
     }
 
@@ -208,17 +222,24 @@ void exit_mem(void)
 
     free_mem(&eg_result);
 
+    tprint("%s(): maximum of %u allocated block%s\r\n", __func__,
+           maxblocks, plural(maxblocks));
+
     struct mblock *p = mroot;
     struct mblock *next;
 
     if (msize != 0)
     {
-        tprint("%%%u total bytes allocated at exit\r\n", msize);
+        tprint("%s(): not deallocated: %u total byte%s in %u block%s\r\n",
+               __func__, msize, plural(msize), nblocks, plural(nblocks));
     }
+
+    uint i = 0;
 
     while (p != NULL)
     {
-        tprint("%%%u bytes allocated at %p\r\n", p->size, p->addr);
+        tprint("%s(): allocation #%u at %p, %u byte%s\r\n", __func__, ++i,
+               p->addr, p->size, plural(p->size));
 
         next = p->next;
         msize -= p->size;
