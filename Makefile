@@ -38,11 +38,11 @@
 #  Build options:
 #
 #      buffer=gap  Use gap buffer for editing text. [default]
-#      debug=1     Enable debugging features.
 #      display=1   Enable display mode.
 #      gdb=1       Enable use of GDB debugger.
 #      gprof=1     Enable use of GPROF profiler.
 #      long=1      Use 64-bit integers.
+#      memcheck=1  Enable checks for memory leaks.
 #      ndebug=1    Disable run-time assertions.
 #      nostrict=1  Relax run-time syntax checking.
 #      paging=std  Use standard paging. [default]
@@ -282,10 +282,10 @@ NULL2 = >/dev/null 2>&1
 
 endif
 
-ifdef   memory
+ifdef   memcheck
 
-DEFINES += -D DEBUG_MEMORY
-DOXYGEN +=    DEBUG_MEMORY
+DEFINES += -D MEMCHECK
+DOXYGEN +=    MEMCHECK
 OPTIONS_DEBUG += -d
 
 endif
@@ -359,11 +359,11 @@ help:
 	@echo "Build options:"
 	@echo ""
 	@echo "    buffer=gap  Use gap buffer for editing text. [default]"
-	@echo "    debug=1     Enable debugging features."
 	@echo "    display=1   Enable display mode."
 	@echo "    gdb=1       Enable use of GDB debugger."
 	@echo "    gprof=1     Enable use of GPROF profiler."
 	@echo "    long=1      Use 64-bit integers."
+	@echo "    memcheck=1  Enable checks for memory leaks."
 	@echo "    ndebug=1    Disable run-time assertions."
 	@echo "    nostrict=1  Relax run-time syntax checking."
 	@echo "    paging=std  Use standard paging. [default]"

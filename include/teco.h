@@ -165,7 +165,7 @@ extern void exit_files(void);
 
 extern void exit_map(void);
 
-#if     defined(DEBUG_MEMORY)
+#if     defined(MEMCHECK)
 
 extern void exit_mem(void);
 
