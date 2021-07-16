@@ -65,8 +65,9 @@ static void unmap_key(uint key);
 ///
 ///  @brief    Execute CTRL/F command. This may take one of two forms:
 ///
-///            <CTRL_F><CTRL_F> - equivalent to <CTRL/F>0
-///            <CTRL_F><digit>
+///            <CTRL_F>x        - Execute command string for command string 'x';
+///                               'x' may range from '0' to '9'.
+///            <CTRL_F><CTRL_F> - Repeats last CTRL/F<digit>.
 ///
 ///  @returns  true if executed command, else false.
 ///
@@ -74,13 +75,15 @@ static void unmap_key(uint key);
 
 bool exec_ctrl_F(int c)
 {
-    assert(c == CTRL_F || isdigit(c));
-
-    int i = 0;                          // Index into CTRL/F array
+    static int i = 0;                   ///< Last index used
 
     if (isdigit(c))
     {
-        i = c - '0';
+        i = c - '0';                    // Set index and default
+    }
+    else
+    {
+        assert(c == CTRL_F);
     }
 
     if (ctrl_f_cmd[i] == NULL || *ctrl_f_cmd[i] == NUL)
