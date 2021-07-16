@@ -72,25 +72,3 @@ the same color.
 | F1green\`black\` | Set foreground and background colors for the command window to green and black, respectively. |
 | 70,80F2blue\`white\` | Set the foreground color for the edit window to blue, at 70% saturation, and set the background color to white, at 80% saturation. |
 | 60F3yellow\`red\` | Set the foreground color for the status line to yellow, at 60% saturation, and set the background color to red (at a default saturation of 100%). |
-
-### Mapping Commands
-
-If display support has been enabled, and the ED&32 flag bit is set, then
-it is possible to map function, cursor, and other special keys to command
-strings or Q-register macros, such that when those keys are subsequently
-input as immediate action commands, the associated command strings or
-macros are executed. It is not necessary that the macros or command strings
-be terminated with \<*delim*\>\<*delim*\>.
-
-| Command | Function |
-| ------- | -------- |
-| FM*key*\`*cmds*\` | Map *key* (e.g., F1, Home) to the command string *cmds*. |
-| :FM*key*\`*cmds*\` | Execute FM command, but return -1 if command succeeded and 0 if command failed (usually because of an invalid key). |
-| @FM/*key*// | Unmap *key*. Used to undo previous FM commands as well as previous FQ commands. The at sign form of this command is recommended, since the second text argument is omitted. |
-| @FM///      | Unmap all keys. The at sign form of this command is recommended, since both text arguments are omitted. |
-| FQ*q**key*\` | Map *key* to Q-register *q*. More than one key may be mapped to the same Q-register. |
-| :FM*key*\`*cmds*\` | Execute FM command, but return -1 if command succeeded and 0 if command failed (usually because of an invalid key). |
-| @FQ*q*// | Ignored. Use the FM command to unmap a key from a Q-register. |
-
-Take care when mapping a key to a local Q-register, since each macro level
-normally gets an entirely new set of local Q-registers when it is invoked.

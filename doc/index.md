@@ -186,6 +186,7 @@
 | *m*,*n*FC      | [Search and replace between *m* and *n*](search.md) |
 | *n*FC          | [Search and replace over *n* lines](search.md) |
 | *n*FD          | [Search and delete string](delete.md) |
+| FF             | (Reserved) |
 | FH             | [Equivalent to "F0,FZ"](variables.md) |
 | FK             | [Search and delete intervening text](delete.md) |
 | FL             | [Convert to lower case](misc.md) |

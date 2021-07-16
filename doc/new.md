@@ -48,6 +48,8 @@ being returned if the open succeeded, and 0 if it failed.
 [^E - Match control constructs](search.md)
 - Added ^E*nnn*.
 
+[^F - Reserved]
+
 [^K - Reset display colors](immediate.md)
 
 [^P - Current page number](variables.md) (TECO-10)
@@ -106,6 +108,8 @@ being returned if the open succeeded, and 0 if it failed.
 
 [EL - Open/close log file](file.md) (TECO-10)
 
+[EM - Echo macro in Q-register](misc.md)
+
 [EO - TECO version number](variables.md)
 - Updated version number of 200, and added minor and patch versions.
 
@@ -127,15 +131,17 @@ being returned if the open succeeded, and 0 if it failed.
 
 [FD - Search and delete](search.md) (TECO-10)
 
+[FF - Reserved]
+
 [FH - Equivalent to F0,FZ](variables.md) (TECO-10)
 
 [FK - Search and delete](search.md) (TECO-10)
 
 [FL - Lower case text](misc.md)
 
-[FM - Map keys to command strings](display.md)
+[FM - Map keycode to command string](keymap.md)
 
-[FQ - Map keys to Q-registers](display.md)
+[FQ - Map keycode to Q-register](keymap.md)
 
 [FU - Upper case text](misc.md)
 
@@ -160,6 +166,9 @@ being returned if the open succeeded, and 0 if it failed.
 
 [R - Move pointer backward](move.md)
 - Added colon modifier to return success/failure value. (TECO-10)
+
+[U - Load Q-register with numeric value](qregister.md)
+- Added colon modifier to allow for default value.
 
 [X - Load Q-register from edit buffer](qregister.md)
 - Added ability to delete text from Q-register.

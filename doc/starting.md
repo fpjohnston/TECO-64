@@ -105,6 +105,15 @@ TECO. If file does not exist, TECO will try opening *mungfile.tec*.
  - If *command* is a string in single or double quotes, then that is treated as
 a command string instead of a file name.
 
+-F, --formfeed
+ - Enables FF as a page delimiter.
+
+-f, --noformfeed
+ - Disables FF as a page delimiter.
+
+-H, --help
+ - Print help message.
+
 -I*initfile*, --initialize=*initfile*
  - Open *initfile* as an indirect command file (using the EI command). If file does
 not exist, TECO will try opening *initfile.tec*.
@@ -133,6 +142,9 @@ name of a file which contains the name of the last file edited.
 
 -m, --nomemory
  - Do not use TECO_MEMORY to find the name of the last edited file.
+
+-n, --nodefaults
+ - Disable all defaults (equivalent to -c -i -m -v).
 
 -O*baz*, --output=*baz*
  - Open specified file for input (using the ER command), and open *baz* for

@@ -101,6 +101,19 @@ language reference manual titled *Standard TECO Text Editor and
 Corrector for the VAX, PDP-11, PDP-10, and PDP-8*, published by
 Digital Equipment Corporation in May 1990.
 
+### Future Directions
+
+The following lists some of what has been considered for future versions of
+of TECO.
+
+- Support for compilers other than *gcc*.
+- Support for other operating systems, especially OpenVMS.
+- An alternative buffer handling module (such as one using a rope buffer).
+- An alternative paging module (to allow backward paging when no virtual memory
+is available).
+- Automated procedures for performing recursion testing.
+
 ### Contact Information
 
-Any questions or comments regarding TECO-64 may be sent to NowwithTreble@gmail.com.
+Any questions or comments, including bug reports and feature requests, may be
+sent to NowwithTreble@gmail.com.
