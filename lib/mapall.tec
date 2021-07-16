@@ -11,16 +11,17 @@
 !! specified key and then detects whether mapping succeeded or failed.
 
 @^U2/                               !! Load Q-register 2
+        . U3                        !! Save current position in Q-register 3
         @I\:@FM"\                   !! Insert start of FM command
         G1                          !! Add in name of key
         @I\":@^A'[\                 !! Insert start of ^A command
         G1                          !! Insert name of string
         @I\]'"\                     !! Insert end of ^A command
-        0,.X3                       !! Copy everything to Q-register 3
-        0,.D                        !! Delete what we added to edit buffer
-        M3 U3                       !! Execute macro and save result
+        Q3,. X4                     !! Copy everything to Q-register 4
+        Q3,. D                      !! Delete what we added to edit buffer
+        M4 U4                       !! Execute macro and save result
         Q0&1 "E                     !! Don't print results if bit 0 is set
-            Q3 "N                   !! Success or failure?
+            Q4 "N                   !! Success or failure?
                 %1                  !! Count another success
                 @^A"Mapped key ["   !! And announce it
             |   %2                  !! Count another failure
