@@ -316,6 +316,7 @@ static void init_teco(int argc, const char * const argv[])
 
 static void reset_teco(void)
 {
+    init_x();                           // Reinitialize expression stack
     reset_if();                         // Reset conditional stack
     reset_loop();                       // Reset loop stack
     reset_cbuf();                       // Reset the input buffer

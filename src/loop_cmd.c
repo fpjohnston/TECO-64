@@ -150,6 +150,8 @@ void exec_F_gt(struct cmd *cmd)
     assert(cmd != NULL);
 
     endloop(cmd, POP_OK);               // Flow to end of loop
+
+    init_x();                           // Reinitialize expression stack
 }
 
 
@@ -165,6 +167,8 @@ void exec_F_lt(struct cmd *cmd)
     assert(cmd != NULL);
 
     cbuf->pos = loop_head->start;       // Just restart the loop
+
+    init_x();                           // Reinitialize expression stack
 
     return;
 }
@@ -204,6 +208,8 @@ void exec_gt(struct cmd *cmd)
     {
         pop_loop(POP_OK);
     }
+
+    init_x();                           // Reinitialize expression stack
 }
 
 
@@ -228,6 +234,8 @@ void exec_lt(struct cmd *cmd)
     {
         push_loop(count);
     }
+
+    init_x();                           // Reinitialize expression stack
 }
 
 
@@ -267,6 +275,8 @@ void exec_semi(struct cmd *cmd)
     }
 
     endloop(cmd, POP_OK);
+
+    init_x();                           // Reinitialize expression stack
 }
 
 

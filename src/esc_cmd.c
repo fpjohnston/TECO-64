@@ -28,6 +28,7 @@
 
 #include "teco.h"
 #include "cbuf.h"
+#include "estack.h"
 #include "exec.h"
 
 
@@ -50,6 +51,8 @@ void exec_escape(struct cmd *cmd)
     {
         cbuf->pos = cbuf->len = 0;
     }
+
+    init_x();                           // Reinitialize expression stack
 }
 
 

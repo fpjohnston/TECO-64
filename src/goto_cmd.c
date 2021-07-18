@@ -191,6 +191,8 @@ static void find_tag(struct cmd *cmd, const char *tag)
         throw(E_TAG, tag2);             // Missing tag
     }
 
+    init_x();                           // Reinitialize expression stack
+
     cbuf->pos = (uint)tag_pos;          // Execute goto
 }
 

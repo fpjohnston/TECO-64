@@ -31,6 +31,7 @@
 #include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
+#include "estack.h"
 #include "exec.h"
 #include "term.h"
 
@@ -166,6 +167,8 @@ void exec_apos(struct cmd *cmd)
     }
 
     pop_if();
+
+    init_x();                           // Reinitialize expression stack
 }
 
 
@@ -179,6 +182,8 @@ void exec_apos(struct cmd *cmd)
 void exec_F_apos(struct cmd *cmd)
 {
     endif(cmd, NO_ELSE);                // Skip any else statement.
+
+    init_x();                           // Reinitialize expression stack
 }
 
 
@@ -192,6 +197,8 @@ void exec_F_apos(struct cmd *cmd)
 void exec_F_vbar(struct cmd *cmd)
 {
     endif(cmd, ELSE_OK);
+
+    init_x();                           // Reinitialize expression stack
 }
 
 
@@ -228,6 +235,8 @@ void exec_quote(struct cmd *cmd)
     {
         throw(E_NAQ);                   // No argument before "
     }
+
+    init_x();                           // Reinitialize expression stack
 
     int c = cmd->n_arg;
 
@@ -366,6 +375,8 @@ void exec_vbar(struct cmd *cmd)
     }
 
     endif(cmd, NO_ELSE);
+
+    init_x();                           // Reinitialize expression stack
 }
 
 
