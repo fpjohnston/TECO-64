@@ -1,6 +1,6 @@
-## TECO-64 - Conditional Commands
+## TECO-64 - If/Then/Else Commands
 
-All conditonal execution commands are of the form:
+All conditional execution commands are of the form:
 
 *n*"X command-string ’
 
@@ -54,6 +54,11 @@ which may, in turn, contain further conditional execution commands.
 | *n*"U   | Execute the following command string if *n* is unsuccessful. Equivalent to *n*"E. |
 | *n*"V   | Execute the following command string if *n* equals the ASCII code for a lower case alphabetic character (lower case A to Z). |
 | *n*"W   | Execute the following command string if *n* equals the ASCII code for an upper case alphabetic character (upper case A to Z). |
-| *n*"<   | Identical to *n*"L |
-| *n*">   | Identical to *n*"G |
-| *n*"=   | Identical to *n*"E |
+| *n*"<   | Identical to *n*"L. |
+| *n*">   | Identical to *n*"G. |
+| *n*"=   | Identical to *n*"E. |
+| ’ | This "command" is actually part of the syntax of TECO conditionals. It has no effect if "executed" other than to signify termination of the current conditional level. |
+| \| | Causes control to branch to the end of the conditional. Command execution resumes with the character following the ’ that ends the current conditional with the ELSE clause being skipped. |
+| F’ | Causes TECO to branch (flow) to the end of the current conditional. TECO effectively resumes execution at the first command following the ’ at the end of the current conditional. Numeric arguments are eaten up by this command. If this command is issued while not in a conditional, the ?MAP error (or its equivalent) is issued. |
+| F\| | Causes TECO to branch (flow) to the else clause of the current conditional. TECO effectively resumes execution at the first command following the |\ at the end of the current THEN clause. If the current conditional has no ELSE clause, or if an unmatched ’ is encountered before an unmatched \|,  then control resumes at the command following the ’ . Numeric arguments are eaten up by this command. If this command is issued while not in a conditional, the ?MAP error is issued. Well-structured programs should not need to use this command. |
+

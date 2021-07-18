@@ -79,6 +79,3 @@ command string with the FM command, or a Q-register with the FQ command.
 If all of these conditions have been met, then typing the key causes the
 the associated command string or Q-register macro to be immediately
 executed.
-
-If a special key is input which has no defined meaning, then TECO will signal
-the error by outputtng a CTRL/G to ring the terminal's bell.

@@ -75,11 +75,11 @@ enough to handle even complicated editing tasks.
 
 - [Search Commands](search.md)
 
-- [Conditional Commands](ifthen.md)
-
 - [Looping Commands](loops.md)
 
-- [Branching Commands](branching.md)
+- [If/Then/Else Commands](ifthen.md)
+
+- [GOTO Commands](goto.md)
 
 - [Q-Register Commands](qregister.md)
 

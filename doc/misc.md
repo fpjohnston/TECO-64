@@ -74,7 +74,14 @@ causes TECO to print all subsequent commands at the terminal as they are
 executed. Commands will be printed as they are executed until another question
 mark character is encountered or the command string terminates.
 
-#### EM Command
+### Aborting Execution
+
+| Command | Function |
+| ------- | -------- |
+| ^C | Causes command execution to stop and control return to TECO’s prompt. No clean-up of push-down lists, flag settings, etc. is done. This command lets a macro abort TECO’s command execution. |
+| ^C\<CTRL/C\> | Causes TECO to unconditionally abort and control exits from TECO. Control returns to the operating system. The second \<CTRL/C\> must be a true \<CTRL/C\> and may not be a Caret-C. |
+
+### EM Command
 
 | Command | Function |
 | ------- | -------- |

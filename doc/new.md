@@ -50,7 +50,7 @@ being returned if the open succeeded, and 0 if it failed.
 
 [^F - Reserved]
 
-[^K - Reset display colors](immediate.md)
+[^K - Reset display colors](action.md)
 
 [^P - Current page number](variables.md) (TECO-10)
 
@@ -70,7 +70,7 @@ being returned if the open succeeded, and 0 if it failed.
 [^X- Search mode flag](flags.md)
 - Flag may be set to 1, in addition to 0 and -1.
 
-[; - Branch out of current iteration](branching.md)
+[; - Branch out of current iteration](loops.md)
 - Allowed whitespace preceding semi-colon.
 
 [= - Print numeric value](typeout.md)
@@ -147,12 +147,12 @@ being returned if the open succeeded, and 0 if it failed.
 
 [FZ - Edit buffer position at end of window](variables.md) (TECO-10)
 
-[G+ - Results of last ::EG command](qregisters.md)
+[G+ - Results of last ::EG command](qregister.md)
 
 [I - Insert string](insert.md)
 - Added repeat count.
 
-[J - Jump to position](move.md)
+[J - Jump to position](dot.md)
 - Added colon modifier to return success/failure value. (TECO-10)
 
 [L - Line count](variables.md)
@@ -164,7 +164,7 @@ being returned if the open succeeded, and 0 if it failed.
 [P - Write page to file](page.md)
 - Allowed backwards paging if virtual memory code included. (TECO-32)
 
-[R - Move pointer backward](move.md)
+[R - Move pointer backward](dot.md)
 - Added colon modifier to return success/failure value. (TECO-10)
 
 [U - Load Q-register with numeric value](qregister.md)
