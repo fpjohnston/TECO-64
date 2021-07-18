@@ -166,7 +166,14 @@ void exec_F_lt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    cbuf->pos = loop_head->start;       // Just restart the loop
+    if (loop_depth == 0)                // Outside of loop?
+    {
+        cbuf->pos = 0;                  // Yes, reset to start of command
+    }
+    else
+    {
+        cbuf->pos = loop_head->start;   // Just restart the loop
+    }
 
     init_x();                           // Reinitialize expression stack
 
