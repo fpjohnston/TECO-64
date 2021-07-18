@@ -1,5 +1,13 @@
 ## TECO-64 - Miscellaneous Commands
 
+### Ignored and Convenience Commands
+
+| Command | Function |
+| ------- | -------- |
+| \<NUL\> | Null characters in command strings will be ignored. Numeric values are not affected. |
+| \<ESC\> | An ESCape that is executed as a TECO command (as distinct from an immediate action command or an ESCape that is part of the syntax of some other TECO command) is ignored by TECO. However, any pending numeric values are discarded. This command is useful for discarding the value returned from a command (such as n%q or m,n:W) when you don’t want that value to affect execution of the following command. |
+| ^[ | Same as \<ESC\>. Like any other TECO command that is a control character, ESCape may be entered in up-arrow mode. |
+
 ### Comments
 
 One of the most powerful features of TECO is its ability to store very long
@@ -41,7 +49,7 @@ delimiter:
 A numeric value that occurs before a comment or tag will be passed
 through to the next command, much like the [ and ] commands.
 
-### Messages
+### Printing Messages
 
 The \<CTRL/A\> command may be used to print out a statement at any point
 during the execution of a command string. The \<CTRL/A\> command has the
@@ -67,21 +75,14 @@ command whose numeric argument contains ^T or ^F characters. The message
 may contain instructions notifying the user as to what sort of input is
 required.
 
-### Tracing
+### Tracing Commands
 
 A question mark (?) entered betweeen any two commands in a command string
 causes TECO to print all subsequent commands at the terminal as they are
 executed. Commands will be printed as they are executed until another question
 mark character is encountered or the command string terminates.
 
-### Aborting Execution
-
-| Command | Function |
-| ------- | -------- |
-| ^C | Causes command execution to stop and control return to TECO’s prompt. No clean-up of push-down lists, flag settings, etc. is done. This command lets a macro abort TECO’s command execution. |
-| ^C\<CTRL/C\> | Causes TECO to unconditionally abort and control exits from TECO. Control returns to the operating system. The second \<CTRL/C\> must be a true \<CTRL/C\> and may not be a Caret-C. |
-
-### EM Command
+### Squishing Command Strings
 
 | Command | Function |
 | ------- | -------- |
@@ -100,14 +101,6 @@ These bits may be OR'd together. If *n* is -1, this is equivalent to setting all
 The *squish.tec* indirect command file may be used to squish macros, as in the following example, in which the *n* argument is set by the -A command-line option:
 
     teco -E squish -B macro.tec -A -1 -X >newmacro.tec
-
-### Convenience Characters
-
-| Command | Function |
-| ------- | -------- |
-| \<NUL\> | Null characters in command strings will be ignored. Numeric values are not affected. |
-| \<ESC\> | An ESCape that is executed as a TECO command (as distinct from an immediate action command or an ESCape that is part of the syntax of some other TECO command) is ignored by TECO. However, any pending numeric values are discarded. This command is useful for discarding the value returned from a command (such as n%q or m,n:W) when you don’t want that value to affect execution of the following command. |
-| ^[ | Same as \<ESC\>. Like any other TECO command that is a control character, ESCape may be entered in up-arrow mode. |
 
 ### Memory Commands
 
@@ -137,4 +130,12 @@ The *squish.tec* indirect command file may be used to squish macros, as in the f
 | ^O | \<CTRL/O\> causes all subsequent numeric input to be accepted as octal numbers. Numeric conversions using the \\ or *n*\\ commands will also be octal. The digits 8 and 9 become invalid as numeric characters. The octal radix will continue to be used until the next ^D command is executed or until TECO’s radix is changed by an *n*^R command. |
 | ^D | \<CTRL/D\> causes all subsequent numeric input to be accepted as decimal numbers. This is the initial setting. |
 | *n*^R | This command sets TECO’s radix to the value of *n*. *n* may only be 8, 10, or 16 (representing octal mode, decimal mode, or hexadecimal mode). If *n* is not one of these values, TECO’s radix remains unchanged and the ?IRA error message is issued. |
+
+### Aborting Execution
+
+| Command | Function |
+| ------- | -------- |
+| ^C | Causes command execution to stop and control return to TECO’s prompt. No clean-up of push-down lists, flag settings, etc. is done. This command lets a macro abort TECO’s command execution. |
+| ^C\<CTRL/C\> | Causes TECO to unconditionally abort and control exits from TECO. Control returns to the operating system. The second \<CTRL/C\> must be a true \<CTRL/C\> and may not be a Caret-C. |
+
 
