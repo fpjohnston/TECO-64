@@ -32,21 +32,6 @@
 #include <sys/types.h>          //lint !e451 !e537
 
 
-#define EDITBUF_INIT    (64 * 1024)     ///< Edit buffer is initially 64 KB
-
-#if     defined(PAGE_VM)
-
-#define EDITBUF_MAX     0               ///< No maximum edit buffer
-
-#else
-
-#define EDITBUF_MAX     (1024 * 1024)   ///< Maximum edit buffer is 1 MB
-
-#endif
-
-#define EDITBUF_STEP    25              ///< Increase edit buffer by 25%
-
-#define EDITBUF_WARN    95              ///< Warn when edit buffer is 95% full
 
 /// @brief  Return status when inserting characters in buffer.
 
@@ -92,7 +77,7 @@ extern int add_ebuf(int c);
 
 //  Delete nbytes at dot. Argument can be positive or negative.
 
-extern void delete_ebuf(int n);
+extern void delete_ebuf(int_t nbytes);
 
 // Get ASCII value of character in buffer at position relative to dot.
 //
@@ -105,40 +90,33 @@ extern void delete_ebuf(int n);
 // Returns: character found, or EOF (-1) if attempt was made to go beyond the
 //          beginning or end of buffer.
 
-extern int getchar_ebuf(int_t n);
+extern int getchar_ebuf(int_t relpos);
 
 //  Get the number of chars between current dot and nth line terminator.
 
-extern int getdelta_ebuf(int_t n);
+extern int_t getdelta_ebuf(int_t nlines);
 
 //  Get the number of lines between current dot and start/end of edit buffer.
 
-extern int getlines_ebuf(int_t n);
+extern int_t getlines_ebuf(int_t relpos);
 
-//
+//  Get the size of the edit buffer.
+
+#if     defined(PAGE_VM)
+
+extern uint_t getsize_ebuf(void);
+
+#endif
+
 //  Initialize buffer.
-//
-//  minsize -  Initial and minimum size of buffer, in bytes.
-//
-//  maxsize -  Maximum size of buffer, in bytes.
-//
-//  stepsize - No. of bytes to increment buffer when warning level encountered.
-//             If 0, buffer is never increased.
-//
-//  warn     - The percentage (0-100%) of how full the buffer can be before
-//             trying to increase its size.
-//
 
-extern void init_ebuf(int minsize, int maxsize, int stepsize, int warn);
+extern void init_ebuf(void);
 
 //  Delete all of the text in the edit buffer.
 
 extern void kill_ebuf(void);
 
-// Replace ASCII value of character in buffer at position relative to dot.
-//
-// Returns: original character, or EOF (-1) if attempt was made to go beyond
-//          the beginning or end of buffer.
+// Set buffer position (a.k.a. 'dot').
 
 extern int putchar_ebuf(int n, int c);
 
@@ -146,8 +124,8 @@ extern int putchar_ebuf(int n, int c);
 
 extern void setpos_ebuf(int n);
 
-// Set maximum memory size, in K bytes.
+// Set maximum memory size.
 
-extern int setsize_ebuf(int n);
+extern void setsize_ebuf(uint_t nbytes);
 
 #endif  // !defined(_EDITBUF_H)

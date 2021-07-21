@@ -139,8 +139,5 @@ void exec_K(struct cmd *cmd)
         n = getdelta_ebuf(n);
     }
 
-    if (n != 0)
-    {
-        delete_ebuf(n);
-    }
+    delete_ebuf(n);
 }

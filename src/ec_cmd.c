@@ -81,13 +81,8 @@ void exec_EC(struct cmd *cmd)
     {
         close_files();
     }
-    else if (cmd->n_arg >= 0)           // nEC?
+    else                                // nEC - set size of edit buffer
     {
-        if (cmd->n_arg == 0)            // Set minimum size?
-        {
-            cmd->n_arg = 1;             // Yes, so use 1K
-        }
-
-        (void)setsize_ebuf(cmd->n_arg);
+        setsize_ebuf((uint_t)cmd->n_arg);
     }
 }

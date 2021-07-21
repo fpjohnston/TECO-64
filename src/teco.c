@@ -296,8 +296,7 @@ static void init_teco(int argc, const char * const argv[])
 
     init_tbuf();                        // Initialize terminal buffer
     init_cbuf();                        // Initialize command buffer
-    init_ebuf(EDITBUF_INIT, EDITBUF_MAX, EDITBUF_STEP, EDITBUF_WARN);
-                                        // Initialize edit buffer
+    init_ebuf();                        // Initialize edit buffer
     init_qreg();                        // Initialize Q-registers
 
     // Change terminal characteristics and set signal handlers.

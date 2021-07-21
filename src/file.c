@@ -400,15 +400,10 @@ struct ifile *open_input(char *name, uint stream, bool colon)
 #if     defined(PAGE_VM)
 
     // If using virtual paging, then we can try to read in the entire file.
-    // So set the size of the edit buffer to 110% of the file size (to allow
-    // room for likely modifications). Note that if this new size is less
-    // than the minimum size of the edit buffer, we don't change anything.
 
-    int newsize = (file_stat.st_size * 110) / 100;
-
-    if (newsize > EDITBUF_INIT)
+    if (file_stat.st_size > getsize_ebuf())
     {
-        (void)setsize_ebuf(newsize / 1024);
+        setsize_ebuf(file_stat.st_size);
     }
 
 #endif

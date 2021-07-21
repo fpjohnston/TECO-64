@@ -38,16 +38,63 @@
 #include "term.h"
 
 
+#if     defined(LONG_64)
+
+#define KB  (1024uL)                ///< No. of bytes in a kilobyte
+
+#else
+
+#define KB  (1024u)                 ///< No. of bytes in a kilobyte
+
+#endif
+
+#define MB  (KB * KB)               ///< No. of bytes in a megabyte
+#define GB  (MB * KB)               ///< No. of bytes in a gigabyte
+
+#define ROUND_K(x) (((((uint_t)x) + KB - 1) / KB) * KB) ///< Round up to K boundary
+
+
+#if     !defined(EDIT_MAX)
+#if     defined(PAGE_VM)
+#if     defined(LONG_64)
+
+#define EDIT_MAX    (GB * 8)        ///< Maximum size is 8 GB (w/ VM)
+
+#else
+
+#define EDIT_MAX    (GB)            ///< Maximum size is 1 GB (w/ VM)
+
+#endif
+
+#else
+
+#define EDIT_MAX    (MB)            ///< Maximum size is 1 MB (w/o VM)
+
+#endif
+#endif
+
+#if     !defined(EDIT_MIN)
+#if     defined(PAGE_VM)
+
+#define EDIT_MIN    (KB * 64)       ///< Minimum size is 64 KB (w/ VM)
+
+#else
+
+#define EDIT_MIN    (KB * 8)        ///< Minimum size is 8 KB (w/o VM)
+
+#endif
+#endif
+
 ///  @var    t
 ///
 ///  @brief  Edit buffer (external)
 
 struct edit t =
 {
-    .B        = 0,
-    .Z        = 0,
-    .dot      = 0,
-    .size     = 0,
+    .B    = 0,
+    .Z    = 0,
+    .dot  = 0,
+    .size = 0,
 };
 
 ///  @var     eb
@@ -57,27 +104,21 @@ struct edit t =
 static struct
 {
     uchar *buf;                 ///< Start of buffer
-    int size;                   ///< Current size of buffer, in bytes
-    int minsize;                ///< Initial and minimum size, in bytes
-    int maxsize;                ///< Maximum size, in bytes
-    int stepsize;               ///< How much to increment size (percent)
-    int lowsize;                ///< Low water mark for gap
-    int warn;                   ///< Warning threshold (0-100%)
-    int left;                   ///< No. of bytes before gap
-    int gap;                    ///< No. of bytes in gap
-    int right;                  ///< No. of bytes after gap
+    const uint_t min;           ///< Minimum buffer size (fixed)
+    const uint_t max;           ///< Maximum buffer size (fixed)
+    uint_t size;                ///< Current size of buffer, in bytes
+    uint_t left;                ///< No. of bytes before gap
+    uint_t right;               ///< No. of bytes after gap
+    uint_t gap;                 ///< No. of bytes in gap
 } eb =
 {
-    .buf      = NULL,
-    .size     = 0,
-    .minsize  = 0,
-    .maxsize  = 0,
-    .stepsize = 0,
-    .lowsize  = 0,
-    .warn     = 100,
-    .left     = 0,
-    .gap      = 0,
-    .right    = 0,
+    .buf   = NULL,
+    .min   = EDIT_MIN,
+    .max   = EDIT_MAX,
+    .size  = EDIT_MIN,
+    .left  = 0,
+    .right = 0,
+    .gap   = EDIT_MIN,
 };
 
 #if     defined(DISPLAY_MODE)
@@ -90,17 +131,13 @@ bool ebuf_changed = false;      ///< true if edit buffer modified
 
 // Local functions
 
-static bool expand_ebuf(void);
+static int_t last_delim(uint_t nlines);
 
-static int last_delim(int nlines);
+static int_t next_delim(uint_t nlines);
 
-static int next_delim(int nlines);
+static void shift_left(uint_t nbytes);
 
-static void print_size(int newsize, int oldsize);
-
-static void shift_left(int nbytes);
-
-static void shift_right(int nbytes);
+static void shift_right(uint_t nbytes);
 
 
 ///
@@ -119,16 +156,19 @@ int add_ebuf(int c)
         return EDIT_ERROR;              // Buffer is already full
     }
 
-    if (t.dot < eb.left)
+    if ((uint_t)t.dot < eb.left)
     {
-        shift_right(eb.left - t.dot);
+        shift_right(eb.left - (uint_t)t.dot);
     }
-    else if (t.dot > eb.left)
+    else if ((uint_t)t.dot > eb.left)
     {
-        shift_left(t.dot - eb.left);
+        shift_left((uint_t)t.dot - eb.left);
     }
 
     eb.buf[eb.left++] = (uchar)c;
+
+    // If we have no data in buffer, then we're on page 0, but
+    // as soon as we add a character, then we're on page 1.
 
     if (page_count == 0)
     {
@@ -144,20 +184,23 @@ int add_ebuf(int c)
 
     ++t.dot;
     ++t.Z;
-    --eb.gap;
 
-    if (eb.gap <= eb.lowsize)           // Below low water mark?
+    if (--eb.gap < KB)                  // Less than 1 KB of buffer?
     {
-        if (!expand_ebuf())             // Try to make buffer bigger
+        if (eb.size < eb.max)           // Yes, can we increase size?
         {
-            if (eb.gap == 0)
-            {
-                return EDIT_FULL;       // Buffer just filled up
-            }
-            else
-            {
-                return EDIT_WARN;       // Buffer is getting full
-            }
+            uint_t newsize = eb.size + (eb.size / 4);
+
+            setsize_ebuf(newsize);      // Try to make buffer bigger
+        }
+
+        if (eb.gap == 0)
+        {
+            return EDIT_FULL;           // Buffer just filled up
+        }
+        else if (eb.gap < KB)           // Unable to increase size?
+        {
+            return EDIT_WARN;           // Buffer is getting full
         }
     }
 
@@ -172,49 +215,54 @@ int add_ebuf(int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void delete_ebuf(int n)
+void delete_ebuf(int_t nbytes)
 {
-    if (t.dot == 0 && n == eb.left + eb.right)
+    if (nbytes == 0)
     {
-        eb.left = eb.right = 0;
+        return;
+    }
+
+    if (t.dot == 0 && nbytes == t.Z)    // Special case for HK command
+    {
+        eb.left = eb.right = t.Z = 0;
+        eb.gap = eb.size;
     }
     else
     {
-        if (t.dot < eb.left)
+        // Buffer is: [left][gap][right], with dot somewhere in [left] or
+        // [right]. We shift things so that dot ends up immediately preceding
+        // [gap]. Then any positive deletion is at the beginning of [right],
+        // and any negative deletion is at the end of [left], which makes it
+        // easy to do any required deletion.
+
+        if ((uint_t)t.dot < eb.left)
         {
-            shift_right(eb.left - t.dot);
+            shift_right(eb.left - (uint_t)t.dot);
         }
-        else if (t.dot > eb.left)
+        else if ((uint_t)t.dot > eb.left)
         {
-            shift_left(t.dot - eb.left);
+            shift_left((uint_t)t.dot - eb.left);
         }
 
-        if (n < 0)
+        if (nbytes < 0)                 // Deleting backwards in [left]
         {
-            n = -n;
+            nbytes = -nbytes;
 
-            if (n > eb.left)
-            {
-                return;
-            }
+            assert((uint_t)nbytes <= eb.left);
 
-            eb.left -= n;
-            t.dot -= n;
+            eb.left -= (uint_t)nbytes;
+            t.dot   -= nbytes;          // Backwards delete affects dot
         }
-        else if (n > 0)
+        else                            // Deleting forward in [right]
         {
-            if (n > eb.right)
-            {
-                return;
-            }
+            assert((uint_t)nbytes <= eb.right);
 
-            eb.right -= n;
+            eb.right -= (uint_t)nbytes;
         }
+
+        eb.gap += (uint_t)nbytes;       // Increase the gap
+        t.Z    -= nbytes;               //  and decrease the total
     }
-
-    eb.gap += n;
-
-    t.Z = eb.left + eb.right;
 
 #if     defined(DISPLAY_MODE)
 
@@ -236,73 +284,6 @@ void delete_ebuf(int n)
 void exit_ebuf(void)
 {
     free_mem(&eb.buf);
-
-    t.B         = 0;
-    t.Z         = 0;
-    t.dot       = 0;
-    t.size      = 0;
-
-    eb.size     = 0;
-    eb.minsize  = 0;
-    eb.maxsize  = 0;
-    eb.stepsize = 0;
-    eb.lowsize  = 0;
-    eb.warn     = 0;
-    eb.left     = 0;
-    eb.gap      = 0;
-    eb.right    = 0;
-}
-
-
-///
-///  @brief    Expand edit buffer.
-///
-///  @returns  true if able to expand, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static bool expand_ebuf(void)
-{
-    if (eb.stepsize == 0 || (eb.maxsize != 0 && eb.size >= eb.maxsize))
-    {
-        return false;
-    }
-
-    // Buffer: [left][gap][right]
-
-    shift_left(eb.right);
-
-    // Buffer: [left + right][gap]
-
-    int addsize = (eb.size * eb.stepsize) / 100;
-    int oldsize = eb.size;
-
-    eb.size += addsize;
-    
-    if (eb.maxsize != 0 && eb.size > eb.maxsize)
-    {
-        addsize = eb.maxsize - oldsize;
-        eb.size = eb.maxsize;
-    }
-
-    if (eb.size == oldsize)
-    {
-        return false;
-    }
-
-    eb.buf     = expand_mem(eb.buf, (uint)oldsize, (uint)eb.size);
-    t.size     = eb.size;
-    eb.lowsize = eb.size - ((eb.size * eb.warn) / 100);
-
-    shift_right(eb.right);
-
-    // Buffer: [left][gap][right]
-
-    eb.gap += addsize;
-
-    print_size(oldsize, eb.size);
-
-    return true;
 }
 
 
@@ -315,16 +296,18 @@ static bool expand_ebuf(void)
 
 int getchar_ebuf(int_t n)
 {
-    int_t pos = t.dot + n;
+    uint_t pos = (uint_t)(t.dot + n);
 
-    if (pos >= 0 && pos < eb.left + eb.right)
+    if (pos < eb.left + eb.right)
     {
+        uint_t i = pos;
+
         if (pos >= eb.left)
         {
-            pos += eb.gap;
+            i += eb.gap;
         }
 
-        return eb.buf[pos];
+        return eb.buf[i];
     }
 
     return EOF;
@@ -338,17 +321,16 @@ int getchar_ebuf(int_t n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int getdelta_ebuf(int_t n)
+int_t getdelta_ebuf(int_t n)
 {
     if (n > 0)
     {
-        return next_delim(n) - t.dot;
+        return next_delim((uint)n) - t.dot;
     }
     else
     {
-        return last_delim(-n) - t.dot;
+        return last_delim((uint)-n)- t.dot;
     }
-
 }
 
 
@@ -359,13 +341,24 @@ int getdelta_ebuf(int_t n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int getlines_ebuf(int_t n)
+int_t getlines_ebuf(int_t n)
 {
-    int start = (n > 0) ? 0 : -t.dot;
-    int end   = (n < 0) ? 0 :  eb.left + eb.right;
-    int nlines = 0;
+    int_t start;
+    int_t end;
+    int_t nlines = 0;
 
-    for (int pos = start; pos < end; ++pos)
+    if (n < 0)
+    {
+        start = -(int_t)t.dot;
+        end = 0;
+    }
+    else
+    {
+        start = 0;
+        end = (int_t)(eb.left + eb.right);
+    }
+
+    for (int_t pos = start; pos < end; ++pos)
     {
         int c = getchar_ebuf(pos);
 
@@ -380,39 +373,36 @@ int getlines_ebuf(int_t n)
 
 
 ///
-///  @brief    Initialize edit buffer.
+///  @brief    Get size of edit buffer.
+///
+///  @returns  Size of edit buffer, in bytes.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(PAGE_VM)
+
+uint_t getsize_ebuf(void)
+{
+    return eb.size;
+}
+
+#endif
+
+
+///
+///  @brief    Initialize edit buffer. All that we need to do here is allocate
+///            the memory for the buffer, since the rest of the initialization
+///            for the 'eb' and 't' structures is done statically, above.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_ebuf(
-    int minsize,                        ///< Initial and min. size of buffer
-    int maxsize,                        ///< Maximum size of buffer, in bytes
-    int stepsize,                       ///< Incremental increase, in bytes
-    int warn)                           ///< Warning threshold (0-100)
+void init_ebuf(void)
 {
-    assert(eb.buf == NULL);             // Error if no edit buffer
+    assert(eb.buf == NULL);             // Double initialization is an error
 
-    if (warn > 100)                     // Buffer can't be more than 100% full
-    {
-        warn = 100;
-    }
-
-    t.Z         = 0;
-    t.dot       = 0;
-
-    eb.size     = minsize;
-    t.size      = eb.size;
-    eb.minsize  = minsize;
-    eb.maxsize  = maxsize;
-    eb.stepsize = stepsize;
-    eb.lowsize  = minsize - ((minsize * warn) / 100);
-    eb.buf      = alloc_mem((uint)eb.size);
-    eb.warn     = warn;
-    eb.left     = 0;
-    eb.gap      = minsize;
-    eb.right    = 0;
+    eb.buf = alloc_mem(eb.size);
 }
 
 
@@ -433,43 +423,26 @@ void kill_ebuf(void)
 ///
 ///  @brief    Scan backward n lines in edit buffer.
 ///
-///  @returns  Position following line terminator.
+///  @returns  Position following line terminator (relative to dot).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int last_delim(int nlines)
+static int_t last_delim(uint_t nlines)
 {
-    int c;
-    int pos = t.dot;
-
-    if (pos-- == 0)
+    for (int_t pos = t.dot; pos-- > 0; )
     {
-        return 0;
-    }
+        int_t i = pos;
 
-    for (;;)
-    {
-        int i = pos;
-
-        if (pos >= eb.left)
+        if ((uint_t)pos >= eb.left)     // Is position on right side of gap?
         {
-            i += eb.gap;
+            i += (int_t)eb.gap;         // Yes, so add bias
         }
 
-        c = eb.buf[i];
+        int c = eb.buf[i];
 
         if (isdelim(c) && nlines-- == 0)
         {
             return ++pos;
-        }
-
-        if (pos > 0)
-        {
-            --pos;
-        }
-        else
-        {
-            break;
         }
     }
 
@@ -483,19 +456,19 @@ static int last_delim(int nlines)
 ///
 ///  @brief    Scan forward nlines in edit buffer.
 ///
-///  @returns  Position including line terminator.
+///  @returns  Position following line terminator (relative to dot).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int next_delim(int nlines)
+static int_t next_delim(uint_t nlines)
 {
-    for (int pos = t.dot; pos < eb.left + eb.right; ++pos)
+    for (int_t pos = t.dot; pos < t.Z; ++pos)
     {
-        int i = pos;
+        int_t i = pos;
 
-        if (pos >= eb.left)
+        if ((uint_t)pos >= eb.left)     // Is position on right side of gap?
         {
-            i += eb.gap;
+            i += (int_t)eb.gap;         // Yes, so add bias
         }
 
         int c = eb.buf[i];
@@ -506,49 +479,7 @@ static int next_delim(int nlines)
         }
     }
 
-    return eb.left + eb.right;
-}
-
-
-///
-///  @brief    Print buffer size.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void print_size(int oldsize, int newsize)
-{
-    if (f.e0.display || f.et.abort)     // Display mode on or abort bit set?
-    {
-        return;                         // Yes, don't print messages then
-    }
-
-    const char *type = "";
-
-    if (newsize > 1024)
-    {
-        newsize /= 1024;
-        oldsize /= 1024;
-
-        if (newsize >= 1024)
-        {
-            newsize /= 1024;
-            oldsize /= 1024;
-
-            type = "M";
-        }
-        else
-        {
-            type = "K";
-        }
-    }
-
-    if (newsize != oldsize)
-    {
-        tprint("[%d%s bytes]", newsize, type);
-        type_out(LF);
-    }
+    return t.Z;
 }
 
 
@@ -561,11 +492,11 @@ static void print_size(int oldsize, int newsize)
 
 int putchar_ebuf(int n, int c)
 {
-    int pos = t.dot + n;
+    uint_t pos = (uint_t)(t.dot + n);
 
     if (pos < eb.left + eb.right)
     {
-        int i = pos;
+        uint_t i = pos;
 
         if (pos >= eb.left)
         {
@@ -596,11 +527,11 @@ int putchar_ebuf(int n, int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void setpos_ebuf(int n)
+void setpos_ebuf(int pos)
 {
-    if (n <= eb.left + eb.right)
+    if ((uint_t)pos < eb.left + eb.right)
     {
-        t.dot = n;
+        t.dot = pos;
 
 #if     defined(DISPLAY_MODE)
 
@@ -614,63 +545,70 @@ void setpos_ebuf(int n)
 
 
 ///
-///  @brief    Set memory size.
+///  @brief    Set memory size for edit buffer.
 ///
-///  @returns  New memory size (may be unchanged).
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int setsize_ebuf(int n)
+void setsize_ebuf(uint_t newsize)
 {
-    n *= 1024;                          // Make it K bytes
-
-    int minsize = ((eb.left + eb.right) * 110) / 100;
-
-    if (n < minsize)
+    if (newsize < eb.min)               // Ensure a minimum size for buffer.
     {
-        if ((n = minsize) == eb.size)
-        {
-            return eb.size;
-        }
+        newsize = eb.min;
     }
-    else if (eb.maxsize != 0 && n > eb.maxsize)
+    else if ((int_t)newsize < 0 || newsize > eb.max)
     {
-        if ((n = eb.maxsize) == eb.size)
-        {
-            return eb.size;
-        }
+        newsize = eb.max;
+    }
+    else
+    {        
+        newsize = ROUND_K(newsize);     // Round up to next higher K boundary
     }
 
-    if (n == eb.size)
+    // Nothing to do if no change, or requested size is smaller than what's
+    // in the edit buffer.
+
+    if (newsize == eb.size || newsize <= eb.left + eb.right)
     {
-        return eb.size;
+        return;
     }
+
+    // We need to temporarily remove the gap before changing buffer size.
 
     shift_left(eb.right);               // Remove the gap
 
-    if (n < eb.size)
+    if (newsize < eb.size)
     {
-        eb.buf = shrink_mem(eb.buf, (uint)eb.size, (uint)n);
+        eb.buf = shrink_mem(eb.buf, eb.size, newsize);
     }
     else
     {
-        eb.buf = expand_mem(eb.buf, (uint)eb.size, (uint)n);
+        eb.buf = expand_mem(eb.buf, eb.size, newsize);
     }
 
     shift_right(eb.right);              // Restore the gap
 
-    t.dot  = 0;
-    t.size = n;
+    eb.size = newsize;
+    eb.gap  = eb.size - (eb.left + eb.right);
 
-    int oldsize = eb.size;
+    if (f.e0.display || f.et.abort)     // Display mode on or abort bit set?
+    {
+        return;                         // Yes, don't print messages then
+    }
 
-    eb.size    = n;
-    eb.lowsize = eb.size - ((eb.size * eb.warn) / 100);
-    eb.gap     = eb.size - (eb.left + eb.right);
-
-    print_size(oldsize, eb.size);
-
-    return eb.size;
+    if (newsize >= GB)
+    {
+        tprint("[%uG bytes]\r\n", newsize / GB);
+    }
+    else if (newsize >= MB)
+    {
+        tprint("[%uM bytes]\r\n", newsize / MB);
+    }
+    else
+    {
+        tprint("[%uK bytes]\r\n", newsize / KB);
+    }
 }
 
 
@@ -681,7 +619,7 @@ int setsize_ebuf(int n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void shift_left(int nbytes)
+static void shift_left(uint_t nbytes)
 {
     uchar *src = eb.buf + eb.size - eb.right;
     uchar *dst = eb.buf + eb.left;
@@ -689,7 +627,7 @@ static void shift_left(int nbytes)
     eb.left  += nbytes;
     eb.right -= nbytes;
 
-    memmove(dst, src, (size_t)(uint)nbytes);
+    memmove(dst, src, (size_t)nbytes);
 }
 
 
@@ -700,7 +638,7 @@ static void shift_left(int nbytes)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void shift_right(int nbytes)
+static void shift_right(uint_t nbytes)
 {
     eb.left  -= nbytes;
     eb.right += nbytes;
@@ -708,5 +646,5 @@ static void shift_right(int nbytes)
     uchar *src = eb.buf + eb.left;
     uchar *dst = eb.buf + eb.size - eb.right;
 
-    memmove(dst, src, (size_t)(uint)nbytes);
+    memmove(dst, src, (size_t)nbytes);
 }

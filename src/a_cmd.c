@@ -192,6 +192,9 @@ bool append_line(void)
                 }
 
                 return false;
+
+            case EDIT_ERROR:
+                break;
         }
     }
 

@@ -47,10 +47,12 @@
 #if     defined(LONG_64)
 
 typedef long int_t;               ///< Size of m and n arguments
+typedef size_t uint_t;            ///< Use largest possible unsigned int
 
 #else
 
 typedef int int_t;                ///< Size of m and n arguments
+typedef unsigned int uint_t;      ///< Use regular unsigned int
 
 #endif
 
