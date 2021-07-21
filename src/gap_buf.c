@@ -381,7 +381,7 @@ int_t getlines_ebuf(int_t n)
 
 #if     defined(PAGE_VM)
 
-uint_t getsize_ebuf(void)
+int_t getsize_ebuf(void)
 {
     return eb.size;
 }

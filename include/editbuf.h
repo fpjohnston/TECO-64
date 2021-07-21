@@ -104,7 +104,7 @@ extern int_t getlines_ebuf(int_t relpos);
 
 #if     defined(PAGE_VM)
 
-extern uint_t getsize_ebuf(void);
+extern int_t getsize_ebuf(void);
 
 #endif
 
