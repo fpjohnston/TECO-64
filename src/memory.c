@@ -60,7 +60,7 @@ struct mblock
     struct mblock *prev;                ///< Previous block in linked list
     struct mblock *next;                ///< Next block in linked list
     const char *addr;                   ///< calloc'd memory block
-    unsigned int size;                  ///< Size of block in bytes
+    uint_t size;                        ///< Size of block in bytes
 };
 
 static struct mblock *mroot = NULL;     ///< Root of memory block list
@@ -89,7 +89,7 @@ static void delete_mblock(void *p1);
 
 #if     defined(MEMCHECK)
 
-static void add_mblock(void *p1, uint size)
+static void add_mblock(void *p1, uint_t size)
 {
     assert(p1 != NULL);                 // Error if no memory block
 
@@ -128,7 +128,7 @@ static void add_mblock(void *p1, uint size)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void *alloc_mem(uint size)
+void *alloc_mem(uint_t size)
 {
     void *p1 = calloc(1uL, (size_t)size);
 
@@ -263,7 +263,7 @@ void exit_mem(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void *expand_mem(void *p1, uint oldsize, uint newsize)
+void *expand_mem(void *p1, uint_t oldsize, uint_t newsize)
 {
     assert(p1 != NULL);                 // Error if NULL memory block
     assert(oldsize != 0);               // Error if old size is 0
@@ -332,7 +332,7 @@ void free_mem(void *p1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void *shrink_mem(void *p1, uint oldsize, uint newsize)
+void *shrink_mem(void *p1, uint_t oldsize, uint_t newsize)
 {
     assert(p1 != NULL);                 // Error if NULL memory block
     assert(oldsize != newsize);         // Error if size didn't change

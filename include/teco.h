@@ -139,7 +139,7 @@ extern const char *teco_vtedit;
 
 // General-purpose common functions
 
-extern void *alloc_mem(uint size);
+extern void *alloc_mem(uint_t size);
 
 extern uint build_string(char **dest, const char *src, uint len);
 
@@ -181,7 +181,7 @@ extern void exit_tbuf(void);
 
 extern void exit_term(void);
 
-extern void *expand_mem(void *ptr, uint oldsize, uint newsize);
+extern void *expand_mem(void *ptr, uint_t oldsize, uint_t newsize);
 
 extern void free_mem(void *ptr);
 
@@ -191,7 +191,7 @@ extern void init_options(int argc, const char * const argv[]);
 
 extern void print_flag(int flag);
 
-extern void *shrink_mem(void *ptr, uint oldsize, uint newsize);
+extern void *shrink_mem(void *ptr, uint_t oldsize, uint_t newsize);
 
 extern char *strdup_mem(const char *ptr);
 
