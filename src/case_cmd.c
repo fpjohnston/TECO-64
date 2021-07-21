@@ -134,28 +134,32 @@ static void exec_case(struct cmd *cmd, bool lower)
         }
     }
 
+    int saved_dot = t.dot;
+
     for (int i = m; i < n; ++i)
     {
-        int c = getchar_ebuf(i);
+        int c = getchar_ebuf(0);
 
         if (c == EOF)
         {
             break;
         }
 
-        if (lower)
+        if (lower && isupper(c))
         {
-            if (isupper(c))
-            {
-                (void)putchar_ebuf(i, tolower(c));
-            }
+            delete_ebuf(1);
+            (void)add_ebuf(tolower(c));
+        }
+        else if (islower(c))
+        {
+            delete_ebuf(1);
+            (void)add_ebuf(toupper(c));
         }
         else
         {
-            if (islower(c))
-            {
-                (void)putchar_ebuf(i, toupper(c));
-            }
+            setpos_ebuf(t.dot + 1);
         }
     }
+
+    setpos_ebuf(saved_dot);
 }

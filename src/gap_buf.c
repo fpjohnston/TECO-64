@@ -484,43 +484,6 @@ static int_t next_delim(uint_t nlines)
 
 
 ///
-///  @brief    Replace ASCII value of nth character before or after dot.
-///
-///  @returns  Original character, or -1 if character outside of edit buffer.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int putchar_ebuf(int n, int c)
-{
-    uint_t pos = (uint_t)(t.dot + n);
-
-    if (pos < eb.left + eb.right)
-    {
-        uint_t i = pos;
-
-        if (pos >= eb.left)
-        {
-            i += eb.gap;
-        }
-
-        int orig = eb.buf[i];
-
-        eb.buf[i] = (uchar)c;
-
-#if     defined(DISPLAY_MODE)
-
-        ebuf_changed = true;
-
-#endif
-
-        return orig;
-    }
-
-    return -1;
-}
-
-
-///
 ///  @brief    Set buffer position.
 ///
 ///  @returns  Nothing.

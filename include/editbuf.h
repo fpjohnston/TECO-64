@@ -116,10 +116,6 @@ extern void init_ebuf(void);
 
 extern void kill_ebuf(void);
 
-// Set buffer position (a.k.a. 'dot').
-
-extern int putchar_ebuf(int n, int c);
-
 // Set buffer position.
 
 extern void setpos_ebuf(int n);
