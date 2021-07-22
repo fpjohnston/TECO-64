@@ -147,6 +147,7 @@
 | EA             | [Switch to secondary output stream](file.md) |
 | EB             | [Edit backup](file.md) |
 | EC             | [Close input and output files](file.md) |
+| *n*EC          | [Set memory size](misc.md) |
 | ED             | [Edit level flag](flags.md) |
 | EE             | [Alternate command delimiter](flags.md) |
 | EF             | [Close output file](file.md) |

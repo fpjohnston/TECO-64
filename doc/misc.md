@@ -106,7 +106,7 @@ The *squish.tec* indirect command file may be used to squish macros, as in the f
 
 | Command | Function |
 | ------- | -------- |
-| *n*EC | *n*EC tells TECO to expand or contract until it uses *n*K bytes of memory for its edit buffer. If this is not possible, then TECO’s memory usage does not change. The 0EC command tells TECO to use the least amount of memory possible. |
+| *n*EC | *n*EC tells TECO to expand or contract until it uses *n*K bytes of memory for its edit buffer. If this is not possible, then TECO’s memory usage does not change. The 0EC command tells TECO to use the least amount of memory possible, and the -1EC command tells TECO to use the most amount of memory possible. |
 
 ### Case Commands
 

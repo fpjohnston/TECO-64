@@ -60,17 +60,20 @@
 #endif
 #endif
 
-#if     !defined(EDIT_MIN)
+#if     !defined(EDIT_INIT)
 #if     defined(PAGE_VM)
 
-#define EDIT_MIN    (KB * 64)       ///< Minimum size is 64 KB (w/ VM)
+#define EDIT_INIT   (KB * 64)       ///< Initial size is 64 KB (w/ VM)
 
 #else
 
-#define EDIT_MIN    (KB * 8)        ///< Minimum size is 8 KB (w/o VM)
+#define EDIT_INIT   (KB * 8)        ///< Initial size is 1 KB (w/o VM)
 
 #endif
 #endif
+
+#define EDIT_MIN    (KB)            ///< Minimum size is 1 KB
+
 
 ///  @var    t
 ///
@@ -101,10 +104,10 @@ static struct
     .buf   = NULL,
     .min   = EDIT_MIN,
     .max   = EDIT_MAX,
-    .size  = EDIT_MIN,
+    .size  = EDIT_INIT,
     .left  = 0,
     .right = 0,
-    .gap   = EDIT_MIN,
+    .gap   = EDIT_INIT,
 };
 
 #if     defined(DISPLAY_MODE)
@@ -177,7 +180,7 @@ int add_ebuf(int c)
         {
             uint_t newsize = eb.size + (eb.size / 4);
 
-            setsize_ebuf(newsize);      // Try to make buffer bigger
+            setsize_ebuf(newsize);      // Try to make buffer 25% bigger
         }
 
         if (eb.gap == 0)
@@ -365,14 +368,10 @@ int_t getlines_ebuf(int_t n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(PAGE_VM)
-
 uint_t getsize_ebuf(void)
 {
     return eb.size;
 }
-
-#endif
 
 
 ///
@@ -502,16 +501,21 @@ void setpos_ebuf(int_t pos)
 
 void setsize_ebuf(uint_t newsize)
 {
-    if (newsize < eb.min)               // Ensure a minimum size for buffer.
-    {
-        newsize = eb.min;
-    }
-    else if ((int_t)newsize < 0 || newsize > eb.max)
+    if ((int_t)newsize < 0 || newsize > eb.max)
     {
         newsize = eb.max;
     }
     else
-    {        
+    {
+        if (newsize < eb.min)
+        {
+            newsize = eb.min;
+        }
+        else if (newsize == 0 && (newsize = eb.right + eb.left) == 0)
+        {
+            newsize = KB;               // Use at least 1 KB
+        }
+
         newsize = ROUND_K(newsize);     // Round up to next higher K boundary
     }
 

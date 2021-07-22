@@ -40,6 +40,7 @@ struct ifile
 {
     FILE *fp;                       ///< Input file stream
     char *name;                     ///< Input file name
+    uint_t size;                    ///< Input file size
     bool cr;                        ///< Last character was CR
 };
 

@@ -80,6 +80,16 @@ void exec_EY(struct cmd *cmd)
     }
     else
     {
+        // Set the edit buffer to the size of the file (plus 10%
+        // to allow for conversion of <LF> to <CR><LF>).
+
+        if (getsize_ebuf() < ifile->size)
+        {
+            uint_t size = (ifile->size * 11) / 10;
+
+            setsize_ebuf(size);
+        }
+
         (void)next_yank();
     }
 

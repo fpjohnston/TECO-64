@@ -395,18 +395,8 @@ struct ifile *open_input(char *name, uint stream, bool colon)
         throw(E_SYS, ifile->name);      // Unexpected system error
     }
 
+    ifile->size = (uint_t)file_stat.st_size;
     ifile->cr  = false;
-
-#if     defined(PAGE_VM)
-
-    // If using virtual paging, then we can try to read in the entire file.
-
-    if (file_stat.st_size > (off_t)getsize_ebuf())
-    {
-        setsize_ebuf((uint_t)file_stat.st_size);
-    }
-
-#endif
 
     return ifile;
 }
