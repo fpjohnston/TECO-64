@@ -117,7 +117,7 @@ extern void kill_ebuf(void);
 
 // Set buffer position.
 
-extern void setpos_ebuf(int n);
+extern void setpos_ebuf(int_t n);
 
 // Set maximum memory size.
 

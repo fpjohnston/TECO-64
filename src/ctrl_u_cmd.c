@@ -56,11 +56,11 @@ void exec_ctrl_U(struct cmd *cmd)
 
         if (cmd->colon)                 // n:^Uq`?
         {
-            append_qchr(cmd->qindex, cmd->n_arg);
+            append_qchr(cmd->qindex, (int)cmd->n_arg);
         }
         else                            // n^Uq`
         {
-            store_qchr(cmd->qindex, cmd->n_arg);
+            store_qchr(cmd->qindex, (int)cmd->n_arg);
         }
     }
     else                                // No n argument
@@ -80,7 +80,7 @@ void exec_ctrl_U(struct cmd *cmd)
         }
         else                            // ^Uqtext`
         {
-            uint len = cmd->text1.len;
+            uint_t len = cmd->text1.len;
             void *buf = alloc_mem(len);
 
             struct buffer text =

@@ -410,9 +410,9 @@ static int geteditsize(char *buf, ulong size, uint_t bytes)
 {
     assert(buf != NULL);
 
-    const uint_t gbytes = bytes / GB;
-    const uint_t mbytes = bytes / MB;
-    const uint_t kbytes = bytes / KB;
+    const uint gbytes = (uint)(bytes / GB);
+    const uint mbytes = (uint)(bytes / MB);
+    const uint kbytes = (uint)(bytes / KB);
 
     if (gbytes != 0)
     {
@@ -428,7 +428,7 @@ static int geteditsize(char *buf, ulong size, uint_t bytes)
     }
     else
     {
-        return snprintf(buf, size, "%u", bytes);
+        return snprintf(buf, size, "%u", (uint)bytes);
     }
 }
 
@@ -559,11 +559,11 @@ static void mark_cursor(int row, int col)
 
 static void move_down(void)
 {
-    int line = getlines_ebuf(-1);       // Get current line number
+    int_t line = getlines_ebuf((int_t)-1); // Get current line number
     int row = d.row;
     int col = d.col;
 
-    if (line == getlines_ebuf(0))       // On last line?
+    if (line == getlines_ebuf((int_t)0)) // On last line?
     {
         return;
     }
@@ -575,9 +575,9 @@ static void move_down(void)
 
     ++row;
 
-    int next = getdelta_ebuf(1);        // Start of next line
-    int len = getdelta_ebuf(2) - next;  // Length of next line
-    int dot = t.dot + next;
+    int next = (int)getdelta_ebuf((int_t)1); // Start of next line
+    int len = (int)getdelta_ebuf((int_t)2) - next; // Length of next line
+    int_t dot = t.dot + next;
 
     if (d.vcol > col)
     {
@@ -629,16 +629,16 @@ static void move_down(void)
 
 static void move_left(void)
 {
-    int dot = t.dot - 1;
+    int_t dot = t.dot - 1;
 
     if (dot >= t.B)
     {
-        int line = getlines_ebuf(-1);
+        int line = (int)getlines_ebuf((int_t)-1);
         int row = (line - rowbias) % d.nrows;
 
         setpos_ebuf(dot);
 
-        if (row == 0 && line != getlines_ebuf(-1))
+        if (row == 0 && line != getlines_ebuf((int_t)-1))
         {
             --rowbias;
         }
@@ -661,16 +661,16 @@ static void move_left(void)
 
 static void move_right(void)
 {
-    int dot = t.dot + 1;
+    int_t dot = t.dot + 1;
 
     if (dot <= t.Z)
     {
-        int line = getlines_ebuf(-1);
+        int line = (int)getlines_ebuf((int_t)-1);
         int row = (line - rowbias) % d.nrows;
 
         setpos_ebuf(dot);
 
-        if (row == d.nrows - 1 && line != getlines_ebuf(-1))
+        if (row == d.nrows - 1 && line != getlines_ebuf((int_t)-1))
         {
             ++rowbias;
         }
@@ -693,7 +693,7 @@ static void move_right(void)
 
 static void move_up(void)
 {
-    int line = getlines_ebuf(-1);       // Get current line number
+    int line = (int)getlines_ebuf((int_t)-1); // Get current line number
     int row = d.row;
     int col = d.col;
 
@@ -709,9 +709,9 @@ static void move_up(void)
 
     --row;
 
-    int prev = -getdelta_ebuf(-1);      // Distance to start of previous
+    int prev = (int)-getdelta_ebuf((int_t)-1); // Distance to start of previous
     int len = prev - col;               // Length of previous line
-    int dot = t.dot - prev;
+    int_t dot = t.dot - (int_t)prev;
 
     if (d.vcol > col)
     {
@@ -967,7 +967,7 @@ void refresh_dpy(void)
         return;
     }
 
-    int line = getlines_ebuf(-1);       // Line number within buffer
+    int line = (int)getlines_ebuf((int_t)-1); // Line number within buffer
 
     if (line == 0)
     {
@@ -975,7 +975,7 @@ void refresh_dpy(void)
     }
 
     int row  = (line - rowbias) % d.nrows; // Relative row within screen
-    int pos  = getdelta_ebuf(-row);     // First character to output
+    int_t pos  = getdelta_ebuf((int_t)-row); // First character to output
 
     if (ebuf_changed)
     {
@@ -1015,7 +1015,7 @@ void refresh_dpy(void)
         uint line_pos = 0;              // Line position
         bool filled = false;            // Is edit region full?
 
-        w.topdot = botdot = t.dot + pos;
+        w.topdot = botdot = (int)(t.dot + pos);
 
         while ((c = getchar_ebuf(pos)) != EOF)
         {
@@ -1202,7 +1202,7 @@ void resize_dpy(void)
 
 bool scan_F0(struct cmd *unused)
 {
-    push_x(w.topdot, X_OPERAND);
+    push_x((int_t)w.topdot, X_OPERAND);
 
     return true;
 }
@@ -1223,7 +1223,7 @@ bool scan_FH(struct cmd *cmd)
     cmd->n_arg = w.topdot;
     cmd->h     = true;
 
-    push_x(botdot, X_OPERAND);
+    push_x((int_t)botdot, X_OPERAND);
 
     return true;
 }
@@ -1238,7 +1238,7 @@ bool scan_FH(struct cmd *cmd)
 
 bool scan_FZ(struct cmd *unused)
 {
-    push_x(botdot, X_OPERAND);
+    push_x((int_t)botdot, X_OPERAND);
 
     return true;
 }
@@ -1379,17 +1379,17 @@ static void update_status(void)
 
         // Add some file status to the left side of the status line
 
-        int row     = getlines_ebuf(-1);
-        int nrows   = getlines_ebuf(0);
-        int col     = -getdelta_ebuf(0);
+        int row     = (int)getlines_ebuf((int_t)-1);
+        int nrows   = (int)getlines_ebuf((int_t)0);
+        int col     = (int)-getdelta_ebuf((int_t)0);
         int width   = getwidth((ulong)(uint)t.Z);
         int nbytes  = snprintf(status, sizeof(status), ".=" DEC_FMT " (",
                                width, t.dot);
         size_t size = sizeof(status);   // Remaining bytes available in line
 
-        nbytes += print_ebuf(status, w.width, nbytes, getchar_ebuf(-1));
+        nbytes += print_ebuf(status, w.width, nbytes, getchar_ebuf((int_t)-1));
         nbytes += snprintf(status + nbytes, size, ",");
-        nbytes += print_ebuf(status, w.width, nbytes, getchar_ebuf(0));
+        nbytes += print_ebuf(status, w.width, nbytes, getchar_ebuf((int_t)0));
 
         size = sizeof(status) - (uint)nbytes;
 

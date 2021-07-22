@@ -463,13 +463,13 @@ bool parse_flag1(struct cmd *cmd)
 
             struct ifile *ifile = &ifiles[istream];
 
-            push_x(feof(ifile->fp), X_OPERAND);
+            push_x((int_t)feof(ifile->fp), X_OPERAND);
 
             return true;
         }
 
         case CTRL_X:
-            push_x(f.ctrl_x, X_OPERAND);
+            push_x((int_t)f.ctrl_x, X_OPERAND);
 
             return true;
 
@@ -479,13 +479,13 @@ bool parse_flag1(struct cmd *cmd)
             {
                 case 'E':
                 case 'e':
-                    push_x(f.ee, X_OPERAND);
+                    push_x((int_t)f.ee, X_OPERAND);
 
                     return true;
 
                 case 'O':
                 case 'o':
-                    push_x(f.eo, X_OPERAND);
+                    push_x((int_t)f.eo, X_OPERAND);
 
                     return true;
 
@@ -527,58 +527,58 @@ bool parse_flag2(struct cmd *cmd)
     switch (cmd->c2)
     {
         case '1':                       // E1
-            push_x(f.e1.flag, X_OPERAND);
+            push_x((int_t)f.e1.flag, X_OPERAND);
 
             return true;
 
         case '2':                       // E2
-            push_x(f.e2.flag, X_OPERAND);
+            push_x((int_t)f.e2.flag, X_OPERAND);
 
             return true;
 
         case '3':                       // E3
-            push_x(f.e3.flag, X_OPERAND);
+            push_x((int_t)f.e3.flag, X_OPERAND);
 
             return true;
 
         case '4':                       // E4
-            push_x(f.e4.flag, X_OPERAND);
+            push_x((int_t)f.e4.flag, X_OPERAND);
 
             return true;
 
         case 'D':                       // ED
         case 'd':
-            push_x(f.ed.flag, X_OPERAND);
+            push_x((int_t)f.ed.flag, X_OPERAND);
 
             return true;
 
         case 'H':                       // EH
         case 'h':
-            push_x(f.eh.flag, X_OPERAND);
+            push_x((int_t)f.eh.flag, X_OPERAND);
 
             return true;
 
         case 'S':                       // ES
         case 's':
-            push_x(f.es, X_OPERAND);
+            push_x((int_t)f.es, X_OPERAND);
 
             return true;
 
         case 'T':                       // ET
         case 't':
-            push_x(f.et.flag, X_OPERAND);
+            push_x((int_t)f.et.flag, X_OPERAND);
 
             return true;
 
         case 'U':                       // EU
         case 'u':
-            push_x(f.eu, X_OPERAND);
+            push_x((int_t)f.eu, X_OPERAND);
 
             return true;
 
         case 'V':                       // EV
         case 'v':
-            push_x(f.ev, X_OPERAND);
+            push_x((int_t)f.ev, X_OPERAND);
 
             return true;
 

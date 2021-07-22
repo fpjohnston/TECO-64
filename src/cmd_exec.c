@@ -94,7 +94,7 @@ static bool echo_cmd(int c)
         }
         else if (f.trace.noblank)       // Skipping blank lines?
         {
-            uint pos = cbuf->pos;       // Save start of line
+            uint_t pos = cbuf->pos;     // Save start of line
 
             while ((c = peek_cbuf()) != EOF)
             {
@@ -277,7 +277,7 @@ static inline exec_func *scan_cmd(struct cmd *cmd, int c)
 
                 trace_cbuf(c);
 
-                push_x(c, X_OPERAND);
+                push_x((int_t)c, X_OPERAND);
 
                 return NULL;
             }
@@ -395,7 +395,7 @@ static void scan_text(int delim, struct tstring *text)
 
     text->data = cbuf->data + cbuf->pos;
 
-    uint n = cbuf->len - cbuf->pos;
+    uint_t n = cbuf->len - cbuf->pos;
     char *end = memchr(text->data, delim, (ulong)n);
 
     if (end == NULL)

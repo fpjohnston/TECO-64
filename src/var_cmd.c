@@ -47,7 +47,7 @@
 
 bool scan_ctrl_P(struct cmd *unused)
 {
-    push_x((int)page_count, X_OPERAND);
+    push_x((int_t)page_count, X_OPERAND);
 
     return true;
 }
@@ -70,7 +70,7 @@ bool scan_ctrl_Q(struct cmd *cmd)
         cmd->n_arg = 0;
     }
 
-    int nchrs = getdelta_ebuf(cmd->n_arg);
+    int_t nchrs = getdelta_ebuf(cmd->n_arg);
 
     push_x(nchrs, X_OPERAND);
 
@@ -91,7 +91,7 @@ bool scan_ctrl_S(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_x(-(int)last_len, X_OPERAND);
+    push_x(-(int_t)last_len, X_OPERAND);
 
     return true;
 }
@@ -144,9 +144,9 @@ bool scan_ctrl_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint n = get_qall();
+    int_t n = (int_t)get_qall();
 
-    push_x((int)n, X_OPERAND);
+    push_x(n, X_OPERAND);
 
     return true;
 }
@@ -167,7 +167,7 @@ bool scan_ctrl_up(struct cmd *cmd)
 
     trace_cbuf(c);
 
-    push_x(c, X_OPERAND);
+    push_x((int_t)c, X_OPERAND);
 
     return true;
 }

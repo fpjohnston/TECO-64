@@ -50,7 +50,7 @@ extern void init_tbuf(void);
 
 extern void reset_tbuf(void);
 
-extern uint start_tbuf(void);
+extern uint_t start_tbuf(void);
 
 extern void store_tbuf(int c);
 

@@ -41,7 +41,7 @@
 
 struct qreg
 {
-    int n;                          ///< Q-register numeric value
+    int_t n;                        ///< Q-register numeric value
     struct buffer text;             ///< Q-register text storage
 };
 
@@ -61,17 +61,17 @@ extern void append_qchr(int qindex, int c);
 
 extern void delete_qtext(int qindex);
 
-extern uint get_qall(void);
+extern uint_t get_qall(void);
 
-extern int get_qchr(int qindex, int n);
+extern int get_qchr(int qindex, int_t n);
 
 extern int get_qindex(int qname, bool qlocal);
 
-extern int get_qnum(int qindex);
+extern int_t get_qnum(int qindex);
 
 extern struct qreg *get_qreg(int qindex);
 
-extern uint get_qsize(int qindex);
+extern uint_t get_qsize(int qindex);
 
 extern void init_qreg(void);
 
@@ -93,7 +93,7 @@ extern void scan_qreg(struct cmd *cmd);
 
 extern void store_qchr(int qindex, int c);
 
-extern void store_qnum(int qindex, int n);
+extern void store_qnum(int qindex, int_t n);
 
 extern void store_qtext(int qindex, struct buffer *text);
 

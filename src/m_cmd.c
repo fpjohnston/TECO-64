@@ -126,7 +126,7 @@ void exec_macro(struct buffer *macro, struct cmd *oldcmd)
     uint saved_loop           = loop_depth;
     uint saved_if             = if_depth;
     uint saved_nparens        = nparens;
-    uint saved_pos            = macro->pos;
+    uint_t saved_pos          = macro->pos;
     struct buffer *saved_cbuf = cbuf;
 
     // Initialize for new command string

@@ -181,7 +181,7 @@ void append_qchr(int qindex, int c)
     }
     else
     {
-        uint nbytes = qreg->text.len;
+        uint_t nbytes = qreg->text.len;
 
         if (nbytes == qreg->text.size)
         {
@@ -265,9 +265,9 @@ void exit_qreg(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-uint get_qall(void)
+uint_t get_qall(void)
 {
-    uint n = 0;
+    uint_t n = 0;
     struct qreg *qreg;
 
     // Get count of all text in global Q-registers
@@ -284,7 +284,7 @@ uint get_qall(void)
 
     while (qnext != NULL)
     {
-        for (uint i = 0; i < QCOUNT; ++i)
+        for (uint_t i = 0; i < QCOUNT; ++i)
         {
             qreg = &qnext->qreg[i];
             n += qreg->text.len;
@@ -315,11 +315,11 @@ uint get_qall(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int get_qchr(int qindex, int n)
+int get_qchr(int qindex, int_t n)
 {
     struct qreg *qreg = QREGISTER(qindex);
 
-    if (n < 0 || (uint)n >= qreg->text.len) // Out of range?
+    if (n < 0 || (uint_t)n >= qreg->text.len) // Out of range?
     {
         return EOF;                     // Yes
     }
@@ -359,7 +359,7 @@ int get_qindex(int qname, bool qlocal)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int get_qnum(int qindex)
+int_t get_qnum(int qindex)
 {
     struct qreg *qreg = QREGISTER(qindex);
 
@@ -394,7 +394,7 @@ struct qreg *get_qreg(int qindex)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-uint get_qsize(int qindex)
+uint_t get_qsize(int qindex)
 {
     struct qreg *qreg = QREGISTER(qindex);
 
@@ -670,7 +670,7 @@ void store_qchr(int qindex, int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void store_qnum(int qindex, int n)
+void store_qnum(int qindex, int_t n)
 {
     struct qreg *qreg = QREGISTER(qindex);
 

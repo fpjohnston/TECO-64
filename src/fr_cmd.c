@@ -38,7 +38,7 @@
 ///  @brief  Length of last string searched for, or length of last insert by I,
 ///          tab, or G command.
 
-uint last_len;
+uint_t last_len;
 
 
 ///
@@ -52,7 +52,7 @@ void exec_FR(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n;
+    int_t n;
 
     if (cmd->n_set)
     {

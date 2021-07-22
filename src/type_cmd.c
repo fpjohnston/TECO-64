@@ -39,7 +39,7 @@
 
 // Local functions
 
-static void exec_type(int m, int n);
+static void exec_type(int_t m, int_t n);
 
 
 ///
@@ -53,8 +53,8 @@ void exec_T(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int m;
-    int n;
+    int_t m;
+    int_t n;
 
     if (cmd->h)
     {
@@ -80,7 +80,7 @@ void exec_T(struct cmd *cmd)
     {
         if (cmd->n_arg == 0)
         {
-            m = getdelta_ebuf(0);
+            m = getdelta_ebuf(0);       //lint !e747
             n = 0;
         }
         else if (cmd->n_arg < 0)
@@ -97,7 +97,7 @@ void exec_T(struct cmd *cmd)
     else
     {
         m = 0;
-        n = getdelta_ebuf(1);
+        n = getdelta_ebuf(1);           //lint !e747
     }
 
     exec_type(m, n);
@@ -111,9 +111,9 @@ void exec_T(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_type(int m, int n)
+static void exec_type(int_t m, int_t n)
 {
-    for (int i = m; i < n; ++i)
+    for (int_t i = m; i < n; ++i)
     {
         int c = getchar_ebuf(i);
 
@@ -138,8 +138,8 @@ void exec_V(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int m;
-    int n;
+    int_t m;
+    int_t n;
 
     if (cmd->n_set)
     {
@@ -156,8 +156,8 @@ void exec_V(struct cmd *cmd)
     }
     else
     {
-        m = getdelta_ebuf(0);
-        n = getdelta_ebuf(1);
+        m = getdelta_ebuf(0);           //lint !e747
+        n = getdelta_ebuf(1);           //lint !e747
     }
 
     exec_type(m, n);

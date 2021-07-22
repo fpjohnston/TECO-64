@@ -209,9 +209,9 @@ void reset_tbuf(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-uint start_tbuf(void)
+uint_t start_tbuf(void)
 {
-    uint i = term_buf->len;
+    uint_t i = term_buf->len;
 
     while (i > 0)
     {
@@ -251,7 +251,7 @@ void store_tbuf(int c)
     {
         assert(term_buf->size != 0);    // Error if no data
 
-        uint newsize = term_buf->size + STR_SIZE_INIT;
+        uint_t newsize = term_buf->size + STR_SIZE_INIT;
         char *newbuf = expand_mem(term_buf->data, term_buf->size, newsize);
 
         term_buf->size = newsize;

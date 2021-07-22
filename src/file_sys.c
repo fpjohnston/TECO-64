@@ -70,7 +70,7 @@ static uint parse_file(const char *file, char *dir, char *base);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct ifile *find_command(char *file, uint len, uint stream, bool colon)
+struct ifile *find_command(char *file, uint_t len, uint stream, bool colon)
 {
     assert(file != NULL);
 
@@ -202,7 +202,7 @@ FILE *open_temp(char **otemp, const char *oname)
     }
 
     char dir[(uint)strlen(oname) + 1];
-    uint nbytes = parse_file(oname, dir, NULL);
+    uint_t nbytes = parse_file(oname, dir, NULL);
     char tempfile[nbytes + 1 + SIZE_NAME + SIZE_TYPE + 1];
 
     nbytes = (uint)snprintf(tempfile, (ulong)sizeof(tempfile), "%s%s%s", dir,

@@ -51,7 +51,7 @@ void exec_EL(struct cmd *cmd)
     assert(cmd != NULL);
 
     const char *buf = cmd->text1.data;
-    uint len = cmd->text1.len;
+    uint_t len = cmd->text1.len;
     uint stream = OFILE_LOG;
 
     close_output(stream);

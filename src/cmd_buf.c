@@ -73,7 +73,7 @@ noreturn void abort_cbuf(void)
 
 bool check_semi(void)
 {
-    uint saved_pos = cbuf->pos;
+    uint_t saved_pos = cbuf->pos;
     struct cmd cmd;
 
     while (cbuf->pos < cbuf->len)
@@ -183,7 +183,7 @@ void store_cbuf(int c)
         cbuf->size /= STR_SIZE_INIT;
         cbuf->size *= STR_SIZE_INIT;
 
-        uint newsize = cbuf->size + STR_SIZE_INIT;
+        uint_t newsize = cbuf->size + STR_SIZE_INIT;
         char *newbuf = expand_mem(cbuf->data, cbuf->size, newsize);
 
         cbuf->size = newsize;

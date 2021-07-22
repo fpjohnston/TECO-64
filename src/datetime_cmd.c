@@ -61,7 +61,7 @@ bool scan_ctrl_B(struct cmd *cmd)
 
     int n = ((tm.tm_year) * 16 + tm.tm_mon + 1) * 32 + tm.tm_mday;
 
-    push_x(n, X_OPERAND);
+    push_x((int_t)n, X_OPERAND);
 
     return true;
 }
@@ -93,7 +93,7 @@ bool scan_ctrl_H(struct cmd *cmd)
     n *= 1000;
     n += (int)(tv.tv_usec / 1000);
 
-    push_x(n, X_OPERAND);
+    push_x((int_t)n, X_OPERAND);
 
     return true;
 }

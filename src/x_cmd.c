@@ -46,8 +46,8 @@ void exec_X(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n = 1;
-    int m;
+    int_t n = 1;
+    int_t m;
 
     if (cmd->n_set)                     // n argument?
     {
@@ -84,7 +84,7 @@ void exec_X(struct cmd *cmd)
     }
     else
     {
-        int delta = getdelta_ebuf(n);
+        int_t delta = getdelta_ebuf(n);
 
         if (n <= 0)
         {
@@ -103,7 +103,7 @@ void exec_X(struct cmd *cmd)
         delete_qtext(cmd->qindex);
     }
 
-    for (int i = m; i < n; ++i)
+    for (int_t i = m; i < n; ++i)
     {
         int c = getchar_ebuf(i);
 

@@ -238,7 +238,7 @@ void exec_quote(struct cmd *cmd)
 
     init_x();                           // Reinitialize expression stack
 
-    int c = cmd->n_arg;
+    int c = (int)cmd->n_arg;
 
     push_if();
 

@@ -50,7 +50,7 @@ void exec_ctrl_I(struct cmd *cmd)
 
     char c = TAB;
 
-    exec_insert(&c, (uint)sizeof(c));
+    exec_insert(&c, (uint_t)sizeof(c));
     exec_insert(cmd->text1.data, cmd->text1.len);
 
     ++last_len;                         // Correct count for added TAB
@@ -80,7 +80,7 @@ void exec_I(struct cmd *cmd)
     else if (cmd->n_set)
     {
         char c = (char)cmd->n_arg;
-        uint n = 1;                     // Default: insert 1 character
+        uint_t n = 1;                   // Default: insert 1 character
 
         if (cmd->m_set)
         {
@@ -88,7 +88,7 @@ void exec_I(struct cmd *cmd)
             {
                 throw(E_IIA);           // Invalid insert argument
             }
-            else if ((n = (uint)cmd->m_arg) == 0)
+            else if ((n = (uint_t)cmd->m_arg) == 0)
             {
                 return;                 // Don't insert if count is 0
             }
@@ -96,7 +96,7 @@ void exec_I(struct cmd *cmd)
 
         while (n-- > 0)
         {
-            exec_insert(&c, (uint)sizeof(c));
+            exec_insert(&c, (uint_t)sizeof(c));
         }
     }
 }
@@ -109,13 +109,13 @@ void exec_I(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_insert(const char *buf, uint len)
+void exec_insert(const char *buf, uint_t len)
 {
     assert(buf != NULL);                // Error if no buffer
 
     last_len = 0;
 
-    for (uint i = 0; i < len; ++i)
+    for (uint_t i = 0; i < len; ++i)
     {
         int c = *buf++;
 

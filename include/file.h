@@ -96,14 +96,14 @@ extern void close_input(uint stream);
 
 extern void close_output(uint stream);
 
-extern struct ifile *find_command(char *base, uint len, uint stream,
+extern struct ifile *find_command(char *base, uint_t len, uint stream,
                                   bool colon);
 
 extern int get_wild(void);
 
-extern char *init_filename(const char *buf, uint len, bool colon);
+extern char *init_filename(const char *buf, uint_t len, bool colon);
 
-extern bool open_command(char *buf, uint len, uint stream, bool colon,
+extern bool open_command(char *buf, uint_t len, uint stream, bool colon,
                          struct buffer *text);
 
 extern struct ifile *open_input(char *name, uint stream, bool colon);

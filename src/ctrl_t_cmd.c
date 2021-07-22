@@ -55,8 +55,8 @@ void exec_ctrl_T(struct cmd *cmd)
 
     if (cmd->n_set)                     // n^T -> type out character
     {
-        int m = 1;
-        int n = cmd->n_arg;
+        int_t m = 1;
+        int_t n = cmd->n_arg;
 
         if (cmd->m_set)
         {
@@ -71,7 +71,7 @@ void exec_ctrl_T(struct cmd *cmd)
 
             if (n >= 0)
             {
-                type_out(n & 0xFF);
+                type_out((int)n & 0xFF);
             }
             else
             {
@@ -92,7 +92,7 @@ void exec_ctrl_T(struct cmd *cmd)
             type_out(c);
         }
 
-        push_x(c, X_OPERAND);
+        push_x((int_t)c, X_OPERAND);
     }
 }
 

@@ -40,7 +40,7 @@
 
 static void exec_c_r(struct cmd *cmd, int sign, int chr);
 
-static void exec_move(struct cmd *cmd, int pos, bool cond, int chr);
+static void exec_move(struct cmd *cmd, int_t pos, bool cond, int chr);
 
 
 ///
@@ -67,7 +67,7 @@ static void exec_c_r(struct cmd *cmd, int sign, int chr)
 {
     assert(cmd != NULL);
 
-    int n = 1;                          // Default move argument
+    int_t n = 1;                        // Default move argument
 
     if (cmd->n_set)
     {
@@ -92,7 +92,7 @@ void exec_J(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n = t.B;
+    int_t n = t.B;
 
     if (cmd->n_set)
     {
@@ -114,7 +114,7 @@ void exec_L(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n = cmd->colon ? 0 : 1;
+    int_t n = cmd->colon ? 0 : 1;
 
     if (cmd->n_set)
     {
@@ -137,7 +137,7 @@ void exec_L(struct cmd *cmd)
     //  1:L -> No. of following lines
     //   :L -> Same as 0:L
 
-    int nlines = getlines_ebuf(n);
+    int_t nlines = getlines_ebuf(n);
 
     push_x(nlines, X_OPERAND);
 }
@@ -150,7 +150,7 @@ void exec_L(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_move(struct cmd *cmd, int pos, bool cond, int chr)
+static void exec_move(struct cmd *cmd, int_t pos, bool cond, int chr)
 {
     assert(cmd != NULL);
 

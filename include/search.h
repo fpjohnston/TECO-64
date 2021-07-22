@@ -52,11 +52,11 @@ struct search
 {
     enum search_type type;              ///< Search type
     bool (*search)(struct search *s);   ///< Search function
-    int count;                          ///< No. of iterations for search
-    int text_start;                     ///< Start search at this position
-    int text_end;                       ///< End search at this position
-    int text_pos;                       ///< Position of string relative to dot
-    uint match_len;                     ///< No. of characters left to match
+    int_t count;                        ///< No. of iterations for search
+    int_t text_start;                   ///< Start search at this position
+    int_t text_end;                     ///< End search at this position
+    int_t text_pos;                     ///< Position of string relative to dot
+    uint_t match_len;                   ///< No. of characters left to match
     const char *match_buf;              ///< Next character to match
 };
 

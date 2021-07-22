@@ -129,7 +129,7 @@ void exec_FF(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int i = 0;                          // Index into CTRL/F array
+    int_t i = 0;                          // Index into CTRL/F array
 
     if (cmd->n_set && ((i = cmd->n_arg - '0') < 0 || i > 9))
     {
@@ -138,7 +138,7 @@ void exec_FF(struct cmd *cmd)
 
     free_mem(&ctrl_f_cmd[i]);           // Free existing command string
 
-    uint size = cmd->text1.len;
+    uint_t size = cmd->text1.len;
 
     if (size != 0)
     {
@@ -174,7 +174,7 @@ void exec_FM(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint size = cmd->text1.len;
+    uint_t size = cmd->text1.len;
 
     if (size == 0)                      // Unmap all keys?
     {
@@ -191,7 +191,7 @@ void exec_FM(struct cmd *cmd)
     // Here to map a key to a command string.
 
     char *temp;
-    uint len = build_string(&temp, cmd->text1.data, size);
+    uint_t len = build_string(&temp, cmd->text1.data, size);
     char key[len + 1];
 
     strcpy(key, temp);
@@ -279,7 +279,7 @@ void exec_FQ(struct cmd *cmd)
     }
 
     char *temp;
-    uint len = build_string(&temp, cmd->text1.data, cmd->text1.len);
+    uint_t len = build_string(&temp, cmd->text1.data, cmd->text1.len);
     char key[len + 1];
 
     strcpy(key, temp);

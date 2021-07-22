@@ -62,7 +62,7 @@ bool append(bool n_set, int_t n_arg, bool colon)
 
     f.ctrl_e = false;                   // Assume not appending FF
 
-    int olddot = t.dot;
+    int_t olddot = t.dot;
 
     setpos_ebuf(t.Z);                   // Go to end of buffer
 
@@ -221,7 +221,7 @@ void exec_A(struct cmd *cmd)
     }
     else if (!cmd->n_set)               // A command
     {
-        (void)append((bool)false, 0, cmd->colon);
+        (void)append((bool)false, (int_t)0, cmd->colon);
     }
 }
 

@@ -32,6 +32,8 @@
 #include <sys/types.h>          //lint !e451 !e537
 
 
+#define OPER    ((int_t)0)          ///< 'value' for expression operators
+
 #define XSTACK_SIZE          64     ///< Size of expression stack
 
 ///  @enum   x_type

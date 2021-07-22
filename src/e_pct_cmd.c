@@ -50,7 +50,7 @@ void exec_E_pct(struct cmd *cmd)
     assert(cmd != NULL);
 
     const char *buf = cmd->text1.data;
-    uint len = cmd->text1.len;
+    uint_t len = cmd->text1.len;
     uint stream = OFILE_QREGISTER;
 
     if (len == 0)                       // If no file name, then done
@@ -81,7 +81,7 @@ void exec_E_pct(struct cmd *cmd)
 
     assert(qreg != NULL);               // Error if no Q-register
 
-    uint size = qreg->text.len;
+    uint_t size = qreg->text.len;
 
     if (size != 0)
     {

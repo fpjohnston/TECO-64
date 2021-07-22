@@ -35,7 +35,7 @@
 #include "term.h"
 
 
-#define NO_POP      (bool)false         ///< Pop loop stack at end of loop
+#define NO_POP      (bool)false         ///< Pop loop stack at end o  f loop
 #define POP_OK      (bool)true          ///< Don't pop loop stack at end of loop
 
 #define INFINITE        (-1)            ///< Infinite loop count
@@ -48,8 +48,8 @@ uint loop_depth = 0;                    ///< Nested loop depth
 struct loop
 {
     struct loop *next;                  ///< Next item in list
-    int count;                          ///< Iteration count
-    uint start;                         ///< Starting position
+    int_t count;                        ///< Iteration count
+    uint_t start;                       ///< Starting position
     uint depth;                         ///< Depth of if statements
 };
 
@@ -61,7 +61,7 @@ static void endloop(struct cmd *cmd, bool pop_ok);
 
 static void pop_loop(bool pop_ok);
 
-static void push_loop(int count);
+static void push_loop(int_t count);
 
 
 ///
@@ -231,7 +231,7 @@ void exec_lt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int count = INFINITE;               // Assume infinite loop
+    int_t count = INFINITE;             // Assume infinite loop
 
     if (cmd->n_set && (count = cmd->n_arg) <= 0)
     {
@@ -318,7 +318,7 @@ static void pop_loop(bool pop_ok)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void push_loop(int count)
+static void push_loop(int_t count)
 {
     struct loop *loop = alloc_mem((uint_t)sizeof(*loop));
 
@@ -394,7 +394,7 @@ bool scan_gt(struct cmd *cmd)
 
         cmd->c2 = (char)c;
 
-        push_x(0, X_GE);
+        push_x(OPER, X_GE);
     }
     else if ((c = peek_cbuf()) == '>')  // >> operator
     {
@@ -403,11 +403,11 @@ bool scan_gt(struct cmd *cmd)
 
         cmd->c2 = (char)c;
 
-        push_x(0, X_RSHIFT);
+        push_x(OPER, X_RSHIFT);
     }
     else                                // > operator
     {
-        push_x(0, X_GT);
+        push_x(OPER, X_GT);
     }
 
     return true;
@@ -456,7 +456,7 @@ bool scan_lt(struct cmd *cmd)
 
         cmd->c2 = (char)c;
 
-        push_x(0, X_LE);
+        push_x(OPER, X_LE);
     }
     else if (c == '>')                  // <> operator
     {
@@ -465,7 +465,7 @@ bool scan_lt(struct cmd *cmd)
 
         cmd->c2 = (char)c;
 
-        push_x(0, X_NE);
+        push_x(OPER, X_NE);
     }
     else if (c == '<')                  // << operator
     {
@@ -474,11 +474,11 @@ bool scan_lt(struct cmd *cmd)
 
         cmd->c2 = (char)c;
 
-        push_x(0, X_LSHIFT);
+        push_x(OPER, X_LSHIFT);
     }
     else                                // < operator
     {
-        push_x(0, X_LT);
+        push_x(OPER, X_LT);
     }
 
     return true;

@@ -47,7 +47,7 @@ bool scan_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n;
+    int_t n;
 
     if (cmd->n_set)                     // nQq
     {
@@ -55,7 +55,7 @@ bool scan_Q(struct cmd *cmd)
     }
     else if (cmd->colon)                // :Qq
     {
-        n = (int)get_qsize(cmd->qindex);
+        n = (int_t)get_qsize(cmd->qindex);
     }
     else                                // Qq
     {

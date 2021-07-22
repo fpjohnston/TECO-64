@@ -149,11 +149,11 @@ extern bool exec_ctrl_F(int key);
 
 extern void exec_macro(struct buffer *macro, struct cmd *cmd);
 
-extern void exec_insert(const char *buf, uint len);
+extern void exec_insert(const char *buf, uint_t len);
 
 extern int find_eg(char *buf, bool reset);
 
-extern bool next_page(int start, int end, bool ff, bool yank);
+extern bool next_page(int_t start, int_t end, bool ff, bool yank);
 
 extern bool next_yank(void);
 

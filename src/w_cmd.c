@@ -210,10 +210,10 @@ bool scan_W(struct cmd *cmd)
 
     if (cmd->m_set)                     // m,n:W
     {
-        set_w(cmd->m_arg, cmd->n_arg);
+        set_w((int)cmd->m_arg, (int)cmd->n_arg);
     }
 
-    int n = get_w(cmd->n_arg);
+    int_t n = (int_t)get_w((int)cmd->n_arg);
 
     push_x(n, X_OPERAND);
 

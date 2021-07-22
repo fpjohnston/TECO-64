@@ -191,7 +191,7 @@ void exit_files(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-char *init_filename(const char *buf, uint len, bool colon)
+char *init_filename(const char *buf, uint_t len, bool colon)
 {
     assert(buf != NULL);                // Error if no file name
     assert(len != 0);                   // Error if name is a null string
@@ -217,12 +217,12 @@ char *init_filename(const char *buf, uint len, bool colon)
 
     if (buf[0] == '~' && home != NULL)
     {
-        len = (uint)snprintf(path, sizeof(path), "%s%.*s", home, len - 1,
-                             buf + 1);
+        len = (uint)snprintf(path, sizeof(path), "%s%.*s", home,
+                             (int)(len - 1), buf + 1);
     }
     else
     {
-        len = (uint)snprintf(path, sizeof(path), "%.*s", len, buf);
+        len = (uint)snprintf(path, sizeof(path), "%.*s", (int)len, buf);
     }
 
     assert((int)len > 0);
@@ -294,7 +294,7 @@ char *init_filename(const char *buf, uint len, bool colon)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool open_command(char *name, uint len, uint stream, bool colon,
+bool open_command(char *name, uint_t len, uint stream, bool colon,
                   struct buffer *text)
 {
     if (len == 0)                       // Any file to open?
@@ -401,7 +401,7 @@ struct ifile *open_input(char *name, uint stream, bool colon)
 
     // If using virtual paging, then we can try to read in the entire file.
 
-    if (file_stat.st_size > getsize_ebuf())
+    if (file_stat.st_size > (off_t)getsize_ebuf())
     {
         setsize_ebuf((uint_t)file_stat.st_size);
     }

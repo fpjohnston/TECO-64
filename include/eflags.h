@@ -39,7 +39,7 @@
 
 union e0_flag
 {
-    int flag;                   ///< Entire E0 flag
+    int_t flag;                 ///< Entire E0 flag
 
     struct
     {
@@ -59,7 +59,7 @@ union e0_flag
 
 union e1_flag
 {
-    int flag;                   ///< Entire E1 flag
+    int_t flag;                 ///< Entire E1 flag
 
     struct
     {
@@ -81,7 +81,7 @@ union e1_flag
 
 union e2_flag
 {
-    int flag;                   ///< Entire E2 flag
+    int_t flag;                 ///< Entire E2 flag
 
     struct
     {
@@ -106,7 +106,7 @@ union e2_flag
 
 union e3_flag
 {
-    int flag;                   ///< Entire E3 flag
+    int_t flag;                 ///< Entire E3 flag
 
     struct
     {
@@ -125,7 +125,7 @@ union e3_flag
 
 union e4_flag
 {
-    int flag;                   ///< Entire E4 flag
+    int_t flag;                 ///< Entire E4 flag
 
     struct
     {
@@ -141,7 +141,7 @@ union e4_flag
 
 union ed_flag
 {
-    int flag;                   ///< Entire ED flag
+    int_t flag;                 ///< Entire ED flag
 
     struct
     {
@@ -162,7 +162,7 @@ union ed_flag
 
 union eh_flag
 {
-    int flag;                   ///< Entire EH flag
+    int_t flag;                 ///< Entire EH flag
 
     struct
     {
@@ -177,7 +177,7 @@ union eh_flag
 
 union et_flag
 {
-    int flag;                   ///< Entire ET flag
+    int_t flag;                 ///< Entire ET flag
 
     struct
     {
@@ -227,22 +227,22 @@ union trace
 struct flags
 {
     bool       ctrl_e;          ///< Form feed flag
-    int        ctrl_x;          ///< Search mode flag
+    int_t      ctrl_x;          ///< Search mode flag
     union  e0_flag e0;          ///< Internal flags (not settable by user)
     union  e1_flag e1;          ///< Extended features
     union  e2_flag e2;          ///< Command restrictions
     union  e3_flag e3;          ///< File I/O features
     union  e4_flag e4;          ///< Display mode flags
     union  ed_flag ed;          ///< Edit level flags
-    int            ee;          ///< ESCape surrogate
+    int_t          ee;          ///< ESCape surrogate
     union  eh_flag eh;          ///< Help message flags
-    int            ej;          ///< Operating system type
-    int            eo;          ///< TECO version number
-    int            es;          ///< Search verification flag
+    int_t          ej;          ///< Operating system type
+    int_t          eo;          ///< TECO version number
+    int_t          es;          ///< Search verification flag
     union  et_flag et;          ///< Terminal flags
-    int            eu;          ///< Upper/lower case flag
-    int            ev;          ///< Edit verify flag
-    int         radix;          ///< Current input radix
+    int_t          eu;          ///< Upper/lower case flag
+    int_t          ev;          ///< Edit verify flag
+    int_t       radix;          ///< Current input radix
     union trace trace;          ///< Command trace flag
 };
 

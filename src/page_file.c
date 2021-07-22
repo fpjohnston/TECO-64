@@ -42,7 +42,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool page_forward(FILE *fp, int start, int end, bool ff)
+bool page_forward(FILE *fp, int_t start, int_t end, bool ff)
 {
     assert(fp != NULL);                 // Error if no file block
 
@@ -53,7 +53,7 @@ bool page_forward(FILE *fp, int start, int end, bool ff)
 
     // First pass - calculate how many characters we'll need to output
 
-    for (int i = start; i < end; ++i)
+    for (int_t i = start; i < end; ++i)
     {
         int c = getchar_ebuf(i);
 

@@ -146,7 +146,7 @@ void echo_in(int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void print_flag(int flag)
+void print_flag(int_t flag)
 {
     // Don't print anything if we're in a loop or a macro.
 
@@ -155,13 +155,13 @@ void print_flag(int flag)
         return;
     }
 
-    int m, n;
+    int_t m, n;
     int mark;
 
     if (flag == -1)
     {
-        m = getdelta_ebuf(0);
-        n = getdelta_ebuf(1);
+        m = getdelta_ebuf((int_t)0);
+        n = getdelta_ebuf((int_t)1);
         mark = -1;
     }
     else
@@ -179,7 +179,7 @@ void print_flag(int flag)
         }
         else if (n >= SPACE && n < DEL)
         {
-            mark = n;
+            mark = (int)n;
         }
         else
         {
@@ -188,8 +188,8 @@ void print_flag(int flag)
 
         if (m == 0)
         {
-            n = getdelta_ebuf(1);
-            m = getdelta_ebuf(0);
+            n = getdelta_ebuf((int_t)1);
+            m = getdelta_ebuf((int_t)0);
         }
         else
         {
@@ -200,7 +200,7 @@ void print_flag(int flag)
 
     int last = NUL;
 
-    for (int i = m; i < n; ++i)
+    for (int_t i = m; i < n; ++i)
     {
         if (i == 0 && mark != -1)
         {

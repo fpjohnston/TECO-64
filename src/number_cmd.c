@@ -98,7 +98,7 @@ void exec_bslash(struct cmd *cmd)
             format = "%x";
         }
 
-        uint nbytes = (uint)snprintf(string, sizeof(string), format, cmd->n_arg);
+        uint_t nbytes = (uint)snprintf(string, sizeof(string), format, cmd->n_arg);
 
         assert(nbytes < sizeof(string)); // Error if string was truncated
 
@@ -109,9 +109,9 @@ void exec_bslash(struct cmd *cmd)
     else
     {
         bool minus = false;
-        int pos = 0;
+        int_t pos = 0;
         uint ndigits = 0;
-        int n = 0;
+        int_t n = 0;
         int c = getchar_ebuf(pos++);
 
         if (c == '+')
@@ -184,7 +184,7 @@ bool scan_number(struct cmd *cmd)
 
     int c = cmd->c1;
     int cx;
-    int radix;
+    int_t radix;
 
     if (!f.e1.radix || nparens == 0)    // Auto-detect radix?
     {
@@ -215,7 +215,7 @@ bool scan_number(struct cmd *cmd)
         radix = 8;
     }
 
-    int n = digits[c];                  // Store 1st digit
+    int_t n = digits[c];                // Store 1st digit
 
     for (;;)
     {

@@ -84,7 +84,7 @@ static const struct color_table color_table[] =
 
 static int find_color(const char *token);
 
-static void set_color(const char *buf, uint len, int sat, short color);
+static void set_color(const char *buf, uint_t len, int_t sat, short color);
 
 static void set_colors(const struct cmd *cmd, enum region_pair pair);
 
@@ -173,7 +173,7 @@ static int find_color(const char *token)
 
 #if     defined(DISPLAY_MODE)
 
-static void set_color(const char *buf, uint len, int sat, short color)
+static void set_color(const char *buf, uint_t len, int_t sat, short color)
 {
     assert(buf != NULL);                // Error if no input string
 
@@ -228,8 +228,8 @@ static void set_colors(const struct cmd *cmd, enum region_pair pair)
 {
     assert(cmd != NULL);
 
-    int fg_sat = 100;
-    int bg_sat = 100;
+    int_t fg_sat = 100;
+    int_t bg_sat = 100;
 
     if (cmd->n_set)
     {

@@ -46,8 +46,8 @@ struct page
     struct page *next;                  ///< Next page in queue
     struct page *prev;                  ///< Previous page in queue
     char *addr;                         ///< Address of page
-    uint size;                          ///< Size of page in bytes
-    uint cr;                            ///< No. of added CRs in page
+    uint_t size;                        ///< Size of page in bytes
+    uint_t cr;                          ///< No. of added CRs in page
     bool ocrlf;                         ///< Copy of f.e3.ocrlf
     bool ff;                            ///< Append form feed to page
 };
@@ -61,6 +61,8 @@ static struct page *page_stack = NULL;  ///< Saved page stack
 static void copy_page(struct page *page);
 
 static void link_page(struct page *page);
+
+static struct page *make_page(int_t start, int_t end, bool ff);
 
 static bool pop_page(void);
 
@@ -90,7 +92,7 @@ static void copy_page(struct page *page)
     // current page and add it back onto the list.
 
     bool split = false;                 // true if we split the page
-    uint nbytes = page->size;           // No. of bytes to copy to edit buffer
+    uint_t nbytes = page->size;         // No. of bytes to copy to edit buffer
     char *p;
 
     if (!f.e3.nopage && (p = strrchr(page->addr, '\f')) != NULL)
@@ -167,7 +169,7 @@ static void link_page(struct page *page)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static struct page *make_page(int start, int end, bool ff)
+static struct page *make_page(int_t start, int_t end, bool ff)
 {
     struct page *page = alloc_mem((uint_t)sizeof(*page));
 
@@ -181,7 +183,7 @@ static struct page *make_page(int start, int end, bool ff)
     char *p  = page->addr;
     char last = NUL;
 
-    for (int i = start; i < end; ++i)
+    for (int_t i = start; i < end; ++i)
     {
         int c = getchar_ebuf(i);
 
@@ -215,7 +217,7 @@ static struct page *make_page(int start, int end, bool ff)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool page_backward(int count, bool ff)
+bool page_backward(int_t count, bool ff)
 {
     assert(count < 0);
 
@@ -308,7 +310,7 @@ void page_flush(FILE *fp)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool page_forward(FILE *unused, int start, int end, bool ff)
+bool page_forward(FILE *unused, int_t start, int_t end, bool ff)
 {
     if (start != end)
     {
@@ -435,11 +437,11 @@ static void write_page(FILE *fp, struct page *page)
     assert(fp != NULL);
     assert(page != NULL);
 
-    char last   = NUL;
-    uint nbytes = page->size + page->cr + (page->ff ? 1 : 0);
-    char *src   = page->addr;
-    char *dst   = alloc_mem(nbytes);
-    char *p     = dst;
+    char   last   = NUL;
+    uint_t nbytes = page->size + page->cr + (page->ff ? 1 : 0);
+    char   *src   = page->addr;
+    char   *dst   = alloc_mem(nbytes);
+    char   *p     = dst;
 
     while (page->size-- > 0)
     {

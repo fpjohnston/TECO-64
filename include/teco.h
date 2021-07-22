@@ -148,7 +148,7 @@ extern const char *teco_vtedit;
 
 extern void *alloc_mem(uint_t size);
 
-extern uint_t build_string(char **dest, const char *src, uint len);
+extern uint_t build_string(char **dest, const char *src, uint_t len);
 
 extern bool check_loop(void);
 
@@ -196,12 +196,12 @@ extern void init_env(void);
 
 extern void init_options(int argc, const char * const argv[]);
 
-extern void print_flag(int flag);
+extern void print_flag(int_t flag);
 
 extern void *shrink_mem(void *ptr, uint_t oldsize, uint_t newsize);
 
 extern char *strdup_mem(const char *ptr);
 
-extern int teco_env(int n, bool colon);
+extern int_t teco_env(int_t n, bool colon);
 
 #endif  // !defined(_TECO_H)

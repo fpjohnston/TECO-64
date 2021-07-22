@@ -311,11 +311,11 @@ int_t getdelta_ebuf(int_t n)
 {
     if (n > 0)
     {
-        return next_delim((uint)n) - t.dot;
+        return next_delim((uint_t)n) - t.dot;
     }
     else
     {
-        return last_delim((uint)-n)- t.dot;
+        return last_delim((uint_t)-n)- t.dot;
     }
 }
 
@@ -476,7 +476,7 @@ static int_t next_delim(uint_t nlines)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void setpos_ebuf(int pos)
+void setpos_ebuf(int_t pos)
 {
     if ((uint_t)pos < eb.left + eb.right)
     {

@@ -78,9 +78,9 @@ static void exec_case(struct cmd *cmd, bool lower)
 {
     assert(cmd != NULL);
 
-    int dot = t.dot;
-    int Z   = t.Z;
-    int m, n;
+    int_t dot = t.dot;
+    int_t Z   = t.Z;
+    int_t m, n;
 
     if (cmd->h)                         // HFU/HFL?
     {
@@ -134,11 +134,11 @@ static void exec_case(struct cmd *cmd, bool lower)
         }
     }
 
-    int saved_dot = t.dot;
+    int_t saved_dot = t.dot;
 
-    for (int i = m; i < n; ++i)
+    for (int_t i = m; i < n; ++i)
     {
-        int c = getchar_ebuf(0);
+        int c = getchar_ebuf((int_t)0);
 
         if (c == EOF)
         {
@@ -147,12 +147,12 @@ static void exec_case(struct cmd *cmd, bool lower)
 
         if (lower && isupper(c))
         {
-            delete_ebuf(1);
+            delete_ebuf((int_t)1);
             (void)add_ebuf(tolower(c));
         }
         else if (islower(c))
         {
-            delete_ebuf(1);
+            delete_ebuf((int_t)1);
             (void)add_ebuf(toupper(c));
         }
         else

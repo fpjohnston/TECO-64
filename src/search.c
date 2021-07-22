@@ -412,7 +412,7 @@ void search_failure(struct cmd *cmd)
     {
         if (!f.ed.keepdot)
         {
-            setpos_ebuf(0);
+            setpos_ebuf(t.B);
         }
 
         if (check_loop())
@@ -522,14 +522,14 @@ bool search_loop(struct search *s)
 
                     if (s->search == search_backward)
                     {
-                        if (!page_backward(-1, f.ctrl_e))
+                        if (!page_backward((int_t)-1, f.ctrl_e))
                         {
                             return false;
                         }
 
                         setpos_ebuf(t.Z); // Go to end of buffer
                     }
-                    else if (!next_page(0, t.Z, f.ctrl_e, (bool)true))
+                    else if (!next_page((int_t)0, t.Z, f.ctrl_e, (bool)true))
                     {
                         return false;
                     }
@@ -554,7 +554,7 @@ bool search_loop(struct search *s)
                         return false;
                     }
 
-                    setpos_ebuf(0);
+                    setpos_ebuf(t.B);
 
                     break;
 

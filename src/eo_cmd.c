@@ -56,7 +56,7 @@ void exec_EO(struct cmd *cmd)
 
     if (!cmd->n_set)
     {
-        push_x(MAJOR_VERSION, X_OPERAND);
+        push_x((int_t)MAJOR_VERSION, X_OPERAND);
 
         return;
     }
@@ -78,18 +78,18 @@ void exec_EO(struct cmd *cmd)
     switch (cmd->n_arg)
     {
         case -2:
-            push_x(PATCH_VERSION, X_OPERAND);
+            push_x((int_t)PATCH_VERSION, X_OPERAND);
 
             break;
 
         case -1:
-            push_x(MINOR_VERSION, X_OPERAND);
+            push_x((int_t)MINOR_VERSION, X_OPERAND);
 
             break;
 
         case 0:
         default:
-            push_x(MAJOR_VERSION, X_OPERAND);
+            push_x((int_t)MAJOR_VERSION, X_OPERAND);
 
             break;
     }

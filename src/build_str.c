@@ -52,7 +52,7 @@ static uint_t build_len;                ///< Current length of build string
 
 static void store_chr(int c);
 
-static void store_str(const char *buf, uint len);
+static void store_str(const char *buf, uint_t len);
 
 
 ///
@@ -75,7 +75,7 @@ static void store_str(const char *buf, uint len);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-uint_t build_string(char **dest, const char *src, uint len)
+uint_t build_string(char **dest, const char *src, uint_t len)
 {
     assert(dest != NULL);               // Error if no destination string
     assert(src != NULL);                // Error if no source string
@@ -95,7 +95,7 @@ uint_t build_string(char **dest, const char *src, uint len)
         {
             literal = false;
 
-            store_chr(c);
+            store_chr((int)c);
 
             continue;
         }
@@ -198,7 +198,7 @@ uint_t build_string(char **dest, const char *src, uint len)
 
             if (qname == '*' && c == 'Q')
             {
-                store_str(last_file, (uint)strlen(last_file));
+                store_str(last_file, (uint_t)strlen(last_file));
 
                 continue;
             }
@@ -233,7 +233,7 @@ uint_t build_string(char **dest, const char *src, uint len)
             }
             else if (c == 'U')          // <CTRL/E>Uq
             {
-                store_chr(qreg->n);
+                store_chr((int)qreg->n);
             }
 
             continue;
@@ -312,7 +312,7 @@ static void store_chr(int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void store_str(const char *buf, uint len)
+static void store_str(const char *buf, uint_t len)
 {
     assert(buf != NULL);                // Error if no input string
 

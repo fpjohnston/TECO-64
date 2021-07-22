@@ -167,8 +167,8 @@ static int get_cmd(char *cmd)
 
     char buf[PATH_MAX];                 //< General purpose buffer
     FILE *fp;                           //< File description for pipe
-    uint size = 0;                      //< Total no. of bytes read
-    uint nbytes;                        //< No. of bytes from last read
+    uint_t size = 0;                    //< Total no. of bytes read
+    uint_t nbytes;                      //< No. of bytes from last read
 
     snprintf(buf, (ulong)PATH_MAX, "%s 2>&1", cmd);
                                         // Capture stderr as well as stdout
@@ -255,7 +255,7 @@ void init_env(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int teco_env(int n_arg, bool colon)
+int_t teco_env(int_t n_arg, bool colon)
 {
     switch (n_arg)
     {

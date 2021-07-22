@@ -108,7 +108,7 @@ void exec_EI(struct cmd *cmd)
     assert(cmd != NULL);
 
     const char *buf = cmd->text1.data;
-    uint len        = cmd->text1.len;
+    uint_t len      = cmd->text1.len;
     uint stream     = IFILE_INDIRECT;
 
     close_input(stream);                // Close any open file

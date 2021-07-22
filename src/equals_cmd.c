@@ -214,7 +214,7 @@ bool scan_equals(struct cmd *cmd)
         }
 
         trace_cbuf('=');
-        push_x(0, X_EQ);
+        push_x((int_t)0, X_EQ);
 
         return true;
     }

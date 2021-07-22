@@ -123,7 +123,7 @@ static void exec_search(struct cmd *cmd, bool replace)
     {
         if (replace)
         {
-            delete_ebuf(-(int)last_len);
+            delete_ebuf(-(int_t)last_len);
 
             if (cmd->text2.len)
             {

@@ -142,7 +142,7 @@ static void find_tag(struct cmd *cmd, const char *tag)
     // by build_string(). This is to avoid memory leaks in the event of errors.
 
     char *tag1 = NULL;                  // Dynamically-allocated tag name
-    uint len = build_string(&tag1, tag, (uint)strlen(tag));
+    uint_t len = build_string(&tag1, tag, (uint_t)strlen(tag));
     char tag2[len + 1];                 // Local copy of tag name
 
     strcpy(tag2, tag1);
@@ -271,7 +271,7 @@ bool scan_bang(struct cmd *cmd)
         reject_colon(cmd);
         reject_atsign(cmd);
 
-        push_x(0, X_NOT);
+        push_x((int_t)0, X_NOT);
 
         return true;
     }

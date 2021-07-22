@@ -47,8 +47,8 @@ void exec_D(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n = 1;
-    int m;
+    int_t n = 1;
+    int_t m;
 
     if (cmd->n_set)
     {
@@ -113,8 +113,8 @@ void exec_K(struct cmd *cmd)
         return;
     }
 
-    int n = 1;
-    int m;
+    int_t n = 1;
+    int_t m;
 
     if (cmd->n_set)
     {

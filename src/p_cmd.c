@@ -56,9 +56,9 @@ void exec_P(struct cmd *cmd)
         throw(E_NFO);                   // No file for output
     }
 
-    int start = t.B;
-    int end   = t.Z;
-    int count = 1;
+    int_t start = t.B;
+    int_t end   = t.Z;
+    int_t count = 1;
     bool ff   = false;
     bool yank = false;
 
@@ -168,7 +168,7 @@ void exec_P(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool next_page(int start, int end, bool ff, bool yank)
+bool next_page(int_t start, int_t end, bool ff, bool yank)
 {
     if (!page_forward(ofiles[ostream].fp, start - t.dot, end - t.dot, ff))
     {
@@ -178,7 +178,8 @@ bool next_page(int start, int end, bool ff, bool yank)
 
             struct ifile *ifile = &ifiles[istream];
 
-            if (ifile->fp == NULL || !append((bool)false, 0, (bool)false))
+            if (ifile->fp == NULL
+                || !append((bool)false, (int_t)0, (bool)false))
             {
                 return false;           // False if no more data
             }

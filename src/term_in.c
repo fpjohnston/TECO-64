@@ -69,7 +69,7 @@ static void exec_ctrl_G(void);
 
 static void exec_DEL(void);
 
-static void exec_inspect(int pos, int line);
+static void exec_inspect(int_t pos, int_t line);
 
 static void exec_star(void);
 
@@ -217,7 +217,7 @@ static void exec_DEL(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_inspect(int pos, int line)
+static void exec_inspect(int_t pos, int_t line)
 {
 
 #if     defined(DISPLAY_MODE)
@@ -241,7 +241,7 @@ static void exec_inspect(int pos, int line)
 
     if (t.dot != pos)
     {
-        int n = getdelta_ebuf(line);
+        int_t n = getdelta_ebuf(line);
 
         setpos_ebuf(n + t.dot);
 
@@ -255,7 +255,7 @@ static void exec_inspect(int pos, int line)
         }
         else
         {
-            print_flag(-1);
+            print_flag((int_t)-1);
         }
     }
 }
@@ -464,7 +464,7 @@ static int read_first(void)
             case DEL:
                 if (t.dot != t.B)
                 {
-                    exec_inspect(t.B, -1);
+                    exec_inspect(t.B, (int_t)-1);
                 }
 
                 break;
@@ -473,7 +473,7 @@ static int read_first(void)
             case LF:
                 if (t.dot != t.Z)
                 {
-                    exec_inspect(t.Z, 1);
+                    exec_inspect(t.Z, (int_t)1);
 
                     if (t.dot == t.Z)
                     {

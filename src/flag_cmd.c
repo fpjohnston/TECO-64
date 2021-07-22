@@ -46,9 +46,9 @@
 
 // Local functions
 
-static void check_n_flag(struct cmd *cmd, int *flag);
+static void check_n_flag(struct cmd *cmd, int_t *flag);
 
-static void check_mn_flag(struct cmd *cmd, int *flag);
+static void check_mn_flag(struct cmd *cmd, int_t *flag);
 
 
 ///
@@ -58,7 +58,7 @@ static void check_mn_flag(struct cmd *cmd, int *flag);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void check_mn_flag(struct cmd *cmd, int *flag)
+static void check_mn_flag(struct cmd *cmd, int_t *flag)
 {
     assert(cmd != NULL);
     assert(flag != NULL);               // Error if no flag bits
@@ -88,7 +88,7 @@ static void check_mn_flag(struct cmd *cmd, int *flag)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void check_n_flag(struct cmd *cmd, int *flag)
+static void check_n_flag(struct cmd *cmd, int_t *flag)
 {
     assert(cmd != NULL);
     assert(flag != NULL);               // Error if no flag bits
@@ -109,7 +109,7 @@ static void check_n_flag(struct cmd *cmd, int *flag)
 
 void exec_ctrl_E(struct cmd *cmd)
 {
-    int n = f.ctrl_e ? -1 : 0;          // Reading flag returns 0 or -1
+    int_t n = f.ctrl_e ? -1 : 0;        // Reading flag returns 0 or -1
 
     check_n_flag(cmd, &n);
 
@@ -266,7 +266,7 @@ void exec_ED(struct cmd *cmd)
 
 void exec_EE(struct cmd *cmd)
 {
-    int n = f.ee;
+    int_t n = f.ee;
 
     check_n_flag(cmd, &n);
 
@@ -408,7 +408,7 @@ bool scan_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int n = 0;                          // 0EJ is default command
+    int_t n = 0;                        // 0EJ is default command
 
     if (cmd->n_set)
     {

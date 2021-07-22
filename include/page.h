@@ -33,11 +33,11 @@
 
 extern uint page_count;
 
-extern bool page_backward(int count, bool ff);
+extern bool page_backward(int_t count, bool ff);
 
 extern void page_flush(FILE *fp);
 
-extern bool page_forward(FILE *fp, int start, int end, bool ff);
+extern bool page_forward(FILE *fp, int_t start, int_t end, bool ff);
 
 extern void reset_pages(void);
 
