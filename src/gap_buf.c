@@ -477,7 +477,7 @@ static int_t next_delim(uint_t nlines)
 
 void setpos_ebuf(int_t pos)
 {
-    if ((uint_t)pos < eb.left + eb.right)
+    if ((uint_t)pos <= eb.left + eb.right)
     {
         t.dot = pos;
 
