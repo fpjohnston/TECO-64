@@ -32,7 +32,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if     defined(DISPLAY_MODE)
+
 #include <ncurses.h>
+
+#endif
 
 #include "teco.h"
 #include "ascii.h"
@@ -566,11 +570,17 @@ static void rubout_chr(int c)
 
     uint n = 1;
 
+#if     defined(DISPLAY_MODE)
+
     if (f.e0.display)
     {
         n = (uint)strlen(unctrl((uint)c));
     }
-    else if (iscntrl(c))
+    else
+
+#endif
+
+    if (iscntrl(c))
     {
         switch (c)
         {

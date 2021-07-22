@@ -38,19 +38,6 @@
 #include "term.h"
 
 
-#if     defined(LONG_64)
-
-#define KB  (1024uL)                ///< No. of bytes in a kilobyte
-
-#else
-
-#define KB  (1024u)                 ///< No. of bytes in a kilobyte
-
-#endif
-
-#define MB  (KB * KB)               ///< No. of bytes in a megabyte
-#define GB  (MB * KB)               ///< No. of bytes in a gigabyte
-
 #define ROUND_K(x) (((((uint_t)x) + KB - 1) / KB) * KB) ///< Round up to K boundary
 
 
@@ -91,10 +78,9 @@
 
 struct edit t =
 {
-    .B    = 0,
-    .Z    = 0,
-    .dot  = 0,
-    .size = 0,
+    .B   = 0,
+    .Z   = 0,
+    .dot = 0,
 };
 
 ///  @var     eb
@@ -381,7 +367,7 @@ int_t getlines_ebuf(int_t n)
 
 #if     defined(PAGE_VM)
 
-int_t getsize_ebuf(void)
+uint_t getsize_ebuf(void)
 {
     return eb.size;
 }

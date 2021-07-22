@@ -177,7 +177,7 @@ int getlen_tbuf(void)
 
 void init_tbuf(void)
 {
-    term_buf = alloc_mem((uint)sizeof(*term_buf));
+    term_buf = alloc_mem((uint_t)sizeof(*term_buf));
 
     term_buf->len  = 0;
     term_buf->pos  = 0;

@@ -86,7 +86,7 @@ static bool canonical_name(char **name)
 
     free_mem(name);                     // Deallocate previous file name
 
-    *name = alloc_mem((uint)strlen(path) + 1);
+    *name = alloc_mem((uint_t)strlen(path) + 1);
 
     strcpy(*name, path);
 
@@ -403,7 +403,7 @@ struct ifile *open_input(char *name, uint stream, bool colon)
 
     if (file_stat.st_size > getsize_ebuf())
     {
-        setsize_ebuf(file_stat.st_size);
+        setsize_ebuf((uint_t)file_stat.st_size);
     }
 
 #endif
@@ -515,7 +515,7 @@ void set_last(const char *name)
 
     // Make copy of name of last file opened.
 
-    last_file = alloc_mem((uint)strlen(name) + 1);
+    last_file = alloc_mem((uint_t)strlen(name) + 1);
 
     strcpy(last_file, name);
 }

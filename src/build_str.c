@@ -44,9 +44,9 @@
 
 static char *build_str;                 ///< Build string
 
-static uint build_size;                 ///< Allocated size of build string
+static uint_t build_size;               ///< Allocated size of build string
 
-static uint build_len;                  ///< Current length of build string
+static uint_t build_len;                ///< Current length of build string
 
 // Local functions
 
@@ -75,7 +75,7 @@ static void store_str(const char *buf, uint len);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-uint build_string(char **dest, const char *src, uint len)
+uint_t build_string(char **dest, const char *src, uint len)
 {
     assert(dest != NULL);               // Error if no destination string
     assert(src != NULL);                // Error if no source string
@@ -294,7 +294,7 @@ static void store_chr(int c)
 {
     if (build_len == build_size)
     {
-        uint oldsize = build_size;
+        uint_t oldsize = build_size;
 
         build_size += BUILD_EXPAND;
 

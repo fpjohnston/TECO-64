@@ -169,7 +169,7 @@ ifdef   display
 
 DEFINES += -D DISPLAY_MODE
 DOXYGEN +=    DISPLAY_MODE
-
+LIBS    += -l ncurses
 endif
 
 #
@@ -205,7 +205,7 @@ endif
 ifeq (${paging}, vm)
 
 SOURCES += page_vm.c
-CFLAGS  += -D PAGE_VM
+DEFINES += -D PAGE_VM
 DOXYGEN +=    PAGE_VM
 
 else ifeq (${paging}, file)
@@ -221,7 +221,7 @@ SOURCES += page_std.c
 else ifeq (${paging}, )
 
 SOURCES += page_vm.c
-CFLAGS  += -D PAGE_VM
+DEFINES += -D PAGE_VM
 DOXYGEN +=    PAGE_VM
 
 else
@@ -236,7 +236,7 @@ endif
 
 ifdef   default_u
 
-CFLAGS  += -D DEFAULT_U=$(default_u)
+DEFINES += -D DEFAULT_U=$(default_u)
 DOXYGEN +=    DEFAULT_U
 
 endif
@@ -245,7 +245,7 @@ endif
 
 ifdef   dollar
 
-CFLAGS  += -D DOLLAR_ESC
+DEFINES += -D DOLLAR_ESC
 DOXYGEN +=    DOLLAR_ESC
 
 endif
@@ -254,7 +254,7 @@ endif
 
 ifdef   eu
 
-CFLAGS  += -D EU_COMMAND
+DEFINES += -D EU_COMMAND
 DOXYGEN +=    EU_COMMAND
 
 endif
@@ -263,7 +263,7 @@ endif
 
 ifdef   long
 
-CFLAGS  += -D LONG_64
+DEFINES += -D LONG_64
 DOXYGEN +=    LONG_64
 
 endif
@@ -382,7 +382,7 @@ $(TARGET): bin/$(TARGET)
 
 bin/$(TARGET): $(OBJECTS)
 	@echo Making $(@F) $(NULL)
-	$(AT)cd obj && $(CC) $(DFLAGS) -o ../$@ $(OBJECTS) $(LIBS) -lncurses -lm
+	$(AT)cd obj && $(CC) $(DFLAGS) -o ../$@ $(OBJECTS) $(LIBS)
 
 %.lob: %.c
 	@echo Making $@ $(NULL)

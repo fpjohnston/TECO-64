@@ -83,14 +83,6 @@ static uint n_home = 0;             ///< No. of consecutive Home keys
 static uint n_end = 0;              ///< No. of consecutive End keys
 
 ///
-///  @def    WIDTH
-///
-///  @brief  Get decimal width of a number (used to print status line values).
-///
-
-#define WIDTH(x) (((x == 0) ? 0 : (int)log10((double)x)) + 1)
-
-///
 ///  @def    err_if_true
 ///
 ///  @brief  Issue error if function returns specified value.
@@ -151,7 +143,9 @@ static void error_dpy(void);
 
 static void exec_commands(const char *string);
 
-static int geteditsize(char *buf, ulong size, uint bytes);
+static int geteditsize(char *buf, ulong size, uint_t bytes);
+
+static int getwidth(ulong n);
 
 static void mark_cursor(int row, int col);
 
@@ -412,54 +406,50 @@ int getchar_dpy(bool unused)
 
 #if     defined(DISPLAY_MODE)
 
-static int geteditsize(char *buf, ulong size, uint bytes)
+static int geteditsize(char *buf, ulong size, uint_t bytes)
 {
     assert(buf != NULL);
 
-    const uint K = 1024;
+    const uint_t gbytes = bytes / GB;
+    const uint_t mbytes = bytes / MB;
+    const uint_t kbytes = bytes / KB;
 
-    if (bytes < K)
+    if (gbytes != 0)
     {
-        snprintf(buf, size, "%u", bytes);
+        return snprintf(buf, size, "%uG", gbytes);
+    }
+    else if (mbytes != 0)
+    {
+        return snprintf(buf, size, "%uM", mbytes);
+    }
+    else if (kbytes != 0)
+    {
+        return snprintf(buf, size, "%uK", kbytes);
     }
     else
     {
-        uint kbytes = (bytes + K - 1) / K;
-
-        if (kbytes < 10)
-        {
-            snprintf(buf, size, "%.1fK", bytes / (float)K);
-
-            if (!strcmp(buf, "10.0K"))
-            {
-                strcpy(buf, "10K");
-            }
-        }
-        else if (kbytes < K)
-        {
-            snprintf(buf, size, "%uK", kbytes);
-        }
-        else
-        {
-            uint mbytes = (kbytes + K - 1) / K;
-
-            if (mbytes < 10)
-            {
-                snprintf(buf, size, "%.1fM", kbytes / (float)K);
-
-                if (!strcmp(buf, "10.0M"))
-                {
-                    strcpy(buf, "10M");
-                }
-            }
-            else
-            {
-                snprintf(buf, size, "%uM", mbytes);
-            }
-        }
+        return snprintf(buf, size, "%u", bytes);
     }
+}
 
-    return (int)strlen(buf);
+#endif
+
+
+///
+///  @brief    Get width of unsigned number (basically, log10() without using
+///            a floating-point library function).
+///
+///  @returns  No. of bytes written to buffer.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DISPLAY_MODE)
+
+static int getwidth(ulong bytes)
+{
+    char buf[12];
+
+    return snprintf(buf, sizeof(buf), "%lu", bytes);
 }
 
 #endif
@@ -1392,7 +1382,7 @@ static void update_status(void)
         int row     = getlines_ebuf(-1);
         int nrows   = getlines_ebuf(0);
         int col     = -getdelta_ebuf(0);
-        int width   = WIDTH(t.Z);
+        int width   = getwidth((ulong)(uint)t.Z);
         int nbytes  = snprintf(status, sizeof(status), ".=" DEC_FMT " (",
                                width, t.dot);
         size_t size = sizeof(status);   // Remaining bytes available in line
@@ -1405,7 +1395,7 @@ static void update_status(void)
 
         nbytes += snprintf(status + nbytes, size, ")  Z=" DEC_FMT " ",
                            width, t.Z);
-        width = WIDTH(nrows);
+        width = getwidth((ulong)(uint)nrows);
 
         if (t.dot >= t.Z)
         {
@@ -1425,7 +1415,7 @@ static void update_status(void)
 
         size = sizeof(status) - (uint)nbytes;
 
-        nbytes += geteditsize(status + nbytes, size, (uint)t.size);
+        nbytes += geteditsize(status + nbytes, size, getsize_ebuf());
 
         status[nbytes] = SPACE;         // Replace NUL character with space
 

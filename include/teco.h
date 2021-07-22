@@ -46,15 +46,22 @@
 
 #if     defined(LONG_64)
 
-typedef long int_t;               ///< Size of m and n arguments
-typedef size_t uint_t;            ///< Use largest possible unsigned int
+typedef long int_t;                 ///< Size of m and n arguments
+typedef size_t uint_t;              ///< Use largest possible unsigned int
+
+#define KB  (1024uL)                ///< No. of bytes in a kilobyte
 
 #else
 
-typedef int int_t;                ///< Size of m and n arguments
-typedef unsigned int uint_t;      ///< Use regular unsigned int
+typedef int int_t;                  ///< Size of m and n arguments
+typedef unsigned int uint_t;        ///< Use regular unsigned int
+
+#define KB  (1024u)                 ///< No. of bytes in a kilobyte
 
 #endif
+
+#define MB  (KB * KB)               ///< No. of bytes in a megabyte
+#define GB  (MB * KB)               ///< No. of bytes in a gigabyte
 
 /// @def    countof(array)
 /// @brief  Returns the number of elements in an array.
@@ -102,9 +109,9 @@ enum
 struct buffer
 {
     char *data;                     ///< Buffer data
-    uint size;                      ///< Total size of buffer in bytes
-    uint len;                       ///< Current length stored
-    uint pos;                       ///< Position of next character
+    uint_t size;                    ///< Total size of buffer in bytes
+    uint_t len;                     ///< Current length stored
+    uint_t pos;                     ///< Position of next character
 };
 
 ///  @struct tstring
@@ -114,7 +121,7 @@ struct buffer
 struct tstring
 {
     char *data;                     ///< String data
-    uint len;                       ///< No. of characters
+    uint_t len;                     ///< No. of characters
 };
 
 // Global variables
@@ -123,7 +130,7 @@ extern uint if_depth;
 
 extern jmp_buf jump_main;
 
-extern uint last_len;
+extern uint_t last_len;
 
 extern uint loop_depth;
 
@@ -141,7 +148,7 @@ extern const char *teco_vtedit;
 
 extern void *alloc_mem(uint_t size);
 
-extern uint build_string(char **dest, const char *src, uint len);
+extern uint_t build_string(char **dest, const char *src, uint len);
 
 extern bool check_loop(void);
 

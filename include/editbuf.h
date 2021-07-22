@@ -50,10 +50,9 @@ typedef enum
 
 struct edit
 {
-    int_t B;                      ///< First position in buffer
+    const int_t B;                ///< First position in buffer
     int_t Z;                      ///< Last position in buffer
     int_t dot;                    ///< Current position in buffer
-    int_t size;                   ///< Size of buffer in bytes
 };
 
 extern struct edit t;
@@ -104,7 +103,7 @@ extern int_t getlines_ebuf(int_t relpos);
 
 #if     defined(PAGE_VM)
 
-extern int_t getsize_ebuf(void);
+extern uint_t getsize_ebuf(void);
 
 #endif
 

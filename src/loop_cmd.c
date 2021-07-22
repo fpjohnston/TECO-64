@@ -320,7 +320,7 @@ static void pop_loop(bool pop_ok)
 
 static void push_loop(int count)
 {
-    struct loop *loop = alloc_mem((uint)sizeof(*loop));
+    struct loop *loop = alloc_mem((uint_t)sizeof(*loop));
 
     loop->count = count;
     loop->start = cbuf->pos;

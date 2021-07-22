@@ -128,7 +128,7 @@ void exit_cbuf(void)
 
 void init_cbuf(void)
 {
-    root = alloc_mem((uint)sizeof(*root));
+    root = alloc_mem((uint_t)sizeof(*root));
 
     root->len  = 0;
     root->pos  = 0;

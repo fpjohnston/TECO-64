@@ -76,7 +76,7 @@ void exec_FK(struct cmd *cmd)
     s.search     = search_forward;
     s.count      = cmd->n_arg;
     s.text_start = 0;
-    s.text_end   = (int)(t.Z - t.dot);
+    s.text_end   = t.Z - t.dot;
 
     if (search_loop(&s))
     {

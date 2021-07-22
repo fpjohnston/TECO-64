@@ -412,7 +412,7 @@ uint get_qsize(int qindex)
 void init_qreg(void)
 {
     list_head = NULL;
-    local_head = alloc_mem((uint)sizeof(*local_head));
+    local_head = alloc_mem((uint_t)sizeof(*local_head));
 }
 
 
@@ -503,7 +503,7 @@ void print_qreg(int qindex)
 
 void push_qlocal(void)
 {
-    struct qlocal *qlocal = alloc_mem((uint)sizeof(*qlocal));
+    struct qlocal *qlocal = alloc_mem((uint_t)sizeof(*qlocal));
 
     qlocal->next = local_head;
 
@@ -521,7 +521,7 @@ void push_qlocal(void)
 bool push_qreg(int qindex)
 {
     struct qreg *qreg    = QREGISTER(qindex);
-    struct qlist *savedq = alloc_mem((uint)sizeof(*savedq));
+    struct qlist *savedq = alloc_mem((uint_t)sizeof(*savedq));
 
     savedq->qreg.n         = qreg->n;
     savedq->qreg.text.size = qreg->text.size;

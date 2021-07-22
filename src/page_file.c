@@ -81,7 +81,7 @@ bool page_forward(FILE *fp, int start, int end, bool ff)
 
     // Second pass - fill page and then output it
 
-    page.addr = alloc_mem((uint)page.size); // Allocate memory for page
+    page.addr = alloc_mem((uint_t)page.size); // Allocate memory for page
 
     char *p = page.addr;
 

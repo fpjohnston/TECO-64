@@ -84,7 +84,7 @@ void exec_E_ubar(struct cmd *cmd)
         s.search     = search_forward;
         s.count      = cmd->n_arg;
         s.text_start = 0;               // Start at current character
-        s.text_end   = (int)(t.Z - t.dot);
+        s.text_end   = t.Z - t.dot;
     }
 
     if (search_loop(&s))

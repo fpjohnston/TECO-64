@@ -127,9 +127,9 @@ void exec_EI(struct cmd *cmd)
             return;
         }
 
-        struct ei_block *ei_cmd = alloc_mem((uint)sizeof(*ei_cmd));
+        struct ei_block *ei_cmd = alloc_mem((uint_t)sizeof(*ei_cmd));
 
-        ei_cmd->buf.data = alloc_mem((uint)sizeof(ei_cmd->buf));
+        ei_cmd->buf.data = alloc_mem((uint_t)sizeof(ei_cmd->buf));
         ei_cmd->buf.size = 0;
         ei_cmd->buf.len  = 0;
         ei_cmd->buf.pos  = 0;

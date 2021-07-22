@@ -78,8 +78,8 @@ static void exec_case(struct cmd *cmd, bool lower)
 {
     assert(cmd != NULL);
 
-    int dot = (int)t.dot;
-    int Z   = (int)t.Z;
+    int dot = t.dot;
+    int Z   = t.Z;
     int m, n;
 
     if (cmd->h)                         // HFU/HFL?

@@ -169,14 +169,14 @@ static void link_page(struct page *page)
 
 static struct page *make_page(int start, int end, bool ff)
 {
-    struct page *page = alloc_mem((uint)sizeof(*page));
+    struct page *page = alloc_mem((uint_t)sizeof(*page));
 
     page->next  = page->prev = NULL;
     page->size  = (uint)t.Z;             // No. of bytes in edit buffer
     page->cr    = 0;
     page->ocrlf = f.e3.ocrlf;
     page->ff    = ff;
-    page->addr  = alloc_mem((uint)page->size);
+    page->addr  = alloc_mem((uint_t)page->size);
 
     char *p  = page->addr;
     char last = NUL;

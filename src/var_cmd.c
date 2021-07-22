@@ -184,7 +184,7 @@ bool scan_dot(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_x((int)t.dot, X_OPERAND);
+    push_x(t.dot, X_OPERAND);
 
     return true;
 }
@@ -236,7 +236,7 @@ bool scan_H(struct cmd *cmd)
     cmd->m_set = true;
     cmd->m_arg = t.B;
 
-    push_x((int)t.Z, X_OPERAND);
+    push_x(t.Z, X_OPERAND);
 
     return true;
 }
@@ -253,7 +253,7 @@ bool scan_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    push_x((int)t.Z, X_OPERAND);
+    push_x(t.Z, X_OPERAND);
 
     return true;
 }

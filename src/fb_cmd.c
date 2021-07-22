@@ -110,7 +110,7 @@ static void exec_search(struct cmd *cmd, bool replace)
     {
         s.search     = search_backward;
         s.text_start = getdelta_ebuf(cmd->n_arg);
-        s.text_end   = (int)t.dot - 1;
+        s.text_end   = t.dot - 1;
     }
     else
     {
