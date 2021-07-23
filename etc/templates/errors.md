@@ -22,13 +22,13 @@ command being executed.
 
 | Message | Description |
 | ------- | ----------- |
-| <nobr>\%%Superseding existing file</nobr> | The file specified to an EW command already exists, and the old copy will be deleted if the file is closed with an EC or EX command. The EK command may be used to undo the EW command. |
-| <nobr>\%%Search failure in loop</nobr> | A search command has failed inside a loop. A ; (semi-colon) command immediately following the search command can be used to suppress this message. After printing the message, the iteration is terminated, i.e., TECO simulates an F> command. |
+| <nobr>\%Superseding existing file</nobr> | The file specified to an EW command already exists, and the old copy will be deleted if the file is closed with an EC or EX command. The EK command may be used to undo the EW command. |
+| <nobr>\%Search failure in loop</nobr> | A search command has failed inside a loop. A ; (semi-colon) command immediately following the search command can be used to suppress this message. After printing the message, the iteration is terminated, i.e., TECO simulates an F> command. |
 
 The following error messages are listed alphabetically by their three-letter
 code.
 
 | Error | Message            | Description |
 | ----- | ------------------ | ----------- |
-%s
+/* (INSERT: ERROR CODES) */
 
