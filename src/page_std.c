@@ -45,7 +45,7 @@ uint page_count = 0;                ///< Current page number
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool page_backward(int unused1, bool unused2)
+bool page_backward(int_t unused1, bool unused2)
 {
     throw(E_NPA);                       // P argument cannot be negative
 }
