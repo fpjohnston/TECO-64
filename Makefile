@@ -396,20 +396,20 @@ bin/$(TARGET): $(OBJECTS)
 
 $(OBJECTS): $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) obj/CFLAGS
 
-$(COMMANDS_H): etc/commands.xml etc/t_commands.h etc/commands.pl
-	$(AT)etc/commands.pl -i $< -t etc/t_commands.h -o $@
+$(COMMANDS_H): etc/commands.xml etc/templates/commands.h etc/commands.pl
+	$(AT)etc/commands.pl -i $< -t etc/templates/commands.h -o $@
 
-$(ERRCODES_H): etc/errors.xml etc/t_errcodes.h etc/errors.pl
-	$(AT)etc/errors.pl -i $< -t etc/t_errcodes.h -o $@
+$(ERRCODES_H): etc/errors.xml etc/templates/errcodes.h etc/errors.pl
+	$(AT)etc/errors.pl -i $< -t etc/templates/errcodes.h -o $@
 
-$(ERRTABLES_H): etc/errors.xml etc/t_errtables.h etc/errors.pl
-	$(AT)etc/errors.pl -i $< -t etc/t_errtables.h -o $@
+$(ERRTABLES_H): etc/errors.xml etc/templates/errtables.h etc/errors.pl
+	$(AT)etc/errors.pl -i $< -t etc/templates/errtables.h -o $@
 
-$(EXEC_H): etc/commands.xml etc/t_exec.h etc/commands.pl
-	$(AT)etc/commands.pl -i $< -t etc/t_exec.h -o $@
+$(EXEC_H): etc/commands.xml etc/templates/exec.h etc/commands.pl
+	$(AT)etc/commands.pl -i $< -t etc/templates/exec.h -o $@
 
-$(OPTIONS_H): etc/options.xml etc/t_options.h etc/options.pl
-	$(AT)etc/options.pl -c $< -t etc/t_options.h -o $@ $(OPTIONS_DEBUG)
+$(OPTIONS_H): etc/options.xml etc/templates/options.h etc/options.pl
+	$(AT)etc/options.pl -c $< -t etc/templates/options.h -o $@ $(OPTIONS_DEBUG)
 
 .PHONY: FORCE
 obj/CFLAGS: FORCE
@@ -440,8 +440,8 @@ html/options.html: html etc/options.xml etc/options.xsl
 	-$(AT)echo "Making HTML options file" $(NULL)
 	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html
 
-$(ERRORS_MD): etc/errors.xml etc/errors.template etc/errors.pl
-	$(AT)etc/errors.pl -i $< -t etc/errors.template -o $@
+$(ERRORS_MD): etc/errors.xml etc/templates/errors.md etc/errors.pl
+	$(AT)etc/errors.pl -i $< -t etc/templates/errors.md -o $@
 
 .PHONY: lobs
 lobs: $(OPTIONS_H) $(LOBS)

@@ -50,7 +50,7 @@ my %args = (
 
 Readonly my $NAME => q{@} . 'name';
 
-my $warning = '///  *** Automatically generated file. DO NOT MODIFY. ***';
+my $warning = '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
 my $cmds;
 my $e_cmds;
 my $f_cmds;

@@ -55,7 +55,7 @@ use POSIX qw( strftime );
 use Readonly;
 use Carp;
 
-my $warning = '///  *** Automatically generated file. DO NOT MODIFY. ***';
+my $warning = '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
 
 # Command-line arguments
 

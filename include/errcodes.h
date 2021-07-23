@@ -2,7 +2,7 @@
 ///  @file    errcodes.h
 ///  @brief   TECO error codes
 ///
-///  *** Automatically generated file. DO NOT MODIFY. ***
+///  *** Automatically generated from template file. DO NOT MODIFY. ***
 ///
 ///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
 ///

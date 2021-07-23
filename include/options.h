@@ -3,7 +3,7 @@
 ///
 ///  @brief      Header file for teco utility.
 ///
-///  *** Automatically generated file. DO NOT MODIFY. ***
+///  *** Automatically generated from template file. DO NOT MODIFY. ***
 ///
 ///  @brief      External resources:
 ///
