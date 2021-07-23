@@ -45,7 +45,7 @@
 #if     defined(PAGE_VM)
 #if     defined(LONG_64)
 
-#define EDIT_MAX    (GB * 8)        ///< Maximum size is 8 GB (w/ VM)
+#define EDIT_MAX    (GB * 16)       ///< Maximum size is 16 GB (w/ VM)
 
 #else
 
