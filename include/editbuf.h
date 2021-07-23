@@ -101,11 +101,7 @@ extern int_t getlines_ebuf(int_t relpos);
 
 //  Get the size of the edit buffer.
 
-#if     defined(PAGE_VM)
-
 extern uint_t getsize_ebuf(void);
-
-#endif
 
 //  Initialize buffer.
 
