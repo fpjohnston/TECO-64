@@ -396,20 +396,20 @@ bin/$(TARGET): $(OBJECTS)
 
 $(OBJECTS): $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) obj/CFLAGS
 
-$(COMMANDS_H): etc/commands.xml etc/commands.template etc/commands.pl
-	$(AT)etc/commands.pl -i $< -t etc/commands.template -o $@
+$(COMMANDS_H): etc/commands.xml etc/t_commands.h etc/commands.pl
+	$(AT)etc/commands.pl -i $< -t etc/t_commands.h -o $@
 
-$(ERRCODES_H): etc/errors.xml etc/errcodes.template etc/errors.pl
-	$(AT)etc/errors.pl -i $< -t etc/errcodes.template -o $@
+$(ERRCODES_H): etc/errors.xml etc/t_errcodes.h etc/errors.pl
+	$(AT)etc/errors.pl -i $< -t etc/t_errcodes.h -o $@
 
-$(ERRTABLES_H): etc/errors.xml etc/errtables.template etc/errors.pl
-	$(AT)etc/errors.pl -i $< -t etc/errtables.template -o $@
+$(ERRTABLES_H): etc/errors.xml etc/t_errtables.h etc/errors.pl
+	$(AT)etc/errors.pl -i $< -t etc/t_errtables.h -o $@
 
-$(EXEC_H): etc/commands.xml etc/exec.template etc/commands.pl
-	$(AT)etc/commands.pl -i $< -t etc/exec.template -o $@
+$(EXEC_H): etc/commands.xml etc/t_exec.h etc/commands.pl
+	$(AT)etc/commands.pl -i $< -t etc/t_exec.h -o $@
 
-$(OPTIONS_H): etc/options.xml etc/options.template etc/options.pl
-	$(AT)etc/options.pl -c $< -t etc/options.template -o $@ $(OPTIONS_DEBUG)
+$(OPTIONS_H): etc/options.xml etc/t_options.h etc/options.pl
+	$(AT)etc/options.pl -c $< -t etc/t_options.h -o $@ $(OPTIONS_DEBUG)
 
 .PHONY: FORCE
 obj/CFLAGS: FORCE

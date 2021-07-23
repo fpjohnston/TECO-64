@@ -2,7 +2,8 @@
 ///  @file       options.h
 ///
 ///  @brief      Header file for teco utility.
-///              *** Automatically generated file. DO NOT MODIFY. ***
+///
+///  *** Automatically generated file. DO NOT MODIFY. ***
 ///
 ///  @brief      External resources:
 ///

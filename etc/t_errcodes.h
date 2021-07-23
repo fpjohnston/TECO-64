@@ -2,7 +2,7 @@
 ///  @file    errcodes.h
 ///  @brief   TECO error codes
 ///
-%s
+/* (INSERT: WARNING NOTICE) */
 ///
 ///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -38,7 +38,7 @@ extern int last_error;
 enum errcodes
 {
     E_NUL,          ///< No error
-%s
+/* (INSERT: ERROR CODES) */
     E_MAX           ///< Error count
 };
 

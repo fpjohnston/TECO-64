@@ -2,7 +2,7 @@
 ///  @file    errtables.h
 ///  @brief   TECO error tables
 ///
-%s
+/* (INSERT: WARNING NOTICE) */
 ///
 ///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -42,7 +42,7 @@ struct errlist
 
 static struct errlist errlist[] =
 {
-%s
+/* (INSERT: ERROR MESSAGES) */
 };
 
 ///  @var    errhelp
@@ -51,5 +51,5 @@ static struct errlist errlist[] =
 
 static const char *errhelp[] =
 {
-%s
+/* (INSERT: ERROR DETAILS) */
 };

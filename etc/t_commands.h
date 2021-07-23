@@ -2,7 +2,7 @@
 ///  @file    commands.h
 ///  @brief   Data tables used in executing command strings.
 ///
-%s
+/* (INSERT: WARNING NOTICE) */
 ///
 ///  @copyright 2020-2021 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -85,7 +85,7 @@ struct cmd_table
 
 static const struct cmd_table cmd_table[] =
 {
-%s
+/* (INSERT: GENERAL COMMANDS) */
 };
 
 static const uint cmd_max = countof(cmd_table); ///< Maximum command
@@ -96,7 +96,7 @@ static const uint cmd_max = countof(cmd_table); ///< Maximum command
 
 static const struct cmd_table e_table[] =
 {
-%s
+/* (INSERT: E COMMANDS) */
 };
 
 static const uint e_max = countof(e_table); ///< Maximum E command
@@ -107,7 +107,7 @@ static const uint e_max = countof(e_table); ///< Maximum E command
 
 static const struct cmd_table f_table[] =
 {
-%s
+/* (INSERT: F COMMANDS) */
 };
 
 static const uint f_max = countof(f_table); ///< Maximum F command

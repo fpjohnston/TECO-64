@@ -2,7 +2,8 @@
 ///  @file       options.h
 ///
 ///  @brief      Header file for teco utility.
-///              *** Automatically generated file. DO NOT MODIFY. ***
+///
+/* (INSERT: WARNING NOTICE) */
 ///
 ///  @brief      External resources:
 ///
@@ -54,7 +55,7 @@ static const char * const help_text[] =
     "  TECO_LIBRARY           Directory of library for TECO macros.",
     "  TECO_MEMORY            File that contains name of last file edited.",
     "  TECO_VTEDIT            Default file for initialization of display mode.",
-%s
+/* (INSERT: HELP OPTIONS) */
     NULL
 };
 
@@ -63,20 +64,20 @@ static const char * const help_text[] =
 
 enum option_t
 {
-%s
+/* (INSERT: ENUM OPTIONS) */
 };
 
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "%s";
+static const char * const optstring = "/* (INSERT: SHORT OPTIONS) */";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
 
 static const struct option long_options[] =
 {
-%s
+/* (INSERT: LONG OPTIONS) */
     { NULL,             no_argument,        NULL,  0      },  // Markers for end of list
 };
 

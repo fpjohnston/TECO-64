@@ -43,7 +43,7 @@ use Carp;
 # Command-line arguments
 
 my %args = (
-    input    => undef,    # Input file (usually errors.xml)
+    input    => undef,    # Input file (usually commands.xml)
     template => undef,    # Template file
     output   => undef,    # Output file
 );
@@ -224,14 +224,18 @@ sub make_commands_h
     my $fh;
     my $file = $args{output};
 
+    $template =~ s"/\* \(INSERT: WARNING NOTICE\) \*/"$warning";
+    $template =~ s"/\* \(INSERT: GENERAL COMMANDS\) \*/"$cmds";
+    $template =~ s"/\* \(INSERT: E COMMANDS\) \*/"$e_cmds";
+    $template =~ s"/\* \(INSERT: F COMMANDS\) \*/"$f_cmds";
+
     print {*STDERR} "Creating $file\n" or croak;
 
     ## no critic (RequireBriefOpen)
 
     open $fh, '>', $file or croak "Can't open $file\n";
 
-    printf {$fh} $template, $warning, $cmds, $e_cmds, $f_cmds
-      or croak "Can't print to $file\n";
+    print {$fh} $template or croak "Can't print to $file\n";
 
     close $fh or croak "Can't close $file\n";
 
@@ -330,14 +334,17 @@ sub make_exec_h
 
     chomp $exec_list;
 
+    $template =~ s"/\* \(INSERT: WARNING NOTICE\) \*/"$warning";
+    $template =~ s"/\* \(INSERT: SCAN FUNCTIONS\) \*/"$scan_list";
+    $template =~ s"/\* \(INSERT: EXEC FUNCTIONS\) \*/"$exec_list";
+
     print {*STDERR} "Creating $file\n" or croak;
 
     ## no critic (RequireBriefOpen)
 
     open $fh, '>', $file or croak "Can't open $file\n";
 
-    printf {$fh} $template, $warning, $scan_list, $exec_list
-      or croak "Can't print to $file\n";
+    printf {$fh} $template, or croak "Can't print to $file\n";
 
     close $fh or croak "Can't close $file\n";
 

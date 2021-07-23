@@ -172,15 +172,18 @@ sub make_errcodes_h
         $errcodes .= sprintf "    E_%s,          ///< %s\n", $code, $message;
     }
 
+    $template =~ s"/\* \(INSERT: WARNING NOTICE\) \*/"$warning";
+    $template =~ s"/\* \(INSERT: ERROR CODES\) \*/"$errcodes";
+
     print {*STDERR} "Creating $args{output}\n" or croak;
 
     ## no critic (RequireBriefOpen)
 
-    open $fh, '>', $args{output};
+    open $fh, '>', $args{output} or croak "Can't open $args{output}\n";
 
-    printf {$fh} $template, $warning, $errcodes;
+    print {$fh} $template or croak "Can't print to $args{output}\n";
 
-    close $fh;
+    close $fh or croak "Can't close $args{output}\n";
 
     # use critic
 
@@ -210,15 +213,17 @@ sub make_errors_md
           $code, $message, $details;
     }
 
+    $template =~ s"/\* \(INSERT: ERROR CODES\) \*/"$errors";
+
     print {*STDERR} "Creating $args{output}\n" or croak;
 
     ## no critic (RequireBriefOpen)
 
-    open $fh, '>', $args{output};
+    open $fh, '>', $args{output} or croak "Can't open $args{output}\n";
 
-    printf {$fh} $template, $errors;
+    print {$fh} $template or croak "Can't print to $args{output}\n";
 
-    close $fh;
+    close $fh or croak "Can't close $args{output}\n";
 
     ## use critic
 
@@ -251,15 +256,19 @@ sub make_errtables_h
         $errhelp .= sprintf "    [E_%s] = \"%s\",\n", $code, $details;
     }
 
+    $template =~ s"/\* \(INSERT: WARNING NOTICE\) \*/"$warning";
+    $template =~ s"/\* \(INSERT: ERROR MESSAGES\) \*/"$errlist";
+    $template =~ s"/\* \(INSERT: ERROR DETAILS\) \*/"$errhelp";
+
     print {*STDERR} "Creating $args{output}\n" or croak;
 
     ## no critic (RequireBriefOpen)
 
-    open $fh, '>', $args{output};
+    open $fh, '>', $args{output} or croak "Can't open $args{output}\n";
 
-    printf {$fh} $template, $warning, $errlist, $errhelp;
+    print {$fh} $template or croak "Can't print to $args{output}\n";
 
-    close $fh;
+    close $fh or croak "Can't close $args{output}\n";
 
     ## use critic
 

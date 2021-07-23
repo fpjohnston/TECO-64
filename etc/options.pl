@@ -55,6 +55,8 @@ use POSIX qw( strftime );
 use Readonly;
 use Carp;
 
+my $warning = '///  *** Automatically generated file. DO NOT MODIFY. ***';
+
 # Command-line arguments
 
 my %args = (
@@ -273,8 +275,12 @@ sub make_options_h
     my $file = $args{output};
     my $fh;
     my $template = read_file( $args{template} );
-    my $result   = sprintf $template, $header{help}, $header{enums},
-      $header{short}, $header{long};
+
+    $template =~ s"/\* \(INSERT: WARNING NOTICE\) \*/"$warning";
+    $template =~ s"/\* \(INSERT: HELP OPTIONS\) \*/"$header{help}";
+    $template =~ s"/\* \(INSERT: ENUM OPTIONS\) \*/"$header{enums}";
+    $template =~ s"/\* \(INSERT: SHORT OPTIONS\) \*/"$header{short}";
+    $template =~ s"/\* \(INSERT: LONG OPTIONS\) \*/"$header{long}";
 
     print {*STDERR} "Creating header file $file\n" or croak;
 
@@ -282,7 +288,7 @@ sub make_options_h
 
     open $fh, '>', $file or croak "Can't open $file: $OS_ERROR";
 
-    print {$fh} $result or croak "Can't open $file: $OS_ERROR";
+    print {$fh} $template or croak "Can't open $file: $OS_ERROR";
 
     close $fh or croak "Can't close $file: $OS_ERROR";
 

@@ -2,7 +2,7 @@
 ///  @file    exec.h
 ///  @brief   Header file for parsing and executing TECO commands.
 ///
-%s
+/* (INSERT: WARNING NOTICE) */
 ///
 ///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -125,11 +125,11 @@ extern const struct cmd null_cmd;
 
 // Functions that scan commands
 
-%s
+/* (INSERT: SCAN FUNCTIONS) */
 
 // Functions that execute commands
 
-%s
+/* (INSERT: EXEC FUNCTIONS) */
 
 // Helper functions for executing commands
 
