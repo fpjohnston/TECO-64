@@ -17,7 +17,7 @@
 @^A\    O/S type: \ -1EJ=
 @^A\    H/W type: \ -2EJ=
 @^A\   Word size: \ -3EJ=
-@^A\    m/n size: \ -4EJ=
+@^A\  (m,n) size: \ -4EJ=
 @^A\   TECO_INIT: \ :@EG\INI\ "L :G* | @^A"(n/a)" ' -1^T
 @^A\TECO_LIBRARY: \ :@EG\LIB\ "L :G* | @^A"(n/a)" ' -1^T
 @^A\ TECO_MEMORY: \ :@EG\MEM\ "L :G* | @^A"(n/a)" ' -1^T
