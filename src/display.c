@@ -579,7 +579,7 @@ static void move_down(void)
     int len = (int)getdelta_ebuf((int_t)2) - next; // Length of next line
     int_t dot = t.dot + next;
 
-    if (d.vcol > col)
+    if (col < d.vcol)
     {
         col = d.vcol;                   // Use virtual column if we can
     }
@@ -606,12 +606,11 @@ static void move_down(void)
     dot_changed = false;                // Force this off for down arrow
 
     update_status();
-
     refresh_dpy();
 
     if (d.vcol < d.col)
     {
-        d.vcol = d.col;
+        d.vcol = d.col;                 // Update virtual column if needed
     }
 }
 
@@ -644,6 +643,8 @@ static void move_left(void)
         }
 
         refresh_dpy();
+
+        d.vcol = d.col;                 // Update virtual column
     }
 }
 
@@ -676,6 +677,8 @@ static void move_right(void)
         }
 
         refresh_dpy();
+
+        d.vcol = d.col;                 // Update virtual column
     }
 }
 
@@ -713,7 +716,7 @@ static void move_up(void)
     int len = prev - col;               // Length of previous line
     int_t dot = t.dot - (int_t)prev;
 
-    if (d.vcol > col)
+    if (col < d.vcol)
     {
         col = d.vcol;                   // Use virtual column if we can
     }
@@ -735,12 +738,11 @@ static void move_up(void)
     dot_changed = false;                // Force this off for up arrow
 
     update_status();
-
     refresh_dpy();
 
     if (d.vcol < d.col)
     {
-        d.vcol = d.col;
+        d.vcol = d.col;                 // Update virtual column if needed
     }
 }
 
