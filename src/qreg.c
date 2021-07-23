@@ -176,7 +176,7 @@ void append_qchr(int qindex, int c)
     {
         qreg->text.pos  = 0;
         qreg->text.len  = 0;
-        qreg->text.size = STR_SIZE_INIT;
+        qreg->text.size = KB;
         qreg->text.data = alloc_mem(qreg->text.size);
     }
     else
@@ -185,7 +185,7 @@ void append_qchr(int qindex, int c)
 
         if (nbytes == qreg->text.size)
         {
-            nbytes += STR_SIZE_INIT;
+            nbytes += KB;
 
             qreg->text.data = expand_mem(qreg->text.data, qreg->text.size,
                                          nbytes);
@@ -656,7 +656,7 @@ void store_qchr(int qindex, int c)
 
     qreg->text.pos  = 0;
     qreg->text.len  = 0;
-    qreg->text.size = STR_SIZE_INIT;
+    qreg->text.size = KB;
     qreg->text.data = alloc_mem(qreg->text.size);
 
     qreg->text.data[qreg->text.len++] = (char)c;

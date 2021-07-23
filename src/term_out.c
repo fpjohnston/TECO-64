@@ -258,7 +258,7 @@ void tprint(
 {
     assert(format != NULL);             // Error if no format
 
-    char buf[STR_SIZE_INIT];
+    char buf[KB + 1];                   // Allow 1 KB for string
 
     va_list argptr;
     va_start(argptr, format);

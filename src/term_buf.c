@@ -181,7 +181,7 @@ void init_tbuf(void)
 
     term_buf->len  = 0;
     term_buf->pos  = 0;
-    term_buf->size = STR_SIZE_INIT;
+    term_buf->size = KB;
     term_buf->data = alloc_mem(term_buf->size);
 }
 
@@ -251,7 +251,7 @@ void store_tbuf(int c)
     {
         assert(term_buf->size != 0);    // Error if no data
 
-        uint_t newsize = term_buf->size + STR_SIZE_INIT;
+        uint_t newsize = term_buf->size + KB;
         char *newbuf = expand_mem(term_buf->data, term_buf->size, newsize);
 
         term_buf->size = newsize;

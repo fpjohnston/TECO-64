@@ -132,7 +132,7 @@ void init_cbuf(void)
 
     root->len  = 0;
     root->pos  = 0;
-    root->size = STR_SIZE_INIT;
+    root->size = KB;
     root->data = alloc_mem(root->size);
 
     cbuf = root;
@@ -177,17 +177,17 @@ void store_cbuf(int c)
     {
         assert(cbuf->size != 0);        // Verify non-zero size
 
-        // Round up size to a multiple of STR_SIZE_INIT
+        // Round up size to a multiple of 1 KB
 
-        cbuf->size += STR_SIZE_INIT - 1;
-        cbuf->size /= STR_SIZE_INIT;
-        cbuf->size *= STR_SIZE_INIT;
+        cbuf->size += KB - 1;
+        cbuf->size /= KB;
+        cbuf->size *= KB;
 
-        uint_t newsize = cbuf->size + STR_SIZE_INIT;
+        uint_t newsize = cbuf->size + KB;
         char *newbuf = expand_mem(cbuf->data, cbuf->size, newsize);
 
         cbuf->size = newsize;
-        cbuf->data  = newbuf;
+        cbuf->data = newbuf;
     }
 
     cbuf->data[cbuf->len++] = (char)c;

@@ -70,8 +70,6 @@ typedef unsigned int uint_t;        ///< Use regular unsigned int
 
 #define WAIT             true       ///< Wait for terminal input
 
-#define STR_SIZE_INIT    1024       ///< Initial string size
-
 typedef unsigned char uchar;        ///< Unsigned character type
 
 #if     defined(__clang__)
