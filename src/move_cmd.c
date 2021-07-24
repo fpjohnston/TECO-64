@@ -40,7 +40,7 @@
 
 static void exec_c_r(struct cmd *cmd, int sign, int chr);
 
-static void exec_move(struct cmd *cmd, int_t pos, bool cond, int chr);
+static void exec_move(struct cmd *cmd, int_t pos, bool pop, int chr);
 
 
 ///
@@ -150,11 +150,11 @@ void exec_L(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_move(struct cmd *cmd, int_t pos, bool cond, int chr)
+static void exec_move(struct cmd *cmd, int_t pos, bool pop, int chr)
 {
     assert(cmd != NULL);
 
-    if (cond)
+    if (pop)
     {
         if (!cmd->colon)
         {

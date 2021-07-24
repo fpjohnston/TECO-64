@@ -174,7 +174,7 @@ static struct page *make_page(int_t start, int_t end, bool ff)
     struct page *page = alloc_mem((uint_t)sizeof(*page));
 
     page->next  = page->prev = NULL;
-    page->size  = (uint)t.Z;             // No. of bytes in edit buffer
+    page->size  = (uint_t)t.Z;          // No. of bytes in edit buffer
     page->cr    = 0;
     page->ocrlf = f.e3.ocrlf;
     page->ff    = ff;
@@ -204,7 +204,7 @@ static struct page *make_page(int_t start, int_t end, bool ff)
         *p++ = last = (char)c;
     }
 
-    assert((uint)(p - page->addr) == page->size);
+    assert((uint_t)(p - page->addr) == page->size);
 
     return page;
 }
