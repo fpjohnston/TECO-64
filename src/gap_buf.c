@@ -332,26 +332,15 @@ int_t getdelta_ebuf(int_t n)
 
 int_t getlines_ebuf(int_t n)
 {
-    int_t start;
-    int_t end;
+    int_t start  = (n > 0) ? 0 : -t.dot;
+    int_t end    = (n < 0) ? 0 : t.Z;
     int_t nlines = 0;
-
-    if (n < 0)
-    {
-        start = -(int_t)t.dot;
-        end = 0;
-    }
-    else
-    {
-        start = 0;
-        end = (int_t)(eb.left + eb.right);
-    }
 
     for (int_t pos = start; pos < end; ++pos)
     {
         int c = getchar_ebuf(pos);
 
-        if (isdelim(c))
+        if (c != EOF && isdelim(c))
         {
             ++nlines;
         }
