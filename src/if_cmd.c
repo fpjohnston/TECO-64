@@ -99,13 +99,13 @@ static void endif(struct cmd *unused, bool else_ok)
 
         if (cmd->c1 == '<')             // Loop start
         {
-            ++loop_depth;
+            setloop_depth(getloop_depth() + 1);
         }
         else if (cmd->c1 == '>')        // Loop end
         {
-            --loop_depth;
+            setloop_depth(getloop_depth() - 1);
 
-            if (f.e2.quote && loop_depth < loop_level[if_depth - 1])
+            if (f.e2.quote && getloop_depth() < loop_level[if_depth - 1])
             {
                 throw(E_MRA);           // Missing right angle bracket
             }
@@ -125,7 +125,7 @@ static void endif(struct cmd *unused, bool else_ok)
         }
         else if (cmd->c1 == '|')        // Conditional else
         {
-            if (f.e2.quote && loop_depth != loop_level[if_depth - 1])
+            if (f.e2.quote && getloop_depth() != loop_level[if_depth - 1])
             {
                 throw(E_MRA);           // Missing right angle bracket
             }
@@ -161,7 +161,7 @@ void exec_apos(struct cmd *cmd)
         throw(E_MSC);                   // Missing start of conditional
     }
 
-    if (f.e2.quote && loop_depth != loop_level[if_depth - 1])
+    if (f.e2.quote && getloop_depth() != loop_level[if_depth - 1])
     {
         throw(E_MRA);                   // Missing right angle bracket
     }
@@ -368,7 +368,7 @@ void exec_vbar(struct cmd *cmd)
 
     if (f.e2.quote)
     {
-        if (loop_depth != loop_level[if_depth])
+        if (getloop_depth() != loop_level[if_depth])
         {
             throw(E_MRA);               // Missing right angle bracket
         }
@@ -404,7 +404,7 @@ static void pop_if(void)
 
 static void push_if(void)
 {
-    loop_level[if_depth++] = loop_depth;
+    loop_level[if_depth++] = getloop_depth();
 }
 
 

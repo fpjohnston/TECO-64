@@ -35,25 +35,61 @@
 #include "term.h"
 
 
-#define NO_POP      (bool)false         ///< Pop loop stack at end o  f loop
-#define POP_OK      (bool)true          ///< Don't pop loop stack at end of loop
+#define NO_POP      (bool)false     ///< Pop loop stack at end o  f loop
+#define POP_OK      (bool)true      ///< Don't pop loop stack at end of loop
 
-#define INFINITE        (-1)            ///< Infinite loop count
-
-uint loop_depth = 0;                    ///< Nested loop depth
+#define INFINITE        (-1)        ///< Infinite loop count
 
 ///  @struct loop
 ///  @brief  Linked list structure for loops
 
 struct loop
 {
-    struct loop *next;                  ///< Next item in list
-    int_t count;                        ///< Iteration count
-    uint_t start;                       ///< Starting position
-    uint depth;                         ///< Depth of if statements
+    struct loop *next;              ///< Next item in list
+    int_t count;                    ///< Iteration count
+    uint_t start;                   ///< Starting position
+    uint depth;                     ///< Depth of if statements
 };
 
-static struct loop *loop_head = NULL;   ///< Head of loop list
+#define STACK_MAX  20               ///< Maximum items in loop stack
+
+//  Define the root structure for keeping track of loops. Nested loops are
+//  handled by dynamically allocating loop structures, as defined above, and
+//  putting them in a linked list. When the loops terminate, we push these
+//  structures on an internal stack rather than deallocating them, since we
+//  are likely to need them again, and this method avoids unnecessary use
+//  of the heap. The high-water mark is intended to assist in analyzing
+//  command strings to see if the stack maximum may need adjustment. Note
+//  that if the stack fills up, we will still handle loops properly, as
+//  terminated loop structures will just be returned to the heap instead of
+//  being pushed on the stack.
+//
+//  When TECO exits, all loop structures, either in the linked list or on
+//  the stack, will be deallocated.
+ 
+///  @struct loop_root
+///  @brief  Root structure for controlling loop commands
+
+struct loop_root
+{
+    struct loop *head;              ///< Head of list
+    struct loop *stack[STACK_MAX];  ///< Discarded list items
+    uint nstack;                    ///< No. of saved items on stack
+    uint hi_mark;                   ///< High-water mark for stack
+    uint nloops;                    ///< Loop nesting depth
+};
+
+///  @var    loop_root
+///  @brief  Root structure for controlling loop commands
+
+static struct loop_root loop_root =
+{
+    .head    = NULL,
+    .stack   = { NULL },
+    .nstack  = 0,
+    .hi_mark = 0,
+    .nloops  = 0,
+};
 
 // Local functions
 
@@ -73,7 +109,7 @@ static void push_loop(int_t count);
 
 bool check_loop(void)
 {
-    if (loop_head != NULL)
+    if (loop_root.head != NULL)
     {
         return true;
     }
@@ -118,7 +154,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
                 }
             }
 
-            if (loop_head != NULL && loop_head->depth > if_depth)
+            if (loop_root.head != NULL && loop_root.head->depth > if_depth)
             {
                 throw(E_MAP);           // Missing apostrophe
             }
@@ -166,13 +202,13 @@ void exec_F_lt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (loop_depth == 0)                // Outside of loop?
+    if (loop_root.nloops == 0)          // Outside of loop?
     {
         cbuf->pos = 0;                  // Yes, reset to start of command
     }
     else
     {
-        cbuf->pos = loop_head->start;   // Just restart the loop
+        cbuf->pos = loop_root.head->start; // Just restart the loop
     }
 
     init_x();                           // Reinitialize expression stack
@@ -192,7 +228,7 @@ void exec_gt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    struct loop *loop = loop_head;
+    struct loop *loop = loop_root.head;
 
     if (loop == NULL)
     {
@@ -257,7 +293,7 @@ void exec_semi(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (loop_head == NULL)
+    if (loop_root.head == NULL)
     {
         throw(E_SNI);                   // Semi-colon not in loop
     }
@@ -288,6 +324,19 @@ void exec_semi(struct cmd *cmd)
 
 
 ///
+///  @brief    Get current loop depth.
+///
+///  @returns  Loop depth.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint getloop_depth(void)
+{
+    return loop_root.nloops;
+}
+
+
+///
 ///  @brief    Pop loop block from linked list stack.
 ///
 ///  @returns  Nothing.
@@ -298,16 +347,28 @@ static void pop_loop(bool pop_ok)
 {
     struct loop *loop;
 
-    if (pop_ok && (loop = loop_head) != NULL)
+    if (pop_ok && (loop = loop_root.head) != NULL)
     {
-        loop_head = loop->next;
+        loop_root.head = loop->next;
 
-        free_mem(&loop);
+        if (loop_root.nstack >= STACK_MAX)
+        {
+            free_mem(&loop);
+        }
+        else
+        {
+            loop_root.stack[loop_root.nstack++] = loop;
+
+            if (loop_root.hi_mark < loop_root.nstack)
+            {
+                loop_root.hi_mark = loop_root.nstack;
+            }
+        }
     }
 
-    assert(loop_depth > 0);             // Error if not in loop
+    assert(loop_root.nloops > 0);       // Error if not in loop
 
-    --loop_depth;
+    --loop_root.nloops;
 }
 
 
@@ -320,16 +381,25 @@ static void pop_loop(bool pop_ok)
 
 static void push_loop(int_t count)
 {
-    struct loop *loop = alloc_mem((uint_t)sizeof(*loop));
+    struct loop *loop;
+
+    if (loop_root.nstack > 0)
+    {
+        loop = loop_root.stack[--loop_root.nstack];
+    }
+    else
+    {
+        loop = alloc_mem((uint_t)sizeof(*loop));
+    }
 
     loop->count = count;
     loop->start = cbuf->pos;
-    loop->next  = loop_head;
+    loop->next  = loop_root.head;
     loop->depth = if_depth;
 
-    loop_head   = loop;
+    loop_root.head   = loop;
 
-    ++loop_depth;
+    ++loop_root.nloops;
 }
 
 
@@ -344,14 +414,19 @@ void reset_loop(void)
 {
     struct loop *loop;
 
-    while ((loop = loop_head) != NULL)
+    while ((loop = loop_root.head) != NULL)
     {
-        loop_head = loop->next;
+        loop_root.head = loop->next;
 
         free_mem(&loop);
     }
 
-    loop_depth = 0;
+    while (loop_root.nstack > 0)
+    {
+        free_mem(&loop_root.stack[--loop_root.nstack]);
+    }
+
+    loop_root.nloops = 0;
 }
 
 
@@ -482,4 +557,17 @@ bool scan_lt(struct cmd *cmd)
     }
 
     return true;
+}
+
+
+///
+///  @brief    Set current loop depth.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void setloop_depth(uint depth)
+{
+    loop_root.nloops = depth;
 }

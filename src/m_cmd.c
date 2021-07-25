@@ -123,7 +123,7 @@ void exec_macro(struct buffer *macro, struct cmd *oldcmd)
     // Save current state
 
     uint saved_base           = set_x(); // Save expression stack level
-    uint saved_loop           = loop_depth;
+    uint saved_loop           = getloop_depth();
     uint saved_if             = if_depth;
     uint saved_nparens        = nparens;
     uint_t saved_pos          = macro->pos;
@@ -131,7 +131,7 @@ void exec_macro(struct buffer *macro, struct cmd *oldcmd)
 
     // Initialize for new command string
 
-    loop_depth = 0;
+    setloop_depth(0);
     if_depth   = 0;
     nparens    = 0;
     macro->pos = 0;
@@ -162,7 +162,7 @@ void exec_macro(struct buffer *macro, struct cmd *oldcmd)
     macro->pos = saved_pos;
     nparens    = saved_nparens;
     if_depth   = saved_if;
-    loop_depth = saved_loop;
+    setloop_depth(saved_loop);
     reset_x(saved_base);                // Restore expression stack level
 }
 

@@ -225,7 +225,7 @@ void exec_cmd(struct cmd *cmd)
     {
         throw(E_MAP);                   // Missing apostrophe
     }
-    else if (loop_depth != 0)
+    else if (getloop_depth() != 0)
     {
         throw(E_MRA);                   // Missing right angle bracket
     }

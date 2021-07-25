@@ -130,8 +130,6 @@ extern jmp_buf jump_main;
 
 extern uint_t last_len;
 
-extern uint loop_depth;
-
 extern const char *teco_init;
 
 extern const char *teco_library;
@@ -190,11 +188,15 @@ extern void *expand_mem(void *ptr, uint_t oldsize, uint_t newsize);
 
 extern void free_mem(void *ptr);
 
+extern uint getloop_depth(void);
+
 extern void init_env(void);
 
 extern void init_options(int argc, const char * const argv[]);
 
 extern void print_flag(int_t flag);
+
+extern void setloop_depth(uint depth);
 
 extern void *shrink_mem(void *ptr, uint_t oldsize, uint_t newsize);
 
