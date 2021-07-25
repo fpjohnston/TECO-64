@@ -67,7 +67,7 @@
 
 #else
 
-#define EDIT_INIT   (KB * 8)        ///< Initial size is 1 KB (w/o VM)
+#define EDIT_INIT   (KB * 8)        ///< Initial size is 8 KB (w/o VM)
 
 #endif
 #endif
