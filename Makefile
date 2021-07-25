@@ -434,7 +434,7 @@ doc: html/options.html $(ERRORS_MD)
 	-$(AT)doxygen obj/Doxyfile
 
 html:
-	-$(AT)mkdir html
+	-$(AT)mkdir -p html
 
 html/options.html: html etc/options.xml etc/options.xsl
 	-$(AT)echo "Making HTML options file" $(NULL)
@@ -447,7 +447,7 @@ $(ERRORS_MD): etc/errors.xml etc/templates/errors.md etc/errors.pl
 lobs: $(OPTIONS_H) $(LOBS)
 
 .PHONY: lint
-lint:   $(OPTIONS_H) $(LOBS)
+lint: $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) $(LOBS)
 	@echo Linting object files $(NULL)
 	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
 
