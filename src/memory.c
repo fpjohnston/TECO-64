@@ -42,7 +42,7 @@
 
 #if     defined(MEMCHECK)
 
-#define plural(x) ((x) == 1) ? "" : "s" ///< Check for plural/non-plural no.
+#define plural(x) (((x) == 1) ? "" : "s") ///< Check for plural/non-plural no.
 
 ///  @struct mblock
 ///
