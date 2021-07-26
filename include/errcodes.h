@@ -103,6 +103,7 @@ enum errcodes
     E_SRH,          ///< Search failure: 'foo'
     E_SYS,          ///< System error: 'foo'
     E_TAG,          ///< Missing tag: '!foo!'
+    E_TXT,          ///< Invalid text delimiter 'x'
     E_UTC,          ///< Unterminated command string
     E_UTM,          ///< Unterminated macro
     E_XAB,          ///< Execution aborted

@@ -460,7 +460,7 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
         if (!isgraph(c))
         {
-            throw(E_ATS);               // Invalid delimiter
+            throw(E_TXT, c);            // Invalid text delimiter
         }
 
         trace_cbuf(c);
@@ -504,7 +504,7 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
     if (!isgraph(c))
     {
-        throw(E_ATS);                   // Invalid delimiter
+        throw(E_TXT, c);                // Invalid text delimiter
     }
 
     trace_cbuf(c);

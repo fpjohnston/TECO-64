@@ -285,6 +285,7 @@ noreturn void throw(int error, ...)
         case E_IQN:
         case E_IUC:
         case E_POP:
+        case E_TXT:
             c[0] = (char)va_arg(args, int);
             convert(err_buf, (uint)sizeof(err_buf), c, 1);
             err_str = err_buf;

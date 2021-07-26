@@ -107,6 +107,7 @@ static struct errlist errlist[] =
     [E_SRH] = { "SRH",  "Search failure: '%s'" },
     [E_SYS] = { "SYS",  "System error: '%s'" },
     [E_TAG] = { "TAG",  "Missing tag: '!%s!'" },
+    [E_TXT] = { "TXT",  "Invalid text delimiter '%s'" },
     [E_UTC] = { "UTC",  "Unterminated command string" },
     [E_UTM] = { "UTM",  "Unterminated macro" },
     [E_XAB] = { "XAB",  "Execution aborted" },
@@ -289,6 +290,8 @@ static const char *errhelp[] =
     [E_TAG] = "The tag specified by an O command cannot "
               "be found. This tag must be in the same macro "
               "level as the O command referencing it.",
+    [E_TXT] = "Text delimiters must be graphic ASCII characters "
+              "(decimal values 33 through 126, inclusive).",
     [E_UTC] = "This is a general error which is usually "
               "caused by an unterminated insert, search, "
               "or filename argument, an unterminated ^A "

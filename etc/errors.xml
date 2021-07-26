@@ -431,6 +431,12 @@
             <detail>level as the O command referencing it.</detail>
         </error>
         <error>
+            <code>TXT</code>
+            <message>Invalid text delimiter &apos;%c&apos;</message>
+            <detail>Text delimiters must be graphic ASCII characters</detail>
+            <detail>(decimal values 33 through 126, inclusive).</detail>
+        </error>
+        <error>
             <code>UTC</code>
             <message>Unterminated command string</message>
             <detail>This is a general error which is usually</detail>
