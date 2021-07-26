@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -161,7 +162,11 @@ bool parse_M1(struct cmd *cmd)
     reject_neg_m(cmd);
     require_n(cmd);
     reject_colon(cmd);
-    scan_texts(cmd, 1, ESC);
+
+    if (toupper(cmd->c1) != 'I' || !cmd->n_set || cmd->atsign)
+    {
+        scan_texts(cmd, 1, ESC);
+    }
 
     return false;
 }
