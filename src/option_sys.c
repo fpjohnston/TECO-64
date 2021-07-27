@@ -293,6 +293,32 @@ void init_options(
             case OPTION_A:
                 if (optarg != NULL)
                 {
+                    const char *p = optarg;
+                    int nbytes;
+
+                    if (sscanf(p, "%d%n", &c, &nbytes) == 1)
+                    {
+                        p += nbytes;
+
+                        if (*p == ',')
+                        {
+                            ++p;
+
+                            if (sscanf(p, "%d%n", &c, &nbytes) == 1)
+                            {
+                                p += nbytes;
+                            }
+                        }
+                    }
+
+                    if (*p != NUL)
+                    {
+                        tprint("%%Invalid value '%s' for --argument "
+                               "option\r\n", optarg);
+
+                        exit(EXIT_FAILURE);
+                    }
+
                     options.args = optarg;
                 }
                 else
