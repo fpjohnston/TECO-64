@@ -172,10 +172,16 @@ void exec_options(int argc, const char * const argv[])
     if (options.buffer)   add_cmd("I%s\e ",    options.buffer);
     if (options.n_set)    add_cmd("%dUA",      options.n_arg);
     if (options.execute)  add_cmd(NULL,        options.execute);
-    if (options.display)  add_cmd("-1W ",      NULL);
-    if (options.vtedit)   add_cmd(NULL,        options.vtedit);
-    if (options.scroll)   add_cmd("%s,7:W \e", options.scroll);
     if (options.formfeed) add_cmd("0,1E3 ",    NULL);
+
+    // Don't enable display mode if we're exiting immediately after execution.
+
+    if (!options.exit)
+    {
+        if (options.display) add_cmd("-1W ",      NULL);
+        if (options.vtedit)  add_cmd(NULL,        options.vtedit);
+        if (options.scroll)  add_cmd("%s,7:W \e", options.scroll);
+    }
 
     // file1 may be an input or output file, depending on the options used.
     // file2 is always an output file.
