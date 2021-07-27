@@ -221,11 +221,14 @@ void exec_cmd(struct cmd *cmd)
     // Here to make sure that all conditionals, loops, and parenthetical
     // expressions were complete within the command string just executed.
 
+#if 0                           // FIXME: THIS IS TEMPORARY!
     if (if_depth != 0)
     {
         throw(E_MAP);                   // Missing apostrophe
     }
-    else if (getloop_depth() != 0)
+    else
+#endif
+    if (getloop_depth() != 0)
     {
         throw(E_MRA);                   // Missing right angle bracket
     }
