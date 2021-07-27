@@ -364,11 +364,11 @@ static void pop_loop(bool pop_ok)
                 loop_root.hi_mark = loop_root.nstack;
             }
         }
+
+        assert(loop_root.nloops > 0);   // Error if not in loop
+
+        --loop_root.nloops;
     }
-
-    assert(loop_root.nloops > 0);       // Error if not in loop
-
-    --loop_root.nloops;
 }
 
 
