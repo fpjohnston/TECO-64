@@ -129,9 +129,13 @@ static void add_cmd(bool mnflag, const char *format, ...)
         {
             snprintf(cmd, size, "%.*s", len - 2, p + 1);
         }
+        else if (mnflag && options.args != NULL)
+        {
+            snprintf(cmd, size, "%sEI%s\e ", options.args, p);
+        }
         else
         {
-            snprintf(cmd, size, "%sEI%s\e ", mnflag ? options.args : "", p);
+            snprintf(cmd, size, "EI%s\e ", p);
         }
     }
     else
