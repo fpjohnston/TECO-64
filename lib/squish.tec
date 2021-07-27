@@ -11,8 +11,6 @@ Z                                       !! Error if no file name
 
 HXA HK                                  !! Copy file name to Q-register A
 
-:GA
-
 @EQB/^EQA/                              !! Load file data into Q-register B
 
 QA EMB                                  !! Squish file in Q-register B
