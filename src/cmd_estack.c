@@ -353,7 +353,20 @@ static inline bool reduce3(void)
             break;
 
         case X_REM:
-            x.operand[-3] %= x.operand[-1];
+            if (x.operand[-1] == 0)
+            {
+                if (f.e2.zero)
+                {
+                    throw(E_DIV);       // Division by zero
+                }
+
+                x.operand[-3] = 0;
+            }
+            else
+            {
+                x.operand[-3] %= x.operand[-1];
+            }
+
             break;
 
         case X_EQ:
