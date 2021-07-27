@@ -434,7 +434,9 @@
             <code>TXT</code>
             <message>Invalid text delimiter &apos;%c&apos;</message>
             <detail>Text delimiters must be graphic ASCII characters</detail>
-            <detail>(decimal values 33 through 126, inclusive).</detail>
+            <detail>in the range of [33,126], or control characters</detail>
+            <detail>in the range of [1,26]. Characters such as spaces</detail>
+            <detail>or ESCapes may not be used for delimiters.</detail>
         </error>
         <error>
             <code>UTC</code>

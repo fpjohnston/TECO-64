@@ -458,14 +458,16 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
         c = require_cbuf();             // Get text string delimiter
 
-        if (!isgraph(c))
+        if (isgraph(c) || (c >= CTRL_A && c <= CTRL_Z))
+        {
+            trace_cbuf(c);
+
+            cmd->delim = (char)c;
+        }
+        else
         {
             throw(E_TXT, c);            // Invalid text delimiter
         }
-
-        trace_cbuf(c);
-
-        cmd->delim = (char)c;
     }
 
     if (cmd->delim != '{' || !f.e1.text)
@@ -502,13 +504,15 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
     c = require_cbuf();                 // Get text string delimiter
 
-    if (!isgraph(c))
+    if (isgraph(c) || (c >= CTRL_A && c <= CTRL_Z))
+    {
+        trace_cbuf(c);
+        scan_text(c == '{' ? '}' : c, &cmd->text2);
+    }
+    else
     {
         throw(E_TXT, c);                // Invalid text delimiter
     }
-
-    trace_cbuf(c);
-    scan_text(c == '{' ? '}' : c, &cmd->text2);
 }
 
 

@@ -291,7 +291,9 @@ static const char *errhelp[] =
               "be found. This tag must be in the same macro "
               "level as the O command referencing it.",
     [E_TXT] = "Text delimiters must be graphic ASCII characters "
-              "(decimal values 33 through 126, inclusive).",
+              "in the range of [33,126], or control characters "
+              "in the range of [1,26]. Characters such as spaces "
+              "or ESCapes may not be used for delimiters.",
     [E_UTC] = "This is a general error which is usually "
               "caused by an unterminated insert, search, "
               "or filename argument, an unterminated ^A "
