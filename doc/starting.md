@@ -79,9 +79,9 @@ Depending on the shell or command interpreter, quotes, and possibly also
 other characters, may need to be escaped so that they will be properly
 passed to TECO.
 
--A*nn*, --argument=*nn*
- - Store *nn* in Q-register A before starting TECO (using the UA command).
-Normally used in conjunction with the –execute option.
+-A*nn* or -A*mm*,*nn*, --argument=*nn* or --argument=*mm*,*nn*
+ - Pass *nn* argument or *mm*,*nn* arguments to indirect command file specified
+with --execute option.
 
 -B*string*, --buffer=*string*
  - Insert *string* into edit buffer before TECO starts (using the I command).

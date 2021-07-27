@@ -1,25 +1,20 @@
 !! TECO-64 macro to squish macros
 
-!! Ensure that we abort on error
+:UA                                     !! Get bit-encoded flag
 
-0,128ET
+0,128ET                                 !! Ensure that we abort on error
 
-!! Verify that a file name was specified with --buffer
+Z                                       !! Error if no file name
+"E
+    :@^A/Specify file name with --buffer or -B option/ ^C
+'
 
-Z "E :@^A/--buffer=file option required/ @O/exit/ '
+HXA HK                                  !! Copy file name to Q-register A
 
-!! Copy file name to Q-register B
+:GA
 
-HXB HK
+@EQB/^EQA/                              !! Load file data into Q-register B
 
-!! Load file into Q-register A
-
-@EQA/^EQB/
-
-!! Squish file in Q-register A
-
-QA EMA
-
-!exit!
+QA EMB                                  !! Squish file in Q-register B
 
 ^[^[

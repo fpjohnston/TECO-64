@@ -67,7 +67,7 @@ static const char * const help_text[] =
     "",
     "Indirect command file options:",
     "",
-    "  -A, --argument=n       Store numeric value 'n' in Q-register A.",
+    "  -A, --argument         Specify n or m,n arguments for command file.",
     "  -B, --buffer=xyz       Store text 'xyz' in edit buffer.",
     "  -E, --execute=xyz      Execute TECO macro in file 'xyz'.",
     "",

@@ -51,8 +51,7 @@
 
 struct options
 {
-    int n_arg;              ///< --argument value
-    bool n_set;             ///< --argument flag
+    const char *args;       ///< --arguments (m,n)
     char *buffer;           ///< --buffer
     bool create;            ///< --create
     bool display;           ///< --display
@@ -77,8 +76,7 @@ struct options
 
 static struct options options =
 {
-    .n_arg    = 0,
-    .n_set    = false,
+    .args     = NULL,
     .buffer   = NULL,
     .create   = true,
     .display  = false,
@@ -98,7 +96,7 @@ static struct options options =
 
 // Local functions
 
-static void add_cmd(const char *format, ...);
+static void add_cmd(bool mnflag, const char *format, ...);
 
 
 ///
@@ -108,7 +106,7 @@ static void add_cmd(const char *format, ...);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void add_cmd(const char *format, ...)
+static void add_cmd(bool mnflag, const char *format, ...)
 {
     // The following needs to be more than twice as big as the longest
     // possible file name, because it might have to contain two copies
@@ -133,7 +131,7 @@ static void add_cmd(const char *format, ...)
         }
         else
         {
-            snprintf(cmd, size, "EI%s\e ", p);
+            snprintf(cmd, size, "%sEI%s\e ", mnflag ? options.args : "", p);
         }
     }
     else
@@ -166,21 +164,20 @@ void exec_options(int argc, const char * const argv[])
 
     // Process commands that don't open a file for editing.
 
-    if (options.initial)  add_cmd(NULL,        options.initial);
-    if (options.zero)     add_cmd("%sE2",      options.zero);
-    if (options.log)      add_cmd("EL%s\e ",   options.log);
-    if (options.buffer)   add_cmd("I%s\e ",    options.buffer);
-    if (options.n_set)    add_cmd("%dUA",      options.n_arg);
-    if (options.execute)  add_cmd(NULL,        options.execute);
-    if (options.formfeed) add_cmd("0,1E3 ",    NULL);
+    if (options.initial)  add_cmd(false, NULL,      options.initial);
+    if (options.zero)     add_cmd(false, "%sE2",    options.zero);
+    if (options.log)      add_cmd(false, "EL%s\e ", options.log);
+    if (options.buffer)   add_cmd(false, "I%s\e ",  options.buffer);
+    if (options.execute)  add_cmd(true,  NULL,      options.execute);
+    if (options.formfeed) add_cmd(false, "0,1E3 ",  NULL);
 
     // Don't enable display mode if we're exiting immediately after execution.
 
     if (!options.exit)
     {
-        if (options.display) add_cmd("-1W ",      NULL);
-        if (options.vtedit)  add_cmd(NULL,        options.vtedit);
-        if (options.scroll)  add_cmd("%s,7:W \e", options.scroll);
+        if (options.display) add_cmd(false, "-1W ",      NULL);
+        if (options.vtedit)  add_cmd(false, NULL,        options.vtedit);
+        if (options.scroll)  add_cmd(false, "%s,7:W \e", options.scroll);
     }
 
     // file1 may be an input or output file, depending on the options used.
@@ -218,13 +215,13 @@ void exec_options(int argc, const char * const argv[])
     {
         if (file2 != NULL || options.readonly)
         {
-            add_cmd("ER%s\e Y ", file1);
-            add_cmd(":^A%%Inspecting file: %s\1 ", file1);
+            add_cmd(false, "ER%s\e Y ", file1);
+            add_cmd(false, ":^A%%Inspecting file: %s\1 ", file1);
         }
         else if (access(file1, F_OK) == 0 || !options.create)
         {
-            add_cmd("EB%s\e Y ", file1);
-            add_cmd(":^A%%Editing file: %s\1 ", file1);
+            add_cmd(false, "EB%s\e Y ", file1);
+            add_cmd(false, ":^A%%Editing file: %s\1 ", file1);
         }
         else
         {
@@ -234,18 +231,18 @@ void exec_options(int argc, const char * const argv[])
 
     if (file2 != NULL)
     {
-        add_cmd("EW%s\e ", file2);
-        add_cmd(":^A%%Creating file: %s\1 ", file2);
+        add_cmd(false, "EW%s\e ", file2);
+        add_cmd(false, ":^A%%Creating file: %s\1 ", file2);
     }
 
     if (options.exit)                    // Should we exit at end of commands?
     {
-        add_cmd("EX ");
+        add_cmd(false, "EX ");
     }
 
     if (cbuf->len != 0)                 // Anything stored?
     {
-        add_cmd("\e\e");
+        add_cmd(false, "\e\e");
     }
 }
 
@@ -290,8 +287,14 @@ void init_options(
         switch (c)
         {
             case OPTION_A:
-                options.n_set = true;
-                options.n_arg = (int)strtol(optarg, NULL, 10);
+                if (optarg != NULL)
+                {
+                    options.args = optarg;
+                }
+                else
+                {
+                    options.args = NULL;
+                }
 
                 break;
 

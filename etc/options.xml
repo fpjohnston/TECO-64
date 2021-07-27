@@ -41,7 +41,7 @@
             <short_name>A</short_name>
             <long_name>argument</long_name>
             <argument>required</argument>
-            <help>Store numeric value 'n' in Q-register A.</help>
+            <help>Specify n or m,n arguments for command file.</help>
         </option>
         <option>
             <short_name>B</short_name>
