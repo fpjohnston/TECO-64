@@ -1,39 +1,76 @@
-! pi.tec - Print 1st 360 digits of pi !
+!!  pi.tec - TECO-64 macro to print pi
+!!
+!!  The following was based on "A Spigot Algorithm for the Digits of Pi", by
+!!  Stanley Rabinowitz and Stan Wagon, published in The American Mathematical
+!!  Monthly, 102(1995)195-203, and is a revised and improved version of an
+!!  earlier TECO macro whose output was only valid to about 360 digits. This
+!!  version more closely follows the algorithm, as well as the sample Pascal
+!!  code included in the cited article, but no attempt is made herein to
+!!  explain it in detail, other than to comment that it treats lines in the
+!!  edit buffer as elements of an array that is used to calculate the digits,
+!!  with the convention that the array is inverted, such that the first
+!!  element is the last line of the buffer.
+!!
 
-360 UN
-B UH
-B UV
+:UN QN "E 10 UN '                       !! Use default of 10 digits
+
 HK
-QN <
-    J
-    B UQ
-    QN * 10 / 3 UI 
-    QI <
-        \ U0
-        Q0 + 2 * 10 + (QQ * QI) UA
-        B L K
-        QI * 2 - 1 UJ
-        QA / QJ UQ
-        QA -(QQ * QJ) - 2 UZ
-        QZ \
-        10@I//
-        -1 %I
+0 UP                                    !! "predigit" variable
+0 U9                                    !! "nines" variable
+
+(QN * 10 / 3) U0                        !! No. of edit buffer lines
+0 UD                                    !! No. of digits processed
+
+Q0 UI                                   !! Array index
+
+QI < 2 \ 10I >                          !! Start with 2 on each line
+
+QN
+<
+    0 J
+    0 UQ                                !! "q" variable
+    Q0 UI                               !! Array index
+
+    QI
+    <
+        \ * 10 + (QQ * QI) UA           !! Get next element
+        (QI * 2 - 1) UJ
+        (QA / QJ) UQ
+        0L K (QA // QJ) \ 10I           !! Replace current element
+        :%I
     >
-    QQ / 10 UT
-    QH + QT + ^^0 UW
-    QW - 58 "E
-        48 UW
-        %V
+
+    ZJ -L \ UA                          !! Read first element
+    0L K (QQ // 10) \ 10I               !!  and replace it
+
+    (QQ / 10) UQ
+
+    (QQ - 9)                            !! Anything < 9 is a normal digit
+    "L
+        QD                              !! Already processed 1st digit?
+        "N
+            (QD - 2)                    !! Have we printed first digit?
+            "E
+                ^^. ^T                  !! Yes, add a decimal point
+            '
+            QP :=                       !! Print the predigit
+            Q9 < 9 := >                 !! And any nines
+        '
+        QQ UP
+        0 U9
+    |
+        (QQ - 9)                        !! Was the digit a 9?
+        "E
+            %9                          !! Yes, just count it for later
+        |
+            (QP + 1) :=                 !! Print predigit + 1
+            Q9 < 0 := >                 !! Translate 9s to 0s
+            0 UP
+            0 U9
+        '
     '
-    QV "N
-        QV ^T
-    '
-    QW UV
-    QQ - (QT * 10) UH
+    %D                                  !! Count another digit
 >
-QV^T
-13^T
-10^T
+QP =                                    !! Print last digit
 HK
-EX
 ^[^[
