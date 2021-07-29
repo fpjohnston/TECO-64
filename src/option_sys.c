@@ -96,7 +96,7 @@ static struct options options =
 
 // Local functions
 
-static void add_cmd(bool mnflag, const char *format, ...);
+static void add_cmd(int mnflag, const char *format, ...);
 
 
 ///
@@ -106,7 +106,7 @@ static void add_cmd(bool mnflag, const char *format, ...);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void add_cmd(bool mnflag, const char *format, ...)
+static void add_cmd(int mnflag, const char *format, ...)
 {
     // The following needs to be more than twice as big as the longest
     // possible file name, because it might have to contain two copies
