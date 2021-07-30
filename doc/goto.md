@@ -25,11 +25,13 @@ a \<DELIM\>. When an O command is executed, the next command to be executed
 will be the one that follows the tag referenced by the O command. Command
 execution continues normally from this point.
 
-Use of the O command is subject to two restrictions. First, the tag referenced
+Use of the O command is subject to several restrictions. First, the tag referenced
 by the command must be in the same command string, Q-register, or indirect
 command file as the command itself. Second, the tag must occur only once.
 This only applies to tags referenced by O commands; tags that are simply
-comments may be duplicated without causing an error.
+comments may be duplicated without causing an error. Finally, although an O
+command may be used to exit a loop or conditional, it cannot jump inside another
+loop, nor can it jump inside a conditional.
 
 The text argument in the O command has the same format as the text
 arguments in the search and E commands. String building characters such
