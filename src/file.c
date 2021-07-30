@@ -326,7 +326,7 @@ bool open_command(char *name, uint_t len, uint stream, bool colon,
 
     uint size = (uint)file_stat.st_size;
 
-    free_mem(&text->data);             // Free any previous storage
+    free_mem(&text->data);              // Free any previous storage
 
     // If there's data in the file, then allocate a buffer for it.
 
@@ -338,7 +338,7 @@ bool open_command(char *name, uint_t len, uint stream, bool colon,
 
         if (fread(text->data, 1uL, (ulong)size, ifile->fp) != size)
         {
-            throw(E_SYS, ifile->name); // Unexpected system error
+            throw(E_SYS, ifile->name);  // Unexpected system error
         }
     }
 
