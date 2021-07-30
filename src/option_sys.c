@@ -55,7 +55,7 @@ struct options
     char *buffer;           ///< --buffer
     bool create;            ///< --create
     bool display;           ///< --display
-    char *execute;          ///< --execute
+    const char *execute;    ///< --execute
     bool exit;              ///< --exit
     bool formfeed;          ///< --formfeed
     const char *initial;    ///< --initial
@@ -281,6 +281,7 @@ void init_options(
 
     int c;
     int idx = 0;
+    bool mung = false;
 
     optind = 0;                         // Reset from any previous calls
     opterr = 0;                         // Suppress any error messages
@@ -290,6 +291,11 @@ void init_options(
     {
         switch (c)
         {
+            case CTRL_M:
+                mung = true;
+
+                break;
+
             case OPTION_A:
                 if (optarg != NULL)
                 {
@@ -313,7 +319,7 @@ void init_options(
 
                     if (*p != NUL)
                     {
-                        tprint("%%Invalid value '%s' for --argument "
+                        tprint("Invalid value '%s' for --argument "
                                "option\r\n", optarg);
 
                         exit(EXIT_FAILURE);
@@ -352,8 +358,16 @@ void init_options(
                 break;
 
             case OPTION_E:
-                if (optarg != NULL && optarg[0] != '-')
+                if (optarg != NULL)
                 {
+                    if (optarg[0] == '-')
+                    {
+                        tprint("Invalid file name for %s option\r\n",
+                               argv[optind - 2]);
+
+                        exit(EXIT_FAILURE);
+                    }
+
                     options.execute = optarg;
                 }
                 else
@@ -509,11 +523,23 @@ void init_options(
 
                 break;
 
+            case ':':
+                tprint("%s option requires file option\r\n", argv[optind - 1]);
+
+                exit(EXIT_FAILURE);
+
             default:
-                tprint("%%Unknown option '%s': use --help for list of "
-                        "options\r\n", argv[optind - 1]);
+                tprint("Unknown option '%s': use --help for list of "
+                       "options\r\n", argv[optind - 1]);
 
                 exit(EXIT_FAILURE);
         }
+    }
+
+    if (mung && argv[optind] != NULL)
+    {
+        options.execute = argv[optind++];
+
+        teco_memory = NULL;             // TODO: is this necessary?
     }
 }

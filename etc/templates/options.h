@@ -33,6 +33,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "ascii.h"
+
 ///  @brief  Help text string.
 
 static const char * const help_text[] =
@@ -70,7 +72,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = "/* (INSERT: SHORT OPTIONS) */";
+static const char * const optstring = ":/* (INSERT: SHORT OPTIONS) */";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -78,6 +80,7 @@ static const char * const optstring = "/* (INSERT: SHORT OPTIONS) */";
 static const struct option long_options[] =
 {
 /* (INSERT: LONG OPTIONS) */
+    { "mung",           no_argument,        NULL,  CTRL_M },  // --mung option (hidden)
     { NULL,             no_argument,        NULL,  0      },  // Markers for end of list
 };
 
