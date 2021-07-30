@@ -79,9 +79,13 @@ Depending on the shell or command interpreter, quotes, and possibly also
 other characters, may need to be escaped so that they will be properly
 passed to TECO.
 
--A*nn* or -A*mm*,*nn*, --argument=*nn* or --argument=*mm*,*nn*
- - Pass *nn* argument or *mm*,*nn* arguments to indirect command file specified
-with --execute option.
+-A*nn*, --argument=*nn*
+ - Pass *nn* argument to the indirect command file specified with the --execute
+ option.
+
+-A*mm*,*nn*, --argument=*mm*,*nn*
+ - Pass *mm* and *nn* arguments to the indirect command file specified with
+the --execute option.
 
 -B*string*, --buffer=*string*
  - Insert *string* into edit buffer before TECO starts (using the I command).
@@ -163,9 +167,18 @@ output (using EW command), then read in first page.
  - Start TECO in split-screen display mode, with *nn* lines for a scrolling
 region (using the 1W and nn,7:W commands).
 
+-V --vtedit=*vtfile*
+ - Use macro in the file *vtfile* to initialize the display (overrides any file
+specified with the TECO_VTEDIT environment variable).
+
+-v, --novtedit
+ - Ignore TECO_VTEDIT environment and don't use any indirect command file to
+initialize the display.
+
 -X, --exit
  - Used with -E to exit from TECO (using the EX command) once the indirect
-command file has been processed.
+command file has been processed. Because of that, this option implicitly
+disables display mode (as though a --novtedit or -v option was used).
 
 -Z, --zero
  - Start TECO with strict enforcement of command syntax (using the -1E2 command).
