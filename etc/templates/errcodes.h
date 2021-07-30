@@ -39,7 +39,7 @@ enum errcodes
 {
     E_NUL,          ///< No error
 /* (INSERT: ERROR CODES) */
-    E_MAX           ///< Error count
+    NERRORS         ///< Total number of errors
 };
 
 extern void print_error(void);

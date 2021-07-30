@@ -73,6 +73,7 @@ enum errcodes
     E_KEY,          ///< Key 'foo' not found
     E_MAP,          ///< Missing apostrophe
     E_MAT,          ///< No matching files
+    E_MAX,          ///< Maximum nesting level reached
     E_MEM,          ///< Memory overflow
     E_MLP,          ///< Missing left parenthesis
     E_MQN,          ///< Missing Q-register name
@@ -109,7 +110,7 @@ enum errcodes
     E_XAB,          ///< Execution aborted
     E_YCA,          ///< Y command aborted
 
-    E_MAX           ///< Error count
+    NERRORS         ///< Total number of errors
 };
 
 extern void print_error(void);

@@ -39,7 +39,7 @@
 #define NO_ELSE     (bool)false         ///< Don't execute | command
 #define ELSE_OK     (bool)true          ///< Execute | command if found
 
-#define MAX_IF      64                  ///< Maximum nesting depth
+#define MAX_IF      32                  ///< Maximum nesting depth
 
 static struct
 {
@@ -430,7 +430,10 @@ static void pop_if(void)
 
 static void push_if(void)
 {
-    assert(quote.depth < MAX_IF);
+    if (quote.depth >= MAX_IF)
+    {
+        throw(E_MAX);                   // Maximum nesting level reached
+    }
 
     quote.loop[quote.depth] = getloop_depth();
     quote.start_if[quote.depth] = cbuf->pos;

@@ -212,7 +212,7 @@
         <error>
             <code>MAP</code>
             <message>Missing apostrophe</message>
-            <detail>Every conditional (opened with the &quot;</detail>
+            <detail>Every conditional (started with the &quot;</detail>
             <detail>command) must be closed with the &apos; command.</detail>
         </error>
         <error>
@@ -220,6 +220,13 @@
             <message>No matching files</message>
             <detail>No match was found for the file specification</detail>
             <detail>for an EN command.</detail>
+        </error>
+        <error>
+            <code>MAX</code>
+            <message>Maximum nesting level reached</message>
+            <detail>Loops (started with the &lt; command) and </detail>
+            <detail>conditionals (started with the &quot; command) may </detail>
+            <detail>only be nested to a maximum of 32 levels.</detail>
         </error>
         <error>
             <code>MEM</code>

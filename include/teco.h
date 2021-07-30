@@ -124,8 +124,6 @@ struct tstring
 
 // Global variables
 
-extern uint if_depth;
-
 extern jmp_buf jump_main;
 
 extern uint_t last_len;
