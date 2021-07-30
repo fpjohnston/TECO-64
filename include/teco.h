@@ -188,13 +188,19 @@ extern void *expand_mem(void *ptr, uint_t oldsize, uint_t newsize);
 
 extern void free_mem(void *ptr);
 
+extern uint getif_depth(void);
+
 extern uint getloop_depth(void);
+
+extern uint getloop_start(void);
 
 extern void init_env(void);
 
 extern void init_options(int argc, const char * const argv[]);
 
 extern void print_flag(int_t flag);
+
+extern void setif_depth(uint depth);
 
 extern void setloop_depth(uint depth);
 

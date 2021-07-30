@@ -146,15 +146,15 @@ static void endloop(struct cmd *cmd, bool pop_ok)
             {
                 if (cmd->c1 == '"')
                 {
-                    ++if_depth;
+                    setif_depth(getif_depth() + 1);
                 }
                 else if (cmd->c1 == '\'')
                 {
-                    --if_depth;
+                    setif_depth(getif_depth() - 1);
                 }
             }
 
-            if (loop_root.head != NULL && loop_root.head->depth > if_depth)
+            if (loop_root.head != NULL && loop_root.head->depth > getif_depth())
             {
                 throw(E_MAP);           // Missing apostrophe
             }
@@ -237,7 +237,7 @@ void exec_gt(struct cmd *cmd)
 
     if (f.e2.loop)
     {
-        if (loop->depth != if_depth)
+        if (loop->depth != getif_depth())
         {
             throw(E_MAP);               // Missing apostrophe
         }
@@ -337,6 +337,26 @@ uint getloop_depth(void)
 
 
 ///
+///  @brief    Get current loop start.
+///
+///  @returns  Starting position of loop (EOF if not in a loop).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint getloop_start(void)
+{
+    if (loop_root.nloops != 0)
+    {
+        return loop_root.head->start;
+    }
+    else
+    {
+        return (uint)EOF;
+    }
+}
+
+
+///
 ///  @brief    Pop loop block from linked list stack.
 ///
 ///  @returns  Nothing.
@@ -395,7 +415,7 @@ static void push_loop(int_t count)
     loop->count = count;
     loop->start = cbuf->pos;
     loop->next  = loop_root.head;
-    loop->depth = if_depth;
+    loop->depth = getif_depth();
 
     loop_root.head   = loop;
 

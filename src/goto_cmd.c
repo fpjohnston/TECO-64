@@ -130,24 +130,43 @@ void exec_O(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void find_tag(struct cmd *cmd, const char *tag)
+static void find_tag(struct cmd *cmd, const char *orig_tag)
 {
     assert(cmd != NULL);
-    assert(tag != NULL);                // Error if no tag string
-
-    int tag_pos = EOF;                  // Position of tag in command string
+    assert(orig_tag != NULL);           // Error if no tag string
 
     // The following creates a tag using string building characters, but then
     // sets up a local copy so that we can free up the string that was allocated
     // by build_string(). This is to avoid memory leaks in the event of errors.
 
-    char *tag1 = NULL;                  // Dynamically-allocated tag name
-    uint_t len = build_string(&tag1, tag, (uint_t)strlen(tag));
-    char tag2[len + 1];                 // Local copy of tag name
+    char *tmp = NULL;                   // Dynamically-allocated tag name
+    uint_t len = build_string(&tmp, orig_tag, (uint_t)strlen(orig_tag));
+    char tag[len + 1];                  ///< Local copy of tag name
 
-    strcpy(tag2, tag1);
+    strcpy(tag, tmp);
+    free_mem(&tmp);
 
-    free_mem(&tag1);
+    struct
+    {
+        uint_t loop_start;              ///< Start of current loop (or 0)
+        uint_t loop_end;                ///< End of current loop (or 0)
+        uint loop_depth;                ///< Current loop depth
+        uint if_depth;                  ///< Current if/else depth
+        uint tag_pos;                   ///< Position of tag
+        uint_t tag_loop;                ///< Loop depth for tag
+        uint tag_if;                    ///< If depth for tag
+    } state =
+    {
+        .loop_start   = 0,
+        .loop_end     = (uint_t)EOF,
+        .loop_depth   = 0,
+        .if_depth     = 0,
+        .tag_pos      = 0,
+        .tag_loop     = 0,
+        .tag_if       = 0,
+    };
+ 
+    state.loop_start = getloop_start();
 
     cbuf->pos = 0;                      // Start at beginning of command
 
@@ -156,44 +175,88 @@ static void find_tag(struct cmd *cmd, const char *tag)
 
     while (cbuf->pos < cbuf->len)
     {
-        if (!skip_cmd(cmd, "!"))
+        if (!skip_cmd(cmd, "!\"'<>"))
         {
             break;                      // No more commands, so quit
         }
-
-        assert(cmd->c1 == '!');
-
-        if (cmd->c2 == '!')             // Comment?
+        else if (cmd->c1 == '"')
         {
-            continue;                   // Yes, can't go to a comment
+            ++state.if_depth;
+        }
+        else if (cmd->c1 == '\'')
+        {
+            --state.if_depth;
+        }
+        else if (cmd->c1 == '<')        // Start of a new loop?
+        {
+            ++state.loop_depth;
+        }
+        else if (cmd->c1 == '>')        // End of a loop?
+        {
+            --state.loop_depth;
+
+            if (state.loop_start != (uint_t)EOF && cbuf->pos >= state.loop_start
+                && state.loop_end == (uint_t)EOF)
+            {
+                state.loop_end = cbuf->pos;
+            }
+        }
+        else if (cmd->c1 != '!' || cmd->c2 == '!')
+        {
+            continue;
         }
 
-        if (cmd->text1.len == len && !memcmp(cmd->text1.data, tag2, (ulong)len))
+        if (cmd->text1.len != len || memcmp(cmd->text1.data, tag, (ulong)len))
         {
-            if (tag_pos != EOF)         // Found tag. Have we seen it already?
-            {
-                throw(E_DUP, tag2);     // Duplicate tag
-            }
-
-            // We found the tag, so print it if tracing.
-
-            if (f.trace.enable)
-            {
-                tprint("!%.*s!", cmd->text1.len, cmd->text1.data);
-            }
-
-            tag_pos = (int)cbuf->pos;   // Remember tag for later
+            continue;                   // Tag didn't match
         }
+
+        // Tag matched. Make sure we're not branching into the middle of a loop
+        // (unless it's within the loop the O command is in).
+
+        if (state.loop_depth != 0)
+        {
+            if (state.loop_start == (uint_t)EOF || cbuf->pos < state.loop_start
+                || (state.loop_end != (uint_t)EOF && cbuf->pos > state.loop_end))
+            {
+                throw(E_BAT, tag);      // Bad tag
+            }
+        }
+
+        if (state.if_depth != 0)
+        {
+            throw(E_BAT, tag);          // Bad tag
+        }
+
+        if (state.tag_pos != 0)         // Found tag. Have we seen it already?
+        {
+            throw(E_DUP, tag);          // Duplicate tag
+        }
+
+        // We found the tag, so print it if tracing.
+
+        if (f.trace.enable)
+        {
+            tprint("!%.*s!", cmd->text1.len, cmd->text1.data);
+        }
+
+        state.tag_pos = cbuf->pos;      // Remember tag for later
+        state.tag_loop = state.loop_depth;
+        state.tag_if = state.if_depth;
     }
 
-    if (tag_pos == EOF)                 // Did we find the tag?
+    if (state.tag_pos == (uint_t)EOF)   // Did we find the tag?
     {
-        throw(E_TAG, tag2);             // Missing tag
+        throw(E_TAG, tag);              // Missing tag
     }
 
     init_x();                           // Reinitialize expression stack
 
-    cbuf->pos = (uint)tag_pos;          // Execute goto
+    setloop_depth(state.tag_loop);
+
+    setif_depth(state.tag_if);
+
+    cbuf->pos = state.tag_pos;          // Execute goto
 }
 
 

@@ -39,11 +39,18 @@
 #define NO_ELSE     (bool)false         ///< Don't execute | command
 #define ELSE_OK     (bool)true          ///< Execute | command if found
 
-uint if_depth = 0;                      ///< Nesting depth for if statements
+#define MAX_IF      64                  ///< Maximum nesting depth
 
-#define MAX_IF      1024                ///< Maximum nesting depth
-
-static uint loop_level[MAX_IF];         ///< Loop depth for each conditional
+static struct
+{
+    uint depth;
+    uint_t start_if[MAX_IF];
+    uint_t start_else[MAX_IF];
+    uint loop[MAX_IF];
+} quote =
+{
+    .depth = 0,
+};
 
 // Local functions
 
@@ -68,12 +75,12 @@ static void endif(struct cmd *unused, bool else_ok)
 
     assert(cmd != NULL);
 
-    if (if_depth == 0)
+    if (quote.depth == 0)
     {
         throw(E_MAP);                   // Missing apostrophe
     }
 
-    const uint start_if = if_depth;     // Initial conditional depth
+    const uint start_if = quote.depth;  // Initial conditional depth
 
     do
     {
@@ -105,7 +112,7 @@ static void endif(struct cmd *unused, bool else_ok)
         {
             setloop_depth(getloop_depth() - 1);
 
-            if (f.e2.quote && getloop_depth() < loop_level[if_depth - 1])
+            if (f.e2.quote && getloop_depth() < quote.loop[quote.depth - 1])
             {
                 throw(E_MRA);           // Missing right angle bracket
             }
@@ -116,7 +123,7 @@ static void endif(struct cmd *unused, bool else_ok)
         }
         else if (cmd->c1 == '\'')       // Conditional end
         {
-            if (f.trace.enable && if_depth == start_if)
+            if (f.trace.enable && quote.depth == start_if)
             {
                 echo_in(cmd->c1);
             }
@@ -125,23 +132,28 @@ static void endif(struct cmd *unused, bool else_ok)
         }
         else if (cmd->c1 == '|')        // Conditional else
         {
-            if (f.e2.quote && getloop_depth() != loop_level[if_depth - 1])
+            if (f.e2.quote && getloop_depth() != quote.loop[quote.depth - 1])
             {
                 throw(E_MRA);           // Missing right angle bracket
             }
 
-            if (else_ok && if_depth == start_if)
+            if (else_ok)
             {
-                if (f.trace.enable)
-                {
-                    echo_in(cmd->c1);
-                }
+                quote.start_else[quote.depth] = cbuf->pos;
 
-                break;
+                if (quote.depth == start_if)
+                {
+                    if (f.trace.enable)
+                    {
+                        echo_in(cmd->c1);
+                    }
+
+                    break;
+                }
             }
         }
 
-    } while (if_depth >= start_if);
+    } while (quote.depth >= start_if);
 }
 
 
@@ -156,12 +168,12 @@ void exec_apos(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (if_depth == 0)
+    if (quote.depth == 0)
     {
         throw(E_MSC);                   // Missing start of conditional
     }
 
-    if (f.e2.quote && getloop_depth() != loop_level[if_depth - 1])
+    if (f.e2.quote && getloop_depth() != quote.loop[quote.depth - 1])
     {
         throw(E_MRA);                   // Missing right angle bracket
     }
@@ -236,10 +248,9 @@ void exec_quote(struct cmd *cmd)
         throw(E_NAQ);                   // No argument before "
     }
 
-    init_x();                           // Reinitialize expression stack
-
     int c = (int)cmd->n_arg;
 
+    init_x();                           // Reinitialize expression stack
     push_if();
 
     switch (cmd->c2)
@@ -361,22 +372,37 @@ void exec_vbar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (if_depth == 0)
+    if (quote.depth == 0)
     {
         throw(E_MSC);                   // Missing start of conditional
     }
 
     if (f.e2.quote)
     {
-        if (getloop_depth() != loop_level[if_depth])
+        if (getloop_depth() != quote.loop[quote.depth])
         {
             throw(E_MRA);               // Missing right angle bracket
         }
     }
 
+    quote.start_else[quote.depth] = cbuf->pos;
+
     endif(cmd, NO_ELSE);
 
     init_x();                           // Reinitialize expression stack
+}
+
+
+///
+///  @brief    Get conditional depth.
+///
+///  @returns  Conditional depth.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint getif_depth(void)
+{
+    return quote.depth;
 }
 
 
@@ -389,9 +415,9 @@ void exec_vbar(struct cmd *cmd)
 
 static void pop_if(void)
 {
-    assert(if_depth > 0);               // Error if not in conditional
+    assert(quote.depth > 0);            // Error if not in conditional
 
-    --if_depth;
+    --quote.depth;
 }
 
 
@@ -404,7 +430,13 @@ static void pop_if(void)
 
 static void push_if(void)
 {
-    loop_level[if_depth++] = getloop_depth();
+    assert(quote.depth < MAX_IF);
+
+    quote.loop[quote.depth] = getloop_depth();
+    quote.start_if[quote.depth] = cbuf->pos;
+    quote.start_else[quote.depth] = (uint_t)-1;
+
+    ++quote.depth;
 }
 
 
@@ -417,7 +449,7 @@ static void push_if(void)
 
 void reset_if(void)
 {
-    if_depth = 0;
+    quote.depth = 0;
 }
 
 
@@ -440,3 +472,18 @@ bool scan_quote(struct cmd *cmd)
 
     return false;
 }
+
+
+///
+///  @brief    Set conditional depth.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void setif_depth(uint depth)
+{
+    quote.depth = depth;
+}
+
+
