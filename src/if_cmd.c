@@ -41,6 +41,10 @@
 
 #define MAX_IF      32                  ///< Maximum nesting depth
 
+///  @var     quote
+///
+///  @brief   Conditional command state
+
 static struct
 {
     uint depth;
