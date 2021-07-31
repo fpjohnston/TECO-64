@@ -189,6 +189,7 @@ void init_term(void)
         (void)sigfillset(&sa.sa_mask);  // Block all signals in handler
 
         (void)sigaction(SIGINT, &sa, NULL);
+        (void)sigaction(SIGABRT, &sa, NULL); // (mostly for assertion failures)
 
 #if     !defined(__DECC)
 
@@ -288,8 +289,40 @@ static void reset_term(void)
 
 static void sig_handler(int signum)
 {
+    static bool aborting = false;
+
     switch (signum)
     {
+        case SIGABRT:
+            //  The following line is included because any assertion failure
+            //  message will have been output before resetting the terminal
+            //  characteristics, so any <LF> would not have included a <CR>.
+            //  But even if it did, an extra <CR> won't hurt.
+
+            type_out(CR);
+
+            if (aborting)
+            {
+                reset_term();           // Reset terminal characteristics
+            }
+            else
+            {
+                aborting = true;        // Prevent aborts during aborts
+
+                exec_EK(NULL);          // Kill any current edit
+
+                if (t.Z != 0)
+                {
+                    setpos_ebuf(t.B);
+
+                    delete_ebuf(t.Z);   // Kill the whole buffer
+                }
+
+                exit(EXIT_FAILURE);     // Cleanup, reset, and exit
+            }
+
+            break;
+
         case SIGINT:
             if (f.et.abort || f.e0.ctrl_c) // Should CTRL/C cause abort?
             {
