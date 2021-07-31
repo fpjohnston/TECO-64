@@ -214,9 +214,9 @@ void init_term(void)
 #endif
 
         f.et.eightbit  = true;          // Terminal can use 8-bit characters
-    }
 
-    getsize();
+        getsize();
+    }
 
     // The following is needed only if there is no display active and we haven't
     // already initialized the terminal mode.
