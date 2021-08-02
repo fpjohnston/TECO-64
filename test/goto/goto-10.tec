@@ -1,0 +1,23 @@
+!! Branch backward into a loop
+
+0,128ET
+
+HK
+
+G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
+
+@^A/ Testing branching backward into a loop.../
+
+@O!tag1!
+
+1 <
+    !tag2!
+
+    :@^A/FAIL/
+
+    ^C
+>
+
+!tag1!
+
+@O!tag2!

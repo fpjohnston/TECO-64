@@ -1,0 +1,29 @@
+!! Branch backward outside a conditional
+
+0,128ET
+
+HK
+
+G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
+
+@^A/ Testing branching backward outside a conditional.../
+
+@O!tag1!
+
+!tag2!
+
+:@^A/PASS/
+
+^C
+
+!tag1!
+
+0 "E
+
+    @O!tag2!
+
+    :@^A/FAIL/
+
+    ^C
+'
+

@@ -1,0 +1,27 @@
+!! Branch forward into a conditional
+
+0,128ET
+
+HK
+
+G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
+
+@^A/ Testing branching forward into a conditional.../
+
+@O!tag1!
+
+:@^A/FAIL/
+
+^C
+
+0 "E
+
+    !tag1!
+
+    :@^A/PASS/
+
+    ^C
+
+'
+
+

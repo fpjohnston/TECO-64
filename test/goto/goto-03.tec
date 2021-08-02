@@ -1,0 +1,21 @@
+!! Branch forward outside loop
+
+0,128ET
+
+HK
+
+G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
+
+@^A/ Testing branching forward outside loop.../
+
+1 <
+    @O!tag1!
+    @^A/FAIL/
+    ^C
+>
+
+!tag1!
+
+:@^A/PASS/
+
+^C

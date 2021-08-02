@@ -1,0 +1,21 @@
+!! Branch forward
+
+0,128ET
+
+HK
+
+G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
+
+@^A/ Testing branching forward.../
+
+@O!tag1!
+
+@^A/FAIL/
+
+^C
+
+!tag1!
+
+:@^A/PASS/
+
+^C

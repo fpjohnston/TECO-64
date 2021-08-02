@@ -1,0 +1,34 @@
+!! EN command test, using colon modifier
+
+0,128ET
+
+!! Verify that we were provided a file name
+
+Z "E :@^A/No file name found/ ^C '
+
+HXA HK          !! Copy file name to Q-register A, clear buffer
+
+G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
+
+@^A/ Testing EN command with colon modifier.../
+
+:@EN/^EQA/      !! Initialize for wildcard lookup
+    "E
+        :@^A/FAIL/
+        ^C
+    '
+
+0UA
+<
+    :@EN//;     !! Loop for all matching filespecs.
+    %A          !! And count how many we found
+>
+
+QA :@=/PASS: %u file/
+
+QA-1 "N @^A/s/ '
+
+:@^A/ matched/
+
+EX
+^[^[

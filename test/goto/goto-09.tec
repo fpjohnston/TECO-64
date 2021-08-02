@@ -1,0 +1,20 @@
+!! Branch forward into a loop
+
+0,128ET
+
+HK
+
+G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
+
+@^A/ Testing branching forward into a loop.../
+
+@O!tag1!
+
+1 <
+    !tag1!
+
+    :@^A/FAIL/
+
+    ^C
+>
+
