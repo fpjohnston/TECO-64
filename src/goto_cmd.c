@@ -237,7 +237,7 @@ static void find_tag(struct cmd *cmd, const char *orig_tag)
 
         if (f.trace.enable)
         {
-            tprint("!%.*s!", cmd->text1.len, cmd->text1.data);
+            tprint("!%.*s!", (int)cmd->text1.len, cmd->text1.data);
         }
 
         state.tag_pos = cbuf->pos;      // Remember tag for later
