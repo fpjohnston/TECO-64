@@ -38,21 +38,18 @@
 #include "qreg.h"
 
 
-#define BUILD_INIT      128             ///< Initial size of string
+#define BUILD_MAX       (KB * 4)        ///< Maximum build string is 4 KB
 
-#define BUILD_EXPAND    128             ///< Incremental size of string
+/// @def    get_src(c)
+/// @brief  Get next character from source buffer (error if buffer empty).
 
-static char *build_str;                 ///< Build string
+#define getc_src(chr, error) if (len-- == 0) throw(error); else chr = *src++
 
-static uint_t build_size;               ///< Allocated size of build string
+/// @def    putc_dest(c)
+/// @brief  Put next character to destination buffer (error if buffer full).
 
-static uint_t build_len;                ///< Current length of build string
-
-// Local functions
-
-static void store_chr(int c);
-
-static void store_str(const char *buf, uint_t len);
+#define putc_dest(c) if (pos == BUILD_MAX - 1) throw(E_MEM); else \
+                     string[pos++] = (char)c
 
 
 ///
@@ -80,244 +77,199 @@ uint_t build_string(char **dest, const char *src, uint_t len)
     assert(dest != NULL);               // Error if no destination string
     assert(src != NULL);                // Error if no source string
 
-    bool literal    = false;
-    bool lower_next = false;
-    bool upper_next = false;
+    char string[BUILD_MAX];             // Allow 4K buffer for build string
+    size_t pos = 0;                     // Position to store next character
+    bool lower_next = false;            // Convert next chr. to lower case
+    bool upper_next = false;            // Convert next chr. to upper case
+    bool lower_all = false;             // Convert all chrs. to lower case
+    bool upper_all = false;             // Convert all chrs. to upper case
 
-    build_str = alloc_mem(build_size = BUILD_INIT);
-    build_len = 0;
+    // Loop for all characters in source string.
 
     while (len-- > 0)
     {
         int c = *src++;
 
-        if (literal)
-        {
-            literal = false;
-
-            store_chr((int)c);
-
-            continue;
-        }
-
         // If allowed, convert ^x to CTRL/x
 
         if (c == '^' && !f.ed.caret)
         {
-            if (len-- == 0)
+            getc_src(c, E_ISS);
+
+            int c1 = toupper(c);
+
+            if (c1 < '@' || c1 > '_')
             {
-                throw(E_ISS);           // Invalid search string
+                throw(E_IUC, c);        // Invalid uparrow character
             }
 
-            int orig = *src++;
-
-            c = toupper(orig);
-
-            if (c < '@' || c > '_')
-            {
-                throw(E_IUC, orig);     // Invalid uparrow character
-            }
-
-            c &= 0x1f;
+            c &= 0x1f;                  // Convert to control character
         }
 
-        if (c == CTRL_Q || c == CTRL_R)
+        // If we don't have any special string building characters, just
+        // take care of those first.
+
+        if (!iscntrl(c))
         {
-            literal = true;
+            // Note that we check for lower_next and upper_next before
+            // lower_all and upper_all because CTRL/V can be used to
+            // temporarily override the case set by a double CTRL/W,
+            // and the same is true of a CTRL/W and a double CTRL/V.
+            // So the code below really can't be simplified.
 
-            continue;
+            if (lower_next)
+            {
+                c = tolower(c);
+            }
+            else if (upper_next)
+            {
+                c = toupper(c);
+            }
+            else if (lower_all || f.e0.lower)
+            {
+                c = tolower(c);
+            }
+            else if (upper_all || f.e0.upper)
+            {
+                c = toupper(c);
+            }
+
+            lower_next = upper_next = false;
+
+            putc_dest(c);
         }
+        else if (c == CTRL_E)
+        {
+            int qname;
+            bool qlocal = false;
+            int qindex;
+            struct qreg *qreg;
 
-        if (c == CTRL_V)
+            getc_src(c, E_ISS);         // Get character after CTRL/E
+
+            switch (toupper(c))
+            {
+                case 'Q':               // <CTRL/E>Q
+                    getc_src(qname, E_MQN);
+
+                    if (qname == '*')
+                    {
+                        size_t nbytes = strlen(last_file);
+
+                        if (pos + nbytes == BUILD_MAX) 
+                        {
+                            throw(E_MEM);
+                        }
+
+                        memcpy(string + pos, src, nbytes);
+                        pos += nbytes;
+
+                        break;
+                    }
+
+                    if (qname == '.')
+                    {
+                        getc_src(qname, E_MQN);
+                        qlocal = true;
+                    }
+
+                    if ((qindex = get_qindex(qname, qlocal)) == -1)
+                    {
+                        throw(E_IQN, qname);
+                    }
+
+                    qreg = get_qreg(qindex);
+
+                    if (qreg->text.len != 0)
+                    {
+                        size_t nbytes = qreg->text.len;
+
+                        if (pos + nbytes == BUILD_MAX) 
+                        {
+                            throw(E_MEM);
+                        }
+
+                        memcpy(string + pos, qreg->text.data, nbytes);
+                        pos += nbytes;
+                    }
+
+                    break;
+
+                case 'U':               // <CTRL/E>U
+                    getc_src(qname, E_MQN);
+
+                    if (qname == '.')
+                    {
+                        getc_src(qname, E_MQN);
+                        qlocal = true;
+                    }
+
+                    if ((qindex = get_qindex(qname, qlocal)) == -1)
+                    {
+                        throw(E_IQN, qname);
+                    }
+
+                    qreg = get_qreg(qindex);
+
+                    putc_dest(qreg->n);
+
+                    break;
+
+                default:                // Not a special string building chr.
+                    putc_dest(CTRL_E);  // Just save the CTRL/E
+
+                    ++len;              // And redo the next character
+                    --src;
+
+                    break;
+            }
+        }
+        else if (c == CTRL_Q || c == CTRL_R)
+        {
+            getc_src(c, E_ISS);
+            putc_dest(c);
+        }
+        else if (c == CTRL_V)
         {
             if (lower_next)             // <CTRL/V><CTRL/V>?
             {
-                f.e0.lower = true;
-                f.e0.upper = false;
-
-                lower_next = upper_next = false;
+                lower_all = true;
+                upper_all = lower_next = upper_next = false;
             }
             else
             {
                 lower_next = true;
             }
-
-            continue;
         }
-
-        if (c == CTRL_W)
+        else if (c == CTRL_W)
         {
             if (upper_next)             // <CTRL/W><CTRL/W>?
             {
-                f.e0.upper = true;
-                f.e0.lower = false;
-
-                upper_next = lower_next = false;
+                upper_all = true;
+                lower_all = upper_next = lower_next = false;
             }
             else
             {
                 upper_next = true;
             }
-
-            continue;
         }
-
-        // Check for <CTRL/E>Qq and <CTRL/E>Uq
-
-        if (c == CTRL_E)
+        else                            // Non-special control character
         {
-            if (len-- == 0)             // Any more characters?
-            {
-                throw(E_ISS);           // Invalid search string
-            }
+            lower_next = upper_next = false;
 
-            int orig = *src++;
-
-            c = toupper(orig);
-
-            // If neither <CTRL/E>Q nor <CTRL/E>U, then it's probably a match
-            // control construct; in any case, just copy it and continue.
-
-            if (c != 'Q' && c != 'U')
-            {
-                store_chr(CTRL_E);
-                store_chr(orig);
-
-                continue;
-            }
-
-            // Here for <CTRL/E>Q or <CTRL/E>U
-
-            if (len-- == 0)             // Q-register specified?
-            {
-                throw(E_MQN);           // Missing Q-register name
-            }
-
-            int qname = *src++;
-            bool qlocal = false;
-
-            if (qname == '*' && c == 'Q')
-            {
-                store_str(last_file, (uint_t)strlen(last_file));
-
-                continue;
-            }
-
-            if (qname == '.')           // Local Q-register?
-            {
-                qlocal = true;
-
-                if (len-- == 0)         // Q-register specified?
-                {
-                    throw(E_MQN);       // Missing Q-register name
-                }
-
-                qname = *src++;
-            }
-
-            int qindex = get_qindex(qname, qlocal);
-
-            if (qindex == -1)
-            {
-                throw(E_IQN, qname);    // Invalid Q-register name
-            }
-
-            struct qreg *qreg = get_qreg(qindex);
-
-            if (c == 'Q')               // <CTRL/E>Qq
-            {
-                if (qreg->text.len != 0)
-                {
-                    store_str(qreg->text.data, qreg->text.len);
-                }
-            }
-            else if (c == 'U')          // <CTRL/E>Uq
-            {
-                store_chr((int)qreg->n);
-            }
-
-            continue;
+            putc_dest(c);
         }
-
-        // Note that we check for lower_next and upper_next before lower_all and
-        // upper_all because CTRL/V can be used to temporarily override the case
-        // set by a double CTRL/W, and the same is true of a CTRL/W and a double
-        // CTRL/V. So the code below really can't be simplified.
-
-        if (lower_next)
-        {
-            c = tolower(c);
-        }
-        else if (upper_next)
-        {
-            c = toupper(c);
-        }
-        else if (f.e0.lower)
-        {
-            c = tolower(c);
-        }
-        else if (f.e0.upper)
-        {
-            c = toupper(c);
-        }
-
-        lower_next = upper_next = false;
-
-        store_chr(c);
     }
 
     // We terminate the string with a NUL character for the benefit of file
     // functions that use the string for C library functions, but we don't
     // want to count the NUL if we were called by any search functions.
 
-    store_chr(NUL);                     // Ensure it's NUL-terminated
+    string[pos] = NUL;                  // Ensure it's NUL-terminated
 
-    --build_len;                        // But don't count the NUL
+    *dest = alloc_mem((uint_t)pos + 1);
 
-    *dest = build_str;
+    memcpy(*dest, string, pos + 1);
 
-    last_len = build_len;
-
-    return build_len;
-}
-
-
-///
-///  @brief    Store a character in build string. Note that this may result in
-///            reallocating memory for a larger build string.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void store_chr(int c)
-{
-    if (build_len == build_size)
-    {
-        uint_t oldsize = build_size;
-
-        build_size += BUILD_EXPAND;
-
-        build_str = expand_mem(build_str, oldsize, build_size);
-    }
-
-    build_str[build_len++] = (char)c;
-}
-
-
-///
-///  @brief    Copy a string to build string.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void store_str(const char *buf, uint_t len)
-{
-    assert(buf != NULL);                // Error if no input string
-
-    while (len-- > 0)
-    {
-        store_chr(*buf++);
-    }
+    return last_len = (uint_t)pos;
 }
