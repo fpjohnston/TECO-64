@@ -177,19 +177,14 @@ void append_qchr(int qindex, int c)
         qreg->text.pos  = 0;
         qreg->text.len  = 0;
         qreg->text.size = KB;
-        qreg->text.data = alloc_mem(qreg->text.size);
+        qreg->text.data = alloc_mem((uint_t)qreg->text.size);
     }
     else
     {
-        uint_t nbytes = qreg->text.len;
-
-        if (nbytes == qreg->text.size)
+        if (qreg->text.len == qreg->text.size)
         {
-            nbytes += KB;
-
-            qreg->text.data = expand_mem(qreg->text.data, qreg->text.size,
-                                         nbytes);
-            qreg->text.size = nbytes;
+            qreg->text.data = expand_mem(qreg->text.data, qreg->text.size, KB);
+            qreg->text.size += KB;
         }
     }
 
@@ -272,7 +267,7 @@ uint_t get_qall(void)
 
     // Get count of all text in global Q-registers
 
-    for (uint i = 0; i < QCOUNT; ++i)
+    for (int_t i = 0; i < QCOUNT; ++i)
     {
         qreg = &qglobal[i];
         n += qreg->text.len;
@@ -284,7 +279,7 @@ uint_t get_qall(void)
 
     while (qnext != NULL)
     {
-        for (uint_t i = 0; i < QCOUNT; ++i)
+        for (int_t i = 0; i < QCOUNT; ++i)
         {
             qreg = &qnext->qreg[i];
             n += qreg->text.len;
@@ -304,7 +299,7 @@ uint_t get_qall(void)
         qlist = qlist->next;
     }
 
-    return n;
+    return (uint_t)n;
 }
 
 
@@ -315,11 +310,11 @@ uint_t get_qall(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int get_qchr(int qindex, int_t n)
+int get_qchr(int qindex, uint n)
 {
     struct qreg *qreg = QREGISTER(qindex);
 
-    if (n < 0 || (uint_t)n >= qreg->text.len) // Out of range?
+    if (n >= qreg->text.len)            // Out of range?
     {
         return EOF;                     // Yes
     }
@@ -398,7 +393,7 @@ uint_t get_qsize(int qindex)
 {
     struct qreg *qreg = QREGISTER(qindex);
 
-    return qreg->text.len;
+    return (uint_t)qreg->text.len;
 }
 
 
@@ -485,7 +480,7 @@ void print_qreg(int qindex)
 {
     struct qreg *qreg = QREGISTER(qindex);
 
-    for (uint i = 0; i < qreg->text.len; ++i)
+    for (uint_t i = 0; i < qreg->text.len; ++i)
     {
         int c = qreg->text.data[i];
 
@@ -530,7 +525,7 @@ bool push_qreg(int qindex)
     savedq->qreg.text.data = alloc_mem(savedq->qreg.text.size);
 
     memcpy(savedq->qreg.text.data, qreg->text.data,
-           (ulong)savedq->qreg.text.size);
+           (size_t)savedq->qreg.text.size);
 
     savedq->next = list_head;
 

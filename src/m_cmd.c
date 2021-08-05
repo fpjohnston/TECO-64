@@ -122,17 +122,18 @@ void exec_macro(tbuffer *macro, struct cmd *oldcmd)
 
     // Save current state
 
-    uint saved_base           = set_x(); // Save expression stack level
-    uint saved_loop           = getloop_depth();
-    uint saved_if             = getif_depth();
-    uint saved_nparens        = nparens;
-    uint_t saved_pos          = macro->pos;
+    uint saved_base     = set_x();      // Save expression stack level
+    uint saved_loop     = getloop_depth();
+    uint saved_if       = getif_depth();
+    uint saved_nparens  = nparens;
+    uint_t saved_pos    = macro->pos;
     tbuffer *saved_cbuf = cbuf;
 
     // Initialize for new command string
 
     setloop_depth(0);
     setif_depth(0);
+
     nparens    = 0;
     macro->pos = 0;
     cbuf       = macro;                 // Switch command strings

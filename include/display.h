@@ -76,7 +76,7 @@ struct watch
     bool seeall;                    ///< SEEALL mode
     int mark;                       ///< "Mark" status
     int hold;                       ///< Hold mode indicator
-    int topdot;                     ///< Buffer position of upper left corner
+    int_t topdot;                   ///< Buffer position of upper left corner
     int nlines;                     ///< No. of scrolling lines
     bool noscroll;                  ///< Disable scrolling region
     union tchar tchar;              ///< Terminal characteristics

@@ -147,7 +147,7 @@ extern const char *teco_vtedit;
 
 extern void *alloc_mem(uint_t size);
 
-extern uint_t build_string(char **dest, const char *src, uint_t len);
+extern tstring build_string(const char *src, uint_t len);
 
 extern bool check_loop(void);
 
@@ -187,7 +187,7 @@ extern void exit_tbuf(void);
 
 extern void exit_term(void);
 
-extern void *expand_mem(void *ptr, uint_t oldsize, uint_t newsize);
+extern void *expand_mem(void *p1, uint_t size, uint_t delta);
 
 extern void free_mem(void *ptr);
 
@@ -195,7 +195,7 @@ extern uint getif_depth(void);
 
 extern uint getloop_depth(void);
 
-extern uint getloop_start(void);
+extern uint_t getloop_start(void);
 
 extern void init_env(void);
 
@@ -207,10 +207,10 @@ extern void setif_depth(uint depth);
 
 extern void setloop_depth(uint depth);
 
-extern void *shrink_mem(void *ptr, uint_t oldsize, uint_t newsize);
+extern void *shrink_mem(void *p1, uint_t size, uint_t delta);
 
 extern char *strdup_mem(const char *ptr);
 
-extern int_t teco_env(int_t n, bool colon);
+extern int teco_env(int n, bool colon);
 
 #endif  // !defined(_TECO_H)

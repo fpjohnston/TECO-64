@@ -79,10 +79,10 @@ void exec_ctrl_R(struct cmd *cmd)
             throw(E_IRA);               // Invalid radix argument
         }
 
-        f.radix = (int)cmd->n_arg;      // Set the radix
+        f.radix = cmd->n_arg;           // Set the radix
     }
     else
     {
-        push_x((int_t)f.radix, X_OPERAND); // No, just save what we have
+        push_x(f.radix, X_OPERAND);     // No, just save what we have
     }
 }

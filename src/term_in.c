@@ -160,7 +160,7 @@ static void exec_ctrl_G(void)
                 print_prompt();
             }
 
-            echo_tbuf(pos);
+            echo_tbuf((uint)pos);
 
             break;
 

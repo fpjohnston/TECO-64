@@ -40,7 +40,7 @@ extern tbuffer copy_tbuf(void);
 
 extern int delete_tbuf(void);
 
-extern void echo_tbuf(int pos);
+extern void echo_tbuf(uint pos);
 
 extern int fetch_tbuf(void);
 

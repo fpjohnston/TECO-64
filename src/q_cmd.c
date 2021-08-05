@@ -51,7 +51,7 @@ bool scan_Q(struct cmd *cmd)
 
     if (cmd->n_set)                     // nQq
     {
-        n = get_qchr(cmd->qindex, cmd->n_arg);
+        n = get_qchr(cmd->qindex, (uint)cmd->n_arg);
     }
     else if (cmd->colon)                // :Qq
     {

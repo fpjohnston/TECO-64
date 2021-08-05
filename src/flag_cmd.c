@@ -408,16 +408,16 @@ bool scan_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int_t n = 0;                        // 0EJ is default command
+    int n = 0;                          // 0EJ is default command
 
     if (cmd->n_set)
     {
-        n = cmd->n_arg;                 // Get whatever operand we can
+        n = (int)cmd->n_arg;            // Get whatever operand we can
     }
 
     n = teco_env(n, cmd->colon);        // Do the system-dependent part
 
-    push_x(n, X_OPERAND);               // Now return the result
+    push_x((int_t)n, X_OPERAND);        // Now return the result
 
     cmd->colon = false;
 

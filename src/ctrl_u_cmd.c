@@ -69,7 +69,7 @@ void exec_ctrl_U(struct cmd *cmd)
         {
             const char *p = cmd->text1.data;
 
-            for (uint i = 0; i < cmd->text1.len; ++i)
+            for (uint_t i = 0; i < cmd->text1.len; ++i)
             {
                 append_qchr(cmd->qindex, *p++);
             }
@@ -80,18 +80,17 @@ void exec_ctrl_U(struct cmd *cmd)
         }
         else                            // ^Uqtext`
         {
-            uint_t len = cmd->text1.len;
-            void *buf = alloc_mem(len);
-
             tbuffer text =
             {
-                .data = buf,
-                .size = len,
+                .data = NULL,
+                .size = cmd->text1.len,
                 .pos  = 0,
-                .len  = len,
+                .len  = cmd->text1.len,
             };
 
-            memcpy(text.data, cmd->text1.data, (ulong)text.size);
+            text.data = alloc_mem(cmd->text1.len);
+
+            memcpy(text.data, cmd->text1.data, (size_t)cmd->text1.len);
             store_qtext(cmd->qindex, &text);
         }
     }

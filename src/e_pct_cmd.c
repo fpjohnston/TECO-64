@@ -50,8 +50,8 @@ void exec_E_pct(struct cmd *cmd)
     assert(cmd != NULL);
 
     const char *buf = cmd->text1.data;
-    uint_t len = cmd->text1.len;
-    uint stream = OFILE_QREGISTER;
+    uint_t len      = cmd->text1.len;
+    uint stream     = OFILE_QREGISTER;
 
     if (len == 0)                       // If no file name, then done
     {
@@ -81,11 +81,11 @@ void exec_E_pct(struct cmd *cmd)
 
     assert(qreg != NULL);               // Error if no Q-register
 
-    uint_t size = qreg->text.len;
-
-    if (size != 0)
+    if (qreg->text.len > 0)
     {
-        if (fwrite(qreg->text.data, 1uL, (ulong)size, ofile->fp) != size)
+        size_t size = (size_t)(uint)qreg->text.len;
+
+        if (fwrite(qreg->text.data, 1uL, size, ofile->fp) != size)
         {
             throw(E_SYS, ofile->name);  // Unexpected system error
         }

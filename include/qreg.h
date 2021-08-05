@@ -42,7 +42,7 @@
 struct qreg
 {
     int_t n;                        ///< Q-register numeric value
-    tbuffer text;             ///< Q-register text storage
+    tbuffer text;                   ///< Q-register text storage
 };
 
 ///  @var     QNAMES
@@ -63,7 +63,7 @@ extern void delete_qtext(int qindex);
 
 extern uint_t get_qall(void);
 
-extern int get_qchr(int qindex, int_t n);
+extern int get_qchr(int qindex, uint n);
 
 extern int get_qindex(int qname, bool qlocal);
 

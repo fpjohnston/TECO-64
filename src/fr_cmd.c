@@ -60,7 +60,7 @@ void exec_FR(struct cmd *cmd)
     }
     else
     {
-        n = -(int)last_len;
+        n = -(int_t)last_len;
     }
 
     delete_ebuf(n);

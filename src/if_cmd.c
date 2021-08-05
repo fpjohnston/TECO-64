@@ -441,7 +441,7 @@ static void push_if(void)
 
     quote.loop[quote.depth] = getloop_depth();
     quote.start_if[quote.depth] = cbuf->pos;
-    quote.start_else[quote.depth] = (uint_t)-1;
+    quote.start_else[quote.depth] = (uint_t)EOF;
 
     ++quote.depth;
 }

@@ -75,9 +75,9 @@ struct watch w =
 
 // Local functions
 
-static int get_w(int n);
+static int_t get_w(int_t n);
 
-static void set_w(int m, int n);
+static void set_w(int_t m, int_t n);
 
 
 ///
@@ -87,7 +87,7 @@ static void set_w(int m, int n);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int get_w(int n)
+static int_t get_w(int_t n)
 {
     switch (n)
     {
@@ -99,7 +99,7 @@ static int get_w(int n)
             return w.width;
 
         case 2:
-            n = w.height - w.nlines;
+            n = (int_t)w.height - (int_t)w.nlines;
 
             if (f.e0.display && f.e4.line)
             {
@@ -127,7 +127,7 @@ static int get_w(int n)
             return w.noscroll ? -1 : 0;
 
         case 9:
-            return (int)w.tchar.flag;
+            return (int_t)w.tchar.flag;
     }
 }
 
@@ -210,10 +210,10 @@ bool scan_W(struct cmd *cmd)
 
     if (cmd->m_set)                     // m,n:W
     {
-        set_w((int)cmd->m_arg, (int)cmd->n_arg);
+        set_w(cmd->m_arg, cmd->n_arg);
     }
 
-    int_t n = (int_t)get_w((int)cmd->n_arg);
+    int_t n = (int_t)get_w(cmd->n_arg);
 
     push_x(n, X_OPERAND);
 
@@ -230,19 +230,19 @@ bool scan_W(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void set_w(int m, int n)
+static void set_w(int_t m, int_t n)
 {
     switch (n)
     {
         case 0:
-            w.type = m;
+            w.type = (int)m;
 
             break;
 
         case 1:
             if (m >= MIN_WIDTH)
             {
-                w.width = m;
+                w.width = (int)m;
             }
 
             break;
@@ -250,7 +250,7 @@ static void set_w(int m, int n)
         case 2:
             if (m >= MIN_HEIGHT)
             {
-                w.height = m;
+                w.height = (int)m;
 
                 set_nrows();
             }
@@ -263,19 +263,19 @@ static void set_w(int m, int n)
             break;
 
         case 4:
-            w.mark = m;
+            w.mark = (int)m;
 
             break;
 
         case 5:
-            w.hold = m;
+            w.hold = (int)m;
 
             break;
 
         case 7:
             if (m > 1 && w.height - m >= 9)
             {
-                w.nlines = m;
+                w.nlines = (int)m;
 
                 set_scroll(w.height, w.nlines);
             }

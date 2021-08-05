@@ -396,15 +396,15 @@ static void scan_text(int delim, tstring *text)
 
     text->data = cbuf->data + cbuf->pos;
 
-    uint_t n = cbuf->len - cbuf->pos;
-    char *end = memchr(text->data, delim, (ulong)n);
+    size_t nbytes = cbuf->len - cbuf->pos;
+    char *end = memchr(text->data, delim, (size_t)nbytes);
 
     if (end == NULL)
     {
         abort_cbuf();
     }
 
-    text->len = (uint)(end - text->data);
+    text->len = (uint_t)(int_t)(end - text->data);
 
     // Echo text string or comment if tracing. In order to ensure that this will
     // work when executing an EM command, note that we must echo the LF that

@@ -58,7 +58,7 @@ static char **next_file;                ///< Next file in pglob
 
 // Local functions
 
-static uint parse_file(const char *file, char *dir, char *base);
+static uint_t parse_file(const char *file, char *dir, char *base);
 
 
 ///
@@ -89,10 +89,10 @@ struct ifile *find_command(char *file, uint_t len, uint stream, bool colon)
     }
 
     char *name = alloc_mem(len + 1);
-    int nbytes = snprintf(name, (ulong)len + 1, "%s%s%s", dir, base, type);
+    int nbytes = snprintf(name, (size_t)len + 1, "%s%s%s", dir, base, type);
     struct ifile *ifile;
 
-    assert((uint)nbytes < len + 1);
+    assert((uint_t)(uint)nbytes < len + 1);
 
     if ((ifile = open_input(name, stream, (bool)true)) != NULL)
     {
@@ -103,13 +103,13 @@ struct ifile *find_command(char *file, uint_t len, uint stream, bool colon)
 
     if (dir[0] != '/' && teco_library != NULL)
     {
-        len = (uint)(strlen(teco_library) + 1 + strlen(name));
+        uint_t size = (uint_t)(strlen(teco_library) + 1 + strlen(name) + 1);
 
-        char *libname = alloc_mem(len + 1);
+        char *libname = alloc_mem(size);
 
-        nbytes = snprintf(libname, (ulong)len + 1, "%s/%s", teco_library, name);
+        nbytes = snprintf(libname, (size_t)size, "%s/%s", teco_library, name);
 
-        assert((uint)nbytes < len + 1);
+        assert((uint_t)(uint)nbytes < size);
 
         if ((ifile = open_input(libname, stream, (bool)true)) != NULL)
         {
@@ -202,11 +202,10 @@ FILE *open_temp(char **otemp, const char *oname)
     }
 
     char dir[(uint)strlen(oname) + 1];
-    uint_t nbytes = parse_file(oname, dir, NULL);
-    char tempfile[nbytes + 1 + SIZE_NAME + SIZE_TYPE + 1];
-
-    nbytes = (uint)snprintf(tempfile, (ulong)sizeof(tempfile), "%s%s%s", dir,
-                            TEMP_NAME, TEMP_TYPE);
+    uint_t size = parse_file(oname, dir, NULL);
+    char tempfile[size + 1 + SIZE_NAME + SIZE_TYPE + 1];
+    int nbytes = snprintf(tempfile, sizeof(tempfile), "%s%s%s", dir,
+                          TEMP_NAME, TEMP_TYPE);
 
     int fd = mkstemps(tempfile, (int)SIZE_TYPE);
 
@@ -217,7 +216,7 @@ FILE *open_temp(char **otemp, const char *oname)
 
     (void)fchmod(fd, statbuf.st_mode);  // Use same permissions as old file
 
-    *otemp = alloc_mem(nbytes + 1);
+    *otemp = alloc_mem((uint_t)(uint)nbytes + 1);
 
     strcpy(*otemp, tempfile);
 
@@ -233,13 +232,13 @@ FILE *open_temp(char **otemp, const char *oname)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static uint parse_file(const char *file, char *dir, char *base)
+static uint_t parse_file(const char *file, char *dir, char *base)
 {
     assert(file != NULL);
     assert(base != NULL || dir != NULL);
 
     const char *slash = strrchr(file, '/');
-    uint len = 0;
+    int nbytes = 0;
 
     // Split file name into directory and base name. We don't use dirname() or
     // basename() here, since we don't like how they handle corner cases.
@@ -254,7 +253,7 @@ static uint parse_file(const char *file, char *dir, char *base)
         {
             if (base != NULL)
             {
-                len = (uint)sprintf(base, "%s", file);
+                nbytes = sprintf(base, "%s", file);
             }
 
             if (dir != NULL)
@@ -272,16 +271,16 @@ static uint parse_file(const char *file, char *dir, char *base)
 
         if (base != NULL)
         {
-            len = (uint)sprintf(base, "%s", slash + 1);
+            nbytes = sprintf(base, "%s", slash + 1);
         }
 
         if (dir != NULL)
         {
-            len += (uint)sprintf(dir, "%.*s", (int)(slash + 1 - file), file);
+            nbytes += sprintf(dir, "%.*s", (int)(slash + 1 - file), file);
         }
     }
 
-    return len;
+    return (uint_t)(uint)nbytes;
 }
 
 

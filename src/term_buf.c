@@ -35,7 +35,7 @@
 #include "term.h"
 
 
-static tbuffer *term_buf;         ///< Terminal input block
+static tbuffer *term_buf;           ///< Terminal input block
 
 
 ///
@@ -56,9 +56,9 @@ tbuffer copy_tbuf(void)
         .size = term_buf->size,
     };
 
-    buf.data  = alloc_mem(term_buf->len);
+    buf.data  = alloc_mem(term_buf->size);
 
-    memcpy(buf.data, term_buf->data, (ulong)buf.len);
+    memcpy(buf.data, term_buf->data, (size_t)term_buf->size);
 
     return buf;
 }
@@ -91,16 +91,16 @@ int delete_tbuf(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void echo_tbuf(int pos)
+void echo_tbuf(uint pos)
 {
     assert(term_buf != NULL);           // Error if no terminal buffer
-    assert((uint)pos <= term_buf->len); // Error if no data overrun
+    assert(pos <= term_buf->len);       // Error if no data overrun
 
     // Just echo everything we're supposed to print. Note that this is not the
     // same as typing out what's in a buffer, so things such as the settings of
     // the EU flag don't matter here.
 
-    for (uint i = (uint)pos; i < term_buf->len; ++i)
+    for (uint i = pos; i < term_buf->len; ++i)
     {
         type_out(term_buf->data[i]);
     }
@@ -251,10 +251,9 @@ void store_tbuf(int c)
     {
         assert(term_buf->size != 0);    // Error if no data
 
-        uint_t newsize = term_buf->size + KB;
-        char *newbuf = expand_mem(term_buf->data, term_buf->size, newsize);
+        char *newbuf = expand_mem(term_buf->data, term_buf->size, KB);
 
-        term_buf->size = newsize;
+        term_buf->size += KB;
         term_buf->data = newbuf;
     }
 

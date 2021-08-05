@@ -65,17 +65,19 @@ struct mblock
 
 static struct mblock *mroot = NULL;     ///< Root of memory block list
 
-static unsigned int msize = 0;          ///< Total memory allocated, in bytes
+static uint_t msize = 0;                ///< Total memory allocated, in bytes
 
-static unsigned int nblocks = 0;        ///< No. of blocks currently allocated
+static uint nblocks = 0;                ///< No. of blocks currently allocated
 
-static unsigned int maxblocks = 0;      ///< High-water mark for allocated blocks
+static uint maxblocks = 0;              ///< High-water mark for allocated blocks
 
 // Local functions
 
-static void add_mblock(void *p1, uint size);
+static void add_mblock(void *p1, uint_t size);
 
 static void delete_mblock(void *p1);
+
+static struct mblock*find_mblock(void *p1);
 
 #endif
 
@@ -230,16 +232,16 @@ void exit_mem(void)
 
     if (msize != 0)
     {
-        tprint("%s(): not deallocated: %u total byte%s in %u block%s\r\n",
-               __func__, msize, plural(msize), nblocks, plural(nblocks));
+        tprint("%s(): not deallocated: %lu total byte%s in %u block%s\r\n",
+               __func__, (size_t)msize, plural(msize), nblocks, plural(nblocks));
     }
 
     uint i = 0;
 
     while (p != NULL)
     {
-        tprint("%s(): allocation #%u at %p, %u byte%s\r\n", __func__, ++i,
-               p->addr, p->size, plural(p->size));
+        tprint("%s(): allocation #%u at %p, %lu byte%s\r\n", __func__, ++i,
+               p->addr, (size_t)p->size, plural(p->size));
 
         next = p->next;
         msize -= p->size;
@@ -263,38 +265,77 @@ void exit_mem(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void *expand_mem(void *p1, uint_t oldsize, uint_t newsize)
+void *expand_mem(void *p1, uint_t size, uint_t delta)
 {
     assert(p1 != NULL);                 // Error if NULL memory block
-    assert(oldsize != 0);               // Error if old size is 0
-    assert(oldsize != newsize);         // Error if size didn't change
-    assert(oldsize < newsize);          // Error if trying to make smaller
+    assert(size != 0);                  // Error if old size is 0
+    assert(delta > 0);                  // Error if delta is 0
+
+    char *p2;
 
 #if     defined(MEMCHECK)
 
-    delete_mblock(p1);
+    struct mblock *mblock = find_mblock(p1);
 
 #endif
 
-    char *p2 = realloc(p1, (size_t)newsize);
-
-    if (p2 == NULL)
+    if ((p2 = realloc(p1, (size_t)size + (size_t)delta)) == NULL)
     {
         throw(E_MEM);                   // Memory overflow
     }
 
 #if     defined(MEMCHECK)
 
-    add_mblock(p2, newsize);
+    if (mblock != NULL)
+    {
+        msize -= mblock->size;
+        msize += size + delta;
+
+        mblock->addr = p2;
+        mblock->size = size + delta;
+    }
 
 #endif
 
     // Initialize the extra memory we just allocated.
 
-    memset(p2 + oldsize, '\0', (size_t)(newsize - oldsize));
+    memset(p2 + size, '\0', (size_t)delta);
 
     return p2;
 }
+
+
+///
+///  @brief    Find memory block.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(MEMCHECK)
+
+static struct mblock*find_mblock(void *p1)
+{
+    assert(p1 != NULL);                 // Error if NULL memory block
+
+    struct mblock *mblock = mroot;
+
+    while (mblock != NULL)
+    {
+        if (p1 == mblock->addr)
+        {
+            return mblock;
+        }
+
+        mblock = mblock->next;
+    }
+
+    tprint("?Can't find memory block: %p\r\n", p1);
+
+    return NULL;
+}
+
+#endif
 
 
 ///
@@ -332,29 +373,36 @@ void free_mem(void *p1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void *shrink_mem(void *p1, uint_t oldsize, uint_t newsize)
+void *shrink_mem(void *p1, uint_t size, uint_t delta)
 {
     assert(p1 != NULL);                 // Error if NULL memory block
-    assert(oldsize != newsize);         // Error if size didn't change
-    assert(oldsize > newsize);          // Error if trying to make larger
-    assert(newsize != 0);               // Error if new size is 0
+    assert(size != 0);                  // Error if old size is 0
+    assert(delta > 0);                  // Error if delta is 0
+    assert(delta < size);               // Error if reducing block to 0
+
+    char *p2;
 
 #if     defined(MEMCHECK)
 
-    delete_mblock(p1);
+    struct mblock *mblock = find_mblock(p1);
 
 #endif
 
-    void *p2 = realloc(p1, (size_t)newsize);
-
-    if (p2 == NULL)
+    if ((p2 = realloc(p1, (size_t)size - (size_t)delta)) == NULL)
     {
         throw(E_MEM);                   // Memory overflow
     }
 
 #if     defined(MEMCHECK)
 
-    add_mblock(p2, newsize);
+    if (mblock != NULL)
+    {
+        msize -= mblock->size;
+        msize += size - delta;
+
+        mblock->addr = p2;
+        mblock->size = size - delta;
+    }
 
 #endif
 
@@ -382,7 +430,7 @@ char *strdup_mem(const char *p)
 
 #if     defined(MEMCHECK)
 
-    add_mblock(p1, (uint)strlen(p1) + 1);
+    add_mblock(p1, (uint_t)strlen(p1) + 1);
 
 #endif
 

@@ -184,7 +184,7 @@ void exec_F_lt(struct cmd *cmd)
     }
     else                                // No, restart the loop
     {
-        cbuf->pos = loop[nloops - 1].if_depth;
+        cbuf->pos = loop[nloops - 1].start;
     }
 
     init_x();                           // Reinitialize expression stack
@@ -318,7 +318,7 @@ uint getloop_depth(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-uint getloop_start(void)
+uint_t getloop_start(void)
 {
     if (nloops != 0)
     {
@@ -326,7 +326,7 @@ uint getloop_start(void)
     }
     else
     {
-        return (uint)EOF;
+        return (uint_t)EOF;
     }
 }
 

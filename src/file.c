@@ -194,7 +194,7 @@ void exit_files(void)
 char *init_filename(const char *buf, uint_t len, bool colon)
 {
     assert(buf != NULL);                // Error if no file name
-    assert(len != 0);                   // Error if name is a null string
+    assert(len > 0);                    // Error if name is a null string
 
     // First, replace an initial "~" (tilde) with the user's home directory.
     // This is the only change we make that increases the length of the file
@@ -203,7 +203,7 @@ char *init_filename(const char *buf, uint_t len, bool colon)
     const char *home = getenv("HOME");
     uint homelen = (home != NULL) ? (uint)strlen(home) : 0;
     char path[homelen + len + 1];
-    char *name, *src, *dst;
+    char *src, *dst;
 
     // Skip any leading whitespace
 
@@ -218,21 +218,21 @@ char *init_filename(const char *buf, uint_t len, bool colon)
     if (buf[0] == '~' && home != NULL)
     {
         len = (uint)snprintf(path, sizeof(path), "%s%.*s", home,
-                             (int)(len - 1), buf + 1);
+                             (int)len - 1, buf + 1);
     }
     else
     {
         len = (uint)snprintf(path, sizeof(path), "%.*s", (int)len, buf);
     }
 
-    assert((int)len > 0);
+    assert(len > 0);
     assert(len < sizeof(path));
 
     // Next, translate any match control characters in the file specification.
     // Note that the allocated string includes a terminating NUL, but it is
     // not included in the returned length.
 
-    len = build_string(&name, path, len);
+    tstring string = build_string(path, len);
 
     // Finally, discard any NUL or whitespace characters, and ensure that the
     // file spec. doesn't have any other control or non-ASCII characters. This
@@ -240,7 +240,8 @@ char *init_filename(const char *buf, uint_t len, bool colon)
     // started with, but never longer. Hencequently, we are able to copy it in
     // place and don't need to allocate another buffer.
 
-    src = dst = name;
+    src = dst = string.data;
+    len = string.len;
 
     for (uint i = 0; i < len; ++i)
     {
@@ -262,9 +263,9 @@ char *init_filename(const char *buf, uint_t len, bool colon)
 
     *dst = NUL;
 
-    if (*name == NUL)
+    if (string.data[0] == NUL)
     {
-        free_mem(&name);
+        free_mem(&string.data);
 
         if (colon)
         {
@@ -279,7 +280,7 @@ char *init_filename(const char *buf, uint_t len, bool colon)
     }
     else
     {
-        return name;
+        return string.data;
     }
 }
 
@@ -324,19 +325,20 @@ bool open_command(char *name, uint_t len, uint stream, bool colon,
         throw(E_SYS, last_file);        // Unexpected system error
     }
 
-    uint size = (uint)file_stat.st_size;
+    uint_t size = (uint_t)file_stat.st_size;
 
     free_mem(&text->data);              // Free any previous storage
 
     // If there's data in the file, then allocate a buffer for it.
 
-    if ((text->len = size) != 0)
+    if (size != 0)
     {
         text->pos  = 0;
+        text->len  = size;
         text->size = size;
-        text->data = alloc_mem(text->size);
+        text->data = alloc_mem(size);
 
-        if (fread(text->data, 1uL, (ulong)size, ifile->fp) != size)
+        if (fread(text->data, 1uL, (size_t)size, ifile->fp) != size)
         {
             throw(E_SYS, ifile->name);  // Unexpected system error
         }

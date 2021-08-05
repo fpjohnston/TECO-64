@@ -48,7 +48,7 @@ void exec_ctrl_A(struct cmd *cmd)
 
     const char *p = cmd->text1.data;
 
-    for (unsigned int i = 0; i < cmd->text1.len; ++i)
+    for (uint_t i = 0; i < cmd->text1.len; ++i)
     {
         type_out(*p++);
     }

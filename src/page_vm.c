@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -178,7 +179,7 @@ static struct page *make_page(int_t start, int_t end, bool ff)
     page->cr    = 0;
     page->ocrlf = f.e3.ocrlf;
     page->ff    = ff;
-    page->addr  = alloc_mem((uint_t)page->size);
+    page->addr  = alloc_mem(page->size);
 
     char *p  = page->addr;
     char last = NUL;
@@ -204,7 +205,7 @@ static struct page *make_page(int_t start, int_t end, bool ff)
         *p++ = last = (char)c;
     }
 
-    assert((uint_t)(p - page->addr) == page->size);
+    assert(p - page->addr == (ptrdiff_t)page->size);
 
     return page;
 }

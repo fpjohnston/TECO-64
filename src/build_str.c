@@ -40,12 +40,12 @@
 
 #define BUILD_MAX       (KB * 4)        ///< Maximum build string is 4 KB
 
-/// @def    get_src(c)
+/// @def    getc_src
 /// @brief  Get next character from source buffer (error if buffer empty).
 
 #define getc_src(chr, error) if (len-- == 0) throw(error); else chr = *src++
 
-/// @def    putc_dest(c)
+/// @def    putc_dest
 /// @brief  Put next character to destination buffer (error if buffer full).
 
 #define putc_dest(c) if (pos == BUILD_MAX - 1) throw(E_MEM); else \
@@ -72,13 +72,12 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-uint_t build_string(char **dest, const char *src, uint_t len)
+tstring build_string(const char *src, uint_t len)
 {
-    assert(dest != NULL);               // Error if no destination string
     assert(src != NULL);                // Error if no source string
 
     char string[BUILD_MAX];             // Allow 4K buffer for build string
-    size_t pos = 0;                     // Position to store next character
+    uint_t pos = 0;                     // Position to store next character
     bool lower_next = false;            // Convert next chr. to lower case
     bool upper_next = false;            // Convert next chr. to upper case
     bool lower_all = false;             // Convert all chrs. to lower case
@@ -154,14 +153,14 @@ uint_t build_string(char **dest, const char *src, uint_t len)
 
                     if (qname == '*')
                     {
-                        size_t nbytes = strlen(last_file);
+                        uint_t nbytes = (uint_t)strlen(last_file);
 
                         if (pos + nbytes == BUILD_MAX) 
                         {
                             throw(E_MEM);
                         }
 
-                        memcpy(string + pos, src, nbytes);
+                        memcpy(string + pos, src, (size_t)nbytes);
                         pos += nbytes;
 
                         break;
@@ -182,14 +181,14 @@ uint_t build_string(char **dest, const char *src, uint_t len)
 
                     if (qreg->text.len != 0)
                     {
-                        size_t nbytes = qreg->text.len;
+                        uint_t nbytes = qreg->text.len;
 
                         if (pos + nbytes == BUILD_MAX) 
                         {
                             throw(E_MEM);
                         }
 
-                        memcpy(string + pos, qreg->text.data, nbytes);
+                        memcpy(string + pos, qreg->text.data, (size_t)nbytes);
                         pos += nbytes;
                     }
 
@@ -267,9 +266,12 @@ uint_t build_string(char **dest, const char *src, uint_t len)
 
     string[pos] = NUL;                  // Ensure it's NUL-terminated
 
-    *dest = alloc_mem((uint_t)pos + 1);
+    tstring dest;
 
-    memcpy(*dest, string, pos + 1);
+    dest.data = alloc_mem(pos + 1);
+    dest.len = last_len = pos;
 
-    return last_len = (uint_t)pos;
+    memcpy(dest.data, string, (size_t)pos + 1);
+
+    return dest;
 }

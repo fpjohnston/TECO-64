@@ -47,7 +47,7 @@ static tbuffer ei_old;
 struct ei_block
 {
     struct ei_block *next;          ///< Next EI block
-    tbuffer buf;              ///< EI command string buffer
+    tbuffer buf;                    ///< EI command string buffer
 };
 
 ///   @var    ei_new

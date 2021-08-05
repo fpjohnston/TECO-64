@@ -89,8 +89,7 @@ static void exec_search(struct cmd *cmd, bool replace)
     {
         free_mem(&last_search.data);
 
-        last_search.len = build_string(&last_search.data, cmd->text1.data,
-                                       cmd->text1.len);
+        last_search = build_string(cmd->text1.data, cmd->text1.len);
     }
 
     struct search s;

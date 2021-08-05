@@ -167,7 +167,7 @@ void exec_equals(struct cmd *cmd)
 
     if (cmd->atsign && cmd->text1.len != 0)
     {
-        memcpy(user_mode, cmd->text1.data, (ulong)cmd->text1.len);
+        memcpy(user_mode, cmd->text1.data, (size_t)(uint)cmd->text1.len);
 
         user_mode[cmd->text1.len] = NUL;
 

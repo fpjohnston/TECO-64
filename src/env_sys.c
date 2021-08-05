@@ -180,7 +180,7 @@ static int get_cmd(char *cmd)
         return 1;
     }
 
-    while ((nbytes = (uint)fread(buf, 1uL, sizeof(buf), fp)) > 0)
+    while ((nbytes = (uint_t)fread(buf, 1uL, sizeof(buf), fp)) > 0)
     {
         if (size == 0)
         {
@@ -188,10 +188,10 @@ static int get_cmd(char *cmd)
         }
         else
         {
-            eg_result = expand_mem(eg_result, size + 1, size + nbytes + 1);
+            eg_result = expand_mem(eg_result, size + 1, nbytes);
         }
 
-        memcpy(eg_result + size, buf, (ulong)nbytes);
+        memcpy(eg_result + size, buf, (size_t)nbytes);
 
         size += nbytes;
     }
@@ -255,7 +255,7 @@ void init_env(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int_t teco_env(int_t n_arg, bool colon)
+int teco_env(int n_arg, bool colon)
 {
     switch (n_arg)
     {

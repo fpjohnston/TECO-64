@@ -124,7 +124,7 @@ bool scan_ctrl_Y(struct cmd *cmd)
 
     cmd->ctrl_y = true;
     cmd->m_set = true;
-    cmd->m_arg = t.dot - (int)last_len;
+    cmd->m_arg = t.dot - (int_t)last_len;
 
     push_x(t.dot, X_OPERAND);
 

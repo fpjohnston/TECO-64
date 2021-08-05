@@ -145,13 +145,15 @@ int add_ebuf(int c)
         return EDIT_ERROR;              // Buffer is already full
     }
 
-    if ((uint_t)t.dot < eb.left)
+    uint_t dot = (uint_t)t.dot;
+
+    if (dot < eb.left)
     {
-        shift_right(eb.left - (uint_t)t.dot);
+        shift_right(eb.left - dot);
     }
-    else if ((uint_t)t.dot > eb.left)
+    else if (dot > eb.left)
     {
-        shift_left((uint_t)t.dot - eb.left);
+        shift_left(dot - eb.left);
     }
 
     eb.buf[eb.left++] = (uchar)c;
@@ -178,7 +180,9 @@ int add_ebuf(int c)
     {
         if (eb.size < eb.max)           // Yes, can we increase size?
         {
-            uint_t newsize = eb.size + (eb.size / 4);
+            uint_t newsize = (uint_t)eb.size;
+
+            newsize += newsize / 4;
 
             setsize_ebuf(newsize);      // Try to make buffer 25% bigger
         }
@@ -359,7 +363,7 @@ int_t getlines_ebuf(int_t n)
 
 uint_t getsize_ebuf(void)
 {
-    return eb.size;
+    return (uint_t)eb.size;
 }
 
 
@@ -488,9 +492,11 @@ void setpos_ebuf(int_t pos)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void setsize_ebuf(uint_t newsize)
+void setsize_ebuf(uint_t nbytes)
 {
-    if ((int_t)newsize < 0 || newsize > eb.max)
+    uint_t newsize = (uint_t)nbytes;
+    
+    if (newsize == 0 || newsize > eb.max)
     {
         newsize = eb.max;
     }
@@ -500,7 +506,7 @@ void setsize_ebuf(uint_t newsize)
         {
             newsize = eb.min;
         }
-        else if (newsize == 0 && (newsize = eb.right + eb.left) == 0)
+        else if ((newsize = eb.right + eb.left) == 0)
         {
             newsize = KB;               // Use at least 1 KB
         }
@@ -520,13 +526,15 @@ void setsize_ebuf(uint_t newsize)
 
     shift_left(eb.right);               // Remove the gap
 
+    uint_t delta = newsize - eb.size;
+
     if (newsize < eb.size)
     {
-        eb.buf = shrink_mem(eb.buf, eb.size, newsize);
+        eb.buf = shrink_mem(eb.buf, eb.size, delta);
     }
     else
     {
-        eb.buf = expand_mem(eb.buf, eb.size, newsize);
+        eb.buf = expand_mem(eb.buf, eb.size, delta);
     }
 
     shift_right(eb.right);              // Restore the gap
@@ -541,15 +549,15 @@ void setsize_ebuf(uint_t newsize)
 
     if (newsize >= GB)
     {
-        tprint("[%uG bytes]\r\n", newsize / GB);
+        tprint("[%uG bytes]\r\n", (uint)(newsize / GB));
     }
     else if (newsize >= MB)
     {
-        tprint("[%uM bytes]\r\n", newsize / MB);
+        tprint("[%uM bytes]\r\n", (uint)(newsize / MB));
     }
     else
     {
-        tprint("[%uK bytes]\r\n", newsize / KB);
+        tprint("[%uK bytes]\r\n", (uint)(newsize / KB));
     }
 }
 

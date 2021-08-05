@@ -94,7 +94,7 @@ bool exec_ctrl_F(int c)
     tbuffer buf;
 
     buf.data = ctrl_f_cmd[i];
-    buf.size = (uint)strlen(ctrl_f_cmd[i]);
+    buf.size = (uint_t)strlen(ctrl_f_cmd[i]);
     buf.len  = buf.size;
     buf.pos  = 0;
 
@@ -138,17 +138,13 @@ void exec_FF(struct cmd *cmd)
 
     free_mem(&ctrl_f_cmd[i]);           // Free existing command string
 
-    uint_t size = cmd->text1.len;
-
-    if (size != 0)
+    if (cmd->text1.len != 0)
     {
         // Here to map CTRL/F to a command string.
 
-        char *cmds;
+        tstring string = build_string(cmd->text1.data, cmd->text1.len);
 
-        (void)build_string(&cmds, cmd->text1.data, size);
-
-        ctrl_f_cmd[i] = cmds;
+        ctrl_f_cmd[i] = string.data;
     }
 }
 
@@ -174,9 +170,7 @@ void exec_FM(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    uint_t size = cmd->text1.len;
-
-    if (size == 0)                      // Unmap all keys?
+    if (cmd->text1.len== 0)             // Unmap all keys?
     {
         reset_map();
 
@@ -190,12 +184,11 @@ void exec_FM(struct cmd *cmd)
 
     // Here to map a key to a command string.
 
-    char *temp;
-    uint_t len = build_string(&temp, cmd->text1.data, size);
-    char key[len + 1];
+    tstring string = build_string(cmd->text1.data, cmd->text1.len);
+    char key[string.len + 1];
 
-    strcpy(key, temp);
-    free_mem(&temp);
+    strcpy(key, string.data);
+    free_mem(&string.data);
 
     for (uint i = 0; i < countof(keys); ++i)
     {
@@ -205,13 +198,11 @@ void exec_FM(struct cmd *cmd)
 
             if (cmd->text2.len != 0)
             {
-                size = cmd->text2.len;
+                keys[i].macro = alloc_mem(cmd->text2.len + 1);
 
-                keys[i].macro = alloc_mem(size + 1);
+                memcpy(keys[i].macro, cmd->text2.data, (size_t)cmd->text2.len);
 
-                memcpy(keys[i].macro, cmd->text2.data, (size_t)size);
-
-                keys[i].macro[size] = NUL;
+                keys[i].macro[cmd->text2.len] = NUL;
             }
 
             if (cmd->colon)
@@ -225,7 +216,7 @@ void exec_FM(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(FAILURE, X_OPERAND); // Command failed
+        push_x(FAILURE, X_OPERAND);     // Command failed
     }
     else
     {
@@ -241,7 +232,7 @@ void exec_FM(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(FAILURE, X_OPERAND); // Command failed
+        push_x(FAILURE, X_OPERAND);     // Command failed
     }
 }
 
@@ -278,12 +269,11 @@ void exec_FQ(struct cmd *cmd)
         return;
     }
 
-    char *temp;
-    uint_t len = build_string(&temp, cmd->text1.data, cmd->text1.len);
-    char key[len + 1];
+    tstring string = build_string(cmd->text1.data, cmd->text1.len);
+    char key[string.len + 1];
 
-    strcpy(key, temp);
-    free_mem(&temp);
+    strcpy(key, string.data);
+    free_mem(&string.data);
 
     for (uint i = 0; i < countof(keys); ++i)
     {
@@ -305,7 +295,7 @@ void exec_FQ(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(FAILURE, X_OPERAND); // Command failed
+        push_x(FAILURE, X_OPERAND);     // Command failed
     }
     else
     {
@@ -321,7 +311,7 @@ void exec_FQ(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(FAILURE, X_OPERAND); // Command failed
+        push_x(FAILURE, X_OPERAND);     // Command failed
     }
 }
 
@@ -353,7 +343,7 @@ bool exec_key(int key)
             tbuffer buf;
 
             buf.data = p->macro;
-            buf.size = (uint)strlen(p->macro);
+            buf.size = (uint_t)strlen(p->macro);
             buf.len  = buf.size;
             buf.pos  = 0;
 

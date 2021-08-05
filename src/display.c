@@ -273,7 +273,7 @@ static void exec_commands(const char *commands)
 {
     assert(commands != NULL);
 
-    uint nbytes = (uint)strlen(commands);
+    uint_t nbytes = (uint_t)strlen(commands);
     char text[nbytes + 1];
 
     strcpy(text, commands);

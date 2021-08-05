@@ -36,9 +36,9 @@
 #include "term.h"
 
 
-tbuffer *cbuf;                    ///< Current command string buffer
+tbuffer *cbuf;                      ///< Current command string buffer
 
-static tbuffer *root;             ///< Command string buffer root
+static tbuffer *root;               ///< Command string buffer root
 
 
 ///
@@ -183,10 +183,9 @@ void store_cbuf(int c)
         cbuf->size /= KB;
         cbuf->size *= KB;
 
-        uint_t newsize = cbuf->size + KB;
-        char *newbuf = expand_mem(cbuf->data, cbuf->size, newsize);
+        char *newbuf = expand_mem(cbuf->data, cbuf->size, KB);
 
-        cbuf->size = newsize;
+        cbuf->size += KB;
         cbuf->data = newbuf;
     }
 

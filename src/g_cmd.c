@@ -65,7 +65,7 @@ static void copy_G(struct cmd *cmd)
         case '*':                       // Copy filespec string
             p = last_file;
 
-            if (p != NULL && (last_len = (uint)strlen(p)) != 0)
+            if (p != NULL && (last_len = (uint_t)strlen(p)) != 0)
             {
                 exec_insert(p, last_len);
             }
@@ -75,7 +75,7 @@ static void copy_G(struct cmd *cmd)
         case '+':                       // Copy EG result
             p = eg_result;
 
-            if (p != NULL && (last_len = (uint)strlen(p)) != 0)
+            if (p != NULL && (last_len = (uint_t)strlen(p)) != 0)
             {
                 exec_insert(p, last_len);
             }
@@ -153,7 +153,7 @@ static void type_G(struct cmd *cmd)
             break;
 
         case '+':                       // Print EG result
-            if ((p = eg_result) != NULL && (last_len = (uint)strlen(p)) != 0)
+            if ((p = eg_result) != NULL && (last_len = (uint_t)strlen(p)) != 0)
             {
                 while (*p != NUL)
                 {

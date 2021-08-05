@@ -98,13 +98,15 @@ void exec_bslash(struct cmd *cmd)
             format = "%x";
         }
 
-        uint_t nbytes = (uint)snprintf(string, sizeof(string), format, cmd->n_arg);
+        int nbytes = snprintf(string, sizeof(string), format, cmd->n_arg);
 
-        assert(nbytes < sizeof(string)); // Error if string was truncated
+        // Error if string was truncated
 
-        exec_insert(string, nbytes);
+        assert(nbytes < (int)sizeof(string));
 
-        last_len = nbytes;
+        exec_insert(string, (uint_t)(uint)nbytes);
+
+        last_len = (uint_t)(uint)nbytes;
     }
     else
     {

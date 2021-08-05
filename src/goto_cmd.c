@@ -99,8 +99,7 @@ void exec_O(struct cmd *cmd)
 
     char tag[cmd->text1.len + 1];
 
-    snprintf(tag, sizeof(tag), "%.*s", (int)cmd->text1.len,
-             cmd->text1.data);
+    snprintf(tag, sizeof(tag), "%.*s", (int)cmd->text1.len, cmd->text1.data);
 
     verify_tag(tag);
 
@@ -139,12 +138,11 @@ static void find_tag(struct cmd *cmd, const char *orig_tag)
     // sets up a local copy so that we can free up the string that was allocated
     // by build_string(). This is to avoid memory leaks in the event of errors.
 
-    char *tmp = NULL;                   // Dynamically-allocated tag name
-    uint_t len = build_string(&tmp, orig_tag, (uint_t)strlen(orig_tag));
-    char tag[len + 1];                  ///< Local copy of tag name
+    tstring string = build_string(orig_tag, (uint_t)strlen(orig_tag));
+    char tag[string.len + 1];           ///< Local copy of tag name
 
-    strcpy(tag, tmp);
-    free_mem(&tmp);
+    strcpy(tag, string.data);
+    free_mem(&string.data);
 
     struct
     {
@@ -152,8 +150,8 @@ static void find_tag(struct cmd *cmd, const char *orig_tag)
         uint_t loop_end;                ///< End of current loop (or 0)
         uint loop_depth;                ///< Current loop depth
         uint if_depth;                  ///< Current if/else depth
-        uint tag_pos;                   ///< Position of tag
-        uint_t tag_loop;                ///< Loop depth for tag
+        uint_t tag_pos;                 ///< Position of tag
+        uint tag_loop;                  ///< Loop depth for tag
         uint tag_if;                    ///< If depth for tag
     } state =
     {
@@ -195,7 +193,8 @@ static void find_tag(struct cmd *cmd, const char *orig_tag)
         {
             --state.loop_depth;
 
-            if (state.loop_start != (uint_t)EOF && cbuf->pos >= state.loop_start
+            if (state.loop_start != (uint_t)EOF
+                && cbuf->pos >= state.loop_start
                 && state.loop_end == (uint_t)EOF)
             {
                 state.loop_end = cbuf->pos;
@@ -206,7 +205,8 @@ static void find_tag(struct cmd *cmd, const char *orig_tag)
             continue;
         }
 
-        if (cmd->text1.len != len || memcmp(cmd->text1.data, tag, (ulong)len))
+        if (cmd->text1.len != string.len
+            || memcmp(cmd->text1.data, tag, (size_t)string.len))
         {
             continue;                   // Tag didn't match
         }

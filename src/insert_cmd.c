@@ -50,7 +50,7 @@ void exec_ctrl_I(struct cmd *cmd)
 
     char c = TAB;
 
-    exec_insert(&c, (uint_t)sizeof(c));
+    exec_insert(&c, 1u);
     exec_insert(cmd->text1.data, cmd->text1.len);
 
     ++last_len;                         // Correct count for added TAB
@@ -80,7 +80,7 @@ void exec_I(struct cmd *cmd)
     else if (cmd->n_set)
     {
         char c = (char)cmd->n_arg;
-        uint_t n = 1;                   // Default: insert 1 character
+        int_t n = 1;                    // Default: insert 1 character
 
         if (cmd->m_set)
         {
@@ -88,15 +88,15 @@ void exec_I(struct cmd *cmd)
             {
                 throw(E_IIA);           // Invalid insert argument
             }
-            else if ((n = (uint_t)cmd->m_arg) == 0)
+            else if ((n = cmd->m_arg) <= 0)
             {
-                return;                 // Don't insert if count is 0
+                return;                 // Don't insert if count is <= 0
             }
         }
 
         while (n-- > 0)
         {
-            exec_insert(&c, (uint_t)sizeof(c));
+            exec_insert(&c, 1u);
         }
     }
 }
