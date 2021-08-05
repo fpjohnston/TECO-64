@@ -53,7 +53,7 @@ void exec_EQ(struct cmd *cmd)
     uint_t len      = cmd->text1.len;
     uint stream     = IFILE_QREGISTER;
 
-    struct buffer text =
+    tbuffer text =
     {
         .len  = 0,
         .pos  = 0,

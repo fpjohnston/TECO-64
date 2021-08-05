@@ -109,8 +109,8 @@ struct cmd
     bool dcolon;                    ///< :: found
     bool atsign;                    ///< @ found
     char delim;                     ///< Delimiter for @ modifier
-    struct tstring text1;           ///< 1st text string
-    struct tstring text2;           ///< 2nd text string
+    tstring text1;           ///< 1st text string
+    tstring text2;           ///< 2nd text string
 };
 
 // Global variables
@@ -483,7 +483,7 @@ extern void exec_cmd(struct cmd *cmd);
 
 extern bool exec_ctrl_F(int key);
 
-extern void exec_macro(struct buffer *macro, struct cmd *cmd);
+extern void exec_macro(tbuffer *macro, struct cmd *cmd);
 
 extern void exec_insert(const char *buf, uint_t len);
 

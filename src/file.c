@@ -295,7 +295,7 @@ char *init_filename(const char *buf, uint_t len, bool colon)
 ////////////////////////////////////////////////////////////////////////////////
 
 bool open_command(char *name, uint_t len, uint stream, bool colon,
-                  struct buffer *text)
+                  tbuffer *text)
 {
     if (len == 0)                       // Any file to open?
     {

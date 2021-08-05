@@ -39,7 +39,7 @@
 ///  @var    ei_old
 ///  @brief  Buffer for old-style EI commands
 
-static struct buffer ei_old;
+static tbuffer ei_old;
 
 ///  @struct ei_block
 ///  @brief  Linked list structure for EI command strings.
@@ -47,7 +47,7 @@ static struct buffer ei_old;
 struct ei_block
 {
     struct ei_block *next;          ///< Next EI block
-    struct buffer buf;              ///< EI command string buffer
+    tbuffer buf;              ///< EI command string buffer
 };
 
 ///   @var    ei_new

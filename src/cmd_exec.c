@@ -74,7 +74,7 @@ static bool echo_cmd(int c);
 
 static inline exec_func *scan_cmd(struct cmd *cmd, int c);
 
-static void scan_text(int delim, struct tstring *text);
+static void scan_text(int delim, tstring *text);
 
 
 ///
@@ -390,7 +390,7 @@ static inline exec_func *scan_cmd(struct cmd *cmd, int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void scan_text(int delim, struct tstring *text)
+static void scan_text(int delim, tstring *text)
 {
     assert(text != NULL);
 

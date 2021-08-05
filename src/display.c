@@ -278,7 +278,7 @@ static void exec_commands(const char *commands)
 
     strcpy(text, commands);
 
-    struct buffer buf;
+    tbuffer buf;
 
     buf.data = text;
     buf.size = nbytes;

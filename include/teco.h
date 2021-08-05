@@ -96,7 +96,7 @@ enum
 };
 
 
-///  @struct   buffer
+///  @struct   tbuffer
 ///  @brief    Definition of general buffer, used both for the main command
 ///            string and for Q-register macros. This is dynamically allocated,
 ///            and can be resized as necessary. It consists of a pointer to a
@@ -104,13 +104,15 @@ enum
 ///            one for storing new characters, and one for removing characters
 ///            as the buffer is read.
 
-struct buffer
+struct tbuffer
 {
     char *data;                     ///< Buffer data
     uint_t size;                    ///< Total size of buffer in bytes
     uint_t len;                     ///< Current length stored
     uint_t pos;                     ///< Position of next character
 };
+
+typedef struct tbuffer tbuffer;     ///< TECO buffer 
 
 ///  @struct tstring
 ///  @brief  Definition of a TECO string, which is a counted string (not a
@@ -121,6 +123,9 @@ struct tstring
     char *data;                     ///< String data
     uint_t len;                     ///< No. of characters
 };
+
+typedef struct tstring tstring;     ///< TECO string
+
 
 // Global variables
 

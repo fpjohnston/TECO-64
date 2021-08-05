@@ -53,7 +53,7 @@ void exec_EM(struct cmd *cmd)
         return;
     }
 
-    struct buffer macro = qreg->text;
+    tbuffer macro = qreg->text;
     int saved_trace = f.trace.flag;
     bool saved_exec = f.e0.exec;
 

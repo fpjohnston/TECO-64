@@ -47,7 +47,7 @@
 ///   @var    last_search
 ///   @brief  Last string searched for
 
-struct tstring last_search = { .len = 0 };
+tstring last_search = { .len = 0 };
 
 // Local functions
 

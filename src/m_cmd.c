@@ -91,7 +91,7 @@ void exec_M(struct cmd *cmd)
     // We make a private copy of the Q-register, since some of the structure
     // members can get modified while processing the macro (esp. len).
 
-    struct buffer macro = qreg->text;
+    tbuffer macro = qreg->text;
 
     if (cmd->colon)                     // :Mq?
     {
@@ -115,7 +115,7 @@ void exec_M(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_macro(struct buffer *macro, struct cmd *oldcmd)
+void exec_macro(tbuffer *macro, struct cmd *oldcmd)
 {
     assert(macro != NULL);
     assert(macro->data != NULL);
@@ -127,7 +127,7 @@ void exec_macro(struct buffer *macro, struct cmd *oldcmd)
     uint saved_if             = getif_depth();
     uint saved_nparens        = nparens;
     uint_t saved_pos          = macro->pos;
-    struct buffer *saved_cbuf = cbuf;
+    tbuffer *saved_cbuf = cbuf;
 
     // Initialize for new command string
 

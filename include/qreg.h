@@ -42,7 +42,7 @@
 struct qreg
 {
     int_t n;                        ///< Q-register numeric value
-    struct buffer text;             ///< Q-register text storage
+    tbuffer text;             ///< Q-register text storage
 };
 
 ///  @var     QNAMES
@@ -95,6 +95,6 @@ extern void store_qchr(int qindex, int c);
 
 extern void store_qnum(int qindex, int_t n);
 
-extern void store_qtext(int qindex, struct buffer *text);
+extern void store_qtext(int qindex, tbuffer *text);
 
 #endif  // !defined(_QREG_H)

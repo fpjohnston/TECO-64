@@ -35,7 +35,7 @@
 #include "term.h"
 
 
-static struct buffer *term_buf;         ///< Terminal input block
+static tbuffer *term_buf;         ///< Terminal input block
 
 
 ///
@@ -45,11 +45,11 @@ static struct buffer *term_buf;         ///< Terminal input block
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct buffer copy_tbuf(void)
+tbuffer copy_tbuf(void)
 {
     assert(term_buf != NULL);           // Error if no terminal block
 
-    struct buffer buf =
+    tbuffer buf =
     {
         .len  = term_buf->len,
         .pos  = term_buf->pos,

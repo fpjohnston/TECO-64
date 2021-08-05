@@ -83,7 +83,7 @@ void exec_ctrl_U(struct cmd *cmd)
             uint_t len = cmd->text1.len;
             void *buf = alloc_mem(len);
 
-            struct buffer text =
+            tbuffer text =
             {
                 .data = buf,
                 .size = len,

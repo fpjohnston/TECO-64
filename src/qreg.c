@@ -685,7 +685,7 @@ void store_qnum(int qindex, int_t n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void store_qtext(int qindex, struct buffer *text)
+void store_qtext(int qindex, tbuffer *text)
 {
     struct qreg *qreg = get_qreg(qindex);
 

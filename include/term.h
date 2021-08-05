@@ -36,7 +36,7 @@ extern int term_pos;
 
 // Terminal buffer functions
 
-extern struct buffer copy_tbuf(void);
+extern tbuffer copy_tbuf(void);
 
 extern int delete_tbuf(void);
 

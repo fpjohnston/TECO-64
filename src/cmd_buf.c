@@ -36,9 +36,9 @@
 #include "term.h"
 
 
-struct buffer *cbuf;                    ///< Current command string buffer
+tbuffer *cbuf;                    ///< Current command string buffer
 
-static struct buffer *root;             ///< Command string buffer root
+static tbuffer *root;             ///< Command string buffer root
 
 
 ///

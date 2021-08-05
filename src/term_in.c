@@ -294,7 +294,7 @@ static void exec_star(void)
 
     echo_in(LF);
 
-    struct buffer qbuf = copy_tbuf();
+    tbuffer qbuf = copy_tbuf();
 
     store_qtext(qindex, &qbuf);
 }

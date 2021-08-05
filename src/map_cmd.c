@@ -91,7 +91,7 @@ bool exec_ctrl_F(int c)
         return false;
     }
 
-    struct buffer buf;
+    tbuffer buf;
 
     buf.data = ctrl_f_cmd[i];
     buf.size = (uint)strlen(ctrl_f_cmd[i]);
@@ -350,7 +350,7 @@ bool exec_key(int key)
 
         if (p->macro != NULL)           // Mapped to command string?
         {
-            struct buffer buf;
+            tbuffer buf;
 
             buf.data = p->macro;
             buf.size = (uint)strlen(p->macro);

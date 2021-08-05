@@ -62,7 +62,7 @@ struct search
 
 // Global variables
 
-extern struct tstring last_search;
+extern tstring last_search;
 
 // Global functions
 

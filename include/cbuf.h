@@ -31,7 +31,7 @@
 
 // Command buffer variable
 
-extern struct buffer *cbuf;
+extern tbuffer *cbuf;
 
 // Command buffer functions
 
