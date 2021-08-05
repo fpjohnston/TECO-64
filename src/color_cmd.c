@@ -204,9 +204,9 @@ static void set_color(const char *buf, uint_t len, int_t sat, short color)
         throw(E_DPY);
     }
 
-    short red   = (short)(color_table[i].red   * (uint)sat / SATMAX);
-    short green = (short)(color_table[i].green * (uint)sat / SATMAX);
-    short blue  = (short)(color_table[i].blue  * (uint)sat / SATMAX);
+    short red   = (short)(color_table[i].red   * (uint_t)sat / SATMAX);
+    short green = (short)(color_table[i].green * (uint_t)sat / SATMAX);
+    short blue  = (short)(color_table[i].blue  * (uint_t)sat / SATMAX);
 
     (void)init_color((short)color, red, green, blue);
 }
@@ -228,22 +228,6 @@ static void set_colors(const struct cmd *cmd, enum region_pair pair)
 {
     assert(cmd != NULL);
 
-    int_t fg_sat = 100;
-    int_t bg_sat = 100;
-
-    if (cmd->n_set)
-    {
-        if (cmd->m_set)
-        {
-            fg_sat = cmd->m_arg;
-            bg_sat = cmd->n_arg;
-        }
-        else
-        {
-            fg_sat = cmd->n_arg;
-        }
-    }
-
     // The following is used to set up new colors, whose saturation we can vary
     // without affecting the use of the same colors by other regions. That is,
     // the edit region could use a white background at 100% while the command
@@ -259,6 +243,23 @@ static void set_colors(const struct cmd *cmd, enum region_pair pair)
     // STATUS      20          21
 
     short color = (short)(COLOR_BASE + ((pair - 1) * 2));
+
+    int_t fg_sat, bg_sat;
+
+    if (!cmd->n_set)                    // Neither foreground nor background
+    {
+        fg_sat = bg_sat = 100;
+    }
+    else if (!cmd->m_set)               // Foreground, but no background
+    {
+        fg_sat = cmd->m_arg;
+        bg_sat = 100;
+    }
+    else                                // Both foreground and background
+    {
+        fg_sat = cmd->m_arg;
+        bg_sat = cmd->n_arg;
+    }
 
     set_color(cmd->text1.data, cmd->text1.len, fg_sat, color);
     set_color(cmd->text2.data, cmd->text2.len, bg_sat, color + 1);

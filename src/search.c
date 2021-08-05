@@ -377,7 +377,7 @@ bool search_backward(struct search *s)
     while (s->text_start > s->text_end) // Search to beginning of buffer
     {
         s->text_pos  = s->text_start--; // Start at current position
-        s->match_len = (uint)last_search.len; // No. of characters left to match
+        s->match_len = last_search.len; // No. of characters left to match
         s->match_buf = last_search.data; // Start of match characters
 
         if (match_str(s))
@@ -455,7 +455,7 @@ bool search_forward(struct search *s)
     while (s->text_start < s->text_end) // Search to end of buffer
     {
         s->text_pos  = s->text_start++; // Start at current position
-        s->match_len = (uint)last_search.len; // No. of characters left to match
+        s->match_len = last_search.len; // No. of characters left to match
         s->match_buf = last_search.data; // Start of match characters
 
         if (match_str(s))

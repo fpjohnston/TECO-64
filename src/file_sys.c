@@ -201,7 +201,7 @@ FILE *open_temp(char **otemp, const char *oname)
         throw(E_SYS, oname);            // Unexpected system error
     }
 
-    char dir[(uint)strlen(oname) + 1];
+    char dir[strlen(oname) + 1];
     uint_t size = parse_file(oname, dir, NULL);
     char tempfile[size + 1 + SIZE_NAME + SIZE_TYPE + 1];
     int nbytes = snprintf(tempfile, sizeof(tempfile), "%s%s%s", dir,

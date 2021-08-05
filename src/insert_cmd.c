@@ -50,7 +50,7 @@ void exec_ctrl_I(struct cmd *cmd)
 
     char c = TAB;
 
-    exec_insert(&c, 1u);
+    exec_insert(&c, (uint_t)1);
     exec_insert(cmd->text1.data, cmd->text1.len);
 
     ++last_len;                         // Correct count for added TAB
@@ -96,7 +96,7 @@ void exec_I(struct cmd *cmd)
 
         while (n-- > 0)
         {
-            exec_insert(&c, 1u);
+            exec_insert(&c, (uint_t)1);
         }
     }
 }

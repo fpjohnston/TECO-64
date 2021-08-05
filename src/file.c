@@ -215,24 +215,26 @@ char *init_filename(const char *buf, uint_t len, bool colon)
 
     // Replace initial tilde (~) with home directory.
 
+    int nbytes = (int)len;
+
     if (buf[0] == '~' && home != NULL)
     {
-        len = (uint)snprintf(path, sizeof(path), "%s%.*s", home,
-                             (int)len - 1, buf + 1);
+        nbytes = snprintf(path, sizeof(path), "%s%.*s", home, nbytes - 1,
+                          buf + 1);
     }
     else
     {
-        len = (uint)snprintf(path, sizeof(path), "%.*s", (int)len, buf);
+        nbytes = snprintf(path, sizeof(path), "%.*s", nbytes, buf);
     }
 
-    assert(len > 0);
-    assert(len < sizeof(path));
+    assert(nbytes > 0);
+    assert(nbytes < (int)sizeof(path));
 
     // Next, translate any match control characters in the file specification.
     // Note that the allocated string includes a terminating NUL, but it is
     // not included in the returned length.
 
-    tstring string = build_string(path, len);
+    tstring string = build_string(path, (uint_t)(uint)nbytes);
 
     // Finally, discard any NUL or whitespace characters, and ensure that the
     // file spec. doesn't have any other control or non-ASCII characters. This

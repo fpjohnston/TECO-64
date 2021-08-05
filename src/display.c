@@ -410,21 +410,17 @@ static int geteditsize(char *buf, ulong size, uint_t bytes)
 {
     assert(buf != NULL);
 
-    const uint gbytes = (uint)(bytes / GB);
-    const uint mbytes = (uint)(bytes / MB);
-    const uint kbytes = (uint)(bytes / KB);
-
-    if (gbytes != 0)
+    if (bytes >= GB)
     {
-        return snprintf(buf, size, "%uG", gbytes);
+        return snprintf(buf, size, "%uG", (uint)(bytes / GB));
     }
-    else if (mbytes != 0)
+    else if (bytes >= MB)
     {
-        return snprintf(buf, size, "%uM", mbytes);
+        return snprintf(buf, size, "%uM", (uint)(bytes / MB));
     }
-    else if (kbytes != 0)
+    else if (bytes >= KB)
     {
-        return snprintf(buf, size, "%uK", kbytes);
+        return snprintf(buf, size, "%uK", (uint)(bytes / KB));
     }
     else
     {
@@ -762,7 +758,7 @@ static int print_ebuf(char *buf, int width, int nbytes, int c)
 {
     assert(buf != NULL);
 
-    size_t size = (uint)(width - nbytes);
+    size_t size = (size_t)(uint)(width - nbytes);
 
     buf += nbytes;
 
@@ -1393,7 +1389,7 @@ static void update_status(void)
         nbytes += snprintf(status + nbytes, size, ",");
         nbytes += print_ebuf(status, w.width, nbytes, getchar_ebuf((int_t)0));
 
-        size = sizeof(status) - (uint)nbytes;
+        size = sizeof(status) - (size_t)(uint)nbytes;
 
         nbytes += snprintf(status + nbytes, size, ")  Z=" DEC_FMT " ",
                            width, t.Z);
@@ -1410,12 +1406,12 @@ static void update_status(void)
                                "row=%-*d  col=%-3d  ", width, row + 1, col + 1);
         }
 
-        size = sizeof(status) - (uint)nbytes;
+        size = sizeof(status) - (size_t)(uint)nbytes;
 
         nbytes += snprintf(status + nbytes, size, "nrows=%-*d  mem=", width,
                            nrows);
 
-        size = sizeof(status) - (uint)nbytes;
+        size = sizeof(status) - (size_t)(uint)nbytes;
 
         nbytes += geteditsize(status + nbytes, size, getsize_ebuf());
 
