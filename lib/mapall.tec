@@ -10,7 +10,7 @@
 !! Q-register 2 contains a macro that sets up the command string to map the
 !! specified key and then detects whether mapping succeeded or failed.
 
-@^U2/                               !! Load Q-register 2
+@^U2$                              !! Load Q-register 2
         . U3                        !! Save current position in Q-register 3
         @I\:@FM"\                   !! Insert start of FM command
         G1                          !! Add in name of key
@@ -22,16 +22,16 @@
         M4 U4                       !! Execute macro and save result
         Q0&1 "E                     !! Don't print results if bit 0 is set
             Q4 "N                   !! Success or failure?
-                %1                  !! Count another success
                 @^A"Mapped key ["   !! And announce it
-            |   %2                  !! Count another failure
+            |
                 @^A"Undefined key [" !! And announce it
-            '                       !! End conditional
+            '
             :G1                     !! Print name of key
             ^^]^T                   !! Terminate the announcement
             -1^T                    !! Add a CRLF
         '
-    /                               !! Q-register 2 is complete now
+        Q4 "N %1 | %2 '             !! Increment success/failure count
+    $                               !! Q-register 2 is complete now
 
 !! Q-register 1 contains the name of each key we're trying to map
 
@@ -60,7 +60,12 @@
 @^U1/F10/ M2    @^U1/S_F11/ M2    @^U1/C_F11/ M2
 @^U1/F12/ M2    @^U1/S_F12/ M2    @^U1/C_F12/ M2
 
-Q0&2 "N                             !! Unmap standard keys if bit 1 is set
+Q0&2 "E                             !! Don't print results if bit 1 is set
+    Q1 :@=/%d key/ Q1-1 "N ^^s^T ' @^A/ mapped, /
+    Q2 :@=/%d key/ Q2-1 "N ^^s^T ' :@^A/ undefined/
+'
+
+Q0&4 "N                             !! Unmap standard keys if bit 2 is set
     @FM/UP//
     @FM/DOWN//
     @FM/LEFT//
@@ -69,11 +74,6 @@ Q0&2 "N                             !! Unmap standard keys if bit 1 is set
     @FM/END//
     @FM/PGUP//
     @FM/PGDN//
-'
-
-Q0&1 "E                             !! Don't print results if bit 0 is set
-    Q1 :@=/%d key/ Q1-1 "N ^^s^T ' @^A/ mapped, /
-    Q2 :@=/%d key/ Q2-1 "N ^^s^T ' :@^A/ undefined/
 '
 
 ^[^[
