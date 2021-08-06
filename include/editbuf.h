@@ -97,7 +97,7 @@ extern int_t getdelta_ebuf(int_t nlines);
 
 //  Get the number of lines between current dot and start/end of edit buffer.
 
-extern int_t getlines_ebuf(int_t relpos);
+extern int_t getlines_ebuf(int relpos);
 
 //  Get the size of the edit buffer.
 

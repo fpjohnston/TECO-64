@@ -137,7 +137,22 @@ void exec_L(struct cmd *cmd)
     //  1:L -> No. of following lines
     //   :L -> Same as 0:L
 
-    int_t nlines = getlines_ebuf(n);
+    int relpos;
+
+    if (n < 0)
+    {
+        relpos = -1;
+    }
+    else if (n > 0)
+    {
+        relpos = 1;
+    }
+    else
+    {
+        relpos = 0;
+    }
+
+    int_t nlines = getlines_ebuf(relpos);
 
     push_x(nlines, X_OPERAND);
 }

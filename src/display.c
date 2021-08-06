@@ -555,11 +555,11 @@ static void mark_cursor(int row, int col)
 
 static void move_down(void)
 {
-    int_t line = getlines_ebuf((int_t)-1); // Get current line number
+    int_t line = getlines_ebuf(-1);     // Get current line number
     int row = d.row;
     int col = d.col;
 
-    if (line == getlines_ebuf((int_t)0)) // On last line?
+    if (line == getlines_ebuf(0))       // On last line?
     {
         return;
     }
@@ -628,12 +628,12 @@ static void move_left(void)
 
     if (dot >= t.B)
     {
-        int line = (int)getlines_ebuf((int_t)-1);
+        int line = (int)getlines_ebuf(-1);
         int row = (line - rowbias) % d.nrows;
 
         setpos_ebuf(dot);
 
-        if (row == 0 && line != getlines_ebuf((int_t)-1))
+        if (row == 0 && line != getlines_ebuf(-1))
         {
             --rowbias;
         }
@@ -662,12 +662,12 @@ static void move_right(void)
 
     if (dot <= t.Z)
     {
-        int line = (int)getlines_ebuf((int_t)-1);
+        int line = (int)getlines_ebuf(-1);
         int row = (line - rowbias) % d.nrows;
 
         setpos_ebuf(dot);
 
-        if (row == d.nrows - 1 && line != getlines_ebuf((int_t)-1))
+        if (row == d.nrows - 1 && line != getlines_ebuf(-1))
         {
             ++rowbias;
         }
@@ -692,7 +692,7 @@ static void move_right(void)
 
 static void move_up(void)
 {
-    int line = (int)getlines_ebuf((int_t)-1); // Get current line number
+    int line = (int)getlines_ebuf(-1);  // Get current line number
     int row = d.row;
     int col = d.col;
 
@@ -965,7 +965,7 @@ void refresh_dpy(void)
         return;
     }
 
-    int line = (int)getlines_ebuf((int_t)-1); // Line number within buffer
+    int line = (int)getlines_ebuf(-1);  // Line number within buffer
 
     if (line == 0)
     {
@@ -1377,8 +1377,8 @@ static void update_status(void)
 
         // Add some file status to the left side of the status line
 
-        int row     = (int)getlines_ebuf((int_t)-1);
-        int nrows   = (int)getlines_ebuf((int_t)0);
+        int row     = (int)getlines_ebuf(-1);
+        int nrows   = (int)getlines_ebuf(0);
         int col     = (int)-getdelta_ebuf((int_t)0);
         int width   = getwidth((ulong)(uint)t.Z);
         int nbytes  = snprintf(status, sizeof(status), ".=" DEC_FMT " (",

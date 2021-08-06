@@ -334,7 +334,7 @@ int_t getdelta_ebuf(int_t n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int_t getlines_ebuf(int_t n)
+int_t getlines_ebuf(int n)
 {
     int_t start  = (n > 0) ? 0 : -t.dot;
     int_t end    = (n < 0) ? 0 : t.Z;
