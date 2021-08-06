@@ -35,7 +35,7 @@
 #include "term.h"
 
 
-static tbuffer *term_buf;           ///< Terminal input block
+static tbuffer term_buf;            ///< Terminal input block
 
 
 ///
@@ -47,18 +47,16 @@ static tbuffer *term_buf;           ///< Terminal input block
 
 tbuffer copy_tbuf(void)
 {
-    assert(term_buf != NULL);           // Error if no terminal block
-
     tbuffer buf =
     {
-        .len  = term_buf->len,
-        .pos  = term_buf->pos,
-        .size = term_buf->size,
+        .len  = term_buf.len,
+        .pos  = term_buf.pos,
+        .size = term_buf.size,
     };
 
-    buf.data  = alloc_mem(term_buf->size);
+    buf.data  = alloc_mem(term_buf.size);
 
-    memcpy(buf.data, term_buf->data, (size_t)term_buf->size);
+    memcpy(buf.data, &term_buf.data, (size_t)term_buf.size);
 
     return buf;
 }
@@ -73,14 +71,12 @@ tbuffer copy_tbuf(void)
 
 int delete_tbuf(void)
 {
-    assert(term_buf != NULL);           // Error if no terminal buffer
-
-    if (term_buf->len == 0)             // Anything in buffer?
+    if (term_buf.len == 0)              // Anything in buffer?
     {
         return EOF;                     // No
     }
 
-    return term_buf->data[--term_buf->len]; // Delete character and return it
+    return term_buf.data[--term_buf.len]; // Delete character and return it
 }
 
 
@@ -93,16 +89,15 @@ int delete_tbuf(void)
 
 void echo_tbuf(uint pos)
 {
-    assert(term_buf != NULL);           // Error if no terminal buffer
-    assert(pos <= term_buf->len);       // Error if no data overrun
+    assert(pos <= term_buf.len);        // Error if no data overrun
 
     // Just echo everything we're supposed to print. Note that this is not the
     // same as typing out what's in a buffer, so things such as the settings of
     // the EU flag don't matter here.
 
-    for (uint i = pos; i < term_buf->len; ++i)
+    for (uint i = pos; i < term_buf.len; ++i)
     {
-        type_out(term_buf->data[i]);
+        type_out(term_buf.data[i]);
     }
 }
 
@@ -119,19 +114,14 @@ void echo_tbuf(uint pos)
 
 void exit_tbuf(void)
 {
-    if (term_buf != NULL)
+    if (term_buf.data != NULL)
     {
-        if (term_buf->data != NULL)
-        {
-            free_mem(&term_buf->data);
-        }
-
-        term_buf->size = 0;
-        term_buf->pos  = 0;
-        term_buf->len  = 0;
-
-        free_mem(&term_buf);
+        free_mem(&term_buf.data);
     }
+
+    term_buf.size = 0;
+    term_buf.pos  = 0;
+    term_buf.len  = 0;
 }
 
 
@@ -144,14 +134,12 @@ void exit_tbuf(void)
 
 int fetch_tbuf(void)
 {
-    assert(term_buf != NULL);           // Error if no terminal buffer
-
-    if (term_buf->pos == term_buf->len)
+    if (term_buf.pos == term_buf.len)
     {
         return EOF;
     }
 
-    return term_buf->data[term_buf->pos++];
+    return term_buf.data[term_buf.pos++];
 }
 
 
@@ -164,7 +152,7 @@ int fetch_tbuf(void)
 
 int getlen_tbuf(void)
 {
-    return (int)term_buf->len;
+    return (int)term_buf.len;
 }
 
 
@@ -177,12 +165,10 @@ int getlen_tbuf(void)
 
 void init_tbuf(void)
 {
-    term_buf = alloc_mem((uint_t)sizeof(*term_buf));
-
-    term_buf->len  = 0;
-    term_buf->pos  = 0;
-    term_buf->size = KB;
-    term_buf->data = alloc_mem(term_buf->size);
+    term_buf.len  = 0;
+    term_buf.pos  = 0;
+    term_buf.size = KB;
+    term_buf.data = alloc_mem(term_buf.size);
 }
 
 
@@ -195,10 +181,8 @@ void init_tbuf(void)
 
 void reset_tbuf(void)
 {
-    assert(term_buf != NULL);           // Error if no terminal buffer
-
-    term_buf->pos = 0;
-    term_buf->len = 0;
+    term_buf.pos = 0;
+    term_buf.len = 0;
 }
 
 
@@ -211,13 +195,13 @@ void reset_tbuf(void)
 
 uint_t start_tbuf(void)
 {
-    uint_t i = term_buf->len;
+    uint_t i = term_buf.len;
 
     while (i > 0)
     {
         // Back up on line until we find a line terminator.
 
-        int c = term_buf->data[i];
+        int c = term_buf.data[i];
 
         if (isdelim(c))
         {
@@ -244,18 +228,17 @@ void store_tbuf(int c)
     // calling realloc(). Note that this may move the block, so we have to
     // reinitialize all of our pointers.
 
-    assert(term_buf != NULL);           // Error if no terminal block
-    assert(term_buf->data != NULL);     // Error if no buffer in block
+    assert(term_buf.data != NULL);      // Error if no buffer in block
 
-    if (term_buf->len == term_buf->size) // Has buffer filled up?
+    if (term_buf.len == term_buf.size)  // Has buffer filled up?
     {
-        assert(term_buf->size != 0);    // Error if no data
+        assert(term_buf.size != 0);     // Error if no data
 
-        char *newbuf = expand_mem(term_buf->data, term_buf->size, KB);
+        char *newbuf = expand_mem(&term_buf.data, term_buf.size, KB);
 
-        term_buf->size += KB;
-        term_buf->data = newbuf;
+        term_buf.size += KB;
+        term_buf.data = newbuf;
     }
 
-    term_buf->data[term_buf->len++] = (char)c;
+    term_buf.data[term_buf.len++] = (char)c;
 }
