@@ -279,7 +279,9 @@ void *expand_mem(void *p1, uint_t size, uint_t delta)
 
 #endif
 
-    if ((p2 = realloc(p1, (size_t)size + (size_t)delta)) == NULL)
+    size_t newsize = (size_t)size + (size_t)delta;
+
+    if ((p2 = realloc(p1, newsize)) == NULL)
     {
         throw(E_MEM);                   // Memory overflow
     }
@@ -388,7 +390,9 @@ void *shrink_mem(void *p1, uint_t size, uint_t delta)
 
 #endif
 
-    if ((p2 = realloc(p1, (size_t)size - (size_t)delta)) == NULL)
+    size_t newsize = (size_t)size - (size_t)delta;
+
+    if ((p2 = realloc(p1, newsize)) == NULL)
     {
         throw(E_MEM);                   // Memory overflow
     }

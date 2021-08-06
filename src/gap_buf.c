@@ -38,9 +38,6 @@
 #include "term.h"
 
 
-#define ROUND_K(x) (((((uint_t)x) + KB - 1) / KB) * KB) ///< Round up to K boundary
-
-
 #if     !defined(EDIT_MAX)
 #if     defined(PAGE_VM)
 #if     defined(LONG_64)
@@ -496,7 +493,7 @@ void setsize_ebuf(uint_t nbytes)
 {
     uint_t newsize = (uint_t)nbytes;
     
-    if (newsize == 0 || newsize > eb.max)
+    if (newsize > eb.max)
     {
         newsize = eb.max;
     }
@@ -506,12 +503,12 @@ void setsize_ebuf(uint_t nbytes)
         {
             newsize = eb.min;
         }
-        else if ((newsize = eb.right + eb.left) == 0)
-        {
-            newsize = KB;               // Use at least 1 KB
-        }
 
-        newsize = ROUND_K(newsize);     // Round up to next higher K boundary
+        // Round up to K boundary
+
+        newsize += KB - 1;
+        newsize /= KB;
+        newsize *= KB;
     }
 
     // Nothing to do if no change, or requested size is smaller than what's
@@ -526,15 +523,13 @@ void setsize_ebuf(uint_t nbytes)
 
     shift_left(eb.right);               // Remove the gap
 
-    uint_t delta = newsize - eb.size;
-
     if (newsize < eb.size)
     {
-        eb.buf = shrink_mem(eb.buf, eb.size, delta);
+        eb.buf = shrink_mem(eb.buf, eb.size, eb.size - newsize);
     }
     else
     {
-        eb.buf = expand_mem(eb.buf, eb.size, delta);
+        eb.buf = expand_mem(eb.buf, eb.size, newsize - eb.size);
     }
 
     shift_right(eb.right);              // Restore the gap
