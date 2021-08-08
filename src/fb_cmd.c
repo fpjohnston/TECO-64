@@ -87,8 +87,6 @@ static void exec_search(struct cmd *cmd, bool replace)
 
     if (cmd->text1.len != 0)
     {
-        free_mem(&last_search.data);
-
         last_search = build_string(cmd->text1.data, cmd->text1.len);
     }
 

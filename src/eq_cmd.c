@@ -49,9 +49,9 @@ void exec_EQ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    const char *buf = cmd->text1.data;
-    uint_t len      = cmd->text1.len;
-    uint stream     = IFILE_QREGISTER;
+    const char *name = cmd->text1.data;
+    uint_t len       = cmd->text1.len;
+    uint stream      = IFILE_QREGISTER;
 
     tbuffer text =
     {
@@ -61,17 +61,9 @@ void exec_EQ(struct cmd *cmd)
         .data = NULL,
     };
 
-    char *temp = init_filename(buf, len, cmd->colon);
-
-    if (temp != NULL)
+    if ((name = init_filename(name, len, cmd->colon)) != NULL)
     {
-        char name[strlen(temp) + 1];
-
-        strcpy(name, temp);
-
-        free_mem(&temp);
-
-        if (open_command(name, len, stream, cmd->colon, &text))
+        if (open_command(name, stream, cmd->colon, &text))
         {
             store_qtext(cmd->qindex, &text);
 

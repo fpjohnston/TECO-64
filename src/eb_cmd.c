@@ -48,49 +48,34 @@ void exec_EB(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    const char *buf = cmd->text1.data;
-    uint_t len      = cmd->text1.len;
+    const char *name = cmd->text1.data;
+    uint_t len = cmd->text1.len;
+    struct ifile *ifile;
 
-    if (len == 0)
+    if (len == 0)                       // ER`?
     {
         throw(E_NFI);                   // No file for input
     }
 
-    assert(buf != NULL);                // Error if no buffer
+    assert(name != NULL);               // Error if no file name
 
-    char *name = init_filename(buf, len, cmd->colon);
-    struct ifile *ifile = NULL;
-
-    if (name != NULL)
+    if ((name = init_filename(name, len, cmd->colon)) != NULL)
     {
-        ifile = open_input(name, istream, cmd->colon);
+        if ((ifile = open_input(name, istream, cmd->colon)) != NULL)
+        {
+            if (open_output(ifile->name, ostream, cmd->colon, 'B') != NULL)
+            {
+                if (cmd->colon)
+                {
+                    push_x(SUCCESS, X_OPERAND);
+                }
+
+                return;
+            }
+        }
     }
 
-    // Note: open_input() only returns NULL for colon-modified command.
+    // Only here if error occurred when colon modifier specified.
 
-    if (ifile == NULL)
-    {
-        push_x(FAILURE, X_OPERAND);
-
-        return;
-    }
-
-    name = strdup_mem(ifile->name);
-
-    assert(name != NULL);
-
-    struct ofile *ofile = open_output(name, ostream, cmd->colon, 'B');
-
-    ofile->backup = true;               // Create backup file on close
-
-    // Note: open_output() only returns NULL for colon-modified command.
-
-    if (ofile == NULL)
-    {
-        push_x(FAILURE, X_OPERAND);
-    }
-    else if (cmd->colon)
-    {
-        push_x(SUCCESS, X_OPERAND);
-    }
+    push_x(FAILURE, X_OPERAND);
 }

@@ -89,7 +89,7 @@ extern uint istream;
 
 extern uint ostream;
 
-extern char *last_file;
+extern char last_file[];
 
 // File functions
 
@@ -97,21 +97,21 @@ extern void close_input(uint stream);
 
 extern void close_output(uint stream);
 
-extern struct ifile *find_command(char *base, uint_t len, uint stream,
-                                  bool colon);
+extern struct ifile *find_command(const char *name, uint stream, bool colon);
 
 extern int get_wild(void);
 
-extern char *init_filename(const char *buf, uint_t len, bool colon);
+extern char *init_filename(const char *src, uint_t len, bool colon);
 
-extern bool open_command(char *buf, uint_t len, uint stream, bool colon,
+extern bool open_command(const char *name, uint stream, bool colon,
                          tbuffer *text);
 
-extern struct ifile *open_input(char *name, uint stream, bool colon);
+extern struct ifile *open_input(const char *name, uint stream, bool colon);
 
-extern struct ofile *open_output(char *name, uint stream, bool colon, int c);
+extern struct ofile *open_output(const char *name, uint stream, bool colon,
+                                 int c);
 
-extern FILE *open_temp(char **temp, const char *oname);
+extern FILE *open_temp(const char *oname, uint stream);
 
 extern void read_memory(char *p, uint len);
 

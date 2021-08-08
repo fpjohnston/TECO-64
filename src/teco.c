@@ -37,6 +37,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <limits.h>
 #include <setjmp.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -51,7 +52,6 @@
 #include "exec.h"
 #include "file.h"
 #include "qreg.h"
-#include "search.h"
 #include "term.h"
 
 //lint -save -e10 -e65 -e133 -e485 -e651
@@ -137,6 +137,8 @@ struct flags f =                    ///< Global flag variables
 //lint -restore
 
 jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
+
+char scratch[PATH_MAX];             ///< General scratch buffer
 
 
 //  Local functions
@@ -252,7 +254,6 @@ static void exit_teco(void)
     reset_loop();                       // Deallocate memory for loops
     reset_indirect();                   // Deallocate memory for EI commands
 
-    exit_search();                      // Deallocate memory for searches
     exit_map();                         // Deallocate memory for key mapping
     exit_error();                       // Deallocate memory for errors
     exit_qreg();                        // Deallocate memory for Q-registers

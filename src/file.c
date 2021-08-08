@@ -51,15 +51,11 @@ uint istream = IFILE_PRIMARY;           ///< Current input stream
 
 uint ostream = OFILE_PRIMARY;           ///< Current output stream
 
-char *last_file = NULL;                 ///< Last opened file
-
-#define ERR_FILE_SIZE   200             ///< Max. len. of file causing error
-
-static char err_file[ERR_FILE_SIZE + 1]; ///< Name of file causing error
+char last_file[PATH_MAX] = { NUL };     ///< Last opened file
 
 // Local functions
 
-static bool canonical_name(char **name);
+static char *canonical_name(const char *name);
 
 
 ///
@@ -70,29 +66,26 @@ static bool canonical_name(char **name);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool canonical_name(char **name)
+static char *canonical_name(const char *name)
 {
     assert(name != NULL);               // Error if no file name
-    assert(*name != NULL);              // Error if file name is a null string
 
     char path[PATH_MAX];
 
-    if (realpath(*name, path) == NULL)  // Get absolute path for file name
+    if (realpath(name, path) == NULL)   // Get resolved path for file name
     {
-        set_last(*name);
+        set_last(name);                 // Set the unresolved name
 
-        return false;
+        return NULL;
     }
+    else
+    {
+        strcpy(scratch, path);          // Copy resolved name to scratch buffer
 
-    free_mem(name);                     // Deallocate previous file name
+        set_last(scratch);              // Set the resolved name
 
-    *name = alloc_mem((uint_t)strlen(path) + 1);
-
-    strcpy(*name, path);
-
-    set_last(*name);
-
-    return true;
+        return scratch;
+    }
 }
 
 
@@ -175,8 +168,6 @@ void exit_files(void)
     }
 
     istream = IFILE_PRIMARY;
-
-    free_mem(&last_file);
 }
 
 
@@ -187,103 +178,99 @@ void exit_files(void)
 ///            acters. We also ensure that the file name ends with a NUL, since
 ///            that's the required format for library calls such as fopen().
 ///
-///  @returns  Pointer to translated file name.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-char *init_filename(const char *buf, uint_t len, bool colon)
+char *init_filename(const char *name, uint_t len, bool colon)
 {
-    assert(buf != NULL);                // Error if no file name
-    assert(len > 0);                    // Error if name is a null string
+    assert(name != NULL);               // Error if no file name
 
-    // First, replace an initial "~" (tilde) with the user's home directory.
-    // This is the only change we make that increases the length of the file
-    // specification, other than the call to build_string().
+    // The caller passed us a counted string, not a C string, so copy it to
+    // a temp. buffer, add a NUL, and then change our source pointer.
 
-    const char *home = getenv("HOME");
-    uint homelen = (home != NULL) ? (uint)strlen(home) : 0;
-    char path[homelen + len + 1];
-    char *src, *dst;
+    char temp[len + 1];
 
-    // Skip any leading whitespace
+    memcpy(temp, name, (size_t)len);
 
-    while (len > 0 && isspace(*buf))
+    temp[len] = NUL;
+
+    name= temp;
+
+    uint_t skip = (uint_t)strspn(name, " "); // Skip leading spaces
+
+    assert(skip < len);                 // Error if no file name
+
+    name += skip;
+    len -= skip;
+
+    assert(len < PATH_MAX);             // Error if file name too long
+
+    // Filenames must be C strings and can't have embedded NUL characters.
+
+    if (memchr(name, NUL, (size_t)len) != NULL)
     {
-        ++buf;
-        --len;
+        throw(E_IFN, NUL);              // Illegal file name
     }
 
-    // Replace initial tilde (~) with home directory.
-
+    const char *home = getenv("HOME");
     int nbytes = (int)len;
+    char *dst;
 
-    if (buf[0] == '~' && home != NULL)
+    // If filename has an initial "~" (tilde), replace it with the user's home
+    // directory. This is the only change we make that increases the length of
+    // the file specification, other than the call to build a string.
+
+    if (name[0] == '~' && home != NULL) // Need to add home directory?
     {
-        nbytes = snprintf(path, sizeof(path), "%s%.*s", home, nbytes - 1,
-                          buf + 1);
+        nbytes = snprintf(scratch, (size_t)PATH_MAX, "%s%.*s", home,
+                          nbytes - 1, name + 1);
     }
     else
     {
-        nbytes = snprintf(path, sizeof(path), "%.*s", nbytes, buf);
+        nbytes = snprintf(scratch, (size_t)PATH_MAX, "%.*s", nbytes, name);
     }
 
     assert(nbytes > 0);
-    assert(nbytes < (int)sizeof(path));
+    assert(nbytes < (int)PATH_MAX);
 
-    // Next, translate any match control characters in the file specification.
-    // Note that the allocated string includes a terminating NUL, but it is
-    // not included in the returned length.
+    name = scratch;
 
-    tstring string = build_string(path, (uint_t)(uint)nbytes);
+    // Next, scan for match control characters.
 
-    // Finally, discard any NUL or whitespace characters, and ensure that the
-    // file spec. doesn't have any other control or non-ASCII characters. This
-    // means the resultant string will be the same length or shorter than we
-    // started with, but never longer. Hencequently, we are able to copy it in
-    // place and don't need to allocate another buffer.
+    tstring string = build_string(name, (uint_t)(uint)nbytes);
 
-    src = dst = string.data;
-    len = string.len;
+    name = dst = string.data;
 
-    for (uint i = 0; i < len; ++i)
+    // Ensure that there are no non-graphic ASCII characters in the filespec.
+
+    for (uint_t i = 0; i < string.len; ++i)
     {
-        int c = *src++;
+        int c = *name++;
 
-        if (isspace(c) || c == NUL)
-        {
-            ;
-        }
-        else if (iscntrl(c) || !isascii(c))
+        if (!isgraph(c))
         {
             throw(E_IFN, c);            // Invalid character in file name
         }
-        else
-        {
-            *dst++ = (char)c;
-        }
+
+        *dst++ = (char)c;
     }
 
     *dst = NUL;
 
-    if (string.data[0] == NUL)
-    {
-        free_mem(&string.data);
+    len = (uint_t)(dst - scratch);
 
+    if (len == 0)
+    {
         if (colon)
         {
             return NULL;
         }
 
-        char file[len + 1];
-
-        sprintf(file, "%.*s", (int)len, buf);
-
-        throw(E_FNF, file);
+        throw(E_FNF, scratch);
     }
-    else
-    {
-        return string.data;
-    }
+
+    return scratch;
 }
 
 
@@ -297,18 +284,12 @@ char *init_filename(const char *buf, uint_t len, bool colon)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool open_command(char *name, uint_t len, uint stream, bool colon,
-                  tbuffer *text)
+bool open_command(const char *name, uint stream, bool colon, tbuffer *text)
 {
-    if (len == 0)                       // Any file to open?
-    {
-        return false;
-    }
-
     assert(name != NULL);               // Error if no input file name
     assert(text != NULL);               // Error if no edit buffer
 
-    struct ifile *ifile = find_command(name, len, stream, colon);
+    struct ifile *ifile = find_command(name, stream, colon);
 
     // If there was no colon, then we've already thrown an exception.
     // Therefore, if ifile is NULL, a colon must have been present.
@@ -355,52 +336,68 @@ bool open_command(char *name, uint_t len, uint stream, bool colon,
 ///
 ///  @brief    Open file for input.
 ///
-///  @returns  Input file stream if success, NULL if failure and a colon is set.
+///  @returns  Input file stream if success, NULL if failure. Note that a NULL
+///            can only be returned if the colon flag was set.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct ifile *open_input(char *name, uint stream, bool colon)
+struct ifile *open_input(const char *name, uint stream, bool colon)
 {
     assert(name != NULL);               // Error if no input file name
 
     close_input(stream);                // Close input file if open
 
-    struct ifile *ifile = &ifiles[stream];
+    // Make canonical form of file name (w/ absolute path)
 
-    ifile->name = name;
+    if ((name = canonical_name(name)) == NULL)
+    {
+        return NULL;                    // File (probably) doesn't exist
+    }
+
+    // Check to see that the file exists
 
     struct stat file_stat;
 
-    if (stat(ifile->name, &file_stat) != 0)
+    if (stat(name, &file_stat) != 0)
     {
         if (colon)
         {
             return NULL;
         }
 
-        throw(E_FNF, ifile->name);      // File not found
+        throw(E_FNF, name);             // File not found
     }
+
+    // Check that file spec is a regular file
 
     if (!S_ISREG(file_stat.st_mode))
     {
-        throw(E_FIL, ifile->name);      // Invalid file
+        throw(E_FIL, name);             // Invalid file
     }
 
-    if (access(ifile->name, R_OK) != 0) // Is file readable?
+    // Check that the file is readable
+
+    if (access(name, R_OK) != 0)        // Is file readable?
     {
         errno = EPERM;
 
-        throw(E_SYS, ifile->name);      // System error
+        throw(E_SYS, name);             // System error
     }
 
-    if (!canonical_name(&ifile->name) ||
-        ((ifile->fp = fopen(ifile->name, "r")) == NULL))
+    struct ifile *ifile = &ifiles[stream];
+
+    // Now actually open the file
+
+    if ((ifile->fp = fopen(name, "r")) == NULL)
     {
-        throw(E_SYS, ifile->name);      // Unexpected system error
+        throw(E_SYS, name);             // Unexpected system error
     }
 
     ifile->size = (uint_t)file_stat.st_size;
-    ifile->cr  = false;
+    ifile->cr   = false;
+    ifile->name = alloc_mem((uint_t)strlen(name) + 1);
+
+    strcpy(ifile->name, name);
 
     return ifile;
 }
@@ -415,7 +412,7 @@ struct ifile *open_input(char *name, uint stream, bool colon)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct ofile *open_output(char *name, uint stream, bool colon, int c)
+struct ofile *open_output(const char *name, uint stream, bool colon, int c)
 {
     assert(name != NULL);               // Error if no output file name
     assert(strchr("BLW%", c) != NULL);  // Ensure it's EB, EL, EW, or E%
@@ -429,59 +426,58 @@ struct ofile *open_output(char *name, uint stream, bool colon, int c)
         throw(E_OFO);                   // Output file is already open
     }
 
-    ofile->name = name;
-
-    // If the output file already exists, then we create a temporary file and
-    // open that instead. That allows us to make off any changes in the event
-    // of an EK command. If the file is closed normally, we will rename the
-    // original, and then rename the temp file.
-
-    if (c == 'L')
+    if (c == 'L')                       // EL command?
     {
-        ofile->fp = fopen(ofile->name, "a+");
+        ofile->fp = fopen(name, "a+");  // Yes, always open in append mode
     }
-    else if (access(ofile->name, F_OK) == 0) // Does file already exist?
+    else if (access(name, F_OK) != 0)   // Does file already exist?
     {
-        if (access(ofile->name, W_OK) != 0) // Yes, but is it writeable?
-        {
-            snprintf(err_file, sizeof(err_file), "%.*s", ERR_FILE_SIZE,
-                     ofile->name);
+        ofile->fp = fopen(name, "w+");  // No, so no temp file needed
+    }
+    else if (access(name, W_OK) != 0)   // File exists - is it writeable?
+    {
+        snprintf(scratch, (size_t)PATH_MAX, "%s", name);
 
-            close_output(ostream);      // Deallocate stream resources
-
-            throw(E_SYS, err_file);     // Unexpected system error
-        }
-
-        ofile->fp = open_temp(&ofile->temp, ofile->name);
-
-        if (c == 'W')                   // Issue warnings if EW command
-        {
-            tprint("%%Superseding existing file '%s'\r\n", ofile->name);
-        }
+        throw(E_SYS, scratch);          // Unexpected system error
     }
     else
     {
-        ofile->fp = fopen(ofile->name, "w+");
+        // Here if file exists and is writeable. Create a temporary file and
+        // open that instead. That allows us to make off any changes in the
+        // event of an EK command. If the file is closed normally, we will
+        // rename the original, and then rename the temp file.
+
+        ofile->fp = open_temp(name, stream);
+
+        if (c == 'W')                   // Issue warning if EW command
+        {
+            tprint("%%Superseding existing file '%s'\r\n", name);
+        }
     }
 
-    if (ofile->fp == NULL || !canonical_name(&ofile->name))
+    // Here after we've tried to open the output (or temp) file
+
+    if (ofile->fp == NULL)
     {
         if (colon)
         {
             return NULL;
         }
 
-        snprintf(err_file, sizeof(err_file), "%.*s", ERR_FILE_SIZE,
-                 ofile->name);
+        snprintf(scratch, (size_t)PATH_MAX, "%s", ofile->name);
 
-        close_output(ostream);          // Deallocate stream resources
-
-        throw(E_SYS, err_file);         // Unexpected system error
+        throw(E_SYS, scratch);          // Unexpected system error
     }
+
+    ofile->name = alloc_mem((uint_t)strlen(name) + 1);
+
+    strcpy(ofile->name, name);
 
     if (c == 'B' || c == 'W')           // Save file name for EB or EW
     {
         write_memory(ofile->name);
+
+        ofile->backup = true;           //  and say we want a backup file
     }
     else if (c == 'L')
     {
@@ -489,6 +485,15 @@ struct ofile *open_output(char *name, uint stream, bool colon, int c)
 
         (void)setvbuf(ofile->fp, NULL, _IONBF, 0uL);
     }
+
+    // Make canonical form of file name (w/ absolute path)
+
+#if 0     // FIXME!
+    if ((name = canonical_name(name)) == NULL)
+    {
+        return NULL;                    // Can't get canonical name?
+    }
+#endif
 
     return ofile;
 }
@@ -505,11 +510,11 @@ void set_last(const char *name)
 {
     assert(name != NULL);               // Error if no file name
 
-    free_mem(&last_file);
+    size_t size = sizeof(last_file);
+    int nbytes = snprintf(last_file, size, "%s", name);
 
-    // Make copy of name of last file opened.
-
-    last_file = alloc_mem((uint_t)strlen(name) + 1);
-
-    strcpy(last_file, name);
+    if (nbytes < 0 || nbytes >= (int)size)
+    {
+        throw(E_MEM);
+    }
 }

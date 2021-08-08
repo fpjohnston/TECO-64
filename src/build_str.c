@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,7 +39,7 @@
 #include "qreg.h"
 
 
-#define BUILD_MAX       (KB * 4)        ///< Maximum build string is 4 KB
+#define BUILD_MAX       (PATH_MAX)      ///< Maximum build string length
 
 /// @def    getc_src
 /// @brief  Get next character from source buffer (error if buffer empty).
@@ -68,7 +69,7 @@
 ///            ^EUq - Insert character whose ASCII code is the same as that
 ///                   which would be returned by Qq.
 ///
-///  @returns  No. of characters in dynamically-allocated string.
+///  @returns  TECO string.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -266,12 +267,13 @@ tstring build_string(const char *src, uint_t len)
 
     string[pos] = NUL;                  // Ensure it's NUL-terminated
 
-    tstring dest;
+    // Copy result to scratch buffer
 
-    dest.data = alloc_mem(pos + 1);
-    dest.len = last_len = pos;
+    memcpy(scratch, string, (size_t)pos + 1);
 
-    memcpy(dest.data, string, (size_t)pos + 1);
+    tstring result = { .data = scratch, .len = pos };
 
-    return dest;
+    last_len = pos;
+
+    return result;
 }

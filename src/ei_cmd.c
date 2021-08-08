@@ -28,12 +28,11 @@
 #include <string.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
-
-#include "cbuf.h"
 
 
 ///  @var    ei_old
@@ -107,9 +106,9 @@ void exec_EI(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    const char *buf = cmd->text1.data;
-    uint_t len      = cmd->text1.len;
-    uint stream     = IFILE_INDIRECT;
+    const char *name = cmd->text1.data;
+    uint_t len       = cmd->text1.len;
+    uint stream      = IFILE_INDIRECT;
 
     close_input(stream);                // Close any open file
 
@@ -137,17 +136,9 @@ void exec_EI(struct cmd *cmd)
 
         ei_new = ei_cmd;
 
-        char *temp = init_filename(buf, len, cmd->colon);
-
-        if (temp != NULL)
+        if ((name = init_filename(name, len, cmd->colon)) != NULL)
         {
-            char name[strlen(temp) + 1];
-
-            strcpy(name, temp);
-
-            free_mem(&temp);
-
-            if (open_command(name, len, stream, cmd->colon, &ei_new->buf))
+            if (open_command(name, stream, cmd->colon, &ei_new->buf))
             {
                 if (cmd->colon)
                 {
@@ -167,17 +158,9 @@ void exec_EI(struct cmd *cmd)
             longjmp(jump_main, MAIN_CTRLC); // Yes, act like CTRL/C typed
         }
 
-        char *temp = init_filename(buf, len, cmd->colon);
-
-        if (temp != NULL)
+        if ((name = init_filename(name, len, cmd->colon)) != NULL)
         {
-            char name[strlen(temp) + 1];
-
-            strcpy(name, temp);
-
-            free_mem(&temp);
-
-            if (open_command(name, len, stream, cmd->colon, &ei_old))
+            if (open_command(name, stream, cmd->colon, &ei_old))
             {
                 if (cmd->colon)
                 {

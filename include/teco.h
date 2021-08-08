@@ -133,6 +133,8 @@ extern jmp_buf jump_main;
 
 extern uint_t last_len;
 
+extern char scratch[];
+
 extern const char *teco_init;
 
 extern const char *teco_library;
@@ -181,8 +183,6 @@ extern void exit_mem(void);
 
 extern void exit_qreg(void);
 
-extern void exit_search(void);
-
 extern void exit_tbuf(void);
 
 extern void exit_term(void);
@@ -208,8 +208,6 @@ extern void setif_depth(uint depth);
 extern void setloop_depth(uint depth);
 
 extern void *shrink_mem(void *p1, uint_t size, uint_t delta);
-
-extern char *strdup_mem(const char *ptr);
 
 extern int teco_env(int n, bool colon);
 

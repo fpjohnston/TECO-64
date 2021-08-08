@@ -433,31 +433,3 @@ void *shrink_mem(void *p1, uint_t size, uint_t delta)
 
     return p2;
 }
-
-
-///
-///  @brief    Duplicate string. Performs the same function as strdup(), but
-///            ensures we add a tracking block if we're debugging memory
-///            allocations.
-///
-///  @returns  Pointer to new memory.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-char *strdup_mem(const char *p)
-{
-    void *p1 = strdup(p);
-
-    if (p1 == NULL)
-    {
-        throw(E_MEM);                   // Memory overflow
-    }
-
-#if     defined(MEMCHECK)
-
-    add_mblock(p1, (uint_t)strlen(p1) + 1);
-
-#endif
-
-    return p1;
-}

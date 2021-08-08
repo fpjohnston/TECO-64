@@ -144,7 +144,9 @@ void exec_FF(struct cmd *cmd)
 
         tstring string = build_string(cmd->text1.data, cmd->text1.len);
 
-        ctrl_f_cmd[i] = string.data;
+        ctrl_f_cmd[i] = alloc_mem(string.len + 1);
+
+        strcpy(ctrl_f_cmd[i], string.data);
     }
 }
 
@@ -188,7 +190,6 @@ void exec_FM(struct cmd *cmd)
     char key[string.len + 1];
 
     strcpy(key, string.data);
-    free_mem(&string.data);
 
     for (uint i = 0; i < countof(keys); ++i)
     {
@@ -273,7 +274,6 @@ void exec_FQ(struct cmd *cmd)
     char key[string.len + 1];
 
     strcpy(key, string.data);
-    free_mem(&string.data);
 
     for (uint i = 0; i < countof(keys); ++i)
     {

@@ -50,9 +50,9 @@ void exec_EL(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    const char *buf = cmd->text1.data;
-    uint_t len      = cmd->text1.len;
-    uint stream     = OFILE_LOG;
+    const char *name = cmd->text1.data;
+    uint_t len       = cmd->text1.len;
+    uint stream      = OFILE_LOG;
 
     close_output(stream);
 
@@ -61,24 +61,22 @@ void exec_EL(struct cmd *cmd)
         return;
     }
 
-    assert(buf != NULL);                // Error if no buffer
+    assert(name != NULL);               // Error if no buffer
 
-    char *name = init_filename(buf, len, cmd->colon);
-    struct ofile *ofile = NULL;
-
-    if (name != NULL)
+    if ((name = init_filename(name, len, cmd->colon)) != NULL)
     {
-        ofile = open_output(name, stream, cmd->colon, 'L');
+        if (open_output(name, ostream, cmd->colon, 'L') != NULL)
+        {
+            if (cmd->colon)
+            {
+                push_x(SUCCESS, X_OPERAND);
+            }
+
+            return;
+        }
     }
 
-    // Note: open_output() only returns NULL for colon-modified command.
+    // Only here if error occurred when colon modifier specified.
 
-    if (ofile == NULL)
-    {
-        push_x(FAILURE, X_OPERAND);
-    }
-    else if (cmd->colon)
-    {
-        push_x(SUCCESS, X_OPERAND);
-    }
+    push_x(FAILURE, X_OPERAND);
 }

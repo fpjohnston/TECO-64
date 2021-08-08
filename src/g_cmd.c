@@ -63,11 +63,9 @@ static void copy_G(struct cmd *cmd)
     switch (cmd->qname)
     {
         case '*':                       // Copy filespec string
-            p = last_file;
-
-            if (p != NULL && (last_len = (uint_t)strlen(p)) != 0)
+            if ((last_len = (uint_t)strlen(last_file)) != 0)
             {
-                exec_insert(p, last_len);
+                exec_insert(last_file, last_len);
             }
 
             break;
@@ -145,10 +143,7 @@ static void type_G(struct cmd *cmd)
     switch (cmd->qname)
     {
         case '*':                       // Print filespec string
-            if (last_file != NULL)
-            {
-                tprint("%s", last_file);
-            }
+            tprint("%s", last_file);
 
             break;
 

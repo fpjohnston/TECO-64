@@ -29,6 +29,7 @@
 #include <errno.h>
 #include <glob.h>                       // for glob()
 #include <libgen.h>                     // for dirname()
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -46,11 +47,7 @@
 #define TEMP_NAME   "_teco_XXXXXX"      ///< Template for temp file name
 #define TEMP_TYPE   ".tmp"              ///< Temp file type/extension
 
-#define SIZE_NAME   (uint)(sizeof(TEMP_NAME) - 1) ///< Size of temp file name
-#define SIZE_TYPE   (uint)(sizeof(TEMP_TYPE) - 1) ///< Size of temp file type
-
 #define TEC_NAME    ".tec"              ///< Command file extension
-#define TEC_SIZE    (uint)(sizeof(TEC_NAME) - 1) ///< Size of file extension
 
 static glob_t pglob;                    ///< Saved list of wildcard files
 
@@ -70,29 +67,30 @@ static uint_t parse_file(const char *file, char *dir, char *base);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-struct ifile *find_command(char *file, uint_t len, uint stream, bool colon)
+struct ifile *find_command(const char *name, uint stream, bool colon)
 {
-    assert(file != NULL);
+    assert(name != NULL);
 
     // Now split the file spec into a directory and a base name.
 
+    uint_t len = (uint_t)strlen(name);
+
+    assert(len != 0);
+
     char dir[len + 1];
     char base[len + 1];
-    const char *type = "";
 
-    len = parse_file(file, dir, base);
+    (void)parse_file(name, dir, base);
 
-    if (strchr(base, '.') == NULL)      // If no file type, add .tec
-    {
-        len += TEC_SIZE;
-        type = TEC_NAME;
-    }
+    const char *type = (strchr(base, '.') == NULL) ? TEC_NAME : "";
+    int nbytes = snprintf(scratch, (size_t)PATH_MAX, "%s%s%s", dir, base, type);
 
-    char *name = alloc_mem(len + 1);
-    int nbytes = snprintf(name, (size_t)len + 1, "%s%s%s", dir, base, type);
+    assert(nbytes > 0);
+    assert(nbytes < PATH_MAX);
+
+    name = scratch;
+
     struct ifile *ifile;
-
-    assert((uint_t)(uint)nbytes < len + 1);
 
     if ((ifile = open_input(name, stream, (bool)true)) != NULL)
     {
@@ -103,15 +101,19 @@ struct ifile *find_command(char *file, uint_t len, uint stream, bool colon)
 
     if (dir[0] != '/' && teco_library != NULL)
     {
-        uint_t size = (uint_t)(strlen(teco_library) + 1 + strlen(name) + 1);
+        char file[strlen(name) + 1];
 
-        char *libname = alloc_mem(size);
+        strcpy(file, name);
 
-        nbytes = snprintf(libname, (size_t)size, "%s/%s", teco_library, name);
+        nbytes = snprintf(scratch, (size_t)PATH_MAX, "%s/%s", teco_library,
+                          file);
 
-        assert((uint_t)(uint)nbytes < size);
+        assert(nbytes > 0);
+        assert(nbytes < PATH_MAX);
 
-        if ((ifile = open_input(libname, stream, (bool)true)) != NULL)
+        name = scratch;
+
+        if ((ifile = open_input(name, stream, (bool)true)) != NULL)
         {
             return ifile;
         }
@@ -122,7 +124,7 @@ struct ifile *find_command(char *file, uint_t len, uint stream, bool colon)
         return NULL;
     }
 
-    throw(E_FNF, file);                 // File not found
+    throw(E_FNF, name);                 // File not found
 }
 
 
@@ -188,12 +190,11 @@ int get_wild(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-FILE *open_temp(char **otemp, const char *oname)
+FILE *open_temp(const char *oname, uint stream)
 {
-    assert(otemp != NULL);              // Error if NULL pointer to temp file
-    assert(*otemp == NULL);             // Error if NULL temp file
     assert(oname != NULL);              // Error if NULL output file
 
+    struct ofile *ofile = &ofiles[stream];
     struct stat statbuf;
 
     if (stat(oname, &statbuf) != 0)
@@ -202,12 +203,13 @@ FILE *open_temp(char **otemp, const char *oname)
     }
 
     char dir[strlen(oname) + 1];
-    uint_t size = parse_file(oname, dir, NULL);
-    char tempfile[size + 1 + SIZE_NAME + SIZE_TYPE + 1];
+
+    (void)parse_file(oname, dir, NULL);
+
+    char tempfile[PATH_MAX];
     int nbytes = snprintf(tempfile, sizeof(tempfile), "%s%s%s", dir,
                           TEMP_NAME, TEMP_TYPE);
-
-    int fd = mkstemps(tempfile, (int)SIZE_TYPE);
+    int fd = mkstemps(tempfile, (int)strlen(TEMP_TYPE));
 
     if (fd == -1)
     {
@@ -216,9 +218,9 @@ FILE *open_temp(char **otemp, const char *oname)
 
     (void)fchmod(fd, statbuf.st_mode);  // Use same permissions as old file
 
-    *otemp = alloc_mem((uint_t)(uint)nbytes + 1);
+    ofile->temp = alloc_mem((uint_t)(uint)nbytes + 1);
 
-    strcpy(*otemp, tempfile);
+    strcpy(ofile->temp, tempfile);
 
     return fdopen(fd, "w+");
 }
@@ -338,28 +340,34 @@ void rename_output(struct ofile *ofile)
 {
     assert(ofile != NULL);              // Error if no output file
 
-    if (ofile->temp != NULL)
+    if (ofile->temp == NULL)            // Nothing to do if no temp. file
     {
-        if (ofile->backup)
-        {
-            char scratch[strlen(ofile->name) + 1 + 1];
+        return;
+    }
 
-            snprintf(scratch, sizeof(scratch), "%s~", ofile->name);
+    if (ofile->backup)
+    {
+        char saved_name[strlen(ofile->name) + 1 + 1];
 
-            if (rename(ofile->name, scratch) != 0)
-            {
-                throw(E_SYS, ofile->name);// Unexpected system error
-            }
-        }
-        else if (remove(ofile->name) != 0)
-        {
-            throw(E_SYS, ofile->name);// Unexpected system error
-        }
+        snprintf(saved_name, sizeof(saved_name), "%s~", ofile->name);
 
-        if (rename(ofile->temp, ofile->name) != 0)
+        // Rename old file
+
+        if (rename(ofile->name, saved_name) != 0)
         {
-            throw(E_SYS, ofile->name);// Unexpected system error
+            throw(E_SYS, ofile->name);  // Unexpected system error
         }
+    }
+    else if (remove(ofile->name) != 0)
+    {
+        throw(E_SYS, ofile->name);      // Unexpected system error
+    }
+
+    // Rename temp. file name to actual name
+
+    if (rename(ofile->temp, ofile->name) != 0)
+    {
+        throw(E_SYS, ofile->name);      // Unexpected system error
     }
 }
 

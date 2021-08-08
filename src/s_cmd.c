@@ -99,13 +99,11 @@ static void exec_search(struct cmd *cmd, bool replace)
 
     if (cmd->text1.len != 0)
     {
-        free_mem(&last_search.data);
-
         last_search = build_string(cmd->text1.data, cmd->text1.len);
     }
     else if (last_search.len == 0)
     {
-        throw(E_SRH, "");         // Nothing to search for
+        throw(E_SRH, "");               // Nothing to search for
     }
 
     struct search s;

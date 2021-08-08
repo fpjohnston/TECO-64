@@ -65,19 +65,6 @@ static bool match_str(struct search *s);
 
 
 ///
-///  @brief    Clean up memory before we exit from TECO.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exit_search(void)
-{
-    free_mem(&last_search.data);
-}
-
-
-///
 ///  @brief    Check for multiple blanks (spaces or tabs) at current position.
 ///
 ///            Note that we return 1/0 instead of true/false for compatibility

@@ -47,7 +47,7 @@ void exec_ER(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    const char *buf = cmd->text1.data;
+    const char *name = cmd->text1.data;
     uint_t len = cmd->text1.len;
 
     if (len == 0)                       // ER`?
@@ -59,24 +59,22 @@ void exec_ER(struct cmd *cmd)
         return;
     }
 
-    assert(buf != NULL);                // Error if no buffer
+    assert(name != NULL);               // Error if no file name
 
-    char *name = init_filename(buf, len, cmd->colon);
-    struct ifile *ifile = NULL;
-
-    if (name != NULL)
+    if ((name = init_filename(name, len, cmd->colon)) != NULL)
     {
-        ifile = open_input(name, istream, cmd->colon);
+        if (open_input(name, istream, cmd->colon) != NULL)
+        {
+            if (cmd->colon)
+            {
+                push_x(SUCCESS, X_OPERAND);
+            }
+
+            return;
+        }
     }
 
-    // Note: open_input() only returns NULL for colon-modified command.
+    // Only here if error occurred when colon modifier specified.
 
-    if (ifile == NULL)
-    {
-        push_x(FAILURE, X_OPERAND);
-    }
-    else if (cmd->colon)
-    {
-        push_x(SUCCESS, X_OPERAND);
-    }
+    push_x(FAILURE, X_OPERAND);
 }
