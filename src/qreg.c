@@ -406,8 +406,7 @@ uint_t get_qsize(int qindex)
 
 void init_qreg(void)
 {
-    list_head = NULL;
-    local_head = alloc_mem((uint_t)sizeof(*local_head));
+        local_head = alloc_mem((uint_t)sizeof(*local_head));
 }
 
 
@@ -674,7 +673,7 @@ void store_qnum(int qindex, int_t n)
 
 
 ///
-///  @brief    Store (or free) text in Q-register.
+///  @brief    Store text in Q-register.
 ///
 ///  @returns  Nothing.
 ///
@@ -682,20 +681,14 @@ void store_qnum(int qindex, int_t n)
 
 void store_qtext(int qindex, tbuffer *text)
 {
+    assert(text != NULL);
+    assert(text->size != 0);            // Error if no data for text
+
+    init_qreg();                        // Initialize data structures if needed
+
     struct qreg *qreg = get_qreg(qindex);
 
     free_mem(&qreg->text.data);
 
-    if (text == NULL)
-    {
-        qreg->text.size = 0;
-        qreg->text.len  = 0;
-        qreg->text.pos  = 0;
-    }
-    else
-    {
-        assert(text->size != 0);        // Error if no data for text
-
-        qreg->text = *text;
-    }
+    qreg->text = *text;
 }

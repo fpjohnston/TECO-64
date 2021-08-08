@@ -76,7 +76,7 @@ void exec_ctrl_U(struct cmd *cmd)
         }
         else if (cmd->text1.len == 0)   // ^Uq`
         {
-            store_qtext(cmd->qindex, NULL);
+            delete_qtext(cmd->qindex);
         }
         else                            // ^Uqtext`
         {
