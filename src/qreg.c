@@ -133,10 +133,15 @@ struct qlocal
     struct qreg qreg[QCOUNT];           ///< Local Q-register set
 };
 
+///  @var    local_base
+///  @brief  Local Q-register set used at prompt level.
+
+static struct qlocal local_base;
+
 ///  @var    local_head
 ///  @brief  Head of local Q-register set linked list.
 
-static struct qlocal *local_head = NULL;
+static struct qlocal *local_head = &local_base;
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -238,8 +243,6 @@ void exit_qreg(void)
                 free_mem(&local_head->qreg[i].text.data);
             }
         }
-
-        free_mem(&local_head);
     }
 
     // Free the global Q-registers
@@ -406,7 +409,7 @@ uint_t get_qsize(int qindex)
 
 void init_qreg(void)
 {
-        local_head = alloc_mem((uint_t)sizeof(*local_head));
+    memset(&local_base, '\0', sizeof(local_base));
 }
 
 
