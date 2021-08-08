@@ -67,6 +67,8 @@ static struct mblock *mroot = NULL;     ///< Root of memory block list
 
 static uint_t msize = 0;                ///< Total memory allocated, in bytes
 
+static uint nallocs = 0;                ///< Total no. of blocks allocated
+
 static uint nblocks = 0;                ///< No. of blocks currently allocated
 
 static uint maxblocks = 0;              ///< High-water mark for allocated blocks
@@ -113,6 +115,10 @@ static void add_mblock(void *p1, uint_t size)
     mblock->size = size;
     msize += size;
     mroot = mblock;
+
+    tprint("%s(): new block at %p, size = %u\r\n", __func__, mblock->addr, mblock->size);
+
+    ++nallocs;
 
     if (maxblocks < ++nblocks)
     {
@@ -184,6 +190,8 @@ static void delete_mblock(void *p1)
                 p->next->prev = p->prev;
             }
 
+//            tprint("%s(): deleted block at %p, size = %u\r\n", __func__, p->addr, p->size);
+
             p->next = p->prev = NULL;
             p->addr = NULL;
             p->size = 0;
@@ -224,8 +232,8 @@ void exit_mem(void)
 
     free_mem(&eg_result);
 
-    tprint("%s(): maximum of %u allocated block%s\r\n", __func__,
-           maxblocks, plural(maxblocks));
+    tprint("%s(): %u block%s allocated, high water mark = %u block%s\r\n", __func__,
+           nallocs, plural(nallocs), maxblocks, plural(maxblocks));
 
     struct mblock *p = mroot;
     struct mblock *next;
@@ -283,6 +291,8 @@ void *expand_mem(void *p1, uint_t size, uint_t delta)
 
     if ((p2 = realloc(p1, newsize)) == NULL)
     {
+        free_mem(&p1);                  // Deallocate memory to avoid leak
+
         throw(E_MEM);                   // Memory overflow
     }
 
@@ -293,8 +303,12 @@ void *expand_mem(void *p1, uint_t size, uint_t delta)
         msize -= mblock->size;
         msize += size + delta;
 
+        tprint("++%s(): changed block at %p, size = %u\r\n", __func__, mblock->addr, mblock->size);
+
         mblock->addr = p2;
         mblock->size = size + delta;
+
+        tprint("++%s(): changed block at %p, size = %u\r\n", __func__, mblock->addr, mblock->size);
     }
 
 #endif
@@ -355,6 +369,7 @@ void free_mem(void *p1)
 
     if (*p2 != NULL)
     {
+
 #if     defined(MEMCHECK)
 
         delete_mblock(*p2);
@@ -394,6 +409,8 @@ void *shrink_mem(void *p1, uint_t size, uint_t delta)
 
     if ((p2 = realloc(p1, newsize)) == NULL)
     {
+        free_mem(&p1);                  // Deallocate memory to avoid leak
+
         throw(E_MEM);                   // Memory overflow
     }
 
@@ -404,8 +421,12 @@ void *shrink_mem(void *p1, uint_t size, uint_t delta)
         msize -= mblock->size;
         msize += size - delta;
 
+        tprint("--%s(): changed block at %p, size = %u\r\n", __func__, mblock->addr, mblock->size);
+
         mblock->addr = p2;
         mblock->size = size - delta;
+
+        tprint("--%s(): changed block at %p, size = %u\r\n", __func__, mblock->addr, mblock->size);
     }
 
 #endif
