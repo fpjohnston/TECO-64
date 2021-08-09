@@ -55,38 +55,7 @@ char last_file[PATH_MAX] = { NUL };     ///< Last opened file
 
 // Local functions
 
-static char *canonical_name(const char *name);
-
-
-///
-///  @brief    Make file name canonical.
-///
-///  @returns  true if name was successfully translated, else false (which may
-///            mean that the file does not exist).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static char *canonical_name(const char *name)
-{
-    assert(name != NULL);               // Error if no file name
-
-    char path[PATH_MAX];
-
-    if (realpath(name, path) == NULL)   // Get resolved path for file name
-    {
-        set_last(name);                 // Set the unresolved name
-
-        return NULL;
-    }
-    else
-    {
-        strcpy(scratch, path);          // Copy resolved name to scratch buffer
-
-        set_last(scratch);              // Set the resolved name
-
-        return scratch;
-    }
-}
+static char *make_canonical(const char *name);
 
 
 ///
@@ -273,6 +242,37 @@ char *init_filename(const char *name, uint_t len, bool colon)
 
 
 ///
+///  @brief    Make file name canonical.
+///
+///  @returns  true if name was successfully translated, else false (which may
+///            mean that the file does not exist).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static char *make_canonical(const char *name)
+{
+    assert(name != NULL);               // Error if no file name
+
+    char path[PATH_MAX];
+
+    if (realpath(name, path) == NULL)   // Get resolved path for file name
+    {
+        set_last(name);                 // Set the unresolved name
+
+        return NULL;
+    }
+    else
+    {
+        strcpy(scratch, path);          // Copy resolved name to scratch buffer
+
+        set_last(scratch);              // Set the resolved name
+
+        return scratch;
+    }
+}
+
+
+///
 ///  @brief    Open indirect command file which may have an implicit .tec file
 ///            type/extension. We try to open the file as specified, but if
 ///            that fails, we append .tec to the name (assuming there was no
@@ -349,7 +349,7 @@ struct ifile *open_input(const char *name, uint stream, bool colon)
 
     // Make canonical form of file name (w/ absolute path)
 
-    if ((name = canonical_name(name)) == NULL)
+    if ((name = make_canonical(name)) == NULL)
     {
         return NULL;                    // File (probably) doesn't exist
     }
@@ -398,6 +398,8 @@ struct ifile *open_input(const char *name, uint stream, bool colon)
     ifile->name = alloc_mem((uint_t)strlen(name) + 1);
 
     strcpy(ifile->name, name);
+
+    write_memory(ifile->name);
 
     return ifile;
 }
@@ -469,7 +471,18 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
         throw(E_SYS, scratch);          // Unexpected system error
     }
 
-    ofile->name = alloc_mem((uint_t)strlen(name) + 1);
+    // Here when we've either just opened a new file that didn't previously
+    // exist, or we've held off on opening an existing file (in case the
+    // user decides to cancel the edit). Regardless of which case, we can
+    // now get the canonical form of the name (with absolute path instead
+    // of any relative path), and use that to create a memory file.
+
+    if ((name = make_canonical(name)) == NULL)
+    {
+        return NULL;                    // Can't get canonical name?
+    }
+
+    ofile->name = alloc_mem(strlen(name) + 1);
 
     strcpy(ofile->name, name);
 
@@ -485,15 +498,6 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
 
         (void)setvbuf(ofile->fp, NULL, _IONBF, 0uL);
     }
-
-    // Make canonical form of file name (w/ absolute path)
-
-#if 0     // FIXME!
-    if ((name = canonical_name(name)) == NULL)
-    {
-        return NULL;                    // Can't get canonical name?
-    }
-#endif
 
     return ofile;
 }
