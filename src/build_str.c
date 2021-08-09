@@ -156,7 +156,8 @@ tstring build_string(const char *src, uint_t len)
                     {
                         uint_t nbytes = (uint_t)strlen(last_file);
 
-                        if (pos + nbytes == BUILD_MAX) 
+                        if (pos + nbytes == BUILD_MAX)
+
                         {
                             throw(E_MEM);
                         }
@@ -184,7 +185,8 @@ tstring build_string(const char *src, uint_t len)
                     {
                         uint_t nbytes = qreg->text.len;
 
-                        if (pos + nbytes == BUILD_MAX) 
+                        if (pos + nbytes == BUILD_MAX)
+
                         {
                             throw(E_MEM);
                         }

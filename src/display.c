@@ -765,7 +765,8 @@ static int print_ebuf(char *buf, int width, int nbytes, int c)
     if (c == EOF)
     {
         return snprintf(buf, size, "----");
-    } 
+    }
+
     else if (isprint(c))
     {
         return snprintf(buf, size, "'%c' ", c);

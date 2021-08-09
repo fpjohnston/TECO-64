@@ -152,7 +152,8 @@ void exec_macro(tbuffer *macro, struct cmd *oldcmd)
             push_x(oldcmd->n_arg, X_OPERAND);
         }
     }
-        
+
+
     ++macro_depth;
     exec_cmd(&cmd);
     --macro_depth;

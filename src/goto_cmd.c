@@ -163,7 +163,8 @@ static void find_tag(struct cmd *cmd, const char *orig_tag)
         .tag_loop     = 0,
         .tag_if       = 0,
     };
- 
+
+
     state.loop_start = getloop_start();
 
     cbuf->pos = 0;                      // Start at beginning of command

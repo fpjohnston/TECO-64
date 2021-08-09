@@ -492,7 +492,8 @@ void setpos_ebuf(int_t pos)
 void setsize_ebuf(uint_t nbytes)
 {
     uint_t newsize = (uint_t)nbytes;
-    
+
+
     if (newsize > eb.max)
     {
         newsize = eb.max;

@@ -112,7 +112,8 @@ struct tbuffer
     uint_t pos;                     ///< Position of next character
 };
 
-typedef struct tbuffer tbuffer;     ///< TECO buffer 
+typedef struct tbuffer tbuffer;     ///< TECO buffer
+
 
 ///  @struct tstring
 ///  @brief  Definition of a TECO string, which is a counted string (not a
