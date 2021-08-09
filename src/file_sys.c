@@ -77,6 +77,7 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
 
     assert(len != 0);
 
+    char oldname[len + 1];
     char dir[len + 1];
     char base[len + 1];
 
@@ -88,11 +89,11 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
     assert(nbytes > 0);
     assert(nbytes < PATH_MAX);
 
-    name = scratch;
+    strcpy(oldname, scratch);
 
     struct ifile *ifile;
 
-    if ((ifile = open_input(name, stream, (bool)true)) != NULL)
+    if ((ifile = open_input(scratch, stream, (bool)true)) != NULL)
     {
         return ifile;
     }
@@ -101,9 +102,9 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
 
     if (dir[0] != '/' && teco_library != NULL)
     {
-        char file[strlen(name) + 1];
+        char file[strlen(scratch) + 1];
 
-        strcpy(file, name);
+        strcpy(file, scratch);
 
         nbytes = snprintf(scratch, (size_t)PATH_MAX, "%s/%s", teco_library,
                           file);
@@ -111,9 +112,7 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
         assert(nbytes > 0);
         assert(nbytes < PATH_MAX);
 
-        name = scratch;
-
-        if ((ifile = open_input(name, stream, (bool)true)) != NULL)
+        if ((ifile = open_input(scratch, stream, (bool)true)) != NULL)
         {
             return ifile;
         }
@@ -124,7 +123,10 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
         return NULL;
     }
 
-    throw(E_FNF, name);                 // File not found
+    // If failure, issue error using original file name (plus explicit or
+    // implicit file type) provided by user.
+
+    throw(E_FNF, oldname);              // File not found
 }
 
 
