@@ -53,19 +53,16 @@ void exec_EQ(struct cmd *cmd)
     uint_t len       = cmd->text1.len;
     uint stream      = IFILE_QREGISTER;
 
-    tbuffer text =
-    {
-        .len  = 0,
-        .pos  = 0,
-        .size = 0,
-        .data = NULL,
-    };
-
     if ((name = init_filename(name, len, cmd->colon)) != NULL)
     {
+        tbuffer text;
+
         if (open_command(name, stream, cmd->colon, &text))
         {
-            store_qtext(cmd->qindex, &text);
+            if (text.size != 0)
+            {
+                store_qtext(cmd->qindex, &text);
+            }
 
             if (cmd->colon)
             {

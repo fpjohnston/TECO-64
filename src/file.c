@@ -280,7 +280,7 @@ char *init_filename(const char *name, uint_t len, bool colon)
 ///            that fails, we append .tec to the name (assuming there was no
 ///            period in the name), and try again.
 ///
-///  @returns  true if file opened and it has data, else false.
+///  @returns  true if file opened, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -308,28 +308,30 @@ bool open_command(const char *name, uint stream, bool colon, tbuffer *text)
         throw(E_SYS, last_file);        // Unexpected system error
     }
 
-    uint_t size = (uint_t)file_stat.st_size;
-
-    free_mem(&text->data);              // Free any previous storage
+    size_t size = (size_t)file_stat.st_size;
 
     // If there's data in the file, then allocate a buffer for it.
 
-    if (size != 0)
+    if ((text->len = text->size = (uint_t)size) != 0)
     {
-        text->pos  = 0;
-        text->len  = size;
-        text->size = size;
-        text->data = alloc_mem(size);
+        char tempbuf[size];
 
-        if (fread(text->data, 1uL, (size_t)size, ifile->fp) != size)
+        if (fread(tempbuf, 1uL, size, ifile->fp) != size)
         {
+            close_input(stream);
+
             throw(E_SYS, ifile->name);  // Unexpected system error
         }
+
+        text->pos  = 0;
+        text->data = alloc_mem((uint_t)size);
+
+        memcpy(text->data, tempbuf, size);
     }
 
     close_input(stream);
 
-    return (text->len != 0) ? true : false;
+    return true;
 }
 
 

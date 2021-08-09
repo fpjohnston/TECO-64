@@ -40,23 +40,10 @@
 
 static tbuffer ei_old;
 
-///  @struct ei_block
-///  @brief  Linked list structure for EI command strings.
+///   @var    ei_depth
+///   @brief  Nesting depth for new-style EI commands.
 
-struct ei_block
-{
-    struct ei_block *next;          ///< Next EI block
-    tbuffer buf;                    ///< EI command string buffer
-};
-
-///   @var    ei_new
-///   @brief  Linked list for new-style EI commands
-
-static struct ei_block *ei_new = NULL;
-
-// Local functions
-
-static struct ei_block *reset_new(void);
+static uint ei_depth = 0;
 
 
 ///
@@ -70,7 +57,7 @@ static struct ei_block *reset_new(void);
 
 int check_EI(void)
 {
-    if (ei_new != NULL && cbuf == &ei_new->buf)
+    if (ei_depth != 0)
     {
         return 1;
     }
@@ -116,7 +103,10 @@ void exec_EI(struct cmd *cmd)
     {
         if (len == 0)
         {
-            ei_new = reset_new();
+            if (ei_depth != 0)
+            {
+                cbuf->pos = cbuf->len;
+            }
 
             if (cmd->colon)
             {
@@ -126,26 +116,27 @@ void exec_EI(struct cmd *cmd)
             return;
         }
 
-        struct ei_block *ei_cmd = alloc_mem((uint_t)sizeof(*ei_cmd));
-
-        ei_cmd->buf.data = alloc_mem((uint_t)sizeof(ei_cmd->buf));
-        ei_cmd->buf.size = 0;
-        ei_cmd->buf.len  = 0;
-        ei_cmd->buf.pos  = 0;
-        ei_cmd->next     = ei_new;
-
-        ei_new = ei_cmd;
-
         if ((name = init_filename(name, len, cmd->colon)) != NULL)
         {
-            if (open_command(name, stream, cmd->colon, &ei_new->buf))
+            tbuffer ei_new;
+
+            if (open_command(name, stream, cmd->colon, &ei_new))
             {
                 if (cmd->colon)
                 {
                     push_x(SUCCESS, X_OPERAND);
                 }
 
-                exec_macro(&ei_new->buf, cmd);
+                if (ei_new.size != 0)
+                {
+                    ++ei_depth;
+
+                    exec_macro(&ei_new, cmd);
+
+                    free_mem(&ei_new.data);
+
+                    --ei_depth;
+                }
 
                 return;
             }
@@ -216,35 +207,5 @@ void reset_indirect(void)
 
     free_mem(&ei_old.data);
 
-    while ((ei_new = reset_new()) != NULL)
-    {
-        ;
-    }
-}
-
-
-///
-///  @brief    Reset buffer for new-style EI command.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static struct ei_block *reset_new(void)
-{
-    if (ei_new == NULL)
-    {
-        return NULL;
-    }
-
-    struct ei_block *ei_cmd = ei_new->next;
-
-    ei_new->buf.size = 0;
-    ei_new->buf.len  = 0;
-    ei_new->buf.pos  = 0;
-
-    free_mem(&ei_new->buf.data);
-    free_mem(&ei_new);
-
-    return ei_cmd;
+    ei_depth = 0;
 }
