@@ -84,10 +84,10 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
     (void)parse_file(name, dir, base);
 
     const char *type = (strchr(base, '.') == NULL) ? TEC_NAME : "";
-    int nbytes = snprintf(scratch, (size_t)PATH_MAX, "%s%s%s", dir, base, type);
+    int nbytes = snprintf(scratch, sizeof(scratch), "%s%s%s", dir, base, type);
 
     assert(nbytes > 0);
-    assert(nbytes < PATH_MAX);
+    assert(nbytes < (int)sizeof(scratch));
 
     strcpy(oldname, scratch);
 
@@ -106,11 +106,11 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
 
         strcpy(file, scratch);
 
-        nbytes = snprintf(scratch, (size_t)PATH_MAX, "%s/%s", teco_library,
+        nbytes = snprintf(scratch, sizeof(scratch), "%s/%s", teco_library,
                           file);
 
         assert(nbytes > 0);
-        assert(nbytes < PATH_MAX);
+        assert(nbytes < (int)sizeof(scratch));
 
         if ((ifile = open_input(scratch, stream, (bool)true)) != NULL)
         {

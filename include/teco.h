@@ -28,6 +28,7 @@
 
 #define _TECO_H
 
+#include <limits.h>             //lint !e451 !e537
 #include <setjmp.h>             //lint !e451 !e537
 #include <stdbool.h>            //lint !e451 !e537
 #include <stdio.h>              //lint !e451 !e537
@@ -134,7 +135,7 @@ extern jmp_buf jump_main;
 
 extern uint_t last_len;
 
-extern char scratch[];
+extern char scratch[PATH_MAX];
 
 extern const char *teco_init;
 

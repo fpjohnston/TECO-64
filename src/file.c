@@ -204,8 +204,6 @@ char *init_filename(const char *name, uint_t len, bool colon)
     name += skip;
     len -= skip;
 
-    assert(len < PATH_MAX);             // Error if file name too long
-
     // Filenames must be C strings and can't have embedded NUL characters.
 
     if (memchr(name, NUL, (size_t)len) != NULL)
@@ -223,16 +221,16 @@ char *init_filename(const char *name, uint_t len, bool colon)
 
     if (name[0] == '~' && home != NULL) // Need to add home directory?
     {
-        nbytes = snprintf(scratch, (size_t)PATH_MAX, "%s%.*s", home,
+        nbytes = snprintf(scratch, sizeof(scratch), "%s%.*s", home,
                           nbytes - 1, name + 1);
     }
     else
     {
-        nbytes = snprintf(scratch, (size_t)PATH_MAX, "%.*s", nbytes, name);
+        nbytes = snprintf(scratch, sizeof(scratch), "%.*s", nbytes, name);
     }
 
     assert(nbytes > 0);
-    assert(nbytes < (int)PATH_MAX);
+    assert(nbytes < (int)sizeof(scratch));
 
     name = scratch;
 
@@ -438,7 +436,7 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
     }
     else if (access(name, W_OK) != 0)   // File exists - is it writeable?
     {
-        snprintf(scratch, (size_t)PATH_MAX, "%s", name);
+        snprintf(scratch, sizeof(scratch), "%s", name);
 
         throw(E_SYS, scratch);          // Unexpected system error
     }
@@ -466,7 +464,7 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
             return NULL;
         }
 
-        snprintf(scratch, (size_t)PATH_MAX, "%s", ofile->name);
+        snprintf(scratch, sizeof(scratch), "%s", ofile->name);
 
         throw(E_SYS, scratch);          // Unexpected system error
     }
