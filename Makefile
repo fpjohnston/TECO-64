@@ -29,8 +29,6 @@
 #      distclean    Clean everything.
 #      doc          Create or update documentation.
 #      help         Print help message.
-#      lint         Lint .c and .lob files (requires PC-lint).
-#      lobs         Lint .c files (requires PC-lint).
 #      mostlyclean  Clean object files.
 #      scratch      Equivalent to 'distclean' and 'all' targets.
 #      teco         Build TECO-64 text editor.
@@ -39,16 +37,25 @@
 #
 #      buffer=gap  Use gap buffer for editing text. [default]
 #      display=1   Enable display mode.
+#      long=1      Use 64-bit integers.
+#      paging=std  Use standard paging.
+#      paging=vm   Use virtual memory paging. [default]
+#      verbose=1   Enable verbosity during build.
+#
+#  Debugging targets:
+#
+#      headers      Regenerate header files if needed.
+#      lint         Lint .c and .lob files (requires PC-lint).
+#      lobs         Lint .c files (requires PC-lint).
+#
+#  Debugging options:
+#
 #      gdb=1       Enable use of GDB debugger.
 #      gprof=1     Enable use of GPROF profiler.
-#      long=1      Use 64-bit integers.
 #      memcheck=1  Enable checks for memory leaks.
 #      ndebug=1    Disable run-time assertions.
 #      nostrict=1  Relax run-time syntax checking.
-#      paging=std  Use standard paging. [default]
-#      paging=vm   Use virtual memory paging.
 #      trace=1     Enable tracing of commands.
-#      verbose=1   Enable verbosity during build.
 #
 ################################################################################
 
@@ -348,10 +355,8 @@ help:
 	@echo "    all          Equivalent to 'teco' target. [default]"
 	@echo "    clean        Clean object files and executables."
 	@echo "    distclean    Clean everything."
-	@echo "    doc          Create or update documentation."
+	@echo "    doc          Create or update documentation (requires Doxygen)."
 	@echo "    help         Print this message."
-	@echo "    lint         Lint .c and .lob files (requires PC-lint)."
-	@echo "    lobs         Lint .c files (requires PC-lint)."
 	@echo "    mostlyclean  Clean object files."
 	@echo "    scratch      Equivalent to 'distclean' and 'all' targets."
 	@echo "    teco         Build TECO-64 text editor."
@@ -360,16 +365,26 @@ help:
 	@echo ""
 	@echo "    buffer=gap  Use gap buffer for editing text. [default]"
 	@echo "    display=1   Enable display mode."
+	@echo "    long=1      Use 64-bit integers."
+	@echo "    paging=std  Use standard paging."
+	@echo "    paging=vm   Use virtual memory paging. [default]"
+	@echo "    verbose=1   Enable verbosity during build."
+	@echo ""
+	@echo "Debugging targets:"
+	@echo ""
+	@echo "    headers      Regenerate header files if needed."
+	@echo "    lint         Lint .c and .lob files (requires PC-lint)."
+	@echo "    lobs         Lint .c files (requires PC-lint)."
+	@echo ""
+	@echo "Debugging options:"
+	@echo ""
 	@echo "    gdb=1       Enable use of GDB debugger."
 	@echo "    gprof=1     Enable use of GPROF profiler."
-	@echo "    long=1      Use 64-bit integers."
 	@echo "    memcheck=1  Enable checks for memory leaks."
 	@echo "    ndebug=1    Disable run-time assertions."
 	@echo "    nostrict=1  Relax run-time syntax checking."
-	@echo "    paging=std  Use standard paging. [default]"
-	@echo "    paging=vm   Use virtual memory paging."
 	@echo "    trace=1     Enable tracing of commands."
-	@echo "    verbose=1   Enable verbosity during build."
+	@echo ""
 
 bin:
 	$(AT)mkdir -p bin
@@ -394,7 +409,10 @@ bin/$(TARGET): $(OBJECTS)
 
 -include $(DFILES)
 
-$(OBJECTS): $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) obj/CFLAGS
+$(OBJECTS): obj/CFLAGS
+
+.PHONY: headers
+headers: $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H)
 
 $(COMMANDS_H): etc/commands.xml etc/templates/commands.h etc/commands.pl
 	$(AT)etc/commands.pl -i $< -t etc/templates/commands.h -o $@
