@@ -116,7 +116,8 @@ static void add_mblock(void *p1, uint_t size)
     msize += size;
     mroot = mblock;
 
-    tprint("%s(): new block at %p, size = %u\r\n", __func__, mblock->addr, mblock->size);
+    tprint("%s(): new block at %p, size = %u\r\n", __func__, mblock->addr,
+           mblock->size);
 
     ++nallocs;
 
@@ -190,8 +191,6 @@ static void delete_mblock(void *p1)
                 p->next->prev = p->prev;
             }
 
-//            tprint("%s(): deleted block at %p, size = %u\r\n", __func__, p->addr, p->size);
-
             p->next = p->prev = NULL;
             p->addr = NULL;
             p->size = 0;
@@ -232,8 +231,8 @@ void exit_mem(void)
 
     free_mem(&eg_result);
 
-    tprint("%s(): %u block%s allocated, high water mark = %u block%s\r\n", __func__,
-           nallocs, plural(nallocs), maxblocks, plural(maxblocks));
+    tprint("%s(): %u block%s allocated, high water mark = %u block%s\r\n",
+           __func__, nallocs, plural(nallocs), maxblocks, plural(maxblocks));
 
     struct mblock *p = mroot;
     struct mblock *next;
@@ -289,10 +288,12 @@ void *expand_mem(void *p1, uint_t size, uint_t delta)
 
     size_t newsize = (size_t)size + (size_t)delta;
 
+    // If realloc() fails, the old memory pointed to by p1 is still valid.
+    // Don't deallocate it here, because it may be needed by our caller
+    // for something important (for example, for the edit buffer).
+
     if ((p2 = realloc(p1, newsize)) == NULL)
     {
-        free_mem(&p1);                  // Deallocate memory to avoid leak
-
         throw(E_MEM);                   // Memory overflow
     }
 
@@ -303,12 +304,14 @@ void *expand_mem(void *p1, uint_t size, uint_t delta)
         msize -= mblock->size;
         msize += size + delta;
 
-        tprint("++%s(): changed block at %p, size = %u\r\n", __func__, mblock->addr, mblock->size);
+        tprint("++%s(): changed block at %p, size = %u\r\n", __func__,
+               mblock->addr, mblock->size);
 
         mblock->addr = p2;
         mblock->size = size + delta;
 
-        tprint("++%s(): changed block at %p, size = %u\r\n", __func__, mblock->addr, mblock->size);
+        tprint("++%s(): changed block at %p, size = %u\r\n", __func__,
+               mblock->addr, mblock->size);
     }
 
 #endif
@@ -407,10 +410,12 @@ void *shrink_mem(void *p1, uint_t size, uint_t delta)
 
     size_t newsize = (size_t)size - (size_t)delta;
 
+    // If realloc() fails, the old memory pointed to by p1 is still valid.
+    // Don't deallocate it here, because it may be needed by our caller
+    // for something important (for example, for the edit buffer).
+
     if ((p2 = realloc(p1, newsize)) == NULL)
     {
-        free_mem(&p1);                  // Deallocate memory to avoid leak
-
         throw(E_MEM);                   // Memory overflow
     }
 
@@ -421,12 +426,14 @@ void *shrink_mem(void *p1, uint_t size, uint_t delta)
         msize -= mblock->size;
         msize += size - delta;
 
-        tprint("--%s(): changed block at %p, size = %u\r\n", __func__, mblock->addr, mblock->size);
+        tprint("--%s(): changed block at %p, size = %u\r\n", __func__,
+               mblock->addr, mblock->size);
 
         mblock->addr = p2;
         mblock->size = size - delta;
 
-        tprint("--%s(): changed block at %p, size = %u\r\n", __func__, mblock->addr, mblock->size);
+        tprint("--%s(): changed block at %p, size = %u\r\n", __func__,
+               mblock->addr, mblock->size);
     }
 
 #endif
