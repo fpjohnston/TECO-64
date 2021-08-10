@@ -687,8 +687,6 @@ void store_qtext(int qindex, tbuffer *text)
     assert(text != NULL);
     assert(text->size != 0);            // Error if no data for text
 
-    init_qreg();                        // Initialize data structures if needed
-
     struct qreg *qreg = get_qreg(qindex);
 
     free_mem(&qreg->text.data);
