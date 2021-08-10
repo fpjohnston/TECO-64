@@ -545,15 +545,15 @@ void setsize_ebuf(uint_t nbytes)
 
     if (newsize >= GB)
     {
-        tprint("[%uG bytes]\r\n", (uint)(newsize / GB));
+        tprint("[%uG bytes]\n", (uint)(newsize / GB));
     }
     else if (newsize >= MB)
     {
-        tprint("[%uM bytes]\r\n", (uint)(newsize / MB));
+        tprint("[%uM bytes]\n", (uint)(newsize / MB));
     }
     else
     {
-        tprint("[%uK bytes]\r\n", (uint)(newsize / KB));
+        tprint("[%uK bytes]\n", (uint)(newsize / KB));
     }
 }
 

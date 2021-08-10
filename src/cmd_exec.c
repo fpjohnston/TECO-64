@@ -351,7 +351,7 @@ static inline exec_func *scan_cmd(struct cmd *cmd, int c)
 
     if (entry->scan != scan_nop && entry->scan != NULL)
     {
-        tprint("--- %s\r\n", entry->scan_name);
+        tprint("--- %s\n", entry->scan_name);
     }
 
 #endif
@@ -374,7 +374,7 @@ static inline exec_func *scan_cmd(struct cmd *cmd, int c)
 
     if (entry->exec != NULL)
     {
-        tprint("+++ %s\r\n", entry->exec_name);
+        tprint("+++ %s\n", entry->exec_name);
     }
 
 #endif

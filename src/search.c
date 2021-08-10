@@ -406,7 +406,7 @@ void search_failure(struct cmd *cmd)
         {
             if (!check_semi())
             {
-                tprint("%%Search failure in loop\r\n");
+                tprint("%%Search failure in loop\n");
             }
 
             exec_F_gt(cmd);

@@ -237,7 +237,7 @@ void print_prompt(void)
 {
     if (f.e1.prompt && term_pos != 0)
     {
-        tprint("%s", "\r\n");
+        tprint("%s", "\n");
     }
 
     tprint("%s", teco_prompt);
@@ -273,6 +273,11 @@ void tprint(
 
     for (int i = 0; i < nbytes; ++i)
     {
+        if (buf[i] == '\n')
+        {
+            tputc('\r', false);
+        }
+
         tputc(buf[i], false);
     }
 }

@@ -225,7 +225,7 @@ char *init_filename(const char *name, uint_t len, bool colon)
 
     *dst = NUL;
 
-    len = (uint_t)(dst - scratch);
+    len = (uint_t)(uint)(dst - scratch);
 
     if (len == 0)
     {
@@ -453,7 +453,7 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
 
         if (c == 'W')                   // Issue warning if EW command
         {
-            tprint("%%Superseding existing file '%s'\r\n", name);
+            tprint("%%Superseding existing file '%s'\n", name);
         }
     }
 
@@ -482,7 +482,7 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
         return NULL;                    // Can't get canonical name?
     }
 
-    ofile->name = alloc_mem(strlen(name) + 1);
+    ofile->name = alloc_mem((uint_t)strlen(name) + 1);
 
     strcpy(ofile->name, name);
 

@@ -158,6 +158,9 @@ static void add_cmd(int mnflag, const char *format, ...)
 ///
 ///  @brief    Process the configuration options we just parsed.
 ///
+///            Note that we use tprint() instead of printf() here because we
+///            are called after terminal characteristics have been changed.
+///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,7 +196,7 @@ void exec_options(int argc, const char * const argv[])
 
     if (optind < argc - 1)
     {
-        tprint("%%Too many file arguments\r\n");
+        tprint("%%Too many file arguments\n");
 
         exit(EXIT_FAILURE);
     }
@@ -258,6 +261,9 @@ void exec_options(int argc, const char * const argv[])
 ///            environment variable options, and to process user-specified
 ///            options.
 ///
+///            Note that we use printf() instead of tprint() here because we
+///            are called before terminal characteristics have been changed.
+///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
@@ -319,8 +325,8 @@ void init_options(
 
                     if (*p != NUL)
                     {
-                        tprint("Invalid value '%s' for --argument "
-                               "option\r\n", optarg);
+                        printf("Invalid value '%s' for --argument "
+                               "option\n", optarg);
 
                         exit(EXIT_FAILURE);
                     }
@@ -362,7 +368,7 @@ void init_options(
                 {
                     if (optarg[0] == '-')
                     {
-                        tprint("Invalid file name for %s option\r\n",
+                        printf("Invalid file name for %s option\n",
                                argv[optind - 2]);
 
                         exit(EXIT_FAILURE);
@@ -524,13 +530,13 @@ void init_options(
                 break;
 
             case ':':
-                tprint("%s option requires file option\r\n", argv[optind - 1]);
+                printf("%s option requires file option\n", argv[optind - 1]);
 
                 exit(EXIT_FAILURE);
 
             default:
-                tprint("Unknown option '%s': use --help for list of "
-                       "options\r\n", argv[optind - 1]);
+                printf("Unknown option '%s': use --help for list of "
+                       "options\n", argv[optind - 1]);
 
                 exit(EXIT_FAILURE);
         }

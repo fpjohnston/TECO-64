@@ -116,8 +116,8 @@ static void add_mblock(void *p1, uint_t size)
     msize += size;
     mroot = mblock;
 
-    tprint("%s(): new block at %p, size = %u\r\n", __func__, mblock->addr,
-           mblock->size);
+    tprint("%s(): new block at %p, size = %lu\n", __func__, mblock->addr,
+           (size_t)mblock->size);
 
     ++nallocs;
 
@@ -207,7 +207,7 @@ static void delete_mblock(void *p1)
         p = p->next;
     }
 
-    tprint("?Can't find memory block: %p\r\n", p1);
+    tprint("?Can't find memory block: %p\n", p1);
 }
 
 #endif
@@ -231,7 +231,7 @@ void exit_mem(void)
 
     free_mem(&eg_result);
 
-    tprint("%s(): %u block%s allocated, high water mark = %u block%s\r\n",
+    tprint("%s(): %u block%s allocated, high water mark = %u block%s\n",
            __func__, nallocs, plural(nallocs), maxblocks, plural(maxblocks));
 
     struct mblock *p = mroot;
@@ -239,7 +239,7 @@ void exit_mem(void)
 
     if (msize != 0)
     {
-        tprint("%s(): not deallocated: %lu total byte%s in %u block%s\r\n",
+        tprint("%s(): not deallocated: %lu total byte%s in %u block%s\n",
                __func__, (size_t)msize, plural(msize), nblocks, plural(nblocks));
     }
 
@@ -247,7 +247,7 @@ void exit_mem(void)
 
     while (p != NULL)
     {
-        tprint("%s(): allocation #%u at %p, %lu byte%s\r\n", __func__, ++i,
+        tprint("%s(): allocation #%u at %p, %lu byte%s\n", __func__, ++i,
                p->addr, (size_t)p->size, plural(p->size));
 
         next = p->next;
@@ -304,14 +304,13 @@ void *expand_mem(void *p1, uint_t size, uint_t delta)
         msize -= mblock->size;
         msize += size + delta;
 
-        tprint("++%s(): changed block at %p, size = %u\r\n", __func__,
-               mblock->addr, mblock->size);
+        uint_t oldsize = mblock->size;
 
         mblock->addr = p2;
         mblock->size = size + delta;
 
-        tprint("++%s(): changed block at %p, size = %u\r\n", __func__,
-               mblock->addr, mblock->size);
+        tprint("--%s(): block at %p increased from %lu to %lu\n", __func__,
+               mblock->addr, (size_t)oldsize, (size_t)mblock->size);
     }
 
 #endif
@@ -349,7 +348,7 @@ static struct mblock*find_mblock(void *p1)
         mblock = mblock->next;
     }
 
-    tprint("?Can't find memory block: %p\r\n", p1);
+    tprint("?Can't find memory block: %p\n", p1);
 
     return NULL;
 }
@@ -426,14 +425,13 @@ void *shrink_mem(void *p1, uint_t size, uint_t delta)
         msize -= mblock->size;
         msize += size - delta;
 
-        tprint("--%s(): changed block at %p, size = %u\r\n", __func__,
-               mblock->addr, mblock->size);
+        uint_t oldsize = mblock->size;
 
         mblock->addr = p2;
         mblock->size = size - delta;
 
-        tprint("--%s(): changed block at %p, size = %u\r\n", __func__,
-               mblock->addr, mblock->size);
+        tprint("--%s(): block at %p decreased from %lu to %lu\n", __func__,
+               mblock->addr, (size_t)oldsize, (size_t)mblock->size);
     }
 
 #endif
