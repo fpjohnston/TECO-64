@@ -36,7 +36,8 @@
 
 
 ///
-///  @brief    Execute "%" command: add value to Q-register, and return result.
+///  @brief    Execute "%" command: add value to Q-register, and return result
+///            (unless command was colon-modified).
 ///
 ///  @returns  Nothing.
 ///
@@ -66,10 +67,6 @@ bool scan_pct(struct cmd *cmd)
     {
         cmd->n_arg += get_qnum(cmd->qindex);
     }
-    else if (cmd->colon)                // :%q decrements Q-register q
-    {
-        cmd->n_arg = get_qnum(cmd->qindex) - 1;
-    }
     else                                // %q increments Q-register q
     {
         cmd->n_arg = get_qnum(cmd->qindex) + 1;
@@ -77,7 +74,10 @@ bool scan_pct(struct cmd *cmd)
 
     cmd->n_set = true;
 
-    push_x(cmd->n_arg, X_OPERAND);
+    if (!cmd->colon)                    // Don't return value if :%q
+    {
+        push_x(cmd->n_arg, X_OPERAND);
+    }
 
     return false;
 }

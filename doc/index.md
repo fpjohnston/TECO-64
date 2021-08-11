@@ -94,6 +94,7 @@
 | \#             | [Logical OR](oper.md) |
 | $              | Not a TECO command. |
 | *n*%*q*        | [Add *n* to Q-register *q* and return result](qregister.md) |
+| *n*:%*q*       | [Add *n* to Q-register *q*, but do not return result](qregister.md) |
 | \&             | [Logical AND](oper.md) |
 | '              | [End conditional](ifthen.md) |
 | (              | [Expression grouping](oper.md) |
