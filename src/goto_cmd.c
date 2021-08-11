@@ -69,13 +69,8 @@ void exec_bang(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // Pass through m and n arguments
+    if (cmd->n_set)                     // Pass through n argument
     {
-        if (cmd->m_set)
-        {
-            push_x(cmd->m_arg, X_OPERAND);
-        }
-
         push_x(cmd->n_arg, X_OPERAND);
     }
 }

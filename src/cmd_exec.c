@@ -215,7 +215,23 @@ void exec_cmd(struct cmd *cmd)
             }
         }
 
+        bool m_set = false;
+        int_t m_arg = 0;
+
+        // Save the 'm' argument for '!', '[', and ']' commands, and pass it
+        // though to the next command. The 'n' argument has already been saved
+        // on the expression stack, and will be popped off in scan_cmd().
+
+        if (c == '!' || c == '[' || c == ']')
+        {
+            m_set = cmd->m_set;
+            m_arg = cmd->m_arg;
+        }
+
         *cmd = null_cmd;
+
+        cmd->m_set = m_set;
+        cmd->m_arg = m_arg;
     }
 
     // Here to make sure that all conditionals, loops, and parenthetical
