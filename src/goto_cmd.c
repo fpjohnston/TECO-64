@@ -41,11 +41,11 @@
 
 // Local functions
 
-static void find_tag(struct cmd *cmd, const char *tag);
+static void find_tag(const char *tag);
 
-static void find_taglist(struct cmd *cmd, const char *taglist);
+static void find_taglist(const char *taglist, int arg);
 
-static void verify_tag(const char *tag);
+static bool validate_tag(tstring *tag);
 
 
 ///
@@ -94,25 +94,19 @@ void exec_O(struct cmd *cmd)
 
     char tag[cmd->text1.len + 1];
 
-    snprintf(tag, sizeof(tag), "%.*s", (int)cmd->text1.len, cmd->text1.data);
-
-    verify_tag(tag);
-
-    // Here when we have a valid tag or taglist, consisting only
-    // of printable characters (including spaces).
+    sprintf(tag, "%.*s", (int)cmd->text1.len, cmd->text1.data);
 
     if (cmd->n_set)                     // Computed GOTO
     {
-        find_taglist(cmd, tag);
+        find_taglist(tag, (int)cmd->n_arg);
+    }
+    else if (strchr(tag, ',') != NULL)  // Tag cannot contain a comma
+    {
+        throw(E_BAT, tag);              // Bad tag
     }
     else                                // Simple GOTO
     {
-        if (strchr(tag, ',') != NULL)
-        {
-            throw(E_BAT, tag);
-        }
-
-        find_tag(cmd, tag);
+        find_tag(tag);
     }
 }
 
@@ -124,134 +118,117 @@ void exec_O(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void find_tag(struct cmd *cmd, const char *orig_tag)
+static void find_tag(const char *orig_tag)
 {
-    assert(cmd != NULL);
     assert(orig_tag != NULL);           // Error if no tag string
 
-    // The following creates a tag using string building characters, but then
-    // sets up a local copy so that we can free up the string that was allocated
-    // by build_string(). This is to avoid memory leaks in the event of errors.
+    // Check for string building characters to create tag
 
-    tstring string = build_string(orig_tag, (uint_t)strlen(orig_tag));
-    char tag[string.len + 1];           ///< Local copy of tag name
+    tstring tag = build_string(orig_tag, (uint_t)strlen(orig_tag));
 
-    strcpy(tag, string.data);
-
-    struct
+    if (!validate_tag(&tag))
     {
-        uint_t loop_start;              ///< Start of current loop (or 0)
-        uint_t loop_end;                ///< End of current loop (or 0)
-        uint loop_depth;                ///< Current loop depth
-        uint if_depth;                  ///< Current if/else depth
-        uint_t tag_pos;                 ///< Position of tag
-        uint tag_loop;                  ///< Loop depth for tag
-        uint tag_if;                    ///< If depth for tag
-    } state =
-    {
-        .loop_start   = 0,
-        .loop_end     = (uint_t)EOF,
-        .loop_depth   = 0,
-        .if_depth     = 0,
-        .tag_pos      = (uint_t)EOF,
-        .tag_loop     = 0,
-        .tag_if       = 0,
-    };
+        throw(E_BAT, tag.data);         // Bad tag
+    }
 
-
-    state.loop_start = getloop_start();
+    struct cmd cmd = null_cmd;          ///< Dummy command block for skip_cmd()
+    uint_t loop_start = getloop_start(); ///< Start of current loop (0 if none)
+    uint_t loop_end = (uint_t)EOF;      ///< End of current loop
+    uint loop_depth = 0;                ///< Current loop depth
+    uint if_depth = 0;                  ///< Current if/else depth
+    uint_t tag_pos = 0;                 ///< Position of tag
+    uint tag_loop = 0;                  ///< Loop depth for tag
+    uint tag_if = 0;                    ///< If depth for tag
 
     cbuf->pos = 0;                      // Start at beginning of command
 
     // Scan entire command string to verify that we have
     // one and only one instance of the specified tag.
 
-    while (cbuf->pos < cbuf->len)
+    while (cbuf->pos < cbuf->len && skip_cmd(&cmd, "!\"'<>"))
     {
-        if (!skip_cmd(cmd, "!\"'<>"))
+        switch (cmd.c1)
         {
-            break;                      // No more commands, so quit
-        }
-        else if (cmd->c1 == '"')
-        {
-            ++state.if_depth;
-        }
-        else if (cmd->c1 == '\'')
-        {
-            --state.if_depth;
-        }
-        else if (cmd->c1 == '<')        // Start of a new loop?
-        {
-            ++state.loop_depth;
-        }
-        else if (cmd->c1 == '>')        // End of a loop?
-        {
-            --state.loop_depth;
+            case '"':                   // Start of conditional
+                ++if_depth;
 
-            if (state.loop_start != (uint_t)EOF
-                && cbuf->pos >= state.loop_start
-                && state.loop_end == (uint_t)EOF)
-            {
-                state.loop_end = cbuf->pos;
-            }
+                break;
+
+            case '\'':                  // End of conditional
+                --if_depth;
+
+                break;
+
+            case '<':                   // Start of loop
+                ++loop_depth;
+
+                break;
+
+            case '>':                   // End of loop
+                --loop_depth;
+
+                // Check for end of loop the O command may be in
+
+                if (loop_start != 0 && loop_end == (uint_t)EOF)
+                {
+                    loop_end = cbuf->pos;
+                }
+
+                break;
+
+            case '!':                   // Start of tag/comment
+                if (cmd.c2 != '!'
+                    && cmd.text1.len == tag.len
+                    && !memcmp(cmd.text1.data, tag.data, (size_t)tag.len))
+                {
+                    // Error if duplicate tag, or jumping into a conditional
+
+                    if (tag_pos != 0 || if_depth != 0)
+                    {
+                        throw(E_BAT, tag.data); // Bad tag
+                    }
+
+                    // Error if jumping into a loop (other than current loop).
+
+                    if (loop_depth != 0
+                        && (cbuf->pos < loop_start || cbuf->pos > loop_end))
+                    {
+                        throw(E_BAT, tag.data); // Bad tag
+                    }
+
+                    // We found the tag, so print it if tracing.
+
+                    if (f.trace.enable)
+                    {
+                        tprint("!%.*s!", (int)cmd.text1.len, cmd.text1.data);
+                    }
+
+                    // Save state for tag in case we decide to use it
+
+                    tag_pos  = cbuf->pos;
+                    tag_loop = loop_depth;
+                    tag_if   = if_depth;
+                }
+
+                break;
+
+            default:
+                break;
         }
-        else if (cmd->c1 != '!' || cmd->c2 == '!')
-        {
-            continue;
-        }
-
-        if (cmd->text1.len != string.len
-            || memcmp(cmd->text1.data, tag, (size_t)string.len))
-        {
-            continue;                   // Tag didn't match
-        }
-
-        // Tag matched. Make sure we're not branching into the middle of a loop
-        // (unless it's within the loop the O command is in).
-
-        if (state.loop_depth != 0)
-        {
-            if (state.loop_start == (uint_t)EOF || cbuf->pos < state.loop_start
-                || (state.loop_end != (uint_t)EOF && cbuf->pos > state.loop_end))
-            {
-                throw(E_BAT, tag);      // Bad tag
-            }
-        }
-
-        if (state.if_depth != 0)
-        {
-            throw(E_BAT, tag);          // Bad tag
-        }
-
-        if (state.tag_pos != 0)         // Found tag. Have we seen it already?
-        {
-            throw(E_DUP, tag);          // Duplicate tag
-        }
-
-        // We found the tag, so print it if tracing.
-
-        if (f.trace.enable)
-        {
-            tprint("!%.*s!", (int)cmd->text1.len, cmd->text1.data);
-        }
-
-        state.tag_pos = cbuf->pos;      // Remember tag for later
-        state.tag_loop = state.loop_depth;
-        state.tag_if = state.if_depth;
     }
 
-    if (state.tag_pos == (uint_t)EOF)   // Did we find the tag?
+    if (tag_pos == 0)                   // Did we find the tag?
     {
-        throw(E_TAG, tag);              // Missing tag
+        throw(E_TAG, tag.data);         // Missing tag
     }
 
     init_x();                           // Reinitialize expression stack
 
-    setloop_depth(state.tag_loop);
+    setloop_depth(tag_loop);
 
-    setif_depth(state.tag_if);
+    setif_depth(tag_if);
 
-    cbuf->pos = state.tag_pos;          // Execute goto
+    cbuf->pos = tag_pos;                // Execute goto
 }
 
 
@@ -262,47 +239,41 @@ static void find_tag(struct cmd *cmd, const char *orig_tag)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void find_taglist(struct cmd *cmd, const char *taglist)
+static void find_taglist(const char *taglist, int arg)
 {
-    assert(cmd != NULL);
     assert(taglist != NULL);
 
     // Here to handle a computed GOTO.
 
-    const char *start = taglist, *end;
+    const char *next = taglist;
     int ntags = 0;
 
     // Find all tags, looking for the one matching the n argument.
 
-    while (++ntags <= cmd->n_arg)
+    while (++ntags <= arg && *next != NUL)
     {
-        start += strspn(start, " ");    // Skip leading whitespace
-        end = start + strcspn(start, " ,"); // Find end of tag
+        uint_t len = (uint_t)strcspn(next, ",");
+        char tag[len + 1];
 
-        char tag[(end - start) + 1];
+        snprintf(tag, sizeof(tag), "%.*s", (int)len, next);
 
-        snprintf(tag, sizeof(tag), "%.*s", (int)(end - start), start);
+        tprint("tag = %s\n", tag);
 
-        if (ntags == cmd->n_arg)
+        if (ntags == arg)
         {
-            find_tag(cmd, tag);
+            if (len != 0)
+            {
+                find_tag(tag);
+            }
 
             break;
         }
 
-        start = end + strspn(end, " "); // Skip trailing whitespace
+        next += len;
 
-        if (*start == ',')
+        if (*next == ',')
         {
-            ++start;
-        }
-        else if (*start == NUL)         // This catches embedded spaces
-        {
-            break;
-        }
-        else
-        {
-            throw(E_BAT, tag);          // Bad tag
+            ++next;
         }
     }
 }
@@ -361,24 +332,46 @@ bool scan_bang(struct cmd *cmd)
 
 
 ///
-///  @brief    Verify that tag (or tag list) contains no control characters.
+///  @brief    Validate tag, skipping any leading or trailing spaces.
 ///
-///  @returns  Nothing.
+///  @returns  true if valid tag, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void verify_tag(const char *tag)
+static bool validate_tag(tstring *tag)
 {
     assert(tag != NULL);
 
+    // Trim leading spaces
+
+    while (*tag->data != NUL && *tag->data == ' ')
+    {
+        ++tag->data;
+        --tag->len;
+    }
+
+    // Trim trailing spaces
+
+    while (tag->data[tag->len - 1] == ' ')
+    {
+        tag->data[--tag->len] = NUL;
+    }
+
+    // Verify that tag does not contain any commas (since these are used for
+    // computed GOTOs), nor any control characters. Note that this restriction
+    // only applies to tags used in O commands, not the tags themselves (which
+    // may actually be comments).
+
+    const char *p = tag->data;
     int c;
-    const char *p = tag;
 
     while ((c = *p++) != NUL)
     {
-        if (iscntrl(c))
+        if (iscntrl(c) || c == ',')
         {
-            throw(E_BAT, tag);          // Bad tag
+            return false;
         }
     }
+
+    return true;
 }
