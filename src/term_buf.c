@@ -34,7 +34,6 @@
 #include "ascii.h"
 #include "term.h"
 
-
 static tbuffer term_buf;            ///< Terminal input block
 
 
@@ -56,7 +55,7 @@ tbuffer copy_tbuf(void)
 
     buf.data  = alloc_mem(term_buf.size);
 
-    memcpy(buf.data, &term_buf.data, (size_t)term_buf.size);
+    memcpy(buf.data, term_buf.data, (size_t)term_buf.size);
 
     return buf;
 }
@@ -234,7 +233,7 @@ void store_tbuf(int c)
     {
         assert(term_buf.size != 0);     // Error if no data
 
-        char *newbuf = expand_mem(&term_buf.data, term_buf.size, KB);
+        char *newbuf = expand_mem(term_buf.data, term_buf.size, KB);
 
         term_buf.size += KB;
         term_buf.data = newbuf;
