@@ -72,8 +72,6 @@ extern void reset_term(void);
 
 #endif
 
-extern void tprint(const char *format, ...);
-
 extern void type_out(int c);
 
 #endif  // !defined(_TERM_H)
