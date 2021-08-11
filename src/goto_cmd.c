@@ -153,6 +153,7 @@ static void find_tag(struct cmd *cmd, const char *orig_tag)
         .loop_end     = (uint_t)EOF,
         .loop_depth   = 0,
         .if_depth     = 0,
+        .tag_pos      = (uint_t)EOF,
         .tag_loop     = 0,
         .tag_if       = 0,
     };
