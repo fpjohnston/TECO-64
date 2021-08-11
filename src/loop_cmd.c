@@ -56,6 +56,7 @@ static struct loop loop[MAX_LOOPS]; ///< Nested loop array
 
 static uint nloops = 0;             ///< Current loop level
 
+static uint loop_base = 0;          ///< Current loop base
 
 // Local functions
 
@@ -299,6 +300,19 @@ void exec_semi(struct cmd *cmd)
 
 
 ///
+///  @brief    Get current loop base.
+///
+///  @returns  Loop base.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint getloop_base(void)
+{
+    return loop_base;
+}
+
+
+///
 ///  @brief    Get current loop depth.
 ///
 ///  @returns  Loop depth.
@@ -340,9 +354,14 @@ uint_t getloop_start(void)
 
 static void pop_loop(bool pop_ok)
 {
-    if (pop_ok && nloops != 0)
+    if (pop_ok && nloops >= loop_base)
     {
         --nloops;
+    }
+
+    if (loop_base > nloops)
+    {
+        loop_base = nloops;
     }
 }
 
@@ -378,7 +397,7 @@ static void push_loop(int_t count)
 
 void reset_loop(void)
 {
-    nloops = 0;
+    nloops = loop_base = 0;
 }
 
 
@@ -509,6 +528,21 @@ bool scan_lt(struct cmd *cmd)
     }
 
     return true;
+}
+
+
+///
+///  @brief    Set current loop base.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void setloop_base(uint base)
+{
+    assert(base < MAX_LOOPS);
+
+    loop_base = base;
 }
 
 

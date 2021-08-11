@@ -195,6 +195,8 @@ extern void free_mem(void *ptr);
 
 extern uint getif_depth(void);
 
+extern uint getloop_base(void);
+
 extern uint getloop_depth(void);
 
 extern uint_t getloop_start(void);
@@ -208,6 +210,8 @@ extern void print_flag(int_t flag);
 extern void setif_depth(uint depth);
 
 extern void setloop_depth(uint depth);
+
+extern void setloop_base(uint base);
 
 extern void *shrink_mem(void *p1, uint_t size, uint_t delta);
 
