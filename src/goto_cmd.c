@@ -137,7 +137,6 @@ static void find_tag(struct cmd *cmd, const char *orig_tag)
     char tag[string.len + 1];           ///< Local copy of tag name
 
     strcpy(tag, string.data);
-    free_mem(&string.data);
 
     struct
     {
@@ -154,7 +153,6 @@ static void find_tag(struct cmd *cmd, const char *orig_tag)
         .loop_end     = (uint_t)EOF,
         .loop_depth   = 0,
         .if_depth     = 0,
-        .tag_pos      = 0,
         .tag_loop     = 0,
         .tag_if       = 0,
     };
