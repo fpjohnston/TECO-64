@@ -12,25 +12,35 @@
 !!  element is the last line of the buffer.
 !!
 
-:UN
-QN
-"E
+:UN                                     !! No. of decimal places to print
+:UW                                     !! Maximum width per line
+
+QN "E
     10 UN                               !! If no value, use 10 digits
 |
-    QN-1
-    "L
-        :@^A/Macro argument must be greater than 0/
-        @O!exit!
-    |
-        %N
+    QN-1 "L
+        :@^A/Number of decimal places must be greater than 0/
+        ^C
+
     '
 '
-HK
+
+:%N                                     !! Add 1 for leading 0 we won't print
+
+@^UP/QP MN Q9 < 9 MN >/                 !! Print predigit and any nines
+
+@^UN{ := :%D }                          !! Output digit and count it
+
+QW "N                                   !! If width specified,
+    :@^UN{ (QD // QW) "E 13^T 10^T ' }  !!  then start new line if needed
+'
+
+HK                                      !! Clear the edit buffer
 0 UP                                    !! "predigit" variable
 0 U9                                    !! "nines" variable
 
 (QN * 10 / 3) U0                        !! No. of edit buffer lines
-0 UD                                    !! No. of digits processed
+0 UD                                    !! Count of printed digits
 
 Q0 UI                                   !! Array index
 
@@ -48,7 +58,7 @@ QN
         (QI * 2 - 1) UJ
         (QA / QJ) UQ
         0L K (QA // QJ) \ 10I           !! Replace current element
-        :%I
+        -1 :%I
     >
 
     ZJ -L \ UA                          !! Read first element
@@ -57,37 +67,29 @@ QN
 
     !! Done calculating next digit. Now see if we should print it.
 
-    (QQ - 9)                            !! Is it a 9?
-    "N
-        (QQ - 10)                       !! No. Is it a 10?
-        "N
-            QD                          !! No. Already processed 1st digit?
-            "N
-                (QD - 2)                !! Have we printed first digit?
-                "E
-                    ^^. ^T              !! Yes, print a decimal point
+    (QQ - 9) "E                         !! Is it a 9?
+        :%9                             !! Yes, just count digit
+    |
+        (QQ - 10) "E                    !! No. Is it a 10?
+            (QP + 1) MN                 !! Yes, print predigit + 1
+            Q9 < 0 MN >                 !! Translate 9s to 0s
+            0 UP
+        |
+            QD "N
+                MP                      !! Print pre-digit and any nines
+                QD - 2 "E               !! Print decimal point if needed
+                    ^^. ^T
                 '
-                QP :=                   !! Print the predigit
-                Q9 < 9 := >             !! And any nines
+            |
+                :%D                     !! Count initial 0 but don't print it
             '
             QQ UP
-        |
-            (QP + 1) :=                 !! Print predigit + 1
-            Q9 < 0 := >                 !! Translate 9s to 0s
-            0 UP
         '
         0 U9                            !! Reset counter for 9s
-    |
-        %9                              !! Count the digit for later
     '
-    %D                                  !! Count another digit
 >
 
-(QD - 2)                                !! Have we printed first digit?
-"E
-    ^^. ^T                              !! Yes, print a decimal point
-'
-QP =                                    !! Print last digit
-HK
-!exit!
+MP                                      !! Print final digit
+-1 ^T                                   !! Output newline
+HK                                      !! Clear the edit buffer
 ^[^[
