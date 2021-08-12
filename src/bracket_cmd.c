@@ -51,11 +51,6 @@ void exec_lbracket(struct cmd *cmd)
     {
         throw(E_PDO);                   // Push-down list is full
     }
-
-    if (cmd->n_set)                     // Pass through n argument
-    {
-        push_x(cmd->n_arg, X_OPERAND);
-    }
 }
 
 
@@ -82,9 +77,5 @@ void exec_rbracket(struct cmd *cmd)
     else if (cmd->colon)
     {
         push_x(SUCCESS, X_OPERAND);
-    }
-    else if (cmd->n_set)                // Pass through n argument
-    {
-        push_x(cmd->n_arg, X_OPERAND);
     }
 }

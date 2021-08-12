@@ -250,7 +250,7 @@ sub make_commands_h
 
 sub make_entry
 {
-    my ( $name, $parse, $scan, $exec ) = @_;
+    my ( $name, $parse, $scan, $exec, $mn_args ) = @_;
 
     if ( $name eq q{'} || $name eq q{\\} )
     {
@@ -297,13 +297,14 @@ sub make_entry
     $parse = sprintf '%-15s', $parse;
     $scan .= q{,};
     $scan = sprintf '%-15s', $scan;
+    $exec .= q{,}; 
     $exec = sprintf '%-15s', $exec;
 
-    my $entry = sprintf '%s', "    ENTRY($name  $parse  $scan  $exec),\n";
+    my $entry = sprintf '%s', "    ENTRY($name  $parse  $scan  $exec  $mn_args),\n";
 
     if ( $name =~ s/^('[[:upper:]]',)/\L$1/msx )
     {
-        $entry .= sprintf '%s', "    ENTRY($name  $parse  $scan  $exec),\n";
+        $entry .= sprintf '%s', "    ENTRY($name  $parse  $scan  $exec  $mn_args),\n";
     }
 
     return $entry;
@@ -378,10 +379,17 @@ sub parse_commands
 
         foreach my $command ( $section->findnodes('./command') )
         {
-            my $name   = $command->getAttribute('name');
-            my $format = $command->getAttribute('parse');
-            my $scan   = $command->getAttribute('scan');
-            my $exec   = $command->getAttribute('exec');
+            my $name    = $command->getAttribute('name');
+            my $format  = $command->getAttribute('parse');
+            my $scan    = $command->getAttribute('scan');
+            my $exec    = $command->getAttribute('exec');
+            my $mn_args = 'false';
+
+            if (defined $exec && $exec =~ /(.+)!/)
+            {
+                $mn_args = 'true';
+                $exec =~ s/(.+)!/$1/;
+            }
 
             if ( defined $scan )
             {
@@ -410,12 +418,12 @@ sub parse_commands
 
             if ( $name =~ /^E(.)$/msx )
             {
-                $e_cmds .= make_entry( $1, $parse, $scan, $exec );
+                $e_cmds .= make_entry( $1, $parse, $scan, $exec, $mn_args );
                 $e_cmd = 1;
             }
             elsif ( $name =~ /^F(.)$/msx && $e_cmd )
             {
-                $f_cmds .= make_entry( $1, $parse, $scan, $exec );
+                $f_cmds .= make_entry( $1, $parse, $scan, $exec, $mn_args );
             }
             else
             {
@@ -424,7 +432,7 @@ sub parse_commands
                     $name = $1;
                 }
 
-                $cmds .= make_entry( $name, $parse, $scan, $exec );
+                $cmds .= make_entry( $name, $parse, $scan, $exec, $mn_args );
             }
         }
     }

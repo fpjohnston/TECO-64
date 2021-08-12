@@ -72,7 +72,7 @@ const struct cmd null_cmd =
 
 static bool echo_cmd(int c);
 
-static inline exec_func *scan_cmd(struct cmd *cmd, int c);
+static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c);
 
 static void scan_text(int delim, tstring *text);
 
@@ -186,20 +186,40 @@ void exec_cmd(struct cmd *cmd)
             continue;
         }
 
-        exec_func *exec;
+        const struct cmd_table *entry;
 
         // The specific check for a space is an optimization which was found
         // through testing to make a noticeable difference with some macros.
 
-        if (c == SPACE || (exec = scan_cmd(cmd, c)) == NULL)
+        if (c == SPACE || (entry = scan_cmd(cmd, c)) == NULL)
         {
             continue;
         }
 
-        if (f.e0.exec)
+        const struct cmd *reset_cmd = &null_cmd;
+        struct cmd alt_cmd;
+
+        if (entry->exec != NULL && f.e0.exec)
         {
-            (*exec)(cmd);
+            (*entry->exec)(cmd);
+
+            // Several commands ('[', ']', and '!') do not use the m and n
+            // arguments, but rather than consume them, allow them to be
+            // passed unchanged to the next command.
+
+            if (entry->mn_args && cmd->n_set)
+            {
+                push_x(cmd->n_arg, X_OPERAND);
+
+                alt_cmd       = *reset_cmd;
+                alt_cmd.m_set = cmd->m_set;
+                alt_cmd.m_arg = cmd->m_arg;
+
+                reset_cmd = &alt_cmd;
+            }
         }
+
+        *cmd = *reset_cmd;
 
         if (f.e0.ctrl_c)
         {
@@ -214,24 +234,6 @@ void exec_cmd(struct cmd *cmd)
                 throw(E_XAB);
             }
         }
-
-        bool m_set = false;
-        int_t m_arg = 0;
-
-        // Save the 'm' argument for '!', '[', and ']' commands, and pass it
-        // though to the next command. The 'n' argument has already been saved
-        // on the expression stack, and will be popped off in scan_cmd().
-
-        if (c == '!' || c == '[' || c == ']')
-        {
-            m_set = cmd->m_set;
-            m_arg = cmd->m_arg;
-        }
-
-        *cmd = null_cmd;
-
-        cmd->m_set = m_set;
-        cmd->m_arg = m_arg;
     }
 
     // Here to make sure that all conditionals, loops, and parenthetical
@@ -259,7 +261,7 @@ void exec_cmd(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline exec_func *scan_cmd(struct cmd *cmd, int c)
+static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 {
     assert(cmd != NULL);
 
@@ -394,7 +396,7 @@ static inline exec_func *scan_cmd(struct cmd *cmd, int c)
 
 #endif
 
-    return entry->exec;
+    return entry;
 }
 
 

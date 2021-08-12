@@ -68,11 +68,6 @@ static bool validate_tag(tstring *tag);
 void exec_bang(struct cmd *cmd)
 {
     assert(cmd != NULL);
-
-    if (cmd->n_set)                     // Pass through n argument
-    {
-        push_x(cmd->n_arg, X_OPERAND);
-    }
 }
 
 

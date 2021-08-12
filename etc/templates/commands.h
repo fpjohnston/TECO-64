@@ -54,6 +54,7 @@ struct cmd_table
     parse_func *parse;              ///< Parse function format
     scan_func *scan;                ///< Scan function
     exec_func *exec;                ///< Execute function
+    bool mn_args;                   ///< true if exec preserves m and n args
 
 #if     defined(TECO_TRACE)
 
@@ -75,11 +76,11 @@ struct cmd_table
 
 #if     defined(TECO_TRACE)
 
-#define ENTRY(chr, parse, scan, exec) [chr] = { parse, scan, exec, #scan, #exec }
+#define ENTRY(chr, parse, scan, exec, mn) [chr] = { parse, scan, exec, mn, #scan, #exec }
 
 #else
 
-#define ENTRY(chr, parse, scan, exec) [chr] = { parse, scan, exec }
+#define ENTRY(chr, parse, scan, exec, mn) [chr] = { parse, scan, exec, mn }
 
 #endif
 
