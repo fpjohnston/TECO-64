@@ -191,7 +191,8 @@ void exec_cmd(struct cmd *cmd)
         // The specific check for a space is an optimization which was found
         // through testing to make a noticeable difference with some macros.
 
-        if (c == SPACE || (entry = scan_cmd(cmd, c)) == NULL)
+        if (c == SPACE || (entry = scan_cmd(cmd, c)) == NULL
+            || entry->exec == NULL)
         {
             continue;
         }
