@@ -1,0 +1,7 @@
+!! TECO-64 test script
+!! Library macros: execute lib/hello.tec
+!! Expect: PASS
+
+@EI/hello/
+:@^A/PASS/
+^C

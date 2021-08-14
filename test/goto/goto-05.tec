@@ -1,12 +1,6 @@
-!! Branch forward within loop
-
-0,128ET
-
-HK
-
-G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
-
-@^A/ Testing branching forward within loop.../
+!! TECO-64 test script
+!! O command: forward branch within loop
+!! Expect: PASS
 
 1 <
     @O!tag1!

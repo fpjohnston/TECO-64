@@ -1,12 +1,8 @@
-!! Verify that we can nest the maximum number of loops.
+!! TECO-64 test script
+!! <> command: maximum nested loops
+!! Expect: PASS
 
 0,128ET
-
-HK
-
-G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
-
-@^A/ Testing maximum nested loops.../
 
 !1! 1 <
   !2! 1 <

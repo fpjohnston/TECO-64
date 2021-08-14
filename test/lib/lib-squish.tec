@@ -1,0 +1,8 @@
+!! FIXME
+!! TECO-64 test script
+!! Library macros: execute lib/squish.tec
+!! Expect: PASS
+
+@EI/squish/
+:@^A/PASS/
+^C

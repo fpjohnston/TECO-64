@@ -1,12 +1,6 @@
-!! Verify that we abort with excessive nested conditionals.
-
-0,128ET
-
-HK
-
-G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
-
-@^A/ Testing excessive nested conditionals.../
+!! TECO-64 test script
+!! "x command: nesting excessive if/then conditionals
+!! Expect: FAIL
 
 1"N
   2"N

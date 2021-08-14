@@ -1,12 +1,8 @@
-!! Verify that we abort with excessive nested loops.
+!! TECO-64 test script
+!! <> command: excessive nested loops
+!! Expect: FAIL
 
 0,128ET
-
-HK
-
-G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
-
-@^A/ Testing excessive nested loops.../
 
 !1! 1 <
   !2! 1 <

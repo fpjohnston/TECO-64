@@ -1,12 +1,6 @@
-!! Branch forward into a loop
-
-0,128ET
-
-HK
-
-G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
-
-@^A/ Testing branching forward into a loop.../
+!! TECO-64 test script
+!! O command: forward branch into a loop
+!! Expect: FAIL
 
 @O!tag1!
 

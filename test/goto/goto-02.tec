@@ -1,12 +1,6 @@
-!! Branch backward
-
-0,128ET
-
-HK
-
-G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
-
-@^A/ Testing branching backward.../
+!! TECO-64 test script
+!! O command: backward branch
+!! Expect: PASS
 
 @O!tag1!
 

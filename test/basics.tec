@@ -1,9 +1,6 @@
-!! TECO-64: test of basic commands
-!!
-!! Commands tested: ^A ^EQ ^T ^U ! . : = @ B D G H I K
-!!                  EB EC ER EW EX FS M N R T X Y Z ^^
-
-:@^A/TECO-64: Test Basic Commands/
+!! TECO-64 test script
+!! Basic commands: general test #1
+!! Expect: PASS
 
 :@^A/[Executing ^UA]/   @^UA"_teco_test_"
 :@^A/[Executing ^UB]/   @^UB"@^A/ result: /"
@@ -35,4 +32,4 @@
  @^A/[Executing HT]/    MC MB HT -1^T
  @^A/[Executing EK]/    EK -1^T
  @^A/[Executing ::EG]/  :@^A/ (to delete temporary files)/ ::@EG/rm -f _teco_test_*.tmp*/
-:@^A/[Executing EX]/    EX
+:@^A/PASS/

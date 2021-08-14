@@ -1,0 +1,7 @@
+!! TECO-64 test script
+!! Library macros: execute lib/vtedit.tec
+!! Expect: PASS
+
+@EI/vtedit/
+:@^A/PASS/
+^C

@@ -1,0 +1,17 @@
+!! TECO-64 test script
+!! :@ER command: open input file
+!! Expect: PASS
+!! Options: -B foo
+
+HXA HK          !! Copy file name to Q-register A, clear buffer
+
+:@ER/^EQA/      !! Open file for read, using name in Q-register A
+
+"S
+    :@^A/PASS/
+|
+    :@^A/FAIL/
+'
+
+HK EX
+^[^[

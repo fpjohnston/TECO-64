@@ -1,0 +1,7 @@
+!! TECO-64 test script
+!! Library macros: execute lib/show.tec
+!! Expect: PASS
+
+@EI/show/
+:@^A/PASS/
+^C

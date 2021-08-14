@@ -1,16 +1,9 @@
-!! EN command test, using at-sign modifier
-
-0,128ET
-
-!! Verify that we were provided a file name
-
-Z "E :@^A/No file name found/ ^C '
+!! TECO-64 test script
+!! @EN// command: open wildcard filespec
+!! Expect: PASS
+!! Options: -B '*.tec'
 
 HXA HK          !! Copy file name to Q-register A, clear buffer
-
-G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
-
-@^A/ Testing EN command with at-sign modifier.../
 
 @EN/^EQA/       !! Initialize for wildcard lookup
 

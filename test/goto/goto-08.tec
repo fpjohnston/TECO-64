@@ -1,12 +1,6 @@
-!! Branch backward outside a conditional
-
-0,128ET
-
-HK
-
-G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
-
-@^A/ Testing branching backward outside a conditional.../
+!! TECO-64 test script
+!! O command: backward branch outside a conditional
+!! Expect: PASS
 
 @O!tag1!
 

@@ -1,16 +1,10 @@
-!! Branch forward
-
-0,128ET
-
-HK
-
-G* ZJ -:@S"/" "N B,.D ' ^^[ ^T HT ^^] ^T HK
-
-@^A/ Testing branching forward.../
+!! TECO-64 test script
+!! O command: forward branch
+!! Expect: PASS
 
 @O!tag1!
 
-@^A/FAIL/
+@^A/?FAIL/
 
 ^C
 

@@ -1,7 +1,13 @@
-:@^A/entering test-2a/
+!! TECO-64 test script
+!! @EI// command: open indirect command file
+!! Expect: PASS
+!! Options: -B foo.tec
 
-@EI/EI-02b/
+HXA HK
 
-:@^A/exiting test-2a/
+@EI/^EQA/
 
-
+:@^A/PASS/
+
+HK EX
+^[^[

@@ -1,0 +1,7 @@
+!! TECO-64 test script
+!! Library macros: execute lib/date.tec
+!! Expect: PASS
+
+@EI/date/
+:@^A/PASS/
+^C
