@@ -1,6 +1,6 @@
 !! TECO-64 test script
 !! EI command: open indirect command file
-!! Expect: PASS
+!! Expect: PASS [EI-04.txt]
 
 :@^A/entering test 4/
 

@@ -1,7 +1,7 @@
 !! TECO-64 test script
 !! :EW command: open output file
 !! Expect: FAIL
-!! Options: -B baz
+!! Options: -B /dev/baz
 
 HXA HK          !! Copy file name to Q-register A, clear buffer
 

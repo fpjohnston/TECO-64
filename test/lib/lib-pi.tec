@@ -1,7 +1,7 @@
 !! TECO-64 test script
 !! Library macros: execute lib/pi.tec
-!! Expect: PASS
+!! Expect: PASS [pi.txt]
 
-50,398 @EI/pi/
+50,500 @EI/pi/
 :@^A/PASS/
 ^C
