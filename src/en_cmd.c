@@ -69,13 +69,8 @@ void exec_EN(struct cmd *cmd)
     else                                // Have filespec, so must set it
     {
         char *name = init_filename(cmd->text1.data, cmd->text1.len, cmd->colon);
-        char filespec[strlen(name) + 1];
 
-        strcpy(filespec, name);
-
-        free_mem(&name);
-
-        if (set_wild(filespec))
+        if (set_wild(name))
         {
             if (cmd->colon)
             {
@@ -90,7 +85,7 @@ void exec_EN(struct cmd *cmd)
             }
             else
             {
-                throw(E_MAT, filespec); // No match found for file spec.
+                throw(E_MAT, name);     // No match found for file spec.
             }
         }
     }
