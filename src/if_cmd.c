@@ -436,7 +436,7 @@ static void push_if(void)
 {
     if (quote.depth >= MAX_IF)
     {
-        throw(E_MAX);                   // Maximum nesting level reached
+        throw(E_MAX);                   // Internal program limit reached
     }
 
     quote.loop[quote.depth] = getloop_depth();

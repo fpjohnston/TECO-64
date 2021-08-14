@@ -28,10 +28,13 @@
 
 #include "teco.h"
 #include "cbuf.h"
+#include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
 
+
+#define MACRO_MAX   64                  ///< Maximum macro depth
 
 static uint macro_depth = 0;            ///< Current macro depth
 
@@ -120,8 +123,13 @@ void exec_macro(tbuffer *macro, struct cmd *oldcmd)
     assert(macro != NULL);
     assert(macro->data != NULL);
 
-    // Save current state
+    if (macro_depth == MACRO_MAX)
+    {
+        throw(E_MAX);                   // Internal program limit reached
+    }
 
+    // Save current state
+    
     uint expr_base      = set_x();      // Save expression stack level
     uint loop_base      = getloop_depth();
     uint saved_if       = getif_depth();

@@ -377,7 +377,7 @@ static void push_loop(int_t count)
 {
     if (nloops == MAX_LOOPS)
     {
-        throw(E_MAX);                   // Maximum nesting level reached
+        throw(E_MAX);                   // Internal program limit reached
     }
 
     loop[nloops].count = count;

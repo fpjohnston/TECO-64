@@ -65,7 +65,7 @@ code.
 | <nobr>?KEY</nobr> | <nobr>Key '*foo*' not found</nobr> | An invalid key was specified for an FM command. |
 | <nobr>?MAP</nobr> | <nobr>Missing apostrophe</nobr> | Every conditional (started with the " command) must be closed with the ' command. |
 | <nobr>?MAT</nobr> | <nobr>No matching files</nobr> | No match was found for the file specification for an EN command. |
-| <nobr>?MAX</nobr> | <nobr>Maximum nesting level reached</nobr> | Loops (started with the < command) and  conditionals (started with the " command) may  only be nested to a maximum of 32 levels. |
+| <nobr>?MAX</nobr> | <nobr>Internal program limit reached</nobr> | Loops and conditionals are limited to a maximum of 32 levels, macros are limited to a depth of 64 levels, and file names are limited to 4095 characters. |
 | <nobr>?MEM</nobr> | <nobr>Memory overflow</nobr> | Insufficient memory available to complete the current command. |
 | <nobr>?MLP</nobr> | <nobr>Missing left parenthesis</nobr> | There is a right parenthesis trhat is not matched by a corresponding left parenthesis. |
 | <nobr>?MQN</nobr> | <nobr>Missing Q-register name</nobr> | A command or match control construct did not include a required Q-register name. |

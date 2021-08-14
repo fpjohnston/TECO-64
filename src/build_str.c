@@ -49,7 +49,7 @@
 /// @def    putc_dest
 /// @brief  Put next character to destination buffer (error if buffer full).
 
-#define putc_dest(c) if (pos == BUILD_MAX - 1) throw(E_MEM); else \
+#define putc_dest(c) if (pos == BUILD_MAX - 1) throw(E_MAX); else \
                      string[pos++] = (char)c
 
 
@@ -157,9 +157,8 @@ tstring build_string(const char *src, uint_t len)
                         uint_t nbytes = (uint_t)strlen(last_file);
 
                         if (pos + nbytes == BUILD_MAX)
-
                         {
-                            throw(E_MEM);
+                            throw(E_MAX); // Internal program limit reached
                         }
 
                         memcpy(string + pos, src, (size_t)nbytes);
@@ -186,9 +185,8 @@ tstring build_string(const char *src, uint_t len)
                         uint_t nbytes = qreg->text.len;
 
                         if (pos + nbytes == BUILD_MAX)
-
                         {
-                            throw(E_MEM);
+                            throw(E_MAX); // Internal program limit reached
                         }
 
                         memcpy(string + pos, qreg->text.data, (size_t)nbytes);

@@ -77,7 +77,7 @@ static struct errlist errlist[] =
     [E_KEY] = { "KEY",  "Key '%s' not found" },
     [E_MAP] = { "MAP",  "Missing apostrophe" },
     [E_MAT] = { "MAT",  "No matching files" },
-    [E_MAX] = { "MAX",  "Maximum nesting level reached" },
+    [E_MAX] = { "MAX",  "Internal program limit reached" },
     [E_MEM] = { "MEM",  "Memory overflow" },
     [E_MLP] = { "MLP",  "Missing left parenthesis" },
     [E_MQN] = { "MQN",  "Missing Q-register name" },
@@ -202,9 +202,9 @@ static const char *errhelp[] =
               "command) must be closed with the ' command.",
     [E_MAT] = "No match was found for the file specification "
               "for an EN command.",
-    [E_MAX] = "Loops (started with the < command) and  "
-              "conditionals (started with the \" command) may  "
-              "only be nested to a maximum of 32 levels.",
+    [E_MAX] = "Loops and conditionals are limited to a maximum "
+              "of 32 levels, macros are limited to a depth of 64 "
+              "levels, and file names are limited to 4095 characters.",
     [E_MEM] = "Insufficient memory available to complete the "
               "current command.",
     [E_MLP] = "There is a right parenthesis trhat is not matched "

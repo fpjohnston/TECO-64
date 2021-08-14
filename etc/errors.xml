@@ -223,10 +223,10 @@
         </error>
         <error>
             <code>MAX</code>
-            <message>Maximum nesting level reached</message>
-            <detail>Loops (started with the &lt; command) and </detail>
-            <detail>conditionals (started with the &quot; command) may </detail>
-            <detail>only be nested to a maximum of 32 levels.</detail>
+            <message>Internal program limit reached</message>
+            <detail>Loops and conditionals are limited to a maximum</detail>
+            <detail>of 32 levels, macros are limited to a depth of 64</detail>
+            <detail>levels, and file names are limited to 4095 characters.</detail>
         </error>
         <error>
             <code>MEM</code>

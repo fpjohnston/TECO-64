@@ -73,7 +73,7 @@ enum errcodes
     E_KEY,          ///< Key 'foo' not found
     E_MAP,          ///< Missing apostrophe
     E_MAT,          ///< No matching files
-    E_MAX,          ///< Maximum nesting level reached
+    E_MAX,          ///< Internal program limit reached
     E_MEM,          ///< Memory overflow
     E_MLP,          ///< Missing left parenthesis
     E_MQN,          ///< Missing Q-register name
