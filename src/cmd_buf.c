@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 
 #include "teco.h"
@@ -67,27 +68,38 @@ noreturn void abort_cbuf(void)
 ///            lookahead here so that we can return a value if a semi-colon
 ///            follows a search command.
 ///
-///  @returns  true if next command is ;, else false.
+///  @returns  true if next command is ; or :;, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 bool check_semi(void)
 {
     uint_t saved_pos = cbuf->pos;
-    struct cmd cmd;
+    bool colon = false;
 
     while (cbuf->pos < cbuf->len)
     {
-        if (!skip_cmd(&cmd, ";"))
+        int c = cbuf->data[cbuf->pos++];
+
+        if (c == ';')
         {
-            break;                      // No more commands, so quit
+            cbuf->pos = saved_pos;
+
+            return true;
         }
+        else if (c == ':')
+        {
+            if (colon)                  // Allow only 1 colon before semi-colon
+            {
+                break;
+            }
 
-        assert(cmd.c1 == ';');
-
-        cbuf->pos = saved_pos;
-
-        return true;
+            colon = true;
+        }
+        else if (!isspace(c) || c == TAB)
+        {
+            break;
+        }
     }
 
     cbuf->pos = saved_pos;
