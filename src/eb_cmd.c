@@ -73,6 +73,10 @@ void exec_EB(struct cmd *cmd)
                 return;
             }
         }
+        else
+        {
+            throw(E_FNF, name);         // File not found
+        }
     }
 
     // Only here if error occurred when colon modifier specified.

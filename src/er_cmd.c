@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
@@ -71,6 +72,10 @@ void exec_ER(struct cmd *cmd)
             }
 
             return;
+        }
+        else
+        {
+            throw(E_FNF, name);         // File not found
         }
     }
 
