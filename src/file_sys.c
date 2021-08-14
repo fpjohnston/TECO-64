@@ -403,7 +403,7 @@ bool set_wild(const char *filename)
             return true;
 
         case GLOB_NOSPACE:
-            throw(E_MEM);          // Ran out of memory
+            throw(E_MEM);               // Ran out of memory
 
         case GLOB_NOMATCH:
             return false;               // No matches
