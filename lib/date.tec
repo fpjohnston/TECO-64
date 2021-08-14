@@ -9,6 +9,7 @@ E2 U.A                  !! Save E2 flag
 
                         !! Get MM/DD/YYYY in Q-reg's .M,.D,.Y
 ^B U.0                  !! .0 = encoded date
+Q.0 "E :@^A/FAIL/ ^C '  !! Quit sanity check
 (Q.0/32) & 15  U.M      !! .M = month
 (Q.0)    & 31  U.D      !! .D = day
 (Q.0/512)      U.Y      !! .Y = year
