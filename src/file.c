@@ -351,7 +351,7 @@ struct ifile *open_input(const char *name, uint stream, bool colon)
 
     if ((name = make_canonical(name)) == NULL)
     {
-        return NULL;                    // File (probably) doesn't exist
+        return NULL;
     }
 
     // Check to see that the file exists
@@ -519,6 +519,6 @@ void set_last(const char *name)
 
     if (nbytes < 0 || nbytes >= (int)size)
     {
-        throw(E_MEM);
+        throw(E_MAX);                   // Internal program limit reached
     }
 }
