@@ -2,6 +2,6 @@
 !! Library macros: execute lib/pi.tec
 !! Expect: PASS [pi.txt]
 
-50,500 @EI/pi/
+50,98 @EI/pi/
 :@^A/PASS/
 ^C
