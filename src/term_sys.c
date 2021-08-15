@@ -26,11 +26,13 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #if     !defined(__DECC)
 
@@ -217,6 +219,11 @@ void init_term(void)
         f.et.eightbit  = true;          // Terminal can use 8-bit characters
 
         getsize();
+
+        if (isatty(fileno(stdout)) == 0)
+        {
+            f.e0.redirect = true;
+        }
     }
 
     // The following is needed only if there is no display active and we haven't

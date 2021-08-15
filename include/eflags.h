@@ -43,13 +43,14 @@ union e0_flag
 
     struct
     {
-        uint exec    : 1;       ///< Executing command
-        uint error   : 1;       ///< Last command caused error
-        uint ctrl_c  : 1;       ///< CTRL/C seen
-        uint lower   : 1;       ///< Force string arguments to lower case
-        uint upper   : 1;       ///< Force string arguments to upper case
-        uint display : 1;       ///< Display mode is active
-        uint init    : 1;       ///< TECO is initializing
+        uint exec     : 1;      ///< Executing command
+        uint error    : 1;      ///< Last command caused error
+        uint ctrl_c   : 1;      ///< CTRL/C seen
+        uint lower    : 1;      ///< Force string arguments to lower case
+        uint upper    : 1;      ///< Force string arguments to upper case
+        uint display  : 1;      ///< Display mode is active
+        uint init     : 1;      ///< TECO is initializing
+        uint redirect : 1;      ///< stdout has been redirected
     };
 };
 
