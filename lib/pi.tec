@@ -27,12 +27,13 @@ QN "E
 
 :%N                                     !! Add 1 for leading 0 we won't print
 
-@^UP/QP MN Q9 < 9 MN >/                 !! Print predigit and any nines
+@^UD/^^. ^T/                            !! Print decimal point
+@^UP/QP MN MD Q9 < 9 MN >/              !! Print predigit and any nines
 
 @^UN{ := :%D }                          !! Output digit and count it
 
 QW "N                                   !! If width specified,
-    :@^UN{ (QD // QW) "E 13^T 10^T ' }  !!  then start new line if needed
+    :@^UN{ (QD // QW) "E -1^T ' }       !!  then start new line if needed
 '
 
 HK                                      !! Clear the edit buffer
@@ -77,9 +78,7 @@ QN
         |
             QD "N
                 MP                      !! Print pre-digit and any nines
-                QD - 2 "E               !! Print decimal point if needed
-                    ^^. ^T
-                '
+                0,0XD                   !! Print only one decimal point
             |
                 :%D                     !! Count initial 0 but don't print it
             '
@@ -90,6 +89,6 @@ QN
 >
 
 MP                                      !! Print final digit
--1 ^T                                   !! Output newline
+-1^T                                    !! Output newline
 HK                                      !! Clear the edit buffer
 ^[^[
