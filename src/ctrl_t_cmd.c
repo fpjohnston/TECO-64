@@ -75,7 +75,6 @@ void exec_ctrl_T(struct cmd *cmd)
             }
             else
             {
-                type_out(CR);
                 type_out(LF);
             }
 
