@@ -1,7 +1,12 @@
 !! vtedit.tec - sample window initialization macro for TECO-64
 
+:UN                     !! Get flag for enabling display mode (for testing)
+
 0,128ET                 !! Abort on error
--1W                     !! Enable display mode
+
+QN "E
+    -1W                 !! Enable display mode
+'
 
 !! The following calculates the total height of the window, and then allocates
 !! 20% of that for the command buffer. Users may adjust this according to their
