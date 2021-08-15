@@ -23,7 +23,7 @@ Q.A,7:W ^[              !! Enable scrolling region
 @f2/blue/white/         !! Set text window colors
 @f3/yellow/red/         !! Set status line colors
 
-3@ei/mapall/            !! Set default mappings
+7@ei/mapall/            !! Set default mappings
 
 @fm/S_PGDN/P/           !! Next page
 @fm/S_PGUP/-P/          !! Previous page
