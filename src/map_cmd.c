@@ -142,11 +142,11 @@ void exec_FF(struct cmd *cmd)
     {
         // Here to map CTRL/F to a command string.
 
-        tstring string = build_string(cmd->text1.data, cmd->text1.len);
+        tstring key = build_string(cmd->text1.data, cmd->text1.len);
 
-        ctrl_f_cmd[i] = alloc_mem(string.len + 1);
+        ctrl_f_cmd[i] = alloc_mem(key.len + 1);
 
-        strcpy(ctrl_f_cmd[i], string.data);
+        strcpy(ctrl_f_cmd[i], key.data);
     }
 }
 
@@ -186,14 +186,11 @@ void exec_FM(struct cmd *cmd)
 
     // Here to map a key to a command string.
 
-    tstring string = build_string(cmd->text1.data, cmd->text1.len);
-    char key[string.len + 1];
-
-    strcpy(key, string.data);
+    tstring key = build_string(cmd->text1.data, cmd->text1.len);
 
     for (uint i = 0; i < countof(keys); ++i)
     {
-        if (keys[i].kname != NULL && !strcasecmp(key, keys[i].kname))
+        if (keys[i].kname != NULL && !strcasecmp(key.data, keys[i].kname))
         {
             unmap_key(i);
 
@@ -221,7 +218,7 @@ void exec_FM(struct cmd *cmd)
     }
     else
     {
-        throw(E_KEY, key);              // Key 'key' not found
+        throw(E_KEY, key.data);         // Key 'key' not found
     }
 }
 
@@ -270,14 +267,11 @@ void exec_FQ(struct cmd *cmd)
         return;
     }
 
-    tstring string = build_string(cmd->text1.data, cmd->text1.len);
-    char key[string.len + 1];
-
-    strcpy(key, string.data);
+    tstring key = build_string(cmd->text1.data, cmd->text1.len);
 
     for (uint i = 0; i < countof(keys); ++i)
     {
-        if (keys[i].kname != NULL && !strcasecmp(key, keys[i].kname))
+        if (keys[i].kname != NULL && !strcasecmp(key.data, keys[i].kname))
         {
             unmap_key(i);
 
@@ -299,7 +293,7 @@ void exec_FQ(struct cmd *cmd)
     }
     else
     {
-        throw(E_KEY, key);              // Key 'key' not found
+        throw(E_KEY, key.data);         // Key 'key' not found
     }
 }
 
