@@ -114,6 +114,14 @@ static char qtable[] =
 };
 
 
+#define QLOCAL_MAX      64          ///< Maximum local Q-register nesting
+#define QSTACK_MAX      64          ///< Maximum Q-register stack depth
+
+static uint qlocal_depth = 0;       ///< Current local Q-register nesting
+
+static uint qstack_depth = 0;       ///< Current Q-register stack depth
+
+
 ///  @def    QREGISTER
 ///  @brief  Get pointer to Q-register data structure.
 
@@ -435,6 +443,8 @@ void pop_qlocal(void)
     }
 
     free_mem(&saved_set);
+
+    --qlocal_depth;
 }
 
 
@@ -466,6 +476,8 @@ bool pop_qreg(int qindex)
     *qreg = savedq->qreg;
 
     free_mem(&savedq);
+
+    --qstack_depth;
 
     return true;
 }
@@ -500,6 +512,13 @@ void print_qreg(int qindex)
 
 void push_qlocal(void)
 {
+    if (qlocal_depth == QLOCAL_MAX)
+    {
+        throw(E_MAX);
+    }
+
+    ++qlocal_depth;
+
     struct qlocal *qlocal = alloc_mem((uint_t)sizeof(*qlocal));
 
     qlocal->next = local_head;
@@ -517,6 +536,13 @@ void push_qlocal(void)
 
 bool push_qreg(int qindex)
 {
+    if (qstack_depth == QSTACK_MAX)
+    {
+        throw(E_MAX);
+    }
+
+    ++qstack_depth;
+
     struct qreg *qreg    = QREGISTER(qindex);
     struct qlist *savedq = alloc_mem((uint_t)sizeof(*savedq));
 
@@ -568,6 +594,8 @@ void reset_qreg(void)
         }
     }
 
+    qlocal_depth = 0;
+
     // Free up what's on the Q-register push-down list.
 
     struct qlist *savedq;
@@ -579,6 +607,8 @@ void reset_qreg(void)
         free_mem(&savedq->qreg.text.data);
         free_mem(&savedq);
     }
+
+    qstack_depth = 0;
 }
 
 
