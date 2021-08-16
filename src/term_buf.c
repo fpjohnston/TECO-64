@@ -46,18 +46,14 @@ static tbuffer term_buf;            ///< Terminal input block
 
 tbuffer copy_tbuf(void)
 {
-    tbuffer buf =
-    {
-        .len  = term_buf.len,
-        .pos  = term_buf.pos,
-        .size = term_buf.size,
-    };
+    tbuffer text = alloc_tbuf(term_buf.size);
 
-    buf.data  = alloc_mem(term_buf.size);
+    text.len = term_buf.len;
+    text.pos = term_buf.pos;
 
-    memcpy(buf.data, term_buf.data, (size_t)term_buf.size);
+    memcpy(text.data, term_buf.data, (size_t)term_buf.size);
 
-    return buf;
+    return text;
 }
 
 
@@ -164,10 +160,7 @@ int getlen_tbuf(void)
 
 void init_tbuf(void)
 {
-    term_buf.len  = 0;
-    term_buf.pos  = 0;
-    term_buf.size = KB;
-    term_buf.data = alloc_mem(term_buf.size);
+    term_buf = alloc_tbuf(KB);
 }
 
 

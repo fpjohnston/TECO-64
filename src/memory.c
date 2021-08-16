@@ -131,7 +131,7 @@ static void add_mblock(void *p1, uint_t size)
 
 
 ///
-///  @brief    Get new memory.
+///  @brief    Allocate new memory.
 ///
 ///  @returns  Pointer to new memory.
 ///
@@ -153,6 +153,30 @@ void *alloc_mem(uint_t size)
 #endif
 
     return p1;
+}
+
+
+///
+///  @brief    Allocate TECO buffer.
+///
+///  @returns  Pointer to new memory.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+tbuffer alloc_tbuf(uint_t size)
+{
+    assert(size > 0);
+
+    tbuffer tbuffer =
+    {
+        .size = size,
+        .pos  = 0,
+        .len  = 0,
+    };
+
+    tbuffer.data = alloc_mem(size);
+
+    return tbuffer;
 }
 
 

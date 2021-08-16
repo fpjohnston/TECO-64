@@ -151,6 +151,8 @@ extern const char *teco_vtedit;
 
 extern void *alloc_mem(uint_t size);
 
+extern tbuffer alloc_tbuf(uint_t size);
+
 extern tstring build_string(const char *src, uint_t len);
 
 extern bool check_loop(void);

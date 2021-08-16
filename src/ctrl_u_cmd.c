@@ -80,15 +80,9 @@ void exec_ctrl_U(struct cmd *cmd)
         }
         else                            // ^Uqtext`
         {
-            tbuffer text =
-            {
-                .data = NULL,
-                .size = cmd->text1.len,
-                .pos  = 0,
-                .len  = cmd->text1.len,
-            };
+            tbuffer text = alloc_tbuf(cmd->text1.len);
 
-            text.data = alloc_mem(cmd->text1.len);
+            text.len = cmd->text1.len;
 
             memcpy(text.data, cmd->text1.data, (size_t)cmd->text1.len);
             store_qtext(cmd->qindex, &text);
