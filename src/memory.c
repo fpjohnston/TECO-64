@@ -167,16 +167,16 @@ tbuffer alloc_tbuf(uint_t size)
 {
     assert(size > 0);
 
-    tbuffer tbuffer =
+    tbuffer tbuf =
     {
         .size = size,
         .pos  = 0,
         .len  = 0,
     };
 
-    tbuffer.data = alloc_mem(size);
+    tbuf.data = alloc_mem(size);
 
-    return tbuffer;
+    return tbuf;
 }
 
 

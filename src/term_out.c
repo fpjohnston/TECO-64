@@ -266,7 +266,7 @@ void tprint(
 
     va_end(argptr);
 
-    assert((uint_t)nbytes <= KB);       // Sanity check
+    assert((uint_t)(uint)nbytes <= KB); // Sanity check
 
     if (nbytes == 0)
     {
