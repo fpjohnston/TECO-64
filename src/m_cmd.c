@@ -96,7 +96,7 @@ void exec_M(struct cmd *cmd)
 
     tbuffer macro = qreg->text;
 
-    if (cmd->colon)                     // :Mq?
+    if (cmd->colon || cmd->qlocal)      // :Mq or using local Q-register?
     {
         exec_macro(&macro, cmd);        // Yes, don't save local Q-registers
     }
