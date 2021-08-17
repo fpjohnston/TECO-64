@@ -1,6 +1,6 @@
 !! TECO-64 test script
 !! U command: load all global Q-registers with unique numbers
-!! Expect: PASS [U-05.txt]
+!! Expect: PASS [U-00.txt]
 
 0 U.A
 10 <
