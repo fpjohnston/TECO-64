@@ -1,0 +1,49 @@
+!! TECO-64 test script
+!! U command: load all global Q-registers with unique numbers
+!! Expect: PASS [U-05.txt]
+
+0 U.A
+10 <
+    %.A \
+    @I/ U/
+    ^^0 + Q.A - 1 I
+    10I
+>
+
+26 <
+    %.A \
+    @I/ U/
+    ^^A + Q.A - 11 I
+    10I
+>
+
+0 U.A HX.A HK M.A
+
+0 U.B
+10 <
+    @I{@^A/Q}
+    ^^0 + Q.BI
+    @I{=/ }
+    @I/Q/
+    ^^0 + Q.BI
+    @I/= /
+    10I
+    :%.B
+>
+
+0 U.B
+26 <
+    @I{@^A/Q}
+    ^^A + Q.BI
+    @I{=/ }
+    @I/Q/
+    ^^A + Q.BI
+    @I/=/
+    10I
+    :%.B
+>
+
+HX.B HK M.B
+:@^A/PASS/
+
+^C
