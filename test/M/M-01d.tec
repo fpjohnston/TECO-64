@@ -1,0 +1,18 @@
+!! TECO-64 test script
+!! M command: execute macro, returning n argument
+!! Expect: PASS
+
+@I/123/
+2,27I
+
+HXA HK
+
+MA UA
+
+QA - 123 "N
+    :@^A/FAIL/
+|
+    :@^A/PASS/
+'
+
+^[^[

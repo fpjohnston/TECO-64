@@ -1,0 +1,7 @@
+!! TECO-64 test script
+!! [ command: maximum Q-register push-down list
+!! Expect: PASS
+
+64 < [A >
+
+:@^A/PASS/

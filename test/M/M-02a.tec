@@ -1,0 +1,9 @@
+!! TECO-64 test script
+!! M command: execute macro without required n argument
+!! Expect: FAIL
+
+@^UA/U.A/
+
+MA
+
+^[^[
