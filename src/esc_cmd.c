@@ -25,11 +25,46 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "cbuf.h"
 #include "estack.h"
 #include "exec.h"
+
+
+// Local functions
+
+static bool end_cmd(void);
+
+
+///
+///  @brief    Check to see if we have a double ESCape, or we're at the end
+///            of our command string.
+///
+///  @returns  true if at end, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static bool end_cmd(void)
+{
+    if (cbuf->pos >= cbuf->len)
+    {
+        return true;                    // We have <ESC> at end of string
+    }
+    else if (cbuf->data[cbuf->pos] == ESC)
+    {
+        return true;                    // We have <ESC><ESC>
+    }
+    else if (cbuf->pos < cbuf->len - 1
+             && !memcmp(&cbuf->data[cbuf->pos], "^[", (size_t)2))
+    {
+        return true;                    // We have <ESC>^[
+    }
+
+    return false;
+}
 
 
 ///
@@ -45,12 +80,21 @@ void exec_escape(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // If no more characters in command string, then reset for next time.
+    // If we're ending this command string, stop processing any more commands.
+    // If we're also in a macro, return to caller, preserving numeric arguments.
 
-    if (cbuf->pos == cbuf->len)
+    if (end_cmd())
     {
-        cbuf->pos = cbuf->len = 0;
+        cbuf->pos = cbuf->len;          // Move to end of command string
+
+        if (check_macro())
+        {
+            return;
+        }
     }
+
+    cmd->m_set = cmd->n_set = false;
+    cmd->m_arg = cmd->n_arg = 0;
 
     init_x();                           // Reinitialize expression stack
 }

@@ -38,7 +38,6 @@
 #include "cbuf.h"
 #include "commands.h"
 
-
 uint nparens;                       ///< Parenthesis nesting count
 
 ///  @var    null_cmd
@@ -175,9 +174,9 @@ void exec_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    // Loop for all commands in command string.
-
     int c;
+
+    // Loop for all commands in command string.
 
     while ((c = fetch_cbuf()) != EOF)
     {
@@ -197,30 +196,37 @@ void exec_cmd(struct cmd *cmd)
             continue;
         }
 
-        const struct cmd *reset_cmd = &null_cmd;
-        struct cmd alt_cmd;
-
         if (entry->exec != NULL && f.e0.exec)
         {
             (*entry->exec)(cmd);
 
-            // Several commands ('[', ']', and '!') do not use the m and n
-            // arguments, but rather than consume them, allow them to be
-            // passed unchanged to the next command.
+            // We normally reset the command block after every command we
+            // execute. However, '[', ']', and '!' pass through m and n
+            // arguments unused. Also, a double ESCape in a macro passes
+            // through m and n arguments, and 'M' commands allow m and n
+            // arguments to be returned to the caller.
 
             if (entry->mn_args && cmd->n_set)
             {
                 push_x(cmd->n_arg, X_OPERAND);
 
-                alt_cmd       = *reset_cmd;
-                alt_cmd.m_set = cmd->m_set;
-                alt_cmd.m_arg = cmd->m_arg;
+                bool m_set = cmd->m_set;
+                int_t m_arg = cmd->m_arg;
 
-                reset_cmd = &alt_cmd;
+                *cmd = null_cmd;
+
+                cmd->m_set = m_set;
+                cmd->m_arg = m_arg;
+            }
+            else
+            {
+                *cmd = null_cmd;
             }
         }
-
-        *cmd = *reset_cmd;
+        else
+        {
+            *cmd = null_cmd;
+        }
 
         if (f.e0.ctrl_c)
         {
@@ -252,6 +258,8 @@ void exec_cmd(struct cmd *cmd)
     {
         throw(E_MRP);                   // Missing right parenthesis
     }
+
+    cbuf->pos = cbuf->len = 0;          // Reset for next command string
 }
 
 

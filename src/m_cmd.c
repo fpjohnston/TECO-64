@@ -118,7 +118,7 @@ void exec_M(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_macro(tbuffer *macro, struct cmd *oldcmd)
+void exec_macro(tbuffer *macro, struct cmd *cmd)
 {
     assert(macro != NULL);
     assert(macro->data != NULL);
@@ -146,24 +146,32 @@ void exec_macro(tbuffer *macro, struct cmd *oldcmd)
     macro->pos = 0;
     cbuf       = macro;                 // Switch command strings
 
-    struct cmd cmd = null_cmd;          // Initialize new command
+    struct cmd newcmd = null_cmd;       // Initialize new command
 
     // If we were passed the previous command, then copy any m and n arguments.
 
-    if (oldcmd != NULL)
+    if (cmd != NULL)
     {
-        cmd.m_set = oldcmd->m_set;
-        cmd.m_arg = oldcmd->m_arg;
+        newcmd.m_set = cmd->m_set;
+        newcmd.m_arg = cmd->m_arg;
 
-        if (oldcmd->n_set)
+        if (cmd->n_set)
         {
-            push_x(oldcmd->n_arg, X_OPERAND);
+            push_x(cmd->n_arg, X_OPERAND);
         }
     }
 
     ++macro_depth;
-    exec_cmd(&cmd);
+    exec_cmd(&newcmd);
     --macro_depth;
+
+    if (cmd != NULL && isoperand())
+    {
+        cmd->m_set = newcmd.m_set;
+        cmd->m_arg = newcmd.m_arg;
+        cmd->n_set = true;
+        cmd->n_arg = pop_x();
+    }
 
     // Restore previous state
 

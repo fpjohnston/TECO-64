@@ -426,8 +426,6 @@ bool parse_escape(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    cmd->m_set = cmd->n_set = false;
-
     reject_colon(cmd);
     reject_atsign(cmd);
 

@@ -37,7 +37,7 @@
         <command name='CTRL_X'  parse='nX!'                         exec='ctrl_X'    />
         <command name='CTRL_Y'  parse='X='         scan='ctrl_Y'                     />
         <command name='CTRL_Z'  parse='X='         scan='ctrl_Z'                     />
-        <command name='ESC'     parse='X$'                          exec='escape'    />
+        <command name='ESC'     parse='X$'                          exec='escape!'   />
         <command name='\x1C'                       scan='bad'                        />
         <command name='\x1D'                       scan='bad'                        />
         <command name='\x1E'                       scan='ctrl_up'                    />
@@ -87,7 +87,7 @@
         <command name='J'       parse='n:X'                         exec='J'         />
         <command name='K'       parse='+m,nX'                       exec='K'         />
         <command name='L'       parse='n:X'                         exec='L'         />
-        <command name='M'       parse='m,n:Xq'                      exec='M'         />
+        <command name='M'       parse='m,n:Xq'                      exec='M!'        />
         <command name='N'       parse='n:@X/'                       exec='N'         />
         <command name='O'       parse='+n@X/'                       exec='O'         />
         <command name='P'       parse='+m,n:X'     scan='P'         exec='P'         />
