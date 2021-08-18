@@ -165,12 +165,20 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
     exec_cmd(&newcmd);
     --macro_depth;
 
-    if (cmd != NULL && isoperand())
+    if (cmd != NULL)
     {
-        cmd->m_set = newcmd.m_set;
-        cmd->m_arg = newcmd.m_arg;
-        cmd->n_set = true;
-        cmd->n_arg = pop_x();
+        if (isoperand())
+        {
+            cmd->m_set = newcmd.m_set;
+            cmd->m_arg = newcmd.m_arg;
+            cmd->n_set = true;
+            cmd->n_arg = pop_x();
+        }
+        else
+        {
+            cmd->m_set = cmd->n_set = false;
+            cmd->m_arg = cmd->n_arg = 0;
+        }
     }
 
     // Restore previous state
