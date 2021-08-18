@@ -1,0 +1,13 @@
+!! TECO-64 test script
+!! A command: get ASCII value of characters in edit buffer
+!! Expect: PASS
+
+@I/hello, world!/
+
+0 UA 0J
+Z < QA A UB QB ^T :%A >
+-1^T
+
+:@^A/PASS/
+
+^C
