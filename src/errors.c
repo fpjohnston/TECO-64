@@ -303,6 +303,7 @@ noreturn void throw(int error, ...)
         case E_FIL:
         case E_FNF:
         case E_KEY:
+        case E_LOC:
         case E_SRH:
         case E_TAG:
             err_str = va_arg(args, const char *);

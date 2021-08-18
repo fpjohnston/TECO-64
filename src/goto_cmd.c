@@ -187,7 +187,7 @@ static void find_tag(const char *orig_tag)
 
                     if (if_depth != 0)
                     {
-                        throw(E_BAT, tag.data); // Bad tag
+                        throw(E_LOC, tag.data); // Invalid location
                     }
 
                     // Error if jumping into a loop (other than current loop).
@@ -195,7 +195,7 @@ static void find_tag(const char *orig_tag)
                     if (loop_depth != 0
                         && (cbuf->pos < loop_start || cbuf->pos > loop_end))
                     {
-                        throw(E_BAT, tag.data); // Bad tag
+                        throw(E_LOC, tag.data); // Invalid location
                     }
 
                     // We found the tag, so print it if tracing.

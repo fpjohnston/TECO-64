@@ -205,6 +205,13 @@
             <detail>An invalid key was specified for an FM command.</detail>
         </error>
         <error>
+            <code>LOC</code>
+            <message>Invalid location for tag &apos;!%s!&apos;</message>
+            <detail>An O command cannot jump to a location inside a</detail>
+            <detail>loop, other than the one the O command may be in,</detail>
+            <detail>or inside a conditional.</detail>
+        </error>
+        <error>
             <code>MAP</code>
             <message>Missing apostrophe</message>
             <detail>Every conditional (started with the &quot;</detail>

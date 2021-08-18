@@ -55,7 +55,6 @@ code.
 | <nobr>?ILN</nobr> | <nobr>Invalid number</nobr> | An 8 or 9 was used in a digit string for an octal number, or a 0x or 0X prefix was not followed by a hexadecimal number. |
 | <nobr>?IMA</nobr> | <nobr>Invalid m argument</nobr> | An m argument was provided to a command which does not allow it. |
 | <nobr>?INA</nobr> | <nobr>Invalid n argument</nobr> | An n argument was provided to a command which does not allow it. |
-| <nobr>?INI</nobr> | <nobr>Initialization error</nobr> | A fatal error occurred during TECO initialization. |
 | <nobr>?IQC</nobr> | <nobr>Invalid quote character</nobr> | One of the valid " qualifiers did not follow the quote character. |
 | <nobr>?IQN</nobr> | <nobr>Invalid Q-register name '*x*'</nobr> | An invalid Q-register name was specified in one of the Q-register commands. |
 | <nobr>?IRA</nobr> | <nobr>Invalid radix argument to ^R</nobr> | The argument to a ^R radix command must be 8, 10 or 16. |
@@ -63,6 +62,7 @@ code.
 | <nobr>?ISS</nobr> | <nobr>Invalid search string</nobr> | One of the search string special characters (^Q, ^V, ^W, etc.) would have modified the search string delimiter (usually <ESC>). |
 | <nobr>?IUC</nobr> | <nobr>Invalid character '*x*' following ^</nobr> | The character following a ^ must have an ASCII value between 64 and 95 inclusive, or between 141 and 172 inclusive. |
 | <nobr>?KEY</nobr> | <nobr>Key '*foo*' not found</nobr> | An invalid key was specified for an FM command. |
+| <nobr>?LOC</nobr> | <nobr>Invalid location for tag '!*foo*!'</nobr> | An O command cannot jump to a location inside a loop, other than the one the O command may be in, or inside a conditional. |
 | <nobr>?MAP</nobr> | <nobr>Missing apostrophe</nobr> | Every conditional (started with the " command) must be closed with the ' command. |
 | <nobr>?MAT</nobr> | <nobr>No matching files</nobr> | No match was found for the file specification for an EN command. |
 | <nobr>?MAX</nobr> | <nobr>Internal program limit reached</nobr> | Loops and conditionals are limited to a maximum of 32 levels, macros are limited to a depth of 64 levels, and file names are limited to 4095 characters. |

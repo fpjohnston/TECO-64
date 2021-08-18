@@ -74,6 +74,7 @@ static struct errlist errlist[] =
     [E_ISS] = { "ISS",  "Invalid search string" },
     [E_IUC] = { "IUC",  "Invalid character '%s' following ^" },
     [E_KEY] = { "KEY",  "Key '%s' not found" },
+    [E_LOC] = { "LOC",  "Invalid location for tag '!%s!'" },
     [E_MAP] = { "MAP",  "Missing apostrophe" },
     [E_MAT] = { "MAT",  "No matching files" },
     [E_MAX] = { "MAX",  "Internal program limit reached" },
@@ -196,6 +197,9 @@ static const char *errhelp[] =
               "value between 64 and 95 inclusive, or between "
               "141 and 172 inclusive.",
     [E_KEY] = "An invalid key was specified for an FM command.",
+    [E_LOC] = "An O command cannot jump to a location inside a "
+              "loop, other than the one the O command may be in, "
+              "or inside a conditional.",
     [E_MAP] = "Every conditional (started with the \" "
               "command) must be closed with the ' command.",
     [E_MAT] = "No match was found for the file specification "
