@@ -176,9 +176,16 @@ static void find_tag(const char *orig_tag)
                     && cmd.text1.len == tag.len
                     && !memcmp(cmd.text1.data, tag.data, (size_t)tag.len))
                 {
-                    // Error if duplicate tag, or jumping into a conditional
+                    // Error if duplicate tag
 
-                    if (tag_pos != 0 || if_depth != 0)
+                    if (tag_pos != 0)
+                    {
+                        throw(E_DUP, tag.data); // Duplicate tag
+                    }
+
+                    // Error if jumping into a conditional
+
+                    if (if_depth != 0)
                     {
                         throw(E_BAT, tag.data); // Bad tag
                     }
@@ -251,8 +258,6 @@ static void find_taglist(const char *taglist, int arg)
         char tag[len + 1];
 
         snprintf(tag, sizeof(tag), "%.*s", (int)len, next);
-
-        tprint("tag = %s\n", tag);
 
         if (ntags == arg)
         {
