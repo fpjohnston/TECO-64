@@ -64,5 +64,7 @@ bool scan_Q(struct cmd *cmd)
 
     push_x(n, X_OPERAND);
 
+    cmd->colon = cmd->dcolon = false;   // Reset for next command
+
     return true;
 }

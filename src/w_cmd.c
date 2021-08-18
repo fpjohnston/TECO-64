@@ -189,8 +189,6 @@ bool scan_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_atsign(cmd);                 // @W/text1/ is invalid
-
     if (!cmd->colon)
     {
         reject_m(cmd);                  // m,nW is invalid
@@ -198,26 +196,22 @@ bool scan_W(struct cmd *cmd)
         return false;
     }
 
-    require_n(cmd);
-
     if (!cmd->n_set)
     {
         cmd->n_set = true;
         cmd->n_arg = 0;                 // :W = 0:W
     }
 
-    reject_dcolon(cmd);                 // n::W and m,n::W are invalid
-
     if (cmd->m_set)                     // m,n:W
     {
         set_w(cmd->m_arg, cmd->n_arg);
     }
 
-    int_t n = (int_t)get_w(cmd->n_arg);
+    int_t n = get_w(cmd->n_arg);
 
     push_x(n, X_OPERAND);
 
-    cmd->colon = false;                 // Reset for next command
+    cmd->colon = cmd->dcolon = false;   // Reset for next command
 
     return true;
 }
