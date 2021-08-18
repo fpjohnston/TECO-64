@@ -71,52 +71,46 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
 {
     assert(name != NULL);
 
-    // Now split the file spec into a directory and a base name.
+    // Split the file spec into a directory name and a base name
 
-    uint_t len = (uint_t)strlen(name);
-
-    assert(len != 0);
-
-    char oldname[len + 1];
+    size_t len = strlen(name);
     char dir[len + 1];
     char base[len + 1];
 
     (void)parse_file(name, dir, base);
 
     const char *type = (strchr(base, '.') == NULL) ? TEC_NAME : "";
-    int nbytes = snprintf(scratch, sizeof(scratch), "%s%s%s", dir, base, type);
+    char file[strlen(name) + strlen(type) + 1];
+    int nbytes = snprintf(file, sizeof(file), "%s%s", name, type);
 
     assert(nbytes > 0);
-    assert(nbytes < (int)sizeof(scratch));
-
-    strcpy(oldname, scratch);
+    assert((size_t)nbytes < sizeof(file));
 
     struct ifile *ifile;
 
-    if ((ifile = open_input(scratch, stream, (bool)true)) != NULL)
+    if ((ifile = open_input(file, stream, (bool)true)) != NULL)
     {
-        return ifile;
+        return ifile;                   // Open succeeded, so we're done
     }
 
     // If we have a relative path and a library directory, then try again.
 
     if (dir[0] != '/' && teco_library != NULL)
     {
-        char file[strlen(scratch) + 1];
+        char libfile[strlen(teco_library) + 1 + strlen(file) + 1];
 
-        strcpy(file, scratch);
-
-        nbytes = snprintf(scratch, sizeof(scratch), "%s/%s", teco_library,
-                          file);
+        nbytes = snprintf(libfile, sizeof(libfile), "%s/%s", teco_library, file);
 
         assert(nbytes > 0);
-        assert(nbytes < (int)sizeof(scratch));
+        assert((size_t)nbytes < sizeof(libfile));
 
-        if ((ifile = open_input(scratch, stream, (bool)true)) != NULL)
+        if ((ifile = open_input(libfile, stream, (bool)true)) != NULL)
         {
-            return ifile;
+            return ifile;               // Open succeeded, so we're done
         }
     }
+
+    // Open failed, so check to see if we should issue an error
 
     if (colon)
     {
@@ -126,7 +120,7 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
     // If failure, issue error using original file name (plus explicit or
     // implicit file type) provided by user.
 
-    throw(E_FNF, oldname);              // File not found
+    throw(E_FNF, file);                 // File not found
 }
 
 
