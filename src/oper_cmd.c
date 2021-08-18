@@ -130,6 +130,19 @@ bool scan_lparen(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    // The following means that a command string such as mmm (nnn) just has a
+    // value of nnn; the mmm is discarded. This allows for enclosing Q and other
+    // commands in parentheses to guard against being affected (and the command
+    // possibly being completely changed) by a preceding value. In the case of
+    // a Q command, for example, instead of returning the numeric value in the
+    // Q-register, a preceding value would return the ASCII value of the nth
+    // character in the Q-register text string.
+
+    if (isoperand())                    // Operand on stack?
+    {
+        (void)pop_x();                  // Yes, just discard it
+    }
+
     ++nparens;
 
     push_x(OPER, X_LPAREN);
