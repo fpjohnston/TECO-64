@@ -67,7 +67,6 @@ static struct errlist errlist[] =
     [E_ILN] = { "ILN",  "Invalid number" },
     [E_IMA] = { "IMA",  "Invalid m argument" },
     [E_INA] = { "INA",  "Invalid n argument" },
-    [E_INI] = { "INI",  "Initialization error" },
     [E_IQC] = { "IQC",  "Invalid quote character" },
     [E_IQN] = { "IQN",  "Invalid Q-register name '%s'" },
     [E_IRA] = { "IRA",  "Invalid radix argument to ^R" },
@@ -182,7 +181,6 @@ static const char *errhelp[] =
               "does not allow it.",
     [E_INA] = "An n argument was provided to a command which "
               "does not allow it.",
-    [E_INI] = "A fatal error occurred during TECO initialization.",
     [E_IQC] = "One of the valid \" qualifiers did not "
               "follow the quote character.",
     [E_IQN] = "An invalid Q-register name was specified in one "

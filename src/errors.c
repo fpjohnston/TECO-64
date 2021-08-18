@@ -302,7 +302,6 @@ noreturn void throw(int error, ...)
         case E_DUP:
         case E_FIL:
         case E_FNF:
-        case E_INI:
         case E_KEY:
         case E_SRH:
         case E_TAG:

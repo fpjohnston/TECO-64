@@ -162,11 +162,6 @@
             <detail>does not allow it.</detail>
         </error>
         <error>
-            <code>INI</code>
-            <message>Initialization error</message>
-            <detail>A fatal error occurred during TECO initialization.</detail>
-        </error>
-        <error>
             <code>IQC</code>
             <message>Invalid quote character</message>
             <detail>One of the valid &quot; qualifiers did not</detail>

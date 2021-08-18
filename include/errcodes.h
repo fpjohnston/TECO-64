@@ -63,7 +63,6 @@ enum errcodes
     E_ILN,          ///< Invalid number
     E_IMA,          ///< Invalid m argument
     E_INA,          ///< Invalid n argument
-    E_INI,          ///< Initialization error
     E_IQC,          ///< Invalid quote character
     E_IQN,          ///< Invalid Q-register name 'x'
     E_IRA,          ///< Invalid radix argument to ^R
