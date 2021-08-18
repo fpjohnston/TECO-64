@@ -2,48 +2,87 @@
 !! U command: load all global Q-registers with unique numbers
 !! Expect: PASS [U-00.txt]
 
-0 U.A
-10 <
+0 U.A                   !! Unique number for each Q-register
+
+!! Create commands to load Q-registers 0-9
+
+^^0 U.B
+^^9 - Q.B + 1 <
     %.A \
     @I/ U/
-    ^^0 + Q.A - 1 I
+    Q.B I
+    :%.B
     10I
 >
 
-26 <
+!! Create commands to load Q-registers a-z
+
+^^a U.B
+^^z - Q.B + 1 <
     %.A \
     @I/ U/
-    ^^A + Q.A - 11 I
+    Q.B I
+    :%.B
     10I
 >
 
-0 U.A HX.A HK M.A
+!! Create commands to load Q-registers A-Z (same as a-z)
 
-0 U.B
-10 <
+^^A U.B
+^^Z - Q.B + 1 <
+    %.A \
+    @I/ U/
+    Q.B I
+    :%.B
+    10I
+>
+
+HX.A HK M.A
+
+!! Create commands to print Q-registers 0-9
+
+^^0 U.B
+^^9 - Q.B + 1 <
     @I{@^A/Q}
-    ^^0 + Q.BI
+    Q.B I
     @I{=/ }
-    @I/Q/
-    ^^0 + Q.BI
-    @I/= /
+    @I{Q}
+    Q.B I
+    @I{=}
     10I
     :%.B
 >
 
-0 U.B
-26 <
+!! Create commands to print Q-registers a-z
+
+^^a U.B
+^^z - Q.B + 1 <
     @I{@^A/Q}
-    ^^A + Q.BI
+    Q.B I
     @I{=/ }
-    @I/Q/
-    ^^A + Q.BI
-    @I/=/
+    @I{Q}
+    Q.B I
+    @I{=}
+    10I
+    :%.B
+>
+
+!! Create commands to print Q-registers A-Z (same as a-z)
+
+^^A U.B
+^^Z - Q.B + 1 <
+    @I{@^A/Q}
+    Q.B I
+    @I{=/ }
+    @I{Q}
+    Q.B I
+    @I{=}
     10I
     :%.B
 >
 
 HX.B HK M.B
+
 :@^A/PASS/
 
 ^C
