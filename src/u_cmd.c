@@ -56,7 +56,7 @@ void exec_U(struct cmd *cmd)
 
     if (cmd->n_set)                     // n argument?
     {
-        reject_colon(cmd);
+        reject_colon(cmd->colon);
     }
     else if (f.e1.colon_u && cmd->colon) // No n, but :Uq and colon allowed?
     {

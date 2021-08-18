@@ -286,21 +286,21 @@ bool scan_bang(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd);
+    reject_colon(cmd->colon);
 
     if (f.e1.xoper && nparens != 0)     // Check for ! operator
     {
-        reject_m(cmd);
-        reject_n(cmd);
-        reject_colon(cmd);
-        reject_atsign(cmd);
+        reject_m(cmd->m_set);
+        reject_n(cmd->n_set);
+        reject_colon(cmd->colon);
+        reject_atsign(cmd->atsign);
 
         push_x((int_t)0, X_NOT);
 
         return true;
     }
 
-    require_n(cmd);
+    require_n(cmd->m_set, cmd->n_set);
 
     // If feature enabled, !! starts a comment that ends with LF
     // (but note that the LF is not counted as part of the command).

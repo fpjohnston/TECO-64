@@ -119,9 +119,9 @@ bool parse_1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_n(cmd);
-    reject_colon(cmd);
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_colon(cmd->colon);
     scan_texts(cmd, 1, ESC);
 
     return false;
@@ -139,10 +139,10 @@ bool parse_M(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_neg_m(cmd);
-    require_n(cmd);
-    reject_colon(cmd);
-    reject_atsign(cmd);
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     return false;
 }
@@ -159,9 +159,9 @@ bool parse_M1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_neg_m(cmd);
-    require_n(cmd);
-    reject_colon(cmd);
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
 
     if (toupper(cmd->c1) != 'I' || !cmd->n_set || cmd->atsign)
     {
@@ -183,10 +183,10 @@ bool parse_Mc(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_neg_m(cmd);
-    require_n(cmd);
-    reject_dcolon(cmd);
-    reject_atsign(cmd);
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
 
     return false;
 }
@@ -203,9 +203,9 @@ bool parse_Mc1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_neg_m(cmd);
-    require_n(cmd);
-    reject_dcolon(cmd);
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);
 
     return false;
@@ -223,9 +223,9 @@ bool parse_Mc2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_neg_m(cmd);
-    require_n(cmd);
-    reject_dcolon(cmd);
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 2, ESC);
 
     return false;
@@ -243,10 +243,10 @@ bool parse_Mcq(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_neg_m(cmd);
-    require_n(cmd);
-    reject_dcolon(cmd);
-    reject_atsign(cmd);
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
     scan_qreg(cmd);
 
     return false;
@@ -264,9 +264,9 @@ bool parse_Mcq1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_neg_m(cmd);
-    require_n(cmd);
-    reject_dcolon(cmd);
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
     scan_qreg(cmd);
     scan_texts(cmd, 1, ESC);
 
@@ -284,9 +284,9 @@ bool parse_Mcq1(struct cmd *cmd)
 bool parse_N1(struct cmd *cmd)
 {
     assert(cmd != NULL);
-    reject_neg_n(cmd);
-    require_n(cmd);
-    reject_colon(cmd);
+    reject_neg_n(cmd->n_set, cmd->n_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
     scan_texts(cmd, 1, ESC);
 
     return false;
@@ -304,10 +304,10 @@ bool parse_X(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_n(cmd);
-    reject_colon(cmd);
-    reject_atsign(cmd);
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     return false;
 }
@@ -324,10 +324,10 @@ bool parse_c(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_n(cmd);
-    reject_dcolon(cmd);
-    reject_atsign(cmd);
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
 
     return false;
 }
@@ -344,9 +344,9 @@ bool parse_c1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_n(cmd);
-    reject_dcolon(cmd);
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);
 
     return false;
@@ -364,9 +364,9 @@ bool parse_c2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_n(cmd);
-    reject_dcolon(cmd);
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 2, ESC);
 
     return false;
@@ -384,9 +384,9 @@ bool parse_cq1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_n(cmd);
-    reject_dcolon(cmd);
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_dcolon(cmd->dcolon);
     scan_qreg(cmd);
     scan_texts(cmd, 1, ESC);
 
@@ -405,8 +405,8 @@ bool parse_d1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_n(cmd);
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
     scan_texts(cmd, 1, ESC);
 
     return false;
@@ -426,8 +426,8 @@ bool parse_escape(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd);
-    reject_atsign(cmd);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     return false;
 }
@@ -444,9 +444,9 @@ bool parse_flag1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_colon(cmd);
-    reject_atsign(cmd);
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -462,7 +462,7 @@ bool parse_flag1(struct cmd *cmd)
 
         case CTRL_N:
         {
-            reject_n(cmd);
+            reject_n(cmd->n_set);
 
             struct ifile *ifile = &ifiles[istream];
 
@@ -516,9 +516,9 @@ bool parse_flag2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd);
-    reject_colon(cmd);
-    reject_atsign(cmd);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -604,8 +604,8 @@ bool parse_m2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd);
-    reject_colon(cmd);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
     scan_texts(cmd, 2, ESC);
 
     return false;
@@ -623,9 +623,9 @@ bool parse_mc(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd);
-    reject_dcolon(cmd);
-    reject_atsign(cmd);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
 
     return false;
 }
@@ -642,8 +642,8 @@ bool parse_mc1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd);
-    reject_dcolon(cmd);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);
 
     return false;
@@ -661,8 +661,8 @@ bool parse_mc2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd);
-    reject_dcolon(cmd);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 2, ESC);
 
     return false;
@@ -680,8 +680,8 @@ bool parse_mcq(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_dcolon(cmd);
-    reject_atsign(cmd);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
     scan_qreg(cmd);
 
     return false;
@@ -699,7 +699,7 @@ bool parse_md1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd);
+    require_n(cmd->m_set, cmd->n_set);
     scan_texts(cmd, 1, ESC);
 
     return false;
@@ -717,7 +717,7 @@ bool parse_md2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd);
+    require_n(cmd->m_set, cmd->n_set);
     scan_texts(cmd, 2, ESC);
 
     return false;
@@ -735,10 +735,10 @@ bool parse_mq(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd);
-    reject_colon(cmd);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
     scan_qreg(cmd);
-    reject_atsign(cmd);
+    reject_atsign(cmd->atsign);
 
     return false;
 }
@@ -755,9 +755,9 @@ bool parse_n(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_colon(cmd);
-    reject_atsign(cmd);
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     return false;
 }
@@ -773,9 +773,9 @@ bool parse_n(struct cmd *cmd)
 bool parse_n1(struct cmd *cmd)
 {
     assert(cmd != NULL);
-    reject_m(cmd);
-    require_n(cmd);
-    reject_colon(cmd);
+    reject_m(cmd->m_set);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
     scan_texts(cmd, 1, ESC);
 
     return false;
@@ -793,9 +793,9 @@ bool parse_nc(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_dcolon(cmd);
-    reject_atsign(cmd);
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
 
     return false;
 }
@@ -812,8 +812,8 @@ bool parse_nc1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_dcolon(cmd);
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);
 
     return false;
@@ -831,9 +831,9 @@ bool parse_ncq(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_dcolon(cmd);
-    reject_atsign(cmd);
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
     scan_qreg(cmd);
 
     return false;
@@ -851,9 +851,9 @@ bool parse_nq(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd);
-    reject_colon(cmd);
-    reject_atsign(cmd);
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
     scan_qreg(cmd);
 
     return false;
@@ -871,8 +871,8 @@ bool parse_oper(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd);
-    reject_atsign(cmd);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     return true;
 }

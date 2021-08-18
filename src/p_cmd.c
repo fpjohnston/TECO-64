@@ -201,9 +201,9 @@ bool scan_P(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd);
-    reject_dcolon(cmd);
-    reject_atsign(cmd);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
 
     int c = peek_cbuf();
 

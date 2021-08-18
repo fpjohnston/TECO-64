@@ -191,7 +191,7 @@ bool scan_W(struct cmd *cmd)
 
     if (!cmd->colon)
     {
-        reject_m(cmd);                  // m,nW is invalid
+        reject_m(cmd->m_set);                  // m,nW is invalid
 
         return false;
     }

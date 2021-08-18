@@ -203,10 +203,10 @@ bool scan_equals(struct cmd *cmd)
 
     if (nparens != 0 && f.e1.xoper)
     {
-        reject_m(cmd);
-        reject_m(cmd);
-        reject_colon(cmd);
-        reject_atsign(cmd);
+        reject_m(cmd->m_set);
+        reject_m(cmd->m_set);
+        reject_colon(cmd->colon);
+        reject_atsign(cmd->atsign);
 
         if (require_cbuf() != '=')
         {
@@ -219,8 +219,8 @@ bool scan_equals(struct cmd *cmd)
         return true;
     }
 
-    reject_m(cmd);
-    reject_dcolon(cmd);
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
 
     if ((c = peek_cbuf()) == '=')
     {
