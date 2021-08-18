@@ -21,7 +21,6 @@ QN "E
     QN-1 "L
         :@^A/Number of decimal places must be greater than 0/
         ^C
-
     '
 '
 
@@ -30,7 +29,7 @@ QN "E
 @^UD/^^. ^T/                            !! Print decimal point
 @^UP/QP MN MD Q9 < 9 MN >/              !! Print predigit and any nines
 
-@^UN{ := :%D }                          !! Output digit and count it
+@^UN/ := :%D /                          !! Output digit and count it
 
 QW "N                                   !! If width specified,
     :@^UN{ (QD // QW) "E -1^T ' }       !!  then start new line if needed
