@@ -84,7 +84,7 @@ loaded into Q-registers.
 | *n*^U*q* | Inserts one character, whose ASCII code is *n* (module 256), into the text area of Q-register *q*. |
 | *n*:^U*q* | Appends the character, whose ASCII code is *n* (module 256), into the text area of Q-register *q*. |
 | @^U*q*// | Delete all text in Q-register *q*. |
-| *n*X*q* | Clear Q-register *q* and copy *n* lines into it, where *n* is a signed integer. <br><br>If *n* is positive, the *n* lines following the current pointer position are copied into the text storage area of Qregister *q*. <br><br>If *n* is negative, the *n* lines preceding the pointer are copied. <br><br>If *n* is zero, the contents of the buffer from the beginning of the line on which the pointer is located up to the pointer is copied. <br><br>The pointer is not moved. The text is not deleted. |
+| *n*X*q* | Clear Q-register *q* and copy *n* lines into it, where *n* is a signed integer. <br><br>If *n* is positive, the *n* lines following the current pointer position are copied into the text storage area of Q-register *q*. <br><br>If *n* is negative, the *n* lines preceding the pointer are copied. <br><br>If *n* is zero, the contents of the buffer from the beginning of the line on which the pointer is located up to the pointer is copied. <br><br>The pointer is not moved. The text is not deleted. |
 | -X*q* | Equivalent to -1X*q*. |
 | *m*,*n*X*q* | Copy the contents of the buffer from the *m*+1th character through and including the *n*th character into the text storage area of Q-register *q*. *m* and *n* must be positive, and *m* should be less than *n*. |
 | .,.+*n*X*q* | Copy the *n* characters immediately following the buffer pointer into the text storage area of Q-register *q*. *n* should be greater than zero. |
@@ -113,7 +113,7 @@ Q-registers.
 | :G_ | Print the search string buffer on the terminal. Neither the edit buffer nor *dot* are changed by this command. |
 | G+ | Copy the output of the last ::EG command into the edit buffer at the current position of *dot*, leaving the pointer positioned after the last character copied. |
 | :G+ | Print the output of the last ::EG command on the terminal. Neither the edit buffer nor *dot* are changed by this command. |
-| [*q* | Copy the contents of the numeric and text storage areas of Q-register *q* into the Q-register push-down list. This command does not alter either the numeric or text storage areas of Qregister *q*. It does not use or affect numeric values. Numeric values are passed through this command transparently, allowing macros to save temporary Q-registers and still accept numeric values. (Note, however, macros written to use local Q-registers may be able to avoid saving and restoring Q-registers via the the pushdown list.) The command sequence [A ]B replicates the text string and numeric value from Q-register A into Q-register B. |
+| [*q* | Copy the contents of the numeric and text storage areas of Q-register *q* into the Q-register push-down list. This command does not alter either the numeric or text storage areas of Q-register *q*. It does not use or affect numeric values. Numeric values are passed through this command transparently, allowing macros to save temporary Q-registers and still accept numeric values. (Note, however, macros written to use local Q-registers may be able to avoid saving and restoring Q-registers via the the pushdown list.) The command sequence [A ]B replicates the text string and numeric value from Q-register A into Q-register B. |
 
 ### Macro Invocation Commands
 
@@ -126,10 +126,10 @@ Elsewhere in this manual, "q" indicates either a global or local Q-register name
 
 | Command | Function |
 | ------- | -------- |
-| M*q* | Execute the contents of the text storage area of global Qregister *q* as a command string. A new set of local Q-registers is created before the macro is invoked. |
+| M*q* | Execute the contents of the text storage area of global Q-register *q* as a command string. A new set of local Q-registers is created before the macro is invoked. |
 | *n*M*q* | Execute the M*q* command as above, using *n* as a numeric argument for the first command contained in global Q-register *q*. A new set of local Q-registers is created. |
 | *m*,*n*M*q* | Execute the M*q* command as above, using *m*,*n* as numeric arguments for the first command contained in global Q-register *q*. A new set of local Q-registers is created. |
-| :M*q* | Execute the contents of the text storage area of global Qregister *q* as a command string. The current set of local Q-registers remains available to the invoked macro; no new set is created. |
+| :M*q* | Execute the contents of the text storage area of global Q-register *q* as a command string. The current set of local Q-registers remains available to the invoked macro; no new set is created. |
 | *n*:M*q* | Execute the :M*q* command as above, using *n* as a numeric argument for the first command contained in global Q-register *q*. No new set of local Q-registers is created. |
 | *m*,*n*:M*q* | Execute the :M*q* command as above, using *m*,*n* as numeric arguments for the first command contained in global Q-register *q*. No new set of local Q-registers is created. |
 | M.*q*, :M.*q* | Execute the contents of the text storage area of local Q-register .*q* as a command string. No new set of local Q-registers is created. |
