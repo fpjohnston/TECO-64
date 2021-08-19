@@ -73,7 +73,7 @@ void exec_EB(struct cmd *cmd)
                 return;
             }
         }
-        else
+        else if (!cmd->colon)
         {
             throw(E_FNF, name);         // File not found
         }
