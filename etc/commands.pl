@@ -40,6 +40,13 @@ use POSIX qw( strftime );
 use Readonly;
 use Carp;
 
+Readonly my $insert_warning => '/\* \(INSERT: WARNING NOTICE\) \*/';
+Readonly my $insert_cmds    => '/\* \(INSERT: GENERAL COMMANDS\) \*/';
+Readonly my $insert_e_cmds  => '/\* \(INSERT: E COMMANDS\) \*/';
+Readonly my $insert_f_cmds  => '/\* \(INSERT: F COMMANDS\) \*/';
+
+Readonly my $warning => '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
+
 # Command-line arguments
 
 my %args = (
@@ -50,7 +57,6 @@ my %args = (
 
 Readonly my $NAME => q{@} . 'name';
 
-my $warning = '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
 my $cmds;
 my $e_cmds;
 my $f_cmds;
@@ -224,10 +230,10 @@ sub make_commands_h
     my $fh;
     my $file = $args{output};
 
-    $template =~ s"/\* \(INSERT: WARNING NOTICE\) \*/"$warning";
-    $template =~ s"/\* \(INSERT: GENERAL COMMANDS\) \*/"$cmds";
-    $template =~ s"/\* \(INSERT: E COMMANDS\) \*/"$e_cmds";
-    $template =~ s"/\* \(INSERT: F COMMANDS\) \*/"$f_cmds";
+    $template =~ s/$insert_warning/$warning/ms;
+    $template =~ s/$insert_cmds/$cmds/ms;
+    $template =~ s/$insert_e_cmds/$e_cmds/ms;
+    $template =~ s/$insert_f_cmds/$f_cmds/ms;
 
     print {*STDERR} "Creating $file\n" or croak;
 
@@ -297,7 +303,7 @@ sub make_entry
     $parse = sprintf '%-15s', $parse;
     $scan .= q{,};
     $scan = sprintf '%-15s', $scan;
-    $exec .= q{,}; 
+    $exec .= q{,};
     $exec = sprintf '%-15s', $exec;
 
     my $entry = sprintf '%s', "    ENTRY($name  $parse  $scan  $exec  $mn_args),\n";
@@ -335,9 +341,13 @@ sub make_exec_h
 
     chomp $exec_list;
 
-    $template =~ s"/\* \(INSERT: WARNING NOTICE\) \*/"$warning";
-    $template =~ s"/\* \(INSERT: SCAN FUNCTIONS\) \*/"$scan_list";
-    $template =~ s"/\* \(INSERT: EXEC FUNCTIONS\) \*/"$exec_list";
+    my $insert_warning = '/\* \(INSERT: WARNING NOTICE\) \*/';
+    my $insert_scan    = '/\* \(INSERT: SCAN FUNCTIONS\) \*/';
+    my $insert_exec    = '/\* \(INSERT: EXEC FUNCTIONS\) \*/';
+
+    $template =~ s/$insert_warning/$warning/ms;
+    $template =~ s/$insert_scan/$scan_list/ms;
+    $template =~ s/$insert_exec/$exec_list/ms;
 
     print {*STDERR} "Creating $file\n" or croak;
 
@@ -385,10 +395,10 @@ sub parse_commands
             my $exec    = $command->getAttribute('exec');
             my $mn_args = 'false';
 
-            if (defined $exec && $exec =~ /(.+)!/)
+            if (defined $exec && $exec =~ / (.+) ! /msx)
             {
                 $mn_args = 'true';
-                $exec =~ s/(.+)!/$1/;
+                $exec =~ s/ (.+) ! /$1/msx;
             }
 
             if ( defined $scan )

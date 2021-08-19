@@ -40,6 +40,13 @@ use POSIX qw( strftime );
 use Readonly;
 use Carp;
 
+Readonly my $insert_warning  => '/\* \(INSERT: WARNING NOTICE\) \*/';
+Readonly my $insert_errcodes => '/\* \(INSERT: ERROR CODES\) \*/';
+Readonly my $insert_errlist  => '/\* \(INSERT: ERROR MESSAGES\) \*/';
+Readonly my $insert_errhelp  => '/\* \(INSERT: ERROR DETAILS\) \*/';
+
+Readonly my $warning => '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
+
 # Command-line arguments
 
 my %args = (
@@ -50,7 +57,6 @@ my %args = (
 
 Readonly my $NAME => q{@} . 'name';
 
-my $warning = '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
 my %errors;
 
 #
@@ -172,8 +178,8 @@ sub make_errcodes_h
         $errcodes .= sprintf "    E_%s,          ///< %s\n", $code, $message;
     }
 
-    $template =~ s"/\* \(INSERT: WARNING NOTICE\) \*/"$warning";
-    $template =~ s"/\* \(INSERT: ERROR CODES\) \*/"$errcodes";
+    $template =~ s/$insert_warning/$warning/ms;
+    $template =~ s/$insert_errcodes/$errcodes/ms;
 
     print {*STDERR} "Creating $args{output}\n" or croak;
 
@@ -210,10 +216,10 @@ sub make_errors_md
         my $details = join q{ }, @details;
 
         $errors .= sprintf "| <nobr>?%s</nobr> | <nobr>%s</nobr> | %s |\n",
-          $code, $message, $details;
+            $code, $message, $details;
     }
 
-    $template =~ s"/\* \(INSERT: ERROR CODES\) \*/"$errors";
+    $template =~ s/$insert_errcodes/$errors/ms;
 
     print {*STDERR} "Creating $args{output}\n" or croak;
 
@@ -256,9 +262,9 @@ sub make_errtables_h
         $errhelp .= sprintf "    [E_%s] = \"%s\",\n", $code, $details;
     }
 
-    $template =~ s"/\* \(INSERT: WARNING NOTICE\) \*/"$warning";
-    $template =~ s"/\* \(INSERT: ERROR MESSAGES\) \*/"$errlist";
-    $template =~ s"/\* \(INSERT: ERROR DETAILS\) \*/"$errhelp";
+    $template =~ s/$insert_warning/$warning/ms;
+    $template =~ s/$insert_errlist/$errlist/ms;
+    $template =~ s/$insert_errhelp/$errhelp/ms;
 
     print {*STDERR} "Creating $args{output}\n" or croak;
 
