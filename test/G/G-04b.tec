@@ -1,0 +1,15 @@
+!! TECO-64 test script
+!! :G_ command: print last search string
+!! Expect: PASS [G-04b.txt]
+
+0 U.A
+HK
+
+:@S/frumious bandersnatch/
+@^A/:G_ = /
+:G_
+-1^T
+
+:@^A/PASS/
+
+^C

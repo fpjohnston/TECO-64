@@ -1,0 +1,15 @@
+!! TECO-64 test script
+!! :G* command: print last file name specification
+!! Expect: PASS [G-03b.txt]
+
+0 U.A
+HK
+
+:@ER/slithy.toves/
+@^A/:G* = /
+:G*
+-1^T
+
+:@^A/PASS/
+
+^C
