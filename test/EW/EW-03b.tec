@@ -13,5 +13,5 @@ HXA HK          !! Copy file name to Q-register A, clear buffer
     :@^A/FAIL/
 '
 
-EK HK EX
+EK HK
 ^[^[

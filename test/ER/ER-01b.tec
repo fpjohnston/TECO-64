@@ -9,5 +9,5 @@ ER^EQA        !! Open file for read, using name in Q-register A
 
 :@^A/PASS/
 
-HK EX
+HK
 ^[^[

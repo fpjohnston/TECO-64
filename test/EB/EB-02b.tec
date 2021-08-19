@@ -9,5 +9,5 @@ HXA HK          !! Copy file name to Q-register A, clear buffer
 
 :@^A/PASS/
 
-EK HK EX
+EK HK
 ^[^[
