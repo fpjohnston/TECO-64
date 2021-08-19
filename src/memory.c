@@ -32,7 +32,6 @@
 #include "teco.h"
 #include "errcodes.h"
 #include "exec.h"
-#include "term.h"
 
 
 // The following conditional code is used to check for memory leaks when we

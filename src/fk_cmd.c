@@ -64,7 +64,7 @@ void exec_FK(struct cmd *cmd)
 
     if (cmd->text1.len != 0)
     {
-        last_search = build_string(cmd->text1.data, cmd->text1.len);
+        build_search(cmd->text1.data, cmd->text1.len);
     }
 
     struct search s;

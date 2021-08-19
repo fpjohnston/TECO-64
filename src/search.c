@@ -62,6 +62,26 @@ static int issymbol(int c);
 static bool match_chr(int c, struct search *s);
 
 static bool match_str(struct search *s);
+ 
+
+///
+///  @brief    Build a search string, allocating storage for it.
+///
+///  @returns  TECO string.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void build_search(const char *src, uint_t len)
+{
+    tstring tmp = build_string(src, len);
+
+    free_mem(&last_search.data);
+
+    last_search.data = alloc_mem(tmp.len + 1);
+    last_search.len = tmp.len;
+
+    strcpy(last_search.data, tmp.data);
+}
 
 
 ///

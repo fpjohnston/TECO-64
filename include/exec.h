@@ -30,11 +30,11 @@
 
 #define _EXEC_H
 
-#include <assert.h>
+#include <assert.h>             //lint !e451 !e537
 
 #include "teco.h"               //lint !e451 !e537
-#include "eflags.h"
-#include "errcodes.h"
+#include "eflags.h"             //lint !e451 !e537
+#include "errcodes.h"           //lint !e451 !e537
 
 ///  @struct cmd
 ///  @brief  Command block structure.

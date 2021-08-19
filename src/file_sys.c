@@ -84,7 +84,7 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
     int nbytes = snprintf(file, sizeof(file), "%s%s", name, type);
 
     assert(nbytes > 0);
-    assert((size_t)nbytes < sizeof(file));
+    assert((size_t)(uint)nbytes < sizeof(file));
 
     struct ifile *ifile;
 
@@ -102,7 +102,7 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
         nbytes = snprintf(libfile, sizeof(libfile), "%s/%s", teco_library, file);
 
         assert(nbytes > 0);
-        assert((size_t)nbytes < sizeof(libfile));
+        assert((size_t)(uint)nbytes < sizeof(libfile));
 
         if ((ifile = open_input(libfile, stream, (bool)true)) != NULL)
         {

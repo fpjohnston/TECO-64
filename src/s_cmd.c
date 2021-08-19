@@ -99,7 +99,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
     if (cmd->text1.len != 0)
     {
-        last_search = build_string(cmd->text1.data, cmd->text1.len);
+        build_search(cmd->text1.data, cmd->text1.len);
     }
     else if (last_search.len == 0)
     {

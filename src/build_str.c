@@ -269,9 +269,9 @@ tstring build_string(const char *src, uint_t len)
 
     // Copy result to scratch buffer
 
-    memcpy(scratch, string, (size_t)pos + 1);
-
     tstring result = { .data = scratch, .len = pos };
+
+    memcpy(result.data, string, (size_t)result.len + 1);
 
     last_len = pos;
 
