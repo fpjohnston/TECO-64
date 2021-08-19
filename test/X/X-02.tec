@@ -1,0 +1,32 @@
+!! TECO-64 test script
+!! X command: append edit buffer text to Q-register
+!! Expect: PASS [X-02.txt]
+
+HK
+
+0UA
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    10I
+>
+
+:@^A/-----/
+0J 1:XA :GA
+:@^A/-----/
+2L 2:XA :GA
+:@^A/-----/
+3L 3:XA :GA
+:@^A/-----/
+ZJ -3:XA :GA
+:@^A/-----/
+-4L -2:XA :GA
+:@^A/-----/
+-3L -1:XA :GA
+:@^A/-----/
+
+:@^A/PASS/
+
+^C
