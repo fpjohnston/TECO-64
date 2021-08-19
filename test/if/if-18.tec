@@ -1,0 +1,15 @@
+!! TECO-64 test script
+!! "T command: test for true
+!! Expect: PASS
+
+ 0 "T   @^A/FAIL/ ^C '
+ 1 "T   @^A/FAIL/ ^C '
+-1 "T | @^A/FAIL/ ^C '
+
+ 0 "t   @^A/FAIL/ ^C '
+ 1 "t   @^A/FAIL/ ^C '
+-1 "t | @^A/FAIL/ ^C '
+
+:@^A/PASS/
+
+^C
