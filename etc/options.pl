@@ -55,13 +55,14 @@ use POSIX qw( strftime );
 use Readonly;
 use Carp;
 
-Readonly my $insert_warning => '/\* \(INSERT: WARNING NOTICE\) \*/';
-Readonly my $insert_help    => '/\* \(INSERT: HELP OPTIONS\) \*/';
-Readonly my $insert_enum    => '/\* \(INSERT: ENUM OPTIONS\) \*/';
-Readonly my $insert_short   => '/\* \(INSERT: SHORT OPTIONS\) \*/';
-Readonly my $insert_long    => '/\* \(INSERT: LONG OPTIONS\) \*/';
+Readonly my $INSERT_WARNING => '/\* \(INSERT: WARNING NOTICE\) \*/';
+Readonly my $INSERT_HELP    => '/\* \(INSERT: HELP OPTIONS\) \*/';
+Readonly my $INSERT_ENUM    => '/\* \(INSERT: ENUM OPTIONS\) \*/';
+Readonly my $INSERT_SHORT   => '/\* \(INSERT: SHORT OPTIONS\) \*/';
+Readonly my $INSERT_LONG    => '/\* \(INSERT: LONG OPTIONS\) \*/';
 
-Readonly my $warning => '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
+Readonly my $WARNING =>
+  '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
 
 # Command-line arguments
 
@@ -282,11 +283,11 @@ sub make_options_h
     my $fh;
     my $template = read_file( $args{template} );
 
-    $template =~ s/$insert_warning/$warning/ms;
-    $template =~ s/$insert_help/$header{help}/ms;
-    $template =~ s/$insert_enum/$header{enums}/ms;
-    $template =~ s/$insert_short/$header{short}/ms;
-    $template =~ s/$insert_long/$header{long}/ms;
+    $template =~ s/$INSERT_WARNING/$WARNING/ms;
+    $template =~ s/$INSERT_HELP/$header{help}/ms;
+    $template =~ s/$INSERT_ENUM/$header{enums}/ms;
+    $template =~ s/$INSERT_SHORT/$header{short}/ms;
+    $template =~ s/$INSERT_LONG/$header{long}/ms;
 
     print {*STDERR} "Creating header file $file\n" or croak;
 

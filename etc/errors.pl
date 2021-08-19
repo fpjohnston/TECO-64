@@ -40,12 +40,13 @@ use POSIX qw( strftime );
 use Readonly;
 use Carp;
 
-Readonly my $insert_warning  => '/\* \(INSERT: WARNING NOTICE\) \*/';
-Readonly my $insert_errcodes => '/\* \(INSERT: ERROR CODES\) \*/';
-Readonly my $insert_errlist  => '/\* \(INSERT: ERROR MESSAGES\) \*/';
-Readonly my $insert_errhelp  => '/\* \(INSERT: ERROR DETAILS\) \*/';
+Readonly my $INSERT_WARNING  => '/\* \(INSERT: WARNING NOTICE\) \*/';
+Readonly my $INSERT_ERRCODES => '/\* \(INSERT: ERROR CODES\) \*/';
+Readonly my $INSERT_ERRLIST  => '/\* \(INSERT: ERROR MESSAGES\) \*/';
+Readonly my $INSERT_ERRHELP  => '/\* \(INSERT: ERROR DETAILS\) \*/';
 
-Readonly my $warning => '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
+Readonly my $WARNING =>
+  '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
 
 # Command-line arguments
 
@@ -178,8 +179,8 @@ sub make_errcodes_h
         $errcodes .= sprintf "    E_%s,          ///< %s\n", $code, $message;
     }
 
-    $template =~ s/$insert_warning/$warning/ms;
-    $template =~ s/$insert_errcodes/$errcodes/ms;
+    $template =~ s/$INSERT_WARNING/$WARNING/ms;
+    $template =~ s/$INSERT_ERRCODES/$errcodes/ms;
 
     print {*STDERR} "Creating $args{output}\n" or croak;
 
@@ -216,10 +217,10 @@ sub make_errors_md
         my $details = join q{ }, @details;
 
         $errors .= sprintf "| <nobr>?%s</nobr> | <nobr>%s</nobr> | %s |\n",
-            $code, $message, $details;
+          $code, $message, $details;
     }
 
-    $template =~ s/$insert_errcodes/$errors/ms;
+    $template =~ s/$INSERT_ERRCODES/$errors/ms;
 
     print {*STDERR} "Creating $args{output}\n" or croak;
 
@@ -262,9 +263,9 @@ sub make_errtables_h
         $errhelp .= sprintf "    [E_%s] = \"%s\",\n", $code, $details;
     }
 
-    $template =~ s/$insert_warning/$warning/ms;
-    $template =~ s/$insert_errlist/$errlist/ms;
-    $template =~ s/$insert_errhelp/$errhelp/ms;
+    $template =~ s/$INSERT_WARNING/$WARNING/ms;
+    $template =~ s/$INSERT_ERRLIST/$errlist/ms;
+    $template =~ s/$INSERT_ERRHELP/$errhelp/ms;
 
     print {*STDERR} "Creating $args{output}\n" or croak;
 

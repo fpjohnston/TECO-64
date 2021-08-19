@@ -40,12 +40,13 @@ use POSIX qw( strftime );
 use Readonly;
 use Carp;
 
-Readonly my $insert_warning => '/\* \(INSERT: WARNING NOTICE\) \*/';
-Readonly my $insert_cmds    => '/\* \(INSERT: GENERAL COMMANDS\) \*/';
-Readonly my $insert_e_cmds  => '/\* \(INSERT: E COMMANDS\) \*/';
-Readonly my $insert_f_cmds  => '/\* \(INSERT: F COMMANDS\) \*/';
+Readonly my $INSERT_WARNING => '/\* \(INSERT: WARNING NOTICE\) \*/';
+Readonly my $INSERT_CMDS    => '/\* \(INSERT: GENERAL COMMANDS\) \*/';
+Readonly my $INSERT_E_CMDS  => '/\* \(INSERT: E COMMANDS\) \*/';
+Readonly my $INSERT_F_CMDS  => '/\* \(INSERT: F COMMANDS\) \*/';
 
-Readonly my $warning => '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
+Readonly my $WARNING =>
+  '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
 
 # Command-line arguments
 
@@ -230,10 +231,10 @@ sub make_commands_h
     my $fh;
     my $file = $args{output};
 
-    $template =~ s/$insert_warning/$warning/ms;
-    $template =~ s/$insert_cmds/$cmds/ms;
-    $template =~ s/$insert_e_cmds/$e_cmds/ms;
-    $template =~ s/$insert_f_cmds/$f_cmds/ms;
+    $template =~ s/$INSERT_WARNING/$WARNING/ms;
+    $template =~ s/$INSERT_CMDS/$cmds/ms;
+    $template =~ s/$INSERT_E_CMDS/$e_cmds/ms;
+    $template =~ s/$INSERT_F_CMDS/$f_cmds/ms;
 
     print {*STDERR} "Creating $file\n" or croak;
 
@@ -306,11 +307,13 @@ sub make_entry
     $exec .= q{,};
     $exec = sprintf '%-15s', $exec;
 
-    my $entry = sprintf '%s', "    ENTRY($name  $parse  $scan  $exec  $mn_args),\n";
+    my $entry = sprintf '%s',
+      "    ENTRY($name  $parse  $scan  $exec  $mn_args),\n";
 
     if ( $name =~ s/^('[[:upper:]]',)/\L$1/msx )
     {
-        $entry .= sprintf '%s', "    ENTRY($name  $parse  $scan  $exec  $mn_args),\n";
+        $entry .= sprintf '%s',
+          "    ENTRY($name  $parse  $scan  $exec  $mn_args),\n";
     }
 
     return $entry;
@@ -341,11 +344,11 @@ sub make_exec_h
 
     chomp $exec_list;
 
-    my $insert_warning = '/\* \(INSERT: WARNING NOTICE\) \*/';
+    my $INSERT_WARNING = '/\* \(INSERT: WARNING NOTICE\) \*/';
     my $insert_scan    = '/\* \(INSERT: SCAN FUNCTIONS\) \*/';
     my $insert_exec    = '/\* \(INSERT: EXEC FUNCTIONS\) \*/';
 
-    $template =~ s/$insert_warning/$warning/ms;
+    $template =~ s/$INSERT_WARNING/$WARNING/ms;
     $template =~ s/$insert_scan/$scan_list/ms;
     $template =~ s/$insert_exec/$exec_list/ms;
 
@@ -395,7 +398,7 @@ sub parse_commands
             my $exec    = $command->getAttribute('exec');
             my $mn_args = 'false';
 
-            if (defined $exec && $exec =~ / (.+) ! /msx)
+            if ( defined $exec && $exec =~ / (.+) ! /msx )
             {
                 $mn_args = 'true';
                 $exec =~ s/ (.+) ! /$1/msx;
