@@ -1,0 +1,6 @@
+!! TECO-64 test script: Test lib/init.tec
+!! Expect: PASS
+
+@EI/init/
+:@^A/PASS/
+^C

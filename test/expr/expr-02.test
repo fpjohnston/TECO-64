@@ -1,0 +1,9 @@
+!! TECO-64 test script: push excessive values
+!! Expect: FAIL
+
+(64 + 1) UA     !! No. of values we'll push on expression stack
+
+QA < :@^UA/123 / MA >
+
+:@^A/PASS/
+

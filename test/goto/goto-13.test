@@ -1,0 +1,20 @@
+!! TECO-64 test script: O -- forward branch into a conditional
+!! Expect: FAIL
+
+@O!tag1!
+
+:@^A/FAIL/
+
+^C
+
+0 "E
+
+    !tag1!
+
+    :@^A/PASS/
+
+    ^C
+
+'
+
+

@@ -1,0 +1,33 @@
+!! TECO-64 test script: X -- copy to Q-register
+!! Expect: PASS [X-01.txt]
+
+HK
+
+0UA
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    10I
+>
+
+:@^A/-----/
+0J 1XA :GA
+:@^A/-----/
+2L 2XA :GA
+:@^A/-----/
+3L 3XA :GA
+:@^A/-----/
+ZJ -3XA :GA
+:@^A/-----/
+-4L -2XA :GA
+:@^A/-----/
+-3L -1XA :GA
+:@^A/-----/
+HXA :GA
+:@^A/-----/
+
+:@^A/PASS/
+
+^C

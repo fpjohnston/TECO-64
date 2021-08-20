@@ -1,7 +1,0 @@
-!! TECO-64 test script
-!! Library macros: execute lib/init.tec
-!! Expect: PASS
-
-@EI/init/
-:@^A/PASS/
-^C

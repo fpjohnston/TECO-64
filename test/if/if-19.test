@@ -1,0 +1,14 @@
+!! TECO-64 test script: "U -- test for unsuccessful
+!! Expect: PASS
+
+ 0 "U | @^A/FAIL/ ^C '
+ 1 "U   @^A/FAIL/ ^C '
+-1 "U   @^A/FAIL/ ^C '
+
+ 0 "u | @^A/FAIL/ ^C '
+ 1 "u   @^A/FAIL/ ^C '
+-1 "u   @^A/FAIL/ ^C '
+
+:@^A/PASS/
+
+^C

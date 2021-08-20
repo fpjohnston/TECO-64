@@ -1,0 +1,8 @@
+!! TECO-64 test script: M -- macro w/o required m & n args.
+!! Expect: FAIL
+
+@^UA/U.A U.B/
+
+123 MA
+
+^[^[

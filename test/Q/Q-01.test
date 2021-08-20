@@ -1,0 +1,22 @@
+!! TECO-64 test script: Q -- Test Q, nQ, and :Q
+!! Expect: PASS [Q-01.txt]
+
+@^UA/the quick brown fox jumped over the lazy dog/
+
+123456 UA
+
+@^A/QA=/ QA=
+
+@^A/:QA=/ :QA=
+
+0 UB
+
+!! Print out contents of Q-register, one character at a time
+
+:QA < QB QA ^T :%B >
+
+-1^T
+
+:@^A/PASS/
+
+^C

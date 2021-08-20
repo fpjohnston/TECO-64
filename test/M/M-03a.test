@@ -1,0 +1,10 @@
+!! TECO-64 test script: M -- maximum nested macros
+!! Expect: PASS
+
+0 UA
+
+@^UA{ %A-63 "L MA | :@^A/PASS/ ^C ' }
+
+MA
+
+^[^[

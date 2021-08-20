@@ -1,0 +1,12 @@
+!! TECO-64 test script: @EI// -- open indirect command file
+!! Expect: PASS
+!! Options: -B foo.test
+
+HXA HK
+
+@EI/^EQA/
+
+:@^A/PASS/
+
+HK
+^[^[

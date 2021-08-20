@@ -1,7 +1,0 @@
-!! TECO-64 test script
-!! [ command: excessive Q-register push-down list
-!! Expect: FAIL
-
-65 < [A >
-
-:@^A/PASS/

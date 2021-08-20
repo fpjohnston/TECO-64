@@ -1,0 +1,22 @@
+!! TECO-64 test script: O -- backward branch into a conditional
+!! Expect: FAIL
+
+@O!tag1!
+
+0 "E
+
+    !tag2!
+
+    :@^A/PASS/
+
+    ^C
+'
+
+!tag1!
+
+@O!tag2!
+
+:@^A/FAIL/
+
+^C
+

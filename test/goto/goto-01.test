@@ -1,0 +1,14 @@
+!! TECO-64 test script: O -- forward branch
+!! Expect: PASS
+
+@O!tag1!
+
+@^A/?FAIL/
+
+^C
+
+!tag1!
+
+:@^A/PASS/
+
+^C

@@ -1,0 +1,18 @@
+!! TECO-64 test script: O -- backward branch
+!! Expect: PASS
+
+@O!tag1!
+
+!tag2!
+
+:@^A/PASS/
+
+^C
+
+!tag1!
+
+@O!tag2!
+
+@^A/FAIL/
+
+^C

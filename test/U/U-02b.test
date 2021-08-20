@@ -1,0 +1,9 @@
+!! TECO-64 test script: U -- load n arg.
+!! Expect: FAIL
+!! Options:
+
+UN
+QN @:=/QN=%d: /
+
+:@^A/PASS/
+^[^[

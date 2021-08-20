@@ -1,0 +1,6 @@
+!! TECO-64 test script: Test lib/vtedit.tec
+!! Expect: PASS
+
+1 @EI/vtedit/
+:@^A/PASS/
+^C

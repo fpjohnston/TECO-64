@@ -1,7 +1,0 @@
-!! TECO-64 test script
-!! Library macros: execute lib/goodbye.tec
-!! Expect: PASS
-
-@EI/goodbye/
-:@^A/PASS/
-^C

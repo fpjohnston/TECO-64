@@ -1,0 +1,47 @@
+!! TECO-64 test script: ^U -- load global Q-registers
+!! Expect: PASS [_U-01.txt]
+
+0 U.A
+10 <
+    @I"@^U"
+    ^^0 + Q.A I
+    @I"{:@^A/Loaded Q-register "
+    ^^0 + Q.A I
+    @I"/}"
+    10I
+    :%.A
+>
+
+0 U.A
+26 <
+    @I"@^U"
+    ^^A + Q.A I
+    @I"{:@^A/Loaded Q-register "
+    ^^A + Q.A I
+    @I"/}"
+    10I
+    :%.A
+>
+
+HX.A HK M.A
+
+0 U.B
+10 <
+    @I/M/
+    ^^0 + Q.BI
+    @I/ /
+    :%.B
+>
+
+0 U.B
+26 <
+    @I/M/
+    ^^A + Q.BI
+    @I/ /
+    :%.B
+>
+
+HX.B HK M.B
+:@^A/PASS/
+
+^C

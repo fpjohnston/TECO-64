@@ -1,0 +1,17 @@
+!! TECO-64 test script: O -- forward branch within loop
+!! Expect: PASS
+
+1 <
+    @O!tag1!
+
+    :@^A/FAIL/
+
+    ^C
+
+    !tag1!
+
+    :@^A/PASS/
+
+    ^C
+>
+

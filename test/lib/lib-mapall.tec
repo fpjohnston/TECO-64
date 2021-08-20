@@ -1,7 +1,0 @@
-!! TECO-64 test script
-!! Library macros: execute lib/mapall.tec
-!! Expect: PASS
-
--1 @EI/mapall/
-:@^A/PASS/
-^C

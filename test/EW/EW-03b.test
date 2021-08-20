@@ -1,0 +1,16 @@
+!! TECO-64 test script: :EW -- open output file
+!! Expect: FAIL
+!! Options: -B /dev/baz
+
+HXA HK          !! Copy file name to Q-register A, clear buffer
+
+:@EW/^EQA/      !! Open file for write, using name in Q-register A
+
+"S
+    :@^A/PASS/
+|
+    :@^A/FAIL/
+'
+
+EK HK
+^[^[

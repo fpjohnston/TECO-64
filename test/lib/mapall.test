@@ -1,0 +1,6 @@
+!! TECO-64 test script: Test lib/mapall.tec
+!! Expect: PASS
+
+-1 @EI/mapall/
+:@^A/PASS/
+^C
