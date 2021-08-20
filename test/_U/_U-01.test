@@ -1,4 +1,4 @@
-!! TECO-64 test script: ^U -- load global Q-registers
+!! TECO-64 test script: ^U -- load global Q-registers w/ text
 !! Expect: PASS [_U-01.txt]
 
 0 U.A
