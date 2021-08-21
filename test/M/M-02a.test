@@ -1,5 +1,5 @@
-!! TECO-64 test script: M -- macro w/o required n arg.
-!! Expect: FAIL
+! TECO-64 test script: Execute macro w/o required n arg. -- M !
+! Expect: FAIL !
 
 @^UA/U.A/
 

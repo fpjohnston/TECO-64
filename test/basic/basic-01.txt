@@ -3,7 +3,7 @@
 [Executing I]
 [Executing HXC]
 [Executing HK]
-[Executing :GC] result: @^A/ (.=/ .:= @^A/, Z=/ Z:= ^^)^T
+[Executing :GC] result: @^A/ (.=/ .:= @^A/, Z=/ Z:= ^^) ^T
 [Executing EW]
 [Executing I]
 [Executing HT] (.=15, Z=15) result: This is a test
@@ -27,5 +27,6 @@
 [Executing B,ZD]
 [Executing HT] (.=0, Z=0) result: 
 [Executing EK]
-[Executing ::EG] (to delete temporary files)
+
 PASS
+[Executing EG]

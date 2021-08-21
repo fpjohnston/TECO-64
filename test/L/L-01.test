@@ -1,24 +1,24 @@
-!! TECO-64 test script: :L -- get relative line info
-!! Expect: PASS [L-01.txt]
+! TECO-64 test script: Get relative line info -- :L !
+! Expect: PASS [L-01.txt] !
 
 HK
 
 @^U.A
 {
-    U.A Q.A :@=/%2u/ @^A/ line/ Q.A-1 "N @^A/s/ | @^A/ / '
+    U.A Q.A := @^A/ line/ Q.A-1 "N @^A/s/ | @^A/ / '
 }
 
 @^U.B
 {
-     .:@=/.=%3d, /
+     @^A/.=/ .:= @^A/, /
      0:L M.A @^A/ in page, /
     -1:L M.A @^A/ preceding dot, /
      1:L M.A @^A/ following dot/
-     -1^T
+     13^T 10^T
 }
 
 10 <
-    @I/abcdefghijklmnopwrstuvwxyz 0123456789/ 10I
+    @I/abcdefghijklmnopwrstuvwxyz 0123456789/ @10I//
 >
 
 0J  M.B
@@ -30,7 +30,7 @@ ZL  M.B
 -L  M.B
 -ZL M.B
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 
 HK
 ^[^[

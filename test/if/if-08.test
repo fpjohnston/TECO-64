@@ -1,30 +1,30 @@
-!! TECO-64 test script: "A -- test for alphabetic
-!! Expect: PASS
+! TECO-64 test script: Test for alphabetic -- "A !
+! Expect: PASS !
 
-0 UC            !! Start at NUL
+0 UC            ! Start at NUL !
 
-^^A < %C-1 "A :@^A/FAIL/ ' >          !! NUL to upper case
+^^A < %C-1 "A @^A/FAIL/ 13^T 10^T ' >          ! NUL to upper case !
 
-^^Z-^^A+1 < %C-1 "A | :@^A/FAIL/ ' >  !! Upper case
+^^Z-^^A+1 < %C-1 "A | @^A/FAIL/ 13^T 10^T ' >  ! Upper case !
 
-^^a-^^Z-1 < %C-1 "A :@^A/FAIL/ ' >    !! Upper case to lower case
+^^a-^^Z-1 < %C-1 "A @^A/FAIL/ 13^T 10^T ' >    ! Upper case to lower case !
 
-^^z-^^a+1 < %C-1 "A | :@^A/FAIL/ ' >  !! Lower case
+^^z-^^a+1 < %C-1 "A | @^A/FAIL/ 13^T 10^T ' >  ! Lower case !
 
-255-^^z-1 < %C-1 "A :@^A/FAIL/ ' >    !! Remaining 8-bit characters
+255-^^z-1 < %C-1 "A @^A/FAIL/ 13^T 10^T ' >    ! Remaining 8-bit characters !
 
-0 UC            !! Start at NUL
+0 UC            ! Start at NUL !
 
-^^A < %C-1 "a :@^A/FAIL/ ' >          !! NUL to upper case
+^^A < %C-1 "a @^A/FAIL/ 13^T 10^T ' >          ! NUL to upper case !
 
-^^Z-^^A+1 < %C-1 "a | :@^A/FAIL/ ' >  !! Upper case
+^^Z-^^A+1 < %C-1 "a | @^A/FAIL/ 13^T 10^T ' >  ! Upper case !
 
-^^a-^^Z-1 < %C-1 "a :@^A/FAIL/ ' >    !! Upper case to lower case
+^^a-^^Z-1 < %C-1 "a @^A/FAIL/ 13^T 10^T ' >    ! Upper case to lower case !
 
-^^z-^^a+1 < %C-1 "a | :@^A/FAIL/ ' >  !! Lower case
+^^z-^^a+1 < %C-1 "a | @^A/FAIL/ 13^T 10^T ' >  ! Lower case !
 
-255-^^z-1 < %C-1 "a :@^A/FAIL/ ' >    !! Remaining 8-bit characters
+255-^^z-1 < %C-1 "a @^A/FAIL/ 13^T 10^T ' >    ! Remaining 8-bit characters !
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 
 ^C

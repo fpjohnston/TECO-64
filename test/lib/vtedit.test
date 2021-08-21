@@ -1,6 +1,6 @@
-!! TECO-64 test script: Test lib/vtedit.tec
-!! Expect: PASS
+! TECO-64 test script: Test lib/vtedit.tec !
+! Expect: PASS !
 
 1 @EI/vtedit/
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 ^C

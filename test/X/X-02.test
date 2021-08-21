@@ -1,5 +1,5 @@
-!! TECO-64 test script: X -- append to Q-register
-!! Expect: PASS [X-02.txt]
+! TECO-64 test script: Append to Q-register -- X !
+! Expect: PASS [X-02.txt] !
 
 HK
 
@@ -9,23 +9,23 @@ HK
     @I/line /
     %A \
     @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
-    10I
+    13@I// 10@I//
 >
 
-:@^A/-----/
+@^A/-----/ 13^T 10^T
 0J 1:XA :GA
-:@^A/-----/
+@^A/-----/ 13^T 10^T
 2L 2:XA :GA
-:@^A/-----/
+@^A/-----/ 13^T 10^T
 3L 3:XA :GA
-:@^A/-----/
+@^A/-----/ 13^T 10^T
 ZJ -3:XA :GA
-:@^A/-----/
+@^A/-----/ 13^T 10^T
 -4L -2:XA :GA
-:@^A/-----/
+@^A/-----/ 13^T 10^T
 -3L -1:XA :GA
-:@^A/-----/
+@^A/-----/ 13^T 10^T
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 
 ^C

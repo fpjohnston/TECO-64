@@ -1,7 +1,7 @@
-!! FIXME
-!! TECO-64 test script: Test lib/squish.tec
-!! Expect: PASS
+! FIXME !
+! TECO-64 test script: Test lib/squish.tec !
+! Expect: PASS !
 
 @EI/squish/
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 ^C

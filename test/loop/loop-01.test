@@ -1,5 +1,5 @@
-!! TECO-64 test script: <> -- maximum nested loops
-!! Expect: PASS
+! TECO-64 test script: Test maximum nested loops -- <, > !
+! Expect: PASS !
 
 0,128ET
 
@@ -68,6 +68,6 @@
   >
 >
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 
 ^C

@@ -1,5 +1,5 @@
-!! TECO-64 test script: "L -- test for less than zero
-!! Expect: PASS
+! TECO-64 test script: Test for less than zero -- "L !
+! Expect: PASS !
 
  0 "L   @^A/FAIL/ ^C '
  1 "L   @^A/FAIL/ ^C '
@@ -9,6 +9,6 @@
  1 "l   @^A/FAIL/ ^C '
 -1 "l | @^A/FAIL/ ^C '
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 
 ^C

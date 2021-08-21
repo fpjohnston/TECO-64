@@ -1,9 +1,9 @@
-!! TECO-64 test script: O -- forward branch into a conditional
-!! Expect: FAIL
+! TECO-64 test script: Branch forward into a conditional -- O !
+! Expect: FAIL !
 
 @O!tag1!
 
-:@^A/FAIL/
+@^A/FAIL/ 13^T 10^T
 
 ^C
 
@@ -11,7 +11,7 @@
 
     !tag1!
 
-    :@^A/PASS/
+    @^A/PASS/ 13^T 10^T
 
     ^C
 

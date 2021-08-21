@@ -1,12 +1,12 @@
-!! TECO-64 test script: EI -- open indirect command file
-!! Expect: FAIL
-!! Options: -B baz.test
+! TECO-64 test script: Open indirect command file -- EI !
+! Expect: FAIL !
+! Options: -B baz.test !
 
 HXA HK
 
 EI^EQA
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 
 HK
 ^[^[

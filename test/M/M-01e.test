@@ -1,23 +1,23 @@
-!! TECO-64 test script: M -- macro returning m & n args.
-!! Expect: PASS
+! TECO-64 test script: Execute macro returning m & n args. -- M !
+! Expect: PASS !
 
 @I/123,456/
-2,27I
+27@I// 27@I//
 
 HXA HK
 
 MA UA UB
 
 QB - 123 "N
-    :@^A/FAIL/
+    @^A/FAIL/ 13^T 10^T
     ^C
 '
 
 QA - 456 "N
-    :@^A/FAIL/
+    @^A/FAIL/ 13^T 10^T
     ^C
 '
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 
 ^[^[

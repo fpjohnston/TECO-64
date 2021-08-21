@@ -1,26 +1,26 @@
-!! TECO-64 test script: ^U -- load global Q-registers w/ text
-!! Expect: PASS [_U-01.txt]
+! TECO-64 test script: Load global Q-registers w/ text -- ^U !
+! Expect: PASS [_U-01.txt] !
 
 0 U.A
 10 <
     @I"@^U"
-    ^^0 + Q.A I
-    @I"{:@^A/Loaded Q-register "
-    ^^0 + Q.A I
-    @I"/}"
-    10I
-    :%.A
+    ^^0 + Q.A @I//
+    @I"{@^A/Loaded Q-register "
+    ^^0 + Q.A @I//
+    @I" 13^T 10^T/}"
+    13@I// 10@I//
+    %.A
 >
 
 0 U.A
 26 <
     @I"@^U"
-    ^^A + Q.A I
-    @I"{:@^A/Loaded Q-register "
-    ^^A + Q.A I
-    @I"/}"
-    10I
-    :%.A
+    ^^A + Q.A @I//
+    @I"{@^A/Loaded Q-register "
+    ^^A + Q.A @I//
+    @I" 13^T 10^T/}"
+    13@I// 10@I//
+    %.A
 >
 
 HX.A HK M.A
@@ -28,20 +28,20 @@ HX.A HK M.A
 0 U.B
 10 <
     @I/M/
-    ^^0 + Q.BI
+    ^^0 + Q.B @I//
     @I/ /
-    :%.B
+    %.B
 >
 
 0 U.B
 26 <
     @I/M/
-    ^^A + Q.BI
+    ^^A + Q.B @I//
     @I/ /
-    :%.B
+    %.B
 >
 
 HX.B HK M.B
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 
 ^C

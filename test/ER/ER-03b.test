@@ -1,15 +1,15 @@
-!! TECO-64 test script: :@ER -- open input file
-!! Expect: FAIL
-!! Options: -B baz
+! TECO-64 test script: Open input file -- :@ER !
+! Expect: FAIL !
+! Options: -B baz !
 
-HXA HK          !! Copy file name to Q-register A, clear buffer
+HXA HK          ! Copy file name to Q-register A, clear buffer !
 
-:@ER/^EQA/      !! Open file for read, using name in Q-register A
+:@ER/^EQA/      ! Open file for read, using name in Q-register A !
 
 "S
-    :@^A/PASS/
+    @^A/PASS/ 13^T 10^T
 |
-    :@^A/FAIL/
+    @^A/FAIL/ 13^T 10^T
 '
 
 HK

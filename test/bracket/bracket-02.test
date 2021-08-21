@@ -1,6 +1,6 @@
-!! TECO-64 test script: [ -- push excessive Q-registers
-!! Expect: FAIL
+! TECO-64 test script: Push excessive Q-registers -- [ !
+! Expect: FAIL !
 
 65 < [A >
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T

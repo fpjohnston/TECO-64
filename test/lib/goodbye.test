@@ -1,6 +1,6 @@
-!! TECO-64 test script: Test lib/goodbye.tec
-!! Expect: PASS
+! TECO-64 test script: Test lib/goodbye.tec !
+! Expect: PASS !
 
 @EI/goodbye/
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 ^C

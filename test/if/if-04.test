@@ -1,5 +1,5 @@
-!! TECO-64 test script: "x | ' -- nesting excessive conditionals
-!! Expect: FAIL
+! TECO-64 test script: Test nesting excessive conditionals -- "x, | !
+! Expect: FAIL !
 
 1"N
 |
@@ -101,6 +101,6 @@
   '
 '
 
-:@^A/FAIL/   !! Shouldn't get here
+@^A/FAIL/ 13^T 10^T   ! Shouldn't get here !
 
 ^C

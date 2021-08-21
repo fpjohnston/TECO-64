@@ -1,9 +1,9 @@
-!! TECO-64 test script: :U -- load n arg.
-!! Expect: PASS
-!! Options:
+! TECO-64 test script: Load n arg. -- :U !
+! Expect: PASS !
+! Options: !
 
 :UN
 QN @:=/QN=%d: /
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 ^[^[

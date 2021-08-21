@@ -1,9 +1,9 @@
-!! TECO-64 test script: M -- excessive nested macros
-!! Expect: FAIL
+! TECO-64 test script: Execute excessive nested macros -- M !
+! Expect: FAIL !
 
 0 UA
 
-@^UA{ %A-64 "L MA | :@^A/PASS/ ^C ' }
+@^UA{ %A-64 "L MA | @^A/PASS/ 13^T 10^T ^C ' }
 
 MA
 

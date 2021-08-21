@@ -1,5 +1,5 @@
-!! TECO-64 test script: G -- copy global Q-registers
-!! Expect: PASS [G-01.txt]
+! TECO-64 test script: Copy global Q-registers -- G !
+! Expect: PASS [G-01.txt] !
 
 0 U.A
 HK
@@ -7,43 +7,43 @@ HK
 ^^0 U.B
 ^^9 - Q.B + 1 <
     @I{@^U}
-    Q.B I
+    Q.B @I//
     @I{/Q-register }
-    Q.B I
+    Q.B @I//
     @I{ text/ }
     @I{10:@^U}
-    Q.B I
+    Q.B @I//
     @I{//}
-    10I
-    :%.B
+    10@I//
+    %.B
 >
 
 ^^a U.B
 ^^z - Q.B + 1 <
     @I{@^U}
-    Q.B I
+    Q.B @I//
     @I{/Q-register }
-    Q.B I
+    Q.B @I//
     @I{ text/ }
     @I{10:@^U}
-    Q.B I
+    Q.B @I//
     @I{//}
-    10I
-    :%.B
+    10@I//
+    %.B
 >
 
 ^^A U.B
 ^^Z - Q.B + 1 <
     @I{@^U}
-    Q.B I
+    Q.B @I//
     @I{/Q-register }
-    Q.B I
+    Q.B @I//
     @I{ text/ }
     @I{10:@^U}
-    Q.B I
+    Q.B @I//
     @I{//}
-    10I
-    :%.B
+    10@I//
+    %.B
 >
 
 HX.A HK M.A
@@ -51,29 +51,29 @@ HX.A HK M.A
 ^^0 U.B
 ^^9 - Q.B + 1 <
     @I/:G/
-    Q.BI
-    10I
-    :%.B
+    Q.B @I//
+    10@I//
+    %.B
 >
 
 ^^a U.B
 ^^z - Q.B + 1 <
     @I/:G/
-    Q.BI
-    10I
-    :%.B
+    Q.B @I//
+    10@I//
+    %.B
 >
 
 ^^A U.B
 ^^Z - Q.B + 1 <
     @I/:G/
-    Q.BI
-    10I
-    :%.B
+    Q.B @I//
+    10@I//
+    %.B
 >
 
 HX.B HK M.B
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 
 ^C

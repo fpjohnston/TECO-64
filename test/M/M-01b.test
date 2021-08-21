@@ -1,15 +1,15 @@
-!! TECO-64 test script: M -- macro w/ n arg.
-!! Expect: PASS
+! TECO-64 test script: Execute macro w/ n arg. -- M !
+! Expect: PASS !
 
 @I
 {
     UA
     QA - 123 "N
-        :@^A/FAIL/
+        @^A/FAIL/ 13^T 10^T
         ^C
     '
 
-    :@^A/PASS/
+    @^A/PASS/ 13^T 10^T
 }
 
 HXA HK

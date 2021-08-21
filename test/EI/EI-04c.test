@@ -1,9 +1,9 @@
-!! TECO-64 helper script
+! TECO-64 helper script !
 
-:@^A/entering test 4c/
+@^A/entering test 4c/ 13^T 10^T
 
-:@^A/hello, world!/
+@^A/hello, world!/ 13^T 10^T
 
-:@^A/exiting test 4c/
+@^A/exiting test 4c/ 13^T 10^T
 
 

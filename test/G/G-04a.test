@@ -1,5 +1,5 @@
-!! TECO-64 test script: G_ -- copy last search string
-!! Expect: PASS [G-04a.txt]
+! TECO-64 test script: Copy last search string -- G_ !
+! Expect: PASS [G-04a.txt] !
 
 0 U.A
 HK
@@ -7,9 +7,9 @@ HK
 :@S/frumious bandersnatch/
 @^A/G_ = /
 G_
-10I
+10@I//
 HT
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 
 ^C

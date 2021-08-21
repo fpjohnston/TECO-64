@@ -1,11 +1,11 @@
-!! TECO-64 test script: U -- load m & n args.
-!! Expect: FAIL
-!! Options:
+! TECO-64 test script: Load m & n args. -- U !
+! Expect: FAIL !
+! Options: !
 
 UN UM
 QM
 @:=/QM=%d: /
 QN @:=/QN=%d: /
 
-:@^A/PASS/
+@^A/PASS/ 13^T 10^T
 ^[^[
