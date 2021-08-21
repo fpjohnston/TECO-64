@@ -31,7 +31,7 @@ QN "E
 
 @^UN/ := :%D /                          !! Output digit and count it
 
-QW "N                                   !! If width specified,
+QW "G                                   !! If width specified,
     :@^UN{ (QD // QW) "E -1^T ' }       !!  then start new line if needed
 '
 
