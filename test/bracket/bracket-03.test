@@ -1,0 +1,20 @@
+!! TECO-64 test script: [] -- push/pop maximum Q-registers
+!! Expect: PASS
+
+0UA
+
+64 <
+    %A
+    [A
+>
+
+64 <
+    ]B
+    QB-QA "N
+        :@^UA/FAIL/
+        ^C
+    '
+    -1:%A
+>
+
+:@^A/PASS/
