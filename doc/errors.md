@@ -42,6 +42,7 @@ code.
 | <nobr>?DTB</nobr> | <nobr>Delete too big</nobr> | A D command attempted to delete text outside the current page. |
 | <nobr>?DUP</nobr> | <nobr>Duplicate tag '!*foo*!'</nobr> | An O command found a duplicate tag within the command string. |
 | <nobr>?EGC</nobr> | <nobr>EG command is too long</nobr> | An EG command was longer than 200 characters. |
+| <nobr>?EXT</nobr> | <nobr>Extended feature not enabled</nobr> | A command attempted to use an extended feature which is not currently enabled. |
 | <nobr>?FIL</nobr> | <nobr>Invalid file '*foo*'</nobr> | An attempt was made to open a directory, FIFO, socket, or similar file specification instead of a regular file. |
 | <nobr>?FNF</nobr> | <nobr>File not found '*foo*'</nobr> | The requested input file could not be located. If this occurred within a macro, the colon-modified command may be necessary. |
 | <nobr>?ICE</nobr> | <nobr>Invalid ^E command in search argument</nobr> | A search argument contains a ^E command that is either not defined or incomplete. |

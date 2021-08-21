@@ -74,7 +74,14 @@ bool scan_pct(struct cmd *cmd)
 
     cmd->n_set = true;
 
-    if (!cmd->colon)                    // Don't return value if :%q
+    if (cmd->colon)
+    {
+        if (!f.e1.percent)
+        {
+            throw(E_EXT);
+        }
+    }
+    else
     {
         push_x(cmd->n_arg, X_OPERAND);
     }

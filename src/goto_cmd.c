@@ -312,8 +312,13 @@ bool scan_bang(struct cmd *cmd)
 
     int c;
 
-    if (f.e1.bang && (c = peek_cbuf()) == '!')
+    if ((c = peek_cbuf()) == '!')
     {
+        if (!f.e1.bang)                 // Is !! enabled?
+        {
+            throw(E_EXT);
+        }
+
         next_cbuf();
         trace_cbuf(c);
 

@@ -77,6 +77,12 @@
             <detail>An EG command was longer than 200 characters.</detail>
         </error>
         <error>
+            <code>EXT</code>
+            <message>Extended feature not enabled</message>
+            <detail>A command attempted to use an extended feature</detail>
+            <detail>which is not currently enabled.</detail>
+        </error>
+        <error>
             <code>FIL</code>
             <message>Invalid file &apos;%s&apos;</message>
             <detail>An attempt was made to open a directory, FIFO,</detail>

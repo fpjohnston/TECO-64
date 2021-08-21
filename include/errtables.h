@@ -54,6 +54,7 @@ static struct errlist errlist[] =
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
     [E_EGC] = { "EGC",  "EG command is too long" },
+    [E_EXT] = { "EXT",  "Extended feature not enabled" },
     [E_FIL] = { "FIL",  "Invalid file '%s'" },
     [E_FNF] = { "FNF",  "File not found '%s'" },
     [E_ICE] = { "ICE",  "Invalid ^E command in search argument" },
@@ -149,6 +150,8 @@ static const char *errhelp[] =
     [E_DUP] = "An O command found a duplicate tag within the "
               "command string.",
     [E_EGC] = "An EG command was longer than 200 characters.",
+    [E_EXT] = "A command attempted to use an extended feature "
+              "which is not currently enabled.",
     [E_FIL] = "An attempt was made to open a directory, FIFO, "
               "socket, or similar file specification instead "
               "of a regular file.",

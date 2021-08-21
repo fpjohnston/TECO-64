@@ -70,7 +70,14 @@ void exec_I(struct cmd *cmd)
 
     if (cmd->n_set && cmd->text1.len != 0) // nItext`?
     {
-        throw(E_IIA);                   // Invalid insert argument
+        if (!cmd->atsign && !f.e1.insert)
+        {
+            throw(E_EXT);               // Extended feature not enabled
+        }
+        else
+        {
+            throw(E_IIA);               // Invalid insert argument
+        }
     }
 
     if (cmd->text1.len != 0)

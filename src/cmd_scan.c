@@ -163,7 +163,7 @@ bool parse_M1(struct cmd *cmd)
     require_n(cmd->m_set, cmd->n_set);
     reject_colon(cmd->colon);
 
-    if (toupper(cmd->c1) != 'I' || !cmd->n_set || cmd->atsign)
+    if (toupper(cmd->c1) != 'I' || !cmd->n_set || cmd->atsign || !f.e1.insert)
     {
         scan_texts(cmd, 1, ESC);
     }

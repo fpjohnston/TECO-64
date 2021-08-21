@@ -58,9 +58,14 @@ void exec_U(struct cmd *cmd)
     {
         reject_colon(cmd->colon);
     }
-    else if (f.e1.colon_u && cmd->colon) // No n, but :Uq and colon allowed?
+    else if (cmd->colon)                // No n, but :Uq and colon allowed?
     {
-        cmd->n_arg = DEFAULT_U;         // Yes, use default argument
+        if (!f.e1.colon_u)
+        {
+            throw(E_EXT);               // Extended feature not enabled
+        }
+
+        cmd->n_arg = DEFAULT_U;         // Use default argument
     }
     else
     {

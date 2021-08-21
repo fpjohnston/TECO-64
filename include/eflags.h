@@ -73,6 +73,8 @@ union e1_flag
         uint prompt  : 1;       ///< Add CR/LF before prompt if needed
         uint radix   : 1;       ///< Automatically determine number radix
         uint colon_u : 1;       ///< Allow :U (w/ default arg. of 0)
+        uint insert  : 1;       ///< Allow nI w/o ESCape or delimiter
+        uint percent : 1;       ///< Allow :%q
     };
 };
 

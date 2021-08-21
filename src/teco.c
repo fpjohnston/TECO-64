@@ -72,6 +72,8 @@ struct flags f =                    ///< Global flag variables
     .e1.prompt  = true,             // Ensure prompt starts in 1st column
     .e1.radix   = true,             // Allow in-line radix control
     .e1.colon_u = true,             // Allow :U (w/ default arg. of 0)
+    .e1.insert  = true,             // Allow nI w/o requiring n@I
+    .e1.percent = true,             // Allow :%q
 
     .e2.flag = 0,                   // All bits off in E2 flag
 

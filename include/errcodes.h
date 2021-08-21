@@ -50,6 +50,7 @@ enum errcodes
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag '!foo!'
     E_EGC,          ///< EG command is too long
+    E_EXT,          ///< Extended feature not enabled
     E_FIL,          ///< Invalid file 'foo'
     E_FNF,          ///< File not found 'foo'
     E_ICE,          ///< Invalid ^E command in search argument
