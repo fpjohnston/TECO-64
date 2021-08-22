@@ -399,7 +399,10 @@ struct ifile *open_input(const char *name, uint stream, bool colon)
 
     strcpy(ifile->name, name);
 
-    write_memory(ifile->name);
+    if (stream == IFILE_PRIMARY || stream == IFILE_SECONDARY)
+    {
+        write_memory(ifile->name);
+    }
 
     return ifile;
 }
