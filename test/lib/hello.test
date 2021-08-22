@@ -2,5 +2,5 @@
 ! Expect: PASS !
 
 @EI/hello/
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 ^C

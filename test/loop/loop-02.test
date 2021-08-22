@@ -68,6 +68,6 @@
   >
 >
 
-@^A/FAIL/ 13^T 10^T     ! Shouldn't get here !
+:@^A/FAIL/     ! Shouldn't get here !
 
 ^C

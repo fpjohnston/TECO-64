@@ -1,5 +1,5 @@
 ! TECO-64 test script: Copy last file name -- G* !
-! Expect: PASS [G-03a.txt] !
+! Expect: PASS [G-03a.log] !
 
 0 U.A
 HK
@@ -10,6 +10,6 @@ G*
 10@I//
 HT
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^C

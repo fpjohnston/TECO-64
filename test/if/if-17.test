@@ -9,6 +9,6 @@
  1 "s   @^A/FAIL/ ^C '
 -1 "s | @^A/FAIL/ ^C '
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^C

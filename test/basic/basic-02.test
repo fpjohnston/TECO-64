@@ -1,5 +1,5 @@
 ! TECO-64 test script: Test basic functions #2 !
-! Expect: PASS [basic-02.txt] !
+! Expect: PASS [basic-02.log] !
 
 10 < @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// >
 
@@ -24,5 +24,5 @@ J
 < @S/def/; -3D >
 
 HT HK
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 

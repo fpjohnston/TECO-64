@@ -6,7 +6,7 @@
 
     !tag2!
 
-    @^A/PASS/ 13^T 10^T
+    :@^A/PASS/
 
     ^C
 
@@ -14,7 +14,7 @@
 
     @O!tag2!
 
-    @^A/FAIL/ 13^T 10^T
+    :@^A/FAIL/
 
     ^C
 >

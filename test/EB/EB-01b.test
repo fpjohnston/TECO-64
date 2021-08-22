@@ -6,7 +6,7 @@ HXA HK          ! Copy file name to Q-register A, clear buffer !
 
 EB^EQA        ! Open file for backup, using name in Q-register A !
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 EK HK
 ^[^[

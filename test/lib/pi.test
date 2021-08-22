@@ -1,6 +1,6 @@
 ! TECO-64 test script: Test lib/pi.tec !
-! Expect: PASS [pi.txt] !
+! Expect: PASS [pi.log] !
 
 50,98 @EI/pi/
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 ^C

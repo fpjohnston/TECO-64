@@ -4,14 +4,14 @@
 0 "E
     @O!tag1!
 
-    @^A/FAIL/ 13^T 10^T
+    :@^A/FAIL/
 
     ^C
 '
 
 !tag1!
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^C
 

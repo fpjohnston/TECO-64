@@ -1,9 +1,9 @@
 ! TECO-64 helper script !
 
-@^A/entering test 4a/ 13^T 10^T
+:@^A/entering test 4a/
 
 @EI/EI-04b.test/
 
-@^A/exiting test 4a/ 13^T 10^T
+:@^A/exiting test 4a/
 
 

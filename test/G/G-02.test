@@ -1,5 +1,5 @@
 ! TECO-64 test script: Print global Q-registers -- :G !
-! Expect: PASS [G-02.txt] !
+! Expect: PASS [G-02.log] !
 
 0 U.A
 HK
@@ -77,6 +77,6 @@ HX.A HK M.A
 
 HX.B HK M.B
 HT HK
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^C

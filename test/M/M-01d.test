@@ -9,9 +9,9 @@ HXA HK
 MA UA
 
 QA - 123 "N
-    @^A/FAIL/ 13^T 10^T
+    :@^A/FAIL/
 |
-    @^A/PASS/ 13^T 10^T
+    :@^A/PASS/
 '
 
 ^[^[

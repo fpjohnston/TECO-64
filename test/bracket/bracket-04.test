@@ -15,7 +15,7 @@
 <
     :]B;
     QB-QA "N
-        @^UA/FAIL/ 13^T 10^T
+        :@^UA/FAIL/
         ^C
     '
     -1%A
@@ -24,8 +24,8 @@
 ! Verify that we popped all expected Q-registers !
 
 QA"N
-    @^A/FAIL/ 13^T 10^T
+    :@^A/FAIL/
     ^C
 '
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/

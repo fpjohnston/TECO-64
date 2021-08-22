@@ -1,7 +1,7 @@
 ! TECO-64 test script: Execute macro -- M !
 ! Expect: PASS !
 
-@^UA"@^A/PASS/ 13^T 10^T"
+@^UA":@^A/PASS/"
 
 MA
 ^[^[

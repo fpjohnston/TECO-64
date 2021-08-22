@@ -1,5 +1,5 @@
 ! TECO-64 test script: Test Q, nQ, and :Q -- Q !
-! Expect: PASS [Q-01.txt] !
+! Expect: PASS [Q-01.log] !
 
 @^UA/the quick brown fox jumped over the lazy dog/
 
@@ -15,8 +15,8 @@
 
 :QA < QB QA ^T %B >
 
-13^T 10^T
+-1 ^T
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^C

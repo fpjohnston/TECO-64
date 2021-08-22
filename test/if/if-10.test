@@ -3,20 +3,20 @@
 
 0 UC            ! Start at NUL !
 
-^^0 < %C-1 "D @^A/FAIL/ 13^T 10^T ' >          ! NUL to digits !
+^^0 < %C-1 "D :@^A/FAIL/ ' >          ! NUL to digits !
 
-^^9-^^0+1 < %C-1 "D | @^A/FAIL/ 13^T 10^T ' >  ! Digits !
+^^9-^^0+1 < %C-1 "D | :@^A/FAIL/ ' >  ! Digits !
 
-255-^^9-1 < %C-1 "D @^A/FAIL/ 13^T 10^T ' >    ! Remaining 8-bit characters !
+255-^^9-1 < %C-1 "D :@^A/FAIL/ ' >    ! Remaining 8-bit characters !
 
 0 UC            ! Start at NUL !
 
-^^0 < %C-1 "d @^A/FAIL/ 13^T 10^T ' >          ! NUL to digits !
+^^0 < %C-1 "d :@^A/FAIL/ ' >          ! NUL to digits !
 
-^^9-^^0+1 < %C-1 "d | @^A/FAIL/ 13^T 10^T ' >  ! Digits !
+^^9-^^0+1 < %C-1 "d | :@^A/FAIL/ ' >  ! Digits !
 
-255-^^9-1 < %C-1 "d @^A/FAIL/ 13^T 10^T ' >    ! Remaining 8-bit characters !
+255-^^9-1 < %C-1 "d :@^A/FAIL/ ' >    ! Remaining 8-bit characters !
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^C

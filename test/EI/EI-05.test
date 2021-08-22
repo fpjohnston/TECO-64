@@ -3,10 +3,10 @@
 
 QA "E 0,32 E1 | 32,0 E1 '
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 @EI//
 
-@^A/FAIL/ 13^T 10^T
+:@^A/FAIL/
 
 

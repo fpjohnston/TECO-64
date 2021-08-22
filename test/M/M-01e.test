@@ -9,15 +9,15 @@ HXA HK
 MA UA UB
 
 QB - 123 "N
-    @^A/FAIL/ 13^T 10^T
+    :@^A/FAIL/
     ^C
 '
 
 QA - 456 "N
-    @^A/FAIL/ 13^T 10^T
+    :@^A/FAIL/
     ^C
 '
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^[^[

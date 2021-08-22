@@ -1,5 +1,5 @@
 ! TECO-64 test script: Print last file name -- :G* !
-! Expect: PASS [G-03b.txt] !
+! Expect: PASS [G-03b.log] !
 
 0 U.A
 HK
@@ -9,6 +9,6 @@ HK
 :G*
 -1^T
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^C

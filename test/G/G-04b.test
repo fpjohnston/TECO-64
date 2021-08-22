@@ -1,5 +1,5 @@
 ! TECO-64 test script: Print last search string -- :G_ !
-! Expect: PASS [G-04b.txt] !
+! Expect: PASS [G-04b.log] !
 
 0 U.A
 HK
@@ -9,6 +9,6 @@ HK
 :G_
 -1^T
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^C

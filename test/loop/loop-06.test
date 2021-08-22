@@ -1,5 +1,5 @@
 ! TECO-64 test script: Test nested loops -- <, > !
-! Expect: PASS [loop-06.txt] !
+! Expect: PASS [loop-06.log] !
 
 0 U1
 2 < @^A/1st loop: #/ %1=
@@ -9,11 +9,11 @@
         4 <
             @^A/3rd loop: #/ %3=
         >
-        @^A/finished 3rd loop/ 13^T 10^T
+        :@^A/finished 3rd loop/
     >
-    @^A/finished 2nd loop/ 13^T 10^T
+    :@^A/finished 2nd loop/
 >
-@^A/finished 1st loop/ 13^T 10^T
+:@^A/finished 1st loop/
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 ^C

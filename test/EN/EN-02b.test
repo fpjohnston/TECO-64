@@ -16,6 +16,6 @@ QA :@=/PASS: %u file/
 
 QA-1 "N @^A/s/ '
 
-@^A/ matched/ 13^T 10^T
+:@^A/ matched/
 
 ^[^[

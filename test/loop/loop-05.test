@@ -1,16 +1,16 @@
 ! TECO-64 test script: Basic loop test -- <, > !
-! Expect: PASS [loop-05.txt] !
+! Expect: PASS [loop-05.log] !
 
-0 < @^A/FAIL/ 13^T 10^T >
+0 < :@^A/FAIL/ >
 
--1 < @^A/FAIL/ 13^T 10^T >
+-1 < :@^A/FAIL/ >
 
-1 < @^A/1 iteration/ 13^T 10^T >
+1 < :@^A/1 iteration/ >
 
-2 < @^A/2 iterations/ 13^T 10^T >
+2 < :@^A/2 iterations/ >
 
-3 < @^A/3 iterations/ 13^T 10^T >
+3 < :@^A/3 iterations/ >
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^C

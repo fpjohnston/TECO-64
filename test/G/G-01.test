@@ -1,5 +1,5 @@
 ! TECO-64 test script: Copy global Q-registers -- G !
-! Expect: PASS [G-01.txt] !
+! Expect: PASS [G-01.log] !
 
 0 U.A
 HK
@@ -74,6 +74,6 @@ HX.A HK M.A
 
 HX.B HK M.B
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^C

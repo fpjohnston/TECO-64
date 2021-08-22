@@ -1,5 +1,5 @@
 ! TECO-64 test script: Load global Q-registers w/ values -- U !
-! Expect: PASS [U-01.txt] !
+! Expect: PASS [U-01.log] !
 
 0 U.A                   ! Unique number for each Q-register !
 
@@ -82,6 +82,6 @@ HX.A HK M.A
 
 HX.B HK M.B
 
-@^A/PASS/ 13^T 10^T
+:@^A/PASS/
 
 ^C
