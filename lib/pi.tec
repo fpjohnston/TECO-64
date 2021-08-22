@@ -27,7 +27,7 @@ QN "E
 :%N                                     !! Add 1 for leading 0 we won't print
 
 @^UD/^^. ^T/                            !! Print decimal point
-@^UP/QP MN MD Q9 < 9 MN >/              !! Print predigit and any nines
+@^UP/QP :MN :MD Q9 < 9 :MN >/           !! Print predigit and any nines
 
 @^UN/ := :%D /                          !! Output digit and count it
 
@@ -71,12 +71,12 @@ QN
         :%9                             !! Yes, just count digit
     |
         (QQ - 10) "E                    !! No. Is it a 10?
-            (QP + 1) MN                 !! Yes, print predigit + 1
-            Q9 < 0 MN >                 !! Translate 9s to 0s
+            (QP + 1) :MN                !! Yes, print predigit + 1
+            Q9 < 0 :MN >                !! Translate 9s to 0s
             0 UP
         |
             QD "N
-                MP                      !! Print pre-digit and any nines
+                :MP                     !! Print pre-digit and any nines
                 0,0XD                   !! Print only one decimal point
             |
                 :%D                     !! Count initial 0 but don't print it
@@ -87,7 +87,7 @@ QN
     '
 >
 
-MP                                      !! Print final digit
+:MP                                     !! Print final digit
 -1^T                                    !! Output newline
 HK                                      !! Clear the edit buffer
 ^[^[
