@@ -37,6 +37,7 @@ code.
 | <nobr>?CFG</nobr> | <nobr>Command not configured</nobr> | A command was input that has not been configured. Modify makefile to include this command, and then rebuild TECO. |
 | <nobr>?CHR</nobr> | <nobr>Invalid character for command</nobr> | The numeric argument to an EE command was not an ASCII character. |
 | <nobr>?COL</nobr> | <nobr>Invalid or extraneous colon</nobr> | A colon preceded a command that does not allow colons, or there were too many colons specified for the command. |
+| <nobr>?CPQ</nobr> | <nobr>Can't pop into Q-register</nobr> | A ] command has been executed and there is nothing saved on the Q-register push down list. |
 | <nobr>?DIV</nobr> | <nobr>Division by zero</nobr> | An expression tried to divide a number by zero. |
 | <nobr>?DPY</nobr> | <nobr>Display mode error</nobr> | Display mode support is either missing or disabled. |
 | <nobr>?DTB</nobr> | <nobr>Delete too big</nobr> | A D command attempted to delete text outside the current page. |
@@ -91,7 +92,6 @@ code.
 | <nobr>?NYI</nobr> | <nobr>Not yet implemented</nobr> | A command was issued that is not yet implemented in this version of TECO. |
 | <nobr>?OFO</nobr> | <nobr>Output file already open</nobr> | A command has been executed which tried to create an output file, but an output file currently is open. It is typically appropriate to use the EC or EK command as the situation calls for to close the output file. |
 | <nobr>?PDO</nobr> | <nobr>Push-down list overflow</nobr> | The command string has become too complex. Simplify it. |
-| <nobr>?PES</nobr> | <nobr>Attempt to pop empty stack</nobr> | A ] command (pop off Q-register stack into a Q-register) was encountered when there was nothing on the Q-register stack. |
 | <nobr>?POP</nobr> | <nobr>Attempt to move pointer off page with '*x*'</nobr> | A J, C or R command has been executed which attempted to move the pointer off the page. The result of executing one of these commands must leave the pointer between 0 and Z, The characters referenced by a D or nA command must also be within the buffer limits. |
 | <nobr>?SNI</nobr> | <nobr>Semi-colon not in iteration</nobr> | A ; command has been executed outside of a loop. |
 | <nobr>?SRH</nobr> | <nobr>Search failure: '*foo*'</nobr> | A search command not preceded by a colon modifier and not within an iteration has failed to find the specified " command. After an S search fails the pointer is left at the beginning of the buffer. After an N or _ search fails the last page of the input file has been input and, in the case of N, output, and the buffer is cleared. In the case of an N search it is usually necessary to close the output file and reopen it. |

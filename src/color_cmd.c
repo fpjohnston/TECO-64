@@ -42,8 +42,6 @@
 
 #if     defined(DISPLAY_MODE)
 
-#include "errcodes.h"
-
 
 #define COLOR_BASE  16              ///< Starting base for new colors
 
