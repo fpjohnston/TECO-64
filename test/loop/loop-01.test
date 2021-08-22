@@ -1,8 +1,6 @@
 ! TECO-64 test script: Test maximum nested loops -- <, > !
 ! Expect: PASS !
 
-0,128ET
-
 !1! 1 <
   !2! 1 <
     !3! 1 <
