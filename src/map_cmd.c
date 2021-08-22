@@ -55,6 +55,8 @@ static char *ctrl_f_cmd[MAX_CTRL_F];    ///< Command strings for CTRL/F
 
 #if     defined(DISPLAY_MODE)
 
+static struct keys *find_key(const char *key);
+
 static void reset_map(void);
 
 static void unmap_key(uint key);
@@ -186,39 +188,33 @@ void exec_FM(struct cmd *cmd)
 
     // Here to map a key to a command string.
 
-    tstring key = build_string(cmd->text1.data, cmd->text1.len);
+    tstring name = build_string(cmd->text1.data, cmd->text1.len);
+    struct keys *key = find_key(name.data);
 
-    for (uint i = 0; i < countof(keys); ++i)
+    if (key == NULL)
     {
-        if (keys[i].kname != NULL && !strcasecmp(key.data, keys[i].kname))
+        if (!cmd->colon)
         {
-            unmap_key(i);
-
-            if (cmd->text2.len != 0)
-            {
-                keys[i].macro = alloc_mem(cmd->text2.len + 1);
-
-                memcpy(keys[i].macro, cmd->text2.data, (size_t)cmd->text2.len);
-
-                keys[i].macro[cmd->text2.len] = NUL;
-            }
-
-            if (cmd->colon)
-            {
-                push_x(SUCCESS, X_OPERAND); // Command succeeded
-            }
-
-            return;
+            throw(E_KEY, name.data);    // Key 'key' not found
         }
+
+        push_x(FAILURE, X_OPERAND);     // Command failed
+
+        return;
+    }
+
+    if (cmd->text2.len != 0)
+    {
+        key->macro = alloc_mem(cmd->text2.len + 1);
+
+        memcpy(key->macro, cmd->text2.data, (size_t)cmd->text2.len);
+
+        key->macro[cmd->text2.len] = NUL;
     }
 
     if (cmd->colon)
     {
-        push_x(FAILURE, X_OPERAND);     // Command failed
-    }
-    else
-    {
-        throw(E_KEY, key.data);         // Key 'key' not found
+        push_x(SUCCESS, X_OPERAND);     // Command succeeded
     }
 }
 
@@ -267,33 +263,27 @@ void exec_FQ(struct cmd *cmd)
         return;
     }
 
-    tstring key = build_string(cmd->text1.data, cmd->text1.len);
+    tstring name = build_string(cmd->text1.data, cmd->text1.len);
+    struct keys *key = find_key(name.data);
 
-    for (uint i = 0; i < countof(keys); ++i)
+    if (key == NULL)
     {
-        if (keys[i].kname != NULL && !strcasecmp(key.data, keys[i].kname))
+        if (!cmd->colon)
         {
-            unmap_key(i);
-
-            keys[i].qname  = cmd->qname;
-            keys[i].qlocal = cmd->qlocal;
-
-            if (cmd->colon)
-            {
-                push_x(SUCCESS, X_OPERAND); // Command succeeded
-            }
-
-            return;
+            throw(E_KEY, name.data);    // Key 'key' not found
         }
+
+        push_x(FAILURE, X_OPERAND);     // Command failed
+
+        return;
     }
+
+    key->qname  = cmd->qname;
+    key->qlocal = cmd->qlocal;
 
     if (cmd->colon)
     {
-        push_x(FAILURE, X_OPERAND);     // Command failed
-    }
-    else
-    {
-        throw(E_KEY, key.data);         // Key 'key' not found
+        push_x(SUCCESS, X_OPERAND);     // Command succeeded
     }
 }
 
@@ -326,51 +316,55 @@ void exec_FQ(struct cmd *cmd)
 
 bool exec_key(int key)
 {
-    struct keys *p = &keys[key - KEY_MIN];
+    struct keys *p;
 
-    if ((uint)key - KEY_MIN < countof(keys) && p->kname != NULL)
+    if ((uint)key - KEY_MIN < countof(keys))
     {
-        bool saved_exec = f.e0.exec;
-
-        if (p->macro != NULL)           // Mapped to command string?
-        {
-            tbuffer buf;
-
-            buf.data = p->macro;
-            buf.size = (uint_t)strlen(p->macro);
-            buf.len  = buf.size;
-            buf.pos  = 0;
-
-            f.e0.exec = true;           // Force execution
-
-            exec_macro(&buf, NULL);
-        }
-        else if (p->qname != NUL)       // Mapped to Q-register?
-        {
-            struct cmd cmd = null_cmd;
-
-            cmd.c1     = 'M';
-            cmd.qname  = p->qname;
-            cmd.qlocal = p->qlocal;
-            cmd.colon  = true;          // Keep local Q-registers
-
-            f.e0.exec = true;           // Force execution
-
-            exec_M(&cmd);
-        }
-        else
-        {
-            return false;
-        }
-
-        f.e0.exec  = saved_exec;        // Restore previous flag
-
-        refresh_dpy();                  // Update display
-
-        return true;
+        p = &keys[key - KEY_MIN];
+    }
+    else
+    {
+        return false;
     }
 
-    return false;
+    bool saved_exec = f.e0.exec;
+
+    if (p->macro != NULL)               // Mapped to command string?
+    {
+        tbuffer buf;
+
+        buf.data = p->macro;
+        buf.size = (uint_t)strlen(p->macro);
+        buf.len  = buf.size;
+        buf.pos  = 0;
+
+        f.e0.exec = true;               // Force execution
+
+        exec_macro(&buf, NULL);
+    }
+    else if (p->qname != NUL)           // Mapped to Q-register?
+    {
+        struct cmd cmd = null_cmd;
+
+        cmd.c1     = 'M';
+        cmd.qname  = p->qname;
+        cmd.qlocal = p->qlocal;
+        cmd.colon  = true;              // Keep local Q-registers
+
+        f.e0.exec = true;               // Force execution
+
+        exec_M(&cmd);
+    }
+    else
+    {
+        return false;
+    }
+
+    f.e0.exec  = saved_exec;            // Restore previous flag
+
+    refresh_dpy();                      // Update display
+
+    return true;
 }
 
 #endif
@@ -397,6 +391,33 @@ void exit_map(void)
         free_mem(&ctrl_f_cmd[i]);
     }
 }
+
+
+///
+///  @brief    Find mapped key (if already mapped, unmap it so we can remap it).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DISPLAY_MODE)
+
+static struct keys *find_key(const char *key)
+{
+    for (uint i = 0; i < countof(keys); ++i)
+    {
+        if (keys[i].kname != NULL && !strcasecmp(key, keys[i].kname))
+        {
+            unmap_key(i);
+
+            return &keys[i];
+        }
+    }
+
+    return NULL;
+}
+
+#endif
 
 
 ///
