@@ -323,6 +323,6 @@ static void reset_teco(void)
     reset_loop();                       // Reset loop stack
     reset_cbuf();                       // Reset the input buffer
     reset_indirect();                   // Reset indirect command file
-    reset_qreg();                       // Free up Q-register storage
+    reset_qreg();                       // Free up local Q-register storage
     reset_macro();                      // Reset macro stack
 }

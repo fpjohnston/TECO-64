@@ -233,9 +233,21 @@ void delete_qtext(int qindex)
 
 void exit_qreg(void)
 {
-    // Free local Q-registers and reset the push-down list.
+    reset_qreg();                       // Free local Q-registers.
 
-    reset_qreg();
+    // Free up what's on the Q-register push-down list.
+
+    struct qlist *savedq;
+
+    while ((savedq = list_head) != NULL)
+    {
+        list_head = savedq->next;
+
+        free_mem(&savedq->qreg.text.data);
+        free_mem(&savedq);
+    }
+
+    qstack_depth = 0;
 
     // The prompt level set of local Q-registers is not freed by reset_qreg(),
     // so we have to do that ourselves.
@@ -564,7 +576,7 @@ bool push_qreg(int qindex)
 
 
 ///
-///  @brief    Free local Q-registers and reset the push-down list.
+///  @brief    Free local Q-registers.
 ///
 ///  @returns  Nothing.
 ///
@@ -572,8 +584,6 @@ bool push_qreg(int qindex)
 
 void reset_qreg(void)
 {
-    // Free the local Q-registers
-
     if (local_head != NULL)
     {
         while (local_head->next != NULL)
@@ -595,20 +605,6 @@ void reset_qreg(void)
     }
 
     qlocal_depth = 0;
-
-    // Free up what's on the Q-register push-down list.
-
-    struct qlist *savedq;
-
-    while ((savedq = list_head) != NULL)
-    {
-        list_head = savedq->next;
-
-        free_mem(&savedq->qreg.text.data);
-        free_mem(&savedq);
-    }
-
-    qstack_depth = 0;
 }
 
 
