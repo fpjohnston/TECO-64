@@ -69,7 +69,7 @@ void exec_rbracket(struct cmd *cmd)
     {
         if (!cmd->colon)
         {
-            throw(E_PES);               // Push-down stack is empty
+            throw(E_CPQ);               // Can't pop into Q-register
         }
 
         push_x(FAILURE, X_OPERAND);

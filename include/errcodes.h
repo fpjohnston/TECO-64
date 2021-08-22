@@ -45,6 +45,7 @@ enum errcodes
     E_CFG,          ///< Command not configured
     E_CHR,          ///< Invalid character for command
     E_COL,          ///< Invalid or extraneous colon
+    E_CPQ,          ///< Can't pop into Q-register
     E_DIV,          ///< Division by zero
     E_DPY,          ///< Display mode error
     E_DTB,          ///< Delete too big
@@ -99,7 +100,6 @@ enum errcodes
     E_NYI,          ///< Not yet implemented
     E_OFO,          ///< Output file already open
     E_PDO,          ///< Push-down list overflow
-    E_PES,          ///< Attempt to pop empty stack
     E_POP,          ///< Attempt to move pointer off page with 'x'
     E_SNI,          ///< Semi-colon not in iteration
     E_SRH,          ///< Search failure: 'foo'

@@ -49,6 +49,7 @@ static struct errlist errlist[] =
     [E_CFG] = { "CFG",  "Command not configured" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
     [E_COL] = { "COL",  "Invalid or extraneous colon" },
+    [E_CPQ] = { "CPQ",  "Can't pop into Q-register" },
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DPY] = { "DPY",  "Display mode error" },
     [E_DTB] = { "DTB",  "Delete too big" },
@@ -103,7 +104,6 @@ static struct errlist errlist[] =
     [E_NYI] = { "NYI",  "Not yet implemented" },
     [E_OFO] = { "OFO",  "Output file already open" },
     [E_PDO] = { "PDO",  "Push-down list overflow" },
-    [E_PES] = { "PES",  "Attempt to pop empty stack" },
     [E_POP] = { "POP",  "Attempt to move pointer off page with '%s'" },
     [E_SNI] = { "SNI",  "Semi-colon not in iteration" },
     [E_SRH] = { "SRH",  "Search failure: '%s'" },
@@ -143,6 +143,8 @@ static const char *errhelp[] =
     [E_COL] = "A colon preceded a command that does not allow "
               "colons, or there were too many colons specified "
               "for the command.",
+    [E_CPQ] = "A ] command has been executed and there is "
+              "nothing saved on the Q-register push down list.",
     [E_DIV] = "An expression tried to divide a number by zero.",
     [E_DPY] = "Display mode support is either missing or disabled.",
     [E_DTB] = "A D command attempted to delete text outside "
@@ -272,9 +274,6 @@ static const char *errhelp[] =
               "calls for to close the output file.",
     [E_PDO] = "The command string has become too complex. "
               "Simplify it.",
-    [E_PES] = "A ] command (pop off Q-register stack into a "
-              "Q-register) was encountered when there was "
-              "nothing on the Q-register stack.",
     [E_POP] = "A J, C or R command has been executed which "
               "attempted to move the pointer off the page. "
               "The result of executing one of these commands "

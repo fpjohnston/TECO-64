@@ -50,6 +50,12 @@
             <detail>for the command.</detail>
         </error>
         <error>
+            <code>CPQ</code>
+            <message>Can't pop into Q-register</message>
+            <detail>A ] command has been executed and there is</detail>
+            <detail>nothing saved on the Q-register push down list.</detail>
+        </error>
+        <error>
             <code>DIV</code>
             <message>Division by zero</message>
             <detail>An expression tried to divide a number by zero.</detail>
@@ -393,13 +399,6 @@
             <message>Push-down list overflow</message>
             <detail>The command string has become too complex.</detail>
             <detail>Simplify it.</detail>
-        </error>
-        <error>
-            <code>PES</code>
-            <message>Attempt to pop empty stack</message>
-            <detail>A ] command (pop off Q-register stack into a</detail>
-            <detail>Q-register) was encountered when there was</detail>
-            <detail>nothing on the Q-register stack.</detail>
         </error>
         <error>
             <code>POP</code>
