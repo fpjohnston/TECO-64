@@ -121,12 +121,6 @@ static uint qlocal_depth = 0;       ///< Current local Q-register nesting
 
 static uint qstack_depth = 0;       ///< Current Q-register stack depth
 
-
-///  @def    QREGISTER
-///  @brief  Get pointer to Q-register data structure.
-
-#define QREGISTER(i) (i >= QCOUNT ? &local_head->qreg[i - QCOUNT] : &qglobal[i])
-
 ///  @var    qglobal
 ///  @brief  Global Q-registers.
 
@@ -174,6 +168,11 @@ struct qlist
 static struct qlist *list_head = NULL;
 
 
+// Local functions
+
+static inline struct qreg *qregister(int qindex);
+
+
 ///
 ///  @brief    Append character to Q-register.
 ///
@@ -183,7 +182,7 @@ static struct qlist *list_head = NULL;
 
 void append_qchr(int qindex, int c)
 {
-    struct qreg *qreg = QREGISTER(qindex);
+    struct qreg *qreg = qregister(qindex);
 
     if (qreg->text.data == NULL)
     {
@@ -214,7 +213,7 @@ void append_qchr(int qindex, int c)
 
 void delete_qtext(int qindex)
 {
-    struct qreg *qreg = QREGISTER(qindex);
+    struct qreg *qreg = qregister(qindex);
 
     free_mem(&qreg->text.data);
 
@@ -335,7 +334,7 @@ uint_t get_qall(void)
 
 int get_qchr(int qindex, uint n)
 {
-    struct qreg *qreg = QREGISTER(qindex);
+    struct qreg *qreg = qregister(qindex);
 
     if (n >= qreg->text.len)            // Out of range?
     {
@@ -379,7 +378,7 @@ int get_qindex(int qname, bool qlocal)
 
 int_t get_qnum(int qindex)
 {
-    struct qreg *qreg = QREGISTER(qindex);
+    struct qreg *qreg = qregister(qindex);
 
     return qreg->n;
 }
@@ -414,7 +413,7 @@ struct qreg *get_qreg(int qindex)
 
 uint_t get_qsize(int qindex)
 {
-    struct qreg *qreg = QREGISTER(qindex);
+    struct qreg *qreg = qregister(qindex);
 
     return (uint_t)qreg->text.len;
 }
@@ -469,7 +468,7 @@ void pop_qlocal(void)
 
 bool pop_qreg(int qindex)
 {
-    struct qreg *qreg = QREGISTER(qindex);
+    struct qreg *qreg = qregister(qindex);
 
     if (list_head == NULL)
     {
@@ -504,7 +503,7 @@ bool pop_qreg(int qindex)
 
 void print_qreg(int qindex)
 {
-    struct qreg *qreg = QREGISTER(qindex);
+    struct qreg *qreg = qregister(qindex);
 
     for (uint_t i = 0; i < qreg->text.len; ++i)
     {
@@ -555,7 +554,7 @@ bool push_qreg(int qindex)
 
     ++qstack_depth;
 
-    struct qreg *qreg    = QREGISTER(qindex);
+    struct qreg *qreg    = qregister(qindex);
     struct qlist *savedq = alloc_mem((uint_t)sizeof(*savedq));
 
     savedq->qreg.n         = qreg->n;
@@ -572,6 +571,26 @@ bool push_qreg(int qindex)
     list_head = savedq;
 
     return true;
+}
+
+
+///
+///  @brief    Get pointer to Q-register data structure.
+///
+///  @returns  Pointer to data.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static inline struct qreg *qregister(int qindex)
+{
+    if (qindex < QCOUNT)
+    {
+        return &qglobal[qindex];
+    }
+    else
+    {
+        return &local_head->qreg[qindex - QCOUNT];
+    }
 }
 
 
@@ -673,7 +692,7 @@ void scan_qreg(struct cmd *cmd)
 
 void store_qchr(int qindex, int c)
 {
-    struct qreg *qreg = QREGISTER(qindex);
+    struct qreg *qreg = qregister(qindex);
 
     free_mem(&qreg->text.data);
 
@@ -695,7 +714,7 @@ void store_qchr(int qindex, int c)
 
 void store_qnum(int qindex, int_t n)
 {
-    struct qreg *qreg = QREGISTER(qindex);
+    struct qreg *qreg = qregister(qindex);
 
     qreg->n = n;
 }
