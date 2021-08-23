@@ -100,12 +100,6 @@ extern void clear_dpy(void);
 
 extern bool exec_key(int key);
 
-#endif
-
-extern int getchar_dpy(bool wait);
-
-#if     defined(DISPLAY_MODE)
-
 extern void init_dpy(void);
 
 extern bool putc_dpy(int c);

@@ -26,6 +26,8 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
+#include <ncurses.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -88,49 +90,96 @@ void exit_term(void)
 ///
 ///  @brief    Get single character from terminal.
 ///
-///  @returns  Character read, or EOF if none available.
+///  @returns  Character read. Note that EOF can only occur in these cases:
+///
+///            Event            Action
+///            -----            ------
+///            KEY_RESIZE       Resize window and read next character.
+///            EINTR            If user wants CTRL/C, just return CTRL/C, else
+///                             issue XAB error.
+///            (other error)    Issue SYS error.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 int getc_term(bool wait)
 {
-    static bool LF_pending = false;
+    int c = 0;
 
-    if (LF_pending)
+    for (;;)
     {
-        LF_pending = false;
 
-        return LF;
-    }
+#if     defined(DISPLAY_MODE)
 
-    int c = getchar_dpy(wait);
-
-    if (c == EOF)
-    {
-        if (f.e0.ctrl_c)                // Error caused by CTRL/C?
+        if (f.e0.display)
         {
-            if (f.et.ctrl_c)            // Yes, does user want CTRL/C?
+            if (wait)
             {
-                f.et.ctrl_c = false;    // Reset flag
+                c = getch();
+            }
+            else
+            {
+                (void)nodelay(stdscr, (bool)TRUE);
 
-                return CTRL_C;          // Yes
+                c = getch();
+
+                (void)nodelay(stdscr, (bool)FALSE);
             }
 
+            if (c == KEY_BACKSPACE)
+            {
+                f.e0.ctrl_c = false;    // We didn't see a CTRL/C
+
+                return DEL;
+            }
+            else if (c == KEY_RESIZE)
+            {
+                if (f.e0.display)
+                {
+                    set_nrows();
+                    clear_dpy();
+                    print_prompt();
+                    echo_tbuf(0);
+
+                    continue;
+                }
+            }
+            else if (c != ERR)
+            {
+                break;
+            }
+        }
+        else
+
+#endif
+
+        if (read(fileno(stdin), &c, 1uL) != -1)
+        {
+            break;
+        }
+
+        // Here if either getch() or read() returned an error
+
+        if (errno != EINTR)             // Interrupted by CTRL/C?
+        {
+            throw(E_SYS, NULL);         // Unexpected system call
+        }
+        else if (f.et.ctrl_c)           // Does user want CTRL/C?
+        {
+            f.e0.ctrl_c = false;        // Haven't seen CTRL/C
+            f.et.ctrl_c = false;        // Yes -- reset flag
+
+            return CTRL_C;              //  and return CTRL/C
+        }
+        else
+        {
             echo_in(CTRL_C);
             echo_in(LF);
 
             throw(E_XAB);               // Execution aborted
         }
     }
-    else                                // Got a real character
-    {
-        f.e0.ctrl_c = false;
 
-        if (c == CR && getlen_tbuf() != 0)
-        {
-            LF_pending = true;
-        }
-    }
+    f.e0.ctrl_c = false;                // We didn't see a CTRL/C
 
     return c;
 }
