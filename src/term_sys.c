@@ -139,9 +139,9 @@ int getc_term(bool wait)
                     clear_dpy();
                     print_prompt();
                     echo_tbuf(0);
-
-                    continue;
                 }
+
+                continue;
             }
             else if (c != ERR)
             {
