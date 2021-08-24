@@ -74,6 +74,8 @@ static void exec_star(void);
 
 static int read_first(void);
 
+static void retype_line(int pos);
+
 static void rubout_chr(int c);
 
 static void rubout_chrs(uint n);
@@ -131,44 +133,42 @@ static void exec_ctrl_G(void)
     echo_in(CTRL_G);                    // Echo ^G
 
     int c = getc_term((bool)WAIT);      // Get next character
-    int pos = (c == SPACE) ? (int)start_tbuf() : 0;
-
-    if (c == DEL)
-    {
-        store_tbuf(CTRL_G);             // Store CTRL/G so it can be deleted
-        exec_DEL();
-
-        return;
-    }
-    else if (c == CTRL_U)
-    {
-        exec_cancel();
-
-        return;
-    }
-
-    echo_in(c);                         // Echo next character
 
     switch (c)
     {
         case CTRL_G:                    // ^G^G - cancel all input
+            echo_in(c);
             reset_cbuf();
             echo_in(LF);
 
             longjmp(jump_first, FIRST_PROMPT); // Restart w/ prompt
 
-        case SPACE:                     // ^G<SPACE> - retype current line
-        case '*':                       // ^G* - retype all input lines
-            if (pos == 0)
-            {
-                print_prompt();
-            }
-
-            echo_tbuf((uint)pos);
+        case CTRL_U:
+            exec_cancel();
 
             break;
 
+        case SPACE:                     // ^G<SPACE> - retype current line
+            echo_in(LF);
+            retype_line(start_tbuf());
+
+            break;
+
+        case '*':                       // ^G* - retype all input lines
+            echo_in(c);
+            echo_in(LF);
+            retype_line(0);
+
+            break;
+
+        case DEL:
+            store_tbuf(CTRL_G);         // Store CTRL/G so it can be deleted
+            exec_DEL();
+
+            break;
+            
         default:                        // Not special ^G command
+            echo_in(c);
             store_tbuf(CTRL_G);
             store_tbuf(c);              // Regular character, so just store it
 
@@ -560,6 +560,26 @@ static int read_first(void)
 
 
 ///
+///  @brief    Re-type current line.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void retype_line(int pos)
+{
+    if (pos == 0)
+    {
+        term_pos = 0;
+
+        print_prompt();
+    }
+
+    echo_tbuf((uint)pos);
+}
+
+
+///
 ///  @brief    Rubout single echoed character.
 ///
 ///  @returns  Nothing.
@@ -637,28 +657,24 @@ static void rubout_chr(int c)
 
 static bool rubout_CR(void)
 {
-    if (f.et.rubout)
+    if (!f.et.rubout)
+    {
+        return false;
+    }
+    else if (!f.e0.display)
     {
         if (f.e3.icrlf)
         {
             tprint("%c[K", ESC);        // Clear to end of line
-
-            int pos = (int)start_tbuf();
-
-            if (pos == 0)
-            {
-                term_pos = 0;
-
-                print_prompt();
-            }
-
-            echo_tbuf((uint)pos);
+            retype_line(start_tbuf());  // Retype current line
         }
 
         return true;
     }
-
-    return false;
+    else
+    {
+        return false;                   // TODO: add handling for ncurses
+    }
 }
 
 
@@ -671,32 +687,28 @@ static bool rubout_CR(void)
 
 static bool rubout_LF(void)
 {
-    if (f.et.rubout)
+    if (!f.et.rubout)
+    {
+        return false;
+    }
+    else if (!f.e0.display)
     {
         tprint("%c[F", ESC);            // Move up 1 line
 
         if (!f.e3.icrlf)
         {
             tprint("%c[K", ESC);        // Clear to end of line
-
-            int pos = (int)start_tbuf();
-
-            if (pos == 0)
-            {
-                term_pos = 0;
-
-                print_prompt();
-            }
-
-            echo_tbuf((uint)pos);
+            retype_line(start_tbuf());  // Retype current line
 
             return true;
         }
 
         return true;
     }
-
-    return false;
+    else
+    {
+        return false;                   // TODO: add handling for ncurses
+    }
 }
 
 
