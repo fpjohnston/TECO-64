@@ -65,7 +65,7 @@ void exec_EL(struct cmd *cmd)
 
     if ((name = init_filename(name, len, cmd->colon)) != NULL)
     {
-        if (open_output(name, ostream, cmd->colon, 'L') != NULL)
+        if (open_output(name, stream, cmd->colon, 'L') != NULL)
         {
             if (cmd->colon)
             {
