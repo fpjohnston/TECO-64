@@ -78,6 +78,10 @@ static void rubout_chr(int c);
 
 static void rubout_chrs(uint n);
 
+static bool rubout_CR(void);
+
+static bool rubout_LF(void);
+
 static void rubout_line(void);
 
 
@@ -584,7 +588,18 @@ static void rubout_chr(int c)
         switch (c)
         {
             case LF:
-                ++n;                    // Add extra for CR
+                if (rubout_LF())
+                {
+                    return;
+                }
+
+                break;
+
+            case CR:
+                if (rubout_CR())
+                {
+                    return;
+                }
 
                 break;
 
@@ -592,7 +607,6 @@ static void rubout_chr(int c)
             case TAB:
             case VT:
             case FF:
-            case CR:
             case ESC:
                 break;
 
@@ -611,6 +625,78 @@ static void rubout_chr(int c)
     }
 
     rubout_chrs(n);
+}
+
+
+///
+///  @brief    Rubout carriage return.
+///
+///  @returns  true if rubout required special handling, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static bool rubout_CR(void)
+{
+    if (f.et.rubout)
+    {
+        if (f.e3.icrlf)
+        {
+            tprint("%c[K", ESC);        // Clear to end of line
+
+            int pos = (int)start_tbuf();
+
+            if (pos == 0)
+            {
+                term_pos = 0;
+
+                print_prompt();
+            }
+
+            echo_tbuf((uint)pos);
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+
+///
+///  @brief    Rubout line feed.
+///
+///  @returns  true if rubout required special handling, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static bool rubout_LF(void)
+{
+    if (f.et.rubout)
+    {
+        tprint("%c[F", ESC);            // Move up 1 line
+
+        if (!f.e3.icrlf)
+        {
+            tprint("%c[K", ESC);        // Clear to end of line
+
+            int pos = (int)start_tbuf();
+
+            if (pos == 0)
+            {
+                term_pos = 0;
+
+                print_prompt();
+            }
+
+            echo_tbuf((uint)pos);
+
+            return true;
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 

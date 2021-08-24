@@ -63,12 +63,6 @@ static bool term_active = false;        ///< Are terminal settings active?
 
 // Local functions
 
-#if     !defined(DISPLAY_MODE)
-
-static void reset_term(void);
-
-#endif
-
 static void getsize(void);
 
 static void sig_handler(int signal);
@@ -103,6 +97,15 @@ void exit_term(void)
 
 int getc_term(bool wait)
 {
+    static bool LF_pending = false;
+
+    if (LF_pending)
+    {
+        LF_pending = false;
+
+        return LF;
+    }
+
     int c = 0;
 
     for (;;)
@@ -180,6 +183,17 @@ int getc_term(bool wait)
     }
 
     f.e0.ctrl_c = false;                // We didn't see a CTRL/C
+
+    if (f.e3.icrlf && c == LF)
+    {
+        LF_pending = true;
+
+        return CR;
+    }
+    else if (f.e0.display && c == CR)
+    {
+        LF_pending = true;
+    }
 
     return c;
 }
@@ -291,7 +305,7 @@ void init_term(void)
 
         mode.c_lflag &= ~ICANON;        // Disable canonical (cooked) mode
         mode.c_lflag &= ~ECHO;          // Disable echo
-        mode.c_iflag &= ~ICRNL;         // Don't map CR to NL on input
+        mode.c_iflag |=  ICRNL;         // Map CR to NL on input
         mode.c_iflag &= ~INLCR;         // Don't map NL to CR on input
         mode.c_oflag &= ~ONLCR;         // Don't map CR to CR/NL on output
 
@@ -310,16 +324,7 @@ void init_term(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
 void reset_term(void)
-
-#else
-
-static void reset_term(void)
-
-#endif
-
 {
     if (term_active)
     {

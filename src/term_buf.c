@@ -71,7 +71,11 @@ int delete_tbuf(void)
         return EOF;                     // No
     }
 
-    return term_buf.data[--term_buf.len]; // Delete character and return it
+    int c = term_buf.data[--term_buf.len]; // Get previous character
+    
+    term_buf.data[term_buf.len] = NUL;  // Make sure we don't re-use it
+
+    return c;
 }
 
 
@@ -197,13 +201,13 @@ uint_t start_tbuf(void)
 
         if (isdelim(c))
         {
-            break;
+            return i + 1;
         }
 
         --i;
     }
 
-    return i;                           // Return index of start of line
+    return 0;
 }
 
 
