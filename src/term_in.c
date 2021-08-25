@@ -332,7 +332,18 @@ int getc_term(bool wait)
         return LF;
     }
 
-    int c = wait ? read_wait() : read_nowait();
+    int c;
+
+    if (wait)
+    {
+        c = read_wait();
+    }
+    else if ((c = read_nowait()) == EOF)
+    {
+        return EOF;
+    }
+
+    // Here when we have a non-EOF character
 
 #if    defined(DISPLAY_MODE)
 
