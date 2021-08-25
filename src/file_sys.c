@@ -81,7 +81,12 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
 
     const char *type = (strchr(base, '.') == NULL) ? TEC_NAME : "";
     char file[strlen(name) + strlen(type) + 1];
+
+#if     defined(NDEBUG)
+    snprintf(file, sizeof(file), "%s%s", name, type);
+#else
     int nbytes = snprintf(file, sizeof(file), "%s%s", name, type);
+#endif
 
     assert(nbytes > 0);
     assert((size_t)(uint)nbytes < sizeof(file));
@@ -99,7 +104,11 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
     {
         char libfile[strlen(teco_library) + 1 + strlen(file) + 1];
 
+#if     defined(NDEBUG)
+        snprintf(libfile, sizeof(libfile), "%s/%s", teco_library, file);
+#else
         nbytes = snprintf(libfile, sizeof(libfile), "%s/%s", teco_library, file);
+#endif
 
         assert(nbytes > 0);
         assert((size_t)(uint)nbytes < sizeof(libfile));
