@@ -116,6 +116,12 @@
             <help>Disables FF as a page delimiter.</help>
         </option>
         <option>
+            <short_name>K</short_name>
+            <long_name>keys</long_name>
+            <argument>required</argument>
+            <help>Saves keystrokes in file 'xyz'.</help>
+        </option>
+        <option>
             <short_name>L</short_name>
             <long_name>log</long_name>
             <argument>required</argument>

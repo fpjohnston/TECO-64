@@ -90,6 +90,7 @@ static const char * const help_text[] =
     "",
     "  -F, --formfeed         Enables FF as a page delimiter.",
     "  -f, --noformfeed       Disables FF as a page delimiter.",
+    "  -K, --keys=xyz         Saves keystrokes in file 'xyz'.",
     "  -L, --log=xyz          Saves input and output in log file 'xyz'.",
     "  -Z, --zero=n           Enable syntax restrictions by setting E2 to 'n'.",
     "",
@@ -114,6 +115,7 @@ enum option_t
     OPTION_F = 'F',
     OPTION_H = 'H',
     OPTION_I = 'I',
+    OPTION_K = 'K',
     OPTION_L = 'L',
     OPTION_M = 'M',
     OPTION_O = 'O',
@@ -135,7 +137,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = ":A:B:CDE:FHI::L:MO:RS:V::XZ::cfimnorv";
+static const char * const optstring = ":A:B:CDE:FHI::K:L:MO:RS:V::XZ::cfimnorv";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -150,6 +152,7 @@ static const struct option long_options[] =
     { "formfeed",       no_argument,        NULL,  'F'    },
     { "help",           no_argument,        NULL,  'H'    },
     { "initialize",     optional_argument,  NULL,  'I'    },
+    { "keys",           required_argument,  NULL,  'K'    },
     { "log",            required_argument,  NULL,  'L'    },
     { "memory",         no_argument,        NULL,  'M'    },
     { "output",         required_argument,  NULL,  'O'    },

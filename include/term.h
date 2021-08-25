@@ -32,6 +32,8 @@
 #include <sys/types.h>          //lint !e451 !e537
 
 
+extern const char *key_name;
+
 extern int term_pos;
 
 // Terminal buffer functions
@@ -63,6 +65,8 @@ extern int getc_term(bool nowait);
 extern void init_term(void);
 
 extern void print_prompt(void);
+
+extern void putc_key(int c);
 
 extern void read_cmd(void);
 

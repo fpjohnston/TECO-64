@@ -421,6 +421,18 @@ void init_options(
 
                 break;
 
+            case OPTION_K:
+                if (optarg != NULL && optarg[0] != '-')
+                {
+                    key_name = optarg;
+                }
+                else
+                {
+                    key_name = NULL;
+                }
+
+                break;
+
             case OPTION_L:
                 if (optarg != NULL && optarg[0] != '-')
                 {

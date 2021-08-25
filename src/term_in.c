@@ -373,6 +373,8 @@ int getc_term(bool wait)
         LF_pending = true;
     }
 
+    putc_key(c);                        // Write character to keystroke file
+
     return c;
 }
 

@@ -56,6 +56,10 @@ static struct termios saved_mode;       ///< Saved terminal mode
 
 static bool term_active = false;        ///< Are terminal settings active?
 
+const char *key_name = NULL;            ///< Name of file for keystrokes
+
+static FILE *key_fp = NULL;             ///< Keystroke file descriptor
+
 // Local functions
 
 static void getsize(void);
@@ -72,6 +76,13 @@ static void sig_handler(int signal);
 
 void exit_term(void)
 {
+    if (key_fp != NULL)
+    {
+        fclose(key_fp);
+
+        key_fp = NULL;
+    }
+
     reset_term();
 }
 
@@ -167,6 +178,16 @@ void init_term(void)
         f.et.eightbit  = true;          // Terminal can use 8-bit characters
 
         getsize();
+
+        if (key_name != NULL)
+        {
+            if ((key_fp = fopen(key_name, "a+")) != NULL)
+            {
+                // Write output immediately and do not buffer.
+
+                (void)setvbuf(key_fp, NULL, _IONBF, 0uL);
+            }
+        }
     }
 
     // The following is needed only if there is no display active and we haven't
@@ -197,6 +218,22 @@ void init_term(void)
 
 #endif
 
+    }
+}
+
+
+///
+///  @brief    Output character to keystroke file (if we have one).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void putc_key(int c)
+{
+    if (key_fp != NULL)
+    {
+        fputc(c, key_fp);
     }
 }
 
