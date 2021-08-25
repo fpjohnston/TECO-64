@@ -248,11 +248,11 @@ void print_prompt(void)
 ///  @brief    Output NUL-terminated string to terminal, and possibly also to
 ///            log file.
 ///
-///  @returns  Nothing.
+///  @returns  No. of characters output (like printf).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void tprint(
+int tprint(
     const char *format,                 ///< printf() format string
     ...)                                ///< Remaining arguments for printf()
 {
@@ -268,20 +268,20 @@ void tprint(
 
     assert((uint_t)(uint)nbytes <= KB); // Sanity check
 
-    if (nbytes == 0)
+    if (nbytes != 0)
     {
-        return;
-    }
-
-    for (int i = 0; i < nbytes; ++i)
-    {
-        if (buf[i] == '\n')
+        for (int i = 0; i < nbytes; ++i)
         {
-            tputc('\r', false);
-        }
+            if (buf[i] == '\n')
+            {
+                tputc('\r', false);
+            }
 
-        tputc(buf[i], false);
+            tputc(buf[i], false);
+        }
     }
+
+    return nbytes;
 }
 
 

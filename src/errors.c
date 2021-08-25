@@ -44,7 +44,7 @@
 
 #define ERR_BUF_SIZE    64          ///< Size of error buffer
 
-#define MAX_LINES       20          ///< Max. lines in error message
+#define MAX_WIDTH       80          ///< Maximum width for error messages
 
 int last_error = E_NUL;             ///< Last error encountered
 
@@ -168,57 +168,34 @@ void print_error(void)
 
 void print_verbose(int error)
 {
-    if (error <= 0 || (uint)error > countof(errhelp))
+    if (error <= 0 || (uint)error > countof(errhelp) || errhelp[error] == NULL)
     {
         return;
     }
 
-    const char *help = errhelp[error];
+    int width = (w.width < MAX_WIDTH) ? w.width : MAX_WIDTH;
+    char *saveptr;
+    char help[strlen(errhelp[error]) + 1];
 
-    if (help == NULL)
+    strcpy(help, errhelp[error]);
+
+    char *token = strtok_r(help, " ", &saveptr);
+    int pos = tprint("    ");
+
+    do
     {
-        return;
-    }
-
-    const char *start = help;
-    const char *end = start;
-    uint pos = 0;
-    uint maxlines = MAX_LINES;
-
-    while (maxlines > 0)
-    {
-        const char *next = strchr(end + pos, ' ');
-        uint len;
-
-        if (next != NULL)
+        if (pos + (int)strlen(token) > width)
         {
-            len = (uint)(next - start);
-
-            if (len > (uint)w.width - 4)
-            {
-                tprint("    %.*s", (end - start) - 1, start);
-                type_out(LF);
-
-                --maxlines;
-
-                start = end;
-                pos = 0;
-            }
-            else
-            {
-                end = next + 1;
-            }
-        }
-        else
-        {
-            len = (uint)strlen(start);
-
-            tprint("    %.*s", (int)len, start);
             type_out(LF);
 
-            break;
+            pos = tprint("    ");
         }
-    }
+
+        pos += tprint(" %s", token);
+
+    } while ((token = strtok_r(NULL, " ", &saveptr)) != NULL);
+
+    type_out(LF);
 }
 
 

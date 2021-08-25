@@ -140,7 +140,7 @@ static void add_cmd(int mnflag, const char *format, ...)
     }
     else
     {
-        (void)vsnprintf(cmd, size, format, args);
+        vsnprintf(cmd, size, format, args);
     }
 
     va_end(args);
