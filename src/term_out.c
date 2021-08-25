@@ -378,7 +378,7 @@ void type_out(int c)
         switch (c)
         {
             case LF:
-                if (!f.et.image && !f.e0.redirect)
+                if (!f.et.image && !f.e0.o_redir)
                 {
                     tputc(CR, false);   // Convert LF to CR/LF
                 }

@@ -25,15 +25,19 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <ctype.h>
+#include <errno.h>
 #include <setjmp.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #if     defined(DISPLAY_MODE)
 
 #include <ncurses.h>
+
+_Static_assert(EOF == ERR);
 
 #endif
 
@@ -73,6 +77,8 @@ static void exec_inspect(int_t pos, int_t line);
 static void exec_star(void);
 
 static int read_first(void);
+
+static int read_term(bool wait);
 
 static void retype_line(int pos);
 
@@ -150,7 +156,7 @@ static void exec_ctrl_G(void)
 
         case SPACE:                     // ^G<SPACE> - retype current line
             echo_in(LF);
-            retype_line(start_tbuf());
+            retype_line((int)start_tbuf());
 
             break;
 
@@ -301,6 +307,63 @@ static void exec_star(void)
     tbuffer qbuf = copy_tbuf();
 
     store_qtext(qindex, &qbuf);
+}
+
+
+///
+///  @brief    Get single character from terminal.
+///
+///  @returns  Character read. EOF can be returned, but only if the wait flag
+///            was clear, indicating that the caller did not want to wait if
+///            there were no input characters immediately available.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int getc_term(bool wait)
+{
+    static bool LF_pending = false;
+
+    if (LF_pending)
+    {
+        LF_pending = false;
+
+        return LF;
+    }
+
+    int c = read_term(wait);
+
+#if    defined(DISPLAY_MODE)
+
+    if (c == KEY_BACKSPACE)
+    {
+        c = DEL;
+    }
+    else if (c == KEY_RESIZE)
+    {
+        set_nrows();
+        clear_dpy();
+        print_prompt();
+        echo_tbuf(0);
+
+        return getc_term(wait);         // Recurse to get next character
+    }
+
+#endif
+
+    f.e0.ctrl_c = false;                // Normal character, not CTRL/C
+
+    if (f.e3.icrlf && c == LF)
+    {
+        LF_pending = true;
+
+        return CR;
+    }
+    else if (f.e0.display && c == CR)
+    {
+        LF_pending = true;
+    }
+
+    return c;
 }
 
 
@@ -560,6 +623,97 @@ static int read_first(void)
 
 
 ///
+///  @brief    Get single character from terminal. This is the lowest-level
+///            input function for TECO; all input is read here.
+///
+///  @returns  Character read. Note that EOF can only be returned if the wait
+///            flag is clear and there are no input characters available.. Also
+///            note the following special cases:
+///
+///            1. If a window resize event occurs, we will call ourselves
+///               recursively to read next character.
+///
+///            2. If a read is interrupted by a CTRL/C, we will either return
+///               the CTRL/C, if so requested by the ET flag, or we will issue
+///               an XAB error.
+///
+///            3. If any error other than EINTR occurs, we will issue a SYS
+///               error.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int read_term(bool wait)
+{
+
+#if     defined(DISPLAY_MODE)
+
+    if (f.e0.display)
+    {
+        int c;
+
+        if (!wait)                      // Can we wait for input?
+        {
+            (void)nodelay(stdscr, (bool)TRUE);
+
+            c = getch();
+
+            (void)nodelay(stdscr, (bool)FALSE);
+
+            return c;
+        }
+        else if ((c = getch()) != ERR)  // We can wait -- any error?
+        {
+            return c;                   // If not, we're done
+        }
+        else                            // getch() returned error
+        {
+            throw(E_SYS, NULL);         // Unexpected system call
+        }
+    }
+    else if (!wait && !f.e0.i_redir)    // If immediate read and not redirected
+    {
+        return getch();
+    }
+
+#endif
+
+    char chr;
+    ssize_t nbytes = read(fileno(stdin), &chr, sizeof(chr));
+
+    if (nbytes == 0)                    // EOF reading redirected stdin
+    {
+        exit(EXIT_SUCCESS);             // So we're all done
+    }
+    else if (nbytes != -1)              // Error?
+    {
+        return chr;
+    }
+
+    // Here if read() returned an error
+
+    f.e0.ctrl_c = false;                // Reset system flag for CTRL/C
+
+    if (errno != EINTR)                 // Interrupted by CTRL/C?
+    {
+        throw(E_SYS, NULL);             // Unexpected system call
+    }
+    else if (f.et.ctrl_c)               // Trapping CTRL/C?
+    {
+        f.et.ctrl_c = false;            // Yes -- reset flag
+
+        return CTRL_C;                  // And return CTRL/C to caller
+    }
+
+    // Here if not trapping CTRL/C
+
+    echo_in(CTRL_C);                    // No, so issue XAB error
+    echo_in(LF);
+
+    throw(E_XAB);                       // Execution aborted
+}
+
+
+///
 ///  @brief    Re-type current line.
 ///
 ///  @returns  Nothing.
@@ -666,7 +820,7 @@ static bool rubout_CR(void)
         if (f.e3.icrlf)
         {
             tprint("%c[K", ESC);        // Clear to end of line
-            retype_line(start_tbuf());  // Retype current line
+            retype_line((int)start_tbuf());  // Retype current line
         }
 
         return true;
@@ -698,7 +852,7 @@ static bool rubout_LF(void)
         if (!f.e3.icrlf)
         {
             tprint("%c[K", ESC);        // Clear to end of line
-            retype_line(start_tbuf());  // Retype current line
+            retype_line((int)start_tbuf());  // Retype current line
 
             return true;
         }

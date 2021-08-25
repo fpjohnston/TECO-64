@@ -542,6 +542,13 @@ void init_options(
         }
     }
 
+    // Disable display mode if stdin has been redirected
+
+    if (f.e0.i_redir)
+    {
+        options.vtedit = NULL;
+    }
+            
     if (mung && argv[optind] != NULL)
     {
         options.execute = argv[optind++];

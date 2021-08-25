@@ -41,6 +41,7 @@
 #include <setjmp.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -284,6 +285,16 @@ static void init_teco(int argc, const char * const argv[])
 {
     f.e0.init = true;                   // TECO initialization is in progress
     f.et.abort = true;                  // Abort on error during initialization
+
+    if (isatty(fileno(stdin)) == 0)     // Has stdin been redirected?
+    {
+        f.e0.i_redir = true;
+    }
+
+    if (isatty(fileno(stdout)) == 0)    // Has stdout been redirected?
+    {
+        f.e0.o_redir = true;
+    }
 
     if (atexit(exit_teco) != 0)
     {

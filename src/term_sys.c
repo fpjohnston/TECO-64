@@ -26,14 +26,12 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <errno.h>
 #include <ncurses.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #if     !defined(__DECC)
 
@@ -82,124 +80,6 @@ void exit_term(void)
 
 
 ///
-///  @brief    Get single character from terminal.
-///
-///  @returns  Character read. Note that EOF can only occur in these cases:
-///
-///            Event            Action
-///            -----            ------
-///            KEY_RESIZE       Resize window and read next character.
-///            EINTR            If user wants CTRL/C, just return CTRL/C, else
-///                             issue XAB error.
-///            (other error)    Issue SYS error.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int getc_term(bool wait)
-{
-    static bool LF_pending = false;
-
-    if (LF_pending)
-    {
-        LF_pending = false;
-
-        return LF;
-    }
-
-    int c = 0;
-
-    for (;;)
-    {
-
-#if     defined(DISPLAY_MODE)
-
-        if (f.e0.display)
-        {
-            if (wait)
-            {
-                c = getch();
-            }
-            else
-            {
-                (void)nodelay(stdscr, (bool)TRUE);
-
-                c = getch();
-
-                (void)nodelay(stdscr, (bool)FALSE);
-            }
-
-            if (c == KEY_BACKSPACE)
-            {
-                f.e0.ctrl_c = false;    // We didn't see a CTRL/C
-
-                return DEL;
-            }
-            else if (c == KEY_RESIZE)
-            {
-                if (f.e0.display)
-                {
-                    set_nrows();
-                    clear_dpy();
-                    print_prompt();
-                    echo_tbuf(0);
-                }
-
-                continue;
-            }
-            else if (c != ERR)
-            {
-                break;
-            }
-        }
-        else
-
-#endif
-
-        if (read(fileno(stdin), &c, 1uL) != -1)
-        {
-            break;
-        }
-
-        // Here if either getch() or read() returned an error
-
-        if (errno != EINTR)             // Interrupted by CTRL/C?
-        {
-            throw(E_SYS, NULL);         // Unexpected system call
-        }
-        else if (f.et.ctrl_c)           // Does user want CTRL/C?
-        {
-            f.e0.ctrl_c = false;        // Haven't seen CTRL/C
-            f.et.ctrl_c = false;        // Yes -- reset flag
-
-            return CTRL_C;              //  and return CTRL/C
-        }
-        else
-        {
-            echo_in(CTRL_C);
-            echo_in(LF);
-
-            throw(E_XAB);               // Execution aborted
-        }
-    }
-
-    f.e0.ctrl_c = false;                // We didn't see a CTRL/C
-
-    if (f.e3.icrlf && c == LF)
-    {
-        LF_pending = true;
-
-        return CR;
-    }
-    else if (f.e0.display && c == CR)
-    {
-        LF_pending = true;
-    }
-
-    return c;
-}
-
-
-///
 ///  @brief    Get current size of window (if display mode is not active).
 ///
 ///  @returns  Nothing.
@@ -210,13 +90,19 @@ static void getsize(void)
 {
     struct winsize ts;
 
-    if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
+    if (f.e0.i_redir)
+    {
+        return;                         // Nothing to do if stdin redirected
+    }
+    else if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
     {
         throw(E_SYS, NULL);             // Unexpected system error
     }
-
-    w.width  = ts.ws_col;
-    w.height = ts.ws_row;
+    else
+    {
+        w.width  = ts.ws_col;
+        w.height = ts.ws_row;
+    }
 }
 
 
@@ -241,7 +127,10 @@ void init_term(void)
 
 #if     !defined(__DECC)
 
-        (void)tcgetattr(fileno(stdin), &saved_mode);
+        if (!f.e0.i_redir)
+        {
+            (void)tcgetattr(fileno(stdin), &saved_mode);
+        }
 
 #endif
 
@@ -281,11 +170,6 @@ void init_term(void)
         f.et.eightbit  = true;          // Terminal can use 8-bit characters
 
         getsize();
-
-        if (isatty(fileno(stdout)) == 0)
-        {
-            f.e0.redirect = true;
-        }
     }
 
     // The following is needed only if there is no display active and we haven't
@@ -297,19 +181,22 @@ void init_term(void)
 
 #if     !defined(__DECC)
 
-        struct termios mode;
+        if (!f.e0.i_redir)
+        {
+            struct termios mode;
 
-        (void)tcgetattr(fileno(stdin), &mode);
+            (void)tcgetattr(fileno(stdin), &mode);
 
-        // Note: NL below means LF
+            // Note: NL below means LF
 
-        mode.c_lflag &= ~ICANON;        // Disable canonical (cooked) mode
-        mode.c_lflag &= ~ECHO;          // Disable echo
-        mode.c_iflag |=  ICRNL;         // Map CR to NL on input
-        mode.c_iflag &= ~INLCR;         // Don't map NL to CR on input
-        mode.c_oflag &= ~ONLCR;         // Don't map CR to CR/NL on output
+            mode.c_lflag &= ~ICANON;    // Disable canonical (cooked) mode
+            mode.c_lflag &= ~ECHO;      // Disable echo
+            mode.c_iflag |=  ICRNL;     // Map CR to NL on input
+            mode.c_iflag &= ~INLCR;     // Don't map NL to CR on input
+            mode.c_oflag &= ~ONLCR;     // Don't map CR to CR/NL on output
 
-        (void)tcsetattr(fileno(stdin), TCSAFLUSH, &mode);
+            (void)tcsetattr(fileno(stdin), TCSAFLUSH, &mode);
+        }
 
 #endif
 
@@ -332,7 +219,10 @@ void reset_term(void)
 
 #if     !defined(__DECC)
 
-        (void)tcsetattr(fileno(stdin), TCSAFLUSH, &saved_mode);
+        if (!f.e0.i_redir)
+        {
+            (void)tcsetattr(fileno(stdin), TCSAFLUSH, &saved_mode);
+        }
 
 #endif
 

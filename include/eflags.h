@@ -50,7 +50,8 @@ union e0_flag
         uint upper    : 1;      ///< Force string arguments to upper case
         uint display  : 1;      ///< Display mode is active
         uint init     : 1;      ///< TECO is initializing
-        uint redirect : 1;      ///< stdout has been redirected
+        uint i_redir  : 1;      ///< stdin has been redirected
+        uint o_redir  : 1;      ///< stdout has been redirected
     };
 };
 

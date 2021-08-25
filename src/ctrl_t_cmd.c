@@ -83,8 +83,27 @@ void exec_ctrl_T(struct cmd *cmd)
     }
     else                                // ^T -> read character from terminal
     {
-        bool wait = f.et.nowait ? false : true;
-        int c = getc_term(wait);
+        int c;
+
+        if (!f.et.nowait)
+        {
+            c = getc_term(true);
+        }
+        else
+
+#if     defined(DISPLAY_MODE)
+
+        {
+            c = getc_term(false);
+        }
+
+#else
+        
+        {
+            throw(E_DPY);               // Need display mode to read w/o wait
+        }
+
+#endif
 
         if (!f.et.noecho && c != -1)
         {
