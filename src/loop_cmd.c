@@ -437,18 +437,12 @@ bool scan_gt(struct cmd *cmd)
     {
         next_cbuf();
         trace_cbuf(c);
-
-        cmd->c2 = (char)c;
-
         push_x(OPER, X_GE);
     }
     else if ((c = peek_cbuf()) == '>')  // >> operator
     {
         next_cbuf();
         trace_cbuf(c);
-
-        cmd->c2 = (char)c;
-
         push_x(OPER, X_RSHIFT);
     }
     else                                // > operator
@@ -499,27 +493,18 @@ bool scan_lt(struct cmd *cmd)
     {
         next_cbuf();
         trace_cbuf(c);
-
-        cmd->c2 = (char)c;
-
         push_x(OPER, X_LE);
     }
     else if (c == '>')                  // <> operator
     {
         next_cbuf();
         trace_cbuf(c);
-
-        cmd->c2 = (char)c;
-
         push_x(OPER, X_NE);
     }
     else if (c == '<')                  // << operator
     {
         next_cbuf();
         trace_cbuf(c);
-
-        cmd->c2 = (char)c;
-
         push_x(OPER, X_LSHIFT);
     }
     else                                // < operator

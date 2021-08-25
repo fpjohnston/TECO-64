@@ -213,6 +213,13 @@ bool scan_equals(struct cmd *cmd)
             throw(E_ARG);
         }
 
+        if (cmd->n_set)
+        {
+            cmd->n_set = false;
+
+            push_x(cmd->n_arg, X_OPERAND);
+        }
+
         trace_cbuf('=');
         push_x((int_t)0, X_EQ);
 

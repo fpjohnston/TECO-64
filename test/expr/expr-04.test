@@ -1,0 +1,76 @@
+! TECO-64 test script: Test extended operators !
+! Expect: PASS !
+
+0 UF            !! Count of failures
+
+!! Macro to evaluate expression and compare with what we expected
+
+@^UB
+{
+    UA
+    :MA
+    UB
+    :GA
+    @^A/= /
+    QB :@=/%3d (/
+    QA-QB "E
+        @^A/pass/
+    |
+        @^A/fail/
+        %F
+    '
+    :@^A/)/
+}
+
+!! Equal
+
+@^UA{ (10 == 3) }   0 MB
+
+!! Not equal
+
+@^UA{ (10 <> 3) }  -1 MB
+
+!! Less than or equal
+
+@^UA{ (10 <= 3) }   0 MB
+
+!! Less than
+
+@^UA{ (10 < 3)  }   0 MB
+
+!! Greater than
+
+@^UA{ (10 > 3)  }  -1 MB
+
+!! Greater than or equal
+
+@^UA{ (10 >= 3) }  -1 MB
+
+!! Division, yielding remainder
+
+@^UA{ (10 // 3) }   1 MB
+
+!! Boolean
+
+@^UA{ (!0)      }  -1 MB
+@^UA{ (!1)      }   0 MB
+
+!! Logical XOR
+
+@^UA{ (10 ~ 3)  }   9 MB
+
+!! Left shift
+
+@^UA{ (10 << 3) }  80 MB
+
+!! Right shift
+
+@^UA{ (10 >> 3) }   1 MB
+
+QF "E
+    :@^A/PASS/
+|
+    :@^A/FAIL/
+'
+
+

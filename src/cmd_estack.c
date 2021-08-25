@@ -49,6 +49,8 @@ static inline bool reduce2(void);
 
 static inline bool reduce3(void);
 
+static inline bool reduce4(void);
+
 
 ///
 ///  @brief    Initialize expression stack.
@@ -160,6 +162,15 @@ void push_x(int_t operand, enum x_type type)
 
 static inline void reduce(void)
 {
+    // Try to reduce the expression stack if 4 or more items - this is used
+    // for expressions such A+-B or X-+Y, where the second operator is actually
+    // as unary operator.
+
+    while (x.level >= x.base + 4 && reduce4())
+    {
+        ;
+    }
+
     // Try to reduce the expression stack if 3 or more items
 
     while (x.level >= x.base + 3 && reduce3())
@@ -215,12 +226,6 @@ static inline bool reduce2(void)
     //     12!34   (use of logical NOT following an operand)
     //     BZ+34   (two operands with no operator)
     //     12++34  (two operators with no operand)
-    //
-    // If it is desired to use a unary plus after an addition operator, or a
-    // unary minus after a subtraction operator, then use parentheses:
-    //
-    //     12+(+34)
-    //     12-(-34)
 
     if (f.e2.oper)
     {
@@ -232,39 +237,37 @@ static inline bool reduce2(void)
         }
     }
 
+    int_t operand;
+
     if (x.type[-1] == X_OPERAND && x.type[-2] == X_PLUS)
     {
-        x.operand[-2] = x.operand[-1];
-        x.type[-2] = X_OPERAND;
-
-        --x.operand;
-        --x.type;
-        --x.level;
+        operand = x.operand[-1];
     }
     else if (x.type[-1] == X_OPERAND && x.type[-2] == X_MINUS)
     {
-        x.operand[-2] = -x.operand[-1];
-        x.type[-2] = X_OPERAND;
-
-        --x.operand;
-        --x.type;
-        --x.level;
+        operand = -x.operand[-1];
     }
     else if (x.type[-1] == X_OPERAND && x.type[-2] == X_NOT)
     {
         // Logical NOT yields -1 for true and 0 for false.
 
-        x.operand[-2] = !x.operand[-1] ? SUCCESS : FAILURE;
-        x.type[-2] = X_OPERAND;
-
-        --x.operand;
-        --x.type;
-        --x.level;
+        operand = !x.operand[-1] ? SUCCESS : FAILURE;
+    }
+    else if (x.type[-1] == X_1S_COMP && x.type[-2] == X_OPERAND)
+    {
+        operand = ~x.operand[-2];
     }
     else
     {
         return false;
     }
+
+    --x.operand;
+    --x.type;
+    --x.level;
+
+    x.operand[-1] = operand;
+    x.type[-1]    = X_OPERAND;
 
     return true;
 }
@@ -417,6 +420,50 @@ static inline bool reduce3(void)
     x.operand -= 2;
     x.type    -= 2;
     x.level   -= 2;
+
+    return true;
+}
+
+
+///
+///  @brief    Reduce top four items on expression stack if possible.
+///
+///  @returns  true if we were able to reduce expression stack, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static inline bool reduce4(void)
+{
+    if (x.type[-1] != X_OPERAND || x.type[-2] == X_OPERAND
+        || x.type[-3] == X_OPERAND || x.type[-4] != X_OPERAND)
+    {
+        return false;
+    }
+
+    int oper = x.type[-2];
+
+    if (oper == X_PLUS)
+    {
+        x.operand[-2] = x.operand[-1];
+        x.type[-2] = X_OPERAND;
+
+        --x.operand;
+        --x.type;
+        --x.level;
+    }
+    else if (oper == X_MINUS)
+    {
+        x.operand[-2] = -x.operand[-1];
+        x.type[-2] = X_OPERAND;
+
+        --x.operand;
+        --x.type;
+        --x.level;
+    }
+    else
+    {
+        return false;
+    }
 
     return true;
 }

@@ -1,0 +1,79 @@
+! TECO-64 test script: Test basic operators !
+! Expect: PASS !
+
+0 UF            !! Count of failures
+
+!! Macro to evaluate expression and compare with what we expected
+
+@^UB
+{
+    UA
+    :MA
+    UB
+    :GA
+    @^A/= /
+    QB :@=/%3d (/
+    QA-QB "E
+        @^A/pass/
+    |
+        @^A/fail/
+        %F
+    '
+    :@^A/)/
+}
+
+!! Simple value
+
+@^UA{ 10        }  10 MB
+
+!! Unary plus
+
+@^UA{ +10       }  10 MB
+
+!! Unary minus
+
+@^UA{ -10       } -10 MB
+
+!! Addition
+
+@^UA{ 10 + 3    }  13 MB
+@^UA{ 10 + +3   }  13 MB
+@^UA{ 10 + -3   }   7 MB
+
+!! Subtraction
+
+@^UA{ 10 - 3    }   7 MB
+@^UA{ 10 - -3   }  13 MB
+@^UA{ -10 - 3   } -13 MB
+
+!! Multiplication
+
+@^UA{ 10 * 3    }  30 MB
+@^UA{ -10 * 3   } -30 MB
+@^UA{ 10 * -3   } -30 MB
+
+!! Division, yield quotient
+
+@^UA{ 10 / 3    }   3 MB
+@^UA{ -10 / 3   }  -3 MB
+@^UA{ 10 / -3   }  -3 MB
+
+!! Logical AND
+
+@^UA{ 10 & 3    }   2 MB
+
+!! Logical OR
+
+@^UA{ 10 # 3    }  11 MB
+
+!! 1's complement
+
+@^UA{ 10^_      } -11 MB
+
+QF "E
+    :@^A/PASS/
+|
+    :@^A/FAIL/
+'
+
+
