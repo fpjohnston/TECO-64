@@ -190,7 +190,7 @@ union et_flag
         uint lower    : 1;      ///< Read lower case
         uint noecho   : 1;      ///< Disable echo for ^T commands
         uint ctrl_o   : 1;      ///< Cancel ^O on type out
-        uint nowait   : 1;      ///< Read with no wait
+        uint nowait   : 1;      ///< Read w/o wait for ^T commands
         uint detach   : 1;      ///< Detach flag
         uint abort    : 1;      ///< Abort-on-error bit
         uint truncate : 1;      ///< Truncate output lines to terminal width
