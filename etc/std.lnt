@@ -69,6 +69,8 @@ co-gcc.lnt   // Basic gcc configuration
 -elibmacro(160,506,866)
 -elib(169)
 -esym(534,prints,snprintf)
+-esym(759,reset_term)
+-esym(765,reset_term)
 -elib(126)
 -elibcall(126)
 -elibmacro(126)

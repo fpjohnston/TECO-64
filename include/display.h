@@ -116,7 +116,9 @@ extern void reset_colors(void);
 
 extern void reset_dpy(void);
 
-extern void resize_dpy(void);
+extern void resize_key(void);
+
+extern void resize_signal(void);
 
 #endif
 

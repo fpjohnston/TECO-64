@@ -37,7 +37,7 @@
 
 #include <ncurses.h>
 
-_Static_assert(EOF == ERR);
+_Static_assert(EOF == ERR);         //lint !e010
 
 #endif
 
@@ -78,9 +78,11 @@ static void exec_star(void);
 
 static int read_first(void);
 
-static int read_term(bool wait);
+static int read_nowait(void);
 
-static void retype_line(int pos);
+static int read_wait(void);
+
+static void retype_line(uint_t pos);
 
 static void rubout_chr(int c);
 
@@ -156,14 +158,14 @@ static void exec_ctrl_G(void)
 
         case SPACE:                     // ^G<SPACE> - retype current line
             echo_in(LF);
-            retype_line((int)start_tbuf());
+            retype_line(start_tbuf());
 
             break;
 
         case '*':                       // ^G* - retype all input lines
             echo_in(c);
             echo_in(LF);
-            retype_line(0);
+            retype_line((uint_t)0);
 
             break;
 
@@ -330,7 +332,7 @@ int getc_term(bool wait)
         return LF;
     }
 
-    int c = read_term(wait);
+    int c = wait ? read_wait() : read_nowait();
 
 #if    defined(DISPLAY_MODE)
 
@@ -340,10 +342,7 @@ int getc_term(bool wait)
     }
     else if (c == KEY_RESIZE)
     {
-        set_nrows();
-        clear_dpy();
-        print_prompt();
-        echo_tbuf(0);
+        resize_key();
 
         return getc_term(wait);         // Recurse to get next character
     }
@@ -623,83 +622,99 @@ static int read_first(void)
 
 
 ///
-///  @brief    Get single character from terminal. This is the lowest-level
-///            input function for TECO; all input is read here.
+///  @brief    Read without wait (non-blocking I/O).
 ///
-///  @returns  Character read. Note that EOF can only be returned if the wait
-///            flag is clear and there are no input characters available.. Also
-///            note the following special cases:
-///
-///            1. If a window resize event occurs, we will call ourselves
-///               recursively to read next character.
-///
-///            2. If a read is interrupted by a CTRL/C, we will either return
-///               the CTRL/C, if so requested by the ET flag, or we will issue
-///               an XAB error.
-///
-///            3. If any error other than EINTR occurs, we will issue a SYS
-///               error.
+///  @returns  Character read.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int read_term(bool wait)
+static int read_nowait(void)
 {
 
 #if     defined(DISPLAY_MODE)
 
     if (f.e0.display)
     {
-        int c;
+        (void)nodelay(stdscr, (bool)TRUE);
 
-        if (!wait)                      // Can we wait for input?
-        {
-            (void)nodelay(stdscr, (bool)TRUE);
+        int c = getch();
 
-            c = getch();
+        (void)nodelay(stdscr, (bool)FALSE);
 
-            (void)nodelay(stdscr, (bool)FALSE);
-
-            return c;
-        }
-        else if ((c = getch()) != ERR)  // We can wait -- any error?
-        {
-            return c;                   // If not, we're done
-        }
-        else                            // getch() returned error
-        {
-            throw(E_SYS, NULL);         // Unexpected system call
-        }
+        return c;
     }
-    else if (!wait && !f.e0.i_redir)    // If immediate read and not redirected
+    else
     {
         return getch();
     }
 
+#else
+
+    throw(E_DPY);                       // Read w/o wait requires ncurses
+
 #endif
 
-    char chr;
-    ssize_t nbytes = read(fileno(stdin), &chr, sizeof(chr));
+}
 
-    if (nbytes == 0)                    // EOF reading redirected stdin
+
+///
+///  @brief    Read with wait (blocking I/O).
+///
+///  @returns  Character read. Note the following special cases:
+///
+///            1. If a read is interrupted by a CTRL/C, we will either return
+///               the CTRL/C, if so requested by the ET flag, or we will issue
+///               an XAB error.
+///
+///            2. If any error other than EINTR occurs, we will issue a SYS
+///               error.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int read_wait(void)
+{
+
+#if     defined(DISPLAY_MODE)
+
+    if (f.e0.display)
     {
-        exit(EXIT_SUCCESS);             // So we're all done
+        int c = getch();
+
+        if (c != ERR)
+        {
+            return c;
+        }
     }
-    else if (nbytes != -1)              // Error?
+    else
+
+#endif
+
     {
-        return chr;
+        char chr;
+        ssize_t nbytes = read(fileno(stdin), &chr, sizeof(chr));
+
+        if (nbytes == 0)                    // EOF reading redirected stdin
+        {
+            exit(EXIT_SUCCESS);             // So we're all done
+        }
+        else if (nbytes != -1)              // Error?
+        {
+            return chr;
+        }
     }
 
-    // Here if read() returned an error
-
-    f.e0.ctrl_c = false;                // Reset system flag for CTRL/C
+    // Here if getch() or read() returned an error
 
     if (errno != EINTR)                 // Interrupted by CTRL/C?
     {
+        f.e0.ctrl_c = false;            // No, so reset system flag
+
         throw(E_SYS, NULL);             // Unexpected system call
     }
     else if (f.et.ctrl_c)               // Trapping CTRL/C?
     {
         f.et.ctrl_c = false;            // Yes -- reset flag
+        f.e0.ctrl_c = false;            // Reset system flag
 
         return CTRL_C;                  // And return CTRL/C to caller
     }
@@ -720,7 +735,7 @@ static int read_term(bool wait)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void retype_line(int pos)
+static void retype_line(uint_t pos)
 {
     if (pos == 0)
     {
@@ -729,7 +744,7 @@ static void retype_line(int pos)
         print_prompt();
     }
 
-    echo_tbuf((uint)pos);
+    echo_tbuf(pos);
 }
 
 
@@ -820,7 +835,7 @@ static bool rubout_CR(void)
         if (f.e3.icrlf)
         {
             tprint("%c[K", ESC);        // Clear to end of line
-            retype_line((int)start_tbuf());  // Retype current line
+            retype_line(start_tbuf());  // Retype current line
         }
 
         return true;
@@ -852,7 +867,7 @@ static bool rubout_LF(void)
         if (!f.e3.icrlf)
         {
             tprint("%c[K", ESC);        // Clear to end of line
-            retype_line((int)start_tbuf());  // Retype current line
+            retype_line(start_tbuf());  // Retype current line
 
             return true;
         }

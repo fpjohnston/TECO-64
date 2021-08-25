@@ -26,7 +26,6 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <ncurses.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -34,9 +33,7 @@
 #include <string.h>
 
 #if     !defined(__DECC)
-
 #include <termios.h>
-
 #endif
 
 #include <sys/ioctl.h>
@@ -300,7 +297,7 @@ static void sig_handler(int signum)
 
 #if     defined(DISPLAY_MODE)
 
-            resize_dpy();
+            resize_signal();
 
 #endif
 

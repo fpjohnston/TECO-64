@@ -86,7 +86,7 @@ int delete_tbuf(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void echo_tbuf(uint pos)
+void echo_tbuf(uint_t pos)
 {
     assert(pos <= term_buf.len);        // Error if no data overrun
 
@@ -94,7 +94,7 @@ void echo_tbuf(uint pos)
     // same as typing out what's in a buffer, so things such as the settings of
     // the EU flag don't matter here.
 
-    for (uint i = pos; i < term_buf.len; ++i)
+    for (uint_t i = pos; i < term_buf.len; ++i)
     {
         type_out(term_buf.data[i]);
     }

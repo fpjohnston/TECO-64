@@ -1097,7 +1097,7 @@ void reset_dpy(void)
 
 
 ///
-///  @brief    Resize window for display mode.
+///  @brief    Finish window resize when KEY_RESIZE key read.
 ///
 ///  @returns  Nothing.
 ///
@@ -1105,7 +1105,30 @@ void reset_dpy(void)
 
 #if     defined(DISPLAY_MODE)
 
-void resize_dpy(void)
+void resize_key(void)
+{
+    if (f.e0.display)
+    {
+        set_nrows();
+        clear_dpy();
+        print_prompt();
+        echo_tbuf((uint_t)0);
+    }
+}
+
+#endif
+
+
+///
+///  @brief    Start window resize when resize signal received.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DISPLAY_MODE)
+
+void resize_signal(void)
 {
     if (f.e0.display)
     {
