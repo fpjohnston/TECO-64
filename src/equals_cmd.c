@@ -152,32 +152,38 @@ void exec_equals(struct cmd *cmd)
         throw(E_NAE);                   // No argument before =
     }
 
-    const char *mode = FORMAT_DEC;      // Assume we're printing decimal
+    const char *format = FORMAT_DEC;    // Assume we're printing decimal
 
     if (cmd->c3 == '=')                 // Print hexadecimal if ===
     {
-        mode = FORMAT_HEX;
+        format = FORMAT_HEX;
     }
     else if (cmd->c2 == '=')            // Print octal if ==
     {
-        mode = FORMAT_OCT;
+        format = FORMAT_OCT;
     }
 
-    char user_mode[cmd->text1.len + 1];
+    // The following is an extension that allows the use of a complex format
+    // string. This is only available when using the at-sign form of this
+    // command. This format allows use of the string building characters, such
+    // as "^EQq", and also allows a numeric output format such as "%06u". The
+    // check_format() function ensures that there is at most one such numeric
+    // format, and no others that would require additional arguments, such as
+    // "%s", that would cause problems during printing.
+
+    tstring result = { .data = NULL };
 
     if (cmd->atsign && cmd->text1.len != 0)
     {
-        memcpy(user_mode, cmd->text1.data, (size_t)(uint)cmd->text1.len);
+        result = build_string(cmd->text1.data, cmd->text1.len);
 
-        user_mode[cmd->text1.len] = NUL;
-
-        if (check_format(user_mode))
+        if (check_format(result.data))
         {
-            mode = user_mode;
+            format = result.data;
         }
     }
 
-    tprint(mode, cmd->n_arg);
+    tprint(format, cmd->n_arg);
 
     if (!cmd->colon)                    // Suppress CRLF?
     {

@@ -7,65 +7,51 @@
 
 @^UB
 {
-    UA
+    UA                              !! Expected value
     :MA
-    UB
-    :GA
-    @^A/= /
-    QB :@=/%3d (/
+    UB                              !! Calculated value
     QA-QB "E
-        @^A/pass/
+        QB @=/^EQA = %6d (pass)/
     |
-        @^A/fail/
+        QB @=/^EQA = %6d (fail)/
         %F
     '
-    :@^A/)/
 }
 
-!! Equal
+@^UA{ (16 == 3) }      0 :MB        !! Compare equal
+@^UA{ (3 == 16) }      0 :MB        !! Compare equal
 
-@^UA{ (10 == 3) }   0 MB
+@^UA{ (16 <> 3) }     -1 :MB        !! Compare not equal
+@^UA{ (3 <> 16) }     -1 :MB        !! Compare not equal
 
-!! Not equal
+@^UA{ (16 < 3)  }      0 :MB        !! Compare less than
+@^UA{ (3 < 16)  }     -1 :MB        !! Compare less than
 
-@^UA{ (10 <> 3) }  -1 MB
+@^UA{ (16 <= 3) }      0 :MB        !! Compare less than or equal
+@^UA{ (3 <= 16) }     -1 :MB        !! Compare less than or equal
 
-!! Less than or equal
+@^UA{ (16 > 3)  }     -1 :MB        !! Compare greater than
+@^UA{ (3 > 16)  }      0 :MB        !! Compare greater than
 
-@^UA{ (10 <= 3) }   0 MB
+@^UA{ (16 >= 3) }     -1 :MB        !! Compare greater than or equal
+@^UA{ (3 >= 16) }      0 :MB        !! Compare greater than or equal
 
-!! Less than
+@^UA{ (16 // 3) }      1 :MB        !! Division, yielding remainder
+@^UA{ (3 // 16) }      3 :MB        !! Division, yielding remainder
 
-@^UA{ (10 < 3)  }   0 MB
+@^UA{ (!0)      }     -1 :MB        !! Logical NOT
+@^UA{ (!1)      }      0 :MB        !! Logical NOT
+@^UA{ (!!0)     }      0 :MB        !! Logical NOT
+@^UA{ (!!1)     }     -1 :MB        !! Logical NOT
 
-!! Greater than
+@^UA{ (16 ~ 3)  }     19 :MB        !! Logical XOR
+@^UA{ (3 ~ 16)  }     19 :MB        !! Logical XOR
 
-@^UA{ (10 > 3)  }  -1 MB
+@^UA{ (16 << 3) }    128 :MB        !! Left shift
+@^UA{ (3 << 16) } 196608 :MB        !! Left shift
 
-!! Greater than or equal
-
-@^UA{ (10 >= 3) }  -1 MB
-
-!! Division, yielding remainder
-
-@^UA{ (10 // 3) }   1 MB
-
-!! Boolean
-
-@^UA{ (!0)      }  -1 MB
-@^UA{ (!1)      }   0 MB
-
-!! Logical XOR
-
-@^UA{ (10 ~ 3)  }   9 MB
-
-!! Left shift
-
-@^UA{ (10 << 3) }  80 MB
-
-!! Right shift
-
-@^UA{ (10 >> 3) }   1 MB
+@^UA{ (16 >> 3) }      2 :MB        !! Right shift
+@^UA{ (3 >> 16) }      0 :MB        !! Right shift
 
 QF "E
     :@^A/PASS/

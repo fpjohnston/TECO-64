@@ -7,68 +7,44 @@
 
 @^UB
 {
-    UA
+    UA                              !! Expected value
     :MA
-    UB
-    :GA
-    @^A/= /
-    QB :@=/%3d (/
+    UB                              !! Calculated value
     QA-QB "E
-        @^A/pass/
+        QB @=/^EQA = %6d (pass)/
     |
-        @^A/fail/
+        QB @=/^EQA = %6d (fail)/
         %F
     '
-    :@^A/)/
 }
 
-!! Simple value
+@^UA{ 10        }     10 :MB        !! Simple value
 
-@^UA{ 10        }  10 MB
+@^UA{ +10       }     10 :MB        !! Unary plus
 
-!! Unary plus
+@^UA{ -10       }    -10 :MB        !! Unary minus
 
-@^UA{ +10       }  10 MB
+@^UA{ 10 + 3    }     13 :MB        !! Addition
+@^UA{ 10 + +3   }     13 :MB        !! Addition
+@^UA{ 10 + -3   }      7 :MB        !! Addition
 
-!! Unary minus
+@^UA{ 10 - 3    }      7 :MB        !! Subtraction
+@^UA{ 10 - -3   }     13 :MB        !! Subtraction
+@^UA{ -10 - 3   }    -13 :MB        !! Subtraction
 
-@^UA{ -10       } -10 MB
+@^UA{ 10 * 3    }     30 :MB        !! Multiplication
+@^UA{ -10 * 3   }    -30 :MB        !! Multiplication
+@^UA{ 10 * -3   }    -30 :MB        !! Multiplication
 
-!! Addition
+@^UA{ 10 / 3    }      3 :MB        !! Division, yielding quotient
+@^UA{ -10 / 3   }     -3 :MB        !! Division, yielding quotient
+@^UA{ 10 / -3   }     -3 :MB        !! Division, yielding quotient
 
-@^UA{ 10 + 3    }  13 MB
-@^UA{ 10 + +3   }  13 MB
-@^UA{ 10 + -3   }   7 MB
+@^UA{ 10 & 3    }      2 :MB        !! Logical AND
 
-!! Subtraction
+@^UA{ 10 # 3    }     11 :MB        !! Logical OR
 
-@^UA{ 10 - 3    }   7 MB
-@^UA{ 10 - -3   }  13 MB
-@^UA{ -10 - 3   } -13 MB
-
-!! Multiplication
-
-@^UA{ 10 * 3    }  30 MB
-@^UA{ -10 * 3   } -30 MB
-@^UA{ 10 * -3   } -30 MB
-
-!! Division, yield quotient
-
-@^UA{ 10 / 3    }   3 MB
-@^UA{ -10 / 3   }  -3 MB
-@^UA{ 10 / -3   }  -3 MB
-
-!! Logical AND
-
-@^UA{ 10 & 3    }   2 MB
-
-!! Logical OR
-
-@^UA{ 10 # 3    }  11 MB
-
-!! 1's complement
-
-@^UA{ 10^_      } -11 MB
+@^UA{ 10^_      }    -11 :MB        !! 1's complement
 
 QF "E
     :@^A/PASS/
