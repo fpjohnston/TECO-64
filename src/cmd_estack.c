@@ -255,7 +255,7 @@ static inline bool reduce2(void)
     }
     else if (x.type[-1] == X_1S_COMP && x.type[-2] == X_OPERAND)
     {
-        operand = ~x.operand[-2];
+        operand = (int_t)~(uint_t)x.operand[-2];
     }
     else
     {

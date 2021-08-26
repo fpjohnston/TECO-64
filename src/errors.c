@@ -347,7 +347,7 @@ noreturn void throw(int error, ...)
 
         if (f.eh.command)
         {
-            echo_tbuf(0);
+            echo_tbuf((uint_t)0);
         }
     }
 
