@@ -241,8 +241,8 @@ static const struct cmd_table e_table[] =
     ENTRY('e',     NULL,            parse_flag1,     exec_EE,         false),
     ENTRY('F',     NULL,            parse_X,         exec_EF,         false),
     ENTRY('f',     NULL,            parse_X,         exec_EF,         false),
-    ENTRY('G',     NULL,            parse_d1,        exec_EG,         false),
-    ENTRY('g',     NULL,            parse_d1,        exec_EG,         false),
+    ENTRY('G',     NULL,            parse_c1,        exec_EG,         false),
+    ENTRY('g',     NULL,            parse_c1,        exec_EG,         false),
     ENTRY('H',     NULL,            parse_flag2,     exec_EH,         false),
     ENTRY('h',     NULL,            parse_flag2,     exec_EH,         false),
     ENTRY('I',     NULL,            parse_mc1,       exec_EI,         false),
@@ -279,6 +279,8 @@ static const struct cmd_table e_table[] =
     ENTRY('x',     NULL,            parse_X,         exec_EX,         false),
     ENTRY('Y',     NULL,            parse_c,         exec_EY,         false),
     ENTRY('y',     NULL,            parse_c,         exec_EY,         false),
+    ENTRY('Z',     NULL,            parse_1,         exec_EZ,         false),
+    ENTRY('z',     NULL,            parse_1,         exec_EZ,         false),
     ENTRY('_',     NULL,            parse_nc1,       exec_E_ubar,     false),
 };
 

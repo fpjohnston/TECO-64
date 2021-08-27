@@ -209,7 +209,7 @@ static inline void require_n(bool m_set, bool n_set)
 
 extern char eg_command[];
 
-extern char *eg_result;
+extern tstring ez;
 
 extern uint nparens;
 
@@ -244,8 +244,6 @@ extern bool parse_c1(struct cmd *cmd);
 extern bool parse_c2(struct cmd *cmd);
 
 extern bool parse_cq1(struct cmd *cmd);
-
-extern bool parse_d1(struct cmd *cmd);
 
 extern bool parse_escape(struct cmd *cmd);
 
@@ -424,6 +422,8 @@ extern void exec_EX(struct cmd *cmd);
 
 extern void exec_EY(struct cmd *cmd);
 
+extern void exec_EZ(struct cmd *cmd);
+
 extern void exec_E_pct(struct cmd *cmd);
 
 extern void exec_E_ubar(struct cmd *cmd);
@@ -579,7 +579,7 @@ extern void exec_macro(tbuffer *macro, struct cmd *cmd);
 
 extern void exec_insert(const char *buf, uint_t len);
 
-extern int find_eg(char *buf, bool reset);
+extern int find_eg(char *buf);
 
 extern bool next_page(int_t start, int_t end, bool ff, bool yank);
 

@@ -252,7 +252,7 @@ void exit_mem(void)
     // before that, and if we didn't free it here, then the code below would
     // assume that there's a memory leak.
 
-    free_mem(&eg_result);
+    free_mem(&ez.data);
 
     tprint("%s(): %u block%s allocated, high water mark = %u block%s\n",
            __func__, nallocs, plural(nallocs), maxblocks, plural(maxblocks));

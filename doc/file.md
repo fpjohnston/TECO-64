@@ -60,7 +60,7 @@ The following commands are used to close files and exit from TECO:
 | ------- | -------- |
 | EC | Moves the contents of the edit buffer, plus the remainder of the current input file on the currently selected input stream, to the current output file on the currently selected output stream; then closes those input and output files. Control remains in TECO. EC leaves the edit buffer empty. |
 | EF | Closes the current output file on the currently selected output stream. The EF command does not write the current contents of the edit buffer to the file before closing it, nor does it clear or change the edit buffer. |
-| @EG/*text*/ | Performs the same function as the EX command, but then exits from TECO and passes *text* to the operating system as a command string to be executed. |
+| @EG/*cmd*/ | Performs the same function as the EX command, but then exits from TECO and passes *cmd* to the operating system as a command string to be executed. |
 | EK | Kill the current output file on the currently selected output stream. This command, which purges the output file without closing it, is useful to abort an undesired edit. Executing the EK command after an EW which is superseding an existing file leaves the old file intact. The EK command also "undoes" an EB command. |
 | EX |  Performs the same function as the EC command, but then exits from TECO. For safety reasons, this command is aborted if there is text in the edit buffer but no output file is open. To exit TECO after inspecting a file, use the command string HK EX. To exit TECO without making any changes if an output file is open, use the command string EK HK EX. 
 

@@ -1,8 +1,8 @@
 ///
-///  @file    eg_cmd.c
-///  @brief   Execute EG command.
+///  @file    ez_cmd.c
+///  @brief   Execute EZ command.
 ///
-///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
+///  @copyright 2021 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a
 ///  copy of this software and associated documentation files (the "Software"),
@@ -39,55 +39,69 @@
 #include "file.h"
 
 
-char eg_command[PATH_MAX];              ///< EG command to be executed on exit.
+#define EZ_SIZE         (KB * 4)        ///< Allocate memory in 4 KB chunks
+
+tstring ez = { .data = NULL, .len = 0 }; ///< Output from EZ command
 
 
 ///
-///  @brief    Execute "EG" command: execute system command.
+///  @brief    Execute "EZ" command: execute system command.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EG(struct cmd *cmd)
+void exec_EZ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len > sizeof(eg_command) - 1)
+    char syscmd[PATH_MAX];              // System command, and input buffer
+    FILE *fp;                           //< File descriptor for pipe
+    size_t size;                        //< Total no. of bytes read
+
+    if (cmd->text1.len == 0)            // Any command string?
+    {
+        return;                         // No
+    }
+
+    int nbytes = snprintf(syscmd, sizeof(syscmd), "%.*s 2>&1",
+                          (int)cmd->text1.len, cmd->text1.data);
+
+    assert(nbytes > 0);
+
+    if (nbytes >= (int)sizeof(syscmd))
     {
         throw(E_CMD);                   // System command is too long
     }
-
-    if (cmd->colon)
+    
+    if ((fp = popen(syscmd, "r")) == NULL)
     {
-        char syscmd[PATH_MAX];          // System command
-
-        snprintf(syscmd, (ulong)PATH_MAX, "%.*s", (int)cmd->text1.len,
-                 cmd->text1.data);
-
-        int status = find_eg(syscmd);
-
-        push_x((int_t)status, X_OPERAND);
-
-        return;
+        throw(E_SYS, syscmd);           // Unexpected system error
     }
 
-    snprintf(eg_command, sizeof(eg_command), "%.*s", (int)cmd->text1.len,
-             cmd->text1.data);
+    ez.len = EZ_SIZE;
+    ez.data = alloc_mem(ez.len);
 
-    // The following ensures that we don't exit if we have nowhere to output
-    // the data in the buffer to.
+    uint_t pos = 0;
 
-    struct ofile *ofile = &ofiles[ostream];
-
-    if (ofile->fp == NULL && t.Z != 0)
+    while ((size = (int)fread(ez.data + pos, 1uL, EZ_SIZE, fp)) > 0)
     {
-        throw(E_NFO);                   // No file for output
+        if (size + pos == ez.len)
+        {
+            ez.data = expand_mem(ez.data, ez.len, EZ_SIZE);
+            ez.len += EZ_SIZE;
+        }
+
+        pos += size;
     }
 
-    close_files();
+    if (ferror(fp) || pclose(fp) == -1)
+    {
+        throw(E_SYS, syscmd);           // Unexpected system error
+    }
 
-    // EG`, not :EG`, so get ready to exit
+    ez.len = pos;                       // Length = total bytes read
 
-    exit(EXIT_SUCCESS);
+    return;
 }
+

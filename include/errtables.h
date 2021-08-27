@@ -48,13 +48,13 @@ static struct errlist errlist[] =
     [E_BNI] = { "BNI",  "Right angle bracket not in iteration" },
     [E_CFG] = { "CFG",  "Command not configured" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
+    [E_CMD] = { "CMD",  "An EG or EZ command is too long" },
     [E_COL] = { "COL",  "Invalid or extraneous colon" },
     [E_CPQ] = { "CPQ",  "Can't pop into Q-register" },
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DPY] = { "DPY",  "Display mode error" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
-    [E_EGC] = { "EGC",  "EG command is too long" },
     [E_EXT] = { "EXT",  "Extended feature not enabled" },
     [E_FIL] = { "FIL",  "Invalid file '%s'" },
     [E_FNF] = { "FNF",  "File not found '%s'" },
@@ -140,6 +140,7 @@ static const char *errhelp[] =
               "rebuild TECO.",
     [E_CHR] = "The numeric argument to an EE command was "
               "not an ASCII character.",
+    [E_CMD] = "An EG or EZ command was longer than 4095 characters.",
     [E_COL] = "A colon preceded a command that does not allow "
               "colons, or there were too many colons specified "
               "for the command.",
@@ -151,7 +152,6 @@ static const char *errhelp[] =
               "the current page.",
     [E_DUP] = "An O command found a duplicate tag within the "
               "command string.",
-    [E_EGC] = "An EG command was longer than 200 characters.",
     [E_EXT] = "A command attempted to use an extended feature "
               "which is not currently enabled.",
     [E_FIL] = "An attempt was made to open a directory, FIFO, "

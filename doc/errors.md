@@ -36,13 +36,13 @@ code.
 | <nobr>?BNI</nobr> | <nobr>Right angle bracket not in iteration</nobr> | A right angle bracket was not matched by a left angle bracket (Note: a loop in a Q-register macro must be complete within the macro.) |
 | <nobr>?CFG</nobr> | <nobr>Command not configured</nobr> | A command was input that has not been configured. Modify makefile to include this command, and then rebuild TECO. |
 | <nobr>?CHR</nobr> | <nobr>Invalid character for command</nobr> | The numeric argument to an EE command was not an ASCII character. |
+| <nobr>?CMD</nobr> | <nobr>An EG or EZ command is too long</nobr> | An EG or EZ command was longer than 4095 characters. |
 | <nobr>?COL</nobr> | <nobr>Invalid or extraneous colon</nobr> | A colon preceded a command that does not allow colons, or there were too many colons specified for the command. |
 | <nobr>?CPQ</nobr> | <nobr>Can't pop into Q-register</nobr> | A ] command has been executed and there is nothing saved on the Q-register push down list. |
 | <nobr>?DIV</nobr> | <nobr>Division by zero</nobr> | An expression tried to divide a number by zero. |
 | <nobr>?DPY</nobr> | <nobr>Display mode error</nobr> | Display mode support is either missing or disabled. |
 | <nobr>?DTB</nobr> | <nobr>Delete too big</nobr> | A D command attempted to delete text outside the current page. |
 | <nobr>?DUP</nobr> | <nobr>Duplicate tag '!*foo*!'</nobr> | An O command found a duplicate tag within the command string. |
-| <nobr>?EGC</nobr> | <nobr>EG command is too long</nobr> | An EG command was longer than 200 characters. |
 | <nobr>?EXT</nobr> | <nobr>Extended feature not enabled</nobr> | A command attempted to use an extended feature which is not currently enabled. |
 | <nobr>?FIL</nobr> | <nobr>Invalid file '*foo*'</nobr> | An attempt was made to open a directory, FIFO, socket, or similar file specification instead of a regular file. |
 | <nobr>?FNF</nobr> | <nobr>File not found '*foo*'</nobr> | The requested input file could not be located. If this occurred within a macro, the colon-modified command may be necessary. |

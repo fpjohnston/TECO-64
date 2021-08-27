@@ -78,10 +78,6 @@ char *eg_result = NULL;                 ///< Output from EG command
 
 #endif
 
-// Local functions
-
-static int get_cmd(char *cmd);
-
 
 ///
 ///  @brief    Final execution of EG command.
@@ -109,14 +105,9 @@ void exit_EG(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int find_eg(char *cmd, bool dcolon)
+int find_eg(char *cmd)
 {
     assert(cmd != NULL);
-
-    if (dcolon)
-    {
-        return get_cmd(cmd);
-    }
 
     //  Get environment variable and load Q-register *.
 
@@ -151,63 +142,6 @@ int find_eg(char *cmd, bool dcolon)
     set_last(result);
 
     return -1;                          // Environment variable is defined
-}
-
-
-///
-///  @brief    Get command status and output from child process.
-///
-///  @returns  -1 = success, 0 = unsupported, 1 = failure.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static int get_cmd(char *cmd)
-{
-    assert(cmd != NULL);
-
-    char buf[PATH_MAX];                 //< General purpose buffer
-    FILE *fp;                           //< File description for pipe
-    uint_t size = 0;                    //< Total no. of bytes read
-    uint_t nbytes;                      //< No. of bytes from last read
-
-    snprintf(buf, (ulong)PATH_MAX, "%s 2>&1", cmd);
-                                        // Capture stderr as well as stdout
-
-    free_mem(&eg_result);
-
-    if ((fp = popen(buf, "r")) == NULL)
-    {
-        return 1;
-    }
-
-    while ((nbytes = (uint_t)fread(buf, 1uL, sizeof(buf), fp)) > 0)
-    {
-        if (size == 0)
-        {
-            eg_result = alloc_mem(nbytes + 1);
-        }
-        else
-        {
-            eg_result = expand_mem(eg_result, size + 1, nbytes);
-        }
-
-        memcpy(eg_result + size, buf, (size_t)nbytes);
-
-        size += nbytes;
-    }
-
-    int retval = pclose(fp);            //< Close pipe and get status
-
-    if (retval == 0)
-    {
-        return -1;
-    }
-    else
-    {
-        free_mem(&eg_result);
-
-        return retval < 0 ? 1 : retval;
-    }
 }
 
 

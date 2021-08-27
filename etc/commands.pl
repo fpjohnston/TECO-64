@@ -80,7 +80,6 @@ my %parse_table = (
     ':@X/'      => { parse => 'parse_c1',     count => 0 },
     ':@X//'     => { parse => 'parse_c2',     count => 0 },
     ':@Xq/'     => { parse => 'parse_cq1',    count => 0 },
-    '::@X/'     => { parse => 'parse_d1',     count => 0 },
     'X$',       => { parse => 'parse_escape', count => 0 },
     'nX!'       => { parse => 'parse_flag1',  count => 0 },
     'm,nX!',    => { parse => 'parse_flag2',  count => 0 },

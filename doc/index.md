@@ -154,7 +154,6 @@
 | EF             | [Close output file](file.md) |
 | EG             | [Exit and Go](file.md) |
 | :EG            | [Read environment variables](env.md) |
-| ::EG           | [Execute system command](env.md) |
 | EH             | [Edit help flag](flags.md) |
 | EI             | [Execute indirect file](file.md) |
 | EJ             | [Get environment information](env.md) |
@@ -175,6 +174,7 @@
 |                | [Switch to primary output stream](file.md) |
 | EX             | [Exit TECO](file.md) |
 | EY             | [Yank w/o yank protection](page.md) |
+| EZ             | [Execute system command](env.md) |
 | E_             | [Search w/o yank protection](search.md) |
 | F'             | [Flow to end of conditional](ifthen.md) |
 | F0             | [Edit buffer position at start of window](variables.md) |

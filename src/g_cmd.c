@@ -39,6 +39,9 @@
 #include "term.h"
 
 
+extern tstring ez; // TODO
+
+
 // Local functions
 
 static void copy_G(struct cmd *cmd);
@@ -57,7 +60,6 @@ static void copy_G(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    const char *p;
     struct qreg *qreg;
 
     switch (cmd->qname)
@@ -70,12 +72,10 @@ static void copy_G(struct cmd *cmd)
 
             break;
 
-        case '+':                       // Copy EG result
-            p = eg_result;
-
-            if (p != NULL && (last_len = (uint_t)strlen(p)) != 0)
+        case '+':                       // Copy EZ result
+            if ((last_len = ez.len) != 0)
             {
-                exec_insert(p, last_len);
+                exec_insert(ez.data, last_len);
             }
 
             break;
@@ -138,8 +138,6 @@ static void type_G(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    const char *p;
-
     switch (cmd->qname)
     {
         case '*':                       // Print filespec string
@@ -148,12 +146,9 @@ static void type_G(struct cmd *cmd)
             break;
 
         case '+':                       // Print EG result
-            if ((p = eg_result) != NULL && (last_len = (uint_t)strlen(p)) != 0)
+            if ((last_len = ez.len) != 0)
             {
-                while (*p != NUL)
-                {
-                    type_out(*p++);
-                }
+                tprint("%.*s", ez.len, ez.data);
             }
 
             break;

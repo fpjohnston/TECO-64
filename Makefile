@@ -137,6 +137,7 @@ SOURCES = \
     e_ubar_cmd.c   \
     ew_cmd.c       \
     ex_cmd.c       \
+    ez_cmd.c       \
     fb_cmd.c       \
     fd_cmd.c       \
     fk_cmd.c       \

@@ -209,7 +209,7 @@ static inline void require_n(bool m_set, bool n_set)
 
 extern char eg_command[];
 
-extern char *eg_result;
+extern tstring ez;
 
 extern uint nparens;
 
@@ -243,7 +243,7 @@ extern void exec_macro(tbuffer *macro, struct cmd *cmd);
 
 extern void exec_insert(const char *buf, uint_t len);
 
-extern int find_eg(char *buf, bool reset);
+extern int find_eg(char *buf);
 
 extern bool next_page(int_t start, int_t end, bool ff, bool yank);
 

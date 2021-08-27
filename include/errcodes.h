@@ -44,13 +44,13 @@ enum errcodes
     E_BNI,          ///< Right angle bracket not in iteration
     E_CFG,          ///< Command not configured
     E_CHR,          ///< Invalid character for command
+    E_CMD,          ///< An EG or EZ command is too long
     E_COL,          ///< Invalid or extraneous colon
     E_CPQ,          ///< Can't pop into Q-register
     E_DIV,          ///< Division by zero
     E_DPY,          ///< Display mode error
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag '!foo!'
-    E_EGC,          ///< EG command is too long
     E_EXT,          ///< Extended feature not enabled
     E_FIL,          ///< Invalid file 'foo'
     E_FNF,          ///< File not found 'foo'

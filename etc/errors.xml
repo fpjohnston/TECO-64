@@ -43,6 +43,11 @@
             <detail>not an ASCII character.</detail>
         </error>
         <error>
+            <code>CMD</code>
+            <message>An EG or EZ command is too long</message>
+            <detail>An EG or EZ command was longer than 4095 characters.</detail>
+        </error>
+        <error>
             <code>COL</code>
             <message>Invalid or extraneous colon</message>
             <detail>A colon preceded a command that does not allow</detail>
@@ -76,11 +81,6 @@
             <message>Duplicate tag &apos;!%s!&apos;</message>
             <detail>An O command found a duplicate tag within the</detail>
             <detail>command string.</detail>
-        </error>
-        <error>
-            <code>EGC</code>
-            <message>EG command is too long</message>
-            <detail>An EG command was longer than 200 characters.</detail>
         </error>
         <error>
             <code>EXT</code>
