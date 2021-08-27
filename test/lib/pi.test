@@ -1,4 +1,4 @@
-! TECO-64 test script: Test lib/pi.tec !
+! TECO-64 test script: Test lib/pi.tec -- (misc.) !
 ! Expect: PASS [pi.log] !
 
 50,98 @EI/pi/
