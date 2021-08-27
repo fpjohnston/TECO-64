@@ -1,0 +1,8 @@
+# Ignore everything in these directories
+bin/*
+html/*
+obj/*
+# Except these files
+.perlcriticrc
+.perltidyrc
+
