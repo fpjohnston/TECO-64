@@ -181,7 +181,7 @@ void init_term(void)
 
         if (key_name != NULL)
         {
-            if ((key_fp = fopen(key_name, "a+")) != NULL)
+            if ((key_fp = fopen(key_name, "w+")) != NULL)
             {
                 // Write output immediately and do not buffer.
 
