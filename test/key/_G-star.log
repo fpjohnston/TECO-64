@@ -1,0 +1,11 @@
+*! TECO-64 test script: Test editing commands -- ^G* !
+! Expect: PASS [_G-star.log] !
+iabc
+def
+ghi^G*
+*! TECO-64 test script: Test editing commands -- ^G* !
+! Expect: PASS [_G-star.log] !
+iabc
+def
+ghi``
+*hkex``

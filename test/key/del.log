@@ -1,0 +1,4 @@
+*! TECO-64 test script: Test editing commands -- DEL !
+! Expect: PASS [del.log] !
+abc^G
+abc   def   ex``

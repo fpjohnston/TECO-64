@@ -1,0 +1,6 @@
+*! TECO-64 test script: Test immediate-action commands -- *q !
+! Expect: PASS [star-Q.log] !
+:@^A/hello, world!/``
+hello, world!
+**A
+*!PASS!^C^C

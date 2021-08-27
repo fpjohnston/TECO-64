@@ -1,0 +1,5 @@
+*! TECO-64 test script: Test editing commands -- ^C^C !
+! Expect: PASS [_C_C.log] !
+^C
+*^C
+*
