@@ -10,28 +10,28 @@
 !! Q-register 2 contains a macro that sets up the command string to map the
 !! specified key and then detects whether mapping succeeded or failed.
 
-@^U2$                              !! Load Q-register 2
-        . U3                        !! Save current position in Q-register 3
-        @I\:@FM"\                   !! Insert start of FM command
-        G1                          !! Add in name of key
-        @I\":@^A'[\                 !! Insert start of ^A command
-        G1                          !! Insert name of string
-        @I\]'"\                     !! Insert end of ^A command
-        Q3,. X4                     !! Copy everything to Q-register 4
-        Q3,. D                      !! Delete what we added to edit buffer
-        M4 U4                       !! Execute macro and save result
-        Q0&1 "E                     !! Don't print results if bit 0 is set
-            Q4 "N                   !! Success or failure?
-                @^A"Mapped key ["   !! And announce it
-            |
-                @^A"Undefined key [" !! And announce it
-            '
-            :G1                     !! Print name of key
-            ^^]^T                   !! Terminate the announcement
-            -1^T                    !! Add a CRLF
+@^U2$                               !! Load Q-register 2
+    . U3                            !! Save current position in Q-register 3
+    @I\:@FM"\                       !! Insert start of FM command
+    G1                              !! Add in name of key
+    @I\":@^A'[\                     !! Insert start of ^A command
+    G1                              !! Insert name of string
+    @I\]'"\                         !! Insert end of ^A command
+    Q3,. X4                         !! Copy everything to Q-register 4
+    Q3,. D                          !! Delete what we added to edit buffer
+    M4 U4                           !! Execute macro and save result
+    Q0&1 "E                         !! Don't print results if bit 0 is set
+        Q4 "N                       !! Success or failure?
+            @^A"Mapped key ["       !! Success
+        |
+            @^A"Undefined key ["    !! Failure
         '
-        Q4 "N %1 | %2 '             !! Increment success/failure count
-    $                               !! Q-register 2 is complete now
+        :G1                         !! Print name of key
+        ^^]^T                       !! Terminate the announcement
+        -1^T                        !! Add a CRLF
+    '
+    Q4 "N %1 | %2 '                 !! Increment success/failure count
+$                                   !! Q-register 2 is complete now
 
 !! Q-register 1 contains the name of each key we're trying to map
 
