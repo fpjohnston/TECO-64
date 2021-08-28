@@ -129,7 +129,7 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
     // If failure, issue error using original file name (plus explicit or
     // implicit file type) provided by user.
 
-    throw(E_FNF, file);                 // File not found
+    throw(E_FNF, name);                 // File not found
 }
 
 
