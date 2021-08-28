@@ -1,0 +1,22 @@
+! TECO-64 test script: Type out characters -- ^T !
+! Expect: PASS [_T-01.log] !
+
+^^H ^T
+^^e ^T
+^^l ^T
+^^l ^T
+^^o ^T
+^^, ^T
+^^  ^T
+^^w ^T
+^^o ^T
+^^r ^T
+^^l ^T
+^^d ^T
+^^! ^T
+
+-1 ^T
+
+:@^A/PASS/
+
+^C

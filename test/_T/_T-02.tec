@@ -1,0 +1,24 @@
+! TECO-64 test script: Type out 8-bit characters -- ^T !
+! Expect: PASS [_T-02.log] !
+
+0,4096 ET                               !! Say we can handle 8-bit chrs.
+
+^^H+128 ^T
+^^e+128 ^T
+^^l+128 ^T
+^^l+128 ^T
+^^o+128 ^T
+^^,+128 ^T
+^^ +128 ^T
+^^w+128 ^T
+^^o+128 ^T
+^^r+128 ^T
+^^l+128 ^T
+^^d+128 ^T
+^^!+128 ^T
+
+-1 ^T
+
+:@^A/PASS/
+
+^C
