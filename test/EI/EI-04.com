@@ -3,7 +3,7 @@
 
 :@^A/entering test 4/
 
-@EI/EI-04a.test/
+@EI/EI-04a.com/
 
 :@^A/exiting test 4/
 

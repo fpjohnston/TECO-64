@@ -1,6 +1,6 @@
 ! TECO-64 test script: Open indirect command file -- EI !
-! Expect: FAIL !
-! Options: -B baz.test !
+! Expect: PASS !
+! Options: -B foo.com !
 
 HXA HK
 

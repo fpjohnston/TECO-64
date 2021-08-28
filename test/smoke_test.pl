@@ -196,7 +196,7 @@ sub test_file
     my ( $file, $abstract, $expect, $options ) = @_;
     my $command;
 
-    if ( $file =~ /.+[.]test/msx )
+    if ( $file =~ /.+[.]com/msx )
     {
         $command = "$teco $options -X -E $file";
     }
@@ -285,7 +285,7 @@ sub wanted
 
     # Only look for TECO script files
 
-    if ( $file !~ /.+[.]test$/msx && $file !~ /.+[.]key$/msx )
+    if ( $file !~ /.+[.]com$/msx && $file !~ /.+[.]key$/msx )
     {
         return;
     }
