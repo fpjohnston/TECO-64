@@ -1,0 +1,14 @@
+! TECO-64 test script: Copy character to Q-register -- n^U !
+! Expect: PASS [_U-03.log] !
+
+^^h @^UA//
+^^e @^UA//
+^^l @^UA//
+^^l @^UA//
+^^o @^UA//
+
+:GA -1^T
+
+:@^A/PASS/
+
+^C
