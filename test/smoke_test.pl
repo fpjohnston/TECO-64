@@ -256,7 +256,6 @@ sub test_file
             if ( $expected ne $output )
             {
                 print "$report-> DIFF: $diff\n";
-                print "output = $output\n";
 
                 return;
             }
