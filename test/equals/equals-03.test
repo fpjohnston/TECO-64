@@ -1,0 +1,20 @@
+! TECO-64 test script: Print numeric values -- @=// !
+! Expect: PASS [equals-03.log] !
+
+@^A/value = /  123 @=//
+@^A/value = /  123 @=/[%d]/
+@^A/value = /  123 @=/[%u]/
+@^A/value = /  123 @=/[%6d]/
+@^A/value = /  123 @=/[%-6d]/
+
+@^A/value = /  -1 @=//
+@^A/value = /  -1 @=/[%d]/
+@^A/value = /  -1 @=/[%u]/
+@^A/value = /  -1 @=/[%6d]/
+@^A/value = /  -1 @=/[%-6d]/
+
+@^A/value = /   0 @=/[%d]/
+
+:@^A/PASS/
+
+^C
