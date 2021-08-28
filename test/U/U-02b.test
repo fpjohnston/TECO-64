@@ -1,4 +1,4 @@
-! TECO-64 test script: Load n arg. -- U !
+! TECO-64 test script: Try to load Q-register using M -- U !
 ! Expect: FAIL !
 ! Options: !
 

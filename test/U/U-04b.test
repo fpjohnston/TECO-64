@@ -1,4 +1,4 @@
-! TECO-64 test script: Load n arg. -- :U !
+! TECO-64 test script: Load Q-register w/ default using nM -- :U !
 ! Expect: PASS !
 ! Options: -A 123 !
 
