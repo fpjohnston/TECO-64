@@ -129,7 +129,7 @@ static void find_tag(const char *orig_tag)
     struct cmd cmd = null_cmd;          ///< Dummy command block for skip_cmd()
     uint_t loop_start = getloop_start(); ///< Start of current loop (0 if none)
     uint_t loop_end = (uint_t)EOF;      ///< End of current loop
-    uint loop_depth = 0;                ///< Current loop depth
+    uint loop_depth = 0;                ///< Initial loop depth
     uint if_depth = 0;                  ///< Current if/else depth
     uint_t tag_pos = 0;                 ///< Position of tag
     uint tag_loop = 0;                  ///< Loop depth for tag
@@ -208,7 +208,7 @@ static void find_tag(const char *orig_tag)
                     // Save state for tag in case we decide to use it
 
                     tag_pos  = cbuf->pos;
-                    tag_loop = loop_depth;
+                    tag_loop = loop_depth + getloop_depth();
                     tag_if   = if_depth;
                 }
 
@@ -227,7 +227,6 @@ static void find_tag(const char *orig_tag)
     init_x();                           // Reinitialize expression stack
 
     setloop_depth(tag_loop);
-
     setif_depth(tag_if);
 
     cbuf->pos = tag_pos;                // Execute goto
