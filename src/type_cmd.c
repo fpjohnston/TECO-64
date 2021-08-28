@@ -138,20 +138,22 @@ void exec_V(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int_t m;
-    int_t n;
+    int_t m = cmd->m_arg;
+    int_t n = cmd->n_arg;
 
     if (cmd->n_set)
     {
         if (cmd->m_set)
         {
-            m = getdelta_ebuf(1 - cmd->m_arg);
-            n = getdelta_ebuf(cmd->n_arg - 1);
+            m = getdelta_ebuf(1 - m);
+            n = getdelta_ebuf(n - 1);
         }
         else
         {
-            m = getdelta_ebuf(1 - cmd->n_arg);
-            n = getdelta_ebuf(cmd->n_arg);
+            n = n ?: 1;                 // 0V -> 1V
+
+            m = getdelta_ebuf(1 - n);
+            n = getdelta_ebuf(n);
         }
     }
     else
