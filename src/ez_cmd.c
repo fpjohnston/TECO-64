@@ -64,8 +64,9 @@ void exec_EZ(struct cmd *cmd)
         return;                         // No
     }
 
-    int nbytes = snprintf(syscmd, sizeof(syscmd), "%.*s 2>&1",
-                          (int)cmd->text1.len, cmd->text1.data);
+    tstring buf = build_string(cmd->text1.data, cmd->text1.len);
+    
+    int nbytes = snprintf(syscmd, sizeof(syscmd), "%s 2>&1", buf.data);
 
     assert(nbytes > 0);
 
