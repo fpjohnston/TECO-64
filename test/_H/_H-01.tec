@@ -1,0 +1,16 @@
+! TECO-64 test script: Get time of day -- ^H !
+! Expect: PASS !
+
+^H UA                               !! Get time of day in milliseconds
+QA / 1000 UB                        !! Convert to seconds
+
+!! The number of seconds must be in the range [0,86400)
+
+QB @=/Current time of day is %d/
+
+QB           "L :@^A/FAIL/ ^C '
+QB-(86400-1) "G :@^A/FAIL/ ^C '
+
+:@^A/PASS/
+
+^C

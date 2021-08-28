@@ -1,0 +1,30 @@
+! TECO-64 test script: Get time of day -- ^B !
+! Expect: PASS !
+
+^B UA                               !! Get date
+
+(QA & 31)         UD                !! D = day
+(QA / 32) & 15    UM                !! M = month
+(QA / 512) + 1900 UY                !! Y = year
+
+QD @:=/day = %d, /
+QM @:=/month = %d, /
+QY @=/year = %d/
+
+!! The following are basic checks for day, month, and year. This is not
+!! intended to be rigorous, but to verify that days are in the range of
+!! 1 to 31, months are in the range of 1 to 12, and years are in the
+!! (adjusted) range of 2000 to 2100.
+    
+QD - 1     "L :@^A/FAIL/ ^C '
+QD - 31    "G :@^A/FAIL/ ^C '
+
+QM - 1     "L :@^A/FAIL/ ^C '
+QM - 12    "G :@^A/FAIL/ ^C '
+
+QY - 2000  "L :@^A/FAIL/ ^C '
+QY - 2100  "G :@^A/FAIL/ ^C '
+
+:@^A/PASS/
+
+^C
