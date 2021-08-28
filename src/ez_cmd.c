@@ -84,7 +84,7 @@ void exec_EZ(struct cmd *cmd)
 
     uint_t pos = 0;
 
-    while ((size = (int)fread(ez.data + pos, 1uL, EZ_SIZE, fp)) > 0)
+    while ((size = fread(ez.data + pos, 1uL, (size_t)EZ_SIZE, fp)) > 0)
     {
         if (size + pos == ez.len)
         {
@@ -92,7 +92,7 @@ void exec_EZ(struct cmd *cmd)
             ez.len += EZ_SIZE;
         }
 
-        pos += size;
+        pos += (uint_t)size;
     }
 
     if (ferror(fp) || pclose(fp) == -1)

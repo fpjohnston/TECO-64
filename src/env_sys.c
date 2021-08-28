@@ -47,8 +47,6 @@ const char *teco_prompt = "*";          ///< TECO's prompt
 
 const char *teco_vtedit = NULL;         ///< Name of VTEDIT macro
 
-char *eg_result = NULL;                 ///< Output from EG command
-
 // Define operating system
 
 #if     defined(__linux)

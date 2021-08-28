@@ -30,16 +30,12 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "eflags.h"
 #include "exec.h"
 #include "file.h"
 #include "qreg.h"
 #include "search.h"
 #include "term.h"
-
-
-extern tstring ez; // TODO
 
 
 // Local functions
@@ -148,7 +144,7 @@ static void type_G(struct cmd *cmd)
         case '+':                       // Print EG result
             if ((last_len = ez.len) != 0)
             {
-                tprint("%.*s", ez.len, ez.data);
+                tprint("%.*s", (int)ez.len, ez.data);
             }
 
             break;
