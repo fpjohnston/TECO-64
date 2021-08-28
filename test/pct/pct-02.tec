@@ -1,0 +1,14 @@
+! TECO-64 test script: Increment Q-register -- % !
+! Expect: PASS !
+
+0 UA
+
+%A - 1 "N :@^A/FAIL/ ^C '               !! Increment w/ implicit value
+
+10 %A - 11 "N :@^A/FAIL/ ^C '           !! Increment w/ explicit value
+
+-16 %A + 5 "N :@^A/FAIL/ ^C '           !! Decrement w/ explicit value
+
+:@^A/PASS/
+
+^C

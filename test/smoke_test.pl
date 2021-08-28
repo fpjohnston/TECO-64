@@ -196,7 +196,7 @@ sub test_file
     my ( $file, $abstract, $expect, $options ) = @_;
     my $command;
 
-    if ( $file =~ /.+[.]com/msx )
+    if ( $file =~ /.+[.]tec/msx )
     {
         $command = "$teco $options -X -E $file";
     }
@@ -255,7 +255,7 @@ sub test_file
 
             if ( $expected ne $output )
             {
-                print "$report-> DIFF: $diff\n";
+                printf "%s-> DIFF: $diff\n", $report;
 
                 return;
             }
@@ -263,8 +263,7 @@ sub test_file
     }
     elsif ( $expect ne 'fail' || $output =~ /PASS/ms )
     {
-        print "$report-> ERROR: $output\n";
-        print "output = $output\n";
+        printf "%s-> ERROR: $output\n", $report;
 
         return;
     }
@@ -273,7 +272,7 @@ sub test_file
 
     if ($okay)
     {
-        printf "$report-> OK\n";
+        printf "%s->OK\n", $report;
     }
 
     return;
@@ -285,7 +284,7 @@ sub wanted
 
     # Only look for TECO script files
 
-    if ( $file !~ /.+[.]com$/msx && $file !~ /.+[.]key$/msx )
+    if ( $file !~ /.+[.]tec$/msx && $file !~ /.+[.]key$/msx )
     {
         return;
     }
