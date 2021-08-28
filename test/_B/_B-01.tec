@@ -1,4 +1,4 @@
-! TECO-64 test script: Get time of day -- ^B !
+! TECO-64 test script: Get date -- ^B !
 ! Expect: PASS !
 
 ^B UA                               !! Get date

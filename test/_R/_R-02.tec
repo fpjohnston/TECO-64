@@ -1,0 +1,8 @@
+! TECO-64 test script: Set radix to invalid value -- ^R !
+! Expect: FAIL !
+
+:@^A/Setting radix to binary/       2 ^R ^D
+
+:@^A/FAIL/                          !! Shouldn't get here
+
+^C
