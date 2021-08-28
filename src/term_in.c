@@ -37,7 +37,11 @@
 
 #include <ncurses.h>
 
-_Static_assert(EOF == ERR);         //lint !e010
+#if     EOF != ERR
+
+#error  EOF and ERR have different values
+
+#endif
 
 #endif
 
