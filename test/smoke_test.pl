@@ -205,7 +205,31 @@ sub test_file
         $command = "$teco $options < $file";
     }
 
+    my $teco_init    = $ENV{TECO_INIT};
+    my $teco_library = $ENV{TECO_LIBRARY};
+    my $teco_memory  = $ENV{TECO_MEMORY};
+    my $teco_vtedit  = $ENV{TECO_VTEDIT};
+
+    # Use special environment variables for :EG commands so we don't have
+    # to guess how the user might have set them up.
+
+    if ($file =~ /^EG/)
+    {
+        $ENV{TECO_INIT}    = 'TECO_INIT';
+        $ENV{TECO_LIBRARY} = 'TECO_LIBRARY';
+        $ENV{TECO_MEMORY}  = 'TECO_MEMORY';
+        $ENV{TECO_VTEDIT}  = 'TECO_VTEDIT';
+    }
+
     my $output = qx/$command/;    # Execute command and capture output
+
+    if ($file =~ /^EG/)
+    {
+        $ENV{TECO_INIT}    = $teco_init;
+        $ENV{TECO_LIBRARY} = $teco_library;
+        $ENV{TECO_MEMORY}  = $teco_memory;
+        $ENV{TECO_VTEDIT}  = $teco_vtedit;
+    }
 
     chomp $output;
 
@@ -242,7 +266,7 @@ sub test_file
         return;
     }
 
-    my $report = sprintf '%17s %-45s %-15s %s ', "[$file]", $abstract,
+    my $report = sprintf '%17s %-45s %-15s %s', "[$file]", $abstract,
       $commands, $expect;
 
     if ( $expect eq 'PASS' && $output =~ /PASS/ms )
@@ -255,7 +279,7 @@ sub test_file
 
             if ( $expected ne $output )
             {
-                printf "%s-> DIFF: $diff\n", $report;
+                printf "%s -> DIFF: $diff\n", $report;
 
                 return;
             }
@@ -263,7 +287,7 @@ sub test_file
     }
     elsif ( $expect ne 'fail' || $output =~ /PASS/ms )
     {
-        printf "%s-> ERROR: $output\n", $report;
+        printf "%s -> ERROR: $output\n", $report;
 
         return;
     }
@@ -272,7 +296,7 @@ sub test_file
 
     if ($okay)
     {
-        printf "%s->OK\n", $report;
+        printf "%s -> OK\n", $report;
     }
 
     return;

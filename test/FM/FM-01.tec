@@ -1,4 +1,6 @@
-!! mapall.tec - TECO-64 macro to map all possible keys usable in display mode.
+! TECO-64 test script: Map keys to macros -- FM !
+! Expect: PASS [FM-01.log] !
+! Options: -A 0 !
 
 :U0                     !! Get flag argument
 
@@ -76,4 +78,5 @@ Q0&4 "N                             !! Unmap standard keys if bit 2 is set
     @FM/PGDN//
 '
 
+:@^A/PASS/
 ^[^[

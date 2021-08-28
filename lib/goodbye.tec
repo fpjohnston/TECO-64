@@ -1,5 +1,0 @@
-!! goodbye.tec - demonstration macro for TECO-64
-
-0,128ET                 !! Abort on error
-
-:@^A/goodbye, cruel world!/

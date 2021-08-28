@@ -1,0 +1,11 @@
+! TECO-64 test script: Read environment variables -- :EG !
+! Expect: PASS [EG-02.log] !
+
+:@EG/INI/ "E :@^A/FAIL/ ^C | :G* -1^T '
+:@EG/LIB/ "E :@^A/FAIL/ ^C | :G* -1^T '
+:@EG/MEM/ "E :@^A/FAIL/ ^C | :G* -1^T '
+:@EG/VTE/ "E :@^A/FAIL/ ^C | :G* -1^T '
+
+:@^A/PASS/
+
+

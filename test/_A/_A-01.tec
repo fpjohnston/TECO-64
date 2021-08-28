@@ -1,0 +1,14 @@
+! TECO-64 test script: Print message -- ^A !
+! Expect: PASS [_A-01.log] !
+
+0,128ET                 !! Abort on error
+
+@^A/hello, world!/      !! Test standard output (no newline)
+
+-1^T
+
+@^A/PASS/
+
+-1^T
+
+^C^C
