@@ -86,10 +86,12 @@ static void exec_search(struct cmd *cmd, bool replace)
         throw(E_ISA);                   // Invalid search argument
     }
 
-    if (!replace && cmd->dcolon)        // ::Stext` => 1,1:Stext`
+    if (!replace && cmd->dcolon)        // ::Stext` => (text len),1:Stext`
     {
-        cmd->m_arg = cmd->n_arg = 1;
-        cmd->m_set = cmd->n_set = true;
+        cmd->n_set = true;
+        cmd->n_arg = 1;
+        cmd->m_set = true;
+        cmd->m_arg = cmd->text1.len;
     }
     else if (!cmd->n_set)               // Stext` => 1Stext`
     {
@@ -115,7 +117,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         s.search     = search_forward;
         s.count      = 1;
         s.text_start = 0;               // Start at current character
-        s.text_end   = 0;
+        s.text_end   = cmd->m_arg;
     }
     else if (cmd->n_arg < 0)
     {
