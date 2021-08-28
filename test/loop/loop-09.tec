@@ -1,0 +1,13 @@
+! TECO-64 test script: Exit iteration on search success -- :; !
+! Expect: PASS !
+
+@I/foo/ 10I
+
+0J
+
+1 < @S/foo/:; :@^A/FAIL/ ^C > 
+
+HK
+
+:@^A/PASS/
+^C
