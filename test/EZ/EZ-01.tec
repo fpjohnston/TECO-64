@@ -1,0 +1,29 @@
+! TECO-64 test script: Execute system command and get output -- EZ !
+! Expect: PASS !
+
+HK
+
+@^UA/hello, world!/
+
+GA @I/"/ 0J @I/echo "/ HXB HK
+
+:@^A/command = [^EQB]/
+
+@EZ/^EQB/
+
+G+                                  !! Copy output to edit buffer
+
+0J                                  !! Go to start
+
+::@S/^EQA/ UA                       !! See if it compares w/ what we expect
+
+HK
+
+QA"E
+    @^A/"^EQA" did not match: /
+    :G+
+    :@^A/FAIL/
+    ^C
+'
+
+:@^A/PASS/
