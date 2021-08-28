@@ -44,7 +44,7 @@ immediately following the edit buffer pointer.
 
 | Command | Function |
 | ------- | -------- |
-| *m*,*n*S*text*` | System specific command. |
+| *m*,*n*S*text*` | Performs the same function as the *n*S command, but *m* serves a bound limit for the search. If the search string can be found without moving the pointer more than ABS(*m*)-1 places, the search succeeds and the pointer is repositioned to immediately after the last character of the string. Otherwise, the pointer is left unchanged. The ^Q operator is useful in conjunction with this command. <br><br>Note that m,Stext$ is identical to m,1Stext$ and m,-Stext$ is identical to m,-1Stext$.|
 | *m*,*n*FB*text*` | Performs the same function as the *n*S*text*` command, but *m* and *n* (inclusive) serve as bounds for the search. In order for a search to be successful, the first character to match must occur between buffer pointer positions *m* and *n*. The string that is matched is permitted to extend beyond the search limits specified, provided that it begins within bounds. If *m* \< *n*, then the search proceeds in a forwards direction. If *m* \> *n*, then the search proceeds in the reverse direction. |
 | *n*FB*text*` | Performs a bounded search over the next *n* lines. If *n* is positive, the search proceeds forward over the next *n* lines; if *n* is negative the search proceeds backwards over the *n* preceding lines; if *n* is zero, the search proceeds backwards over the portion of the line preceding the pointer. |
 | FB*text*` | Equivalent to 1FB*text*`. |
