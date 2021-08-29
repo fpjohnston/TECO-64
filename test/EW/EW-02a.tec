@@ -1,12 +1,12 @@
-! TECO-64 test script: Open output file -- @EW// !
+! TECO-64 test script: Open file for writing -- @EW// !
 ! Expect: PASS !
-! Options: -B foo !
 
-HXA HK          !! Copy file name to Q-register A, clear buffer
+@^UA{/tmp/foo}  !! Name of output file
 
-@EW/^EQA/       !! Open file for write, using name in Q-register A
+@EW/^EQA/       !! Open file for writing
+
+EK HK
 
 :@^A/PASS/
 
-EK HK
 ^[^[
