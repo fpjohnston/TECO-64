@@ -32,6 +32,7 @@
 #include <unistd.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
 #include "errcodes.h"
 #include "estack.h"
@@ -39,7 +40,7 @@
 #include "file.h"
 
 
-char eg_command[PATH_MAX];              ///< EG command to be executed on exit.
+char eg_command[PATH_MAX] = { NUL };    ///< Command to execute on exit
 
 
 ///
@@ -72,8 +73,9 @@ void exec_EG(struct cmd *cmd)
         return;
     }
 
-    snprintf(eg_command, sizeof(eg_command), "%.*s", (int)cmd->text1.len,
-             cmd->text1.data);
+    tstring eg = build_string(cmd->text1.data, cmd->text1.len);
+
+    snprintf(eg_command, sizeof(eg_command), "%s", eg.data);
 
     // The following ensures that we don't exit if we have nowhere to output
     // the data in the buffer to.
