@@ -1,8 +1,7 @@
 ! TECO-64 test script: Open indirect command file -- @EI// !
 ! Expect: FAIL !
-! Options: -B baz.tec !
 
-HXA HK
+@^UA/baz.tec/
 
 @EI/^EQA/
 

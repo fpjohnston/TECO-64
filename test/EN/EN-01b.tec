@@ -1,8 +1,7 @@
 ! TECO-64 test script: Open wildcard filespec -- EN !
 ! Expect: FAIL !
-! Options: -B '*.foo' !
 
-HXA HK          !! Copy file name to Q-register A, clear buffer
+@^UA{*.foo}
 
 EN^EQA        !! Initialize for wildcard lookup
 

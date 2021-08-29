@@ -1,12 +1,12 @@
-! TECO-64 test script: Open file for backup -- EB !
+! TECO-64 test script: Open file for reading and writing -- EB !
 ! Expect: PASS !
-! Options: -B foo !
 
-HXA HK          !! Copy file name to Q-register A, clear buffer
+@^UA{foo}
 
-EB^EQA        !! Open file for backup, using name in Q-register A
+EB^EQA        !! Open file for reading and writing
+
+EK HK
 
 :@^A/PASS/
 
-EK HK
 ^[^[
