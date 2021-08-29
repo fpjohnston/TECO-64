@@ -2,9 +2,9 @@
 ! Expect: PASS !
 ! Options: -B foo !
 
-HXA HK          ! Copy file name to Q-register A, clear buffer !
+HXA HK          !! Copy file name to Q-register A, clear buffer
 
-EW^EQA        ! Open file for write, using name in Q-register A !
+EW^EQA        !! Open file for write, using name in Q-register A
 
 :@^A/PASS/
 

@@ -2,9 +2,9 @@
 ! Expect: FAIL !
 ! Options: -B baz !
 
-HXA HK          ! Copy file name to Q-register A, clear buffer !
+HXA HK          !! Copy file name to Q-register A, clear buffer
 
-:@EB/^EQA/      ! Open file for backup, using name in Q-register A !
+:@EB/^EQA/      !! Open file for backup, using name in Q-register A
 
 "S
     :@^A/PASS/

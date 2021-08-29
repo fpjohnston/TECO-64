@@ -1,4 +1,4 @@
-*! TECO-64 test script: Test editing commands -- ^G<space> !
+*! TECO-64 test script: Re-type current input line -- ^G<space> !
 ! Expect: PASS [_G-space.log] !
 IABC^G
 IABC
