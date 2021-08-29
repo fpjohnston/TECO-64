@@ -1,4 +1,4 @@
-*! TECO-64 test script: Test immediate-action commands -- *q !
+*! TECO-64 test script: Copy command string to Q-register -- *q !
 ! Expect: PASS [star.log] !
 :@^A/hello, world!/``
 hello, world!
