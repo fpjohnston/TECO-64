@@ -1,5 +1,5 @@
-! TECO-64 test script: Get time of day -- ^H !
-! Expect: PASS !
+!! TECO-64 test script: Get time of day -- ^H
+!! Expect: PASS
 
 ^H UA                               !! Get time of day in milliseconds
 QA / 1000 UB                        !! Convert to seconds

@@ -1,5 +1,5 @@
-! TECO-64 test script: Exit iteration if negative -- n:; !
-! Expect: PASS !
+!! TECO-64 test script: Exit iteration if negative -- n:;
+!! Expect: PASS
 
 1 < -1:; :@^A/!FAIL!/ ^C > 
 

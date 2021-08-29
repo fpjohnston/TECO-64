@@ -1,5 +1,5 @@
-! TECO-64 test script: Map keys to macros -- FM !
-! Expect: PASS [FM-01.log] !
+!! TECO-64 test script: Map keys to macros -- FM
+!! Expect: PASS [FM-01.log]
 ! Options: -A 0 !
 
 :U0                     !! Get flag argument

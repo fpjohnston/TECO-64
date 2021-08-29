@@ -1,5 +1,5 @@
-! TECO-64 test script: Get current buffer position -- . !
-! Expect: PASS !
+!! TECO-64 test script: Get current buffer position -- .
+!! Expect: PASS
 
 10 < @I/0123456789/ 10I >
 

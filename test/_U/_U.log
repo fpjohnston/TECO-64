@@ -1,5 +1,5 @@
-*! TECO-64 test script: Cancel current input line -- ^U !
-! Expect: PASS [_U.log] !
+*!! TECO-64 test script: Cancel current input line -- ^U
+!! Expect: PASS [_U.log]
 abcdef       *
 *
 *

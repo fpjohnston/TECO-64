@@ -1,5 +1,5 @@
-! TECO-64 test script: Execute macro returning n arg. -- M !
-! Expect: PASS !
+!! TECO-64 test script: Execute macro returning n arg. -- M
+!! Expect: PASS
 
 @I/123/
 27@I// 27@I//

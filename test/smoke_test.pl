@@ -163,7 +163,7 @@ sub read_header
         return ( undef, undef, undef );
     }
 
-    if ( $abstract !~ s/! \s+ TECO-64 \s test \s script: \s (.+) \s !\n/$1/msx )
+    if ( $abstract !~ s/!! \s+ TECO-64 \s test \s script: \s (.+) \n /$1/msx )
     {
         return ( undef, undef, undef );
     }
@@ -171,7 +171,7 @@ sub read_header
     # Find out whether we expect success or failure
 
     if ( !defined $expect
-        || $expect !~ s/! \s+ Expect: \s+ (.+) \s !\n/$1/msx )
+        || $expect !~ s/!! \s+ Expect: \s+ (.+) \n /$1/msx )
     {
         print "[$file] Test script is missing expectations\n";
 

@@ -1,5 +1,5 @@
-! TECO-64 test script: Test extended operators -- (misc.) !
-! Expect: PASS !
+!! TECO-64 test script: Test extended operators -- (misc.)
+!! Expect: PASS
 
 0 UF            !! Count of failures
 

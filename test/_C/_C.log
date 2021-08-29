@@ -1,5 +1,5 @@
-*! TECO-64 test script: Abort input command string -- ^C !
-! Expect: PASS [_C.log] !
+*!! TECO-64 test script: Abort input command string -- ^C
+!! Expect: PASS [_C.log]
 abc^C
 *
 *

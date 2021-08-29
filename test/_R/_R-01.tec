@@ -1,5 +1,5 @@
-! TECO-64 test script: Set input radix to 8, 10, & 16 -- ^R !
-! Expect: PASS !
+!! TECO-64 test script: Set input radix to 8, 10, & 16 -- ^R
+!! Expect: PASS
 
 :@^A/Setting radix to octal/        8 ^R ^D
 

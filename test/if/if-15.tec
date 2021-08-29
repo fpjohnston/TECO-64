@@ -1,5 +1,5 @@
-! TECO-64 test script: Test for not equal to zero -- "N !
-! Expect: PASS !
+!! TECO-64 test script: Test for not equal to zero -- "N
+!! Expect: PASS
 
  0 "N   @^A/!FAIL!/ ^C '
  1 "N | @^A/!FAIL!/ ^C '

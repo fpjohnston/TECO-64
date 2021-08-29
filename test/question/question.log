@@ -1,9 +1,9 @@
-*! TECO-64 test script: Print erroneous command string -- ? !
-! Expect: PASS [question.log] !
+*!! TECO-64 test script: Print erroneous command string -- ?
+!! Expect: PASS [question.log]
 ERfoo``
 ?FNF   File not found 'foo'
-*?! TECO-64 test script: Print erroneous command string -- ? !
-! Expect: PASS [question.log] !
+*?!! TECO-64 test script: Print erroneous command string -- ?
+!! Expect: PASS [question.log]
 ERfoo`?
 *
 *!PASS!

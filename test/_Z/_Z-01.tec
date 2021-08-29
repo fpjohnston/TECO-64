@@ -1,5 +1,5 @@
-! TECO-64 test script: Check size of text in Q-registers -- ^Z !
-! Expect: PASS [_Z-01.log] !
+!! TECO-64 test script: Check size of text in Q-registers -- ^Z
+!! Expect: PASS [_Z-01.log]
 
 @^A/^Z = / ^Z := ^Z-0 "E :@^A/ (pass)/ | :@^A/ (fail)/ '
 

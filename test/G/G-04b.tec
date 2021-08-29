@@ -1,5 +1,5 @@
-! TECO-64 test script: Print last search string -- :G_ !
-! Expect: PASS [G-04b.log] !
+!! TECO-64 test script: Print last search string -- :G_
+!! Expect: PASS [G-04b.log]
 
 0 U.A
 HK

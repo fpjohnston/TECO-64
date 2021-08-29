@@ -1,5 +1,5 @@
-! TECO-64 test script: Type out multiple lines -- V !
-! Expect: PASS [V-03.log] !
+!! TECO-64 test script: Type out multiple lines -- V
+!! Expect: PASS [V-03.log]
 
 HK
 

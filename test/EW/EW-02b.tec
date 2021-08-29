@@ -1,5 +1,5 @@
-! TECO-64 test script: Open file for writing -- @EW// !
-! Expect: FAIL !
+!! TECO-64 test script: Open file for writing -- @EW//
+!! Expect: FAIL
 
 @^UA{/dev/foo}  !! Name of output file
 

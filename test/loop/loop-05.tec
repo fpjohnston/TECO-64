@@ -1,5 +1,5 @@
-! TECO-64 test script: Basic loop test -- <, > !
-! Expect: PASS [loop-05.log] !
+!! TECO-64 test script: Basic loop test -- <, >
+!! Expect: PASS [loop-05.log]
 
 0 < :@^A/!FAIL!/ >
 

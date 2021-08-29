@@ -1,5 +1,5 @@
-! TECO-64 test script: Open file for reading -- :@ER !
-! Expect: FAIL !
+!! TECO-64 test script: Open file for reading -- :@ER
+!! Expect: FAIL
 
 @^UA{baz}       !! Name of non-existent input file
 

@@ -1,5 +1,5 @@
-! TECO-64 test script: Print message -- :^A !
-! Expect: PASS [_A-02.log] !
+!! TECO-64 test script: Print message -- :^A
+!! Expect: PASS [_A-02.log]
 
 0,128ET                 !! Abort on error
 

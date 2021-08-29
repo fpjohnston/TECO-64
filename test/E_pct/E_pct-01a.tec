@@ -1,5 +1,5 @@
-! TECO-64 test script: Write Q-register to file -- E% !
-! Expect: PASS !
+!! TECO-64 test script: Write Q-register to file -- E%
+!! Expect: PASS
 
 @^UA{/tmp/hello}
 

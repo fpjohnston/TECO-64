@@ -1,5 +1,5 @@
-! TECO-64 test script: Read Q-register from file -- @EQ// !
-! Expect: PASS !
+!! TECO-64 test script: Read Q-register from file -- @EQ//
+!! Expect: PASS
 
 @^UA{hello}
 

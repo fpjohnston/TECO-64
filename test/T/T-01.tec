@@ -1,5 +1,5 @@
-! TECO-64 test script: Type entire edit buffer -- HT !
-! Expect: PASS [T-01.log] !
+!! TECO-64 test script: Type entire edit buffer -- HT
+!! Expect: PASS [T-01.log]
 
 HK
 
