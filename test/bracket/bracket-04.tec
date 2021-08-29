@@ -3,14 +3,14 @@
 
 0UA
 
-! Push maximum Q-registers, each with unique value !
+!! Push maximum Q-registers, each with unique value
 
 64 <
     %A
     [A
 >
 
-! Pop Q-registers, checking each value !
+!! Pop Q-registers, checking each value
 
 <
     :]B;
@@ -21,7 +21,7 @@
     -1%A
 >
 
-! Verify that we popped all expected Q-registers !
+!! Verify that we popped all expected Q-registers
 
 QA"N
     :@^A/FAIL/

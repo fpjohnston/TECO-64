@@ -11,7 +11,7 @@
 
 0 UB
 
-! Print out contents of Q-register, one character at a time !
+!! Print out contents of Q-register, one character at a time
 
 :QA < QB QA ^T %B >
 
