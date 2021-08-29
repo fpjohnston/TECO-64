@@ -11,10 +11,12 @@ EN^EQA        !! Initialize for wildcard lookup
     %A          !! And count how many we found
 >
 
-QA :@=/PASS: %u file/
+QA :@=/%u file/
 
 QA-1 "N @^A/s/ '
 
 :@^A/ matched/
+
+:@^A/!PASS!/    !! This shouldn't happen
 
 ^[^[

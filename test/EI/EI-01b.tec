@@ -1,11 +1,12 @@
 ! TECO-64 test script: Open indirect command file -- EI !
 ! Expect: FAIL !
 
-@^UA/foo.tec/
+@^UA/baz.tec/
 
 EI^EQA
 
-:@^A/PASS/
-
 HK
+
+:@^A/!PASS!/    !! Shouldn't get here
+
 ^[^[

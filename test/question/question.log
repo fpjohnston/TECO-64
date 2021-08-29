@@ -5,4 +5,6 @@ ERfoo``
 *?! TECO-64 test script: Print erroneous command string -- ? !
 ! Expect: PASS [question.log] !
 ERfoo`?
-*EX``
+*
+*!PASS!
+EX``

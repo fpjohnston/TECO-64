@@ -5,9 +5,9 @@
 
 0J
 
-1 < @S/foo/:; :@^A/FAIL/ ^C > 
+1 < @S/foo/:; :@^A/!FAIL!/ ^C > 
 
 HK
 
-:@^A/PASS/
+:@^A/!PASS!/
 ^C

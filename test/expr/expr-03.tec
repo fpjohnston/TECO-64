@@ -47,9 +47,9 @@
 @^UA{ 10^_      }    -11 :MB        !! 1's complement
 
 QF "E
-    :@^A/PASS/
+    :@^A/!PASS!/
 |
-    :@^A/FAIL/
+    :@^A/!FAIL!/
 '
 
 

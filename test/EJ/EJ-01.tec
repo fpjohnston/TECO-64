@@ -56,9 +56,9 @@ QW-QN "L
 '
 
 QF "N
-    :@^A/FAIL/
+    :@^A/!FAIL!/
     ^C
 |
-    :@^A/PASS/
+    :@^A/!PASS!/
 '
 ^C^C

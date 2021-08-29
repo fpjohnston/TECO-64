@@ -2,5 +2,5 @@
 ! Expect: PASS !
 
 @EI/show/
-:@^A/PASS/
+:@^A/!PASS!/
 ^C

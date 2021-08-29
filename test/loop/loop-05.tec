@@ -1,9 +1,9 @@
 ! TECO-64 test script: Basic loop test -- <, > !
 ! Expect: PASS [loop-05.log] !
 
-0 < :@^A/FAIL/ >
+0 < :@^A/!FAIL!/ >
 
--1 < :@^A/FAIL/ >
+-1 < :@^A/!FAIL!/ >
 
 1 < :@^A/1 iteration/ >
 
@@ -11,6 +11,6 @@
 
 3 < :@^A/3 iterations/ >
 
-:@^A/PASS/
+:@^A/!PASS!/
 
 ^C

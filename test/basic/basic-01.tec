@@ -31,4 +31,4 @@
  @^A/[Executing HT]/   MC MB HT -1 ^T
 :@^A/[Executing EK]/   EK
 :@^A/[Executing EZ]/   @EZ/rm _teco_test_*.tmp*/
-:@^A/PASS/
+:@^A/!PASS!/

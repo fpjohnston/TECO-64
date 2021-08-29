@@ -4,11 +4,14 @@
 @^UA/foo.tec/
 
 :@EI/^EQA/
-"S
-    :@^A/PASS/
-|
-    :@^A/FAIL/
+
+"U
+    :@^A/!FAIL!/
+    ^C
 '
 
 HK
+
+:@^A/!PASS!/
+
 ^[^[

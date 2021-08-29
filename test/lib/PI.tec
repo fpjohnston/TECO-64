@@ -2,5 +2,5 @@
 ! Expect: PASS [pi.log] !
 
 50,98 @EI/pi/
-:@^A/PASS/
+:@^A/!PASS!/
 ^C

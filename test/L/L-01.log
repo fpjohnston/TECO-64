@@ -6,4 +6,4 @@
 .=380,  10 lines in page,  10 lines preceding dot,   0 lines following dot
 .=342,  10 lines in page,   9 lines preceding dot,   1 line  following dot
 .=0  ,  10 lines in page,   0 lines preceding dot,  10 lines following dot
-PASS
+!PASS!

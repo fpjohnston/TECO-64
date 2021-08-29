@@ -7,7 +7,7 @@
 
     !tag2!
 
-    :@^A/PASS/
+    :@^A/!PASS!/
 
     ^C
 '
@@ -16,7 +16,7 @@
 
 @O!tag2!
 
-:@^A/FAIL/
+:@^A/!FAIL!/
 
 ^C
 

@@ -54,9 +54,9 @@
 @^UA{ (3 >> 16) }      0 :MB        !! Right shift
 
 QF "E
-    :@^A/PASS/
+    :@^A/!PASS!/
 |
-    :@^A/FAIL/
+    :@^A/!FAIL!/
 '
 
 

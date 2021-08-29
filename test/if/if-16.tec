@@ -3,36 +3,36 @@
 
 0 UC            !! Start at NUL
 
-^^0 < %C-1 "R :@^A/FAIL/ ' >          !! NUL to digits
+^^0 < %C-1 "R :@^A/!FAIL!/ ' >          !! NUL to digits
 
-^^9-^^0+1 < %C-1 "R | :@^A/FAIL/ ' >  !! Digits
+^^9-^^0+1 < %C-1 "R | :@^A/!FAIL!/ ' >  !! Digits
 
-^^A-^^9-1 < %C-1 "R :@^A/FAIL/ ' >    !! Digits to upper case
+^^A-^^9-1 < %C-1 "R :@^A/!FAIL!/ ' >    !! Digits to upper case
 
-^^Z-^^A+1 < %C-1 "R | :@^A/FAIL/ ' >  !! Upper case
+^^Z-^^A+1 < %C-1 "R | :@^A/!FAIL!/ ' >  !! Upper case
 
-^^a-^^Z-1 < %C-1 "R :@^A/FAIL/ ' >    !! Upper case to lower case
+^^a-^^Z-1 < %C-1 "R :@^A/!FAIL!/ ' >    !! Upper case to lower case
 
-^^z-^^a+1 < %C-1 "R | :@^A/FAIL/ ' >  !! Lower case
+^^z-^^a+1 < %C-1 "R | :@^A/!FAIL!/ ' >  !! Lower case
 
-255-^^z-1 < %C-1 "R :@^A/FAIL/ ' >    !! Remaining 8-bit characters
+255-^^z-1 < %C-1 "R :@^A/!FAIL!/ ' >    !! Remaining 8-bit characters
 
 0 UC            !! Start at NUL
 
-^^0 < %C-1 "r :@^A/FAIL/ ' >          !! NUL to digits
+^^0 < %C-1 "r :@^A/!FAIL!/ ' >          !! NUL to digits
 
-^^9-^^0+1 < %C-1 "r | :@^A/FAIL/ ' >  !! Digits
+^^9-^^0+1 < %C-1 "r | :@^A/!FAIL!/ ' >  !! Digits
 
-^^A-^^9-1 < %C-1 "r :@^A/FAIL/ ' >    !! Digits to upper case
+^^A-^^9-1 < %C-1 "r :@^A/!FAIL!/ ' >    !! Digits to upper case
 
-^^Z-^^A+1 < %C-1 "r | :@^A/FAIL/ ' >  !! Upper case
+^^Z-^^A+1 < %C-1 "r | :@^A/!FAIL!/ ' >  !! Upper case
 
-^^a-^^Z-1 < %C-1 "r :@^A/FAIL/ ' >    !! Upper case to lower case
+^^a-^^Z-1 < %C-1 "r :@^A/!FAIL!/ ' >    !! Upper case to lower case
 
-^^z-^^a+1 < %C-1 "r | :@^A/FAIL/ ' >  !! Lower case
+^^z-^^a+1 < %C-1 "r | :@^A/!FAIL!/ ' >  !! Lower case
 
-255-^^z-1 < %C-1 "r :@^A/FAIL/ ' >    !! Remaining 8-bit characters
+255-^^z-1 < %C-1 "r :@^A/!FAIL!/ ' >    !! Remaining 8-bit characters
 
-:@^A/PASS/
+:@^A/!PASS!/
 
 ^C

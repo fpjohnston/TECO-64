@@ -4,13 +4,13 @@
 1 <
     @O!tag1!
 
-    :@^A/FAIL/
+    :@^A/!FAIL!/
 
     ^C
 
     !tag1!
 
-    :@^A/PASS/
+    :@^A/!PASS!/
 
     ^C
 >

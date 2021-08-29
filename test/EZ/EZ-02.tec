@@ -22,8 +22,8 @@ HK
 QA"E
     @^A/"^EQA" did not match: /
     :G+
-    :@^A/FAIL/
+    :@^A/!FAIL!/
     ^C
 '
 
-:@^A/PASS/
+:@^A/!PASS!/

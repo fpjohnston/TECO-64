@@ -6,9 +6,9 @@
 :@EQB/^EQA/         !! Read Q-register from file B
 
 "S
-    :@^A/PASS/
+    :@^A/!PASS!/
 |
-    :@^A/FAIL/
+    :@^A/!FAIL!/
 '
 
 ^[^[

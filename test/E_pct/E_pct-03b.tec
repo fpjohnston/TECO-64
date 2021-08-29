@@ -9,9 +9,9 @@ HXB HK
 :@E%B/^EQA/         !! Write Q-register B to file
 
 "S
-    :@^A/PASS/      !! This shouldn't happen
+    :@^A/!PASS!/      !! This shouldn't happen
 |
-    :@^A/FAIL/
+    :@^A/!FAIL!/
     ^C
 '
 

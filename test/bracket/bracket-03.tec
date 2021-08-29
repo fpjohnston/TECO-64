@@ -11,10 +11,10 @@
 64 <
     ]B
     QB-QA "N
-        :@^UA/FAIL/
+        :@^UA/!FAIL!/
         ^C
     '
     -1%A
 >
 
-:@^A/PASS/
+:@^A/!PASS!/

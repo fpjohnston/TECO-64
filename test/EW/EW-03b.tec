@@ -6,12 +6,12 @@
 :@EW/^EQA/      !! Open file for writing
 
 "U
-    :@^A/FAIL/
+    :@^A/!FAIL!/
     ^C
 '
 
 EK HK
 
-:@^A/PASS/      !! Shouldn't get here
+:@^A/!PASS!/      !! Shouldn't get here
 
 ^[^[

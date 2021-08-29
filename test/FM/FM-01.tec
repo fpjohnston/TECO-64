@@ -78,5 +78,5 @@ Q0&4 "N                             !! Unmap standard keys if bit 2 is set
     @FM/PGDN//
 '
 
-:@^A/PASS/
+:@^A/!PASS!/
 ^[^[

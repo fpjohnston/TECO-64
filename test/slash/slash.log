@@ -5,4 +5,6 @@ ERfoo``
 */
      The requested input file could not be located. If this occurred within a
      macro, the colon-modified command may be necessary.
-*EX``
+*
+*!PASS!
+EX``

@@ -3,6 +3,6 @@
 
 :@^A/Setting radix to binary/       2 ^R ^D
 
-:@^A/FAIL/                          !! Shouldn't get here
+:@^A/!FAIL!/                          !! Shouldn't get here
 
 ^C

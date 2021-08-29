@@ -25,7 +25,7 @@
 0 UI
 6 < QI MA %I >
 
-QF "E :@^A/PASS/ | :@^A/FAIL/ '
+QF "E :@^A/!PASS!/ | :@^A/!FAIL!/ '
 
 ^C
 

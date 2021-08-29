@@ -6,12 +6,12 @@
 :@ER/^EQA/      !! Open file for reading
 
 "U
-    :@^A/FAIL/
+    :@^A/!FAIL!/
     ^C
 '
 
 HK
 
-:@^A/PASS/      !! Shouldn't get here
+:@^A/!PASS!/      !! Shouldn't get here
 
 ^[^[

@@ -5,11 +5,11 @@
 {
     UA
     QA - 123 "N
-        :@^A/FAIL/
+        :@^A/!FAIL!/
         ^C
     '
 
-    :@^A/PASS/
+    :@^A/!PASS!/
 }
 
 HXA HK

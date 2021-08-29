@@ -9,9 +9,9 @@ HXA HK
 MA UA
 
 QA - 123 "N
-    :@^A/FAIL/
+    :@^A/!FAIL!/
 |
-    :@^A/PASS/
+    :@^A/!PASS!/
 '
 
 ^[^[

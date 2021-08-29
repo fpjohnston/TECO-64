@@ -7,6 +7,6 @@ EW^EQA        !! Open file for writing
 
 EK HK
 
-:@^A/PASS/      !! Shouldn't get here
+:@^A/!PASS!/      !! Shouldn't get here
 
 ^[^[

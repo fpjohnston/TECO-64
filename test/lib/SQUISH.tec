@@ -3,5 +3,5 @@
 ! Expect: PASS !
 
 @EI/squish/
-:@^A/PASS/
+:@^A/!PASS!/
 ^C

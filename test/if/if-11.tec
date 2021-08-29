@@ -1,14 +1,14 @@
 ! TECO-64 test script: Test for equal to zero -- "E !
 ! Expect: PASS !
 
- 0 "E | @^A/FAIL/ ^C '
- 1 "E   @^A/FAIL/ ^C '
--1 "E   @^A/FAIL/ ^C '
+ 0 "E | @^A/!FAIL!/ ^C '
+ 1 "E   @^A/!FAIL!/ ^C '
+-1 "E   @^A/!FAIL!/ ^C '
 
- 0 "e | @^A/FAIL/ ^C '
- 1 "e   @^A/FAIL/ ^C '
--1 "e   @^A/FAIL/ ^C '
+ 0 "e | @^A/!FAIL!/ ^C '
+ 1 "e   @^A/!FAIL!/ ^C '
+-1 "e   @^A/!FAIL!/ ^C '
 
-:@^A/PASS/
+:@^A/!PASS!/
 
 ^C

@@ -7,5 +7,7 @@ ghi^G*
 ! Expect: PASS [_G-star.log] !
 iabc
 def
-ghi``
+ghi
+!PASS!
+``
 *hkex``

@@ -1,8 +1,15 @@
 ! TECO-64 test script: Exit TECO and go -- EG !
 ! Expect: PASS [EG-01.log] !
 
-@EG/echo "hello, world!\nPASS"/
+@^UA/echo "hello, world!\n/
 
-:@^A/FAIL/
+^^!:@^UA//
+:@^UA/PASS/
+^^!:@^UA//
+^^":@^UA//
+
+@EG/^EQA/
+ 
+:@^A/!FAIL!/
 
 

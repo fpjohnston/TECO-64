@@ -2,5 +2,5 @@
 ! Expect: PASS !
 
 @EI/init/
-:@^A/PASS/
+:@^A/!PASS!/
 ^C

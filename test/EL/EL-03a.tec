@@ -6,9 +6,9 @@
 :@EL/^EQA/              !! Open log file
 
 "S
-    :@^A/PASS/
+    :@^A/!PASS!/
 |
-    :@^A/FAIL/
+    :@^A/!FAIL!/
 '
 
 @EL//                    !! Close log file

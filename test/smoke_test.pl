@@ -269,7 +269,7 @@ sub test_file
     my $report = sprintf '%17s %-45s %-15s %s', "[$file]", $abstract,
       $commands, $expect;
 
-    if ( $expect eq 'PASS' && $output =~ /PASS/ms )
+    if ( $expect eq 'PASS' && $output =~ /!PASS!/ms )
     {
         if ( defined $diff )
         {
@@ -285,7 +285,7 @@ sub test_file
             }
         }
     }
-    elsif ( $expect ne 'fail' || $output =~ /PASS/ms )
+    elsif ( $expect ne 'fail' || $output =~ /!PASS!/ms )
     {
         printf "%s -> ERROR: $output\n", $report;
 
