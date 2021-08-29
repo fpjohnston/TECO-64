@@ -1,8 +1,7 @@
 ! TECO-64 test script: Read Q-register from file -- EQ !
 ! Expect: FAIL !
-! Options: -B goodbye.txt !
 
-HXA HK              !! Copy file name to Q-register A, clear buffer
+@^UA{goodbye.txt}
 
 EQB^EQA           !! Read Q-register from file B
 

@@ -1,8 +1,7 @@
 ! TECO-64 test script: Write Q-register to file -- @E%// !
 ! Expect: PASS !
-! Options: -B /tmp/hello !
 
-HXA HK              !! Copy file name to Q-register A, clear buffer
+@^UA{/tmp/hello}
 
 @I/hello, world!/ 10I
 HXB HK

@@ -1,8 +1,7 @@
 ! TECO-64 test script: Read to Q-register, verify data -- :@EQ// !
 ! Expect: PASS !
-! Options: -B hello !
 
-HXA HK              !! Copy file name to Q-register A, clear buffer
+@^UA{hello}
 
 :@EQB/^EQA/         !! Read Q-register from file B
 "U :@^A/FAIL/ ^C '
