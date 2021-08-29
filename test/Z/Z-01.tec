@@ -1,0 +1,13 @@
+! TECO-64 test script: Get ending buffer position -- Z !
+! Expect: PASS !
+
+10 < @I/0123456789/ 10I >
+
+0J Z-110 "N :@^A/FAIL/ ^C '
+ L Z-110 "N :@^A/FAIL/ ^C '
+3L Z-110 "N :@^A/FAIL/ ^C '
+4L Z-110 "N :@^A/FAIL/ ^C '
+2L Z-110 "N :@^A/FAIL/ ^C '
+
+:@^A/PASS/
+^C^C

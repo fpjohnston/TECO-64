@@ -1,0 +1,13 @@
+! TECO-64 test script: Get current buffer position -- . !
+! Expect: PASS !
+
+10 < @I/0123456789/ 10I >
+
+0J .-  0 "N :@^A/FAIL/ ^C '
+ L .- 11 "N :@^A/FAIL/ ^C '
+3L .- 44 "N :@^A/FAIL/ ^C '
+4L .- 88 "N :@^A/FAIL/ ^C '
+2L .-110 "N :@^A/FAIL/ ^C '
+
+:@^A/PASS/
+^C^C

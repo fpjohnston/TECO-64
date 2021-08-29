@@ -1,0 +1,13 @@
+! TECO-64 test script: Get starting buffer position -- B !
+! Expect: PASS !
+
+10 < @I/0123456789/ 10I >
+
+0J B "N :@^A/FAIL/ ^C '
+ L B "N :@^A/FAIL/ ^C '
+3L B "N :@^A/FAIL/ ^C '
+4L B "N :@^A/FAIL/ ^C '
+2L B "N :@^A/FAIL/ ^C '
+
+:@^A/PASS/
+^C^C

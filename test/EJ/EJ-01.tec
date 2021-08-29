@@ -1,0 +1,64 @@
+! TECO-64 test script: Get environment information -- EJ !
+! Expect: PASS !
+
+0 UF                    !! No. of failures
+
+0  EJ UI                !! Process ID
+0 :EJ UP                !! Parent process ID
+
+QI-QP "E %F '           !! IDs cannot be the same
+
+-1 EJ UO                !! Operating system
+
+QO-10 "N
+    QO-20 "N
+        QO-30 "N
+            QO-40 "N
+                QO @=/Invalid operating system: %d/
+                %F
+            '
+        '
+    '
+'
+
+-2 EJ UH                !! Processor type
+
+QH-10 "N
+    QH-20 "N
+        QH-30 "N
+            QH@=/Invalid processor type: %d/
+            %F
+        '
+    '
+'
+
+-3 EJ UW                !! Processor word size
+
+QW-32 "N
+    QW-64 "N
+        QW@=/Invalid processor word size: %d/
+        %F
+    '
+'
+
+-4 EJ UN                !! Numeric argument size
+
+QN-32 "N
+    QN-64 "N
+        QN@=/Invalid numeric argument size: %d/
+        %F
+    '
+'
+
+QW-QN "L
+    :@^A/Numeric argument size is < processor word size/
+    %F
+'
+
+QF "N
+    :@^A/FAIL/
+    ^C
+|
+    :@^A/PASS/
+'
+^C^C
