@@ -1,12 +1,12 @@
-! TECO-64 test script: Open input file -- ER !
+! TECO-64 test script: Open file for reading -- ER !
 ! Expect: PASS !
-! Options: -B foo !
+ 
+@^UA{foo}       !! Name of existing input file
 
-HXA HK          !! Copy file name to Q-register A, clear buffer
+ER^EQA        !! Open file for reading
 
-ER^EQA        !! Open file for read, using name in Q-register A
+HK
 
 :@^A/PASS/
 
-HK
 ^[^[
