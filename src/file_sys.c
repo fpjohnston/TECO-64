@@ -47,7 +47,7 @@
 #define TEMP_NAME   "_teco_XXXXXX"      ///< Template for temp file name
 #define TEMP_TYPE   ".tmp"              ///< Temp file type/extension
 
-#define TEC_NAME    ".tec"              ///< Command file extension
+#define TEC_TYPE    ".tec"              ///< Command file extension
 
 static glob_t pglob;                    ///< Saved list of wildcard files
 
@@ -55,12 +55,14 @@ static char **next_file;                ///< Next file in pglob
 
 // Local functions
 
+static struct ifile *find_file(const char *name, uint stream, const char *type);
+
 static uint_t parse_file(const char *file, char *dir, char *base);
 
 
 ///
-///  @brief    Find command file by looking in user-specified directory, and
-///            then if necessary in library directory.
+///  @brief    Try to open command file; if failure, then try again with TECO
+///            file type (.tec).
 ///
 ///  @returns  File pointer, or NULL if all opens failed and colon modifier was
 ///            present.
@@ -71,16 +73,56 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
 {
     assert(name != NULL);
 
+    struct ifile *ifile;
+
+    if ((ifile = find_file(name, stream, "")) != NULL
+        || (ifile = find_file(name, stream, TEC_TYPE)) != NULL)
+    {
+        return ifile;
+    }
+
+    // Here if open failed. See if we should return error status.
+
+    if (colon)
+    {
+        return NULL;
+    }
+
+    // If failure, issue error using original file name (plus explicit or
+    // implicit file type) provided by user.
+
+    throw(E_FNF, name);                 // File not found
+}
+
+
+///
+///  @brief    Open command file in current directory; if not found, then try
+///            library directory.
+///
+///  @returns  File pointer, or NULL if all opens failed and colon modifier was
+///            present.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static struct ifile *find_file(const char *name, uint stream, const char *type)
+{
+    assert(name != NULL);
+    assert(type != NULL);
+
     // Split the file spec into a directory name and a base name
 
     size_t len = strlen(name);
     char dir[len + 1];
     char base[len + 1];
+    char file[strlen(name) + strlen(type) + 1];
+    struct ifile *ifile;
 
     (void)parse_file(name, dir, base);
 
-    const char *type = (strchr(base, '.') == NULL) ? TEC_NAME : "";
-    char file[strlen(name) + strlen(type) + 1];
+    if (strchr(base, '.'))              // Is there a file type/extension?
+    {
+        type = "";                      // If so, don't use default type
+    }                                            
 
 #if     defined(NDEBUG)
     snprintf(file, sizeof(file), "%s%s", name, type);
@@ -90,8 +132,6 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
 
     assert(nbytes > 0);
     assert((size_t)(uint)nbytes < sizeof(file));
-
-    struct ifile *ifile;
 
     if ((ifile = open_input(file, stream, (bool)true)) != NULL)
     {
@@ -119,17 +159,7 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
         }
     }
 
-    // Open failed, so check to see if we should issue an error
-
-    if (colon)
-    {
-        return NULL;
-    }
-
-    // If failure, issue error using original file name (plus explicit or
-    // implicit file type) provided by user.
-
-    throw(E_FNF, name);                 // File not found
+    return NULL;
 }
 
 
