@@ -433,7 +433,7 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
 
     if (c == 'L')                       // EL command?
     {
-        ofile->fp = fopen(name, "a+");  // Yes, always open in append mode
+        ofile->fp = fopen(name, "w+");  // Yes, always open for write
     }
     else if (access(name, F_OK) != 0)   // Does file already exist?
     {

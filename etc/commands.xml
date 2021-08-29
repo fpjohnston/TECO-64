@@ -131,7 +131,7 @@
         <command name='EI'      parse='m,n:@X/'                     exec='EI'        />
         <command name='EJ'      parse='m,n:X'      scan='EJ'        exec='nop'       />
         <command name='EK'      parse='X'                           exec='EK'        />
-        <command name='EL'      parse=':@X/'                        exec='EL'        />
+        <command name='EL'      parse='n:@X/'                       exec='EL'        />
         <command name='EM'      parse='nXq'                         exec='EM'        />
         <command name='EN'      parse=':@X/'                        exec='EN'        />
         <command name='EO'      parse='n:X'                         exec='EO'        />

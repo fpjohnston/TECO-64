@@ -72,6 +72,12 @@ void exec_EL(struct cmd *cmd)
                 push_x(SUCCESS, X_OPERAND);
             }
 
+            if (cmd->n_set)
+            {
+                f.e3.noin  = (cmd->n_arg & 1) ? true : false;
+                f.e3.noout = (cmd->n_arg & 2) ? true : false;
+            }
+
             return;
         }
     }
