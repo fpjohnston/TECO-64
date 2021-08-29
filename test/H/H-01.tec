@@ -1,0 +1,34 @@
+!! TECO-64 test script: Get numeric pair -- H
+!! Expect: PASS
+
+@I/0123456789/ 10I              !! Add a line
+
+H UZ UB
+
+QB - B "N :@^A/!FAIL!/ ^C '
+QZ - Z "N :@^A/!FAIL!/ ^C '
+
+@I/0123456789/ 10I              !! Add another line
+
+H UZ UB
+
+QB - B "N :@^A/!FAIL!/ ^C '
+QZ - Z "N :@^A/!FAIL!/ ^C '
+
+@I/0123456789/ 10I              !! Add another line
+
+H UZ UB
+
+QB - B "N :@^A/!FAIL!/ ^C '
+QZ - Z "N :@^A/!FAIL!/ ^C '
+
+HK                              !! Delete all lines
+
+H UZ UB
+
+QB - B "N :@^A/!FAIL!/ ^C '
+QZ - Z "N :@^A/!FAIL!/ ^C '
+
+:@^A/!PASS!/
+
+^C^C
