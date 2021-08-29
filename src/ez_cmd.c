@@ -77,6 +77,13 @@ void exec_EZ(struct cmd *cmd)
     
     if ((fp = popen(syscmd, "r")) == NULL)
     {
+        if (cmd->colon)
+        {
+            push_x(FAILURE, X_OPERAND);
+
+            return;
+        }
+
         throw(E_SYS, syscmd);           // Unexpected system error
     }
 
@@ -98,10 +105,22 @@ void exec_EZ(struct cmd *cmd)
 
     if (ferror(fp) || pclose(fp) == -1)
     {
+        if (cmd->colon)
+        {
+            push_x(FAILURE, X_OPERAND);
+
+            return;
+        }
+
         throw(E_SYS, syscmd);           // Unexpected system error
     }
 
     ez.len = pos;                       // Length = total bytes read
+
+    if (cmd->colon)
+    {
+        push_x(SUCCESS, X_OPERAND);
+    }
 
     return;
 }

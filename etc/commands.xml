@@ -145,7 +145,7 @@
         <command name='EW'      parse=':@X/'                        exec='EW'        />
         <command name='EX'      parse='X'                           exec='EX'        />
         <command name='EY'      parse=':X'                          exec='EY'        />
-        <command name='EZ'      parse='@X/'                         exec='EZ'        />
+        <command name='EZ'      parse=':@X/'                        exec='EZ'        />
         <command name='E_'      parse='n:@X/'                       exec='E_ubar'    />
 
         <!-- F commands -->

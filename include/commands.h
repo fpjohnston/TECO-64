@@ -279,8 +279,8 @@ static const struct cmd_table e_table[] =
     ENTRY('x',     NULL,            parse_X,         exec_EX,         false),
     ENTRY('Y',     NULL,            parse_c,         exec_EY,         false),
     ENTRY('y',     NULL,            parse_c,         exec_EY,         false),
-    ENTRY('Z',     NULL,            parse_1,         exec_EZ,         false),
-    ENTRY('z',     NULL,            parse_1,         exec_EZ,         false),
+    ENTRY('Z',     NULL,            parse_c1,        exec_EZ,         false),
+    ENTRY('z',     NULL,            parse_c1,        exec_EZ,         false),
     ENTRY('_',     NULL,            parse_nc1,       exec_E_ubar,     false),
 };
 
