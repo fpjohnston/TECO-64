@@ -1,4 +1,4 @@
-*! TECO-64 test script: Test immediate-action commands -- / !
+*! TECO-64 test script: Get detailed error message -- / !
 ! Expect: PASS [slash.log] !
 ERfoo``
 ?FNF   File not found 'foo'

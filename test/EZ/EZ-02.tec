@@ -1,4 +1,4 @@
-! TECO-64 test script: Execute system command -- EZ !
+! TECO-64 test script: Execute system command -- @EZ// !
 ! Expect: PASS !
 
 HK
@@ -9,7 +9,7 @@ GA @I/"/ 0J @I/echo "/ HXB HK
 
 :@^A/command = [^EQB]/
 
-EZ^EQB                            !! Execute system command
+@EZ/^EQB/                           !! Execute system command
 
 G+                                  !! Copy output to edit buffer
 

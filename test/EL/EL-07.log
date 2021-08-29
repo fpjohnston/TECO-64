@@ -1,0 +1,13 @@
+!! Logging starts here
+
+:@^A/hello, world!/         !! Generate an output message
+``
+5 < @I/abcdef/ 10I >        !! Insert some lines of text
+0 J                         !! Go to beginning of buffer
+3 L                         !! Move down 3 lines
+1 K                         !! And kill the next line
+
+!! Logging ends here
+``
+   @EL//                       !! Close log file
+``

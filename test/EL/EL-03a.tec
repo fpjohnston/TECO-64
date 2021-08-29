@@ -1,0 +1,17 @@
+! TECO-64 test script: Open log file -- :@EL// !
+! Expect: PASS !
+
+@^UA{/tmp/teco.log}     !! Load output file name
+
+:@EL/^EQA/              !! Open log file
+
+"S
+    :@^A/PASS/
+|
+    :@^A/FAIL/
+'
+
+@EL//                    !! Close log file
+
+EK HK
+^[^[

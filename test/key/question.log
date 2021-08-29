@@ -1,8 +1,0 @@
-*! TECO-64 test script: Test immediate-action commands -- ? !
-! Expect: PASS [question.log] !
-ERfoo``
-?FNF   File not found 'foo'
-*?! TECO-64 test script: Test immediate-action commands -- ? !
-! Expect: PASS [question.log] !
-ERfoo`?
-*EX``
