@@ -1,0 +1,19 @@
+! TECO-64 test script: Write Q-register to file -- :@E%// !
+! Expect: FAIL !
+! Options: -B /dev/fubar !
+
+HXA HK              !! Copy file name to Q-register A, clear buffer
+
+@I/hello, world!/ 10I
+HXB HK
+
+:@E%B/^EQA/         !! Write Q-register B to file
+
+"S
+    :@^A/PASS/      !! This shouldn't happen
+|
+    :@^A/FAIL/
+    ^C
+'
+
+^[^[
