@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -137,4 +138,40 @@ static void exec_search(struct cmd *cmd, bool replace)
     {
         search_failure(cmd);
     }
+}
+
+
+///
+///  @brief    Scan "FN" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FN(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, 1);                  // FN => 1FN
+    scan_texts(cmd, 2, ESC);
+
+    return false;
+}
+
+
+///
+///  @brief    Scan "N" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_N(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, 1);                  // N => 1N
+    scan_texts(cmd, 1, ESC);
+
+    return false;
 }

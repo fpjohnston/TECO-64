@@ -47,7 +47,7 @@
         <command name='"'       parse='nX'         scan='quote'     exec='quote'     />
         <command name='#'       parse='X='         scan='oper'                       />
         <command name='$'                          scan='bad'                        />
-        <command name='%'       parse='n:Xq'       scan='pct'       exec='pct'       />
+        <command name='%'                          scan='pct'       exec='pct'       />
         <command name='&amp;'   parse='X='         scan='oper'                       />
         <command name='&apos;'  parse='X$'                          exec='apos'      />
         <command name='('       parse='X='         scan='lparen'                     />
@@ -69,7 +69,7 @@
         <command name='8'       parse='X='         scan='number'                     />
         <command name='9'       parse='X='         scan='number'                     />
         <command name=':'                          scan='colon'                      />
-        <command name=';'       parse='n:X'                         exec='semi'      />
+        <command name=';'                          scan='semi'      exec='semi'      />
         <command name='&lt;'    parse='nX'         scan='lt'        exec='lt'        />
         <command name='='                          scan='equals'    exec='equals'    />
         <command name='&gt;'    parse='X'          scan='gt'        exec='gt'        />
@@ -77,23 +77,23 @@
         <command name='@'                          scan='atsign'                     />
         <command name='A'                          scan='A'         exec='A'         />
         <command name='B'       parse='X='         scan='B'                          />
-        <command name='C'       parse='n:X'                         exec='C'         />
+        <command name='C'                          scan='CRL'       exec='C'         />
         <command name='D'       parse='+m,n:X'                      exec='D'         />
         <command name='[E]'                                                          />
         <command name='[F]'                                                          />
         <command name='G'       parse='n:Xq'                        exec='G'         />
         <command name='H'       parse='X='         scan='H'                          />
         <command name='I'       parse='+m,n@X/'                     exec='I'         />
-        <command name='J'       parse='n:X'                         exec='J'         />
+        <command name='J'                          scan='J'         exec='J'         />
         <command name='K'       parse='+m,nX'                       exec='K'         />
-        <command name='L'       parse='n:X'                         exec='L'         />
+        <command name='L'                          scan='CRL'       exec='L'         />
         <command name='M'       parse='m,n:Xq'                      exec='M!'        />
-        <command name='N'       parse='n:@X/'                       exec='N'         />
+        <command name='N'                          scan='N'         exec='N'         />
         <command name='O'       parse='+n@X/'                       exec='O'         />
         <command name='P'       parse='+m,n:X'     scan='P'         exec='P'         />
-        <command name='Q'       parse='n:Xq'       scan='Q'                          />
-        <command name='R'       parse='n:X'                         exec='R'         />
-        <command name='S'       parse='m,n::@X/'                    exec='S'         />
+        <command name='Q'                          scan='Q'                          />
+        <command name='R'                          scan='CRL'       exec='R'         />
+        <command name='S'                          scan='S'         exec='S'         />
         <command name='T'       parse='+m,n:X'                      exec='T'         />
         <command name='U'       parse='m,n:Xq'                      exec='U'         />
         <command name='V'       parse='+m,nX'                       exec='V'         />
@@ -134,7 +134,7 @@
         <command name='EL'      parse='n:@X/'                       exec='EL'        />
         <command name='EM'      parse='nXq'                         exec='EM'        />
         <command name='EN'      parse=':@X/'                        exec='EN'        />
-        <command name='EO'      parse='n:X'                         exec='EO'        />
+        <command name='EO'                         scan='EO'        exec='EO'        />
         <command name='EP'      parse='X'                           exec='EP'        />
         <command name='EQ'      parse=':@Xq/'                       exec='EQ'        />
         <command name='ER'      parse=':@X/'                        exec='ER'        />
@@ -157,18 +157,18 @@
         <command name='F3'      parse='m,n@X//'                     exec='F3'        />
         <command name='F&lt;'   parse='X$'                          exec='F_lt'      />
         <command name='F&gt;'   parse='X$'                          exec='F_gt'      />
-        <command name='FB'      parse='+m,n:@X/'                    exec='FB'        />
-        <command name='FC'      parse='+m,n:@X//'                   exec='FC'        />
-        <command name='FD'      parse='n:@X/'                       exec='FD'        />
+        <command name='FB'                         scan='FB'        exec='FB'        />
+        <command name='FC'                         scan='FC'        exec='FC'        />
+        <command name='FD'                         scan='FD'        exec='FD'        />
         <command name='FF'      parse='n@X/'                        exec='FF'        />
         <command name='FH'      parse='X'          scan='FH'        exec='nop'       />
-        <command name='FK'      parse='n:@X/'                       exec='FK'        />
+        <command name='FK'                         scan='FK'        exec='FK'        />
         <command name='FL'      parse='+m,nX'                       exec='FL'        />
         <command name='FM'      parse=':@X//'                       exec='FM'        />
-        <command name='FN'      parse='n:@X/'                       exec='FN'        />
+        <command name='FN'                         scan='FN'        exec='FN'        />
         <command name='FQ'      parse=':@Xq/'                       exec='FQ'        />
-        <command name='FR'      parse='+m,n:@X/'                    exec='FR'        />
-        <command name='FS'      parse='m,n::@X//'                   exec='FS'        />
+        <command name='FR'                         scan='FR'        exec='FR'        />
+        <command name='FS'                         scan='FS'        exec='FS'        />
         <command name='FU'      parse='+m,nX'                       exec='FU'        />
         <command name='FZ'      parse='X'          scan='FZ'        exec='nop'       />
         <command name='F_'      parse='m,n:@X//'                    exec='F_ubar'    />

@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
 #include "exec.h"
 
@@ -52,17 +53,26 @@ void exec_FR(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int_t n;
-
-    if (cmd->n_set)
-    {
-        n = cmd->n_arg;
-    }
-    else
-    {
-        n = -(int_t)last_len;
-    }
-
-    delete_ebuf(n);
+    delete_ebuf(cmd->n_arg);
     exec_insert(cmd->text1.data, cmd->text1.len);
+}
+
+
+///
+///  @brief    Scan "FR" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FR(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, -(int_t)last_len);   // FRtext` => ^SFRtext`
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    reject_dcolon(cmd->dcolon);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
 }

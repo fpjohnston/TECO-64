@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "estack.h"
@@ -78,12 +79,6 @@ void exec_FC(struct cmd *cmd)
 static void exec_search(struct cmd *cmd, bool replace)
 {
     assert(cmd != NULL);
-
-    if (!cmd->n_set)                    // FBtext` => 1FBtext`
-    {
-        cmd->n_arg = 1;
-        cmd->n_set = true;
-    }
 
     if (cmd->text1.len != 0)
     {
@@ -138,4 +133,44 @@ static void exec_search(struct cmd *cmd, bool replace)
     {
         search_failure(cmd);
     }
+}
+
+
+///
+///  @brief    Scan "FB" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FB(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, 1);                  // FB => 1FB
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    reject_dcolon(cmd->dcolon);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
+}
+
+
+///
+///  @brief    Scan "FC" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FC(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, 1);                  // FC => 1FC
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    reject_dcolon(cmd->dcolon);
+    scan_texts(cmd, 2, ESC);
+
+    return false;
 }

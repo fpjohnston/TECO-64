@@ -201,3 +201,43 @@ void exec_R(struct cmd *cmd)
 {
     exec_c_r(cmd, -1, 'R');             // Reverse of C command
 }
+
+
+///
+///  @brief    Scan "C","R", or "L" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_CRL(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, 1);                  // C => 1C, R => 1R, L => 1L
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+
+    return false;
+}
+
+
+///
+///  @brief    Scan "J" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_J(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, 0);                  // J => 0J
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+
+    return false;
+}

@@ -46,16 +46,26 @@
 void exec_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
-    assert(cmd->n_set);
+
+    cmd->n_arg += get_qnum(cmd->qindex);
 
     store_qnum(cmd->qindex, cmd->n_arg);
+
+    if (!cmd->colon)
+    {
+        push_x(cmd->n_arg, X_OPERAND);
+    }
+    else if (!f.e1.percent)             // :%q, but is it allowed?
+    {
+        throw(E_EXT);                   // Extended feature not enabled
+    }
 }
 
 
 ///
 ///  @brief    Scan "%" command with format "n:Xq".
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -63,28 +73,11 @@ bool scan_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // n%q adds to Q-register q
-    {
-        cmd->n_arg += get_qnum(cmd->qindex);
-    }
-    else                                // %q increments Q-register q
-    {
-        cmd->n_arg = get_qnum(cmd->qindex) + 1;
-    }
-
-    cmd->n_set = true;
-
-    if (cmd->colon)
-    {
-        if (!f.e1.percent)
-        {
-            throw(E_EXT);
-        }
-    }
-    else
-    {
-        push_x(cmd->n_arg, X_OPERAND);
-    }
+    default_n(cmd, 1);
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+    scan_qreg(cmd);
 
     return false;
 }

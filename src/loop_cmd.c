@@ -273,7 +273,8 @@ void exec_semi(struct cmd *cmd)
     {
         throw(E_SNI);                   // Semi-colon not in loop
     }
-    else if (!cmd->n_set)
+
+    if (!cmd->n_set)
     {
         throw(E_NAS);                   // No argument before semi-colon
     }
@@ -513,6 +514,25 @@ bool scan_lt(struct cmd *cmd)
     }
 
     return true;
+}
+
+
+///
+///  @brief    Scan ";" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_semi(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+
+    return false;
 }
 
 

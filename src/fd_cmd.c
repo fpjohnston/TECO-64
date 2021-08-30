@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -94,4 +95,24 @@ void exec_FD(struct cmd *cmd)
     {
         search_failure(cmd);
     }
+}
+
+
+///
+///  @brief    Scan "FD" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FD(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, 1);                  // FD => 1FD
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    reject_dcolon(cmd->dcolon);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
 }

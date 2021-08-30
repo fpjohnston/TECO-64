@@ -94,3 +94,22 @@ void exec_EO(struct cmd *cmd)
             break;
     }
 }
+
+
+///
+///  @brief    Scan "EO" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_EO(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+
+    return false;
+}

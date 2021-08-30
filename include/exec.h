@@ -78,6 +78,23 @@ struct cmd
 
 
 ///
+///  @brief    Set default value for n if needed.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static inline void default_n(struct cmd *cmd, int_t n_default)
+{
+    if (!cmd->n_set)
+    {
+        cmd->n_set = true;
+        cmd->n_arg = n_default;
+    }
+}
+
+
+///
 ///  @brief    Error if at sign and command doesn't allow it.
 ///
 ///  @returns  Nothing.
@@ -225,10 +242,6 @@ extern bool parse_M1(struct cmd *cmd);
 
 extern bool parse_Mc(struct cmd *cmd);
 
-extern bool parse_Mc1(struct cmd *cmd);
-
-extern bool parse_Mc2(struct cmd *cmd);
-
 extern bool parse_Mcq(struct cmd *cmd);
 
 extern bool parse_Mcq1(struct cmd *cmd);
@@ -261,17 +274,11 @@ extern bool parse_mc2(struct cmd *cmd);
 
 extern bool parse_mcq(struct cmd *cmd);
 
-extern bool parse_md1(struct cmd *cmd);
-
-extern bool parse_md2(struct cmd *cmd);
-
 extern bool parse_mq(struct cmd *cmd);
 
 extern bool parse_n(struct cmd *cmd);
 
 extern bool parse_n1(struct cmd *cmd);
-
-extern bool parse_nc(struct cmd *cmd);
 
 extern bool parse_nc1(struct cmd *cmd);
 
@@ -285,19 +292,43 @@ extern bool scan_A(struct cmd *cmd);
 
 extern bool scan_B(struct cmd *cmd);
 
+extern bool scan_CRL(struct cmd *cmd);
+
 extern bool scan_EJ(struct cmd *cmd);
+
+extern bool scan_EO(struct cmd *cmd);
 
 extern bool scan_F0(struct cmd *cmd);
 
+extern bool scan_FB(struct cmd *cmd);
+
+extern bool scan_FC(struct cmd *cmd);
+
+extern bool scan_FD(struct cmd *cmd);
+
 extern bool scan_FH(struct cmd *cmd);
+
+extern bool scan_FK(struct cmd *cmd);
+
+extern bool scan_FN(struct cmd *cmd);
+
+extern bool scan_FR(struct cmd *cmd);
+
+extern bool scan_FS(struct cmd *cmd);
 
 extern bool scan_FZ(struct cmd *cmd);
 
 extern bool scan_H(struct cmd *cmd);
 
+extern bool scan_J(struct cmd *cmd);
+
+extern bool scan_N(struct cmd *cmd);
+
 extern bool scan_P(struct cmd *cmd);
 
 extern bool scan_Q(struct cmd *cmd);
+
+extern bool scan_S(struct cmd *cmd);
 
 extern bool scan_W(struct cmd *cmd);
 
@@ -354,6 +385,8 @@ extern bool scan_pct(struct cmd *cmd);
 extern bool scan_quote(struct cmd *cmd);
 
 extern bool scan_rparen(struct cmd *cmd);
+
+extern bool scan_semi(struct cmd *cmd);
 
 extern bool scan_tilde(struct cmd *cmd);
 

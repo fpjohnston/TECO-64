@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -48,19 +49,6 @@
 void exec_FK(struct cmd *cmd)
 {
     assert(cmd != NULL);
-
-    if (cmd->n_set)
-    {
-        if (cmd->n_arg <= 0)            // 0FKtext` and -nFKtext` aren't allowed
-        {
-            throw(E_ISA);               // Invalid search argument
-        }
-    }
-    else                                // FKtext` => 1FKtext`
-    {
-        cmd->n_arg = 1;
-        cmd->n_set = true;
-    }
 
     if (cmd->text1.len != 0)
     {
@@ -85,4 +73,24 @@ void exec_FK(struct cmd *cmd)
     {
         search_failure(cmd);
     }
+}
+
+
+///
+///  @brief    Scan "FK" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FK(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, 1);                  // FKtext` => 1FKtext`
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    reject_dcolon(cmd->dcolon);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
 }

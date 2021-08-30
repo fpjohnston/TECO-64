@@ -39,13 +39,18 @@
 ///  @brief    Scan "Q" command: return numeric value of Q-register, or size
 ///            of text string.
 ///
-///  @returns  Nothing.
+///  @returns  true (command is an operand).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 bool scan_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+    scan_qreg(cmd);
 
     int_t n;
 
