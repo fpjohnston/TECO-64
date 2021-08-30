@@ -64,9 +64,10 @@ void exec_T(struct cmd *cmd)
     }
     else if (cmd->m_set && cmd->n_set)
     {
-        if (cmd->m_arg > t.Z || cmd->n_arg > t.Z)
+        if (cmd->m_arg < t.B || cmd->m_arg > t.Z
+            || cmd->n_arg < t.B || cmd->n_arg > t.Z)
         {
-            throw(E_POP, "T");          // Pointer off page
+            throw(E_POP, 'T');          // Pointer off page
         }
 
         if (cmd->m_arg > cmd->n_arg)
