@@ -78,34 +78,34 @@
         <command name='A'                          scan='A'         exec='A'         />
         <command name='B'       parse='X='         scan='B'                          />
         <command name='C'                          scan='CRL'       exec='C'         />
-        <command name='D'       parse='+m,n:X'                      exec='D'         />
+        <command name='D'                          scan='D'         exec='D'         />
         <command name='[E]'                                                          />
         <command name='[F]'                                                          />
-        <command name='G'       parse='n:Xq'                        exec='G'         />
+        <command name='G'                          scan='G'         exec='G'         />
         <command name='H'       parse='X='         scan='H'                          />
         <command name='I'       parse='+m,n@X/'                     exec='I'         />
         <command name='J'                          scan='J'         exec='J'         />
-        <command name='K'       parse='+m,nX'                       exec='K'         />
+        <command name='K'                          scan='K'         exec='K'         />
         <command name='L'                          scan='CRL'       exec='L'         />
         <command name='M'       parse='m,n:Xq'                      exec='M!'        />
         <command name='N'                          scan='N'         exec='N'         />
-        <command name='O'       parse='+n@X/'                       exec='O'         />
+        <command name='O'                          scan='O'         exec='O'         />
         <command name='P'       parse='+m,n:X'     scan='P'         exec='P'         />
         <command name='Q'                          scan='Q'                          />
         <command name='R'                          scan='CRL'       exec='R'         />
         <command name='S'                          scan='S'         exec='S'         />
-        <command name='T'       parse='+m,n:X'                      exec='T'         />
+        <command name='T'                          scan='T'         exec='T'         />
         <command name='U'       parse='m,n:Xq'                      exec='U'         />
-        <command name='V'       parse='+m,nX'                       exec='V'         />
+        <command name='V'                          scan='V'         exec='V'         />
         <command name='W'       parse='m,n:X'      scan='W'         exec='W'         />
-        <command name='X'       parse='+m,n:Xq'                     exec='X'         />
+        <command name='X'                          scan='X'         exec='X'         />
         <command name='Y'       parse=':X'                          exec='Y'         />
         <command name='Z'       parse='X='         scan='Z'                          />
         <command name='['       parse='m,nXq'                       exec='lbracket!' />
         <command name='\'       parse='nX'                          exec='bslash'    />
         <command name=']'       parse='m,n:Xq'                      exec='rbracket!' />
         <command name='[^]'                                                          />
-        <command name='_'       parse='n:@X/'                       exec='ubar'      />
+        <command name='_'                          scan='ubar'      exec='ubar'      />
         <command name='`'                          scan='bad'                        />
         <command name='{'                          scan='bad'                        />
         <command name='|'       parse='X$'                          exec='vbar'      />
@@ -146,7 +146,7 @@
         <command name='EX'      parse='X'                           exec='EX'        />
         <command name='EY'      parse=':X'                          exec='EY'        />
         <command name='EZ'      parse=':@X/'                        exec='EZ'        />
-        <command name='E_'      parse='n:@X/'                       exec='E_ubar'    />
+        <command name='E_'                         scan='E_ubar'    exec='E_ubar'    />
 
         <!-- F commands -->
 
@@ -171,7 +171,7 @@
         <command name='FS'                         scan='FS'        exec='FS'        />
         <command name='FU'      parse='+m,nX'                       exec='FU'        />
         <command name='FZ'      parse='X'          scan='FZ'        exec='nop'       />
-        <command name='F_'      parse='m,n:@X//'                    exec='F_ubar'    />
+        <command name='F_'                         scan='F_ubar'    exec='F_ubar'    />
         <command name='F|'      parse='X$'                          exec='F_vbar'    />
     </section>
 </teco>

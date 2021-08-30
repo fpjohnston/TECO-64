@@ -124,6 +124,27 @@ void exec_G(struct cmd *cmd)
 
 
 ///
+///  @brief    Scan "G" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_G(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_n(cmd->n_set);
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+    scan_qreg(cmd);
+
+    return false;
+}
+
+
+///
 ///  @brief    Type out Q-register or special string to edit buffer.
 ///
 ///  @returns  Nothing.

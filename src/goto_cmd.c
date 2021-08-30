@@ -336,6 +336,25 @@ bool scan_bang(struct cmd *cmd)
 
 
 ///
+///  @brief    Scan "O" command.
+////
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_O(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+    reject_neg_n(cmd->n_set, cmd->n_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
+}
+
+
+///
 ///  @brief    Validate tag, skipping any leading or trailing spaces.
 ///
 ///  @returns  true if valid tag, else false.

@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -94,11 +95,6 @@ void exec_T(struct cmd *cmd)
             n = getdelta_ebuf(cmd->n_arg);
         }
     }
-    else
-    {
-        m = 0;
-        n = getdelta_ebuf(1);           //lint !e747
-    }
 
     exec_type(m, n);
 }
@@ -141,26 +137,80 @@ void exec_V(struct cmd *cmd)
     int_t m = cmd->m_arg;
     int_t n = cmd->n_arg;
 
-    if (cmd->n_set)
+    if (cmd->m_set)
     {
-        if (cmd->m_set)
+        m = getdelta_ebuf(1 - m);
+        n = getdelta_ebuf(n - 1);
+    }
+    else
+    {
+        m = getdelta_ebuf(1 - n);
+        n = getdelta_ebuf(n);
+    }
+
+    exec_type(m, n);
+}
+
+
+///
+///  @brief    Scan "T" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_T(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+
+    if (cmd->m_set)
+    {
+        if (cmd->n_set)
         {
-            m = getdelta_ebuf(1 - m);
-            n = getdelta_ebuf(n - 1);
+            if (cmd->n_arg < cmd->m_arg)
+            {
+                int_t n = cmd->n_arg;
+
+                cmd->n_arg = cmd->m_arg;
+                cmd->m_arg = n;
+            }
         }
         else
         {
-            n = n ?: 1;                 // 0V -> 1V
-
-            m = getdelta_ebuf(1 - n);
-            n = getdelta_ebuf(n);
+            cmd->m_arg = false;
+            cmd->n_set = true;
+            cmd->n_arg = cmd->m_arg;
         }
     }
     else
     {
-        m = getdelta_ebuf(0);           //lint !e747
-        n = getdelta_ebuf(1);           //lint !e747
+        default_n(cmd, 1);              // T => 1T
     }
 
-    exec_type(m, n);
+    return false;
+}
+
+
+///
+///  @brief    Scan "V" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_V(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, 1);                  // V => 1V
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    cmd->n_arg = cmd->n_arg ?: 1;       // 0V => 1V
+
+    return false;
 }

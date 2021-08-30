@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -94,4 +95,23 @@ void exec_E_ubar(struct cmd *cmd)
     {
         search_failure(cmd);
     }
+}
+
+
+///
+///  @brief    Scan "E_" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_E_ubar(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_dcolon(cmd->dcolon);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
 }

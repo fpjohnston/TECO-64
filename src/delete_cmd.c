@@ -141,3 +141,43 @@ void exec_K(struct cmd *cmd)
 
     delete_ebuf(n);
 }
+
+
+///
+///  @brief    Scan "D" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_D(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, 1);                  // D => 1D
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+
+    return false;
+}
+
+
+///
+///  @brief    Scan "K" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_K(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    default_n(cmd, 1);                  // K => 1K
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    return false;
+}
