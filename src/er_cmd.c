@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
@@ -82,4 +83,25 @@ void exec_ER(struct cmd *cmd)
     // Only here if error occurred when colon modifier specified.
 
     push_x(FAILURE, X_OPERAND);
+}
+
+
+///
+///  @brief    Scan "ER" command. Also "EB", "EN", and "EN" and other file
+///            commands.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ER(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
 }

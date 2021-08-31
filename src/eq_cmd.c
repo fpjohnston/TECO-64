@@ -32,6 +32,7 @@
 #include <unistd.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
@@ -77,4 +78,25 @@ void exec_EQ(struct cmd *cmd)
     {
         push_x(FAILURE, X_OPERAND);
     }
+}
+
+
+///
+///  @brief    Scan "EQ" command. Also E% and FQ.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_EQ(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    scan_qreg(cmd);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
 }

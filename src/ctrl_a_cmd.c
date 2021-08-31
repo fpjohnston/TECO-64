@@ -60,3 +60,23 @@ void exec_ctrl_A(struct cmd *cmd)
         type_out(LF);
     }
 }
+
+
+///
+///  @brief    Scan "^A" (CTRL/A) command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ctrl_A(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
+}

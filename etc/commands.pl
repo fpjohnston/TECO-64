@@ -67,8 +67,6 @@ my %parse_table = (
     ## no critic (RequireInterpolationOfMetachars)
 
     'X',        => { parse => 'parse_X',      count => 0 },
-    ':@X/'      => { parse => 'parse_c1',     count => 0 },
-    ':@Xq/'     => { parse => 'parse_cq1',    count => 0 },
     'X$',       => { parse => 'parse_escape', count => 0 },
     'nX!'       => { parse => 'parse_flag1',  count => 0 },
     'm,nX!',    => { parse => 'parse_flag2',  count => 0 },

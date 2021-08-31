@@ -238,10 +238,6 @@ extern const struct cmd null_cmd;
 
 extern bool parse_X(struct cmd *cmd);
 
-extern bool parse_c1(struct cmd *cmd);
-
-extern bool parse_cq1(struct cmd *cmd);
-
 extern bool parse_escape(struct cmd *cmd);
 
 extern bool parse_flag1(struct cmd *cmd);
@@ -271,6 +267,10 @@ extern bool scan_EL(struct cmd *cmd);
 extern bool scan_EM(struct cmd *cmd);
 
 extern bool scan_EO(struct cmd *cmd);
+
+extern bool scan_EQ(struct cmd *cmd);
+
+extern bool scan_ER(struct cmd *cmd);
 
 extern bool scan_E_ubar(struct cmd *cmd);
 
@@ -349,6 +349,8 @@ extern bool scan_bang(struct cmd *cmd);
 extern bool scan_colon(struct cmd *cmd);
 
 extern bool scan_comma(struct cmd *cmd);
+
+extern bool scan_ctrl_A(struct cmd *cmd);
 
 extern bool scan_ctrl_B(struct cmd *cmd);
 

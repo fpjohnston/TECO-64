@@ -129,47 +129,6 @@ bool parse_X(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse command with format ":@X/text1/".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_c1(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    scan_texts(cmd, 1, ESC);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format ":@Xq/text1/".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_cq1(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    scan_qreg(cmd);
-    scan_texts(cmd, 1, ESC);
-
-    return false;
-}
-
-
-///
 ///  @brief    Parse command with format "X$" that act like ESCape, in that they
 ///            accept m and n arguments, but just consume them without using
 ///            them.
