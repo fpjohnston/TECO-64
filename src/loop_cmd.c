@@ -413,7 +413,7 @@ bool scan_gt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    scan_x(cmd);
+    (void)scan_x(cmd);
 
     if (!f.e1.xoper || nparens == 0)
     {

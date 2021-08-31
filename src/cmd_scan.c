@@ -28,7 +28,6 @@
 #include <ctype.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "errcodes.h"
 #include "eflags.h"
 #include "estack.h"

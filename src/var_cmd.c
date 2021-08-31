@@ -47,6 +47,8 @@
 
 bool scan_ctrl_P(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
