@@ -413,6 +413,8 @@ bool scan_gt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
+
     if (!f.e1.xoper || nparens == 0)
     {
         (void)parse_escape(cmd);
@@ -420,7 +422,8 @@ bool scan_gt(struct cmd *cmd)
         return false;
     }
 
-    (void)parse_oper(cmd);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     // The following is necessary to handle the situation where a '>' command
     // is a relational operator (or part therefore) and not the end of a loop.

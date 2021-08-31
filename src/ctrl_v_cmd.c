@@ -48,6 +48,10 @@ void exec_ctrl_V(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     if (cmd->n_set && cmd->n_arg == 0)
     {
         f.e0.lower = false;

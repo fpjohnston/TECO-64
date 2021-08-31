@@ -236,19 +236,9 @@ extern const struct cmd null_cmd;
 
 // Functions that scan commands
 
-extern bool parse_X(struct cmd *cmd);
-
 extern bool parse_escape(struct cmd *cmd);
 
-extern bool parse_flag1(struct cmd *cmd);
-
-extern bool parse_flag2(struct cmd *cmd);
-
 extern bool parse_mc(struct cmd *cmd);
-
-extern bool parse_n(struct cmd *cmd);
-
-extern bool parse_oper(struct cmd *cmd);
 
 extern bool scan_A(struct cmd *cmd);
 
@@ -382,6 +372,10 @@ extern bool scan_dot(struct cmd *cmd);
 
 extern bool scan_equals(struct cmd *cmd);
 
+extern bool scan_flag1(struct cmd *cmd);
+
+extern bool scan_flag2(struct cmd *cmd);
+
 extern bool scan_gt(struct cmd *cmd);
 
 extern bool scan_lbracket(struct cmd *cmd);
@@ -409,6 +403,8 @@ extern bool scan_semi(struct cmd *cmd);
 extern bool scan_tilde(struct cmd *cmd);
 
 extern bool scan_ubar(struct cmd *cmd);
+
+extern bool scan_x(struct cmd *cmd);
 
 
 // Functions that execute commands

@@ -45,8 +45,11 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_ctrl_P(struct cmd *unused)
+bool scan_ctrl_P(struct cmd *cmd)
 {
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     push_x((int_t)page_count, X_OPERAND);
 
     return true;
@@ -64,6 +67,9 @@ bool scan_ctrl_P(struct cmd *unused)
 bool scan_ctrl_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     if (!cmd->n_set)
     {
@@ -91,6 +97,9 @@ bool scan_ctrl_S(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     push_x(-(int_t)last_len, X_OPERAND);
 
     return true;
@@ -107,6 +116,9 @@ bool scan_ctrl_S(struct cmd *cmd)
 bool scan_ctrl_Y(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     // The following prevents expressions such as 123+^Y.
 
@@ -143,6 +155,9 @@ bool scan_ctrl_Y(struct cmd *cmd)
 bool scan_ctrl_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     int_t n = (int_t)get_qall();
 
@@ -201,6 +216,9 @@ bool scan_B(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     push_x(t.B, X_OPERAND);
 
     return true;
@@ -217,6 +235,9 @@ bool scan_B(struct cmd *cmd)
 bool scan_H(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     // The following prevents expressions such as 123+H.
 
@@ -252,6 +273,9 @@ bool scan_H(struct cmd *cmd)
 bool scan_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     push_x(t.Z, X_OPERAND);
 

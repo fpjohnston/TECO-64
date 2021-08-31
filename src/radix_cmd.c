@@ -72,6 +72,10 @@ void exec_ctrl_R(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     if (cmd->n_set)                     // n^R?
     {
         if (cmd->n_arg != 8 && cmd->n_arg != 10 && cmd->n_arg != 16)

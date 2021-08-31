@@ -1147,8 +1147,9 @@ void resize_signal(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_F0(struct cmd *unused)
+bool scan_F0(struct cmd *cmd)
 {
+    scan_x(cmd);
     push_x((int_t)w.topdot, X_OPERAND);
 
     return true;
@@ -1165,6 +1166,8 @@ bool scan_F0(struct cmd *unused)
 bool scan_FH(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    scan_x(cmd);
 
     cmd->n_set = true;
     cmd->n_arg = w.topdot;
@@ -1183,8 +1186,10 @@ bool scan_FH(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_FZ(struct cmd *unused)
+bool scan_FZ(struct cmd *cmd)
 {
+    scan_x(cmd);
+
     push_x((int_t)botdot, X_OPERAND);
 
     return true;

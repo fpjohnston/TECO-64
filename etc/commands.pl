@@ -66,13 +66,8 @@ my %exec_funcs;
 my %parse_table = (
     ## no critic (RequireInterpolationOfMetachars)
 
-    'X',        => { parse => 'parse_X',      count => 0 },
     'X$',       => { parse => 'parse_escape', count => 0 },
-    'nX!'       => { parse => 'parse_flag1',  count => 0 },
-    'm,nX!',    => { parse => 'parse_flag2',  count => 0 },
     'm,n:X'     => { parse => 'parse_mc',     count => 0 },
-    'nX'        => { parse => 'parse_n',      count => 0 },
-    'X='        => { parse => 'parse_oper',   count => 0 },
 
     ## use critic
 );

@@ -84,6 +84,10 @@ void exec_bslash(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     if (cmd->n_set)                     // n\`?
     {
         char string[MAX_DIGITS];
@@ -183,6 +187,9 @@ void exec_bslash(struct cmd *cmd)
 bool scan_number(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     int c = cmd->c1;
     int cx;

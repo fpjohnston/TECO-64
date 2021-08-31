@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
@@ -422,4 +423,164 @@ bool scan_EJ(struct cmd *cmd)
     cmd->colon = false;
 
     return true;
+}
+
+
+///
+///  @brief    Scan flag commands that accept 1 numeric argument.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_flag1(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    switch (cmd->c1)
+    {
+        case CTRL_E:
+            push_x(f.ctrl_e ? SUCCESS : FAILURE, X_OPERAND);
+
+            return true;
+
+        case CTRL_N:
+        {
+            reject_n(cmd->n_set);
+
+            struct ifile *ifile = &ifiles[istream];
+
+            push_x((int_t)feof(ifile->fp), X_OPERAND);
+
+            return true;
+        }
+
+        case CTRL_X:
+            push_x((int_t)f.ctrl_x, X_OPERAND);
+
+            return true;
+
+        case 'E':
+        case 'e':
+            switch (cmd->c2)
+            {
+                case 'E':
+                case 'e':
+                    push_x((int_t)f.ee, X_OPERAND);
+
+                    return true;
+
+                case 'O':
+                case 'o':
+                    push_x((int_t)f.eo, X_OPERAND);
+
+                    return true;
+
+                default:
+                    break;
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    throw(E_ILL, cmd->c1);              // Should never get here!
+}
+
+
+///
+///  @brief    Scan flag commands that accept 2 numeric arguments.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_flag2(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    if (cmd->n_set)                     // n argument?
+    {
+        return false;                   // Yes, not an operand
+    }
+
+    assert(cmd->c1 == 'E' || cmd->c1 == 'e');
+
+    switch (cmd->c2)
+    {
+        case '1':                       // E1
+            push_x((int_t)f.e1.flag, X_OPERAND);
+
+            return true;
+
+        case '2':                       // E2
+            push_x((int_t)f.e2.flag, X_OPERAND);
+
+            return true;
+
+        case '3':                       // E3
+            push_x((int_t)f.e3.flag, X_OPERAND);
+
+            return true;
+
+        case '4':                       // E4
+            push_x((int_t)f.e4.flag, X_OPERAND);
+
+            return true;
+
+        case 'D':                       // ED
+        case 'd':
+            push_x((int_t)f.ed.flag, X_OPERAND);
+
+            return true;
+
+        case 'H':                       // EH
+        case 'h':
+            push_x((int_t)f.eh.flag, X_OPERAND);
+
+            return true;
+
+        case 'S':                       // ES
+        case 's':
+            push_x((int_t)f.es, X_OPERAND);
+
+            return true;
+
+        case 'T':                       // ET
+        case 't':
+            push_x((int_t)f.et.flag, X_OPERAND);
+
+            return true;
+
+        case 'U':                       // EU
+        case 'u':
+            push_x((int_t)f.eu, X_OPERAND);
+
+            return true;
+
+        case 'V':                       // EV
+        case 'v':
+            push_x((int_t)f.ev, X_OPERAND);
+
+            return true;
+
+        default:
+            break;
+    }
+
+    throw(E_ILL, cmd->c1);              // Should never get here!
 }

@@ -46,6 +46,9 @@ bool scan_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     if (cmd->m_set)                     // Already seen m argument?
     {
         throw(E_ARG);                   // Invalid arguments
@@ -80,6 +83,9 @@ bool scan_ctrl_ubar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     push_x(OPER, X_1S_COMP);
 
     return true;
@@ -96,6 +102,9 @@ bool scan_ctrl_ubar(struct cmd *cmd)
 bool scan_div(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     // Check for double slash remainder operator.
 
@@ -129,6 +138,9 @@ bool scan_div(struct cmd *cmd)
 bool scan_lparen(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     // The following means that a command string such as mmm (nnn) just has a
     // value of nnn; the mmm is discarded. This allows for enclosing Q and other
@@ -169,6 +181,9 @@ bool scan_oper(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     // The following takes advantage of the fact that the operators have the
     // same value as the equivalent expression types (e.g., X_MUL == '*').
 
@@ -188,6 +203,9 @@ bool scan_oper(struct cmd *cmd)
 bool scan_rparen(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     if (nparens == 0)                   // Can't have ) without (
     {
@@ -218,6 +236,9 @@ bool scan_rparen(struct cmd *cmd)
 bool scan_tilde(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     if (!f.e1.xoper || nparens == 0)
     {
