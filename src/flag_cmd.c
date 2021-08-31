@@ -32,6 +32,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
@@ -345,7 +346,19 @@ void exec_ET(struct cmd *cmd)
 
 #endif
 
-    // The following are read-only bits and cannot be changed by the user.
+    // If truncate mode just changed, that might affect display, so refresh it
+
+#if     defined(DISPLAY_MODE)
+
+    if (f.et.truncate ^ saved.truncate)
+    {
+        ebuf_changed = true;            // Pretend that the buffer changed
+        refresh_dpy();                  //  and force a refresh
+    }
+
+#endif
+
+    // The following are read-only bits and cannot be changed by the user
 
     f.et.scope   = saved.scope;
     f.et.refresh = saved.refresh;
