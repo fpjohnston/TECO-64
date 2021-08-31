@@ -1,0 +1,11 @@
+line 1 abcdeffoojklmnopqrstuvwxyz 0123456789
+line 2 abcdefghijklmnopqrstuvwBAZ 0123456789
+line 3 abcdefghijklmnopqrstuvwxyz 0123456789
+line 4 abcdefghijklmnopqrstuvwxyz 0123456789
+line 5 abcdefghijklmnopqrstuvwxyz 0123456789
+line 6 abcdefghijkfoobazqrstuvwxyz 0123456789
+line 7 abcdefghijklmnopqrstuvwxyz 0123456789
+line 8 abcdefghijklmnopqrstuvwxyz 0123456789
+line 9 ABCdefghijklmnopqrstuvwxyz 0123456789
+line 10 abcdefghijklmnopqrstuvwxyz 0123456789
+!PASS!

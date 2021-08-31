@@ -1,0 +1,25 @@
+!! TECO-64 test script: Local search and replace -- FS
+!! Expect: PASS [FS-04.log]
+
+HK
+
+0UA
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    13@I// 10@I//
+>
+
+0J
+
+@FS/ghi/foo/
+2@FS/xyz/BAZ/
+4@FS/lmnop/foobaz/
+3@FS/abc/ABC/
+HT
+
+:@^A/!PASS!/
+
+^C

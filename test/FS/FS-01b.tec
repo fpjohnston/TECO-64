@@ -1,0 +1,14 @@
+!! TECO-64 test script: Local search and replace -- FS
+!! Expect: FAIL
+ 
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+
+0J
+
+FSfooBAZ
+
+HK
+
+:@^A/!PASS!/      !! Shouldn't get here
+
+^[^[
