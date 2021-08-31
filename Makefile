@@ -55,7 +55,6 @@
 #      memcheck=1  Enable checks for memory leaks.
 #      ndebug=1    Disable run-time assertions.
 #      nostrict=1  Relax run-time syntax checking.
-#      trace=1     Enable tracing of commands.
 #
 ################################################################################
 
@@ -325,13 +324,6 @@ DEFINES += -D NOSTRICT
 
 endif
 
-ifdef   trace
-
-DEFINES += -D TECO_TRACE
-DOXYGEN +=    TECO_TRACE
-
-endif
-
 LOBS = $(SOURCES:.c=.lob)
 
 OBJECTS = $(SOURCES:.c=.o)
@@ -384,7 +376,6 @@ help:
 	@echo "    memcheck=1  Enable checks for memory leaks."
 	@echo "    ndebug=1    Disable run-time assertions."
 	@echo "    nostrict=1  Relax run-time syntax checking."
-	@echo "    trace=1     Enable tracing of commands."
 	@echo ""
 
 bin:
