@@ -28,8 +28,8 @@
 
 #define _XSTACK_H
 
-#include <stdbool.h>            //lint !e451 !e537
-#include <sys/types.h>          //lint !e451 !e537
+#include <stdbool.h>            //lint !e451
+#include <sys/types.h>          //lint !e451
 
 
 #define OPER    ((int_t)0)          ///< 'value' for expression operators

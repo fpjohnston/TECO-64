@@ -28,8 +28,8 @@
 
 #define _PAGE_H
 
-#include <stdbool.h>            //lint !e451 !e537
-#include <stdio.h>              //lint !e451 !e537
+#include <stdbool.h>            //lint !e451
+#include <stdio.h>              //lint !e451
 
 extern uint page_count;
 

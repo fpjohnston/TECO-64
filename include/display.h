@@ -28,9 +28,9 @@
 
 #define _DISPLAY_H
 
-#include <stdbool.h>            //lint !e451 !e537
+#include <stdbool.h>            //lint !e451
 
-#include "teco.h"               //lint !e451 !e537
+#include "teco.h"
 
 
 #define SATMAX      1000            ///< Maximum color saturation

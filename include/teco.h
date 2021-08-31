@@ -28,11 +28,11 @@
 
 #define _TECO_H
 
-#include <limits.h>             //lint !e451 !e537
-#include <setjmp.h>             //lint !e451 !e537
-#include <stdbool.h>            //lint !e451 !e537
-#include <stdio.h>              //lint !e451 !e537
-#include <sys/types.h>          //lint !e451 !e537
+#include <limits.h>             //lint !e451
+#include <setjmp.h>             //lint !e451
+#include <stdbool.h>            //lint !e451
+#include <stdio.h>              //lint !e451
+#include <sys/types.h>          //lint !e451
 
 
 #if     defined(__DECC)

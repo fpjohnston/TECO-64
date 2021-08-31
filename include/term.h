@@ -28,8 +28,8 @@
 
 #define _TERM_H
 
-#include <stdbool.h>            //lint !e451 !e537
-#include <sys/types.h>          //lint !e451 !e537
+#include <stdbool.h>            //lint !e451
+#include <sys/types.h>          //lint !e451
 
 
 extern const char *key_name;

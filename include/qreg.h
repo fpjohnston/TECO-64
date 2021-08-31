@@ -28,11 +28,11 @@
 
 #define _QREG_H
 
-#include <stdbool.h>            //lint !e451 !e537
-#include <sys/types.h>          //lint !e451 !e537
+#include <stdbool.h>            //lint !e451
+#include <sys/types.h>          //lint !e451
 
-#include "teco.h"               //lint !e451 !e537
-#include "exec.h"               //lint !e451 !e537
+#include "teco.h"
+#include "exec.h"
 
 
 ///  @struct  qreg

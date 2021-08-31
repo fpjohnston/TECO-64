@@ -32,7 +32,7 @@
 #include <ncurses.h>
 #endif
 
-#include <stdbool.h>                //lint !e537
+#include <stdbool.h>
 
 // NOTE: some key codes changed when upgrading to Ubuntu 21.04, which may have
 // involved consequent changes to the C library, ncurses, or other components.

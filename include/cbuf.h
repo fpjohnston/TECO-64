@@ -28,6 +28,8 @@
 
 #define _CBUF_H
 
+#include "eflags.h"
+#include "term.h"
 
 // Command buffer variable
 
@@ -129,6 +131,13 @@ static inline int require_cbuf(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#define trace_cbuf(c) if (f.trace.enable) echo_in(c)
+static inline void trace_cbuf(int c)
+{
+    if (f.trace.enable)
+    {
+        echo_in(c);
+    }
+}
+
 
 #endif  // !defined(_CBUF_H)

@@ -52,6 +52,7 @@ co-gcc.lnt   // Basic gcc configuration
 
 // Ensure that prototypes are in scope before functions are defined
 
+-e537
 +e957
 +elib(957)
 -emacro(124,va_arg)
@@ -75,5 +76,4 @@ co-gcc.lnt   // Basic gcc configuration
 -elibcall(126)
 -elibmacro(126)
 -elibsym(126)
-
 
