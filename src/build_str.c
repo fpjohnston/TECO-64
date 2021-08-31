@@ -41,16 +41,13 @@
 
 #define BUILD_MAX       (PATH_MAX)      ///< Maximum build string length
 
-/// @def    getc_src
-/// @brief  Get next character from source buffer (error if buffer empty).
 
-#define getc_src(chr, error) if (len-- == 0) throw(error); else chr = *src++
+// Local functions
 
-/// @def    putc_dest
-/// @brief  Put next character to destination buffer (error if buffer full).
+static int getc_src(const char *src, uint_t len, int error);
 
-#define putc_dest(c) if (pos == BUILD_MAX - 1) throw(E_MAX); else \
-                     string[pos++] = (char)c
+static char putc_dest(uint_t pos, int c);
+    
 
 
 ///
@@ -78,7 +75,8 @@ tstring build_string(const char *src, uint_t len)
     assert(src != NULL);                // Error if no source string
 
     char string[BUILD_MAX];             // Allow 4K buffer for build string
-    uint_t pos = 0;                     // Position to store next character
+    char *next = string;                // Address to store next character
+    uint_t pos = 0;                     // No. of characters output
     bool lower_next = false;            // Convert next chr. to lower case
     bool upper_next = false;            // Convert next chr. to upper case
     bool lower_all = false;             // Convert all chrs. to lower case
@@ -94,7 +92,8 @@ tstring build_string(const char *src, uint_t len)
 
         if (c == '^' && !f.ed.caret)
         {
-            getc_src(c, E_ISS);
+            c = getc_src(src, len, E_ISS);
+            ++src, --len;
 
             int c1 = toupper(c);
 
@@ -136,7 +135,7 @@ tstring build_string(const char *src, uint_t len)
 
             lower_next = upper_next = false;
 
-            putc_dest(c);
+            *next++ = putc_dest(pos++, c);
         }
         else if (c == CTRL_E)
         {
@@ -145,32 +144,36 @@ tstring build_string(const char *src, uint_t len)
             int qindex;
             struct qreg *qreg;
 
-            getc_src(c, E_ISS);         // Get character after CTRL/E
+            c = getc_src(src, len, E_ISS); // Get character after CTRL/E
+            ++src, --len;
 
             switch (toupper(c))
             {
                 case 'Q':               // <CTRL/E>Q
-                    getc_src(qname, E_MQN);
+                    qname = getc_src(src, len, E_MQN);
+                     ++src, --len;
 
                     if (qname == '*')
                     {
                         uint_t nbytes = (uint_t)strlen(last_file);
 
-                        if (pos + nbytes == BUILD_MAX)
+                        if ((uint_t)(next - string) + nbytes == BUILD_MAX)
                         {
                             throw(E_MAX); // Internal program limit reached
                         }
 
-                        memcpy(string + pos, src, (size_t)nbytes);
-                        pos += nbytes;
+                        memcpy(next, src, (size_t)nbytes);
+
+                        next += nbytes, pos += nbytes;
 
                         break;
                     }
 
                     if (qname == '.')
                     {
-                        getc_src(qname, E_MQN);
                         qlocal = true;
+                        qname = getc_src(src, len, E_MQN);
+                        ++src, --len;
                     }
 
                     if ((qindex = get_qindex(qname, qlocal)) == -1)
@@ -184,24 +187,27 @@ tstring build_string(const char *src, uint_t len)
                     {
                         uint_t nbytes = qreg->text.len;
 
-                        if (pos + nbytes == BUILD_MAX)
+                        if ((uint_t)(next - string) + nbytes == BUILD_MAX)
                         {
                             throw(E_MAX); // Internal program limit reached
                         }
 
-                        memcpy(string + pos, qreg->text.data, (size_t)nbytes);
-                        pos += nbytes;
+                        memcpy(next, qreg->text.data, (size_t)nbytes);
+
+                        next += nbytes, pos += nbytes;
                     }
 
                     break;
 
                 case 'U':               // <CTRL/E>U
-                    getc_src(qname, E_MQN);
+                    qname = getc_src(src, len, E_MQN);
+                    ++src, --len;
 
                     if (qname == '.')
                     {
-                        getc_src(qname, E_MQN);
                         qlocal = true;
+                        qname = getc_src(src, len, E_MQN);
+                        ++src, --len;
                     }
 
                     if ((qindex = get_qindex(qname, qlocal)) == -1)
@@ -211,23 +217,22 @@ tstring build_string(const char *src, uint_t len)
 
                     qreg = get_qreg(qindex);
 
-                    putc_dest(qreg->n);
+                    *next++ = putc_dest(pos++, qreg->n);
 
                     break;
 
                 default:                // Not a special string building chr.
-                    putc_dest(CTRL_E);  // Just save the CTRL/E
-
-                    ++len;              // And redo the next character
-                    --src;
+                    *next++ = putc_dest(pos++, CTRL_E);
+                    --src, ++len;       // Re-do the next character
 
                     break;
             }
         }
         else if (c == CTRL_Q || c == CTRL_R)
         {
-            getc_src(c, E_ISS);
-            putc_dest(c);
+            c = getc_src(src, len, E_ISS);
+            ++src, --len;
+            *next++ = putc_dest(pos++, c);
         }
         else if (c == CTRL_V)
         {
@@ -257,7 +262,7 @@ tstring build_string(const char *src, uint_t len)
         {
             lower_next = upper_next = false;
 
-            putc_dest(c);
+            *next++ = putc_dest(pos++, c);
         }
     }
 
@@ -265,7 +270,7 @@ tstring build_string(const char *src, uint_t len)
     // functions that use the string for C library functions, but we don't
     // want to count the NUL if we were called by any search functions.
 
-    string[pos] = NUL;                  // Ensure it's NUL-terminated
+    *next = NUL;                        // Ensure it's NUL-terminated
 
     // Copy result to scratch buffer
 
@@ -276,4 +281,42 @@ tstring build_string(const char *src, uint_t len)
     last_len = pos;
 
     return result;
+}
+
+
+///
+///  @brief    Get next character from source buffer (error if buffer empty).
+///
+///  @returns  Next character.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int getc_src(const char *src, uint_t len, int error)
+{
+    assert(src != NULL);
+
+    if (len == 0)
+    {
+        throw(error);
+    }
+
+    return *src;
+}
+
+
+///
+// / @brief  Put next character to destination buffer (error if buffer full).
+///
+///  @returns  Next character.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static char putc_dest(uint_t pos, int c)
+{
+    if (pos == BUILD_MAX - 1)
+    {
+        throw(E_MAX);
+    }
+
+    return (char)c;
 }
