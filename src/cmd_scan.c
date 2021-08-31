@@ -40,95 +40,6 @@
 
 
 ///
-///  @brief    Scan at sign command.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_atsign(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->atsign && f.e2.atsign)
-    {
-        throw(E_ATS);                   // Too many at signs
-    }
-
-    cmd->atsign = true;
-
-    return true;
-}
-
-
-///
-///  @brief    Scan bad command.
-///
-///  @returns  Nothing (we throw an exception).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_bad(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    throw(E_ILL, cmd->c1);              // Illegal command
-}
-
-
-///
-///  @brief    Scan colon command.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_colon(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    int c;
-
-    if ((c = peek_cbuf()) == ':')       // Double colon?
-    {
-        if (cmd->dcolon && f.e2.colon)
-        {
-            throw(E_COL);               // Too many colons
-        }
-
-        next_cbuf();                    // Yes, count it
-        trace_cbuf(c);
-
-        cmd->dcolon = true;             // And flag it
-    }
-
-    cmd->colon = true;                  // Flag the first colon
-
-    return true;
-}
-
-
-///
-///  @brief    Parse command with format "X" (no arguments).
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_X(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
-
-    return false;
-}
-
-
-///
 ///  @brief    Parse command with format "X$" that act like ESCape, in that they
 ///            accept m and n arguments, but just consume them without using
 ///            them.
@@ -359,6 +270,95 @@ bool parse_oper(struct cmd *cmd)
 
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
+
+    return true;
+}
+
+
+///
+///  @brief    Parse command with format "X" (no arguments).
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool parse_X(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    return false;
+}
+
+
+///
+///  @brief    Scan at sign command.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_atsign(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->atsign && f.e2.atsign)
+    {
+        throw(E_ATS);                   // Too many at signs
+    }
+
+    cmd->atsign = true;
+
+    return true;
+}
+
+
+///
+///  @brief    Scan bad command.
+///
+///  @returns  Nothing (we throw an exception).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_bad(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    throw(E_ILL, cmd->c1);              // Illegal command
+}
+
+
+///
+///  @brief    Scan colon command.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_colon(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int c;
+
+    if ((c = peek_cbuf()) == ':')       // Double colon?
+    {
+        if (cmd->dcolon && f.e2.colon)
+        {
+            throw(E_COL);               // Too many colons
+        }
+
+        next_cbuf();                    // Yes, count it
+        trace_cbuf(c);
+
+        cmd->dcolon = true;             // And flag it
+    }
+
+    cmd->colon = true;                  // Flag the first colon
 
     return true;
 }
