@@ -30,7 +30,7 @@
         <command name='CTRL_Q'  parse='X='         scan='ctrl_Q'                     />
         <command name='CTRL_R'  parse='nX'                          exec='ctrl_R'    />
         <command name='CTRL_S'  parse='X='         scan='ctrl_S'                     />
-        <command name='CTRL_T'  parse='+m,n:X'                      exec='ctrl_T'    />
+        <command name='CTRL_T'                     scan='ctrl_T'    exec='ctrl_T'    />
         <command name='CTRL_U'                     scan='ctrl_U'    exec='ctrl_U'    />
         <command name='CTRL_V'  parse='nX'                          exec='ctrl_V'    />
         <command name='CTRL_W'  parse='nX'                          exec='ctrl_W'    />
@@ -90,7 +90,7 @@
         <command name='M'                          scan='M'         exec='M!'        />
         <command name='N'                          scan='N'         exec='N'         />
         <command name='O'                          scan='O'         exec='O'         />
-        <command name='P'       parse='+m,n:X'     scan='P'         exec='P'         />
+        <command name='P'                          scan='P'         exec='P'         />
         <command name='Q'                          scan='Q'                          />
         <command name='R'                          scan='CRL'       exec='R'         />
         <command name='S'                          scan='S'         exec='S'         />

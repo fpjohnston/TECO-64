@@ -109,7 +109,7 @@ bool scan_FD(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, 1);                  // FD => 1FD
+    default_n(cmd, (int_t)1);           // FD => 1FD
     reject_neg_m(cmd->m_set, cmd->m_arg);
     reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);

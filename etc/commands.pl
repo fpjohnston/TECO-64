@@ -66,7 +66,6 @@ my %exec_funcs;
 my %parse_table = (
     ## no critic (RequireInterpolationOfMetachars)
 
-    '+m,n:X'    => { parse => 'parse_Mc',     count => 0 },
     'X',        => { parse => 'parse_X',      count => 0 },
     ':@X/'      => { parse => 'parse_c1',     count => 0 },
     ':@Xq/'     => { parse => 'parse_cq1',    count => 0 },

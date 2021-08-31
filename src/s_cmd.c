@@ -92,7 +92,7 @@ static void exec_search(struct cmd *cmd, bool replace)
         cmd->n_set = true;
         cmd->n_arg = 1;
         cmd->m_set = true;
-        cmd->m_arg = cmd->text1.len;
+        cmd->m_arg = (int_t)cmd->text1.len;
     }
     else if (!cmd->n_set)               // Stext` => 1Stext`
     {
@@ -191,7 +191,7 @@ bool scan_FS(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, 1);                  // FS => 1FS
+    default_n(cmd, (int_t)1);           // FS => 1FS
     scan_texts(cmd, 2, ESC);
 
     return false;
@@ -209,7 +209,7 @@ bool scan_S(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, 1);                  // S => 1S
+    default_n(cmd, (int_t)1);           // S => 1S
     scan_texts(cmd, 1, ESC);
 
     return false;

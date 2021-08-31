@@ -86,6 +86,8 @@ struct cmd
 
 static inline void default_n(struct cmd *cmd, int_t n_default)
 {
+    assert(cmd != NULL);
+
     if (!cmd->n_set)
     {
         cmd->n_set = true;

@@ -128,7 +128,7 @@ bool scan_X(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, 1);                  // X => 1X
+    default_n(cmd, (int_t)1);           // X => 1X
     reject_neg_m(cmd->m_set, cmd->m_arg);
     reject_dcolon(cmd->dcolon);
     reject_atsign(cmd->atsign);

@@ -109,66 +109,6 @@ bool scan_colon(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse command with format "+m,n:X".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_Mc(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "+m,n:@X/text1/".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_Mc1(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    scan_texts(cmd, 1, ESC);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "+m,n:@X/text1/text2/".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_Mc2(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    scan_texts(cmd, 2, ESC);
-
-    return false;
-}
-
-
-///
 ///  @brief    Parse command with format "X" (no arguments).
 ///
 ///  @returns  false (command is not an operand or operator).
@@ -423,44 +363,6 @@ bool parse_mc(struct cmd *cmd)
     require_n(cmd->m_set, cmd->n_set);
     reject_dcolon(cmd->dcolon);
     reject_atsign(cmd->atsign);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "m,n:@X/text1/text2/".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_mc2(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    scan_texts(cmd, 2, ESC);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "m,n:Xq".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_mcq(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
-    scan_qreg(cmd);
 
     return false;
 }

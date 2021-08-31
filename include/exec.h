@@ -86,6 +86,8 @@ struct cmd
 
 static inline void default_n(struct cmd *cmd, int_t n_default)
 {
+    assert(cmd != NULL);
+
     if (!cmd->n_set)
     {
         cmd->n_set = true;
@@ -234,8 +236,6 @@ extern const struct cmd null_cmd;
 
 // Functions that scan commands
 
-extern bool parse_Mc(struct cmd *cmd);
-
 extern bool parse_X(struct cmd *cmd);
 
 extern bool parse_c1(struct cmd *cmd);
@@ -361,6 +361,8 @@ extern bool scan_ctrl_P(struct cmd *cmd);
 extern bool scan_ctrl_Q(struct cmd *cmd);
 
 extern bool scan_ctrl_S(struct cmd *cmd);
+
+extern bool scan_ctrl_T(struct cmd *cmd);
 
 extern bool scan_ctrl_U(struct cmd *cmd);
 

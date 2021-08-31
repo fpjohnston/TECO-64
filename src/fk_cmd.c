@@ -33,7 +33,6 @@
 #include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
-#include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 #include "search.h"
@@ -87,7 +86,7 @@ bool scan_FK(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, 1);                  // FKtext` => 1FKtext`
+    default_n(cmd, (int_t)1);           // FKtext` => 1FKtext`
     reject_neg_m(cmd->m_set, cmd->m_arg);
     reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);

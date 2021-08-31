@@ -1,4 +1,4 @@
-///
+ ///
 ///  @file    pct_cmd.c
 ///  @brief   Scan and execute "%" command.
 ///
@@ -73,7 +73,7 @@ bool scan_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, 1);                  // % => 1%
+    default_n(cmd, (int_t)1);           // % => 1%
     reject_m(cmd->m_set);
     reject_dcolon(cmd->dcolon);
     reject_atsign(cmd->atsign);

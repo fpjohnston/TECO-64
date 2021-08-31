@@ -152,7 +152,7 @@ bool scan_FN(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, 1);                  // FN => 1FN
+    default_n(cmd, (int_t)1);           // FN => 1FN
     scan_texts(cmd, 2, ESC);
 
     return false;
@@ -170,7 +170,7 @@ bool scan_N(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, 1);                  // N => 1N
+    default_n(cmd, (int_t)1);           // N => 1N
     scan_texts(cmd, 1, ESC);
 
     return false;

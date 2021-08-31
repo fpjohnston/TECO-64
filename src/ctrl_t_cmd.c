@@ -94,3 +94,22 @@ void exec_ctrl_T(struct cmd *cmd)
     }
 }
 
+
+///
+///  @brief    Scan "^T" (CTRL/T) command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ctrl_T(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+
+    return false;
+}

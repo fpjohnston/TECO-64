@@ -30,7 +30,6 @@
 #include <string.h>
 
 #include "teco.h"
-#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -54,8 +53,8 @@ void exec_T(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int_t m;
-    int_t n;
+    int_t m = 0;
+    int_t n = 1;
 
     if (cmd->h)
     {
@@ -188,7 +187,7 @@ bool scan_T(struct cmd *cmd)
     }
     else
     {
-        default_n(cmd, 1);              // T => 1T
+        default_n(cmd, (int_t)1);       // T => 1T
     }
 
     return false;
@@ -206,7 +205,7 @@ bool scan_V(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, 1);                  // V => 1V
+    default_n(cmd, (int_t)1);           // V => 1V
     reject_neg_m(cmd->m_set, cmd->m_arg);
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);

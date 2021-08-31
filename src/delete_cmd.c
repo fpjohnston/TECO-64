@@ -154,7 +154,7 @@ bool scan_D(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, 1);                  // D => 1D
+    default_n(cmd, (int_t)1);           // D => 1D
     reject_neg_m(cmd->m_set, cmd->m_arg);
     reject_dcolon(cmd->dcolon);
     reject_atsign(cmd->atsign);
@@ -174,7 +174,7 @@ bool scan_K(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, 1);                  // K => 1K
+    default_n(cmd, (int_t)1);           // K => 1K
     reject_neg_m(cmd->m_set, cmd->m_arg);
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
