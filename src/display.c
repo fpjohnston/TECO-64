@@ -82,13 +82,6 @@ static uint n_home = 0;             ///< No. of consecutive Home keys
 
 static uint n_end = 0;              ///< No. of consecutive End keys
 
-///
-///  @def    err_if_true
-///
-///  @brief  Issue error if function returns specified value.
-///
-
-#define err_if_true(func, cond) if (func == cond) error_dpy()
 
 ///
 ///  @struct  region
@@ -137,9 +130,14 @@ static struct display d =
 };
 
 
+/// @def    check_error(truth)
+/// @brief  Wrapper to force Boolean value for check_error() parameter.
+
+#define check_error(truth) (check_error)((bool)(truth))
+
 // Local functions
 
-static void error_dpy(void);
+static void (check_error)(bool truth);
 
 static void exec_commands(const char *string);
 
@@ -160,6 +158,29 @@ static void move_up(void);
 static int print_ebuf(char *buf, int width, int nbytes, int c);
 
 static void update_status(void);
+
+#endif
+
+
+///
+///  @brief    Issue an error if caller's function call failed.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DISPLAY_MODE)
+
+static void (check_error)(bool truth)
+{
+    if (truth)
+    {
+        reset_dpy();
+        init_term();
+
+        throw(E_DPY);                       // Display mode initialization
+    }
+}
 
 #endif
 
@@ -235,29 +256,6 @@ void clear_dpy(void)
 #endif
 
 }
-
-
-///
-///  @brief    Reset display and issue error. When TECO starts, we either try
-///            to initialize for display mode, or initialize terminal settings.
-///            So if display initialization fails, we have to ensure that the
-///            terminal is set up correctly.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
-
-static void error_dpy(void)
-{
-    reset_dpy();
-    init_term();
-
-    throw(E_DPY);                       // Display mode initialization
-}
-
-#endif
 
 
 ///
@@ -389,6 +387,8 @@ void init_dpy(void)
 {
     if (!f.e0.display)
     {
+        bool esc_seq = f.ed.escape ? (bool)TRUE : (bool)FALSE;
+
         f.e0.display = true;
 
         // Note that initscr() will print an error message and exit if it
@@ -396,16 +396,15 @@ void init_dpy(void)
 
         (void)initscr();
 
-        err_if_true(cbreak(),                       ERR);
-        err_if_true(noecho(),                       ERR);
-        err_if_true(nonl(),                         ERR);
-        err_if_true(notimeout(stdscr, (bool)TRUE),  ERR);
-        err_if_true(idlok(stdscr,     (bool)TRUE),  ERR);
-        err_if_true(scrollok(stdscr,  (bool)TRUE),  ERR);
-        err_if_true(has_colors(),                   FALSE);
-        err_if_true(start_color(),                  ERR);
-
-        err_if_true(keypad(stdscr, f.ed.escape ? (bool)TRUE : (bool)FALSE), ERR);
+        check_error( cbreak()                       == ERR   );
+        check_error( noecho()                       == ERR   );
+        check_error( nonl()                         == ERR   );
+        check_error( notimeout(stdscr, (bool)TRUE)  == ERR   );
+        check_error( idlok(stdscr,     (bool)TRUE)  == ERR   );
+        check_error( scrollok(stdscr,  (bool)TRUE)  == ERR   );
+        check_error( has_colors()                   == FALSE );
+        check_error( start_color()                  == ERR   );
+        check_error( keypad(stdscr, esc_seq)        == ERR   );
 
         reset_colors();
         (void)set_escdelay(0);
