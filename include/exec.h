@@ -78,25 +78,6 @@ struct cmd
 
 
 ///
-///  @brief    Set default value for n if needed.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void default_n(struct cmd *cmd, int_t n_default)
-{
-    assert(cmd != NULL);
-
-    if (!cmd->n_set)
-    {
-        cmd->n_set = true;
-        cmd->n_arg = n_default;
-    }
-}
-
-
-///
 ///  @brief    Error if at sign and command doesn't allow it.
 ///
 ///  @returns  Nothing.
@@ -223,6 +204,25 @@ static inline void require_n(bool m_set, bool n_set)
 }
 
 #endif
+
+///
+///  @brief    Set default value for n if needed.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static inline void default_n(struct cmd *cmd, int_t n_default)
+{
+    assert(cmd != NULL);
+
+    if (!cmd->n_set)
+    {
+        cmd->n_set = true;
+        cmd->n_arg = n_default;
+    }
+}
+
 
 // Global variables
 
