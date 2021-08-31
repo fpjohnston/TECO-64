@@ -1,0 +1,14 @@
+!! TECO-64 test script: Local search -- S
+!! Expect: PASS
+ 
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+
+0J
+
+Sxyz
+
+HK
+
+:@^A/!PASS!/
+
+^[^[
