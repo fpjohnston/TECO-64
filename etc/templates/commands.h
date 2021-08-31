@@ -30,11 +30,6 @@
 
 // Command table definitions
 
-///  @typedef parse_func
-///  @brief   Function to parse command arguments.
-
-typedef bool (parse_func)(struct cmd *cmd);
-
 ///  @typedef scan_func
 ///  @brief   Function to scan command.
 
@@ -47,11 +42,10 @@ typedef void (exec_func)(struct cmd *cmd);
 
 ///  @struct cmd_table
 ///
-///  @brief  Format of command tables used to parse and execute commands.
+///  @brief  Format of command tables used to scan and execute commands.
 
 struct cmd_table
 {
-    parse_func *parse;              ///< Parse function format
     scan_func *scan;                ///< Scan function
     exec_func *exec;                ///< Execute function
     bool mn_args;                   ///< true if exec preserves m and n args
@@ -76,11 +70,11 @@ struct cmd_table
 
 #if     defined(TECO_TRACE)
 
-#define ENTRY(chr, parse, scan, exec, mn) [chr] = { parse, scan, exec, mn, #scan, #exec }
+#define ENTRY(chr, scan, exec, mn) [chr] = { scan, exec, mn, #scan, #exec }
 
 #else
 
-#define ENTRY(chr, parse, scan, exec, mn) [chr] = { parse, scan, exec, mn }
+#define ENTRY(chr, scan, exec, mn) [chr] = { scan, exec, mn }
 
 #endif
 

@@ -63,14 +63,6 @@ my $e_cmds;
 my $f_cmds;
 my %scan_funcs;
 my %exec_funcs;
-my %parse_table = (
-    ## no critic (RequireInterpolationOfMetachars)
-
-    'X$',       => { parse => 'parse_escape', count => 0 },
-    'm,n:X'     => { parse => 'parse_mc',     count => 0 },
-
-    ## use critic
-);
 
 #
 #  Parse our command-line options
@@ -169,29 +161,6 @@ sub get_details
 }
 
 #
-#  Translate parse code in XML file to parse function.
-#
-
-sub get_parse
-{
-    my ($format) = @_;
-
-    if ( !length $format )
-    {
-        $format = 'X';
-    }
-
-    if ( exists $parse_table{$format} )
-    {
-        ++$parse_table{$format}{count};
-
-        return $parse_table{$format}{parse};
-    }
-
-    croak "Invalid format $format\n";
-}
-
-#
 #  Create commands.h (or equivalent)
 #
 
@@ -226,7 +195,7 @@ sub make_commands_h
 
 sub make_entry
 {
-    my ( $name, $parse, $scan, $exec, $mn_args ) = @_;
+    my ( $name, $scan, $exec, $mn_args ) = @_;
 
     if ( $name eq q{'} || $name eq q{\\} )
     {
@@ -240,19 +209,9 @@ sub make_entry
     $name .= q{,};
     $name = sprintf '%-7s', $name;
 
-    if ( $parse ne 'NULL' )
-    {
-        $scan_funcs{$parse} = 1;
-    }
-
     if ( $scan ne 'NULL' )
     {
         $scan_funcs{$scan} = 1;
-    }
-
-    if ( !defined $parse )
-    {
-        $parse = 'NULL';
     }
 
     if ( defined $exec )
@@ -264,20 +223,18 @@ sub make_entry
         $exec = 'NULL';
     }
 
-    $parse .= q{,};
-    $parse = sprintf '%-15s', $parse;
     $scan .= q{,};
     $scan = sprintf '%-15s', $scan;
     $exec .= q{,};
     $exec = sprintf '%-15s', $exec;
 
     my $entry = sprintf '%s',
-      "    ENTRY($name  $parse  $scan  $exec  $mn_args),\n";
+      "    ENTRY($name  $scan  $exec  $mn_args),\n";
 
     if ( $name =~ s/^('[[:upper:]]',)/\L$1/msx )
     {
         $entry .= sprintf '%s',
-          "    ENTRY($name  $parse  $scan  $exec  $mn_args),\n";
+          "    ENTRY($name  $scan  $exec  $mn_args),\n";
     }
 
     return $entry;
@@ -357,7 +314,6 @@ sub parse_commands
         foreach my $command ( $section->findnodes('./command') )
         {
             my $name    = $command->getAttribute('name');
-            my $format  = $command->getAttribute('parse');
             my $scan    = $command->getAttribute('scan');
             my $exec    = $command->getAttribute('exec');
             my $mn_args = 'false';
@@ -382,25 +338,18 @@ sub parse_commands
                 $exec = "exec_$exec";
             }
 
-            my $parse = 'NULL';
-
-            if ( defined $format )
-            {
-                $parse = get_parse($format);
-            }
-
             # Note the use of a flag variable to mark when we've started parsing
             # E commands. This allows us to distinguish the 1-character FF (form
             # feed) command from the 2-character FF command.
 
             if ( $name =~ /^E(.)$/msx )
             {
-                $e_cmds .= make_entry( $1, $parse, $scan, $exec, $mn_args );
+                $e_cmds .= make_entry( $1, $scan, $exec, $mn_args );
                 $e_cmd = 1;
             }
             elsif ( $name =~ /^F(.)$/msx && $e_cmd )
             {
-                $f_cmds .= make_entry( $1, $parse, $scan, $exec, $mn_args );
+                $f_cmds .= make_entry( $1, $scan, $exec, $mn_args );
             }
             else
             {
@@ -409,16 +358,8 @@ sub parse_commands
                     $name = $1;
                 }
 
-                $cmds .= make_entry( $name, $parse, $scan, $exec, $mn_args );
+                $cmds .= make_entry( $name, $scan, $exec, $mn_args );
             }
-        }
-    }
-
-    foreach my $format ( keys %parse_table )
-    {
-        if ( $parse_table{$format}->{count} == 0 )
-        {
-            croak "Unused format: $format";
         }
     }
 

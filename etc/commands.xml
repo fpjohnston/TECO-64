@@ -13,7 +13,7 @@
         <command name='NUL'                        scan='bad'                        />
         <command name='CTRL_A'                     scan='ctrl_A'    exec='ctrl_A'    />
         <command name='CTRL_B'                     scan='ctrl_B'                     />
-        <command name='CTRL_C'  parse='X$'                          exec='ctrl_C'    />
+        <command name='CTRL_C'                                      exec='ctrl_C'    />
         <command name='CTRL_D'                     scan='x'         exec='ctrl_D'    />
         <command name='CTRL_E'                     scan='flag1'     exec='ctrl_E'    />
         <command name='CTRL_F'                     scan='bad'                        />
@@ -37,7 +37,7 @@
         <command name='CTRL_X'                     scan='flag1'     exec='ctrl_X'    />
         <command name='CTRL_Y'                     scan='ctrl_Y'                     />
         <command name='CTRL_Z'                     scan='ctrl_Z'                     />
-        <command name='ESC'     parse='X$'                          exec='escape!'   />
+        <command name='ESC'                                         exec='escape!'   />
         <command name='\x1C'                       scan='bad'                        />
         <command name='\x1D'                       scan='bad'                        />
         <command name='\x1E'                       scan='ctrl_up'                    />
@@ -49,7 +49,7 @@
         <command name='$'                          scan='bad'                        />
         <command name='%'                          scan='pct'       exec='pct'       />
         <command name='&amp;'                      scan='oper'                       />
-        <command name='&apos;'  parse='X$'                          exec='apos'      />
+        <command name='&apos;'                                      exec='apos'      />
         <command name='('                          scan='lparen'                     />
         <command name=')'                          scan='rparen'                     />
         <command name='*'                          scan='oper'                       />
@@ -97,7 +97,7 @@
         <command name='T'                          scan='T'         exec='T'         />
         <command name='U'                          scan='U'         exec='U'         />
         <command name='V'                          scan='V'         exec='V'         />
-        <command name='W'       parse='m,n:X'      scan='W'         exec='W'         />
+        <command name='W'                          scan='W'         exec='W'         />
         <command name='X'                          scan='X'         exec='X'         />
         <command name='Y'                          scan='Y'         exec='Y'         />
         <command name='Z'                          scan='Z'                          />
@@ -108,7 +108,7 @@
         <command name='_'                          scan='ubar'      exec='ubar'      />
         <command name='`'                          scan='bad'                        />
         <command name='{'                          scan='bad'                        />
-        <command name='|'       parse='X$'                          exec='vbar'      />
+        <command name='|'                                           exec='vbar'      />
         <command name='}'                          scan='bad'                        />
         <command name='~'                          scan='tilde'                      />
         <command name='DEL'                        scan='bad'                        />
@@ -129,7 +129,7 @@
         <command name='EG'                         scan='ER'        exec='EG'        />
         <command name='EH'                         scan='flag2'     exec='EH'        />
         <command name='EI'                         scan='EI'        exec='EI'        />
-        <command name='EJ'      parse='m,n:X'      scan='EJ'        exec='nop'       />
+        <command name='EJ'                         scan='EJ'        exec='nop'       />
         <command name='EK'                         scan='x'         exec='EK'        />
         <command name='EL'                         scan='EL'        exec='EL'        />
         <command name='EM'                         scan='EM'        exec='EM'        />
@@ -150,13 +150,13 @@
 
         <!-- F commands -->
 
-        <command name='F&apos;' parse='X$'                          exec='F_apos'    />
+        <command name='F&apos;'                                     exec='F_apos'    />
         <command name='F0'                         scan='F0'        exec='nop'       />
         <command name='F1'                         scan='F1'        exec='F1'        />
         <command name='F2'                         scan='F1'        exec='F2'        />
         <command name='F3'                         scan='F1'        exec='F3'        />
-        <command name='F&lt;'   parse='X$'                          exec='F_lt'      />
-        <command name='F&gt;'   parse='X$'                          exec='F_gt'      />
+        <command name='F&lt;'                                       exec='F_lt'      />
+        <command name='F&gt;'                                       exec='F_gt'      />
         <command name='FB'                         scan='FB'        exec='FB'        />
         <command name='FC'                         scan='FC'        exec='FC'        />
         <command name='FD'                         scan='FD'        exec='FD'        />
@@ -172,7 +172,7 @@
         <command name='FU'                         scan='FL'        exec='FU'        />
         <command name='FZ'                         scan='FZ'        exec='nop'       />
         <command name='F_'                         scan='F_ubar'    exec='F_ubar'    />
-        <command name='F|'      parse='X$'                          exec='F_vbar'    />
+        <command name='F|'                                          exec='F_vbar'    />
     </section>
 </teco>
 

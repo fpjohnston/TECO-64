@@ -409,6 +409,10 @@ bool scan_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+
     int n = 0;                          // 0EJ is default command
 
     if (cmd->n_set)

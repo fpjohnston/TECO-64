@@ -39,8 +39,13 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_C(struct cmd *unused)
+void exec_ctrl_C(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     if (f.et.abort)
     {
         exit(EXIT_FAILURE);

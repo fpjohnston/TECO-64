@@ -39,45 +39,6 @@
 
 
 ///
-///  @brief    Parse command with format "X$" that act like ESCape, in that they
-///            accept m and n arguments, but just consume them without using
-///            them.
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_escape(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "m,n:X".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_mc(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
-
-    return false;
-}
-
-
-///
 ///  @brief    Scan commands with no arguments.
 ///
 ///  @returns  false (command is not an operand or operator).

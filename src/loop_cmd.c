@@ -155,6 +155,9 @@ void exec_F_gt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     if (nloops == 0)                    // Outside of loop?
     {
         cbuf->pos = cbuf->len;          // Yes, end the command string
@@ -178,6 +181,9 @@ void exec_F_gt(struct cmd *cmd)
 void exec_F_lt(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     if (nloops == 0)                    // Outside of loop?
     {
@@ -417,13 +423,8 @@ bool scan_gt(struct cmd *cmd)
 
     if (!f.e1.xoper || nparens == 0)
     {
-        (void)parse_escape(cmd);
-
         return false;
     }
-
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
 
     // The following is necessary to handle the situation where a '>' command
     // is a relational operator (or part therefore) and not the end of a loop.

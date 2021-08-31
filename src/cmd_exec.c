@@ -285,7 +285,7 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 
     // Check for secondary commands (E, F, and ^).
 
-    if (entry->parse == NULL && entry->scan == NULL && entry->exec == NULL)
+    if (entry->scan == NULL && entry->exec == NULL)
     {
         // Note that the order of the conditional tests below are based on
         // the anticipated frequency of the respective commands. That is,
@@ -373,14 +373,7 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
         }
     }
 
-    if (entry->scan == NULL)
-    {
-        if (entry->parse != NULL && (*entry->parse)(cmd))
-        {
-            return NULL;
-        }
-    }
-    else if ((*entry->scan)(cmd))
+    if (entry->scan != NULL && (*entry->scan)(cmd))
     {
         return NULL;
     }

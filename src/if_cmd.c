@@ -172,6 +172,9 @@ void exec_apos(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     if (quote.depth == 0)
     {
         throw(E_MSC);                   // Missing start of conditional
@@ -197,6 +200,11 @@ void exec_apos(struct cmd *cmd)
 
 void exec_F_apos(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     endif(cmd, NO_ELSE);                // Skip any else statement.
 
     init_x();                           // Reinitialize expression stack
@@ -211,7 +219,12 @@ void exec_F_apos(struct cmd *cmd)
 ////////////////////////////////////////////////////////////////////////////////
 
 void exec_F_vbar(struct cmd *cmd)
-{
+{ 
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     endif(cmd, ELSE_OK);
 
     init_x();                           // Reinitialize expression stack
@@ -375,6 +388,9 @@ void exec_quote(struct cmd *cmd)
 void exec_vbar(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     if (quote.depth == 0)
     {

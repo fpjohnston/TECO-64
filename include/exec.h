@@ -236,10 +236,6 @@ extern const struct cmd null_cmd;
 
 // Functions that scan commands
 
-extern bool parse_escape(struct cmd *cmd);
-
-extern bool parse_mc(struct cmd *cmd);
-
 extern bool scan_A(struct cmd *cmd);
 
 extern bool scan_B(struct cmd *cmd);

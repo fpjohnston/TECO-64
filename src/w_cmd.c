@@ -188,6 +188,10 @@ bool scan_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+
     if (!cmd->colon)
     {
         reject_m(cmd->m_set);                  // m,nW is invalid
