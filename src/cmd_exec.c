@@ -285,7 +285,7 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 
     // Check for secondary commands (E, F, and ^).
 
-    if (entry->scan == NULL && entry->exec == NULL)
+    if (entry->parse == NULL && entry->scan == NULL && entry->exec == NULL)
     {
         // Note that the order of the conditional tests below are based on
         // the anticipated frequency of the respective commands. That is,
@@ -373,37 +373,17 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
         }
     }
 
-#if     defined(TECO_TRACE)
-
-    if (entry->scan != scan_nop && entry->scan != NULL)
+    if (entry->scan == NULL)
     {
-        tprint("--- %s\n", entry->scan_name);
-    }
-
-#endif
-
-    if (entry->parse != NULL)
-    {
-        (void)(*entry->parse)(cmd);
-
-        if ((*entry->scan)(cmd))
+        if (entry->parse != NULL && (*entry->parse)(cmd))
         {
             return NULL;
         }
     }
-    else if (entry->scan != NULL && (*entry->scan)(cmd))
+    else if ((*entry->scan)(cmd))
     {
         return NULL;
     }
-
-#if     defined(TECO_TRACE)
-
-    if (entry->exec != NULL)
-    {
-        tprint("+++ %s\n", entry->exec_name);
-    }
-
-#endif
 
     return entry;
 }

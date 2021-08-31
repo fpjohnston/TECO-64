@@ -204,3 +204,24 @@ void reset_macro(void)
 {
     macro_depth = 0;
 }
+
+
+///
+///  @brief    Scan "M" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_M(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+    scan_qreg(cmd);
+
+    return false;
+}

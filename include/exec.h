@@ -234,23 +234,11 @@ extern const struct cmd null_cmd;
 
 // Functions that scan commands
 
-extern bool parse_1(struct cmd *cmd);
-
-extern bool parse_M(struct cmd *cmd);
-
-extern bool parse_M1(struct cmd *cmd);
-
 extern bool parse_Mc(struct cmd *cmd);
-
-extern bool parse_Mcq1(struct cmd *cmd);
 
 extern bool parse_X(struct cmd *cmd);
 
-extern bool parse_c(struct cmd *cmd);
-
 extern bool parse_c1(struct cmd *cmd);
-
-extern bool parse_c2(struct cmd *cmd);
 
 extern bool parse_cq1(struct cmd *cmd);
 
@@ -260,23 +248,9 @@ extern bool parse_flag1(struct cmd *cmd);
 
 extern bool parse_flag2(struct cmd *cmd);
 
-extern bool parse_m2(struct cmd *cmd);
-
 extern bool parse_mc(struct cmd *cmd);
 
-extern bool parse_mc1(struct cmd *cmd);
-
-extern bool parse_mcq(struct cmd *cmd);
-
-extern bool parse_mq(struct cmd *cmd);
-
 extern bool parse_n(struct cmd *cmd);
-
-extern bool parse_n1(struct cmd *cmd);
-
-extern bool parse_nc1(struct cmd *cmd);
-
-extern bool parse_nq(struct cmd *cmd);
 
 extern bool parse_oper(struct cmd *cmd);
 
@@ -288,7 +262,13 @@ extern bool scan_CRL(struct cmd *cmd);
 
 extern bool scan_D(struct cmd *cmd);
 
+extern bool scan_EI(struct cmd *cmd);
+
 extern bool scan_EJ(struct cmd *cmd);
+
+extern bool scan_EL(struct cmd *cmd);
+
+extern bool scan_EM(struct cmd *cmd);
 
 extern bool scan_EO(struct cmd *cmd);
 
@@ -296,15 +276,23 @@ extern bool scan_E_ubar(struct cmd *cmd);
 
 extern bool scan_F0(struct cmd *cmd);
 
+extern bool scan_F123(struct cmd *cmd);
+
 extern bool scan_FB(struct cmd *cmd);
 
 extern bool scan_FC(struct cmd *cmd);
 
 extern bool scan_FD(struct cmd *cmd);
 
+extern bool scan_FF(struct cmd *cmd);
+
 extern bool scan_FH(struct cmd *cmd);
 
 extern bool scan_FK(struct cmd *cmd);
+
+extern bool scan_FLFU(struct cmd *cmd);
+
+extern bool scan_FM(struct cmd *cmd);
 
 extern bool scan_FN(struct cmd *cmd);
 
@@ -320,9 +308,13 @@ extern bool scan_G(struct cmd *cmd);
 
 extern bool scan_H(struct cmd *cmd);
 
+extern bool scan_I(struct cmd *cmd);
+
 extern bool scan_J(struct cmd *cmd);
 
 extern bool scan_K(struct cmd *cmd);
+
+extern bool scan_M(struct cmd *cmd);
 
 extern bool scan_N(struct cmd *cmd);
 
@@ -336,11 +328,15 @@ extern bool scan_S(struct cmd *cmd);
 
 extern bool scan_T(struct cmd *cmd);
 
+extern bool scan_U(struct cmd *cmd);
+
 extern bool scan_V(struct cmd *cmd);
 
 extern bool scan_W(struct cmd *cmd);
 
 extern bool scan_X(struct cmd *cmd);
+
+extern bool scan_Y(struct cmd *cmd);
 
 extern bool scan_Z(struct cmd *cmd);
 
@@ -358,11 +354,15 @@ extern bool scan_ctrl_B(struct cmd *cmd);
 
 extern bool scan_ctrl_H(struct cmd *cmd);
 
+extern bool scan_ctrl_I(struct cmd *cmd);
+
 extern bool scan_ctrl_P(struct cmd *cmd);
 
 extern bool scan_ctrl_Q(struct cmd *cmd);
 
 extern bool scan_ctrl_S(struct cmd *cmd);
+
+extern bool scan_ctrl_U(struct cmd *cmd);
 
 extern bool scan_ctrl_Y(struct cmd *cmd);
 
@@ -380,6 +380,8 @@ extern bool scan_equals(struct cmd *cmd);
 
 extern bool scan_gt(struct cmd *cmd);
 
+extern bool scan_lbracket(struct cmd *cmd);
+
 extern bool scan_lparen(struct cmd *cmd);
 
 extern bool scan_lt(struct cmd *cmd);
@@ -393,6 +395,8 @@ extern bool scan_oper(struct cmd *cmd);
 extern bool scan_pct(struct cmd *cmd);
 
 extern bool scan_quote(struct cmd *cmd);
+
+extern bool scan_rbracket(struct cmd *cmd);
 
 extern bool scan_rparen(struct cmd *cmd);
 

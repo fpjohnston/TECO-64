@@ -138,3 +138,23 @@ bool next_yank(void)
 
     return (t.Z != 0) ? true : false;
 }
+
+
+///
+///  @brief    Scan "EY" and "Y" commands.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_Y(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    reject_atsign(cmd->atsign);
+
+    return false;
+}

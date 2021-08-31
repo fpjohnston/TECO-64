@@ -466,6 +466,10 @@ bool scan_lt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     // "<" is a relational operator only if it's in parentheses; otherwise,
     // it's the start of a loop.
 

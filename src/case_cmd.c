@@ -163,3 +163,23 @@ static void exec_case(struct cmd *cmd, bool lower)
 
     setpos_ebuf(saved_dot);
 }
+
+
+///
+///  @brief    Scan "FL" and "FU" commands.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FLFU(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    return false;
+}

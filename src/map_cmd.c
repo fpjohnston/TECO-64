@@ -441,6 +441,45 @@ static void reset_map(void)
 
 
 ///
+///  @brief    Scan "FF" command.
+////
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FF(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+    reject_m(cmd->m_set);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
+}
+
+
+///
+///  @brief    Scan "FM" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FM(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    scan_texts(cmd, 2, ESC);
+
+    return false;
+}
+
+
+///
 ///  @brief    Unmap key.
 ///
 ///  @returns  Nothing.

@@ -471,6 +471,10 @@ bool scan_quote(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     int c = require_cbuf();             // Get test condition
 
     trace_cbuf(c);

@@ -141,3 +141,47 @@ void exec_insert(const char *buf, uint_t len)
         ++last_len;
     }
 }
+
+
+///
+///  @brief    Scan "^I" (CTRL/I) command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ctrl_I(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_colon(cmd->colon);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
+}
+
+
+///
+///  @brief    Scan "I" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_I(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
+
+    if (!cmd->n_set || cmd->atsign || !f.e1.insert)
+    {
+        scan_texts(cmd, 1, ESC);
+    }
+
+    return false;
+}

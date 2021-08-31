@@ -80,3 +80,23 @@ void exec_EM(struct cmd *cmd)
     f.e0.exec = saved_exec;
     f.trace.flag = saved_trace;
 }
+
+
+///
+///  @brief    Scan "EM" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_EM(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+    scan_qreg(cmd);
+
+    return false;
+}

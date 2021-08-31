@@ -36,6 +36,7 @@
 #endif
 
 #include "teco.h"
+#include "ascii.h"
 #include "display.h"
 #include "exec.h"
 
@@ -160,6 +161,25 @@ static int find_color(const char *token)
 }
 
 #endif
+
+
+///
+///  @brief    Scan "F1", "F2", and "F3" commands.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_F123(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    require_n(cmd->m_set, cmd->n_set);
+    reject_colon(cmd->colon);
+    scan_texts(cmd, 2, ESC);
+
+    return false;
+}
 
 
 ///

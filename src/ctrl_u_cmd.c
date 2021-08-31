@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "errcodes.h"
 #include "exec.h"
 #include "qreg.h"
@@ -88,4 +89,25 @@ void exec_ctrl_U(struct cmd *cmd)
             store_qtext(cmd->qindex, &text);
         }
     }
+}
+
+
+///
+///  @brief    Scan "^U" (CTRL/U) command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ctrl_U(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_neg_m(cmd->m_set, cmd->m_arg);
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    scan_qreg(cmd);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
 }

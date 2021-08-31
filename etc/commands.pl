@@ -66,28 +66,15 @@ my %exec_funcs;
 my %parse_table = (
     ## no critic (RequireInterpolationOfMetachars)
 
-    '@X/'       => { parse => 'parse_1',      count => 0 },
-    '+m,nX'     => { parse => 'parse_M',      count => 0 },
-    '+m,n@X/'   => { parse => 'parse_M1',     count => 0 },
     '+m,n:X'    => { parse => 'parse_Mc',     count => 0 },
-    '+m,n:@Xq/' => { parse => 'parse_Mcq1',   count => 0 },
     'X',        => { parse => 'parse_X',      count => 0 },
-    ':X',       => { parse => 'parse_c',      count => 0 },
     ':@X/'      => { parse => 'parse_c1',     count => 0 },
-    ':@X//'     => { parse => 'parse_c2',     count => 0 },
     ':@Xq/'     => { parse => 'parse_cq1',    count => 0 },
     'X$',       => { parse => 'parse_escape', count => 0 },
     'nX!'       => { parse => 'parse_flag1',  count => 0 },
     'm,nX!',    => { parse => 'parse_flag2',  count => 0 },
-    'm,n@X//'   => { parse => 'parse_m2',     count => 0 },
     'm,n:X'     => { parse => 'parse_mc',     count => 0 },
-    'm,n:@X/'   => { parse => 'parse_mc1',    count => 0 },
-    'm,n:Xq'    => { parse => 'parse_mcq',    count => 0 },
-    'm,nXq'     => { parse => 'parse_mq',     count => 0 },
     'nX'        => { parse => 'parse_n',      count => 0 },
-    'n@X/'      => { parse => 'parse_n1',     count => 0 },
-    'n:@X/'     => { parse => 'parse_nc1',    count => 0 },
-    'nXq'       => { parse => 'parse_nq',     count => 0 },
     'X='        => { parse => 'parse_oper',   count => 0 },
 
     ## use critic
@@ -269,11 +256,6 @@ sub make_entry
     if ( $scan ne 'NULL' )
     {
         $scan_funcs{$scan} = 1;
-    }
-    else
-    {
-        $scan  = $parse;
-        $parse = 'NULL';
     }
 
     if ( !defined $parse )

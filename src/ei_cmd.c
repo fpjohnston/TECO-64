@@ -28,6 +28,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "cbuf.h"
 #include "eflags.h"
 #include "estack.h"
@@ -208,4 +209,23 @@ void reset_indirect(void)
     free_mem(&ei_old.data);
 
     ei_depth = 0;
+}
+
+
+///
+///  @brief    Scan "EI" command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_EI(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    require_n(cmd->m_set, cmd->n_set);
+    reject_dcolon(cmd->dcolon);
+    scan_texts(cmd, 1, ESC);
+
+    return false;
 }

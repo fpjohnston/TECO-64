@@ -109,70 +109,6 @@ bool scan_colon(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse command with format "@X/text1/".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_1(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_colon(cmd->colon);
-    scan_texts(cmd, 1, ESC);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "+m,nX".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_M(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "+m,n@X/text1/".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_M1(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
-
-    if (toupper(cmd->c1) != 'I' || !cmd->n_set || cmd->atsign || !f.e1.insert)
-    {
-        scan_texts(cmd, 1, ESC);
-    }
-
-    return false;
-}
-
-
-///
 ///  @brief    Parse command with format "+m,n:X".
 ///
 ///  @returns  false (command is not an operand or operator).
@@ -233,48 +169,6 @@ bool parse_Mc2(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse command with format "+m,n:Xq".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_Mcq(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
-    scan_qreg(cmd);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "+m,n:Xq//".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_Mcq1(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    scan_qreg(cmd);
-    scan_texts(cmd, 1, ESC);
-
-    return false;
-}
-
-
-///
 ///  @brief    Parse command with format "X" (no arguments).
 ///
 ///  @returns  false (command is not an operand or operator).
@@ -288,26 +182,6 @@ bool parse_X(struct cmd *cmd)
     reject_m(cmd->m_set);
     reject_n(cmd->n_set);
     reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format ":X".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_c(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_dcolon(cmd->dcolon);
     reject_atsign(cmd->atsign);
 
     return false;
@@ -329,26 +203,6 @@ bool parse_c1(struct cmd *cmd)
     reject_n(cmd->n_set);
     reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format ":@X/text1/text2/".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_c2(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    scan_texts(cmd, 2, ESC);
 
     return false;
 }
@@ -556,25 +410,6 @@ bool parse_flag2(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse command with format "m,n@X/text1/text2/".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_m2(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
-    scan_texts(cmd, 2, ESC);
-
-    return false;
-}
-
-
-///
 ///  @brief    Parse command with format "m,n:X".
 ///
 ///  @returns  false (command is not an operand or operator).
@@ -588,25 +423,6 @@ bool parse_mc(struct cmd *cmd)
     require_n(cmd->m_set, cmd->n_set);
     reject_dcolon(cmd->dcolon);
     reject_atsign(cmd->atsign);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "m,n:@X/text1/".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_mc1(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    scan_texts(cmd, 1, ESC);
 
     return false;
 }
@@ -651,26 +467,6 @@ bool parse_mcq(struct cmd *cmd)
 
 
 ///
-///  @brief    Parse command with format "m,nXq".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_mq(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
-    scan_qreg(cmd);
-    reject_atsign(cmd->atsign);
-
-    return false;
-}
-
-
-///
 ///  @brief    Parse command with format "nX".
 ///
 ///  @returns  false (command is not an operand or operator).
@@ -684,64 +480,6 @@ bool parse_n(struct cmd *cmd)
     reject_m(cmd->m_set);
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "n@X/text1/".
-////
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_n1(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-    reject_m(cmd->m_set);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
-    scan_texts(cmd, 1, ESC);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "n:@X/text1/".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_nc1(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_m(cmd->m_set);
-    reject_dcolon(cmd->dcolon);
-    scan_texts(cmd, 1, ESC);
-
-    return false;
-}
-
-
-///
-///  @brief    Parse command with format "nXq".
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool parse_nq(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_m(cmd->m_set);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
-    scan_qreg(cmd);
 
     return false;
 }
