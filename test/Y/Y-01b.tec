@@ -1,0 +1,20 @@
+!! TECO-64 test script: Yank file into edit buffer -- Y
+!! Expect: FAIL
+
+@EW{/tmp/foo} 
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+EC
+
+@I/add some text to buffer in order to cause Y command to fail/
+
+@EB{/tmp/foo}
+
+2,0 ED
+
+Y
+
+HK
+
+:@^A/!PASS!/            !! Shouldn't get here
+
+^[^[

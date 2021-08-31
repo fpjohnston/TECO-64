@@ -1,0 +1,22 @@
+!! TECO-64 test script: Yank file into edit buffer -- :Y
+!! Expect: PASS
+
+@EW{/tmp/foo} 
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+EC
+
+@EB{/tmp/foo}
+
+2,0 ED
+
+:Y
+"U
+    :@^A/FAIL/
+    ^C
+'
+
+HK
+
+:@^A/!PASS!/
+
+^[^[

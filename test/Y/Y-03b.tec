@@ -1,0 +1,20 @@
+!! TECO-64 test script: Yank file w/o yank protection -- Y
+!! Expect: PASS
+
+@EW{/tmp/foo} 
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+EC
+
+@I/add some text to buffer in order to cause Y command to fail/
+
+@EB{/tmp/foo}
+
+0,2 ED
+
+Y
+
+HK
+
+:@^A/!PASS!/
+
+^[^[
