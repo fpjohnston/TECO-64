@@ -77,7 +77,7 @@
         <command name='@'                          scan='atsign'                     />
         <command name='A'                          scan='A'         exec='A'         />
         <command name='B'       parse='X='         scan='B'                          />
-        <command name='C'                          scan='CRL'       exec='C'         />
+        <command name='C'                          scan='C'         exec='C'         />
         <command name='D'                          scan='D'         exec='D'         />
         <command name='[E]'                                                          />
         <command name='[F]'                                                          />
@@ -86,13 +86,13 @@
         <command name='I'                          scan='I'         exec='I'         />
         <command name='J'                          scan='J'         exec='J'         />
         <command name='K'                          scan='K'         exec='K'         />
-        <command name='L'                          scan='CRL'       exec='L'         />
+        <command name='L'                          scan='C'         exec='L'         />
         <command name='M'                          scan='M'         exec='M!'        />
         <command name='N'                          scan='N'         exec='N'         />
         <command name='O'                          scan='O'         exec='O'         />
         <command name='P'                          scan='P'         exec='P'         />
         <command name='Q'                          scan='Q'                          />
-        <command name='R'                          scan='CRL'       exec='R'         />
+        <command name='R'                          scan='C'         exec='R'         />
         <command name='S'                          scan='S'         exec='S'         />
         <command name='T'                          scan='T'         exec='T'         />
         <command name='U'                          scan='U'         exec='U'         />
@@ -152,9 +152,9 @@
 
         <command name='F&apos;' parse='X$'                          exec='F_apos'    />
         <command name='F0'      parse='X'          scan='F0'        exec='nop'       />
-        <command name='F1'                         scan='F123'      exec='F1'        />
-        <command name='F2'                         scan='F123'      exec='F2'        />
-        <command name='F3'                         scan='F123'      exec='F3'        />
+        <command name='F1'                         scan='F1'        exec='F1'        />
+        <command name='F2'                         scan='F1'        exec='F2'        />
+        <command name='F3'                         scan='F1'        exec='F3'        />
         <command name='F&lt;'   parse='X$'                          exec='F_lt'      />
         <command name='F&gt;'   parse='X$'                          exec='F_gt'      />
         <command name='FB'                         scan='FB'        exec='FB'        />
@@ -163,13 +163,13 @@
         <command name='FF'                         scan='FF'        exec='FF'        />
         <command name='FH'      parse='X'          scan='FH'        exec='nop'       />
         <command name='FK'                         scan='FK'        exec='FK'        />
-        <command name='FL'                         scan='FLFU'      exec='FL'        />
+        <command name='FL'                         scan='FL'        exec='FL'        />
         <command name='FM'                         scan='FM'        exec='FM'        />
         <command name='FN'                         scan='FN'        exec='FN'        />
         <command name='FQ'                         scan='EQ'        exec='FQ'        />
         <command name='FR'                         scan='FR'        exec='FR'        />
         <command name='FS'                         scan='FS'        exec='FS'        />
-        <command name='FU'                         scan='FLFU'      exec='FU'        />
+        <command name='FU'                         scan='FL'        exec='FU'        />
         <command name='FZ'      parse='X'          scan='FZ'        exec='nop'       />
         <command name='F_'                         scan='F_ubar'    exec='F_ubar'    />
         <command name='F|'      parse='X$'                          exec='F_vbar'    />

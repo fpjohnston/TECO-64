@@ -172,7 +172,7 @@ static void exec_case(struct cmd *cmd, bool lower)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_FLFU(struct cmd *cmd)
+bool scan_FL(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

@@ -254,7 +254,7 @@ extern bool scan_A(struct cmd *cmd);
 
 extern bool scan_B(struct cmd *cmd);
 
-extern bool scan_CRL(struct cmd *cmd);
+extern bool scan_C(struct cmd *cmd);
 
 extern bool scan_D(struct cmd *cmd);
 
@@ -276,7 +276,7 @@ extern bool scan_E_ubar(struct cmd *cmd);
 
 extern bool scan_F0(struct cmd *cmd);
 
-extern bool scan_F123(struct cmd *cmd);
+extern bool scan_F1(struct cmd *cmd);
 
 extern bool scan_FB(struct cmd *cmd);
 
@@ -290,7 +290,7 @@ extern bool scan_FH(struct cmd *cmd);
 
 extern bool scan_FK(struct cmd *cmd);
 
-extern bool scan_FLFU(struct cmd *cmd);
+extern bool scan_FL(struct cmd *cmd);
 
 extern bool scan_FM(struct cmd *cmd);
 

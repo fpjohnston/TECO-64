@@ -170,7 +170,7 @@ static int find_color(const char *token)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_F123(struct cmd *cmd)
+bool scan_F1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

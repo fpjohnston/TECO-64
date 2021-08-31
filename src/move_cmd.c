@@ -210,7 +210,7 @@ void exec_R(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_CRL(struct cmd *cmd)
+bool scan_C(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
