@@ -163,26 +163,19 @@ bool scan_T(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_dcolon(cmd->dcolon);
+    reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
     if (cmd->m_set)
     {
-        if (cmd->n_set)
-        {
-            if (cmd->n_arg < cmd->m_arg)
-            {
-                int_t n = cmd->n_arg;
+        default_n(cmd, (int_t)0);       // m,Y => m,1T
 
-                cmd->n_arg = cmd->m_arg;
-                cmd->m_arg = n;
-            }
-        }
-        else
+        if (cmd->m_arg > cmd->n_arg)    // Swap m and n if m > n
         {
-            cmd->m_arg = false;
-            cmd->n_set = true;
+            int_t n = cmd->n_arg;
+
             cmd->n_arg = cmd->m_arg;
+            cmd->m_arg = n;
         }
     }
     else
@@ -205,12 +198,15 @@ bool scan_V(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    default_n(cmd, (int_t)1);           // V => 1V
+    if (!cmd->n_set || cmd->n_arg == 0) // V => 1V, 0V => 1V
+    {
+        cmd->n_set = true;
+        cmd->n_arg = 1;
+    }
+
     reject_neg_m(cmd->m_set, cmd->m_arg);
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
-
-    cmd->n_arg = cmd->n_arg ?: 1;       // 0V => 1V
 
     return false;
 }
