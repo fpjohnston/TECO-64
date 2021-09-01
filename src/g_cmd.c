@@ -61,26 +61,17 @@ static void copy_G(struct cmd *cmd)
     switch (cmd->qname)
     {
         case '*':                       // Copy filespec string
-            if ((last_len = (uint_t)strlen(last_file)) != 0)
-            {
-                exec_insert(last_file, last_len);
-            }
+            exec_insert(last_file, (uint_t)strlen(last_file));
 
             break;
 
         case '+':                       // Copy EZ result
-            if ((last_len = ez.len) != 0)
-            {
-                exec_insert(ez.data, last_len);
-            }
+            exec_insert(ez.data, ez.len);
 
             break;
 
         case '_':                       // Copy search result
-            if ((last_len = last_search.len) != 0)
-            {
-                exec_insert(last_search.data, last_len);
-            }
+            exec_insert(last_search.data, last_search.len);
 
             break;
 
@@ -88,8 +79,6 @@ static void copy_G(struct cmd *cmd)
             qreg = get_qreg(cmd->qindex);
 
             assert(qreg != NULL);       // Error if no Q-register
-
-            last_len = qreg->text.len;
 
             if (qreg->text.len != 0)
             {
