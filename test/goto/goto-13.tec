@@ -1,5 +1,5 @@
 !! TECO-64 test script: Branch forward into a conditional -- O
-!! Expect: FAIL
+!! Expect: ?LOC
 
 @O!tag1!
 

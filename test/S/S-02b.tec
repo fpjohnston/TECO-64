@@ -1,5 +1,5 @@
 !! TECO-64 test script: Local search -- @S//
-!! Expect: FAIL
+!! Expect: ?SRH
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 

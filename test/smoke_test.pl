@@ -233,6 +233,11 @@ sub test_file
 
     chomp $output;
 
+    if ( $output =~ / ([?][[:alpha:]]{3}) /msx)
+    {
+        $output = $1;
+    }
+
     ++$ntests;
 
     my $commands = q{};
@@ -249,9 +254,10 @@ sub test_file
 
     if ( $expect =~ /^PASS/msx )
     {
+        $expect = 'pass';
+
         if ( $expect =~ / (PASS) \s \[ (.+) \] /msx )
         {
-            $expect = $1;
             $diff   = $2;
         }
     }
@@ -259,19 +265,39 @@ sub test_file
     {
         $expect = 'fail';
     }
+    elsif ( $expect =~ / ([?][[:alpha:]]{3}) /msx )
+    {
+        $expect = $1;
+    }
     else
     {
-        print "$file: Invalid header format\n";
+        print "$file: Invalid expectations\n";
 
         return;
     }
 
-    my $report = sprintf '%17s %-45s %-15s %s', "[$file]", $abstract,
-      $commands, $expect;
+    my $report = sprintf '%17s %-45s %-15s', "[$file]", $abstract,
+      $commands;
 
-    if ( $expect eq 'PASS' && $output =~ /!PASS!/ms )
+    #  The following cases are possible:
+    #
+    #  Expected             Got
+    #  --------             ---
+    #  PASS, no diff. file  PASS
+    #  PASS, diff. file     PASS, diff. file matched
+    #  PASS, diff. file     PASS, diff. file did not match
+    #  TECO error           Expected TECO error
+    #  TECO error           Got different TECO error, or no error
+    #  FAIL                 FAIL
+    #  FAIL                 PASS, or error
+    
+    if ( $expect eq 'pass' )
     {
-        if ( defined $diff )
+        if ( $output !~ /!PASS!/ms )
+        {
+            printf "%s %s -> ERROR: %s\n", $report, $expect, $output;
+        }
+        elsif ( defined $diff )
         {
             my $expected = read_file($diff);
 
@@ -279,26 +305,34 @@ sub test_file
 
             if ( $expected ne $output )
             {
-                printf "%s -> DIFF: $diff\n", $report;
-
-                return;
+                printf "%s %s -> DIFF: %s\n", $report, $expect, $output;
             }
         }
+        elsif ($okay)
+        {
+            printf "%s %s -> OK\n", $report, $expect;
+        }
     }
-    elsif ( $expect ne 'fail' || $output =~ /!PASS!/ms )
+    elsif ( $expect eq 'fail' )
     {
-        printf "%s -> ERROR: $output\n", $report;
-
-        return;
+        if ( $output =~ /!PASS!/ms )
+        {
+            printf "%s %s -> ERROR: %s\n", $report, $expect, $output;
+        }
+        elsif ($okay)
+        {
+            printf "%s %s -> OK\n", $report, $expect;
+        }
     }
-
-    # Only output normal results if requested
-
-    if ($okay)
+    elsif ( $expect ne $output )
     {
-        printf "%s -> OK\n", $report;
+        printf "%s %s -> ERROR: %s\n", $report, $expect, $output;
     }
-
+    elsif ($okay)
+    {
+        printf "%s %s -> OK\n", $report, $expect;
+    }
+        
     return;
 }
 

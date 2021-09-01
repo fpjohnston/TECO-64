@@ -1,5 +1,5 @@
 !! TECO-64 test script: Test end of loop w/o start -- >
-!! Expect: FAIL
+!! Expect: ?BNI
 
 >
 

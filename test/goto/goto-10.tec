@@ -1,5 +1,5 @@
 !! TECO-64 test script: Branch backward into a loop -- O
-!! Expect: FAIL
+!! Expect: ?LOC
 
 @O!tag1!
 
