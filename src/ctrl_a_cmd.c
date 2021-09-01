@@ -47,7 +47,7 @@ void exec_ctrl_A(struct cmd *cmd)
     assert(cmd->text1.data != NULL);    // Error if no edit buffer
 
     tstring text = build_string(cmd->text1.data, cmd->text1.len);
-    
+
     const char *p = text.data;
 
     for (uint_t i = 0; i < text.len; ++i)

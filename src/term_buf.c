@@ -72,7 +72,7 @@ int delete_tbuf(void)
     }
 
     int c = term_buf.data[--term_buf.len]; // Get previous character
-    
+
     term_buf.data[term_buf.len] = NUL;  // Make sure we don't re-use it
 
     return c;

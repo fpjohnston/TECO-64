@@ -560,7 +560,7 @@ void init_options(
     {
         options.vtedit = NULL;
     }
-            
+
     if (mung && argv[optind] != NULL)
     {
         options.execute = argv[optind++];

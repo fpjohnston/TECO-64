@@ -62,7 +62,7 @@ static int issymbol(int c);
 static bool match_chr(int c, struct search *s);
 
 static bool match_str(struct search *s);
- 
+
 
 ///
 ///  @brief    Build a search string, allocating storage for it.

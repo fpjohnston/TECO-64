@@ -47,7 +47,7 @@
 static int getc_src(const char *src, uint_t len, int error);
 
 static char putc_dest(uint_t pos, int c);
-    
+
 
 
 ///

@@ -129,7 +129,7 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
     }
 
     // Save current state
-    
+
     uint expr_base      = set_x();      // Save expression stack level
     uint loop_base      = getloop_depth();
     uint saved_if       = getif_depth();

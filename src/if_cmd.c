@@ -219,7 +219,7 @@ void exec_F_apos(struct cmd *cmd)
 ////////////////////////////////////////////////////////////////////////////////
 
 void exec_F_vbar(struct cmd *cmd)
-{ 
+{
     assert(cmd != NULL);
 
     reject_colon(cmd->colon);

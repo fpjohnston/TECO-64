@@ -122,7 +122,7 @@ static struct ifile *find_file(const char *name, uint stream, const char *type)
     if (strchr(base, '.'))              // Is there a file type/extension?
     {
         type = "";                      // If so, don't use default type
-    }                                            
+    }
 
 #if     defined(NDEBUG)
     snprintf(file, sizeof(file), "%s%s", name, type);

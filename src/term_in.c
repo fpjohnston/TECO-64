@@ -178,7 +178,7 @@ static void exec_ctrl_G(void)
             exec_DEL();
 
             break;
-            
+
         default:                        // Not special ^G command
             echo_in(c);
             store_tbuf(CTRL_G);

@@ -65,7 +65,7 @@ void exec_EZ(struct cmd *cmd)
     }
 
     tstring buf = build_string(cmd->text1.data, cmd->text1.len);
-    
+
     int nbytes = snprintf(syscmd, sizeof(syscmd), "%s 2>&1", buf.data);
 
     assert(nbytes > 0);
@@ -74,7 +74,7 @@ void exec_EZ(struct cmd *cmd)
     {
         throw(E_CMD);                   // System command is too long
     }
-    
+
     if ((fp = popen(syscmd, "r")) == NULL)
     {
         if (cmd->colon)
