@@ -278,8 +278,6 @@ tstring build_string(const char *src, uint_t len)
 
     memcpy(result.data, string, (size_t)result.len + 1);
 
-    last_len = pos;
-
     return result;
 }
 

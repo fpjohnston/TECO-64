@@ -75,6 +75,8 @@ void build_search(const char *src, uint_t len)
 {
     tstring tmp = build_string(src, len);
 
+    last_len = 0;                       // Assume search will fail
+
     free_mem(&last_search.data);
 
     last_search.data = alloc_mem(tmp.len + 1);
@@ -586,6 +588,8 @@ bool search_loop(struct search *s)
     }
 
     setpos_ebuf(t.dot + s->text_pos);
+
+    last_len = last_search.len;         // Save length of last search string
 
     return true;
 }

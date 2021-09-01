@@ -89,11 +89,11 @@ static void copy_G(struct cmd *cmd)
 
             assert(qreg != NULL);       // Error if no Q-register
 
-            if (qreg->text.size != 0)
-            {
-                last_len = qreg->text.len;
+            last_len = qreg->text.len;
 
-                exec_insert(qreg->text.data, last_len);
+            if (qreg->text.len != 0)
+            {
+                exec_insert(qreg->text.data, qreg->text.len);
             }
 
             break;
@@ -163,7 +163,7 @@ static void type_G(struct cmd *cmd)
             break;
 
         case '+':                       // Print EG result
-            if ((last_len = ez.len) != 0)
+            if (ez.len != 0)
             {
                 tprint("%.*s", (int)ez.len, ez.data);
             }
@@ -171,7 +171,7 @@ static void type_G(struct cmd *cmd)
             break;
 
         case '_':                       // Print search result
-            if ((last_len = last_search.len) != 0)
+            if (last_search.len != 0)
             {
                 tprint("%.*s", (int)last_search.len, last_search.data);
             }
