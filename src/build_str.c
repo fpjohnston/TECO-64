@@ -157,7 +157,7 @@ tstring build_string(const char *src, uint_t len)
                     {
                         uint_t nbytes = (uint_t)strlen(last_file);
 
-                        if ((uint_t)(next - string) + nbytes == BUILD_MAX)
+                        if ((uint_t)(uint)(next - string) + nbytes == BUILD_MAX)
                         {
                             throw(E_MAX); // Internal program limit reached
                         }
@@ -187,7 +187,7 @@ tstring build_string(const char *src, uint_t len)
                     {
                         uint_t nbytes = qreg->text.len;
 
-                        if ((uint_t)(next - string) + nbytes == BUILD_MAX)
+                        if ((uint_t)(uint)(next - string) + nbytes == BUILD_MAX)
                         {
                             throw(E_MAX); // Internal program limit reached
                         }
@@ -217,7 +217,7 @@ tstring build_string(const char *src, uint_t len)
 
                     qreg = get_qreg(qindex);
 
-                    *next++ = putc_dest(pos++, qreg->n);
+                    *next++ = putc_dest(pos++, (int)qreg->n);
 
                     break;
 
