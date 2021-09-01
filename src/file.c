@@ -524,4 +524,6 @@ void set_last(const char *name)
     {
         throw(E_MAX);                   // Internal program limit reached
     }
+
+    last_len = (uint_t)nbytes;
 }
