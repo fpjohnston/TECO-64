@@ -25,6 +25,6 @@ adjacent lines.
 | *n*K | Executes the K command *n* times. <br><br>If *n* is positive, the *n* lines following *dot* are deleted. <br><br>If *n* is negative, the *n* lines preceding *dot* are deleted. <br><br>If *n* is zero, the contents of the buffer from the beginning of the line on which the pointer is located up to the pointer is deleted. <br><br>It is not an error if more lines are specified than occur when a boundary of the edit buffer is encountered. |
 | -K | Equivalent to -1K. |
 | *m*,*n*K | Deletes the contents of the buffer between pointer positions *m* and *n*. *dot* moves to the point of the deletion. The ?POP error message is issued if either *m* or *n* is out of range. |
-| *n*FK/*text*/ | Search for the *n*th occurrence of *text, and delete all characters in the edit buffer between the pointer positions before and after the search. |
+| *n*FK/*text*/ | Search for the *n*th occurrence of *text*, and delete all characters in the edit buffer between the initial position before the search, and the final position after the search. |
 | @FK/*text*/ | Equivalent to 1FK/*text*/. |
 | HK | Deletes the entire contents of the buffer. |
