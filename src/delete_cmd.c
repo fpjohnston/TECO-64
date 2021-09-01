@@ -47,13 +47,8 @@ void exec_D(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int_t n = 1;
+    int_t n = cmd->n_arg;
     int_t m;
-
-    if (cmd->n_set)
-    {
-        n = cmd->n_arg;
-    }
 
     if (cmd->m_set)                     // m,nD - same as m,nK
     {
@@ -113,13 +108,8 @@ void exec_K(struct cmd *cmd)
         return;
     }
 
-    int_t n = 1;
+    int_t n = cmd->n_arg;
     int_t m;
-
-    if (cmd->n_set)
-    {
-        n = cmd->n_arg;
-    }
 
     if (cmd->m_set)                     // m,nK
     {
