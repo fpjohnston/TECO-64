@@ -53,7 +53,32 @@ void exec_FR(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    delete_ebuf(cmd->n_arg);
+    int_t n = cmd->n_arg;
+    int_t m;
+
+    if (cmd->m_set)                     // m,nD - same as m,nK
+    {
+        m = cmd->m_arg;
+
+        if (m < 0 || m > t.Z || n < 0 || n > t.Z)
+        {
+            throw(E_POP, 'D');          // Pointer off page
+        }
+
+        if (m > n)                      // Swap m and n to ensure m < n
+        {
+            int_t saved_m = m;
+
+            m = n;
+            n = saved_m;
+        }
+
+        setpos_ebuf(m);                 // Go to first position
+
+        n -= m;                         // And delete this many chars
+    }
+
+    delete_ebuf(n);
     exec_insert(cmd->text1.data, cmd->text1.len);
 }
 
