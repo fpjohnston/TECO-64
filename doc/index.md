@@ -195,7 +195,8 @@
 | FM             | [Map key to command string](display.md) |
 | *n*FN          | [Global string replace](search.md) |
 | FQ*q*          | [Map key to Q-register *q*](display.md) |
-| FR             | [Replace last string](delete.md) |
+| FR\`           | [Delete string from last insert or search](delete.md) |
+| FR*text*\`     | [Replace string from last insert or search](insert.md) |
 | *n*FS          | [Local string replace](search.md) |
 | FU             | [Convert to upper case](misc.md) |
 | FZ             | [Edit buffer position at end of window](variables.md) |

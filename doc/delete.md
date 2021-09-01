@@ -15,7 +15,7 @@ adjacent lines.
 | *n*:D | Same as *n*D but returns -1 if the command succeeds, and 0 if the command failed because the range of characters to be deleted fell outside the edit buffer. |
 | *n*@FD/*text*/ | Search for the *n*th occurrence of *text* and delete it. *n* may be negative. |
 | @FD/*text*/ | Equivalent to 1@FD/*text*/. |
-| @FR// | Equivalent to -*n*D where *n*  is the length of the last insert, get or search command. See the description of the @FR/*text*/ command for more details. |
+| @FR// | Equivalent to -*n*D where *n*  is the length of the last insert, get or search command. See the description of the [@FR/*text*/](insert.md) command for more details. |
 
 ### Kill commands
 
