@@ -395,7 +395,7 @@ bin/$(TARGET): $(OBJECTS) bin
 	@echo Making $@ $(NULL)
 	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
 
-%.o: %.c
+%.o: %.c obj
 	@echo Making $@ $(NULL)
 	$(AT)cd obj && $(CC) @../obj/CFLAGS ../$<
 
@@ -456,7 +456,7 @@ $(ERRORS_MD): etc/errors.xml etc/templates/errors.md etc/errors.pl
 lobs: $(OPTIONS_H) $(LOBS)
 
 .PHONY: lint
-lint: obj $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) $(LOBS)
+lint: $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) $(LOBS)
 	@echo Linting object files $(NULL)
 	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
 
