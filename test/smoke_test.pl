@@ -240,10 +240,6 @@ sub test_file
         $output = $1;
         $detail = $2;
     }
-    elsif ( $output =~ / !FAIL! \s -- \s (.+) /msx )
-    {
-        $output = $1;
-    }
 
     ++$ntests;
 
@@ -268,10 +264,6 @@ sub test_file
             $diff   = $2;
         }
     }
-    elsif ( $expect eq 'FAIL' )
-    {
-        $expect = 'fail';
-    }
     elsif ( $expect =~ / ([?][[:alpha:]]{3}) /msx )
     {
         $expect = $1;
@@ -295,8 +287,6 @@ sub test_file
     #  PASS, diff. file     PASS, diff. file did not match
     #  TECO error           Expected TECO error
     #  TECO error           Got different TECO error, or no error
-    #  FAIL                 FAIL
-    #  FAIL                 PASS, or error
     
     if ( $expect eq 'pass' )
     {
@@ -314,17 +304,6 @@ sub test_file
             {
                 printf "%s %s -> %s\n", $report, $expect, $output;
             }
-        }
-        elsif ($okay)
-        {
-            printf "%s %s -> OK\n", $report, $expect;
-        }
-    }
-    elsif ( $expect eq 'fail' )
-    {
-        if ( $output =~ /!PASS!/ms )
-        {
-            printf "%s %s -> %s\n", $report, $expect, $output;
         }
         elsif ($okay)
         {
