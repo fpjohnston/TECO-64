@@ -233,13 +233,12 @@ sub test_file
 
     chomp $output;
 
-    if ( $output =~ / [?]XAB \s{3} (.+) /msx )
+    my $detail;
+
+    if ( $output =~ / ([?][[:alpha:]]{3}) \s (.+) /msx )
     {
         $output = $1;
-    }
-    elsif ( $output =~ / ([?][[:alpha:]]{3}) /msx )
-    {
-        $output = $1;
+        $detail = $2;
     }
     elsif ( $output =~ / !FAIL! \s -- \s (.+) /msx )
     {
@@ -334,6 +333,7 @@ sub test_file
     }
     elsif ( $expect ne $output )
     {
+        print "output = $output\n";
         printf "%s %s -> %s\n", $report, $expect, $output;
     }
     elsif ($okay)

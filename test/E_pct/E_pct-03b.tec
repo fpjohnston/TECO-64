@@ -1,5 +1,5 @@
 !! TECO-64 test script: Write Q-register to file -- :@E%//
-!! Expect: FAIL
+!! Expect: ?XAB
 
 @^UA{/dev/fubar}
 
@@ -8,11 +8,10 @@ HXB HK
 
 :@E%B/^EQA/         !! Write Q-register B to file
 
-"S
-    :@^A/!PASS!/      !! This shouldn't happen
-|
-    :@^A/!FAIL!/
-    ^C
+"U
+    ::^C
 '
+
+:@^A/!PASS!/      !! This shouldn't happen
 
 ^[^[

@@ -1,13 +1,13 @@
 !! TECO-64 test script: Test for successful -- "S
 !! Expect: PASS
 
- 0 "S   @^A/!FAIL!/ ^C '
- 1 "S   @^A/!FAIL!/ ^C '
--1 "S | @^A/!FAIL!/ ^C '
+ 0 "S   @^A/!FAIL!/ ::^C '
+ 1 "S   @^A/!FAIL!/ ::^C '
+-1 "S | @^A/!FAIL!/ ::^C '
 
- 0 "s   @^A/!FAIL!/ ^C '
- 1 "s   @^A/!FAIL!/ ^C '
--1 "s | @^A/!FAIL!/ ^C '
+ 0 "s   @^A/!FAIL!/ ::^C '
+ 1 "s   @^A/!FAIL!/ ::^C '
+-1 "s | @^A/!FAIL!/ ::^C '
 
 :@^A/!PASS!/
 

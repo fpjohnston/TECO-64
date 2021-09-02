@@ -1,13 +1,13 @@
 !! TECO-64 test script: Test for greater than zero -- "G
 !! Expect: PASS
 
- 0 "G   @^A/!FAIL!/ ^C '
- 1 "G | @^A/!FAIL!/ ^C '
--1 "G   @^A/!FAIL!/ ^C '
+ 0 "G   @^A/!FAIL!/ ::^C '
+ 1 "G | @^A/!FAIL!/ ::^C '
+-1 "G   @^A/!FAIL!/ ::^C '
 
- 0 "g   @^A/!FAIL!/ ^C '
- 1 "g | @^A/!FAIL!/ ^C '
--1 "g   @^A/!FAIL!/ ^C '
+ 0 "g   @^A/!FAIL!/ ::^C '
+ 1 "g | @^A/!FAIL!/ ::^C '
+-1 "g   @^A/!FAIL!/ ::^C '
 
 :@^A/!PASS!/
 

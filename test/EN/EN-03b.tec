@@ -1,13 +1,12 @@
 !! TECO-64 test script: Open wildcard filespec -- :EN
-!! Expect: FAIL
+!! Expect: ?XAB
 
 @^UA{*.foo}
 
 :@EN/^EQA/      !! Initialize for wildcard lookup
-    "E
-        :@^A/!FAIL!/
-        ^C
-    '
+"E
+    ::^C
+'
 
 0UA
 <

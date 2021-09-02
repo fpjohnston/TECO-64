@@ -16,14 +16,14 @@ QY @=/year = %d/
 !! 1 to 31, months are in the range of 1 to 12, and years are in the
 !! (adjusted) range of 2000 to 2100.
     
-QD - 1     "L :@^A/!FAIL!/ ^C '
-QD - 31    "G :@^A/!FAIL!/ ^C '
+QD - 1     "L :@^A/!FAIL!/ ::^C '
+QD - 31    "G :@^A/!FAIL!/ ::^C '
 
-QM - 1     "L :@^A/!FAIL!/ ^C '
-QM - 12    "G :@^A/!FAIL!/ ^C '
+QM - 1     "L :@^A/!FAIL!/ ::^C '
+QM - 12    "G :@^A/!FAIL!/ ::^C '
 
-QY - 2000  "L :@^A/!FAIL!/ ^C '
-QY - 2100  "G :@^A/!FAIL!/ ^C '
+QY - 2000  "L :@^A/!FAIL!/ ::^C '
+QY - 2100  "G :@^A/!FAIL!/ ::^C '
 
 :@^A/!PASS!/
 

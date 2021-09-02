@@ -6,7 +6,7 @@
 :@EN/^EQA/      !! Initialize for wildcard lookup
     "E
         :@^A/!FAIL!/
-        ^C
+        ::^C
     '
 
 0UA

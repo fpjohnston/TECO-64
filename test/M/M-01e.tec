@@ -10,12 +10,12 @@ MA UA UB
 
 QB - 123 "N
     :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 QA - 456 "N
     :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 :@^A/!PASS!/

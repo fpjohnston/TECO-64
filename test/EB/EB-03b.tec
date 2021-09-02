@@ -1,13 +1,12 @@
 !! TECO-64 test script: Open file for reading and writing -- :EB
-!! Expect: FAIL
+!! Expect: ?XAB
 
 @^UA{baz}
 
 :@EB/^EQA/      !! Open file for reading and writing
 
 "U
-    :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 EK HK

@@ -1,17 +1,18 @@
 !! TECO-64 test script: Open log file -- :@EL//
-!! Expect: FAIL
+!! Expect: ?XAB
 
 @^UA{/dev/teco.log}     !! Load output file name
 
 :@EL/^EQA/              !! Open log file
 
-"S
-    :@^A/!PASS!/
-|
-    :@^A/!FAIL!/
+"U
+    ::^C
 '
 
 @EL//                    !! Close log file
 
 EK HK
+
+:@^A/!PASS!/      !! Shouldn't get here
+
 ^[^[

@@ -13,7 +13,7 @@ GA @I/"/ 0J @I/echo "/ HXB HK
 
 "U
     :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 G+                                  !! Copy output to edit buffer
@@ -28,7 +28,7 @@ QA"E
     @^A/"^EQA" did not match: /
     :G+
     :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 :@^A/!PASS!/

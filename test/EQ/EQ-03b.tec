@@ -1,14 +1,12 @@
 !! TECO-64 test script: Read Q-register from file -- :@EQ//
-!! Expect: FAIL
+!! Expect: ?XAB
 
 @^UA{goodbye.txt}
 
 :@EQB/^EQA/         !! Read Q-register from file B
 
-"S
-    :@^A/!PASS!/
-|
-    :@^A/!FAIL!/
+"U
+    ::^C
 '
 
 ^[^[

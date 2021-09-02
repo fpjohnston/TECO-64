@@ -46,14 +46,14 @@ All mimsy were the borogoves,
 ^S+10 "N
     ^S @=/^S=%d/
     :@^A/FAIL/
-    ^C
+    ::^C
 '
 
 @I/y baby/
 ^S+6 "N
     ^S @=/^S=%d/
     :@^A/FAIL/
-    ^C
+    ::^C
 '
 
 590,620 XA
@@ -62,27 +62,27 @@ GA
 ^S+30 "N
     ^S @=/^S=%d/
     :@^A/FAIL/
-    ^C
+    ::^C
 '
 
 G_
 ^S+10 "N
     ^S @=/^S=%d/
     :@^A/FAIL/
-    ^C
+    ::^C
 '
 
 :@EW{/tmp/teco.tmp}
 "E
     :@^A/FAIL/
-    ^C
+    ::^C
 '
 
 G*
 ^S+13 "N
     ^S @=/^S=%d/
     :@^A/FAIL/
-    ^C
+    ::^C
 '
 
 HK

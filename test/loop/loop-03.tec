@@ -1,8 +1,6 @@
 !! TECO-64 test script: Test start of loop w/o end -- <
-!! Expect: FAIL
+!! Expect: ?MRA
 
 <
 
-:@^A/!FAIL!/
-
-^C
+^C

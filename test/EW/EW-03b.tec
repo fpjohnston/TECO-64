@@ -1,13 +1,12 @@
 !! TECO-64 test script: Open file for writing -- :EW
-!! Expect: FAIL
+!! Expect: ?XAB
 
 @^UA{/dev/foo}  !! Name of output file
 
 :@EW/^EQA/      !! Open file for writing
 
 "U
-    :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 EK HK

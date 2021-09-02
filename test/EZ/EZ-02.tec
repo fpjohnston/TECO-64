@@ -23,7 +23,7 @@ QA"E
     @^A/"^EQA" did not match: /
     :G+
     :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 :@^A/!PASS!/

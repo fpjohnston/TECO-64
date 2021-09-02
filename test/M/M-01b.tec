@@ -6,7 +6,7 @@
     UA
     QA - 123 "N
         :@^A/!FAIL!/
-        ^C
+        ::^C
     '
 
     :@^A/!PASS!/

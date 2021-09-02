@@ -1,13 +1,12 @@
 !! TECO-64 test script: Open file for reading -- :@ER
-!! Expect: FAIL
+!! Expect: ?XAB
 
 @^UA{baz}       !! Name of non-existent input file
 
 :@ER/^EQA/      !! Open file for reading
 
 "U
-    :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 HK

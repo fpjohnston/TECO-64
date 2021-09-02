@@ -1,5 +1,5 @@
 !! TECO-64 test script: Local search forward -- :@S
-!! Expect: FAIL
+!! Expect: ?XAB
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 
@@ -8,7 +8,6 @@
 :@S/foo/
 
 "U
-    :@^A/!FAIL!/
     ::^C
 '
 
