@@ -233,7 +233,11 @@ sub test_file
 
     chomp $output;
 
-    if ( $output =~ / ([?][[:alpha:]]{3}) /msx )
+    if ( $output =~ / [?]XAB \s{3} (.+) /msx )
+    {
+        $output = $1;
+    }
+    elsif ( $output =~ / ([?][[:alpha:]]{3}) /msx )
     {
         $output = $1;
     }
@@ -299,7 +303,7 @@ sub test_file
     {
         if ( $output !~ /!PASS!/ms )
         {
-            printf "%s %s -> ERROR: %s\n", $report, $expect, $output;
+            printf "%s %s -> %s\n", $report, $expect, $output;
         }
         elsif ( defined $diff )
         {
@@ -309,7 +313,7 @@ sub test_file
 
             if ( $expected ne $output )
             {
-                printf "%s %s -> DIFF: %s\n", $report, $expect, $output;
+                printf "%s %s -> %s\n", $report, $expect, $output;
             }
         }
         elsif ($okay)
@@ -321,7 +325,7 @@ sub test_file
     {
         if ( $output =~ /!PASS!/ms )
         {
-            printf "%s %s -> ERROR: %s\n", $report, $expect, $output;
+            printf "%s %s -> %s\n", $report, $expect, $output;
         }
         elsif ($okay)
         {
@@ -330,7 +334,7 @@ sub test_file
     }
     elsif ( $expect ne $output )
     {
-        printf "%s %s -> ERROR: %s\n", $report, $expect, $output;
+        printf "%s %s -> %s\n", $report, $expect, $output;
     }
     elsif ($okay)
     {

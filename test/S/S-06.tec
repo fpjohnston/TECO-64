@@ -16,7 +16,7 @@ HK
 
 "S
     :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 !! Ensure that text at current position matches
@@ -27,14 +27,14 @@ HK
 
 "U
     :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 !! Ensure the dot moved by length of searched string
 
 (.-QA) - 4 "N
     :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 !! Ensure that text ahead of dot doesn't match
@@ -43,7 +43,7 @@ HK
 
 "S
     :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 !! Ensure that backward compare fails
@@ -52,7 +52,7 @@ HK
 
 "S
     :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 !! Ensure that text not in buffer doesn't match
@@ -61,7 +61,7 @@ HK
 
 "S
     :@^A/!FAIL!/
-    ^C
+    ::^C
 '
 
 :@^A/!PASS!/
