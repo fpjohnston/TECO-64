@@ -113,7 +113,7 @@ static void exec_cancel(void)
 
     if (clear_eol())                    // Can we clear to end of line?
     {
-        ;                               // If so, we're done
+        term_pos = 0;                   // Yes, so we're back at column 0
     }
     else
 
