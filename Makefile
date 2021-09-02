@@ -387,11 +387,11 @@ obj:
 .PHONY: $(TARGET) 
 $(TARGET): bin/$(TARGET)
 
-bin/$(TARGET): $(OBJECTS)
+bin/$(TARGET): $(OBJECTS) bin
 	@echo Making $(@F) $(NULL)
 	$(AT)cd obj && $(CC) $(DFLAGS) -o ../$@ $(OBJECTS) $(LIBS)
 
-%.lob: %.c
+%.lob: %.c obj
 	@echo Making $@ $(NULL)
 	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
 
@@ -421,8 +421,7 @@ $(EXEC_H): etc/commands.xml etc/templates/exec.h etc/commands.pl
 $(OPTIONS_H): etc/options.xml etc/templates/options.h etc/options.pl
 	$(AT)etc/options.pl -c $< -t etc/templates/options.h -o $@ $(OPTIONS_DEBUG)
 
-.PHONY: FORCE
-obj/CFLAGS: FORCE
+obj/CFLAGS: obj
 	-$(AT)echo '$(CFLAGS)' | cmp -s - $@ || echo '$(CFLAGS)' > $@
 
 .PHONY: clean
@@ -457,11 +456,11 @@ $(ERRORS_MD): etc/errors.xml etc/templates/errors.md etc/errors.pl
 lobs: $(OPTIONS_H) $(LOBS)
 
 .PHONY: lint
-lint: $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) $(LOBS)
+lint: obj $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) $(LOBS)
 	@echo Linting object files $(NULL)
 	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
 
 .PHONY: mostlyclean
-mostlyclean:
+mostlyclean: obj
 	-$(AT)cd obj && rm -f *.o *.d *.lob $(NULL2)
 
