@@ -43,7 +43,7 @@ enum search_type
     SEARCH_N = 2,                   ///< Non-stop search
     SEARCH_U = 3,                   ///< Search with yank protection
     SEARCH_E = 4,                   ///< Search w/o yank protection
-    SEARCH_C = 5                    ///< Search w/ compare (::S)
+    SEARCH_C = 5                    ///< Compare text string
 };
 
 ///  @struct  search

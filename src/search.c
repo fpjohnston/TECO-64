@@ -573,6 +573,7 @@ bool search_loop(struct search *s)
 
                 default:
                 case SEARCH_S:
+                case SEARCH_C:
                     return false;
             }
 
