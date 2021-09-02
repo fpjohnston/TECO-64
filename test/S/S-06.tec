@@ -1,0 +1,69 @@
+!! TECO-64 test script: Compare text -- ::S
+!! Expect: PASS
+
+HK
+
+0UA
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/
+
+0J
+28C                     !! Skip to 123...
+
+!! Ensure that text preceding position doesn't match
+
+::@S/abcd/
+
+"S
+    :@^A/!FAIL!/
+    ^C
+'
+
+!! Ensure that text at current position matches
+
+. UA
+
+::@S/1234/
+
+"U
+    :@^A/!FAIL!/
+    ^C
+'
+
+!! Ensure the dot moved by length of searched string
+
+(.-QA) - 4 "N
+    :@^A/!FAIL!/
+    ^C
+'
+
+!! Ensure that text ahead of dot doesn't match
+
+::@S/6789/
+
+"S
+    :@^A/!FAIL!/
+    ^C
+'
+
+!! Ensure that backward compare fails
+
+-::@S/4/
+
+"S
+    :@^A/!FAIL!/
+    ^C
+'
+
+!! Ensure that text not in buffer doesn't match
+
+::@S/foobaz/
+
+"S
+    :@^A/!FAIL!/
+    ^C
+'
+
+:@^A/!PASS!/
+
+^C

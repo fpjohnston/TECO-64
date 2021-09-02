@@ -87,17 +87,35 @@ static void exec_search(struct cmd *cmd, bool replace)
         throw(E_ISA);                   // Invalid search argument
     }
 
+    struct search s;
+
     if (!replace && cmd->dcolon)        // ::Stext` => (text len),1:Stext`
     {
+        // Backwards compares always fail
+
+        if (cmd->n_set && cmd->n_arg < 0)
+        {
+            push_x(FAILURE, X_OPERAND);
+
+            return;
+        }
+
+        s.type = SEARCH_C;              // Compare text at current position
+
         cmd->n_set = true;
         cmd->n_arg = 1;
         cmd->m_set = true;
         cmd->m_arg = (int_t)cmd->text1.len;
     }
-    else if (!cmd->n_set)               // Stext` => 1Stext`
+    else
     {
-        cmd->n_arg = 1;
-        cmd->n_set = true;
+        s.type = SEARCH_S;              // Normal local search 
+
+        if (!cmd->n_set)                // Stext` => 1Stext`
+        {
+            cmd->n_arg = 1;
+            cmd->n_set = true;
+        }
     }
 
     if (cmd->text1.len != 0)
@@ -108,10 +126,6 @@ static void exec_search(struct cmd *cmd, bool replace)
     {
         throw(E_SRH, "");               // Nothing to search for
     }
-
-    struct search s;
-
-    s.type = SEARCH_S;
 
     if (cmd->dcolon)
     {

@@ -1,4 +1,4 @@
-!! TECO-64 test script: Local search -- S
+!! TECO-64 test script: Local search backward -- -S
 !! Expect: PASS [S-05.log]
 
 HK

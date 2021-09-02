@@ -1,4 +1,4 @@
-!! TECO-64 test script: Local search -- :@S
+!! TECO-64 test script: Local search forward -- :@S
 !! Expect: FAIL
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//

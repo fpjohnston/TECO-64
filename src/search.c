@@ -486,6 +486,10 @@ bool search_forward(struct search *s)
 
             return true;
         }
+        else if (s->type == SEARCH_C)   // Are we processing ::S?
+        {
+            return false;               // Yes, then we've failed
+        }
     }
 
     return false;
