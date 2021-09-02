@@ -618,7 +618,7 @@ static int read_first(void)
                 }
 
                 echo_in('?');
-                print_error();
+                print_command();
                 echo_in('?');
                 echo_in(LF);
 

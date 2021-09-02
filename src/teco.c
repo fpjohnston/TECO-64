@@ -119,7 +119,8 @@ struct flags f =                    ///< Global flag variables
 #endif
 
     .ee = NUL,                      // No ESCape surrogate
-    .eh.verbose = 2,                // Help message flags
+    .eh.verbose = 2,                // Use standard verbosity for error msgs.
+    .eh.line = true,                // Include line number for errors in macros
     .ej = 0,                        // Operating system type
     .eo = 0,                        // TECO version number
     .es = 0,                        // Search verification flag
@@ -138,6 +139,8 @@ struct flags f =                    ///< Global flag variables
 };
 
 //lint -restore
+
+uint cmd_line;                      ///< Line number in current command/macro
 
 jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
@@ -192,6 +195,8 @@ int main(int argc, const char * const argv[])
                 }
 
                 init_x();               // Initialize expression stack
+
+                cmd_line = 0;           // Don't count lines in command string
 
                 f.e0.exec = true;       // Command is in progress
                 exec_cmd(&cmd);         // Execute command string

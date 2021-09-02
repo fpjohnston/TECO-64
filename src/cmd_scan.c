@@ -28,6 +28,7 @@
 #include <ctype.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "errcodes.h"
 #include "eflags.h"
 #include "estack.h"
@@ -134,7 +135,14 @@ bool scan_colon(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_nop(struct cmd *unused)
+bool scan_nop(struct cmd *cmd)
 {
+    assert(cmd != NULL);
+
+    if (cmd->c1 == LF && cmd_line != 0)
+    {
+        ++cmd_line;
+    }
+
     return false;
 }

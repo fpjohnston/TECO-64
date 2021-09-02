@@ -36,6 +36,7 @@
 #include "display.h"
 #include "eflags.h"
 #include "errcodes.h"
+#include "exec.h"
 #include "term.h"
 
 #include "cbuf.h"
@@ -54,6 +55,8 @@ static char *last_command;          ///< Command string for last error
 // Local functions
 
 static void convert(char *buf, uint bufsize, const char *err_str, uint len);
+
+static void print_error(int error, const char *err_str, const char *file_str);
 
 
 ///
@@ -116,6 +119,34 @@ static void convert(char *buf, uint bufsize, const char *err_str, uint len)
 
 
 ///
+///  @brief    Execute "^C" (CTRL/C) command: return control to main loop.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_ctrl_C(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->dcolon)
+    {
+        print_error(E_XAB, NULL, NULL);
+    }
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    if (f.et.abort)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    longjmp(jump_main, MAIN_CTRLC);
+}
+
+
+///
 ///  @brief    Free up any memory we may have allocated.
 ///
 ///  @returns  Nothing.
@@ -138,7 +169,7 @@ void exit_error(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void print_error(void)
+void print_command(void)
 {
     if (last_command != NULL)
     {
@@ -155,6 +186,53 @@ void print_error(void)
 
             type_out(c);
         }
+    }
+}
+
+
+///
+///  @brief    Print information about current error.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void print_error(int error, const char *err_str, const char *file_str)
+{
+    const char *code = errlist[error].code;
+    const char *text = errlist[error].text;
+
+    tprint("?%s", code);                // Always print code
+
+    last_error = error;
+
+    if (f.eh.verbose != 1)              // Need to print more?
+    {
+        tprint("   ");
+        tprint(text, err_str == NULL ? err_str : "");
+
+        if (error == E_SYS && file_str != NULL)
+        {
+            tprint(" for '%s'", file_str);
+        }
+    }
+
+    if (f.eh.line && cmd_line != 0)
+    {
+        tprint(" in %s at line %u", check_macro() ? "macro" : "command",
+            cmd_line);
+    }
+
+    type_out(LF);
+
+    if (f.eh.verbose == 3)
+    {
+        print_verbose(last_error);
+    }
+
+    if (f.eh.command)
+    {
+        echo_tbuf((uint_t)0);
     }
 }
 
@@ -303,9 +381,6 @@ noreturn void throw(int error, ...)
 
     va_end(args);
 
-    const char *code = errlist[error].code;
-    const char *text = errlist[error].text;
-
     // Save copy of current command string, up to point of error.
 
     if (error != E_XAB)
@@ -319,36 +394,7 @@ noreturn void throw(int error, ...)
 
     if (error != E_XAB || f.e0.exec)
     {
-        tprint("?%s", code);            // Always print code
-
-        last_error = error;
-
-        if (f.eh.verbose != 1)          // Need to print more?
-        {
-            tprint("   ");
-            tprint(text, err_str);
-
-            if (error == E_SYS && file_str != NULL)
-            {
-                tprint(" for '%s'", file_str);
-            }
-
-            type_out(LF);
-
-            if (f.eh.verbose == 3)
-            {
-                print_verbose(last_error);
-            }
-        }
-        else
-        {
-            type_out(LF);
-        }
-
-        if (f.eh.command)
-        {
-            echo_tbuf((uint_t)0);
-        }
+        print_error(error, err_str, file_str);
     }
 
     if (f.et.abort)                     // Abort on error?

@@ -132,6 +132,7 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
 
     uint expr_base      = set_x();      // Save expression stack level
     uint loop_base      = getloop_depth();
+    uint saved_line     = cmd_line;
     uint saved_if       = getif_depth();
     uint saved_nparens  = nparens;
     uint_t saved_pos    = macro->pos;
@@ -161,6 +162,8 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
         }
     }
 
+    cmd_line = 1;                       // Start execution at line 1
+
     ++macro_depth;
     exec_cmd(&newcmd);
     --macro_depth;
@@ -186,6 +189,8 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
     cbuf       = saved_cbuf;            // Restore previous command string
     macro->pos = saved_pos;
     nparens    = saved_nparens;
+
+    cmd_line = saved_line;
 
     setif_depth(saved_if);
     setloop_base(loop_base);

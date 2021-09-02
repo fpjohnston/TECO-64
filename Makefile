@@ -109,7 +109,6 @@ SOURCES = \
     case_cmd.c     \
     color_cmd.c    \
     ctrl_a_cmd.c   \
-    ctrl_c_cmd.c   \
     ctrl_t_cmd.c   \
     ctrl_u_cmd.c   \
     ctrl_v_cmd.c   \

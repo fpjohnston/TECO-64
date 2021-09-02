@@ -42,7 +42,7 @@ enum errcodes
     NERRORS         ///< Total number of errors
 };
 
-extern void print_error(void);
+extern void print_command(void);
 
 extern void print_verbose(int err_teco);
 

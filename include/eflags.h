@@ -172,6 +172,7 @@ union eh_flag
     {
         uint verbose   : 2;     ///< Error message verbosity
         uint command   : 1;     ///< Print failing command if error
+        uint line      : 1;     ///< Print line number within command/macro
     };
 };
 

@@ -396,14 +396,36 @@ static void scan_text(int delim, tstring *text)
     text->data = cbuf->data + cbuf->pos;
 
     size_t nbytes = cbuf->len - cbuf->pos;
-    char *end = memchr(text->data, delim, (size_t)nbytes);
+    const char *start = text->data;
+    const char *end = memchr(start, delim, (size_t)nbytes);
+    const char *p;
 
     if (end == NULL)
     {
         abort_cbuf();
     }
 
-    text->len = (uint_t)(int_t)(end - text->data);
+    text->len = (uint_t)(int_t)(end - start);
+
+    // If we're counting lines, then count any LFs in the text string.
+
+    if (cmd_line != 0)
+    {
+        p = start;
+
+        for (int i = 0; i < (int)(end - start); ++i)
+        {
+            if (*p++ == LF)
+            {
+                ++cmd_line;
+            }
+        }
+
+        if (*p == LF)                   // Is LF the delimiter (for !! tags)?
+        {
+            ++cmd_line;                 // Yes, so count that also
+        }
+    }
 
     // Echo text string or comment if tracing. In order to ensure that this will
     // work when executing an EM command, note that we must echo the LF that
@@ -412,7 +434,7 @@ static void scan_text(int delim, tstring *text)
 
     if (f.trace.enable)
     {
-        const char *p = text->data;
+        p = start;
 
         for (uint i = 0; i < text->len + 1; ++i)
         {
