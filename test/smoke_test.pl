@@ -233,7 +233,11 @@ sub test_file
 
     chomp $output;
 
-    if ( $output =~ / ([?][[:alpha:]]{3}) /msx)
+    if ( $output =~ / ([?][[:alpha:]]{3}) /msx )
+    {
+        $output = $1;
+    }
+    elsif ( $output =~ / !FAIL! \s -- \s (.+) /msx )
     {
         $output = $1;
     }
