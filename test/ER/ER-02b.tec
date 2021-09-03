@@ -1,4 +1,5 @@
-!! TECO-64 test script: Open file for reading -- @ER//
+!! TECO-64 test script: Open file for reading
+!! Commands: @ER//
 !! Expect: ?FNF
 
 @^UA{baz}       !! Name of non-existent input file

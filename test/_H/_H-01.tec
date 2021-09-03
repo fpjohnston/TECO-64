@@ -1,4 +1,5 @@
-!! TECO-64 test script: Get time of day -- ^H
+!! TECO-64 test script: Get time of day
+!! Commands: ^H
 !! Expect: PASS
 
 ^H UA                               !! Get time of day in milliseconds

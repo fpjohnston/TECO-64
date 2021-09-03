@@ -103,11 +103,11 @@ sub open_dir
 
         foreach my $file ( sort { uc $a cmp uc $b } @files )
         {
-            my ( $abstract, $expect, $options ) = read_header( $dir, $file );
+            my ( $abstract, $commands, $expect, $options ) = read_header( $dir, $file );
 
             if ( defined $abstract && defined $expect )
             {
-                test_file( $file, $abstract, $expect, $options );
+                test_file( $file, $commands, $abstract, $expect, $options );
             }
         }
 
@@ -133,11 +133,11 @@ sub open_file
 
         chdir $dir or croak "Can't change directory to $dir";
 
-        my ( $abstract, $expect, $options ) = read_header( $dir, $file );
+        my ( $abstract, $commands, $expect, $options ) = read_header( $dir, $file );
 
         if ( defined $abstract && defined $expect )
         {
-            test_file( $file, $abstract, $expect, $options );
+            test_file( $file, $abstract, $commands, $expect, $options );
         }
 
         chdir $cwd or croak "Can't change directory to $cwd";
@@ -153,6 +153,7 @@ sub read_header
     open my $fh, '<', $file or croak "Can't open file $file";
 
     my $abstract = <$fh>;
+    my $commands = <$fh>;
     my $expect   = <$fh>;
     my $options  = <$fh>;
 
@@ -160,12 +161,17 @@ sub read_header
 
     if ( !defined $abstract )
     {
-        return ( undef, undef, undef );
+        return ( undef, undef, undef, undef );
     }
 
     if ( $abstract !~ s/!! \s+ TECO-64 \s test \s script: \s (.+) \n /$1/msx )
     {
-        return ( undef, undef, undef );
+        return ( undef, undef, undef, undef );
+    }
+
+    if ( !defined $commands )
+    {
+        return ( undef, undef, undef, undef );
     }
 
     # Find out whether we expect success or failure
@@ -175,7 +181,7 @@ sub read_header
     {
         print "[$file] Test script is missing expectations\n";
 
-        return ( undef, undef, undef );
+        return ( undef, undef, undef, undef );
     }
 
     # Look for possible additional options for TECO command line. This
@@ -188,12 +194,12 @@ sub read_header
         $options = q{};
     }
 
-    return ( $abstract, $expect, $options );
+    return ( $abstract, $commands, $expect, $options );
 }
 
 sub test_file
 {
-    my ( $file, $abstract, $expect, $options ) = @_;
+    my ( $file, $abstract, $commands, $expect, $options ) = @_;
     my $command;
 
     if ( $file =~ /.+[.]tec/msx )
@@ -243,14 +249,7 @@ sub test_file
 
     ++$ntests;
 
-    my $commands = q{};
     my $diff;
-
-    if ( $abstract =~ /(.+) -- (.+)/ms )
-    {
-        $abstract = $1;
-        $commands = $2;
-    }
 
     # We expect the test to either pass or fail; if pass, then there may be
     # a file name that we will use to look for differences in the output.

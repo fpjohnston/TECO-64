@@ -1,4 +1,5 @@
-!! TECO-64 test script: Print last file name -- :G*
+!! TECO-64 test script: Print last file name
+!! Commands: :G*
 !! Expect: PASS [G-03b.log]
 
 0 U.A

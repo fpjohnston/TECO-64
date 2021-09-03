@@ -1,4 +1,5 @@
-!! TECO-64 test script: Copy to Q-register -- X
+!! TECO-64 test script: Copy to Q-register
+!! Commands: X
 !! Expect: PASS [X-01.log]
 
 HK

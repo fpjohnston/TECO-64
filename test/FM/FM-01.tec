@@ -1,4 +1,5 @@
-!! TECO-64 test script: Map keys to macros -- FM
+!! TECO-64 test script: Map keys to macros
+!! Commands: FM
 !! Expect: PASS [FM-01.log]
 ! Options: -A 0 !
 

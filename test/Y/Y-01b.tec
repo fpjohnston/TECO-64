@@ -1,4 +1,5 @@
-!! TECO-64 test script: Yank file into edit buffer -- Y
+!! TECO-64 test script: Yank file into edit buffer
+!! Commands: Y
 !! Expect: ?YCA
 
 @EW{/tmp/foo} 

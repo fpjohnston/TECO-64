@@ -1,4 +1,5 @@
-!! TECO-64 test script: Branch backward into a conditional -- O
+!! TECO-64 test script: Branch backward into a conditional
+!! Commands: O
 !! Expect: ?LOC
 
 @O!tag1!

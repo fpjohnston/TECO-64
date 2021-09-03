@@ -1,4 +1,5 @@
-!! TECO-64 test script: Type out current line -- V
+!! TECO-64 test script: Type out current line
+!! Commands: V
 !! Expect: PASS [V-01.log]
 
 HK

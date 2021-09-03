@@ -1,4 +1,5 @@
-!! TECO-64 test script: Test for alphabetic -- "A
+!! TECO-64 test script: Test for alphabetic
+!! Commands: "A
 !! Expect: PASS
 
 0 UC            !! Start at NUL

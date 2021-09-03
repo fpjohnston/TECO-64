@@ -1,4 +1,5 @@
-!! TECO-64 test script: Branch backward outside loop -- O
+!! TECO-64 test script: Branch backward outside loop
+!! Commands: O
 !! Expect: PASS
 
 @O!tag1!

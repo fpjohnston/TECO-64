@@ -1,4 +1,5 @@
-!! TECO-64 test script: Get numeric pair -- H
+!! TECO-64 test script: Get numeric pair
+!! Commands: H
 !! Expect: PASS
 
 @I/0123456789/ 10I              !! Add a line

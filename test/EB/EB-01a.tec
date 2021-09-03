@@ -1,4 +1,5 @@
-!! TECO-64 test script: Open file for reading and writing -- EB
+!! TECO-64 test script: Open file for reading and writing
+!! Commands: EB
 !! Expect: PASS
 
 @^UA{foo}

@@ -1,4 +1,5 @@
-!! TECO-64 test script: Execute system command -- EZ
+!! TECO-64 test script: Execute system command
+!! Commands: EZ
 !! Expect: PASS
 
 HK

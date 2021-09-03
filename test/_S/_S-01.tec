@@ -1,4 +1,5 @@
-!! TECO-64 test script: Get last string length from insert/search -- ^S
+!! TECO-64 test script: Get last string length from insert/search
+!! Commands: ^S
 !! Expect: PASS
 
 @I/Jabberwocky

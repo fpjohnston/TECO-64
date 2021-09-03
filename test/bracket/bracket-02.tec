@@ -1,4 +1,5 @@
-!! TECO-64 test script: Push excessive Q-registers -- [
+!! TECO-64 test script: Push excessive Q-registers
+!! Commands: [
 !! Expect: ?MAX
 
 65 < [A >

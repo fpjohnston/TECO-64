@@ -1,4 +1,5 @@
-!! TECO-64 test script: Copy last search string -- G_
+!! TECO-64 test script: Copy last search string
+!! Commands: G_
 !! Expect: PASS [G-04a.log]
 
 0 U.A

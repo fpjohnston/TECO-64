@@ -1,4 +1,5 @@
-!! TECO-64 test script: Type lines in edit buffer -- T
+!! TECO-64 test script: Type lines in edit buffer
+!! Commands: T
 !! Expect: PASS [T-02.log]
 
 HK

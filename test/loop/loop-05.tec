@@ -1,4 +1,5 @@
-!! TECO-64 test script: Basic loop test -- <, >
+!! TECO-64 test script: Basic loop test
+!! Commands: <, >
 !! Expect: PASS [loop-05.log]
 
 0 < ::^C >

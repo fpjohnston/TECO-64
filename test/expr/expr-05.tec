@@ -1,4 +1,5 @@
-!! TECO-64 test script: Test parenthesized expressions -- (, )
+!! TECO-64 test script: Test parenthesized expressions
+!! Commands: (, )
 !! Expect: PASS [expr-05.log]
 
 10+(1) =

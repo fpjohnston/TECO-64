@@ -1,4 +1,5 @@
-!! TECO-64 test script: Open log file -- EL
+!! TECO-64 test script: Open log file
+!! Commands: EL
 !! Expect: PASS
 
 @^UA{/tmp/teco.log}     !! Load output file name

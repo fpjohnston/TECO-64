@@ -1,4 +1,5 @@
-!! TECO-64 test script: Read Q-register from file -- EQ
+!! TECO-64 test script: Read Q-register from file
+!! Commands: EQ
 !! Expect: ?FNF
 
 @^UA{goodbye.txt}

@@ -1,4 +1,5 @@
-!! TECO-64 test script: Delete and replace -- FR
+!! TECO-64 test script: Delete and replace
+!! Commands: FR
 !! Expect: PASS [FK-02.log]
  
 HK

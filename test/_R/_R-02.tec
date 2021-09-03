@@ -1,4 +1,5 @@
-!! TECO-64 test script: Set radix to invalid value -- ^R
+!! TECO-64 test script: Set radix to invalid value
+!! Commands: ^R
 !! Expect: ?IRA
 
 :@^A/Setting radix to binary/       2 ^R ^D

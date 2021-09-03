@@ -1,4 +1,5 @@
-!! TECO-64 test script: Print numeric values -- @=//
+!! TECO-64 test script: Print numeric values
+!! Commands: @=//
 !! Expect: PASS [equals-03.log]
 
 @^A/value = /  123 @=//

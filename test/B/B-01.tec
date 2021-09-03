@@ -1,4 +1,5 @@
-!! TECO-64 test script: Get starting buffer position -- B
+!! TECO-64 test script: Get starting buffer position
+!! Commands: B
 !! Expect: PASS
 
 10 < @I/0123456789/ 10I >

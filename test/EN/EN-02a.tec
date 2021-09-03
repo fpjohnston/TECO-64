@@ -1,4 +1,5 @@
-!! TECO-64 test script: Open wildcard filespec -- @EN//
+!! TECO-64 test script: Open wildcard filespec
+!! Commands: @EN//
 !! Expect: PASS
 
 @^UA{*.tec}

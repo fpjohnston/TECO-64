@@ -1,4 +1,5 @@
-!! TECO-64 test script: Test lib/date.tec -- (misc.)
+!! TECO-64 test script: Test lib/date.tec
+!! Commands: (misc.)
 !! Expect: PASS
 
 @EI/date/

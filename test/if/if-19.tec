@@ -1,4 +1,5 @@
-!! TECO-64 test script: Test for unsuccessful -- "U
+!! TECO-64 test script: Test for unsuccessful
+!! Commands: "U
 !! Expect: PASS
 
  0 "U | ::^C '

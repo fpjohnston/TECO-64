@@ -1,4 +1,5 @@
-!! TECO-64 test script: Read environment variables -- :EG
+!! TECO-64 test script: Read environment variables
+!! Commands: :EG
 !! Expect: PASS [EG-02.log]
 
 :@EG/INI/ "E ::^C | :G* -1^T '

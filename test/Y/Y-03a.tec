@@ -1,4 +1,5 @@
-!! TECO-64 test script: Yank file w/o yank protection -- Y
+!! TECO-64 test script: Yank file w/o yank protection
+!! Commands: Y
 !! Expect: PASS
 
 @EW{/tmp/foo} 

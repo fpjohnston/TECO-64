@@ -1,4 +1,5 @@
-!! TECO-64 test script: Get ASCII value of character -- ^^
+!! TECO-64 test script: Get ASCII value of character
+!! Commands: ^^
 !! Expect: PASS
 
 0 UF

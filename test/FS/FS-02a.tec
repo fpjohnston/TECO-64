@@ -1,4 +1,5 @@
-!! TECO-64 test script: Local search and replace -- @FS//
+!! TECO-64 test script: Local search and replace
+!! Commands: @FS//
 !! Expect: PASS
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//

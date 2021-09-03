@@ -1,4 +1,5 @@
-!! TECO-64 test script: Type out 8-bit characters -- ^T
+!! TECO-64 test script: Type out 8-bit characters
+!! Commands: ^T
 !! Expect: PASS [_T-02.log]
 
 0,4096 ET                               !! Say we can handle 8-bit chrs.

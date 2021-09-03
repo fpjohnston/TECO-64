@@ -1,4 +1,5 @@
-!! TECO-64 test script: Push maximum values -- (misc.)
+!! TECO-64 test script: Push maximum values
+!! Commands: (misc.)
 !! Expect: PASS
 
 64 UA           !! No. of values we'll push on expression stack

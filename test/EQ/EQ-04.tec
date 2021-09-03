@@ -1,4 +1,5 @@
-!! TECO-64 test script: Read to Q-register, verify data -- :@EQ//
+!! TECO-64 test script: Read to Q-register, verify data
+!! Commands: :@EQ//
 !! Expect: PASS
 
 @^UA{hello}

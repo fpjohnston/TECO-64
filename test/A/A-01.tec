@@ -1,4 +1,5 @@
-!! TECO-64 test script: Read edit buffer values -- nA
+!! TECO-64 test script: Read edit buffer values
+!! Commands: nA
 !! Expect: PASS
 
 @I/hello, world!/

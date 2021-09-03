@@ -1,4 +1,5 @@
-!! TECO-64 test script: Branch backward within loop -- O
+!! TECO-64 test script: Branch backward within loop
+!! Commands: O
 !! Expect: PASS
 
 1 <

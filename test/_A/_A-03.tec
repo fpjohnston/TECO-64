@@ -1,4 +1,5 @@
-!! TECO-64 test script: Print message w/ string building chrs. -- ^A
+!! TECO-64 test script: Print message w/ string building chrs.
+!! Commands: ^A
 !! Expect: PASS [_A-03.log]
 
 0,128ET                 !! Abort on error

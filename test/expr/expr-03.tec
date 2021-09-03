@@ -1,4 +1,5 @@
-!! TECO-64 test script: Test basic operators -- (misc.)
+!! TECO-64 test script: Test basic operators
+!! Commands: (misc.)
 !! Expect: PASS
 
 0 UF            !! Count of failures

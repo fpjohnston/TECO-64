@@ -1,4 +1,5 @@
-!! TECO-64 test script: Test for true -- "T
+!! TECO-64 test script: Test for true
+!! Commands: "T
 !! Expect: PASS
 
  0 "T   ::^C '

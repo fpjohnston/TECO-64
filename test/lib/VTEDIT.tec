@@ -1,4 +1,5 @@
-!! TECO-64 test script: Test lib/vtedit.tec -- (misc.)
+!! TECO-64 test script: Test lib/vtedit.tec
+!! Commands: (misc.)
 !! Expect: PASS
 
 1 @EI/vtedit/

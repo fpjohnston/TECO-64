@@ -1,4 +1,5 @@
-!! TECO-64 test script: Write Q-register to file -- @E%//
+!! TECO-64 test script: Write Q-register to file
+!! Commands: @E%//
 !! Expect: ?SYS
 
 @^UA{/dev/fubar}

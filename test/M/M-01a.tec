@@ -1,4 +1,5 @@
-!! TECO-64 test script: Execute macro -- M
+!! TECO-64 test script: Execute macro
+!! Commands: M
 !! Expect: PASS
 
 @^UA":@^A/!PASS!/"

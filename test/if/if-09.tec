@@ -1,4 +1,5 @@
-!! TECO-64 test script: Test for symbol constituent -- "C
+!! TECO-64 test script: Test for symbol constituent
+!! Commands: "C
 !! Expect: PASS
 
 0 UC            !! Start at NUL

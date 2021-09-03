@@ -1,4 +1,5 @@
-!! TECO-64 test script: Test for upper case -- "W
+!! TECO-64 test script: Test for upper case
+!! Commands: "W
 !! Expect: PASS
 
 0 UC            !! Start at NUL

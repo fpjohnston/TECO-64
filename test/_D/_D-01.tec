@@ -1,4 +1,5 @@
-!! TECO-64 test script: Set input radix to decimal -- ^D
+!! TECO-64 test script: Set input radix to decimal
+!! Commands: ^D
 !! Expect: PASS [_D-01.log]
 
 HK

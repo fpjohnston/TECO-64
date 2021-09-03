@@ -1,4 +1,5 @@
-!! TECO-64 test script: Get relative line info -- :L
+!! TECO-64 test script: Get relative line info
+!! Commands: :L
 !! Expect: PASS [L-01.log]
 
 HK

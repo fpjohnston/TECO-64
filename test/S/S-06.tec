@@ -1,4 +1,5 @@
-!! TECO-64 test script: Compare text -- ::S
+!! TECO-64 test script: Compare text
+!! Commands: ::S
 !! Expect: PASS
 
 HK

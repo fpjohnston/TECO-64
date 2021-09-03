@@ -1,4 +1,5 @@
-!! TECO-64 test script: Get current radix -- ^R
+!! TECO-64 test script: Get current radix
+!! Commands: ^R
 !! Expect: PASS
 
   ^D ^RUA ^D QA-10 "N ::^C '

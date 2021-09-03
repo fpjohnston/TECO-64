@@ -1,4 +1,5 @@
-!! TECO-64 test script: Test nested loops -- <, >
+!! TECO-64 test script: Test nested loops
+!! Commands: <, >
 !! Expect: PASS [loop-06.log]
 
 0 U1

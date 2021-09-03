@@ -1,4 +1,5 @@
-!! TECO-64 test script: Append string to Q-register -- :^U
+!! TECO-64 test script: Append string to Q-register
+!! Commands: :^U
 !! Expect: PASS [_U-02.log]
 
 @^UA/hello/

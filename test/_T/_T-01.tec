@@ -1,4 +1,5 @@
-!! TECO-64 test script: Type out characters -- ^T
+!! TECO-64 test script: Type out characters
+!! Commands: ^T
 !! Expect: PASS [_T-01.log]
 
 ^^H ^T

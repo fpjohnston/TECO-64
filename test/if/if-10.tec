@@ -1,4 +1,5 @@
- !! TECO-64 test script: Test for numeric -- "D
+ !! TECO-64 test script: Test for numeric
+!! Commands: "D
 !! Expect: PASS
 
 0 UC            !! Start at NUL
