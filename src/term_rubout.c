@@ -32,7 +32,11 @@
 #include "eflags.h"
 #include "term.h"
 
-//#include "cbuf.h"
+#if     defined(DISPLAY_MODE)
+
+#include <ncurses.h>
+
+#endif
 
 // Local functions
 
