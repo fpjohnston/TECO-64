@@ -102,6 +102,7 @@ SOURCES = \
     term_buf.c     \
     term_in.c      \
     term_out.c     \
+    term_rubout.c  \
     term_sys.c     \
                    \
     a_cmd.c        \
@@ -390,11 +391,11 @@ bin/$(TARGET): $(OBJECTS) bin
 	@echo Making $(@F) $(NULL)
 	$(AT)cd obj && $(CC) $(DFLAGS) -o ../$@ $(OBJECTS) $(LIBS)
 
-%.lob: %.c obj
+%.lob: %.c
 	@echo Making $@ $(NULL)
 	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
 
-%.o: %.c obj
+%.o: %.c
 	@echo Making $@ $(NULL)
 	$(AT)cd obj && $(CC) @../obj/CFLAGS ../$<
 
