@@ -4,20 +4,19 @@
 @^UA{hello}
 
 :@EQB/^EQA/         !! Read Q-register from file B
-"U :@^A/!FAIL!/ ::^C '
+"U ::^C '
 
 :@ER/^EQA/          !! Read file into the edit buffer
-"U :@^A/!FAIL!/ ::^C '
+"U ::^C '
 
 Y
 
 !! Verify that the size is the same
 
-:QB-Z "N :@^A/!FAIL!/ ::^C '
+:QB-Z "N ::^C '
 
-0J ::@S/^EQA/ "E :@^A/!FAIL!/ ::^C '
+0J ::@S/^EQA/ "E ::^C '
 
 :GB HK
-:@^A/!PASS!/
 
-^[^[
+:@^A/!PASS!/

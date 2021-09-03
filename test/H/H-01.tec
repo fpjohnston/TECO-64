@@ -5,30 +5,28 @@
 
 H UZ UB
 
-QB - B "N :@^A/!FAIL!/ ::^C '
-QZ - Z "N :@^A/!FAIL!/ ::^C '
+QB - B "N ::^C '
+QZ - Z "N ::^C '
 
 @I/0123456789/ 10I              !! Add another line
 
 H UZ UB
 
-QB - B "N :@^A/!FAIL!/ ::^C '
-QZ - Z "N :@^A/!FAIL!/ ::^C '
+QB - B "N ::^C '
+QZ - Z "N ::^C '
 
 @I/0123456789/ 10I              !! Add another line
 
 H UZ UB
 
-QB - B "N :@^A/!FAIL!/ ::^C '
-QZ - Z "N :@^A/!FAIL!/ ::^C '
+QB - B "N ::^C '
+QZ - Z "N ::^C '
 
 HK                              !! Delete all lines
 
 H UZ UB
 
-QB - B "N :@^A/!FAIL!/ ::^C '
-QZ - Z "N :@^A/!FAIL!/ ::^C '
+QB - B "N ::^C '
+QZ - Z "N ::^C '
 
 :@^A/!PASS!/
-
-^C^C

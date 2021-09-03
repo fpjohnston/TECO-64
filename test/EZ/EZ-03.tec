@@ -12,7 +12,6 @@ GA @I/"/ 0J @I/echo "/ HXB HK
 :@EZ/^EQB/                          !! Execute system command
 
 "U
-    :@^A/!FAIL!/
     ::^C
 '
 
@@ -27,7 +26,6 @@ HK
 QA"E
     @^A/"^EQA" did not match: /
     :G+
-    :@^A/!FAIL!/
     ::^C
 '
 

@@ -1,12 +1,10 @@
 !! TECO-64 test script: Get current radix -- ^R
 !! Expect: PASS
 
-  ^D ^RUA ^D QA-10 "N :@^A/!FAIL!/ ::^C '
-  ^O ^RUA ^D QA-8  "N :@^A/!FAIL!/ ::^C '
- 8^R ^RUA ^D QA-8  "N :@^A/!FAIL!/ ::^C '
-10^R ^RUA ^D QA-10 "N :@^A/!FAIL!/ ::^C '
-16^R ^RUA ^D QA-16 "N :@^A/!FAIL!/ ::^C '
+  ^D ^RUA ^D QA-10 "N ::^C '
+  ^O ^RUA ^D QA-8  "N ::^C '
+ 8^R ^RUA ^D QA-8  "N ::^C '
+10^R ^RUA ^D QA-10 "N ::^C '
+16^R ^RUA ^D QA-16 "N ::^C '
 
 :@^A/!PASS!/
-
-^C

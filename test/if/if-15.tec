@@ -1,14 +1,12 @@
 !! TECO-64 test script: Test for not equal to zero -- "N
 !! Expect: PASS
 
- 0 "N   @^A/!FAIL!/ ::^C '
- 1 "N | @^A/!FAIL!/ ::^C '
--1 "N | @^A/!FAIL!/ ::^C '
+ 0 "N   ::^C '
+ 1 "N | ::^C '
+-1 "N | ::^C '
 
- 0 "n   @^A/!FAIL!/ ::^C '
- 1 "n | @^A/!FAIL!/ ::^C '
--1 "n | @^A/!FAIL!/ ::^C '
+ 0 "n   ::^C '
+ 1 "n | ::^C '
+-1 "n | ::^C '
 
 :@^A/!PASS!/
-
-^C

@@ -5,13 +5,12 @@
 
 :@EL/^EQA/              !! Open log file
 
-"S
-    :@^A/!PASS!/
-|
-    :@^A/!FAIL!/
+"U
+    ::^C
 '
 
 @EL//                    !! Close log file
 
 EK HK
-^[^[
+
+:@^A/!PASS!/

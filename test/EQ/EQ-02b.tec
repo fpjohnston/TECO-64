@@ -5,7 +5,4 @@
 
 @EQB/^EQA/          !! Read Q-register from file B
 
-:@^A/!PASS!/          !! This shouldn't happen
-
 HK
-^[^[

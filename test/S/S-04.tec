@@ -18,6 +18,6 @@ HK
 @S/abc/ .=
 @S/abc/ .=
 
-:@^A/!PASS!/
+HK
 
-^C
+:@^A/!PASS!/

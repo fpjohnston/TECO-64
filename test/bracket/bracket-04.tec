@@ -15,7 +15,6 @@
 <
     :]B;
     QB-QA "N
-        :@^UA/!FAIL!/
         ::^C
     '
     -1%A
@@ -24,7 +23,6 @@
 !! Verify that we popped all expected Q-registers
 
 QA"N
-    :@^A/!FAIL!/
     ::^C
 '
 

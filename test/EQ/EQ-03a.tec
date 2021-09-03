@@ -5,11 +5,10 @@
 
 :@EQB/^EQA/         !! Read Q-register from file B
 
-"S
-    :@^A/!PASS!/
-    :GB
-|
-    :@^A/!FAIL!/
+"U
+    ::^C
 '
 
-^[^[
+:GB
+
+:@^A/!PASS!/

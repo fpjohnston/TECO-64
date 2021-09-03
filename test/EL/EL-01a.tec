@@ -7,7 +7,6 @@ EL^EQA                !! Open log file
 
 EL                    !! Close log file
 
-:@^A/!PASS!/
-
 EK HK
-^[^[
+
+:@^A/!PASS!/

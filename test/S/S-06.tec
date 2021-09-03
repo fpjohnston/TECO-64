@@ -15,7 +15,6 @@ HK
 ::@S/abcd/
 
 "S
-    :@^A/!FAIL!/
     ::^C
 '
 
@@ -26,14 +25,12 @@ HK
 ::@S/1234/
 
 "U
-    :@^A/!FAIL!/
     ::^C
 '
 
 !! Ensure the dot moved by length of searched string
 
 (.-QA) - 4 "N
-    :@^A/!FAIL!/
     ::^C
 '
 
@@ -42,7 +39,6 @@ HK
 ::@S/6789/
 
 "S
-    :@^A/!FAIL!/
     ::^C
 '
 
@@ -51,7 +47,6 @@ HK
 -::@S/4/
 
 "S
-    :@^A/!FAIL!/
     ::^C
 '
 
@@ -60,10 +55,9 @@ HK
 ::@S/foobaz/
 
 "S
-    :@^A/!FAIL!/
     ::^C
 '
 
-:@^A/!PASS!/
+HK
 
-^C
+:@^A/!PASS!/

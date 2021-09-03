@@ -6,12 +6,9 @@
 :@ER/^EQA/      !! Open file for reading
 
 "U
-    :@^A/!FAIL!/
     ::^C
 '
 
 HK
 
 :@^A/!PASS!/
-
-^[^[

@@ -8,11 +8,8 @@ HXB HK
 
 :@E%B/^EQA/         !! Write Q-register B to file
 
-"S
-    :@^A/!PASS!/
-|
-    :@^A/!FAIL!/
+"U
     ::^C
 '
 
-^[^[
+:@^A/!PASS!/

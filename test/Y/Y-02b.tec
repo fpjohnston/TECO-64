@@ -13,12 +13,7 @@ EC
 
 :Y
 "U
-    :@^A/FAIL/
     ::^C
 '
 
 HK
-
-:@^A/!PASS!/            !! Shouldn't get here
-
-^[^[

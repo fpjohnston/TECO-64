@@ -7,7 +7,4 @@
 
 @EL//                   !! Close log file
 
-:@^A/!PASS!/              !! Shouldn't get here
-
 EK HK
-^[^[

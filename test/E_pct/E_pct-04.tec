@@ -9,21 +9,19 @@ HXB HK
 :@E%B/^EQA/         !! Write Q-register B to file
 
 "U
-    :@^A/!FAIL!/
     ::^C
 '
 
 :@ER/^EQA/          !! Read file into the edit buffer
-"U :@^A/!FAIL!/ ::^C '
+"U ::^C '
 
 Y
 !! Verify that the size is the same
 
-:QB-Z "N :@^A/!FAIL!/ ::^C '
+:QB-Z "N ::^C '
 
-0J ::@S/^EQB/ "E :@^A/!FAIL!/ ::^C '
+0J ::@S/^EQB/ "E ::^C '
 
 :GB HK
-:@^A/!PASS!/
 
-^[^[
+:@^A/!PASS!/

@@ -1,14 +1,12 @@
 !! TECO-64 test script: Test for false -- "F
 !! Expect: PASS
 
- 0 "F | @^A/!FAIL!/ ::^C '
- 1 "F   @^A/!FAIL!/ ::^C '
--1 "F   @^A/!FAIL!/ ::^C '
+ 0 "F | ::^C '
+ 1 "F   ::^C '
+-1 "F   ::^C '
 
- 0 "f | @^A/!FAIL!/ ::^C '
- 1 "f   @^A/!FAIL!/ ::^C '
--1 "f   @^A/!FAIL!/ ::^C '
+ 0 "f | ::^C '
+ 1 "f   ::^C '
+-1 "f   ::^C '
 
 :@^A/!PASS!/
-
-^C

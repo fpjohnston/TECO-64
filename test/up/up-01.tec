@@ -133,7 +133,6 @@
 ^^} UB MA
 ^^~ UB MA
 
-QF "N :@^A/!FAIL!/ ::^C '
+QF "N ::^C '
 
 :@^A/!PASS!/
-^C^C

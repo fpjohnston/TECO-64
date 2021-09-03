@@ -53,10 +53,8 @@
 @^UA{ (16 >> 3) }      2 :MB        !! Right shift
 @^UA{ (3 >> 16) }      0 :MB        !! Right shift
 
-QF "E
-    :@^A/!PASS!/
-|
-    :@^A/!FAIL!/
+QF "N
+    ::^C
 '
 
-
+:@^A/!PASS!/
