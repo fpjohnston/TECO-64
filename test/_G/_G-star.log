@@ -1,9 +1,11 @@
-*!! TECO-64 test script: Re-type all input lines -- ^G*
+*!! TECO-64 test script: Re-type all input lines
+!! Commands: ^G*
 !! Expect: PASS [_G-star.log]
 iabc
 def
 ghi^G*
-*!! TECO-64 test script: Re-type all input lines -- ^G*
+*!! TECO-64 test script: Re-type all input lines
+!! Commands: ^G*
 !! Expect: PASS [_G-star.log]
 iabc
 def

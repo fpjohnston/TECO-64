@@ -107,7 +107,7 @@ sub open_dir
 
             if ( defined $abstract && defined $expect )
             {
-                test_file( $file, $commands, $abstract, $expect, $options );
+                test_file( $file, $abstract, $commands, $expect, $options );
             }
         }
 
@@ -169,8 +169,10 @@ sub read_header
         return ( undef, undef, undef, undef );
     }
 
-    if ( !defined $commands )
+    if ( $commands !~ s/!! \s+ Commands: \s+ (.+) \n /$1/msx )
     {
+        print "[$file] No commands found in test script\n";
+
         return ( undef, undef, undef, undef );
     }
 
@@ -201,6 +203,8 @@ sub test_file
 {
     my ( $file, $abstract, $commands, $expect, $options ) = @_;
     my $command;
+
+    chomp $commands;
 
     if ( $file =~ /.+[.]tec/msx )
     {
@@ -254,18 +258,18 @@ sub test_file
     # We expect the test to either pass or fail; if pass, then there may be
     # a file name that we will use to look for differences in the output.
 
-    if ( $expect =~ /^PASS/msx )
+    if ( $expect =~ /^PASS \s \[ (.+) \]/msx )
     {
         $expect = 'pass';
-
-        if ( $expect =~ / (PASS) \s \[ (.+) \] /msx )
-        {
-            $diff   = $2;
-        }
+        $diff = $1;
     }
     elsif ( $expect =~ / ([?][[:alpha:]]{3}) /msx )
     {
         $expect = $1;
+    }
+    elsif ( $expect eq 'PASS' )
+    {
+        $expect = 'pass';
     }
     else
     {
@@ -286,7 +290,7 @@ sub test_file
     #  PASS, diff. file     PASS, diff. file did not match
     #  TECO error           Expected TECO error
     #  TECO error           Got different TECO error, or no error
-    
+
     if ( $expect eq 'pass' )
     {
         if ( $output !~ /!PASS!/ms )

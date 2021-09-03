@@ -1,4 +1,5 @@
-*!! TECO-64 test script: Abort editing session and exit TECO -- ^C^C
+*!! TECO-64 test script: Abort editing session and exit TECO
+!! Commands: ^C^C
 !! Expect: PASS [_C_C.log]
 !PASS!
 ^C

@@ -1,4 +1,5 @@
-*!! TECO-64 test script: Delete input characters -- DEL
+*!! TECO-64 test script: Delete input characters
+!! Commands: DEL
 !! Expect: PASS [del.log]
 abc^G
 abc   def   
