@@ -45,6 +45,7 @@ enum ascii
     CTRL_H,
     BS      = CTRL_H,
     CTRL_I,
+    HT      = CTRL_I,
     TAB     = CTRL_I,
     CTRL_J,
     LF      = CTRL_J,

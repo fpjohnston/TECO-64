@@ -100,14 +100,14 @@ void echo_in(int c)
                 //lint -fallthrough
 
             case BS:
-            case TAB:
+            case HT:
             case CR:
                 tputc(c, true);
 
                 break;
 
             case VT:
-                for (uint i = 0; i < 4; ++i)
+                for (uint i = 0; i < VT_LINES; ++i)
                 {
                     tputc(CR, true);
                     tputc(LF, true);
@@ -116,7 +116,7 @@ void echo_in(int c)
                 break;
 
             case FF:
-                for (uint i = 0; i < 8; ++i)
+                for (uint i = 0; i < FF_LINES; ++i)
                 {
                     tputc(CR, true);
                     tputc(LF, true);
@@ -314,11 +314,7 @@ int tprint(
 
 static void tputc(int c, int input)
 {
-    if (isdelim(c))
-    {
-        term_pos = 0;
-    }
-    else if (c == CR)
+    if (isdelim(c) || c == CR)
     {
         term_pos = 0;
     }
@@ -395,8 +391,20 @@ void type_out(int c)
     }
     else if (iscntrl(c))                // ASCII character?
     {
+        int nspaces;
+
         switch (c)
         {
+            case HT:
+                nspaces = TAB_WIDTH - (term_pos % TAB_WIDTH);
+
+                for (int i = 0; i < nspaces; ++i)
+                {
+                    tputc(' ', false);
+                }
+
+                break;
+
             case LF:
                 if (!f.et.image && !f.e0.o_redir)
                 {
@@ -405,7 +413,6 @@ void type_out(int c)
                 //lint -fallthrough
 
             case BS:
-            case TAB:
             case VT:
             case FF:
             case CR:

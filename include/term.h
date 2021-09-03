@@ -31,6 +31,11 @@
 #include <stdbool.h>            //lint !e451
 #include <sys/types.h>          //lint !e451
 
+#define FF_LINES    8           ///< No. of horizontal lines for form feed
+
+#define VT_LINES    4           ///< No. of horizontal lines for vertical tab
+
+#define TAB_WIDTH   8           ///< Horizontal tab stop width
 
 extern const char *key_name;
 
@@ -52,6 +57,10 @@ extern void init_tbuf(void);
 
 extern void reset_tbuf(void);
 
+extern void rubout_chr(int c);
+
+extern void rubout_line(void);
+
 extern uint_t start_tbuf(void);
 
 extern void store_tbuf(int c);
@@ -71,6 +80,8 @@ extern void putc_key(int c);
 extern void read_cmd(void);
 
 extern void reset_term(void);
+
+extern void retype_line(uint_t pos);
 
 extern void type_out(int c);
 

@@ -86,18 +86,6 @@ static int read_nowait(void);
 
 static int read_wait(void);
 
-static void retype_line(uint_t pos);
-
-static void rubout_chr(int c);
-
-static void rubout_chrs(uint n);
-
-static bool rubout_CR(void);
-
-static bool rubout_LF(void);
-
-static void rubout_line(void);
-
 
 ///
 ///  @brief    Execute CTRL/U: delete to start of current line.
@@ -752,195 +740,14 @@ static int read_wait(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void retype_line(uint_t pos)
+void retype_line(uint_t pos)
 {
-    if (pos == 0)
-    {
-        term_pos = 0;
+    term_pos = 0;
 
-        print_prompt();
+    if (pos == 0)                       // At start of terminal buffer?
+    {
+        print_prompt();                 // Yes, output prompt first
     }
 
     echo_tbuf(pos);
 }
-
-
-///
-///  @brief    Rubout single echoed character.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void rubout_chr(int c)
-{
-    // Echoed input is normally only a single character, but control characters
-    // may require more (or fewer) RUBOUTs.
-
-    uint n = 1;
-
-#if     defined(DISPLAY_MODE)
-
-    if (f.e0.display)
-    {
-        n = (uint)strlen(unctrl((uint)c));
-    }
-    else
-
-#endif
-
-    if (iscntrl(c))
-    {
-        switch (c)
-        {
-            case LF:
-                if (rubout_LF())
-                {
-                    return;
-                }
-
-                break;
-
-            case CR:
-                if (rubout_CR())
-                {
-                    return;
-                }
-
-                break;
-
-            case BS:
-            case TAB:
-            case VT:
-            case FF:
-            case ESC:
-                break;
-
-            case DEL:                   // DEL doesn't echo
-                return;
-
-            default:                    // Generic control sequence
-                ++n;
-
-                break;
-        }
-    }
-    else if (!isascii(c))
-    {
-        n += 3;                         // 8-bit chrs. are printed as [xx]
-    }
-
-    rubout_chrs(n);
-}
-
-
-///
-///  @brief    Rubout carriage return.
-///
-///  @returns  true if rubout required special handling, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static bool rubout_CR(void)
-{
-    if (!f.et.rubout)
-    {
-        return false;
-    }
-    else if (!f.e0.display)
-    {
-        if (f.e3.icrlf)
-        {
-            tprint("%c[K", ESC);        // Clear to end of line
-            retype_line(start_tbuf());  // Retype current line
-        }
-
-        return true;
-    }
-    else
-    {
-        return false;                   // TODO: add handling for ncurses
-    }
-}
-
-
-///
-///  @brief    Rubout line feed.
-///
-///  @returns  true if rubout required special handling, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static bool rubout_LF(void)
-{
-    if (!f.et.rubout)
-    {
-        return false;
-    }
-    else if (!f.e0.display)
-    {
-        tprint("%c[F", ESC);            // Move up 1 line
-
-        if (!f.e3.icrlf)
-        {
-            tprint("%c[K", ESC);        // Clear to end of line
-            retype_line(start_tbuf());  // Retype current line
-
-            return true;
-        }
-
-        return true;
-    }
-    else
-    {
-        return false;                   // TODO: add handling for ncurses
-    }
-}
-
-
-///
-///  @brief    Rubout multiple echoed characters.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void rubout_chrs(uint n)
-{
-    while (n-- > 0)
-    {
-        echo_in(BS);
-        echo_in(SPACE);
-        echo_in(BS);
-    }
-}
-
-
-///
-///  @brief    Rubout entire line (including the prompt).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void rubout_line(void)
-{
-    int c;
-
-    while ((c = delete_tbuf()) != EOF)
-    {
-        if (isdelim(c))                 // Delimiter for previous line?
-        {
-            store_tbuf(c);              // Yes, put it back
-
-            break;
-        }
-
-        rubout_chr(c);
-    }
-
-    uint n = (uint)strlen(teco_prompt);
-
-    rubout_chrs(n);
-}
-
