@@ -43,6 +43,7 @@ code.
 | <nobr>?DPY</nobr> | <nobr>Display mode error</nobr> | Display mode support is either missing or disabled. |
 | <nobr>?DTB</nobr> | <nobr>Delete too big</nobr> | A D command attempted to delete text outside the current page. |
 | <nobr>?DUP</nobr> | <nobr>Duplicate tag '!*foo*!'</nobr> | An O command found a duplicate tag within the command string. |
+| <nobr>?ERR</nobr> | <nobr>*foo*</nobr> | A system call failed. The error message text explains the error. |
 | <nobr>?EXT</nobr> | <nobr>Extended feature not enabled</nobr> | A command attempted to use an extended feature which is not currently enabled. |
 | <nobr>?FIL</nobr> | <nobr>Invalid file '*foo*'</nobr> | An attempt was made to open a directory, FIFO, socket, or similar file specification instead of a regular file. |
 | <nobr>?FNF</nobr> | <nobr>File not found '*foo*'</nobr> | The requested input file could not be located. If this occurred within a macro, the colon-modified command may be necessary. |
@@ -95,7 +96,6 @@ code.
 | <nobr>?POP</nobr> | <nobr>Attempt to move pointer off page with '*x*'</nobr> | A J, C or R command has been executed which attempted to move the pointer off the page. The result of executing one of these commands must leave the pointer between 0 and Z, The characters referenced by a D or nA command must also be within the buffer limits. |
 | <nobr>?SNI</nobr> | <nobr>Semi-colon not in iteration</nobr> | A ; command has been executed outside of a loop. |
 | <nobr>?SRH</nobr> | <nobr>Search failure: '*foo*'</nobr> | A search command not preceded by a colon modifier and not within an iteration has failed to find the specified " command. After an S search fails the pointer is left at the beginning of the buffer. After an N or _ search fails the last page of the input file has been input and, in the case of N, output, and the buffer is cleared. In the case of an N search it is usually necessary to close the output file and reopen it. |
-| <nobr>?SYS</nobr> | <nobr>System error: '*foo*'</nobr> | A system call failed. The error message text explains the error. |
 | <nobr>?TAG</nobr> | <nobr>Missing tag: '!*foo*!'</nobr> | The tag specified by an O command cannot be found. This tag must be in the same macro level as the O command referencing it. |
 | <nobr>?TXT</nobr> | <nobr>Invalid text delimiter '*x*'</nobr> | Text delimiters must be graphic ASCII characters in the range of [33,126], or control characters in the range of [1,26]. Characters such as spaces or ESCapes may not be used for delimiters. |
 | <nobr>?UTC</nobr> | <nobr>Unterminated command string</nobr> | This is a general error which is usually caused by an unterminated insert, search, or filename argument, an unterminated ^A message, an unterminated tag or comment (i.e., unterminated ! construct), or a missing ' character which closes a conditional execution command. |
