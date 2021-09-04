@@ -81,6 +81,8 @@ INCLUDES = -I ../$(INCDIR)
 
 VPATH=src:obj:$(INCDIR)
 
+DOXYGEN = "DOXYGEN"
+
 LIBS =
 
 SOURCES = \

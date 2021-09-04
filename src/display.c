@@ -133,7 +133,7 @@ static struct display d =
 /// @def    check_error(truth)
 /// @brief  Wrapper to force Boolean value for check_error() parameter.
 
-#if     !defined(DOXYGEN_SHOULD_SKIP_THIS)
+#if     !defined(DOXYGEN)
 
 #define check_error(truth) (check_error)((bool)(truth))
 
@@ -175,7 +175,11 @@ static void update_status(void);
 
 #if     defined(DISPLAY_MODE)
 
+#if     defined(DOXYGEN)
+static void check_error(bool truth)
+#else
 static void (check_error)(bool truth)
+#endif
 {
     if (truth)
     {
