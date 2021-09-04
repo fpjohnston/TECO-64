@@ -32,7 +32,7 @@ code.
 | ----- | ------------------ | ----------- |
 | <nobr>?ARG</nobr> | <nobr>Improper arguments</nobr> | Three or more numeric arguments are given (e.g., 1,2,3D or H,cT). |
 | <nobr>?ATS</nobr> | <nobr>Invalid or extraneous at-sign</nobr> | At sign not allowed for command, or more than one at sign specififed. |
-| <nobr>?BAT</nobr> | <nobr>Bad tag '!*foo*!'</nobr> | An O command was specified with an invalid tag. Tags may only contain graphic ASCII characters (excluding commas which are reserved for computed GOTOs). Leading and trailing spaces are ignored, but embedded spaces are not allowed. |
+| <nobr>?BAT</nobr> | <nobr>Bad tag '!foo!'</nobr> | An O command was specified with an invalid tag. Tags may only contain graphic ASCII characters (excluding commas which are reserved for computed GOTOs). Leading and trailing spaces are ignored, but embedded spaces are not allowed. |
 | <nobr>?BNI</nobr> | <nobr>Right angle bracket not in iteration</nobr> | A right angle bracket was not matched by a left angle bracket (Note: a loop in a Q-register macro must be complete within the macro.) |
 | <nobr>?CFG</nobr> | <nobr>Command not configured</nobr> | A command was input that has not been configured. Modify makefile to include this command, and then rebuild TECO. |
 | <nobr>?CHR</nobr> | <nobr>Invalid character for command</nobr> | The numeric argument to an EE command was not an ASCII character. |
@@ -42,11 +42,11 @@ code.
 | <nobr>?DIV</nobr> | <nobr>Division by zero</nobr> | An expression tried to divide a number by zero. |
 | <nobr>?DPY</nobr> | <nobr>Display mode error</nobr> | Display mode support is either missing or disabled. |
 | <nobr>?DTB</nobr> | <nobr>Delete too big</nobr> | A D command attempted to delete text outside the current page. |
-| <nobr>?DUP</nobr> | <nobr>Duplicate tag '!*foo*!'</nobr> | An O command found a duplicate tag within the command string. |
-| <nobr>?ERR</nobr> | <nobr>*foo*</nobr> | A system call failed. The error message text explains the error. |
+| <nobr>?DUP</nobr> | <nobr>Duplicate tag '!foo!'</nobr> | An O command found a duplicate tag within the command string. |
+| <nobr>?ERR</nobr> | <nobr>(error message)</nobr> | A system call failed. The error message text explains the error. |
 | <nobr>?EXT</nobr> | <nobr>Extended feature not enabled</nobr> | A command attempted to use an extended feature which is not currently enabled. |
-| <nobr>?FIL</nobr> | <nobr>Invalid file '*foo*'</nobr> | An attempt was made to open a directory, FIFO, socket, or similar file specification instead of a regular file. |
-| <nobr>?FNF</nobr> | <nobr>File not found '*foo*'</nobr> | The requested input file could not be located. If this occurred within a macro, the colon-modified command may be necessary. |
+| <nobr>?FIL</nobr> | <nobr>Invalid file 'foo'</nobr> | An attempt was made to open a directory, FIFO, socket, or similar file specification instead of a regular file. |
+| <nobr>?FNF</nobr> | <nobr>File not found 'foo'</nobr> | The requested input file could not be located. If this occurred within a macro, the colon-modified command may be necessary. |
 | <nobr>?ICE</nobr> | <nobr>Invalid ^E command in search argument</nobr> | A search argument contains a ^E command that is either not defined or incomplete. |
 | <nobr>?IE1</nobr> | <nobr>Invalid E1 command</nobr> | An invalid E1 command has been executed. The E1&32 flag bit may not be set while executing an old-style EI command, and may not be reset while executing a new-style EI command. |
 | <nobr>?IEC</nobr> | <nobr>Invalid character '*x*' after E</nobr> | An invalid E command has been executed. |
@@ -64,8 +64,8 @@ code.
 | <nobr>?ISA</nobr> | <nobr>Invalid search argument</nobr> | The argument preceding a search command is 0. This argument must not be 0. |
 | <nobr>?ISS</nobr> | <nobr>Invalid search string</nobr> | One of the search string special characters (^Q, ^V, ^W, etc.) would have modified the search string delimiter (usually <ESC>). |
 | <nobr>?IUC</nobr> | <nobr>Invalid character '*x*' following ^</nobr> | The character following a ^ must have an ASCII value between 64 and 95 inclusive, or between 141 and 172 inclusive. |
-| <nobr>?KEY</nobr> | <nobr>Key '*foo*' not found</nobr> | An invalid key was specified for an FM command. |
-| <nobr>?LOC</nobr> | <nobr>Invalid location for tag '!*foo*!'</nobr> | An O command cannot jump to a location inside a loop, other than the one the O command may be in, or inside a conditional. |
+| <nobr>?KEY</nobr> | <nobr>Key 'foo' not found</nobr> | An invalid key was specified for an FM command. |
+| <nobr>?LOC</nobr> | <nobr>Invalid location for tag '!foo!'</nobr> | An O command cannot jump to a location inside a loop, other than the one the O command may be in, or inside a conditional. |
 | <nobr>?MAP</nobr> | <nobr>Missing apostrophe</nobr> | Every conditional (started with the " command) must be closed with the ' command. |
 | <nobr>?MAT</nobr> | <nobr>No matching files</nobr> | No match was found for the file specification for an EN command. |
 | <nobr>?MAX</nobr> | <nobr>Internal program limit reached</nobr> | Loops and conditionals are limited to a maximum of 32 levels, macros are limited to a depth of 64 levels, and file names are limited to 4095 characters. |
@@ -95,8 +95,8 @@ code.
 | <nobr>?PDO</nobr> | <nobr>Push-down list overflow</nobr> | The command string has become too complex. Simplify it. |
 | <nobr>?POP</nobr> | <nobr>Attempt to move pointer off page with '*x*'</nobr> | A J, C or R command has been executed which attempted to move the pointer off the page. The result of executing one of these commands must leave the pointer between 0 and Z, The characters referenced by a D or nA command must also be within the buffer limits. |
 | <nobr>?SNI</nobr> | <nobr>Semi-colon not in iteration</nobr> | A ; command has been executed outside of a loop. |
-| <nobr>?SRH</nobr> | <nobr>Search failure: '*foo*'</nobr> | A search command not preceded by a colon modifier and not within an iteration has failed to find the specified " command. After an S search fails the pointer is left at the beginning of the buffer. After an N or _ search fails the last page of the input file has been input and, in the case of N, output, and the buffer is cleared. In the case of an N search it is usually necessary to close the output file and reopen it. |
-| <nobr>?TAG</nobr> | <nobr>Missing tag: '!*foo*!'</nobr> | The tag specified by an O command cannot be found. This tag must be in the same macro level as the O command referencing it. |
+| <nobr>?SRH</nobr> | <nobr>Search failure: 'foo'</nobr> | A search command not preceded by a colon modifier and not within an iteration has failed to find the specified " command. After an S search fails the pointer is left at the beginning of the buffer. After an N or _ search fails the last page of the input file has been input and, in the case of N, output, and the buffer is cleared. In the case of an N search it is usually necessary to close the output file and reopen it. |
+| <nobr>?TAG</nobr> | <nobr>Missing tag: '!foo!'</nobr> | The tag specified by an O command cannot be found. This tag must be in the same macro level as the O command referencing it. |
 | <nobr>?TXT</nobr> | <nobr>Invalid text delimiter '*x*'</nobr> | Text delimiters must be graphic ASCII characters in the range of [33,126], or control characters in the range of [1,26]. Characters such as spaces or ESCapes may not be used for delimiters. |
 | <nobr>?UTC</nobr> | <nobr>Unterminated command string</nobr> | This is a general error which is usually caused by an unterminated insert, search, or filename argument, an unterminated ^A message, an unterminated tag or comment (i.e., unterminated ! construct), or a missing ' character which closes a conditional execution command. |
 | <nobr>?UTM</nobr> | <nobr>Unterminated macro</nobr> | This error is that same as the ?UTC error except that the unterminated command was executing from a Q-register (i.e., it was a macro). (Note: An entire command sequence stored in a Q-register must be complete within the Q-register.) |

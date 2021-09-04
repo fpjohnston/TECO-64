@@ -218,8 +218,16 @@ sub make_errors_md
     {
         my $message = $errors{$code}{message};
 
-        $message =~ s/%s/*foo*/msxg;
-        $message =~ s/%c/*x*/msxg;
+        if ($code eq 'ERR')
+        {
+            $message =~ s/%s/(error message)/gmsx;
+        }
+        else
+        {
+            $message =~ s/%s/foo/gmsx;
+        }
+
+        $message =~ s/%c/*x*/gmsx;
 
         my @details = @{ $errors{$code}{details} };
         my $details = join q{ }, @details;
