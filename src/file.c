@@ -303,7 +303,7 @@ bool open_command(const char *name, uint stream, bool colon, tbuffer *text)
     {
         close_input(stream);
 
-        throw(E_SYS, last_file);        // Unexpected system error
+        throw(E_ERR, last_file);        // General error
     }
 
     size_t size = (size_t)file_stat.st_size;
@@ -318,7 +318,7 @@ bool open_command(const char *name, uint stream, bool colon, tbuffer *text)
         {
             close_input(stream);
 
-            throw(E_SYS, ifile->name);  // Unexpected system error
+            throw(E_ERR, ifile->name);  // General error
         }
 
         text->pos  = 0;
@@ -381,7 +381,7 @@ struct ifile *open_input(const char *name, uint stream, bool colon)
     {
         errno = EPERM;
 
-        throw(E_SYS, name);             // System error
+        throw(E_ERR, name);             // General error
     }
 
     struct ifile *ifile = &ifiles[stream];
@@ -390,7 +390,7 @@ struct ifile *open_input(const char *name, uint stream, bool colon)
 
     if ((ifile->fp = fopen(name, "r")) == NULL)
     {
-        throw(E_SYS, name);             // Unexpected system error
+        throw(E_ERR, name);             // General error
     }
 
     ifile->size = (uint_t)file_stat.st_size;
@@ -441,7 +441,7 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
     }
     else if (access(name, W_OK) != 0)   // File exists - is it writeable?
     {
-        throw(E_SYS, name);             // Unexpected system error
+        throw(E_ERR, name);             // General error
     }
     else
     {
@@ -467,7 +467,7 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
             return NULL;
         }
 
-        throw(E_SYS, name);             // Unexpected system error
+        throw(E_ERR, name);             // General error
     }
 
     // Here when we've either just opened a new file that didn't previously

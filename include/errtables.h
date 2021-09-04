@@ -55,6 +55,7 @@ static struct errlist errlist[] =
     [E_DPY] = { "DPY",  "Display mode error" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
+    [E_ERR] = { "ERR",  "%s" },
     [E_EXT] = { "EXT",  "Extended feature not enabled" },
     [E_FIL] = { "FIL",  "Invalid file '%s'" },
     [E_FNF] = { "FNF",  "File not found '%s'" },
@@ -107,7 +108,6 @@ static struct errlist errlist[] =
     [E_POP] = { "POP",  "Attempt to move pointer off page with '%s'" },
     [E_SNI] = { "SNI",  "Semi-colon not in iteration" },
     [E_SRH] = { "SRH",  "Search failure: '%s'" },
-    [E_SYS] = { "SYS",  "System error: '%s'" },
     [E_TAG] = { "TAG",  "Missing tag: '!%s!'" },
     [E_TXT] = { "TXT",  "Invalid text delimiter '%s'" },
     [E_UTC] = { "UTC",  "Unterminated command string" },
@@ -152,6 +152,8 @@ static const char *errhelp[] =
               "the current page.",
     [E_DUP] = "An O command found a duplicate tag within the "
               "command string.",
+    [E_ERR] = "A system call failed. The error message text "
+              "explains the error.",
     [E_EXT] = "A command attempted to use an extended feature "
               "which is not currently enabled.",
     [E_FIL] = "An attempt was made to open a directory, FIFO, "
@@ -293,8 +295,6 @@ static const char *errhelp[] =
               "buffer is cleared. In the case of an N "
               "search it is usually necessary to close "
               "the output file and reopen it.",
-    [E_SYS] = "A system call failed. The error message "
-              "text explains the error.",
     [E_TAG] = "The tag specified by an O command cannot "
               "be found. This tag must be in the same macro "
               "level as the O command referencing it.",

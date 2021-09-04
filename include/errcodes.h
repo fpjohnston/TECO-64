@@ -51,6 +51,7 @@ enum errcodes
     E_DPY,          ///< Display mode error
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag '!foo!'
+    E_ERR,          ///< (error message)
     E_EXT,          ///< Extended feature not enabled
     E_FIL,          ///< Invalid file 'foo'
     E_FNF,          ///< File not found 'foo'
@@ -103,7 +104,6 @@ enum errcodes
     E_POP,          ///< Attempt to move pointer off page with 'x'
     E_SNI,          ///< Semi-colon not in iteration
     E_SRH,          ///< Search failure: 'foo'
-    E_SYS,          ///< System error: 'foo'
     E_TAG,          ///< Missing tag: '!foo!'
     E_TXT,          ///< Invalid text delimiter 'x'
     E_UTC,          ///< Unterminated command string

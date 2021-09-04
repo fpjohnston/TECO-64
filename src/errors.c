@@ -211,7 +211,7 @@ static void print_error(int error, const char *err_str, const char *file_str)
         tprint("   ");
         tprint(text, err_str ?: "");
 
-        if (error == E_SYS && file_str != NULL)
+        if (error == E_ERR && file_str != NULL)
         {
             tprint(" for '%s'", file_str);
         }
@@ -313,7 +313,7 @@ void print_verbose(int error)
 ///               character, it is output as [xx]; if it is a control character,
 ///               it is output as ^x.
 ///
-///            3. The E_SYS error code, which includes a string that contains
+///            3. The E_ERR error code, which includes a string that contains
 ///               the name of a file (or which is NULL) that is appended after
 ///               the error message.
 ///
@@ -357,7 +357,7 @@ noreturn void throw(int error, ...)
 
             break;
 
-        case E_SYS:
+        case E_ERR:
             err_str = strerror(errno);  // Convert errno to string
             file_str = va_arg(args, const char *);
 

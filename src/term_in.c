@@ -719,7 +719,7 @@ static int read_wait(void)
     {
         f.e0.ctrl_c = false;            // No, so reset system flag
 
-        throw(E_SYS, NULL);             // Unexpected system call
+        throw(E_ERR, NULL);             // General error
     }
     else if (f.et.ctrl_c)               // Trapping CTRL/C?
     {

@@ -84,7 +84,7 @@ void exec_EZ(struct cmd *cmd)
             return;
         }
 
-        throw(E_SYS, syscmd);           // Unexpected system error
+        throw(E_ERR, syscmd);           // General error
     }
 
     ez.len = EZ_SIZE;
@@ -112,7 +112,7 @@ void exec_EZ(struct cmd *cmd)
             return;
         }
 
-        throw(E_SYS, syscmd);           // Unexpected system error
+        throw(E_ERR, syscmd);           // General error
     }
 
     ez.len = pos;                       // Length = total bytes read

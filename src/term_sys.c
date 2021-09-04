@@ -104,7 +104,7 @@ static void getsize(void)
     }
     else if (ioctl(fileno(stdin), (ulong)TIOCGWINSZ, &ts) == -1)
     {
-        throw(E_SYS, NULL);             // Unexpected system error
+        throw(E_ERR, NULL);             // General error
     }
     else
     {

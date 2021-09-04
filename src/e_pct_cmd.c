@@ -76,7 +76,7 @@ void exec_E_pct(struct cmd *cmd)
 
                 if (fwrite(qreg->text.data, 1uL, size, ofile->fp) != size)
                 {
-                    throw(E_SYS, ofile->name); // Unexpected system error
+                    throw(E_ERR, ofile->name); // General error
                 }
             }
 

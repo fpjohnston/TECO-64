@@ -173,7 +173,15 @@ sub make_errcodes_h
     {
         my $message = $errors{$code}{message};
 
-        $message =~ s/%s/foo/gmsx;
+        if ($code eq 'ERR')
+        {
+            $message =~ s/%s/(error message)/gmsx;
+        }
+        else
+        {
+            $message =~ s/%s/foo/gmsx;
+        }
+
         $message =~ s/%c/x/gmsx;
 
         $errcodes .= sprintf "    E_%s,          ///< %s\n", $code, $message;

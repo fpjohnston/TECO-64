@@ -1,0 +1,7 @@
+!! TECO-64 test script: Test ERR error
+!! Commands: ?ERR
+!! Expect: ?ERR [ERR.log]
+
+@^UA{/dev/foo}  !! Name of output file
+
+@EW/^EQA/       !! Open file for writing

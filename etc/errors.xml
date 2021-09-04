@@ -83,6 +83,12 @@
             <detail>command string.</detail>
         </error>
         <error>
+            <code>ERR</code>
+            <message>%s</message>
+            <detail>A system call failed. The error message text</detail>
+            <detail>explains the error.</detail>
+        </error>
+        <error>
             <code>EXT</code>
             <message>Extended feature not enabled</message>
             <detail>A command attempted to use an extended feature</detail>
@@ -430,12 +436,6 @@
             <detail>buffer is cleared. In the case of an N</detail>
             <detail>search it is usually necessary to close</detail>
             <detail>the output file and reopen it.</detail>
-        </error>
-        <error>
-            <code>SYS</code>
-            <message>System error: &apos;%s&apos;</message>
-            <detail>A system call failed. The error message</detail>
-            <detail>text explains the error.</detail>
         </error>
         <error>
             <code>TAG</code>

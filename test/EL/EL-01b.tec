@@ -1,6 +1,6 @@
 !! TECO-64 test script: Open log file
 !! Commands: EL
-!! Expect: ?SYS
+!! Expect: ?ERR
 
 @^UA{/dev/teco.log}     !! Load output file name
 

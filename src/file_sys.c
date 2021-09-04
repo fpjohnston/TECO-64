@@ -187,7 +187,7 @@ int get_wild(void)
             {
                 next_file = NULL;       // Make sure we can't repeat this
 
-                throw(E_SYS, filename);// Unexpected system error
+                throw(E_ERR, filename); // General error
             }
 
             if (S_ISREG(file_stat.st_mode))
@@ -234,7 +234,7 @@ FILE *open_temp(const char *oname, uint stream)
 
     if (stat(oname, &statbuf) != 0)
     {
-        throw(E_SYS, oname);            // Unexpected system error
+        throw(E_ERR, oname);            // General error
     }
 
     char dir[strlen(oname) + 1];
@@ -248,7 +248,7 @@ FILE *open_temp(const char *oname, uint stream)
 
     if (fd == -1)
     {
-        throw(E_SYS, tempfile);         // Unexpected system error
+        throw(E_ERR, tempfile);         // General error
     }
 
     (void)fchmod(fd, statbuf.st_mode);  // Use same permissions as old file
@@ -390,19 +390,19 @@ void rename_output(struct ofile *ofile)
 
         if (rename(ofile->name, saved_name) != 0)
         {
-            throw(E_SYS, ofile->name);  // Unexpected system error
+            throw(E_ERR, ofile->name);  // General error
         }
     }
     else if (remove(ofile->name) != 0)
     {
-        throw(E_SYS, ofile->name);      // Unexpected system error
+        throw(E_ERR, ofile->name);      // General error
     }
 
     // Rename temp. file name to actual name
 
     if (rename(ofile->temp, ofile->name) != 0)
     {
-        throw(E_SYS, ofile->name);      // Unexpected system error
+        throw(E_ERR, ofile->name);      // General error
     }
 }
 
@@ -442,7 +442,7 @@ bool set_wild(const char *filename)
             return false;               // No matches
 
         default:                        // Something unexpected
-            throw(E_SYS, filename);// Unexpected system error
+            throw(E_ERR, filename);// General error
     }
 }
 
