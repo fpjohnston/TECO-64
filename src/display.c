@@ -133,7 +133,11 @@ static struct display d =
 /// @def    check_error(truth)
 /// @brief  Wrapper to force Boolean value for check_error() parameter.
 
+#if     !defined(DOXYGEN_SHOULD_SKIP_THIS)
+
 #define check_error(truth) (check_error)((bool)(truth))
+
+#endif
 
 // Local functions
 
