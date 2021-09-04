@@ -206,7 +206,7 @@ static bool rubout_FF(void)
     }
     else if (!f.e0.display)
     {
-        tprint("\e[%uF", FF_LINES);     // Move up 8 lines
+        tprint("\e[%dF", FF_LINES);     // Move up 8 lines
         retype_line(start_tbuf());      // Retype current line
 
         return true;
@@ -323,7 +323,7 @@ static bool rubout_VT(void)
     }
     else if (!f.e0.display)
     {
-        tprint("\e[%uF", VT_LINES);     // Move up 4 lines
+        tprint("\e[%dF", VT_LINES);     // Move up 4 lines
         retype_line(start_tbuf());      // Retype current line
 
         return true;
