@@ -578,6 +578,11 @@ static int read_first(void)
                 break;
 
             case CTRL_K:
+                if (!f.e0.display)
+                {
+                    return c;
+                }
+
                 reset_colors();
                 //lint -fallthrough
 
