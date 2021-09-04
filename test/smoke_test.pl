@@ -244,14 +244,8 @@ sub test_file
     chomp $output;
 
     my $detail;
-
-    if ( $output =~ / ([?][[:alpha:]]{3}) \s (.+) /msx )
-    {
-        $output = $1;
-        $detail = $2;
-    }
-
     my $diff;
+    my $expected;
 
     # We expect the test to either pass or fail; if pass, then there may be
     # a file name that we will use to look for differences in the output.
@@ -261,19 +255,31 @@ sub test_file
         $expect = 'pass';
         $diff = $1;
     }
-    elsif ( $expect =~ / ([?][[:alpha:]]{3}) /msx )
-    {
-        $expect = $1;
-    }
     elsif ( $expect eq 'PASS' )
     {
         $expect = 'pass';
+    }
+    elsif ( $expect =~ / ([?][[:alpha:]]{3}) \s \[ (.+) \]/msx )
+    {
+        $expect = $1;
+        $diff = $2;
+    }
+    elsif ( $expect =~ / ([?][[:alpha:]]{3}) /msx )
+    {
+        $expect = $1;
     }
     else
     {
         print "$file: Invalid expectations\n";
 
         return;
+    }
+
+    if ( defined $diff)
+    {
+        $expected = read_file($diff);
+
+        chomp $expected;
     }
 
     my $report = sprintf '%17s %-45s %-15s', "[$file]", $abstract,
@@ -293,36 +299,57 @@ sub test_file
 
     if ( $expect eq 'pass' )
     {
+        # Here if test should succeed
+
         if ( $output !~ /!PASS!/ms )
         {
-            printf "%s %s -> %s\n", $report, $expect, $output;
+            # Say error occurred, but only print first word in output
 
-            return;
-        }
-        elsif ( defined $diff )
-        {
-            my $expected = read_file($diff);
+            my $len = index($output, " ");
 
-            chomp $expected;
-
-            if ( $expected ne $output )
+            if ($len == -1)
             {
-                printf "%s %s -> %s\n", $report, $expect, $output;
-
-                return;
+                $len = length $output;
             }
+
+            printf "%s %s -> %s\n", $report, $expect,
+                substr($output, 0, $len);
+        }
+        elsif ( defined $diff && $expected ne $output )
+        {
+            printf "%s %s -> DIFF\n", $report, $expect;
+        }
+        elsif ($okay)
+        {
+            printf "%s %s -> OK\n", $report, $expect;
         }
     }
-    elsif ( $expect ne $output )
+    else
     {
-        printf "%s %s -> %s\n", $report, $expect, $output;
+        # Here if test failed or should fail
 
-        return;
-    }
+        if ( index($output, $expect) == -1 )
+        {
+            # Say error occurred, but only print first word in output
 
-    if ($okay)
-    {
-        printf "%s %s -> OK\n", $report, $expect;
+            my $len = index($output, " ");
+
+            if ($len == -1)
+            {
+                $len = length $output;
+            }
+
+            printf "%s %s -> %s\n", $report, $expect,
+                substr($output, 0, $len);
+        }
+        elsif ( defined $diff && $expected ne $output )
+        {
+            printf "%s %s -> DIFF\n", $report, $expect;
+        }
+        elsif ($okay)
+        {
+            printf "%s %s -> OK\n", $report, $expect;
+        }
     }
 
     return;

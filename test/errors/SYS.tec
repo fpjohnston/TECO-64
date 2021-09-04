@@ -1,0 +1,7 @@
+!! TECO-64 test script: Test SYS error
+!! Commands: ?SYS
+!! Expect: ?SYS [SYS.log]
+
+@^UA{/dev/foo}  !! Name of output file
+
+@EW/^EQA/       !! Open file for writing
