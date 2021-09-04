@@ -391,7 +391,7 @@ bin/$(TARGET): $(OBJECTS) bin
 	@echo Making $(@F) $(NULL)
 	$(AT)cd obj && $(CC) $(DFLAGS) -o ../$@ $(OBJECTS) $(LIBS)
 
-%.lob: %.c
+%.lob: %.c obj
 	@echo Making $@ $(NULL)
 	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
 
@@ -429,7 +429,7 @@ clean: mostlyclean
 	-$(AT)cd bin && rm -f $(TARGET) $(TARGET).map $(NULL2)
 
 .PHONY: distclean
-distclean: mostlyclean clean
+distclean: obj bin mostlyclean clean
 	-$(AT)rm -f obj/CFLAGS obj/Doxyfile $(NULL2) 
 	-$(AT)rm -rf html $(NULL2) 
 	-$(AT)cd src && rm -f *.bak $(NULL2)
@@ -453,10 +453,10 @@ $(ERRORS_MD): etc/errors.xml etc/templates/errors.md etc/errors.pl
 	$(AT)etc/errors.pl -i $< -t etc/templates/errors.md -o $@
 
 .PHONY: lobs
-lobs: $(OPTIONS_H) $(LOBS)
+lobs: obj $(OPTIONS_H) $(LOBS)
 
 .PHONY: lint
-lint: $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) $(LOBS)
+lint: obj $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) $(LOBS)
 	@echo Linting object files $(NULL)
 	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
 
