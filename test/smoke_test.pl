@@ -251,8 +251,6 @@ sub test_file
         $detail = $2;
     }
 
-    ++$ntests;
-
     my $diff;
 
     # We expect the test to either pass or fail; if pass, then there may be
@@ -291,11 +289,15 @@ sub test_file
     #  TECO error           Expected TECO error
     #  TECO error           Got different TECO error, or no error
 
+    ++$ntests;
+
     if ( $expect eq 'pass' )
     {
         if ( $output !~ /!PASS!/ms )
         {
             printf "%s %s -> %s\n", $report, $expect, $output;
+
+            return;
         }
         elsif ( defined $diff )
         {
@@ -306,23 +308,23 @@ sub test_file
             if ( $expected ne $output )
             {
                 printf "%s %s -> %s\n", $report, $expect, $output;
+
+                return;
             }
-        }
-        elsif ($okay)
-        {
-            printf "%s %s -> OK\n", $report, $expect;
         }
     }
     elsif ( $expect ne $output )
     {
-        print "output = $output\n";
         printf "%s %s -> %s\n", $report, $expect, $output;
+
+        return;
     }
-    elsif ($okay)
+
+    if ($okay)
     {
         printf "%s %s -> OK\n", $report, $expect;
     }
-        
+
     return;
 }
 
