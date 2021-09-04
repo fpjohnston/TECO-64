@@ -430,6 +430,13 @@ obj/CFLAGS: obj
 clean: mostlyclean
 	-$(AT)cd bin && rm -f $(TARGET) $(TARGET).map $(NULL2)
 
+.PHONY: critic
+critic:
+	$(AT)perlcritic etc/commands.pl
+	$(AT)perlcritic etc/errors.pl
+	$(AT)perlcritic etc/options.pl
+	$(AT)perlcritic test/smoke_test.pl
+
 .PHONY: distclean
 distclean: obj bin mostlyclean clean
 	-$(AT)rm -f obj/CFLAGS obj/Doxyfile $(NULL2) 
