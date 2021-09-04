@@ -85,6 +85,102 @@ printf "$ntests test script%s executed\n", $ntests == 1 ? q{} : 's';
 
 exit;
 
+sub check_results
+{
+    my ( $file, $abstract, $commands, $expect, $output ) = @_;
+
+    chomp $commands;
+
+    my $diff;
+    my $expected;
+
+    # We expect the test to either pass or fail; if pass, then there may be
+    # a file name that we will use to look for differences in the output.
+
+    if ( $expect =~ / ^PASS (\s \[ (.+) \])? /msx )
+    {
+        $expect = 'pass';
+        $diff   = $3;
+    }
+    elsif ( $expect =~ /^ ([?][[:alpha:]]{3}) (\s \[ (.+) \])? /msx )
+    {
+        $expect = $1;
+        $diff   = $3;
+    }
+    else
+    {
+        print "$file: Invalid expectations\n";
+
+        return;
+    }
+
+    if ( defined $diff )
+    {
+        $expected = read_file($diff);
+
+        chomp $expected;
+    }
+
+    my $report = sprintf '%17s %-45s %-15s', "[$file]", $abstract, $commands;
+
+    ++$ntests;
+
+    if ( $expect eq 'pass' )
+    {
+        # Here if test should succeed
+
+        if ( $output !~ /!PASS!/ms )
+        {
+            # Say error occurred, but only print first word in output
+
+            my $len = index $output, q{ };
+
+            if ( $len < 0 )
+            {
+                $len = length $output;
+            }
+
+            printf "%s %s -> %s\n", $report, $expect, substr $output, 0, $len;
+        }
+        elsif ( defined $diff && $expected ne $output )
+        {
+            printf "%s %s -> DIFF\n", $report, $expect;
+        }
+        elsif ($okay)
+        {
+            printf "%s %s -> OK\n", $report, $expect;
+        }
+    }
+    else
+    {
+        # Here if test failed or should fail
+
+        if ( index( $output, $expect ) < 0 )
+        {
+            # Say error occurred, but only print first word in output
+
+            my $len = index $output, q{ };
+
+            if ( $len < 0 )
+            {
+                $len = length $output;
+            }
+
+            printf "%s %s -> %s\n", $report, $expect, substr $output, 0, $len;
+        }
+        elsif ( defined $diff && $expected ne $output )
+        {
+            printf "%s %s -> DIFF\n", $report, $expect;
+        }
+        elsif ($okay)
+        {
+            printf "%s %s -> OK\n", $report, $expect;
+        }
+    }
+
+    return;
+}
+
 sub open_dir
 {
     my ($filespec) = @_;
@@ -103,11 +199,14 @@ sub open_dir
 
         foreach my $file ( sort { uc $a cmp uc $b } @files )
         {
-            my ( $abstract, $commands, $expect, $options ) = read_header( $dir, $file );
+            my ( $abstract, $commands, $expect, $options ) =
+              read_header( $dir, $file );
 
             if ( defined $abstract && defined $expect )
             {
-                test_file( $file, $abstract, $commands, $expect, $options );
+                my $output = run_test( $file, $options );
+
+                check_results( $file, $abstract, $commands, $expect, $output );
             }
         }
 
@@ -133,11 +232,14 @@ sub open_file
 
         chdir $dir or croak "Can't change directory to $dir";
 
-        my ( $abstract, $commands, $expect, $options ) = read_header( $dir, $file );
+        my ( $abstract, $commands, $expect, $options ) =
+          read_header( $dir, $file );
 
         if ( defined $abstract && defined $expect )
         {
-            test_file( $file, $abstract, $commands, $expect, $options );
+            my $output = run_test( $file, $options );
+
+            check_results( $file, $abstract, $commands, $expect, $output );
         }
 
         chdir $cwd or croak "Can't change directory to $cwd";
@@ -199,12 +301,11 @@ sub read_header
     return ( $abstract, $commands, $expect, $options );
 }
 
-sub test_file
+sub run_test
 {
-    my ( $file, $abstract, $commands, $expect, $options ) = @_;
+    my ( $file, $options ) = @_;
     my $command;
-
-    chomp $commands;
+    my $output;
 
     if ( $file =~ /.+[.]tec/msx )
     {
@@ -215,144 +316,26 @@ sub test_file
         $command = "$teco $options < $file";
     }
 
-    my $teco_init    = $ENV{TECO_INIT};
-    my $teco_library = $ENV{TECO_LIBRARY};
-    my $teco_memory  = $ENV{TECO_MEMORY};
-    my $teco_vtedit  = $ENV{TECO_VTEDIT};
-
     # Use special environment variables for :EG commands so we don't have
     # to guess how the user might have set them up.
 
-    if ($file =~ /^EG/)
+    if ( $file =~ /^EG/ms )
     {
-        $ENV{TECO_INIT}    = 'TECO_INIT';
-        $ENV{TECO_LIBRARY} = 'TECO_LIBRARY';
-        $ENV{TECO_MEMORY}  = 'TECO_MEMORY';
-        $ENV{TECO_VTEDIT}  = 'TECO_VTEDIT';
+        local $ENV{TECO_INIT}    = 'TECO_INIT';
+        local $ENV{TECO_LIBRARY} = 'TECO_LIBRARY';
+        local $ENV{TECO_MEMORY}  = 'TECO_MEMORY';
+        local $ENV{TECO_VTEDIT}  = 'TECO_VTEDIT';
+
+        $output = qx/$command/;    # Execute command and capture output
     }
-
-    my $output = qx/$command/;    # Execute command and capture output
-
-    if ($file =~ /^EG/)
+    else
     {
-        $ENV{TECO_INIT}    = $teco_init;
-        $ENV{TECO_LIBRARY} = $teco_library;
-        $ENV{TECO_MEMORY}  = $teco_memory;
-        $ENV{TECO_VTEDIT}  = $teco_vtedit;
+        $output = qx/$command/;    # Execute command and capture output
     }
 
     chomp $output;
 
-    my $detail;
-    my $diff;
-    my $expected;
-
-    # We expect the test to either pass or fail; if pass, then there may be
-    # a file name that we will use to look for differences in the output.
-
-    if ( $expect =~ /^PASS \s \[ (.+) \]/msx )
-    {
-        $expect = 'pass';
-        $diff = $1;
-    }
-    elsif ( $expect eq 'PASS' )
-    {
-        $expect = 'pass';
-    }
-    elsif ( $expect =~ / ([?][[:alpha:]]{3}) \s \[ (.+) \]/msx )
-    {
-        $expect = $1;
-        $diff = $2;
-    }
-    elsif ( $expect =~ / ([?][[:alpha:]]{3}) /msx )
-    {
-        $expect = $1;
-    }
-    else
-    {
-        print "$file: Invalid expectations\n";
-
-        return;
-    }
-
-    if ( defined $diff)
-    {
-        $expected = read_file($diff);
-
-        chomp $expected;
-    }
-
-    my $report = sprintf '%17s %-45s %-15s', "[$file]", $abstract,
-      $commands;
-
-    #  The following cases are possible:
-    #
-    #  Expected             Got
-    #  --------             ---
-    #  PASS, no diff. file  PASS
-    #  PASS, diff. file     PASS, diff. file matched
-    #  PASS, diff. file     PASS, diff. file did not match
-    #  TECO error           Expected TECO error
-    #  TECO error           Got different TECO error, or no error
-
-    ++$ntests;
-
-    if ( $expect eq 'pass' )
-    {
-        # Here if test should succeed
-
-        if ( $output !~ /!PASS!/ms )
-        {
-            # Say error occurred, but only print first word in output
-
-            my $len = index($output, " ");
-
-            if ($len == -1)
-            {
-                $len = length $output;
-            }
-
-            printf "%s %s -> %s\n", $report, $expect,
-                substr($output, 0, $len);
-        }
-        elsif ( defined $diff && $expected ne $output )
-        {
-            printf "%s %s -> DIFF\n", $report, $expect;
-        }
-        elsif ($okay)
-        {
-            printf "%s %s -> OK\n", $report, $expect;
-        }
-    }
-    else
-    {
-        # Here if test failed or should fail
-
-        if ( index($output, $expect) == -1 )
-        {
-            # Say error occurred, but only print first word in output
-
-            my $len = index($output, " ");
-
-            if ($len == -1)
-            {
-                $len = length $output;
-            }
-
-            printf "%s %s -> %s\n", $report, $expect,
-                substr($output, 0, $len);
-        }
-        elsif ( defined $diff && $expected ne $output )
-        {
-            printf "%s %s -> DIFF\n", $report, $expect;
-        }
-        elsif ($okay)
-        {
-            printf "%s %s -> OK\n", $report, $expect;
-        }
-    }
-
-    return;
+    return $output;
 }
 
 sub wanted

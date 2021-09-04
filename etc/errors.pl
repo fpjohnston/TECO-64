@@ -173,7 +173,7 @@ sub make_errcodes_h
     {
         my $message = $errors{$code}{message};
 
-        if ($code eq 'ERR')
+        if ( $code eq 'ERR' )
         {
             $message =~ s/%s/(error message)/gmsx;
         }
@@ -218,7 +218,7 @@ sub make_errors_md
     {
         my $message = $errors{$code}{message};
 
-        if ($code eq 'ERR')
+        if ( $code eq 'ERR' )
         {
             $message =~ s/%s/(error message)/gmsx;
         }

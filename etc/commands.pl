@@ -228,13 +228,11 @@ sub make_entry
     $exec .= q{,};
     $exec = sprintf '%-15s', $exec;
 
-    my $entry = sprintf '%s',
-      "    ENTRY($name  $scan  $exec  $mn_args),\n";
+    my $entry = sprintf '%s', "    ENTRY($name  $scan  $exec  $mn_args),\n";
 
     if ( $name =~ s/^('[[:upper:]]',)/\L$1/msx )
     {
-        $entry .= sprintf '%s',
-          "    ENTRY($name  $scan  $exec  $mn_args),\n";
+        $entry .= sprintf '%s', "    ENTRY($name  $scan  $exec  $mn_args),\n";
     }
 
     return $entry;
