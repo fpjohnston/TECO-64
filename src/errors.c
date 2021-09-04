@@ -217,10 +217,20 @@ static void print_error(int error, const char *err_str, const char *file_str)
         }
     }
 
-    if (f.eh.line && cmd_line != 0)
+    // If EH&8 is set, then print line number for a macro, indirect command
+    // file, or command string. For that last case, line numbers are suppressed
+    // if the error occurred on line 1, since most commands are not multi-line,
+    // and therefore it is not necessary to tell the user which line the error
+    // occurred on.
+
+    if (f.eh.line)
     {
-        tprint(" in %s at line %u", check_macro() ? "macro" : "command",
-            cmd_line);
+        bool macro = check_macro();
+
+        if (macro || cmd_line > 1)
+        {
+            tprint(" in %s at line %u", macro ? "macro" : "command", cmd_line);
+        }
     }
 
     type_out(LF);

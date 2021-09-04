@@ -196,7 +196,7 @@ int main(int argc, const char * const argv[])
 
                 init_x();               // Initialize expression stack
 
-                cmd_line = 0;           // Don't count lines in command string
+                cmd_line = 1;           // Start command at line 1
 
                 f.e0.exec = true;       // Command is in progress
                 exec_cmd(&cmd);         // Execute command string
