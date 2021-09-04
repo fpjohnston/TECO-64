@@ -209,7 +209,7 @@ static void print_error(int error, const char *err_str, const char *file_str)
     if (f.eh.verbose != 1)              // Need to print more?
     {
         tprint("   ");
-        tprint(text, err_str == NULL ? err_str : "");
+        tprint(text, err_str ?: "");
 
         if (error == E_SYS && file_str != NULL)
         {

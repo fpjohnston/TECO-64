@@ -441,9 +441,7 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
     }
     else if (access(name, W_OK) != 0)   // File exists - is it writeable?
     {
-        snprintf(scratch, sizeof(scratch), "%s", name);
-
-        throw(E_SYS, scratch);          // Unexpected system error
+        throw(E_SYS, name);             // Unexpected system error
     }
     else
     {
@@ -469,9 +467,7 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
             return NULL;
         }
 
-        snprintf(scratch, sizeof(scratch), "%s", ofile->name);
-
-        throw(E_SYS, scratch);          // Unexpected system error
+        throw(E_SYS, name);             // Unexpected system error
     }
 
     // Here when we've either just opened a new file that didn't previously
