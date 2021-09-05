@@ -39,6 +39,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "errcodes.h"
 #include "file.h"
 #include "term.h"
