@@ -1,0 +1,40 @@
+!! TECO-64 test script: Switch to secondary input stream
+!! Commands: EP
+!! Expect: PASS [EP-01.log]
+
+@EZ{rm /tmp/foo; rm /tmp/baz}   !! Delete any existing files
+
+:@EW{/tmp/foo} "U ::^C '        !! Create 1st temp file
+
+@I/abcdef/ 10I                  !! Add some data
+
+EC                              !! Write data and close file
+
+:@EW{/tmp/baz} "U ::^C '        !! Create 2nd temp file
+
+@I/123456/ 10I                  !! Add some data
+
+EC                              !! Write data and close file
+
+:@ER{/tmp/foo} "U ::^C '        !! Open 1st file on primary stream
+
+A
+
+EP                              !! Switch to secondary stream
+
+:@ER{/tmp/baz} "U ::^C '        !! Open 2nd file on secondary stream
+
+A
+
+@ER//                           !! Switch to primary stream
+
+EC
+
+EP                              !! Switch to secondary stream
+
+EC
+
+HT
+HK
+
+:@^A/!PASS!/
