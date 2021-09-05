@@ -1,6 +1,6 @@
 !! TECO-64 test script: Test EOF flag
 !! Commands: ^N
-!! Expect: PASS
+!! Expect: PASS [_N-01.log]
 
 @EZ{rm /tmp/foo; rm /tmp/baz}   !! Delete any existing files
 
