@@ -1,0 +1,17 @@
+!! TECO-64 test script: Flow to end of iteration
+!! Commands: F>
+!! Expect: PASS
+
+1 UA QA < -1%A "L ::^C ' F> >
+
+QA "N ::^C '
+
+10 UA QA < -1%A "L ::^C ' F> > 
+
+QA-9 "N ::^C '
+
+1000 UA  < -1%A "L ::^C ' F> > 
+
+QA-999 "N ::%C '
+
+:@^A/!PASS!/

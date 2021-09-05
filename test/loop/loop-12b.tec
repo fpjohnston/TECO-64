@@ -1,0 +1,11 @@
+!! TECO-64 test script: Flow to end of command
+!! Commands: F>
+!! Expect: PASS
+
+:@^A/!PASS!/
+
+F>
+
+:@^A/!FAIL!/
+
+::^C
