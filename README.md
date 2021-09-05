@@ -103,15 +103,13 @@ Digital Equipment Corporation in May 1990.
 
 ### Future Directions
 
-The following lists some of what has been considered for future versions of
-of TECO.
+The following may be implemented in future versions of TECO.
 
 - Support for compilers other than *gcc*.
 - Support for other operating systems, especially OpenVMS.
-- An alternative buffer handling module (such as one using a rope buffer).
+- An alternative buffer handling module (e.g., a rope buffer).
 - An alternative paging module (to allow backward paging when no virtual memory
 is available).
-- Automated procedures for performing recursion testing.
 
 ### Contact Information
 
