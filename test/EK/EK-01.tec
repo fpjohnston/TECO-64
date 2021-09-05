@@ -1,0 +1,27 @@
+!! TECO-64 test script: Kill file edit after EB - EK
+!! Commands: EK
+!! Expect: PASS
+
+@^UA{/tmp/foo}                  !! File name
+
+:@EW/^EQA/ "U ::^C '            !! Open file for write
+
+@I/abcdef/                      !! Add some data
+
+EC                              !! Write data and close file
+
+:@EB/^EQA/ "U ::^C ' Y          !! Open file for backup
+
+:@FS/bcd/FOOBAZ/ "U ::^C '      !! Change data in file
+
+EK HK EC                        !! Kill edit, clear buffer, close file
+
+:@ER/^EQA/ "U ::^C ' Y          !! Open file for read again
+
+0J
+
+::@S/abcdef/ "U ::^C '          !! Verify that data hasn't changed
+
+HK
+
+:@^A/!PASS!/
