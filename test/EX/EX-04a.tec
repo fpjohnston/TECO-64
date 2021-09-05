@@ -1,0 +1,9 @@
+!! TECO-64 test script: Exit TECO w/ empty buffer
+!! Commands: EX
+!! Expect: PASS
+
+HK
+
+:@^A/!PASS!/
+
+EX

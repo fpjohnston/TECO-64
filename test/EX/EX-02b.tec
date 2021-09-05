@@ -1,0 +1,13 @@
+!! TECO-64 test script: Exit TECO after EW
+!! Commands: EX
+!! Expect: PASS
+
+0,64 E3                         !! Suppress informational messages
+
+@EW{/tmp/foo}                   !! Open the file for output
+
+@I/abcdef/
+
+:@^A/!PASS!/
+
+EX
