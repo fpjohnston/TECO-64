@@ -96,9 +96,9 @@ void echo_in(int c)
         switch (c)
         {
             case CTRL_C:
-                if (f.et.rubout)
+                if (f.et.rubout && !f.e0.display)
                 {
-                    tprint("\n\e[7m CANCEL \e[0m\n");
+                    tprint("\n\e[7m Cancel \e[0m\n");
                 }
                 else
                 {
