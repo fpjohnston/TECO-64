@@ -120,6 +120,7 @@ union e3_flag
         uint ocrlf  : 1;        ///< Use CR/LF for output lines
         uint noin   : 1;        ///< Don't type input to log file
         uint noout  : 1;        ///< Don't type output to log file
+        uint noinfo : 1;        ///< Suppress informational messages
     };
 };
 

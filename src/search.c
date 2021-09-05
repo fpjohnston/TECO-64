@@ -426,7 +426,7 @@ void search_failure(struct cmd *cmd)
 
         if (check_loop())
         {
-            if (!check_semi())
+            if (!check_semi() && !f.e3.noinfo)
             {
                 tprint("%%Search failure in loop\n");
             }

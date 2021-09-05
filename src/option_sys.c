@@ -196,7 +196,7 @@ void exec_options(int argc, const char * const argv[])
 
     if (optind < argc - 1)
     {
-        tprint("%%Too many file arguments\n");
+        tprint("Too many file arguments\n");
 
         exit(EXIT_FAILURE);
     }
@@ -223,12 +223,20 @@ void exec_options(int argc, const char * const argv[])
         if (file2 != NULL || options.readonly)
         {
             add_cmd(false, "ER%s\e Y ", file1);
-            add_cmd(false, ":^A%%Inspecting file: %s\1 ", file1);
+
+            if (!f.e3.noinfo)
+            {
+                add_cmd(false, ":^A%%Inspecting file: %s\1 ", file1);
+            }
         }
         else if (access(file1, F_OK) == 0 || !options.create)
         {
             add_cmd(false, "EB%s\e Y ", file1);
-            add_cmd(false, ":^A%%Editing file: %s\1 ", file1);
+
+            if (!f.e3.noinfo)
+            {
+                add_cmd(false, ":^A%%Editing file: %s\1 ", file1);
+            }
         }
         else
         {
@@ -239,7 +247,11 @@ void exec_options(int argc, const char * const argv[])
     if (file2 != NULL)
     {
         add_cmd(false, "EW%s\e ", file2);
-        add_cmd(false, ":^A%%Creating file: %s\1 ", file2);
+
+        if (!f.e3.noinfo)
+        {
+            add_cmd(false, ":^A%%Creating file: %s\1 ", file2);
+        }
     }
 
     if (options.exit)                    // Should we exit at end of commands?
