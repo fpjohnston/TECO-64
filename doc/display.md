@@ -60,15 +60,15 @@ the same color.
 
 | Command | Function |
 | ------- | -------- |
-| F1*color1*\`*color2*\` | Set command region foreground color to *color1*, and the background color to *color2*. |
-| *m*,*n*,F1*color1*\`*color2*\` | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, thatsets the foreground saturation only. |
-| F2*color1*\`*color2*\` | Set edit region foreground color to *color1*, and the background color to *color2*. |
-| *m*,*n*,F2*color1*\`*color2*\` | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, thatsets the foreground saturation only. |
-| F3*color1*\`*color2*\` | Set status line foreground color to *color1*, and the background color to *color2*. |
-| *m*,*n*,F3*color1*\`*color2*\` | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, thatsets the foreground saturation only. |
+| @F1/*color1*/*color2*/ | Set command region foreground color to *color1*, and the background color to *color2*. |
+| *m*,*n*,@F1/*color1*/*color2*/ | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, thatsets the foreground saturation only. |
+| @F2/*color1*/*color2*/ | Set edit region foreground color to *color1*, and the background color to *color2*. |
+| *m*,*n*,@F2/*color1*/*color2*/ | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, thatsets the foreground saturation only. |
+| @F3/*color1*/*color2*/ | Set status line foreground color to *color1*, and the background color to *color2*. |
+| *m*,*n*,@F3/*color1*/*color2*/ | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, thatsets the foreground saturation only. |
 
 | Example | Description |
 | ------- | ----------- |
-| F1green\`black\` | Set foreground and background colors for the command window to green and black, respectively. |
-| 70,80F2blue\`white\` | Set the foreground color for the edit window to blue, at 70% saturation, and set the background color to white, at 80% saturation. |
-| 60F3yellow\`red\` | Set the foreground color for the status line to yellow, at 60% saturation, and set the background color to red (at a default saturation of 100%). |
+| @F1/green/black/ | Set foreground and background colors for the command window to green and black, respectively. |
+| 70,80@F2/blue/white/ | Set the foreground color for the edit window to blue, at 70% saturation, and set the background color to white, at 80% saturation. |
+| 60@F3/yellow/red/ | Set the foreground color for the status line to yellow, at 60% saturation, and set the background color to red (at a default saturation of 100%). |
