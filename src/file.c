@@ -511,15 +511,18 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
 
 void set_last(const char *name)
 {
-    assert(name != NULL);               // Error if no file name
-
-    size_t size = sizeof(last_file);
-    int nbytes = snprintf(last_file, size, "%s", name);
-
-    if (nbytes < 0 || nbytes >= (int)size)
+    if (name == NULL)
     {
-        throw(E_MAX);                   // Internal program limit reached
+        last_file[0] = NUL;
     }
+    else
+    {
+        size_t size = sizeof(last_file);
+        int nbytes = snprintf(last_file, size, "%s", name);
 
-    last_len = (uint_t)(uint)nbytes;
+        if (nbytes < 0 || nbytes >= (int)size)
+        {
+            throw(E_MAX);               // Internal program limit reached
+        }
+    }
 }
