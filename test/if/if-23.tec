@@ -1,0 +1,7 @@
+!! TECO-64 test script: Flow to end of else
+!! Commands: F|
+!! Expect: PASS
+
+0 "E F| ::^C | '
+
+:@^A/!PASS!/

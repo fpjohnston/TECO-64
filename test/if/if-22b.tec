@@ -1,0 +1,7 @@
+!! TECO-64 test script: Flow to end of conditional
+!! Commands: F'
+!! Expect: ?MAP
+
+F'
+
+:@^A/!PASS!/
