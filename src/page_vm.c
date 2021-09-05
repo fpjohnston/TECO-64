@@ -60,7 +60,7 @@ struct page_table
     struct page *stack;                 ///< Saved page stack
 };
 
-struct page_table ptable[] =
+static struct page_table ptable[] =
 {
     { .count = 0, .head = NULL, .tail = NULL, .stack = NULL },
     { .count = 0, .head = NULL, .tail = NULL, .stack = NULL },

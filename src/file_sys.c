@@ -466,9 +466,12 @@ void write_memory(const char *file)
         return;
     }
 
-    if ((fp = fopen(teco_memory, "w")) == NULL && !f.e3.noinfo)
+    if ((fp = fopen(teco_memory, "w")) == NULL)
     {
-        tprint("%%Can't open memory file '%s'\n", teco_memory);
+        if (!f.e3.noinfo)
+        {
+            tprint("%%Can't open memory file '%s'\n", teco_memory);
+        }
 
         return;
     }
