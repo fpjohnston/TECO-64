@@ -50,15 +50,9 @@ void exec_FD(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set && cmd->n_arg == 0)  // 0FDtext` isn't allowed
+    if (cmd->n_arg == 0)                // 0FDtext` isn't allowed
     {
         throw(E_ISA);                   // Invalid search argument
-    }
-
-    if (!cmd->n_set)                    // FDtext` => 1FDtext`
-    {
-        cmd->n_arg = 1;
-        cmd->n_set = true;
     }
 
     if (cmd->text1.len != 0)
