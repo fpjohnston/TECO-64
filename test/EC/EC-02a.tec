@@ -1,0 +1,23 @@
+!! TECO-64 test script: Close input file
+!! Commands: EC
+!! Expect: PASS
+
+@^UA{/tmp/foo}                  !! File name
+
+:@EW/^EQA/ "U ::^C '            !! Open file for write
+
+@I/abcdef/                      !! Add some data
+
+Z UZ
+
+EC                              !! Write data and close file
+
+Z "N ::^C '                     !! Verify that buffer is clear
+
+:@ER/^EQA/ "U ::^C ' Y          !! Open file for read
+
+QZ-Z "N ::^C '                  !! Verify that we read all of the data
+
+HK
+
+:@^A/!PASS!/
