@@ -1,0 +1,13 @@
+*!! TECO-64 test script: Test help level flag
+!! Commands: 0EH
+!! Expect: ?FNF [EH-01.log]
+
+EH=
+0 EH
+EH=
+@ER/FOO/
+``
+10
+0
+?FNF   File not found 'FOO'
+*
