@@ -1,0 +1,19 @@
+!! TECO-64 test script: Yank file into edit buffer at EOF
+!! Commands: :Y
+!! Expect: PASS
+
+0,64 E3
+
+@EW{/tmp/foo} 
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+EC
+
+@EB{/tmp/foo}
+
+:Y "E ::^C '                        !! 1st yank should succeed (not at EOF)
+
+HK
+
+:Y "N ::^C '                        !! 2nd yank should fail (at EOF)
+
+:@^A/!PASS!/
