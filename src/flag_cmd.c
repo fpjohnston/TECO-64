@@ -470,8 +470,9 @@ bool scan_flag1(struct cmd *cmd)
             reject_n(cmd->n_set);
 
             struct ifile *ifile = &ifiles[istream];
+            int_t eof = feof(ifile->fp) ? -1 : 0;
 
-            push_x((int_t)feof(ifile->fp), X_OPERAND);
+            push_x(eof, X_OPERAND);
 
             return true;
         }
