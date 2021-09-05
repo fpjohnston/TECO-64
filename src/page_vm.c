@@ -37,7 +37,6 @@
 #include "page.h"
 #include "term.h"
 
-uint page_count = 0;                ///< Current page number
 
 ///  @struct   page
 ///  @brief    Descriptor for storing a linked list of pages in memory.
@@ -53,9 +52,19 @@ struct page
     bool ff;                            ///< Append form feed to page
 };
 
-static struct page *page_head = NULL;   ///< Head of page list
-static struct page *page_tail = NULL;   ///< Tail of page list
-static struct page *page_stack = NULL;  ///< Saved page stack
+struct page_table
+{
+    uint count;                         ///< Current page number
+    struct page *head;                  ///< Head of page list
+    struct page *tail;                  ///< Tail of page list
+    struct page *stack;                 ///< Saved page stack
+};
+
+struct page_table ptable[] =
+{
+    { .count = 0, .head = NULL, .tail = NULL, .stack = NULL },
+    { .count = 0, .head = NULL, .tail = NULL, .stack = NULL },
+};
 
 // Local functions
 
@@ -145,17 +154,17 @@ static void link_page(struct page *page)
 {
     assert(page != NULL);
 
-    if (page_head == NULL)
+    if (ptable[ostream].head == NULL)
     {
-        page_head = page;               // Head -> new page
+        ptable[ostream].head = page;       // Head -> new page
     }
     else
     {
-        page->prev      = page_tail;    // New page -> last page
-        page_tail->next = page;         // Last page -> new page
+        page->prev = ptable[ostream].tail; // New page -> last page
+        ptable[ostream].tail->next = page; // Last page -> new page
     }
 
-    page_tail = page;                   // Tail -> new page
+    ptable[ostream].tail = page;           // Tail -> new page
 }
 
 
@@ -175,7 +184,7 @@ static struct page *make_page(int_t start, int_t end, bool ff)
     struct page *page = alloc_mem((uint_t)sizeof(*page));
 
     page->next  = page->prev = NULL;
-    page->size  = (uint_t)t.Z;          // No. of bytes in edit buffer
+    page->size  = end - start;
     page->cr    = 0;
     page->ocrlf = f.e3.ocrlf;
     page->ff    = ff;
@@ -199,7 +208,7 @@ static struct page *make_page(int_t start, int_t end, bool ff)
         }
         else if (ff && c == FF)
         {
-            ++page_count;
+            ++ptable[ostream].count;
         }
 
         *p++ = last = (char)c;
@@ -221,6 +230,7 @@ static struct page *make_page(int_t start, int_t end, bool ff)
 bool page_backward(int_t count, bool ff)
 {
     assert(count < 0);
+    assert(ostream == OFILE_PRIMARY || ostream == OFILE_SECONDARY);
 
     // Create a new page with data from edit buffer and push it on the stack.
 
@@ -255,19 +265,34 @@ bool page_backward(int_t count, bool ff)
 
             if (havedata)
             {
-                --page_count;
+                --ptable[ostream].count;
             }
 
             return havedata;
         }
     }
 
-    if (page_count > 0)
+    if (ptable[ostream].count > 0)
     {
-        --page_count;
+        --ptable[ostream].count;
     }
 
     return f.ctrl_e = false;
+}
+
+
+///
+///  @brief    Get page count for current page.
+///
+///  @returns  Page number (0 if no data in buffer).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint page_count(void)
+{
+    assert(ostream == OFILE_PRIMARY || ostream == OFILE_SECONDARY);
+
+    return ptable[ostream].count;
 }
 
 
@@ -281,26 +306,27 @@ bool page_backward(int_t count, bool ff)
 void page_flush(FILE *fp)
 {
     assert(fp != NULL);                 // Error if no file block
+    assert(ostream == OFILE_PRIMARY || ostream == OFILE_SECONDARY);
 
     struct page *page;
 
     // Write out all pages in queue.
 
-    while ((page = page_head) != NULL)
+    while ((page = ptable[ostream].head) != NULL)
     {
-        page_head = page->next;
+        ptable[ostream].head = page->next;
 
         write_page(fp, page);
     }
 
-    while ((page = page_stack) != NULL)
+    while ((page = ptable[ostream].stack) != NULL)
     {
-        page_stack = page->next;
+        ptable[ostream].stack = page->next;
 
         write_page(fp, page);
     }
 
-    page_count = 0;
+    ptable[ostream].count = 0;
 }
 
 
@@ -313,6 +339,8 @@ void page_flush(FILE *fp)
 
 bool page_forward(FILE *unused, int_t start, int_t end, bool ff)
 {
+    assert(ostream == OFILE_PRIMARY || ostream == OFILE_SECONDARY);
+
     if (start != end)
     {
         struct page *page = make_page(start, end, ff);
@@ -320,7 +348,7 @@ bool page_forward(FILE *unused, int_t start, int_t end, bool ff)
         link_page(page);
     }
 
-    ++page_count;
+    ++ptable[ostream].count;
 
     return pop_page();
 }
@@ -335,14 +363,14 @@ bool page_forward(FILE *unused, int_t start, int_t end, bool ff)
 
 static bool pop_page(void)
 {
-    struct page *page = page_stack;
+    struct page *page = ptable[ostream].stack;
 
     if (page == NULL)
     {
         return false;
     }
 
-    page_stack = page->next;
+    ptable[ostream].stack = page->next;
 
     copy_page(page);
 
@@ -361,9 +389,9 @@ static void push_page(struct page *page)
 {
     assert(page != NULL);
 
-    page->next = page_stack;
+    page->next = ptable[ostream].stack;
 
-    page_stack = page;
+    ptable[ostream].stack = page;
 }
 
 
@@ -376,17 +404,34 @@ static void push_page(struct page *page)
 
 void reset_pages(void)
 {
+    assert(ostream == OFILE_PRIMARY || ostream == OFILE_SECONDARY);
+
     struct page *page;
 
-    while ((page = page_head) != NULL)
+    while ((page = ptable[ostream].head) != NULL)
     {
-        page_head = page->next;
+        ptable[ostream].head = page->next;
 
         free_mem(&page->addr);
         free_mem(&page);
     }
 
-    page_tail = NULL;
+    ptable[ostream].tail = NULL;
+}
+
+
+///
+///  @brief    Set page count for current page.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void set_page(uint page)
+{
+    assert(ostream == OFILE_PRIMARY || ostream == OFILE_SECONDARY);
+
+    ptable[ostream].count = page;
 }
 
 
@@ -401,7 +446,7 @@ static struct page *unlink_page(void)
 {
     struct page *page;
 
-    if ((page = page_tail) == NULL)
+    if ((page = ptable[ostream].tail) == NULL)
     {
         return NULL;
     }
@@ -410,12 +455,12 @@ static struct page *unlink_page(void)
 
     if (page->prev == NULL)             // Only page in list?
     {
-        page_head = NULL;
-        page_tail = NULL;
+        ptable[ostream].head = NULL;
+        ptable[ostream].tail = NULL;
     }
     else
     {
-        page_tail        = page->prev;
+        ptable[ostream].tail        = page->prev;
 
         page->prev->next = NULL;
         page->prev       = NULL;
@@ -478,6 +523,8 @@ static void write_page(FILE *fp, struct page *page)
 
 void yank_backward(FILE *unused)
 {
+    assert(ostream == OFILE_PRIMARY || ostream == OFILE_SECONDARY);
+
     struct page *page;
 
     if (!pop_page())
@@ -492,8 +539,8 @@ void yank_backward(FILE *unused)
         }
     }
 
-    if (page_count > 0)
+    if (ptable[ostream].count > 0)
     {
-        --page_count;
+        --ptable[ostream].count;
     }
 }

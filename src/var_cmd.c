@@ -52,7 +52,7 @@ bool scan_ctrl_P(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    push_x((int_t)page_count, X_OPERAND);
+    push_x((int_t)page_count(), X_OPERAND);
 
     return true;
 }

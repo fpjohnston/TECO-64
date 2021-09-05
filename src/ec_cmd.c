@@ -58,7 +58,7 @@ void close_files(void)
         page_flush(ofile->fp);
     }
 
-    page_count = 0;
+    set_page(0);
 
     exec_EF(NULL);                      // Rename and close the output file
 

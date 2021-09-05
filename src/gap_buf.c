@@ -158,9 +158,9 @@ int add_ebuf(int c)
     // If we have no data in buffer, then we're on page 0, but
     // as soon as we add a character, then we're on page 1.
 
-    if (page_count == 0)
+    if (page_count() == 0)
     {
-        ++page_count;
+        set_page(1);
     }
 
 #if     defined(DISPLAY_MODE)
