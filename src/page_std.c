@@ -112,7 +112,7 @@ bool page_forward(FILE *fp, int_t start, int_t end, bool ff)
 
 
 ///
-///  @brief    Reset all pages (no-op for standard paging)./
+///  @brief    Reset all pages (no-op for standard paging).
 ///
 ///  @returns  Nothing.
 ///

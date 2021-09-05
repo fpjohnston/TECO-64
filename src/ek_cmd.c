@@ -47,7 +47,7 @@ void exec_EK(struct cmd *unused)
 {
     struct ofile *ofile = &ofiles[ostream];
 
-    reset_pages();
+    reset_pages(ostream);
 
     // Delete any file we created. Use the temp name if we have one. Note that
     // this needs to be done before closing the file, because that will delete

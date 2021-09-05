@@ -41,6 +41,7 @@
 #include "eflags.h"
 #include "errcodes.h"
 #include "file.h"
+#include "page.h"
 #include "term.h"
 
 
@@ -125,6 +126,11 @@ void exit_files(void)
     }
 
     ostream = OFILE_PRIMARY;
+
+    // Deallocate pages for primary and secondary output streams
+
+    reset_pages(OFILE_PRIMARY);
+    reset_pages(OFILE_SECONDARY);
 
     for (uint i = 0; i < IFILE_MAX; ++i)
     {

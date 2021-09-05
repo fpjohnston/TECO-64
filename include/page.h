@@ -39,7 +39,7 @@ extern void page_flush(FILE *fp);
 
 extern bool page_forward(FILE *fp, int_t start, int_t end, bool ff);
 
-extern void reset_pages(void);
+extern void reset_pages(uint stream);
 
 extern void set_page(uint page);
 

@@ -184,7 +184,7 @@ static struct page *make_page(int_t start, int_t end, bool ff)
     struct page *page = alloc_mem((uint_t)sizeof(*page));
 
     page->next  = page->prev = NULL;
-    page->size  = end - start;
+    page->size  = (uint)(end - start);
     page->cr    = 0;
     page->ocrlf = f.e3.ocrlf;
     page->ff    = ff;
@@ -402,21 +402,21 @@ static void push_page(struct page *page)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void reset_pages(void)
+void reset_pages(uint stream)
 {
-    assert(ostream == OFILE_PRIMARY || ostream == OFILE_SECONDARY);
+    assert(stream == OFILE_PRIMARY || stream == OFILE_SECONDARY);
 
     struct page *page;
 
-    while ((page = ptable[ostream].head) != NULL)
+    while ((page = ptable[stream].head) != NULL)
     {
-        ptable[ostream].head = page->next;
+        ptable[stream].head = page->next;
 
         free_mem(&page->addr);
         free_mem(&page);
     }
 
-    ptable[ostream].tail = NULL;
+    ptable[stream].tail = NULL;
 }
 
 
