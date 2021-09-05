@@ -1,0 +1,39 @@
+!! TECO-64 test script: Test CTRL/Y flag
+!! Commands: ^Y
+!! Expect: PASS
+
+@I/abcdef
+/
+
+^Y UC UB
+^S UA
+
+.:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
+
+.+QA-QB "N ::^C '
+
+0J
+
+:@S/cde/ "U ::^C '
+
+^Y UC UB
+^S UA
+
+.:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
+
+.+QA-QB "N ::^C '
+
+@^UA/Jabberwocky/
+
+GA
+
+^Y UC UB
+^S UA
+
+.:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
+
+.+QA-QB "N ::^C '
+
+HK
+
+:@^A/!PASS!/
