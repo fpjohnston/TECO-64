@@ -1,6 +1,6 @@
 !! TECO-64 test script: Close input file
 !! Commands: EC
-!! Expect: ?NYI
+!! Expect: ?NFI
 
 @^UA{/tmp/foo}                  !! File name
 
