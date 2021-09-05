@@ -78,8 +78,8 @@ void exec_P(struct cmd *cmd)
     }
     else if (cmd->m_set)                // We assume n was also set
     {
-        if (cmd->m_arg < (int)start || cmd->m_arg >= (int)end ||
-            cmd->n_arg < (int)start || cmd->n_arg >= (int)end)
+        if (cmd->m_arg < (int)start || cmd->m_arg > (int)end ||
+            cmd->n_arg < (int)start || cmd->n_arg > (int)end)
         {
             throw(E_POP, 'P');          // Pointer off page
         }
@@ -110,7 +110,7 @@ void exec_P(struct cmd *cmd)
             return;
         }
 
-        if (cmd->c2 != 'W')            // Is it nPW?
+        if (cmd->c2 != 'W')             // Is it nPW?
         {
             yank = true;
         }
@@ -140,6 +140,11 @@ void exec_P(struct cmd *cmd)
             }
 
             return;
+        }
+
+        if (cmd->c2 == 'W')
+        {
+            page_flush(ofiles[ostream].fp);
         }
 
         // If the command isn't m,nP or m,nPW, then we're always writing out

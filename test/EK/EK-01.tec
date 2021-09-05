@@ -1,4 +1,4 @@
-!! TECO-64 test script: Kill file edit after EB - EK
+!! TECO-64 test script: Kill file edit after EB
 !! Commands: EK
 !! Expect: PASS
 
