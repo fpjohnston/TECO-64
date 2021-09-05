@@ -1,5 +1,5 @@
-!! TECO-64 test script: Switch to secondary input stream
-!! Commands: EP
+!! TECO-64 test script: Switch input streams
+!! Commands: EP, ER`
 !! Expect: PASS [EP-01.log]
 
 @EZ{rm /tmp/foo; rm /tmp/baz}   !! Delete any existing files
