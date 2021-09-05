@@ -95,6 +95,19 @@ void echo_in(int c)
     {
         switch (c)
         {
+            case CTRL_C:
+                if (f.et.rubout)
+                {
+                    tprint("\n\e[7m CANCEL \e[0m\n");
+                }
+                else
+                {
+                    tputc(c, true);
+                    tputc(LF, true);
+                }
+
+                break;
+                
             case LF:
                 tputc(CR, true);
                 //lint -fallthrough

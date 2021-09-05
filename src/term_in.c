@@ -437,7 +437,6 @@ void read_cmd(void)
         if (c == CTRL_C)
         {
             echo_in(CTRL_C);
-            echo_in(LF);
             store_tbuf(CTRL_C);
 
             if (f.et.abort)             // Should we abort?
@@ -732,7 +731,6 @@ static int read_wait(void)
     // Here if not trapping CTRL/C
 
     echo_in(CTRL_C);                    // No, so issue XAB error
-    echo_in(LF);
 
     throw(E_XAB);                       // Execution aborted
 }

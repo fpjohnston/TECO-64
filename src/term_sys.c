@@ -311,8 +311,6 @@ static void sig_handler(int signum)
             if (f.et.abort || f.e0.ctrl_c) // Should CTRL/C cause abort?
             {
                 echo_in(CTRL_C);
-                echo_in(LF);
-
                 exec_EK(NULL);          // Kill any current edit
 
                 if (t.Z != 0)
