@@ -295,11 +295,6 @@ void exec_EH(struct cmd *cmd)
     check_mn_flag(cmd, &f.eh.flag);
 
     f.eh.flag &= 15;                    // Clear all but low 4 bits
-
-    if (f.eh.verbose == 0)              // 0 is equivalent to 2 for EH
-    {
-        f.eh.verbose = 2;
-    }
 }
 
 
