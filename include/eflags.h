@@ -201,7 +201,7 @@ union et_flag
         uint          : 1;      ///< (unused)
         uint eightbit : 1;      ///< Can handle 8-bit characters
         uint accent   : 1;      ///< Accent grave is ESCAPE surrogate
-        uint vt200    : 1;      ///< Special VT200 mode
+        uint          : 1;      ///< (unused)
         uint ctrl_c   : 1;      ///< CTRL/C detection control
     };
 };
