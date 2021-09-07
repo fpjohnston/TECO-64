@@ -73,12 +73,16 @@ bool scan_ctrl_Q(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    if (!cmd->n_set)
-    {
-        cmd->n_arg = 0;
-    }
+    int_t nchrs;
 
-    int_t nchrs = getdelta_ebuf(cmd->n_arg);
+    if (isoperand())
+    {
+        nchrs = getdelta_ebuf(pop_x());
+    }
+    else
+    {
+        nchrs = getdelta_ebuf(0);
+    }
 
     push_x(nchrs, X_OPERAND);
 
@@ -128,7 +132,7 @@ bool scan_ctrl_Y(struct cmd *cmd)
     {
         if (isoperand() || cmd->m_set)
         {
-            throw(E_ARG);                   // Invalid arguments
+            throw(E_ARG);               // Invalid arguments
         }
     }
     else if (isoperand())

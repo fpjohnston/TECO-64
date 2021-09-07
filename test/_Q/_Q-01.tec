@@ -20,6 +20,12 @@ abcdefghij
  1^Q UA QA-7 "N ::^C '                  !! Test:  1^Q
 -1^Q UA QA+6 "N ::^C '                  !! Test: -1^Q
 
+3C
+
+ 0^Q UA QA+3 "N ::^C '                  !! Test:  0^Q
+ 1^Q UA QA-4 "N ::^C '                  !! Test:  1^Q
+-1^Q UA QA+9 "N ::^C '                  !! Test: -1^Q
+
 HK
 
 :@^A/!PASS!/
