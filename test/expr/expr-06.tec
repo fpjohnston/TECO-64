@@ -1,0 +1,21 @@
+!! TECO-64 test script: Test comma operator
+!! Commands: ,
+!! Expect: PASS
+
+ 1,  0 UA UB
+
+QA   "N ::^C ' QB-1 "N ::^C '
+
+ 0,  1 UA UB
+
+QA-1 "N ::^C ' QB "N ::^C '
+
+ 1,  2 UA UB
+
+QA-2 "N ::^C ' QB-1 "N ::^C '
+
+1,  -2 UA UB
+
+QA+2 "N ::^C ' QB-1 "N ::^C '
+
+:@^A/!PASS!/
