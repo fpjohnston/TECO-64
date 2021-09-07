@@ -70,14 +70,7 @@ void exec_I(struct cmd *cmd)
 
     if (cmd->n_set && cmd->text1.len != 0) // nItext`?
     {
-        if (!cmd->atsign && !f.e1.insert)
-        {
-            throw(E_EXT);               // Extended feature not enabled
-        }
-        else
-        {
-            throw(E_IIA);               // Invalid insert argument
-        }
+        throw(E_IIA);                   // Invalid insert argument
     }
 
     if (cmd->text1.len != 0)
@@ -87,24 +80,27 @@ void exec_I(struct cmd *cmd)
     else if (cmd->n_set)
     {
         char c = (char)cmd->n_arg;
-        int_t n = 1;                    // Default: insert 1 character
 
-        if (cmd->m_set)
+        if (cmd->m_set && f.e1.insert)  // m,nI is an extended feature
         {
-            if (cmd->m_arg < 0)
-            {
-                throw(E_IIA);           // Invalid insert argument
-            }
-            else if ((n = cmd->m_arg) <= 0)
+            if (cmd->m_arg <= 0)
             {
                 return;                 // Don't insert if count is <= 0
             }
         }
+        else
+        {
+            cmd->m_arg = 1;             // Default is to insert 1 chr.
+        }
+
+        int_t n = cmd->m_arg;
 
         while (n-- > 0)
         {
             exec_insert(&c, (uint_t)1);
         }
+
+        last_len = cmd->m_arg;          // Adjust length of last insertion
     }
 }
 
