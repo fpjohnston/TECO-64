@@ -38,6 +38,26 @@ static tbuffer term_buf;            ///< Terminal input block
 
 
 ///
+///  @brief    See if terminal buffer starts with "HELP".
+///
+///  @returns  true if buffer starts with "HELP", else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool check_help(void)
+{
+    if (strcasecmp(term_buf.data, "HELP"))
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
+///
 ///  @brief    Create copy of terminal buffer.
 ///
 ///  @returns  Nothing.
@@ -237,4 +257,5 @@ void store_tbuf(int c)
     }
 
     term_buf.data[term_buf.len++] = (char)c;
+    term_buf.data[term_buf.len] = NUL;  // Always keep buffer NUL-terminated
 }

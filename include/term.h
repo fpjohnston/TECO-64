@@ -67,6 +67,8 @@ extern void store_tbuf(int c);
 
 // Terminal input/output functions
 
+extern bool check_help(void);
+
 extern void echo_in(int c);
 
 extern int getc_term(bool nowait);

@@ -75,6 +75,7 @@ struct flags f =                    ///< Global flag variables
     .e1.colon_u = true,             // Allow :U (w/ default arg. of 0)
     .e1.insert  = true,             // Allow nI w/o requiring n@I
     .e1.percent = true,             // Allow :%q
+    .e1.newline = false,            // LF does not act like double ESCape
 
     .e2.flag = 0,                   // All bits off in E2 flag
 

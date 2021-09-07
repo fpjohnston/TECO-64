@@ -462,17 +462,26 @@ void read_cmd(void)
         {
             exec_cancel();
         }
-        else if (c != ESC)
+        else if (c == LF && f.e1.newline)
         {
-            if (!f.et.lower)
+            echo_in(LF);
+
+            if (check_help())
             {
-                c = toupper(c);
+                throw(E_NYI);           // No help available yet
             }
 
-            echo_in(c);
-            store_tbuf(c);
+            store_tbuf(ESC);
+            store_tbuf(ESC);
+
+            while ((c = fetch_tbuf()) != EOF)
+            {
+                store_cbuf(c);          // Copy command string
+            }
+
+            return;                     // Return to execute it
         }
-        else
+        else if (c == ESC)
         {
             store_tbuf(ESC);
 
@@ -487,6 +496,21 @@ void read_cmd(void)
 
                 return;                 // Return to execute it
             }
+        }
+        else
+        {
+            echo_in(c);
+
+            if (c == LF && check_help())
+            {
+                throw(E_NYI);           // No help available yet
+            }
+            else if (!f.et.lower)
+            {
+                c = toupper(c);
+            }
+
+            store_tbuf(c);
         }
 
         last_in = c;                    // Save last character

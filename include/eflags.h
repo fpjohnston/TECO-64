@@ -76,6 +76,11 @@ union e1_flag
         uint colon_u : 1;       ///< Allow :U (w/ default arg. of 0)
         uint insert  : 1;       ///< Allow nI w/o ESCape or delimiter
         uint percent : 1;       ///< Allow :%q
+        uint         : 1;       ///< (unused)
+        uint         : 1;       ///< (unused)
+        uint         : 1;       ///< (unused)
+        uint         : 1;       ///< (unused)
+        uint newline : 1;       ///< LF acts like double ESCape
     };
 };
 
