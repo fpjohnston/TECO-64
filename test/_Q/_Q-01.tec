@@ -1,0 +1,25 @@
+!! TECO-64 test script: Convert lines to characters
+!! Commands: ^Q
+!! Expect: PASS
+ 
+@I/a
+ab
+abc
+abcd
+abcde
+abcdef
+abcdefg
+abcdefgh
+abcdefghi
+abcdefghij
+/
+
+0J 5L
+
+ 0^Q UA QA   "N ::^C '                  !! Test:  0^Q
+ 1^Q UA QA-7 "N ::^C '                  !! Test:  1^Q
+-1^Q UA QA+6 "N ::^C '                  !! Test: -1^Q
+
+HK
+
+:@^A/!PASS!/
