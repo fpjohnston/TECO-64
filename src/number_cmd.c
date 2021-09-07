@@ -194,6 +194,7 @@ bool scan_number(struct cmd *cmd)
     int c = cmd->c1;
     int cx;
     int_t radix;
+    bool hex = false;                   // Assume hex digits are disallowed
 
     if (!f.e1.radix || nparens == 0)    // Auto-detect radix?
     {
@@ -218,6 +219,8 @@ bool scan_number(struct cmd *cmd)
         trace_cbuf(c);
 
         radix = 16;
+
+        hex = true;                     // We can allow hex digits
     }
     else                                // Must be base 8
     {
@@ -245,6 +248,10 @@ bool scan_number(struct cmd *cmd)
             if (!isxdigit(c))
             {
                 break;                  // Not a hex digit
+            }
+            else if (!isdigit(c) && !hex)
+            {
+                break;
             }
         }
         else if (c > '7')               // Must be octal
