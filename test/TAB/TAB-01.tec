@@ -1,0 +1,20 @@
+!! TECO-64 test script: Insert text
+!! Commands: <TAB>
+!! Expect: PASS
+ 
+512,0 E1                            !! Disable extended insert features
+
+HK 	abc Z-4 "N ::^C '             !! Test: simple insert
+
+HK 	 Z-1 "N ::^C '                !! Test: insert of TAB only
+
+HK 	abc
+def
+
+Z-9 "N ::^C '                       !! Test: multi-line insert
+
+HK @	/abcdef/ Z-7 "N ::^C '      !! Test: at-sign insert
+
+HK
+
+:@^A/!PASS!/
