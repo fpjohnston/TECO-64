@@ -1,0 +1,11 @@
+!! TECO-64 test script: Insert text (w/ extended features)
+!! Commands: n@Itext`
+!! Expect: ?IIA
+ 
+0,512 E1                            !! Enable extended insert features
+
+HK ^^A @I/text/                     !! Test: n@I/text/
+
+HK
+
+::^C

@@ -1,0 +1,9 @@
+!! TECO-64 test script: Invalid insertion
+!! Commands: n@Itext`
+!! Expect: ?IIA
+
+512,0 E1                            !! Disable extended insert features
+
+HK 65Iabc                         !! Test: insert ASCII chr. & text
+
+HK ::^C
