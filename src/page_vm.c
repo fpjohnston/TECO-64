@@ -39,7 +39,7 @@
 
 
 ///  @struct   page
-///  @brief    Descriptor for storing a linked list of pages in memory.
+///  @brief    Description of each page stored internally.
 
 struct page
 {
@@ -52,6 +52,9 @@ struct page
     bool ff;                            ///< Append form feed to page
 };
 
+///  @struct   page_table
+///  @brief    Description of stored pages for output streams.
+
 struct page_table
 {
     uint count;                         ///< Current page number
@@ -59,6 +62,9 @@ struct page_table
     struct page *tail;                  ///< Tail of page list
     struct page *stack;                 ///< Saved page stack
 };
+
+///  @var      ptable
+///  @brief    Stored data for primary and secondary output streams.
 
 static struct page_table ptable[] =
 {
