@@ -110,11 +110,11 @@ struct flags f =                    ///< Global flag variables
 
 #if   defined(__vms)
 
-    .ed.keepnul = true;             // Don't discard input NUL chrs.
+    .ed.keepnul = true,             // Don't discard input NUL chrs.
 
 #else
 
-    .ed.keepnul = false;            // Discard input NUL chrs.
+    .ed.keepnul = false,            // Discard input NUL chrs.
 
 #endif
 
