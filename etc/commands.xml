@@ -10,7 +10,7 @@
              Exec attribute defines the execution function (if any).
         -->
 
-        <command name='NUL'                        scan='bad'                        />
+        <command name='NUL'                        scan='nop'                        />
         <command name='CTRL_A'                     scan='ctrl_A'    exec='ctrl_A'    />
         <command name='CTRL_B'                     scan='ctrl_B'                     />
         <command name='CTRL_C'                                      exec='ctrl_C'    />

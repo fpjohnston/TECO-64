@@ -80,7 +80,7 @@ struct cmd_table
 
 static const struct cmd_table cmd_table[] =
 {
-    ENTRY(NUL,     scan_bad,        NULL,            false),
+    ENTRY(NUL,     scan_nop,        NULL,            false),
     ENTRY(CTRL_A,  scan_ctrl_A,     exec_ctrl_A,     false),
     ENTRY(CTRL_B,  scan_ctrl_B,     NULL,            false),
     ENTRY(CTRL_C,  NULL,            exec_ctrl_C,     false),
