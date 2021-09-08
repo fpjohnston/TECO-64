@@ -158,7 +158,7 @@ union ed_flag
         uint caret     : 1;     ///< Allow caret (^) in search strings
         uint yank      : 1;     ///< Allow all Y and _ commands
         uint memory    : 1;     ///< Expand memory as much as possible
-        uint           : 1;     ///< (unused)
+        uint keepnul   : 1;     ///< Discard NUL chrs. in input files
         uint keepdot   : 1;     ///< Preserve dot if search fails
         uint escape    : 1;     ///< Enable immediate escape-sequence commands
         uint movedot   : 1;     ///< Move dot by one on multiple occurrence searches

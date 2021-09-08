@@ -116,7 +116,11 @@ bool append_line(void)
     {
         next = fgetc(ifile->fp);
 
-        if (c == FF && !f.e3.nopage)    // Is it FF, and is it a page delimiter?
+        if (c == NUL && !f.ed.keepnul)  // Discard NUL chrs. if necessary
+        {
+            continue;
+        }
+        else if (c == FF && !f.e3.nopage) // Is it FF, and is it a page delimiter?
         {
             f.ctrl_e = true;            // Yes, flag it, but don't store it
 

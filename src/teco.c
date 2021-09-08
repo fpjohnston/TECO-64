@@ -108,6 +108,15 @@ struct flags f =                    ///< Global flag variables
     .e4.line   = true,              // Line between text & command regions
     .e4.status = true,              // Display status on line
 
+#if   defined(__vms)
+
+    .ed.keepnul = true;             // Don't discard input NUL chrs.
+
+#else
+
+    .ed.keepnul = false;            // Discard input NUL chrs.
+
+#endif
 
 #if     defined(DISPLAY_MODE)
 
