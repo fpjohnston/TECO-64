@@ -2,6 +2,8 @@
 !! Commands: ^B
 !! Expect: PASS
 
+!! Test: Validate current year, month and day for ^B
+
 ^B UA                               !! Get date
 
 (QA & 31)         UD                !! D = day

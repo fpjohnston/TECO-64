@@ -4,6 +4,8 @@
 
 0UA
 
+!! Test: push and pop Q-registers, each with unique value
+
 !! Push maximum Q-registers, each with unique value
 
 64 <

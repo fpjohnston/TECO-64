@@ -2,6 +2,8 @@
 !! Commands: B
 !! Expect: PASS
 
+!! Test: Verify that B is always 0, regardless of dot
+
 10 < @I/0123456789/ 10I >
 
 0J B "N ::^C '

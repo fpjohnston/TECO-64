@@ -2,6 +2,8 @@
 !! Commands: (misc.)
 !! Expect: PASS [basic-01.log]
 
+!! Test: mix of basic TECO commands
+
 :@^A/[Executing ^UA]/  @^UA"_teco_test_"
 :@^A/[Executing ^UB]/  @^UB"@^A/ result: /"
 :@^A/[Executing I]/    @I"@^A/ (.=/ .:= @^A/, Z=/ Z:= ^^) ^T"
@@ -32,4 +34,5 @@
  @^A/[Executing HT]/   MC MB HT -1 ^T
 :@^A/[Executing EK]/   EK
 :@^A/[Executing EZ]/   @EZ/rm _teco_test_*.tmp*/
+
 :@^A/!PASS!/

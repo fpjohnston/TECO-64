@@ -4,7 +4,7 @@
 
 0,128ET                 !! Abort on error
 
-@^A/hello, world!/      !! Test standard output (no newline)
+@^A/hello, world!/      !! Test: ^A w/o colon
 
 -1^T
 

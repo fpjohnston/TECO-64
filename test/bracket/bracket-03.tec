@@ -4,6 +4,8 @@
 
 0UA
 
+!! Test: push and pop maximum Q-registers
+
 64 <
     %A
     [A

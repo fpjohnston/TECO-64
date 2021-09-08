@@ -2,6 +2,6 @@
 !! Commands: [
 !! Expect: PASS
 
-64 < [A >
+64 < [A >                           !! Test: maximum Q-register pushes
 
 :@^A/!PASS!/

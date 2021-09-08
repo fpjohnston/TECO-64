@@ -2,6 +2,8 @@
 !! Commands: (misc.)
 !! Expect: PASS [basic-02.log]
 
+!! Test: mix of basic TECO commands
+
 10 < @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// >
 
 J
@@ -25,4 +27,5 @@ J
 < @S/def/; -3D >
 
 HT HK
+
 :@^A/!PASS!/
