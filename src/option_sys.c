@@ -52,7 +52,6 @@
 struct options
 {
     const char *args;       ///< --arguments (m,n)
-    char *buffer;           ///< --buffer
     bool create;            ///< --create
     bool display;           ///< --display
     const char *execute;    ///< --execute
@@ -64,6 +63,7 @@ struct options
     char *output;           ///< --output
     const char *scroll;     ///< --scroll
     bool readonly;          ///< --readonly
+    char *text;             ///< --text
     const char *vtedit;     ///< --vtedit
     const char *zero;       ///< --zero
 };
@@ -77,7 +77,6 @@ struct options
 static struct options options =
 {
     .args     = NULL,
-    .buffer   = NULL,
     .create   = true,
     .display  = false,
     .execute  = NULL,
@@ -89,6 +88,7 @@ static struct options options =
     .output   = NULL,
     .readonly = false,
     .scroll   = NULL,
+    .text     = NULL,
     .vtedit   = NULL,
     .zero     = NULL,
 };
@@ -174,7 +174,7 @@ void exec_options(int argc, const char * const argv[])
     if (options.initial)  add_cmd(false, NULL,      options.initial);
     if (options.zero)     add_cmd(false, "%sE2",    options.zero);
     if (options.log)      add_cmd(false, "EL%s\e ", options.log);
-    if (options.buffer)   add_cmd(false, "I%s\e ",  options.buffer);
+    if (options.text)     add_cmd(false, "I%s\e ",  options.text);
     if (options.execute)  add_cmd(true,  NULL,      options.execute);
     if (options.formfeed) add_cmd(false, "0,1E3 ",  NULL);
 
@@ -352,14 +352,14 @@ void init_options(
 
                 break;
 
-            case OPTION_B:
+            case OPTION_T:
                 if (optarg != NULL)
                 {
-                    options.buffer = optarg;
+                    options.text = optarg;
                 }
                 else
                 {
-                    options.buffer = NULL;
+                    options.text = NULL;
                 }
 
                 break;

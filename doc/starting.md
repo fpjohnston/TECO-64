@@ -87,10 +87,6 @@ passed to TECO.
  - Pass *mm* and *nn* arguments to the indirect command file specified with
 the --execute option.
 
--B*string*, --buffer=*string*
- - Insert *string* into edit buffer before TECO starts (using the I command).
-Normally used in conjunction with the –execute option.
-
 -C, --create (default)
  - If the specified file does not exist, then create it (using the EW command).
 This is effectively a *make* command in other versions of TECO.
@@ -166,6 +162,10 @@ output (using EW command), then read in first page.
 -S*nn*, --scroll=*nn*
  - Start TECO in split-screen display mode, with *nn* lines for a scrolling
 region (using the 1W and nn,7:W commands).
+
+-T*string*, --text=*string*
+ - Insert *string* into edit buffer as text before TECO starts (using the I command).
+Normally used in conjunction with the –execute option.
 
 -V --vtedit=*vtfile*
  - Use macro in the file *vtfile* to initialize the display (overrides any file

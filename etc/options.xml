@@ -44,16 +44,16 @@
             <help>Specify n or m,n arguments for command file.</help>
         </option>
         <option>
-            <short_name>B</short_name>
-            <long_name>buffer</long_name>
-            <argument>required</argument>
-            <help>Store text 'xyz' in edit buffer.</help>
-        </option>
-        <option>
             <short_name>E</short_name>
             <long_name>execute</long_name>
             <argument>required</argument>
             <help>Execute TECO macro in file 'xyz'.</help>
+        </option>
+        <option>
+            <short_name>T</short_name>
+            <long_name>text</long_name>
+            <argument>required</argument>
+            <help>Store text 'xyz' in edit buffer.</help>
         </option>
     </section>
     <section title="Initialization options">

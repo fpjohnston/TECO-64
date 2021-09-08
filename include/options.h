@@ -69,8 +69,8 @@ static const char * const help_text[] =
     "Indirect command file options:",
     "",
     "  -A, --argument         Specify n or m,n arguments for command file.",
-    "  -B, --buffer=xyz       Store text 'xyz' in edit buffer.",
     "  -E, --execute=xyz      Execute TECO macro in file 'xyz'.",
+    "  -T, --text=xyz         Store text 'xyz' in edit buffer.",
     "",
     "Initialization options:",
     "",
@@ -108,7 +108,6 @@ static const char * const help_text[] =
 enum option_t
 {
     OPTION_A = 'A',
-    OPTION_B = 'B',
     OPTION_C = 'C',
     OPTION_D = 'D',
     OPTION_E = 'E',
@@ -121,6 +120,7 @@ enum option_t
     OPTION_O = 'O',
     OPTION_R = 'R',
     OPTION_S = 'S',
+    OPTION_T = 'T',
     OPTION_V = 'V',
     OPTION_X = 'X',
     OPTION_Z = 'Z',
@@ -137,7 +137,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = ":A:B:CDE:FHI::K:L:MO:RS:V::XZ::cfimnorv";
+static const char * const optstring = ":A:CDE:FHI::K:L:MO:RS:T:V::XZ::cfimnorv";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -145,7 +145,6 @@ static const char * const optstring = ":A:B:CDE:FHI::K:L:MO:RS:V::XZ::cfimnorv";
 static const struct option long_options[] =
 {
     { "argument",       required_argument,  NULL,  'A'    },
-    { "buffer",         required_argument,  NULL,  'B'    },
     { "create",         no_argument,        NULL,  'C'    },
     { "display",        no_argument,        NULL,  'D'    },
     { "execute",        required_argument,  NULL,  'E'    },
@@ -158,6 +157,7 @@ static const struct option long_options[] =
     { "output",         required_argument,  NULL,  'O'    },
     { "read-only",      no_argument,        NULL,  'R'    },
     { "scroll",         required_argument,  NULL,  'S'    },
+    { "text",           required_argument,  NULL,  'T'    },
     { "vtedit",         optional_argument,  NULL,  'V'    },
     { "exit",           no_argument,        NULL,  'X'    },
     { "zero",           optional_argument,  NULL,  'Z'    },
