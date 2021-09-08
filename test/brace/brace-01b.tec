@@ -1,0 +1,7 @@
+!! TECO-64 test script: Braced text arguments
+!! Commands: {, }
+!! Expect: ?UTM
+
+:@^A{hello, world!{                 !! Test: matched left braces
+
+:@^A/!PASS!/
