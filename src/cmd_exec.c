@@ -492,6 +492,14 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
         }
     }
 
+    // If we allowing paired text delimiters, then the first delimiter
+    // cannot be a closing parenthesis, bracket, or brace.
+
+    if (strchr(")]}", cmd->delim) != NULL && f.e1.text)
+    {
+        throw(E_TXT, cmd->delim);       // Invalid text delimiter
+    }
+
     if (strchr("([{", cmd->delim) == NULL || !f.e1.text)
     {
         scan_text(cmd->delim, &cmd->text1);
