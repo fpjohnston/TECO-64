@@ -1,0 +1,9 @@
+!! TECO-64 test script: Braced text arguments
+!! Commands: {, }
+!! Expect: PASS
+
+:@^A{hello, world!}                 !! Test: paired braces w/ 1 arg.
+
+:@FS{hello} {world!}                !! Test: paired braces w/ 2 args.
+
+:@^A/!PASS!/

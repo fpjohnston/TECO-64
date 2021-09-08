@@ -1,7 +1,0 @@
-!! TECO-64 test script: Bracketed text arguments
-!! Commands: [, ]
-!! Expect: PASS
-
-:@^A [hello, world!]                !! Test: paired brackets
-
-:@^A/!PASS!/
