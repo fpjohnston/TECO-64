@@ -1,0 +1,23 @@
+!! TECO-64 test script: Move forward or backward lines
+!! Commands: L
+!! Expect: PASS
+ 
+10 < @I/abcdefghi/ 10I >
+
+0J
+
+  L .-10 "N ::^C '
+ 1L .-20 "N ::^C '
+ 6L .-80 "N ::^C '
+
+ -L .-70 "N ::^C '
+-1L .-60 "N ::^C '
+-4L .-20 "N ::^C '
+
+5C
+
+ 0L .-20 "N ::^C '
+
+HK
+
+:@^A/!PASS!/
