@@ -319,6 +319,8 @@ void page_flush(FILE *fp)
         write_page(fp, page);
     }
 
+    ptable[ostream].tail = NULL;
+
     while ((page = ptable[ostream].stack) != NULL)
     {
         ptable[ostream].stack = page->next;
