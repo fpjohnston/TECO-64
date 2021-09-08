@@ -492,7 +492,7 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
         }
     }
 
-    if (cmd->delim != '{' || !f.e1.text)
+    if (strchr("([{", cmd->delim) == NULL || !f.e1.text)
     {
         scan_text(cmd->delim, &cmd->text1);
 
@@ -504,18 +504,29 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
         return;
     }
 
-    // Here if user wants to delimit text string(s) with braces. This means
-    // the text strings may be of the form {xxx}, and may include whitespace.
-    // This allows for commands such as @S {foo} or @FS {foo} {baz}.
+    // Here if user wants to delimit text string(s) with paired parentheses,
+    // brackets, or braces. This means the text strings may be of the form
+    // (xxx), [xxx], or {xxx}, and may include leading or trailing whitespace,
+    // allowing commands such as @S {foo} or @FS [foo] [baz] or @^A (foo).
+    // Note that if a command allows two text arguments, the second must be
+    // delimited by the same character pair as the first.
 
-    scan_text('}', &cmd->text1);
+    const char *end = strchr("()[]{}", cmd->delim);
+
+    assert(end != NULL);
+
+    // Point to closing parenthesis, bracket, or brace
+
+    ++end;
+
+    scan_text(*end, &cmd->text1);
 
     if (ntexts != 2)
     {
         return;
     }
 
-    // Skip any whitespace after '}'
+    // Skip any whitespace after ')', ']', or '}'
 
     int c;
 
@@ -526,15 +537,14 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
     c = require_cbuf();                 // Get text string delimiter
 
-    if (isgraph(c) || (c >= CTRL_A && c <= CTRL_Z))
-    {
-        trace_cbuf(c);
-        scan_text(c == '{' ? '}' : c, &cmd->text2);
-    }
-    else
+    if (c != cmd->delim)                // Must be same delimiter
     {
         throw(E_TXT, c);                // Invalid text delimiter
     }
+
+    trace_cbuf(c);
+
+    scan_text(*end, &cmd->text2);
 }
 
 
