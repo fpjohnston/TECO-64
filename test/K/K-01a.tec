@@ -1,0 +1,75 @@
+!! TECO-64 test script: Delete lines
+!! Commands: K
+!! Expect: PASS [K-01a.log]
+
+0UA
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    13@I// 10@I//
+>
+
+0J
+
+:@^A/-----/
+
+HT
+
+:@^A/-----/
+
+K HT                                !! Test: K
+
+:@^A/-----/
+
+1K HT                               !! Test: 1K
+
+:@^A/-----/
+
+3L 2K HT                            !! Test: nK
+
+:@^A/-----/
+
+-K HT                               !! Test: -K
+
+:@^A/-----/
+
+-1K HT                              !! Test: -1K
+
+ZJ
+
+:@^A/-----/
+
+-2K HT                              !! Test: -nK
+
+HK
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    13@I// 10@I//
+>
+
+0J
+
+:@^A/-----/
+
+5L 10K HT                           !! Test: nK
+
+:@^A/-----/
+
+-10K HT                             !! Test: -nK
+
+HK
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+
+10,20K HT                           !! Test: m,nK
+
+:@^A/-----/
+
+HK
+
+:@^A/!PASS!/
