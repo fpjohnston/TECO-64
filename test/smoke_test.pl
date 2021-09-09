@@ -42,6 +42,7 @@ use File::Slurp;
 my $teco = 'teco -n -I"\'0,128ET\'"';
 my %dirs;
 my $okay   = q{};
+my $nscripts = 0;
 my $ntests = 0;
 
 #
@@ -81,11 +82,12 @@ foreach my $filespec (@filespecs)
     }
 }
 
-printf "$ntests test script%s executed\n", $ntests == 1 ? q{} : 's';
+printf "Executed $nscripts script%s with a total of $ntests test%s\n",
+    $nscripts == 1 ? q{} : 's', $ntests == 1 ? q{} : 's';
 
 exit;
 
-sub check_results
+sub check_tests
 {
     my ( $file, $abstract, $commands, $expect, $output ) = @_;
 
@@ -123,7 +125,7 @@ sub check_results
 
     my $report = sprintf '%17s %-45s %-15s', "[$file]", $abstract, $commands;
 
-    ++$ntests;
+    ++$nscripts;
 
     if ( $expect eq 'pass' )
     {
@@ -206,7 +208,7 @@ sub open_dir
             {
                 my $output = run_test( $file, $options );
 
-                check_results( $file, $abstract, $commands, $expect, $output );
+                check_tests( $file, $abstract, $commands, $expect, $output );
             }
         }
 
@@ -239,7 +241,7 @@ sub open_file
         {
             my $output = run_test( $file, $options );
 
-            check_results( $file, $abstract, $commands, $expect, $output );
+            check_tests( $file, $abstract, $commands, $expect, $output );
         }
 
         chdir $cwd or croak "Can't change directory to $cwd";
@@ -254,24 +256,21 @@ sub read_header
 
     open my $fh, '<', $file or croak "Can't open file $file";
 
-    my $abstract = <$fh>;
-    my $commands = <$fh>;
-    my $expect   = <$fh>;
-    my $options  = <$fh>;
+    chomp(my @lines = <$fh>);
+
+    my $abstract = $lines[0];
+    my $commands = $lines[1];
+    my $expect   = $lines[2];
+    my $options  = $lines[3];
 
     close $fh or croak "Can't close file $file";
 
-    if ( !defined $abstract )
+    if ( $lines[0] !~ s/!! \s+ TECO-64 \s test \s script: \s (.+) /$1/msx )
     {
         return ( undef, undef, undef, undef );
     }
 
-    if ( $abstract !~ s/!! \s+ TECO-64 \s test \s script: \s (.+) \n /$1/msx )
-    {
-        return ( undef, undef, undef, undef );
-    }
-
-    if ( $commands !~ s/!! \s+ Commands: \s+ (.+) \n /$1/msx )
+    if ( $lines[1] !~ s/!! \s+ Commands: \s+ (.+) /$1/msx )
     {
         print "[$file] No commands found in test script\n";
 
@@ -280,25 +279,31 @@ sub read_header
 
     # Find out whether we expect success or failure
 
-    if ( !defined $expect
-        || $expect !~ s/!! \s+ Expect: \s+ (.+) \n /$1/msx )
+    if ( $lines[2] !~ s/!! \s+ Expect: \s+ (.+) /$1/msx )
     {
         print "[$file] Test script is missing expectations\n";
 
         return ( undef, undef, undef, undef );
     }
 
+    foreach my $line (@lines)
+    {
+        if ($line =~ /Test:/)
+        {
+            ++$ntests;
+        }
+    }
+
     # Look for possible additional options for TECO command line. This
     # line is not required in the test script, so don't use it if it's
     # not in the expected form.
 
-    if ( !defined $options
-        || $options !~ s/! \s+ Options: \s+ (.+) \s !\n/$1/msx )
+    if ( $lines[3] !~ s/!! \s+ Options: \s+ (.+) /$1/msx )
     {
-        $options = q{};
+        return ( $lines[0], $lines[1], $lines[2], q{} );
     }
 
-    return ( $abstract, $commands, $expect, $options );
+    return ( $lines[0], $lines[1], $lines[2], $lines[3] );
 }
 
 sub run_test
