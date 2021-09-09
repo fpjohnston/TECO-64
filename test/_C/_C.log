@@ -1,7 +1,11 @@
 *!! TECO-64 test script: Abort input command string
 !! Commands: ^C
 !! Expect: PASS [_C.log]
-abc^C
+
+!! Test: aborting input command string w/ CTRL/C
+
+abc
+[7m Cancel [0m
 *
 *
 *

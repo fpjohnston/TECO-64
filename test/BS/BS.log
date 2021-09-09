@@ -2,6 +2,8 @@
 !! Commands: BS
 !! Expect: PASS [BS.log]
 
+!! Test: immediate-action BS commands
+
 @I/line 1
 line 2
 line 3
