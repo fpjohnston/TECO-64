@@ -2,12 +2,12 @@
 !! Commands: EX
 !! Expect: PASS
 
-0,64 E3                         !! Suppress informational messages
+0,64 E3                             !! Suppress informational messages
 
-@EZ{touch /tmp/foo}             !! Make sure the temp file exists
+@EZ{touch /tmp/foo}                 !! Make sure the temp file exists
 
-@EB{/tmp/foo}                   !! Open the file for backup
+@EB{/tmp/foo}                       !! Open the file for backup
 
 :@^A/!PASS!/
 
-EX
+EX                                  !! Test: EX after EB

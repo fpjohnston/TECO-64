@@ -10,7 +10,7 @@ GA @I/"/ 0J @I/echo "/ HXB HK
 
 :@^A/command = [^EQB]/
 
-EZ^EQB                            !! Execute system command
+EZ^EQB                            !! Test: EZ
 
 G+                                  !! Copy output to edit buffer
 

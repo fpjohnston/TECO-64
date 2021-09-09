@@ -4,7 +4,7 @@
 
 @^UA/foo.tec/
 
-@EI/^EQA/
+@EI/^EQA/                           !! Test: @EI//
 
 HK
 

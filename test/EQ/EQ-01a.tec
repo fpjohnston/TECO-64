@@ -4,9 +4,9 @@
 
 @^UA{hello}
 
-EQB^EQA           !! Read Q-register from file B
+EQB^EQA                           !! Test: EQq
 
-:GB                 !! Type out what we got
+:GB                                 !! Type out what we got
 
 HK
 

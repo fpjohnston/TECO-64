@@ -1,0 +1,8 @@
+!! TECO-64 test script: Map key to macro
+!! Commands: FM
+!! Expect: PASS
+
+:@FM/BAZ/EX/                        !! Test: map key to command
+"S ::^C '
+
+:@^A/!PASS!/

@@ -2,9 +2,9 @@
 !! Commands: EW
 !! Expect: PASS
 
-@^UA{/tmp/foo}  !! Name of output file
+@^UA{/tmp/foo}                      !! Name of output file
 
-EW^EQA        !! Open file for writing
+EW^EQA                            !! Test: open file for writing
 
 EK HK
 

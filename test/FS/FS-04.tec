@@ -15,10 +15,10 @@ HK
 
 0J
 
-@FS/ghi/foo/
-2@FS/xyz/BAZ/
-4@FS/lmnop/foobaz/
-3@FS/abc/ABC/
+@FS/ghi/foo/                        !! Test: FS
+2@FS/xyz/BAZ/                       !! Test: 2FS
+4@FS/lmnop/foobaz/                  !! Test: 4FS
+3@FS/abc/ABC/                       !! Test: 3FS
 
 HT
 HK

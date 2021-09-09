@@ -1,11 +1,13 @@
 !! TECO-64 test script: Map keys to macros
 !! Commands: FM
-!! Expect: PASS [FM-01.log]
+!! Expect: PASS [FM-02.log]
 ! Options: -A 0 !
 
 :U0                     !! Get flag argument
 
 0,128ET                 !! Abort on error
+
+!! Test: map all keys w/ :FM
 
 0 U1                    !! No. of mapped keys
 0 U2                    !! No. of undefined keys
@@ -67,6 +69,8 @@ Q0&2 "E                             !! Don't print results if bit 1 is set
     Q1 :@=/%d key/ Q1-1 "N ^^s^T ' @^A/ mapped, /
     Q2 :@=/%d key/ Q2-1 "N ^^s^T ' :@^A/ undefined/
 '
+
+!! Test: conditionally unmap keys w/ FM
 
 Q0&4 "N                             !! Unmap standard keys if bit 2 is set
     @FM/UP//

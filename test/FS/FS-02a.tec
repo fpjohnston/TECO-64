@@ -6,7 +6,7 @@
 
 0J
 
-@FS/xyz/FOO/
+@FS/xyz/FOO/                        !! Test: @FS//
 
 HK
 

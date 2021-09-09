@@ -4,10 +4,10 @@
 
 @^UA{hello}
 
-:@EQB/^EQA/         !! Read Q-register from file B
+:@EQB/^EQA/                         !! Test: :@EQq//
 "U ::^C '
 
-:@ER/^EQA/          !! Read file into the edit buffer
+:@ER/^EQA/                          !! Read file into the edit buffer
 "U ::^C '
 
 Y

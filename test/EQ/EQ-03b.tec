@@ -4,7 +4,7 @@
 
 @^UA{goodbye.txt}
 
-:@EQB/^EQA/         !! Read Q-register from file B
+:@EQB/^EQA/                         !! Test: :@EQq
 
 "U
     ::^C

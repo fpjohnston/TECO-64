@@ -2,9 +2,9 @@
 !! Commands: :@ER
 !! Expect: PASS
 
-@^UA{foo}       !! Name of existing input file
+@^UA{foo}                           !! Name of existing input file
 
-:@ER/^EQA/      !! Open file for reading
+:@ER/^EQA/                          !! Test: open file for reading
 
 "U
     ::^C

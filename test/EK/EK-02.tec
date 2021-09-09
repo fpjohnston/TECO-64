@@ -14,7 +14,8 @@ EC                              !! Write data and close file
 
 @I/123456/                      !! Add some new data
 
-EK HK EC                        !! Kill edit, clear buffer, close file
+EK                              !! Test: EK after EW
+HK EC                           !! Clear buffer, close file
 
 :@ER/^EQA/ "U ::^C ' Y          !! Open file for read
 

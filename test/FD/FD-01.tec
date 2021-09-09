@@ -45,11 +45,11 @@ All mimsy were the borogoves,
 
 0J
 
-@FD/Jubjub/      @I/------/
+@FD/Jubjub/      @I/------/         !! Test: @FD//
 
-2@FD/Jabberwock/ @I/++++++++++/
+2@FD/Jabberwock/ @I/++++++++++/     !! Test: 2@FD//
 
--@FD/gyre/       @I/****/
+-@FD/gyre/       @I/****/           !! Test: -1@FD//
 
 HT
 HK

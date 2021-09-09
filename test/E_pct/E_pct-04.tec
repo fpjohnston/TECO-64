@@ -7,13 +7,13 @@
 @I/hello, world!/ 10I
 HXB HK
 
-:@E%B/^EQA/         !! Write Q-register B to file
+:@E%B/^EQA/                         !! Test: :@E%q
 
 "U
     ::^C
 '
 
-:@ER/^EQA/          !! Read file into the edit buffer
+:@ER/^EQA/                          !! Read file into the edit buffer
 "U ::^C '
 
 Y

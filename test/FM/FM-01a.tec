@@ -1,0 +1,15 @@
+!! TECO-64 test script: Map key to macro
+!! Commands: FM
+!! Expect: PASS
+
+@FM/F1/EX/                          !! Test: map key to command
+
+@FM/F1//                            !! Test: unmap key
+
+:@FM/BAZ/EX/                        !! Test: map key to command
+"S ::^C '
+
+:@FM/BAZ//                          !! Test: unmap key
+"S ::^C '
+
+:@^A/!PASS!/

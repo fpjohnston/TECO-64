@@ -2,4 +2,4 @@
 !! Commands: EO
 !! Expect: ?NYI
  
-40 EO
+40 EO                               !! Test: nEO

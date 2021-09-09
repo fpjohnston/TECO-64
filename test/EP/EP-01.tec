@@ -20,7 +20,7 @@ EC                              !! Write data and close file
 
 A
 
-EP                              !! Switch to secondary stream
+EP                              !! Test: switch to secondary input stream
 
 :@ER{/tmp/baz} "U ::^C '        !! Open 2nd file on secondary stream
 

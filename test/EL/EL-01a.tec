@@ -2,11 +2,11 @@
 !! Commands: EL
 !! Expect: PASS
 
-@^UA{/tmp/teco.log}     !! Load output file name
+@^UA{/tmp/teco.log}                 !! Load output file name
 
-EL^EQA                !! Open log file
+EL^EQA                            !! Test: open log file
 
-EL                    !! Close log file
+EL                                !! Test: close log file
 
 EK HK
 

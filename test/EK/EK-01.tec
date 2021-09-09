@@ -14,7 +14,8 @@ EC                              !! Write data and close file
 
 :@FS/bcd/FOOBAZ/ "U ::^C '      !! Change data in file
 
-EK HK EC                        !! Kill edit, clear buffer, close file
+EK                              !! Test: EK after EB
+HK EC                           !! Clear buffer, close file
 
 :@ER/^EQA/ "U ::^C ' Y          !! Open file for read again
 

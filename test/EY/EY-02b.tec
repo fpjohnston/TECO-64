@@ -12,7 +12,7 @@ EC
 
 2,0 ED
 
-:EY
+:EY                                 !! Test: :EY w/o protection
 "U
     :@^A/FAIL/
     ::^C

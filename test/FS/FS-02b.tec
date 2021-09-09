@@ -6,6 +6,6 @@
 
 0J
 
-@FS/foo/BAZ/
+@FS/foo/BAZ/                        !! Test: @FS//
 
 HK

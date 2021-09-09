@@ -4,12 +4,12 @@
 
 @^UA{*.foo}
 
-@EN/^EQA/       !! Initialize for wildcard lookup
+@EN/^EQA/                           !! Test: @EN/file/
 
 0UA
 <
-    :@EN//;     !! Loop for all matching filespecs.
-    %A          !! And count how many we found
+    :@EN//;                         !! Test: :@EN//
+    %A                              !! Count how many files we found
 >
 
 QA :@=/%u file/

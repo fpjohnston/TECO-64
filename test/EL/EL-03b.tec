@@ -2,14 +2,14 @@
 !! Commands: :@EL//
 !! Expect: ?XAB
 
-@^UA{/dev/teco.log}     !! Load output file name
+@^UA{/dev/teco.log}                 !! Load output file name
 
-:@EL/^EQA/              !! Open log file
+:@EL/^EQA/                          !! Test: open log file
 
 "U
     ::^C
 '
 
-@EL//                    !! Close log file
+@EL//                               !! Test: close log file
 
 EK HK
