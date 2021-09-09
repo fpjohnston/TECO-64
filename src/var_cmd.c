@@ -81,7 +81,7 @@ bool scan_ctrl_Q(struct cmd *cmd)
     }
     else
     {
-        nchrs = getdelta_ebuf(0);
+        nchrs = getdelta_ebuf((int_t)0);
     }
 
     push_x(nchrs, X_OPERAND);

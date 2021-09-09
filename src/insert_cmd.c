@@ -100,7 +100,7 @@ void exec_I(struct cmd *cmd)
             exec_insert(&c, (uint_t)1);
         }
 
-        last_len = cmd->m_arg;          // Adjust length of last insertion
+        last_len = (uint_t)cmd->m_arg;  // Adjust length of last insertion
     }
 }
 

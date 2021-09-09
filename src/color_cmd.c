@@ -55,9 +55,9 @@
 struct color_table
 {
     const char *name;               ///< Name of color
-    uint red;                       ///< Red saturation (0-1000)
-    uint green;                     ///< Green saturation (0-1000)
-    uint blue;                      ///< Blue saturation (0-1000)
+    short red;                      ///< Red saturation (0-1000)
+    short green;                    ///< Green saturation (0-1000)
+    short blue;                     ///< Blue saturation (0-1000)
 };
 
 ///
@@ -78,6 +78,7 @@ static const struct color_table color_table[] =
     [COLOR_WHITE]   = { "WHITE",   SATMAX, SATMAX, SATMAX, },
 };
 
+#define NREGIONS    ((STATUS - CMD) + 1) ///< No. of display regions
 
 ///
 ///  @var    saved_color
@@ -85,7 +86,7 @@ static const struct color_table color_table[] =
 ///  @brief  Saved table of colors for each region.
 ///
 
-static struct color_table saved_color[REGION_MAX * 2] =
+static struct color_table saved_color[NREGIONS * 2] =
 {
     { .name = NULL, .red = 0, .green = 0, .blue = 0 },
     { .name = NULL, .red = 0, .green = 0, .blue = 0 },
@@ -98,11 +99,11 @@ static struct color_table saved_color[REGION_MAX * 2] =
 
 // Local functions
 
-static void color_region(int region);
+static void color_region(short region);
 
 static int find_color(const char *token);
 
-static void set_color(const char *buf, uint_t len, int_t sat, short color);
+static void set_color(const char *buf, uint_t len, short sat, short color);
 
 static void set_colors(const struct cmd *cmd, enum region_pair pair);
 
@@ -142,10 +143,12 @@ void color_dpy(void)
 
 #if     defined(DISPLAY_MODE)
 
-static void color_region(int region)
+static void color_region(short region)
 {
-    const struct color_table *fg = &saved_color[(region - 1) * 2];
-    const struct color_table *bg = &saved_color[(region - 1) * 2 + 1];
+    int n1 = (region - 1) * 2;
+    int n2 = n1 + 1;
+    const struct color_table *fg = &saved_color[n1];
+    const struct color_table *bg = &saved_color[n2];
 
     // If both foreground and background are black, then we assume
     // that this region hasn't yet been initialized.
@@ -264,7 +267,7 @@ bool scan_F1(struct cmd *cmd)
 
 #if     defined(DISPLAY_MODE)
 
-static void set_color(const char *buf, uint_t len, int_t sat, short color)
+static void set_color(const char *buf, uint_t len, short sat, short color)
 {
     assert(buf != NULL);                // Error if no input string
 
@@ -288,16 +291,16 @@ static void set_color(const char *buf, uint_t len, int_t sat, short color)
 
     sat *= 10;
 
-    int i = find_color(keyword);        // Get color index
+    int i = (short)find_color(keyword); // Get color index
 
     if (i == -1)
     {
         throw(E_DPY);
     }
 
-    short red   = (short)(color_table[i].red   * (uint_t)sat / SATMAX);
-    short green = (short)(color_table[i].green * (uint_t)sat / SATMAX);
-    short blue  = (short)(color_table[i].blue  * (uint_t)sat / SATMAX);
+    short red   = (short)(color_table[i].red   * sat / SATMAX);
+    short green = (short)(color_table[i].green * sat / SATMAX);
+    short blue  = (short)(color_table[i].blue  * sat / SATMAX);
 
     saved_color[color - COLOR_BASE].red   = red;
     saved_color[color - COLOR_BASE].green = green;
@@ -337,7 +340,7 @@ static void set_colors(const struct cmd *cmd, enum region_pair pair)
 
     short color = (short)(COLOR_BASE + ((pair - 1) * 2));
 
-    int_t fg_sat, bg_sat;
+    short fg_sat, bg_sat;
 
     if (!cmd->n_set)                    // Neither foreground nor background
     {
@@ -345,19 +348,19 @@ static void set_colors(const struct cmd *cmd, enum region_pair pair)
     }
     else if (!cmd->m_set)               // Foreground, but no background
     {
-        fg_sat = cmd->m_arg;
+        fg_sat = (short)cmd->m_arg;
         bg_sat = 100;
     }
     else                                // Both foreground and background
     {
-        fg_sat = cmd->m_arg;
-        bg_sat = cmd->n_arg;
+        fg_sat = (short)cmd->m_arg;
+        bg_sat = (short)cmd->n_arg;
     }
 
     set_color(cmd->text1.data, cmd->text1.len, fg_sat, color);
     set_color(cmd->text2.data, cmd->text2.len, bg_sat, color + 1);
 
-    color_region(pair);
+    color_region((short)pair);
 }
 
 #else
