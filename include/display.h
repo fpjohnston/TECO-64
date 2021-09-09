@@ -98,6 +98,8 @@ extern void clear_dpy(void);
 
 #if     defined(DISPLAY_MODE)
 
+extern void color_dpy(void);
+
 extern bool exec_key(int key);
 
 extern void init_dpy(void);

@@ -79,7 +79,26 @@ static const struct color_table color_table[] =
 };
 
 
+///
+///  @var    saved_color
+///
+///  @brief  Saved table of colors for each region.
+///
+
+static struct color_table saved_color[REGION_MAX * 2] =
+{
+    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
+    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
+    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
+    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
+    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
+    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
+};
+
+
 // Local functions
+
+static void color_region(int region);
 
 static int find_color(const char *token);
 
@@ -90,6 +109,60 @@ static void set_colors(const struct cmd *cmd, enum region_pair pair);
 #else
 
 static void set_colors(void *unused1, int unused2);
+
+#endif
+
+
+///
+///  @brief    Use previous colors for display.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DISPLAY_MODE)
+
+void color_dpy(void)
+{
+    for (short pair = CMD; pair <= STATUS; ++pair)
+    {
+        color_region(pair);
+    }
+}
+
+#endif
+
+
+///
+///  @brief    Use previous colors for region.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DISPLAY_MODE)
+
+static void color_region(int region)
+{
+    const struct color_table *fg = &saved_color[(region - 1) * 2];
+    const struct color_table *bg = &saved_color[(region - 1) * 2 + 1];
+
+    // If both foreground and background are black, then we assume
+    // that this region hasn't yet been initialized.
+
+    if (fg->red == 0 && fg->green == 0 && fg->blue == 0
+        && bg->red == 0 && bg->green == 0 && bg->blue == 0)
+    {
+        return;
+    }
+    
+    short color = (short)(COLOR_BASE + ((region - 1) * 2));
+
+    (void)init_color(color,     fg->red, fg->green, fg->blue);
+    (void)init_color(color + 1, bg->red, bg->green, bg->blue);
+
+    (void)init_pair(region, color, color + 1);
+}
 
 #endif
 
@@ -226,7 +299,9 @@ static void set_color(const char *buf, uint_t len, int_t sat, short color)
     short green = (short)(color_table[i].green * (uint_t)sat / SATMAX);
     short blue  = (short)(color_table[i].blue  * (uint_t)sat / SATMAX);
 
-    (void)init_color((short)color, red, green, blue);
+    saved_color[color - COLOR_BASE].red   = red;
+    saved_color[color - COLOR_BASE].green = green;
+    saved_color[color - COLOR_BASE].blue  = blue;
 }
 
 #endif
@@ -282,7 +357,7 @@ static void set_colors(const struct cmd *cmd, enum region_pair pair)
     set_color(cmd->text1.data, cmd->text1.len, fg_sat, color);
     set_color(cmd->text2.data, cmd->text2.len, bg_sat, color + 1);
 
-    (void)init_pair((short)pair, color, color + 1);
+    color_region(pair);
 }
 
 #else
