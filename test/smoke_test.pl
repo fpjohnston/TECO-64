@@ -102,7 +102,7 @@ sub check_tests
     if ( $expect =~ / ^PASS (\s \[ (.+) \])? /msx )
     {
         $expect = 'pass';
-        $diff   = $3;
+        $diff   = $2;
     }
     elsif ( $expect =~ /^ ([?][[:alpha:]]{3}) (\s \[ (.+) \])? /msx )
     {
