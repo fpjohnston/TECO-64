@@ -8,7 +8,7 @@
 
 @I/abcdef/                      !! Add some data
 
-EC                              !! Write data and close file
+EC                              !! Test: write data and close file
 
 :@EB/^EQA/ "U ::^C '            !! Open file for read
 

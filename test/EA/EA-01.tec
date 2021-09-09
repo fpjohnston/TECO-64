@@ -14,6 +14,8 @@ HK
 
 :@EW{/tmp/foo} "U ::^C '        !! Create 1st temp file
 
+!! Test: switch to secondary output stream
+
 EA                              !! Switch to secondary output stream
 
 :@EW{/tmp/baz} "U ::^C '        !! Create 2nd temp file

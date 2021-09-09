@@ -14,7 +14,7 @@ EC                              !! Write data and close file
 
 @I/123456/
 
-EF                              !! Kill edit, clear buffer, close file
+EF                              !! Test: close file
 
 Z "E ::^C '
 

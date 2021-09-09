@@ -14,7 +14,7 @@ All mimsy were the borogoves,
 
 "Beware the Jabberwock, my son!
       The jaws that bite, the claws that catch!
-Beware the Jubjub bird, and shun
+Beware.name = NULL,  the Jubjub bird, and shun
       The frumious Bandersnatch!"
 
 He took his vorpal sword in hand;
@@ -45,7 +45,7 @@ All mimsy were the borogoves,
 
 0J
 
-Z+1 C                           !! Test nC, where n > following chrs.
+Z+1 C                           !! Test: nC, where n > following chrs.
 
 ::^C
 

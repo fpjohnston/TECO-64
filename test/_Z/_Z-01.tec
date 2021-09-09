@@ -2,19 +2,23 @@
 !! Commands: ^Z
 !! Expect: PASS [_Z-01.log]
 
-@^A/^Z = / ^Z := ^Z-0 "E :@^A/ (pass)/ | :@^A/ (fail)/ '
+@^A/^Z = / ^Z := ^Z-0               !! Test: ^Z with Q-registers empty
+"E :@^A/ (pass)/ | :@^A/ (fail)/ '
 
 @^UA/abcdefghijklmnopwrstuvwxyz/
 
-@^A/^Z = / ^Z := ^Z-26 "E :@^A/ (pass)/ | :@^A/ (fail)/ '
+@^A/^Z = / ^Z := ^Z-26              !! Test: ^Z w/ text in 1 Q-register
+"E :@^A/ (pass)/ | :@^A/ (fail)/ '
 
 @^UB/0123456789/
 
-@^A/^Z = / ^Z := ^Z-36 "E :@^A/ (pass)/ | :@^A/ (fail)/ '
+@^A/^Z = / ^Z := ^Z-36              !! Test: ^Z w/ text in 2 Q-registers
+"E :@^A/ (pass)/ | :@^A/ (fail)/ '
 
 @^UC/now is the time for all good men to come to the aid of their party/
 
-@^A/^Z = / ^Z := ^Z-102 "E :@^A/ (pass)/ | :@^A/ (fail)/ '
+@^A/^Z = / ^Z := ^Z-102             !! Test: ^Z w/ text in 3 Q-registers
+"E :@^A/ (pass)/ | :@^A/ (fail)/ '
 
 :@^A/!PASS!/
 

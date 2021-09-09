@@ -3,7 +3,7 @@
 !! Expect: ?FNF [EH-04.log]
 
 3 EH
-EH=
+EH=                                 !! Test: verbose error message
 @ER/FOO/
 ``
 3

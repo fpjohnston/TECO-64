@@ -2,7 +2,7 @@
 !! Commands: 7EH
 !! Expect: ?FNF [EH-05.log]
 
-7 EH
+7 EH                                !! Test: error message + failing command
 EH=
 @ER/FOO/
 ``
@@ -14,7 +14,7 @@ EH=
 !! Commands: 7EH
 !! Expect: ?FNF [EH-05.log]
 
-7 EH
+7 EH                                !! Test: error message + failing command
 EH=
 @ER/FOO/
 ``

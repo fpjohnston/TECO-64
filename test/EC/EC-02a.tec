@@ -10,7 +10,7 @@
 
 Z UZ
 
-EC                              !! Write data and close file
+EC                              !! Test: write data and close file
 
 Z "N ::^C '                     !! Verify that buffer is clear
 

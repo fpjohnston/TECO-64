@@ -4,6 +4,6 @@
 
 @^UA{baz}
 
-@EB/^EQA/       !! Open file for reading and writing
+@EB/^EQA/                           !! Test: open file for backup
 
 EK HK

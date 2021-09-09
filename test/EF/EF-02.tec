@@ -14,7 +14,7 @@ B,Z PW                          !! Write data
 
 @I/123456/                      !! Add more data
 
-EF                              !! Close output file
+EF                              !! Test: close output file
 
 HK
 

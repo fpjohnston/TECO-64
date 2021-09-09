@@ -4,11 +4,10 @@
 
 10 < @I/0123456789/ 10I >
 
-0J Z-110 "N ::^C '
- L Z-110 "N ::^C '
-3L Z-110 "N ::^C '
-4L Z-110 "N ::^C '
-2L Z-110 "N ::^C '
+0J Z-110 "N ::^C '                  !! Test: Z at start of buffer
+ L Z-110 "N ::^C '                  !! Test: Z after L
+3L Z-110 "N ::^C '                  !! Test: Z after 3L
+4L Z-110 "N ::^C '                  !! Test: Z after 4L
+2L Z-110 "N ::^C '                  !! Test: Z after 2L
 
 :@^A/!PASS!/
-^C^C

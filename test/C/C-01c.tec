@@ -45,7 +45,7 @@ All mimsy were the borogoves,
 
 ZJ
 
--(Z+1) C                        !! Test nC, where n > preceding chrs.
+-(Z+1) C                        !! Test: nC, where n > preceding chrs.
 
 ::^C
 

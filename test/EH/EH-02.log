@@ -2,7 +2,7 @@
 !! Commands: 1EH
 !! Expect: ?FNF [EH-02.log]
 
-1 EH
+1 EH                                !! Test: minimal error message
 EH=
 @ER/FOO/
 ``

@@ -4,11 +4,11 @@
 
 10 < @I/0123456789/ 10I >
 
-0J .-  0 "N ::^C '
- L .- 11 "N ::^C '
+0J .-  0 "N ::^C '                  !! Test: . at start of buffer
+ L .- 11 "N ::^C '                  !! Test: . in middle of buffer
 3L .- 44 "N ::^C '
 4L .- 88 "N ::^C '
-2L .-110 "N ::^C '
+2L .-110 "N ::^C '                  !! Test: . at end of buffer
 
 HK
 
