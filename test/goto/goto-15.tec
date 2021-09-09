@@ -8,7 +8,7 @@
     UA                              !! Index value for GOTO
 
     QA @:=/Index = %d -> /
-    QA @O/tag1,tag2,,tag4/
+    QA @O/tag1,tag2,,tag4/          !! Test: computed GOTO
 
     0 UA   @^A/no tag/  0 MB @O/end/
 

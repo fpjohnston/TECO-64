@@ -2,6 +2,8 @@
 !! Commands: (misc.)
 !! Expect: PASS
 
+!! Test: library vtedit.tec macro
+
 1 @EI/vtedit/
 :@^A/!PASS!/
 ^C

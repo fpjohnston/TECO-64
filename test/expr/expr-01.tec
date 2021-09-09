@@ -4,6 +4,6 @@
 
 64 UA           !! No. of values we'll push on expression stack
 
-QA < :@^UA/123 / MA >
+QA < :@^UA/123 / MA >               !! Test: push numeric values
 
 :@^A/!PASS!/

@@ -2,6 +2,6 @@
 !! Commands: ?FNF
 !! Expect: ?FNF [FNF.log]
  
-@^UA{baz}       !! Name of non-existent input file
+@^UA{baz}                           !! Name of non-existent input file
 
-@ER/^EQA/       !! Open file for reading
+@ER/^EQA/                           !! Test: open file for read

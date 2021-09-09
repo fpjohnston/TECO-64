@@ -2,6 +2,8 @@
 !! Commands: "C
 !! Expect: PASS
 
+!! Test: "C
+
 0 UC            !! Start at NUL
 
 ^^$ < %C-1 "C ::^C ' >         !! NUL to $

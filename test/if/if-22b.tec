@@ -2,6 +2,6 @@
 !! Commands: F'
 !! Expect: ?MAP
 
-F'
+F'                                  !! Test: F' outside of conditionalk
 
 :@^A/!PASS!/

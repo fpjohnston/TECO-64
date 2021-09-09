@@ -1,6 +1,8 @@
-!! TECO-64 test script: Print global Q-registers
-!! Commands: :G
+!! TECO-64 test script: Copy global Q-registers
+!! Commands: G
 !! Expect: PASS [G-02.log]
+
+!! Test: print global Q-registers
 
 0 U.A
 HK

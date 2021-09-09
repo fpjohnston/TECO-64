@@ -2,7 +2,7 @@
 !! Commands: O
 !! Expect: PASS
 
-@O!tag1!
+@O!tag1!                            !! Test: branch forward
 
 @^A/?FAIL/
 

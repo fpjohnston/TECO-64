@@ -19,33 +19,33 @@
     '
 }
 
-@^UA{ 10        }     10 :MB        !! Simple value
+@^UA{ 10        }     10 :MB        !! Test: numeric value
 
-@^UA{ +10       }     10 :MB        !! Unary plus
+@^UA{ +10       }     10 :MB        !! Test: unary plus
 
-@^UA{ -10       }    -10 :MB        !! Unary minus
+@^UA{ -10       }    -10 :MB        !! Test: unary minus
 
-@^UA{ 10 + 3    }     13 :MB        !! Addition
-@^UA{ 10 + +3   }     13 :MB        !! Addition
-@^UA{ 10 + -3   }      7 :MB        !! Addition
+@^UA{ 10 + 3    }     13 :MB        !! Test: addition
+@^UA{ 10 + +3   }     13 :MB        !! Test: addition
+@^UA{ 10 + -3   }      7 :MB        !! Test: addition
 
-@^UA{ 10 - 3    }      7 :MB        !! Subtraction
-@^UA{ 10 - -3   }     13 :MB        !! Subtraction
-@^UA{ -10 - 3   }    -13 :MB        !! Subtraction
+@^UA{ 10 - 3    }      7 :MB        !! Test: subtraction
+@^UA{ 10 - -3   }     13 :MB        !! Test: subtraction
+@^UA{ -10 - 3   }    -13 :MB        !! Test: subtraction
 
-@^UA{ 10 * 3    }     30 :MB        !! Multiplication
-@^UA{ -10 * 3   }    -30 :MB        !! Multiplication
-@^UA{ 10 * -3   }    -30 :MB        !! Multiplication
+@^UA{ 10 * 3    }     30 :MB        !! Test: multiplication
+@^UA{ -10 * 3   }    -30 :MB        !! Test: multiplication
+@^UA{ 10 * -3   }    -30 :MB        !! Test: multiplication
 
-@^UA{ 10 / 3    }      3 :MB        !! Division, yielding quotient
-@^UA{ -10 / 3   }     -3 :MB        !! Division, yielding quotient
-@^UA{ 10 / -3   }     -3 :MB        !! Division, yielding quotient
+@^UA{ 10 / 3    }      3 :MB        !! Test: division, yielding quotient
+@^UA{ -10 / 3   }     -3 :MB        !! Test: division, yielding quotient
+@^UA{ 10 / -3   }     -3 :MB        !! Test: division, yielding quotient
 
-@^UA{ 10 & 3    }      2 :MB        !! Logical AND
+@^UA{ 10 & 3    }      2 :MB        !! Test: logical AND
 
-@^UA{ 10 # 3    }     11 :MB        !! Logical OR
+@^UA{ 10 # 3    }     11 :MB        !! Test: logical OR
 
-@^UA{ 10^_      }    -11 :MB        !! 1's complement
+@^UA{ 10^_      }    -11 :MB        !! Test: 1's complement
 
 QF "N
     ::^C

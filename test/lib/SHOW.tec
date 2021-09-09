@@ -2,6 +2,8 @@
 !! Commands: (misc.)
 !! Expect: PASS
 
+!! Test: library show.tec macro
+
 @EI/show/
 :@^A/!PASS!/
 ^C

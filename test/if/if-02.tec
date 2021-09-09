@@ -2,6 +2,8 @@
 !! Commands: "x, |
 !! Expect: PASS
 
+!! Test: nested conditionals w/ else
+
 1"N
 |
   2"N

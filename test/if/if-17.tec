@@ -2,6 +2,8 @@
 !! Commands: "S
 !! Expect: PASS
 
+!! Test: "S
+
  0 "S   ::^C '
  1 "S   ::^C '
 -1 "S | ::^C '

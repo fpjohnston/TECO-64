@@ -2,10 +2,10 @@
 !! Commands: F'
 !! Expect: PASS
 
-0 "E F' ::^C '
+0 "E F' ::^C '                      !! Test: F' after "
 
-0 "E F' ::^C | ::^C '
+0 "E F' ::^C | ::^C '               !! Test: F' after " and before |
 
-0 "N | F' ::^C '
+0 "N | F' ::^C '                    !! Test: F' after |
 
 :@^A/!PASS!/

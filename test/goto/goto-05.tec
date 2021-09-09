@@ -3,7 +3,7 @@
 !! Expect: PASS
 
 1 <
-    @O!tag1!
+    @O!tag1!                        !! Test: branch forward
 
     ::^C
 

@@ -2,19 +2,19 @@
 !! Commands: :=
 !! Expect: PASS [equals-02.log]
 
-@^A/value = [/    0 := :@^A/]/
-@^A/value = [/   -1 := :@^A/]/
-@^A/value = [/  123 := :@^A/]/
-@^A/value = [/ -456 := :@^A/]/
+@^A/value = [/    0 := :@^A/]/      !! Test:    0:= in decimal
+@^A/value = [/   -1 := :@^A/]/      !! Test:   -1:= in decimal
+@^A/value = [/  123 := :@^A/]/      !! Test:  123:= in decimal
+@^A/value = [/ -456 := :@^A/]/      !! Test: -456:= in decimal
 
-@^A/value = [/    0 :== :@^A/]/
-@^A/value = [/   -1 :== :@^A/]/
-@^A/value = [/  123 :== :@^A/]/
-@^A/value = [/ -456 :== :@^A/]/
+@^A/value = [/    0 :== :@^A/]/     !! Test:    0:== in octal
+@^A/value = [/   -1 :== :@^A/]/     !! Test:   -1:== in octal
+@^A/value = [/  123 :== :@^A/]/     !! Test:  123:== in octal
+@^A/value = [/ -456 :== :@^A/]/     !! Test: -456:== in octal
 
-@^A/value = [/    0 :=== :@^A/]/
-@^A/value = [/   -1 :=== :@^A/]/
-@^A/value = [/  123 :=== :@^A/]/
-@^A/value = [/ -456 :=== :@^A/]/
+@^A/value = [/    0 :=== :@^A/]/    !! Test:    0:=== in hexadecimal
+@^A/value = [/   -1 :=== :@^A/]/    !! Test:   -1:=== in hexadecimal
+@^A/value = [/  123 :=== :@^A/]/    !! Test:  123:=== in hexadecimal
+@^A/value = [/ -456 :=== :@^A/]/    !! Test: -456:=== in hexadecimal
 
 :@^A/!PASS!/

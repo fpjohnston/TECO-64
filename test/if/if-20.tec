@@ -2,6 +2,8 @@
 !! Commands: "V
 !! Expect: PASS
 
+!! Test: "V
+
 0 UC            !! Start at NUL
 
 ^^a < %C-1 "V ::^C ' >          !! NUL to lower case

@@ -2,6 +2,8 @@
 !! Commands: "D
 !! Expect: PASS
 
+!! Test: "D
+
 0 UC            !! Start at NUL
 
 ^^0 < %C-1 "D ::^C ' >          !! NUL to digits

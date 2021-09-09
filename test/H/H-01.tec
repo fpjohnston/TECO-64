@@ -4,28 +4,28 @@
 
 @I/0123456789/ 10I              !! Add a line
 
-H UZ UB
+H UZ UB                         !! Test: H w/ 1 line
 
 QB - B "N ::^C '
 QZ - Z "N ::^C '
 
 @I/0123456789/ 10I              !! Add another line
 
-H UZ UB
+H UZ UB                         !! Test: H w/ 2 lines
 
 QB - B "N ::^C '
 QZ - Z "N ::^C '
 
 @I/0123456789/ 10I              !! Add another line
 
-H UZ UB
+H UZ UB                         !! Test: H w/ 3 lines
 
 QB - B "N ::^C '
 QZ - Z "N ::^C '
 
-HK                              !! Delete all lines
+B,ZK                            !! Delete all lines
 
-H UZ UB
+H UZ UB                         !! Test: H w/ empty buffer
 
 QB - B "N ::^C '
 QZ - Z "N ::^C '

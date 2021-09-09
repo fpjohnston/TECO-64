@@ -2,6 +2,8 @@
 !! Commands: "x
 !! Expect: ?MAX
 
+!! Test: nested conditionals
+
 1"N
   2"N
     3"N

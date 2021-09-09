@@ -2,6 +2,8 @@
 !! Commands: "W
 !! Expect: PASS
 
+!! Test: "W
+
 0 UC            !! Start at NUL
 
 ^^A < %C-1 "W ::^C ' >          !! NUL to upper case

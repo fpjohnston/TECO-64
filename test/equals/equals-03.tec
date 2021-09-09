@@ -2,18 +2,18 @@
 !! Commands: @=//
 !! Expect: PASS [equals-03.log]
 
-@^A/value = /  123 @=//
-@^A/value = /  123 @=/[%d]/
-@^A/value = /  123 @=/[%u]/
-@^A/value = /  123 @=/[%6d]/
-@^A/value = /  123 @=/[%-6d]/
+@^A/value = /  123 @=//             !! Test: n@=//
+@^A/value = /  123 @=/[%d]/         !! Test: n@=/%d/
+@^A/value = /  123 @=/[%u]/         !! Test: n@=/%u/
+@^A/value = /  123 @=/[%6d]/        !! Test: n@=/%6d/
+@^A/value = /  123 @=/[%-6d]/       !! Test: n@=/%-6d/
 
-@^A/value = /  -1 @=//
-@^A/value = /  -1 @=/[%d]/
-@^A/value = /  -1 @=/[%u]/
-@^A/value = /  -1 @=/[%6d]/
-@^A/value = /  -1 @=/[%-6d]/
+@^A/value = /  -1 @=//              !! Test: -1@=//
+@^A/value = /  -1 @=/[%d]/          !! Test: -1@=/%d/
+@^A/value = /  -1 @=/[%u]/          !! Test: -1@=/%u/
+@^A/value = /  -1 @=/[%6d]/         !! Test: -1@=/%6d/
+@^A/value = /  -1 @=/[%-6d]/        !! Test: -1@=/%-6d/
 
-@^A/value = /   0 @=/[%d]/
+@^A/value = /   0 @=/[%d]/          !! Test: 0@=/%d/
 
 :@^A/!PASS!/

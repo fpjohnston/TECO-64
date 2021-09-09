@@ -2,7 +2,7 @@
 !! Commands: ^H
 !! Expect: PASS
 
-^H UA                               !! Get time of day in milliseconds
+^H UA                               !! Test: Get time of day in milliseconds
 QA / 1000 UB                        !! Convert to seconds
 
 !! The number of seconds must be in the range [0,86400)

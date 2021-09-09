@@ -2,19 +2,19 @@
 !! Commands: ,
 !! Expect: PASS
 
- 1,  0 UA UB
+ 1,  0 UA UB                        !! Test: m,0
 
 QA   "N ::^C ' QB-1 "N ::^C '
 
- 0,  1 UA UB
+ 0,  1 UA UB                        !! Test: 0,n
 
 QA-1 "N ::^C ' QB "N ::^C '
 
- 1,  2 UA UB
+ 1,  2 UA UB                        !! Test: m,n
 
 QA-2 "N ::^C ' QB-1 "N ::^C '
 
-1,  -2 UA UB
+1,  -2 UA UB                        !! Test: m,-n
 
 QA+2 "N ::^C ' QB-1 "N ::^C '
 
