@@ -1,0 +1,27 @@
+!! TECO-64 test script: Delete characters
+!! Commands: :D
+!! Expect: PASS
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// Z UA 0 UD 0J
+
+0J -:D                              !! Test: -D
+"S ::^C '
+
+0J -1:D                             !! Test: -1:D
+"S ::^C '
+
+20C -40:D                           !! Test: -n:D
+"S ::^C '
+
+ZJ :D                               !! Test: :D
+"S ::^C '
+
+ZJ 1:D                              !! Test: 1:D
+"S ::^C '
+
+20J 40:D                            !! Test: n:D
+"S ::^C '
+
+HK
+
+:@^A/!PASS!/
