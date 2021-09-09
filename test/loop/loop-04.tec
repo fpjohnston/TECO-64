@@ -2,4 +2,6 @@
 !! Commands: >
 !! Expect: ?BNI
 
+!! Test: > w/o <
+
 >

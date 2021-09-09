@@ -12,6 +12,6 @@ EC
 
 2,0 ED
 
-Y
+Y                                   !! Test: yank w/ data in buffer
 
 HK

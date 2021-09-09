@@ -2,6 +2,8 @@
 !! Commands: ^U
 !! Expect: PASS [_U-01.log]
 
+!! Test: load global Q-registers w/ text
+
 0 U.A
 10 <
     @I"@^U"

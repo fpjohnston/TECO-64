@@ -2,6 +2,8 @@
 !! Commands: <, >
 !! Expect: PASS
 
+!! Test: nested loops
+
 !1! 1 <
   !2! 1 <
     !3! 1 <

@@ -2,8 +2,8 @@
 !! Commands: n;
 !! Expect: PASS
 
-1 < 0; ::^C > 
+1 < 0; ::^C >                       !! Test: loop w/ 0;
 
-1 < 1; ::^C > 
+1 < 1; ::^C >                       !! Test: loop w/ 1;
 
 :@^A/!PASS!/

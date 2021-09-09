@@ -44,14 +44,14 @@ All mimsy were the borogoves,
 0J
 
 3@S/Jabberwock/
-^S+10 "N
+^S+10 "N                            !! Test: ^S after S command
     ^S @=/^S=%d/
     :@^A/FAIL/
     ::^C
 '
 
 @I/y baby/
-^S+6 "N
+^S+6 "N                             !! Test: ^S after I command
     ^S @=/^S=%d/
     :@^A/FAIL/
     ::^C
@@ -60,14 +60,14 @@ All mimsy were the borogoves,
 590,620 XA
 
 GA
-^S+30 "N
+^S+30 "N                            !! Test: ^S after Gq command
     ^S @=/^S=%d/
     :@^A/FAIL/
     ::^C
 '
 
 G_
-^S+10 "N
+^S+10 "N                            !! Test: ^S after G_ command
     ^S @=/^S=%d/
     :@^A/FAIL/
     ::^C
@@ -80,7 +80,7 @@ G_
 '
 
 G*
-^S+13 "N
+^S+13 "N                            !! Test: ^S after G* command
     ^S @=/^S=%d/
     :@^A/FAIL/
     ::^C

@@ -45,7 +45,7 @@ All mimsy were the borogoves,
 
 0J
 
--(Z+1) R                        !! Test -nR, where n > following chrs.
+-(Z+1) R                        !! Test: -nR, where n > following chrs.
 
 ::^C
 

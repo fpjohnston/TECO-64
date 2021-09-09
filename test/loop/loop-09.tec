@@ -6,7 +6,7 @@
 
 0J
 
-1 < @S/foo/:; ::^C > 
+1 < @S/foo/:; ::^C >                !! Test: loop w/ @S//:;
 
 HK
 

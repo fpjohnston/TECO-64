@@ -2,7 +2,7 @@
 !! Commands: U
 !! Expect: ?NAU
 
-UN UM
+UN UM                               !! Test: load Q-registers using M
 QM
 @:=/QM=%d: /
 QN @:=/QN=%d: /

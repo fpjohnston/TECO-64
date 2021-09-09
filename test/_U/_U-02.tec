@@ -3,7 +3,7 @@
 !! Expect: PASS [_U-02.log]
 
 @^UA/hello/
-:@^UA/, world!/
+:@^UA/, world!/                     !! Test: append string to Q-register
 
 :GA -1^T
 

@@ -2,7 +2,7 @@
 !! Commands: :U
 !! Expect: PASS
 
-:UN
+:UN                                 !! Test: load Q-register w/ default
 QN @:=/QN=%d: /
 
 :@^A/!PASS!/

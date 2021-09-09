@@ -6,6 +6,8 @@
 0 UA
 @^UA{ QB-%A "N QA @=/Expected %d, got / QB= %F ' }
 
+!! Test: get values of all ASCII characters
+
 ^^ UB MA
 ^^ UB MA
 ^^ UB MA

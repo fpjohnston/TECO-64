@@ -6,6 +6,6 @@
 
 0J
 
-@S/foo/
+@S/foo/                             !! Test: @S//
 
 HK

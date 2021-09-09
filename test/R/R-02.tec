@@ -47,25 +47,25 @@ ZJ
 
 . UA
 
-:R        "U ::^C '
+:R        "U ::^C '                 !! Test: :R
 
-1:R       "U ::^C '
+1:R       "U ::^C '                 !! Test: 1:R
 
-10:R      "U ::^C '
+10:R      "U ::^C '                 !! Test: n:R, w/ n < preceding chrs.
 
-Z-.:R     "U ::^C '
+Z-.:R     "U ::^C '                 !! Test: n:R, w/ n == preceding chrs.
 
--:R       "U ::^C '
+-:R       "U ::^C '                 !! Test: -:R
 
--1:R      "U ::^C '
+-1:R      "U ::^C '                 !! Test: -1:R
 
--10:R     "U ::^C '
+-10:R     "U ::^C '                 !! Test: -n:R, w/ n < following chrs.
 
-Z. :R     "U ::^C '
+Z-.:R     "U ::^C '                 !! Test: n:R, w/ n == preceding chrs.
 
-Z+1 :R    "S ::^C '
+Z+1 :R    "S ::^C '                 !! Test: n:R, w/ n > preceding chrs
 
--(Z+1) :R "S ::^C '
+-(Z+1) :R "S ::^C '                 !! Test: n:R, w/ n > following chrs.
 
 HK
 

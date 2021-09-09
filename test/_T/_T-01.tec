@@ -2,7 +2,7 @@
 !! Commands: ^T
 !! Expect: PASS [_T-01.log]
 
-^^H ^T
+^^H ^T                              !! Test: nT
 ^^e ^T
 ^^l ^T
 ^^l ^T
@@ -16,7 +16,7 @@
 ^^d ^T
 ^^! ^T
 
--1 ^T
+-1 ^T                               !! Test: -1T
 
 :@^A/!PASS!/
 

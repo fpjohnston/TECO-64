@@ -6,15 +6,15 @@
 
 123456 UA
 
-@^A/QA=/ QA=
+@^A/QA=/ QA=                        !! Test: Q
 
-@^A/:QA=/ :QA=
+@^A/:QA=/ :QA=                      !! Test: :Q
 
 0 UB
 
 !! Print out contents of Q-register, one character at a time
 
-:QA < QB QA ^T %B >
+:QA < QB QA ^T %B >                 !! Test: nQ
 
 -1 ^T
 

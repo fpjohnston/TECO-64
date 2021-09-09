@@ -18,31 +18,31 @@ EC                              !! Write data and close file
 
 :@ER{/tmp/foo} "U ::^C '        !! Open 1st file on primary stream
 
-^N @=/^R^N=%d/
+^N @=/^R^N=%d/                  !! Test: ^N after opening primary
 
 A
 
-^N @=/^R^N=%d/
+^N @=/^R^N=%d/                  !! Test: ^N after A
 
 EP                              !! Switch to secondary stream
 
 :@ER{/tmp/baz} "U ::^C '        !! Open 2nd file on secondary stream
 
-^N @=/^R^N=%d/
+^N @=/^R^N=%d/                  !! Test: ^N after opening secondary
 
 A
 
-^N @=/^R^N=%d/
+^N @=/^R^N=%d/                  !! Test: ^N after A
 
 @ER//                           !! Switch to primary stream
 
-^N @=/^R^N=%d/
+^N @=/^R^N=%d/                  !! Test: ^N after switching to primary
 
 EC
 
 EP                              !! Switch to secondary stream
 
-^N @=/^R^N=%d/
+^N @=/^R^N=%d/                  !! Test: ^N after switching to secondary
 
 EC
 

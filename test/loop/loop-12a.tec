@@ -2,15 +2,15 @@
 !! Commands: F>
 !! Expect: PASS
 
-1 UA QA < -1%A "L ::^C ' F> >
+1 UA QA < -1%A "L ::^C ' F> >       !! Test: 1 < F> >
 
 QA "N ::^C '
 
-10 UA QA < -1%A "L ::^C ' F> > 
+10 UA QA < -1%A "L ::^C ' F> >      !! Test: 10 < F> >
 
 QA-9 "N ::^C '
 
-1000 UA  < -1%A "L ::^C ' F> > 
+1000 UA  < -1%A "L ::^C ' F> >      !! Test: 1000 < F> >
 
 QA-999 "N ::%C '
 

@@ -2,6 +2,8 @@
 !! Commands: <, >
 !! Expect: ?MAX
 
+!! Test: nested loops
+
 !1! 1 <
   !2! 1 <
     !3! 1 <

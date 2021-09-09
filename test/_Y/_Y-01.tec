@@ -5,7 +5,7 @@
 @I/abcdef
 /
 
-^Y UC UB
+^Y UC UB                            !! Test: ^Y after I command
 ^S UA
 
 .:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
@@ -16,7 +16,7 @@
 
 :@S/cde/ "U ::^C '
 
-^Y UC UB
+^Y UC UB                            !! Test: ^Y after S command
 ^S UA
 
 .:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
@@ -27,7 +27,7 @@
 
 GA
 
-^Y UC UB
+^Y UC UB                            !! Test: ^Y after G command
 ^S UA
 
 .:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/

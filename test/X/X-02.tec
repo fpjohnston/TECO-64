@@ -14,17 +14,17 @@ HK
 >
 
 :@^A/-----/
-0J 1:XA :GA
+0J 1:XA :GA                         !! Test: 1:X
 :@^A/-----/
-2L 2:XA :GA
+2L 2:XA :GA                         !! Test: 2:X
 :@^A/-----/
-3L 3:XA :GA
+3L 3:XA :GA                         !! Test: 3:X
 :@^A/-----/
-ZJ -3:XA :GA
+ZJ -3:XA :GA                        !! Test: -3:X
 :@^A/-----/
--4L -2:XA :GA
+-4L -2:XA :GA                       !! Test: -2:X
 :@^A/-----/
--3L -1:XA :GA
+-3L -1:XA :GA                       !! Test: -1:X
 :@^A/-----/
 
 :@^A/!PASS!/

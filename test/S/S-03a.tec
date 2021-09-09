@@ -6,7 +6,7 @@
 
 0J
 
-:@S/xyz/
+:@S/xyz/                            !! Test: :@S//
 
 "U
     ::^C

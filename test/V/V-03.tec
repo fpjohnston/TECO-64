@@ -45,10 +45,10 @@ All mimsy were the borogoves,
 
 0 J
 19 L
-:@^A/-----/ 0 V
-:@^A/-----/ 1 V
-:@^A/-----/ 2 V
-:@^A/-----/ 3 V
+:@^A/-----/ 0 V                     !! Test: 0V
+:@^A/-----/ 1 V                     !! Test: 1V
+:@^A/-----/ 2 V                     !! Test: 2V
+:@^A/-----/ 3 V                     !! Test: 3V
 HK
 
 :@^A/!PASS!/

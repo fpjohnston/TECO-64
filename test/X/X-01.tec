@@ -14,19 +14,19 @@ HK
 >
 
 :@^A/-----/
-0J 1XA :GA
+0J 1XA :GA                          !! Test: 1X
 :@^A/-----/
-2L 2XA :GA
+2L 2XA :GA                          !! Test: 2X
 :@^A/-----/
-3L 3XA :GA
+3L 3XA :GA                          !! Test: 3X
 :@^A/-----/
-ZJ -3XA :GA
+ZJ -3XA :GA                         !! Test: 4X
 :@^A/-----/
--4L -2XA :GA
+-4L -2XA :GA                        !! Test: -2X
 :@^A/-----/
--3L -1XA :GA
+-3L -1XA :GA                        !! Test: -1X
 :@^A/-----/
-HXA :GA
+HXA :GA                             !! Test: HX
 :@^A/-----/
 
 :@^A/!PASS!/

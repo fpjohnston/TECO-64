@@ -12,9 +12,9 @@ HK
 @^U.B
 {
      . :@=/.=%-3d, /
-     0:L M.A @^A/ in page, /
-    -1:L M.A @^A/ preceding dot, /
-     1:L M.A :@^A/ following dot/
+     0:L M.A @^A/ in page, /        !! Test:  0:L
+    -1:L M.A @^A/ preceding dot, /  !! Test: -1:L
+     1:L M.A :@^A/ following dot/   !! Test:  1:L
 }
 
 10 <

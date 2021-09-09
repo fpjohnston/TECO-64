@@ -2,6 +2,6 @@
 !! Commands: :;
 !! Expect: PASS
 
-1 < @S/baz/; ::^C > 
+1 < @S/baz/; ::^C >                 !! Test: loop w/ @S//;
 
 :@^A/!PASS!/

@@ -4,11 +4,11 @@
 
 0 UA
 
-%A - 1 "N ::^C '               !! Increment w/ implicit value
+%A - 1 "N ::^C '               !! Test: %
 
-10 %A - 11 "N ::^C '           !! Increment w/ explicit value
+10 %A - 11 "N ::^C '           !! Test: n%
 
--16 %A + 5 "N ::^C '           !! Decrement w/ explicit value
+-16 %A + 5 "N ::^C '           !! Test: -n%
 
 :@^A/!PASS!/
 

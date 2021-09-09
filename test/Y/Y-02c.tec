@@ -10,10 +10,10 @@ EC
 
 @EB{/tmp/foo}
 
-:Y "E ::^C '                        !! 1st yank should succeed (not at EOF)
+:Y "E ::^C '                        !! Test: yank before EOF
 
 HK
 
-:Y "N ::^C '                        !! 2nd yank should fail (at EOF)
+:Y "N ::^C '                        !! Test: yank after EOF
 
 :@^A/!PASS!/

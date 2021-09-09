@@ -2,7 +2,7 @@
 !! Commands: n^U
 !! Expect: PASS [_U-03.log]
 
-^^h @^UA//
+^^h @^UA//                          !! Test: copy character to Q-register
 ^^e @^UA//
 ^^l @^UA//
 ^^l @^UA//

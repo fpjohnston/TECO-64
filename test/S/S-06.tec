@@ -13,7 +13,7 @@ HK
 
 !! Ensure that text preceding position doesn't match
 
-::@S/abcd/
+::@S/abcd/                          !! Test: ::@S//
 
 "S
     ::^C
@@ -23,7 +23,7 @@ HK
 
 . UA
 
-::@S/1234/
+::@S/1234/                          !! Test: ::@S//
 
 "U
     ::^C
@@ -37,7 +37,7 @@ HK
 
 !! Ensure that text ahead of dot doesn't match
 
-::@S/6789/
+::@S/6789/                          !! Test: ::@S//
 
 "S
     ::^C
@@ -45,7 +45,7 @@ HK
 
 !! Ensure that backward compare fails
 
--::@S/4/
+-::@S/4/                            !! Test: -::@S//
 
 "S
     ::^C
@@ -53,7 +53,7 @@ HK
 
 !! Ensure that text not in buffer doesn't match
 
-::@S/foobaz/
+::@S/foobaz/                        !! Test: @S//
 
 "S
     ::^C

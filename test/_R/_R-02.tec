@@ -2,4 +2,5 @@
 !! Commands: ^R
 !! Expect: ?IRA
 
-:@^A/Setting radix to binary/       2 ^R ^D
+:@^A/Setting radix to binary/
+2 ^R ^D                             !! Test: 2^R

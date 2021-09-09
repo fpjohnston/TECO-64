@@ -15,10 +15,10 @@ HK
 
 ZJ
 
-@-S/abc/ .=
-@-1S/abc/ .=
-@-2S/abc/ .=
-@-3S/abc/ .=
+@-S/abc/ .=                         !! Test: -S
+@-1S/abc/ .=                        !! Test: -1S
+@-2S/abc/ .=                        !! Test: -2S
+@-3S/abc/ .=                        !! Test: -3S
 
 HK
 

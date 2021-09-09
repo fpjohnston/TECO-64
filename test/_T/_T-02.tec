@@ -4,7 +4,7 @@
 
 0,4096 ET                               !! Say we can handle 8-bit chrs.
 
-^^H+128 ^T
+^^H+128 ^T                              !! Test: nT w/ n > 128
 ^^e+128 ^T
 ^^l+128 ^T
 ^^l+128 ^T
