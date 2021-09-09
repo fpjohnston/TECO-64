@@ -1,9 +1,10 @@
 *!! TECO-64 test script: Cancel all input lines
 !! Commands: ^G^G
 !! Expect: PASS [_G_G.log]
+
 iabc
 def
 ghi^G^G
-*
-*!PASS!
+*                             !! Test: cancel all input lines
+!PASS!
 ex``
