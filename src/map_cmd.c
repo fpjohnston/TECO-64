@@ -131,7 +131,7 @@ void exec_FF(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int_t i = 0;                          // Index into CTRL/F array
+    int_t i = 0;                        // Index into CTRL/F array
 
     if (cmd->n_set && ((i = cmd->n_arg - '0') < 0 || i > 9))
     {
