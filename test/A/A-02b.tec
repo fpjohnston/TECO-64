@@ -1,0 +1,35 @@
+!! TECO-64 test script: Append text to edit buffer
+!! Commands: A
+!! Expect: PASS [A-02b.log]
+
+0,64 E3                             !! Suppress informational messages
+1,0 E3                              !! Disable FF as a regular character
+
+0 UA
+4 UI
+5 UJ
+
+QI <
+    QJ <
+        . UC
+        %A UB QA-10 "L 32@I// ' QA \
+        @I/ abcdefghijklmnopqrstuvwxyz0123456789/
+        10@I//
+        .-QC UL
+    >
+    12@I//
+>
+
+:@EW{/tmp/foo} "U ::^C '
+EC
+
+:@ER{/tmp/foo} "U ::^C '
+
+A                                   !! Test: append 1st page to buffer
+A                                   !! Test: append 2nd page to buffer
+
+Z-(QJ * QL * 2) "N ::^C '
+
+HT HK
+
+:@^A/!PASS!/
