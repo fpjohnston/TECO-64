@@ -38,6 +38,7 @@
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
+#include "qreg.h"
 
 #if     defined(DISPLAY_MODE)
 
@@ -135,6 +136,13 @@ void exec_FF(struct cmd *cmd)
 
     if (cmd->n_set && ((i = cmd->n_arg - '0') < 0 || i > 9))
     {
+        if (cmd->colon)
+        {
+            push_x(FAILURE, X_OPERAND); // Command failed
+
+            return;
+        }
+
         throw(E_INA);
     }
 
@@ -149,6 +157,11 @@ void exec_FF(struct cmd *cmd)
         ctrl_f_cmd[i] = alloc_mem(key.len + 1);
 
         strcpy(ctrl_f_cmd[i], key.data);
+    }
+
+    if (cmd->colon)
+    {
+        push_x(SUCCESS, X_OPERAND);     // Command succeeded
     }
 }
 
@@ -452,7 +465,7 @@ bool scan_FF(struct cmd *cmd)
     assert(cmd != NULL);
     reject_m(cmd->m_set);
     require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
+    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);
 
     return false;

@@ -1,0 +1,5 @@
+!! TECO-64 test script: Map command string to CTRL/F sequence
+!! Commands: @FF
+!! Expect: ?INA
+
+^^Z@FF/BAZ/                         !! Test: map commands to <CTRL/F>Z
