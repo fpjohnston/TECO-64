@@ -3,5 +3,3 @@
 !! Expect: ?KEY
 
 @FM/BAZ/EX/                         !! Test: map key to command
-
-:@^A/!PASS!/
