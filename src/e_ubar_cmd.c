@@ -93,7 +93,7 @@ void exec_E_ubar(struct cmd *cmd)
     }
     else
     {
-        search_failure(cmd);
+        search_failure(cmd, f.ed.keepdot);
     }
 }
 

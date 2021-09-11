@@ -143,7 +143,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
         if (cmd->m_set && cmd->m_arg != 0)
         {
-            int_t nbytes = -cmd->m_arg + 1;
+            int_t nbytes = -abs(cmd->m_arg) + 1;
 
             if (s.text_end < s.text_start + nbytes)
             {
@@ -160,7 +160,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
         if (cmd->m_set && cmd->m_arg != 0)
         {
-            int_t nbytes = cmd->m_arg - 1;
+            int_t nbytes = abs(cmd->m_arg) - 1;
 
             if (s.text_end > s.text_start + nbytes)
             {
@@ -189,7 +189,7 @@ static void exec_search(struct cmd *cmd, bool replace)
     }
     else
     {
-        search_failure(cmd);
+        search_failure(cmd, cmd->m_set ? (bool)true : f.ed.keepdot);
     }
 }
 

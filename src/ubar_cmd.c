@@ -136,7 +136,7 @@ static void exec_search(struct cmd *cmd, bool replace)
     }
     else
     {
-        search_failure(cmd);
+        search_failure(cmd, f.ed.keepdot);
     }
 }
 

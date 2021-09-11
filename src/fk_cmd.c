@@ -70,7 +70,7 @@ void exec_FK(struct cmd *cmd)
     }
     else
     {
-        search_failure(cmd);
+        search_failure(cmd, f.ed.keepdot);
     }
 }
 

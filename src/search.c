@@ -409,7 +409,7 @@ bool search_backward(struct search *s)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void search_failure(struct cmd *cmd)
+void search_failure(struct cmd *cmd, bool keepdot)
 {
     assert(cmd != NULL);
 
@@ -419,7 +419,7 @@ void search_failure(struct cmd *cmd)
     }
     else
     {
-        if (!f.ed.keepdot)
+        if (!keepdot)
         {
             setpos_ebuf(t.B);
         }
