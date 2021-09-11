@@ -121,6 +121,7 @@ The *squish.tec* indirect command file may be used to squish macros, as in the f
 | *n*FL     | Change the following *n* lines to lower case. |
 | -*n*FL    | Change the preceding *n* lines to lower case. |
 | *m*,*n*FL | Change all characters between buffer positions *m* and *n* to lower case. |
+| HFL       | Change contents of entire edit buffer to lower case. |
 | FU        | Change current line to upper case, from dot through end of line. |
 | 1FU       | Same as FU. |
 | 0FU       | Change current line to upper case, from beginning of line to dot. |
@@ -130,6 +131,7 @@ The *squish.tec* indirect command file may be used to squish macros, as in the f
 | *n*FU     | Change the following *n* lines to upper case. |
 | -*n*FU    | Change the preceding *n* lines to upper case. |
 | *m*,*n*FU | Change all characters between buffer positions *m* and *n* to upper case. |
+| HFU       | Change contents of entire edit buffer to upper case. |
 | ^V        | Puts TECO into lower case conversion mode. In this mode, all alphabetic characters in string arguments are automatically changed to lower case. This mode can be overridden by explicit case control within the search string. This command makes all strings behave as if they began with a \<CTRL/V\>\<CTRL/V\>. |
 | 0^V       | Returns TECO to its original mode. No special case conversion occurs within strings except those case conversions that are explicitly specified by \<CTRL/V\> and \<CTRL/W\> string build constructs located within the string. |
 | ^W        | Puts TECO into upper case conversion mode. In this mode, all alphabetic characters in string arguments are automatically changed to upper case. This mode can be overridden by explicit case control within the search string. This command makes all strings behave as if they began with \<CTRL/W\>\<CTRL/W\>. |

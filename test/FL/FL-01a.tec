@@ -1,0 +1,61 @@
+!! TECO-64 test script: Convert text to lower case
+!! Commands: FL
+!! Expect: PASS
+ 
+HK
+
+0 UA
+
+15 < %A-10 "L 32I ' QA \ @I/. abcdefg HIJKLMN/ 10I>
+
+HT 10^T 0J
+
+.@=/FU: .=%d/
+
+FU                                  !! Test: FU
+
+L HT 10^T
+
+.@=/1 FU: .=%d/
+
+1 FU                                !! Test: FU
+
+2L HT 10^T
+
+.@=/2 FU: .=%d/
+
+2 FU                                !! Test: nFU
+
+ZJ HT 10^T
+
+.@=/-FU: .=%d/
+
+-FU                                 !! Test: -FU
+
+-L HT 10^T
+
+.@=/-1 FU: .=%d/
+
+-1 FU                               !! Test: -1FU
+
+-L HT 10^T
+
+.@=/-2 FU: .=%d/
+
+-2 FU                               !! Test: -nFU
+
+HT 10^T
+
+.@=/120,140 FU: .=%d/
+
+120,140 FU                          !! Test: m,nFU
+
+HT 10^T
+
+.@=/H FU: .=%d/
+
+H FU                                !! Test: HFU
+
+HT 10^T
+
+:@^A/!PASS!/
