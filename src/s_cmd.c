@@ -189,7 +189,7 @@ static void exec_search(struct cmd *cmd, bool replace)
     }
     else
     {
-        search_failure(cmd, cmd->m_set ? (bool)true : f.ed.keepdot);
+        search_failure(cmd, cmd->m_set ? true : f.ed.keepdot);
     }
 }
 

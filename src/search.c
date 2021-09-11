@@ -409,7 +409,7 @@ bool search_backward(struct search *s)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void search_failure(struct cmd *cmd, bool keepdot)
+void search_failure(struct cmd *cmd, uint keepdot)
 {
     assert(cmd != NULL);
 

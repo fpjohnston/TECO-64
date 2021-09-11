@@ -73,7 +73,7 @@ extern bool search_loop(struct search *s);
 
 extern bool search_backward(struct search *s);
 
-extern void search_failure(struct cmd *cmd, bool keepdot);
+extern void search_failure(struct cmd *cmd, uint keepdot);
 
 extern bool search_forward(struct search *s);
 
