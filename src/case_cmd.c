@@ -42,7 +42,7 @@ static void exec_case(struct cmd *cmd, bool lower);
 
 
 ///
-///  @brief    Execute "FL" command: convert characters to lower case.
+///  @brief    Execute FL command: convert characters to lower case.
 ///
 ///  @returns  Nothing.
 ///
@@ -55,7 +55,7 @@ void exec_FL(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "FU" command: convert characters to upper case.
+///  @brief    Execute FU command: convert characters to upper case.
 ///
 ///  @returns  Nothing.
 ///
@@ -87,54 +87,48 @@ static void exec_case(struct cmd *cmd, bool lower)
         m = 0 - dot;
         n = Z - dot;
     }
-    else
+    else if (cmd->m_set)                // m,nFL or m,nFU
     {
-        if (cmd->m_set)                 // m,nFU/m,nFL
+        m = cmd->m_arg;
+        n = cmd->n_set ? cmd->n_arg : t.dot;
+
+        if (m < 0 || m > Z || n < 0 || n > Z)
         {
-            if (cmd->n_set)
-            {
-                n = cmd->n_arg;
-            }
-            else
-            {
-                n = 0;
-            }
+            throw(E_POP, '?');          // Pointer off page
+        }
 
-            m = cmd->m_arg;
+        if (m > n)                      // Swap m and n if needed
+        {
+            int_t tmp = m;
 
-            if (m < 0 || m > Z || n < 0 || n > Z || m > n)
-            {
-                throw(E_POP, '?');      // Pointer off page
-            }
+            m = n;
+            n = tmp;
+        }
 
-            m -= dot;
-            n -= dot;
+        // Make position relative to dot
+
+        m -= dot;
+        n -= dot;
+    }
+    else                                // nFL or nFU
+    {
+        n = cmd->n_set ? cmd->n_arg : 1;
+
+        if (n < 1)
+        {
+            m = getdelta_ebuf(n);
+            n = 0;
         }
         else
         {
-            if (cmd->n_set)
-            {
-                n = cmd->n_arg;
-            }
-            else
-            {
-                n = 1;
-            }
-
-            if (n < 1)
-            {
-                m = getdelta_ebuf(n);
-                n = 0;
-            }
-            else
-            {
-                m = 0;
-                n = getdelta_ebuf(n);
-            }
+            m = 0;
+            n = getdelta_ebuf(n);
         }
     }
 
     int_t saved_dot = t.dot;
+
+    setpos_ebuf(t.dot + m);
 
     for (int_t i = m; i < n; ++i)
     {
@@ -150,7 +144,7 @@ static void exec_case(struct cmd *cmd, bool lower)
             delete_ebuf((int_t)1);
             (void)add_ebuf(tolower(c));
         }
-        else if (islower(c))
+        else if (!lower && islower(c))
         {
             delete_ebuf((int_t)1);
             (void)add_ebuf(toupper(c));
@@ -166,13 +160,13 @@ static void exec_case(struct cmd *cmd, bool lower)
 
 
 ///
-///  @brief    Scan "FL" and "FU" commands.
+///  @brief    Scan FL and FU commands.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_FL(struct cmd *cmd)
+bool scan_case(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

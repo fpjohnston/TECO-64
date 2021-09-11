@@ -110,18 +110,30 @@ The *squish.tec* indirect command file may be used to squish macros, as in the f
 
 ### Case Commands
 
-| Command | Function |
-| ------- | -------- |
-| *n*FL | Change the following *n* lines to lower case. |
-| 0*n*FL | Change the preceding *n* lines to lower case. |
+| Command   | Function |
+| --------- | -------- |
+| FL        | Change current line to lower case, from dot through end of line. |
+| 1FL       | Same as FL. |
+| 0FL       | Change current line to lower case, from beginning of line to dot. |
+| 0FL1FL    | Change entire current line to lower case. |
+| -1FL      | Change text to lower case in previous line. |
+| -FL       | Same -1FL. |
+| *n*FL     | Change the following *n* lines to lower case. |
+| -*n*FL    | Change the preceding *n* lines to lower case. |
 | *m*,*n*FL | Change all characters between buffer positions *m* and *n* to lower case. |
-| *n*FU | Change the following *n* lines to upper case. |
-| *n*FU | Change the preceding *n* lines to upper case. |
+| FU        | Change current line to upper case, from dot through end of line. |
+| 1FU       | Same as FU. |
+| 0FU       | Change current line to upper case, from beginning of line to dot. |
+| 0FU1FU    | Change entire current line to upper case. |
+| -1FU      | Change text to upper case in previous line. |
+| -FU       | Same -1FU. |
+| *n*FU     | Change the following *n* lines to upper case. |
+| -*n*FU    | Change the preceding *n* lines to upper case. |
 | *m*,*n*FU | Change all characters between buffer positions *m* and *n* to upper case. |
-| ^V | Puts TECO into lower case conversion mode. In this mode, all alphabetic characters in string arguments are automatically changed to lower case. This mode can be overridden by explicit case control within the search string. This command makes all strings behave as if they began with a \<CTRL/V\>\<CTRL/V\>. |
-| 0^V | Returns TECO to its original mode. No special case conversion occurs within strings except those case conversions that are explicitly specified by \<CTRL/V\> and \<CTRL/W\> string build constructs located within the string. |
-| ^W | Puts TECO into upper case conversion mode. In this mode, all alphabetic characters in string arguments are automatically changed to upper case. This mode can be overridden by explicit case control within the search string. This command makes all strings behave as if they began with \<CTRL/W\>\<CTRL/W\>. |
-| 0^W | Returns TECO to its original mode. No special case conversion occurs within strings except those case conversions that are explicitly specified by \<CTRL/\V> and \<CTRL/W\> string build constructs located within the string. |
+| ^V        | Puts TECO into lower case conversion mode. In this mode, all alphabetic characters in string arguments are automatically changed to lower case. This mode can be overridden by explicit case control within the search string. This command makes all strings behave as if they began with a \<CTRL/V\>\<CTRL/V\>. |
+| 0^V       | Returns TECO to its original mode. No special case conversion occurs within strings except those case conversions that are explicitly specified by \<CTRL/V\> and \<CTRL/W\> string build constructs located within the string. |
+| ^W        | Puts TECO into upper case conversion mode. In this mode, all alphabetic characters in string arguments are automatically changed to upper case. This mode can be overridden by explicit case control within the search string. This command makes all strings behave as if they began with \<CTRL/W\>\<CTRL/W\>. |
+| 0^W       | Returns TECO to its original mode. No special case conversion occurs within strings except those case conversions that are explicitly specified by \<CTRL/\V> and \<CTRL/W\> string build constructs located within the string. |
 
 ### Radix Control Commands
 

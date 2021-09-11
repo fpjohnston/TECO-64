@@ -163,13 +163,13 @@
         <command name='FF'                         scan='FF'        exec='FF'        />
         <command name='FH'                         scan='FH'        exec='nop'       />
         <command name='FK'                         scan='FK'        exec='FK'        />
-        <command name='FL'                         scan='FL'        exec='FL'        />
+        <command name='FL'                         scan='case'      exec='FL'        />
         <command name='FM'                         scan='FM'        exec='FM'        />
         <command name='FN'                         scan='FN'        exec='FN'        />
         <command name='FQ'                         scan='EQ'        exec='FQ'        />
         <command name='FR'                         scan='FR'        exec='FR'        />
         <command name='FS'                         scan='FS'        exec='FS'        />
-        <command name='FU'                         scan='FL'        exec='FU'        />
+        <command name='FU'                         scan='case'      exec='FU'        />
         <command name='FZ'                         scan='FZ'        exec='nop'       />
         <command name='F_'                         scan='F_ubar'    exec='F_ubar'    />
         <command name='F|'                                          exec='F_vbar'    />

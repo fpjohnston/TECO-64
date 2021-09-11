@@ -276,8 +276,6 @@ extern bool scan_FH(struct cmd *cmd);
 
 extern bool scan_FK(struct cmd *cmd);
 
-extern bool scan_FL(struct cmd *cmd);
-
 extern bool scan_FM(struct cmd *cmd);
 
 extern bool scan_FN(struct cmd *cmd);
@@ -331,6 +329,8 @@ extern bool scan_atsign(struct cmd *cmd);
 extern bool scan_bad(struct cmd *cmd);
 
 extern bool scan_bang(struct cmd *cmd);
+
+extern bool scan_case(struct cmd *cmd);
 
 extern bool scan_colon(struct cmd *cmd);
 
