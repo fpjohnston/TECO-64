@@ -62,7 +62,7 @@ void exec_FR(struct cmd *cmd)
 
         if (m < 0 || m > t.Z || n < 0 || n > t.Z)
         {
-            throw(E_POP, 'D');          // Pointer off page
+            throw(E_POP, "FR");         // Pointer off page
         }
 
         if (m > n)                      // Swap m and n to ensure m < n

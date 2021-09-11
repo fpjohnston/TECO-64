@@ -349,7 +349,6 @@ noreturn void throw(int error, ...)
         case E_ILL:
         case E_IQN:
         case E_IUC:
-        case E_POP:
         case E_TXT:
             c[0] = (char)va_arg(args, int);
             convert(err_buf, (uint)sizeof(err_buf), c, 1);
@@ -369,6 +368,7 @@ noreturn void throw(int error, ...)
         case E_FNF:
         case E_KEY:
         case E_LOC:
+        case E_POP:
         case E_SRH:
         case E_TAG:
             err_str = va_arg(args, const char *);

@@ -60,7 +60,7 @@ void exec_X(struct cmd *cmd)
 
         if (m < 0 || m > t.Z || n < 0 || n > t.Z)
         {
-            throw(E_POP, 'X');          // Pointer off page
+            throw(E_POP, "X");          // Pointer off page
         }
         else if (m == 0 && n == 0)
         {

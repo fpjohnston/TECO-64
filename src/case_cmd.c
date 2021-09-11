@@ -1,4 +1,4 @@
-///
+ ///
 ///  @file    case_cmd.c
 ///  @brief   Execute commands to change lower and upper case.
 ///
@@ -94,7 +94,14 @@ static void exec_case(struct cmd *cmd, bool lower)
 
         if (m < 0 || m > Z || n < 0 || n > Z)
         {
-            throw(E_POP, '?');          // Pointer off page
+            if (lower)
+            {
+                throw(E_POP, "FL");     // Pointer off page
+            }
+            else
+            {
+                throw(E_POP, "FU");     // Pointer off page
+            }
         }
 
         if (m > n)                      // Swap m and n if needed

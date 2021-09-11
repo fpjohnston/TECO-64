@@ -173,7 +173,18 @@ static void exec_move(struct cmd *cmd, int_t pos, bool pop, int chr)
     {
         if (!cmd->colon)
         {
-            throw(E_POP, chr);          // Pointer off page
+            if (chr == 'C')
+            {
+                throw(E_POP, "C");      // Pointer off page
+            }
+            else if (chr == 'J')
+            {
+                throw(E_POP, "J");      // Pointer off page
+            }
+            else                        // Must be R
+            {
+                throw(E_POP, "R");      // Pointer off page
+            }
         }
 
         push_x(FAILURE, X_OPERAND);

@@ -56,7 +56,7 @@ void exec_D(struct cmd *cmd)
 
         if (m < 0 || m > t.Z || n < 0 || n > t.Z || m > n)
         {
-            throw(E_POP, 'D');          // Pointer off page
+            throw(E_POP, "D");          // Pointer off page
         }
 
         setpos_ebuf(m);                 // Go to first position
@@ -117,7 +117,7 @@ void exec_K(struct cmd *cmd)
 
         if (m < 0 || m > t.Z || n < 0 || n > t.Z || m > n)
         {
-            throw(E_POP, 'K');          // Pointer off page
+            throw(E_POP, "K");          // Pointer off page
         }
 
         setpos_ebuf(m);                 // Go to first position
