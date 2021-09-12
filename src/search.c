@@ -383,7 +383,7 @@ bool search_backward(struct search *s)
     // edit buffer without a match, then return failure, otherwise update our
     // position and return success.
 
-    while (s->text_start > s->text_end) // Search to beginning of buffer
+    while (s->text_start >= s->text_end) // Search to beginning of buffer
     {
         s->text_pos  = s->text_start--; // Start at current position
         s->match_len = last_search.len; // No. of characters left to match
@@ -541,6 +541,9 @@ bool search_loop(struct search *s)
                         }
 
                         setpos_ebuf(t.Z); // Go to end of buffer
+
+                        s->text_start = -1;
+                        s->text_end = -t.Z;
                     }
                     else if (!next_page((int_t)0, t.Z, f.ctrl_e, (bool)true))
                     {
