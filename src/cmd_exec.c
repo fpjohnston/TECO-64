@@ -97,7 +97,7 @@ static bool echo_cmd(int c)
 
             while ((c = peek_cbuf()) != EOF)
             {
-                if (isspace(c) || c == TAB)
+                if (isspace(c) && c != TAB)
                 {
                     cbuf->pos = pos;    // Reset to start of line
 
