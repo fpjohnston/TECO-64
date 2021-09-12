@@ -1,0 +1,13 @@
+!! TECO-64 test script: Test vertical tab in command file
+!! Commands: VT
+!! Expect: PASS
+
+@I/foo/ 0J
+
+!! Test: vertical tab in command file
+
+:@FS{foo}{baz} "U ::^C '
+
+HK
+
+@:^A/!PASS!/

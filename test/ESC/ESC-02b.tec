@@ -1,0 +1,11 @@
+!! TECO-64 test script: Test ESCapes in command file
+!! Commands: ^[
+!! Expect: PASS
+
+@:^A/hello, world!/
+
+@:^A/!PASS!/
+
+!! Test: ^[ in command string
+
+^[^[

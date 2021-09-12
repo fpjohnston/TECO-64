@@ -1,0 +1,13 @@
+!! TECO-64 test script: Test form feed in command file
+!! Commands: FF
+!! Expect: PASS
+
+@I/foo/ 0J
+
+!! Test: form feed in command file
+
+:@FS{foo}{baz} "U ::^C '
+
+HK
+
+@:^A/!PASS!/
