@@ -237,7 +237,7 @@ void print_flag(int_t flag)
     {
         if (i == 0 && mark != -1)
         {
-            type_out(mark);
+            tputc(mark, false);
         }
 
         int c = getchar_ebuf(i);
