@@ -154,14 +154,14 @@ static int isctrlx(int c, int match)
         c     = toupper(c);
         match = toupper(match);
 
-        if (f.ctrl_x == 0)
+        if (!isalpha(c) && f.ctrl_x == 0)
         {
-            if (strchr("`{\\}~", c) != NULL)
+            if (strchr("`{|}~", c) != NULL)
             {
                 c -= 'a' - 'A';
             }
 
-            if (strchr("`{\\}~", match) != NULL)
+            if (strchr("`{|}~", match) != NULL)
             {
                 match -= 'a' - 'A';
             }
