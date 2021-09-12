@@ -101,13 +101,13 @@ static void exec_search(struct cmd *cmd, bool replace)
     else if (cmd->n_arg <= 0)
     {
         s.search     = search_backward;
-        s.text_start = getdelta_ebuf(cmd->n_arg);
-        s.text_end   = t.dot - 1;
+        s.text_start = -1;
+        s.text_end   = getdelta_ebuf(cmd->n_arg);
     }
     else
     {
         s.search     = search_forward;
-        s.text_start = t.dot;
+        s.text_start = 0;
         s.text_end   = getdelta_ebuf(cmd->n_arg);
     }
 
