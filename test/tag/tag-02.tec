@@ -1,0 +1,8 @@
+!! TECO-64 test script: Test tag in command file
+!! Commands: !
+!! Expect: PASS
+
+! Test: tag in command string !
+!! Test: tag in command string
+
+@:^A/!PASS!/

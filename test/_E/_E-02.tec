@@ -1,0 +1,26 @@
+!! TECO-64 test script: Test form feed flag
+!! Commands: ^E
+!! Expect: PASS
+
+0,64 E3
+1,0 E3
+
+HK
+
+@I/single/
+
+:@EW{/tmp/baz} "U ::^C '
+
+EC
+
+:@EB{/tmp/baz} "U ::^C '
+
+^E "S ::^C '                        !! Test: ^E at beginning of file
+
+P ^E "S ::^C '                      !! Test: ^E after 1st page
+
+P ^E "S ::^C '                      !! Test: ^E at end of file
+
+EK HK EC
+
+:@^A/!PASS!/

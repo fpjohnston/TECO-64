@@ -1,0 +1,39 @@
+!! TECO-64 test script: Test tag in command file
+!! Commands: !
+!! Expect: PASS
+
+123
+
+! Test: tag in command string !
+
+UA
+
+QA-123 "N ::^C '
+
+123,456
+
+! Test: tag in command string !
+
+UA UB
+
+QA-456 "N ::^C '
+QB-123 "N ::^C '
+
+123
+
+!! Test: tag in command string
+
+UA
+
+QA-123 "N ::^C '
+
+123,456
+
+!! Test: tag in command string
+
+UA UB
+
+QA-456 "N ::^C '
+QB-123 "N ::^C '
+
+@:^A/!PASS!/

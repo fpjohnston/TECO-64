@@ -1,0 +1,27 @@
+!! TECO-64 test script: Non-stop forward search
+!! Commands: N
+!! Expect: PASS
+
+1,0 E3
+0,64 E3
+
+HK
+
+@I/'Twas /    10I 12I
+@I/brillig, / 10I 12I
+@I/and /      10I 12I
+@I/the /      10I 12I
+@I/slithy /   10I 12I
+@I/toves/     10I 12I
+
+:@EW{/tmp/baz} "U ::^C '
+
+EC
+
+:@EB{/tmp/baz} "U ::^C '
+
+:@N/gyre/ "S ::C '                  !! Test: N
+
+EK HK EC
+
+:@^A/!PASS!/

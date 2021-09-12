@@ -1,0 +1,32 @@
+!! TECO-64 test script: Write contents of edit buffer
+!! Commands: nPW
+!! Expect: PASS [P-10.log]
+
+0,64 E3
+1,0 E3
+
+HK
+
+@I/page 1/ 12I
+@I/page 2/ 12I
+@I/page 3/ 12I
+
+:@EW{/tmp/baz} "U ::^C '
+
+EC
+
+:@EB{/tmp/baz} "U ::^C '
+
+EY EY
+
+5PW                                 !! Test: nPW
+
+EF HK EC
+
+0,1 E3
+
+:@ER{/tmp/baz} "UK ::^C ' Y
+
+HT HK EC
+
+:@^A/!PASS!/

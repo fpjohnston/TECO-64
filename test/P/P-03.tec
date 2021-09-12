@@ -1,0 +1,32 @@
+!! TECO-64 test script: Write contents of edit buffer
+!! Commands: HP
+!! Expect: PASS [P-03.log]
+
+0,64 E3
+
+HK
+
+@I/Jabberwocky
+by Lewis Carroll
+
+’Twas brillig, and the slithy toves
+      Did gyre and gimble in the wabe:
+All mimsy were the borogoves,
+      And the mome raths outgrabe.
+/
+
+:@EW{/tmp/baz} "U ::^C '
+
+HP                                  !! Test: HP
+
+HK
+
+EC
+
+:@ER{/tmp/baz} "U ::^C ' Y
+
+HT
+HK
+EC
+
+:@^A/!PASS!/
