@@ -265,12 +265,14 @@ sub read_header
 
     close $fh or croak "Can't close file $file";
 
-    if ( $lines[0] !~ s/!! \s+ TECO-64 \s test \s script: \s (.+) /$1/msx )
+    if ( ( $lines[0] !~ s/!! \s+ TECO-64 \s test \s script: \s (.+) /$1/msx ) &&
+         ( $lines[0] !~ s/! \s+ TECO-64 \s test \s script: \s (.+) \s ! /$1/msx ) )
     {
         return ( undef, undef, undef, undef );
     }
 
-    if ( $lines[1] !~ s/!! \s+ Commands: \s+ (.+) /$1/msx )
+    if ( ( $lines[1] !~ s/!! \s+ Commands: \s+ (.+) /$1/msx ) &&
+         ( $lines[1] !~ s/! \s+ Commands: \s+ (.+) \s ! /$1/msx ) )
     {
         print "[$file] No commands found in test script\n";
 
@@ -279,7 +281,8 @@ sub read_header
 
     # Find out whether we expect success or failure
 
-    if ( $lines[2] !~ s/!! \s+ Expect: \s+ (.+) /$1/msx )
+    if ( ( $lines[2] !~ s/!! \s+ Expect: \s+ (.+) /$1/msx ) &&
+         ( $lines[2] !~ s/! \s+ Expect: \s+ (.+) \s ! /$1/msx ) )
     {
         print "[$file] Test script is missing expectations\n";
 
@@ -298,7 +301,8 @@ sub read_header
     # line is not required in the test script, so don't use it if it's
     # not in the expected form.
 
-    if ( $lines[3] !~ s/!! \s+ Options: \s+ (.+) /$1/msx )
+    if ( ( $lines[3] !~ s/!! \s+ Options: \s+ (.+) /$1/msx ) &&
+         ( $lines[3] !~ s/! \s+ Options: \s+ (.+) \s ! /$1/msx ) )
     {
         return ( $lines[0], $lines[1], $lines[2], q{} );
     }
