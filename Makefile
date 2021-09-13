@@ -239,8 +239,6 @@ $(error Unknown paging handler: ${paging})
 
 endif
 
-# Always enable ESCape as dollar sign regardless of alternate delimiter
-
 # Change default for :U command
 
 ifdef   default_u
