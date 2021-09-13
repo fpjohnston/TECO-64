@@ -2,8 +2,6 @@
 ! Commands: ^A !
 ! Expect: PASS [_A-03.log] !
 
-0,128ET                 ! Abort on error !
-
 @^UA/goodbye, cruel world!/
 
 :@^A/^EQA/              ! Test: ^A w/ string-building chrs. !

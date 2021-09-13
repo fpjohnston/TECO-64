@@ -5,8 +5,6 @@
 
 :U0                     ! Get flag argument !
 
-0,128ET                 ! Abort on error !
-
 ! Test: map all keys w/ :FM !
 
 0 U1                    ! No. of mapped keys !
