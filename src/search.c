@@ -284,7 +284,7 @@ static bool match_chr(int c, struct search *s)
         match = toupper(*s->match_buf++);
 
         if ((match == 'A' && isalpha(c))     ||
-            (match == 'B' && isblankx(c, s)) ||
+            (match == 'B' && !isalnum(c))    ||
             (match == 'C' && issymbol(c))    ||
             (match == 'D' && isdigit(c))     ||
             (match == 'G' && isqreg(c, s))   ||
@@ -296,6 +296,10 @@ static bool match_chr(int c, struct search *s)
             (match == 'X'))
         {
             return true;
+        }
+        else if (strchr("ABCDGLRSVWX", match) != NULL)
+        {
+            return false;               // Valid match chr., but no match
         }
 
         // <CTRL/E>nnn matches character whose decimal value is nnn.
