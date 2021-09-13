@@ -1,7 +1,7 @@
-!! TECO-64 test script: Execute macro
-!! Commands: M
-!! Expect: PASS
+! TECO-64 test script: Execute macro !
+! Commands: M !
+! Expect: PASS !
 
 @^UA":@^A/!PASS!/"
 
-MA                                  !! Test: M
+MA                                  ! Test: M !

@@ -1,8 +1,8 @@
-!! TECO-64 test script: Try to load Q-registers using M
-!! Commands: U
-!! Expect: ?NAU
+! TECO-64 test script: Try to load Q-registers using M !
+! Commands: U !
+! Expect: ?NAU !
 
-UN UM                               !! Test: load Q-registers using M
+UN UM                               ! Test: load Q-registers using M !
 QM
 @:=/QM=%d: /
 QN @:=/QN=%d: /

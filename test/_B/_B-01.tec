@@ -1,23 +1,23 @@
-!! TECO-64 test script: Get date
-!! Commands: ^B
-!! Expect: PASS
+! TECO-64 test script: Get date !
+! Commands: ^B !
+! Expect: PASS !
 
-!! Test: Validate current year, month and day for ^B
+! Test: Validate current year, month and day for ^B !
 
-^B UA                               !! Get date
+^B UA                               ! Get date !
 
-(QA & 31)         UD                !! D = day
-(QA / 32) & 15    UM                !! M = month
-(QA / 512) + 1900 UY                !! Y = year
+(QA & 31)         UD                ! D = day !
+(QA / 32) & 15    UM                ! M = month !
+(QA / 512) + 1900 UY                ! Y = year !
 
 QD @:=/day = %d, /
 QM @:=/month = %d, /
 QY @=/year = %d/
 
-!! The following are basic checks for day, month, and year. This is not
-!! intended to be rigorous, but to verify that days are in the range of
-!! 1 to 31, months are in the range of 1 to 12, and years are in the
-!! (adjusted) range of 2000 to 2100.
+! The following are basic checks for day, month, and year. This is not !
+! intended to be rigorous, but to verify that days are in the range of !
+! 1 to 31, months are in the range of 1 to 12, and years are in the !
+! (adjusted) range of 2000 to 2100. !
     
 QD - 1     "L ::^C '
 QD - 31    "G ::^C '

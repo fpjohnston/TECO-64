@@ -1,8 +1,8 @@
-!! TECO-64 test script: Test lib/show.tec
-!! Commands: (misc.)
-!! Expect: PASS
+! TECO-64 test script: Test lib/show.tec !
+! Commands: (misc.) !
+! Expect: PASS !
 
-!! Test: library show.tec macro
+! Test: library show.tec macro !
 
 @EI/show/
 :@^A/!PASS!/

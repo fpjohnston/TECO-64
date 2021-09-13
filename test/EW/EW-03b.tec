@@ -1,10 +1,10 @@
-!! TECO-64 test script: Open file for writing
-!! Commands: :EW
-!! Expect: ?XAB
+! TECO-64 test script: Open file for writing !
+! Commands: :EW !
+! Expect: ?XAB !
 
-@^UA{/dev/foo}                      !! Name of output file
+@^UA{/dev/foo}                      ! Name of output file !
 
-:@EW/^EQA/                          !! Test: open file for writing
+:@EW/^EQA/                          ! Test: open file for writing !
 
 "U
     ::^C

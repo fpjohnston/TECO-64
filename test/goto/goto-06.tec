@@ -1,6 +1,6 @@
-!! TECO-64 test script: Branch backward within loop
-!! Commands: O
-!! Expect: PASS
+! TECO-64 test script: Branch backward within loop !
+! Commands: O !
+! Expect: PASS !
 
 1 <
     @O!tag1!
@@ -13,7 +13,7 @@
 
     !tag1!
 
-    @O!tag2!                        !! Test: branch backward
+    @O!tag2!                        ! Test: branch backward !
 
     ::^C
 >

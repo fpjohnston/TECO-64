@@ -1,14 +1,14 @@
-!! TECO-64 test script: Branch using computed GOTO
-!! Commands: O
-!! Expect: PASS
+! TECO-64 test script: Branch using computed GOTO !
+! Commands: O !
+! Expect: PASS !
 
 0 UF
 
 @^UA{
-    UA                              !! Index value for GOTO
+    UA                              ! Index value for GOTO !
 
     QA @:=/Index = %d -> /
-    QA @O/tag1,tag2,,tag4/          !! Test: computed GOTO
+    QA @O/tag1,tag2,,tag4/          ! Test: computed GOTO !
 
     0 UA   @^A/no tag/  0 MB @O/end/
 

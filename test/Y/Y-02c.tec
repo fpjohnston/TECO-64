@@ -1,6 +1,6 @@
-!! TECO-64 test script: Yank file into edit buffer at EOF
-!! Commands: :Y
-!! Expect: PASS
+! TECO-64 test script: Yank file into edit buffer at EOF !
+! Commands: :Y !
+! Expect: PASS !
 
 0,64 E3
 
@@ -10,10 +10,10 @@ EC
 
 @EB{/tmp/foo}
 
-:Y "E ::^C '                        !! Test: yank before EOF
+:Y "E ::^C '                        ! Test: yank before EOF !
 
 HK
 
-:Y "N ::^C '                        !! Test: yank after EOF
+:Y "N ::^C '                        ! Test: yank after EOF !
 
 :@^A/!PASS!/

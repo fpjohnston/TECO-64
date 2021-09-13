@@ -1,10 +1,10 @@
-!! TECO-64 test script: Open indirect command file
-!! Commands: @EI//
-!! Expect: PASS
+! TECO-64 test script: Open indirect command file !
+! Commands: @EI// !
+! Expect: PASS !
 
 @^UA/foo.tec/
 
-@EI/^EQA/                           !! Test: @EI//
+@EI/^EQA/                           ! Test: @EI// !
 
 HK
 

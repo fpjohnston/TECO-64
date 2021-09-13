@@ -1,6 +1,6 @@
-!! TECO-64 test script: Move position backward
-!! Commands: :R
-!! Expect: PASS
+! TECO-64 test script: Move position backward !
+! Commands: :R !
+! Expect: PASS !
  
 HK
 
@@ -47,25 +47,25 @@ ZJ
 
 . UA
 
-:R        "U ::^C '                 !! Test: :R
+:R        "U ::^C '                 ! Test: :R !
 
-1:R       "U ::^C '                 !! Test: 1:R
+1:R       "U ::^C '                 ! Test: 1:R !
 
-10:R      "U ::^C '                 !! Test: n:R, w/ n < preceding chrs.
+10:R      "U ::^C '                 ! Test: n:R, w/ n < preceding chrs. !
 
-Z-.:R     "U ::^C '                 !! Test: n:R, w/ n == preceding chrs.
+Z-.:R     "U ::^C '                 ! Test: n:R, w/ n == preceding chrs. !
 
--:R       "U ::^C '                 !! Test: -:R
+-:R       "U ::^C '                 ! Test: -:R !
 
--1:R      "U ::^C '                 !! Test: -1:R
+-1:R      "U ::^C '                 ! Test: -1:R !
 
--10:R     "U ::^C '                 !! Test: -n:R, w/ n < following chrs.
+-10:R     "U ::^C '                 ! Test: -n:R, w/ n < following chrs. !
 
-Z-.:R     "U ::^C '                 !! Test: n:R, w/ n == preceding chrs.
+Z-.:R     "U ::^C '                 ! Test: n:R, w/ n == preceding chrs. !
 
-Z+1 :R    "S ::^C '                 !! Test: n:R, w/ n > preceding chrs
+Z+1 :R    "S ::^C '                 ! Test: n:R, w/ n > preceding chrs !
 
--(Z+1) :R "S ::^C '                 !! Test: n:R, w/ n > following chrs.
+-(Z+1) :R "S ::^C '                 ! Test: n:R, w/ n > following chrs. !
 
 HK
 

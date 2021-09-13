@@ -1,39 +1,39 @@
-!! TECO-64 test script: Test for alphanumeric
-!! Commands: "R
-!! Expect: PASS
+! TECO-64 test script: Test for alphanumeric !
+! Commands: "R !
+! Expect: PASS !
 
-!! Test: "R
+! Test: "R !
 
-0 UC            !! Start at NUL
+0 UC            ! Start at NUL !
 
-^^0 < %C-1 "R ::^C ' >          !! NUL to digits
+^^0 < %C-1 "R ::^C ' >          ! NUL to digits !
 
-^^9-^^0+1 < %C-1 "R | ::^C ' >  !! Digits
+^^9-^^0+1 < %C-1 "R | ::^C ' >  ! Digits !
 
-^^A-^^9-1 < %C-1 "R ::^C ' >    !! Digits to upper case
+^^A-^^9-1 < %C-1 "R ::^C ' >    ! Digits to upper case !
 
-^^Z-^^A+1 < %C-1 "R | ::^C ' >  !! Upper case
+^^Z-^^A+1 < %C-1 "R | ::^C ' >  ! Upper case !
 
-^^a-^^Z-1 < %C-1 "R ::^C ' >    !! Upper case to lower case
+^^a-^^Z-1 < %C-1 "R ::^C ' >    ! Upper case to lower case !
 
-^^z-^^a+1 < %C-1 "R | ::^C ' >  !! Lower case
+^^z-^^a+1 < %C-1 "R | ::^C ' >  ! Lower case !
 
-255-^^z-1 < %C-1 "R ::^C ' >    !! Remaining 8-bit characters
+255-^^z-1 < %C-1 "R ::^C ' >    ! Remaining 8-bit characters !
 
-0 UC            !! Start at NUL
+0 UC            ! Start at NUL !
 
-^^0 < %C-1 "r ::^C ' >          !! NUL to digits
+^^0 < %C-1 "r ::^C ' >          ! NUL to digits !
 
-^^9-^^0+1 < %C-1 "r | ::^C ' >  !! Digits
+^^9-^^0+1 < %C-1 "r | ::^C ' >  ! Digits !
 
-^^A-^^9-1 < %C-1 "r ::^C ' >    !! Digits to upper case
+^^A-^^9-1 < %C-1 "r ::^C ' >    ! Digits to upper case !
 
-^^Z-^^A+1 < %C-1 "r | ::^C ' >  !! Upper case
+^^Z-^^A+1 < %C-1 "r | ::^C ' >  ! Upper case !
 
-^^a-^^Z-1 < %C-1 "r ::^C ' >    !! Upper case to lower case
+^^a-^^Z-1 < %C-1 "r ::^C ' >    ! Upper case to lower case !
 
-^^z-^^a+1 < %C-1 "r | ::^C ' >  !! Lower case
+^^z-^^a+1 < %C-1 "r | ::^C ' >  ! Lower case !
 
-255-^^z-1 < %C-1 "r ::^C ' >    !! Remaining 8-bit characters
+255-^^z-1 < %C-1 "r ::^C ' >    ! Remaining 8-bit characters !
 
 :@^A/!PASS!/

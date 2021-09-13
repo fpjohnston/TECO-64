@@ -1,8 +1,8 @@
-!! TECO-64 test script: Get starting buffer position
-!! Commands: B
-!! Expect: PASS
+! TECO-64 test script: Get starting buffer position !
+! Commands: B !
+! Expect: PASS !
 
-!! Test: Verify that B is always 0, regardless of dot
+! Test: Verify that B is always 0, regardless of dot !
 
 10 < @I/0123456789/ 10I >
 

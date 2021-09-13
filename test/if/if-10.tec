@@ -1,23 +1,23 @@
- !! TECO-64 test script: Test for numeric
-!! Commands: "D
-!! Expect: PASS
+ ! TECO-64 test script: Test for numeric !
+! Commands: "D !
+! Expect: PASS !
 
-!! Test: "D
+! Test: "D !
 
-0 UC            !! Start at NUL
+0 UC            ! Start at NUL !
 
-^^0 < %C-1 "D ::^C ' >          !! NUL to digits
+^^0 < %C-1 "D ::^C ' >          ! NUL to digits !
 
-^^9-^^0+1 < %C-1 "D | ::^C ' >  !! Digits
+^^9-^^0+1 < %C-1 "D | ::^C ' >  ! Digits !
 
-255-^^9-1 < %C-1 "D ::^C ' >    !! Remaining 8-bit characters
+255-^^9-1 < %C-1 "D ::^C ' >    ! Remaining 8-bit characters !
 
-0 UC            !! Start at NUL
+0 UC            ! Start at NUL !
 
-^^0 < %C-1 "d ::^C ' >          !! NUL to digits
+^^0 < %C-1 "d ::^C ' >          ! NUL to digits !
 
-^^9-^^0+1 < %C-1 "d | ::^C ' >  !! Digits
+^^9-^^0+1 < %C-1 "d | ::^C ' >  ! Digits !
 
-255-^^9-1 < %C-1 "d ::^C ' >    !! Remaining 8-bit characters
+255-^^9-1 < %C-1 "d ::^C ' >    ! Remaining 8-bit characters !
 
 :@^A/!PASS!/

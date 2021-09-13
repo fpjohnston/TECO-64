@@ -1,6 +1,6 @@
-!! TECO-64 test script: Convert text to lower case
-!! Commands: FL
-!! Expect: ?POP
+! TECO-64 test script: Convert text to lower case !
+! Commands: FL !
+! Expect: ?POP !
  
 HK
 
@@ -8,6 +8,6 @@ HK
 
 15 < %A-10 "L 32I ' QA \ @I/. abcdefg HIJKLMN/ 10I>
 
-0,-1 FL                             !! Test: m,nFL w/ n < B
+0,-1 FL                             ! Test: m,nFL w/ n < B !
 
 :@^A/!PASS!/

@@ -1,11 +1,11 @@
-!! TECO-64 test script: Test CTRL/Y flag
-!! Commands: ^Y
-!! Expect: PASS
+! TECO-64 test script: Test CTRL/Y flag !
+! Commands: ^Y !
+! Expect: PASS !
 
 @I/abcdef
 /
 
-^Y UC UB                            !! Test: ^Y after I command
+^Y UC UB                            ! Test: ^Y after I command !
 ^S UA
 
 .:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
@@ -16,7 +16,7 @@
 
 :@S/cde/ "U ::^C '
 
-^Y UC UB                            !! Test: ^Y after S command
+^Y UC UB                            ! Test: ^Y after S command !
 ^S UA
 
 .:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
@@ -27,7 +27,7 @@
 
 GA
 
-^Y UC UB                            !! Test: ^Y after G command
+^Y UC UB                            ! Test: ^Y after G command !
 ^S UA
 
 .:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/

@@ -1,39 +1,39 @@
-!! TECO-64 test script: Switch output streams
-!! Commands: EA, EW`
-!! Expect: PASS [EA-01.log]
+! TECO-64 test script: Switch output streams !
+! Commands: EA, EW` !
+! Expect: PASS [EA-01.log] !
 
-@EZ{rm /tmp/foo; rm /tmp/baz}   !! Delete any existing files
+@EZ{rm /tmp/foo; rm /tmp/baz}   ! Delete any existing files !
 
 HK
 
-@I/abcdef/ 10I                  !! Add some data
+@I/abcdef/ 10I                  ! Add some data !
 
 . UA
 
-@I/123456/ 10I                  !! Add some more data
+@I/123456/ 10I                  ! Add some more data !
 
-:@EW{/tmp/foo} "U ::^C '        !! Create 1st temp file
+:@EW{/tmp/foo} "U ::^C '        ! Create 1st temp file !
 
-EA                              !! Test: switch to secondary output stream
+EA                              ! Test: switch to secondary output stream !
 
-:@EW{/tmp/baz} "U ::^C '        !! Create 2nd temp file
+:@EW{/tmp/baz} "U ::^C '        ! Create 2nd temp file !
 
-2 < B,QA PW >                   !! Write data to secondary stream
+2 < B,QA PW >                   ! Write data to secondary stream !
 
-@EW//                           !! Switch back to primary output stream
+@EW//                           ! Switch back to primary output stream !
 
-3 < QA,Z PW>                    !! Write data to primary stream
+3 < QA,Z PW>                    ! Write data to primary stream !
 
 HT
 HK
 
-EC                              !! Close primary stream
+EC                              ! Close primary stream !
 
-EA                              !! Switch back to secondary output stream
+EA                              ! Switch back to secondary output stream !
 
-EC                              !! Close secondary stream
+EC                              ! Close secondary stream !
 
-:@ER{/tmp/foo} "U ::^C ' Y      !! Open 1st temp file and read it in
+:@ER{/tmp/foo} "U ::^C ' Y      ! Open 1st temp file and read it in !
 
 :@^A/-----/
 
@@ -42,7 +42,7 @@ HK
 
 EC
 
-:@ER{/tmp/baz} "U ::^C ' Y      !! Open 2nd temp file and read it in
+:@ER{/tmp/baz} "U ::^C ' Y      ! Open 2nd temp file and read it in !
 
 :@^A/-----/
 

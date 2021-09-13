@@ -1,10 +1,10 @@
-!! TECO-64 test script: Print message
-!! Commands: ^A
-!! Expect: PASS [_A-01.log]
+! TECO-64 test script: Print message !
+! Commands: ^A !
+! Expect: PASS [_A-01.log] !
 
-0,128ET                 !! Abort on error
+0,128ET                 ! Abort on error !
 
-@^A/hello, world!/      !! Test: ^A w/o colon
+@^A/hello, world!/      ! Test: ^A w/o colon !
 
 -1^T
 

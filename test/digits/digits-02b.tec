@@ -1,9 +1,9 @@
-!! TECO-64 test script: Test octal digits
-!! Commands: 9
-!! Expect: ?ILN
+! TECO-64 test script: Test octal digits !
+! Commands: 9 !
+! Expect: ?ILN !
 
 :@^A/Testing base 8/
 
 ^D 8^R
 
- 99 UA                              !! Test: 9 in base 8
+ 99 UA                              ! Test: 9 in base 8 !

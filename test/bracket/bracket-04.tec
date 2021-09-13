@@ -1,19 +1,19 @@
-!! TECO-64 test script: Push/pop maximum Q-registers
-!! Commands: [, :]
-!! Expect: PASS
+! TECO-64 test script: Push/pop maximum Q-registers !
+! Commands: [, :] !
+! Expect: PASS !
 
 0UA
 
-!! Test: push and pop Q-registers, each with unique value
+! Test: push and pop Q-registers, each with unique value !
 
-!! Push maximum Q-registers, each with unique value
+! Push maximum Q-registers, each with unique value !
 
 64 <
     %A
     [A
 >
 
-!! Pop Q-registers, checking each value
+! Pop Q-registers, checking each value !
 
 <
     :]B;
@@ -23,7 +23,7 @@
     -1%A
 >
 
-!! Verify that we popped all expected Q-registers
+! Verify that we popped all expected Q-registers !
 
 QA"N
     ::^C

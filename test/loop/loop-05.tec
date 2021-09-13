@@ -1,15 +1,15 @@
-!! TECO-64 test script: Basic loop test
-!! Commands: <, >
-!! Expect: PASS [loop-05.log]
+! TECO-64 test script: Basic loop test !
+! Commands: <, > !
+! Expect: PASS [loop-05.log] !
 
-0 < ::^C >                          !! Test: 0 < >
+0 < ::^C >                          ! Test: 0 < > !
 
--1 < ::^C >                         !! Test: -1 < >
+-1 < ::^C >                         ! Test: -1 < > !
 
-1 < :@^A/1 iteration/ >             !! Test: 1 < >
+1 < :@^A/1 iteration/ >             ! Test: 1 < > !
 
-2 < :@^A/2 iterations/ >            !! Test: 2 < >
+2 < :@^A/2 iterations/ >            ! Test: 2 < > !
 
-3 < :@^A/3 iterations/ >            !! Test: 3 < >
+3 < :@^A/3 iterations/ >            ! Test: 3 < > !
 
 :@^A/!PASS!/

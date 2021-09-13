@@ -1,9 +1,9 @@
-!! TECO-64 test script: Load Q-registers using m,nM
-!! Commands: U
-!! Expect: PASS
-!! Options: -A 123,456
+! TECO-64 test script: Load Q-registers using m,nM !
+! Commands: U !
+! Expect: PASS !
+! Options: -A 123,456 !
 
-UN UM                               !! Test: load Q-registers using m,nM
+UN UM                               ! Test: load Q-registers using m,nM !
 QM
 @:=/QM=%d: /
 QN @:=/QN=%d: /

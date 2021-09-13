@@ -1,10 +1,10 @@
-!! TECO-64 test script: Type out 8-bit characters
-!! Commands: ^T
-!! Expect: PASS [_T-03.log]
+! TECO-64 test script: Type out 8-bit characters !
+! Commands: ^T !
+! Expect: PASS [_T-03.log] !
 
-4096,0 ET                               !! Say we can't handle 8-bit chrs.
+4096,0 ET                               ! Say we can't handle 8-bit chrs. !
 
-^^H+128 ^T                              !! Test: nT w/ n > 128
+^^H+128 ^T                              ! Test: nT w/ n > 128 !
 ^^e+128 ^T
 ^^l+128 ^T
 ^^l+128 ^T

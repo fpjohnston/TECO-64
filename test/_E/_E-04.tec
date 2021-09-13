@@ -1,6 +1,6 @@
-!! TECO-64 test script: Test form feed flag
-!! Commands: 0^E
-!! Expect: PASS [_E-04.log]
+! TECO-64 test script: Test form feed flag !
+! Commands: 0^E !
+! Expect: PASS [_E-04.log] !
 
 0,64 E3
 1,0 E3
@@ -15,13 +15,13 @@ EC
 
 :@EB{/tmp/baz} "U ::^C '
 
-^E "S ::^C '                        !! Test: ^E at beginning of file
+^E "S ::^C '                        ! Test: ^E at beginning of file !
 
-P ^E "U ::^C '                      !! Test: ^E after 1st page
+P ^E "U ::^C '                      ! Test: ^E after 1st page !
 
-0^E                                 !! Test: 0^E
+0^E                                 ! Test: 0^E !
 
-P ^E "S ::^C '                      !! Test: ^E at end of file
+P ^E "S ::^C '                      ! Test: ^E at end of file !
 
 EC
 

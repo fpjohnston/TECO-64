@@ -1,41 +1,41 @@
-!! TECO-64 test script: Map command string to sequence
-!! Commands: :@FQ
-!! Expect: PASS
+! TECO-64 test script: Map command string to sequence !
+! Commands: :@FQ !
+! Expect: PASS !
 
-^^0:@FF/F1/                         !! Test: map command string to <CTRL/F>0
+^^0:@FF/F1/                         ! Test: map command string to <CTRL/F>0 !
 "U ::^C '
 
-^^1:@FF/F1/                         !! Test: map command string to <CTRL/F>1
+^^1:@FF/F1/                         ! Test: map command string to <CTRL/F>1 !
 "U ::^C '
 
-^^2:@FF/F1/                         !! Test: map command string to <CTRL/F>2
+^^2:@FF/F1/                         ! Test: map command string to <CTRL/F>2 !
 "U ::^C '
 
-^^3:@FF/F1/                         !! Test: map command string to <CTRL/F>3
+^^3:@FF/F1/                         ! Test: map command string to <CTRL/F>3 !
 "U ::^C '
 
-^^4:@FF/F1/                         !! Test: map command string to <CTRL/F>4
+^^4:@FF/F1/                         ! Test: map command string to <CTRL/F>4 !
 "U ::^C '
 
-^^5:@FF/F1/                         !! Test: map command string to <CTRL/F>5
+^^5:@FF/F1/                         ! Test: map command string to <CTRL/F>5 !
 "U ::^C '
 
-^^6:@FF/F1/                         !! Test: map command string to <CTRL/F>6
+^^6:@FF/F1/                         ! Test: map command string to <CTRL/F>6 !
 "U ::^C '
 
-^^7:@FF/F1/                         !! Test: map command string to <CTRL/F>7
+^^7:@FF/F1/                         ! Test: map command string to <CTRL/F>7 !
 "U ::^C '
 
-^^8:@FF/F1/                         !! Test: map command string to <CTRL/F>8
+^^8:@FF/F1/                         ! Test: map command string to <CTRL/F>8 !
 "U ::^C '
 
-^^9:@FF/F1/                         !! Test: map command string to <CTRL/F>9
+^^9:@FF/F1/                         ! Test: map command string to <CTRL/F>9 !
 "U ::^C '
 
-^^/:@FF/F1/                         !! Test: map command string to <CTRL/F>/
+^^/:@FF/F1/                         ! Test: map command string to <CTRL/F>/ !
 "S ::^C '
 
-^^::@FF/F1/                         !! Test: map command string to <CTRL/F>:
+^^::@FF/F1/                         ! Test: map command string to <CTRL/F>: !
 "S ::^C '
 
 :@^A/!PASS!/

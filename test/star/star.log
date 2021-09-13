@@ -1,10 +1,10 @@
-*!! TECO-64 test script: Copy command string to Q-register
-!! Commands: *q
-!! Expect: PASS [star.log]
+*! TECO-64 test script: Copy command string to Q-register !
+! Commands: *q !
+! Expect: PASS [star.log] !
 
 :@^A/hello, world!/``
 hello, world!
 **A
-*           !! Test: save command string in Q-register
+*           ! Test: save command string in Q-register !
 !PASS!
 ^C^C

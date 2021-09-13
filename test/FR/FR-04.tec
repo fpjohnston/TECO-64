@@ -1,6 +1,6 @@
-!! TECO-64 test script: Delete and replace
-!! Commands: FR
-!! Expect: PASS
+! TECO-64 test script: Delete and replace !
+! Commands: FR !
+! Expect: PASS !
 
 HK
 
@@ -45,7 +45,7 @@ All mimsy were the borogoves,
 
 0J
 
-669,675 @FR/ADAMANTIUM/             !! Test: m,n@FR//
+669,675 @FR/ADAMANTIUM/             ! Test: m,n@FR// !
 
 HT
 HK

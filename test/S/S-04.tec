@@ -1,6 +1,6 @@
-!! TECO-64 test script: Local search forward
-!! Commands: S
-!! Expect: PASS [S-04.log]
+! TECO-64 test script: Local search forward !
+! Commands: S !
+! Expect: PASS [S-04.log] !
 
 HK
 
@@ -15,7 +15,7 @@ HK
 
 0J
 
-!! Test: repeated @S// commands
+! Test: repeated @S// commands !
 
 @S/abc/ .=
 @S/abc/ .=

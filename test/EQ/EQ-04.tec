@@ -1,18 +1,18 @@
-!! TECO-64 test script: Read to Q-register, verify data
-!! Commands: :@EQ//
-!! Expect: PASS
+! TECO-64 test script: Read to Q-register, verify data !
+! Commands: :@EQ// !
+! Expect: PASS !
 
 @^UA{hello}
 
-:@EQB/^EQA/                         !! Test: :@EQq//
+:@EQB/^EQA/                         ! Test: :@EQq// !
 "U ::^C '
 
-:@ER/^EQA/                          !! Read file into the edit buffer
+:@ER/^EQA/                          ! Read file into the edit buffer !
 "U ::^C '
 
 Y
 
-!! Verify that the size is the same
+! Verify that the size is the same !
 
 :QB-Z "N ::^C '
 

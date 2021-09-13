@@ -1,8 +1,8 @@
-!! TECO-64 test script: Test basic functions #1
-!! Commands: (misc.)
-!! Expect: PASS [basic-01.log]
+! TECO-64 test script: Test basic functions #1 !
+! Commands: (misc.) !
+! Expect: PASS [basic-01.log] !
 
-!! Test: mix of basic TECO commands
+! Test: mix of basic TECO commands !
 
 :@^A/[Executing ^UA]/  @^UA"_teco_test_"
 :@^A/[Executing ^UB]/  @^UB"@^A/ result: /"

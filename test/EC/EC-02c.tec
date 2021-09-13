@@ -1,17 +1,17 @@
-!! TECO-64 test script: Close input file
-!! Commands: EC
-!! Expect: ?NFI
+! TECO-64 test script: Close input file !
+! Commands: EC !
+! Expect: ?NFI !
 
-@^UA{/tmp/foo}                  !! File name
+@^UA{/tmp/foo}                  ! File name !
 
-:@EW/^EQA/ "U ::^C '            !! Open file for write
+:@EW/^EQA/ "U ::^C '            ! Open file for write !
 
-@I/abcdef/                      !! Add some data
+@I/abcdef/                      ! Add some data !
 
-EC                              !! Test: write data and close file
+EC                              ! Test: write data and close file !
 
-:@EB/^EQA/ "U ::^C '            !! Open file for read
+:@EB/^EQA/ "U ::^C '            ! Open file for read !
 
-EC                              !! Close input file
+EC                              ! Close input file !
 
-Y                               !! Try to yank input
+Y                               ! Try to yank input !

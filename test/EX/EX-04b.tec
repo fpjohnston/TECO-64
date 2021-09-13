@@ -1,7 +1,7 @@
-!! TECO-64 test script: Exit TECO w/ non-empty buffer
-!! Commands: EX
-!! Expect: ?NFO
+! TECO-64 test script: Exit TECO w/ non-empty buffer !
+! Commands: EX !
+! Expect: ?NFO !
 
 @I/abcdef/
 
-EX                                  !! Test: EX w/ data in edit buffer
+EX                                  ! Test: EX w/ data in edit buffer !

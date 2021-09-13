@@ -1,6 +1,6 @@
-!! TECO-64 test script: Local search backward
-!! Commands: -S
-!! Expect: PASS [S-05.log]
+! TECO-64 test script: Local search backward !
+! Commands: -S !
+! Expect: PASS [S-05.log] !
 
 HK
 
@@ -15,10 +15,10 @@ HK
 
 ZJ
 
-@-S/abc/ .=                         !! Test: -S
-@-1S/abc/ .=                        !! Test: -1S
-@-2S/abc/ .=                        !! Test: -2S
-@-3S/abc/ .=                        !! Test: -3S
+@-S/abc/ .=                         ! Test: -S !
+@-1S/abc/ .=                        ! Test: -1S !
+@-2S/abc/ .=                        ! Test: -2S !
+@-3S/abc/ .=                        ! Test: -3S !
 
 HK
 

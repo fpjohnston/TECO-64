@@ -1,9 +1,9 @@
-!! TECO-64 test script: Flow to start of command
-!! Commands: F<
-!! Expect: PASS
+! TECO-64 test script: Flow to start of command !
+! Commands: F< !
+! Expect: PASS !
 
 :UA
 
 QA-123 "N :@^A/!PASS!/ ^C '
 
-F<                                  !! Test: F<
+F<                                  ! Test: F< !

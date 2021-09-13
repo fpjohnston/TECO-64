@@ -1,21 +1,21 @@
-!! TECO-64 test script: Test conversion to lower case
-!! Commands: ^V
-!! Expect: PASS
+! TECO-64 test script: Test conversion to lower case !
+! Commands: ^V !
+! Expect: PASS !
 
 @I/abc/
 
--1 ^X                               !! Require exact case match
+-1 ^X                               ! Require exact case match !
 0J :@S/ABC/ "S ::^C '
 
-^V                                  !! Test: ^V
+^V                                  ! Test: ^V !
 
 0J :@S/ABC/ "U ::^C '
 
-1 ^V                                !! Test: 1^V
+1 ^V                                ! Test: 1^V !
 
 0J :@S/ABC/ "U ::^C '
 
-0 ^V                                !! Test: 0^V
+0 ^V                                ! Test: 0^V !
 
 0J :@S/ABC/ "S ::^C '
 

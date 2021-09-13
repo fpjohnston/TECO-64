@@ -1,21 +1,21 @@
-!! TECO-64 test script: Insert text
-!! Commands: I, @I, nI
-!! Expect: PASS
+! TECO-64 test script: Insert text !
+! Commands: I, @I, nI !
+! Expect: PASS !
  
-512,0 E1                            !! Disable extended insert features
+512,0 E1                            ! Disable extended insert features !
 
-HK Iabc Z-3 "N ::^C '             !! Test: simple insert
+HK Iabc Z-3 "N ::^C '             ! Test: simple insert !
 
 HK Iabc
 def
 
-Z-8 "N ::^C '                       !! Test: multi-line insert
+Z-8 "N ::^C '                       ! Test: multi-line insert !
 
-HK @I/abcdef/ Z-6 "N ::^C '         !! Test: at-sign insert
+HK @I/abcdef/ Z-6 "N ::^C '         ! Test: at-sign insert !
 
-HK 65I Z-1 "N ::^C '              !! Test: insert ASCII chr.
+HK 65I Z-1 "N ::^C '              ! Test: insert ASCII chr. !
 
-HK 65@I// Z-1 "N ::^C '             !! Test: at-sign insert of ASCII chr.
+HK 65@I// Z-1 "N ::^C '             ! Test: at-sign insert of ASCII chr. !
 
 HK
 

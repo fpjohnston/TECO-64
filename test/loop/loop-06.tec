@@ -1,10 +1,10 @@
-!! TECO-64 test script: Test nested loops
-!! Commands: <, >
-!! Expect: PASS [loop-06.log]
+! TECO-64 test script: Test nested loops !
+! Commands: <, > !
+! Expect: PASS [loop-06.log] !
 
 0 U1
 
-!! Test: nested loops w/ different loop counts
+! Test: nested loops w/ different loop counts !
 
 2 < @^A/1st loop: #/ %1=
     0 U2

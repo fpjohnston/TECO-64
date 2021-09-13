@@ -1,11 +1,11 @@
-!! TECO-64 test script: Local search and replace
-!! Commands: @FS//
-!! Expect: ?SRH
+! TECO-64 test script: Local search and replace !
+! Commands: @FS// !
+! Expect: ?SRH !
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 
 0J
 
-@FS/foo/BAZ/                        !! Test: @FS//
+@FS/foo/BAZ/                        ! Test: @FS// !
 
 HK

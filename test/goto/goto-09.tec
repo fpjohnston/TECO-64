@@ -1,8 +1,8 @@
-!! TECO-64 test script: Branch forward into a loop
-!! Commands: O
-!! Expect: ?LOC
+! TECO-64 test script: Branch forward into a loop !
+! Commands: O !
+! Expect: ?LOC !
 
-@O!tag1!                            !! Test: branch forward
+@O!tag1!                            ! Test: branch forward !
 
 1 <
     !tag1!

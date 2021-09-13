@@ -1,8 +1,8 @@
-*!! TECO-64 test script: Back up and type one line
-!! Commands: BS
-!! Expect: PASS [BS.log]
+*! TECO-64 test script: Back up and type one line !
+! Commands: BS !
+! Expect: PASS [BS.log] !
 
-!! Test: immediate-action BS commands
+! Test: immediate-action BS commands !
 
 @I/line 1
 line 2

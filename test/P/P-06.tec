@@ -1,6 +1,6 @@
-!! TECO-64 test script: Write contents of edit buffer
-!! Commands: nP
-!! Expect: PASS
+! TECO-64 test script: Write contents of edit buffer !
+! Commands: nP !
+! Expect: PASS !
 
 0,64 E3
 1,0 E3
@@ -20,7 +20,7 @@ EC
 
 :@EB{/tmp/baz} "U ::^C '
 
-4P                                  !! Test: nP
+4P                                  ! Test: nP !
 
 0J ::@S/page 4/ "U :: ^C '
 

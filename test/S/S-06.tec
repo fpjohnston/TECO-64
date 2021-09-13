@@ -1,6 +1,6 @@
-!! TECO-64 test script: Compare text
-!! Commands: ::S
-!! Expect: PASS
+! TECO-64 test script: Compare text !
+! Commands: ::S !
+! Expect: PASS !
 
 HK
 
@@ -9,51 +9,51 @@ HK
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/
 
 0J
-28C                     !! Skip to 123...
+28C                     ! Skip to 123... !
 
-!! Ensure that text preceding position doesn't match
+! Ensure that text preceding position doesn't match !
 
-::@S/abcd/                          !! Test: ::@S//
+::@S/abcd/                          ! Test: ::@S// !
 
 "S
     ::^C
 '
 
-!! Ensure that text at current position matches
+! Ensure that text at current position matches !
 
 . UA
 
-::@S/1234/                          !! Test: ::@S//
+::@S/1234/                          ! Test: ::@S// !
 
 "U
     ::^C
 '
 
-!! Ensure the dot moved by length of searched string
+! Ensure the dot moved by length of searched string !
 
 (.-QA) - 4 "N
     ::^C
 '
 
-!! Ensure that text ahead of dot doesn't match
+! Ensure that text ahead of dot doesn't match !
 
-::@S/6789/                          !! Test: ::@S//
-
-"S
-    ::^C
-'
-
-!! Ensure that backward compare fails
-
--::@S/4/                            !! Test: -::@S//
+::@S/6789/                          ! Test: ::@S// !
 
 "S
     ::^C
 '
 
-!! Ensure that text not in buffer doesn't match
+! Ensure that backward compare fails !
 
-::@S/foobaz/                        !! Test: @S//
+-::@S/4/                            ! Test: -::@S// !
+
+"S
+    ::^C
+'
+
+! Ensure that text not in buffer doesn't match !
+
+::@S/foobaz/                        ! Test: @S// !
 
 "S
     ::^C

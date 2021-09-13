@@ -1,9 +1,9 @@
-!! TECO-64 test script: Map command string to CTRL/F sequence
-!! Commands: FF, @FF
-!! Expect: PASS
+! TECO-64 test script: Map command string to CTRL/F sequence !
+! Commands: FF, @FF !
+! Expect: PASS !
 
-^^0FFV                           !! Test: map commands to <CTRL/F>0
+^^0FFV                           ! Test: map commands to <CTRL/F>0 !
 
-^^9@FF{:@^A/hello, world!/}        !! Test: map commands to <CTRL/F>9
+^^9@FF{:@^A/hello, world!/}        ! Test: map commands to <CTRL/F>9 !
 
 :@^A/!PASS!/

@@ -1,8 +1,8 @@
-!! TECO-64 test script: Test for less than zero
-!! Commands: "L
-!! Expect: PASS
+! TECO-64 test script: Test for less than zero !
+! Commands: "L !
+! Expect: PASS !
 
-!! Test: "L
+! Test: "L !
 
  0 "L   ::^C '
  1 "L   ::^C '

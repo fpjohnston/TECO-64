@@ -1,6 +1,6 @@
-!! TECO-64 test script: Yank file into edit buffer
-!! Commands: Y
-!! Expect: ?YCA
+! TECO-64 test script: Yank file into edit buffer !
+! Commands: Y !
+! Expect: ?YCA !
 
 @EW{/tmp/foo} 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
@@ -12,6 +12,6 @@ EC
 
 2,0 ED
 
-Y                                   !! Test: yank w/ data in buffer
+Y                                   ! Test: yank w/ data in buffer !
 
 HK

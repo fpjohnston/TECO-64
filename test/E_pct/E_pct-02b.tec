@@ -1,10 +1,10 @@
-!! TECO-64 test script: Write Q-register to file
-!! Commands: @E%//
-!! Expect: ?ERR
+! TECO-64 test script: Write Q-register to file !
+! Commands: @E%// !
+! Expect: ?ERR !
 
 @^UA{/dev/fubar}
 
 @I/hello, world!/ 10I
 HXB HK
 
-@E%B/^EQA/                          !! Test: @E%q
+@E%B/^EQA/                          ! Test: @E%q !

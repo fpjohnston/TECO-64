@@ -1,8 +1,8 @@
 ! FIXME !
-!! TECO-64 test script: Test lib/squish.tec
-!! Expect: PASS
+! TECO-64 test script: Test lib/squish.tec !
+! Expect: PASS !
 
-!! Test: library squish.tec macro
+! Test: library squish.tec macro !
 
 @EI/squish/
 :@^A/!PASS!/

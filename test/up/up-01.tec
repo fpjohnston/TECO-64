@@ -1,12 +1,12 @@
-!! TECO-64 test script: Get ASCII value of character
-!! Commands: ^^
-!! Expect: PASS
+! TECO-64 test script: Get ASCII value of character !
+! Commands: ^^ !
+! Expect: PASS !
 
 0 UF
 0 UA
 @^UA{ QB-%A "N QA @=/Expected %d, got / QB= %F ' }
 
-!! Test: get values of all ASCII characters
+! Test: get values of all ASCII characters !
 
 ^^ UB MA
 ^^ UB MA

@@ -1,6 +1,6 @@
-!! TECO-64 test script: Branch backward outside a conditional
-!! Commands: O
-!! Expect: PASS
+! TECO-64 test script: Branch backward outside a conditional !
+! Commands: O !
+! Expect: PASS !
 
 @O!tag1!
 
@@ -14,7 +14,7 @@
 
 0 "E
 
-    @O!tag2!                        !! Test: branch backward
+    @O!tag2!                        ! Test: branch backward !
 
     ::^C
 '

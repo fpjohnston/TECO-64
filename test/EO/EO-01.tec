@@ -1,7 +1,7 @@
-!! TECO-64 test script: Get TECO version number
-!! Commands: EO
-!! Expect: PASS
+! TECO-64 test script: Get TECO version number !
+! Commands: EO !
+! Expect: PASS !
  
-EO-200 "N ::^C '                    !! Test: EO
+EO-200 "N ::^C '                    ! Test: EO !
 
 :@^A/!PASS!/

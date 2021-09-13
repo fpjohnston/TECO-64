@@ -1,9 +1,9 @@
-*!! TECO-64 test script: Test help level flag
-!! Commands: 3EH
-!! Expect: ?FNF [EH-04.log]
+*! TECO-64 test script: Test help level flag !
+! Commands: 3EH !
+! Expect: ?FNF [EH-04.log] !
 
 3 EH
-EH=                                 !! Test: verbose error message
+EH=                                 ! Test: verbose error message !
 @ER/FOO/
 ``
 3

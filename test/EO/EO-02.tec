@@ -1,5 +1,5 @@
-!! TECO-64 test script: Get TECO version number
-!! Commands: EO
-!! Expect: ?NYI
+! TECO-64 test script: Get TECO version number !
+! Commands: EO !
+! Expect: ?NYI !
  
-40 EO                               !! Test: nEO
+40 EO                               ! Test: nEO !

@@ -1,12 +1,12 @@
-!! TECO-64 test script: Local search forward
-!! Commands: @S//
-!! Expect: PASS
+! TECO-64 test script: Local search forward !
+! Commands: @S// !
+! Expect: PASS !
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 
 0J
 
-@S/xyz/                             !! Test: @S//
+@S/xyz/                             ! Test: @S// !
 
 HK
 

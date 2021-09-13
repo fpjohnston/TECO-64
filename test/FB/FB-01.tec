@@ -1,6 +1,6 @@
-!! TECO-64 test script: Bounded search
-!! Commands: FB
-!! Expect: PASS
+! TECO-64 test script: Bounded search !
+! Commands: FB !
+! Expect: PASS !
 
 HK
 
@@ -46,39 +46,39 @@ All mimsy were the borogoves,
 0J
 :@S/Beware/ "U ::^C ' 0L
 
-:@FB/Jabberwock/                    !! Test: FB
+:@FB/Jabberwock/                    ! Test: FB !
 
 "U ::^C '
 
-:@FB/jaws/                          !! Test: FB
+:@FB/jaws/                          ! Test: FB !
 
 "S ::^C '
 
-10:@FB/manxome/                     !! Test: nFB
+10:@FB/manxome/                     ! Test: nFB !
 
 "U ::^C '
 
-5:@FB/hast/                         !! Test: nFB
+5:@FB/hast/                         ! Test: nFB !
 
 "S ::^C '
 
--:@FB/vorpal/                       !! Test: -FB
+-:@FB/vorpal/                       ! Test: -FB !
 
 "U ::^C '
 
--:@FB/Bander/                       !! Test: -nFB
+-:@FB/Bander/                       ! Test: -nFB !
 
 "S ::^C '
 
--3:@FB/Bander/                      !! Test: -nFB
+-3:@FB/Bander/                      ! Test: -nFB !
 
 "U ::^C '
 
-550,590:@FB/whiffling/              !! Test: m,nFB
+550,590:@FB/whiffling/              ! Test: m,nFB !
 
 "U ::^C '
 
-550,590:@FB/burbled/                !! Test: m,nFB
+550,590:@FB/burbled/                ! Test: m,nFB !
 
 "S ::^C '
 

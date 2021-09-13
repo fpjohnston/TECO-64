@@ -1,15 +1,15 @@
-!! TECO-64 test script: Get environment information
-!! Commands: EJ
-!! Expect: PASS
+! TECO-64 test script: Get environment information !
+! Commands: EJ !
+! Expect: PASS !
 
-0 UF                                !! No. of failures
+0 UF                                ! No. of failures !
 
-0  EJ UI                            !! Test: 0EJ
-0 :EJ UP                            !! Test: 0:EJ
+0  EJ UI                            ! Test: 0EJ !
+0 :EJ UP                            ! Test: 0:EJ !
 
-QI-QP "E %F '                       !! IDs cannot be the same
+QI-QP "E %F '                       ! IDs cannot be the same !
 
--1 EJ UO                            !! Test: -1EJ
+-1 EJ UO                            ! Test: -1EJ !
 
 QO-10 "N
     QO-20 "N
@@ -22,7 +22,7 @@ QO-10 "N
     '
 '
 
--2 EJ UH                            !! Test: -2EJ
+-2 EJ UH                            ! Test: -2EJ !
 
 QH-10 "N
     QH-20 "N
@@ -33,7 +33,7 @@ QH-10 "N
     '
 '
 
--3 EJ UW                            !! Test: -3EJ
+-3 EJ UW                            ! Test: -3EJ !
 
 QW-32 "N
     QW-64 "N
@@ -42,7 +42,7 @@ QW-32 "N
     '
 '
 
--4 EJ UN                            !! Test: -4EJ
+-4 EJ UN                            ! Test: -4EJ !
 
 QN-32 "N
     QN-64 "N

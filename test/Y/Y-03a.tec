@@ -1,6 +1,6 @@
-!! TECO-64 test script: Yank file w/o yank protection
-!! Commands: Y
-!! Expect: PASS
+! TECO-64 test script: Yank file w/o yank protection !
+! Commands: Y !
+! Expect: PASS !
 
 @EW{/tmp/foo} 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
@@ -10,7 +10,7 @@ EC
 
 0,2 ED
 
-Y                                   !! Test: yank w/o protection
+Y                                   ! Test: yank w/o protection !
 
 HK
 

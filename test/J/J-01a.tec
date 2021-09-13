@@ -1,6 +1,6 @@
-!! TECO-64 test script: Move position
-!! Commands: J
-!! Expect: PASS
+! TECO-64 test script: Move position !
+! Commands: J !
+! Expect: PASS !
  
 HK
 
@@ -43,11 +43,11 @@ All mimsy were the borogoves,
       And the mome raths outgrabe.
 /
 
-0J    .     "N ::^C '               !! Test: 0J
+0J    .     "N ::^C '               ! Test: 0J !
 
-171J  .-171 "N ::^C '               !! Test: nJ
+171J  .-171 "N ::^C '               ! Test: nJ !
 
-ZJ    Z-.   "N ::^C '               !! Test: ZJ
+ZJ    Z-.   "N ::^C '               ! Test: ZJ !
 
 HK
 

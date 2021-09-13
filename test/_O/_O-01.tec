@@ -1,12 +1,12 @@
-!! TECO-64 test script: Set input radix to octal
-!! Commands: ^O
-!! Expect: PASS [_O-01.log]
+! TECO-64 test script: Set input radix to octal !
+! Commands: ^O !
+! Expect: PASS [_O-01.log] !
 
 HK
 
 :@^A/Setting radix to octal/
 
-^O 123 \ HT -1^T 0J \ UA QA==       !! Test: ^O
+^O 123 \ HT -1^T 0J \ UA QA==       ! Test: ^O !
 
 HK
 

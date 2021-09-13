@@ -1,9 +1,9 @@
-!! TECO-64 test script: Append text to edit buffer
-!! Commands: n:A
-!! Expect: PASS [A-02d.log]
+! TECO-64 test script: Append text to edit buffer !
+! Commands: n:A !
+! Expect: PASS [A-02d.log] !
 
-0,64 E3                             !! Suppress informational messages
-1,0 E3                              !! Disable FF as a regular character
+0,64 E3                             ! Suppress informational messages !
+1,0 E3                              ! Disable FF as a regular character !
 
 0 UA
 4 UI
@@ -25,7 +25,7 @@ EC
 
 :@ER{/tmp/foo} "U ::^C '
 
-3:A                                 !! Test: append pages to buffer
+3:A                                 ! Test: append pages to buffer !
 
 Z-(QL * 3) "N ::^C '
 

@@ -1,7 +1,7 @@
-!! TECO-64 test script: Delete lines
-!! Commands: K
-!! Expect: ?POP
+! TECO-64 test script: Delete lines !
+! Commands: K !
+! Expect: ?POP !
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 
-0,100K                              !! Test: m,nK
+0,100K                              ! Test: m,nK !

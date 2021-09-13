@@ -1,8 +1,8 @@
-*!! TECO-64 test script: Advance and type one line
-!! Commands: LF
-!! Expect: PASS [LF-01.log]
+*! TECO-64 test script: Advance and type one line !
+! Commands: LF !
+! Expect: PASS [LF-01.log] !
 
-!! Test: immediate-action LF commands
+! Test: immediate-action LF commands !
 
 @I/line 1
 line 2

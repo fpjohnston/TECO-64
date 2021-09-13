@@ -1,12 +1,12 @@
-!! TECO-64 test script: Load all global Q-registers
-!! Commands: U
-!! Expect: PASS [U-01.log]
+! TECO-64 test script: Load all global Q-registers !
+! Commands: U !
+! Expect: PASS [U-01.log] !
 
-!! Test: load global Q-registers w/ unique numbers
+! Test: load global Q-registers w/ unique numbers !
 
-0 U.A                   !! Unique number for each Q-register
+0 U.A                   ! Unique number for each Q-register !
 
-!! Create commands to load Q-registers 0-9
+! Create commands to load Q-registers 0-9 !
 
 ^^0 U.B
 ^^9 - Q.B + 1 <
@@ -17,7 +17,7 @@
     10@I//
 >
 
-!! Create commands to load Q-registers a-z
+! Create commands to load Q-registers a-z !
 
 ^^a U.B
 ^^z - Q.B + 1 <
@@ -28,7 +28,7 @@
     10@I//
 >
 
-!! Create commands to load Q-registers A-Z (same as a-z)
+! Create commands to load Q-registers A-Z (same as a-z) !
 
 ^^A U.B
 ^^Z - Q.B + 1 <
@@ -41,7 +41,7 @@
 
 HX.A HK M.A
 
-!! Create commands to print Q-registers 0-9
+! Create commands to print Q-registers 0-9 !
 
 ^^0 U.B
 ^^9 - Q.B + 1 <
@@ -55,7 +55,7 @@ HX.A HK M.A
     %.B
 >
 
-!! Create commands to print Q-registers a-z
+! Create commands to print Q-registers a-z !
 
 ^^a U.B
 ^^z - Q.B + 1 <
@@ -69,7 +69,7 @@ HX.A HK M.A
     %.B
 >
 
-!! Create commands to print Q-registers A-Z (same as a-z)
+! Create commands to print Q-registers A-Z (same as a-z) !
 
 ^^A U.B
 ^^Z - Q.B + 1 <

@@ -1,8 +1,8 @@
-!! TECO-64 test script: Test for greater than zero
-!! Commands: ">
-!! Expect: PASS
+! TECO-64 test script: Test for greater than zero !
+! Commands: "> !
+! Expect: PASS !
 
-!! Test: ">
+! Test: "> !
 
  0 ">   ::^C '
  1 "> | ::^C '

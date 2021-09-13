@@ -1,6 +1,6 @@
-!! TECO-64 test script: Write contents of edit buffer
-!! Commands: PW
-!! Expect: PASS [P-09.log]
+! TECO-64 test script: Write contents of edit buffer !
+! Commands: PW !
+! Expect: PASS [P-09.log] !
 
 0,64 E3
 1,0 E3
@@ -19,8 +19,8 @@ EC
 
 EY EY
 
-PW                                  !! Test: PW
-PW                                  !! Test: PW
+PW                                  ! Test: PW !
+PW                                  ! Test: PW !
 
 EF HK EC
 

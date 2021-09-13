@@ -1,13 +1,13 @@
-!! TECO-64 test script: Map key to Q-register
-!! Commands: FQ, @FQ
-!! Expect: PASS
+! TECO-64 test script: Map key to Q-register !
+! Commands: FQ, @FQ !
+! Expect: PASS !
 
-FQAF1                             !! Test: map key to Q-register A
+FQAF1                             ! Test: map key to Q-register A !
 
-@FQZ/F2/                            !! Test: map key to Q-register Z
+@FQZ/F2/                            ! Test: map key to Q-register Z !
 
-@FQ0/F3/                            !! Test: map key to Q-register 0
+@FQ0/F3/                            ! Test: map key to Q-register 0 !
 
-@FQ9/F4/                            !! Test: map key to Q-register 9
+@FQ9/F4/                            ! Test: map key to Q-register 9 !
 
 :@^A/!PASS!/

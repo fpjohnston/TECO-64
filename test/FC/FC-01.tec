@@ -1,6 +1,6 @@
-!! TECO-64 test script: Bounded search and replace
-!! Commands: FC
-!! Expect: PASS [FC-01.log]
+! TECO-64 test script: Bounded search and replace !
+! Commands: FC !
+! Expect: PASS [FC-01.log] !
 
 HK
 
@@ -46,39 +46,39 @@ All mimsy were the borogoves,
 0J
 :@S/Beware/ "U ::^C ' 0L
 
-:@FC/Jabberwock/Fluffy/             !! Test: FC
+:@FC/Jabberwock/Fluffy/             ! Test: FC !
 
 "U ::^C '
 
-:@FC/jaws/JAWS/                     !! Test: FC
+:@FC/jaws/JAWS/                     ! Test: FC !
 
 "S ::^C '
 
-10:@FC/manxome/turtle/              !! Test: nFC
+10:@FC/manxome/turtle/              ! Test: nFC !
 
 "U ::^C '
 
-5:@FC/hast/HAST/                    !! Test: nFC
+5:@FC/hast/HAST/                    ! Test: nFC !
 
 "S ::^C '
 
--:@FC/vorpal/mickle/                !! Test: -FC
+-:@FC/vorpal/mickle/                ! Test: -FC !
 
 "U ::^C '
 
--:@FC/Bander/Floofy/                !! Test: -nFC
+-:@FC/Bander/Floofy/                ! Test: -nFC !
 
 "S ::^C '
 
--3:@FC/Bander/Snorkle/              !! Test: -nFC
+-3:@FC/Bander/Snorkle/              ! Test: -nFC !
 
 "U ::^C '
 
-550,590:@FC/whiffling/toodling/     !! Test: m,nFC
+550,590:@FC/whiffling/toodling/     ! Test: m,nFC !
 
 "U ::^C '
 
-550,590:@FC/burbled/bobbled/        !! Test: m,nFC
+550,590:@FC/burbled/bobbled/        ! Test: m,nFC !
 
 "S ::^C '
 

@@ -1,8 +1,8 @@
-!! TECO-64 test script: Load Q-registers w/ default
-!! Commands: :U
-!! Expect: PASS
+! TECO-64 test script: Load Q-registers w/ default !
+! Commands: :U !
+! Expect: PASS !
 
-:UN                                 !! Test: load Q-registers w/ defaults
+:UN                                 ! Test: load Q-registers w/ defaults !
 :UM
 QM :@=/QM=%d: /
 QN :@=/QN=%d: /

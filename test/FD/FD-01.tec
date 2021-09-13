@@ -1,6 +1,6 @@
-!! TECO-64 test script: Search and delete
-!! Commands: FD
-!! Expect: PASS [FD-01.log]
+! TECO-64 test script: Search and delete !
+! Commands: FD !
+! Expect: PASS [FD-01.log] !
  
 HK
 
@@ -45,11 +45,11 @@ All mimsy were the borogoves,
 
 0J
 
-@FD/Jubjub/      @I/------/         !! Test: @FD//
+@FD/Jubjub/      @I/------/         ! Test: @FD// !
 
-2@FD/Jabberwock/ @I/++++++++++/     !! Test: 2@FD//
+2@FD/Jabberwock/ @I/++++++++++/     ! Test: 2@FD// !
 
--@FD/gyre/       @I/****/           !! Test: -1@FD//
+-@FD/gyre/       @I/****/           ! Test: -1@FD// !
 
 HT
 HK

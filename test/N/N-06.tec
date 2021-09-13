@@ -1,6 +1,6 @@
-!! TECO-64 test script: Non-stop forward search
-!! Commands: nN
-!! Expect: PASS
+! TECO-64 test script: Non-stop forward search !
+! Commands: nN !
+! Expect: PASS !
 
 1,0 E3
 0,64 E3
@@ -24,9 +24,9 @@ EC HK
 
 :@EB{/tmp/baz} "U ::^C '
 
-2:@N/the/ "U ::C '                  !! Test: nN
+2:@N/the/ "U ::C '                  ! Test: nN !
 
-^P-9 "N ::^C '                      !! Make sure we found the right one
+^P-9 "N ::^C '                      ! Make sure we found the right one !
 
 EK HK EC
 

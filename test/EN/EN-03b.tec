@@ -1,18 +1,18 @@
-!! TECO-64 test script: Open wildcard filespec
-!! Commands: :EN
-!! Expect: ?XAB
+! TECO-64 test script: Open wildcard filespec !
+! Commands: :EN !
+! Expect: ?XAB !
 
 @^UA{*.foo}
 
-:@EN/^EQA/                          !! Test: :@EN/file/
+:@EN/^EQA/                          ! Test: :@EN/file/ !
 "E
     ::^C
 '
 
 0UA
 <
-    :@EN//;                         !! Test: :@EN//
-    %A                              !! Count how many files we found
+    :@EN//;                         ! Test: :@EN// !
+    %A                              ! Count how many files we found !
 >
 
 QA :@=/%u file/

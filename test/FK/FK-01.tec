@@ -1,6 +1,6 @@
-!! TECO-64 test script: Delete and replace
-!! Commands: FK
-!! Expect: PASS [FK-01.log]
+! TECO-64 test script: Delete and replace !
+! Commands: FK !
+! Expect: PASS [FK-01.log] !
  
 HK
 
@@ -47,7 +47,7 @@ All mimsy were the borogoves,
 
 @S/And, as in /
 
-@FK/uffish /                        !! Test: @FK//
+@FK/uffish /                        ! Test: @FK// !
 
 HT
 HK

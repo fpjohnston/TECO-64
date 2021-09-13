@@ -1,7 +1,7 @@
-!! TECO-64 test script: Test end of loop w/o start
-!! Commands: >
-!! Expect: ?BNI
+! TECO-64 test script: Test end of loop w/o start !
+! Commands: > !
+! Expect: ?BNI !
 
-!! Test: > w/o <
+! Test: > w/o < !
 
 >

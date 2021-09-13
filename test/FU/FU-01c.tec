@@ -1,6 +1,6 @@
-!! TECO-64 test script: Convert text to upper case
-!! Commands: FU
-!! Expect: ?POP
+! TECO-64 test script: Convert text to upper case !
+! Commands: FU !
+! Expect: ?POP !
  
 HK
 
@@ -8,6 +8,6 @@ HK
 
 15 < %A-10 "L 32I ' QA \ @I/. abcdefg HIJKLMN/ 10I>
 
-0,Z+1 FU                            !! Test: m,nFU w/ n > Z
+0,Z+1 FU                            ! Test: m,nFU w/ n > Z !
 
 :@^A/!PASS!/

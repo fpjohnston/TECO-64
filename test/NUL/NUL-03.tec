@@ -1,8 +1,8 @@
-!! TECO-64 test script: Test NUL characters in input files
-!! Commands: NUL
-!! Expect: PASS
+! TECO-64 test script: Test NUL characters in input files !
+! Commands: NUL !
+! Expect: PASS !
 
-!! Test: NUL characters in command files
+! Test: NUL characters in command files !
 
 @I/abc/ 10,0I @I/def/ 10I
 
@@ -10,13 +10,13 @@
 
 EC
 
-8,0 ED                              !! Test: discarding NUL input chrs.
+8,0 ED                              ! Test: discarding NUL input chrs. !
 
 :@ER{/tmp/baz} "E ::^C ' Y
 
 Z-7 "N ::^C ' HK EC
 
-0,8 ED                              !! Test: keeping NUL input chrs.
+0,8 ED                              ! Test: keeping NUL input chrs. !
 
 :@ER{/tmp/baz} "E ::^C ' Y
 

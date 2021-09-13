@@ -1,12 +1,12 @@
-!! TECO-64 test script: Test search mode flag
-!! Commands: 0^X
-!! Expect: PASS
+! TECO-64 test script: Test search mode flag !
+! Commands: 0^X !
+! Expect: PASS !
 
-!! Try to match lower case letters (and special characters)
+! Try to match lower case letters (and special characters) !
 
 @I/`abcdefghijklmnopqrstuvwxyz{|}~/
 
-0 ^X                                !! Test: 0^X
+0 ^X                                ! Test: 0^X !
 
 0J ^^@ UA
 
@@ -14,11 +14,11 @@
 
 HK
 
-!! Try to match upper case letters (and special characters)
+! Try to match upper case letters (and special characters) !
 
 @I/@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^/
 
-0 ^X                                !! Test: 0^X
+0 ^X                                ! Test: 0^X !
 
 0J ^^` UA
 

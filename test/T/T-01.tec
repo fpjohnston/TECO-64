@@ -1,6 +1,6 @@
-!! TECO-64 test script: Type entire edit buffer
-!! Commands: HT
-!! Expect: PASS [T-01.log]
+! TECO-64 test script: Type entire edit buffer !
+! Commands: HT !
+! Expect: PASS [T-01.log] !
 
 HK
 
@@ -43,7 +43,7 @@ All mimsy were the borogoves,
       And the mome raths outgrabe.
 /
 
-HT                                  !! Test: HT
+HT                                  ! Test: HT !
 
 HK
 

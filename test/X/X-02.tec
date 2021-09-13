@@ -1,6 +1,6 @@
-!! TECO-64 test script: Append to Q-register
-!! Commands: X
-!! Expect: PASS [X-02.log]
+! TECO-64 test script: Append to Q-register !
+! Commands: X !
+! Expect: PASS [X-02.log] !
 
 HK
 
@@ -14,17 +14,17 @@ HK
 >
 
 :@^A/-----/
-0J 1:XA :GA                         !! Test: 1:X
+0J 1:XA :GA                         ! Test: 1:X !
 :@^A/-----/
-2L 2:XA :GA                         !! Test: 2:X
+2L 2:XA :GA                         ! Test: 2:X !
 :@^A/-----/
-3L 3:XA :GA                         !! Test: 3:X
+3L 3:XA :GA                         ! Test: 3:X !
 :@^A/-----/
-ZJ -3:XA :GA                        !! Test: -3:X
+ZJ -3:XA :GA                        ! Test: -3:X !
 :@^A/-----/
--4L -2:XA :GA                       !! Test: -2:X
+-4L -2:XA :GA                       ! Test: -2:X !
 :@^A/-----/
--3L -1:XA :GA                       !! Test: -1:X
+-3L -1:XA :GA                       ! Test: -1:X !
 :@^A/-----/
 
 :@^A/!PASS!/

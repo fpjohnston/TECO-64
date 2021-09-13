@@ -1,7 +1,7 @@
-!! TECO-64 helper script
+! TECO-64 helper script !
 
 :@^A/entering test 4a/
 
-@EI/EI-04b/                         !! Test: EI (level 1)
+@EI/EI-04b/                         ! Test: EI (level 1) !
 
 :@^A/exiting test 4a/

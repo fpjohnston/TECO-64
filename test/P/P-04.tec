@@ -1,6 +1,6 @@
-!! TECO-64 test script: Write contents of edit buffer
-!! Commands: HPW
-!! Expect: PASS [P-04.log]
+! TECO-64 test script: Write contents of edit buffer !
+! Commands: HPW !
+! Expect: PASS [P-04.log] !
 
 0,64 E3
 
@@ -17,7 +17,7 @@ All mimsy were the borogoves,
 
 :@EW{/tmp/baz} "U ::^C '
 
-HPW                                 !! Test: HPW
+HPW                                 ! Test: HPW !
 
 HK
 

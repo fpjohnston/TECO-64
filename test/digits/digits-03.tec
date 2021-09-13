@@ -1,10 +1,10 @@
-!! TECO-64 test script: Test extended digit format
-!! Commands: 0-f (digits)
-!! Expect: PASS [digits-03.log]
+! TECO-64 test script: Test extended digit format !
+! Commands: 0-f (digits) !
+! Expect: PASS [digits-03.log] !
 
 :@^A/Testing base 10/
 
-( 00) UA QA:@=/%d /                 !! Test: all decimal digits
+( 00) UA QA:@=/%d /                 ! Test: all decimal digits !
 ( 11) UA QA:@=/%d /
 ( 22) UA QA:@=/%d /
 ( 33) UA QA:@=/%d /
@@ -17,7 +17,7 @@
 
 :@^A/Testing base 8/
 
-(000) UA QA:@=/%o /                 !! Test: all octal digits
+(000) UA QA:@=/%o /                 ! Test: all octal digits !
 (011) UA QA:@=/%o /
 (022) UA QA:@=/%o /
 (033) UA QA:@=/%o /
@@ -28,7 +28,7 @@
 
 :@^A/Testing base 16/
 
-(0x00) UA QA:@=/%x /                !! Test: all hexadecimal digits
+(0x00) UA QA:@=/%x /                ! Test: all hexadecimal digits !
 (0x11) UA QA:@=/%x /
 (0x22) UA QA:@=/%x /
 (0x33) UA QA:@=/%x /

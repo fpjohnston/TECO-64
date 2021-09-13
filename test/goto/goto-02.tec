@@ -1,6 +1,6 @@
-!! TECO-64 test script: Branch backward
-!! Commands: O
-!! Expect: PASS
+! TECO-64 test script: Branch backward !
+! Commands: O !
+! Expect: PASS !
 
 @O!tag1!
 
@@ -12,6 +12,6 @@
 
 !tag1!
 
-@O!tag2!                            !! Test: branch backward
+@O!tag2!                            ! Test: branch backward !
 
 ::^C

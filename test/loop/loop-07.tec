@@ -1,7 +1,7 @@
-!! TECO-64 test script: Exit iteration on search failure
-!! Commands: :;
-!! Expect: PASS
+! TECO-64 test script: Exit iteration on search failure !
+! Commands: :; !
+! Expect: PASS !
 
-1 < @S/baz/; ::^C >                 !! Test: loop w/ @S//;
+1 < @S/baz/; ::^C >                 ! Test: loop w/ @S//; !
 
 :@^A/!PASS!/

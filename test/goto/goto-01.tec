@@ -1,8 +1,8 @@
-!! TECO-64 test script: Branch forward
-!! Commands: O
-!! Expect: PASS
+! TECO-64 test script: Branch forward !
+! Commands: O !
+! Expect: PASS !
 
-@O!tag1!                            !! Test: branch forward
+@O!tag1!                            ! Test: branch forward !
 
 @^A/?FAIL/
 

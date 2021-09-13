@@ -1,8 +1,8 @@
-!! TECO-64 test script: Test nesting excessive conditionals
-!! Commands: "x
-!! Expect: ?MAX
+! TECO-64 test script: Test nesting excessive conditionals !
+! Commands: "x !
+! Expect: ?MAX !
 
-!! Test: nested conditionals
+! Test: nested conditionals !
 
 1"N
   2"N

@@ -1,6 +1,6 @@
-!! TECO-64 test script: Type out current line
-!! Commands: V
-!! Expect: PASS [V-02.log]
+! TECO-64 test script: Type out current line !
+! Commands: V !
+! Expect: PASS [V-02.log] !
 
 HK
 
@@ -46,7 +46,7 @@ All mimsy were the borogoves,
 0 J
 19 L
 20 C
-V                                   !! Test: V in middle of line
+V                                   ! Test: V in middle of line !
 HK
 
 :@^A/!PASS!/

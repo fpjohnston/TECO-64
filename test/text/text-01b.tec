@@ -1,7 +1,7 @@
-!! TECO-64 test script: Parenthesized text arguments
-!! Commands: (
-!! Expect: ?UTM
+! TECO-64 test script: Parenthesized text arguments !
+! Commands: ( !
+! Expect: ?UTM !
 
-:@^A(hello, world!(                 !! Test: matched left parentheses
+:@^A(hello, world!(                 ! Test: matched left parentheses !
 
 :@^A/!PASS!/

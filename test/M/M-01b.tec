@@ -1,6 +1,6 @@
-!! TECO-64 test script: Execute macro w/ n arg.
-!! Commands: M
-!! Expect: PASS
+! TECO-64 test script: Execute macro w/ n arg. !
+! Commands: M !
+! Expect: PASS !
 
 @I
 {
@@ -14,4 +14,4 @@
 
 HXA HK
 
-123 MA                              !! Test: nM
+123 MA                              ! Test: nM !

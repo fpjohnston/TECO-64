@@ -1,5 +1,5 @@
-!! TECO-64 test script: Map key to macro
-!! Commands: FM
-!! Expect: ?KEY
+! TECO-64 test script: Map key to macro !
+! Commands: FM !
+! Expect: ?KEY !
 
-@FM/BAZ/EX/                         !! Test: map key to command
+@FM/BAZ/EX/                         ! Test: map key to command !

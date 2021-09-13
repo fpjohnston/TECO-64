@@ -1,11 +1,11 @@
-!! TECO-64 test script: Open log file
-!! Commands: @EL//
-!! Expect: ?ERR
+! TECO-64 test script: Open log file !
+! Commands: @EL// !
+! Expect: ?ERR !
 
-@^UA{/dev/teco.log}                 !! Load output file name
+@^UA{/dev/teco.log}                 ! Load output file name !
 
-@EL/^EQA/                           !! Test: open log file
+@EL/^EQA/                           ! Test: open log file !
 
-@EL//                               !! Test: close log file
+@EL//                               ! Test: close log file !
 
 EK HK

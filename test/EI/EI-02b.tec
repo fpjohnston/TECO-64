@@ -1,10 +1,10 @@
-!! TECO-64 test script: Open indirect command file
-!! Commands: @EI//
-!! Expect: ?FNF
+! TECO-64 test script: Open indirect command file !
+! Commands: @EI// !
+! Expect: ?FNF !
 
 @^UA/baz.tec/
 
-@EI/^EQA/                           !! Test: @EI//
+@EI/^EQA/                           ! Test: @EI// !
 
 HK
 

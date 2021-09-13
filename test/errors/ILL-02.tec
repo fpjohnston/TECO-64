@@ -1,6 +1,6 @@
-!! TECO-64 test script: Test illegal command
-!! Commands: ^]
-!! Expect: ?ILL
+! TECO-64 test script: Test illegal command !
+! Commands: ^] !
+! Expect: ?ILL !
  
-                                      !! Test: ^] command
+                                      ! Test: ^] command !
 

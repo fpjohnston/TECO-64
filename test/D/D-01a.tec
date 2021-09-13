@@ -1,46 +1,46 @@
-!! TECO-64 test script: Delete characters
-!! Commands: D
-!! Expect: PASS
+! TECO-64 test script: Delete characters !
+! Commands: D !
+! Expect: PASS !
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// Z UA 0 UD 0J
 
-0D                                  !! Test: 0D
+0D                                  ! Test: 0D !
 ::@S/abcde/ "U ::^C '
 QA-Z-QD "N ::^C '
 
-D                                   !! Test: D
+D                                   ! Test: D !
 1%D ^[ R
 ::@S/egh/ "U ::^C '
 QA-Z-QD "N ::^C '
 
-1D                                  !! Test: 1D
+1D                                  ! Test: 1D !
 1%D ^[ R
 ::@S/hjk/ "U ::^C '
 QA-Z-QD "N ::^C '
 
-4D                                  !! Test: nD
+4D                                  ! Test: nD !
 4%D ^[ R
 ::@S/kpq/ "U ::^C '
 QA-Z-QD "N ::^C '
 
--D                                  !! Test: -D
+-D                                  ! Test: -D !
 %D ^[ R
 ::@S/prs/ "U ::^C '
 QA-Z-QD "N ::^C '
 
--1D                                 !! Test: -1D
+-1D                                 ! Test: -1D !
 %D ^[ R
 ::@S/rtu/ "U ::^C '
 QA-Z-QD "N ::^C '
 
--2D                                 !! Test: -nD
+-2D                                 ! Test: -nD !
 2%D ^[ R
 ::@S/rvw/ "U ::^C '
 QA-Z-QD "N ::^C '
 
 HK @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// Z UA 0J
 
-28,31D                              !! Test: m,nD
+28,31D                              ! Test: m,nD !
 R ::@S/0456/ "U ::^C '
 QA-Z-3 "N ::^C '
 

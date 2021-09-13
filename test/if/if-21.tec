@@ -1,23 +1,23 @@
-!! TECO-64 test script: Test for upper case
-!! Commands: "W
-!! Expect: PASS
+! TECO-64 test script: Test for upper case !
+! Commands: "W !
+! Expect: PASS !
 
-!! Test: "W
+! Test: "W !
 
-0 UC            !! Start at NUL
+0 UC            ! Start at NUL !
 
-^^A < %C-1 "W ::^C ' >          !! NUL to upper case
+^^A < %C-1 "W ::^C ' >          ! NUL to upper case !
 
-^^Z-^^A+1 < %C-1 "W | ::^C ' >  !! Upper case
+^^Z-^^A+1 < %C-1 "W | ::^C ' >  ! Upper case !
 
-255-^^Z-1 < %C-1 "W ::^C ' >    !! Remaining 8-bit characters
+255-^^Z-1 < %C-1 "W ::^C ' >    ! Remaining 8-bit characters !
 
-0 UC            !! Start at NUL
+0 UC            ! Start at NUL !
 
-^^A < %C-1 "w ::^C ' >          !! NUL to upper case
+^^A < %C-1 "w ::^C ' >          ! NUL to upper case !
 
-^^Z-^^A+1 < %C-1 "w | ::^C ' >  !! Upper case
+^^Z-^^A+1 < %C-1 "w | ::^C ' >  ! Upper case !
 
-255-^^Z-1 < %C-1 "w ::^C ' >    !! Remaining 8-bit characters
+255-^^Z-1 < %C-1 "w ::^C ' >    ! Remaining 8-bit characters !
 
 :@^A/!PASS!/

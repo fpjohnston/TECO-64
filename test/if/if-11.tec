@@ -1,8 +1,8 @@
-!! TECO-64 test script: Test for equal to zero
-!! Commands: "E
-!! Expect: PASS
+! TECO-64 test script: Test for equal to zero !
+! Commands: "E !
+! Expect: PASS !
 
-!! Test: "E
+! Test: "E !
 
  0 "E | ::^C '
  1 "E   ::^C '

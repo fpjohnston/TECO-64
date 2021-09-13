@@ -1,13 +1,13 @@
-!! TECO-64 test script: Copy last file name
-!! Commands: G*
-!! Expect: PASS [G-03a.log]
+! TECO-64 test script: Copy last file name !
+! Commands: G* !
+! Expect: PASS [G-03a.log] !
 
 0 U.A
 HK
 
 :@ER/slithy.toves/
 @^A/G* = /
-G*                                  !! Test: G*
+G*                                  ! Test: G* !
 10@I//
 HT
 HK

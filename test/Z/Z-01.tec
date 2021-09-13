@@ -1,13 +1,13 @@
-!! TECO-64 test script: Get ending buffer position
-!! Commands: Z
-!! Expect: PASS
+! TECO-64 test script: Get ending buffer position !
+! Commands: Z !
+! Expect: PASS !
 
 10 < @I/0123456789/ 10I >
 
-0J Z-110 "N ::^C '                  !! Test: Z at start of buffer
- L Z-110 "N ::^C '                  !! Test: Z after L
-3L Z-110 "N ::^C '                  !! Test: Z after 3L
-4L Z-110 "N ::^C '                  !! Test: Z after 4L
-2L Z-110 "N ::^C '                  !! Test: Z after 2L
+0J Z-110 "N ::^C '                  ! Test: Z at start of buffer !
+ L Z-110 "N ::^C '                  ! Test: Z after L !
+3L Z-110 "N ::^C '                  ! Test: Z after 3L !
+4L Z-110 "N ::^C '                  ! Test: Z after 4L !
+2L Z-110 "N ::^C '                  ! Test: Z after 2L !
 
 :@^A/!PASS!/

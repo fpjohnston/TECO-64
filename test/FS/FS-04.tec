@@ -1,6 +1,6 @@
-!! TECO-64 test script: Local search and replace
-!! Commands: FS
-!! Expect: PASS [FS-04.log]
+! TECO-64 test script: Local search and replace !
+! Commands: FS !
+! Expect: PASS [FS-04.log] !
 
 HK
 
@@ -15,10 +15,10 @@ HK
 
 0J
 
-@FS/ghi/foo/                        !! Test: FS
-2@FS/xyz/BAZ/                       !! Test: 2FS
-4@FS/lmnop/foobaz/                  !! Test: 4FS
-3@FS/abc/ABC/                       !! Test: 3FS
+@FS/ghi/foo/                        ! Test: FS !
+2@FS/xyz/BAZ/                       ! Test: 2FS !
+4@FS/lmnop/foobaz/                  ! Test: 4FS !
+3@FS/abc/ABC/                       ! Test: 3FS !
 
 HT
 HK

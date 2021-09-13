@@ -1,10 +1,10 @@
-!! TECO-64 test script: Test carriage return in command file
-!! Commands: CR
-!! Expect: PASS
+! TECO-64 test script: Test carriage return in command file !
+! Commands: CR !
+! Expect: PASS !
 
 @I/foo/ 0J
 
-!! Test: carriage return in command file
+! Test: carriage return in command file !
 
 :@FS{foo}{baz} "U ::^C '
 

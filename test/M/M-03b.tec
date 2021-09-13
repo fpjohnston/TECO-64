@@ -1,9 +1,9 @@
-!! TECO-64 test script: Execute excessive nested macros
-!! Commands: M
-!! Expect: ?MAX
+! TECO-64 test script: Execute excessive nested macros !
+! Commands: M !
+! Expect: ?MAX !
 
 0 UA
 
 @^UA{ %A-64 "L MA | ::^C ' }
 
-MA                                  !! Test: nested M
+MA                                  ! Test: nested M !

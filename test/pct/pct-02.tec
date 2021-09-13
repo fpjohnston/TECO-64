@@ -1,12 +1,12 @@
-!! TECO-64 test script: Increment Q-register
-!! Commands: :%
-!! Expect: PASS
+! TECO-64 test script: Increment Q-register !
+! Commands: :% !
+! Expect: PASS !
 
 0 UA
 
-:%A + 123 UB (QB - 123) "N ::^C '   !! Test: :%
+:%A + 123 UB (QB - 123) "N ::^C '   ! Test: :% !
 
-42:%A + 456 UB (QB - 456) "N ::^C ' !! Test: n:%
+42:%A + 456 UB (QB - 456) "N ::^C ' ! Test: n:% !
 
 QA @=/QA=%d/
 

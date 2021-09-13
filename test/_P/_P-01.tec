@@ -1,6 +1,6 @@
-!! TECO-64 test script: Test page number
-!! Commands: ^P
-!! Expect: PASS
+! TECO-64 test script: Test page number !
+! Commands: ^P !
+! Expect: PASS !
 
 0,64 E3
 1,0 E3
@@ -17,19 +17,19 @@ EC
 
 :@EB{/tmp/baz} "U ::^C '
 
-^P-0 "N ::^C '                      !! Test: ^P
+^P-0 "N ::^C '                      ! Test: ^P !
 
 P
 
-^P-1 "N ::^C '                      !! Test: ^P
+^P-1 "N ::^C '                      ! Test: ^P !
 
 P
 
-^P-2 "N ::^C '                      !! Test: ^P
+^P-2 "N ::^C '                      ! Test: ^P !
 
 P
 
-^P-3 "N ::^C '                      !! Test: ^P
+^P-3 "N ::^C '                      ! Test: ^P !
 
 EK HK EC
 

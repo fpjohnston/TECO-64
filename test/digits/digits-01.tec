@@ -1,12 +1,12 @@
-!! TECO-64 test script: Test digits
-!! Commands: 0-9
-!! Expect: PASS [digits-01.log]
+! TECO-64 test script: Test digits !
+! Commands: 0-9 !
+! Expect: PASS [digits-01.log] !
 
 ^D 10^R
 
 :@^A/Testing base 10/
 
- 00 UA QA:@=/%d /                   !! Test: positive decimal digits
+ 00 UA QA:@=/%d /                   ! Test: positive decimal digits !
  11 UA QA:@=/%d /
  22 UA QA:@=/%d /
  33 UA QA:@=/%d /
@@ -16,13 +16,13 @@
  77 UA QA:@=/%d /
  88 UA QA:@=/%d /
  99 UA QA:@=/%d /
- -1 UA QA @=/%d/                    !! Test: negative no. in base 10
+ -1 UA QA @=/%d/                    ! Test: negative no. in base 10 !
 
 :@^A/Testing base 8/
 
 ^D 8^R
 
- 00 UA QA:@=/%o /                   !! Test: positive octal digits
+ 00 UA QA:@=/%o /                   ! Test: positive octal digits !
  11 UA QA:@=/%o /
  22 UA QA:@=/%o /
  33 UA QA:@=/%o /
@@ -30,13 +30,13 @@
  55 UA QA:@=/%o /
  66 UA QA:@=/%o /
  77 UA QA:@=/%o /
- -1 UA QA @=/%o/                    !! Test: negative no. in base 8
+ -1 UA QA @=/%o/                    ! Test: negative no. in base 8 !
 
 :@^A/Testing base 16/
 
 ^D 16^R
 
- 00 UA QA:@=/%x /                   !! Test: positive hexadecimal digits
+ 00 UA QA:@=/%x /                   ! Test: positive hexadecimal digits !
  11 UA QA:@=/%x /
  22 UA QA:@=/%x /
  33 UA QA:@=/%x /
@@ -46,6 +46,6 @@
  77 UA QA:@=/%x /
  88 UA QA:@=/%x /
  99 UA QA:@=/%x /
- -1 UA QA @=/%x/                    !! Test: negative no. in base 16
+ -1 UA QA @=/%x/                    ! Test: negative no. in base 16 !
 
 :@^A/!PASS!/

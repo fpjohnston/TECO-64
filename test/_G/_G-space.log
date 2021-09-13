@@ -1,9 +1,9 @@
-*!! TECO-64 test script: Re-type current input line
-!! Commands: ^G<space>
-!! Expect: PASS [_G-space.log]
+*! TECO-64 test script: Re-type current input line !
+! Commands: ^G<space> !
+! Expect: PASS [_G-space.log] !
 
 IABC^G
-IABC                             !! Test: retype current input line
+IABC                             ! Test: retype current input line !
 ^C
 !PASS!
 ^C^C

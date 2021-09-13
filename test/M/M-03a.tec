@@ -1,9 +1,9 @@
-!! TECO-64 test script: Execute maximum nested macros
-!! Commands: M
-!! Expect: PASS
+! TECO-64 test script: Execute maximum nested macros !
+! Commands: M !
+! Expect: PASS !
 
 0 UA
 
 @^UA{ %A-63 "L MA | :@^A/!PASS!/ ^C ' }
 
-MA                                  !! Test: nested M
+MA                                  ! Test: nested M !

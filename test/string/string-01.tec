@@ -1,6 +1,6 @@
-!! TECO-64 test script: Test string building characters
-!! Commands: (mix)
-!! Expect: PASS
+! TECO-64 test script: Test string building characters !
+! Commands: (mix) !
+! Expect: PASS !
 
 @^UA/baz/
 ^^x UA
@@ -9,43 +9,43 @@
 
 HK G* 0J ::@S/foo/ "E ::^C ' Z-3 "N ::^C '
 
-:@ER/^EQA/                          !! Test: ^EQA
+:@ER/^EQA/                          ! Test: ^EQA !
 
 HK G* 0J ::@S/baz/ "E ::^C ' Z-3 "N :: ^C '
 
-:@ER/^EUA/                          !! Test: ^EUA
+:@ER/^EUA/                          ! Test: ^EUA !
 
 HK G* 0J ::@S/x/ "E ::^C ' Z-1 "N ::^C '
 
-:@ER/^EUA^EUA/                      !! Test: ^EUA^EUA
+:@ER/^EUA^EUA/                      ! Test: ^EUA^EUA !
 
 HK G* 0J ::@S/xx/ "E ::^C ' Z-2 "N ::^C '
 
-:@ER/^EUA^EQA/                      !! Test: ^EUA^EQA
+:@ER/^EUA^EQA/                      ! Test: ^EUA^EQA !
 
 HK G* 0J ::@S/xbaz/ "E ::^C ' Z-4 "N ::^C '
 
-:@ER/^VXYZ/                         !! Test: ^V
+:@ER/^VXYZ/                         ! Test: ^V !
 
 HK G* 0J ::@S/xYZ/ "E ::^C ' Z-3 "N ::^C '
 
-:@ER/^V^VXYZ/                       !! Test: ^V^V
+:@ER/^V^VXYZ/                       ! Test: ^V^V !
 
 HK G* 0J ::@S/xyz/ "E ::^C ' Z-3 "N ::^C '
 
-:@ER/^Wabc/                         !! Test: ^W
+:@ER/^Wabc/                         ! Test: ^W !
 
 HK G* 0J ::@S/Abc/ "E ::^C ' Z-3 "N ::^C '
 
-:@ER/^W^Wabc/                       !! Test: ^W^W
+:@ER/^W^Wabc/                       ! Test: ^W^W !
 
 HK G* 0J ::@S/ABC/ "E ::^C ' Z-3 "N ::^C '
 
-:@ER/^Q^E/                          !! Test: ^Q
+:@ER/^Q^E/                          ! Test: ^Q !
 
 HK G* 0J ::@S/^R^E/ "E ::^C ' Z-2 "N ::^C '
 
-:@ER/^R^E/                          !! Test: ^R
+:@ER/^R^E/                          ! Test: ^R !
 
 HK G* 0J ::@S/^Q^E/ "E ::^C ' Z-2 "N ::^C '
 

@@ -1,22 +1,22 @@
-!! TECO-64 test script: Test basic functions #2
-!! Commands: (misc.)
-!! Expect: PASS [basic-02.log]
+! TECO-64 test script: Test basic functions #2 !
+! Commands: (misc.) !
+! Expect: PASS [basic-02.log] !
 
-!! Test: mix of basic TECO commands
+! Test: mix of basic TECO commands !
 
 10 < @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// >
 
 J
 
-!! Change first three occurrences of 'abc' to 'FOO'
+! Change first three occurrences of 'abc' to 'FOO' !
 
 3 < @FS/abc/FOO/ >
 
-!! Go down 2 lines, and 40 characters to the right
+! Go down 2 lines, and 40 characters to the right !
 
 2L 40C @I/!!!/
 
-!! Find next four occurrences of 'xyz' and insert 'BAZ'
+! Find next four occurrences of 'xyz' and insert 'BAZ' !
 
 4 < @S/xyz/ @I/BAZ/ >
 

@@ -1,6 +1,6 @@
-!! TECO-64 test script: Non-stop backward search
-!! Commands: -nN
-!! Expect: PASS
+! TECO-64 test script: Non-stop backward search !
+! Commands: -nN !
+! Expect: PASS !
 
 1,0 E3
 0,64 E3
@@ -26,7 +26,7 @@ EC HK
 
 10 P
 
--2:@N/the/ "U ::C '                 !! Test: -nN
+-2:@N/the/ "U ::C '                 ! Test: -nN !
 
 EK HK EC
 

@@ -1,6 +1,6 @@
-!! TECO-64 test script: Move position backward
-!! Commands: R
-!! Expect: ?POP
+! TECO-64 test script: Move position backward !
+! Commands: R !
+! Expect: ?POP !
  
 HK
 
@@ -45,7 +45,7 @@ All mimsy were the borogoves,
 
 ZJ
 
-Z+1 R                           !! Test: nR, where n > preceding chrs.
+Z+1 R                           ! Test: nR, where n > preceding chrs. !
 
 ::^C
 

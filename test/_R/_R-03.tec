@@ -1,11 +1,11 @@
-!! TECO-64 test script: Get current radix
-!! Commands: ^R
-!! Expect: PASS
+! TECO-64 test script: Get current radix !
+! Commands: ^R !
+! Expect: PASS !
 
-  ^D ^RUA ^D QA-10 "N ::^C '        !! Test: ^R after ^D
-  ^O ^RUA ^D QA-8  "N ::^C '        !! Test: ^R after ^O
- 8^R ^RUA ^D QA-8  "N ::^C '        !! Test: ^R after 8^R
-10^R ^RUA ^D QA-10 "N ::^C '        !! Test: ^R after 10^R
-16^R ^RUA ^D QA-16 "N ::^C '        !! Test: ^R after 16^R
+  ^D ^RUA ^D QA-10 "N ::^C '        ! Test: ^R after ^D !
+  ^O ^RUA ^D QA-8  "N ::^C '        ! Test: ^R after ^O !
+ 8^R ^RUA ^D QA-8  "N ::^C '        ! Test: ^R after 8^R !
+10^R ^RUA ^D QA-10 "N ::^C '        ! Test: ^R after 10^R !
+16^R ^RUA ^D QA-16 "N ::^C '        ! Test: ^R after 16^R !
 
 :@^A/!PASS!/

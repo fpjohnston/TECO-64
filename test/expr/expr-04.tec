@@ -1,16 +1,16 @@
-!! TECO-64 test script: Test extended operators
-!! Commands: (misc.)
-!! Expect: PASS
+! TECO-64 test script: Test extended operators !
+! Commands: (misc.) !
+! Expect: PASS !
 
-0 UF            !! Count of failures
+0 UF            ! Count of failures !
 
-!! Macro to evaluate expression and compare with what we expected
+! Macro to evaluate expression and compare with what we expected !
 
 @^UB
 {
-    UA                              !! Expected value
+    UA                              ! Expected value !
     :MA
-    UB                              !! Calculated value
+    UB                              ! Calculated value !
     QA-QB "E
         QB @=/^EQA = %6d (pass)/
     |
@@ -19,40 +19,40 @@
     '
 }
 
-@^UA{ (16 == 3) }      0 :MB        !! Test: compare equal
-@^UA{ (3 == 16) }      0 :MB        !! Test: compare equal
+@^UA{ (16 == 3) }      0 :MB        ! Test: compare equal !
+@^UA{ (3 == 16) }      0 :MB        ! Test: compare equal !
 
-@^UA{ (16 <> 3) }     -1 :MB        !! Test: compare not equal
-@^UA{ (3 <> 16) }     -1 :MB        !! Test: compare not equal
+@^UA{ (16 <> 3) }     -1 :MB        ! Test: compare not equal !
+@^UA{ (3 <> 16) }     -1 :MB        ! Test: compare not equal !
 
-@^UA{ (16 < 3)  }      0 :MB        !! Test: compare less than
-@^UA{ (3 < 16)  }     -1 :MB        !! Test: compare less than
+@^UA{ (16 < 3)  }      0 :MB        ! Test: compare less than !
+@^UA{ (3 < 16)  }     -1 :MB        ! Test: compare less than !
 
-@^UA{ (16 <= 3) }      0 :MB        !! Test: compare less than or equal
-@^UA{ (3 <= 16) }     -1 :MB        !! Test: compare less than or equal
+@^UA{ (16 <= 3) }      0 :MB        ! Test: compare less than or equal !
+@^UA{ (3 <= 16) }     -1 :MB        ! Test: compare less than or equal !
 
-@^UA{ (16 > 3)  }     -1 :MB        !! Test: compare greater than
-@^UA{ (3 > 16)  }      0 :MB        !! Test: compare greater than
+@^UA{ (16 > 3)  }     -1 :MB        ! Test: compare greater than !
+@^UA{ (3 > 16)  }      0 :MB        ! Test: compare greater than !
 
-@^UA{ (16 >= 3) }     -1 :MB        !! Test: compare greater than or equal
-@^UA{ (3 >= 16) }      0 :MB        !! Test: compare greater than or equal
+@^UA{ (16 >= 3) }     -1 :MB        ! Test: compare greater than or equal !
+@^UA{ (3 >= 16) }      0 :MB        ! Test: compare greater than or equal !
 
-@^UA{ (16 // 3) }      1 :MB        !! Test: division, yielding remainder
-@^UA{ (3 // 16) }      3 :MB        !! Test: division, yielding remainder
+@^UA{ (16 // 3) }      1 :MB        ! Test: division, yielding remainder !
+@^UA{ (3 // 16) }      3 :MB        ! Test: division, yielding remainder !
 
-@^UA{ (!0)      }     -1 :MB        !! Test: logical NOT
-@^UA{ (!1)      }      0 :MB        !! Test: logical NOT
-@^UA{ (!!0)     }      0 :MB        !! Test: logical NOT
-@^UA{ (!!1)     }     -1 :MB        !! Test: logical NOT
+@^UA{ (!0)      }     -1 :MB        ! Test: logical NOT !
+@^UA{ (!1)      }      0 :MB        ! Test: logical NOT !
+@^UA{ (!!0)     }      0 :MB        ! Test: logical NOT !
+@^UA{ (!!1)     }     -1 :MB        ! Test: logical NOT !
 
-@^UA{ (16 ~ 3)  }     19 :MB        !! Test: logical XOR
-@^UA{ (3 ~ 16)  }     19 :MB        !! Test: logical XOR
+@^UA{ (16 ~ 3)  }     19 :MB        ! Test: logical XOR !
+@^UA{ (3 ~ 16)  }     19 :MB        ! Test: logical XOR !
 
-@^UA{ (16 << 3) }    128 :MB        !! Test: left shift
-@^UA{ (3 << 16) } 196608 :MB        !! Test: left shift
+@^UA{ (16 << 3) }    128 :MB        ! Test: left shift !
+@^UA{ (3 << 16) } 196608 :MB        ! Test: left shift !
 
-@^UA{ (16 >> 3) }      2 :MB        !! Test: right shift
-@^UA{ (3 >> 16) }      0 :MB        !! Test: right shift
+@^UA{ (16 >> 3) }      2 :MB        ! Test: right shift !
+@^UA{ (3 >> 16) }      0 :MB        ! Test: right shift !
 
 QF "N
     ::^C

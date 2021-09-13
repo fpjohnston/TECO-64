@@ -1,23 +1,23 @@
-!! TECO-64 test script: Test for lower case
-!! Commands: "V
-!! Expect: PASS
+! TECO-64 test script: Test for lower case !
+! Commands: "V !
+! Expect: PASS !
 
-!! Test: "V
+! Test: "V !
 
-0 UC            !! Start at NUL
+0 UC            ! Start at NUL !
 
-^^a < %C-1 "V ::^C ' >          !! NUL to lower case
+^^a < %C-1 "V ::^C ' >          ! NUL to lower case !
 
-^^z-^^a+1 < %C-1 "V | ::^C ' >  !! Lower case
+^^z-^^a+1 < %C-1 "V | ::^C ' >  ! Lower case !
 
-255-^^z-1 < %C-1 "V ::^C ' >    !! Remaining 8-bit characters
+255-^^z-1 < %C-1 "V ::^C ' >    ! Remaining 8-bit characters !
 
-0 UC            !! Start at NUL
+0 UC            ! Start at NUL !
 
-^^a < %C-1 "v ::^C ' >          !! NUL to lower case
+^^a < %C-1 "v ::^C ' >          ! NUL to lower case !
 
-^^z-^^a+1 < %C-1 "v | ::^C ' >  !! Lower case
+^^z-^^a+1 < %C-1 "v | ::^C ' >  ! Lower case !
 
-255-^^z-1 < %C-1 "v ::^C ' >    !! Remaining 8-bit characters
+255-^^z-1 < %C-1 "v ::^C ' >    ! Remaining 8-bit characters !
 
 :@^A/!PASS!/

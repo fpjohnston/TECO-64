@@ -1,9 +1,9 @@
-!! TECO-64 test script: Open file for reading and writing
-!! Commands: EB
-!! Expect: ?FNF
+! TECO-64 test script: Open file for reading and writing !
+! Commands: EB !
+! Expect: ?FNF !
 
 @^UA{baz}
 
-EB^EQA                            !! Test: open file for backup
+EB^EQA                            ! Test: open file for backup !
 
 EK HK

@@ -1,10 +1,10 @@
-!! TECO-64 test script: Test spaces in command file
-!! Commands: SPACE
-!! Expect: PASS
+! TECO-64 test script: Test spaces in command file !
+! Commands: SPACE !
+! Expect: PASS !
 
 @I/foo/ 0J
 
-!! Test: spaces in command file
+! Test: spaces in command file !
 
  :  @   FS    {foo}     {baz}       "U ::^C '
 

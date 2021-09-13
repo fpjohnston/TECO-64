@@ -1,8 +1,8 @@
-!! TECO-64 test script: Test for successful
-!! Commands: "S
-!! Expect: PASS
+! TECO-64 test script: Test for successful !
+! Commands: "S !
+! Expect: PASS !
 
-!! Test: "S
+! Test: "S !
 
  0 "S   ::^C '
  1 "S   ::^C '

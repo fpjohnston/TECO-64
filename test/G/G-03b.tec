@@ -1,13 +1,13 @@
-!! TECO-64 test script: Print last file name
-!! Commands: :G*
-!! Expect: PASS [G-03b.log]
+! TECO-64 test script: Print last file name !
+! Commands: :G* !
+! Expect: PASS [G-03b.log] !
 
 0 U.A
 HK
 
 :@ER/slithy.toves/
 @^A/:G* = /
-:G*                                 !! Test: :G*
+:G*                                 ! Test: :G* !
 -1^T
 
 :@^A/!PASS!/

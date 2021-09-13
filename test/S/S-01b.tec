@@ -1,11 +1,11 @@
-!! TECO-64 test script: Local search forward
-!! Commands: S
-!! Expect: ?SRH
+! TECO-64 test script: Local search forward !
+! Commands: S !
+! Expect: ?SRH !
  
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 
 0J
 
-Sfoo                              !! Test: S
+Sfoo                              ! Test: S !
 
 HK

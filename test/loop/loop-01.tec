@@ -1,8 +1,8 @@
-!! TECO-64 test script: Test maximum nested loops
-!! Commands: <, >
-!! Expect: PASS
+! TECO-64 test script: Test maximum nested loops !
+! Commands: <, > !
+! Expect: PASS !
 
-!! Test: nested loops
+! Test: nested loops !
 
 !1! 1 <
   !2! 1 <

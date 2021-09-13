@@ -1,8 +1,8 @@
-*!! TECO-64 test script: Test help level flag
-!! Commands: 7EH
-!! Expect: ?FNF [EH-05.log]
+*! TECO-64 test script: Test help level flag !
+! Commands: 7EH !
+! Expect: ?FNF [EH-05.log] !
 
-7 EH                                !! Test: error message + failing command
+7 EH                                ! Test: error message + failing command !
 EH=
 @ER/FOO/
 ``
@@ -10,11 +10,11 @@ EH=
 ?FNF   File not found 'FOO'
      The requested input file could not be located. If this occurred within a
      macro, the colon-modified command may be necessary.
-!! TECO-64 test script: Test help level flag
-!! Commands: 7EH
-!! Expect: ?FNF [EH-05.log]
+! TECO-64 test script: Test help level flag !
+! Commands: 7EH !
+! Expect: ?FNF [EH-05.log] !
 
-7 EH                                !! Test: error message + failing command
+7 EH                                ! Test: error message + failing command !
 EH=
 @ER/FOO/
 ``

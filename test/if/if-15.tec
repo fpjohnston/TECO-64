@@ -1,8 +1,8 @@
-!! TECO-64 test script: Test for not equal to zero
-!! Commands: "N
-!! Expect: PASS
+! TECO-64 test script: Test for not equal to zero !
+! Commands: "N !
+! Expect: PASS !
 
-!! Test: "N
+! Test: "N !
 
  0 "N   ::^C '
  1 "N | ::^C '

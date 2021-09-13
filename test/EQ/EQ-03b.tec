@@ -1,10 +1,10 @@
-!! TECO-64 test script: Read Q-register from file
-!! Commands: :@EQ//
-!! Expect: ?XAB
+! TECO-64 test script: Read Q-register from file !
+! Commands: :@EQ// !
+! Expect: ?XAB !
 
 @^UA{goodbye.txt}
 
-:@EQB/^EQA/                         !! Test: :@EQq
+:@EQB/^EQA/                         ! Test: :@EQq !
 
 "U
     ::^C

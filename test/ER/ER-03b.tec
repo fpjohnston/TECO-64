@@ -1,10 +1,10 @@
-!! TECO-64 test script: Open file for reading
-!! Commands: :@ER
-!! Expect: ?XAB
+! TECO-64 test script: Open file for reading !
+! Commands: :@ER !
+! Expect: ?XAB !
 
-@^UA{baz}                           !! Name of non-existent input file
+@^UA{baz}                           ! Name of non-existent input file !
 
-:@ER/^EQA/                          !! Test: open file for reading
+:@ER/^EQA/                          ! Test: open file for reading !
 
 "U
     ::^C

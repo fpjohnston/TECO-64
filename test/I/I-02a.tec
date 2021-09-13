@@ -1,16 +1,16 @@
-!! TECO-64 test script: Insert text (w/ extended features)
-!! Commands: nI, m,nI
-!! Expect: PASS
+! TECO-64 test script: Insert text (w/ extended features) !
+! Commands: nI, m,nI !
+! Expect: PASS !
  
-0,512 E1                            !! Enable extended insert features
+0,512 E1                            ! Enable extended insert features !
 
-HK ^^A I Z-1 "N ::^C '              !! Test: nI
+HK ^^A I Z-1 "N ::^C '              ! Test: nI !
 
-HK ^^B @I// Z-1 "N ::^C '           !! Test: nI
+HK ^^B @I// Z-1 "N ::^C '           ! Test: nI !
 
-HK 0,^^C I Z "N ::^C '              !! Test: 0,nI
+HK 0,^^C I Z "N ::^C '              ! Test: 0,nI !
 
-HK 5,^^D I Z-5 "N ::^C '            !! Test: 5,nI
+HK 5,^^D I Z-5 "N ::^C '            ! Test: 5,nI !
 
 HK
 

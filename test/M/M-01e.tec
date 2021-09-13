@@ -1,13 +1,13 @@
-!! TECO-64 test script: Execute macro returning m & n args.
-!! Commands: M
-!! Expect: PASS
+! TECO-64 test script: Execute macro returning m & n args. !
+! Commands: M !
+! Expect: PASS !
 
 @I/123,456/
 27@I// 27@I//
 
 HXA HK
 
-MA UA UB                            !! Test: M returning m and n
+MA UA UB                            ! Test: M returning m and n !
 
 QB - 123 "N
     ::^C

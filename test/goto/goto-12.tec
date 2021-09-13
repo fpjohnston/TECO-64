@@ -1,6 +1,6 @@
-!! TECO-64 test script: Branch backward within nested loop
-!! Commands: O
-!! Expect: ?LOC
+! TECO-64 test script: Branch backward within nested loop !
+! Commands: O !
+! Expect: ?LOC !
 
 1 <
     @O!tag1!
@@ -16,7 +16,7 @@
     !tag1!
 
     1 <
-        @O!tag2!                    !! Test: branch backward
+        @O!tag2!                    ! Test: branch backward !
     >
 
     ::^C

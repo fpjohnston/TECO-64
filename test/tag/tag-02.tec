@@ -1,6 +1,6 @@
-!! TECO-64 test script: Test tag in command file
-!! Commands: !
-!! Expect: PASS
+! TECO-64 test script: Test tag in command file !
+! Commands: bang !
+! Expect: PASS !
 
 ! Test: tag in command string !
 !! Test: tag in command string

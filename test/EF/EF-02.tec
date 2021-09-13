@@ -1,30 +1,30 @@
-!! TECO-64 test script: Close output file after EW
-!! Commands: EF
-!! Expect: PASS
+! TECO-64 test script: Close output file after EW !
+! Commands: EF !
+! Expect: PASS !
 
-@^UA{/tmp/foo}                  !! File name
+@^UA{/tmp/foo}                  ! File name !
 
-:@EW/^EQA/ "U ::^C '            !! Open file for write
+:@EW/^EQA/ "U ::^C '            ! Open file for write !
 
-@I/abcdef/                      !! Add some data
+@I/abcdef/                      ! Add some data !
 
 Z UA
 
-B,Z PW                          !! Write data
+B,Z PW                          ! Write data !
 
-@I/123456/                      !! Add more data
+@I/123456/                      ! Add more data !
 
-EF                              !! Test: close output file
+EF                              ! Test: close output file !
 
 HK
 
-:@ER/^EQA/ "U ::^C ' Y          !! Open file for read again
+:@ER/^EQA/ "U ::^C ' Y          ! Open file for read again !
 
 0J
 
-Z-QA "N ::^C '                  !! Verify that size of data is the same
+Z-QA "N ::^C '                  ! Verify that size of data is the same !
 
-::@S/abcdef/ "U ::^C '          !! Verify that data hasn't changed
+::@S/abcdef/ "U ::^C '          ! Verify that data hasn't changed !
 
 HK
 

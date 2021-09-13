@@ -1,15 +1,15 @@
-!! TECO-64 test script: Flow to start of iteration
-!! Commands: F<
-!! Expect: PASS
+! TECO-64 test script: Flow to start of iteration !
+! Commands: F< !
+! Expect: PASS !
 
-0 UA  1 < %A-5; F< >                !! Test: 1 < F< >
+0 UA  1 < %A-5; F< >                ! Test: 1 < F< > !
 
-0 UA 10 < %A-5; F< >                !! Test: 10 < F< >
+0 UA 10 < %A-5; F< >                ! Test: 10 < F< > !
 
-0 UA    < %A-5; F< >                !! Test: < F < >
+0 UA    < %A-5; F< >                ! Test: < F < > !
 
-0 UA 1 < < %A-5; F< > >             !! Test: 1 < < F< > >
+0 UA 1 < < %A-5; F< > >             ! Test: 1 < < F< > > !
 
-0 UA 1 < %A-5; 1 < > F< >           !! Test: 1 < 1 < > F< >
+0 UA 1 < %A-5; 1 < > F< >           ! Test: 1 < 1 < > F< > !
 
 :@^A/!PASS!/
