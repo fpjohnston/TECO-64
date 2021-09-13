@@ -1,0 +1,21 @@
+! TECO-64 test script: Test ^EL -- match line terminator !
+! Commands: ^EL !
+! Expect: PASS !
+
+HK
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0 J
+
+10         < ::@S/^EL/ "S ::^C ' C > ! Test: ^EL for [0,9] !
+
+13 - 10    < ::@S/^EL/ "U ::^C ' >   ! Test: ^EL for [10,12] !
+
+127 - 13   < ::@S/^EL/ "S ::^C ' C > ! Test: ^EL for [13,127] !
+
+HK
+
+:@^A/!PASS!/

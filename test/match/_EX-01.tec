@@ -1,0 +1,17 @@
+! TECO-64 test script: Test ^EX -- match any character !
+! Commands: ^EX !
+! Expect: PASS !
+
+HK
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0 J
+
+128  < ::@S/^EX/ "U ::^C ' >        ! Test: ^EX for [0,127] !
+
+HK
+
+:@^A/!PASS!/

@@ -1,0 +1,25 @@
+! TECO-64 test script: Test ^EA -- match alphabetic character !
+! Commands: ^EA !
+! Expect: PASS !
+
+HK
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0 J
+
+^^A       < ::@S/^EA/ "S ::^C ' C > ! Test: ^EA for [0,64] !
+
+^^[ - ^^A < ::@S/^EA/ "U ::^C ' >   ! Test: ^EA for [65,90] !
+
+^^a - ^^[ < ::@S/^EA/ "S ::^C ' C > ! Test: ^EA for [91,96] !
+
+^^{ - ^^a < ::@S/^EA/ "U ::^C ' >   ! Test: ^EA for [97,122] ! 
+
+127 - ^^z < ::@S/^EA/ "S ::^C ' C > ! Test: ^EA for [123,127] !
+
+HK
+
+:@^A/!PASS!/

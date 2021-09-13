@@ -1,0 +1,31 @@
+! TECO-64 test script: Test ^Enn -- match ASCII character !
+! Commands: ^Enn !
+! Expect: PASS !
+
+HK
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0J
+
+:@S/^E6/                            ! Test: ^E6 - control character !
+"U ::^C '
+.-7 "N ::^C '
+
+:@S/^E10/                           ! Test: ^E10 - line delimiter !
+"U ::^C '
+.-11 "N ::^C '
+
+:@S/^E50/                           ! Test: ^E50 - digit character !
+"U ::^C '
+.-51 "N ::^C '
+
+:@S/^E76/                           ! Test: ^E76 - alphabetic character !
+"U ::^C '
+.-77 "N ::^C '
+
+HK
+
+:@^A/!PASS!/

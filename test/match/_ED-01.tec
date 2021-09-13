@@ -1,0 +1,21 @@
+! TECO-64 test script: Test ^ED -- match digit character !
+! Commands: ^ED !
+! Expect: PASS !
+
+HK
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0 J
+
+^^0        < ::@S/^ED/ "S ::^C ' C > ! Test: ^ED for [0,47] !
+
+^^: - ^^0  < ::@S/^ED/ "U ::^C ' >   ! Test: ^ED for [48,57] !
+
+127 - ^^:  < ::@S/^ED/ "S ::^C ' C > ! Test: ^ED for [58,127] !
+
+HK
+
+:@^A/!PASS!/

@@ -1,0 +1,21 @@
+! TECO-64 test script: Test ^EW -- match upper case character !
+! Commands: ^EW !
+! Expect: PASS !
+
+HK
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0 J
+
+^^A        < ::@S/^EW/ "S ::^C ' C > ! Test: ^EW for [0,64] !
+
+^^[ - ^^A  < ::@S/^EW/ "U ::^C ' >   ! Test: ^EW for [65,90] !
+
+127 - ^^Z  < ::@S/^EW/ "S ::^C ' C > ! Test: ^EW for [91,127] !
+
+HK
+
+:@^A/!PASS!/

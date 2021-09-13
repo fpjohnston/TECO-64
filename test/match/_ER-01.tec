@@ -1,0 +1,29 @@
+! TECO-64 test script: Test ^ER -- match alphanumeric character !
+! Commands: ^ER !
+! Expect: PASS !
+
+HK
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0 J
+
+^^0        < ::@S/^ER/ "S ::^C ' C > ! Test: ^ER for [0,47] !
+
+^^: - ^^0  < ::@S/^ER/ "U ::^C ' >   ! Test: ^ER for [48,57] !
+
+^^A - ^^:  < ::@S/^ER/ "S ::^C ' C > ! Test: ^ER for [58,64] !
+
+^^[ - ^^A  < ::@S/^ER/ "U ::^C ' >   ! Test: ^ER for [65,90] !
+
+^^a - ^^[  < ::@S/^ER/ "S ::^C ' C > ! Test: ^ER for [91,96] !
+
+^^{ - ^^a  < ::@S/^ER/ "U ::^C ' >   ! Test: ^ER for [97,122] !
+
+127 - ^^{  < ::@S/^ER/ "S ::^C ' C > ! Test: ^ER for [123,127] !
+
+HK
+
+:@^A/!PASS!/

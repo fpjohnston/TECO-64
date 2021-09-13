@@ -1,0 +1,21 @@
+! TECO-64 test script: Test ^EV -- match lower case character !
+! Commands: ^EV !
+! Expect: PASS !
+
+HK
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0 J
+
+^^a        < ::@S/^EV/ "S ::^C ' C > ! Test: ^EV for [0,96] !
+
+^^{ - ^^a  < ::@S/^EV/ "U ::^C ' >   ! Test: ^EV for [97,122 !
+
+127 - ^^z  < ::@S/^EV/ "S ::^C ' C > ! Test: ^EV for [123,127] !
+
+HK
+
+:@^A/!PASS!/
