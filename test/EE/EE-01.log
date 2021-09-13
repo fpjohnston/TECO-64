@@ -1,0 +1,23 @@
+*!! TECO-64 test script: Test EE flag
+!! Commands: EE, nEE
+!! Expect: PASS [EE-01.log]
+
+EE=``
+0
+*                             !! Test: EE
+
+:@^A/hello/ ??                      !! This will not print until after EE
+
+^^?EE``
+hello
+?
+*                           !! Test: nEE
+
+:@^A/hello, again/ ``
+hello, again
+*               !! This should print immediately
+
+!PASS!
+
+EX
+``
