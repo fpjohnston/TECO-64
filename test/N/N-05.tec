@@ -24,7 +24,7 @@ EC HK
 
 :@EB{/tmp/baz} "U ::^C '
 
-2:@N/the/ "U ::C '                  ! Test: nN !
+2:@N/the/ "U ::^C '                 ! Test: nN !
 
 ^P-9 "N ::^C '                      ! Make sure we found the right one !
 
