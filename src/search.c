@@ -229,11 +229,10 @@ static int isqreg(int c, struct search *s)
 
 ///
 ///  @brief    Check for a match on a symbol constituent: alphanumeric, period,
-///            maybe dollar sign or underscore, depending on operating environ-
-///            ment.
+///            dollar sign and underscore.
 ///
 ///            Note that we return 1/0 instead of true/false for compatibility
-///            with the ANSI isxxx() functions.
+///            with the ANSI isxxx() library functions.
 ///
 ///  @returns  1 if a match found, else 0.
 ///
@@ -241,9 +240,7 @@ static int isqreg(int c, struct search *s)
 
 static int issymbol(int c)
 {
-    if (isalnum(c)   || c == '.' ||
-        (f.e1.dollar && c == '$') ||
-        (f.e1.ubar   && c == '_'))
+    if (isalnum(c) || c == '.' || c == '$' || c == '_')
     {
         return 1;
     }

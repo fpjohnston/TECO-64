@@ -11,8 +11,8 @@
 | ^E<*n*>        | [(Match char) Match ASCII code *n*](search.md) |
 | ^EA            | [(Match char) Match alphabetics](search.md) |
 | ^EB            | [(Match char) Match separator character](search.md) |
-| ^EC            | [(Match char) Match Symbol Constituent](search.md) |
-| ^ED            | [(Match char) Match numerics](search.md) |
+| ^EC            | [(Match char) Match symbol constituent](search.md) |
+| ^ED            | [(Match char) Match digit character](search.md) |
 | ^EG*q*         | [(Match char) Match contents of Q-register *q*](search.md) |
 | ^EL            | [(Match char) Match line terminators](search.md) |
 | ^EM*x*         | [(Match char) Match any number of *x*](search.md) |

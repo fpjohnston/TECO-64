@@ -66,8 +66,6 @@ struct flags f =                    ///< Global flag variables
 
     .e1.xoper   = true,             // Enable extended operators
     .e1.text    = true,             // Enable extended text strings
-    .e1.dollar  = true,             // $ is a valid symbol character
-    .e1.ubar    = true,             // _ is a valid symbol character
     .e1.new_ei  = true,             // Enable new-style EI commands
     .e1.bang    = true,             // !! starts end-of-line comment
     .e1.prompt  = true,             // Ensure prompt starts in 1st column

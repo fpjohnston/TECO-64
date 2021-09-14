@@ -4,19 +4,15 @@
 
 ! Test: "C !
 
-0 UC            ! Start at NUL !
+0 UC                           ! Start at NUL !
 
 ^^$ < %C-1 "C ::^C ' >         ! NUL to $ !
 
-E1&4 "E                                 ! $ is conditionally a symbol chr. !
-    %C-1 "C ::^C '
-|
-    %C-1 "C | ::^C '
-'
+%C-1 "C | ::^C '               ! $ is a symbol constituent !
 
 ^^.-^^$-1 < %C-1 "C ::^C ' >   ! $ to . !
 
-%C-1 "C | ::^C '               ! . is always a symbol chr. !
+%C-1 "C | ::^C '               ! . is a symbol constituent !
 
 ^^0-^^.-1 < %C-1 "C ::^C ' >   ! . to 0 !
 
@@ -28,11 +24,7 @@ E1&4 "E                                 ! $ is conditionally a symbol chr. !
 
 ^^_-^^Z-1 < %C-1 "C ::^C ' >   ! Upper case to _ !
 
-E1&8 "E                                 ! _ is conditionally a symbol chr. !
-    %C-1 "C ::^C '
-|
-    %C-1 "C | ::^C '
-'
+%C-1 "C | ::^C '               ! _ is a symbol constituent !
 
 ^^a-^^_-1 < %C-1 "C ::^C ' >   ! _ to lower case !
 
@@ -40,19 +32,17 @@ E1&8 "E                                 ! _ is conditionally a symbol chr. !
 
 255-^^z-1 < %C-1 "C ::^C ' >   ! Remaining 8-bit characters !
 
-0 UC            ! Start at NUL !
+! Test: "c !
+
+0 UC                           ! Start at NUL !
 
 ^^$ < %C-1 "c ::^C ' >         ! NUL to $ !
 
-E1&4 "E                                 ! $ is conditionally a symbol chr. !
-    %C-1 "c ::^C '
-|
-    %C-1 "c | ::^C '
-'
+%C-1 "C | ::^C '               ! $ is a symbol constituent !
 
 ^^.-^^$-1 < %C-1 "c ::^C ' >   ! $ to . !
 
-%C-1 "c | ::^C '               ! . is always a symbol chr. !
+%C-1 "C | ::^C '               ! . is a symbol constituent !
 
 ^^0-^^.-1 < %C-1 "c ::^C ' >   ! . to 0 !
 
@@ -64,11 +54,7 @@ E1&4 "E                                 ! $ is conditionally a symbol chr. !
 
 ^^_-^^Z-1 < %C-1 "c ::^C ' >   ! Upper case to _ !
 
-E1&8 "E                                 ! _ is conditionally a symbol chr. !
-    %C-1 "c ::^C '
-|
-    %C-1 "c | ::^C '
-'
+%C-1 "C | ::^C '               ! _ is a symbol constituent !
 
 ^^a-^^_-1 < %C-1 "c ::^C ' >   ! _ to lower case !
 

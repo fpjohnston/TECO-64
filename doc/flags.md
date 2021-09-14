@@ -27,8 +27,6 @@ file may be used to customize which bits are set or cleared.
 | --- | -------- |
 | E1&1 |  If set, allow extended operators within parentheses. If clear, no extended operators are allowed. | 
 | E1&2 | If set, paired braces may be used to delimit text strings. If clear, braces have no special meaning in text arguments. |
-| E1&4 | If set, dollar signs are valid symbol constituents for the ^EC match control construct or the n“C command. |
-| E1&8 | If set, underscores are valid symbol constituents for the ^EC match control construct or the n“C command. |
 | E1&16 | If set, EI commands are executed immediately, rather than being executed after completion of the current command string. |
 | E1&32 | If set, "!!" may be used start a comment that extends to the next line terminator (LF, VT, or FF). |
 | E1&64 | If set, CR/LF will be output if needed to ensure that TECO's prompt is printed at the start of a new line. |

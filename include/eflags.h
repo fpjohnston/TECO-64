@@ -67,8 +67,8 @@ union e1_flag
     {
         uint xoper   : 1;       ///< Enable extended operators
         uint text    : 1;       ///< Enable extended text strings
-        uint dollar  : 1;       ///< $ is a valid symbol character
-        uint ubar    : 1;       ///< _ is a valid symbol character
+        uint         : 1;       ///< (unused)
+        uint         : 1;       ///< (unused)
         uint new_ei  : 1;       ///< Use new-style EI commands
         uint bang    : 1;       ///< !! starts end-of-line comment
         uint prompt  : 1;       ///< Add CR/LF before prompt if needed

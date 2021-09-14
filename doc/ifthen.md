@@ -41,7 +41,7 @@ which may, in turn, contain further conditional execution commands.
 | Command | Function |
 | ------- | -------- |
 | *n*"A   | Execute the following command string if *n* equals the ASCII code for an alphabetic character (upper or lower case A to Z). |
-| *n*"C   | Execute the following command string if *n* is the ASCII code of any character that is a symbol constituent. This is usually one of the upper or lower case letters A to Z, one of the digits 0 to 9, or period, or dollar sign, but may include additional characters on some operating systems. |
+| *n*"C   | Execute the following command string if *n* is the ASCII code of any character that is a symbol constituent. This includes the upper and lower case letters A to Z, the digits 0 to 9, and the symbols period (.), dollar sign ($), and underscore (_). |
 | *n*"D   | Execute the following command string if *n* equals the ASCII code for a digit (0 to 9). |
 | *n*"E   | Execute the following command string if *n* is equal to zero. |
 | *n*"F   | Execute the following command string if *n* is FALSE. Equivalent to *n*"E. |
