@@ -1,0 +1,36 @@
+! TECO-64 test script: Non-stop forward search and replace !
+! Commands: -F_ !
+! Expect: ?SRH !
+
+1,0 E3
+0,64 E3
+0,2 ED
+
+HK
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    13@I// 10@I// 12@I//
+>
+
+:@EW{/tmp/baz} "U ::^C '
+
+EC
+
+:@EB{/tmp/baz} "U ::^C '
+
+10 P
+
+-@F_/klmnop/--- FOO ---/            ! Test: -F_ !
+
+EC
+
+0,1 E3
+
+:@ER{/tmp/baz} "U ::^C ' Y
+
+HT HK EC
+
+:@^A/!PASS!/

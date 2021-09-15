@@ -1,0 +1,25 @@
+! TECO-64 test script: Destructive forward search !
+! Commands: _ !
+! Expect: ?YCA !
+
+1,0 E3
+0,64 E3
+
+HK
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    13@I// 10@I// 12@I//
+>
+
+:@EW{/tmp/baz} "U ::^C '
+
+EC
+
+:@EB{/tmp/baz} "U ::^C '
+
+5P
+
+@_/foo/                             ! Test: _ !

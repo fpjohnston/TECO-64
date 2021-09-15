@@ -1,0 +1,35 @@
+! TECO-64 test script: Destructive forward search !
+! Commands: _ !
+! Expect: PASS [ubar-01.log] !
+
+1,0 E3
+0,64 E3
+0,2 ED
+
+HK
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    13@I// 10@I// 12@I//
+>
+
+:@EW{/tmp/baz} "U ::^C '
+
+EC
+
+:@EB{/tmp/baz} "U ::^C '
+
+:@_/line 5/                         ! Test: _ !
+"U ::^C '
+
+EC
+
+0,1 E3
+
+:@ER{/tmp/baz} "U ::^C ' Y
+
+HT HK EC
+
+:@^A/!PASS!/
