@@ -353,10 +353,9 @@ void exec_ET(struct cmd *cmd)
 
 #endif
 
-    // The following are read-only bits and cannot be changed by the user
+    // The following is a read-only bit and cannot be changed by the user
 
-    f.et.scope   = saved.scope;
-    f.et.refresh = saved.refresh;
+    f.et.scope = saved.scope;
 }
 
 

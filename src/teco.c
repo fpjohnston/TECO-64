@@ -218,7 +218,6 @@ int main(int argc, const char * const argv[])
 
                 f.et.image  = false;    // Disable image output
                 f.et.noecho = false;    // Enable echo for CTRL/T
-                f.et.ctrl_o = false;    // Disable CTRL/O
                 f.et.nowait = false;    // Enable wait for CTRL/T
                 f.et.ctrl_c = false;    // Disable CTRL/C trap
                 //lint -fallthrough

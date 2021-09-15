@@ -157,12 +157,12 @@ union ed_flag
     {
         uint caret     : 1;     ///< Allow caret (^) in search strings
         uint yank      : 1;     ///< Allow all Y and _ commands
-        uint memory    : 1;     ///< Expand memory as much as possible
+        uint           : 1;     ///< (Expand memory as much as possible)
         uint keepnul   : 1;     ///< Discard NUL chrs. in input files
         uint keepdot   : 1;     ///< Preserve dot if search fails
         uint escape    : 1;     ///< Enable immediate escape-sequence commands
         uint movedot   : 1;     ///< Move dot by one on multiple occurrence searches
-        uint noauto    : 1;     ///< Automatic refresh inhibit
+        uint           : 1;     ///< (Automatic refresh inhibit)
     };
 };
 
@@ -196,16 +196,16 @@ union et_flag
         uint rubout   : 1;      ///< Process DEL and ^U in scope mode
         uint lower    : 1;      ///< Read lower case
         uint noecho   : 1;      ///< Disable echo for ^T commands
-        uint ctrl_o   : 1;      ///< Cancel ^O on type out
+        uint          : 1;      ///< (Cancel ^O on type out)
         uint nowait   : 1;      ///< Read w/o wait for ^T commands
-        uint detach   : 1;      ///< Detach flag
+        uint          : 1;      ///< (Detach flag)
         uint abort    : 1;      ///< Abort-on-error bit
         uint truncate : 1;      ///< Truncate output lines to terminal width
-        uint scope    : 1;      ///< Terminal is a scope
-        uint refresh  : 1;      ///< Terminal is a refresh scope
+        uint scope    : 1;      ///< Scope terminal
+        uint          : 1;      ///< (Refresh scope terminal)
         uint          : 1;      ///< (unused)
         uint eightbit : 1;      ///< Can handle 8-bit characters
-        uint accent   : 1;      ///< Accent grave is ESCAPE surrogate
+        uint accent   : 1;      ///< Accent grave is ESCape surrogate
         uint          : 1;      ///< (unused)
         uint ctrl_c   : 1;      ///< CTRL/C detection control
     };
