@@ -1,4 +1,4 @@
-! TECO-64 test script: Test ^EC -- match symbol constituent chartacter  !
+! TECO-64 test script: Test ^EC -- match symbol constituent character  !
 ! Commands: ^EC !
 ! Expect: PASS !
 

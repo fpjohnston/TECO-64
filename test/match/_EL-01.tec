@@ -1,4 +1,4 @@
-! TECO-64 test script: Test ^EL -- match line terminator !
+! TECO-64 test script: Test ^EL -- match line terminator character !
 ! Commands: ^EL !
 ! Expect: PASS !
 
