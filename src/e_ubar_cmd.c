@@ -55,12 +55,6 @@ void exec_E_ubar(struct cmd *cmd)
         throw(E_ISA);                   // Invalid search argument
     }
 
-    if (!cmd->n_set)                    // E_text` => 1E_text`
-    {
-        cmd->n_arg = 1;
-        cmd->n_set = true;
-    }
-
     if (cmd->text1.len != 0)
     {
         build_search(cmd->text1.data, cmd->text1.len);
@@ -109,6 +103,7 @@ bool scan_E_ubar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    default_n(cmd, (int_t)1);       // E_ => 1E_
     reject_m(cmd->m_set);
     reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);
