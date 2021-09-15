@@ -1,4 +1,4 @@
-! TECO-64 test script: Test ^Enn -- match ASCII character !
+! TECO-64 test script: Match ASCII character !
 ! Commands: ^Enn !
 ! Expect: PASS !
 

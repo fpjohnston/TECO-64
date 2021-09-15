@@ -1,6 +1,6 @@
-! TECO-64 test script: Test ^EV -- match lower case character !
+! TECO-64 test script: Match lower case character !
 ! Commands: ^EV !
-! Expect: PASS !
+! Expect: PASS [_EV-01.log] !
 
 HK
 
@@ -10,11 +10,16 @@ HK
 
 0 J
 
-^^a        < ::@S/^EV/ "S ::^C ' C > ! Test: ^EV for [0,96] !
+128 <
+    ::@S/^EV/                       ! Test: ^EV !
+    "S
+        -1A ^T
+    |
+        C
+    '
+>
 
-^^{ - ^^a  < ::@S/^EV/ "U ::^C ' >   ! Test: ^EV for [97,122 !
-
-127 - ^^z  < ::@S/^EV/ "S ::^C ' C > ! Test: ^EV for [123,127] !
+13^T 10^T
 
 HK
 

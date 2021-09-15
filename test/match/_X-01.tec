@@ -1,6 +1,6 @@
-! TECO-64 test script: Test ^X -- match any character !
+! TECO-64 test script: Match any character !
 ! Commands: ^X !
-! Expect: PASS !
+! Expect: PASS [_X-01.log] !
 
 HK
 
@@ -10,7 +10,15 @@ HK
 
 0 J
 
-128  < ::@S/^X/ "U ::^C ' >         ! Test: ^X for [0,127] !
+128 <
+    ::@S/^X/                        ! Test: ^X !
+    "U
+        0A:@/%d /
+        C
+    '
+>
+
+13^T 10^T
 
 HK
 

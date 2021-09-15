@@ -1,6 +1,6 @@
-! TECO-64 test script: Test ^ED -- match digit character !
+! TECO-64 test script: Match digit character !
 ! Commands: ^ED !
-! Expect: PASS !
+! Expect: PASS [_ED-01.log] !
 
 HK
 
@@ -10,11 +10,16 @@ HK
 
 0 J
 
-^^0        < ::@S/^ED/ "S ::^C ' C > ! Test: ^ED for [0,47] !
+128 <
+    ::@S/^ED/                       ! Test: ^ED !
+    "S
+        -1A ^T
+    |
+        C
+    '
+>
 
-^^: - ^^0  < ::@S/^ED/ "U ::^C ' >   ! Test: ^ED for [48,57] !
-
-127 - ^^:  < ::@S/^ED/ "S ::^C ' C > ! Test: ^ED for [58,127] !
+13^T 10^T
 
 HK
 

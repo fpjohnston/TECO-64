@@ -1,6 +1,6 @@
-! TECO-64 test script: Test ^EC -- match symbol constituent character  !
+! TECO-64 test script: Match symbol constituent character  !
 ! Commands: ^EC !
-! Expect: PASS !
+! Expect: PASS [_EC-01.log] !
 
 HK
 
@@ -10,31 +10,16 @@ HK
 
 0 J
 
-^^$        < ::@S/^EC/ "S ::^C ' C > ! Test: ^EC for [0,35] !
+128 <
+    ::@S/^EC/                       ! Test: ^EC !
+    "S
+        -1A ^T
+    |
+        C
+    '
+>
 
-^^% - ^^$  < ::@S/^EC/ "U ::^C '   > ! Test: ^EC for dollar sign !
-
-^^. - ^^%  < ::@S/^EC/ "S ::^C ' C > ! Test: ^EC for [37,45] !
-
-^^/ - ^^.  < ::@S/^EC/ "U ::^C '   > ! Test: ^EC for period !
-
-^^0 - ^^/  < ::@S/^EC/ "S ::^C ' C > ! Test: ^EC for [47,47] !
-
-^^: - ^^0  < ::@S/^EC/ "U ::^C '   > ! Test: ^EC for digits !
-
-^^A - ^^:  < ::@S/^EC/ "S ::^C ' C > ! Test: ^EC for [58,64] !
-
-^^[ - ^^A  < ::@S/^EC/ "U ::^C '   > ! Test: ^EC for upper case letters !
-
-^^_ - ^^[  < ::@S/^EC/ "S ::^C ' C > ! Test: ^EC for [91,94] !
-
-^^` - ^^_  < ::@S/^EC/ "U ::^C '   > ! Test: ^EC for underscore !
-
-^^a - ^^`  < ::@S/^EC/ "S ::^C ' C > ! Test: ^EC for [96,96] !
-
-^^{ - ^^a  < ::@S/^EC/ "U ::^C '   > ! Test: ^EC for lower case letters !
-
-127 - ^^{  < ::@S/^EC/ "S ::^C ' C > ! Test: ^EC for [123,127] !
+13^T 10^T
 
 HK
 

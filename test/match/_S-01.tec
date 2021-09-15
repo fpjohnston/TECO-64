@@ -1,6 +1,6 @@
-! TECO-64 test script: Test ^S -- match separator character !
+! TECO-64 test script: Match separator character !
 ! Commands: ^S !
-! Expect: PASS !
+! Expect: PASS [_S-01.log] !
 
 HK
 
@@ -10,19 +10,15 @@ HK
 
 0 J
 
-^^0        < ::@S/^S/ "U ::^C ' >   ! Test: ^S for [0,47] !
+128 <
+    ::@S/^S/                        ! Test: ^S !
+    "U -1A
+        0A ^T
+        C
+    '
+>
 
-^^: - ^^0  < ::@S/^S/ "S ::^C ' C > ! Test: ^S for [48,57] !
-
-^^A - ^^:  < ::@S/^S/ "U ::^C ' >   ! Test: ^S for [58,64] !
-
-^^[ - ^^A  < ::@S/^S/ "S ::^C ' C > ! Test: ^S for [65,90] !
-
-^^a - ^^[  < ::@S/^S/ "U ::^C ' >   ! Test: ^S for [91,96] !
-
-^^{ - ^^a  < ::@S/^S/ "S ::^C ' C > ! Test: ^S for [97,122] !
-
-127 - ^^{  < ::@S/^S/ "U ::^C ' >   ! Test: ^S for [123,127] !
+13^T 10^T
 
 HK
 
