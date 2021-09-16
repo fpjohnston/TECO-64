@@ -1,0 +1,28 @@
+! TECO-64 test script: Set status line colors ! 
+! Commands: F3 !
+! Expect: PASS !
+
+HK
+
+! Test all possible foreground and background colors !
+
+@F3 {BLACK}   {white}               ! Test: F3 !
+@F3 {RED}     {black}               ! Test: F3 !
+@F3 {GREEN}   {red}                 ! Test: F3 !
+@F3 {YELLOW}  {green}               ! Test: F3 !
+@F3 {BLUE}    {yellow}              ! Test: F3 !
+@F3 {MAGENTA} {blue}                ! Test: F3 !
+@F3 {CYAN}    {magenta}             ! Test: F3 !
+@F3 {WHITE}   {cyan}                ! Test: F3 !
+
+! Test saturation levels !
+
+0,100 @F3 {BLACK} {white}           ! Test: F3 !
+100,0 @F3 {BLACK} {white}           ! Test: F3 !
+50,50 @F3 {BLACK} {white}           ! Test: F3 !
+
+! Saturation levels < 0 or > 100 are adjusted to 0 and 100, respectively !
+
+-1,999 @F3 {BLACK} {white}          ! Test: F3 !
+
+:@^A/!PASS!/

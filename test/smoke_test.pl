@@ -89,7 +89,7 @@ exit;
 
 sub check_tests
 {
-    my ( $file, $abstract, $commands, $expect, $output ) = @_;
+    my ( $file, $abstract, $commands, $expect, $output, $ntests ) = @_;
 
     chomp $commands;
 
@@ -123,7 +123,8 @@ sub check_tests
         chomp $expected;
     }
 
-    my $report = sprintf '%17s %-45s %-15s', "[$file]", $abstract, $commands;
+    my $report = sprintf '%17s %-45s %-15s  (%2d) ', "[$file]", $abstract,
+        $commands, $ntests;
 
     ++$nscripts;
 
@@ -142,15 +143,15 @@ sub check_tests
                 $len = length $output;
             }
 
-            printf "%s %s -> %s", $report, $expect, substr $output, 0, $len;
+            printf "%s %s -> %s\n", $report, $expect, substr $output, 0, $len;
         }
         elsif ( defined $diff && $expected ne $output )
         {
-            printf "%s %s -> DIFF", $report, $expect;
+            printf "%s %s -> DIFF\n", $report, $expect;
         }
         elsif ($okay)
         {
-            printf "%s %s -> OK", $report, $expect;
+            printf "%s %s -> OK\n", $report, $expect;
         }
     }
     else
@@ -168,15 +169,15 @@ sub check_tests
                 $len = length $output;
             }
 
-            printf "%s %s -> %s", $report, $expect, substr $output, 0, $len;
+            printf "%s %s -> %s\n", $report, $expect, substr $output, 0, $len;
         }
         elsif ( defined $diff && $expected ne $output )
         {
-            printf "%s %s -> DIFF", $report, $expect;
+            printf "%s %s -> DIFF\n", $report, $expect;
         }
         elsif ($okay)
         {
-            printf "%s %s -> OK", $report, $expect;
+            printf "%s %s -> OK\n", $report, $expect;
         }
     }
 
@@ -208,9 +209,8 @@ sub open_dir
             {
                 my $output = run_test( $file, $options );
 
-                check_tests( $file, $abstract, $commands, $expect, $output );
-
-                printf ", $ntests test%s\n", $ntests == 1 ? "" : "s";
+                check_tests( $file, $abstract, $commands, $expect, $output,
+                             $ntests );
             }
         }
 
@@ -243,9 +243,8 @@ sub open_file
         {
             my $output = run_test( $file, $options );
 
-            check_tests( $file, $abstract, $commands, $expect, $output );
-
-            printf ", $ntests test%s\n", $ntests == 1 ? "" : "s";
+            check_tests( $file, $abstract, $commands, $expect, $output,
+                         $ntests );
         }
 
         chdir $cwd or croak "Can't change directory to $cwd";

@@ -1,0 +1,7 @@
+! TECO-64 test script: Set command region colors ! 
+! Commands: F1 !
+! Expect: ?DPY !
+
+HK
+
+@F1 {FOOBAR} {white}                ! Test: F1 !

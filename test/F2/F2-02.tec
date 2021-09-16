@@ -1,0 +1,7 @@
+! TECO-64 test script: Set edit region colors ! 
+! Commands: F2 !
+! Expect: ?DPY !
+
+HK
+
+@F2 {black} {FOOBAR}                ! Test: F2 !
