@@ -325,9 +325,9 @@ static bool match_chr(int c, struct search *s)
 
         throw(E_ICE);                   // Invalid ^E command in search argument
     }
-    else if (match == CTRL_N)
+    else if (match == CTRL_N)           // ^N^N doesn't make sense
     {
-        return !match_chr(match, s);
+        throw(E_ISS);                   // Invalid search string
     }
     else if ((match == CTRL_S && !isalnum(c)) ||
              match == CTRL_X                  ||
@@ -344,7 +344,8 @@ static bool match_chr(int c, struct search *s)
 ///
 ///  @brief    Check to see if text string matches search string.
 ///
-///  @returns  true if match, else false.
+///  @returns  true if match, else false (unless the first character is CTRL/N,
+///            if which case we return false if it's a match, otherwise true).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -352,17 +353,41 @@ static bool match_str(struct search *s)
 {
     assert(s != NULL);                  // Error if no search block
 
-    while (s->match_len > 0)
+    if (*s->match_buf == CTRL_N && s->match_len > 0)
     {
-        int c = getchar_ebuf(s->text_pos++);
+        --s->match_len;
+        ++s->match_buf;
 
-        if (c == EOF || !match_chr(c, s))
+        while (s->match_len > 0)
         {
-            return false;
-        }
-    }
+            int c = getchar_ebuf(s->text_pos++);
 
-    return true;
+            if (c == EOF)
+            {
+                return false;
+            }
+            else if (!match_chr(c, s))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    else
+    {
+        while (s->match_len > 0)
+        {
+            int c = getchar_ebuf(s->text_pos++);
+
+            if (c == EOF || !match_chr(c, s))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
 
 

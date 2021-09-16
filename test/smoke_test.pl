@@ -43,7 +43,7 @@ my $teco = 'teco -n -I"\'0,128ET\'"';
 my %dirs;
 my $okay   = q{};
 my $nscripts = 0;
-my $ntests = 0;
+my $all_tests = 0;
 
 #
 #  Parse our command-line options
@@ -82,8 +82,8 @@ foreach my $filespec (@filespecs)
     }
 }
 
-printf "Executed $nscripts script%s with a total of $ntests test%s\n",
-    $nscripts == 1 ? q{} : 's', $ntests == 1 ? q{} : 's';
+printf "Executed $nscripts script%s with a total of $all_tests test%s\n",
+    $nscripts == 1 ? q{} : 's', $all_tests == 1 ? q{} : 's';
 
 exit;
 
@@ -142,15 +142,15 @@ sub check_tests
                 $len = length $output;
             }
 
-            printf "%s %s -> %s\n", $report, $expect, substr $output, 0, $len;
+            printf "%s %s -> %s", $report, $expect, substr $output, 0, $len;
         }
         elsif ( defined $diff && $expected ne $output )
         {
-            printf "%s %s -> DIFF\n", $report, $expect;
+            printf "%s %s -> DIFF", $report, $expect;
         }
         elsif ($okay)
         {
-            printf "%s %s -> OK\n", $report, $expect;
+            printf "%s %s -> OK", $report, $expect;
         }
     }
     else
@@ -168,15 +168,15 @@ sub check_tests
                 $len = length $output;
             }
 
-            printf "%s %s -> %s\n", $report, $expect, substr $output, 0, $len;
+            printf "%s %s -> %s", $report, $expect, substr $output, 0, $len;
         }
         elsif ( defined $diff && $expected ne $output )
         {
-            printf "%s %s -> DIFF\n", $report, $expect;
+            printf "%s %s -> DIFF", $report, $expect;
         }
         elsif ($okay)
         {
-            printf "%s %s -> OK\n", $report, $expect;
+            printf "%s %s -> OK", $report, $expect;
         }
     }
 
@@ -201,7 +201,7 @@ sub open_dir
 
         foreach my $file ( sort { uc $a cmp uc $b } @files )
         {
-            my ( $abstract, $commands, $expect, $options ) =
+            my ( $abstract, $commands, $expect, $options, $ntests ) =
               read_header( $dir, $file );
 
             if ( defined $abstract && defined $expect )
@@ -209,6 +209,8 @@ sub open_dir
                 my $output = run_test( $file, $options );
 
                 check_tests( $file, $abstract, $commands, $expect, $output );
+
+                printf ", $ntests test%s\n", $ntests == 1 ? "" : "s";
             }
         }
 
@@ -234,7 +236,7 @@ sub open_file
 
         chdir $dir or croak "Can't change directory to $dir";
 
-        my ( $abstract, $commands, $expect, $options ) =
+        my ( $abstract, $commands, $expect, $options, $ntests ) =
           read_header( $dir, $file );
 
         if ( defined $abstract && defined $expect )
@@ -242,6 +244,8 @@ sub open_file
             my $output = run_test( $file, $options );
 
             check_tests( $file, $abstract, $commands, $expect, $output );
+
+            printf ", $ntests test%s\n", $ntests == 1 ? "" : "s";
         }
 
         chdir $cwd or croak "Can't change directory to $cwd";
@@ -268,7 +272,7 @@ sub read_header
     if ( ( $lines[0] !~ s/!! \s+ TECO-64 \s test \s script: \s (.+) /$1/msx ) &&
          ( $lines[0] !~ s/! \s+ TECO-64 \s test \s script: \s (.+) \s ! /$1/msx ) )
     {
-        return ( undef, undef, undef, undef );
+        return ( undef, undef, undef, undef, undef );
     }
 
     if ( ( $lines[1] !~ s/!! \s+ Commands: \s+ (.+) /$1/msx ) &&
@@ -276,7 +280,7 @@ sub read_header
     {
         print "[$file] No commands found in test script\n";
 
-        return ( undef, undef, undef, undef );
+        return ( undef, undef, undef, undef, undef );
     }
 
     # Find out whether we expect success or failure
@@ -286,14 +290,17 @@ sub read_header
     {
         print "[$file] Test script is missing expectations\n";
 
-        return ( undef, undef, undef, undef );
+        return ( undef, undef, undef, undef, undef );
     }
+
+    my $ntests = 0;
 
     foreach my $line (@lines)
     {
         if ($line =~ /Test:/)
         {
             ++$ntests;
+            ++$all_tests;
         }
     }
 
@@ -304,10 +311,10 @@ sub read_header
     if ( ( $lines[3] !~ s/!! \s+ Options: \s+ (.+) /$1/msx ) &&
          ( $lines[3] !~ s/! \s+ Options: \s+ (.+) \s ! /$1/msx ) )
     {
-        return ( $lines[0], $lines[1], $lines[2], q{} );
+        return ( $lines[0], $lines[1], $lines[2], q{}, $ntests );
     }
 
-    return ( $lines[0], $lines[1], $lines[2], $lines[3] );
+    return ( $lines[0], $lines[1], $lines[2], $lines[3], $ntests );
 }
 
 sub run_test

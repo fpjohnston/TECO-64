@@ -158,19 +158,19 @@
 | EJ             | [Get environment information](env.md) |
 | EK             | [Kill output file](file.md) |
 | EL             | [Open/close log file](file.md) |
-| EM*q*          | [Echo macro in Q-register *q*](misc.md) |
+| EM*q*          | [Type macro in Q-register *q*](misc.md) |
 | EN             | [Find next file](file.md) |
 | EO             | [TECO version number](variables.md) |
 | EP             | [Switch to secondary input stream](file.md) |
 | EQ             | [Read file to Q-register](file.md) |
 | ER             | [Edit read](file.md) |
-|                | [Switch to primary input stream](file.md) |
+| ER             | [Switch to primary input stream](file.md) |
 | ES             | [Edit search flag](flags.md) |
 | ET             | [Terminal flag](flags.md) |
 | EU             | [Upper/lower case flag](flags.md) |
 | EV             | [Edit verify flag](flags.md) |
 | EW             | [Edit write](file.md) |
-|                | [Switch to primary output stream](file.md) |
+| EW             | [Switch to primary output stream](file.md) |
 | EX             | [Exit TECO](file.md) |
 | EY             | [Yank w/o yank protection](page.md) |
 | EZ             | [Execute system command](env.md) |

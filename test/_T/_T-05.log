@@ -1,0 +1,22 @@
+*! TECO-64 test script: Read input character !
+! Commands: ^T !
+! Expect: PASS [_T-05.log] !
+
+HK
+
+! Test: ^T with several input characters !
+
+^T=``
+a97
+*
+*^T=``
+b98
+*
+*^T=``
+c99
+*
+*^T=``
+d100
+*
+*
+*!PASS!

@@ -1,0 +1,17 @@
+! TECO-64 test script: Match non-null string of spaces and/or tabs !
+! Commands: ^ES !
+! Expect: PASS [_ES-01.log] !
+
+HK
+
+0 UA
+
+@I/abcd                1234/ 10@I//
+
+0J :@S/^ES/                         ! Test: ^ES !
+"U ::^C '
+0T ^^`^T T
+
+HK
+
+:@^A/!PASS!/

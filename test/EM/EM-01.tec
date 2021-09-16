@@ -1,0 +1,31 @@
+! TECO-64 test script: Type macro in Q-register !
+! Commands: EMq !
+! Expect: PASS [EM-01.log] !
+
+HK
+
+@^UA/   65   ^T     ! Comment !
+
+66 ^T               !! Another comment
+
+/
+
+0 EMA                               ! Test: 0 EMA !
+:@^A/-----/
+
+2 EMA                               ! Test: 2 EMA !
+:@^A/-----/
+
+4 EMA                               ! Test: 4 EMA !
+:@^A/-----/
+
+16 EMA                              ! Test: 16 EMA !
+:@^A/-----/
+
+32 EMA                              ! Test: 32 EMA !
+:@^A/-----/
+
+-1 EMA                              ! Test: -1 EMA !
+:@^A/-----/
+
+:@^A/!PASS!/
