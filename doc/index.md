@@ -15,7 +15,6 @@
 | ^ED            | [(Match char) Match digit character](search.md) |
 | ^EG*q*         | [(Match char) Match contents of Q-register *q*](search.md) |
 | ^EL            | [(Match char) Match line terminators](search.md) |
-| ^EM*x*         | [(Match char) Match any number of *x*](search.md) |
 | ^EQ*q*         | [(String char) Use contents of Q-register *q*](search.md) |
 | ^ER            | [(Match char) Match alphanumerics](search.md) |
 | ^ES            | [(Match char) Match non-null space/tab](search.md) |
