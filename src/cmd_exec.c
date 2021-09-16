@@ -66,6 +66,8 @@ const struct cmd null_cmd =
     .text2  = { .data = NULL, .len = 0 },
 };
 
+uint cmd_line;                      ///< Line number in current command/macro
+
 
 // Local functions
 
@@ -173,6 +175,8 @@ static bool echo_cmd(int c)
 void exec_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    cmd_line = 1;                       // Start command at line 1
 
     int c;
 

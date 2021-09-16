@@ -49,6 +49,7 @@ struct loop
 {
     int_t count;                    ///< Iteration count for loop
     uint_t start;                   ///< Starting position of loop
+    uint_t line;                    ///< Line number of loop
     uint if_depth;                  ///< Depth of if statements
 };
 
@@ -228,6 +229,7 @@ void exec_gt(struct cmd *cmd)
     {
         cbuf->pos = loop[nloops - 1].start;
                                         // Go back to start of loop
+        cmd_line = loop[nloops - 1].line; // Reset line number
     }
     else
     {
@@ -389,6 +391,7 @@ static void push_loop(int_t count)
 
     loop[nloops].count = count;
     loop[nloops].start = cbuf->pos;
+    loop[nloops].line = cmd_line;
     loop[nloops].if_depth = getif_depth();
 
     ++nloops;

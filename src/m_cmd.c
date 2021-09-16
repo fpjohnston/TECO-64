@@ -162,8 +162,6 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
         }
     }
 
-    cmd_line = 1;                       // Start execution at line 1
-
     ++macro_depth;
     exec_cmd(&newcmd);
     --macro_depth;

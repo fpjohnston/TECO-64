@@ -126,15 +126,18 @@ static void find_tag(const char *orig_tag)
         throw(E_BAT, tag.data);         // Bad tag
     }
 
-    struct cmd cmd = null_cmd;          ///< Dummy command block for skip_cmd()
-    uint_t loop_start = getloop_start(); ///< Start of current loop (0 if none)
-    uint_t loop_end = (uint_t)EOF;      ///< End of current loop
-    uint loop_depth = 0;                ///< Initial loop depth
-    uint if_depth = 0;                  ///< Current if/else depth
-    uint_t tag_pos = 0;                 ///< Position of tag
-    uint tag_loop = 0;                  ///< Loop depth for tag
-    uint tag_if = 0;                    ///< If depth for tag
+    struct cmd cmd = null_cmd;          // Dummy command block for skip_cmd()
+    uint_t loop_start = getloop_start(); // Start of current loop (0 if none)
+    uint_t loop_end = (uint_t)EOF;      // End of current loop
+    uint loop_depth = 0;                // Initial loop depth
+    uint if_depth = 0;                  // Current if/else depth
+    uint_t tag_pos = 0;                 // Position of tag
+    uint_t tag_line = 0;                // Line number for tag
+    uint tag_loop = 0;                  // Loop depth for tag
+    uint tag_if = 0;                    // If depth for tag
+    uint_t saved_line = cmd_line;       // Save current line number
 
+    cmd_line = 1;                       // Start command at line 1
     cbuf->pos = 0;                      // Start at beginning of command
 
     // Scan entire command string to verify that we have
@@ -180,6 +183,8 @@ static void find_tag(const char *orig_tag)
 
                     if (tag_pos != 0)
                     {
+                        cmd_line = saved_line;  // Restore original line number
+
                         throw(E_DUP, tag.data); // Duplicate tag
                     }
 
@@ -187,6 +192,8 @@ static void find_tag(const char *orig_tag)
 
                     if (if_depth != 0)
                     {
+                        cmd_line = saved_line;  // Restore original line number
+
                         throw(E_LOC, tag.data); // Invalid location
                     }
 
@@ -195,6 +202,8 @@ static void find_tag(const char *orig_tag)
                     if (loop_depth != 0
                         && (cbuf->pos < loop_start || cbuf->pos > loop_end))
                     {
+                        cmd_line = saved_line;  // Restore original line number
+
                         throw(E_LOC, tag.data); // Invalid location
                     }
 
@@ -208,6 +217,7 @@ static void find_tag(const char *orig_tag)
                     // Save state for tag in case we decide to use it
 
                     tag_pos  = cbuf->pos;
+                    tag_line = cmd_line;
                     tag_loop = loop_depth + getloop_depth();
                     tag_if   = if_depth;
                 }
@@ -221,6 +231,8 @@ static void find_tag(const char *orig_tag)
 
     if (tag_pos == 0)                   // Did we find the tag?
     {
+        cmd_line = saved_line;          // Restore original line number
+
         throw(E_TAG, tag.data);         // Missing tag
     }
 
@@ -229,6 +241,7 @@ static void find_tag(const char *orig_tag)
     setloop_depth(tag_loop);
     setif_depth(tag_if);
 
+    cmd_line = tag_line;                // Use the tag's line number
     cbuf->pos = tag_pos;                // Execute goto
 }
 

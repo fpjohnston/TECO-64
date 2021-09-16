@@ -148,8 +148,6 @@ struct flags f =                    ///< Global flag variables
 
 //lint -restore
 
-uint cmd_line;                      ///< Line number in current command/macro
-
 jmp_buf jump_main;                  ///< longjmp() buffer to reset main loop
 
 char scratch[PATH_MAX];             ///< General scratch buffer
@@ -203,8 +201,6 @@ int main(int argc, const char * const argv[])
                 }
 
                 init_x();               // Initialize expression stack
-
-                cmd_line = 1;           // Start command at line 1
 
                 f.e0.exec = true;       // Command is in progress
                 exec_cmd(&cmd);         // Execute command string
