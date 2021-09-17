@@ -10,13 +10,13 @@
 
 EC
 
-8,0 ED                              ! Test: discarding NUL input chrs. !
+128,0 E3                            ! Test: discarding NUL input chrs. !
 
 :@ER{/tmp/baz} "E ::^C ' Y
 
 Z-7 "N ::^C ' HK EC
 
-0,8 ED                              ! Test: keeping NUL input chrs. !
+0,128 E3                            ! Test: keeping NUL input chrs. !
 
 :@ER{/tmp/baz} "E ::^C ' Y
 

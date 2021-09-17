@@ -1,0 +1,9 @@
+! TECO-64 test script: Test edit terminal flag !
+! Commands: ET !
+! Expect: PASS !
+
+HK
+
+ET=                                 ! Test: ET= !
+
+:@^A/!PASS!/

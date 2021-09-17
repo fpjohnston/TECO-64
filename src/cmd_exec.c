@@ -66,7 +66,7 @@ const struct cmd null_cmd =
     .text2  = { .data = NULL, .len = 0 },
 };
 
-uint cmd_line;                      ///< Line number in current command/macro
+uint_t cmd_line;                    ///< Line number in current command/macro
 
 
 // Local functions

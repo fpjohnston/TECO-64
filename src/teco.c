@@ -103,18 +103,18 @@ struct flags f =                    ///< Global flag variables
 #error  Unknown operating environment
 #endif
 
-    .e4.line   = true,              // Line between text & command regions
-    .e4.status = true,              // Display status on line
-
 #if   defined(__vms)
 
-    .ed.keepnul = true,             // Don't discard input NUL chrs.
+    .e3.keepnul = true,             // Don't discard input NUL chrs.
 
 #else
 
-    .ed.keepnul = false,            // Discard input NUL chrs.
+    .e3.keepnul = false,            // Discard input NUL chrs.
 
 #endif
+
+    .e4.line   = true,              // Line between text & command regions
+    .e4.status = true,              // Display status on line
 
 #if     defined(DISPLAY_MODE)
 

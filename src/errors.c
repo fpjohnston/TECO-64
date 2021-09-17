@@ -229,7 +229,8 @@ static void print_error(int error, const char *err_str, const char *file_str)
 
         if (macro || cmd_line > 1)
         {
-            tprint(" in %s at line %u", macro ? "macro" : "command", cmd_line);
+            tprint(" in %s at line %lu", macro ? "macro" : "command",
+                   (ulong)cmd_line);
         }
     }
 

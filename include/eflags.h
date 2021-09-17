@@ -119,13 +119,14 @@ union e3_flag
 
     struct
     {
-        uint nopage : 1;        ///< Don't use FF as page delimiter
-        uint smart  : 1;        ///< Smart mode for line terminators
-        uint icrlf  : 1;        ///< Use CR/LF for input lines
-        uint ocrlf  : 1;        ///< Use CR/LF for output lines
-        uint noin   : 1;        ///< Don't type input to log file
-        uint noout  : 1;        ///< Don't type output to log file
-        uint noinfo : 1;        ///< Suppress informational messages
+        uint nopage  : 1;       ///< Don't use FF as page delimiter
+        uint smart   : 1;       ///< Smart mode for line terminators
+        uint icrlf   : 1;       ///< Use CR/LF for input lines
+        uint ocrlf   : 1;       ///< Use CR/LF for output lines
+        uint noin    : 1;       ///< Don't type input to log file
+        uint noout   : 1;       ///< Don't type output to log file
+        uint noinfo  : 1;       ///< Suppress informational messages
+        uint keepnul : 1;       ///< Discard NUL chrs. in input files
     };
 };
 
@@ -158,7 +159,7 @@ union ed_flag
         uint caret     : 1;     ///< Allow caret (^) in search strings
         uint yank      : 1;     ///< Allow all Y and _ commands
         uint           : 1;     ///< (Expand memory as much as possible)
-        uint keepnul   : 1;     ///< Discard NUL chrs. in input files
+        uint           : 1;     ///< (Reserved for TECO-8)
         uint keepdot   : 1;     ///< Preserve dot if search fails
         uint escape    : 1;     ///< Enable immediate escape-sequence commands
         uint movedot   : 1;     ///< Move dot by one on multiple occurrence searches

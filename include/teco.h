@@ -131,7 +131,7 @@ typedef struct tstring tstring;     ///< TECO string
 
 // Global variables
 
-extern uint cmd_line;
+extern uint_t cmd_line;
 
 extern jmp_buf jump_main;
 
