@@ -1,0 +1,29 @@
+! TECO-64 test script: Read display mode parameters ! 
+! Commands: n:W !
+! Expect: PASS !
+
+HK
+
+:W    - 8 "N ::^C '                 ! Test: :W !
+
+0:W   - 8 "N ::^C '                 ! Test: 0:W !
+
+1:W @=/1:W=%d/                      ! Test: 1:W !
+
+2:W @=/2:W=%d/                      ! Test: 2:W !
+
+3:W       "N ::^C '                 ! Test: 3:W !
+
+4:W       "N ::^C '                 ! Test: 4:W !
+
+5:W       "N ::^C '                 ! Test: 5:W !
+
+6:W       "N ::^C '                 ! Test: 6:W !
+
+7:W @=/7:W=%d/                      ! Test: 7:W !
+
+8:W @=/8:W=%d/                      ! Test: 8:W !
+
+9:W - 255 "N ::^C '                 ! Test: 9:W !
+
+:@^A/!PASS!/

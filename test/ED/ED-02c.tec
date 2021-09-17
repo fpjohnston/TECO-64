@@ -1,0 +1,23 @@
+! TECO-64 test script: Test edit level flag !
+! Commands: ED&2 !
+! Expect: ?YCA !
+
+0,64 E3
+
+HK
+
+:@EW{/tmp/baz} "U ::^C '
+
+@I/abc/
+
+EC
+
+:@EB{/tmp/baz} "U ::^C '
+
+@I/xyz/
+
+ED=                                 ! Test: ED= !
+
+2,0 ED                              ! Test: ED&2 !
+
+@_/abc/

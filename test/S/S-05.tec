@@ -20,6 +20,8 @@ ZJ
 @-2S/abc/ .=                        ! Test: -2S !
 @-3S/abc/ .=                        ! Test: -3S !
 
+@-S/line 1/ .=                      ! Test: -S !
+
 HK
 
 :@^A/!PASS!/

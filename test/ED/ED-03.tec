@@ -1,0 +1,23 @@
+! TECO-64 test script: Test edit level flag !
+! Commands: ED&16 !
+! Expect: PASS !
+
+0,64 E3
+
+HK
+
+@I/123 456 789/
+
+ED=                                 ! Test: ED= !
+
+16,0 ED                             ! Test: ED&16 !
+
+0J 6C :@S/xyz/ . "N ::^C '
+
+0,16 ED                             ! Test: ED&16 !
+
+0J 6C :@S/xyz/ .-6 "N ::^C '
+
+HK
+
+:@^A/!PASS!/
