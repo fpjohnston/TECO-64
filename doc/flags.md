@@ -148,7 +148,7 @@ set:
 | ET&16 | Unused by TECO-64. |
 | ET&32 | Read with no wait. This enables the ^T command to test if a character is available at the user terminal. If a character has been typed, ^T returns the value of the character as always. If no character has been typed, ^T immediately returns a value of -1 and execution continues without waiting for a character. |
 | ET&64 | Unused by TECO-64. |
-| ET&128 | "Abort-on-error" bit. Initially set, when TECO starts up; cleared each time TECO issues its asterisk prompt. When this bit is set: 1) all informational messages are supressed, 2) any \<CTRL/C\> causes the immediate termination of TECO, and 3) any error causes the termination of TECO after the error message is printed. |
+| ET&128 | "Abort-on-error" bit. Initially set, when TECO starts up; cleared each time TECO issues its asterisk prompt. When this bit is set: 1) all informational messages are suppressed, 2) any \<CTRL/C\> causes the immediate termination of TECO, and 3) any error causes the termination of TECO after the error message is printed. |
 | ET&256 | If this bit is set, all lines output to the terminal are truncated to the terminal’s width if needed. |
 | ET&512 | If this bit is set, the display mode feature of TECO is present and your terminal is able to use display mode. This bit is a read-only bit; its state cannot be altered. |
 | ET&1024 | Unused by TECO-64. |
