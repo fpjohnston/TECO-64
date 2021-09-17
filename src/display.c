@@ -1176,9 +1176,8 @@ bool scan_FH(struct cmd *cmd)
 
     (void)scan_x(cmd);
 
-    cmd->n_set = true;
-    cmd->n_arg = w.topdot;
-    cmd->h     = true;
+    cmd->m_set = true;
+    cmd->m_arg = w.topdot;
 
     push_x((int_t)botdot, X_OPERAND);
 
