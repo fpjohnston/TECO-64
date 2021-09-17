@@ -439,17 +439,17 @@ void search_failure(struct cmd *cmd, uint keepdot)
 {
     assert(cmd != NULL);
 
+    if (!keepdot)
+    {
+        setpos_ebuf(t.B);
+    }
+
     if (cmd->colon)
     {
         push_x(FAILURE, X_OPERAND);
     }
     else
     {
-        if (!keepdot)
-        {
-            setpos_ebuf(t.B);
-        }
-
         if (check_loop())
         {
             if (!check_semi() && !f.e3.noinfo)
@@ -501,11 +501,7 @@ bool search_forward(struct search *s)
             // only increment by one character. This is only significant if the
             // first character of the string occurs again in the middle of it.
 
-            if (f.ed.movedot)
-            {
-                ++s->text_start;
-            }
-            else
+            if (!f.ed.movedot)
             {
                 s->text_start = s->text_pos;
             }
