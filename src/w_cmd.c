@@ -50,9 +50,6 @@ struct watch w =
     .type     = 8,                      // VT102 in ANSI mode
     .width    = DEFAULT_WIDTH,
     .height   = DEFAULT_HEIGHT,
-    .seeall   = false,
-    .mark     = 0,
-    .hold     = 0,
     .topdot   = 0,
     .nlines   = 0,
     .noscroll = false,
@@ -108,13 +105,9 @@ static int_t get_w(int_t n)
             return n;
 
         case 3:
-            return w.seeall ? -1 : 0;
-
         case 4:
-            return w.mark;
-
         case 5:
-            return w.hold;
+            return 0;
 
         case 6:
             return w.topdot;
@@ -216,6 +209,8 @@ bool scan_W(struct cmd *cmd)
     push_x(n, X_OPERAND);
 
     cmd->colon = cmd->dcolon = false;   // Reset for next command
+    cmd->m_set = false;
+    cmd->m_arg = 0;
 
     return true;
 }
@@ -252,21 +247,6 @@ static void set_w(int_t m, int_t n)
 
                 set_nrows();
             }
-
-            break;
-
-        case 3:
-            w.seeall = (m == -1) ? true : false;
-
-            break;
-
-        case 4:
-            w.mark = (int)m;
-
-            break;
-
-        case 5:
-            w.hold = (int)m;
 
             break;
 

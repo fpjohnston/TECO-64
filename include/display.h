@@ -73,9 +73,6 @@ struct watch
     int type;                       ///< Type of scope
     int width;                      ///< Terminal width in columns
     int height;                     ///< Terminal height in rows
-    bool seeall;                    ///< SEEALL mode
-    int mark;                       ///< "Mark" status
-    int hold;                       ///< Hold mode indicator
     int_t topdot;                   ///< Buffer position of upper left corner
     int nlines;                     ///< No. of scrolling lines
     bool noscroll;                  ///< Disable scrolling region
