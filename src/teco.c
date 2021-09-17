@@ -133,13 +133,7 @@ struct flags f =                    ///< Global flag variables
     .eo = 0,                        // TECO version number
     .es = 0,                        // Search verification flag
     .et.accent  = true,             // Use accent grave as delimiter
-
-#if     defined(EU_COMMAND)
-
     .eu = -1,                       // No case flagging
-
-#endif
-
     .ev = 0,                        // Don't print any lines before prompt
     .radix = 10,                    // Use decimal radix
     .trace.flag = 0,                // All trace bits off

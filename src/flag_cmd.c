@@ -366,21 +366,19 @@ void exec_ET(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(EU_COMMAND)
-
 void exec_EU(struct cmd *cmd)
 {
     check_n_flag(cmd, &f.eu);
+
+    if (f.eu < -1)
+    {
+        f.eu = -1;
+    }
+    else if (f.eu > 1)
+    {
+        f.eu = 1;
+    }
 }
-
-#else
-
-void exec_EU(struct cmd *unused)
-{
-    throw(E_CFG);                       // Command not configured
-}
-
-#endif
 
 
 ///
@@ -485,15 +483,21 @@ bool scan_flag1(struct cmd *cmd)
         case 'e':
             switch (cmd->c2)
             {
-                case 'E':
+                case 'E':               // EE
                 case 'e':
                     push_x((int_t)f.ee, X_OPERAND);
 
                     return true;
 
-                case 'O':
+                case 'O':               // EO
                 case 'o':
                     push_x((int_t)f.eo, X_OPERAND);
+
+                    return true;
+
+                case 'U':               // EU
+                case 'u':
+                    push_x((int_t)f.eu, X_OPERAND);
 
                     return true;
 
@@ -575,12 +579,6 @@ bool scan_flag2(struct cmd *cmd)
         case 'T':                       // ET
         case 't':
             push_x((int_t)f.et.flag, X_OPERAND);
-
-            return true;
-
-        case 'U':                       // EU
-        case 'u':
-            push_x((int_t)f.eu, X_OPERAND);
 
             return true;
 

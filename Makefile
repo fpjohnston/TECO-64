@@ -257,15 +257,6 @@ DOXYGEN +=    DOLLAR_ESC
 
 endif
 
-# Enable obsolete EU command
-
-ifdef   eu
-
-DEFINES += -D EU_COMMAND
-DOXYGEN +=    EU_COMMAND
-
-endif
-
 # Use 64-bit long integers
 
 ifdef   long
