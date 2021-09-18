@@ -1,5 +1,7 @@
-*! TECO-64 test script: Read input character !
+*! TECO test: Read input character !
 ! Commands: ^T !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: PASS [_T-05.log] !
 
 HK

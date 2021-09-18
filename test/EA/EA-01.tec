@@ -1,5 +1,7 @@
-! TECO-64 test script: Switch output streams !
+! TECO test: Switch output streams !
 ! Commands: EA, EW` !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [EA-01.log] !
 
 @EZ{rm /tmp/foo; rm /tmp/baz}   ! Delete any existing files !

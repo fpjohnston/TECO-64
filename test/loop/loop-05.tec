@@ -1,5 +1,7 @@
-! TECO-64 test script: Basic loop test !
+! TECO test: Basic loop test !
 ! Commands: <, > !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [loop-05.log] !
 
 0 < ::^C >                          ! Test: 0 < > !

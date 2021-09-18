@@ -1,5 +1,7 @@
-! TECO-64 test script: Check size of text in Q-registers !
+! TECO test: Check size of text in Q-registers !
 ! Commands: ^Z !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_Z-01.log] !
 
 @^A/^Z = / ^Z := ^Z-0               ! Test: ^Z with Q-registers empty !

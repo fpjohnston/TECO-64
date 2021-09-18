@@ -1,5 +1,7 @@
-! TECO-64 test script: Get value of digit string !
+! TECO test: Get value of digit string !
 ! Commands: \ !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [bslash-01.log] !
 
 ^D

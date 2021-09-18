@@ -1,0 +1,17 @@
+! TECO test: Test spaces in command string !
+! Commands: SPACE !
+! Requirements: None !
+! Execution: Redirect !
+! Expect: PASS !
+
+@I/foo/ 0J
+
+! Test: spaces in command string !
+
+ :  @   FS    {foo}     {baz}       "U ::^C '
+
+HK
+
+!PASS!
+
+

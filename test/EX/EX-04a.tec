@@ -1,5 +1,7 @@
-! TECO-64 test script: Exit TECO w/ empty buffer !
+! TECO test: Exit TECO w/ empty buffer !
 ! Commands: EX !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 HK

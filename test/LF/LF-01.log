@@ -1,5 +1,7 @@
-*! TECO-64 test script: Advance and type one line !
+*! TECO test: Advance and type one line !
 ! Commands: LF !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: PASS [LF-01.log] !
 
 ! Test: immediate-action LF commands !

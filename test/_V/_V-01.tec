@@ -1,5 +1,7 @@
-! TECO-64 test script: Test conversion to lower case !
+! TECO test: Test conversion to lower case !
 ! Commands: ^V !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @I/abc/

@@ -1,5 +1,7 @@
-! TECO-64 test script: Match lower case character !
+! TECO test: Match lower case character !
 ! Commands: ^EV !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_EV-01.log] !
 
 HK

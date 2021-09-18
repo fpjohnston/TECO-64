@@ -1,5 +1,7 @@
-! TECO-64 test script: Test excessive nested loops !
+! TECO test: Test excessive nested loops !
 ! Commands: <, > !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?MAX !
 
 ! Test: nested loops !

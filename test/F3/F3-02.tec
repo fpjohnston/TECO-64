@@ -1,5 +1,7 @@
-! TECO-64 test script: Set status line colors ! 
+! TECO test: Set status line colors ! 
 ! Commands: F3 !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?DPY !
 
 HK

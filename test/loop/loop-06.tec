@@ -1,5 +1,7 @@
-! TECO-64 test script: Test nested loops !
+! TECO test: Test nested loops !
 ! Commands: <, > !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [loop-06.log] !
 
 0 U1

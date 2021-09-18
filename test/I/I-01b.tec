@@ -1,5 +1,7 @@
-! TECO-64 test script: Invalid insertion !
+! TECO test: Invalid insertion !
 ! Commands: n@Itext` !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?IIA !
 
 512,0 E1                            ! Disable extended insert features !

@@ -1,5 +1,7 @@
-! TECO-64 test script: Exit iteration on search success !
+! TECO test: Exit iteration on search success !
 ! Commands: :; !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @I/foo/ 10I

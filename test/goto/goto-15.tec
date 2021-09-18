@@ -1,5 +1,7 @@
-! TECO-64 test script: Branch using computed GOTO !
+! TECO test: Branch using computed GOTO !
 ! Commands: O !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0 UF

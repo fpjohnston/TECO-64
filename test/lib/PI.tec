@@ -1,5 +1,7 @@
-! TECO-64 test script: Test lib/pi.tec !
+! TECO test: Test lib/pi.tec !
 ! Commands: (misc.) !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [pi.log] !
 
 ! Test: library pi.tec macro !

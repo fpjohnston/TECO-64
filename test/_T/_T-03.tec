@@ -1,5 +1,7 @@
-! TECO-64 test script: Type out 8-bit characters !
+! TECO test: Type out 8-bit characters !
 ! Commands: n^T !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_T-03.log] !
 
 4096,0 ET                               ! Say we can't handle 8-bit chrs. !

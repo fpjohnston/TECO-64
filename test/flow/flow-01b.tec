@@ -1,5 +1,7 @@
-! TECO-64 test script: Flow to end of conditional !
+! TECO test: Flow to end of conditional !
 ! Commands: F' !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?MAP !
 
 F'                                  ! Test: F' outside of conditionalk !

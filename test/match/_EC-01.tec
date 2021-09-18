@@ -1,5 +1,7 @@
-! TECO-64 test script: Match symbol constituent character  !
+! TECO test: Match symbol constituent character  !
 ! Commands: ^EC !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_EC-01.log] !
 
 HK

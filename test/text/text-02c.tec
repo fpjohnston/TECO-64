@@ -1,5 +1,7 @@
-! TECO-64 test script: Bracketed text arguments !
+! TECO test: Bracketed text arguments !
 ! Commands: ] !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?TXT !
 
 :@^A]hello, world!]                 ! Test: matched right brackets !

@@ -1,5 +1,7 @@
-! TECO-64 test script: Yank file into non-empty edit buffer !
+! TECO test: Yank file into non-empty edit buffer !
 ! Commands: :Y !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?YCA !
 
 @EW{/tmp/foo} 

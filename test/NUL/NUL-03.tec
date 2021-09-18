@@ -1,5 +1,7 @@
-! TECO-64 test script: Test NUL characters in input files !
+! TECO test: Test NUL characters in input files !
 ! Commands: NUL !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: NUL characters in command files !

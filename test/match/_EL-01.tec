@@ -1,5 +1,7 @@
-! TECO-64 test script: Match line terminator character !
+! TECO test: Match line terminator character !
 ! Commands: ^EL !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_EL-01.log] !
 
 HK

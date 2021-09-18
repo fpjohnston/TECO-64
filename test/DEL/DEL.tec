@@ -1,0 +1,8 @@
+! TECO test: Delete input characters !
+! Commands: DEL !
+! Requirements: None !
+! Execution: Redirect !
+! Expect: PASS [DEL.log] !
+abc def               ! Test: deleting input chrs. !
+!PASS!
+ex

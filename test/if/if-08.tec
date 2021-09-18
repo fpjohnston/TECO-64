@@ -1,5 +1,7 @@
-! TECO-64 test script: Test for alphabetic !
+! TECO test: Test for alphabetic !
 ! Commands: "A !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: "A !

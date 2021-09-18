@@ -1,5 +1,7 @@
-! TECO-64 test script: Get time of day !
+! TECO test: Get time of day !
 ! Commands: ^H !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ^H UA                               ! Test: Get time of day in milliseconds !

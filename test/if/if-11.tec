@@ -1,5 +1,7 @@
-! TECO-64 test script: Test for equal to zero !
+! TECO test: Test for equal to zero !
 ! Commands: "E !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: "E !

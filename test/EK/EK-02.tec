@@ -1,5 +1,7 @@
-! TECO-64 test script: Kill file edit after EW !
+! TECO test: Kill file edit after EW !
 ! Commands: EK !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @^UA{/tmp/foo}                  ! File name !

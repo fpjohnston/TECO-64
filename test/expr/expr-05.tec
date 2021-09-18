@@ -1,5 +1,7 @@
-! TECO-64 test script: Test parenthesized expressions !
+! TECO test: Test parenthesized expressions !
 ! Commands: (, ) !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [expr-05.log] !
 
 10+(1) =                            ! Test: n+() !

@@ -1,5 +1,7 @@
-! TECO-64 test script: Get date !
+! TECO test: Get date !
 ! Commands: ^B !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: Validate current year, month and day for ^B !

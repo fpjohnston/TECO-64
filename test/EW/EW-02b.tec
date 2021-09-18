@@ -1,5 +1,7 @@
-! TECO-64 test script: Open file for writing !
+! TECO test: Open file for writing !
 ! Commands: @EW// !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?ERR !
 
 @^UA{/dev/foo}                      ! Name of output file !

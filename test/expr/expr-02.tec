@@ -1,5 +1,7 @@
-! TECO-64 test script: Push excessive values !
+! TECO test: Push excessive values !
 ! Commands: (misc.) !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?PDO !
 
 (64 + 1) UA     ! No. of values we'll push on expression stack !

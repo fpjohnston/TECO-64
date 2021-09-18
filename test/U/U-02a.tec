@@ -1,5 +1,7 @@
-! TECO-64 test script: Load Q-register using nM !
+! TECO test: Load Q-register using nM !
 ! Commands: U !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 ! Options: -A 123 !
 

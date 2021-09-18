@@ -1,5 +1,7 @@
-! TECO-64 test script: Test for false !
+! TECO test: Test for false !
 ! Commands: "F !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: "F !

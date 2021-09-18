@@ -1,5 +1,7 @@
-! TECO-64 test script: Insert numeric value in edit buffer !
+! TECO test: Insert numeric value in edit buffer !
 ! Commands: n\ !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 HK

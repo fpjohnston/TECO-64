@@ -1,5 +1,7 @@
-! TECO-64 test script: Flow to end of else !
+! TECO test: Flow to end of else !
 ! Commands: F| !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0 "E F| ::^C | '                    ! Test: F| after " !

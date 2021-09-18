@@ -1,5 +1,7 @@
-! TECO-64 test script: Compare text !
+! TECO test: Compare text !
 ! Commands: ::S !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 HK

@@ -1,5 +1,7 @@
-! TECO-64 test script: Execute excessive nested macros !
+! TECO test: Execute excessive nested macros !
 ! Commands: M !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?MAX !
 
 0 UA

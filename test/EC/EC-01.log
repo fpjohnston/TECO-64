@@ -1,5 +1,7 @@
-*! TECO-64 test script: Set memory size !
+*! TECO test: Set memory size !
 ! Commands: nEC !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: PASS [EC-01.log] !
  
 HK

@@ -1,5 +1,7 @@
-! TECO-64 test script: Test carriage return in command file !
+! TECO test: Test carriage return in command file !
 ! Commands: CR !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @I/foo/ 0J

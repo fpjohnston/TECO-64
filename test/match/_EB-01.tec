@@ -1,5 +1,7 @@
-! TECO-64 test script: Match separator character !
+! TECO test: Match separator character !
 ! Commands: ^EB !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_EB-01.log] !
 
 HK

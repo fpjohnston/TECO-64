@@ -1,5 +1,7 @@
-! TECO-64 test script: Execute system command !
+! TECO test: Execute system command !
 ! Commands: @EZ// !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 HK

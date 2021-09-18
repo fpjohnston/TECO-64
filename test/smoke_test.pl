@@ -202,15 +202,18 @@ sub open_dir
 
         foreach my $file ( sort { uc $a cmp uc $b } @files )
         {
-            my ( $abstract, $commands, $expect, $options, $ntests ) =
+            my ( $abstract, $commands, $expect, $options, $ntests, $execution ) =
               read_header( $dir, $file );
 
             if ( defined $abstract && defined $expect )
             {
-                my $output = run_test( $file, $options );
+                my $output = run_test( $file, $options, $execution );
 
-                check_tests( $file, $abstract, $commands, $expect, $output,
-                             $ntests );
+                if ( length $output )
+                {
+                    check_tests( $file, $abstract, $commands, $expect, $output,
+                                 $ntests );
+                }
             }
         }
 
@@ -236,15 +239,18 @@ sub open_file
 
         chdir $dir or croak "Can't change directory to $dir";
 
-        my ( $abstract, $commands, $expect, $options, $ntests ) =
+        my ( $abstract, $commands, $expect, $options, $ntests, $execution ) =
           read_header( $dir, $file );
 
         if ( defined $abstract && defined $expect )
         {
-            my $output = run_test( $file, $options );
+            my $output = run_test( $file, $options, $execution );
 
-            check_tests( $file, $abstract, $commands, $expect, $output,
-                         $ntests );
+            if ( length $output )
+            {
+                check_tests( $file, $abstract, $commands, $expect, $output,
+                             $ntests );
+            }
         }
 
         chdir $cwd or croak "Can't change directory to $cwd";
@@ -261,35 +267,48 @@ sub read_header
 
     chomp(my @lines = <$fh>);
 
-    my $abstract = $lines[0];
-    my $commands = $lines[1];
-    my $expect   = $lines[2];
-    my $options  = $lines[3];
+    my $abstract     = $lines[0];
+    my $commands     = $lines[1];
+    my $requirements = $lines[2];
+    my $execution    = $lines[3];
+    my $expect       = $lines[4];
+    my $options      = $lines[5];
 
     close $fh or croak "Can't close file $file";
 
-    if ( ( $lines[0] !~ s/!! \s+ TECO-64 \s test \s script: \s (.+) /$1/msx ) &&
-         ( $lines[0] !~ s/! \s+ TECO-64 \s test \s script: \s (.+) \s ! /$1/msx ) )
+    if ( $abstract !~ s/! \s+ TECO \s test: \s (.+) \s ! /$1/msx )
     {
-        return ( undef, undef, undef, undef, undef );
+        return ( undef, undef, undef, undef, undef, undef );
     }
 
-    if ( ( $lines[1] !~ s/!! \s+ Commands: \s+ (.+) /$1/msx ) &&
-         ( $lines[1] !~ s/! \s+ Commands: \s+ (.+) \s ! /$1/msx ) )
+    if ( $commands !~ s/! \s+ Commands: \s+ (.+) \s ! /$1/msx )
     {
         print "[$file] No commands found in test script\n";
 
-        return ( undef, undef, undef, undef, undef );
+        exit;
     }
 
     # Find out whether we expect success or failure
 
-    if ( ( $lines[2] !~ s/!! \s+ Expect: \s+ (.+) /$1/msx ) &&
-         ( $lines[2] !~ s/! \s+ Expect: \s+ (.+) \s ! /$1/msx ) )
+    if ( $expect !~ s/! \s+ Expect: \s+ (.+) \s ! /$1/msx )
     {
-        print "[$file] Test script is missing expectations\n";
+        print "[$file] No expectations found in test script\n";
 
-        return ( undef, undef, undef, undef, undef );
+        exit;
+    }
+
+    if ( $requirements !~ s/! \s+ Requirements: \s+ (.+) \s ! /$1/msx )
+    {
+        print "[$file] No requirements found in test script\n";
+
+        exit;
+    }
+
+    if ( $execution !~ s/! \s+ Execution: \s+ (.+) \s ! /$1/msx )
+    {
+        print "[$file] Don't know how to execute test script\n";
+
+        exit;
     }
 
     my $ntests = 0;
@@ -307,28 +326,33 @@ sub read_header
     # line is not required in the test script, so don't use it if it's
     # not in the expected form.
 
-    if ( ( $lines[3] !~ s/!! \s+ Options: \s+ (.+) /$1/msx ) &&
-         ( $lines[3] !~ s/! \s+ Options: \s+ (.+) \s ! /$1/msx ) )
+    if ( $options !~ s/! \s+ Options: \s+ (.+) \s ! /$1/msx )
     {
-        return ( $lines[0], $lines[1], $lines[2], q{}, $ntests );
+        return ( $abstract, $commands, $expect, q{}, $ntests, $execution );
     }
 
-    return ( $lines[0], $lines[1], $lines[2], $lines[3], $ntests );
+    return ( $abstract, $commands, $expect, $options, $ntests, $execution );
 }
 
 sub run_test
 {
-    my ( $file, $options ) = @_;
+    my ( $file, $options, $execution ) = @_;
     my $command;
     my $output;
 
-    if ( $file =~ /.+[.]tec/msx )
+    if ( $execution =~ /Standard/ )
     {
         $command = "$teco $options -X -E $file";
     }
-    elsif ( $file =~ /.+[.]key/msx )
+    elsif ( $execution =~ /Redirect/ )
     {
         $command = "$teco $options < $file";
+    }
+    else
+    {
+        print "Skipping $file\n";
+
+        return q{};
     }
 
     # Use special environment variables for :EG commands so we don't have
@@ -359,7 +383,7 @@ sub wanted
 
     # Only look for TECO script files
 
-    if ( $file !~ /.+[.]tec$/msx && $file !~ /.+[.]key$/msx )
+    if ( $file !~ /.+[.]tec$/msx )
     {
         return;
     }

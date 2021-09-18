@@ -1,5 +1,7 @@
-! TECO-64 test script: Test octal digits !
+! TECO test: Test octal digits !
 ! Commands: 8 !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?ILN !
 
 :@^A/Testing base 8/

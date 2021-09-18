@@ -1,5 +1,7 @@
-! TECO-64 test script: Test for greater than zero !
+! TECO test: Test for greater than zero !
 ! Commands: "G !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: "G !

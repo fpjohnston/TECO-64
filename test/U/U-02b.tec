@@ -1,5 +1,7 @@
-! TECO-64 test script: Try to load Q-register using M !
+! TECO test: Try to load Q-register using M !
 ! Commands: U !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?NAU !
 
 UN                                  ! Test: load Q-register using M !

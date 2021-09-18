@@ -1,5 +1,7 @@
-! TECO-64 test script: Branch forward into a conditional !
+! TECO test: Branch forward into a conditional !
 ! Commands: O !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?LOC !
 
 @O!tag1!                            ! Test: branch forward !

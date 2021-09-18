@@ -1,5 +1,7 @@
-! TECO-64 test script: Append text to edit buffer !
+! TECO test: Append text to edit buffer !
 ! Commands: n:A !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [A-02d.log] !
 
 0,64 E3                             ! Suppress informational messages !

@@ -1,5 +1,7 @@
-! TECO-64 test script: Match non-null string of spaces and/or tabs !
+! TECO test: Match non-null string of spaces and/or tabs !
 ! Commands: ^ES !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_ES-01.log] !
 
 HK

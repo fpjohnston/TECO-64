@@ -1,5 +1,7 @@
-! TECO-64 test script: Exit TECO and go !
+! TECO test: Exit TECO and go !
 ! Commands: EG !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [EG-01.log] !
 
 @^UA/echo "hello, world!\n/

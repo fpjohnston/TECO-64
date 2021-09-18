@@ -1,5 +1,7 @@
-! TECO-64 test script: Destructive backward search !
+! TECO test: Destructive backward search !
 ! Commands: -E_ !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?SRH !
 
 1,0 E3

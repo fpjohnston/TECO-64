@@ -1,5 +1,7 @@
-! TECO-64 test script: Read edit buffer values !
+! TECO test: Read edit buffer values !
 ! Commands: nA !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [A-01.log] !
 
 @I/hello, world!/

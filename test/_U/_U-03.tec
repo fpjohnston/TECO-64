@@ -1,5 +1,7 @@
-! TECO-64 test script: Copy character to Q-register !
+! TECO test: Copy character to Q-register !
 ! Commands: n^U !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_U-03.log] !
 
 ^^h @^UA//                          ! Test: copy character to Q-register !

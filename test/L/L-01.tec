@@ -1,5 +1,7 @@
-! TECO-64 test script: Get relative line info !
+! TECO test: Get relative line info !
 ! Commands: :L !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [L-01.log] !
 
 HK

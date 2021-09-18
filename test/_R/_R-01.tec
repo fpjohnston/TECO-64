@@ -1,5 +1,7 @@
-! TECO-64 test script: Set input radix to 8, 10, & 16 !
+! TECO test: Set input radix to 8, 10, & 16 !
 ! Commands: ^R !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 :@^A/Setting radix to octal/

@@ -1,5 +1,7 @@
-! TECO-64 test script: Get TECO version number !
+! TECO test: Get TECO version number !
 ! Commands: EO !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
  
 EO-200 "N ::^C '                    ! Test: EO !

@@ -1,5 +1,7 @@
-! TECO-64 test script: Move forward or backward lines !
+! TECO test: Move forward or backward lines !
 ! Commands: L !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
  
 10 < @I/abcdefghi/ 10I >

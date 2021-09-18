@@ -1,5 +1,7 @@
-! TECO-64 test script: Write Q-register to file !
+! TECO test: Write Q-register to file !
 ! Commands: E% !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?ERR !
 
 @^UA{/dev/fubar}

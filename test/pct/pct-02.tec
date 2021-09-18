@@ -1,5 +1,7 @@
-! TECO-64 test script: Increment Q-register !
+! TECO test: Increment Q-register !
 ! Commands: :% !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0 UA

@@ -1,5 +1,7 @@
-! TECO-64 test script: Destructive forward search and replace !
+! TECO test: Destructive forward search and replace !
 ! Commands: F_ !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [F_ubar-01.log] !
 
 1,0 E3

@@ -1,5 +1,7 @@
-! TECO-64 test script: Print message !
+! TECO test: Print message !
 ! Commands: :^A !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_A-02.log] !
 
 :@^A/hello, world!/                 ! Test: ^A w/ colon !

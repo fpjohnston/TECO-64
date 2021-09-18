@@ -1,5 +1,7 @@
-! TECO-64 test script: Open file for reading and writing !
+! TECO test: Open file for reading and writing !
 ! Commands: :EB !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?XAB !
 
 @^UA{baz}

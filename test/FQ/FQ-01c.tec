@@ -1,5 +1,7 @@
-! TECO-64 test script: Map key to macro !
+! TECO test: Map key to macro !
 ! Commands: :@FQ !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 :@FQq/F1/                           ! Test: map key to Q-register !

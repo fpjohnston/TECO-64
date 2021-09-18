@@ -1,5 +1,7 @@
-! TECO-64 test script: Test CTRL/Y flag !
+! TECO test: Test CTRL/Y flag !
 ! Commands: ^Y !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @I/abcdef

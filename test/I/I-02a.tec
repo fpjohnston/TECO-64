@@ -1,5 +1,7 @@
-! TECO-64 test script: Insert text (w/ extended features) !
+! TECO test: Insert text (w/ extended features) !
 ! Commands: nI, m,nI !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
  
 0,512 E1                            ! Enable extended insert features !

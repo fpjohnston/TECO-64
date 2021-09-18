@@ -1,5 +1,7 @@
-! TECO-64 test script: Push/pop maximum Q-registers !
+! TECO test: Push/pop maximum Q-registers !
 ! Commands: [, ] !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0UA

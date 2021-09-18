@@ -1,5 +1,7 @@
-! TECO-64 test script: Flow to start of command !
+! TECO test: Flow to start of command !
 ! Commands: F< !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 :UA

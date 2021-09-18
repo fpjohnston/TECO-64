@@ -1,13 +1,17 @@
-*! TECO-64 test script: Re-type all input lines !
+*! TECO test: Re-type all input lines !
 ! Commands: ^G* !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: PASS [_G-star.log] !
 
 iabc
 def
 ghi
 jkl^G*
-*! TECO-64 test script: Re-type all input lines !
+*! TECO test: Re-type all input lines !
 ! Commands: ^G* !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: PASS [_G-star.log] !
 
 iabc

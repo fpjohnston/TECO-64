@@ -1,5 +1,7 @@
-! TECO-64 test script: Test ERR error !
+! TECO test: Test ERR error !
 ! Commands: ?ERR !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?ERR [ERR.log] !
 
 @^UA{/dev/foo}                      ! Name of output file !

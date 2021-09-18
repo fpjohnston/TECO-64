@@ -1,5 +1,7 @@
-! TECO-64 test script: Insert text !
+! TECO test: Insert text !
 ! Commands: <TAB> !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
  
 512,0 E1                            ! Disable extended insert features !

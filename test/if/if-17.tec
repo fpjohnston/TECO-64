@@ -1,5 +1,7 @@
-! TECO-64 test script: Test for successful !
+! TECO test: Test for successful !
 ! Commands: "S !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: "S !

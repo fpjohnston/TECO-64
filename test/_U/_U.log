@@ -1,5 +1,7 @@
-*! TECO-64 test script: Cancel current input line !
+*! TECO test: Cancel current input line !
 ! Commands: ^U !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: PASS [_U.log] !
 
 abcdef       *

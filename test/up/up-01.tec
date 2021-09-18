@@ -1,5 +1,7 @@
-! TECO-64 test script: Get ASCII value of character !
+! TECO test: Get ASCII value of character !
 ! Commands: ^^ !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0 UF

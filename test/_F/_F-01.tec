@@ -1,0 +1,12 @@
+! TECO test: Execute command string w/ CTRL/F sequence !
+! Commands: ^F !
+! Requirements: None !
+! Execution: Redirect !
+! Expect: PASS !
+
+^^0FF:@^A/hello, world!/``
+^^9FF:@^A/goodbye, cruel world! !PASS!/ EX``
+0                                 ! Test: <CTRL/F>0 !
+                                ! Test: <CTRL/F><CTRL/F> !
+9                                 ! Test: <CTRL/F>9 !
+::^C

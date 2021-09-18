@@ -1,5 +1,7 @@
-! TECO-64 test script: Type macro in Q-register !
+! TECO test: Type macro in Q-register !
 ! Commands: EMq !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [EM-01.log] !
 
 HK

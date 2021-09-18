@@ -1,5 +1,7 @@
-! TECO-64 test script: Set display mode parameters ! 
+! TECO test: Set display mode parameters ! 
 ! Commands: m,n:W !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 HK

@@ -1,5 +1,7 @@
-! TECO-64 test script: Test comma operator !
+! TECO test: Test comma operator !
 ! Commands: , !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
  1,  0 UA UB                        ! Test: m,0 !

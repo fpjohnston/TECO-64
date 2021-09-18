@@ -1,5 +1,7 @@
-! TECO-64 test script: Set radix to invalid value !
+! TECO test: Set radix to invalid value !
 ! Commands: ^R !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?IRA !
 
 :@^A/Setting radix to binary/

@@ -1,5 +1,7 @@
-! TECO-64 test script: Test search mode flag !
+! TECO test: Test search mode flag !
 ! Commands: 0^X !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Try to match lower case letters (and special characters) !

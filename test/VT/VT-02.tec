@@ -1,5 +1,7 @@
-! TECO-64 test script: Test vertical tab in command file !
+! TECO test: Test vertical tab in command file !
 ! Commands: VT !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @I/foo/ 0J

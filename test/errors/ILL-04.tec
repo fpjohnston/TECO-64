@@ -1,5 +1,7 @@
-! TECO-64 test script: Test illegal command !
+! TECO test: Test illegal command !
 ! Commands: $ !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?ILL !
  
 `                                       ! Test: ` command !

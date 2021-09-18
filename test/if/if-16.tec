@@ -1,5 +1,7 @@
-! TECO-64 test script: Test for alphanumeric !
+! TECO test: Test for alphanumeric !
 ! Commands: "R !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: "R !

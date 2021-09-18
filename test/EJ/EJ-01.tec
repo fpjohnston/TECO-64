@@ -1,5 +1,7 @@
-! TECO-64 test script: Get environment information !
+! TECO test: Get environment information !
 ! Commands: EJ !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0 UF                                ! No. of failures !

@@ -1,5 +1,7 @@
-! TECO-64 test script: Convert text to upper case !
+! TECO test: Convert text to upper case !
 ! Commands: FU !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
  
 HK

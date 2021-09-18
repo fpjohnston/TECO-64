@@ -1,5 +1,7 @@
-! TECO-64 test script: Print numeric values !
+! TECO test: Print numeric values !
 ! Commands: := !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [equals-02.log] !
 
 @^A/value = [/    0 := :@^A/]/      ! Test:    0:= in decimal !

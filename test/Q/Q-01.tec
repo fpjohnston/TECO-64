@@ -1,5 +1,7 @@
-! TECO-64 test script: Test Q, nQ, and :Q !
+! TECO test: Test Q, nQ, and :Q !
 ! Commands: Q !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [Q-01.log] !
 
 @^UA/the quick brown fox jumped over the lazy dog/

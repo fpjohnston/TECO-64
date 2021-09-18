@@ -1,5 +1,7 @@
-! TECO-64 test script: Type out multiple lines !
+! TECO test: Type out multiple lines !
 ! Commands: V !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [V-03.log] !
 
 HK

@@ -1,5 +1,7 @@
-*! TECO-64 test script: Back up and type one line !
+*! TECO test: Back up and type one line !
 ! Commands: BS !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: PASS [BS.log] !
 
 ! Test: immediate-action BS commands !

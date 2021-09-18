@@ -1,5 +1,7 @@
-! TECO-64 test script: Close input file !
+! TECO test: Close input file !
 ! Commands: EC !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?NFI !
 
 @^UA{/tmp/foo}                  ! File name !

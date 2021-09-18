@@ -1,5 +1,7 @@
-! TECO-64 test script: Branch backward into a conditional !
+! TECO test: Branch backward into a conditional !
 ! Commands: O !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?LOC !
 
 @O!tag1!

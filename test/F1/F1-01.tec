@@ -1,5 +1,7 @@
-! TECO-64 test script: Set command region colors ! 
+! TECO test: Set command region colors ! 
 ! Commands: F1 !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 HK

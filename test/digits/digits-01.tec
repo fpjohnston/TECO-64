@@ -1,5 +1,7 @@
-! TECO-64 test script: Test digits !
+! TECO test: Test digits !
 ! Commands: 0-9 !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [digits-01.log] !
 
 ^D 10^R

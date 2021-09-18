@@ -1,5 +1,7 @@
-! TECO-64 test script: Append to Q-register !
+! TECO test: Append to Q-register !
 ! Commands: X !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [X-02.log] !
 
 HK

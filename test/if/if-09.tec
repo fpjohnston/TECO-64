@@ -1,5 +1,7 @@
-! TECO-64 test script: Test for symbol constituent !
+! TECO test: Test for symbol constituent !
 ! Commands: "C !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: "C !

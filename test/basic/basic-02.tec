@@ -1,5 +1,7 @@
-! TECO-64 test script: Test basic functions #2 !
+! TECO test: Test basic functions #2 !
 ! Commands: (misc.) !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [basic-02.log] !
 
 ! Test: mix of basic TECO commands !

@@ -1,5 +1,7 @@
-! TECO-64 test script: Bounded search and replace !
+! TECO test: Bounded search and replace !
 ! Commands: FC !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [FC-01.log] !
 
 HK

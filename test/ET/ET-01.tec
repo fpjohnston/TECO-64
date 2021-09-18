@@ -1,5 +1,7 @@
-! TECO-64 test script: Test edit terminal flag !
+! TECO test: Test edit terminal flag !
 ! Commands: ET !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 HK

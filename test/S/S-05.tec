@@ -1,5 +1,7 @@
-! TECO-64 test script: Local search backward !
+! TECO test: Local search backward !
 ! Commands: -S !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [S-05.log] !
 
 HK

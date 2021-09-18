@@ -1,5 +1,7 @@
-! TECO-64 test script: Test lib/init.tec !
+! TECO test: Test lib/init.tec !
 ! Commands: (misc.) !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: library init.tec macro !

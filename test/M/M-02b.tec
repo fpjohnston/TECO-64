@@ -1,5 +1,7 @@
-! TECO-64 test script: Execute macro w/o required m & n args. !
+! TECO test: Execute macro w/o required m & n args. !
 ! Commands: M !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?NAU !
 
 @^UA/U.A U.B/

@@ -1,5 +1,7 @@
-! TECO-64 test script: Match any character !
+! TECO test: Match any character !
 ! Commands: ^X !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_X-01.log] !
 
 HK

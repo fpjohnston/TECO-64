@@ -1,5 +1,7 @@
-! TECO-64 test script: Exit TECO after EB !
+! TECO test: Exit TECO after EB !
 ! Commands: EX !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0,64 E3                             ! Suppress informational messages !

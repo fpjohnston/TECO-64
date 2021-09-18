@@ -1,5 +1,7 @@
-*! TECO-64 test script: Test help level flag !
+*! TECO test: Test help level flag !
 ! Commands: 2EH !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: ?FNF [EH-03.log] !
 
 2 EH

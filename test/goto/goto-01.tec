@@ -1,5 +1,7 @@
-! TECO-64 test script: Branch forward !
+! TECO test: Branch forward !
 ! Commands: O !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @O!tag1!                            ! Test: branch forward !

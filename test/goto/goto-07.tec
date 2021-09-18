@@ -1,5 +1,7 @@
-! TECO-64 test script: Branch forward outside a conditional !
+! TECO test: Branch forward outside a conditional !
 ! Commands: O !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0 "E

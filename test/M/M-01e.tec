@@ -1,5 +1,7 @@
-! TECO-64 test script: Execute macro returning m & n args. !
+! TECO test: Execute macro returning m & n args. !
 ! Commands: M !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @I/123,456/

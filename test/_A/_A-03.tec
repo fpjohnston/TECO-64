@@ -1,5 +1,7 @@
-! TECO-64 test script: Print message w/ string building chrs. !
+! TECO test: Print message w/ string building chrs. !
 ! Commands: ^A !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_A-03.log] !
 
 @^UA/goodbye, cruel world!/

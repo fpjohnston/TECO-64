@@ -1,5 +1,7 @@
-! TECO-64 test script: Type out current line !
+! TECO test: Type out current line !
 ! Commands: V !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [V-02.log] !
 
 HK

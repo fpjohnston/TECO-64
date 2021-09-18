@@ -1,5 +1,7 @@
-! TECO-64 test script: Get starting buffer position !
+! TECO test: Get starting buffer position !
 ! Commands: B !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: Verify that B is always 0, regardless of dot !

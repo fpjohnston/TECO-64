@@ -1,5 +1,7 @@
-! TECO-64 test script: Delete and replace !
+! TECO test: Delete and replace !
 ! Commands: FR !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
  
 HK

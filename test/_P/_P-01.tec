@@ -1,5 +1,7 @@
-! TECO-64 test script: Test page number !
+! TECO test: Test page number !
 ! Commands: ^P !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0,64 E3

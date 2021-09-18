@@ -1,0 +1,17 @@
+! TECO test: Test form feed in command string !
+! Commands: FF !
+! Requirements: None !
+! Execution: Redirect !
+! Expect: PASS !
+
+@I/foo/ 0J
+
+! Test: form feed in command string !
+
+:@FS{foo}{baz} "U ::^C '
+
+HK
+
+!PASS!
+
+

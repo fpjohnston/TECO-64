@@ -1,5 +1,7 @@
-! TECO-64 test script: Type lines in edit buffer !
+! TECO test: Type lines in edit buffer !
 ! Commands: T !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [T-02.log] !
 
 HK

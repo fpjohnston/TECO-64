@@ -1,5 +1,7 @@
-! TECO-64 test script: Test edit level flag !
+! TECO test: Test edit level flag !
 ! Commands: ED&64 !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0,64 E3

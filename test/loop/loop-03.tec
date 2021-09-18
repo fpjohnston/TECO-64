@@ -1,5 +1,7 @@
-! TECO-64 test script: Test start of loop w/o end !
+! TECO test: Test start of loop w/o end !
 ! Commands: < !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?MRA !
 
 ! Test: < w/o > !

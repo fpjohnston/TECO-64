@@ -1,5 +1,7 @@
-! TECO-64 test script: Open indirect command file !
+! TECO test: Open indirect command file !
 ! Commands: EI !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 QA "E 0,32 E1 | 32,0 E1 '

@@ -1,5 +1,7 @@
-! TECO-64 test script: Match upper case character !
+! TECO test: Match upper case character !
 ! Commands: ^EW !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_EW-01.log] !
 
 HK

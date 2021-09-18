@@ -1,5 +1,7 @@
-! TECO-64 test script: Local search forward !
+! TECO test: Local search forward !
 ! Commands: S !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [S-04.log] !
 
 HK

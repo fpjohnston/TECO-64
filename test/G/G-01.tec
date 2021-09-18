@@ -1,5 +1,7 @@
-! TECO-64 test script: Print global Q-registers !
+! TECO test: Print global Q-registers !
 ! Commands: :G !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [G-01.log] !
 
 ! Test: copy global Q-registers !

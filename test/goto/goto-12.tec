@@ -1,5 +1,7 @@
-! TECO-64 test script: Branch backward within nested loop !
+! TECO test: Branch backward within nested loop !
 ! Commands: O !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?LOC !
 
 1 <

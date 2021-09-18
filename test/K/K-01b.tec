@@ -1,5 +1,7 @@
-! TECO-64 test script: Delete lines !
+! TECO test: Delete lines !
 ! Commands: K !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?POP !
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//

@@ -1,5 +1,7 @@
-! TECO-64 test script: Get current radix !
+! TECO test: Get current radix !
 ! Commands: ^R !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
   ^D ^RUA ^D QA-10 "N ::^C '        ! Test: ^R after ^D !

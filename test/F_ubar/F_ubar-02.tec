@@ -1,5 +1,7 @@
-! TECO-64 test script: Non-stop forward search and replace !
+! TECO test: Non-stop forward search and replace !
 ! Commands: nF_ !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [F_ubar-02.log] !
 
 1,0 E3

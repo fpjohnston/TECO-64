@@ -1,5 +1,7 @@
-! TECO-64 test script: Test extended digit format !
+! TECO test: Test extended digit format !
 ! Commands: 0-f (digits) !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [digits-03.log] !
 
 :@^A/Testing base 10/

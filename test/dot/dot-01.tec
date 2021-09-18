@@ -1,5 +1,7 @@
-! TECO-64 test script: Get current buffer position !
+! TECO test: Get current buffer position !
 ! Commands: . !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 10 < @I/0123456789/ 10I >

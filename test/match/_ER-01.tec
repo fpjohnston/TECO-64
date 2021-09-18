@@ -1,5 +1,7 @@
-! TECO-64 test script: Match alphanumeric character !
+! TECO test: Match alphanumeric character !
 ! Commands: ^ER !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_ER-01.log] !
 
 HK

@@ -1,0 +1,11 @@
+! TECO test: Cancel all input lines !
+! Commands: ^G^G !
+! Requirements: None !
+! Execution: Redirect !
+! Expect: PASS [_G_G.log] !
+
+iabc
+def
+ghi                             ! Test: cancel all input lines !
+!PASS!
+ex``

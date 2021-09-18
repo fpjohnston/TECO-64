@@ -1,5 +1,7 @@
-! TECO-64 test script: Match alphabetic character !
+! TECO test: Match alphabetic character !
 ! Commands: ^EA !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_EA-01.log] !
 
 HK

@@ -1,5 +1,7 @@
-! TECO-64 test script: Test spaces in command file !
+! TECO test: Test spaces in command file !
 ! Commands: SPACE !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @I/foo/ 0J

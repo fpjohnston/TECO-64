@@ -1,0 +1,9 @@
+! TECO test: Print erroneous command string !
+! Commands: ? !
+! Requirements: None !
+! Execution: Redirect !
+! Expect: ?FNF !
+
+ERfoo``?                            ! Test: print failing command !
+!PASS!
+EX``

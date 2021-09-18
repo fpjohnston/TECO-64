@@ -1,5 +1,7 @@
-! TECO-64 test script: Exit TECO after ER !
+! TECO test: Exit TECO after ER !
 ! Commands: EX !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?NFO !
 
 0,64 E3                             ! Suppress informational messages !

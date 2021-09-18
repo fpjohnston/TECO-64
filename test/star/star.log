@@ -1,5 +1,7 @@
-*! TECO-64 test script: Copy command string to Q-register !
+*! TECO test: Copy command string to Q-register !
 ! Commands: *q !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: PASS [star.log] !
 
 :@^A/hello, world!/``

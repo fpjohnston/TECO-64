@@ -1,5 +1,7 @@
-! TECO-64 test script: Test FNF error !
+! TECO test: Test FNF error !
 ! Commands: ?FNF !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?FNF [FNF.log] !
  
 @^UA{baz}                           ! Name of non-existent input file !

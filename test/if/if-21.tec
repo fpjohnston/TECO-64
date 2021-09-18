@@ -1,5 +1,7 @@
-! TECO-64 test script: Test for upper case !
+! TECO test: Test for upper case !
 ! Commands: "W !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: "W !

@@ -1,5 +1,7 @@
-! TECO-64 test script: Write contents of edit buffer !
+! TECO test: Write contents of edit buffer !
 ! Commands: -nP !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0,64 E3

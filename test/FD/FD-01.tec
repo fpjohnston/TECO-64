@@ -1,5 +1,7 @@
-! TECO-64 test script: Search and delete !
+! TECO test: Search and delete !
 ! Commands: FD !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [FD-01.log] !
  
 HK

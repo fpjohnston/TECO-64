@@ -1,5 +1,7 @@
-! TECO-64 test script: Non-stop forward search and replace !
+! TECO test: Non-stop forward search and replace !
 ! Commands: -FN !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [FN-03.log] !
 
 1,0 E3

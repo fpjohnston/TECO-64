@@ -1,5 +1,7 @@
-! TECO-64 test script: Append character to Q-register !
+! TECO test: Append character to Q-register !
 ! Commands: n:^U !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_U-04.log] !
 
 ^^h  @^UA//                         ! Test: append character to Q-register !

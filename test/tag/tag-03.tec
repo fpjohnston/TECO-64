@@ -1,5 +1,7 @@
-! TECO-64 test script: Test tag in command file !
+! TECO test: Test tag in command file !
 ! Commands: bang !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 123

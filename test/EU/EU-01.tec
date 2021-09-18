@@ -1,5 +1,7 @@
-! TECO-64 test script: Test upper/lower case flag ! 
+! TECO test: Test upper/lower case flag ! 
 ! Commands: EU !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 HK

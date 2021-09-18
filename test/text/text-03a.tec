@@ -1,5 +1,7 @@
-! TECO-64 test script: Braced text arguments !
+! TECO test: Braced text arguments !
 ! Commands: {, } !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 :@^A{hello, world!}                 ! Test: paired braces w/ 1 arg. !

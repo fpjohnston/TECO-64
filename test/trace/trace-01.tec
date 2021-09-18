@@ -1,0 +1,13 @@
+! TECO test: Trace executed commands !
+! Commands: ? !
+! Requirements: None !
+! Execution: Redirect !
+! Expect: PASS !
+
+@I/this command is not traced/
+?                                   ! Test: enable tracing !
+@I/this command is traced/
+@I/so is this command/
+HK
+!PASS!
+EX``

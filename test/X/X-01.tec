@@ -1,5 +1,7 @@
-! TECO-64 test script: Copy to Q-register !
+! TECO test: Copy to Q-register !
 ! Commands: X !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [X-01.log] !
 
 HK

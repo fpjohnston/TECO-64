@@ -1,5 +1,7 @@
-! TECO-64 test script: Execute macro !
+! TECO test: Execute macro !
 ! Commands: M !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @^UA":@^A/!PASS!/"

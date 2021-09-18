@@ -1,5 +1,7 @@
-! TECO-64 test script: Test lib/show.tec !
+! TECO test: Test lib/show.tec !
 ! Commands: (misc.) !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: library show.tec macro !

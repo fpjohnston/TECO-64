@@ -1,5 +1,7 @@
-! TECO-64 test script: Move position !
+! TECO test: Move position !
 ! Commands: J !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
  
 HK

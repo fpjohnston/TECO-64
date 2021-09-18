@@ -1,0 +1,9 @@
+! TECO test: Cancel current input line !
+! Commands: ^U !
+! Requirements: None !
+! Execution: Redirect !
+! Expect: PASS [_U.log] !
+
+abcdef``                          ! Test: cancel current input line !
+!PASS!
+ex

@@ -1,5 +1,7 @@
-! TECO-64 test script: Close output file after EB !
+! TECO test: Close output file after EB !
 ! Commands: EF !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @^UA{/tmp/foo}                  ! File name !

@@ -1,5 +1,7 @@
-! TECO-64 test script: Delete characters !
+! TECO test: Delete characters !
 ! Commands: D !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?DTB !
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// 0J

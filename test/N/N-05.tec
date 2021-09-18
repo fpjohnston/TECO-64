@@ -1,5 +1,7 @@
-! TECO-64 test script: Non-stop forward search !
+! TECO test: Non-stop forward search !
 ! Commands: nN !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 1,0 E3

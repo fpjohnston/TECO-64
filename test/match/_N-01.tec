@@ -1,5 +1,7 @@
-! TECO-64 test script: Inverse character match !
+! TECO test: Inverse character match !
 ! Commands: ^N !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_N-01.log] !
 
 HK

@@ -1,5 +1,7 @@
-! TECO-64 test script: Search, and preserve dot if failure !
+! TECO test: Search, and preserve dot if failure !
 ! Commands: m,nS !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @I/1. abcdef

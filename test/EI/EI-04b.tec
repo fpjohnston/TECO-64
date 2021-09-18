@@ -1,5 +1,7 @@
 ! TECO-64 helper script !
 
+! Requirements: None !
+! Execution: Standard !
 :@^A/entering test 4b/
 
 @EI/EI-04c/                         ! Test: EI (level 2) !

@@ -1,5 +1,7 @@
-! TECO-64 test script: Read environment variables !
+! TECO test: Read environment variables !
 ! Commands: :EG !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [EG-02.log] !
 
 :@EG/INI/ "E ::^C | :G* -1^T '      ! Test: get TECO_INIT environment variable !

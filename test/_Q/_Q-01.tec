@@ -1,5 +1,7 @@
-! TECO-64 test script: Convert lines to characters !
+! TECO test: Convert lines to characters !
 ! Commands: ^Q !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
  
 @I/a

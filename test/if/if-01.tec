@@ -1,5 +1,7 @@
-! TECO-64 test script: Test nesting maximum conditionals !
+! TECO test: Test nesting maximum conditionals !
 ! Commands: "x !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: nested conditionals !

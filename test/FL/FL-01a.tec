@@ -1,5 +1,7 @@
-! TECO-64 test script: Convert text to lower case !
+! TECO test: Convert text to lower case !
 ! Commands: FL !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
  
 HK

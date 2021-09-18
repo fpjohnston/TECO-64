@@ -1,5 +1,7 @@
-! TECO-64 test script: Flow to end of command !
+! TECO test: Flow to end of command !
 ! Commands: F> !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 :@^A/!PASS!/

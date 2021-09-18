@@ -1,5 +1,7 @@
-*! TECO-64 test script: Test EE flag !
+*! TECO test: Test EE flag !
 ! Commands: EE, nEE !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: PASS [EE-01.log] !
 
 EE=``

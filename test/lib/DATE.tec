@@ -1,5 +1,7 @@
-! TECO-64 test script: Test lib/date.tec !
+! TECO test: Test lib/date.tec !
 ! Commands: (misc.) !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ! Test: library date.tec macro !

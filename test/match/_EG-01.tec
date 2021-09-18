@@ -1,5 +1,7 @@
-! TECO-64 test script: Match character in Q-register  !
+! TECO test: Match character in Q-register  !
 ! Commands: ^EGq !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_EG-01.log] !
 
 HK

@@ -1,5 +1,7 @@
-! TECO-64 test script: Map key to Q-register !
+! TECO test: Map key to Q-register !
 ! Commands: @FQ !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?KEY !
 
 @FQq/BAZ/                           ! Test: map key to Q-register q !

@@ -1,5 +1,7 @@
-! TECO-64 test script: Map command string to CTRL/F sequence !
+! TECO test: Map command string to CTRL/F sequence !
 ! Commands: FF, @FF !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 ^^0FFV                           ! Test: map commands to <CTRL/F>0 !

@@ -1,0 +1,10 @@
+! TECO test: Re-type current input line !
+! Commands: ^G<space> !
+! Requirements: None !
+! Execution: Redirect !
+! Expect: PASS [_G-space.log] !
+
+IABC                              ! Test: retype current input line !
+^C
+!PASS!
+^C^C

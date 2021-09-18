@@ -1,5 +1,7 @@
-! TECO-64 test script: Set edit region colors ! 
+! TECO test: Set edit region colors ! 
 ! Commands: F2 !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?DPY !
 
 HK

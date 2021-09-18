@@ -1,5 +1,7 @@
-! TECO-64 test script: Load Q-register w/ default !
+! TECO test: Load Q-register w/ default !
 ! Commands: :U !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 :UN                                 ! Test: load Q-register w/ default !

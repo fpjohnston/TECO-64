@@ -1,5 +1,7 @@
-! TECO-64 test script: Write Q-register to file, verify data !
+! TECO test: Write Q-register to file, verify data !
 ! Commands: E% !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @^UA{/tmp/hello}

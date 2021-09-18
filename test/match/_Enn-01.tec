@@ -1,5 +1,7 @@
-! TECO-64 test script: Match ASCII character !
+! TECO test: Match ASCII character !
 ! Commands: ^Enn !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 HK

@@ -1,5 +1,7 @@
-! TECO-64 test script: Append string to Q-register !
+! TECO test: Append string to Q-register !
 ! Commands: :^U !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_U-02.log] !
 
 @^UA/hello/

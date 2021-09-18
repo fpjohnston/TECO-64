@@ -1,5 +1,7 @@
-! TECO-64 test script: Test string building characters !
+! TECO test: Test string building characters !
 ! Commands: (mix) !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @^UA/baz/

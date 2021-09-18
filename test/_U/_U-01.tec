@@ -1,5 +1,7 @@
-! TECO-64 test script: Load global Q-registers w/ text !
+! TECO test: Load global Q-registers w/ text !
 ! Commands: ^U !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_U-01.log] !
 
 ! Test: load global Q-registers w/ text !

@@ -1,0 +1,38 @@
+! TECO test: Test line feed in command string !
+! Commands: LF !
+! Requirements: None !
+! Execution: Redirect !
+! Expect: PASS !
+
+@I/foo/ 0J
+
+! Test: line feed in command string !
+
+
+:
+
+@
+
+
+FS
+
+
+
+{foo}
+
+
+
+
+{baz}
+
+
+
+
+
+ "U ::^C '
+
+HK
+
+!PASS!
+
+

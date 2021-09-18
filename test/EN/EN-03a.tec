@@ -1,5 +1,7 @@
-! TECO-64 test script: Open wildcard filespec !
+! TECO test: Open wildcard filespec !
 ! Commands: :EN !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 @^UA{*.tec}

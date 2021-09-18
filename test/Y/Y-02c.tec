@@ -1,5 +1,7 @@
-! TECO-64 test script: Yank file into edit buffer at EOF !
+! TECO test: Yank file into edit buffer at EOF !
 ! Commands: :Y !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 0,64 E3

@@ -1,5 +1,7 @@
-*! TECO-64 test script: Re-type current input line !
+*! TECO test: Re-type current input line !
 ! Commands: ^G<space> !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: PASS [_G-space.log] !
 
 IABC^G

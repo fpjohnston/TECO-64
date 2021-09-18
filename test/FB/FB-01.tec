@@ -1,5 +1,7 @@
-! TECO-64 test script: Bounded search !
+! TECO test: Bounded search !
 ! Commands: FB !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 HK

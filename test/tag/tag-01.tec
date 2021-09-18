@@ -1,0 +1,12 @@
+! TECO test: Test tag in command string !
+! Commands: ! !
+! Requirements: None !
+! Execution: Redirect !
+! Expect: PASS !
+
+! Test: tag in command string !
+! Test: tag in command string !
+
+!PASS!
+
+

@@ -1,5 +1,7 @@
-! TECO-64 test script: Type out characters !
+! TECO test: Type out characters !
 ! Commands: n^T !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_T-01.log] !
 
 ^^H ^T                              ! Test: nT !

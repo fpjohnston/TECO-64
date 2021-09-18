@@ -1,5 +1,7 @@
-! TECO-64 test script: Set input radix to decimal !
+! TECO test: Set input radix to decimal !
 ! Commands: ^D !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_D-01.log] !
 
 HK

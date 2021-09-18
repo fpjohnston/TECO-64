@@ -1,5 +1,7 @@
-! TECO-64 test script: Move position backward !
+! TECO test: Move position backward !
 ! Commands: R !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: ?POP !
  
 HK

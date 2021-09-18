@@ -1,5 +1,7 @@
-*! TECO-64 test script: Cancel all input lines !
+*! TECO test: Cancel all input lines !
 ! Commands: ^G^G !
+! Requirements: None !
+! Execution: Redirect !
 ! Expect: PASS [_G_G.log] !
 
 iabc

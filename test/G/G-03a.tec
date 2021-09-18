@@ -1,5 +1,7 @@
-! TECO-64 test script: Copy last file name !
+! TECO test: Copy last file name !
 ! Commands: G* !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [G-03a.log] !
 
 0 U.A

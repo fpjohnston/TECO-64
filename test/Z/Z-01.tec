@@ -1,5 +1,7 @@
-! TECO-64 test script: Get ending buffer position !
+! TECO test: Get ending buffer position !
 ! Commands: Z !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 10 < @I/0123456789/ 10I >

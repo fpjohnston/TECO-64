@@ -1,5 +1,7 @@
-! TECO-64 test script: Match digit character !
+! TECO test: Match digit character !
 ! Commands: ^ED !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS [_ED-01.log] !
 
 HK

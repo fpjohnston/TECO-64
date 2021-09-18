@@ -1,5 +1,7 @@
-! TECO-64 test script: Non-stop backward search !
+! TECO test: Non-stop backward search !
 ! Commands: -N !
+! Requirements: None !
+! Execution: Standard !
 ! Expect: PASS !
 
 1,0 E3
