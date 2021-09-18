@@ -6,4 +6,4 @@ UN                                  ! Test: load Q-register using M !
 QN @:=/QN=%d: /
 
 :@^A/!PASS!/
-^[^[
+^[^[

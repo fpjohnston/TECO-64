@@ -15,3 +15,4 @@ EC                              ! Test: write data and close file !
 EC                              ! Close input file !
 
 Y                               ! Try to yank input !
+

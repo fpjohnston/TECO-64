@@ -5,3 +5,4 @@
 @^UA{baz}                           ! Name of non-existent input file !
 
 @ER/^EQA/                           ! Test: open file for read !
+

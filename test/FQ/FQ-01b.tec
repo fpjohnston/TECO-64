@@ -3,3 +3,4 @@
 ! Expect: ?KEY !
 
 @FQq/BAZ/                           ! Test: map key to Q-register q !
+

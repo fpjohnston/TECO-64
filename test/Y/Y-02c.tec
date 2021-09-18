@@ -17,3 +17,4 @@ HK
 :Y "N ::^C '                        ! Test: yank after EOF !
 
 :@^A/!PASS!/
+

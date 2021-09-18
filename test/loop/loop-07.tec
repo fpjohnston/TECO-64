@@ -5,3 +5,4 @@
 1 < @S/baz/; ::^C >                 ! Test: loop w/ @S//; !
 
 :@^A/!PASS!/
+
