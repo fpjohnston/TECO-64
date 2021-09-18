@@ -14,8 +14,8 @@ Z < QA A UB QB ^T %A >          ! Test: nA for all chrs. forward !
 Z < -QA A UB QB ^T %A >         ! Test: nA for all chrs. backward !
 13^T 10^T
 
-ZJ  1 A+1 UA QA "N ::^C '       ! Test: nA for chr. < B !
-0J -1 A+1 UA QA "N ::^C '       ! Test: nA for chr. > Z !
+0J -1 A+1 UA QA "N ::^C '       ! Test: nA for chr. < B !
+ZJ  1 A+1 UA QA "N ::^C '       ! Test: nA for chr. > Z !
 
 HK
 
