@@ -2,9 +2,9 @@
 ! Commands: :EG !
 ! Expect: PASS [EG-02.log] !
 
-:@EG/INI/ "E ::^C | :G* -1^T '      ! Test: get TECO_INIT environment variable !
-:@EG/LIB/ "E ::^C | :G* -1^T '      ! Test: get TECO_LIBRARY environment variable !
-:@EG/MEM/ "E ::^C | :G* -1^T '      ! Test: get TECO_MEMORY environment variable !
-:@EG/VTE/ "E ::^C | :G* -1^T '      ! Test: get TECO_VTEDIT environment variable !
+:@EG/INI/ "E ::^C | :G* 13^T 10^T ' ! Test: get TECO_INIT environment variable !
+:@EG/LIB/ "E ::^C | :G* 13^T 10^T ' ! Test: get TECO_LIBRARY environment variable !
+:@EG/MEM/ "E ::^C | :G* 13^T 10^T ' ! Test: get TECO_MEMORY environment variable !
+:@EG/VTE/ "E ::^C | :G* 13^T 10^T ' ! Test: get TECO_VTEDIT environment variable !
 
 :@^A/!PASS!/

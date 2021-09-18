@@ -4,10 +4,10 @@
 
 @^UA/goodbye, cruel world!/
 
-:@^A/^EQA/              ! Test: ^A w/ string-building chrs. !
+@^A/^EQA/                           ! Test: ^A w/ string-building chrs. !
 
--1^T
+13^T 10^T
 
 @^A/!PASS!/
 
--1^T
+13^T 10^T

@@ -1,5 +1,5 @@
-TECO_INIT
-TECO_LIBRARY
-TECO_MEMORY
-TECO_VTEDIT
+init
+/home/franklin/software/teco/200/lib
+teco.tmp
+vtedit
 !PASS!

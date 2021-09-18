@@ -6,7 +6,7 @@ HK
 
 :@^A/Setting radix to decimal/
 
-^D 123 \ HT -1^T 0J \ UA QA=            ! Test: set radix to decimal !
+^D 123 \ HT 13^T 10^T 0J \ UA QA=   ! Test: set radix to decimal !
 
 HK
 

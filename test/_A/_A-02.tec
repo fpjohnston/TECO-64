@@ -2,10 +2,10 @@
 ! Commands: :^A !
 ! Expect: PASS [_A-02.log] !
 
-:@^A/hello, world!/     ! Test: ^A w/ colon !
+:@^A/hello, world!/                 ! Test: ^A w/ colon !
 
--1^T
+13^T 10^T
 
 @^A/!PASS!/
 
--1^T
+13^T 10^T

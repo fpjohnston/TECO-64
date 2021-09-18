@@ -5,7 +5,7 @@
 @^UA/hello/
 :@^UA/, world!/                     ! Test: append string to Q-register !
 
-:GA -1^T
+:GA 13^T 10^T
 
 :@^A/!PASS!/
 

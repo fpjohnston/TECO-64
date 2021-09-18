@@ -6,11 +6,11 @@
 
 0 UA 0J
 Z < QA A UB QB ^T %A >          ! Test: nA for all chrs. forward !
--1^T
+13^T 10^T
 
 1 UA ZJ
 Z < -QA A UB QB ^T %A >         ! Test: nA for all chrs. backward !
--1^T
+13^T 10^T
 
 ZJ  1 A+1 UA QA "N ::^C '       ! Test: nA for chr. < B !
 0J -1 A+1 UA QA "N ::^C '       ! Test: nA for chr. > Z !

@@ -9,12 +9,12 @@
 :@^A/[Executing I]/    @I"@^A/ (.=/ .:= @^A/, Z=/ Z:= ^^) ^T"
 :@^A/[Executing HXC]/  HXC
 :@^A/[Executing HK]/   HK
- @^A/[Executing :GC]/  MB :GC -1 ^T
+ @^A/[Executing :GC]/  MB :GC 13^T 10^T
 :@^A/[Executing EW]/   :@EW/^EQA1.tmp/ "E :@^A/EW command failed/ ::^C '
 :@^A/[Executing I]/    :@I/This is a test/ 13@I// 10@I//
  @^A/[Executing HT]/   MC MB HT
 :@^A/[Executing EC]/   EC
- @^A/[Executing HT]/   MC MB HT -1 ^T
+ @^A/[Executing HT]/   MC MB HT 13^T 10^T
 :@^A/[Executing ER]/   :@ER/^EQA1.tmp/ "E :@^A/ER command failed/ ::^C ' Y
  @^A/[Executing HT]/   MC MB HT
 :@^A/[Executing FS]/   @FS/a test/not a test/
@@ -31,7 +31,7 @@
 :@^A/[Executing I]/    @I/deal/
  @^A/[Executing HT]/   MC MB HT
 :@^A/[Executing B,ZD]/ B,ZD
- @^A/[Executing HT]/   MC MB HT -1 ^T
+ @^A/[Executing HT]/   MC MB HT 13^T 10^T
 :@^A/[Executing EK]/   EK
 :@^A/[Executing EZ]/   @EZ/rm _teco_test_*.tmp*/
 

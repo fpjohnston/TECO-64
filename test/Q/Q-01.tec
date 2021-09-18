@@ -16,8 +16,6 @@
 
 :QA < QB QA ^T %B >                 ! Test: nQ !
 
--1 ^T
+13^T 10^T
 
 :@^A/!PASS!/
-
-^C

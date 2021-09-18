@@ -8,6 +8,6 @@ HK
 :@S/frumious bandersnatch/
 @^A/:G_ = /
 :G_                                 ! Test: :G_ !
--1^T
+13^T 10^T
 
 :@^A/!PASS!/
