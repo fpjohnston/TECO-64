@@ -1,5 +1,1 @@
-^Z = 0 (pass)
-^Z = 26 (pass)
-^Z = 36 (pass)
-^Z = 102 (pass)
-!PASS!
+^Z = 6 (fail)^Z = 32 (fail)^Z = 42 (fail)^Z = 108 (fail)!PASS!

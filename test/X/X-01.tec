@@ -6,7 +6,9 @@
 
 EO - 100 "L
     -1 EJ - 1024 "E                 ! TECO-32 !
-        3 UZ                        ! CR/LF, -P !
+        1 U.Z                       ! -P !
+        @^U.Z/ 13^T 10^T/           ! Set up macro to print CR/LF !
+        13@^UY// 10:@^UY//          ! Set up macro to insert CR/LF !
     |                               ! Unknown or unsupported TECO !
         @^A/Unknown TECO: EO=/
         EO :=
@@ -16,13 +18,15 @@ EO - 100 "L
     '
 |
     EO - 200 "L                     ! TECO C !
-        0 UZ                        ! LF, no -P !
+        0 U.Z                       ! No -P !
+        @^U.Z/ 10^T/                ! Set up macro to print LF !
+        10@^UY//                    ! Set up macro to insert LF !
     |                               ! TECO-64 !
-        7 UZ                        ! LF, -P, ext. features !
+        3 U.Z                       ! -P, ext. features !
+        @^U.Z/ 10^T/                ! Set up macro to print LF !
+        10@^UY//                    ! Set up macro to insert LF !
     '
 '
-
-QZ&1 "N @^UZ/ 13^T/ ' :@^UZ/ 10^T/
 
 HK
 

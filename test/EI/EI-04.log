@@ -1,10 +1,1 @@
-entering test 4
-entering test 4a
-entering test 4b
-entering test 4c
-hello, world!
-exiting test 4c
-exiting test 4b
-exiting test 4a
-exiting test 4
-!PASS!
+entering test 4entering test 4aentering test 4bentering test 4chello, world!exiting test 4cexiting test 4bexiting test 4aexiting test 4!PASS!

@@ -4,9 +4,13 @@
 ! Execution: Standard !
 ! Expect: PASS [EA-01.log] !
 
+0 U.Z
+
 EO - 100 "L
     -1 EJ - 1024 "E                 ! TECO-32 !
-        3 UZ                        ! CR/LF, -P !
+        1 U.Z                       ! -P !
+        @^U.Z/ 13^T 10^T/           ! Set up macro to print CR/LF !
+        13@^UY// 10:@^UY//          ! Set up macro to insert CR/LF !
     |                               ! Unknown or unsupported TECO !
         @^A/Unknown TECO: EO=/
         EO :=
@@ -16,69 +20,65 @@ EO - 100 "L
     '
 |
     EO - 200 "L                     ! TECO C !
-        0 UZ                        ! LF, no -P !
+        0 U.Z                       ! No -P !
+        @^U.Z/ 10^T/                ! Set up macro to print LF !
+        10@^UY//                    ! Set up macro to insert LF !
     |                               ! TECO-64 !
-        7 UZ                        ! LF, -P, ext. features !
+        3 U.Z                       ! -P, ext. features !
+        @^U.Z/ 10^T/                ! Set up macro to print LF !
+        10@^UY//                    ! Set up macro to insert LF !
     '
 '
 
-QZ&1 "N
-    13@^UY//
-    @^UZ/ 13^T/
-'
-
-10:@^UY//
-:@^UZ/ 10^T/
-
-@EZ{rm /tmp/foo; rm /tmp/baz}   ! Delete any existing files !
+@EZ{rm /tmp/foo; rm /tmp/baz}       ! Delete any existing files !
 
 HK
 
-@I/abcdef/ 10I                  ! Add some data !
+@I/abcdef/ 10I                      ! Add some data !
 
 . UA
 
-@I/123456/ 10I                  ! Add some more data !
+@I/123456/ 10I                      ! Add some more data !
 
-:@EW{/tmp/foo} "U ::^C '        ! Create 1st temp file !
+:@EW{/tmp/foo} "U ::^C '            ! Create 1st temp file !
 
-EA                              ! Test: switch to secondary output stream !
+EA                                  ! Test: switch to secondary output stream !
 
-:@EW{/tmp/baz} "U ::^C '        ! Create 2nd temp file !
+:@EW{/tmp/baz} "U ::^C '            ! Create 2nd temp file !
 
-2 < B,QA PW >                   ! Write data to secondary stream !
+2 < B,QA PW >                       ! Write data to secondary stream !
 
-@EW//                           ! Switch back to primary output stream !
+@EW//                               ! Switch back to primary output stream !
 
-3 < QA,Z PW>                    ! Write data to primary stream !
+3 < QA,Z PW>                        ! Write data to primary stream !
 
 HT
 HK
 
-EC                              ! Close primary stream !
+EC                                  ! Close primary stream !
 
-EA                              ! Switch back to secondary output stream !
+EA                                  ! Switch back to secondary output stream !
 
-EC                              ! Close secondary stream !
+EC                                  ! Close secondary stream !
 
-:@ER{/tmp/foo} "U ::^C ' Y      ! Open 1st temp file and read it in !
+:@ER{/tmp/foo} "U ::^C ' Y          ! Open 1st temp file and read it in !
 
-@^A/-----/ MZ
+@^A/-----/ M.Z
 
 HT
 HK
 
 EC
 
-:@ER{/tmp/baz} "U ::^C ' Y      ! Open 2nd temp file and read it in !
+:@ER{/tmp/baz} "U ::^C ' Y          ! Open 2nd temp file and read it in !
 
-@^A/-----/ MZ
+@^A/-----/ M.Z
 
 HT
 
 EC
 
-@^A/!PASS!/ MZ
+@^A/!PASS!/ M.Z
 
 EK HK EX
 

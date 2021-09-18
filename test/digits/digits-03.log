@@ -1,8 +1,5 @@
-Testing base 10
-0 11 22 33 44 55 66 77 88 99 
-Testing base 8
-0 11 22 33 44 55 66 77 
-Testing base 16
-0 11 22 33 44 55 66 77 88 99 aa bb cc dd ee ff 
+Testing base 100 11 22 33 44 55 66 77 88 99 
+Testing base 80 11 22 33 44 55 66 77 
+Testing base 160 11 22 33 44 55 66 77 88 99 aa bb cc dd ee ff 
 0 11 22 33 44 55 66 77 88 99 aa bb cc dd ee ff 
 !PASS!
