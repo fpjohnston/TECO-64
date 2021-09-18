@@ -10,15 +10,15 @@
 3:@EL/^EQA/                 ! Test: open log file !
 
 "U
-    :@^A/Can't open log file/
-    :@^A/FAIL/
+    @^A/Can't open log file/
+    @^A/FAIL/
     ^C
 '
 ``
 
 ! Logging starts here !
 
-:@^A/hello, world!/         ! Generate an output message !
+@^A/hello, world!/         ! Generate an output message !
 ``
 5 < @I/abcdef/ 10I >        ! Insert some lines of text !
 0 J                         ! Go to beginning of buffer !
@@ -36,8 +36,8 @@ HK
 :@EZ/diff -B -w -q ^EQA ^EQB/
 
 "U
-    :@^A/Can't compare log files/
-    :@^A/FAIL/
+    @^A/Can't compare log files/
+    @^A/FAIL/
     ^C
 '
 
@@ -46,8 +46,8 @@ G+ 0J
 :@S/differ/
 
 "U
-    :@^A/Log files differ/
-    :@^A/FAIL/
+    @^A/Log files differ/
+    @^A/FAIL/
     ^C
 '
 HK

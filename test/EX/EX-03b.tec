@@ -12,7 +12,7 @@
 
 @I/abcdef/
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 EX                                  ! Test: EX w/ data in edit buffer !
 

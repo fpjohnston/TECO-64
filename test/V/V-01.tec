@@ -50,7 +50,7 @@ All mimsy were the borogoves,
 V                                   ! Test: V at start of line !
 HK
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 ^C
 

@@ -8,5 +8,5 @@
 
 @FM/F1//                            ! Test: unmap key !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

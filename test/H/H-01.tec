@@ -32,5 +32,5 @@ H UZ UB                         ! Test: H w/ empty buffer !
 QB - B "N ::^C '
 QZ - Z "N ::^C '
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

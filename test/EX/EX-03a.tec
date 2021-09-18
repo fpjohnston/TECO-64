@@ -10,7 +10,7 @@
 
 @EB{/tmp/foo}                       ! Open the file for backup !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 EX                                  ! Test: EX after EB !
 

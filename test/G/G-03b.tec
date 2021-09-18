@@ -12,5 +12,5 @@ HK
 :G*                                 ! Test: :G* !
 13^T 10^T
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

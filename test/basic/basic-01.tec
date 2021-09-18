@@ -6,36 +6,64 @@
 
 ! Test: mix of basic TECO commands !
 
-:@^A/[Executing ^UA]/  @^UA"_teco_test_"
-:@^A/[Executing ^UB]/  @^UB"@^A/ result: /"
-:@^A/[Executing I]/    @I"@^A/ (.=/ .:= @^A/, Z=/ Z:= ^^) ^T"
-:@^A/[Executing HXC]/  HXC
-:@^A/[Executing HK]/   HK
- @^A/[Executing :GC]/  MB :GC 13^T 10^T
-:@^A/[Executing EW]/   :@EW/^EQA1.tmp/ "E :@^A/EW command failed/ ::^C '
-:@^A/[Executing I]/    :@I/This is a test/ 13@I// 10@I//
- @^A/[Executing HT]/   MC MB HT
-:@^A/[Executing EC]/   EC
- @^A/[Executing HT]/   MC MB HT 13^T 10^T
-:@^A/[Executing ER]/   :@ER/^EQA1.tmp/ "E :@^A/ER command failed/ ::^C ' Y
- @^A/[Executing HT]/   MC MB HT
-:@^A/[Executing FS]/   @FS/a test/not a test/
- @^A/[Executing HT]/   MC MB HT
-:@^A/[Executing R]/    4R
-:@^A/[Executing I]/    @I/really big /
- @^A/[Executing HT]/   MC MB HT
-:@^A/[Executing D]/    4D
- @^A/[Executing HT]/   MC MB HT
-:@^A/[Executing EW]/   :@EW/^EQA2.tmp/ "E :@^A/EW command failed/ ::^C '
-:@^A/[Executing EC]/   EC
-:@^A/[Executing EB]/   :@EB/^EQA2.tmp/ "E :@^A/EB command failed/ ::^C '
-:@^A/[Executing N]/    @N/really big /
-:@^A/[Executing I]/    @I/deal/
- @^A/[Executing HT]/   MC MB HT
-:@^A/[Executing B,ZD]/ B,ZD
- @^A/[Executing HT]/   MC MB HT 13^T 10^T
-:@^A/[Executing EK]/   EK
-:@^A/[Executing EZ]/   @EZ/rm _teco_test_*.tmp*/
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
 
-:@^A/!PASS!/
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
+
+10:@^UY//
+:@^UZ/ 10^T/
+
+@^A/[Executing ^UA]/  MZ @^UA"_teco_test_"
+@^A/[Executing ^UB]/  MZ @^UB"@^A/ result: /"
+@^A/[Executing I]/    MZ @I"@^A/ (.=/ .:= @^A/, Z=/ Z:= ^^) ^T"
+@^A/[Executing HXC]/  MZ HXC
+@^A/[Executing HK]/   MZ HK
+@^A/[Executing :GC]/  MB :GC MZ
+@^A/[Executing EW]/   MZ :@EW/^EQA1.tmp/ "E :@^A/EW command failed/ ::^C '
+@^A/[Executing I]/    MZ :@I/This is a test/ 13@I// 10@I//
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing EC]/   MZ EC
+@^A/[Executing HT]/   MC MB HT MZ
+@^A/[Executing ER]/   MZ :@ER/^EQA1.tmp/ "E :@^A/ER command failed/ ::^C ' Y
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing FS]/   MZ @FS/a test/not a test/
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing R]/    MZ 4R
+@^A/[Executing I]/    MZ @I/really big /
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing D]/    MZ 4D
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing EW]/   MZ :@EW/^EQA2.tmp/ "E :@^A/EW command failed/ ::^C '
+@^A/[Executing EC]/   MZ EC
+@^A/[Executing EB]/   MZ :@EB/^EQA2.tmp/ "E :@^A/EB command failed/ ::^C '
+@^A/[Executing N]/    MZ @N/really big /
+@^A/[Executing I]/    MZ @I/deal/
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing B,ZD]/ MZ B,ZD
+@^A/[Executing HT]/   MC MB HT MZ
+@^A/[Executing EK]/   MZ EK
+@^A/[Executing EZ]/   MZ @EZ/rm _teco_test_*.tmp*/
+
+@^A/!PASS!/ MZ
+
+EK HK EX
 

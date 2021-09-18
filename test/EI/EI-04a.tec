@@ -1,10 +1,9 @@
-! TECO-64 helper script !
+! Helper script for TECO tests !
 
-! Requirements: None !
-! Execution: Standard !
-:@^A/entering test 4a/
+@^A/entering test 4a/ MZ
 
 @EI/EI-04b/                         ! Test: EI (level 1) !
 
-:@^A/exiting test 4a/
+@^A/exiting test 4a/ MZ
+
 

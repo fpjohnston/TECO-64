@@ -12,5 +12,5 @@ FQAF1                             ! Test: map key to Q-register A !
 
 @FQ9/F4/                            ! Test: map key to Q-register 9 !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

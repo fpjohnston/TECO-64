@@ -10,7 +10,7 @@
 
 @ER{/tmp/foo}                       ! Open the file for input !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 EX                                  ! Test: EX after ER !
 

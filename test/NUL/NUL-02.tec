@@ -8,15 +8,15 @@
 
 !NUL!
 
-:@^A/hello, /
+@^A/hello, /
 
 !NUL!
 
-:@^A/world!/
+@^A/world!/
 
 !NUL!
 
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 

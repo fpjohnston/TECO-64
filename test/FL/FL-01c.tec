@@ -12,5 +12,5 @@ HK
 
 0,Z+1 FL                            ! Test: m,nFL w/ n > Z !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

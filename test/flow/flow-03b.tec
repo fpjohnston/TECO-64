@@ -4,11 +4,11 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 F>                                  ! Test: F> !
 
-:@^A/!FAIL!/
+@^A/!FAIL!/
 
 ::^C
 

@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: ?ILN !
 
-:@^A/Testing base 8/
+@^A/Testing base 8/
 
 ^D 8^R
 

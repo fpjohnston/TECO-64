@@ -14,5 +14,5 @@ QB @=/Current time of day is %d/
 QB           "L ::^C '
 QB-(86400-1) "G ::^C '
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

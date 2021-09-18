@@ -7,6 +7,6 @@
 ! Test: library squish.tec macro !
 
 @EI/squish/
-:@^A/!PASS!/
+@^A/!PASS!/
 ^C
 

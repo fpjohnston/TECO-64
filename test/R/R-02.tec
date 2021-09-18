@@ -71,5 +71,5 @@ Z+1 :R    "S ::^C '                 ! Test: n:R, w/ n > preceding chrs !
 
 HK
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

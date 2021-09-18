@@ -40,5 +40,5 @@
 ^^::@FF/F1/                         ! Test: map command string to <CTRL/F>: !
 "S ::^C '
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

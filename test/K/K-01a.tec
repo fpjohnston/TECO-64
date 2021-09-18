@@ -4,44 +4,70 @@
 ! Execution: Standard !
 ! Expect: PASS [K-01a.log] !
 
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
+
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
+
+10:@^UY//
+:@^UZ/ 10^T/
+
 0UA
 
 10 <
     @I/line /
     %A \
     @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
-    13@I// 10@I//
+    GY
 >
 
 0J
 
-:@^A/-----/
+@^A/-----/ MZ
 
 HT
 
-:@^A/-----/
+@^A/-----/ MZ
 
 K HT                                ! Test: K !
 
-:@^A/-----/
+@^A/-----/ MZ
 
 1K HT                               ! Test: 1K !
 
-:@^A/-----/
+@^A/-----/ MZ
 
 3L 2K HT                            ! Test: nK !
 
-:@^A/-----/
+@^A/-----/ MZ
 
 -K HT                               ! Test: -K !
 
-:@^A/-----/
+@^A/-----/ MZ
 
 -1K HT                              ! Test: -1K !
 
 ZJ
 
-:@^A/-----/
+@^A/-----/ MZ
 
 -2K HT                              ! Test: -nK !
 
@@ -56,11 +82,11 @@ HK
 
 0J
 
-:@^A/-----/
+@^A/-----/ MZ
 
 5L 10K HT                           ! Test: nK !
 
-:@^A/-----/
+@^A/-----/ MZ
 
 -10K HT                             ! Test: -nK !
 
@@ -70,9 +96,9 @@ HK
 
 10,20K HT                           ! Test: m,nK !
 
-:@^A/-----/
+@^A/-----/ MZ
 
-HK
+@^A/!PASS!/ MZ
 
-:@^A/!PASS!/
+EK HK EX
 

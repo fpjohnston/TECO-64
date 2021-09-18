@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@^UA":@^A/!PASS!/"
+@^UA"@^A/!PASS!/"
 
 MA                                  ! Test: M !
 

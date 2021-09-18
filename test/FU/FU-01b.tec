@@ -12,5 +12,5 @@ HK
 
 0,-1 FU                             ! Test: m,nFU w/ n < B !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

@@ -10,5 +10,5 @@
 :@FM/BAZ/EX/                        ! Test: map key to command !
 "S ::^C '
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

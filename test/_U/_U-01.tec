@@ -4,16 +4,44 @@
 ! Execution: Standard !
 ! Expect: PASS [_U-01.log] !
 
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
+
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
+
+10:@^UY//
+:@^UZ/ 10^T/
+
+[Z ].Z
+
 ! Test: load global Q-registers w/ text !
 
 0 U.A
 10 <
     @I"@^U"
     ^^0 + Q.A I
-    @I"{:@^A/Loaded Q-register "
+    @I"{@^A/Loaded Q-register "
     ^^0 + Q.A I
-    @I"/}"
-    10 I
+    @I"/ M.Z}"
+    GY
     %.A
 >
 
@@ -21,10 +49,10 @@
 26 <
     @I"@^U"
     ^^A + Q.A @I//
-    @I"{:@^A/Loaded Q-register "
+    @I"{@^A/Loaded Q-register "
     ^^A + Q.A I
-    @I"/}"
-    10 I
+    @I"/ M.Z}"
+    GY
     %.A
 >
 
@@ -32,7 +60,7 @@ HX.A HK M.A
 
 0 U.B
 10 <
-    @I/M/
+    @I/:M/
     ^^0 + Q.B I
     @I/ /
     %.B
@@ -40,14 +68,15 @@ HX.A HK M.A
 
 0 U.B
 26 <
-    @I/M/
+    @I/:M/
     ^^A + Q.B I
     @I/ /
     %.B
 >
 
 HX.B HK M.B
-:@^A/!PASS!/
 
-^C
+@^A/!PASS!/ M.Z
+
+EK HK EX
 

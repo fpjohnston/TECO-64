@@ -7,6 +7,6 @@
 ! Test: library date.tec macro !
 
 @EI/date/
-:@^A/!PASS!/
+@^A/!PASS!/
 ^C
 

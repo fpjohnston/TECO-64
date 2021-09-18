@@ -4,6 +4,32 @@
 ! Execution: Standard !
 ! Expect: PASS [V-03.log] !
 
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
+
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
+
+10:@^UY//
+:@^UZ/ 10^T/
+
 HK
 
 @I/Jabberwocky
@@ -47,13 +73,12 @@ All mimsy were the borogoves,
 
 0 J
 19 L
-:@^A/-----/ 0 V                     ! Test: 0V !
-:@^A/-----/ 1 V                     ! Test: 1V !
-:@^A/-----/ 2 V                     ! Test: 2V !
-:@^A/-----/ 3 V                     ! Test: 3V !
-HK
+@^A/-----/ MZ 0 V                  ! Test: 0V !
+@^A/-----/ MZ 1 V                  ! Test: 1V !
+@^A/-----/ MZ 2 V                  ! Test: 2V !
+@^A/-----/ MZ 3 V                  ! Test: 3V !
 
-:@^A/!PASS!/
+@^A/!PASS!/ MZ
 
-^C
+EK HK EX
 

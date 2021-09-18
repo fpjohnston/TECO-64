@@ -7,6 +7,6 @@
 ! Test: library vtedit.tec macro !
 
 1 @EI/vtedit/
-:@^A/!PASS!/
+@^A/!PASS!/
 ^C
 

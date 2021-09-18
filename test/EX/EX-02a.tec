@@ -8,7 +8,7 @@
 
 @EW{/tmp/foo}                       ! Open the file for output !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 EX                                  ! Test: EX after EW !
 

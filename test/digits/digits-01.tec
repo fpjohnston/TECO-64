@@ -4,9 +4,35 @@
 ! Execution: Standard !
 ! Expect: PASS [digits-01.log] !
 
-^D 10^R
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
 
-:@^A/Testing base 10/
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
+
+10:@^UY//
+:@^UZ/ 10^T/
+
+@^A/Testing base 10/ ^D MZ
+
+^D 10^R
 
  00 UA QA:@=/%d /                   ! Test: positive decimal digits !
  11 UA QA:@=/%d /
@@ -20,7 +46,7 @@
  99 UA QA:@=/%d /
  -1 UA QA @=/%d/                    ! Test: negative no. in base 10 !
 
-:@^A/Testing base 8/
+@^A/Testing base 8/ ^D MZ
 
 ^D 8^R
 
@@ -34,7 +60,7 @@
  77 UA QA:@=/%o /
  -1 UA QA @=/%o/                    ! Test: negative no. in base 8 !
 
-:@^A/Testing base 16/
+@^A/Testing base 16/ ^D MZ
 
 ^D 16^R
 
@@ -50,4 +76,4 @@
  99 UA QA:@=/%x /
  -1 UA QA @=/%x/                    ! Test: negative no. in base 16 !
 
-:@^A/!PASS!/
+@^A/!PASS!/

@@ -10,7 +10,7 @@ QM
 @:=/QM=%d: /
 QN @:=/QN=%d: /
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 EK HK EX
 

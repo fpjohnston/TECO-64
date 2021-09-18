@@ -4,20 +4,48 @@
 ! Execution: Standard !
 ! Expect: PASS [equals-02.log] !
 
-@^A/value = [/    0 := :@^A/]/      ! Test:    0:= in decimal !
-@^A/value = [/   -1 := :@^A/]/      ! Test:   -1:= in decimal !
-@^A/value = [/  123 := :@^A/]/      ! Test:  123:= in decimal !
-@^A/value = [/ -456 := :@^A/]/      ! Test: -456:= in decimal !
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
 
-@^A/value = [/    0 :== :@^A/]/     ! Test:    0:== in octal !
-@^A/value = [/   -1 :== :@^A/]/     ! Test:   -1:== in octal !
-@^A/value = [/  123 :== :@^A/]/     ! Test:  123:== in octal !
-@^A/value = [/ -456 :== :@^A/]/     ! Test: -456:== in octal !
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
 
-@^A/value = [/    0 :=== :@^A/]/    ! Test:    0:=== in hexadecimal !
-@^A/value = [/   -1 :=== :@^A/]/    ! Test:   -1:=== in hexadecimal !
-@^A/value = [/  123 :=== :@^A/]/    ! Test:  123:=== in hexadecimal !
-@^A/value = [/ -456 :=== :@^A/]/    ! Test: -456:=== in hexadecimal !
+10:@^UY//
+:@^UZ/ 10^T/
 
-:@^A/!PASS!/
+@^A/value = [/    0 := @^A/]/ MZ   ! Test:    0:= in decimal !
+@^A/value = [/   -1 := @^A/]/ MZ   ! Test:   -1:= in decimal !
+@^A/value = [/  123 := @^A/]/ MZ   ! Test:  123:= in decimal !
+@^A/value = [/ -456 := @^A/]/ MZ   ! Test: -456:= in decimal !
+
+@^A/value = [/    0 :== @^A/]/ MZ  ! Test:    0:== in octal !
+@^A/value = [/   -1 :== @^A/]/ MZ  ! Test:   -1:== in octal !
+@^A/value = [/  123 :== @^A/]/ MZ  ! Test:  123:== in octal !
+@^A/value = [/ -456 :== @^A/]/ MZ  ! Test: -456:== in octal !
+
+@^A/value = [/    0 :=== @^A/]/ MZ ! Test:    0:=== in hexadecimal !
+@^A/value = [/   -1 :=== @^A/]/ MZ ! Test:   -1:=== in hexadecimal !
+@^A/value = [/  123 :=== @^A/]/ MZ ! Test:  123:=== in hexadecimal !
+@^A/value = [/ -456 :=== @^A/]/ MZ ! Test: -456:=== in hexadecimal !
+
+@^A/!PASS!/ MZ
+
+EK HK EX
 

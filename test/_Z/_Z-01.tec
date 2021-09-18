@@ -4,25 +4,52 @@
 ! Execution: Standard !
 ! Expect: PASS [_Z-01.log] !
 
-@^A/^Z = / ^Z := ^Z-0               ! Test: ^Z with Q-registers empty !
-"E :@^A/ (pass)/ | :@^A/ (fail)/ '
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
+
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
+
+10:@^UY//
+:@^UZ/ 10^T/
+:QY+:QZ UZ 
+
+@^A/^Z = / ^Z-QZ := ^Z-QZ            ! Test: ^Z with Q-registers empty !
+"E @^A/ (pass)/ | @^A/ (fail)/ ' MZ
 
 @^UA/abcdefghijklmnopwrstuvwxyz/
 
-@^A/^Z = / ^Z := ^Z-26              ! Test: ^Z w/ text in 1 Q-register !
-"E :@^A/ (pass)/ | :@^A/ (fail)/ '
+@^A/^Z = / ^Z-QZ := ^Z-QZ-26         ! Test: ^Z w/ text in 1 Q-register !
+"E @^A/ (pass)/ | @^A/ (fail)/ ' MZ
 
 @^UB/0123456789/
 
-@^A/^Z = / ^Z := ^Z-36              ! Test: ^Z w/ text in 2 Q-registers !
-"E :@^A/ (pass)/ | :@^A/ (fail)/ '
+@^A/^Z = / ^Z-QZ := ^Z-QZ-36         ! Test: ^Z w/ text in 2 Q-registers !
+"E @^A/ (pass)/ | @^A/ (fail)/ ' MZ
 
 @^UC/now is the time for all good men to come to the aid of their party/
 
-@^A/^Z = / ^Z := ^Z-102             ! Test: ^Z w/ text in 3 Q-registers !
-"E :@^A/ (pass)/ | :@^A/ (fail)/ '
+@^A/^Z = / ^Z-QZ := ^Z-QZ-102        ! Test: ^Z w/ text in 3 Q-registers !
+"E @^A/ (pass)/ | @^A/ (fail)/ ' MZ
 
-:@^A/!PASS!/
+@^A/!PASS!/ MZ
 
-^C
+EK HK EX
 

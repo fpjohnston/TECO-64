@@ -84,7 +84,7 @@ T                                   ! Test: T in middle of line !
 
 HK
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 ^C
 

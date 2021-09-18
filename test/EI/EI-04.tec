@@ -4,11 +4,39 @@
 ! Execution: Standard !
 ! Expect: PASS [EI-04.log] !
 
-:@^A/entering test 4/
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
+
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
+
+10:@^UY//
+:@^UZ/ 10^T/
+
+@^A/entering test 4/ MZ
 
 @EI/EI-04a/                         ! Test: EI (level 0) !
 
-:@^A/exiting test 4/
+@^A/exiting test 4/ MZ
 
-:@^A/!PASS!/
+@^A/!PASS!/ MZ
+
+EK HK EX
 

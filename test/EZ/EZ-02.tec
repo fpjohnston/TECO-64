@@ -10,7 +10,7 @@ HK
 
 GA @I/"/ 0J @I/echo "/ HXB HK
 
-:@^A/command = [^EQB]/
+@^A/command = [^EQB]/
 
 @EZ/^EQB/                           ! Test: @EZ// !
 
@@ -28,5 +28,5 @@ QA"E
     ::^C
 '
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

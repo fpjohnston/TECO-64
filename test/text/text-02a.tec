@@ -4,9 +4,9 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-:@^A [hello, world!]                ! Test: paired brackets w/ 1 arg. !
+@^A [hello, world!]                ! Test: paired brackets w/ 1 arg. !
 
 :@FS[hello][world!]                 ! Test: paired brackets w/ 1 args. !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

@@ -8,14 +8,13 @@ EE=``
 0
 *                             ! Test: EE !
 
-:@^A/hello/ ??                      ! This will not print until after EE !
+@^A/hello/ ??                      ! This will not print until after EE !
 
 ^^?EE``
-hello
-?
+hello?
 *                           ! Test: nEE !
 
-:@^A/hello, again/ ``
+@^A/hello, again/ ``
 hello, again
 *               ! This should print immediately !
 

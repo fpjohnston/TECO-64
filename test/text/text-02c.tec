@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: ?TXT !
 
-:@^A]hello, world!]                 ! Test: matched right brackets !
+@^A]hello, world!]                 ! Test: matched right brackets !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

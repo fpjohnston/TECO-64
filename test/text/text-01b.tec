@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: ?UTM !
 
-:@^A(hello, world!(                 ! Test: matched left parentheses !
+@^A(hello, world!(                 ! Test: matched left parentheses !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

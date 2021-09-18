@@ -14,11 +14,11 @@ EC
 
 :EY                                 ! Test: :EY w/o protection !
 "U
-    :@^A/FAIL/
+    @^A/FAIL/
     ::^C
 '
 
 HK
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

@@ -21,5 +21,5 @@ HK 65@I// Z-1 "N ::^C '             ! Test: at-sign insert of ASCII chr. !
 
 HK
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

@@ -7,6 +7,6 @@
 ! Test: library show.tec macro !
 
 @EI/show/
-:@^A/!PASS!/
+@^A/!PASS!/
 ^C
 

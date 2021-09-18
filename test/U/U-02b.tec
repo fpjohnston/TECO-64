@@ -8,7 +8,7 @@ UN                                  ! Test: load Q-register using M !
 
 QN @:=/QN=%d: /
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 EK HK EX
 

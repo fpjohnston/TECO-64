@@ -7,6 +7,32 @@
 
 :U0                     ! Get flag argument !
 
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
+
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
+
+10:@^UY//
+:@^UZ/ 10^T/
+
 ! Test: map all keys w/ :FM !
 
 0 U1                    ! No. of mapped keys !
@@ -19,7 +45,7 @@
     . U3                            ! Save current position in Q-register 3 !
     @I\:@FM"\                       ! Insert start of FM command !
     G1                              ! Add in name of key !
-    @I\":@^A'[\                     ! Insert start of ^A command !
+    @I\"@^A'[\                     ! Insert start of ^A command !
     G1                              ! Insert name of string !
     @I\]'"\                         ! Insert end of ^A command !
     Q3,. X4                         ! Copy everything to Q-register 4 !
@@ -33,7 +59,7 @@
         '
         :G1                         ! Print name of key !
         ^^]^T                       ! Terminate the announcement !
-        13^T 10^T                   ! Add a CRLF !
+        MZ                          ! End the line !
     '
     Q4 "N %1 | %2 '                 ! Increment success/failure count !
 $                                   ! Q-register 2 is complete now !
@@ -67,7 +93,8 @@ $                                   ! Q-register 2 is complete now !
 
 Q0&2 "E                             ! Don't print results if bit 1 is set !
     Q1 :@=/%d key/ Q1-1 "N ^^s^T ' @^A/ mapped, /
-    Q2 :@=/%d key/ Q2-1 "N ^^s^T ' :@^A/ undefined/
+    Q2 :@=/%d key/ Q2-1 "N ^^s^T ' @^A/ undefined/
+    MZ
 '
 
 ! Test: conditionally unmap keys w/ FM !
@@ -83,5 +110,7 @@ Q0&4 "N                             ! Unmap standard keys if bit 2 is set !
     @FM/PGDN//
 '
 
-:@^A/!PASS!/
+@^A/!PASS!/ MZ
+
+EK HK EX
 

@@ -19,5 +19,5 @@
 @^A/value = /  123 ===              ! Test:  123=== in hexadecimal !
 @^A/value = / -456 ===              ! Test: -456=== in hexadecimal !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

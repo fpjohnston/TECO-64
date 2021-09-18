@@ -7,6 +7,6 @@
 ! Test: library pi.tec macro !
 
 50,98 @EI/pi/
-:@^A/!PASS!/
+@^A/!PASS!/
 ^C
 

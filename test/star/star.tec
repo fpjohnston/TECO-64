@@ -4,6 +4,6 @@
 ! Execution: Redirect !
 ! Expect: PASS [star.log] !
 
-:@^A/hello, world!/*A           ! Test: save command string in Q-register !
+@^A/hello, world!/*A           ! Test: save command string in Q-register !
 !PASS!
 ^C^C

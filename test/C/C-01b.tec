@@ -51,5 +51,5 @@ Z+1 C                           ! Test: nC, where n > following chrs. !
 
 ::^C
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

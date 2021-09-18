@@ -6,7 +6,7 @@
 
 HK
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 EX                                  ! Test: EX w/ empty edit buffer !
 

@@ -4,7 +4,33 @@
 ! Execution: Standard !
 ! Expect: PASS [digits-03.log] !
 
-:@^A/Testing base 10/
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
+
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
+
+10:@^UY//
+:@^UZ/ 10^T/
+
+@^A/Testing base 10/ ^D MZ
 
 ( 00) UA QA:@=/%d /                 ! Test: all decimal digits !
 ( 11) UA QA:@=/%d /
@@ -17,7 +43,7 @@
 ( 88) UA QA:@=/%d /
 ( 99) UA QA @=/%d /
 
-:@^A/Testing base 8/
+@^A/Testing base 8/ ^D MZ
 
 (000) UA QA:@=/%o /                 ! Test: all octal digits !
 (011) UA QA:@=/%o /
@@ -28,7 +54,7 @@
 (066) UA QA:@=/%o /
 (077) UA QA @=/%o /
 
-:@^A/Testing base 16/
+@^A/Testing base 16/ ^D MZ
 
 (0x00) UA QA:@=/%x /                ! Test: all hexadecimal digits !
 (0x11) UA QA:@=/%x /
@@ -64,4 +90,7 @@
 (0Xee) UA QA:@=/%x /
 (0Xff) UA QA @=/%x /
 
-:@^A/!PASS!/
+@^A/!PASS!/ MZ
+
+EK HK EX
+

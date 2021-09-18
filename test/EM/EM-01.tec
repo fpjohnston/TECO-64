@@ -4,6 +4,32 @@
 ! Execution: Standard !
 ! Expect: PASS [EM-01.log] !
 
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
+
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
+
+10:@^UY//
+:@^UZ/ 10^T/
+
 HK
 
 @^UA/   65   ^T     ! Comment !
@@ -13,22 +39,24 @@ HK
 /
 
 0 EMA                               ! Test: 0 EMA !
-:@^A/-----/
+@^A/-----/ MZ
 
 2 EMA                               ! Test: 2 EMA !
-:@^A/-----/
+@^A/-----/ MZ
 
 4 EMA                               ! Test: 4 EMA !
-:@^A/-----/
+@^A/-----/ MZ
 
 16 EMA                              ! Test: 16 EMA !
-:@^A/-----/
+@^A/-----/ MZ
 
 32 EMA                              ! Test: 32 EMA !
-:@^A/-----/
+@^A/-----/ MZ
 
 -1 EMA                              ! Test: -1 EMA !
-:@^A/-----/
+@^A/-----/ MZ
 
-:@^A/!PASS!/
+@^A/!PASS!/ MZ
+
+EK HK EX
 

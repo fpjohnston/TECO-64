@@ -12,5 +12,5 @@ HK
 
 0,Z+1 FU                            ! Test: m,nFU w/ n > Z !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

@@ -6,7 +6,7 @@
 
 QA "E 0,32 E1 | 32,0 E1 '
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 @EI//                               ! Test: @EI// !
 

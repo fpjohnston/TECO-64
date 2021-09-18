@@ -16,5 +16,5 @@ Y                                   ! Test: yank w/ protection !
 
 HK
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

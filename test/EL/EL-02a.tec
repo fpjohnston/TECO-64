@@ -10,7 +10,7 @@
 
 @EL//                               ! Test: close log file !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
 EK HK
 

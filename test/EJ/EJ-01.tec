@@ -54,7 +54,7 @@ QN-32 "N
 '
 
 QW-QN "L
-    :@^A/Numeric argument size is < processor word size/
+    @^A/Numeric argument size is < processor word size/
     %F
 '
 
@@ -62,5 +62,5 @@ QF "N
     ::^C
 '
 
-:@^A/!PASS!/
+@^A/!PASS!/
 

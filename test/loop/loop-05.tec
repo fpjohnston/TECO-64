@@ -4,15 +4,41 @@
 ! Execution: Standard !
 ! Expect: PASS [loop-05.log] !
 
+EO - 100 "L
+    -1 EJ - 1024 "E                 ! TECO-32 !
+        3 UZ                        ! CR/LF, -P !
+    |                               ! Unknown or unsupported TECO !
+        @^A/Unknown TECO: EO=/
+        EO :=
+        @^A/, -1EJ=/
+        -1EJ =
+        ^C
+    '
+|
+    EO - 200 "L                     ! TECO C !
+        0 UZ                        ! LF, no -P !
+    |                               ! TECO-64 !
+        7 UZ                        ! LF, -P, ext. features !
+    '
+'
+
+QZ&1 "N
+    13@^UY//
+    @^UZ/ 13^T/
+'
+
+10:@^UY//
+:@^UZ/ 10^T/
+
 0 < ::^C >                          ! Test: 0 < > !
 
 -1 < ::^C >                         ! Test: -1 < > !
 
-1 < :@^A/1 iteration/ >             ! Test: 1 < > !
+1 < @^A/1 iteration/ MZ >           ! Test: 1 < > !
 
-2 < :@^A/2 iterations/ >            ! Test: 2 < > !
+2 < @^A/2 iterations/ MZ >          ! Test: 2 < > !
 
-3 < :@^A/3 iterations/ >            ! Test: 3 < > !
+3 < @^A/3 iterations/ MZ >          ! Test: 3 < > !
 
-:@^A/!PASS!/
+@^A/!PASS!/
 
