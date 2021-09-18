@@ -39,7 +39,6 @@ use File::Slurp;
 
 #  Set up basic TECO command we will issue for each test script.
 
-my $teco = 'teco -n -I"\'0,128ET\'"';
 my %dirs;
 my $okay   = q{};
 my $nscripts = 0;
@@ -339,14 +338,15 @@ sub run_test
     my ( $file, $options, $execution ) = @_;
     my $command;
     my $output;
+    my $teco = 'teco -n -I"\'0,128ET\'"' . " $options";
 
     if ( $execution =~ /Standard/ )
     {
-        $command = "$teco $options -X -E $file";
+        $command = "$teco -X -E $file";
     }
     elsif ( $execution =~ /Redirect/ )
     {
-        $command = "$teco $options < $file";
+        $command = "$teco < $file";
     }
     else
     {

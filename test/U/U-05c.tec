@@ -7,8 +7,11 @@
 
 :UN                                 ! Test: load Q-registers w/ defaults !
 :UM
+
 QM :@=/QM=%d: /
 QN :@=/QN=%d: /
 
 :@^A/!PASS!/
-^[^[
+
+EK HK EX
+

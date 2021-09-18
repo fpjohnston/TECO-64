@@ -17,7 +17,7 @@ Z < -QA A UB QB ^T %A >         ! Test: nA for all chrs. backward !
 0J -1 A+1 UA QA "N ::^C '       ! Test: nA for chr. < B !
 ZJ  1 A+1 UA QA "N ::^C '       ! Test: nA for chr. > Z !
 
-HK
+@^A/!PASS!/ 13^T 10^T
 
-:@^A/!PASS!/
+EK HK EX
 

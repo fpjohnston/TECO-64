@@ -6,8 +6,11 @@
 ! Options: -A 123 !
 
 :UN                                 ! Test: load Q-register w/ default !
+
 QN
 @:=/QN=%d: /
 
 :@^A/!PASS!/
-^[^[
+
+EK HK EX
+

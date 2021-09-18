@@ -32,7 +32,9 @@ A                                   ! Test: append 2nd page to buffer !
 
 Z-(QJ * QL * 2) "N ::^C '
 
-HT HK
+HT
 
-:@^A/!PASS!/
+@^A/!PASS!/ 13^T 10^T
+
+EK HK EX
 
