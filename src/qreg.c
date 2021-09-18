@@ -561,10 +561,18 @@ bool push_qreg(int qindex)
     savedq->qreg.text.size = qreg->text.size;
     savedq->qreg.text.pos  = qreg->text.pos;
     savedq->qreg.text.len  = qreg->text.len;
-    savedq->qreg.text.data = alloc_mem(savedq->qreg.text.size);
 
-    memcpy(savedq->qreg.text.data, qreg->text.data,
-           (size_t)savedq->qreg.text.size);
+    if (savedq->qreg.text.size == 0)
+    {
+        savedq->qreg.text.data = NULL;
+    }
+    else
+    {
+        savedq->qreg.text.data = alloc_mem(savedq->qreg.text.size);
+
+        memcpy(savedq->qreg.text.data, qreg->text.data,
+               (size_t)savedq->qreg.text.size);
+    }
 
     savedq->next = list_head;
 
