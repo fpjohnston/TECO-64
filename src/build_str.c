@@ -162,7 +162,7 @@ tstring build_string(const char *src, uint_t len)
                             throw(E_MAX); // Internal program limit reached
                         }
 
-                        memcpy(next, src, (size_t)nbytes);
+                        memcpy(next, last_file, (size_t)nbytes);
 
                         next += nbytes, pos += nbytes;
 
