@@ -496,15 +496,15 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
         }
     }
 
-    // If we allowing paired text delimiters, then the first delimiter
+    // If we are allowing paired text delimiters, then the first delimiter
     // cannot be a closing parenthesis, bracket, or brace.
 
-    if (strchr(")]}", cmd->delim) != NULL && f.e1.text)
+    if (strchr(")>]}", cmd->delim) != NULL && f.e1.text)
     {
         throw(E_TXT, cmd->delim);       // Invalid text delimiter
     }
 
-    if (strchr("([{", cmd->delim) == NULL || !f.e1.text)
+    if (strchr("(<[{", cmd->delim) == NULL || !f.e1.text)
     {
         scan_text(cmd->delim, &cmd->text1);
 
@@ -518,12 +518,13 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
     // Here if user wants to delimit text string(s) with paired parentheses,
     // brackets, or braces. This means the text strings may be of the form
-    // (xxx), [xxx], or {xxx}, and may include leading or trailing whitespace,
-    // allowing commands such as @S {foo} or @FS [foo] [baz] or @^A (foo).
-    // Note that if a command allows two text arguments, the second must be
-    // delimited by the same character pair as the first.
+    // (xxx), <xxx>, [xxx], or {xxx}, and may include leading or trailing
+    // whitespace, allowing commands such as @S {foo}, @FS [foo] [baz],
+    // @S<foobaz>, or @^A (foo). Note that if a command allows two text
+    // arguments, the second must be delimited by the same character pair
+    // as the first.
 
-    const char *end = strchr("()[]{}", cmd->delim);
+    const char *end = strchr("()<>[]{}", cmd->delim);
 
     assert(end != NULL);
 
@@ -538,7 +539,7 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
         return;
     }
 
-    // Skip any whitespace after ')', ']', or '}'
+    // Skip any whitespace after ')', '>', ']', or '}'
 
     int c;
 
