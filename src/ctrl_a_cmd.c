@@ -76,7 +76,7 @@ bool scan_ctrl_A(struct cmd *cmd)
     reject_m(cmd->m_set);
     reject_n(cmd->n_set);
     reject_dcolon(cmd->dcolon);
-    scan_texts(cmd, 1, ESC);
+    scan_texts(cmd, 1, CTRL_A);
 
     return false;
 }

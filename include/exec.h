@@ -56,7 +56,6 @@ struct cmd
     bool colon;                     ///< : found
     bool dcolon;                    ///< :: found
     bool atsign;                    ///< @ found
-    char delim;                     ///< Delimiter for @ modifier
     tstring text1;                  ///< 1st text string
     tstring text2;                  ///< 2nd text string
 };

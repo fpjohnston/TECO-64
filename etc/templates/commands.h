@@ -59,11 +59,9 @@ struct cmd_table
 
 };
 
-///
-///  @var    cmd_table
-///
-///  @brief  Dispatch table, defining functions to scan and execute commands.
-///
+#define NO_ARGS     (bool)false     ///< m & n args are not preserved by command
+
+#define MN_ARGS     (bool)true      ///< m & n args are preserved by command
 
 /// @def    ENTRY(chr, scan, exec)
 /// @brief  Defines entries in command table.
@@ -77,6 +75,12 @@ struct cmd_table
 #define ENTRY(chr, scan, exec, mn) [chr] = { scan, exec, mn }
 
 #endif
+
+///
+///  @var    cmd_table
+///
+///  @brief  Dispatch table, defining functions to scan and execute commands.
+///
 
 static const struct cmd_table cmd_table[] =
 {

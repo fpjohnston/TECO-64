@@ -314,11 +314,11 @@ sub parse_commands
             my $name    = $command->getAttribute('name');
             my $scan    = $command->getAttribute('scan');
             my $exec    = $command->getAttribute('exec');
-            my $mn_args = 'false';
+            my $mn_args = 'NO_ARGS';
 
             if ( defined $exec && $exec =~ / (.+) ! /msx )
             {
-                $mn_args = 'true';
+                $mn_args = 'MN_ARGS';
                 $exec =~ s/ (.+) ! /$1/msx;
             }
 

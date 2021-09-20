@@ -61,7 +61,6 @@ const struct cmd null_cmd =
     .colon  = false,
     .dcolon = false,
     .atsign = false,
-    .delim  = ESC,
     .text1  = { .data = NULL, .len = 0 },
     .text2  = { .data = NULL, .len = 0 },
 };
@@ -461,15 +460,6 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 {
     assert(cmd != NULL);
 
-    if (cmd->c1 == CTRL_A)
-    {
-        cmd->delim = CTRL_A;
-    }
-    else
-    {
-        cmd->delim = (char)delim;
-    }
-
     // If the user specified the at-sign modifier, then skip any whitespace
     // between the command and the delimiter.
 
@@ -488,7 +478,7 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
         {
             trace_cbuf(c);
 
-            cmd->delim = (char)c;
+            delim = (char)c;
         }
         else
         {
@@ -499,18 +489,18 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
     // If we are allowing paired text delimiters, then the first delimiter
     // cannot be a closing parenthesis, bracket, or brace.
 
-    if (strchr(")>]}", cmd->delim) != NULL && f.e1.text)
+    if (strchr(")>]}", delim) != NULL && f.e1.text)
     {
-        throw(E_TXT, cmd->delim);       // Invalid text delimiter
+        throw(E_TXT, delim);            // Invalid text delimiter
     }
 
-    if (strchr("(<[{", cmd->delim) == NULL || !f.e1.text)
+    if (strchr("(<[{", delim) == NULL || !f.e1.text)
     {
-        scan_text(cmd->delim, &cmd->text1);
+        scan_text(delim, &cmd->text1);
 
         if (ntexts == 2)
         {
-            scan_text(cmd->delim, &cmd->text2);
+            scan_text(delim, &cmd->text2);
         }
 
         return;
@@ -524,7 +514,7 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
     // arguments, the second must be delimited by the same character pair
     // as the first.
 
-    const char *end = strchr("()<>[]{}", cmd->delim);
+    const char *end = strchr("()<>[]{}", delim);
 
     assert(end != NULL);
 
@@ -550,7 +540,7 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
     c = require_cbuf();                 // Get text string delimiter
 
-    if (c != cmd->delim)                // Must be same delimiter
+    if (c != delim)                     // Must be same delimiter
     {
         throw(E_TXT, c);                // Invalid text delimiter
     }
