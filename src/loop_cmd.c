@@ -430,7 +430,7 @@ bool scan_gt(struct cmd *cmd)
     }
 
     // The following is necessary to handle the situation where a '>' command
-    // is a relational operator (or part therefore) and not the end of a loop.
+    // is a relational operator (or part of one) and not the end of a loop.
 
     if (cmd->n_set)
     {
