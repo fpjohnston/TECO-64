@@ -30,7 +30,7 @@ use warnings;
 use version; our $VERSION = '1.0.0';
 
 use Carp;
-use Cwd qw(getcwd);
+use Cwd qw(getcwd abs_path);
 use Getopt::Long;
 use File::Basename;
 use File::Find;
@@ -43,6 +43,7 @@ my %dirs;
 my $okay   = q{};
 my $nscripts = 0;
 my $all_tests = 0;
+my $auxdir = dirname(abs_path($0)) . '/aux';
 
 #
 #  Parse our command-line options
@@ -181,6 +182,37 @@ sub check_tests
     }
 
     return;
+}
+
+sub make_test
+{
+    my ($file) = @_;
+    my @lines = read_file($file);
+    my $dir = dirname($0);
+
+    $file = "/tmp/$file";
+
+    open(FH, ">", $file) or croak "Can't open output file $file";
+
+    foreach my $line (@lines)
+    {
+        if ( $line =~ /! \s Include: \s (.+) \s !/msx )
+        {
+            my $contents = read_file("$auxdir/$1");
+
+            print FH $contents;
+        }
+        else
+        {
+            print FH $line;
+        }
+    }
+
+    print FH "\e\e";                    # End macro with double ESCape
+
+    close(FH);
+
+    return $file;
 }
 
 sub open_dir
@@ -340,6 +372,8 @@ sub run_test
     my $output;
     my $teco = 'teco -n -I"\'0,128ET\'"' . " $options";
 
+    $file = make_test($file);
+
     if ( $execution =~ /Standard/ )
     {
         $command = "$teco -X -E $file";
@@ -358,7 +392,7 @@ sub run_test
     # Use special environment variables for :EG commands so we don't have
     # to guess how the user might have set them up.
 
-    if ( $file =~ /^EG/ms )
+    if ( $file =~ /EG-\d\d\.tec/ms )
     {
         local $ENV{TECO_INIT}    = 'TECO_INIT';
         local $ENV{TECO_LIBRARY} = 'TECO_LIBRARY';

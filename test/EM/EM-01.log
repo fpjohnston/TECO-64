@@ -2,15 +2,21 @@
 
 66 ^T               !! Another comment
 
------65^T! Comment !
+-----
+65^T! Comment !
 66^T!! Another comment
------   65   ^T     ! Comment !66 ^T               !! Another comment
------   65   ^T     ! Comment !
+-----
+   65   ^T     ! Comment !66 ^T               !! Another comment
+-----
+   65   ^T     ! Comment !
 
 66 ^T               
 
------   65   ^T     ! Comment !
+-----
+   65   ^T     ! Comment !
 
 66 ^T               !! Another comment
 
------65^T66^T-----!PASS!
+-----
+65^T66^T-----
+!PASS!

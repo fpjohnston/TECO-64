@@ -4,35 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS [_A-02.log] !
 
-0 U.Z
-
-EO - 100 "L
-    -1 EJ - 1024 "E                 ! TECO-32 !
-        1 U.Z                       ! -P !
-        @^U.Z/ 13^T 10^T/           ! Set up macro to print CR/LF !
-        13@^UY// 10:@^UY//          ! Set up macro to insert CR/LF !
-    |                               ! Unknown or unsupported TECO !
-        @^A/Unknown TECO: EO=/
-        EO :=
-        @^A/, -1EJ=/
-        -1EJ =
-        ^C
-    '
-|
-    EO - 200 "L                     ! TECO C !
-        0 U.Z                       ! No -P !
-        @^U.Z/ 10^T/                ! Set up macro to print LF !
-        10@^UY//                    ! Set up macro to insert LF !
-    |                               ! TECO-64 !
-        3 U.Z                       ! -P, ext. features !
-        @^U.Z/ 10^T/                ! Set up macro to print LF !
-        10@^UY//                    ! Set up macro to insert LF !
-    '
-'
+! Include: setup-01.tec !
 
 :@^A/hello, world!/                 ! Test: ^A w/ colon !
 
-@^A/!PASS!/ MZ
-
-EK HK EX
-
+! Include: cleanup-01.tec !

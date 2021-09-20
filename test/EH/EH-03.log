@@ -11,3 +11,5 @@ EH=                                 ! Test: standard error message !
 2
 ?FNF   File not found 'FOO'
 *
+*
+*

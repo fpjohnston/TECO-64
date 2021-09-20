@@ -1,0 +1,9 @@
+! Test succeeded, exit macro !
+
+EK                                      ! Kill any edit !
+
+HK                                      ! Delete text in edit buffer !
+
+@^A/!PASS!/ M.Z                         ! Tell caller we succeeded !
+
+EX                                      ! Close any files, and exit !
