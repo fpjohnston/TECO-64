@@ -2,34 +2,27 @@
 
 0,128 ET                                ! Abort if error occurs !
 
-0 UZ                                    ! QZ is a bit-encoded feature flag !
-
 EO - 100 "L
     -1 EJ - 1024 "E                     ! TECO-32 !
         1 UZ                            ! -P !
-        @^UZ/ ^D 13^T 10^T/             ! Set up macro to print CR/LF !
-        13@^UY// 10:@^UY//              ! Set up macro to insert CR/LF !
     |                                   ! Unknown or unsupported TECO !
-        @^A/Unknown TECO: EO=/          ! But identify what we know about it !
-        EO :=
-        @^A/, -1EJ=/
-        -1EJ =
-        ^C
+        0 UZ                            ! Assume no -P or ext. features !
     '
+    13@^UY// 10:@^UY//                  ! Set up macro to insert CR/LF !
 |
     EO - 200 "L                         ! TECO C !
         0 UZ                            ! No -P !
-        @^UZ/ ^D 10^T/                  ! Set up macro to print LF !
         10@^UY//                        ! Set up macro to insert LF !
     |                                   ! TECO-64 !
         3 UZ                            ! -P, ext. features !
-        @^UZ/ ^D 10^T/                  ! Set up macro to print LF !
         10@^UY//                        ! Set up macro to insert LF !
     '
 '
 
-[Z ].Z
+@^UZ/ ^D 13^T 10^T/                     ! Set up macro to print CR/LF !
 
-HK                                      ! Clear the buffer !
+@^A/Starting TECO v/ EO:= @^A/ test/ MZ
+
+HK                                      ! Clear the edit buffer !
 
 ! Start of test !

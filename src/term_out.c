@@ -372,6 +372,14 @@ static void tputc(int c, int input)
 
 void type_out(int c)
 {
+    if (c == CRLF)
+    {
+        tputc(CR, false);
+        tputc(LF, false);
+
+        return;
+    }
+
     c &= 0xFF;                          // Ensure we only print 8 bits
 
     if (f.et.image)
@@ -392,7 +400,6 @@ void type_out(int c)
         tputc('\'', false);
         tputc(c, false);
     }
-
     else if (isprint(c))
     {
         tputc(c, false);
@@ -412,15 +419,9 @@ void type_out(int c)
                 }
 
                 break;
-
-            case LF:
-                if (!f.et.image && !f.e0.o_redir)
-                {
-                    tputc(CR, false);   // Convert LF to CR/LF
-                }
-                //lint -fallthrough
-
+            
             case BS:
+            case LF:
             case VT:
             case FF:
             case CR:

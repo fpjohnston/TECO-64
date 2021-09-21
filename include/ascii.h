@@ -33,7 +33,8 @@
 
 enum ascii
 {
-    NUL     = 0,
+    CRLF = -1,                          ///< CR/LF combination
+    NUL,
     CTRL_A,
     CTRL_B,
     CTRL_C,
@@ -77,10 +78,5 @@ enum ascii
     ACCENT  = '`',                      ///< Accent grave
     DEL     = 127                       ///< DELETE/RUBOUT
 };
-
-///  @var    CRLF
-///  @brief  Special character used to print CR/LF on terminal.
-
-#define CRLF        (CR | (LF << 8))
 
 #endif  // !defined(_ASCII_H)

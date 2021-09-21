@@ -4,7 +4,10 @@
 ! Execution: Standard !
 ! Expect: ?FNF [FNF.log] !
  
+! Include: setup-01.tec !
+
 @^UA{baz}                           ! Name of non-existent input file !
 
 @ER/^EQA/                           ! Test: open file for read !
-
+
+! Include: cleanup-01.tec !

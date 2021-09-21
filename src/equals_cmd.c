@@ -187,7 +187,7 @@ void exec_equals(struct cmd *cmd)
 
     if (!cmd->colon)                    // Suppress CRLF?
     {
-        type_out(LF);
+        type_out(CRLF);
     }
 }
 

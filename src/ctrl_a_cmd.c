@@ -57,7 +57,7 @@ void exec_ctrl_A(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        type_out(LF);
+        type_out(CRLF);
     }
 }
 
