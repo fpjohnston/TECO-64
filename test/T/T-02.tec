@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS [T-02.log] !
 
-HK
+! Include: setup-01.tec !
 
 @I/Jabberwocky
 by Lewis Carroll
@@ -82,9 +82,4 @@ T                                   ! Test: T in middle of line !
 @^A/-----/ 13^T 10^T
 621,774 T                           ! Test: m,nT !
 
-HK
-
-@^A/!PASS!/
-
-^C
-
+! Include: cleanup-01.tec !

@@ -185,9 +185,10 @@ void exec_equals(struct cmd *cmd)
 
     tprint(format, cmd->n_arg);
 
-    if (!cmd->colon)                    // Suppress CRLF?
+    if (!cmd->colon)                    // Suppress CR/LF?
     {
-        type_out(CRLF);
+        type_out(CR);
+        type_out(LF);
     }
 }
 

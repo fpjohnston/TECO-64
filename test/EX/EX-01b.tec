@@ -4,11 +4,9 @@
 ! Execution: Standard !
 ! Expect: ?NFO !
 
-0,64 E3                             ! Suppress informational messages !
+@EZ{touch /tmp/TECO.lis}            ! Make sure the temp file exists !
 
-@EZ{touch /tmp/foo}                 ! Make sure the temp file exists !
-
-@ER{/tmp/foo}                       ! Open the file for input !
+@ER{/tmp/TECO.lis}                  ! Open the file for input !
 
 @I/abcdef/
 

@@ -354,7 +354,7 @@ int getc_term(bool wait)
 
     f.e0.ctrl_c = false;                // Normal character, not CTRL/C
 
-    if (f.e3.icrlf && c == LF)
+    if (f.e3.CR_in && c == LF)
     {
         LF_pending = true;
 

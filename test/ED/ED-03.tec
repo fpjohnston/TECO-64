@@ -4,8 +4,6 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-0,64 E3
-
 HK
 
 @I/123 456 789/

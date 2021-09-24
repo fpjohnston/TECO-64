@@ -5,7 +5,6 @@
 ! Expect: PASS !
 
 1,0 E3
-0,64 E3
 
 HK
 
@@ -20,11 +19,11 @@ HK
 @I/the/       10I 12I
 @I/borogoves/ 10I 12I
 
-:@EW{/tmp/baz} "U ::^C '
+:@EW{/tmp/TECO-01.lis} "U ::^C '
 
 EC HK
 
-:@EB{/tmp/baz} "U ::^C '
+:@EB{/tmp/TECO-01.lis} "U ::^C '
 
 10 P
 

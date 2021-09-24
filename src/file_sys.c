@@ -339,7 +339,7 @@ void read_memory(char *p, uint len)
 
         if (fp == NULL)
         {
-            if (errno != ENOENT && errno != ENODEV && !f.e3.noinfo)
+            if (errno != ENOENT && errno != ENODEV)
             {
                 tprint("%%Can't open memory file '%s'\n", teco_memory);
             }
@@ -468,10 +468,7 @@ void write_memory(const char *file)
 
     if ((fp = fopen(teco_memory, "w")) == NULL)
     {
-        if (!f.e3.noinfo)
-        {
-            tprint("%%Can't open memory file '%s'\n", teco_memory);
-        }
+        tprint("%%Can't open memory file '%s'\n", teco_memory);
 
         return;
     }

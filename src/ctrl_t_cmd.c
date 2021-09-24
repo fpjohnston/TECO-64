@@ -75,7 +75,7 @@ void exec_ctrl_T(struct cmd *cmd)
             }
             else
             {
-                type_out(CRLF);
+                type_out(NL);
             }
 
             f.et.image = saved_image;

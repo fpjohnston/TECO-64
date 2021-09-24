@@ -4,11 +4,10 @@
 ! Execution: Standard !
 ! Expect: PASS [ubar-01.log] !
 
-1,0 E3
-0,64 E3
-0,2 ED
+! Include: setup-01.tec !
 
-HK
+1,0 E3
+0,2 ED
 
 10 <
     @I/line /
@@ -17,11 +16,11 @@ HK
     13@I// 10@I// 12@I//
 >
 
-:@EW{/tmp/baz} "U ::^C '
+:@EW{/tmp/TECO-01.lis} "U ::^C '
 
 EC
 
-:@EB{/tmp/baz} "U ::^C '
+:@EB{/tmp/TECO-01.lis} "U ::^C '
 
 :@_/line 5/                         ! Test: _ !
 "U ::^C '
@@ -30,9 +29,8 @@ EC
 
 0,1 E3
 
-:@ER{/tmp/baz} "U ::^C ' Y
+:@ER{/tmp/TECO-01.lis} "U ::^C ' Y
 
-HT HK EC
+HT
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

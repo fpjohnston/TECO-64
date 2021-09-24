@@ -48,7 +48,7 @@ struct page
     char *addr;                         ///< Address of page
     uint_t size;                        ///< Size of page in bytes
     uint_t cr;                          ///< No. of added CRs in page
-    bool ocrlf;                         ///< Copy of f.e3.ocrlf
+    bool CR_out;                        ///< Copy of f.e3.CR_out
     bool ff;                            ///< Append form feed to page
 };
 
@@ -189,12 +189,12 @@ static struct page *make_page(int_t start, int_t end, bool ff)
 {
     struct page *page = alloc_mem((uint_t)sizeof(*page));
 
-    page->next  = page->prev = NULL;
-    page->size  = (uint)(end - start);
-    page->cr    = 0;
-    page->ocrlf = f.e3.ocrlf;
-    page->ff    = ff;
-    page->addr  = alloc_mem(page->size);
+    page->next   = page->prev = NULL;
+    page->size   = (uint)(end - start);
+    page->cr     = 0;
+    page->CR_out = f.e3.CR_out;
+    page->ff     = ff;
+    page->addr   = alloc_mem(page->size);
 
     char *p  = page->addr;
     char last = NUL;
@@ -208,7 +208,7 @@ static struct page *make_page(int_t start, int_t end, bool ff)
             break;
         }
 
-        if (c == LF && last != CR && page->ocrlf)
+        if (c == LF && last != CR && page->CR_out)
         {
             ++page->cr;
         }
@@ -501,7 +501,7 @@ static void write_page(FILE *fp, struct page *page)
     {
         char c = *src++;
 
-        if (c == LF && last != CR && page->ocrlf)
+        if (c == LF && last != CR && page->CR_out)
         {
             *p++ = CR;
         }

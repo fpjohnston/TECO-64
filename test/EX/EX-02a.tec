@@ -4,9 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-0,64 E3                             ! Suppress informational messages !
-
-@EW{/tmp/foo}                       ! Open the file for output !
+@EW{/tmp/TECO-01.lis}               ! Open the file for output !
 
 @^A/!PASS!/
 

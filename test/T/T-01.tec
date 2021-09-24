@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS [T-01.log] !
 
-HK
+! Include: setup-01.tec !
 
 @I/Jabberwocky
 by Lewis Carroll
@@ -47,9 +47,4 @@ All mimsy were the borogoves,
 
 HT                                  ! Test: HT !
 
-HK
-
-@^A/!PASS!/
-
-^C
-
+! Include: cleanup-01.tec !

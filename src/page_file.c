@@ -64,7 +64,7 @@ bool page_forward(FILE *fp, int_t start, int_t end, bool ff)
 
         // Translate LF to CR/LF if needed, unless last chr. was CR
 
-        if (c == LF && last != CR && f.e3.ocrlf)
+        if (c == LF && last != CR && f.e3.CR_out)
         {
             ++page.size;
         }
@@ -96,7 +96,7 @@ bool page_forward(FILE *fp, int_t start, int_t end, bool ff)
 
         // Translate LF to CR/LF if needed, unless last chr. was CR
 
-        if (c == LF && last != CR && f.e3.ocrlf)
+        if (c == LF && last != CR && f.e3.CR_out)
         {
             *p++ = CR;
         }

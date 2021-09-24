@@ -91,17 +91,19 @@ struct flags f =                    ///< Global flag variables
 
 #if     defined(__linux) || defined(__APPLE__)
 
-    .e3.icrlf = false,              // Use LF for input lines
-    .e3.ocrlf = false,              // Use LF for output lines
+    .e3.CR_in   = false,            // Use LF for input lines
+    .e3.CR_out  = false,            // Use LF for output lines
 
 #elif   defined(__win64) || defined(__vms)
 
-    .e3.icrlf = true,               // Use CR/LF for input lines
-    .e3.ocrlf = true,               // Use CR/LF for output lines
+    .e3.CR_in   = true,             // Use CR/LF for input lines
+    .e3.CR_out  = true,             // Use CR/LF for output lines
 
 #else
 #error  Unknown operating environment
 #endif
+
+    .e3.CR_type = true,             // Use CR/LF for typed lines
 
 #if   defined(__vms)
 

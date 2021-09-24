@@ -139,12 +139,12 @@ bool append_line(void)
             {
                 if (f.e3.smart && first_line)
                 {
-                    first_line = false;
-                    f.e3.icrlf = true;
-                    f.e3.ocrlf = true;
+                    first_line  = false;
+                    f.e3.CR_in  = true;
+                    f.e3.CR_out = true;
                 }
 
-                if (!f.e3.icrlf)
+                if (!f.e3.CR_in)
                 {
                     continue;
                 }
@@ -154,9 +154,9 @@ bool append_line(void)
         {
             if (f.e3.smart && first_line)
             {
-                first_line = false;
-                f.e3.icrlf = false;
-                f.e3.ocrlf = false;
+                first_line  = false;
+                f.e3.CR_in  = false;
+                f.e3.CR_out = false;
             }
         }
 

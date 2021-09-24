@@ -4,8 +4,9 @@
 ! Execution: Standard !
 ! Expect: ?SRH !
 
+! Include: setup-01.tec !
+
 1,0 E3
-0,64 E3
 0,2 ED
 
 HK
@@ -17,14 +18,17 @@ HK
     13@I// 10@I// 12@I//
 >
 
-:@EW{/tmp/baz} "U ::^C '
+:@EW{/tmp/TECO-01.lis} "U ::^C '
 
 EC
 
-:@EB{/tmp/baz} "U ::^C '
+:@EB{/tmp/TECO-01.lis} "U ::^C '
 
 5P
 
 -@_/foo/                            ! Test: -_ !
 "S ::^C '
-
+
+HT
+
+! Include: cleanup-01.tec !

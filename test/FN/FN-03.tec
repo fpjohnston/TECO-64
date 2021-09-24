@@ -5,7 +5,6 @@
 ! Expect: PASS [FN-03.log] !
 
 1,0 E3
-0,64 E3
 
 HK
 
@@ -16,11 +15,11 @@ HK
     13@I// 10@I// 12@I//
 >
 
-:@EW{/tmp/baz} "U ::^C '
+:@EW{/tmp/TECO-01.lis} "U ::^C '
 
 EC
 
-:@EB{/tmp/baz} "U ::^C '
+:@EB{/tmp/TECO-01.lis} "U ::^C '
 
 10 P
 
@@ -31,7 +30,7 @@ EC
 
 0,1 E3
 
-:@ER{/tmp/baz} "U ::^C ' Y
+:@ER{/tmp/TECO-01.lis} "U ::^C ' Y
 
 HT HK EC
 

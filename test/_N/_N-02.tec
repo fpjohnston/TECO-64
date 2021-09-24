@@ -2,23 +2,23 @@
 ! Commands: ^N !
 ! Requirements: None !
 ! Execution: Standard !
-! Expect: PASS [_N-01.log] !
+! Expect: PASS [_N-02.log] !
 
-@EZ{rm /tmp/foo; rm /tmp/baz}   ! Delete any existing files !
+! Include: setup-01.tec !
 
-:@EW{/tmp/foo} "U ::^C '        ! Create 1st temp file !
+:@EW{/tmp/TECO-01.lis} "U ::^C ' ! Create 1st temp file !
 
 @I/abcdef/ 10I                  ! Add some data !
 
 EC                              ! Write data and close file !
 
-:@EW{/tmp/baz} "U ::^C '        ! Create 2nd temp file !
+:@EW{/tmp/TECO-02.lis} "U ::^C ' ! Create 2nd temp file !
 
 @I/123456/ 10I                  ! Add some data !
 
 EC                              ! Write data and close file !
 
-:@ER{/tmp/foo} "U ::^C '        ! Open 1st file on primary stream !
+:@ER{/tmp/TECO-01.lis} "U ::^C ' ! Open 1st file on primary stream !
 
 ^N @=/^R^N=%d/                  ! Test: ^N after opening primary !
 
@@ -28,7 +28,7 @@ A
 
 EP                              ! Switch to secondary stream !
 
-:@ER{/tmp/baz} "U ::^C '        ! Open 2nd file on secondary stream !
+:@ER{/tmp/TECO-02.lis} "U ::^C '       ! Open 2nd file on secondary stream !
 
 ^N @=/^R^N=%d/                  ! Test: ^N after opening secondary !
 
@@ -49,7 +49,5 @@ EP                              ! Switch to secondary stream !
 EC
 
 HT
-HK
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

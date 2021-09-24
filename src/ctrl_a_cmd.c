@@ -49,15 +49,30 @@ void exec_ctrl_A(struct cmd *cmd)
     tstring text = build_string(cmd->text1.data, cmd->text1.len);
 
     const char *p = text.data;
+    int last = EOF;
 
     for (uint_t i = 0; i < text.len; ++i)
     {
-        type_out(*p++);
+        int c = *p++;
+
+        if (c == LF && f.e3.CR_type && last != CR)
+        {
+            type_out(CR);
+        }
+
+        type_out(c);
+
+        last = c;
     }
 
     if (cmd->colon)
     {
-        type_out(CRLF);
+        if (f.e3.CR_type && last != CR)
+        {
+            type_out(CR);
+        }
+
+        type_out(LF);
     }
 }
 

@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -116,6 +117,10 @@ static void exec_type(int_t m, int_t n)
         if (c == EOF)
         {
             break;
+        }
+        else if (c == LF && f.e3.CR_type)
+        {
+            type_out(CR);
         }
 
         type_out(c);

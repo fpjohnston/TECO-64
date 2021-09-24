@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@^UA{/tmp/foo}                      ! Name of output file !
+@^UA{/tmp/TECO-01.lis}              ! Name of output file !
 
 :@EW/^EQA/                          ! Test: open file for writing !
 

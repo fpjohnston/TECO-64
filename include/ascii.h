@@ -33,7 +33,7 @@
 
 enum ascii
 {
-    CRLF = -1,                          ///< CR/LF combination
+    NL = -1,                            ///< Newline (LF or CR/LF)
     NUL,
     CTRL_A,
     CTRL_B,

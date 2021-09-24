@@ -4,18 +4,17 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-0,64 E3
-1,0 E3
+! Include: setup-01.tec !
 
-HK
+1,0 E3
 
 @I/single/
 
-:@EW{/tmp/baz} "U ::^C '
+:@EW{/tmp/TECO-01.lis} "U ::^C '
 
 EC
 
-:@EB{/tmp/baz} "U ::^C '
+:@EB{/tmp/TECO-01.lis} "U ::^C '
 
 ^E "S ::^C '                        ! Test: ^E at beginning of file !
 
@@ -23,7 +22,4 @@ P ^E "S ::^C '                      ! Test: ^E after 1st page !
 
 P ^E "S ::^C '                      ! Test: ^E at end of file !
 
-EK HK EC
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

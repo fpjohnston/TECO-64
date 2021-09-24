@@ -4,13 +4,13 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@EW{/tmp/foo} 
+@EW{/tmp/TECO.lis} 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 EC
 
 @I/add some text to buffer to verify that :EY still works/
 
-@EB{/tmp/foo}
+@EB{/tmp/TECO.lis}
 
 2,0 ED
 

@@ -4,7 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS [A-02c.log] !
 
-0,64 E3                             ! Suppress informational messages !
+! Include: setup-01.tec !
+
 1,0 E3                              ! Disable FF as a regular character !
 
 0 UA
@@ -22,10 +23,10 @@ QI <
     12@I//
 >
 
-:@EW{/tmp/foo} "U ::^C '
+:@EW{/tmp/TECO-01.lis} "U ::^C '
 EC
 
-:@ER{/tmp/foo} "U ::^C '
+:@ER{/tmp/TECO-01.lis} "U ::^C '
 
 < :A; >                             ! Test: append pages to buffer !
 
@@ -33,7 +34,4 @@ Z-(QJ * QI * QL) "N ::^C '
 
 HT
 
-@^A/!PASS!/ 13^T 10^T
-
-EK HK EX
-
+! Include: cleanup-01.tec !

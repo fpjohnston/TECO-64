@@ -5,7 +5,6 @@
 ! Expect: PASS !
 
 1,0 E3
-0,64 E3
 
 HK
 
@@ -16,11 +15,11 @@ HK
 @I/slithy /   10I 12I
 @I/toves/     10I 12I
 
-:@EW{/tmp/baz} "U ::^C '
+:@EW{/tmp/TECO-01.lis} "U ::^C '
 
 EC
 
-:@EB{/tmp/baz} "U ::^C '
+:@EB{/tmp/TECO-01.lis} "U ::^C '
 
 :@N/slithy/ "U ::^C '               ! Test: N !
 

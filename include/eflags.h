@@ -121,12 +121,13 @@ union e3_flag
     {
         uint nopage  : 1;       ///< Don't use FF as page delimiter
         uint smart   : 1;       ///< Smart mode for line terminators
-        uint icrlf   : 1;       ///< Use CR/LF for input lines
-        uint ocrlf   : 1;       ///< Use CR/LF for output lines
+        uint CR_in   : 1;       ///< Convert CR/LF to LF reading input
+        uint CR_out  : 1;       ///< Convert LF to CR/LF writing output
         uint noin    : 1;       ///< Don't type input to log file
         uint noout   : 1;       ///< Don't type output to log file
-        uint noinfo  : 1;       ///< Suppress informational messages
+        uint         : 1;       ///< (unused)
         uint keepnul : 1;       ///< Discard NUL chrs. in input files
+        uint CR_type : 1;       ///< Convert LF to CR/LF on type out
     };
 };
 

@@ -234,7 +234,8 @@ static void print_error(int error, const char *err_str, const char *file_str)
         }
     }
 
-    type_out(CRLF);
+    type_out(CR);
+    type_out(LF);
 
     if (f.eh.verbose == 3)
     {
@@ -275,7 +276,8 @@ void print_verbose(int error)
     {
         if (pos + (int)strlen(token) > width)
         {
-            type_out(CRLF);
+            type_out(CR);
+            type_out(LF);
 
             pos = tprint("    ");
         }
@@ -284,7 +286,8 @@ void print_verbose(int error)
 
     } while ((token = strtok_r(NULL, " ", &saveptr)) != NULL);
 
-    type_out(CRLF);
+    type_out(CR);
+    type_out(LF);
 }
 
 

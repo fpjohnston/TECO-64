@@ -4,17 +4,15 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-0,64 E3
-
 HK
 
-:@EW{/tmp/baz} "U ::^C '
+:@EW{/tmp/TECO-01.lis} "U ::^C '
 
 @I/abc/
 
 EC
 
-:@EB{/tmp/baz} "U ::^C '
+:@EB{/tmp/TECO-01.lis} "U ::^C '
 
 @I/xyz/
 

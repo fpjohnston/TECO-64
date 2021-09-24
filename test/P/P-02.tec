@@ -4,9 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS [P-02.log] !
 
-0,64 E3
-
-HK
+! Include: setup-01.tec !
 
 @I/Jabberwocky
 by Lewis Carroll
@@ -47,7 +45,7 @@ All mimsy were the borogoves,
       And the mome raths outgrabe.
 /
 
-:@EW{/tmp/baz} "U ::^C '
+:@EW{/tmp/TECO-01.lis} "U ::^C '
 
 621,775 PW                          ! Test: m,nPW !
 
@@ -55,11 +53,8 @@ HK
 
 EC
 
-:@ER{/tmp/baz} "U ::^C ' Y
+:@ER{/tmp/TECO-01.lis} "U ::^C ' Y
 
 HT
-HK
-EC
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

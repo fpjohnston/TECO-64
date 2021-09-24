@@ -51,12 +51,12 @@ line 10 abcdefghijklmnopqrstuvwxyz 0123456789
 line 3 abcdefghijklmnopqrstuvwxyz 0123456789
 line 8 abcdefghijklmnopqrstuvwxyz 0123456789
 -----
-line 11 abcdefghijklmnopqrstuvwxyz 0123456789
-line 12 abcdefghijklmnopqrstuvwxyz 0123456789
-line 13 abcdefghijklmnopqrstuvwxyz 0123456789
-line 14 abcdefghijklmnopqrstuvwxyz 0123456789
-line 15 abcdefghijklmnopqrstuvwxyz 0123456789
+line 11 abcdefghijklmnopqrstuvwxyz 0123456789
+line 12 abcdefghijklmnopqrstuvwxyz 0123456789
+line 13 abcdefghijklmnopqrstuvwxyz 0123456789
+line 14 abcdefghijklmnopqrstuvwxyz 0123456789
+line 15 abcdefghijklmnopqrstuvwxyz 0123456789
 -----
-abcdefghijuvwxyz 0123456789
+abcdefghijuvwxyz 0123456789
 -----
 !PASS!

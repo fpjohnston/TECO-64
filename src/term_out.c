@@ -372,9 +372,13 @@ static void tputc(int c, int input)
 
 void type_out(int c)
 {
-    if (c == CRLF)
+    if (c == NL)
     {
-        tputc(CR, false);
+        if (f.e3.CR_type)
+        {
+            tputc(CR, false);
+        }
+
         tputc(LF, false);
 
         return;

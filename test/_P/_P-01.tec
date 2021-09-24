@@ -4,7 +4,6 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-0,64 E3
 1,0 E3
 
 HK
@@ -13,11 +12,11 @@ HK
 @I/page 2/ 12I
 @I/page 3/ 12I
 
-:@EW{/tmp/baz} "U ::^C '
+:@EW{/tmp/TECO-01.lis} "U ::^C '
 
 EC
 
-:@EB{/tmp/baz} "U ::^C '
+:@EB{/tmp/TECO-01.lis} "U ::^C '
 
 ^P-0 "N ::^C '                      ! Test: ^P !
 

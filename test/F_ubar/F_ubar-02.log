@@ -1,8 +1,9 @@
-line 4 abcdefghij--- FOO ---qrstuvwxyz 0123456789
-line 5 abcdefghijklmnopqrstuvwxyz 0123456789
-line 6 abcdefghijklmnopqrstuvwxyz 0123456789
-line 7 abcdefghijklmnopqrstuvwxyz 0123456789
-line 8 abcdefghijklmnopqrstuvwxyz 0123456789
-line 9 abcdefghijklmnopqrstuvwxyz 0123456789
-line 10 abcdefghijklmnopqrstuvwxyz 0123456789
+Starting TECO v200 test
+line 4 abcdefghij--- FOO ---qrstuvwxyz 0123456789
+line 5 abcdefghijklmnopqrstuvwxyz 0123456789
+line 6 abcdefghijklmnopqrstuvwxyz 0123456789
+line 7 abcdefghijklmnopqrstuvwxyz 0123456789
+line 8 abcdefghijklmnopqrstuvwxyz 0123456789
+line 9 abcdefghijklmnopqrstuvwxyz 0123456789
+line 10 abcdefghijklmnopqrstuvwxyz 0123456789
 !PASS!

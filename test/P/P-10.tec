@@ -4,20 +4,19 @@
 ! Execution: Standard !
 ! Expect: PASS [P-10.log] !
 
-0,64 E3
-1,0 E3
+! Include: setup-01.tec !
 
-HK
+1,0 E3
 
 @I/page 1/ 12I
 @I/page 2/ 12I
 @I/page 3/ 12I
 
-:@EW{/tmp/baz} "U ::^C '
+:@EW{/tmp/TECO-01.lis} "U ::^C '
 
 EC
 
-:@EB{/tmp/baz} "U ::^C '
+:@EB{/tmp/TECO-01.lis} "U ::^C '
 
 EY EY
 
@@ -27,9 +26,8 @@ EF HK EC
 
 0,1 E3
 
-:@ER{/tmp/baz} "UK ::^C ' Y
+:@ER{/tmp/TECO-01.lis} "UK ::^C ' Y
 
-HT HK EC
+HT
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

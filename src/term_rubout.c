@@ -176,7 +176,7 @@ static bool rubout_CR(void)
     }
     else if (!f.e0.display)
     {
-        if (f.e3.icrlf)
+        if (f.e3.CR_in)
         {
             tprint("\e[K");             // Clear to end of line
             retype_line(start_tbuf());  // Retype current line
@@ -262,7 +262,7 @@ static bool rubout_LF(void)
     {
         tprint("\e[F");                 // Move up 1 line
 
-        if (!f.e3.icrlf)
+        if (!f.e3.CR_in)
         {
             tprint("\e[K");             // Clear to end of line
             retype_line(start_tbuf());  // Retype current line

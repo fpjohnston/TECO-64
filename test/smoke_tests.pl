@@ -148,6 +148,7 @@ sub check_tests
         elsif ( defined $diff && $expected ne $output )
         {
             printf "%s %s -> DIFF\n", $report, $expect;
+            print "diff: $output\n";
         }
         elsif ($okay)
         {
@@ -388,6 +389,15 @@ sub run_test
 
         return q{};
     }
+
+    # Delete any temporary output files created by a previous script
+
+    unlink("/tmp/TECO-01.lis", "/tmp/TECO-02.lis");
+
+    # Create a zero-length temporary file for reading
+
+    open FH, ">/tmp/TECO.lis" or die "Can't create /tmp/TECO.lis: $!\n";
+    close FH;
 
     # Use special environment variables for :EG commands so we don't have
     # to guess how the user might have set them up.
