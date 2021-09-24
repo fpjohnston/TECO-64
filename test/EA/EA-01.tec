@@ -12,11 +12,11 @@
 
 @I/123456/ 10I                      ! Add some more data !
 
-:@EW{/tmp/TECO-01.lis} "U ::^C '    ! Create 1st temp file !
+:@EW|/tmp/TECO-01.lis| "U ::^C '    ! Create 1st temp file !
 
 EA                                  ! Test: switch to secondary output stream !
 
-:@EW{/tmp/TECO-02.lis} "U ::^C '    ! Create 2nd temp file !
+:@EW|/tmp/TECO-02.lis| "U ::^C '    ! Create 2nd temp file !
 
 2 < B,QA PW >                       ! Write data to secondary stream !
 
@@ -33,7 +33,7 @@ EA                                  ! Switch back to secondary output stream !
 
 EC                                  ! Close secondary stream !
 
-:@ER{/tmp/TECO-01.lis} "U ::^C ' Y  ! Open 1st temp file and read it in !
+:@ER|/tmp/TECO-01.lis| "U ::^C ' Y  ! Open 1st temp file and read it in !
 
 @^A/-----/ MZ
 
@@ -42,7 +42,7 @@ HK
 
 EC
 
-:@ER{/tmp/TECO-02.lis} "U ::^C ' Y  ! Open 2nd temp file and read it in !
+:@ER|/tmp/TECO-02.lis| "U ::^C ' Y  ! Open 2nd temp file and read it in !
 
 @^A/-----/ MZ
 

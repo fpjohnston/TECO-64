@@ -4,11 +4,11 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@EW{/tmp/TECO.lis} 
+@EW|/tmp/TECO.lis| 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 EC
 
-@EB{/tmp/TECO.lis}
+@EB|/tmp/TECO.lis|
 
 2,0 ED
 

@@ -6,7 +6,7 @@
 
 0 UF
 
-@^UA{
+@^UA\
     UA                              ! Index value for GOTO !
 
     QA @:=/Index = %d -> /
@@ -19,11 +19,11 @@
     !tag4! @^A/tag4  / QA MB @O/end/
 
     !end! 13^T 10^T
-}
+\
 
-@^UB{
+@^UB\
     UB QB - QA "N @^A/ (fail)/ %F | @^A/ (pass)/ '
-}
+\
 
 0 UI
 6 < QI MA %I >

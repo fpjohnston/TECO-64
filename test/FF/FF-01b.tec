@@ -4,5 +4,8 @@
 ! Execution: Standard !
 ! Expect: ?INA !
 
+! Include: setup-01.tec !
+
 ^^A@FF/FOO/                         ! Test: map commands to <CTRL/F>A !
-
+
+! Include: cleanup-01.tec !

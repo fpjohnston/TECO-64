@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@^UA{*.tec}
+@^UA|*.tec|
 
 :@EN/^EQA/                          ! Test: :@EN/file/ !
 "E

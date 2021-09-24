@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: ?ERR !
 
-@^UA{/dev/teco.log}                 ! Load output file name !
+@^UA|/dev/teco.log|                 ! Load output file name !
 
 EL^EQA                            ! Test: open log file !
 

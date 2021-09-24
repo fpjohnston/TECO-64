@@ -6,7 +6,7 @@
 
 ! Include: setup-01.tec !
 
-@^UA{/dev/foo}                      ! Name of output file !
+@^UA|/dev/foo|                      ! Name of output file !
 
 @EW/^EQA/                           ! Test: open file for write !
 

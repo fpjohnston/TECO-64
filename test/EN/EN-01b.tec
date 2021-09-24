@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: ?MAT !
 
-@^UA{*.foo}
+@^UA|*.foo|
 
 EN^EQA                            ! Test: ENfile` !
 

@@ -8,7 +8,28 @@
 
 ! Test: carriage return in command file !
 
-:@FS{foo}{baz} "U ::^C '
+
+:
+
+@
+
+
+FS
+
+
+
+{foo}
+
+
+
+
+{baz}
+
+
+
+
+
+ "U ::^C '
 
 HK
 

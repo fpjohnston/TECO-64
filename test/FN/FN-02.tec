@@ -15,11 +15,11 @@ HK
     13@I// @10I// 12@I//
 >
 
-:@EW{/tmp/TECO-01.lis} "U ::^C '
+:@EW|/tmp/TECO-01.lis| "U ::^C '
 
 EC
 
-:@EB{/tmp/TECO-01.lis} "U ::^C '
+:@EB|/tmp/TECO-01.lis| "U ::^C '
 
 4:@FN/klmnop/--- FOO ---/           ! Test: nFN !
 "U ::^C '
@@ -28,7 +28,7 @@ EC
 
 0,1 E3
 
-:@ER{/tmp/TECO-01.lis} "U ::^C ' Y
+:@ER|/tmp/TECO-01.lis| "U ::^C ' Y
 
 HT HK EC
 

@@ -15,11 +15,11 @@ HK
 @I/slithy /   10I 12I
 @I/toves/     10I 12I
 
-:@EW{/tmp/TECO-01.lis} "U ::^C '
+:@EW|/tmp/TECO-01.lis| "U ::^C '
 
 EC
 
-:@EB{/tmp/TECO-01.lis} "U ::^C '
+:@EB|/tmp/TECO-01.lis| "U ::^C '
 
 :@N/gyre/ "S ::^C '                 ! Test: N !
 

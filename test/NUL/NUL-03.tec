@@ -8,19 +8,19 @@
 
 @I/abc/ 10,0I @I/def/ 10I
 
-:@EW{/tmp/TECO-01.lis} "E ::^C '
+:@EW|/tmp/TECO-01.lis| "E ::^C '
 
 EC
 
 128,0 E3                            ! Test: discarding NUL input chrs. !
 
-:@ER{/tmp/TECO-01.lis} "E ::^C ' Y
+:@ER|/tmp/TECO-01.lis| "E ::^C ' Y
 
 Z-7 "N ::^C ' HK EC
 
 0,128 E3                            ! Test: keeping NUL input chrs. !
 
-:@ER{/tmp/TECO-01.lis} "E ::^C ' Y
+:@ER|/tmp/TECO-01.lis| "E ::^C ' Y
 
 Z-17 "N ::^C ' HK EC
 

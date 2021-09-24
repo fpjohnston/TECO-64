@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: ?FNF !
 
-@^UA{baz}                           ! Name of non-existent input file !
+@^UA|baz|                           ! Name of non-existent input file !
 
 @ER/^EQA/                           ! Test: open file for reading !
 

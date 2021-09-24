@@ -45,7 +45,7 @@ All mimsy were the borogoves,
       And the mome raths outgrabe.
 /
 
-:@EW{/tmp/TECO-01.lis} "U ::^C '
+:@EW|/tmp/TECO-01.lis| "U ::^C '
 
 621,775 P                           ! Test: m,nP !
 
@@ -53,7 +53,7 @@ HK
 
 EC
 
-:@ER{/tmp/TECO-01.lis} "U ::^C ' Y
+:@ER|/tmp/TECO-01.lis| "U ::^C ' Y
 
 HT
 

@@ -4,8 +4,8 @@
 ! Execution: Redirect !
 ! Expect: PASS !
 
-@^UA{/tmp/teco.log}         ! Name of log file we create !
-@^UB{EL-04.log}             ! Name of log file we compare against !
+@^UA|/tmp/teco.log|         ! Name of log file we create !
+@^UB|EL-04.log|             ! Name of log file we compare against !
 
 :@EL/^EQA/                  ! Test: open log file !
 

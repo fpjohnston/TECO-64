@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: ?XAB !
 
-@^UA{/dev/fubar}
+@^UA|/dev/fubar|
 
 @I/hello, world!/ 10I
 HXB HK

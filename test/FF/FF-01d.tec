@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ^^0:@FF/F1/                         ! Test: map command string to <CTRL/F>0 !
 "U ::^C '
 
@@ -40,5 +42,4 @@
 ^^::@FF/F1/                         ! Test: map command string to <CTRL/F>: !
 "S ::^C '
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@^UA{hello}
+@^UA|hello|
 
 :@EQB/^EQA/                         ! Test: :@EQq !
 

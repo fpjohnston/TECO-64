@@ -10,11 +10,11 @@
 
 @I/text/ 10I
 
-:@EW{/tmp/TECO-01.lis} "U ::^C '
+:@EW|/tmp/TECO-01.lis| "U ::^C '
 
 EC
 
-:@EB{/tmp/TECO-01.lis} "U ::^C '
+:@EB|/tmp/TECO-01.lis| "U ::^C '
 
 ^E "S ::^C '                        ! Test: ^E at beginning of file !
 
@@ -26,7 +26,7 @@ P ^E "S ::^C '                      ! Test: ^E at end of file !
 
 EC
 
-:@ER{/tmp/TECO-01.lis} "U ::^C ' Y
+:@ER|/tmp/TECO-01.lis| "U ::^C ' Y
 
 HT
 

@@ -11,42 +11,42 @@ HK
 
 ^^0 U.B
 ^^9 - Q.B + 1 <
-    @I{@^U}
+    @I|@^U|
     Q.B @I//
-    @I{/Q-register }
+    @I|/Q-register |
     Q.B @I//
-    @I{ text/ }
-    @I{10:@^U}
+    @I| text/ |
+    @I|10:@^U|
     Q.B @I//
-    @I{//}
+    @I|//|
     10@I//
     %.B
 >
 
 ^^a U.B
 ^^z - Q.B + 1 <
-    @I{@^U}
+    @I|@^U|
     Q.B @I//
-    @I{/Q-register }
+    @I|/Q-register |
     Q.B @I//
-    @I{ text/ }
-    @I{10:@^U}
+    @I| text/ |
+    @I|10:@^U|
     Q.B @I//
-    @I{//}
+    @I|//|
     10@I//
     %.B
 >
 
 ^^A U.B
 ^^Z - Q.B + 1 <
-    @I{@^U}
+    @I|@^U|
     Q.B @I//
-    @I{/Q-register }
+    @I|/Q-register |
     Q.B @I//
-    @I{ text/ }
-    @I{10:@^U}
+    @I| text/ |
+    @I|10:@^U|
     Q.B @I//
-    @I{//}
+    @I|//|
     10@I//
     %.B
 >

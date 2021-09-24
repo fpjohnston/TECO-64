@@ -6,7 +6,7 @@
 
 ! Try to match lower case letters (and special characters) !
 
-@I/`abcdefghijklmnopqrstuvwxyz{|}~/
+@I/`abcdefghijklmnopqrstuvwxyz|||~/
 
 1 ^X                                ! Test: 1^X !
 

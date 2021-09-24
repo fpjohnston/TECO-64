@@ -12,11 +12,11 @@
 @I/page 2/ 12I
 @I/page 3/ 12I
 
-:@EW{/tmp/TECO-01.lis} "U ::^C '
+:@EW|/tmp/TECO-01.lis| "U ::^C '
 
 EC
 
-:@EB{/tmp/TECO-01.lis} "U ::^C '
+:@EB|/tmp/TECO-01.lis| "U ::^C '
 
 EY EY
 
@@ -26,7 +26,7 @@ EF HK EC
 
 0,1 E3
 
-:@ER{/tmp/TECO-01.lis} "UK ::^C ' Y
+:@ER|/tmp/TECO-01.lis| "UK ::^C ' Y
 
 HT
 

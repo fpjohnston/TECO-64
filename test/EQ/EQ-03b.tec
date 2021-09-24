@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: ?XAB !
 
-@^UA{goodbye.txt}
+@^UA|goodbye.txt|
 
 :@EQB/^EQA/                         ! Test: :@EQq !
 

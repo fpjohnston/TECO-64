@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: ?ERR !
 
-@^UA{/dev/TECO-01.lis}              ! Name of output file !
+@^UA|/dev/TECO-01.lis|              ! Name of output file !
 
 EW^EQA                            ! Test: open file for writing !
 

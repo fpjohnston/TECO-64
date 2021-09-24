@@ -19,11 +19,11 @@ HK
 @I/the/       10I 12I
 @I/borogoves/ 10I 12I
 
-:@EW{/tmp/TECO-01.lis} "U ::^C '
+:@EW|/tmp/TECO-01.lis| "U ::^C '
 
 EC HK
 
-:@EB{/tmp/TECO-01.lis} "U ::^C '
+:@EB|/tmp/TECO-01.lis| "U ::^C '
 
 2:@N/the/ "U ::^C '                 ! Test: nN !
 

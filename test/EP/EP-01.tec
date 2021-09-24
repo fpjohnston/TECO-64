@@ -4,25 +4,25 @@
 ! Execution: Standard !
 ! Expect: PASS [EP-01.log] !
 
-:@EW{/tmp/TECO-01.lis} "U ::^C ' ! Create 1st temp file !
+:@EW|/tmp/TECO-01.lis| "U ::^C ' ! Create 1st temp file !
 
 @I/abcdef/ 10I                  ! Add some data !
 
 EC                              ! Write data and close file !
 
-:@EW{/tmp/TECO-02.lis} "U ::^C ' ! Create 2nd temp file !
+:@EW|/tmp/TECO-02.lis| "U ::^C ' ! Create 2nd temp file !
 
 @I/123456/ 10I                  ! Add some data !
 
 EC                              ! Write data and close file !
 
-:@ER{/tmp/TECO-01.lis} "U ::^C ' ! Open 1st file on primary stream !
+:@ER|/tmp/TECO-01.lis| "U ::^C ' ! Open 1st file on primary stream !
 
 A
 
 EP                              ! Test: switch to secondary input stream !
 
-:@ER{/tmp/TECO-02.lis} "U ::^C '       ! Open 2nd file on secondary stream !
+:@ER|/tmp/TECO-02.lis| "U ::^C '       ! Open 2nd file on secondary stream !
 
 A
 

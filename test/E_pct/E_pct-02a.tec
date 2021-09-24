@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@^UA{/tmp/hello}
+@^UA|/tmp/hello|
 
 @I/hello, world!/ 10I
 HXB HK

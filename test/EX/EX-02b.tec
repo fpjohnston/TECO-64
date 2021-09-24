@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@EW{/tmp/TECO-01.lis}               ! Open the file for output !
+@EW|/tmp/TECO-01.lis|               ! Open the file for output !
 
 @I/abcdef/
 

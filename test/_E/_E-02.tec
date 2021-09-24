@@ -10,11 +10,11 @@
 
 @I/single/
 
-:@EW{/tmp/TECO-01.lis} "U ::^C '
+:@EW|/tmp/TECO-01.lis| "U ::^C '
 
 EC
 
-:@EB{/tmp/TECO-01.lis} "U ::^C '
+:@EB|/tmp/TECO-01.lis| "U ::^C '
 
 ^E "S ::^C '                        ! Test: ^E at beginning of file !
 

@@ -5,14 +5,14 @@
 ! Expect: PASS !
 
 @I
-{
+\
     UA
     QA - 123 "N
         ::^C
     '
 
     @^A/!PASS!/
-}
+\
 
 HXA HK
 

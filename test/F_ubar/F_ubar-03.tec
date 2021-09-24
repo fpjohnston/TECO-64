@@ -16,11 +16,11 @@
     13@I// 10@I// 12@I//
 >
 
-:@EW{/tmp/TECO-01.lis} "U ::^C '
+:@EW|/tmp/TECO-01.lis| "U ::^C '
 
 EC
 
-:@EB{/tmp/TECO-01.lis} "U ::^C '
+:@EB|/tmp/TECO-01.lis| "U ::^C '
 
 10 P
 
@@ -30,7 +30,7 @@ EC
 
 0,1 E3
 
-:@ER{/tmp/TECO-01.lis} "U ::^C ' Y
+:@ER|/tmp/TECO-01.lis| "U ::^C ' Y
 
 HT
 

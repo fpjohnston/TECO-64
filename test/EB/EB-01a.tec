@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@^UA{foo}
+@^UA|foo|
 
 EB^EQA                            ! Test: open file for backup !
 

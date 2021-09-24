@@ -23,10 +23,10 @@ QI <
     12@I//
 >
 
-:@EW{/tmp/TECO-01.lis} "U ::^C '
+:@EW|/tmp/TECO-01.lis| "U ::^C '
 EC
 
-:@ER{/tmp/TECO-01.lis} "U ::^C '
+:@ER|/tmp/TECO-01.lis| "U ::^C '
 
 A                                   ! Test: append 1st page to buffer !
 

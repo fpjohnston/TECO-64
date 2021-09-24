@@ -8,7 +8,7 @@
 
 ! Test: carriage return in command string !
 
-:@FS{foo}{baz} "U ::^C '
+:@FS|foo}{baz| "U ::^C '
 
 HK
 

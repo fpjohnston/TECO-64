@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: ?NFI !
 
-@^UA{/tmp/TECO.lis}             ! File name !
+@^UA|/tmp/TECO.lis|             ! File name !
 
 :@EW/^EQA/ "U ::^C '            ! Open file for write !
 

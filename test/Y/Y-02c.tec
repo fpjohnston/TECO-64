@@ -4,13 +4,13 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@EW{/tmp/TECO-01.lis} 
+@EW|/tmp/TECO-01.lis| 
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 
 EC
 
-@EB{/tmp/TECO-01.lis}
+@EB|/tmp/TECO-01.lis|
 
 :Y "E ::^C '                        ! Test: yank before EOF !
 

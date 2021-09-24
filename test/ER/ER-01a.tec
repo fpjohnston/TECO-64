@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
  
-@^UA{foo}                           ! Name of existing input file !
+@^UA|foo|                           ! Name of existing input file !
 
 ER^EQA                            ! Test: open file for reading !
 

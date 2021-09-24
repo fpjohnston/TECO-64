@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@EB{/tmp/TECO.lis}                  ! Open the file for backup !
+@EB|/tmp/TECO.lis|                  ! Open the file for backup !
 
 @^A/!PASS!/
 
