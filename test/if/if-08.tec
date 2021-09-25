@@ -4,31 +4,32 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ! Test: "A !
 
-0 UC            ! Start at NUL !
+0 UC                                    ! Start at NUL !
 
-^^A < %C-1 "A ::^C ' >          ! NUL to upper case !
+^^A < %C-1 "A MF ' >                    ! NUL to upper case !
 
-^^Z-^^A+1 < %C-1 "A | ::^C ' >  ! Upper case !
+^^Z-^^A+1 < %C-1 "A | MF ' >            ! Upper case !
 
-^^a-^^Z-1 < %C-1 "A ::^C ' >    ! Upper case to lower case !
+^^a-^^Z-1 < %C-1 "A MF ' >              ! Upper case to lower case !
 
-^^z-^^a+1 < %C-1 "A | ::^C ' >  ! Lower case !
+^^z-^^a+1 < %C-1 "A | MF ' >            ! Lower case !
 
-255-^^z-1 < %C-1 "A ::^C ' >    ! Remaining 8-bit characters !
+255-^^z-1 < %C-1 "A MF ' >              ! Remaining 8-bit characters !
 
-0 UC            ! Start at NUL !
+0 UC                                    ! Start at NUL !
 
-^^A < %C-1 "a ::^C ' >          ! NUL to upper case !
+^^A < %C-1 "a MF ' >                    ! NUL to upper case !
 
-^^Z-^^A+1 < %C-1 "a | ::^C ' >  ! Upper case !
+^^Z-^^A+1 < %C-1 "a | MF ' >            ! Upper case !
 
-^^a-^^Z-1 < %C-1 "a ::^C ' >    ! Upper case to lower case !
+^^a-^^Z-1 < %C-1 "a MF ' >              ! Upper case to lower case !
 
-^^z-^^a+1 < %C-1 "a | ::^C ' >  ! Lower case !
+^^z-^^a+1 < %C-1 "a | MF ' >            ! Lower case !
 
-255-^^z-1 < %C-1 "a ::^C ' >    ! Remaining 8-bit characters !
+255-^^z-1 < %C-1 "a MF ' >              ! Remaining 8-bit characters !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

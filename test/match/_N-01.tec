@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS [_N-01.log] !
 
-HK
+! Include: setup-01.tec !
 
 0 UA
 
@@ -19,7 +19,4 @@ HK
 0J @S/^N^ED/                        ! Test: ^N^ED !
 0T ^^`^T T
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

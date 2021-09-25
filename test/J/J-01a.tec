@@ -3,9 +3,9 @@
 ! Requirements: None !
 ! Execution: Standard !
 ! Expect: PASS !
- 
-HK
 
+! Include: setup-01.tec !
+ 
 @I/Jabberwocky
 by Lewis Carroll
 
@@ -45,13 +45,10 @@ All mimsy were the borogoves,
       And the mome raths outgrabe.
 /
 
-0J    .     "N ::^C '               ! Test: 0J !
+0J    .     MN                          ! Test: 0J !
 
-171J  .-171 "N ::^C '               ! Test: nJ !
+171J  .-171 MN                          ! Test: nJ !
 
-ZJ    Z-.   "N ::^C '               ! Test: ZJ !
+ZJ    Z-.   MN                          ! Test: ZJ !
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

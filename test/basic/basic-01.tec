@@ -14,12 +14,12 @@
 @^A/[Executing HXC]/  MZ HXC
 @^A/[Executing HK]/   MZ HK
 @^A/[Executing :GC]/  MB :GC MZ
-@^A/[Executing EW]/   MZ :@EW/^EQA1.tmp/ "E :@^A/EW command failed/ ::^C '
+@^A/[Executing EW]/   MZ :@EW/^EQA1.tmp/ "E :@^A/EW command failed/ MF '
 @^A/[Executing I]/    MZ :@I/This is a test/ 13@I// 10@I//
 @^A/[Executing HT]/   MC MB HT
 @^A/[Executing EC]/   MZ EC
 @^A/[Executing HT]/   MC MB HT MZ
-@^A/[Executing ER]/   MZ :@ER/^EQA1.tmp/ "E :@^A/ER command failed/ ::^C ' Y
+@^A/[Executing ER]/   MZ :@ER/^EQA1.tmp/ "E :@^A/ER command failed/ MF ' Y
 @^A/[Executing HT]/   MC MB HT
 @^A/[Executing FS]/   MZ @FS/a test/not a test/
 @^A/[Executing HT]/   MC MB HT
@@ -28,9 +28,9 @@
 @^A/[Executing HT]/   MC MB HT
 @^A/[Executing D]/    MZ 4D
 @^A/[Executing HT]/   MC MB HT
-@^A/[Executing EW]/   MZ :@EW/^EQA2.tmp/ "E :@^A/EW command failed/ ::^C '
+@^A/[Executing EW]/   MZ :@EW/^EQA2.tmp/ "E :@^A/EW command failed/ MF '
 @^A/[Executing EC]/   MZ EC
-@^A/[Executing EB]/   MZ :@EB/^EQA2.tmp/ "E :@^A/EB command failed/ ::^C '
+@^A/[Executing EB]/   MZ :@EB/^EQA2.tmp/ "E :@^A/EB command failed/ MF '
 @^A/[Executing N]/    MZ @N/really big /
 @^A/[Executing I]/    MZ @I/deal/
 @^A/[Executing HT]/   MC MB HT

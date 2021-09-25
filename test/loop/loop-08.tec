@@ -4,9 +4,10 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-1 < 0; ::^C >                       ! Test: loop w/ 0; !
+! Include: setup-01.tec !
 
-1 < 1; ::^C >                       ! Test: loop w/ 1; !
+1 < 0; MF >                             ! Test: loop w/ 0; !
 
-@^A/!PASS!/
-
+1 < 1; MF >                             ! Test: loop w/ 1; !
+
+! Include: cleanup-01.tec !

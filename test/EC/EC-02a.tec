@@ -3,24 +3,23 @@
 ! Requirements: None !
 ! Execution: Standard !
 ! Expect: PASS !
+ 
+! Include: setup-01.tec !
 
-@^UA|/tmp/TECO.lis|             ! File name !
+@^UA|/tmp/TECO.lis|                     ! File name !
 
-:@EW/^EQA/ "U ::^C '            ! Open file for write !
+:@EW/^EQA/ MU                           ! Open file for write !
 
-@I/abcdef/                      ! Add some data !
+@I/abcdef/                              ! Add some data !
 
 Z UZ
 
-EC                              ! Test: write data and close file !
+EC                                      ! Test: write data and close file !
 
-Z "N ::^C '                     ! Verify that buffer is clear !
+Z MN                                    ! Verify that buffer is clear !
 
-:@ER/^EQA/ "U ::^C ' Y          ! Open file for read !
+:@ER/^EQA/ MU Y                         ! Open file for read !
 
-QZ-Z "N ::^C '                  ! Verify that we read all of the data !
-
-HK
-
-@^A/!PASS!/
-
+QZ-Z MN                                 ! Verify that we read all of the data !
+ 
+! Include: cleanup-01.tec !

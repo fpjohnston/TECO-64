@@ -4,17 +4,12 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec ! 
+
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 
 0J
 
-:@S/xyz/                            ! Test: :@S// !
+:@S/xyz/ MU                             ! Test: :@S// !
 
-"U
-    ::^C
-'
-
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

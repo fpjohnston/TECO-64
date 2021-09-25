@@ -12,20 +12,20 @@
 @I/page 2/ 12I
 @I/page 3/ 12I
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 
 EC
 
-:@EB|/tmp/TECO-01.lis| "U ::^C '
+:@EB|/tmp/TECO-01.lis| MU
 
-^E "S ::^C '                        ! Test: ^E at beginning of file !
+^E MS                                   ! Test: ^E at beginning of file !
 
-P ^E "U ::^C '                      ! Test: ^E after 1st page !
+P ^E MU                                 ! Test: ^E after 1st page !
 
-P ^E "U ::^C '                      ! Test: ^E after 2nd page !
+P ^E MU                                 ! Test: ^E after 2nd page !
 
-P ^E "U ::^C '                      ! Test: ^E after 3rd page !
+P ^E MU                                 ! Test: ^E after 3rd page !
 
-P ^E "S ::^C '                      ! Test: ^E at end of file !
+P ^E MS                                 ! Test: ^E at end of file !
 
 ! Include: cleanup-01.tec !

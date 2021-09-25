@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-HK
+! Include: setup-01.tec !
 
 @I/123 456 789/
 
@@ -12,13 +12,10 @@ ED=                                 ! Test: ED= !
 
 16,0 ED                             ! Test: ED&16 !
 
-0J 6C :@S/xyz/ . "N ::^C '
+0J 6C :@S/xyz/ . MN
 
 0,16 ED                             ! Test: ED&16 !
 
-0J 6C :@S/xyz/ .-6 "N ::^C '
+0J 6C :@S/xyz/ .-6 MN
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @^UA|/tmp/teco.log|                 ! Load output file name !
 
 :@EL/^EQA/                          ! Test: open log file !
@@ -14,7 +16,4 @@
 
 @EL//                               ! Test: close log file !
 
-EK HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

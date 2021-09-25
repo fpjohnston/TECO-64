@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @I/Jabberwocky
 by Lewis Carroll
 
@@ -49,14 +51,14 @@ All mimsy were the borogoves,
 ^S+10 "N                            ! Test: ^S after S command !
     ^S @=/^S=%d/
     @^A/FAIL/
-    ::^C
+    MF
 '
 
 @I/y baby/
 ^S+6 "N                             ! Test: ^S after I command !
     ^S @=/^S=%d/
     @^A/FAIL/
-    ::^C
+    MF
 '
 
 590,620 XA
@@ -65,31 +67,27 @@ GA
 ^S+30 "N                            ! Test: ^S after Gq command !
     ^S @=/^S=%d/
     @^A/FAIL/
-    ::^C
+    MF
 '
 
 G_
 ^S+10 "N                            ! Test: ^S after G_ command !
     ^S @=/^S=%d/
     @^A/FAIL/
-    ::^C
+    MF
 '
 
 :@EW|/tmp/teco.tmp|
 "E
     @^A/FAIL/
-    ::^C
+    MF
 '
 
 G*
 ^S+13 "N                            ! Test: ^S after G* command !
     ^S @=/^S=%d/
     @^A/FAIL/
-    ::^C
+    MF
 '
 
-HK
-
-@^A/!PASS!/
-
-^C^C
+! Include: cleanup-01.tec !

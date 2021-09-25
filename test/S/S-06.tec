@@ -4,64 +4,39 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-HK
+! Include: setup-01.tec ! 
 
 0UA
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/
 
 0J
-28C                     ! Skip to 123... !
+28C                                     ! Skip to 123... !
 
 ! Ensure that text preceding position doesn't match !
 
-::@S/abcd/                          ! Test: ::@S// !
-
-"S
-    ::^C
-'
+::@S/abcd/ MS                           ! Test: ::@S// !
 
 ! Ensure that text at current position matches !
 
 . UA
 
-::@S/1234/                          ! Test: ::@S// !
-
-"U
-    ::^C
-'
+::@S/1234/ MU                           ! Test: ::@S// !
 
 ! Ensure the dot moved by length of searched string !
 
-(.-QA) - 4 "N
-    ::^C
-'
+(.-QA) - 4 MN
 
 ! Ensure that text ahead of dot doesn't match !
 
-::@S/6789/                          ! Test: ::@S// !
-
-"S
-    ::^C
-'
+::@S/6789/ MS                           ! Test: ::@S// !
 
 ! Ensure that backward compare fails !
 
--::@S/4/                            ! Test: -::@S// !
-
-"S
-    ::^C
-'
+-::@S/4/ MS                             ! Test: -::@S// !
 
 ! Ensure that text not in buffer doesn't match !
 
-::@S/foobaz/                        ! Test: @S// !
+::@S/foobaz/ MS                         ! Test: @S// !
 
-"S
-    ::^C
-'
-
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

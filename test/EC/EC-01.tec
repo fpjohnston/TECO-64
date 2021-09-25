@@ -4,7 +4,8 @@
 ! Execution: Redirect !
 ! Expect: PASS [EC-01.log] !
  
-HK
+! Include: setup-01.tec !
+
 
             0 EC                ! Test: minimize edit buffer !
             2 EC                ! Test: increase edit buffer to 2 KB !

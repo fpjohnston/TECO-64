@@ -4,10 +4,14 @@
 ! Execution: Standard !
 ! Expect: PASS [G-01.log] !
 
+! Include: setup-01.tec !
+
 ! Test: copy global Q-registers !
 
+[Z ].Z
+[Y ].Y
+
 0 U.A
-HK
 
 ^^0 U.B
 ^^9 - Q.B + 1 <
@@ -19,7 +23,7 @@ HK
     @I|10:@^U|
     Q.B @I//
     @I|//|
-    10@I//
+    M.Y
     %.B
 >
 
@@ -33,7 +37,7 @@ HK
     @I|10:@^U|
     Q.B @I//
     @I|//|
-    10@I//
+    M.Y
     %.B
 >
 
@@ -47,7 +51,7 @@ HK
     @I|10:@^U|
     Q.B @I//
     @I|//|
-    10@I//
+    M.Y
     %.B
 >
 
@@ -57,7 +61,7 @@ HX.A HK M.A
 ^^9 - Q.B + 1 <
     @I/:G/
     Q.B @I//
-    10@I//
+    M.Y
     %.B
 >
 
@@ -65,7 +69,7 @@ HX.A HK M.A
 ^^z - Q.B + 1 <
     @I/:G/
     Q.B @I//
-    10@I//
+    M.Y
     %.B
 >
 
@@ -73,11 +77,13 @@ HX.A HK M.A
 ^^Z - Q.B + 1 <
     @I/:G/
     Q.B @I//
-    10@I//
+    M.Y
     %.B
 >
 
 HX.B HK M.B
 
-@^A/!PASS!/
-
+[.Y ]Y
+[.Z ]Z
+   
+! Include: cleanup-01.tec !

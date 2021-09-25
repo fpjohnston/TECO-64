@@ -4,8 +4,8 @@
 ! Execution: Standard !
 ! Expect: ?POP !
  
-HK
-
+! Include: setup-01.tec !
+ 
 @I/Jabberwocky
 by Lewis Carroll
 
@@ -49,7 +49,4 @@ ZJ
 
 -(Z+1) C                        ! Test: nC, where n > preceding chrs. !
 
-::^C
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

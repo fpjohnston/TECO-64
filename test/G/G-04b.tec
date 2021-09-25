@@ -4,13 +4,16 @@
 ! Execution: Standard !
 ! Expect: PASS [G-04b.log] !
 
+! Include: setup-01.tec !
+
 0 U.A
-HK
 
 :@S/frumious bandersnatch/
-@^A/:G_ = /
-:G_                                 ! Test: :G_ !
-13^T 10^T
 
-@^A/!PASS!/
-
+@^A/:G_ = /
+
+:G_                                 ! Test: :G_ !
+
+MZ
+
+! Include: cleanup-01.tec !

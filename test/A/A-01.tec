@@ -9,14 +9,14 @@
 @I/hello, world!/
 
 0 UA 0J
-Z < QA A UB QB ^T %A >          ! Test: nA for all chrs. forward !
-13^T 10^T
+Z < QA A UB QB ^T %A >                  ! Test: nA for all chrs. forward !
+MZ
 
 1 UA ZJ
-Z < -QA A UB QB ^T %A >         ! Test: nA for all chrs. backward !
-13^T 10^T
+Z < -QA A UB QB ^T %A >                 ! Test: nA for all chrs. backward !
+MZ
 
-0J -1 A+1 UA QA "N ::^C '       ! Test: nA for chr. < B !
-ZJ  1 A+1 UA QA "N ::^C '       ! Test: nA for chr. > Z !
+0J -1 A+1 UA QA MN                      ! Test: nA for chr. < B !
+ZJ  1 A+1 UA QA MN                      ! Test: nA for chr. > Z !
 
 ! Include: cleanup-01.tec !

@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS [S-04.log] !
 
-HK
+! Include: setup-01.tec ! 
 
 0UA
 
@@ -23,7 +23,4 @@ HK
 @S/abc/ .=
 @S/abc/ .=
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

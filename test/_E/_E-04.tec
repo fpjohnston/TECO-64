@@ -10,23 +10,23 @@
 
 @I/text/ 10I 12I
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 
 EC
 
-:@EB|/tmp/TECO-01.lis| "U ::^C '
+:@EB|/tmp/TECO-01.lis| MU
 
-^E "S ::^C '                        ! Test: ^E at beginning of file !
+^E MS                                   ! Test: ^E at beginning of file !
 
-P ^E "U ::^C '                      ! Test: ^E after 1st page !
+P ^E MU                                 ! Test: ^E after 1st page !
 
-0^E                                 ! Test: 0^E !
+0^E                                     ! Test: 0^E !
 
-P ^E "S ::^C '                      ! Test: ^E at end of file !
+P ^E MS                                 ! Test: ^E at end of file !
 
 EC
 
-:@ER|/tmp/TECO-01.lis| "U ::^C ' Y
+:@ER|/tmp/TECO-01.lis| MU Y
 
 HT
 

@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @^UA|/tmp/hello|
 
 @I/hello, world!/ 10I
@@ -11,5 +13,4 @@ HXB HK
 
 E%B^EQA                           ! Test: E^q !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

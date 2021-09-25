@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS [_T-02.log] !
 
+! Include: setup-01.tec !
+
 0,4096 ET                               ! Say we can handle 8-bit chrs. !
 
 ^^H+128 ^T                              ! Test: nT w/ n > 128 !
@@ -20,7 +22,6 @@
 ^^d+128 ^T
 ^^!+128 ^T
 
-13^T 10^T
+MZ
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

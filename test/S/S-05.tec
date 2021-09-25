@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS [S-05.log] !
 
-HK
+! Include: setup-01.tec ! 
 
 0UA
 
@@ -24,7 +24,4 @@ ZJ
 
 @-S/line 1/ .=                      ! Test: -S !
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

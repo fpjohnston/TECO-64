@@ -4,17 +4,14 @@
 ! Execution: Standard !
 ! Expect: PASS [_ES-01.log] !
 
-HK
+! Include: setup-01.tec !
 
 0 UA
 
 @I/abcd                1234/ 10@I//
 
-0J :@S/^ES/                         ! Test: ^ES !
-"U ::^C '
+0J :@S/^ES/ MU                     ! Test: ^ES !
+
 0T ^^`^T T
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

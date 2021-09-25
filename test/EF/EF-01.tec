@@ -4,31 +4,30 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@^UA|/tmp/TECO.lis|             ! File name !
+! Include: setup-01.tec !
 
-:@EW/^EQA/ "U ::^C '            ! Open file for write !
+@^UA|/tmp/TECO.lis|                     ! File name !
 
-@I/abcdef/                      ! Add some data !
+:@EW/^EQA/ MU                           ! Open file for write !
 
-EC                              ! Write data and close file !
+@I/abcdef/                              ! Add some data !
 
-:@EB/^EQA/ "U ::^C ' Y          ! Open file for backup !
+EC                                      ! Write data and close file !
+
+:@EB/^EQA/ MU Y                         ! Open file for backup !
 
 @I/123456/
 
-EF                              ! Test: close file !
+EF                                      ! Test: close file !
 
-Z "E ::^C '
+Z MU
 
 HK
 
-:@ER/^EQA/ "U ::^C ' Y          ! Open file for read !
+:@ER/^EQA/ MU Y                         ! Open file for read !
 
 0J
 
-Z "N ::^C '
+Z MN
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

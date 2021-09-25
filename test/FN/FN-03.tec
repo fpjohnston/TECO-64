@@ -4,35 +4,33 @@
 ! Execution: Standard !
 ! Expect: PASS [FN-03.log] !
 
-1,0 E3
+! Include: setup-01.tec !
 
-HK
+1,0 E3
 
 10 <
     @I/line /
     %A \
     @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
-    13@I// 10@I// 12@I//
+    MY 12@I//
 >
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 
 EC
 
-:@EB|/tmp/TECO-01.lis| "U ::^C '
+:@EB|/tmp/TECO-01.lis| MU
 
 10 P
 
--:@FN/klmnop/--- FOO ---/           ! Test: -FN !
-"U ::^C '
+-:@FN/klmnop/--- FOO ---/ MU            ! Test: -FN !
 
 EC
 
 0,1 E3
 
-:@ER|/tmp/TECO-01.lis| "U ::^C ' Y
+:@ER|/tmp/TECO-01.lis| MU Y
 
-HT HK EC
+HT
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

@@ -4,12 +4,11 @@
 ! Execution: Standard !
 ! Expect: PASS [_U-02.log] !
 
+! Include: setup-01.tec !
+
 @^UA/hello/
 :@^UA/, world!/                     ! Test: append string to Q-register !
 
-:GA 13^T 10^T
+:GA MZ
 
-@^A/!PASS!/
-
-^C
-
+! Include: cleanup-01.tec !

@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS [_ER-01.log] !
 
-HK
+! Include: setup-01.tec !
 
 0 UA
 
@@ -21,9 +21,6 @@ HK
     '
 >
 
-13^T 10^T
+MZ
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

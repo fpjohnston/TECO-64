@@ -2,15 +2,12 @@
 ! Commands: :@ER !
 ! Requirements: None !
 ! Execution: Standard !
-! Expect: ?XAB !
+! Expect: FAIL !
+
+! Include: setup-01.tec !
 
 @^UA|baz|                           ! Name of non-existent input file !
 
-:@ER/^EQA/                          ! Test: open file for reading !
+:@ER/^EQA/ MU                       ! Test: open file for reading !
 
-"U
-    ::^C
-'
-
-HK
-
+! Include: cleanup-01.tec !

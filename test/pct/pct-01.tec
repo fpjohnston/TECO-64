@@ -4,15 +4,14 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 0 UA
 
-%A - 1 "N ::^C '               ! Test: % !
+%A - 1 MN                               ! Test: % !
 
-10 %A - 11 "N ::^C '           ! Test: n% !
+10 %A - 11 MN                           ! Test: n% !
 
--16 %A + 5 "N ::^C '           ! Test: -n% !
+-16 %A + 5 MN                           ! Test: -n% !
 
-@^A/!PASS!/
-
-^C
-
+! Include: cleanup-01.tec !

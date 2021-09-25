@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
  
-HK
+! Include: setup-01.tec !
 
 @I/Jabberwocky
 by Lewis Carroll
@@ -49,27 +49,24 @@ ZJ
 
 . UA
 
-:R        "U ::^C '                 ! Test: :R !
+:R        MU                            ! Test: :R !
 
-1:R       "U ::^C '                 ! Test: 1:R !
+1:R       MU                            ! Test: 1:R !
 
-10:R      "U ::^C '                 ! Test: n:R, w/ n < preceding chrs. !
+10:R      MU                            ! Test: n:R, w/ n < preceding chrs. !
 
-Z-.:R     "U ::^C '                 ! Test: n:R, w/ n == preceding chrs. !
+Z-.:R     MU                            ! Test: n:R, w/ n == preceding chrs. !
 
--:R       "U ::^C '                 ! Test: -:R !
+-:R       MU                            ! Test: -:R !
 
--1:R      "U ::^C '                 ! Test: -1:R !
+-1:R      MU                            ! Test: -1:R !
 
--10:R     "U ::^C '                 ! Test: -n:R, w/ n < following chrs. !
+-10:R     MU                            ! Test: -n:R, w/ n < following chrs. !
 
-Z-.:R     "U ::^C '                 ! Test: n:R, w/ n == preceding chrs. !
+Z-.:R     MU                            ! Test: n:R, w/ n == preceding chrs. !
 
-Z+1 :R    "S ::^C '                 ! Test: n:R, w/ n > preceding chrs !
+Z+1 :R    MS                            ! Test: n:R, w/ n > preceding chrs !
 
--(Z+1) :R "S ::^C '                 ! Test: n:R, w/ n > following chrs. !
+-(Z+1) :R MS                            ! Test: n:R, w/ n > following chrs. !
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: ?POP !
  
-HK
+! Include: setup-01.tec !
 
 @I/Jabberwocky
 by Lewis Carroll
@@ -47,9 +47,6 @@ All mimsy were the borogoves,
 
 ZJ
 
-Z+1 R                           ! Test: nR, where n > preceding chrs. !
+Z+1 R                               ! Test: nR, where n > preceding chrs. !
 
-::^C
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

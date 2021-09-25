@@ -4,22 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-123
-
-! Test: tag in command string !
-
-UA
-
-QA-123 "N ::^C '
-
-123,456
-
-! Test: tag in command string !
-
-UA UB
-
-QA-456 "N ::^C '
-QB-123 "N ::^C '
+! Include: setup-01.tec !
 
 123
 
@@ -27,7 +12,7 @@ QB-123 "N ::^C '
 
 UA
 
-QA-123 "N ::^C '
+QA-123 MN       
 
 123,456
 
@@ -35,8 +20,24 @@ QA-123 "N ::^C '
 
 UA UB
 
-QA-456 "N ::^C '
-QB-123 "N ::^C '
+QA-456 MN       
+QB-123 MN       
 
-@:^A/!PASS!/
-
+123
+
+! Test: tag in command string !
+
+UA
+
+QA-123 MN       
+
+123,456
+
+! Test: tag in command string !
+
+UA UB
+
+QA-456 MN       
+QB-123 MN       
+
+! Include: cleanup-01.tec !

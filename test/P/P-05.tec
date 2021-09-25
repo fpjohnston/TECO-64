@@ -15,22 +15,22 @@
 @I/page 5/ 12I
 @I/page 6/ 12I
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 
 EC
 
-:@EB|/tmp/TECO-01.lis| "U ::^C '
+:@EB|/tmp/TECO-01.lis| MU
 
 P                                   ! Test: P !
 
-0J ::@S/page 1/ "U :: ^C '
+0J ::@S/page 1/ MU
 
 P                                   ! Test: P !
 
-0J ::@S/page 2/ "U :: ^C '
+0J ::@S/page 2/ MU
 
 P                                   ! Test: P !
 
-0J ::@S/page 3/ "U :: ^C '
+0J ::@S/page 3/ MU
 
 ! Include: cleanup-01.tec !

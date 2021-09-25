@@ -4,6 +4,9 @@
 ! Execution: Redirect !
 ! Expect: PASS [_U.log] !
 
+! Include: setup-01.tec !
+
 abcdef``                          ! Test: cancel current input line !
+
 !PASS!
 ex

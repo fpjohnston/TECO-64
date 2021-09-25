@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: ?MAX !
 
+! Include: setup-01.tec !
+
 ! Test: nested conditionals w/ else !
 
 1"N
@@ -105,4 +107,5 @@
     '
   '
 '
-
+
+! Include: cleanup-01.tec !

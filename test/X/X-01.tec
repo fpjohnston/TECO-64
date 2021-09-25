@@ -12,23 +12,23 @@
     @I/line /
     %A \
     @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
-    13@I// 10@I//
+    GY
 >
 
 @^A/-----/ MZ
-0J 1XA :GA                          ! Test: 1X !
+0J 1XA :GA                              ! Test: 1X !
 @^A/-----/ MZ
-2L 2XA :GA                          ! Test: 2X !
+2L 2XA :GA                              ! Test: 2X !
 @^A/-----/ MZ
-3L 3XA :GA                          ! Test: 3X !
+3L 3XA :GA                              ! Test: 3X !
 @^A/-----/ MZ
-ZJ -3XA :GA                         ! Test: 4X !
+ZJ -3XA :GA                             ! Test: -3X !
 @^A/-----/ MZ
--4L -2XA :GA                        ! Test: -2X !
+-4L -2XA :GA                            ! Test: -2X !
 @^A/-----/ MZ
--3L -1XA :GA                        ! Test: -1X !
+-3L -1XA :GA                            ! Test: -1X !
 @^A/-----/ MZ
-HXA :GA                             ! Test: HX !
+HXA :GA                                 ! Test: HX !
 @^A/-----/ MZ
 
 ! Include: cleanup-01.tec !

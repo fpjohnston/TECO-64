@@ -4,7 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-1 < @S/baz/; ::^C >                 ! Test: loop w/ @S//; !
+! Include: setup-01.tec !
 
-@^A/!PASS!/
-
+1 < @S/baz/; MF >                       ! Test: loop w/ @S//; !
+
+! Include: cleanup-01.tec !

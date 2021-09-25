@@ -23,15 +23,15 @@ QI <
     12@I//
 >
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 EC
 
-:@ER|/tmp/TECO-01.lis| "U ::^C '
+:@ER|/tmp/TECO-01.lis| MU
 
 A                                   ! Test: append 1st page to buffer !
 A                                   ! Test: append 2nd page to buffer !
 
-Z-(QJ * QL * 2) "N ::^C '
+Z-(QJ * QL * 2) MN
 
 HT
 

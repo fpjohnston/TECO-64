@@ -4,11 +4,10 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-@^UA|/tmp/TECO.lis|                 ! Name of output file !
+! Include: setup-01.tec !
+
+@^UA|/tmp/TECO-01.lis|              ! Name of output file !
 
 EW^EQA                            ! Test: open file for writing !
 
-EK HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

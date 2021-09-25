@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @^UA|*.tec|
 
 :@EN/^EQA/                          ! Test: :@EN/file/ !
@@ -24,4 +26,5 @@ QA-1 "N @^A/s/ '
 @^A/ matched/
 
 @^A/!PASS!/
-
+
+! Include: cleanup-01.tec !

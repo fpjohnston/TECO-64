@@ -4,7 +4,7 @@
 ! Execution: Redirect !
 ! Expect: PASS [_T-05.log] !
 
-HK
+! Include: setup-01.tec !
 
 ! Test: ^T with several input characters !
 

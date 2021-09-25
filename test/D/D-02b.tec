@@ -4,27 +4,20 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// Z UA 0 UD 0J
 
-0J -:D                              ! Test: -D !
-"S ::^C '
+0J -:D MS                               ! Test: -D !
 
-0J -1:D                             ! Test: -1:D !
-"S ::^C '
+0J -1:D MS                              ! Test: -1:D !
 
-20C -40:D                           ! Test: -n:D !
-"S ::^C '
+20C -40:D MS                            ! Test: -n:D !
 
-ZJ :D                               ! Test: :D !
-"S ::^C '
+ZJ :D MS                                ! Test: :D !
 
-ZJ 1:D                              ! Test: 1:D !
-"S ::^C '
+ZJ 1:D MS                               ! Test: 1:D !
 
-20J 40:D                            ! Test: n:D !
-"S ::^C '
+20J 40:D MS                             ! Test: n:D !
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

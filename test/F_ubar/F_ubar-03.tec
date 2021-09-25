@@ -16,21 +16,21 @@
     13@I// 10@I// 12@I//
 >
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 
 EC
 
-:@EB|/tmp/TECO-01.lis| "U ::^C '
+:@EB|/tmp/TECO-01.lis| MU
 
 10 P
 
--@F_/klmnop/--- FOO ---/            ! Test: -F_ !
+-@F_/klmnop/--- FOO ---/                ! Test: -F_ !
 
 EC
 
 0,1 E3
 
-:@ER|/tmp/TECO-01.lis| "U ::^C ' Y
+:@ER|/tmp/TECO-01.lis| MU Y
 
 HT
 

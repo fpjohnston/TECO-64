@@ -8,18 +8,27 @@ EO - 100 "L
     |                                   ! Unknown or unsupported TECO !
         0 UZ                            ! Assume no -P or ext. features !
     '
-    13@^UY// 10:@^UY//                  ! Set up macro to insert CR/LF !
+    13@^UY// 10:@^UY//                  ! MY inserts CR/LF !
+    @^UZ/ ^D 13^T 10^T/                 ! MZ prints CR/LF !
 |
     EO - 200 "L                         ! TECO C !
         0 UZ                            ! No -P !
-        10@^UY//                        ! Set up macro to insert LF !
+        10@^UY//                        ! MY inserts LF !
+        @^UZ/ ^D 13^T 10^T/             ! MZ prints CR/LF !
     |                                   ! TECO-64 !
         3 UZ                            ! -P, ext. features !
-        10@^UY//                        ! Set up macro to insert LF !
+        10@^UY//                        ! MY inserts LF !
+        @^UZ/ ^D 10^T/                  ! MZ prints newline (LF or CR/LF) !
     '
 '
 
-@^UZ/ ^D 13^T 10^T/                     ! Set up macro to print CR/LF !
+@^UF\ @^A/!FA\ :@^UF\IL!/ MZ ^C \       ! MF aborts unconditionally !
+
+@^UN\"N MF '\                           ! MN aborts if not zero !
+
+@^US\"S MF '\                           ! MS aborts if success or negative !
+
+@^UU\"U MF '\                           ! MU aborts if failure or zero!
 
 @^A/Starting TECO v/ EO:= @^A/ test/ MZ
 

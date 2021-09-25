@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ! Try to match lower case letters (and special characters) !
 
 @I/`abcdefghijklmnopqrstuvwxyz{|}~/
@@ -12,7 +14,7 @@
 
 0J ^^@ UA
 
-31 < :@S/^EUA/ "U ::^C ' %A >
+31 < :@S/^EUA/ MU %A >
 
 HK
 
@@ -24,9 +26,6 @@ HK
 
 0J ^^` UA
 
-31 < :@S/^EUA/ "U ::^C ' %A >
+31 < :@S/^EUA/ MU %A >
 
-HK
-
-@:^A/!PASS!/
-
+! Include: cleanup-01.tec !

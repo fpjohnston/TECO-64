@@ -10,16 +10,16 @@
 
 @I/single/
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 
 EC
 
-:@EB|/tmp/TECO-01.lis| "U ::^C '
+:@EB|/tmp/TECO-01.lis| MU
 
-^E "S ::^C '                        ! Test: ^E at beginning of file !
+^E MS                                   ! Test: ^E at beginning of file !
 
-P ^E "S ::^C '                      ! Test: ^E after 1st page !
+P ^E MS                                 ! Test: ^E after 1st page !
 
-P ^E "S ::^C '                      ! Test: ^E at end of file !
+P ^E MS                                 ! Test: ^E at end of file !
 
 ! Include: cleanup-01.tec !

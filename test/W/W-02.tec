@@ -4,25 +4,24 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-HK
+! Include: setup-01.tec !
 
 80,1:W                              ! Test: m,1:W !
-UA QA - 80 "N ::^C '
+UA QA - 80 MN
 
 24,2:W                              ! Test: m,2:W !
-UA QA - 24 "N ::^C '
+UA QA - 24 MN
 
 5,7:W                               ! Test: m,7:W !
-UA QA -  5 "N ::^C '
+UA QA -  5 MN
 
 10,7:W                              ! Test: m,7:W !
-UA QA - 10 "N ::^C '
+UA QA - 10 MN
 
 0,8:W                               ! Test: m,8:W !
-UA QA      "N ::^C '
+UA QA      MN
 
 -1,8:W                              ! Test: m,8:W !
-UA QA +  1 "N ::^C '
+UA QA +  1 MN
 
-@^A/!PASS!/
-    
+! Include: cleanup-01.tec !

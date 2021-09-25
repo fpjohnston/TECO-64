@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-HK
+! Include: setup-01.tec !
 
 ^D      @I/decimal: /
 
@@ -39,7 +39,6 @@ HK
 -12345 \                            ! Test: insert negative number !
 ^D 10@I//
 
-HT HK
+HT
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

@@ -4,17 +4,16 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ! Test: Verify that B is always 0, regardless of dot !
 
 10 < @I/0123456789/ 10I >
 
-0J B "N ::^C '
- L B "N ::^C '
-3L B "N ::^C '
-4L B "N ::^C '
-2L B "N ::^C '
+0J B MN
+ L B MN
+3L B MN
+4L B MN
+2L B MN
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

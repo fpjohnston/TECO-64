@@ -2,16 +2,15 @@
 ! Commands: :@E%// !
 ! Requirements: None !
 ! Execution: Standard !
-! Expect: ?XAB !
+! Expect: FAIL !
+
+! Include: setup-01.tec !
 
 @^UA|/dev/fubar|
 
 @I/hello, world!/ 10I
 HXB HK
 
-:@E%B/^EQA/                         ! Test: :@E%q !
+:@E%B/^EQA/ MU                          ! Test: :@E%q !
 
-"U
-    ::^C
-'
-
+! Include: cleanup-01.tec !

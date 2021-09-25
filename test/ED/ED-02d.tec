@@ -4,15 +4,15 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-HK
+! Include: setup-01.tec !
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 
 @I/abc/
 
 EC
 
-:@EB|/tmp/TECO-01.lis| "U ::^C '
+:@EB|/tmp/TECO-01.lis| MU
 
 @I/xyz/
 
@@ -22,7 +22,4 @@ ED=                                 ! Test: ED= !
 
 :@_/abc/
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

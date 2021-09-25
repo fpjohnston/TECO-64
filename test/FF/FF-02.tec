@@ -10,8 +10,6 @@
 
 ! Test: form feed in command string !
 
-:@FS{foo}{baz} "U ::^C '
-
-HK
+:@FS{foo}{baz} MU
 
 ! Include: cleanup-01.tec !

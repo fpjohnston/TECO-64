@@ -4,8 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
  
-HK
-
+! Include: setup-01.tec !
+ 
 @I/Jabberwocky
 by Lewis Carroll
 
@@ -49,27 +49,24 @@ All mimsy were the borogoves,
 
 . UA
 
-:C        "U ::^C '                 ! Test: :C !
+:C        MU                            ! Test: :C !
 
-1:C       "U ::^C '                 ! Test: :1C !
+1:C       MU                            ! Test: :1C !
 
-10:C      "U ::^C '                 ! Test: :nC w/ n < following chrs. !
+10:C      MU                            ! Test: :nC w/ n < following chrs. !
 
-Z-.:C     "U ::^C '                 ! Test: :nC w/ n == following chrs. !
+Z-.:C     MU                            ! Test: :nC w/ n == following chrs. !
 
--:C       "U ::^C '                 ! Test: -:C !
+-:C       MU                            ! Test: -:C !
 
--1:C      "U ::^C '                 ! Test: -1:C !
+-1:C      MU                            ! Test: -1:C !
 
--10:C     "U ::^C '                 ! Test: -n:C w/ n < preceding chrs. !
+-10:C     MU                            ! Test: -n:C w/ n < preceding chrs. !
 
--. :C     "U ::^C '                 ! Test: -n:C w/ n == preceding chrs. !
+-. :C     MU                            ! Test: -n:C w/ n == preceding chrs. !
 
-Z+1 :C    "S ::^C '                 ! Test: n:C w/ n > following chrs. !
+Z+1 :C    MS                            ! Test: n:C w/ n > following chrs. !
 
--(Z+1) :C "S ::^C '                 ! Test: -n:C w/ n > preceding chrs. !
+-(Z+1) :C MS                            ! Test: -n:C w/ n > preceding chrs. !
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

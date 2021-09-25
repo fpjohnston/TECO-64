@@ -4,11 +4,10 @@
 ! Execution: Standard !
 ! Expect: PASS [_A-01.log] !
 
+! Include: setup-01.tec !
+
 @^A/hello, world!/                  ! Test: ^A w/o colon !
 
-13^T 10^T
+MZ
 
-@^A/!PASS!/
-
-13^T 10^T
-
+! Include: cleanup-01.tec !

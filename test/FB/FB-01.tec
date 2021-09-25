@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-HK
+! Include: setup-01.tec !
 
 @I/Jabberwocky
 by Lewis Carroll
@@ -46,45 +46,25 @@ All mimsy were the borogoves,
 /
 
 0J
-:@S/Beware/ "U ::^C ' 0L
 
-:@FB/Jabberwock/                    ! Test: FB !
+:@S/Beware/ MU 0L
 
-"U ::^C '
+:@FB/Jabberwock/ MU                     ! Test: FB !
 
-:@FB/jaws/                          ! Test: FB !
+:@FB/jaws/ MS                           ! Test: FB !
 
-"S ::^C '
+10:@FB/manxome/ MU                      ! Test: nFB !
 
-10:@FB/manxome/                     ! Test: nFB !
+5:@FB/hast/ MS                          ! Test: nFB !
 
-"U ::^C '
+-:@FB/vorpal/ MU                        ! Test: -FB !
 
-5:@FB/hast/                         ! Test: nFB !
+-:@FB/Bander/ MS                        ! Test: -nFB !
 
-"S ::^C '
+-3:@FB/Bander/ MU                       ! Test: -nFB !
 
--:@FB/vorpal/                       ! Test: -FB !
+550,590:@FB/whiffling/ MU               ! Test: m,nFB !
 
-"U ::^C '
+550,590:@FB/burbled/ MS                 ! Test: m,nFB !
 
--:@FB/Bander/                       ! Test: -nFB !
-
-"S ::^C '
-
--3:@FB/Bander/                      ! Test: -nFB !
-
-"U ::^C '
-
-550,590:@FB/whiffling/              ! Test: m,nFB !
-
-"U ::^C '
-
-550,590:@FB/burbled/                ! Test: m,nFB !
-
-"S ::^C '
-
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

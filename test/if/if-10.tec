@@ -4,23 +4,24 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ! Test: "D !
 
-0 UC            ! Start at NUL !
+0 UC                                    ! Start at NUL !
 
-^^0 < %C-1 "D ::^C ' >          ! NUL to digits !
+^^0 < %C-1 "D MF ' >                    ! NUL to digits !
 
-^^9-^^0+1 < %C-1 "D | ::^C ' >  ! Digits !
+^^9-^^0+1 < %C-1 "D | MF ' >            ! Digits !
 
-255-^^9-1 < %C-1 "D ::^C ' >    ! Remaining 8-bit characters !
+255-^^9-1 < %C-1 "D MF ' >              ! Remaining 8-bit characters !
 
-0 UC            ! Start at NUL !
+0 UC                                    ! Start at NUL !
 
-^^0 < %C-1 "d ::^C ' >          ! NUL to digits !
+^^0 < %C-1 "d MF ' >                    ! NUL to digits !
 
-^^9-^^0+1 < %C-1 "d | ::^C ' >  ! Digits !
+^^9-^^0+1 < %C-1 "d | MF ' >            ! Digits !
 
-255-^^9-1 < %C-1 "d ::^C ' >    ! Remaining 8-bit characters !
+255-^^9-1 < %C-1 "d MF ' >              ! Remaining 8-bit characters !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

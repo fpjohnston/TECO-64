@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-HK
+! Include: setup-01.tec !
 
 0 UA
 
@@ -12,23 +12,20 @@ HK
 
 0J
 
-:@S/^E6/                            ! Test: ^E6 - control character !
-"U ::^C '
-.-7 "N ::^C '
+:@S/^E6/ MU                         ! Test: ^E6 - control character !
 
-:@S/^E10/                           ! Test: ^E10 - line delimiter !
-"U ::^C '
-.-11 "N ::^C '
+.-7 MN
 
-:@S/^E50/                           ! Test: ^E50 - digit character !
-"U ::^C '
-.-51 "N ::^C '
+:@S/^E10/ MU                        ! Test: ^E10 - line delimiter !
 
-:@S/^E76/                           ! Test: ^E76 - alphabetic character !
-"U ::^C '
-.-77 "N ::^C '
+.-11 MN
 
-HK
+:@S/^E50/ MU                        ! Test: ^E50 - digit character !
 
-@^A/!PASS!/
-
+.-51 MN
+
+:@S/^E76/ MU                        ! Test: ^E76 - alphabetic character !
+
+.-77 MN
+
+! Include: cleanup-01.tec !

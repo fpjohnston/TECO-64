@@ -3,9 +3,9 @@
 ! Requirements: None !
 ! Execution: Standard !
 ! Expect: ?POP !
- 
-HK
 
+! Include: setup-01.tec !
+ 
 @I/Jabberwocky
 by Lewis Carroll
 
@@ -46,4 +46,5 @@ All mimsy were the borogoves,
 /
 
 Z+1 J                               ! Test: Z+1J !
-
+
+! Include: cleanup-01.tec !

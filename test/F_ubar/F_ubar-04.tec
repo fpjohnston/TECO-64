@@ -16,14 +16,14 @@
     13@I// 10@I// 12@I//
 >
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 
 EC
 
-:@EB|/tmp/TECO-01.lis| "U ::^C '
+:@EB|/tmp/TECO-01.lis| MU
 
 10 P
 
--7@F_/klmnop/--- FOO ---/           ! Test: -nF_ !
+-7@F_/klmnop/--- FOO ---/               ! Test: -nF_ !
 
 ! Include: cleanup-01.tec !

@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec ! 
+
 @I/1. abcdef
 2. abcdef
 3. abcdef
@@ -16,31 +18,28 @@
 
 0J 4L . UA
 
-30, :@S/xyz/ "U ::^C '              ! Test: m,S !
-30,3:@S/xyz/ "S ::^C '              ! Test: m,nS !
+30, :@S/xyz/ MU                         ! Test: m,S !
+30,3:@S/xyz/ MS                         ! Test: m,nS !
 
 QA J
 
--30,1:@S/xyz/ "U ::^C '             ! Test: -m,1S !
--30,3:@S/xyz/ "S ::^C '             ! Test: -m,nS !
+-30,1:@S/xyz/ MU                        ! Test: -m,1S !
+-30,3:@S/xyz/ MS                        ! Test: -m,nS !
 
 QA J
 
-30, -:@S/abc/ "U ::^C '             ! Test: m,-S !
-30,-1:@S/abc/ "U ::^C '             ! Test: m,-1S !
-30,-4:@S/abc/ "S ::^C '             ! Test: m,-nS !
+30, -:@S/abc/ MU                        ! Test: m,-S !
+30,-1:@S/abc/ MU                        ! Test: m,-1S !
+30,-4:@S/abc/ MS                        ! Test: m,-nS !
 
 QA J
 
--30,-1:@S/abc/ "U ::^C '            ! Test: -m,-1S !
--30,-4:@S/abc/ "S ::^C '            ! Test: -m,-nS !
+-30,-1:@S/abc/ MU                       ! Test: -m,-1S !
+-30,-4:@S/abc/ MS                       ! Test: -m,-nS !
 
 0 J
 
-0,1:@S/klmnop/ "U ::^C '            ! Test: 0,1S !
-0,2:@S/klmnop/ "S ::^C '            ! Test: 0,nS !
+0,1:@S/klmnop/ MU                       ! Test: 0,1S !
+0,2:@S/klmnop/ MS                       ! Test: 0,nS !
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

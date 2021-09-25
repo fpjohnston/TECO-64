@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS [_T-01.log] !
 
+! Include: setup-01.tec !
+
 ^^H ^T                              ! Test: nT !
 ^^e ^T
 ^^l ^T
@@ -18,7 +20,6 @@
 ^^d ^T
 ^^! ^T
 
-13^T 10^T
+MZ
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

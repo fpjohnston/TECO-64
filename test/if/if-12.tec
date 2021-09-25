@@ -4,15 +4,16 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ! Test: "F !
 
- 0 "F | ::^C '
- 1 "F   ::^C '
--1 "F   ::^C '
+ 0 "F | MF '
+ 1 "F   MF '
+-1 "F   MF '
 
- 0 "f | ::^C '
- 1 "f   ::^C '
--1 "f   ::^C '
+ 0 "f | MF '
+ 1 "f   MF '
+-1 "f   MF '
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

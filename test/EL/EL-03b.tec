@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: ?XAB !
 
+! Include: setup-01.tec !
+
 @^UA|/dev/teco.log|                 ! Load output file name !
 
 :@EL/^EQA/                          ! Test: open log file !
@@ -14,5 +16,4 @@
 
 @EL//                               ! Test: close log file !
 
-EK HK
-
+! Include: cleanup-01.tec !

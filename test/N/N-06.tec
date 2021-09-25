@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 1,0 E3
 
 HK
@@ -19,17 +21,14 @@ HK
 @I/the/       10I 12I
 @I/borogoves/ 10I 12I
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 
 EC HK
 
-:@EB|/tmp/TECO-01.lis| "U ::^C '
+:@EB|/tmp/TECO-01.lis| MU
 
-2:@N/the/ "U ::^C '                 ! Test: nN !
+2:@N/the/ MU                            ! Test: nN !
 
-^P-9 "N ::^C '                      ! Make sure we found the right one !
+^P-9 MN                                 ! Make sure we found the right one !
 
-EK HK EC
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

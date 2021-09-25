@@ -6,7 +6,7 @@
 
 ! Include: setup-01.tec !
 
-(:QY+:QZ+:Q.Z) U9
+^Z U9
 
 @^A/^Z = / ^Z-Q9 := ^Z-Q9            ! Test: ^Z with Q-registers empty !
 "E @^A/ (pass)/ | @^A/ (fail)/ ' MZ

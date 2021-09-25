@@ -4,65 +4,66 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ! Test: "C !
 
-0 UC                           ! Start at NUL !
+0 UC                                    ! Start at NUL !
 
-^^$ < %C-1 "C ::^C ' >         ! NUL to $ !
+^^$ < %C-1 "C MF ' >                    ! NUL to $ !
 
-%C-1 "C | ::^C '               ! $ is a symbol constituent !
+%C-1 "C | MF '                          ! $ is a symbol constituent !
 
-^^.-^^$-1 < %C-1 "C ::^C ' >   ! $ to . !
+^^.-^^$-1 < %C-1 "C MF ' >              ! $ to . !
 
-%C-1 "C | ::^C '               ! . is a symbol constituent !
+%C-1 "C | MF '                          ! . is a symbol constituent !
 
-^^0-^^.-1 < %C-1 "C ::^C ' >   ! . to 0 !
+^^0-^^.-1 < %C-1 "C MF ' >              ! . to 0 !
 
-^^9-^^0+1 < %C-1 "C | ::^C ' > ! Digits !
+^^9-^^0+1 < %C-1 "C | MF ' >            ! Digits !
 
-^^A-^^9-1 < %C-1 "C ::^C ' >   ! Digits to upper case !
+^^A-^^9-1 < %C-1 "C MF ' >              ! Digits to upper case !
 
-^^Z-^^A+1 < %C-1 "C | ::^C ' > ! Upper case !
+^^Z-^^A+1 < %C-1 "C | MF ' >            ! Upper case !
 
-^^_-^^Z-1 < %C-1 "C ::^C ' >   ! Upper case to _ !
+^^_-^^Z-1 < %C-1 "C MF ' >              ! Upper case to _ !
 
-%C-1 "C | ::^C '               ! _ is a symbol constituent !
+%C-1 "C | MF '                          ! _ is a symbol constituent !
 
-^^a-^^_-1 < %C-1 "C ::^C ' >   ! _ to lower case !
+^^a-^^_-1 < %C-1 "C MF ' >              ! _ to lower case !
 
-^^z-^^a+1 < %C-1 "C | ::^C ' > ! Lower case !
+^^z-^^a+1 < %C-1 "C | MF ' >            ! Lower case !
 
-255-^^z-1 < %C-1 "C ::^C ' >   ! Remaining 8-bit characters !
+255-^^z-1 < %C-1 "C MF ' >              ! Remaining 8-bit characters !
 
 ! Test: "c !
 
-0 UC                           ! Start at NUL !
+0 UC                                    ! Start at NUL !
 
-^^$ < %C-1 "c ::^C ' >         ! NUL to $ !
+^^$ < %C-1 "c MF ' >                    ! NUL to $ !
 
-%C-1 "C | ::^C '               ! $ is a symbol constituent !
+%C-1 "C | MF '                          ! $ is a symbol constituent !
 
-^^.-^^$-1 < %C-1 "c ::^C ' >   ! $ to . !
+^^.-^^$-1 < %C-1 "c MF ' >              ! $ to . !
 
-%C-1 "C | ::^C '               ! . is a symbol constituent !
+%C-1 "C | MF '                          ! . is a symbol constituent !
 
-^^0-^^.-1 < %C-1 "c ::^C ' >   ! . to 0 !
+^^0-^^.-1 < %C-1 "c MF ' >              ! . to 0 !
 
-^^9-^^0+1 < %C-1 "c | ::^C ' > ! Digits !
+^^9-^^0+1 < %C-1 "c | MF ' >            ! Digits !
 
-^^A-^^9-1 < %C-1 "c ::^C ' >   ! Digits to upper case !
+^^A-^^9-1 < %C-1 "c MF ' >              ! Digits to upper case !
 
-^^Z-^^A+1 < %C-1 "c | ::^C ' > ! Upper case !
+^^Z-^^A+1 < %C-1 "c | MF ' >            ! Upper case !
 
-^^_-^^Z-1 < %C-1 "c ::^C ' >   ! Upper case to _ !
+^^_-^^Z-1 < %C-1 "c MF ' >              ! Upper case to _ !
 
-%C-1 "C | ::^C '               ! _ is a symbol constituent !
+%C-1 "C | MF '                          ! _ is a symbol constituent !
 
-^^a-^^_-1 < %C-1 "c ::^C ' >   ! _ to lower case !
+^^a-^^_-1 < %C-1 "c MF ' >              ! _ to lower case !
 
-^^z-^^a+1 < %C-1 "c | ::^C ' > ! Lower case !
+^^z-^^a+1 < %C-1 "c | MF ' >            ! Lower case !
 
-255-^^z-1 < %C-1 "c ::^C ' >   ! Remaining 8-bit characters !
+255-^^z-1 < %C-1 "c MF ' >              ! Remaining 8-bit characters !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

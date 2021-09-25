@@ -4,53 +4,53 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @^UA/baz/
 ^^x UA
 
 :@ER/foo/
 
-HK G* 0J ::@S/foo/ "E ::^C ' Z-3 "N ::^C '
+HK G* 0J ::@S/foo/ MU Z-3 MN
 
 :@ER/^EQA/                          ! Test: ^EQA !
 
-HK G* 0J ::@S/baz/ "E ::^C ' Z-3 "N :: ^C '
+HK G* 0J ::@S/baz/ MU Z-3 MN
 
 :@ER/^EUA/                          ! Test: ^EUA !
 
-HK G* 0J ::@S/x/ "E ::^C ' Z-1 "N ::^C '
+HK G* 0J ::@S/x/ MU Z-1 MN
 
 :@ER/^EUA^EUA/                      ! Test: ^EUA^EUA !
 
-HK G* 0J ::@S/xx/ "E ::^C ' Z-2 "N ::^C '
+HK G* 0J ::@S/xx/ MU Z-2 MN
 
 :@ER/^EUA^EQA/                      ! Test: ^EUA^EQA !
 
-HK G* 0J ::@S/xbaz/ "E ::^C ' Z-4 "N ::^C '
+HK G* 0J ::@S/xbaz/ MU Z-4 MN
 
 :@ER/^VXYZ/                         ! Test: ^V !
 
-HK G* 0J ::@S/xYZ/ "E ::^C ' Z-3 "N ::^C '
+HK G* 0J ::@S/xYZ/ MU Z-3 MN
 
 :@ER/^V^VXYZ/                       ! Test: ^V^V !
 
-HK G* 0J ::@S/xyz/ "E ::^C ' Z-3 "N ::^C '
+HK G* 0J ::@S/xyz/ MU Z-3 MN
 
 :@ER/^Wabc/                         ! Test: ^W !
 
-HK G* 0J ::@S/Abc/ "E ::^C ' Z-3 "N ::^C '
+HK G* 0J ::@S/Abc/ MU Z-3 MN
 
 :@ER/^W^Wabc/                       ! Test: ^W^W !
 
-HK G* 0J ::@S/ABC/ "E ::^C ' Z-3 "N ::^C '
+HK G* 0J ::@S/ABC/ MU Z-3 MN
 
 :@ER/^Q^E/                          ! Test: ^Q !
 
-HK G* 0J ::@S/^R^E/ "E ::^C ' Z-2 "N ::^C '
+HK G* 0J ::@S/^R^E/ MU Z-2 MN
 
 :@ER/^R^E/                          ! Test: ^R !
 
-HK G* 0J ::@S/^Q^E/ "E ::^C ' Z-2 "N ::^C '
+HK G* 0J ::@S/^Q^E/ MU Z-2 MN
 
-HK EC
-
-@^A/!PASS!/
+! Include: cleanup-01.tec !

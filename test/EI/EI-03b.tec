@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: ?XAB !
 
+! Include: setup-01.tec !
+
 @^UA/baz.tec/
 
 :@EI/^EQA/                          ! Test: :@EI// !
@@ -12,5 +14,4 @@
     ::^C
 '
 
-HK
-
+! Include: cleanup-01.tec !

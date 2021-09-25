@@ -4,14 +4,14 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 0 UA
 
-:%A + 123 UB (QB - 123) "N ::^C '   ! Test: :% !
+:%A + 123 UB (QB - 123) MN   ! Test: :% !
 
-42:%A + 456 UB (QB - 456) "N ::^C ' ! Test: n:% !
+42:%A + 456 UB (QB - 456) MN ! Test: n:% !
 
 QA @=/QA=%d/
 
-@^A/!PASS!/
-
-^C
+! Include: cleanup-01.tec !

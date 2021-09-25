@@ -4,7 +4,10 @@
 ! Execution: Standard !
 ! Expect: ?DTB !
 
+! Include: setup-01.tec !
+
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I//
 
 0J -1D                              ! Test: -1D !
-
+
+! Include: cleanup-01.tec !

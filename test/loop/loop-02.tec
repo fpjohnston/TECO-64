@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: ?MAX !
 
+! Include: setup-01.tec !
+
 ! Test: nested loops !
 
 !1! 1 <
@@ -72,4 +74,5 @@
     >
   >
 >
-
+
+! Include: cleanup-01.tec !

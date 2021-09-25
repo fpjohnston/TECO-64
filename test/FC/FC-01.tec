@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS [FC-01.log] !
 
-HK
+! Include: setup-01.tec !
 
 @I/Jabberwocky
 by Lewis Carroll
@@ -46,47 +46,26 @@ All mimsy were the borogoves,
 /
 
 0J
-:@S/Beware/ "U ::^C ' 0L
+:@S/Beware/ MU 0L
 
-:@FC/Jabberwock/Fluffy/             ! Test: FC !
+:@FC/Jabberwock/Fluffy/ MU              ! Test: FC !
 
-"U ::^C '
+:@FC/jaws/JAWS/ MS                      ! Test: FC !
 
-:@FC/jaws/JAWS/                     ! Test: FC !
+10:@FC/manxome/turtle/ MU               ! Test: nFC !
 
-"S ::^C '
+5:@FC/hast/HAST/ MS                     ! Test: nFC !
 
-10:@FC/manxome/turtle/              ! Test: nFC !
+-:@FC/vorpal/mickle/ MU                 ! Test: -FC !
 
-"U ::^C '
+-:@FC/Bander/Floofy/ MS                 ! Test: -nFC !
 
-5:@FC/hast/HAST/                    ! Test: nFC !
+-3:@FC/Bander/Snorkle/ MU               ! Test: -nFC !
 
-"S ::^C '
+550,590:@FC/whiffling/toodling/ MU      ! Test: m,nFC !
 
--:@FC/vorpal/mickle/                ! Test: -FC !
-
-"U ::^C '
-
--:@FC/Bander/Floofy/                ! Test: -nFC !
-
-"S ::^C '
-
--3:@FC/Bander/Snorkle/              ! Test: -nFC !
-
-"U ::^C '
-
-550,590:@FC/whiffling/toodling/     ! Test: m,nFC !
-
-"U ::^C '
-
-550,590:@FC/burbled/bobbled/        ! Test: m,nFC !
-
-"S ::^C '
+550,590:@FC/burbled/bobbled/ MS         ! Test: m,nFC !
 
 HT
 
-HK
-
-@^A/!PASS!/
-
+! Include: setup-01.tec !

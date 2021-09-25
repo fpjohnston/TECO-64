@@ -104,6 +104,10 @@ sub check_tests
         $expect = 'pass';
         $diff   = $2;
     }
+    elsif ( $expect =~ / ^FAIL /msx )
+    {
+        $expect = 'fail';
+    }
     elsif ( $expect =~ /^ ([?][[:alpha:]]{3}) (\s \[ (.+) \])? /msx )
     {
         $expect = $1;
@@ -148,7 +152,28 @@ sub check_tests
         elsif ( defined $diff && $expected ne $output )
         {
             printf "%s %s -> DIFF\n", $report, $expect;
-            print "diff: $output\n";
+        }
+        elsif ($okay)
+        {
+            printf "%s %s -> OK\n", $report, $expect;
+        }
+    }
+    elsif ( $expect eq 'fail' )
+    {
+        # Here if test should succeed
+
+        if ( $output !~ /!FAIL!/ms )
+        {
+            # Say error occurred, but only print first word in output
+
+            my $len = index $output, q{ };
+
+            if ( $len < 0 )
+            {
+                $len = length $output;
+            }
+
+            printf "%s %s -> %s\n", $report, $expect, substr $output, 0, $len;
         }
         elsif ($okay)
         {
@@ -393,6 +418,12 @@ sub run_test
     # Delete any temporary output files created by a previous script
 
     unlink("/tmp/TECO-01.lis", "/tmp/TECO-02.lis");
+
+    my $altfile = $file;
+
+    $altfile =~ s/\-/_/g;
+
+    symlink($file, $altfile);
 
     # Create a zero-length temporary file for reading
 

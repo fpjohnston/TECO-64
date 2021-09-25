@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ! Test: nested conditionals w/ else !
 
 1"N
@@ -103,5 +105,4 @@
   '
 '
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

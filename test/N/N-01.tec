@@ -4,9 +4,9 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-1,0 E3
+! Include: setup-01.tec !
 
-HK
+1,0 E3
 
 @I/'Twas /    10I 12I
 @I/brillig, / 10I 12I
@@ -15,15 +15,12 @@ HK
 @I/slithy /   10I 12I
 @I/toves/     10I 12I
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 
 EC
 
-:@EB|/tmp/TECO-01.lis| "U ::^C '
+:@EB|/tmp/TECO-01.lis| MU
 
-:@N/slithy/ "U ::^C '               ! Test: N !
+:@N/slithy/ MU                          ! Test: N !
 
-EK HK EC
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

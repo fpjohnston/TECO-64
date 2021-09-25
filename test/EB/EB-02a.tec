@@ -4,11 +4,10 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @^UA|foo|
 
 @EB/^EQA/                           ! Test: open file for backup !
 
-EK HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

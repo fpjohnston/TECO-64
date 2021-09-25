@@ -4,15 +4,14 @@
 ! Execution: Standard !
 ! Expect: PASS [_U-04.log] !
 
+! Include: setup-01.tec !
+
 ^^h  @^UA//                         ! Test: append character to Q-register !
 ^^e :@^UA//
 ^^l :@^UA//
 ^^l :@^UA//
 ^^o :@^UA//
 
-:GA 13^T 10^T
+:GA MZ
 
-@^A/!PASS!/
-
-^C
-
+! Include: cleanup-01.tec !

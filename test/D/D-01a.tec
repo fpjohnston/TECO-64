@@ -4,49 +4,48 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// Z UA 0 UD 0J
 
 0D                                  ! Test: 0D !
-::@S/abcde/ "U ::^C '
-QA-Z-QD "N ::^C '
+::@S/abcde/ MU
+QA-Z-QD MN
 
 D                                   ! Test: D !
 1%D ^[ R
-::@S/egh/ "U ::^C '
-QA-Z-QD "N ::^C '
+::@S/egh/ MU
+QA-Z-QD MN
 
 1D                                  ! Test: 1D !
 1%D ^[ R
-::@S/hjk/ "U ::^C '
-QA-Z-QD "N ::^C '
+::@S/hjk/ MU
+QA-Z-QD MN
 
 4D                                  ! Test: nD !
 4%D ^[ R
-::@S/kpq/ "U ::^C '
-QA-Z-QD "N ::^C '
+::@S/kpq/ MU
+QA-Z-QD MN
 
 -D                                  ! Test: -D !
 %D ^[ R
-::@S/prs/ "U ::^C '
-QA-Z-QD "N ::^C '
+::@S/prs/ MU
+QA-Z-QD MN
 
 -1D                                 ! Test: -1D !
 %D ^[ R
-::@S/rtu/ "U ::^C '
-QA-Z-QD "N ::^C '
+::@S/rtu/ MU
+QA-Z-QD MN
 
 -2D                                 ! Test: -nD !
 2%D ^[ R
-::@S/rvw/ "U ::^C '
-QA-Z-QD "N ::^C '
+::@S/rvw/ MU
+QA-Z-QD MN
 
 HK @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// Z UA 0J
 
 28,31D                              ! Test: m,nD !
-R ::@S/0456/ "U ::^C '
-QA-Z-3 "N ::^C '
+R ::@S/0456/ MU
+QA-Z-3 MN
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

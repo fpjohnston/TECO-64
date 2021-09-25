@@ -4,15 +4,18 @@
 ! Execution: Standard !
 ! Expect: PASS [G-03a.log] !
 
+! Include: setup-01.tec !
+
 0 U.A
-HK
 
 :@ER/slithy.toves/
-@^A/G* = /
-G*                                  ! Test: G* !
-10@I//
-HT
-HK
 
-@^A/!PASS!/
-
+@^A/G* = /
+
+G*                                  ! Test: G* !
+
+10@I//
+
+HT
+
+! Include: cleanup-01.tec !

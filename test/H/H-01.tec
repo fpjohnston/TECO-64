@@ -4,33 +4,34 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @I/0123456789/ 10I              ! Add a line !
 
 H UZ UB                         ! Test: H w/ 1 line !
 
-QB - B "N ::^C '
-QZ - Z "N ::^C '
+QB - B MN
+QZ - Z MN
 
 @I/0123456789/ 10I              ! Add another line !
 
 H UZ UB                         ! Test: H w/ 2 lines !
 
-QB - B "N ::^C '
-QZ - Z "N ::^C '
+QB - B MN
+QZ - Z MN
 
 @I/0123456789/ 10I              ! Add another line !
 
 H UZ UB                         ! Test: H w/ 3 lines !
 
-QB - B "N ::^C '
-QZ - Z "N ::^C '
+QB - B MN
+QZ - Z MN
 
 B,ZK                            ! Delete all lines !
 
 H UZ UB                         ! Test: H w/ empty buffer !
 
-QB - B "N ::^C '
-QZ - Z "N ::^C '
+QB - B MN
+QZ - Z MN
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

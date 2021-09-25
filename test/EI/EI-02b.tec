@@ -4,11 +4,10 @@
 ! Execution: Standard !
 ! Expect: ?FNF !
 
+! Include: setup-01.tec !
+
 @^UA/baz.tec/
 
 @EI/^EQA/                           ! Test: @EI// !
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

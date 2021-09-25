@@ -4,11 +4,10 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @^UA/foo.tec/
 
 @EI/^EQA/                           ! Test: @EI// !
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

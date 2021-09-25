@@ -4,9 +4,10 @@
 ! Execution: Standard !
 ! Expect: ?FNF !
 
+! Include: setup-01.tec !
+
 @^UA|baz|
 
 EB^EQA                            ! Test: open file for backup !
 
-EK HK
-
+! Include: cleanup-01.tec !

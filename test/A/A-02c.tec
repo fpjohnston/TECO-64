@@ -23,14 +23,14 @@ QI <
     12@I//
 >
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 EC
 
-:@ER|/tmp/TECO-01.lis| "U ::^C '
+:@ER|/tmp/TECO-01.lis| MU
 
 < :A; >                             ! Test: append pages to buffer !
 
-Z-(QJ * QI * QL) "N ::^C '
+Z-(QJ * QI * QL) MN
 
 HT
 

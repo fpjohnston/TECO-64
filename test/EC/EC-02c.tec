@@ -3,18 +3,21 @@
 ! Requirements: None !
 ! Execution: Standard !
 ! Expect: ?NFI !
+ 
+! Include: setup-01.tec !
 
-@^UA|/tmp/TECO.lis|             ! File name !
+@^UA|/tmp/TECO.lis|                     ! File name !
 
-:@EW/^EQA/ "U ::^C '            ! Open file for write !
+:@EW/^EQA/ MU                           ! Open file for write !
 
-@I/abcdef/                      ! Add some data !
+@I/abcdef/                              ! Add some data !
 
-EC                              ! Test: write data and close file !
+EC                                      ! Test: write data and close file !
 
-:@EB/^EQA/ "U ::^C '            ! Open file for read !
+:@EB/^EQA/ MU                           ! Open file for read !
 
-EC                              ! Close input file !
+EC                                      ! Close input file !
 
-Y                               ! Try to yank input !
-
+Y                                       ! Try to yank input !
+ 
+! Include: cleanup-01.tec !

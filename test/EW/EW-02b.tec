@@ -4,9 +4,10 @@
 ! Execution: Standard !
 ! Expect: ?ERR !
 
+! Include: setup-01.tec !
+
 @^UA|/dev/TECO-01.lis|              ! Name of output file !
 
 @EW/^EQA/                           ! Test: open file for writing !
 
-EK HK
-
+! Include: cleanup-01.tec !

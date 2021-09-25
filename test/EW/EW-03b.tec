@@ -2,15 +2,12 @@
 ! Commands: :EW !
 ! Requirements: None !
 ! Execution: Standard !
-! Expect: ?XAB !
+! Expect: FAIL !
+
+! Include: setup-01.tec !
 
 @^UA|/dev/TECO-01.lis|              ! Name of output file !
 
-:@EW/^EQA/                          ! Test: open file for writing !
+:@EW/^EQA/ MU                       ! Test: open file for writing !
 
-"U
-    ::^C
-'
-
-EK HK
-
+! Include: cleanup-01.tec !
