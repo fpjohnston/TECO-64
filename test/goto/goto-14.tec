@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: ?LOC !
 
+! Include: setup-01.tec !
+
 @O!tag1!
 
 0 "E
@@ -19,6 +21,6 @@
 
 @O!tag2!                            ! Test: branch backward !
 
-::^C
+MF
 
-
+! Include: cleanup-01.tec !

@@ -4,6 +4,8 @@
 ! Execution: Redirect !
 ! Expect: PASS [LF-01.log] !
 
+! Include: setup-01.tec !
+
 ! Test: immediate-action LF commands !
 
 @I/line 1
@@ -15,7 +17,6 @@ line 5
 
 0J
 
-
 
 HK
 

@@ -4,9 +4,12 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 :UA
 
 QA-123 "N @^A/!PASS!/ ^C '
 
 F<                                  ! Test: F< !
-
+
+! Include: cleanup-01.tec !

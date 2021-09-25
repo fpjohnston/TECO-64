@@ -4,6 +4,9 @@
 ! Execution: Standard !
 ! Expect: ?IRA !
 
+! Include: setup-01.tec !
+
 @^A/Setting radix to binary/
 2 ^R ^D                             ! Test: 2^R !
-
+
+! Include: cleanup-01.tec !

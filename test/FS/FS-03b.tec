@@ -2,17 +2,14 @@
 ! Commands: :@FS// !
 ! Requirements: None !
 ! Execution: Standard !
-! Expect: ?XAB !
+! Expect: FAIL !
+
+! Include: setup-01.tec !
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 
 0J
 
-:@FS/foo/BAZ/                       ! Test: :@FS// !
+:@FS/foo/BAZ/ MU                        ! Test: :@FS// !
 
-"U
-    ::^C
-'
-
-HK
-
+! Include: cleanup-01.tec !

@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @O!tag1!
 
 !tag2!
@@ -16,5 +18,4 @@
 
 @O!tag2!                            ! Test: branch backward !
 
-::^C
-
+! Include: cleanup-01.tec !

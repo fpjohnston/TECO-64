@@ -4,15 +4,14 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-10 < @I/0123456789/ 10I >
+! Include: setup-01.tec !
 
-0J .-  0 "N ::^C '                  ! Test: . at start of buffer !
- L .- 11 "N ::^C '                  ! Test: . in middle of buffer !
-3L .- 44 "N ::^C '
-4L .- 88 "N ::^C '
-2L .-110 "N ::^C '                  ! Test: . at end of buffer !
+10 < @I/0123456789/ GY >
 
-HK
+0J .-  0 MN                             ! Test: . at start of buffer !
+ L .- 11 MN                             ! Test: . in middle of buffer !
+3L .- 44 MN
+4L .- 88 MN
+2L .-110 MN                             ! Test: . at end of buffer !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

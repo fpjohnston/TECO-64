@@ -4,13 +4,12 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @^UA|hello|
 
 @EQB/^EQA/                          ! Test: @EQq !
 
 :GB                                 ! Type out what we got !
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

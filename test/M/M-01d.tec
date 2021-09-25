@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @I/123/
 27@I// 27@I//
 
@@ -11,9 +13,6 @@ HXA HK
 
 MA UA                               ! Test: M returning n !
 
-QA - 123 "N
-    ::^C
-'
+QA - 123 MN
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

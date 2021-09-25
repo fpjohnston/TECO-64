@@ -4,9 +4,14 @@
 ! Execution: Redirect !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ^^0FF@^A/hello, world!/``
 ^^9FF@^A/goodbye, cruel world! !PASS!/ EX``
 0                                 ! Test: <CTRL/F>0 !
                                 ! Test: <CTRL/F><CTRL/F> !
 9                                 ! Test: <CTRL/F>9 !
-::^C
+
+MF
+
+! Include: cleanup-01.tec !

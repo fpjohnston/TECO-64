@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS [Q-01.log] !
 
+! Include: setup-01.tec !
+
 @^UA/the quick brown fox jumped over the lazy dog/
 
 123456 UA
@@ -18,7 +20,6 @@
 
 :QA < QB QA ^T %B >                 ! Test: nQ !
 
-13^T 10^T
+MZ
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

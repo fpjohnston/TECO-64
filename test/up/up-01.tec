@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 0 UF
 0 UA
 @^UA| QB-%A "N QA @=/Expected %d, got / QB= %F ' |
@@ -138,7 +140,6 @@
 ^^} UB MA
 ^^~ UB MA
 
-QF "N ::^C '
+QF MN
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

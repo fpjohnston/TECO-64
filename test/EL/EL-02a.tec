@@ -12,6 +12,4 @@
 
 @EL//                               ! Test: close log file !
 
-@^A/!PASS!/
-
 ! Include: cleanup-01.tec !

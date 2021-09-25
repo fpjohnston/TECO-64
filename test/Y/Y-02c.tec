@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @EW|/tmp/TECO-01.lis| 
 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
@@ -12,11 +14,10 @@ EC
 
 @EB|/tmp/TECO-01.lis|
 
-:Y "E ::^C '                        ! Test: yank before EOF !
+:Y MU                                   ! Test: yank before EOF !
 
 HK
 
-:Y "N ::^C '                        ! Test: yank after EOF !
+:Y MN                                   ! Test: yank after EOF !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

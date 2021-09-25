@@ -4,23 +4,22 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @^UA|hello|
 
-:@EQB/^EQA/                         ! Test: :@EQq// !
-"U ::^C '
+:@EQB/^EQA/ MU                          ! Test: :@EQq// !
 
-:@ER/^EQA/                          ! Read file into the edit buffer !
-"U ::^C '
+:@ER/^EQA/ MU                           ! Read file into the edit buffer !
 
 Y
 
 ! Verify that the size is the same !
 
-:QB-Z "N ::^C '
+:QB-Z MN
 
-0J ::@S/^EQA/ "E ::^C '
+0J ::@S/^EQA/ MU
 
-:GB HK
+:GB
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

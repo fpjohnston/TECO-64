@@ -2,18 +2,14 @@
 ! Commands: :@EL// !
 ! Requirements: None !
 ! Execution: Standard !
-! Expect: ?XAB !
+! Expect: FAIL !
 
 ! Include: setup-01.tec !
 
-@^UA|/dev/teco.log|                 ! Load output file name !
+@^UA|/dev/teco.log|                     ! Load output file name !
 
-:@EL/^EQA/                          ! Test: open log file !
+:@EL/^EQA/ MU                           ! Test: open log file !
 
-"U
-    ::^C
-'
-
-@EL//                               ! Test: close log file !
+@EL//                                   ! Test: close log file !
 
 ! Include: cleanup-01.tec !

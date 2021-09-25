@@ -4,11 +4,12 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-0 "E F' ::^C '                      ! Test: F' after " !
+! Include: setup-01.tec !
 
-0 "E F' ::^C | ::^C '               ! Test: F' after " and before | !
+0 "E F' MF '                            ! Test: F' after " !
 
-0 "N | F' ::^C '                    ! Test: F' after | !
+0 "E F' MF | MF '                       ! Test: F' after " and before | !
 
-@^A/!PASS!/
-
+0 "N | F' MF '                          ! Test: F' after | !
+
+! Include: cleanup-01.tec !

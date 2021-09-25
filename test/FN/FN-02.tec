@@ -12,7 +12,7 @@
     @I/line /
     %A \
     @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
-    MY 12@I//
+    GY 12@I//
 >
 
 :@EW|/tmp/TECO-01.lis| MU

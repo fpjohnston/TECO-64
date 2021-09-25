@@ -4,33 +4,18 @@
 ! Execution: Standard !
 ! Expect: PASS [EG-02.log] !
 
-:@EG/INI/                           ! Test: get TECO_INIT environment variable !
-"E
-    ::^C
-|
-    :G* 10^T
-'
+! Include: setup-01.tec !
 
-:@EG/LIB/                           ! Test: get TECO_LIBRARY environment variable !
-"E
-    ::^C
-|
-    :G* 10^T
-'
+:@EG/INI/ MU                            ! Test: get TECO_INIT environment variable !
+:G* MZ
 
-:@EG/MEM/                           ! Test: get TECO_MEMORY environment variable !
-"E
-    ::^C
-|
-    :G* 10^T
-'
+:@EG/LIB/ MU                            ! Test: get TECO_LIBRARY environment variable !
+:G* MZ
 
-:@EG/VTE/                           ! Test: get TECO_VTEDIT environment variable !
-"E
-    ::^C
-|
-    :G* 10^T
-'
+:@EG/MEM/ MU                            ! Test: get TECO_MEMORY environment variable !
+:G* MZ
 
-@^A/!PASS!/
-
+:@EG/VTE/ MU                            ! Test: get TECO_VTEDIT environment variable !
+:G* MZ
+
+! Include: cleanup-01.tec !

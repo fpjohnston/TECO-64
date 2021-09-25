@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS [expr-05.log] !
 
+! Include: setup-01.tec !
+
 10+(1) =                            ! Test: n+() !
 10+(1+(2)) =                        ! Test: n+(()) !
 10+(1+(2+(3))) =                    ! Test: n+((())) !
@@ -18,5 +20,4 @@
 ((456)) =                           ! Test: ((n)) !
 (((789))) =                         ! Test: (((n))) !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

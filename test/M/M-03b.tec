@@ -4,9 +4,12 @@
 ! Execution: Standard !
 ! Expect: ?MAX !
 
+! Include: setup-01.tec !
+
 0 UA
 
-@^UA\ %A-64 "L MA | ::^C ' \
+@^UA\ %A-64 "L MA | MF ' \
 
 MA                                  ! Test: nested M !
-
+
+! Include: cleanup-01.tec !

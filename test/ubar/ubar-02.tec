@@ -13,23 +13,22 @@
     @I/line /
     %A \
     @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
-    13@I// 10@I// 12@I//
+    GY 12@I//
 >
 
-:@EW|/tmp/TECO-01.lis| "U ::^C '
+:@EW|/tmp/TECO-01.lis| MU
 
 EC
 
-:@EB|/tmp/TECO-01.lis| "U ::^C '
+:@EB|/tmp/TECO-01.lis| MU
 
-6:@_/klm/                           ! Test: n_ !
-"U ::^C '
+6:@_/klm/ MU                            ! Test: n_ !
 
 EC
 
 0,1 E3
 
-:@ER|/tmp/TECO-01.lis| "U ::^C ' Y
+:@ER|/tmp/TECO-01.lis| MU Y
 
 HT
 

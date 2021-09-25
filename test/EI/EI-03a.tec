@@ -8,10 +8,6 @@
 
 @^UA/foo.tec/
 
-:@EI/^EQA/                          ! Test: :@EI// !
-
-"U
-    ::^C
-'
+:@EI/^EQA/ MU                           ! Test: :@EI// !
 
 ! Include: cleanup-01.tec !

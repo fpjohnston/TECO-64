@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ! Test: NUL characters in command files !
 
 !NUL!
@@ -16,7 +18,4 @@
 
 !NUL!
 
-
-@^A/!PASS!/
-
-
+! Include: cleanup-01.tec !

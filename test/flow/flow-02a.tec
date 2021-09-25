@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 0 UA  1 < %A-5; F< >                ! Test: 1 < F< > !
 
 0 UA 10 < %A-5; F< >                ! Test: 10 < F< > !
@@ -14,5 +16,4 @@
 
 0 UA 1 < %A-5; 1 < > F< >           ! Test: 1 < 1 < > F< > !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

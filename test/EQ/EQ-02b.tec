@@ -4,9 +4,10 @@
 ! Execution: Standard !
 ! Expect: ?FNF !
 
+! Include: setup-01.tec !
+
 @^UA|goodbye.txt|
 
 @EQB/^EQA/                          ! Test: @EQq !
 
-HK
-
+! Include: cleanup-01.tec !

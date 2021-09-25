@@ -4,6 +4,8 @@
 ! Execution: Redirect !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ! Test: NUL input characters !
 
 !NUL!
@@ -16,5 +18,4 @@
 
 !NUL!
 
-!PASS!
-ex
+! Include: cleanup-01.tec !

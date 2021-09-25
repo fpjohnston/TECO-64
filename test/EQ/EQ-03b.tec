@@ -2,13 +2,12 @@
 ! Commands: :@EQ// !
 ! Requirements: None !
 ! Execution: Standard !
-! Expect: ?XAB !
+! Expect: FAIL !
+
+! Include: setup-01.tec !
 
 @^UA|goodbye.txt|
 
-:@EQB/^EQA/                         ! Test: :@EQq !
+:@EQB/^EQA/ MU                          ! Test: :@EQq !
 
-"U
-    ::^C
-'
-
+! Include: cleanup-01.tec !

@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 0UA
 
 ! Test: push and pop maximum Q-registers !
@@ -15,11 +17,8 @@
 
 64 <
     ]B
-    QB-QA "N
-        ::^C
-    '
+    QB-QA MN
     -1%A
 >
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

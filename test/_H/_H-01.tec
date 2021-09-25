@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 ^H UA                               ! Test: Get time of day in milliseconds !
 QA / 1000 UB                        ! Convert to seconds !
 
@@ -11,8 +13,7 @@ QA / 1000 UB                        ! Convert to seconds !
 
 QB @=/Current time of day is %d/
 
-QB           "L ::^C '
-QB-(86400-1) "G ::^C '
+QB           MS
+86400 - QB   MS
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

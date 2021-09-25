@@ -4,7 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 64 < [A >                           ! Test: maximum Q-register pushes !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

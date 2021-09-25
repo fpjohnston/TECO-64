@@ -13,8 +13,7 @@
 
 "U
     @^A/Can't open log file/
-    @^A/FAIL/
-    ^C
+    MF
 '
 ``
 
@@ -39,8 +38,7 @@ HK
 
 "U
     @^A/Can't compare log files/
-    @^A/FAIL/
-    ^C
+    MF
 '
 
 G+ 0J
@@ -49,8 +47,7 @@ G+ 0J
 
 "U
     @^A/Log files differ/
-    @^A/FAIL/
-    ^C
+    MF
 '
 
 ! Include: cleanup-01.tec !

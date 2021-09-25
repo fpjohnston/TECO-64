@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS [FS-04.log] !
 
-HK
+! Include: setup-01.tec !
 
 0UA
 
@@ -23,7 +23,5 @@ HK
 3@FS/abc/ABC/                       ! Test: 3FS !
 
 HT
-HK
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

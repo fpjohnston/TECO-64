@@ -4,38 +4,38 @@
 ! Execution: Standard !
 ! Expect: PASS [EP-01.log] !
 
-:@EW|/tmp/TECO-01.lis| "U ::^C ' ! Create 1st temp file !
+! Include: setup-01.tec !
 
-@I/abcdef/ 10I                  ! Add some data !
+:@EW|/tmp/TECO-01.lis| MU               ! Create 1st temp file !
 
-EC                              ! Write data and close file !
+@I/abcdef/ 10I                          ! Add some data !
 
-:@EW|/tmp/TECO-02.lis| "U ::^C ' ! Create 2nd temp file !
+EC                                      ! Write data and close file !
 
-@I/123456/ 10I                  ! Add some data !
+:@EW|/tmp/TECO-02.lis| MU               ! Create 2nd temp file !
 
-EC                              ! Write data and close file !
+@I/123456/ 10I                          ! Add some data !
 
-:@ER|/tmp/TECO-01.lis| "U ::^C ' ! Open 1st file on primary stream !
+EC                                      ! Write data and close file !
 
-A
-
-EP                              ! Test: switch to secondary input stream !
-
-:@ER|/tmp/TECO-02.lis| "U ::^C '       ! Open 2nd file on secondary stream !
+:@ER|/tmp/TECO-01.lis| MU               ! Open 1st file on primary stream !
 
 A
 
-@ER//                           ! Switch to primary stream !
+EP                                      ! Test: switch to secondary input stream !
+
+:@ER|/tmp/TECO-02.lis| MU               ! Open 2nd file on secondary stream !
+
+A
+
+@ER//                                   ! Switch to primary stream !
 
 EC
 
-EP                              ! Switch to secondary stream !
+EP                                      ! Switch to secondary stream !
 
 EC
 
 HT
-HK
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

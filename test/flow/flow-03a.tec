@@ -4,17 +4,18 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-1 UA QA < -1%A "L ::^C ' F> >       ! Test: 1 < F> > !
+! Include: setup-01.tec !
 
-QA "N ::^C '
+1 UA QA < -1%A "L MF ' F> >             ! Test: 1 < F> > !
 
-10 UA QA < -1%A "L ::^C ' F> >      ! Test: 10 < F> > !
+QA MN
 
-QA-9 "N ::^C '
+10 UA QA < -1%A "L MF ' F> >            ! Test: 10 < F> > !
 
-1000 UA  < -1%A "L ::^C ' F> >      ! Test: 1000 < F> > !
+QA-9 MN
 
-QA-999 "N ::%C '
+1000 UA  < -1%A "L MF ' F> >            ! Test: 1000 < F> > !
 
-@^A/!PASS!/
-
+QA-999 MN
+
+! Include: cleanup-01.tec !

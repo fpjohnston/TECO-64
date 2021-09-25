@@ -4,7 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-0 "E F| ::^C | '                    ! Test: F| after " !
+! Include: setup-01.tec !
 
-@^A/!PASS!/
-
+0 "E F| MF | '                          ! Test: F| after " !
+
+! Include: cleanup-01.tec !

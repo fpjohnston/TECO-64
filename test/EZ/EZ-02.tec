@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-HK
+! Include: setup-01.tec !
 
 @^UA/hello, world!/
 
@@ -25,8 +25,7 @@ HK
 QA"E
     @^A/"^EQA" did not match: /
     :G+
-    ::^C
+    MF
 '
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

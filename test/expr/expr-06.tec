@@ -4,21 +4,22 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
  1,  0 UA UB                        ! Test: m,0 !
 
-QA   "N ::^C ' QB-1 "N ::^C '
+QA MN QB-1 MN
 
  0,  1 UA UB                        ! Test: 0,n !
 
-QA-1 "N ::^C ' QB "N ::^C '
+QA-1 MN QB MN
 
  1,  2 UA UB                        ! Test: m,n !
 
-QA-2 "N ::^C ' QB-1 "N ::^C '
+QA-2 MN QB-1 MN
 
 1,  -2 UA UB                        ! Test: m,-n !
 
-QA+2 "N ::^C ' QB-1 "N ::^C '
+QA+2 MN QB-1 MN
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

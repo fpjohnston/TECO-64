@@ -3,11 +3,13 @@
 ! Requirements: None !
 ! Execution: Standard !
 ! Expect: ?IIA !
+
+! Include: setup-01.tec !
  
 0,512 E1                            ! Enable extended insert features !
 
 HK ^^A @I/text/                     ! Test: n@I/text/ !
 
-HK
+MF
 
-::^C
+! Include: cleanup-01.tec !

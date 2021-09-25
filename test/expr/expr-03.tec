@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 0 UF            ! Count of failures !
 
 ! Macro to evaluate expression and compare with what we expected !
@@ -49,9 +51,6 @@
 
 @^UA| 10^_      |    -11 :MB        ! Test: 1's complement !
 
-QF "N
-    ::^C
-'
+QF MN
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

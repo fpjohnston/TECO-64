@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @I/abcdef
 /
 
@@ -12,18 +14,18 @@
 
 .:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
 
-.+QA-QB "N ::^C '
+.+QA-QB MN
 
 0J
 
-:@S/cde/ "U ::^C '
+:@S/cde/ MU
 
 ^Y UC UB                            ! Test: ^Y after S command !
 ^S UA
 
 .:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
 
-.+QA-QB "N ::^C '
+.+QA-QB MN
 
 @^UA/Jabberwocky/
 
@@ -34,9 +36,6 @@ GA
 
 .:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
 
-.+QA-QB "N ::^C '
+.+QA-QB MN
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

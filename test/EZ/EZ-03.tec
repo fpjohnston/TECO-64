@@ -4,7 +4,7 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-HK
+! Include: setup-01.tec !
 
 @^UA/hello, world!/
 
@@ -12,25 +12,20 @@ GA @I/"/ 0J @I/echo "/ HXB HK
 
 @^A/command = [^EQB]/
 
-:@EZ/^EQB/                          ! Test: :@EZ// !
+:@EZ/^EQB/ MU                           ! Test: :@EZ// !
 
-"U
-    ::^C
-'
+G+                                      ! Copy output to edit buffer !
 
-G+                                  ! Copy output to edit buffer !
+0J                                      ! Go to start !
 
-0J                                  ! Go to start !
-
-::@S/^EQA/ UA                       ! See if it compares w/ what we expect !
+::@S/^EQA/ UA                           ! See if it compares w/ what we expect !
 
 HK
 
 QA"E
     @^A/"^EQA" did not match: /
     :G+
-    ::^C
+    MF
 '
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

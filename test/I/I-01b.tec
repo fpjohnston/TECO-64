@@ -4,9 +4,12 @@
 ! Execution: Standard !
 ! Expect: ?IIA !
 
+! Include: setup-01.tec !
+
 512,0 E1                            ! Disable extended insert features !
 
 HK 65Iabc                         ! Test: insert ASCII chr. & text !
 
-HK ::^C
-
+MF
+
+! Include: cleanup-01.tec !

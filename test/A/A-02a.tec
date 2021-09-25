@@ -17,7 +17,7 @@ QI <
         . UC
         %A UB QA-10 "L 32@I// ' QA \
         @I/ abcdefghijklmnopqrstuvwxyz0123456789/
-        10@I//
+        GY
         .-QC UL
     >
     12@I//
@@ -30,7 +30,7 @@ EC
 
 A                                   ! Test: append 1st page to buffer !
 
-Z-(QJ * QL) "N ::^C '
+Z-(QJ * QL) MN
 
 HT
 

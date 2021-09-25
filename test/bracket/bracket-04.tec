@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 0UA
 
 ! Test: push and pop Q-registers, each with unique value !
@@ -19,17 +21,12 @@
 
 <
     :]B;
-    QB-QA "N
-        ::^C
-    '
+    QB-QA MN
     -1%A
 >
 
 ! Verify that we popped all expected Q-registers !
 
-QA"N
-    ::^C
-'
+QA MN
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

@@ -8,15 +8,12 @@
 
 @^UA|*.tec|
 
-:@EN/^EQA/                          ! Test: :@EN/file/ !
-"E
-    ::^C
-'
+:@EN/^EQA/ MU                           ! Test: :@EN/file/ !
 
 0UA
 <
-    :@EN//;                         ! Test: :@EN// !
-    %A                              ! Count how many files we found !
+    :@EN//;                             ! Test: :@EN// !
+    %A                                  ! Count how many files we found !
 >
 
 QA :@=/%u file/
@@ -24,7 +21,5 @@ QA :@=/%u file/
 QA-1 "N @^A/s/ '
 
 @^A/ matched/
-
-@^A/!PASS!/
 
 ! Include: cleanup-01.tec !

@@ -11,13 +11,7 @@ HXA HK
 
 MA UA UB                            ! Test: M returning m and n !
 
-QB - 123 "N
-    ::^C
-'
+QB - 123 MN
+QA - 456 MN
 
-QA - 456 "N
-    ::^C
-'
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

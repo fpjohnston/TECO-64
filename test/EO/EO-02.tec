@@ -3,6 +3,9 @@
 ! Requirements: None !
 ! Execution: Standard !
 ! Expect: ?NYI !
+
+! Include: setup-01.tec !
  
 40 EO                               ! Test: nEO !
-
+
+! Include: cleanup-01.tec !

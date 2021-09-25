@@ -4,7 +4,8 @@
 ! Execution: Standard !
 ! Expect: ?MAP !
 
+! Include: setup-01.tec !
+
 F'                                  ! Test: F' outside of conditionalk !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

@@ -4,25 +4,24 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @I/ABC/
 
 -1 ^X                               ! Require exact case match !
 
-0J :@S/abc/ "S ::^C '
+0J :@S/abc/ MS
 
 ^W                                  ! Test: ^W !
 
-0J :@S/abc/ "U ::^C '
+0J :@S/abc/ MU
 
 1 ^W                                ! Test: 1^W !
 
-0J :@S/abc/ "U ::^C '
+0J :@S/abc/ MU
 
 0 ^W                                ! Test: 0^W !
 
-0J :@S/abc/ "S ::^C '
+0J :@S/abc/ MS
 
-HK
-
-@:^A/!PASS!/
-
+! Include: cleanup-01.tec !

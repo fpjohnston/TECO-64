@@ -4,22 +4,19 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @I
 \
     UA
     UB
-    QB - 123 "N
-        ::^C
-    '
-
-    QA - 456 "N
-        ::^C
-    '
-
+    QB - 123 MN
+    QA - 456 MN
     @^A/!PASS!/
 \
 
 HXA HK
 
 123,456 MA                          ! Test: m,nM !
-
+
+! Include: cleanup-01.tec !

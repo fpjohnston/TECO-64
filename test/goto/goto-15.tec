@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 0 UF
 
 @^UA\
@@ -28,7 +30,6 @@
 0 UI
 6 < QI MA %I >
 
-QF "N ::^C '
+QF MN
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

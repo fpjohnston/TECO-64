@@ -4,18 +4,20 @@
 ! Execution: Standard !
 ! Expect: ?LOC !
 
+! Include: setup-01.tec !
+
 1 <
     1 <
         @O!tag1!                    ! Test: branch forward !
     >
 
-    ::^C
+    MF
 
     !tag1!
 
     @^A/!PASS!/
 
-    ::^C
+    MF
 >
 
-
+! Include: cleanup-01.tec !

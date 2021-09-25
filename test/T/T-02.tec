@@ -47,39 +47,39 @@ All mimsy were the borogoves,
 
 0J 15L
 
-@^A/-----/ 13^T 10^T
-T                                   ! Test: T at start of line !
+@^A/-----/ MZ
+T                                       ! Test: T at start of line !
 
-@^A/-----/ 13^T 10^T
--1 T                                ! Test: -1T !
+@^A/-----/ MZ
+-1 T                                    ! Test: -1T !
 
-@^A/-----/ 13^T 10^T
--T                                  ! Test: -T !
+@^A/-----/ MZ
+-T                                      ! Test: -T !
 
-@^A/-----/ 13^T 10^T
-1 T                                 ! Test: 1T !
+@^A/-----/ MZ
+1 T                                     ! Test: 1T !
 
-@^A/-----/ 13^T 10^T
-2 T                                 ! Test: 2T !
+@^A/-----/ MZ
+2 T                                     ! Test: 2T !
 
-@^A/-----/ 13^T 10^T
--2 T                                ! Test: -2T !
+@^A/-----/ MZ
+-2 T                                    ! Test: -2T !
 
 @S/the /
 
-@^A/-----/ 13^T 10^T
-0 T 13^T 10^T                       ! Test: 0T in middle of line !
+@^A/-----/ MZ
+0 T MZ                                  ! Test: 0T in middle of line !
 
-@^A/-----/ 13^T 10^T
-T                                   ! Test: T in middle of line !
+@^A/-----/ MZ
+T                                       ! Test: T in middle of line !
 
-@^A/-----/ 13^T 10^T
-.,.+6 T 13^T 10^T                   ! Test: .,.+nT !
+@^A/-----/ MZ
+.,.+6 T MZ                              ! Test: .,.+nT !
 
-@^A/-----/ 13^T 10^T
-.-6,. T 13^T 10^T                   ! Test: .-n,.T !
+@^A/-----/ MZ
+.-6,. T MZ                              ! Test: .-n,.T !
 
-@^A/-----/ 13^T 10^T
-621,774 T                           ! Test: m,nT !
+@^A/-----/ MZ
+621,774 T                               ! Test: m,nT !
 
 ! Include: cleanup-01.tec !

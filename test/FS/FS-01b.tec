@@ -3,12 +3,13 @@
 ! Requirements: None !
 ! Execution: Standard !
 ! Expect: ?SRH !
+
+! Include: setup-01.tec !
  
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 
 0J
 
-FSfooBAZ                        ! Test: FS !
+FSfooBAZ                            ! Test: FS !
 
-HK
-
+! Include: cleanup-01.tec !

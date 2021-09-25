@@ -4,11 +4,14 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @^A/!PASS!/
 
 F>                                  ! Test: F> !
 
 @^A/!FAIL!/
 
-::^C
-
+MF
+
+! Include: cleanup-01.tec !

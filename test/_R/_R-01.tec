@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @^A/Setting radix to octal/
 8 ^R ^D                             ! Test: 8^R !
 
@@ -13,5 +15,4 @@
 @^A/Setting radix to hexadecimal/
 16 ^R ^D                            ! Test: 16^R !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

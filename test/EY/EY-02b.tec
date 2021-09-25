@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 @EW|/tmp/TECO.lis| 
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
 EC
@@ -14,13 +16,6 @@ EC
 
 2,0 ED
 
-:EY                                 ! Test: :EY w/o protection !
-"U
-    @^A/FAIL/
-    ::^C
-'
+:EY MU                                  ! Test: :EY w/o protection !
 
-HK
-
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !

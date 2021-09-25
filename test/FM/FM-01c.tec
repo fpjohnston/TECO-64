@@ -4,11 +4,10 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
-:@FM/F1/EX/                         ! Test: map key to command !
-"U ::^C '
+! Include: setup-01.tec !
 
-:@FM/BAZ/EX/                        ! Test: map key to command !
-"S ::^C '
+:@FM/F1/EX/ MU                          ! Test: map key to command !
 
-@^A/!PASS!/
-
+:@FM/BAZ/EX/ MS                         ! Test: map key to command !
+
+! Include: cleanup-01.tec !

@@ -3,8 +3,9 @@
 ! Requirements: None !
 ! Execution: Standard !
 ! Expect: PASS !
- 
-EO-200 "N ::^C '                    ! Test: EO !
 
-@^A/!PASS!/
-
+! Include: setup-01.tec !
+ 
+EO-200 MN                               ! Test: EO !
+
+! Include: cleanup-01.tec !

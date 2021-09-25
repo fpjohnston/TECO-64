@@ -4,6 +4,8 @@
 ! Execution: Standard !
 ! Expect: PASS !
 
+! Include: setup-01.tec !
+
 FQAF1                             ! Test: map key to Q-register A !
 
 @FQZ/F2/                            ! Test: map key to Q-register Z !
@@ -12,5 +14,4 @@ FQAF1                             ! Test: map key to Q-register A !
 
 @FQ9/F4/                            ! Test: map key to Q-register 9 !
 
-@^A/!PASS!/
-
+! Include: cleanup-01.tec !
