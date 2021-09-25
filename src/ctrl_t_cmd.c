@@ -71,7 +71,14 @@ void exec_ctrl_T(struct cmd *cmd)
 
             if (n >= 0)
             {
-                type_out((int)n & 0xFF);
+                int c = (int)n & 0xFF;
+
+                if (c == LF && f.e3.CR_type)
+                {
+                    type_out(CR);
+                }
+
+                type_out(c);
             }
             else
             {

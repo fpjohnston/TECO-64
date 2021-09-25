@@ -305,9 +305,9 @@ int tprint(
     {
         for (int i = 0; i < nbytes; ++i)
         {
-            if (buf[i] == '\n')
+            if (buf[i] == LF)
             {
-                tputc('\r', false);
+                tputc(CR, false);
             }
 
             tputc(buf[i], false);

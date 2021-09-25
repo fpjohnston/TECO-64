@@ -381,7 +381,7 @@ void init_options(
                     options.execute = NULL;
                 }
 
-                teco_memory = NULL;
+                options.memory  = NULL;
 
                 break;
 
@@ -564,7 +564,6 @@ void init_options(
     if (mung && argv[optind] != NULL)
     {
         options.execute = argv[optind++];
-
-        teco_memory = NULL;
+        options.memory  = NULL;
     }
 }

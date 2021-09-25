@@ -509,6 +509,11 @@ void print_qreg(int qindex)
     {
         int c = qreg->text.data[i];
 
+        if (c == LF && f.e3.CR_type)
+        {
+            type_out(CR);
+        }
+
         type_out(c);
     }
 }
