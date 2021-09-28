@@ -1,5 +1,5 @@
 ! TECO test: Test search mode flag !
-! Commands: 1^X !
+! Commands: 0^X !
 ! Requirements: None !
 ! Execution: Standard !
 ! Expect: PASS !
@@ -8,17 +8,13 @@
 
 ! Try to match lower case letters (and special characters) !
 
-@I/`abcdefghijklmnopqrstuvwxyz|||~/
+@I/`abcdefghijklmnopqrstuvwxyz{|}~/
 
-1 ^X                                ! Test: 1^X !
+0 ^X                                ! Test: 0^X !
 
 0J ^^@ UA
 
-:@S/^EUA/ MS :%A
-
-26 < :@S/^EUA/ MU %A >
-
-5 < :@S/^EUA/ MS %A >
+31 < :@S/^EUA/ MU %A >
 
 HK
 
@@ -26,14 +22,10 @@ HK
 
 @I/@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^/
 
-1 ^X                                ! Test: 1^X !
+0 ^X                                ! Test: 0^X !
 
 0J ^^` UA
 
-:@S/^EUA/ MS :%A
-
-26 < :@S/^EUA/ MU %A >
-
-5 < :@S/^EUA/ MS %A >
+31 < :@S/^EUA/ MU %A >
 
 ! Include: cleanup-01.tec !

@@ -6,7 +6,7 @@
 
 ! Include: setup-01.tec !
 
-@^UA/foo.tec/
+@^UA|/tmp/foo|
 
 :@EI/^EQA/ MU                           ! Test: :@EI// !
 

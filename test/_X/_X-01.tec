@@ -1,31 +1,25 @@
-! TECO test: Test search mode flag !
-! Commands: -1^X !
+! TECO test: Match any character !
+! Commands: ^X !
 ! Requirements: None !
 ! Execution: Standard !
-! Expect: PASS !
+! Expect: PASS [_X-01.log] !
 
 ! Include: setup-01.tec !
 
-! Try to match lower case letters (and special characters) !
+0 UA
 
-@I/`abcdefghijklmnopqrstuvwxyz|||~/
+128 < %A-1 @I// > 10@I//
 
--1 ^X                               ! Test: -1^X !
+0 J
 
-0J ^^@ UA
+128 <
+    ::@S/^X/                        ! Test: ^X !
+    "U
+        0A:@/%d /
+        C
+    '
+>
 
-31 < :@S/^EUA/ MS %A >
-
-HK
-
-! Try to match upper case letters (and special characters) !
-
-@I/@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^/
-
--1 ^X                               ! Test: -1^X !
-
-0J ^^` UA
-
-31 < :@S/^EUA/ MS %A >
+MZ
 
 ! Include: cleanup-01.tec !
