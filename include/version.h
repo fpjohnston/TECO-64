@@ -31,7 +31,7 @@
 // TECO-64 version numbers
 
 #define MAJOR_VERSION    200    ///< Major version
-#define MINOR_VERSION     21    ///< Minor version
-#define PATCH_VERSION      2    ///< Patch version
+#define MINOR_VERSION     22    ///< Minor version
+#define PATCH_VERSION      0    ///< Patch version
 
 #endif  // !defined(_VERSION_H)
