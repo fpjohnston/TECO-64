@@ -1,0 +1,31 @@
+! TECO test: Convert lines to characters w/ ^Q !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+ 
+@I/a
+ab
+abc
+abcd
+abcde
+abcdef
+abcdefg
+abcdefgh
+abcdefghi
+abcdefghij
+/
+
+0J 5L
+
+ 0^Q UA QA   [["N]]                         ! Test:  0^Q (start of line) !
+ 1^Q UA QA-7 [["N]]                         ! Test:  1^Q (start of line) !
+-1^Q UA QA+6 [["N]]                         ! Test: -1^Q (start of line) !
+
+3C
+
+ 0^Q UA QA+3 [["N]]                         ! Test:  0^Q (middle of line) !
+ 1^Q UA QA-4 [["N]]                         ! Test:  1^Q (middle of line) !
+-1^Q UA QA+9 [["N]]                         ! Test: -1^Q (middle of line) !
+
+[[exit]]

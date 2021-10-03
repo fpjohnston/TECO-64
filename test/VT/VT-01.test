@@ -1,0 +1,13 @@
+! TECO test: Test vertical tab in command string w/ VT !
+! Requires: TECO, Redirect !
+! Expects: PASS !
+
+[[enter]]
+
+@I/foo/ 0J
+
+! Test: vertical tab in command string !
+
+:@FS{foo}{baz} [["U]]
+
+[[exit]]

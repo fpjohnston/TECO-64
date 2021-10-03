@@ -1,0 +1,13 @@
+! TECO test: Load Q-registers with default w/ :U !
+! Requires: TECO !
+! Expects: PASS !
+
+:UN                                 ! Test: load Q-registers w/ defaults !
+:UM
+
+[[enter]]
+
+QM :@=/QM=%d: /
+QN :@=/QN=%d: /
+
+[[exit]]

@@ -1,0 +1,34 @@
+! TECO test: Write contents of edit buffer w/ P !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+1,0 E3
+
+@I/page 1/ 12I
+@I/page 2/ 12I
+@I/page 3/ 12I
+@I/page 4/ 12I
+@I/page 5/ 12I
+@I/page 6/ 12I
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+P                                   ! Test: P !
+
+0J ::@S/page 1/ [["U]]
+
+P                                   ! Test: P !
+
+0J ::@S/page 2/ [["U]]
+
+P                                   ! Test: P !
+
+0J ::@S/page 3/ [["U]]
+
+[[exit]]

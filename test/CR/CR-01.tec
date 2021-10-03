@@ -1,17 +1,0 @@
-! TECO test: Test carriage return in command string !
-! Commands: CR !
-! Requirements: None !
-! Execution: Redirect !
-! Expect: PASS !
-
-@I/foo/ 0J
-
-! Test: carriage return in command string !
-
-:@FS|foo}{baz| MU
-
-HK
-
-!PASS!
-
-

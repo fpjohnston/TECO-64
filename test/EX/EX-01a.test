@@ -1,0 +1,12 @@
+! TECO test: Exit TECO after ER w/ EX !
+! Requires: TECO-64 !
+! Expects: PASS !
+
+[[enter]]
+
+@ER"[[in1]]"                        ! Open the file for input !
+
+[[PASS]]
+
+EX                                  ! Test: EX after ER !
+

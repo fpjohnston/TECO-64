@@ -1,0 +1,9 @@
+! TECO test: Open indirect command file w/ EI !
+! Requires: TECO !
+! Expects: ?FNF !
+
+[[enter]]
+
+EI[[cmd2]]                            ! Test: EI !
+
+[[exit]]

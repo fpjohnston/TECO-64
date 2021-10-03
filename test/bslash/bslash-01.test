@@ -1,0 +1,87 @@
+! TECO test: Get value of digit string w/ \ !
+! Requires: TECO !
+! Expects: PASS [bslash-01.log] !
+
+[[enter]]
+
+^D
+
+@^A/    decimal: /
+
+HK @I/0123456789/ 0J .UA
+\:@=/%d /                           ! Test: \ /w decimal digits !
+.-QA-10 [["N]]
+
+HK @I/-12345/     0J .UA
+\:@=/%d /                           ! Test: \ /w negative number !
+.-QA-6 [["N]]
+
+HK @I/123 456/    0J .UA
+\:@=/%d /                           ! Test: \ /w separate numbers !
+.-QA-3 [["N]]
+
+HK @I/456abc/     0J .UA
+\:@=/%d /                           ! Test: \ /w non-digits !
+.-QA-3 [["N]]
+
+HK @I/xyz/        0J .UA
+\ @=/%d/                            ! Test: \ /w non-digits !
+.-QA [["N]]
+
+^O
+
+@^A/      octal: /
+
+HK @I/01234567/   0J .UA
+\:@=/%o /                           ! Test: \ /w octal digits !
+.-QA-8 [["N]]
+
+HK @I/-12345/     0J .UA
+\:@=/%o /                           ! Test: \ /w negative number !
+.-QA-6 [["N]]
+
+HK @I/123 456/    0J .UA
+\:@=/%o /                           ! Test: \ /w separate numbers !
+.-QA-3 [["N]]
+
+HK @I/789abc/     0J .UA
+\:@=/%o /                           ! Test: \ /w non-digits !
+.-QA-1 [["N]]
+
+HK @I/xyz/        0J .UA
+\ @=/%o/                            ! Test: \ /w non-digits !
+.-QA [["N]]
+
+^D 16^R
+
+@^A/hexadecimal: /
+
+HK @I/01234/      0J .UA
+\:@=/%x /                           ! Test: \ /w hexadecimal digits !
+.-QA-5 [["N]]
+
+HK @I/56789/      0J .UA
+\:@=/%x /                           ! Test: \ /w hexadecimal digits !
+.-QA-5 [["N]]
+
+HK @I/abcdef/     0J .UA
+\:@=/%x /                           ! Test: \ /w hexadecimal digits !
+.-QA-6 [["N]]
+
+HK @I/-12345/     0J .UA
+\:@=/%x /                           ! Test: \ /w negative number !
+.-QA-6 [["N]]
+
+HK @I/123 abc/    0J .UA
+\:@=/%x /                           ! Test: \ /w separate numbers !
+.-QA-3 [["N]]
+
+HK @I/456abg/     0J .UA
+\:@=/%x /                           ! Test: \ /w non-digits !
+.-QA-5 [["N]]
+
+HK @I/xyz/        0J .UA
+\ @=/%x/                            ! Test: \ /w non-digits !
+.-QA [["N]]
+
+[[exit]]

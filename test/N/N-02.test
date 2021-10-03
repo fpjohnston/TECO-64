@@ -1,0 +1,24 @@
+! TECO test: Non-stop forward search w/ N !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+1,0 E3
+
+@I/'Twas /    10I 12I
+@I/brillig, / 10I 12I
+@I/and /      10I 12I
+@I/the /      10I 12I
+@I/slithy /   10I 12I
+@I/toves/     10I 12I
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+:@N/gyre/ [["S]]                            ! Test: N !
+
+[[exit]]

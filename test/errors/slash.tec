@@ -1,9 +1,0 @@
-! TECO test: Get detailed error message !
-! Commands: / !
-! Requirements: None !
-! Execution: Redirect !
-! Expect: ?FNF !
-
-ERfoo``/                            ! Test: print detailed error !
-!PASS!
-EX``

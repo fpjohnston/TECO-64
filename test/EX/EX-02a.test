@@ -1,0 +1,11 @@
+! TECO test: Exit TECO after EW w/ EX !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@EW"[[out1]]"                           ! Open the file for output !
+
+[[PASS]]
+
+EX                                      ! Test: EX after EW !

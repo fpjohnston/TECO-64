@@ -1,0 +1,26 @@
+*! TECO test: Back up and type one line w/ BS !
+! Requires: TECO, Redirect !
+! Expects: PASS [BS.log] !
+
+0,128ET HK
+``
+*
+*! Test: immediate-action BS commands !
+
+@I/line 1
+line 2
+line 3
+line 4
+line 5
+/
+
+0J 4L
+``
+*   line 4
+* line 3
+* line 2
+*HK
+
+^D EK HK ^A!PASS!^A 10^T EX
+``
+!PASS!

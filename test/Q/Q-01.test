@@ -1,0 +1,23 @@
+! TECO test: Test Q, nQ, and :Q w/ Q !
+! Requires: TECO !
+! Expects: PASS [Q-01.log] !
+
+[[enter]]
+
+@^UA/the quick brown fox jumped over the lazy dog/
+
+123456 UA
+
+@^A/QA=/ QA=                        ! Test: Q !
+
+@^A/:QA=/ :QA=                      ! Test: :Q !
+
+0 UB
+
+! Print out contents of Q-register, one character at a time !
+
+:QA < QB QA ^T %B >                 ! Test: nQ !
+
+[[^T]]
+
+[[exit]]

@@ -1,0 +1,10 @@
+! TECO test: Open file for reading and writing w/ EB !
+! Requires: TECO !
+! Expects: ?FNF !
+
+[[enter]]
+
+EB[[in2]]                             ! Test: open file for backup !
+
+[[exit]]
+

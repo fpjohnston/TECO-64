@@ -1,0 +1,11 @@
+! TECO test: Print erroneous command string w/ ? !
+! Requires: TECO, Redirect !
+! Expects: ?FNF !
+ 
+[[enter]]
+
+ERfoo``?                            ! Test: print failing command !
+
+[[PASS]]
+
+EX``

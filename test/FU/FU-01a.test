@@ -1,0 +1,61 @@
+! TECO test: Convert text to upper case w/ FU !
+! Requires: TECO !
+! Expects: PASS !
+ 
+[[enter]]
+
+0 UA
+
+15 < %A-10 "L 32I ' QA \ @I/. abcdefg HIJKL[["N]]/ 10I>
+
+HT [[^T]] 0J
+
+.@=/FU: .=%d/
+
+FU                                  ! Test: FU !
+
+L HT [[^T]]
+
+.@=/1 FU: .=%d/
+
+1 FU                                ! Test: FU !
+
+2L HT [[^T]]
+
+.@=/2 FU: .=%d/
+
+2 FU                                ! Test: nFU !
+
+ZJ HT [[^T]]
+
+.@=/-FU: .=%d/
+
+-FU                                 ! Test: -FU !
+
+-L HT [[^T]]
+
+.@=/-1 FU: .=%d/
+
+-1 FU                               ! Test: -1FU !
+
+-L HT [[^T]]
+
+.@=/-2 FU: .=%d/
+
+-2 FU                               ! Test: -nFU !
+
+HT [[^T]]
+
+.@=/120,140 FU: .=%d/
+
+120,140 FU                          ! Test: m,nFU !
+
+HT [[^T]]
+
+.@=/H FU: .=%d/
+
+H FU                                ! Test: HFU !
+
+HT [[^T]]
+
+[[exit]]

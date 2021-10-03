@@ -1,0 +1,9 @@
+! TECO test: Open file for reading w/ :@ER !
+! Requires: TECO !
+! Expects: PASS !
+ 
+[[enter]]
+
+:@ER"[[in1]]" [["U]]                    ! Test: open file for reading !
+
+[[exit]]

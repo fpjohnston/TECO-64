@@ -1,0 +1,16 @@
+! TECO test: Set input radix to 8, 10, & 16 w/ ^R !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@^A/Setting radix to octal/
+8 ^R ^D                             ! Test: 8^R !
+
+@^A/Setting radix to decimal/
+10 ^R ^D                            ! Test: 10^R !
+
+@^A/Setting radix to hexadecimal/
+16 ^R ^D                            ! Test: 16^R !
+
+[[exit]]

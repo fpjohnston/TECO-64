@@ -1,0 +1,19 @@
+! TECO test: Yank file without yank protection w/ Y !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@EW"[[in1]]" 
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+EC
+
+@I/add some text to buffer in order to cause Y command to fail/
+
+@EB"[[in1]]"
+
+0,2 ED
+
+Y                                   ! Test: yank w/o protection !
+
+[[exit]]

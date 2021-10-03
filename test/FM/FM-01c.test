@@ -1,0 +1,11 @@
+! TECO test: Map key to macro w/ :FM !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+:@FM/F1/EX/ [["U]]                          ! Test: map key to command !
+
+:@FM/BAZ/EX/ [["S]]                         ! Test: map key to command !
+
+[[exit]]

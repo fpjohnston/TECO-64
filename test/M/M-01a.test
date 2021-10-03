@@ -1,0 +1,11 @@
+! TECO test: Execute macro w/ M !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@^UA"@^A/!PASS!/"
+
+MA                                  ! Test: M !
+
+[[exit]]

@@ -1,0 +1,27 @@
+! TECO test: Branch backward within nested loop w/ O !
+! Requires: TECO !
+! Expects: ?LOC !
+
+[[enter]]
+
+1 <
+    @O!tag1!
+
+    [[FAIL]]
+
+    !tag2!
+
+    [[PASS]]
+
+    [[FAIL]]
+
+    !tag1!
+
+    1 <
+        @O!tag2!                    ! Test: branch backward !
+    >
+
+    [[FAIL]]
+>
+
+[[exit]]

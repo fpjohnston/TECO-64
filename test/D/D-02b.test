@@ -1,0 +1,21 @@
+! TECO test: Delete characters w/ :D !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// Z UA 0 UD 0J
+
+0J -:D [["S]]                               ! Test: -D !
+
+0J -1:D [["S]]                              ! Test: -1:D !
+
+20C -40:D [["S]]                            ! Test: -n:D !
+
+ZJ :D [["S]]                                ! Test: :D !
+
+ZJ 1:D [["S]]                               ! Test: 1:D !
+
+20J 40:D [["S]]                             ! Test: n:D !
+
+[[exit]]

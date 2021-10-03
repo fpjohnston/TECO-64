@@ -1,0 +1,9 @@
+! TECO test: Exit TECO with non-empty buffer w/ EX !
+! Requires: TECO !
+! Expects: ?NFO !
+
+[[enter]]
+
+@I/abcdef/
+
+EX                                  ! Test: EX w/ data in edit buffer !

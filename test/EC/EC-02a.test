@@ -1,0 +1,23 @@
+! TECO test: Close input file w/ EC !
+! Requires: TECO !
+! Expects: PASS !
+ 
+[[enter]]
+
+@^UA"[[in1]]"                     ! File name !
+
+:@EW/^EQA/ [["U]]                           ! Open file for write !
+
+@I/abcdef/                              ! Add some data !
+
+Z UZ
+
+EC                                      ! Test: write data and close file !
+
+Z [["N]]                                    ! Verify that buffer is clear !
+
+:@ER/^EQA/ [["U]] Y                         ! Open file for read !
+
+QZ-Z [["N]]                                 ! Verify that we read all of the data !
+ 
+[[exit]]

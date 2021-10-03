@@ -1,0 +1,42 @@
+! TECO test: Insert numeric value in edit buffer w/ n\ !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+^D      @I/decimal: /
+
+ 12345 \                            ! Test: insert decimal number !
+@I/, /
+
+ 67890 \                            ! Test: insert decimal number !
+@I/, /
+
+-12345 \                            ! Test: insert negative number !
+^D 10@I//
+
+^O      @I/octal: /
+
+ 1234  \                            ! Test: insert octal number !
+@I/, /
+
+ 5670  \                            ! Test: insert octal number !
+@I/, /
+
+-12345 \                            ! Test: insert negative number !
+^D 10@I//
+
+^D 16^R @I/hexadecimal: /
+
+ 12345 \                            ! Test: insert hexadecimal number !
+@I/, /
+
+ 67890 \                            ! Test: insert hexadecimal number !
+@I/, /
+
+-12345 \                            ! Test: insert negative number !
+^D 10@I//
+
+HT
+
+[[exit]]

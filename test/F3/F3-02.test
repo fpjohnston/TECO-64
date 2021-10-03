@@ -1,0 +1,10 @@
+! TECO test: Set status line colors w/ F3 ! 
+! Requires: TECO-64 !
+! Expects: ?DPY !
+
+[[enter]]
+
+@F3 {FOO} {BAZ}                     ! Test: F3 !
+
+[[exit]]
+

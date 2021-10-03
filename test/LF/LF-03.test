@@ -1,0 +1,34 @@
+! TECO test: Test spaces in command file w/ SPACE !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@I/foo/ 0J
+
+! Test: spaces in command file !
+
+
+:
+
+@
+
+
+FS
+
+
+
+{foo}
+
+
+
+
+{baz}
+
+
+
+
+
+[["U]]
+
+[[exit]]

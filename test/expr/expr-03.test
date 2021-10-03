@@ -1,0 +1,54 @@
+! TECO test: Test basic operators w/ (misc.) !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+0 UF            ! Count of failures !
+
+! Macro to evaluate expression and compare with what we expected !
+
+@^UB
+{
+    UA                              ! Expected value !
+    :MA
+    UB                              ! Calculated value !
+    QA-QB "E
+        QB @=/^EQA = %6d (pass)/
+    |
+        QB @=/^EQA = %6d (fail)/
+        %F
+    '
+}
+
+@^UA| 10        |     10 :MB        ! Test: numeric value !
+
+@^UA| +10       |     10 :MB        ! Test: unary plus !
+
+@^UA| -10       |    -10 :MB        ! Test: unary minus !
+
+@^UA| 10 + 3    |     13 :MB        ! Test: addition !
+@^UA| 10 + +3   |     13 :MB        ! Test: addition !
+@^UA| 10 + -3   |      7 :MB        ! Test: addition !
+
+@^UA| 10 - 3    |      7 :MB        ! Test: subtraction !
+@^UA| 10 - -3   |     13 :MB        ! Test: subtraction !
+@^UA| -10 - 3   |    -13 :MB        ! Test: subtraction !
+
+@^UA| 10 * 3    |     30 :MB        ! Test: multiplication !
+@^UA| -10 * 3   |    -30 :MB        ! Test: multiplication !
+@^UA| 10 * -3   |    -30 :MB        ! Test: multiplication !
+
+@^UA| 10 / 3    |      3 :MB        ! Test: division, yielding quotient !
+@^UA| -10 / 3   |     -3 :MB        ! Test: division, yielding quotient !
+@^UA| 10 / -3   |     -3 :MB        ! Test: division, yielding quotient !
+
+@^UA| 10 & 3    |      2 :MB        ! Test: logical AND !
+
+@^UA| 10 # 3    |     11 :MB        ! Test: logical OR !
+
+@^UA| 10^_      |    -11 :MB        ! Test: 1's complement !
+
+QF [["N]]
+
+[[exit]]

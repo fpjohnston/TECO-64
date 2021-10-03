@@ -1,0 +1,18 @@
+*! TECO test: Test help level flag w/ 3EH !
+! Requires: TECO, Redirect !
+! Expects: ?FNF [EH-04.log] !
+
+0,128ET HK
+``
+*
+*3 EH
+EH=                                 ! Test: verbose error message !
+@ER/FOO/
+``
+3
+?FNF   File not found 'FOO'
+     The requested input file could not be located. If this occurred within a
+     macro, the colon-modified command may be necessary.
+*
+*
+*

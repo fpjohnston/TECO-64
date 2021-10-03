@@ -1,0 +1,21 @@
+*! TECO test: Abort editing session and exit TECO w/ ^C^C !
+! Requires: TECO, Redirect !
+! Expects: PASS [_C_C.log] !
+
+0,128ET HK
+``
+*
+*
+*! Test: abort editing session with two CTRL/C's !
+
+^A!PASS!^A 10^T
+``
+!PASS!
+*
+*
+[7m Cancel [0m
+*
+[7m Cancel [0m
+*
+*
+*

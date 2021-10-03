@@ -1,0 +1,19 @@
+! TECO test: Execute macro with n arg. w/ M !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@I
+\
+    UA
+    QA - 123 [["N]]
+
+    [[PASS]]
+\
+
+HXA HK
+
+123 MA                              ! Test: nM !
+
+[[exit]]

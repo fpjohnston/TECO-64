@@ -1,0 +1,20 @@
+! TECO test: Insert text w/ <TAB> !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+ 
+512,0 E1                                ! Disable extended insert features !
+
+HK 	abc Z-4 [["N]]                        ! Test: simple insert !
+
+HK 	 Z-1 [["N]]                           ! Test: insert of TAB only !
+
+HK 	abc
+def
+
+Z-9 [["N]]                                  ! Test: multi-line insert !
+
+HK @	/abcdef/ Z-7 [["N]]                 ! Test: at-sign insert !
+
+[[exit]]

@@ -1,0 +1,16 @@
+! TECO test: Execute macro returning n arg. w/ M !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@I/123/
+27@I// 27@I//
+
+HXA HK
+
+MA UA                               ! Test: M returning n !
+
+QA - 123 [["N]]
+
+[[exit]]

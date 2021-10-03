@@ -1,0 +1,27 @@
+! TECO test: Test NUL characters in input files w/ NUL !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: NUL characters in command files !
+
+@I/abc/ 10,0I @I/def/ 10I
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+128,0 E3                            ! Test: discarding NUL input chrs. !
+
+:@ER"[[out1]]" [["U]] Y
+
+Z-7 [["N]] HK EC
+
+0,128 E3                            ! Test: keeping NUL input chrs. !
+
+:@ER"[[out1]]" [["U]] Y
+
+Z-17 [["N]] HK EC
+
+[[exit]]

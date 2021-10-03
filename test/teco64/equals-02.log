@@ -1,0 +1,13 @@
+value = [0]
+value = [-1]
+value = [123]
+value = [-456]
+value = [0]
+value = [37777777777]
+value = [173]
+value = [37777777070]
+value = [0]
+value = [ffffffff]
+value = [7b]
+value = [fffffe38]
+!PASS!

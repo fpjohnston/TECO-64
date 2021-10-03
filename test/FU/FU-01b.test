@@ -1,0 +1,13 @@
+! TECO test: Convert text to upper case w/ FU !
+! Requires: TECO !
+! Expects: ?POP !
+ 
+[[enter]]
+
+0 UA
+
+15 < %A-10 "L 32I ' QA \ @I/. abcdefg HIJKLMN/ 10I>
+
+0,-1 FU                             ! Test: m,nFU w/ n < B !
+
+[[exit]]

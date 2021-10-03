@@ -1,0 +1,41 @@
+! TECO test: Test for alphanumeric w/ "R !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: "R !
+
+0 UC                                    ! Start at NUL !
+
+^^0 < %C-1 "R [[FAIL]] ' >              ! NUL to digits !
+
+^^9-^^0+1 < %C-1 "R | [[FAIL]] ' >      ! Digits !
+
+^^A-^^9-1 < %C-1 "R [[FAIL]] ' >        ! Digits to upper case !
+
+^^Z-^^A+1 < %C-1 "R | [[FAIL]] ' >      ! Upper case !
+
+^^a-^^Z-1 < %C-1 "R [[FAIL]] ' >        ! Upper case to lower case !
+
+^^z-^^a+1 < %C-1 "R | [[FAIL]] ' >      ! Lower case !
+
+255-^^z-1 < %C-1 "R [[FAIL]] ' >        ! Remaining 8-bit characters !
+
+0 UC                                    ! Start at NUL !
+
+^^0 < %C-1 "r [[FAIL]] ' >              ! NUL to digits !
+
+^^9-^^0+1 < %C-1 "r | [[FAIL]] ' >      ! Digits !
+
+^^A-^^9-1 < %C-1 "r [[FAIL]] ' >        ! Digits to upper case !
+
+^^Z-^^A+1 < %C-1 "r | [[FAIL]] ' >      ! Upper case !
+
+^^a-^^Z-1 < %C-1 "r [[FAIL]] ' >        ! Upper case to lower case !
+
+^^z-^^a+1 < %C-1 "r | [[FAIL]] ' >      ! Lower case !
+
+255-^^z-1 < %C-1 "r [[FAIL]] ' >        ! Remaining 8-bit characters !
+
+[[exit]]

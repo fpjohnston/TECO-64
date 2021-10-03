@@ -1,15 +1,0 @@
-! TECO test: Test form feed in command file !
-! Commands: FF !
-! Requirements: None !
-! Execution: Standard !
-! Expect: PASS !
-
-! Include: setup-01.tec !
-
-@I/foo/ 0J
-
-! Test: form feed in command file !
-
-:@FS{foo}{baz} MU
-
-! Include: cleanup-01.tec !

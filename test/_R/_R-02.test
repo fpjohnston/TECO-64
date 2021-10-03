@@ -1,0 +1,10 @@
+! TECO test: Set radix to invalid value w/ ^R !
+! Requires: TECO !
+! Expects: ?IRA !
+
+[[enter]]
+
+@^A/Setting radix to binary/
+2 ^R ^D                             ! Test: 2^R !
+
+[[exit]]

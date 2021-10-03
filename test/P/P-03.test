@@ -1,0 +1,28 @@
+! TECO test: Write contents of edit buffer w/ HP !
+! Requires: TECO !
+! Expects: PASS [P-03.log] !
+
+[[enter]]
+
+@I/Jabberwocky
+by Lewis Carroll
+
+’Twas brillig, and the slithy toves
+      Did gyre and gimble in the wabe:
+All mimsy were the borogoves,
+      And the mome raths outgrabe.
+/
+
+:@EW"[[out1]]" [["U]]
+
+HP                                  ! Test: HP !
+
+HK
+
+EC
+
+:@ER"[[out1]]" [["U]] Y
+
+HT
+
+[[exit]]

@@ -1,0 +1,29 @@
+! TECO test: Non-stop backward search w/ -nN !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+1,0 E3
+
+@I/'Twas /    10I 12I
+@I/brillig, / 10I 12I
+@I/and /      10I 12I
+@I/the /      10I 12I
+@I/slithy /   10I 12I
+@I/All/       10I 12I
+@I/mimsy/     10I 12I
+@I/were/      10I 12I
+@I/the/       10I 12I
+@I/borogoves/ 10I 12I
+:@EW"[[out1]]" [["U]]
+
+EC HK
+
+:@EB"[[out1]]" [["U]]
+
+10 P
+
+-2:@N/the/ [["U]]                           ! Test: -nN !
+
+[[exit]]

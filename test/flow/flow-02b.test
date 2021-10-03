@@ -1,0 +1,13 @@
+! TECO test: Flow to start of command w/ F< !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+:UA
+
+QA-123 "N [[PASS]] ^C '
+
+F<                                  ! Test: F< !
+
+[[exit]]

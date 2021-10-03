@@ -1,0 +1,13 @@
+! TECO test: Try to load Q-registers using M w/ U !
+! Requires: TECO !
+! Expects: ?NAU !
+
+UN UM                               ! Test: load Q-registers using M !
+
+[[enter]]
+
+QM
+@:=/QM=%d: /
+QN @:=/QN=%d: /
+
+[[exit]]

@@ -1,0 +1,28 @@
+! TECO test: Set command region colors w/ F1 ! 
+! Requires: TECO-64 !
+! Expects: PASS !
+
+[[enter]]
+
+! Test all possible foreground and background colors !
+
+@F1 {BLACK}   {white}               ! Test: F1 !
+@F1 {RED}     {black}               ! Test: F1 !
+@F1 {GREEN}   {red}                 ! Test: F1 !
+@F1 {YELLOW}  {green}               ! Test: F1 !
+@F1 {BLUE}    {yellow}              ! Test: F1 !
+@F1 {MAGENTA} {blue}                ! Test: F1 !
+@F1 {CYAN}    {magenta}             ! Test: F1 !
+@F1 {WHITE}   {cyan}                ! Test: F1 !
+
+! Test saturation levels !
+
+0,100 @F1 {BLACK} {white}           ! Test: F1 !
+100,0 @F1 {BLACK} {white}           ! Test: F1 !
+50,50 @F1 {BLACK} {white}           ! Test: F1 !
+
+! Saturation levels < 0 or > 100 are adjusted to 0 and 100, respectively !
+
+-1,999 @F1 {BLACK} {white}          ! Test: F1 !
+
+[[exit]]

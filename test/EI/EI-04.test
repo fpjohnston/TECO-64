@@ -1,0 +1,13 @@
+! TECO test: Open indirect command file w/ @EI !
+! Requires: TECO !
+! Expects: PASS [EI-04.log] !
+
+[[enter]]
+
+@^A/entering test 4/ [[^T]]
+
+@EI"EI-a"                               ! Test: EI (level 0) !
+
+@^A/exiting test 4/ [[^T]]
+
+[[exit]]

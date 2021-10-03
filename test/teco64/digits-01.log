@@ -1,0 +1,7 @@
+Testing base 10
+0 11 22 33 44 55 66 77 88 99 -1
+Testing base 8
+0 11 22 33 44 55 66 77 37777777777
+Testing base 16
+0 11 22 33 44 55 66 77 88 99 ffffffff
+!PASS!

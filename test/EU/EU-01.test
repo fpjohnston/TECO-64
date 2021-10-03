@@ -1,0 +1,39 @@
+! TECO test: Test upper/lower case flag w/ EU ! 
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+^^a UA
+
+^^z - ^^a + 1 < QA@I// %A > 32@I//
+
+^^0 UA
+
+^^9 - ^^0 + 1 < QA@I// %A > 32@I//
+
+^^A UA
+
+^^Z - ^^A + 1 < QA@I// %A > @10I//
+
+EU@=/EU=%d/                         ! Test: EU= !
+
+0 EU                                ! Test: 0EU !
+EU@=/EU=%d/ HT
+
+1 EU                                ! Test: 1EU !
+EU@=/EU=%d/ HT
+
+-1 EU                               ! Test: -1EU !
+EU@=/EU=%d/ HT
+
+-2 EU                               ! Test: -2EU !
+EU@=/EU=%d/
+
++2 EU                               ! Test: +2EU !
+EU@=/EU=%d/
+
+-1 EU                               ! Test: -1EU !
+EU@=/EU=%d/
+
+[[exit]]

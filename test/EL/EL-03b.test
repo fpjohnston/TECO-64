@@ -1,0 +1,11 @@
+! TECO test: Open log file w/ :@EL !
+! Requires: TECO !
+! Expects: FAIL !
+
+[[enter]]
+
+:@EL"[[bad]]" [["U]]                    ! Test: open log file !
+
+@EL//                                   ! Test: close log file !
+
+[[exit]]

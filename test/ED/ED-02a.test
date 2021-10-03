@@ -1,0 +1,23 @@
+! TECO test: Test edit level flag w/ ED&2 !
+! Requires: TECO !
+! Expects: ?YCA !
+
+[[enter]]
+
+:@EW"[[out1]]" [["U]]
+
+@I/abc/
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+@I/abc/
+
+ED=                                 ! Test: ED= !
+
+2,0 ED                              ! Test: ED&2 !
+
+Y
+
+[[exit]]

@@ -1,0 +1,16 @@
+*! TECO test: Test help level flag w/ 1EH !
+! Requires: TECO, Redirect !
+! Expects: ?FNF [EH-02.log] !
+
+0,128ET HK
+``
+*
+*1 EH                                ! Test: minimal error message !
+EH=
+@ER/FOO/
+``
+1
+?FNF
+*
+*
+*

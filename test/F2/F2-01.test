@@ -1,0 +1,29 @@
+! TECO test: Set edit region colors w/ F2 ! 
+! Requires: TECO-64 !
+! Expects: PASS !
+
+[[enter]]
+
+! Test all possible foreground and background colors !
+
+@F2 {BLACK}   {white}               ! Test: F2 !
+@F2 {RED}     {black}               ! Test: F2 !
+@F2 {GREEN}   {red}                 ! Test: F2 !
+@F2 {YELLOW}  {green}               ! Test: F2 !
+@F2 {BLUE}    {yellow}              ! Test: F2 !
+@F2 {MAGENTA} {blue}                ! Test: F2 !
+@F2 {CYAN}    {magenta}             ! Test: F2 !
+@F2 {WHITE}   {cyan}                ! Test: F2 !
+
+! Test saturation levels !
+
+0,100 @F2 {BLACK} {white}           ! Test: F2 !
+100,0 @F2 {BLACK} {white}           ! Test: F2 !
+50,50 @F2 {BLACK} {white}           ! Test: F2 !
+
+! Saturation levels < 0 or > 100 are adjusted to 0 and 100, respectively !
+
+-1,999 @F2 {BLACK} {white}          ! Test: F2 !
+
+[[exit]]
+

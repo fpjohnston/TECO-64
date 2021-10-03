@@ -1,0 +1,9 @@
+! TECO test: Get TECO version number w/ EO !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+ 
+EO-200 [["N]]                               ! Test: EO !
+
+[[exit]]

@@ -1,0 +1,23 @@
+! TECO test: Move forward or backward lines w/ L !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+ 
+10 < @I/abcdefghi/ 10I >
+
+0J
+
+  L .-10 [["N]]                             ! Test: L !
+ 1L .-20 [["N]]                             ! Test: 1L !
+ 6L .-80 [["N]]                             ! Test: nL !
+
+ -L .-70 [["N]]                             ! Test: -L !
+-1L .-60 [["N]]                             ! Test: -1L !
+-4L .-20 [["N]]                             ! Test: -nL !
+
+5C
+
+ 0L .-20 [["N]]                             ! Test: 0L !
+
+[[exit]]

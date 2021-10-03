@@ -1,0 +1,14 @@
+! TECO test: Re-type all input lines w/ ^G* !
+! Requires: TECO, Redirect !
+! Expects: PASS [_G-star.log] !
+
+[[enter]]
+
+
+iabc
+def
+ghi
+jkl*                              ! Test: retype all input lines !
+
+
+[[exit]]

@@ -1,8 +1,0 @@
-! TECO test: Test illegal command !
-! Commands: ^] !
-! Requirements: None !
-! Execution: Standard !
-! Expect: ?ILL !
- 
-                                      ! Test: ^] command !
-

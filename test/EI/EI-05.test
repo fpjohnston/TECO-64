@@ -1,0 +1,13 @@
+! TECO test: Open indirect command file w/ @EI !
+! Requires: TECO-64 !
+! Expects: PASS !
+
+[[enter]]
+
+QA "E 0,32 E1 | 32,0 E1 '
+
+[[PASS]]
+
+@EI//                               ! Test: @EI// !
+
+[[exit]]

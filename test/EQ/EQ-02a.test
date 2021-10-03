@@ -1,0 +1,11 @@
+! TECO test: Read Q-register from file w/ @EQ !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@EQB"[[in1]]"                           ! Test: @EQq !
+
+:GB                                     ! Type out what we got !
+
+[[exit]]

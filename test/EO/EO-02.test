@@ -1,0 +1,9 @@
+! TECO test: Get TECO version number w/ EO !
+! Requires: TECO !
+! Expects: ?NYI !
+
+[[enter]]
+ 
+40 EO                               ! Test: nEO !
+
+[[exit]]

@@ -1,0 +1,14 @@
+*! TECO test: Delete input characters w/ DEL !
+! Requires: TECO, Redirect !
+! Expects: PASS [DEL.log] !
+
+0,128ET HK
+``
+*
+*
+*abc^G
+*abc   def                  ! Test: deleting input chrs. !
+
+^D EK HK ^A!PASS!^A 10^T EX
+``
+!PASS!

@@ -1,0 +1,57 @@
+! TECO test: Delete characters w/ :D !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// Z UA 0 UD 0J
+
+0:D [["U]]                                   ! Test: 0:D !
+
+::@S/abcde/ [["U]]
+QA-Z-QD [["N]]
+
+:D [["U]]                                    ! Test: :D !
+
+1%D ^[ R
+::@S/egh/ [["U]]
+QA-Z-QD [["N]]
+
+1:D [["U]]                                   ! Test: 1:D !
+
+1%D ^[ R
+::@S/hjk/ [["U]]
+QA-Z-QD [["N]]
+
+4:D [["U]]                                   ! Test: n:D !
+
+4%D ^[ R
+::@S/kpq/ [["U]]
+QA-Z-QD [["N]]
+
+-:D [["U]]                                   ! Test: -:D !
+
+%D ^[ R
+::@S/prs/ [["U]]
+QA-Z-QD [["N]]
+
+-1:D [["U]]                                  ! Test: -1:D !
+
+%D ^[ R
+::@S/rtu/ [["U]]
+QA-Z-QD [["N]]
+
+-2:D [["U]]                                  ! Test: -n:D !
+
+2%D ^[ R
+::@S/rvw/ [["U]]
+QA-Z-QD [["N]]
+
+HK @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// Z UA 0J
+
+28,31:D [["U]]                               ! Test: m,n:D !
+
+R ::@S/0456/ [["U]]
+QA-Z-3 [["N]]
+
+[[exit]]

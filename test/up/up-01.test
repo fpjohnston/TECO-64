@@ -1,0 +1,143 @@
+! TECO test: Get ASCII value of character w/ ^^ !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+0 UF
+0 UA
+@^UA| QB-%A "N QA @=/Expected %d, got / QB= %F ' |
+
+! Test: get values of all ASCII characters !
+
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^	 UB MA
+^^
+ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^ UB MA
+^^  UB MA
+^^! UB MA
+^^" UB MA
+^^# UB MA
+^^$ UB MA
+^^% UB MA
+^^& UB MA
+^^' UB MA
+^^( UB MA
+^^) UB MA
+^^* UB MA
+^^+ UB MA
+^^, UB MA
+^^- UB MA
+^^. UB MA
+^^/ UB MA
+^^0 UB MA
+^^1 UB MA
+^^2 UB MA
+^^3 UB MA
+^^4 UB MA
+^^5 UB MA
+^^6 UB MA
+^^7 UB MA
+^^8 UB MA
+^^9 UB MA
+^^: UB MA
+^^; UB MA
+^^< UB MA
+^^= UB MA
+^^> UB MA
+^^? UB MA
+^^@ UB MA
+^^A UB MA
+^^B UB MA
+^^C UB MA
+^^D UB MA
+^^E UB MA
+^^F UB MA
+^^G UB MA
+^^H UB MA
+^^I UB MA
+^^J UB MA
+^^K UB MA
+^^L UB MA
+^^M UB MA
+^^N UB MA
+^^O UB MA
+^^P UB MA
+^^Q UB MA
+^^R UB MA
+^^S UB MA
+^^T UB MA
+^^U UB MA
+^^V UB MA
+^^W UB MA
+^^X UB MA
+^^Y UB MA
+^^Z UB MA
+^^[ UB MA
+^^\ UB MA
+^^] UB MA
+^^^ UB MA
+^^_ UB MA
+^^` UB MA
+^^a UB MA
+^^b UB MA
+^^c UB MA
+^^d UB MA
+^^e UB MA
+^^f UB MA
+^^g UB MA
+^^h UB MA
+^^i UB MA
+^^j UB MA
+^^k UB MA
+^^l UB MA
+^^m UB MA
+^^n UB MA
+^^o UB MA
+^^p UB MA
+^^q UB MA
+^^r UB MA
+^^s UB MA
+^^t UB MA
+^^u UB MA
+^^v UB MA
+^^w UB MA
+^^x UB MA
+^^y UB MA
+^^z UB MA
+^^{ UB MA
+^^| UB MA
+^^} UB MA
+^^~ UB MA
+
+QF [["N]]
+
+[[exit]]

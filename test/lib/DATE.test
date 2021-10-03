@@ -1,0 +1,11 @@
+! TECO test: Test lib/date.tec w/ (misc.) !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: library date.tec macro !
+
+@EI/date/
+
+[[exit]]

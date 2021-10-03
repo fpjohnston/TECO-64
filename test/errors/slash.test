@@ -1,0 +1,11 @@
+! TECO test: Get detailed error message w/ / !
+! Requires: TECO, Redirect !
+! Expects: ?FNF !
+ 
+[[enter]]
+
+ERfoo``/                            ! Test: print detailed error !
+
+[[PASS]]
+
+EX``

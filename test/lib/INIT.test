@@ -1,0 +1,11 @@
+! TECO test: Test lib/init.tec w/ (misc.) !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: library init.tec macro !
+
+@EI/init/
+
+[[exit]]

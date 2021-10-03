@@ -1,9 +1,0 @@
-! Helper script for TECO tests !
-
-@^A/entering test 4c/ MZ
-
-@^A/hello, world!/ MZ
-
-@^A/exiting test 4c/ MZ
-
-

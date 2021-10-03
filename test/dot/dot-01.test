@@ -1,0 +1,15 @@
+! TECO test: Get current buffer position w/ . !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+10 < @I/0123456789/ [[I]] >
+
+0J .-  0 [["N]]                             ! Test: . at start of buffer !
+ L .- 11 [["N]]                             ! Test: . in middle of buffer !
+3L .- 44 [["N]]
+4L .- 88 [["N]]
+2L .-110 [["N]]                             ! Test: . at end of buffer !
+
+[[exit]]

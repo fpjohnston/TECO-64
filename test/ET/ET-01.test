@@ -1,0 +1,9 @@
+! TECO test: Test edit terminal flag w/ ET !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+ET=                                 ! Test: ET= !
+
+[[exit]]

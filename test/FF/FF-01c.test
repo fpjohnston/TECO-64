@@ -1,0 +1,9 @@
+! TECO test: Map command string to CTRL/F sequence w/ @FF !
+! Requires: TECO !
+! Expects: ?INA !
+
+[[enter]]
+
+^^Z@FF/BAZ/                         ! Test: map commands to <CTRL/F>Z !
+
+[[exit]]

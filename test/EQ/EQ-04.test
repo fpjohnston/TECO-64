@@ -1,0 +1,21 @@
+! TECO test: Read to Q-register, verify data w/ :@EQ !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+:@EQB"[[in1]]" [["U]]                   ! Test: :@EQq// !
+
+:@ER"[[in1]]" [["U]]                    ! Read file into the edit buffer !
+
+Y
+
+! Verify that the size is the same !
+
+:QB-Z [["N]]
+
+0J ::@S/^EQA/ [["U]]
+
+:GB
+
+[[exit]]

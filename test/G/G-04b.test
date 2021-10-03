@@ -1,0 +1,17 @@
+! TECO test: Print last search string w/ :G_ !
+! Requires: TECO !
+! Expects: PASS [G-04b.log] !
+
+[[enter]]
+
+0 U.A
+
+:@S/frumious bandersnatch/
+
+@^A/:G_ = /
+
+:G_                                 ! Test: :G_ !
+
+[[^T]]
+
+[[exit]]

@@ -1,0 +1,9 @@
+! TECO test: Push excessive Q-registers w/ [ !
+! Requires: TECO !
+! Expects: ?MAX !
+
+[[enter]]
+
+65 < [A >                           ! Test: excessive Q-register pushes !
+
+[[exit]]

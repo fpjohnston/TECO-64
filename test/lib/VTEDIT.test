@@ -1,0 +1,11 @@
+! TECO test: Test lib/vtedit.tec w/ (misc.) !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: library vtedit.tec macro !
+
+1 @EI/vtedit/
+
+[[exit]]

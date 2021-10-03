@@ -1,0 +1,35 @@
+! TECO test: Test page number w/ ^P !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+1,0 E3
+
+HK
+
+@I/page 1/ 12I
+@I/page 2/ 12I
+@I/page 3/ 12I
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+^P-0 [["N]]                                 ! Test: ^P !
+
+P
+
+^P-1 [["N]]                                 ! Test: ^P !
+
+P
+
+^P-2 [["N]]                                 ! Test: ^P !
+
+P
+
+^P-3 [["N]]                                 ! Test: ^P !
+
+[[exit]]

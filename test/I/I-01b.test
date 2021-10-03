@@ -1,0 +1,13 @@
+! TECO test: Invalid insertion w/ n@Itext` !
+! Requires: TECO !
+! Expects: ?IIA !
+
+[[enter]]
+
+512,0 E1                            ! Disable extended insert features !
+
+HK 65Iabc                         ! Test: insert ASCII chr. & text !
+
+[[FAIL]]
+
+[[exit]]

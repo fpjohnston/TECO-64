@@ -1,0 +1,19 @@
+! TECO test: Test edit level flag w/ ED&16 !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@I/123 456 789/
+
+ED=                                 ! Test: ED= !
+
+16,0 ED                             ! Test: ED&16 !
+
+0J 6C :@S/xyz/ . [["N]]
+
+0,16 ED                             ! Test: ED&16 !
+
+0J 6C :@S/xyz/ .-6 [["N]]
+
+[[exit]]

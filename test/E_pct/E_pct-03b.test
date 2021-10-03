@@ -1,0 +1,14 @@
+! TECO test: Write Q-register to file w/ :@E% !
+! Requires: TECO !
+! Expects: FAIL !
+
+[[enter]]
+
+@^UA|/dev/fubar|
+
+@I/hello, world!/ 10I
+HXB HK
+
+:@E%B/^EQA/ [["U]]                          ! Test: :@E%q !
+
+[[exit]]

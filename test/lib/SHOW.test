@@ -1,0 +1,11 @@
+! TECO test: Test lib/show.tec w/ (misc.) !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: library show.tec macro !
+
+@EI/show/
+
+[[exit]]

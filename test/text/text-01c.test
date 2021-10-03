@@ -1,0 +1,9 @@
+! TECO test: Parenthesized text arguments w/ ) !
+! Requires: TECO !
+! Expects: ?TXT !
+
+[[enter]]
+
+@^A)hello, world!)                 ! Test: matched right parentheses !
+
+[[exit]]

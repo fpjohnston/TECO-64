@@ -1,0 +1,25 @@
+! TECO test: Test for upper case w/ "W !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: "W !
+
+0 UC                                    ! Start at NUL !
+
+^^A < %C-1 "W [[FAIL]] ' >              ! NUL to upper case !
+
+^^Z-^^A+1 < %C-1 "W | [[FAIL]] ' >      ! Upper case !
+
+255-^^Z-1 < %C-1 "W [[FAIL]] ' >        ! Remaining 8-bit characters !
+
+0 UC                                    ! Start at NUL !
+
+^^A < %C-1 "w [[FAIL]] ' >              ! NUL to upper case !
+
+^^Z-^^A+1 < %C-1 "w | [[FAIL]] ' >      ! Upper case !
+
+255-^^Z-1 < %C-1 "w [[FAIL]] ' >        ! Remaining 8-bit characters !
+
+[[exit]]

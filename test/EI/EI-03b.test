@@ -1,0 +1,9 @@
+! TECO test: Open indirect command file w/ :@EI !
+! Requires: TECO !
+! Expects: FAIL !
+
+[[enter]]
+
+:@EI"[[cmd2]]" [["U]]                   ! Test: :@EI// !
+
+[[exit]]

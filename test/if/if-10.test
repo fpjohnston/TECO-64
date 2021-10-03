@@ -1,0 +1,25 @@
+ ! TECO test: Test for numeric w/ "D !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: "D !
+
+0 UC                                    ! Start at NUL !
+
+^^0 < %C-1 "D [[FAIL]] ' >              ! NUL to digits !
+
+^^9-^^0+1 < %C-1 "D | [[FAIL]] ' >      ! Digits !
+
+255-^^9-1 < %C-1 "D [[FAIL]] ' >        ! Remaining 8-bit characters !
+
+0 UC                                    ! Start at NUL !
+
+^^0 < %C-1 "d [[FAIL]] ' >              ! NUL to digits !
+
+^^9-^^0+1 < %C-1 "d | [[FAIL]] ' >      ! Digits !
+
+255-^^9-1 < %C-1 "d [[FAIL]] ' >        ! Remaining 8-bit characters !
+
+[[exit]]

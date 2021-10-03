@@ -1,0 +1,15 @@
+! TECO test: Branch forward outside a conditional w/ O !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+0 "E
+    @O!tag1!                        ! Test: branch forward !
+
+    [[FAIL]]
+'
+
+!tag1!
+
+[[exit]]

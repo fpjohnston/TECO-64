@@ -1,0 +1,17 @@
+! TECO test: Test for greater than zero w/ "G !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: "G !
+
+ 0 "G   [[FAIL]] '
+ 1 "G | [[FAIL]] '
+-1 "G   [[FAIL]] '
+
+ 0 "g   [[FAIL]] '
+ 1 "g | [[FAIL]] '
+-1 "g   [[FAIL]] '
+
+[[exit]]

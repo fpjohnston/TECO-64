@@ -1,0 +1,13 @@
+! TECO test: Flow to end of command w/ F> !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+[[PASS]]
+
+F>                                  ! Test: F> !
+
+[[FAIL]]
+
+[[exit]]

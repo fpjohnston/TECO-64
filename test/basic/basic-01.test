@@ -1,0 +1,40 @@
+! TECO test: Test basic functions #1 w/ (misc.) !
+! Requires: TECO !
+! Expects: PASS [basic-01.log] !
+
+[[enter]]
+
+! Test: mix of basic TECO commands !
+
+@^A/[Executing ^UA]/  [[^T]] @^UA"_teco_test_"
+@^A/[Executing ^UB]/  [[^T]] @^UB"@^A/ result: /"
+@^A/[Executing I]/    [[^T]] @I"@^A/ (.=/ .:= @^A/, Z=/ Z:= ^^) ^T"
+@^A/[Executing HXC]/  [[^T]] HXC
+@^A/[Executing HK]/   [[^T]] HK
+@^A/[Executing :GC]/  MB :GC [[^T]]
+@^A/[Executing EW]/   [[^T]] :@EW/^EQA1.tmp/ "E :@^A/EW command failed/ [[FAIL]] '
+@^A/[Executing I]/    [[^T]] :@I/This is a test/ 13@I// 10@I//
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing EC]/   [[^T]] EC
+@^A/[Executing HT]/   MC MB HT [[^T]]
+@^A/[Executing ER]/   [[^T]] :@ER/^EQA1.tmp/ "E :@^A/ER command failed/ [[FAIL]] ' Y
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing FS]/   [[^T]] @FS/a test/not a test/
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing R]/    [[^T]] 4R
+@^A/[Executing I]/    [[^T]] @I/really big /
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing D]/    [[^T]] 4D
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing EW]/   [[^T]] :@EW/^EQA2.tmp/ "E :@^A/EW command failed/ [[FAIL]] '
+@^A/[Executing EC]/   [[^T]] EC
+@^A/[Executing EB]/   [[^T]] :@EB/^EQA2.tmp/ "E :@^A/EB command failed/ [[FAIL]] '
+@^A/[Executing N]/    [[^T]] @N/really big /
+@^A/[Executing I]/    [[^T]] @I/deal/
+@^A/[Executing HT]/   MC MB HT
+@^A/[Executing B,ZD]/ [[^T]] B,ZD
+@^A/[Executing HT]/   MC MB HT [[^T]]
+@^A/[Executing EK]/   [[^T]] EK
+@^A/[Executing EZ]/   [[^T]] @EZ/rm _teco_test_*.tmp*/
+
+[[exit]]

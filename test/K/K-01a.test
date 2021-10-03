@@ -1,0 +1,75 @@
+! TECO test: Delete lines w/ K !
+! Requires: TECO !
+! Expects: PASS [K-01a.log] !
+
+[[enter]]
+
+0UA
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    [[I]]
+>
+
+0J
+
+@^A/-----/ [[^T]]
+
+HT
+
+@^A/-----/ [[^T]]
+
+K HT                                ! Test: K !
+
+@^A/-----/ [[^T]]
+
+1K HT                               ! Test: 1K !
+
+@^A/-----/ [[^T]]
+
+3L 2K HT                            ! Test: nK !
+
+@^A/-----/ [[^T]]
+
+-K HT                               ! Test: -K !
+
+@^A/-----/ [[^T]]
+
+-1K HT                              ! Test: -1K !
+
+ZJ
+
+@^A/-----/ [[^T]]
+
+-2K HT                              ! Test: -nK !
+
+HK
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    13@I// 10@I//
+>
+
+0J
+
+@^A/-----/ [[^T]]
+
+5L 10K HT                           ! Test: nK !
+
+@^A/-----/ [[^T]]
+
+-10K HT                             ! Test: -nK !
+
+HK
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+
+10,20K HT                           ! Test: m,nK !
+
+@^A/-----/ [[^T]]
+
+[[exit]]

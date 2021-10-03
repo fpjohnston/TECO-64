@@ -1,0 +1,9 @@
+! TECO test: Bracketed text arguments w/ [ !
+! Requires: TECO !
+! Expects: ?UTM !
+
+[[enter]]
+
+@^A[hello, world![                 ! Test: matched left brackets !
+
+[[exit]]

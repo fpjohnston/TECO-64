@@ -1,0 +1,17 @@
+! TECO test: Get starting buffer position w/ B !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: Verify that B is always 0, regardless of dot !
+
+10 < @I/0123456789/ 10I >
+
+0J B [["N]]
+ L B [["N]]
+3L B [["N]]
+4L B [["N]]
+2L B [["N]]
+
+[[exit]]

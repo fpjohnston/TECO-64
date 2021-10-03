@@ -1,0 +1,39 @@
+! TECO test: Switch input streams w/ EP, ER` !
+! Requires: TECO !
+! Expects: PASS [EP-01.log] !
+
+[[enter]]
+
+:@EW"[[out1]]" [["U]]               ! Create 1st temp file !
+
+@I/abcdef/ 10I                          ! Add some data !
+
+EC                                      ! Write data and close file !
+
+:@EW"[[out2]]" [["U]]               ! Create 2nd temp file !
+
+@I/123456/ 10I                          ! Add some data !
+
+EC                                      ! Write data and close file !
+
+:@ER"[[out1]]" [["U]]               ! Open 1st file on primary stream !
+
+A
+
+EP                                      ! Test: switch to secondary input stream !
+
+:@ER"[[out2]]" [["U]]               ! Open 2nd file on secondary stream !
+
+A
+
+@ER//                                   ! Switch to primary stream !
+
+EC
+
+EP                                      ! Switch to secondary stream !
+
+EC
+
+HT
+
+[[exit]]

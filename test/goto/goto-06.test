@@ -1,0 +1,23 @@
+! TECO test: Branch backward within loop w/ O !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+1 <
+    @O!tag1!
+
+    !tag2!
+
+    [[PASS]]
+
+    ^C
+
+    !tag1!
+
+    @O!tag2!                        ! Test: branch backward !
+
+    [[FAIL]]
+>
+
+[[exit]]

@@ -1,0 +1,17 @@
+! TECO test: Test for unsuccessful w/ "U !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: "U !
+
+ 0 "U | [[FAIL]] '
+ 1 "U   [[FAIL]] '
+-1 "U   [[FAIL]] '
+
+ 0 "u | [[FAIL]] '
+ 1 "u   [[FAIL]] '
+-1 "u   [[FAIL]] '
+
+[[exit]]

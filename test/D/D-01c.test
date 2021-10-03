@@ -1,0 +1,11 @@
+! TECO test: Delete characters w/ D !
+! Requires: TECO !
+! Expects: ?DTB !
+
+[[enter]]
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I//
+
+0J -1D                              ! Test: -1D !
+
+[[exit]]

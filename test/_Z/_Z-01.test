@@ -1,0 +1,27 @@
+! TECO test: Check size of text in Q-registers w/ ^Z !
+! Requires: TECO !
+! Expects: PASS [_Z-01.log] !
+
+[[enter]]
+
+^Z U9
+
+@^A/^Z = / ^Z-Q9 := ^Z-Q9            ! Test: ^Z with Q-registers empty !
+"E @^A/ (pass)/ | @^A/ (fail)/ ' [[^T]]
+
+@^UA/abcdefghijklmnopwrstuvwxyz/
+
+@^A/^Z = / ^Z-Q9 := ^Z-Q9-26         ! Test: ^Z w/ text in 1 Q-register !
+"E @^A/ (pass)/ | @^A/ (fail)/ ' [[^T]]
+
+@^UB/0123456789/
+
+@^A/^Z = / ^Z-Q9 := ^Z-Q9-36         ! Test: ^Z w/ text in 2 Q-registers !
+"E @^A/ (pass)/ | @^A/ (fail)/ ' [[^T]]
+
+@^UC/now is the time for all good men to come to the aid of their party/
+
+@^A/^Z = / ^Z-Q9 := ^Z-Q9-102        ! Test: ^Z w/ text in 3 Q-registers !
+"E @^A/ (pass)/ | @^A/ (fail)/ ' [[^T]]
+
+[[exit]]

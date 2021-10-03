@@ -1,0 +1,13 @@
+! TECO test: Exit iteration on search success w/ :; !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@I/foo/ 10I
+
+0J
+
+1 < @S/foo/:; [[FAIL]] >                ! Test: loop w/ @S//:; !
+
+[[exit]]

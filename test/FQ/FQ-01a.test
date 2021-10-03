@@ -1,0 +1,15 @@
+! TECO test: Map key to Q-register w/ FQ, @FQ !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+FQAF1                             ! Test: map key to Q-register A !
+
+@FQZ/F2/                            ! Test: map key to Q-register Z !
+
+@FQ0/F3/                            ! Test: map key to Q-register 0 !
+
+@FQ9/F4/                            ! Test: map key to Q-register 9 !
+
+[[exit]]

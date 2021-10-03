@@ -1,0 +1,17 @@
+! TECO test: Test for false w/ "F !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: "F !
+
+ 0 "F | [[FAIL]] '
+ 1 "F   [[FAIL]] '
+-1 "F   [[FAIL]] '
+
+ 0 "f | [[FAIL]] '
+ 1 "f   [[FAIL]] '
+-1 "f   [[FAIL]] '
+
+[[exit]]

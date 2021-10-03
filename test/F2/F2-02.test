@@ -1,0 +1,9 @@
+! TECO test: Set edit region colors w/ F2 ! 
+! Requires: TECO-64 !
+! Expects: ?DPY !
+
+[[enter]]
+
+@F2 {black} {FOOBAR}                ! Test: F2 !
+
+[[exit]]

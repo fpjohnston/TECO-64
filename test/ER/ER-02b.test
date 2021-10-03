@@ -1,0 +1,9 @@
+! TECO test: Open file for reading w/ @ER !
+! Requires: TECO !
+! Expects: ?FNF !
+ 
+[[enter]]
+
+@ER/[[in2]]/                            ! Test: open file for reading !
+
+[[exit]]

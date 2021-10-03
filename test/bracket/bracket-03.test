@@ -1,0 +1,22 @@
+! TECO test: Push/pop maximum Q-registers w/ [, ] !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+0UA
+
+! Test: push and pop maximum Q-registers !
+
+64 <
+    %A
+    [A
+>
+
+64 <
+    ]B
+    QB-QA [["N]]
+    -1%A
+>
+
+[[exit]]

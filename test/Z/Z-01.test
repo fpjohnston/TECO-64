@@ -1,0 +1,15 @@
+! TECO test: Get ending buffer position w/ Z !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+10 < @I/0123456789/ 10I >
+
+0J Z-110 [["N]]                             ! Test: Z at start of buffer !
+ L Z-110 [["N]]                             ! Test: Z after L !
+3L Z-110 [["N]]                             ! Test: Z after 3L !
+4L Z-110 [["N]]                             ! Test: Z after 4L !
+2L Z-110 [["N]]                             ! Test: Z after 2L !
+
+[[exit]]

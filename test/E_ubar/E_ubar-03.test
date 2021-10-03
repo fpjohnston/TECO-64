@@ -1,0 +1,28 @@
+! TECO test: Destructive backward search w/ -E_ !
+! Requires: TECO !
+! Expects: ?SRH !
+
+[[enter]]
+
+1,0 E3
+
+HK
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    MY 12@I//
+>
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+5P
+
+-@E_/abc/ [["S]]                            ! Test: -E_ !
+
+[[exit]]

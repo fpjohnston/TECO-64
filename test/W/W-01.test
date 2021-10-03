@@ -1,0 +1,29 @@
+! TECO test: Read display mode parameters w/ n:W ! 
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+:W    - 8 [["N]]                            ! Test: :W !
+
+0:W   - 8 [["N]]                            ! Test: 0:W !
+
+1:W @=/1:W=%d/                          ! Test: 1:W !
+
+2:W @=/2:W=%d/                          ! Test: 2:W !
+
+3:W       [["N]]                            ! Test: 3:W !
+
+4:W       [["N]]                            ! Test: 4:W !
+
+5:W       [["N]]                            ! Test: 5:W !
+
+6:W       [["N]]                            ! Test: 6:W !
+
+7:W @=/7:W=%d/                          ! Test: 7:W !
+
+8:W @=/8:W=%d/                          ! Test: 8:W !
+
+9:W - 255 [["N]]                            ! Test: 9:W !
+
+[[exit]]

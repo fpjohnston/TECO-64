@@ -1,0 +1,67 @@
+! TECO test: Test for symbol constituent w/ "C !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: "C !
+
+0 UC                                    ! Start at NUL !
+
+^^$ < %C-1 "C [[FAIL]] ' >              ! NUL to $ !
+
+%C-1 "C | [[FAIL]] '                    ! $ is a symbol constituent !
+
+^^.-^^$-1 < %C-1 "C [[FAIL]] ' >        ! $ to . !
+
+%C-1 "C | [[FAIL]] '                    ! . is a symbol constituent !
+
+^^0-^^.-1 < %C-1 "C [[FAIL]] ' >        ! . to 0 !
+
+^^9-^^0+1 < %C-1 "C | [[FAIL]] ' >      ! Digits !
+
+^^A-^^9-1 < %C-1 "C [[FAIL]] ' >        ! Digits to upper case !
+
+^^Z-^^A+1 < %C-1 "C | [[FAIL]] ' >      ! Upper case !
+
+^^_-^^Z-1 < %C-1 "C [[FAIL]] ' >        ! Upper case to _ !
+
+%C-1 "C | [[FAIL]] '                    ! _ is a symbol constituent !
+
+^^a-^^_-1 < %C-1 "C [[FAIL]] ' >        ! _ to lower case !
+
+^^z-^^a+1 < %C-1 "C | [[FAIL]] ' >      ! Lower case !
+
+255-^^z-1 < %C-1 "C [[FAIL]] ' >        ! Remaining 8-bit characters !
+
+! Test: "c !
+
+0 UC                                    ! Start at NUL !
+
+^^$ < %C-1 "c [[FAIL]] ' >              ! NUL to $ !
+
+%C-1 "C | [[FAIL]] '                    ! $ is a symbol constituent !
+
+^^.-^^$-1 < %C-1 "c [[FAIL]] ' >        ! $ to . !
+
+%C-1 "C | [[FAIL]] '                    ! . is a symbol constituent !
+
+^^0-^^.-1 < %C-1 "c [[FAIL]] ' >        ! . to 0 !
+
+^^9-^^0+1 < %C-1 "c | [[FAIL]] ' >      ! Digits !
+
+^^A-^^9-1 < %C-1 "c [[FAIL]] ' >        ! Digits to upper case !
+
+^^Z-^^A+1 < %C-1 "c | [[FAIL]] ' >      ! Upper case !
+
+^^_-^^Z-1 < %C-1 "c [[FAIL]] ' >        ! Upper case to _ !
+
+%C-1 "C | [[FAIL]] '                    ! _ is a symbol constituent !
+
+^^a-^^_-1 < %C-1 "c [[FAIL]] ' >        ! _ to lower case !
+
+^^z-^^a+1 < %C-1 "c | [[FAIL]] ' >      ! Lower case !
+
+255-^^z-1 < %C-1 "c [[FAIL]] ' >        ! Remaining 8-bit characters !
+
+[[exit]]

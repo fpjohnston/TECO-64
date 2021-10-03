@@ -1,0 +1,31 @@
+! TECO test: Close output file after EB w/ EF !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@^UA"[[in1]]"                     ! File name !
+
+:@EW/^EQA/ [["U]]                           ! Open file for write !
+
+@I/abcdef/                              ! Add some data !
+
+EC                                      ! Write data and close file !
+
+:@EB/^EQA/ [["U]] Y                         ! Open file for backup !
+
+@I/123456/
+
+EF                                      ! Test: close file !
+
+Z [["U]]
+
+HK
+
+:@ER/^EQA/ [["U]] Y                         ! Open file for read !
+
+0J
+
+Z [["N]]
+
+[[exit]]

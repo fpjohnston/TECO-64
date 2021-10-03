@@ -1,0 +1,21 @@
+! TECO test: Open wildcard filespec w/ EN !
+! Requires: TECO !
+! Expects: ?MAT !
+
+[[enter]]
+
+EN*.foo                               ! Test: ENfile` !
+
+0UA
+<
+    :@EN//;                             ! Test: :@EN// !
+    %A                                  ! Count how many files we found !
+>
+
+QA :@=/%u file/
+
+QA-1 "N @^A/s/ '
+
+@^A/ matched/
+
+[[exit]]

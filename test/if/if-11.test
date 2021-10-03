@@ -1,0 +1,17 @@
+! TECO test: Test for equal to zero w/ "E !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: "E !
+
+ 0 "E | [[FAIL]] '
+ 1 "E   [[FAIL]] '
+-1 "E   [[FAIL]] '
+
+ 0 "e | [[FAIL]] '
+ 1 "e   [[FAIL]] '
+-1 "e   [[FAIL]] '
+
+[[exit]]

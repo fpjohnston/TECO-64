@@ -1,0 +1,13 @@
+! TECO test: Local search forward w/ @S !
+! Requires: TECO !
+! Expects: ?SRH !
+
+[[enter]] 
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+
+0J
+
+@S/foo/                             ! Test: @S// !
+
+[[exit]]

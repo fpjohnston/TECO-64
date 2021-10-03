@@ -1,0 +1,10 @@
+! TECO test: Copy command string to Q-register w/ *q !
+! Requires: TECO, Redirect !
+! Expects: PASS [star.log] !
+
+[[enter]]
+
+
+@^A/hello, world!/*A:GA     ! Test: save command string in Q-register !
+
+[[exit]]

@@ -1,0 +1,14 @@
+! TECO test: Test ESCapes in command file w/ ESC !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@:^A/hello, world!/
+
+[[PASS]]
+
+! Test: ESCape in command string !
+
+
+

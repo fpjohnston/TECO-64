@@ -1,0 +1,39 @@
+! TECO test: Test CTRL/Y flag w/ ^Y !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@I/abcdef
+/
+
+^Y UC UB                            ! Test: ^Y after I command !
+^S UA
+
+.:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
+
+.+QA-QB [["N]]
+
+0J
+
+:@S/cde/ [["U]]
+
+^Y UC UB                            ! Test: ^Y after S command !
+^S UA
+
+.:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
+
+.+QA-QB [["N]]
+
+@^UA/Jabberwocky/
+
+GA
+
+^Y UC UB                            ! Test: ^Y after G command !
+^S UA
+
+.:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
+
+.+QA-QB [["N]]
+
+[[exit]]

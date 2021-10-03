@@ -1,0 +1,17 @@
+! TECO test: Test for not equal to zero w/ "N !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Test: "N !
+
+ 0 "N   [[FAIL]] '
+ 1 "N | [[FAIL]] '
+-1 "N | [[FAIL]] '
+
+ 0 "n   [[FAIL]] '
+ 1 "n | [[FAIL]] '
+-1 "n | [[FAIL]] '
+
+[[exit]]

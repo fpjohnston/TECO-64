@@ -1,0 +1,9 @@
+! TECO test: Flow to end of conditional w/ F' !
+! Requires: TECO !
+! Expects: ?MAP !
+
+[[enter]]
+
+F'                                  ! Test: F' outside of conditionalk !
+
+[[exit]]

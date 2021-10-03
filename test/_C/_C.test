@@ -1,0 +1,14 @@
+! TECO test: Abort input command string w/ ^C !
+! Requires: TECO, Redirect !
+! Expects: PASS [_C.log] !
+
+[[enter]]
+
+
+128,0ET
+
+! Test: aborting input command string w/ CTRL/C !
+
+abc``
+
+[[exit]]

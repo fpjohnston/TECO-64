@@ -1,0 +1,9 @@
+! TECO test: Open file for writing w/ @EW !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@EW"[[out1]]"                           ! Test: open file for writing !
+
+[[exit]]

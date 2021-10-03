@@ -1,0 +1,25 @@
+! TECO test: Write Q-register to file, verify data w/ E% !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@^UA|/tmp/hello|
+
+@I/hello, world!/ 10I
+HXB HK
+
+:@E%B/^EQA/ [["U]]                          ! Test: :@E%q !
+
+:@ER/^EQA/ [["U]]                           ! Read file into the edit buffer !
+
+Y
+! Verify that the size is the same !
+
+:QB-Z [["N]]
+
+0J ::@S/^EQB/ [["U]]
+
+:GB
+
+[[exit]]

@@ -1,0 +1,10 @@
+entering test 4
+entering test 4a
+entering test 4b
+entering test 4c
+hello, world!
+exiting test 4c
+exiting test 4b
+exiting test 4a
+exiting test 4
+!PASS!

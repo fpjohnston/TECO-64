@@ -1,0 +1,13 @@
+! TECO test: Branch forward w/ O !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@O!tag1!                            ! Test: branch forward !
+
+[[FAIL]]
+
+!tag1!
+
+[[exit]]

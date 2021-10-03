@@ -1,0 +1,23 @@
+! TECO test: Type out characters w/ n^T !
+! Requires: TECO !
+! Expects: PASS [_T-01.log] !
+
+[[enter]]
+
+^^H ^T                              ! Test: nT !
+^^e ^T
+^^l ^T
+^^l ^T
+^^o ^T
+^^, ^T
+^^  ^T
+^^w ^T
+^^o ^T
+^^r ^T
+^^l ^T
+^^d ^T
+^^! ^T
+
+[[^T]]
+
+[[exit]]

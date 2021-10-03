@@ -1,0 +1,12 @@
+! TECO test: Test octal digits w/ 9 !
+! Requires: TECO !
+! Expects: ?ILN !
+
+[[enter]]
+
+@^A/Testing base 8/
+
+^D 8^R
+
+ 99 UA                              ! Test: 9 in base 8 !
+

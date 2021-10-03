@@ -1,9 +1,0 @@
-! Helper script for TECO tests !
-
-@^A/entering test 4a/ MZ
-
-@EI/EI-04b/                             ! Test: EI (level 1) !
-
-@^A/exiting test 4a/ MZ
-
-

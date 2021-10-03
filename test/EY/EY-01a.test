@@ -1,0 +1,17 @@
+! TECO test: Yank file into edit buffer w/ EY !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@EW"[[in1]]" 
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+EC
+
+@EB"[[in1]]"
+
+2,0 ED
+
+EY                                  ! Test: EY w/o protection !
+
+[[exit]]

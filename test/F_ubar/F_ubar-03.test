@@ -1,0 +1,35 @@
+! TECO test: Non-stop forward search and replace w/ -F_ !
+! Requires: TECO !
+! Expects: ?SRH !
+
+[[enter]]
+
+1,0 E3
+0,2 ED
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    13@I// 10@I// 12@I//
+>
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+10 P
+
+-@F_/klmnop/--- FOO ---/                ! Test: -F_ !
+
+EC
+
+0,1 E3
+
+:@ER"[[out1]]" [["U]] Y
+
+HT
+
+[[exit]]

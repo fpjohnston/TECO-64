@@ -1,0 +1,17 @@
+! TECO test: Basic loop test w/ <, > !
+! Requires: TECO !
+! Expects: PASS [loop-05.log] !
+
+[[enter]]
+
+0 < [[FAIL]] >                          ! Test: 0 < > !
+
+-1 < [[FAIL]] >                         ! Test: -1 < > !
+
+1 < @^A/1 iteration/ [[^T]] >           ! Test: 1 < > !
+
+2 < @^A/2 iterations/ [[^T]] >          ! Test: 2 < > !
+
+3 < @^A/3 iterations/ [[^T]] >          ! Test: 3 < > !
+
+[[exit]]

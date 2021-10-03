@@ -1,0 +1,41 @@
+! TECO test: Test tag in command file w/ bang !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+123
+
+! Test: tag in command string !
+
+UA
+
+QA-123 [["N]]       
+
+123,456
+
+! Test: tag in command string !
+
+UA UB
+
+QA-456 [["N]]       
+QB-123 [["N]]       
+
+123
+
+! Test: tag in command string !
+
+UA
+
+QA-123 [["N]]       
+
+123,456
+
+! Test: tag in command string !
+
+UA UB
+
+QA-456 [["N]]       
+QB-123 [["N]]       
+
+[[exit]]

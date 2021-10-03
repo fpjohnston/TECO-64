@@ -1,0 +1,19 @@
+! TECO test: Branch forward within loop w/ O !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+1 <
+    @O!tag1!                        ! Test: branch forward !
+
+    [[FAIL]]
+
+    !tag1!
+
+    [[PASS]]
+
+    ^C
+>
+
+[[exit]]

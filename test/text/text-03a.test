@@ -1,0 +1,11 @@
+! TECO test: Braced text arguments w/ {, } !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@^A{hello, world!}                 ! Test: paired braces w/ 1 arg. !
+
+:@FS{hello} {world!}                ! Test: paired braces w/ 2 args. !
+
+[[exit]]

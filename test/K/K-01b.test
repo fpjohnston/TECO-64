@@ -1,0 +1,9 @@
+! TECO test: Delete lines w/ K !
+! Requires: TECO !
+! Expects: ?POP !
+
+[[enter]]
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+
+0,100K                              ! Test: m,nK !

@@ -1,0 +1,13 @@
+! TECO test: Execute excessive nested macros w/ M !
+! Requires: TECO !
+! Expects: ?MAX !
+
+[[enter]]
+
+0 UA
+
+@^UA\ %A-64 "L MA | [[FAIL]] ' \
+
+MA                                  ! Test: nested M !
+
+[[exit]]

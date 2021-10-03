@@ -1,0 +1,35 @@
+! TECO test: Get relative line info w/ :L !
+! Requires: TECO !
+! Expects: PASS [L-01.log] !
+
+[[enter]]
+
+@^U.A
+\
+
+    U.A Q.A :@=/%3d line/ Q.A-1 "N @^A/s/ | @^A/ / '
+\
+
+@^U.B
+\
+     . :@=/.=%-3d, /
+     0:L M.A @^A/ in page, /        ! Test:  0:L !
+    -1:L M.A @^A/ preceding dot, /  ! Test: -1:L !
+     1:L M.A @^A/ following dot/    ! Test:  1:L !
+    [[^T]]
+\
+
+10 <
+    @I/abcdefghijklmnopwrstuvwxyz 0123456789/ 10 I
+>
+
+0J  M.B
+ L  M.B
+3L  M.B
+3L  M.B
+-5L M.B
+ZL  M.B
+-L  M.B
+-ZL M.B
+
+[[exit]]

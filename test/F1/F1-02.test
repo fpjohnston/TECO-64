@@ -1,0 +1,9 @@
+! TECO test: Set command region colors w/ F1 ! 
+! Requires: TECO-64 !
+! Expects: ?DPY !
+
+[[enter]]
+
+@F1 {FOOBAR} {white}                ! Test: F1 !
+
+[[exit]]

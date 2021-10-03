@@ -1,0 +1,25 @@
+! TECO test: Test conversion to upper case w/ ^W !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+@I/ABC/
+
+-1 ^X                               ! Require exact case match !
+
+0J :@S/abc/ [["S]]
+
+^W                                  ! Test: ^W !
+
+0J :@S/abc/ [["U]]
+
+1 ^W                                ! Test: 1^W !
+
+0J :@S/abc/ [["U]]
+
+0 ^W                                ! Test: 0^W !
+
+0J :@S/abc/ [["S]]
+
+[[exit]]
