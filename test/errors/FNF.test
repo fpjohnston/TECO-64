@@ -1,7 +1,0 @@
-! TECO test: Test FNF error w/ ?FNF !
-! Requires: TECO !
-! Expects: ?FNF [FNF.log] !
- 
-[[enter]]
-
-@ER"[[bad]]"                            ! Test: open file for read !
