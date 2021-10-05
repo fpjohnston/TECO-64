@@ -33,6 +33,7 @@ use Carp;
 use Cwd qw(getcwd abs_path);
 use Getopt::Long;
 use File::Basename;
+use File::Copy;
 use File::Find;
 use File::Glob;
 use File::Slurp;
@@ -42,16 +43,14 @@ use File::Slurp;
 my %dirs;
 my $verbose  = q{};
 my $nscripts = 0;
-my $auxdir = dirname(abs_path($0)) . '/aux';
-my $outdir;
 my $target = 'teco64';
+my @tecfiles = ();
 
 #
 #  Parse our command-line options
 #
 
 GetOptions(
-    'output=s' => \$outdir,
     'target=s' => \$target,
     'verbose'  => \$verbose,
 );
@@ -103,31 +102,22 @@ my %tokens =
    'bad'   => '/dev/teco',
 );
 
-my @filespecs = @ARGV;
+croak "Input and output arguments required" if ( $#ARGV != 1 );
 
-# Use current directory as default if no arguments
-
-if ( $#filespecs + 1 == 0 )
-{
-    @filespecs = q{.};
-}
+my $input  = $ARGV[0];
+my $outdir = $ARGV[1]; 
 
 #
 #  Main program start
 #
 
-# Search specified file specifications
-
-foreach my $filespec (@filespecs)
+if ( -d $input )                        # If directory, recurse through tree
 {
-    if ( -d $filespec )    # If directory, recurse through tree
-    {
-        open_dir($filespec);
-    }
-    else                   #  else assume specific file(s)
-    {
-        open_file($filespec);
-    }
+    open_dir($input);
+}
+else                                    #  else assume specific file(s)
+{
+    open_file($input);
 }
 
 printf "Total of $nscripts test script%s created\n", $nscripts == 1 ? q{} : 's';
@@ -183,6 +173,14 @@ sub open_dir
     my ($filespec) = @_;
 
     find( { wanted => \&wanted }, $filespec );
+
+    if ($outdir)
+    {
+        while (defined (my $file = pop(@tecfiles)))
+        {
+            copy($file, $outdir) or croak "Failed to copy '$file' to '$outdir': $!";
+        }
+    }               
 
     # Sort the directories, then sort the files in each one
 
@@ -279,6 +277,12 @@ sub wanted
         # matching files as elements in the array used as the hash's value.
 
         push @{ $dirs{$File::Find::dir} }, $infile;
+    }
+    elsif ( $infile =~ / [.] tec $ /msx && $outdir)
+    {
+        my $dir = dirname(abs_path($File::Find::dir));
+
+        push(@tecfiles, "$dir/$infile");
     }
 
     return;
