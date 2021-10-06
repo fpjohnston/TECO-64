@@ -1,5 +1,5 @@
 ! TECO test: Non-stop forward search and replace w/ -FN !
-! Requires: TECO !
+! Requires: TECO-32 !
 ! Expects: PASS [FN-03.log] !
 
 [[enter]]

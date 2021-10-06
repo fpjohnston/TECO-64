@@ -1,5 +1,5 @@
 ! TECO test: Non-stop backward search w/ -nN !
-! Requires: TECO !
+! Requires: TECO-32 !
 ! Expects: PASS !
 
 [[enter]]

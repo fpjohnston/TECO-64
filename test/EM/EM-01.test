@@ -1,5 +1,5 @@
 ! TECO test: Type macro in Q-register w/ EMq !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS [EM-01.log] !
 
 [[enter]]

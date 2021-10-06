@@ -4,15 +4,13 @@
 
 [[enter]]
 
-@^UA"[[in1]]"                     ! File name !
-
-:@EW/^EQA/ [["U]]                           ! Open file for write !
+:@EW"[[in1]]" [["U]]                    ! Open file for write !
 
 @I/abcdef/                              ! Add some data !
 
 EC                                      ! Write data and close file !
 
-:@EB/^EQA/ [["U]] Y                         ! Open file for backup !
+:@EB"[[in1]]" [["U]] Y                  ! Open file for backup !
 
 @I/123456/
 
@@ -22,7 +20,7 @@ Z [["U]]
 
 HK
 
-:@ER/^EQA/ [["U]] Y                         ! Open file for read !
+:@ER"[[in1]]" [["U]] Y                  ! Open file for read !
 
 0J
 

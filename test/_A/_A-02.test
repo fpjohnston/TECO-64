@@ -1,5 +1,5 @@
 ! TECO test: Print message w/ :^A !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS [_A-02.log] !
 
 [[enter]]

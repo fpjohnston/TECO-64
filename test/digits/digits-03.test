@@ -1,5 +1,5 @@
 ! TECO test: Test extended digit format w/ 0-f (digits) !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS [digits-03.log] !
 
 [[enter]]

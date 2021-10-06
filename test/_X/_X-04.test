@@ -1,5 +1,5 @@
 ! TECO test: Test search mode flag w/ 1^X !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]

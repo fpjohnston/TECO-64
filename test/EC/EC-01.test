@@ -1,5 +1,5 @@
 ! TECO test: Set memory size w/ nEC !
-! Requires: TECO, Redirect !
+! Requires: TECO-64, Redirect !
 ! Expects: PASS [EC-01.log] !
  
 [[enter]]

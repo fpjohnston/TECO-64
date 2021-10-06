@@ -1,5 +1,5 @@
 ! TECO test: Test page number w/ ^P !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]

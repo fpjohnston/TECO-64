@@ -1,5 +1,5 @@
 ! TECO test: Delete and replace w/ FK !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS [FK-01.log] !
  
 [[enter]]

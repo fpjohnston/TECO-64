@@ -1,5 +1,5 @@
 ! TECO test: Destructive backward search w/ -_ !
-! Requires: TECO !
+! Requires: TECO-32 !
 ! Expects: ?SRH !
 
 [[enter]]

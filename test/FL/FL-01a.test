@@ -1,5 +1,5 @@
 ! TECO test: Convert text to lower case w/ FL !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
  
 [[enter]]

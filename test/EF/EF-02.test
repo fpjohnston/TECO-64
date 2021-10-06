@@ -4,9 +4,7 @@
 
 [[enter]]
 
-@^UA"[[in1]]"                     ! File name !
-
-:@EW/^EQA/ [["U]]                           ! Open file for write !
+:@EW"[[in1]]" [["U]]                    ! Open file for write !
 
 @I/abcdef/                              ! Add some data !
 
@@ -20,13 +18,13 @@ EF                                      ! Test: close output file !
 
 HK
 
-:@ER/^EQA/ [["U]] Y                         ! Open file for read again !
+:@ER"[[in1]]" [["U]] Y                  ! Open file for read again !
 
 0J
 
-Z-QA [["N]]                                 ! Verify that size of data is the same !
+Z-QA [["N]]                             ! Verify that size of data is the same !
 
-::@S/abcdef/ [["U]]                         ! Verify that data hasn't changed !
+::@S/abcdef/ [["U]]                     ! Verify that data hasn't changed !
 
 [[exit]]
 

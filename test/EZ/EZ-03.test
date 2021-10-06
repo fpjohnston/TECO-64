@@ -1,5 +1,5 @@
 ! TECO test: Execute system command w/ :@EZ !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]

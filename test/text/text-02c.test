@@ -1,5 +1,5 @@
 ! TECO test: Bracketed text arguments w/ ] !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: ?TXT !
 
 [[enter]]

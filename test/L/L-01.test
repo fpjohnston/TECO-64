@@ -1,5 +1,5 @@
 ! TECO test: Get relative line info w/ :L !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS [L-01.log] !
 
 [[enter]]

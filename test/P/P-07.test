@@ -1,5 +1,5 @@
 ! TECO test: Write contents of edit buffer w/ -P !
-! Requires: TECO !
+! Requires: TECO-32 !
 ! Expects: PASS !
 
 [[enter]]

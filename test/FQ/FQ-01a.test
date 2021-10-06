@@ -1,5 +1,5 @@
 ! TECO test: Map key to Q-register w/ FQ, @FQ !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]

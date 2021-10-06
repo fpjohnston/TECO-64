@@ -1,5 +1,5 @@
 ! TECO test: Load Q-registers with default w/ :U !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 :UN                                 ! Test: load Q-registers w/ defaults !

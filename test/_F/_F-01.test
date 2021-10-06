@@ -1,5 +1,5 @@
 ! TECO test: Execute command string with CTRL/F sequence w/ ^F !
-! Requires: TECO, Redirect !
+! Requires: TECO-64, Redirect !
 ! Expects: PASS !
 
 [[enter]]

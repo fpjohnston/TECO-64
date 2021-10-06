@@ -1,5 +1,5 @@
 ! TECO test: Search and delete w/ FD !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS [FD-01.log] !
  
 [[enter]]

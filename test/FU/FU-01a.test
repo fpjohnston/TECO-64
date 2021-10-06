@@ -1,5 +1,5 @@
 ! TECO test: Convert text to upper case w/ FU !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
  
 [[enter]]

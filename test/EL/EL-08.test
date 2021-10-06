@@ -1,5 +1,5 @@
 ! TECO test: Open log file and verify data w/ 3:@EL !
-! Requires: TECO, Redirect !
+! Requires: TECO-64, Redirect !
 ! Expects: PASS !
 
 [[enter]]

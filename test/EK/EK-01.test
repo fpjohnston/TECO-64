@@ -4,25 +4,23 @@
 
 [[enter]]
 
-@^UA"[[in1]]"                     ! File name !
-
-:@EW/^EQA/ [["U]]                           ! Open file for write !
+:@EW"[[out1]]" [["U]]                   ! Open file for write !
 
 @I/abcdef/                              ! Add some data !
 
 EC                                      ! Write data and close file !
 
-:@EB/^EQA/ [["U]] Y                         ! Open file for backup !
+:@EB"[[out1]]" [["U]] Y                 ! Open file for backup !
 
-:@FS/bcd/FOOBAZ/ [["U]]                     ! Change data in file !
+:@FS/bcd/FOOBAZ/ [["U]]                 ! Change data in file !
 
 EK                                      ! Test: EK after EB !
 HK EC                                   ! Clear buffer, close file !
 
-:@ER/^EQA/ [["U]] Y                         ! Open file for read again !
+:@ER"[[out1]]" [["U]] Y                 ! Open file for read again !
 
 0J
 
-::@S/abcdef/ [["U]]                         ! Verify that data hasn't changed !
+::@S/abcdef/ [["U]]                     ! Verify that data hasn't changed !
 
 [[exit]]

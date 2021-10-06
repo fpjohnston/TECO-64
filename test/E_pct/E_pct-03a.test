@@ -1,14 +1,12 @@
 ! TECO test: Write Q-register to file w/ :@E% !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]
 
-@^UA|/tmp/hello|
-
 @I/hello, world!/ 10I
 HXB HK
 
-:@E%B/^EQA/ [["U]]                          ! Test: :@E%q !
+:@E%B"[[out1]]" [["U]]                  ! Test: :@E%q !
 
 [[exit]]

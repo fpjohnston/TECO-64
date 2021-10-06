@@ -1,5 +1,5 @@
 ! TECO test: Open log file w/ :@EL !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]

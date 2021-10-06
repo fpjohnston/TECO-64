@@ -1,5 +1,5 @@
 ! TECO test: Print numeric values w/ @=// !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS [equals-03.log] !
 
 [[enter]]

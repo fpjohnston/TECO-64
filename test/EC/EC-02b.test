@@ -4,18 +4,16 @@
  
 [[enter]]
 
-@^UA"[[in1]]"                             ! File name !
+:@EW"[[in1]]" [["U]]                    ! Open file for write !
 
-:@EW/^EQA/ [["U]]                                   ! Open file for write !
+@I/abcdef/                              ! Add some data !
 
-@I/abcdef/                                      ! Add some data !
+EC                                      ! Test: write data and close file !
 
-EC                                              ! Test: write data and close file !
+:@ER"[[in1]]" [["U]]                    ! Open file for read !
 
-:@ER/^EQA/ [["U]]                                   ! Open file for read !
+EC                                      ! Close input file !
 
-EC                                              ! Close input file !
-
-Y                                               ! Try to yank input !
+Y                                       ! Try to yank input !
  
 [[exit]]

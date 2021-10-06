@@ -1,5 +1,5 @@
 ! TECO test: Map key to macro w/ :@FQ !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]
