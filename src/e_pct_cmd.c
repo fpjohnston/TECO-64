@@ -80,7 +80,7 @@ void exec_E_pct(struct cmd *cmd)
                 }
             }
 
-            close_output(ostream);
+            close_output(stream);
 
             if (cmd->colon)
             {

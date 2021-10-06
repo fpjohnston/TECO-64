@@ -4,7 +4,8 @@
 
 [[enter]]
 
-@I/hello, world!/ 10I
+@I/hello, world!/ [[I]]
+
 HXB HK
 
 :@E%B"[[out1]]" [["U]]                  ! Test: :@E%q !
@@ -12,6 +13,7 @@ HXB HK
 :@ER"[[out1]]" [["U]]                   ! Read file into the edit buffer !
 
 Y
+
 ! Verify that the size is the same !
 
 :QB-Z [["N]]

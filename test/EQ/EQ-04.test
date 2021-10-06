@@ -4,9 +4,17 @@
 
 [[enter]]
 
-:@EQB"[[in1]]" [["U]]                   ! Test: :@EQq// !
+:@EW"[[out1]]" [["U]]
 
-:@ER"[[in1]]" [["U]]                    ! Read file into the edit buffer !
+@I/hello, world!/ [[I]]
+
+HXA
+
+EC
+
+:@EQB"[[out1]]" [["U]]                  ! Test: :@EQq// !
+
+:@ER"[[out1]]" [["U]]                   ! Read file into the edit buffer !
 
 Y
 
@@ -14,7 +22,7 @@ Y
 
 :QB-Z [["N]]
 
-! 0J ::@S/^EQA/ [["U]] FIXME !
+0J ::@S/^EQA/ [["U]]
 
 :GB
 
