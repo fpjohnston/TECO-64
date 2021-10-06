@@ -1,0 +1,16 @@
+*! TECO test: Test help level flag w/ 2EH !
+! Requires: TECO, Redirect !
+! Expects: ?FNF [EH-03.txt] !
+
+0,128ET HK
+``
+*
+*2 EH
+EH=                                 ! Test: standard error message !
+@ER/FOO/
+``
+2
+?FNF   File not found 'FOO'
+*
+*
+*

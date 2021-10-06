@@ -1,0 +1,7 @@
+! TECO test: Exit TECO and go w/ EG !
+! Requires: TECO !
+! Expects: PASS [EG-01.txt] !
+
+[[enter]]
+
+@EG/echo "hello, world!\n!PASS!"/       ! Test: execute system command and exit !

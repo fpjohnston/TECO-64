@@ -1,0 +1,32 @@
+! TECO test: Copy to Q-register w/ X !
+! Requires: TECO !
+! Expects: PASS [X-01.txt] !
+
+[[enter]]
+
+0UA
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    [[I]]
+>
+
+@^A/-----/ [[^T]]
+0J 1XA :GA                              ! Test: 1X !
+@^A/-----/ [[^T]]
+2L 2XA :GA                              ! Test: 2X !
+@^A/-----/ [[^T]]
+3L 3XA :GA                              ! Test: 3X !
+@^A/-----/ [[^T]]
+ZJ -3XA :GA                             ! Test: -3X !
+@^A/-----/ [[^T]]
+-4L -2XA :GA                            ! Test: -2X !
+@^A/-----/ [[^T]]
+-3L -1XA :GA                            ! Test: -1X !
+@^A/-----/ [[^T]]
+HXA :GA                                 ! Test: HX !
+@^A/-----/ [[^T]]
+
+[[exit]]

@@ -1,0 +1,18 @@
+*! TECO test: Cancel all input lines w/ ^G^G !
+! Requires: TECO, Redirect !
+! Expects: PASS [_G_G.txt] !
+
+0,128ET HK
+``
+*
+*
+*iabc
+def
+ghi^G^G
+*                             ! Test: cancel all input lines !
+``
+*
+*
+*^D EK HK ^A!PASS!^A 10^T EX
+``
+!PASS!

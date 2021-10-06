@@ -1,0 +1,22 @@
+! TECO test: Print numeric values w/ = !
+! Requires: TECO !
+! Expects: PASS [equals-01.txt] !
+
+[[enter]]
+
+@^A/value = /    0 =                ! Test:    0= in decimal !
+@^A/value = /   -1 =                ! Test:   -1= in decimal !
+@^A/value = /  123 =                ! Test:  123= in decimal !
+@^A/value = / -456 =                ! Test: -456= in decimal !
+
+@^A/value = /    0 ==               ! Test:    0== in octal !
+@^A/value = /   -1 ==               ! Test:   -1== in octal !
+@^A/value = /  123 ==               ! Test:  123== in octal !
+@^A/value = / -456 ==               ! Test: -456== in octal !
+
+@^A/value = /    0 ===              ! Test:    0=== in hexadecimal !
+@^A/value = /   -1 ===              ! Test:   -1=== in hexadecimal !
+@^A/value = /  123 ===              ! Test:  123=== in hexadecimal !
+@^A/value = / -456 ===              ! Test: -456=== in hexadecimal !
+
+[[exit]]

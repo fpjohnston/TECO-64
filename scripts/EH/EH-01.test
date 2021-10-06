@@ -1,0 +1,11 @@
+! TECO test: Test help level flag w/ 0EH !
+! Requires: TECO, Redirect !
+! Expects: ?FNF [EH-01.txt] !
+
+[[enter]]
+
+EH=                                 ! Test: confirm EH default !
+0 EH                                ! Test: default error message !
+EH=
+@ER/FOO/
+

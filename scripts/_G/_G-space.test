@@ -1,0 +1,11 @@
+! TECO test: Re-type current input line w/ ^G<space> !
+! Requires: TECO, Redirect !
+! Expects: PASS [_G-space.txt] !
+
+[[enter]]
+
+
+IABC                              ! Test: retype current input line !
+
+
+[[exit]]

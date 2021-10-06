@@ -1,0 +1,13 @@
+! TECO test: Test help level flag w/ 15EH !
+! Requires: TECO, Redirect !
+! Expects: ?FNF [EH-06.txt] !
+
+[[enter]]
+
+15 EH                               ! Test: error message, including line no. !
+EH=
+@I/
+    
+/
+@ER/FOO/
+

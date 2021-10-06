@@ -1,0 +1,25 @@
+! TECO test: Type out 8-bit characters w/ n^T !
+! Requires: TECO !
+! Expects: PASS [_T-02.txt] !
+
+[[enter]]
+
+0,4096 ET                               ! Say we can handle 8-bit chrs. !
+
+^^H+128 ^T                              ! Test: nT w/ n > 128 !
+^^e+128 ^T
+^^l+128 ^T
+^^l+128 ^T
+^^o+128 ^T
+^^,+128 ^T
+^^ +128 ^T
+^^w+128 ^T
+^^o+128 ^T
+^^r+128 ^T
+^^l+128 ^T
+^^d+128 ^T
+^^!+128 ^T
+
+[[^T]]
+
+[[exit]]

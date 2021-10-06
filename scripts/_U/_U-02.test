@@ -1,0 +1,12 @@
+! TECO test: Append string to Q-register w/ :^U !
+! Requires: TECO !
+! Expects: PASS [_U-02.txt] !
+
+[[enter]]
+
+@^UA/hello/
+:@^UA/, world!/                     ! Test: append string to Q-register !
+
+:GA [[^T]]
+
+[[exit]]

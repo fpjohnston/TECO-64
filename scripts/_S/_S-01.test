@@ -1,0 +1,23 @@
+! TECO test: Match separator character w/ ^S !
+! Requires: TECO !
+! Expects: PASS [_S-01.txt] !
+
+[[enter]]
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0 J
+
+128 <
+    ::@S/^S/                        ! Test: ^S !
+    "U -1A
+        0A ^T
+        C
+    '
+>
+
+[[^T]]
+
+[[exit]]

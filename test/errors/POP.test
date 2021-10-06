@@ -1,7 +1,0 @@
-! TECO test: Test error w/ ?POP !
-! Requires: TECO !
-! Expects: ?POP [POP.log] !
- 
-[[enter]]
-
-ZJ C                                    ! Test: move pointer beyond end of page !

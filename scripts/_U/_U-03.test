@@ -1,0 +1,15 @@
+! TECO test: Copy character to Q-register w/ n^U !
+! Requires: TECO !
+! Expects: PASS [_U-03.txt] !
+
+[[enter]]
+
+^^h @^UA//                          ! Test: copy character to Q-register !
+^^e @^UA//
+^^l @^UA//
+^^l @^UA//
+^^o @^UA//
+
+:GA [[^T]]
+
+[[exit]]

@@ -1,0 +1,7 @@
+! TECO test: Test error w/ ?ERR !
+! Requires: TECO !
+! Expects: ?ERR [ERR.txt] !
+
+[[enter]]
+
+@EW"[[bad]]"                            ! Test: open file for write !

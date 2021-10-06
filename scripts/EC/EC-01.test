@@ -1,0 +1,23 @@
+! TECO test: Set memory size w/ nEC !
+! Requires: TECO-64, Redirect !
+! Expects: PASS [EC-01.txt] !
+ 
+[[enter]]
+
+
+            0 EC                ! Test: minimize edit buffer !
+            2 EC                ! Test: increase edit buffer to 2 KB !
+            1 EC                ! Test: decrease edit buffer to 1 KB !
+            4 EC                ! Test: increase edit buffer to 4 KB !
+         1024 EC                ! Test: increase edit buffer to 1 MB !
+(1024 * 1024) EC                ! Test: increase edit buffer to 1 GB !
+            0 EC                ! Test: minimize edit buffer !
+           -1 EC                ! Test: maximize edit buffer !
+         1024 EC                ! Test: decrease edit buffer to 1 MB !
+            4 EC                ! Test: decrease edit buffer to 4 KB !
+            1 EC                ! Test: decrease edit buffer to 1 KB !
+            2 EC                ! Test: decrease edit buffer to 2 KB !
+            0 EC                ! Test: minimize edit buffer !
+
+[[exit]]
+

@@ -1,0 +1,12 @@
+! TECO test: Abort editing session and exit TECO w/ ^C^C !
+! Requires: TECO, Redirect !
+! Expects: PASS [_C_C.txt] !
+
+[[enter]]
+
+
+! Test: abort editing session with two CTRL/C's !
+
+[[PASS]]
+
+

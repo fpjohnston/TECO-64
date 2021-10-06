@@ -1,0 +1,31 @@
+! TECO test: Test form feed flag w/ -1^E !
+! Requires: TECO !
+! Expects: PASS [_E-03.txt] !
+
+[[enter]]
+
+1,0 E3
+
+@I/text/ 10I
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+^E [["S]]                                   ! Test: ^E at beginning of file !
+
+P ^E [["S]]                                 ! Test: ^E after 1st page !
+
+-1^E                                    ! Test: -1^E !
+
+P ^E [["S]]                                 ! Test: ^E at end of file !
+
+EC
+
+:@ER"[[out1]]" [["U]] Y
+
+HT
+
+[[exit]]

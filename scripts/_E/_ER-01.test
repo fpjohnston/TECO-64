@@ -1,0 +1,24 @@
+! TECO test: Match alphanumeric character w/ ^ER !
+! Requires: TECO !
+! Expects: PASS [_ER-01.txt] !
+
+[[enter]]
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0 J
+
+128 <
+    ::@S/^ER/                       ! Test: ^ER !
+    "S
+        -1A ^T
+    |
+        C
+    '
+>
+
+[[^T]]
+
+[[exit]]

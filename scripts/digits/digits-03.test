@@ -1,0 +1,67 @@
+! TECO test: Test extended digit format w/ 0-f (digits) !
+! Requires: TECO-64 !
+! Expects: PASS [digits-03.txt] !
+
+[[enter]]
+
+@^A/Testing base 10/ ^D [[^T]]
+
+( 00) UA QA:@=/%d /                 ! Test: all decimal digits !
+( 11) UA QA:@=/%d /
+( 22) UA QA:@=/%d /
+( 33) UA QA:@=/%d /
+( 44) UA QA:@=/%d /
+( 55) UA QA:@=/%d /
+( 66) UA QA:@=/%d /
+( 77) UA QA:@=/%d /
+( 88) UA QA:@=/%d /
+( 99) UA QA @=/%d /
+
+@^A/Testing base 8/ ^D [[^T]]
+
+(000) UA QA:@=/%o /                 ! Test: all octal digits !
+(011) UA QA:@=/%o /
+(022) UA QA:@=/%o /
+(033) UA QA:@=/%o /
+(044) UA QA:@=/%o /
+(055) UA QA:@=/%o /
+(066) UA QA:@=/%o /
+(077) UA QA @=/%o /
+
+@^A/Testing base 16/ ^D [[^T]]
+
+(0x00) UA QA:@=/%x /                ! Test: all hexadecimal digits !
+(0x11) UA QA:@=/%x /
+(0x22) UA QA:@=/%x /
+(0x33) UA QA:@=/%x /
+(0x44) UA QA:@=/%x /
+(0x55) UA QA:@=/%x /
+(0x66) UA QA:@=/%x /
+(0x77) UA QA:@=/%x /
+(0x88) UA QA:@=/%x /
+(0x99) UA QA:@=/%x /
+(0xaa) UA QA:@=/%x /
+(0xbb) UA QA:@=/%x /
+(0xcc) UA QA:@=/%x /
+(0xdd) UA QA:@=/%x /
+(0xee) UA QA:@=/%x /
+(0xff) UA QA @=/%x /
+
+(0X00) UA QA:@=/%x /
+(0X11) UA QA:@=/%x /
+(0X22) UA QA:@=/%x /
+(0X33) UA QA:@=/%x /
+(0X44) UA QA:@=/%x /
+(0X55) UA QA:@=/%x /
+(0X66) UA QA:@=/%x /
+(0X77) UA QA:@=/%x /
+(0X88) UA QA:@=/%x /
+(0X99) UA QA:@=/%x /
+(0Xaa) UA QA:@=/%x /
+(0Xbb) UA QA:@=/%x /
+(0Xcc) UA QA:@=/%x /
+(0Xdd) UA QA:@=/%x /
+(0Xee) UA QA:@=/%x /
+(0Xff) UA QA @=/%x /
+
+[[exit]]

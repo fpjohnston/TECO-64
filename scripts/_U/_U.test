@@ -1,0 +1,10 @@
+! TECO test: Cancel current input line w/ ^U !
+! Requires: TECO, Redirect !
+! Expects: PASS [_U.txt] !
+
+[[enter]]
+
+
+abcdef``                          ! Test: cancel current input line !
+
+[[exit]]

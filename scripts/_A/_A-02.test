@@ -1,0 +1,9 @@
+! TECO test: Print message w/ :^A !
+! Requires: TECO-64 !
+! Expects: PASS [_A-02.txt] !
+
+[[enter]]
+
+:@^A/hello, world!/                 ! Test: ^A w/ colon !
+
+[[exit]]

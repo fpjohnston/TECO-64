@@ -1,0 +1,51 @@
+! TECO test: Test EOF flag w/ ^N !
+! Requires: TECO !
+! Expects: PASS [_N-02.txt] !
+
+[[enter]]
+
+:@EW"[[out1]]" [["U]]               ! Create 1st temp file !
+
+@I/abcdef/ 10I                          ! Add some data !
+
+EC                                      ! Write data and close file !
+
+:@EW"[[out2]]" [["U]]               ! Create 2nd temp file !
+
+@I/123456/ 10I                          ! Add some data !
+
+EC                                      ! Write data and close file !
+
+:@ER"[[out1]]" [["U]]               ! Open 1st file on primary stream !
+
+^N @=/^R^N=%d/                          ! Test: ^N after opening primary !
+
+A
+
+^N @=/^R^N=%d/                          ! Test: ^N after A !
+
+EP                                      ! Switch to secondary stream !
+
+:@ER"[[out2]]" [["U]]               ! Open 2nd file on secondary stream !
+
+^N @=/^R^N=%d/                          ! Test: ^N after opening secondary !
+
+A
+
+^N @=/^R^N=%d/                          ! Test: ^N after A !
+
+@ER//                                   ! Switch to primary stream !
+
+^N @=/^R^N=%d/                          ! Test: ^N after switching to primary !
+
+EC
+
+EP                                      ! Switch to secondary stream !
+
+^N @=/^R^N=%d/                          ! Test: ^N after switching to secondary !
+
+EC
+
+HT
+
+[[exit]]
