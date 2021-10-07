@@ -1,10 +1,10 @@
 ! TECO test: Test form feed flag w/ ^E !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]
 
-1,0 E3
+[[-FF]]
 
 @I/single/
 

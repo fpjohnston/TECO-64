@@ -1,10 +1,10 @@
 ! TECO test: Non-stop forward search and replace w/ -F_ !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: ?SRH !
 
 [[enter]]
 
-1,0 E3
+[[-FF]]
 0,2 ED
 
 10 <
@@ -26,7 +26,7 @@ EC
 
 EC
 
-0,1 E3
+[[+FF]]
 
 :@ER"[[out1]]" [["U]] Y
 

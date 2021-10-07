@@ -1,10 +1,10 @@
 ! TECO test: Non-stop forward search w/ nN !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]
 
-1,0 E3
+[[-FF]]
 
 HK
 

@@ -1,5 +1,5 @@
 ! TECO test: Match ASCII character w/ ^Enn !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]

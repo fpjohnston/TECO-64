@@ -1,10 +1,10 @@
 ! TECO test: Destructive backward search w/ -E_ !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: ?SRH !
 
 [[enter]]
 
-1,0 E3
+[[-FF]]
 
 HK
 
