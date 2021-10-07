@@ -1,10 +1,10 @@
 ! TECO test: Non-stop forward search and replace w/ nFN !
-! Requires: TECO-64 !
+! Requires: TECO !
 ! Expects: PASS [FN-02.txt] !
 
 [[enter]]
 
-[[-FF]]
+[[FF]]
 
 10 <
     @I/line /
@@ -23,9 +23,7 @@ EC
 
 EC
 
-[[+FF]]
-
-:@ER"[[out1]]" [["U]] Y
+:@ER"[[out1]]" [["U]] < :A; >
 
 HT
 

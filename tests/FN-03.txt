@@ -8,4 +8,4 @@ line 7 abcdefghijklmnopqrstuvwxyz 0123456789
 line 8 abcdefghijklmnopqrstuvwxyz 0123456789
 line 9 abcdefghij--- FOO ---qrstuvwxyz 0123456789
 line 10 abcdefghijklmnopqrstuvwxyz 0123456789
-!PASS!
+!PASS!

@@ -1,10 +1,10 @@
 ! TECO test: Write contents of edit buffer w/ P !
-! Requires: TECO !
+! Requires: TECO C !
 ! Expects: PASS !
 
 [[enter]]
 
-[[-FF]]
+[[FF]]
 
 @I/page 1/ 12I
 @I/page 2/ 12I

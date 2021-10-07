@@ -88,6 +88,7 @@ my %tokens =
    '"N'    => '"N [[FAIL]] \'',
    '"S'    => '"S [[FAIL]] \'',
    '"U'    => '"U [[FAIL]] \'',
+   'FF'    => '1,0E3',
    'I'     => '10@I//',
    'PASS'  => '!PASS! [[^T]]',
    'exit'  => '^D EK HK [[PASS]] EX',
