@@ -1,17 +1,17 @@
 ! TECO test: Test EE flag w/ EE, nEE !
-! Requires: TECO, Redirect !
+! Requires: TECO-32 !
 ! Expects: PASS [EE-01.txt] !
 
 [[enter]]
 
 
-EE=                             ! Test: EE !
+EE=                                 ! Test: EE !
 
-@^A/hello/ ??                      ! This will not print until after EE !
+@^A/hello/ ??                           ! This should not print immediately !
 
-^^?EE                           ! Test: nEE !
+^^?EE                               ! Test: nEE !
 
-@^A/hello, again/ ??               ! This should print immediately !
+@^A/hello, again/ ??                    ! This should print immediately !
 
 
 [[exit]]

@@ -1,10 +1,8 @@
 ! TECO test: Destructive forward search w/ _ !
-! Requires: TECO C !
+! Requires: TECO !
 ! Expects: ?YCA !
 
 [[enter]]
-
-[[FF]]
 
 10 <
     @I/line /

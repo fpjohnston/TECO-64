@@ -31,17 +31,9 @@ HK G* 0J ::@S/xbaz/ [["U]] Z-4 [["N]]
 
 HK G* 0J ::@S/xYZ/ [["U]] Z-3 [["N]]
 
-:@ER/^V^VXYZ/                       ! Test: ^V^V !
-
-HK G* 0J ::@S/xyz/ [["U]] Z-3 [["N]]
-
 :@ER/^Wabc/                         ! Test: ^W !
 
 HK G* 0J ::@S/Abc/ [["U]] Z-3 [["N]]
-
-:@ER/^W^Wabc/                       ! Test: ^W^W !
-
-HK G* 0J ::@S/ABC/ [["U]] Z-3 [["N]]
 
 :@ER/^Q^E/                          ! Test: ^Q !
 

@@ -1,5 +1,5 @@
 ! TECO test: Cancel current input line w/ ^U !
-! Requires: TECO, Redirect !
+! Requires: TECO !
 ! Expects: PASS [_U.txt] !
 
 [[enter]]

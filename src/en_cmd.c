@@ -83,10 +83,6 @@ void exec_EN(struct cmd *cmd)
             {
                 push_x(FAILURE, X_OPERAND);
             }
-            else
-            {
-                throw(E_MAT, name);     // No match found for file spec.
-            }
         }
     }
 }

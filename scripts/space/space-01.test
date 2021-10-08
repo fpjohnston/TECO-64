@@ -1,5 +1,5 @@
 ! TECO test: Test spaces in command string w/ SPACE !
-! Requires: TECO, Redirect !
+! Requires: TECO !
 ! Expects: PASS !
 
 [[enter]]
@@ -8,6 +8,6 @@
 
 ! Test: spaces in command string !
 
- :  @   FS    {foo}     {baz}       [["U]]
+ :  @   FS/foo/baz/       [["U]]
 
 [[exit]]

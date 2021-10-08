@@ -67,8 +67,8 @@ union e1_flag
     {
         uint xoper   : 1;       ///< Enable extended operators
         uint text    : 1;       ///< Enable extended text strings
-        uint         : 1;       ///< (unused)
-        uint         : 1;       ///< (unused)
+        uint ctrl_a  : 1;       ///< Allow colon modifier for CTRL/A
+        uint equals  : 1;       ///< Allow at-sign modifier for '='
         uint new_ei  : 1;       ///< Use new-style EI commands
         uint bang    : 1;       ///< !! starts end-of-line comment
         uint prompt  : 1;       ///< Add CR/LF before prompt if needed

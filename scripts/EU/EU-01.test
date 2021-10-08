@@ -14,26 +14,26 @@
 
 ^^A UA
 
-^^Z - ^^A + 1 < QA@I// %A > @10I//
+^^Z - ^^A + 1 < QA@I// %A > [[I]]
 
-EU@=/EU=%d/                         ! Test: EU= !
+@^A/EU=/ EU=                        ! Test: EU= !
 
 0 EU                                ! Test: 0EU !
-EU@=/EU=%d/ HT
+@^A/EU=/ EU= HT
 
 1 EU                                ! Test: 1EU !
-EU@=/EU=%d/ HT
+@^A/EU=/ EU= HT
 
 -1 EU                               ! Test: -1EU !
-EU@=/EU=%d/ HT
+@^A/EU=/ EU= HT
 
 -2 EU                               ! Test: -2EU !
-EU@=/EU=%d/
+@^A/EU=/ EU=
 
 +2 EU                               ! Test: +2EU !
-EU@=/EU=%d/
+@^A/EU=/ EU=
 
 -1 EU                               ! Test: -1EU !
-EU@=/EU=%d/
+@^A/EU=/ EU=
 
 [[exit]]

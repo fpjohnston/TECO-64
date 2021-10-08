@@ -6,7 +6,7 @@
 
 ! Test: mix of basic TECO commands !
 
-10 < @I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I// >
+10 < @I/abcdefghijklmnopqrstuvwxyz 0123456789/ [[I]] >
 
 J
 
@@ -22,7 +22,7 @@ J
 
 4 < @S/xyz/ @I/BAZ/ >
 
--6@S/lmnop/ @FR//
+-6@S/lmnop/ ^SD
 
 J
 

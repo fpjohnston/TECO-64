@@ -2,10 +2,9 @@
 ! Requires: TECO, Redirect !
 ! Expects: PASS [BS.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*! Test: immediate-action BS commands !
+**! Test: immediate-action BS commands !
 
 @I/line 1
 line 2

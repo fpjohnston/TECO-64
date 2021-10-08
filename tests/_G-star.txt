@@ -2,11 +2,9 @@
 ! Requires: TECO, Redirect !
 ! Expects: PASS [_G-star.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*
-*iabc
+***iabc
 def
 ghi
 jkl^G*
@@ -15,8 +13,6 @@ def
 ghi
 jkl                              ! Test: retype all input lines !
 ``
-*
-*
-*^D EK HK ^A!PASS!^A 10^T EX
+***^D EK HK ^A!PASS!^A 10^T EX
 ``
 !PASS!

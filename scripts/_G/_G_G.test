@@ -1,5 +1,5 @@
 ! TECO test: Cancel all input lines w/ ^G^G !
-! Requires: TECO, Redirect !
+! Requires: TECO !
 ! Expects: PASS [_G_G.txt] !
 
 [[enter]]

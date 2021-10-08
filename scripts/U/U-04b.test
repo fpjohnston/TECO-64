@@ -1,13 +1,15 @@
 ! TECO test: Load Q-register with default using nM w/ :U !
 ! Requires: TECO-64 !
 ! Expects: PASS !
-! Options: -A 123 !
-
-:UN                                 ! Test: load Q-register w/ default !
 
 [[enter]]
 
-QN
-@:=/QN=%d: /
+0,256 E1
+
+@^UA/:UN/                               ! Test: load Q-register using nM !
+
+123 MA
+
+QN= QN=
 
 [[exit]]

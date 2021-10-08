@@ -67,7 +67,6 @@ code.
 | <nobr>?KEY</nobr> | <nobr>Key 'foo' not found</nobr> | An invalid key was specified for an FM command. |
 | <nobr>?LOC</nobr> | <nobr>Invalid location for tag '!foo!'</nobr> | An O command cannot jump to a location inside a loop, other than the one the O command may be in, or inside a conditional. |
 | <nobr>?MAP</nobr> | <nobr>Missing apostrophe</nobr> | Every conditional (started with the " command) must be closed with the ' command. |
-| <nobr>?MAT</nobr> | <nobr>No matching files</nobr> | No match was found for the file specification for an EN command. |
 | <nobr>?MAX</nobr> | <nobr>Internal program limit reached</nobr> | Loops and conditionals are limited to a maximum of 32 levels, macros are limited to a depth of 64 levels, and file names are limited to 4095 characters. |
 | <nobr>?MEM</nobr> | <nobr>Memory overflow</nobr> | Insufficient memory available to complete the current command. |
 | <nobr>?MLP</nobr> | <nobr>Missing left parenthesis</nobr> | There is a right parenthesis trhat is not matched by a corresponding left parenthesis. |

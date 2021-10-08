@@ -1,10 +1,10 @@
 ! TECO test: Test help level flag w/ 3EH !
-! Requires: TECO, Redirect !
-! Expects: ?FNF [EH-04.txt] !
+! Requires: TECO !
+! Expects: ?POP [EH-04.txt] !
 
 [[enter]]
 
 3 EH
 EH=                                 ! Test: verbose error message !
-@ER/FOO/
+ZJ C
 

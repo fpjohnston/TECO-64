@@ -1,10 +1,9 @@
 ! TECO test: Destructive forward search w/ n_ !
-! Requires: TECO C !
+! Requires: TECO !
 ! Expects: PASS [ubar-02.txt] !
 
 [[enter]]
 
-[[FF]]
 0,2 ED
 
 10 <

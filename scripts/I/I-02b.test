@@ -1,5 +1,5 @@
 ! TECO test: Insert text (w/ extended features) w/ n@Itext` !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: ?IIA !
 
 [[enter]]

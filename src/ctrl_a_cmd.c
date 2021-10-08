@@ -67,6 +67,11 @@ void exec_ctrl_A(struct cmd *cmd)
 
     if (cmd->colon)
     {
+        if (!f.e1.ctrl_a)
+        {
+            throw(E_EXT);               // Extended feature not enabled
+        }
+
         if (f.e3.CR_type && last != CR)
         {
             type_out(CR);

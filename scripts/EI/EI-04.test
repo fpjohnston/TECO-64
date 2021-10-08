@@ -4,10 +4,10 @@
 
 [[enter]]
 
-@^A/entering test 4/ [[^T]]
+@^A/entering test 4/ [[^T]] 
 
-@EI"EI-a"                               ! Test: EI (level 0) !
+@EI"EI-a"                           ! Test: EI (level 0) !
 
-@^A/exiting test 4/ [[^T]]
+@^A/exiting test 4/ [[^T]] 
 
 [[exit]]

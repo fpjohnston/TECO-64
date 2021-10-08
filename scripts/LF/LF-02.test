@@ -1,5 +1,5 @@
 ! TECO test: Test line feed in command string w/ LF !
-! Requires: TECO, Redirect !
+! Requires: TECO !
 ! Expects: PASS !
 
 [[enter]]
@@ -14,16 +14,7 @@
 @
 
 
-FS
-
-
-
-|foo|
-
-
-
-
-|baz|
+FS|foo|baz|
 
 
 

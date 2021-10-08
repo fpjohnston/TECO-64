@@ -2,8 +2,12 @@
 ! Requires: TECO !
 ! Expects: ?NAU !
 
-UN                                  ! Test: load Q-register using M !
-
 [[enter]]
 
-QN @:=/QN=%d: /
+@^UA/UN/                                ! Test: load Q-register using nM !
+
+MA
+
+QN= QN=
+
+[[exit]]

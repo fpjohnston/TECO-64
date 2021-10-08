@@ -1,8 +1,10 @@
 ! TECO test: Test lib/init.tec w/ (misc.) !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]
+
+-1 E1
 
 ! Test: library init.tec macro !
 

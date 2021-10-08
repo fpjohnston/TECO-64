@@ -1,5 +1,5 @@
 ! TECO test: Read Q-register from file w/ EQ !
-! Requires: TECO !
+! Requires: TECO-10 !
 ! Expects: ?FNF !
 
 [[enter]]

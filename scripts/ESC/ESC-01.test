@@ -1,13 +1,13 @@
 ! TECO test: Test ESCapes in command string w/ ESC !
-! Requires: TECO, Redirect !
+! Requires: TECO !
 ! Expects: PASS !
 
 [[enter]]
 
-@:^A/hello, world!/
-
-[[PASS]]
+:@^A/hello, world!/
 
 ! Test: ESCape in command string !
+
+[[PASS]]
 
 

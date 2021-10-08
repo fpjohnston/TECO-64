@@ -1,14 +1,12 @@
 ! TECO test: Write contents of edit buffer w/ nPW !
-! Requires: TECO C !
+! Requires: TECO !
 ! Expects: PASS [P-10.txt] !
 
 [[enter]]
 
-[[FF]]
-
-@I/page 1/ 12I
-@I/page 2/ 12I
-@I/page 3/ 12I
+@I/page 1/ 12@I//
+@I/page 2/ 12@I//
+@I/page 3/ 12@I//
 
 :@EW"[[out1]]" [["U]]
 

@@ -17,7 +17,7 @@ QO-10 "N
     QO-20 "N
         QO-30 "N
             QO-40 "N
-                QO @=/Invalid operating system: %d/
+                @^A/Invalid operating system: / QO=
                 %F
             '
         '
@@ -29,7 +29,7 @@ QO-10 "N
 QH-10 "N
     QH-20 "N
         QH-30 "N
-            QH@=/Invalid processor type: %d/
+            @^A/Invalid processor type: / QH=
             %F
         '
     '
@@ -39,7 +39,7 @@ QH-10 "N
 
 QW-32 "N
     QW-64 "N
-        QW@=/Invalid processor word size: %d/
+        @^A/Invalid processor word size: / QW=
         %F
     '
 '
@@ -48,7 +48,7 @@ QW-32 "N
 
 QN-32 "N
     QN-64 "N
-        QN@=/Invalid numeric argument size: %d/
+        @^A/Invalid numeric argument size: / QN=
         %F
     '
 '

@@ -11,8 +11,7 @@
 0 J
 
 128 <
-    ::@S/^EX/                       ! Test: ^EX !
-    "U
+    ::@S/^EX/ "U                        ! Test: ^EX !
         0A:@/%d /
         C
     '

@@ -6,7 +6,7 @@
 
 0 UF
 0 UA
-@^UA| QB-%A "N QA @=/Expected %d, got / QB= %F ' |
+@^UA| %A-QB "N @^A/Expected = / QA:= @^A/, actual = / QB= %F ' |
 
 ! Test: get values of all ASCII characters !
 

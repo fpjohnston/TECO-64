@@ -4,6 +4,8 @@
 
 [[enter]]
 
+0,8 E1
+
 @^A/value = /  123 @=//             ! Test: n@=// !
 @^A/value = /  123 @=/[%d]/         ! Test: n@=/%d/ !
 @^A/value = /  123 @=/[%u]/         ! Test: n@=/%u/ !

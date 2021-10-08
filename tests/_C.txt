@@ -2,21 +2,13 @@
 ! Requires: TECO, Redirect !
 ! Expects: PASS [_C.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*
-*128,0ET``
-*
-*
-*! Test: aborting input command string w/ CTRL/C !
+***128,0ET``
+***! Test: aborting input command string w/ CTRL/C !
 
 abc
 [7m Cancel [0m
-*
-*
-*
-*
-*^D EK HK ^A!PASS!^A 10^T EX
+*****^D EK HK ^A!PASS!^A 10^T EX
 ``
 !PASS!

@@ -54,8 +54,6 @@ being returned if the open succeeded, and 0 if it failed.
 
 [^P - Current page number](variables.md) (TECO-10)
 
-[^Q - Convert line numbers to character values](variables.md) (TECO-10)
-
 [^T - Type character](typeout.md)
 - Added repeat count.
 - Allowed -1 for printing CR/LF.
@@ -98,8 +96,6 @@ being returned if the open succeeded, and 0 if it failed.
 
 [EC - Set Memory Size](misc.md) (TECO-10)
 
-[::EG - Execute system command w/o exiting](env.md)
-
 [EI - Indirect File Command](file.md)
 - Added colon modifier to return success/failure value.
 
@@ -120,6 +116,8 @@ being returned if the open succeeded, and 0 if it failed.
 
 [EY - Yank backwards](page.md)
 - Added optional code to allow backwards paging (TECO-32).
+
+[EZ - Execute system command w/o exiting](env.md)
 
 [F0 - Edit buffer position at start of window](variables.md) (TECO-10)
 

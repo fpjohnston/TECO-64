@@ -2,17 +2,13 @@
 ! Requires: TECO, Redirect !
 ! Expects: PASS [_G_G.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*
-*iabc
+***iabc
 def
 ghi^G^G
 *                             ! Test: cancel all input lines !
 ``
-*
-*
-*^D EK HK ^A!PASS!^A 10^T EX
+***^D EK HK ^A!PASS!^A 10^T EX
 ``
 !PASS!

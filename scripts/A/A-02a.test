@@ -1,10 +1,8 @@
 ! TECO test: Append text to edit buffer w/ A !
-! Requires: TECO C !
+! Requires: TECO !
 ! Expects: PASS [A-02a.txt] !
 
 [[enter]]
-
-[[FF]]                              ! Disable FF as a regular character !
 
 0 UA
 4 UI

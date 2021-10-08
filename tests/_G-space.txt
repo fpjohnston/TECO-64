@@ -2,15 +2,11 @@
 ! Requires: TECO, Redirect !
 ! Expects: PASS [_G-space.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*
-*IABC^G
+***IABC^G
 *IABC                             ! Test: retype current input line !
 ``
-*
-*
-*^D EK HK ^A!PASS!^A 10^T EX
+***^D EK HK ^A!PASS!^A 10^T EX
 ``
 !PASS!

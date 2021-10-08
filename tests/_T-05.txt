@@ -2,23 +2,18 @@
 ! Requires: TECO, Redirect !
 ! Expects: PASS [_T-05.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 
 ! Test: ^T with several input characters !
 
 ^T=``
 a97
-*
-*^T=``
+**^T=``
 b98
-*
-*^T=``
+**^T=``
 c99
-*
-*^T=``
+**^T=``
 d100
-*
-*
-*^D EK HK ^A!PASS!^A 10^T EX
+***^D EK HK ^A!PASS!^A 10^T EX
 ``
 !PASS!

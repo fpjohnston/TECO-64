@@ -6,7 +6,7 @@
 
 ! Test: Verify that B is always 0, regardless of dot !
 
-10 < @I/0123456789/ 10I >
+10 < @I/0123456789/ [[I]] >
 
 0J B [["N]]
  L B [["N]]

@@ -4,22 +4,24 @@
 
 [[enter]]
 
+0,3 E1
+
 0 UF            ! Count of failures !
 
 ! Macro to evaluate expression and compare with what we expected !
 
 @^UB
-{
+\
     UA                              ! Expected value !
     :MA
     UB                              ! Calculated value !
     QA-QB "E
-        QB @=/^EQA = %6d (pass)/
+        @^A/^EQA = / QB := @^A/ (pass)/ [[^T]]
     |
-        QB @=/^EQA = %6d (fail)/
+        @^A/^EQA = / QB := @^A/ (fail)/ [[^T]]
         %F
     '
-}
+\
 
 @^UA| (16 == 3) |      0 :MB        ! Test: compare equal !
 @^UA| (3 == 16) |      0 :MB        ! Test: compare equal !

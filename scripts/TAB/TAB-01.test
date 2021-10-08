@@ -4,8 +4,6 @@
 
 [[enter]]
  
-512,0 E1                                ! Disable extended insert features !
-
 HK 	abc Z-4 [["N]]                        ! Test: simple insert !
 
 HK 	 Z-1 [["N]]                           ! Test: insert of TAB only !

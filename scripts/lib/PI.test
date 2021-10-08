@@ -1,8 +1,10 @@
 ! TECO test: Test lib/pi.tec w/ (misc.) !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS [pi.txt] !
 
 [[enter]]
+
+-1 E1
 
 ! Test: library pi.tec macro !
 

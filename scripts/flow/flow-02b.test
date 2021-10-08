@@ -4,9 +4,9 @@
 
 [[enter]]
 
-:UA
+QA-2 "N [[PASS]] ^C '
 
-QA-123 "N [[PASS]] ^C '
+%A
 
 F<                                  ! Test: F< !
 

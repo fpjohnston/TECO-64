@@ -1,8 +1,10 @@
 ! TECO test: Test tag in command file w/ bang !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]
+
+0,32 E1
 
 ! Test: tag in command string !
 !! Test: tag in command string

@@ -1,5 +1,5 @@
 ! TECO test: Delete characters w/ :D !
-! Requires: TECO-64 !
+! Requires: TECO-10 !
 ! Expects: PASS !
 
 [[enter]]

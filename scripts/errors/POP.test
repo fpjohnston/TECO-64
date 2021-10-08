@@ -1,6 +1,6 @@
 ! TECO test: Test error w/ ?POP !
 ! Requires: TECO !
-! Expects: ?POP [POP.txt] !
+! Expects: ?POP !
  
 [[enter]]
 

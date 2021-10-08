@@ -1,6 +1,6 @@
 ! TECO test: Test error w/ ?ERR !
-! Requires: TECO !
-! Expects: ?ERR [ERR.txt] !
+! Requires: TECO-64 !
+! Expects: ?ERR !
 
 [[enter]]
 

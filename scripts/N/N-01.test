@@ -1,17 +1,15 @@
 ! TECO test: Non-stop forward search w/ N !
-! Requires: TECO-64 !
+! Requires: TECO !
 ! Expects: PASS !
 
 [[enter]]
 
-[[FF]]
-
-@I/'Twas /    10I 12I
-@I/brillig, / 10I 12I
-@I/and /      10I 12I
-@I/the /      10I 12I
-@I/slithy /   10I 12I
-@I/toves/     10I 12I
+@I/'Twas /    [[I]] 12@I//
+@I/brillig, / [[I]] 12@I//
+@I/and /      [[I]] 12@I//
+@I/the /      [[I]] 12@I//
+@I/slithy /   [[I]] 12@I//
+@I/toves/     [[I]] 12@I//
 
 :@EW"[[out1]]" [["U]]
 

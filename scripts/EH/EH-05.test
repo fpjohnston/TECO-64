@@ -1,10 +1,10 @@
 ! TECO test: Test help level flag w/ 7EH !
-! Requires: TECO, Redirect !
-! Expects: ?FNF [EH-05.txt] !
+! Requires: TECO !
+! Expects: ?POP [EH-05.txt] !
 
 [[enter]]
 
 7 EH                                ! Test: error message + failing command !
 EH=
-@ER/FOO/
+ZJ C                                ! Force POP error !
 

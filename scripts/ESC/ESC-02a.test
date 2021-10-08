@@ -4,11 +4,10 @@
 
 [[enter]]
 
-@:^A/hello, world!/
-
-[[PASS]]
+:@^A/hello, world!/
 
 ! Test: ESCape in command string !
 
-
+[[PASS]]
+
 

@@ -1,5 +1,5 @@
 ! TECO test: Move position forward w/ :C !
-! Requires: TECO-64 !
+! Requires: TECO !
 ! Expects: PASS !
  
 [[enter]]
@@ -21,7 +21,7 @@ He took his vorpal sword in hand;
       Long time the manxome foe he sought --
 So rested he by the Tumtum tree
       And stood awhile in thought.
-
+X
 And, as in uffish thought he stood,
       The Jabberwock, with eyes of flame,
 Came whiffling through the tulgey wood,

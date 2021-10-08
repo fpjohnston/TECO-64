@@ -1,5 +1,5 @@
 ! TECO test: Re-type all input lines w/ ^G* !
-! Requires: TECO, Redirect !
+! Requires: TECO !
 ! Expects: PASS [_G-star.txt] !
 
 [[enter]]

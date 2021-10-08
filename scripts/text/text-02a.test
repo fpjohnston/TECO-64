@@ -4,6 +4,8 @@
 
 [[enter]]
 
+0,2 E1
+
 @^A [hello, world!]                ! Test: paired brackets w/ 1 arg. !
 
 :@FS[hello][world!]                 ! Test: paired brackets w/ 1 args. !

@@ -1,8 +1,10 @@
 ! TECO TEST: Test lib/squish.tec w/ EM !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]
+
+-1 E1
 
 ! Test: library squish.tec macro !
 

@@ -1,18 +1,17 @@
 *! TECO test: Test help level flag w/ 3EH !
 ! Requires: TECO, Redirect !
-! Expects: ?FNF [EH-04.txt] !
+! Expects: ?POP [EH-04.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*3 EH
+**3 EH
 EH=                                 ! Test: verbose error message !
-@ER/FOO/
+ZJ C
 ``
 3
-?FNF   File not found 'FOO'
-     The requested input file could not be located. If this occurred within a
-     macro, the colon-modified command may be necessary.
-*
-*
-*
+?POP   Attempt to move pointer off page with 'C'
+     A J, C or R command has been executed which attempted to move the pointer
+     off the page. The result of executing one of these commands must leave the
+     pointer between 0 and Z, The characters referenced by a D or nA command must
+     also be within the buffer limits.
+***

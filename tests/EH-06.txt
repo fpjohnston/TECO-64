@@ -1,28 +1,26 @@
 *! TECO test: Test help level flag w/ 15EH !
-! Requires: TECO, Redirect !
-! Expects: ?FNF [EH-06.txt] !
+! Requires: TECO-64, Redirect !
+! Expects: ?POP [EH-06.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*15 EH                               ! Test: error message, including line no. !
+**15 EH                               ! Test: error message, including line no. !
 EH=
 @I/
     
 /
-@ER/FOO/
+ZJ C                                ! Force POP error !
 ``
 15
-?FNF   File not found 'FOO' in command at line 6
-     The requested input file could not be located. If this occurred within a
-     macro, the colon-modified command may be necessary.
+?POP   Attempt to move pointer off page with 'C' in command at line 6
+     A J, C or R command has been executed which attempted to move the pointer
+     off the page. The result of executing one of these commands must leave the
+     pointer between 0 and Z, The characters referenced by a D or nA command must
+     also be within the buffer limits.
 15 EH                               ! Test: error message, including line no. !
 EH=
 @I/
     
 /
-@ER/FOO/
-``
-*
-*
-*
+ZJ C                                ! Force POP error !
+``***

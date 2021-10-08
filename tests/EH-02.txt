@@ -1,16 +1,13 @@
 *! TECO test: Test help level flag w/ 1EH !
 ! Requires: TECO, Redirect !
-! Expects: ?FNF [EH-02.txt] !
+! Expects: ?POP [EH-02.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*1 EH                                ! Test: minimal error message !
+**1 EH                                ! Test: minimal error message !
 EH=
-@ER/FOO/
+ZJ C                                ! Force POP error !
 ``
 1
-?FNF
-*
-*
-*
+?POP
+***

@@ -1,5 +1,5 @@
 ! TECO test: Test form feed in command file w/ FF !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]
@@ -8,6 +8,6 @@
 
 ! Test: form feed in command file !
 
-:@FS{foo}{baz} [["U]]
+:@FS/foo/baz/ [["U]]
 
 [[exit]]

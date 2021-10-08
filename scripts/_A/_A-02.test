@@ -4,6 +4,8 @@
 
 [[enter]]
 
+0,4 E1
+
 :@^A/hello, world!/                 ! Test: ^A w/ colon !
 
 [[exit]]

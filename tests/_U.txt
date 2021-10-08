@@ -2,13 +2,9 @@
 ! Requires: TECO, Redirect !
 ! Expects: PASS [_U.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*
-*abcdef       *
-*
-*                          ! Test: cancel current input line !
+***abcdef       ***                          ! Test: cancel current input line !
 
 ^D EK HK ^A!PASS!^A 10^T EX
 ``

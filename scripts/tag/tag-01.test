@@ -1,5 +1,5 @@
 ! TECO test: Test tag in command string w/ ! !
-! Requires: TECO, Redirect !
+! Requires: TECO !
 ! Expects: PASS !
 
 [[enter]]
@@ -7,4 +7,4 @@
 ! Test: tag in command string !
 ! Test: tag in command string !
 
-[[PASS]]
+[[exit]]

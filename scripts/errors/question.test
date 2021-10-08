@@ -1,11 +1,9 @@
 ! TECO test: Print erroneous command string w/ ? !
-! Requires: TECO, Redirect !
-! Expects: ?FNF !
+! Requires: TECO !
+! Expects: ?POP !
  
 [[enter]]
 
-ERfoo``?                            ! Test: print failing command !
+ZJ C``?                                 ! Test: print failing command !
 
-[[PASS]]
-
-EX``
+[[exit]]

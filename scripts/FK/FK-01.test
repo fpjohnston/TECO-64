@@ -1,5 +1,5 @@
 ! TECO test: Delete and replace w/ FK !
-! Requires: TECO-64 !
+! Requires: TECO-10 !
 ! Expects: PASS [FK-01.txt] !
  
 [[enter]]

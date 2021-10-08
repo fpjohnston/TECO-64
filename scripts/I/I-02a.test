@@ -1,5 +1,5 @@
 ! TECO test: Insert text (w/ extended features) w/ nI, m,nI !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]

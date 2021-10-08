@@ -4,6 +4,8 @@
 
 [[enter]]
 
+0,2 E1
+
 @F3 {FOO} {BAZ}                     ! Test: F3 !
 
 [[exit]]

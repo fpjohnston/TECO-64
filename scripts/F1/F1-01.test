@@ -4,6 +4,8 @@
 
 [[enter]]
 
+0,2 E1
+
 ! Test all possible foreground and background colors !
 
 @F1 {BLACK}   {white}               ! Test: F1 !

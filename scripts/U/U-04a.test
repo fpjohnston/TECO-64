@@ -2,10 +2,14 @@
 ! Requires: TECO-64 !
 ! Expects: PASS !
 
-:UN                                 ! Test: load Q-register w/ default !
-
 [[enter]]
 
-QN @:=/QN=%d: /
+0,256 E1
+
+@^UA/:UN/                               ! Test: load Q-register using nM !
+
+MA
+
+QN= QN=
 
 [[exit]]

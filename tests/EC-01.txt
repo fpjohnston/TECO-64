@@ -1,12 +1,10 @@
 *! TECO test: Set memory size w/ nEC !
-! Requires: TECO-64, Redirect !
+! Requires: TECO-10, Redirect !
 ! Expects: PASS [EC-01.txt] !
  
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*
-*            0 EC ``
+***            0 EC ``
 [1K bytes]
 *               ! Test: minimize edit buffer !
             2 EC ``

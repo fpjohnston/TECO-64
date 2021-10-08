@@ -12,7 +12,7 @@ EN*.tec                               ! Test: ENfile` !
     %A                                  ! Count how many files we found !
 >
 
-QA :@=/%u file/
+QA:= @^A/ file/ [[^T]]
 
 QA-1 "N @^A/s/ '
 

@@ -4,6 +4,8 @@
 
 [[enter]]
 
+0,2 E1
+
 @F2 {black} {FOOBAR}                ! Test: F2 !
 
 [[exit]]

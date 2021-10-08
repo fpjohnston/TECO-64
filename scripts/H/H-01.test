@@ -4,21 +4,21 @@
 
 [[enter]]
 
-@I/0123456789/ 10I              ! Add a line !
+@I/0123456789/ 10@I//           ! Add a line !
 
 H UZ UB                         ! Test: H w/ 1 line !
 
 QB - B [["N]]
 QZ - Z [["N]]
 
-@I/0123456789/ 10I              ! Add another line !
+@I/0123456789/ 10@I//           ! Add another line !
 
 H UZ UB                         ! Test: H w/ 2 lines !
 
 QB - B [["N]]
 QZ - Z [["N]]
 
-@I/0123456789/ 10I              ! Add another line !
+@I/0123456789/ 10@I//           ! Add another line !
 
 H UZ UB                         ! Test: H w/ 3 lines !
 

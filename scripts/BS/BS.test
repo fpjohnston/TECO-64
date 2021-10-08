@@ -1,5 +1,5 @@
 ! TECO test: Back up and type one line w/ BS !
-! Requires: TECO, Redirect !
+! Requires: TECO !
 ! Expects: PASS [BS.txt] !
 
 [[enter]]

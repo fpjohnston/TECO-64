@@ -11,8 +11,7 @@
 0 J
 
 128 <
-    ::@S/^ER/                       ! Test: ^ER !
-    "S
+    ::@S/^ER/ "S                        ! Test: ^ER !
         -1A ^T
     |
         C

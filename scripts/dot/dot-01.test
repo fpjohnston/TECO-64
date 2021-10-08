@@ -6,10 +6,12 @@
 
 10 < @I/0123456789/ [[I]] >
 
-0J .-  0 [["N]]                             ! Test: . at start of buffer !
- L .- 11 [["N]]                             ! Test: . in middle of buffer !
-3L .- 44 [["N]]
-4L .- 88 [["N]]
-2L .-110 [["N]]                             ! Test: . at end of buffer !
+Z/10 UA
+
+0J .- 0       [["N]]                    ! Test: . at start of buffer !
+ L .- QA      [["N]]                    ! Test: . in middle of buffer !
+3L .- (QA*4)  [["N]]                    ! Test: . in middle of buffer !
+4L .- (QA*8)  [["N]]                    ! Test: . in middle of buffer !
+2L .- (QA*10) [["N]]                    ! Test: . at end of buffer !
 
 [[exit]]

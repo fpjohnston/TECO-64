@@ -6,7 +6,7 @@
 
 0 UA
 
-@I/abcd1234/ 10@I//
+@I/abcd1234/ [[I]]
 
 0J @S/^Na/                          ! Test: ^Nx !
 0T ^^`^T T

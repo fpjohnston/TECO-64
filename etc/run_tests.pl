@@ -41,14 +41,33 @@ use File::Slurp;
 my $verbose  = q{};
 my $nscripts = 0;
 my $all_tests = 0;
+my $target = 'teco64';
 
 #
 #  Parse our command-line options
 #
 
 GetOptions(
+    'target=s' => \$target,
     'verbose'  => \$verbose,
 );
+
+$target = lc $target;
+
+if ($target eq 'vms' || $target eq 'teco-32')
+{
+    $target = 'teco32';
+}
+elsif ($target eq 'teco-64')
+{
+    $target = 'teco64';
+}
+elsif ($target ne 'teco32' && $target ne 'teco64' && $target ne 'tecoc')
+{
+    print "Invalid target: $target\n";
+
+    exit;
+}
 
 croak "Input directory required" if ( $#ARGV != 0 );
 
@@ -74,7 +93,7 @@ my $command;
 
 foreach my $file (@files)
 {
-    next if $file !~ /\.tec/ && $file !~ /\.key/;
+    next if $file !~ /\.tec$/;
 
     unlink("out_1.tmp", "out_2.tmp");
 
@@ -86,40 +105,40 @@ foreach my $file (@files)
     print FH "@^A/hello, world!/ 10^T";
     close FH;
 
-    my ($abstract, $commands, $expects, $options, $ntests) = read_header($file);
+    my ($report, $expects) = read_header($file);
 
-    next unless defined $abstract;
+    next unless defined $report;
 
-    my $teco = 'teco -n -I"\'0,128ET\'"' . " $options ";
+    my $actual;
 
-    if ($file =~ /\.key/)
+    if ($target eq 'tecoc')
     {
-        $teco .= "< $file";
+        my $teco = 'tecoc < ' . $file . ' 2>&1';
+
+        $actual = qx/$teco/;            # Execute command and capture output
     }
     else
     {
-        $teco .= "-X -E $file";
+        my $teco = 'teco -n -I"\'0,128ET\'" < ' . $file . ' 2>&1';
+
+        if ( $file =~ /EG-\d\d\.tec/ms )
+        {
+            local $ENV{TECO_INIT}    = 'TECO_INIT';
+            local $ENV{TECO_LIBRARY} = 'TECO_LIBRARY';
+            local $ENV{TECO_MEMORY}  = 'TECO_MEMORY';
+            local $ENV{TECO_VTEDIT}  = 'TECO_VTEDIT';
+
+            $actual = qx/$teco/;        # Execute command and capture output
+        }
+        else
+        {
+            $actual = qx/$teco/;        # Execute command and capture output
+        }
     }
 
-    my $output;
+    chomp $actual;
 
-    if ( $file =~ /EG-\d\d\.tec/ms )
-    {
-        local $ENV{TECO_INIT}    = 'TECO_INIT';
-        local $ENV{TECO_LIBRARY} = 'TECO_LIBRARY';
-        local $ENV{TECO_MEMORY}  = 'TECO_MEMORY';
-        local $ENV{TECO_VTEDIT}  = 'TECO_VTEDIT';
-
-        $output = qx/$teco/;        # Execute command and capture output
-    }
-    else
-    {
-        $output = qx/$teco/;        # Execute command and capture output
-    }
-
-    chomp $output;
-
-    check_test($file, $abstract, $commands, $expects, $output, $ntests);
+    check_test($file, $report, $expects, $actual);
 }
 
 # Clean up any temp. files we may have created.
@@ -146,9 +165,7 @@ exit;
 
 sub check_test
 {
-    my ( $file, $abstract, $commands, $expects, $output, $ntests ) = @_;
-
-    chomp $commands;
+    my ( $file, $report, $expects, $actual ) = @_;
 
     my $diff;
     my $expected;
@@ -184,83 +201,116 @@ sub check_test
         chomp $expected;
     }
 
-    my $report = sprintf '%17s %-45s %-15s  (%2d) ', "[$file]", $abstract,
-        $commands, $ntests;
-
     ++$nscripts;
 
-    if ( $expects eq 'pass' )
+    if ($actual =~ /Aborted/)
+    {
+        # This is handled specially without regard to the desired result,
+        # because it was found that some tests could complete successfully,
+        # but abort on exit, due to such things as stack smashing. So we
+        # first check to see if there was an abort in the output, and only
+        # then check for desired success or failure.
+
+        printf "%s ABORTED\n", $report;
+    }
+    elsif ( $expects eq 'pass' )
     {
         # Here if test should succeed
 
-        if ( $output !~ /!PASS!/ms )
+        if ( $actual !~ /!PASS!/ms )
         {
-            # Say error occurred, but only print first word in output
-
-            my $len = index $output, q{ };
-
-            if ( $len < 0 )
+            if ($actual =~ /(\?\w\w\w)\s/)
             {
-                $len = length $output;
-            }
+                # Test encountered TECO error
 
-            printf "%s %s -> %s\n", $report, $expects, substr $output, 0, $len;
+                printf "%s %s\n", $report, $1;
+            }
+            elsif ( $actual =~ /!FAIL!/ )
+            {
+                # Test failed when it should have succeeded
+
+                printf "%s FAIL\n", $report;
+            }
+            else
+            {
+                # Test encountered unknown error
+
+                printf "%s ERROR\n", $report;
+            }
         }
-        elsif ( defined $diff && $expected ne $output )
+        elsif ( defined $diff && $expected ne $actual )
         {
-            printf "%s %s -> DIFF\n", $report, $expects;
+            printf "%s DIFF\n", $report;
         }
         elsif ($verbose)
         {
-            printf "%s %s -> OK\n", $report, $expects;
+            printf "%s OK\n", $report;
         }
     }
     elsif ( $expects eq 'fail' )
     {
-        # Here if test should succeed
+        # Here if test  succeed
 
-        if ( $output !~ /!FAIL!/ms )
+        if ( $actual !~ /!FAIL!/ms )
         {
-            # Say error occurred, but only print first word in output
-
-            my $len = index $output, q{ };
-
-            if ( $len < 0 )
+            if ($actual =~ /(\?\w\w\w)\s/)
             {
-                $len = length $output;
-            }
+                # Test encountered TECO error
 
-            printf "%s %s -> %s\n", $report, $expects, substr $output, 0, $len;
+                printf "%s %s\n", $report, $1;
+            }
+            elsif ( $actual =~ /!PASS!/ )
+            {
+                # Test succeeded when it should have failed
+
+                printf "%s PASS\n", $report;
+            }
+            else
+            {
+                # Test encountered unknown error
+
+                printf "%s ERROR\n", $report;
+            }
         }
         elsif ($verbose)
         {
-            printf "%s %s -> OK\n", $report, $expects;
+            printf "%s OK\n", $report;
         }
     }
-    else
+    else                                # Here if test failed or should fail
     {
-        # Here if test failed or should fail
-
-        if ( index( $output, $expects) < 0 )
+        if ( index( $actual, $expects) < 0 )
         {
-            # Say error occurred, but only print first word in output
-
-            my $len = index $output, q{ };
-
-            if ( $len < 0 )
+            if ($actual =~ /(\?\w\w\w)\s/)
             {
-                $len = length $output;
-            }
+                # Test encountered unexpected TECO error
 
-            printf "%s %s -> %s\n", $report, $expects, substr $output, 0, $len;
-        }
-        elsif ( defined $diff && $expected ne $output )
-        {
-            printf "%s %s -> DIFF\n", $report, $expects;
+                printf "%s %s\n", $report, $1;
+            }
+            elsif ( $actual =~ /!FAIL!/ )
+            {
+                # Test failed when it should have issued TECO error
+
+                printf "%s FAIL\n", $report;
+            }
+            elsif ( $actual =~ /!PASS!/ )
+            {
+                # Test succeeded when it should have failed
+
+                printf "%s PASS\n", $report;
+            }
+            else
+            {
+                # Test encountered unknown error
+
+                printf "%s ERROR\n", $report;
+            }
         }
         elsif ($verbose)
         {
-            printf "%s %s -> OK\n", $report, $expects;
+            # Test encountered expected TECO error
+
+            printf "%s OK\n", $report;
         }
     }
 
@@ -280,7 +330,6 @@ sub read_header
     my $abstract;
     my $commands;
     my $expects;
-    my $options = q{};
     my $ntests = 0;
 
     foreach my $line (@lines)
@@ -290,13 +339,9 @@ sub read_header
             $abstract = $1;
             $commands = $3;
         }
-        elsif ( $line =~ /! \s Expects: \s (.+) \s ! /x )
+        elsif ( $line =~ /! \s Expects: \s (.+?) \s (\[.+\] \s)? ! /x )
         {
             $expects = $1;
-        }
-        elsif ( $line =~ /! \s+ Options: \s+ (.+) \s ! /x )
-        {
-            $options = $1;
         }
         elsif ($line =~ /Test:/)
         {
@@ -306,7 +351,7 @@ sub read_header
 
     if (!defined $abstract)
     {
-        return (undef, undef, undef, undef, undef);
+        return (undef, undef, undef, undef);
     }
 
     $all_tests += $ntests;
@@ -314,5 +359,8 @@ sub read_header
     croak "Can't find test commands in file: $file\n" unless defined $commands;
     croak "Can't find test expectations in file: $file\n" unless defined $expects;
 
-    return ( $abstract, $commands, $expects, $options, $ntests );
+    my $report = sprintf '%17s %-45s %-15s  (%2d)  %s ->', "[$file]", $abstract,
+        $commands, $ntests, $expects;
+
+    return ( $report, $expects );
 }

@@ -1,8 +1,10 @@
 ! TECO test: Increment Q-register w/ :% !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]
+
+0,1024 E1
 
 0 UA
 
@@ -10,6 +12,6 @@
 
 42:%A + 456 UB (QB - 456) [["N]] ! Test: n:% !
 
-QA @=/QA=%d/
+@^A/QA=/ QA=
 
 [[exit]]

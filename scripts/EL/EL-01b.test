@@ -1,5 +1,5 @@
 ! TECO test: Open log file w/ EL !
-! Requires: TECO-64 !
+! Requires: TECO-10 !
 ! Expects: ?ERR !
 
 [[enter]]

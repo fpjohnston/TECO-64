@@ -4,10 +4,6 @@
 
 [[enter]]
 
-512,0 E1                            ! Disable extended insert features !
-
 HK 65Iabc                         ! Test: insert ASCII chr. & text !
-
-[[FAIL]]
 
 [[exit]]

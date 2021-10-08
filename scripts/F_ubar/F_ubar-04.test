@@ -1,17 +1,16 @@
 ! TECO test: Non-stop forward search and replace w/ -nF_ !
-! Requires: TECO-64 !
+! Requires: TECO !
 ! Expects: ?SRH !
 
 [[enter]]
 
-[[FF]]
 0,2 ED
 
 10 <
     @I/line /
     %A \
     @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
-    13@I// 10@I// 12@I//
+    [[I]] 12@I//
 >
 
 :@EW"[[out1]]" [["U]]

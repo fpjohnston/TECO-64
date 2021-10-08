@@ -1,14 +1,14 @@
 ! TECO test: Load Q-registers using m,nM w/ U !
 ! Requires: TECO !
 ! Expects: PASS !
-! Options: -A 123,456 !
-
-UN UM                               ! Test: load Q-registers using m,nM !
 
 [[enter]]
 
-QM
-@:=/QM=%d: /
-QN @:=/QN=%d: /
+@^UA/UN UM/                             ! Test: load Q-registers using m,nM !
+
+123,456 MA
+
+QM= QM=
+QN QN=
 
 [[exit]]

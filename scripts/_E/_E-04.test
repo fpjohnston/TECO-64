@@ -4,9 +4,7 @@
 
 [[enter]]
 
-[[FF]]
-
-@I/text/ 10I 12I
+@I/text/ [[I]] 12@I//
 
 :@EW"[[out1]]" [["U]]
 
@@ -18,7 +16,7 @@ EC
 
 P ^E [["U]]                                 ! Test: ^E after 1st page !
 
-0^E                                     ! Test: 0^E !
+0^E                                         ! Test: 0^E !
 
 P ^E [["S]]                                 ! Test: ^E at end of file !
 

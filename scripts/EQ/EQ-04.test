@@ -1,5 +1,5 @@
 ! TECO test: Read to Q-register, verify data w/ :@EQ !
-! Requires: TECO !
+! Requires: TECO-10 !
 ! Expects: PASS !
 
 [[enter]]

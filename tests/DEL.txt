@@ -2,11 +2,9 @@
 ! Requires: TECO, Redirect !
 ! Expects: PASS [DEL.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*
-*abc^G
+***abc^G
 *abc   def                  ! Test: deleting input chrs. !
 
 ^D EK HK ^A!PASS!^A 10^T EX

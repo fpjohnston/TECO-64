@@ -1,5 +1,5 @@
 ! TECO test: Open log file and verify data w/ 3:@EL !
-! Requires: TECO-64, Redirect !
+! Requires: TECO-10 !
 ! Expects: PASS !
 
 [[enter]]
@@ -19,7 +19,7 @@
 
 @^A/hello, world!/         ! Generate an output message !
 ``
-5 < @I/abcdef/ 10I >        ! Insert some lines of text !
+5 < @I/abcdef/ [[I]] >      ! Insert some lines of text !
 0 J                         ! Go to beginning of buffer !
 3 L                         ! Move down 3 lines !
 1 K                         ! And kill the next line !

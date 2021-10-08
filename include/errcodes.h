@@ -75,7 +75,6 @@ enum errcodes
     E_KEY,          ///< Key 'foo' not found
     E_LOC,          ///< Invalid location for tag '!foo!'
     E_MAP,          ///< Missing apostrophe
-    E_MAT,          ///< No matching files
     E_MAX,          ///< Internal program limit reached
     E_MEM,          ///< Memory overflow
     E_MLP,          ///< Missing left parenthesis

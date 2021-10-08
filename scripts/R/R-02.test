@@ -1,5 +1,5 @@
 ! TECO test: Move position backward w/ :R !
-! Requires: TECO-64 !
+! Requires: TECO-10 !
 ! Expects: PASS !
  
 [[enter]]

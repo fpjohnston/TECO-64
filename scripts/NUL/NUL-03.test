@@ -6,7 +6,7 @@
 
 ! Test: NUL characters in command files !
 
-@I/abc/ 10,0I @I/def/ 10I
+@I/abc/ 10 < 0@I// > @I/def/ [[I]]
 
 :@EW"[[out1]]" [["U]]
 

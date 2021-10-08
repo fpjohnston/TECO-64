@@ -4,18 +4,16 @@
 
 [[enter]]
 
-[[FF]]
-
-@I/'Twas /    10I 12I
-@I/brillig, / 10I 12I
-@I/and /      10I 12I
-@I/the /      10I 12I
-@I/slithy /   10I 12I
-@I/All/       10I 12I
-@I/mimsy/     10I 12I
-@I/were/      10I 12I
-@I/the/       10I 12I
-@I/borogoves/ 10I 12I
+@I/'Twas /    [[I]] 12@I//
+@I/brillig, / [[I]] 12@I//
+@I/and /      [[I]] 12@I//
+@I/the /      [[I]] 12@I//
+@I/slithy /   [[I]] 12@I//
+@I/All/       [[I]] 12@I//
+@I/mimsy/     [[I]] 12@I//
+@I/were/      [[I]] 12@I//
+@I/the/       [[I]] 12@I//
+@I/borogoves/ [[I]] 12@I//
 
 :@EW"[[out1]]" [["U]]
 

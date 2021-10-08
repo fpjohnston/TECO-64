@@ -1,14 +1,12 @@
 ! TECO test: Test page number w/ ^P !
-! Requires: TECO-64 !
+! Requires: TECO-10 !
 ! Expects: PASS !
 
 [[enter]]
 
-[[FF]]
-
-@I/page 1/ 12I
-@I/page 2/ 12I
-@I/page 3/ 12I
+@I/page 1/ 12//
+@I/page 2/ 12//
+@I/page 3/ 12//
 
 :@EW"[[out1]]" [["U]]
 

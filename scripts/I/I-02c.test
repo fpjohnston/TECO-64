@@ -1,10 +1,10 @@
 ! TECO test: Insert text (w/ extended features) w/ -1,nI !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: ?NCA !
 
 [[enter]]
  
-0,512 E1                            ! Enable extended insert features !
+0,512 E1
 
 HK -1,^^A I                         ! Test: -1,nI !
 

@@ -2,18 +2,12 @@
 ! Requires: TECO, Redirect !
 ! Expects: PASS [star.txt] !
 
-0,128ET HK
+HK 0,128ET 0E1 1,0E3
 ``
-*
-*
-*
-*
-*@^A/hello, world!/``
-hello, world!
-**A
+*****@^A/hello, world!/``
+hello, world!**A
 *:GA``
-@^A/hello, world!/``
-*     ! Test: save command string in Q-register !
+@^A/hello, world!/``*     ! Test: save command string in Q-register !
 
 ^D EK HK ^A!PASS!^A 10^T EX
 ``

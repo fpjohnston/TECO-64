@@ -1,5 +1,5 @@
 ! TECO test: Map command string to CTRL/F sequence w/ @FF !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: ?INA !
 
 [[enter]]

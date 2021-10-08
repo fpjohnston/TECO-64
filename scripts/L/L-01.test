@@ -4,6 +4,8 @@
 
 [[enter]]
 
+0,8 E1
+
 @^U.A
 \
 
@@ -20,7 +22,7 @@
 \
 
 10 <
-    @I/abcdefghijklmnopwrstuvwxyz 0123456789/ 10 I
+    @I/abcdefghijklmnopwrstuvwxyz 0123456789/ [[I]]
 >
 
 0J  M.B

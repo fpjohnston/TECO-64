@@ -1,5 +1,5 @@
 ! TECO test: Set memory size w/ nEC !
-! Requires: TECO-64, Redirect !
+! Requires: TECO-10 !
 ! Expects: PASS [EC-01.txt] !
  
 [[enter]]

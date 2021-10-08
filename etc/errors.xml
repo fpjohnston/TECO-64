@@ -236,12 +236,6 @@
             <detail>command) must be closed with the &apos; command.</detail>
         </error>
         <error>
-            <code>MAT</code>
-            <message>No matching files</message>
-            <detail>No match was found for the file specification</detail>
-            <detail>for an EN command.</detail>
-        </error>
-        <error>
             <code>MAX</code>
             <message>Internal program limit reached</message>
             <detail>Loops and conditionals are limited to a maximum</detail>

@@ -10,7 +10,7 @@
 ^Y UC UB                            ! Test: ^Y after I command !
 ^S UA
 
-.:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
+@^A/.=/ .:= @^A/, QA=/ QA:= @^A/, QB=/ QB:= @^A/, QC=/ QC=
 
 .+QA-QB [["N]]
 
@@ -21,7 +21,7 @@
 ^Y UC UB                            ! Test: ^Y after S command !
 ^S UA
 
-.:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
+@^A/.=/ .:= @^A/, QA=/ QA:= @^A/, QB=/ QB:= @^A/, QC=/ QC=
 
 .+QA-QB [["N]]
 
@@ -32,7 +32,7 @@ GA
 ^Y UC UB                            ! Test: ^Y after G command !
 ^S UA
 
-.:@=/.=%d, / QA:@=/QA=%d, / QB:@=/QB=%d, / QC@=/QC=%d/
+@^A/.=/ .:= @^A/, QA=/ QA:= @^A/, QB=/ QB:= @^A/, QC=/ QC=
 
 .+QA-QB [["N]]
 

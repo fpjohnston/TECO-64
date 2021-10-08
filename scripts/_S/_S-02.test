@@ -47,15 +47,13 @@ All mimsy were the borogoves,
 
 3@S/Jabberwock/
 ^S+10 "N                            ! Test: ^S after S command !
-    ^S @=/^S=%d/
-    @^A/FAIL/
+    @^A/^S=/ ^S:=
     [[FAIL]]
 '
 
 @I/y baby/
 ^S+6 "N                             ! Test: ^S after I command !
-    ^S @=/^S=%d/
-    @^A/FAIL/
+    @^A/^S=/ ^S:=
     [[FAIL]]
 '
 
@@ -63,28 +61,24 @@ All mimsy were the borogoves,
 
 GA
 ^S+30 "N                            ! Test: ^S after Gq command !
-    ^S @=/^S=%d/
-    @^A/FAIL/
+    @^A/^S=/ ^S:=
     [[FAIL]]
 '
 
 G_
 ^S+10 "N                            ! Test: ^S after G_ command !
-    ^S @=/^S=%d/
-    @^A/FAIL/
+    @^A/^S=/ ^S:=
     [[FAIL]]
 '
 
 :@EW|/tmp/teco.tmp|
 "E
-    @^A/FAIL/
     [[FAIL]]
 '
 
 G*
 ^S+13 "N                            ! Test: ^S after G* command !
-    ^S @=/^S=%d/
-    @^A/FAIL/
+    @^A/^S=/ ^S:=
     [[FAIL]]
 '
 

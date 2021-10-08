@@ -45,6 +45,7 @@ my $verbose  = q{};
 my $nscripts = 0;
 my $target = 'teco64';
 my @tecfiles = ();
+my $nskipped = 0;
 
 #
 #  Parse our command-line options
@@ -65,19 +66,13 @@ elsif ($target eq 'teco-64')
 {
     $target = 'teco64';
 }
-elsif ($target ne 'teco32' && $target ne 'teco64' && $target ne 'tecoc')
+elsif ($target ne 'teco32' && $target ne 'teco64'
+       && $target ne 'tecoc' && $target ne 'teco')
 {
     print "Invalid target: $target\n";
 
     exit;
 }
-
-#  [[FAIL]] - Unconditional failure.
-#  [["L]]   - Failure if successful/less than zero.
-#  [["E]]   - Failure if unsuccessful/zero.
-#  [["N]]   - Failure if non-zero.
-#  [[I]]    - Insert newline (LF or CR/LF).
-#  [[^T]]   - Type newline (LF or CR/LF).
 
 my %tokens =
 (
@@ -88,11 +83,10 @@ my %tokens =
    '"N'    => '"N [[FAIL]] \'',
    '"S'    => '"S [[FAIL]] \'',
    '"U'    => '"U [[FAIL]] \'',
-   'FF'    => '1,0E3',
    'I'     => '10@I//',
    'PASS'  => '!PASS! [[^T]]',
    'exit'  => '^D EK HK [[PASS]] EX',
-   'enter' => '0,128ET HK',
+   'enter' => 'HK 0,128ET',
    'in1'   => 'in_1.tmp',
    'in2'   => 'in_2.tmp',
    'out1'  => 'out_1.tmp',
@@ -108,6 +102,9 @@ croak "Input and output arguments required" if ( $#ARGV != 1 );
 my $input  = $ARGV[0];
 my $outdir = $ARGV[1]; 
 
+$input =~ s[/$][];
+$outdir =~ s[/$][];
+
 #
 #  Main program start
 #
@@ -121,23 +118,21 @@ else                                    #  else assume specific file(s)
     open_file($input);
 }
 
-printf "Total of $nscripts test script%s created\n", $nscripts == 1 ? q{} : 's';
+my $total = $nscripts + $nskipped;
+
+print "\n" if $verbose;
+printf "%u file%s found in $input/, ", $total, $total == 1 ? q{} : 's';
+printf "%u skipped, ", $nskipped;
+printf "%u copied to $outdir/\n", $nscripts;
 
 exit;
 
 sub make_test
 {
-    my ($indir, $file, $key) = @_;
+    my ($indir, $file) = @_;
     my $text = read_file("$indir/$file");
 
-    if (defined $key)
-    {
-        $file =~ s/[.]test/.key/;
-    }
-    else
-    {
-        $file =~ s/[.]test/.tec/;
-    }
+    $file =~ s/[.]test$/.tec/;
 
     my $outfile;
 
@@ -150,7 +145,12 @@ sub make_test
         $outfile = "$indir/$file";
     }
 
-    print "Creating test script: $outfile\n" if $verbose;
+    if ($target eq 'tecoc')
+    {
+        $outfile =~ s/\-/_/g;
+    }
+
+    print "Creating file: $outfile\n" if $verbose;
 
     open(FH, ">", $outfile) or croak "Can't open output file $outfile";
 
@@ -158,7 +158,41 @@ sub make_test
     {
         croak "Can't translate token: $2" unless exists $tokens{$2};
 
-        $text = $1 . $tokens{$2} . $3;
+        my $before = $1;
+        my $token = $2;
+        my $middle = $tokens{$token};
+        my $after = $3;
+
+        if ($target eq 'tecoc')
+        {
+            if ($token eq '^T')
+            {
+                $middle = " 13^T $middle";
+            }
+            elsif ($token eq 'FF')
+            {
+                $middle = q{};
+            }
+            elsif ($token eq 'I')
+            {
+                $middle = ' 13@I// ' . $middle;
+            }
+        }
+        elsif ($target eq 'teco64' && $token eq 'enter')
+        {
+            $middle .= ' 0E1 1,0E3',
+        }
+
+        if ($token eq 'enter')
+        {
+            $middle .= "\e\e\n";
+        }
+        elsif ($token eq 'exit')
+        {
+            $middle = "\e\e\n$middle";
+        }
+
+        $text = $before . $middle . $after;
     }
 
     print FH $text;
@@ -192,11 +226,11 @@ sub open_dir
 
         foreach my $infile ( sort { uc $a cmp uc $b } @infiles )
         {
-            my ( $abstract, $redirect ) = read_header( "$indir/$infile" );
+            my ( $abstract ) = read_header( "$indir/$infile" );
 
             if ( defined $abstract )
             {
-                make_test($indir, $infile, $redirect);
+                make_test($indir, $infile);
             }
         }
     }
@@ -217,11 +251,11 @@ sub open_file
         $infile = basename($infile);
 
         my $cwd = getcwd;
-        my ( $abstract, $redirect ) = read_header( "$indir/$infile" );
+        my ( $abstract ) = read_header( "$indir/$infile" );
 
         if ( defined $abstract )
         {
-            make_test($indir, $infile, $redirect);
+            make_test($indir, $infile);
         }
     }
 
@@ -239,7 +273,6 @@ sub read_header
     close $fh or croak "Can't close file $file";
 
     my $abstract;
-    my $key;
 
     foreach my $line (@lines)
     {
@@ -251,19 +284,54 @@ sub read_header
         {
             my $requires = $1;
 
-            if ($requires =~ /(.+), Redirect/)
+            if ($requires eq 'TECO C')
             {
-                $requires = $1;
-                $key = 'yes';
+                if ($target ne 'tecoc' && $target ne 'teco64')
+                {
+                    ++$nskipped;
+
+                    print "Skipping file: $file\n" if $verbose;
+
+                    return ( undef, undef );
+                }
             }
-        }
-        elsif ( $line =~ /Execution:/ )
-        {
-            undef $abstract;
+            elsif ($requires eq 'TECO-10')
+            {
+                if ($target ne 'teco64')
+                {
+                    ++$nskipped;
+
+                    print "Skipping file: $file\n" if $verbose;
+
+                    return ( undef, undef );
+                }
+            }
+            elsif ($requires eq 'TECO-32')
+            {
+                if ($target ne 'teco32' && $target ne 'teco64')
+                {
+                    ++$nskipped;
+
+                    print "Skipping file: $file\n" if $verbose;
+
+                    return ( undef, undef );
+                }
+            }
+            elsif ($requires eq 'TECO-64')
+            {
+                if ($target ne 'teco64')
+                {
+                    ++$nskipped;
+
+                    print "Skipping file: $file\n" if $verbose;
+
+                    return ( undef, undef );
+                }
+            }
         }
     }
 
-    return ( $abstract, $key );
+    return ( $abstract );
 }
 
 sub wanted

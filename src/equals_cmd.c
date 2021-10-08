@@ -194,7 +194,7 @@ void exec_equals(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan command with format "n:@X/text1/".
+///  @brief    Scan '=' command.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -258,6 +258,11 @@ bool scan_equals(struct cmd *cmd)
 
     if (cmd->atsign)
     {
+        if (!f.e1.equals)
+        {
+            throw(E_EXT);               // Extended feature not enabled
+        }
+
         scan_texts(cmd, 1, ESC);
     }
 

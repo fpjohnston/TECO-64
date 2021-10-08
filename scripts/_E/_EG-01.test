@@ -13,8 +13,7 @@
 0 J 0 UA
 
 128 <
-    ::@S/^EGA/                      ! Test: ^EGq !
-    "S
+    ::@S/^EGA/ "S                       ! Test: ^EGq !
         QA ^T
     |
         C

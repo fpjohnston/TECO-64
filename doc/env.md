@@ -38,5 +38,5 @@ EZ performs the same function as the EG command, but does not exit TECO.
     
 | Command | Function |
 | ------- | -------- |
-| EG*cmd*` | Executes *cmd* and loads Q-register + with the output of the system command, which may then be accessed with the G+ and :G+ commands. |
-| @EG/*cmd*/ | Equivalent to EG*cmd*`. |
+| EZ*cmd*` | Executes *cmd* and loads Q-register + with the output of the system command, which may then be accessed with the G+ and :G+ commands. |
+| @EZ/*cmd*/ | Equivalent to EG*cmd*`. |

@@ -1,5 +1,5 @@
 ! TECO test: Trace executed commands w/ ? !
-! Requires: TECO, Redirect !
+! Requires: TECO !
 ! Expects: PASS !
 
 [[enter]]

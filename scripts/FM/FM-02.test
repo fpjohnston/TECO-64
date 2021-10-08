@@ -1,14 +1,14 @@
 ! TECO test: Map keys to macros w/ FM !
 ! Requires: TECO-64 !
 ! Expects: PASS [FM-02.txt] !
-! Options: -A 0 !
-
-:U0                     ! Get flag argument !
 
 [[enter]]
 
+0,8 E1
+
 ! Test: map all keys w/ :FM !
 
+0 U0                    ! Use flag argument of 0 !
 0 U1                    ! No. of mapped keys !
 0 U2                    ! No. of undefined keys !
 
@@ -19,7 +19,7 @@
     . U3                            ! Save current position in Q-register 3 !
     @I\:@FM"\                       ! Insert start of FM command !
     G1                              ! Add in name of key !
-    @I\"@^A'[\                     ! Insert start of ^A command !
+    @I\"@^A'[\                      ! Insert start of ^A command !
     G1                              ! Insert name of string !
     @I\]'"\                         ! Insert end of ^A command !
     Q3,. X4                         ! Copy everything to Q-register 4 !

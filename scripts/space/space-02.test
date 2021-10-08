@@ -8,6 +8,6 @@
 
 ! Test: spaces in command file !
 
- :  @   FS    {foo}     {baz}       [["U]]
+ :  @   FS/foo/baz/       [["U]]
 
 [[exit]]

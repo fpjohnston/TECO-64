@@ -1,4 +1,4 @@
-! TECO test: Test spaces in command file w/ SPACE !
+! TECO test: Test line feeds in command file w/ LF !
 ! Requires: TECO !
 ! Expects: PASS !
 
@@ -14,16 +14,7 @@
 @
 
 
-FS
-
-
-
-{foo}
-
-
-
-
-{baz}
+FS/foo/baz/
 
 
 
