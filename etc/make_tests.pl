@@ -42,6 +42,7 @@ use File::Slurp;
 
 my %dirs;
 my $verbose  = q{};
+my $clean;
 my $nscripts = 0;
 my $target = 'teco64';
 my @tecfiles = ();
@@ -52,6 +53,7 @@ my $nskipped = 0;
 #
 
 GetOptions(
+    'clean!'   => \$clean,
     'target=s' => \$target,
     'verbose'  => \$verbose,
 );
@@ -76,17 +78,19 @@ elsif ($target ne 'teco32' && $target ne 'teco64'
 
 my %tokens =
 (
-   'FAIL'  => '!FAIL! [[^T]] ^C',
+   'FAIL'  => '!FA IL! [[^T]] ^C',
    '^T'    => '10^T',
+   '-8'    => '4096,0 ET',
    '"E'    => '"E [[FAIL]] \'',
    '"L'    => '"L [[FAIL]] \'',
    '"N'    => '"N [[FAIL]] \'',
    '"S'    => '"S [[FAIL]] \'',
    '"U'    => '"U [[FAIL]] \'',
    'I'     => '10@I//',
-   'PASS'  => '!PASS! [[^T]]',
+   'PASS'  => '!PA SS! [[^T]]',
    'exit'  => '^D EK HK [[PASS]] EX',
    'enter' => 'HK 0,128ET',
+   'error' => '!FA IL! [[^T]]',
    'in1'   => 'in_1.tmp',
    'in2'   => 'in_2.tmp',
    'out1'  => 'out_1.tmp',
@@ -104,6 +108,18 @@ my $outdir = $ARGV[1];
 
 $input =~ s[/$][];
 $outdir =~ s[/$][];
+
+# If requested, delete any existing .tec files in output directory
+
+if ($clean)
+{
+    my @files = glob "$outdir/*.tec";
+
+    foreach my $file (@files)
+    {
+        unlink $file;
+    }
+}
 
 #
 #  Main program start
@@ -169,7 +185,7 @@ sub make_test
             {
                 $middle = " 13^T $middle";
             }
-            elsif ($token eq 'FF')
+            elsif ($token eq 'FF' || $token eq '-8')
             {
                 $middle = q{};
             }

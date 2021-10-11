@@ -4,7 +4,7 @@
 
 [[enter]]
 
-4096,0 ET                               ! Say we can't handle 8-bit chrs. !
+[[-8]]                                  ! Say we can't handle 8-bit chrs. !
 
 ^^H+128 :^T                             ! Test: n:T w/ n > 128 !
 ^^e+128 :^T

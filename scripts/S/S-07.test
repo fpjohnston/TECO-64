@@ -1,5 +1,5 @@
 ! TECO test: Search, and preserve dot if failure w/ m,nS !
-! Requires: TECO !
+! Requires: TECO-32 !
 ! Expects: PASS !
 
 [[enter]] 

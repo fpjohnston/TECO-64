@@ -116,12 +116,30 @@ foreach my $file (@files)
         my $teco = 'tecoc < ' . $file . ' 2>&1';
 
         $actual = qx/$teco/;            # Execute command and capture output
+
+        if ( $file =~ /^EG_\d\d\.tec$/ms )
+        {
+            local $ENV{TEC_INIT}    = 'TECO_INIT';
+            local $ENV{TEC_LIBRARY} = 'TECO_LIBRARY';
+            local $ENV{TEC_MEMORY}  = 'TECO_MEMORY';
+            local $ENV{TEC_VTEDIT}  = 'TECO_VTEDIT';
+
+            $actual = qx/$teco/;        # Execute command and capture output
+        }
+        else
+        {
+            $actual = qx/$teco/;        # Execute command and capture output
+        }
     }
-    else
+    elsif ($target eq 'teco32')
+    {
+        croak "$target target not implemented yet\n";
+    }
+    elsif ($target eq 'teco64')
     {
         my $teco = 'teco -n -I"\'0,128ET\'" < ' . $file . ' 2>&1';
 
-        if ( $file =~ /EG-\d\d\.tec/ms )
+        if ( $file =~ /^EG-\d\d\.tec$/ms )
         {
             local $ENV{TECO_INIT}    = 'TECO_INIT';
             local $ENV{TECO_LIBRARY} = 'TECO_LIBRARY';
@@ -134,6 +152,10 @@ foreach my $file (@files)
         {
             $actual = qx/$teco/;        # Execute command and capture output
         }
+    }
+    else
+    {
+        croak "Unknonwn target: $target\n";
     }
 
     chomp $actual;
@@ -235,7 +257,7 @@ sub check_test
             {
                 # Test encountered unknown error
 
-                printf "%s ERROR\n", $report;
+                printf "%s UNKNOWN\n", $report;
             }
         }
         elsif ( defined $diff && $expected ne $actual )
@@ -269,7 +291,7 @@ sub check_test
             {
                 # Test encountered unknown error
 
-                printf "%s ERROR\n", $report;
+                printf "%s UNKNOWN\n", $report;
             }
         }
         elsif ($verbose)
@@ -279,6 +301,10 @@ sub check_test
     }
     else                                # Here if test failed or should fail
     {
+        my $match = '! Expects: ' . quotemeta $expects . ' !';
+
+        $actual =~ s/$match//ms;
+
         if ( index( $actual, $expects) < 0 )
         {
             if ($actual =~ /(\?\w\w\w)\s/)
@@ -303,7 +329,7 @@ sub check_test
             {
                 # Test encountered unknown error
 
-                printf "%s ERROR\n", $report;
+                printf "%s UNKNOWN\n", $report;
             }
         }
         elsif ($verbose)
@@ -342,6 +368,11 @@ sub read_header
         elsif ( $line =~ /! \s Expects: \s (.+?) \s (\[.+\] \s)? ! /x )
         {
             $expects = $1;
+
+            if ($target eq 'tecoc' && ($expects eq '?FNF' || $expects eq '?ERR'))
+            {
+                $expects = '?SYS';
+            }
         }
         elsif ($line =~ /Test:/)
         {

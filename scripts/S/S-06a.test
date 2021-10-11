@@ -13,13 +13,13 @@
 
 ! Ensure that text preceding position doesn't match !
 
-::@S/abcd/ [["S]]                           ! Test: ::@S// !
+::@S/abcd/ [["S]]                       ! Test: ::@S// !
 
 ! Ensure that text at current position matches !
 
 . UA
 
-::@S/1234/ [["U]]                           ! Test: ::@S// !
+::@S/1234/ [["U]]                       ! Test: ::@S// !
 
 ! Ensure the dot moved by length of searched string !
 
@@ -27,14 +27,10 @@
 
 ! Ensure that text ahead of dot doesn't match !
 
-::@S/6789/ [["S]]                           ! Test: ::@S// !
-
-! Ensure that backward compare fails !
-
--::@S/4/ [["S]]                             ! Test: -::@S// !
+::@S/6789/ [["S]]                       ! Test: ::@S// !
 
 ! Ensure that text not in buffer doesn't match !
 
-::@S/foobaz/ [["S]]                         ! Test: @S// !
+::@S/foobaz/ [["S]]                     ! Test: @S// !
 
 [[exit]]

@@ -1,5 +1,5 @@
 ! TECO test: Test vertical tab in command string w/ VT !
-! Requires: TECO !
+! Requires: TECO-32 !
 ! Expects: PASS !
 
 [[enter]]

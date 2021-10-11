@@ -4,7 +4,7 @@
 
 [[enter]]
 
-@EW"[[in1]]"                            ! Open the file for output !
+@EW"[[out1]]"                           ! Open the file for output !
 
 @I/abcdef/
 

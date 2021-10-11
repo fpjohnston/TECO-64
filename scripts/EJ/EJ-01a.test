@@ -1,0 +1,14 @@
+! TECO test: Get environment information w/ EJ !
+! Requires: TECO !
+! Expects: PASS !
+
+[[enter]]
+
+! Since the data returned is system-dependent, we don't do anything with !
+! it here, we just confirm that the commands execute as expected. !
+
+-1 EJ                                   ! Test: -1 EJ !
+
+0  EJ                                   ! Test: 0 EJ !
+
+[[exit]]

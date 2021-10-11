@@ -6,4 +6,6 @@
 
 @I/abcdef/
 
+[[error]]
+
 EX                                  ! Test: EX w/ data in edit buffer !

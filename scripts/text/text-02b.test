@@ -1,6 +1,6 @@
 ! TECO test: Bracketed text arguments w/ [ !
 ! Requires: TECO-64 !
-! Expects: ?UTM !
+! Expects: ?UTC !
 
 [[enter]]
 

@@ -1,0 +1,18 @@
+! TECO test: Compare text w/ ::S !
+! Requires: TECO-32 !
+! Expects: PASS !
+
+[[enter]] 
+
+0UA
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/
+
+0J
+28C                                     ! Skip to 123... !
+
+! Ensure that backward compare fails !
+
+-::@S/4/ [["S]]                         ! Test: -::@S// !
+
+[[exit]]

@@ -1,5 +1,5 @@
 ! TECO test: Non-stop forward search and replace w/ -nF_ !
-! Requires: TECO !
+! Requires: TECO-32 !
 ! Expects: ?SRH !
 
 [[enter]]

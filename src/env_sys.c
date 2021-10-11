@@ -191,6 +191,10 @@ int teco_env(int n_arg, bool colon)
 {
     switch (n_arg)
     {
+        case 2:
+        case 1:
+            return 0;
+
         case 0:
             return colon ? getppid() : getpid();
 
@@ -207,6 +211,6 @@ int teco_env(int n_arg, bool colon)
             return sizeof(int_t) * CHAR_BIT;
 
         default:
-            return 0;                       // Any other EJ
+            throw(E_NYI);               // No such EJ command
     }
 }

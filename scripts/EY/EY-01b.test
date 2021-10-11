@@ -4,13 +4,15 @@
 
 [[enter]]
 
-@EW"[[in1]]" 
+@EW"[[out1]]" 
+
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ [[I]]
+
 EC
 
 @I/add some text to buffer to verify that EY still works/
 
-@EB"[[in1]]"
+@EB"[[out1]]"
 
 2,0 ED
 

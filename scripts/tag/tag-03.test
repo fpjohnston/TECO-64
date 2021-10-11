@@ -1,31 +1,31 @@
 ! TECO test: Test tag in command file w/ bang !
-! Requires: TECO !
+! Requires: TECO-64 !
 ! Expects: PASS !
 
 [[enter]]
 
-! Test: tag in command string !
-
 123 UA
+
+! Test: tag in command string !
 
 QA-123 [["N]]       
 
-! Test: tag in command string !
-
 123,456 UA UB
+
+! Test: tag in command string !
 
 QA-456 [["N]]       
 QB-123 [["N]]       
 
-! Test: tag in command string !
-
 123 UA
+
+! Test: tag in command string !
 
 QA-123 [["N]]       
 
-! Test: tag in command string !
-
 123,456 UA UB
+
+! Test: tag in command string !
 
 QA-456 [["N]]       
 QB-123 [["N]]       

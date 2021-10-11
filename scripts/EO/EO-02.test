@@ -1,9 +1,9 @@
 ! TECO test: Get TECO version number w/ EO !
-! Requires: TECO !
-! Expects: ?NYI !
+! Requires: TECO-64 !
+! Expects: PASS !
 
 [[enter]]
  
-40 EO                               ! Test: nEO !
+EO-200 [["N]]                               ! Test: EO !
 
 [[exit]]

@@ -4,11 +4,13 @@
 
 [[enter]]
 
-@EW"[[in1]]" 
+@EW"[[out1]]" 
+
 @I/abcdefghijklmnopqrstuvwxyz 0123456789/ [[I]]
+
 EC
 
-@EB"[[in1]]"
+@EB"[[out1]]"
 
 0,2 ED
 

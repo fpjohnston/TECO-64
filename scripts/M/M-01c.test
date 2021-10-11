@@ -1,20 +1,16 @@
-! TECO test: Execute macro with m & n args. w/ M !
+! TECO test: Execute macro w/ m,nM !
 ! Requires: TECO !
 ! Expects: PASS !
 
 [[enter]]
 
-@I
-\
+@^UA\
     UA
     UB
     QB - 123 [["N]]
     QA - 456 [["N]]
-    [[PASS]]
 \
 
-HXA HK
-
-123,456 MA                          ! Test: m,nM !
+123,456 MA                              ! Test: m,nM !
 
 [[exit]]

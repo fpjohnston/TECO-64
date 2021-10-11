@@ -4,13 +4,13 @@
  
 [[enter]]
 
-:@EW"[[in1]]" [["U]]                    ! Open file for write !
+:@EW"[[out1]]" [["U]]                   ! Open file for write !
 
 @I/abcdef/                              ! Add some data !
 
 EC                                      ! Test: write data and close file !
 
-:@EB"[[in1]]" [["U]]                    ! Open file for read !
+:@EB"[[out1]]" [["U]]                   ! Open file for read !
 
 EC                                      ! Close input file !
 
