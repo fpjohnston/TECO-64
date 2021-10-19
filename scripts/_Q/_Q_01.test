@@ -6,16 +6,16 @@
 
 [[enter]]
  
-@I/a
-ab
-abc
-abcd
-abcde
-abcdef
-abcdefg
-abcdefgh
-abcdefghi
-abcdefghij
+@I/a/ 10@I//
+@I/ab/ 10@I//
+@I/abc/ 10@I//
+@I/abcd/ 10@I//
+@I/abcde/ 10@I//
+@I/abcdef/ 10@I//
+@I/abcdefg/ 10@I//
+@I/abcdefgh/ 10@I//
+@I/abcdefghi/ 10@I//
+@I/abcdefghij/ 10@I//
 /
 
 0J 5L

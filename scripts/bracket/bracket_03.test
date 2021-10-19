@@ -10,12 +10,12 @@
 
 ! Test: push and pop maximum Q-registers !
 
-64 <
+[[Q]] <
     %A
     [A
 >
 
-64 <
+[[Q]] <
     ]B
     QB-QA [["N]]
     -1%A

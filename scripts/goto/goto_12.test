@@ -2,7 +2,8 @@
 
 ! Function: Branch backward within nested loop !
 !  Command: O !
-!     TECO: ?LOC !
+!     TECO: ?TAG !
+!  TECO-64: ?LOC !
 
 [[enter]]
 

@@ -2,10 +2,11 @@
 
 ! Function: Push excessive Q-registers !
 !  Command: [ !
-!     TECO: ?MAX !
+!     TECO: ?PDO !
+!  TECO-64: ?MAX !
 
 [[enter]]
 
-65 < [A >                           ! Test: excessive Q-register pushes !
+[[Q]]+1 < [A >                          ! Test: excessive Q-register pushes !
 
 [[exit]]

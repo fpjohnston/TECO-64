@@ -10,8 +10,8 @@ HK 	abc Z-4 [["N]]                        ! Test: simple insert !
 
 HK 	 Z-1 [["N]]                           ! Test: insert of TAB only !
 
-HK 	abc
-def
+HK 	abc @10I//
+Idef @10I//
 
 Z-9 [["N]]                                  ! Test: multi-line insert !
 

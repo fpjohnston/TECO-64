@@ -2,7 +2,8 @@
 
 ! Function: Execute excessive nested macros !
 !  Command: M !
-!     TECO: ?MAX !
+!     TECO: ?PDO !
+!  TECO-64: ?MAX !
 
 [[enter]]
 

@@ -6,84 +6,79 @@
 
 [[enter]]
 
+@^A/    decimal: /
 ^D
 
-@^A/    decimal: /
-
 HK @I/0123456789/ 0J .UA
-\:= ^^ ^T                               ! Test: \ /w decimal digits !
+\:= 32^T                                ! Test: \ /w decimal digits !
 .-QA-10 [["N]]
 
 HK @I/-12345/     0J .UA
-\:= ^^ ^T                               ! Test: \ /w negative number !
+\:= 32^T                                ! Test: \ /w decimal digits !
 .-QA-6 [["N]]
 
 HK @I/123 456/    0J .UA
-\:= ^^ ^T                               ! Test: \ /w separate numbers !
+\:= 32^T                                ! Test: \ /w decimal digits !
 .-QA-3 [["N]]
 
 HK @I/456abc/     0J .UA
-\:= ^^ ^T                               ! Test: \ /w digit/alpha mix !
+\:= 32^T                                ! Test: \ /w decimal digits !
 .-QA-3 [["N]]
 
 HK @I/xyz/        0J .UA
-\=                                      ! Test: \ w/ non-digits  !
+\=                                      ! Test: \ /w decimal digits !
 .-QA [["N]]
-
-^O
 
 @^A/      octal: /
 
 HK @I/01234567/   0J .UA
-\:== ^^ ^T                              ! Test: \ /w octal digits !
+^O \:== ^D 32^T                         ! Test: \ /w octal digits !
 .-QA-8 [["N]]
 
 HK @I/-12345/     0J .UA
-\:== ^^ ^T                              ! Test: \ /w negative number !
+^O \:== ^D 32^T                         ! Test: \ /w octal digits !
 .-QA-6 [["N]]
 
 HK @I/123 456/    0J .UA
-\:== ^^ ^T                              ! Test: \ /w separate numbers !
+^O \:== ^D 32^T                         ! Test: \ /w octal digits !
 .-QA-3 [["N]]
 
 HK @I/789abc/     0J .UA
-\:== ^^ ^T                              ! Test: \ /w digit/alpha mix !
+^O \:== ^D 32^T                         ! Test: \ /w octal digits !
 .-QA-1 [["N]]
 
 HK @I/xyz/        0J .UA
-\==                                     ! Test: \ /w non-digits !
+^O \== ^D                               ! Test: \ /w octal digits !
 .-QA [["N]]
-
-^D 16^R
 
 @^A/hexadecimal: /
 
 HK @I/01234/      0J .UA
-\:=== ^^ ^T                             ! Test: \ /w hexadecimal digits !
+16^R \:=== ^D 32^T                      ! Test: \ /w hexadecimal digits !
 .-QA-5 [["N]]
 
 HK @I/56789/      0J .UA
-\:=== ^^ ^T                             ! Test: \ /w hexadecimal digits !
+16^R \:=== ^D 32^T                      ! Test: \ /w hexadecimal digits !
 .-QA-5 [["N]]
 
 HK @I/abcdef/     0J .UA
-\:=== ^^ ^T                             ! Test: \ /w hexadecimal digits !
+16^R \:=== ^D 32^T                      ! Test: \ /w hexadecimal digits !
 .-QA-6 [["N]]
 
 HK @I/-12345/     0J .UA
-\:=== ^^ ^T                             ! Test: \ /w negative number !
+16^R \:=== ^D 32^T                      ! Test: \ /w hexadecimal digits !
 .-QA-6 [["N]]
 
 HK @I/123 abc/    0J .UA
-\:=== ^^ ^T                             ! Test: \ /w separate numbers !
+16^R \:=== ^D 32^T                      ! Test: \ /w hexadecimal digits !
 .-QA-3 [["N]]
 
 HK @I/456abg/     0J .UA
-\:=== ^^ ^T                             ! Test: \ /w non-digits !
+16^R \:=== ^D 32^T                      ! Test: \ /w hexadecimal digits !
 .-QA-5 [["N]]
 
 HK @I/xyz/        0J .UA
-\===                                    ! Test: \ /w non-digits !
+16^R \=== ^D                            ! Test: \ /w hexadecimal digits !
 .-QA [["N]]
 
 [[exit]]

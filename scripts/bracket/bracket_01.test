@@ -6,6 +6,6 @@
 
 [[enter]]
 
-64 < [A >                           ! Test: maximum Q-register pushes !
+[[Q]] < [A >                            ! Test: maximum Q-register pushes !
 
 [[exit]]

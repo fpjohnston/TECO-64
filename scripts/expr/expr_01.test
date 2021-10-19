@@ -6,7 +6,7 @@
 
 [[enter]]
 
-64 UA                                   ! No. of values we'll push on expression stack !
+[[expr]] UA                             ! No. of values we'll push on expression stack !
 
 QA < :@^UA/123 / MA >                   ! Test: push numeric values !
 

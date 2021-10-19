@@ -44,6 +44,7 @@ use File::Slurp;
 
 my $clean;
 my $execute = 1;
+my $orphans;
 my $target  = 'TECO-64';
 my $verbose = q{};
 
@@ -54,29 +55,65 @@ my $nskipped = 0;
 my $nfiles   = 0;
 my $ntests   = 0;
 my %scripts;
+my %logfiles;
 my @tecfiles = ();
+
+# Define tokens we will use to translate scripts into test sets,
+# depending on the TECO we are targeting.
+
 my %tokens   = (
-    'FAIL'  => q{[[error]] ^C},
-    '^T'    => q{10^T},
-    '-8'    => q{4096,0 ET},
-    '"E'    => q{"E [[FAIL]] '},
-    '"L'    => q{"L [[FAIL]] '},
-    '"N'    => q{"N [[FAIL]] '},
-    '"S'    => q{"S [[FAIL]] '},
-    '"U'    => q{"U [[FAIL]] '},
-    'I'     => q{10@I//},
-    'PASS'  => qq{@^A/!PASS!/ [[^T]]},
-    'exit'  => q{^D EK HK [[PASS]] EX},
-    'enter' => q{HK 0,128ET},
-    'error' => qq{@^A/!FAIL!/ [[^T]]},
-    'in1'   => q{in_1.tmp},
-    'in2'   => q{in_2.tmp},
-    'out1'  => q{out_1.tmp},
-    'out2'  => q{out_2.tmp},
-    'cmd1'  => q{cmd_1.tmp},
-    'cmd2'  => q{cmd_2.tmp},
-    'log1'  => q{log_1.tmp},
-    'bad'   => q{/dev/teco},
+    teco64 => {
+        '8'     =>  q{4096,0 ET},
+        'bad'   =>  q{/dev/teco},
+        'cmd1'  =>  q{cmd_1.tmp},
+        'cmd2'  =>  q{cmd_2.tmp},
+        'enter' =>  q{HK 0,128ET 0E1 1,0E3},
+        '"E'    =>  q{"E [[FAIL]] '},
+        'error' => qq{@^A/!FAIL!/ [[^T]]},
+        'exit'  =>  q{^D EK HK [[PASS]] EX},
+        'expr'  =>  q{64},
+        'FAIL'  =>  q{[[error]] ^C},
+        'in1'   =>  q{in_1.tmp},
+        'in2'   =>  q{in_2.tmp},
+        'I'     =>  q{10@I//},
+        'log1'  =>  q{log_1.tmp},
+        'LOOP'  =>  q{32},
+        '"L'    =>  q{"L [[FAIL]] '},
+        '"N'    =>  q{"N [[FAIL]] '},
+        'out1'  =>  q{out_1.tmp},
+        'out2'  =>  q{out_2.tmp},
+        'PASS'  => qq{@^A/!PASS!/ [[^T]]},
+        'Q'     =>  q{64},
+        '"S'    =>  q{"S [[FAIL]] '},
+        '^T'    =>  q{10^T},
+        '"U'    =>  q{"U [[FAIL]] '},
+    },                
+    tecoc => {
+        '8'     =>  q{},
+        'bad'   =>  q{/dev/teco},
+        'cmd1'  =>  q{cmd_1.tmp},
+        'cmd2'  =>  q{cmd_2.tmp},
+        'enter' =>  q{HK 0,128ET},
+        '"E'    =>  q{"E [[FAIL]] '},
+        'error' => qq{@^A/!FAIL!/ [[^T]]},
+        'exit'  =>  q{^D EK HK [[PASS]] EX},
+        'expr'  =>  q{63},
+        'FAIL'  =>  q{[[error]] ^C},
+        'in1'   =>  q{in_1.tmp},
+        'in2'   =>  q{in_2.tmp},
+        'I'     =>  q{13@I// 10@I//},
+        'log1'  =>  q{log_1.tmp},
+        'LOOP'  =>  q{31},
+        '"L'    =>  q{"L [[FAIL]] '},
+        '"N'    =>  q{"N [[FAIL]] '},
+        'out1'  =>  q{out_1.tmp},
+        'out2'  =>  q{out_2.tmp},
+        'PASS'  => qq{@^A/!PASS!/ [[^T]]},
+        'Q'     =>  q{21},
+        '"S'    =>  q{"S [[FAIL]] '},
+        '^T'    =>  q{10^T},
+        '"U'    =>  q{"U [[FAIL]] '},
+    },                
 );
 
 #
@@ -151,6 +188,18 @@ printf "skipped %u\n", $nskipped;
 printf "Created %u file%s in $outdir, ", $nfiles, $nfiles == 1 ? q{} : 's';
 printf "executed $ntests test%s\n", $ntests == 1 ? q{} : 's';
 
+# Tell user which log files were superfluous
+
+if ($orphans && keys %logfiles != 0)
+{
+    print "Orphan log files:\n";
+
+    foreach my $file (sort keys %logfiles)
+    {
+        print "    $file\n";
+    }
+}
+
 exit;
 
 
@@ -165,13 +214,13 @@ sub check_error
 
     if ( index( $actual, $expects ) < 0 )
     {
-        if ( $actual =~ /( \N{QUESTION MARK} \w\w\w )/ms )
+        if ( $actual =~ /( \N{QUESTION MARK} \w\w\w )/msx )
         {
             # Test encountered unexpected TECO error
 
             printf "%s %s\n", $report, $1;
         }
-        elsif ( $actual =~ /!FAIL!/ms )
+        elsif ( $actual =~ /!FAIL\d+!/ms )
         {
             # Test failed when it should have issued TECO error
 
@@ -209,7 +258,7 @@ sub check_fail
 
     if ( $actual !~ /!FAIL\d+!/ms )
     {
-        if ( $actual =~ / ( \N{QUESTION MARK} \w\w\w )/ms )
+        if ( $actual =~ / ( \N{QUESTION MARK} \w\w\w )/msx )
         {
             # Test encountered TECO error
 
@@ -245,7 +294,7 @@ sub check_pass
 
     if ( $actual !~ /!PASS!/ms )
     {
-        if ( $actual =~ / ( \N{QUESTION MARK} \w\w\w )/ms )
+        if ( $actual =~ / ( \N{QUESTION MARK} \w\w\w )/msx )
         {
             # Test encountered TECO error
 
@@ -281,9 +330,9 @@ sub check_teco
 {
     my ( $infile, $teco ) = @_;
 
-    if (   ( $teco eq 'TECO C' && $target eq 'TECO-32' )
+    if (   ( $teco eq 'TECO C'  && $target eq 'TECO-32' )
         || ( $teco eq 'TECO-10' && $target ne 'TECO-64' )
-        || ( $teco eq 'TECO-32' && $target eq 'TECO C' )
+        || ( $teco eq 'TECO-32' && $target eq 'TECO C'  )
         || ( $teco eq 'TECO-64' && $target ne 'TECO-64' ) )
     {
         ++$nskipped;
@@ -310,7 +359,7 @@ sub check_test
 {
     my ( $report, $expects, $actual, $expected ) = @_;
 
-    if ( $actual =~ / Aborted /ms )
+    if ( $actual =~ / core \s dumped /imsx )
     {
         # This is handled specially without regard to the desired result,
         # because it was found that some tests could complete successfully,
@@ -350,6 +399,8 @@ sub find_log
 
     my $expected = read_file($file);
 
+    delete($logfiles{$file});           # Delete this key
+
     if ($expected)
     {
         $expected =~ s/\r//msg;
@@ -368,6 +419,7 @@ sub initialize
     GetOptions(
         'clean!'   => \$clean,
         'execute!' => \$execute,
+        'orphans!' => \$orphans,
         'target=s' => \$target,
         'verbose'  => \$verbose,
     );
@@ -392,6 +444,14 @@ sub initialize
 
     $indir  = $ARGV[0] =~ s{ \$ }{}mrs;
     $outdir = $ARGV[1] =~ s{ \$ }{}mrs;
+
+    my @logfiles = glob "$outdir/*.log";
+
+    foreach my $file (@logfiles)
+    {
+        $file = basename($file);
+        $logfiles{$file} = 1;
+    }
 
     # If requested, delete any existing .tec files in output directory
 
@@ -446,6 +506,11 @@ sub parse_script
 
                     $teco = check_teco( $infile, $2 );
                 }
+                elsif ( $2 eq 'TECO-64' && $target eq 'TECO-64' )
+                {
+                    $redirect = $1;
+                    $expects  = $3;
+                }                    
 
                 return ( undef, undef, undef, undef ) unless $teco;
             }
@@ -525,6 +590,11 @@ sub run_test
         {
             $actual = qx/$teco/;    # Execute command and capture output
         }
+
+        if ($actual =~ /core dumped/i)
+        {
+            qx/reset -I/;
+        }
     }
     elsif ( $target eq 'TECO-32' )
     {
@@ -575,41 +645,35 @@ sub translate_tokens
 {
     my ( $file, $text, $redirect ) = @_;
     my $sequence = 0;
+    my $teco;
+
+    if ($target eq 'TECO-64')
+    {
+        $teco = 'teco64';
+    }
+    elsif ($target eq 'TECO C')
+    {
+        $teco = 'tecoc';
+    }
+    else
+    {
+        croak "Invalid target: $target";
+    }
 
     while ( $text =~ / (.*) \[ \[ (.+) \] \] (.*) /msx )
     {
         croak "Can't translate token $2 in script: $file"
-          unless exists $tokens{$2};
+          unless exists $tokens{$teco}{$2};
 
         my $before = $1;
         my $token  = $2;
-        my $middle = $tokens{$token};
+        my $middle = $tokens{$teco}{$token};
         my $after  = $3;
 
         if ( $middle =~ /(.+!FAIL)(!.+)/ms )
         {
             $middle = $1 . sprintf '%u', ++$sequence;
             $middle .= $2;
-        }
-
-        if ( $target eq 'TECO C' )
-        {
-            if ( $token eq '^T' )
-            {
-                #                $middle = " 13^T $middle";
-            }
-            elsif ( $token eq 'FF' || $token eq '-8' )
-            {
-                $middle = q{};
-            }
-            elsif ( $token eq 'I' )
-            {
-                $middle = ' 13@I// ' . $middle;
-            }
-        }
-        elsif ( $target eq 'TECO-64' && $token eq 'enter' )
-        {
-            $middle .= ' 0E1 1,0E3';
         }
 
         if ($redirect)
