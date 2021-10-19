@@ -1,10 +1,12 @@
-! TECO test: Copy command string to Q-register w/ *q !
-! Requires: TECO !
-! Expects: PASS [star.txt] !
+! Smoke test for TECO text editor !
+
+! Function: Copy command string to Q-register !
+!  Command: *q !
+!    <TECO: PASS !
 
 [[enter]]
-
 
-@^A/hello, world!/*A:GA     ! Test: save command string in Q-register !
+!START!
+@^A/hello, world!/*A:GA         ! Test: save command string in Q-register !
 
 [[exit]]

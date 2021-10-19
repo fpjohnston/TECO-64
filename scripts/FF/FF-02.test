@@ -1,13 +1,0 @@
-! TECO test: Test form feed in command string w/ FF !
-! Requires: TECO-64 !
-! Expects: PASS !
-
-[[enter]]
-
-@I/foo/ 0J
-
-! Test: form feed in command string !
-
-:@FS/foo/baz/ [["U]]
-
-[[exit]]

@@ -1,0 +1,9 @@
+``
+*@^A/hello, world!/``
+hello, world!**A
+*:GA         ! Test: save command string in Q-register !
+
+``
+@^A/hello, world!/``**^D EK HK @^A/!PASS!/ 10^T EX
+``
+!PASS!

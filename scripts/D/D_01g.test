@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Delete characters !
+!  Command: D !
+!     TECO: ?DTB !
+
+[[enter]]
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 10@I//
+
+20J 40D                             ! Test: nD !
+
+[[exit]]

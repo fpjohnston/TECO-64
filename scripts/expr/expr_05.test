@@ -1,0 +1,23 @@
+! Smoke test for TECO text editor !
+
+! Function: Test parenthesized expressions !
+!  Command: (, ) !
+!     TECO: PASS !
+
+[[enter]]
+
+10+(1) =                            ! Test: n+() !
+10+(1+(2)) =                        ! Test: n+(()) !
+10+(1+(2+(3))) =                    ! Test: n+((())) !
+10+(1+(2+(3+(4)))) =                ! Test: n+(((()))) !
+
+(1)+10 =                            ! Test: ()+n !
+(1+(2))+10 =                        ! Test: (())+n !
+(1+(2+(3)))+10 =                    ! Test: ((()))+n !
+(1+(2+(3+(4))))+10 =                ! Test: (((())))+n !
+
+(123) =                             ! Test: (n) !
+((456)) =                           ! Test: ((n)) !
+(((789))) =                         ! Test: (((n))) !
+
+[[exit]]

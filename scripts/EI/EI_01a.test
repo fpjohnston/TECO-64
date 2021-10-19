@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Open indirect command file !
+!  Command: EI !
+!     TECO: PASS !
+
+[[enter]]
+
+EI[[cmd1]]                            ! Test: EI !
+
+[[exit]]

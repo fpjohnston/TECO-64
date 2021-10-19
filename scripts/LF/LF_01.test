@@ -1,0 +1,20 @@
+! Smoke test for TECO text editor !
+
+! Function: Advance and type one line !
+!  Command: LF !
+!    <TECO: PASS !
+
+[[enter]]
+!START!
+! Test: immediate-action LF commands !
+
+@I/line 1
+line 2
+line 3
+line 4
+line 5
+/
+
+0J
+
+[[exit]]

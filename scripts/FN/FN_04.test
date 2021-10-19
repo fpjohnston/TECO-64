@@ -1,0 +1,32 @@
+! Smoke test for TECO text editor !
+
+! Function: Non-stop backward search and replace !
+!  Command: -nFN !
+!  TECO-32: PASS !
+
+[[enter]]
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    [[I]] 12@I//
+>
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+10 P
+
+-7:@FN/klmnop/--- FOO ---/ [["U]]           ! Test: -nFN !
+
+EC
+
+:@ER"[[out1]]" [["U]] < :A; >
+
+HT
+
+[[exit]]

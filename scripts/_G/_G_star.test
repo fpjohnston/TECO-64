@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Re-type all input lines !
+!  Command: ^G* !
+!    <TECO: PASS !
+
+[[enter]]
+
+!START!
+iabc
+def
+ghi
+jkl*                              ! Test: retype all input lines !
+
+[[exit]]

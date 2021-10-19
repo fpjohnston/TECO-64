@@ -1,0 +1,19 @@
+! Smoke test for TECO text editor !
+
+! Function: Print last file name !
+!  Command: :G* !
+!     TECO: PASS !
+
+[[enter]]
+
+0 U.A
+
+:@ER/slithy.toves/
+
+@^A/:G* = /
+
+:G*                                 ! Test: :G* !
+
+[[^T]]
+
+[[exit]]

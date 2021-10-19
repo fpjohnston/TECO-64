@@ -1,0 +1,12 @@
+! Smoke test for TECO text editor !
+
+! Function: Re-type current input line !
+!  Command: ^G<space> !
+!    <TECO: PASS !
+
+[[enter]]
+
+!START!
+IABC                              ! Test: retype current input line !
+
+[[exit]]

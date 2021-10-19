@@ -1,0 +1,27 @@
+! Smoke test for TECO text editor !
+
+! Function: Local search and replace !
+!  Command: FS !
+!     TECO: PASS !
+
+[[enter]]
+
+0UA
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    [[I]]
+>
+
+0J
+
+@FS/ghi/foo/                        ! Test: FS !
+2@FS/xyz/BAZ/                       ! Test: 2FS !
+4@FS/lmnop/foobaz/                  ! Test: 4FS !
+3@FS/abc/ABC/                       ! Test: 3FS !
+
+HT
+
+[[exit]]

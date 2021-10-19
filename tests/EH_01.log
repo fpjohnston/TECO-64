@@ -1,0 +1,10 @@
+*HK 0,128ET 0E1 1,0E3$$
+****EH=                                 ! Test: confirm EH default !
+0 EH                                ! Test: default error message !
+EH=
+ZJ C                                ! Force POP error !
+$$
+10
+0
+?POP   Attempt to move pointer off page with 'C'
+*

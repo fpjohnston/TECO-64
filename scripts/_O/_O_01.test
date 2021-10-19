@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Set input radix to octal !
+!  Command: ^O !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/Setting radix to octal/ [[^T]]
+
+^O 123 \ HT ^D [[^T]] ^O 0J \ UA QA==   ! Test: ^O !
+
+[[exit]]

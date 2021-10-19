@@ -1,6 +1,8 @@
-! TECO test: Test error w/ ?ERR !
-! Requires: TECO-64 !
-! Expects: ?ERR !
+! Smoke test for TECO text editor !
+
+! Function: Test error !
+!  Command: ?ERR !
+! <TECO-64: ?ERR !
 
 [[enter]]
 

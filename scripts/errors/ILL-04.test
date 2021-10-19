@@ -1,7 +1,0 @@
-! TECO test: Test illegal command w/ ` !
-! Requires: TECO !
-! Expects: ?ILL !
- 
-[[enter]]
- 
-96^UA MA                          ! Test: ` command !

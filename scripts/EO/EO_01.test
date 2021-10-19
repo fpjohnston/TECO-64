@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Get TECO version number !
+!  Command: EO !
+!     TECO: PASS !
+
+[[enter]]
+ 
+EO=                                     ! Test: EO !
+
+[[exit]]

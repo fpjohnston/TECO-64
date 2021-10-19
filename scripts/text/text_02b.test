@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Bracketed text arguments !
+!  Command: [ !
+!  TECO-64: ?UTM !
+
+[[enter]]
+
+0,2 E1
+
+@^A[hello, world![                 ! Test: matched left brackets !
+
+[[exit]]

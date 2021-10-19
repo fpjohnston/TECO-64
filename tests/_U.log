@@ -1,0 +1,6 @@
+abcdef       ***                            ! Test: cancel current input line !
+
+``
+**^D EK HK @^A/!PASS!/ 10^T EX
+``
+!PASS!

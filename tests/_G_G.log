@@ -1,0 +1,9 @@
+iabc
+def
+ghi^G^G
+*                             ! Test: cancel all input lines !
+
+``
+**^D EK HK @^A/!PASS!/ 10^T EX
+``
+!PASS!

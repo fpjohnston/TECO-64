@@ -1,0 +1,14 @@
+! Smoke test for TECO text editor !
+
+! Function: Exit TECO after ER !
+!  Command: EX !
+!  TECO-64: PASS !
+
+[[enter]]
+
+@ER"[[in1]]"                        ! Open the file for input !
+
+[[PASS]]
+
+EX                                  ! Test: EX after ER !
+

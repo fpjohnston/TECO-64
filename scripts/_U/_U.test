@@ -1,10 +1,12 @@
-! TECO test: Cancel current input line w/ ^U !
-! Requires: TECO !
-! Expects: PASS [_U.txt] !
+! Smoke test for TECO text editor !
+
+! Function: Cancel current input line !
+!  Command: ^U !
+!    <TECO: PASS !
 
 [[enter]]
-
 
-abcdef``                          ! Test: cancel current input line !
+!START!
+abcdef                            ! Test: cancel current input line !
 
 [[exit]]

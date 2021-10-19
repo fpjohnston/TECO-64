@@ -1,0 +1,14 @@
+! Smoke test for TECO text editor !
+
+! Function: Set status line colors !
+!  Command: F3 !
+!  TECO-64: ?DPY !
+
+[[enter]]
+
+0,2 E1
+
+@F3 {FOO} {BAZ}                     ! Test: F3 !
+
+[[exit]]
+

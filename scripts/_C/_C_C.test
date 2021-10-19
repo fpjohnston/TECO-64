@@ -1,10 +1,12 @@
-! TECO test: Abort editing session and exit TECO w/ ^C^C !
-! Requires: TECO !
-! Expects: PASS [_C_C.txt] !
+! Smoke test for TECO text editor !
+
+! Function: Abort editing session and exit TECO !
+!  Command: ^C^C !
+!    <TECO: PASS !
 
 [[enter]]
-
 
+!START!
 ! Test: abort editing session with two CTRL/C's !
 
 [[PASS]]

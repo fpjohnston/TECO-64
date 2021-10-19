@@ -1,0 +1,19 @@
+! Smoke test for TECO text editor !
+
+! Function: Execute macro returning m & n args. !
+!  Command: M !
+!     TECO: PASS !
+
+[[enter]]
+
+@I/123,456/
+27@I// 27@I//
+
+HXA HK
+
+MA UA UB                                ! Test: M returning m and n !
+
+QB - 123 [["N]]
+QA - 456 [["N]]
+
+[[exit]]

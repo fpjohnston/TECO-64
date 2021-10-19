@@ -1,0 +1,19 @@
+! Smoke test for TECO text editor !
+
+! Function: Test for successful !
+!  Command: "S !
+!     TECO: PASS !
+
+[[enter]]
+
+! Test: "S !
+
+ 0 "S   [[FAIL]] '
+ 1 "S   [[FAIL]] '
+-1 "S | [[FAIL]] '
+
+ 0 "s   [[FAIL]] '
+ 1 "s   [[FAIL]] '
+-1 "s | [[FAIL]] '
+
+[[exit]]

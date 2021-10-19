@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Test edit terminal flag !
+!  Command: ET !
+!     TECO: PASS !
+
+[[enter]]
+
+ET=                                 ! Test: ET= !
+
+[[exit]]

@@ -1,0 +1,21 @@
+! Smoke test for TECO text editor !
+
+! Function: Close input file !
+!  Command: EC !
+!     TECO: ?NFI !
+
+[[enter]]
+
+:@EW"[[out1]]" [["U]]                   ! Open file for write !
+
+@I/abcdef/                              ! Add some data !
+
+EC                                      ! Test: write data and close file !
+
+:@EB"[[out1]]" [["U]]                   ! Open file for read !
+
+EC                                      ! Close input file !
+
+Y                                       ! Try to yank input !
+ 
+[[exit]]

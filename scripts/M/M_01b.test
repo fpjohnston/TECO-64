@@ -1,0 +1,18 @@
+! Smoke test for TECO text editor !
+
+! Function: Execute macro !
+!  Command: nM !
+!     TECO: PASS !
+
+[[enter]]
+
+@I\
+    UA
+    QA - 123 [["N]]
+\
+
+HXA HK
+
+123 MA                                  ! Test: nM !
+
+[[exit]]

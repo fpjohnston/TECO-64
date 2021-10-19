@@ -1,0 +1,16 @@
+! Test: immediate-action LF commands !
+
+@I/line 1
+line 2
+line 3
+line 4
+line 5
+/
+
+0J
+
+``
+*   line 2
+*^D EK HK @^A/!PASS!/ 10^T EX
+``
+!PASS!

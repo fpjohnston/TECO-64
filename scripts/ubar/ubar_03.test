@@ -1,0 +1,30 @@
+! Smoke test for TECO text editor !
+
+! Function: Destructive backward search !
+!  Command: -_ !
+!  TECO-32: ?SRH !
+
+[[enter]]
+
+0,2 ED
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    [[I]] 12@I//
+>
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+5P
+
+-@_/foo/ [["S]]                             ! Test: -_ !
+
+HT
+
+[[exit]]

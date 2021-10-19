@@ -1,9 +1,0 @@
-! TECO test: Map key to macro w/ :@FQ !
-! Requires: TECO-64 !
-! Expects: PASS !
-
-[[enter]]
-
-:@FQq/F1/ [["U]]                            ! Test: map key to Q-register !
-
-[[exit]]

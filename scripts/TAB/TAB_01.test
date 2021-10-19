@@ -1,0 +1,20 @@
+! Smoke test for TECO text editor !
+
+! Function: Insert text !
+!  Command: <TAB> !
+!     TECO: PASS !
+
+[[enter]]
+ 
+HK 	abc Z-4 [["N]]                        ! Test: simple insert !
+
+HK 	 Z-1 [["N]]                           ! Test: insert of TAB only !
+
+HK 	abc
+def
+
+Z-9 [["N]]                                  ! Test: multi-line insert !
+
+HK @	/abcdef/ Z-7 [["N]]                 ! Test: at-sign insert !
+
+[[exit]]

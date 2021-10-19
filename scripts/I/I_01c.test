@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Invalid insertion !
+!  Command: n@Itext` !
+!     TECO: ?IIA !
+
+[[enter]]
+ 
+HK 65@I/abc/                        ! Test: insert ASCII chr. & text !
+
+[[FAIL]]
+
+[[exit]]

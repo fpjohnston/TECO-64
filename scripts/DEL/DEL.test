@@ -1,10 +1,12 @@
-! TECO test: Delete input characters w/ DEL !
-! Requires: TECO !
-! Expects: PASS [DEL.txt] !
+! Smoke test for TECO text editor !
+
+! Function: Delete input characters !
+!  Command: DEL !
+!    <TECO: PASS !
 
 [[enter]]
-
 
+!START!
 abc def               ! Test: deleting input chrs. !
 
 [[exit]]

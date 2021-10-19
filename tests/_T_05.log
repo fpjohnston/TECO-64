@@ -1,0 +1,13 @@
+! Test: ^T with several input characters !
+
+^T=``
+a97
+**^T=``
+b98
+**^T=``
+c99
+**^T=``
+d100
+******^D EK HK @^A/!PASS!/ 10^T EX
+``
+!PASS!

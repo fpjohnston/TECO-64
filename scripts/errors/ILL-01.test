@@ -1,7 +1,0 @@
-! TECO test: Test illegal command w/ ^\ !
-! Requires: TECO !
-! Expects: ?ILL !
- 
-[[enter]]
- 
-                                  ! Test: ^\ command !

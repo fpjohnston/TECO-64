@@ -1,0 +1,19 @@
+! Smoke test for TECO text editor !
+
+! Function: Test conversion to upper case !
+!  Command: 1^W !
+!  TECO-32: PASS !
+
+[[enter]]
+
+@I/ABC/
+
+-1 ^X                               ! Require exact case match !
+
+1 ^W                                ! Test: 1^W !
+
+0J :@S/abc/ [["U]]
+
+0 ^W
+
+[[exit]]

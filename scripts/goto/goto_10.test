@@ -1,0 +1,21 @@
+! Smoke test for TECO text editor !
+
+! Function: Branch backward into a loop !
+!  Command: O !
+!     TECO: ?LOC !
+
+[[enter]]
+
+@O!tag1!
+
+1 <
+    !tag2!
+
+    [[FAIL]]
+>
+
+!tag1!
+
+@O!tag2!                            ! Test: branch backward !
+
+[[exit]]

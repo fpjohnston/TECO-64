@@ -1,0 +1,35 @@
+! Smoke test for TECO text editor !
+
+! Function: Test tag in command file !
+!  Command: bang !
+!  TECO-64: PASS !
+
+[[enter]]
+
+123 UA
+
+! Test: tag in command string !
+
+QA-123 [["N]]       
+
+123,456 UA UB
+
+! Test: tag in command string !
+
+QA-456 [["N]]       
+QB-123 [["N]]       
+
+123 UA
+
+! Test: tag in command string !
+
+QA-123 [["N]]       
+
+123,456 UA UB
+
+! Test: tag in command string !
+
+QA-456 [["N]]       
+QB-123 [["N]]       
+
+[[exit]]

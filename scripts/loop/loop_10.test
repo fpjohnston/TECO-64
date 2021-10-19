@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Exit iteration if negative !
+!  Command: n:; !
+!     TECO: PASS !
+
+[[enter]]
+
+1 < -1:; [[FAIL]] >                     ! Test: loop w/ -1:; !
+
+[[exit]]

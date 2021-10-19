@@ -1,0 +1,7 @@
+abc^G
+abc   def                  ! Test: deleting input chrs. !
+
+``
+**^D EK HK @^A/!PASS!/ 10^T EX
+``
+!PASS!

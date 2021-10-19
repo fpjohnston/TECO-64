@@ -1,0 +1,12 @@
+! Smoke test for TECO text editor !
+
+! Function: Open indirect command file !
+!  Command: EI !
+!     TECO: ?FNF !
+!   TECO C: ?SYS !
+
+[[enter]]
+
+EI[[cmd2]]                            ! Test: EI !
+
+[[exit]]

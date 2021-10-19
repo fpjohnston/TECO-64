@@ -1,0 +1,24 @@
+! Smoke test for TECO text editor !
+
+! Function: Non-stop forward search !
+!  Command: N !
+!     TECO: PASS !
+
+[[enter]]
+
+@I/'Twas /    [[I]] 12@I//
+@I/brillig, / [[I]] 12@I//
+@I/and /      [[I]] 12@I//
+@I/the /      [[I]] 12@I//
+@I/slithy /   [[I]] 12@I//
+@I/toves/     [[I]] 12@I//
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+:@N/slithy/ [["U]]                          ! Test: N !
+
+[[exit]]

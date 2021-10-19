@@ -1,0 +1,41 @@
+! Smoke test for TECO text editor !
+
+! Function: Test upper/lower case flag !
+!  Command: EU !
+!     TECO: PASS !
+
+[[enter]]
+
+^^a UA
+
+^^z - ^^a + 1 < QA@I// %A > 32@I//
+
+^^0 UA
+
+^^9 - ^^0 + 1 < QA@I// %A > 32@I//
+
+^^A UA
+
+^^Z - ^^A + 1 < QA@I// %A > [[I]]
+
+@^A/EU=/ EU=                        ! Test: EU= !
+
+0 EU                                ! Test: 0EU !
+@^A/EU=/ EU= HT
+
+1 EU                                ! Test: 1EU !
+@^A/EU=/ EU= HT
+
+-1 EU                               ! Test: -1EU !
+@^A/EU=/ EU= HT
+
+-2 EU                               ! Test: -2EU !
+@^A/EU=/ EU=
+
++2 EU                               ! Test: +2EU !
+@^A/EU=/ EU=
+
+-1 EU                               ! Test: -1EU !
+@^A/EU=/ EU=
+
+[[exit]]

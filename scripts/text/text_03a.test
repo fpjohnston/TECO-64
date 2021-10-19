@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Braced text arguments !
+!  Command: {, } !
+!  TECO-64: PASS !
+
+[[enter]]
+
+0,2 E1
+
+@^A{hello, world!}                 ! Test: paired braces w/ 1 arg. !
+
+:@FS{hello} {world!}                ! Test: paired braces w/ 2 args. !
+
+[[exit]]

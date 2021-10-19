@@ -1,0 +1,22 @@
+! Smoke test for TECO text editor !
+
+! Function: Read edit buffer values !
+!  Command: nA !
+!     TECO: PASS !
+
+[[enter]]
+
+@I/hello, world!/
+
+0 UA 0J
+Z < QA A UB QB ^T %A >                  ! Test: nA for all chrs. forward !
+[[^T]]
+
+1 UA ZJ
+Z < -QA A UB QB ^T %A >                 ! Test: nA for all chrs. backward !
+[[^T]]
+
+0J -1 A+1 UA QA [["N]]                      ! Test: nA for chr. < B !
+ZJ  1 A+1 UA QA [["N]]                      ! Test: nA for chr. > Z !
+
+[[exit]]

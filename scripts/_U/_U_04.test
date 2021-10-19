@@ -1,0 +1,18 @@
+! Smoke test for TECO text editor !
+
+! Function: Append character to Q-register !
+!  Command: n:^U !
+!     TECO: PASS !
+
+[[enter]]
+
+^^h  @^UA//                         ! Test: append character to Q-register !
+^^e :@^UA//
+^^l :@^UA//
+^^l :@^UA//
+^^o :@^UA//
+
+!START!
+:GA [[^T]]
+
+[[exit]]

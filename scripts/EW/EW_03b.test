@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Open file for writing !
+!  Command: :@EW !
+!     TECO: FAIL !
+
+[[enter]]
+
+:@EW"[[bad]]" [["U]]                    ! Test: open file for writing !
+
+[[exit]]

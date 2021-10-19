@@ -1,0 +1,27 @@
+! Smoke test for TECO text editor !
+
+! Function: Test carriage return in command file !
+!  Command: CR !
+!     TECO: PASS !
+
+[[enter]]
+
+@I/foo/ 0J
+
+! Test: carriage return in command file !
+
+
+:
+
+@
+
+
+FS/foo/baz/
+
+
+
+
+
+[["U]]
+
+[[exit]]

@@ -1,6 +1,8 @@
-! TECO test: Test lib/show.tec w/ (misc.) !
-! Requires: TECO-64 !
-! Expects: PASS !
+! Smoke test for TECO text editor !
+
+! Function: Test lib/show.tec !
+!  Command: (misc.) !
+!  TECO-64: PASS !
 
 [[enter]]
 

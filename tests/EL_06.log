@@ -1,0 +1,45 @@
+@^UA|/tmp/teco.log|         ! Name of log file we create !
+@^UB|EL_06.log|             ! Name of log file we compare against !
+
+1:@EL/^EQA/                 ! Test: open log file !
+
+"U
+    @^A/Can't open log file/
+    @^A/!FAIL3!/ 10^T ^C
+'
+``
+***! Logging starts here !
+
+@^A/hello, world!/         ! Generate an output message !
+``
+hello, world!**5 < @I/abcdef/ 10@I// >      ! Insert some lines of text !
+0 J                         ! Go to beginning of buffer !
+3 L                         ! Move down 3 lines !
+1 K                         ! And kill the next line !
+
+! Logging ends here !
+``
+*   ***@EL//                       ! Test: close log file !
+``
+***HK
+
+:@EZ/diff -B -w -q ^EQA ^EQB/
+
+"U
+    @^A/Can't compare log files/
+    @^A/!FAIL2!/ 10^T ^C
+'
+
+G+ 0J
+
+:@S/differ/
+
+"U
+    @^A/Log files differ/
+    @^A/!FAIL1!/ 10^T ^C
+'
+
+``
+*   **^D EK HK @^A/!PASS!/ 10^T EX
+``
+!PASS!

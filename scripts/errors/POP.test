@@ -1,7 +1,9 @@
-! TECO test: Test error w/ ?POP !
-! Requires: TECO !
-! Expects: ?POP !
- 
+! Smoke test for TECO text editor !
+
+! Function: Test error !
+!  Command: ?POP !
+!     TECO: ?POP !
+
 [[enter]]
 
 ZJ C                                    ! Test: move pointer beyond end of page !

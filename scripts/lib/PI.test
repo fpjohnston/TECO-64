@@ -1,6 +1,8 @@
-! TECO test: Test lib/pi.tec w/ (misc.) !
-! Requires: TECO-64 !
-! Expects: PASS [pi.txt] !
+! Smoke test for TECO text editor !
+
+! Function: Test lib/pi.tec !
+!  Command: (misc.) !
+!  TECO-64: PASS !
 
 [[enter]]
 

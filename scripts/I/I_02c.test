@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Insert text (w/ extended features) !
+!  Command: -1,nI !
+!  TECO-64: ?NCA !
+
+[[enter]]
+ 
+0,512 E1
+
+HK -1,^^A I                         ! Test: -1,nI !
+
+[[FAIL]]
+
+[[exit]]

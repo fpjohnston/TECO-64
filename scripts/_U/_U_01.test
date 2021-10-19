@@ -1,0 +1,55 @@
+! Smoke test for TECO text editor !
+
+! Function: Load global Q-registers with text !
+!  Command: ^U !
+!     TECO: PASS !
+
+[[enter]]
+
+! Test: load global Q-registers w/ text !
+
+@^U0/@^A"Q-register 0 text/ 13:@^U0// 10:@^U0// ^^":@^U0//
+@^U1/@^A"Q-register 1 text/ 13:@^U1// 10:@^U1// ^^":@^U1//
+@^U2/@^A"Q-register 2 text/ 13:@^U2// 10:@^U2// ^^":@^U2//
+@^U3/@^A"Q-register 3 text/ 13:@^U3// 10:@^U3// ^^":@^U3//
+@^U4/@^A"Q-register 4 text/ 13:@^U4// 10:@^U4// ^^":@^U4//
+@^U5/@^A"Q-register 5 text/ 13:@^U5// 10:@^U5// ^^":@^U5//
+@^U6/@^A"Q-register 6 text/ 13:@^U6// 10:@^U6// ^^":@^U6//
+@^U7/@^A"Q-register 7 text/ 13:@^U7// 10:@^U7// ^^":@^U7//
+@^U8/@^A"Q-register 8 text/ 13:@^U8// 10:@^U8// ^^":@^U8//
+@^U9/@^A"Q-register 9 text/ 13:@^U9// 10:@^U9// ^^":@^U9//
+
+@^UA/@^A"Q-register A text/ 13:@^UA// 10:@^UA// ^^":@^UA//
+@^UB/@^A"Q-register B text/ 13:@^UB// 10:@^UB// ^^":@^UB//
+@^UC/@^A"Q-register C text/ 13:@^UC// 10:@^UC// ^^":@^UC//
+@^UD/@^A"Q-register D text/ 13:@^UD// 10:@^UD// ^^":@^UD//
+@^UE/@^A"Q-register E text/ 13:@^UE// 10:@^UE// ^^":@^UE//
+@^UF/@^A"Q-register F text/ 13:@^UF// 10:@^UF// ^^":@^UF//
+@^UG/@^A"Q-register G text/ 13:@^UG// 10:@^UG// ^^":@^UG//
+@^UH/@^A"Q-register H text/ 13:@^UH// 10:@^UH// ^^":@^UH//
+@^UI/@^A"Q-register I text/ 13:@^UI// 10:@^UI// ^^":@^UI//
+@^UJ/@^A"Q-register J text/ 13:@^UJ// 10:@^UJ// ^^":@^UJ//
+@^UK/@^A"Q-register K text/ 13:@^UK// 10:@^UK// ^^":@^UK//
+@^UL/@^A"Q-register L text/ 13:@^UL// 10:@^UL// ^^":@^UL//
+@^UM/@^A"Q-register M text/ 13:@^UM// 10:@^UM// ^^":@^UM//
+@^UN/@^A"Q-register N text/ 13:@^UN// 10:@^UN// ^^":@^UN//
+@^UO/@^A"Q-register O text/ 13:@^UO// 10:@^UO// ^^":@^UO//
+@^UP/@^A"Q-register P text/ 13:@^UP// 10:@^UP// ^^":@^UP//
+@^UQ/@^A"Q-register Q text/ 13:@^UQ// 10:@^UQ// ^^":@^UQ//
+@^UR/@^A"Q-register R text/ 13:@^UR// 10:@^UR// ^^":@^UR//
+@^US/@^A"Q-register S text/ 13:@^US// 10:@^US// ^^":@^US//
+@^UT/@^A"Q-register T text/ 13:@^UT// 10:@^UT// ^^":@^UT//
+@^UU/@^A"Q-register U text/ 13:@^UU// 10:@^UU// ^^":@^UU//
+@^UV/@^A"Q-register V text/ 13:@^UV// 10:@^UV// ^^":@^UV//
+@^UW/@^A"Q-register W text/ 13:@^UW// 10:@^UW// ^^":@^UW//
+@^UX/@^A"Q-register X text/ 13:@^UX// 10:@^UX// ^^":@^UX//
+@^UY/@^A"Q-register Y text/ 13:@^UY// 10:@^UY// ^^":@^UY//
+@^UZ/@^A"Q-register Z text/ 13:@^UZ// 10:@^UZ// ^^":@^UZ//
+
+!START!
+:M0 :M1 :M2 :M3 :M4 :M5 :M6 :M7 :M8 :M9
+
+:MA :MB :MC :MD :ME :MF :MG :MH :MI :MJ :MK :ML :MM
+:MN :MO :MP :MQ :MR :MS :MT :MU :MV :MW :MX :MY :MZ 
+
+[[exit]]

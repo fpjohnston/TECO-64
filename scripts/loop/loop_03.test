@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Test start of loop without end !
+!  Command: < !
+!  TECO-32: ?MRA !
+
+[[enter]]
+
+! Test: < w/o > !
+
+<

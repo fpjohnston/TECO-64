@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Use string building chrs. to print message !
+!  Command: ^A !
+!  TECO-64: PASS !
+
+[[enter]]
+
+@^UA/goodbye, cruel world!/
+
+@^A/^EQA/                               ! Test: ^A w/ string-building chrs. !
+
+[[^T]]
+
+[[exit]]

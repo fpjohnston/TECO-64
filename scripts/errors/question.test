@@ -1,7 +1,9 @@
-! TECO test: Print erroneous command string w/ ? !
-! Requires: TECO !
-! Expects: ?POP !
- 
+! Smoke test for TECO text editor !
+
+! Function: Print erroneous command string !
+!  Command: ? !
+!    <TECO: ?POP !
+
 [[enter]]
 
 ZJ C``?                                 ! Test: print failing command !

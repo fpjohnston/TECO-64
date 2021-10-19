@@ -1,0 +1,14 @@
+iabc
+def
+ghi
+jkl^G*
+*!START!
+iabc
+def
+ghi
+jkl                              ! Test: retype all input lines !
+
+``
+**^D EK HK @^A/!PASS!/ 10^T EX
+``
+!PASS!

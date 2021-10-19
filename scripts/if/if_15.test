@@ -1,0 +1,19 @@
+! Smoke test for TECO text editor !
+
+! Function: Test for not equal to zero !
+!  Command: "N !
+!     TECO: PASS !
+
+[[enter]]
+
+! Test: "N !
+
+ 0 "N   [[FAIL]] '
+ 1 "N | [[FAIL]] '
+-1 "N | [[FAIL]] '
+
+ 0 "n   [[FAIL]] '
+ 1 "n | [[FAIL]] '
+-1 "n | [[FAIL]] '
+
+[[exit]]

@@ -1,8 +1,0 @@
-*^^0FF:@^A/hello, world!/``
-*^^9FF:@^A/goodbye, cruel world!/ EX``
-*^F0
-hello, world!
-*^F^F
-hello, world!
-*^F9
-goodbye, cruel world!

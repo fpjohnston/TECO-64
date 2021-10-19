@@ -1,0 +1,10 @@
+! Test: abort editing session with two CTRL/C's !
+
+@^A/!PASS!/ 10^T
+``
+!PASS!
+**
+[7m Cancel [0m
+*
+[7m Cancel [0m
+***

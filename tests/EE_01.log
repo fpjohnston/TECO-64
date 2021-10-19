@@ -1,0 +1,16 @@
+EE=``
+0
+*                                 ! Test: EE !
+
+@^A/hello/ ??                           ! This should not print immediately !
+
+^^?EE``
+hello?*                               ! Test: nEE !
+
+@^A/hello, again/ ``
+hello, again*                    ! This should print immediately !
+
+``
+**^D EK HK @^A/!PASS!/ 10^T EX
+``
+!PASS!

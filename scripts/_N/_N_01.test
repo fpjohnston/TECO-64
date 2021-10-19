@@ -1,0 +1,22 @@
+! Smoke test for TECO text editor !
+
+! Function: Inverse character match !
+!  Command: ^N !
+!     TECO: PASS !
+
+[[enter]]
+
+0 UA
+
+@I/abcd1234/ [[I]]
+
+0J @S/^Na/                          ! Test: ^Nx !
+0T ^^`^T T
+
+0J @S/^N^EA/                        ! Test: ^N^EA !
+0T ^^`^T T
+
+0J @S/^N^ED/                        ! Test: ^N^ED !
+0T ^^`^T T
+
+[[exit]]

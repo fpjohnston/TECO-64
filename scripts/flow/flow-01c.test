@@ -1,9 +1,0 @@
-! TECO test: Flow to end of else w/ F| !
-! Requires: TECO !
-! Expects: PASS !
-
-[[enter]]
-
-0 "E F| [[FAIL]] | '                    ! Test: F| after " !
-
-[[exit]]

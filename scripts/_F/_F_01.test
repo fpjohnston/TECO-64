@@ -1,0 +1,17 @@
+! Smoke test for TECO text editor !
+
+! Function: Execute command string with CTRL/F sequence !
+!  Command: ^F !
+! <TECO-64: PASS !
+
+[[enter]]
+
+^^0FF@^A/hello, world!/``
+^^9FF@^A/goodbye, cruel world! !PASS!/ EX``
+0                                 ! Test: <CTRL/F>0 !
+                                ! Test: <CTRL/F><CTRL/F> !
+9                                 ! Test: <CTRL/F>9 !
+
+[[FAIL]]
+
+[[exit]]

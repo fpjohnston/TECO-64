@@ -1,9 +1,0 @@
-! TECO test: Open file for reading and writing w/ EB !
-! Requires: TECO !
-! Expects: PASS !
-
-[[enter]]
-
-EB[[in1]]                             ! Test: open file for backup !
-
-[[exit]]

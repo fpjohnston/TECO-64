@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Print message !
+!  Command: ^A !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/hello, world!/                      ! Test: @^A !
+
+[[exit]]

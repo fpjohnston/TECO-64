@@ -1,0 +1,19 @@
+! Smoke test for TECO text editor !
+
+! Function: Insert text (w/ extended features) !
+!  Command: nI, m,nI !
+!  TECO-64: PASS !
+
+[[enter]]
+ 
+0,512 E1                                ! Enable extended insert features !
+
+HK ^^A I Z-1 [["N]]                         ! Test: nI !
+
+HK ^^B @I// Z-1 [["N]]                      ! Test: nI !
+
+HK 0,^^C I Z [["N]]                         ! Test: 0,nI !
+
+HK 5,^^D I Z-5 [["N]]                       ! Test: 5,nI !
+
+[[exit]]

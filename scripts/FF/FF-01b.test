@@ -1,9 +1,0 @@
-! TECO test: Map command string to CTRL/F sequence w/ @FF !
-! Requires: TECO-64 !
-! Expects: ?INA !
-
-[[enter]]
-
-^^A@FF/FOO/                         ! Test: map commands to <CTRL/F>A !
-
-[[exit]]

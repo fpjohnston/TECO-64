@@ -1,9 +1,0 @@
-! TECO test: Read Q-register from file w/ :@EQ !
-! Requires: TECO-10 !
-! Expects: FAIL !
-
-[[enter]]
-
-:@EQB"[[in2]]" [["U]]                   ! Test: :@EQq !
-
-[[exit]]

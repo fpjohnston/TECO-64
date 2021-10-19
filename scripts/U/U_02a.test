@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Load Q-register using nM !
+!  Command: U !
+!     TECO: PASS !
+
+[[enter]]
+
+@^UA/UN/                                ! Test: load Q-register using nM !
+
+123 MA
+
+QN= QN=
+
+[[exit]]

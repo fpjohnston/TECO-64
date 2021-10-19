@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Execute excessive nested macros !
+!  Command: M !
+!     TECO: ?MAX !
+
+[[enter]]
+
+0 UA
+
+@^UA\ %A-65 "L MA | [[FAIL]] ' \
+
+MA                                      ! Test: nested M !
+
+[[exit]]

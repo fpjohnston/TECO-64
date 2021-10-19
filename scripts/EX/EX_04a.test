@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Exit TECO with empty buffer !
+!  Command: EX !
+!     TECO: PASS !
+
+[[enter]]
+
+[[PASS]]
+
+EX                                  ! Test: EX w/ empty edit buffer !

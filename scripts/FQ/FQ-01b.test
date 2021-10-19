@@ -1,9 +1,0 @@
-! TECO test: Map key to Q-register w/ @FQ !
-! Requires: TECO-64 !
-! Expects: ?KEY !
-
-[[enter]]
-
-@FQq/BAZ/                           ! Test: map key to Q-register q !
-
-[[exit]]

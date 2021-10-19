@@ -1,0 +1,63 @@
+! Smoke test for TECO text editor !
+
+! Function: Convert text to upper case !
+!  Command: FU !
+!  TECO-64: PASS !
+
+[[enter]]
+
+0 UA
+
+15 < %A-10 "L 32@I// ' QA \ @I/. abcdefg HIJKLMN/ [[I]] >
+
+HT [[^T]] 0J
+
+@^A/FU: .=/ .=
+
+FU                                  ! Test: FU !
+
+L HT [[^T]]
+
+@^A/1 FU: .=/ .=
+
+1 FU                                ! Test: FU !
+
+2L HT [[^T]]
+
+@^A/2 FU: .=/ .=
+
+2 FU                                ! Test: nFU !
+
+ZJ HT [[^T]]
+
+@^A/-FU: .=/ .=
+
+-FU                                 ! Test: -FU !
+
+-L HT [[^T]]
+
+@^A/-1 FU: .=/ .=
+
+-1 FU                               ! Test: -1FU !
+
+-L HT [[^T]]
+
+@^A/-2 FU: .=/ .=
+
+-2 FU                               ! Test: -nFU !
+
+HT [[^T]]
+
+@^A/120,140 FU: .=/ .=
+
+120,140 FU                          ! Test: m,nFU !
+
+HT [[^T]]
+
+@^A/H FU: .=/ .=
+
+H FU                                ! Test: HFU !
+
+HT [[^T]]
+
+[[exit]]

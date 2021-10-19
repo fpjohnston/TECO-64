@@ -1,0 +1,28 @@
+! Smoke test for TECO text editor !
+
+! Function: Match character in Q-register  !
+!  Command: ^EGq !
+!     TECO: PASS !
+
+[[enter]]
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+@^UA/1234abcd/ :GA 13^T 10^T
+
+0 J 0 UA
+
+128 <
+    ::@S/^EGA/ "S                       ! Test: ^EGq !
+        QA ^T
+    |
+        C
+    '
+    %A
+>
+
+[[^T]]
+
+[[exit]]

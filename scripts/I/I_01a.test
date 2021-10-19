@@ -1,0 +1,22 @@
+! Smoke test for TECO text editor !
+
+! Function: Insert text !
+!  Command: I, @I, nI !
+!     TECO: PASS !
+
+[[enter]]
+ 
+HK Iabc Z-3 [["N]]                        ! Test: simple insert !
+
+HK Iabc
+def
+
+Z-8 [["N]]                                  ! Test: multi-line insert !
+
+HK @I/abcdef/ Z-6 [["N]]                    ! Test: at-sign insert !
+
+HK 65I Z-1 [["N]]                         ! Test: insert ASCII chr. !
+
+HK 65@I// Z-1 [["N]]                        ! Test: at-sign insert of ASCII chr. !
+
+[[exit]]

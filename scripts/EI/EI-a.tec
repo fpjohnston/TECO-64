@@ -1,9 +1,0 @@
-! Helper script for TECO tests !
-
-@^A/entering test 4a/ 13^T 10^T
-
-@EI/EI-b/                               ! Test: EI (level 1) !
-
-@^A/exiting test 4a/ 13^T 10^T
-
-

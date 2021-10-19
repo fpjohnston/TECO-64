@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Push maximum values !
+!  Command: (misc.) !
+!     TECO: PASS !
+
+[[enter]]
+
+64 UA                                   ! No. of values we'll push on expression stack !
+
+QA < :@^UA/123 / MA >                   ! Test: push numeric values !
+
+[[exit]]

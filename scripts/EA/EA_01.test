@@ -1,0 +1,53 @@
+! Smoke test for TECO text editor !
+
+! Function: Switch output streams !
+!  Command: EA, EW` !
+!     TECO: PASS !
+
+[[enter]]
+
+@I/abcdef/ [[I]]                        ! Add some data !
+
+. UA
+
+@I/123456/ [[I]]                        ! Add some more data !
+
+:@EW"[[out1]]" [["U]]                   ! Create 1st temp file !
+
+EA                                      ! Test: switch to secondary output stream !
+
+:@EW"[[out2]]" [["U]]                   ! Create 2nd temp file !
+
+2 < B,QA PW >                           ! Write data to secondary stream !
+
+@EW//                                   ! Switch back to primary output stream !
+
+3 < QA,Z PW>                            ! Write data to primary stream !
+
+HT
+HK
+
+EC                                      ! Close primary stream !
+
+EA                                      ! Switch back to secondary output stream !
+
+EC                                      ! Close secondary stream !
+
+:@ER"[[out1]]" [["U]] Y                 ! Open 1st temp file and read it in !
+
+@^A/-----/ [[^T]]
+
+HT
+HK
+
+EC
+
+:@ER"[[out2]]" [["U]] Y                 ! Open 2nd temp file and read it in !
+
+@^A/-----/ [[^T]]
+
+HT
+
+EC
+
+[[exit]]

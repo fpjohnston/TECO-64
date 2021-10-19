@@ -1,0 +1,30 @@
+! Smoke test for TECO text editor !
+
+! Function: Destructive forward search !
+!  Command: E_ !
+!     TECO: PASS !
+
+[[enter]]
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    [[I]] 12@I//
+>
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+:@E_/line 5/ [["U]]                         ! Test: E_ !
+
+EC
+
+:@ER"[[out1]]" [["U]] < :A; >
+
+HT
+
+[[exit]]

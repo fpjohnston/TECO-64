@@ -1,9 +1,0 @@
-! TECO test: Invalid insertion w/ n@Itext` !
-! Requires: TECO !
-! Expects: ?IIA !
-
-[[enter]]
-
-65Iabc                                ! Test: insert ASCII chr. & text !
-
-[[exit]]

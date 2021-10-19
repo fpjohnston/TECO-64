@@ -1,0 +1,17 @@
+! Smoke test for TECO text editor !
+
+! Function: Match non-null string of spaces and/or tabs !
+!  Command: ^ES !
+!     TECO: PASS !
+
+[[enter]]
+
+0 UA
+
+@I/abcd                1234/ 10@I//
+
+0J :@S/^ES/ [["U]]                     ! Test: ^ES !
+
+0T ^^`^T T
+
+[[exit]]

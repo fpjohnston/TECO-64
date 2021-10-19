@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Convert text to lower case !
+!  Command: FL !
+!  TECO-64: ?POP !
+
+[[enter]]
+
+0 UA
+
+15 < %A-10 "L 32@I// ' QA \ @I/. abcdefg HIJKLMN/ [[I]] >
+
+0,Z+1 FL                            ! Test: m,nFL w/ n > Z !
+
+[[exit]]

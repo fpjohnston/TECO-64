@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Open indirect command file !
+!  Command: @EI !
+!  TECO-32: PASS !
+
+[[enter]]
+
+@^A/entering test 4/ [[^T]]
+
+@EI"EI_a"                               ! Test: EI (level 0) !
+
+@^A/exiting test 4/ [[^T]]
+
+[[exit]]

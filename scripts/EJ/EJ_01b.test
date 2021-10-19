@@ -1,0 +1,16 @@
+! Smoke test for TECO text editor !
+
+! Function: Get environment information !
+!  Command: EJ !
+!  TECO-32: PASS !
+
+[[enter]]
+
+! Since the data returned is system-dependent, we don't do anything with !
+! it here, we just confirm that the commands execute as expected. !
+
+1  EJ                                   ! Test: 1 EJ !
+
+2  EJ                                   ! Test: 2 EJ !
+
+[[exit]]

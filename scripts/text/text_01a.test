@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Parenthesized text arguments !
+!  Command: (, ) !
+!  TECO-64: PASS !
+
+[[enter]]
+
+0,2 E1
+
+@^A (hello, world!)                ! Test: paired parentheses w/ 1 arg. !
+
+:@FS (hello) (world!)               ! Test: paired parentheses w/ 2 args. !
+
+[[exit]]

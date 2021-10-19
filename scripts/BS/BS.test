@@ -1,9 +1,12 @@
-! TECO test: Back up and type one line w/ BS !
-! Requires: TECO !
-! Expects: PASS [BS.txt] !
+! Smoke test for TECO text editor !
+
+! Function: Back up and type one line !
+!  Command: BS !
+!    <TECO: PASS !
 
 [[enter]]
-
+
+!START!
 ! Test: immediate-action BS commands !
 
 @I/line 1
@@ -13,7 +16,7 @@ line 4
 line 5
 /
 
-0J 4L
-HK
+0J 4L 
+HK
 
 [[exit]]

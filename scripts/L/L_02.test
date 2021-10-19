@@ -1,0 +1,27 @@
+! Smoke test for TECO text editor !
+
+! Function: Move forward or backward lines !
+!  Command: L !
+!     TECO: PASS !
+
+[[enter]]
+ 
+10 < @I/abcdefghi/ [[I]] >
+
+Z/10 UA
+
+0J
+
+  L .-(QA*1) [["N]]                     ! Test: L !
+ 1L .-(QA*2) [["N]]                     ! Test: 1L !
+ 6L .-(QA*8) [["N]]                     ! Test: nL !
+
+ -L .-(QA*7) [["N]]                     ! Test: -L !
+-1L .-(QA*6) [["N]]                     ! Test: -1L !
+-4L .-(QA*2) [["N]]                     ! Test: -nL !
+
+5C
+
+ 0L .-(QA*2) [["N]]                     ! Test: 0L !
+
+[[exit]]

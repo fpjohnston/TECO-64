@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Parenthesized text arguments !
+!  Command: ) !
+!  TECO-64: ?TXT !
+
+[[enter]]
+
+0,2 E1
+
+@^A)hello, world!)                 ! Test: matched right parentheses !
+
+[[exit]]

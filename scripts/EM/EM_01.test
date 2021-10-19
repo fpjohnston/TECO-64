@@ -1,0 +1,33 @@
+! Smoke test for TECO text editor !
+
+! Function: Type macro in Q-register !
+!  Command: EMq !
+!  TECO-64: PASS !
+
+[[enter]]
+
+@^UA/   65   ^T     ! Comment !
+
+66 ^T               ! Another comment !
+
+/
+
+0 EMA                               ! Test: 0 EMA !
+@^A/-----/ [[^T]]
+
+2 EMA                               ! Test: 2 EMA !
+@^A/-----/ [[^T]]
+
+4 EMA                               ! Test: 4 EMA !
+@^A/-----/ [[^T]]
+
+16 EMA                              ! Test: 16 EMA !
+@^A/-----/ [[^T]]
+
+32 EMA                              ! Test: 32 EMA !
+@^A/-----/ [[^T]]
+
+-1 EMA                              ! Test: -1 EMA !
+@^A/-----/ [[^T]]
+
+[[exit]]

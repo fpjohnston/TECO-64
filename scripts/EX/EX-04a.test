@@ -1,9 +1,0 @@
-! TECO test: Exit TECO with empty buffer w/ EX !
-! Requires: TECO !
-! Expects: PASS !
-
-[[enter]]
-
-[[PASS]]
-
-EX                                  ! Test: EX w/ empty edit buffer !

@@ -1,0 +1,24 @@
+! Smoke test for TECO text editor !
+
+! Function: Match any character !
+!  Command: ^X !
+!     TECO: PASS !
+
+[[enter]]
+
+0 UA
+
+128 < %A-1 @I// > [[I]]
+
+0 J
+
+128 <
+    ::@S/^X/ "U                         ! Test: ^X !
+        0A:@/%d /
+        C
+    '
+>
+
+[[^T]]
+
+[[exit]]

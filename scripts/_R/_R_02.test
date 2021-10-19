@@ -1,0 +1,12 @@
+! Smoke test for TECO text editor !
+
+! Function: Set radix to invalid value !
+!  Command: ^R !
+!     TECO: ?IRA !
+
+[[enter]]
+
+@^A/Setting radix to binary/
+2 ^R ^D                             ! Test: 2^R !
+
+[[exit]]

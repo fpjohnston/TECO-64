@@ -1,0 +1,27 @@
+! Smoke test for TECO text editor !
+
+! Function: Test line feeds in command file !
+!  Command: LF !
+!     TECO: PASS !
+
+[[enter]]
+
+@I/foo/ 0J
+
+! Test: spaces in command file !
+
+
+:
+
+@
+
+
+FS/foo/baz/
+
+
+
+
+
+[["U]]
+
+[[exit]]

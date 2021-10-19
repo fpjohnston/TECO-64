@@ -1,0 +1,35 @@
+! Smoke test for TECO text editor !
+
+! Function: Test basic functions #2 !
+!  Command: (misc.) !
+!     TECO: PASS !
+
+[[enter]]
+
+! Test: mix of basic TECO commands !
+
+10 < @I/abcdefghijklmnopqrstuvwxyz 0123456789/ [[I]] >
+
+J
+
+! Change first three occurrences of 'abc' to 'FOO' !
+
+3 < @FS/abc/FOO/ >
+
+! Go down 2 lines, and 40 characters to the right !
+
+2L 40C @I/!!!/
+
+! Find next four occurrences of 'xyz' and insert 'BAZ' !
+
+4 < @S/xyz/ @I/BAZ/ >
+
+-6@S/lmnop/ ^SD
+
+J
+
+< @S/def/; -3D >
+
+HT
+
+[[exit]]

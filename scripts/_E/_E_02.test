@@ -1,0 +1,23 @@
+! Smoke test for TECO text editor !
+
+! Function: Test form feed flag !
+!  Command: ^E !
+!     TECO: PASS !
+
+[[enter]]
+
+@I/single/
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+^E [["S]]                                   ! Test: ^E at beginning of file !
+
+P ^E [["S]]                                 ! Test: ^E after 1st page !
+
+P ^E [["S]]                                 ! Test: ^E at end of file !
+
+[[exit]]

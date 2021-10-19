@@ -1,0 +1,33 @@
+! Smoke test for TECO text editor !
+
+! Function: Test page number !
+!  Command: ^P !
+!  TECO-10: PASS !
+
+[[enter]]
+
+@I/page 1/ 12@I//
+@I/page 2/ 12@I//
+@I/page 3/ 12@I//
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+^P-0 [["N]]                                 ! Test: ^P !
+
+P
+
+^P-1 [["N]]                                 ! Test: ^P !
+
+P
+
+^P-2 [["N]]                                 ! Test: ^P !
+
+P
+
+^P-3 [["N]]                                 ! Test: ^P !
+
+[[exit]]

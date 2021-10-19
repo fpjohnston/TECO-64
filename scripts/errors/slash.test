@@ -1,7 +1,9 @@
-! TECO test: Get detailed error message w/ / !
-! Requires: TECO !
-! Expects: ?POP !
- 
+! Smoke test for TECO text editor !
+
+! Function: Get detailed error message !
+!  Command: / !
+!    <TECO: ?POP !
+
 [[enter]]
 
 ZJ C``?                                 ! Test: print failing command !

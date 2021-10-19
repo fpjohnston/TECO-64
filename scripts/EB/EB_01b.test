@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Open file for reading and writing !
+!  Command: EB !
+!     TECO: ?FNF !
+!   TECO C: ?SYS !
+
+[[enter]]
+
+EB[[in2]]                             ! Test: open file for backup !
+
+[[exit]]
+

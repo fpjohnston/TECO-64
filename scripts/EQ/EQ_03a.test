@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Read Q-register from file !
+!  Command: :@EQ !
+!  TECO-10: PASS !
+
+[[enter]]
+
+:@EQB"[[in1]]" [["U]]                   ! Test: :@EQq !
+
+:GB
+
+[[exit]]

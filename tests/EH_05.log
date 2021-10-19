@@ -1,0 +1,15 @@
+*HK 0,128ET 0E1 1,0E3$$
+****7 EH                                ! Test: error message + failing command !
+EH=
+ZJ C                                ! Force POP error !
+$$
+7
+?POP   Attempt to move pointer off page with 'C'
+     A J, C or R command has been executed which attempted to move the pointer
+     off the page. The result of executing one of these commands must leave the
+     pointer between 0 and Z, The characters referenced by a D or nA command must
+     also be within the buffer limits.
+7 EH                                ! Test: error message + failing command !
+EH=
+ZJ C                                ! Force POP error !
+$$*

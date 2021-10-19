@@ -1,0 +1,24 @@
+! Smoke test for TECO text editor !
+
+! Function: Print numeric values !
+!  Command: := !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/value = [/    0 := @^A/]/ [[^T]]   ! Test:    0:= in decimal !
+@^A/value = [/   -1 := @^A/]/ [[^T]]   ! Test:   -1:= in decimal !
+@^A/value = [/  123 := @^A/]/ [[^T]]   ! Test:  123:= in decimal !
+@^A/value = [/ -456 := @^A/]/ [[^T]]   ! Test: -456:= in decimal !
+
+@^A/value = [/    0 :== @^A/]/ [[^T]]  ! Test:    0:== in octal !
+@^A/value = [/   -1 :== @^A/]/ [[^T]]  ! Test:   -1:== in octal !
+@^A/value = [/  123 :== @^A/]/ [[^T]]  ! Test:  123:== in octal !
+@^A/value = [/ -456 :== @^A/]/ [[^T]]  ! Test: -456:== in octal !
+
+@^A/value = [/    0 :=== @^A/]/ [[^T]] ! Test:    0:=== in hexadecimal !
+@^A/value = [/   -1 :=== @^A/]/ [[^T]] ! Test:   -1:=== in hexadecimal !
+@^A/value = [/  123 :=== @^A/]/ [[^T]] ! Test:  123:=== in hexadecimal !
+@^A/value = [/ -456 :=== @^A/]/ [[^T]] ! Test: -456:=== in hexadecimal !
+
+[[exit]]

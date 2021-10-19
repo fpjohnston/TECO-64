@@ -1,0 +1,25 @@
+! Smoke test for TECO text editor !
+
+! Function: Test edit level flag !
+!  Command: ED&2 !
+!     TECO: PASS !
+
+[[enter]]
+
+:@EW"[[out1]]" [["U]]
+
+@I/abc/
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+@I/xyz/
+
+ED=                                 ! Test: ED= !
+
+0,2 ED                              ! Test: ED&2 !
+
+Y
+
+[[exit]]

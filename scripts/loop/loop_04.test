@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Test end of loop without start !
+!  Command: > !
+!     TECO: ?BNI !
+
+[[enter]]
+
+! Test: > w/o < !
+
+>
+
+[[exit]]

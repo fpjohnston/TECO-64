@@ -1,0 +1,31 @@
+! Smoke test for TECO text editor !
+
+! Function: Read display mode parameters !
+!  Command: n:W !
+!     TECO: PASS !
+
+[[enter]]
+
+:W    - 8 [["N]]                        ! Test: :W !
+
+0:W   - 8 [["N]]                        ! Test: 0:W !
+
+@^A/1:W=/ 1:W=                          ! Test: 1:W !
+
+@^A/2:W=/ 2:W=                          ! Test: 2:W !
+
+3:W       [["N]]                        ! Test: 3:W !
+
+4:W       [["N]]                        ! Test: 4:W !
+
+5:W       [["N]]                        ! Test: 5:W !
+
+6:W       [["N]]                        ! Test: 6:W !
+
+@^A/7:W=/ 7:W=                          ! Test: 7:W !
+
+@^A/8:W=/ 8:W=                          ! Test: 8:W !
+
+9:W - 255 [["N]]                        ! Test: 9:W !
+
+[[exit]]

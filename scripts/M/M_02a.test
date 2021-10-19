@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Execute macro without required n arg. !
+!  Command: M !
+!     TECO: ?NAU !
+
+[[enter]]
+
+@^UA/U.A/
+
+MA                                      ! Test: M w/o n !
+
+[[exit]]

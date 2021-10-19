@@ -1,0 +1,31 @@
+! Smoke test for TECO text editor !
+
+! Function: Close output file after EB !
+!  Command: EF !
+!     TECO: PASS !
+
+[[enter]]
+
+:@EW"[[in1]]" [["U]]                    ! Open file for write !
+
+@I/abcdef/                              ! Add some data !
+
+EC                                      ! Write data and close file !
+
+:@EB"[[in1]]" [["U]] Y                  ! Open file for backup !
+
+@I/123456/
+
+EF                                      ! Test: close file !
+
+Z [["U]]
+
+HK
+
+:@ER"[[in1]]" [["U]] Y                  ! Open file for read !
+
+0J
+
+Z [["N]]
+
+[[exit]]

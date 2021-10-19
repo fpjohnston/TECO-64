@@ -1,0 +1,14 @@
+! Smoke test for TECO text editor !
+
+! Function: Test tag in command file !
+!  Command: bang !
+!  TECO-64: PASS !
+
+[[enter]]
+
+0,32 E1
+
+! Test: tag in command string !
+!! Test: tag in command string
+
+[[PASS]]

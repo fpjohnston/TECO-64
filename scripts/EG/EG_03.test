@@ -1,0 +1,12 @@
+! Smoke test for TECO text editor !
+
+! Function: Read environment variables !
+!  Command: :EG !
+!  TECO-32: PASS !
+
+[[enter]]
+
+:@EG/VTE/ [["U]]                            ! Test: get TECO_VTEDIT environment variable !
+:G* [[^T]]
+
+[[exit]]

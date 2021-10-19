@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Exit iteration on search success !
+!  Command: :; !
+!     TECO: PASS !
+
+[[enter]]
+
+@I/foo/ [[I]]
+
+0J
+
+1 < @S/foo/:; [[FAIL]] >                ! Test: loop w/ @S//:; !
+
+[[exit]]

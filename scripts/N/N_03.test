@@ -1,0 +1,30 @@
+! Smoke test for TECO text editor !
+
+! Function: Non-stop backward search !
+!  Command: -N !
+!  TECO-32: PASS !
+
+[[enter]]
+
+@I/'Twas /    [[I]] 12@I//
+@I/brillig, / [[I]] 12@I//
+@I/and /      [[I]] 12@I//
+@I/the /      [[I]] 12@I//
+@I/slithy /   [[I]] 12@I//
+@I/All/       [[I]] 12@I//
+@I/mimsy/     [[I]] 12@I//
+@I/were/      [[I]] 12@I//
+@I/the/       [[I]] 12@I//
+@I/borogoves/ [[I]] 12@I//
+
+:@EW"[[out1]]" [["U]]
+
+EC HK
+
+:@EB"[[out1]]" [["U]]
+
+10 P
+
+-:@N/slithy/ [["U]]                         ! Test: -N !
+
+[[exit]]

@@ -1,9 +1,0 @@
-! TECO test: Exit iteration on search failure w/ :; !
-! Requires: TECO !
-! Expects: PASS !
-
-[[enter]]
-
-1 < @S/baz/; [[FAIL]] >                 ! Test: loop w/ @S//; !
-
-[[exit]]

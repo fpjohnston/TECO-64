@@ -1,0 +1,55 @@
+! Smoke test for TECO text editor !
+
+! Function: Test digits !
+!  Command: 0-9 !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/Testing base 10/ ^D [[^T]]
+
+^D 10^R
+
+ 00 UA QA:= ^^ ^T                       ! Test: positive decimal digits !
+ 11 UA QA:= ^^ ^T
+ 22 UA QA:= ^^ ^T
+ 33 UA QA:= ^^ ^T
+ 44 UA QA:= ^^ ^T
+ 55 UA QA:= ^^ ^T
+ 66 UA QA:= ^^ ^T
+ 77 UA QA:= ^^ ^T
+ 88 UA QA:= ^^ ^T
+ 99 UA QA:= ^^ ^T
+ -1 UA QA=                              ! Test: negative no. in base 10 !
+
+@^A/Testing base 8/ ^D [[^T]]
+
+^D 8^R
+
+ 00 UA QA:== ^^ ^T                      ! Test: positive octal digits !
+ 11 UA QA:== ^^ ^T
+ 22 UA QA:== ^^ ^T
+ 33 UA QA:== ^^ ^T
+ 44 UA QA:== ^^ ^T
+ 55 UA QA:== ^^ ^T
+ 66 UA QA:== ^^ ^T
+ 77 UA QA:== ^^ ^T
+ -1 UA QA==                             ! Test: negative no. in base 8 !
+
+@^A/Testing base 16/ ^D [[^T]]
+
+^D 16^R
+
+ 00 UA QA:=== ^^ ^T                     ! Test: positive hexadecimal digits !
+ 11 UA QA:=== ^^ ^T
+ 22 UA QA:=== ^^ ^T
+ 33 UA QA:=== ^^ ^T
+ 44 UA QA:=== ^^ ^T
+ 55 UA QA:=== ^^ ^T
+ 66 UA QA:=== ^^ ^T
+ 77 UA QA:=== ^^ ^T
+ 88 UA QA:=== ^^ ^T
+ 99 UA QA:=== ^^ ^T
+ -1 UA QA===                            ! Test: negative no. in base 16 !
+
+[[exit]]

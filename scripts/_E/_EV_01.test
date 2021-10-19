@@ -1,0 +1,25 @@
+! Smoke test for TECO text editor !
+
+! Function: Match lower case character !
+!  Command: ^EV !
+!     TECO: PASS !
+
+[[enter]]
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0 J
+
+128 <
+    ::@S/^EV/ "S                        ! Test: ^EV !
+        -1A ^T
+    |
+        C
+    '
+>
+
+[[^T]]
+
+[[exit]]

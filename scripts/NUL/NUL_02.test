@@ -1,0 +1,21 @@
+! Smoke test for TECO text editor !
+
+! Function: Test NUL characters in command files !
+!  Command: NUL !
+!     TECO: PASS !
+
+[[enter]]
+
+! Test: NUL characters in command files !
+
+!NUL!
+
+@^A/hello, /
+
+!NUL!
+
+@^A/world!/
+
+!NUL!
+
+[[exit]]

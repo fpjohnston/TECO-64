@@ -1,0 +1,17 @@
+! Smoke test for TECO text editor !
+
+! Function: Map key to Q-register !
+!  Command: FQ, @FQ !
+!  TECO-64: PASS !
+
+[[enter]]
+
+FQAF1                             ! Test: map key to Q-register A !
+
+@FQZ/F2/                            ! Test: map key to Q-register Z !
+
+@FQ0/F3/                            ! Test: map key to Q-register 0 !
+
+@FQ9/F4/                            ! Test: map key to Q-register 9 !
+
+[[exit]]

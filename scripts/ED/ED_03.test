@@ -1,0 +1,21 @@
+! Smoke test for TECO text editor !
+
+! Function: Test edit level flag !
+!  Command: ED&16 !
+!     TECO: PASS !
+
+[[enter]]
+
+@I/123 456 789/
+
+ED=                                 ! Test: ED= !
+
+16,0 ED                             ! Test: ED&16 !
+
+0J 6C :@S/xyz/ . [["N]]
+
+0,16 ED                             ! Test: ED&16 !
+
+0J 6C :@S/xyz/ .-6 [["N]]
+
+[[exit]]

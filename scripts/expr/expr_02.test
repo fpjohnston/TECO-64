@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Push excessive values !
+!  Command: (misc.) !
+!     TECO: ?PDO !
+
+[[enter]]
+
+(64 + 1) UA     ! No. of values we'll push on expression stack !
+
+QA < :@^UA/123 / MA >               ! Test: push numeric values !
+
+[[exit]]

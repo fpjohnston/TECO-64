@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Delete lines !
+!  Command: K !
+!     TECO: ?POP !
+
+[[enter]]
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+
+0,100K                              ! Test: m,nK !

@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Map key to macro !
+!  Command: FM !
+!  TECO-64: PASS !
+
+[[enter]]
+
+@FM/F1/EX/                          ! Test: map key to command !
+
+@FM/F1//                            ! Test: unmap key !
+
+[[exit]]

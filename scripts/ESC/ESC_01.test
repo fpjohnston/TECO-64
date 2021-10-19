@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Test ESCapes in command string !
+!  Command: ESC !
+!    <TECO: PASS !
+
+[[enter]]
+
+@^A/hello, world!/ [[^T]]
+
+! Test: ESCape in command string !
+
+[[exit]]

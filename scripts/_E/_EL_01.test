@@ -1,0 +1,25 @@
+! Smoke test for TECO text editor !
+
+! Function: Match line terminator character !
+!  Command: ^EL !
+!     TECO: PASS !
+
+[[enter]]
+
+0 UA
+
+128 < %A-1 @I// > 10@I//
+
+0 J
+
+128 <
+    ::@S/^EL/ "S                        ! Test: ^EL !
+        -1A:= ^^ ^T
+    |
+        C
+    '
+>
+
+[[^T]]
+
+[[exit]]

@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Exit TECO after ER !
+!  Command: EX !
+!     TECO: PASS !
+
+[[enter]]
+
+@EB"[[in1]]"                        ! Open the file for backup !
+
+@I/abcdef/
+
+[[PASS]]
+
+EX                                  ! Test: EX w/ data in edit buffer !

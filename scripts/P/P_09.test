@@ -1,0 +1,30 @@
+! Smoke test for TECO text editor !
+
+! Function: Write contents of edit buffer !
+!  Command: PW !
+!     TECO: PASS !
+
+[[enter]]
+
+@I/page 1/ 12@I//
+@I/page 2/ 12@I//
+@I/page 3/ 12@I//
+
+:@EW"[[out1]]" [["U]]
+
+EC
+
+:@EB"[[out1]]" [["U]]
+
+EY EY
+
+PW                                  ! Test: PW !
+PW                                  ! Test: PW !
+
+EF HK EC
+
+:@ER"[[out1]]" [["U]] < :A; >
+
+HT
+
+[[exit]]

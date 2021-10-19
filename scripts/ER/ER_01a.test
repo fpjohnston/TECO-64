@@ -1,0 +1,12 @@
+! Smoke test for TECO text editor !
+
+! Function: Open file for reading !
+!  Command: ER !
+!     TECO: PASS !
+
+[[enter]]
+
+ER[[in1]]                             ! Test: open file for reading !
+
+[[exit]]
+

@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Flow to end of conditional !
+!  Command: F' !
+!     TECO: PASS !
+
+[[enter]]
+
+0 "E F' [[FAIL]] '                      ! Test: F' after " !
+
+0 "E F' [[FAIL]] | MF '                 ! Test: F' after " and before | !
+
+0 "N | F' [[FAIL]] '                    ! Test: F' after | !
+
+[[exit]]

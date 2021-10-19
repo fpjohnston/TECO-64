@@ -1,0 +1,12 @@
+! Smoke test for TECO text editor !
+
+! Function: Test tag in command string !
+!  Command: bang !
+!    <TECO: PASS !
+
+[[enter]]
+
+! Test: tag in command string !
+! Test: tag in command string !
+
+[[exit]]

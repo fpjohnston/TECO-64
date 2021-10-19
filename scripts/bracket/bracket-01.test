@@ -1,9 +1,0 @@
-! TECO test: Push maximum Q-registers w/ [ !
-! Requires: TECO !
-! Expects: PASS !
-
-[[enter]]
-
-64 < [A >                           ! Test: maximum Q-register pushes !
-
-[[exit]]

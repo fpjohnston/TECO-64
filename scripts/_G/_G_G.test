@@ -1,13 +1,14 @@
-! TECO test: Cancel all input lines w/ ^G^G !
-! Requires: TECO !
-! Expects: PASS [_G_G.txt] !
+! Smoke test for TECO text editor !
+
+! Function: Cancel all input lines !
+!  Command: ^G^G !
+!    <TECO: PASS !
 
 [[enter]]
-
 
+!START!
 iabc
 def
 ghi                             ! Test: cancel all input lines !
-
 
 [[exit]]

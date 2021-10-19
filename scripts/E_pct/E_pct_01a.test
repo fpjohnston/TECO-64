@@ -1,0 +1,14 @@
+! Smoke test for TECO text editor !
+
+! Function: Write Q-register to file !
+!  Command: E% !
+!  TECO-10: PASS !
+
+[[enter]]
+
+@I/hello, world!/ [[I]]
+HXB HK
+
+E%B[[out1]]                           ! Test: E^q !
+
+[[exit]]

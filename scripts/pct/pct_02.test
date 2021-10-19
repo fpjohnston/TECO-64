@@ -1,0 +1,19 @@
+! Smoke test for TECO text editor !
+
+! Function: Increment Q-register !
+!  Command: :% !
+!  TECO-64: PASS !
+
+[[enter]]
+
+0,1024 E1
+
+0 UA
+
+:%A + 123 UB (QB - 123) [["N]]   ! Test: :% !
+
+42:%A + 456 UB (QB - 456) ! Test: n:% !
+
+@^A/QA=/ QA=
+
+[[exit]]

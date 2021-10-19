@@ -1,0 +1,24 @@
+! Smoke test for TECO text editor !
+
+! Function: Test string building characters !
+!  Command: (mix) !
+!  TECO-10: PASS !
+
+[[enter]]
+
+@^UA/baz/
+^^x UA
+
+:@ER/foo/
+
+HK G* 0J ::@S/foo/ [["U]] Z-3 [["N]]
+
+:@ER/^V^VXYZ/                       ! Test: ^V^V !
+
+HK G* 0J ::@S/xyz/ [["U]] Z-3 [["N]]
+
+:@ER/^W^Wabc/                       ! Test: ^W^W !
+
+HK G* 0J ::@S/ABC/ [["U]] Z-3 [["N]]
+
+[[exit]]

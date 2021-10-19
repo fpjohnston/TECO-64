@@ -1,0 +1,19 @@
+! Smoke test for TECO text editor !
+
+! Function: Print last search string !
+!  Command: :G_ !
+!     TECO: PASS !
+
+[[enter]]
+
+0 U.A
+
+:@S/frumious bandersnatch/
+
+@^A/:G_ = /
+
+:G_                                 ! Test: :G_ !
+
+[[^T]]
+
+[[exit]]

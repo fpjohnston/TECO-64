@@ -1,0 +1,27 @@
+! Smoke test for TECO text editor !
+
+! Function: Local search backward !
+!  Command: -S !
+!     TECO: PASS !
+
+[[enter]] 
+
+0UA
+
+10 <
+    @I/line /
+    %A \
+    @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
+    13@I// 10@I//
+>
+
+ZJ
+
+@-S/abc/ .=                         ! Test: -S !
+@-1S/abc/ .=                        ! Test: -1S !
+@-2S/abc/ .=                        ! Test: -2S !
+@-3S/abc/ .=                        ! Test: -3S !
+
+@-S/line 1/ .=                      ! Test: -S !
+
+[[exit]]

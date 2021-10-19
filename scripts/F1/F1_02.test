@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Set command region colors !
+!  Command: F1 !
+!  TECO-64: ?DPY !
+
+[[enter]]
+
+0,2 E1
+
+@F1 {FOOBAR} {white}                ! Test: F1 !
+
+[[exit]]

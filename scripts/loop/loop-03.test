@@ -1,9 +1,0 @@
-! TECO test: Test start of loop without end w/ < !
-! Requires: TECO !
-! Expects: ?MRA !
-
-[[enter]]
-
-! Test: < w/o > !
-
-<

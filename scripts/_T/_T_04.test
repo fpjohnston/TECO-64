@@ -1,0 +1,27 @@
+! Smoke test for TECO text editor !
+
+! Function: Type out 8-bit binary characters !
+!  Command: n:^T !
+!     TECO: PASS !
+
+[[enter]]
+
+[[-8]]                                  ! Say we can't handle 8-bit chrs. !
+
+^^H+128 :^T                             ! Test: n:T w/ n > 128 !
+^^e+128 :^T
+^^l+128 :^T
+^^l+128 :^T
+^^o+128 :^T
+^^,+128 :^T
+^^ +128 :^T
+^^w+128 :^T
+^^o+128 :^T
+^^r+128 :^T
+^^l+128 :^T
+^^d+128 :^T
+^^!+128 :^T
+
+[[^T]]
+
+[[exit]]

@@ -1,0 +1,9 @@
+! Smoke test for TECO text editor !
+
+! Function: Exit TECO and go !
+!  Command: EG !
+!  TECO-32: PASS !
+
+[[enter]]
+
+@EG/echo "hello, world!\n!PASS!"/       ! Test: execute system command and exit !

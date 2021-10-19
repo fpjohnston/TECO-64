@@ -1,0 +1,14 @@
+! Smoke test for TECO text editor !
+
+! Function: Test octal digits !
+!  Command: 8 !
+!     TECO: ?ILN !
+
+[[enter]]
+
+@^A/Testing base 8/
+
+^D 8^R
+
+ 88 UA                              ! Test: 8 in base 8 !
+

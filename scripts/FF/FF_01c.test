@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Map command string to CTRL/F sequence !
+!  Command: @FF !
+!  TECO-64: ?INA !
+
+[[enter]]
+
+^^Z@FF/BAZ/                         ! Test: map commands to <CTRL/F>Z !
+
+[[exit]]

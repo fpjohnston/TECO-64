@@ -1,0 +1,36 @@
+! Smoke test for TECO text editor !
+
+! Function: Append text to edit buffer !
+!  Command: A !
+!     TECO: PASS !
+
+[[enter]]
+
+0 UA
+4 UI
+5 UJ
+
+QI <
+    QJ <
+        . UC
+        %A UB QA-10 "L 32@I// ' QA \
+        @I/ abcdefghijklmnopqrstuvwxyz0123456789/
+        [[I]]
+        .-QC UL
+    >
+    12@I//
+>
+
+:@EW"[[out1]]" [["U]]
+EC
+
+:@ER"[[out1]]" [["U]]
+
+A                                   ! Test: append 1st page to buffer !
+A                                   ! Test: append 2nd page to buffer !
+
+Z-(QJ * QL * 2) [["N]]
+
+HT
+
+[[exit]]

@@ -1,9 +1,0 @@
-! TECO test: Map key to macro w/ FM !
-! Requires: TECO-64 !
-! Expects: ?KEY !
-
-[[enter]]
-
-@FM/BAZ/EX/                         ! Test: map key to command !
-
-[[exit]]

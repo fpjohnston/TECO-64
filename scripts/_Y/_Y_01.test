@@ -1,0 +1,41 @@
+! Smoke test for TECO text editor !
+
+! Function: Test CTRL/Y flag !
+!  Command: ^Y !
+!     TECO: PASS !
+
+[[enter]]
+
+@I/abcdef
+/
+
+^Y UC UB                            ! Test: ^Y after I command !
+^S UA
+
+@^A/.=/ .:= @^A/, QA=/ QA:= @^A/, QB=/ QB:= @^A/, QC=/ QC=
+
+.+QA-QB [["N]]
+
+0J
+
+:@S/cde/ [["U]]
+
+^Y UC UB                            ! Test: ^Y after S command !
+^S UA
+
+@^A/.=/ .:= @^A/, QA=/ QA:= @^A/, QB=/ QB:= @^A/, QC=/ QC=
+
+.+QA-QB [["N]]
+
+@^UA/Jabberwocky/
+
+GA
+
+^Y UC UB                            ! Test: ^Y after G command !
+^S UA
+
+@^A/.=/ .:= @^A/, QA=/ QA:= @^A/, QB=/ QB:= @^A/, QC=/ QC=
+
+.+QA-QB [["N]]
+
+[[exit]]

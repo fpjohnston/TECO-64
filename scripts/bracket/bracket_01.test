@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Push maximum Q-registers !
+!  Command: [ !
+!     TECO: PASS !
+
+[[enter]]
+
+64 < [A >                           ! Test: maximum Q-register pushes !
+
+[[exit]]

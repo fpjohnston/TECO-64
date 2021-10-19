@@ -1,0 +1,14 @@
+! Smoke test for TECO text editor !
+
+! Function: Test help level flag !
+!  Command: 15EH !
+! <TECO-64: ?POP !
+
+[[enter]]
+
+15 EH                               ! Test: error message, including line no. !
+EH=
+@I/
+    
+/
+ZJ C                                ! Force POP error !

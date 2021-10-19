@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Local search forward !
+!  Command: @S !
+!     TECO: PASS !
+
+[[enter]] 
+
+@I/abcdefghijklmnopqrstuvwxyz 0123456789/ 13@I// 10@I//
+
+0J
+
+@S/xyz/                             ! Test: @S// !
+
+[[exit]]

@@ -1,0 +1,33 @@
+! Smoke test for TECO text editor !
+
+! Function: Map command string to sequence !
+!  Command: :@FQ !
+!  TECO-64: PASS !
+
+[[enter]]
+
+^^0:@FF/F1/ [["U]]                          ! Test: map command string to <CTRL/F>0 !
+
+^^1:@FF/F1/ [["U]]                          ! Test: map command string to <CTRL/F>1 !
+
+^^2:@FF/F1/ [["U]]                          ! Test: map command string to <CTRL/F>2 !
+
+^^3:@FF/F1/ [["U]]                          ! Test: map command string to <CTRL/F>3 !
+
+^^4:@FF/F1/ [["U]]                          ! Test: map command string to <CTRL/F>4 !
+
+^^5:@FF/F1/ [["U]]                          ! Test: map command string to <CTRL/F>5 !
+
+^^6:@FF/F1/ [["U]]                          ! Test: map command string to <CTRL/F>6 !
+
+^^7:@FF/F1/ [["U]]                          ! Test: map command string to <CTRL/F>7 !
+
+^^8:@FF/F1/ [["U]]                          ! Test: map command string to <CTRL/F>8 !
+
+^^9:@FF/F1/ [["U]]                          ! Test: map command string to <CTRL/F>9 !
+
+^^/:@FF/F1/ [["S]]                          ! Test: map command string to <CTRL/F>/ !
+
+^^::@FF/F1/ [["S]]                          ! Test: map command string to <CTRL/F>: !
+
+[[exit]]

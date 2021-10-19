@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Open log file !
+!  Command: EL !
+!  TECO-10: PASS !
+
+[[enter]]
+
+EL[[out1]]                            ! Test: open log file !
+
+EL                                    ! Test: close log file !
+
+[[exit]]

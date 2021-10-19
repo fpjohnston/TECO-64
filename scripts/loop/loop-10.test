@@ -1,9 +1,0 @@
-! TECO test: Exit iteration if negative w/ n:; !
-! Requires: TECO !
-! Expects: PASS !
-
-[[enter]]
-
-1 < -1:; [[FAIL]] >                     ! Test: loop w/ -1:; !
-
-[[exit]]

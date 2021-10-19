@@ -1,0 +1,71 @@
+! Smoke test for TECO text editor !
+
+! Function: Test extended digit format !
+!  Command: 0-f (digits) !
+!  TECO-64: PASS !
+
+[[enter]]
+
+0,128 E1
+
+@^A/Testing base 10/ ^D [[^T]]
+
+( 00) UA QA:= ^^ ^T                     ! Test: all decimal digits !
+( 11) UA QA:= ^^ ^T
+( 22) UA QA:= ^^ ^T
+( 33) UA QA:= ^^ ^T
+( 44) UA QA:= ^^ ^T
+( 55) UA QA:= ^^ ^T
+( 66) UA QA:= ^^ ^T
+( 77) UA QA:= ^^ ^T
+( 88) UA QA:= ^^ ^T
+( 99) UA QA=
+
+@^A/Testing base 8/ ^D [[^T]]
+
+(000) UA QA:== ^^ ^T                    ! Test: all octal digits !
+(011) UA QA:== ^^ ^T
+(022) UA QA:== ^^ ^T
+(033) UA QA:== ^^ ^T
+(044) UA QA:== ^^ ^T
+(055) UA QA:== ^^ ^T
+(066) UA QA:== ^^ ^T
+(077) UA QA==
+
+@^A/Testing base 16/ ^D [[^T]]
+
+(0x00) UA QA:=== ^^ ^T                  ! Test: all hexadecimal digits !
+(0x11) UA QA:=== ^^ ^T
+(0x22) UA QA:=== ^^ ^T
+(0x33) UA QA:=== ^^ ^T
+(0x44) UA QA:=== ^^ ^T
+(0x55) UA QA:=== ^^ ^T
+(0x66) UA QA:=== ^^ ^T
+(0x77) UA QA:=== ^^ ^T
+(0x88) UA QA:=== ^^ ^T
+(0x99) UA QA:=== ^^ ^T
+(0xaa) UA QA:=== ^^ ^T
+(0xbb) UA QA:=== ^^ ^T
+(0xcc) UA QA:=== ^^ ^T
+(0xdd) UA QA:=== ^^ ^T
+(0xee) UA QA:=== ^^ ^T
+(0xff) UA QA===
+
+(0X00) UA QA:=== ^^ ^T
+(0X11) UA QA:=== ^^ ^T
+(0X22) UA QA:=== ^^ ^T
+(0X33) UA QA:=== ^^ ^T
+(0X44) UA QA:=== ^^ ^T
+(0X55) UA QA:=== ^^ ^T
+(0X66) UA QA:=== ^^ ^T
+(0X77) UA QA:=== ^^ ^T
+(0X88) UA QA:=== ^^ ^T
+(0X99) UA QA:=== ^^ ^T
+(0Xaa) UA QA:=== ^^ ^T
+(0Xbb) UA QA:=== ^^ ^T
+(0Xcc) UA QA:=== ^^ ^T
+(0Xdd) UA QA:=== ^^ ^T
+(0Xee) UA QA:=== ^^ ^T
+(0Xff) UA QA===
+
+[[exit]]

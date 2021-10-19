@@ -1,0 +1,39 @@
+! Smoke test for TECO text editor !
+
+! Function: Test search mode flag !
+!  Command: 1^X !
+!  TECO-64: PASS !
+
+[[enter]]
+
+! Try to match lower case letters (and special characters) !
+
+@I/`abcdefghijklmnopqrstuvwxyz|||~/
+
+1 ^X                                ! Test: 1^X !
+
+0J ^^@ UA
+
+:@S/^EUA/ [["S]] %A
+
+26 < :@S/^EUA/ [["U]] %A >
+
+5 < :@S/^EUA/ [["S]] %A >
+
+HK
+
+! Try to match upper case letters (and special characters) !
+
+@I/@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^/
+
+1 ^X                                ! Test: 1^X !
+
+0J ^^` UA
+
+:@S/^EUA/ [["S]] %A
+
+26 < :@S/^EUA/ [["U]] %A >
+
+5 < :@S/^EUA/ [["S]] %A >
+
+[[exit]]
