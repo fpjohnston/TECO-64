@@ -111,7 +111,7 @@ my %tokens   = (
         'PASS'  => qq{@^A/!PASS!/ [[^T]]},
         'Q'     =>  q{21},
         '"S'    =>  q{"S [[FAIL]] '},
-        '^T'    =>  q{10^T},
+        '^T'    =>  q{13^T 10^T},
         '"U'    =>  q{"U [[FAIL]] '},
     },                
 );
@@ -436,6 +436,11 @@ sub find_log
     if ($expected)
     {
         $expected =~ s/\r//msg;
+
+        if ($expected =~ /!START! . (.+) /msx)
+        {
+            $expected = $1;
+        }
     }
 
     return $expected;
@@ -567,8 +572,18 @@ sub parse_script
 
     $outfile =~ s/ (.+) [.]tec /$1/msx;
 
-    my $report = sprintf '%-11s %-45s %-13s  (%2d)  %s ->', "$outfile",
-      $function, $command, $local_tests, $expects;
+    my $report = sprintf '%-11s %-45s %-13s', "$outfile", $function, $command;
+
+    if ($redirect)
+    {
+        $report .= sprintf '  <%2d>', $local_tests;
+    }
+    else
+    {
+        $report .= sprintf '  [%2d]', $local_tests;
+    }
+
+    $report .= sprintf '  %s ->', $expects;
 
     return ( $report, $text, $expects, $redirect );
 }
