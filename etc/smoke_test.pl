@@ -186,7 +186,7 @@ print "\n" if $verbose;
 printf "Found %u script%s in $indir, ", $nscripts, $nscripts == 1 ? q{} : 's';
 printf "skipped %u\n", $nskipped;
 printf "Created %u file%s in $outdir, ", $nfiles, $nfiles == 1 ? q{} : 's';
-printf "executed $ntests test%s\n", $ntests == 1 ? q{} : 's';
+printf "containing a total of $ntests test%s\n", $ntests == 1 ? q{} : 's';
 
 # Tell user which log files were superfluous
 
@@ -337,7 +337,7 @@ sub check_teco
     {
         ++$nskipped;
 
-        print "Skipping file: $infile\n" if $verbose;
+        print "Skipping $teco file: $infile\n" if $verbose;
 
         return;
     }
@@ -359,7 +359,11 @@ sub check_test
 {
     my ( $report, $expects, $actual, $expected ) = @_;
 
-    if ( $actual =~ / core \s dumped /imsx )
+    if ( $actual eq 'TIMEOUT' )
+    {
+        print "$report TIMEOUT\n";
+    }
+    elsif ( $actual =~ / core \s dumped /imsx )
     {
         # This is handled specially without regard to the desired result,
         # because it was found that some tests could complete successfully,
@@ -367,7 +371,7 @@ sub check_test
         # first check to see if there was an abort in the output, and only
         # then check for desired success or failure.
 
-        printf "%s ABORTED\n", $report;
+        print "$report ABORTED\n";
     }
     elsif ( $expects eq 'PASS' )
     {
@@ -383,6 +387,34 @@ sub check_test
     }
 
     return;
+}
+
+
+sub exec_test
+{
+    my ($command) = @_;
+    my $result = "";
+
+    eval {
+        local $SIG{ALRM} = sub { die "TECO alarm" };
+
+        alarm 2;                        # Should be long enough for any TECO test
+
+        $result = qx($command);
+
+        alarm 0;
+    };
+
+    alarm 0;                            # Race condition protection
+
+    if ($@ && $@ =~ "TECO alarm")
+    {
+        $result = "TIMEOUT";
+
+        qx/reset -I/;
+    }
+
+    return $result;
 }
 
 
@@ -575,8 +607,6 @@ sub run_test
             $teco = 'tecoc mung ' . $file . ' 2>&1';
         }
 
-        $actual = qx/$teco/;    # Execute command and capture output
-
         if ( $file =~ /^EG_\d\d[.]tec$/ms )
         {
             local $ENV{TEC_INIT}    = 'TECO_INIT';
@@ -584,11 +614,11 @@ sub run_test
             local $ENV{TEC_MEMORY}  = 'TECO_MEMORY';
             local $ENV{TEC_VTEDIT}  = 'TECO_VTEDIT';
 
-            $actual = qx/$teco/;    # Execute command and capture output
+            $actual = exec_test($teco);
         }
         else
         {
-            $actual = qx/$teco/;    # Execute command and capture output
+            $actual = exec_test($teco);
         }
 
         if ($actual =~ /core dumped/i)
@@ -618,11 +648,11 @@ sub run_test
             local $ENV{TECO_MEMORY}  = 'TECO_MEMORY';
             local $ENV{TECO_VTEDIT}  = 'TECO_VTEDIT';
 
-            $actual = qx/$teco/;    # Execute command and capture output
+            $actual = exec_test($teco);
         }
         else
         {
-            $actual = qx/$teco/;    # Execute command and capture output
+            $actual = exec_test($teco);
         }
     }
     else
