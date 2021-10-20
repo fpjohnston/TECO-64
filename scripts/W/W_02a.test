@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Set terminal width !
+!  Command: m,1:W !
+!     TECO: PASS !
+
+[[enter]]
+
+80,1:W UA QA - 80 [["N]]                ! Test: m,1:W !
+
+[[exit]]

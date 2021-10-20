@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Read hold mode indicator !
+!  Command: 5:W !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/5:W=/ 5:W=                          ! Test: 5:W !
+
+[[exit]]

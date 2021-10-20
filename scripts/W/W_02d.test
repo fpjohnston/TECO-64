@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Enable and disable scrolling regioin !
+!  Command: m,8:W !
+!     TECO: PASS !
+
+[[enter]]
+
+0,8:W UA  QA      [["N]]                ! Test: m,8:W !
+
+-1,8:W UA QA +  1 [["N]]                ! Test: m,8:W !
+
+[[exit]]

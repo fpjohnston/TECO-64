@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Read terminal width !
+!  Command: 1:W !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/1:W=/ 1:W=                          ! Test: 1:W !
+
+[[exit]]

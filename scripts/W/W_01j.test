@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Read scrolling region status !
+!  Command: 8:W !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/8:W=/ 8:W=                          ! Test: 8:W !
+
+[[exit]]

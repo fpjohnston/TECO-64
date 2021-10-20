@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Read mark status !
+!  Command: 4:W !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/4:W=/ 4:W=                          ! Test: 4:W !
+
+[[exit]]

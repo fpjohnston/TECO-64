@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Set size of scrolling region !
+!  Command: m,7:W !
+!     TECO: PASS !
+
+[[enter]]
+
+5,7:W UA  QA -  5 [["N]]                ! Test: m,7:W !
+
+10,7:W UA QA - 10 [["N]]                ! Test: m,7:W !
+
+[[exit]]

@@ -2,7 +2,7 @@
 
 ! Function: Read display mode parameters !
 !  Command: n:W !
-!     TECO: PASS !
+!  TECO-64: PASS !
 
 [[enter]]
 

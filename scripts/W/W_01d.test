@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Read terminal height !
+!  Command: 2:W !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/2:W=/ 2:W=                          ! Test: 2:W !
+
+[[exit]]

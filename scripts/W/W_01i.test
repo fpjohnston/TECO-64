@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Read size of scrolling region !
+!  Command: 7:W !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/7:W=/ 7:W=                          ! Test: 7:W !
+
+[[exit]]

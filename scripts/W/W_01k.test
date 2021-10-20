@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Read terminal flag !
+!  Command: 9:W !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/9:W=/ 9:W=                          ! Test: 9:W !
+
+[[exit]]

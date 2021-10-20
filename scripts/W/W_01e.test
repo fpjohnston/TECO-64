@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Read SEEALL parameter !
+!  Command: 3:W !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/3:W=/ 3:W=                          ! Test: 3:W !
+
+[[exit]]

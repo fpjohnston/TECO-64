@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Read position in upper left corner !
+!  Command: 6:W !
+!     TECO: PASS !
+
+[[enter]]
+
+@^A/6:W=/ 6:W=                          ! Test: 6:W !
+
+[[exit]]
