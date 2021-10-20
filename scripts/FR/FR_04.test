@@ -1,7 +1,7 @@
 ! Smoke test for TECO text editor !
 
 ! Function: Delete and replace !
-!  Command: m,n@FR !
+!  Command: m,nFR !
 !     TECO: PASS !
 
 [[enter]]
@@ -47,7 +47,7 @@ All mimsy were the borogoves,
 
 0J
 
-669,675 @FR/ADAMANTIUM/             ! Test: m,n@FR// !
+669,675 FRADAMANTIUM                  ! Test: m,nFR !
 
 HT
 
