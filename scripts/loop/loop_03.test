@@ -2,10 +2,12 @@
 
 ! Function: Test start of loop without end !
 !  Command: < !
-!  TECO-32: ?MRA !
+!     TECO: ?MRA !
 
 [[enter]]
 
 ! Test: < w/o > !
 
 <
+
+[[FAIL]]
