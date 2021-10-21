@@ -2,10 +2,10 @@
 
 ! Function: Test help level flag !
 !  Command: 3EH !
-!    <TECO: ?POP !
+!     TECO: ?POP !
 
 [[enter]]
 
-3 EH
-EH=                                 ! Test: verbose error message !
-ZJ C
+3 EH                                    ! Test: verbose error message !
+EH=
+ZJ C                                ! Force POP error !

@@ -1,8 +1,2 @@
-*HK 0,128ET 0E1 1,0E3$$
-****2 EH
-EH=                                 ! Test: standard error message !
-ZJ C                                ! Force POP error !
-$$
 2
 ?POP   Attempt to move pointer off page with 'C'
-*

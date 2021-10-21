@@ -1,8 +1,2 @@
-*HK 0,128ET 0E1 1,0E3$$
-****1 EH                                ! Test: minimal error message !
-EH=
-ZJ C                                ! Force POP error !
-$$
 1
 ?POP
-*

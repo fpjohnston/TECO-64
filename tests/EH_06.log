@@ -1,21 +1,6 @@
-*HK 0,128ET 0E1 1,0E3$$
-****15 EH                               ! Test: error message, including line no. !
-EH=
-@I/
-    
-/
-ZJ C                                ! Force POP error !
-$$
 15
-?POP   Attempt to move pointer off page with 'C' in command at line 6
+?POP   Attempt to move pointer off page with 'C' in macro at line 9
      A J, C or R command has been executed which attempted to move the pointer
      off the page. The result of executing one of these commands must leave the
      pointer between 0 and Z, The characters referenced by a D or nA command must
      also be within the buffer limits.
-15 EH                               ! Test: error message, including line no. !
-EH=
-@I/
-    
-/
-ZJ C                                ! Force POP error !
-$$*

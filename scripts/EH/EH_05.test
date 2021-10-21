@@ -6,6 +6,6 @@
 
 [[enter]]
 
-7 EH                                ! Test: error message + failing command !
+7 EH                                    ! Test: error message + failing command !
 EH=
-ZJ C                                ! Force POP error !
+ZJ C                                ! Force POP error !
