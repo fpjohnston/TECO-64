@@ -67,7 +67,7 @@ my %tokens   = (
         'bad'   =>  q{/dev/teco},
         'cmd1'  =>  q{cmd_1.tmp},
         'cmd2'  =>  q{cmd_2.tmp},
-        'enter' =>  q{HK 0,128ET 0E1 1,0E3},
+        'enter' =>  q{0,128ET HK 0E1 1,0E3},
         '"E'    =>  q{"E [[FAIL]] '},
         'error' => qq{@^A/!FAIL!/ [[^T]]},
         'exit'  =>  q{^D EK HK [[PASS]] EX},
@@ -93,7 +93,7 @@ my %tokens   = (
         'bad'   =>  q{/dev/teco},
         'cmd1'  =>  q{cmd_1.tmp},
         'cmd2'  =>  q{cmd_2.tmp},
-        'enter' =>  q{HK 0,128ET},
+        'enter' =>  q{0,128ET HK},
         '"E'    =>  q{"E [[FAIL]] '},
         'error' => qq{@^A/!FAIL!/ [[^T]]},
         'exit'  =>  q{^D EK HK [[PASS]] EX},
@@ -164,6 +164,15 @@ foreach my $file ( sort { uc $a cmp uc $b } keys %scripts )
 
         my $actual   = run_test( $outfile, $report, $expects, $redirect );
         my $expected = find_log($outfile);
+
+        if ($expected)
+        {
+            $report .= ' =>';
+        }
+        else
+        {
+            $report .= ' ->';
+        }
 
         check_test( $report, $expects, $actual, $expected );
 
@@ -457,7 +466,7 @@ sub initialize
         'clean!'   => \$clean,
         'execute!' => \$execute,
         'orphans!' => \$orphans,
-        'target=s' => \$target,
+        'teco=s'   => \$target,
         'verbose'  => \$verbose,
     );
 
@@ -465,6 +474,9 @@ sub initialize
     croak 'Missing output directory' if $#ARGV + 1 == 1;
 
     my %targets = (
+        '32'      => 'TECO-32',
+        '64'      => 'TECO-64',
+        'C'       => 'TECO C',
         'TECOC'   => 'TECO C',
         'TECO32'  => 'TECO-32',
         'TECO-32' => 'TECO-32',
@@ -583,7 +595,7 @@ sub parse_script
         $report .= sprintf '  [%2d]', $local_tests;
     }
 
-    $report .= sprintf '  %s ->', $expects;
+    $report .= sprintf '  %s', $expects;
 
     return ( $report, $text, $expects, $redirect );
 }
@@ -608,19 +620,23 @@ sub run_test
 
     close $fh;
 
-    my $teco;
+    my $command;
     my $actual;
 
     if ( $target eq 'TECO C' )
     {
+        $command = 'tecoc ';
+
         if ($redirect)
         {
-            $teco = 'tecoc < ' . $file . ' 2>&1';
+            $command .= '< ';
         }
         else
         {
-            $teco = 'tecoc mung ' . $file . ' 2>&1';
+            $command .= 'mung ';
         }
+
+        $command .= "$file 2>&1";
 
         if ( $file =~ /^EG_\d\d[.]tec$/ms )
         {
@@ -629,11 +645,11 @@ sub run_test
             local $ENV{TEC_MEMORY}  = 'TECO_MEMORY';
             local $ENV{TEC_VTEDIT}  = 'TECO_VTEDIT';
 
-            $actual = exec_test($teco);
+            $actual = exec_test($command);
         }
         else
         {
-            $actual = exec_test($teco);
+            $actual = exec_test($command);
         }
 
         if ($actual =~ /core dumped/i)
@@ -643,18 +659,22 @@ sub run_test
     }
     elsif ( $target eq 'TECO-32' )
     {
-        croak "$target target not implemented yet";
+        croak "$target target not yet implemented";
     }
     elsif ( $target eq 'TECO-64' )
     {
+        $command = 'teco -n ';
+
         if ($redirect)
         {
-            $teco = 'teco -n -I"\'0,128ET\'" < ' . $file . ' 2>&1';
+            $command .= '< ';
         }
         else
         {
-            $teco = 'mungx -n -I"\'0,128ET\'" ' . $file . ' 2>&1';
+            $command .= '--mung -X ';
         }
+
+        $command .= "$file 2>&1";
 
         if ( $file =~ /^EG_\d\d[.]tec$/ms )
         {
@@ -663,11 +683,11 @@ sub run_test
             local $ENV{TECO_MEMORY}  = 'TECO_MEMORY';
             local $ENV{TECO_VTEDIT}  = 'TECO_VTEDIT';
 
-            $actual = exec_test($teco);
+            $actual = exec_test($command);
         }
         else
         {
-            $actual = exec_test($teco);
+            $actual = exec_test($command);
         }
     }
     else
