@@ -407,7 +407,7 @@ sub exec_test
     eval {
         local $SIG{ALRM} = sub { die "TECO alarm" };
 
-        alarm 2;                        # Should be long enough for any TECO test
+        alarm 1;                        # Should be long enough for any TECO test
 
         $result = qx($command);
 
