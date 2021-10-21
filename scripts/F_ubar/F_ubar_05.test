@@ -1,8 +1,8 @@
 ! Smoke test for TECO text editor !
 
 ! Function: Destructive forward search and replace !
-!  Command: nF_ !
-!     TECO: PASS !
+!  Command: F_ !
+!     TECO: ?YCA !
 
 [[enter]]
 
@@ -21,9 +21,9 @@ EC
 
 :@EB"[[out1]]" [["U]]
 
-0,2 ED
+2,0 ED
 
-4:@F_/klmnop/--- FOO ---/ [["U]]        ! Test: nF_ !
+5:@F_/klmnop/--- FOO ---/ [["U]]        ! Test: F_ w/ yank protection !
 
 EC
 

@@ -1,6 +1,6 @@
 ! Smoke test for TECO text editor !
 
-! Function: Non-stop forward search and replace !
+! Function: Destructive backward search and replace !
 !  Command: -F_ !
 !  TECO-32: ?SRH !
 
@@ -22,6 +22,8 @@ EC
 :@EB"[[out1]]" [["U]]
 
 10 P
+
+0,2 ED
 
 -@F_/klmnop/--- FOO ---/                ! Test: -F_ !
 

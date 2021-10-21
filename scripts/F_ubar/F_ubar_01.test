@@ -21,7 +21,9 @@ EC
 
 :@EB"[[out1]]" [["U]]
 
-4:@F_/klmnop/--- FOO ---/ [["U]]            ! Test: nF_ !
+0,2 ED
+
+:@F_/klmnop/--- FOO ---/ [["U]]         ! Test: F_ !
 
 EC
 
