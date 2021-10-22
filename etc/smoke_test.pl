@@ -88,6 +88,32 @@ my %tokens   = (
         '^T'    =>  q{10^T},
         '"U'    =>  q{"U [[FAIL]] '},
     },                
+    teco32 => {
+        '8'     =>  q{},
+        'bad'   =>  q{/dev/teco},
+        'cmd1'  =>  q{cmd_1.tmp},
+        'cmd2'  =>  q{cmd_2.tmp},
+        'enter' =>  q{0,128ET HK},
+        '"E'    =>  q{"E [[FAIL]] '},
+        'error' => qq{@^A/!FAIL!/ [[^T]]},
+        'exit'  =>  q{^D EK HK [[PASS]] EX},
+        'expr'  =>  q{64},
+        'FAIL'  =>  q{[[error]] ^C},
+        'in1'   =>  q{in_1.tmp},
+        'in2'   =>  q{in_2.tmp},
+        'I'     =>  q{13@I// 10@I//},
+        'log1'  =>  q{log_1.tmp},
+        'LOOP'  =>  q{32},
+        '"L'    =>  q{"L [[FAIL]] '},
+        '"N'    =>  q{"N [[FAIL]] '},
+        'out1'  =>  q{out_1.tmp},
+        'out2'  =>  q{out_2.tmp},
+        'PASS'  => qq{@^A/!PASS!/ [[^T]]},
+        'Q'     =>  q{64},
+        '"S'    =>  q{"S [[FAIL]] '},
+        '^T'    =>  q{13^T 10^T},
+        '"U'    =>  q{"U [[FAIL]] '},
+    },                
     tecoc => {
         '8'     =>  q{},
         'bad'   =>  q{/dev/teco},
@@ -337,12 +363,24 @@ sub check_pass
 
 sub check_teco
 {
-    my ( $infile, $teco ) = @_;
+    my ( $infile, $teco, $redirect ) = @_;
 
     if (   ( $teco eq 'TECO C'  && $target eq 'TECO-32' )
         || ( $teco eq 'TECO-10' && $target ne 'TECO-64' )
         || ( $teco eq 'TECO-32' && $target eq 'TECO C'  )
         || ( $teco eq 'TECO-64' && $target ne 'TECO-64' ) )
+    {
+        ++$nskipped;
+
+        print "Skipping $teco file: $infile\n" if $verbose;
+
+        return;
+    }
+
+    # The following is temporary until we figure out how to redirect
+    # input on VMS.
+
+    if ( $teco eq 'TECO' && $target eq 'TECO-32' && $redirect )
     {
         ++$nskipped;
 
@@ -402,7 +440,7 @@ sub check_test
 sub exec_test
 {
     my ($command) = @_;
-    my $result = "";
+    my $result = q{};
 
     eval {
         local $SIG{ALRM} = sub { die "TECO alarm" };
@@ -553,7 +591,7 @@ sub parse_script
                     $redirect = $1;
                     $expects  = $3;
 
-                    $teco = check_teco( $infile, $2 );
+                    $teco = check_teco( $infile, $2, $redirect );
                 }
                 elsif ( $2 eq 'TECO-64' && $target eq 'TECO-64' )
                 {
@@ -561,7 +599,7 @@ sub parse_script
                     $expects  = $3;
                 }                    
 
-                return ( undef, undef, undef, undef ) unless $teco;
+                return unless $teco;
             }
 
             next;
@@ -638,12 +676,11 @@ sub run_test
 
         $command .= "$file 2>&1";
 
-        if ( $file =~ /^EG_\d\d[.]tec$/ms )
+        if ( $report =~ /:EG/ms )
         {
-            local $ENV{TEC_INIT}    = 'TECO_INIT';
-            local $ENV{TEC_LIBRARY} = 'TECO_LIBRARY';
-            local $ENV{TEC_MEMORY}  = 'TECO_MEMORY';
-            local $ENV{TEC_VTEDIT}  = 'TECO_VTEDIT';
+           local $ENV{TEC_LIBRARY} = 'TEC_LIBRARY';
+           local $ENV{TEC_MEMORY}  = 'TEC_MEMORY';
+           local $ENV{TEC_VTEDIT}  = 'TEC_VTEDIT';
 
             $actual = exec_test($command);
         }
@@ -676,7 +713,7 @@ sub run_test
 
         $command .= "$file 2>&1";
 
-        if ( $file =~ /^EG_\d\d[.]tec$/ms )
+        if ( $report =~ /:EG/ms )
         {
             local $ENV{TECO_INIT}    = 'TECO_INIT';
             local $ENV{TECO_LIBRARY} = 'TECO_LIBRARY';
@@ -715,6 +752,10 @@ sub translate_tokens
     if ($target eq 'TECO-64')
     {
         $teco = 'teco64';
+    }
+    elsif ($target eq 'TECO-32')
+    {
+        $teco = 'teco32';
     }
     elsif ($target eq 'TECO C')
     {

@@ -2,7 +2,7 @@
 
 ! Function: Non-stop forward search and replace !
 !  Command: -nF_ !
-!  TECO-32: ?SRH !
+!     TECO: ?SRH !
 
 [[enter]]
 
