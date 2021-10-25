@@ -170,6 +170,18 @@ SOURCES = \
     yank_cmd.c     \
 
 #
+#  Check to see if we should enable test mode.
+#
+################################################################################
+
+ifdef   test
+
+DEFINES += -D TEST
+DOXYGEN +=    TEST
+
+endif
+
+#
 #  Check to see if we should enable display mode.
 #
 ################################################################################
@@ -179,6 +191,7 @@ ifdef   display
 DEFINES += -D DISPLAY_MODE
 DOXYGEN +=    DISPLAY_MODE
 LIBS    += -l ncurses
+
 endif
 
 #

@@ -57,7 +57,7 @@ bool append(bool n_set, int_t n_arg, bool colon)
 
     if (n_set && n_arg < 0)
     {
-        throw(E_ARG);                   // Invalid arguments
+        throw(E_IAA);                   // Invalid A argument
     }
 
     f.ctrl_e = false;                   // Assume not appending FF

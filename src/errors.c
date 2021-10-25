@@ -56,7 +56,13 @@ static char *last_command;          ///< Command string for last error
 
 static void convert(char *buf, uint bufsize, const char *err_str, uint len);
 
-static void print_error(int error, const char *err_str, const char *file_str);
+static void print_error(
+
+#if     defined(TEST)
+    const char *func, unsigned int line,
+#endif
+
+    int error, const char *err_str, const char *file_str);
 
 
 ///
@@ -131,7 +137,13 @@ void exec_ctrl_C(struct cmd *cmd)
 
     if (cmd->dcolon)
     {
-        print_error(E_XAB, NULL, NULL);
+        print_error(
+
+#if     defined(TEST)
+            __func__, __LINE__,
+#endif
+
+            E_XAB, NULL, NULL);
     }
 
     reject_colon(cmd->colon);
@@ -197,8 +209,21 @@ void print_command(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void print_error(int error, const char *err_str, const char *file_str)
+static void print_error(
+
+#if     defined(TEST)
+    const char *func, unsigned int line,
+#endif
+
+    int error, const char *err_str, const char *file_str)
 {
+
+#if     defined(TEST)
+
+    assert(func != NULL);
+
+#endif
+
     const char *code = errlist[error].code;
     const char *text = errlist[error].text;
 
@@ -233,6 +258,15 @@ static void print_error(int error, const char *err_str, const char *file_str)
                    (ulong)cmd_line);
         }
     }
+
+#if     defined(TEST)
+
+    if (f.eh.func)
+    {
+        tprint(" [%s:%u]", func, line);
+    }
+
+#endif
 
     type_out(CR);
     type_out(LF);
@@ -334,7 +368,13 @@ void print_verbose(int error)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-noreturn void throw(int error, ...)
+noreturn void (throw)(
+
+#if     defined(TEST)
+    const char *func, unsigned int line,
+#endif
+
+    int error, ...)
 {
     const char *file_str = NULL;
     const char *err_str;
@@ -408,7 +448,13 @@ noreturn void throw(int error, ...)
 
     if (error != E_XAB || f.e0.exec)
     {
-        print_error(error, err_str, file_str);
+        print_error(
+
+#if     defined(TEST)
+            func, line,
+#endif
+
+            error, err_str, file_str);
     }
 
     if (f.et.abort)                     // Abort on error?

@@ -292,9 +292,21 @@ void exec_EH(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    check_mn_flag(cmd, &f.eh.flag);
+    union eh_flag eh = { .flag = f.eh.flag };
 
-    f.eh.flag &= 15;                    // Clear all but low 4 bits
+    check_mn_flag(cmd, &eh.flag);
+
+    // Only allow defined bits
+
+    f.eh.flag = 0;
+    f.eh.verbose = eh.verbose;
+    f.eh.command = eh.command;
+    f.eh.line = eh.line;
+
+#if     defined(TEST)
+    f.eh.func = eh.func;
+#endif
+
 }
 
 

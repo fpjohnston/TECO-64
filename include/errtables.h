@@ -59,17 +59,19 @@ static struct errlist errlist[] =
     [E_EXT] = { "EXT",  "Extended feature not enabled" },
     [E_FIL] = { "FIL",  "Invalid file '%s'" },
     [E_FNF] = { "FNF",  "File not found '%s'" },
+    [E_IAA] = { "IAA",  "Invalid A argument" },
     [E_ICE] = { "ICE",  "Invalid ^E command in search argument" },
     [E_IE1] = { "IE1",  "Invalid E1 command" },
     [E_IEC] = { "IEC",  "Invalid character '%s' after E" },
     [E_IFC] = { "IFC",  "Invalid character '%s' after F" },
     [E_IFE] = { "IFE",  "Ill-formed numeric expression" },
     [E_IFN] = { "IFN",  "Invalid character '%s' in filename" },
-    [E_IIA] = { "IIA",  "Invalid insert arg" },
+    [E_IIA] = { "IIA",  "Invalid insert argument" },
     [E_ILL] = { "ILL",  "Invalid command '%s'" },
     [E_ILN] = { "ILN",  "Invalid number" },
     [E_IMA] = { "IMA",  "Invalid m argument" },
     [E_INA] = { "INA",  "Invalid n argument" },
+    [E_IPA] = { "IPA",  "Invalid P argument" },
     [E_IQC] = { "IQC",  "Invalid quote character" },
     [E_IQN] = { "IQN",  "Invalid Q-register name '%s'" },
     [E_IRA] = { "IRA",  "Invalid radix argument to ^R" },
@@ -99,7 +101,6 @@ static struct errlist errlist[] =
     [E_NFO] = { "NFO",  "No file for output" },
     [E_NON] = { "NON",  "No n argument after m argument" },
     [E_NOT] = { "NOT",  "O command has no tag" },
-    [E_NPA] = { "NPA",  "P or PW argument is negative" },
     [E_NYA] = { "NYA",  "Numeric argument with Y" },
     [E_NYI] = { "NYI",  "Not yet implemented" },
     [E_OFO] = { "OFO",  "Output file already open" },
@@ -161,6 +162,8 @@ static const char *errhelp[] =
     [E_FNF] = "The requested input file could not be located. "
               "If this occurred within a macro, the "
               "colon-modified command may be necessary.",
+    [E_IAA] = "The argument preceding a :A command is "
+              "negative or zero.",
     [E_ICE] = "A search argument contains a ^E command that "
               "is either not defined or incomplete.",
     [E_IE1] = "An invalid E1 command has been executed. The "
@@ -178,7 +181,7 @@ static const char *errhelp[] =
               "are valid for file names.",
     [E_IIA] = "A command of the form \"nItext`\" was attempted. "
               "This combination of character and text "
-              "insertion is invalid.",
+              "insertion is not allowed.",
     [E_ILL] = "An attempt has been made to execute an invalid "
               "TECO command.",
     [E_ILN] = "An 8 or 9 was used in a digit string for an "
@@ -188,6 +191,8 @@ static const char *errhelp[] =
               "does not allow it.",
     [E_INA] = "An n argument was provided to a command which "
               "does not allow it.",
+    [E_IPA] = "The argument preceding a P or PW command is "
+              "negative or zero.",
     [E_IQC] = "One of the valid \" qualifiers did not "
               "follow the quote character.",
     [E_IQN] = "An invalid Q-register name was specified in one "
@@ -259,8 +264,6 @@ static const char *errhelp[] =
               "a command such as EW or EB.",
     [E_NON] = "An m argument was not followed by an n argument.",
     [E_NOT] = "No tag was found for an O command.",
-    [E_NPA] = "The argument preceding a P or PW command is "
-              "zero or negative.",
     [E_NYA] = "The Y command must not be preceded by either a "
               "numeric argument or a command that returns a "
               "numeric value.",

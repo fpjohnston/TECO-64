@@ -133,6 +133,13 @@ struct flags f =                    ///< Global flag variables
     .ee = NUL,                      // No ESCape surrogate
     .eh.verbose = 2,                // Use standard verbosity for error msgs.
     .eh.line = true,                // Include line number for errors in macros
+
+#if     defined(TEST)
+
+    .eh.func = true,                // Include function information
+
+#endif
+
     .ej = 0,                        // Operating system type
     .eo = 0,                        // TECO version number
     .es = 0,                        // Search verification flag
@@ -141,7 +148,6 @@ struct flags f =                    ///< Global flag variables
     .ev = 0,                        // Don't print any lines before prompt
     .radix = 10,                    // Use decimal radix
     .trace.flag = 0,                // All trace bits off
-
 };
 
 //lint -restore

@@ -47,17 +47,19 @@ code.
 | <nobr>?EXT</nobr> | <nobr>Extended feature not enabled</nobr> | A command attempted to use an extended feature which is not currently enabled. |
 | <nobr>?FIL</nobr> | <nobr>Invalid file 'foo'</nobr> | An attempt was made to open a directory, FIFO, socket, or similar file specification instead of a regular file. |
 | <nobr>?FNF</nobr> | <nobr>File not found 'foo'</nobr> | The requested input file could not be located. If this occurred within a macro, the colon-modified command may be necessary. |
+| <nobr>?IAA</nobr> | <nobr>Invalid A argument</nobr> | The argument preceding a :A command is negative or zero. |
 | <nobr>?ICE</nobr> | <nobr>Invalid ^E command in search argument</nobr> | A search argument contains a ^E command that is either not defined or incomplete. |
 | <nobr>?IE1</nobr> | <nobr>Invalid E1 command</nobr> | An invalid E1 command has been executed. The E1&32 flag bit may not be set while executing an old-style EI command, and may not be reset while executing a new-style EI command. |
 | <nobr>?IEC</nobr> | <nobr>Invalid character '*x*' after E</nobr> | An invalid E command has been executed. |
 | <nobr>?IFC</nobr> | <nobr>Invalid character '*x*' after F</nobr> | An invalid F command has been executed. |
 | <nobr>?IFE</nobr> | <nobr>Ill-formed numeric expression</nobr> | The numeric expression preceding a command doesn't make sense. For example, 5+ isn't a complete expression. |
 | <nobr>?IFN</nobr> | <nobr>Invalid character '*x*' in filename</nobr> | A file name contained one or more invalid characters. Check your operating system documentation to determine what characters are valid for file names. |
-| <nobr>?IIA</nobr> | <nobr>Invalid insert arg</nobr> | A command of the form "nItext`" was attempted. This combination of character and text insertion is invalid. |
+| <nobr>?IIA</nobr> | <nobr>Invalid insert argument</nobr> | A command of the form "nItext`" was attempted. This combination of character and text insertion is not allowed. |
 | <nobr>?ILL</nobr> | <nobr>Invalid command '*x*'</nobr> | An attempt has been made to execute an invalid TECO command. |
 | <nobr>?ILN</nobr> | <nobr>Invalid number</nobr> | An 8 or 9 was used in a digit string for an octal number, or a 0x or 0X prefix was not followed by a hexadecimal number. |
 | <nobr>?IMA</nobr> | <nobr>Invalid m argument</nobr> | An m argument was provided to a command which does not allow it. |
 | <nobr>?INA</nobr> | <nobr>Invalid n argument</nobr> | An n argument was provided to a command which does not allow it. |
+| <nobr>?IPA</nobr> | <nobr>Invalid P argument</nobr> | The argument preceding a P or PW command is negative or zero. |
 | <nobr>?IQC</nobr> | <nobr>Invalid quote character</nobr> | One of the valid " qualifiers did not follow the quote character. |
 | <nobr>?IQN</nobr> | <nobr>Invalid Q-register name '*x*'</nobr> | An invalid Q-register name was specified in one of the Q-register commands. |
 | <nobr>?IRA</nobr> | <nobr>Invalid radix argument to ^R</nobr> | The argument to a ^R radix command must be 8, 10 or 16. |
@@ -87,7 +89,6 @@ code.
 | <nobr>?NFO</nobr> | <nobr>No file for output</nobr> | Before issuing an output command, such as N or or P, it is necessary to open an output file with a command such as EW or EB. |
 | <nobr>?NON</nobr> | <nobr>No n argument after m argument</nobr> | An m argument was not followed by an n argument. |
 | <nobr>?NOT</nobr> | <nobr>O command has no tag</nobr> | No tag was found for an O command. |
-| <nobr>?NPA</nobr> | <nobr>P or PW argument is negative</nobr> | The argument preceding a P or PW command is zero or negative. |
 | <nobr>?NYA</nobr> | <nobr>Numeric argument with Y</nobr> | The Y command must not be preceded by either a numeric argument or a command that returns a numeric value. |
 | <nobr>?NYI</nobr> | <nobr>Not yet implemented</nobr> | A command was issued that is not yet implemented in this version of TECO. |
 | <nobr>?OFO</nobr> | <nobr>Output file already open</nobr> | A command has been executed which tried to create an output file, but an output file currently is open. It is typically appropriate to use the EC or EK command as the situation calls for to close the output file. |

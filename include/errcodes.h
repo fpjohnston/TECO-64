@@ -55,17 +55,19 @@ enum errcodes
     E_EXT,          ///< Extended feature not enabled
     E_FIL,          ///< Invalid file 'foo'
     E_FNF,          ///< File not found 'foo'
+    E_IAA,          ///< Invalid A argument
     E_ICE,          ///< Invalid ^E command in search argument
     E_IE1,          ///< Invalid E1 command
     E_IEC,          ///< Invalid character 'x' after E
     E_IFC,          ///< Invalid character 'x' after F
     E_IFE,          ///< Ill-formed numeric expression
     E_IFN,          ///< Invalid character 'x' in filename
-    E_IIA,          ///< Invalid insert arg
+    E_IIA,          ///< Invalid insert argument
     E_ILL,          ///< Invalid command 'x'
     E_ILN,          ///< Invalid number
     E_IMA,          ///< Invalid m argument
     E_INA,          ///< Invalid n argument
+    E_IPA,          ///< Invalid P argument
     E_IQC,          ///< Invalid quote character
     E_IQN,          ///< Invalid Q-register name 'x'
     E_IRA,          ///< Invalid radix argument to ^R
@@ -95,7 +97,6 @@ enum errcodes
     E_NFO,          ///< No file for output
     E_NON,          ///< No n argument after m argument
     E_NOT,          ///< O command has no tag
-    E_NPA,          ///< P or PW argument is negative
     E_NYA,          ///< Numeric argument with Y
     E_NYI,          ///< Not yet implemented
     E_OFO,          ///< Output file already open
@@ -117,6 +118,23 @@ extern void print_command(void);
 
 extern void print_verbose(int err_teco);
 
+#if     defined(TEST)
+
+//lint -save -e652
+
+extern noreturn void (throw)(const char *func, unsigned int line, int err_teco, ...);
+
+/// @def    throw
+/// @brief  Debug version of throw(), used in order to add function and line number.
+
+#define throw(err_teco, ...) (throw)(__func__, __LINE__, err_teco, ## __VA_ARGS__)
+
+//lint -restore
+
+#else
+
 extern noreturn void throw(int err_teco, ...);
+
+#endif
 
 #endif  // !defined(_ERRCODES_H)

@@ -46,6 +46,23 @@ extern void print_command(void);
 
 extern void print_verbose(int err_teco);
 
+#if     defined(TEST)
+
+//lint -save -e652
+
+extern noreturn void (throw)(const char *func, unsigned int line, int err_teco, ...);
+
+/// @def    throw
+/// @brief  Debug version of throw(), used in order to add function and line number.
+
+#define throw(err_teco, ...) (throw)(__func__, __LINE__, err_teco, ## __VA_ARGS__)
+
+//lint -restore
+
+#else
+
 extern noreturn void throw(int err_teco, ...);
+
+#endif
 
 #endif  // !defined(_ERRCODES_H)

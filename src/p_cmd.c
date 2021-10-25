@@ -89,9 +89,10 @@ void exec_P(struct cmd *cmd)
     }
     else if (cmd->n_set)                // nP, n:P, nPW
     {
-        if ((count = cmd->n_arg) == 0)
+        if ((count = cmd->n_arg) == 0 ||
+            (count < 0 && cmd->c2 == 'W'))
         {
-            throw(E_NPA);               // Negative or zero argument to P or PW
+            throw(E_IPA);               // Negative or zero argument to P or PW
         }
 
         if (cmd->c2 == 'W')             // Is it nPW?

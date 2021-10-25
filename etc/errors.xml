@@ -109,6 +109,12 @@
             <detail>colon-modified command may be necessary.</detail>
         </error>
         <error>
+            <code>IAA</code>
+            <message>Invalid A argument</message>
+            <detail>The argument preceding a :A command is</detail>
+            <detail>negative or zero.</detail>
+        </error>
+        <error>
             <code>ICE</code>
             <message>Invalid ^E command in search argument</message>
             <detail>A search argument contains a ^E command that</detail>
@@ -149,10 +155,10 @@
         </error>
         <error>
             <code>IIA</code>
-            <message>Invalid insert arg</message>
+            <message>Invalid insert argument</message>
             <detail>A command of the form "nItext`" was attempted.</detail>
             <detail>This combination of character and text</detail>
-            <detail>insertion is invalid.</detail>
+            <detail>insertion is not allowed.</detail>
         </error>
         <error>
             <code>ILL</code>
@@ -178,6 +184,12 @@
             <message>Invalid n argument</message>
             <detail>An n argument was provided to a command which</detail>
             <detail>does not allow it.</detail>
+        </error>
+        <error>
+            <code>IPA</code>
+            <message>Invalid P argument</message>
+            <detail>The argument preceding a P or PW command is</detail>
+            <detail>negative or zero.</detail>
         </error>
         <error>
             <code>IQC</code>
@@ -365,12 +377,6 @@
             <code>NOT</code>
             <message>O command has no tag</message>
             <detail>No tag was found for an O command.</detail>
-        </error>
-        <error>
-            <code>NPA</code>
-            <message>P or PW argument is negative</message>
-            <detail>The argument preceding a P or PW command is</detail>
-            <detail>zero or negative.</detail>
         </error>
         <error>
             <code>NYA</code>
