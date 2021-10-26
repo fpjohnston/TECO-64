@@ -42,11 +42,11 @@ use File::Slurp;
 
 # Command-line options
 
-my $check = 1;
 my $clean;
 my $execute = 1;
 my $make = 1;
 my $orphans;
+my $prove = 1;
 my $target  = 'TECO-64';
 my $verbose = q{};
 
@@ -77,7 +77,7 @@ my %tokens   = (
         'in1'   =>  q{in1.tmp},
         'in2'   =>  q{in2.tmp},
         'I'     =>  q{10@I//},
-        'log1'  =>  q{log_1.tmp},
+        'log1'  =>  q{log1.tmp},
         'LOOP'  =>  q{32},
         '"L'    =>  q{"L [[FAIL]] '},
         '"N'    =>  q{"N [[FAIL]] '},
@@ -103,7 +103,7 @@ my %tokens   = (
         'in1'   =>  q{in1.tmp},
         'in2'   =>  q{in2.tmp},
         'I'     =>  q{13@I// 10@I//},
-        'log1'  =>  q{log_1.tmp},
+        'log1'  =>  q{log1.tmp},
         'LOOP'  =>  q{32},
         '"L'    =>  q{"L [[FAIL]] '},
         '"N'    =>  q{"N [[FAIL]] '},
@@ -129,7 +129,7 @@ my %tokens   = (
         'in1'   =>  q{in1.tmp},
         'in2'   =>  q{in2.tmp},
         'I'     =>  q{13@I// 10@I//},
-        'log1'  =>  q{log_1.tmp},
+        'log1'  =>  q{log1.tmp},
         'LOOP'  =>  q{31},
         '"L'    =>  q{"L [[FAIL]] '},
         '"N'    =>  q{"N [[FAIL]] '},
@@ -162,7 +162,7 @@ while ( defined( my $file = pop @teco_files ) )
 
 # Sort all of the input files by file name, then create a test script for
 # each one, translating any tokens as needed, then run the script, capture
-# the output, and check to see whether we got the desired result.
+# the output, and verify that we got the desired result.
 
 foreach my $file ( sort { uc $a cmp uc $b } keys %scripts )
 {
@@ -201,165 +201,48 @@ foreach my $file ( sort { uc $a cmp uc $b } keys %scripts )
         write_result( "$testdir/results/$file.lis", $actual );
     }
 
-    if ($check)
+    if ($prove)
     {
-        check_test( $file, $report, $expects );
+        prove_test( $file, $report, $expects );
     }
 }
 
-# Clean up any temp. files we may have created.
-
-my @files = glob "$testdir/cases/*.tmp";
-
-foreach my $file (@files)
+if ($execute)
 {
-    unlink $file or croak "Can't delete file: $file";
+    # Clean up any temp. files we may have created.
+
+    my @files = glob "$testdir/cases/*.tmp";
+
+    foreach my $file (@files)
+    {
+        unlink $file or croak "Can't delete file: $file";
+    }
+
+    # Tell user which benchmark files were superfluous
+
+    if ($orphans && keys %benchmark_files != 0)
+    {
+        print "Orphan benchmark files:\n";
+
+        foreach my $file (sort keys %benchmark_files)
+        {
+            print "    $file\n";
+        }
+    }
 }
 
-$nscripts += $nskipped;
-
-print "\n" if $verbose;
-printf "Found %u script%s in $testdir/scripts, skipped %u\n", $nscripts,
-    $nscripts == 1 ? q{} : 's', $nskipped;
-printf "Created %u file%s in $testdir/cases, ", $nfiles, $nfiles == 1 ? q{} : 's';
-printf "containing a total of $ntests test%s\n", $ntests == 1 ? q{} : 's';
-
-# Tell user which log files were superfluous
-
-if ($orphans && keys %benchmark_files != 0)
+if ($make)
 {
-    print "Orphan log files:\n";
+    $nscripts += $nskipped;
 
-    foreach my $file (sort keys %benchmark_files)
-    {
-        print "    $file\n";
-    }
+    printf "Found %u script%s in $testdir/scripts, skipped %u\n", $nscripts,
+        $nscripts == 1 ? q{} : 's', $nskipped;
+
+    printf "Created %u file%s in $testdir/cases, containing a total of $ntests " .
+        "test%s\n", $nfiles, $nfiles == 1 ? q{} : 's', $ntests == 1 ? q{} : 's';
 }
 
 exit;
-
-
-sub check_error
-{
-    my ( $report, $expects, $actual ) = @_;
-    my $match = '! Expects: ' . quotemeta $expects . ' !';
-
-    $actual =~ s/$match//ms;
-
-    # Here if test was supposed to abort with TECO error
-
-    if ( index( $actual, $expects ) < 0 )
-    {
-        if ( $actual =~ /( \N{QUESTION MARK} \w\w\w )/msx )
-        {
-            # Test encountered unexpected TECO error
-
-            printf "%s %s\n", $report, $1;
-        }
-        elsif ( $actual =~ /!FAIL\d+!/ms )
-        {
-            # Test failed when it should have issued TECO error
-
-            printf "%s FAIL\n", $report;
-        }
-        elsif ( $actual =~ /!PASS!/ms )
-        {
-            # Test succeeded when it should have failed
-
-            printf "%s PASS\n", $report;
-        }
-        else
-        {
-            # Test encountered unknown error
-
-            printf "%s UNKNOWN\n", $report;
-        }
-    }
-    elsif ($verbose)
-    {
-        # Test encountered expected TECO error
-
-        printf "%s OK\n", $report;
-    }
-
-    return;
-}
-
-
-sub check_fail
-{
-    my ( $report, $expected, $actual ) = @_;
-
-    # Here if test was supposed to fail
-
-    if ( $actual !~ /!FAIL\d+!/ms )
-    {
-        if ( $actual =~ / ( \N{QUESTION MARK} \w\w\w )/msx )
-        {
-            # Test encountered TECO error
-
-            printf "%s %s\n", $report, $1;
-        }
-        elsif ( $actual =~ /!PASS!/ms )
-        {
-            # Test succeeded when it should have failed
-
-            printf "%s PASS\n", $report;
-        }
-        else
-        {
-            # Test encountered unknown error
-
-            printf "%s UNKNOWN\n", $report;
-        }
-    }
-    elsif ($verbose)
-    {
-        printf "%s OK\n", $report;
-    }
-
-    return;
-}
-
-
-sub check_pass
-{
-    my ( $report, $expected, $actual ) = @_;
-
-    # Here if test was supposed to succeed
-
-    if ( $actual !~ /!PASS!/ms )
-    {
-        if ( $actual =~ / ( \N{QUESTION MARK} \w\w\w )/msx )
-        {
-            # Test encountered TECO error
-
-            printf "%s %s\n", $report, $1;
-        }
-        elsif ( $actual =~ /!FAIL\d+!/ms )
-        {
-            # Test failed when it should have succeeded
-
-            printf "%s FAIL\n", $report;
-        }
-        else
-        {
-            # Test encountered unknown error
-
-            printf "%s UNKNOWN\n", $report;
-        }
-    }
-    elsif ( defined $expected && $expected ne $actual )
-    {
-        printf "%s DIFF\n", $report;
-    }
-    elsif ($verbose)
-    {
-        printf "%s OK\n", $report;
-    }
-
-    return;
-}
 
 
 sub check_teco
@@ -400,55 +283,6 @@ sub check_teco
     }
 
     return $teco;
-}
-
-
-sub check_test
-{
-    my ( $file, $report, $expects ) = @_;
-
-    my $actual = get_data("$testdir/results/$file.lis");
-    my $expected = get_data("$testdir/benchmarks/$file.lis");
-
-    delete($benchmark_files{$file});    # Delete this key
-
-    if ($expected)
-    {
-        $report .= ' =>';
-    }
-    else
-    {
-        $report .= ' ->';
-    }
-
-    if ( $actual eq 'TIMEOUT' )
-    {
-        print "$report TIMEOUT\n";
-    }
-    elsif ( $actual =~ / core \s dumped /imsx )
-    {
-        # This is handled specially without regard to the desired result,
-        # because it was found that some tests could complete successfully,
-        # but abort on exit, due to such things as stack smashing. So we
-        # first check to see if there was an abort in the output, and only
-        # then check for desired success or failure.
-
-        print "$report ABORTED\n";
-    }
-    elsif ( $expects eq 'PASS' )
-    {
-        check_pass( $report, $expected, $actual );
-    }
-    elsif ( $expects eq 'FAIL' )
-    {
-        check_fail( $report, $expected, $actual );
-    }
-    else    # Here if test failed or should fail
-    {
-        check_error( $report, $expects, $actual );
-    }
-
-    return;
 }
 
 
@@ -513,13 +347,17 @@ sub initialize
 
     GetOptions(
         'clean!'   => \$clean,
-        'check!'   => \$check,
         'execute!' => \$execute,
         'make!'    => \$make,
         'orphans!' => \$orphans,
+        'prove!'   => \$prove,
         'teco=s'   => \$target,
         'verbose'  => \$verbose,
     );
+
+    # Nothing to execute if we're not making any tests.
+
+    $execute = 0 if !$make;
 
     if ($#ARGV == -1)
     {
@@ -670,6 +508,178 @@ sub parse_script
     $report .= sprintf '  %s', $expects;
 
     return ( $report, $text, $expects, $redirect );
+}
+
+
+sub prove_error
+{
+    my ( $report, $expects, $actual ) = @_;
+    my $match = '! Expects: ' . quotemeta $expects . ' !';
+
+    $actual =~ s/$match//ms;
+
+    # Here if test was supposed to abort with TECO error
+
+    if ( index( $actual, $expects ) < 0 )
+    {
+        if ( $actual =~ /( \N{QUESTION MARK} \w\w\w )/msx )
+        {
+            # Test encountered unexpected TECO error
+
+            printf "%s %s\n", $report, $1;
+        }
+        elsif ( $actual =~ /!FAIL\d+!/ms )
+        {
+            # Test failed when it should have issued TECO error
+
+            printf "%s FAIL\n", $report;
+        }
+        elsif ( $actual =~ /!PASS!/ms )
+        {
+            # Test succeeded when it should have failed
+
+            printf "%s PASS\n", $report;
+        }
+        else
+        {
+            # Test encountered unknown error
+
+            printf "%s UNKNOWN\n", $report;
+        }
+    }
+    elsif ($verbose)
+    {
+        # Test encountered expected TECO error
+
+        printf "%s OK\n", $report;
+    }
+
+    return;
+}
+
+
+sub prove_fail
+{
+    my ( $report, $expected, $actual ) = @_;
+
+    # Here if test was supposed to fail
+
+    if ( $actual !~ /!FAIL\d+!/ms )
+    {
+        if ( $actual =~ / ( \N{QUESTION MARK} \w\w\w )/msx )
+        {
+            # Test encountered TECO error
+
+            printf "%s %s\n", $report, $1;
+        }
+        elsif ( $actual =~ /!PASS!/ms )
+        {
+            # Test succeeded when it should have failed
+
+            printf "%s PASS\n", $report;
+        }
+        else
+        {
+            # Test encountered unknown error
+
+            printf "%s UNKNOWN\n", $report;
+        }
+    }
+    elsif ($verbose)
+    {
+        printf "%s OK\n", $report;
+    }
+
+    return;
+}
+
+
+sub prove_pass
+{
+    my ( $report, $expected, $actual ) = @_;
+
+    # Here if test was supposed to succeed
+
+    if ( $actual !~ /!PASS!/ms )
+    {
+        if ( $actual =~ / ( \N{QUESTION MARK} \w\w\w )/msx )
+        {
+            # Test encountered TECO error
+
+            printf "%s %s\n", $report, $1;
+        }
+        elsif ( $actual =~ /!FAIL\d+!/ms )
+        {
+            # Test failed when it should have succeeded
+
+            printf "%s FAIL\n", $report;
+        }
+        else
+        {
+            # Test encountered unknown error
+
+            printf "%s UNKNOWN\n", $report;
+        }
+    }
+    elsif ( defined $expected && $expected ne $actual )
+    {
+        printf "%s DIFF\n", $report;
+    }
+    elsif ($verbose)
+    {
+        printf "%s OK\n", $report;
+    }
+
+    return;
+}
+
+
+sub prove_test
+{
+    my ( $file, $report, $expects ) = @_;
+
+    my $actual = get_data("$testdir/results/$file.lis");
+    my $expected = get_data("$testdir/benchmarks/$file.lis");
+
+    delete($benchmark_files{$file});    # Delete this key
+
+    if ($expected)
+    {
+        $report .= ' =>';
+    }
+    else
+    {
+        $report .= ' ->';
+    }
+
+    if ( $actual eq 'TIMEOUT' )
+    {
+        print "$report TIMEOUT\n";
+    }
+    elsif ( $actual =~ / core \s dumped /imsx )
+    {
+        # This is handled specially without regard to the desired result,
+        # because it was found that some tests could complete successfully,
+        # but abort on exit, due to such things as stack smashing. So we
+        # first check to see if there was an abort in the output, and only
+        # then verify desired success or failure.
+
+        print "$report ABORTED\n";
+    }
+    elsif ( $expects eq 'PASS' )
+    {
+        prove_pass( $report, $expected, $actual );
+    }
+    elsif ( $expects eq 'FAIL' )
+    {
+        prove_fail( $report, $expected, $actual );
+    }
+    else    # Here if test failed or should fail
+    {
+        prove_error( $report, $expects, $actual );
+    }
+
+    return;
 }
 
 

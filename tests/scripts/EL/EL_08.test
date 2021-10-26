@@ -6,8 +6,8 @@
 
 [[enter]]
 !START!
-@^UA|/tmp/teco.log|         ! Name of log file we create !
-@^UB|EL_08.log|             ! Name of log file we compare against !
+@^UA|/tmp/teco.lis|         ! Name of log file we create !
+@^UB|EL_08.lis|             ! Name of log file we compare against !
 
 3:@EL/^EQA/                 ! Test: open log file !
 
