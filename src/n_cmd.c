@@ -45,7 +45,7 @@ static void exec_search(struct cmd *cmd, bool replace);
 
 
 ///
-///  @brief    Execute "N" command: global search.
+///  @brief    Execute N command: global search.
 ///
 ///  @returns  Nothing.
 ///
@@ -58,7 +58,7 @@ void exec_N(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "FN" command: global search and replace.
+///  @brief    Execute FN command: global search and replace.
 ///
 ///  @returns  Nothing.
 ///
@@ -142,7 +142,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
 
 ///
-///  @brief    Scan "FN" command.
+///  @brief    Scan FN command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///
@@ -160,7 +160,7 @@ bool scan_FN(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "N" command.
+///  @brief    Scan N command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

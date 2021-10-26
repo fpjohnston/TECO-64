@@ -428,7 +428,7 @@ bool search_backward(struct search *s)
 ///
 ///  @brief    Process failure of any search command. If the command was colon-
 ///            modified, then we can just return a value. If not, but we are
-///            in a loop, then we exit using a "F>" command. Otherwise, throw
+///            in a loop, then we exit using an F> command. Otherwise, throw
 ///            an exception.
 ///
 ///  @returns  Nothing.

@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute "EK" command: kill current output file.
+///  @brief    Execute EK command: kill current output file.
 ///
 ///  @returns  Nothing.
 ///

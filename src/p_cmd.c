@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute "P" command (write out buffer, and read next page).
+///  @brief    Execute P command (write out buffer, and read next page).
 ///
 ///  @returns  Nothing.
 ///
@@ -197,7 +197,7 @@ bool next_page(int_t start, int_t end, bool ff, bool yank)
 
 
 ///
-///  @brief    Scan "P" command, which may have an optional postfix W.
+///  @brief    Scan P command, which may have an optional postfix W.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///

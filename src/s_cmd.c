@@ -46,7 +46,7 @@ static void exec_search(struct cmd *cmd, bool replace);
 
 
 ///
-///  @brief    Execute "S" command: local search.
+///  @brief    Execute S command: local search.
 ///
 ///  @returns  Nothing.
 ///
@@ -59,7 +59,7 @@ void exec_S(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "FS" command: local search and replace.
+///  @brief    Execute FS command: local search and replace.
 ///
 ///  @returns  Nothing.
 ///
@@ -213,7 +213,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
 
 ///
-///  @brief    Scan "FS" command.
+///  @brief    Scan FS command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///
@@ -231,7 +231,7 @@ bool scan_FS(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "S" command.
+///  @brief    Scan S command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

@@ -171,7 +171,7 @@ static void color_region(short region)
 
 
 ///
-///  @brief    Execute "F1" command: set colors for command region.
+///  @brief    Execute F1 command: set colors for command region.
 ///
 ///  @returns  Nothing.
 ///
@@ -184,7 +184,7 @@ void exec_F1(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "F2" command: set colors for edit region.
+///  @brief    Execute F2 command: set colors for edit region.
 ///
 ///  @returns  Nothing.
 ///
@@ -197,7 +197,7 @@ void exec_F2(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "F3" command: set colors for status line.
+///  @brief    Execute F3 command: set colors for status line.
 ///
 ///  @returns  Nothing.
 ///
@@ -240,7 +240,7 @@ static int find_color(const char *token)
 
 
 ///
-///  @brief    Scan "F1", "F2", and "F3" commands.
+///  @brief    Scan F1, F2, and F3 commands.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

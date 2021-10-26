@@ -74,7 +74,7 @@ static const char digits[] =
 
 
 ///
-///  @brief    Execute "\" command: read digit string.
+///  @brief    Execute \ command: read digit string.
 ///
 ///  @returns  nothing.
 ///

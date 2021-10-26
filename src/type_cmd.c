@@ -44,7 +44,7 @@ static void exec_type(int_t m, int_t n);
 
 
 ///
-///  @brief    Execute "T" command: type line(s).
+///  @brief    Execute T command: type line(s).
 ///
 ///  @returns  Nothing.
 ///
@@ -129,7 +129,7 @@ static void exec_type(int_t m, int_t n)
 
 
 ///
-///  @brief    Execute "V" command: type line(s).
+///  @brief    Execute V command: type line(s).
 ///
 ///  @returns  Nothing.
 ///
@@ -158,7 +158,7 @@ void exec_V(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "T" command.
+///  @brief    Scan T command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///
@@ -193,7 +193,7 @@ bool scan_T(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "V" command.
+///  @brief    Scan V command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

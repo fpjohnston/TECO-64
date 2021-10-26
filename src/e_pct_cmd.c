@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute "E%" command: write Q-register to file.
+///  @brief    Execute E% command: write Q-register to file.
 ///
 ///  @returns  Nothing.
 ///

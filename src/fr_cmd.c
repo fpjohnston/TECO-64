@@ -43,7 +43,7 @@ uint_t last_len;
 
 
 ///
-///  @brief    Execute "FR" command: delete and replace.
+///  @brief    Execute FR command: delete and replace.
 ///
 ///  @returns  Nothing.
 ///
@@ -84,7 +84,7 @@ void exec_FR(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "FR" command.
+///  @brief    Scan FR command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute "[" command - Push Q-register onto push-down list.
+///  @brief    Execute [ command - Push Q-register onto push-down list.
 ///
 ///  @returns  Nothing.
 ///
@@ -55,7 +55,7 @@ void exec_lbracket(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "]" command: pop Q-register from push-down list.
+///  @brief    Execute ] command: pop Q-register from push-down list.
 ///
 ///  @returns  Nothing.
 ///
@@ -82,7 +82,7 @@ void exec_rbracket(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan '[' command.
+///  @brief    Scan [ command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///
@@ -102,7 +102,7 @@ bool scan_lbracket(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "]" command.
+///  @brief    Scan ] command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

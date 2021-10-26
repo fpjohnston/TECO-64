@@ -34,7 +34,7 @@
 
 
 ///
-///  @brief    Execute "EO" command: read or set TECO version number.
+///  @brief    Execute EO command: read or set TECO version number.
 ///
 ///               EO - Major version.
 ///              :EO - Same as EO.
@@ -97,7 +97,7 @@ void exec_EO(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "EO" command.
+///  @brief    Scan EO command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

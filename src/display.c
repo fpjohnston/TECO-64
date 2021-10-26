@@ -1145,7 +1145,7 @@ void resize_signal(void)
 
 
 ///
-///  @brief    Scan "F0" command: return position for top left corner.
+///  @brief    Scan F0 command: return position for top left corner.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -1161,7 +1161,7 @@ bool scan_F0(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "FH" command: equivalent to F0,FZ.
+///  @brief    Scan FH command: equivalent to F0,FZ.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -1183,7 +1183,7 @@ bool scan_FH(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "FZ" command: return position for bottom right corner.
+///  @brief    Scan FZ command: return position for bottom right corner.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///

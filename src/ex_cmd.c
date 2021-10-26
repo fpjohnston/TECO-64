@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute "EX" command: close files and exit.
+///  @brief    Execute EX command: close files and exit.
 ///
 ///  @returns  Nothing.
 ///

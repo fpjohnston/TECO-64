@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute "ER" command: open file for input.
+///  @brief    Execute ER command: open file for input.
 ///
 ///  @returns  Nothing.
 ///
@@ -87,8 +87,7 @@ void exec_ER(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "ER" command. Also "EB", "EN", and "EN" and other file
-///            commands.
+///  @brief    Scan ER command. Also EB, EN, EN, and other file commands.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Scan "," command: separate m and n arguments.
+///  @brief    Scan , (comma) command: separate m and n arguments.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -73,7 +73,7 @@ bool scan_comma(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "^_" (CTRL/_) command: 1's complement operator.
+///  @brief    Scan CTRL/_ command: 1's complement operator.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -93,7 +93,7 @@ bool scan_ctrl_ubar(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "/" command: division operator.
+///  @brief    Scan / command: division operator.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -129,7 +129,7 @@ bool scan_div(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "(" command: expression grouping.
+///  @brief    Scan ( command: expression grouping.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -194,7 +194,7 @@ bool scan_oper(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan ")" command: expression grouping.
+///  @brief    Scan ) command: expression grouping.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -227,7 +227,7 @@ bool scan_rparen(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "~" command: exclusive OR operator.
+///  @brief    Scan ~ command: exclusive OR operator.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///

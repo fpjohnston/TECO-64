@@ -103,7 +103,7 @@ static void check_n_flag(struct cmd *cmd, int_t *flag)
 
 
 ///
-///  @brief    Execute "^E" (CTRL/E) command: read or set form feed flag.
+///  @brief    Execute CTRL/E command: read or set form feed flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -120,7 +120,7 @@ void exec_ctrl_E(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "^X" (CTRL/X) command: read or set search mode flag.
+///  @brief    Execute CTRL/X command: read or set search mode flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -144,7 +144,7 @@ void exec_ctrl_X(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "E1" command: read or set extended features.
+///  @brief    Execute E1 command: read or set extended features.
 ///
 ///  @returns  Nothing.
 ///
@@ -191,7 +191,7 @@ void exec_E1(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "E2" command: read or set extended features.
+///  @brief    Execute E2 command: read or set extended features.
 ///
 ///  @returns  Nothing.
 ///
@@ -204,7 +204,7 @@ void exec_E2(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "E3" command: read or set I/O flags.
+///  @brief    Execute E3 command: read or set I/O flags.
 ///
 ///  @returns  Nothing.
 ///
@@ -217,7 +217,7 @@ void exec_E3(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "E4" command: read or set display flags.
+///  @brief    Execute E4 command: read or set display flags.
 ///
 ///  @returns  Nothing.
 ///
@@ -230,7 +230,7 @@ void exec_E4(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "ED" command: read or set mode flags.
+///  @brief    Execute ED command: read or set mode flags.
 ///
 ///  @returns  Nothing.
 ///
@@ -267,7 +267,7 @@ void exec_ED(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "EE" command: read or set alternate delimiter.
+///  @brief    Execute EE command: read or set alternate delimiter.
 ///
 ///  @returns  Nothing.
 ///
@@ -289,7 +289,7 @@ void exec_EE(struct cmd *cmd)
 
 
 ///
-//  @brief    Execute "EH" command: read or set help flag.
+///  @brief    Execute EH command: read or set help flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -320,7 +320,7 @@ void exec_EH(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "ES" command: read or set search verification flag.
+///  @brief    Execute ES command: read or set search verification flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -341,7 +341,7 @@ void exec_ES(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "ET" command: read or set terminal mode flag.
+///  @brief    Execute ET command: read or set terminal mode flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -404,7 +404,7 @@ void exec_ET(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "EU" command: read or set upper/lower case flag.
+///  @brief    Execute EU command: read or set upper/lower case flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -426,7 +426,7 @@ void exec_EU(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "EV" command: read or set edit verify flag.
+///  @brief    Execute EV command: read or set edit verify flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -447,7 +447,7 @@ void exec_EV(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "EJ" command: read or set operating environment
+///  @brief    Scan EJ command: read or set operating environment
 ///            information.
 ///
 ///  @returns  true if command is an operand or operator, else false.

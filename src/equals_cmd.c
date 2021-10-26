@@ -1,6 +1,6 @@
 ///
 ///  @file    equals_cmd.c
-///  @brief   Execute "=" command.
+///  @brief   Execute = (equals) command.
 ///
 ///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -130,7 +130,7 @@ static bool check_format(const char *format)
 
 
 ///
-///  @brief    Execute "=", "==", and "===" commands (and with ":" modifiers).
+///  @brief    Execute = (equals) command.
 ///
 ///             n=     Display n in decimal, + CRLF
 ///             n==    Display n in octal, + CRLF
@@ -194,7 +194,7 @@ void exec_equals(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan '=' command.
+///  @brief    Scan = (equals) command.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///

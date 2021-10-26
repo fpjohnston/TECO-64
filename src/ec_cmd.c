@@ -67,7 +67,7 @@ void close_files(void)
 
 
 ///
-///  @brief    Execute "EC" command: copy input to output and close file.
+///  @brief    Execute EC command: copy input to output and close file.
 ///
 ///  @returns  Nothing.
 ///

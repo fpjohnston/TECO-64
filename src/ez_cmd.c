@@ -45,7 +45,7 @@ tstring ez = { .data = NULL, .len = 0 }; ///< Output from EZ command
 
 
 ///
-///  @brief    Execute "EZ" command: execute system command.
+///  @brief    Execute EZ command: execute system command.
 ///
 ///  @returns  Nothing.
 ///

@@ -146,7 +146,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 
 
 ///
-///  @brief    Execute "F>" command: flow to end of loop.
+///  @brief    Execute F> command: flow to end of loop.
 ///
 ///  @returns  Nothing.
 ///
@@ -173,7 +173,7 @@ void exec_F_gt(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "F<" command: flow to start of loop.
+///  @brief    Execute F< command: flow to start of loop.
 ///
 ///  @returns  Nothing.
 ///
@@ -202,7 +202,7 @@ void exec_F_lt(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute ">" command: end of loop.
+///  @brief    Execute > command: end of loop.
 ///
 ///  @returns  Nothing.
 ///
@@ -241,7 +241,7 @@ void exec_gt(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "<" command: start of loop.
+///  @brief    Execute < command: start of loop.
 ///
 ///  @returns  Nothing.
 ///
@@ -267,7 +267,7 @@ void exec_lt(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute ";" command: exit loop.
+///  @brief    Execute ; command: exit loop.
 ///
 ///  @returns  Nothing.
 ///
@@ -412,7 +412,7 @@ void reset_loop(void)
 
 
 ///
-///  @brief    Scan ">" command: relational operator.
+///  @brief    Scan > command: relational operator.
 ///
 ///  @returns  true if extended operator found, else false.
 ///
@@ -463,7 +463,7 @@ bool scan_gt(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "<" command: relational operator or start of loop.
+///  @brief    Scan < command: relational operator or start of loop.
 ///
 ///  @returns  true if extended operator found, else false.
 ///
@@ -529,7 +529,7 @@ bool scan_lt(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan ";" command.
+///  @brief    Scan ; command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

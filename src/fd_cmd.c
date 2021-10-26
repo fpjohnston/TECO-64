@@ -40,7 +40,7 @@
 
 
 ///
-///  @brief    Execute "FD" command: search and delete.
+///  @brief    Execute FD command: search and delete.
 ///
 ///  @returns  Nothing.
 ///
@@ -93,7 +93,7 @@ void exec_FD(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "FD" command.
+///  @brief    Scan FD command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

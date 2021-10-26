@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute "D" command: delete characters at dot.
+///  @brief    Execute D command: delete characters at dot.
 ///
 ///  @returns  Nothing.
 ///
@@ -86,7 +86,7 @@ void exec_D(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "K" command: kill (delete) lines.
+///  @brief    Execute K command: kill (delete) lines.
 ///
 ///  @returns  Nothing.
 ///
@@ -134,7 +134,7 @@ void exec_K(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "D" command.
+///  @brief    Scan D command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///
@@ -154,7 +154,7 @@ bool scan_D(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "K" command.
+///  @brief    Scan K command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

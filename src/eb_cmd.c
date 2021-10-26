@@ -38,7 +38,7 @@
 
 
 ///
-///  @brief    Execute "EB" command: open file for backup.
+///  @brief    Execute EB command: open file for backup.
 ///
 ///  @returns  Nothing.
 ///

@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Execute "FK" command: forward search and delete.
+///  @brief    Execute FK command: forward search and delete.
 ///
 ///  @returns  Nothing.
 ///
@@ -76,7 +76,7 @@ void exec_FK(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "FK" command.
+///  @brief    Scan FK command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

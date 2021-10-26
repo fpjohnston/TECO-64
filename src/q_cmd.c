@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Scan "Q" command: return numeric value of Q-register, or size
+///  @brief    Scan Q command: return numeric value of Q-register, or size
 ///            of text string.
 ///
 ///  @returns  true (command is an operand).

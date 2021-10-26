@@ -44,7 +44,7 @@ char eg_command[PATH_MAX] = { NUL };    ///< Command to execute on exit
 
 
 ///
-///  @brief    Execute "EG" command: execute system command.
+///  @brief    Execute EG command: execute system command.
 ///
 ///  @returns  Nothing.
 ///

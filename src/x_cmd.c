@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute "X" command: copy lines to Q-register.
+///  @brief    Execute X command: copy lines to Q-register.
 ///
 ///  @returns  Nothing.
 ///
@@ -118,7 +118,7 @@ void exec_X(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "X" command.
+///  @brief    Scan X command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

@@ -33,7 +33,7 @@
 
 
 ///
-///  @brief    Execute "EF" command: close output file without writing out
+///  @brief    Execute EF command: close output file without writing out
 ///            current buffer.
 ///
 ///  @returns  Nothing.

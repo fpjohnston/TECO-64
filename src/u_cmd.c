@@ -44,7 +44,7 @@
 
 
 ///
-///  @brief    Execute "U" command: store number in Q-register.
+///  @brief    Execute U command: store number in Q-register.
 ///
 ///  @returns  Nothing.
 ///
@@ -84,7 +84,7 @@ void exec_U(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "U" command.
+///  @brief    Scan U command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

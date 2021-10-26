@@ -33,7 +33,7 @@
 
 
 ///
-///  @brief    Execute "EM" command: echo macro in Q-register according to bits
+///  @brief    Execute EM command: echo macro in Q-register according to bits
 ///            set in specified Q-register. Used to "squish" macros.
 ///
 ///  @returns  Nothing.
@@ -83,7 +83,7 @@ void exec_EM(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "EM" command.
+///  @brief    Scan EM command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

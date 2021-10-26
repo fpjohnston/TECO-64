@@ -40,7 +40,7 @@
 
 
 ///
-///  @brief    Execute "E_" command: search without yank protection.
+///  @brief    Execute E_ command: search without yank protection.
 ///
 ///  @returns  Nothing.
 ///
@@ -93,7 +93,7 @@ void exec_E_ubar(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "E_" command.
+///  @brief    Scan E_ command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

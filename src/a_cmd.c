@@ -1,6 +1,6 @@
 ///
 ///  @file    a_cmd.c
-///  @brief   Execute "A" command.
+///  @brief   Execute A command.
 ///
 ///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -207,7 +207,7 @@ bool append_line(void)
 
 
 ///
-///  @brief    Execute "A" command: append lines to buffer.
+///  @brief    Execute A command: append lines to buffer.
 ///
 ///  @returns  Nothing.
 ///
@@ -231,7 +231,7 @@ void exec_A(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "A" command: get value of character in buffer.
+///  @brief    Scan A command: get value of character in buffer.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///

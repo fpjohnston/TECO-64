@@ -125,7 +125,7 @@ static int_t get_w(int_t n)
 
 
 ///
-///  @brief    Execute "W" command: process display functions.
+///  @brief    Execute W command: process display functions.
 ///
 ///  @returns  Nothing.
 ///
@@ -172,7 +172,7 @@ void exec_W(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "W" command: process display functions.
+///  @brief    Scan W command: process display functions.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///

@@ -49,7 +49,7 @@ static bool validate_tag(tstring *tag);
 
 
 ///
-///  @brief    Execute "!" command: comment/tag. This function doesn't actually
+///  @brief    Execute ! command: comment/tag. This function doesn't actually
 ///            do anything, but it exists to ensure that the command is properly
 ///            parsed, so that tags can be found with the O and nO commands.
 ///
@@ -72,7 +72,7 @@ void exec_bang(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "O" command: goto and computed goto.
+///  @brief    Execute O command: goto and computed goto.
 ///
 ///  @returns  Nothing.
 ///
@@ -349,7 +349,7 @@ bool scan_bang(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "O" command.
+///  @brief    Scan O command.
 ////
 ///  @returns  false (command is not an operand or operator).
 ///

@@ -39,7 +39,7 @@
 
 
 ///
-///  @brief    Scan "^P" (CTRL/P) command: get current page number.
+///  @brief    Scan CTRL/P command: get current page number.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -59,8 +59,8 @@ bool scan_ctrl_P(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "^Q" (CTRL/Q) command: get no. of characters between
-///            dot and nth line terminator. n may be negative.
+///  @brief    Scan CTRL/Q command: get no. of characters between dot and nth
+///            line terminator. n may be negative.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -91,9 +91,9 @@ bool scan_ctrl_Q(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "^S" (CTRL/S) command: return negative of last insert,
-///            string found, or string inserted with a G command, whichever
-///            occurred last.
+///  @brief    Scan CTRL/S command: return negative of last insert, string
+///            found, or string inserted with a G command, whichever occurred
+///            last.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -113,7 +113,7 @@ bool scan_ctrl_S(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "^Y" (CTRL/Y) command: equivalent to .+^S,.
+///  @brief    Scan CTRL/Y command: equivalent to .+^S,.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -151,8 +151,7 @@ bool scan_ctrl_Y(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "^Z" (CTRL/Z) command: get no. of chrs. in all
-///            Q-registers.
+///  @brief    Scan CTRL/Z command: get no. of chrs. in all Q-registers.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -174,7 +173,7 @@ bool scan_ctrl_Z(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "^^" command: get literal value of next character
+///  @brief    Scan CTRL/^ command: get literal value of next character
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -195,7 +194,7 @@ bool scan_ctrl_up(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "." command: get current position in buffer.
+///  @brief    Scan . command: get current position in buffer.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -212,7 +211,7 @@ bool scan_dot(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "B" command: read first position in buffer (always 0).
+///  @brief    Scan B command: read first position in buffer (always 0).
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -232,7 +231,7 @@ bool scan_B(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "H" command: equivalent to B,Z.
+///  @brief    Scan H command: equivalent to B,Z.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -270,7 +269,7 @@ bool scan_H(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "Z" command: read last position in buffer.
+///  @brief    Scan Z command: read last position in buffer.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///

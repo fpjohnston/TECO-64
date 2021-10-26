@@ -34,7 +34,7 @@
 
 
 ///
-///  @brief    Execute "^V" (CTRL/V) command: force conversion to lower case.
+///  @brief    Execute CTRL/V command: force conversion to lower case.
 ///
 ///             ^V -> enable lower-case conversion.
 ///            0^V -> disable lower-case conversion.

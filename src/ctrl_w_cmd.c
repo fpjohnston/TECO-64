@@ -34,7 +34,7 @@
 
 
 ///
-///  @brief    Execute "^W" (CTRL/W) command: force conversion to upper case.
+///  @brief    Execute CTRL/W command: force conversion to upper case.
 ///
 ///             ^W -> enable upper-case conversion.
 ///            0^W -> disable upper-case conversion.

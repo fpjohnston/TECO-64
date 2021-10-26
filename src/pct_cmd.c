@@ -1,6 +1,6 @@
  ///
 ///  @file    pct_cmd.c
-///  @brief   Scan and execute "%" command.
+///  @brief   Execute % command.
 ///
 ///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -36,7 +36,7 @@
 
 
 ///
-///  @brief    Execute "%" command: add value to Q-register, and return result
+///  @brief    Execute % command: add value to Q-register, and return result
 ///            (unless command was colon-modified).
 ///
 ///  @returns  Nothing.
@@ -63,7 +63,7 @@ void exec_pct(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "%" command with format "n:Xq".
+///  @brief    Scan % command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

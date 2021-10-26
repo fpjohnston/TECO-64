@@ -40,7 +40,7 @@
 
 
 ///
-///  @brief    Execute "EQ" command: read file into Q-register.
+///  @brief    Execute EQ command: read file into Q-register.
 ///
 ///  @returns  Nothing.
 ///
@@ -82,7 +82,7 @@ void exec_EQ(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "EQ" command. Also E% and FQ.
+///  @brief    Scan EQ command. Also E% and FQ.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

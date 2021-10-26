@@ -33,7 +33,7 @@
 
 
 ///
-///  @brief    Execute "EP" command: switch to secondary input stream.
+///  @brief    Execute EP command: switch to secondary input stream.
 ///
 ///  @returns  Nothing.
 ///

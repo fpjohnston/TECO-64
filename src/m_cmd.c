@@ -60,7 +60,7 @@ bool check_macro(void)
 
 
 ///
-///  @brief    Execute "M" command: invoke macro in Q-register.
+///  @brief    Execute M command: invoke macro in Q-register.
 ///
 ///                Mq -> Execute Q-register q as a command string.
 ///               nMq -> Same as Mq; use n as numeric argument.
@@ -210,7 +210,7 @@ void reset_macro(void)
 
 
 ///
-///  @brief    Scan "M" command.
+///  @brief    Scan M command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

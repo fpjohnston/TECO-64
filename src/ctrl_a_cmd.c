@@ -35,7 +35,7 @@
 
 
 ///
-///  @brief    Execute "^A" (CTRL/A) command: type out string.
+///  @brief    Execute CTRL/A command: type out string.
 ///
 ///  @returns  Nothing.
 ///
@@ -83,7 +83,7 @@ void exec_ctrl_A(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "^A" (CTRL/A) command.
+///  @brief    Scan CTRL/A command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

@@ -37,7 +37,7 @@
 
 
 ///
-///  @brief    Execute "^U" (CTRL/U) command: store/append string/character in
+///  @brief    Execute CTRL/U command: store/append string/character in
 ///            Q-register.
 ///
 ///  @returns  Nothing.
@@ -93,7 +93,7 @@ void exec_ctrl_U(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "^U" (CTRL/U) command.
+///  @brief    Scan CTRL/U command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

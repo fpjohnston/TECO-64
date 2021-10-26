@@ -125,7 +125,7 @@ static void convert(char *buf, uint bufsize, const char *err_str, uint len)
 
 
 ///
-///  @brief    Execute "^C" (CTRL/C) command: return control to main loop.
+///  @brief    Execute CTRL/C command: return control to main loop.
 ///
 ///  @returns  Nothing.
 ///

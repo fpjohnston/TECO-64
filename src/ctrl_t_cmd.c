@@ -38,7 +38,7 @@
 
 
 ///
-///  @brief    Execute "^T" (CTRL/T) command: read input or type character.
+///  @brief    Execute CTRL/T command: read input or type character.
 ///
 ///              ^T  Read and decode next character typed.
 ///              ^T= Type ASCII value of next character.
@@ -103,7 +103,7 @@ void exec_ctrl_T(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "^T" (CTRL/T) command.
+///  @brief    Scan CTRL/T command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

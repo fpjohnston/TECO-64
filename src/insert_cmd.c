@@ -38,7 +38,7 @@
 
 
 ///
-///  @brief    Execute "^I" (CTRL/I) command: insert text.
+///  @brief    Execute CTRL/I command: insert text.
 ///
 ///  @returns  Nothing.
 ///
@@ -58,7 +58,7 @@ void exec_ctrl_I(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "I" command: insert text.
+///  @brief    Execute I command: insert text.
 ///
 ///  @returns  Nothing.
 ///
@@ -134,7 +134,7 @@ void exec_insert(const char *buf, uint_t len)
 
 
 ///
-///  @brief    Scan "^I" (CTRL/I) command.
+///  @brief    Scan CTRL/I command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///
@@ -154,7 +154,7 @@ bool scan_ctrl_I(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "I" command.
+///  @brief    Scan I command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

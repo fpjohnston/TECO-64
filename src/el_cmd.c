@@ -38,7 +38,7 @@
 
 
 ///
-///  @brief    Execute "EL" command: open or close log file.
+///  @brief    Execute EL command: open or close log file.
 ///
 ///            ELfile`         - open log file for write.
 ///            EL`             - close log file.
@@ -90,7 +90,7 @@ void exec_EL(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan "EL" command.
+///  @brief    Scan EL command.
 ///
 ///  Returns: false (command is not an operand or operator).
 ///

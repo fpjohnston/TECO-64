@@ -162,7 +162,7 @@ static void endif(struct cmd *unused, bool else_ok)
 
 
 ///
-///  @brief    Execute "'" command: end conditional statement.
+///  @brief    Execute ' command: end conditional statement.
 ///
 ///  @returns  Nothing.
 ///
@@ -192,7 +192,7 @@ void exec_apos(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "F'" command: flow to end of conditional statement.
+///  @brief    Execute F' command: flow to end of conditional statement.
 ///
 ///  @returns  Nothing.
 ///
@@ -212,7 +212,7 @@ void exec_F_apos(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "F|" command: flow to else clause of conditional statement.
+///  @brief    Execute F| command: flow to else clause of conditional statement.
 ///
 ///  @returns  Nothing.
 ///
@@ -232,7 +232,7 @@ void exec_F_vbar(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute '"' (quote) command: if/then/else statement.
+///  @brief    Execute " (quote) command: if/then/else statement.
 ///
 ///            n"<    Text for less than zero
 ///            n"=    Test for equal to zero
@@ -377,7 +377,7 @@ void exec_quote(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute "|" command: else clause of conditional statement.
+///  @brief    Execute | command: else clause of conditional statement.
 ///
 ///  @returns  Nothing.
 ///
@@ -475,7 +475,7 @@ void reset_if(void)
 
 
 ///
-///  @brief    Scan quote command.
+///  @brief    Scan " (quote) command.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///

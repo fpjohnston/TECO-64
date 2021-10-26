@@ -74,7 +74,7 @@ int check_EI(void)
 
 
 ///
-///  @brief    Execute "EI" command: read TECO command file. This is handled in
+///  @brief    Execute EI command: read TECO command file. This is handled in
 ///            one of two ways: preset where input is read from after execution
 ///            of the command string has completed, as DEC TECOs have done, or
 ///            immediately execute the contents of the file as though it were a
@@ -213,7 +213,7 @@ void reset_indirect(void)
 
 
 ///
-///  @brief    Scan "EI" command.
+///  @brief    Scan EI command.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

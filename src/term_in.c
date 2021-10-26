@@ -178,7 +178,7 @@ static void exec_ctrl_G(void)
 
 
 ///
-///  @brief    Execute "DEL": delete last character typed. We should normally
+///  @brief    Execute DEL: delete last character typed. We should normally
 ///            only get here if there is actually something to delete; if the
 ///            terminal buffer is empty, then BS is executed as an immediate-
 ///            action command.
@@ -213,7 +213,7 @@ static void exec_DEL(void)
 
 
 ///
-///  @brief    Execute "BS" or "LF": immediate-action commands to go to next or
+///  @brief    Execute BS or LF: immediate-action commands to go to next or
 ///            previous lines in file.
 ///
 ///  @returns  Nothing.
@@ -265,7 +265,7 @@ static void exec_inspect(int_t pos, int_t line)
 
 
 ///
-///  @brief    Execute "*": immediate-action command to store last command
+///  @brief    Execute * (star) immediate-action command to store last command
 ///            string in Q-register.
 ///
 ///  @returns  Nothing.
