@@ -42,21 +42,22 @@ use File::Slurp;
 
 # Command-line options
 
+my $check = 1;
 my $clean;
 my $execute = 1;
+my $make = 1;
 my $orphans;
 my $target  = 'TECO-64';
 my $verbose = q{};
 
-my $indir;
-my $outdir;
+my $testdir;
 my $nscripts = 0;
 my $nskipped = 0;
 my $nfiles   = 0;
 my $ntests   = 0;
 my %scripts;
-my %logfiles;
-my @tecfiles = ();
+my %benchmark_files;
+my @teco_files = ();
 
 # Define tokens we will use to translate scripts into test sets,
 # depending on the TECO we are targeting.
@@ -65,23 +66,23 @@ my %tokens   = (
     teco64 => {
         '8'     =>  q{4096,0 ET},
         'bad'   =>  q{/dev/teco},
-        'cmd1'  =>  q{cmd_1.tmp},
-        'cmd2'  =>  q{cmd_2.tmp},
+        'cmd1'  =>  q{cmd1.tmp},
+        'cmd2'  =>  q{cmd2.tmp},
         'enter' =>  q{0,128ET HK 0E1 1,0E3},
         '"E'    =>  q{"E [[FAIL]] '},
         'error' => qq{@^A/!FAIL!/ [[^T]]},
         'exit'  =>  q{^D EK HK [[PASS]] EX},
         'expr'  =>  q{64},
         'FAIL'  =>  q{[[error]] ^C},
-        'in1'   =>  q{in_1.tmp},
-        'in2'   =>  q{in_2.tmp},
+        'in1'   =>  q{in1.tmp},
+        'in2'   =>  q{in2.tmp},
         'I'     =>  q{10@I//},
         'log1'  =>  q{log_1.tmp},
         'LOOP'  =>  q{32},
         '"L'    =>  q{"L [[FAIL]] '},
         '"N'    =>  q{"N [[FAIL]] '},
-        'out1'  =>  q{out_1.tmp},
-        'out2'  =>  q{out_2.tmp},
+        'out1'  =>  q{out1.tmp},
+        'out2'  =>  q{out2.tmp},
         'PASS'  => qq{@^A/!PASS!/ [[^T]]},
         'Q'     =>  q{64},
         '"S'    =>  q{"S [[FAIL]] '},
@@ -91,23 +92,23 @@ my %tokens   = (
     teco32 => {
         '8'     =>  q{},
         'bad'   =>  q{/dev/teco},
-        'cmd1'  =>  q{cmd_1.tmp},
-        'cmd2'  =>  q{cmd_2.tmp},
+        'cmd1'  =>  q{cmd1.tmp},
+        'cmd2'  =>  q{cmd2.tmp},
         'enter' =>  q{0,128ET HK},
         '"E'    =>  q{"E [[FAIL]] '},
         'error' => qq{@^A/!FAIL!/ [[^T]]},
         'exit'  =>  q{^D EK HK [[PASS]] EX},
         'expr'  =>  q{64},
         'FAIL'  =>  q{[[error]] ^C},
-        'in1'   =>  q{in_1.tmp},
-        'in2'   =>  q{in_2.tmp},
+        'in1'   =>  q{in1.tmp},
+        'in2'   =>  q{in2.tmp},
         'I'     =>  q{13@I// 10@I//},
         'log1'  =>  q{log_1.tmp},
         'LOOP'  =>  q{32},
         '"L'    =>  q{"L [[FAIL]] '},
         '"N'    =>  q{"N [[FAIL]] '},
-        'out1'  =>  q{out_1.tmp},
-        'out2'  =>  q{out_2.tmp},
+        'out1'  =>  q{out1.tmp},
+        'out2'  =>  q{out2.tmp},
         'PASS'  => qq{@^A/!PASS!/ [[^T]]},
         'Q'     =>  q{64},
         '"S'    =>  q{"S [[FAIL]] '},
@@ -117,23 +118,23 @@ my %tokens   = (
     tecoc => {
         '8'     =>  q{},
         'bad'   =>  q{/dev/teco},
-        'cmd1'  =>  q{cmd_1.tmp},
-        'cmd2'  =>  q{cmd_2.tmp},
+        'cmd1'  =>  q{cmd1.tmp},
+        'cmd2'  =>  q{cmd2.tmp},
         'enter' =>  q{0,128ET HK},
         '"E'    =>  q{"E [[FAIL]] '},
         'error' => qq{@^A/!FAIL!/ [[^T]]},
         'exit'  =>  q{^D EK HK [[PASS]] EX},
         'expr'  =>  q{63},
         'FAIL'  =>  q{[[error]] ^C},
-        'in1'   =>  q{in_1.tmp},
-        'in2'   =>  q{in_2.tmp},
+        'in1'   =>  q{in1.tmp},
+        'in2'   =>  q{in2.tmp},
         'I'     =>  q{13@I// 10@I//},
         'log1'  =>  q{log_1.tmp},
         'LOOP'  =>  q{31},
         '"L'    =>  q{"L [[FAIL]] '},
         '"N'    =>  q{"N [[FAIL]] '},
-        'out1'  =>  q{out_1.tmp},
-        'out2'  =>  q{out_2.tmp},
+        'out1'  =>  q{out1.tmp},
+        'out2'  =>  q{out2.tmp},
         'PASS'  => qq{@^A/!PASS!/ [[^T]]},
         'Q'     =>  q{21},
         '"S'    =>  q{"S [[FAIL]] '},
@@ -148,15 +149,15 @@ my %tokens   = (
 
 initialize();
 
-find( { wanted => \&wanted }, $indir );
+find( { wanted => \&wanted }, "$testdir/scripts" );
 
-# If we found any .tec files in the input directory tree, then they're helper
-# files for the test scripts, so copy them to the output directory.
+# If we found any .tec files in the scripts directory, then they're helper
+# files for the test scripts, so copy them to the cases directory.
 
-while ( defined( my $file = pop @tecfiles ) )
+while ( defined( my $file = pop @teco_files ) )
 {
-    copy( $file, $outdir )
-      or croak "Failed to copy '$file' to '$outdir': $OS_ERROR";
+    copy( $file, "$testdir/cases" )
+      or croak "Failed to copy '$file' to '$testdir/cases': $OS_ERROR";
 }
 
 # Sort all of the input files by file name, then create a test script for
@@ -168,47 +169,47 @@ foreach my $file ( sort { uc $a cmp uc $b } keys %scripts )
     my $infile = "$scripts{$file}/$file.test";
     my @input  = read_file($infile);
 
-    next if ( $#input + 1 == 0 );
+    next if $#input == -1;
 
     my $outfile = "$file.tec";
     my ( $report, $text, $expects, $redirect ) =
-      parse_script( $infile, $outfile, @input );
+        parse_script( $infile, $outfile, @input );
 
     next unless $report;
 
-    # Found a real test script, so count it
+    if ($make)
+    {
+        # Found a real test script, so count it
 
-    ++$nscripts;
+        ++$nscripts;
 
-    $text = translate_tokens( $infile, $text, $redirect );
+        $text = translate_tokens( $infile, $text, $redirect );
 
-    write_test( "$outdir$outfile", $text );
+        write_test( "$testdir/cases/$outfile", $text );
+    }
 
     if ($execute)
     {
-        chdir $outdir or croak "Can't change directory to $outdir";
+        my $cwd = getcwd;
 
-        my $actual   = run_test( $outfile, $report, $expects, $redirect );
-        my $expected = find_log($outfile);
+        chdir "$testdir/cases" or croak "Can't change directory to $testdir/cases";
 
-        if ($expected)
-        {
-            $report .= ' =>';
-        }
-        else
-        {
-            $report .= ' ->';
-        }
+        my $actual = run_test( $outfile, $report, $expects, $redirect );
 
-        check_test( $report, $expects, $actual, $expected );
+        chdir $cwd or croak 'Can\'t change directory to \'..\'';
 
-        chdir q{..} or croak 'Can\'t change directory to \'..\'';
+        write_result( "$testdir/results/$file.lis", $actual );
+    }
+
+    if ($check)
+    {
+        check_test( $file, $report, $expects );
     }
 }
 
 # Clean up any temp. files we may have created.
 
-my @files = glob "$outdir" . '*.tmp';
+my @files = glob "$testdir/cases/*.tmp";
 
 foreach my $file (@files)
 {
@@ -218,18 +219,18 @@ foreach my $file (@files)
 $nscripts += $nskipped;
 
 print "\n" if $verbose;
-printf "Found %u script%s in $indir, ", $nscripts, $nscripts == 1 ? q{} : 's';
-printf "skipped %u\n", $nskipped;
-printf "Created %u file%s in $outdir, ", $nfiles, $nfiles == 1 ? q{} : 's';
+printf "Found %u script%s in $testdir/scripts, skipped %u\n", $nscripts,
+    $nscripts == 1 ? q{} : 's', $nskipped;
+printf "Created %u file%s in $testdir/cases, ", $nfiles, $nfiles == 1 ? q{} : 's';
 printf "containing a total of $ntests test%s\n", $ntests == 1 ? q{} : 's';
 
 # Tell user which log files were superfluous
 
-if ($orphans && keys %logfiles != 0)
+if ($orphans && keys %benchmark_files != 0)
 {
     print "Orphan log files:\n";
 
-    foreach my $file (sort keys %logfiles)
+    foreach my $file (sort keys %benchmark_files)
     {
         print "    $file\n";
     }
@@ -404,7 +405,21 @@ sub check_teco
 
 sub check_test
 {
-    my ( $report, $expects, $actual, $expected ) = @_;
+    my ( $file, $report, $expects ) = @_;
+
+    my $actual = get_data("$testdir/results/$file.lis");
+    my $expected = get_data("$testdir/benchmarks/$file.lis");
+
+    delete($benchmark_files{$file});    # Delete this key
+
+    if ($expected)
+    {
+        $report .= ' =>';
+    }
+    else
+    {
+        $report .= ' ->';
+    }
 
     if ( $actual eq 'TIMEOUT' )
     {
@@ -465,32 +480,28 @@ sub exec_test
 }
 
 
-sub find_log
+sub get_data
 {
     my ($file) = @_;
-
-    $file =~ s/ [.] tec $ /.log/msx;
 
     if ( !-e $file )
     {
         return;
     }
 
-    my $expected = read_file($file);
+    my $text = read_file($file);
 
-    delete($logfiles{$file});           # Delete this key
-
-    if ($expected)
+    if ($text)
     {
-        $expected =~ s/\r//msg;
+        $text =~ s/\r//msg;
 
-        if ($expected =~ /!START! . (.+) /msx)
+        if ($text =~ /!START! . (.+) /msx)
         {
-            $expected = $1;
+            $text = $1;
         }
     }
 
-    return $expected;
+    return $text;
 }
 
 
@@ -502,14 +513,31 @@ sub initialize
 
     GetOptions(
         'clean!'   => \$clean,
+        'check!'   => \$check,
         'execute!' => \$execute,
+        'make!'    => \$make,
         'orphans!' => \$orphans,
         'teco=s'   => \$target,
         'verbose'  => \$verbose,
     );
 
-    croak 'Missing input directory'  if $#ARGV + 1 == 0;
-    croak 'Missing output directory' if $#ARGV + 1 == 1;
+    if ($#ARGV == -1)
+    {
+        $testdir = '.';
+    }
+    elsif ($#ARGV == 0)
+    {
+        $testdir = $ARGV[0] =~ s{ \$ }{}mrs;
+    }
+    else
+    {
+        croak 'Too many arguments';
+    }
+
+    croak 'Can\'t find scripts directory'    if !-d "$testdir/scripts";
+    croak 'Can\'t find benchmarks directory' if !-d "$testdir/benchmarks";
+    croak 'Can\'t find cases directory'      if !-d "$testdir/cases";
+    croak 'Can\'t find results directory'    if !-d "$testdir/results";
 
     my %targets = (
         '32'      => 'TECO-32',
@@ -529,24 +557,30 @@ sub initialize
 
     croak "Invalid TECO version: $orig" unless $target;
 
-    $indir  = $ARGV[0] =~ s{ \$ }{}mrs;
-    $outdir = $ARGV[1] =~ s{ \$ }{}mrs;
+    # Get the list of benchmark files
 
-    my @logfiles = glob "$outdir/*.log";
+    my @files = glob "$testdir/benchmarks/*.lis";
 
-    foreach my $file (@logfiles)
+    foreach my $file (@files)
     {
         $file = basename($file);
-        $logfiles{$file} = 1;
+        $benchmark_files{$file} = 1;
     }
 
-    # If requested, delete any existing .tec files in output directory
+    # If requested, reinitialize cases/ and results/ directories
 
     if ($clean)
     {
-        my @outfiles = glob "$outdir/*.tec";
+        my @files = glob "$testdir/cases/*";
 
-        foreach my $file (@outfiles)
+        foreach my $file (@files)
+        {
+            unlink $file or croak "Can't delete file: $file";
+        }
+
+        @files = glob "$testdir/results/*";
+
+        foreach my $file (@files)
         {
             unlink $file or croak "Can't delete file: $file";
         }
@@ -644,15 +678,15 @@ sub run_test
     my ( $file, $report, $expects, $redirect ) = @_;
     my $fh;
 
-    unlink 'out_1.tmp', 'out_2.tmp';
+    unlink 'out1.tmp', 'out2.tmp';
 
-    open $fh, '>', 'in_1.tmp' or die "Can't create in_1.tmp: $OS_ERROR\n";
+    open $fh, '>', 'in1.tmp' or die "Can't create in1.tmp: $OS_ERROR\n";
 
     print {$fh} "hello, world!\n";
 
     close $fh;
 
-    open $fh, '>', 'cmd_1.tmp' or die "Can't create cmd_1.tmp: $OS_ERROR\n";
+    open $fh, '>', 'cmd1.tmp' or die "Can't create cmd1.tmp: $OS_ERROR\n";
 
     print {$fh} "@^A/hello, world!/ 10^T";
 
@@ -813,12 +847,26 @@ sub wanted
     {
         $scripts{$1} = $File::Find::dir;
     }
-    elsif ( $infile =~ / [.] tec $ /msx && $outdir )
+    elsif ( $infile =~ / [.] tec $ /msx )
     {
         $infile = getcwd . q{/} . $infile;
 
-        push @tecfiles, $infile;
+        push @teco_files, $infile;
     }
+
+    return;
+}
+
+
+sub write_result
+{
+    my ( $file, $text ) = @_;
+
+    open my $fh, '>', $file or croak "Can't open output file: $file";
+
+    print {$fh} $text;
+
+    close $fh;
 
     return;
 }
