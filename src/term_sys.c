@@ -164,17 +164,7 @@ void init_term(void)
 
         f.et.rubout    = true;          // Process DEL and ^U in scope mode
         f.et.lower     = true;          // Terminal can read lower case
-
-#if     defined(DISPLAY_MODE)
-
         f.et.scope     = true;          // Terminal is a scope
-
-#else
-
-        f.et.scope     = false;         // Terminal is not a scope
-
-#endif
-
         f.et.eightbit  = true;          // Terminal can use 8-bit characters
 
         getsize();

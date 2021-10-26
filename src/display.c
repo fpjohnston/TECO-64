@@ -202,12 +202,9 @@ static void (check_error)(bool truth)
 
 #if     defined(DISPLAY_MODE)
 
-void check_escape(uint escape)
+void check_escape(bool escape)
 {
-    if (f.ed.escape ^ escape)           // Any change?
-    {
-        (void)keypad(stdscr, f.ed.escape ? (bool)TRUE : (bool)FALSE);
-    }
+    (void)keypad(stdscr, escape ? (bool)TRUE : (bool)FALSE);
 }
 
 #endif

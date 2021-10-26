@@ -238,24 +238,31 @@ void exec_E4(struct cmd *cmd)
 
 void exec_ED(struct cmd *cmd)
 {
+    union ed_flag ed = { .flag = f.ed.flag };
+
+    check_mn_flag(cmd, &ed.flag);
+
+    // Only allow defined bits to be set or cleared
+
+    f.ed.flag    = 0;
+    f.ed.caret   = ed.caret;
+    f.ed.yank    = ed.yank;
+    f.ed.keepdot = ed.keepdot;
+    f.ed.movedot = ed.movedot;
 
 #if    defined(DISPLAY_MODE)
 
-    union ed_flag saved = { .flag = f.ed.flag };
-
-#endif
-
-    check_mn_flag(cmd, &f.ed.flag);
-
-#if    defined(DISPLAY_MODE)
-
-    check_escape((uint)saved.escape);
+    if (f.ed.escape ^ ed.escape)
+    {
+        check_escape((bool)(f.ed.escape = ed.escape));
+    }
 
 #else
 
-    f.ed.escape = false;
+    f.ed.escape = false;                // Always off if no display mode
 
 #endif
+
 }
 
 
@@ -298,13 +305,15 @@ void exec_EH(struct cmd *cmd)
 
     // Only allow defined bits
 
-    f.eh.flag = 0;
+    f.eh.flag    = 0;
     f.eh.verbose = eh.verbose;
     f.eh.command = eh.command;
-    f.eh.line = eh.line;
+    f.eh.line    = eh.line;
 
 #if     defined(TEST)
-    f.eh.func = eh.func;
+
+    f.eh.func    = eh.func;
+
 #endif
 
 }
@@ -340,24 +349,50 @@ void exec_ES(struct cmd *cmd)
 
 void exec_ET(struct cmd *cmd)
 {
-    union et_flag saved = { .flag = f.et.flag };
+    union et_flag et = { .flag = f.et.flag };
 
-    check_mn_flag(cmd, &f.et.flag);
+    check_mn_flag(cmd, &et.flag);
 
 #if     defined(__vms)
 
-    if (f.et.eightbit ^ saved.eightbit)
+    bool eightbit = f.et.eightbit ^ et.eightbit;
+
+#endif
+
+#if     defined(DISPLAY_MODE)
+
+    bool truncate = f.et.truncate ^ et.truncate;
+
+#endif
+
+    // Only allow defined bits.
+
+    f.et.image    = et.image;
+    f.et.rubout   = et.rubout;
+    f.et.lower    = et.lower;
+    f.et.noecho   = et.noecho;
+    f.et.nowait   = et.nowait;
+    f.et.abort    = et.abort;
+    f.et.truncate = et.truncate;
+    //f.et.scope  = et.scope;           // Scope bit is read-only
+    f.et.eightbit = et.eightbit;
+    f.et.accent   = et.accent;
+    f.et.ctrl_c   = et.ctrl_c;
+
+#if     defined(__vms)
+
+    if (eightbit)
     {
         // TODO: tell operating system if user changed bit
     }
 
 #endif
 
-    // If truncate mode just changed, that might affect display, so refresh it
-
 #if     defined(DISPLAY_MODE)
 
-    if (f.et.truncate ^ saved.truncate)
+    // If truncate mode just changed, that might affect display, so refresh it
+
+    if (truncate && f.e0.display)
     {
         ebuf_changed = true;            // Pretend that the buffer changed
         refresh_dpy();                  //  and force a refresh
@@ -365,9 +400,6 @@ void exec_ET(struct cmd *cmd)
 
 #endif
 
-    // The following is a read-only bit and cannot be changed by the user
-
-    f.et.scope = saved.scope;
 }
 
 

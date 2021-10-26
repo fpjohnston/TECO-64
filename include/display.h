@@ -85,7 +85,7 @@ extern struct watch w;
 
 #if     defined(DISPLAY_MODE)
 
-extern void check_escape(uint escape);
+extern void check_escape(bool escape);
 
 extern bool clear_eol(void);
 
