@@ -581,18 +581,35 @@ bool search_loop(struct search *s)
                     }
                     //lint -fallthrough
 
-                case SEARCH_E:
+                case SEARCH_E:          // For E_ commands
                     if (ifile->fp == NULL)
                     {
                         throw(E_NFI);   // No file for input
                     }
 
-                    if (!next_yank())
+                    if (s->search == search_backward)
                     {
-                        return false;
-                    }
+                        yank_backward(NULL);
 
-                    setpos_ebuf(t.B);
+                        if (t.Z == 0)
+                        {
+                            return false;
+                        }
+
+                        setpos_ebuf(t.Z); // Go to end of buffer
+
+                        s->text_start = -1;
+                        s->text_end = -t.Z;
+                    }
+                    else
+                    {
+                        if (!next_yank())
+                        {
+                            return false;
+                        }
+
+                        setpos_ebuf(t.B);
+                    }
 
                     break;
 

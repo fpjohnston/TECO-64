@@ -2,7 +2,7 @@
 
 ! Function: Test conversion to lower case !
 !  Command: 0^V !
-!     TECO: PASS !
+!  TECO-64: PASS !
 
 [[enter]]
 

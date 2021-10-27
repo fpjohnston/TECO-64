@@ -64,7 +64,7 @@ void exec_E_ubar(struct cmd *cmd)
 
     if (cmd->n_arg < 0)
     {
-        s.type       = SEARCH_S;
+        s.type       = SEARCH_E;
         s.search     = search_backward;
         s.count      = -cmd->n_arg;
         s.text_start = -1;              // Start at previous character

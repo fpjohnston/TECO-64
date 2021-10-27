@@ -3,9 +3,10 @@
 ! Function: Get TECO version number !
 !  Command: EO !
 !     TECO: ?NYI !
+!  TECO-32: PASS !
 
 [[enter]]
  
-40 EO                               ! Test: nEO !
+80 EO                               ! Test: nEO !
 
 [[exit]]

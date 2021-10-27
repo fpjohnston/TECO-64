@@ -95,7 +95,7 @@ static const struct cmd_table cmd_table[] =
     ENTRY(CTRL_H,  scan_ctrl_H,     NULL,            NO_ARGS),
     ENTRY(CTRL_I,  scan_ctrl_I,     exec_ctrl_I,     NO_ARGS),
     ENTRY(LF,      scan_nop,        NULL,            NO_ARGS),
-    ENTRY(VT,      scan_nop,        NULL,            NO_ARGS),
+    ENTRY(VT,      scan_bad,        NULL,            NO_ARGS),
     ENTRY(FF,      scan_nop,        NULL,            NO_ARGS),
     ENTRY(CR,      scan_nop,        NULL,            NO_ARGS),
     ENTRY(CTRL_N,  scan_flag1,      NULL,            NO_ARGS),

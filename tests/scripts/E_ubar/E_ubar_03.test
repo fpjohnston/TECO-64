@@ -2,7 +2,7 @@
 
 ! Function: Destructive backward search !
 !  Command: -E_ !
-!  TECO-32: ?SRH !
+!  TECO-32: PASS !
 
 [[enter]]
 
@@ -10,7 +10,7 @@
     @I/line /
     %A \
     @I/ abcdefghijklmnopqrstuvwxyz 0123456789/
-    MY 12@I//
+    [[I]] 12@I//
 >
 
 :@EW"[[out1]]" [["U]]
@@ -21,6 +21,6 @@ EC
 
 5P
 
--@E_/abc/ [["S]]                            ! Test: -E_ !
+-:@E_/line 4/ [["U]]                    ! Test: -E_ !
 
 [[exit]]

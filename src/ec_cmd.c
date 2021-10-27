@@ -48,7 +48,14 @@ void close_files(void)
 {
     struct ofile *ofile = &ofiles[ostream];
 
-    if (ofile->fp != NULL)
+    if (ofile->fp == NULL)
+    {
+        if (t.Z != 0)
+        {
+            throw(E_NFO);               // No output file open
+        }
+    }
+    else
     {
         while (next_page(t.B, t.Z, f.ctrl_e, (bool)true))
         {

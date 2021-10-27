@@ -21,7 +21,7 @@
         <command name='CTRL_H'          scan='ctrl_H'                     />
         <command name='CTRL_I'          scan='ctrl_I'    exec='ctrl_I'    />
         <command name='LF'              scan='nop'                        />
-        <command name='VT'              scan='nop'                        />
+        <command name='VT'              scan='bad'                        />
         <command name='FF'              scan='nop'                        />
         <command name='CR'              scan='nop'                        />
         <command name='CTRL_N'          scan='flag1'                      />

@@ -2,7 +2,7 @@
 
 ! Function: Test conversion to upper case !
 !  Command: 1^W !
-!  TECO-32: PASS !
+!  TECO-64: PASS !
 
 [[enter]]
 

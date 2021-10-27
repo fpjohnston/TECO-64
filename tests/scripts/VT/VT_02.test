@@ -2,7 +2,7 @@
 
 ! Function: Test vertical tab in command file !
 !  Command: VT !
-!     TECO: PASS !
+!     TECO: ?ILL !
 
 [[enter]]
 

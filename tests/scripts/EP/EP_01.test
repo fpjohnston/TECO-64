@@ -30,12 +30,12 @@ A
 
 @ER//                                   ! Switch to primary stream !
 
+HT
+HK
 EC
 
 EP                                      ! Switch to secondary stream !
 
 EC
-
-HT
 
 [[exit]]

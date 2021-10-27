@@ -3,6 +3,7 @@
 ! Function: Delete characters !
 !  Command: D !
 !     TECO: ?DTB !
+!  TECO-32: ?POP !
 
 [[enter]]
 

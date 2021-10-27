@@ -47,6 +47,7 @@ my $execute = 1;
 my $make = 1;
 my $orphans;
 my $prove = 1;
+my $skip;
 my $target  = 'TECO-64';
 my $verbose = q{};
 
@@ -149,7 +150,7 @@ my %tokens   = (
 
 initialize();
 
-find( { wanted => \&wanted }, "$testdir/scripts" );
+find( { wanted => \&wanted, follow => 1 }, "$testdir/scripts" );
 
 # If we found any .tec files in the scripts directory, then they're helper
 # files for the test scripts, so copy them to the cases directory.
@@ -186,19 +187,23 @@ foreach my $file ( sort { uc $a cmp uc $b } keys %scripts )
         $text = translate_tokens( $infile, $text, $redirect );
 
         write_test( "$testdir/cases/$outfile", $text );
-    }
 
-    if ($execute)
-    {
-        my $cwd = getcwd;
+        if ($execute)
+        {
+            my $cwd = getcwd;
 
-        chdir "$testdir/cases" or croak "Can't change directory to $testdir/cases";
+            chdir "$testdir/cases" or croak "Can't change directory to $testdir/cases";
 
-        my $actual = run_test( $outfile, $report, $expects, $redirect );
+            my $actual = setup_test( $outfile, $report, $expects, $redirect );
 
-        chdir $cwd or croak 'Can\'t change directory to \'..\'';
+            chdir $cwd or croak "Can't change directory to $cwd";
 
-        write_result( "$testdir/results/$file.lis", $actual );
+            write_result( "$testdir/results/$file.lis", $actual );
+        }
+        else
+        {
+            $prove = 0;
+        }
     }
 
     if ($prove)
@@ -245,6 +250,8 @@ if ($make)
 exit;
 
 
+# Check to see that the test script specifies a valid TECO.
+
 sub check_teco
 {
     my ( $infile, $teco, $redirect ) = @_;
@@ -256,7 +263,7 @@ sub check_teco
     {
         ++$nskipped;
 
-        print "Skipping $teco file: $infile\n" if $verbose;
+        print "Skipping $teco file: $infile\n" if $skip;
 
         return;
     }
@@ -264,11 +271,11 @@ sub check_teco
     # The following is temporary until we figure out how to redirect
     # input on VMS.
 
-    if ( $teco eq 'TECO' && $target eq 'TECO-32' && $redirect )
+    if ( $target eq 'TECO-32' && $redirect )
     {
         ++$nskipped;
 
-        print "Skipping $teco file: $infile\n" if $verbose;
+        print "Skipping $teco file: $infile\n" if $skip;
 
         return;
     }
@@ -286,33 +293,7 @@ sub check_teco
 }
 
 
-sub exec_test
-{
-    my ($command) = @_;
-    my $result = q{};
-
-    eval {
-        local $SIG{ALRM} = sub { die "TECO alarm" };
-
-        alarm 1;                        # Should be long enough for any TECO test
-
-        $result = qx($command);
-
-        alarm 0;
-    };
-
-    alarm 0;                            # Race condition protection
-
-    if ($@ && $@ =~ "TECO alarm")
-    {
-        $result = "TIMEOUT";
-
-        qx/reset -I/;
-    }
-
-    return $result;
-}
-
+# Get data from text file, containing expected or actual test results.
 
 sub get_data
 {
@@ -339,6 +320,8 @@ sub get_data
 }
 
 
+# Initialize command-line arguments and options.
+
 sub initialize
 {
     #
@@ -351,13 +334,10 @@ sub initialize
         'make!'    => \$make,
         'orphans!' => \$orphans,
         'prove!'   => \$prove,
+        'skip!'    => \$skip,
         'teco=s'   => \$target,
         'verbose'  => \$verbose,
     );
-
-    # Nothing to execute if we're not making any tests.
-
-    $execute = 0 if !$make;
 
     if ($#ARGV == -1)
     {
@@ -428,6 +408,8 @@ sub initialize
 }
 
 
+# Read a test script header, and figure out how we need to proceed.
+
 sub parse_script
 {
     my ( $infile, $outfile, @lines ) = @_;
@@ -465,6 +447,11 @@ sub parse_script
 
                     $teco = check_teco( $infile, $2, $redirect );
                 }
+                elsif ( $2 eq 'TECO-32' && $target eq 'TECO-32' )
+                {
+                    $redirect = $1;
+                    $expects  = $3;
+                }                    
                 elsif ( $2 eq 'TECO-64' && $target eq 'TECO-64' )
                 {
                     $redirect = $1;
@@ -510,6 +497,8 @@ sub parse_script
     return ( $report, $text, $expects, $redirect );
 }
 
+
+# Verify that we got the test resulted in the expected TECO error.
 
 sub prove_error
 {
@@ -558,6 +547,8 @@ sub prove_error
 }
 
 
+# Verify that we got the test resulted in the expected failure.
+
 sub prove_fail
 {
     my ( $report, $expected, $actual ) = @_;
@@ -593,6 +584,8 @@ sub prove_fail
     return;
 }
 
+
+# Verify that we got the test resulted in the expected success.
 
 sub prove_pass
 {
@@ -634,11 +627,16 @@ sub prove_pass
 }
 
 
+# Verify the test results.
+
 sub prove_test
 {
     my ( $file, $report, $expects ) = @_;
 
     my $actual = get_data("$testdir/results/$file.lis");
+
+    croak "No test results found in $testdir/results/$file.lis" unless $actual;
+
     my $expected = get_data("$testdir/benchmarks/$file.lis");
 
     delete($benchmark_files{$file});    # Delete this key
@@ -683,7 +681,42 @@ sub prove_test
 }
 
 
+# Execute a given test set. The reason for the alarm is that some of the tests
+# cause TECO C to hang, and we need a way to bail out. The execution of the
+# reset command ensures that we restore terminal characteristics to what they
+# were originally.
+
 sub run_test
+{
+    my ($command) = @_;
+    my $result = q{};
+
+    eval {
+        local $SIG{ALRM} = sub { die "TECO alarm" };
+
+        alarm 1;                        # Should be long enough for any TECO test
+
+        $result = qx($command);
+
+        alarm 0;
+    };
+
+    alarm 0;                            # Race condition protection
+
+    if ($@ && $@ =~ "TECO alarm")
+    {
+        $result = "TIMEOUT";
+
+        qx/reset -I/;
+    }
+
+    return $result;
+}
+
+
+# Set up to run a test.
+
+sub setup_test
 {
     my ( $file, $report, $expects, $redirect ) = @_;
     my $fh;
@@ -726,11 +759,11 @@ sub run_test
            local $ENV{TEC_MEMORY}  = 'TEC_MEMORY';
            local $ENV{TEC_VTEDIT}  = 'TEC_VTEDIT';
 
-            $actual = exec_test($command);
+            $actual = run_test($command);
         }
         else
         {
-            $actual = exec_test($command);
+            $actual = run_test($command);
         }
 
         if ($actual =~ /core dumped/i)
@@ -764,11 +797,11 @@ sub run_test
             local $ENV{TECO_MEMORY}  = 'TECO_MEMORY';
             local $ENV{TECO_VTEDIT}  = 'TECO_VTEDIT';
 
-            $actual = exec_test($command);
+            $actual = run_test($command);
         }
         else
         {
-            $actual = exec_test($command);
+            $actual = run_test($command);
         }
     }
     else
@@ -786,6 +819,8 @@ sub run_test
     return $actual;
 }
 
+
+# Translate tokens in test script, depending on target TECO.
 
 sub translate_tokens
 {
@@ -847,6 +882,8 @@ sub translate_tokens
 }
 
 
+# Helper function for find().
+
 sub wanted
 {
     my $infile = $_;
@@ -868,6 +905,8 @@ sub wanted
 }
 
 
+# Write test result to new file.
+
 sub write_result
 {
     my ( $file, $text ) = @_;
@@ -881,6 +920,8 @@ sub write_result
     return;
 }
 
+
+# Write translated test script to new file.
 
 sub write_test
 {
