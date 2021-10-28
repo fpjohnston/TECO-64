@@ -354,8 +354,16 @@ sub initialize
 
     croak 'Can\'t find scripts directory'    if !-d "$testdir/scripts";
     croak 'Can\'t find benchmarks directory' if !-d "$testdir/benchmarks";
-    croak 'Can\'t find cases directory'      if !-d "$testdir/cases";
-    croak 'Can\'t find results directory'    if !-d "$testdir/results";
+
+    if (!-e "$testdir/cases")
+    {
+        mkdir "$testdir/cases" or croak;
+    }
+
+    if (!-e "$testdir/results")
+    {
+        mkdir "$testdir/results" or croak;
+    }
 
     my %targets = (
         '32'      => 'TECO-32',
