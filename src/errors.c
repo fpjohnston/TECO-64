@@ -186,6 +186,7 @@ void print_command(void)
     if (last_command != NULL)
     {
         const char *p = last_command;
+        char last = NUL;
 
         for (;;)
         {
@@ -195,8 +196,13 @@ void print_command(void)
             {
                 break;
             }
+            else if (c == LF && last != CR)
+            {
+                type_out(CR);
+            }
 
             type_out(c);
+            last = c;
         }
     }
 }
