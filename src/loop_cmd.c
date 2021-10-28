@@ -109,20 +109,17 @@ static void endloop(struct cmd *cmd, bool pop_ok)
             throw(E_MRA);               // Missing right angle bracket
         }
 
-        if (f.e2.loop)
+        if (cmd->c1 == '"')             // Start of a new conditional?
         {
-            if (f.e2.quote)
-            {
-                if (cmd->c1 == '"')
-                {
-                    ++if_depth;
-                }
-                else if (cmd->c1 == '\'')
-                {
-                    --if_depth;
-                }
-            }
+            ++if_depth;
+        }
+        else if (cmd->c1 == '\'')       // End of a conditional?
+        {
+            --if_depth;
+        }
 
+        if (f.e2.loop && f.e2.quote)
+        {
             if (nloops != 0 && loop[nloops - 1].if_depth > getif_depth())
             {
                 throw(E_MAP);           // Missing apostrophe
