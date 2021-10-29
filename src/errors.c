@@ -186,7 +186,7 @@ void print_command(void)
     if (last_command != NULL)
     {
         const char *p = last_command;
-        char last = NUL;
+        int last = NUL;
 
         for (;;)
         {
