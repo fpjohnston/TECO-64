@@ -647,7 +647,7 @@ sub prove_test
 
     my $expected = get_data("$testdir/benchmarks/$file.lis");
 
-    delete($benchmark_files{$file});    # Delete this key
+    delete($benchmark_files{"$file.lis"}); # Delete this key
 
     if ($expected)
     {
