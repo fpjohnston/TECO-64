@@ -29,7 +29,7 @@ command delimiters). Thus a long TECO macro might look like:
 
 ```final commands ! end of command string!```
 
-Only \<SPACE\>, \<LF\>, \<VT\>, \<FF\>, and \<CR\> can be used to format
+Only \<SPACE\>, \<LF\>, \<FF\>, and \<CR\> can be used to format
 command strings. \<TAB\> cannot be used, since that is an insertion command.
 
 It is suggested, but not required, that, in order to help distinguish
