@@ -110,6 +110,8 @@ void exec_T(struct cmd *cmd)
 
 static void exec_type(int_t m, int_t n)
 {
+    int last = EOF;
+
     for (int_t i = m; i < n; ++i)
     {
         int c = getchar_ebuf(i);
@@ -118,12 +120,14 @@ static void exec_type(int_t m, int_t n)
         {
             break;
         }
-        else if (c == LF && f.e3.CR_type)
+        else if (f.e3.CR_type && c == LF && last != CR)
         {
             type_out(CR);
         }
 
         type_out(c);
+
+        last = c;
     }
 }
 

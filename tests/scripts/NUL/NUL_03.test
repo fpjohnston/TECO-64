@@ -18,12 +18,12 @@ EC
 
 :@ER"[[out1]]" [["U]] Y
 
-Z-7 [["N]] HK EC
+Z-8 [["N]] HK EC
 
 0,128 E3                            ! Test: keeping NUL input chrs. !
 
 :@ER"[[out1]]" [["U]] Y
 
-Z-17 [["N]] HK EC
+Z-18 [["N]] HK EC
 
 [[exit]]

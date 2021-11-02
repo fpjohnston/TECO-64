@@ -1,9 +1,9 @@
 .=0  ,  10 lines in page,   0 lines preceding dot,  10 lines following dot
-.=38 ,  10 lines in page,   1 line  preceding dot,   9 lines following dot
-.=152,  10 lines in page,   4 lines preceding dot,   6 lines following dot
-.=266,  10 lines in page,   7 lines preceding dot,   3 lines following dot
-.=76 ,  10 lines in page,   2 lines preceding dot,   8 lines following dot
-.=380,  10 lines in page,  10 lines preceding dot,   0 lines following dot
-.=342,  10 lines in page,   9 lines preceding dot,   1 line  following dot
+.=39 ,  10 lines in page,   1 line  preceding dot,   9 lines following dot
+.=156,  10 lines in page,   4 lines preceding dot,   6 lines following dot
+.=273,  10 lines in page,   7 lines preceding dot,   3 lines following dot
+.=78 ,  10 lines in page,   2 lines preceding dot,   8 lines following dot
+.=390,  10 lines in page,  10 lines preceding dot,   0 lines following dot
+.=351,  10 lines in page,   9 lines preceding dot,   1 line  following dot
 .=0  ,  10 lines in page,   0 lines preceding dot,  10 lines following dot
 !PASS!

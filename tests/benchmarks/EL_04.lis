@@ -14,7 +14,7 @@
 
 @^A/hello, world!/         ! Generate an output message !
 ``
-hello, world!**5 < @I/abcdef/ 10@I// >      ! Insert some lines of text !
+hello, world!**5 < @I/abcdef/ 13@I// 10@I// >      ! Insert some lines of text !
 0 J                         ! Go to beginning of buffer !
 3 L                         ! Move down 3 lines !
 1 K                         ! And kill the next line !
