@@ -64,85 +64,94 @@ my @teco_files = ();
 # depending on the TECO we are targeting.
 
 my %tokens   = (
+    common => {
+        'cmd1'  =>  q{cmd1.tmp},
+        'cmd2'  =>  q{cmd2.tmp},
+        'in1'   =>  q{in1.tmp},
+        'in2'   =>  q{in2.tmp},
+        'log1'  =>  q{log1.tmp},
+        'out1'  =>  q{out1.tmp},
+        'out2'  =>  q{out2.tmp},
+        '"E'    =>  q{"E [[FAIL]] '},
+        '"L'    =>  q{"L [[FAIL]] '},
+        '"N'    =>  q{"N [[FAIL]] '},
+        '"S'    =>  q{"S [[FAIL]] '},
+        '"U'    =>  q{"U [[FAIL]] '},
+        'I'     =>  q{13@I// 10@I//},
+        '^T'    =>  q{13^T 10^T},
+        'PASS'  => qq{@^A/!PASS!/ [[^T]]},
+        'FAIL'  =>  q{[[error]] ^C},
+        'error' => qq{@^A/!FAIL!/ [[^T]]},
+        'exit'  =>  q{^D EK HK [[PASS]] EX},
+    },
+    teco32 => {
+        '8'     =>  q{},
+        'bad'   =>  q{[TECO]},
+        'enter' =>  q{0,128ET HK},
+        'expr'  =>  q{64},
+        'LOOP'  =>  q{32},
+        'Q'     =>  q{64},
+    },                
     teco64 => {
         '8'     =>  q{4096,0 ET},
         'bad'   =>  q{/dev/teco},
-        'cmd1'  =>  q{cmd1.tmp},
-        'cmd2'  =>  q{cmd2.tmp},
         'enter' =>  q{0,128ET HK 0E1 1,0E3},
-        '"E'    =>  q{"E [[FAIL]] '},
-        'error' => qq{@^A/!FAIL!/ [[^T]]},
-        'exit'  =>  q{^D EK HK [[PASS]] EX},
         'expr'  =>  q{64},
-        'FAIL'  =>  q{[[error]] ^C},
-        'in1'   =>  q{in1.tmp},
-        'in2'   =>  q{in2.tmp},
-        'I'     =>  q{10@I//},
-        'log1'  =>  q{log1.tmp},
         'LOOP'  =>  q{32},
-        '"L'    =>  q{"L [[FAIL]] '},
-        '"N'    =>  q{"N [[FAIL]] '},
-        'out1'  =>  q{out1.tmp},
-        'out2'  =>  q{out2.tmp},
-        'PASS'  => qq{@^A/!PASS!/ [[^T]]},
         'Q'     =>  q{64},
-        '"S'    =>  q{"S [[FAIL]] '},
+#        'I'     =>  q{10@I//},
         '^T'    =>  q{10^T},
-        '"U'    =>  q{"U [[FAIL]] '},
-    },                
-    teco32 => {
-        '8'     =>  q{},
-        'bad'   =>  q{/dev/teco},
-        'cmd1'  =>  q{cmd1.tmp},
-        'cmd2'  =>  q{cmd2.tmp},
-        'enter' =>  q{0,128ET HK},
-        '"E'    =>  q{"E [[FAIL]] '},
-        'error' => qq{@^A/!FAIL!/ [[^T]]},
-        'exit'  =>  q{^D EK HK [[PASS]] EX},
-        'expr'  =>  q{64},
-        'FAIL'  =>  q{[[error]] ^C},
-        'in1'   =>  q{in1.tmp},
-        'in2'   =>  q{in2.tmp},
-        'I'     =>  q{13@I// 10@I//},
-        'log1'  =>  q{log1.tmp},
-        'LOOP'  =>  q{32},
-        '"L'    =>  q{"L [[FAIL]] '},
-        '"N'    =>  q{"N [[FAIL]] '},
-        'out1'  =>  q{out1.tmp},
-        'out2'  =>  q{out2.tmp},
-        'PASS'  => qq{@^A/!PASS!/ [[^T]]},
-        'Q'     =>  q{64},
-        '"S'    =>  q{"S [[FAIL]] '},
-        '^T'    =>  q{13^T 10^T},
-        '"U'    =>  q{"U [[FAIL]] '},
     },                
     tecoc => {
         '8'     =>  q{},
         'bad'   =>  q{/dev/teco},
-        'cmd1'  =>  q{cmd1.tmp},
-        'cmd2'  =>  q{cmd2.tmp},
         'enter' =>  q{0,128ET HK},
-        '"E'    =>  q{"E [[FAIL]] '},
-        'error' => qq{@^A/!FAIL!/ [[^T]]},
-        'exit'  =>  q{^D EK HK [[PASS]] EX},
         'expr'  =>  q{63},
-        'FAIL'  =>  q{[[error]] ^C},
-        'in1'   =>  q{in1.tmp},
-        'in2'   =>  q{in2.tmp},
-        'I'     =>  q{13@I// 10@I//},
-        'log1'  =>  q{log1.tmp},
         'LOOP'  =>  q{31},
-        '"L'    =>  q{"L [[FAIL]] '},
-        '"N'    =>  q{"N [[FAIL]] '},
-        'out1'  =>  q{out1.tmp},
-        'out2'  =>  q{out2.tmp},
-        'PASS'  => qq{@^A/!PASS!/ [[^T]]},
         'Q'     =>  q{21},
-        '"S'    =>  q{"S [[FAIL]] '},
-        '^T'    =>  q{13^T 10^T},
-        '"U'    =>  q{"U [[FAIL]] '},
     },                
 );
+
+my @jabberwocky = (
+    '@I/Jabberwocky',
+    'by Lewis Carroll',
+    q{},
+    '\'Twas brillig, and the slithy toves',
+    '     Did gyre and gimble in the wabe:',
+    'All mimsy were the borogoves,',
+    '     And the mome raths outgrabe.',
+    q{},
+    '"Beware the Jabberwock, my son!',
+    '     The jaws that bite, the claws that catch!',
+    'Beware the Jubjub bird, and shun',
+    '     The frumious Bandersnatch!"',
+    q{},
+    'He took his vorpal sword in hand;',
+    '     Long time the manxome foe he sought --',
+    'So rested he by the Tumtum tree',
+    '     And stood awhile in thought.',
+    q{},
+    'And, as in uffish thought he stood,',
+    '     The Jabberwock, with eyes of flame,',
+    'Came whiffling through the tulgey wood,',
+    '     And burbled as it came!',
+    q{},
+    'One, two! One, two! And through and through',
+    '     The vorpal blade went snicker-snack!',
+    'He left it dead, and with its head',
+    '     He went galumphing back.',
+    q{},
+    '"And hast thou slain the Jabberwock?',
+    '     Come to my arms, my beamish boy!',
+    'O frabjous day! Callooh! Callay!"',
+    '     He chortled in his joy.',
+    q{},
+    '\'Twas brillig, and the slithy toves',
+    '     Did gyre and gimble in the wabe:',
+    'All mimsy were the borogoves,',
+    '     And the mome raths outgrabe.',
+    '/',
+    );
 
 #
 #  Main program start
@@ -308,8 +317,6 @@ sub get_data
 
     if ($text)
     {
-        $text =~ s/\r//msg;
-
         if ($text =~ /!START! . (.+) /msx)
         {
             $text = $1;
@@ -649,6 +656,15 @@ sub prove_test
 
     delete($benchmark_files{"$file.lis"}); # Delete this key
 
+    # TECO C sometimes terminates lines with CR/LF, and sometimes with LF/CR.
+    # Removing all instances of CR just makes comparisons much easier.
+
+    if ($target eq 'TECO C')
+    {
+        $actual   =~ s/\r//gms;
+        $expected =~ s/\r//gms if $expected;
+    }
+
     if ($expected)
     {
         $report .= ' =>';
@@ -761,18 +777,19 @@ sub setup_test
 
         $command .= "$file 2>&1";
 
-        if ( $report =~ /:EG/ms )
-        {
-           local $ENV{TEC_LIBRARY} = 'TEC_LIBRARY';
-           local $ENV{TEC_MEMORY}  = 'TEC_MEMORY';
-           local $ENV{TEC_VTEDIT}  = 'TEC_VTEDIT';
+        # Set up dummy environment variables that we can use to match our
+        # benchmark results, instead of having actual directory and file
+        # names that will vary depending on the environment. Note that
+        # TECO C treats TEC_INIT not as the name of an indirect command
+        # file, but as a command string, so we provide a dummy tag that
+        # can be executed without actually doing anything.
 
-            $actual = run_test($command);
-        }
-        else
-        {
-            $actual = run_test($command);
-        }
+        local $ENV{TEC_INIT}    = '!TEC_INIT!';
+        local $ENV{TEC_LIBRARY} = 'TEC_LIBRARY';
+        local $ENV{TEC_MEMORY}  = 'TEC_MEMORY';
+        local $ENV{TEC_VTEDIT}  = 'TEC_VTEDIT';
+
+        $actual = run_test($command);
 
         if ($actual =~ /core dumped/i)
         {
@@ -798,8 +815,14 @@ sub setup_test
 
         $command .= "$file 2>&1";
 
-        if ( $report =~ /:EG/ms )
+        if ( $report =~ /:\@EG/ms )
         {
+            # Set up dummy environment variables that we can use to match
+            # our benchmark results, instead of having actual directory and
+            # file names that will vary depending on the environment. Note
+            # that we do this for :@EG commands, because other commands might
+            # actually care about the settings of these (esp. TECO_LIBRARY).
+
             local $ENV{TECO_INIT}    = 'TECO_INIT';
             local $ENV{TECO_LIBRARY} = 'TECO_LIBRARY';
             local $ENV{TECO_MEMORY}  = 'TECO_MEMORY';
@@ -816,8 +839,6 @@ sub setup_test
     {
         croak "Unknown target: $target";
     }
-
-    $actual =~ s/\r//gms;
 
     if ( $actual =~ /!START!.(.+)/msx )
     {
@@ -855,13 +876,27 @@ sub translate_tokens
 
     while ( $text =~ / (.*) \[ \[ (.+) \] \] (.*) /msx )
     {
-        croak "Can't translate token $2 in script: $file"
-          unless exists $tokens{$teco}{$2};
-
         my $before = $1;
         my $token  = $2;
-        my $middle = $tokens{$teco}{$token};
         my $after  = $3;
+        my $middle;
+
+        if ($token eq 'JABBERWOCKY')
+        {
+            $middle = join("\n", @jabberwocky);
+        }
+        elsif (exists $tokens{$teco}{$2})
+        {
+            $middle = $tokens{$teco}{$2};
+        }
+        elsif (exists $tokens{common}{$2})
+        {
+            $middle = $tokens{common}{$2};
+        }
+        else
+        {
+            croak "Can't translate token $2 in script: $file";
+        }
 
         if ( $middle =~ /(.+!FAIL)(!.+)/ms )
         {

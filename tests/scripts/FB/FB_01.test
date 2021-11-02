@@ -26,8 +26,8 @@
 
 -3:@FB/Bander/ [["U]]                       ! Test: -nFB !
 
-544,584:@FB/whiffling/ [["U]]               ! Test: m,nFB !
+537,577:@FB/whiffling/ [["U]]               ! Test: m,nFB !
 
-544,584:@FB/burbled/ [["S]]                 ! Test: m,nFB !
+537,577:@FB/burbled/ [["S]]                 ! Test: m,nFB !
 
 [[exit]]

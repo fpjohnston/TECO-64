@@ -43,6 +43,6 @@ T                                       ! Test: T in middle of line !
 .-20,. T [[^T]]                         ! Test: .-n,.T !
 
 @^A/-----/ [[^T]]
-630,785 T                               ! Test: m,nT !
+607,758 T                               ! Test: m,nT !
 
 [[exit]]
