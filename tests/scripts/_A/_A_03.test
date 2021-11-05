@@ -1,6 +1,6 @@
 ! Smoke test for TECO text editor !
 
-! Function: Use string building chrs. to print message !
+! Function: Print message using string-building chrs. !
 !  Command: ^A !
 !  TECO-64: PASS !
 
