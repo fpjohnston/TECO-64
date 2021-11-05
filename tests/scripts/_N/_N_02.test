@@ -20,25 +20,25 @@ EC                                      ! Write data and close file !
 
 :@ER"[[out1]]" [["U]]                   ! Open 1st file on primary stream !
 
-@^A/^R^N=/ ^N=                          ! Test: ^N after opening primary !
+^^^ ^T @^A/N=/ ^N=                      ! Test: ^N after opening primary !
 
 A
 
-@^A/^R^N=/ ^N=                          ! Test: ^N after A !
+^^^ ^T @^A/N=/ ^N=                      ! Test: ^N after A !
 
 EP                                      ! Switch to secondary stream !
 
 :@ER"[[out2]]" [["U]]                   ! Open 2nd file on secondary stream !
 
-@^A/^R^N=/ ^N=                          ! Test: ^N after opening secondary !
+^^^ ^T @^A/N=/ ^N=                      ! Test: ^N after opening secondary !
 
 A
 
-@^A/^R^N=/ ^N=                          ! Test: ^N after A !
+^^^ ^T @^A/N=/ ^N=                      ! Test: ^N after A !
 
 @ER//                                   ! Switch to primary stream !
 
-@^A/^R^N=/ ^N=                          ! Test: ^N after switching to primary !
+^^^ ^T @^A/N=/ ^N=                      ! Test: ^N after switching to primary !
 
 HT
 HK
@@ -46,7 +46,7 @@ EC
 
 EP                                      ! Switch to secondary stream !
 
-@^A/^R^N=/ ^N=                          ! Test: ^N after switching to secondary !
+^^^ ^T @^A/N=/ ^N=                      ! Test: ^N after switching to secondary !
 
 EC
 

@@ -24,7 +24,7 @@ HK
 
 0J
 
-Z-QA [["N]]                             ! Verify that size of data is the same !
+QA-Z [["G]]                             ! Verify that size of data is the same !
 
 ::@S/abcdef/ [["U]]                     ! Verify that data hasn't changed !
 

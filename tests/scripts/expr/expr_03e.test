@@ -1,0 +1,23 @@
+! Smoke test for TECO text editor !
+
+! Function: Test multiplication w/ unary minus !
+!  Command: 10 * -3 !
+!     TECO: PASS !
+
+[[enter]]
+
+0 UF            ! Count of failures !
+
+! Macro to evaluate expression and compare with what we expected !
+
+^UB
+    :GA @^A/ = / QA:=
+    QA-QB "E @^A/ (pass)/ | @^A/ (fail)/ %F '
+    [[^T]]
+
+
+@^UA| 10 * -3 | 10 * -3 UA  -30 UB MB   ! Test: multiplication !
+
+QF [["N]]
+
+[[exit]]

@@ -42,7 +42,7 @@ use File::Slurp;
 
 # Command-line options
 
-my $clean;
+my $init;
 my $execute = 1;
 my $make = 1;
 my $orphans;
@@ -73,6 +73,7 @@ my %tokens   = (
         'out1'  =>  q{out1.tmp},
         'out2'  =>  q{out2.tmp},
         '"E'    =>  q{"E [[FAIL]] '},
+        '"G'    =>  q{"G [[FAIL]] '},
         '"L'    =>  q{"L [[FAIL]] '},
         '"N'    =>  q{"N [[FAIL]] '},
         '"S'    =>  q{"S [[FAIL]] '},
@@ -82,15 +83,16 @@ my %tokens   = (
         'PASS'  => qq{@^A/!PASS!/ [[^T]]},
         'FAIL'  =>  q{[[error]] ^C},
         'error' => qq{@^A/!FAIL!/ [[^T]]},
+        'enter' =>  q{0,128ET HK},
         'exit'  =>  q{^D EK HK [[PASS]] EX},
+        '8'     =>  q{},
     },
     teco32 => {
-        '8'     =>  q{},
         'bad'   =>  q{[TECO]},
-        'enter' =>  q{0,128ET HK},
         'expr'  =>  q{64},
         'LOOP'  =>  q{32},
         'Q'     =>  q{64},
+        'EG'    =>  q{type hello.tmp}
     },                
     teco64 => {
         '8'     =>  q{4096,0 ET},
@@ -99,16 +101,15 @@ my %tokens   = (
         'expr'  =>  q{64},
         'LOOP'  =>  q{32},
         'Q'     =>  q{64},
-#        'I'     =>  q{10@I//},
         '^T'    =>  q{10^T},
+        'EG'    =>  q{echo "hello, world!\n!PASS!"},
     },                
     tecoc => {
-        '8'     =>  q{},
         'bad'   =>  q{/dev/teco},
-        'enter' =>  q{0,128ET HK},
         'expr'  =>  q{63},
         'LOOP'  =>  q{31},
         'Q'     =>  q{21},
+        'EG'    =>  q{echo "hello, world!\n!PASS!"},
     },                
 );
 
@@ -335,16 +336,30 @@ sub initialize
     #  Parse our command-line options
     #
 
+    my $tecoc;
+    my $teco32;
+    my $teco64;
+
     GetOptions(
-        'clean!'   => \$clean,
+        '32'       => \$teco32,
+        '64'       => \$teco64,
+        'C'        => \$tecoc,
         'execute!' => \$execute,
+        'init!'    => \$init,
         'make!'    => \$make,
         'orphans!' => \$orphans,
         'prove!'   => \$prove,
         'skip!'    => \$skip,
+        'tecoc'    => \$tecoc,
+        'teco32'   => \$teco32,
+        'teco64'   => \$teco64,
         'teco=s'   => \$target,
         'verbose'  => \$verbose,
     );
+
+    $target = 'TECOC'   if $tecoc;
+    $target = 'TECO-32' if $teco32;
+    $target = 'TECO-64' if $teco64;
 
     if ($#ARGV == -1)
     {
@@ -402,7 +417,7 @@ sub initialize
 
     # If requested, reinitialize cases/ and results/ directories
 
-    if ($clean)
+    if ($init)
     {
         my @files = glob "$testdir/cases/*";
 
@@ -659,7 +674,7 @@ sub prove_test
     # TECO C sometimes terminates lines with CR/LF, and sometimes with LF/CR.
     # Removing all instances of CR just makes comparisons much easier.
 
-    if ($target eq 'TECO C')
+    if ($target eq 'TECO C' || $target eq 'TECO-32')
     {
         $actual   =~ s/\r//gms;
         $expected =~ s/\r//gms if $expected;

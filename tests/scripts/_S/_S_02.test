@@ -11,13 +11,13 @@
 0J
 
 3@S/Jabberwock/
-^S+10 "N                            ! Test: ^S after S command !
+^S+10 "N                                ! Test: ^S after S command !
     @^A/^S=/ ^S:=
     [[FAIL]]
 '
 
 @I/y baby/
-^S+6 "N                             ! Test: ^S after I command !
+^S+6 "N                                 ! Test: ^S after I command !
     @^A/^S=/ ^S:=
     [[FAIL]]
 '
@@ -25,24 +25,24 @@
 590,620 XA
 
 GA
-^S+30 "N                            ! Test: ^S after Gq command !
+^S+30 "N                                ! Test: ^S after Gq command !
     @^A/^S=/ ^S:=
     [[FAIL]]
 '
 
 G_
-^S+10 "N                            ! Test: ^S after G_ command !
+^S+10 "N                                ! Test: ^S after G_ command !
     @^A/^S=/ ^S:=
     [[FAIL]]
 '
 
-:@EW|/tmp/teco.tmp|
+:@EW|[[out1]]|
 "E
     [[FAIL]]
 '
 
-G*
-^S+13 "N                            ! Test: ^S after G* command !
+HK G*
+^S D Z "N                               ! Test: ^S after G* command !
     @^A/^S=/ ^S:=
     [[FAIL]]
 '

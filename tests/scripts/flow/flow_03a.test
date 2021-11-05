@@ -6,16 +6,16 @@
 
 [[enter]]
 
-1 UA QA < -1%A "L [[FAIL]] ' F> >       ! Test: 1 < F> > !
+1 UA QA < -1%A "L [[FAIL]] ' F> ^C >    ! Test: 1 < F> > !
 
 QA [["N]]
 
-10 UA QA < -1%A "L [[FAIL]] ' F> >      ! Test: 10 < F> > !
+10 UA QA < -1%A "L [[FAIL]] ' F> ^C >   ! Test: 10 < F> > !
 
-QA-9 [["N]]
+QA [["N]]
 
-1000 UA  < -1%A "L [[FAIL]] ' F> >      ! Test: 1000 < F> > !
+100 UA QA < -1%A "L [[FAIL]] ' F> ^C >  ! Test: 100 < F> > !
 
-QA-999 [["N]]
+QA [["N]]
 
 [[exit]]

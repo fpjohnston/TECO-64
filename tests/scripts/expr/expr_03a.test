@@ -1,0 +1,49 @@
+! Smoke test for TECO text editor !
+
+! Function: Test basic operators !
+!  Command: (misc.) !
+!     TECO: PASS !
+
+[[enter]]
+
+0 UF            ! Count of failures !
+
+! Macro to evaluate expression and compare with what we expected !
+
+^UB
+    :GA @^A/ = / QA:=
+    QA-QB "E @^A/ (pass)/ | @^A/ (fail)/ %F '
+    [[^T]]
+
+
+@^UA| 10        | 10        UA   10 UB MB   ! Test: numeric value !
+
+@^UA| +10       | +10       UA   10 UB MB   ! Test: unary plus !
+
+@^UA| -10       | -10       UA  -10 UB MB   ! Test: unary minus !
+
+@^UA| 10 + 3    | 10 + 3    UA   13 UB MB   ! Test: addition !
+@^UA| 10 + (+3) | 10 + (+3) UA   13 UB MB   ! Test: addition !
+@^UA| 10 + (-3) | 10 + (-3) UA    7 UB MB   ! Test: addition !
+
+@^UA| 10 - 3    | 10 - 3    UA    7 UB MB   ! Test: subtraction !
+@^UA| 10 - (-3) | 10 - (-3) UA   13 UB MB   ! Test: subtraction !
+@^UA| -10 - 3   | -10 - 3   UA  -13 UB MB   ! Test: subtraction !
+
+@^UA| 10 * 3    | 10 * 3    UA   30 UB MB   ! Test: multiplication !
+@^UA| -10 * 3   | -10 * 3   UA  -30 UB MB   ! Test: multiplication !
+@^UA| 10 * (-3) | 10 * (-3) UA  -30 UB MB   ! Test: multiplication !
+
+@^UA| 10 / 3    | 10 / 3    UA    3 UB MB   ! Test: division, yielding quotient !
+@^UA| -10 / 3   | -10 / 3   UA   -3 UB MB   ! Test: division, yielding quotient !
+@^UA| 10 / (-3) | 10 / (-3) UA   -3 UB MB   ! Test: division, yielding quotient !
+
+@^UA| 10 & 3    | 10 & 3    UA    2 UB MB   ! Test: logical AND !
+
+@^UA| 10 # 3    | 10 # 3    UA   11 UB MB   ! Test: logical OR !
+
+@^UA| 10^_      | 10^_      UA  -11 UB MB   ! Test: 1's complement !
+
+QF [["N]]
+
+[[exit]]

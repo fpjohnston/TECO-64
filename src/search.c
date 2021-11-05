@@ -457,7 +457,7 @@ void search_failure(struct cmd *cmd, uint keepdot)
                 tprint("%%Search failure in loop\n");
             }
 
-            exec_F_gt(cmd);
+            exit_loop(cmd);
         }
         else
         {

@@ -2,7 +2,7 @@
 
 ! Function: Destructive backward search and replace !
 !  Command: -F_ !
-!     TECO: ?SRH !
+!     TECO: PASS !
 
 [[enter]]
 

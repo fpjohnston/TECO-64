@@ -1,0 +1,18 @@
+! Smoke test for TECO text editor !
+
+! Function: Get ASCII value of character !
+!  Command: ^^{LF} !
+!     TECO: PASS !
+
+[[enter]]
+
+0 UF
+10-1 UA
+@^UA| %A-QB "N @^A/Expected = / QA:= @^A/, actual = / QB= %F ' |
+
+! Test: ^^ with ASCII  10 ! ^^
+UB MA
+
+QF [["N]]
+
+[[exit]]

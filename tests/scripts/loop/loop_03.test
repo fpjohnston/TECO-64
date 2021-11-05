@@ -3,6 +3,7 @@
 ! Function: Test start of loop without end !
 !  Command: < !
 !     TECO: ?MRA !
+!  TECO-32: ?UTC !
 
 [[enter]]
 

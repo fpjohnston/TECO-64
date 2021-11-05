@@ -623,6 +623,8 @@ extern void exec_macro(tbuffer *macro, struct cmd *cmd);
 
 extern void exec_insert(const char *buf, uint_t len);
 
+extern void exit_loop(struct cmd *cmd);
+
 extern int find_eg(char *buf);
 
 extern bool next_page(int_t start, int_t end, bool ff, bool yank);

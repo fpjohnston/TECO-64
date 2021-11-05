@@ -3,6 +3,7 @@
 ! Function: Flow to end of conditional !
 !  Command: F' !
 !     TECO: ?MAP !
+!  TECO-32: ?UTC !
 
 [[enter]]
 

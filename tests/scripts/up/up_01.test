@@ -10,135 +10,132 @@
 0 UA
 @^UA| %A-QB "N @^A/Expected = / QA:= @^A/, actual = / QB= %F ' |
 
-! Test: get values of all ASCII characters !
-
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^	 UB MA
-^^
- UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^ UB MA
-^^  UB MA
-^^! UB MA
-^^" UB MA
-^^# UB MA
-^^$ UB MA
-^^% UB MA
-^^& UB MA
-^^' UB MA
-^^( UB MA
-^^) UB MA
-^^* UB MA
-^^+ UB MA
-^^, UB MA
-^^- UB MA
-^^. UB MA
-^^/ UB MA
-^^0 UB MA
-^^1 UB MA
-^^2 UB MA
-^^3 UB MA
-^^4 UB MA
-^^5 UB MA
-^^6 UB MA
-^^7 UB MA
-^^8 UB MA
-^^9 UB MA
-^^: UB MA
-^^; UB MA
-^^< UB MA
-^^= UB MA
-^^> UB MA
-^^? UB MA
-^^@ UB MA
-^^A UB MA
-^^B UB MA
-^^C UB MA
-^^D UB MA
-^^E UB MA
-^^F UB MA
-^^G UB MA
-^^H UB MA
-^^I UB MA
-^^J UB MA
-^^K UB MA
-^^L UB MA
-^^M UB MA
-^^N UB MA
-^^O UB MA
-^^P UB MA
-^^Q UB MA
-^^R UB MA
-^^S UB MA
-^^T UB MA
-^^U UB MA
-^^V UB MA
-^^W UB MA
-^^X UB MA
-^^Y UB MA
-^^Z UB MA
-^^[ UB MA
-^^\ UB MA
-^^] UB MA
-^^^ UB MA
-^^_ UB MA
-^^` UB MA
-^^a UB MA
-^^b UB MA
-^^c UB MA
-^^d UB MA
-^^e UB MA
-^^f UB MA
-^^g UB MA
-^^h UB MA
-^^i UB MA
-^^j UB MA
-^^k UB MA
-^^l UB MA
-^^m UB MA
-^^n UB MA
-^^o UB MA
-^^p UB MA
-^^q UB MA
-^^r UB MA
-^^s UB MA
-^^t UB MA
-^^u UB MA
-^^v UB MA
-^^w UB MA
-^^x UB MA
-^^y UB MA
-^^z UB MA
-^^{ UB MA
-^^| UB MA
-^^} UB MA
-^^~ UB MA
+! Test: ^^ with ASCII   1 ! ^^ UB MA
+! Test: ^^ with ASCII   2 ! ^^ UB MA
+! Test: ^^ with ASCII   3 ! ^^ UB MA
+! Test: ^^ with ASCII   4 ! ^^ UB MA
+! Test: ^^ with ASCII   5 ! ^^ UB MA
+! Test: ^^ with ASCII   6 ! ^^ UB MA
+! Test: ^^ with ASCII   7 ! ^^ UB MA
+! Test: ^^ with ASCII   8 ! ^^ UB MA
+! Test: ^^ with ASCII   9 ! ^^	 UB MA
+! Test: ^^ with ASCII  10 ! %A          ! Skip for TECO-32 !
+! Test: ^^ with ASCII  11 ! ^^ UB MA
+! Test: ^^ with ASCII  12 ! %A          ! Skip for TECO C !
+! Test: ^^ with ASCII  13 ! ^^ UB MA
+! Test: ^^ with ASCII  14 ! ^^ UB MA
+! Test: ^^ with ASCII  15 ! ^^ UB MA
+! Test: ^^ with ASCII  16 ! ^^ UB MA
+! Test: ^^ with ASCII  17 ! ^^ UB MA
+! Test: ^^ with ASCII  18 ! ^^ UB MA
+! Test: ^^ with ASCII  19 ! ^^ UB MA
+! Test: ^^ with ASCII  20 ! ^^ UB MA
+! Test: ^^ with ASCII  21 ! ^^ UB MA
+! Test: ^^ with ASCII  22 ! ^^ UB MA
+! Test: ^^ with ASCII  23 ! ^^ UB MA
+! Test: ^^ with ASCII  24 ! ^^ UB MA
+! Test: ^^ with ASCII  25 ! ^^ UB MA
+! Test: ^^ with ASCII  26 ! ^^ UB MA
+! Test: ^^ with ASCII  27 ! ^^ UB MA
+! Test: ^^ with ASCII  28 ! ^^ UB MA
+! Test: ^^ with ASCII  29 ! ^^ UB MA
+! Test: ^^ with ASCII  30 ! ^^ UB MA
+! Test: ^^ with ASCII  31 ! ^^ UB MA
+! Test: ^^ with ASCII  32 ! ^^  UB MA
+! Test: ^^ with ASCII  33 ! ^^! UB MA
+! Test: ^^ with ASCII  34 ! ^^" UB MA
+! Test: ^^ with ASCII  35 ! ^^# UB MA
+! Test: ^^ with ASCII  36 ! ^^$ UB MA
+! Test: ^^ with ASCII  37 ! ^^% UB MA
+! Test: ^^ with ASCII  38 ! ^^& UB MA
+! Test: ^^ with ASCII  39 ! ^^' UB MA
+! Test: ^^ with ASCII  40 ! ^^( UB MA
+! Test: ^^ with ASCII  41 ! ^^) UB MA
+! Test: ^^ with ASCII  42 ! ^^* UB MA
+! Test: ^^ with ASCII  43 ! ^^+ UB MA
+! Test: ^^ with ASCII  44 ! ^^, UB MA
+! Test: ^^ with ASCII  45 ! ^^- UB MA
+! Test: ^^ with ASCII  46 ! ^^. UB MA
+! Test: ^^ with ASCII  47 ! ^^/ UB MA
+! Test: ^^ with ASCII  48 ! ^^0 UB MA
+! Test: ^^ with ASCII  49 ! ^^1 UB MA
+! Test: ^^ with ASCII  50 ! ^^2 UB MA
+! Test: ^^ with ASCII  51 ! ^^3 UB MA
+! Test: ^^ with ASCII  52 ! ^^4 UB MA
+! Test: ^^ with ASCII  53 ! ^^5 UB MA
+! Test: ^^ with ASCII  54 ! ^^6 UB MA
+! Test: ^^ with ASCII  55 ! ^^7 UB MA
+! Test: ^^ with ASCII  56 ! ^^8 UB MA
+! Test: ^^ with ASCII  57 ! ^^9 UB MA
+! Test: ^^ with ASCII  58 ! ^^: UB MA
+! Test: ^^ with ASCII  59 ! ^^; UB MA
+! Test: ^^ with ASCII  60 ! ^^< UB MA
+! Test: ^^ with ASCII  61 ! ^^= UB MA
+! Test: ^^ with ASCII  62 ! ^^> UB MA
+! Test: ^^ with ASCII  63 ! ^^? UB MA
+! Test: ^^ with ASCII  64 ! ^^@ UB MA
+! Test: ^^ with ASCII  65 ! ^^A UB MA
+! Test: ^^ with ASCII  66 ! ^^B UB MA
+! Test: ^^ with ASCII  67 ! ^^C UB MA
+! Test: ^^ with ASCII  68 ! ^^D UB MA
+! Test: ^^ with ASCII  69 ! ^^E UB MA
+! Test: ^^ with ASCII  70 ! ^^F UB MA
+! Test: ^^ with ASCII  71 ! ^^G UB MA
+! Test: ^^ with ASCII  72 ! ^^H UB MA
+! Test: ^^ with ASCII  73 ! ^^I UB MA
+! Test: ^^ with ASCII  74 ! ^^J UB MA
+! Test: ^^ with ASCII  75 ! ^^K UB MA
+! Test: ^^ with ASCII  76 ! ^^L UB MA
+! Test: ^^ with ASCII  77 ! ^^M UB MA
+! Test: ^^ with ASCII  78 ! ^^N UB MA
+! Test: ^^ with ASCII  79 ! ^^O UB MA
+! Test: ^^ with ASCII  80 ! ^^P UB MA
+! Test: ^^ with ASCII  81 ! ^^Q UB MA
+! Test: ^^ with ASCII  82 ! ^^R UB MA
+! Test: ^^ with ASCII  83 ! ^^S UB MA
+! Test: ^^ with ASCII  84 ! ^^T UB MA
+! Test: ^^ with ASCII  85 ! ^^U UB MA
+! Test: ^^ with ASCII  86 ! ^^V UB MA
+! Test: ^^ with ASCII  87 ! ^^W UB MA
+! Test: ^^ with ASCII  88 ! ^^X UB MA
+! Test: ^^ with ASCII  89 ! ^^Y UB MA
+! Test: ^^ with ASCII  90 ! ^^Z UB MA
+! Test: ^^ with ASCII  91 ! ^^[ UB MA
+! Test: ^^ with ASCII  92 ! ^^\ UB MA
+! Test: ^^ with ASCII  93 ! ^^] UB MA
+! Test: ^^ with ASCII  94 ! ^^^ UB MA
+! Test: ^^ with ASCII  95 ! ^^_ UB MA
+! Test: ^^ with ASCII  96 ! ^^` UB MA
+! Test: ^^ with ASCII  97 ! ^^a UB MA
+! Test: ^^ with ASCII  98 ! ^^b UB MA
+! Test: ^^ with ASCII  99 ! ^^c UB MA
+! Test: ^^ with ASCII 100 ! ^^d UB MA
+! Test: ^^ with ASCII 101 ! ^^e UB MA
+! Test: ^^ with ASCII 102 ! ^^f UB MA
+! Test: ^^ with ASCII 103 ! ^^g UB MA
+! Test: ^^ with ASCII 104 ! ^^h UB MA
+! Test: ^^ with ASCII 105 ! ^^i UB MA
+! Test: ^^ with ASCII 106 ! ^^j UB MA
+! Test: ^^ with ASCII 107 ! ^^k UB MA
+! Test: ^^ with ASCII 108 ! ^^l UB MA
+! Test: ^^ with ASCII 109 ! ^^m UB MA
+! Test: ^^ with ASCII 110 ! ^^n UB MA
+! Test: ^^ with ASCII 111 ! ^^o UB MA
+! Test: ^^ with ASCII 112 ! ^^p UB MA
+! Test: ^^ with ASCII 113 ! ^^q UB MA
+! Test: ^^ with ASCII 114 ! ^^r UB MA
+! Test: ^^ with ASCII 115 ! ^^s UB MA
+! Test: ^^ with ASCII 116 ! ^^t UB MA
+! Test: ^^ with ASCII 117 ! ^^u UB MA
+! Test: ^^ with ASCII 118 ! ^^v UB MA
+! Test: ^^ with ASCII 119 ! ^^w UB MA
+! Test: ^^ with ASCII 120 ! ^^x UB MA
+! Test: ^^ with ASCII 121 ! ^^y UB MA
+! Test: ^^ with ASCII 122 ! ^^z UB MA
+! Test: ^^ with ASCII 123 ! ^^{ UB MA
+! Test: ^^ with ASCII 124 ! ^^| UB MA
+! Test: ^^ with ASCII 125 ! ^^} UB MA
+! Test: ^^ with ASCII 126 ! ^^~ UB MA
 
 QF [["N]]
 

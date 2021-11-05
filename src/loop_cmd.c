@@ -162,7 +162,25 @@ void exec_F_gt(struct cmd *cmd)
     }
     else
     {
-        endloop(cmd, POP_OK);           // Flow to end of loop
+        if (f.e2.loop)
+        {
+            if (loop[nloops - 1].if_depth != getif_depth())
+            {
+                throw(E_MAP);           // Missing apostrophe
+            }
+        }
+
+        if (loop[nloops - 1].count == INFINITE || --loop[nloops - 1].count > 0)
+        {
+            cbuf->pos = loop[nloops - 1].start;
+                                        // Go back to start of loop
+            cmd_line = loop[nloops - 1].line;
+                                        // Reset line number
+        }
+        else
+        {
+            endloop(cmd, POP_OK);
+        }
 
         init_x();                       // Reinitialize expression stack
     }
@@ -226,7 +244,8 @@ void exec_gt(struct cmd *cmd)
     {
         cbuf->pos = loop[nloops - 1].start;
                                         // Go back to start of loop
-        cmd_line = loop[nloops - 1].line; // Reset line number
+        cmd_line = loop[nloops - 1].line;
+                                        // Reset line number
     }
     else
     {
@@ -298,6 +317,23 @@ void exec_semi(struct cmd *cmd)
             return;
         }
     }
+
+    endloop(cmd, POP_OK);
+
+    init_x();                           // Reinitialize expression stack
+}
+
+
+///
+///  @brief    Exit loop.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exit_loop(struct cmd *cmd)
+{
+    assert(cmd != NULL);
 
     endloop(cmd, POP_OK);
 

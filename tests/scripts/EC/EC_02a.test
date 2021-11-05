@@ -18,6 +18,6 @@ Z [["N]]                                ! Verify that buffer is clear !
 
 :@ER"[[out1]]" [["U]] Y                 ! Open file for read !
 
-QZ-Z [["N]]                             ! Verify that we read all of the data !
+QZ-Z [["G]]                             ! Verify that we read all of the data !
  
 [[exit]]
