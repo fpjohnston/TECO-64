@@ -27,8 +27,9 @@
 ///  This is an implementation in C of the TECO text editor, for 64-bit
 ///  operating environments.
 ///
-///  It is a complete re-write of version 147 of TECO C, and is a work in
-///  progress. Further documentation will be added later.
+///  It is a complete re-write of version 147 of TECO C, and is a work in pro-
+///  gress. Additional documentation is available in Markdown files included
+///  as part of the same distribution.
 ///
 ///  @version 200
 ///
@@ -246,8 +247,8 @@ int main(int argc, const char * const argv[])
 ///
 ///  @brief    Exit TECO, after calling cleanup functions. Note that the
 ///            ordering of the first two or three function calls, as well as
-///            the last two function calls, is significant, but the remaining
-///            function calls isn't especially required.
+///            the last two function calls, is significant, but the ordering of
+///            the remaining function calls isn't especially important.
 ///
 ///  @returns  Nothing (also, it may not return, depending on whether an EG
 ///            command was issued).
@@ -333,7 +334,7 @@ static void init_teco(int argc, const char * const argv[])
 
 ///
 ///  @brief    Reset everything before starting a new command. This frees up
-///            allocated, closes files, etc.
+///            some allocated memory, closes files, etc.
 ///
 ///  @returns  Nothing.
 ///
