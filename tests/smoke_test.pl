@@ -515,11 +515,11 @@ sub parse_script
 
     if ($redirect)
     {
-        $report .= sprintf '  <%2d>', $local_tests;
+        $report .= sprintf '  <%3d>', $local_tests;
     }
     else
     {
-        $report .= sprintf '  [%2d]', $local_tests;
+        $report .= sprintf '  [%3d]', $local_tests;
     }
 
     $report .= sprintf '  %s', $expects;
