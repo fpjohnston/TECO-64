@@ -135,17 +135,6 @@ void exec_ctrl_C(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->dcolon)
-    {
-        print_error(
-
-#if     defined(TEST)
-            __func__, __LINE__,
-#endif
-
-            E_XAB, NULL, NULL);
-    }
-
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
@@ -274,8 +263,7 @@ static void print_error(
 
 #endif
 
-    type_out(CR);
-    type_out(LF);
+    type_out(NL);
 
     if (f.eh.verbose == 3)
     {
@@ -316,8 +304,7 @@ void print_verbose(int error)
     {
         if (pos + (int)strlen(token) > width)
         {
-            type_out(CR);
-            type_out(LF);
+            type_out(NL);
 
             pos = tprint("    ");
         }
@@ -326,8 +313,7 @@ void print_verbose(int error)
 
     } while ((token = strtok_r(NULL, " ", &saveptr)) != NULL);
 
-    type_out(CR);
-    type_out(LF);
+    type_out(NL);
 }
 
 
