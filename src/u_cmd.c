@@ -36,13 +36,6 @@
 #include "qreg.h"
 
 
-#if     !defined(DEFAULT_U)
-
-#define DEFAULT_U       0           ///< Default argument for :U (if enabled)
-
-#endif
-
-
 ///
 ///  @brief    Execute U command: store number in Q-register.
 ///
@@ -54,20 +47,7 @@ void exec_U(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->n_set)                     // n argument?
-    {
-        reject_colon(cmd->colon);
-    }
-    else if (cmd->colon)                // No n, but :Uq and colon allowed?
-    {
-        if (!f.e1.colon_u)
-        {
-            throw(E_EXT);               // Extended feature not enabled
-        }
-
-        cmd->n_arg = DEFAULT_U;         // Use default argument
-    }
-    else
+    if (!cmd->n_set)                    // n argument?
     {
         throw(E_NAU);                   // No argument before U
     }
@@ -96,7 +76,7 @@ bool scan_U(struct cmd *cmd)
 
     reject_neg_m(cmd->m_set, cmd->m_arg);
     require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
+    reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
     scan_qreg(cmd);
 
