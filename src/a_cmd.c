@@ -116,7 +116,7 @@ bool append_line(void)
     {
         next = fgetc(ifile->fp);
 
-        if (c == NUL && !f.e3.keepnul)  // Discard NUL chrs. if necessary
+        if (c == NUL && !f.e3.keepNUL)  // Discard NUL chrs. if necessary
         {
             continue;
         }

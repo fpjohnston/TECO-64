@@ -73,7 +73,6 @@ struct flags f =                    ///< Global flag variables
     .e1.bang    = true,             // !! starts end-of-line comment
     .e1.prompt  = true,             // Ensure prompt starts in 1st column
     .e1.radix   = true,             // Allow in-line radix control
-    .e1.colon_u = true,             // Allow :U (w/ default arg. of 0)
     .e1.insert  = true,             // Allow nI w/o requiring n@I
     .e1.percent = true,             // Allow :%q
     .e1.newline = false,            // LF does not act like double ESCape
@@ -110,11 +109,11 @@ struct flags f =                    ///< Global flag variables
 
 #if   defined(__vms)
 
-    .e3.keepnul = true,             // Don't discard input NUL chrs.
+    .e3.keepNUL = true,             // Don't discard input NUL chrs.
 
 #else
 
-    .e3.keepnul = false,            // Discard input NUL chrs.
+    .e3.keepNUL = false,            // Discard input NUL chrs.
 
 #endif
 

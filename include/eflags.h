@@ -73,7 +73,7 @@ union e1_flag
         uint bang    : 1;       ///< !! starts end-of-line comment
         uint prompt  : 1;       ///< Add CR/LF before prompt if needed
         uint radix   : 1;       ///< Automatically determine number radix
-        uint colon_u : 1;       ///< Allow :U (w/ default arg. of 0)
+        uint         : 1;       ///< (unused)
         uint insert  : 1;       ///< Allow nI w/o ESCape or delimiter
         uint percent : 1;       ///< Allow :%q
         uint         : 1;       ///< (unused)
@@ -105,7 +105,6 @@ union e2_flag
         uint quote  : 1;        ///< Conditional not complete within loop
         uint page   : 1;        ///< m,n:P or H:P or :PW
         uint args   : 1;        ///< Too many arguments for command
-        uint escape : 1;        ///< Disallow "escape"-like commands
     };
 };
 
@@ -126,7 +125,7 @@ union e3_flag
         uint noin    : 1;       ///< Don't type input to log file
         uint noout   : 1;       ///< Don't type output to log file
         uint         : 1;       ///< (unused)
-        uint keepnul : 1;       ///< Discard NUL chrs. in input files
+        uint keepNUL : 1;       ///< Keep NUL chrs. in input files
         uint CR_type : 1;       ///< Convert LF to CR/LF on type out
     };
 };
