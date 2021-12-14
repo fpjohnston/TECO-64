@@ -6,8 +6,11 @@ current setting of the flag is returned as a value. A flag may be set to a speci
 value by executing its command name preceded by a numerical argument; the
 flag is set to the value of the argument.
 
-The following table describes the commands that set and clear flags; *\<flag\>*
-represents any of the flags listed below.
+The following table describes the format of the commands that set and clear flags.
+Note that the formats which set and/or clear bits in a flag only apply to commands
+which are truly bit-encoded, such as ED or ET.
+Other commands, such as ES, interpret the *m* and *n* arguments differently.
+See specific commands for details.
 
 | Command | Function |
 | ------- | -------- |
@@ -16,27 +19,39 @@ represents any of the flags listed below.
 | *m*,*n*\<flag\> | In the flag, turn off those bits specified by *m* and turn on those bits specified by *n*. |
 | 0,*n*\<flag\> | Turn on the bits in the flag specified by *n*. |
 | *m*,0\<flag\> | Turn off the bits in the flag specified by *m*. |
+| *m*,*n*\<flag\> | Turn off the bits in the flag specified by *m*, and turn on the bits specified by *n*. |
 
 ### E1 - Extended Features Flag
 
-The E1 flag controls whether certain new and extended features are enabled
-in TECO. By default, all of the bits below are set, but an initialization
-file may be used to customize which bits are set or cleared.
+The E1 flag contains bit-encoded information controls whether certain new and
+extended features are enabled in TECO.
+By default, all of the bits below are set, but an initialization file may be
+used to customize which bits are set or cleared.
 
 | Bit | Function |
 | --- | -------- |
 | E1&1 |  If set, allow extended operators within parentheses. If clear, no extended operators are allowed. | 
-| E1&2 | If set, paired braces may be used to delimit text strings. If clear, braces have no special meaning in text arguments. |
+| E1&2 | If set, paired parentheses, braces, square brackets, or angle brackets may be used to delimit text strings. If clear, parentheses, braces, and brackets have no special meaning in text arguments. |
+| E1&4 | If set, a colon modifier for a CTRL/A command will cause it to print a newline after the text message . If clear, CTRL/A commands will ignore any colon modifiers. |
+| E1&8 | If set, an at-sign modifier may be used with an '=' command, which allows the use of a text argument containing an *sprintf()* format string. If clear, '=' commands will ignore any at-sign modifiers. |
 | E1&16 | If set, EI commands are executed immediately, rather than being executed after completion of the current command string. |
 | E1&32 | If set, "!!" may be used start a comment that extends to the next line terminator (LF, VT, or FF). |
 | E1&64 | If set, CR/LF will be output if needed to ensure that TECO's prompt is printed at the start of a new line. |
 | E1&128 | If set, the radix of an input number will be determined as follows: if the first  two characters are 0x or 0X, the number is assumed to be decimal; if the first character is 1-9, it is assumed to be decimal; and if the first character is 0, it is assumed to be octal. |
-| E1&256 | If set, a :U*q* command will load a default value of -1 into the Q-register if the command is not preceded by a numeric value. If this flag is not set, or if the U command is executed without a colon modifier, then a missing numeric value will result in an NAU error. |
+| E1&256 | Unused. |
+| E1&512 | If set, an *n*I command is equivalent to *n*I\<ESC\> or *n*@I//. If clear, any *n*I command must be terminated with either an ESCape or a delimiter. |
+| E1&1024 | If set, *n*% commands may include a colon modifier that causes the return value to be discarded (obviating the need to include an ESCape in order to avoid passing that value to the next command). If clear, colon modifiers preceding *n*% commands have no special meaning. |
+| E1&2048 | Unused. |
+| E1&4096 | Unused. |
+| E1&8192 | Unused. |
+| E1&16384 | Unused. |
+| E1&32768 | If set, typing a newline at the end of a command string is equivalent to typing a double ESCape. If clear, newlines are treated as part of the command string (and ignored). |
 
 ### E2 - Command Restrictions Flag
 
-The E2 flag controls how strictly TECO enforces command syntax. For
-compatibility with older TECO macros, none of the bits below are set
+The E2 flag contains bit-encoded information that controls how strictly TECO
+enforces command syntax.
+For compatibility with older TECO macros, none of the bits below are set
 by default, but an initialization may be used to customize which bits
 are set or cleared.
 
@@ -53,8 +68,14 @@ are set or cleared.
 | E2&256 | If set, issue BNI error if conditional is not complete within a loop. |
 | E2&512 | If set, issue NAT error for m,n:P or H:P or :PW. |
 | E2&1024 | If set, issue ARG error if command has too many arguments. |
+| E2&2048 | If set, issue ARG error if command has too many arguments. |
 
 ### E3 - File Operations Flag
+
+The E3 flag contains bit-encoded information that controls how TECO reads input
+files and writes output files.
+This flag exists mostly to achieve compatibility with various older TECOs,
+where the handling of file operations was operating-system dependent.
 
 | Bit | Function |
 | --- | -------- |
@@ -64,8 +85,14 @@ are set or cleared.
 | E3&8 | Specifies whether the line delimiter for output files is LF or CR/LF. If this bit is set, LF is translated to CR/LF on output. If this bit is clear, the delimiter is LF. The default setting is clear for Linux and MacOS, and set for Windows and VMS. |
 | E3&16 | This bit affects the behavior of echoed input to log files (opened with the EL command). If the bit is set, echoed input is not written to the log file. If the bit is clear, all echoed input is written to the log file. |
 | E3&32 | This bit affects the behavior of output messages to log files (opened with the EL command). If the bit is set, output is not written to the log file. If the bit is clear, all output is written to the log file. |
-
+| E3&64 | Unused. |
+ | E3&128 | If set, keep NUL characters found in input files. If the bit is clear, discard NUL characters in input files. |
+ | E3&256 | This bit affects the type out of LF with CTRL/A, CTRL/T, :G*q*, T, and V commands. If set, LF is converted to CR/LF. If clear, LF is output as is. |
+ 
 ### E4 - Display Mode Flag
+
+The E4 flag contains bit-encoded information that controls the appearance of
+the TECO's display window, when the -1W has been executed.
 
 | Bit | Function |
 | --- | -------- |
@@ -104,13 +131,15 @@ The EE flag is initially zero.
 
 ### EH - Help Level Flag
 
-The help level flag controls the printing of error
-messages and failed commands. (See also the / command.)
+The help level flag controls the printing of error messages and failed commands.
+(See also the / command.)
 
 | Bits | Function |
 | ---- | -------- |
-| EH&3 | If the low two bits of EH are 1, error messages are output in abbreviated form ("?XXX"). If they are equal to 2, error messages are output in normal form ("?XXX Message"). If they are equal to 3, error messages are output in long or "War and Peace" form, that is, a paragraph of informative material is typed following the normal form of the error message. |
-| EH&4 | If this bit of EH is set, the failing command is also output up to and including the failing character in the command followed by a question mark. (Just like TECO’s response to the typing of a question mark immediately after an error.) |
+| EH&3 | If the low two bits are 1, error messages are output in abbreviated form ("?XXX"). If they are equal to 0 or 2, error messages are output in normal form ("?XXX Message"). If they are equal to 3, error messages are output in long or "War and Peace" form, that is, a paragraph of informative material is typed following the normal form of the error message. |
+| EH&4 | If set, the failing command is also output up to and including the failing character in the command followed by a question mark. (Just like TECO’s response to the typing of a question mark immediately after an error.) |
+| EH&8 | If set, error messages will include the line number of the macro or command string where the error occurred. Note that TECO will not print the line number if the error occurred in the first line of a command string. |
+| EH&16 | If set, error messages will include the function name where the error occurred, plus the line number within the file containing the definition of that function. This is for test builds only. |
 
 The initial value of the EH flag is 0 which is equivalent to a value of 2.
 
@@ -134,10 +163,8 @@ The initial value of the ES flag is 0.
 
 ### ET - Terminal Flag
 
-The ET flag is a bit-encoded word controlling TECO’s
-treatment of the terminal. Any combination of the individual
-bits may be set. The bits provide the following functions, when
-set:
+The ET flag contains bit-encoded information that affect terminal input and output.
+Any combination of the individual bits may be set.
 
 | Bit | Function |
 | --- | -------- |
@@ -145,16 +172,17 @@ set:
 | ET&2 | Process DELETEs and \<CTRL/U\>s by using "scope mode". Scope mode processing uses the cursor control features of monitors to handle character deletion by actually erasing characters from the screen. |
 | ET&4 | Read lower case. TECO normally converts all lower case alphabetics to upper case on input. Setting this bit causes lower case alphabetics to be input as lower case. TECO commands and file specifiers may be typed in either upper or lower case. For the purpose of searches, however, upper and lower case may be treated as different characters. (See ^X flag). |
 | ET&8 | Read without echo for ^T commands. This allows data to be read by the ^T command without having the characters echo at the terminal. Normal command input to TECO will echo. |
-| ET&16 | Unused by TECO-64. |
+| ET&16 | Unused. |
 | ET&32 | Read with no wait. This enables the ^T command to test if a character is available at the user terminal. If a character has been typed, ^T returns the value of the character as always. If no character has been typed, ^T immediately returns a value of -1 and execution continues without waiting for a character. |
-| ET&64 | Unused by TECO-64. |
+| ET&64 | Unused. |
 | ET&128 | "Abort-on-error" bit. Initially set, when TECO starts up; cleared each time TECO issues its asterisk prompt. When this bit is set: 1) all informational messages are suppressed, 2) any \<CTRL/C\> causes the immediate termination of TECO, and 3) any error causes the termination of TECO after the error message is printed. |
 | ET&256 | If this bit is set, all lines output to the terminal are truncated to the terminal’s width if needed. |
 | ET&512 | If this bit is set, the display mode feature of TECO is present and your terminal is able to use display mode. This bit is a read-only bit; its state cannot be altered. |
-| ET&1024 | Unused by TECO-64. |
-| ET&2048 | Unused by TECO-64. |
+| ET&1024 | Unused. |
+| ET&2048 | Unused. |
 | ET&4096 | This bit reflects the terminal is capable of handling eight-bit character codes. <br><br> Because the data manipulated (edited) by TECO can consist of all 256 possible byte codes, the way data characters are displayed (typed out) at the terminal varies depending upon the setting of the 4096 ET bit. <br><br> Unprintable or invalid codes in the 128 to 255 range are typed out as [ab] (where ab is the corresponding hexadecimal code). The display mode feature (controlled by the W commands) always uses the \<xy\> and [ab] notations. |
 | ET&8192 | Accent grave as ESCape surrogate. If this bit is set, TECO recognizes the \` (accent grave) character as an ESCAPE surrogate. That is, an ` character typed at the terminal will be recognized as a command \<DELIM\> character, and passed to TECO as an ESCape. (This interpretation applies only to \<DELIM\>s typed at the terminal; ESCape characters must still be used in macros and indirect files.) When an ESCape surrogate is set, an ESCape received by TECO echos as accent grave; when none is set, an ESCape received by TECO echos as dollar sign. This feature is provided for the benefit of certain newer terminals which lack an ESCape key. (See also the Introduction, and the EE flag.) |
+| ET&16384 | Unused. |
 | ET&32768 | If this bit is set and a \<CTRL/C\> is typed, the bit is turned off, but execution of the current command string is allowed to continue. This allows a TECO macro to detect typed \<CTRL/C\>s. |
 
 When TECO is initialized, ET&2, ET&4, ET&512, ET&4096, and ET&8192 are set,
