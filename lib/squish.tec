@@ -1,8 +1,12 @@
-!! TECO-64 macro to squish macros
++0 UA                                   ! Get bit-encoded flag !
 
-:UA                                     !! Get bit-encoded flag
+! TECO-64 macro to squish macros !
 
-0,128ET                                 !! Ensure that we abort on error
+0,128ET                                 ! Abort on error !
+
+EO - 200 "L
+    @^A/Macro requires TECO version 200+/ 13^T 10^T ^C
+'
 
 Z                                       !! Error if no file name
 "E

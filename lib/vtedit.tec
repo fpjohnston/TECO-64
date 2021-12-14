@@ -1,8 +1,12 @@
-!! vtedit.tec - sample window initialization macro for TECO-64
++0 UN                   ! Get flag for enabling display mode (for testing) !
 
-:UN                     !! Get flag for enabling display mode (for testing)
+! vtedit.tec - sample window initialization macro for TECO-64 !
 
-0,128ET                 !! Abort on error
+0,128ET                 ! Abort on error !
+
+EO - 200 "L
+    @^A/Macro requires TECO version 200+/ 13^T 10^T ^C
+'
 
 QN "E
     -1W                 !! Enable display mode

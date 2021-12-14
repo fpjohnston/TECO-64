@@ -1,3 +1,12 @@
++0 UN                                   ! No. of decimal places to print !
++0 UW                                   ! Maximum width per line !
+
+0,128ET                                 ! Abort on error !
+
+EO - 200 "L
+    @^A/Macro requires TECO version 200+/ 13^T 10^T ^C
+'
+
 !!  pi.tec - TECO-64 macro to print pi
 !!
 !!  The following was based on "A Spigot Algorithm for the Digits of Pi", by
@@ -11,9 +20,6 @@
 !!  with the convention that the array is inverted, such that the first
 !!  element is the last line of the buffer.
 !!
-
-:UN                                     !! No. of decimal places to print
-:UW                                     !! Maximum width per line
 
 QN "E
     10 UN                               !! If no value, use 10 digits

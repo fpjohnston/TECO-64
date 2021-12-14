@@ -1,8 +1,12 @@
-!! init.tec - sample initialization macro for TECO-64
+! init.tec - sample initialization macro for TECO-64 !
 
-!! Invoke by setting TECO_INIT=init or use --initialize=init option
+! Invoke by setting TECO_INIT=init or use --initialize=init option !
 
-0,128ET                 !! Abort on error
+0,128ET                                 ! Abort on error !
+
+EO - 200 "L
+    @^A/Macro requires TECO version 200+/ 13^T 10^T ^C
+'
 
 !! Add more initialization commands here
 
