@@ -515,10 +515,6 @@ bool scan_lt(struct cmd *cmd)
 
     if (!f.e1.xoper || nparens == 0)
     {
-        reject_m(cmd->m_set);
-        reject_colon(cmd->colon);
-        reject_atsign(cmd->atsign);
-
         return false;
     }
 
