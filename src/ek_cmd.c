@@ -43,8 +43,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EK(struct cmd *unused)
+void exec_EK(struct cmd *cmd)
 {
+    scan_x(cmd);
+
     struct ofile *ofile = &ofiles[ostream];
 
     reset_pages(ostream);

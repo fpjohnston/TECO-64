@@ -48,12 +48,13 @@
 
 bool scan_x(struct cmd *cmd)
 {
-    assert(cmd != NULL);
-
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    if (cmd != NULL)
+    {
+        reject_m(cmd->m_set);
+        reject_n(cmd->n_set);
+        reject_colon(cmd->colon);
+        reject_atsign(cmd->atsign);
+    }
 
     return false;
 }

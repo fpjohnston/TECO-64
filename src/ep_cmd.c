@@ -39,8 +39,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EP(struct cmd *unused)
+void exec_EP(struct cmd *cmd)
 {
+    scan_x(cmd);
+
     istream = IFILE_SECONDARY;
 
     set_last(ifiles[istream].name);

@@ -43,8 +43,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EX(struct cmd *unused)
+void exec_EX(struct cmd *cmd)
 {
+    scan_x(cmd);
+
     struct ofile *ofile = &ofiles[ostream];
 
     if (ofile->fp == NULL && t.Z != 0)

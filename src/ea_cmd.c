@@ -39,8 +39,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EA(struct cmd *unused)
+void exec_EA(struct cmd *cmd)
 {
+    scan_x(cmd);
+
     ostream = OFILE_SECONDARY;
 
     set_last(ofiles[ostream].name);

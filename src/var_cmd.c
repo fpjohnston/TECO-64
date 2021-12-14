@@ -204,6 +204,9 @@ bool scan_dot(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
     push_x(t.dot, X_OPERAND);
 
     return true;

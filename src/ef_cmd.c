@@ -40,8 +40,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_EF(struct cmd *unused)
+void exec_EF(struct cmd *cmd)
 {
+    scan_x(cmd);
+
     struct ofile *ofile = &ofiles[ostream];
 
     rename_output(ofile);              // Handle any required file renaming

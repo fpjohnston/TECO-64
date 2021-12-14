@@ -303,6 +303,8 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 
             if (c == '^')               // Command is ^^x
             {
+                scan_x(cmd);
+
                 c = require_cbuf();
 
                 trace_cbuf(c);

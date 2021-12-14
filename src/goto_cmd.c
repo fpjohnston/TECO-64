@@ -309,7 +309,6 @@ bool scan_bang(struct cmd *cmd)
     {
         reject_m(cmd->m_set);
         reject_n(cmd->n_set);
-        reject_colon(cmd->colon);
         reject_atsign(cmd->atsign);
 
         push_x((int_t)0, X_NOT);
