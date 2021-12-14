@@ -55,13 +55,8 @@ void exec_ctrl_T(struct cmd *cmd)
 
     if (cmd->n_set)                     // n^T -> type out character
     {
-        int_t m = 1;
+        int_t m = cmd->m_set ? cmd->m_arg : 1;
         int_t n = cmd->n_arg;
-
-        if (cmd->m_set)
-        {
-            m = cmd->m_arg;
-        }
 
         for (int i = 0; i < m; ++i)
         {
