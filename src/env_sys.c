@@ -69,7 +69,7 @@ const char *teco_vtedit = NULL;         ///< Name of VTEDIT macro
 #define TECO_OS          40             ///< VMS
 #define TECO_HW          30             ///< Alpha
 
-#elif
+#else
 
 #define TECO_OS          -1             ///< Unknown
 #define TECO_HW          -1             ///< Unknown
