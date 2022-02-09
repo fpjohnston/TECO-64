@@ -458,7 +458,7 @@ html:
 
 html/options.html: html etc/options.xml etc/options.xsl
 	-$(AT)echo "Making HTML options file" $(NULL)
-	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html
+	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html || xalan -o html/options.html etc/options.xml etc/options.xsl
 
 $(ERRORS_MD): etc/errors.xml etc/templates/errors.md etc/errors.pl
 	$(AT)etc/errors.pl -i $< -t etc/templates/errors.md -o $@
@@ -474,4 +474,3 @@ lint: obj $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) $(LO
 .PHONY: mostlyclean
 mostlyclean: obj
 	-$(AT)cd obj && rm -f *.o *.d *.lob $(NULL2)
-
