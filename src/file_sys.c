@@ -45,9 +45,6 @@
 #include "term.h"
 
 
-#define TEMP_NAME   "_teco_XXXXXX"      ///< Template for temp file name
-#define TEMP_TYPE   ".tmp"              ///< Temp file type/extension
-
 #define TEC_TYPE    ".tec"              ///< Command file extension
 
 static glob_t pglob;                    ///< Saved list of wildcard files
@@ -243,10 +240,9 @@ FILE *open_temp(const char *oname, uint stream)
     (void)parse_file(oname, dir, NULL);
 
     char tempfile[PATH_MAX];
-    int nbytes = snprintf(tempfile, sizeof(tempfile), "%s%s%s", dir,
-                          TEMP_NAME, TEMP_TYPE);
-    int fd = mkstemps(tempfile, (int)strlen(TEMP_TYPE));
-
+    int nbytes = snprintf(tempfile, sizeof(tempfile), "%s%s", dir, "_teco_XXXXXX");
+    int fd = mkstemp(tempfile);
+    
     if (fd == -1)
     {
         throw(E_ERR, tempfile);         // General error
