@@ -97,6 +97,7 @@ enum errcodes
     E_NFO,          ///< No file for output
     E_NON,          ///< No n argument after m argument
     E_NOT,          ///< O command has no tag
+    E_NPA,          ///< Negative or 0 argument to P
     E_NYA,          ///< Numeric argument with Y
     E_NYI,          ///< Not yet implemented
     E_OFO,          ///< Output file already open

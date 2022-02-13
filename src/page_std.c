@@ -33,10 +33,33 @@
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
+#include "file.h"
 #include "page.h"
 #include "term.h"
 
-uint page_count = 0;                ///< Current page number
+//
+//  Note: the following definitions are more complicated than they need to be,
+//        but this was done in order to allow the page_count() and set_page()
+//        functions to be defined identically to those used in page_vm.c.
+//
+
+///  @struct   page_table
+///  @brief    Description of page counts for output streams.
+
+struct page_table
+{
+    uint count;                         ///< Current page number
+};
+
+///  @var      ptable
+///  @brief    Stored data for primary and secondary output streams.
+
+static struct page_table ptable[] =
+{
+    { .count = 0 },
+    { .count = 0 },
+};
+
 
 ///
 ///  @brief    Read in previous page (invalid for standard paging).
@@ -52,6 +75,21 @@ bool page_backward(int_t unused1, bool unused2)
 
 
 ///
+///  @brief    Get page count for current page.
+///
+///  @returns  Page number (0 if no data in buffer).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+uint page_count(void)
+{
+    assert(ostream == OFILE_PRIMARY || ostream == OFILE_SECONDARY);
+
+    return ptable[ostream].count;
+}
+
+
+///
 ///  @brief    Flush out remaining pages (no-op for standard paging).
 ///
 ///  @returns  Nothing.
@@ -60,7 +98,7 @@ bool page_backward(int_t unused1, bool unused2)
 
 void page_flush(FILE *unused)
 {
-    page_count = 0;
+    // Nothing to do
 }
 
 
@@ -105,7 +143,9 @@ bool page_forward(FILE *fp, int_t start, int_t end, bool ff)
         fputc(FF, fp);
     }
 
-    ++page_count;
+    assert(ostream == OFILE_PRIMARY || ostream == OFILE_SECONDARY);
+
+    ++ptable[ostream].count;
 
     return false;
 }
@@ -118,8 +158,23 @@ bool page_forward(FILE *fp, int_t start, int_t end, bool ff)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void reset_pages(void)
+void reset_pages(uint unused)
 {
+}
+
+
+///
+///  @brief    Set page count for current page.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void set_page(uint page)
+{
+    assert(ostream == OFILE_PRIMARY || ostream == OFILE_SECONDARY);
+
+    ptable[ostream].count = page;
 }
 
 

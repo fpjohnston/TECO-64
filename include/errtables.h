@@ -101,6 +101,7 @@ static struct errlist errlist[] =
     [E_NFO] = { "NFO",  "No file for output" },
     [E_NON] = { "NON",  "No n argument after m argument" },
     [E_NOT] = { "NOT",  "O command has no tag" },
+    [E_NPA] = { "NPA",  "Negative or 0 argument to P" },
     [E_NYA] = { "NYA",  "Numeric argument with Y" },
     [E_NYI] = { "NYI",  "Not yet implemented" },
     [E_OFO] = { "OFO",  "Output file already open" },
@@ -264,6 +265,7 @@ static const char *errhelp[] =
               "a command such as EW or EB.",
     [E_NON] = "An m argument was not followed by an n argument.",
     [E_NOT] = "No tag was found for an O command.",
+    [E_NPA] = "A P command was preceded by a negative or 0 argument.",
     [E_NYA] = "The Y command must not be preceded by either a "
               "numeric argument or a command that returns a "
               "numeric value.",

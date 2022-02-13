@@ -379,6 +379,11 @@
             <detail>No tag was found for an O command.</detail>
         </error>
         <error>
+            <code>NPA</code>
+            <message>Negative or 0 argument to P</message>
+            <detail>A P command was preceded by a negative or 0 argument.</detail>
+        </error>
+        <error>
             <code>NYA</code>
             <message>Numeric argument with Y</message>
             <detail>The Y command must not be preceded by either a</detail>
