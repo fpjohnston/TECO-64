@@ -41,7 +41,7 @@
 
 void exec_EA(struct cmd *cmd)
 {
-    scan_x(cmd);
+    (void)scan_x(cmd);
 
     ostream = OFILE_SECONDARY;
 

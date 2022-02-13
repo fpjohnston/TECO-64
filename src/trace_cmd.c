@@ -40,7 +40,7 @@
 
 void exec_trace(struct cmd *cmd)
 {
-    scan_x(cmd);
+    (void)scan_x(cmd);
 
     f.trace.enable = !f.trace.enable;   // Invert current tracing state
 }
