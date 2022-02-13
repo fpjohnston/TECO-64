@@ -36,10 +36,10 @@
 
 typedef enum
 {
-    EDIT_OK,
-    EDIT_WARN,
-    EDIT_FULL,
-    EDIT_ERROR
+    EDIT_OK    = -1,
+    EDIT_WARN  = -2,
+    EDIT_FULL  = -3,
+    EDIT_ERROR = -4
 } estatus;
 
 
@@ -71,7 +71,7 @@ extern bool ebuf_changed;
 //          EDIT_FULL  - Insertion was successful, but buffer just became full.
 //          EDIT_ERROR - Insertion was unsuccessful. Buffer is already full.
 
-extern int add_ebuf(int c);
+extern estatus add_ebuf(int c);
 
 //  Delete nbytes at dot. Argument can be positive or negative.
 

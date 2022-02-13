@@ -133,7 +133,7 @@ static void shift_right(uint_t nbytes);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int add_ebuf(int c)
+estatus add_ebuf(int c)
 {
     assert(eb.buf != NULL);             // Error if no edit buffer
 
