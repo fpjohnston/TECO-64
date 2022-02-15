@@ -35,26 +35,27 @@
 #
 #  Build options:
 #
-#      buffer=gap  Use gap buffer for editing text. [default]
-#      display=1   Enable display mode.
-#      long=1      Use 64-bit integers.
-#      paging=std  Use standard paging.
-#      paging=vm   Use virtual memory paging. [default]
-#      verbose=1   Enable verbosity during build.
+#      buffer=gap   Use gap buffer for editing text. [default]
+#      display=1    Enable display mode.
+#      int=32       Use 32-bit integers. [default]
+#      int=64       Use 64-bit integers.
+#      paging=std   Use standard paging.
+#      paging=vm    Use virtual memory paging. [default]
+#      verbose=1    Enable verbosity during build.
 #
-#  Debugging targets:
+#  Debugging options:
 #
 #      headers      Regenerate header files if needed.
 #      lint         Lint .c and .lob files (requires PC-lint).
 #      lobs         Lint .c files (requires PC-lint).
+#      gdb=1        Enable use of GDB debugger.
+#      gprof=1      Enable use of GPROF profiler.
+#      memcheck= 1  Enable checks for memory leaks.
 #
-#  Debugging options:
+#  Optimization options:
 #
-#      gdb=1       Enable use of GDB debugger.
-#      gprof=1     Enable use of GPROF profiler.
-#      memcheck=1  Enable checks for memory leaks.
-#      ndebug=1    Disable run-time assertions.
-#      nostrict=1  Relax run-time syntax checking.
+#      ndebug=1     Disable run-time assertions.
+#      nostrict=1   Disable run-time syntax checking.
 #
 ################################################################################
 
@@ -272,10 +273,24 @@ endif
 
 # Use 64-bit long integers
 
-ifdef   long
+ifeq      (${int}, 64)
 
-DEFINES += -D LONG_64
-DOXYGEN +=    LONG_64
+DEFINES += -D INT_T=64
+DOXYGEN +=    INT_T=64
+
+else ifeq (${int}, 32)
+
+DEFINES += -D INT_T=32
+DOXYGEN +=    INT_T=32
+
+else ifeq (${int}, )
+
+DEFINES += -D INT_T=32
+DOXYGEN +=    INT_T=32
+
+else
+
+$(error Unknown integer size: ${int}: expected 32 or 64)
 
 endif
 
@@ -360,26 +375,27 @@ help:
 	@echo ""
 	@echo "Build options:"
 	@echo ""
-	@echo "    buffer=gap  Use gap buffer for editing text. [default]"
-	@echo "    display=1   Enable display mode."
-	@echo "    long=1      Use 64-bit integers."
-	@echo "    paging=std  Use standard paging."
-	@echo "    paging=vm   Use virtual memory paging. [default]"
-	@echo "    verbose=1   Enable verbosity during build."
-	@echo ""
-	@echo "Debugging targets:"
-	@echo ""
-	@echo "    headers      Regenerate header files if needed."
-	@echo "    lint         Lint .c and .lob files (requires PC-lint)."
-	@echo "    lobs         Lint .c files (requires PC-lint)."
+	@echo "    buffer=gap   Use gap buffer for editing text. [default]"
+	@echo "    display=1    Enable display mode."
+	@echo "    int=32       Use 32-bit integers. [default]."
+	@echo "    int=64       Use 64-bit integers."
+	@echo "    paging=std   Use standard paging."
+	@echo "    paging=vm    Use virtual memory paging. [default]"
+	@echo "    verbose=1    Enable verbosity during build."
 	@echo ""
 	@echo "Debugging options:"
 	@echo ""
-	@echo "    gdb=1       Enable use of GDB debugger."
-	@echo "    gprof=1     Enable use of GPROF profiler."
-	@echo "    memcheck=1  Enable checks for memory leaks."
-	@echo "    ndebug=1    Disable run-time assertions."
-	@echo "    nostrict=1  Relax run-time syntax checking."
+	@echo "    headers      Rebuild header files if needed."
+	@echo "    lint         Lint .c and .lob files (requires PC-lint)."
+	@echo "    lobs         Lint .c files (requires PC-lint)."
+	@echo "    gdb=1        Enable use of GDB debugger."
+	@echo "    gprof=1      Enable use of GPROF profiler."
+	@echo "    memcheck=1   Enable checks for memory leaks."
+	@echo ""
+	@echo "Optimization options:"
+	@echo ""
+	@echo "    ndebug=1     Disable run-time assertions."
+	@echo "    nostrict=1   Disable run-time syntax checking."
 	@echo ""
 
 bin:
@@ -444,6 +460,7 @@ distclean: obj bin mostlyclean clean
 	-$(AT)rm -f obj/CFLAGS obj/Doxyfile $(NULL2) 
 	-$(AT)rm -rf html $(NULL2) 
 	-$(AT)cd src && rm -f *.bak $(NULL2)
+	-$(AT)cd tests && rm -f cases/* results/* $(NULL2)
 	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL2)
 
 .PHONY: doc

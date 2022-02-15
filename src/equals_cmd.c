@@ -38,7 +38,7 @@
 #include "term.h"
 
 
-#if     defined(LONG_64)
+#if     INT_T == 64
 
 #define FORMAT_DEC      "%ld"       ///< Decimal format
 #define FORMAT_HEX      "%lx"       ///< Hexadecimal format

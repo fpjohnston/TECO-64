@@ -66,7 +66,7 @@ static int botdot = 0;              ///< Value of FZ flag
 
 #if     defined(DISPLAY_MODE)
 
-#if     defined(LONG_64)
+#if     INT_T == 64
 
 #define DEC_FMT "%-*ld"             ///< Left-justified decimal format
 

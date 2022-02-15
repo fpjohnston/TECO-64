@@ -39,28 +39,42 @@
 
 
 #if     !defined(EDIT_MAX)
+
+#if     INT_T == 64
+
 #if     defined(PAGE_VM)
-#if     defined(LONG_64)
-
 #define EDIT_MAX    (GB * 16)       ///< Maximum size is 16 GB (w/ VM)
-
 #else
-
-#define EDIT_MAX    (GB)            ///< Maximum size is 1 GB (w/ VM)
-
-#endif
-
-#else
-
 #define EDIT_MAX    (MB)            ///< Maximum size is 1 MB (w/o VM)
+#endif
+
+#elif   INT_T == 32
+
+#if     defined(PAGE_VM)
+#define EDIT_MAX    (GB)            ///< Maximum size is 1 GB (w/ VM)
+#else
+#define EDIT_MAX    (MB)            ///< Maximum size is 1 MB (w/o VM)
+#endif
+
+// The following is reserved for a possible future implementation
+// of TECO for a 16-bit environment.
+
+//#elif   INT_T == 16
+
+//#define EDIT_MAX    (KB * 32)       ///< Maximum size is 32 KB (w/ VM)
+
+#else
+
+#error  Invalid integer size: expected 32, or 64
 
 #endif
+
 #endif
 
 #if     !defined(EDIT_INIT)
 #if     defined(PAGE_VM)
 
-#define EDIT_INIT   (KB * 64)       ///< Initial size is 64 KB (w/ VM)
+#define EDIT_INIT   (KB * 64)       ///< Initial size is 64 KB
 
 #else
 

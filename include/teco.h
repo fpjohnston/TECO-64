@@ -45,24 +45,57 @@
 
 #endif
 
-#if     defined(LONG_64)
+//
+//  Define the int_t and uint_t types that we will subsequently use whenever we
+//  require an integral type that can vary depending on the environment we've
+//  been compiled for. There are currently three possibilities: 16, 32, and 64
+//  bits, with 32 being the default. Others could perhaps be added, but not
+//  willy-nilly, which is why we abort with a preprocessor error if we see
+//  something strange.
+//
+//  Note that since the maximum value in a 16-bit environment is only 64 K,
+//  there is no reason to define the MB and GB macros.
+//
+
+#if     !defined(INT_T)
+
+#define INT_T 32                    ///< Default integer size is 32 bits
+
+#endif
+
+#if     INT_T == 64
 
 typedef long int_t;                 ///< Size of m and n arguments
 typedef size_t uint_t;              ///< Use largest possible unsigned int
 
 #define KB  (1024uL)                ///< No. of bytes in a kilobyte
+#define MB  (KB * KB)               ///< No. of bytes in a megabyte
+#define GB  (MB * KB)               ///< No. of bytes in a gigabyte
 
-#else
+#elif   INT_T == 32
 
 typedef int int_t;                  ///< Size of m and n arguments
 typedef unsigned int uint_t;        ///< Use regular unsigned int
 
 #define KB  (1024u)                 ///< No. of bytes in a kilobyte
-
-#endif
-
 #define MB  (KB * KB)               ///< No. of bytes in a megabyte
 #define GB  (MB * KB)               ///< No. of bytes in a gigabyte
+
+// The following is reserved for a possible future implementation
+// of TECO for a 16-bit environment.
+
+//#elif   INT_T == 16
+
+//typedef short int_t;                ///< Size of m and n arguments
+//typedef unsigned short uint_t;      ///< Use regular unsigned int
+
+//#define KB  (1024u)                 ///< No. of bytes in a kilobyte
+
+#else
+
+#error Invalid integer size: expected 32 or 64
+
+#endif
 
 /// @def    countof(array)
 /// @brief  Returns the number of elements in an array.
