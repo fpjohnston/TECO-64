@@ -6,9 +6,11 @@
 
 [[enter]]
 
+0,16 E1                                 ! Turn on new-style EI commands !
+
 @^A/entering test 4/ [[^T]]
 
-@EI"EI_a"                               ! Test: EI (level 0) !
+@EI"EI_04a"                             ! Test: EI (1st nesting) !
 
 @^A/exiting test 4/ [[^T]]
 

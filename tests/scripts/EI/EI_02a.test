@@ -6,6 +6,8 @@
 
 [[enter]]
 
+0,16 E1                                 ! Turn on new-style EI commands !
+
 @EI"[[cmd1]]"                           ! Test: @EI// !
 
 [[exit]]

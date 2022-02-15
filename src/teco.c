@@ -268,6 +268,7 @@ static void exit_teco(void)
 
     reset_loop();                       // Deallocate memory for loops
     reset_indirect();                   // Deallocate memory for EI commands
+    reset_search();                     // Deallocate memory for last search
 
     exit_map();                         // Deallocate memory for key mapping
     exit_error();                       // Deallocate memory for errors

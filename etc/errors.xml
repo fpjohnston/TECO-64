@@ -83,6 +83,14 @@
             <detail>command string.</detail>
         </error>
         <error>
+            <code>EIE</code>
+            <message>EI command error</message>
+            <detail>An invalid EI command has been executed. The user</detail>
+            <detail>had too many nested EI commands, or tried to execute</detail>
+            <detail>an old-style EI command while a new-style EI command</detail>
+            <detail>was being executed (or vice versa).</detail>
+        </error>
+        <error>
             <code>ERR</code>
             <message>%s</message>
             <detail>A system call failed. The error message text</detail>
@@ -119,14 +127,6 @@
             <message>Invalid ^E command in search argument</message>
             <detail>A search argument contains a ^E command that</detail>
             <detail>is either not defined or incomplete.</detail>
-        </error>
-        <error>
-            <code>IE1</code>
-            <message>Invalid E1 command</message>
-            <detail>An invalid E1 command has been executed. The</detail>
-            <detail>E1&amp;32 flag bit may not be set while executing</detail>
-            <detail>an old-style EI command, and may not be reset</detail>
-            <detail>while executing a new-style EI command.</detail>
         </error>
         <error>
             <code>IEC</code>

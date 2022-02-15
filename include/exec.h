@@ -609,8 +609,6 @@ extern bool append(bool n_set, int_t n_arg, bool colon_set);
 
 extern bool append_line(void);
 
-extern int check_EI(void);
-
 extern bool check_semi(void);
 
 extern void close_files(void);
@@ -638,6 +636,10 @@ extern void reset_if(void);
 extern void reset_indirect(void);
 
 extern void reset_loop(void);
+
+extern void reset_search(void);
+
+extern void set_EI(bool ei_new);
 
 extern bool skip_cmd(struct cmd *cmd, const char *skip);
 

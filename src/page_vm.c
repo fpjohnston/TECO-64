@@ -404,7 +404,7 @@ static void push_page(struct page *page)
 
 
 ///
-///  @brief    Reset all pages (used by EK command).
+///  @brief    Reset all pages (used by EK and EX commands).
 ///
 ///  @returns  Nothing.
 ///
@@ -425,6 +425,16 @@ void reset_pages(uint stream)
     }
 
     ptable[stream].tail = NULL;
+
+    // Free up anything on the page stack
+
+    while ((page = ptable[stream].stack) != NULL)
+    {
+        ptable[stream].stack = page->next;
+
+        free_mem(&page->addr);
+        free_mem(&page);
+    }
 }
 
 
@@ -468,7 +478,7 @@ static struct page *unlink_page(void)
     }
     else
     {
-        ptable[ostream].tail        = page->prev;
+        ptable[ostream].tail = page->prev;
 
         page->prev->next = NULL;
         page->prev       = NULL;

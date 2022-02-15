@@ -1,0 +1,9 @@
+! Helper script for TECO tests !
+
+@^A/entering test 6b/ 13^T 10^T
+
+@EI/EI_06c/                             ! Test: EI (3rd nesting) !
+
+@^A/exiting test 6b/ 13^T 10^T
+
+

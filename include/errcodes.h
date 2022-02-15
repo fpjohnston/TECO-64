@@ -51,13 +51,13 @@ enum errcodes
     E_DPY,          ///< Display mode error
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag '!foo!'
+    E_EIE,          ///< EI command error
     E_ERR,          ///< (error message)
     E_EXT,          ///< Extended feature not enabled
     E_FIL,          ///< Invalid file 'foo'
     E_FNF,          ///< File not found 'foo'
     E_IAA,          ///< Invalid A argument
     E_ICE,          ///< Invalid ^E command in search argument
-    E_IE1,          ///< Invalid E1 command
     E_IEC,          ///< Invalid character 'x' after E
     E_IFC,          ///< Invalid character 'x' after F
     E_IFE,          ///< Ill-formed numeric expression

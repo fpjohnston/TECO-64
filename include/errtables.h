@@ -55,13 +55,13 @@ static struct errlist errlist[] =
     [E_DPY] = { "DPY",  "Display mode error" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
+    [E_EIE] = { "EIE",  "EI command error" },
     [E_ERR] = { "ERR",  "%s" },
     [E_EXT] = { "EXT",  "Extended feature not enabled" },
     [E_FIL] = { "FIL",  "Invalid file '%s'" },
     [E_FNF] = { "FNF",  "File not found '%s'" },
     [E_IAA] = { "IAA",  "Invalid A argument" },
     [E_ICE] = { "ICE",  "Invalid ^E command in search argument" },
-    [E_IE1] = { "IE1",  "Invalid E1 command" },
     [E_IEC] = { "IEC",  "Invalid character '%s' after E" },
     [E_IFC] = { "IFC",  "Invalid character '%s' after F" },
     [E_IFE] = { "IFE",  "Ill-formed numeric expression" },
@@ -153,6 +153,10 @@ static const char *errhelp[] =
               "the current page.",
     [E_DUP] = "An O command found a duplicate tag within the "
               "command string.",
+    [E_EIE] = "An invalid EI command has been executed. The user "
+              "had too many nested EI commands, or tried to execute "
+              "an old-style EI command while a new-style EI command "
+              "was being executed (or vice versa).",
     [E_ERR] = "A system call failed. The error message text "
               "explains the error.",
     [E_EXT] = "A command attempted to use an extended feature "
@@ -167,10 +171,6 @@ static const char *errhelp[] =
               "negative or zero.",
     [E_ICE] = "A search argument contains a ^E command that "
               "is either not defined or incomplete.",
-    [E_IE1] = "An invalid E1 command has been executed. The "
-              "E1&32 flag bit may not be set while executing "
-              "an old-style EI command, and may not be reset "
-              "while executing a new-style EI command.",
     [E_IEC] = "An invalid E command has been executed.",
     [E_IFC] = "An invalid F command has been executed.",
     [E_IFE] = "The numeric expression preceding a command "

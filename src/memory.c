@@ -60,6 +60,7 @@ struct mblock
     struct mblock *next;                ///< Next block in linked list
     const char *addr;                   ///< calloc'd memory block
     uint_t size;                        ///< Size of block in bytes
+    uint count;                         ///< Block count (index)
 };
 
 static struct mblock *mroot = NULL;     ///< Root of memory block list
@@ -71,6 +72,8 @@ static uint nallocs = 0;                ///< Total no. of blocks allocated
 static uint nblocks = 0;                ///< No. of blocks currently allocated
 
 static uint maxblocks = 0;              ///< High-water mark for allocated blocks
+
+static uint mcount = 0;
 
 // Local functions
 
@@ -112,11 +115,12 @@ static void add_mblock(void *p1, uint_t size)
 
     mblock->addr = p1;
     mblock->size = size;
+    mblock->count = ++mcount;
     msize += size;
     mroot = mblock;
 
-    tprint("%s(): new block at %p, size = %lu\n", __func__, mblock->addr,
-           (size_t)mblock->size);
+    tprint("%s(): block #%u at %p, size = %lu\n", __func__, mcount,
+           mblock->addr, (size_t)mblock->size);
 
     ++nallocs;
 
@@ -266,11 +270,9 @@ void exit_mem(void)
                __func__, (size_t)msize, plural(msize), nblocks, plural(nblocks));
     }
 
-    uint i = 0;
-
     while (p != NULL)
     {
-        tprint("%s(): allocation #%u at %p, %lu byte%s\n", __func__, ++i,
+        tprint("%s(): lost block #%u at %p, %lu byte%s\n", __func__, p->count,
                p->addr, (size_t)p->size, plural(p->size));
 
         next = p->next;
@@ -332,8 +334,8 @@ void *expand_mem(void *p1, uint_t size, uint_t delta)
         mblock->addr = p2;
         mblock->size = size + delta;
 
-        tprint("--%s(): block at %p increased from %lu to %lu\n", __func__,
-               mblock->addr, (size_t)oldsize, (size_t)mblock->size);
+        tprint("%s(): block #%u at %p increased from %lu to %lu\n", __func__,
+               mblock->count, mblock->addr, (size_t)oldsize, (size_t)mblock->size);
     }
 
 #endif
@@ -453,8 +455,8 @@ void *shrink_mem(void *p1, uint_t size, uint_t delta)
         mblock->addr = p2;
         mblock->size = size - delta;
 
-        tprint("--%s(): block at %p decreased from %lu to %lu\n", __func__,
-               mblock->addr, (size_t)oldsize, (size_t)mblock->size);
+        tprint("%s(): block #%u at %p decreased from %lu to %lu\n", __func__,
+               mblock->count, mblock->addr, (size_t)oldsize, (size_t)mblock->size);
     }
 
 #endif

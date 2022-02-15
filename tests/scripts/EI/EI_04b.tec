@@ -2,7 +2,7 @@
 
 @^A/entering test 4b/ 13^T 10^T
 
-@EI/EI_c/                               ! Test: EI (level 2) !
+@EI/EI_04c/                             ! Test: EI (3rd nesting) !
 
 @^A/exiting test 4b/ 13^T 10^T
 

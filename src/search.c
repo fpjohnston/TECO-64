@@ -392,6 +392,19 @@ static bool match_str(struct search *s)
 
 
 ///
+///  @brief    Deallocate memory for last search.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_search(void)
+{
+    free_mem(&last_search.data);
+}
+
+
+///
 ///  @brief    Search backward through edit buffer to find next instance of
 ///            string in search buffer.
 ///

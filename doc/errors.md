@@ -43,13 +43,13 @@ code.
 | <nobr>?DPY</nobr> | <nobr>Display mode error</nobr> | Display mode support is either missing or disabled. |
 | <nobr>?DTB</nobr> | <nobr>Delete too big</nobr> | A D command attempted to delete text outside the current page. |
 | <nobr>?DUP</nobr> | <nobr>Duplicate tag '!foo!'</nobr> | An O command found a duplicate tag within the command string. |
+| <nobr>?EIE</nobr> | <nobr>EI command error</nobr> | An invalid EI command has been executed. The user had too many nested EI commands, or tried to execute an old-style EI command while a new-style EI command was being executed (or vice versa). |
 | <nobr>?ERR</nobr> | <nobr>(error message)</nobr> | A system call failed. The error message text explains the error. |
 | <nobr>?EXT</nobr> | <nobr>Extended feature not enabled</nobr> | A command attempted to use an extended feature which is not currently enabled. |
 | <nobr>?FIL</nobr> | <nobr>Invalid file 'foo'</nobr> | An attempt was made to open a directory, FIFO, socket, or similar file specification instead of a regular file. |
 | <nobr>?FNF</nobr> | <nobr>File not found 'foo'</nobr> | The requested input file could not be located. If this occurred within a macro, the colon-modified command may be necessary. |
 | <nobr>?IAA</nobr> | <nobr>Invalid A argument</nobr> | The argument preceding a :A command is negative or zero. |
 | <nobr>?ICE</nobr> | <nobr>Invalid ^E command in search argument</nobr> | A search argument contains a ^E command that is either not defined or incomplete. |
-| <nobr>?IE1</nobr> | <nobr>Invalid E1 command</nobr> | An invalid E1 command has been executed. The E1&32 flag bit may not be set while executing an old-style EI command, and may not be reset while executing a new-style EI command. |
 | <nobr>?IEC</nobr> | <nobr>Invalid character '*x*' after E</nobr> | An invalid E command has been executed. |
 | <nobr>?IFC</nobr> | <nobr>Invalid character '*x*' after F</nobr> | An invalid F command has been executed. |
 | <nobr>?IFE</nobr> | <nobr>Ill-formed numeric expression</nobr> | The numeric expression preceding a command doesn't make sense. For example, 5+ isn't a complete expression. |
@@ -89,6 +89,7 @@ code.
 | <nobr>?NFO</nobr> | <nobr>No file for output</nobr> | Before issuing an output command, such as N or or P, it is necessary to open an output file with a command such as EW or EB. |
 | <nobr>?NON</nobr> | <nobr>No n argument after m argument</nobr> | An m argument was not followed by an n argument. |
 | <nobr>?NOT</nobr> | <nobr>O command has no tag</nobr> | No tag was found for an O command. |
+| <nobr>?NPA</nobr> | <nobr>Negative or 0 argument to P</nobr> | A P command was preceded by a negative or 0 argument. |
 | <nobr>?NYA</nobr> | <nobr>Numeric argument with Y</nobr> | The Y command must not be preceded by either a numeric argument or a command that returns a numeric value. |
 | <nobr>?NYI</nobr> | <nobr>Not yet implemented</nobr> | A command was issued that is not yet implemented in this version of TECO. |
 | <nobr>?OFO</nobr> | <nobr>Output file already open</nobr> | A command has been executed which tried to create an output file, but an output file currently is open. It is typically appropriate to use the EC or EK command as the situation calls for to close the output file. |

@@ -1,0 +1,10 @@
+! Helper script for TECO tests !
+
+@^A/entering test 6c/ 13^T 10^T
+
+@^A/hello, world!/ 13^T 10^T
+
+@^A/exiting test 6c/ 13^T 10^T
+
+^D EK HK @^A/!PASS!/ 10^T EX
+

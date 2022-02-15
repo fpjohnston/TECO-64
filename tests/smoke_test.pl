@@ -226,7 +226,7 @@ if ($execute)
 {
     # Clean up any temp. files we may have created.
 
-    my @files = glob "$testdir/cases/*.tmp";
+    my @files = glob "$testdir/cases/_teco_*";
 
     foreach my $file (@files)
     {
@@ -688,6 +688,18 @@ sub prove_test
     {
         $report .= ' ->';
     }
+
+    if ($actual =~ /lost block/gm)
+    {
+        print "$report MEMORY\n";
+
+        return;
+    }
+        
+    $actual =~ s/add_mblock.+?\n//gm;
+    $actual =~ s/exit_mem.+?\n//gm;
+    $actual =~ s/expand_mem.+?\n//gm;
+    $actual =~ s/shrink_mem.+?\n//gm;
 
     if ( $actual eq 'TIMEOUT' )
     {
