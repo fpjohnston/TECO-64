@@ -2,7 +2,7 @@
 ///  @file    cmd_estack.c
 ///  @brief   Functions that handle the expression stack.
 ///
-///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
+///  @copyright 2019-2022 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a
 ///  copy of this software and associated documentation files (the "Software"),

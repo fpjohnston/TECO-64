@@ -3,7 +3,7 @@
 #
 #  commands.pl - Build-process tool for TECO-64 text editor.
 #
-#  @copyright 2020-2021 Franklin P. Johnston / Nowwith Treble Software
+#  @copyright 2020-2022 Franklin P. Johnston / Nowwith Treble Software
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a
 #  copy of this software and associated documentation files (the "Software"),

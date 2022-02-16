@@ -2,7 +2,7 @@
 ///  @file    ctrl_w_cmd.c
 ///  @brief   Execute CTRL/W command.
 ///
-///  @copyright 2019-2021 Franklin P. Johnston / Nowwith Treble Software
+///  @copyright 2019-2022 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a
 ///  copy of this software and associated documentation files (the "Software"),
