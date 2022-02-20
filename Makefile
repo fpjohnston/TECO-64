@@ -253,15 +253,6 @@ $(error Unknown paging handler: ${paging})
 
 endif
 
-# Change default for :U command
-
-ifdef   default_u
-
-DEFINES += -D DEFAULT_U=$(default_u)
-DOXYGEN +=    DEFAULT_U
-
-endif
-
 # Always echo ESCape as dollar sign, regardless of alternate delimiters
 
 ifdef   dollar
