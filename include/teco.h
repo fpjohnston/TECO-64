@@ -102,15 +102,16 @@ typedef unsigned int uint_t;        ///< Use regular unsigned int
 
 #define countof(array) (sizeof(array) / sizeof(array[0]))
 
-#define WAIT             true       ///< Wait for terminal input
+#define WAIT             true           ///< Wait for terminal input
 
-typedef unsigned char uchar;        ///< Unsigned character type
+typedef unsigned char uchar;            ///< Unsigned character shortcut
 
-#if     defined(__clang__)
+//
+//  The following may be redundant if the compiler already defines 'ulong', but
+//  as long as the definitions are identical, it shouldn't cause an error.
+//
 
-typedef unsigned long ulong;
-
-#endif
+typedef unsigned long ulong;            ///< Unsigned long shortcut
 
 
 /// @def    isdelim(c)
@@ -119,14 +120,14 @@ typedef unsigned long ulong;
 #define isdelim(c)  (c == LF || c == VT || c == FF)
 
 
-#define SUCCESS         ((int_t)-1) ///< Command succeeded
-#define FAILURE         ((int_t)0)  ///< Command failed
+#define SUCCESS         ((int_t)-1)     ///< Command succeeded
+#define FAILURE         ((int_t)0)      ///< Command failed
 
 enum
 {
-    MAIN_NORMAL,                    ///< Normal main loop entry
-    MAIN_ERROR,                     ///< Error entry
-    MAIN_CTRLC                      ///< CTRL/C or abort entry
+    MAIN_NORMAL,                        ///< Normal main loop entry
+    MAIN_ERROR,                         ///< Error entry
+    MAIN_CTRLC                          ///< CTRL/C or abort entry
 };
 
 
@@ -140,13 +141,13 @@ enum
 
 struct tbuffer
 {
-    char *data;                     ///< Buffer data
-    uint_t size;                    ///< Total size of buffer in bytes
-    uint_t len;                     ///< Current length stored
-    uint_t pos;                     ///< Position of next character
+    char *data;                         ///< Buffer data
+    uint_t size;                        ///< Total size of buffer in bytes
+    uint_t len;                         ///< Current length stored
+    uint_t pos;                         ///< Position of next character
 };
 
-typedef struct tbuffer tbuffer;     ///< TECO buffer
+typedef struct tbuffer tbuffer;         ///< TECO buffer
 
 
 ///  @struct tstring
