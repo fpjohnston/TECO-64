@@ -111,7 +111,7 @@ typedef unsigned char uchar;            ///< Unsigned character shortcut
 //  as long as the definitions are identical, it shouldn't cause an error.
 //
 
-typedef unsigned long ulong;            ///< Unsigned long shortcut
+typedef unsigned long ulong;            //lint !e761
 
 
 /// @def    isdelim(c)
