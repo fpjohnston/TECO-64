@@ -111,8 +111,11 @@ typedef unsigned char uchar;            ///< Unsigned character shortcut
 //  as long as the definitions are identical, it shouldn't cause an error.
 //
 
-typedef unsigned long ulong;            //lint !e761
+//lint -save -e761
 
+typedef unsigned long ulong;            ///< Unsigned long shortcut
+
+//lint -restore
 
 /// @def    isdelim(c)
 /// @brief  Check character to see if it's a line delimiter.
