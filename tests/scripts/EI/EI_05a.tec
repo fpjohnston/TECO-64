@@ -1,0 +1,10 @@
+! Helper script for TECO tests !
+
+@^A/entering test 5a/ 13^T 10^T
+
+@EI//
+
+@^A/exiting test 5a/ 13^T 10^T
+
+[[FAIL]] ^C
+

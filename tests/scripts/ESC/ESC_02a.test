@@ -6,6 +6,7 @@
 
 [[enter]]
 
-@^A/!PASS/ ^^!^T 13^T 10^T          ! Test: ESCape in command string !
+@^A/!PASS/ ^^!^T 13^T 10^T            ! Test: ESCape in command string !
 
 ^C
+

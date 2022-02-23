@@ -8,10 +8,6 @@
 
 0,16 E1                             ! Turn on new-style EI commands !
 
-QA "E 0,32 E1 | 32,0 E1 '
-
-[[PASS]]
-
-@EI//                               ! Test: @EI// !
+@EI/EI_05a/                         ! Test: @EI// !
 
 [[exit]]

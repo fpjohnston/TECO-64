@@ -6,10 +6,10 @@
 
 [[enter]]
 
-[[PASS]]
+! Test: F> - use macro to test command - if it fails, we exit with error !
 
-F>                                  ! Test: F> !
+@^UA"@^A/entering macro/ [[^T]] F> @^A/exiting macro/ [[^T]] [[FAIL]] ^C"
 
-[[FAIL]]
+MA
 
 [[exit]]

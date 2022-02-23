@@ -6,6 +6,6 @@
 
 [[enter]]
 
-@^A/!PASS/ ^^!^T 13^T 10^T ^[^[         ! Test: ^[ in command string !
+@^A/!PASS/ ^^!^T 13^T 10^T ^[         ! Test: ^[ in command string !
 
 ^C
