@@ -639,8 +639,6 @@ extern void reset_loop(void);
 
 extern void reset_search(void);
 
-extern void set_EI(bool ei_new);
-
 extern bool skip_cmd(struct cmd *cmd, const char *skip);
 
 extern void scan_texts(struct cmd *cmd, int ntexts, int delim);

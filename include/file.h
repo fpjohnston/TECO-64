@@ -103,8 +103,7 @@ extern int get_wild(void);
 
 extern char *init_filename(const char *src, uint_t len, bool colon);
 
-extern bool open_command(const char *name, uint stream, bool colon,
-                         tbuffer *text);
+extern struct ifile *open_command(const char *name, uint stream, bool colon, uint_t *size);
 
 extern struct ifile *open_input(const char *name, uint stream, bool colon);
 
@@ -112,6 +111,8 @@ extern struct ofile *open_output(const char *name, uint stream, bool colon,
                                  int c);
 
 extern FILE *open_temp(const char *oname, uint stream);
+
+extern void read_command(struct ifile *ifile, uint stream, tbuffer *text);
 
 extern void read_memory(char *p, uint len);
 

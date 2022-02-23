@@ -43,7 +43,6 @@ code.
 | <nobr>?DPY</nobr> | <nobr>Display mode error</nobr> | Display mode support is either missing or disabled. |
 | <nobr>?DTB</nobr> | <nobr>Delete too big</nobr> | A D command attempted to delete text outside the current page. |
 | <nobr>?DUP</nobr> | <nobr>Duplicate tag '!foo!'</nobr> | An O command found a duplicate tag within the command string. |
-| <nobr>?EIE</nobr> | <nobr>EI command error</nobr> | An invalid EI command has been executed. The user had too many nested EI commands, or tried to execute an old-style EI command while a new-style EI command was being executed (or vice versa). |
 | <nobr>?ERR</nobr> | <nobr>(error message)</nobr> | A system call failed. The error message text explains the error. |
 | <nobr>?EXT</nobr> | <nobr>Extended feature not enabled</nobr> | A command attempted to use an extended feature which is not currently enabled. |
 | <nobr>?FIL</nobr> | <nobr>Invalid file 'foo'</nobr> | An attempt was made to open a directory, FIFO, socket, or similar file specification instead of a regular file. |

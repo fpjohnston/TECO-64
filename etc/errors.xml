@@ -83,14 +83,6 @@
             <detail>command string.</detail>
         </error>
         <error>
-            <code>EIE</code>
-            <message>EI command error</message>
-            <detail>An invalid EI command has been executed. The user</detail>
-            <detail>had too many nested EI commands, or tried to execute</detail>
-            <detail>an old-style EI command while a new-style EI command</detail>
-            <detail>was being executed (or vice versa).</detail>
-        </error>
-        <error>
             <code>ERR</code>
             <message>%s</message>
             <detail>A system call failed. The error message text</detail>

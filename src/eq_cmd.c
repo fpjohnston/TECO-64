@@ -56,12 +56,18 @@ void exec_EQ(struct cmd *cmd)
 
     if ((name = init_filename(name, len, cmd->colon)) != NULL)
     {
-        tbuffer text;
+        struct ifile *ifile;
+        tbuffer text = { .size = 0, .pos = 0, .len = 0, .data = NULL };
 
-        if (open_command(name, stream, cmd->colon, &text))
+        if ((ifile = open_command(name, stream, cmd->colon, &text.size)) != NULL)
         {
-            if (text.size != 0)
+            if (text.size == 0)
             {
+                delete_qtext(cmd->qindex);
+            }
+            else
+            {
+                read_command(ifile, stream, &text);
                 store_qtext(cmd->qindex, &text);
             }
 

@@ -51,7 +51,6 @@ enum errcodes
     E_DPY,          ///< Display mode error
     E_DTB,          ///< Delete too big
     E_DUP,          ///< Duplicate tag '!foo!'
-    E_EIE,          ///< EI command error
     E_ERR,          ///< (error message)
     E_EXT,          ///< Extended feature not enabled
     E_FIL,          ///< Invalid file 'foo'

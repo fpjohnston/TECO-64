@@ -285,58 +285,35 @@ static char *make_canonical(const char *name)
 ///            that fails, we append .tec to the name (assuming there was no
 ///            period in the name), and try again.
 ///
-///  @returns  true if file opened, else false.
+///  @returns  File pointer, or NULL if unable to open file.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool open_command(const char *name, uint stream, bool colon, tbuffer *text)
+struct ifile *open_command(const char *name, uint stream, bool colon, uint_t *size)
 {
     assert(name != NULL);               // Error if no input file name
-    assert(text != NULL);               // Error if no edit buffer
+    assert(size != NULL);               // Error if no pointer to size
 
     struct ifile *ifile = find_command(name, stream, colon);
 
     // If there was no colon, then we've already thrown an exception.
     // Therefore, if ifile is NULL, a colon must have been present.
 
-    if (ifile == NULL)
+    if (ifile != NULL)
     {
-        return false;
-    }
+        struct stat file_stat;
 
-    struct stat file_stat;
-
-    if (stat(last_file, &file_stat) != 0)
-    {
-        close_input(stream);
-
-        throw(E_ERR, last_file);        // General error
-    }
-
-    size_t size = (size_t)file_stat.st_size;
-
-    // If there's data in the file, then allocate a buffer for it.
-
-    if ((text->len = text->size = (uint_t)size) != 0)
-    {
-        char tempbuf[size];
-
-        if (fread(tempbuf, 1uL, size, ifile->fp) != size)
+        if (stat(last_file, &file_stat) != 0)
         {
             close_input(stream);
 
-            throw(E_ERR, ifile->name);  // General error
+            throw(E_ERR, last_file);    // General error
         }
 
-        text->pos  = 0;
-        text->data = alloc_mem((uint_t)size);
-
-        memcpy(text->data, tempbuf, size);
+        *size = (uint_t)file_stat.st_size;
     }
 
-    close_input(stream);
-
-    return true;
+    return ifile;
 }
 
 
@@ -506,6 +483,46 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
     }
 
     return ofile;
+}
+
+
+///
+///  @brief    Read data from indirect command file, storing it in the text
+///            buffer provided by the user. If the pointer to the data is NULL,
+///            then we will allocate space for the data (which is then the
+///            responsibility of the caller to deallocate).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void read_command(struct ifile *ifile, uint stream, tbuffer *text)
+{
+    assert(ifile != NULL);              // Error if no input file pointer
+    assert(text != NULL);               // Error if no edit buffer
+
+    // If there's data in the file, then allocate a buffer for it.
+
+    if (text->size != 0)
+    {
+        if (text->data == NULL)         // Do we need to allocate memory?
+        {
+            text->data = alloc_mem(text->size);
+        }
+
+        if (fread(text->data, 1uL, (ulong)text->size, ifile->fp) != text->size)
+        {
+            free_mem(&text->data);
+            close_input(stream);
+
+            throw(E_ERR, ifile->name);  // General error
+        }
+
+        text->len = text->size;
+        text->pos = 0;
+    }
+
+    close_input(stream);
 }
 
 

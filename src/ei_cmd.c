@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "teco.h"
@@ -36,68 +37,31 @@
 #include "file.h"
 
 
-#define EI_MAX      128                 ///< Max. depth for EI commands
+// The following variables are only used for "classic" EI commands. See
+// description for exec_EI() for details.
 
-///   @var    ei_depth
-///   @brief  Nesting depth for new-style EI commands. Note that this can be no
-///           greater than 1 if we're processing an old-style EI command.
+static tbuffer ei_primary;              ///< Primary EI command buffer
 
-static uint ei_depth = 0;
+static tbuffer ei_secondary;            ///< Secondary EI command buffer
 
-///   @var    ei_stack
-///   @brief  EI command buffer array.
-
-static tbuffer ei_stack[EI_MAX];
-
-///   @var    ei_old
-///   @brief  Flag to distinguish between old-style and new-style EI commands.
-///           The ei_stack[] array is used for both, but if we're processing
-///           an old-style EI command, then ei_old is set to true, and the
-///           array can have at most one element (because old-style EI commands
-///           cannot be nested).
-
-static bool ei_old = false;
+static tbuffer *ei_command = NULL;      ///< Current EI command buffer
 
 
 ///
-///  @brief    Set or clear old-style EI flag. Basically, we verify that we're
-///            not already processing a old-style EI command when the user wants
-///            to switch to old-style, or vice versa. This is because new-style
-///            commands can be nested, whereas old-style commands are more like
-///            chaining one indirect command file to another: once an EI command
-///            is seen, execution of that file terminates and we open up a new
-///            file and start execution of the commands found therein.
+///  @brief    Execute EI command: read TECO indirect command file. This can be
+///            handled in one of two ways:
 ///
-///  @returns  Nothing.
+///            1. Execute indirect command file data after execution of current
+///               command has completed. This is how DEC TECOs behaved.
 ///
-////////////////////////////////////////////////////////////////////////////////
-
-void set_EI(bool ei_new)
-{
-    if (ei_depth > 1)                   // Have we started nesting?
-    {
-        if (ei_old && ei_new)           // Yes. Changing horses in mid-stream?
-        {
-            throw(E_EIE);               // EI command error
-        }
-    }
-
-    ei_old = !ei_new;                   // Change new to old and old to new
-}
-
-
+///            2. Execute indirect command file as though it were a macro loaded
+///               in a Q-register. This behavior is new to TECO-64, and allows
+///               immediate execution, as well as the ability to nest EI com-
+///               mands. Basically, it treats the EI command as a subroutine
+///               call.
 ///
-///  @brief    Execute EI command: read TECO command file. This is handled in
-///            one of two ways: preset where input is read from after execution
-///            of the command string has completed, as DEC TECOs have done, or
-///            immediately execute the contents of the file as though it were a
-///            as TECO C has done. Which behavior is used depends on the new_ei
-///            bit in the E1 extended features flag. By default, this bit is
-///            enabled.
-///
-///            N.B.: the new_ei bit should not be changed after TECO starts up,
-///            or while executing EI commands, as this could have unpredictable
-///            and undesirable results.
+///            The second option described above is enabled by a bit in the E1
+///            flag, which is enabled by default.
 ///
 ///  @returns  Nothing.
 ///
@@ -110,17 +74,15 @@ void exec_EI(struct cmd *cmd)
     const char *name = cmd->text1.data;
     uint_t len       = cmd->text1.len;
     uint stream      = IFILE_INDIRECT;
+    struct ifile *ifile;
 
     close_input(stream);                // Close any open file
 
-    if (f.e1.new_ei)                    // New-style EI
+    if (f.e1.eimacro)
     {
         if (len == 0)
         {
-            if (ei_depth != 0)
-            {
-                cbuf->pos = cbuf->len;
-            }
+            cbuf->pos = cbuf->len;
 
             if (cmd->colon)
             {
@@ -132,37 +94,31 @@ void exec_EI(struct cmd *cmd)
 
         if ((name = init_filename(name, len, cmd->colon)) != NULL)
         {
-            if (ei_depth == EI_MAX)
-            {
-                throw(E_EIE);           // EI command error (stack overflow)
-            }
+            uint_t size;
 
-            if (open_command(name, stream, cmd->colon, &ei_stack[ei_depth]))
+            if ((ifile = open_command(name, stream, cmd->colon, &size)) != NULL)
             {
+                char ei_data[size + 1];
+                tbuffer ei_macro =
+                    { .len = 0, .pos = 0, .size = size, .data = ei_data };
+
+                read_command(ifile, stream, &ei_macro);
+
                 if (cmd->colon)
                 {
                     push_x(SUCCESS, X_OPERAND);
                 }
 
-                if (ei_stack[ei_depth].size != 0)
+                if (ei_macro.size != 0)
                 {
-                    // Incrementing ei_depth is necessary here to deal with any
-                    // nesting that will occur if the macro we are executing
-                    // contains an EI command that will cause another macro to
-                    // be loaded and executed.
-
-                    exec_macro(&ei_stack[ei_depth++], cmd);
-
-                    --ei_depth;
+                    exec_macro(&ei_macro, cmd);
                 }
-
-                free_mem(&ei_stack[ei_depth].data);
 
                 return;
             }
         }
     }
-    else                                // Old-style EI
+    else                                // Classic EI
     {
         if (len == 0)                   // @EI//?
         {
@@ -171,19 +127,14 @@ void exec_EI(struct cmd *cmd)
 
         if ((name = init_filename(name, len, cmd->colon)) != NULL)
         {
-            if (ei_depth == 0)          // Trying to nest EI command?
-            {
-                ++ei_depth;
-            }
-            else
-            {
-                free_mem(&ei_stack[0].data);
-            }
+            ei_command = (ei_command == &ei_secondary) ? &ei_primary : &ei_secondary;
+                
+            free_mem(&ei_command->data); // Free up previous data
 
-            ei_old = true;
-
-            if (open_command(name, stream, cmd->colon, &ei_stack[0]))
+            if ((ifile = open_command(name, stream, cmd->colon, &ei_command->size)) != NULL)
             {
+                read_command(ifile, stream, ei_command);
+
                 if (cmd->colon)
                 {
                     push_x(SUCCESS, X_OPERAND);
@@ -210,25 +161,28 @@ void exec_EI(struct cmd *cmd)
 
 bool read_EI(void)
 {
-    if (ei_old)
+    if (ei_command == NULL)                 // Executing "classic" EI command?
     {
-        if (ei_stack[0].data == NULL || ei_stack[0].pos == ei_stack[0].len)
-        {
-            ei_old = false;
+        return false;                   // No, so we're done
+    }
+
+    if (ei_command->pos == ei_command->len)     // Used up all data in current buffer?
+    {
+        free_mem(&ei_command->data);        // Yes, free it up
+
+        ei_command = (ei_command == &ei_secondary) ? &ei_primary : &ei_secondary;
+
+        if (ei_command->pos == ei_command->len)
+        {            
+            ei_command = NULL;
 
             return false;
         }
-        else
-        {
-            cbuf = &ei_stack[0];        // Use our command string
+    }
 
-            return true;
-        }
-    }
-    else
-    {
-        return false;
-    }
+    cbuf = ei_command;                      // Set command string using our buffer
+
+    return true;
 }
 
 
@@ -241,16 +195,14 @@ bool read_EI(void)
 
 void reset_indirect(void)
 {
-    ei_old = false;
+    free_mem(&ei_primary.data);
+    free_mem(&ei_secondary.data);
 
-    while (ei_depth != 0)
-    {
-        free_mem(&ei_stack[--ei_depth].data);
-
-        ei_stack[ei_depth].size = 0;
-        ei_stack[ei_depth].len  = 0;
-        ei_stack[ei_depth].pos  = 0;
-    }
+    ei_primary.len = 0;
+    ei_primary.pos = 0;
+    ei_secondary.len = 0;
+    ei_secondary.pos = 0;
+    ei_command = NULL;
 }
 
 

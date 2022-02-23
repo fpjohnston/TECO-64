@@ -152,14 +152,7 @@ void exec_ctrl_X(struct cmd *cmd)
 
 void exec_E1(struct cmd *cmd)
 {
-    union e1_flag saved = { .flag = f.e1.flag };
-
     check_mn_flag(cmd, &f.e1.flag);
-
-    if (f.e1.new_ei ^ saved.new_ei)     // Did EI bit change?
-    {
-        set_EI((bool)f.e1.new_ei);      // Make sure new setting is okay
-    }
 }
 
 

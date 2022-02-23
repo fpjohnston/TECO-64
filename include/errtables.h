@@ -55,7 +55,6 @@ static struct errlist errlist[] =
     [E_DPY] = { "DPY",  "Display mode error" },
     [E_DTB] = { "DTB",  "Delete too big" },
     [E_DUP] = { "DUP",  "Duplicate tag '!%s!'" },
-    [E_EIE] = { "EIE",  "EI command error" },
     [E_ERR] = { "ERR",  "%s" },
     [E_EXT] = { "EXT",  "Extended feature not enabled" },
     [E_FIL] = { "FIL",  "Invalid file '%s'" },
@@ -153,10 +152,6 @@ static const char *errhelp[] =
               "the current page.",
     [E_DUP] = "An O command found a duplicate tag within the "
               "command string.",
-    [E_EIE] = "An invalid EI command has been executed. The user "
-              "had too many nested EI commands, or tried to execute "
-              "an old-style EI command while a new-style EI command "
-              "was being executed (or vice versa).",
     [E_ERR] = "A system call failed. The error message text "
               "explains the error.",
     [E_EXT] = "A command attempted to use an extended feature "

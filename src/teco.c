@@ -69,7 +69,7 @@ struct flags f =                    ///< Global flag variables
     .e1.text    = true,             // Enable extended text strings
     .e1.ctrl_a  = true,             // Enable colon-modified ^A commands
     .e1.equals  = true,             // Enable at-sign modified '=' commands
-    .e1.new_ei  = true,             // Enable new-style EI commands
+    .e1.eimacro = true,             // EI commands are treated as macros
     .e1.bang    = true,             // !! starts end-of-line comment
     .e1.prompt  = true,             // Ensure prompt starts in 1st column
     .e1.radix   = true,             // Allow in-line radix control
@@ -224,6 +224,7 @@ int main(int argc, const char * const argv[])
 
             case MAIN_CTRLC:            // CTRL/C typed
                 reset_teco();           // Reset everything
+                reset_indirect();       // Also reset indirect command files
 
                 break;
 
@@ -346,7 +347,6 @@ static void reset_teco(void)
     reset_if();                         // Reset conditional stack
     reset_loop();                       // Reset loop stack
     reset_cbuf();                       // Reset the input buffer
-    reset_indirect();                   // Reset indirect command file
     reset_qreg();                       // Free up local Q-register storage
     reset_macro();                      // Reset macro stack
 }

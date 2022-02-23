@@ -69,7 +69,7 @@ union e1_flag
         uint text    : 1;       ///< Enable extended text strings
         uint ctrl_a  : 1;       ///< Allow colon modifier for CTRL/A
         uint equals  : 1;       ///< Allow at-sign modifier for '='
-        uint new_ei  : 1;       ///< Use new-style EI commands
+        uint eimacro : 1;       ///< Execute EI commands as macros
         uint bang    : 1;       ///< !! starts end-of-line comment
         uint prompt  : 1;       ///< Add CR/LF before prompt if needed
         uint radix   : 1;       ///< Automatically determine number radix
