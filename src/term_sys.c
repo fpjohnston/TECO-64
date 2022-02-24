@@ -48,6 +48,7 @@
 #include "errcodes.h"
 #include "exec.h"
 #include "file.h"
+#include "page.h"
 #include "term.h"
 
 
@@ -114,15 +115,8 @@ void detach_term(void)
     {
         tprint("Detached child process with ID %u\n", (uint)pid);
 
-        // Clearing the pointers below ensures that exiting the parent process
-        // does not delete any output files possibly created during the current
-        // editing session, thus allowing the child process, which was given a
-        // copy of all the parent's file descriptors, to continue editing any
-        // open files.
-
-        ofiles[ostream].name = ofiles[ostream].temp = NULL;
-
-        exec_EK(NULL);                  // Kill any current edit
+        reset_pages(ostream);
+        close_output(ostream);
 
         if (t.Z != 0)
         {

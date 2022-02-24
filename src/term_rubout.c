@@ -235,7 +235,7 @@ static bool rubout_HT(void)
     {
         tprint("\r\e[K");               // Go to start of line, then clear it
         retype_line(start_tbuf());      // Retype current line
-        
+
         return true;
     }
     else

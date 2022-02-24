@@ -242,7 +242,7 @@ FILE *open_temp(const char *oname, uint stream)
     char tempfile[PATH_MAX];
     int nbytes = snprintf(tempfile, sizeof(tempfile), "%s%s", dir, "_teco_XXXXXX");
     int fd = mkstemp(tempfile);
-    
+
     if (fd == -1)
     {
         throw(E_ERR, tempfile);         // General error

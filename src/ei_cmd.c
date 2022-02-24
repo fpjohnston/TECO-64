@@ -128,7 +128,7 @@ void exec_EI(struct cmd *cmd)
         if ((name = init_filename(name, len, cmd->colon)) != NULL)
         {
             ei_command = (ei_command == &ei_secondary) ? &ei_primary : &ei_secondary;
-                
+
             free_mem(&ei_command->data); // Free up previous data
 
             if ((ifile = open_command(name, stream, cmd->colon, &ei_command->size)) != NULL)
@@ -173,7 +173,7 @@ bool read_EI(void)
         ei_command = (ei_command == &ei_secondary) ? &ei_primary : &ei_secondary;
 
         if (ei_command->pos == ei_command->len)
-        {            
+        {
             ei_command = NULL;
 
             return false;

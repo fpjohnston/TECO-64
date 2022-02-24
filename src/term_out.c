@@ -107,7 +107,7 @@ void echo_in(int c)
                 }
 
                 break;
-                
+
             case LF:
                 tputc(CR, true);
                 //lint -fallthrough
@@ -423,7 +423,7 @@ void type_out(int c)
                 }
 
                 break;
-            
+
             case BS:
             case LF:
             case VT:

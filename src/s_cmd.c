@@ -109,7 +109,7 @@ static void exec_search(struct cmd *cmd, bool replace)
     }
     else
     {
-        s.type = SEARCH_S;              // Normal local search 
+        s.type = SEARCH_S;              // Normal local search
 
         if (!cmd->n_set)                // Stext` => 1Stext`
         {

@@ -158,7 +158,7 @@ static void color_region(short region)
     {
         return;
     }
-    
+
     short color = (short)(COLOR_BASE + ((region - 1) * 2));
 
     (void)init_color(color,     fg->red, fg->green, fg->blue);
