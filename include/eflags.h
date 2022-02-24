@@ -164,6 +164,7 @@ union ed_flag
         uint escape    : 1;     ///< Enable immediate escape-sequence commands
         uint movedot   : 1;     ///< Move dot by one on multiple occurrence searches
         uint           : 1;     ///< (Automatic refresh inhibit)
+        uint nobuffer  : 1;     ///< Flush output immediately
     };
 };
 
@@ -206,7 +207,7 @@ union et_flag
         uint noecho   : 1;      ///< Disable echo for ^T commands
         uint          : 1;      ///< (Cancel ^O on type out)
         uint nowait   : 1;      ///< Read w/o wait for ^T commands
-        uint          : 1;      ///< (Detach flag)
+        uint detach   : 1;      ///< Detach from terminal
         uint abort    : 1;      ///< Abort-on-error bit
         uint truncate : 1;      ///< Truncate output lines to terminal width
         uint scope    : 1;      ///< Scope terminal

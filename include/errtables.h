@@ -51,6 +51,7 @@ static struct errlist errlist[] =
     [E_CMD] = { "CMD",  "An EG or EZ command is too long" },
     [E_COL] = { "COL",  "Invalid or extraneous colon" },
     [E_CPQ] = { "CPQ",  "Can't pop into Q-register" },
+    [E_DET] = { "DET",  "%s" },
     [E_DIV] = { "DIV",  "Division by zero" },
     [E_DPY] = { "DPY",  "Display mode error" },
     [E_DTB] = { "DTB",  "Delete too big" },
@@ -146,6 +147,10 @@ static const char *errhelp[] =
               "for the command.",
     [E_CPQ] = "A ] command has been executed and there is "
               "nothing saved on the Q-register push down list.",
+    [E_DET] = "An error occurred when attempting to detach TECO "
+              "from the user's terminal with a 0,64 ET command (or "
+              "equivalent command), or if the detach feature is "
+              "not supported in the current operating environment.",
     [E_DIV] = "An expression tried to divide a number by zero.",
     [E_DPY] = "Display mode support is either missing or disabled.",
     [E_DTB] = "A D command attempted to delete text outside "

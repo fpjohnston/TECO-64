@@ -47,6 +47,7 @@ enum errcodes
     E_CMD,          ///< An EG or EZ command is too long
     E_COL,          ///< Invalid or extraneous colon
     E_CPQ,          ///< Can't pop into Q-register
+    E_DET,          ///< (error message)
     E_DIV,          ///< Division by zero
     E_DPY,          ///< Display mode error
     E_DTB,          ///< Delete too big

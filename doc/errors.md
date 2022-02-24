@@ -39,6 +39,7 @@ code.
 | <nobr>?CMD</nobr> | <nobr>An EG or EZ command is too long</nobr> | An EG or EZ command was longer than 4095 characters. |
 | <nobr>?COL</nobr> | <nobr>Invalid or extraneous colon</nobr> | A colon preceded a command that does not allow colons, or there were too many colons specified for the command. |
 | <nobr>?CPQ</nobr> | <nobr>Can't pop into Q-register</nobr> | A ] command has been executed and there is nothing saved on the Q-register push down list. |
+| <nobr>?DET</nobr> | <nobr>(error message)</nobr> | An error occurred when attempting to detach TECO from the user's terminal with a 0,64 ET command (or equivalent command), or if the detach feature is not supported in the current operating environment. |
 | <nobr>?DIV</nobr> | <nobr>Division by zero</nobr> | An expression tried to divide a number by zero. |
 | <nobr>?DPY</nobr> | <nobr>Display mode error</nobr> | Display mode support is either missing or disabled. |
 | <nobr>?DTB</nobr> | <nobr>Delete too big</nobr> | A D command attempted to delete text outside the current page. |

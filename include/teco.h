@@ -198,6 +198,8 @@ extern bool check_loop(void);
 
 extern bool check_macro(void);
 
+extern void detach_term(void);
+
 extern void exec_options(int argc, const char * const argv[]);
 
 extern void exit_cbuf(void);

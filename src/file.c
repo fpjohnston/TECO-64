@@ -475,9 +475,10 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
 
         ofile->backup = true;           //  and say we want a backup file
     }
-    else if (c == 'L')
+
+    if (f.ed.nobuffer || c == 'L')
     {
-        // Write log output immediately and do not buffer.
+        // Write output immediately and do not buffer.
 
         (void)setvbuf(ofile->fp, NULL, _IONBF, 0uL);
     }

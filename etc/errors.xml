@@ -61,6 +61,14 @@
             <detail>nothing saved on the Q-register push down list.</detail>
         </error>
         <error>
+            <code>DET</code>
+            <message>%s</message>
+            <detail>An error occurred when attempting to detach TECO</detail>
+            <detail>from the user's terminal with a 0,64 ET command (or</detail>
+            <detail>equivalent command), or if the detach feature is</detail>
+            <detail>not supported in the current operating environment.</detail>
+        </error>
+        <error>
             <code>DIV</code>
             <message>Division by zero</message>
             <detail>An expression tried to divide a number by zero.</detail>

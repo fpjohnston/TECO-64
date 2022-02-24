@@ -399,6 +399,7 @@ noreturn void (throw)(
             break;
 
         case E_BAT:
+        case E_DET:
         case E_DUP:
         case E_FIL:
         case E_FNF:

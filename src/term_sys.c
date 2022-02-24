@@ -26,11 +26,13 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #if     !defined(__DECC)
 #include <termios.h>
@@ -45,6 +47,7 @@
 #include "eflags.h"
 #include "errcodes.h"
 #include "exec.h"
+#include "file.h"
 #include "term.h"
 
 
@@ -65,6 +68,82 @@ static FILE *key_fp = NULL;             ///< Keystroke file descriptor
 static void getsize(void);
 
 static void sig_handler(int signal);
+
+
+///
+///  @brief    Detach TECO from terminal. fork() is required for compliance with
+///            POSIX standards, so we shouldn't encounter errors when compiling
+///            or linking this code, but as a safeguard we only try to detach
+///            for known operating environments.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void detach_term(void)
+{
+
+#if     defined(__linux) || defined(__win64) || defined(__APPLE__)
+
+    pid_t pid = fork();                 // Create child process
+
+    if (pid < 0)
+    {
+        throw(E_DET, strerror(errno));  // Detach error
+    }
+
+    if (pid == 0)                       // Child process
+    {
+        // Close streams we won't need while detached
+
+        fclose(stdin);
+        fclose(stdout);
+        fclose(stderr);
+
+        // This creates a new session, which ensures that the child process
+        // is not killed if the parent process is terminated. If we get an
+        // error, then errno contains the reason why, but there's not much
+        // we can do with it, because we've already detached, so we just abort.
+
+        if (setsid() == -1)
+        {
+            abort();
+        }
+    }
+    else                                // Parent process
+    {
+        tprint("Detached child process with ID %u\n", (uint)pid);
+
+        // Clearing the pointers below ensures that exiting the parent process
+        // does not delete any output files possibly created during the current
+        // editing session, thus allowing the child process, which was given a
+        // copy of all the parent's file descriptors, to continue editing any
+        // open files.
+
+        ofiles[ostream].name = ofiles[ostream].temp = NULL;
+
+        exec_EK(NULL);                  // Kill any current edit
+
+        if (t.Z != 0)
+        {
+            setpos_ebuf(t.B);
+
+            delete_ebuf(t.Z);           // Kill the whole buffer
+        }
+
+        // Note that we used atexit() when TECO was initialized, so that
+        // exit_teco() will be called now to clean up and reset things.
+
+        exit(EXIT_SUCCESS);             // Cleanup, reset, and exit
+    }
+
+#else
+
+    throw(E_DET, "Detach not supported");
+
+#endif
+
+}
 
 
 ///
@@ -292,6 +371,9 @@ static void sig_handler(int signum)
                     delete_ebuf(t.Z);   // Kill the whole buffer
                 }
 
+                // Note that we used atexit() when TECO was initialized, so that
+                // exit_teco() will be called now to clean up and reset things.
+
                 exit(EXIT_FAILURE);     // Cleanup, reset, and exit
             }
 
@@ -309,6 +391,9 @@ static void sig_handler(int signum)
 
                     delete_ebuf(t.Z);   // Kill the whole buffer
                 }
+
+                // Note that we used atexit() when TECO was initialized, so that
+                // exit_teco() will be called now to clean up and reset things.
 
                 exit(EXIT_FAILURE);     // Cleanup, reset, and exit
             }

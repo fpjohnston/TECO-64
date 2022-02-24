@@ -46,7 +46,6 @@ EJ - Get Environment Information
 
 ET - Terminal Mode Flag
 - ET&16 - Cancel CTRL/O on type out.
-- ET&64 - Detach flag.
 - ET&512 - The scope “WATCH” feature of TECO is present (always set).
 - ET&1024 - The refresh scope “WATCH” feature of TECO is present
 (always clear).

@@ -210,11 +210,12 @@ void exec_ED(struct cmd *cmd)
 
     // Only allow defined bits to be set or cleared
 
-    f.ed.flag    = 0;
-    f.ed.caret   = ed.caret;
-    f.ed.yank    = ed.yank;
-    f.ed.keepdot = ed.keepdot;
-    f.ed.movedot = ed.movedot;
+    f.ed.flag     = 0;
+    f.ed.caret    = ed.caret;
+    f.ed.yank     = ed.yank;
+    f.ed.keepdot  = ed.keepdot;
+    f.ed.movedot  = ed.movedot;
+    f.ed.nobuffer = ed.nobuffer;
 
 #if    defined(DISPLAY_MODE)
 
@@ -344,6 +345,14 @@ void exec_ET(struct cmd *cmd)
     f.et.eightbit = et.eightbit;
     f.et.accent   = et.accent;
     f.et.ctrl_c   = et.ctrl_c;
+
+    if (et.detach && !f.et.detach)      // Does user want us to detach?
+    {
+        detach_term();                  // Detach from terminal
+
+        f.et.detach = true;
+    }
+
 
 #if     defined(__vms)
 

@@ -117,6 +117,7 @@ functions:
 | ED&32 | Enable immediate ESCape-sequence commands. If this bit is set, TECO will recognize an ESCape sequence key pressed immediately after the prompting asterisk as an immediate command. See [here](action.md) for a description of immediate ESCape-sequence commands. If this bit is clear (the default case), TECO will treat an ESCape coming in immediately after the asterisk prompt as a \<DELIM\>; that is, TECO will hear a discrete \<ESC\> character: an ESCape sequence will therefore be treated not as a unified command, but as a sequence of characters. |
 | ED&64 | Only move dot by one on multiple occurrence searches. If this bit is clear, TECO treats nStext$ exactly as n\<1Stext\$\>. That is, skip over the whole matched search string when proceeding to the nth search match. For example, if the edit buffer contains only A’s, the command 5SAA$ will complete with dot equal to 10. If this bit is set, TECO increments dot by one each search match. In the above example, dot would become 5. |
 | ED&128 | Unused in TECO-64. |
+| ED&256 | If set before a file is opened with an EB or EW command, P and PW commands cause buffer data to be immediately output to that file. If clear, file data may be internally buffered before being output, and possibly not output until the file is closed. Changing this bit has no effect on any output files that are already open. |
 
 The initial value of ED&1 is system dependent. The initial value of the other
 bits in the ED flag is 0.
@@ -174,7 +175,7 @@ Any combination of the individual bits may be set.
 | ET&8 | Read without echo for ^T commands. This allows data to be read by the ^T command without having the characters echo at the terminal. Normal command input to TECO will echo. |
 | ET&16 | Unused. |
 | ET&32 | Read with no wait. This enables the ^T command to test if a character is available at the user terminal. If a character has been typed, ^T returns the value of the character as always. If no character has been typed, ^T immediately returns a value of -1 and execution continues without waiting for a character. |
-| ET&64 | Unused. |
+| ET&64 | Detach TECO from the user's terminal, but continue execution of the command string. An error will be issued if this feature is not supported in the current operating environment. |
 | ET&128 | "Abort-on-error" bit. Initially set, when TECO starts up; cleared each time TECO issues its asterisk prompt. When this bit is set: 1) all informational messages are suppressed, 2) any \<CTRL/C\> causes the immediate termination of TECO, and 3) any error causes the termination of TECO after the error message is printed. |
 | ET&256 | If this bit is set, all lines output to the terminal are truncated to the terminal’s width if needed. |
 | ET&512 | If this bit is set, the display mode feature of TECO is present and your terminal is able to use display mode. This bit is a read-only bit; its state cannot be altered. |
