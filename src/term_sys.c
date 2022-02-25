@@ -70,6 +70,8 @@ static void getsize(void);
 
 static void sig_handler(int signal);
 
+static void term_exit(bool skip_EK);
+
 
 ///
 ///  @brief    Detach TECO from terminal. fork() is required for compliance with
@@ -115,20 +117,7 @@ void detach_term(void)
     {
         tprint("Detached child process with ID %u\n", (uint)pid);
 
-        reset_pages(ostream);
-        close_output(ostream);
-
-        if (t.Z != 0)
-        {
-            setpos_ebuf(t.B);
-
-            delete_ebuf(t.Z);           // Kill the whole buffer
-        }
-
-        // Note that we used atexit() when TECO was initialized, so that
-        // exit_teco() will be called now to clean up and reset things.
-
-        exit(EXIT_SUCCESS);             // Cleanup, reset, and exit
+        term_exit((bool)true);
     }
 
 #else
@@ -356,19 +345,7 @@ static void sig_handler(int signum)
             {
                 aborting = true;        // Prevent aborts during aborts
 
-                exec_EK(NULL);          // Kill any current edit
-
-                if (t.Z != 0)
-                {
-                    setpos_ebuf(t.B);
-
-                    delete_ebuf(t.Z);   // Kill the whole buffer
-                }
-
-                // Note that we used atexit() when TECO was initialized, so that
-                // exit_teco() will be called now to clean up and reset things.
-
-                exit(EXIT_FAILURE);     // Cleanup, reset, and exit
+                term_exit((bool)false); // Clean up and exit
             }
 
             break;
@@ -377,19 +354,8 @@ static void sig_handler(int signum)
             if (f.et.abort || f.e0.ctrl_c) // Should CTRL/C cause abort?
             {
                 echo_in(CTRL_C);
-                exec_EK(NULL);          // Kill any current edit
 
-                if (t.Z != 0)
-                {
-                    setpos_ebuf(t.B);
-
-                    delete_ebuf(t.Z);   // Kill the whole buffer
-                }
-
-                // Note that we used atexit() when TECO was initialized, so that
-                // exit_teco() will be called now to clean up and reset things.
-
-                exit(EXIT_FAILURE);     // Cleanup, reset, and exit
+                term_exit((bool)false); // Clean up and exit
             }
 
             f.e0.ctrl_c = true;         // Set flag saying we saw CTRL/C
@@ -411,3 +377,34 @@ static void sig_handler(int signum)
             break;
     }
 }
+
+
+///
+///  @brief    Exit TECO, either because we got a fatal signal, or because
+///            we forked a child process to continue the edit session. In the
+///            latter case we don't want to kill any file edits by calling
+///            exec_EK() because that's now the responsibility of the child.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void term_exit(bool skip_EK)
+{
+    if (!skip_EK)
+    {
+        exec_EK(NULL);                  // Kill any current edit
+    }
+
+    if (t.Z != 0)
+    {
+        setpos_ebuf(t.B);
+
+        delete_ebuf(t.Z);               // Kill the whole buffer
+    }
+
+    // Note that we used atexit() when TECO was initialized, so that
+    // exit_teco() will be called now to clean up and reset things.
+
+    exit(EXIT_FAILURE);                 // Clean up, reset, and exit
+ }
