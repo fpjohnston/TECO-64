@@ -91,7 +91,7 @@ struct flags f =                    ///< Global flag variables
 
     .e3.smart = true,               // Enable smart line detection
 
-#if     defined(__linux) || defined(__APPLE__)
+#if     defined(__linux) || defined(__APPLE__) || defined(__AMIGA__)
 
     .e3.CR_in   = false,            // Use LF for input lines
     .e3.CR_out  = false,            // Use LF for output lines
