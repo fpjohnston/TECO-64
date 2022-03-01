@@ -180,6 +180,12 @@ void init_env(void)
 ///
 ///            -4EJ - The size of numeric arguments in bits.
 ///
+///            -5EJ - The process status, as follows:
+///
+///                   > 0 - Foreground process, attached to a terminal.
+///                   = 0 - Background process, attached to a terminal.
+///                   < 0 - Child or detached process.
+///
 ///             0EJ - Process ID
 ///            0:EJ - Parent process ID
 ///
@@ -209,6 +215,22 @@ int teco_env(int n_arg, bool colon)
 
         case -4:
             return sizeof(int_t) * CHAR_BIT;
+
+        case -5:
+            pid_t pid = tcgetpgrp(STDIN_FILENO);
+
+            if (pid == -1)
+            {
+                return -1;              // Process is child or detached
+            }
+            else if (pid == getpgrp())
+            {
+                return (int)pid;        // Foreground process
+            }
+            else
+            {
+                return 0;               // Background process
+            }
 
         default:
             throw(E_NYI);               // No such EJ command

@@ -31,6 +31,7 @@ Other TECOs have sometimes provided the ability to set or clear environment vari
 | -2EJ | Return a number representing the operating system upon which TECO is running. On Linux, this value is 1. |
 | -3EJ | Return a number representing the processor upon which TECO is running. On x86 processors, this value is 10. |
 | -4EJ | Return a number representing the number of bits in the word size on the processor upon which TECO is currently running. |
+| -5EJ | Return a number representing the current operating environment, as follows:<br><br>-1 -- Child or other process detached from any terminal.<br>=0 -- Background process, attached to a terminal.<br>\>0 -- Foreground process, attached to a terminal. |
 
 ### EZ - Execute system command
 
