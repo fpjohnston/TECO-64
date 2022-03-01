@@ -69,6 +69,11 @@ const char *teco_vtedit = NULL;         ///< Name of VTEDIT macro
 #define TECO_OS          40             ///< VMS
 #define TECO_HW          30             ///< Alpha
 
+#elif   defined(__AMIGA)
+
+#define TECO_OS          50             ///< Amiga
+#define TECO_HW          40             ///< M68000
+
 #else
 
 #define TECO_OS          -1             ///< Unknown
