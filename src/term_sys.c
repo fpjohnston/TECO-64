@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -99,9 +100,9 @@ void detach_term(void)
     {
         // Close streams we won't need while detached
 
-        fclose(stdin);
-        fclose(stdout);
-        fclose(stderr);
+        close(STDIN_FILENO);
+        close(STDOUT_FILENO);
+        close(STDERR_FILENO);
 
         // This creates a new session, which ensures that the child process
         // is not killed if the parent process is terminated. If we get an
