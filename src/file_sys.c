@@ -45,7 +45,8 @@
 #include "term.h"
 
 
-#define TEC_TYPE    ".tec"              ///< Command file extension
+#define TEC_TYPE    ".tec"              ///< Command file extension ("source")
+#define TCO_TYPE    ".tco"              ///< Command file extension ("compiled")
 
 static glob_t pglob;                    ///< Saved list of wildcard files
 
@@ -74,6 +75,7 @@ struct ifile *find_command(const char *name, uint stream, bool colon)
     struct ifile *ifile;
 
     if ((ifile = find_file(name, stream, "")) != NULL
+        || (ifile = find_file(name, stream, TCO_TYPE)) != NULL
         || (ifile = find_file(name, stream, TEC_TYPE)) != NULL)
     {
         return ifile;
