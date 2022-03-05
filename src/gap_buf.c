@@ -339,7 +339,11 @@ int_t getdelta_ebuf(int_t n)
 
 
 ///
-///  @brief    Count no. of lines relative to current position.
+///  @brief    Count no. of lines in buffer, as follows:
+///
+///            n < 0 -> No. of lines preceding current position.
+///            n = 0 -> Total no. of lines in buffer.
+///            n < 0 -> No. of lines following current position.
 ///
 ///  @returns  No. of total/following/preceding lines.
 ///
