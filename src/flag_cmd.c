@@ -219,7 +219,7 @@ void exec_ED(struct cmd *cmd)
 
 #if    defined(DISPLAY_MODE)
 
-    if (f.ed.escape ^ ed.escape)
+    if (f.ed.escape ^ ed.escape)        // Do we need to update display?
     {
         check_escape((bool)(f.ed.escape = ed.escape));
     }
