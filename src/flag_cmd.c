@@ -32,18 +32,13 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
-
-#if     defined(DISPLAY_MODE)
-
-#include "display.h"
-
-#endif
 
 
 // Local functions
@@ -217,19 +212,10 @@ void exec_ED(struct cmd *cmd)
     f.ed.movedot  = ed.movedot;
     f.ed.nobuffer = ed.nobuffer;
 
-#if    defined(DISPLAY_MODE)
-
     if (f.ed.escape ^ ed.escape)        // Do we need to update display?
     {
         check_escape((bool)(f.ed.escape = ed.escape));
     }
-
-#else
-
-    f.ed.escape = false;                // Always off if no display mode
-
-#endif
-
 }
 
 
@@ -326,11 +312,7 @@ void exec_ET(struct cmd *cmd)
 
 #endif
 
-#if     defined(DISPLAY_MODE)
-
     bool truncate = f.et.truncate ^ et.truncate;
-
-#endif
 
     // Only allow defined bits.
 
@@ -363,18 +345,14 @@ void exec_ET(struct cmd *cmd)
 
 #endif
 
-#if     defined(DISPLAY_MODE)
-
     // If truncate mode just changed, that might affect display, so refresh it
 
     if (truncate && f.e0.display)
     {
-        ebuf_changed = true;            // Pretend that the buffer changed
+        mark_ebuf();                    // Pretend that the buffer changed
+
         refresh_dpy();                  //  and force a refresh
     }
-
-#endif
-
 }
 
 

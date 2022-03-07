@@ -32,6 +32,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "page.h"
@@ -121,13 +122,6 @@ static struct
     .gap   = EDIT_INIT,
 };
 
-#if     defined(DISPLAY_MODE)
-
-bool dot_changed = false;       ///< true if dot changed
-
-bool ebuf_changed = false;      ///< true if edit buffer modified
-
-#endif
 
 // Local functions
 
@@ -177,12 +171,8 @@ estatus add_ebuf(int c)
         set_page(1);
     }
 
-#if     defined(DISPLAY_MODE)
-
-    ebuf_changed = true;
-    dot_changed = true;
-
-#endif
+    mark_dot();
+    mark_ebuf();
 
     ++t.dot;
     ++t.Z;
@@ -268,13 +258,8 @@ void delete_ebuf(int_t nbytes)
         t.Z    -= nbytes;               //  and decrease the total
     }
 
-#if     defined(DISPLAY_MODE)
-
-    ebuf_changed = true;
-    dot_changed = true;
-
-#endif
-
+    mark_dot();
+    mark_ebuf();
 }
 
 
@@ -489,13 +474,8 @@ void setpos_ebuf(int_t pos)
     {
         t.dot = pos;
 
-#if     defined(DISPLAY_MODE)
-
-        ebuf_changed = true;
-        dot_changed = true;
-
-#endif
-
+        mark_dot();
+        mark_ebuf();
     }
 }
 
@@ -510,7 +490,6 @@ void setpos_ebuf(int_t pos)
 void setsize_ebuf(uint_t nbytes)
 {
     uint_t newsize = (uint_t)nbytes;
-
 
     if (newsize > eb.max)
     {

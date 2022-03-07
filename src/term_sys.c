@@ -365,12 +365,7 @@ static void sig_handler(int signum)
 
         case SIGWINCH:
             getsize();
-
-#if     defined(DISPLAY_MODE)
-
             resize_signal();
-
-#endif
 
             break;
 

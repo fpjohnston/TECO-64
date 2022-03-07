@@ -27,12 +27,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <math.h>
-
-#if     defined(DISPLAY_MODE)
-
 #include <ncurses.h>
-
-#endif
 
 #if     !defined(_STDIO_H)
 
@@ -45,14 +40,8 @@
 #include <unistd.h>
 
 #include "teco.h"
-
-#if     defined(DISPLAY_MODE)
-
 #include "ascii.h"
 #include "errcodes.h"
-
-#endif
-
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
@@ -61,10 +50,6 @@
 #include "page.h"
 #include "term.h"
 
-
-static int botdot = 0;              ///< Value of FZ flag
-
-#if     defined(DISPLAY_MODE)
 
 #if     INT_T == 64
 
@@ -75,6 +60,12 @@ static int botdot = 0;              ///< Value of FZ flag
 #define DEC_FMT "%-*d"              ///< Left-justified decimal format
 
 #endif
+
+const bool esc_seq_def = true;      ///< Escape sequences enabled by default
+
+static bool dot_changed = false;    ///< true if dot changed
+
+static bool ebuf_changed = false;   ///< true if edit buffer modified
 
 static int rowbias = 0;             ///< Row adjustment
 
@@ -149,6 +140,8 @@ static int geteditsize(char *buf, ulong size, uint_t bytes);
 
 static int getwidth(ulong n);
 
+static void init_dpy(void);
+
 static void mark_cursor(int row, int col);
 
 static void move_down(void);
@@ -161,9 +154,37 @@ static void move_up(void);
 
 static int print_ebuf(char *buf, int width, int nbytes, int c);
 
+static void reset_dpy(void);
+
+static void resize_key(void);
+
 static void update_status(void);
 
-#endif
+
+///
+///  @brief    Check for special display input characters.
+///
+///  @returns  Next input character to process.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int check_dpy_chr(int c, bool wait)
+{
+    if (c == KEY_BACKSPACE)
+    {
+        return DEL;
+    }
+    else if (c == KEY_RESIZE)
+    {
+        resize_key();
+
+        return getc_term(wait);         // Recurse to get next character
+    }
+    else
+    {
+        return c;
+    }
+}
 
 
 ///
@@ -172,8 +193,6 @@ static void update_status(void);
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 #if     defined(DOXYGEN)
 static void check_error(bool truth)
@@ -190,8 +209,6 @@ static void (check_error)(bool truth)
     }
 }
 
-#endif
-
 
 ///
 ///  @brief    Check to see if escape sequences were enabled or disabled.
@@ -200,14 +217,31 @@ static void (check_error)(bool truth)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
 void check_escape(bool escape)
 {
     (void)keypad(stdscr, escape ? (bool)TRUE : (bool)FALSE);
 }
 
-#endif
+
+///
+///  @brief    Clear screen and redraw display.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void clear_dpy(void)
+{
+    term_pos = 0;
+
+    (void)clear();
+
+    ebuf_changed = true;
+
+    set_scroll(w.height, w.nlines);
+
+    refresh_dpy();
+}
 
 
 ///
@@ -216,8 +250,6 @@ void check_escape(bool escape)
 ///  @returns  true if success, false if we couldn't.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 bool clear_eol(void)
 {
@@ -233,33 +265,44 @@ bool clear_eol(void)
     return false;
 }
 
-#endif
+
+///
+///  @brief    Get length of echoed character to be rubbed out.
+///
+///  @returns  Length in bytes, or EOF if length not available.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int echo_len(int c)
+{
+    if (f.e0.display)
+    {
+        const char *s = unctrl((uint)c);
+
+        if (s != NULL)
+        {
+            return (int)strlen(s);
+        }
+    }
+
+    return EOF;
+}
 
 
 ///
-///  @brief    Clear screen and redraw display.
+///  @brief    Check for ending display mode.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void clear_dpy(void)
+void end_dpy(void)
 {
-
-#if     defined(DISPLAY_MODE)
-
-    term_pos = 0;
-
-    (void)clear();
-
-    ebuf_changed = true;
-
-    set_scroll(w.height, w.nlines);
-
-    refresh_dpy();
-
-#endif
-
+    if (f.e0.display)
+    {
+        reset_dpy();
+        init_term();
+    }
 }
 
 
@@ -269,8 +312,6 @@ void clear_dpy(void)
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 static void exec_commands(const char *commands)
 {
@@ -305,8 +346,6 @@ static void exec_commands(const char *commands)
     refresh_dpy();
 }
 
-#endif
-
 
 ///
 ///  @brief    Reset display mode prior to exiting from TECO.
@@ -315,14 +354,10 @@ static void exec_commands(const char *commands)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
 void exit_dpy(void)
 {
     reset_dpy();
 }
-
-#endif
 
 
 ///
@@ -331,8 +366,6 @@ void exit_dpy(void)
 ///  @returns  No. of bytes written to buffer.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 static int geteditsize(char *buf, ulong size, uint_t bytes)
 {
@@ -356,8 +389,6 @@ static int geteditsize(char *buf, ulong size, uint_t bytes)
     }
 }
 
-#endif
-
 
 ///
 ///  @brief    Get width of unsigned number (basically, log10() without using
@@ -367,8 +398,6 @@ static int geteditsize(char *buf, ulong size, uint_t bytes)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
 static int getwidth(ulong bytes)
 {
     char buf[12];
@@ -376,7 +405,51 @@ static int getwidth(ulong bytes)
     return snprintf(buf, sizeof(buf), "%lu", bytes);
 }
 
-#endif
+
+///
+///  @brief    Read next character without wait (non-blocking I/O).
+///
+///  @returns  Character read.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int get_nowait(void)
+{
+    if (f.e0.display)
+    {
+        (void)nodelay(stdscr, (bool)TRUE);
+
+        int c = getch();
+
+        (void)nodelay(stdscr, (bool)FALSE);
+
+        return c;
+    }
+    else
+    {
+        return get_wait();
+    }
+}
+
+
+///
+///  @brief    Read next character (if in display mode).
+///
+///  @returns  Character read, or EOF if none available.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int get_wait(void)
+{
+    int c = getch();
+
+    if (c != ERR)
+    {
+        return c;
+    }
+
+    return EOF;
+}
 
 
 ///
@@ -386,9 +459,7 @@ static int getwidth(ulong bytes)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
-void init_dpy(void)
+static void init_dpy(void)
 {
     if (!f.e0.display)
     {
@@ -420,8 +491,6 @@ void init_dpy(void)
     }
 }
 
-#endif
-
 
 ///
 ///  @brief    Mark or unmark cursor at current position.
@@ -429,8 +498,6 @@ void init_dpy(void)
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 static void mark_cursor(int row, int col)
 {
@@ -470,7 +537,31 @@ static void mark_cursor(int row, int col)
     (void)move(d.edit.top + saved_row, saved_col);
 }
 
-#endif
+
+///
+///  @brief    Mark dot as having changed.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void mark_dot(void)
+{
+    dot_changed = true;
+}
+
+
+///
+///  @brief    Mark edit buffer as having changed.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void mark_ebuf(void)
+{
+    ebuf_changed = true;
+}
 
 
 ///
@@ -479,8 +570,6 @@ static void mark_cursor(int row, int col)
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 static void move_down(void)
 {
@@ -539,8 +628,6 @@ static void move_down(void)
     }
 }
 
-#endif
-
 
 ///
 ///  @brief    Move cursor left.
@@ -548,8 +635,6 @@ static void move_down(void)
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 static void move_left(void)
 {
@@ -573,8 +658,6 @@ static void move_left(void)
     }
 }
 
-#endif
-
 
 ///
 ///  @brief    Move cursor right.
@@ -582,8 +665,6 @@ static void move_left(void)
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 static void move_right(void)
 {
@@ -607,8 +688,6 @@ static void move_right(void)
     }
 }
 
-#endif
-
 
 ///
 ///  @brief    Move cursor up.
@@ -616,8 +695,6 @@ static void move_right(void)
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 static void move_up(void)
 {
@@ -671,8 +748,6 @@ static void move_up(void)
     }
 }
 
-#endif
-
 
 ///
 ///  @brief    Output formatted description of edit buffer character.
@@ -680,8 +755,6 @@ static void move_up(void)
 ///  @returns  No. of characters written to buffer.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 static int print_ebuf(char *buf, int width, int nbytes, int c)
 {
@@ -710,8 +783,6 @@ static int print_ebuf(char *buf, int width, int nbytes, int c)
     }
 }
 
-#endif
-
 
 ///
 ///  @brief    Output character to display. We do not output CR because ncurses
@@ -726,8 +797,6 @@ static int print_ebuf(char *buf, int width, int nbytes, int c)
 ///  @returns  true if character output, false if display not active.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 bool putc_dpy(int c)
 {
@@ -744,8 +813,6 @@ bool putc_dpy(int c)
     return false;
 }
 
-#endif
-
 
 ///
 ///  @brief    Read display key.
@@ -756,9 +823,6 @@ bool putc_dpy(int c)
 
 int readkey_dpy(int key)
 {
-
-#if     defined(DISPLAY_MODE)
-
     if (!f.e0.display)
     {
         return key;
@@ -868,13 +932,6 @@ int readkey_dpy(int key)
     n_home = n_end = 0;
 
     return EOF;
-
-#else
-
-    return key;
-
-#endif
-
 }
 
 
@@ -887,9 +944,6 @@ int readkey_dpy(int key)
 
 void refresh_dpy(void)
 {
-
-#if     defined(DISPLAY_MODE)
-
     if (!f.e0.display || w.nlines == 0 || w.noscroll)
     {
         return;
@@ -943,7 +997,7 @@ void refresh_dpy(void)
         uint line_pos = 0;              // Line position
         bool filled = false;            // Is edit region full?
 
-        w.topdot = botdot = (int)(t.dot + pos);
+        w.topdot = w.botdot = (int)(t.dot + pos);
 
         while ((c = getchar_ebuf(pos)) != EOF)
         {
@@ -954,14 +1008,14 @@ void refresh_dpy(void)
 
             if (c == CR)
             {
-                ++botdot;
+                ++w.botdot;
 
                 continue;
             }
 
             if (isdelim(c))
             {
-                ++botdot;
+                ++w.botdot;
 
                 if (++nrows == d.nrows)
                 {
@@ -982,7 +1036,7 @@ void refresh_dpy(void)
                 {
                     if (f.et.truncate)
                     {
-                        ++botdot;
+                        ++w.botdot;
 
                         continue;
                     }
@@ -999,7 +1053,7 @@ void refresh_dpy(void)
                     line_pos = 0;
                 }
 
-                ++botdot;
+                ++w.botdot;
 
                 (void)addch((uint)c);
             }
@@ -1037,9 +1091,6 @@ void refresh_dpy(void)
     update_status();
 
     (void)refresh();
-
-#endif
-
 }
 
 
@@ -1052,9 +1103,6 @@ void refresh_dpy(void)
 
 void reset_colors(void)
 {
-
-#if     defined(DISPLAY_MODE)
-
     if (can_change_color())             // Make colors as bright as possible
     {
         (void)init_color(COLOR_BLACK,        0,      0,      0);
@@ -1072,9 +1120,6 @@ void reset_colors(void)
     (void)init_pair(CMD,    COLOR_BLACK, COLOR_WHITE);
     (void)init_pair(EDIT,   COLOR_BLACK, COLOR_WHITE);
     (void)init_pair(STATUS, COLOR_WHITE, COLOR_BLACK);
-
-#endif
-
 }
 
 
@@ -1085,9 +1130,7 @@ void reset_colors(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
-void reset_dpy(void)
+static void reset_dpy(void)
 {
     if (f.e0.display)
     {
@@ -1097,8 +1140,6 @@ void reset_dpy(void)
     }
 }
 
-#endif
-
 
 ///
 ///  @brief    Finish window resize when KEY_RESIZE key read.
@@ -1107,9 +1148,7 @@ void reset_dpy(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
-void resize_key(void)
+static void resize_key(void)
 {
     if (f.e0.display)
     {
@@ -1120,8 +1159,6 @@ void resize_key(void)
     }
 }
 
-#endif
-
 
 ///
 ///  @brief    Start window resize when resize signal received.
@@ -1130,8 +1167,6 @@ void resize_key(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
 void resize_signal(void)
 {
     if (f.e0.display)
@@ -1139,63 +1174,6 @@ void resize_signal(void)
         (void)resizeterm(w.height, w.width);
         getmaxyx(stdscr, w.height, w.width);
     }
-}
-
-#endif
-
-
-///
-///  @brief    Scan F0 command: return position for top left corner.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_F0(struct cmd *cmd)
-{
-    (void)scan_x(cmd);
-    push_x((int_t)w.topdot, X_OPERAND);
-
-    return true;
-}
-
-
-///
-///  @brief    Scan FH command: equivalent to F0,FZ.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_FH(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    (void)scan_x(cmd);
-
-    cmd->m_set = true;
-    cmd->m_arg = w.topdot;
-
-    push_x((int_t)botdot, X_OPERAND);
-
-    return true;
-}
-
-
-///
-///  @brief    Scan FZ command: return position for bottom right corner.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_FZ(struct cmd *cmd)
-{
-    (void)scan_x(cmd);
-
-    push_x((int_t)botdot, X_OPERAND);
-
-    return true;
 }
 
 
@@ -1208,9 +1186,6 @@ bool scan_FZ(struct cmd *cmd)
 
 void set_nrows(void)
 {
-
-#if     defined(DISPLAY_MODE)
-
     d.nrows = w.height - w.nlines;
 
     if (f.e4.line)
@@ -1219,9 +1194,6 @@ void set_nrows(void)
     }
 
     assert(d.nrows > 0);                // Verify that we have at least 1 row
-
-#endif
-
 }
 
 
@@ -1232,20 +1204,8 @@ void set_nrows(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
 void set_scroll(int height, int nlines)
-
-#else
-
-void set_scroll(int unused1, int unused2)
-
-#endif
-
 {
-
-#if     defined(DISPLAY_MODE)
-
     if (f.e0.display && w.nlines != 0 && !w.noscroll)
     {
         if (f.e4.invert)
@@ -1295,9 +1255,25 @@ void set_scroll(int unused1, int unused2)
 
         set_nrows();
     }
+}
 
-#endif
 
+///
+///  @brief    Check for starting display mode.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void start_dpy(void)
+{
+    if (!f.e0.display)
+    {
+        reset_term();                   // Reset if display mode support
+        init_dpy();
+        color_dpy();
+        clear_dpy();
+    }
 }
 
 
@@ -1307,8 +1283,6 @@ void set_scroll(int unused1, int unused2)
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 static void update_status(void)
 {
@@ -1400,5 +1374,3 @@ static void update_status(void)
     (void)move(saved_row, saved_col);
     (void)attrset(COLOR_PAIR(CMD));     //lint !e835 !e845
 }
-
-#endif

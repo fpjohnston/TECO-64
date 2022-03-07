@@ -120,16 +120,6 @@ struct flags f =                    ///< Global flag variables
     .e4.line   = true,              // Line between text & command regions
     .e4.status = true,              // Display status on line
 
-#if     defined(DISPLAY_MODE)
-
-    .ed.escape  = true,             // Enable ESCape-sequences
-
-#else
-
-    .ed.escape  = false,            // Disable ESCape-sequences
-
-#endif
-
     .ee = NUL,                      // No ESCape surrogate
     .eh.verbose = 2,                // Use standard verbosity for error msgs.
     .eh.line = true,                // Include line number for errors in macros
@@ -175,6 +165,8 @@ static void reset_teco(void);
 
 int main(int argc, const char * const argv[])
 {
+    f.ed.escape = esc_seq_def;          // Set default for ESCape-sequences
+
     init_teco(argc, argv);              // Initialize variables and things
 
     // After initialization is complete, we can "execute" the command-line
@@ -257,13 +249,7 @@ int main(int argc, const char * const argv[])
 
 static void exit_teco(void)
 {
-
-#if     defined(DISPLAY_MODE)
-
-    exit_dpy();                         // Disable display first
-
-#endif
-
+    exit_dpy();                         // Disable display first (if active)
     exit_term();                        // Restore terminal settings next
     exit_files();                       // Close any open files
 
@@ -271,7 +257,7 @@ static void exit_teco(void)
     reset_indirect();                   // Deallocate memory for EI commands
     reset_search();                     // Deallocate memory for last search
 
-    exit_map();                         // Deallocate memory for key mapping
+    exit_map();                         // Deallocate memory for map commands
     exit_error();                       // Deallocate memory for errors
     exit_qreg();                        // Deallocate memory for Q-registers
     exit_ebuf();                        // Deallocate memory for edit buffer

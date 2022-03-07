@@ -56,14 +56,6 @@ struct edit
 
 extern struct edit t;
 
-#if     defined(DISPLAY_MODE)
-
-extern bool dot_changed;
-
-extern bool ebuf_changed;
-
-#endif
-
 // Add one character to buffer at current position of dot.
 //
 // Returns: EDIT_OK    - Insertion was successful.

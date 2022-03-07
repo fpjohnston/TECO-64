@@ -340,14 +340,10 @@ static void tputc(int c, int input)
         --term_pos;
     }
 
-#if     defined(DISPLAY_MODE)
-
-    if (putc_dpy(c))
+    if (putc_dpy(c))                    // Can we output to display?
     {
-        return;
+        return;                         // Yes, so we're all done
     }
-
-#endif
 
     if (!f.et.truncate || term_pos < w.width)
     {

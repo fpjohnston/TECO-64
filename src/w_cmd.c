@@ -1,6 +1,6 @@
 ///
 ///  @file    w_cmd.c
-///  @brief   Execute W command.
+///  @brief   Execute W, F0, FH, and FZ commands.
 ///
 ///  @copyright 2019-2022 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -50,7 +50,8 @@ struct watch w =
     .type     = 8,                      // VT102 in ANSI mode
     .width    = DEFAULT_WIDTH,
     .height   = DEFAULT_HEIGHT,
-    .topdot   = 0,
+    .topdot   = 0,                      // Value of F0 flag
+    .botdot   = 0,                      // Value of FZ flag
     .nlines   = 0,
     .noscroll = false,
     .tchar    =
@@ -135,39 +136,79 @@ void exec_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->colon)                     // n:W already processed
+    if (!cmd->colon)                    // Is it nW?
     {
-        return;
-    }
-
-#if     defined(DISPLAY_MODE)
-
-    if (!f.et.scope)                    // Scope mode allowed?
-    {
-        return;                         // No
-    }
-
-    if (!cmd->n_set)                    // Was it W with no argument?
-    {
-        if (f.e0.display)
+        if (f.et.scope)                 // Scope mode allowed?
         {
-            reset_dpy();
-            init_term();
+            if (!cmd->n_set)            // Was it W with no argument?
+            {
+                end_dpy();
+            }
+            else if (cmd->n_arg == -1)  // Was it -1W?
+            {
+                start_dpy();
+            }
+        }
+        else
+        {
+            throw(E_DPY);               // Display mode requires scope terminal
         }
     }
-    else if (cmd->n_arg == -1)          // Was it -1W?
-    {
-        if (!f.e0.display)
-        {
-            reset_term();               // Reset if display mode support
-            init_dpy();
-            color_dpy();
-            clear_dpy();
-        }
-    }
+}
 
-#endif
 
+///
+///  @brief    Scan F0 command: return position for top left corner.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_F0(struct cmd *cmd)
+{
+    (void)scan_x(cmd);
+    push_x((int_t)w.topdot, X_OPERAND);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan FH command: equivalent to F0,FZ.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FH(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    (void)scan_x(cmd);
+
+    cmd->m_set = true;
+    cmd->m_arg = w.topdot;
+
+    push_x(w.botdot, X_OPERAND);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan FZ command: return position for bottom right corner.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_FZ(struct cmd *cmd)
+{
+    (void)scan_x(cmd);
+
+    push_x(w.botdot, X_OPERAND);
+
+    return true;
 }
 
 

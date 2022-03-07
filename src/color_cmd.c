@@ -25,23 +25,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#if     defined(DISPLAY_MODE)
-
 #include <ncurses.h>
 #include <string.h>
 
-#endif
-
 #include "teco.h"
-#include "ascii.h"
 #include "display.h"
 #include "exec.h"
-
-
-#if     defined(DISPLAY_MODE)
 
 
 #define COLOR_BASE  16              ///< Starting base for new colors
@@ -105,13 +94,7 @@ static int find_color(const char *token);
 
 static void set_color(const char *buf, uint_t len, short sat, short color);
 
-static void set_colors(const struct cmd *cmd, enum region_pair pair);
-
-#else
-
-static void set_colors(void *unused1, int unused2);
-
-#endif
+static void set_colors(const struct cmd *cmd, int pair);
 
 
 ///
@@ -121,8 +104,6 @@ static void set_colors(void *unused1, int unused2);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
 void color_dpy(void)
 {
     for (short pair = CMD; pair <= STATUS; ++pair)
@@ -131,8 +112,6 @@ void color_dpy(void)
     }
 }
 
-#endif
-
 
 ///
 ///  @brief    Use previous colors for region.
@@ -140,8 +119,6 @@ void color_dpy(void)
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 static void color_region(short region)
 {
@@ -166,8 +143,6 @@ static void color_region(short region)
 
     (void)init_pair(region, color, color + 1);
 }
-
-#endif
 
 
 ///
@@ -216,8 +191,6 @@ void exec_F3(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
 static int find_color(const char *token)
 {
     if (token == NULL)
@@ -236,27 +209,6 @@ static int find_color(const char *token)
     return -1;
 }
 
-#endif
-
-
-///
-///  @brief    Scan F1, F2, and F3 commands.
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_F1(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
-    scan_texts(cmd, 2, ESC);
-
-    return false;
-}
-
 
 ///
 ///  @brief    Initialize saturation levels for a specified color.
@@ -264,8 +216,6 @@ bool scan_F1(struct cmd *cmd)
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DISPLAY_MODE)
 
 static void set_color(const char *buf, uint_t len, short sat, short color)
 {
@@ -307,8 +257,6 @@ static void set_color(const char *buf, uint_t len, short sat, short color)
     saved_color[color - COLOR_BASE].blue  = blue;
 }
 
-#endif
-
 
 ///
 ///  @brief    Set foreground and background colors for our three display
@@ -318,9 +266,7 @@ static void set_color(const char *buf, uint_t len, short sat, short color)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DISPLAY_MODE)
-
-static void set_colors(const struct cmd *cmd, enum region_pair pair)
+static void set_colors(const struct cmd *cmd, int pair)
 {
     assert(cmd != NULL);
 
@@ -362,11 +308,3 @@ static void set_colors(const struct cmd *cmd, enum region_pair pair)
 
     color_region((short)pair);
 }
-
-#else
-
-static void set_colors(void *unused1, int unused2)
-{
-}
-
-#endif

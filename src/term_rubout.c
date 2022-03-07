@@ -29,28 +29,24 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "display.h"
 #include "eflags.h"
 #include "term.h"
 
-#if     defined(DISPLAY_MODE)
-
-#include <ncurses.h>
-
-#endif
 
 // Local functions
 
 static void rubout_chrs(uint n);
 
-static bool rubout_CR(void);
+static void rubout_CR(void);
 
-static bool rubout_FF(void);
+static void rubout_FF(void);
 
-static bool rubout_HT(void);
+static void rubout_HT(void);
 
-static bool rubout_LF(void);
+static void rubout_LF(void);
 
-static bool rubout_VT(void);
+static void rubout_VT(void);
 
 
 ///
@@ -65,81 +61,67 @@ void rubout_chr(int c)
     // Echoed input is normally only a single character, but control characters
     // may require more (or fewer) RUBOUTs.
 
-    uint n = 1;
+    int n = echo_len(c);
 
-#if     defined(DISPLAY_MODE)
-
-    if (f.e0.display)
+    if (n != EOF)
     {
-        n = (uint)strlen(unctrl((uint)c));
+        rubout_chrs((uint)n);
     }
-    else
-
-#endif
 
     if (iscntrl(c))
     {
         switch (c)
         {
             case LF:
-                if (rubout_LF())
-                {
-                    return;
-                }
+                rubout_LF();
 
-                break;
+                return;
 
             case CR:
-                if (rubout_CR())
-                {
-                    return;
-                }
+                rubout_CR();
 
-                break;
+                return;
 
             case FF:
-                if (rubout_FF())
-                {
-                    return;
-                }
+                rubout_FF();
 
-                break;
+                return;
 
             case VT:
-                if (rubout_VT())
-                {
-                    return;
-                }
+                rubout_VT();
 
-                break;
+                return;
 
             case HT:
-                if (rubout_HT())
-                {
-                    return;
-                }
+                rubout_HT();
 
-                break;
+                return;
 
-            case BS:
             case ESC:
-                break;
+                rubout_chrs(1);         // ESC echoes as $ or `
 
-            case DEL:                   // DEL doesn't echo
+                return;
+
+            case BS:                    // BS isn't printed, so no echo
+            case DEL:                   // DEL isn't printed, so no echo
                 return;
 
             default:                    // Generic control sequence
-                ++n;
+                rubout_chrs(2);         // Control chrs. are printed as ^X
 
-                break;
+                return;
         }
     }
     else if (!isascii(c))
     {
-        n += 3;                         // 8-bit chrs. are printed as [xx]
-    }
+        rubout_chrs(4);                 // 8-bit chrs. are printed as [xx]
 
-    rubout_chrs(n);
+        return;
+    }
+    else
+    {
+        rubout_chrs(1);                 // Default is 1 echoed chr.
+    }
 }
 
 
@@ -164,29 +146,23 @@ static void rubout_chrs(uint n)
 ///
 ///  @brief    Rubout carriage return.
 ///
-///  @returns  true if rubout required special handling, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool rubout_CR(void)
+static void rubout_CR(void)
 {
-    if (!f.et.rubout)
+    if (f.et.rubout)
     {
-        return false;
-    }
-    else if (!f.e0.display)
-    {
-        if (f.e3.CR_in)
+        if (f.e0.display)
+        {
+            ;                           // TODO: add handling for display
+        }
+        else if (f.e3.CR_in)
         {
             tprint("\e[K");             // Clear to end of line
             retype_line(start_tbuf());  // Retype current line
         }
-
-        return true;
-    }
-    else
-    {
-        return false;                   // TODO: add handling for ncurses
     }
 }
 
@@ -194,26 +170,23 @@ static bool rubout_CR(void)
 ///
 ///  @brief    Rubout form feed.
 ///
-///  @returns  true if rubout required special handling, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool rubout_FF(void)
+static void rubout_FF(void)
 {
-    if (!f.et.rubout)
+    if (f.et.rubout)
     {
-        return false;
-    }
-    else if (!f.e0.display)
-    {
-        tprint("\e[%dF", FF_LINES);     // Move up 8 lines
-        retype_line(start_tbuf());      // Retype current line
-
-        return true;
-    }
-    else
-    {
-        return false;                   // TODO: add handling for ncurses
+        if (f.e0.display)
+        {
+            ;                           // TODO: add handling for display
+        }
+        else
+        {
+            tprint("\e[%dF", FF_LINES); // Move up 8 lines
+            retype_line(start_tbuf());  // Retype current line
+        }
     }
 }
 
@@ -221,26 +194,23 @@ static bool rubout_FF(void)
 ///
 ///  @brief    Rubout horizontal tab.
 ///
-///  @returns  true if rubout required special handling, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool rubout_HT(void)
+static void rubout_HT(void)
 {
-    if (!f.et.rubout)
+    if (f.et.rubout)
     {
-        return false;
-    }
-    else if (!f.e0.display)
-    {
-        tprint("\r\e[K");               // Go to start of line, then clear it
-        retype_line(start_tbuf());      // Retype current line
-
-        return true;
-    }
-    else
-    {
-        return false;                   // TODO: add handling for ncurses
+        if (f.e0.display)
+        {
+            ;                           // TODO: add handling for display
+        }
+        else
+        {
+            tprint("\r\e[K");           // Go to start of line, then clear it
+            retype_line(start_tbuf());  // Retype current line
+        }
     }
 }
 
@@ -248,33 +218,29 @@ static bool rubout_HT(void)
 ///
 ///  @brief    Rubout line feed.
 ///
-///  @returns  true if rubout required special handling, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool rubout_LF(void)
+static void rubout_LF(void)
 {
-    if (!f.et.rubout)
+    if (f.et.rubout)
     {
-        return false;
-    }
-    else if (!f.e0.display)
-    {
-        tprint("\e[F");                 // Move up 1 line
-
-        if (!f.e3.CR_in)
+        if (f.e0.display)
         {
-            tprint("\e[K");             // Clear to end of line
-            retype_line(start_tbuf());  // Retype current line
-
-            return true;
+            ;                           // TODO: add handling for display
         }
+        else
+        {
+            tprint("\e[F");             // Move up 1 line
 
-        return true;
-    }
-    else
-    {
-        return false;                   // TODO: add handling for ncurses
+            if (!f.e3.CR_in)
+            {
+                tprint("\e[K");         // Clear to end of line
+                retype_line(start_tbuf());
+                                        // Retype current line
+            }
+        }
     }
 }
 
@@ -311,25 +277,22 @@ void rubout_line(void)
 ///
 ///  @brief    Rubout vertical tab.
 ///
-///  @returns  true if rubout required special handling, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool rubout_VT(void)
+static void rubout_VT(void)
 {
-    if (!f.et.rubout)
+    if (f.et.rubout)
     {
-        return false;
-    }
-    else if (!f.e0.display)
-    {
-        tprint("\e[%dF", VT_LINES);     // Move up 4 lines
-        retype_line(start_tbuf());      // Retype current line
-
-        return true;
-    }
-    else
-    {
-        return false;                   // TODO: add handling for ncurses
+        if (f.e0.display)
+        {
+            ;                           // TODO: add handling for display
+        }
+        else
+        {
+            tprint("\e[%dF", VT_LINES); // Move up 4 lines
+            retype_line(start_tbuf());  // Retype current line
+        }
     }
 }

@@ -33,18 +33,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#if     defined(DISPLAY_MODE)
-
-#include <ncurses.h>
-
-#if     EOF != ERR
-
-#error  EOF and ERR have different values
-
-#endif
-
-#endif
-
 #include "teco.h"
 #include "ascii.h"
 #include "display.h"
@@ -82,8 +70,6 @@ static void exec_star(void);
 
 static int read_first(void);
 
-static int read_nowait(void);
-
 static int read_wait(void);
 
 
@@ -96,18 +82,11 @@ static int read_wait(void);
 
 static void exec_cancel(void)
 {
-
-#if     defined(DISPLAY_MODE)
-
     if (clear_eol())                    // Can we clear to end of line?
     {
         term_pos = 0;                   // Yes, so we're back at column 0
     }
-    else
-
-#endif
-
-    if (f.et.rubout)
+    else if (f.et.rubout)
     {
         rubout_line();
     }
@@ -222,18 +201,11 @@ static void exec_DEL(void)
 
 static void exec_inspect(int_t pos, int_t line)
 {
-
-#if     defined(DISPLAY_MODE)
-
     if (clear_eol())                    // Can we clear to end of line?
     {
         ;                               // If so, we're done
     }
-    else
-
-#endif
-
-    if (f.et.rubout)
+    else if (f.et.rubout)
     {
         rubout_line();
     }
@@ -330,27 +302,14 @@ int getc_term(bool wait)
     {
         c = read_wait();
     }
-    else if ((c = read_nowait()) == EOF)
+    else if ((c = get_nowait()) == EOF)
     {
         return EOF;
     }
 
     // Here when we have a non-EOF character
 
-#if    defined(DISPLAY_MODE)
-
-    if (c == KEY_BACKSPACE)
-    {
-        c = DEL;
-    }
-    else if (c == KEY_RESIZE)
-    {
-        resize_key();
-
-        return getc_term(wait);         // Recurse to get next character
-    }
-
-#endif
+    c = check_dpy_chr(c, wait);         // Check for special display input
 
     f.e0.ctrl_c = false;                // Normal character, not CTRL/C
 
@@ -655,42 +614,6 @@ static int read_first(void)
 
 
 ///
-///  @brief    Read without wait (non-blocking I/O).
-///
-///  @returns  Character read.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static int read_nowait(void)
-{
-
-#if     defined(DISPLAY_MODE)
-
-    if (f.e0.display)
-    {
-        (void)nodelay(stdscr, (bool)TRUE);
-
-        int c = getch();
-
-        (void)nodelay(stdscr, (bool)FALSE);
-
-        return c;
-    }
-    else
-    {
-        return getch();
-    }
-
-#else
-
-    throw(E_DPY);                       // Read w/o wait requires ncurses
-
-#endif
-
-}
-
-
-///
 ///  @brief    Read with wait (blocking I/O).
 ///
 ///  @returns  Character read. Note the following special cases:
@@ -706,37 +629,31 @@ static int read_nowait(void)
 
 static int read_wait(void)
 {
-
-#if     defined(DISPLAY_MODE)
-
-    if (f.e0.display)
+    if (f.e0.display)                   // Display mode active?
     {
-        int c = getch();
+        int c = get_wait();
 
-        if (c != ERR)
+        if (c != EOF)
         {
             return c;
         }
     }
     else
-
-#endif
-
     {
         char chr;
         ssize_t nbytes = read(fileno(stdin), &chr, sizeof(chr));
 
-        if (nbytes == 0)                    // EOF reading redirected stdin
+        if (nbytes == 0)                // EOF reading redirected stdin
         {
-            exit(EXIT_SUCCESS);             // So we're all done
+            exit(EXIT_SUCCESS);         // So we're all done
         }
-        else if (nbytes != -1)              // Error?
+        else if (nbytes != -1)          // Error?
         {
             return chr;
         }
     }
 
-    // Here if getch() or read() returned an error
+    // Here if getch_wait() or read() returned an error
 
     if (errno != EINTR)                 // Interrupted by CTRL/C?
     {

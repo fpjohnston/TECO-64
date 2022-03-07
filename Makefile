@@ -92,7 +92,6 @@ SOURCES = \
     cmd_estack.c   \
     cmd_exec.c     \
     cmd_scan.c     \
-    display.c      \
     env_sys.c      \
     errors.c       \
     file.c         \
@@ -111,7 +110,6 @@ SOURCES = \
     a_cmd.c        \
     bracket_cmd.c  \
     case_cmd.c     \
-    color_cmd.c    \
     ctrl_a_cmd.c   \
     ctrl_t_cmd.c   \
     ctrl_u_cmd.c   \
@@ -142,6 +140,7 @@ SOURCES = \
     ez_cmd.c       \
     fb_cmd.c       \
     fd_cmd.c       \
+    ff_cmd.c       \
     fk_cmd.c       \
     flag_cmd.c     \
     fr_cmd.c       \
@@ -151,7 +150,6 @@ SOURCES = \
     insert_cmd.c   \
     loop_cmd.c     \
     m_cmd.c        \
-    map_cmd.c      \
     move_cmd.c     \
     n_cmd.c        \
     number_cmd.c   \
@@ -190,8 +188,12 @@ endif
 ifdef   display
 
 DEFINES += -D DISPLAY_MODE
-DOXYGEN +=    DISPLAY_MODE
 LIBS    += -l ncurses
+SOURCES += display.c color_cmd.c map_cmd.c
+
+else
+
+SOURCES += stubs.c
 
 endif
 

@@ -204,11 +204,7 @@ extern void exec_options(int argc, const char * const argv[]);
 
 extern void exit_cbuf(void);
 
-#if     defined(DISPLAY_MODE)
-
 extern void exit_dpy(void);
-
-#endif
 
 extern void exit_ebuf(void);
 
@@ -249,6 +245,8 @@ extern void init_env(void);
 extern void init_options(int argc, const char * const argv[]);
 
 extern void print_flag(int_t flag);
+
+extern void reset_map(void);
 
 extern void setif_depth(uint depth);
 
