@@ -142,6 +142,12 @@ static void add_mblock(void *p1, uint_t size)
 
 void *alloc_mem(uint_t size)
 {
+    //  This assertion check exists because implementations of calloc() won't
+    //  return a NULL pointer if the product of its two arguments are equal 0,but
+    //  but will rather return a unique pointer that can be safely passed to
+    //  free(). And the reason for this check, instead of throwing an exception,
+    //  is because the argument to our function should never be 0.
+
     assert(size != 0);
 
     void *p1 = calloc(1uL, (size_t)size);
