@@ -41,7 +41,6 @@
 #      int=64       Use 64-bit integers.
 #      paging=std   Use standard paging.
 #      paging=vm    Use virtual memory paging. [default]
-#      verbose=1    Enable verbosity during build.
 #
 #  Debugging options:
 #
@@ -51,6 +50,7 @@
 #      gdb=1        Enable use of GDB debugger.
 #      gprof=1      Enable use of GPROF profiler.
 #      memcheck= 1  Enable checks for memory leaks.
+#      verbose=1    Enable verbosity during build.
 #
 #  Optimization options:
 #
@@ -374,7 +374,6 @@ help:
 	@echo "    int=64       Use 64-bit integers."
 	@echo "    paging=std   Use standard paging."
 	@echo "    paging=vm    Use virtual memory paging. [default]"
-	@echo "    verbose=1    Enable verbosity during build."
 	@echo ""
 	@echo "Debugging options:"
 	@echo ""
@@ -384,6 +383,7 @@ help:
 	@echo "    gdb=1        Enable use of GDB debugger."
 	@echo "    gprof=1      Enable use of GPROF profiler."
 	@echo "    memcheck=1   Enable checks for memory leaks."
+	@echo "    verbose=1    Enable verbosity during build."
 	@echo ""
 	@echo "Optimization options:"
 	@echo ""
