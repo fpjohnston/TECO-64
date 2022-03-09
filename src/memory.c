@@ -142,6 +142,8 @@ static void add_mblock(void *p1, uint_t size)
 
 void *alloc_mem(uint_t size)
 {
+    assert(size != 0);
+
     void *p1 = calloc(1uL, (size_t)size);
 
     if (p1 == NULL)
