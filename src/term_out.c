@@ -319,7 +319,14 @@ int tprint(
 
 
 ///
-///  @brief    Output character to terminal or display.
+///  @brief    Output character to terminal or display. Note that ALL output is
+///            done here, other than output specific to display mode, such as a
+///            status line. This is necessary because ncurses will get messed up
+///            if we do output both with its functions and with Standard C func-
+///            tions such as printf(). Also, having one lowest-level function
+///            for function makes it easier to handle such things as updating
+///            the terminal position, checking for truncation, and handling any
+///            output to a possible log file.
 ///
 ///  @returns  Nothing.
 ///
