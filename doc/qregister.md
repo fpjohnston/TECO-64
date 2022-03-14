@@ -86,7 +86,7 @@ loaded into Q-registers.
 | -X*q* | Equivalent to -1X*q*. |
 | *m*,*n*X*q* | Copy the contents of the buffer from the *m*+1th character through and including the *n*th character into the text storage area of Q-register *q*. *m* and *n* must be positive, and *m* should be less than *n*. |
 | .,.+*n*X*q* | Copy the *n* characters immediately following the buffer pointer into the text storage area of Q-register *q*. *n* should be greater than zero. |
-| .-*n*,.X*q* | Copy the *n* characters immediately preceeding the buffer pointer into the text storage area of Q-register *q*. *n* should be greater than zero. |
+| .-*n*,.X*q* | Copy the *n* characters immediately preceding the buffer pointer into the text storage area of Q-register *q*. *n* should be greater than zero. |
 | *n*:X*q* | Append *n* lines to Q-register *q*, where *n* is a signed integer with the same functions as *n* in the nX*q* command above. The pointer is not moved. <br><br>The colon construct for appending to a Q-register can be used with all forms of the X command. |
 | 0,0X*q* | Delete any text string in Q-register *q*. |
 | ]*q* | Pop from the Q-register push-down list into Q-register *q*. Any previous contents of Q-register *q* are destroyed. Both the numeric and text parts of the Q-register are loaded by this command. The Q-register push-down list is a last-in first-out (LIFO) storage area. (See above for a description of the push-down list.) This command does not use or affect numeric values. Numeric values are passed through this command transparently. This allows macros to restore Q-registers and still return numeric values. |

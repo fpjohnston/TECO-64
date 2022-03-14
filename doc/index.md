@@ -127,7 +127,7 @@
 | :===           | [Type in hexadecimal, no CR/LF](oper.md) |
 | \>             | [End loop](loops.md) |
 | \>             | [Relational comparison for greater than](oper.md) |
-| \<=            | [Relational comparisson for greater than or equal](oper.md) |
+| \<=            | [Relational comparison for greater than or equal](oper.md) |
 | \>\>           | [Arithmetic right shift](oper.md) |
 | ?              | [Toggle trace mode](misc.md) |
 | ?              | [Type out command string in error](action.md) |

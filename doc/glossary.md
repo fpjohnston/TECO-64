@@ -536,7 +536,7 @@ do not print. Controlled by the 3:W flag.
 **Search verification flag**
 
 A flag, referenced by the ES command, that controls the action of TECO
-subsequent to the execution of a command string containg a search command.
+subsequent to the execution of a command string containing a search command.
 Proper setting of this flag will enable the user to verify that the search located
 the correct string, by having the line containing the string found displayed on the
 terminal.

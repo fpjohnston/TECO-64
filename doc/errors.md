@@ -83,7 +83,7 @@ code.
 | <nobr>?NAQ</nobr> | <nobr>No argument before quote</nobr> | The " commands must be preceded by a single numeric argument on which the decision to execute the following commands or skip to the matching ' is based. |
 | <nobr>?NAS</nobr> | <nobr>No argument before semi-colon</nobr> | The ; command must be preceded by a single numeric argument on which the decision to execute the following commands or skip to the matching > is based. |
 | <nobr>?NAT</nobr> | <nobr>Cannot have n argument and text string</nobr> | Both an n argument and a string were specified for a command which does not allow more than one. |
-| <nobr>?NAU</nobr> | <nobr>No argument before U command</nobr> | The U comand must be preceded by either a specific numeric argument or a command that returns a numeric value. |
+| <nobr>?NAU</nobr> | <nobr>No argument before U command</nobr> | The U command must be preceded by either a specific numeric argument or a command that returns a numeric value. |
 | <nobr>?NCA</nobr> | <nobr>Negative argument to comma</nobr> | A comma was preceded by a negative number. |
 | <nobr>?NFI</nobr> | <nobr>No file for input</nobr> | Before issuing an input command, such as Y, it is necessary to open an input file by use of a command such as ER or EB. |
 | <nobr>?NFO</nobr> | <nobr>No file for output</nobr> | Before issuing an output command, such as N or or P, it is necessary to open an output file with a command such as EW or EB. |
