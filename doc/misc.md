@@ -77,7 +77,7 @@ required.
 
 ### Tracing Commands
 
-A question mark (?) entered betweeen any two commands in a command string
+A question mark (?) entered between any two commands in a command string
 causes TECO to print all subsequent commands at the terminal as they are
 executed. Commands will be printed as they are executed until another question
 mark character is encountered or the command string terminates.

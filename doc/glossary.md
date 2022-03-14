@@ -292,7 +292,7 @@ match the exact case (upper case or lower case) of characters specified.
 **Exit Protection**
 
 A protective feature of TECO that prevents a user from exiting TECO if a
-potential los of data is imminent. The EX and EG commands are aborted (with
+potential loss of data is imminent. The EX and EG commands are aborted (with
 the ?NFO error message) if there is text in the edit buffer, but no output file is
 open.
 
@@ -536,7 +536,7 @@ do not print. Controlled by the 3:W flag.
 **Search verification flag**
 
 A flag, referenced by the ES command, that controls the action of TECO
-subsequent to the execution of a command string containg a search command.
+subsequent to the execution of a command string containing a search command.
 Proper setting of this flag will enable the user to verify that the search located
 the correct string, by having the line containing the string found displayed on the
 terminal.

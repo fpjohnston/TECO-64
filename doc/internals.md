@@ -11,7 +11,7 @@ as well as those who are curious about how it is structured.
 TECO-64 development began in October 2019, and was primarily done on Linux
 (Ubuntu), using gcc and other GNU tools. It has been successfully executed
 on Linux, Windows 10, and MacOS. It has also been successfully compiled
-on VMS, but requires addititional run-time library support to be fully
+on VMS, but requires additional run-time library support to be fully
 executable.
 
 ### Development

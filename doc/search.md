@@ -109,7 +109,7 @@ lists these match control characters and their functions.
 | \<CTRL/E\>B | Equivalent to \<CTRL/S\>. |
 | \<CTRL/E\>C | Specifies that any symbol constituent character is acceptable in this position. TECO accepts any letter (upper or lower case A to Z), any digit (0 to 9), a dot (.), a dollar sign ($), or an underscore (_) as a match for \<CTRL/E\>C. |
 | \<CTRL/E\>D | Specifies that any digit (0 to 9) is acceptable in this position. |
-| \<CTRL/E\>G*q* | Specifies that any character contained in Qregister *q* is acceptable in this position. For example, if Q-register A contains "A\*:" then TECO accepts either A, \*, or : as a match for \<CTRL/E\>GA. |
+| \<CTRL/E\>G*q* | Specifies that any character contained in Q-register *q* is acceptable in this position. For example, if Q-register A contains "A\*:" then TECO accepts either A, \*, or : as a match for \<CTRL/E\>GA. |
 | \<CTRL/E\>L | Specifies that any line terminator (line feed, vertical tab, or form feed) is acceptable in the position occupied by \<CTRL/E\>L in the search string. |
 | \<CTRL/E\>R | Specifies that any alphanumeric character (letter or digit as defined above) is acceptable in this position. |
 | \<CTRL/E\>S | Specifies that any non-null string of spaces and/or tabs is acceptable in the position occupied by \<CTRL/E\>S. |

@@ -10,7 +10,7 @@ The length of an insertion command is limited primarily by the amount of
 memory available for command string storage. When command string space
 is about to run out, TECO will ring the terminal’s bell after each
 character that is typed. Attempting to enter too many characters into
-the current command string causes unpredictible results to occur and
+the current command string causes unpredictable results to occur and
 should be avoided.
 
 As explained [here](action.md), certain characters are filtered out by the

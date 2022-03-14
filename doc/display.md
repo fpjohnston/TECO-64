@@ -61,11 +61,11 @@ the same color.
 | Command | Function |
 | ------- | -------- |
 | @F1/*color1*/*color2*/ | Set command region foreground color to *color1*, and the background color to *color2*. |
-| *m*,*n*,@F1/*color1*/*color2*/ | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, thatsets the foreground saturation only. |
+| *m*,*n*,@F1/*color1*/*color2*/ | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, that sets the foreground saturation only. |
 | @F2/*color1*/*color2*/ | Set edit region foreground color to *color1*, and the background color to *color2*. |
-| *m*,*n*,@F2/*color1*/*color2*/ | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, thatsets the foreground saturation only. |
+| *m*,*n*,@F2/*color1*/*color2*/ | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, that sets the foreground saturation only. |
 | @F3/*color1*/*color2*/ | Set status line foreground color to *color1*, and the background color to *color2*. |
-| *m*,*n*,@F3/*color1*/*color2*/ | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, thatsets the foreground saturation only. |
+| *m*,*n*,@F3/*color1*/*color2*/ | Same as previous command, but sets the foreground and background saturation levels to *m* and *n*, respectively. If only *n* is specified, that sets the foreground saturation only. |
 
 | Example | Description |
 | ------- | ----------- |
