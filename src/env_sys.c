@@ -222,6 +222,7 @@ int teco_env(int n_arg, bool colon)
             return sizeof(int_t) * CHAR_BIT;
 
         case -5:
+        {
             pid_t pid = tcgetpgrp(STDIN_FILENO);
 
             if (pid == -1)
@@ -236,6 +237,7 @@ int teco_env(int n_arg, bool colon)
             {
                 return 0;               // Background process
             }
+        }
 
         default:
             throw(E_NYI);               // No such EJ command
