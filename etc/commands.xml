@@ -155,6 +155,7 @@
         <command name='F1'              scan='F1'        exec='F1'        />
         <command name='F2'              scan='F1'        exec='F2'        />
         <command name='F3'              scan='F1'        exec='F3'        />
+        <command name='F4'              scan='F1'        exec='F4'        />
         <command name='F&lt;'                            exec='F_lt'      />
         <command name='F&gt;'                            exec='F_gt'      />
         <command name='FB'              scan='FB'        exec='FB'        />

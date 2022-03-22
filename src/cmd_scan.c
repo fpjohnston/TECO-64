@@ -130,7 +130,7 @@ bool scan_colon(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan F1, F2, and F3 commands.
+///  @brief    Scan F1, F2, F3, and F4 commands.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///

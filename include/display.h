@@ -35,12 +35,13 @@
 
 #define SATMAX      1000            ///< Maximum color saturation
 
-//  Values of foreground/background pairs for defined regions.
+//  Values of foreground/background pairs for defined windows.
 
-#define CMD     1                   ///< Command region
-#define EDIT    2                   ///< Edit region
-#define STATUS  3                   ///< Status line
-
+#define CMD         1               ///< Command window
+#define EDIT        2               ///< Edit window
+#define STATUS      3               ///< Status window
+#define LINE        4               ///< Dividing line
+#define MAX_PAIRS   LINE            ///< Total no. of color pairs
 
 ///  @struct  tchar
 ///  @brief   Terminal characteristics flag.
@@ -73,6 +74,7 @@ struct watch
     int_t topdot;                   ///< Buffer position of upper left corner
     int_t botdot;                   ///< Buffer position of bottom right corner
     int nlines;                     ///< No. of scrolling lines
+    bool seeall;                    ///< SEEALL mode
     bool noscroll;                  ///< Disable scrolling region
     union tchar tchar;              ///< Terminal characteristics
 };
@@ -94,21 +96,21 @@ extern void clear_dpy(void);
 
 extern void color_dpy(void);
 
-extern int echo_len(int c);
-
 extern void end_dpy(void);
 
 extern bool exec_key(int key);
 
 extern int get_nowait(void);
 
+extern int get_tab(void);
+
 extern int get_wait(void);
 
-extern void mark_dot(void);
+extern void init_windows(void);
 
 extern void mark_ebuf(void);
 
-extern bool putc_dpy(int c);
+extern bool putc_cmd(int c);
 
 extern int readkey_dpy(int c);
 
@@ -118,9 +120,11 @@ extern void reset_colors(void);
 
 extern void resize_signal(void);
 
-extern void set_nrows(void);
+extern void rubout_dpy(int c);
 
-extern void set_scroll(int height, int nscroll);
+extern void set_parity(bool parity);
+
+extern void set_tab(int n);
 
 extern void start_dpy(void);
 

@@ -67,7 +67,6 @@ static const struct color_table color_table[] =
     [COLOR_WHITE]   = { "WHITE",   SATMAX, SATMAX, SATMAX, },
 };
 
-#define NREGIONS    ((STATUS - CMD) + 1) ///< No. of display regions
 
 ///
 ///  @var    saved_color
@@ -75,8 +74,10 @@ static const struct color_table color_table[] =
 ///  @brief  Saved table of colors for each region.
 ///
 
-static struct color_table saved_color[NREGIONS * 2] =
+static struct color_table saved_color[MAX_PAIRS * 2] =
 {
+    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
+    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
     { .name = NULL, .red = 0, .green = 0, .blue = 0 },
     { .name = NULL, .red = 0, .green = 0, .blue = 0 },
     { .name = NULL, .red = 0, .green = 0, .blue = 0 },
@@ -172,7 +173,7 @@ void exec_F2(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute F3 command: set colors for status line.
+///  @brief    Execute F3 command: set colors for status window.
 ///
 ///  @returns  Nothing.
 ///
@@ -181,6 +182,19 @@ void exec_F2(struct cmd *cmd)
 void exec_F3(struct cmd *cmd)
 {
     set_colors(cmd, STATUS);
+}
+
+
+///
+///  @brief    Execute F4 command: set colors for divider line.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_F4(struct cmd *cmd)
+{
+    set_colors(cmd, LINE);
 }
 
 

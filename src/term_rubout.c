@@ -61,14 +61,11 @@ void rubout_chr(int c)
     // Echoed input is normally only a single character, but control characters
     // may require more (or fewer) RUBOUTs.
 
-    int n = echo_len(c);
-
-    if (n != EOF)
+    if (f.e0.display)
     {
-        rubout_chrs((uint)n);
+        rubout_dpy(c);
     }
-
-    if (iscntrl(c))
+    else if (iscntrl(c))
     {
         switch (c)
         {

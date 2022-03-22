@@ -89,19 +89,6 @@ bool clear_eol(void)
 
 
 ///
-///  @brief    (STUB) Get length of echoed character to be rubbed out.
-///
-///  @returns  EOF.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int echo_len(int unused)
-{
-    return EOF;
-}
-
-
-///
 ///  @brief    (STUB) Check for ending display mode.
 ///
 ///  @returns  Nothing.
@@ -224,6 +211,19 @@ int get_nowait(void)
 
 
 ///
+///  @brief    (STUB) Get tabsize.
+///
+///  @returns  Tab size.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int get_tab(void)
+{
+    return 8;                           // Default tab size
+}
+
+
+///
 ///  @brief    (STUB) Read next character (if in display mode).
 ///
 ///  @returns  Throws E_DPY error.
@@ -237,13 +237,26 @@ int get_wait(void)
 
 
 ///
-///  @brief    (STUB) Mark dot as having changed.
+///  @brief    (STUB) Get tabsize.
+///
+///  @returns  Tab size.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int get_window(void)
+{
+    return 8;                           // Standard tab size
+}
+
+
+///
+///  @brief    (STUB) Initialize display windows.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void mark_dot(void)
+void init_windows(void)
 {
     ;
 }
@@ -341,26 +354,39 @@ void resize_signal(void)
 
 
 ///
-///  @brief    (STUB) Set maximum no. of rows.
+///  @brief    (STUB) Rubout character on display.
 ///
-///  @returns  Same character received.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void set_nrows(void)
+void rubout_dpy(int unused)
 {
     ;
 }
 
 
 ///
-///  @brief    (STUB) Set scrolling region.
+///  @brief    (STUB) Set parity.
 ///
-///  @returns  Same character received.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void set_scroll(int unused1, int unused2)
+void set_parity(bool unused)
+{
+    ;
+}
+
+
+///
+///  @brief    (STUB) Set tabsize.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void set_tab(int unused)
 {
     ;
 }

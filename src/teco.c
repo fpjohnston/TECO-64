@@ -117,8 +117,8 @@ struct flags f =                    ///< Global flag variables
 
 #endif
 
-    .e4.line   = true,              // Line between text & command regions
-    .e4.status = true,              // Display status on line
+    .e4.line   = true,              // Display divider line
+    .e4.status = true,              // Display status window
 
     .ee = NUL,                      // No ESCape surrogate
     .eh.verbose = 2,                // Use standard verbosity for error msgs.
@@ -184,8 +184,7 @@ int main(int argc, const char * const argv[])
         switch (setjmp(jump_main))
         {
             case MAIN_NORMAL:           // Normal entry
-                refresh_dpy();          // Update display if needed
-
+                refresh_dpy();          // Update display if enabled
                 f.trace.flag = 0;       // Switch off all tracing bits
                 f.et.abort = false;     // Don't abort on error
 

@@ -259,6 +259,8 @@ extern void exec_macro(tbuffer *macro, struct cmd *cmd);
 
 extern void exec_insert(const char *buf, uint_t len);
 
+extern void exec_str(const char *string);
+
 extern void exit_loop(struct cmd *cmd);
 
 extern int find_eg(char *buf);

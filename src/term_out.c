@@ -46,7 +46,7 @@
 
 int term_pos = 0;
 
-static const char *table_8bit[] =       ///< 8-bit characters
+const char *table_8bit[] =          ///< 8-bit characters
 {
     "[80]",  "[81]",  "[82]",  "[83]",  "[84]",  "[85]",  "[86]",  "[87]",
     "[88]",  "[89]",  "[8A]",  "[8B]",  "[8C]",  "[8D]",  "[8E]",  "[8F]",
@@ -347,9 +347,9 @@ static void tputc(int c, int input)
         --term_pos;
     }
 
-    if (putc_dpy(c))                    // Can we output to display?
+    if (putc_cmd(c))
     {
-        return;                         // Yes, so we're all done
+        return;
     }
 
     if (!f.et.truncate || term_pos < w.width)

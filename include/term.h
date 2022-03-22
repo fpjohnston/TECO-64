@@ -39,6 +39,8 @@
 
 extern const char *key_name;
 
+extern const char *table_8bit[];
+
 extern int term_pos;
 
 // Terminal buffer functions

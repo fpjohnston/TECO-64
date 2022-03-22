@@ -47,27 +47,36 @@
 #include "eflags.h"
 #include "estack.h"
 #include "exec.h"
+#include "file.h"
 #include "page.h"
 #include "term.h"
 
 
 #if     INT_T == 64
 
-#define DEC_FMT "%-*ld"             ///< Left-justified decimal format
+#define FMT     "%ld"
 
 #else
 
-#define DEC_FMT "%-*d"              ///< Left-justified decimal format
+#define FMT     "%d"
 
 #endif
 
+#define DEFAULT_TABSIZE     8       ///< Default tab size
+
+#define MIN_ROWS            10      ///< Minimum no. of rows for edit window
+
+#define DIAMOND  (A_ALTCHARSET | 0x60) ///< End of file marker
+
+#define STATUS_WIDTH        22      ///< Width of status window
+
+#define STATUS_HEIGHT        5      ///< Min. height for status window
+
 const bool esc_seq_def = true;      ///< Escape sequences enabled by default
 
-static bool dot_changed = false;    ///< true if dot changed
+static bool dot_changed = false;    ///< true if 'dot' modified
 
 static bool ebuf_changed = false;   ///< true if edit buffer modified
-
-static int rowbias = 0;             ///< Row adjustment
 
 static uint n_home = 0;             ///< No. of consecutive Home keys
 
@@ -75,49 +84,33 @@ static uint n_end = 0;              ///< No. of consecutive End keys
 
 
 ///
-///  @struct  region
-///
-///  @brief   Characteristics of a screen region
-///
-
-struct region
-{
-    int top;                        ///< Top of region
-    int bot;                        ///< Bottom of region
-};
-
-///
 ///  @struct  display
 ///
-///  @brief   Display format
+///  @brief   Display window information
 ///
 
-struct display
+static struct display
 {
-    int row;                        ///< Edit row
-    int col;                        ///< Edit column
-    int vcol;                       ///< Virtual column
-    int nrows;                      ///< No. of edit rows
-    struct region cmd;              ///< Command region
-    struct region edit;             ///< Edit region
-    struct region status;           ///< Status line
-};
-
-///
-///  @var     d
-///
-///  @brief   Display format
-///
-
-static struct display d =
+    WINDOW *edit;                   ///< Edit window
+    WINDOW *status;                 ///< Status window
+    WINDOW *cmd;                    ///< Command window
+    WINDOW *line;                   ///< Dividing line
+    int row;                        ///< y coordinate for 'dot'
+    int col;                        ///< x coordinate for 'dot'
+    int bias;                       ///< Row bias within edit window
+    int nrows;                      ///< No. of rows in edit window
+    int vcol;                       ///< Virtual column in edit window
+} d =
 {
+    .edit   = NULL,
+    .status = NULL,
+    .cmd    = NULL,
+    .line   = NULL,
     .row    = 0,
     .col    = 0,
-    .vcol   = 0,
+    .bias   = 0,
     .nrows  = 0,
-    .cmd    = { .top = 0, .bot = 0 },
-    .edit   = { .top = 0, .bot = 0 },
-    .status = { .top = 0, .bot = 0 },
+    .vcol   = 0,
 };
 
 
@@ -126,23 +119,19 @@ static struct display d =
 
 #if     !defined(DOXYGEN)
 
-#define check_error(truth) (check_error)((bool)(truth))
+#define check_error(error) (check_error)((bool)(error))
 
 #endif
 
 // Local functions
 
-static void (check_error)(bool truth);
+static void (check_error)(bool error);
 
-static void exec_commands(const char *string);
+static int addlines(int pos, int nrows);
 
-static int geteditsize(char *buf, ulong size, uint_t bytes);
+static void get_dot(int *row, int *col);
 
-static int getwidth(ulong n);
-
-static void init_dpy(void);
-
-static void mark_cursor(int row, int col);
+static void init_window(WINDOW **win, int pair, int top, int bot, int col, int width);
 
 static void move_down(void);
 
@@ -152,13 +141,112 @@ static void move_right(void);
 
 static void move_up(void);
 
-static int print_ebuf(char *buf, int width, int nbytes, int c);
+static void putc_edit(int c);
 
 static void reset_dpy(void);
 
 static void resize_key(void);
 
+static void set_dot(int row, int col);
+
+static void status_line(int line, const char *header, const char *data);
+
 static void update_status(void);
+
+
+#define DEBUG_DPY       1               // TODO: remove for production build
+
+#if     defined(DEBUG_DPY)
+
+static FILE *dpy_fp = NULL;
+
+static void (bugprint)(const char *func, ...);
+
+//lint -save -e652
+
+#define bugprint(...) (bugprint)(__func__, __VA_ARGS__)
+
+//lint -restore
+
+#else
+
+#define bugprint(func, ...)
+
+#endif
+
+
+///
+///  @brief    Print debug message.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DEBUG_DPY)
+
+static void (bugprint)(
+    const char *func,                   ///< Function name
+    ...)                                ///< Remaining arguments for printf()
+{
+    assert(func != NULL);               // Make sure we have a function name
+    assert(dpy_fp != NULL);             // Debug file should be open
+
+    fprintf(dpy_fp, "%s: ", func);      // Print error preamble
+
+    va_list argptr;
+
+    //lint -esym(530,argptr)
+
+    va_start(argptr, func);
+
+    //lint -esym(534,vfprintf)
+
+    const char *format = va_arg(argptr, const char *);
+
+    vfprintf(dpy_fp, format, argptr);   // Now add the message text
+
+    va_end(argptr);
+}
+
+#endif
+
+
+///
+///  @brief    Output one or more lines to the edit window.
+///
+///  @returns  New position.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int addlines(int pos, int nrows)
+{
+    int row = 0;
+    int c;
+
+    while ((c = getchar_ebuf(pos)) != EOF)
+    {
+        // Save window coordinates of current position in edit buffer
+
+        if (pos++ == 0)
+        {
+            getyx(d.edit, d.row, d.col);
+        }
+
+        putc_edit(c);
+
+        if (c == LF)
+        {
+            if (++row == nrows)
+            {
+                break;
+            }
+
+            waddch(d.edit, (chtype)c);
+        }
+    }
+
+    return pos;
+}
 
 
 ///
@@ -195,17 +283,17 @@ int check_dpy_chr(int c, bool wait)
 ////////////////////////////////////////////////////////////////////////////////
 
 #if     defined(DOXYGEN)
-static void check_error(bool truth)
+static void check_error(bool error)
 #else
-static void (check_error)(bool truth)
+static void (check_error)(bool error)
 #endif
 {
-    if (truth)
+    if (error)
     {
         reset_dpy();
         init_term();
 
-        throw(E_DPY);                       // Display mode initialization
+        throw(E_DPY);                       // Display mode error
     }
 }
 
@@ -219,7 +307,7 @@ static void (check_error)(bool truth)
 
 void check_escape(bool escape)
 {
-    (void)keypad(stdscr, escape ? (bool)TRUE : (bool)FALSE);
+    keypad(d.cmd, escape ? (bool)TRUE : (bool)FALSE);
 }
 
 
@@ -234,11 +322,9 @@ void clear_dpy(void)
 {
     term_pos = 0;
 
-    (void)clear();
+    init_windows();
 
     ebuf_changed = true;
-
-    set_scroll(w.height, w.nlines);
 
     refresh_dpy();
 }
@@ -255,37 +341,14 @@ bool clear_eol(void)
 {
     if (f.et.scope && f.e0.display)
     {
-        (void)printw("\r");
-        (void)clrtoeol();
-        (void)refresh();
+        wprintw(d.cmd, "\r");
+        wclrtoeol(d.cmd);
+        wrefresh(d.cmd);
 
         return true;
     }
 
     return false;
-}
-
-
-///
-///  @brief    Get length of echoed character to be rubbed out.
-///
-///  @returns  Length in bytes, or EOF if length not available.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int echo_len(int c)
-{
-    if (f.e0.display)
-    {
-        const char *s = unctrl((uint)c);
-
-        if (s != NULL)
-        {
-            return (int)strlen(s);
-        }
-    }
-
-    return EOF;
 }
 
 
@@ -307,47 +370,6 @@ void end_dpy(void)
 
 
 ///
-///  @brief    Execute command string.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void exec_commands(const char *commands)
-{
-    assert(commands != NULL);
-
-    uint_t nbytes = (uint_t)strlen(commands);
-    char text[nbytes + 1];
-
-    strcpy(text, commands);
-
-    tbuffer buf;
-
-    buf.data = text;
-    buf.size = nbytes;
-    buf.len  = buf.size;
-    buf.pos  = 0;
-
-    bool saved_exec = f.e0.exec;
-
-    // The reason for the next line is that we are called from readkey_dpy(),
-    // which in turn is called when we are processing character input. So the
-    // execution flag isn't on at this point, but we need to temporarily force
-    // it in order to process an immediate-mode command string initiated by a
-    // special key such as Page Up or Page Down.
-
-    f.e0.exec = true;                   // Force execution
-
-    exec_macro(&buf, NULL);
-
-    f.e0.exec = saved_exec;             // Restore previous state
-
-    refresh_dpy();
-}
-
-
-///
 ///  @brief    Reset display mode prior to exiting from TECO.
 ///
 ///  @returns  Nothing.
@@ -357,52 +379,64 @@ static void exec_commands(const char *commands)
 void exit_dpy(void)
 {
     reset_dpy();
+
+#if     defined(DEBUG_DPY)
+
+    if (dpy_fp != NULL)
+    {
+        bugprint("TECO display log closed\n");
+
+        fclose(dpy_fp);
+
+        dpy_fp = NULL;
+    }
+
+#endif
+
 }
 
 
 ///
-///  @brief    Get size of edit buffer.
+///  @brief    Get coordinates of 'dot' and un-mark its position.
 ///
-///  @returns  No. of bytes written to buffer.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int geteditsize(char *buf, ulong size, uint_t bytes)
+static void get_dot(int *row, int *col)
 {
-    assert(buf != NULL);
+    int y_pos, x_pos;
 
-    if (bytes >= GB)
+    getyx(d.edit, y_pos, x_pos);
+
+    // Un-highlight the character at the current position
+
+    if (t.dot == t.Z)
     {
-        return snprintf(buf, size, "%uG", (uint)(bytes / GB));
-    }
-    else if (bytes >= MB)
-    {
-        return snprintf(buf, size, "%uM", (uint)(bytes / MB));
-    }
-    else if (bytes >= KB)
-    {
-        return snprintf(buf, size, "%uK", (uint)(bytes / KB));
+        mvwchgat(d.edit, y_pos, x_pos, 1, A_ALTCHARSET, EDIT, NULL);
     }
     else
     {
-        return snprintf(buf, size, "%u", (uint)bytes);
+        int n = 1;
+        int c = getchar_ebuf(0);
+
+        if (iscntrl(c) && (c < BS || c > CR))
+        {
+            ++n;
+        }
+
+        mvwchgat(d.edit, y_pos, x_pos, n, 0, EDIT, NULL);
     }
-}
 
+    if (row != NULL)
+    {
+        *row = y_pos;
+    }
 
-///
-///  @brief    Get width of unsigned number (basically, log10() without using
-///            a floating-point library function).
-///
-///  @returns  No. of bytes written to buffer.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static int getwidth(ulong bytes)
-{
-    char buf[12];
-
-    return snprintf(buf, sizeof(buf), "%lu", bytes);
+    if (col != NULL)
+    {
+        *col = x_pos;
+    }
 }
 
 
@@ -417,11 +451,11 @@ int get_nowait(void)
 {
     if (f.e0.display)
     {
-        (void)nodelay(stdscr, (bool)TRUE);
+        nodelay(d.cmd, (bool)TRUE);
 
-        int c = getch();
+        int c = wgetch(d.cmd);
 
-        (void)nodelay(stdscr, (bool)FALSE);
+        nodelay(d.cmd, (bool)FALSE);
 
         return c;
     }
@@ -429,6 +463,19 @@ int get_nowait(void)
     {
         return get_wait();
     }
+}
+
+
+///
+///  @brief    Get tabsize.
+///
+///  @returns  Tab size.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int get_tab(void)
+{
+    return TABSIZE;
 }
 
 
@@ -441,7 +488,7 @@ int get_nowait(void)
 
 int get_wait(void)
 {
-    int c = getch();
+    int c = wgetch(d.cmd);
 
     if (c != ERR)
     {
@@ -453,101 +500,121 @@ int get_wait(void)
 
 
 ///
-///  @brief    Initialize for display mode.
+///  @brief    Set up display window (technically, subwindow).
+///
+///  @returns  Pointer to new subwindow.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void init_window(WINDOW **win, int pair, int top, int bot, int col, int width)
+{
+    assert(win != NULL);
+
+    if (*win != NULL)
+    {
+        delwin(*win);
+    }
+
+    int nlines = 1 + bot - top;         // No. of rows in region
+
+    *win = subwin(stdscr, nlines, width, top, col);
+
+    check_error(*win == NULL);
+
+    // Set default foreground and background colors for region
+
+    wbkgd(*win, COLOR_PAIR(pair));  //lint !e835
+
+    scrollok(*win, (bool)TRUE);
+
+    wsetscrreg(*win, top, bot);
+
+    keypad(*win, f.ed.escape ? (bool)TRUE : (bool)FALSE);
+
+    wclear(*win);
+    wrefresh(*win);
+}
+
+
+///
+///  @brief    Set up display windows (technically, subwindows).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void init_dpy(void)
+void init_windows(void)
 {
     if (!f.e0.display)
     {
-        bool esc_seq = f.ed.escape ? (bool)TRUE : (bool)FALSE;
-
-        f.e0.display = true;
-
-        // Note that initscr() will print an error message and exit if it
-        // fails to initialize, so there is no error return to check for.
-
-        (void)initscr();
-
-        check_error( cbreak()                       == ERR   );
-        check_error( noecho()                       == ERR   );
-        check_error( nonl()                         == ERR   );
-        check_error( notimeout(stdscr, (bool)TRUE)  == ERR   );
-        check_error( idlok(stdscr,     (bool)TRUE)  == ERR   );
-        check_error( scrollok(stdscr,  (bool)TRUE)  == ERR   );
-        check_error( has_colors()                   == FALSE );
-        check_error( start_color()                  == ERR   );
-        check_error( keypad(stdscr, esc_seq)        == ERR   );
-
-        reset_colors();
-        (void)set_escdelay(0);
-
-        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
-
-        set_nrows();
+        return;
     }
-}
 
+    if (w.nlines == 0 || w.noscroll)    // If editing window is not set up,
+    {
+        d.cmd = stdscr;                 //  then use entire window for commands
 
-///
-///  @brief    Mark or unmark cursor at current position.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
+        return;
+    }
 
-static void mark_cursor(int row, int col)
-{
-    // Save current position
+    int edit_top, edit_bot;
+    int cmd_top, cmd_bot;
+    int line_top = 0;
+    int nrows = w.height - w.nlines;    // No. of lines for edit window
 
-    int saved_row, saved_col;
-    uint c;
+    check_error(nrows < MIN_ROWS);      // Verify that we have at least 10 rows
 
-    getyx(stdscr, saved_row, saved_col);
+    if (f.e4.invert)                    // Command window above edit window?
+    {
+        edit_top = w.nlines;
+        cmd_top = 0;
+    }
+    else                                // No, edit window is on top.
+    {
+        edit_top = 0;
+        cmd_top = nrows;
+    }
 
-    (void)attrset(COLOR_PAIR(EDIT));    //lint !e835
+    // Check for drawing line/status between command and editing window.
 
-    // Go to old cursor position
+    if (f.e4.line)
+    {
+        --nrows;                        // One fewer lines for editing window
 
-    (void)move(d.edit.top + d.row, d.col);
+        if (f.e4.invert)
+        {
+            line_top = w.nlines;        // Position line after command window
+            ++edit_top;                 // Start of editing window gets bumped
+        }
+        else
+        {
+            line_top = nrows;           // Position line after editing window
+        }
+    }
 
-    c = inch() & A_CHARTEXT;            //lint !e835
+    edit_bot = edit_top + nrows - 1;
+    cmd_bot  = cmd_top + w.nlines - 1;
 
-    (void)delch();
-    (void)insch(c);
+    d.nrows = 1 + edit_bot - edit_top;
 
-    // Go to new cursor position
+    init_window(&d.edit, EDIT, edit_top, edit_bot, 0, w.width);
 
-    d.row = row;
-    d.col = col;
+    if (f.e4.line)
+    {
+        init_window(&d.line, LINE, line_top, line_top, 0, w.width);
+    }
 
-    (void)move(d.edit.top + d.row, d.col);
+    if (f.e4.status && 1 + cmd_bot - cmd_top >= STATUS_HEIGHT)
+    {
+        init_window(&d.status, STATUS, cmd_top, cmd_bot, w.width - STATUS_WIDTH,
+                    STATUS_WIDTH);
 
-    c = inch() | A_REVERSE;
-
-    (void)delch();
-    (void)insch(c);
-
-    // Restore old position and color
-
-    (void)attrset(COLOR_PAIR(CMD));     //lint !e835 !e845
-    (void)move(d.edit.top + saved_row, saved_col);
-}
-
-
-///
-///  @brief    Mark dot as having changed.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void mark_dot(void)
-{
-    dot_changed = true;
+        init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, w.width - STATUS_WIDTH);
+    }
+    else
+    {
+        init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, w.width);
+    }
 }
 
 
@@ -573,64 +640,46 @@ void mark_ebuf(void)
 
 static void move_down(void)
 {
-    int_t line = getlines_ebuf(-1);     // Get current line number
-    int row = d.row;
-    int col = d.col;
+    // TODO: handle virtual columns.
+    // TODO: handle hardware tabs in lines.
 
-    if (line == getlines_ebuf(0))       // On last line?
+    int row, col;
+
+    get_dot(&row, &col);
+
+    if (t.dot == t.Z)
     {
-        return;
-    }
+        int attr = A_ALTCHARSET | A_REVERSE | A_BLINK;
+        int len = -getdelta_ebuf(0);    // Get length of current line
 
-    if (row == d.nrows - 1)
-    {
-        ++rowbias;
-    }
-
-    ++row;
-
-    int next = (int)getdelta_ebuf((int_t)1); // Start of next line
-    int len = (int)getdelta_ebuf((int_t)2) - next; // Length of next line
-    int_t dot = t.dot + next;
-
-    if (col < d.vcol)
-    {
-        col = d.vcol;                   // Use virtual column if we can
-    }
-
-    if (len < col)
-    {
-        dot += len - 1;
-        col = len - 1;
+        mvwchgat(d.edit, row, col + len, 1, attr, EDIT, NULL); //lint !e732
     }
     else
     {
-        dot += col;
+        t.dot += getdelta_ebuf(1);      // Go to start of next line
+
+        if (d.bias < d.nrows - 1)
+        {
+            ++d.bias;
+        }
+        else
+        {
+            wscrl(d.edit, 1);
+            wmove(d.edit, d.nrows - 1, 0);
+
+            (void)addlines(0, 1);
+        }
+
+        set_dot(row + 1, 0);
     }
 
-    if (dot > t.Z)                      // Make sure we stay within buffer
-    {
-        dot = t.Z;
-    }
-
-    mark_cursor(row, col);
-
-    setpos_ebuf(dot);
-
-    dot_changed = false;                // Force this off for down arrow
-
-    update_status();
-    refresh_dpy();
-
-    if (d.vcol < d.col)
-    {
-        d.vcol = d.col;                 // Update virtual column if needed
-    }
+    wrefresh(d.edit);
+    wrefresh(d.cmd);
 }
 
 
 ///
-///  @brief    Move cursor left.
+///  @brief    Move cursor to the left.
 ///
 ///  @returns  Nothing.
 ///
@@ -638,29 +687,50 @@ static void move_down(void)
 
 static void move_left(void)
 {
-    int_t dot = t.dot - 1;
-
-    if (dot >= t.B)
+    if (t.dot == t.B)
     {
-        int line = (int)getlines_ebuf(-1);
-        int row = (line - rowbias) % d.nrows;
+        int attr = A_REVERSE | A_BLINK;
 
-        setpos_ebuf(dot);
+        mvwchgat(d.edit, 0, 0, 1, attr, EDIT, NULL); //lint !e732
+    }
+    else
+    {
+        int row, col;
 
-        if (row == 0 && line != getlines_ebuf(-1))
+        get_dot(&row, &col);
+
+        --t.dot;
+
+        if (getchar_ebuf(0) == LF)
         {
-            --rowbias;
+            col = -getdelta_ebuf(0);
+
+            if (d.bias > 0)
+            {
+                --d.bias;
+                --row;
+            }
+            else
+            {
+                wscrl(d.edit, -1);
+                wmove(d.edit, 0, 0);
+
+                (void)addlines(-col, 1);
+
+                ++col;
+            }
         }
 
-        refresh_dpy();
-
-        d.vcol = d.col;                 // Update virtual column
+        set_dot(row, col - 1);
     }
+
+    wrefresh(d.edit);
+    wrefresh(d.cmd);
 }
 
 
 ///
-///  @brief    Move cursor right.
+///  @brief    Move cursor to the right.
 ///
 ///  @returns  Nothing.
 ///
@@ -668,24 +738,28 @@ static void move_left(void)
 
 static void move_right(void)
 {
-    int_t dot = t.dot + 1;
-
-    if (dot <= t.Z)
+    if (t.dot == t.Z || getchar_ebuf(0) == LF)
     {
-        int line = (int)getlines_ebuf(-1);
-        int row = (line - rowbias) % d.nrows;
+        move_down();
 
-        setpos_ebuf(dot);
-
-        if (row == d.nrows - 1 && line != getlines_ebuf(-1))
-        {
-            ++rowbias;
-        }
-
-        refresh_dpy();
-
-        d.vcol = d.col;                 // Update virtual column
+        return;
     }
+
+    if (t.dot == t.Z)                   // Already at EOF?
+    {
+        mvwchgat(d.edit, d.row, d.col, 1, A_ALTCHARSET, EDIT, NULL);
+    }
+    else
+    {
+        ++t.dot;
+
+        mvwchgat(d.edit, d.row, d.col, 1, 0, EDIT, NULL);
+    }
+
+    set_dot(d.row, d.col + 1);
+
+    wrefresh(d.edit);
+    wrefresh(d.cmd);
 }
 
 
@@ -698,95 +772,46 @@ static void move_right(void)
 
 static void move_up(void)
 {
-    int line = (int)getlines_ebuf(-1);  // Get current line number
-    int row = d.row;
-    int col = d.col;
+    // TODO: handle virtual columns.
+    // TODO: handle hardware tabs in lines.
 
-    if (line == 0)                      // On first line?
+    if (t.dot == t.B)
     {
-        return;                         // Yes, nothing to do
-    }
+        int attr = A_REVERSE | A_BLINK;
 
-    if (row == 0)
-    {
-        --rowbias;
-    }
-
-    --row;
-
-    int prev = (int)-getdelta_ebuf((int_t)-1); // Distance to start of previous
-    int len = prev - col;               // Length of previous line
-    int_t dot = t.dot - (int_t)prev;
-
-    if (col < d.vcol)
-    {
-        col = d.vcol;                   // Use virtual column if we can
-    }
-
-    if (len < col)
-    {
-        dot += len - 1;
-        col = len - 1;
+        mvwchgat(d.edit, 0, 0, 1, attr, EDIT, NULL); //lint !e732
     }
     else
     {
-        dot += col;
+        int row, col;
+
+        get_dot(&row, &col);
+
+        t.dot += getdelta_ebuf(-1);
+
+        if (d.bias > 0)
+        {
+            --d.bias;
+        }
+        else
+        {
+            wscrl(d.edit, -1);
+            wmove(d.edit, 0, 0);
+
+            (void)addlines(0, 1);
+        }
+
+        set_dot(row - 1, 0);
     }
 
-    mark_cursor(row, col);
-
-    setpos_ebuf(dot);
-
-    dot_changed = false;                // Force this off for up arrow
-
-    update_status();
-    refresh_dpy();
-
-    if (d.vcol < d.col)
-    {
-        d.vcol = d.col;                 // Update virtual column if needed
-    }
+    wrefresh(d.edit);
+    wrefresh(d.cmd);
 }
 
 
 ///
-///  @brief    Output formatted description of edit buffer character.
-///
-///  @returns  No. of characters written to buffer.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static int print_ebuf(char *buf, int width, int nbytes, int c)
-{
-    assert(buf != NULL);
-
-    size_t size = (size_t)(uint)(width - nbytes);
-
-    buf += nbytes;
-
-    if (c == EOF)
-    {
-        return snprintf(buf, size, "----");
-    }
-
-    else if (isprint(c))
-    {
-        return snprintf(buf, size, "'%c' ", c);
-    }
-    else if (c > NUL && c < SPACE)
-    {
-        return snprintf(buf, size, "'^%c'", c + '@');
-    }
-    else
-    {
-        return snprintf(buf, size, "% 4d", c);
-    }
-}
-
-
-///
-///  @brief    Output character to display. We do not output CR because ncurses
-///            does the following when processing LF:
+///  @brief    Output character to command window. We do not output CR because
+///            ncurses does the following when processing LF:
 ///
 ///            1. Clear to end of line.
 ///            2. Go to start of next line.
@@ -798,19 +823,80 @@ static int print_ebuf(char *buf, int width, int nbytes, int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool putc_dpy(int c)
+bool putc_cmd(int c)
 {
-    if (f.e0.display)
+    if (!f.e0.display)
     {
-        if (c != CR)
-        {
-            (void)addch((uint)c);
-        }
-
-        return true;
+        return false;
     }
 
-    return false;
+    if (c != CR)
+    {
+        (void)waddch(d.cmd, (chtype)c);
+    }
+
+    return true;
+}
+
+
+///
+///  @brief    Output character to edit window.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void putc_edit(int c)
+{
+    chtype ch = (chtype)c;
+
+    if (isprint(c))                     // Printing chr. [32-126]
+    {
+        waddch(d.edit, ch);
+    }
+    else if (iscntrl(c))                // Control chr. [0-31, 127]
+    {
+        switch (c)
+        {
+            case HT:
+                if (w.seeall)
+                {
+                    wprintw(d.edit, "%s", unctrl(ch));
+                }
+
+                waddch(d.edit, ch);
+
+                break;
+
+            case BS:
+            case VT:
+            case FF:
+            case LF:
+            case CR:
+                if (w.seeall)
+                {
+                    wprintw(d.edit, "%s", unctrl(ch));
+                }
+
+                break;
+
+            default:
+                waddch(d.edit, ch);
+
+                break;
+        }
+    }
+    else                                // 8-bit chr. [128-255]
+    {
+        if (f.et.eightbit)
+        {
+            wprintw(d.edit, "%s", unctrl(ch));
+        }
+        else
+        {
+            waddstr(d.edit, table_8bit[c & 0x7f]);
+        }
+    }
 }
 
 
@@ -823,13 +909,13 @@ bool putc_dpy(int c)
 
 int readkey_dpy(int key)
 {
-    if (!f.e0.display)
+    if (!f.e0.display)                  // If display is off,
     {
-        return key;
+        return key;                     //  just return whatever we got
     }
-    else if (exec_key(key))
+    else if (exec_key(key))             // User-defined key?
     {
-        ;
+        n_home = n_end = 0;             // Yes. Reset Home and End counters.
     }
     else if (key == KEY_HOME)
     {
@@ -837,18 +923,18 @@ int readkey_dpy(int key)
 
         if (++n_home == 1)              // Beginning of line
         {
-            exec_commands("0L");
+            exec_str("0 L");
         }
         else if (n_home == 2)           // Beginning of window
         {
-            exec_commands("F0J");
+            exec_str("F0 J");
         }
         else                            // Beginning of file
         {
-            exec_commands("0J");
+            exec_str("0 J");
         }
 
-        return EOF;
+        ebuf_changed = true;
     }
     else if (key == KEY_END)
     {
@@ -862,74 +948,86 @@ int readkey_dpy(int key)
             // before the LF is a CR, take care of this regardless of the file
             // format.
 
-            exec_commands("L (-2A-13)\"E 2R | R '");
+            exec_str("L (-2 A - 13)\"E 2 R | R '");
         }
         else if (n_end == 2)            // End of window
         {
-            exec_commands("(FZ-1)J");
+            exec_str("(FZ - 1) J");
         }
         else                            // End of file
         {
-            exec_commands("ZJ");
+            exec_str("Z J");
         }
 
-        return EOF;
+        ebuf_changed = true;
     }
-    else if (key == KEY_PPAGE)
+    else                                // Neither Home nor End
     {
-        exec_commands("-(2:W)L");
-    }
-    else if (key == KEY_NPAGE)
-    {
-        exec_commands("(2:W)L");
-    }
-    else if (key == KEY_UP)
-    {
-        move_up();
-    }
-    else if (key == KEY_DOWN)
-    {
-        move_down();
-    }
-    else if (key == KEY_LEFT)
-    {
-        move_left();
-    }
-    else if (key == KEY_RIGHT)
-    {
-        move_right();
-    }
-    else if (key == CR || key == LF || key == ESC ||
-            (key == ACCENT && f.et.accent) || key == f.ee)
-    {
-        if (w.nlines == 0 || w.noscroll)
-        {
-            exec_commands(".-Z \"N L T '");
-        }
-        else
-        {
-            exec_commands("L");
-        }
-    }
-    else if (key == BS || key == DEL)
-    {
-        if (w.nlines == 0 || w.noscroll)
-        {
-            exec_commands(".-B \"N -L T '");
-        }
-        else
-        {
-            exec_commands("-L");
-        }
-    }
-    else
-    {
-        n_home = n_end = 0;
+        n_home = n_end = 0;             // Make sure we restart the counts
 
-        return key;
+        if (key == KEY_UP)
+        {
+            move_up();
+        }
+        else if (key == KEY_DOWN)
+        {
+            move_down();
+        }
+        else if (key == KEY_LEFT)
+        {
+            move_left();
+
+            dot_changed = true;
+        }
+        else if (key == KEY_RIGHT)
+        {
+            move_right();
+
+            dot_changed = true;
+        }
+        else                            // Not an arrow key
+        {
+            ebuf_changed = true;        // Repaint the edit window
+
+            if (key == KEY_PPAGE)
+            {
+                exec_str("-(2:W) L");
+            }
+            else if (key == KEY_NPAGE)
+            {
+                exec_str("(2:W) L");
+            }
+            else if (key == CR || key == LF || key == ESC ||
+                     (key == ACCENT && f.et.accent) || key == f.ee)
+            {
+                if (w.nlines == 0 || w.noscroll)
+                {
+                    exec_str(".-Z \"N L T '");
+                }
+                else
+                {
+                    exec_str("L");
+                }
+            }
+            else if (key == BS)
+            {
+                if (w.nlines == 0 || w.noscroll)
+                {
+                    exec_str(".-B \"N -L T '");
+                }
+                else
+                {
+                    exec_str("-L");
+                }
+            }
+            else                        // Not a special key
+            {
+                return key;
+            }
+        }
     }
 
-    n_home = n_end = 0;
+    refresh_dpy();
 
     return EOF;
 }
@@ -944,153 +1042,62 @@ int readkey_dpy(int key)
 
 void refresh_dpy(void)
 {
-    if (!f.e0.display || w.nlines == 0 || w.noscroll)
+    if (!f.e0.display)
     {
         return;
     }
 
-    int line = (int)getlines_ebuf(-1);  // Line number within buffer
-
-    if (line == 0)
+    if (f.e4.line || f.e4.status)
     {
-        rowbias = 0;
+        update_status();
     }
 
-    int row  = (line - rowbias) % d.nrows; // Relative row within screen
-    int_t pos  = getdelta_ebuf((int_t)-row); // First character to output
-
-    if (ebuf_changed)
+    if (w.nlines != 0 && !w.noscroll && ebuf_changed)
     {
         ebuf_changed = false;
 
-        if (dot_changed)
-        {
-            dot_changed = false;
+        int line = (int)getlines_ebuf(-1);  // Line number within buffer
 
-            d.vcol = 0;
+        if (line == 0)
+        {
+            d.bias = 0;
         }
 
-        int saved_row, saved_col;
+        int row  = (line - d.bias) % d.nrows; // Relative row within screen
+        int_t pos  = getdelta_ebuf((int_t)-row); // First character to output
 
-        getyx(stdscr, saved_row, saved_col); // Save position in command region
+        w.topdot = t.dot + pos;
 
-        (void)move(d.edit.top, 0);      // Switch to edit region
+        wmove(d.edit, 0, 0);
+        wclear(d.edit);
 
-        getyx(stdscr, d.row, d.col);    // Get starting position
+        pos = addlines(pos, d.nrows);
 
-        (void)attrset(COLOR_PAIR(EDIT)); //lint !e835
+        w.botdot = t.dot + pos;
 
-        int c;
-        int nrows = d.nrows;
-
-        // Erase the current edit region
-
-        while (nrows-- > 0)
+        if (getchar_ebuf(pos) == EOF)
         {
-            (void)addch('\n');
+            waddch(d.edit, DIAMOND);
+            waddch(d.edit, BS);
         }
 
-        nrows = 0;
-
-        (void)move(d.edit.top, 0);      // Back to the top
-
-        uint line_pos = 0;              // Line position
-        bool filled = false;            // Is edit region full?
-
-        w.topdot = w.botdot = (int)(t.dot + pos);
-
-        while ((c = getchar_ebuf(pos)) != EOF)
+        if (d.row == 0 && d.col == 0)
         {
-            if (pos++ <= 0)
-            {
-                getyx(stdscr, d.row, d.col);
-            }
+            set_dot(0, 0);
+        }
+        else
+        {
+            int row, col;
 
-            if (c == CR)
-            {
-                ++w.botdot;
+            getyx(d.edit, row, col);
 
-                continue;
-            }
-
-            if (isdelim(c))
-            {
-                ++w.botdot;
-
-                if (++nrows == d.nrows)
-                {
-                    filled = true;
-
-                    break;
-                }
-
-                (void)move(d.edit.top + nrows, 0);
-
-                line_pos = 0;
-            }
-            else
-            {
-                line_pos += (uint)strlen(unctrl((uint)c));
-
-                if (line_pos > (uint)w.width)
-                {
-                    if (f.et.truncate)
-                    {
-                        ++w.botdot;
-
-                        continue;
-                    }
-
-                    if (++nrows == d.nrows)
-                    {
-                        filled = true;
-
-                        break;
-                    }
-
-                    (void)move(d.edit.top + nrows, 0);
-
-                    line_pos = 0;
-                }
-
-                ++w.botdot;
-
-                (void)addch((uint)c);
-            }
+            set_dot(row, col);
         }
 
-        // If at end of edit buffer, adjust cursor
-
-        if (pos == 0)
-        {
-            getyx(stdscr, d.row, d.col);
-        }
-
-        // If at end of buffer, and if room for it, add marker
-
-        if (!filled && getchar_ebuf(pos) == EOF)
-        {
-            (void)addch(A_ALTCHARSET | 0x60);
-        }
-
-        // Highlight our current position in edit region
-
-        (void)move(d.row, d.col);
-
-        c = (int)inch();
-
-        (void)delch();
-        (void)insch((uint)c | A_REVERSE);
-
-        // Restore position in command region
-
-        (void)move(saved_row, saved_col);
-        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
+        wrefresh(d.edit);
     }
 
-    update_status();
-
-    (void)refresh();
+    wrefresh(d.cmd);                // Switch back to command window
 }
 
 
@@ -1105,21 +1112,22 @@ void reset_colors(void)
 {
     if (can_change_color())             // Make colors as bright as possible
     {
-        (void)init_color(COLOR_BLACK,        0,      0,      0);
-        (void)init_color(COLOR_RED,     SATMAX,      0,      0);
-        (void)init_color(COLOR_GREEN,        0, SATMAX,      0);
-        (void)init_color(COLOR_YELLOW,  SATMAX, SATMAX,      0);
-        (void)init_color(COLOR_BLUE,         0,      0, SATMAX);
-        (void)init_color(COLOR_MAGENTA, SATMAX,      0, SATMAX);
-        (void)init_color(COLOR_CYAN,         0, SATMAX, SATMAX);
-        (void)init_color(COLOR_WHITE,   SATMAX, SATMAX, SATMAX);
+        init_color(COLOR_BLACK,        0,      0,      0);
+        init_color(COLOR_RED,     SATMAX,      0,      0);
+        init_color(COLOR_GREEN,        0, SATMAX,      0);
+        init_color(COLOR_YELLOW,  SATMAX, SATMAX,      0);
+        init_color(COLOR_BLUE,         0,      0, SATMAX);
+        init_color(COLOR_MAGENTA, SATMAX,      0, SATMAX);
+        init_color(COLOR_CYAN,         0, SATMAX, SATMAX);
+        init_color(COLOR_WHITE,   SATMAX, SATMAX, SATMAX);
     }
 
-    (void)assume_default_colors(COLOR_BLACK, COLOR_WHITE);
+    assume_default_colors(COLOR_BLACK, COLOR_WHITE);
 
-    (void)init_pair(CMD,    COLOR_BLACK, COLOR_WHITE);
-    (void)init_pair(EDIT,   COLOR_BLACK, COLOR_WHITE);
-    (void)init_pair(STATUS, COLOR_WHITE, COLOR_BLACK);
+    init_pair(CMD,    COLOR_BLACK, COLOR_WHITE);
+    init_pair(EDIT,   COLOR_BLACK, COLOR_WHITE);
+    init_pair(STATUS, COLOR_BLACK, COLOR_WHITE);
+    init_pair(LINE,   COLOR_BLACK, COLOR_WHITE);
 }
 
 
@@ -1136,7 +1144,7 @@ static void reset_dpy(void)
     {
         f.e0.display = false;
 
-        (void)endwin();
+        endwin();
     }
 }
 
@@ -1152,7 +1160,7 @@ static void resize_key(void)
 {
     if (f.e0.display)
     {
-        set_nrows();
+        init_windows();
         clear_dpy();
         print_prompt();
         echo_tbuf((uint_t)0);
@@ -1161,7 +1169,7 @@ static void resize_key(void)
 
 
 ///
-///  @brief    Start window resize when resize signal received.
+///  @brief    Resize window when user changes its size.
 ///
 ///  @returns  Nothing.
 ///
@@ -1171,95 +1179,117 @@ void resize_signal(void)
 {
     if (f.e0.display)
     {
-        (void)resizeterm(w.height, w.width);
+        resizeterm(w.height, w.width);
         getmaxyx(stdscr, w.height, w.width);
+        init_windows();
     }
 }
 
 
 ///
-///  @brief    Set maximum no. of rows.
+///  @brief    Rubout character on display.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void set_nrows(void)
+void rubout_dpy(int c)
 {
-    d.nrows = w.height - w.nlines;
+    const char *s = unctrl((chtype)c);  // Get string representation of chr.
+    size_t len = strlen(s);
 
-    if (f.e4.line)
+    while (len-- > 0)
     {
-        --d.nrows;
+        waddch(d.cmd, '\b');
     }
 
-    assert(d.nrows > 0);                // Verify that we have at least 1 row
+    wclrtobot(d.cmd);
 }
 
 
 ///
-///  @brief    Set scrolling region.
+///  @brief    Save coordinates of 'dot' and mark its position. Note that the
+///            end of file marker uses the alternate character set.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void set_scroll(int height, int nlines)
+static void set_dot(int row, int col)
 {
-    if (f.e0.display && w.nlines != 0 && !w.noscroll)
+    if (row >= d.nrows)
     {
-        if (f.e4.invert)
+        row = d.nrows - 1;
+    }
+    else if (row < 0)
+    {
+        row = 0;
+    }
+
+    d.row = row;
+    d.col = col;
+
+    if (t.dot == t.Z)
+    {
+        mvwchgat(d.edit, d.row, d.col, 1, A_ALTCHARSET | A_REVERSE, EDIT, NULL);
+    }
+    else
+    {
+        int n = 1;
+        int c = getchar_ebuf(0);
+
+        if (iscntrl(c) && (c < BS || c > CR))
         {
-            d.cmd.top  = 0;
-            d.cmd.bot  = nlines - 1;
-            d.edit.top = nlines;
-        }
-        else
-        {
-            d.cmd.top  = height - nlines;
-            d.cmd.bot  = height - 1;
-            d.edit.top = 0;
-        }
-
-        (void)setscrreg(d.cmd.top, d.cmd.bot);
-
-        d.status.top = d.status.bot = -1;
-
-        if (f.e4.line)
-        {
-            if (f.e4.invert)
-            {
-                d.status.top = d.status.bot = d.cmd.bot + 1;
-                ++d.edit.top;
-            }
-            else
-            {
-                d.status.top = d.status.bot = d.cmd.top - 1;
-            }
-
-            update_status();
+            ++n;
         }
 
-        (void)move(d.cmd.top, 0);
-
-        for (int i = d.cmd.top; i <= d.cmd.bot; ++i)
-        {
-            (void)addch('\n');
-        }
-
-        (void)attrset(COLOR_PAIR(CMD)); //lint !e835 !e845
-
-        (void)move(d.cmd.top, 0);
-
-        (void)refresh();
-
-        set_nrows();
+        mvwchgat(d.edit, d.row, d.col, n, A_REVERSE, EDIT, NULL);
     }
 }
 
 
 ///
-///  @brief    Check for starting display mode.
+///  @brief    Set parity. Note that the window argument to meta() is always
+///            ignored, so we just pass it as a NULL.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void set_parity(bool parity)
+{
+    if (f.e0.display)
+    {
+        meta(NULL, parity ? (bool)TRUE : (bool)FALSE);
+    }
+}
+
+
+///
+///  @brief    Set tabsize.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void set_tab(int n)
+{
+    if (n != TABSIZE)                   // Making a change?
+    {
+        if (n == 0)
+        {
+            n = DEFAULT_TABSIZE;        // Use default size
+        }
+
+        set_tabsize(n);                 // Yes, so set new tab size
+        touchwin(d.edit);           // And force edit window update
+        wrefresh(d.edit);
+    }
+}
+
+
+///
+///  @brief    Initialize for display mode.
 ///
 ///  @returns  Nothing.
 ///
@@ -1269,8 +1299,69 @@ void start_dpy(void)
 {
     if (!f.e0.display)
     {
+
+#if     defined(DEBUG_DPY)
+
+        if (dpy_fp == NULL)
+        {
+            dpy_fp = fopen("teco.dpy", "w+");
+
+            assert(dpy_fp != NULL);
+
+            setvbuf(dpy_fp, NULL, _IONBF, 0uL);
+
+            bugprint("TECO display log opened\n");
+        }
+
+#endif
+
         reset_term();                   // Reset if display mode support
-        init_dpy();
+
+        f.e0.display = true;
+
+#if 0                               // TODO: add soft labels?
+        if (f.e4.labels)
+        {
+            slk_init(2);
+        }
+#endif
+
+        // Note that initscr() will print an error message and exit if it
+        // fails to initialize, so there is no error return to check for.
+
+        initscr();
+
+        check_error( cbreak()                       == ERR   );
+        check_error( noecho()                       == ERR   );
+        check_error( nonl()                         == ERR   );
+        check_error( notimeout(stdscr, (bool)TRUE)  == ERR   );
+        check_error( idlok(stdscr,     (bool)TRUE)  == ERR   );
+        check_error( has_colors()                   == FALSE );
+        check_error( start_color()                  == ERR   );
+
+        reset_colors();
+        set_escdelay(0);
+
+        getmaxyx(stdscr, w.height, w.width);
+
+#if 0                               // TODO: add soft labels?
+        slk_set(1,  "F1",  1);
+        slk_set(2,  "F2",  1);
+        slk_set(3,  "F3",  1);
+        slk_set(4,  "F4",  1);
+        slk_set(5,  "F5",  1);
+        slk_set(6,  "F6",  1);
+        slk_set(7,  "F7",  1);
+        slk_set(8,  "F8",  1);
+        slk_set(9,  "F9",  1);
+        slk_set(10, "F10", 1);
+        slk_set(11, "F11", 1);
+        slk_set(12, "F12", 1);
+
+        slk_refresh();
+#endif
+
+        init_windows();
         color_dpy();
         clear_dpy();
     }
@@ -1278,7 +1369,27 @@ void start_dpy(void)
 
 
 ///
-///  @brief    Update status line.
+///  @brief    Update line in status window.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void status_line(int line, const char *header, const char *data)
+{
+    char buf[STATUS_WIDTH - 2];
+
+    int nbytes = snprintf(buf, sizeof(buf), "%s:", header);
+    int rem = (int)(sizeof(buf) - nbytes);
+
+    snprintf(buf + nbytes, rem, "%*s", rem - 1, data);
+
+    mvwprintw(d.status, line, 2, buf);
+}
+
+
+///
+///  @brief    Update status window and divider line.
 ///
 ///  @returns  Nothing.
 ///
@@ -1286,91 +1397,84 @@ void start_dpy(void)
 
 static void update_status(void)
 {
-    if (!f.e4.line)
-    {
-        return;
-    }
-
-    // Draw line between edit region and command region
-
-    int saved_row, saved_col;
-
-    getyx(stdscr, saved_row, saved_col);
-
-    (void)move(d.status.top, 0);
-    (void)attrset(COLOR_PAIR(STATUS));  //lint !e835
-
     if (f.e4.status)
     {
-        char status[w.width];
+        char buf[STATUS_WIDTH + 1];
 
-        memset(status, SPACE, (size_t)(uint)w.width);
+        // Output current position and no. of characters in edit buffer
 
-        // Add some file status to the left side of the status line
+        snprintf(buf, sizeof(buf), FMT "/" FMT, t.dot, t.Z);
+        status_line(0, "./Z", buf);
 
-        int row     = (int)getlines_ebuf(-1);
-        int nrows   = (int)getlines_ebuf(0);
-        int col     = (int)-getdelta_ebuf((int_t)0);
-        int width   = getwidth((ulong)(uint)t.Z);
-        int nbytes  = snprintf(status, sizeof(status), ".=" DEC_FMT " (",
-                               width, t.dot);
-        size_t size = sizeof(status);   // Remaining bytes available in line
+        // Output row and column for display
 
-        nbytes += print_ebuf(status, w.width, nbytes, getchar_ebuf((int_t)-1));
-        nbytes += snprintf(status + nbytes, size, ",");
-        nbytes += print_ebuf(status, w.width, nbytes, getchar_ebuf((int_t)0));
-
-        size = sizeof(status) - (size_t)(uint)nbytes;
-
-        nbytes += snprintf(status + nbytes, size, ")  Z=" DEC_FMT " ",
-                           width, t.Z);
-        width = getwidth((ulong)(uint)nrows);
+        int row = (int)getlines_ebuf(-1) + 1;
+        int col = (int)-getdelta_ebuf((int_t)0) + 1;
 
         if (t.dot >= t.Z)
         {
-            nbytes += snprintf(status + nbytes, size,
-                               "row=%-*d   <EOF>   ", width, row + 1);
+            status_line(1, "pos", "EOF");
         }
         else
         {
-            nbytes += snprintf(status + nbytes, size,
-                               "row=%-*d  col=%-3d  ", width, row + 1, col + 1);
+            snprintf(buf, sizeof(buf), FMT "/" FMT, row, col);
+            status_line(1, "pos", buf);
         }
 
-        size = sizeof(status) - (size_t)(uint)nbytes;
+        // Output no. of lines in file
 
-        nbytes += snprintf(status + nbytes, size, "nrows=%-*d  mem=", width,
-                           nrows);
+        snprintf(buf, sizeof(buf), FMT, getlines_ebuf(0));
+        status_line(2, "lines", buf);
 
-        size = sizeof(status) - (size_t)(uint)nbytes;
+        // Output memory size
 
-        nbytes += geteditsize(status + nbytes, size, getsize_ebuf());
+        uint_t memsize = getsize_ebuf();
 
-        status[nbytes] = SPACE;         // Replace NUL character with space
-
-        // Now add in page number on right side.
-
-        char buf[w.width];
-
-        nbytes = sprintf(buf, "Page %u", page_count());
-
-        memcpy(status + w.width - nbytes, buf, (size_t)(uint)nbytes);
-
-        for (int i = 0; i < w.width; ++i)
+        if (memsize >= GB)
         {
-            int c = status[i];
-
-            (void)addch((uint)c);
+            snprintf(buf, sizeof(buf), "%uG", memsize / GB);
         }
+        else if (memsize >= MB)
+        {
+            snprintf(buf, sizeof(buf), "%uM", memsize / MB);
+        }
+        else if (memsize >= KB)
+        {
+            snprintf(buf, sizeof(buf), "%uK", memsize / KB);
+        }
+
+        status_line(3, "memory", buf);
+
+        // Output page number
+
+        snprintf(buf, sizeof(buf), "%d", page_count());
+        status_line(4, "page", buf);
+
+        // Output vertical line to divide command window from status window
+
+        //lint -save -e438 -e550
+        int nrows;
+        int unused __attribute__((unused));
+        //line -restore
+
+        getmaxyx(d.status, nrows, unused);
+        mvwvline(d.status, 0, 0, ACS_VLINE, nrows);
+
+        wrefresh(d.status);
     }
-    else
+
+    if (f.e4.line)
     {
-        for (int i = 0; i < w.width; ++i)
-        {
-            (void)addch(ACS_HLINE);
-        }
-    }
+        whline(d.line, ACS_HLINE, w.width);
 
-    (void)move(saved_row, saved_col);
-    (void)attrset(COLOR_PAIR(CMD));     //lint !e835 !e845
+        // If we have a status window, then connect its vertical
+        // line to our horizontal line, using a top tee character.
+
+        if (f.e4.status)
+        {
+            mvwaddch(d.line, 0, w.width - STATUS_WIDTH, ACS_TTEE);
+        }
+
+        wrefresh(d.line);
+    }
 }

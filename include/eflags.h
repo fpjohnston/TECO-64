@@ -143,6 +143,7 @@ union e4_flag
         uint invert  : 1;       ///< Put command region above text region
         uint line    : 1;       ///< Line between text and command regions
         uint status  : 1;       ///< Display status on line
+        uint labels  : 1;       ///< Enable soft labels
     };
 };
 

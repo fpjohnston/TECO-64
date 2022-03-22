@@ -23,16 +23,17 @@ mode information.
 | ------- | -------- |
 | 0:W | The display terminal type. Not used in TECO-64. For compatibility with older TECO macros, this returns 8, to indicate VT102 in ANSI mode. |
 | :W | Equivalent to 0:W. |
-| 1:W | Return the horizontal size of the user’s display. |
-| 2:W | Return the vertical size of the user’s display. |
-| 3:W | Not implemented. |
-| 4:W | Not implemented. |
-| 5:W | Not implemented. |
-| 6:W | Not implemented. |
+| 1:W | Return or set the horizontal size of the user’s display. |
+| 2:W | Return or set the vertical size of the user’s display. |
+| 3:W | Return or set SEEALL mode. Not implemented. |
+| 4:W | Return or set "mark" status of window support. Not implemented. |
+| 5:W | Return or set the hold mode indicator. Not implemented. |
+| 6:W | Return buffer position of character in upper left hand corner of the window. |
 | 7:W | Return or set the number of lines in the scrolling (command region) portion of the screen. If n is 0, then split screen scrolling is disabled. When split screen scrolling is enabled, n lines (as specified) are reserved at the bottom of the screen to scroll the terminal interaction. The remainder of the screen is used as a display window into the text buffer, and is automatically updated immediately before each command prompt. <br><br>The value of n must be greater than 1, and the display height minus n must be greater than 9. <br><br>Whenever the scrolling region’s size is modified (that is, whenever an m,7:W command is executed), TECO alters the display height (2:W) accordingly. For example, if 2:W is currently returning a value of 24, then after a 5,7:W command 2:W will return a value of 19. Executing a 0,7:W will restore 2:W to 24. |
 | 8:W | If 0, enables scrolling regions. If non-zero, disables scrolling regions. |
 | 9:W | Read-only terminal mask. For compatibility with older TECO macros, all bits are set, but none are used within TECO-64.<br><br>1 - Is ANSI CRT.<br>2 - Has EDIT mode features. <br>4 - Can do reverse scrolling. <br>8 - Has special graphics. <br>16 - Can do reverse video. <br>32 - Can change width. <br>64 - Has scrolling regions. <br>128 - Can erase to end-of-screen. |
-| *m*,*n*:W | Sets the parameter represented by *n*:W to *m* and returns a value. If the new setting has been accepted, the returned value is *m*. Elsewise, the returned value is either the old value associated with *n*:W or whatever new setting was actually set. In all cases, the returned value reflects the new current setting. <br><br>Note that each *m*,*n*:W command returns a value, even if your only intent is to set something. Good programming practice suggests following any command which returns a value with \<*delim*\> or ^[ if you don’t intend that value to be passed to the following command. <br><br>Currently, the only parameters for which it makes any sense to set a value are 7:W and 8:W. |
+| 10:W | Returns or sets the number of spaces for each tab size. The default value is 8, which is also the value used when setting this value to 0. |
+| *m*,*n*:W | Sets the parameter represented by *n*:W to *m* and returns a value. If the new setting has been accepted, the returned value is *m*. Elsewise, the returned value is either the old value associated with *n*:W or whatever new setting was actually set. In all cases, the returned value reflects the new current setting. <br><br>Note that each *m*,*n*:W command returns a value, even if your only intent is to set something. Good programming practice suggests following any command which returns a value with *delim* or ^[ if you don’t intend that value to be passed to the following command. |
 
 ### Color Commands
 

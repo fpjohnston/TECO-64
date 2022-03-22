@@ -186,7 +186,24 @@ void exec_E3(struct cmd *cmd)
 
 void exec_E4(struct cmd *cmd)
 {
-    check_mn_flag(cmd, &f.e4.flag);
+    union e4_flag e4 = { .flag = f.e4.flag };
+
+    check_mn_flag(cmd, &e4.flag);
+
+    int changes = (f.e4.flag ^ e4.flag);
+
+    // Only allow defined bits to be set or cleared
+
+    f.e4.flag   = 0;
+    f.e4.invert = e4.invert;
+    f.e4.line   = e4.line;
+    f.e4.status = e4.status;
+    f.e4.labels = e4.labels;
+
+    if (f.e0.display && changes)        // Any changes?
+    {
+        clear_dpy();                    // Yes, reset display
+    }
 }
 
 
@@ -306,12 +323,7 @@ void exec_ET(struct cmd *cmd)
 
     check_mn_flag(cmd, &et.flag);
 
-#if     defined(__vms)
-
     bool eightbit = f.et.eightbit ^ et.eightbit;
-
-#endif
-
     bool truncate = f.et.truncate ^ et.truncate;
 
     // Only allow defined bits.
@@ -328,30 +340,21 @@ void exec_ET(struct cmd *cmd)
     f.et.accent   = et.accent;
     f.et.ctrl_c   = et.ctrl_c;
 
-    if (et.detach && !f.et.detach)      // Does user want us to detach?
+    if (!f.et.detach && et.detach)      // Does user want us to detach?
     {
         detach_term();                  // Detach from terminal
 
         f.et.detach = true;
     }
 
-
-#if     defined(__vms)
-
-    if (eightbit)
+    if (eightbit)                       // Did 8-bit setting just change?
     {
-        // TODO: tell operating system if user changed bit
+        set_parity((bool)f.et.eightbit);
     }
 
-#endif
-
-    // If truncate mode just changed, that might affect display, so refresh it
-
-    if (truncate && f.e0.display)
+    if (truncate)                       // Did truncation bit just change?
     {
         mark_ebuf();                    // Pretend that the buffer changed
-
-        refresh_dpy();                  //  and force a refresh
     }
 }
 

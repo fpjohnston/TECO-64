@@ -267,6 +267,53 @@ void exec_cmd(struct cmd *cmd)
 
 
 ///
+///  @brief    Execute command string. This is different from exec_cmd() in that
+///            it is typically for strings constructed internally (that is, not
+///            user input) for such purposes as mapping keycodes to TECO
+///            commands. It constructs a buffer containing the command string
+///            and then calls exec_macro(), which in turn calls cmd_exec().
+///
+///            See readkey_dpy() for examples of use.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_str(const char *str)
+{
+    assert(str != NULL);
+    assert(str[0] != NUL);
+
+    bool saved_exec = f.e0.exec;
+    size_t nbytes = strlen(str);
+    char text[nbytes + 1];
+    tbuffer buf =
+    {
+        .data = text,
+        .size = (uint_t)nbytes,
+        .len  = 0,
+        .pos  = 0,
+    };
+
+    buf.len = buf.size;
+
+    strcpy(text, str);
+
+    // The reason for the next line is that we can be called when we are
+    // processing character input, such as an immediate-mode command. This
+    // means that the execution flag isn't on, but we need to temporarily force
+    // it in order to process a command string initiated by a special key such
+    // as Page Up or Page Down.
+
+    f.e0.exec = true;                   // Force execution
+
+    exec_macro(&buf, NULL);
+
+    f.e0.exec = saved_exec;             // Restore previous state
+}
+
+
+///
 ///  @brief    Scan for secondary commands (E, F, and ^).
 ///
 ///  @returns  Table entry if need to execute command, NULL if done scanning.

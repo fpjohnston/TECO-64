@@ -295,6 +295,7 @@ static const struct cmd_table f_table[] =
     ENTRY('1',     scan_F1,         exec_F1,         NO_ARGS),
     ENTRY('2',     scan_F1,         exec_F2,         NO_ARGS),
     ENTRY('3',     scan_F1,         exec_F3,         NO_ARGS),
+    ENTRY('4',     scan_F1,         exec_F4,         NO_ARGS),
     ENTRY('<',     NULL,            exec_F_lt,       NO_ARGS),
     ENTRY('>',     NULL,            exec_F_gt,       NO_ARGS),
     ENTRY('B',     scan_FB,         exec_FB,         NO_ARGS),

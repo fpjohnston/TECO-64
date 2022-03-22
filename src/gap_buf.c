@@ -171,7 +171,6 @@ estatus add_ebuf(int c)
         set_page(1);
     }
 
-    mark_dot();
     mark_ebuf();
 
     ++t.dot;
@@ -258,7 +257,6 @@ void delete_ebuf(int_t nbytes)
         t.Z    -= nbytes;               //  and decrease the total
     }
 
-    mark_dot();
     mark_ebuf();
 }
 
@@ -474,7 +472,6 @@ void setpos_ebuf(int_t pos)
     {
         t.dot = pos;
 
-        mark_dot();
         mark_ebuf();
     }
 }

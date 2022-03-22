@@ -478,6 +478,8 @@ extern void exec_F2(struct cmd *cmd);
 
 extern void exec_F3(struct cmd *cmd);
 
+extern void exec_F4(struct cmd *cmd);
+
 extern void exec_FB(struct cmd *cmd);
 
 extern void exec_FC(struct cmd *cmd);
@@ -620,6 +622,8 @@ extern bool exec_ctrl_F(int key);
 extern void exec_macro(tbuffer *macro, struct cmd *cmd);
 
 extern void exec_insert(const char *buf, uint_t len);
+
+extern void exec_str(const char *string);
 
 extern void exit_loop(struct cmd *cmd);
 

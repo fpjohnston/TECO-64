@@ -186,44 +186,26 @@ bool exec_key(int key)
         return false;
     }
 
-    bool saved_exec = f.e0.exec;
-
     if (p->macro != NULL)               // Mapped to command string?
     {
-        tbuffer buf;
+        exec_str(p->macro);
 
-        buf.data = p->macro;
-        buf.size = (uint_t)strlen(p->macro);
-        buf.len  = buf.size;
-        buf.pos  = 0;
-
-        f.e0.exec = true;               // Force execution
-
-        exec_macro(&buf, NULL);
+        return true;
     }
     else if (p->qname != NUL)           // Mapped to Q-register?
     {
-        struct cmd cmd = null_cmd;
+        char cmd[4];                    // Room for "M.A" (or similar command)
 
-        cmd.c1     = 'M';
-        cmd.qname  = p->qname;
-        cmd.qlocal = p->qlocal;
-        cmd.colon  = true;              // Keep local Q-registers
+        snprintf(cmd, sizeof(cmd), "M%s%c", p->qlocal ? "." : "", p->qname);
 
-        f.e0.exec = true;               // Force execution
+        exec_str(cmd);
 
-        exec_M(&cmd);
+        return true;
     }
     else
     {
         return false;
     }
-
-    f.e0.exec  = saved_exec;            // Restore previous flag
-
-    refresh_dpy();                      // Update display
-
-    return true;
 }
 
 

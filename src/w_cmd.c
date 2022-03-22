@@ -53,6 +53,7 @@ struct watch w =
     .topdot   = 0,                      // Value of F0 flag
     .botdot   = 0,                      // Value of FZ flag
     .nlines   = 0,
+    .seeall   = false,
     .noscroll = false,
     .tchar    =
     {
@@ -89,13 +90,13 @@ static int_t get_w(int_t n)
     switch (n)
     {
         default:
-        case 0:
+        case 0:                         // Terminal type
             return w.type;
 
-        case 1:
+        case 1:                         // Horizontal size of editing window
             return w.width;
 
-        case 2:
+        case 2:                         // Vertical size of editing window
             n = (int_t)w.height - (int_t)w.nlines;
 
             if (f.e0.display && f.e4.line)
@@ -105,22 +106,27 @@ static int_t get_w(int_t n)
 
             return n;
 
-        case 3:
-        case 4:
-        case 5:
+        case 3:                         // SEEALL mode
+            return w.seeall;
+            
+        case 4:                         // Mark status
+        case 5:                         // Hold mode indicator
             return 0;
 
-        case 6:
+        case 6:                         // Buffer position of top left corner
             return w.topdot;
 
-        case 7:
+        case 7:                         // No. of lines of command window
             return w.nlines;
 
-        case 8:
+        case 8:                         // Edit window enable/disable status
             return w.noscroll ? -1 : 0;
 
-        case 9:
+        case 9:                         // Terminal characteristics
             return (int_t)w.tchar.flag;
+
+        case 10:                        // Horizontal tab size
+            return get_tab();
     }
 }
 
@@ -277,6 +283,8 @@ static void set_w(int_t m, int_t n)
             if (m >= MIN_WIDTH)
             {
                 w.width = (int)m;
+
+                init_windows();
             }
 
             break;
@@ -286,23 +294,35 @@ static void set_w(int_t m, int_t n)
             {
                 w.height = (int)m;
 
-                set_nrows();
+                init_windows();
             }
 
             break;
 
+        case 3:
+            w.seeall = m ? true : false;
+
+            break;
+
+            
         case 7:
             if (m > 1 && w.height - m >= 9)
             {
                 w.nlines = (int)m;
 
-                set_scroll(w.height, w.nlines);
+                init_windows();
             }
 
             break;
 
         case 8:
             w.noscroll = m ? true : false;
+
+            break;
+
+        case 10:
+            set_tab(m);
+            clear_dpy();
 
             break;
 
