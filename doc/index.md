@@ -65,7 +65,7 @@
 | ^Z             | [Size of text in all Q-registers](variables.md) |
 | ESC            | [String and command terminator](action.md) |
 | ^[             | [String and command terminator](action.md) |
-| ^\\            | Not a TECO command |
+| ^\\            | Equivalent to CTRL/C. |
 | ^]             | Not a TECO command |
 | ^^*x*          | [ASCII value of *x*](variables.md) |
 | ^_             | [One's complement (logical NOT)](oper.md) |

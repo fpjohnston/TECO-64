@@ -214,6 +214,7 @@ void init_term(void)
 
         (void)sigaction(SIGINT, &sa, NULL);
         (void)sigaction(SIGABRT, &sa, NULL); // (mostly for assertion failures)
+        (void)sigaction(SIGQUIT, &sa, NULL);
 
 #if     !defined(__DECC)
 
@@ -351,6 +352,7 @@ static void sig_handler(int signum)
 
             break;
 
+        case SIGQUIT:                   // CTRL-backslash causes this
         case SIGINT:
             if (f.et.abort || f.e0.ctrl_c) // Should CTRL/C cause abort?
             {
