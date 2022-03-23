@@ -1,5 +1,5 @@
 ## TECO-64 - README
-    
+
 ### Description
 
 TECO-64 is:
