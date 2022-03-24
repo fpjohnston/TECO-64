@@ -156,6 +156,8 @@ static void update_status(void);
 
 static FILE *dpy_fp = NULL;
 
+static void bugend(void);
+
 static void (bugprint)(const char *func, ...);
 
 //lint -save -e652
@@ -167,6 +169,30 @@ static void (bugprint)(const char *func, ...);
 #else
 
 #define bugprint(func, ...)
+
+#endif
+
+
+///
+///  @brief    Close debugging file.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DEBUG_DPY)
+
+static void bugend(void)
+{
+    if (dpy_fp != NULL)
+    {
+        bugprint("TECO display log closed\n");
+
+        fclose(dpy_fp);
+
+        dpy_fp = NULL;
+    }
+}
 
 #endif
 
@@ -185,7 +211,26 @@ static void (bugprint)(
     ...)                                ///< Remaining arguments for printf()
 {
     assert(func != NULL);               // Make sure we have a function name
-    assert(dpy_fp != NULL);             // Debug file should be open
+
+    if (dpy_fp == NULL)
+    {
+        static bool first = true;
+
+        if (first)
+        {
+            first = false;
+
+            atexit(bugend);
+        }
+
+        dpy_fp = fopen("tecoc.lis", "w+");
+
+        assert(dpy_fp != NULL);
+
+        setvbuf(dpy_fp, NULL, _IONBF, 0uL);
+
+        bugprint("TECO display log opened\n");
+    }
 
     fprintf(dpy_fp, "%s: ", func);      // Print error preamble
 
@@ -385,20 +430,6 @@ void end_dpy(void)
 void exit_dpy(void)
 {
     reset_dpy();
-
-#if     defined(DEBUG_DPY)
-
-    if (dpy_fp != NULL)
-    {
-        bugprint("TECO display log closed\n");
-
-        fclose(dpy_fp);
-
-        dpy_fp = NULL;
-    }
-
-#endif
-
 }
 
 
@@ -1408,22 +1439,6 @@ void start_dpy(void)
 {
     if (!f.e0.display)
     {
-
-#if     defined(DEBUG_DPY)
-
-        if (dpy_fp == NULL)
-        {
-            dpy_fp = fopen("teco.dpy", "w+");
-
-            assert(dpy_fp != NULL);
-
-            setvbuf(dpy_fp, NULL, _IONBF, 0uL);
-
-            bugprint("TECO display log opened\n");
-        }
-
-#endif
-
         reset_term();                   // Reset if display mode support
 
         f.e0.display = true;
