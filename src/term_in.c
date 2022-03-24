@@ -35,6 +35,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cbuf.h"
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
@@ -42,8 +43,6 @@
 #include "exec.h"
 #include "qreg.h"
 #include "term.h"
-
-#include "cbuf.h"
 
 
 enum
@@ -574,6 +573,38 @@ static int read_first(void)
                 clear_dpy();
 
                 break;
+
+            case CTRL_RIGHT:
+                if (f.e1.repeat)
+                {
+                    echo_in(c);         // Echo ^]
+
+                    c = getc_term((bool)WAIT);
+
+                    if (c == CTRL_RIGHT)
+                    {
+                        echo_in(c);
+                        echo_in(LF);
+
+                        if (cbuf->data[0] != NUL)
+                        {
+                            assert(strlen(cbuf->data) < cbuf->size);
+
+                            exec_str(cbuf->data);
+                        }
+                    }
+                    else
+                    {
+                        echo_in('?');
+                        echo_in(LF);
+                    }
+
+                    break;
+                }
+                else
+                {
+                    return c;
+                }
 
             case '/':                   // Display verbose error message
                 echo_in(c);

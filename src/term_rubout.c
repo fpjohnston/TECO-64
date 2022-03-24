@@ -151,11 +151,7 @@ static void rubout_CR(void)
 {
     if (f.et.rubout)
     {
-        if (f.e0.display)
-        {
-            ;                           // TODO: add handling for display
-        }
-        else if (f.e3.CR_in)
+        if (f.e3.CR_in)
         {
             tprint("\e[K");             // Clear to end of line
             retype_line(start_tbuf());  // Retype current line
@@ -175,15 +171,8 @@ static void rubout_FF(void)
 {
     if (f.et.rubout)
     {
-        if (f.e0.display)
-        {
-            ;                           // TODO: add handling for display
-        }
-        else
-        {
-            tprint("\e[%dF", FF_LINES); // Move up 8 lines
-            retype_line(start_tbuf());  // Retype current line
-        }
+        tprint("\e[%dF", FF_LINES);     // Move up 8 lines
+        retype_line(start_tbuf());      // Retype current line
     }
 }
 
@@ -199,15 +188,8 @@ static void rubout_HT(void)
 {
     if (f.et.rubout)
     {
-        if (f.e0.display)
-        {
-            ;                           // TODO: add handling for display
-        }
-        else
-        {
-            tprint("\r\e[K");           // Go to start of line, then clear it
-            retype_line(start_tbuf());  // Retype current line
-        }
+        tprint("\r\e[K");               // Go to start of line, then clear it
+        retype_line(start_tbuf());      // Retype current line
     }
 }
 
@@ -223,20 +205,12 @@ static void rubout_LF(void)
 {
     if (f.et.rubout)
     {
-        if (f.e0.display)
-        {
-            ;                           // TODO: add handling for display
-        }
-        else
-        {
-            tprint("\e[F");             // Move up 1 line
+        tprint("\e[F");                 // Move up 1 line
 
-            if (!f.e3.CR_in)
-            {
-                tprint("\e[K");         // Clear to end of line
-                retype_line(start_tbuf());
-                                        // Retype current line
-            }
+        if (!f.e3.CR_in)
+        {
+            tprint("\e[K");             // Clear to end of line
+            retype_line(start_tbuf());  // Retype current line
         }
     }
 }
@@ -282,14 +256,7 @@ static void rubout_VT(void)
 {
     if (f.et.rubout)
     {
-        if (f.e0.display)
-        {
-            ;                           // TODO: add handling for display
-        }
-        else
-        {
-            tprint("\e[%dF", VT_LINES); // Move up 4 lines
-            retype_line(start_tbuf());  // Retype current line
-        }
+        tprint("\e[%dF", VT_LINES);     // Move up 4 lines
+        retype_line(start_tbuf());      // Retype current line
     }
 }

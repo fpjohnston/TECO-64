@@ -79,7 +79,7 @@ union e1_flag
         uint         : 1;       ///< (unused)
         uint         : 1;       ///< (unused)
         uint         : 1;       ///< (unused)
-        uint         : 1;       ///< (unused)
+        uint repeat  : 1;       ///< Double Ctrl-\ repeats command
         uint newline : 1;       ///< LF acts like double ESCape
     };
 };

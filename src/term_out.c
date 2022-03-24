@@ -137,6 +137,11 @@ void echo_in(int c)
 
                 break;
 
+            case CTRL_BACK:
+                tprint("\n\e[7m Interrupt \e[0m\n");
+
+                break;
+
             case DEL:
                 break;
 

@@ -70,10 +70,14 @@ enum ascii
     CTRL_Y,
     CTRL_Z,
     ESC,
-    FS,
-    GS,
-    RS,
-    US,
+    CTRL_BACK,
+    FS = CTRL_BACK,
+    CTRL_RIGHT,
+    GS = CTRL_RIGHT,
+    CTRL_UP,
+    RS = CTRL_UP,
+    CTRL_UNDER,
+    US = CTRL_UNDER,
     SPACE   = ' ',                      ///< Space character
     ACCENT  = '`',                      ///< Accent grave
     DEL     = 127                       ///< DELETE/RUBOUT

@@ -222,7 +222,10 @@ void init_term(void)
 
 #endif
 
-        (void)sigaction(SIGWINCH, &sa, NULL);
+        if (!f.e0.display)
+        {
+            (void)sigaction(SIGWINCH, &sa, NULL);
+        }
 
         (void)setvbuf(stdout, NULL, _IONBF, 0uL);
 
@@ -353,9 +356,19 @@ static void sig_handler(int signum)
             break;
 
         case SIGQUIT:                   // CTRL-backslash causes this
+            end_dpy();                  // Turn off display so error is visible
+
+            echo_in(CTRL_BACK);
+
+            term_exit((bool)false); // Clean up and exit
+
+            break;
+
         case SIGINT:
             if (f.et.abort || f.e0.ctrl_c) // Should CTRL/C cause abort?
             {
+                end_dpy();              // Turn off display so error is visible
+
                 echo_in(CTRL_C);
 
                 term_exit((bool)false); // Clean up and exit
@@ -367,7 +380,6 @@ static void sig_handler(int signum)
 
         case SIGWINCH:
             getsize();
-            resize_signal();
 
             break;
 

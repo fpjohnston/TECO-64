@@ -118,8 +118,6 @@ extern void refresh_dpy(void);
 
 extern void reset_colors(void);
 
-extern void resize_signal(void);
-
 extern void rubout_dpy(int c);
 
 extern void set_parity(bool parity);

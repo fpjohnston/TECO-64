@@ -341,19 +341,6 @@ void reset_map(void)
 
 
 ///
-///  @brief    (STUB) Start window resize when resize signal received.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void resize_signal(void)
-{
-    ;
-}
-
-
-///
 ///  @brief    (STUB) Rubout character on display.
 ///
 ///  @returns  Nothing.
