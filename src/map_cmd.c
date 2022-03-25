@@ -39,6 +39,63 @@
 #include "qreg.h"
 
 
+/// @def    _
+///
+/// @brief  Helper macro to set up table of keys.
+
+#define _(key) [KEY_ ## key - KEY_MIN] = \
+    { \
+        .kname  = #key,  \
+        .qname  = NUL,   \
+        .qlocal = false, \
+        .macro  = NULL,  \
+    }
+
+/// @struct  keys
+///
+/// @brief   Key-to-Q-register mapping.
+
+struct keys
+{
+    const char *kname;              ///< Key name
+    char qname;                     ///< Mapped Q-register
+    bool qlocal;                    ///< true if local Q-register
+    char *macro;                    ///< Command string
+};
+
+static struct keys keys[] =         ///< List of mappable keys
+{
+    // Key      Shift + key   Ctrl + key    Alt + key
+
+    _(UP),      _(S_UP),      _(C_UP),      _(A_UP),
+    _(DOWN),    _(S_DOWN),    _(C_DOWN),    _(A_DOWN),
+    _(LEFT),    _(S_LEFT),    _(C_LEFT),    _(A_LEFT),
+    _(RIGHT),   _(S_RIGHT),   _(C_RIGHT),   _(A_RIGHT),
+
+    _(HOME),    _(S_HOME),    _(C_HOME),    _(A_HOME),
+    _(END),     _(S_END),     _(C_END),     _(A_END),
+    _(PGUP),    _(S_PGUP),    _(C_PGUP),    _(A_PGUP),
+    _(PGDN),    _(S_PGDN),    _(C_PGDN),    _(A_PGDN),
+    _(DELETE),  _(S_DELETE),  _(C_DELETE),  _(A_DELETE),
+    _(INSERT),                              _(A_INSERT),
+
+    _(F1),      _(S_F1),      _(C_F1),
+    _(F2),      _(S_F2),      _(C_F2),
+    _(F3),      _(S_F3),      _(C_F3),
+    _(F4),      _(S_F4),      _(C_F4),
+    _(F5),      _(S_F5),      _(C_F5),
+    _(F6),      _(S_F6),      _(C_F6),
+    _(F7),      _(S_F7),      _(C_F7),
+    _(F8),      _(S_F8),      _(C_F8),
+    _(F9),      _(S_F9),      _(C_F9),
+    _(F10),     _(S_F10),     _(C_F10),
+    _(F11),     _(S_F11),     _(C_F11),
+    _(F12),     _(S_F12),     _(C_F12),
+};
+
+#undef _
+
+
 // Local functions
 
 static struct keys *find_key(const char *key);
