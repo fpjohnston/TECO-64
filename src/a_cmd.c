@@ -126,7 +126,7 @@ bool append_line(void)
 
             if (next != EOF)
             {
-                (void)ungetc(next, ifile->fp);
+                ungetc(next, ifile->fp);
             }
 
             return false;               // And say we need to stop
@@ -168,7 +168,7 @@ bool append_line(void)
                 {
                     if (next != EOF)
                     {
-                        (void)ungetc(next, ifile->fp);
+                        ungetc(next, ifile->fp);
                     }
 
                     return true;
@@ -181,7 +181,7 @@ bool append_line(void)
                 {
                     if (next != EOF)
                     {
-                        (void)ungetc(next, ifile->fp);
+                        ungetc(next, ifile->fp);
                     }
 
                     return false;
@@ -192,7 +192,7 @@ bool append_line(void)
             case EDIT_FULL:             // Stop if buffer is full
                 if (next != EOF)
                 {
-                    (void)ungetc(next, ifile->fp);
+                    ungetc(next, ifile->fp);
                 }
 
                 return false;

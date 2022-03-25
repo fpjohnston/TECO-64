@@ -455,7 +455,7 @@ bool scan_gt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    (void)scan_x(cmd);
+    scan_x(cmd);
 
     if (!f.e1.xoper || nparens == 0)
     {

@@ -60,7 +60,7 @@ bool scan_ctrl_B(struct cmd *cmd)
     time_t t = time(NULL);
     struct tm tm;
 
-    (void)localtime_r(&t, &tm);
+    localtime_r(&t, &tm);
 
     int n = ((tm.tm_year) * 16 + tm.tm_mon + 1) * 32 + tm.tm_mday;
 
@@ -89,8 +89,8 @@ bool scan_ctrl_H(struct cmd *cmd)
     struct tm tm;
     struct timeval tv = { .tv_usec = 0 };
 
-    (void)localtime_r(&t, &tm);
-    (void)gettimeofday(&tv, NULL);
+    localtime_r(&t, &tm);
+    gettimeofday(&tv, NULL);
 
     int n = tm.tm_hour * MINUTES_PER_HOUR + tm.tm_min;
 

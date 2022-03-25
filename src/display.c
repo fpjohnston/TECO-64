@@ -465,23 +465,14 @@ static WINDOW *init_window(int pair, int top, int bot, int col, int width)
 
     if (pair == EDIT)
     {
-        win = newpad(nlines, width * 4);
+        win = newpad(nlines, width * 4); // TODO: magic number
     }
     else
     {
         win = subwin(stdscr, nlines, width, top, col);
     }
 
-    if (win == NULL)
-    {
-        check_error(win == NULL);
-    }
-
-    if (pair == CMD)
-    {
-        scrollok(win, (bool)TRUE);
-        wsetscrreg(win, top, bot);
-    }
+    check_error(win == NULL);
 
     // Set default foreground and background colors for region
 
@@ -602,6 +593,9 @@ void init_windows(void)
     {
         d.cmd = init_window(CMD, cmd_top, cmd_bot, 0, w.width);
     }
+
+    scrollok(d.cmd, (bool)TRUE);
+    wsetscrreg(d.cmd, cmd_top, cmd_bot);
 }
 
 
@@ -849,7 +843,7 @@ bool putc_cmd(int c)
 
     if (c != CR)
     {
-        (void)waddch(d.cmd, (chtype)c);
+        waddch(d.cmd, (chtype)c);
     }
 
     return true;
@@ -1284,15 +1278,10 @@ void set_parity(bool parity)
 
 void set_tab(int n)
 {
-    if (n != TABSIZE)                   // Making a change?
+    if (n != TABSIZE)                   // Nothing to do if no change
     {
-        if (n == 0)
-        {
-            n = DEFAULT_TABSIZE;        // Use default size
-        }
+        set_tabsize(n == 0 ? DEFAULT_TABSIZE : n);
 
-        set_tabsize(n);                 // Yes, so set new tab size
-//        touchwin(d.edit);               // And force edit window update
         prefresh(d.edit, 0, 0, 0, 0, d.nrows, w.width);
     }
 }
@@ -1309,9 +1298,9 @@ void start_dpy(void)
 {
     if (!f.e0.display)
     {
-        reset_term();                   // Reset if display mode support
-
         f.e0.display = true;
+
+        reset_term();                   // Reset if display mode support
 
 #if 0                               // TODO: add soft labels?
         if (f.e4.labels)

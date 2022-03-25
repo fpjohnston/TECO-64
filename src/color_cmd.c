@@ -139,10 +139,10 @@ static void color_region(short region)
 
     short color = (short)(COLOR_BASE + ((region - 1) * 2));
 
-    (void)init_color(color,     fg->red, fg->green, fg->blue);
-    (void)init_color(color + 1, bg->red, bg->green, bg->blue);
+    init_color(color,     fg->red, fg->green, fg->blue);
+    init_color(color + 1, bg->red, bg->green, bg->blue);
 
-    (void)init_pair(region, color, color + 1);
+    init_pair(region, color, color + 1);
 }
 
 

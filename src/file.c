@@ -480,7 +480,7 @@ struct ofile *open_output(const char *name, uint stream, bool colon, int c)
     {
         // Write output immediately and do not buffer.
 
-        (void)setvbuf(ofile->fp, NULL, _IONBF, 0uL);
+        setvbuf(ofile->fp, NULL, _IONBF, 0uL);
     }
 
     return ofile;

@@ -41,7 +41,7 @@
 
 void exec_EP(struct cmd *cmd)
 {
-    (void)scan_x(cmd);
+    scan_x(cmd);
 
     istream = IFILE_SECONDARY;
 

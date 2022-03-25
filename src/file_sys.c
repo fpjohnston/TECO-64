@@ -250,7 +250,7 @@ FILE *open_temp(const char *oname, uint stream)
         throw(E_ERR, tempfile);         // General error
     }
 
-    (void)fchmod(fd, statbuf.st_mode);  // Use same permissions as old file
+    fchmod(fd, statbuf.st_mode);  // Use same permissions as old file
 
     ofile->temp = alloc_mem((uint_t)(uint)nbytes + 1);
 

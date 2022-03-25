@@ -439,6 +439,10 @@ void read_cmd(void)
 
             return;                     // Return to execute it
         }
+        else if (c == CR && f.e1.newline)
+        {
+            ;                           // Just ignore CR in newline mode
+        }
         else if (c == ESC)
         {
             store_tbuf(ESC);

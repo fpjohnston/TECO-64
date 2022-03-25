@@ -65,6 +65,10 @@ const char *key_name = NULL;            ///< Name of file for keystrokes
 
 static FILE *key_fp = NULL;             ///< Keystroke file descriptor
 
+static struct sigaction old_act;        ///< Saved action for SIGWINCH signal
+
+static bool old_saved = false;
+
 // Local functions
 
 static void getsize(void);
@@ -189,6 +193,28 @@ void init_term(void)
 {
     static bool init_set = false;       // Initialization already done if true
 
+    // Set up handler for the signals we want to catch.
+
+    struct sigaction sa;
+
+    sa.sa_handler = sig_handler;        // Set up general handler
+    sa.sa_flags = 0;
+
+#if     !defined(__DECC)
+
+    sa.sa_flags = SA_RESTART;           // Restarts are okay for screen resizing
+
+#endif
+
+    sigfillset(&sa.sa_mask);            // Block all signals in handler
+
+    sigaction(SIGINT, &sa, NULL);       // This catches Ctrl/C
+    sigaction(SIGABRT, &sa, NULL);      // This catches assertion failures
+    sigaction(SIGQUIT, &sa, NULL);      // This catches Ctrl-Backslash
+    sigaction(SIGWINCH, &sa, &old_act); // This catches window resizes
+
+    old_saved = true;
+
     // The following only needs to be executed once, regardless
     // how many times terminal initialization is done.
 
@@ -200,41 +226,19 @@ void init_term(void)
 
         if (!f.e0.i_redir)
         {
-            (void)tcgetattr(fileno(stdin), &saved_mode);
+            tcgetattr(fileno(stdin), &saved_mode);
         }
 
 #endif
 
-        struct sigaction sa;
-
-        sa.sa_handler = sig_handler;    // Set up general handler
-        sa.sa_flags = 0;
-
-        (void)sigfillset(&sa.sa_mask);  // Block all signals in handler
-
-        (void)sigaction(SIGINT, &sa, NULL);
-        (void)sigaction(SIGABRT, &sa, NULL); // (mostly for assertion failures)
-        (void)sigaction(SIGQUIT, &sa, NULL);
-
-#if     !defined(__DECC)
-
-        sa.sa_flags = SA_RESTART;       // Restarts are okay for screen resizing
-
-#endif
-
-        if (!f.e0.display)
-        {
-            (void)sigaction(SIGWINCH, &sa, NULL);
-        }
-
-        (void)setvbuf(stdout, NULL, _IONBF, 0uL);
+        setvbuf(stdout, NULL, _IONBF, 0uL);
 
         f.et.rubout    = true;          // Process DEL and ^U in scope mode
         f.et.lower     = true;          // Terminal can read lower case
         f.et.scope     = true;          // Terminal is a scope
         f.et.eightbit  = true;          // Terminal can use 8-bit characters
 
-        getsize();
+        getsize();                      // Get the current window size
 
         if (key_name != NULL)
         {
@@ -242,7 +246,7 @@ void init_term(void)
             {
                 // Write output immediately and do not buffer.
 
-                (void)setvbuf(key_fp, NULL, _IONBF, 0uL);
+                setvbuf(key_fp, NULL, _IONBF, 0uL);
             }
         }
     }
@@ -260,7 +264,7 @@ void init_term(void)
         {
             struct termios mode;
 
-            (void)tcgetattr(fileno(stdin), &mode);
+            tcgetattr(fileno(stdin), &mode);
 
             // Note: NL below means LF
 
@@ -270,7 +274,7 @@ void init_term(void)
             mode.c_iflag &= ~INLCR;     // Don't map NL to CR on input
             mode.c_oflag &= ~ONLCR;     // Don't map CR to CR/NL on output
 
-            (void)tcsetattr(fileno(stdin), TCSAFLUSH, &mode);
+            tcsetattr(fileno(stdin), TCSAFLUSH, &mode);
         }
 
 #endif
@@ -308,11 +312,20 @@ void reset_term(void)
     {
         term_active = false;
 
+        // If we're switching to display mode, reset the signal handler for
+        // window resizing so that ncurses will use its own handler instead
+        // of ours.
+
+        if (f.e0.display && old_saved)
+        {
+            sigaction(SIGWINCH, &old_act, NULL);
+        }
+
 #if     !defined(__DECC)
 
         if (!f.e0.i_redir)
         {
-            (void)tcsetattr(fileno(stdin), TCSAFLUSH, &saved_mode);
+            tcsetattr(fileno(stdin), TCSAFLUSH, &saved_mode);
         }
 
 #endif
@@ -379,7 +392,7 @@ static void sig_handler(int signum)
             break;
 
         case SIGWINCH:
-            getsize();
+            getsize();                  // Get the new window size
 
             break;
 

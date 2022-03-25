@@ -42,7 +42,7 @@
 
 void exec_EF(struct cmd *cmd)
 {
-    (void)scan_x(cmd);
+    scan_x(cmd);
 
     struct ofile *ofile = &ofiles[ostream];
 

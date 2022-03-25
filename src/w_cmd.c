@@ -172,7 +172,7 @@ void exec_W(struct cmd *cmd)
 
 bool scan_F0(struct cmd *cmd)
 {
-    (void)scan_x(cmd);
+    scan_x(cmd);
     push_x((int_t)w.topdot, X_OPERAND);
 
     return true;
@@ -190,7 +190,7 @@ bool scan_FH(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    (void)scan_x(cmd);
+    scan_x(cmd);
 
     cmd->m_set = true;
     cmd->m_arg = w.topdot;
@@ -210,7 +210,7 @@ bool scan_FH(struct cmd *cmd)
 
 bool scan_FZ(struct cmd *cmd)
 {
-    (void)scan_x(cmd);
+    scan_x(cmd);
 
     push_x(w.botdot, X_OPERAND);
 

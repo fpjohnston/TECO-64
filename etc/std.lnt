@@ -75,10 +75,12 @@ co-gcc.lnt   // Basic gcc configuration
 -esym(534,wsetscrreg,keypad,initscr,set_escdelay,wbkgd,resizeterm,delwin)
 -esym(534,setvbuf,scrollok,set_tabsize,meta,wtouchln,wclrtobot,wchgat,wscrl)
 -esym(534,mvwprintw,wvline,waddnstr,atexit,prefresh,newpad)
+-esym(534,sigaction,sigfillset,setvbuf,tcgetattr,tcsetattr,ungetc)
+-esym(534,localtime_r,gettimeofday,init_color,init_pair,fchmod)
+-esym(534,scan_x)
 -esym(759,reset_term)
 -esym(765,reset_term)
 -elib(126)
 -elibcall(126)
 -elibmacro(126)
 -elibsym(126)
-
