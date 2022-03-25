@@ -51,6 +51,8 @@
 #include "page.h"
 #include "term.h"
 
+#include "keys.h"
+
 
 #if     INT_T == 64
 
@@ -95,8 +97,10 @@ static struct display
     WINDOW *line;                   ///< Dividing line
     int row;                        ///< y coordinate for 'dot'
     int col;                        ///< x coordinate for 'dot'
-    int bias;                       ///< Row bias within edit window
+    int vbias;                      ///< Vertical bias
+//    int hbias;                      ///< Horizontal bias
     int nrows;                      ///< No. of rows in edit window
+    int left;                       ///< Left-most column in edit window
 } d =
 {
     .edit   = NULL,
@@ -105,8 +109,10 @@ static struct display
     .line   = NULL,
     .row    = 0,
     .col    = 0,
-    .bias   = 0,
+    .vbias  = 0,
+//    .hbias  = 0,
     .nrows  = 0,
+    .left   = 0,
 };
 
 
@@ -123,29 +129,29 @@ static struct display
 
 static void (check_error)(bool error);
 
-static int addline(int pos);
-
-static void get_dot(int *row, int *col);
-
 static WINDOW *init_window(int pair, int top, int bot, int col, int width);
+
+static void mark_dot(int row, int col);
 
 static void move_down(void);
 
-static void move_left(void);
+static void move_left(bool ctrl);
 
-static void move_right(void);
+static void move_right(bool ctrl);
 
 static void move_up(void);
 
 static void putc_edit(int c);
 
+static void refresh_edit(void);
+
 static void reset_dpy(void);
 
 static void resize_key(void);
 
-static void set_dot(int row, int col);
-
 static void status_line(int line, const char *header, const char *data);
+
+static void unmark_dot(void);
 
 static void update_status(void);
 
@@ -223,7 +229,7 @@ static void (bugprint)(
             atexit(bugend);
         }
 
-        dpy_fp = fopen("tecoc.lis", "w+");
+        dpy_fp = fopen("teco.lis", "w+");
 
         assert(dpy_fp != NULL);
 
@@ -232,7 +238,7 @@ static void (bugprint)(
         bugprint("TECO display log opened\n");
     }
 
-    fprintf(dpy_fp, "%s: ", func);      // Print error preamble
+//    fprintf(dpy_fp, "%s: ", func);      // Print error preamble
 
     va_list argptr;
 
@@ -250,54 +256,6 @@ static void (bugprint)(
 }
 
 #endif
-
-
-///
-///  @brief    Print a line to the edit window. Note that the task of handling
-///            any line terminator (LF, VT, or FF) is the responsibility of the
-///            caller, so that we don't need to guess whether we're trying to
-///            print the last line in the window.
-///
-///  @returns  No. of characters read (including any line terminator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static int addline(int start)
-{
-    int next = start;
-    int c = getchar_ebuf(next);
-
-    if (c == EOF)
-    {
-        waddch(d.edit, DIAMOND);
-        waddch(d.edit, BS);
-
-        if (next == 0)
-        {
-            getyx(d.edit, d.row, d.col);
-        }
-    }
-    else
-    {
-        do
-        {
-            if (next++ == 0)            // If at 'dot', save coordinates
-            {
-                getyx(d.edit, d.row, d.col);
-            }
-
-            if (isdelim(c))
-            {
-                break;
-            }
-
-            putc_edit(c);
-
-        } while ((c = getchar_ebuf(next)) != EOF);
-    }
-
-    return next - start;
-}
 
 
 ///
@@ -434,61 +392,6 @@ void exit_dpy(void)
 
 
 ///
-///  @brief    Get coordinates of 'dot' and un-mark its position.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void get_dot(int *row, int *col)
-{
-    int y_pos, x_pos;
-
-    getyx(d.edit, y_pos, x_pos);
-
-    // Un-highlight the character at the current position
-
-    if (t.dot == t.Z)
-    {
-        mvwchgat(d.edit, y_pos, x_pos, 1, A_ALTCHARSET, EDIT, NULL);
-    }
-    else
-    {
-        int n = 1;
-        int c = getchar_ebuf(0);
-
-        if (iscntrl(c) && (c < BS || c > CR))
-        {
-            ++n;
-        }
-        else if (c > DEL)
-        {
-            if (f.et.eightbit)
-            {
-                n = (int)strlen(unctrl(c));
-            }
-            else
-            {
-                n = (int)strlen(table_8bit[c & 0x7f]);
-            }
-        }
-
-        mvwchgat(d.edit, y_pos, x_pos, n, 0, EDIT, NULL);
-    }
-
-    if (row != NULL)
-    {
-        *row = y_pos;
-    }
-
-    if (col != NULL)
-    {
-        *col = x_pos;
-    }
-}
-
-
-///
 ///  @brief    Read next character without wait (non-blocking I/O).
 ///
 ///  @returns  Character read.
@@ -556,27 +459,46 @@ int get_wait(void)
 
 static WINDOW *init_window(int pair, int top, int bot, int col, int width)
 {
-    int nlines = 1 + bot - top;         // No. of rows in region
+    int nlines = 1 + bot - top;         // No. of rows in window
 
-    WINDOW *win = subwin(stdscr, nlines, width, top, col);
+    WINDOW *win;
+
+    if (pair == EDIT)
+    {
+        win = newpad(nlines, width * 4);
+    }
+    else
+    {
+        win = subwin(stdscr, nlines, width, top, col);
+    }
 
     if (win == NULL)
     {
         check_error(win == NULL);
     }
 
+    if (pair == CMD)
+    {
+        scrollok(win, (bool)TRUE);
+        wsetscrreg(win, top, bot);
+    }
+
     // Set default foreground and background colors for region
 
     wbkgd(win, COLOR_PAIR(pair));  //lint !e835
 
-    scrollok(win, (bool)TRUE);
-
-    wsetscrreg(win, top, bot);
-
     keypad(win, f.ed.escape ? (bool)TRUE : (bool)FALSE);
 
     wclear(win);
-    wrefresh(win);
+
+    if (pair == EDIT)
+    {
+        prefresh(win, 0, d.left = 0, 0, 0, nlines - 1, w.width - 1);
+    }
+    else
+    {
+        wrefresh(win);
+    }
 
     return win;
 }
@@ -662,7 +584,6 @@ void init_windows(void)
     cmd_bot  = cmd_top + w.nlines - 1;
 
     d.nrows = 1 + edit_bot - edit_top;
-
     d.edit = init_window(EDIT, edit_top, edit_bot, 0, w.width);
 
     if (f.e4.line)
@@ -680,6 +601,62 @@ void init_windows(void)
     else
     {
         d.cmd = init_window(CMD, cmd_top, cmd_bot, 0, w.width);
+    }
+}
+
+
+///
+///  @brief    Save coordinates of 'dot' and mark its position. Note that the
+///            end of file marker uses the alternate character set.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void mark_dot(int row, int col)
+{
+    if (row >= d.nrows)
+    {
+        row = d.nrows - 1;
+    }
+    else if (row < 0)
+    {
+        row = 0;
+    }
+
+    d.row = row;
+    d.col = col;
+
+    if (t.dot == t.Z)
+    {
+        mvwchgat(d.edit, d.row, d.col, 1, A_ALTCHARSET | A_REVERSE, EDIT, NULL);
+    }
+    else
+    {
+        int n;
+        int c = getchar_ebuf(0);
+
+        if (iscntrl(c) && (c < BS || c > CR))
+        {
+            n = (int)strlen(unctrl((chtype)c));
+        }
+        else if (c > DEL)
+        {
+            if (f.et.eightbit)
+            {
+                n = (int)strlen(unctrl((chtype)c));
+            }
+            else
+            {
+                n = (int)strlen(table_8bit[c & 0x7f]);
+            }
+        }
+        else
+        {
+            n = 1;
+        }
+
+        mvwchgat(d.edit, d.row, d.col, n, A_REVERSE, EDIT, NULL);
     }
 }
 
@@ -708,35 +685,18 @@ static void move_down(void)
 {
     // TODO: handle virtual columns.
 
-    int row, col;
+    t.dot += getdelta_ebuf(1);      // Go to start of next line
 
-    get_dot(&row, &col);
-
-    if (t.dot == t.Z)
+    if (d.vbias < d.nrows - 1)
     {
-        int attr = A_ALTCHARSET | A_REVERSE | A_BLINK;
-        int len = -getdelta_ebuf(0);    // Get length of current line
-
-        mvwchgat(d.edit, row, col + len, 1, attr, EDIT, NULL); //lint !e732
+        ++d.vbias;
     }
-    else
-    {
-        t.dot += getdelta_ebuf(1);      // Go to start of next line
 
-        if (d.bias < d.nrows - 1)
-        {
-            ++d.bias;
-        }
-        else
-        {
-            wscrl(d.edit, 1);
-            wmove(d.edit, d.nrows - 1, 0);
+    refresh_edit();
 
-            (void)addline(0);
-        }
+    d.left = (d.col / w.width) * w.width;
 
-        set_dot(row + 1, 0);
-    }
+    prefresh(d.edit, 0, d.left, 0, 0, d.nrows - 1, w.width - 1);
 }
 
 
@@ -747,86 +707,47 @@ static void move_down(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void move_left(void)
+static void move_left(bool ctrl)
 {
-    if (t.dot == t.B)
+    if (t.dot > t.B)
     {
-        int attr = A_REVERSE | A_BLINK;
-
-        mvwchgat(d.edit, 0, 0, 1, attr, EDIT, NULL); //lint !e732
-    }
-    else
-    {
-        int row, col, c = getchar_ebuf(-1);
-
-        get_dot(&row, &col);
-
         --t.dot;
+
+        int c = getchar_ebuf(0);
 
         if (isdelim(c))
         {
-            col = -getdelta_ebuf(0);
-
-            if (d.bias > 0)
+            if (d.vbias > 0)
             {
-                --d.bias;
-                --row;
-
-                wmove(d.edit, row, 0);
-                wclrtoeol(d.edit);
-
-                (void)addline(getdelta_ebuf(0));
-
-                set_dot(row, d.col);
-            }
-            else
-            {
-                wscrl(d.edit, -1);
-                wmove(d.edit, 0, 0);
-
-                (void)addline(-col);
-
-                set_dot(row, col);
+                --d.vbias;
             }
         }
-        else if (c == HT)
+
+        bool start_of_line = (d.col == 0);
+
+        refresh_edit();
+
+        int pos = d.col % w.width;
+
+        if (start_of_line)
         {
-            // Skipping forward over a tab is easy, but backing up is harder,
-            // because we don't know what at what column the tab occurred.
-            // So we just clear the line and redraw it, with the cursor at
-            // the desired position.
-
-            wmove(d.edit, row, 0);
-            wclrtoeol(d.edit);
-
-            (void)addline(getdelta_ebuf(0));
-            set_dot(row, d.col);
+            d.left = 1 + d.col - w.width;
         }
-        else if (c == CR)
+        else if (ctrl)
         {
-            set_dot(row, col);
+            --d.left;
         }
-        else if (c > DEL)
+        else if (pos == 0)
         {
-            int ncols;
-
-            if (f.et.eightbit)
-            {
-                ncols = (int)strlen(unctrl(c));
-            }
-            else
-            {
-                ncols = (int)strlen(table_8bit[c & 0x7f]);
-            }
-
-            set_dot(row, col - ncols);
+            d.left -= w.width;
         }
-        else
+
+        if (d.left < 0)
         {
-            int ncols = (int)strlen(unctrl(c));
-
-            set_dot(row, col - ncols);
+            d.left = 0;
         }
+
+        prefresh(d.edit, 0, d.left, 0, 0, d.nrows - 1, w.width - 1);
     }
 }
 
@@ -838,70 +759,43 @@ static void move_left(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void move_right(void)
+static void move_right(bool ctrl)
 {
-    if (t.dot == t.Z)
+    if (t.dot < t.Z)
     {
-        int attr = A_REVERSE | A_BLINK;
-
-        mvwchgat(d.edit, 0, 0, 1, attr, EDIT, NULL); //lint !e732
-    }
-    else
-    {
-        int row, col, c = getchar_ebuf(0);
-
-        get_dot(&row, &col);
-
         ++t.dot;
+
+        int c = getchar_ebuf(0);
 
         if (isdelim(c))
         {
-            if (d.bias < d.nrows - 1)
+            if (d.vbias < d.nrows - 1)
             {
-                ++d.bias;
-                ++row;
+                ++d.vbias;
             }
-            else
-            {
-                wscrl(d.edit, 1);
-                wmove(d.edit, 0, 0);
-
-                (void)addline(-col);
-            }
-
-            set_dot(row, 0);
         }
-        else if (c == HT)
+
+        refresh_edit();
+
+        if (d.col == 0)
         {
-            int ncols = TABSIZE - (col % TABSIZE);
-            
-            set_dot(row, col + ncols);
+            d.left = 0;
         }
-        else if (c == CR)
+        else if (ctrl)
         {
-            set_dot(row, col);
+            ++d.left;
         }
-        else if (c > DEL)
+        else if (d.col > d.left + w.width - 1)
         {
-            int ncols;
-
-            if (f.et.eightbit)
-            {
-                ncols = (int)strlen(unctrl(c));
-            }
-            else
-            {
-                ncols = (int)strlen(table_8bit[c & 0x7f]);
-            }
-
-            set_dot(row, col + ncols);
+            d.left += w.width;
         }
-        else
+
+        if (d.left > w.width - 1)
         {
-            int ncols = (int)strlen(unctrl(c));
-
-            set_dot(row, col + ncols);
+            d.left = w.width - 1;
         }
+
+        prefresh(d.edit, 0, d.left, 0, 0, d.nrows - 1, w.width - 1);
     }
 }
 
@@ -917,34 +811,18 @@ static void move_up(void)
 {
     // TODO: handle virtual columns.
 
-    if (t.dot == t.B)
+    t.dot += getdelta_ebuf(-1);
+
+    if (d.vbias > 0)
     {
-        int attr = A_REVERSE | A_BLINK;
-
-        mvwchgat(d.edit, 0, 0, 1, attr, EDIT, NULL); //lint !e732
+        --d.vbias;
     }
-    else
-    {
-        int row, col;
 
-        get_dot(&row, &col);
+    refresh_edit();
 
-        t.dot += getdelta_ebuf(-1);
+    d.left = (d.col / w.width) * w.width;
 
-        if (d.bias > 0)
-        {
-            --d.bias;
-        }
-        else
-        {
-            wscrl(d.edit, -1);
-            wmove(d.edit, 0, 0);
-
-            (void)addline(0);
-        }
-
-        set_dot(row - 1, 0);
-    }
+    prefresh(d.edit, 0, d.left, 0, 0, d.nrows - 1, w.width - 1);
 }
 
 
@@ -1000,10 +878,12 @@ static void putc_edit(int c)
             case HT:
                 if (w.seeall)
                 {
-                    wprintw(d.edit, "%s", unctrl(ch));
+                    waddstr(d.edit, unctrl(ch));
                 }
-
-                waddch(d.edit, ch);
+                else
+                {
+                    waddch(d.edit, ch);
+                }
 
                 break;
 
@@ -1014,7 +894,7 @@ static void putc_edit(int c)
             case CR:
                 if (w.seeall)
                 {
-                    wprintw(d.edit, "%s", unctrl(ch));
+                    waddstr(d.edit, unctrl(ch));
                 }
 
                 break;
@@ -1029,7 +909,7 @@ static void putc_edit(int c)
     {
         if (f.et.eightbit)
         {
-            wprintw(d.edit, "%s", unctrl(ch));
+            waddstr(d.edit, unctrl(ch));
         }
         else
         {
@@ -1114,11 +994,27 @@ int readkey_dpy(int key)
         }
         else if (key == KEY_LEFT)
         {
-            move_left();
+            move_left((bool)false);
         }
         else if (key == KEY_RIGHT)
         {
-            move_right();
+            move_right((bool)false);
+        }
+        else if (key == KEY_C_UP)
+        {
+            bugprint("KEY_C_UP\n");
+        }
+        else if (key == KEY_C_DOWN)
+        {
+            bugprint("KEY_C_DOWN\n");
+        }
+        else if (key == KEY_C_LEFT)
+        {
+            move_left((bool)true);
+        }
+        else if (key == KEY_C_RIGHT)
+        {
+            move_right((bool)true);
         }
         else                            // Not an arrow key
         {
@@ -1187,59 +1083,89 @@ void refresh_dpy(void)
         update_status();
     }
 
-    if (w.nlines != 0 && !w.noscroll && ebuf_changed)
+    if (ebuf_changed && w.nlines != 0 && !w.noscroll)
     {
         ebuf_changed = false;
 
-        int_t pos  = getdelta_ebuf((int_t)-d.bias); // First character to output
+        refresh_edit();
 
-        w.topdot = t.dot + pos;
+        d.left = (d.col / w.width) * w.width;
 
-        wmove(d.edit, 0, 0);
-        wclear(d.edit);
+        prefresh(d.edit, 0, d.left, 0, 0, d.nrows - 1, w.width - 1);
+    }
 
-        int row = 0;
-        int col __attribute__((unused));
+    wrefresh(d.cmd);                    // Switch back to command window
+}
 
-        while (row < d.nrows)
+
+///
+///  @brief    Refresh edit window.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void refresh_edit(void)
+{
+    unmark_dot();
+
+    int col = 0;
+    int row = 0;
+    int_t pos  = getdelta_ebuf((int_t)-d.vbias); // First character to output
+
+    wclear(d.edit);
+
+    w.topdot = t.dot + pos;
+
+    for (;;)
+    {
+        int c = getchar_ebuf(pos);
+
+        if (pos++ == 0)
         {
-            int nbytes = addline(pos);
+            d.row = row;
+            d.col = col;
+        }
 
-            if (nbytes == 0)
+        if (c == EOF)
+        {
+            waddch(d.edit, DIAMOND);
+
+            break;
+        }
+
+        int y __attribute__((unused));
+        int old_x, new_x;
+
+        getyx(d.edit, y, old_x);
+
+        putc_edit(c);
+
+        getyx(d.edit, y, new_x);
+
+        // If we've found a delimiter (LF, VT, FF), then output an LF to
+        // end the line. And if we've filled up all the rows, then we're
+        // done. Otherwise, reset the column count for the next line.
+
+        if (isdelim(c))                 // Found a delimiter (LF, VT, FF)?
+        {
+            waddch(d.edit, '\n');
+
+            if (++row == d.nrows)
             {
                 break;
             }
 
-            pos += nbytes;
-
-            int c = getchar_ebuf(pos - 1);
-
-            // If last character was a delimiter, and we're not
-            // at the end of the edit window, output an LF.
-
-            getyx(d.edit, row, col);
-
-            if (isdelim(c))
-            {
-                if (row < d.nrows - 1)
-                {
-                    waddch(d.edit, LF);
-                }
-                else
-                {
-                    break;
-                }
-            }
+            col = 0;
         }
+        else
+        {
+            col += new_x - old_x;
+        }
+    }                                   //lint !e550
 
-        d.bias = d.row;
-        w.botdot = t.dot + pos;
-
-        set_dot(d.row, d.col);
-    }                                   //lint !e438 !e550
-
-    wrefresh(d.edit);
-    wrefresh(d.cmd);                // Switch back to command window
+    w.botdot = t.dot + pos;
+    mark_dot(d.row, d.col);             // Mark the new cursor
 }
 
 
@@ -1333,62 +1259,6 @@ void rubout_dpy(int c)
 
 
 ///
-///  @brief    Save coordinates of 'dot' and mark its position. Note that the
-///            end of file marker uses the alternate character set.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void set_dot(int row, int col)
-{
-    if (row >= d.nrows)
-    {
-        row = d.nrows - 1;
-    }
-    else if (row < 0)
-    {
-        row = 0;
-    }
-
-    d.row = row;
-    d.col = col;
-
-    if (t.dot == t.Z)
-    {
-        mvwchgat(d.edit, d.row, d.col, 1, A_ALTCHARSET | A_REVERSE, EDIT, NULL);
-    }
-    else
-    {
-        int n;
-        int c = getchar_ebuf(0);
-
-        if (iscntrl(c) && (c < BS || c > CR))
-        {
-            n = (int)strlen(unctrl(c));
-        }
-        else if (c > DEL)
-        {
-            if (f.et.eightbit)
-            {
-                n = (int)strlen(unctrl(c));
-            }
-            else
-            {
-                n = (int)strlen(table_8bit[c & 0x7f]);
-            }
-        }
-        else
-        {
-            n = 1;
-        }
-
-        mvwchgat(d.edit, d.row, d.col, n, A_REVERSE, EDIT, NULL);
-    }
-}
-
-
-///
 ///  @brief    Set parity. Note that the window argument to meta() is always
 ///            ignored, so we just pass it as a NULL.
 ///
@@ -1422,8 +1292,8 @@ void set_tab(int n)
         }
 
         set_tabsize(n);                 // Yes, so set new tab size
-        touchwin(d.edit);           // And force edit window update
-        wrefresh(d.edit);
+//        touchwin(d.edit);               // And force edit window update
+        prefresh(d.edit, 0, 0, 0, 0, d.nrows, w.width);
     }
 }
 
@@ -1508,6 +1378,49 @@ static void status_line(int line, const char *header, const char *data)
     snprintf(buf + nbytes, rem, "%*s ", (int)rem - 1, data);
 
     mvwprintw(d.status, line, 1, buf);
+}
+
+
+///
+///  @brief    Get coordinates of 'dot' and un-mark its position.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void unmark_dot(void)
+{
+    wmove(d.edit, d.row, d.col);
+
+    // Un-highlight the character at the current position
+
+    if (t.dot == t.Z)
+    {
+        mvwchgat(d.edit, d.row, d.col, 1, A_ALTCHARSET, EDIT, NULL);
+    }
+    else
+    {
+        int n = 1;
+        int c = getchar_ebuf(0);
+
+        if (iscntrl(c) && (c < BS || c > CR))
+        {
+            ++n;
+        }
+        else if (c > DEL)
+        {
+            if (f.et.eightbit)
+            {
+                n = (int)strlen(unctrl((chtype)c));
+            }
+            else
+            {
+                n = (int)strlen(table_8bit[c & 0x7f]);
+            }
+        }
+
+        mvwchgat(d.edit, d.row, d.col, n, 0, EDIT, NULL);
+    }
 }
 
 
