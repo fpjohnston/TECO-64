@@ -74,6 +74,7 @@ struct watch
     int_t topdot;                   ///< Buffer position of upper left corner
     int_t botdot;                   ///< Buffer position of bottom right corner
     int nlines;                     ///< No. of scrolling lines
+    int maxline;                    ///< Length of longest line in edit buffer
     bool seeall;                    ///< SEEALL mode
     bool noscroll;                  ///< Disable scrolling region
     union tchar tchar;              ///< Terminal characteristics

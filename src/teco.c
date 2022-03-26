@@ -185,6 +185,7 @@ int main(int argc, const char * const argv[])
         {
             case MAIN_NORMAL:           // Normal entry
                 refresh_dpy();          // Update display if enabled
+
                 f.trace.flag = 0;       // Switch off all tracing bits
                 f.et.abort = false;     // Don't abort on error
 

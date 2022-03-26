@@ -74,6 +74,10 @@
 
 #define STATUS_HEIGHT        5      ///< Min. height for status window
 
+#define HOLD        (bool)true      ///< Hold cursor in current row/column
+
+#define NO_HOLD     (bool)false     ///< Don't hold cursor in current row/column
+
 const bool esc_seq_def = true;      ///< Escape sequences enabled by default
 
 static bool ebuf_changed = false;   ///< true if edit buffer modified
@@ -95,12 +99,16 @@ static struct display
     WINDOW *status;                 ///< Status window
     WINDOW *cmd;                    ///< Command window
     WINDOW *line;                   ///< Dividing line
-    int row;                        ///< y coordinate for 'dot'
-    int col;                        ///< x coordinate for 'dot'
+    int row;                        ///< Current row for 'dot'
+    int col;                        ///< Current column for 'dot'
+    int prev;                       ///< Previous column for 'dot'
+    int minrow;                     ///< Min. row for edit window
+    int mincol;                     ///< Min. column for edit window
+    int maxrow;                     ///< Max. row for edit window
+    int maxcol;                     ///< Max. column for edit window
     int vbias;                      ///< Vertical bias
-//    int hbias;                      ///< Horizontal bias
+    int hbias;                      ///< Horizontal bias
     int nrows;                      ///< No. of rows in edit window
-    int left;                       ///< Left-most column in edit window
 } d =
 {
     .edit   = NULL,
@@ -109,10 +117,14 @@ static struct display
     .line   = NULL,
     .row    = 0,
     .col    = 0,
+    .prev   = 0,
+    .minrow = 0,
+    .mincol = 0,
+    .maxrow = 0,
+    .maxcol = 0,
     .vbias  = 0,
-//    .hbias  = 0,
+    .hbias  = 0,
     .nrows  = 0,
-    .left   = 0,
 };
 
 
@@ -129,17 +141,19 @@ static struct display
 
 static void (check_error)(bool error);
 
-static WINDOW *init_window(int pair, int top, int bot, int col, int width);
+static int_t adjust_dot(void);
+
+static void init_window(WINDOW **win, int pair, int top, int bot, int col, int width);
 
 static void mark_dot(int row, int col);
 
-static void move_down(void);
+static void move_down(bool hold);
 
-static void move_left(bool ctrl);
+static void move_left(bool hold);
 
-static void move_right(bool ctrl);
+static void move_right(bool hold);
 
-static void move_up(void);
+static void move_up(bool hold);
 
 static void putc_edit(int c);
 
@@ -156,106 +170,73 @@ static void unmark_dot(void);
 static void update_status(void);
 
 
-#define DEBUG_DPY       1               // TODO: remove for production build
-
-#if     defined(DEBUG_DPY)
-
-static FILE *dpy_fp = NULL;
-
-static void bugend(void);
-
-static void (bugprint)(const char *func, ...);
-
-//lint -save -e652
-
-#define bugprint(...) (bugprint)(__func__, __VA_ARGS__)
-
-//lint -restore
-
-#else
-
-#define bugprint(func, ...)
-
-#endif
-
-
 ///
-///  @brief    Close debugging file.
+///  @brief    Get adjustment for 'dot'.
 ///
-///  @returns  Nothing.
+///  @returns  No. of bytes to adjust 'dot'.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DEBUG_DPY)
-
-static void bugend(void)
+static int_t adjust_dot(void)
 {
-    if (dpy_fp != NULL)
+    int col = 0;                        // Current column in line
+    int pos = 0;                        // Position relative to 'dot'
+    int c;
+
+    while ((c = getchar_ebuf(pos)) != EOF)
     {
-        bugprint("TECO display log closed\n");
+        chtype ch = (chtype)c;
+        int width;
 
-        fclose(dpy_fp);
-
-        dpy_fp = NULL;
-    }
-}
-
-#endif
-
-
-///
-///  @brief    Print debug message.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DEBUG_DPY)
-
-static void (bugprint)(
-    const char *func,                   ///< Function name
-    ...)                                ///< Remaining arguments for printf()
-{
-    assert(func != NULL);               // Make sure we have a function name
-
-    if (dpy_fp == NULL)
-    {
-        static bool first = true;
-
-        if (first)
+        if (isprint(c))                 // Printing chr. [32-126]
         {
-            first = false;
-
-            atexit(bugend);
+            width = 1;
+        }
+        else if (c >= BS && c <= CR)    // Special control chrs.
+        {
+            if (w.seeall)
+            {
+                width = (int)strlen(unctrl(ch));
+            }
+            else if (c == HT)
+            {
+                width = TABSIZE - (col % 8);
+            }
+            else
+            {
+                width = 0;
+            }
+        }
+        else if (iscntrl(c))            // General control chrs.
+        {
+            if (w.seeall)
+            {
+                width = (int)strlen(unctrl(ch));
+            }
+            else
+            {
+                width = 1;
+            }
+        }
+        else if (f.et.eightbit)         // 8-bit chrs. w/ parity bit
+        {
+            width = (int)strlen(unctrl(ch));
+        }
+        else                            // 8-bit chrs. w/o parity bit
+        {
+            width = (int)strlen(table_8bit[c & 0x7f]);
         }
 
-        dpy_fp = fopen("teco.lis", "w+");
+        if (isdelim(c) || col + width > d.prev)
+        {
+            break;
+        }
 
-        assert(dpy_fp != NULL);
-
-        setvbuf(dpy_fp, NULL, _IONBF, 0uL);
-
-        bugprint("TECO display log opened\n");
+        col += width;
     }
 
-//    fprintf(dpy_fp, "%s: ", func);      // Print error preamble
-
-    va_list argptr;
-
-    //lint -esym(530,argptr)
-
-    va_start(argptr, func);
-
-    //lint -esym(534,vfprintf)
-
-    const char *format = va_arg(argptr, const char *);
-
-    vfprintf(dpy_fp, format, argptr);   // Now add the message text
-
-    va_end(argptr);
+    return pos;
 }
-
-#endif
 
 
 ///
@@ -457,41 +438,49 @@ int get_wait(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static WINDOW *init_window(int pair, int top, int bot, int col, int width)
+static void init_window(WINDOW **win, int pair, int top, int bot, int col, int width)
 {
-    int nlines = 1 + bot - top;         // No. of rows in window
+    assert(win != NULL);
 
-    WINDOW *win;
+    if (*win != NULL && *win != stdscr)
+    {
+        delwin(*win);
+
+        *win = NULL;
+    }
+
+    int nlines = 1 + bot - top;         // No. of rows in window
 
     if (pair == EDIT)
     {
-        win = newpad(nlines, width * 4); // TODO: magic number
+        *win = newpad(nlines, w.maxline);
     }
     else
     {
-        win = subwin(stdscr, nlines, width, top, col);
+        *win = subwin(stdscr, nlines, width, top, col);
     }
 
-    check_error(win == NULL);
+    check_error(*win == NULL);
 
     // Set default foreground and background colors for region
 
-    wbkgd(win, COLOR_PAIR(pair));  //lint !e835
+    wbkgd(*win, COLOR_PAIR(pair));  //lint !e835
 
-    keypad(win, f.ed.escape ? (bool)TRUE : (bool)FALSE);
-
-    wclear(win);
+    keypad(*win, f.ed.escape ? (bool)TRUE : (bool)FALSE);
 
     if (pair == EDIT)
     {
-        prefresh(win, 0, d.left = 0, 0, 0, nlines - 1, w.width - 1);
+        d.minrow = top;
+        d.mincol = 0;
+        d.maxrow = bot;
+        d.maxcol = w.width - 1;
+
+        prefresh(*win, 0, d.hbias = 0, d.minrow, d.mincol, d.maxrow, d.mincol);
     }
     else
     {
-        wrefresh(win);
+        wrefresh(*win);
     }
-
-    return win;
 }
 
 
@@ -516,25 +505,10 @@ void init_windows(void)
         return;
     }
 
-    if (d.edit != NULL)
-    {
-        delwin(d.edit);
-    }
+    clear();
+    refresh();
 
-    if (d.cmd != NULL && d.cmd != stdscr)
-    {
-        delwin(d.cmd);
-    }
-
-    if (d.status != NULL)
-    {
-        delwin(d.status);
-    }
-
-    if (d.line != NULL)
-    {
-        delwin(d.line);
-    }
+    // Figure out what rows each window starts and ends on.
 
     int edit_top, edit_bot;
     int cmd_top, cmd_bot;
@@ -575,23 +549,23 @@ void init_windows(void)
     cmd_bot  = cmd_top + w.nlines - 1;
 
     d.nrows = 1 + edit_bot - edit_top;
-    d.edit = init_window(EDIT, edit_top, edit_bot, 0, w.width);
+
+    init_window(&d.edit, EDIT, edit_top, edit_bot, 0, w.maxline);
 
     if (f.e4.line)
     {
-        d.line = init_window(LINE, line_top, line_top, 0, w.width);
+        init_window(&d.line, LINE, line_top, line_top, 0, w.width);
     }
 
     if (f.e4.status && 1 + cmd_bot - cmd_top >= STATUS_HEIGHT)
     {
-        d.status = init_window(STATUS, cmd_top, cmd_bot, w.width - STATUS_WIDTH,
+        init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, w.width - STATUS_WIDTH);
+        init_window(&d.status, STATUS, cmd_top, cmd_bot, w.width - STATUS_WIDTH,
                     STATUS_WIDTH);
-
-        d.cmd = init_window(CMD, cmd_top, cmd_bot, 0, w.width - STATUS_WIDTH);
     }
     else
     {
-        d.cmd = init_window(CMD, cmd_top, cmd_bot, 0, w.width);
+        init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, w.width);
     }
 
     scrollok(d.cmd, (bool)TRUE);
@@ -675,22 +649,32 @@ void mark_ebuf(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void move_down(void)
+static void move_down(bool hold)
 {
-    // TODO: handle virtual columns.
-
     t.dot += getdelta_ebuf(1);      // Go to start of next line
 
-    if (d.vbias < d.nrows - 1)
+    if (d.prev < d.col)
     {
-        ++d.vbias;
+        d.prev = d.col;
     }
+
+    if (!hold)
+    {
+        if (d.vbias < d.nrows - 1)
+        {
+            ++d.vbias;
+        }
+    }
+
+    t.dot += adjust_dot();
 
     refresh_edit();
 
-    d.left = (d.col / w.width) * w.width;
+    d.hbias = (d.col / w.width) * w.width;
 
-    prefresh(d.edit, 0, d.left, 0, 0, d.nrows - 1, w.width - 1);
+    prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
+    update_status();
+    wrefresh(d.cmd);                    // Switch back to command window
 }
 
 
@@ -701,7 +685,7 @@ static void move_down(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void move_left(bool ctrl)
+static void move_left(bool hold)
 {
     if (t.dot > t.B)
     {
@@ -725,23 +709,25 @@ static void move_left(bool ctrl)
 
         if (start_of_line)
         {
-            d.left = 1 + d.col - w.width;
+            d.hbias = 1 + d.col - w.width;
         }
-        else if (ctrl)
+        else if (hold)
         {
-            --d.left;
+            --d.hbias;
         }
         else if (pos == 0)
         {
-            d.left -= w.width;
+            d.hbias -= w.width;
         }
 
-        if (d.left < 0)
+        if (d.hbias < 0)
         {
-            d.left = 0;
+            d.hbias = 0;
         }
 
-        prefresh(d.edit, 0, d.left, 0, 0, d.nrows - 1, w.width - 1);
+        d.prev = 0;
+
+        prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
     }
 }
 
@@ -753,7 +739,7 @@ static void move_left(bool ctrl)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void move_right(bool ctrl)
+static void move_right(bool hold)
 {
     if (t.dot < t.Z)
     {
@@ -773,23 +759,25 @@ static void move_right(bool ctrl)
 
         if (d.col == 0)
         {
-            d.left = 0;
+            d.hbias = 0;
         }
-        else if (ctrl)
+        else if (hold)
         {
-            ++d.left;
+            ++d.hbias;
         }
-        else if (d.col > d.left + w.width - 1)
+        else if (d.col > d.hbias + w.width - 1)
         {
-            d.left += w.width;
+            d.hbias += w.width;
         }
 
-        if (d.left > w.width - 1)
+        if (d.hbias > w.width - 1)
         {
-            d.left = w.width - 1;
+            d.hbias = w.width - 1;
         }
 
-        prefresh(d.edit, 0, d.left, 0, 0, d.nrows - 1, w.width - 1);
+        d.prev = 0;
+
+        prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
     }
 }
 
@@ -801,22 +789,32 @@ static void move_right(bool ctrl)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void move_up(void)
+static void move_up(bool hold)
 {
-    // TODO: handle virtual columns.
-
     t.dot += getdelta_ebuf(-1);
 
-    if (d.vbias > 0)
+    if (d.prev < d.col)
     {
-        --d.vbias;
+        d.prev = d.col;
     }
+
+    if (!hold)
+    {
+        if (d.vbias > 0)
+        {
+            --d.vbias;
+        }
+    }
+
+    t.dot += adjust_dot();
 
     refresh_edit();
 
-    d.left = (d.col / w.width) * w.width;
+    d.hbias = (d.col / w.width) * w.width;
 
-    prefresh(d.edit, 0, d.left, 0, 0, d.nrows - 1, w.width - 1);
+    prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
+    update_status();
+    wrefresh(d.cmd);                    // Switch back to command window
 }
 
 
@@ -980,35 +978,43 @@ int readkey_dpy(int key)
 
         if (key == KEY_UP)
         {
-            move_up();
+            move_up(NO_HOLD);
+
+            return EOF;
         }
         else if (key == KEY_DOWN)
         {
-            move_down();
+            move_down(NO_HOLD);
+
+            return EOF;
         }
         else if (key == KEY_LEFT)
         {
-            move_left((bool)false);
+            move_left(NO_HOLD);
         }
         else if (key == KEY_RIGHT)
         {
-            move_right((bool)false);
+            move_right(NO_HOLD);
         }
         else if (key == KEY_C_UP)
         {
-            bugprint("KEY_C_UP\n");
+            move_up(HOLD);
+
+            return EOF;
         }
         else if (key == KEY_C_DOWN)
         {
-            bugprint("KEY_C_DOWN\n");
+            move_down(HOLD);
+
+            return EOF;
         }
         else if (key == KEY_C_LEFT)
         {
-            move_left((bool)true);
+            move_left(HOLD);
         }
         else if (key == KEY_C_RIGHT)
         {
-            move_right((bool)true);
+            move_right(HOLD);
         }
         else                            // Not an arrow key
         {
@@ -1072,20 +1078,21 @@ void refresh_dpy(void)
         return;
     }
 
-    if (f.e4.line || f.e4.status)
-    {
-        update_status();
-    }
+    update_status();
 
-    if (ebuf_changed && w.nlines != 0 && !w.noscroll)
+    if (ebuf_changed)
     {
         ebuf_changed = false;
+        d.prev = 0;
 
-        refresh_edit();
+        if (w.nlines != 0 && !w.noscroll)
+        {
+            refresh_edit();
 
-        d.left = (d.col / w.width) * w.width;
+            d.hbias = (d.col / w.width) * w.width;
 
-        prefresh(d.edit, 0, d.left, 0, 0, d.nrows - 1, w.width - 1);
+            prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
+        }
     }
 
     wrefresh(d.cmd);                    // Switch back to command window
@@ -1103,43 +1110,25 @@ static void refresh_edit(void)
 {
     unmark_dot();
 
-    int col = 0;
-    int row = 0;
-    int_t pos  = getdelta_ebuf((int_t)-d.vbias); // First character to output
+    int_t pos = getdelta_ebuf((int_t)-d.vbias); // First character to output
+    int c;
 
     wclear(d.edit);
 
     w.topdot = t.dot + pos;
 
-    for (;;)
+    int row = 0;
+
+    while (pos < t.Z && (c = getchar_ebuf(pos)) != EOF)
     {
-        int c = getchar_ebuf(pos);
-
-        if (pos++ == 0)
+        if (pos == 0)
         {
-            d.row = row;
-            d.col = col;
+            getyx(d.edit, d.row, d.col);
         }
-
-        if (c == EOF)
-        {
-            waddch(d.edit, DIAMOND);
-
-            break;
-        }
-
-        int y __attribute__((unused));
-        int old_x, new_x;
-
-        getyx(d.edit, y, old_x);
 
         putc_edit(c);
 
-        getyx(d.edit, y, new_x);
-
-        // If we've found a delimiter (LF, VT, FF), then output an LF to
-        // end the line. And if we've filled up all the rows, then we're
-        // done. Otherwise, reset the column count for the next line.
+        // Always output an LF after a line delimiter
 
         if (isdelim(c))                 // Found a delimiter (LF, VT, FF)?
         {
@@ -1149,16 +1138,24 @@ static void refresh_edit(void)
             {
                 break;
             }
+        }
 
-            col = 0;
-        }
-        else
+        ++pos;
+    }
+        
+    if (t.dot + pos >= t.Z)             // Should we print EOF marker?
+    {
+        waddch(d.edit, DIAMOND);
+        waddch(d.edit, BS);
+
+        if (t.dot >= t.Z)               // Are we actually at EOF marker?
         {
-            col += new_x - old_x;
+            getyx(d.edit, d.row, d.col);
         }
-    }                                   //lint !e550
+    }
 
     w.botdot = t.dot + pos;
+
     mark_dot(d.row, d.col);             // Mark the new cursor
 }
 
@@ -1282,7 +1279,7 @@ void set_tab(int n)
     {
         set_tabsize(n == 0 ? DEFAULT_TABSIZE : n);
 
-        prefresh(d.edit, 0, 0, 0, 0, d.nrows, w.width);
+        prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
     }
 }
 
@@ -1302,13 +1299,6 @@ void start_dpy(void)
 
         reset_term();                   // Reset if display mode support
 
-#if 0                               // TODO: add soft labels?
-        if (f.e4.labels)
-        {
-            slk_init(2);
-        }
-#endif
-
         // Note that initscr() will print an error message and exit if it
         // fails to initialize, so there is no error return to check for.
 
@@ -1327,22 +1317,10 @@ void start_dpy(void)
 
         getmaxyx(stdscr, w.height, w.width);
 
-#if 0                               // TODO: add soft labels?
-        slk_set(1,  "F1",  1);
-        slk_set(2,  "F2",  1);
-        slk_set(3,  "F3",  1);
-        slk_set(4,  "F4",  1);
-        slk_set(5,  "F5",  1);
-        slk_set(6,  "F6",  1);
-        slk_set(7,  "F7",  1);
-        slk_set(8,  "F8",  1);
-        slk_set(9,  "F9",  1);
-        slk_set(10, "F10", 1);
-        slk_set(11, "F11", 1);
-        slk_set(12, "F12", 1);
-
-        slk_refresh();
-#endif
+        if (w.maxline < w.width)
+        {
+            w.maxline = w.width;
+        }
 
         init_windows();
         color_dpy();

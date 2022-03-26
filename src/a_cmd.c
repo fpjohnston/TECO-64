@@ -31,6 +31,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
@@ -111,10 +112,16 @@ bool append_line(void)
     bool first_line = (ftell(ifile->fp) == 0);
     int next = fgetc(ifile->fp);
     int c;
+    int len = 0;
 
     while ((c = next) != EOF)
     {
         next = fgetc(ifile->fp);
+
+        if (++len > w.maxline)          // Is line longer than maximum?
+        {
+            w.maxline += w.width;       // Yes, so bump this for display mode
+        }
 
         if (c == NUL && !f.e3.keepNUL)  // Discard NUL chrs. if necessary
         {
