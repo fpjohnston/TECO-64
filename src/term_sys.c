@@ -67,7 +67,7 @@ static FILE *key_fp = NULL;             ///< Keystroke file descriptor
 
 static struct sigaction old_act;        ///< Saved action for SIGWINCH signal
 
-static bool old_saved = false;
+static bool old_saved = false;          ///< true if old_act has valid data
 
 // Local functions
 

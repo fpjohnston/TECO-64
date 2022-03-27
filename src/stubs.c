@@ -141,6 +141,19 @@ void exec_F3(struct cmd *unused)
 
 
 ///
+///  @brief    (STUB) Execute F4 command: set colors for divider line.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_F4(struct cmd *unused)
+{
+    ;
+}
+
+
+///
 ///  @brief    (STUB) Execute FM command: map key to command string, or unmap key.
 ///
 ///  @returns  Returns failure for :FM command, else exception is thrown.
@@ -237,19 +250,6 @@ int get_wait(void)
 
 
 ///
-///  @brief    (STUB) Get tabsize.
-///
-///  @returns  Tab size.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int get_window(void)
-{
-    return 8;                           // Standard tab size
-}
-
-
-///
 ///  @brief    (STUB) Initialize display windows.
 ///
 ///  @returns  Nothing.
@@ -276,17 +276,16 @@ void mark_ebuf(void)
 
 
 ///
-///  @brief    (STUB) Output character to display.
+///  @brief    (STUB) Output character to command window.
 ///
-///  @returns  false (display is not active).
+///  @returns  Always false (because display is never active).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool putc_dpy(int unused)
+bool putc_cmd(int unused)
 {
     return false;
 }
-
 
 ///
 ///  @brief    (STUB) Read display key.

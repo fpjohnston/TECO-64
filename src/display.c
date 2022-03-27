@@ -56,11 +56,11 @@
 
 #if     INT_T == 64
 
-#define FMT     "%ld"
+#define FMT     "%ld"               ///< 64-bit numeric format
 
 #else
 
-#define FMT     "%d"
+#define FMT     "%d"                ///< 32-bit numeric format
 
 #endif
 
@@ -88,12 +88,12 @@ static uint n_end = 0;              ///< No. of consecutive End keys
 
 
 ///
-///  @struct  display
+///  @var     d
 ///
 ///  @brief   Display window information
 ///
 
-static struct display
+static struct
 {
     WINDOW *edit;                   ///< Edit window
     WINDOW *status;                 ///< Status window
