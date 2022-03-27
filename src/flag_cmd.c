@@ -198,7 +198,6 @@ void exec_E4(struct cmd *cmd)
     f.e4.invert = e4.invert;
     f.e4.line   = e4.line;
     f.e4.status = e4.status;
-    f.e4.labels = e4.labels;
 
     if (f.e0.display && changes)        // Any changes?
     {

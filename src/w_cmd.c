@@ -38,7 +38,6 @@
 
 #define DEFAULT_HEIGHT          24      ///< Default terminal rows
 #define DEFAULT_WIDTH           80      ///< Default terminal columns
-#define DEFAULT_MAXLINE         400     ///< Default maximum line length
 
 #define MIN_HEIGHT              10      ///< Minimum no. of rows
 #define MIN_WIDTH               10      ///< Minimum no. of columns
@@ -54,7 +53,7 @@ struct watch w =
     .topdot   = 0,                      // Value of F0 flag
     .botdot   = 0,                      // Value of FZ flag
     .nlines   = 0,
-    .maxline  = DEFAULT_MAXLINE,
+    .maxline  = DEFAULT_WIDTH,
     .seeall   = false,
     .noscroll = false,
     .tchar    =
@@ -307,6 +306,8 @@ static void set_w(int_t m, int_t n)
         case 3:
             w.seeall = m ? true : false;
 
+            mark_ebuf();
+
             break;
 
             
@@ -327,7 +328,7 @@ static void set_w(int_t m, int_t n)
 
         case 10:
             set_tab(m);
-            clear_dpy();
+            mark_ebuf();
 
             break;
 

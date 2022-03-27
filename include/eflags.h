@@ -143,7 +143,6 @@ union e4_flag
         uint invert  : 1;       ///< Put command window above edit window
         uint line    : 1;       ///< Line between edit and command windows
         uint status  : 1;       ///< Display status on line
-        uint labels  : 1;       ///< Enable soft labels
     };
 };
 

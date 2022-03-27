@@ -121,6 +121,8 @@ extern void reset_colors(void);
 
 extern void rubout_dpy(int c);
 
+extern void setdot_dpy(void);
+
 extern void set_parity(bool parity);
 
 extern void set_tab(int n);

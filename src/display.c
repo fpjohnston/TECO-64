@@ -74,6 +74,8 @@
 
 #define STATUS_HEIGHT        5      ///< Min. height for status window
 
+#define EOF_ROWS             4      ///< No. of rows following EOF
+
 #define HOLD        (bool)true      ///< Hold cursor in current row/column
 
 #define NO_HOLD     (bool)false     ///< Don't hold cursor in current row/column
@@ -145,7 +147,7 @@ static int_t adjust_dot(void);
 
 static void init_window(WINDOW **win, int pair, int top, int bot, int col, int width);
 
-static void mark_dot(int row, int col);
+static void mark_dot(void);
 
 static void move_down(bool hold);
 
@@ -159,6 +161,8 @@ static void putc_edit(int c);
 
 static void refresh_edit(void);
 
+static void refresh_status(void);
+
 static void reset_dpy(void);
 
 static void resize_key(void);
@@ -166,8 +170,6 @@ static void resize_key(void);
 static void status_line(int line, const char *header, const char *data);
 
 static void unmark_dot(void);
-
-static void update_status(void);
 
 
 ///
@@ -227,7 +229,7 @@ static int_t adjust_dot(void)
             width = (int)strlen(table_8bit[c & 0x7f]);
         }
 
-        if (isdelim(c) || col + width > d.prev)
+        if (isdelim(c) || c == CR || col + width > d.prev)
         {
             break;
         }
@@ -311,12 +313,10 @@ void check_escape(bool escape)
 
 void clear_dpy(void)
 {
-    term_pos = 0;
+    term_pos = 0;                       // Nothing output to terminal yet
 
     init_windows();
-
-    ebuf_changed = true;
-
+    mark_ebuf();
     refresh_dpy();
 }
 
@@ -582,19 +582,16 @@ void init_windows(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void mark_dot(int row, int col)
+static void mark_dot(void)
 {
-    if (row >= d.nrows)
+    if (d.row >= d.nrows)
     {
-        row = d.nrows - 1;
+        d.row = d.nrows - 1;
     }
-    else if (row < 0)
+    else if (d.row < 0)
     {
-        row = 0;
+        d.row = 0;
     }
-
-    d.row = row;
-    d.col = col;
 
     if (t.dot == t.Z)
     {
@@ -602,12 +599,15 @@ static void mark_dot(int row, int col)
     }
     else
     {
-        int n;
+        int n = 1;                      // Most chrs. are 1 byte wide
         int c = getchar_ebuf(0);
 
-        if (iscntrl(c) && (c < BS || c > CR))
+        if (iscntrl(c))
         {
-            n = (int)strlen(unctrl((chtype)c));
+            if (w.seeall || (c < BS || c > CR))
+            {
+                n = (int)strlen(unctrl((chtype)c));
+            }
         }
         else if (c > DEL)
         {
@@ -619,10 +619,6 @@ static void mark_dot(int row, int col)
             {
                 n = (int)strlen(table_8bit[c & 0x7f]);
             }
-        }
-        else
-        {
-            n = 1;
         }
 
         mvwchgat(d.edit, d.row, d.col, n, A_REVERSE, EDIT, NULL);
@@ -668,14 +664,6 @@ static void move_down(bool hold)
     }
 
     t.dot += adjust_dot();
-
-    refresh_edit();
-
-    d.hbias = (d.col / w.width) * w.width;
-
-    prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
-    update_status();
-    wrefresh(d.cmd);                    // Switch back to command window
 }
 
 
@@ -692,7 +680,7 @@ static void move_left(bool hold)
     {
         --t.dot;
 
-        int c = getchar_ebuf(0);
+        int c = getchar_ebuf(0);        // Get previous character
 
         if (isdelim(c))
         {
@@ -702,21 +690,16 @@ static void move_left(bool hold)
             }
         }
 
-        bool start_of_line = (d.col == 0);
-
-        refresh_edit();
-
-        int pos = d.col % w.width;
-
-        if (start_of_line)
+        if (d.col == 0)
         {
-            d.hbias = 1 + d.col - w.width;
+            d.col = -getdelta_ebuf(0);  // Go to end of line
+            d.hbias = d.col - w.width;
         }
         else if (hold)
         {
             --d.hbias;
         }
-        else if (pos == 0)
+        else if (d.col <= d.hbias)
         {
             d.hbias -= w.width;
         }
@@ -725,10 +708,6 @@ static void move_left(bool hold)
         {
             d.hbias = 0;
         }
-
-        d.prev = 0;
-
-        prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
     }
 }
 
@@ -744,19 +723,19 @@ static void move_right(bool hold)
 {
     if (t.dot < t.Z)
     {
-        ++t.dot;
+        int c = getchar_ebuf(0);        // Get next character
 
-        int c = getchar_ebuf(0);
+        ++t.dot;
 
         if (isdelim(c))
         {
+            d.col = 0;
+
             if (d.vbias < d.nrows - 1)
             {
                 ++d.vbias;
             }
         }
-
-        refresh_edit();
 
         if (d.col == 0)
         {
@@ -766,19 +745,15 @@ static void move_right(bool hold)
         {
             ++d.hbias;
         }
-        else if (d.col > d.hbias + w.width - 1)
+        else if (d.col >= d.hbias + w.width - 1)
         {
             d.hbias += w.width;
         }
 
-        if (d.hbias > w.width - 1)
+        if (d.hbias > w.width)
         {
-            d.hbias = w.width - 1;
+            d.hbias = w.width;
         }
-
-        d.prev = 0;
-
-        prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
     }
 }
 
@@ -792,7 +767,7 @@ static void move_right(bool hold)
 
 static void move_up(bool hold)
 {
-    t.dot += getdelta_ebuf(-1);
+    t.dot += getdelta_ebuf(-1);         // Go to start of previous line
 
     if (d.prev < d.col)
     {
@@ -808,14 +783,6 @@ static void move_up(bool hold)
     }
 
     t.dot += adjust_dot();
-
-    refresh_edit();
-
-    d.hbias = (d.col / w.width) * w.width;
-
-    prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
-    update_status();
-    wrefresh(d.cmd);                    // Switch back to command window
 }
 
 
@@ -921,6 +888,10 @@ static void putc_edit(int c)
 
 int readkey_dpy(int key)
 {
+    int saved_prev = d.prev;
+
+    d.prev = 0;                         // Assume we need to reset this
+
     if (!f.e0.display)                  // If display is off,
     {
         return key;                     //  just return whatever we got
@@ -933,45 +904,48 @@ int readkey_dpy(int key)
     {
         n_end = 0;
 
-        if (++n_home == 1)              // Beginning of line
+        if (++n_home == 1)
         {
-            exec_str("0 L");
+            t.dot += getdelta_ebuf(0);
         }
-        else if (n_home == 2)           // Beginning of window
+        else if (n_home == 2)
         {
-            exec_str("F0 J");
+            t.dot = w.topdot;
+            d.vbias = 0;
         }
-        else                            // Beginning of file
+        else
         {
-            exec_str("0 J");
+            n_home = 0;
+            t.dot = t.B;
         }
 
-        ebuf_changed = true;
+        setdot_dpy();
     }
     else if (key == KEY_END)
     {
         n_home = 0;
 
-        if (++n_end == 1)               // End of line
+        if (++n_end == 1)
         {
-            // We effectively execute "LR" to get to the end of a line that
-            // ends with LF, and execute "L2R" for a line that ends with CR/LF.
-            // The commands below, which include a test to see if the character
-            // before the LF is a CR, take care of this regardless of the file
-            // format.
+            t.dot += getdelta_ebuf(1);
 
-            exec_str("L (-2 A - 13)\"E 2 R | R '");
+            if (t.dot > t.B)
+            {
+                --t.dot;
+            }
         }
-        else if (n_end == 2)            // End of window
+        else if (n_end == 2)
         {
-            exec_str("(FZ - 1) J");
+            t.dot = w.botdot;
+            d.vbias = d.nrows - 1;
         }
-        else                            // End of file
+        else
         {
-            exec_str("Z J");
+            n_end = 0;
+            t.dot = t.Z;
         }
 
-        ebuf_changed = true;
+        setdot_dpy();
     }
     else                                // Neither Home nor End
     {
@@ -979,15 +953,15 @@ int readkey_dpy(int key)
 
         if (key == KEY_UP)
         {
-            move_up(NO_HOLD);
+            d.prev = saved_prev;        // Restore saved column
 
-            return EOF;
+            move_up(NO_HOLD);
         }
         else if (key == KEY_DOWN)
         {
-            move_down(NO_HOLD);
+            d.prev = saved_prev;        // Restore saved column
 
-            return EOF;
+            move_down(NO_HOLD);
         }
         else if (key == KEY_LEFT)
         {
@@ -999,15 +973,15 @@ int readkey_dpy(int key)
         }
         else if (key == KEY_C_UP)
         {
-            move_up(HOLD);
+            d.prev = saved_prev;        // Restore saved column
 
-            return EOF;
+            move_up(HOLD);
         }
         else if (key == KEY_C_DOWN)
         {
-            move_down(HOLD);
+            d.prev = saved_prev;        // Restore saved column
 
-            return EOF;
+            move_down(HOLD);
         }
         else if (key == KEY_C_LEFT)
         {
@@ -1019,8 +993,6 @@ int readkey_dpy(int key)
         }
         else                            // Not an arrow key
         {
-            ebuf_changed = true;        // Repaint the edit window
-
             if (key == KEY_PPAGE)
             {
                 exec_str("-(2:W) L");
@@ -1059,6 +1031,7 @@ int readkey_dpy(int key)
         }
     }
 
+    mark_ebuf();
     refresh_dpy();
 
     return EOF;
@@ -1074,27 +1047,26 @@ int readkey_dpy(int key)
 
 void refresh_dpy(void)
 {
-    if (!f.e0.display)
+    if (!f.e0.display || w.nlines == 0 || w.noscroll)
     {
         return;
     }
 
-    update_status();
-
     if (ebuf_changed)
     {
         ebuf_changed = false;
-        d.prev = 0;
 
-        if (w.nlines != 0 && !w.noscroll)
+        refresh_edit();
+
+        if (n_home != 0 || n_end != 0)
         {
-            refresh_edit();
-
             d.hbias = (d.col / w.width) * w.width;
-
-            prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
         }
+
+        prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
     }
+
+    refresh_status();
 
     wrefresh(d.cmd);                    // Switch back to command window
 }
@@ -1111,14 +1083,20 @@ static void refresh_edit(void)
 {
     unmark_dot();
 
-    int_t pos = getdelta_ebuf((int_t)-d.vbias); // First character to output
+    int next = getlines_ebuf(1);        // No. of lines remaining
+
+    if (d.vbias + next < d.nrows - EOF_ROWS)
+    {
+        d.vbias = d.nrows - EOF_ROWS;
+    }
+
+    int_t pos = getdelta_ebuf((int_t)-d.vbias);
     int c;
+    int row = 0;
 
     wclear(d.edit);
 
     w.topdot = t.dot + pos;
-
-    int row = 0;
 
     while (pos < t.Z && (c = getchar_ebuf(pos)) != EOF)
     {
@@ -1157,7 +1135,103 @@ static void refresh_edit(void)
 
     w.botdot = t.dot + pos;
 
-    mark_dot(d.row, d.col);             // Mark the new cursor
+    mark_dot();                         // Mark the new cursor
+}
+
+
+///
+///  @brief    Refresh status window and divider line.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void refresh_status(void)
+{
+    if (f.e4.status)
+    {
+        char buf[STATUS_WIDTH + 1];
+        int nrows, line = 0;
+
+        //lint -save -e438 -e550
+        int unused __attribute__((unused));
+        //lint -restore
+
+        getmaxyx(d.status, nrows, unused);
+
+        // Output current position and no. of characters in edit buffer
+
+        snprintf(buf, sizeof(buf), FMT "/" FMT, t.dot, t.Z);
+        status_line(line++, "./Z", buf);
+
+        // Output row and column for display
+
+        if (t.dot >= t.Z)
+        {
+            status_line(line++, "Row/Col", "EOF");
+        }
+        else
+        {
+            int n = snprintf(buf, sizeof(buf), FMT, d.row + 1);
+
+            snprintf(buf + n, sizeof(buf) - (size_t)(uint)n, "/" FMT, d.col + 1);
+            status_line(line++, "Row/Col", buf);
+        }
+
+        // Output no. of lines in file
+
+        snprintf(buf, sizeof(buf), FMT, getlines_ebuf(0));
+        status_line(line++, "Lines", buf);
+
+        // Output memory size
+
+        uint_t memsize = getsize_ebuf();
+
+        if (memsize >= GB)
+        {
+            snprintf(buf, sizeof(buf), "%uG", memsize / GB);
+        }
+        else if (memsize >= MB)
+        {
+            snprintf(buf, sizeof(buf), "%uM", memsize / MB);
+        }
+        else if (memsize >= KB)
+        {
+            snprintf(buf, sizeof(buf), "%uK", memsize / KB);
+        }
+
+        status_line(line++, "Memory", buf);
+
+        // Output page number
+
+        snprintf(buf, sizeof(buf), "%d", page_count());
+        status_line(line++, "Page", buf);
+
+        // Output vertical line to divide command window from status window
+
+        mvwvline(d.status, 0, 0, ACS_VLINE | COLOR_PAIR(LINE), nrows); //lint !e835
+
+        wrefresh(d.status);
+    }                                   //lint !e438 !e550
+
+    if (f.e4.line)
+    {
+        whline(d.line, ACS_HLINE, w.width);
+
+        // If we have a status window, then connect its vertical line to the
+        // horizontal line we just printed, using a top tee character if the
+        // the edit window is on top of the command window, or a bottom tee
+        // character if the command window is on top.
+
+        if (f.e4.status)
+        {
+            chtype ch = (f.e4.invert) ? ACS_BTEE : ACS_TTEE;
+
+            mvwaddch(d.line, 0, w.width - STATUS_WIDTH, ch);
+        }
+
+        wrefresh(d.line);
+    }
 }
 
 
@@ -1221,6 +1295,21 @@ void rubout_dpy(int c)
 
 
 ///
+///  @brief    Mark 'dot' as having changed, and force a screen redraw.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void setdot_dpy(void)
+{
+    ebuf_changed = true;
+
+    d.prev = 0;
+}
+
+
+///
 ///  @brief    Set parity. Note that the window argument to meta() is always
 ///            ignored, so we just pass it as a NULL.
 ///
@@ -1233,6 +1322,7 @@ void set_parity(bool parity)
     if (f.e0.display)
     {
         meta(NULL, parity ? (bool)TRUE : (bool)FALSE);
+        ebuf_changed = true;
     }
 }
 
@@ -1358,100 +1448,5 @@ static void unmark_dot(void)
         }
 
         mvwchgat(d.edit, d.row, d.col, n, 0, EDIT, NULL);
-    }
-}
-
-
-///
-///  @brief    Update status window and divider line.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void update_status(void)
-{
-    if (f.e4.status)
-    {
-        char buf[STATUS_WIDTH + 1];
-        int nrows, line = 0;
-
-        //lint -save -e438 -e550
-        int unused __attribute__((unused));
-        //lint -restore
-
-        getmaxyx(d.status, nrows, unused);
-
-        // Output current position and no. of characters in edit buffer
-
-        snprintf(buf, sizeof(buf), FMT "/" FMT, t.dot, t.Z);
-        status_line(line++, "./Z", buf);
-
-        // Output row and column for display
-
-        int row = (int)getlines_ebuf(-1) + 1;
-
-        if (t.dot >= t.Z)
-        {
-            status_line(line++, "pos", "EOF");
-        }
-        else
-        {
-            int n = snprintf(buf, sizeof(buf), FMT, row);
-
-            snprintf(buf + n, sizeof(buf) - (size_t)(uint)n, "/" FMT, d.col);
-            status_line(line++, "r/c", buf);
-        }
-
-        // Output no. of lines in file
-
-        snprintf(buf, sizeof(buf), FMT, getlines_ebuf(0));
-        status_line(line++, "lines", buf);
-
-        // Output memory size
-
-        uint_t memsize = getsize_ebuf();
-
-        if (memsize >= GB)
-        {
-            snprintf(buf, sizeof(buf), "%uG", memsize / GB);
-        }
-        else if (memsize >= MB)
-        {
-            snprintf(buf, sizeof(buf), "%uM", memsize / MB);
-        }
-        else if (memsize >= KB)
-        {
-            snprintf(buf, sizeof(buf), "%uK", memsize / KB);
-        }
-
-        status_line(line++, "memory", buf);
-
-        // Output page number
-
-        snprintf(buf, sizeof(buf), "%d", page_count());
-        status_line(line++, "page", buf);
-
-        // Output vertical line to divide command window from status window
-
-        mvwvline(d.status, 0, 0, ACS_VLINE | COLOR_PAIR(LINE), nrows); //lint !e835
-
-        wrefresh(d.status);
-    }                                   //lint !e438 !e550
-
-    if (f.e4.line)
-    {
-        whline(d.line, ACS_HLINE, w.width);
-
-        // If we have a status window, then connect its vertical
-        // line to our horizontal line, using a top tee character.
-
-        if (f.e4.status)
-        {
-            mvwaddch(d.line, 0, w.width - STATUS_WIDTH,
-                     f.e4.invert ? ACS_BTEE : ACS_TTEE);
-        }
-
-        wrefresh(d.line);
     }
 }

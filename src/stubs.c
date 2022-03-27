@@ -353,6 +353,19 @@ void rubout_dpy(int unused)
 
 
 ///
+///  @brief    (STUB) Mark 'dot' as having changed, and force a screen redraw.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void setdot_dpy(void)
+{
+    ;
+}
+
+
+///
 ///  @brief    (STUB) Set parity.
 ///
 ///  @returns  Nothing.

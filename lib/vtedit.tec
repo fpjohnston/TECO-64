@@ -16,8 +16,8 @@ QN "E
 
 @f1/cyan/black/         !! Set command window colors
 @f2/blue/white/         !! Set edit window colors
-@f3/cyan/black/         !! Set status window colors
-@f4/cyan/black/         !! Set divider line colors
+@f3/green/black/        !! Set status window colors
+@f4/red/black/          !! Set divider line colors
 
 @fm/S_PGDN/P/           !! Next page
 @fm/S_PGUP/-P/          !! Previous page

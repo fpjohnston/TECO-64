@@ -472,7 +472,7 @@ void setpos_ebuf(int_t pos)
     {
         t.dot = pos;
 
-        mark_ebuf();
+        setdot_dpy();                   // Tell display that 'dot' changed
     }
 }
 
