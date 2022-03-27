@@ -44,7 +44,7 @@ used to customize which bits are set or cleared.
 | E1&2048 | Unused. |
 | E1&4096 | Unused. |
 | E1&8192 | Unused. |
-| E1&16384 | Unused. |
+| E1&16384 | If set, typing a double CTRL/] causes the last command string to be executed again. |
 | E1&32768 | If set, typing a newline at the end of a command string is equivalent to typing a double ESCape. If clear, newlines are treated as part of the command string (and ignored). |
 
 ### E2 - Command Restrictions Flag

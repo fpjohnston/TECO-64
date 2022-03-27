@@ -4,8 +4,8 @@
 
 TECO is a text editor for editing ASCII files. It can be executed
 either interactively, using a simple command-line interface, or with
-a display mode that includes the ability to define separate regions
-in a window for both an edit buffer and TECO commands.
+a display mode that includes the ability to define separate windows
+on a terminal screen for both an edit buffer and TECO commands.
 
 TECO is also a programming or scripting language that allows users to
 create *macros* for processing text or files, using a terse syntax

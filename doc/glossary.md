@@ -3,12 +3,12 @@
 **Accent grave**
 
 The ` character (ASCII 96). Echoed for TECO’s text and command string delimiter when an
-ESCape surrogate is in effect. Actually set as the ESCape surrogate by the 8192ET
+ESCape surrogate is in effect. Actually set as the ESCape surrogate by the ET&8192
 flag bit, or EE flag.
 
 **Abort-on-error bit**
 
-The 128ET flag bit. If this bit is set, then TECO will abort execution on
+The ET&128 flag bit. If this bit is set, then TECO will abort execution on
 encountering an error (after printing the error message) and control returns to
 the operating system. This bit is initially set when TECO starts up, but is reset
 whenever TECO issues its prompt.
@@ -49,7 +49,7 @@ after command execution.
 
 **Auto-trace mode**
 
-A mode that TECO goes into when the 4EH flag bit is set.
+A mode that TECO goes into when the EH&4 flag bit is set.
 In this mode, TECO will automatically print out the erroneous command string
 after an error occurs.
 
@@ -202,7 +202,7 @@ One of several two-character TECO commands that start with the letter ’E’.
 
 A normal mode of operation in which TECO will automatically echo (display) each
 character that is typed in response to a ^T command. Opposite of no-echo mode.
-This mode is controlled by the 8ET flag bit. (0 means no-echo mode.)
+This mode is controlled by the ET&8 flag bit. (0 means no-echo mode.)
 
 **ED flag**
 
@@ -268,7 +268,7 @@ surrogate is active, an ESCape types out as $ (dollar sign). See also \<DELIM\>.
 
 **ESCape surrogate**
 
-A character (designated via the 8192ET flag bit, or via the EE flag) which causes
+A character (designated via the ET&8192 flag bit, or via the EE flag) which causes
 an ESCape to be transmitted to TECO. When an ESCape surrogate is active, an
 ESCape types out as ` (accent grave). See also \<DELIM\>.
 
@@ -402,7 +402,7 @@ continued on the next line. Opposite of truncate mode.
 
 **Literal type-out mode**
 
-A mode that TECO can be put into by setting the 1ET flag bit, or (for a
+A mode that TECO can be put into by setting the ET&1 flag bit, or (for a
 single character on a one-shot basis) by using the :^T command. In this mode,
 any characters typed by a TECO program via use of one of the commands T,
 V, ^A, or :G, will be displayed on the user’s terminal without any modification.
@@ -464,7 +464,7 @@ users to their source files.
 
 A mode of operation in which TECO will not automatically echo (display) the
 character typed by the user in response to the ^T command. This mode is entered
-by setting the 8ET flag bit. Opposite of echo mode.
+by setting the ET&8 flag bit. Opposite of echo mode.
 
 **Page**
 
@@ -483,7 +483,7 @@ edited. TECOs are pipeline editors.
 **Pointer preservation mode**
 
 A mode of operation in which the edit buffer pointer will not change after a
-failing search. This mode is controlled by the 16ED flag bit.
+failing search. This mode is controlled by the ED&16 flag bit.
 
 **Primary input stream**
 
@@ -515,7 +515,7 @@ Q-registers.
 
 A mode of operation in which the ^T command will not hang until a key is typed
 on the user’s terminal. In this mode, if no key has been struck, TECO returns a
--1 as the value of the ^T command. This mode is entered by setting the 32ET flag
+-1 as the value of the ^T command. This mode is entered by setting the ET&32 flag
 bit.
 
 **Scrolling**
@@ -562,7 +562,7 @@ formed by use of the EA command.
 **Scope editing mode**
 
 A mode of TECO in which command line scope editing (q.v.) algorithms are
-used. This mode is enabled by setting the 2ET flag bit. It is usually
+used. This mode is enabled by setting the ET&2 flag bit. It is usually
 automatically enabled by TECO if the operating system can detect that the user
 has invoked TECO from a scope terminal. Opposite of hard-copy editing mode.
 
@@ -619,7 +619,7 @@ via use of the ? command.
 
 A mode of TECO’s window support wherein lines that are too long to fit on a
 single physical line of the user’s terminal are truncated when the right margin of
-the scope is encountered. This mode is entered by setting the 256ET flag bit.
+the scope is encountered. This mode is entered by setting the ET&256 flag bit.
 Opposite of line-wrap mode.
 
 **Type-out-time command**
@@ -657,5 +657,5 @@ A feature of TECO wherein any Y, _, or F_ command that will potentially destroy
 valid data is aborted. This mode is normally enabled and will cause any of the
 aforementioned commands to abort with the ?YCA error message if there is text
 in the edit buffer and an output file is open. This feature can be disabled by
-turning off the 2ED flag bit.
+turning off the ED&2 flag bit.
 

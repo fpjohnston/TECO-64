@@ -24,8 +24,9 @@ after TECO's prompt, and perform different functions if they are not.
 
 | Command | Function |
 | ------- | -------- |
-| \<BS\> | Causes TECO to execute a "-LT" command. This lets you walk backwards through a file when display mode is disabled. If you are already positioned at the start of the edit buffer, this command does nothing. <br><br>If the EV flag is non-zero, then the T portion of this command is redundant and is not executed.<br/><br/>If scrolling is enabled in display mode, changes are shown immediately in the edit region, so the T portion of this command is not executed. |
-| \<LF\> | Causes TECO to execute an "LT" command. This lets you walk forwards through a file when display mode is disabled. If you are already positioned at the end of the edit buffer, this command does nothing. <br><br>If the EV flag is non-zero, then the T portion of this command is redundant and is not executed. <br/><br/>If scrolling is enabled in display mode, changes are shown immediately in the edit region, so the T portion of the command is not executed. |
+| \<BS\> | Causes TECO to execute a "-LT" command. This lets you walk backwards through a file when display mode is disabled. If you are already positioned at the start of the edit buffer, this command does nothing. <br><br>If the EV flag is non-zero, then the T portion of this command is redundant and is not executed.<br/><br/>If scrolling is enabled in display mode, changes are shown immediately in the edit window, so the T portion of this command is not executed. |
+| \<LF\> | Causes TECO to execute an "LT" command. This lets you walk forwards through a file when display mode is disabled. If you are already positioned at the end of the edit buffer, this command does nothing. <br><br>If the EV flag is non-zero, then the T portion of this command is redundant and is not executed. <br/><br/>If scrolling is enabled in display mode, changes are shown immediately in the edit window, so the T portion of the command is not executed. |
+| \<CTRL/]\>\<CTRL/]\> | If the ET&16384 flag bit is set, causes last command to be executed again. |
 | \<DEL\> | Equivalent to the \<BS\> command. |
 | \<*delim*\> | Equivalent to the \<LF\> command. |
 
@@ -49,7 +50,7 @@ FQ commands, described below.
 | Command | Function |
 | ------- | -------- |
 | \<CTRL/W\> | Re-paints the display. |
-| \<CTRL/K\> | Changes the edit and command region to a black foreground on a white background, and the status line (if any) to a white foreground on a black background. This command is intended to remedy the situation where a user inadvertently sets the same foreground and background colors for a region, thus rendering it unreadable. |
+| \<CTRL/K\> | Changes the edit and command window to a black foreground on a white background, and the status line (if any) to a white foreground on a black background. This command is intended to remedy the situation where a user inadvertently sets the same foreground and background colors for a window, thus rendering it unreadable. |
 | \<End\> | Go to end of line. |
 | \<End\>\<End\> | Go to end of window. |
 | <nobr>\<End\>\<End\>\<End\></nobr> | Go to end of file. |

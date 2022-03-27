@@ -64,22 +64,22 @@ the terminal width and height, respectively, but should not be necessary
 for setting either since TECO determines the terminal size automatically
 at start-up and whenever the display is resized.
 
-- -1W - Refresh the terminal’s screen to show the contents of the edit buffer.
+- -1W - Enable disable mode.
+- -W - Equivalent to -1W.
 - -nW - Ignored.
 - nW - Ignored.
 - 0W - Ignored.
-- W - Forget screen image and special scope modes.
+- W - Disable display mode.
 - -1000W - Ignored.
-- 0:W - Can be read or set, but is otherwise ignored.
+- 0:W - Read the terminal type. Cannot be set.
 - :W - Equivalent to 0:W.
 - 1:W - Read or set the horizontal size of the user’s editing display.
 - 2:W - Read or set the vertical size of the user’s editing display.
-- 3:W - Read or set SEEALL mode. This is currently not used, but may be
-added in a future release.
-- 4:W - Can be read or set, but is otherwise ignored.
-- 5:W - Can be read or set, but is otherwise ignored.
-- 6:W - Can be read or set, but is otherwise ignored.
+- 3:W - Read or set SEEALL mode.
+- 4:W - Always returns 0. Cannot be set.
+- 5:W - Always returns 0. Cannot be set.
+- 6:W - Read the buffer position of the character in the top left corner of the screen. Cannot be set.
 - 7:W - Read or set the number of lines in the scrolling (command dialogue)
 portion of the screen.
-- 8:W - Can be read or set, but is otherwise ignored.
-- 9:W - Can be read or set, but is otherwise ignored.
+- 8:W - Read or set scrolling region status. If set to a non-zero value, the scrolling region is disabled.
+- 9:W - Read the terminal characteristics flag. Cannot be set.

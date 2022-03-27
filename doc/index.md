@@ -65,8 +65,8 @@
 | ^Z             | [Size of text in all Q-registers](variables.md) |
 | ESC            | [String and command terminator](action.md) |
 | ^[             | [String and command terminator](action.md) |
-| ^\\            | Equivalent to CTRL/C. |
-| ^]             | Not a TECO command |
+| ^\\            | Causes TECO to immediately abort. Use with caution. No recovery is possible. |
+| ^]             | [Repeats last command](action.md) |
 | ^^*x*          | [ASCII value of *x*](variables.md) |
 | ^_             | [One's complement (logical NOT)](oper.md) |
 | SPACE          | [Ignored in commands](conventions.md) |
@@ -177,9 +177,10 @@
 | E_             | [Search w/o yank protection](search.md) |
 | F'             | [Flow to end of conditional](ifthen.md) |
 | F0             | [Edit buffer position at start of window](variables.md) |
-| F1             | [Set command region colors](display.md) |
-| F2             | [Set edit region colors](display.md) |
-| F3             | [Set status line colors](display.md) |
+| F1             | [Set command window colors](display.md) |
+| F2             | [Set edit window colors](display.md) |
+| F3             | [Set status window colors](display.md) |
+| F4             | [Set separator line colors](display.md) |
 | F\<            | [Flow to start of iteration](loops.md) |
 | F\>            | [Flow to end of iteration](loops.md) |
 | *m*,*n*FB      | [Search between positions *m* and *n*](search.md) |
