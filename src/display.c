@@ -233,6 +233,7 @@ static int_t adjust_dot(void)
         }
 
         col += width;
+        ++pos;
     }
 
     return pos;
@@ -462,7 +463,7 @@ static void init_window(WINDOW **win, int pair, int top, int bot, int col, int w
 
     check_error(*win == NULL);
 
-    // Set default foreground and background colors for region
+    // Set default foreground and background colors for window
 
     wbkgd(*win, COLOR_PAIR(pair));  //lint !e835
 
@@ -1161,36 +1162,6 @@ static void refresh_edit(void)
 
 
 ///
-///  @brief    Reset region colors to defaults.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void reset_colors(void)
-{
-    if (can_change_color())             // Make colors as bright as possible
-    {
-        init_color(COLOR_BLACK,        0,      0,      0);
-        init_color(COLOR_RED,     SATMAX,      0,      0);
-        init_color(COLOR_GREEN,        0, SATMAX,      0);
-        init_color(COLOR_YELLOW,  SATMAX, SATMAX,      0);
-        init_color(COLOR_BLUE,         0,      0, SATMAX);
-        init_color(COLOR_MAGENTA, SATMAX,      0, SATMAX);
-        init_color(COLOR_CYAN,         0, SATMAX, SATMAX);
-        init_color(COLOR_WHITE,   SATMAX, SATMAX, SATMAX);
-    }
-
-    assume_default_colors(COLOR_BLACK, COLOR_WHITE);
-
-    init_pair(CMD,    COLOR_BLACK, COLOR_WHITE);
-    init_pair(EDIT,   COLOR_BLACK, COLOR_WHITE);
-    init_pair(STATUS, COLOR_BLACK, COLOR_WHITE);
-    init_pair(LINE,   COLOR_BLACK, COLOR_WHITE);
-}
-
-
-///
 ///  @brief    Terminate display mode.
 ///
 ///  @returns  Nothing.
@@ -1419,7 +1390,6 @@ static void update_status(void)
         // Output row and column for display
 
         int row = (int)getlines_ebuf(-1) + 1;
-        int col = (int)-getdelta_ebuf((int_t)0) + 1;
 
         if (t.dot >= t.Z)
         {
@@ -1429,7 +1399,7 @@ static void update_status(void)
         {
             int n = snprintf(buf, sizeof(buf), FMT, row);
 
-            snprintf(buf + n, sizeof(buf) - (size_t)(uint)n, "/" FMT, col);
+            snprintf(buf + n, sizeof(buf) - (size_t)(uint)n, "/" FMT, d.col);
             status_line(line++, "r/c", buf);
         }
 
@@ -1464,7 +1434,7 @@ static void update_status(void)
 
         // Output vertical line to divide command window from status window
 
-        mvwvline(d.status, 0, 0, ACS_VLINE, nrows);
+        mvwvline(d.status, 0, 0, ACS_VLINE | COLOR_PAIR(LINE), nrows); //lint !e835
 
         wrefresh(d.status);
     }                                   //lint !e438 !e550

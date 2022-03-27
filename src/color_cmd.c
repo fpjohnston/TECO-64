@@ -1,6 +1,6 @@
 ///
 ///  @file    color_cmd.c
-///  @brief   Execute commands that set display colors (F1, F2, F3).
+///  @brief   Execute commands that set display colors (F1, F2, F3, F4).
 ///
 ///  @copyright 2019-2022 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -71,7 +71,7 @@ static const struct color_table color_table[] =
 ///
 ///  @var    saved_color
 ///
-///  @brief  Saved table of colors for each region.
+///  @brief  Saved table of colors for each window.
 ///
 
 static struct color_table saved_color[MAX_PAIRS * 2] =
@@ -89,7 +89,7 @@ static struct color_table saved_color[MAX_PAIRS * 2] =
 
 // Local functions
 
-static void color_region(short region);
+static void color_window(short window);
 
 static int find_color(const char *token);
 
@@ -99,7 +99,7 @@ static void set_colors(const struct cmd *cmd, int pair);
 
 
 ///
-///  @brief    Use previous colors for display.
+///  @brief    Set up window colors whenever we switch to display mode.
 ///
 ///  @returns  Nothing.
 ///
@@ -107,29 +107,29 @@ static void set_colors(const struct cmd *cmd, int pair);
 
 void color_dpy(void)
 {
-    for (short pair = CMD; pair <= STATUS; ++pair)
-    {
-        color_region(pair);
-    }
+    color_window(CMD);
+    color_window(EDIT);
+    color_window(STATUS);
+    color_window(LINE);
 }
 
 
 ///
-///  @brief    Use previous colors for region.
+///  @brief    Use previous colors for window.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void color_region(short region)
+static void color_window(short window)
 {
-    int n1 = (region - 1) * 2;
+    int n1 = (window - 1) * 2;
     int n2 = n1 + 1;
     const struct color_table *fg = &saved_color[n1];
     const struct color_table *bg = &saved_color[n2];
 
     // If both foreground and background are black, then we assume
-    // that this region hasn't yet been initialized.
+    // that this window hasn't yet been initialized.
 
     if (fg->red == 0 && fg->green == 0 && fg->blue == 0
         && bg->red == 0 && bg->green == 0 && bg->blue == 0)
@@ -137,17 +137,20 @@ static void color_region(short region)
         return;
     }
 
-    short color = (short)(COLOR_BASE + ((region - 1) * 2));
+    short color = (short)(COLOR_BASE + ((window - 1) * 2));
 
     init_color(color,     fg->red, fg->green, fg->blue);
     init_color(color + 1, bg->red, bg->green, bg->blue);
 
-    init_pair(region, color, color + 1);
+    init_pair(window, color, color + 1);
 }
 
 
 ///
-///  @brief    Execute F1 command: set colors for command region.
+///  @brief    Execute F1 command: set colors for command window. These colors
+///            are also copied to the status and line windows, but the F3 and
+///            F4 commands may be used to override those colors after F1 has
+///            been executed.
 ///
 ///  @returns  Nothing.
 ///
@@ -156,11 +159,13 @@ static void color_region(short region)
 void exec_F1(struct cmd *cmd)
 {
     set_colors(cmd, CMD);
+    set_colors(cmd, STATUS);
+    set_colors(cmd, LINE);
 }
 
 
 ///
-///  @brief    Execute F2 command: set colors for edit region.
+///  @brief    Execute F2 command: set colors for edit window.
 ///
 ///  @returns  Nothing.
 ///
@@ -225,6 +230,34 @@ static int find_color(const char *token)
 
 
 ///
+///  @brief    Reset window colors to defaults.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_colors(void)
+{
+    if (can_change_color())             // Make colors as bright as possible
+    {
+        for (uint color = 0; color < countof(color_table); ++color)
+        {
+            const struct color_table *p = &color_table[color];
+
+            init_color((short)color, p->red, p->green, p->blue);
+        }
+    }
+
+    assume_default_colors(COLOR_BLACK, COLOR_WHITE);
+
+    init_pair(CMD,    COLOR_WHITE, COLOR_BLACK);
+    init_pair(EDIT,   COLOR_BLACK, COLOR_WHITE);
+    init_pair(STATUS, COLOR_WHITE, COLOR_BLACK);
+    init_pair(LINE,   COLOR_WHITE, COLOR_BLACK);
+}
+
+
+///
 ///  @brief    Initialize saturation levels for a specified color.
 ///
 ///  @returns  Nothing.
@@ -273,8 +306,8 @@ static void set_color(const char *buf, uint_t len, short sat, short color)
 
 
 ///
-///  @brief    Set foreground and background colors for our three display
-///            regions: command, edit, and status line).
+///  @brief    Set foreground and background colors for our four display
+///            windows: command, edit, status, and the divider line).
 ///
 ///  @returns  Nothing.
 ///
@@ -285,18 +318,19 @@ static void set_colors(const struct cmd *cmd, int pair)
     assert(cmd != NULL);
 
     // The following is used to set up new colors, whose saturation we can vary
-    // without affecting the use of the same colors by other regions. That is,
-    // the edit region could use a white background at 100% while the command
-    // region could use one at 80%. If they both used the standard colors, then
-    // changing the saturation for one region would change the other.
+    // without affecting the use of the same colors by other windows. That is,
+    // the edit window could use a white background at 100% while the command
+    // window could use one at 80%. If they both used the standard colors, then
+    // changing the saturation for one window would change the other.
     //
     // The colors have the following values:
     //
-    // Region  Foreground  Background
+    // Window  Foreground  Background
     // ------  ----------  ----------
     // CMD         16          17
     // EDIT        18          19
     // STATUS      20          21
+    // LINE        22          23
 
     short color = (short)(COLOR_BASE + ((pair - 1) * 2));
 
@@ -308,7 +342,7 @@ static void set_colors(const struct cmd *cmd, int pair)
     }
     else if (!cmd->m_set)               // Foreground, but no background
     {
-        fg_sat = (short)cmd->m_arg;
+        fg_sat = (short)cmd->n_arg;
         bg_sat = 100;
     }
     else                                // Both foreground and background
@@ -320,5 +354,5 @@ static void set_colors(const struct cmd *cmd, int pair)
     set_color(cmd->text1.data, cmd->text1.len, fg_sat, color);
     set_color(cmd->text2.data, cmd->text2.len, bg_sat, color + 1);
 
-    color_region((short)pair);
+    color_window((short)pair);
 }

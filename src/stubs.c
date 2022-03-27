@@ -102,7 +102,7 @@ void end_dpy(void)
 
 
 ///
-///  @brief    (STUB) Execute F1 command: set colors for command region.
+///  @brief    (STUB) Execute F1 command: set colors for command window.
 ///
 ///  @returns  Nothing.
 ///
@@ -115,7 +115,7 @@ void exec_F1(struct cmd *unused)
 
 
 ///
-///  @brief    (STUB) Execute F2 command: set colors for edit region.
+///  @brief    (STUB) Execute F2 command: set colors for edit window.
 ///
 ///  @returns  Nothing.
 ///
@@ -314,7 +314,7 @@ void refresh_dpy(void)
 
 
 ///
-///  @brief    (STUB) Reset region colors to defaults.
+///  @brief    (STUB) Reset window colors to defaults.
 ///
 ///  @returns  Nothing.
 ///
