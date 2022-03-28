@@ -250,19 +250,6 @@ int get_wait(void)
 
 
 ///
-///  @brief    (STUB) Initialize display windows.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void init_windows(void)
-{
-    ;
-}
-
-
-///
 ///  @brief    (STUB) Mark edit buffer as having changed.
 ///
 ///  @returns  Nothing.

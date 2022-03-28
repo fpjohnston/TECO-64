@@ -288,7 +288,7 @@ static void set_w(int_t m, int_t n)
             {
                 w.width = (int)m;
 
-                init_windows();
+                clear_dpy();
             }
 
             break;
@@ -298,7 +298,7 @@ static void set_w(int_t m, int_t n)
             {
                 w.height = (int)m;
 
-                init_windows();
+                clear_dpy();
             }
 
             break;
@@ -316,7 +316,7 @@ static void set_w(int_t m, int_t n)
             {
                 w.nlines = (int)m;
 
-                init_windows();
+                clear_dpy();
             }
 
             break;

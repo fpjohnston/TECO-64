@@ -147,6 +147,7 @@ static int_t adjust_dot(void);
 
 static void init_window(WINDOW **win, int pair, int top, int bot, int col, int width);
 
+static void init_windows(void);
 static void mark_dot(void);
 
 static void move_down(bool hold);
@@ -492,7 +493,7 @@ static void init_window(WINDOW **win, int pair, int top, int bot, int col, int w
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_windows(void)
+static void init_windows(void)
 {
     if (!f.e0.display)
     {
@@ -505,6 +506,8 @@ void init_windows(void)
 
         return;
     }
+
+    d.vbias = d.hbias = 0;
 
     clear();
     refresh();
@@ -655,7 +658,11 @@ static void move_down(bool hold)
         d.prev = d.col;
     }
 
-    if (!hold)
+    if (hold)
+    {
+        ;
+    }
+    else
     {
         if (d.vbias < d.nrows - 1)
         {
@@ -888,10 +895,6 @@ static void putc_edit(int c)
 
 int readkey_dpy(int key)
 {
-    int saved_prev = d.prev;
-
-    d.prev = 0;                         // Assume we need to reset this
-
     if (!f.e0.display)                  // If display is off,
     {
         return key;                     //  just return whatever we got
@@ -953,43 +956,43 @@ int readkey_dpy(int key)
 
         if (key == KEY_UP)
         {
-            d.prev = saved_prev;        // Restore saved column
-
             move_up(NO_HOLD);
+            mark_ebuf();
         }
         else if (key == KEY_DOWN)
         {
-            d.prev = saved_prev;        // Restore saved column
-
             move_down(NO_HOLD);
+            mark_ebuf();
         }
         else if (key == KEY_LEFT)
         {
             move_left(NO_HOLD);
+            setdot_dpy();
         }
         else if (key == KEY_RIGHT)
         {
             move_right(NO_HOLD);
+            setdot_dpy();
         }
         else if (key == KEY_C_UP)
         {
-            d.prev = saved_prev;        // Restore saved column
-
             move_up(HOLD);
+            mark_ebuf();
         }
         else if (key == KEY_C_DOWN)
         {
-            d.prev = saved_prev;        // Restore saved column
-
             move_down(HOLD);
+            mark_ebuf();
         }
         else if (key == KEY_C_LEFT)
         {
             move_left(HOLD);
+            setdot_dpy();
         }
         else if (key == KEY_C_RIGHT)
         {
             move_right(HOLD);
+            setdot_dpy();
         }
         else                            // Not an arrow key
         {
@@ -1028,10 +1031,11 @@ int readkey_dpy(int key)
             {
                 return key;
             }
+
+            setdot_dpy();
         }
     }
 
-    mark_ebuf();
     refresh_dpy();
 
     return EOF;
@@ -1121,7 +1125,7 @@ static void refresh_edit(void)
 
         ++pos;
     }
-        
+
     if (t.dot + pos >= t.Z)             // Should we print EOF marker?
     {
         waddch(d.edit, DIAMOND);
@@ -1265,7 +1269,7 @@ static void resize_key(void)
     if (f.e0.display)
     {
         getmaxyx(stdscr, w.height, w.width);
-            
+
         clear_dpy();
 
         print_prompt();

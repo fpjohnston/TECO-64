@@ -107,8 +107,6 @@ extern int get_tab(void);
 
 extern int get_wait(void);
 
-extern void init_windows(void);
-
 extern void mark_ebuf(void);
 
 extern bool putc_cmd(int c);
