@@ -1170,17 +1170,11 @@ static void refresh_status(void)
 
         // Output row and column for display
 
-        if (t.dot >= t.Z)
-        {
-            status_line(line++, "Row/Col", "EOF");
-        }
-        else
-        {
-            int n = snprintf(buf, sizeof(buf), FMT, d.row + 1);
+        int row = getlines_ebuf(-1);
+        int n = snprintf(buf, sizeof(buf), FMT, row);
 
-            snprintf(buf + n, sizeof(buf) - (size_t)(uint)n, "/" FMT, d.col + 1);
-            status_line(line++, "Row/Col", buf);
-        }
+        snprintf(buf + n, sizeof(buf) - (size_t)(uint)n, "/" FMT, d.col + 1);
+        status_line(line++, "Row/Col", buf);
 
         // Output no. of lines in file
 

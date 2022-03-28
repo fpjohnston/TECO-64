@@ -96,10 +96,9 @@ to be significant for TECO macros.
 ### Additional Documentation
 
 [TECO-64 Reference Manual](doc/TECO.md) - this is a work in progress
-that has been adapted, corrected, and updated from a user's guide and
-language reference manual titled *Standard TECO Text Editor and
-Corrector for the VAX, PDP-11, PDP-10, and PDP-8*, published by
-Digital Equipment Corporation in May 1990.
+that has been adapted, corrected, and updated from a user's guide and language
+reference manual published in May 1990 by Digital Equipment Corporation,
+*Standard TECO Text Editor and Corrector for the VAX, PDP-11, PDP-10, and PDP-8*.
 
 ### Future Directions
 

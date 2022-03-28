@@ -43,9 +43,9 @@ after TECO's prompt, and perform different functions if they are not.
 
 ### Display Commands
 
-If TECO is in display mode, and scrolling is enabled, then the following
-commands may be used. These functions may be overridden with the FM or
-FQ commands, described below.
+If TECO is in display mode, and scrolling has been enabled with the 7:W command,
+then the following commands may be used. These functions may be overridden with
+the FM or FQ commands, as described [here](keymap.md).
 
 | Command | Function |
 | ------- | -------- |
@@ -59,6 +59,14 @@ FQ commands, described below.
 | <nobr>\<Home\>\<Home\>\<Home\></nobr> | Go to start of file. |
 | \<PgDn\> | Go to next window. |
 | \<PgUp\> | Go to previous window. |
+| \<Up\> | Move the cursor up one row. |
+| \<Ctrl/Up\> | Scroll the window down one row. |
+| \<Down\> | Move the cursor down one row. |
+| \<Ctrl/Down\> | Scroll the window up one row. |
+| \<Left\> | Move the cursor left one column. |
+| \<Ctrl/Left\> | Scroll the window right one column. |
+| \<Right\> | Move the cursor right one column. |
+| \<Ctrl/Right\> | Scroll the window left one column. |
 
 ### User-Definable Keys
 

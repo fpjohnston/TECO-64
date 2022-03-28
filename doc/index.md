@@ -192,9 +192,9 @@
 | FH             | [Equivalent to "F0,FZ"](variables.md) |
 | FK             | [Search and delete intervening text](delete.md) |
 | FL             | [Convert to lower case](misc.md) |
-| FM             | [Map key to command string](display.md) |
+| FM             | [Map key to command string](keymap.md) |
 | *n*FN          | [Global string replace](search.md) |
-| FQ*q*          | [Map key to Q-register *q*](display.md) |
+| FQ*q*          | [Map key to Q-register *q*](keymap.md) |
 | FR\`           | [Delete string from last insert or search](delete.md) |
 | FR*text*\`     | [Replace string from last insert or search](insert.md) |
 | *n*FS          | [Local string replace](search.md) |
