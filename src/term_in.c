@@ -439,10 +439,6 @@ void read_cmd(void)
 
             return;                     // Return to execute it
         }
-        else if (c == CR && f.e1.newline)
-        {
-            ;                           // Just ignore CR in newline mode
-        }
         else if (c == ESC)
         {
             store_tbuf(ESC);
@@ -670,6 +666,7 @@ static int read_wait(void)
 
         if (c != EOF)
         {
+//            tprint("c = %d\n", c);
             return c;
         }
     }
@@ -684,6 +681,7 @@ static int read_wait(void)
         }
         else if (nbytes != -1)          // Error?
         {
+//            tprint("chr = %d\n", chr);
             return chr;
         }
     }

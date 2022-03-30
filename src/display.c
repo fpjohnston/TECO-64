@@ -76,6 +76,8 @@
 
 #define EOF_ROWS             4      ///< No. of rows following EOF
 
+#define CMDBUF_SIZE         80      ///< Width of temporary buffer for command
+
 #define HOLD        (bool)true      ///< Hold cursor in current row/column
 
 #define NO_HOLD     (bool)false     ///< Don't hold cursor in current row/column
@@ -108,8 +110,8 @@ static struct
     int mincol;                     ///< Min. column for edit window
     int maxrow;                     ///< Max. row for edit window
     int maxcol;                     ///< Max. column for edit window
-    int vbias;                      ///< Vertical bias
-    int hbias;                      ///< Horizontal bias
+    int ybias;                      ///< Vertical bias
+    int xbias;                      ///< Horizontal bias
     int nrows;                      ///< No. of rows in edit window
 } d =
 {
@@ -124,8 +126,8 @@ static struct
     .mincol = 0,
     .maxrow = 0,
     .maxcol = 0,
-    .vbias  = 0,
-    .hbias  = 0,
+    .ybias  = 0,
+    .xbias  = 0,
     .nrows  = 0,
 };
 
@@ -477,7 +479,7 @@ static void init_window(WINDOW **win, int pair, int top, int bot, int col, int w
         d.maxrow = bot;
         d.maxcol = w.width - 1;
 
-        prefresh(*win, 0, d.hbias = 0, d.minrow, d.mincol, d.maxrow, d.mincol);
+        prefresh(*win, 0, d.xbias = 0, d.minrow, d.mincol, d.maxrow, d.mincol);
     }
     else
     {
@@ -507,7 +509,7 @@ static void init_windows(void)
         return;
     }
 
-    d.vbias = d.hbias = 0;
+    d.ybias = d.xbias = 0;
 
     clear();
     refresh();
@@ -664,9 +666,9 @@ static void move_down(bool hold)
     }
     else
     {
-        if (d.vbias < d.nrows - 1)
+        if (d.ybias < d.nrows - 1)
         {
-            ++d.vbias;
+            ++d.ybias;
         }
     }
 
@@ -691,29 +693,29 @@ static void move_left(bool hold)
 
         if (isdelim(c))
         {
-            if (d.vbias > 0)
+            if (d.ybias > 0)
             {
-                --d.vbias;
+                --d.ybias;
             }
         }
 
         if (d.col == 0)
         {
             d.col = -getdelta_ebuf(0);  // Go to end of line
-            d.hbias = d.col - w.width;
+            d.xbias = d.col - w.width;
         }
         else if (hold)
         {
-            --d.hbias;
+            --d.xbias;
         }
-        else if (d.col <= d.hbias)
+        else if (d.col <= d.xbias)
         {
-            d.hbias -= w.width;
+            d.xbias -= w.width;
         }
 
-        if (d.hbias < 0)
+        if (d.xbias < 0)
         {
-            d.hbias = 0;
+            d.xbias = 0;
         }
     }
 }
@@ -738,28 +740,28 @@ static void move_right(bool hold)
         {
             d.col = 0;
 
-            if (d.vbias < d.nrows - 1)
+            if (d.ybias < d.nrows - 1)
             {
-                ++d.vbias;
+                ++d.ybias;
             }
         }
 
         if (d.col == 0)
         {
-            d.hbias = 0;
+            d.xbias = 0;
         }
         else if (hold)
         {
-            ++d.hbias;
+            ++d.xbias;
         }
-        else if (d.col >= d.hbias + w.width - 1)
+        else if (d.col >= d.xbias + w.width - 1)
         {
-            d.hbias += w.width;
+            d.xbias += w.width;
         }
 
-        if (d.hbias > w.width)
+        if (d.xbias > w.width)
         {
-            d.hbias = w.width;
+            d.xbias = w.width;
         }
     }
 }
@@ -783,9 +785,9 @@ static void move_up(bool hold)
 
     if (!hold)
     {
-        if (d.vbias > 0)
+        if (d.ybias > 0)
         {
-            --d.vbias;
+            --d.ybias;
         }
     }
 
@@ -902,6 +904,7 @@ int readkey_dpy(int key)
     else if (exec_key(key))             // User-defined key?
     {
         n_home = n_end = 0;             // Yes. Reset Home and End counters.
+        d.ybias = d.nrows - 1;
     }
     else if (key == KEY_HOME)
     {
@@ -914,7 +917,7 @@ int readkey_dpy(int key)
         else if (n_home == 2)
         {
             t.dot = w.topdot;
-            d.vbias = 0;
+            d.ybias = 0;
         }
         else
         {
@@ -940,7 +943,7 @@ int readkey_dpy(int key)
         else if (n_end == 2)
         {
             t.dot = w.botdot;
-            d.vbias = d.nrows - 1;
+            d.ybias = d.nrows - 1;
         }
         else
         {
@@ -996,15 +999,43 @@ int readkey_dpy(int key)
         }
         else                            // Not an arrow key
         {
+            char cmd[CMDBUF_SIZE];
+                
+            d.ybias = d.nrows - 1;
+
             if (key == KEY_PPAGE)
             {
-                exec_str("-(2:W) L");
+                d.ybias = 0;
+
+                snprintf(cmd, sizeof(cmd), "%dL", -d.nrows);
+                exec_str(cmd);
             }
             else if (key == KEY_NPAGE)
             {
-                exec_str("(2:W) L");
+                d.ybias = 0;
+
+                snprintf(cmd, sizeof(cmd), "%dL", d.nrows);
+                exec_str(cmd);
             }
-            else if (key == CR || key == LF || key == ESC ||
+            else if (key == KEY_C_PGUP)
+            {
+                int n =  d.nrows / 2;
+
+                d.ybias = (d.nrows - (d.row + n)) % d.nrows;
+
+                snprintf(cmd, sizeof(cmd), "-%uL", n);
+                exec_str(cmd);
+            }
+            else if (key == KEY_C_PGDN)
+            {
+                int n = d.nrows / 2;
+
+                d.ybias = (n + d.row) % d.nrows;
+
+                snprintf(cmd, sizeof(cmd), "%uL", n);
+                exec_str(cmd);
+            }
+            else if (key == LF || key == ESC ||
                      (key == ACCENT && f.et.accent) || key == f.ee)
             {
                 if (w.nlines == 0 || w.noscroll)
@@ -1029,6 +1060,8 @@ int readkey_dpy(int key)
             }
             else                        // Not a special key
             {
+                --d.ybias;
+
                 return key;
             }
 
@@ -1064,10 +1097,10 @@ void refresh_dpy(void)
 
         if (n_home != 0 || n_end != 0)
         {
-            d.hbias = (d.col / w.width) * w.width;
+            d.xbias = (d.col / w.width) * w.width;
         }
 
-        prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
+        prefresh(d.edit, 0, d.xbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
     }
 
     refresh_status();
@@ -1089,12 +1122,12 @@ static void refresh_edit(void)
 
     int next = getlines_ebuf(1);        // No. of lines remaining
 
-    if (d.vbias + next < d.nrows - EOF_ROWS)
+    if (d.ybias + next < d.nrows - EOF_ROWS)
     {
-        d.vbias = d.nrows - EOF_ROWS;
+        d.ybias = d.nrows - EOF_ROWS;
     }
 
-    int_t pos = getdelta_ebuf((int_t)-d.vbias);
+    int_t pos = getdelta_ebuf((int_t)-d.ybias);
     int c;
     int row = 0;
 
@@ -1171,7 +1204,7 @@ static void refresh_status(void)
         // Output row and column for display
 
         int row = getlines_ebuf(-1);
-        int n = snprintf(buf, sizeof(buf), FMT, row);
+        int n = snprintf(buf, sizeof(buf), FMT, row + 1);
 
         snprintf(buf + n, sizeof(buf) - (size_t)(uint)n, "/" FMT, d.col + 1);
         status_line(line++, "Row/Col", buf);
@@ -1338,7 +1371,7 @@ void set_tab(int n)
     {
         set_tabsize(n == 0 ? DEFAULT_TABSIZE : n);
 
-        prefresh(d.edit, 0, d.hbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
+        prefresh(d.edit, 0, d.xbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
     }
 }
 

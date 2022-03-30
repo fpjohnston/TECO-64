@@ -50,15 +50,17 @@ the FM or FQ commands, as described [here](keymap.md).
 | Command | Function |
 | ------- | -------- |
 | \<CTRL/W\> | Re-paints the display. |
-| \<CTRL/K\> | Changes the edit and command window to a black foreground on a white background, and the status line (if any) to a white foreground on a black background. This command is intended to remedy the situation where a user inadvertently sets the same foreground and background colors for a window, thus rendering it unreadable. |
+| \<CTRL/K\> | Changes the windows to use default colors. This command is intended for a the situation where a user inadvertently sets a window to use the same foreground and background colors, thus rendering it unreadable. |
 | \<End\> | Go to end of line. |
 | \<End\>\<End\> | Go to end of window. |
 | <nobr>\<End\>\<End\>\<End\></nobr> | Go to end of file. |
 | \<Home\> | Go to start of line. |
 | \<Home\>\<Home\> | Go to start of window. |
 | <nobr>\<Home\>\<Home\>\<Home\></nobr> | Go to start of file. |
-| \<PgDn\> | Go to next window. |
-| \<PgUp\> | Go to previous window. |
+| \<PgUp\> | Move up n lines, where n is the number of rows visible in the window. |
+| \<Ctrl/PgUp\> | Move up n/2 lines, where n is the number of rows visible in the window. |
+| \<PgDn\> | Move down n lines, where n is the number of rows visible in the window. |
+| \<Ctrl/PgDn\> | Move down n/2 lines, where n is the number of rows visible in the window. |
 | \<Up\> | Move the cursor up one row. |
 | \<Ctrl/Up\> | Scroll the window down one row. |
 | \<Down\> | Move the cursor down one row. |
@@ -82,7 +84,8 @@ In order for this to happen, the following are required:
 - The ED&32 flag bit must be set, to enable ESCape sequences and other
 special characters.
 - A function, cursor, or other special key must have been mapped to a
-command string with the FM command, or a Q-register with the FQ command.
+command string with the FM command, or a Q-register with the FQ command,
+as described [here](keymap.md).
 - The special key must be entered directly after TECO's command prompt.
 
 If all of these conditions have been met, then typing the key causes the
