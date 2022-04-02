@@ -51,12 +51,8 @@ the FM or FQ commands, as described [here](keymap.md).
 | ------- | -------- |
 | \<CTRL/W\> | Re-paints the display. |
 | \<CTRL/K\> | Changes the windows to use default colors. This command is intended for a the situation where a user inadvertently sets a window to use the same foreground and background colors, thus rendering it unreadable. |
-| \<End\> | Go to end of line. |
-| \<End\>\<End\> | Go to end of window. |
-| <nobr>\<End\>\<End\>\<End\></nobr> | Go to end of file. |
-| \<Home\> | Go to start of line. |
-| \<Home\>\<Home\> | Go to start of window. |
-| <nobr>\<Home\>\<Home\>\<Home\></nobr> | Go to start of file. |
+| \<End\> | Go to end of line, then to end of window, then to end of buffer. |
+| \<Home\> | Go to start of line, then to start of window, then to start of buffer. |
 | \<PgUp\> | Move up n lines, where n is the number of rows visible in the window. |
 | \<Ctrl/PgUp\> | Move up n/2 lines, where n is the number of rows visible in the window. |
 | \<PgDn\> | Move down n lines, where n is the number of rows visible in the window. |

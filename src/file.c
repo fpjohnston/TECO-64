@@ -222,11 +222,7 @@ char *init_filename(const char *name, uint_t len, bool colon)
     {
         int c = *name++;
 
-        if (c == CR && i == string.len - 1)
-        {
-            continue;                   // Just ignore a trailing CR
-        }
-        else if (!isgraph(c))
+        if (!isgraph(c))
         {
             throw(E_IFN, c);            // Invalid character in file name
         }

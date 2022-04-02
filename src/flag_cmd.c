@@ -349,6 +349,8 @@ void exec_ET(struct cmd *cmd)
     if (eightbit)                       // Did 8-bit setting just change?
     {
         set_parity((bool)f.et.eightbit);
+        reset_width();
+        mark_ebuf();
     }
 
     if (truncate)                       // Did truncation bit just change?

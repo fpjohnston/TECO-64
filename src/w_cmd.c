@@ -284,21 +284,17 @@ static void set_w(int_t m, int_t n)
             break;
 
         case 1:
-            if (m >= MIN_WIDTH)
+            if (!f.e0.display && m >= MIN_WIDTH)
             {
                 w.width = (int)m;
-
-                clear_dpy();
             }
 
             break;
 
         case 2:
-            if (m >= MIN_HEIGHT)
+            if (!f.e0.display && m >= MIN_HEIGHT)
             {
                 w.height = (int)m;
-
-                clear_dpy();
             }
 
             break;
@@ -306,7 +302,8 @@ static void set_w(int_t m, int_t n)
         case 3:
             w.seeall = m ? true : false;
 
-            mark_ebuf();
+            reset_width();
+            clear_dpy();
 
             break;
 

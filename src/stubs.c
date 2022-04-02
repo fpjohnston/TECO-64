@@ -327,6 +327,19 @@ void reset_map(void)
 
 
 ///
+///  @brief    (STUB) Reset characters in cwidth[] array.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_width(void)
+{
+    ;
+}
+
+
+///
 ///  @brief    (STUB) Rubout character on display.
 ///
 ///  @returns  Nothing.
@@ -388,4 +401,17 @@ void set_tab(int unused)
 void start_dpy(void)
 {
     throw(E_DPY);                       // No display mode available
+}
+
+
+///
+///  @brief    (STUB) Mark 'dot' as having changed.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void unmark_dot(void)
+{
+    ;
 }

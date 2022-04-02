@@ -434,7 +434,10 @@ void read_cmd(void)
 
             while ((c = fetch_tbuf()) != EOF)
             {
-                store_cbuf(c);          // Copy command string
+                if (c != CR)            // Skip any CR
+                {
+                    store_cbuf(c);      // Copy command string
+                }
             }
 
             return;                     // Return to execute it
@@ -583,15 +586,16 @@ static int read_first(void)
 
                     if (c == CTRL_RIGHT)
                     {
-                        echo_in(c);
+                        echo_in(c);     // Echo ^] again
                         echo_in(LF);
 
-                        if (cbuf->data[0] != NUL)
-                        {
-                            assert(strlen(cbuf->data) < cbuf->size);
+                        size_t len = strlen(cbuf->data);
+                        char temp[len + 1];
 
-                            exec_str(cbuf->data);
-                        }
+                        strcpy(temp, cbuf->data);
+
+                        exec_str(temp); // Re-execute last command string
+                        refresh_dpy();  // Do any necessary screen update
                     }
                     else
                     {

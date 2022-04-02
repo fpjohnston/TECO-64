@@ -189,7 +189,7 @@ void init_tbuf(void)
 
 
 ///
-///  @brief    Reset command buffer.
+///  @brief    Reset terminal buffer.
 ///
 ///  @returns  Nothing.
 ///

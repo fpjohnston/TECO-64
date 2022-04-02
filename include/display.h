@@ -40,7 +40,7 @@
 #define CMD         1               ///< Command window
 #define EDIT        2               ///< Edit window
 #define STATUS      3               ///< Status window
-#define LINE        4               ///< Dividing line
+#define LINE        4               ///< Partition line
 #define MAX_PAIRS   LINE            ///< Total no. of color pairs
 
 ///  @struct  tchar
@@ -117,15 +117,17 @@ extern void refresh_dpy(void);
 
 extern void reset_colors(void);
 
-extern void rubout_dpy(int c);
+extern void reset_width(void);
 
-extern void setdot_dpy(void);
+extern void rubout_dpy(int c);
 
 extern void set_parity(bool parity);
 
 extern void set_tab(int n);
 
 extern void start_dpy(void);
+
+extern void unmark_dot(void);
 
 
 #endif  // !defined(_DISPLAY_H)

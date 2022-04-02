@@ -13,6 +13,7 @@ QN "E
 '
 
 9,7:W ^[                !! Set 9 lines for command window
+400,11:W ^[             !! Allow display lines to be 400 columns wide
 
 @f1/cyan/black/         !! Set command window colors
 @f2/blue/white/         !! Set edit window colors

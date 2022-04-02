@@ -470,9 +470,9 @@ void setpos_ebuf(int_t pos)
 {
     if ((uint_t)pos <= eb.left + eb.right)
     {
-        t.dot = pos;
+        unmark_dot();                   // Tell display that 'dot' changed
 
-        setdot_dpy();                   // Tell display that 'dot' changed
+        t.dot = pos;
     }
 }
 
