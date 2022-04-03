@@ -306,9 +306,13 @@ int getc_term(bool wait)
         return EOF;
     }
 
-    // Here when we have a non-EOF character
+    // Here when we have a non-EOF character. See if it requires special
+    // processing for display mode.
 
-    c = check_dpy_chr(c, wait);         // Check for special display input
+    if ((c = check_key(c)) == EOF)
+    {
+        return getc_term(wait);         // Recurse to get next character
+    }        
 
     f.e0.ctrl_c = false;                // Normal character, not CTRL/C
 
@@ -498,7 +502,7 @@ static int read_first(void)
     {
         int c = getc_term((bool)WAIT);
 
-        if ((c = readkey_dpy(c)) == EOF)
+        if ((c = exec_key(c)) == EOF)
         {
             continue;
         }

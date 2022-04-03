@@ -221,7 +221,7 @@ void exec_FQ(struct cmd *cmd)
 
 
 ///
-///  @brief    Check input key and execute anything it's mapped to.
+///  @brief    Check soft key and execute anything it's mapped to.
 ///
 ///            NOTE THAT THIS FUNCTION ONLY WORKS IF DISPLAY MODE IS CURRENTLY
 ///            ACTIVE. IF NOT, IT WILL NOT SEE THE CORRECT KEY CODES.
@@ -230,7 +230,7 @@ void exec_FQ(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool exec_key(int key)
+bool exec_soft(int key)
 {
     struct keys *p;
 

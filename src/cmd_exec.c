@@ -273,7 +273,7 @@ void exec_cmd(struct cmd *cmd)
 ///            commands. It constructs a buffer containing the command string
 ///            and then calls exec_macro(), which in turn calls cmd_exec().
 ///
-///            See readkey_dpy() for examples of use.
+///            See exec_key() for examples of use.
 ///
 ///  @returns  Nothing.
 ///

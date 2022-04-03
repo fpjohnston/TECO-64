@@ -81,15 +81,18 @@ struct watch
 };
 
 
-extern const bool esc_seq_def;      ///< Default for ESCape-sequences
+extern const bool esc_seq_def;
+
+extern bool update_window;
 
 extern struct watch w;
 
+
 // Functions defined only if including display mode
 
-extern int check_dpy_chr(int c, bool wait);
-
 extern void check_escape(bool escape);
+
+extern int check_key(int c);
 
 extern bool clear_eol(void);
 
@@ -99,7 +102,9 @@ extern void color_dpy(void);
 
 extern void end_dpy(void);
 
-extern bool exec_key(int key);
+extern int exec_key(int c);
+
+extern bool exec_soft(int key);
 
 extern int get_nowait(void);
 
@@ -107,17 +112,13 @@ extern int get_tab(void);
 
 extern int get_wait(void);
 
-extern void mark_ebuf(void);
+extern void init_charsize(void);
 
 extern bool putc_cmd(int c);
-
-extern int readkey_dpy(int c);
 
 extern void refresh_dpy(void);
 
 extern void reset_colors(void);
-
-extern void reset_width(void);
 
 extern void rubout_dpy(int c);
 

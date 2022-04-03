@@ -349,13 +349,14 @@ void exec_ET(struct cmd *cmd)
     if (eightbit)                       // Did 8-bit setting just change?
     {
         set_parity((bool)f.et.eightbit);
-        reset_width();
-        mark_ebuf();
+        init_charsize();
+
+        update_window = true;
     }
 
     if (truncate)                       // Did truncation bit just change?
     {
-        mark_ebuf();                    // Pretend that the buffer changed
+        update_window = true;
     }
 }
 

@@ -35,18 +35,7 @@
 
 const bool esc_seq_def = false;         ///< Escape sequences disabled by default
 
-
-///
-///  @brief    (STUB) Check for special display input characters.
-///
-///  @returns  Next input character to process.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int check_dpy_chr(int c, bool unused)
-{
-    return c;                           // Just return what we got if no display
-}
+bool update_window = false;             ///< true if screen redraw needed
 
 
 ///
@@ -63,6 +52,19 @@ void check_escape(bool unused)
 
 
 ///
+///  @brief    (STUB) Check for input characters that require special processing.
+///
+///  @returns  Next input character to process.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int check_key(int c, bool unused)
+{
+    return c;                           // Just return what we got if no display
+}
+
+
+///
 ///  @brief    (STUB) Clear screen and redraw display.
 ///
 ///  @returns  Nothing.
@@ -71,7 +73,7 @@ void check_escape(bool unused)
 
 void clear_dpy(void)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -110,7 +112,7 @@ void end_dpy(void)
 
 void exec_F1(struct cmd *unused)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -123,7 +125,7 @@ void exec_F1(struct cmd *unused)
 
 void exec_F2(struct cmd *unused)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -136,7 +138,7 @@ void exec_F2(struct cmd *unused)
 
 void exec_F3(struct cmd *unused)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -149,7 +151,7 @@ void exec_F3(struct cmd *unused)
 
 void exec_F4(struct cmd *unused)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -198,6 +200,19 @@ void exec_FQ(struct cmd *cmd)
 
 
 ///
+///  @brief    (STUB) Execute ncurses keys such as F1, Home, or PgDn.
+///
+///  @returns  Same character received.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int exec_key(int c)
+{
+    return c;
+}
+
+
+///
 ///  @brief    (STUB) Reset display mode prior to exiting from TECO.
 ///
 ///  @returns  Nothing.
@@ -206,7 +221,7 @@ void exec_FQ(struct cmd *cmd)
 
 void exit_dpy(void)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -250,15 +265,15 @@ int get_wait(void)
 
 
 ///
-///  @brief    (STUB) Mark edit buffer as having changed.
+///  @brief    (STUB) Initialize charsize[] array with the length of each character.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void mark_ebuf(void)
+void init_charsize(void)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -274,18 +289,6 @@ bool putc_cmd(int unused)
     return false;
 }
 
-///
-///  @brief    (STUB) Read display key.
-///
-///  @returns  Same character received.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int readkey_dpy(int c)
-{
-    return c;
-}
-
 
 ///
 ///  @brief    (STUB) Refresh screen.
@@ -296,7 +299,7 @@ int readkey_dpy(int c)
 
 void refresh_dpy(void)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -309,7 +312,7 @@ void refresh_dpy(void)
 
 void reset_colors(void)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -322,20 +325,7 @@ void reset_colors(void)
 
 void reset_map(void)
 {
-    ;
-}
-
-
-///
-///  @brief    (STUB) Reset characters in cwidth[] array.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void reset_width(void)
-{
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -348,7 +338,7 @@ void reset_width(void)
 
 void rubout_dpy(int unused)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -361,7 +351,7 @@ void rubout_dpy(int unused)
 
 void setdot_dpy(void)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -374,7 +364,7 @@ void setdot_dpy(void)
 
 void set_parity(bool unused)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -387,7 +377,7 @@ void set_parity(bool unused)
 
 void set_tab(int unused)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }
 
 
@@ -413,5 +403,5 @@ void start_dpy(void)
 
 void unmark_dot(void)
 {
-    ;
+    ;                                   // Nothing to do if no display
 }

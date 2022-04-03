@@ -77,9 +77,11 @@
 
 const bool esc_seq_def = true;      ///< Escape sequences enabled by default
 
-static bool update_window = false;  ///< true if screen redraw needed
+bool update_window = false;         ///< true if screen redraw needed
 
 static bool update_cursor = false;  ///< true if cursor changed
+
+static char charsize[UCHAR_MAX + 1]; ///< Width of each character on display
 
 
 ///
@@ -125,8 +127,6 @@ static struct
     .nrows   = 0,
 };
 
-static char cwidth[UCHAR_MAX + 1];
-
 /// @def    check_error(truth)
 /// @brief  Wrapper to force Boolean value for check_error() parameter.
 
@@ -142,6 +142,18 @@ static void (check_error)(bool error);
 
 static int_t count_chrs(int_t pos, int maxcol);
 
+static void exec_down(int key);
+
+static void exec_end(int key);
+
+static void exec_home(int key);
+
+static void exec_left(int key);
+
+static void exec_right(int key);
+
+static void exec_up(int key);
+
 static int_t find_column(void);
 
 static void init_window(WINDOW **win, int pair, int top, int bot, int col, int width);
@@ -152,18 +164,6 @@ static bool iseol(void);
 
 static void mark_dot(void);
 
-static void move_down(int key);
-
-static void move_end(int key);
-
-static void move_home(int key);
-
-static void move_left(int key);
-
-static void move_right(int key);
-
-static void move_up(int key);
-
 static void putc_edit(int c);
 
 static void refresh_edit(void);
@@ -172,35 +172,7 @@ static void refresh_status(void);
 
 static void reset_dpy(void);
 
-static void resize_key(void);
-
 static void status_line(int line, const char *header, const char *data);
-
-
-///
-///  @brief    Check for special display input characters.
-///
-///  @returns  Next input character to process.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int check_dpy_chr(int c, bool wait)
-{
-    if (c == KEY_BACKSPACE)
-    {
-        return DEL;
-    }
-    else if (c == KEY_RESIZE)
-    {
-        resize_key();
-
-        return getc_term(wait);         // Recurse to get next character
-    }
-    else
-    {
-        return c;
-    }
-}
 
 
 ///
@@ -240,6 +212,42 @@ void check_escape(bool escape)
 
 
 ///
+///  @brief    Check for input characters that require special processing for
+///            ncurses. This codes is placed here so that the caller doesn't
+///            need to know about the KEY_xxx macros.
+///
+///  @returns  Next input character to process, or EOF if caller needs to check
+///            for more input.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int check_key(int c)
+{
+    if (c == KEY_BACKSPACE)
+    {
+        return DEL;
+    }
+    else if (c == KEY_RESIZE)
+    {
+        if (f.e0.display)
+        {
+            getmaxyx(stdscr, w.height, w.width);
+
+            clear_dpy();
+
+            print_prompt();
+        }
+
+        return EOF;
+    }
+    else
+    {
+        return c;
+    }
+}
+
+
+///
 ///  @brief    Clear screen and redraw display.
 ///
 ///  @returns  Nothing.
@@ -253,7 +261,6 @@ void clear_dpy(void)
     init_windows();
 
     update_window = true;
-    update_cursor = true;
 
     refresh_dpy();
 }
@@ -295,7 +302,7 @@ static int_t count_chrs(int_t pos, int maxcol)
 
     while ((c = getchar_ebuf(pos)) != EOF)
     {
-        int width = cwidth[c];
+        int width = charsize[c];
 
         if (width == -1)
         {
@@ -333,6 +340,416 @@ void end_dpy(void)
 
 
 ///
+///  @brief    Move cursor down.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_down(int key)
+{
+    int pos = getdelta_ebuf(1);         // Go to start of next line
+
+    if (d.oldcol < d.col)
+    {
+        d.oldcol = d.col;
+    }
+
+    if (key == KEY_C_DOWN)
+    {
+        d.updown = true;
+    }
+    else if (d.ybias < d.nrows - 1)
+    {
+        ++d.ybias;
+    }
+
+    unmark_dot();
+
+    t.dot += count_chrs(pos, d.oldcol);
+}
+
+
+///
+///  @brief    Process End key, as follows:
+///
+///            <End>      - Moves to the last column in the window, then repeats
+///                         until at end of line. Then moves to the end of the
+///                         window, and finally to the end of the buffer.
+///
+///            <Ctrl/End> - Moves to the last column of the line, then to the
+///                         end of the buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_end(int key)
+{
+    unmark_dot();
+
+    // Here to process End and Ctrl/End keys
+
+    if (iseol())
+    {
+        if (t.dot >= w.botdot - 1)      // Go to end of buffer
+        {
+            if (key == KEY_C_END && t.dot + 1 < t.Z)
+            {
+                t.dot += getdelta_ebuf(d.nrows + 1);
+
+                if (t.dot < t.Z)
+                {
+                    --t.dot;
+
+                    return;
+                }
+            }
+
+            d.xbias = 0;
+            d.ybias = 0;
+            t.dot = t.Z;
+        }
+        else                            // Go to end of window
+        {
+            d.ybias = d.nrows - 1;
+            t.dot = w.botdot - 1;
+        }
+    }
+    else if (t.dot != t.Z)
+    {
+        int_t len = getdelta_ebuf(1) - 1;
+
+        if (key == KEY_END)
+        {
+            t.dot += len;               // Go to end of line
+        }
+        else
+        {
+            if (d.col < d.maxcol)
+            {
+                d.col = d.maxcol;
+            }
+            else
+            {
+                d.col += d.maxcol + 1;
+                d.xbias += d.maxcol + 1;
+            }
+
+            t.dot += count_chrs(getdelta_ebuf(0), d.col);
+        }
+    }
+}
+
+
+///
+///  @brief    Process Home key, as follows:
+///
+///            <Home>      - Moves to the first column in the window, then
+///                          repeats until at the start of the line. Then moves
+///                          to the top of the window, and finally to the start
+///                          of the buffer.
+///
+///            <Ctrl/Home> - Moves to the first column on the line, then to the
+///                          start of the buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_home(int key)
+{
+    unmark_dot();
+
+    // Here to process Home and Ctrl/Home keys
+
+    if (d.xbias != 0 && key == KEY_C_HOME) // Shift to the left
+    {
+        if (d.col == d.xbias && (d.xbias -= w.width) < 0)
+        {
+            d.xbias = 0;
+        }
+
+        d.col = d.xbias;
+        t.dot += count_chrs(getdelta_ebuf(0), d.col);
+    }
+    else if (d.col != 0)                // Go to start of line
+    {
+        d.col = 0;
+        d.xbias = 0;
+        t.dot += getdelta_ebuf(0);
+    }
+    else if (t.dot != w.topdot)
+    {                                   // Go to top of window
+        d.row = 0;
+        d.ybias = 0;
+        t.dot = w.topdot;
+    }
+    else                                // Go to top of buffer
+    {
+        d.row = 0;
+        d.xbias = 0;
+        d.ybias = 0;
+        t.dot = t.B;
+    }
+}
+
+
+///
+///  @brief    Execute ncurses keys such as F1, Home, or PgDn. This includes
+///            user-defined keys which depend on ncurses.
+///
+///  @returns  EOF if ncurses key, else same key that was passed in so that the
+///            caller can process it.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int exec_key(int key)
+{
+    if (!f.e0.display)                  // If display is off,
+    {
+        return key;                     //  just return whatever we got
+    }
+
+    d.updown = false;
+
+    if (exec_soft(key))                 // User-defined (i.e., soft) key?
+    {
+        d.ybias = d.nrows - 1;
+    }
+    else if (key == KEY_HOME || key == KEY_C_HOME)
+    {
+        exec_home(key);
+    }
+    else if (key == KEY_END || key == KEY_C_END)
+    {
+        exec_end(key);
+    }
+    else                                // Neither Home nor End
+    {
+        if (key == KEY_UP || key == KEY_C_UP)
+        {
+            exec_up(key);
+            refresh_dpy();
+
+            return EOF;
+        }
+        else if (key == KEY_DOWN || key == KEY_C_DOWN)
+        {
+            exec_down(key); 
+            refresh_dpy();
+
+            return EOF;
+        }
+        else if (key == KEY_LEFT || key == KEY_C_LEFT)
+        {
+            exec_left(key);
+        }
+        else if (key == KEY_RIGHT || key == KEY_C_RIGHT)
+        {
+            exec_right(key);
+        }
+        else                            // Not an arrow key
+        {
+            char cmd[CMDBUF_SIZE];
+
+            if (key == KEY_PPAGE)
+            {
+                d.ybias = 0;
+
+                snprintf(cmd, sizeof(cmd), "%dL", -d.nrows);
+                exec_str(cmd);
+            }
+            else if (key == KEY_NPAGE)
+            {
+                d.ybias = 0;
+
+                snprintf(cmd, sizeof(cmd), "%dL", d.nrows);
+                exec_str(cmd);
+            }
+            else if (key == KEY_C_PGUP)
+            {
+                int n =  d.nrows / 2;
+
+                d.ybias = (d.nrows - (d.row + n)) % d.nrows;
+
+                snprintf(cmd, sizeof(cmd), "-%uL", n);
+                exec_str(cmd);
+            }
+            else if (key == KEY_C_PGDN)
+            {
+                int n = d.nrows / 2;
+
+                d.ybias = (n + d.row) % d.nrows;
+
+                snprintf(cmd, sizeof(cmd), "%uL", n);
+                exec_str(cmd);
+            }
+            else if (key == LF || key == ESC ||
+                     (key == ACCENT && f.et.accent) || key == f.ee)
+            {
+                if (w.nlines == 0 || w.noscroll)
+                {
+                    exec_str(".-Z \"N L T '");
+                }
+                else
+                {
+                    exec_str("L");
+                }
+            }
+            else if (key == BS)
+            {
+                if (w.nlines == 0 || w.noscroll)
+                {
+                    exec_str(".-B \"N -L T '");
+                }
+                else
+                {
+                    exec_str("-L");
+                }
+            }
+            else                        // Not a special key
+            {
+                return key;
+            }
+        }
+    }
+
+    d.oldcol = 0;
+
+    refresh_dpy();
+
+    return EOF;
+}
+
+
+///
+///  @brief    Move cursor to the left.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_left(int key)
+{
+    if (t.dot > t.B)
+    {
+        unmark_dot();
+
+        int c = getchar_ebuf(-1);       // Get previous character
+
+        if (isdelim(c))
+        {
+            if (d.ybias > 0)
+            {
+                --d.ybias;
+            }
+        }
+
+        if (d.col == 0)
+        {
+            d.col = -getdelta_ebuf(0);  // Go to end of line
+            d.xbias = d.col - w.width;
+        }
+        else if (key == KEY_C_LEFT)
+        {
+            --d.xbias;
+        }
+        else if (d.col <= d.xbias)
+        {
+            d.xbias -= w.width;
+        }
+
+        if (d.xbias < 0)
+        {
+            d.xbias = 0;
+        }
+
+        --t.dot;
+    }
+}
+
+
+///
+///  @brief    Move cursor to the right.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_right(int key)
+{
+    if (t.dot < t.Z)
+    {
+        unmark_dot();
+
+        int c = getchar_ebuf(0);        // Get next character
+
+        if (isdelim(c))
+        {
+            d.col = 0;
+
+            if (d.ybias < d.nrows - 1)
+            {
+                ++d.ybias;
+            }
+        }
+
+        if (d.col == 0)
+        {
+            d.xbias = 0;
+        }
+        else if (key == KEY_C_RIGHT)
+        {
+            ++d.xbias;
+        }
+        else if (d.col >= d.xbias + w.width - 1)
+        {
+            d.xbias += w.width;
+        }
+
+        if (d.xbias > w.width)
+        {
+            d.xbias = w.width;
+        }
+
+        ++t.dot;
+    }
+}
+
+
+///
+///  @brief    Move cursor up.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_up(int key)
+{
+    int pos = getdelta_ebuf(-1);        // Go to start of previous line
+
+    if (d.oldcol < d.col)
+    {
+        d.oldcol = d.col;
+    }
+
+    if (key == KEY_C_UP)
+    {
+        d.updown = true;
+    }
+    else if (d.ybias > 0)
+    {
+        --d.ybias;
+    }
+
+    unmark_dot();
+
+    t.dot += count_chrs(pos, d.oldcol);
+}
+
+
+///
 ///  @brief    Reset display mode prior to exiting from TECO.
 ///
 ///  @returns  Nothing.
@@ -360,7 +777,7 @@ static int_t find_column(void)
 
     while ((c = getchar_ebuf(pos)) != EOF)
     {
-        int width = cwidth[c];
+        int width = charsize[c];
 
         if (width == -1)
         {
@@ -437,6 +854,57 @@ int get_wait(void)
     }
 
     return EOF;
+}
+
+
+///
+///  @brief    Initialize charsize[] array with the length of each character
+///            on the display. The values will depend not only on the specific
+///            character, but also on whether SEEALL mode is in effect, and
+///            whether 8-bit characters can be displayed.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void init_charsize(void)
+{
+    for (int c = 0; c <= UCHAR_MAX; ++c)
+    {
+        chtype ch = (chtype)c;
+
+        if (isprint(c))                 // Printing chr. [32-126]
+        {
+            charsize[c] = 1;
+        }
+        else if (c >= BS && c <= CR)    // Special control chrs.
+        {
+            if (w.seeall)
+            {
+                charsize[c] = (char)strlen(unctrl(ch));
+            }
+            else if (c == HT)
+            {
+                charsize[c] = -1;         // Special flag for tabs
+            }
+            else
+            {
+                charsize[c] = 0;
+            }
+        }
+        else if (iscntrl(c))            // General control chrs.
+        {
+            charsize[c] = (char)strlen(unctrl(ch));
+        }
+        else if (f.et.eightbit)         // 8-bit chrs. w/ parity bit
+        {
+            charsize[c] = (char)strlen(unctrl(ch));
+        }
+        else                            // 8-bit chrs. w/o parity bit
+        {
+            charsize[c] = (char)strlen(table_8bit[c & 0x7f]);
+        }
+    }
 }
 
 
@@ -518,7 +986,7 @@ static void init_windows(void)
 
     clear();
     refresh();
-    reset_width();
+    init_charsize();
 
     // Figure out what rows each window starts and ends on.
 
@@ -637,7 +1105,7 @@ static void mark_dot(void)
     else
     {
         int c = getchar_ebuf(0);
-        int width = cwidth[c];
+        int width = charsize[c];
 
         if (width == -1)
         {
@@ -650,305 +1118,6 @@ static void mark_dot(void)
 
         mvwchgat(d.edit, d.row, d.col, width, A_REVERSE, EDIT, NULL);
     }
-}
-
-
-///
-///  @brief    Mark edit buffer as having changed.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void mark_ebuf(void)
-{
-    update_window = true;
-    update_cursor = true;
-}
-
-
-///
-///  @brief    Move cursor down.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void move_down(int key)
-{
-    int pos = getdelta_ebuf(1);         // Go to start of next line
-
-    if (d.oldcol < d.col)
-    {
-        d.oldcol = d.col;
-    }
-
-    if (key == KEY_C_DOWN)
-    {
-        d.updown = true;
-    }
-    else if (d.ybias < d.nrows - 1)
-    {
-        ++d.ybias;
-    }
-
-    unmark_dot();
-
-    t.dot += count_chrs(pos, d.oldcol);
-}
-
-
-///
-///  @brief    Process End key, as follows:
-///
-///            <End>      - Moves to the last column in the window, then repeats
-///                         until at end of line. Then moves to the end of the
-///                         window, and finally to the end of the buffer.
-///
-///            <Ctrl/End> - Moves to the last column of the line, then to the
-///                         end of the buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void move_end(int key)
-{
-    unmark_dot();
-
-    // Here to process End and Ctrl/End keys
-
-    if (iseol())
-    {
-        if (t.dot >= w.botdot - 1)      // Go to end of buffer
-        {
-            if (key != KEY_C_END && t.dot + 1 < t.Z)
-            {
-                t.dot += getdelta_ebuf(d.nrows + 1);
-
-                if (t.dot < t.Z)
-                {
-                    --t.dot;
-                }
-            }
-            else
-            {
-                d.xbias = 0;
-                d.ybias = 0;
-                t.dot = t.Z;
-            }
-        }
-        else                            // Go to end of window
-        {
-            d.ybias = d.nrows - 1;
-            t.dot = w.botdot - 1;
-        }
-    }
-    else if (t.dot != t.Z)
-    {
-        int_t len = getdelta_ebuf(1) - 1;
-
-        if (key == KEY_C_END)
-        {
-            t.dot += len;               // Go to end of line
-        }
-        else
-        {
-            if (d.col < d.maxcol)
-            {
-                d.col = d.maxcol;
-            }
-            else
-            {
-                d.col += d.maxcol + 1;
-                d.xbias += d.maxcol + 1;
-            }
-
-            t.dot += count_chrs(getdelta_ebuf(0), d.col);
-        }
-    }
-}
-
-
-///
-///  @brief    Process Home key, as follows:
-///
-///            <Home>      - Moves to the first column in the window, then
-///                          repeats until at the start of the line. Then moves
-///                          to the top of the window, and finally to the start
-///                          of the buffer.
-///
-///            <Ctrl/Home> - Moves to the first column on the line, then to the
-///                          start of the buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void move_home(int key)
-{
-    unmark_dot();
-
-    // Here to process Home and Ctrl/Home keys
-
-    if (d.xbias != 0)
-    {
-        if (key == KEY_C_HOME)
-        {
-            d.col = 0;
-            t.dot += getdelta_ebuf(0);
-            d.xbias = 0;
-        }
-        else if (d.col == d.xbias && (d.xbias -= w.width) < 0)
-        {
-            d.xbias = 0;
-        }
-
-        d.col = d.xbias;
-        t.dot += count_chrs(getdelta_ebuf(0), d.col);
-    }
-    else if (d.col != 0)
-    {
-        d.col = 0;
-        d.ybias = 0;
-        t.dot += getdelta_ebuf(0);
-    }
-    else if (t.dot != w.topdot && key == KEY_HOME)
-    {
-        d.row = 0;
-        d.ybias = 0;
-        t.dot = w.topdot;
-    }
-    else
-    {
-        t.dot = t.B;
-    }
-}
-
-
-///
-///  @brief    Move cursor to the left.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void move_left(int key)
-{
-    if (t.dot > t.B)
-    {
-        unmark_dot();
-
-        int c = getchar_ebuf(-1);       // Get previous character
-
-        if (isdelim(c))
-        {
-            if (d.ybias > 0)
-            {
-                --d.ybias;
-            }
-        }
-
-        if (d.col == 0)
-        {
-            d.col = -getdelta_ebuf(0);  // Go to end of line
-            d.xbias = d.col - w.width;
-        }
-        else if (key == KEY_C_LEFT)
-        {
-            --d.xbias;
-        }
-        else if (d.col <= d.xbias)
-        {
-            d.xbias -= w.width;
-        }
-
-        if (d.xbias < 0)
-        {
-            d.xbias = 0;
-        }
-
-        --t.dot;
-    }
-}
-
-
-///
-///  @brief    Move cursor to the right.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void move_right(int key)
-{
-    if (t.dot < t.Z)
-    {
-        unmark_dot();
-
-        int c = getchar_ebuf(0);        // Get next character
-
-        if (isdelim(c))
-        {
-            d.col = 0;
-
-            if (d.ybias < d.nrows - 1)
-            {
-                ++d.ybias;
-            }
-        }
-
-        if (d.col == 0)
-        {
-            d.xbias = 0;
-        }
-        else if (key == KEY_C_RIGHT)
-        {
-            ++d.xbias;
-        }
-        else if (d.col >= d.xbias + w.width - 1)
-        {
-            d.xbias += w.width;
-        }
-
-        if (d.xbias > w.width)
-        {
-            d.xbias = w.width;
-        }
-
-        ++t.dot;
-    }
-}
-
-
-///
-///  @brief    Move cursor up.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void move_up(int key)
-{
-    int pos = getdelta_ebuf(-1);        // Go to start of previous line
-
-    if (d.oldcol < d.col)
-    {
-        d.oldcol = d.col;
-    }
-
-    if (key == KEY_C_UP)
-    {
-        d.updown = true;
-    }
-    else if (d.ybias > 0)
-    {
-        --d.ybias;
-    }
-
-    unmark_dot();
-
-    t.dot += count_chrs(pos, d.oldcol);
 }
 
 
@@ -1046,133 +1215,7 @@ static void putc_edit(int c)
 
 
 ///
-///  @brief    Read display key.
-///
-///  @returns  Character to process, or EOF if already processed.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int readkey_dpy(int key)
-{
-    if (!f.e0.display)                  // If display is off,
-    {
-        return key;                     //  just return whatever we got
-    }
-
-    d.updown = false;
-
-    if (exec_key(key))                  // User-defined key?
-    {
-        d.ybias = d.nrows - 1;
-    }
-    else if (key == KEY_HOME || key == KEY_C_HOME)
-    {
-        move_home(key);
-    }
-    else if (key == KEY_END || key == KEY_C_END)
-    {
-        move_end(key);
-    }
-    else                                // Neither Home nor End
-    {
-        if (key == KEY_UP || key == KEY_C_UP)
-        {
-            move_up(key);
-            refresh_dpy();
-
-            return EOF;
-        }
-        else if (key == KEY_DOWN || key == KEY_C_DOWN)
-        {
-            move_down(key); 
-            refresh_dpy();
-
-            return EOF;
-        }
-        else if (key == KEY_LEFT || key == KEY_C_LEFT)
-        {
-            move_left(key);
-        }
-        else if (key == KEY_RIGHT || key == KEY_C_RIGHT)
-        {
-            move_right(key);
-        }
-        else                            // Not an arrow key
-        {
-            char cmd[CMDBUF_SIZE];
-
-            if (key == KEY_PPAGE)
-            {
-                d.ybias = 0;
-
-                snprintf(cmd, sizeof(cmd), "%dL", -d.nrows);
-                exec_str(cmd);
-            }
-            else if (key == KEY_NPAGE)
-            {
-                d.ybias = 0;
-
-                snprintf(cmd, sizeof(cmd), "%dL", d.nrows);
-                exec_str(cmd);
-            }
-            else if (key == KEY_C_PGUP)
-            {
-                int n =  d.nrows / 2;
-
-                d.ybias = (d.nrows - (d.row + n)) % d.nrows;
-
-                snprintf(cmd, sizeof(cmd), "-%uL", n);
-                exec_str(cmd);
-            }
-            else if (key == KEY_C_PGDN)
-            {
-                int n = d.nrows / 2;
-
-                d.ybias = (n + d.row) % d.nrows;
-
-                snprintf(cmd, sizeof(cmd), "%uL", n);
-                exec_str(cmd);
-            }
-            else if (key == LF || key == ESC ||
-                     (key == ACCENT && f.et.accent) || key == f.ee)
-            {
-                if (w.nlines == 0 || w.noscroll)
-                {
-                    exec_str(".-Z \"N L T '");
-                }
-                else
-                {
-                    exec_str("L");
-                }
-            }
-            else if (key == BS)
-            {
-                if (w.nlines == 0 || w.noscroll)
-                {
-                    exec_str(".-B \"N -L T '");
-                }
-                else
-                {
-                    exec_str("-L");
-                }
-            }
-            else                        // Not a special key
-            {
-                return key;
-            }
-        }
-    }
-
-    d.oldcol = 0;
-
-    refresh_dpy();
-
-    return EOF;
-}
-
-
-///
-///  @brief    Refresh screen.
+///  @brief    See if we need to move the cursor or refresh the display.
 ///
 ///  @returns  Nothing.
 ///
@@ -1192,37 +1235,34 @@ void refresh_dpy(void)
 
     if (update_window || update_cursor)
     {
-        if (update_cursor)
+        update_cursor = false;
+
+        d.col = find_column();
+
+        int nlines = getlines_ebuf(-1);
+        int delta = nlines - d.oldline;
+
+        d.oldline = nlines;
+
+        if (!d.updown)
         {
-            update_cursor = false;
-
-            d.col = find_column();
-
-            int nlines = getlines_ebuf(-1);
-            int delta = nlines - d.oldline;
-
-            d.oldline = nlines;
-
-            if (!d.updown)
-            {
-                d.row += delta;
-            }
-
-            if (d.row < 0)
-            {
-                d.row = 0;
-
-                update_window = true;
-            }
-            else if (d.row >= d.nrows)
-            {
-                d.row = d.nrows - 1;
-
-                update_window = true;
-            }
-
-            d.ybias = d.row;
+            d.row += delta;
         }
+
+        if (d.row < 0)
+        {
+            d.row = 0;
+
+            update_window = true;
+        }
+        else if (d.row >= d.nrows)
+        {
+            d.row = d.nrows - 1;
+
+            update_window = true;
+        }
+
+        d.ybias = d.row;
 
         if (update_window)
         {
@@ -1241,7 +1281,6 @@ void refresh_dpy(void)
     }
 
     refresh_status();
-
     wrefresh(d.cmd);                    // Switch back to command window
 }
 
@@ -1409,74 +1448,6 @@ static void reset_dpy(void)
 
 
 ///
-///  @brief    Reset characters in cwidth[] array.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void reset_width(void)
-{
-    for (int c = 0; c <= UCHAR_MAX; ++c)
-    {
-        chtype ch = (chtype)c;
-
-        if (isprint(c))                 // Printing chr. [32-126]
-        {
-            cwidth[c] = 1;
-        }
-        else if (c >= BS && c <= CR)    // Special control chrs.
-        {
-            if (w.seeall)
-            {
-                cwidth[c] = (char)strlen(unctrl(ch));
-            }
-            else if (c == HT)
-            {
-                cwidth[c] = -1;         // Special flag for tabs
-            }
-            else
-            {
-                cwidth[c] = 0;
-            }
-        }
-        else if (iscntrl(c))            // General control chrs.
-        {
-            cwidth[c] = (char)strlen(unctrl(ch));
-        }
-        else if (f.et.eightbit)         // 8-bit chrs. w/ parity bit
-        {
-            cwidth[c] = (char)strlen(unctrl(ch));
-        }
-        else                            // 8-bit chrs. w/o parity bit
-        {
-            cwidth[c] = (char)strlen(table_8bit[c & 0x7f]);
-        }
-    }
-}
-
-
-///
-///  @brief    Finish window resize when KEY_RESIZE key read.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void resize_key(void)
-{
-    if (f.e0.display)
-    {
-        getmaxyx(stdscr, w.height, w.width);
-
-        clear_dpy();
-
-        print_prompt();
-    }
-}
-
-
-///
 ///  @brief    Rubout character on display.
 ///
 ///  @returns  Nothing.
@@ -1617,7 +1588,7 @@ void unmark_dot(void)
     else
     {
         int c = getchar_ebuf(0);
-        int width = cwidth[c];
+        int width = charsize[c];
 
         if (width == -1)
         {

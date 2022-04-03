@@ -302,7 +302,7 @@ static void set_w(int_t m, int_t n)
         case 3:
             w.seeall = m ? true : false;
 
-            reset_width();
+            init_charsize();
             clear_dpy();
 
             break;
@@ -325,7 +325,8 @@ static void set_w(int_t m, int_t n)
 
         case 10:
             set_tab(m);
-            mark_ebuf();
+
+            update_window = true;
 
             break;
 
