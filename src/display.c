@@ -698,14 +698,17 @@ static void reset_dpy(void)
 void rubout_dpy(int c)
 {
     char len = keysize[c];              // Get width of key
+    int row;
+    int col;
 
-    // TODO
+    getyx(d.cmd, row, col);
 
-    while (len-- > 0)
+    if (len > col)
     {
-        waddch(d.cmd, '\b');
+        len = col;
     }
 
+    wmove(d.cmd, row, col - len);
     wclrtobot(d.cmd);
 }
 
