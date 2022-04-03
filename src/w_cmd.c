@@ -38,6 +38,7 @@
 
 #define DEFAULT_HEIGHT          24      ///< Default terminal rows
 #define DEFAULT_WIDTH           80      ///< Default terminal columns
+#define DEFAULT_MAXLINE        500      ///< Default maximum line length
 
 #define MIN_HEIGHT              10      ///< Minimum no. of rows
 #define MIN_WIDTH               10      ///< Minimum no. of columns
@@ -53,7 +54,7 @@ struct watch w =
     .topdot   = 0,                      // Value of F0 flag
     .botdot   = 0,                      // Value of FZ flag
     .nlines   = 0,
-    .maxline  = DEFAULT_WIDTH,
+    .maxline  = DEFAULT_MAXLINE,
     .seeall   = false,
     .noscroll = false,
     .tchar    =

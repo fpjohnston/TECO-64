@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DISPLAY_INTERNAL
+#define DISPLAY_INTERNAL            ///< Enable internal definitions
 
 #include "teco.h"
 #include "ascii.h"

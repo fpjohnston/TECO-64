@@ -29,7 +29,7 @@
 #include <ncurses.h>
 #include <stdio.h>
 
-#define DISPLAY_INTERNAL
+#define DISPLAY_INTERNAL            ///< Enable internal definitions
 
 #include "teco.h"
 #include "ascii.h"
