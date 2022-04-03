@@ -39,33 +39,20 @@ bool update_window = false;             ///< true if screen redraw needed
 
 
 ///
-///  @brief    (STUB) Check to see if escape sequences were enabled or disabled.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void check_escape(bool unused)
-{
-    f.ed.escape = false;                // Always off if no display mode
-}
-
-
-///
-///  @brief    (STUB) Check for input characters that require special processing.
+///  @brief    Check for input characters that require special processing.
 ///
 ///  @returns  Next input character to process.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int check_key(int c, bool unused)
+int check_key(int c)
 {
     return c;                           // Just return what we got if no display
 }
 
 
 ///
-///  @brief    (STUB) Clear screen and redraw display.
+///  @brief    Clear screen and redraw display.
 ///
 ///  @returns  Nothing.
 ///
@@ -78,7 +65,7 @@ void clear_dpy(void)
 
 
 ///
-///  @brief    (STUB) Clear to end of line.
+///  @brief    Clear to end of line.
 ///
 ///  @returns  false.
 ///
@@ -91,7 +78,7 @@ bool clear_eol(void)
 
 
 ///
-///  @brief    (STUB) Check for ending display mode.
+///  @brief    Check for ending display mode.
 ///
 ///  @returns  Nothing.
 ///
@@ -104,7 +91,7 @@ void end_dpy(void)
 
 
 ///
-///  @brief    (STUB) Execute F1 command: set colors for command window.
+///  @brief    Execute F1 command: set colors for command window.
 ///
 ///  @returns  Nothing.
 ///
@@ -117,7 +104,7 @@ void exec_F1(struct cmd *unused)
 
 
 ///
-///  @brief    (STUB) Execute F2 command: set colors for edit window.
+///  @brief    Execute F2 command: set colors for edit window.
 ///
 ///  @returns  Nothing.
 ///
@@ -130,7 +117,7 @@ void exec_F2(struct cmd *unused)
 
 
 ///
-///  @brief    (STUB) Execute F3 command: set colors for status line.
+///  @brief    Execute F3 command: set colors for status line.
 ///
 ///  @returns  Nothing.
 ///
@@ -143,7 +130,7 @@ void exec_F3(struct cmd *unused)
 
 
 ///
-///  @brief    (STUB) Execute F4 command: set colors for divider line.
+///  @brief    Execute F4 command: set colors for divider line.
 ///
 ///  @returns  Nothing.
 ///
@@ -156,7 +143,7 @@ void exec_F4(struct cmd *unused)
 
 
 ///
-///  @brief    (STUB) Execute FM command: map key to command string, or unmap key.
+///  @brief    Execute FM command: map key to command string, or unmap key.
 ///
 ///  @returns  Returns failure for :FM command, else exception is thrown.
 ///
@@ -178,7 +165,7 @@ void exec_FM(struct cmd *cmd)
 
 
 ///
-///  @brief    (STUB) Execute FQ command: map key to Q-register.
+///  @brief    Execute FQ command: map key to Q-register.
 ///
 ///  @returns  Returns failure for :FQ command, else exception is thrown.
 ///
@@ -200,7 +187,7 @@ void exec_FQ(struct cmd *cmd)
 
 
 ///
-///  @brief    (STUB) Execute ncurses keys such as F1, Home, or PgDn.
+///  @brief    Execute ncurses keys such as F1, Home, or PgDn.
 ///
 ///  @returns  Same character received.
 ///
@@ -213,7 +200,7 @@ int exec_key(int c)
 
 
 ///
-///  @brief    (STUB) Reset display mode prior to exiting from TECO.
+///  @brief    Reset display mode prior to exiting from TECO.
 ///
 ///  @returns  Nothing.
 ///
@@ -226,7 +213,7 @@ void exit_dpy(void)
 
 
 ///
-///  @brief    (STUB) Read next character without wait (non-blocking I/O).
+///  @brief    Read next character without wait (non-blocking I/O).
 ///
 ///  @returns  Throws E_DPY error.
 ///
@@ -239,7 +226,7 @@ int get_nowait(void)
 
 
 ///
-///  @brief    (STUB) Get tabsize.
+///  @brief    Get tabsize.
 ///
 ///  @returns  Tab size.
 ///
@@ -252,7 +239,7 @@ int get_tab(void)
 
 
 ///
-///  @brief    (STUB) Read next character (if in display mode).
+///  @brief    Read next character (if in display mode).
 ///
 ///  @returns  Throws E_DPY error.
 ///
@@ -264,21 +251,20 @@ int get_wait(void)
 }
 
 
-///
-///  @brief    (STUB) Initialize charsize[] array with the length of each character.
+///  @brief    Initialize keysize[] array with the length of each character.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void init_charsize(void)
+void init_keys(void)
 {
     ;                                   // Nothing to do if no display
 }
 
 
 ///
-///  @brief    (STUB) Output character to command window.
+///  @brief    Output character to command window.
 ///
 ///  @returns  Always false (because display is never active).
 ///
@@ -291,7 +277,7 @@ bool putc_cmd(int unused)
 
 
 ///
-///  @brief    (STUB) Refresh screen.
+///  @brief    Refresh screen.
 ///
 ///  @returns  Nothing.
 ///
@@ -304,7 +290,7 @@ void refresh_dpy(void)
 
 
 ///
-///  @brief    (STUB) Reset window colors to defaults.
+///  @brief    Reset window colors to defaults.
 ///
 ///  @returns  Nothing.
 ///
@@ -317,7 +303,20 @@ void reset_colors(void)
 
 
 ///
-///  @brief    (STUB) Reset all mapped keys.
+///  @brief    Un-highlight cursor, and say that we need a cursor update.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_cursor(void)
+{
+    ;                                   // Nothing to do if no display
+}
+
+
+///
+///  @brief    Reset all mapped keys.
 ///
 ///  @returns  Nothing.
 ///
@@ -330,7 +329,7 @@ void reset_map(void)
 
 
 ///
-///  @brief    (STUB) Rubout character on display.
+///  @brief    Rubout character on display.
 ///
 ///  @returns  Nothing.
 ///
@@ -343,33 +342,33 @@ void rubout_dpy(int unused)
 
 
 ///
-///  @brief    (STUB) Mark 'dot' as having changed, and force a screen redraw.
+///  @brief    Tell ncurses when 7-/8-bit setting changes.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void setdot_dpy(void)
+void set_bits(bool unused)
 {
     ;                                   // Nothing to do if no display
 }
 
 
 ///
-///  @brief    (STUB) Set parity.
+///  @brief    Tell ncurses when escape setting changes.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void set_parity(bool unused)
+void set_escape(bool unused)
 {
-    ;                                   // Nothing to do if no display
+    f.ed.escape = false;                // Always off if no display mode
 }
 
 
 ///
-///  @brief    (STUB) Set tabsize.
+///  @brief    Set tabsize.
 ///
 ///  @returns  Nothing.
 ///
@@ -382,7 +381,7 @@ void set_tab(int unused)
 
 
 ///
-///  @brief    (STUB) Check for starting display mode.
+///  @brief    Check for starting display mode.
 ///
 ///  @returns  Nothing.
 ///
@@ -391,17 +390,4 @@ void set_tab(int unused)
 void start_dpy(void)
 {
     throw(E_DPY);                       // No display mode available
-}
-
-
-///
-///  @brief    (STUB) Mark 'dot' as having changed.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void unmark_dot(void)
-{
-    ;                                   // Nothing to do if no display
 }

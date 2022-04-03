@@ -302,7 +302,7 @@ static void set_w(int_t m, int_t n)
         case 3:
             w.seeall = m ? true : false;
 
-            init_charsize();
+            init_keys();
             clear_dpy();
 
             break;

@@ -230,7 +230,7 @@ void exec_ED(struct cmd *cmd)
 
     if (f.ed.escape ^ ed.escape)        // Do we need to update display?
     {
-        check_escape((bool)(f.ed.escape = ed.escape));
+        set_escape((bool)(f.ed.escape = ed.escape));
     }
 }
 
@@ -348,8 +348,8 @@ void exec_ET(struct cmd *cmd)
 
     if (eightbit)                       // Did 8-bit setting just change?
     {
-        set_parity((bool)f.et.eightbit);
-        init_charsize();
+        set_bits((bool)f.et.eightbit);
+        init_keys();
 
         update_window = true;
     }

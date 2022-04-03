@@ -28,6 +28,7 @@
 
 #define _DISPLAY_H
 
+#include <limits.h>             //lint !e451
 #include <stdbool.h>            //lint !e451
 
 #include "teco.h"
@@ -88,10 +89,6 @@ extern bool update_window;
 extern struct watch w;
 
 
-// Functions defined only if including display mode
-
-extern void check_escape(bool escape);
-
 extern int check_key(int c);
 
 extern bool clear_eol(void);
@@ -112,7 +109,7 @@ extern int get_tab(void);
 
 extern int get_wait(void);
 
-extern void init_charsize(void);
+extern void init_keys(void);
 
 extern bool putc_cmd(int c);
 
@@ -120,15 +117,59 @@ extern void refresh_dpy(void);
 
 extern void reset_colors(void);
 
+extern void reset_cursor(void);
+
 extern void rubout_dpy(int c);
 
-extern void set_parity(bool parity);
+extern void set_bits(bool parity);
+
+extern void set_escape(bool escape);
 
 extern void set_tab(int n);
 
 extern void start_dpy(void);
 
-extern void unmark_dot(void);
 
+// Define data used only internally within display code
+
+#if     defined(DISPLAY_INTERNAL)
+
+#define STATUS_WIDTH        22      ///< Width of status window
+
+#define STATUS_HEIGHT        5      ///< Min. height for status window
+
+///  @struct  display
+///  @brief   Display mode variables
+
+struct display
+{
+    WINDOW *edit;                   ///< Edit window
+    WINDOW *status;                 ///< Status window
+    WINDOW *cmd;                    ///< Command window
+    WINDOW *line;                   ///< Partition line
+    int row;                        ///< Current row for 'dot'
+    int col;                        ///< Current column for 'dot'
+    bool updown;                    ///< true if last cmd was up/down arrow
+    int oldline;                    ///< Previous line no. for 'dot'
+    int oldcol;                     ///< Previous column for 'dot'
+    int minrow;                     ///< Min. row for edit window
+    int mincol;                     ///< Min. column for edit window
+    int maxrow;                     ///< Max. row for edit window
+    int maxcol;                     ///< Max. column for edit window
+    int ybias;                      ///< Vertical bias for edit window
+    int xbias;                      ///< Horizontal bias for edit window
+    int nrows;                      ///< No. of rows in edit window
+};
+
+
+extern struct display d;
+
+extern char keysize[UCHAR_MAX + 1];
+
+
+extern void refresh_status(void);
+
+
+#endif
 
 #endif  // !defined(_DISPLAY_H)

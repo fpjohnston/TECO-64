@@ -470,7 +470,7 @@ void setpos_ebuf(int_t pos)
 {
     if ((uint_t)pos <= eb.left + eb.right)
     {
-        unmark_dot();                   // Tell display that 'dot' changed
+        reset_cursor();                 // Say that cursor needs to change
 
         t.dot = pos;
     }
