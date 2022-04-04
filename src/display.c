@@ -129,15 +129,23 @@ static void (check_error)(bool error)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void clear_dpy(void)
+void clear_dpy(bool all)
 {
-    term_pos = 0;                       // Nothing output to terminal yet
-
-    init_windows();
+    if (all)
+    {
+        init_windows();
+    }
 
     update_window = true;
 
     refresh_dpy();
+
+    if (all && !f.e0.init)
+    {
+        term_pos = 0;
+
+        print_prompt();
+    }
 }
 
 
@@ -795,6 +803,6 @@ void start_dpy(void)
 
         init_windows();
         color_dpy();
-        clear_dpy();
+        clear_dpy((bool)true);
     }
 }

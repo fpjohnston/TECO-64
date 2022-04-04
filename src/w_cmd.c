@@ -48,16 +48,15 @@
 
 struct watch w =
 {
-    .type     = 8,                      // VT102 in ANSI mode
-    .width    = DEFAULT_WIDTH,
-    .height   = DEFAULT_HEIGHT,
-    .topdot   = 0,                      // Value of F0 flag
-    .botdot   = 0,                      // Value of FZ flag
-    .nlines   = 0,
-    .maxline  = DEFAULT_MAXLINE,
-    .seeall   = false,
-    .noscroll = false,
-    .tchar    =
+    .type     = 8,                      // 0:W - VT102 in ANSI mode
+    .width    = DEFAULT_WIDTH,          // 1:W
+    .height   = DEFAULT_HEIGHT,         // 2:W
+    .seeall   = false,                  // 3:W
+    .mark     = 0,                      // 4:W
+    .topdot   = 0,                      // 6:W and F0
+    .nlines   = 0,                      // 7:W
+    .noscroll = false,                  // 8:W
+    .tchar    =                         // 9:W
     {
         {                               //lint !e708
             .ansi_crt   = true,
@@ -70,6 +69,8 @@ struct watch w =
             .end_of_scr = true,
         }
     },
+    .maxline  = DEFAULT_MAXLINE,        // 11:W
+    .botdot   = 0,                      // FZ
 };
 
 
@@ -78,6 +79,42 @@ struct watch w =
 static int_t get_w(int_t n);
 
 static void set_w(int_t m, int_t n);
+
+
+///
+///  @brief    Execute W command: process display functions.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_W(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (!cmd->colon)                    // Is it nW?
+    {
+        if (f.et.scope)                 // Scope mode allowed?
+        {
+            if (!cmd->n_set || cmd->n_arg == 0)
+            {
+                end_dpy();              // W or 0W ends display mode
+            }
+            else if (cmd->n_arg == -1)
+            {
+                start_dpy();            // -1W starts display mode
+            }
+            else
+            {
+                throw(E_DPY);           // Anything else is an error
+            }
+        }
+        else
+        {
+            throw(E_DPY);               // Display mode requires scope terminal
+        }
+    }
+}
 
 
 ///
@@ -91,7 +128,6 @@ static int_t get_w(int_t n)
 {
     switch (n)
     {
-        default:
         case 0:                         // Terminal type
             return w.type;
 
@@ -112,6 +148,8 @@ static int_t get_w(int_t n)
             return w.seeall ? -1 : 0;
             
         case 4:                         // Mark status
+            return w.mark;
+
         case 5:                         // Hold mode indicator
             return 0;
 
@@ -132,38 +170,9 @@ static int_t get_w(int_t n)
 
         case 11:                        // Maximum length of line in edit buffer
             return w.maxline;
-    }
-}
 
-
-///
-///  @brief    Execute W command: process display functions.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_W(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (!cmd->colon)                    // Is it nW?
-    {
-        if (f.et.scope)                 // Scope mode allowed?
-        {
-            if (!cmd->n_set)            // Was it W with no argument?
-            {
-                end_dpy();
-            }
-            else if (cmd->n_arg == -1)  // Was it -1W?
-            {
-                start_dpy();
-            }
-        }
-        else
-        {
-            throw(E_DPY);               // Display mode requires scope terminal
-        }
+        default:
+            throw(E_ARG);               // n:W is out of range
     }
 }
 
@@ -256,15 +265,23 @@ bool scan_W(struct cmd *cmd)
         set_w(cmd->m_arg, cmd->n_arg);
     }
 
-    int_t n = get_w(cmd->n_arg);
-
-    push_x(n, X_OPERAND);
-
-    cmd->colon = cmd->dcolon = false;   // Reset for next command
     cmd->m_set = false;
     cmd->m_arg = 0;
 
-    return true;
+    if (cmd->colon)
+    {
+        cmd->colon = cmd->dcolon = false; // Reset for next command
+
+        int_t n = get_w(cmd->n_arg);
+
+        push_x(n, X_OPERAND);
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 
@@ -309,14 +326,21 @@ static void set_w(int_t m, int_t n)
 
             break;
 
-            
+        case 4:
+            w.mark = m;
+
+            break;
+
+        case 5:
+        case 6:
+            break;
+
         case 7:
             if (m > 1 && w.height - m >= 9)
             {
                 w.nlines = (int)m;
 
-                clear_dpy();
-                print_prompt();
+                clear_dpy((bool)true);
             }
 
             break;
@@ -324,6 +348,9 @@ static void set_w(int_t m, int_t n)
         case 8:
             w.noscroll = m ? true : false;
 
+            break;
+
+        case 9:
             break;
 
         case 10:
@@ -336,12 +363,11 @@ static void set_w(int_t m, int_t n)
         case 11:
             w.maxline = m;
 
-            clear_dpy();
-            print_prompt();
+            clear_dpy((bool)true);
 
             break;
 
         default:
-            break;
+            throw(E_ARG);               // m,n:W is out of range
     }
 }

@@ -496,6 +496,10 @@ void read_cmd(void)
 
 static int read_first(void)
 {
+    static bool last_ctrl_w = false;    // Last character was CTRL/W
+
+    bool found_ctrl_w = false;          // Assume no CTRL/W this time
+
     // Loop until we've seen something other than an immediate-action command.
 
     for (;;)
@@ -572,12 +576,28 @@ static int read_first(void)
                 }
 
                 reset_colors();
-                //lint -fallthrough
+                clear_dpy((bool)true);
+                echo_in(c);
+                echo_in(LF);
+
+                continue;
 
             case CTRL_W:
                 echo_in(c);
                 echo_in(LF);
-                clear_dpy();
+
+                if (last_ctrl_w)        // Did we see double CTRL/W?
+                {
+                    last_ctrl_w = false;
+
+                    clear_dpy((bool)true); // Refresh all windows
+
+                    continue;
+                }
+
+                clear_dpy((bool)false); // Just refresh edit window
+
+                found_ctrl_w = true;
 
                 break;
 
@@ -600,19 +620,15 @@ static int read_first(void)
 
                         exec_str(temp); // Re-execute last command string
                         refresh_dpy();  // Do any necessary screen update
-                    }
-                    else
-                    {
-                        echo_in('?');
-                        echo_in(LF);
-                    }
 
-                    break;
+                        break;
+                    }
                 }
-                else
-                {
-                    return c;
-                }
+
+                echo_in('?');
+                echo_in(LF);
+
+                break;
 
             case '/':                   // Display verbose error message
                 echo_in(c);
@@ -644,8 +660,12 @@ static int read_first(void)
                 break;
 
             default:
+                last_ctrl_w = false;
+
                 return c;
         }
+
+        last_ctrl_w = found_ctrl_w;
 
         print_prompt();
     }
@@ -689,7 +709,6 @@ static int read_wait(void)
         }
         else if (nbytes != -1)          // Error?
         {
-//            tprint("chr = %d\n", chr);
             return chr;
         }
     }

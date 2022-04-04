@@ -57,29 +57,28 @@ is not informed.
 W - Video Terminal Watch Commands
 
 These commands facilitated screen updates that are now handled by the
-*ncurses* library. Other than -1W and W, for enabling and disabling display
-mode, respectively, and 7:W, for setting the size of a scrolling region,
-they appear to be largely unnecessary. 1:W and 2:W may be used to determine
-the terminal width and height, respectively, but should not be necessary
-for setting either since TECO determines the terminal size automatically
-at start-up and whenever the display is resized.
+*ncurses* library, as a result of which, many of these commands are now
+obsolete.
 
 - -1W - Enable disable mode.
 - -W - Equivalent to -1W.
-- -nW - Ignored.
-- nW - Ignored.
-- 0W - Ignored.
+- -nW - Not implemented.
+- nW - Not implemented.
 - W - Disable display mode.
-- -1000W - Ignored.
+- 0W - Implemented as equivalent to W.
+- -1000W - Not implemented.
 - 0:W - Read the terminal type. Cannot be set.
 - :W - Equivalent to 0:W.
 - 1:W - Read or set the horizontal size of the user’s editing display.
 - 2:W - Read or set the vertical size of the user’s editing display.
 - 3:W - Read or set SEEALL mode.
-- 4:W - Always returns 0. Cannot be set.
+- 4:W - Read or set "mark" status.
 - 5:W - Always returns 0. Cannot be set.
 - 6:W - Read the buffer position of the character in the top left corner of the screen. Cannot be set.
-- 7:W - Read or set the number of lines in the scrolling (command dialogue)
-portion of the screen.
+- 7:W - Read or set the number of lines in the scrolling region (command window) of the screen.
 - 8:W - Read or set scrolling region status. If set to a non-zero value, the scrolling region is disabled.
 - 9:W - Read the terminal characteristics flag. Cannot be set.
+- 10:W - Read or set the tab size.
+- 11:W - Read or set the maximum line length.
+- 256:W - Not implemented.
+- -256+n:W - Not implemented.

@@ -92,9 +92,7 @@ int check_key(int c)
         {
             getmaxyx(stdscr, w.height, w.width);
 
-            clear_dpy();
-
-            print_prompt();
+            clear_dpy((bool)true);
         }
 
         return EOF;

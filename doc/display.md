@@ -26,7 +26,7 @@ mode information.
 | 1:W | Return or set the horizontal size of the user’s display. |
 | 2:W | Return or set the vertical size of the user’s display. |
 | 3:W | Return or set SEEALL mode. SEEALL mode provides a graphic representation of all characters, including control characters and 8-bit characters. |
-| 4:W | Return or set "mark" status of window support. Not implemented. |
+| 4:W | Return or set "mark" status of window support. |
 | 5:W | Return or set the hold mode indicator. Not implemented. |
 | 6:W | Return buffer position of character in upper left hand corner of the window. |
 | 7:W | Return or set the number of lines in the scrolling region (command window) portion of the screen. If n is 0, then split screen scrolling is disabled. When split screen scrolling is enabled, n lines (as specified) are reserved at the bottom of the screen to scroll the terminal interaction. The remainder of the screen is used as a display window into the text buffer, and is automatically updated immediately before each command prompt. <br><br>The value of n must be greater than 1, and the display height minus n must be greater than 9. <br><br>Whenever the scrolling region’s size is modified (that is, whenever an m,7:W command is executed), TECO alters the display height (2:W) accordingly. For example, if 2:W is currently returning a value of 24, then after a 5,7:W command 2:W will return a value of 19. Executing a 0,7:W will restore 2:W to 24. |

@@ -58,7 +58,7 @@ int check_key(int c)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void clear_dpy(void)
+void clear_dpy(bool unused)
 {
     ;                                   // Nothing to do if no display
 }

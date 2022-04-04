@@ -69,16 +69,17 @@ union tchar
 
 struct watch
 {
-    int type;                       ///< Type of scope
-    int width;                      ///< Terminal width in columns
-    int height;                     ///< Terminal height in rows
-    int_t topdot;                   ///< Buffer position of upper left corner
+    int type;                       ///< 0:W - Type of scope
+    int width;                      ///< 1:W - Terminal width in columns
+    int height;                     ///< 2:W - Terminal height in rows
+    bool seeall;                    ///< 3:W - SEEALL mode
+    int_t mark;                     ///< 4:W - Mark status
+    int_t topdot;                   ///< 6:W - Buffer position of upper left corner
+    int nlines;                     ///< 7:W - No. of command window lines
+    bool noscroll;                  ///< 8:W - Disable scrolling region
+    union tchar tchar;              ///< 9:W - Terminal characteristics
+    int maxline;                    ///< 11:W - Length of longest line in edit buffer
     int_t botdot;                   ///< Buffer position of bottom right corner
-    int nlines;                     ///< No. of scrolling lines
-    int maxline;                    ///< Length of longest line in edit buffer
-    bool seeall;                    ///< SEEALL mode
-    bool noscroll;                  ///< Disable scrolling region
-    union tchar tchar;              ///< Terminal characteristics
 };
 
 
@@ -93,7 +94,7 @@ extern int check_key(int c);
 
 extern bool clear_eol(void);
 
-extern void clear_dpy(void);
+extern void clear_dpy(bool all);
 
 extern void color_dpy(void);
 

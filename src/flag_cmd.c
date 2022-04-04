@@ -201,7 +201,7 @@ void exec_E4(struct cmd *cmd)
 
     if (f.e0.display && changes)        // Any changes?
     {
-        clear_dpy();                    // Yes, reset display
+        clear_dpy((bool)true);          // Yes, reset display
     }
 }
 
