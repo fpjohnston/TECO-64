@@ -9,22 +9,23 @@ EO - 200 "L
 '
 
 QN "E
-    -1W                 !! Enable display mode
+    -1W                                 !! Enable display mode
 '
 
-9,7:W ^[                !! Set 9 lines for command window
+9,7:W ^[                                !! Set 9 lines for command window
 
-@f1/cyan/black/         !! Set command window colors
-@f2/blue/white/         !! Set edit window colors
-@f3/green/black/        !! Set status window colors
-@f4/red/black/          !! Set divider line colors
+@f1/cyan/black/                         !! Set command window colors
+@f2/blue/white/                         !! Set edit window colors
+@f3/green/black/                        !! Set status window colors
+@f4/red/black/                          !! Set divider line colors
 
-@fm/S_PGDN/P/           !! Next page
-@fm/S_PGUP/-P/          !! Previous page
-@fm/F1/FL L/            !! Downcase line, advance to next
-@fm/S_F1/FL/            !! Downcase line
-@fm/F2/FU L/            !! Upcase line, advance to next
-@fm/S_F2/FU/            !! Upcase line
-@fm/A_DELETE/EK HK EX/  !! Cancel edit and exit
+@fm/A_DELETE/EK HK EX/                  !! Cancel edit and exit
+
+@FM/F1/(-1 - (3:W)),3:W/                !! Toggle SEEALL mode
+
+!! The following are just to show how to set and reset the mark
+
+@fm/F2/4:W "E (.+1),4:W @="Mark set at %d" | 4:W @="Mark already set at %d" '/
+@fm/S_F2/4:W "E :@^A"Mark not set" | 0,4:W ^[ :@^A"Mark reset" '/
 
 ^[^[
