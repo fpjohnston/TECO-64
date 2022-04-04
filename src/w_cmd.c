@@ -109,7 +109,7 @@ static int_t get_w(int_t n)
             return n;
 
         case 3:                         // SEEALL mode
-            return w.seeall;
+            return w.seeall ? -1 : 0;
             
         case 4:                         // Mark status
         case 5:                         // Hold mode indicator
@@ -303,8 +303,9 @@ static void set_w(int_t m, int_t n)
         case 3:
             w.seeall = m ? true : false;
 
-            init_keys();
-            clear_dpy();
+            init_keys();                // Adjust widths of display chrs.
+
+            update_window = true;
 
             break;
 
@@ -315,6 +316,7 @@ static void set_w(int_t m, int_t n)
                 w.nlines = (int)m;
 
                 clear_dpy();
+                print_prompt();
             }
 
             break;
@@ -335,6 +337,7 @@ static void set_w(int_t m, int_t n)
             w.maxline = m;
 
             clear_dpy();
+            print_prompt();
 
             break;
 
