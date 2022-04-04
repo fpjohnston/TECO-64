@@ -46,7 +46,6 @@ static struct errlist errlist[] =
     [E_ATS] = { "ATS",  "Invalid or extraneous at-sign" },
     [E_BAT] = { "BAT",  "Bad tag '!%s!'" },
     [E_BNI] = { "BNI",  "Right angle bracket not in iteration" },
-    [E_CFG] = { "CFG",  "Command not configured" },
     [E_CHR] = { "CHR",  "Invalid character for command" },
     [E_CMD] = { "CMD",  "An EG or EZ command is too long" },
     [E_COL] = { "COL",  "Invalid or extraneous colon" },
@@ -136,9 +135,6 @@ static const char *errhelp[] =
     [E_BNI] = "A right angle bracket was not matched by a left "
               "angle bracket (Note: a loop in a Q-register "
               "macro must be complete within the macro.)",
-    [E_CFG] = "A command was input that has not been configured. "
-              "Modify makefile to include this command, and then "
-              "rebuild TECO.",
     [E_CHR] = "The numeric argument to an EE command was "
               "not an ASCII character.",
     [E_CMD] = "An EG or EZ command was longer than 4095 characters.",
