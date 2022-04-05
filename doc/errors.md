@@ -34,7 +34,6 @@ code.
 | <nobr>?ATS</nobr> | <nobr>Invalid or extraneous at-sign</nobr> | At sign not allowed for command, or more than one at sign specified. |
 | <nobr>?BAT</nobr> | <nobr>Bad tag '!foo!'</nobr> | An O command was specified with an invalid tag. Tags may only contain graphic ASCII characters (excluding commas which are reserved for computed GOTOs). Leading and trailing spaces are ignored, but embedded spaces are not allowed. |
 | <nobr>?BNI</nobr> | <nobr>Right angle bracket not in iteration</nobr> | A right angle bracket was not matched by a left angle bracket (Note: a loop in a Q-register macro must be complete within the macro.) |
-| <nobr>?CFG</nobr> | <nobr>Command not configured</nobr> | A command was input that has not been configured. Modify makefile to include this command, and then rebuild TECO. |
 | <nobr>?CHR</nobr> | <nobr>Invalid character for command</nobr> | The numeric argument to an EE command was not an ASCII character. |
 | <nobr>?CMD</nobr> | <nobr>An EG or EZ command is too long</nobr> | An EG or EZ command was longer than 4095 characters. |
 | <nobr>?COL</nobr> | <nobr>Invalid or extraneous colon</nobr> | A colon preceded a command that does not allow colons, or there were too many colons specified for the command. |
@@ -66,12 +65,12 @@ code.
 | <nobr>?ISA</nobr> | <nobr>Invalid search argument</nobr> | The argument preceding a search command is 0. This argument must not be 0. |
 | <nobr>?ISS</nobr> | <nobr>Invalid search string</nobr> | One of the search string special characters (^Q, ^V, ^W, etc.) would have modified the search string delimiter (usually <ESC>). |
 | <nobr>?IUC</nobr> | <nobr>Invalid character '*x*' following ^</nobr> | The character following a ^ must have an ASCII value between 64 and 95 inclusive, or between 141 and 172 inclusive. |
-| <nobr>?KEY</nobr> | <nobr>Key 'foo' not found</nobr> | An invalid key was specified for an FM command. |
+| <nobr>?KEY</nobr> | <nobr>Keyword 'foo' not found</nobr> | An invalid keyword was specified for an F1, F2, F3, F4, FM, or FQ command. |
 | <nobr>?LOC</nobr> | <nobr>Invalid location for tag '!foo!'</nobr> | An O command cannot jump to a location inside a loop, other than the one the O command may be in, or inside a conditional. |
 | <nobr>?MAP</nobr> | <nobr>Missing apostrophe</nobr> | Every conditional (started with the " command) must be closed with the ' command. |
 | <nobr>?MAX</nobr> | <nobr>Internal program limit reached</nobr> | Loops and conditionals are limited to a maximum of 32 levels, macros are limited to a depth of 64 levels, and file names are limited to 4095 characters. |
 | <nobr>?MEM</nobr> | <nobr>Memory overflow</nobr> | Insufficient memory available to complete the current command. |
-| <nobr>?MLP</nobr> | <nobr>Missing left parenthesis</nobr> | There is a right parenthesis that is not matched by a corresponding left parenthesis. |
+| <nobr>?MLP</nobr> | <nobr>Missing left parenthesis</nobr> | There is a right parenthesis trhat is not matched by a corresponding left parenthesis. |
 | <nobr>?MQN</nobr> | <nobr>Missing Q-register name</nobr> | A command or match control construct did not include a required Q-register name. |
 | <nobr>?MRA</nobr> | <nobr>Missing right angle bracket</nobr> | There is a left angle bracket that has no matching right angle bracket. A loop must be complete within a macro or command string. |
 | <nobr>?MRP</nobr> | <nobr>Missing right parenthesis</nobr> | There is a left parenthesis that is not matched by a corresponding right parenthesis. |
@@ -83,7 +82,7 @@ code.
 | <nobr>?NAQ</nobr> | <nobr>No argument before quote</nobr> | The " commands must be preceded by a single numeric argument on which the decision to execute the following commands or skip to the matching ' is based. |
 | <nobr>?NAS</nobr> | <nobr>No argument before semi-colon</nobr> | The ; command must be preceded by a single numeric argument on which the decision to execute the following commands or skip to the matching > is based. |
 | <nobr>?NAT</nobr> | <nobr>Cannot have n argument and text string</nobr> | Both an n argument and a string were specified for a command which does not allow more than one. |
-| <nobr>?NAU</nobr> | <nobr>No argument before U command</nobr> | The U command must be preceded by either a specific numeric argument or a command that returns a numeric value. |
+| <nobr>?NAU</nobr> | <nobr>No argument before U command</nobr> | The U comand must be preceded by either a specific numeric argument or a command that returns a numeric value. |
 | <nobr>?NCA</nobr> | <nobr>Negative argument to comma</nobr> | A comma was preceded by a negative number. |
 | <nobr>?NFI</nobr> | <nobr>No file for input</nobr> | Before issuing an input command, such as Y, it is necessary to open an input file by use of a command such as ER or EB. |
 | <nobr>?NFO</nobr> | <nobr>No file for output</nobr> | Before issuing an output command, such as N or or P, it is necessary to open an output file with a command such as EW or EB. |

@@ -11,7 +11,7 @@
             <code>ATS</code>
             <message>Invalid or extraneous at-sign</message>
             <detail>At sign not allowed for command, or more than</detail>
-            <detail>one at sign specififed.</detail>
+            <detail>one at sign specified.</detail>
         </error>
         <error>
             <code>BAT</code>
@@ -224,8 +224,9 @@
         </error>
         <error>
             <code>KEY</code>
-            <message>Key &apos;%s&apos; not found</message>
-            <detail>An invalid key was specified for an FM command.</detail>
+            <message>Keyword &apos;%s&apos; not found</message>
+            <detail>An invalid keyword was specified for an F1, F2,</detail>
+            <detail>F3, F4, FM, or FQ command.</detail>
         </error>
         <error>
             <code>LOC</code>

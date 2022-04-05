@@ -52,19 +52,6 @@ int check_key(int c)
 
 
 ///
-///  @brief    Clear screen and redraw display.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void clear_dpy(bool unused)
-{
-    ;                                   // Nothing to do if no display
-}
-
-
-///
 ///  @brief    Clear to end of line.
 ///
 ///  @returns  false.
@@ -74,19 +61,6 @@ void clear_dpy(bool unused)
 bool clear_eol(void)
 {
     return false;
-}
-
-
-///
-///  @brief    Check for ending display mode.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void end_dpy(void)
-{
-    throw(E_DPY);                       // No display mode available
 }
 
 
@@ -251,6 +225,19 @@ int get_wait(void)
 }
 
 
+///
+///  @brief    Initialize display mode.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void init_dpy(void)
+{
+    ;                                   // Nothing to do if no display
+}
+
+
 ///  @brief    Initialize keysize[] array with the length of each character.
 ///
 ///  @returns  Nothing.
@@ -316,6 +303,19 @@ void reset_cursor(void)
 
 
 ///
+///  @brief    Reset display.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void reset_dpy(bool unused)
+{
+    ;                                   // Nothing to do if no display
+}
+
+
+///
 ///  @brief    Reset all mapped keys.
 ///
 ///  @returns  Nothing.
@@ -335,7 +335,7 @@ void reset_map(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void rubout_dpy(int unused)
+void rubout_key(int unused)
 {
     ;                                   // Nothing to do if no display
 }
@@ -377,17 +377,4 @@ void set_escape(bool unused)
 void set_tab(int unused)
 {
     ;                                   // Nothing to do if no display
-}
-
-
-///
-///  @brief    Check for starting display mode.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void start_dpy(void)
-{
-    throw(E_DPY);                       // No display mode available
 }

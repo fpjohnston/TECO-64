@@ -194,6 +194,8 @@ extern tbuffer alloc_tbuf(uint_t size);
 
 extern tstring build_string(const char *src, uint_t len);
 
+extern const char *build_trimmed(const char *src, uint_t len);
+
 extern bool check_loop(void);
 
 extern bool check_macro(void);
@@ -203,8 +205,6 @@ extern void detach_term(void);
 extern void exec_options(int argc, const char * const argv[]);
 
 extern void exit_cbuf(void);
-
-extern void exit_dpy(void);
 
 extern void exit_ebuf(void);
 

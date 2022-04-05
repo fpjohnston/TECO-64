@@ -34,15 +34,17 @@
 #include "teco.h"
 
 
-#define SATMAX      1000            ///< Maximum color saturation
+///  @var     pair
+///  @brief   Values of foreground/background pairs for defined windows.
 
-//  Values of foreground/background pairs for defined windows.
-
-#define CMD         1               ///< Command window
-#define EDIT        2               ///< Edit window
-#define STATUS      3               ///< Status window
-#define LINE        4               ///< Partition line
-#define MAX_PAIRS   LINE            ///< Total no. of color pairs
+enum pair
+{
+    CMD = 1,
+    EDIT,
+    STATUS,
+    LINE,
+    MAX_PAIR = LINE
+};
 
 ///  @struct  tchar
 ///  @brief   Terminal characteristics flag.
@@ -94,11 +96,7 @@ extern int check_key(int c);
 
 extern bool clear_eol(void);
 
-extern void clear_dpy(bool all);
-
-extern void color_dpy(void);
-
-extern void end_dpy(void);
+extern void exit_dpy(void);
 
 extern int exec_key(int c);
 
@@ -110,6 +108,8 @@ extern int get_tab(void);
 
 extern int get_wait(void);
 
+extern void init_dpy(void);
+
 extern void init_keys(void);
 
 extern bool putc_cmd(int c);
@@ -120,15 +120,15 @@ extern void reset_colors(void);
 
 extern void reset_cursor(void);
 
-extern void rubout_dpy(int c);
+extern void reset_dpy(bool all);
+
+extern void rubout_key(int c);
 
 extern void set_bits(bool parity);
 
 extern void set_escape(bool escape);
 
 extern void set_tab(int n);
-
-extern void start_dpy(void);
 
 
 // Define data used only internally within display code
@@ -160,6 +160,7 @@ struct display
     int ybias;                      ///< Vertical bias for edit window
     int xbias;                      ///< Horizontal bias for edit window
     int nrows;                      ///< No. of rows in edit window
+    int ncols;                      ///< No. of columns in edit window
 };
 
 
@@ -167,6 +168,8 @@ extern struct display d;
 
 extern char keysize[UCHAR_MAX + 1];
 
+
+extern void init_colors(void);
 
 extern void refresh_status(void);
 

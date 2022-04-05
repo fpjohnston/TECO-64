@@ -77,7 +77,7 @@ static struct errlist errlist[] =
     [E_ISA] = { "ISA",  "Invalid search argument" },
     [E_ISS] = { "ISS",  "Invalid search string" },
     [E_IUC] = { "IUC",  "Invalid character '%s' following ^" },
-    [E_KEY] = { "KEY",  "Key '%s' not found" },
+    [E_KEY] = { "KEY",  "Keyword '%s' not found" },
     [E_LOC] = { "LOC",  "Invalid location for tag '!%s!'" },
     [E_MAP] = { "MAP",  "Missing apostrophe" },
     [E_MAX] = { "MAX",  "Internal program limit reached" },
@@ -126,7 +126,7 @@ static const char *errhelp[] =
     [E_ARG] = "Three or more numeric arguments are given "
               "(e.g., 1,2,3D or H,cT).",
     [E_ATS] = "At sign not allowed for command, or more than "
-              "one at sign specififed.",
+              "one at sign specified.",
     [E_BAT] = "An O command was specified with an invalid tag. "
               "Tags may only contain graphic ASCII characters "
               "(excluding commas which are reserved for computed "
@@ -204,7 +204,8 @@ static const char *errhelp[] =
     [E_IUC] = "The character following a ^ must have an ASCII "
               "value between 64 and 95 inclusive, or between "
               "141 and 172 inclusive.",
-    [E_KEY] = "An invalid key was specified for an FM command.",
+    [E_KEY] = "An invalid keyword was specified for an F1, F2, "
+              "F3, F4, FM, or FQ command.",
     [E_LOC] = "An O command cannot jump to a location inside a "
               "loop, other than the one the O command may be in, "
               "or inside a conditional.",

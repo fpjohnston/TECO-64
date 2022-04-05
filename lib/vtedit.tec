@@ -14,18 +14,26 @@ QN "E
 
 9,7:W ^[                                !! Set 9 lines for command window
 
-@f1/cyan/black/                         !! Set command window colors
-@f2/blue/white/                         !! Set edit window colors
-@f3/green/black/                        !! Set status window colors
-@f4/red/black/                          !! Set divider line colors
+@f1/ CYAN / BLACK /                     !! Set command window colors
+@f2/ BLUE / WHITE /                     !! Set edit window colors
+@f3/ GREEN / BLACK /                    !! Set status window colors
+@f4/ RED / BLACK /                      !! Set divider line colors
 
-@fm/A_DELETE/EK HK EX/                  !! Cancel edit and exit
+@fm/ A_DELETE / EK HK EX /              !! Cancel edit and exit
 
-@FM/F1/(-1 - (3:W)),3:W/                !! Toggle SEEALL mode
+@fm/ F1 / (-1 - (3:W)),3:W /            !! Toggle SEEALL mode
 
 !! The following are just to show how to set and reset the mark
 
-@fm/F2/4:W "E (.+1),4:W @="Mark set at %d" | 4:W @="Mark already set at %d" '/
-@fm/S_F2/4:W "E :@^A"Mark not set" | 0,4:W ^[ :@^A"Mark reset" '/
+@fm/ F2 /
+    4:W "E (.+1),4:W @="Mark set at %d"
+    |
+    4:W @="Mark already set at %d"
+    '/
+@fm/ S_F2 /
+    4:W "E :@^A"Mark not set"
+    |
+    0,4:W ^[ :@^A"Mark reset"
+    '/
 
 ^[^[

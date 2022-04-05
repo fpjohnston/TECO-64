@@ -88,12 +88,7 @@ int check_key(int c)
     }
     else if (c == KEY_RESIZE)
     {
-        if (f.e0.display)
-        {
-            getmaxyx(stdscr, w.height, w.width);
-
-            clear_dpy((bool)true);
-        }
+        reset_dpy((bool)true);
 
         return EOF;
     }
@@ -264,7 +259,7 @@ static void exec_home(int key)
 
     if (d.xbias != 0 && key == KEY_C_HOME) // Shift to the left
     {
-        if (d.col == d.xbias && (d.xbias -= w.width) < 0)
+        if (d.col == d.xbias && (d.xbias -= d.ncols) < 0)
         {
             d.xbias = 0;
         }
@@ -335,7 +330,7 @@ int exec_key(int key)
         }
         else if (key == KEY_DOWN || key == KEY_C_DOWN)
         {
-            exec_down(key); 
+            exec_down(key);
             refresh_dpy();
 
             return EOF;
@@ -448,7 +443,7 @@ static void exec_left(int key)
         if (d.col == 0)
         {
             d.col = -getdelta_ebuf(0);  // Go to end of line
-            d.xbias = d.col - w.width;
+            d.xbias = d.col - d.ncols;
         }
         else if (key == KEY_C_LEFT)
         {
@@ -456,7 +451,7 @@ static void exec_left(int key)
         }
         else if (d.col <= d.xbias)
         {
-            d.xbias -= w.width;
+            d.xbias -= d.ncols;
         }
 
         if (d.xbias < 0)
@@ -502,14 +497,14 @@ static void exec_right(int key)
         {
             ++d.xbias;
         }
-        else if (d.col >= d.xbias + w.width - 1)
+        else if (d.col >= d.xbias + d.ncols - 1)
         {
-            d.xbias += w.width;
+            d.xbias += d.ncols;
         }
 
-        if (d.xbias > w.width)
+        if (d.xbias > d.ncols)
         {
-            d.xbias = w.width;
+            d.xbias = d.ncols;
         }
 
         ++t.dot;
@@ -635,6 +630,31 @@ static bool iseol(void)
     {
         return false;
     }
+}
+
+
+///
+///  @brief    Rubout character on display.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void rubout_key(int c)
+{
+    int len = keysize[c];               // Get width of key
+    int row;
+    int col;
+
+    getyx(d.cmd, row, col);
+
+    if (len > col)
+    {
+        len = col;
+    }
+
+    wmove(d.cmd, row, col - len);
+    wclrtobot(d.cmd);
 }
 
 

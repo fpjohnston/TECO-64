@@ -2,12 +2,12 @@
 
 ! Function: Set edit region colors !
 !  Command: F2 !
-!  TECO-64: ?DPY !
+!  TECO-64: ?KEY !
 
 [[enter]]
 
 0,2 E1
 
-@F2 {black} {FOOBAR}                ! Test: F2 !
+@F2 {black} {FOOBAR}                    ! Test: F2 !
 
 [[exit]]

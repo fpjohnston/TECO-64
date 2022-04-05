@@ -189,7 +189,6 @@ char *init_filename(const char *name, uint_t len, bool colon)
 
     const char *home = getenv("HOME");
     int nbytes = (int)len;
-    char *dst;
 
     // If filename has an initial "~" (tilde), replace it with the user's home
     // directory. This is the only change we make that increases the length of
@@ -208,17 +207,14 @@ char *init_filename(const char *name, uint_t len, bool colon)
     assert(nbytes > 0);
     assert(nbytes < (int)sizeof(scratch));
 
-    name = scratch;
-
     // Next, scan for match control characters.
 
-    tstring string = build_string(name, (uint_t)(uint)nbytes);
-
-    name = dst = string.data;
+    name = build_trimmed(name, (uint_t)(uint)nbytes);
+    len = strlen(name);
 
     // Ensure that there are no non-graphic ASCII characters in the filespec.
 
-    for (uint_t i = 0; i < string.len; ++i)
+    for (uint_t i = 0; i < len; ++i)
     {
         int c = *name++;
 
@@ -226,13 +222,7 @@ char *init_filename(const char *name, uint_t len, bool colon)
         {
             throw(E_IFN, c);            // Invalid character in file name
         }
-
-        *dst++ = (char)c;
     }
-
-    *dst = NUL;
-
-    len = (uint_t)(uint)(dst - scratch);
 
     if (len == 0)
     {

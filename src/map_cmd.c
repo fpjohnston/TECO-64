@@ -136,14 +136,14 @@ void exec_FM(struct cmd *cmd)
 
     // Here to map a key to a command string.
 
-    tstring name = build_string(cmd->text1.data, cmd->text1.len);
-    struct keys *key = find_key(name.data);
+    const char *name = build_trimmed(cmd->text1.data, cmd->text1.len);
+    struct keys *key = find_key(name);
 
     if (key == NULL)
     {
         if (!cmd->colon)
         {
-            throw(E_KEY, name.data);    // Key 'key' not found
+            throw(E_KEY, name);         // Keyword 'name' not found
         }
 
         push_x(FAILURE, X_OPERAND);     // Command failed
@@ -195,14 +195,14 @@ void exec_FQ(struct cmd *cmd)
         return;
     }
 
-    tstring name = build_string(cmd->text1.data, cmd->text1.len);
-    struct keys *key = find_key(name.data);
+    const char *name = build_trimmed(cmd->text1.data, cmd->text1.len);
+    struct keys *key = find_key(name);
 
     if (key == NULL)
     {
         if (!cmd->colon)
         {
-            throw(E_KEY, name.data);    // Key 'key' not found
+            throw(E_KEY, name);         // Keyword 'name' not found
         }
 
         push_x(FAILURE, X_OPERAND);     // Command failed

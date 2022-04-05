@@ -369,18 +369,18 @@ static void sig_handler(int signum)
             break;
 
         case SIGQUIT:                   // CTRL-backslash causes this
-            end_dpy();                  // Turn off display so error is visible
+            exit_dpy();                 // Turn off display so error is visible
 
             echo_in(CTRL_BACK);
 
-            term_exit((bool)false); // Clean up and exit
+            term_exit((bool)false);     // Clean up and exit
 
             break;
 
         case SIGINT:
             if (f.et.abort || f.e0.ctrl_c) // Should CTRL/C cause abort?
             {
-                end_dpy();              // Turn off display so error is visible
+                exit_dpy();             // Turn off display so error is visible
 
                 echo_in(CTRL_C);
 

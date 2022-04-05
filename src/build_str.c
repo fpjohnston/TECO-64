@@ -283,6 +283,28 @@ tstring build_string(const char *src, uint_t len)
 
 
 ///
+///  @brief    Build a trimmed string (with leading and trailing whitespace
+///            removed).
+///
+///  @returns  Pointer to string.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+const char *build_trimmed(const char *src, uint_t len)
+{
+    tstring result = build_string(src, len);
+    char *p = result.data;
+    const char *white = "\t\n\v\f\r ";  // Characters to trim
+
+    p += strspn(p, white);              // Skip past leading whitespace
+    len = (uint_t)strcspn(p, white);    // Find start of trailing whitespace
+    p[len] = NUL;                       // And trim it
+
+    return p;
+}
+
+
+///
 ///  @brief    Get next character from source buffer (error if buffer empty).
 ///
 ///  @returns  Next character.

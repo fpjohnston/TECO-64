@@ -302,7 +302,7 @@ void print_verbose(int error)
 
     do
     {
-        if (pos + (int)strlen(token) > width)
+        if (pos + (int)strlen(token) >= width)
         {
             type_out(NL);
 

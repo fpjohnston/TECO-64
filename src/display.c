@@ -69,20 +69,22 @@ struct display d =
     .ybias   = 0,
     .xbias   = 0,
     .nrows   = 0,
+    .ncols   = 0,
 };
 
-/// @def    check_error(truth)
-/// @brief  Wrapper to force Boolean value for check_error() parameter.
+/// @def    check(cond)
+/// @brief  Wrapper to force Boolean value for check() parameter.
 
 #if     !defined(DOXYGEN)
 
-#define check_error(error) (check_error)((bool)(error))
+#define check(cond) (check)((bool)(cond))
 
 #endif
 
 // Local functions
 
-static void (check_error)(bool error);
+
+static inline void (check)(bool cond);
 
 static int_t find_column(void);
 
@@ -90,11 +92,7 @@ static void init_window(WINDOW **win, int pair, int top, int bot, int col, int w
 
 static void init_windows(void);
 
-static void putc_edit(int c);
-
 static void refresh_edit(void);
-
-static void reset_dpy(void);
 
 static void set_cursor(void);
 
@@ -107,44 +105,16 @@ static void set_cursor(void);
 ////////////////////////////////////////////////////////////////////////////////
 
 #if     defined(DOXYGEN)
-static void check_error(bool error)
+static inline void check(bool cond)
 #else
-static void (check_error)(bool error)
+static inline void (check)(bool cond)
 #endif
 {
-    if (error)
+    if (!cond)
     {
-        reset_dpy();
-        init_term();
+        exit_dpy();                         // Turn off any display mode
 
         throw(E_DPY);                       // Display mode error
-    }
-}
-
-
-///
-///  @brief    Clear screen and redraw display.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void clear_dpy(bool all)
-{
-    if (all)
-    {
-        init_windows();
-    }
-
-    update_window = true;
-
-    refresh_dpy();
-
-    if (all && !f.e0.init)
-    {
-        term_pos = 0;
-
-        print_prompt();
     }
 }
 
@@ -172,24 +142,7 @@ bool clear_eol(void)
 
 
 ///
-///  @brief    Check for ending display mode.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void end_dpy(void)
-{
-    if (f.e0.display)
-    {
-        reset_dpy();
-        init_term();
-    }
-}
-
-
-///
-///  @brief    Reset display mode prior to exiting from TECO.
+///  @brief    Exit display mode.
 ///
 ///  @returns  Nothing.
 ///
@@ -197,7 +150,13 @@ void end_dpy(void)
 
 void exit_dpy(void)
 {
-    reset_dpy();
+    if (f.e0.display)
+    {
+        f.e0.display = false;
+
+        endwin();
+        init_term();
+    }
 }
 
 
@@ -284,6 +243,42 @@ int get_wait(void)
 
 
 ///
+///  @brief    Initialize display mode.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void init_dpy(void)
+{
+    if (!f.e0.display)
+    {
+        f.e0.display = true;
+
+        reset_term();                   // Reset if display mode support
+
+        // Note that initscr() will print an error message and exit if it
+        // fails to initialize, so there is no error return to check for.
+
+        initscr();
+
+        check( cbreak()                       == OK   );
+        check( noecho()                       == OK   );
+        check( nonl()                         == OK   );
+        check( notimeout(stdscr, (bool)TRUE)  == OK   );
+        check( idlok(stdscr,     (bool)TRUE)  == OK   );
+        check( has_colors()                   == TRUE );
+        check( start_color()                  == OK   );
+
+        set_escdelay(0);
+        keypad(stdscr, f.ed.escape ? (bool)TRUE : (bool)FALSE);
+        init_colors();
+        reset_dpy((bool)true);
+    }
+}
+
+
+///
 ///  @brief    Set up display window (technically, subwindow).
 ///
 ///  @returns  Pointer to new subwindow.
@@ -312,7 +307,7 @@ static void init_window(WINDOW **win, int pair, int top, int bot, int col, int w
         *win = subwin(stdscr, nlines, width, top, col);
     }
 
-    check_error(*win == NULL);
+    check( *win != NULL );
 
     // Set default foreground and background colors for window
 
@@ -325,7 +320,7 @@ static void init_window(WINDOW **win, int pair, int top, int bot, int col, int w
         d.minrow = top;
         d.mincol = 0;
         d.maxrow = bot;
-        d.maxcol = w.width - 1;
+        d.maxcol = d.ncols - 1;
 
         prefresh(*win, 0, d.xbias = 0, d.minrow, d.mincol, d.maxrow, d.mincol);
     }
@@ -337,7 +332,7 @@ static void init_window(WINDOW **win, int pair, int top, int bot, int col, int w
 
 
 ///
-///  @brief    Set up display windows (technically, subwindows).
+///  @brief    Re-initialize all windows.
 ///
 ///  @returns  Nothing.
 ///
@@ -345,23 +340,12 @@ static void init_window(WINDOW **win, int pair, int top, int bot, int col, int w
 
 static void init_windows(void)
 {
-    if (!f.e0.display)
+    getmaxyx(stdscr, w.height, d.ncols);
+
+    if (w.maxline < d.ncols)
     {
-        return;
+        w.maxline = d.ncols;
     }
-
-    if (w.nlines == 0 || w.noscroll)    // If editing window is not set up,
-    {
-        d.cmd = stdscr;                 //  then use entire window for commands
-
-        return;
-    }
-
-    d.ybias = d.xbias = 0;
-
-    clear();
-    refresh();
-    init_keys();
 
     // Figure out what rows each window starts and ends on.
 
@@ -370,7 +354,7 @@ static void init_windows(void)
     int line_top = 0;
     int nrows = w.height - w.nlines;    // No. of lines for edit window
 
-    check_error(nrows < MIN_ROWS);      // Verify that we have at least 10 rows
+    check( nrows >= MIN_ROWS );         // Check that we have at least 10 rows
 
     if (f.e4.invert)                    // Command window above edit window?
     {
@@ -402,27 +386,27 @@ static void init_windows(void)
 
     edit_bot = edit_top + nrows - 1;
     cmd_bot  = cmd_top + w.nlines - 1;
-
-    d.nrows = 1 + edit_bot - edit_top;
+    d.nrows  = 1 + edit_bot - edit_top;
 
     init_window(&d.edit, EDIT, edit_top, edit_bot, 0, w.maxline);
 
     if (f.e4.line)
     {
-        init_window(&d.line, LINE, line_top, line_top, 0, w.width);
+        init_window(&d.line, LINE, line_top, line_top, 0, d.ncols);
     }
 
     if (f.e4.status && 1 + cmd_bot - cmd_top >= STATUS_HEIGHT)
     {
-        init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, w.width - STATUS_WIDTH);
-        init_window(&d.status, STATUS, cmd_top, cmd_bot, w.width - STATUS_WIDTH,
-                    STATUS_WIDTH);
+        w.width = d.ncols - STATUS_WIDTH;
+
+        init_window(&d.status, STATUS, cmd_top, cmd_bot, w.width, STATUS_WIDTH);
     }
     else
     {
-        init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, w.width);
+        w.width = d.ncols;
     }
 
+    init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, w.width);
     scrollok(d.cmd, (bool)TRUE);
     wsetscrreg(d.cmd, cmd_top, cmd_bot);
 }
@@ -455,69 +439,6 @@ bool putc_cmd(int c)
     }
 
     return true;
-}
-
-
-///
-///  @brief    Output character to edit window.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void putc_edit(int c)
-{
-    chtype ch = (chtype)c;
-
-    if (isprint(c))                     // Printing chr. [32-126]
-    {
-        waddch(d.edit, ch);
-    }
-    else if (iscntrl(c))                // Control chr. [0-31, 127]
-    {
-        switch (c)
-        {
-            case HT:
-                if (w.seeall)
-                {
-                    waddstr(d.edit, unctrl(ch));
-                }
-                else
-                {
-                    waddch(d.edit, ch);
-                }
-
-                break;
-
-            case BS:
-            case VT:
-            case FF:
-            case LF:
-            case CR:
-                if (w.seeall)
-                {
-                    waddstr(d.edit, unctrl(ch));
-                }
-
-                break;
-
-            default:
-                waddch(d.edit, ch);
-
-                break;
-        }
-    }
-    else                                // 8-bit chr. [128-255]
-    {
-        if (f.et.eightbit)
-        {
-            waddstr(d.edit, unctrl(ch));
-        }
-        else
-        {
-            waddstr(d.edit, table_8bit[c & 0x7f]);
-        }
-    }
 }
 
 
@@ -578,9 +499,9 @@ void refresh_dpy(void)
             refresh_edit();
         }
 
-        if (d.col - d.xbias > w.width)
+        if (d.col - d.xbias > d.ncols)
         {
-            d.xbias = d.col - (w.width / 2);
+            d.xbias = d.col - (d.ncols / 2);
         }
 
         set_cursor();                   // Mark the new cursor
@@ -613,7 +534,58 @@ static void refresh_edit(void)
     while ((c = getchar_ebuf(pos)) != EOF)
     {
         getyx(d.edit, row, col);
-        putc_edit(c);
+
+        chtype ch = (chtype)c;
+
+        if (isprint(c))                 // Printing chr. [32-126]
+        {
+            waddch(d.edit, ch);
+        }
+        else if (iscntrl(c))            // Control chr. [0-31, 127]
+        {
+            switch (c)
+            {
+                case HT:
+                    if (w.seeall)
+                    {
+                        waddstr(d.edit, unctrl(ch));
+                    }
+                    else
+                    {
+                        waddch(d.edit, ch);
+                    }
+
+                    break;
+
+                case BS:
+                case VT:
+                case FF:
+                case LF:
+                case CR:
+                    if (w.seeall)
+                    {
+                        waddstr(d.edit, unctrl(ch));
+                    }
+
+                    break;
+
+                default:
+                    waddch(d.edit, ch);
+
+                    break;
+            }
+        }
+        else                            // 8-bit chr. [128-255]
+        {
+            if (f.et.eightbit)
+            {
+                waddstr(d.edit, unctrl(ch));
+            }
+            else
+            {
+                waddstr(d.edit, table_8bit[c & 0x7f]);
+            }
+        }
 
         ++pos;
 
@@ -679,45 +651,43 @@ void reset_cursor(void)
 
 
 ///
-///  @brief    Terminate display mode.
+///  @brief    Reset display.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void reset_dpy(void)
+void reset_dpy(bool all)
 {
-    if (f.e0.display)
+    if (!f.e0.display)
     {
-        f.e0.display = false;
-
-        endwin();
-    }
-}
-
-
-///
-///  @brief    Rubout character on display.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void rubout_dpy(int c)
-{
-    char len = keysize[c];              // Get width of key
-    int row;
-    int col;
-
-    getyx(d.cmd, row, col);
-
-    if (len > col)
-    {
-        len = col;
+        return;
     }
 
-    wmove(d.cmd, row, col - len);
-    wclrtobot(d.cmd);
+    if (all)
+    {
+        clear();
+        init_keys();
+
+        if (w.nlines == 0 || w.noscroll)
+        {
+            d.cmd = stdscr;
+
+            refresh();
+
+            return;
+        }
+        else
+        {
+            init_windows();
+        }
+    }
+
+    d.ybias = d.xbias = 0;
+
+    update_window = true;
+
+    refresh_dpy();
 }
 
 
@@ -759,50 +729,5 @@ static void set_cursor(void)
         }
 
         mvwchgat(d.edit, d.row, d.col, width, A_REVERSE, EDIT, NULL);
-    }
-}
-
-
-///
-///  @brief    Initialize for display mode.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void start_dpy(void)
-{
-    if (!f.e0.display)
-    {
-        f.e0.display = true;
-
-        reset_term();                   // Reset if display mode support
-
-        // Note that initscr() will print an error message and exit if it
-        // fails to initialize, so there is no error return to check for.
-
-        initscr();
-
-        check_error( cbreak()                       == ERR   );
-        check_error( noecho()                       == ERR   );
-        check_error( nonl()                         == ERR   );
-        check_error( notimeout(stdscr, (bool)TRUE)  == ERR   );
-        check_error( idlok(stdscr,     (bool)TRUE)  == ERR   );
-        check_error( has_colors()                   == FALSE );
-        check_error( start_color()                  == ERR   );
-
-        reset_colors();
-        set_escdelay(0);
-
-        getmaxyx(stdscr, w.height, w.width);
-
-        if (w.maxline < w.width)
-        {
-            w.maxline = w.width;
-        }
-
-        init_windows();
-        color_dpy();
-        clear_dpy((bool)true);
     }
 }

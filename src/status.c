@@ -132,7 +132,7 @@ void refresh_status(void)
 
     if (f.e4.line)
     {
-        whline(d.line, ACS_HLINE, w.width);
+        whline(d.line, ACS_HLINE, d.ncols);
 
         // If we have a status window, then connect its vertical line to the
         // horizontal line we just printed, using a top tee character if the
@@ -143,7 +143,7 @@ void refresh_status(void)
         {
             chtype ch = (f.e4.invert) ? ACS_BTEE : ACS_TTEE;
 
-            mvwaddch(d.line, 0, w.width - STATUS_WIDTH, ch);
+            mvwaddch(d.line, 0, w.width, ch);
         }
 
         wrefresh(d.line);

@@ -50,7 +50,7 @@ the FM or FQ commands, as described [here](keymap.md).
 | Command | Function |
 | ------- | -------- |
 | \<CTRL/W\> | Re-paints the display. |
-| \<CTRL/K\> | Changes the windows to use default colors. This command is intended for a the situation where a user inadvertently sets a window to use the same foreground and background colors, thus rendering it unreadable. |
+| \<CTRL/K\> | Toggles colors off or on. This command is intended for a the situation where a user inadvertently sets a window to use the same foreground and background colors, thus rendering it unreadable. |
 | \<End\> | Go to end of line, then to end of window, then to end of buffer. |
 | \<Ctrl/End\> | Like \<End\>, but involves more steps before reaching the end of buffer. |
 | \<Home\> | Go to start of line, then to start of window, then to start of buffer. |

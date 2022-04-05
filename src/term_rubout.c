@@ -63,7 +63,7 @@ void rubout_chr(int c)
 
     if (f.e0.display)
     {
-        rubout_dpy(c);
+        rubout_key(c);
     }
     else if (iscntrl(c))
     {

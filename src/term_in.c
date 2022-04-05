@@ -307,12 +307,18 @@ int getc_term(bool wait)
     }
 
     // Here when we have a non-EOF character. See if it requires special
-    // processing for display mode.
+    // processing for display mode. If check_key() returns an EOF, that
+    // means that a resize occurred, so re-print the prompt and then get
+    // another character.
 
     if ((c = check_key(c)) == EOF)
     {
+        term_pos = 0;
+
+        print_prompt();
+
         return getc_term(wait);         // Recurse to get next character
-    }        
+    }
 
     f.e0.ctrl_c = false;                // Normal character, not CTRL/C
 
@@ -570,34 +576,29 @@ static int read_first(void)
                 break;
 
             case CTRL_K:
-                if (!f.e0.display)
-                {
-                    return c;
-                }
-
-                reset_colors();
-                clear_dpy((bool)true);
                 echo_in(c);
                 echo_in(LF);
+                reset_colors();
+                reset_dpy((bool)true);
 
-                continue;
+                break;
 
             case CTRL_W:
                 echo_in(c);
                 echo_in(LF);
 
-                if (last_ctrl_w)        // Did we see double CTRL/W?
+                if (last_ctrl_w)        // Refresh all windows?
                 {
                     last_ctrl_w = false;
 
-                    clear_dpy((bool)true); // Refresh all windows
-
-                    continue;
+                    reset_dpy((bool)true);
                 }
+                else                    // No, just refresh edit window
+                {
+                    reset_dpy((bool)false);
 
-                clear_dpy((bool)false); // Just refresh edit window
-
-                found_ctrl_w = true;
+                    found_ctrl_w = true;
+                }
 
                 break;
 

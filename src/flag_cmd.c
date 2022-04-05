@@ -199,9 +199,9 @@ void exec_E4(struct cmd *cmd)
     f.e4.line   = e4.line;
     f.e4.status = e4.status;
 
-    if (f.e0.display && changes)        // Any changes?
+    if (changes)                        // Any changes?
     {
-        clear_dpy((bool)true);          // Yes, reset display
+        reset_dpy((bool)true);          // Yes, reset display
     }
 }
 

@@ -28,12 +28,22 @@
 #include <ncurses.h>
 #include <string.h>
 
+#define DISPLAY_INTERNAL            ///< Enable internal definitions
+
 #include "teco.h"
 #include "display.h"
 #include "exec.h"
 
 
-#define COLOR_BASE  16              ///< Starting base for new colors
+#define FG              (bool)true      ///< Foreground flag
+#define BG              (bool)false     ///< Background flag
+
+
+static bool color_active = true;        ///< Switched on or off by CTRL/K
+
+static const short color_base = 16;     ///< Start of user-defined color pairs
+
+static const short satmax = 1000;       ///< Saturation maximum
 
 ///
 ///  @struct color_table
@@ -50,103 +60,34 @@ struct color_table
 };
 
 ///
-///  @var    color_table
+///  @var    system_colors
 ///
-///  @brief  Table of colors
+///  @brief  Table of pre-defined system colors
 ///
 
-static const struct color_table color_table[] =
+static const struct color_table system_colors[] =
 {
     [COLOR_BLACK]   = { "BLACK",        0,      0,      0, },
-    [COLOR_RED]     = { "RED",     SATMAX,      0,      0, },
-    [COLOR_GREEN]   = { "GREEN",        0, SATMAX,      0, },
-    [COLOR_YELLOW]  = { "YELLOW",  SATMAX, SATMAX,      0, },
-    [COLOR_BLUE]    = { "BLUE",         0,      0, SATMAX, },
-    [COLOR_MAGENTA] = { "MAGENTA", SATMAX,      0, SATMAX, },
-    [COLOR_CYAN]    = { "CYAN",         0, SATMAX, SATMAX, },
-    [COLOR_WHITE]   = { "WHITE",   SATMAX, SATMAX, SATMAX, },
+    [COLOR_RED]     = { "RED",     satmax,      0,      0, },
+    [COLOR_GREEN]   = { "GREEN",        0, satmax,      0, },
+    [COLOR_YELLOW]  = { "YELLOW",  satmax, satmax,      0, },
+    [COLOR_BLUE]    = { "BLUE",         0,      0, satmax, },
+    [COLOR_MAGENTA] = { "MAGENTA", satmax,      0, satmax, },
+    [COLOR_CYAN]    = { "CYAN",         0, satmax, satmax, },
+    [COLOR_WHITE]   = { "WHITE",   satmax, satmax, satmax, },
 };
-
-
-///
-///  @var    saved_color
-///
-///  @brief  Saved table of colors for each window.
-///
-
-static struct color_table saved_color[MAX_PAIRS * 2] =
-{
-    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
-    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
-    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
-    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
-    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
-    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
-    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
-    { .name = NULL, .red = 0, .green = 0, .blue = 0 },
-};
-
 
 // Local functions
 
-static void color_window(short window);
-
 static int find_color(const char *token);
 
-static void set_color(const char *buf, uint_t len, short sat, short color);
+static void make_pair(short pair);
 
-static void set_colors(const struct cmd *cmd, int pair);
+static void set_color(const tstring *text, short sat, short color, bool type);
 
-
-///
-///  @brief    Set up window colors whenever we switch to display mode.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void color_dpy(void)
-{
-    color_window(CMD);
-    color_window(EDIT);
-    color_window(STATUS);
-    color_window(LINE);
-}
+static void set_colors(const struct cmd *cmd, short pair);
 
 
-///
-///  @brief    Use previous colors for window.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void color_window(short window)
-{
-    int n1 = (window - 1) * 2;
-    int n2 = n1 + 1;
-    const struct color_table *fg = &saved_color[n1];
-    const struct color_table *bg = &saved_color[n2];
-
-    // If both foreground and background are black, then we assume
-    // that this window hasn't yet been initialized.
-
-    if (fg->red == 0 && fg->green == 0 && fg->blue == 0
-        && bg->red == 0 && bg->green == 0 && bg->blue == 0)
-    {
-        return;
-    }
-
-    short color = (short)(COLOR_BASE + ((window - 1) * 2));
-
-    init_color(color,     fg->red, fg->green, fg->blue);
-    init_color(color + 1, bg->red, bg->green, bg->blue);
-
-    init_pair(window, color, color + 1);
-}
-
-
-///
 ///  @brief    Execute F1 command: set colors for command window. These colors
 ///            are also copied to the status and line windows, but the F3 and
 ///            F4 commands may be used to override those colors after F1 has
@@ -161,6 +102,15 @@ void exec_F1(struct cmd *cmd)
     set_colors(cmd, CMD);
     set_colors(cmd, STATUS);
     set_colors(cmd, LINE);
+
+    if (f.e0.display)
+    {
+        // Use command window colors for stdscr
+
+        bkgd(COLOR_PAIR(CMD));           //lint !e835
+
+        reset_dpy((bool)true);
+    }
 }
 
 
@@ -174,6 +124,11 @@ void exec_F1(struct cmd *cmd)
 void exec_F2(struct cmd *cmd)
 {
     set_colors(cmd, EDIT);
+
+    if (f.e0.display)
+    {
+        reset_dpy((bool)true);
+    }
 }
 
 
@@ -187,6 +142,11 @@ void exec_F2(struct cmd *cmd)
 void exec_F3(struct cmd *cmd)
 {
     set_colors(cmd, STATUS);
+
+    if (f.e0.display)
+    {
+        reset_dpy((bool)true);
+    }
 }
 
 
@@ -200,6 +160,11 @@ void exec_F3(struct cmd *cmd)
 void exec_F4(struct cmd *cmd)
 {
     set_colors(cmd, LINE);
+
+    if (f.e0.display)
+    {
+        reset_dpy((bool)true);
+    }
 }
 
 
@@ -217,9 +182,9 @@ static int find_color(const char *token)
         return -1;
     }
 
-    for (int i = 0; i < (int)countof(color_table); ++i)
+    for (int i = 0; i < (int)countof(system_colors); ++i)
     {
-        if (!strcasecmp(token, color_table[i].name))
+        if (!strcasecmp(token, system_colors[i].name))
         {
             return i;
         }
@@ -230,7 +195,43 @@ static int find_color(const char *token)
 
 
 ///
-///  @brief    Reset window colors to defaults.
+///  @brief    Initialize system colors.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void init_colors(void)
+{
+    if (can_change_color())         // Make colors as bright as possible
+    {
+        for (short color = 0; color < (short)countof(system_colors); ++color)
+        {
+            const struct color_table *p = &system_colors[color];
+
+            init_color(color, p->red, p->green, p->blue);
+        }
+    }
+}
+
+
+///
+///  @brief    Create color pair.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void make_pair(short pair)
+{
+    short color = (short)((pair - 1) * 2 + color_base);
+
+    init_pair(pair, color, color + 1);
+}
+
+
+///
+///  @brief    Switch window colors on or off. Called when user types CTRL/K.
 ///
 ///  @returns  Nothing.
 ///
@@ -238,22 +239,27 @@ static int find_color(const char *token)
 
 void reset_colors(void)
 {
-    if (can_change_color())             // Make colors as bright as possible
+    if (f.e0.display)
     {
-        for (uint color = 0; color < countof(color_table); ++color)
+        if (color_active)
         {
-            const struct color_table *p = &color_table[color];
+            color_active = false;
 
-            init_color((short)color, p->red, p->green, p->blue);
+            init_pair(CMD,    COLOR_WHITE, COLOR_BLACK);
+            init_pair(EDIT,   COLOR_BLACK, COLOR_WHITE);
+            init_pair(STATUS, COLOR_WHITE, COLOR_BLACK);
+            init_pair(LINE,   COLOR_WHITE, COLOR_BLACK);
+        }
+        else
+        {
+            color_active = true;
+
+            make_pair(CMD);
+            make_pair(EDIT);
+            make_pair(STATUS);
+            make_pair(LINE);
         }
     }
-
-    assume_default_colors(COLOR_BLACK, COLOR_WHITE);
-
-    init_pair(CMD,    COLOR_WHITE, COLOR_BLACK);
-    init_pair(EDIT,   COLOR_BLACK, COLOR_WHITE);
-    init_pair(STATUS, COLOR_WHITE, COLOR_BLACK);
-    init_pair(LINE,   COLOR_WHITE, COLOR_BLACK);
 }
 
 
@@ -264,18 +270,15 @@ void reset_colors(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void set_color(const char *buf, uint_t len, short sat, short color)
+static void set_color(const tstring *text, short pair, short sat, bool fg)
 {
-    assert(buf != NULL);                // Error if no input string
-
-    char keyword[len + 1];
-
-    snprintf(keyword, sizeof(keyword), "%s", buf);
+    assert(text != NULL);               // Error if no input string
+    assert(pair >= CMD && pair <= MAX_PAIR);
 
     // Adjust color saturation, which ncurses allows to range from 0 to 1000.
     // Colors are defined with separate levels for red, green, and blue. Note
-    // that setting a level only makes sense for colors other than black, since
-    // black is defined as having red, green, and blue all 0.
+    // that setting a level only makes sense for colors other than black,
+    // since black has red, green, and blue all set to 0.
 
     if (sat < 0)
     {
@@ -288,20 +291,27 @@ static void set_color(const char *buf, uint_t len, short sat, short color)
 
     sat *= 10;
 
-    int i = (short)find_color(keyword); // Get color index
+    const char *name = build_trimmed(text->data, text->len);
+    int i = find_color(name);           // Get color index
 
     if (i == -1)
     {
-        throw(E_DPY);
+        throw(E_KEY, name);             // Keyword 'name' not found
     }
 
-    short red   = (short)(color_table[i].red   * sat / SATMAX);
-    short green = (short)(color_table[i].green * sat / SATMAX);
-    short blue  = (short)(color_table[i].blue  * sat / SATMAX);
+    short red   = (short)(system_colors[i].red   * sat / satmax);
+    short green = (short)(system_colors[i].green * sat / satmax);
+    short blue  = (short)(system_colors[i].blue  * sat / satmax);
+    short color = (short)((pair - 1) * 2 + color_base);
 
-    saved_color[color - COLOR_BASE].red   = red;
-    saved_color[color - COLOR_BASE].green = green;
-    saved_color[color - COLOR_BASE].blue  = blue;
+    if (fg && f.e0.display)
+    {
+        init_color(color, red, green, blue);
+    }
+    else
+    {
+        init_color(color + 1, red, green, blue);
+    }
 }
 
 
@@ -313,9 +323,10 @@ static void set_color(const char *buf, uint_t len, short sat, short color)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void set_colors(const struct cmd *cmd, int pair)
+static void set_colors(const struct cmd *cmd, short pair)
 {
     assert(cmd != NULL);
+    assert(pair >= CMD && pair <= MAX_PAIR);
 
     // The following is used to set up new colors, whose saturation we can vary
     // without affecting the use of the same colors by other windows. That is,
@@ -332,27 +343,36 @@ static void set_colors(const struct cmd *cmd, int pair)
     // STATUS      20          21
     // LINE        22          23
 
-    short color = (short)(COLOR_BASE + ((pair - 1) * 2));
-
-    short fg_sat, bg_sat;
+    short fsat, bsat;
 
     if (!cmd->n_set)                    // Neither foreground nor background
     {
-        fg_sat = bg_sat = 100;
+        fsat = bsat = 100;
     }
     else if (!cmd->m_set)               // Foreground, but no background
     {
-        fg_sat = (short)cmd->n_arg;
-        bg_sat = 100;
+        fsat = (short)cmd->n_arg;
+        bsat = 100;
     }
     else                                // Both foreground and background
     {
-        fg_sat = (short)cmd->m_arg;
-        bg_sat = (short)cmd->n_arg;
+        fsat = (short)cmd->m_arg;
+        bsat = (short)cmd->n_arg;
     }
 
-    set_color(cmd->text1.data, cmd->text1.len, fg_sat, color);
-    set_color(cmd->text2.data, cmd->text2.len, bg_sat, color + 1);
+    set_color(&cmd->text1, pair, fsat, FG);
+    set_color(&cmd->text2, pair, bsat, BG);
 
-    color_window((short)pair);
+    // Here once we've set up a color pair, but we won't use it if colors have
+    // been disabled through use of the CTRL/K command. This allows users to
+    // turn off colors in order to change them before making them active (such
+    // as might be desirable if a window was inadvertently set to the same color
+    // for both foreground and background, thus making it unreadable).
+
+    if (color_active && f.e0.display)
+    {
+        short color = (short)((pair - 1) * 2 + color_base);
+
+        init_pair(pair, color, color + 1);
+    }
 }

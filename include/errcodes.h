@@ -73,7 +73,7 @@ enum errcodes
     E_ISA,          ///< Invalid search argument
     E_ISS,          ///< Invalid search string
     E_IUC,          ///< Invalid character 'x' following ^
-    E_KEY,          ///< Key 'foo' not found
+    E_KEY,          ///< Keyword 'foo' not found
     E_LOC,          ///< Invalid location for tag '!foo!'
     E_MAP,          ///< Missing apostrophe
     E_MAX,          ///< Internal program limit reached

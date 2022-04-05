@@ -2,7 +2,7 @@
 
 ! Function: Set status line colors !
 !  Command: F3 !
-!  TECO-64: ?DPY !
+!  TECO-64: ?KEY !
 
 [[enter]]
 

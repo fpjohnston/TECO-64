@@ -2,7 +2,7 @@
 
 ! Function: Set command region colors !
 !  Command: F1 !
-!  TECO-64: ?DPY !
+!  TECO-64: ?KEY !
 
 [[enter]]
 

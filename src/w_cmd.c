@@ -98,11 +98,11 @@ void exec_W(struct cmd *cmd)
         {
             if (!cmd->n_set || cmd->n_arg == 0)
             {
-                end_dpy();              // W or 0W ends display mode
+                exit_dpy();             // W or 0W stops display mode
             }
             else if (cmd->n_arg == -1)
             {
-                start_dpy();            // -1W starts display mode
+                init_dpy();             // -1W starts display mode
             }
             else
             {
@@ -146,7 +146,7 @@ static int_t get_w(int_t n)
 
         case 3:                         // SEEALL mode
             return w.seeall ? -1 : 0;
-            
+
         case 4:                         // Mark status
             return w.mark;
 
@@ -318,11 +318,14 @@ static void set_w(int_t m, int_t n)
             break;
 
         case 3:
-            w.seeall = m ? true : false;
+            if (w.seeall != (bool)m)
+            {
+                w.seeall = m ? true : false;
 
-            init_keys();                // Adjust widths of display chrs.
+                init_keys();            // Adjust widths of display chrs.
 
-            update_window = true;
+                update_window = true;
+            }
 
             break;
 
@@ -338,15 +341,23 @@ static void set_w(int_t m, int_t n)
         case 7:
             if (m > 1 && w.height - m >= 9)
             {
-                w.nlines = (int)m;
+                if (w.nlines != (int)m)
+                {
+                    w.nlines = (int)m;
 
-                clear_dpy((bool)true);
+                    reset_dpy((bool)true);
+                }
             }
 
             break;
 
         case 8:
-            w.noscroll = m ? true : false;
+            if (w.noscroll != (bool)m)
+            {
+                w.noscroll = m ? true : false;
+
+                reset_dpy((bool)true);
+            }
 
             break;
 
@@ -354,16 +365,22 @@ static void set_w(int_t m, int_t n)
             break;
 
         case 10:
-            set_tab(m);
+            if (get_tab() != m)
+            {
+                set_tab(m);
 
-            update_window = true;
+                reset_dpy((bool)false);
+            }
 
             break;
 
         case 11:
-            w.maxline = m;
+            if (w.maxline != m)
+            {
+                w.maxline = m;
 
-            clear_dpy((bool)true);
+                reset_dpy((bool)true);
+            }
 
             break;
 
