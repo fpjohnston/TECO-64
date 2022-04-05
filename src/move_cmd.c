@@ -99,7 +99,7 @@ void exec_J(struct cmd *cmd)
         n = cmd->n_arg;
     }
 
-    exec_move(cmd, n, (bool)(n < 0 || n > t.Z), 'J');
+    exec_move(cmd, n, (bool)(n < t.B || n > t.Z), 'J');
 }
 
 

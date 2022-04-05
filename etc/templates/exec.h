@@ -85,7 +85,7 @@ struct cmd
 
 static inline void reject_atsign(bool atsign)
 {
-    if (f.e2.atsign && atsign)
+    if (f.e0.exec && f.e2.atsign && atsign)
     {
         throw(E_ATS);
     }
@@ -101,7 +101,7 @@ static inline void reject_atsign(bool atsign)
 
 static inline void reject_colon(bool colon)
 {
-    if (f.e2.colon && colon)
+    if (f.e0.exec && f.e2.colon && colon)
     {
         throw(E_COL);
     }
@@ -117,7 +117,7 @@ static inline void reject_colon(bool colon)
 
 static inline void reject_dcolon(bool dcolon)
 {
-    if (f.e2.colon && dcolon)
+    if (f.e0.exec && f.e2.colon && dcolon)
     {
         throw(E_COL);
     }
@@ -133,7 +133,7 @@ static inline void reject_dcolon(bool dcolon)
 
 static inline void reject_m(bool m_set)
 {
-    if (f.e2.m_arg && m_set)
+    if (f.e0.exec && f.e2.m_arg && m_set)
     {
         throw(E_IMA);
     }
@@ -149,7 +149,7 @@ static inline void reject_m(bool m_set)
 
 static inline void reject_neg_m(bool m_set, int_t m_arg)
 {
-    if (m_set && m_arg < 0)
+    if (f.e0.exec && m_set && m_arg < 0)
     {
         throw(E_NCA);
     }
@@ -165,7 +165,7 @@ static inline void reject_neg_m(bool m_set, int_t m_arg)
 
 static inline void reject_neg_n(bool n_set, int_t n_arg)
 {
-    if (n_set && n_arg < 0)
+    if (f.e0.exec && n_set && n_arg < 0)
     {
         throw(E_NCA);
     }
@@ -181,7 +181,7 @@ static inline void reject_neg_n(bool n_set, int_t n_arg)
 
 static inline void reject_n(bool n_set)
 {
-    if (f.e2.n_arg && n_set)
+    if (f.e0.exec && f.e2.n_arg && n_set)
     {
         throw(E_INA);
     }
@@ -196,7 +196,7 @@ static inline void reject_n(bool n_set)
 
 static inline void require_n(bool m_set, bool n_set)
 {
-    if (m_set && !n_set)
+    if (f.e0.exec && m_set && !n_set)
     {
         throw(E_NON);
     }

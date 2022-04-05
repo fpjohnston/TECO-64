@@ -54,7 +54,14 @@ void exec_D(struct cmd *cmd)
     {
         m = cmd->m_arg;
 
-        if (m < 0 || m > t.Z || n < 0 || n > t.Z || m > n)
+        if (m > n)                      // Swap m and n if needed
+        {
+            m ^= n;
+            n ^= m;
+            m ^= n;
+        }
+
+        if (m < t.B || m > t.Z || n < t.B || n > t.Z)
         {
             throw(E_POP, "D");          // Pointer off page
         }
@@ -115,7 +122,14 @@ void exec_K(struct cmd *cmd)
     {
         m = cmd->m_arg;
 
-        if (m < 0 || m > t.Z || n < 0 || n > t.Z || m > n)
+        if (m > n)                      // Swap m and n if needed
+        {
+            m ^= n;
+            n ^= m;
+            m ^= n;
+        }
+
+        if (m < t.B || m > t.Z || n < t.B || n > t.Z)
         {
             throw(E_POP, "K");          // Pointer off page
         }

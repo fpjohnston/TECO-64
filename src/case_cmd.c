@@ -92,6 +92,13 @@ static void exec_case(struct cmd *cmd, bool lower)
         m = cmd->m_arg;
         n = cmd->n_set ? cmd->n_arg : t.dot;
 
+        if (m > n)                      // Swap m and n if needed
+        {
+            m ^= n;
+            n ^= m;
+            m ^= n;
+        }
+
         if (m < 0 || m > Z || n < 0 || n > Z)
         {
             if (lower)
@@ -102,14 +109,6 @@ static void exec_case(struct cmd *cmd, bool lower)
             {
                 throw(E_POP, "FU");     // Pointer off page
             }
-        }
-
-        if (m > n)                      // Swap m and n if needed
-        {
-            int_t tmp = m;
-
-            m = n;
-            n = tmp;
         }
 
         // Make position relative to dot

@@ -60,17 +60,16 @@ void exec_FR(struct cmd *cmd)
     {
         m = cmd->m_arg;
 
-        if (m < 0 || m > t.Z || n < 0 || n > t.Z)
+        if (m < t.B || m > t.Z || n < t.B || n > t.Z)
         {
             throw(E_POP, "FR");         // Pointer off page
         }
 
-        if (m > n)                      // Swap m and n to ensure m < n
+        if (m > n)                      // Swap m and n if needed
         {
-            int_t saved_m = m;
-
-            m = n;
-            n = saved_m;
+            m ^= n;
+            n ^= m;
+            m ^= n;
         }
 
         setpos_ebuf(m);                 // Go to first position

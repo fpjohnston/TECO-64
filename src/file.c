@@ -210,7 +210,7 @@ char *init_filename(const char *name, uint_t len, bool colon)
     // Next, scan for match control characters.
 
     name = build_trimmed(name, (uint_t)(uint)nbytes);
-    len = strlen(name);
+    len = (uint)strlen(name);
 
     // Ensure that there are no non-graphic ASCII characters in the filespec.
 

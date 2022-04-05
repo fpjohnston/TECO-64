@@ -58,7 +58,14 @@ void exec_X(struct cmd *cmd)
     {
         m = cmd->m_arg;
 
-        if (m < 0 || m > t.Z || n < 0 || n > t.Z)
+        if (m > n)                      // Swap m and n if needed
+        {
+            m ^= n;
+            n ^= m;
+            m ^= n;
+        }
+
+        if (m < t.B || m > t.Z || n < t.B || n > t.Z)
         {
             throw(E_POP, "X");          // Pointer off page
         }
@@ -71,10 +78,6 @@ void exec_X(struct cmd *cmd)
             delete_qtext(cmd->qindex);
 
             return;
-        }
-        else if (m > n)
-        {
-            throw(E_ARG);               // Invalid arguments
         }
 
         // Change absolute positions to relative positions.

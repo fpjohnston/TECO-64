@@ -64,15 +64,17 @@ void exec_T(struct cmd *cmd)
     }
     else if (cmd->m_set && cmd->n_set)
     {
+        if (cmd->m_arg > cmd->n_arg)    // Swap m and n if needed
+        {
+            cmd->m_arg ^= cmd->n_arg;
+            cmd->n_arg ^= cmd->m_arg;
+            cmd->m_arg ^= cmd->n_arg;
+        }
+
         if (cmd->m_arg < t.B || cmd->m_arg > t.Z
             || cmd->n_arg < t.B || cmd->n_arg > t.Z)
         {
             throw(E_POP, "T");          // Pointer off page
-        }
-
-        if (cmd->m_arg > cmd->n_arg)
-        {
-            return;
         }
 
         m = cmd->m_arg - t.dot;
@@ -177,14 +179,13 @@ bool scan_T(struct cmd *cmd)
 
     if (cmd->m_set)
     {
-        default_n(cmd, (int_t)0);       // m,Y => m,1T
+        default_n(cmd, (int_t)0);       // m,T => m,1T
 
         if (cmd->m_arg > cmd->n_arg)    // Swap m and n if m > n
         {
-            int_t n = cmd->n_arg;
-
-            cmd->n_arg = cmd->m_arg;
-            cmd->m_arg = n;
+            cmd->m_arg ^= cmd->n_arg;
+            cmd->n_arg ^= cmd->m_arg;
+            cmd->m_arg ^= cmd->n_arg;
         }
     }
     else

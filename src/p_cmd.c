@@ -57,7 +57,7 @@ void exec_P(struct cmd *cmd)
     }
 
     int_t start = t.B;
-    int_t end   = t.Z;
+    int_t end = t.Z;
     int_t count = 1;
     bool ff   = false;
     bool yank = false;
@@ -78,14 +78,22 @@ void exec_P(struct cmd *cmd)
     }
     else if (cmd->m_set)                // We assume n was also set
     {
-        if (cmd->m_arg < (int)start || cmd->m_arg > (int)end ||
-            cmd->n_arg < (int)start || cmd->n_arg > (int)end)
+        if (cmd->m_arg < t.B || cmd->m_arg > t.Z ||
+            cmd->n_arg < t.B || cmd->n_arg > t.Z)
         {
             throw(E_POP, "P");          // Pointer off page
         }
 
-        start = cmd->m_arg;
-        end   = cmd->n_arg;
+        if (start > end)
+        {
+            start = cmd->n_arg;
+            end   = cmd->m_arg;
+        }
+        else
+        {
+            start = cmd->m_arg;
+            end   = cmd->n_arg;
+        }
     }
     else if (cmd->n_set)                // nP, n:P, nPW
     {

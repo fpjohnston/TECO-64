@@ -26,9 +26,9 @@ QN "E
 !! The following are just to show how to set and reset the mark
 
 @fm/ F2 /
-    4:W "E (.+1),4:W @="Mark set at %d"
+    4:W "E (.+1),4:W-1 @="Mark set at %d"
     |
-    4:W @="Mark already set at %d"
+    4:W-1 @="Mark already set at %d"
     '/
 @fm/ S_F2 /
     4:W "E :@^A"Mark not set"
