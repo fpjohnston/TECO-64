@@ -250,7 +250,7 @@ static const char *errhelp[] =
               "the matching > is based.",
     [E_NAT] = "Both an n argument and a string were specified for "
               "a command which does not allow more than one.",
-    [E_NAU] = "The U comand must be preceded by either a specific "
+    [E_NAU] = "The U command must be preceded by either a specific "
               "numeric argument or a command that returns a "
               "numeric value.",
     [E_NCA] = "A comma was preceded by a negative number.",

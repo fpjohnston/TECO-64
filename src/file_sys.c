@@ -208,7 +208,7 @@ int get_wild(void)
 ///
 ///  @brief    Open temp file name. We are passed the output file name the
 ///            user specified, but we can't use it if we are opening it for
-///            output, because that might supercede and truncate an existing
+///            output, because that might supersede and truncate an existing
 ///            file. So if a file exists, we create a temporary name to use for
 ///            the actual open, and then when we close the output stream, we
 ///            will delete (or, if a backup copy was requested, rename) the
