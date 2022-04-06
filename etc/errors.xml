@@ -345,7 +345,7 @@
         <error>
             <code>NAU</code>
             <message>No argument before U command</message>
-            <detail>The U comand must be preceded by either a specific</detail>
+            <detail>The U command must be preceded by either a specific</detail>
             <detail>numeric argument or a command that returns a</detail>
             <detail>numeric value.</detail>
         </error>
