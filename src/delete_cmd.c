@@ -105,12 +105,7 @@ void exec_K(struct cmd *cmd)
 
     if (cmd->h)                         // HK?
     {
-        if (t.Z != 0)
-        {
-            setpos_ebuf(t.B);
-
-            delete_ebuf(t.Z);           // Yes, kill the whole buffer
-        }
+        kill_ebuf();                    // Kill the current buffer
 
         return;
     }

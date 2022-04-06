@@ -615,12 +615,16 @@ static int read_first(void)
                         echo_in(LF);
 
                         size_t len = strlen(cbuf->data);
-                        char temp[len + 1];
 
-                        strcpy(temp, cbuf->data);
+//                        if (len != 0)
+                        {
+                            char temp[len + 1];
 
-                        exec_str(temp); // Re-execute last command string
-                        refresh_dpy();  // Do any necessary screen update
+                            strcpy(temp, cbuf->data);
+
+                            exec_str(temp); // Re-execute last command string
+                            refresh_dpy();  // Do any necessary screen update
+                        }
 
                         break;
                     }
@@ -695,7 +699,6 @@ static int read_wait(void)
 
         if (c != EOF)
         {
-//            tprint("c = %d\n", c);
             return c;
         }
     }

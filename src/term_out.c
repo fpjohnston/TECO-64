@@ -96,11 +96,7 @@ void echo_in(int c)
         switch (c)
         {
             case CTRL_C:
-                if (f.et.rubout && !f.e0.display)
-                {
-                    tprint("\n\e[7m Cancel \e[0m\n");
-                }
-                else
+                if (!f.et.rubout || f.e0.display)
                 {
                     tputc(c, true);
                     tputc(LF, true);
@@ -134,11 +130,6 @@ void echo_in(int c)
                     tputc(CR, true);
                     tputc(LF, true);
                 }
-
-                break;
-
-            case CTRL_BACK:
-                tprint("\n\e[7m Interrupt \e[0m\n");
 
                 break;
 

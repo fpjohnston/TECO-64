@@ -165,6 +165,7 @@ void reset_cbuf(void)
     cbuf = root;
     cbuf->pos = 0;
     cbuf->len = 0;
+    cbuf->data[0] = NUL;
 }
 
 

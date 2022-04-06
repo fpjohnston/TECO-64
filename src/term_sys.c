@@ -73,9 +73,11 @@ static bool old_saved = false;          ///< true if old_act has valid data
 
 static void getsize(void);
 
-static void sig_handler(int signal);
+static void runaway(const char *msg);
 
-static void term_exit(bool skip_EK);
+static void signal_alert(const char *msg);
+
+static void sig_handler(int signal);
 
 
 ///
@@ -122,7 +124,10 @@ void detach_term(void)
     {
         tprint("Detached child process with ID %u\n", (uint)pid);
 
-        term_exit((bool)true);
+        close_output(OFILE_LOG);        // Close any log file
+        kill_ebuf();                    // Kill the current buffer
+
+        exit(EXIT_SUCCESS);             // Clean up, reset, and exit
     }
 
 #else
@@ -200,17 +205,18 @@ void init_term(void)
     sa.sa_handler = sig_handler;        // Set up general handler
     sa.sa_flags = 0;
 
+    sigfillset(&sa.sa_mask);            // Block all signals in handler
+
+    sigaction(SIGINT, &sa, NULL);       // This catches Ctrl/C
+    sigaction(SIGABRT, &sa, NULL);      // This catches assertion failures
+    sigaction(SIGQUIT, &sa, NULL);      // This catches Ctrl-Backslash
+
 #if     !defined(__DECC)
 
     sa.sa_flags = SA_RESTART;           // Restarts are okay for screen resizing
 
 #endif
 
-    sigfillset(&sa.sa_mask);            // Block all signals in handler
-
-    sigaction(SIGINT, &sa, NULL);       // This catches Ctrl/C
-    sigaction(SIGABRT, &sa, NULL);      // This catches assertion failures
-    sigaction(SIGQUIT, &sa, NULL);      // This catches Ctrl-Backslash
     sigaction(SIGWINCH, &sa, &old_act); // This catches window resizes
 
     old_saved = true;
@@ -335,6 +341,46 @@ void reset_term(void)
 
 
 ///
+///  @brief    Stop TECO and exit due to an unexpected or unrecoverable error.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void runaway(const char *msg)
+{
+    assert(msg != NULL);
+
+    exit_dpy();                         // Disable display so message is visible
+
+    signal_alert(msg);
+
+    close_output(OFILE_LOG);            // Close any log file
+    exec_EK(NULL);                      // Kill any current edit
+    kill_ebuf();                        // Kill the current buffer
+
+    exit(EXIT_FAILURE);                 // Clean up, reset, and exit
+}
+
+
+///
+///  @brief    Print alert message. Typically used just before exiting TECO
+///            because of a received signal.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void signal_alert(const char *msg)
+{
+    assert(msg != NULL);
+
+    tprint("%s\e[7m %s \e[0m\n", term_pos != 0 ? "\n" : "", msg);
+}
+
+
+
+///
 ///  @brief    Signal handler for CTRL/C and display size changes.
 ///
 ///  @returns  Nothing.
@@ -343,91 +389,51 @@ void reset_term(void)
 
 static void sig_handler(int signum)
 {
-    static bool aborting = false;
+    static bool active = false;
+
+    if (active)                         // Double fault?
+    {
+        abort();                        // Yes, just quit
+    }
+
+    active = true;
 
     switch (signum)
     {
-        case SIGABRT:
-            //  The following line is included because any assertion failure
-            //  message will have been output before resetting the terminal
-            //  characteristics, so any <LF> would not have included a <CR>.
-            //  But even if it did, an extra <CR> won't hurt.
+        case SIGABRT:                   // An assertion failure causes this
+            type_out(CR);               // Assertion msg. might not include CR
 
-            type_out(CR);
-
-            if (aborting)
-            {
-                reset_term();           // Reset terminal characteristics
-            }
-            else
-            {
-                aborting = true;        // Prevent aborts during aborts
-
-                term_exit((bool)false); // Clean up and exit
-            }
+            runaway("Abort");           // Print message and exit
 
             break;
 
-        case SIGQUIT:                   // CTRL-backslash causes this
-            exit_dpy();                 // Turn off display so error is visible
-
-            echo_in(CTRL_BACK);
-
-            term_exit((bool)false);     // Clean up and exit
-
-            break;
-
-        case SIGINT:
-            if (f.et.abort || f.e0.ctrl_c) // Should CTRL/C cause abort?
+        case SIGINT:                    // Ctrl-C causes this
+            if (f.et.abort || f.e0.ctrl_c) // Should we abort?
             {
-                exit_dpy();             // Turn off display so error is visible
+                runaway("Cancel");      // Print message and exit
+            }
+            else                        // Just process as normal input
+            {
+                signal_alert("Cancel");
 
-                echo_in(CTRL_C);
-
-                term_exit((bool)false); // Clean up and exit
+                f.e0.ctrl_c = true;     // Set flag saying we saw Ctrl-C
             }
 
-            f.e0.ctrl_c = true;         // Set flag saying we saw CTRL/C
+            break;
+
+        case SIGQUIT:                   // Ctrl-\ causes this
+            runaway("Interrupt");       // Print message and exit
 
             break;
 
-        case SIGWINCH:
-            getsize();                  // Get the new window size
+        case SIGWINCH:                  // Window resizing causes this
+            getsize();                  // Update the size
 
             break;
 
-        default:
+        default:                        // Ignore remaining signals
             break;
     }
+
+    active = false;                     // Done with signal, reset flag
 }
-
-
-///
-///  @brief    Exit TECO, either because we got a fatal signal, or because
-///            we forked a child process to continue the edit session. In the
-///            latter case we don't want to kill any file edits by calling
-///            exec_EK() because that's now the responsibility of the child.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void term_exit(bool skip_EK)
-{
-    if (!skip_EK)
-    {
-        exec_EK(NULL);                  // Kill any current edit
-    }
-
-    if (t.Z != 0)
-    {
-        setpos_ebuf(t.B);
-
-        delete_ebuf(t.Z);               // Kill the whole buffer
-    }
-
-    // Note that we used atexit() when TECO was initialized, so that
-    // exit_teco() will be called now to clean up and reset things.
-
-    exit(EXIT_FAILURE);                 // Clean up, reset, and exit
- }
