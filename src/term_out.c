@@ -101,6 +101,10 @@ void echo_in(int c)
                     tputc(c, true);
                     tputc(LF, true);
                 }
+                else
+                {
+                    print_alert("Cancel");
+                }
 
                 break;
 

@@ -77,6 +77,8 @@ extern int getc_term(bool nowait);
 
 extern void init_term(void);
 
+extern void print_alert(const char *msg);
+
 extern void print_prompt(void);
 
 extern void putc_key(int c);

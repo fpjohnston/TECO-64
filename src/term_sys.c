@@ -75,8 +75,6 @@ static void getsize(void);
 
 static void runaway(const char *msg);
 
-static void signal_alert(const char *msg);
-
 static void sig_handler(int signal);
 
 
@@ -290,6 +288,22 @@ void init_term(void)
 
 
 ///
+///  @brief    Print alert message. Typically used just before exiting TECO
+///            because of a received signal.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void print_alert(const char *msg)
+{
+    assert(msg != NULL);
+
+    tprint("%s\e[7m %s \e[0m\n", term_pos != 0 ? "\n" : "", msg);
+}
+
+
+///
 ///  @brief    Output character to keystroke file (if we have one).
 ///
 ///  @returns  Nothing.
@@ -353,7 +367,7 @@ static void runaway(const char *msg)
 
     exit_dpy();                         // Disable display so message is visible
 
-    signal_alert(msg);
+    print_alert(msg);
 
     close_output(OFILE_LOG);            // Close any log file
     exec_EK(NULL);                      // Kill any current edit
@@ -361,23 +375,6 @@ static void runaway(const char *msg)
 
     exit(EXIT_FAILURE);                 // Clean up, reset, and exit
 }
-
-
-///
-///  @brief    Print alert message. Typically used just before exiting TECO
-///            because of a received signal.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void signal_alert(const char *msg)
-{
-    assert(msg != NULL);
-
-    tprint("%s\e[7m %s \e[0m\n", term_pos != 0 ? "\n" : "", msg);
-}
-
 
 
 ///
@@ -414,7 +411,7 @@ static void sig_handler(int signum)
             }
             else                        // Just process as normal input
             {
-                signal_alert("Cancel");
+                print_alert("Cancel");
 
                 f.e0.ctrl_c = true;     // Set flag saying we saw Ctrl-C
             }
