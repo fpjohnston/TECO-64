@@ -50,14 +50,14 @@ void close_files(void)
 
     if (ofile->fp == NULL)
     {
-        if (t.Z != 0)
+        if (t->Z != 0)
         {
             throw(E_NFO);               // No output file open
         }
     }
     else
     {
-        while (next_page(t.B, t.Z, f.ctrl_e, (bool)true))
+        while (next_page(t->B, t->Z, f.ctrl_e, (bool)true))
         {
             ;
         }

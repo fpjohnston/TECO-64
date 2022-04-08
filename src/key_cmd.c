@@ -160,7 +160,9 @@ static void exec_down(int key)
 
     reset_cursor();
 
-    t.dot += count_chrs(pos, d.oldcol);
+    int_t delta = count_chrs(pos, d.oldcol);
+
+    add_dot(delta);
 }
 
 
@@ -186,15 +188,17 @@ static void exec_end(int key)
 
     if (iseol())
     {
-        if (t.dot >= w.botdot - 1)      // Go to end of buffer
+        if (t->dot >= w.botdot - 1)      // Go to end of buffer
         {
-            if (key == KEY_C_END && t.dot + 1 < t.Z)
+            if (key == KEY_C_END && t->dot + 1 < t->Z)
             {
-                t.dot += getdelta_ebuf(d.nrows + 1);
+                int_t delta = getdelta_ebuf(d.nrows + 1);
 
-                if (t.dot < t.Z)
+                add_dot(delta);
+
+                if (t->dot < t->Z)
                 {
-                    --t.dot;
+                    dec_dot();
 
                     return;
                 }
@@ -202,21 +206,23 @@ static void exec_end(int key)
 
             d.xbias = 0;
             d.ybias = 0;
-            t.dot = t.Z;
+
+            end_dot();
         }
         else                            // Go to end of window
         {
             d.ybias = d.nrows - 1;
-            t.dot = w.botdot - 1;
+
+            set_dot(w.botdot - 1);
         }
     }
-    else if (t.dot != t.Z)
+    else if (t->dot != t->Z)
     {
         int_t len = getdelta_ebuf(1) - 1;
 
         if (key == KEY_END)
         {
-            t.dot += len;               // Go to end of line
+            add_dot(len);               // Go to end of line
         }
         else
         {
@@ -230,7 +236,9 @@ static void exec_end(int key)
                 d.xbias += d.maxcol + 1;
             }
 
-            t.dot += count_chrs(getdelta_ebuf(0), d.col);
+            int_t delta = count_chrs(getdelta_ebuf(0), d.col);
+
+            add_dot(delta);
         }
     }
 }
@@ -265,26 +273,34 @@ static void exec_home(int key)
         }
 
         d.col = d.xbias;
-        t.dot += count_chrs(getdelta_ebuf(0), d.col);
+
+        int_t delta = count_chrs(getdelta_ebuf(0), d.col);
+
+        add_dot(delta);
     }
     else if (d.col != 0)                // Go to start of line
     {
         d.col = 0;
         d.xbias = 0;
-        t.dot += getdelta_ebuf(0);
+
+        int_t delta = getdelta_ebuf(0);
+
+        add_dot(delta);
     }
-    else if (t.dot != w.topdot)
+    else if (t->dot != w.topdot)
     {                                   // Go to top of window
         d.row = 0;
         d.ybias = 0;
-        t.dot = w.topdot;
+
+        set_dot(w.topdot);
     }
     else                                // Go to top of buffer
     {
         d.row = 0;
         d.xbias = 0;
         d.ybias = 0;
-        t.dot = t.B;
+
+        start_dot();
     }
 }
 
@@ -426,7 +442,7 @@ int exec_key(int key)
 
 static void exec_left(int key)
 {
-    if (t.dot > t.B)
+    if (t->dot > t->B)
     {
         reset_cursor();
 
@@ -459,7 +475,7 @@ static void exec_left(int key)
             d.xbias = 0;
         }
 
-        --t.dot;
+        dec_dot();
     }
 }
 
@@ -473,7 +489,7 @@ static void exec_left(int key)
 
 static void exec_right(int key)
 {
-    if (t.dot < t.Z)
+    if (t->dot < t->Z)
     {
         reset_cursor();
 
@@ -507,7 +523,7 @@ static void exec_right(int key)
             d.xbias = d.ncols;
         }
 
-        ++t.dot;
+        inc_dot();
     }
 }
 
@@ -539,7 +555,9 @@ static void exec_up(int key)
 
     reset_cursor();
 
-    t.dot += count_chrs(pos, d.oldcol);
+    int_t delta = count_chrs(pos, d.oldcol);
+
+    add_dot(delta);
 }
 
 

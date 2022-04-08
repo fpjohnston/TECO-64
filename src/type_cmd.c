@@ -59,8 +59,8 @@ void exec_T(struct cmd *cmd)
 
     if (cmd->h)
     {
-        m = -t.dot;
-        n = t.Z - t.dot;
+        m = -t->dot;
+        n = t->Z - t->dot;
     }
     else if (cmd->m_set && cmd->n_set)
     {
@@ -71,14 +71,14 @@ void exec_T(struct cmd *cmd)
             cmd->m_arg ^= cmd->n_arg;
         }
 
-        if (cmd->m_arg < t.B || cmd->m_arg > t.Z
-            || cmd->n_arg < t.B || cmd->n_arg > t.Z)
+        if (cmd->m_arg < t->B || cmd->m_arg > t->Z
+            || cmd->n_arg < t->B || cmd->n_arg > t->Z)
         {
             throw(E_POP, "T");          // Pointer off page
         }
 
-        m = cmd->m_arg - t.dot;
-        n = cmd->n_arg - t.dot;
+        m = cmd->m_arg - t->dot;
+        n = cmd->n_arg - t->dot;
     }
     else if (cmd->n_set)
     {

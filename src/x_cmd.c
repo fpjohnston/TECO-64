@@ -65,7 +65,7 @@ void exec_X(struct cmd *cmd)
             m ^= n;
         }
 
-        if (m < t.B || m > t.Z || n < t.B || n > t.Z)
+        if (m < t->B || m > t->Z || n < t->B || n > t->Z)
         {
             throw(E_POP, "X");          // Pointer off page
         }
@@ -82,8 +82,8 @@ void exec_X(struct cmd *cmd)
 
         // Change absolute positions to relative positions.
 
-        m -= t.dot;
-        n -= t.dot;
+        m -= t->dot;
+        n -= t->dot;
     }
     else
     {

@@ -78,8 +78,8 @@ static void exec_case(struct cmd *cmd, bool lower)
 {
     assert(cmd != NULL);
 
-    int_t dot = t.dot;
-    int_t Z   = t.Z;
+    int_t dot = t->dot;
+    int_t Z   = t->Z;
     int_t m, n;
 
     if (cmd->h)                         // HFU/HFL?
@@ -90,7 +90,7 @@ static void exec_case(struct cmd *cmd, bool lower)
     else if (cmd->m_set)                // m,nFL or m,nFU
     {
         m = cmd->m_arg;
-        n = cmd->n_set ? cmd->n_arg : t.dot;
+        n = cmd->n_set ? cmd->n_arg : t->dot;
 
         if (m > n)                      // Swap m and n if needed
         {
@@ -132,9 +132,9 @@ static void exec_case(struct cmd *cmd, bool lower)
         }
     }
 
-    int_t saved_dot = t.dot;
+    int_t saved_dot = t->dot;
 
-    setpos_ebuf(t.dot + m);
+    setpos_ebuf(t->dot + m);
 
     for (int_t i = m; i < n; ++i)
     {
@@ -157,7 +157,7 @@ static void exec_case(struct cmd *cmd, bool lower)
         }
         else
         {
-            setpos_ebuf(t.dot + 1);
+            setpos_ebuf(t->dot + 1);
         }
     }
 

@@ -456,7 +456,7 @@ void refresh_dpy(void)
         return;
     }
 
-    if (t.dot < w.topdot || t.dot > w.botdot)
+    if (t->dot < w.topdot || t->dot > w.botdot)
     {
         update_window = true;           // Force repaint if too much changed
     }
@@ -529,7 +529,7 @@ static void refresh_edit(void)
 
     wclear(d.edit);
 
-    w.topdot = t.dot + pos;             // First character output in window
+    w.topdot = t->dot + pos;             // First character output in window
 
     while ((c = getchar_ebuf(pos)) != EOF)
     {
@@ -600,7 +600,7 @@ static void refresh_edit(void)
         }
     }
 
-    w.botdot = t.dot + pos;             // Last character output in window
+    w.botdot = t->dot + pos;             // Last character output in window
 
     if (row < d.maxrow)                 // Should we print EOF marker?
     {
@@ -623,7 +623,7 @@ void reset_cursor(void)
 
     // Un-highlight the character at the current position
 
-    if (t.dot == t.Z)
+    if (t->dot == t->Z)
     {
         mvwchgat(d.edit, d.row, d.col, 1, ACS_DIAMOND, EDIT, NULL);
     }
@@ -710,7 +710,7 @@ static void set_cursor(void)
         d.row = 0;
     }
 
-    if (t.dot == t.Z)
+    if (t->dot == t->Z)
     {
         mvwchgat(d.edit, d.row, d.col, 1, A_ALTCHARSET | A_REVERSE, EDIT, NULL);
     }

@@ -49,12 +49,12 @@ typedef enum
 
 struct edit
 {
-    const int_t B;                ///< First position in buffer
-    int_t Z;                      ///< Last position in buffer
-    int_t dot;                    ///< Current position in buffer
+    const int_t B;              ///< First position in buffer
+    int_t Z;                    ///< Last position in buffer
+    int_t dot;                  ///< Current position in buffer
 };
 
-extern struct edit t;
+extern const struct edit *t;
 
 // Add one character to buffer at current position of dot.
 //
@@ -109,5 +109,12 @@ extern void setpos_ebuf(int_t n);
 // Set maximum memory size.
 
 extern uint_t setsize_ebuf(uint_t size);
+
+extern void add_dot(int_t delta);
+extern void dec_dot(void);
+extern void end_dot(void);
+extern void inc_dot(void);
+extern void set_dot(int_t pos);
+extern void start_dot(void);
 
 #endif  // !defined(_EDITBUF_H)

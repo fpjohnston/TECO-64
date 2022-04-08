@@ -61,7 +61,7 @@ void exec_D(struct cmd *cmd)
             m ^= n;
         }
 
-        if (m < t.B || m > t.Z || n < t.B || n > t.Z)
+        if (m < t->B || m > t->Z || n < t->B || n > t->Z)
         {
             throw(E_POP, "D");          // Pointer off page
         }
@@ -71,7 +71,7 @@ void exec_D(struct cmd *cmd)
         n -= m;                         // And delete this many chars
     }
 
-    if ((n < 0 && -n > t.dot) || (n > 0 && n > t.Z - t.dot))
+    if ((n < 0 && -n > t->dot) || (n > 0 && n > t->Z - t->dot))
     {
         if (!cmd->colon)
         {
@@ -124,7 +124,7 @@ void exec_K(struct cmd *cmd)
             m ^= n;
         }
 
-        if (m < t.B || m > t.Z || n < t.B || n > t.Z)
+        if (m < t->B || m > t->Z || n < t->B || n > t->Z)
         {
             throw(E_POP, "K");          // Pointer off page
         }

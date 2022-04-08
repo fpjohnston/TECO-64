@@ -97,7 +97,7 @@ void exec_EY(struct cmd *cmd)
         push_x(SUCCESS, X_OPERAND);
     }
 
-    setpos_ebuf(t.B);                   // Position to start of buffer
+    setpos_ebuf(t->B);                   // Position to start of buffer
 }
 
 
@@ -113,7 +113,7 @@ void exec_Y(struct cmd *cmd)
     // If data in buffer and yank protection is enabled, and an output file
     // is open, then abort.
 
-    if (t.Z != 0 && !f.ed.yank && ofiles[ostream].fp != NULL)
+    if (t->Z != 0 && !f.ed.yank && ofiles[ostream].fp != NULL)
     {
         throw(E_YCA);                   // Y command aborted
     }
@@ -138,7 +138,7 @@ bool next_yank(void)
         ;
     }
 
-    return (t.Z != 0) ? true : false;
+    return (t->Z != 0) ? true : false;
 }
 
 

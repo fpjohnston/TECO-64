@@ -62,9 +62,9 @@ bool append(bool n_set, int_t n_arg, bool colon)
 
     f.ctrl_e = false;                   // Assume not appending FF
 
-    int_t olddot = t.dot;
+    int_t olddot = t->dot;
 
-    setpos_ebuf(t.Z);                   // Go to end of buffer
+    setpos_ebuf(t->Z);                   // Go to end of buffer
 
     if (feof(ifile->fp))                // Already at EOF?
     {

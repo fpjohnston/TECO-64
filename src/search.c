@@ -454,7 +454,7 @@ void search_failure(struct cmd *cmd, uint keepdot)
 
     if (!keepdot)
     {
-        setpos_ebuf(t.B);
+        setpos_ebuf(t->B);
     }
 
     if (cmd->colon)
@@ -575,12 +575,12 @@ bool search_loop(struct search *s)
                             return false;
                         }
 
-                        setpos_ebuf(t.Z); // Go to end of buffer
+                        setpos_ebuf(t->Z); // Go to end of buffer
 
                         s->text_start = -1;
-                        s->text_end = -t.Z;
+                        s->text_end = -t->Z;
                     }
-                    else if (!next_page((int_t)0, t.Z, f.ctrl_e, (bool)true))
+                    else if (!next_page((int_t)0, t->Z, f.ctrl_e, (bool)true))
                     {
                         return false;
                     }
@@ -604,15 +604,15 @@ bool search_loop(struct search *s)
                     {
                         yank_backward(NULL);
 
-                        if (t.Z == 0)
+                        if (t->Z == 0)
                         {
                             return false;
                         }
 
-                        setpos_ebuf(t.Z); // Go to end of buffer
+                        setpos_ebuf(t->Z); // Go to end of buffer
 
                         s->text_start = -1;
-                        s->text_end = -t.Z;
+                        s->text_end = -t->Z;
                     }
                     else
                     {
@@ -621,7 +621,7 @@ bool search_loop(struct search *s)
                             return false;
                         }
 
-                        setpos_ebuf(t.B);
+                        setpos_ebuf(t->B);
                     }
 
                     break;
@@ -637,17 +637,17 @@ bool search_loop(struct search *s)
             if (s->search == search_backward)
             {
                 s->text_start = -1;     // Start at previous character
-                s->text_end   = -t.Z;
+                s->text_end   = -t->Z;
             }
             else
             {
                 s->text_start = 0;      // Start at current character
-                s->text_end   = t.Z;
+                s->text_end   = t->Z;
             }
         }
     }
 
-    setpos_ebuf(t.dot + s->text_pos);
+    setpos_ebuf(t->dot + s->text_pos);
 
     last_len = last_search.len;         // Save length of last search string
 

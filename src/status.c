@@ -75,14 +75,14 @@ void refresh_status(void)
 
         // Output current position and no. of characters in edit buffer
 
-        snprintf(buf, sizeof(buf), FMT "/" FMT, t.dot, t.Z);
+        snprintf(buf, sizeof(buf), FMT "/" FMT, t->dot, t->Z);
         status_line(line++, "./Z", buf);
 
         // Output row and column for display
 
         int row = getlines_ebuf(-1);
 
-        if (t.dot == t.Z)
+        if (t->dot == t->Z)
         {
             status_line(line++, "Row/Col", "EOF");
         }

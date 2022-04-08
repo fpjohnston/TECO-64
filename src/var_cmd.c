@@ -142,9 +142,9 @@ bool scan_ctrl_Y(struct cmd *cmd)
 
     cmd->ctrl_y = true;
     cmd->m_set = true;
-    cmd->m_arg = t.dot - (int_t)last_len;
+    cmd->m_arg = t->dot - (int_t)last_len;
 
-    push_x(t.dot, X_OPERAND);
+    push_x(t->dot, X_OPERAND);
 
     return true;
 }
@@ -207,7 +207,7 @@ bool scan_dot(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    push_x(t.dot, X_OPERAND);
+    push_x(t->dot, X_OPERAND);
 
     return true;
 }
@@ -227,7 +227,7 @@ bool scan_B(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    push_x(t.B, X_OPERAND);
+    push_x(t->B, X_OPERAND);
 
     return true;
 }
@@ -263,9 +263,9 @@ bool scan_H(struct cmd *cmd)
 
     cmd->h = true;
     cmd->m_set = true;
-    cmd->m_arg = t.B;
+    cmd->m_arg = t->B;
 
-    push_x(t.Z, X_OPERAND);
+    push_x(t->Z, X_OPERAND);
 
     return true;
 }
@@ -285,7 +285,7 @@ bool scan_Z(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    push_x(t.Z, X_OPERAND);
+    push_x(t->Z, X_OPERAND);
 
     return true;
 }

@@ -60,7 +60,7 @@ void exec_FR(struct cmd *cmd)
     {
         m = cmd->m_arg;
 
-        if (m < t.B || m > t.Z || n < t.B || n > t.Z)
+        if (m < t->B || m > t->Z || n < t->B || n > t->Z)
         {
             throw(E_POP, "FR");         // Pointer off page
         }

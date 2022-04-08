@@ -213,11 +213,11 @@ static void exec_inspect(int_t pos, int_t line)
         echo_in(CR);
     }
 
-    if (t.dot != pos)
+    if (t->dot != pos)
     {
         int_t n = getdelta_ebuf(line);
 
-        setpos_ebuf(n + t.dot);
+        setpos_ebuf(n + t->dot);
 
         if (f.e0.display)
         {
@@ -530,20 +530,20 @@ static int read_first(void)
         {
             case BS:
             case DEL:
-                if (t.dot != t.B)
+                if (t->dot != t->B)
                 {
-                    exec_inspect(t.B, (int_t)-1);
+                    exec_inspect(t->B, (int_t)-1);
                 }
 
                 break;
 
             case CR:
             case LF:
-                if (t.dot != t.Z)
+                if (t->dot != t->Z)
                 {
-                    exec_inspect(t.Z, (int_t)1);
+                    exec_inspect(t->Z, (int_t)1);
 
-                    if (t.dot == t.Z)
+                    if (t->dot == t->Z)
                     {
                         print_prompt();
                     }

@@ -159,7 +159,7 @@ void exec_bslash(struct cmd *cmd)
                 n = -n;
             }
 
-            setpos_ebuf(t.dot + pos - 1);
+            setpos_ebuf(t->dot + pos - 1);
         }
 
         push_x(n, X_OPERAND);

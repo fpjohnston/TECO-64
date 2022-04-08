@@ -75,9 +75,9 @@ static void exec_c_r(struct cmd *cmd, int sign, int chr)
     }
 
     n *= sign;
-    n += t.dot;                         // Calculate absolute position
+    n += t->dot;                         // Calculate absolute position
 
-    exec_move(cmd, n, (bool)(n < t.B || n > t.Z), chr);
+    exec_move(cmd, n, (bool)(n < t->B || n > t->Z), chr);
 }
 
 
@@ -92,14 +92,14 @@ void exec_J(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int_t n = t.B;
+    int_t n = t->B;
 
     if (cmd->n_set)
     {
         n = cmd->n_arg;
     }
 
-    exec_move(cmd, n, (bool)(n < t.B || n > t.Z), 'J');
+    exec_move(cmd, n, (bool)(n < t->B || n > t->Z), 'J');
 }
 
 
@@ -125,7 +125,7 @@ void exec_L(struct cmd *cmd)
     {
         n = getdelta_ebuf(n);
 
-        setpos_ebuf(n + t.dot);
+        setpos_ebuf(n + t->dot);
 
         return;
     }

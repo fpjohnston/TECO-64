@@ -95,8 +95,8 @@ static void exec_search(struct cmd *cmd, bool replace)
         bool reverse = (cmd->m_arg > cmd->n_arg);
 
         s.search     = reverse ? search_backward : search_forward;
-        s.text_start = cmd->m_arg - t.dot;
-        s.text_end   = cmd->n_arg - t.dot;
+        s.text_start = cmd->m_arg - t->dot;
+        s.text_end   = cmd->n_arg - t->dot;
     }
     else if (cmd->n_arg <= 0)
     {
