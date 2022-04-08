@@ -87,8 +87,6 @@ struct watch
 
 extern const bool esc_seq_def;
 
-extern bool update_window;
-
 extern struct watch w;
 
 

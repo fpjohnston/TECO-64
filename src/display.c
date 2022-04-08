@@ -41,10 +41,6 @@
 
 #define MIN_ROWS            10      ///< Minimum no. of rows for edit window
 
-bool update_window = false;         ///< true if screen redraw needed
-
-static bool update_cursor = false;  ///< true if cursor changed
-
 
 ///
 ///  @var     d
@@ -458,16 +454,16 @@ void refresh_dpy(void)
 
     if (t->dot < w.topdot || t->dot > w.botdot)
     {
-        update_window = true;           // Force repaint if too much changed
+        f.e0.window = true;           // Force repaint if too much changed
     }
 
-    if (update_window || update_cursor)
+    if (f.e0.window || f.e0.cursor)
     {
-        update_cursor = false;
+        f.e0.cursor = false;
 
         d.col = find_column();
 
-        int nlines = getlines_ebuf(-1);
+        int nlines = t->before;
         int delta = nlines - d.oldline;
 
         d.oldline = nlines;
@@ -481,20 +477,20 @@ void refresh_dpy(void)
         {
             d.row = 0;
 
-            update_window = true;
+            f.e0.window = true;
         }
         else if (d.row >= d.nrows)
         {
             d.row = d.nrows - 1;
 
-            update_window = true;
+            f.e0.window = true;
         }
 
         d.ybias = d.row;
 
-        if (update_window)
+        if (f.e0.window)
         {
-            update_window = false;
+            f.e0.window = false;
 
             refresh_edit();
         }
@@ -644,9 +640,9 @@ void reset_cursor(void)
         mvwchgat(d.edit, d.row, d.col, width, 0, EDIT, NULL);
     }
 
-    d.oldline = getlines_ebuf(-1);      // Save current line number
+    d.oldline = t->before;              // Save current line number
 
-    update_cursor = true;               // Flag need to update cursor
+    f.e0.cursor = true;                 // Flag need to update cursor
 }
 
 
@@ -685,7 +681,7 @@ void reset_dpy(bool all)
 
     d.ybias = d.xbias = 0;
 
-    update_window = true;
+    f.e0.window = true;
 
     refresh_dpy();
 }

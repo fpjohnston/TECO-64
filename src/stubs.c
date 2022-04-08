@@ -35,8 +35,6 @@
 
 const bool esc_seq_def = false;         ///< Escape sequences disabled by default
 
-bool update_window = false;             ///< true if screen redraw needed
-
 
 ///
 ///  @brief    Check for input characters that require special processing.

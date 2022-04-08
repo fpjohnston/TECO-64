@@ -80,7 +80,7 @@ void refresh_status(void)
 
         // Output row and column for display
 
-        int row = getlines_ebuf(-1);
+        int row = t->before;
 
         if (t->dot == t->Z)
         {
@@ -96,12 +96,12 @@ void refresh_status(void)
 
         // Output no. of lines in file
 
-        snprintf(buf, sizeof(buf), FMT, getlines_ebuf(0));
+        snprintf(buf, sizeof(buf), FMT, t->total);
         status_line(line++, "Lines", buf);
 
         // Output memory size
 
-        uint_t memsize = getsize_ebuf();
+        uint_t memsize = t->size;
 
         if (memsize >= GB)
         {

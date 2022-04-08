@@ -351,12 +351,12 @@ void exec_ET(struct cmd *cmd)
         set_bits((bool)f.et.eightbit);
         init_keys();
 
-        update_window = true;
+        f.e0.window = true;             // Window update is pending
     }
 
     if (truncate)                       // Did truncation bit just change?
     {
-        update_window = true;
+        f.e0.window = true;             // Window update is pending 
     }
 }
 

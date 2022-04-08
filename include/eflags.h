@@ -49,6 +49,8 @@ union e0_flag
         uint lower    : 1;      ///< Force string arguments to lower case
         uint upper    : 1;      ///< Force string arguments to upper case
         uint display  : 1;      ///< Display mode is active
+        uint window   : 1;      ///< Window update pending
+        uint cursor   : 1;      ///< Cursor update pending
         uint init     : 1;      ///< TECO is initializing
         uint i_redir  : 1;      ///< stdin has been redirected
         uint o_redir  : 1;      ///< stdout has been redirected

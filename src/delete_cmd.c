@@ -66,7 +66,7 @@ void exec_D(struct cmd *cmd)
             throw(E_POP, "D");          // Pointer off page
         }
 
-        setpos_ebuf(m);                 // Go to first position
+        set_dot(m);                     // Go to first position
 
         n -= m;                         // And delete this many chars
     }
@@ -129,7 +129,7 @@ void exec_K(struct cmd *cmd)
             throw(E_POP, "K");          // Pointer off page
         }
 
-        setpos_ebuf(m);                 // Go to first position
+        set_dot(m);                     // Go to first position
 
         n -= m;                         // And delete this many chars
     }

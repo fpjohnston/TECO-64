@@ -87,14 +87,6 @@
 #define EDIT_MIN    (KB)            ///< Minimum size is 1 KB
 
 
-///  @var    t
-///
-///  @brief  Edit buffer (external)
-
-const struct edit *t = NULL;
-
-
-
 ///  @var     eb
 ///
 ///  @brief   Edit buffer data (internal)
@@ -102,36 +94,51 @@ const struct edit *t = NULL;
 static struct
 {
     uchar *buf;                 ///< Start of buffer
-    const uint_t min;           ///< Minimum buffer size (fixed)
-    const uint_t max;           ///< Maximum buffer size (fixed)
-    uint_t size;                ///< Current size of buffer, in bytes
     uint_t left;                ///< No. of bytes before gap
     uint_t right;               ///< No. of bytes after gap
     uint_t gap;                 ///< No. of bytes in gap
-    struct edit t;
+    const uint_t min;           ///< Minimum buffer size (fixed)
+    const uint_t max;           ///< Maximum buffer size (fixed)
+    struct edit t;              ///< Read/write copies of public variables
 } eb =
 {
-    .buf   = NULL,
-    .min   = EDIT_MIN,
-    .max   = EDIT_MAX,
-    .size  = EDIT_INIT,
-    .left  = 0,
-    .right = 0,
-    .gap   = EDIT_INIT,
+    .buf    = NULL,
+    .min    = EDIT_MIN,
+    .max    = EDIT_MAX,
+    .left   = 0,
+    .right  = 0,
+    .gap    = EDIT_INIT,
     .t =
     {
-        .B   = 0,
-        .Z   = 0,
-        .dot = 0,
+        .size   = EDIT_INIT,
+        .B      = 0,
+        .Z      = 0,
+        .dot    = 0,
+        .front  = EOF,
+        .at     = EOF,
+        .back   = EOF,
+        .len    = 0,
+        .pos    = 0,
+        .before = 0,
+        .after  = 0,
+        .total  = 0,
     },
 };
+
+const struct edit *t = &eb.t;       ///< Read-only pointers to public variables
 
 
 // Local functions
 
+static void adjust_dot(int_t unused); // TODO
+
+static int get_count(int_t pos);
+
 static int_t last_delim(uint_t nlines);
 
 static int_t next_delim(uint_t nlines);
+
+static void reset_ebuf(void);
 
 static void shift_left(uint_t nbytes);
 
@@ -188,18 +195,33 @@ estatus add_ebuf(int c)
         set_page(1);
     }
 
-    update_window = true;
-
     ++eb.t.dot;
     ++eb.t.Z;
 
+    if (isdelim(c))
+    {
+        ++eb.t.before;
+        ++eb.t.total;
+
+        eb.t.pos = 0;
+        eb.t.len = next_delim(1) - eb.t.dot;
+    }
+    else
+    {
+        ++eb.t.pos;
+        ++eb.t.len;
+    }
+
+    eb.t.back = eb.t.at;
+    eb.t.at = c;
+
     if (--eb.gap < KB)                  // Less than 1 KB of buffer?
     {
-        if (eb.size < eb.max)           // Yes, can we increase size?
+        if (eb.t.size < eb.max)         // Yes, can we increase size?
         {
             // Try to make 25% larger
 
-            uint_t size = setsize_ebuf(eb.size + (eb.size / 4));
+            uint_t size = setsize_ebuf(eb.t.size + (eb.t.size / 4));
 
             print_size(size);
         }
@@ -219,6 +241,20 @@ estatus add_ebuf(int c)
 
 
 ///
+///  @brief    Change buffer position.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void adjust_dot(int_t unused) // TODO
+{
+    eb.t.pos = (next_delim(1) - eb.t.dot);
+    eb.t.len = (last_delim(1) - eb.t.dot) + eb.t.pos;
+}
+
+
+///
 ///  @brief    Decrement dot by 1.
 ///
 ///  @returns  Nothing.
@@ -229,7 +265,21 @@ void dec_dot(void)
 {
     if (eb.t.dot > eb.t.B)
     {
+        int_t old = eb.t.dot;
+
         --eb.t.dot;
+
+        eb.t.front = eb.t.at;
+        eb.t.at    = eb.t.back;
+        eb.t.back  = getchar_ebuf(-1);
+
+        if (isdelim(eb.t.at))
+        {
+            --eb.t.before;
+            ++eb.t.after;
+        }
+
+        adjust_dot(old);
     }
 }
 
@@ -250,8 +300,7 @@ void delete_ebuf(int_t nbytes)
 
     if (eb.t.dot == 0 && nbytes == eb.t.Z)    // Special case for HK command
     {
-        eb.left = eb.right = eb.t.Z = 0;
-        eb.gap = eb.size;
+        kill_ebuf();
     }
     else
     {
@@ -277,20 +326,32 @@ void delete_ebuf(int_t nbytes)
             assert((uint_t)nbytes <= eb.left);
 
             eb.left -= (uint_t)nbytes;
-            eb.t.dot   -= nbytes;          // Backwards delete affects dot
+            eb.t.dot -= nbytes;         // Backwards delete affects dot
+
+            eb.t.back  = getchar_ebuf(-1);
+
+            eb.t.before = get_count(-1);
+            eb.t.total  = eb.t.before + eb.t.after;
         }
         else                            // Deleting forward in [right]
         {
             assert((uint_t)nbytes <= eb.right);
 
             eb.right -= (uint_t)nbytes;
+
+            eb.t.at    = getchar_ebuf(0);
+            eb.t.front = getchar_ebuf(1);
+
+            eb.t.after  = get_count(1);
+            eb.t.total  = eb.t.before + eb.t.after;
         }
 
-        eb.gap += (uint_t)nbytes;       // Increase the gap
-        eb.t.Z    -= nbytes;               //  and decrease the total
-    }
+        eb.t.pos = (next_delim(1) - eb.t.dot);
+        eb.t.len = (last_delim(1) - eb.t.dot) + eb.t.pos;
 
-    update_window = true;
+        eb.gap += (uint_t)nbytes;       // Increase the gap
+        eb.t.Z -= nbytes;               //  and decrease the total
+    }
 }
 
 
@@ -303,7 +364,20 @@ void delete_ebuf(int_t nbytes)
 
 void end_dot(void)
 {
-    eb.t.dot = eb.t.Z;
+    if (eb.t.dot < eb.t.Z)
+    {
+        int_t old = eb.t.dot;
+
+        eb.t.dot   = eb.t.Z;
+        eb.t.back  = getchar_ebuf(-1);
+        eb.t.at    = EOF;
+        eb.t.front = EOF;
+
+        eb.t.before = eb.t.total;
+        eb.t.after  = 0;
+
+        adjust_dot(old);
+    }
 }
 
 
@@ -327,15 +401,13 @@ void exit_ebuf(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int getchar_ebuf(int_t n)
+int getchar_ebuf(int_t pos)
 {
-    uint_t pos = (uint_t)(eb.t.dot + n);
+    uint_t i = (uint_t)(eb.t.dot + pos); // Make relative position absolute
 
-    if (pos < eb.left + eb.right)
+    if (i < eb.left + eb.right)
     {
-        uint_t i = pos;
-
-        if (pos >= eb.left)
+        if (i >= eb.left)
         {
             i += eb.gap;
         }
@@ -345,7 +417,6 @@ int getchar_ebuf(int_t n)
 
     return EOF;
 }
-
 
 ///
 ///  @brief    Return number of characters between dot and nth line terminator.
@@ -378,7 +449,7 @@ int_t getdelta_ebuf(int_t n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int_t getlines_ebuf(int n)
+static int_t get_count(int n)
 {
     int_t start  = (n > 0) ? 0 : -eb.t.dot;
     int_t end    = (n < 0) ? 0 : eb.t.Z;
@@ -399,19 +470,6 @@ int_t getlines_ebuf(int n)
 
 
 ///
-///  @brief    Get size of edit buffer.
-///
-///  @returns  Size of edit buffer, in bytes.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-uint_t getsize_ebuf(void)
-{
-    return (uint_t)eb.size;
-}
-
-
-///
 ///  @brief    Increment dot by 1.
 ///
 ///  @returns  Nothing.
@@ -422,7 +480,21 @@ void inc_dot(void)
 {
     if (eb.t.dot < eb.t.Z)
     {
+        int_t old = eb.t.dot;
+
         ++eb.t.dot;
+
+        eb.t.back  = eb.t.at;
+        eb.t.at    = eb.t.front;
+        eb.t.front = getchar_ebuf(1);
+
+        if (isdelim(eb.t.at))
+        {
+            ++eb.t.before;
+            --eb.t.after;
+        }
+
+        adjust_dot(old);
     }
 }
 
@@ -440,9 +512,9 @@ void init_ebuf(void)
 {
     assert(eb.buf == NULL);             // Double initialization is an error
 
-    eb.buf = alloc_mem(eb.size);
+    eb.buf = alloc_mem(eb.t.size);
 
-    t = &eb.t;
+    reset_ebuf();
 }
 
 
@@ -455,8 +527,11 @@ void init_ebuf(void)
 
 void kill_ebuf(void)
 {
-    setpos_ebuf(eb.t.B);
-    delete_ebuf(eb.t.Z);
+    if (eb.t.Z != 0)                    // Anything in buffer?
+    {
+        reset_ebuf();
+//        set_page(0); // TODO
+    }
 }
 
 
@@ -524,34 +599,69 @@ static int_t next_delim(uint_t nlines)
 
 
 ///
+///  @brief    Reset buffer variables to initial conditions.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void reset_ebuf(void)
+{
+    eb.left     = 0;
+    eb.right    = 0;
+    eb.gap      = eb.t.size;
+
+    eb.t.Z      = 0;
+    eb.t.dot    = 0;
+    eb.t.front  = EOF;
+    eb.t.at     = EOF;
+    eb.t.back   = EOF;
+    eb.t.len    = 0;
+    eb.t.pos    = 0;
+    eb.t.before = 0;
+    eb.t.after  = 0;
+    eb.t.total  = 0;
+}
+
+
+///
 ///  @brief    Set dot to new position.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void set_dot(int_t pos)
+void set_dot(int_t dot)
 {
-    assert(pos >= eb.t.B && pos <= eb.t.Z);
+    assert(dot >= eb.t.B && dot <= eb.t.Z);
 
-    eb.t.dot = pos;
-}
-
-
-///
-///  @brief    Set buffer position.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void setpos_ebuf(int_t pos)
-{
-    if ((uint_t)pos <= eb.left + eb.right)
+    if (eb.t.dot != dot)
     {
-        reset_cursor();                 // Say that cursor needs to change
+        if (dot == eb.t.dot + 1)
+        {
+            inc_dot();
 
-        eb.t.dot = pos;
+            return;
+        }
+        else if (dot == eb.t.dot - 1)
+        {
+            dec_dot();
+
+            return;
+        }
+
+        int_t old = eb.t.dot;
+
+        eb.t.dot = dot;
+
+        eb.t.back  = getchar_ebuf(-1);
+        eb.t.at    = getchar_ebuf(0);
+        eb.t.front = getchar_ebuf(1);
+
+        eb.t.before = get_count(-1);
+        eb.t.after  = get_count(1);
+
+        adjust_dot(old);
     }
 }
 
@@ -581,10 +691,9 @@ uint_t setsize_ebuf(uint_t size)
         size += KB - runt;              // Yes, round up to next kilobyte
     }
 
-    // Nothing to do if no change, or requested size is smaller than what's
-    // in the edit buffer.
+    // Return if size is the same as, or is smaller than, the edit buffer.
 
-    if (size == eb.size || size <= eb.left + eb.right)
+    if (size == eb.t.size || size <= eb.left + eb.right)
     {
         return 0;
     }
@@ -593,19 +702,19 @@ uint_t setsize_ebuf(uint_t size)
 
     shift_left(eb.right);               // Remove the gap
 
-    if (size < eb.size)
+    if (size < eb.t.size)
     {
-        eb.buf = shrink_mem(eb.buf, eb.size, eb.size - size);
+        eb.buf = shrink_mem(eb.buf, eb.t.size, eb.t.size - size);
     }
     else
     {
-        eb.buf = expand_mem(eb.buf, eb.size, size - eb.size);
+        eb.buf = expand_mem(eb.buf, eb.t.size, size - eb.t.size);
     }
 
     shift_right(eb.right);              // Restore the gap
 
-    eb.size = size;
-    eb.gap  = eb.size - (eb.left + eb.right);
+    eb.t.size = size;
+    eb.gap = eb.t.size - (eb.left + eb.right);
 
     return size;
 }
@@ -620,7 +729,7 @@ uint_t setsize_ebuf(uint_t size)
 
 static void shift_left(uint_t nbytes)
 {
-    uchar *src = eb.buf + eb.size - eb.right;
+    uchar *src = eb.buf + eb.t.size - eb.right;
     uchar *dst = eb.buf + eb.left;
 
     eb.left  += nbytes;
@@ -643,7 +752,7 @@ static void shift_right(uint_t nbytes)
     eb.right += nbytes;
 
     uchar *src = eb.buf + eb.left;
-    uchar *dst = eb.buf + eb.size - eb.right;
+    uchar *dst = eb.buf + eb.t.size - eb.right;
 
     memmove(dst, src, (size_t)nbytes);
 }
@@ -658,5 +767,18 @@ static void shift_right(uint_t nbytes)
 
 void start_dot(void)
 {
-    eb.t.dot = eb.t.B;
+    if (eb.t.dot > eb.t.B)
+    {
+        int_t old = eb.t.dot;
+
+        eb.t.dot   = eb.t.B;
+        eb.t.back  = EOF;
+        eb.t.at    = getchar_ebuf(0);
+        eb.t.front = getchar_ebuf(1);
+
+        eb.t.before = 0;
+        eb.t.after  = eb.t.total;
+
+        adjust_dot(old);
+    }
 }

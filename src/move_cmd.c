@@ -125,7 +125,7 @@ void exec_L(struct cmd *cmd)
     {
         n = getdelta_ebuf(n);
 
-        setpos_ebuf(n + t->dot);
+        set_dot(n + t->dot);
 
         return;
     }
@@ -137,24 +137,18 @@ void exec_L(struct cmd *cmd)
     //  1:L -> No. of following lines
     //   :L -> Same as 0:L
 
-    int relpos;
-
     if (n < 0)
     {
-        relpos = -1;
+        push_x(t->before, X_OPERAND);
     }
     else if (n > 0)
     {
-        relpos = 1;
+        push_x(t->after, X_OPERAND);
     }
     else
     {
-        relpos = 0;
+        push_x(t->total, X_OPERAND);
     }
-
-    int_t nlines = getlines_ebuf(relpos);
-
-    push_x(nlines, X_OPERAND);
 }
 
 
@@ -192,7 +186,7 @@ static void exec_move(struct cmd *cmd, int_t pos, bool pop, int chr)
         return;
     }
 
-    setpos_ebuf(pos);
+    set_dot(pos);
 
     if (cmd->colon)
     {

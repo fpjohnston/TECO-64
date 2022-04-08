@@ -82,7 +82,7 @@ void exec_EY(struct cmd *cmd)
     {
         // Set the edit buffer to the size of the file.
 
-        if (getsize_ebuf() < ifile->size)
+        if (t->size < ifile->size)
         {
             uint_t size = setsize_ebuf(ifile->size);
 
@@ -97,7 +97,7 @@ void exec_EY(struct cmd *cmd)
         push_x(SUCCESS, X_OPERAND);
     }
 
-    setpos_ebuf(t->B);                   // Position to start of buffer
+    set_dot(t->B);                      // Position to start of buffer
 }
 
 
@@ -138,7 +138,16 @@ bool next_yank(void)
         ;
     }
 
-    return (t->Z != 0) ? true : false;
+    if (t->Z != 0)
+    {
+        f.e0.window = true;             // Window update is pending
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 

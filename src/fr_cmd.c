@@ -72,7 +72,7 @@ void exec_FR(struct cmd *cmd)
             m ^= n;
         }
 
-        setpos_ebuf(m);                 // Go to first position
+        set_dot(m);                     // Go to first position
 
         n -= m;                         // And delete this many chars
     }

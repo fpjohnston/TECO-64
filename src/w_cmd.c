@@ -324,7 +324,7 @@ static void set_w(int_t m, int_t n)
 
                 init_keys();            // Adjust widths of display chrs.
 
-                update_window = true;
+                f.e0.window = true;     // Window update is pending
             }
 
             break;

@@ -454,7 +454,7 @@ void search_failure(struct cmd *cmd, uint keepdot)
 
     if (!keepdot)
     {
-        setpos_ebuf(t->B);
+        set_dot(t->B);
     }
 
     if (cmd->colon)
@@ -575,7 +575,7 @@ bool search_loop(struct search *s)
                             return false;
                         }
 
-                        setpos_ebuf(t->Z); // Go to end of buffer
+                        set_dot(t->Z);  // Go to end of buffer
 
                         s->text_start = -1;
                         s->text_end = -t->Z;
@@ -609,7 +609,7 @@ bool search_loop(struct search *s)
                             return false;
                         }
 
-                        setpos_ebuf(t->Z); // Go to end of buffer
+                        set_dot(t->Z);  // Go to end of buffer
 
                         s->text_start = -1;
                         s->text_end = -t->Z;
@@ -621,7 +621,7 @@ bool search_loop(struct search *s)
                             return false;
                         }
 
-                        setpos_ebuf(t->B);
+                        set_dot(t->B);
                     }
 
                     break;
@@ -647,7 +647,7 @@ bool search_loop(struct search *s)
         }
     }
 
-    setpos_ebuf(t->dot + s->text_pos);
+    set_dot(t->dot + s->text_pos);
 
     last_len = last_search.len;         // Save length of last search string
 

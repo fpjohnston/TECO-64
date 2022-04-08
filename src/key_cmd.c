@@ -688,7 +688,8 @@ void set_bits(bool parity)
     if (f.e0.display)
     {
         meta(NULL, parity ? (bool)TRUE : (bool)FALSE);
-        update_window = true;
+
+        f.e0.window = true;             // Window update is pending
     }
 }
 

@@ -217,7 +217,7 @@ static void exec_inspect(int_t pos, int_t line)
     {
         int_t n = getdelta_ebuf(line);
 
-        setpos_ebuf(n + t->dot);
+        set_dot(n + t->dot);
 
         if (f.e0.display)
         {

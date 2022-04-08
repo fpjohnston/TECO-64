@@ -133,7 +133,7 @@ static void copy_page(struct page *page)
         (void)add_ebuf(*p++);
     }
 
-    setpos_ebuf(t->B);                   // Reset to start of buffer
+    set_dot(t->B);                      // Reset to start of buffer
 
     if (split)
     {
@@ -244,7 +244,7 @@ bool page_backward(int_t count, bool ff)
 
     if (t->Z != 0)
     {
-        setpos_ebuf(t->B);
+        set_dot(t->B);
 
         page = make_page(t->B, t->Z, ff);
 

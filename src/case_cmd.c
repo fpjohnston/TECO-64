@@ -134,7 +134,7 @@ static void exec_case(struct cmd *cmd, bool lower)
 
     int_t saved_dot = t->dot;
 
-    setpos_ebuf(t->dot + m);
+    set_dot(t->dot + m);
 
     for (int_t i = m; i < n; ++i)
     {
@@ -157,11 +157,11 @@ static void exec_case(struct cmd *cmd, bool lower)
         }
         else
         {
-            setpos_ebuf(t->dot + 1);
+            set_dot(t->dot + 1);
         }
     }
 
-    setpos_ebuf(saved_dot);
+    set_dot(saved_dot);
 }
 
 

@@ -64,7 +64,7 @@ bool append(bool n_set, int_t n_arg, bool colon)
 
     int_t olddot = t->dot;
 
-    setpos_ebuf(t->Z);                   // Go to end of buffer
+    set_dot(t->Z);                      // Go to end of buffer
 
     if (feof(ifile->fp))                // Already at EOF?
     {
@@ -92,7 +92,9 @@ bool append(bool n_set, int_t n_arg, bool colon)
         (void)append_line();            // :A -> append single line
     }
 
-    setpos_ebuf(olddot);
+    set_dot(olddot);
+
+    f.e0.window = true;                 // Window update is pending
 
     return true;
 }

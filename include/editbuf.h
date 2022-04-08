@@ -45,13 +45,22 @@ typedef enum
 
 ///  @struct  edit
 ///
-///  @brief   Edit buffer
+///  @brief   Edit buffer variables
 
 struct edit
 {
+    uint_t size;                ///< Size of edit buffer in bytes
     const int_t B;              ///< First position in buffer
     int_t Z;                    ///< Last position in buffer
     int_t dot;                  ///< Current position in buffer
+    int front;                  ///< Chr. in front of dot (or EOF)
+    int at;                     ///< Chr. at dot (or EOF)
+    int back;                   ///< Chr. in back of dot (or EOF)
+    int len;                    ///< Length of current line in bytes
+    int pos;                    ///< Position in line
+    int before;                 ///< No. of delimiters before dot
+    int after;                  ///< No. of delimiters after dot
+    int total;                  ///< Total no. of delimiters in buffer
 };
 
 extern const struct edit *t;
@@ -71,7 +80,7 @@ extern void delete_ebuf(int_t nbytes);
 
 // Get ASCII value of character in buffer at position relative to dot.
 //
-// Examples of values of n:
+// Example values:
 //
 //  0 -> character at current position of dot.
 //  1 -> character one position ahead of dot.
@@ -86,14 +95,6 @@ extern int getchar_ebuf(int_t relpos);
 
 extern int_t getdelta_ebuf(int_t nlines);
 
-//  Get the number of lines between current dot and start/end of edit buffer.
-
-extern int_t getlines_ebuf(int relpos);
-
-//  Get the size of the edit buffer.
-
-extern uint_t getsize_ebuf(void);
-
 //  Initialize buffer.
 
 extern void init_ebuf(void);
@@ -101,10 +102,6 @@ extern void init_ebuf(void);
 //  Delete all of the text in the edit buffer.
 
 extern void kill_ebuf(void);
-
-// Set buffer position.
-
-extern void setpos_ebuf(int_t n);
 
 // Set maximum memory size.
 
