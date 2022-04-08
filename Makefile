@@ -453,7 +453,7 @@ distclean: obj bin mostlyclean clean
 	-$(AT)rm -f obj/CFLAGS obj/Doxyfile $(NULL2) 
 	-$(AT)rm -rf html $(NULL2) 
 	-$(AT)cd src && rm -f *.bak $(NULL2)
-	-$(AT)cd tests && rm -f cases/* results/* $(NULL2)
+	-$(AT)cd test && rm -f cases/* results/* $(NULL2)
 	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL2)
 
 .PHONY: doc
@@ -485,3 +485,7 @@ lint: obj $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) $(LO
 mostlyclean: obj
 	-$(AT)cd obj && rm -f *.o *.d *.lob $(NULL2)
 
+.PHONY: smoke
+smoke:
+	@echo Smoke testing $(TARGET) $(NULL)
+	$(AT)test/smoke_test.pl test

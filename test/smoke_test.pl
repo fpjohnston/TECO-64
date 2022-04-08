@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-
 #
 #  smoke_tests.pl - Create and run smoke tests for TECO text editor.
 #
@@ -39,6 +38,8 @@ use File::Copy;
 use File::Find;
 use File::Glob;
 use File::Slurp;
+use File::Which;
+use Readonly;
 
 # Command-line options
 
@@ -93,7 +94,7 @@ my %tokens   = (
         'LOOP'  =>  q{32},
         'Q'     =>  q{64},
         'EG'    =>  q{type hello.tmp}
-    },                
+    },
     teco64 => {
         '8'     =>  q{4096,0 ET},
         'bad'   =>  q{/dev/teco},
@@ -102,19 +103,19 @@ my %tokens   = (
         'LOOP'  =>  q{32},
         'Q'     =>  q{64},
         '^T'    =>  q{10^T},
-        'EG'    =>  q{echo "hello, world!\n!PASS!"},
-    },                
+        'EG'    =>  qq{echo 'hello, world!\n!PASS!'},
+    },
     tecoc => {
         'bad'   =>  q{/dev/teco},
         'expr'  =>  q{63},
         'LOOP'  =>  q{31},
         'Q'     =>  q{21},
-        'EG'    =>  q{echo "hello, world!\n!PASS!"},
-    },                
+        'EG'    =>  qq{echo 'hello, world!\n!PASS!'},
+    },
 );
 
 my @jabberwocky = (
-    '@I/Jabberwocky',
+    q{@} . 'I/Jabberwocky',
     'by Lewis Carroll',
     q{},
     '\'Twas brillig, and the slithy toves',
@@ -151,7 +152,7 @@ my @jabberwocky = (
     '     Did gyre and gimble in the wabe:',
     'All mimsy were the borogoves,',
     '     And the mome raths outgrabe.',
-    '/',
+    q{/},
     );
 
 #
@@ -177,10 +178,12 @@ while ( defined( my $file = pop @teco_files ) )
 
 foreach my $file ( sort { uc $a cmp uc $b } keys %scripts )
 {
+    Readonly my $ERROR => -1;
+
     my $infile = "$scripts{$file}/$file.test";
     my @input  = read_file($infile);
 
-    next if $#input == -1;
+    next if $#input == $ERROR;
 
     my $outfile = "$file.tec";
     my ( $report, $text, $expects, $redirect ) =
@@ -253,11 +256,11 @@ if ($make)
     printf "Found %u script%s in $testdir/scripts, skipped %u\n", $nscripts,
         $nscripts == 1 ? q{} : 's', $nskipped;
 
-    printf "Created %u file%s in $testdir/cases, containing a total of $ntests " .
-        "test%s\n", $nfiles, $nfiles == 1 ? q{} : 's', $ntests == 1 ? q{} : 's';
+    printf "Created %u file%s in $testdir/cases, with $ntests test%s\n",
+        $nfiles, $nfiles == 1 ? q{} : 's', $ntests == 1 ? q{} : 's';
 }
 
-exit;
+exit 0;
 
 
 # Check to see that the test script specifies a valid TECO.
@@ -361,13 +364,14 @@ sub initialize
     $target = 'TECO-32' if $teco32;
     $target = 'TECO-64' if $teco64;
 
-    if ($#ARGV == -1)
+    if ($#ARGV + 1 == 0)
     {
-        $testdir = '.';
+        $testdir = q{.};
     }
     elsif ($#ARGV == 0)
     {
-        $testdir = $ARGV[0] =~ s{ \$ }{}mrs;
+        $testdir = $ARGV[0];
+        $testdir =~ s{(.+)/}{$1}ms;
     }
     else
     {
@@ -419,7 +423,7 @@ sub initialize
 
     if ($init)
     {
-        my @files = glob "$testdir/cases/*";
+        @files = glob "$testdir/cases/*";
 
         foreach my $file (@files)
         {
@@ -481,12 +485,12 @@ sub parse_script
                 {
                     $redirect = $1;
                     $expects  = $3;
-                }                    
+                }
                 elsif ( $2 eq 'TECO-64' && $target eq 'TECO-64' )
                 {
                     $redirect = $1;
                     $expects  = $3;
-                }                    
+                }
 
                 return unless $teco;
             }
@@ -566,11 +570,9 @@ sub prove_error
             printf "%s UNKNOWN\n", $report;
         }
     }
-    elsif ($verbose)
+    else                                # Test encountered expected TECO error
     {
-        # Test encountered expected TECO error
-
-        printf "%s OK\n", $report;
+        printf "%s OK\n", $report if $verbose;
     }
 
     return;
@@ -606,9 +608,9 @@ sub prove_fail
             printf "%s UNKNOWN\n", $report;
         }
     }
-    elsif ($verbose)
+    else
     {
-        printf "%s OK\n", $report;
+        printf "%s OK\n", $report if $verbose;
     }
 
     return;
@@ -648,9 +650,9 @@ sub prove_pass
     {
         printf "%s DIFF\n", $report;
     }
-    elsif ($verbose)
+    else
     {
-        printf "%s OK\n", $report;
+        printf "%s OK\n", $report if $verbose;
     }
 
     return;
@@ -669,7 +671,7 @@ sub prove_test
 
     my $expected = get_data("$testdir/benchmarks/$file.lis");
 
-    delete($benchmark_files{"$file.lis"}); # Delete this key
+    delete $benchmark_files{"$file.lis"}; # Delete this key
 
     # TECO C sometimes terminates lines with CR/LF, and sometimes with LF/CR.
     # Removing all instances of CR just makes comparisons much easier.
@@ -689,17 +691,17 @@ sub prove_test
         $report .= ' ->';
     }
 
-    if ($actual =~ /lost block/gm)
+    if ($actual =~ /lost block/gms)
     {
         print "$report MEMORY\n";
 
         return;
     }
-        
-    $actual =~ s/add_mblock.+?\n//gm;
-    $actual =~ s/exit_mem.+?\n//gm;
-    $actual =~ s/expand_mem.+?\n//gm;
-    $actual =~ s/shrink_mem.+?\n//gm;
+
+    $actual =~ s/add_mblock.+?\n//gms;
+    $actual =~ s/exit_mem.+?\n//gms;
+    $actual =~ s/expand_mem.+?\n//gms;
+    $actual =~ s/shrink_mem.+?\n//gms;
 
     if ( $actual eq 'TIMEOUT' )
     {
@@ -741,9 +743,8 @@ sub run_test
 {
     my ($command) = @_;
     my $result = q{};
-
-    eval {
-        local $SIG{ALRM} = sub { die "TECO alarm" };
+    my $status = eval {
+        local $SIG{ALRM} = sub { croak 'TECO alarm' };
 
         alarm 1;                        # Should be long enough for any TECO test
 
@@ -754,11 +755,11 @@ sub run_test
 
     alarm 0;                            # Race condition protection
 
-    if ($@ && $@ =~ "TECO alarm")
+    if (!defined $status || ($EVAL_ERROR && $EVAL_ERROR =~ 'TECO alarm'))
     {
-        $result = "TIMEOUT";
+        $result = 'TIMEOUT';
 
-        qx/reset -I/;
+        system 'reset -I';
     }
 
     return $result;
@@ -791,18 +792,25 @@ sub setup_test
 
     if ( $target eq 'TECO C' )
     {
-        $command = 'tecoc ';
+        $command = 'tecoc';
+
+        if (qx{which $command} eq q{})
+        {
+            print "Can't find $command executable\n";
+
+            exit 1;
+        }
 
         if ($redirect)
         {
-            $command .= '< ';
+            $command .= ' < ';
         }
         else
         {
-            $command .= 'mung ';
+            $command .= ' mung ';
         }
 
-        $command .= "$file 2>&1";
+        $command .= " $file 2>&1";
 
         # Set up dummy environment variables that we can use to match our
         # benchmark results, instead of having actual directory and file
@@ -818,9 +826,9 @@ sub setup_test
 
         $actual = run_test($command);
 
-        if ($actual =~ /core dumped/i)
+        if ($actual =~ /core dumped/ims)
         {
-            qx/reset -I/;
+            system 'reset -I';
         }
     }
     elsif ( $target eq 'TECO-32' )
@@ -829,18 +837,27 @@ sub setup_test
     }
     elsif ( $target eq 'TECO-64' )
     {
-        $command = 'teco -n ';
+        $command = 'teco';
+
+        if (qx{which $command} eq q{})
+        {
+            print "Can't find $command executable\n";
+
+            exit 1;
+        }
+
+        $command .= ' -n';
 
         if ($redirect)
         {
-            $command .= '< ';
+            $command .= ' <';
         }
         else
         {
-            $command .= '-v -i --mung ';
+            $command .= ' -v -i --mung';
         }
 
-        $command .= "$file 2>&1";
+        $command .= " $file 2>&1";
 
         if ( $report =~ /:\@EG/ms )
         {
@@ -910,7 +927,7 @@ sub translate_tokens
 
         if ($token eq 'JABBERWOCKY')
         {
-            $middle = join("\n", @jabberwocky);
+            $middle = join "\n", @jabberwocky;
         }
         elsif (exists $tokens{$teco}{$2})
         {
