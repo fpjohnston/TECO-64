@@ -94,8 +94,8 @@ void exec_EC(struct cmd *cmd)
     }
     else                                // nEC - set size of edit buffer
     {
-        uint_t kbytes = (uint_t)cmd->n_arg;
+        uint_t size = setsize_ebuf((uint_t)cmd->n_arg * KB);
 
-        setsize_ebuf(kbytes * KB);
+        print_size(size);
     }
 }

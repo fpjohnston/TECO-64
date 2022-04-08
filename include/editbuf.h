@@ -108,6 +108,6 @@ extern void setpos_ebuf(int_t n);
 
 // Set maximum memory size.
 
-extern void setsize_ebuf(uint_t nbytes);
+extern uint_t setsize_ebuf(uint_t size);
 
 #endif  // !defined(_EDITBUF_H)

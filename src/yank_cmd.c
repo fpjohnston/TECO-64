@@ -84,7 +84,9 @@ void exec_EY(struct cmd *cmd)
 
         if (getsize_ebuf() < ifile->size)
         {
-            setsize_ebuf(ifile->size);
+            uint_t size = setsize_ebuf(ifile->size);
+
+            print_size(size);
         }
 
         (void)next_yank();

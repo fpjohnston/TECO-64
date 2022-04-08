@@ -180,11 +180,11 @@ estatus add_ebuf(int c)
     {
         if (eb.size < eb.max)           // Yes, can we increase size?
         {
-            uint_t newsize = (uint_t)eb.size;
+            // Try to make 25% larger
 
-            newsize += newsize / 4;
+            uint_t size = setsize_ebuf(eb.size + (eb.size / 4));
 
-            setsize_ebuf(newsize);      // Try to make buffer 25% bigger
+            print_size(size);
         }
 
         if (eb.gap == 0)
@@ -480,75 +480,55 @@ void setpos_ebuf(int_t pos)
 ///
 ///  @brief    Set memory size for edit buffer.
 ///
-///  @returns  Nothing.
+///  @returns  New size, or 0 if size didn't change.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void setsize_ebuf(uint_t nbytes)
+uint_t setsize_ebuf(uint_t size)
 {
-    uint_t newsize = (uint_t)nbytes;
-
-    if (newsize > eb.max)
+    if (size > eb.max)
     {
-        newsize = eb.max;
+        size = eb.max;
     }
-    else
+    else if (size < eb.min)
     {
-        if (newsize < eb.min)
-        {
-            newsize = eb.min;
-        }
+        size = eb.min;
+    }
 
-        // Round up to K boundary
+    uint_t runt = size & (KB - 1);
 
-        newsize += KB - 1;
-        newsize /= KB;
-        newsize *= KB;
+    if (runt != 0)                      // Partial kilobyte?
+    {
+        size += KB - runt;              // Yes, round up to next kilobyte
     }
 
     // Nothing to do if no change, or requested size is smaller than what's
     // in the edit buffer.
 
-    if (newsize == eb.size || newsize <= eb.left + eb.right)
+    if (size == eb.size || size <= eb.left + eb.right)
     {
-        return;
+        return 0;
     }
 
     // We need to temporarily remove the gap before changing buffer size.
 
     shift_left(eb.right);               // Remove the gap
 
-    if (newsize < eb.size)
+    if (size < eb.size)
     {
-        eb.buf = shrink_mem(eb.buf, eb.size, eb.size - newsize);
+        eb.buf = shrink_mem(eb.buf, eb.size, eb.size - size);
     }
     else
     {
-        eb.buf = expand_mem(eb.buf, eb.size, newsize - eb.size);
+        eb.buf = expand_mem(eb.buf, eb.size, size - eb.size);
     }
 
     shift_right(eb.right);              // Restore the gap
 
-    eb.size = newsize;
+    eb.size = size;
     eb.gap  = eb.size - (eb.left + eb.right);
 
-    if (f.e0.display || f.et.abort)     // Display mode on or abort bit set?
-    {
-        return;                         // Yes, don't print messages then
-    }
-
-    if (newsize >= GB)
-    {
-        tprint("[%uG bytes]\n", (uint)(newsize / GB));
-    }
-    else if (newsize >= MB)
-    {
-        tprint("[%uM bytes]\n", (uint)(newsize / MB));
-    }
-    else
-    {
-        tprint("[%uK bytes]\n", (uint)(newsize / KB));
-    }
+    return size;
 }
 
 

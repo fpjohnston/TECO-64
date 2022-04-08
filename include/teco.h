@@ -246,6 +246,8 @@ extern void init_options(int argc, const char * const argv[]);
 
 extern void print_flag(int_t flag);
 
+extern void print_size(uint_t size);
+
 extern void reset_map(void);
 
 extern void setif_depth(uint depth);

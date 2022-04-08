@@ -320,6 +320,38 @@ static void init_teco(int argc, const char * const argv[])
 
 
 ///
+///  @brief    Print current size of edit buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void print_size(uint_t size)
+{
+    // Don't print anything if no change, or if display mode is on,
+    // or if we should abort on error.
+
+    if (size == 0 || f.e0.display || f.et.abort)
+    {
+        return;
+    }
+
+    if (size >= GB)
+    {
+        tprint("[%uG bytes]\n", (uint)(size / GB));
+    }
+    else if (size >= MB)
+    {
+        tprint("[%uM bytes]\n", (uint)(size / MB));
+    }
+    else
+    {
+        tprint("[%uK bytes]\n", (uint)(size / KB));
+    }
+}
+
+
+///
 ///  @brief    Reset everything before starting a new command. This frees up
 ///            some allocated memory, closes files, etc.
 ///
