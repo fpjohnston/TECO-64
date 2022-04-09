@@ -35,7 +35,6 @@
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
-#include "page.h"
 #include "term.h"
 
 
@@ -427,14 +426,6 @@ bool insert_edit(int c)
     }
 
     eb.buf[eb.left++] = (uchar)c;
-
-    // If we have no data in buffer, then we're on page 0, but
-    // as soon as we add a character, then we're on page 1.
-
-    if (page_count() == 0)
-    {
-        set_page(1);
-    }
 
     ++eb.t.dot;
     ++eb.t.Z;

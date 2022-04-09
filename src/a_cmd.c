@@ -37,6 +37,7 @@
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
+#include "page.h"
 
 
 ///
@@ -96,6 +97,11 @@ bool append(bool n_set, int_t n_arg, bool colon)
 
     f.e0.window = true;                 // Window update is pending
 
+    if (t->Z != 0 && page_count() == 0) // Anything in buffer?
+    {
+        set_page(1);                    // If so, can't be on page 0
+    }
+
     return true;
 }
 
@@ -110,74 +116,80 @@ bool append(bool n_set, int_t n_arg, bool colon)
 bool append_line(void)
 {
     struct ifile *ifile = &ifiles[istream];
-    bool line = false;                  // Assume we won't read a whole line
-    int next = fgetc(ifile->fp);        // Get first character to check
+    int next;
     int c;
 
-    while ((c = next) != EOF)
+    while ((c = fgetc(ifile->fp)) != EOF)
     {
-        next = fgetc(ifile->fp);        // Lookahead for CR/LF
-
-        if (c == NUL && !f.e3.keepNUL)  // Discard NUL chrs. if necessary
+        switch (c)
         {
-            continue;
-        }
-        else if (c == FF && !f.e3.nopage) // Is it FF, and is it a page delimiter?
-        {
-            f.ctrl_e = true;            // Yes, flag it, but don't store it
-
-            break;
-        }
-        else if (c == CR)
-        {
-            // Discard CR if start of CR/LF sequence.
-
-            if (next == LF)
-            {
-                if (f.e3.smart && !ifile->first)
-                {
-                    ifile->first = true;
-
-                    f.e3.CR_in   = true;
-                    f.e3.CR_out  = true;
-                }
-
-                if (!f.e3.CR_in)
+            case NUL:
+                if (!f.e3.keepNUL)
                 {
                     continue;
                 }
-            }
-        }
-        else if (c == LF)
-        {
-            if (f.e3.smart && !ifile->first)
-            {
-                ifile->first = true;
 
-                f.e3.CR_in   = false;
-                f.e3.CR_out  = false;
-            }
+                break;
+
+            case LF:
+                if (!ifile->first && f.e3.smart)
+                {
+                    ifile->first = true;
+
+                    f.e3.CR_in   = false;
+                    f.e3.CR_out  = false;
+                }
+
+                return insert_edit(c);
+
+            case VT:
+                return insert_edit(c);
+
+            case FF:
+                if (!f.e3.nopage)
+                {
+                    f.ctrl_e = true;    // Yes, flag it, but don't store it
+
+                    return false;       // Say we're done with line
+                }
+
+                return insert_edit(c);
+
+            case CR:
+                if ((next = fgetc(ifile->fp)) == LF)
+                {
+                    if (!ifile->first && f.e3.smart)
+                    {
+                        ifile->first = true;
+
+                        f.e3.CR_in   = true;
+                        f.e3.CR_out  = true;
+                    }
+
+                    if (!f.e3.CR_in)    // CR/LF on input -> LF
+                    {
+                        continue;
+                    }
+                }
+
+                if (next != EOF)
+                {
+                    ungetc(next, ifile->fp);
+                }
+
+                break;
+
+            default:
+                break;
         }
 
         if (!insert_edit(c))
         {
             break;
         }
-
-        if (isdelim(c))
-        {
-            line = true;                // We read an entire line
-
-            break;
-        }
     }
 
-    if (next != EOF)
-    {
-        ungetc(next, ifile->fp);
-    }
-
-    return line;
+    return false;
 }
 
 

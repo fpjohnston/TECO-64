@@ -411,8 +411,6 @@ static void sig_handler(int signum)
             }
             else                        // Just process as normal input
             {
-                print_alert("Cancel");
-
                 f.e0.ctrl_c = true;     // Set flag saying we saw Ctrl-C
             }
 
