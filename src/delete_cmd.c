@@ -83,7 +83,7 @@ void exec_D(struct cmd *cmd)
         return;
     }
 
-    delete_ebuf(n);
+    delete_edit(n);
 
     if (cmd->colon)
     {
@@ -105,7 +105,7 @@ void exec_K(struct cmd *cmd)
 
     if (cmd->h)                         // HK?
     {
-        kill_ebuf();                    // Kill the current buffer
+        kill_edit();                    // Kill the current buffer
 
         return;
     }
@@ -135,10 +135,10 @@ void exec_K(struct cmd *cmd)
     }
     else
     {
-        n = getdelta_ebuf(n);
+        n = len_edit(n);
     }
 
-    delete_ebuf(n);
+    delete_edit(n);
 }
 
 

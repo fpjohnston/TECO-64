@@ -367,9 +367,10 @@ struct ifile *open_input(const char *name, uint stream, bool colon)
         throw(E_ERR, name);             // General error
     }
 
-    ifile->size = (uint_t)file_stat.st_size;
-    ifile->cr   = false;
-    ifile->name = alloc_mem((uint_t)strlen(name) + 1);
+    ifile->name  = alloc_mem((uint_t)strlen(name) + 1);
+    ifile->size  = (uint_t)file_stat.st_size;
+    ifile->cr    = false;
+    ifile->first = false;
 
     strcpy(ifile->name, name);
 

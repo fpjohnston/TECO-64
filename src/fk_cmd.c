@@ -64,7 +64,7 @@ void exec_FK(struct cmd *cmd)
 
     if (search_loop(&s))
     {
-        delete_ebuf(-s.text_pos);
+        delete_edit(-s.text_pos);
 
         search_success(cmd);
     }

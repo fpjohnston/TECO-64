@@ -100,7 +100,7 @@ static void copy_page(struct page *page)
 {
     assert(page != NULL);
 
-    kill_ebuf();                        // Delete all data in edit buffer
+    kill_edit();                        // Delete all data in edit buffer
 
     // If there is a form feed in the page (because the user added it while
     // editing), then we have to treat it as an end of page marker, and only
@@ -130,7 +130,7 @@ static void copy_page(struct page *page)
 
     while (nbytes-- != 0)
     {
-        (void)add_ebuf(*p++);
+        (void)insert_edit(*p++);
     }
 
     set_dot(t->B);                      // Reset to start of buffer
@@ -201,7 +201,7 @@ static struct page *make_page(int_t start, int_t end, bool ff)
 
     for (int_t i = start; i < end; ++i)
     {
-        int c = getchar_ebuf(i);
+        int c = read_edit(i);
 
         if (c == EOF)
         {
@@ -248,7 +248,7 @@ bool page_backward(int_t count, bool ff)
 
         page = make_page(t->B, t->Z, ff);
 
-        kill_ebuf();
+        kill_edit();
 
         push_page(page);
     }
@@ -549,7 +549,7 @@ void yank_backward(FILE *unused)
     {
         if ((page = unlink_page()) == NULL)
         {
-            kill_ebuf();
+            kill_edit();
         }
         else
         {

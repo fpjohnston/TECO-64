@@ -107,7 +107,7 @@ static int isblankx(int c, struct search *s)
 
     while (s->text_pos < s->text_end)
     {
-        if ((c = getchar_ebuf(s->text_pos++)) == EOF)
+        if ((c = read_edit(s->text_pos++)) == EOF)
         {
             break;
         }
@@ -360,7 +360,7 @@ static bool match_str(struct search *s)
 
         while (s->match_len > 0)
         {
-            int c = getchar_ebuf(s->text_pos++);
+            int c = read_edit(s->text_pos++);
 
             if (c == EOF)
             {
@@ -378,7 +378,7 @@ static bool match_str(struct search *s)
     {
         while (s->match_len > 0)
         {
-            int c = getchar_ebuf(s->text_pos++);
+            int c = read_edit(s->text_pos++);
 
             if (c == EOF || !match_chr(c, s))
             {

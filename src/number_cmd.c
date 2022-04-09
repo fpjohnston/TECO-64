@@ -118,15 +118,15 @@ void exec_bslash(struct cmd *cmd)
         int_t pos = 0;
         uint ndigits = 0;
         int_t n = 0;
-        int c = getchar_ebuf(pos++);
+        int c = read_edit(pos++);
 
         if (c == '+')
         {
-            c = getchar_ebuf(pos++);
+            c = read_edit(pos++);
         }
         else if (c == '-')
         {
-            c = getchar_ebuf(pos++);
+            c = read_edit(pos++);
             minus = true;
         }
 
@@ -149,7 +149,7 @@ void exec_bslash(struct cmd *cmd)
             n *= f.radix;
             n += digit;
 
-            c = getchar_ebuf(pos++);
+            c = read_edit(pos++);
         }
 
         if (ndigits != 0)

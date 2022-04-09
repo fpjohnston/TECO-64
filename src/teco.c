@@ -260,7 +260,7 @@ static void exit_teco(void)
     exit_map();                         // Deallocate memory for map commands
     exit_error();                       // Deallocate memory for errors
     exit_qreg();                        // Deallocate memory for Q-registers
-    exit_ebuf();                        // Deallocate memory for edit buffer
+    exit_edit();                        // Deallocate memory for edit buffer
     exit_cbuf();                        // Deallocate memory for command buffer
     exit_tbuf();                        // Deallocate memory for terminal buffer
 
@@ -310,7 +310,7 @@ static void init_teco(int argc, const char * const argv[])
 
     init_tbuf();                        // Initialize terminal buffer
     init_cbuf();                        // Initialize command buffer
-    init_ebuf();                        // Initialize edit buffer
+    init_edit();                        // Initialize edit buffer
     init_qreg();                        // Initialize Q-registers
 
     // Change terminal characteristics and set signal handlers.

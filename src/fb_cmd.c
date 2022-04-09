@@ -102,20 +102,20 @@ static void exec_search(struct cmd *cmd, bool replace)
     {
         s.search     = search_backward;
         s.text_start = -1;
-        s.text_end   = getdelta_ebuf(cmd->n_arg);
+        s.text_end   = len_edit(cmd->n_arg);
     }
     else
     {
         s.search     = search_forward;
         s.text_start = 0;
-        s.text_end   = getdelta_ebuf(cmd->n_arg);
+        s.text_end   = len_edit(cmd->n_arg);
     }
 
     if (search_loop(&s))
     {
         if (replace)
         {
-            delete_ebuf(-(int_t)last_len);
+            delete_edit(-(int_t)last_len);
 
             if (cmd->text2.len)
             {

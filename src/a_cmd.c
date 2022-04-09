@@ -103,20 +103,20 @@ bool append(bool n_set, int_t n_arg, bool colon)
 ///
 ///  @brief    Append line to edit buffer.
 ///
-///  @returns  true if OK to add more, false if buffer full or nearly so.
+///  @returns  true if we can read more, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 bool append_line(void)
 {
     struct ifile *ifile = &ifiles[istream];
-    bool first_line = (ftell(ifile->fp) == 0);
-    int next = fgetc(ifile->fp);
+    bool line = false;                  // Assume we won't read a whole line
+    int next = fgetc(ifile->fp);        // Get first character to check
     int c;
 
     while ((c = next) != EOF)
     {
-        next = fgetc(ifile->fp);
+        next = fgetc(ifile->fp);        // Lookahead for CR/LF
 
         if (c == NUL && !f.e3.keepNUL)  // Discard NUL chrs. if necessary
         {
@@ -126,24 +126,20 @@ bool append_line(void)
         {
             f.ctrl_e = true;            // Yes, flag it, but don't store it
 
-            if (next != EOF)
-            {
-                ungetc(next, ifile->fp);
-            }
-
-            return false;               // And say we need to stop
+            break;
         }
         else if (c == CR)
         {
-            // Check for discarding CR if start of CR/LF sequence.
+            // Discard CR if start of CR/LF sequence.
 
             if (next == LF)
             {
-                if (f.e3.smart && first_line)
+                if (f.e3.smart && !ifile->first)
                 {
-                    first_line  = false;
-                    f.e3.CR_in  = true;
-                    f.e3.CR_out = true;
+                    ifile->first = true;
+
+                    f.e3.CR_in   = true;
+                    f.e3.CR_out  = true;
                 }
 
                 if (!f.e3.CR_in)
@@ -154,57 +150,34 @@ bool append_line(void)
         }
         else if (c == LF)
         {
-            if (f.e3.smart && first_line)
+            if (f.e3.smart && !ifile->first)
             {
-                first_line  = false;
-                f.e3.CR_in  = false;
-                f.e3.CR_out = false;
+                ifile->first = true;
+
+                f.e3.CR_in   = false;
+                f.e3.CR_out  = false;
             }
         }
 
-        switch (add_ebuf(c))
+        if (!insert_edit(c))
         {
-            default:
-            case EDIT_OK:
-                if (c == LF || c == VT) // Done if line terminator found
-                {
-                    if (next != EOF)
-                    {
-                        ungetc(next, ifile->fp);
-                    }
+            break;
+        }
 
-                    return true;
-                }
+        if (isdelim(c))
+        {
+            line = true;                // We read an entire line
 
-                break;
-
-            case EDIT_WARN:             // Set flag if buffer getting full
-                if (c == LF || c == VT)
-                {
-                    if (next != EOF)
-                    {
-                        ungetc(next, ifile->fp);
-                    }
-
-                    return false;
-                }
-
-                break;
-
-            case EDIT_FULL:             // Stop if buffer is full
-                if (next != EOF)
-                {
-                    ungetc(next, ifile->fp);
-                }
-
-                return false;
-
-            case EDIT_ERROR:
-                break;
+            break;
         }
     }
 
-    return false;
+    if (next != EOF)
+    {
+        ungetc(next, ifile->fp);
+    }
+
+    return line;
 }
 
 
@@ -248,7 +221,7 @@ bool scan_A(struct cmd *cmd)
         return false;
     }
 
-    int_t n = getchar_ebuf(cmd->n_arg);
+    int_t n = read_edit(cmd->n_arg);
 
     push_x(n, X_OPERAND);               // Note: n may be EOF (-1)
 

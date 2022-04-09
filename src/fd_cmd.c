@@ -81,7 +81,7 @@ void exec_FD(struct cmd *cmd)
 
     if (search_loop(&s))
     {
-        delete_ebuf(-(int_t)last_len);
+        delete_edit(-(int_t)last_len);
 
         search_success(cmd);
     }

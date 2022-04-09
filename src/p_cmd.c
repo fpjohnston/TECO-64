@@ -188,7 +188,7 @@ bool next_page(int_t start, int_t end, bool ff, bool yank)
     {
         if (yank)                       // Yank next page if we need to
         {
-            kill_ebuf();
+            kill_edit();
 
             struct ifile *ifile = &ifiles[istream];
 

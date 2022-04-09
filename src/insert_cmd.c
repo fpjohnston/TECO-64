@@ -120,10 +120,7 @@ void exec_insert(const char *buf, uint_t len)
 
     for (uint_t i = 0; i < len; ++i)
     {
-        int c = *buf++;
-        int retval = add_ebuf(c);
-
-        if (retval == EDIT_FULL || retval == EDIT_ERROR)
+        if (!insert_edit(*buf++))
         {
             break;
         }

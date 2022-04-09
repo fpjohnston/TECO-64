@@ -84,7 +84,7 @@ void exec_EY(struct cmd *cmd)
 
         if (t->size < ifile->size)
         {
-            uint_t size = setsize_ebuf(ifile->size);
+            uint_t size = size_edit(ifile->size);
 
             print_size(size);
         }
@@ -131,7 +131,7 @@ void exec_Y(struct cmd *cmd)
 
 bool next_yank(void)
 {
-    kill_ebuf();
+    kill_edit();
 
     while (append_line())               // Read what we can
     {

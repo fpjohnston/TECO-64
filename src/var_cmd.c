@@ -77,11 +77,11 @@ bool scan_ctrl_Q(struct cmd *cmd)
 
     if (isoperand())
     {
-        nchrs = getdelta_ebuf(pop_x());
+        nchrs = len_edit(pop_x());
     }
     else
     {
-        nchrs = getdelta_ebuf((int_t)0);
+        nchrs = t->pos;
     }
 
     push_x(nchrs, X_OPERAND);

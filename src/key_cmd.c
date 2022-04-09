@@ -111,7 +111,7 @@ static int_t count_chrs(int_t pos, int maxcol)
     int col = 0;                        // Current column in line
     int c;
 
-    while ((c = getchar_ebuf(pos)) != EOF)
+    while ((c = read_edit(pos)) != EOF)
     {
         int width = keysize[c];
 
@@ -142,7 +142,7 @@ static int_t count_chrs(int_t pos, int maxcol)
 
 static void exec_down(int key)
 {
-    int pos = getdelta_ebuf(1);         // Go to start of next line
+    int pos = t->len - t->pos;          // Go to start of next line
 
     if (d.oldcol < d.col)
     {
@@ -162,7 +162,7 @@ static void exec_down(int key)
 
     int_t delta = count_chrs(pos, d.oldcol);
 
-    add_dot(delta);
+    move_dot(delta);
 }
 
 
@@ -188,13 +188,13 @@ static void exec_end(int key)
 
     if (iseol())
     {
-        if (t->dot >= w.botdot - 1)      // Go to end of buffer
+        if (t->dot >= w.botdot - 1)     // Go to end of buffer
         {
             if (key == KEY_C_END && t->dot + 1 < t->Z)
             {
-                int_t delta = getdelta_ebuf(d.nrows + 1);
+                int_t delta = len_edit(d.nrows + 1);
 
-                add_dot(delta);
+                move_dot(delta);
 
                 if (t->dot < t->Z)
                 {
@@ -207,7 +207,7 @@ static void exec_end(int key)
             d.xbias = 0;
             d.ybias = 0;
 
-            end_dot();
+            last_dot();
         }
         else                            // Go to end of window
         {
@@ -218,11 +218,11 @@ static void exec_end(int key)
     }
     else if (t->dot != t->Z)
     {
-        int_t len = getdelta_ebuf(1) - 1;
+        int_t len = t->len - (t->pos + 1);
 
         if (key == KEY_END)
         {
-            add_dot(len);               // Go to end of line
+            move_dot(len);              // Go to end of line
         }
         else
         {
@@ -236,9 +236,9 @@ static void exec_end(int key)
                 d.xbias += d.maxcol + 1;
             }
 
-            int_t delta = count_chrs(getdelta_ebuf(0), d.col);
+            int_t delta = count_chrs(t->pos, d.col);
 
-            add_dot(delta);
+            move_dot(delta);
         }
     }
 }
@@ -274,18 +274,16 @@ static void exec_home(int key)
 
         d.col = d.xbias;
 
-        int_t delta = count_chrs(getdelta_ebuf(0), d.col);
+        int_t delta = count_chrs(t->pos, d.col);
 
-        add_dot(delta);
+        set_dot(delta);
     }
     else if (d.col != 0)                // Go to start of line
     {
         d.col = 0;
         d.xbias = 0;
 
-        int_t delta = getdelta_ebuf(0);
-
-        add_dot(delta);
+        set_dot(t->pos);
     }
     else if (t->dot != w.topdot)
     {                                   // Go to top of window
@@ -300,7 +298,7 @@ static void exec_home(int key)
         d.xbias = 0;
         d.ybias = 0;
 
-        start_dot();
+        first_dot();
     }
 }
 
@@ -446,7 +444,7 @@ static void exec_left(int key)
     {
         reset_cursor();
 
-        int c = getchar_ebuf(-1);       // Get previous character
+        int c = t->back;                // Get previous character
 
         if (isdelim(c))
         {
@@ -458,7 +456,7 @@ static void exec_left(int key)
 
         if (d.col == 0)
         {
-            d.col = -getdelta_ebuf(0);  // Go to end of line
+            d.col = -t->pos;            // Go to end of line
             d.xbias = d.col - d.ncols;
         }
         else if (key == KEY_C_LEFT)
@@ -493,7 +491,7 @@ static void exec_right(int key)
     {
         reset_cursor();
 
-        int c = getchar_ebuf(0);        // Get next character
+        int c = t->at;                  // Get next character
 
         if (isdelim(c))
         {
@@ -537,7 +535,7 @@ static void exec_right(int key)
 
 static void exec_up(int key)
 {
-    int pos = getdelta_ebuf(-1);        // Go to start of previous line
+    int pos = len_edit(-1);        // Go to start of previous line
 
     if (d.oldcol < d.col)
     {
@@ -557,7 +555,7 @@ static void exec_up(int key)
 
     int_t delta = count_chrs(pos, d.oldcol);
 
-    add_dot(delta);
+    move_dot(delta);
 }
 
 
@@ -602,7 +600,7 @@ void init_keys(void)
             }
             else if (c == HT)
             {
-                keysize[c] = -1;         // Special flag for tabs
+                keysize[c] = -1;        // Special flag for tabs
             }
             else
             {
@@ -634,9 +632,9 @@ void init_keys(void)
 
 static bool iseol(void)
 {
-    int c = getchar_ebuf(0);            // Get next character
+    int c = t->at;                      // Get next character
 
-    if (c == CR && getchar_ebuf(1) == LF)
+    if (c == CR && t->front == LF)
     {
         return true;
     }

@@ -87,7 +87,7 @@ void exec_X(struct cmd *cmd)
     }
     else
     {
-        int_t delta = getdelta_ebuf(n);
+        int_t delta = len_edit(n);
 
         if (n <= 0)
         {
@@ -108,7 +108,7 @@ void exec_X(struct cmd *cmd)
 
     for (int_t i = m; i < n; ++i)
     {
-        int c = getchar_ebuf(i);
+        int c = read_edit(i);
 
         if (c == EOF)
         {

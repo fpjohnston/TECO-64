@@ -193,8 +193,8 @@ void print_flag(int_t flag)
 
     if (flag == -1)
     {
-        m = getdelta_ebuf((int_t)0);
-        n = getdelta_ebuf((int_t)1);
+        m = t->pos;
+        n = t->len - m;
         mark = -1;
     }
     else
@@ -221,13 +221,13 @@ void print_flag(int_t flag)
 
         if (m == 0)
         {
-            n = getdelta_ebuf((int_t)1);
-            m = getdelta_ebuf((int_t)0);
+            m = t->pos;
+            n = t->len - m;
         }
         else
         {
-            n = getdelta_ebuf(m);
-            m = getdelta_ebuf(1 - m);
+            n = len_edit(m);
+            m = len_edit(1 - m);
         }
     }
 
@@ -240,7 +240,7 @@ void print_flag(int_t flag)
             tputc(mark, false);
         }
 
-        int c = getchar_ebuf(i);
+        int c = read_edit(i);
 
         if (c == EOF)
         {

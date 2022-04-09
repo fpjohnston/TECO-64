@@ -165,11 +165,11 @@ void exit_dpy(void)
 
 static int_t find_column(void)
 {
-    int_t pos = getdelta_ebuf(0);       // Get -(no. of chrs. before 'dot')
+    int_t pos = t->pos;                 // Get -(no. of chrs. before 'dot')
     int col = 0;                        // Current column in line
     int c;
 
-    while ((c = getchar_ebuf(pos)) != EOF)
+    while ((c = read_edit(pos)) != EOF)
     {
         int width = keysize[c];
 
@@ -518,7 +518,7 @@ void refresh_dpy(void)
 
 static void refresh_edit(void)
 {
-    int_t pos = getdelta_ebuf((int_t)-d.ybias);
+    int_t pos = len_edit((int_t)-d.ybias);
     int row = -1;
     int col __attribute__((unused));
     int c;
@@ -527,7 +527,7 @@ static void refresh_edit(void)
 
     w.topdot = t->dot + pos;             // First character output in window
 
-    while ((c = getchar_ebuf(pos)) != EOF)
+    while ((c = read_edit(pos)) != EOF)
     {
         getyx(d.edit, row, col);
 
@@ -625,7 +625,7 @@ void reset_cursor(void)
     }
     else
     {
-        int c = getchar_ebuf(0);
+        int c = t->at;
         int width = keysize[c];
 
         if (width == -1)
@@ -712,7 +712,7 @@ static void set_cursor(void)
     }
     else
     {
-        int c = getchar_ebuf(0);
+        int c = t->at;
         int width = keysize[c];
 
         if (width == -1)

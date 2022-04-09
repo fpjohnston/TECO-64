@@ -215,7 +215,7 @@ static void exec_inspect(int_t pos, int_t line)
 
     if (t->dot != pos)
     {
-        int_t n = getdelta_ebuf(line);
+        int_t n = len_edit(line);
 
         set_dot(n + t->dot);
 

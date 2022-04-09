@@ -55,7 +55,7 @@ bool page_forward(FILE *fp, int_t start, int_t end, bool ff)
 
     for (int_t i = start; i < end; ++i)
     {
-        int c = getchar_ebuf(i);
+        int c = read_edit(i);
 
         if (c == EOF)
         {
@@ -87,7 +87,7 @@ bool page_forward(FILE *fp, int_t start, int_t end, bool ff)
 
     for (int i = start; i < end; ++i)
     {
-        int c = getchar_ebuf(i);
+        int c = read_edit(i);
 
         if (c == EOF)
         {

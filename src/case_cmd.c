@@ -122,13 +122,13 @@ static void exec_case(struct cmd *cmd, bool lower)
 
         if (n < 1)
         {
-            m = getdelta_ebuf(n);
+            m = len_edit(n);
             n = 0;
         }
         else
         {
             m = 0;
-            n = getdelta_ebuf(n);
+            n = len_edit(n);
         }
     }
 
@@ -138,7 +138,7 @@ static void exec_case(struct cmd *cmd, bool lower)
 
     for (int_t i = m; i < n; ++i)
     {
-        int c = getchar_ebuf((int_t)0);
+        int c = t->at;
 
         if (c == EOF)
         {
@@ -147,13 +147,11 @@ static void exec_case(struct cmd *cmd, bool lower)
 
         if (lower && isupper(c))
         {
-            delete_ebuf((int_t)1);
-            (void)add_ebuf(tolower(c));
+            change_dot(tolower(c));
         }
         else if (!lower && islower(c))
         {
-            delete_ebuf((int_t)1);
-            (void)add_ebuf(toupper(c));
+            change_dot(toupper(c)); 
         }
         else
         {

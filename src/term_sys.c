@@ -123,7 +123,7 @@ void detach_term(void)
         tprint("Detached child process with ID %u\n", (uint)pid);
 
         close_output(OFILE_LOG);        // Close any log file
-        kill_ebuf();                    // Kill the current buffer
+        kill_edit();                    // Kill the current buffer
 
         exit(EXIT_SUCCESS);             // Clean up, reset, and exit
     }
@@ -371,7 +371,7 @@ static void runaway(const char *msg)
 
     close_output(OFILE_LOG);            // Close any log file
     exec_EK(NULL);                      // Kill any current edit
-    kill_ebuf();                        // Kill the current buffer
+    kill_edit();                        // Kill the current buffer
 
     exit(EXIT_FAILURE);                 // Clean up, reset, and exit
 }

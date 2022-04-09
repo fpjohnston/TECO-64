@@ -77,7 +77,7 @@ void exec_FR(struct cmd *cmd)
         n -= m;                         // And delete this many chars
     }
 
-    delete_ebuf(n);
+    delete_edit(n);
     exec_insert(cmd->text1.data, cmd->text1.len);
 }
 

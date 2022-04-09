@@ -206,7 +206,7 @@ extern void exec_options(int argc, const char * const argv[]);
 
 extern void exit_cbuf(void);
 
-extern void exit_ebuf(void);
+extern void exit_edit(void);
 
 extern void exit_EG(void);
 

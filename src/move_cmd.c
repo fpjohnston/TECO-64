@@ -123,7 +123,7 @@ void exec_L(struct cmd *cmd)
 
     if (!cmd->colon)
     {
-        n = getdelta_ebuf(n);
+        n = len_edit(n);
 
         set_dot(n + t->dot);
 

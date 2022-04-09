@@ -84,18 +84,18 @@ void exec_T(struct cmd *cmd)
     {
         if (cmd->n_arg == 0)
         {
-            m = getdelta_ebuf(0);       //lint !e747
+            m = -t->pos;
             n = 0;
         }
         else if (cmd->n_arg < 0)
         {
-            m = getdelta_ebuf(cmd->n_arg);
+            m = len_edit(cmd->n_arg);
             n = 0;
         }
         else
         {
             m = 0;
-            n = getdelta_ebuf(cmd->n_arg);
+            n = len_edit(cmd->n_arg);
         }
     }
 
@@ -116,7 +116,7 @@ static void exec_type(int_t m, int_t n)
 
     for (int_t i = m; i < n; ++i)
     {
-        int c = getchar_ebuf(i);
+        int c = read_edit(i);
 
         if (c == EOF)
         {
@@ -150,13 +150,13 @@ void exec_V(struct cmd *cmd)
 
     if (cmd->m_set)
     {
-        m = getdelta_ebuf(1 - m);
-        n = getdelta_ebuf(n - 1);
+        m = len_edit(1 - m);
+        n = len_edit(n - 1);
     }
     else
     {
-        m = getdelta_ebuf(1 - n);
-        n = getdelta_ebuf(n);
+        m = len_edit(1 - n);
+        n = len_edit(n);
     }
 
     exec_type(m, n);

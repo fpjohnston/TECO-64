@@ -32,17 +32,6 @@
 #include <sys/types.h>          //lint !e451
 
 
-/// @brief  Return status when inserting characters in buffer.
-
-typedef enum
-{
-    EDIT_OK    = -1,
-    EDIT_WARN  = -2,
-    EDIT_FULL  = -3,
-    EDIT_ERROR = -4
-} estatus;
-
-
 ///  @struct  edit
 ///
 ///  @brief   Edit buffer variables
@@ -65,20 +54,51 @@ struct edit
 
 extern const struct edit *t;
 
-// Add one character to buffer at current position of dot.
-//
-// Returns: EDIT_OK    - Insertion was successful.
-//          EDIT_WARN  - Insertion was successful, but buffer is getting full.
-//          EDIT_FULL  - Insertion was successful, but buffer just became full.
-//          EDIT_ERROR - Insertion was unsuccessful. Buffer is already full.
+// Changed character at dot.
 
-extern estatus add_ebuf(int c);
+extern void change_dot(int c);
+
+// Move dot to previous position.
+
+extern void dec_dot(void);
 
 //  Delete nbytes at dot. Argument can be positive or negative.
 
-extern void delete_ebuf(int_t nbytes);
+extern void delete_edit(int_t nbytes);
 
-// Get ASCII value of character in buffer at position relative to dot.
+// Set dot to first position in buffer.
+
+extern void first_dot(void);
+
+// Move dot to next position.
+
+extern void inc_dot(void);
+
+//  Initialize edit buffer.
+
+extern void init_edit(void);
+
+// Insert a character in buffer at current position of dot.
+
+extern bool insert_edit(int c);
+
+//  Delete all of the text in the edit buffer.
+
+extern void kill_edit(void);
+
+// Set dot to last position in buffer.
+
+extern void last_dot(void);
+
+//  Get the number of chars between current dot and nth line terminator.
+
+extern int_t len_edit(int_t nlines);
+
+// Set dot to relative position.
+
+extern void move_dot(int_t delta);
+
+// Read ASCII value of character in buffer at position relative to dot.
 //
 // Example values:
 //
@@ -89,29 +109,14 @@ extern void delete_ebuf(int_t nbytes);
 // Returns: character found, or EOF (-1) if attempt was made to go beyond the
 //          beginning or end of buffer.
 
-extern int getchar_ebuf(int_t relpos);
+extern int read_edit(int_t relpos);
 
-//  Get the number of chars between current dot and nth line terminator.
+// Set dot to absolute position.
 
-extern int_t getdelta_ebuf(int_t nlines);
-
-//  Initialize buffer.
-
-extern void init_ebuf(void);
-
-//  Delete all of the text in the edit buffer.
-
-extern void kill_ebuf(void);
+extern void set_dot(int_t pos);
 
 // Set maximum memory size.
 
-extern uint_t setsize_ebuf(uint_t size);
-
-extern void add_dot(int_t delta);
-extern void dec_dot(void);
-extern void end_dot(void);
-extern void inc_dot(void);
-extern void set_dot(int_t pos);
-extern void start_dot(void);
+extern uint_t size_edit(uint_t size);
 
 #endif  // !defined(_EDITBUF_H)
