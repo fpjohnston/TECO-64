@@ -129,10 +129,6 @@ void exec_FM(struct cmd *cmd)
     {
         push_x(FAILURE, X_OPERAND);     // Command failed
     }
-    else
-    {
-        throw(E_DPY);                   // Display mode not active
-    }
 }
 
 
@@ -150,10 +146,6 @@ void exec_FQ(struct cmd *cmd)
     if (cmd->colon)
     {
         push_x(FAILURE, X_OPERAND);     // Command failed
-    }
-    else
-    {
-        throw(E_DPY);                   // Display mode not active
     }
 }
 

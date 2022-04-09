@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,6 +39,14 @@
 #include "exec.h"
 #include "file.h"
 #include "page.h"
+
+
+#define BUFSIZE     (KB * 4)            ///< Buffer size for reading files
+
+
+// Local functions
+
+static bool append_line(void);
 
 
 ///
@@ -75,22 +84,18 @@ bool append(bool n_set, int_t n_arg, bool colon)
     {
         for (int_t i = 0; i < n_arg; ++i)
         {
-            if (!append_line())         // If we should stop
+            if (!append_line())         // Append a single line
             {
                 break;
             }
         }
     }
-    else if (!colon)                    // A -> append entire page
+    else                                // A or :A
     {
-        while (append_line())           // Append all we can
+        while (append_lines())          // Append all we can
         {
             ;
         }
-    }
-    else
-    {
-        (void)append_line();            // :A -> append single line
     }
 
     set_dot(olddot);
@@ -107,14 +112,117 @@ bool append(bool n_set, int_t n_arg, bool colon)
 
 
 ///
-///  @brief    Append line to edit buffer.
+///  @brief    Append single line to edit buffer.
 ///
-///  @returns  true if we can read more, else false.
+///  @returns  true if we can continue reading lines, else false (because we
+///            encountered either an EOF or an error).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool append_line(void)
+static bool append_line(void)
 {
+    struct ifile *ifile = &ifiles[istream];
+    int next;
+    int c;
+    char ch;
+
+    if (feof(ifile->fp))
+    {
+        return false;
+    }
+
+    while ((c = fgetc(ifile->fp)) != EOF)
+    {
+        ch = (char)c;
+
+        switch (c)
+        {
+            case NUL:
+                if (!f.e3.keepNUL)
+                {
+                    continue;
+                }
+
+                break;
+
+            case LF:
+                if (!ifile->first && f.e3.smart)
+                {
+                    ifile->first = true;
+
+                    f.e3.CR_in   = false;
+                    f.e3.CR_out  = false;
+                }
+
+                return insert_edit(&ch, 1);
+
+            case VT:
+                return insert_edit(&ch, 1);
+
+            case FF:
+                if (!f.e3.nopage)
+                {
+                    f.ctrl_e = true;    // Flag FF, but don't store it
+
+                    return true;
+                }
+                else
+                {
+                    return insert_edit(&ch, 1);
+                }
+
+            case CR:
+                if ((next = fgetc(ifile->fp)) == LF)
+                {
+                    if (!ifile->first && f.e3.smart)
+                    {
+                        ifile->first = true;
+
+                        f.e3.CR_in   = true;
+                        f.e3.CR_out  = true;
+                    }
+
+                    if (!f.e3.CR_in)    // Discard CR on input?
+                    {
+                        ungetc(next, ifile->fp);
+
+                        continue;
+                    }
+                }
+
+                if (next != EOF)
+                {
+                    ungetc(next, ifile->fp);
+                }
+
+                break;
+
+            default:
+                break;
+        }
+
+        if (!insert_edit(&ch, 1))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+///
+///  @brief    Append to edit buffer.
+///
+///  @returns  true if we can continue reading lines, else false (because we
+///            encountered either an EOF or a FF).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool append_lines(void)
+{
+    char inbuf[BUFSIZE];
+    char *p = inbuf;
     struct ifile *ifile = &ifiles[istream];
     int next;
     int c;
@@ -140,20 +248,26 @@ bool append_line(void)
                     f.e3.CR_out  = false;
                 }
 
-                return insert_edit(c);
+                break;
 
             case VT:
-                return insert_edit(c);
+                break;
 
             case FF:
                 if (!f.e3.nopage)
                 {
-                    f.ctrl_e = true;    // Yes, flag it, but don't store it
+                    f.ctrl_e = true;    // Flag FF, but don't store it
+                    c = EOF;            // And treat it like an EOF
 
-                    return false;       // Say we're done with line
+                    if (p - inbuf > 0)
+                    {
+                        (void)insert_edit(inbuf, p - inbuf);
+                    }
+
+                    return false;
                 }
 
-                return insert_edit(c);
+                break;
 
             case CR:
                 if ((next = fgetc(ifile->fp)) == LF)
@@ -166,8 +280,10 @@ bool append_line(void)
                         f.e3.CR_out  = true;
                     }
 
-                    if (!f.e3.CR_in)    // CR/LF on input -> LF
+                    if (!f.e3.CR_in)    // Discard CR on input?
                     {
+                        ungetc(next, ifile->fp);
+
                         continue;
                     }
                 }
@@ -183,13 +299,20 @@ bool append_line(void)
                 break;
         }
 
-        if (!insert_edit(c))
+        *p++ = (char)c;
+
+        if ((p - inbuf) >= BUFSIZE)
         {
             break;
         }
     }
 
-    return false;
+    if (p - inbuf > 0)
+    {
+        (void)insert_edit(inbuf, p - inbuf);
+    }
+
+    return (c == EOF) ? false : true;
 }
 
 

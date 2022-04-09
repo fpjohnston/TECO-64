@@ -133,7 +133,7 @@ bool next_yank(void)
 {
     kill_edit();
 
-    while (append_line())               // Read what we can
+    while (append_lines())              // Read all we can
     {
         ;
     }

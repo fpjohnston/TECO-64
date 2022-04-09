@@ -80,7 +80,7 @@ extern void init_edit(void);
 
 // Insert a character in buffer at current position of dot.
 
-extern bool insert_edit(int c);
+extern bool insert_edit(const char *c, size_t nbytes);
 
 //  Delete all of the text in the edit buffer.
 

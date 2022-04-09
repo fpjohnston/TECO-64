@@ -117,16 +117,13 @@ void exec_insert(const char *buf, uint_t len)
 {
     assert(buf != NULL);                // Error if no buffer
 
-    last_len = 0;
-
-    for (uint_t i = 0; i < len; ++i)
+    if (len == 0 || !insert_edit(buf, (size_t)len))
     {
-        if (!insert_edit(*buf++))
-        {
-            break;
-        }
-
-        ++last_len;
+        last_len = 0;
+    }
+    else
+    {
+        last_len = len;
     }
 
     if (t->Z != 0 && page_count() == 0) // Anything in buffer?

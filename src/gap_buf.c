@@ -399,76 +399,6 @@ void first_dot(void)
 
 
 ///
-///  @brief    Add character to edit buffer.
-///
-///  @returns  true if insert succeeded, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool insert_edit(int c)
-{
-    assert(eb.buf != NULL);             // Error if no edit buffer
-
-    if (eb.gap == 0)
-    {
-        return false;                   // Buffer is already full
-    }
-
-    uint_t dot = (uint_t)eb.t.dot;
-
-    if (dot < eb.left)
-    {
-        shift_right(eb.left - dot);
-    }
-    else if (dot > eb.left)
-    {
-        shift_left(dot - eb.left);
-    }
-
-    eb.buf[eb.left++] = (uchar)c;
-
-    ++eb.t.dot;
-    ++eb.t.Z;
-
-    if (isdelim(c))
-    {
-        ++eb.t.before;
-        ++eb.t.total;
-
-        eb.t.pos = 0;
-        eb.t.len = count_next(1) - eb.t.dot;
-    }
-    else
-    {
-        ++eb.t.pos;
-        ++eb.t.len;
-    }
-
-    eb.t.back = eb.t.at;
-    eb.t.at = c;
-
-    if (--eb.gap < KB)                  // Less than 1 KB of buffer?
-    {
-        if (eb.t.size < eb.max)         // Yes, can we increase size?
-        {
-            // Try to make 25% larger
-
-            uint_t size = size_edit(eb.t.size + (eb.t.size / 4));
-
-            print_size(size);
-        }
-
-        if (eb.gap == 0)
-        {
-            return false;
-        }
-    }
-
-    return true;                        // Insertion was successful
-}
-
-
-///
 ///  @brief    Increment dot by 1.
 ///
 ///  @returns  Nothing.
@@ -517,6 +447,78 @@ void init_edit(void)
     eb.buf = alloc_mem(eb.t.size);
 
     reset_edit();
+}
+
+
+///
+///  @brief    Add character to edit buffer.
+///
+///  @returns  true if insert succeeded, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool insert_edit(const char *buf, size_t nbytes)
+{
+    assert(buf != NULL);
+    assert(nbytes != 0);
+    assert(eb.buf != NULL);             // Error if no edit buffer
+
+    // First, ensure dot is at start of the gap
+
+    uint_t dot = (uint_t)eb.t.dot;
+
+    if (dot < eb.left)
+    {
+        shift_right(eb.left - dot);
+    }
+    else if (dot > eb.left)
+    {
+        shift_left(dot - eb.left);
+    }
+
+    // Then make sure we have enough room. Try to increase size if we don't.
+
+    while (eb.gap < nbytes)
+    {
+        uint_t size = eb.t.size;        // Get current size
+
+        size += size / 4;               //  and increase it by 25%
+
+        if (size_edit(size) == 0)       // If not able to increase size,
+        {
+            return false;               //  then we can't insert anything
+        }
+
+        print_size(size);
+    }
+
+    int c = EOF;
+
+    for (uint_t i = 0; i < nbytes; ++i)
+    {
+        c = *buf++;
+
+        eb.buf[eb.left++] = (uchar)c;
+
+        if (isdelim(c))
+        {
+            ++eb.t.before;
+            ++eb.t.total;
+        }
+    }
+
+    eb.t.dot += (int_t)nbytes;
+    eb.t.Z   += (int_t)nbytes;;
+    eb.gap   -= (uint_t)nbytes;
+
+    eb.t.pos  = eb.t.dot - count_prev(0);
+    eb.t.len  = count_next(1) - eb.t.dot;
+    eb.t.len += eb.t.pos;
+
+    eb.t.back = eb.buf[eb.left - 1];
+    eb.t.at = c;
+
+    return true;                        // Insertion was successful
 }
 
 
@@ -690,9 +692,6 @@ void set_dot(int_t dot)
             eb.t.len += eb.t.pos;
         }
     }
-// TODO
-//    tprint("dot = %d, pos = %d, len = %d, back = %d, at = %d, front = %d\n",
-//           t->dot, t->pos, t->len, t->back, t->at, t->front);
 }
 
 
