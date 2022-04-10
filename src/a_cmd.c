@@ -80,7 +80,7 @@ bool append(bool n_set, int_t n_arg, bool colon)
     {
         return false;
     }
-    else if (n_set)                     // n:A -> append n lines
+    else if (colon && n_set)            // n:A -> append n lines
     {
         for (int_t i = 0; i < n_arg; ++i)
         {
@@ -99,8 +99,6 @@ bool append(bool n_set, int_t n_arg, bool colon)
     }
 
     set_dot(olddot);
-
-    f.e0.window = true;                 // Window update is pending
 
     if (t->Z != 0 && page_count() == 0) // Anything in buffer?
     {
@@ -154,10 +152,10 @@ static bool append_line(void)
                     f.e3.CR_out  = false;
                 }
 
-                return insert_edit(&ch, 1);
+                return insert_edit(&ch, 1uL);
 
             case VT:
-                return insert_edit(&ch, 1);
+                return insert_edit(&ch, 1uL);
 
             case FF:
                 if (!f.e3.nopage)
@@ -168,7 +166,7 @@ static bool append_line(void)
                 }
                 else
                 {
-                    return insert_edit(&ch, 1);
+                    return insert_edit(&ch, 1uL);
                 }
 
             case CR:
@@ -201,7 +199,7 @@ static bool append_line(void)
                 break;
         }
 
-        if (!insert_edit(&ch, 1))
+        if (!insert_edit(&ch, 1uL))
         {
             return false;
         }
@@ -261,7 +259,7 @@ bool append_lines(void)
 
                     if (p - inbuf > 0)
                     {
-                        (void)insert_edit(inbuf, p - inbuf);
+                        (void)insert_edit(inbuf, (size_t)(uint_t)(p - inbuf));
                     }
 
                     return false;
@@ -301,7 +299,7 @@ bool append_lines(void)
 
         *p++ = (char)c;
 
-        if ((p - inbuf) >= BUFSIZE)
+        if ((uint)(p - inbuf) >= BUFSIZE)
         {
             break;
         }
@@ -309,7 +307,7 @@ bool append_lines(void)
 
     if (p - inbuf > 0)
     {
-        (void)insert_edit(inbuf, p - inbuf);
+        (void)insert_edit(inbuf, (size_t)(uint_t)(p - inbuf));
     }
 
     return (c == EOF) ? false : true;

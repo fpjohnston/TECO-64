@@ -130,9 +130,9 @@ void refresh_status(void)
         wrefresh(d.status);
     }                                   //lint !e438 !e550
 
-    if (f.e4.line)
+    if (f.e4.fence)
     {
-        whline(d.line, ACS_HLINE, d.ncols);
+        whline(d.fence, ACS_HLINE, d.ncols);
 
         // If we have a status window, then connect its vertical line to the
         // horizontal line we just printed, using a top tee character if the
@@ -143,10 +143,10 @@ void refresh_status(void)
         {
             chtype ch = (f.e4.invert) ? ACS_BTEE : ACS_TTEE;
 
-            mvwaddch(d.line, 0, w.width, ch);
+            mvwaddch(d.fence, 0, w.width, ch);
         }
 
-        wrefresh(d.line);
+        wrefresh(d.fence);
     }
 }
 

@@ -196,7 +196,7 @@ void exec_E4(struct cmd *cmd)
 
     f.e4.flag   = 0;
     f.e4.invert = e4.invert;
-    f.e4.line   = e4.line;
+    f.e4.fence   = e4.fence;
     f.e4.status = e4.status;
 
     if (changes)                        // Any changes?
@@ -350,13 +350,11 @@ void exec_ET(struct cmd *cmd)
     {
         set_bits((bool)f.et.eightbit);
         init_keys();
-
-        f.e0.window = true;             // Window update is pending
     }
 
     if (truncate)                       // Did truncation bit just change?
     {
-        f.e0.window = true;             // Window update is pending 
+        f.e0.window = true;             // Window refresh needed
     }
 }
 

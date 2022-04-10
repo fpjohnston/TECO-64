@@ -116,8 +116,6 @@ extern void refresh_dpy(void);
 
 extern void reset_colors(void);
 
-extern void reset_cursor(void);
-
 extern void reset_dpy(bool all);
 
 extern void rubout_key(int c);
@@ -145,12 +143,13 @@ struct display
     WINDOW *edit;                   ///< Edit window
     WINDOW *status;                 ///< Status window
     WINDOW *cmd;                    ///< Command window
-    WINDOW *line;                   ///< Partition line
-    int row;                        ///< Current row for 'dot'
-    int col;                        ///< Current column for 'dot'
+    WINDOW *fence;                  ///< Fence between edit and command windows
+    int row, col;                   ///< Current cursor coordinates
+    int newrow, newcol;             ///< Pending cursor coordinates
+    int cursor;                     ///< Cursor character
     bool updown;                    ///< true if last cmd was up/down arrow
-    int oldline;                    ///< Previous line no. for 'dot'
-    int oldcol;                     ///< Previous column for 'dot'
+    int line;                       ///< Previous line no. for dot
+    int oldcol;                     ///< Previous column for dot
     int minrow;                     ///< Min. row for edit window
     int mincol;                     ///< Min. column for edit window
     int maxrow;                     ///< Max. row for edit window
@@ -166,6 +165,8 @@ extern struct display d;
 
 extern char keysize[UCHAR_MAX + 1];
 
+
+extern int_t find_column(void);
 
 extern void init_colors(void);
 

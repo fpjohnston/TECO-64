@@ -137,7 +137,7 @@ static int_t get_w(int_t n)
         case 2:                         // Vertical size of editing window
             n = (int_t)w.height - (int_t)w.nlines;
 
-            if (f.e0.display && f.e4.line)
+            if (f.e0.display && f.e4.fence)
             {
                 --n;
             }
@@ -260,7 +260,7 @@ bool scan_W(struct cmd *cmd)
         cmd->n_arg = 0;                 // :W = 0:W
     }
 
-    if (cmd->m_set)                     // m,n:W
+    if (cmd->m_set && f.e0.exec)        // m,n:W
     {
         set_w(cmd->m_arg, cmd->n_arg);
     }
@@ -323,8 +323,6 @@ static void set_w(int_t m, int_t n)
                 w.seeall = m ? true : false;
 
                 init_keys();            // Adjust widths of display chrs.
-
-                f.e0.window = true;     // Window update is pending
             }
 
             break;

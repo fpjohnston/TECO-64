@@ -113,11 +113,15 @@ static int_t count_chrs(int_t pos, int maxcol)
 
     while ((c = read_edit(pos)) != EOF)
     {
-        int width = keysize[c];
+        int width;
 
-        if (width == -1)
+        if (c == HT)
         {
             width = TABSIZE - (col % TABSIZE);
+        }
+        else
+        {
+            width = keysize[c];
         }
 
         if (isdelim(c) || c == CR || col + width > maxcol)
@@ -142,27 +146,29 @@ static int_t count_chrs(int_t pos, int maxcol)
 
 static void exec_down(int key)
 {
-    int pos = t->len - t->pos;          // Go to start of next line
+    d.newrow = d.row;
+    d.newcol = d.col;
 
-    if (d.oldcol < d.col)
+    if (d.oldcol < d.newcol)
     {
-        d.oldcol = d.col;
+        d.oldcol = d.newcol;
     }
+
+    int pos = t->len - t->pos;          // Go to start of next line
+    int_t delta = count_chrs(pos, d.oldcol);
+
+    move_dot(delta);
 
     if (key == KEY_C_DOWN)
     {
         d.updown = true;
     }
-    else if (d.ybias < d.nrows - 1)
+    else if (d.newrow < d.nrows - 1)
     {
-        ++d.ybias;
+        ++d.newrow;
     }
 
-    reset_cursor();
-
-    int_t delta = count_chrs(pos, d.oldcol);
-
-    move_dot(delta);
+    d.newcol = find_column();
 }
 
 
@@ -182,13 +188,14 @@ static void exec_down(int key)
 
 static void exec_end(int key)
 {
-    reset_cursor();
+    d.newrow = d.row;
+    d.newcol = d.col;
 
     // Here to process End and Ctrl/End keys
 
     if (iseol())
     {
-        if (t->dot >= w.botdot - 1)     // Go to end of buffer
+        if (t->dot >= w.botdot)         // Go to end of buffer
         {
             if (key == KEY_C_END && t->dot + 1 < t->Z)
             {
@@ -200,20 +207,29 @@ static void exec_end(int key)
                 {
                     dec_dot();
 
+                    d.newcol = find_column();
+
                     return;
                 }
             }
 
+            if ((d.newrow = after_dot()) > d.nrows - 1)
+            {
+                d.newrow = d.nrows - 1;
+            }
+
             d.xbias = 0;
-            d.ybias = 0;
 
             last_dot();
         }
         else                            // Go to end of window
         {
-            d.ybias = d.nrows - 1;
+            if ((d.newrow = after_dot()) > d.nrows - 1)
+            {
+                d.newrow = d.nrows - 1;
+            }
 
-            set_dot(w.botdot - 1);
+            set_dot(w.botdot);
         }
     }
     else if (t->dot != t->Z)
@@ -241,6 +257,8 @@ static void exec_end(int key)
             move_dot(delta);
         }
     }
+
+    d.newcol = find_column();
 }
 
 
@@ -261,42 +279,40 @@ static void exec_end(int key)
 
 static void exec_home(int key)
 {
-    reset_cursor();
+    d.newrow = d.row;
+    d.newcol = d.col;
 
     // Here to process Home and Ctrl/Home keys
 
     if (d.xbias != 0 && key == KEY_C_HOME) // Shift to the left
     {
-        if (d.col == d.xbias && (d.xbias -= d.ncols) < 0)
+        if (d.newcol == d.xbias && (d.xbias -= d.ncols) < 0)
         {
             d.xbias = 0;
         }
 
-        d.col = d.xbias;
+        d.newcol = d.xbias;
 
-        int_t delta = count_chrs(t->pos, d.col);
+        int_t delta = count_chrs(t->pos, d.newcol);
 
         set_dot(delta);
     }
-    else if (d.col != 0)                // Go to start of line
+    else if (d.newcol != 0)             // Go to start of line
     {
-        d.col = 0;
-        d.xbias = 0;
+        d.newcol = 0;
 
-        set_dot(t->pos);
+        move_dot(-t->pos);
     }
     else if (t->dot != w.topdot)
     {                                   // Go to top of window
-        d.row = 0;
-        d.ybias = 0;
+        d.newrow = 0;
 
         set_dot(w.topdot);
     }
     else                                // Go to top of buffer
     {
-        d.row = 0;
+        d.newrow = 0;
         d.xbias = 0;
-        d.ybias = 0;
 
         first_dot();
     }
@@ -440,40 +456,40 @@ int exec_key(int key)
 
 static void exec_left(int key)
 {
-    if (t->dot > t->B)
+    if (t->dot == t->B)
     {
-        reset_cursor();
+        return;
+    }
 
-        int c = t->back;                // Get previous character
+    d.newrow = d.row;
+    d.newcol = d.col;
 
-        if (isdelim(c))
-        {
-            if (d.ybias > 0)
-            {
-                --d.ybias;
-            }
-        }
+    dec_dot();
 
-        if (d.col == 0)
-        {
-            d.col = -t->pos;            // Go to end of line
-            d.xbias = d.col - d.ncols;
-        }
-        else if (key == KEY_C_LEFT)
-        {
-            --d.xbias;
-        }
-        else if (d.col <= d.xbias)
-        {
-            d.xbias -= d.ncols;
-        }
+    if (isdelim(t->c))                  // Did we just back up over a delimiter?
+    {
+        --d.newrow;                     // Yes, we're on the previous row
+    }
 
-        if (d.xbias < 0)
-        {
-            d.xbias = 0;
-        }
+    d.newcol = find_column();
 
-        dec_dot();
+    if (d.newcol == 0)                  // If we're at first column,
+    {
+        d.newcol = -t->pos;             //  go to end of previous line
+        d.xbias = d.newcol - d.ncols;
+    }
+    else if (key == KEY_C_LEFT)         // If Ctrl-Left,
+    {
+        --d.xbias;                      //  then shift window left 1 chr.
+    }
+    else if (d.newcol <= d.xbias)       // If column outside of window,
+    {
+        d.xbias -= d.ncols;             //  then shift window left
+    }
+
+    if (d.xbias > d.ncols)              // Keep horizontal bias reasonable
+    {
+        d.xbias = 0;
     }
 }
 
@@ -487,41 +503,39 @@ static void exec_left(int key)
 
 static void exec_right(int key)
 {
-    if (t->dot < t->Z)
+    if (t->dot == t->Z)
     {
-        reset_cursor();
+        return;
+    }
 
-        int c = t->at;                  // Get next character
+    d.newrow = d.row;
+    d.newcol = d.col;
 
-        if (isdelim(c))
-        {
-            d.col = 0;
+    inc_dot();
 
-            if (d.ybias < d.nrows - 1)
-            {
-                ++d.ybias;
-            }
-        }
+    if (isdelim(t->lastc))              // Did we just advance over a delimiter?
+    {
+        ++d.newrow;                     // Yes, we're on the next row
+    }
 
-        if (d.col == 0)
-        {
-            d.xbias = 0;
-        }
-        else if (key == KEY_C_RIGHT)
-        {
-            ++d.xbias;
-        }
-        else if (d.col >= d.xbias + d.ncols - 1)
-        {
-            d.xbias += d.ncols;
-        }
+    d.newcol = find_column();
 
-        if (d.xbias > d.ncols)
-        {
-            d.xbias = d.ncols;
-        }
+    if (d.newcol == 0)                  // If we returned to first column,
+    {
+        d.xbias = 0;                    //  then remove any horizontal bias
+    }
+    else if (key == KEY_C_RIGHT)        // If Ctrl-Right,
+    {
+        ++d.xbias;                      //  then shift window right 1 chr.
+    }
+    else if (d.newcol >= d.xbias + d.ncols - 1) // If column outside of window,
+    {
+        d.xbias += d.ncols;             //  then shift window right
+    }
 
-        inc_dot();
+    if (d.xbias > d.ncols)              // Keep horizontal bias reasonable
+    {
+        d.xbias = d.ncols;
     }
 }
 
@@ -535,27 +549,30 @@ static void exec_right(int key)
 
 static void exec_up(int key)
 {
-    int pos = len_edit(-1);        // Go to start of previous line
+    int pos = len_edit(-1);             // Go to start of previous line
 
-    if (d.oldcol < d.col)
+    d.newrow = d.row;
+    d.newcol = d.col;
+
+    if (d.oldcol < d.newcol)
     {
-        d.oldcol = d.col;
+        d.oldcol = d.newcol;
     }
+
+    int_t delta = count_chrs(pos, d.oldcol);
+
+    move_dot(delta);
 
     if (key == KEY_C_UP)
     {
         d.updown = true;
     }
-    else if (d.ybias > 0)
+    else if (d.newrow > 0)
     {
-        --d.ybias;
+        --d.newrow;
     }
 
-    reset_cursor();
-
-    int_t delta = count_chrs(pos, d.oldcol);
-
-    move_dot(delta);
+    d.newcol = find_column();
 }
 
 
@@ -598,10 +615,6 @@ void init_keys(void)
             {
                 keysize[c] = (char)strlen(unctrl(ch));
             }
-            else if (c == HT)
-            {
-                keysize[c] = -1;        // Special flag for tabs
-            }
             else
             {
                 keysize[c] = 0;
@@ -620,6 +633,8 @@ void init_keys(void)
             keysize[c] = (char)strlen(table_8bit[c & 0x7f]);
         }
     }
+
+    f.e0.window = true;                 // Window refresh needed
 }
 
 
@@ -632,9 +647,9 @@ void init_keys(void)
 
 static bool iseol(void)
 {
-    int c = t->at;                      // Get next character
+    int c = t->c;                       // Get next character
 
-    if (c == CR && t->front == LF)
+    if (c == CR && t->nextc == LF)
     {
         return true;
     }
@@ -687,7 +702,7 @@ void set_bits(bool parity)
     {
         meta(NULL, parity ? (bool)TRUE : (bool)FALSE);
 
-        f.e0.window = true;             // Window update is pending
+        f.e0.window = true;             // Window refresh needed
     }
 }
 

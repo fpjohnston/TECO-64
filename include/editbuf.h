@@ -42,9 +42,9 @@ struct edit
     const int_t B;              ///< First position in buffer
     int_t Z;                    ///< Last position in buffer
     int_t dot;                  ///< Current position in buffer
-    int front;                  ///< Chr. in front of dot (or EOF)
-    int at;                     ///< Chr. at dot (or EOF)
-    int back;                   ///< Chr. in back of dot (or EOF)
+    int c;                      ///< Current character (or EOF)
+    int lastc;                  ///< Previous character (or EOF)
+    int nextc;                  ///< Next character (or EOF)
     int len;                    ///< Length of current line in bytes
     int pos;                    ///< Position in line
 };

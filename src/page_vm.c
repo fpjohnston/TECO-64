@@ -128,7 +128,7 @@ static void copy_page(struct page *page)
     // buffer, we assume it will fit, and therefore don't bother to check for
     // warnings or errors.
 
-    insert_edit(p, nbytes);
+    (void)insert_edit(p, (size_t)nbytes);
     set_dot(t->B);                      // Reset to start of buffer
 
     if (split)

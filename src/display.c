@@ -28,6 +28,7 @@
 #include <ctype.h>
 #include <ncurses.h>
 #include <stdio.h>
+#include <string.h>
 
 #define DISPLAY_INTERNAL            ///< Enable internal definitions
 
@@ -53,10 +54,13 @@ struct display d =
     .edit    = NULL,
     .status  = NULL,
     .cmd     = NULL,
-    .line    = NULL,
+    .fence   = NULL,
     .row     = 0,
     .col     = 0,
-    .oldline = 0,
+    .newrow  = 0,
+    .newcol  = 0,
+    .line    = 0,
+    .cursor  = NUL,
     .oldcol  = 0,
     .minrow  = 0,
     .mincol  = 0,
@@ -82,13 +86,13 @@ struct display d =
 
 static inline void (check)(bool cond);
 
-static int_t find_column(void);
-
 static void init_window(WINDOW **win, int pair, int top, int bot, int col, int width);
 
 static void init_windows(void);
 
 static void refresh_edit(void);
+
+static void reset_cursor(void);
 
 static void set_cursor(void);
 
@@ -163,19 +167,27 @@ void exit_dpy(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int_t find_column(void)
+int_t find_column(void)
 {
-    int_t pos = t->pos;                 // Get no. of chrs. before 'dot'
+    int_t pos = -t->pos;                // Get no. of chrs. to start of line
     int col = 0;                        // Current column in line
     int c;
 
+    // Read characters from the start of the current line, summing the width
+    // of each one, in order to calculate what column the cursor should be in.
+    // We have to do this one character at a time since the widths can vary.
+
     while ((c = read_edit(pos)) != EOF)
     {
-        int width = keysize[c];
+        int width;
 
-        if (width == -1)
+        if (c == HT)
         {
             width = TABSIZE - (col % TABSIZE);
+        }
+        else
+        {
+            width = keysize[c];
         }
 
         if (isdelim(c) || pos == 0)
@@ -185,7 +197,7 @@ static int_t find_column(void)
 
         col += width;
 
-        --pos;
+        ++pos;
     }
 
     return col;
@@ -365,7 +377,7 @@ static void init_windows(void)
 
     // Check for drawing line/status between command and editing window.
 
-    if (f.e4.line)
+    if (f.e4.fence)
     {
         --nrows;                        // One fewer lines for editing window
 
@@ -386,9 +398,9 @@ static void init_windows(void)
 
     init_window(&d.edit, EDIT, edit_top, edit_bot, 0, w.maxline);
 
-    if (f.e4.line)
+    if (f.e4.fence)
     {
-        init_window(&d.line, LINE, line_top, line_top, 0, d.ncols);
+        init_window(&d.fence, LINE, line_top, line_top, 0, d.ncols);
     }
 
     if (f.e4.status && 1 + cmd_bot - cmd_top >= STATUS_HEIGHT)
@@ -454,35 +466,41 @@ void refresh_dpy(void)
 
     if (t->dot < w.topdot || t->dot > w.botdot)
     {
-        f.e0.window = true;           // Force repaint if too much changed
+        f.e0.window = true;             // Force repaint if too much changed
     }
 
     if (f.e0.window || f.e0.cursor)
     {
         f.e0.cursor = false;
 
-        d.col = find_column();
+        reset_cursor();
 
-        int nlines = before_dot();
-        int delta = nlines - d.oldline;
+        // We can safely change d.row and d.col after resetting cursor
 
-        d.oldline = nlines;
-
-        if (!d.updown)
+        if (d.newrow == -1)             // New cursor coordinates valid?
         {
+            int line = before_dot();    // Get current line dot is on
+            int delta = line - d.line;  // Get difference from last line
+
             d.row += delta;
+            d.col = find_column();
         }
+        else
+        {
+            d.row = d.newrow;
+            d.col = d.newcol;
+        }
+
+        // If row isn't in current window, then correct value and repaint screen
 
         if (d.row < 0)
         {
             d.row = 0;
-
             f.e0.window = true;
         }
         else if (d.row >= d.nrows)
         {
             d.row = d.nrows - 1;
-
             f.e0.window = true;
         }
 
@@ -501,6 +519,7 @@ void refresh_dpy(void)
         }
 
         set_cursor();                   // Mark the new cursor
+
         prefresh(d.edit, 0, d.xbias, d.minrow, d.mincol, d.maxrow, d.maxcol);
     }
 
@@ -529,6 +548,8 @@ static void refresh_edit(void)
 
     while ((c = read_edit(pos)) != EOF)
     {
+        ++pos;
+
         getyx(d.edit, row, col);
 
         chtype ch = (chtype)c;
@@ -583,12 +604,12 @@ static void refresh_edit(void)
             }
         }
 
-        ++pos;
-
         if (isdelim(c))                 // Found a delimiter (LF, VT, FF)?
         {
             if (row == d.maxrow)        // If at end of last row, then done
             {
+                --pos;                  // Don't count the last character
+
                 break;
             }
 
@@ -596,7 +617,7 @@ static void refresh_edit(void)
         }
     }
 
-    w.botdot = t->dot + pos;             // Last character output in window
+    w.botdot = t->dot + pos;            // Last character output in window
 
     if (row < d.maxrow)                 // Should we print EOF marker?
     {
@@ -607,42 +628,43 @@ static void refresh_edit(void)
 
 
 ///
-///  @brief    Un-highlight cursor, and say that we need a cursor update.
+///  @brief    Un-highlight cursor.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void reset_cursor(void)
+static void reset_cursor(void)
 {
-    wmove(d.edit, d.row, d.col);
+    int c = d.cursor;
 
-    // Un-highlight the character at the current position
-
-    if (t->dot == t->Z)
+    if (c == HT)
     {
-        mvwchgat(d.edit, d.row, d.col, 1, ACS_DIAMOND, EDIT, NULL);
+        int width = TABSIZE - (d.col % TABSIZE);
+        chtype ch = mvwinch(d.edit, d.row, d.col) & ~A_REVERSE;
+
+        mvwchgat(d.edit, d.row, d.col, width, ch, EDIT, NULL);
     }
     else
     {
-        int c = t->at;
-        int width = keysize[c];
+        int width;
 
-        if (width == -1)
+        if (c == EOF)
         {
-            width = TABSIZE - (d.col % TABSIZE);
+            width = 1;
         }
-        else if (width == 0)
+        else
         {
-            ++width;
+            width = keysize[c] ?: 1;
         }
 
-        mvwchgat(d.edit, d.row, d.col, width, 0, EDIT, NULL);
+        for (int col = d.col; col < d.col + width; ++col)
+        {
+            chtype ch = mvwinch(d.edit, d.row, col) & ~A_REVERSE;
+
+            mvwchgat(d.edit, d.row, col, 1, ch, EDIT, NULL);
+        }
     }
-
-    d.oldline = before_dot();           // Save current line number
-
-    f.e0.cursor = true;                 // Flag need to update cursor
 }
 
 
@@ -697,33 +719,36 @@ void reset_dpy(bool all)
 
 static void set_cursor(void)
 {
-    if (d.row >= d.nrows)
-    {
-        d.row = d.nrows - 1;
-    }
-    else if (d.row < 0)
-    {
-        d.row = 0;
-    }
+    int c = d.cursor = read_edit(0);    // Save cursor character (for reset)
 
-    if (t->dot == t->Z)
+    if (c == HT)
     {
-        mvwchgat(d.edit, d.row, d.col, 1, A_ALTCHARSET | A_REVERSE, EDIT, NULL);
+        int width = TABSIZE - (d.col % TABSIZE);
+        chtype ch = mvwinch(d.edit, d.row, d.col) | A_REVERSE;
+
+        mvwchgat(d.edit, d.row, d.col, width, ch, EDIT, NULL);
     }
     else
     {
-        int c = t->at;
-        int width = keysize[c];
+        int width;
 
-        if (width == -1)
+        if (c == EOF)
         {
-            width = TABSIZE - (d.col % TABSIZE);
+            width = 1;
         }
-        else if (width == 0)
+        else
         {
-            ++width;
+            width = keysize[c] ?: 1;
         }
 
-        mvwchgat(d.edit, d.row, d.col, width, A_REVERSE, EDIT, NULL);
+        for (int col = d.col; col < d.col + width; ++col)
+        {
+            chtype ch = mvwinch(d.edit, d.row, col) | A_REVERSE;
+
+            mvwchgat(d.edit, d.row, col, 1, ch, EDIT, NULL);
+        }
     }
+
+    d.line = before_dot();              // Save current line number
+    d.newrow = d.newcol = -1;           // Reinitialize new cursor coordinates
 }

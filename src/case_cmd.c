@@ -138,7 +138,7 @@ static void exec_case(struct cmd *cmd, bool lower)
 
     for (int_t i = m; i < n; ++i)
     {
-        int c = t->at;
+        int c = t->c;
 
         if (c == EOF)
         {

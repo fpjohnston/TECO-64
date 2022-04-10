@@ -109,15 +109,15 @@ static struct
     .gap    = EDIT_INIT,
     .t =
     {
-        .size   = EDIT_INIT,
-        .B      = 0,
-        .Z      = 0,
-        .dot    = 0,
-        .front  = EOF,
-        .at     = EOF,
-        .back   = EOF,
-        .len    = 0,
-        .pos    = 0,
+        .size  = EDIT_INIT,
+        .B     = 0,
+        .Z     = 0,
+        .dot   = 0,
+        .nextc = EOF,
+        .c     = EOF,
+        .lastc = EOF,
+        .len   = 0,
+        .pos   = 0,
     },
 };
 
@@ -205,7 +205,9 @@ void change_dot(int c)
         i += eb.gap;
     }
 
-    eb.buf[i] = eb.t.at = (uchar)c;
+    eb.buf[i] = eb.t.c = (uchar)c;
+
+    f.e0.window = true;                 // Window refresh needed
 }
 
 
@@ -285,11 +287,11 @@ void dec_dot(void)
     {
         --eb.t.dot;
 
-        eb.t.front = eb.t.at;
-        eb.t.at    = eb.t.back;
-        eb.t.back  = find_edit(-1);
+        eb.t.nextc = eb.t.c;
+        eb.t.c     = eb.t.lastc;
+        eb.t.lastc = find_edit(-1);
 
-        if (isdelim(eb.t.at))
+        if (isdelim(eb.t.c))
         {
             eb.t.pos = eb.t.dot - count_prev(0);
             eb.t.len = eb.t.pos + 1;
@@ -298,6 +300,8 @@ void dec_dot(void)
         {
             --eb.t.pos;
         }
+
+        f.e0.cursor = true;             // Cursor refresh needed
     }
 }
 
@@ -346,7 +350,7 @@ void delete_edit(int_t nbytes)
             eb.left -= (uint_t)nbytes;
             eb.t.dot -= nbytes;         // Backwards delete affects dot
 
-            eb.t.back  = find_edit(-1);
+            eb.t.lastc  = find_edit(-1);
         }
         else                            // Deleting forward in [right]
         {
@@ -354,8 +358,8 @@ void delete_edit(int_t nbytes)
 
             eb.right -= (uint_t)nbytes;
 
-            eb.t.at    = find_edit(0);
-            eb.t.front = find_edit(1);
+            eb.t.c    = find_edit(0);
+            eb.t.nextc = find_edit(1);
         }
 
         eb.t.pos = eb.t.dot - count_prev(0);
@@ -363,6 +367,8 @@ void delete_edit(int_t nbytes)
 
         eb.gap += (uint_t)nbytes;       // Increase the gap
         eb.t.Z -= nbytes;               //  and decrease the total
+
+        f.e0.window = true;             // Window refresh needed
     }
 }
 
@@ -418,12 +424,14 @@ void first_dot(void)
     if (eb.t.dot > eb.t.B)
     {
         eb.t.dot   = eb.t.B;
-        eb.t.back  = EOF;
-        eb.t.at    = find_edit(0);
-        eb.t.front = find_edit(1);
+        eb.t.lastc = EOF;
+        eb.t.c     = find_edit(0);
+        eb.t.nextc = find_edit(1);
 
         eb.t.len = count_next(1) - eb.t.dot;
         eb.t.pos = 0;
+
+        f.e0.cursor = true;             // Cursor refresh needed
     }
 }
 
@@ -441,7 +449,7 @@ void inc_dot(void)
     {
         ++eb.t.dot;
 
-        if (isdelim(eb.t.at))           // About to move across a line delimiter?
+        if (isdelim(eb.t.c))           // About to move across a line delimiter?
         {
             eb.t.pos = 0;
             eb.t.len = count_next(1) - eb.t.dot;
@@ -451,9 +459,11 @@ void inc_dot(void)
             ++eb.t.pos;
         }
 
-        eb.t.back  = eb.t.at;
-        eb.t.at    = eb.t.front;
-        eb.t.front = find_edit(1);
+        eb.t.lastc = eb.t.c;
+        eb.t.c     = eb.t.nextc;
+        eb.t.nextc = find_edit(1);
+
+        f.e0.cursor = true;             // Cursor refresh needed
     }
 }
 
@@ -536,8 +546,10 @@ bool insert_edit(const char *buf, size_t nbytes)
     eb.t.len  = count_next(1) - eb.t.dot;
     eb.t.len += eb.t.pos;
 
-    eb.t.back = eb.buf[eb.left - 1];
-    eb.t.at = c;
+    eb.t.lastc = eb.buf[eb.left - 1];
+    eb.t.c = c;
+
+    f.e0.window = true;                 // Window refresh needed
 
     return true;                        // Insertion was successful
 }
@@ -555,6 +567,8 @@ void kill_edit(void)
     if (eb.t.Z != 0)                    // Anything in buffer?
     {
         reset_edit();
+
+        f.e0.window = true;             // Window refresh needed
     }
 }
 
@@ -571,12 +585,14 @@ void last_dot(void)
     if (eb.t.dot < eb.t.Z)
     {
         eb.t.dot   = eb.t.Z;
-        eb.t.back  = find_edit(-1);
-        eb.t.at    = EOF;
-        eb.t.front = EOF;
+        eb.t.lastc = find_edit(-1);
+        eb.t.c     = EOF;
+        eb.t.nextc = EOF;
 
         eb.t.pos = eb.t.dot - count_prev(0);
         eb.t.len = eb.t.pos;
+
+        f.e0.cursor = true;             // Cursor refresh needed
     }
 }
 
@@ -621,7 +637,7 @@ void move_dot(int_t delta)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-inline int read_edit(int_t pos)
+int read_edit(int_t pos)
 {
     uint_t i = (uint_t)(eb.t.dot + pos); // Make relative position absolute
 
@@ -654,9 +670,9 @@ static void reset_edit(void)
 
     eb.t.Z      = 0;
     eb.t.dot    = 0;
-    eb.t.front  = EOF;
-    eb.t.at     = EOF;
-    eb.t.back   = EOF;
+    eb.t.nextc  = EOF;
+    eb.t.c      = EOF;
+    eb.t.lastc  = EOF;
     eb.t.len    = 0;
     eb.t.pos    = 0;
 }
@@ -695,13 +711,15 @@ void set_dot(int_t dot)
         {
             eb.t.dot = dot;
 
-            eb.t.back  = find_edit(-1);
-            eb.t.at    = find_edit(0);
-            eb.t.front = find_edit(1);
+            eb.t.lastc = find_edit(-1);
+            eb.t.c     = find_edit(0);
+            eb.t.nextc = find_edit(1);
 
             eb.t.pos  = eb.t.dot - count_prev(0);
             eb.t.len  = count_next(1) - eb.t.dot;
             eb.t.len += eb.t.pos;
+
+            f.e0.cursor = true;         // Cursor refresh needed
         }
     }
 }

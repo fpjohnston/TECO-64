@@ -140,8 +140,6 @@ bool next_yank(void)
 
     if (t->Z != 0)
     {
-        f.e0.window = true;             // Window update is pending
-
         return true;
     }
     else

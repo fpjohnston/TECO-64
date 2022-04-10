@@ -43,17 +43,17 @@ union e0_flag
 
     struct
     {
-        uint exec     : 1;      ///< Executing command
-        uint error    : 1;      ///< Last command caused error
-        uint ctrl_c   : 1;      ///< CTRL/C seen
-        uint lower    : 1;      ///< Force string arguments to lower case
-        uint upper    : 1;      ///< Force string arguments to upper case
-        uint display  : 1;      ///< Display mode is active
-        uint window   : 1;      ///< Window update pending
-        uint cursor   : 1;      ///< Cursor update pending
-        uint init     : 1;      ///< TECO is initializing
-        uint i_redir  : 1;      ///< stdin has been redirected
-        uint o_redir  : 1;      ///< stdout has been redirected
+        uint exec    : 1;       ///< Executing command
+        uint error   : 1;       ///< Last command caused error
+        uint ctrl_c  : 1;       ///< CTRL/C seen
+        uint lower   : 1;       ///< Force string arguments to lower case
+        uint upper   : 1;       ///< Force string arguments to upper case
+        uint display : 1;       ///< Display mode is active
+        uint window  : 1;       ///< Window refresh needed
+        uint cursor  : 1;       ///< Cursor update needed
+        uint init    : 1;       ///< TECO is initializing
+        uint i_redir : 1;       ///< stdin has been redirected
+        uint o_redir : 1;       ///< stdout has been redirected
     };
 };
 
@@ -143,7 +143,7 @@ union e4_flag
     struct
     {
         uint invert  : 1;       ///< Put command window above edit window
-        uint line    : 1;       ///< Line between edit and command windows
+        uint fence   : 1;       ///< Line between edit and command windows
         uint status  : 1;       ///< Display status on line
     };
 };

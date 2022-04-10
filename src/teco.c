@@ -117,7 +117,7 @@ struct flags f =                    ///< Global flag variables
 
 #endif
 
-    .e4.line   = true,              // Display divider line
+    .e4.fence  = true,              // Display divider line
     .e4.status = true,              // Display status window
 
     .ee = NUL,                      // No ESCape surrogate
