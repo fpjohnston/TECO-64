@@ -165,7 +165,7 @@ void exit_dpy(void)
 
 static int_t find_column(void)
 {
-    int_t pos = t->pos;                 // Get -(no. of chrs. before 'dot')
+    int_t pos = t->pos;                 // Get no. of chrs. before 'dot'
     int col = 0;                        // Current column in line
     int c;
 
@@ -185,7 +185,7 @@ static int_t find_column(void)
 
         col += width;
 
-        ++pos;
+        --pos;
     }
 
     return col;
