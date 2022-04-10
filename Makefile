@@ -71,10 +71,12 @@ OPT ?= 3
 OPT_OPT = -O$(OPT)
 
 COMMANDS_H  = $(INCDIR)/commands.h
-OPTIONS_H   = $(INCDIR)/options.h
 ERRCODES_H  = $(INCDIR)/errcodes.h
 ERRTABLES_H = $(INCDIR)/errtables.h
 EXEC_H      = $(INCDIR)/exec.h
+OPTIONS_H   = $(INCDIR)/options.h
+
+HEADERS     = $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H)
 
 ERRORS_MD   = doc/errors.md
 
@@ -185,7 +187,25 @@ endif
 #
 ################################################################################
 
-ifdef   display
+ifeq ($(display),off)
+
+override display = 0
+
+else ifeq ($(display),no)
+
+override display = 0
+
+else ifeq ($(display),0)
+
+override display = 0
+
+else ifndef ($(display))
+
+override display = 1
+
+endif
+
+ifneq ($(display),0)
 
 DEFINES += -D DISPLAY_MODE
 LIBS    += -l ncurses
@@ -408,7 +428,7 @@ bin/$(TARGET): $(OBJECTS) bin
 	@echo Making $@ $(NULL)
 	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
 
-%.o: %.c
+%.o: %.c $(HEADERS)
 	@echo Making $@ $(NULL)
 	$(AT)cd obj && $(CC) @../obj/CFLAGS ../$<
 
@@ -417,7 +437,7 @@ bin/$(TARGET): $(OBJECTS) bin
 $(OBJECTS): obj/CFLAGS
 
 .PHONY: headers
-headers: $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H)
+headers: $(HEADERS)
 
 $(COMMANDS_H): etc/commands.xml etc/templates/commands.h etc/commands.pl
 	$(AT)etc/commands.pl -i $< -t etc/templates/commands.h -o $@
