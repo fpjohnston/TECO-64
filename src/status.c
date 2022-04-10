@@ -80,7 +80,7 @@ void refresh_status(void)
 
         // Output row and column for display
 
-        int row = t->before;
+        int row = before_dot();
 
         if (t->dot == t->Z)
         {
@@ -96,7 +96,7 @@ void refresh_status(void)
 
         // Output no. of lines in file
 
-        snprintf(buf, sizeof(buf), FMT, t->total);
+        snprintf(buf, sizeof(buf), FMT, row + after_dot());
         status_line(line++, "Lines", buf);
 
         // Output memory size

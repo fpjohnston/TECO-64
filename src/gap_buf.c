@@ -118,9 +118,6 @@ static struct
         .back   = EOF,
         .len    = 0,
         .pos    = 0,
-        .before = 0,
-        .after  = 0,
-        .total  = 0,
     },
 };
 
@@ -129,17 +126,67 @@ const struct edit *t = &eb.t;       ///< Read-only pointers to public variables
 
 // Local functions
 
-static int count_lines(int_t pos);
-
 static int_t count_prev(uint_t nlines);
 
 static int_t count_next(uint_t nlines);
+
+static inline int find_edit(int_t pos);
 
 static void reset_edit(void);
 
 static void shift_left(uint_t nbytes);
 
 static void shift_right(uint_t nbytes);
+
+
+///
+///  @brief    Get no. of lines after dot.
+///
+///  @returns  No. of lines.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int_t after_dot(void)
+{
+    int_t nlines = 0;
+
+    for (int_t pos = 0; pos < eb.t.Z; ++pos)
+    {
+        int c = find_edit(pos);
+
+        if (c != EOF && isdelim(c))
+        {
+            ++nlines;
+        }
+    }
+
+    return nlines;
+}
+
+
+///
+///  @brief    Get no. of lines before dot.
+///
+///  @returns  No. of lines.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+int_t before_dot(void)
+{
+    int_t nlines = 0;
+
+    for (int_t pos = -eb.t.dot; pos < 0; ++pos)
+    {
+        int c = find_edit(pos);
+
+        if (c != EOF && isdelim(c))
+        {
+            ++nlines;
+        }
+    }
+
+    return nlines;
+}
 
 
 ///
@@ -159,37 +206,6 @@ void change_dot(int c)
     }
 
     eb.buf[i] = eb.t.at = (uchar)c;
-}
-
-
-///
-///  @brief    Count no. of lines in buffer, as follows:
-///
-///            n < 0 -> No. of lines preceding current position.
-///            n = 0 -> Total no. of lines in buffer.
-///            n < 0 -> No. of lines following current position.
-///
-///  @returns  No. of total/following/preceding lines.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static int_t count_lines(int n)
-{
-    int_t start  = (n > 0) ? 0 : -eb.t.dot;
-    int_t end    = (n < 0) ? 0 : eb.t.Z;
-    int_t nlines = 0;
-
-    for (int_t pos = start; pos < end; ++pos)
-    {
-        int c = read_edit(pos);
-
-        if (c != EOF && isdelim(c))
-        {
-            ++nlines;
-        }
-    }
-
-    return nlines;
 }
 
 
@@ -271,13 +287,10 @@ void dec_dot(void)
 
         eb.t.front = eb.t.at;
         eb.t.at    = eb.t.back;
-        eb.t.back  = read_edit(-1);
+        eb.t.back  = find_edit(-1);
 
         if (isdelim(eb.t.at))
         {
-            --eb.t.before;
-            ++eb.t.after;
-
             eb.t.pos = eb.t.dot - count_prev(0);
             eb.t.len = eb.t.pos + 1;
         }
@@ -333,10 +346,7 @@ void delete_edit(int_t nbytes)
             eb.left -= (uint_t)nbytes;
             eb.t.dot -= nbytes;         // Backwards delete affects dot
 
-            eb.t.back  = read_edit(-1);
-
-            eb.t.before = count_lines(-1);
-            eb.t.total  = eb.t.before + eb.t.after;
+            eb.t.back  = find_edit(-1);
         }
         else                            // Deleting forward in [right]
         {
@@ -344,11 +354,8 @@ void delete_edit(int_t nbytes)
 
             eb.right -= (uint_t)nbytes;
 
-            eb.t.at    = read_edit(0);
-            eb.t.front = read_edit(1);
-
-            eb.t.after  = count_lines(1);
-            eb.t.total  = eb.t.before + eb.t.after;
+            eb.t.at    = find_edit(0);
+            eb.t.front = find_edit(1);
         }
 
         eb.t.pos = eb.t.dot - count_prev(0);
@@ -374,6 +381,32 @@ void exit_edit(void)
 
 
 ///
+///  @brief    Get ASCII value of nth character before or after dot. Inline
+///            and internal version of read_edit().
+///
+///  @returns  ASCII value, or EOF if character outside of edit buffer.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static inline int find_edit(int_t pos)
+{
+    uint_t i = (uint_t)(eb.t.dot + pos); // Make relative position absolute
+
+    if (i < eb.left + eb.right)
+    {
+        if (i >= eb.left)
+        {
+            i += eb.gap;
+        }
+
+        return eb.buf[i];
+    }
+
+    return EOF;
+}
+
+
+///
 ///  @brief    Move dot to start of buffer.
 ///
 ///  @returns  Nothing.
@@ -386,11 +419,8 @@ void first_dot(void)
     {
         eb.t.dot   = eb.t.B;
         eb.t.back  = EOF;
-        eb.t.at    = read_edit(0);
-        eb.t.front = read_edit(1);
-
-        eb.t.before = 0;
-        eb.t.after  = eb.t.total;
+        eb.t.at    = find_edit(0);
+        eb.t.front = find_edit(1);
 
         eb.t.len = count_next(1) - eb.t.dot;
         eb.t.pos = 0;
@@ -413,9 +443,6 @@ void inc_dot(void)
 
         if (isdelim(eb.t.at))           // About to move across a line delimiter?
         {
-            ++eb.t.before;
-            --eb.t.after;
-
             eb.t.pos = 0;
             eb.t.len = count_next(1) - eb.t.dot;
         }
@@ -426,7 +453,7 @@ void inc_dot(void)
 
         eb.t.back  = eb.t.at;
         eb.t.at    = eb.t.front;
-        eb.t.front = read_edit(1);
+        eb.t.front = find_edit(1);
     }
 }
 
@@ -499,12 +526,6 @@ bool insert_edit(const char *buf, size_t nbytes)
         c = *buf++;
 
         eb.buf[eb.left++] = (uchar)c;
-
-        if (isdelim(c))
-        {
-            ++eb.t.before;
-            ++eb.t.total;
-        }
     }
 
     eb.t.dot += (int_t)nbytes;
@@ -550,12 +571,9 @@ void last_dot(void)
     if (eb.t.dot < eb.t.Z)
     {
         eb.t.dot   = eb.t.Z;
-        eb.t.back  = read_edit(-1);
+        eb.t.back  = find_edit(-1);
         eb.t.at    = EOF;
         eb.t.front = EOF;
-
-        eb.t.before = eb.t.total;
-        eb.t.after  = 0;
 
         eb.t.pos = eb.t.dot - count_prev(0);
         eb.t.len = eb.t.pos;
@@ -603,7 +621,7 @@ void move_dot(int_t delta)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int read_edit(int_t pos)
+inline int read_edit(int_t pos)
 {
     uint_t i = (uint_t)(eb.t.dot + pos); // Make relative position absolute
 
@@ -641,9 +659,6 @@ static void reset_edit(void)
     eb.t.back   = EOF;
     eb.t.len    = 0;
     eb.t.pos    = 0;
-    eb.t.before = 0;
-    eb.t.after  = 0;
-    eb.t.total  = 0;
 }
 
 
@@ -680,12 +695,9 @@ void set_dot(int_t dot)
         {
             eb.t.dot = dot;
 
-            eb.t.back  = read_edit(-1);
-            eb.t.at    = read_edit(0);
-            eb.t.front = read_edit(1);
-
-            eb.t.before = count_lines(-1);
-            eb.t.after  = count_lines(1);
+            eb.t.back  = find_edit(-1);
+            eb.t.at    = find_edit(0);
+            eb.t.front = find_edit(1);
 
             eb.t.pos  = eb.t.dot - count_prev(0);
             eb.t.len  = count_next(1) - eb.t.dot;

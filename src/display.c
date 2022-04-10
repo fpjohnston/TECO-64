@@ -463,7 +463,7 @@ void refresh_dpy(void)
 
         d.col = find_column();
 
-        int nlines = t->before;
+        int nlines = before_dot();
         int delta = nlines - d.oldline;
 
         d.oldline = nlines;
@@ -640,7 +640,7 @@ void reset_cursor(void)
         mvwchgat(d.edit, d.row, d.col, width, 0, EDIT, NULL);
     }
 
-    d.oldline = t->before;              // Save current line number
+    d.oldline = before_dot();           // Save current line number
 
     f.e0.cursor = true;                 // Flag need to update cursor
 }

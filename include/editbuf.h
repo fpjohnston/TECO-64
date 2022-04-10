@@ -47,14 +47,19 @@ struct edit
     int back;                   ///< Chr. in back of dot (or EOF)
     int len;                    ///< Length of current line in bytes
     int pos;                    ///< Position in line
-    int before;                 ///< No. of delimiters before dot
-    int after;                  ///< No. of delimiters after dot
-    int total;                  ///< Total no. of delimiters in buffer
 };
 
 extern const struct edit *t;
 
-// Changed character at dot.
+// Get no. of lines after dot.
+
+extern int_t after_dot(void);
+
+// Get no. of lines before dot.
+
+extern int_t before_dot(void);
+
+// Change character at dot.
 
 extern void change_dot(int c);
 

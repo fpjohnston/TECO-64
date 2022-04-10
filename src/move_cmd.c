@@ -139,15 +139,15 @@ void exec_L(struct cmd *cmd)
 
     if (n < 0)
     {
-        push_x(t->before, X_OPERAND);
+        push_x(before_dot(), X_OPERAND);
     }
     else if (n > 0)
     {
-        push_x(t->after, X_OPERAND);
+        push_x(after_dot(), X_OPERAND);
     }
     else
     {
-        push_x(t->total, X_OPERAND);
+        push_x(before_dot() + after_dot(), X_OPERAND);
     }
 }
 
