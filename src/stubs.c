@@ -280,19 +280,6 @@ void reset_colors(void)
 
 
 ///
-///  @brief    Un-highlight cursor, and say that we need a cursor update.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void reset_cursor(void)
-{
-    ;                                   // Nothing to do if no display
-}
-
-
-///
 ///  @brief    Reset display.
 ///
 ///  @returns  Nothing.

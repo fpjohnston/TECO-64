@@ -34,18 +34,6 @@
 #include "teco.h"
 
 
-///  @var     pair
-///  @brief   Values of foreground/background pairs for defined windows.
-
-enum pair
-{
-    CMD = 1,
-    EDIT,
-    STATUS,
-    LINE,
-    MAX_PAIR = LINE
-};
-
 ///  @struct  tchar
 ///  @brief   Terminal characteristics flag.
 
@@ -134,6 +122,18 @@ extern void set_tab(int n);
 #define STATUS_WIDTH        22      ///< Width of status window
 
 #define STATUS_HEIGHT        5      ///< Min. height for status window
+
+///  @var     pair
+///  @brief   Values of foreground/background pairs for defined windows.
+
+enum pair
+{
+    CMD = 1,
+    EDIT,
+    STATUS,
+    LINE,
+    MAX_PAIR = LINE
+};
 
 ///  @struct  display
 ///  @brief   Display mode variables

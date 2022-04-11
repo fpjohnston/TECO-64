@@ -237,7 +237,9 @@ static int_t count_next(uint_t nlines)
         }
     }
 
-    return eb.t.Z;      // TODO: is this correct?
+    // There aren't n lines following the current position, so just return Z.
+
+    return eb.t.Z;
 }
 
 
@@ -267,10 +269,9 @@ static int_t count_prev(uint_t nlines)
         }
     }
 
-    // There aren't n lines preceding the current position, so just back up to
-    // the beginning of the buffer.
+    // There aren't n lines preceding the current position, so just return B.
 
-    return 0;           // TODO: is this correct?
+    return 0;
 }
 
 
@@ -687,7 +688,14 @@ static void reset_edit(void)
 
 void set_dot(int_t dot)
 {
-    assert(dot >= eb.t.B && dot <= eb.t.Z);
+    if (dot < eb.t.B)
+    {
+        dot = eb.t.B;
+    }
+    else if (dot > eb.t.Z)
+    {
+        dot = eb.t.Z;
+    }
 
     if (eb.t.dot != dot)
     {

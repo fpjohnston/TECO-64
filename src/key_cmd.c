@@ -67,8 +67,6 @@ static void exec_right(int key);
 
 static void exec_up(int key);
 
-static bool iseol(void);
-
 
 ///
 ///  @brief    Check for input characters that require special processing for
@@ -188,77 +186,73 @@ static void exec_down(int key)
 
 static void exec_end(int key)
 {
+    if (t->dot == t->Z)
+    {
+        return;
+    }
+            
     d.newrow = d.row;
     d.newcol = d.col;
 
-    // Here to process End and Ctrl/End keys
+    // Here to process End and Ctrl-End keys
 
-    if (iseol())
+    bool eol = (isdelim(t->c) || (t->c == CR && t->nextc == LF));
+    
+    if (!eol)                           // If not at end of line
     {
-        if (t->dot >= w.botdot)         // Go to end of buffer
+        int_t delta = t->len - (t->pos + 1);
+
+        if (key == KEY_C_END)
         {
-            if (key == KEY_C_END && t->dot + 1 < t->Z)
+            int_t col = find_column();
+
+            if (col < d.maxcol)
             {
-                int_t delta = len_edit(d.nrows + 1);
-
-                move_dot(delta);
-
-                if (t->dot < t->Z)
-                {
-                    dec_dot();
-
-                    d.newcol = find_column();
-
-                    return;
-                }
+                delta = count_chrs(t->pos, d.maxcol);
             }
-
-            if ((d.newrow = after_dot()) > d.nrows - 1)
-            {
-                d.newrow = d.nrows - 1;
-            }
-
-            d.xbias = 0;
-
-            last_dot();
         }
-        else                            // Go to end of window
-        {
-            if ((d.newrow = after_dot()) > d.nrows - 1)
-            {
-                d.newrow = d.nrows - 1;
-            }
 
-            set_dot(w.botdot);
-        }
+        move_dot(delta);
     }
-    else if (t->dot != t->Z)
+    else if (t->dot < w.botdot - 1)     // If not at end of window
     {
-        int_t len = t->len - (t->pos + 1);
+        int_t line = after_dot() - 1;
 
-        if (key == KEY_END)
+        set_dot(w.botdot - 1);
+
+        d.newrow += line;
+    }
+    else                                // Check for end of buffer
+    {
+        if (key == KEY_END || (t->dot == t->Z - 1 && isdelim(t->c)))
         {
-            move_dot(len);              // Go to end of line
+            last_dot();
+
+            ++d.newrow;
+            d.xbias = 0;
         }
         else
         {
-            if (d.col < d.maxcol)
-            {
-                d.col = d.maxcol;
-            }
-            else
-            {
-                d.col += d.maxcol + 1;
-                d.xbias += d.maxcol + 1;
-            }
-
-            int_t delta = count_chrs(t->pos, d.col);
+            int_t delta = len_edit(d.nrows);
 
             move_dot(delta);
+
+            delta = t->len - (t->pos + 1);
+
+            move_dot(delta);
+
+            d.newrow += d.nrows - 1;
         }
     }
 
+    // Make sure horizontal bias is correct for column
+
     d.newcol = find_column();
+
+    while (d.newcol > d.xbias + d.maxcol)
+    {
+        d.xbias += d.maxcol + 1;
+    }
 }
 
 
@@ -279,6 +273,11 @@ static void exec_end(int key)
 
 static void exec_home(int key)
 {
+    if (t->dot == t->B)
+    {
+        return;
+    }
+            
     d.newrow = d.row;
     d.newcol = d.col;
 
@@ -291,31 +290,47 @@ static void exec_home(int key)
             d.xbias = 0;
         }
 
+        d.newrow = d.row;
         d.newcol = d.xbias;
 
-        int_t delta = count_chrs(t->pos, d.newcol);
+        int_t delta = count_chrs(-t->pos, d.newcol);
 
-        set_dot(delta);
+        move_dot(delta);
     }
     else if (d.newcol != 0)             // Go to start of line
     {
         d.newcol = 0;
+        d.xbias = 0;
 
         move_dot(-t->pos);
     }
     else if (t->dot != w.topdot)
     {                                   // Go to top of window
         d.newrow = 0;
+        d.xbias = 0;
 
         set_dot(w.topdot);
     }
-    else                                // Go to top of buffer
+    else                               // Go to top of buffer
     {
+        int line = before_dot();
+
         d.newrow = 0;
         d.xbias = 0;
 
-        first_dot();
+        if (key == KEY_HOME || line <= d.nrows)
+        {
+            first_dot();
+        }
+        else
+        {
+            int_t delta = len_edit(-d.nrows);
+
+            move_dot(delta);
+        }
     }
+
+    d.newcol = find_column();
 }
 
 
@@ -476,7 +491,7 @@ static void exec_left(int key)
     if (d.newcol == 0)                  // If we're at first column,
     {
         d.newcol = -t->pos;             //  go to end of previous line
-        d.xbias = d.newcol - d.ncols;
+        d.xbias = 0;
     }
     else if (key == KEY_C_LEFT)         // If Ctrl-Left,
     {
@@ -635,32 +650,6 @@ void init_keys(void)
     }
 
     f.e0.window = true;                 // Window refresh needed
-}
-
-
-///
-///  @brief    See if we're at the end of a line.
-///
-///  @returns  true if at end of line, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static bool iseol(void)
-{
-    int c = t->c;                       // Get next character
-
-    if (c == CR && t->nextc == LF)
-    {
-        return true;
-    }
-    else if (isdelim(c))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
 }
 
 
