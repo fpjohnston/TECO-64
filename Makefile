@@ -82,7 +82,7 @@ ERRORS_MD   = doc/errors.md
 
 INCLUDES = -I ../$(INCDIR)
 
-VPATH=src:obj:$(INCDIR)
+VPATH=src:obj
 
 DOXYGEN = "DOXYGEN"
 
@@ -430,7 +430,7 @@ bin/$(TARGET): $(OBJECTS) bin
 
 %.o: %.c $(HEADERS)
 	@echo Making $@ $(NULL)
-	$(AT)cd obj && $(CC) @../obj/CFLAGS ../$<
+	$(AT)cd obj && $(CC) @CFLAGS ../$<
 
 -include $(DFILES)
 
