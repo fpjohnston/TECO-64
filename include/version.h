@@ -1,6 +1,8 @@
 ///
 ///  @file    version.h
-///  @brief   Definitions of version numbers for TECO-64 text editor.
+///  @brief   Release version numbers for TECO-64 text editor.
+///
+//  *** Automatically generated file. DO NOT MODIFY. ***
 ///
 ///  @copyright 2020-2022 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -28,10 +30,11 @@
 
 #define _VERSION_H
 
-// TECO-64 version numbers
-
-#define MAJOR_VERSION    200    ///< Major version
-#define MINOR_VERSION     26    ///< Minor version
-#define PATCH_VERSION      4    ///< Patch version
+enum release_version
+{
+    major_version = 200,
+    minor_version = 26,
+    patch_version = 4
+};
 
 #endif  // !defined(_VERSION_H)

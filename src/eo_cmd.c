@@ -56,7 +56,7 @@ void exec_EO(struct cmd *cmd)
 
     if (!cmd->n_set)
     {
-        push_x((int_t)MAJOR_VERSION, X_OPERAND);
+        push_x((int_t)major_version, X_OPERAND);
 
         return;
     }
@@ -65,7 +65,7 @@ void exec_EO(struct cmd *cmd)
 
     if (!cmd->colon)                    // :EO?
     {
-        if (cmd->n_arg == MAJOR_VERSION)
+        if (cmd->n_arg == major_version)
         {
             return;                     // Setting current version is okay
         }
@@ -78,18 +78,18 @@ void exec_EO(struct cmd *cmd)
     switch (cmd->n_arg)
     {
         case -2:
-            push_x((int_t)PATCH_VERSION, X_OPERAND);
+            push_x((int_t)patch_version, X_OPERAND);
 
             break;
 
         case -1:
-            push_x((int_t)MINOR_VERSION, X_OPERAND);
+            push_x((int_t)minor_version, X_OPERAND);
 
             break;
 
         case 0:
         default:
-            push_x((int_t)MAJOR_VERSION, X_OPERAND);
+            push_x((int_t)major_version, X_OPERAND);
 
             break;
     }
