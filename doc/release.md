@@ -12,27 +12,25 @@ various build options are dependent on one another.
 
 ### Check In Code
 
-- Update *include/version.h* with new version number.
 - Confirm that all code changes have been checked in with *git status*.
 - Confirm that all check-ins are correct with *git log*.
-- Ensure that header files are current with *make headers*.
 
 ### Lint Code (if PC-Lint available)
 
-- *make distclean lint*
-- *make distclean display=1 lint*
 - *make distclean paging=std lint*
+- *make distclean display=off lint*
+- *make distclean lint*
 
 ### Run Smoke Tests
 
-- *make distclean display=1 memcheck=1 test=1 teco*
-- *./tests/smoke_test.pl tests*
+- *make distclean memcheck=1 test=1 teco*
+- *make smoke*
 
 ### Build Code and Documentation
 
-- *make distclean teco doc*
-- *make distclean display=1 teco doc*
 - *make distclean paging=std teco doc*
+- *make distclean display=off teco doc*
+- *make release=(major,minor,patch) teco doc*
 
 ### Label Release
 
@@ -42,6 +40,5 @@ various build options are dependent on one another.
 
 ### Post Release
 
-- Clean up directory tree with *make distclean*.
 - Post new version to *github* with *git push*.
 - Draft a new release on *github*.

@@ -216,11 +216,12 @@ static void exec_end(int key)
     }
     else if (t->dot < w.botdot - 1)     // If not at end of window
     {
+        int_t dot = (w.botdot < t->Z) ? w.botdot : w.botdot - 1;
         int_t line = after_dot() - 1;
 
-        set_dot(w.botdot - 1);
-
         d.newrow += line;
+
+        set_dot(dot);
     }
     else                                // Check for end of buffer
     {
@@ -245,9 +246,16 @@ static void exec_end(int key)
         }
     }
 
-    // Make sure horizontal bias is correct for column
+    if (d.newrow > d.nrows - 1)
+    {
+        d.newrow = d.nrows - 1;
+    }
 
     d.newcol = find_column();
+
+    // Make sure horizontal bias is correct for column
+
+    wprintw(d.cmd, "dot = %d, row = %d, col = %d\n", t->dot, d.newrow, d.newcol);
 
     while (d.newcol > d.xbias + d.maxcol)
     {

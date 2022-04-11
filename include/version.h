@@ -2,7 +2,7 @@
 ///  @file    version.h
 ///  @brief   Release version numbers for TECO-64 text editor.
 ///
-//  *** Automatically generated file. DO NOT MODIFY. ***
+///  *** Automatically generated file. DO NOT MODIFY. ***
 ///
 ///  @copyright 2020-2022 Franklin P. Johnston / Nowwith Treble Software
 ///
@@ -33,8 +33,8 @@
 enum release_version
 {
     major_version = 200,
-    minor_version = 26,
-    patch_version = 4
+    minor_version = 27,
+    patch_version = 0
 };
 
 #endif  // !defined(_VERSION_H)

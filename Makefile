@@ -175,6 +175,17 @@ SOURCES = \
 #
 ################################################################################
 
+ifdef   release
+
+VERSION = version
+
+endif
+
+#
+#  Check to see if we should enable test mode.
+#
+################################################################################
+
 ifdef   test
 
 DEFINES += -D TEST
@@ -418,7 +429,7 @@ obj:
 	$(AT)mkdir -p obj
 
 .PHONY: $(TARGET) 
-$(TARGET): bin/$(TARGET)
+$(TARGET): $(VERSION) bin/$(TARGET)
 
 bin/$(TARGET): $(OBJECTS) bin
 	@echo Making $(@F) $(NULL)
@@ -435,6 +446,10 @@ bin/$(TARGET): $(OBJECTS) bin
 -include $(DFILES)
 
 $(OBJECTS): obj/CFLAGS
+
+.PHONY: version
+version: distclean
+	$(AT)etc/version.pl $(INCDIR)/version.h --release=$(release)
 
 .PHONY: headers
 headers: $(HEADERS)
