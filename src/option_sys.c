@@ -100,7 +100,10 @@ static void add_cmd(int mnflag, const char *format, ...);
 
 
 ///
-///  @brief    Add command to command string.
+///  @brief    Called from exec_options() to add a command string to the command
+///            buffer. When initialization has completed, the contents of the
+///            command buffer will be the first set of commands that TECO will
+///            execute.
 ///
 ///  @returns  Nothing.
 ///
@@ -194,17 +197,29 @@ void exec_options(int argc, const char * const argv[])
     const char *file2 = options.output ?: NULL;
     char memory[PATH_MAX];              // File name from memory file
 
-    if (optind < argc - 1)
-    {
-        tprint("Too many file arguments\n");
+    // If we have at least one argument, then we have an input file. If we have
+    // two arguments, then we have an output file also (unless one was specified
+    // with the --output option). Any additional arguments cause an error.
 
-        exit(EXIT_FAILURE);
-    }
-    else if (optind < argc)
+    if (optind < argc)
     {
         file1 = argv[optind];
+
+        if (optind + 1 < argc)
+        {
+            if (options.output == NULL)
+            {
+                file2 = argv[optind + 1];
+            }
+            else
+            {
+                tprint("?Too many file arguments\n");
+
+                exit(EXIT_FAILURE);
+            }
+        }
     }
-    else if (options.memory != NULL)
+    else if (options.memory != NULL)    // No arguments, so try read memory file
     {
         read_memory(memory, (uint)sizeof(memory));
 
@@ -218,17 +233,28 @@ void exec_options(int argc, const char * const argv[])
     // open fails, the rest of the command string will be aborted, which
     // means that the subsequent CTRL/A command won't be executed.
 
-    if (file1 != NULL)
+    if (options.readonly && file1 == NULL)
+    {
+        add_cmd(false, ":^A?How can I inspect nothing?\1");
+
+        options.exit = true;
+    }
+    else if (file1 != NULL)
     {
         if (file2 != NULL || options.readonly)
         {
             add_cmd(false, "ER%s\e Y ", file1);
-            add_cmd(false, ":^A%%Inspecting file: %s\1 ", file1);
+            add_cmd(false, ":^AReading file: %s\1 ", file1);
+
+            if (file2 == NULL)
+            {
+                teco_memory = NULL;     // Don't save file name on exit
+            }
         }
         else if (access(file1, F_OK) == 0 || !options.create)
         {
             add_cmd(false, "EB%s\e Y ", file1);
-            add_cmd(false, ":^A%%Editing file: %s\1 ", file1);
+            add_cmd(false, ":^AEditing file: %s\1 ", file1);
         }
         else
         {
@@ -238,11 +264,11 @@ void exec_options(int argc, const char * const argv[])
 
     if (file2 != NULL)
     {
+        add_cmd(false, ":^AWriting file: %s\1 ", file2);
         add_cmd(false, "EW%s\e ", file2);
-        add_cmd(false, ":^A%%Creating file: %s\1 ", file2);
     }
 
-    if (options.exit)                    // Should we exit at end of commands?
+    if (options.exit)                   // Should we exit at end of commands?
     {
         add_cmd(false, "EX ");
     }
