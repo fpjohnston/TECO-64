@@ -255,8 +255,6 @@ static void exec_end(int key)
 
     // Make sure horizontal bias is correct for column
 
-    wprintw(d.cmd, "dot = %d, row = %d, col = %d\n", t->dot, d.newrow, d.newcol);
-
     while (d.newcol > d.xbias + d.maxcol)
     {
         d.xbias += d.maxcol + 1;
