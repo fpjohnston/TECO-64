@@ -245,8 +245,6 @@ extern const struct cmd null_cmd;
 
 extern bool append(bool n_set, int_t n_arg, bool colon_set);
 
-extern bool append_lines(void);
-
 extern bool check_semi(void);
 
 extern void close_files(void);

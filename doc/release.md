@@ -7,33 +7,25 @@ It is intended for the benefit of developers, and is not necessary for end users
 
 Note the sections for linting, testing, and building may need to be enhanced for
 64-bit builds eventually.
-These sections may also need to be enhanced if it is determined that
-various build options are dependent on one another.
 
 ### Check In Code
 
 - Confirm that all code changes have been checked in with *git status*.
 - Confirm that all check-ins are correct with *git log*.
 
-### Lint Code (if PC-Lint available)
+### Verify Common Builds
 
-- *make distclean paging=std lint*
-- *make distclean display=off lint*
-- *make distclean lint*
+- *make distclean paging=std  lint doc teco*
+- *make distclean display=off lint doc teco*
+- *make distclean             lint doc teco*
 
 ### Run Smoke Tests
 
-- *make distclean memcheck=1 test=1 teco*
-- *make smoke*
+- *make distclean test=1 memcheck=1 teco smoke*
 
-### Build Code and Documentation
+### Build Release
 
-- *make distclean paging=std teco doc*
-- *make distclean display=off teco doc*
-- *make release=(major,minor,patch) teco doc*
-
-### Label Release
-
+- *make distclean release=(major,minor,patch) teco*
 - Delete any untracked files with *make distclean*.
 - Add new tag with *git tag -a -m*.
 - Confirm that all check-ins are correct with *git log*.

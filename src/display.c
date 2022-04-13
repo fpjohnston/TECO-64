@@ -181,7 +181,7 @@ int_t find_column(void)
     {
         int width;
 
-        if (c == HT)
+        if (c == HT && !w.seeall)
         {
             width = TABSIZE - (col % TABSIZE);
         }
@@ -608,8 +608,6 @@ static void refresh_edit(void)
         {
             if (row == d.maxrow)        // If at end of last row, then done
             {
-                --pos;                  // Don't count the last character
-
                 break;
             }
 
@@ -638,7 +636,7 @@ static void reset_cursor(void)
 {
     int c = d.cursor;
 
-    if (c == HT)
+    if (c == HT && !w.seeall)
     {
         int width = TABSIZE - (d.col % TABSIZE);
         chtype ch = mvwinch(d.edit, d.row, d.col) & ~A_REVERSE;
@@ -721,7 +719,7 @@ static void set_cursor(void)
 {
     int c = d.cursor = read_edit(0);    // Save cursor character (for reset)
 
-    if (c == HT)
+    if (c == HT && !w.seeall)
     {
         int width = TABSIZE - (d.col % TABSIZE);
         chtype ch = mvwinch(d.edit, d.row, d.col) | A_REVERSE;

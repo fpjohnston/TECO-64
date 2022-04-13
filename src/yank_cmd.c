@@ -133,10 +133,9 @@ bool next_yank(void)
 {
     kill_edit();
 
-    while (append_lines())              // Read all we can
-    {
-        ;
-    }
+    struct ifile *ifile = &ifiles[istream];
+
+    (void)append_edit(ifile, 0);        // Read all we can
 
     if (t->Z != 0)
     {

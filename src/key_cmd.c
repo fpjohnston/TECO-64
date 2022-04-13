@@ -113,7 +113,7 @@ static int_t count_chrs(int_t pos, int maxcol)
     {
         int width;
 
-        if (c == HT)
+        if (c == HT && !w.seeall)
         {
             width = TABSIZE - (col % TABSIZE);
         }
@@ -216,12 +216,11 @@ static void exec_end(int key)
     }
     else if (t->dot < w.botdot - 1)     // If not at end of window
     {
-        int_t dot = (w.botdot < t->Z) ? w.botdot : w.botdot - 1;
         int_t line = after_dot() - 1;
 
         d.newrow += line;
 
-        set_dot(dot);
+        set_dot(w.botdot - 1);
     }
     else                                // Check for end of buffer
     {

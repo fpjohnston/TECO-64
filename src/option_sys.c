@@ -207,16 +207,14 @@ void exec_options(int argc, const char * const argv[])
 
         if (optind + 1 < argc)
         {
-            if (options.output == NULL)
-            {
-                file2 = argv[optind + 1];
-            }
-            else
+            if (options.output != NULL || optind + 2 < argc)
             {
                 tprint("?Too many file arguments\n");
 
                 exit(EXIT_FAILURE);
             }
+
+            file2 = argv[argc - 1];     // Treat 2nd argument same as --output
         }
     }
     else if (options.memory != NULL)    // No arguments, so try read memory file

@@ -35,6 +35,7 @@
 #include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
+#include "file.h"
 #include "term.h"
 
 
@@ -132,11 +133,15 @@ static int_t count_next(uint_t nlines);
 
 static inline int find_edit(int_t pos);
 
+static void finish_insert(uint_t nbytes);
+
 static void reset_edit(void);
 
 static void shift_left(uint_t nbytes);
 
 static void shift_right(uint_t nbytes);
+
+static bool start_insert(uint_t size);
 
 
 ///
@@ -161,6 +166,133 @@ int_t after_dot(void)
     }
 
     return nlines;
+}
+
+
+///
+///  @brief    Append to edit buffer. Similar to insert_edit(), but adds an
+///            entire file to the buffer.
+///
+///  @returns  true if we can continue reading lines, else false (because we
+///            encountered either an EOF or a FF).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool append_edit(struct ifile *ifile, uint nlines)
+{
+    assert(ifile != NULL);
+    assert(nlines <= 1);
+
+    if (!start_insert(ifile->size))
+    {
+        return false;
+    }
+
+    int c;
+    uchar *p = eb.buf + eb.left;
+
+    // Read characters until EOF or FF
+
+    while ((c = getc(ifile->fp)) != EOF)
+    {
+        if (c == LF)
+        {
+            // If first LF, see if smart mode is enabled
+
+            if (!ifile->first && f.e3.smart)
+            {
+                ifile->first = true;
+
+                f.e3.CR_in   = false;
+                f.e3.CR_out  = false;
+            }
+
+            if (nlines == 1)
+            {
+                *p++ = (uchar)c;
+
+                break;
+            }
+        }
+        else if (c == CR)
+        {
+            int next = fgetc(ifile->fp);
+
+            if (next == LF)             // CR followed by LF
+            {
+                // If first CR/LF, see if smart mode is enabled
+
+                if (!ifile->first && f.e3.smart)
+                {
+                    ifile->first = true;
+
+                    f.e3.CR_in   = true;
+                    f.e3.CR_out  = true;
+                }
+
+                // If CR/LF is okay, save LF for next read
+
+                if (f.e3.CR_in)
+                {
+                    ungetc(next, ifile->fp);
+                }
+                else
+                {
+                    c = LF;             // Ignore CR and just use LF
+
+                    if (nlines == 1)
+                    {
+                        *p++ = (uchar)c;
+
+                        break;
+                    }
+                }
+            }
+            else if (next != EOF)       // CR followed by non-LF
+            {
+                ungetc(next, ifile->fp);
+            }
+        }
+        else if (c == VT)
+        {
+            if (nlines == 1)
+            {
+                *p++ = (uchar)c;
+
+                break;
+            }
+        }
+        else if (c == FF)
+        {
+            if (!f.e3.nopage)
+            {
+                f.ctrl_e = true;        // Flag FF, but don't store it
+
+                break;
+            }
+            else if (nlines == 1)
+            {
+                *p++ = (uchar)c;
+
+                break;
+            }
+        }
+        else if (c == NUL && !f.e3.keepNUL)
+        {
+            continue;
+        }
+
+        *p++ = (uchar)c;
+    }
+
+    uint_t nbytes = (uint_t)(p - (eb.buf + eb.left));
+
+    if (nbytes != 0)
+    {
+        finish_insert(nbytes);
+    }
+
+    return (c == EOF) ? false : true;
 }
 
 
@@ -414,6 +546,45 @@ static inline int find_edit(int_t pos)
 
 
 ///
+///  @brief    Finish insertion into buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void finish_insert(uint_t nbytes)
+{
+    assert(nbytes != 0);
+
+    // Now fix up some variables
+
+    eb.left  += nbytes;
+    eb.gap   -= nbytes;
+    eb.t.dot += (int_t)nbytes;
+    eb.t.Z   += (int_t)nbytes;
+
+    eb.t.pos  = eb.t.dot - count_prev(0);
+    eb.t.len  = count_next(1) - eb.t.dot;
+    eb.t.len += eb.t.pos;
+
+    if (eb.t.dot == 0)
+    {
+        eb.t.lastc = EOF;
+    }
+    else
+    {
+        eb.t.lastc = eb.buf[eb.left - 1];
+    }
+
+    eb.t.c = eb.buf[eb.left];
+    
+    //eb.t.nextc = ...                  // Next character doesn't change
+
+    f.e0.window = true;                 // Window refresh needed
+}
+
+
+///
 ///  @brief    Move dot to start of buffer.
 ///
 ///  @returns  Nothing.
@@ -489,7 +660,7 @@ void init_edit(void)
 
 
 ///
-///  @brief    Add character to edit buffer.
+///  @brief    Insert string in edit buffer.
 ///
 ///  @returns  true if insert succeeded, else false.
 ///
@@ -498,59 +669,16 @@ void init_edit(void)
 bool insert_edit(const char *buf, size_t nbytes)
 {
     assert(buf != NULL);
-    assert(nbytes != 0);
     assert(eb.buf != NULL);             // Error if no edit buffer
 
-    // First, ensure dot is at start of the gap
-
-    uint_t dot = (uint_t)eb.t.dot;
-
-    if (dot < eb.left)
+    if (!start_insert((uint_t)nbytes))
     {
-        shift_right(eb.left - dot);
-    }
-    else if (dot > eb.left)
-    {
-        shift_left(dot - eb.left);
+        return false;
     }
 
-    // Then make sure we have enough room. Try to increase size if we don't.
+    memcpy(eb.buf + eb.left, buf, nbytes);
 
-    while (eb.gap < nbytes)
-    {
-        uint_t size = eb.t.size;        // Get current size
-
-        size += size / 4;               //  and increase it by 25%
-
-        if (size_edit(size) == 0)       // If not able to increase size,
-        {
-            return false;               //  then we can't insert anything
-        }
-
-        print_size(size);
-    }
-
-    int c = EOF;
-
-    for (uint_t i = 0; i < nbytes; ++i)
-    {
-        c = *buf++;
-
-        eb.buf[eb.left++] = (uchar)c;
-    }
-
-    eb.t.dot += (int_t)nbytes;
-    eb.t.Z   += (int_t)nbytes;;
-    eb.gap   -= (uint_t)nbytes;
-
-    eb.t.pos  = eb.t.dot - count_prev(0);
-    eb.t.len  = count_next(1) - eb.t.dot;
-    eb.t.len += eb.t.pos;
-
-    eb.t.lastc = eb.buf[eb.left - 1];
-    eb.t.c = c;
-
-    f.e0.window = true;                 // Window refresh needed
+    finish_insert((uint_t)nbytes);
 
     return true;                        // Insertion was successful
 }
@@ -822,4 +950,49 @@ uint_t size_edit(uint_t size)
     eb.gap = eb.t.size - (eb.left + eb.right);
 
     return size;
+}
+
+
+///
+///  @brief    Initialize buffer for adding characters.
+///
+///  @returns  true if initialized succeeded, false if it didn't.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static bool start_insert(uint_t nbytes)
+{
+    if (nbytes == 0)
+    {
+        return false;
+    }
+
+    // Make sure data can fit in the space we have. If not, increase by 50%.
+
+    while (eb.gap < nbytes)
+    {
+        uint_t size = (eb.t.size * 3) / 2;
+
+        if (size_edit(size) == 0)
+        {
+            return false;
+        }
+
+        print_size(size);
+    }
+
+    // Ensure dot is at start of the gap
+
+    uint_t dot = (uint_t)eb.t.dot;
+
+    if (dot < eb.left)
+    {
+        shift_right(eb.left - dot);
+    }
+    else if (dot > eb.left)
+    {
+        shift_left(dot - eb.left);
+    }
+
+    return true;
 }

@@ -609,8 +609,6 @@ extern void exec_vbar(struct cmd *cmd);
 
 extern bool append(bool n_set, int_t n_arg, bool colon_set);
 
-extern bool append_lines(void);
-
 extern bool check_semi(void);
 
 extern void close_files(void);

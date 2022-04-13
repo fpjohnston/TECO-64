@@ -36,7 +36,8 @@
 #  Build options:
 #
 #      buffer=gap   Use gap buffer for editing text. [default]
-#      display=1    Enable display mode.
+#      display=on   Enable display mode. [default]
+#      display=off  Disable display mode.
 #      int=32       Use 32-bit integers. [default]
 #      int=64       Use 64-bit integers.
 #      paging=std   Use standard paging.
@@ -400,7 +401,8 @@ help:
 	@echo "Build options:"
 	@echo ""
 	@echo "    buffer=gap   Use gap buffer for editing text. [default]"
-	@echo "    display=1    Enable display mode."
+	@echo "    display=on   Enable display mode. [default]"
+	@echo "    display=off  Enable display mode."
 	@echo "    int=32       Use 32-bit integers. [default]."
 	@echo "    int=64       Use 64-bit integers."
 	@echo "    paging=std   Use standard paging."
@@ -521,6 +523,6 @@ mostlyclean: obj
 	-$(AT)cd obj && rm -f *.o *.d *.lob $(NULL2)
 
 .PHONY: smoke
-smoke:
+smoke: $(TARGET)
 	@echo Smoke testing $(TARGET) $(NULL)
 	$(AT)test/smoke_test.pl test

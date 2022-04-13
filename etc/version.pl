@@ -60,8 +60,11 @@ my $file = $ARGV[0];
 #
 
 my %version = ();
+my $previous;
 
 read_version($file);
+
+$previous = "$version{major}.$version{minor}.$version{patch}";
 
 update_version($args{release});
 
@@ -197,7 +200,7 @@ sub write_version
          q{},
          '#define _VERSION_H',
          q{},
-         'enum release_version',
+         'enum release_version                ///< TECO release version numbers',
          '{',
          "    major_version = $version{major},",
          "    minor_version = $version{minor},",
@@ -214,7 +217,7 @@ sub write_version
 
     close $fh;
 
-    print 'Updated TECO release version to '
+    print "Updated TECO release version from $previous to "
         . "$version{major}.$version{minor}.$version{patch}\n";
 
     return;

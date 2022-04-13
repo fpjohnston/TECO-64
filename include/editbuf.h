@@ -31,6 +31,7 @@
 #include <stdbool.h>            //lint !e451
 #include <sys/types.h>          //lint !e451
 
+#include "file.h"
 
 ///  @struct  edit
 ///
@@ -54,6 +55,10 @@ extern const struct edit *t;
 // Get no. of lines after dot.
 
 extern int_t after_dot(void);
+
+// Append file to buffer.
+
+extern bool append_edit(struct ifile *ifile, uint nlines);
 
 // Get no. of lines before dot.
 
