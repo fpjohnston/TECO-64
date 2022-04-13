@@ -667,7 +667,14 @@ sub prove_test
 
     my $actual = get_data("$testdir/results/$file.lis");
 
-    croak "No test results found in $testdir/results/$file.lis" unless $actual;
+    if (!$actual)
+    {
+        system 'reset -I';
+
+        printf "%s -> EMPTY\n", $report;
+
+        return;
+    }
 
     my $expected = get_data("$testdir/benchmarks/$file.lis");
 
