@@ -10,7 +10,7 @@ EO - 200 "L
 
 Z                                       !! Error if no file name
 "E
-    :@^A/Specify file name with --buffer or -B option/ ^C
+    :@^A/Specify file name with --text or -T option/ ^C
 '
 
 HXA HK                                  !! Copy file name to Q-register A
