@@ -623,32 +623,11 @@ void init_keys(void)
 {
     for (int c = 0; c <= UCHAR_MAX; ++c)
     {
-        chtype ch = (chtype)c;
-
-        if (isprint(c))                 // Printing chr. [32-126]
+        if (isascii(c) || !w.seeall)    // 7-bit character or not SEEALL mode
         {
-            keysize[c] = 1;
+            keysize[c] = (char)strlen(unctrl((chtype)c));
         }
-        else if (c >= BS && c <= CR)    // Special control chrs.
-        {
-            if (w.seeall)
-            {
-                keysize[c] = (char)strlen(unctrl(ch));
-            }
-            else
-            {
-                keysize[c] = 0;
-            }
-        }
-        else if (iscntrl(c))            // General control chrs.
-        {
-            keysize[c] = (char)strlen(unctrl(ch));
-        }
-        else if (f.et.eightbit)         // 8-bit chrs. w/ parity bit
-        {
-            keysize[c] = (char)strlen(unctrl(ch));
-        }
-        else                            // 8-bit chrs. w/o parity bit
+        else                            // 8-bit character in SEEALL mode
         {
             keysize[c] = (char)strlen(table_8bit[c & 0x7f]);
         }

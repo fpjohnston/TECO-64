@@ -594,13 +594,13 @@ static void refresh_edit(void)
         }
         else                            // 8-bit chr. [128-255]
         {
-            if (f.et.eightbit)
+            if (w.seeall)
             {
-                waddstr(d.edit, unctrl(ch));
+                waddstr(d.edit, table_8bit[c & 0x7f]);
             }
             else
             {
-                waddstr(d.edit, table_8bit[c & 0x7f]);
+                waddstr(d.edit, unctrl(ch));
             }
         }
 

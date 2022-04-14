@@ -21,15 +21,7 @@ QN "E
 
 @fm/ A_DELETE / EK HK EX /              !! Cancel edit and exit
 
-@fm/ F1 /
-        3:W "E 1,3:W                    !! 1st F1 enables SEEALL
-        |
-            ET&4096 "N 4096,0ET         !! 2nd F1 disables 8-bit display
-            |
-                0,4096ET 0,3:W          !! 3rd F1 cycles back to start
-            '
-        '
-        /
+@fm/ F1 / (-1 - (3:W)),3:W /            !! Toggle SEEALL mode
 
 !! The following are just to show how to set and reset the mark
 
