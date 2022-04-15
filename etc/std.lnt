@@ -1,5 +1,4 @@
 -I ../include
-//include.lnt
 co-gcc.lnt   // Basic gcc configuration
 
 // prevent the GCC version of offsetof being used
@@ -78,8 +77,8 @@ co-gcc.lnt   // Basic gcc configuration
 -esym(534,sigaction,sigfillset,setvbuf,tcgetattr,tcsetattr,ungetc)
 -esym(534,localtime_r,gettimeofday,init_color,init_pair,fchmod)
 -esym(534,scan_x)
--esym(759,reset_term,table_8bit,first_dot,last_dot,move_dot,inc_dot,dec_dot)
--esym(765,reset_term,table_8bit,first_dot,last_dot,move_dot,inc_dot,dec_dot)
+-esym(759,reset_term,table_8bit,move_dot,inc_dot,dec_dot)
+-esym(765,reset_term,table_8bit,move_dot,inc_dot,dec_dot)
 -esym(714,move_dot)
 -elib(126)
 -elibcall(126)

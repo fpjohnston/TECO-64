@@ -141,16 +141,11 @@ void echo_in(int c)
                 break;
 
             case ESC:
-
-#if     !defined(DOLLAR_ESC)
-
-                if (f.et.accent || f.ee != NUL)
+                if (!f.e1.dollar && (f.et.accent || f.ee != NUL))
                 {
                     tputc('`', false);
                 }
                 else
-
-#endif
                 {
                     tputc('$', false);
                 }
@@ -440,16 +435,11 @@ void type_out(int c)
                 break;
 
             case ESC:
-
-#if     !defined(DOLLAR_ESC)
-
-                if (f.et.accent || f.ee != NUL)
+                if (!f.e1.dollar && (f.et.accent || f.ee != NUL))
                 {
                     tputc('`', false);
                 }
                 else
-
-#endif
                 {
                     tputc('$', false);
                 }

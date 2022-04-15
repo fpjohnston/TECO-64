@@ -387,19 +387,16 @@ void read_cmd(void)
             echo_in('`');               // Echo delimiter as accent grave
             c = ESC;                    //  but treat it as ESCape
         }
-
-#if     !defined(DOLLAR_ESC)
-
-        else if (c == ESC && (f.et.accent || f.ee != NUL))
-        {
-            echo_in('`');               // Echo delimiter as accent grave
-        }
-
-#endif
-
         else if (c == ESC)
         {
-            echo_in('$');               // Echo ESCape as dollar sign
+            if (!f.e1.dollar && (f.et.accent || f.ee != NUL))
+            {
+                echo_in('`');           // Echo delimiter as accent grave
+            }
+            else
+            {
+                echo_in('$');           // Echo ESCape as dollar sign
+            }
         }
 
         if (c == CTRL_C)

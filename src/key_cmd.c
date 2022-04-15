@@ -226,7 +226,7 @@ static void exec_end(int key)
     {
         if (key == KEY_END || (t->dot == t->Z - 1 && isdelim(t->c)))
         {
-            last_dot();
+            set_dot(t->Z);
 
             ++d.newrow;
             d.xbias = 0;
@@ -325,7 +325,7 @@ static void exec_home(int key)
 
         if (key == KEY_HOME || line <= d.nrows)
         {
-            first_dot();
+            set_dot(t->B);
         }
         else
         {
@@ -484,7 +484,7 @@ static void exec_left(int key)
     d.newrow = d.row;
     d.newcol = d.col;
 
-    dec_dot();
+    set_dot(t->dot - 1);
 
     if (isdelim(t->c))                  // Did we just back up over a delimiter?
     {
@@ -531,7 +531,7 @@ static void exec_right(int key)
     d.newrow = d.row;
     d.newcol = d.col;
 
-    inc_dot();
+    set_dot(t->dot + 1);
 
     if (isdelim(t->lastc))              // Did we just advance over a delimiter?
     {

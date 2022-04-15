@@ -75,7 +75,7 @@ union e1_flag
         uint bang    : 1;       ///< !! starts end-of-line comment
         uint prompt  : 1;       ///< Add CR/LF before prompt if needed
         uint radix   : 1;       ///< Automatically determine number radix
-        uint         : 1;       ///< (unused)
+        uint dollar  : 1;       ///< Echo delimiter as ESCape
         uint insert  : 1;       ///< Allow nI w/o ESCape or delimiter
         uint percent : 1;       ///< Allow :%q
         uint         : 1;       ///< (unused)

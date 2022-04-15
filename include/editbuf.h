@@ -68,21 +68,9 @@ extern int_t before_dot(void);
 
 extern void change_dot(int c);
 
-// Move dot to previous position.
-
-extern void dec_dot(void);
-
 //  Delete nbytes at dot. Argument can be positive or negative.
 
 extern void delete_edit(int_t nbytes);
-
-// Set dot to first position in buffer.
-
-extern void first_dot(void);
-
-// Move dot to next position.
-
-extern void inc_dot(void);
 
 //  Initialize edit buffer.
 
@@ -95,10 +83,6 @@ extern bool insert_edit(const char *c, size_t nbytes);
 //  Delete all of the text in the edit buffer.
 
 extern void kill_edit(void);
-
-// Set dot to last position in buffer.
-
-extern void last_dot(void);
 
 //  Get the number of chars between current dot and nth line terminator.
 

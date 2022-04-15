@@ -73,8 +73,10 @@ struct flags f =                    ///< Global flag variables
     .e1.bang    = true,             // !! starts end-of-line comment
     .e1.prompt  = true,             // Ensure prompt starts in 1st column
     .e1.radix   = true,             // Allow in-line radix control
+    .e1.dollar  = false,            // Do not echo delimiter as ESCape
     .e1.insert  = true,             // Allow nI w/o requiring n@I
     .e1.percent = true,             // Allow :%q
+    .e1.repeat  = false,            // Double CTRL-] does not repeat command
     .e1.newline = false,            // LF does not act like double ESCape
 
     .e2.flag = 0,                   // All bits off in E2 flag

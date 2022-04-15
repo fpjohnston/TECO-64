@@ -131,9 +131,17 @@ static int_t count_prev(uint_t nlines);
 
 static int_t count_next(uint_t nlines);
 
+static void dec_dot(void);
+
 static inline int find_edit(int_t pos);
 
 static void finish_insert(uint_t nbytes);
+
+static void first_dot(void);
+
+static void inc_dot(void);
+
+static void last_dot(void);
 
 static void reset_edit(void);
 
@@ -414,7 +422,7 @@ static int_t count_prev(uint_t nlines)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void dec_dot(void)
+static void dec_dot(void)
 {
     if (eb.t.dot > eb.t.B)
     {
@@ -591,7 +599,7 @@ static void finish_insert(uint_t nbytes)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void first_dot(void)
+static void first_dot(void)
 {
     if (eb.t.dot > eb.t.B)
     {
@@ -615,7 +623,7 @@ void first_dot(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void inc_dot(void)
+static void inc_dot(void)
 {
     if (eb.t.dot < eb.t.Z)
     {
@@ -709,7 +717,7 @@ void kill_edit(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void last_dot(void)
+static void last_dot(void)
 {
     if (eb.t.dot < eb.t.Z)
     {
