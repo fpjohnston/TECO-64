@@ -159,9 +159,9 @@ static void exec_down(int key)
 
     if (key == KEY_C_DOWN)
     {
-        d.updown = true;
+        f.e0.window = true;
     }
-    else if (d.newrow < d.nrows - 1)
+    else
     {
         ++d.newrow;
     }
@@ -583,11 +583,11 @@ static void exec_up(int key)
 
     move_dot(delta);
 
-    if (key == KEY_C_UP)
+    if (key == KEY_C_UP && d.ybias <= before_dot())
     {
-        d.updown = true;
+        f.e0.window = true;
     }
-    else if (d.newrow > 0)
+    else
     {
         --d.newrow;
     }
