@@ -3,19 +3,11 @@
 #
 
 ifeq ($(release),major)
-
-VERSION = version
-
+    VERSION = version
 else ifeq ($(release),minor)
-
-VERSION = version
-
+    VERSION = version
 else ifeq ($(release),patch)
-
-VERSION = version
-
+    VERSION = version
 else ifdef release
-
-$(error Invalid release version option: $(release))
-
+    $(error Invalid release version option: $(release))
 endif

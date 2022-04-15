@@ -3,10 +3,8 @@
 #
 
 ifdef   ndebug
-
-DEFINES += -D NDEBUG
-DOXYGEN +=    NDEBUG
-
+    DEFINES += -D NDEBUG
+    DOXYGEN +=    NDEBUG
 endif
 
 #
@@ -14,9 +12,7 @@ endif
 #
 
 ifdef   nostrict
-
-DEFINES += -D NOSTRICT
-
+    DEFINES += -D NOSTRICT
 endif
 
 #

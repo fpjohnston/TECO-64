@@ -623,11 +623,18 @@ void init_keys(void)
 {
     for (int c = 0; c <= UCHAR_MAX; ++c)
     {
-        if (isascii(c) || !w.seeall)    // 7-bit character or not SEEALL mode
+        if (!w.seeall || isascii(c))    // SEEALL mode or 7-bit character
         {
-            keysize[c] = (char)strlen(unctrl((chtype)c));
+            if (w.seeall || c < BS || c > CR)
+            {
+                keysize[c] = (char)strlen(unctrl((chtype)c));
+            }
+            else                        // If special chrs. w/ SEEALL mode,
+            {
+                keysize[c] = 1;         //  then pretend they're 1 chr. wide
+            }
         }
-        else                            // 8-bit character in SEEALL mode
+        else                            // 8-bit char. w/ SEEALL mode
         {
             keysize[c] = (char)strlen(table_8bit[c & 0x7f]);
         }

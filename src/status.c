@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 #include <ncurses.h>
 #include <stdio.h>
 
@@ -35,22 +36,142 @@
 #include "editbuf.h"
 #include "exec.h"
 #include "page.h"
+#include "term.h"
 
 
 #if     INT_T == 64
 
-#define FMT     "%ld"               ///< 64-bit numeric format
+#define FMT     "%ld"               ///< 64-bit format for snprintf()
 
 #else
 
-#define FMT     "%d"                ///< 32-bit numeric format
+#define FMT     "%d"                ///< 32-bit format for snprintf()
 
 #endif
 
+/// @def    check_line(line,maxline)
+/// @brief  Verifies that status window has room for another line.
+
+#define check_line(line, maxline) if (line == maxline) return;
 
 // Local functions
 
+static void print_status(int nrows);
+
 static void status_line(int line, const char *header, const char *data);
+
+
+///
+///  @brief    Print status information.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void print_status(int maxline)
+{
+    char buf[STATUS_WIDTH + 1];
+    int line = 0;
+
+    // Output current character value
+
+    const char *chr;
+
+    if (t->dot == t->Z)
+    {
+        snprintf(buf, sizeof(buf), "EOF");
+    }
+    else
+    {
+        if (isascii(t->c) || !w.seeall)
+        {
+            chr = unctrl((chtype)t->c);
+        }
+        else
+        {
+            chr = table_8bit[t->c & 0x7f];
+        }
+
+        snprintf(buf, sizeof(buf), FMT "=%s", t->c, chr);
+    }
+
+    status_line(line++, "character", buf);
+    check_line(line, maxline);
+
+    // Output current position ('dot') and total no. of chrs.
+
+    snprintf(buf, sizeof(buf), FMT "," FMT, t->dot, t->Z);
+    status_line(line++, "dot,Z", buf);
+    check_line(line, maxline);
+
+    // Output current line no. and total no. of lines.
+
+    int before = before_dot();
+    int total  = before + after_dot();
+
+    if (t->dot < t->Z)
+    {
+        if (t->Z != 0)
+        {
+            ++before;
+        }
+
+        snprintf(buf, sizeof(buf), FMT "/" FMT, before, total);
+    }
+    else
+    {
+        snprintf(buf, sizeof(buf), "EOF/" FMT, total);
+    }
+
+    status_line(line++, "line", buf);
+    check_line(line, maxline);
+
+    // Output current position in line and length of line
+
+    snprintf(buf, sizeof(buf), FMT "/" FMT, t->pos, t->len);
+
+    status_line(line++, "offset", buf);
+    check_line(line, maxline);
+
+    // Output current column and maximum allowed column
+
+    snprintf(buf, sizeof(buf), FMT "/" FMT, d.col, w.maxline);
+    status_line(line++, "column", buf);
+    check_line(line, maxline);
+
+    // Output page count
+
+    snprintf(buf, sizeof(buf), FMT, page_count());
+    status_line(line++, "page", buf);
+    check_line(line, maxline);
+
+    // Output memory size
+
+    uint_t memsize = t->size;
+    const char *memtype;
+
+    if (memsize >= GB)
+    {
+        memsize /= GB;
+        memtype = "GB";
+    }
+    else if (memsize >= MB)
+    {
+        memsize /= MB;
+        memtype = "MB";
+    }
+    else
+    {
+        memsize /= KB;
+        memtype = "KB";
+    }
+
+    // Output memory size
+
+    snprintf(buf, sizeof(buf), FMT " %s", memsize, memtype);
+    status_line(line++, "memory", buf);
+    check_line(line, maxline);
+}
 
 
 ///
@@ -64,8 +185,7 @@ void refresh_status(void)
 {
     if (f.e4.status)
     {
-        char buf[STATUS_WIDTH + 1];
-        int nrows, line = 0;
+        int nrows;
 
         //lint -save -e438 -e550
         int unused __attribute__((unused));
@@ -73,61 +193,18 @@ void refresh_status(void)
 
         getmaxyx(d.status, nrows, unused);
 
-        // Output current position and no. of characters in edit buffer
-
-        snprintf(buf, sizeof(buf), FMT "/" FMT, t->dot, t->Z);
-        status_line(line++, "./Z", buf);
-
-        // Output row and column for display
-
-        int row = before_dot();
-
-        if (t->dot == t->Z)
+        if (nrows > 0)
         {
-            status_line(line++, "Row/Col", "EOF");
+            print_status(nrows);
+
+            // Output vertical line to divide command window from status window
+
+            chtype ch = ACS_VLINE | COLOR_PAIR(LINE); //lint !e835
+
+            mvwvline(d.status, 0, 0, ch, nrows);
+
+            wrefresh(d.status);
         }
-        else
-        {
-            int n = snprintf(buf, sizeof(buf), FMT, row + 1);
-
-            snprintf(buf + n, sizeof(buf) - (size_t)(uint)n, "/" FMT, d.col + 1);
-            status_line(line++, "Row/Col", buf);
-        }
-
-        // Output no. of lines in file
-
-        snprintf(buf, sizeof(buf), FMT, row + after_dot());
-        status_line(line++, "Lines", buf);
-
-        // Output memory size
-
-        uint_t memsize = t->size;
-
-        if (memsize >= GB)
-        {
-            snprintf(buf, sizeof(buf), "%uG", memsize / GB);
-        }
-        else if (memsize >= MB)
-        {
-            snprintf(buf, sizeof(buf), "%uM", memsize / MB);
-        }
-        else if (memsize >= KB)
-        {
-            snprintf(buf, sizeof(buf), "%uK", memsize / KB);
-        }
-
-        status_line(line++, "Memory", buf);
-
-        // Output page number
-
-        snprintf(buf, sizeof(buf), "%d", page_count());
-        status_line(line++, "Page", buf);
-
-        // Output vertical line to divide command window from status window
-
-        mvwvline(d.status, 0, 0, ACS_VLINE | COLOR_PAIR(LINE), nrows); //lint !e835
-
-        wrefresh(d.status);
     }                                   //lint !e438 !e550
 
     if (f.e4.fence)
@@ -161,10 +238,9 @@ void refresh_status(void)
 static void status_line(int line, const char *header, const char *data)
 {
     char buf[STATUS_WIDTH - 1];
-    int nbytes = snprintf(buf, sizeof(buf), " %s:", header);
-    size_t rem = sizeof(buf) - (size_t)(uint)nbytes;
-
-    snprintf(buf + nbytes, rem, "%*s ", (int)rem - 1, data);
-
+    int nbytes = snprintf(buf, sizeof(buf), " %s", header);
+    int rem = (int)sizeof(buf) - nbytes;
+    
+    snprintf(buf + nbytes, (size_t)(uint)rem, "%*s ", rem - 1, data);
     mvwprintw(d.status, line, 1, buf);
 }

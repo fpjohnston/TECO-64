@@ -35,7 +35,6 @@
 #include "eflags.h"
 #include "errcodes.h"
 #include "exec.h"
-#include "page.h"
 
 
 ///
@@ -124,11 +123,6 @@ void exec_insert(const char *buf, uint_t len)
     else
     {
         last_len = len;
-    }
-
-    if (t->Z != 0 && page_count() == 0) // Anything in buffer?
-    {
-        set_page(1);                    // If so, can't be on page 0
     }
 }
 

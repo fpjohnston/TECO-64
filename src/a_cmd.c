@@ -37,7 +37,6 @@
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
-#include "page.h"
 
 
 ///
@@ -87,11 +86,6 @@ bool append(bool n_set, int_t n_arg, bool colon)
     }
 
     set_dot(olddot);
-
-    if (t->Z != 0 && page_count() == 0) // Anything in buffer?
-    {
-        set_page(1);                    // If so, can't be on page 0
-    }
 
     return true;
 }
