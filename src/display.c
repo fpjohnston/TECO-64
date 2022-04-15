@@ -544,7 +544,7 @@ static void refresh_edit(void)
 
     wclear(d.edit);
 
-    w.topdot = t->dot + pos;             // First character output in window
+    w.topdot = t->dot + pos;            // First character output in window
 
     while ((c = read_edit(pos)) != EOF)
     {

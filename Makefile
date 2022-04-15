@@ -66,7 +66,16 @@ INCDIR   = include
 INCLUDES = -I ../$(INCDIR)
 LIBS     =                              # Default is no libraries
 
-include etc/make/verbosity.mk           # Verbosity option
+#  Enable verbosity if requested.
+
+ifdef   verbose
+    AT   =
+    NULL = 
+else
+    AT   = @
+    NULL = >/dev/null 2>&1
+endif
+
 include etc/make/sources.mk             # Source files
 include etc/make/display.mk             # Display node option
 include etc/make/buffer.mk              # Buffer handler option
@@ -147,7 +156,7 @@ obj/CFLAGS: obj
 -include $(DFILES)
 
 %.o: %.c $(HEADERS)
-	@echo Making $@ $(NULL)
+	@echo Making $@
 	$(AT)cd obj && $(CC) @CFLAGS ../$<
 
 #
@@ -155,7 +164,7 @@ obj/CFLAGS: obj
 #
 
 bin/$(TARGET): $(OBJECTS) bin
-	@echo Making $(@F) $(NULL)
+	@echo Making $(@F)
 	$(AT)cd obj && $(CC) $(DEBUG) -o ../$@ $(OBJECTS) $(LIBS)
 
 #
@@ -173,7 +182,7 @@ ERRORS_MD = doc/errors.md
 
 .PHONY: doc
 doc: html/options.html $(ERRORS_MD)
-	-$(AT)echo "Making Doxygen documents" $(NULL)
+	-$(AT)echo "Making Doxygen documents"
 	-$(AT)cp etc/Doxyfile obj/Doxyfile
 	-$(AT)echo "PREDEFINED = $(DOXYGEN)" >>obj/Doxyfile
 	-$(AT)doxygen obj/Doxyfile
@@ -182,7 +191,7 @@ html:
 	-$(AT)mkdir -p html
 
 html/options.html: html etc/options.xml etc/options.xsl
-	-$(AT)echo "Making HTML options file" $(NULL)
+	-$(AT)echo "Making HTML options file"
 	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html
 
 $(ERRORS_MD): etc/errors.xml etc/templates/errors.md etc/errors.pl
@@ -194,19 +203,19 @@ $(ERRORS_MD): etc/errors.xml etc/templates/errors.md etc/errors.pl
 
 .PHONY: clean
 clean: mostlyclean
-	-$(AT)cd bin && rm -f $(TARGET) $(TARGET).map $(NULL2)
+	-$(AT)cd bin && rm -f $(TARGET) $(TARGET).map $(NULL)
 
 .PHONY: distclean
 distclean: obj bin mostlyclean clean
-	-$(AT)rm -f obj/CFLAGS obj/Doxyfile $(NULL2) 
-	-$(AT)rm -rf html $(NULL2) 
-	-$(AT)cd src && rm -f *.bak $(NULL2)
-	-$(AT)cd test && rm -f cases/* results/* $(NULL2)
-	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL2)
+	-$(AT)rm -f obj/CFLAGS obj/Doxyfile $(NULL) 
+	-$(AT)rm -rf html $(NULL) 
+	-$(AT)cd src && rm -f *.bak $(NULL)
+	-$(AT)cd test && rm -f cases/* results/* $(NULL)
+	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL)
 
 .PHONY: mostlyclean
 mostlyclean: obj
-	-$(AT)cd obj && rm -f *.o *.d *.lob $(NULL2)
+	-$(AT)cd obj && rm -f *.o *.d *.lob $(NULL)
 
 #
 #  Define targets that verify Perl scripts.
@@ -227,7 +236,7 @@ LINT = flint -b -zero -i$(HOME)/flint/lnt $(DEFINES) ../etc/std.lnt \
              -e126 -e786 -e818 -e830 -e843 -e844 +fan +fas
 
 %.lob: %.c obj
-	@echo Making $@ $(NULL)
+	@echo Making $@
 	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
 
 #
@@ -236,7 +245,7 @@ LINT = flint -b -zero -i$(HOME)/flint/lnt $(DEFINES) ../etc/std.lnt \
 
 .PHONY: lint
 lint: obj $(HEADERS) $(LOBS)
-	@echo Linting object files $(NULL)
+	@echo Linting object files
 	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
 
 .PHONY: lobs
@@ -250,5 +259,5 @@ PHONY: smoke
 smoke:
 	@echo Rebuilding teco for smoke testing
 	$(MAKE) test=1 memcheck=1 teco
-	@echo Smoke testing $(TARGET) $(NULL)
+	@echo Smoke testing $(TARGET)
 	$(AT)test/smoke_test.pl test
