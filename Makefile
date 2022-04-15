@@ -24,20 +24,20 @@
 #
 #  Build targets:
 #
-#      all          Equivalent to 'teco' target. [default]
+#      all          Equivalent to 'teco' target.
 #      clean        Clean object files and executables.
 #      distclean    Clean everything.
 #      doc          Create or update documentation.
 #      help         Print help message.
 #      mostlyclean  Clean object files.
-#      scratch      Equivalent to 'distclean' and 'all' targets.
-#      teco         Build TECO-64 text editor.
+#      teco         Build TECO-64 text editor. [default]
 #
 #  Build options:
 #
 #      buffer=gap   Use gap buffer for editing text. [default]
 #      display=on   Enable display mode. [default]
 #      display=off  Disable display mode.
+#      headers      Regenerate header files if needed.
 #      int=32       Use 32-bit integers. [default]
 #      int=64       Use 64-bit integers.
 #      paging=std   Use standard paging.
@@ -45,12 +45,11 @@
 #
 #  Debugging options:
 #
-#      headers      Regenerate header files if needed.
 #      lint         Lint .c and .lob files (requires PC-lint).
 #      lobs         Lint .c files (requires PC-lint).
 #      gdb=1        Enable use of GDB debugger.
 #      gprof=1      Enable use of GPROF profiler.
-#      memcheck= 1  Enable checks for memory leaks.
+#      memcheck=1   Enable checks for memory leaks.
 #      verbose=1    Enable verbosity during build.
 #
 #  Optimization options:
@@ -60,16 +59,51 @@
 #
 ################################################################################
 
-TARGET = teco
+TARGET   = teco
+VPATH    = src:obj
+CC       = gcc
+INCDIR   = include
+INCLUDES = -I ../$(INCDIR)
+LIBS     =                              # Default is no libraries
 
-CC = gcc
+include etc/make/verbosity.mk           # Verbosity option
+include etc/make/sources.mk             # Source files
+include etc/make/display.mk             # Display node option
+include etc/make/buffer.mk              # Buffer handler option
+include etc/make/paging.mk              # Page handler option
+include etc/make/integer.mk             # Integer option
+include etc/make/debug.mk               # Debugging options
+include etc/make/optimize.mk            # Optimization options
+include etc/make/release.mk             # Release option
 
-CFLAGS = -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums
+DFILES  = $(SOURCES:.c=.d)
+LOBS    = $(SOURCES:.c=.lob)
+OBJECTS = $(SOURCES:.c=.o)
 
-INCDIR = include
+CFLAGS = -c -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums \
+         -O$(OPT) $(INCLUDES) $(OPT_OPT) $(DEBUG) $(DEFINES) -MMD
 
-OPT ?= 3
-OPT_OPT = -O$(OPT)
+#  Define default target ('teco'). This may also update the release version.
+
+.PHONY: $(TARGET) 
+$(TARGET): $(VERSION) bin/$(TARGET)
+
+.PHONY: all
+all: $(TARGET)                          # Equivalent to default target.
+
+#
+#  Define targets that create directories.
+#
+
+bin:
+	$(AT)mkdir -p bin
+
+obj:
+	$(AT)mkdir -p obj
+
+#
+#  Define targets that rebuild header files.
+#
 
 COMMANDS_H  = $(INCDIR)/commands.h
 ERRCODES_H  = $(INCDIR)/errcodes.h
@@ -78,380 +112,6 @@ EXEC_H      = $(INCDIR)/exec.h
 OPTIONS_H   = $(INCDIR)/options.h
 
 HEADERS     = $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H)
-
-ERRORS_MD   = doc/errors.md
-
-INCLUDES = -I ../$(INCDIR)
-
-VPATH=src:obj
-
-DOXYGEN = "DOXYGEN"
-
-LIBS =
-
-SOURCES = \
-    build_str.c    \
-    cmd_buf.c      \
-    cmd_estack.c   \
-    cmd_exec.c     \
-    cmd_scan.c     \
-    env_sys.c      \
-    errors.c       \
-    file.c         \
-    file_sys.c     \
-    memory.c       \
-    option_sys.c   \
-    qreg.c         \
-    search.c       \
-    teco.c         \
-    term_buf.c     \
-    term_in.c      \
-    term_out.c     \
-    term_rubout.c  \
-    term_sys.c     \
-                   \
-    a_cmd.c        \
-    bracket_cmd.c  \
-    case_cmd.c     \
-    ctrl_a_cmd.c   \
-    ctrl_t_cmd.c   \
-    ctrl_u_cmd.c   \
-    ctrl_v_cmd.c   \
-    ctrl_w_cmd.c   \
-    datetime_cmd.c \
-    delete_cmd.c   \
-    ea_cmd.c       \
-    eb_cmd.c       \
-    ec_cmd.c       \
-    ef_cmd.c       \
-    eg_cmd.c       \
-    ei_cmd.c       \
-    ek_cmd.c       \
-    el_cmd.c       \
-    em_cmd.c       \
-    en_cmd.c       \
-    eo_cmd.c       \
-    ep_cmd.c       \
-    e_pct_cmd.c    \
-    eq_cmd.c       \
-    equals_cmd.c   \
-    er_cmd.c       \
-    esc_cmd.c      \
-    e_ubar_cmd.c   \
-    ew_cmd.c       \
-    ex_cmd.c       \
-    ez_cmd.c       \
-    fb_cmd.c       \
-    fd_cmd.c       \
-    ff_cmd.c       \
-    fk_cmd.c       \
-    flag_cmd.c     \
-    fr_cmd.c       \
-    g_cmd.c        \
-    goto_cmd.c     \
-    if_cmd.c       \
-    insert_cmd.c   \
-    loop_cmd.c     \
-    m_cmd.c        \
-    move_cmd.c     \
-    n_cmd.c        \
-    number_cmd.c   \
-    oper_cmd.c     \
-    p_cmd.c        \
-    pct_cmd.c      \
-    q_cmd.c        \
-    radix_cmd.c    \
-    s_cmd.c        \
-    trace_cmd.c    \
-    type_cmd.c     \
-    ubar_cmd.c     \
-    u_cmd.c        \
-    var_cmd.c      \
-    w_cmd.c        \
-    x_cmd.c        \
-    yank_cmd.c     \
-
-#
-#  Check to see if we should enable test mode.
-#
-################################################################################
-
-ifdef   release
-
-VERSION = version
-
-endif
-
-#
-#  Check to see if we should enable test mode.
-#
-################################################################################
-
-ifdef   test
-
-DEFINES += -D TEST
-DOXYGEN +=    TEST
-
-endif
-
-#
-#  Check to see if we should enable display mode.
-#
-################################################################################
-
-ifeq ($(display),off)
-
-override display = 0
-
-else ifeq ($(display),no)
-
-override display = 0
-
-else ifeq ($(display),0)
-
-override display = 0
-
-else ifndef ($(display))
-
-override display = 1
-
-endif
-
-ifneq ($(display),0)
-
-DEFINES += -D DISPLAY_MODE
-LIBS    += -l ncurses
-SOURCES += display.c color_cmd.c key_cmd.c map_cmd.c status.c
-
-else
-
-SOURCES += stubs.c
-
-endif
-
-#
-#  Check to see which buffer handler we should use
-#
-################################################################################
-
-ifeq (${buffer}, rope)
-
-$(error Rope buffer handler is not yet implemented)
-
-SOURCES += rope_buf.c
-
-else ifeq (${buffer}, gap)
-
-SOURCES += gap_buf.c
-
-else ifeq (${buffer}, )
-
-SOURCES += gap_buf.c
-
-else
-
-$(error Unknown buffer handler: ${buffer})
-
-endif
-
-#
-#  Check to see which paging handler we should use
-#
-################################################################################
-
-ifeq (${paging}, vm)
-
-SOURCES += page_vm.c
-DEFINES += -D PAGE_VM
-DOXYGEN +=    PAGE_VM
-
-else ifeq (${paging}, file)
-
-$(error Holding file paging is not yet implemented)
-
-SOURCES += page_file.c
-
-else ifeq (${paging}, std)
-
-SOURCES += page_std.c
-
-else ifeq (${paging}, )
-
-SOURCES += page_vm.c
-DEFINES += -D PAGE_VM
-DOXYGEN +=    PAGE_VM
-
-else
-
-$(error Unknown paging handler: ${paging})
-
-endif
-
-# Always echo ESCape as dollar sign, regardless of alternate delimiters
-
-ifdef   dollar
-
-DEFINES += -D DOLLAR_ESC
-DOXYGEN +=    DOLLAR_ESC
-
-endif
-
-# Use 64-bit long integers
-
-ifeq      (${int}, 64)
-
-DEFINES += -D INT_T=64
-DOXYGEN +=    INT_T=64
-
-else ifeq (${int}, 32)
-
-DEFINES += -D INT_T=32
-DOXYGEN +=    INT_T=32
-
-else ifeq (${int}, )
-
-DEFINES += -D INT_T=32
-DOXYGEN +=    INT_T=32
-
-else
-
-$(error Unknown integer size: ${int}: expected 32 or 64)
-
-endif
-
-ifdef   verbose
-
-AT =
-NULL = >/dev/null 2>&1
-NULL2 = 
-
-else
-
-AT = @
-NULL =
-NULL2 = >/dev/null 2>&1
-
-endif
-
-ifdef   memcheck
-
-DEFINES += -D MEMCHECK
-DOXYGEN +=    MEMCHECK
-OPTIONS_DEBUG += -d
-
-endif
-
-ifdef   gdb
-
-DFLAGS += -g
-OPT_OPT = -O0
-
-endif
-
-ifdef   gprof
-
-DFLAGS += -pg
-OPT_OPT = -O3
-
-endif
-
-ifdef   ndebug
-
-DEFINES += -D NDEBUG
-DOXYGEN +=    NDEBUG
-
-endif
-
-ifdef   nostrict
-
-DEFINES += -D NOSTRICT
-
-endif
-
-LOBS = $(SOURCES:.c=.lob)
-
-OBJECTS = $(SOURCES:.c=.o)
-
-DFILES = $(SOURCES:.c=.d)
-
-CFLAGS += -MMD -c $(INCLUDES) $(OPT_OPT) $(DFLAGS) $(DEFINES)
-
-LINT = flint -b -zero -i$(HOME)/flint/lnt $(DEFINES) ../etc/std.lnt \
-             -e126 -e786 -e818 -e830 -e843 -e844 +fan +fas
-
-.PHONY: all
-all: $(TARGET)
-
-.PHONY: scratch
-scratch: distclean all
-
-.PHONY: help
-help:
-	@echo "Build targets:"
-	@echo ""
-	@echo "    all          Equivalent to 'teco' target. [default]"
-	@echo "    clean        Clean object files and executables."
-	@echo "    distclean    Clean everything."
-	@echo "    doc          Create or update documentation (requires Doxygen)."
-	@echo "    help         Print this message."
-	@echo "    mostlyclean  Clean object files."
-	@echo "    scratch      Equivalent to 'distclean' and 'all' targets."
-	@echo "    teco         Build TECO-64 text editor."
-	@echo ""
-	@echo "Build options:"
-	@echo ""
-	@echo "    buffer=gap   Use gap buffer for editing text. [default]"
-	@echo "    display=on   Enable display mode. [default]"
-	@echo "    display=off  Enable display mode."
-	@echo "    int=32       Use 32-bit integers. [default]."
-	@echo "    int=64       Use 64-bit integers."
-	@echo "    paging=std   Use standard paging."
-	@echo "    paging=vm    Use virtual memory paging. [default]"
-	@echo ""
-	@echo "Debugging options:"
-	@echo ""
-	@echo "    headers      Rebuild header files if needed."
-	@echo "    lint         Lint .c and .lob files (requires PC-lint)."
-	@echo "    lobs         Lint .c files (requires PC-lint)."
-	@echo "    gdb=1        Enable use of GDB debugger."
-	@echo "    gprof=1      Enable use of GPROF profiler."
-	@echo "    memcheck=1   Enable checks for memory leaks."
-	@echo "    verbose=1    Enable verbosity during build."
-	@echo ""
-	@echo "Optimization options:"
-	@echo ""
-	@echo "    ndebug=1     Disable run-time assertions."
-	@echo "    nostrict=1   Disable run-time syntax checking."
-	@echo ""
-
-bin:
-	$(AT)mkdir -p bin
-
-obj:
-	$(AT)mkdir -p obj
-
-.PHONY: $(TARGET) 
-$(TARGET): $(VERSION) bin/$(TARGET)
-
-bin/$(TARGET): $(OBJECTS) bin
-	@echo Making $(@F) $(NULL)
-	$(AT)cd obj && $(CC) $(DFLAGS) -o ../$@ $(OBJECTS) $(LIBS)
-
-%.lob: %.c obj
-	@echo Making $@ $(NULL)
-	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
-
-%.o: %.c $(HEADERS)
-	@echo Making $@ $(NULL)
-	$(AT)cd obj && $(CC) @CFLAGS ../$<
-
--include $(DFILES)
-
-$(OBJECTS): obj/CFLAGS
-
-.PHONY: version
-version: distclean
-	$(AT)etc/version.pl $(INCDIR)/version.h --release=$(release)
 
 .PHONY: headers
 headers: $(HEADERS)
@@ -471,27 +131,45 @@ $(EXEC_H): etc/commands.xml etc/templates/exec.h etc/commands.pl
 $(OPTIONS_H): etc/options.xml etc/templates/options.h etc/options.pl
 	$(AT)etc/options.pl -c $< -t etc/templates/options.h -o $@ $(OPTIONS_DEBUG)
 
+.PHONY: version
+version: distclean
+	$(AT)etc/version.pl $(INCDIR)/version.h --release=$(release)
+
+#
+#  Define how to compile source files.
+#
+
+$(OBJECTS): obj/CFLAGS
+
 obj/CFLAGS: obj
 	-$(AT)echo '$(CFLAGS)' | cmp -s - $@ || echo '$(CFLAGS)' > $@
 
-.PHONY: clean
-clean: mostlyclean
-	-$(AT)cd bin && rm -f $(TARGET) $(TARGET).map $(NULL2)
+-include $(DFILES)
 
-.PHONY: critic
-critic:
-	$(AT)perlcritic etc/commands.pl
-	$(AT)perlcritic etc/errors.pl
-	$(AT)perlcritic etc/options.pl
-	$(AT)perlcritic test/smoke_test.pl
+%.o: %.c $(HEADERS)
+	@echo Making $@ $(NULL)
+	$(AT)cd obj && $(CC) @CFLAGS ../$<
 
-.PHONY: distclean
-distclean: obj bin mostlyclean clean
-	-$(AT)rm -f obj/CFLAGS obj/Doxyfile $(NULL2) 
-	-$(AT)rm -rf html $(NULL2) 
-	-$(AT)cd src && rm -f *.bak $(NULL2)
-	-$(AT)cd test && rm -f cases/* results/* $(NULL2)
-	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL2)
+#
+#  Define how to link object files and create executable image.
+#
+
+bin/$(TARGET): $(OBJECTS) bin
+	@echo Making $(@F) $(NULL)
+	$(AT)cd obj && $(CC) $(DEBUG) -o ../$@ $(OBJECTS) $(LIBS)
+
+#
+#  Define help target.
+#
+
+include etc/make/help.mk                # Help target
+
+#
+#  Define targets that build documentation
+#
+
+DOXYGEN   = "DOXYGEN"
+ERRORS_MD = doc/errors.md
 
 .PHONY: doc
 doc: html/options.html $(ERRORS_MD)
@@ -510,19 +188,67 @@ html/options.html: html etc/options.xml etc/options.xsl
 $(ERRORS_MD): etc/errors.xml etc/templates/errors.md etc/errors.pl
 	$(AT)etc/errors.pl -i $< -t etc/templates/errors.md -o $@
 
-.PHONY: lobs
-lobs: obj $(OPTIONS_H) $(LOBS)
+#
+#  Define targets that clean things up
+#
 
-.PHONY: lint
-lint: obj $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H) $(LOBS)
-	@echo Linting object files $(NULL)
-	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
+.PHONY: clean
+clean: mostlyclean
+	-$(AT)cd bin && rm -f $(TARGET) $(TARGET).map $(NULL2)
+
+.PHONY: distclean
+distclean: obj bin mostlyclean clean
+	-$(AT)rm -f obj/CFLAGS obj/Doxyfile $(NULL2) 
+	-$(AT)rm -rf html $(NULL2) 
+	-$(AT)cd src && rm -f *.bak $(NULL2)
+	-$(AT)cd test && rm -f cases/* results/* $(NULL2)
+	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL2)
 
 .PHONY: mostlyclean
 mostlyclean: obj
 	-$(AT)cd obj && rm -f *.o *.d *.lob $(NULL2)
 
-.PHONY: smoke
-smoke: $(TARGET)
+#
+#  Define targets that verify Perl scripts.
+#
+
+.PHONY: critic
+critic:
+	$(AT)perlcritic etc/commands.pl
+	$(AT)perlcritic etc/errors.pl
+	$(AT)perlcritic etc/options.pl
+	$(AT)perlcritic test/smoke_test.pl
+
+#
+#  Define how to lint source files.
+#
+
+LINT = flint -b -zero -i$(HOME)/flint/lnt $(DEFINES) ../etc/std.lnt \
+             -e126 -e786 -e818 -e830 -e843 -e844 +fan +fas
+
+%.lob: %.c obj
+	@echo Making $@ $(NULL)
+	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
+
+#
+#  Define how to lint .lob (lint object) files.
+#
+
+.PHONY: lint
+lint: obj $(HEADERS) $(LOBS)
+	@echo Linting object files $(NULL)
+	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
+
+.PHONY: lobs
+lobs: obj $(OPTIONS_H) $(LOBS)
+
+#
+#  Define target to smoke test executable image.
+#
+
+PHONY: smoke
+smoke:
+	@echo Rebuilding teco for smoke testing
+	$(MAKE) test=1 memcheck=1 teco
 	@echo Smoke testing $(TARGET) $(NULL)
 	$(AT)test/smoke_test.pl test
