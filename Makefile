@@ -244,12 +244,12 @@ LINT = flint -b -zero -i$(HOME)/flint/lnt $(DEFINES) ../etc/std.lnt \
 #
 
 .PHONY: lint
-lint: obj $(HEADERS) $(LOBS)
+lint: obj $(LOBS)
 	@echo Linting object files
 	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
 
 .PHONY: lobs
-lobs: obj $(OPTIONS_H) $(LOBS)
+lobs: obj $(LOBS)
 
 #
 #  Define target to smoke test executable image.

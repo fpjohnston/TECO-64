@@ -172,81 +172,11 @@ while ( defined( my $file = pop @teco_files ) )
       or croak "Failed to copy '$file' to '$testdir/cases': $OS_ERROR";
 }
 
-# Sort all of the input files by file name, then create a test script for
-# each one, translating any tokens as needed, then run the script, capture
-# the output, and verify that we got the desired result.
-
-foreach my $file ( sort { uc $a cmp uc $b } keys %scripts )
-{
-    Readonly my $ERROR => -1;
-
-    my $infile = "$scripts{$file}/$file.test";
-    my @input  = read_file($infile);
-
-    next if $#input == $ERROR;
-
-    my $outfile = "$file.tec";
-    my ( $report, $text, $expects, $redirect ) =
-        parse_script( $infile, $outfile, @input );
-
-    next unless $report;
-
-    if ($make)
-    {
-        # Found a real test script, so count it
-
-        ++$nscripts;
-
-        $text = translate_tokens( $infile, $text, $redirect );
-
-        write_test( "$testdir/cases/$outfile", $text );
-
-        if ($execute)
-        {
-            my $cwd = getcwd;
-
-            chdir "$testdir/cases" or croak "Can't change directory to $testdir/cases";
-
-            my $actual = setup_test( $outfile, $report, $expects, $redirect );
-
-            chdir $cwd or croak "Can't change directory to $cwd";
-
-            write_result( "$testdir/results/$file.lis", $actual );
-        }
-        else
-        {
-            $prove = 0;
-        }
-    }
-
-    if ($prove)
-    {
-        prove_test( $file, $report, $expects );
-    }
-}
+make_tests();
 
 if ($execute)
 {
-    # Clean up any temp. files we may have created.
-
-    my @files = glob "$testdir/cases/_teco_*";
-
-    foreach my $file (@files)
-    {
-        unlink $file or croak "Can't delete file: $file";
-    }
-
-    # Tell user which benchmark files were superfluous
-
-    if ($orphans && keys %benchmark_files != 0)
-    {
-        print "Orphan benchmark files:\n";
-
-        foreach my $file (sort keys %benchmark_files)
-        {
-            print "    $file\n";
-        }
-    }
+    exec_tests();
 }
 
 if ($make)
@@ -303,6 +233,35 @@ sub check_teco
     }
 
     return $teco;
+}
+
+
+# Execute tests
+
+sub exec_tests
+{
+    # Clean up any temp. files we may have created.
+
+    my @files = glob "$testdir/cases/_teco_*";
+
+    foreach my $file (@files)
+    {
+        unlink $file or croak "Can't delete file: $file";
+    }
+
+    # Tell user which benchmark files were superfluous
+
+    if ($orphans && keys %benchmark_files != 0)
+    {
+        print "Orphan benchmark files:\n";
+
+        foreach my $file (sort keys %benchmark_files)
+        {
+            print "    $file\n";
+        }
+    }
+
+    return;
 }
 
 
@@ -441,6 +400,66 @@ sub initialize
     return;
 }
 
+
+# Make test scripts.
+
+sub make_tests
+{
+    # Sort all of the input files by file name, then create a test script for
+    # each one, translating any tokens as needed, then run the script, capture
+    # the output, and verify that we got the desired result.
+
+    foreach my $file ( sort { uc $a cmp uc $b } keys %scripts )
+    {
+        Readonly my $ERROR => -1;
+
+        my $infile = "$scripts{$file}/$file.test";
+        my @input  = read_file($infile);
+
+        next if $#input == $ERROR;
+
+        my $outfile = "$file.tec";
+        my ( $report, $text, $expects, $redirect ) =
+            parse_script( $infile, $outfile, @input );
+
+        next unless $report;
+
+        if ($make)
+        {
+            # Found a real test script, so count it
+
+            ++$nscripts;
+
+            $text = translate_tokens( $infile, $text, $redirect );
+
+            write_test( "$testdir/cases/$outfile", $text );
+
+            if ($execute)
+            {
+                my $cwd = getcwd;
+
+                chdir "$testdir/cases" or croak "Can't change directory to $testdir/cases";
+
+                my $actual = setup_test( $outfile, $report, $expects, $redirect );
+
+                chdir $cwd or croak "Can't change directory to $cwd";
+
+                write_result( "$testdir/results/$file.lis", $actual );
+            }
+            else
+            {
+                $prove = 0;
+            }
+        }
+
+        if ($prove)
+        {
+            prove_test( $file, $report, $expects );
+        }
+    }
+
+    return;
+}
 
 # Read a test script header, and figure out how we need to proceed.
 

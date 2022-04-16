@@ -28,16 +28,16 @@ QN "E
         (.+1),4:W-1 @="Mark set at %d"
     |
         .+1-(4:W) "E
-            0,4:W :@^A"Mark reset"
+            0,4:W ^[ :@^A"Mark reset"
         |
-            4:W-1 @="Mark already set at %d"
+            4:W-1 @="Mark already at %d"
         '
     '
     /
 
-!! Shift-F1 clears a mark
+!! Ctrl-F1 clears a mark
 
-@fm/ S_F1 /
+@fm/ C_F1 /
     4:W "E
         :@^A"Mark not set"
     |
@@ -53,8 +53,8 @@ QN "E
     |
         4:W-1,. XZ
         4:W-1,. D
-        0,4:W
-        :@^A"Text cut to Q-register Z"
+        0,4:W ^[
+        :@^A"Text cut"
     '
     /
 
@@ -65,21 +65,26 @@ QN "E
         :@^A"Mark not set"
     |
         4:W-1,. XZ
-        0,4:W
-        :@^A"Text copied to Q-register Z"
+        0,4:W ^[
+        :@^A"Text copied"
     '
     /
 
 !! F4 pastes the text in Q-register Z
 
 @fm/ F4 /
-    :QZ "E :@^A"Nothing to paste from Q-register Z"
+    :QZ "E
+        :@^A"No text to paste"
     |
         GZ
-        :@^A"Text pasted from Q-register Z"
+        :@^A"Text pasted"
     '
     /
 
-@fm/ F12 / (-1 - (3:W)),3:W /           !! Toggle SEEALL mode
+!! Ctrl-F4 clears the paste buffer (Q-register Z).
+
+@fm/ C_F4 / 0,0 XZ :@^A"Text cleared" /
+
+@fm/ F12 / (-1 - (3:W)),3:W ^[ /        !! Toggle SEEALL mode
 
 ^[^[

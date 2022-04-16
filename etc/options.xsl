@@ -33,8 +33,8 @@
                                             <xsl:when test="normalize-space(short_name) = ''">(n/a)</xsl:when>
                                             <xsl:otherwise>-<xsl:value-of select="short_name"/></xsl:otherwise>
                                         </xsl:choose>
-				    </td>
-                                    <td> --<xsl:value-of select="long_name"/> </td>
+                                    </td>
+                                    <td>--<xsl:value-of select="long_name"/> </td>
                                     <td align="center">
                                         <xsl:choose>
                                             <xsl:when test="argument">
