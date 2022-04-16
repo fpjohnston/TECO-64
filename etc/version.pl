@@ -79,13 +79,13 @@ exit 0;
 sub read_version
 {
     my ($infile) = @_;
+    my local $RS = undef;
 
     open my $fh, '<', $infile or die "Cannot open input version file $infile\n";
 
-    local $/ = undef;
     my $data = <$fh>;
 
-    close $fh;
+    close $fh or croak "Can't close $infile: $OS_ERROR";
 
     my %header = ();
 
@@ -215,7 +215,7 @@ sub write_version
 
     print {$fh} join "\n", @data;
 
-    close $fh;
+    close $fh or croak "Can't close $outfile: $OS_ERROR";
 
     print "Updated TECO release version from $previous to "
         . "$version{major}.$version{minor}.$version{patch}\n";
