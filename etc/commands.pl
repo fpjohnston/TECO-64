@@ -207,7 +207,7 @@ sub make_entry
     }
 
     $name .= q{,};
-    $name = sprintf '%-7s', $name;
+    $name = sprintf '%-11s', $name;
 
     if ( $scan ne 'NULL' )
     {
