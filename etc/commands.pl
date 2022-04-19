@@ -29,162 +29,64 @@ use strict;
 use warnings;
 use version; our $VERSION = '1.0.0';
 
-use File::Basename;
-use File::Spec;
-use File::Slurp;
 use Getopt::Long;
-use XML::LibXML;
 use English qw( -no_match_vars );
-use autodie qw( open close );
-use POSIX qw( strftime );
-use Readonly;
-use Carp;
+use XML::LibXML;
 
-Readonly my $INSERT_WARNING => '/\* \(INSERT: WARNING NOTICE\) \*/';
-Readonly my $INSERT_CMDS    => '/\* \(INSERT: GENERAL COMMANDS\) \*/';
-Readonly my $INSERT_E_CMDS  => '/\* \(INSERT: E COMMANDS\) \*/';
-Readonly my $INSERT_F_CMDS  => '/\* \(INSERT: F COMMANDS\) \*/';
-
-Readonly my $WARNING =>
-  '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
+use lib 'etc/';
+use Teco qw(teco_read teco_write);
 
 # Command-line arguments
 
 my %args = (
-    input    => undef,    # Input file (usually commands.xml)
+    input    => undef,    # Input XML file
+    output   => undef,    # Output header file
     template => undef,    # Template file
-    output   => undef,    # Output file
 );
 
-Readonly my $NAME => q{@} . 'name';
-
-my $cmds;
-my $e_cmds;
-my $f_cmds;
-my %scan_funcs;
-my %exec_funcs;
-
 #
-#  Parse our command-line options
+#  Main program entry.
 #
 
-GetOptions(
-    'input=s'    => \$args{input},
-    'template=s' => \$args{template},
-    'output=s'   => \$args{output}
-);
+main();
 
-check_file( $args{input},    'r', '-e' );
-check_file( $args{template}, 'r', '-t' );
-check_file( $args{output},   'w', '-o' );
+exit 0;
 
-read_xml();    # Parse XML file
+#
+#  This subroutine is defined so that variables we use therein are not global
+#  and therefore don't cause perltidy to complain if they happen to be the
+#  same as variables used in the subroutines below.
+#
 
-my $template = read_file( $args{template} );
-
-if ( $args{output} =~ /commands.h/msx )
+sub main
 {
-    make_commands_h();
-}
-elsif ( $args{output} =~ /exec.h/msx )
-{
-    make_exec_h();
-}
-else
-{
-    croak "Unknown output file $args{output}";
-}
+    parse_options();
 
-exit;
+    my $xmlfile  = teco_read( $args{input} );
+    my $template = teco_read( $args{template} );
 
-#
-#  Validate that we have a file name for specified option, that the file
-#  exists, that it is readable, and that it is a plain file.
-#
+    print "Reading configuration file $args{input}...\n";
 
-sub check_file
-{
-    my ( $file, $mode, $option ) = @_;
+    my $array_ref = parse_xml( $xmlfile, 1 );
 
-    croak "No file specified for $option option\n" if !$file;
-
-    return if $mode eq 'w';
-
-    croak "File $file does not exist"      if !-e $file;
-    croak "File $file is not readable"     if !-r $file;
-    croak "File $file is not a plain file" if !-f $file;
-
-    return;
-}
-
-#
-#  Get child element of current node, and validate it.
-#
-
-sub get_child
-{
-    my ( $tag, $child, $lineno ) = @_;
-
-    my @child = $tag->findnodes("./$child");
-
-    croak "Only one <$child> tag allowed for error at line $lineno"
-      if ( $#child > 0 );
-
-    return q{} if $#child < 0;
-
-    return q{ } if length $child[0]->textContent() == 0;
-
-    return $child[0]->textContent;
-}
-
-#
-#  Get 'detail' child elements of current node, and validate it.
-#
-
-sub get_details
-{
-    my ( $tag, $child, $lineno ) = @_;
-
-    my @child = $tag->findnodes("./$child");
-
-    croak "Missing <$child> tag for error at line $lineno"
-      if ( $#child < 0 );
-
-    my @details = ();
-
-    for my $child (@child)
+    if ( $args{output} =~ /commands.h/msx )
     {
-        push @details, $child->textContent();
+        my ( $cmds, $e_cmds, $f_cmds ) = make_commands($array_ref);
+
+        write_commands( $template, $cmds, $e_cmds, $f_cmds );
     }
+    elsif ( $args{output} =~ /exec.h/msx )
+    {
+        my ( $scan_list, $exec_list ) = make_exec($array_ref);
 
-    return @details;
-}
+        write_exec( $template, $scan_list, $exec_list );
+    }
+    else
+    {
+        print "Unknown output file $args{output}\n";
 
-#
-#  Create commands.h (or equivalent)
-#
-
-sub make_commands_h
-{
-    my $fh;
-    my $file = $args{output};
-
-    $template =~ s/$INSERT_WARNING/$WARNING/ms;
-    $template =~ s/$INSERT_CMDS/$cmds/ms;
-    $template =~ s/$INSERT_E_CMDS/$e_cmds/ms;
-    $template =~ s/$INSERT_F_CMDS/$f_cmds/ms;
-
-    print {*STDERR} "Creating $file\n" or croak;
-
-    ## no critic (RequireBriefOpen)
-
-    open $fh, '>', $file or croak "Can't open $file\n";
-
-    print {$fh} $template or croak "Can't print to $file\n";
-
-    close $fh or croak "Can't close $file\n";
-
-    ## use critic
+        exit 1;
+    }
 
     return;
 }
@@ -193,59 +95,112 @@ sub make_commands_h
 #  Create macro line for each command defined in commands.h
 #
 
-sub make_entry
+sub make_commands
 {
-    my ( $name, $scan, $exec, $mn_args ) = @_;
+    my ($ref) = @_;
+    my @commands = @{$ref};
+    my $cmds;
+    my $e_cmds;
+    my $f_cmds;
 
-    if ( $name eq q{'} || $name eq q{\\} )
+    foreach (@commands)
     {
-        $name = "'\\$name'";
+        my $name    = $_->{name};
+        my $scan    = $_->{scan};
+        my $exec    = $_->{exec};
+        my $mn_args = $_->{mn_args};
+
+        if ( $name eq q{'} || $name eq q{\\} )
+        {
+            $name = "'\\$name'";
+        }
+        elsif ( $name eq q{F'} )
+        {
+            $name = q{'\\''};
+        }
+        elsif ( length $name == 1 || $name =~ /^\\x..$/msx )
+        {
+            $name = "'$name'";
+        }
+
+        if ( !defined $exec )
+        {
+            $exec = 'NULL';
+        }
+
+        $scan .= q{,};
+        $scan = sprintf '%-15s', $scan;
+        $exec .= q{,};
+        $exec = sprintf '%-15s', $exec;
+
+        if ( $name =~ /^E(.)$/ms )
+        {
+            $name = "'$1'";
+        }
+        elsif ( $name =~ /^F(.)$/ms )
+        {
+            $name = "'$1'";
+        }
+
+        $name .= q{,};
+        $name = sprintf '%-11s', $name;
+
+        my $entry = sprintf '%s', "    ENTRY($name  $scan  $exec  $mn_args),\n";
+
+        if ( $name =~ s/^('[[:upper:]]',)/\L$1/msx )
+        {
+            $entry .= sprintf '%s',
+              "    ENTRY($name  $scan  $exec  $mn_args),\n";
+        }
+
+        if ( $_->{name} =~ /^E.$/msx )
+        {
+            $e_cmds .= $entry;
+        }
+        elsif ( $_->{name} =~ /^F.$/msx )
+        {
+            $f_cmds .= $entry;
+        }
+        else
+        {
+            $cmds .= $entry;
+        }
     }
-    elsif ( length $name == 1 || $name =~ /^\\x..$/msx )
-    {
-        $name = "'$name'";
-    }
 
-    $name .= q{,};
-    $name = sprintf '%-11s', $name;
+    chomp $cmds;
+    chomp $e_cmds;
+    chomp $f_cmds;
 
-    if ( $scan ne 'NULL' )
-    {
-        $scan_funcs{$scan} = 1;
-    }
-
-    if ( defined $exec )
-    {
-        $exec_funcs{$exec} = 1;
-    }
-    else
-    {
-        $exec = 'NULL';
-    }
-
-    $scan .= q{,};
-    $scan = sprintf '%-15s', $scan;
-    $exec .= q{,};
-    $exec = sprintf '%-15s', $exec;
-
-    my $entry = sprintf '%s', "    ENTRY($name  $scan  $exec  $mn_args),\n";
-
-    if ( $name =~ s/^('[[:upper:]]',)/\L$1/msx )
-    {
-        $entry .= sprintf '%s', "    ENTRY($name  $scan  $exec  $mn_args),\n";
-    }
-
-    return $entry;
+    return ( $cmds, $e_cmds, $f_cmds );
 }
 
 #
-#  Create exec.h (or equivalent)
+#  Create macro line for each command defined in commands.h
 #
 
-sub make_exec_h
+sub make_exec
 {
-    my $fh;
-    my $file = $args{output};
+    my ($ref) = @_;
+    my @commands = @{$ref};
+    my %scan_funcs;
+    my %exec_funcs;
+
+    foreach (@commands)
+    {
+        my $scan = $_->{scan};
+        my $exec = $_->{exec};
+
+        if ( $scan ne 'NULL' )
+        {
+            $scan_funcs{$scan} = 1;    # We found a real scan function
+        }
+
+        if ( defined $exec )
+        {
+            $exec_funcs{$exec} = 1;    # We found a real exec function
+        }
+    }
+
     my $scan_list;
     my $exec_list;
 
@@ -263,51 +218,58 @@ sub make_exec_h
 
     chomp $exec_list;
 
-    my $INSERT_WARNING = '/\* \(INSERT: WARNING NOTICE\) \*/';
-    my $insert_scan    = '/\* \(INSERT: SCAN FUNCTIONS\) \*/';
-    my $insert_exec    = '/\* \(INSERT: EXEC FUNCTIONS\) \*/';
+    return ( $scan_list, $exec_list );
+}
 
-    $template =~ s/$INSERT_WARNING/$WARNING/ms;
-    $template =~ s/$insert_scan/$scan_list/ms;
-    $template =~ s/$insert_exec/$exec_list/ms;
+#
+#  Parse command-line options.
+#
 
-    print {*STDERR} "Creating $file\n" or croak;
+sub parse_options
+{
+    GetOptions( 'output=s' => \$args{output} );
 
-    ## no critic (RequireBriefOpen)
+    die "Not enough input files\n" if $#ARGV < 1;
+    die "Too many input files\n"   if $#ARGV > 1;
 
-    open $fh, '>', $file or croak "Can't open $file\n";
-
-    printf {$fh} $template, or croak "Can't print to $file\n";
-
-    close $fh or croak "Can't close $file\n";
-
-    ## use critic
+    $args{input}    = $ARGV[0];
+    $args{template} = $ARGV[1];
 
     return;
 }
 
 #
-#  parse_commands() - Find all TECO commands in XML data.
+#  parse_xml() - Parse XML file.
+#
+#  Note that this subroutine is called twice: once to calculate the spacing
+#  for the help text for each option, and then to actually store the data.
 #
 
-sub parse_commands
+sub parse_xml
 {
-    my ($xml) = @_;
-
+    my ( $xml, $type ) = @_;
     my $dom = XML::LibXML->load_xml( string => $xml, line_numbers => 1 );
 
-    my $teco = $dom->findnodes("/teco/$NAME");
+    ## no critic (ProhibitInterpolationOfLiterals)
 
-    die "Can't find program name\n" if !$teco;
+    my $teco = $dom->findvalue(qq{/teco/\@name});
 
-    my $e_cmd;
+    ## use critic
+
+    die "Missing name attribute\n"         if !defined $teco;
+    die "Invalid name attribute '$teco'\n" if $teco ne 'teco';
+
+    my @commands = ();
 
     foreach my $section ( $dom->findnodes('/teco/section') )
     {
         my $line  = $section->line_number();
         my $title = $section->getAttribute('title');
 
-        croak "Section element missing title at line $line" if !defined $title;
+        if ( !defined $title )
+        {
+            die "Missing title at line $line\n";
+        }
 
         foreach my $command ( $section->findnodes('./command') )
         {
@@ -336,51 +298,55 @@ sub parse_commands
                 $exec = "exec_$exec";
             }
 
-            # Note the use of a flag variable to mark when we've started parsing
-            # E commands. This allows us to distinguish the 1-character FF (form
-            # feed) command from the 2-character FF command.
+            if ( $name =~ /^\[(.)\]/msx )
+            {
+                $name = $1;    # Convert [^] to ^
+            }
 
-            if ( $name =~ /^E(.)$/msx )
-            {
-                $e_cmds .= make_entry( $1, $scan, $exec, $mn_args );
-                $e_cmd = 1;
-            }
-            elsif ( $name =~ /^F(.)$/msx && $e_cmd )
-            {
-                $f_cmds .= make_entry( $1, $scan, $exec, $mn_args );
-            }
-            else
-            {
-                if ( $name =~ /^\[(.)\]/msx )
-                {
-                    $name = $1;
-                }
-
-                $cmds .= make_entry( $name, $scan, $exec, $mn_args );
-            }
+            push @commands,
+              {
+                name    => $name,
+                scan    => $scan,
+                exec    => $exec,
+                mn_args => $mn_args
+              };
         }
     }
 
-    chomp $cmds;
-    chomp $e_cmds;
-    chomp $f_cmds;
+    return \@commands;
+}
+
+#
+#  Create new version of commands.h.
+#
+
+sub write_commands
+{
+    my ( $template, $cmds, $e_cmds, $f_cmds ) = @_;
+    my %changes = (
+        'GENERAL COMMANDS' => $cmds,
+        'E COMMANDS'       => $e_cmds,
+        'F COMMANDS'       => $f_cmds,
+    );
+
+    teco_write( $template, $args{output}, %changes );
 
     return;
 }
 
 #
-#  read_xml() - Read XML file and extract data for each name.
+#  Create new version of exec.h.
 #
 
-sub read_xml
+sub write_exec
 {
-    print {*STDERR} "Reading configuration file $args{input}...\n" or croak;
+    my ( $template, $scan_list, $exec_list ) = @_;
+    my %changes = (
+        'SCAN FUNCTIONS' => $scan_list,
+        'EXEC FUNCTIONS' => $exec_list
+    );
 
-    # Read entire input file into string.
-
-    my $xml = do { local ( @ARGV, $RS ) = $args{input}; <> };
-
-    parse_commands($xml);
+    teco_write( $template, $args{output}, %changes );
 
     return;
 }

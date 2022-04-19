@@ -29,90 +29,63 @@ use strict;
 use warnings;
 use version; our $VERSION = '1.0.0';
 
-use File::Basename;
-use File::Spec;
-use File::Slurp;
 use Getopt::Long;
 use XML::LibXML;
-use English qw( -no_match_vars );
-use autodie qw( open close );
-use POSIX qw( strftime );
-use Readonly;
-use Carp;
 
-Readonly my $INSERT_WARNING  => '/\* \(INSERT: WARNING NOTICE\) \*/';
-Readonly my $INSERT_ERRCODES => '/\* \(INSERT: ERROR CODES\) \*/';
-Readonly my $INSERT_ERRLIST  => '/\* \(INSERT: ERROR MESSAGES\) \*/';
-Readonly my $INSERT_ERRHELP  => '/\* \(INSERT: ERROR DETAILS\) \*/';
-
-Readonly my $WARNING =>
-  '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
+use lib 'etc/';
+use Teco qw(teco_read teco_write);
 
 # Command-line arguments
 
 my %args = (
-    input    => undef,    # Input file (usually errors.xml)
+    input    => undef,    # Input XML file
     template => undef,    # Template file
     output   => undef,    # Output file
 );
 
-Readonly my $NAME => q{@} . 'name';
-
-my %errors;
-
 #
-#  Parse our command-line options
+#  Main program entry.
 #
 
-GetOptions(
-    'input=s'    => \$args{input},
-    'template=s' => \$args{template},
-    'output=s'   => \$args{output}
-);
+main();
 
-check_file( $args{input},    'r', '-e' );
-check_file( $args{template}, 'r', '-t' );
-check_file( $args{output},   'w', '-o' );
-
-read_xml();    # Parse XML file
-
-my $template = read_file( $args{template} );
-
-if ( $args{output} =~ /errcodes.h/msx )
-{
-    make_errcodes_h();
-}
-elsif ( $args{output} =~ /errors.md/msx )
-{
-    make_errors_md();
-}
-elsif ( $args{output} =~ /errtables.h/msx )
-{
-    make_errtables_h();
-}
-else
-{
-    croak "Unknown output file $args{output}";
-}
-
-exit;
+exit 0;
 
 #
-#  Validate that we have a file name for specified option, that the file
-#  exists, that it is readable, and that it is a plain file.
+#  This subroutine is defined so that variables we use therein are not global
+#  and therefore don't cause perltidy to complain if they happen to be the
+#  same as variables used in the subroutines below.
 #
 
-sub check_file
+sub main
 {
-    my ( $file, $mode, $option ) = @_;
+    parse_options();
 
-    croak "No file specified for $option option\n" if !$file;
+    my $xml      = teco_read( $args{input} );
+    my $template = teco_read( $args{template} );
 
-    return if $mode eq 'w';
+    print "Reading configuration file $args{input}...\n";
 
-    croak "File $file does not exist"      if !-e $file;
-    croak "File $file is not readable"     if !-r $file;
-    croak "File $file is not a plain file" if !-f $file;
+    my %errors;
+
+    my $hash_ref = parse_xml( $xml, 2 );
+
+    if ( $args{output} =~ /errcodes.h/msx )
+    {
+        make_errcodes( $template, $hash_ref );
+    }
+    elsif ( $args{output} =~ /errors.md/msx )
+    {
+        make_errors( $template, $hash_ref );
+    }
+    elsif ( $args{output} =~ /errtables.h/msx )
+    {
+        make_errtables( $template, $hash_ref );
+    }
+    else
+    {
+        die "Unknown output file: $args{output}\n";
+    }
 
     return;
 }
@@ -127,8 +100,12 @@ sub get_child
 
     my @child = $tag->findnodes("./$child");
 
-    croak "Only one <$child> tag allowed for error at line $lineno"
-      if ( $#child > 0 );
+    if ( $#child > 0 )
+    {
+        print "Duplicate <$child> tag at line $lineno\n";
+
+        exit 1;
+    }
 
     return q{} if $#child < 0;
 
@@ -147,8 +124,12 @@ sub get_details
 
     my @child = $tag->findnodes("./$child");
 
-    croak "Missing <$child> tag for error at line $lineno"
-      if ( $#child < 0 );
+    if ( $#child < 0 )
+    {
+        print "Missing <$child> tag at line $lineno\n";
+
+        exit 1;
+    }
 
     my @details = ();
 
@@ -164,9 +145,10 @@ sub get_details
 #  Create errcodes.h (or equivalent)
 #
 
-sub make_errcodes_h
+sub make_errcodes
 {
-    my $fh;
+    my ( $template, $hash_ref ) = @_;
+    my %errors = %{$hash_ref};
     my $errcodes;
 
     foreach my $code ( sort keys %errors )
@@ -187,31 +169,21 @@ sub make_errcodes_h
         $errcodes .= sprintf "    E_%s,          ///< %s\n", $code, $message;
     }
 
-    $template =~ s/$INSERT_WARNING/$WARNING/ms;
-    $template =~ s/$INSERT_ERRCODES/$errcodes/ms;
+    my %changes = ( 'ERROR CODES' => $errcodes, );
 
-    print {*STDERR} "Creating $args{output}\n" or croak;
-
-    ## no critic (RequireBriefOpen)
-
-    open $fh, '>', $args{output} or croak "Can't open $args{output}\n";
-
-    print {$fh} $template or croak "Can't print to $args{output}\n";
-
-    close $fh or croak "Can't close $args{output}\n";
-
-    # use critic
+    teco_write( $template, $args{output}, %changes );
 
     return;
 }
 
 #
-#  Create errors.md (or equivalent)
+#  Create errors.md
 #
 
-sub make_errors_md
+sub make_errors
 {
-    my $fh;
+    my ( $template, $hash_ref ) = @_;
+    my %errors = %{$hash_ref};
     my $errors;
 
     foreach my $code ( sort keys %errors )
@@ -236,26 +208,21 @@ sub make_errors_md
           $code, $message, $details;
     }
 
-    $template =~ s/$INSERT_ERRCODES/$errors/ms;
+    my %changes = ( 'ERROR CODES' => $errors, );
 
-    print {*STDERR} "Creating $args{output}\n" or croak;
-
-    ## no critic (RequireBriefOpen)
-
-    open $fh, '>', $args{output} or croak "Can't open $args{output}\n";
-
-    print {$fh} $template or croak "Can't print to $args{output}\n";
-
-    close $fh or croak "Can't close $args{output}\n";
-
-    ## use critic
+    teco_write( $template, $args{output}, %changes );
 
     return;
 }
 
-sub make_errtables_h
+#
+#  Create errtables.h.
+#
+
+sub make_errtables
 {
-    my $fh;
+    my ( $template, $hash_ref ) = @_;
+    my %errors = %{$hash_ref};
     my $errlist;
     my $errhelp;
 
@@ -279,45 +246,65 @@ sub make_errtables_h
         $errhelp .= sprintf "    [E_%s] = \"%s\",\n", $code, $details;
     }
 
-    $template =~ s/$INSERT_WARNING/$WARNING/ms;
-    $template =~ s/$INSERT_ERRLIST/$errlist/ms;
-    $template =~ s/$INSERT_ERRHELP/$errhelp/ms;
+    my %changes = (
+        'ERROR MESSAGES' => $errlist,
+        'ERROR DETAILS'  => $errhelp,
+    );
 
-    print {*STDERR} "Creating $args{output}\n" or croak;
-
-    ## no critic (RequireBriefOpen)
-
-    open $fh, '>', $args{output} or croak "Can't open $args{output}\n";
-
-    print {$fh} $template or croak "Can't print to $args{output}\n";
-
-    close $fh or croak "Can't close $args{output}\n";
-
-    ## use critic
+    teco_write( $template, $args{output}, %changes );
 
     return;
 }
 
 #
-#  parse_errors() - Find all error messages in XML data.
+#  Parse command-line options.
 #
 
-sub parse_errors
+sub parse_options
 {
-    my ($xml) = @_;
+    GetOptions(
+        'input=s'    => \$args{input},
+        'template=s' => \$args{template},
+        'output=s'   => \$args{output}
+    );
 
+    die "Not enough input files\n" if $#ARGV < 1;
+    die "Too many input files\n"   if $#ARGV > 1;
+
+    $args{input}    = $ARGV[0];
+    $args{template} = $ARGV[1];
+
+    return;
+}
+
+#
+#  parse_xml() - Parse XML file.
+#
+
+sub parse_xml
+{
+    my ( $xml, $type ) = @_;
     my $dom = XML::LibXML->load_xml( string => $xml, line_numbers => 1 );
+    my %errors;
 
-    my $name = $dom->findnodes("/teco/$NAME");
+    ## no critic (ProhibitInterpolationOfLiterals)
 
-    die "Can't find program name\n" if !$name;
+    my $teco = $dom->findvalue(qq{/teco/\@name});
+
+    ## use critic
+
+    die "Missing name attribute\n"         if !defined $teco;
+    die "Invalid name attribute '$teco'\n" if $teco ne 'teco';
 
     foreach my $section ( $dom->findnodes('/teco/section') )
     {
         my $line  = $section->line_number();
         my $title = $section->getAttribute('title');
 
-        croak "Section element missing title at line $line" if !defined $title;
+        if ( !defined $title )
+        {
+            die "Missing title at line $line\n";
+        }
 
         foreach my $error ( $section->findnodes('./error') )
         {
@@ -326,8 +313,15 @@ sub parse_errors
             my $code    = get_child( $error, 'code',    $line );
             my $message = get_child( $error, 'message', $line );
 
-            croak "Missing error code at line $line\n"    if !length $code;
-            croak "Missing error message at line $line\n" if !length $message;
+            if ( length $code == 0 )
+            {
+                die "Missing error code at line $line\n";
+            }
+
+            if ( length $message == 0 )
+            {
+                die "Missing error message at line $line\n";
+            }
 
             $errors{$code}{line}    = $line;
             $errors{$code}{message} = $message;
@@ -335,22 +329,5 @@ sub parse_errors
         }
     }
 
-    return;
-}
-
-#
-#  read_xml() - Read XML file and extract data for each name.
-#
-
-sub read_xml
-{
-    print {*STDERR} "Reading configuration file $args{input}...\n" or croak;
-
-    # Read entire input file into string.
-
-    my $xml = do { local ( @ARGV, $RS ) = $args{input}; <> };
-
-    parse_errors($xml);
-
-    return;
+    return \%errors;
 }

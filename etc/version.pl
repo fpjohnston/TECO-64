@@ -30,85 +30,55 @@ use warnings;
 use version; our $VERSION = '1.0.0';
 
 use Getopt::Long;
-use Readonly;
 
-Readonly my $WARNING =>
-  '///  *** Automatically generated file. DO NOT MODIFY. ***';
+use lib 'etc/';
+use Teco qw(teco_read teco_write);
 
 # Command-line arguments
 
 my %args = (
-    update => undef,            # Update type (major, minor, patch)
-    file   => undef,            # Version header file
+    input    => undef,    # Input header file
+    output   => undef,    # Output header file
+    template => undef,    # Template file
+    release  => undef,    # Release type (major, minor, patch)
 );
 
-#
-#  Parse our command-line options
-#
-
-GetOptions(
-    'release:s' => \$args{release},
-);
-
-die "Missing header file name\n" unless defined $ARGV[0];
-die "Too many arguments\n" if $#ARGV > 0;
-
-my $file = $ARGV[0];
+my %version;
 
 #
-#  Main program
+#  Main program entry.
 #
 
-my %version = ();
-my $previous;
-
-read_version($file);
-
-$previous = "$version{major}.$version{minor}.$version{patch}";
-
-update_version($args{release});
-
-write_version($file);
+main();
 
 exit 0;
 
 #
-#  Read current release version information from header file.
+#  This subroutine is defined so that variables we use therein are not global
+#  and therefore don't cause perltidy to complain if they happen to be the
+#  same as variables used in the subroutines below.
 #
 
-sub read_version
+sub main
 {
-    my ($infile) = @_;
-    my local $RS = undef;
+    parse_options();
 
-    open my $fh, '<', $infile or die "Cannot open input version file $infile\n";
+    my $header_data   = teco_read( $args{input} );
+    my $template_data = teco_read( $args{template} );
 
-    my $data = <$fh>;
+    find_version($header_data);
+    advance_version( $args{release} );
 
-    close $fh or croak "Can't close $infile: $OS_ERROR";
+    my %changes = (
+        'MAJOR VERSION' => "    major_version = $version{major},",
+        'MINOR VERSION' => "    minor_version = $version{minor},",
+        'PATCH VERSION' => "    patch_version = $version{patch}",
+    );
 
-    my %header = ();
+    teco_write( $template_data, $args{output}, %changes );
 
-    if ($data =~ /\s+major_version\s+=\s+(\d+)/ms)
-    {
-        $version{major} = $1;
-    }
-
-    die "Cannot find major version in $infile\n" unless defined $version{major};
-
-    if ($data =~ /\s+minor_version\s+=\s+(\d+)/ms)
-    {
-        $version{minor} = $1;
-    }
-
-    die "Cannot find minor version in $infile\n" unless defined $version{minor};
-
-    if ($data =~ /\s+patch_version\s+=\s+(\d+)/ms)
-    {
-        $version{patch} = $1;
-    }
-
-    die "Cannot find patch version in $infile\n" unless defined $version{patch};
+    print "Updated TECO release version from $version{previous}"
+      . " to $version{full}\n";
 
     return;
 }
@@ -117,108 +87,105 @@ sub read_version
 #  Update release version number.
 #
 
-sub update_version
+sub advance_version
 {
     my ($release) = @_;
 
-    if (!defined $release)
+    if ( !defined $release )    # Just print current release
     {
         print 'Current TECO release version: '
-            . "$version{major}.$version{minor}.$version{patch}\n";
+          . "$version{major}.$version{minor}.$version{patch}\n";
 
         exit 1;
     }
-
-    die "Required --release option is missing\n"
-        if (!defined $release || length($release) == 0);
-
-    if ($release =~ /major/ims)
+    elsif ( length $release == 0 )    # What user specified was bogus
     {
-        ++$version{major};
+        die "No argument found for --release\n";
+    }
 
-        $version{minor} = 0;
+    my $previous = $version{full};
+
+    if ( $release =~ /major/ims )     # User specified major version,
+    {
+        ++$version{major};            #  so increment it,
+
+        $version{minor} = 0;          #  and reset minor and patch versions
         $version{patch} = 0;
     }
-    elsif ($release =~ /minor/ims)
+    elsif ( $release =~ /minor/ims )    # User specified minor version,
     {
-        ++$version{minor};
+        ++$version{minor};              #  so increment it,
 
-        $version{patch} = 0;
+        $version{patch} = 0;            #  and reset patch version
     }
-    elsif ($release =~ /patch/ims)
+    elsif ( $release =~ /patch/ims )    # User specified patch version,
     {
-        ++$version{patch};
+        ++$version{patch};              #  so increment it
     }
-    else
+    else                                # What user specified was bogus
     {
-        print "release = $release\n";
+        die "Invalid argument '$release' for --release\n";
+    }
 
-        die "--release option must be one of: (major,minor,patch)\n";
-    }
+    $version{previous} = $version{full};
+    $version{full}     = "$version{major}.$version{minor}.$version{patch}";
 
     return;
 }
 
 #
-#  Write new release version information to header file.
+#  Find current release version information in file we just read,
 #
 
-sub write_version
+sub find_version
 {
-    my ($outfile) = @_;
-    my @data =
-        (
-         '///',
-         '///  @' . 'file    version.h',
-         '///  @' . 'brief   Release version numbers for TECO-64 text editor.',
-         '///',
-         "$WARNING",
-         '///',
-         '///  @' . 'copyright 2020-2022 Franklin P. Johnston / Nowwith Treble Software',
-         '///',
-         '///  Permission is hereby granted, free of charge, to any person obtaining a',
-         '///  copy of this software and associated documentation files (the "Software"),',
-         '///  to deal in the Software without restriction, including without limitation',
-         '///  the rights to use, copy, modify, merge, publish, distribute, sublicense,',
-         '///  and/or sell copies of the Software, and to permit persons to whom the',
-         '///  Software is furnished to do so, subject to the following conditions:',
-         '///',
-         '///  The above copyright notice and this permission notice shall be included in',
-         '///  all copies or substantial portions of the Software.',
-         '///',
-         '///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR',
-         '///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,',
-         '///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE',
-         '///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIA-',
-         '///  BILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,',
-         '///  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN',
-         '///  THE SOFTWARE.',
-         '///',
-         '////////////////////////////////////////////////////////////////////////////////',
-         q{},
-         '#if     !defined(_VERSION_H)',
-         q{},
-         '#define _VERSION_H',
-         q{},
-         'enum release_version                ///< TECO release version numbers',
-         '{',
-         "    major_version = $version{major},",
-         "    minor_version = $version{minor},",
-         "    patch_version = $version{patch}",
-         '};',
-         q{},
-         '#endif  // !defined(_VERSION_H)',
-         q{},
-        );
+    my ($data) = @_;
 
-    open my $fh, '>', $outfile or die "Cannot open output version file $outfile\n";
+    if ( $data =~ /\s+major_version\s+=\s+(\d+)/ms )
+    {
+        $version{major} = $1;
+    }
 
-    print {$fh} join "\n", @data;
+    die "Cannot find major version in $args{input}\n"
+      if !defined $version{major};
 
-    close $fh or croak "Can't close $outfile: $OS_ERROR";
+    if ( $data =~ /\s+minor_version\s+=\s+(\d+)/ms )
+    {
+        $version{minor} = $1;
+    }
 
-    print "Updated TECO release version from $previous to "
-        . "$version{major}.$version{minor}.$version{patch}\n";
+    die "Cannot find minor version in $args{input}\n"
+      if !defined $version{minor};
+
+    if ( $data =~ /\s+patch_version\s+=\s+(\d+)/ms )
+    {
+        $version{patch} = $1;
+    }
+
+    print "Cannot find patch version in $args{input}\n"
+      if !defined $version{patch};
+
+    $version{full} = "$version{major}.$version{minor}.$version{patch}";
+
+    return;
+}
+
+#
+#  Parse command-line options.
+#
+
+sub parse_options
+{
+    GetOptions(
+        'output=s'  => \$args{output},
+        'release:s' => \$args{release},
+    );
+
+    die "Not enough input files\n" if $#ARGV < 1;
+    die "Too many input files\n"   if $#ARGV > 1;
+
+    $args{input}    = $ARGV[0];
+    $args{template} = $ARGV[1];
 
     return;
 }

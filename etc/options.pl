@@ -44,32 +44,20 @@ use strict;
 use warnings;
 use version; our $VERSION = '1.0.0';
 
-use File::Basename;
-use File::Spec;
-use File::Slurp;
-use Getopt::Long;
-use XML::LibXML;
-use English qw( -no_match_vars );
-use autodie qw( open close );
-use POSIX qw( strftime );
-use Readonly;
 use Carp;
+use Getopt::Long;
+use Readonly;
+use XML::LibXML;
 
-Readonly my $INSERT_WARNING => '/\* \(INSERT: WARNING NOTICE\) \*/';
-Readonly my $INSERT_HELP    => '/\* \(INSERT: HELP OPTIONS\) \*/';
-Readonly my $INSERT_ENUM    => '/\* \(INSERT: ENUM OPTIONS\) \*/';
-Readonly my $INSERT_SHORT   => '/\* \(INSERT: SHORT OPTIONS\) \*/';
-Readonly my $INSERT_LONG    => '/\* \(INSERT: LONG OPTIONS\) \*/';
-
-Readonly my $WARNING =>
-  '///  *** Automatically generated from template file. DO NOT MODIFY. ***';
+use lib 'etc/';
+use Teco qw(teco_read teco_write);
 
 # Command-line arguments
 
 my %args = (
-    config => undef,    # XML configuration file (usually options.xml)
+    input  => undef,    # Options file (usually options.xml)
     debug  => undef,    # Enable processing of debugging options
-    output => undef,    # Output header file (usually options.h)
+    output => undef,    # Output file (usually options.h)
 );
 
 # Configuration options read from XML file
@@ -87,30 +75,48 @@ my %header = (
 
 Readonly my $MIN_CTRL => 1;
 Readonly my $MAX_CTRL => 31;
-Readonly my $NAME     => q{@} . 'name';
 
 my $max_length = 0;
 
 #
-#  Parse our command-line options
+#  Main program entry.
 #
 
-GetOptions(
-    'config=s'   => \$args{config},
-    'template=s' => \$args{template},
-    'debug'      => \$args{debug},
-    'output=s'   => \$args{output}
-);
+main();
 
-check_file( $args{config},   'r', '-c' );
-check_file( $args{template}, 'r', '-t' );
-check_file( $args{output},   'w', '-o' );
+exit 0;
 
-read_xml();          # Parse command-line options
-build_strings();     # Build data strings for header file
-make_options_h();    # Create new header file
+#
+#  This subroutine is defined so that variables we use therein are not global
+#  and therefore don't cause perltidy to complain if they happen to be the
+#  same as variables used in the subroutines below.
+#
 
-exit;
+sub main
+{
+    parse_options();
+
+    my $input    = teco_read( $args{input} );
+    my $template = teco_read( $args{template} );
+
+    print "Reading configuration file $args{input}...\n";
+
+    parse_xml( $input, 1 );
+
+    my $nopts = parse_xml( $input, 2 );
+
+    if ( $nopts == 0 )
+    {
+        print "No options found in $args{input}\n";
+    }
+
+    printf "...%u option%s found\n", $nopts, $nopts == 1 ? q{} : 's';
+
+    build_strings();            # Build data strings for header file
+    make_options($template);    # Create new header file
+
+    return;
+}
 
 #
 #  Build data strings needed for header file.
@@ -131,7 +137,7 @@ sub build_strings
 
         if ( !length $long )
         {
-            croak "short option '$short' has no long option\n";
+            die "short option '$short' has no long option\n";
         }
 
         next if ( $debug && !$args{debug} );
@@ -172,26 +178,6 @@ sub build_strings
 }
 
 #
-#  Validate that we have a file name for specified option, that the file
-#  exists, that it is readable, and that it is a plain file.
-#
-
-sub check_file
-{
-    my ( $file, $mode, $option ) = @_;
-
-    croak "No file specified for $option option\n" if !$file;
-
-    return if $mode eq 'w';
-
-    croak "File $file does not exist"      if !-e $file;
-    croak "File $file is not readable"     if !-r $file;
-    croak "File $file is not a plain file" if !-f $file;
-
-    return;
-}
-
-#
 #  Verify that option isn't a duplicate and has help text.
 #
 
@@ -199,11 +185,19 @@ sub check_option
 {
     my ( $line, $option, $short, $max_help ) = @_;
 
-    croak "Duplicate option '$option' at line $line\n"
-      if defined $options{$short};
+    if ( defined $options{$short} )
+    {
+        print "Duplicate $option option at line $line\n";
 
-    croak "No help text found for option '$option' at line $line\n"
-      if $max_help < 0;
+        exit 1;
+    }
+
+    if ( $max_help < 0 )
+    {
+        print "No help text found for option '$option' at line $line\n";
+
+        exit 1;
+    }
 
     return;
 }
@@ -218,8 +212,10 @@ sub get_argument
 
     my @child = $tag->findnodes("./$child");
 
-    croak "Only one <$child> tag allowed for option at line $lineno"
-      if ( $#child > 0 );
+    if ( $#child > 0 )
+    {
+        print "Duplicate <$child> tag for option at line $lineno\n";
+    }
 
     if ( $#child == 0 )
     {
@@ -240,93 +236,116 @@ sub get_child
 
     my @child = $tag->findnodes("./$child");
 
-    croak "Only one <$child> tag allowed for option at line $lineno"
-      if ( $#child > 0 );
+    if ( $#child > 0 )
+    {
+        print "Duplicate <$child> tag at line $lineno\n";
+
+        exit 1;
+    }
 
     return q{} if $#child < 0;
 
     return q{ } if length $child[0]->textContent() == 0;
 
-    return $child[0]->textContent();
+    return $child[0]->textContent;
 }
 
 #
-#  Get 'help' child element of current node, and validate it.
+#  Get 'detail' child elements of current node, and validate it.
 #
 
-sub get_help
+sub get_details
 {
     my ( $tag, $child, $lineno ) = @_;
 
     my @child = $tag->findnodes("./$child");
 
-    croak "Missing <$child> tag for option at line $lineno"
-      if ( $#child < 0 );
+    if ( $#child < 0 )
+    {
+        print "Missing <$child> tag at line $lineno\n";
 
-    my @help = ();
+        exit 1;
+    }
+
+    my @details = ();
 
     for my $child (@child)
     {
-        push @help, $child->textContent();
+        push @details, $child->textContent();
     }
 
-    return @help;
+    return @details;
 }
 
 #
 #  Create options.h (or equivalent).
 #
 
-sub make_options_h
+sub make_options
 {
-    my $file = $args{output};
-    my $fh;
-    my $template = read_file( $args{template} );
+    my ($template) = @_;
+    my %changes = (
+        'HELP OPTIONS'  => $header{help},
+        'ENUM OPTIONS'  => $header{enums},
+        'SHORT OPTIONS' => $header{short},
+        'LONG OPTIONS'  => $header{long},
+    );
 
-    $template =~ s/$INSERT_WARNING/$WARNING/ms;
-    $template =~ s/$INSERT_HELP/$header{help}/ms;
-    $template =~ s/$INSERT_ENUM/$header{enums}/ms;
-    $template =~ s/$INSERT_SHORT/$header{short}/ms;
-    $template =~ s/$INSERT_LONG/$header{long}/ms;
-
-    print {*STDERR} "Creating header file $file\n" or croak;
-
-    ## no critic (RequireBriefOpen)
-
-    open $fh, '>', $file or croak "Can't open $file: $OS_ERROR";
-
-    print {$fh} $template or croak "Can't open $file: $OS_ERROR";
-
-    close $fh or croak "Can't close $file: $OS_ERROR";
-
-    ## use critic
+    teco_write( $template, $args{output}, %changes );
 
     return;
 }
 
 #
-#  parse_options() - Find all options in XML data.
+#  Parse command-line options.
+#
+
+sub parse_options
+{
+    GetOptions(
+        'debug'    => \$args{debug},
+        'output=s' => \$args{output}
+    );
+
+    die "Not enough input files\n" if $#ARGV < 1;
+    die "Too many input files\n"   if $#ARGV > 1;
+
+    $args{input}    = $ARGV[0];
+    $args{template} = $ARGV[1];
+
+    return;
+}
+
+#
+#  parse_xml() - Parse XML file.
 #
 #  Note that this subroutine is called twice: once to calculate the spacing
 #  for the help text for each option, and then to actually store the data.
 #
 
-sub parse_options
+sub parse_xml
 {
     my ( $xml, $pass ) = @_;
-
     my $dom = XML::LibXML->load_xml( string => $xml, line_numbers => 1 );
 
-    my $name = $dom->findnodes("/teco/$NAME");
+    ## no critic (ProhibitInterpolationOfLiterals)
 
-    die "Can't find program name\n" if !$name;
+    my $teco = $dom->findvalue(qq{/teco/\@name});
+
+    ## use critic
+
+    die "Missing name attribute\n"         if !defined $teco;
+    die "Invalid name attribute '$teco'\n" if $teco ne 'teco';
 
     foreach my $section ( $dom->findnodes('/teco/section') )
     {
         my $line  = $section->line_number();
         my $title = $section->getAttribute('title');
 
-        croak "Section element missing title at line $line" if !defined $title;
+        if ( !defined $title )
+        {
+            die "Missing title at line $line\n";
+        }
 
         if ( $pass == 2 )
         {
@@ -335,7 +354,7 @@ sub parse_options
 
         foreach my $option ( $section->findnodes('./option') )
         {
-            my @help   = get_help( $option, 'help', $line );
+            my @help   = get_details( $option, 'help', $line );
             my %option = (
                 pass    => $pass,
                 line    => $option->line_number(),
@@ -350,34 +369,7 @@ sub parse_options
         }
     }
 
-    if ( $pass == 2 )
-    {
-        my $options = scalar keys %options;
-
-        croak "No options found in $args{config}\n" if ( $options == 0 );
-
-        printf "...%u option%s found\n", $options, $options == 1 ? q{} : 's';
-    }
-
-    return;
-}
-
-#
-#  read_xml() - Read XML file and extract data for each name.
-#
-
-sub read_xml
-{
-    print {*STDERR} "Reading configuration file $args{config}...\n" or croak;
-
-    # Read entire input file into string.
-
-    my $xml = do { local ( @ARGV, $RS ) = $args{config}; <> };
-
-    parse_options( $xml, 1 );
-    parse_options( $xml, 2 );
-
-    return;
+    return scalar keys %options;
 }
 
 #
@@ -400,26 +392,34 @@ sub save_option
 
     if ($debug)
     {
-        croak "Unexpected short name for debug option '--$long' at line"
-          . " $line\n"
-          if length $short;
+        if ( length $short != 0 )
+        {
+            die "Unexpected short name for debug option '--$long' at "
+              . "line $line\n";
+        }
 
         return if !$args{debug};
 
-        croak "Debug option out of range at line $line\n"
-          if $debug < $MIN_CTRL or $debug > $MAX_CTRL;
+        if ( $debug < $MIN_CTRL or $debug > $MAX_CTRL )
+        {
+            die "Debug option out of range at line $line\n";
+        }
 
         $short = $debug;
 
-        die "Invalid debug option '--$long' at line $line\n"
-          if !length $short;
+        if ( length $short == 0 )
+        {
+            die "Invalid debug option '--$long' at line $line\n";
+        }
 
         check_option( $line, "--$long", $short, $#help );
     }
     else
     {
-        croak "Missing short name for option at line $line\n"
-          if !length $short;
+        if ( length $short == 0 )
+        {
+            die "Missing short name for option at line $line\n";
+        }
 
         check_option( $line, "-$short", $short, $#help );
     }

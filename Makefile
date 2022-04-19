@@ -66,6 +66,8 @@ INCDIR   = include
 INCLUDES = -I ../$(INCDIR)
 LIBS     =                              # Default is no libraries
 
+export PATH := etc/:${PATH}
+
 #  Enable verbosity if requested.
 
 ifdef   verbose
@@ -111,38 +113,34 @@ obj:
 	$(AT)mkdir -p obj
 
 #
-#  Define targets that rebuild header files.
+#  Define targets that create header files from XML files and template files.
+#  This is done to avoid duplicating information pertaining to such things as
+#  commands, error codes, or start-up options.
 #
 
-COMMANDS_H  = $(INCDIR)/commands.h
-ERRCODES_H  = $(INCDIR)/errcodes.h
-ERRTABLES_H = $(INCDIR)/errtables.h
-EXEC_H      = $(INCDIR)/exec.h
-OPTIONS_H   = $(INCDIR)/options.h
-
-HEADERS     = $(COMMANDS_H) $(ERRCODES_H) $(ERRTABLES_H) $(EXEC_H) $(OPTIONS_H)
+HEADERS = include/commands.h include/errcodes.h include/errtables.h \
+		  include/exec.h include/options.h
 
 .PHONY: headers
 headers: $(HEADERS)
 
-$(COMMANDS_H): etc/commands.xml etc/templates/commands.h etc/commands.pl
-	$(AT)etc/commands.pl -i $< -t etc/templates/commands.h -o $@
+include/commands.h: etc/commands.xml etc/templates/commands.h
+	$(AT)commands.pl $^ --out $@
 
-$(ERRCODES_H): etc/errors.xml etc/templates/errcodes.h etc/errors.pl
-	$(AT)etc/errors.pl -i $< -t etc/templates/errcodes.h -o $@
+include/errcodes.h: etc/errors.xml etc/templates/errcodes.h
+	$(AT)errors.pl $^ --out $@
 
-$(ERRTABLES_H): etc/errors.xml etc/templates/errtables.h etc/errors.pl
-	$(AT)etc/errors.pl -i $< -t etc/templates/errtables.h -o $@
+include/errtables.h: etc/errors.xml etc/templates/errtables.h
+	$(AT)errors.pl $^ --out $@
 
-$(EXEC_H): etc/commands.xml etc/templates/exec.h etc/commands.pl
-	$(AT)etc/commands.pl -i $< -t etc/templates/exec.h -o $@
+include/exec.h: etc/commands.xml etc/templates/exec.h
+	$(AT)commands.pl $^ --out $@
 
-$(OPTIONS_H): etc/options.xml etc/templates/options.h etc/options.pl
-	$(AT)etc/options.pl -c $< -t etc/templates/options.h -o $@ $(OPTIONS_DEBUG)
+include/options.h: etc/options.xml etc/templates/options.h
+	$(AT)options.pl $^ --out $@ $(OPTIONS_DEBUG)
 
-.PHONY: version
-version: distclean
-	$(AT)etc/version.pl $(INCDIR)/version.h --release=$(release)
+include/version.h: distclean
+	$(AT)version.pl include/version.h etc/templates/$(@F) --out $@ --release=$(release)
 
 #
 #  Define how to compile source files.
@@ -178,10 +176,9 @@ include etc/make/help.mk                # Help target
 #
 
 DOXYGEN   = "DOXYGEN"
-ERRORS_MD = doc/errors.md
 
 .PHONY: doc
-doc: html/options.html $(ERRORS_MD)
+doc: html/options.html doc/errors.md
 	-$(AT)echo "Making Doxygen documents"
 	-$(AT)cp etc/Doxyfile obj/Doxyfile
 	-$(AT)echo "PREDEFINED = $(DOXYGEN)" >>obj/Doxyfile
@@ -194,8 +191,8 @@ html/options.html: html etc/options.xml etc/options.xsl
 	-$(AT)echo "Making HTML options file"
 	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html
 
-$(ERRORS_MD): etc/errors.xml etc/templates/errors.md etc/errors.pl
-	$(AT)etc/errors.pl -i $< -t etc/templates/errors.md -o $@
+doc/errors.md: etc/errors.xml etc/templates/errors.md
+	$(AT)etc/errors.pl $^ -o $@
 
 #
 #  Define targets that clean things up
@@ -223,10 +220,11 @@ mostlyclean: obj
 
 .PHONY: critic
 critic:
+	$(AT)perlcritic etc/Teco.pm
 	$(AT)perlcritic etc/commands.pl
 	$(AT)perlcritic etc/errors.pl
 	$(AT)perlcritic etc/options.pl
-	$(AT)perlcritic test/smoke_test.pl
+	$(AT)perlcritic etc/version.pl
 
 #
 #  Define how to lint source files.
