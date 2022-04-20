@@ -18,9 +18,8 @@ endif
 #  Enable basic memory checks.
 
 ifdef   memcheck
-    DEFINES       += -D MEMCHECK
-    DOXYGEN       += MEMCHECK
-    OPTIONS_DEBUG += -d
+    DEFINES += -D MEMCHECK
+    DOXYGEN += MEMCHECK
 endif
 
 #
@@ -28,6 +27,7 @@ endif
 #
 
 ifdef   test
-    DEFINES += -D TEST
-    DOXYGEN +=    TEST
+    DEFINES       += -D TEST
+    DOXYGEN       += TEST
+    OPTIONS_DEBUG += -d
 endif

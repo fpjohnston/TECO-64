@@ -45,10 +45,11 @@ static const char * const help_text[] =
     "",
     "Examples:",
     "",
-    "  teco abc               Open file 'abc' for input and output.",
-    "  teco -R abc            Open file 'abc' for input only.",
-    "  teco -O xyz abc        Open file 'abc' for input and file 'xyz' for output.",
-    "  teco -E abc            Execute file 'abc' as a TECO macro.",
+    "  teco abc               Open 'abc' for input and output.",
+    "  teco -R abc            Open 'abc' for input only.",
+    "  teco abc xyz           Open 'abc' for input and 'xyz' for output.",
+    "  teco abc -O xyz        Equivalent to 'teco abc xyz'",
+    "  teco -E abc            Execute the file 'abc' as a TECO macro.",
     "",
     "Environment variables:",
     "",
@@ -92,7 +93,6 @@ static const char * const help_text[] =
     "  -f, --noformfeed       Disables FF as a page delimiter.",
     "  -K, --keys=xyz         Saves keystrokes in file 'xyz'.",
     "  -L, --log=xyz          Saves input and output in log file 'xyz'.",
-    "  -Z, --zero=n           Enable syntax restrictions by setting E2 to 'n'.",
     "",
     "Miscellaneous options:",
     "",
@@ -123,7 +123,6 @@ enum option_t
     OPTION_T = 'T',
     OPTION_V = 'V',
     OPTION_X = 'X',
-    OPTION_Z = 'Z',
     OPTION_c = 'c',
     OPTION_f = 'f',
     OPTION_i = 'i',
@@ -134,10 +133,12 @@ enum option_t
     OPTION_v = 'v'
 };
 
+// No debug options in this build
+
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = ":A:CDE:FHI::K:L:MO:RS:T:V::XZ::cfimnorv";
+static const char * const optstring = ":A:CDE:FHI::K:L:MO:RS:T:V::Xcfimnorv";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -160,7 +161,6 @@ static const struct option long_options[] =
     { "text",           required_argument,  NULL,  'T'    },
     { "vtedit",         optional_argument,  NULL,  'V'    },
     { "exit",           no_argument,        NULL,  'X'    },
-    { "zero",           optional_argument,  NULL,  'Z'    },
     { "nocreate",       no_argument,        NULL,  'c'    },
     { "noformfeed",     no_argument,        NULL,  'f'    },
     { "noinitialize",   no_argument,        NULL,  'i'    },
@@ -169,7 +169,7 @@ static const struct option long_options[] =
     { "nooutput",       no_argument,        NULL,  'o'    },
     { "noread-only",    no_argument,        NULL,  'r'    },
     { "novtedit",       no_argument,        NULL,  'v'    },
-    { "mung",           no_argument,        NULL,  CTRL_M },  // --mung option (hidden)
+    { "mung",           no_argument,        NULL,  DEL    },  // --mung option (hidden)
     { NULL,             no_argument,        NULL,  0      },  // Markers for end of list
 };
 

@@ -56,7 +56,7 @@ struct options
     bool display;           ///< --display
     const char *execute;    ///< --execute
     bool exit;              ///< --exit
-    bool formfeed;          ///< --formfeed
+    const char *formfeed;   ///< --formfeed
     const char *initial;    ///< --initial
     char *log;              ///< --log
     const char *memory;     ///< --memory
@@ -65,7 +65,10 @@ struct options
     bool readonly;          ///< --readonly
     char *text;             ///< --text
     const char *vtedit;     ///< --vtedit
-    const char *zero;       ///< --zero
+    const char *e1;         ///< --e1 (debug only)
+    const char *e2;         ///< --e2 (debug only)
+    const char *e3;         ///< --e3 (debug only)
+    const char *e4;         ///< --e4 (debug only)
 };
 
 ///
@@ -81,7 +84,7 @@ static struct options options =
     .display  = false,
     .execute  = NULL,
     .exit     = false,
-    .formfeed = false,
+    .formfeed = NULL,
     .initial  = NULL,
     .log      = NULL,
     .memory   = NULL,
@@ -90,7 +93,10 @@ static struct options options =
     .scroll   = NULL,
     .text     = NULL,
     .vtedit   = NULL,
-    .zero     = NULL,
+    .e1       = NULL,
+    .e2       = NULL,
+    .e3       = NULL,
+    .e4       = NULL,
 };
 
 
@@ -174,12 +180,15 @@ void exec_options(int argc, const char * const argv[])
 
     // Process commands that don't open a file for editing.
 
-    if (options.initial)  add_cmd(false, NULL,      options.initial);
-    if (options.zero)     add_cmd(false, "%sE2",    options.zero);
-    if (options.log)      add_cmd(false, "EL%s\e ", options.log);
-    if (options.text)     add_cmd(false, "I%s\e ",  options.text);
-    if (options.execute)  add_cmd(true,  NULL,      options.execute);
-    if (options.formfeed) add_cmd(false, "0,1E3 ",  NULL);
+    if (options.initial)   add_cmd(false, NULL,      options.initial);
+    if (options.log)       add_cmd(false, "EL%s\e ", options.log);
+    if (options.text)      add_cmd(false, "I%s\e ",  options.text);
+    if (options.execute)   add_cmd(true,  NULL,      options.execute);
+    if (options.formfeed)  add_cmd(false, NULL,      options.formfeed);
+    if (options.e1)        add_cmd(false, "%sE1",    options.e1);
+    if (options.e2)        add_cmd(false, "%sE2",    options.e2);
+    if (options.e3)        add_cmd(false, "%sE3",    options.e3);
+    if (options.e4)        add_cmd(false, "%sE4",    options.e4);
 
     // Don't enable display mode if we're exiting immediately after execution.
 
@@ -321,9 +330,24 @@ void init_options(
     {
         switch (c)
         {
-            case CTRL_M:
-                mung = true;
+            case '\001':
+                options.e1 = (optarg != NULL) ? optarg : "-1";
+                
+                break;
 
+            case '\002':
+                options.e2 = (optarg != NULL) ? optarg : "-1";
+                
+                break;
+
+            case '\003':
+                options.e3 = (optarg != NULL) ? optarg : "-1";
+                
+                break;
+
+            case '\004':
+                options.e4 = (optarg != NULL) ? optarg : "-1";
+                
                 break;
 
             case OPTION_A:
@@ -410,8 +434,12 @@ void init_options(
                 break;
 
             case OPTION_F:
+                options.formfeed = "1,0E3 ";
+
+                break;
+
             case OPTION_f:
-                options.formfeed = (c == 'F') ? true : false;
+                options.formfeed = "0,1E3 ";
 
                 break;
 
@@ -553,22 +581,15 @@ void init_options(
 
                 break;
 
-            case OPTION_Z:
-                if (optarg != NULL)
-                {
-                    options.zero = optarg;
-                }
-                else
-                {
-                    options.zero = "-1";
-                }
-
-                break;
-
             case ':':
                 printf("%s option requires file option\n", argv[optind - 1]);
 
                 exit(EXIT_FAILURE);
+
+            case DEL:                   // Hidden --mung option
+                mung = true;
+
+                break;
 
             default:
                 printf("Unknown option '%s': use --help for list of "

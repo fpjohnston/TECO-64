@@ -127,11 +127,25 @@
             <argument>required</argument>
             <help>Saves input and output in log file 'xyz'.</help>
         </option>
-        <option>
-            <short_name>Z</short_name>
-            <long_name>zero</long_name>
+        <option debug="1">
+            <long_name>E1</long_name>
             <argument>optional</argument>
-            <help>Enable syntax restrictions by setting E2 to 'n'.</help>
+            <help>Set E1 variable to 'n' (default value is -1).</help>
+        </option>
+        <option debug="2">
+            <long_name>E2</long_name>
+            <argument>optional</argument>
+            <help>Set E2 variable to 'n' (default value is -1).</help>
+        </option>
+        <option debug="3">
+            <long_name>E3</long_name>
+            <argument>optional</argument>
+            <help>Set E3 variable to 'n' (default value is -1).</help>
+        </option>
+        <option debug="4">
+            <long_name>E4</long_name>
+            <argument>optional</argument>
+            <help>Set E4 variable to 'n' (default value is -1).</help>
         </option>
     </section>
     <section title="Miscellaneous options">

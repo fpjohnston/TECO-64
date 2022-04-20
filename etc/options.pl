@@ -69,6 +69,7 @@ my %options = ();
 my %header = (
     help  => undef,     # Help text
     enums => undef,     # Cases for command-line options
+    debug => undef,     # Defines for debug options
     short => undef,     # Short options for getopt_long()
     long  => undef,     # Long options for getopt_long()
 );
@@ -145,7 +146,8 @@ sub build_strings
         if ($debug)
         {
             $short = sprintf '\'\\%03u\'', $short;
-            $debug_enums .= sprintf "    DEBUG_$debug = $short,\n";
+            $header{debug} .= sprintf "#define DEBUG_$debug $short"
+              . "          ///< Debug command-line option $long\n";
         }
         else
         {
@@ -167,11 +169,15 @@ sub build_strings
           "\"$long\",", "$argtype,";
     }
 
-    $header{enums} .= $debug_enums;
+    if ( !defined $header{debug} )
+    {
+        $header{debug} = "// No debug options in this build\n";
+    }
 
     chomp $header{help};
     chomp $header{long};
     chomp $header{enums};
+    chomp $header{debug};
     chop $header{enums};
 
     return;
@@ -287,6 +293,7 @@ sub make_options
     my %changes = (
         'HELP OPTIONS'  => $header{help},
         'ENUM OPTIONS'  => $header{enums},
+        'DEBUG OPTIONS' => $header{debug},
         'SHORT OPTIONS' => $header{short},
         'LONG OPTIONS'  => $header{long},
     );
