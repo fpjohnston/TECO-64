@@ -168,8 +168,6 @@ extern char keysize[UCHAR_MAX + 1];
 
 extern int_t find_column(void);
 
-extern void init_colors(void);
-
 extern void refresh_status(void);
 
 

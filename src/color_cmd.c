@@ -195,27 +195,6 @@ static int find_color(const char *token)
 
 
 ///
-///  @brief    Initialize system colors.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void init_colors(void)
-{
-    if (can_change_color())         // Make colors as bright as possible
-    {
-        for (short color = 0; color < (short)countof(system_colors); ++color)
-        {
-            const struct color_table *p = &system_colors[color];
-
-            init_color(color, p->red, p->green, p->blue);
-        }
-    }
-}
-
-
-///
 ///  @brief    Create color pair.
 ///
 ///  @returns  Nothing.
