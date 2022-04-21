@@ -258,4 +258,4 @@ smoke:
 	@echo Rebuilding teco for smoke testing
 	$(MAKE) test=1 memcheck=1 teco
 	@echo Smoke testing $(TARGET)
-	$(AT)test/smoke_test.pl test
+	$(AT)test/smoke_test.pl --verbose test/
