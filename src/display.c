@@ -476,10 +476,12 @@ void refresh_dpy(void)
 
         // We can safely change d.row and d.col after resetting cursor
 
+        int before = before_dot();
+        int total  = before + after_dot(); // Total no. of line terminators
+
         if (d.newrow == -1)             // New cursor coordinates valid?
         {
-            int line = before_dot();    // Get current line dot is on
-            int delta = line - d.line;  // Get difference from last line
+            int delta = before - d.line; // Get difference from last line
 
             d.row += delta;
             d.col = find_column();
@@ -488,6 +490,23 @@ void refresh_dpy(void)
         {
             d.row = d.newrow;
             d.col = d.newcol;
+        }
+
+        // The following is a (hopefully temporary) hack to handle the situation
+        // where the buffer has data but no line delimiter.
+
+        if (total == 0)
+        {
+            if (t->Z != 0 && t->dot == t->Z)
+            {
+                d.row = 1;
+                d.col = 0;
+            }
+            else
+            {
+                d.row = 0;
+                d.col = find_column();
+            }
         }
 
         // If row isn't in current window, then correct value and repaint screen

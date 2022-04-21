@@ -109,6 +109,14 @@ static void print_status(int maxline)
     int before = before_dot();
     int total  = before + after_dot();
 
+    // The following is a (hopefully temporary) hack to handle the situation
+    // where the buffer has data but no line delimiter.
+
+    if (total == 0 && t->Z != 0)
+    {
+        total = 1;                      // Must have at least 1 line if data
+    }
+
     if (t->dot < t->Z)
     {
         if (t->Z != 0)
