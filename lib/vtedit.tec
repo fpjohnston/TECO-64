@@ -35,9 +35,9 @@ QN "E -1W '                             !! Enable display mode
     '
     /
 
-!! Ctrl-F1 clears a mark
+!! Shift-F1 clears a mark
 
-@fm/ C_F1 /
+@fm/ S_F1 /
     4:W "E                              !! Mark already clear?
         QZ "N :@^A"Mark not set" '      !! Yes, so complain
     |                                   !! Else clear it
@@ -82,9 +82,9 @@ QN "E -1W '                             !! Enable display mode
     '
     /
 
-!! Ctrl-F4 clears the paste buffer (Q-register Z).
+!! Shift-F4 clears the paste buffer (Q-register Z).
 
-@fm/ C_F4 / 0,0 XZ QZ "N :@^A"Text cleared" ' /
+@fm/ S_F4 / 0,0 XZ QZ "N :@^A"Text cleared" ' /
 
 @fm/ F12 / (-1 - (3:W)),3:W /           !! Toggle SEEALL mode
 
