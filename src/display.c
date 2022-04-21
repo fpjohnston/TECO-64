@@ -638,7 +638,6 @@ static void refresh_edit(void)
     if (row < d.maxrow)                 // Should we print EOF marker?
     {
         mvwaddch(d.edit, row + 1, 0, ACS_DIAMOND);
-        wmove(d.edit, row + 1, 0);
     }
 }                                       //lint !e438 !e550
 

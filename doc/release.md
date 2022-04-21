@@ -10,25 +10,19 @@ Note the sections for linting, testing, and building may need to be enhanced for
 
 ### Check In Code
 
+- *make distclean release=(major,minor,patch) teco*
 - Confirm that all code changes have been checked in with *git status*.
-- Confirm that all check-ins are correct with *git log*.
-
-### Verify Common Builds
-
-- *make distclean paging=std  lint doc teco*
-- *make distclean display=off lint doc teco*
-- *make distclean             lint doc teco*
+- Add new tag with *git tag -a -m* and confirm with *git log*.
 
 ### Run Smoke Tests
 
-- *make distclean test=1 memcheck=1 teco smoke*
+- *make smoke*
+- *make distclean*
 
-### Build Release
+### Verify Common Builds
 
-- *make distclean release=(major,minor,patch) teco*
-- Delete any untracked files with *make distclean*.
-- Add new tag with *git tag -a -m*.
-- Confirm that all check-ins are correct with *git log*.
+- *make distclean paging=std display=off teco lint doc*
+- *make distclean teco lint doc*
 
 ### Post Release
 
