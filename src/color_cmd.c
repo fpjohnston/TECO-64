@@ -88,6 +88,38 @@ static void set_color(const tstring *text, short sat, short color, bool type);
 static void set_colors(const struct cmd *cmd, short pair);
 
 
+///
+///  @brief    Check that colors have been set (based on whether the foreground
+///            and background colors for the command window are both black). If
+///            not, we provide default colors for each of the windows (black on
+///            white for the edit window, white on black for everything else).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void check_colors(void)
+{
+    short fg, bg;
+
+    pair_content(CMD, &fg, &bg);
+
+    if (fg == COLOR_BLACK && bg == COLOR_BLACK)
+    {
+        const short black = color_base;
+        const short white = color_base + 1;
+
+        init_color(white, 1000, 1000, 1000);
+        init_color(black,    0,    0,    0);
+
+        init_pair(CMD,    white, black);
+        init_pair(STATUS, white, black);
+        init_pair(LINE,   white, black);
+        init_pair(EDIT,   black, white);
+    }
+}
+
+
 ///  @brief    Execute F1 command: set colors for command window. These colors
 ///            are also copied to the status and line windows, but the F3 and
 ///            F4 commands may be used to override those colors after F1 has

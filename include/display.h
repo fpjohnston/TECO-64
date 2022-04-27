@@ -166,6 +166,8 @@ extern struct display d;
 extern char keysize[UCHAR_MAX + 1];
 
 
+extern void check_colors(void);
+
 extern int_t find_column(void);
 
 extern void refresh_status(void);

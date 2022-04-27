@@ -76,7 +76,7 @@ co-gcc.lnt   // Basic gcc configuration
 -esym(534,mvwprintw,wvline,waddnstr,atexit,prefresh,newpad)
 -esym(534,sigaction,sigfillset,setvbuf,tcgetattr,tcsetattr,ungetc)
 -esym(534,localtime_r,gettimeofday,init_color,init_pair,fchmod)
--esym(534,scan_x)
+-esym(534,scan_x,pair_content)
 -esym(759,reset_term,table_8bit,move_dot,inc_dot,dec_dot)
 -esym(765,reset_term,table_8bit,move_dot,inc_dot,dec_dot)
 -esym(714,move_dot)

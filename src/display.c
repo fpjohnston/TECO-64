@@ -281,6 +281,7 @@ void init_dpy(void)
         set_escdelay(0);
         keypad(stdscr, f.ed.escape ? (bool)TRUE : (bool)FALSE);
         reset_dpy((bool)true);
+        check_colors();
     }
 }
 

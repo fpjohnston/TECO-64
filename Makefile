@@ -102,6 +102,9 @@ $(TARGET): $(VERSION) bin/$(TARGET)
 .PHONY: all
 all: $(TARGET)                          # Equivalent to default target.
 
+.PHONY: version
+version: include/version.h
+
 #
 #  Define targets that create directories.
 #
