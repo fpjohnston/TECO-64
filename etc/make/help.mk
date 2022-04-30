@@ -7,6 +7,7 @@ help:
 	@echo "    distclean    Clean everything."
 	@echo "    doc          Create or update documentation (requires Doxygen)."
 	@echo "    help         Print this message."
+	@echo "    install      Build executable and copy to /usr/local/bin."
 	@echo "    mostlyclean  Clean object files."
 	@echo "    teco         Build TECO-64 text editor. [default]"
 	@echo ""

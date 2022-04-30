@@ -29,6 +29,7 @@
 #      distclean    Clean everything.
 #      doc          Create or update documentation.
 #      help         Print help message.
+#      install      Build executable and copy to /usr/local/bin.
 #      mostlyclean  Clean object files.
 #      teco         Build TECO-64 text editor. [default]
 #
@@ -101,6 +102,10 @@ $(TARGET): $(VERSION) bin/$(TARGET)
 
 .PHONY: all
 all: $(TARGET)                          # Equivalent to default target.
+
+.PHONY: install
+install: $(TARGET)
+	$(AT)cp bin/teco /usr/local/bin
 
 .PHONY: version
 version: include/version.h
