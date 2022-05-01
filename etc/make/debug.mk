@@ -1,18 +1,25 @@
+# gdb and gprof options don't play well together
+
+ifdef   gdb
+ifdef   gprof
+    $(error gdb and gprof options cannot both be included for a build)
+endif
+endif
+
 #  Enable use of GDB.
 
 ifdef   gdb
     DEBUG  += -g
     OPT_OPT = -O0
+    LINK =
 endif
 
 #  Enable use of GPROF.
 
 ifdef   gprof
-ifdef   gdb
-    $(error gdb and gprof options cannot both be included for a build)
-endif
     DEBUG  += -pg
     OPT_OPT = -O3
+    LINK =
 endif
 
 #  Enable basic memory checks.

@@ -66,6 +66,7 @@ CC       = gcc
 INCDIR   = include
 INCLUDES = -I ../$(INCDIR)
 LIBS     =                              # Default is no libraries
+LINK     = -s                           # Linker options
 
 export PATH := etc/:${PATH}
 
@@ -105,8 +106,9 @@ all: $(TARGET)                          # Equivalent to default target.
 
 .PHONY: install
 install: $(TARGET)
-	$(AT)cp -v -p bin/teco /usr/local/bin
-	$(AT)mkdir -v -p /usr/local/lib/teco && cp -v -p lib/*.tec /usr/local/lib/teco
+	$(AT)install -v -C bin/teco /usr/local/bin
+	$(AT)install -v -d /usr/local/lib/teco
+	$(AT)install -v -C --mode=0644 lib/*.tec /usr/local/lib/teco
 
 .PHONY: version
 version: include/version.h
@@ -172,7 +174,7 @@ obj/CFLAGS: obj
 
 bin/$(TARGET): $(OBJECTS) bin
 	@echo Making $(@F)
-	$(AT)cd obj && $(CC) $(DEBUG) -o ../$@ $(OBJECTS) $(LIBS)
+	$(AT)cd obj && $(CC) $(DEBUG) $(LINK) -o ../$@ $(OBJECTS) $(LIBS)
 
 #
 #  Define help target.
