@@ -33,4 +33,4 @@ else
     $(error Invalid display mode option: $(display))
 endif
 
-undefine option
+option =
