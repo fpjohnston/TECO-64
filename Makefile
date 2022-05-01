@@ -105,7 +105,8 @@ all: $(TARGET)                          # Equivalent to default target.
 
 .PHONY: install
 install: $(TARGET)
-	$(AT)cp bin/teco /usr/local/bin
+	$(AT)cp -v -p bin/teco /usr/local/bin
+	$(AT)mkdir -v -p /usr/local/lib/teco && cp -v -p lib/*.tec /usr/local/lib/teco
 
 .PHONY: version
 version: include/version.h
