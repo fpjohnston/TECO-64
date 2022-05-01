@@ -13,6 +13,16 @@
             <help>Do not create new file if file does not exist.</help>
         </option>
         <option>
+            <short_name>F</short_name>
+            <long_name>formfeed</long_name>
+            <help>Enables FF as a page delimiter.</help>
+        </option>
+        <option>
+            <short_name>f</short_name>
+            <long_name>noformfeed</long_name>
+            <help>Disables FF as a page delimiter.</help>
+        </option>
+        <option>
             <short_name>O</short_name>
             <long_name>output</long_name>
             <argument>required</argument>
@@ -104,29 +114,7 @@
             <help>Ignore TECO_VTEDIT environment variable.</help>
         </option>
     </section>
-    <section title="Debug options">
-        <option>
-            <short_name>F</short_name>
-            <long_name>formfeed</long_name>
-            <help>Enables FF as a page delimiter.</help>
-        </option>
-        <option>
-            <short_name>f</short_name>
-            <long_name>noformfeed</long_name>
-            <help>Disables FF as a page delimiter.</help>
-        </option>
-        <option>
-            <short_name>K</short_name>
-            <long_name>keys</long_name>
-            <argument>required</argument>
-            <help>Saves keystrokes in file 'xyz'.</help>
-        </option>
-        <option>
-            <short_name>L</short_name>
-            <long_name>log</long_name>
-            <argument>required</argument>
-            <help>Saves input and output in log file 'xyz'.</help>
-        </option>
+    <section title="Miscellaneous options">
         <option debug="1">
             <long_name>E1</long_name>
             <argument>optional</argument>
@@ -147,17 +135,26 @@
             <argument>optional</argument>
             <help>Set E4 variable to 'n' (default value is -1).</help>
         </option>
-    </section>
-    <section title="Miscellaneous options">
-        <option>
-            <short_name>n</short_name>
-            <long_name>nodefaults</long_name>
-            <help>Disable all defaults (equivalent to -c -i -m -v).</help>
-        </option>
         <option>
             <short_name>H</short_name>
             <long_name>help</long_name>
             <help>Print this help message.</help>
+        </option>
+        <option debug="K">
+            <long_name>keys</long_name>
+            <argument>required</argument>
+            <help>Saves keystrokes in file 'xyz'.</help>
+        </option>
+        <option>
+            <short_name>L</short_name>
+            <long_name>log</long_name>
+            <argument>required</argument>
+            <help>Saves input and output in log file 'xyz'.</help>
+        </option>
+        <option>
+            <short_name>n</short_name>
+            <long_name>nodefaults</long_name>
+            <help>Disable all defaults (equivalent to -c -i -m -v).</help>
         </option>
         <option>
             <short_name>X</short_name>

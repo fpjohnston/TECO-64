@@ -43,7 +43,7 @@ introduce the concept of TECO as a programming language and explain
 how basic editing commands may be combined into programs sophisticated
 enough to handle even complicated editing tasks.
 
-- [Starting TECO](starting.md)
+- [Getting Started](starting.md)
 
 - [Document Conventions](conventions.md)
 

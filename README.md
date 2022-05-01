@@ -34,35 +34,6 @@ Pete Siemsen's TECO C. Its command set is backwards-compatible with TECO C,
 as well as other TECOs. TECO-64 was written from scratch to take full
 advantage of current features of the C language and run-time library.
 
-### Building TECO
-
-To compile and link TECO, type
-
-    make
-
-or
-
-    make teco
-
-An executable image will be created in the *bin/* directory, which can then be used
-to print a list of command-line options by typing
-
-    bin/teco --help    
-
-To build TECO with display mode support, type
-
-    make display=1
-
-TECO normally includes virtual memory paging, which is required for commands
-such as -P and -N. To disable this feature and use TECO as a simple pipeline
-editor, type
-
-    make paging=std
-
-To print a list of all targets and options, type
-
-    make help
-
 ### System Requirements
 
 Version 200 of TECO-64 was primarily developed on Linux, using the GNU

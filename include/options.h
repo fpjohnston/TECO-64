@@ -62,6 +62,8 @@ static const char * const help_text[] =
     "",
     "  -C, --create           Create new file if file does not exist.",
     "  -c, --nocreate         Do not create new file if file does not exist.",
+    "  -F, --formfeed         Enables FF as a page delimiter.",
+    "  -f, --noformfeed       Disables FF as a page delimiter.",
     "  -O, --output=abc       Open file 'abc' for output.",
     "  -o, --nooutput         Use same name for output file as input file.",
     "  -R, --read-only        Open file for input only.",
@@ -87,17 +89,11 @@ static const char * const help_text[] =
     "  -V, --vtedit=xyz       Use macro in file 'xyz' to initialize display.",
     "  -v, --novtedit         Ignore TECO_VTEDIT environment variable.",
     "",
-    "Debug options:",
-    "",
-    "  -F, --formfeed         Enables FF as a page delimiter.",
-    "  -f, --noformfeed       Disables FF as a page delimiter.",
-    "  -K, --keys=xyz         Saves keystrokes in file 'xyz'.",
-    "  -L, --log=xyz          Saves input and output in log file 'xyz'.",
-    "",
     "Miscellaneous options:",
     "",
-    "  -n, --nodefaults       Disable all defaults (equivalent to -c -i -m -v).",
     "  -H, --help             Print this help message.",
+    "  -L, --log=xyz          Saves input and output in log file 'xyz'.",
+    "  -n, --nodefaults       Disable all defaults (equivalent to -c -i -m -v).",
     "  -X, --exit             Exit from TECO after executing all command-line options.",
     NULL
 };
@@ -114,7 +110,6 @@ enum option_t
     OPTION_F = 'F',
     OPTION_H = 'H',
     OPTION_I = 'I',
-    OPTION_K = 'K',
     OPTION_L = 'L',
     OPTION_M = 'M',
     OPTION_O = 'O',
@@ -138,7 +133,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = ":A:CDE:FHI::K:L:MO:RS:T:V::Xcfimnorv";
+static const char * const optstring = ":A:CDE:FHI::L:MO:RS:T:V::Xcfimnorv";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -152,7 +147,6 @@ static const struct option long_options[] =
     { "formfeed",       no_argument,        NULL,  'F'    },
     { "help",           no_argument,        NULL,  'H'    },
     { "initialize",     optional_argument,  NULL,  'I'    },
-    { "keys",           required_argument,  NULL,  'K'    },
     { "log",            required_argument,  NULL,  'L'    },
     { "memory",         no_argument,        NULL,  'M'    },
     { "output",         required_argument,  NULL,  'O'    },

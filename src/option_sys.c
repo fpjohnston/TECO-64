@@ -474,7 +474,7 @@ void init_options(
 
                 break;
 
-            case OPTION_K:
+            case 'K':
                 if (optarg != NULL && optarg[0] != '-')
                 {
                     key_name = optarg;
