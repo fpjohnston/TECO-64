@@ -38,6 +38,7 @@
 #include "eflags.h"
 #include "file.h"
 #include "term.h"
+#include "version.h"
 
 #include "cbuf.h"
 #include "options.h"
@@ -586,7 +587,17 @@ void init_options(
 
                 exit(EXIT_FAILURE);
 
-            case DEL:                   // Hidden --mung option
+            // Hidden options start here
+
+            case SPACE:                 // --version option
+                printf("%s (TECO text editor) version %d.%d.%d\n", argv[0],
+                       major_version, minor_version, patch_version);
+
+                printf("Copyright (C) 2019-2022 Nowwith Treble Software\n");
+
+                exit(EXIT_SUCCESS);
+
+            case DEL:                   // --mung option
                 mung = true;
 
                 break;
