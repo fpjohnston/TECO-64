@@ -1,6 +1,6 @@
 ! Smoke test for TECO text editor !
 
-! Function: Test lib/dump.tec !
+! Function: Test lib/show.tec !
 !  Command: (misc.) !
 !  TECO-64: PASS !
 
@@ -8,8 +8,6 @@
 
 -1 E1
 
-! Test: library dump.tec macro !
-
-@EI/dump/
+@EI/show/                           ! Test: library show.tec macro !
 
 [[exit]]

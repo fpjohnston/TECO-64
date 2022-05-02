@@ -331,26 +331,6 @@ void init_options(
     {
         switch (c)
         {
-            case '\001':
-                options.e1 = (optarg != NULL) ? optarg : "-1";
-                
-                break;
-
-            case '\002':
-                options.e2 = (optarg != NULL) ? optarg : "-1";
-                
-                break;
-
-            case '\003':
-                options.e3 = (optarg != NULL) ? optarg : "-1";
-                
-                break;
-
-            case '\004':
-                options.e4 = (optarg != NULL) ? optarg : "-1";
-                
-                break;
-
             case OPTION_A:
                 if (optarg != NULL)
                 {
@@ -474,18 +454,6 @@ void init_options(
 
                 break;
 
-            case 'K':
-                if (optarg != NULL && optarg[0] != '-')
-                {
-                    key_name = optarg;
-                }
-                else
-                {
-                    key_name = NULL;
-                }
-
-                break;
-
             case OPTION_L:
                 if (optarg != NULL && optarg[0] != '-')
                 {
@@ -590,8 +558,15 @@ void init_options(
             // Hidden options start here
 
             case SPACE:                 // --version option
-                printf("%s (TECO text editor) version %d.%d.%d\n", argv[0],
-                       major_version, minor_version, patch_version);
+                fputs("teco (TECO text editor) version ", stdout);
+
+#if     defined(DEBUG)
+
+                fputc('X', stdout);     // Say that it's a debug version
+
+#endif
+
+                printf("%d.%d.%d\n", major_version, minor_version, patch_version);
 
                 printf("Copyright (C) 2019-2022 Nowwith Treble Software\n");
 
@@ -601,6 +576,44 @@ void init_options(
                 mung = true;
 
                 break;
+
+#if     defined(DEBUG)
+
+            // Debug options start here
+
+            case '\001':
+                options.e1 = (optarg != NULL) ? optarg : "-1";
+                
+                break;
+
+            case '\002':
+                options.e2 = (optarg != NULL) ? optarg : "-1";
+                
+                break;
+
+            case '\003':
+                options.e3 = (optarg != NULL) ? optarg : "-1";
+                
+                break;
+
+            case '\004':
+                options.e4 = (optarg != NULL) ? optarg : "-1";
+                
+                break;
+                
+            case '\005':
+                if (optarg != NULL && optarg[0] != '-')
+                {
+                    key_name = optarg;
+                }
+                else
+                {
+                    key_name = NULL;
+                }
+
+                break;
+
+#endif
 
             default:
                 printf("Unknown option '%s': use --help for list of "

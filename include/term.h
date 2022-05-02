@@ -37,7 +37,13 @@
 
 #define TAB_WIDTH   8           ///< Horizontal tab stop width
 
+#if     defined(DEBUG)
+
 extern const char *key_name;
+
+extern void putc_key(int c);
+
+#endif
 
 extern const char *table_8bit[];
 
@@ -80,8 +86,6 @@ extern void init_term(void);
 extern void print_alert(const char *msg);
 
 extern void print_prompt(void);
-
-extern void putc_key(int c);
 
 extern void read_cmd(void);
 

@@ -22,7 +22,7 @@
 | ^EV            | [(Match char) Match lower case alphabetic](search.md) |
 | ^EW            | [(Match char) Match upper case alphabetic](search.md) |
 | ^EX            | [(Match char) Match any character](search.md) |
-| ^F             | (Reserved) |
+| ^F             | (Reserved for future use) |
 | ^G^G           | [Delete entire command string](action.md) |
 | ^G\<SPACE\>    | [Retype current command line](action.md) |
 | ^G\*           | [Retype current command input](action.md) |
@@ -188,7 +188,7 @@
 | *m*,*n*FC      | [Search and replace between *m* and *n*](search.md) |
 | *n*FC          | [Search and replace over *n* lines](search.md) |
 | *n*FD          | [Search and delete string](delete.md) |
-| FF             | (Reserved) |
+| FF             | (Reserved for future use) |
 | FH             | [Equivalent to "F0,FZ"](variables.md) |
 | FK             | [Search and delete intervening text](delete.md) |
 | FL             | [Convert to lower case](misc.md) |

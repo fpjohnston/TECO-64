@@ -46,7 +46,7 @@ extern void print_command(void);
 
 extern void print_verbose(int err_teco);
 
-#if     defined(TEST)
+#if     defined(DEBUG)
 
 //lint -save -e652
 

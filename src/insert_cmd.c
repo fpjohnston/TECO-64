@@ -128,6 +128,28 @@ void exec_insert(const char *buf, uint_t len)
 
 
 ///
+///  @brief    Insert newline (LF or CR/LF).
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DEBUG)
+
+void insert_newline(void)
+{
+    if (f.e3.CR_in)
+    {
+        (void)insert_edit("\r", 1uL);
+    }
+
+    (void)insert_edit("\n", 1uL);
+}
+
+#endif
+
+
+///
 ///  @brief    Scan CTRL/I command.
 ///
 ///  @returns  false (command is not an operand or operator).

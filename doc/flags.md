@@ -44,8 +44,8 @@ used to customize which bits are set or cleared.
 | E1&2048 | Unused. |
 | E1&4096 | Unused. |
 | E1&8192 | Unused. |
-| E1&16384 | If set, typing a double CTRL/] causes the last command string to be executed again. |
-| E1&32768 | If set, typing a newline at the end of a command string is equivalent to typing a double ESCape. If clear, newlines are treated as part of the command string (and ignored). |
+| E1&16384 | Reserved for future use. |
+| E1&32768 | Reserved for future use. |
 
 ### E2 - Command Restrictions Flag
 
@@ -68,7 +68,6 @@ are set or cleared.
 | E2&256 | If set, issue BNI error if conditional is not complete within a loop. |
 | E2&512 | If set, issue NAT error for m,n:P or H:P or :PW. |
 | E2&1024 | If set, issue ARG error if command has too many arguments. |
-| E2&2048 | If set, issue ARG error if command has too many arguments. |
 
 ### E3 - File Operations Flag
 
@@ -139,8 +138,8 @@ The help level flag controls the printing of error messages and failed commands.
 | ---- | -------- |
 | EH&3 | If the low two bits are 1, error messages are output in abbreviated form ("?XXX"). If they are equal to 0 or 2, error messages are output in normal form ("?XXX Message"). If they are equal to 3, error messages are output in long or "War and Peace" form, that is, a paragraph of informative material is typed following the normal form of the error message. |
 | EH&4 | If set, the failing command is also output up to and including the failing character in the command followed by a question mark. (Just like TECO’s response to the typing of a question mark immediately after an error.) |
-| EH&8 | If set, error messages will include the line number of the macro or command string where the error occurred. Note that TECO will not print the line number if the error occurred in the first line of a command string. |
-| EH&16 | If set, error messages will include the function name where the error occurred, plus the line number within the file containing the definition of that function. This is for test builds only. |
+| EH&8 | Reserved for future use. |
+| EH&16 | Reserved for future use. |
 
 The initial value of the EH flag is 0 which is equivalent to a value of 2.
 

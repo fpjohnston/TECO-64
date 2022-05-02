@@ -179,6 +179,12 @@ void exec_cmd(struct cmd *cmd)
 
     int c;
 
+#if     defined(DEBUG)
+
+    bool insert = false;
+
+#endif
+
     // Loop for all commands in command string.
 
     while ((c = fetch_cbuf()) != EOF)
@@ -231,6 +237,19 @@ void exec_cmd(struct cmd *cmd)
             *cmd = null_cmd;
         }
 
+#if     defined(DEBUG)
+
+        if (c == 'I' || c == 'i')
+        {
+            insert = true;
+        }
+        else if (c != ESC)
+        {
+            insert = false;
+        }
+
+#endif
+
         if (f.e0.ctrl_c)
         {
             if (f.et.ctrl_c)
@@ -245,6 +264,15 @@ void exec_cmd(struct cmd *cmd)
             }
         }
     }
+
+#if     defined(DEBUG)
+
+    if (insert && f.e1.newline)
+    {
+        insert_newline();
+    }
+
+#endif
 
     // Here to make sure that all conditionals, loops, and parenthetical
     // expressions were complete within the command string just executed.

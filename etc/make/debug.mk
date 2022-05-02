@@ -11,7 +11,7 @@ endif
 ifdef   gdb
     DEBUG  += -g
     OPT_OPT = -O0
-    LINK =
+    STRIP   =                       # Don't strip symbol table
 endif
 
 #  Enable use of GPROF.
@@ -19,22 +19,24 @@ endif
 ifdef   gprof
     DEBUG  += -pg
     OPT_OPT = -O3
-    LINK =
+    STRIP   =                       # Don't strip symbol table
 endif
 
 #  Enable basic memory checks.
 
 ifdef   memcheck
     DEFINES += -D MEMCHECK
-    DOXYGEN += MEMCHECK
+    DOXYGEN +=    MEMCHECK
+    STRIP    =                      # Don't strip symbol table
 endif
 
 #
 #  Enable test mode.
 #
 
-ifdef   test
-    DEFINES       += -D TEST
-    DOXYGEN       += TEST
-    OPTIONS_DEBUG += -d
+ifdef   debug
+    DEFINES += -D DEBUG
+    DOXYGEN +=    DEBUG
+    OPTIONS += -d
+    STRIP    =                      # Don't strip symbol table
 endif

@@ -12,10 +12,31 @@ QN "E -1W '                             !! Enable display mode
 
 9,7:W ^[                                !! Set 9 lines for command window
 
+1 UZ                                    !! Enable messages
+
 @f1/ CYAN / BLACK /                     !! Set command window colors
 @f2/ BLUE / WHITE /                     !! Set edit window colors
 @f3/ GREEN / BLACK /                    !! Set status window colors
 @f4/ RED / BLACK /                      !! Set divider line colors
+
+E1 U1                                   !! Save E1
+0,32768 E1                              !! See if we can set newline mode
+32768&E1 U2                             !! Save bit
+Q1 E1                                   !! Restore E1
+
+Q2 "E                                   !! Is this a debug build?
+    @fm/ INSERT / :@^A"Newline mode not available" /
+|                                       !! Yes
+    @fm/ INSERT /                       !! Toggle newline mode
+        32768&E1 "N
+            32768,0 E1
+            QZ "N :@^A"Newline mode off" '
+        |
+            0,32768 E1
+            QZ "N :@^A"Newline mode on" '
+        '
+    /
+'
 
 @fm/ A_DELETE / EK HK EX /              !! Cancel edit and exit
 

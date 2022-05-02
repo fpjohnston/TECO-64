@@ -115,6 +115,27 @@
         </option>
     </section>
     <section title="Miscellaneous options">
+        <option>
+            <short_name>H</short_name>
+            <long_name>help</long_name>
+            <help>Print this help message.</help>
+        </option>
+        <option>
+            <short_name>L</short_name>
+            <long_name>log</long_name>
+            <argument>required</argument>
+            <help>Saves input and output in log file 'xyz'.</help>
+        </option>
+        <option>
+            <short_name>n</short_name>
+            <long_name>nodefaults</long_name>
+            <help>Disable all defaults (equivalent to -c -i -m -v).</help>
+        </option>
+        <option>
+            <short_name>X</short_name>
+            <long_name>exit</long_name>
+            <help>Exit from TECO after executing all command-line options.</help>
+        </option>
         <option debug="1">
             <long_name>E1</long_name>
             <argument>optional</argument>
@@ -135,31 +156,10 @@
             <argument>optional</argument>
             <help>Set E4 variable to 'n' (default value is -1).</help>
         </option>
-        <option>
-            <short_name>H</short_name>
-            <long_name>help</long_name>
-            <help>Print this help message.</help>
-        </option>
-        <option debug="K">
+        <option debug="5">
             <long_name>keys</long_name>
             <argument>required</argument>
             <help>Saves keystrokes in file 'xyz'.</help>
-        </option>
-        <option>
-            <short_name>L</short_name>
-            <long_name>log</long_name>
-            <argument>required</argument>
-            <help>Saves input and output in log file 'xyz'.</help>
-        </option>
-        <option>
-            <short_name>n</short_name>
-            <long_name>nodefaults</long_name>
-            <help>Disable all defaults (equivalent to -c -i -m -v).</help>
-        </option>
-        <option>
-            <short_name>X</short_name>
-            <long_name>exit</long_name>
-            <help>Exit from TECO after executing all command-line options.</help>
         </option>
     </section>
 </teco>

@@ -48,7 +48,7 @@ being returned if the open succeeded, and 0 if it failed.
 [^E - Match control constructs](search.md)
 - Added ^E*nnn*.
 
-[^F - Reserved]
+[^F - Reserved for future use]
 
 [^K - Reset display colors](action.md)
 
@@ -129,7 +129,7 @@ being returned if the open succeeded, and 0 if it failed.
 
 [FD - Search and delete](search.md) (TECO-10)
 
-[FF - Reserved]
+[FF - Reserved for future use]
 
 [FH - Equivalent to F0,FZ](variables.md) (TECO-10)
 

@@ -333,7 +333,11 @@ int getc_term(bool wait)
         LF_pending = true;
     }
 
+#if     defined(DEBUG)
+
     putc_key(c);                        // Write character to keystroke file
+
+#endif
 
     return c;
 }
@@ -427,6 +431,9 @@ void read_cmd(void)
         {
             exec_cancel();
         }
+
+#if     defined(DEBUG)
+
         else if (c == LF && f.e1.newline)
         {
             echo_in(LF);
@@ -449,6 +456,9 @@ void read_cmd(void)
 
             return;                     // Return to execute it
         }
+
+#endif
+
         else if (c == ESC)
         {
             store_tbuf(ESC);
@@ -599,6 +609,8 @@ static int read_first(void)
 
                 break;
 
+#if     defined(DEBUG)
+
             case CTRL_RIGHT:
                 if (f.e1.repeat)
                 {
@@ -613,7 +625,7 @@ static int read_first(void)
 
                         size_t len = strlen(cbuf->data);
 
-//                        if (len != 0)
+                        if (len != 0)
                         {
                             char temp[len + 1];
 
@@ -631,6 +643,8 @@ static int read_first(void)
                 echo_in(LF);
 
                 break;
+
+#endif
 
             case '/':                   // Display verbose error message
                 echo_in(c);

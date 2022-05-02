@@ -76,8 +76,18 @@ struct flags f =                    ///< Global flag variables
     .e1.dollar  = false,            // Do not echo delimiter as ESCape
     .e1.insert  = true,             // Allow nI w/o requiring n@I
     .e1.percent = true,             // Allow :%q
+
+#if     defined(DEBUG)
+
+    .e1.repeat  = true,             // Double CTRL-] repeats command
+    .e1.newline = true,             // LF acts like double ESCape
+
+#else
+
     .e1.repeat  = false,            // Double CTRL-] does not repeat command
     .e1.newline = false,            // LF does not act like double ESCape
+
+#endif
 
     .e2.flag = 0,                   // All bits off in E2 flag
 
@@ -123,12 +133,13 @@ struct flags f =                    ///< Global flag variables
     .e4.status = true,              // Display status window
 
     .ee = NUL,                      // No ESCape surrogate
-    .eh.verbose = 2,                // Use standard verbosity for error msgs.
-    .eh.line = true,                // Include line number for errors in macros
+    .eh.why = HELP_CONCISE,         // Use standard verbosity for error msgs.
+    .eh.what = false,               // Don't print failing command
 
-#if     defined(TEST)
+#if     defined(DEBUG)
 
-    .eh.func = true,                // Include function information
+    .eh.where = true,               // Include line number for errors in macros
+    .eh.who = true,                 // Include function information
 
 #endif
 

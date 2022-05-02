@@ -58,7 +58,7 @@ static void convert(char *buf, uint bufsize, const char *err_str, uint len);
 
 static void print_error(
 
-#if     defined(TEST)
+#if     defined(DEBUG)
     const char *func, unsigned int line,
 #endif
 
@@ -206,14 +206,14 @@ void print_command(void)
 
 static void print_error(
 
-#if     defined(TEST)
+#if     defined(DEBUG)
     const char *func, unsigned int line,
 #endif
 
     int error, const char *err_str, const char *file_str)
 {
 
-#if     defined(TEST)
+#if     defined(DEBUG)
 
     assert(func != NULL);
 
@@ -226,7 +226,7 @@ static void print_error(
 
     last_error = error;
 
-    if (f.eh.verbose != 1)              // Need to print more?
+    if (f.eh.why != HELP_TERSE)         // Need to print more?
     {
         tprint("   ");
         tprint(text, err_str ?: "");
@@ -243,7 +243,9 @@ static void print_error(
     // and therefore it is not necessary to tell the user which line the error
     // occurred on.
 
-    if (f.eh.line)
+#if     defined(DEBUG)
+
+    if (f.eh.where)
     {
         bool macro = check_macro();
 
@@ -254,9 +256,7 @@ static void print_error(
         }
     }
 
-#if     defined(TEST)
-
-    if (f.eh.func)
+    if (f.eh.who)
     {
         tprint(" [%s:%u]", func, line);
     }
@@ -265,12 +265,12 @@ static void print_error(
 
     type_out(NL);
 
-    if (f.eh.verbose == 3)
+    if (f.eh.why == HELP_VERBOSE)
     {
         print_verbose(last_error);
     }
 
-    if (f.eh.command)
+    if (f.eh.what)
     {
         echo_tbuf((uint_t)0);
     }
@@ -362,7 +362,7 @@ void print_verbose(int error)
 
 noreturn void (throw)(
 
-#if     defined(TEST)
+#if     defined(DEBUG)
     const char *func, unsigned int line,
 #endif
 
@@ -443,7 +443,7 @@ noreturn void (throw)(
     {
         print_error(
 
-#if     defined(TEST)
+#if     defined(DEBUG)
             func, line,
 #endif
 

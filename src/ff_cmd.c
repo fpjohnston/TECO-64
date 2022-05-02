@@ -63,6 +63,19 @@ bool exec_ctrl_F(int c)
         assert(c == CTRL_F);
     }
 
+#if     defined(DEBUG)
+
+    if (i == 0 && ctrl_f_cmd[0] == NULL)
+    {
+        const char *p = "EK HK EX";
+
+        ctrl_f_cmd[0] = alloc_mem((uint_t)strlen(p) + 1);
+
+        strcpy(ctrl_f_cmd[0], p);
+    }
+
+#endif
+
     if (ctrl_f_cmd[i] == NULL || *ctrl_f_cmd[i] == NUL)
     {
         return false;

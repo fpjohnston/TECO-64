@@ -1,0 +1,49 @@
+! Smoke test for TECO text editor !
+
+! Function: Test display flag !
+!  Command: E4 !
+!     TECO: PASS !
+
+[[enter]]
+
+E4=                                 ! Test: E4= !
+
+E4 U1
+
+0,1     E4 E4&1     "E [[FAIL]] '   ! Test: set E4&1 !
+0,2     E4 E4&2     "E [[FAIL]] '   ! Test: set E4&2 !
+0,4     E4 E4&4     "E [[FAIL]] '   ! Test: set E4&4 !
+0,8     E4 E4&8     "N [[FAIL]] '   ! Test: set E4&8 !
+0,16    E4 E4&16    "N [[FAIL]] '   ! Test: set E4&16 !
+0,32    E4 E4&32    "N [[FAIL]] '   ! Test: set E4&32 !
+0,64    E4 E4&64    "N [[FAIL]] '   ! Test: set E4&64 !
+0,128   E4 E4&128   "N [[FAIL]] '   ! Test: set E4&128 !
+0,256   E4 E4&256   "N [[FAIL]] '   ! Test: set E4&256 !
+0,512   E4 E4&512   "N [[FAIL]] '   ! Test: set E4&512 !
+0,1024  E4 E4&1024  "N [[FAIL]] '   ! Test: set E4&1024 !
+0,2048  E4 E4&2048  "N [[FAIL]] '   ! Test: set E4&2048 !
+0,4096  E4 E4&4096  "N [[FAIL]] '   ! Test: set E4&4096 !
+0,8192  E4 E4&8192  "N [[FAIL]] '   ! Test: set E4&8192 !
+0,16384 E4 E4&16384 "N [[FAIL]] '   ! Test: set E4&16384 !
+0,32768 E4 E4&32768 "N [[FAIL]] '   ! Test: set E4&32768 !
+
+1,0     E4 E4&1     "N [[FAIL]] '   ! Test: clear E4&1 !
+2,0     E4 E4&2     "N [[FAIL]] '   ! Test: clear E4&2 !
+4,0     E4 E4&4     "N [[FAIL]] '   ! Test: clear E4&4 !
+8,0     E4 E4&8     "N [[FAIL]] '   ! Test: clear E4&8 !
+16,0    E4 E4&16    "N [[FAIL]] '   ! Test: clear E4&16 !
+32,0    E4 E4&32    "N [[FAIL]] '   ! Test: clear E4&32 !
+64,0    E4 E4&64    "N [[FAIL]] '   ! Test: clear E4&64 !
+128,0   E4 E4&128   "N [[FAIL]] '   ! Test: clear E4&128 !
+256,0   E4 E4&256   "N [[FAIL]] '   ! Test: clear E4&256 !
+512,0   E4 E4&512   "N [[FAIL]] '   ! Test: clear E4&512 !
+1024,0  E4 E4&1024  "N [[FAIL]] '   ! Test: clear E4&1024 !
+2048,0  E4 E4&2048  "N [[FAIL]] '   ! Test: clear E4&2048 !
+4096,0  E4 E4&4096  "N [[FAIL]] '   ! Test: clear E4&4096 !
+8192,0  E4 E4&8192  "N [[FAIL]] '   ! Test: clear E4&8192 !
+16384,0 E4 E4&16384 "N [[FAIL]] '   ! Test: clear E4&16384 !
+32768,0 E4 E4&32768 "N [[FAIL]] '   ! Test: clear E4&32768 !
+
+Q1 E4
+
+[[exit]]

@@ -627,6 +627,12 @@ extern void exit_loop(struct cmd *cmd);
 
 extern int find_eg(char *buf);
 
+#if     defined(DEBUG)
+
+extern void insert_newline(void);
+
+#endif
+
 extern bool next_page(int_t start, int_t end, bool ff, bool yank);
 
 extern bool next_yank(void);

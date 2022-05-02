@@ -8,4 +8,42 @@
 
 ET=                                 ! Test: ET= !
 
+ET U1
+
+0,1     ET ET&1     "E [[FAIL]] '   ! Test: set ET&1 !
+0,2     ET ET&2     "E [[FAIL]] '   ! Test: set ET&2 !
+0,4     ET ET&4     "E [[FAIL]] '   ! Test: set ET&4 !
+0,8     ET ET&8     "E [[FAIL]] '   ! Test: set ET&8 !
+0,16    ET ET&16    "N [[FAIL]] '   ! Test: set ET&16 !
+0,32    ET ET&32    "E [[FAIL]] '   ! Test: set ET&32 !
+! Need to test setting ET&64 elsewhere, since it detaches terminal !
+0,128   ET ET&128   "E [[FAIL]] '   ! Test: set ET&128 !
+0,256   ET ET&256   "E [[FAIL]] '   ! Test: set ET&256 !
+0,512   ET ET&512   "E [[FAIL]] '   ! Test: set ET&512 !
+0,1024  ET ET&1024  "N [[FAIL]] '   ! Test: set ET&1024 !
+0,2048  ET ET&2048  "N [[FAIL]] '   ! Test: set ET&2048 !
+0,4096  ET ET&4096  "E [[FAIL]] '   ! Test: set ET&4096 !
+0,8192  ET ET&8192  "E [[FAIL]] '   ! Test: set ET&8192 !
+0,16384 ET ET&16384 "N [[FAIL]] '   ! Test: set ET&16384 !
+0,32768 ET ET&32768 "E [[FAIL]] '   ! Test: set ET&32768 !
+
+1,0     ET ET&1     "N [[FAIL]] '   ! Test: clear ET&1 !
+2,0     ET ET&2     "N [[FAIL]] '   ! Test: clear ET&2 !
+4,0     ET ET&4     "N [[FAIL]] '   ! Test: clear ET&4 !
+8,0     ET ET&8     "N [[FAIL]] '   ! Test: clear ET&8 !
+16,0    ET ET&16    "N [[FAIL]] '   ! Test: clear ET&16 !
+32,0    ET ET&32    "N [[FAIL]] '   ! Test: clear ET&32 !
+64,0    ET ET&64    "N [[FAIL]] '   ! Test: clear ET&64 !
+128,0   ET ET&128   "N [[FAIL]] '   ! Test: clear ET&128 !
+256,0   ET ET&256   "N [[FAIL]] '   ! Test: clear ET&256 !
+512,0   ET ET&512   "E [[FAIL]] '   ! Test: clear ET&512 !
+1024,0  ET ET&1024  "N [[FAIL]] '   ! Test: clear ET&1024 !
+2048,0  ET ET&2048  "N [[FAIL]] '   ! Test: clear ET&2048 !
+4096,0  ET ET&4096  "N [[FAIL]] '   ! Test: clear ET&4096 !
+8192,0  ET ET&8192  "N [[FAIL]] '   ! Test: clear ET&8192 !
+16384,0 ET ET&16384 "N [[FAIL]] '   ! Test: clear ET&16384 !
+32768,0 ET ET&32768 "N [[FAIL]] '   ! Test: clear ET&32768 !
+
+Q1 ET
+
 [[exit]]

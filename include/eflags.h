@@ -172,7 +172,8 @@ union ed_flag
 
 ///  @union   eh_flag
 ///
-///  @brief   Definition of flags that affect output of help messages.
+///  @brief   Definition of flags that affect output of help messages when an
+///           error occurs.
 
 union eh_flag
 {
@@ -180,17 +181,24 @@ union eh_flag
 
     struct
     {
-        uint verbose   : 2;     ///< Error message verbosity
-        uint command   : 1;     ///< Print failing command if error
-        uint line      : 1;     ///< Print line number within command/macro
+        uint why       : 2;     ///< Why the error occurred
+        uint what      : 1;     ///< What command caused the error
+        uint where     : 1;     ///< Where the error occurred (line no.)
 
-#if     defined(TEST)
+#if     defined(DEBUG)
 
-        uint func      : 1;     ///< Print function name
+        uint who       : 1;     ///< Who issued the error (function name)
 
 #endif
 
     };
+};
+
+enum help
+{
+    HELP_TERSE   = 1,
+    HELP_CONCISE = 2,
+    HELP_VERBOSE = 3
 };
 
 ///  @union   et_flag

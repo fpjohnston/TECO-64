@@ -1,4 +1,4 @@
-! dump.tec - List internal variables for TECO-64 !
+! show.tec - Show internal variables for TECO-64 !
 
 0,128ET                 ! Abort on error !
 
@@ -100,10 +100,19 @@ E1 U1                                   ! Save extended features flag !
 
 @^UH{
     EH :@=/EH = 0x%x: /
-    EH&16 "N @^A/func / '
-    EH&8  "N @^A/line / '
-    EH&4  "N @^A/command / '
-             @^A/verbose=/ EH&3:=
+    EH&16 "N @^A/who / '
+    EH&8  "N @^A/where / '
+    EH&4  "N @^A/what / '
+    @^A/why=/
+    EH&3 - 1 "E
+        @^A/terse/
+    |
+        EH&3 - 3 "E
+            @^A/verbose/
+        |
+            @^A/concise/
+        '
+    '
     -1^T
 }
 
@@ -158,9 +167,9 @@ MG                                      !! Dump environment variables
 
 !! Dump general purpose variables
 
-B :@=/B = %-6d  / ^^^ ^T ^E :@=/E = %-6d  / ^^^ ^T ^S @=/S = %-6d/
-. :@=/. = %-6d  / ^^^ ^T ^Q :@=/Q = %-6d  / ^^^ ^T ^X @=/X = %-6d/
-Z :@=/Z = %-6d  / ^^^ ^T ^R :@=/R = %-6d  / ^^^ ^T ^Z @=/Z = %-6d/
+B :@=/B -> %-6d  / ^^^ ^T ^E :@=/E = %-6d  / ^^^ ^T ^S @=/S = %-6d/
+. :@=/. -> %-6d  / ^^^ ^T ^Q :@=/Q = %-6d  / ^^^ ^T ^X @=/X = %-6d/
+Z :@=/Z -> %-6d  / ^^^ ^T ^R :@=/R = %-6d  / ^^^ ^T ^Z @=/Z = %-6d/
 
 -1^T                                    !! Print blank line
 

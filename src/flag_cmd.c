@@ -147,7 +147,31 @@ void exec_ctrl_X(struct cmd *cmd)
 
 void exec_E1(struct cmd *cmd)
 {
-    check_mn_flag(cmd, &f.e1.flag);
+    union e1_flag e1 = { .flag = f.e1.flag };
+
+    check_mn_flag(cmd, &e1.flag);
+
+    // Only allow defined bits to be set or cleared
+
+    f.e1.xoper   = e1.xoper;
+    f.e1.text    = e1.text;
+    f.e1.ctrl_a  = e1.ctrl_a;
+    f.e1.equals  = e1.equals;
+    f.e1.eimacro = e1.eimacro;
+    f.e1.bang    = e1.bang;
+    f.e1.prompt  = e1.prompt;
+    f.e1.radix   = e1.radix;
+    f.e1.dollar  = e1.dollar;
+    f.e1.insert  = e1.insert;
+    f.e1.percent = e1.percent;
+
+#if     defined(DEBUG)
+
+    f.e1.repeat  = e1.repeat;
+    f.e1.newline = e1.newline;
+
+#endif
+
 }
 
 
@@ -160,7 +184,23 @@ void exec_E1(struct cmd *cmd)
 
 void exec_E2(struct cmd *cmd)
 {
-    check_mn_flag(cmd, &f.e2.flag);
+    union e2_flag e2 = { .flag = f.e2.flag };
+
+    check_mn_flag(cmd, &e2.flag);
+
+    // Only allow defined bits to be set or cleared
+
+    f.e2.zero   = e2.zero;
+    f.e2.oper   = e2.oper;
+    f.e2.atsign = e2.atsign;
+    f.e2.colon  = e2.colon;
+    f.e2.comma  = e2.comma;
+    f.e2.m_arg  = e2.m_arg;
+    f.e2.n_arg  = e2.n_arg;
+    f.e2.loop   = e2.loop;;
+    f.e2.quote  = e2.quote;
+    f.e2.page   = e2.page;
+    f.e2.args   = e2.args;
 }
 
 
@@ -173,7 +213,20 @@ void exec_E2(struct cmd *cmd)
 
 void exec_E3(struct cmd *cmd)
 {
-    check_mn_flag(cmd, &f.e3.flag);
+    union e3_flag e3 = { .flag = f.e3.flag };
+
+    check_mn_flag(cmd, &e3.flag);
+
+    // Only allow defined bits to be set or cleared
+
+    f.e3.nopage  = e3.nopage;
+    f.e3.smart   = e3.smart;
+    f.e3.CR_in   = e3.CR_in;
+    f.e3.CR_out  = e3.CR_out;
+    f.e3.noin    = e3.noin;
+    f.e3.noout   = e3.noout;
+    f.e3.keepNUL = e3.keepNUL;
+    f.e3.CR_type = e3.CR_type;
 }
 
 
@@ -194,9 +247,8 @@ void exec_E4(struct cmd *cmd)
 
     // Only allow defined bits to be set or cleared
 
-    f.e4.flag   = 0;
     f.e4.invert = e4.invert;
-    f.e4.fence   = e4.fence;
+    f.e4.fence  = e4.fence;
     f.e4.status = e4.status;
 
     if (changes)                        // Any changes?
@@ -221,7 +273,6 @@ void exec_ED(struct cmd *cmd)
 
     // Only allow defined bits to be set or cleared
 
-    f.ed.flag     = 0;
     f.ed.caret    = ed.caret;
     f.ed.yank     = ed.yank;
     f.ed.keepdot  = ed.keepdot;
@@ -272,16 +323,15 @@ void exec_EH(struct cmd *cmd)
 
     check_mn_flag(cmd, &eh.flag);
 
-    // Only allow defined bits
+    // Only allow defined bits to be set or cleared
 
-    f.eh.flag    = 0;
-    f.eh.verbose = eh.verbose;
-    f.eh.command = eh.command;
-    f.eh.line    = eh.line;
+    f.eh.why   = eh.why;                // Print why we failed
+    f.eh.what  = eh.what;               // Print command (what failed)
 
-#if     defined(TEST)
+#if     defined(DEBUG)
 
-    f.eh.func    = eh.func;
+    f.eh.where = eh.where;              // Print line no. (where error occurred)
+    f.eh.who   = eh.who;                // Print function (who issued error)
 
 #endif
 
@@ -325,7 +375,7 @@ void exec_ET(struct cmd *cmd)
     bool eightbit = f.et.eightbit ^ et.eightbit;
     bool truncate = f.et.truncate ^ et.truncate;
 
-    // Only allow defined bits.
+    // Only allow defined bits to be set or cleared
 
     f.et.image    = et.image;
     f.et.rubout   = et.rubout;

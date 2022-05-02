@@ -66,7 +66,7 @@ CC       = gcc
 INCDIR   = include
 INCLUDES = -I ../$(INCDIR)
 LIBS     =                              # Default is no libraries
-LINK     = -s                           # Linker options
+STRIP    = -s                           # Strip symbol table when linking
 
 export PATH := etc/:${PATH}
 
@@ -147,8 +147,8 @@ include/errtables.h: etc/errors.xml etc/templates/errtables.h
 include/exec.h: etc/commands.xml etc/templates/exec.h
 	$(AT)commands.pl $^ --out $@
 
-include/options.h: etc/options.xml etc/templates/options.h
-	$(AT)options.pl $^ --out $@ $(OPTIONS_DEBUG)
+include/options.h: etc/options.xml etc/templates/options.h obj/CFLAGS
+	$(AT)options.pl etc/options.xml etc/templates/options.h --out $@ $(OPTIONS)
 
 include/version.h: distclean
 	$(AT)version.pl include/version.h etc/templates/$(@F) --out $@ --release=$(release)
@@ -174,7 +174,7 @@ obj/CFLAGS: obj
 
 bin/$(TARGET): $(OBJECTS) bin
 	@echo Making $(@F)
-	$(AT)cd obj && $(CC) $(DEBUG) $(LINK) -o ../$@ $(OBJECTS) $(LIBS)
+	$(AT)cd obj && $(CC) $(DEBUG) $(STRIP) -o ../$@ $(OBJECTS) $(LIBS)
 
 #
 #  Define help target.
@@ -267,6 +267,6 @@ lobs: obj $(LOBS)
 PHONY: smoke
 smoke:
 	@echo Rebuilding teco for smoke testing
-	$(MAKE) test=1 memcheck=1 teco
+	$(MAKE) debug=1 memcheck=1 teco
 	@echo Smoke testing $(TARGET)
 	$(AT)test/smoke_test.pl test/

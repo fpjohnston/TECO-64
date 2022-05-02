@@ -1,0 +1,49 @@
+! Smoke test for TECO text editor !
+
+! Function: Test command restrictions flag !
+!  Command: E2 !
+!     TECO: PASS !
+
+[[enter]]
+
+E2=                                 ! Test: E2= !
+
+E2 U1
+
+0,1     E2 E2&1     "E [[FAIL]] '   ! Test: set E2&1 !
+0,2     E2 E2&2     "E [[FAIL]] '   ! Test: set E2&2 !
+0,4     E2 E2&4     "E [[FAIL]] '   ! Test: set E2&4 !
+0,8     E2 E2&8     "E [[FAIL]] '   ! Test: set E2&8 !
+0,16    E2 E2&16    "E [[FAIL]] '   ! Test: set E2&16 !
+0,32    E2 E2&32    "E [[FAIL]] '   ! Test: set E2&32 !
+0,64    E2 E2&64    "E [[FAIL]] '   ! Test: set E2&64 !
+0,128   E2 E2&128   "E [[FAIL]] '   ! Test: set E2&128 !
+0,256   E2 E2&256   "E [[FAIL]] '   ! Test: set E2&256 !
+0,512   E2 E2&512   "E [[FAIL]] '   ! Test: set E2&512 !
+0,1024  E2 E2&1024  "E [[FAIL]] '   ! Test: set E2&1024 !
+0,2048  E2 E2&2048  "N [[FAIL]] '   ! Test: set E2&2048 !
+0,4096  E2 E2&4096  "N [[FAIL]] '   ! Test: set E2&4096 !
+0,8192  E2 E2&8192  "N [[FAIL]] '   ! Test: set E2&8192 !
+0,16384 E2 E2&16384 "N [[FAIL]] '   ! Test: set E2&16384 !
+0,32768 E2 E2&32768 "N [[FAIL]] '   ! Test: set E2&32768 !
+
+1,0     E2 E2&1     "N [[FAIL]] '   ! Test: clear E2&1 !
+2,0     E2 E2&2     "N [[FAIL]] '   ! Test: clear E2&2 !
+4,0     E2 E2&4     "N [[FAIL]] '   ! Test: clear E2&4 !
+8,0     E2 E2&8     "N [[FAIL]] '   ! Test: clear E2&8 !
+16,0    E2 E2&16    "N [[FAIL]] '   ! Test: clear E2&16 !
+32,0    E2 E2&32    "N [[FAIL]] '   ! Test: clear E2&32 !
+64,0    E2 E2&64    "N [[FAIL]] '   ! Test: clear E2&64 !
+128,0   E2 E2&128   "N [[FAIL]] '   ! Test: clear E2&128 !
+256,0   E2 E2&256   "N [[FAIL]] '   ! Test: clear E2&256 !
+512,0   E2 E2&512   "N [[FAIL]] '   ! Test: clear E2&512 !
+1024,0  E2 E2&1024  "N [[FAIL]] '   ! Test: clear E2&1024 !
+2048,0  E2 E2&2048  "N [[FAIL]] '   ! Test: clear E2&2048 !
+4096,0  E2 E2&4096  "N [[FAIL]] '   ! Test: clear E2&4096 !
+8192,0  E2 E2&8192  "N [[FAIL]] '   ! Test: clear E2&8192 !
+16384,0 E2 E2&16384 "N [[FAIL]] '   ! Test: clear E2&16384 !
+32768,0 E2 E2&32768 "N [[FAIL]] '   ! Test: clear E2&32768 !
+
+Q1 E2
+
+[[exit]]
