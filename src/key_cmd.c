@@ -190,14 +190,14 @@ static void exec_end(int key)
     {
         return;
     }
-            
+
     d.newrow = d.row;
     d.newcol = d.col;
 
     // Here to process End and Ctrl-End keys
 
     bool eol = (isdelim(t->c) || (t->c == CR && t->nextc == LF));
-    
+
     if (!eol)                           // If not at end of line
     {
         int_t delta = t->len - (t->pos + 1);
@@ -282,7 +282,7 @@ static void exec_home(int key)
     {
         return;
     }
-            
+
     d.newrow = d.row;
     d.newcol = d.col;
 

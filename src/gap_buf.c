@@ -586,7 +586,7 @@ static void finish_insert(uint_t nbytes)
     }
 
     eb.t.c = eb.buf[eb.left];
-    
+
     //eb.t.nextc = ...                  // Next character doesn't change
 
     if (eb.t.Z != 0 && page_count() == 0)

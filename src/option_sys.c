@@ -583,24 +583,24 @@ void init_options(
 
             case '\001':
                 options.e1 = (optarg != NULL) ? optarg : "-1";
-                
+
                 break;
 
             case '\002':
                 options.e2 = (optarg != NULL) ? optarg : "-1";
-                
+
                 break;
 
             case '\003':
                 options.e3 = (optarg != NULL) ? optarg : "-1";
-                
+
                 break;
 
             case '\004':
                 options.e4 = (optarg != NULL) ? optarg : "-1";
-                
+
                 break;
-                
+
             case '\005':
                 if (optarg != NULL && optarg[0] != '-')
                 {

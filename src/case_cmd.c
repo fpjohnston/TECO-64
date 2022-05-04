@@ -151,7 +151,7 @@ static void exec_case(struct cmd *cmd, bool lower)
         }
         else if (!lower && islower(c))
         {
-            change_dot(toupper(c)); 
+            change_dot(toupper(c));
         }
         else
         {
