@@ -194,6 +194,9 @@ union eh_flag
     };
 };
 
+///  @enum   help
+///  @brief  Definitions of verbosity levels for error messages.
+
 enum help
 {
     HELP_TERSE   = 1,
