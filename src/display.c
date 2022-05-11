@@ -403,18 +403,22 @@ static void init_windows(void)
         init_window(&d.fence, LINE, line_top, line_top, 0, d.ncols);
     }
 
-    if (f.e4.status && 1 + cmd_bot - cmd_top >= STATUS_HEIGHT)
-    {
-        w.width = d.ncols - STATUS_WIDTH;
+    w.width = d.ncols;
 
-        init_window(&d.status, STATUS, cmd_top, cmd_bot, w.width, STATUS_WIDTH);
+    if (f.e4.status)
+    {
+        int width = d.ncols;
+
+        width -= (w.status == 0) ? STATUS_WIDTH : w.status;
+
+        init_window(&d.status, STATUS, cmd_top, cmd_bot, width, w.status);
+        init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, width);
     }
     else
     {
-        w.width = d.ncols;
+        init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, w.width);
     }
 
-    init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, w.width);
     scrollok(d.cmd, (bool)TRUE);
     wsetscrreg(d.cmd, cmd_top, cmd_bot);
 }

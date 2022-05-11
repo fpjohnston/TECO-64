@@ -34,6 +34,10 @@
 #include "teco.h"
 
 
+#define STATUS_WIDTH        22      ///< Width of status window
+
+#define STATUS_HEIGHT        5      ///< Min. height for status window
+
 ///  @struct  tchar
 ///  @brief   Terminal characteristics flag.
 
@@ -69,6 +73,7 @@ struct watch
     bool noscroll;                  ///< 8:W - Disable scrolling region
     union tchar tchar;              ///< 9:W - Terminal characteristics
     int maxline;                    ///< 11:W - Length of longest line in edit buffer
+    int status;                     ///< 12:W - Width of status window
     int_t botdot;                   ///< Buffer position of bottom right corner
 };
 
@@ -118,10 +123,6 @@ extern void set_tab(int n);
 // Define data used only internally within display code
 
 #if     defined(DISPLAY_INTERNAL)
-
-#define STATUS_WIDTH        22      ///< Width of status window
-
-#define STATUS_HEIGHT        5      ///< Min. height for status window
 
 ///  @var     pair
 ///  @brief   Values of foreground/background pairs for defined windows.

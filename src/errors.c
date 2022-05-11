@@ -45,7 +45,7 @@
 
 #define ERR_BUF_SIZE    64          ///< Size of error buffer
 
-#define MAX_WIDTH       80          ///< Maximum width for error messages
+#define DEFAULT_WIDTH   80          ///< Default width for error messages
 
 int last_error = E_NUL;             ///< Last error encountered
 
@@ -291,9 +291,14 @@ void print_verbose(int error)
         return;
     }
 
-    int width = (w.width < MAX_WIDTH) ? w.width : MAX_WIDTH;
     char *saveptr;
     char help[strlen(errhelp[error]) + 1];
+    int width = (w.width == 0) ? DEFAULT_WIDTH : w.width;
+
+    if (f.e0.display && f.e4.status)    // Is status line active?
+    {
+        width -= (w.status == 0) ? STATUS_WIDTH : w.status;
+    }
 
     strcpy(help, errhelp[error]);
 

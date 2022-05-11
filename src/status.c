@@ -227,8 +227,11 @@ void refresh_status(void)
         if (f.e4.status)
         {
             chtype ch = (f.e4.invert) ? ACS_BTEE : ACS_TTEE;
+            int col = w.width;
 
-            mvwaddch(d.fence, 0, w.width, ch);
+            col -= (w.status == 0) ? STATUS_WIDTH : w.status;
+
+            mvwaddch(d.fence, 0, col, ch);
         }
 
         wrefresh(d.fence);

@@ -70,6 +70,7 @@ struct watch w =
         }
     },
     .maxline  = DEFAULT_MAXLINE,        // 11:W
+    .status   = 0,                      // 12:W
     .botdot   = 0,                      // FZ
 };
 
@@ -170,6 +171,9 @@ static int_t get_w(int_t n)
 
         case 11:                        // Maximum length of line in edit buffer
             return w.maxline;
+
+        case 12:                        // Width of status window (or 0 if none)
+            return w.status;
 
         default:
             throw(E_ARG);               // n:W is out of range
@@ -376,6 +380,16 @@ static void set_w(int_t m, int_t n)
             if (w.maxline != m)
             {
                 w.maxline = m;
+
+                reset_dpy((bool)true);
+            }
+
+            break;
+
+        case 12:
+            if (w.status != m)
+            {
+                w.status = m;
 
                 reset_dpy((bool)true);
             }
