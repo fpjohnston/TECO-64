@@ -302,22 +302,6 @@ void init_term(void)
 
 
 ///
-///  @brief    Print alert message. Typically used just before exiting TECO
-///            because of a received signal.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void print_alert(const char *msg)
-{
-    assert(msg != NULL);
-
-    tprint("%s\e[7m %s \e[0m\n", term_pos != 0 ? "\n" : "", msg);
-}
-
-
-///
 ///  @brief    Output character to keystroke file (if we have one).
 ///
 ///  @returns  Nothing.
