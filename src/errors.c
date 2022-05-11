@@ -175,22 +175,18 @@ void print_command(void)
     if (last_command != NULL)
     {
         const char *p = last_command;
-        int last = NUL;
+        int last = EOF;
+        int c;
 
-        for (;;)
+        while ((c = *p++) != NUL)
         {
-            int c = *p++;
-
-            if (c == NUL)
-            {
-                break;
-            }
-            else if (c == LF && last != CR)
+            if (c == LF && last != CR)
             {
                 type_out(CR);
             }
 
             type_out(c);
+
             last = c;
         }
     }
@@ -438,7 +434,9 @@ noreturn void (throw)(
     if (error != E_XAB)
     {
         free_mem(&last_command);
+
         last_command = alloc_mem(cbuf->pos + 1);
+
         sprintf(last_command, "%.*s", (int)cbuf->pos, cbuf->data);
     }
 
