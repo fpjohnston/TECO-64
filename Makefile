@@ -147,7 +147,7 @@ include/errtables.h: etc/errors.xml etc/templates/errtables.h
 include/exec.h: etc/commands.xml etc/templates/exec.h
 	$(AT)commands.pl $^ --out $@
 
-include/options.h: etc/options.xml etc/templates/options.h obj/CFLAGS
+include/options.h: etc/options.xml etc/templates/options.h
 	$(AT)options.pl etc/options.xml etc/templates/options.h --out $@ $(OPTIONS)
 
 include/version.h: distclean
