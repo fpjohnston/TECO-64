@@ -57,13 +57,12 @@ void exec_ctrl_T(struct cmd *cmd)
     {
         int_t m = cmd->m_set ? cmd->m_arg : 1;
         int_t n = cmd->n_arg;
+        bool saved_image = f.et.image;
+
+        f.et.image = cmd->colon;
 
         for (int i = 0; i < m; ++i)
         {
-            bool saved_image = f.et.image;
-
-            f.et.image = cmd->colon;
-
             if (n >= 0)
             {
                 int c = (int)n & 0xFF;
@@ -79,9 +78,9 @@ void exec_ctrl_T(struct cmd *cmd)
             {
                 type_out(NL);
             }
-
-            f.et.image = saved_image;
         }
+
+        f.et.image = saved_image;
     }
     else                                // ^T -> read character from terminal
     {
