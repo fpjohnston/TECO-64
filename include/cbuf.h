@@ -70,7 +70,7 @@ static inline int fetch_cbuf(void)
 
 
 ///
-///  @brief    Skip past current current in command string.
+///  @brief    Skip past current character in command string.
 ///
 ///  @returns  Nothing.
 ///
