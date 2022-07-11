@@ -253,5 +253,5 @@ static void status_line(int line, const char *header, const char *data)
     int rem = (int)sizeof(buf) - nbytes;
 
     snprintf(buf + nbytes, (size_t)(uint)rem, "%*s ", rem - 1, data);
-    mvwprintw(d.status, line, 1, buf);
+    mvwprintw(d.status, line, 1, "%s", buf);
 }
