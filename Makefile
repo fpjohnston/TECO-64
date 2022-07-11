@@ -267,6 +267,6 @@ lobs: obj $(LOBS)
 PHONY: smoke
 smoke:
 	@echo Rebuilding teco for smoke testing
-	$(MAKE) debug=1 memcheck=1 teco
+	cd . && $(MAKE) debug=1 memcheck=1 teco
 	@echo Smoke testing $(TARGET)
 	$(AT)test/smoke_test.pl test/
