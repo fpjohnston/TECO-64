@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Non-stop forward search !
+!  Command: N !
+!  TECO-64: ?SRH !
+
+[[enter]]
+
+@EW"[[out1]]"
+
+@N"" [["U]]                             ! Test: N !
+
+[[exit]]

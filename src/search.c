@@ -472,6 +472,10 @@ void search_failure(struct cmd *cmd, uint keepdot)
 
             exit_loop(cmd);
         }
+        else if (last_search.data == NULL)
+        {
+            throw(E_SRH, "");           // Always an error if no previous search
+        }
         else
         {
             last_search.data[last_search.len] = NUL;

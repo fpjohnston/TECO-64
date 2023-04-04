@@ -410,6 +410,9 @@ noreturn void (throw)(
         case E_SRH:
         case E_TAG:
             err_str = va_arg(args, const char *);
+
+            assert(err_str != NULL);    // Sanity check for safety's sake
+
             convert(err_buf, (uint)sizeof(err_buf), err_str,
                     (uint)strlen(err_str));
             err_str = err_buf;
