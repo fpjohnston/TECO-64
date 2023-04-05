@@ -29,8 +29,8 @@ to read in text from files, insert and delete text, search for or
 replace text, and write out text to files. This buffer is initially
 64K bytes, but is capable of growing to 1MB. The current contents
 of an edit buffer is referred to as a *page*. Each page is usually
-delimited by a \<FF\>, and is divided into *lines*, which are
-delimited by a line terminator such  as \<LF\>, \<VT\>, or \<FF\>.
+delimited by a &lt;FF>, and is divided into *lines*, which are
+delimited by a line terminator such  as &lt;LF>, &lt;VT>, or &lt;FF>.
 Lines in turn are comprised of single 8-bit ASCII *characters*.
 TECO provides commands to manipulate pages, lines, and characters.
 
@@ -53,7 +53,7 @@ buffer.
 
 The general format for TECO commands is as follows:
 
-[[ *m* ,] *n* ] [ : [ : ]] [ @ ] command [ *q* ] [ *text1* [ \<*delim*\> ][ *text2* [ \<*delim*\> ]]]
+[[ *m* ,] *n* ] [ : [ : ]] [ @ ] command [ *q* ] [ *text1* [ &lt;*delim*> ][ *text2* [ &lt;*delim*> ]]]
 
 The fields in brackets are either optional, or are dependent on the
 command being executed. These are for illustration only; none of TECO's
@@ -71,7 +71,7 @@ commands use all of these fields.
 | *q* | The name of the Q-register that the command will use. | 1XA |
 | *text1* | The first text argument for the command. See description below. | Ifoobaz\` |
 | *text2* | The second text argument for the command. See description below. | FSfoo\`baz\` |
-| \<*delim*\> | The command delimiter. Only required for commands that allow text arguments when there is no at sign modifier. | EWoutput.c\` |
+| &lt;*delim*> | The command delimiter. Only required for commands that allow text arguments when there is no at sign modifier. | EWoutput.c\` |
 
 Note that if a command allows both the colon (including double colon)
 and at sign modifiers, they may be specified in either order.
@@ -117,14 +117,14 @@ illustrated in the examples below.
 | ------------------ | ----------- |
 | :ER, :S, :FN       | Do not abort the command if it failed, but return a value of 0 to flag that an error occurred, and return -1 if it succeeded. This can be used by subsequent commands to take corrective action or print an informative message if needed. |
 | :G*q*              | Type the result on the terminal instead of copying it to the text buffer. |
-| :=                 | Print a numeric value, but do not print a \<CR\>\<LF\> after it. |
+| :=                 | Print a numeric value, but do not print a &lt;CR>&lt;LF> after it. |
 
 ### Text Arguments
 
 Many TECO commands allow or require a text argument, which is a
 character string that follows the command and is usually terminated
-by a \<*delim*\> character. This provides additional information to
-the command being executed. The string may not include a \<*delim*\>,
+by a &lt;*delim*> character. This provides additional information to
+the command being executed. The string may not include a &lt;*delim*>,
 since this would terminate the string prematurely, but it may
 include any other character.
 
@@ -132,8 +132,8 @@ Commands that allow a single text argument are normally delimited as follows:
 
 | Command | Description |
 | ------- | ----------- |
-| command\<*delim*\> | General command, where \<*delim*\> is ESCape or an alternative delimiter such as accent grave. |
-| <span>^Ahello, world!\<CTRL/A\></span> | The type-out command may start with a CTRL/A or literal ^A, but it must be terminated by a CTRL/A.
+| command&lt;*delim*> | General command, where &lt;*delim*> is ESCape or an alternative delimiter such as accent grave. |
+| <span>^Ahello, world!&lt;CTRL/A></span> | The type-out command may start with a CTRL/A or literal ^A, but it must be terminated by a CTRL/A.
 | !tag! | Any tag or comment must be start and end with an exclamation mark. |
 
 | Example | Description |
@@ -143,13 +143,13 @@ Commands that allow a single text argument are normally delimited as follows:
 | OBEGIN\` | Branch to the tag specified by the string "BEGIN" |
 
 Depending on the command, it may also be possible to use a "null" text
-argument by terminating the command with a \<*delim*\>. The effect of
+argument by terminating the command with a &lt;*delim*>. The effect of
 doing so is dependent on the specific command, but using the
 example of the S command above, if that was followed by an " S\' " command,
 that would cause TECO to search for the next occurrence of "abc".
 
 Some TECO commands allow or require two text arguments. Each argument
-must be followed by a \<*delim*\> character, as shown below:
+must be followed by a &lt;*delim*> character, as shown below:
 
 ```FSabc`def` ```
 

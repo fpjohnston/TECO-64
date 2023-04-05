@@ -28,7 +28,7 @@ characters that could not ordinarily be typed at a terminal.
 | *n*@I// | Equivalent to the *n*I\` command. |
 | *m*,*n*I\` | Equivalent to executing the *n*I\' command *m* times. <br><br>If *m* is not specified, one character is inserted. <br><br>If *m* is 0, nothing is inserted. <br><br>If *m* is negative, then an IIA (invalid insert argument) error occurs. |
 | *m*,*n*@I// | Equivalent to the *m*,*n*I\` command. |
-| \<TAB\>*text*\` | Equivalent to the I command except that the \<TAB\> is part of the text which is inserted into the buffer. |
+| &lt;TAB>*text*\` | Equivalent to the I command except that the &lt;TAB> is part of the text which is inserted into the buffer. |
 | FR*text*\` | Equivalent to -*n*DI/*text*/, where *n* is obtained from the most recent occurrence of the following: (a) the length of the most recent string found by a successful search command, (b) the length of the most recent text string inserted (including insertions from the FS, FN, or FR commands), or (c) the length of the string retrieved by the most recent "G" command. In effect, the last string inserted or found is replaced with *text*, provided that the pointer has not been moved. After execution of this command, the buffer pointer is positioned immediately after *text*. |
 | @FR/*text*/ | Equivalent to FR*text*\`.
 | *n*FR*text*\` | Equivalent to *n*DI*text*\`. If *n* is less than 0, characters preceding the buffer pointer are deleted and replaced with *text*. If *n* is greater than 0, characters following the buffer pointer are deleted and replaced with *text*. In either case, the buffer pointer is left positioned immediately after *text* upon completion of this command. |

@@ -24,14 +24,14 @@
 | ^EX            | [(Match char) Match any character](search.md) |
 | ^F             | (Reserved for future use) |
 | ^G^G           | [Delete entire command string](action.md) |
-| ^G\<SPACE\>    | [Retype current command line](action.md) |
+| ^G&lt;SPACE>    | [Retype current command line](action.md) |
 | ^G\*           | [Retype current command input](action.md) |
 | ^H             | [Current time of day](variables.md) |
 | BS             | [Back up and type one line](action.md) |
 | TAB            | [Insert tab and text](insert.md) |
 | LF             | [Advance and type one line](action.md) |
 | LF             | [Line terminator](conventions.md) |
-| \<CTRL/K\>     | [Reset display colors](action.md) |
+| &lt;CTRL/K>     | [Reset display colors](action.md) |
 | VT             | [Line terminator](conventions.md) |
 | FF             | [Page terminator](conventions.md) |
 | CR             | [End input line](conventions.md) |
@@ -56,7 +56,7 @@
 | :n^U*q*        | [Append ASCII char. *n* to Q-register *q*](qregister.md) |
 | ^V             | [Enable lower case conversion](misc.md) |
 | ^V*x*          | [(String char.) Force *x* to lower case](search.md) |
-| \<CTRL/W\>     | [Repaint display](action.md) |
+| &lt;CTRL/W>     | [Repaint display](action.md) |
 | ^W             | [Enable upper case conversion](misc.md) |
 | ^W*x*          | [(String char.) Force *x* to upper case](search.md) |
 | ^X             | [Search mode flag](flags.md) |
@@ -113,11 +113,11 @@
 | *n*;           | [Exit iteration if *n* is positive](loops.md) |
 | :;             | [Exit iteration on search success](loops.md) |
 | *n*:;          | [Exit iteration if *n* is negative](loops.md) |
-| *n*\<          | [Iterate n times](loops.md) |
-| \<             | [Relational comparison for less than](oper.md) |
-| \<=            | [Relational comparison for less than or equal](oper.md) |
-| \<\<           | [Arithmetic left shift](oper.md) |
-| \<\>           | [Relational comparison for inequality](oper.md) |
+| *n*&lt;          | [Iterate n times](loops.md) |
+| &lt;             | [Relational comparison for less than](oper.md) |
+| &lt;=            | [Relational comparison for less than or equal](oper.md) |
+| &lt;&lt;           | [Arithmetic left shift](oper.md) |
+| &lt;>           | [Relational comparison for inequality](oper.md) |
 | =              | [Type in decimal](oper.md) |
 | ==             | [Type in octal](oper.md) |
 | ==             | [Relational comparison for equality](oper.md) |
@@ -125,10 +125,10 @@
 | :=             | [Type in decimal, no CR/LF](oper.md) |
 | :==            | [Type in octal, no CR/LF](oper.md) |
 | :===           | [Type in hexadecimal, no CR/LF](oper.md) |
-| \>             | [End loop](loops.md) |
-| \>             | [Relational comparison for greater than](oper.md) |
-| \<=            | [Relational comparison for greater than or equal](oper.md) |
-| \>\>           | [Arithmetic right shift](oper.md) |
+| >             | [End loop](loops.md) |
+| >             | [Relational comparison for greater than](oper.md) |
+| &lt;=            | [Relational comparison for greater than or equal](oper.md) |
+| >>           | [Arithmetic right shift](oper.md) |
 | ?              | [Toggle trace mode](misc.md) |
 | ?              | [Type out command string in error](action.md) |
 | @              | [Modify next text argument](basics.md) |
@@ -181,8 +181,8 @@
 | F2             | [Set edit window colors](display.md) |
 | F3             | [Set status window colors](display.md) |
 | F4             | [Set separator line colors](display.md) |
-| F\<            | [Flow to start of iteration](loops.md) |
-| F\>            | [Flow to end of iteration](loops.md) |
+| F&lt;            | [Flow to start of iteration](loops.md) |
+| F>            | [Flow to end of iteration](loops.md) |
 | *m*,*n*FB      | [Search between positions *m* and *n*](search.md) |
 | *n*FB          | [Search, bounded by *n* lines](search.md) |
 | *m*,*n*FC      | [Search and replace between *m* and *n*](search.md) |

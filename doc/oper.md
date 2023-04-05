@@ -41,13 +41,13 @@ If the E1&1 flag bit is set, then there are additional operators that can be use
 | Command | Example | Function |
 | ------- | --------| -------- |
 | ==      | (1==1)=-1   | Relational comparison for equality. |
-| \<\>    | (1\<\>1)=0  | Relational comparison for inequality. |
-| \<      | (1\<1)=0    | Relational comparison for less than. |
-| \<=     | (1\<=1)=-1  | Relational comparison for less than or equal. |
-| \>      | (1\>1)=0    | Relational comparison for greater than. |
-| \>=     | (1\>=1)=0   | Relational comparison for greater than or equal. |
+| &lt;>    | (1&lt;>1)=0  | Relational comparison for inequality. |
+| &lt;      | (1&lt;1)=0    | Relational comparison for less than. |
+| &lt;=     | (1&lt;=1)=-1  | Relational comparison for less than or equal. |
+| >      | (1>1)=0    | Relational comparison for greater than. |
+| >=     | (1>=1)=0   | Relational comparison for greater than or equal. |
 | //      | (7//3)=1    | Binary division yielding remainder. |
 | !       | (!0)=-1     | Bitwise logical NOT. |
 | \~      | (7~3)=4     | Bitwise logical XOR. |
-| \<\<    | (1<<3)=8    | Arithmetic left shift. |
-| \>\>    | (16>>2)=4   | Arithmetic right shift. |
+| &lt;&lt;    | (1<<3)=8    | Arithmetic left shift. |
+| >\>    | (16>>2)=4   | Arithmetic right shift. |

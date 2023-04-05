@@ -4,9 +4,9 @@
 
 | Command | Function |
 | ------- | -------- |
-| \<NUL\> | Null characters in command strings will be ignored. Numeric values are not affected. |
-| \<ESC\> | An ESCape that is executed as a TECO command (as distinct from an immediate action command or an ESCape that is part of the syntax of some other TECO command) is ignored by TECO. However, any pending numeric values are discarded. This command is useful for discarding the value returned from a command (such as n%q or m,n:W) when you don’t want that value to affect execution of the following command. |
-| ^[ | Same as \<ESC\>. Like any other TECO command that is a control character, ESCape may be entered in up-arrow mode. |
+| &lt;NUL> | Null characters in command strings will be ignored. Numeric values are not affected. |
+| &lt;ESC> | An ESCape that is executed as a TECO command (as distinct from an immediate action command or an ESCape that is part of the syntax of some other TECO command) is ignored by TECO. However, any pending numeric values are discarded. This command is useful for discarding the value returned from a command (such as n%q or m,n:W) when you don’t want that value to affect execution of the following command. |
+| ^[ | Same as &lt;ESC>. Like any other TECO command that is a control character, ESCape may be entered in up-arrow mode. |
 
 ### Comments
 
@@ -29,8 +29,8 @@ command delimiters). Thus a long TECO macro might look like:
 
 ```final commands ! end of command string!```
 
-Only \<SPACE\>, \<LF\>, \<FF\>, and \<CR\> can be used to format
-command strings. \<TAB\> cannot be used, since that is an insertion command.
+Only &lt;SPACE>, &lt;LF>, &lt;FF>, and &lt;CR> can be used to format
+command strings. &lt;TAB> cannot be used, since that is an insertion command.
 
 It is suggested, but not required, that, in order to help distinguish
 tags from comments, tags should only consist of alphanumeric characters,
@@ -51,11 +51,11 @@ through to the next command, much like the [ and ] commands.
 
 ### Printing Messages
 
-The \<CTRL/A\> command may be used to print out a statement at any point
-during the execution of a command string. The \<CTRL/A\> command has the
+The &lt;CTRL/A> command may be used to print out a statement at any point
+during the execution of a command string. The &lt;CTRL/A> command has the
 general form:
 
-```^Atext\<CTRL/A\>```
+```^Atext&lt;CTRL/A>```
 
 or
 
@@ -63,14 +63,14 @@ or
 
 The first ^A is the actual command, which may be entered by striking the
 control key and the A key simultaneously or by typing a caret (uparrow)
-followed by an A character. The second \<CTRL/A\> character of the first
+followed by an A character. The second &lt;CTRL/A> character of the first
 form shown is the command terminator, which must be entered by typing
 the control key and the A key simultaneously. In the second form, the
 second occurrence of the delimiting character (shown as slash in the
 example) terminates the message. Upon execution, this command causes
 TECO to print the specified message at the terminal.
 
-The ^Amessage\<CTRL/A\> command is particularly useful when it precedes a
+The ^Amessage&lt;CTRL/A> command is particularly useful when it precedes a
 command whose numeric argument contains ^T or ^F characters. The message
 may contain instructions notifying the user as to what sort of input is
 required.
@@ -132,17 +132,17 @@ The *squish.tec* indirect command file may be used to squish macros, as in the f
 | -*n*FU    | Change the preceding *n* lines to upper case. |
 | *m*,*n*FU | Change all characters between buffer positions *m* and *n* to upper case. |
 | HFU       | Change contents of entire edit buffer to upper case. |
-| ^V        | Puts TECO into lower case conversion mode. In this mode, all alphabetic characters in string arguments are automatically changed to lower case. This mode can be overridden by explicit case control within the search string. This command makes all strings behave as if they began with a \<CTRL/V\>\<CTRL/V\>. |
-| 0^V       | Returns TECO to its original mode. No special case conversion occurs within strings except those case conversions that are explicitly specified by \<CTRL/V\> and \<CTRL/W\> string build constructs located within the string. |
-| ^W        | Puts TECO into upper case conversion mode. In this mode, all alphabetic characters in string arguments are automatically changed to upper case. This mode can be overridden by explicit case control within the search string. This command makes all strings behave as if they began with \<CTRL/W\>\<CTRL/W\>. |
-| 0^W       | Returns TECO to its original mode. No special case conversion occurs within strings except those case conversions that are explicitly specified by \<CTRL/\V> and \<CTRL/W\> string build constructs located within the string. |
+| ^V        | Puts TECO into lower case conversion mode. In this mode, all alphabetic characters in string arguments are automatically changed to lower case. This mode can be overridden by explicit case control within the search string. This command makes all strings behave as if they began with a &lt;CTRL/V>&lt;CTRL/V>. |
+| 0^V       | Returns TECO to its original mode. No special case conversion occurs within strings except those case conversions that are explicitly specified by &lt;CTRL/V> and &lt;CTRL/W> string build constructs located within the string. |
+| ^W        | Puts TECO into upper case conversion mode. In this mode, all alphabetic characters in string arguments are automatically changed to upper case. This mode can be overridden by explicit case control within the search string. This command makes all strings behave as if they began with &lt;CTRL/W>&lt;CTRL/W>. |
+| 0^W       | Returns TECO to its original mode. No special case conversion occurs within strings except those case conversions that are explicitly specified by &lt;CTRL/\V> and &lt;CTRL/W> string build constructs located within the string. |
 
 ### Radix Control Commands
 
 | Command | Function |
 | ------- | -------- |
-| ^O | \<CTRL/O\> causes all subsequent numeric input to be accepted as octal numbers. Numeric conversions using the \\ or *n*\\ commands will also be octal. The digits 8 and 9 become invalid as numeric characters. The octal radix will continue to be used until the next ^D command is executed or until TECO’s radix is changed by an *n*^R command. |
-| ^D | \<CTRL/D\> causes all subsequent numeric input to be accepted as decimal numbers. This is the initial setting. |
+| ^O | &lt;CTRL/O> causes all subsequent numeric input to be accepted as octal numbers. Numeric conversions using the \\ or *n*\\ commands will also be octal. The digits 8 and 9 become invalid as numeric characters. The octal radix will continue to be used until the next ^D command is executed or until TECO’s radix is changed by an *n*^R command. |
+| ^D | &lt;CTRL/D> causes all subsequent numeric input to be accepted as decimal numbers. This is the initial setting. |
 | *n*^R | This command sets TECO’s radix to the value of *n*. *n* may only be 8, 10, or 16 (representing octal mode, decimal mode, or hexadecimal mode). If *n* is not one of these values, TECO’s radix remains unchanged and the ?IRA error message is issued. |
 
 ### Aborting Execution
@@ -150,6 +150,6 @@ The *squish.tec* indirect command file may be used to squish macros, as in the f
 | Command | Function |
 | ------- | -------- |
 | ^C | Causes command execution to stop and control return to TECO’s prompt. No clean-up of push-down lists, flag settings, etc. is done. This command lets a macro abort TECO’s command execution. |
-| ^C\<CTRL/C\> | Causes TECO to unconditionally abort and control exits from TECO. Control returns to the operating system. The second \<CTRL/C\> must be a true \<CTRL/C\> and may not be a Caret-C. |
+| ^C&lt;CTRL/C> | Causes TECO to unconditionally abort and control exits from TECO. Control returns to the operating system. The second &lt;CTRL/C> must be a true &lt;CTRL/C> and may not be a Caret-C. |
 
 

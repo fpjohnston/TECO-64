@@ -14,12 +14,12 @@ See specific commands for details.
 
 | Command | Function |
 | ------- | -------- |
-| \<flag\>  | Return value of flag. |
-| *n*\<flag\> | Set value of flag to *n*. |
-| *m*,*n*\<flag\> | In the flag, turn off those bits specified by *m* and turn on those bits specified by *n*. |
-| 0,*n*\<flag\> | Turn on the bits in the flag specified by *n*. |
-| *m*,0\<flag\> | Turn off the bits in the flag specified by *m*. |
-| *m*,*n*\<flag\> | Turn off the bits in the flag specified by *m*, and turn on the bits specified by *n*. |
+| &lt;flag>  | Return value of flag. |
+| *n*&lt;flag> | Set value of flag to *n*. |
+| *m*,*n*&lt;flag> | In the flag, turn off those bits specified by *m* and turn on those bits specified by *n*. |
+| 0,*n*&lt;flag> | Turn on the bits in the flag specified by *n*. |
+| *m*,0&lt;flag> | Turn off the bits in the flag specified by *m*. |
+| *m*,*n*&lt;flag> | Turn off the bits in the flag specified by *m*, and turn on the bits specified by *n*. |
 
 ### E1 - Extended Features Flag
 
@@ -39,7 +39,7 @@ used to customize which bits are set or cleared.
 | E1&64 | If set, CR/LF will be output if needed to ensure that TECO's prompt is printed at the start of a new line. |
 | E1&128 | If set, the radix of an input number will be determined as follows: if the first  two characters are 0x or 0X, the number is assumed to be decimal; if the first character is 1-9, it is assumed to be decimal; and if the first character is 0, it is assumed to be octal. |
 | E1&256 | Unused. |
-| E1&512 | If set, an *n*I command is equivalent to *n*I\<ESC\> or *n*@I//. If clear, any *n*I command must be terminated with either an ESCape or a delimiter. |
+| E1&512 | If set, an *n*I command is equivalent to *n*I&lt;ESC> or *n*@I//. If clear, any *n*I command must be terminated with either an ESCape or a delimiter. |
 | E1&1024 | If set, *n*% commands may include a colon modifier that causes the return value to be discarded (obviating the need to include an ESCape in order to avoid passing that value to the next command). If clear, colon modifiers preceding *n*% commands have no special meaning. |
 | E1&2048 | Unused. |
 | E1&4096 | Unused. |
@@ -113,8 +113,8 @@ functions:
 | ED&4 | Unused in TECO-64. |
 | ED&8 | Unused in TECO-64. |
 | ED&16 | Allow failing searches to preserve dot. If this bit is set, then whenever a search fails, the original location of the edit buffer pointer will be preserved. If this bit is clear, then failing searches (other than bounded searches) leave the edit buffer pointer at pointer position 0 after they fail. |
-| ED&32 | Enable immediate ESCape-sequence commands. If this bit is set, TECO will recognize an ESCape sequence key pressed immediately after the prompting asterisk as an immediate command. See [here](action.md) for a description of immediate ESCape-sequence commands. If this bit is clear (the default case), TECO will treat an ESCape coming in immediately after the asterisk prompt as a \<DELIM\>; that is, TECO will hear a discrete \<ESC\> character: an ESCape sequence will therefore be treated not as a unified command, but as a sequence of characters. |
-| ED&64 | Only move dot by one on multiple occurrence searches. If this bit is clear, TECO treats nStext$ exactly as n\<1Stext\$\>. That is, skip over the whole matched search string when proceeding to the nth search match. For example, if the edit buffer contains only A’s, the command 5SAA$ will complete with dot equal to 10. If this bit is set, TECO increments dot by one each search match. In the above example, dot would become 5. |
+| ED&32 | Enable immediate ESCape-sequence commands. If this bit is set, TECO will recognize an ESCape sequence key pressed immediately after the prompting asterisk as an immediate command. See [here](action.md) for a description of immediate ESCape-sequence commands. If this bit is clear (the default case), TECO will treat an ESCape coming in immediately after the asterisk prompt as a &lt;*delim*>; that is, TECO will hear a discrete &lt;ESC> character: an ESCape sequence will therefore be treated not as a unified command, but as a sequence of characters. |
+| ED&64 | Only move dot by one on multiple occurrence searches. If this bit is clear, TECO treats nStext$ exactly as n&lt;1Stext\$>. That is, skip over the whole matched search string when proceeding to the nth search match. For example, if the edit buffer contains only A’s, the command 5SAA$ will complete with dot equal to 10. If this bit is set, TECO increments dot by one each search match. In the above example, dot would become 5. |
 | ED&128 | Unused in TECO-64. |
 | ED&256 | If set before a file is opened with an EB or EW command, P and PW commands cause buffer data to be immediately output to that file. If clear, file data may be internally buffered before being output, and possibly not output until the file is closed. Changing this bit has no effect on any output files that are already open. |
 
@@ -125,7 +125,7 @@ bits in the ED flag is 0.
 
 | Command | Function |
 | ------- | -------- |
-| *n*EE | Set EE flag. When the flag is zero, and unless the 8192 ET bit is set, TECO recognizes only the ESCape as its \<DELIM\> character from the terminal. If it is desired to use another character as an ESCape surrogate (as when working from a terminal lacking an ESCape key), the ASCII value of that other character may be set in the EE flag. <br><br>Note that when an ESCape surrogate is set, that character (when typed at the terminal) is received by TECO as an ESCape — that character is no longer directly available at the keyboard. When an ESCape surrogate is active, an ESCape received by TECO echoes as accent grave; when none is active, an ESCape received by TECO echoes as a dollar sign. This feature is provided for the benefit of newer terminals which lack an ESCape key. (8192ET and 96EE both set \` as ESCape surrogate. EE, however, can be used to designate a character other than accent grave.) |
+| *n*EE | Set EE flag. When the flag is zero, and unless the 8192 ET bit is set, TECO recognizes only the ESCape as its &lt;*delim*> character from the terminal. If it is desired to use another character as an ESCape surrogate (as when working from a terminal lacking an ESCape key), the ASCII value of that other character may be set in the EE flag. <br><br>Note that when an ESCape surrogate is set, that character (when typed at the terminal) is received by TECO as an ESCape — that character is no longer directly available at the keyboard. When an ESCape surrogate is active, an ESCape received by TECO echoes as accent grave; when none is active, an ESCape received by TECO echoes as a dollar sign. This feature is provided for the benefit of newer terminals which lack an ESCape key. (8192ET and 96EE both set \` as ESCape surrogate. EE, however, can be used to designate a character other than accent grave.) |
 
 The EE flag is initially zero.
 
@@ -168,22 +168,22 @@ Any combination of the individual bits may be set.
 
 | Bit | Function |
 | --- | -------- |
-| ET&1 | Type out in image mode. Setting this bit inhibits all of TECO’s type out conversions. All characters are output to the terminal exactly as they appear in the buffer or ^A command. For example, the changing of control characters into the "caret/character" form, and the conversion of \<ESCAPE\> to \` (accent grave) or to $ (dollar sign) are suppressed. This mode is useful for driving displays. |
-| ET&2 | Process DELETEs and \<CTRL/U\>s by using "scope mode". Scope mode processing uses the cursor control features of monitors to handle character deletion by actually erasing characters from the screen. |
+| ET&1 | Type out in image mode. Setting this bit inhibits all of TECO’s type out conversions. All characters are output to the terminal exactly as they appear in the buffer or ^A command. For example, the changing of control characters into the "caret/character" form, and the conversion of &lt;ESCAPE> to \` (accent grave) or to $ (dollar sign) are suppressed. This mode is useful for driving displays. |
+| ET&2 | Process DELETEs and &lt;CTRL/U> characters by using "scope mode". Scope mode processing uses the cursor control features of monitors to handle character deletion by actually erasing characters from the screen. |
 | ET&4 | Read lower case. TECO normally converts all lower case alphabetics to upper case on input. Setting this bit causes lower case alphabetics to be input as lower case. TECO commands and file specifiers may be typed in either upper or lower case. For the purpose of searches, however, upper and lower case may be treated as different characters. (See ^X flag). |
 | ET&8 | Read without echo for ^T commands. This allows data to be read by the ^T command without having the characters echo at the terminal. Normal command input to TECO will echo. |
 | ET&16 | Unused. |
 | ET&32 | Read with no wait. This enables the ^T command to test if a character is available at the user terminal. If a character has been typed, ^T returns the value of the character as always. If no character has been typed, ^T immediately returns a value of -1 and execution continues without waiting for a character. |
 | ET&64 | Detach TECO from the user's terminal, but continue execution of the command string. An error will be issued if this feature is not supported in the current operating environment. <br><br> While detaching with open files should work in at least some environments, it is safer and more portable to detach from a terminal before executing EB, ER, EW, or other commands that open files. However, this does not apply to an EI command, since the data from any indirect command file is read, and the file closed, before execution of the commands contained therein. |
-| ET&128 | "Abort-on-error" bit. Initially set, when TECO starts up; cleared each time TECO issues its asterisk prompt. When this bit is set: 1) all informational messages are suppressed, 2) any \<CTRL/C\> causes the immediate termination of TECO, and 3) any error causes the termination of TECO after the error message is printed. |
+| ET&128 | "Abort-on-error" bit. Initially set, when TECO starts up; cleared each time TECO issues its asterisk prompt. When this bit is set: 1) all informational messages are suppressed, 2) any &lt;CTRL/C> causes the immediate termination of TECO, and 3) any error causes the termination of TECO after the error message is printed. |
 | ET&256 | If this bit is set, all lines output to the terminal are truncated to the terminal’s width if needed. |
 | ET&512 | If this bit is set, the display mode feature of TECO is present and your terminal is able to use display mode. This bit is a read-only bit; its state cannot be altered. |
 | ET&1024 | Unused. |
 | ET&2048 | Unused. |
-| ET&4096 | This bit reflects the terminal is capable of handling eight-bit character codes. <br><br> Because the data manipulated (edited) by TECO can consist of all 256 possible byte codes, the way data characters are displayed (typed out) at the terminal varies depending upon the setting of the 4096 ET bit. <br><br> Unprintable or invalid codes in the 128 to 255 range are typed out as [ab] (where ab is the corresponding hexadecimal code). The display mode feature (controlled by the W commands) always uses the \<xy\> and [ab] notations. |
-| ET&8192 | Accent grave as ESCape surrogate. If this bit is set, TECO recognizes the \` (accent grave) character as an ESCAPE surrogate. That is, an ` character typed at the terminal will be recognized as a command \<DELIM\> character, and passed to TECO as an ESCape. (This interpretation applies only to \<DELIM\>s typed at the terminal; ESCape characters must still be used in macros and indirect files.) When an ESCape surrogate is set, an ESCape received by TECO echos as accent grave; when none is set, an ESCape received by TECO echos as dollar sign. This feature is provided for the benefit of certain newer terminals which lack an ESCape key. (See also the Introduction, and the EE flag.) |
+| ET&4096 | This bit reflects the terminal is capable of handling eight-bit character codes. <br><br> Because the data manipulated (edited) by TECO can consist of all 256 possible byte codes, the way data characters are displayed (typed out) at the terminal varies depending upon the setting of the 4096 ET bit. <br><br> Unprintable or invalid codes in the 128 to 255 range are typed out as [ab] (where ab is the corresponding hexadecimal code). The display mode feature (controlled by the W commands) always uses the &lt;xy> and [ab] notations. |
+| ET&8192 | Accent grave as ESCape surrogate. If this bit is set, TECO recognizes the \` (accent grave) character as an ESCAPE surrogate. That is, an ` character typed at the terminal will be recognized as a command &lt;*delim*> character, and passed to TECO as an ESCape. (This interpretation applies only to &lt;*delim*> characters typed at the terminal; ESCape characters must still be used in macros and indirect files.) When an ESCape surrogate is set, an ESCape received by TECO echos as accent grave; when none is set, an ESCape received by TECO echos as dollar sign. This feature is provided for the benefit of certain newer terminals which lack an ESCape key. (See also the Introduction, and the EE flag.) |
 | ET&16384 | Unused. |
-| ET&32768 | If this bit is set and a \<CTRL/C\> is typed, the bit is turned off, but execution of the current command string is allowed to continue. This allows a TECO macro to detect typed \<CTRL/C\>s. |
+| ET&32768 | If this bit is set and a &lt;CTRL/C> is typed, the bit is turned off, but execution of the current command string is allowed to continue. This allows a TECO macro to detect typed &lt;CTRL/C> characters. |
 
 When TECO is initialized, ET&2, ET&4, ET&512, ET&4096, and ET&8192 are set,
 and all other bits are clear. Furthermore, ET&128 and ET&32768 are always

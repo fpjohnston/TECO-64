@@ -38,7 +38,7 @@ it represents.
 | FH | Equivalent to F0,FZ. |
 | FZ | Edit buffer position at start of window. Always 0 unless display mode is enabled. |
 | H | The numeric pair "B,Z", or "from the beginning of the buffer up to the end of the buffer." Thus, H represents the whole buffer. |
-| *n*:L | Returns a count of buffer lines, according to the value of *n*. *dot* is not moved.<br><br>If *n* = 0, returns the total number of lines in the buffer. <br><br>If *n* \< 0, returns the number of lines preceding *dot*. <br><br>If *n* \> 0, Returns the number of lines following *dot*. |
+| *n*:L | Returns a count of buffer lines, according to the value of *n*. *dot* is not moved.<br><br>If *n* = 0, returns the total number of lines in the buffer. <br><br>If *n* &lt; 0, returns the number of lines preceding *dot*. <br><br>If *n* > 0, Returns the number of lines following *dot*. |
 | :L | Equivalent to 0:L. |
 | M*q* | The M*q* command (execute the contents of the text storage area of Q-register *q as a command string) may return a numeric value if the last command in the string returns a numeric value and is not followed by an ESCape.
 | Q*q* | The numeric value stored in Q-register *q*. |

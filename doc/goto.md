@@ -21,7 +21,7 @@ The unconditional branch command is the O command, which has the form:
 O*tag*\`
 
 where *tag* is a location named elsewhere in the command string and "`" signifies
-a \<DELIM\>. When an O command is executed, the next command to be executed
+a &lt;*delim*>. When an O command is executed, the next command to be executed
 will be the one that follows the tag referenced by the O command. Command
 execution continues normally from this point.
 
@@ -56,7 +56,7 @@ all described in the table below.
 
 | Command | Function |
 | ------- | -------- |
-| @O*tag*\` | Causes TECO to branch to the first occurrence of the specified label *tag* in the current macro level. Branching to the left of the start of the current iteration is not permitted, and this command will only look for an occurrence of the specified tag following the \< of the current iteration, if you are in an iteration. In any case, branching out of an iteration is poor programming practice. Command execution resumes at the first character after the delimiter terminating the specified tag. Using this syntax, any character except \<ESC\> is permitted in the tag specification. The usual string build characters are permitted when specifying the tag. |
+| @O*tag*\` | Causes TECO to branch to the first occurrence of the specified label *tag* in the current macro level. Branching to the left of the start of the current iteration is not permitted, and this command will only look for an occurrence of the specified tag following the &lt; of the current iteration, if you are in an iteration. In any case, branching out of an iteration is poor programming practice. Command execution resumes at the first character after the delimiter terminating the specified tag. Using this syntax, any character except &lt;ESC> is permitted in the tag specification. The usual string build characters are permitted when specifying the tag. |
 | @O/*tag*/ | Equivalent to O*tag*`. The usual string build characters are permitted when specifying the tag. |
-| *n*O*tag0*,*tag1*, *tag2*,...\` | Causes TECO to branch to the tag specified by the *n*th tag in the accompanying list. The string argument to this command consists of a sequence of tags separated by commas. The tags may contain any characters other than comma or \<ESC>; however, good programming practice suggests that the tags should consist only of letters and digits. If *n* is out of range, or if *n* selects a null tag (signified by two adjacent commas), then command execution continues with the first command following the \<DELIM\> that delimits this command. |
+| *n*O*tag0*,*tag1*, *tag2*,...\` | Causes TECO to branch to the tag specified by the *n*th tag in the accompanying list. The string argument to this command consists of a sequence of tags separated by commas. The tags may contain any characters other than comma or &lt;ESC>; however, good programming practice suggests that the tags should consist only of letters and digits. If *n* is out of range, or if *n* selects a null tag (signified by two adjacent commas), then command execution continues with the first command following the &lt;*delim*> that delimits this command. |
 | *n*O/*tag0*,*tag1*, *tag2*,.../ | Same as the preceding command except that the list of tags is bracketed by a delimiter shown here as "/". The delimiter can be any character other than comma that does not appear within the list of tags. |

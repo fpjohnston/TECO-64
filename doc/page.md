@@ -15,7 +15,7 @@ capacity will be presented later in this chapter.
 
 | Command | Function |
 | ------- | -------- |
-| A | Appends the next page of the input file to the contents of the edit buffer, thus combining the two pages of text on a single page with no intervening form feed character. This command takes no argument. To perform n append commands, use the n\<A\> construct. Note that nA is a completely different command. |
+| A | Appends the next page of the input file to the contents of the edit buffer, thus combining the two pages of text on a single page with no intervening form feed character. This command takes no argument. To perform n append commands, use the n&lt;A> construct. Note that nA is a completely different command. |
 | :A | Executes the A command, but also returns -1 if the append succeeded, and zero if the append failed because end-of-file for the input file had previously been reached (\^N flag is -1 at start of this command). |
 | *n*:A | Appends *n* lines of text from the input file to the contents of the edit buffer. The value of *n* must not be negative. -1 is returned if the command succeeded, and zero is returned if end-of-file on the input file was encountered before all *n* lines were read in. Note that the command can succeed and yet read in fewer than *n* lines in the case that the edit buffer fills up. |
 
@@ -24,7 +24,7 @@ capacity will be presented later in this chapter.
 | Command | Function |
 | ------- | -------- |
 | P | Writes the contents of the buffer onto the output file, then clears the buffer and reads the next page of the input file into the buffer. A form feed is appended to the output file if the last page read in (with a P, Y, or A command) was terminated with a form feed. |
-| :P | Same as the P command except that a value is returned. -1 is returned if the command succeeded. 0 is returned if the command failed because the end-of-file on the input file had been reached prior to the initiation of this command. The command string \<:P;\> takes you to end of file. |
+| :P | Same as the P command except that a value is returned. -1 is returned if the command succeeded. 0 is returned if the command failed because the end-of-file on the input file had been reached prior to the initiation of this command. The command string &lt;:P;> takes you to end of file. |
 | *n*P | Executes the P command *n* times, where *n* must be a non-zero positive integer. If backwards paging is enabled, *n* can be a negative integer (and -P means -1P). A -*n*P command will back up *n* pages. |
 | *n*:P | Executes the :P command *n* times, where n must be a non-zero positive integer. If backwards paging is enabled, *n* can be a negative integer (and -:P means -1:P). This command returns 0 when another page could not be backed up because beginning of file had been reached. |
 | PW | Write the contents of the buffer onto the output file and append a form feed character. The buffer is not cleared and the pointer position remains unchanged. |

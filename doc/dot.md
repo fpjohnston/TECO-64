@@ -14,7 +14,7 @@ have been exceeded and no error message is printed.
 | Command | Function |
 | ------- | -------- |
 | C | Advances *dot* forward across one character. |
-| *n*C | Executes the C command *n* times, as follows: <br><br>If *n* \> 0, *dot* is moved forward across *n* characters. <br><br>If *n* \< 0, *dot* is moved backward across *n* characters. <br><br>If *n* = 0, *dot* is not changed. |
+| *n*C | Executes the C command *n* times, as follows: <br><br>If *n* > 0, *dot* is moved forward across *n* characters. <br><br>If *n* &lt; 0, *dot* is moved backward across *n* characters. <br><br>If *n* = 0, *dot* is not changed. |
 | -C | Equivalent to -1C. |
 | *n*:C | Equivalent to *n*C except that -1 is returned if the command succeeded. If the command failed, 0 is returned and *dot* is not changed. |
 | :C | Equivalent to 1:C. |
@@ -34,7 +34,7 @@ have been exceeded and no error message is printed.
 | Command | Function |
 | ------- | -------- |
 | L | Advances *dot* forward across the next line terminator (line feed, vertical tab, or form feed) and positions it at the beginning of the next line. |
-| *n*L | Executes the L command *n* times, as follows: <br><br>If *n* \> 0, *dot* is moved forward *n* lines. <br><br>If *n* \< 0, *dot* is moved backward *n* lines. <br><br>If *n* = 0, *dot* is moved to the beginning of the line on which it is currently positioned. |
+| *n*L | Executes the L command *n* times, as follows: <br><br>If *n* > 0, *dot* is moved forward *n* lines. <br><br>If *n* &lt; 0, *dot* is moved backward *n* lines. <br><br>If *n* = 0, *dot* is moved to the beginning of the line on which it is currently positioned. |
 | -L | Equivalent to -1L. |
 
 ### Reverse commands
@@ -42,7 +42,7 @@ have been exceeded and no error message is printed.
 | Command | Function |
 | ------- | -------- |
 | R | Moves *dot* backward across one character. Equivalent to -C. |
-| *n*R | Executes the R command *n* times, as follows: <br><br>If *n* \> 0, *dot* is moved backward across *n* characters. <br><br>If *n* \< 0, *dot* is moved forward across *n* characters. <br><br>If *n* = 0, *dot* is not changed. |
+| *n*R | Executes the R command *n* times, as follows: <br><br>If *n* > 0, *dot* is moved backward across *n* characters. <br><br>If *n* &lt; 0, *dot* is moved forward across *n* characters. <br><br>If *n* = 0, *dot* is not changed. |
 | -R | Equivalent to -1R. |
 | *n*:R | Equivalent to *n*R except that -1 is returned if the command succeeded. If the command failed, 0 is returned and *dot* is not changed. |
 | :R | Equivalent to 1:R. |

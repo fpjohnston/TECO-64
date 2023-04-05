@@ -7,9 +7,9 @@ These commands do not move *dot*.
 
 | Command | Function |
 | ------- | -------- |
-| \^A*text*\<CTRL/A\> | Types *text* on the terminal. While the command may begin with \<CTRL/A\> or \^A, closing character must be a \<CTRL/A\>. |
-| @^A/*text*/ | Equivalent to \^A*text*\<CTRL/A\>. |
-| :\^A*text*\<CTRL/A\> | Equivalent to \^A*text*\<CTRL/A\> 13\^T 10\^T. |
+| \^A*text*&lt;CTRL/A> | Types *text* on the terminal. While the command may begin with &lt;CTRL/A> or \^A, closing character must be a &lt;CTRL/A>. |
+| @^A/*text*/ | Equivalent to \^A*text*&lt;CTRL/A>. |
+| :\^A*text*&lt;CTRL/A> | Equivalent to \^A*text*&lt;CTRL/A> 13\^T 10\^T. |
 | :@\^A/*text*/ | Equivalent to \^A/*text*/ 13\^T 10\^T. |
 | *n*^T | Types out to the terminal the character whose ASCII value is *n*. Whatever normal type-out conversions may currently be in effect and applicable (such as translation of control characters to up-arrow format) are done. The value of *n* is used modulo 256 (except if it is -1; see below). |
 | *n*:^T | Outputs to the terminal the character whose ASCII value is *n*. Output is done in "one-shot" binary mode; no type-out translations are done. The value of *n* is used modulo 256 (except if it is -1; see below). |
@@ -22,7 +22,7 @@ These commands do not move *dot*.
 | *n*@=/*format*/ | Output the value of *n* using *format* as a *printf()* format string, followed by a CR/LF. Any string for *printf()* may be used, as long as it contains at most one numeric conversion specifier. Non-numeric specifiers such as %s, or multiple numeric specifiers, are not allowed. However, %% may be used to print a percent sign. Also, the output format is used regardless whether =, ==, or === is specified. |
 | *n*:@=/*format*/ | Equivalent to *n*@=/*format*/, except that no CR/LF is added. |
 | T | Types out the contents of the buffer from the current position of *dot* through and including the next line terminator character. |
-| *n*T | Types *n* lines, as follows: <br><br>If *n* \> 0, types the *n* lines following the current position of *dot*. <br><br>If *n* \< 0, types the *n* lines preceding *dot*. <br><br>If *n* = 0, types the contents of the buffer from the beginning of the line on which *dot* is located up to *dot*. |
+| *n*T | Types *n* lines, as follows: <br><br>If *n* > 0, types the *n* lines following the current position of *dot*. <br><br>If *n* &lt; 0, types the *n* lines preceding *dot*. <br><br>If *n* = 0, types the contents of the buffer from the beginning of the line on which *dot* is located up to *dot*. |
 | -T | Equivalent to -1T. |
 | *m*,*n*T | Types out the contents of the buffer between pointer positions *m* and *n*. |
 | .,.+*n*T | Types out the *n* characters immediately following *dot*. *n* should be greater than zero. |

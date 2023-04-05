@@ -33,7 +33,7 @@ immediately following the edit buffer pointer.
 
 | Command | Function |
 | ------- | -------- |
-| S*text*` |  Where *text* is a string of characters terminated by a \<DELIM\>. This command searches the *text* buffer for the next occurrence of the specified character string following the current position of the buffer pointer. If the string is found, the pointer is positioned after the last character in the string. If it is not found, the pointer is positioned immediately before the first character in the buffer (i.e., a 0J is executed) and an error message is printed. |
+| S*text*` |  Where *text* is a string of characters terminated by a &lt;*delim*>. This command searches the *text* buffer for the next occurrence of the specified character string following the current position of the buffer pointer. If the string is found, the pointer is positioned after the last character in the string. If it is not found, the pointer is positioned immediately before the first character in the buffer (i.e., a 0J is executed) and an error message is printed. |
 | nS*text*` | This command searches for the *n*th occurrence of the specified character string, where *n* is greater than zero. It is identical to the S command in other respects. |
 | -*n*S*text*` | Identical to "*n*S*text*`" except that the search proceeds in the reverse direction. If the string is not found, the pointer is positioned immediately before the first character in the buffer and an error message is printed. If the pointer is positioned at the beginning of or within an occurrence of the desired string, that occurrence is considered to be the first one found. Upon successful completion, the pointer is positioned after the last character in the string found. |
 | -S*text*` | Equivalent to -1S*text*`. |
@@ -51,7 +51,7 @@ immediately following the edit buffer pointer.
 | Command | Function |
 | ------- | -------- |
 | *m*,*n*S*text*` | Performs the same function as the *n*S command, but *m* serves a bound limit for the search. If the search string can be found without moving the pointer more than ABS(*m*)-1 places, the search succeeds and the pointer is repositioned to immediately after the last character of the string. Otherwise, the pointer is left unchanged. The ^Q operator is useful in conjunction with this command. <br><br>Note that m,Stext$ is identical to m,1Stext$ and m,-Stext$ is identical to m,-1Stext$.|
-| *m*,*n*FB*text*` | Performs the same function as the *n*S*text*` command, but *m* and *n* (inclusive) serve as bounds for the search. In order for a search to be successful, the first character to match must occur between buffer pointer positions *m* and *n*. The string that is matched is permitted to extend beyond the search limits specified, provided that it begins within bounds. If *m* \< *n*, then the search proceeds in a forwards direction. If *m* \> *n*, then the search proceeds in the reverse direction. |
+| *m*,*n*FB*text*` | Performs the same function as the *n*S*text*` command, but *m* and *n* (inclusive) serve as bounds for the search. In order for a search to be successful, the first character to match must occur between buffer pointer positions *m* and *n*. The string that is matched is permitted to extend beyond the search limits specified, provided that it begins within bounds. If *m* &lt; *n*, then the search proceeds in a forwards direction. If *m* > *n*, then the search proceeds in the reverse direction. |
 | *n*FB*text*` | Performs a bounded search over the next *n* lines. If *n* is positive, the search proceeds forward over the next *n* lines; if *n* is negative the search proceeds backwards over the *n* preceding lines; if *n* is zero, the search proceeds backwards over the portion of the line preceding the pointer. |
 | FB*text*` | Equivalent to 1FB*text*`. |
 | -FB*text*` | Equivalent to -1FB*text*`. |
@@ -86,14 +86,14 @@ function of the caret can be disabled by using the ED flag.
 
 | Command | Function |
 | ------- | -------- |
-| \<CTRL/Q\> | Specifies that the character following the \<CTRL/Q\> is to be used literally rather than as a match control character. |
-| \<CTRL/R\> | Equivalent to \<CTRL/Q\>. |
-| \<CTRL/V\>\<CTRL/V\> | Convert all following alphabetic characters in this string are to be converted to lower case unless an explicit \<CTRL/W\> is given to temporarily override this state. This state continues until the end of the string or until a \<CTRL/W\> construct is encountered. |
-| \<CTRL/V\>*x* | Convert *x* to lower case. |
-| \<CTRL/W\>\<CTRL/W\> | Convert all following alphabetic characters in this string to upper case unless an explicit \<CTRL/V\> is encountered to temporarily override this state. This state continues until the end of the string or until a \<CTRL/V\>\<CTRL/V\> construct is encountered. |
-| \<CTRL/W\>*x* | Convert *x* to upper case. |
-| \<CTRL/E\>Q*q* | Specifies that the string stored in Q-register *q* is to be used in the position occupied by the ^EQ*q* in the search string. |
-| \<CTRL/E\>U*q* | Specifies that the character whose ASCII code is specified by the numeric storage area of Q-register *q* is to be used in the position occupied by the ^EU*q* in the search string. |
+| &lt;CTRL/Q> | Specifies that the character following the &lt;CTRL/Q> is to be used literally rather than as a match control character. |
+| &lt;CTRL/R> | Equivalent to &lt;CTRL/Q>. |
+| &lt;CTRL/V>&lt;CTRL/V> | Convert all following alphabetic characters in this string are to be converted to lower case unless an explicit &lt;CTRL/W> is given to temporarily override this state. This state continues until the end of the string or until a &lt;CTRL/W> construct is encountered. |
+| &lt;CTRL/V>*x* | Convert *x* to lower case. |
+| &lt;CTRL/W>&lt;CTRL/W> | Convert all following alphabetic characters in this string to upper case unless an explicit &lt;CTRL/V> is encountered to temporarily override this state. This state continues until the end of the string or until a &lt;CTRL/V>&lt;CTRL/V> construct is encountered. |
+| &lt;CTRL/W>*x* | Convert *x* to upper case. |
+| &lt;CTRL/E>Q*q* | Specifies that the string stored in Q-register *q* is to be used in the position occupied by the ^EQ*q* in the search string. |
+| &lt;CTRL/E>U*q* | Specifies that the character whose ASCII code is specified by the numeric storage area of Q-register *q* is to be used in the position occupied by the ^EU*q* in the search string. |
 
 String build characters are also permitted inside the string arguments
 of the O, EB, ER, EW, and EG commands.
@@ -108,18 +108,18 @@ lists these match control characters and their functions.
 
 | Command | Function |
 | ------- | -------- |
-| \<CTRL/X\> | Specifies that this position in the character string may be any character. TECO accepts any character as a match for \<CTRL/X\>. |
-| \<CTRL/S\> | Specifies that any separator character is acceptable in this position. TECO accepts any character that is not a letter (upper or lower case A to Z) or a digit (0 to 9) as a match for \<CTRL/S\>. |
-| \<CTRL/N\>x | TECO accepts any character as a match for the \<CTRL/N\>x combination EXCEPT the character which follows the \<CTRL/N\>. \<CTRL/N\> can be combined with other special characters. For example, the combination \<CTRL/N\>\<CTRL/E\>D means match anything except a digit in this position. |
-| \<CTRL/E\>A | Specifies that any alphabetic character (upper or lower case A to Z) is acceptable in this position.|
-| \<CTRL/E\>B | Equivalent to \<CTRL/S\>. |
-| \<CTRL/E\>C | Specifies that any symbol constituent character is acceptable in this position. TECO accepts any letter (upper or lower case A to Z), any digit (0 to 9), a dot (.), a dollar sign ($), or an underscore (_) as a match for \<CTRL/E\>C. |
-| \<CTRL/E\>D | Specifies that any digit (0 to 9) is acceptable in this position. |
-| \<CTRL/E\>G*q* | Specifies that any character contained in Q-register *q* is acceptable in this position. For example, if Q-register A contains "A\*:" then TECO accepts either A, \*, or : as a match for \<CTRL/E\>GA. |
-| \<CTRL/E\>L | Specifies that any line terminator (line feed, vertical tab, or form feed) is acceptable in the position occupied by \<CTRL/E\>L in the search string. |
-| \<CTRL/E\>R | Specifies that any alphanumeric character (letter or digit as defined above) is acceptable in this position. |
-| \<CTRL/E\>S | Specifies that any non-null string of spaces and/or tabs is acceptable in the position occupied by \<CTRL/E\>S. |
-| \<CTRL/E\>V | Specifies that any lower case alphabetic character is acceptable in this position. |
-| \<CTRL/E\>W | Specifies that any upper case alphabetic character is acceptable in this position. |
-| \<CTRL/E\>X | Equivalent to \<CTRL/X\>. |
-| <span>\<CTRL/E\>\<*nnn*></span> | Specifies that the character whose ASCII decimal code is *nnn* is acceptable in this position. |
+| &lt;CTRL/X> | Specifies that this position in the character string may be any character. TECO accepts any character as a match for &lt;CTRL/X>. |
+| &lt;CTRL/S> | Specifies that any separator character is acceptable in this position. TECO accepts any character that is not a letter (upper or lower case A to Z) or a digit (0 to 9) as a match for &lt;CTRL/S>. |
+| &lt;CTRL/N>x | TECO accepts any character as a match for the &lt;CTRL/N>x combination EXCEPT the character which follows the &lt;CTRL/N>. &lt;CTRL/N> can be combined with other special characters. For example, the combination &lt;CTRL/N>&lt;CTRL/E>D means match anything except a digit in this position. |
+| &lt;CTRL/E>A | Specifies that any alphabetic character (upper or lower case A to Z) is acceptable in this position.|
+| &lt;CTRL/E>B | Equivalent to &lt;CTRL/S>. |
+| &lt;CTRL/E>C | Specifies that any symbol constituent character is acceptable in this position. TECO accepts any letter (upper or lower case A to Z), any digit (0 to 9), a dot (.), a dollar sign ($), or an underscore (_) as a match for &lt;CTRL/E>C. |
+| &lt;CTRL/E>D | Specifies that any digit (0 to 9) is acceptable in this position. |
+| &lt;CTRL/E>G*q* | Specifies that any character contained in Q-register *q* is acceptable in this position. For example, if Q-register A contains "A\*:" then TECO accepts either A, \*, or : as a match for &lt;CTRL/E>GA. |
+| &lt;CTRL/E>L | Specifies that any line terminator (line feed, vertical tab, or form feed) is acceptable in the position occupied by &lt;CTRL/E>L in the search string. |
+| &lt;CTRL/E>R | Specifies that any alphanumeric character (letter or digit as defined above) is acceptable in this position. |
+| &lt;CTRL/E>S | Specifies that any non-null string of spaces and/or tabs is acceptable in the position occupied by &lt;CTRL/E>S. |
+| &lt;CTRL/E>V | Specifies that any lower case alphabetic character is acceptable in this position. |
+| &lt;CTRL/E>W | Specifies that any upper case alphabetic character is acceptable in this position. |
+| &lt;CTRL/E>X | Equivalent to &lt;CTRL/X>. |
+| <span>&lt;CTRL/E>&lt;*nnn*></span> | Specifies that the character whose ASCII decimal code is *nnn* is acceptable in this position. |
