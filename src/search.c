@@ -426,7 +426,11 @@ bool search_backward(struct search *s)
     {
         s->text_pos  = s->text_start--; // Start at current position
         s->match_len = last_search.len; // No. of characters left to match
-        s->match_buf = last_search.data; // Start of match characters
+
+        if ((s->match_buf = last_search.data) == NULL) // Start of match characters
+        {
+            break;                      // If no previous search string, then fail
+        }
 
         if (match_str(s))
         {
@@ -508,7 +512,11 @@ bool search_forward(struct search *s)
     {
         s->text_pos  = s->text_start++; // Start at current position
         s->match_len = last_search.len; // No. of characters left to match
-        s->match_buf = last_search.data; // Start of match characters
+
+        if ((s->match_buf = last_search.data) == NULL) // Start of match characters
+        {
+            break;                      // If no previous search string, then fail
+        }
 
         if (match_str(s))
         {
@@ -527,7 +535,7 @@ bool search_forward(struct search *s)
         }
         else if (s->type == SEARCH_C)   // Are we processing ::S?
         {
-            return false;               // Yes, then we've failed
+            break;                      // Yes, then we've failed
         }
     }
 
