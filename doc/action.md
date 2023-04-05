@@ -1,5 +1,11 @@
 ## TECO-64 - Immediate Action Commands
 
+<style>
+    span {
+        white-space: nowrap;
+    }
+</style>
+
 ### Editing Commands
 
 These commands may be used while entering a command string, in order
@@ -9,13 +15,13 @@ execution, or abort input and return to the command prompt.
 | Command | Function |
 | ------- | -------- |
 | \<CTRL/C\> | Deletes the command string being input and returns to TECO's prompt. |
-| <nobr>\<CTRL/C\>\<CTRL/C\></nobr> | Deletes the command string being input, kills the editing session, deletes the edit buffer, and exits TECO. Effectively executes "\<CTRL/G\>\<CTRL\G\> EK HK EX". |
-| <nobr>\<CTRL/G\>\<CTRL/G\></nobr> | Causes all commands which have been entered but not executed to be erased. Used to erase an entire command string. |
-| <nobr>\<CTRL/G\>\<SPACE\></nobr> | Re-types the current input line. |
+| <span>\<CTRL/C\>\<CTRL/C\></span> | Deletes the command string being input, kills the editing session, deletes the edit buffer, and exits TECO. Effectively executes "\<CTRL/G\>\<CTRL\G\> EK HK EX". |
+| <span>\<CTRL/G\>\<CTRL/G\></span> | Causes all commands which have been entered but not executed to be erased. Used to erase an entire command string. |
+| <span>\<CTRL/G\>\<SPACE\></span> | Re-types the current input line. |
 | \<CTRL/G\>\* | Re-types the entire command string. Equivalent to \<CTRL/G\>\<SPACE\> if the command string is only one line. |
 | \<CTRL/U\> | Deletes the current input line. |
 | \<DEL\> | Deletes the last character typed. |
-| <nobr>\<*delim*\>\<*delim*\></nobr> | Causes TECO to begin execution of the command string. The two \<*delim*\>s must be typed successively without any intervening characters. |
+| <span>\<*delim*\>\<*delim*\></span> | Causes TECO to begin execution of the command string. The two \<*delim*\>s must be typed successively without any intervening characters. |
 
 ### Type-Out Commands
 

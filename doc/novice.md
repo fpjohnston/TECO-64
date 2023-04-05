@@ -1,5 +1,11 @@
 ## TECO-64 - Novice Commands
 
+<style>
+    span {
+        white-space: nowrap;
+    }
+</style>
+
 The table below describes a set of commands that can be used by a novice
 user to edit files.
 For simplicity, no attempt is made here to describe all of the modifiers
@@ -22,7 +28,7 @@ sections that follow.
 | EW*filespec*\` | Create a new file, or overwrite an existing one. |
 | EX | Same as EC, but then exits from TECO. |
 | FS*text1*\`*text2*\` | Search forward for the next occurrence of *text1* and replace it with *text2*. |
-| <nobr>-FS*text1*\`*text2*\`</nobr> | Same as -FS, but search backward. |
+| <span>-FS*text1*\`*text2*\`</span> | Same as -FS, but search backward. |
 | I*text*\` | Insert *text* into the edit buffer at the current position of *dot*. |
 | J | Move *dot* to the start of the buffer. |
 | K | Delete the contents of the edit buffer from *dot* through the next line terminator. |

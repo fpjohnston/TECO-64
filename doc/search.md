@@ -1,5 +1,11 @@
 ## TECO-64 - Search Commands
 
+<style>
+    span {
+        white-space: nowrap;
+    }
+</style>
+
 In many cases, the easiest way to position the buffer pointer is by means of a
 character string search. Search commands cause TECO to scan through text
 until a specified string of characters is found, and then position the buffer pointer
@@ -116,4 +122,4 @@ lists these match control characters and their functions.
 | \<CTRL/E\>V | Specifies that any lower case alphabetic character is acceptable in this position. |
 | \<CTRL/E\>W | Specifies that any upper case alphabetic character is acceptable in this position. |
 | \<CTRL/E\>X | Equivalent to \<CTRL/X\>. |
-| <nobr>\<CTRL/E\>\<*nnn*\></nobr> | Specifies that the character whose ASCII decimal code is *nnn* is acceptable in this position. |
+| <span>\<CTRL/E\>\<*nnn*></span> | Specifies that the character whose ASCII decimal code is *nnn* is acceptable in this position. |

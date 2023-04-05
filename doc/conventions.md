@@ -1,5 +1,11 @@
 ## TECO-64 - Document Conventions
 
+<style>
+    span {
+        white-space: nowrap;
+    }
+</style>
+
 Before proceeding with a description of TECO syntax and commands,
 the following is presented to enumerate the special conventions and
 notations used throughout this manual.
@@ -36,7 +42,7 @@ the ESCape character at that position.
 | \<VT\>          | 11            | Vertical tab |
 | \<FF\>          | 12            | Form feed |
 | \<CR\>          | 13            | Carriage return |
-| <nobr>\<CR\>\<LF\></nobr>    | 13+10         | Carriage return/line feed sequence |
+| <span>\<CR\>\<LF\></span>    | 13+10         | Carriage return/line feed sequence |
 | \<ESC\>         | 27            | ESCape |
 | \<CTRL/*x*\>    | -             | Control-*x* |
 | \<SPACE\>       | 20            | Space |

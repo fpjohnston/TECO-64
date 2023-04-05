@@ -1,5 +1,11 @@
 ## TECO-64 - Command Basics
 
+<style>
+    span {
+        white-space: nowrap;
+    }
+</style>
+
 A general editing session with TECO might look like this:
 
 - A user starts TECO from the command line.
@@ -127,7 +133,7 @@ Commands that allow a single text argument are normally delimited as follows:
 | Command | Description |
 | ------- | ----------- |
 | command\<*delim*\> | General command, where \<*delim*\> is ESCape or an alternative delimiter such as accent grave. |
-| <nobr>^Ahello, world!\<CTRL/A\></nobr> | The type-out command may start with a CTRL/A or literal ^A, but it must be terminated by a CTRL/A.
+| <span>^Ahello, world!\<CTRL/A\></span> | The type-out command may start with a CTRL/A or literal ^A, but it must be terminated by a CTRL/A.
 | !tag! | Any tag or comment must be start and end with an exclamation mark. |
 
 | Example | Description |
