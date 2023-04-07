@@ -330,7 +330,14 @@ int getc_term(bool wait)
     }
     else if (f.e0.display && c == CR)
     {
-        LF_pending = true;
+        if (f.e3.CR_in)                 // Allow CR/LF?
+        {
+            LF_pending = true;          // Yes, output LF next
+        }
+        else
+        {
+            c = LF;                     // No, so just change CR to LF
+        }
     }
 
 #if     defined(DEBUG)
