@@ -58,7 +58,7 @@ extern int_t after_dot(void);
 
 // Append file to buffer.
 
-extern bool append_edit(struct ifile *ifile, uint nlines);
+extern bool append_edit(struct ifile *ifile, bool single);
 
 // Get no. of lines before dot.
 

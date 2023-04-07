@@ -78,8 +78,6 @@ void close_input(uint stream)
         ifile->fp = NULL;
     }
 
-    ifile->cr = false;
-
     free_mem(&ifile->name);
 }
 
@@ -367,10 +365,9 @@ struct ifile *open_input(const char *name, uint stream, bool colon)
         throw(E_ERR, name);             // General error
     }
 
-    ifile->name  = alloc_mem((uint_t)strlen(name) + 1);
-    ifile->size  = (uint_t)file_stat.st_size;
-    ifile->cr    = false;
-    ifile->first = false;
+    ifile->name = alloc_mem((uint_t)strlen(name) + 1);
+    ifile->size = (uint_t)file_stat.st_size;
+    ifile->LF   = false;                // No LF characters read yet
 
     strcpy(ifile->name, name);
 

@@ -187,10 +187,9 @@ int_t after_dot(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool append_edit(struct ifile *ifile, uint nlines)
+bool append_edit(struct ifile *ifile, bool single)
 {
     assert(ifile != NULL);
-    assert(nlines <= 1);
 
     if (!start_insert(ifile->size))
     {
@@ -198,93 +197,59 @@ bool append_edit(struct ifile *ifile, uint nlines)
     }
 
     int c;
+    int next;
     uchar *p = eb.buf + eb.left;
 
-    // Read characters until EOF or FF
+    // Read characters until end of file or end of page
 
     while ((c = getc(ifile->fp)) != EOF)
     {
         if (c == LF)
         {
-            // If first LF, see if smart mode is enabled
-
-            if (!ifile->first && f.e3.smart)
+            if (!ifile->LF)             // First LF?
             {
-                ifile->first = true;
+                ifile->LF = true;
 
-                f.e3.CR_in   = false;
-                f.e3.CR_out  = false;
-            }
-
-            if (nlines == 1)
-            {
-                *p++ = (uchar)c;
-
-                break;
-            }
-        }
-        else if (c == CR)
-        {
-            int next = fgetc(ifile->fp);
-
-            if (next == LF)             // CR followed by LF
-            {
-                // If first CR/LF, see if smart mode is enabled
-
-                if (!ifile->first && f.e3.smart)
+                if (f.e3.smart)         // In smart mode?
                 {
-                    ifile->first = true;
-
-                    f.e3.CR_in   = true;
-                    f.e3.CR_out  = true;
-                }
-
-                // If CR/LF is okay, save LF for next read
-
-                if (f.e3.CR_in)
-                {
-                    ungetc(next, ifile->fp);
-                }
-                else
-                {
-                    c = LF;             // Ignore CR and just use LF
-
-                    if (nlines == 1)
-                    {
-                        *p++ = (uchar)c;
-
-                        break;
-                    }
+                    f.e3.CR_in  = false; // Terminate input lines with LF
+                    f.e3.CR_out = false; // Terminate output lines with LF
                 }
             }
-            else if (next != EOF)       // CR followed by non-LF
-            {
-                ungetc(next, ifile->fp);
-            }
         }
-        else if (c == VT)
+        else if (c == CR)               // Check for CR followed by LF
         {
-            if (nlines == 1)
+            if ((next = fgetc(ifile->fp)) != LF)
+            {
+                ungetc(next, ifile->fp); // Save non-LF for next read
+            }
+            else if (!ifile->LF)        // First LF?
+            {
+                ifile->LF = true;
+
+                if (f.e3.smart)         // In smart mode?
+                {
+                    f.e3.CR_in  = true; // Terminate input lines with CR/LF
+                    f.e3.CR_out = true; // Terminate output lines with CR/LF
+                }
+            }
+
+            // If input lines can be terminated with CR/LF, then we save
+            // both characters; if they can only be terminated with LF,
+            // then we ignore the CR.
+
+            if (f.e3.CR_in)             // If CR/LF is okay, save CR here
             {
                 *p++ = (uchar)c;
-
-                break;
             }
+
+            c = LF;                     // Now save the LF
         }
-        else if (c == FF)
+        else if (c == FF && !f.e3.nopage)
         {
-            if (!f.e3.nopage)
-            {
-                f.ctrl_e = true;        // Flag FF, but don't store it
+            f.ctrl_e = true;            // Flag FF, but don't store it
 
-                break;
-            }
-            else if (nlines == 1)
-            {
-                *p++ = (uchar)c;
-
-                break;
-            }
+            break;
         }
         else if (c == NUL && !f.e3.keepNUL)
         {
@@ -292,6 +257,11 @@ bool append_edit(struct ifile *ifile, uint nlines)
         }
 
         *p++ = (uchar)c;
+
+        if (single && isdelim(c))       // Delimiter seen for single line?
+        {
+            break;
+        }
     }
 
     uint_t nbytes = (uint_t)(p - (eb.buf + eb.left));

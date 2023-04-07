@@ -41,8 +41,7 @@ struct ifile
     FILE *fp;                       ///< Input file stream
     char *name;                     ///< Input file name
     uint_t size;                    ///< Input file size
-    bool cr;                        ///< Last character was CR
-    bool first;                     ///< First line has been read
+    bool LF;                        ///< First LF has been read
 };
 
 ///  @enum    itype

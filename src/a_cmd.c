@@ -74,7 +74,7 @@ bool append(bool n_set, int_t n_arg, bool colon)
     {
         for (int_t i = 0; i < n_arg; ++i)
         {
-            if (!append_edit(ifile, 1)) // Append a single line
+            if (!append_edit(ifile, true)) // Append a single line
             {
                 break;
             }
@@ -82,7 +82,7 @@ bool append(bool n_set, int_t n_arg, bool colon)
     }
     else                                // A or :A
     {
-        (void)append_edit(ifile, 0);    // Append all we can
+        (void)append_edit(ifile, false); // Append all we can
     }
 
     set_dot(olddot);
