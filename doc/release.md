@@ -12,12 +12,11 @@ Note the sections for linting, testing, and building may need to be enhanced for
 
 - *make distclean release=(major,minor,patch) teco*
 - Confirm that all code changes have been checked in with *git status*.
-- Add new tag with *git tag -a -m* and confirm with *git log*.
+- Add new tag with *git tag -a x.y.z -m "TECO-64 version x.y.z*" and confirm with *git log*.
 
 ### Run Smoke Tests
 
-- *make smoke*
-- *make distclean*
+- *make distclean smoke*
 
 ### Verify Common Builds
 
