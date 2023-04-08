@@ -33,8 +33,8 @@
 enum release_version                ///< TECO release version numbers
 {
     major_version = 200,
-    minor_version = 29,
-    patch_version = 3
+    minor_version = 30,
+    patch_version = 0
 };
 
 #endif  // !defined(_VERSION_H)
