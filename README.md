@@ -27,6 +27,20 @@ systems such as Linux and Windows.
 
 And although six decades old, it remains in use today.
 
+### Version Numbers
+
+The highest version of any DEC TECO (TECO-11 and TECO-32) was 40. To avoid
+any conflict with those TECOs, since TECO macros sometimes obtain the version
+number (using the EO command) in order to determine what features are
+available, the initial version of TECO C was set to 100, with subsequent
+versions eventually reaching 147.
+
+For similar reasons, a baseline version number of 200 was chosen for
+TECO-64. This is the major version. A minor version and patch version
+also exist, per *github*'s guidelines. Values for all three can be
+accessed via the EO command, although only the major version is likely
+to be significant for TECO macros.
+
 ### Implementation
 
 TECO-64 is written in C, for maximum portability, and was inspired by
@@ -50,19 +64,20 @@ Doxygen must be installed in order to use the *doc* target.
 
 PC-lint must be installed in order to use the *lint* and *lobs* targets.
 
-### Version Numbers
+### Getting Started
 
-The highest version of any DEC TECO (TECO-11 and TECO-32) was 40. To avoid
-any conflict with those TECOs, since TECO macros sometimes obtain the version
-number (using the EO command) in order to determine what features are
-available, the initial version of TECO C was set to 100, with subsequent
-versions eventually reaching 147.
+TECO is intended to be usable in a variety of operating environments.
+As the methods for building and starting TECO vary from environment to
+environment, the specifics for getting set up are described in the
+following separate sections.
 
-For similar reasons, a baseline version number of 200 was chosen for
-TECO-64. This is the major version. A minor version and patch version
-also exist, per *github*'s guidelines. Values for all three can be
-accessed via the EO command, although only the major version is likely
-to be significant for TECO macros.
+- [Linux Setup](doc/linux.md)
+
+- [Windows Setup](doc/windows.md)
+
+- [MacOS Setup](doc/macos.md)
+
+- [OpenVMS Setup](doc/openvms.md)
 
 ### Additional Documentation
 
