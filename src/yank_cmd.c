@@ -135,7 +135,7 @@ bool next_yank(void)
 
     struct ifile *ifile = &ifiles[istream];
 
-    (void)append_edit(ifile, false);    // Read all we can
+    (void)append_edit(ifile, (bool)false); // Read all we can
 
     if (t->Z != 0)
     {

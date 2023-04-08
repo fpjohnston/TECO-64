@@ -52,11 +52,11 @@ static char *ctrl_f_cmd[MAX_CTRL_F];    ///< Command strings for CTRL/F
 
 bool exec_ctrl_F(int c)
 {
-    static int index = 0;               ///< Last index used
+    static int saved_index = 0;         ///< Last index used
 
     if (isdigit(c))
     {
-        index = c - '0';                // Set index and default
+        saved_index = c - '0';          // Set index and default
     }
     else
     {
@@ -65,7 +65,7 @@ bool exec_ctrl_F(int c)
 
 #if     defined(DEBUG)
 
-    if (index == 0 && ctrl_f_cmd[0] == NULL)
+    if (saved_index == 0 && ctrl_f_cmd[0] == NULL)
     {
         const char *p = "EK HK EX";
 
@@ -76,15 +76,15 @@ bool exec_ctrl_F(int c)
 
 #endif
 
-    if (ctrl_f_cmd[index] == NULL || *ctrl_f_cmd[index] == NUL)
+    if (ctrl_f_cmd[saved_index] == NULL || *ctrl_f_cmd[saved_index] == NUL)
     {
         return false;
     }
 
     tbuffer buf;
 
-    buf.data = ctrl_f_cmd[index];
-    buf.size = (uint_t)strlen(ctrl_f_cmd[index]);
+    buf.data = ctrl_f_cmd[saved_index];
+    buf.size = (uint_t)strlen(ctrl_f_cmd[saved_index]);
     buf.len  = buf.size;
     buf.pos  = 0;
 
