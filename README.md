@@ -29,15 +29,22 @@ And although six decades old, it remains in use today.
 
 ### Version Numbers
 
-The highest version of any DEC TECO (TECO-11 and TECO-32) was 40. To avoid
-any conflict with those TECOs, since TECO macros sometimes obtain the version
-number (using the EO command) in order to determine what features are
-available, the initial version of TECO C was set to 100, with subsequent
-versions eventually reaching 147.
+When TECO C was created, other TECOs were still in development on DEC operating
+systems.
+Each of these TECOs had their own version numbers, which could be used in
+macros or indirect command files to determine which TECO features were available.
+This allowed users to write code that could be used in multiple operating
+environments.
+For example, a user could create a macro that would only use a given command
+if it was determined that the version of TECO in use supported that feature.
+
+In order to avoid any confusion with other TECOs, the baseline version of
+TECO C was set to 100, and incremented as subsequent versions were released.
+The highest version of TECO C is currently 147.
 
 For similar reasons, a baseline version number of 200 was chosen for
 TECO-64. This is the major version. A minor version and patch version
-also exist, per *github*'s guidelines. Values for all three can be
+also exist, per *GitHub*'s guidelines. Values for all three can be
 accessed via the EO command, although only the major version is likely
 to be significant for TECO macros.
 
