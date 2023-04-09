@@ -82,6 +82,11 @@ const char *teco_vtedit = NULL;         ///< Name of VTEDIT macro
 #endif
 
 
+//  Local functions
+
+static const char *read_env(const char *name);
+
+
 ///
 ///  @brief    Final execution of EG command.
 ///
@@ -118,19 +123,19 @@ int find_eg(char *cmd)
 
     if (!strcasecmp(cmd, "INI"))
     {
-        result = teco_init = getenv("TECO_INIT");
+        result = teco_init = read_env("TECO_INIT");
     }
     else if (!strcasecmp(cmd, "LIB"))
     {
-        result = teco_library = getenv("TECO_LIBRARY");
+        result = teco_library = read_env("TECO_LIBRARY");
     }
     else if (!strcasecmp(cmd, "MEM"))
     {
-        result = teco_memory = getenv("TECO_MEMORY");
+        result = teco_memory = read_env("TECO_MEMORY");
     }
     else if (!strcasecmp(cmd, "VTE"))
     {
-        result = teco_vtedit = getenv("TECO_VTEDIT");
+        result = teco_vtedit = read_env("TECO_VTEDIT");
     }
     else
     {
@@ -158,16 +163,40 @@ int find_eg(char *cmd)
 
 void init_env(void)
 {
-    teco_init    = getenv("TECO_INIT");
-    teco_memory  = getenv("TECO_MEMORY");
-    teco_library = getenv("TECO_LIBRARY");
-    teco_vtedit  = getenv("TECO_VTEDIT");
+    teco_init    = read_env("TECO_INIT");
+    teco_memory  = read_env("TECO_MEMORY");
+    teco_library = read_env("TECO_LIBRARY");
+    teco_vtedit  = read_env("TECO_VTEDIT");
 
     const char *env;
 
-    if ((env = getenv("TECO_PROMPT")) != NULL)
+    if ((env = read_env("TECO_PROMPT")) != NULL)
     {
         teco_prompt = env;              // Change TECO prompt
+    }
+}
+
+
+///
+///  @brief    Read environment variable (wrapper for getenv()).
+///
+///  @returns  Value of environment variable, or NULL if not set.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static const char *read_env(const char *name)
+{
+    assert(name != NULL);
+
+    const char *value = getenv(name);
+
+    if (value == NULL || value[0] == NUL)
+    {
+        return NULL;
+    }
+    else
+    {
+        return value;
     }
 }
 
