@@ -154,7 +154,7 @@
 | EG             | [Exit and Go](file.md) |
 | :EG            | [Read environment variables](env.md) |
 | EH             | [Edit help flag](flags.md) |
-| EI             | [Execute indirect file](file.md) |
+| EI             | [Execute indirect command file](file.md) |
 | EJ             | [Get environment information](env.md) |
 | EK             | [Kill output file](file.md) |
 | EL             | [Open/close log file](file.md) |
