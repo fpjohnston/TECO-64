@@ -75,7 +75,7 @@ Once TECO starts, it will prompt a prompt, signaling that you may start
 typing commands. By default, this prompt is simply a single asterisk:
 
 teco
-<br/>
+<br>
 \*
 
 TECO can generally edit only one file at a time, although it is possible
