@@ -103,7 +103,7 @@ static struct options options =
 
 // Local functions
 
-static void add_cmd(int mnflag, const char *format, ...);
+static void add_cmd(bool argflag, const char *format, ...);
 
 
 ///
@@ -116,7 +116,7 @@ static void add_cmd(int mnflag, const char *format, ...);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void add_cmd(int mnflag, const char *format, ...)
+static void add_cmd(bool argflag, const char *format, ...)
 {
     // The following needs to be more than twice as big as the longest
     // possible file name, because it might have to contain two copies
@@ -128,10 +128,12 @@ static void add_cmd(int mnflag, const char *format, ...)
 
     va_start(args, format);
 
-    if (format == NULL)
+    if (format == NULL)                 // We have a command string or an EI command
     {
         const char *p = va_arg(args, const char *);
         int len = (int)strlen(p);
+
+        // Check for command string between single or double quotes
 
         if (len > 2 &&
             ((p[0] == '"' && p[len - 1] == '"') ||
@@ -139,16 +141,16 @@ static void add_cmd(int mnflag, const char *format, ...)
         {
             snprintf(cmd, size, "%.*s", len - 2, p + 1);
         }
-        else if (mnflag && options.args != NULL)
-        {
+        else if (argflag && options.args != NULL)
+        {                               // EI command with numeric arguments
             snprintf(cmd, size, "%sEI%s\e ", options.args, p);
         }
-        else
+        else                            // EI command without arguments
         {
             snprintf(cmd, size, "EI%s\e ", p);
         }
     }
-    else
+    else                                // Not command string or EI command
     {
         vsnprintf(cmd, size, format, args);
     }
@@ -181,23 +183,23 @@ void exec_options(int argc, const char * const argv[])
 
     // Process commands that don't open a file for editing.
 
-    if (options.initial)   add_cmd(false, NULL,      options.initial);
-    if (options.log)       add_cmd(false, "EL%s\e ", options.log);
-    if (options.text)      add_cmd(false, "I%s\e ",  options.text);
-    if (options.execute)   add_cmd(true,  NULL,      options.execute);
-    if (options.formfeed)  add_cmd(false, NULL,      options.formfeed);
-    if (options.e1)        add_cmd(false, "%sE1",    options.e1);
-    if (options.e2)        add_cmd(false, "%sE2",    options.e2);
-    if (options.e3)        add_cmd(false, "%sE3",    options.e3);
-    if (options.e4)        add_cmd(false, "%sE4",    options.e4);
+    if (options.initial)   add_cmd((bool)false, NULL,      options.initial);
+    if (options.log)       add_cmd((bool)false, "EL%s\e ", options.log);
+    if (options.text)      add_cmd((bool)false, "I%s\e ",  options.text);
+    if (options.execute)   add_cmd((bool)true,  NULL,      options.execute);
+    if (options.formfeed)  add_cmd((bool)false, "%sE3",    options.formfeed);
+    if (options.e1)        add_cmd((bool)false, "%sE1",    options.e1);
+    if (options.e2)        add_cmd((bool)false, "%sE2",    options.e2);
+    if (options.e3)        add_cmd((bool)false, "%sE3",    options.e3);
+    if (options.e4)        add_cmd((bool)false, "%sE4",    options.e4);
 
     // Don't enable display mode if we're exiting immediately after execution.
 
     if (!options.exit)
     {
-        if (options.display) add_cmd(false, "-1W ",      NULL);
-        if (options.vtedit)  add_cmd(false, NULL,        options.vtedit);
-        if (options.scroll)  add_cmd(false, "%s,7:W \e", options.scroll);
+        if (options.display) add_cmd((bool)false, "-1W ",      NULL);
+        if (options.vtedit)  add_cmd((bool)false, NULL,        options.vtedit);
+        if (options.scroll)  add_cmd((bool)false, "%s,7:W \e", options.scroll);
     }
 
     // file1 may be an input or output file, depending on the options used.
@@ -243,7 +245,7 @@ void exec_options(int argc, const char * const argv[])
 
     if (options.readonly && file1 == NULL)
     {
-        add_cmd(false, ":^A?How can I inspect nothing?\1");
+        add_cmd((bool)false, ":^A?How can I inspect nothing?\1");
 
         options.exit = true;
     }
@@ -251,8 +253,8 @@ void exec_options(int argc, const char * const argv[])
     {
         if (file2 != NULL || options.readonly)
         {
-            add_cmd(false, "ER%s\e Y ", file1);
-            add_cmd(false, ":^AReading file: %s\1 ", file1);
+            add_cmd((bool)false, "ER%s\e Y ", file1);
+            add_cmd((bool)false, ":^AReading file: %s\1 ", file1);
 
             if (file2 == NULL)
             {
@@ -261,8 +263,8 @@ void exec_options(int argc, const char * const argv[])
         }
         else if (access(file1, F_OK) == 0 || !options.create)
         {
-            add_cmd(false, "EB%s\e Y ", file1);
-            add_cmd(false, ":^AEditing file: %s\1 ", file1);
+            add_cmd((bool)false, "EB%s\e Y ", file1);
+            add_cmd((bool)false, ":^AEditing file: %s\1 ", file1);
         }
         else
         {
@@ -272,18 +274,18 @@ void exec_options(int argc, const char * const argv[])
 
     if (file2 != NULL)
     {
-        add_cmd(false, ":^AWriting file: %s\1 ", file2);
-        add_cmd(false, "EW%s\e ", file2);
+        add_cmd((bool)false, ":^AWriting file: %s\1 ", file2);
+        add_cmd((bool)false, "EW%s\e ", file2);
     }
 
     if (options.exit)                   // Should we exit at end of commands?
     {
-        add_cmd(false, "EX ");
+        add_cmd((bool)false, "EX ");
     }
 
     if (cbuf->len != 0)                 // Anything stored?
     {
-        add_cmd(false, "\e\e");
+        add_cmd((bool)false, "\e\e");
     }
 }
 
@@ -415,12 +417,12 @@ void init_options(
                 break;
 
             case OPTION_F:
-                options.formfeed = "1,0E3 ";
+                options.formfeed = "1,0";
 
                 break;
 
             case OPTION_f:
-                options.formfeed = "0,1E3 ";
+                options.formfeed = "0,1";
 
                 break;
 
