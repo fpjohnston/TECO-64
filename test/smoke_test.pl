@@ -192,7 +192,7 @@ if ($make)
 
     printf "% 4u test file%s, ", $nfiles, $nfiles == 1 ? q{} : 's';
 
-    printf "%u test case%s\n", $ntests, $ntests == 1 ? q{} : 's';
+    printf "%u case%s\n", $ntests, $ntests == 1 ? q{} : 's';
 
     printf "% 4u completed OK\n", $okay;
 }
