@@ -200,7 +200,6 @@ int main(int argc, const char * const argv[])
                 refresh_dpy();          // Update display if enabled
 
                 f.trace.flag = 0;       // Switch off all tracing bits
-                f.et.abort = false;     // Don't abort on error
 
                 nparens = 0;            // Reset parenthesis count
 
@@ -238,6 +237,7 @@ int main(int argc, const char * const argv[])
         }
 
         f.e0.exec = false;              // No command active
+        f.et.abort = false;             // Don't abort on error
 
         if (f.e0.init)
         {
