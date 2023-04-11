@@ -58,6 +58,7 @@ my $nscripts = 0;
 my $nskipped = 0;
 my $nfiles   = 0;
 my $ntests   = 0;
+my $okay     = 0;
 my %scripts;
 my %benchmark_files;
 my @teco_files = ();
@@ -184,11 +185,16 @@ if ($make)
 {
     $nscripts += $nskipped;
 
-    printf "Found %u script%s in $testdir/scripts, skipped %u\n", $nscripts,
+    print "Test results:\n";
+
+    printf "% 4u test script%s (%s skipped)\n", $nscripts,
         $nscripts == 1 ? q{} : 's', $nskipped;
 
-    printf "Created %u file%s in $testdir/cases, with $ntests test%s\n",
-        $nfiles, $nfiles == 1 ? q{} : 's', $ntests == 1 ? q{} : 's';
+    printf "% 4u test file%s, ", $nfiles, $nfiles == 1 ? q{} : 's';
+
+    printf "%u test case%s\n", $ntests, $ntests == 1 ? q{} : 's';
+
+    printf "% 4u completed OK\n", $okay;
 }
 
 exit 0;
@@ -599,6 +605,8 @@ sub prove_error
     else                                # Test encountered expected TECO error
     {
         printf "%s OK\n", $report if $verbose;
+
+        ++$okay;
     }
 
     return;
@@ -637,6 +645,8 @@ sub prove_fail
     else
     {
         printf "%s OK\n", $report if $verbose;
+
+        ++$okay;
     }
 
     return;
@@ -679,6 +689,8 @@ sub prove_pass
     else
     {
         printf "%s OK\n", $report if $verbose;
+
+        ++$okay;
     }
 
     return;
