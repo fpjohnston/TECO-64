@@ -103,66 +103,79 @@ static struct options options =
 
 // Local functions
 
-static void add_cmd(bool argflag, const char *format, ...);
+static void format_cmd(const char *format, const char *arg);
+
+static void format_EI(const char *ei_args, const char *file);
+
+static void store_cmd(const char *format, ...);
 
 
 ///
-///  @brief    Called from exec_options() to add a command string to the command
-///            buffer. When initialization has completed, the contents of the
-///            command buffer will be the first set of commands that TECO will
-///            execute.
+///  @brief    Format a command string and store it in the command buffer. When
+///            initialization has completed, the contents of the command buffer
+///            will be the first set of commands that TECO will execute.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void add_cmd(bool argflag, const char *format, ...)
+static void format_cmd(const char *format, const char *arg)
 {
-    // The following needs to be more than twice as big as the longest
-    // possible file name, because it might have to contain two copies
-    // of a file name in addition to other text.
+    assert(format != NULL);
 
-    char cmd[PATH_MAX * 2 + 100];
-    size_t size = sizeof(cmd);
-    va_list args;
-
-    va_start(args, format);
-
-    if (format == NULL)                 // We have a command string or an EI command
+    if (arg == NULL)
     {
-        const char *p = va_arg(args, const char *);
-        int len = (int)strlen(p);
-
-        // Check for command string between single or double quotes
-
-        if (len > 2 &&
-            ((p[0] == '"' && p[len - 1] == '"') ||
-             (p[0] == '\'' && p[len - 1] == '\'')))
-        {
-            snprintf(cmd, size, "%.*s", len - 2, p + 1);
-        }
-        else if (argflag && options.args != NULL)
-        {                               // EI command with numeric arguments
-            snprintf(cmd, size, "%sEI%s\e ", options.args, p);
-        }
-        else                            // EI command without arguments
-        {
-            snprintf(cmd, size, "EI%s\e ", p);
-        }
-    }
-    else                                // Not command string or EI command
-    {
-        vsnprintf(cmd, size, format, args);
+        return;
     }
 
-    va_end(args);
+    store_cmd(format, arg);
+}
 
-    int c;
-    const char *p = cmd;
 
-    while ((c = *p++) != NUL)
+///
+///  @brief    Format an EI command string and store it in the command buffer.
+///            This is used to implement the --init, --execute, and --vtedit
+///            command options, the arguments for which are usually a file
+///            name, but which could be a string of TECO commands, delimited
+///            by single or double quotes.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void format_EI(const char *ei_args, const char *src)
+{
+    if (src == NULL)
     {
-        store_cbuf(c);
+        return;
+    }
+
+    // See if user specified a command string in matching single or double quotes
+
+    int len = (int)strlen(src);
+
+    if (len > 2)
+    {
+        int first = src[0];
+        int last = src[len - 1];
+
+        if (first == last && (first == '"' || first == '\''))
+        {
+            store_cmd("%.*s",len - 2, src + 1);
+
+            return;
+        }
+    }
+
+    // Here if user specified a file and not a command string
+
+    if (ei_args != NULL)
+    {
+        store_cmd("%sEI%s\e", ei_args, src);
+    }
+    else
+    {
+        store_cmd("EI%s\e", src);
     }
 }
 
@@ -181,25 +194,27 @@ void exec_options(int argc, const char * const argv[])
 {
     assert(argv != NULL);               // Error if no argument list
 
-    // Process commands that don't open a file for editing.
-
-    if (options.initial)   add_cmd((bool)false, NULL,      options.initial);
-    if (options.log)       add_cmd((bool)false, "EL%s\e ", options.log);
-    if (options.text)      add_cmd((bool)false, "I%s\e ",  options.text);
-    if (options.execute)   add_cmd((bool)true,  NULL,      options.execute);
-    if (options.formfeed)  add_cmd((bool)false, "%sE3",    options.formfeed);
-    if (options.e1)        add_cmd((bool)false, "%sE1",    options.e1);
-    if (options.e2)        add_cmd((bool)false, "%sE2",    options.e2);
-    if (options.e3)        add_cmd((bool)false, "%sE3",    options.e3);
-    if (options.e4)        add_cmd((bool)false, "%sE4",    options.e4);
+    format_EI(NULL, options.initial);
+    format_cmd("EL%s\e", options.log);
+    format_cmd("I%s\e",  options.text);
+    format_EI(options.args, options.execute);
+    format_cmd("%sE3", options.formfeed);
+    format_cmd("%sE1", options.e1);
+    format_cmd("%sE2", options.e2);
+    format_cmd("%sE3", options.e3);
+    format_cmd("%sE4", options.e4);
 
     // Don't enable display mode if we're exiting immediately after execution.
 
     if (!options.exit)
     {
-        if (options.display) add_cmd((bool)false, "-1W ",      NULL);
-        if (options.vtedit)  add_cmd((bool)false, NULL,        options.vtedit);
-        if (options.scroll)  add_cmd((bool)false, "%s,7:W \e", options.scroll);
+        if (options.display)
+        {
+            format_cmd("%s", "-1W");
+        }
+
+        format_EI(NULL, options.vtedit);
+        format_cmd("%s,7:W \e", options.scroll);
     }
 
     // file1 may be an input or output file, depending on the options used.
@@ -245,7 +260,7 @@ void exec_options(int argc, const char * const argv[])
 
     if (options.readonly && file1 == NULL)
     {
-        add_cmd((bool)false, ":^A?How can I inspect nothing?\1");
+        store_cmd(":^A?How can I inspect nothing?\1");
 
         options.exit = true;
     }
@@ -253,8 +268,8 @@ void exec_options(int argc, const char * const argv[])
     {
         if (file2 != NULL || options.readonly)
         {
-            add_cmd((bool)false, "ER%s\e Y ", file1);
-            add_cmd((bool)false, ":^AReading file: %s\1 ", file1);
+            format_cmd("ER%s\e Y", file1);
+            format_cmd(":^AReading file: %s\1", file1);
 
             if (file2 == NULL)
             {
@@ -263,8 +278,8 @@ void exec_options(int argc, const char * const argv[])
         }
         else if (access(file1, F_OK) == 0 || !options.create)
         {
-            add_cmd((bool)false, "EB%s\e Y ", file1);
-            add_cmd((bool)false, ":^AEditing file: %s\1 ", file1);
+            format_cmd("EB%s\e Y", file1);
+            format_cmd(":^AEditing file: %s\1", file1);
         }
         else
         {
@@ -274,18 +289,18 @@ void exec_options(int argc, const char * const argv[])
 
     if (file2 != NULL)
     {
-        add_cmd((bool)false, ":^AWriting file: %s\1 ", file2);
-        add_cmd((bool)false, "EW%s\e ", file2);
+        format_cmd(":^AWriting file: %s\1", file2);
+        format_cmd("EW%s\e", file2);
     }
 
     if (options.exit)                   // Should we exit at end of commands?
     {
-        add_cmd((bool)false, "EX ");
+        store_cmd("EX");
     }
 
     if (cbuf->len != 0)                 // Anything stored?
     {
-        add_cmd((bool)false, "\e\e");
+        store_cmd("\e\e");
     }
 }
 
@@ -637,4 +652,36 @@ void init_options(
         options.execute = argv[optind++];
         options.memory  = NULL;
     }
+}
+
+
+///
+///  @brief    Store a formatted command string in the command buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void store_cmd(const char *format, ...)
+{
+    assert(format != NULL);
+
+    char cmd[PATH_MAX];
+    va_list args;
+
+    va_start(args, format);
+
+    vsnprintf(cmd, sizeof(cmd), format, args);
+
+    va_end(args);
+
+    int c;
+    const char *p = cmd;
+
+    while ((c = *p++) != NUL)
+    {
+        store_cbuf(c);
+    }
+
+    store_cbuf(' ');
 }
