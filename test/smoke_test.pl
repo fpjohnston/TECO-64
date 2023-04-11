@@ -48,6 +48,7 @@ my $execute = 1;
 my $make = 1;
 my $orphans;
 my $prove = 1;
+my $set = q{};
 my $skip;
 my $target  = 'TECO-64';
 my $verbose = q{};
@@ -161,7 +162,7 @@ my @jabberwocky = (
 
 initialize();
 
-find( { wanted => \&wanted, follow => 1 }, "$testdir/scripts" );
+find( { wanted => \&wanted, follow => 1 }, "$testdir/scripts/$set" );
 
 # If we found any .tec files in the scripts directory, then they're helper
 # files for the test scripts, so copy them to the cases directory.
@@ -311,6 +312,7 @@ sub initialize
         'make!'    => \$make,
         'orphans!' => \$orphans,
         'prove!'   => \$prove,
+        'set=s'    => \$set,
         'skip!'    => \$skip,
         'tecoc'    => \$tecoc,
         'teco32'   => \$teco32,
@@ -337,8 +339,13 @@ sub initialize
         croak 'Too many arguments';
     }
 
-    croak 'Can\'t find scripts directory'    if !-d "$testdir/scripts";
-    croak 'Can\'t find benchmarks directory' if !-d "$testdir/benchmarks";
+    if ($set ne q{} && $set =~ /^\/(.+)/)
+    {
+        $set = $1;                      # If specified, strip off leading slash
+    }
+
+    croak "Can't find directory: $testdir/scripts/$set" if !-d "$testdir/scripts/$set";
+    croak "Can\'t find directory: $testdir/benchmarks" if !-d "$testdir/benchmarks";
 
     if (!-e "$testdir/cases")
     {
