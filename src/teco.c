@@ -186,7 +186,7 @@ int main(int argc, const char * const argv[])
     // options we found, which usually consists of creating a string of
     // commands and inserting them into the command buffer.
 
-    exec_options(argc, argv);           // Execute command-line options
+    exec_options();                     // Execute command-line options
 
     f.e0.init = (cbuf->pos != cbuf->len); // Reset if no initial command string
 

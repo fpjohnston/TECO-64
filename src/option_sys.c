@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <errno.h>
 #include <getopt.h>
 #include <limits.h>
 #include <stdarg.h>
@@ -32,6 +33,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <sys/stat.h>                   // for stat()
 
 #include "teco.h"
 #include "ascii.h"
@@ -121,12 +124,18 @@ static struct options options =
 
 };
 
+static const char *file1 = NULL;        ///< Input file
+static const char *file2 = NULL;        ///< Output file
 
 // Local functions
+
+static bool check_infile(const char *infile, const char *outfile);
 
 static void check_option(const char *format, const char *option);
 
 static void format_EI(const char *ei_args, const char *file);
+
+static int get_info(const char *file, dev_t *dev, ino_t *ino);
 
 #if     defined(DEBUG)
 
@@ -135,6 +144,51 @@ static void print_initial(void);
 #endif
 
 static void store_cmd(const char *format, ...);
+
+
+///
+///  @brief    Check which commands we should use for an input file, and whether
+///            to read the memory file if no input file provided.
+///
+///  @returns  true if we found an existing input file, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static bool check_infile(const char *infile, const char *outfile)
+{
+    // Here to figure out which file commands to use for an input file. If a
+    // file open fails, the rest of the command string will be aborted, which
+    // means that the subsequent CTRL/A command won't be executed.
+
+    if (options.readonly && infile == NULL)
+    {
+        store_cmd(":^A?How can I inspect nothing?\1");
+
+        options.exit = true;
+    }
+    else if (infile != NULL)
+    {
+        if (outfile != NULL || options.readonly)
+        {
+            store_cmd("ER%s\e Y :^AReading file: %s\1", infile, infile);
+
+            if (outfile != NULL)
+            {
+                teco_memory = NULL;     // Don't save file name on exit
+            }
+        }
+        else if (access(infile, F_OK) == 0 || !options.create)
+        {
+            store_cmd("EB%s\e Y :^AEditing file: %s\1", infile, infile);
+        }
+        else                            // File doesn't exist
+        {
+            return false;               // So it's really an output file
+        }
+    }
+
+    return true;
+}
 
 
 ///
@@ -218,10 +272,8 @@ static void format_EI(const char *ei_args, const char *file)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_options(int argc, const char * const argv[]) 
+void exec_options(void) 
 {
-    assert(argv != NULL);               // Error if no argument list
-
     format_EI(NULL, options.initial);
     check_option("EL%s\e", options.log);
     check_option("I%s\e",  options.text);
@@ -250,70 +302,75 @@ void exec_options(int argc, const char * const argv[])
         check_option("%s,7:W\e", options.scroll);
     }
 
-    // file1 may be an input or output file, depending on the options used.
-    // file2 is always an output file.
+    // Now process input file (if any) and output file (if any)
 
-    const char *file1 = NULL;
-    const char *file2 = NULL;
-    char memory[PATH_MAX];              // File name from memory file
-
-    // If we have at least one argument, then we have an input file. If we have
-    // two arguments, then we have an output file also.
-
-    if (optind < argc)
+    if (file1 == NULL)                  // We have no file names
     {
-        file1 = argv[optind];
-
-        if (optind + 1 < argc)
+        if (options.memory != NULL)     // Try to read memory file
         {
-            if (optind + 2 < argc)
+            char memory[PATH_MAX];      // File name from memory file
+
+            read_memory(memory, (uint)sizeof(memory));
+
+            if (memory[0] != NUL)
             {
-                tprint("?Too many file arguments\n");
+                if (!check_infile(memory, NULL))
+                {
+                    file2 = file1;
+                }
+            }
+        }
+    }
+    else if (file2 == NULL)             // We only have one file name
+    {
+        if (!check_infile(file1, NULL))
+        {
+            file2 = file1;
+        }
+    }
+    else                                // We have two file names
+    {
+        dev_t dev1, dev2;
+        ino_t ino1, ino2;
+        int err1 = get_info(file1, &dev1, &ino1);
+        int err2 = get_info(file2, &dev2, &ino2);
+
+        // See if the two files are actually the same. There are basically two
+        // possibilities: either both files exist and have the same device IDs
+        // and inode numbers, or neither exist, but their file names match. In
+        // either case, we skip using the second file name, and just use an EB
+        // command to open the file.
+
+        if (err1 == 0 && err2 == 0)
+        {
+            if (dev1 == dev2 && ino1 == ino2)
+            {
+                file2 = NULL;
+            }
+        }
+        else if (err1 == ENOENT && err2 == ENOENT)
+        {
+            if (!strcmp(file1, file2))
+            {
+                file2 = NULL;
+            }
+        }
+
+        if (file2 != NULL)
+        {
+            if (!check_infile(file1, file2))
+            {
+                tprint("?Input file does not exist\n");
 
                 exit(EXIT_FAILURE);
             }
-
-            file2 = argv[argc - 1];
-        }
-    }
-    else if (options.memory != NULL)    // No arguments, so try read memory file
-    {
-        read_memory(memory, (uint)sizeof(memory));
-
-        if (memory[0] != NUL)
-        {
-            file1 = memory;
-        }
-    }
-
-    // Here to figure out which file commands to use. Note that if a file
-    // open fails, the rest of the command string will be aborted, which
-    // means that the subsequent CTRL/A command won't be executed.
-
-    if (options.readonly && file1 == NULL)
-    {
-        store_cmd(":^A?How can I inspect nothing?\1");
-
-        options.exit = true;
-    }
-    else if (file1 != NULL)
-    {
-        if (file2 != NULL || options.readonly)
-        {
-            store_cmd("ER%s\e Y :^AReading file: %s\1", file1, file1);
-
-            if (file2 == NULL)
-            {
-                teco_memory = NULL;     // Don't save file name on exit
-            }
-        }
-        else if (access(file1, F_OK) == 0 || !options.create)
-        {
-            store_cmd("EB%s\e Y :^AEditing file: %s\1", file1, file1);
         }
         else
         {
-            file2 = file1;
+            if (!check_infile(file1, NULL))
+            {
+                file2 = file1;
+            }
         }
     }
 
@@ -338,6 +395,37 @@ void exec_options(int argc, const char * const argv[])
 
 #endif
 
+}
+
+
+///
+///  @brief    Get file information (device ID and inode number).
+///
+///  @returns  0 if no error, else errno code.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int get_info(const char *file, dev_t *dev, ino_t *ino)
+{
+    assert(file != NULL);
+    assert(dev != NULL);
+    assert(ino != NULL);
+
+    struct stat statbuf;
+
+    errno = 0;
+
+    if (stat(file, &statbuf) == -1)
+    {
+        *dev = *ino = 0;
+
+        return errno;
+    }
+
+    *dev = statbuf.st_dev;
+    *ino = statbuf.st_ino;
+
+    return 0;
 }
 
 
@@ -689,17 +777,42 @@ void init_options(
         }
     }
 
+    // See if we have any file arguments
+
+    if (optind < argc)
+    {
+        if (mung)
+        {
+            options.memory  = NULL;
+            options.execute = argv[optind++];
+        }
+        else
+        {
+            file1 = argv[optind++];
+
+            // Check for an output file name
+
+            if (optind < argc)
+            {
+                file2 = argv[optind++];
+            }
+        }
+
+        if (optind < argc)
+        {
+            tprint("?Too many file arguments\n");
+
+            exit(EXIT_FAILURE);
+        }
+    }
+
     // Disable display mode if stdin has been redirected
 
     if (f.e0.i_redir)
     {
+        options.display = false;
+        options.scroll = NULL;
         options.vtedit = NULL;
-    }
-
-    if (mung && argv[optind] != NULL)
-    {
-        options.execute = argv[optind++];
-        options.memory  = NULL;
     }
 }
 

@@ -202,7 +202,7 @@ extern bool check_macro(void);
 
 extern void detach_term(void);
 
-extern void exec_options(int argc, const char * const argv[]);
+extern void exec_options(void);
 
 extern void exit_cbuf(void);
 
