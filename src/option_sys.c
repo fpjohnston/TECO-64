@@ -43,6 +43,15 @@
 #include "cbuf.h"
 #include "options.h"
 
+#if     defined(DEBUG)
+
+#include <ctype.h>
+#include <stdbool.h>
+
+static bool just_print = false;         // Don't print initial command string
+
+#endif
+
 
 ///
 ///   @struct  options
@@ -103,9 +112,15 @@ static struct options options =
 
 // Local functions
 
-static void format_cmd(const char *format, const char *arg);
+static void check_option(const char *format, const char *option);
 
 static void format_EI(const char *ei_args, const char *file);
+
+#if     defined(DEBUG)
+
+static void print_string(void);
+
+#endif
 
 static void store_cmd(const char *format, ...);
 
@@ -119,16 +134,16 @@ static void store_cmd(const char *format, ...);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void format_cmd(const char *format, const char *arg)
+static void check_option(const char *format, const char *option)
 {
     assert(format != NULL);
 
-    if (arg == NULL)
+    if (option == NULL)                 // Did user specify this option?
     {
-        return;
+        return;                         // No, so there's nothing to do
     }
 
-    store_cmd(format, arg);
+    store_cmd(format, option);
 }
 
 
@@ -143,25 +158,26 @@ static void format_cmd(const char *format, const char *arg)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void format_EI(const char *ei_args, const char *src)
+static void format_EI(const char *ei_args, const char *file)
 {
-    if (src == NULL)
+    if (file == NULL)                   // Did user specify this option?
     {
-        return;
+        return;                         // No, so there's nothing to do
     }
 
-    // See if user specified a command string in matching single or double quotes
+    // If file name starts and ends with single or double quotes, then it's
+    // really a TECO command string.
 
-    int len = (int)strlen(src);
+    int len = (int)strlen(file);
 
     if (len > 2)
     {
-        int first = src[0];
-        int last = src[len - 1];
+        int first = file[0];
+        int last = file[len - 1];
 
         if (first == last && (first == '"' || first == '\''))
         {
-            store_cmd("%.*s",len - 2, src + 1);
+            store_cmd("%.*s\e",len - 2, file + 1);
 
             return;
         }
@@ -171,11 +187,11 @@ static void format_EI(const char *ei_args, const char *src)
 
     if (ei_args != NULL)
     {
-        store_cmd("%sEI%s\e", ei_args, src);
+        store_cmd("%sEI%s\e", ei_args, file);
     }
     else
     {
-        store_cmd("EI%s\e", src);
+        store_cmd("EI%s\e", file);
     }
 }
 
@@ -195,14 +211,14 @@ void exec_options(int argc, const char * const argv[])
     assert(argv != NULL);               // Error if no argument list
 
     format_EI(NULL, options.initial);
-    format_cmd("EL%s\e", options.log);
-    format_cmd("I%s\e",  options.text);
+    check_option("EL%s\e", options.log);
+    check_option("I%s\e",  options.text);
     format_EI(options.args, options.execute);
-    format_cmd("%sE3", options.formfeed);
-    format_cmd("%sE1", options.e1);
-    format_cmd("%sE2", options.e2);
-    format_cmd("%sE3", options.e3);
-    format_cmd("%sE4", options.e4);
+    check_option("%sE3", options.formfeed);
+    check_option("%sE1", options.e1);
+    check_option("%sE2", options.e2);
+    check_option("%sE3", options.e3);
+    check_option("%sE4", options.e4);
 
     // Don't enable display mode if we're exiting immediately after execution.
 
@@ -210,11 +226,11 @@ void exec_options(int argc, const char * const argv[])
     {
         if (options.display)
         {
-            format_cmd("%s", "-1W");
+            store_cmd("-1W");
         }
 
         format_EI(NULL, options.vtedit);
-        format_cmd("%s,7:W \e", options.scroll);
+        check_option("%s,7:W\e", options.scroll);
     }
 
     // file1 may be an input or output file, depending on the options used.
@@ -268,8 +284,7 @@ void exec_options(int argc, const char * const argv[])
     {
         if (file2 != NULL || options.readonly)
         {
-            format_cmd("ER%s\e Y", file1);
-            format_cmd(":^AReading file: %s\1", file1);
+            store_cmd("ER%s\e Y :^AReading file: %s\1", file1, file1);
 
             if (file2 == NULL)
             {
@@ -278,8 +293,7 @@ void exec_options(int argc, const char * const argv[])
         }
         else if (access(file1, F_OK) == 0 || !options.create)
         {
-            format_cmd("EB%s\e Y", file1);
-            format_cmd(":^AEditing file: %s\1", file1);
+            store_cmd("EB%s\e Y :^AEditing file: %s\1", file1, file1);
         }
         else
         {
@@ -289,8 +303,7 @@ void exec_options(int argc, const char * const argv[])
 
     if (file2 != NULL)
     {
-        format_cmd(":^AWriting file: %s\1", file2);
-        format_cmd("EW%s\e", file2);
+        store_cmd(":^AWriting file: %s\1 EW%s\e", file2, file2);
     }
 
     if (options.exit)                   // Should we exit at end of commands?
@@ -302,6 +315,13 @@ void exec_options(int argc, const char * const argv[])
     {
         store_cmd("\e\e");
     }
+
+#if     defined(DEBUG)
+
+    print_string();                     // Check for printing command string
+
+#endif
+
 }
 
 
@@ -630,6 +650,15 @@ void init_options(
 
                 break;
 
+            case '\006':
+                options.create  = false;
+                options.initial = NULL;
+                options.memory  = NULL;
+                options.vtedit  = NULL;
+                just_print      = true; // Print initial command string and exit
+
+                break;
+
 #endif
 
             default:
@@ -653,6 +682,84 @@ void init_options(
         options.memory  = NULL;
     }
 }
+
+
+///
+///  @brief    If --just-print option specified, print command string. If -X
+///            option was also specified, then we will exit afterward.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DEBUG)
+
+static void print_string(void)
+{
+    if (!just_print)                    // Should we print the command string?
+    {
+        return;
+    }
+
+    tprint("Commands: ");
+
+    for (uint i = 0; i < cbuf->len; ++i)
+    {
+        int c = cbuf->data[i];
+
+        switch (c)
+        {
+            case BS:
+                fputs("\\b", stdout);
+                break;
+
+            case HT:
+                fputs("\\t", stdout);
+                break;
+
+            case LF:
+                fputs("\\n", stdout);
+                break;
+
+            case VT:
+                fputs("\\v", stdout);
+                break;
+
+            case FF:
+                fputs("\\f", stdout);
+                break;
+
+            case CR:
+                fputs("\\r", stdout);
+                break;
+
+            case ESC:
+                fputs("\\e", stdout);
+                break;
+
+            default:
+                if (iscntrl(c))
+                {
+                    printf("\\%d", c);
+                }
+                else
+                {
+                    fputc(c, stdout);
+                }
+                break;
+        }
+    }
+
+    tprint("\n");
+    fflush(stdout);
+
+    if (options.exit)
+    {
+        exit(EXIT_SUCCESS);
+    }
+}
+
+#endif
 
 
 ///

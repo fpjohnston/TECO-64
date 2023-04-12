@@ -161,5 +161,9 @@
             <argument>required</argument>
             <help>Saves keystrokes in file 'xyz'.</help>
         </option>
+        <option debug="6">
+            <long_name>just-print</long_name>
+            <help>Exit after parsing command-line options.</help>
+        </option>
     </section>
 </teco>
