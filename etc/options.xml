@@ -23,18 +23,6 @@
             <help>Disables FF as a page delimiter.</help>
         </option>
         <option>
-            <short_name>O</short_name>
-            <long_name>output</long_name>
-            <argument>required</argument>
-            <help>Open file 'abc' for output.</help>
-        </option>
-        <option>
-            <short_name>o</short_name>
-            <long_name>nooutput</long_name>
-            <default/>
-            <help>Use same name for output file as input file.</help>
-        </option>
-        <option>
             <short_name>R</short_name>
             <long_name>read-only</long_name>
             <help>Open file for input only.</help>
@@ -49,7 +37,7 @@
     <section title="Indirect command file options">
         <option>
             <short_name>A</short_name>
-            <long_name>argument</long_name>
+            <long_name>arguments</long_name>
             <argument>required</argument>
             <help>Specify n or m,n arguments for command file.</help>
         </option>
@@ -70,7 +58,7 @@
         <option>
             <short_name>I</short_name>
             <long_name>initialize</long_name>
-            <argument>optional</argument>
+            <argument>required</argument>
             <help>Use initialization file 'xyz' at startup.</help>
         </option>
         <option>
@@ -105,7 +93,7 @@
         <option>
             <short_name>V</short_name>
             <long_name>vtedit</long_name>
-            <argument>optional</argument>
+            <argument>required</argument>
             <help>Use macro in file 'xyz' to initialize display.</help>
         </option>
         <option>
@@ -113,7 +101,7 @@
             <long_name>novtedit</long_name>
             <help>Ignore TECO_VTEDIT environment variable.</help>
         </option>
-    </section>
+    </section>l
     <section title="Miscellaneous options">
         <option>
             <short_name>H</short_name>
@@ -162,8 +150,12 @@
             <help>Saves keystrokes in file 'xyz'.</help>
         </option>
         <option debug="6">
-            <long_name>just-print</long_name>
-            <help>Exit after parsing command-line options.</help>
+            <long_name>print</long_name>
+            <help>Print initial TECO commands before execution.</help>
+        </option>
+        <option debug="7">
+            <long_name>quit</long_name>
+            <help>Quit after printing initial TECO commands..</help>
         </option>
     </section>
 </teco>

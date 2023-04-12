@@ -48,8 +48,6 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-static bool just_print = false;         // Don't print initial command string
-
 #endif
 
 
@@ -70,15 +68,22 @@ struct options
     const char *initial;    ///< --initial
     char *log;              ///< --log
     const char *memory;     ///< --memory
-    char *output;           ///< --output
     const char *scroll;     ///< --scroll
     bool readonly;          ///< --readonly
     char *text;             ///< --text
     const char *vtedit;     ///< --vtedit
+
+#if     defined(DEBUG)
+
     const char *e1;         ///< --e1 (debug only)
     const char *e2;         ///< --e2 (debug only)
     const char *e3;         ///< --e3 (debug only)
     const char *e4;         ///< --e4 (debug only)
+    bool print;             ///< --print (debug only)
+    bool quit;              ///< --quit (debug only)
+
+#endif
+
 };
 
 ///
@@ -98,15 +103,22 @@ static struct options options =
     .initial  = NULL,
     .log      = NULL,
     .memory   = NULL,
-    .output   = NULL,
     .readonly = false,
     .scroll   = NULL,
     .text     = NULL,
     .vtedit   = NULL,
+
+#if     defined(DEBUG)
+
     .e1       = NULL,
     .e2       = NULL,
     .e3       = NULL,
     .e4       = NULL,
+    .print    = false,
+    .quit     = false,
+
+#endif
+
 };
 
 
@@ -118,7 +130,7 @@ static void format_EI(const char *ei_args, const char *file);
 
 #if     defined(DEBUG)
 
-static void print_string(void);
+static void print_initial(void);
 
 #endif
 
@@ -206,7 +218,7 @@ static void format_EI(const char *ei_args, const char *file)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_options(int argc, const char * const argv[])
+void exec_options(int argc, const char * const argv[]) 
 {
     assert(argv != NULL);               // Error if no argument list
 
@@ -215,10 +227,15 @@ void exec_options(int argc, const char * const argv[])
     check_option("I%s\e",  options.text);
     format_EI(options.args, options.execute);
     check_option("%sE3", options.formfeed);
+
+#if     defined(DEBUG)
+
     check_option("%sE1", options.e1);
     check_option("%sE2", options.e2);
     check_option("%sE3", options.e3);
     check_option("%sE4", options.e4);
+
+#endif
 
     // Don't enable display mode if we're exiting immediately after execution.
 
@@ -237,12 +254,11 @@ void exec_options(int argc, const char * const argv[])
     // file2 is always an output file.
 
     const char *file1 = NULL;
-    const char *file2 = options.output ?: NULL;
+    const char *file2 = NULL;
     char memory[PATH_MAX];              // File name from memory file
 
     // If we have at least one argument, then we have an input file. If we have
-    // two arguments, then we have an output file also (unless one was specified
-    // with the --output option). Any additional arguments cause an error.
+    // two arguments, then we have an output file also.
 
     if (optind < argc)
     {
@@ -250,14 +266,14 @@ void exec_options(int argc, const char * const argv[])
 
         if (optind + 1 < argc)
         {
-            if (options.output != NULL || optind + 2 < argc)
+            if (optind + 2 < argc)
             {
                 tprint("?Too many file arguments\n");
 
                 exit(EXIT_FAILURE);
             }
 
-            file2 = argv[argc - 1];     // Treat 2nd argument same as --output
+            file2 = argv[argc - 1];
         }
     }
     else if (options.memory != NULL)    // No arguments, so try read memory file
@@ -318,7 +334,7 @@ void exec_options(int argc, const char * const argv[])
 
 #if     defined(DEBUG)
 
-    print_string();                     // Check for printing command string
+    print_initial();                    // Maybe print initial command string
 
 #endif
 
@@ -406,18 +422,6 @@ void init_options(
 
                 break;
 
-            case OPTION_T:
-                if (optarg != NULL)
-                {
-                    options.text = optarg;
-                }
-                else
-                {
-                    options.text = NULL;
-                }
-
-                break;
-
             case OPTION_C:
             case OPTION_c:
                 options.create = (c == 'C') ? true : false;
@@ -475,13 +479,21 @@ void init_options(
             }
 
             case OPTION_I:
-                if (optarg != NULL && optarg[0] != '-')
+                if (optarg != NULL)
                 {
+                    if (optarg[0] == '-')
+                    {
+                        printf("Invalid file name for %s option\n",
+                               argv[optind - 2]);
+
+                        exit(EXIT_FAILURE);
+                    }
+
                     options.initial = optarg;
                 }
                 else
                 {
-                    options.initial = teco_init;
+                    options.initial = NULL;
                 }
 
                 break;
@@ -521,27 +533,14 @@ void init_options(
                 break;
 
             case OPTION_n:
+                teco_init   = NULL;
+                teco_memory = NULL;
+                teco_vtedit = NULL;
+
                 options.create  = false;
                 options.initial = NULL;
                 options.memory  = NULL;
                 options.vtedit  = NULL;
-
-                break;
-
-            case OPTION_O:
-                if (optarg != NULL && optarg[0] != '-')
-                {
-                    options.output = optarg;
-                }
-                else
-                {
-                    options.output = NULL;
-                }
-
-                break;
-
-            case OPTION_o:
-                options.output = NULL;
 
                 break;
 
@@ -565,14 +564,34 @@ void init_options(
 
                 break;
 
+            case OPTION_T:
+                if (optarg != NULL)
+                {
+                    options.text = optarg;
+                }
+                else
+                {
+                    options.text = NULL;
+                }
+
+                break;
+
             case OPTION_V:
                 if (optarg != NULL)
                 {
+                    if (optarg[0] == '-')
+                    {
+                        printf("Invalid file name for %s option\n",
+                               argv[optind - 2]);
+
+                        exit(EXIT_FAILURE);
+                    }
+
                     options.vtedit = optarg;
                 }
                 else
                 {
-                    options.vtedit = teco_vtedit;
+                    options.vtedit = NULL;
                 }
 
                 break;
@@ -588,7 +607,7 @@ void init_options(
                 break;
 
             case ':':
-                printf("%s option requires file option\n", argv[optind - 1]);
+                printf("Argument required for %s option\n", argv[optind - 1]);
 
                 exit(EXIT_FAILURE);
 
@@ -651,11 +670,12 @@ void init_options(
                 break;
 
             case '\006':
-                options.create  = false;
-                options.initial = NULL;
-                options.memory  = NULL;
-                options.vtedit  = NULL;
-                just_print      = true; // Print initial command string and exit
+                options.print   = true; // Print initial command string
+
+                break;
+
+            case '\007':
+                options.quit = true;    // Quit after printing command string
 
                 break;
 
@@ -685,8 +705,9 @@ void init_options(
 
 
 ///
-///  @brief    If --just-print option specified, print command string. If -X
-///            option was also specified, then we will exit afterward.
+///  @brief    If --print option was specified, print initial command string
+///            that we created from the command-line options. If the -X option
+///            was also specified, then we will also exit.
 ///
 ///  @returns  Nothing.
 ///
@@ -694,9 +715,9 @@ void init_options(
 
 #if     defined(DEBUG)
 
-static void print_string(void)
+static void print_initial(void)
 {
-    if (!just_print)                    // Should we print the command string?
+    if (!options.print)                 // Should we print the command string?
     {
         return;
     }
@@ -753,7 +774,7 @@ static void print_string(void)
     tprint("\n");
     fflush(stdout);
 
-    if (options.exit)
+    if (options.quit)
     {
         exit(EXIT_SUCCESS);
     }

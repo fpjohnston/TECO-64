@@ -99,7 +99,8 @@ name *foo* on exit.
 
 teco *foo* *baz*
  - Open *foo* for input (using the ER command) and read in the first page,
-and open *baz* for output (using the EW command).
+and open *baz* for output (using the EW command), overwriting any existing file.
+The EK command may be used to undo this and recover the original file.
  - If the TECO_MEMORY environment variable is defined, then save the file
 name *baz* on exit.
 
@@ -178,13 +179,6 @@ name of a file which contains the name of the last file edited.
 
 -n, --nodefaults
  - Disable all defaults (equivalent to -c -i -m -v).
-
--O*baz*, --output=*baz*
- - Open *baz* as an output file (with EW command), overwriting any existing file.
-The EK command may be used to undo this and recover the original file.
-
--o, --nooutput (default)
- - Use the same name for the output file as the input file (unless –readonly is specified).
 
 -R, --readonly
  - Open specified for inspection (using the ER command), and read in first page.

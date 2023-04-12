@@ -64,14 +64,12 @@ static const char * const help_text[] =
     "  -c, --nocreate         Do not create new file if file does not exist.",
     "  -F, --formfeed         Enables FF as a page delimiter.",
     "  -f, --noformfeed       Disables FF as a page delimiter.",
-    "  -O, --output=abc       Open file 'abc' for output.",
-    "  -o, --nooutput         Use same name for output file as input file.",
     "  -R, --read-only        Open file for input only.",
     "  -r, --noread-only      Open file for input and output.",
     "",
     "Indirect command file options:",
     "",
-    "  -A, --argument         Specify n or m,n arguments for command file.",
+    "  -A, --arguments        Specify n or m,n arguments for command file.",
     "  -E, --execute=xyz      Execute TECO macro in file 'xyz'.",
     "  -T, --text=xyz         Store text 'xyz' in edit buffer.",
     "",
@@ -112,7 +110,6 @@ enum option_t
     OPTION_I = 'I',
     OPTION_L = 'L',
     OPTION_M = 'M',
-    OPTION_O = 'O',
     OPTION_R = 'R',
     OPTION_S = 'S',
     OPTION_T = 'T',
@@ -123,7 +120,6 @@ enum option_t
     OPTION_i = 'i',
     OPTION_m = 'm',
     OPTION_n = 'n',
-    OPTION_o = 'o',
     OPTION_r = 'r',
     OPTION_v = 'v'
 };
@@ -133,34 +129,32 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = ":A:CDE:FHI::L:MO:RS:T:V::Xcfimnorv";
+static const char * const optstring = ":A:CDE:FHI:L:MRS:T:V:Xcfimnrv";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
 
 static const struct option long_options[] =
 {
-    { "argument",       required_argument,  NULL,  'A'    },
+    { "arguments",      required_argument,  NULL,  'A'    },
     { "create",         no_argument,        NULL,  'C'    },
     { "display",        no_argument,        NULL,  'D'    },
     { "execute",        required_argument,  NULL,  'E'    },
     { "formfeed",       no_argument,        NULL,  'F'    },
     { "help",           no_argument,        NULL,  'H'    },
-    { "initialize",     optional_argument,  NULL,  'I'    },
+    { "initialize",     required_argument,  NULL,  'I'    },
     { "log",            required_argument,  NULL,  'L'    },
     { "memory",         no_argument,        NULL,  'M'    },
-    { "output",         required_argument,  NULL,  'O'    },
     { "read-only",      no_argument,        NULL,  'R'    },
     { "scroll",         required_argument,  NULL,  'S'    },
     { "text",           required_argument,  NULL,  'T'    },
-    { "vtedit",         optional_argument,  NULL,  'V'    },
+    { "vtedit",         required_argument,  NULL,  'V'    },
     { "exit",           no_argument,        NULL,  'X'    },
     { "nocreate",       no_argument,        NULL,  'c'    },
     { "noformfeed",     no_argument,        NULL,  'f'    },
     { "noinitialize",   no_argument,        NULL,  'i'    },
     { "nomemory",       no_argument,        NULL,  'm'    },
     { "nodefaults",     no_argument,        NULL,  'n'    },
-    { "nooutput",       no_argument,        NULL,  'o'    },
     { "noread-only",    no_argument,        NULL,  'r'    },
     { "novtedit",       no_argument,        NULL,  'v'    },
     { "version",        no_argument,        NULL,  SPACE  },  // --version option (hidden)
