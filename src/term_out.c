@@ -2,7 +2,7 @@
 ///  @file    term_out.c
 ///  @brief   System-independent functions to output to user's terminal.
 ///
-///  @copyright 2019-2022 Franklin P. Johnston / Nowwith Treble Software
+///  @copyright 2019-2023 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a
 ///  copy of this software and associated documentation files (the "Software"),

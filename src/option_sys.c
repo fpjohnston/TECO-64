@@ -2,7 +2,7 @@
 ///  @file    option_sys.c
 ///  @brief   Process command-line options for TECO editor.
 ///
-///  @copyright 2019-2022 Franklin P. Johnston / Nowwith Treble Software
+///  @copyright 2019-2023 Franklin P. Johnston / Nowwith Treble Software
 ///
 ///  Permission is hereby granted, free of charge, to any person obtaining a
 ///  copy of this software and associated documentation files (the "Software"),
@@ -624,7 +624,7 @@ void init_options(
 
                 printf("%d.%d.%d\n", major_version, minor_version, patch_version);
 
-                printf("Copyright (C) 2019-2022 Nowwith Treble Software\n");
+                printf("Copyright (C) 2019-2023 Nowwith Treble Software\n");
 
                 exit(EXIT_SUCCESS);
 

@@ -2,7 +2,7 @@
 #
 #  smoke_tests.pl - Create and run smoke tests for TECO text editor.
 #
-#  @copyright 2021-2022 Franklin P. Johnston / Nowwith Treble Software
+#  @copyright 2021-2023 Franklin P. Johnston / Nowwith Treble Software
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a
 #  copy of this software and associated documentation files (the "Software"),
