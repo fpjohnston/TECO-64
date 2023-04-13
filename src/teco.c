@@ -182,11 +182,9 @@ int main(int argc, const char * const argv[])
 
     init_teco(argc, argv);              // Initialize variables and things
 
-    // After initialization is complete, we can "execute" the command-line
+    // After initialization is complete, we can execute the command-line
     // options we found, which usually consists of creating a string of
     // commands and inserting them into the command buffer.
-
-    exec_options();                     // Execute command-line options
 
     f.e0.init = (cbuf->pos != cbuf->len); // Reset if no initial command string
 
@@ -317,7 +315,6 @@ static void init_teco(int argc, const char * const argv[])
     }
 
     init_env();                         // Initialize environment variables
-    init_options(argc, argv);           // Initialize command-line options
 
     // Allocate memory that we'll need when executing commands.
 
@@ -325,6 +322,7 @@ static void init_teco(int argc, const char * const argv[])
     init_cbuf();                        // Initialize command buffer
     init_edit();                        // Initialize edit buffer
     init_qreg();                        // Initialize Q-registers
+    init_options(argc, argv);           // Initialize command-line options
 
     // Change terminal characteristics and set signal handlers.
 

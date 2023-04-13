@@ -116,13 +116,13 @@ Depending on the shell or command interpreter, some characters, such as
 single or double quotes, may need to be escaped so that they will be
 properly passed to TECO.
 
--A*nn*, --argument=*nn*
- - Pass numeric argument *nn* to the indirect command file specified with
-the --execute option.
+-A*nn*, --arguments=*nn*
+ - Pass numeric argument *nn* to an indirect command file
+specified with a subsequent --execute option.
 
--A*mm*,*nn*, --argument=*mm*,*nn*
- - Pass *mm* and *nn* numeric arguments to the indirect command file specified with
-the --execute option.
+-A*mm*,*nn*, --arguments=*mm*,*nn*
+ - Pass *mm* and *nn* numeric arguments to an indirect command file
+specified with a subsequent --execute option.
 
 -C, --create (default)
  - If the specified file does not exist, then create it (using the EW command).
@@ -135,9 +135,12 @@ This is effectively a *make* command in other versions of TECO.
  - Start TECO in display mode (using the -W command).
 
 -E*command*, --execute=*command*
- - This is like a *mung* command in other versions of TECO.
-If *command* is a file, TECO will use the EI command to execute any commands in it.
-Alternately, *command* may be a string of TECO commands in single or double quotes.
+ - Open *command* as an indirect command file (using the EI command). If file does
+not exist, TECO will try opening *command.tec*. This is similar to a *mung* command
+in other versions of TECO.
+
+ - If *command* is a string in single or double quotes, then TECO will execute that
+as a command string instead of opening any file.
 
 -F, --formfeed
  - Enables FF as a page delimiter.
@@ -150,18 +153,8 @@ Alternately, *command* may be a string of TECO commands in single or double quot
 
 -I*initfile*, --initialize=*initfile*
  - Open *initfile* as an indirect command file (using the EI command). If file does
-not exist, TECO will try opening *initfile.tec*.
-
- - If *initfile* is a string in single or double quotes, then that is treated as a
-command string instead of a file name.
-
--I, --initialize (default)
- - Use the TECO_INIT environment variable to find the name of the initialization
-file. If TECO_INIT is not defined, then no initialization occurs before TECO
-starts.
-
- - If the value of TECO_INIT is in single or double quotes, then that is treated
-as a command string instead of a file name.
+not exist, TECO will try opening *initfile.tec*. This overrides any initialization
+file specified using the TECO_INIT environment variable.
 
 -i, --noinitialize
  - Do not use any initialization file, and do not check TECO_INIT.
@@ -195,11 +188,9 @@ name of a file which contains the name of the last file edited.
 Normally used in conjunction using the –execute option.
 
 -V --vtedit=*vtfile*
- - Use macro in the file *vtfile* to initialize the display (overrides any file
-specified using the TECO_VTEDIT environment variable).
-
- - If *vtfile* is a string in single or double quotes, then that is treated as a
-command string instead of a file name.
+ - Open *vtfile* as an indirect command file (using the EI command). If file does
+not exist, TECO will try opening *vtfile.tec*. This overrides any initialization
+file specified using the TECO_VTEDIT environment variable.
 
 -v, --novtedit
  - Ignore TECO_VTEDIT environment and don't use any indirect command file to

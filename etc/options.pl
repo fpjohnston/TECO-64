@@ -74,8 +74,8 @@ my %header = (
     long  => undef,     # Long options for getopt_long()
 );
 
-Readonly my $MIN_CTRL => 1;
-Readonly my $MAX_CTRL => 31;
+Readonly my $MIN_DEBUG => 200;
+Readonly my $MAX_DEBUG => 255;
 
 my $max_length = 0;
 
@@ -145,7 +145,7 @@ sub build_strings
 
         if ($debug)
         {
-            $short = sprintf '\'\\%03u\'', $short;
+            $short = sprintf '%3u   ', $short;
             $header{debug} .= sprintf "#define DEBUG_$debug $short"
               . "          ///< Debug command-line option $long\n";
         }
@@ -407,7 +407,7 @@ sub save_option
 
         return if !$args{debug};
 
-        if ( $debug < $MIN_CTRL or $debug > $MAX_CTRL )
+        if ( $debug < $MIN_DEBUG or $debug > $MAX_DEBUG )
         {
             die "Debug option out of range at line $line\n";
         }

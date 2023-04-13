@@ -202,8 +202,6 @@ extern bool check_macro(void);
 
 extern void detach_term(void);
 
-extern void exec_options(void);
-
 extern void exit_cbuf(void);
 
 extern void exit_edit(void);

@@ -157,8 +157,10 @@ static const struct option long_options[] =
     { "nodefaults",     no_argument,        NULL,  'n'    },
     { "noread-only",    no_argument,        NULL,  'r'    },
     { "novtedit",       no_argument,        NULL,  'v'    },
-    { "version",        no_argument,        NULL,  SPACE  },  // --version option (hidden)
-    { "mung",           no_argument,        NULL,  DEL    },  // --mung option (hidden)
+    { "version",        no_argument,        NULL,  1      },  // --version option (hidden)
+    { "mung",           no_argument,        NULL,  2      },  // --mung option (hidden)
+    { "quit",           no_argument,        NULL,  3      },  // --quit option (hidden)
+    { "print",          no_argument,        NULL,  4      },  // --print option (hidden)
     { NULL,             no_argument,        NULL,  0      },  // Markers for end of list
 };
 
