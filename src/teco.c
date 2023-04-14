@@ -187,6 +187,7 @@ int main(int argc, const char * const argv[])
     // commands and inserting them into the command buffer.
 
     f.e0.init = (cbuf->pos != cbuf->len); // Reset if no initial command string
+    f.et.abort = f.e0.init;             // If initial string, abort on error
 
     for (;;)                            // Loop forever
     {

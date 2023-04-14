@@ -145,13 +145,11 @@ static void parse_V(void);
 
 static void parse_version(void);
 
-static void print_initial(void);
-
 static void read_options(int argc, const char *const argv[]);
 
 static void save_next(const char *format, ...);
 
-static void store_cmd(const char *format, ...);
+static void store_cmd(const char *cmd);
 
 static void store_EB(const char *file);
 
@@ -208,24 +206,7 @@ static void check_file(const char *option)
 
 static void exec_options(void)
 {
-    if (teco_init != NULL)              // Initializaton file is always first
-    {
-        store_cmd("EI%s\e", teco_init);
-    }
-
-    if (teco_vtedit != NULL)            // Initialize display next
-    {
-        store_cmd("EI%s\e", teco_vtedit);
-    }
-
-    // Now process all options we saw
-
-    for (int i = 0; i < next_cmd; ++i)
-    {
-        store_cmd(cmd_list[i]);
-    }
-
-    // Now process input file (if any) and output file (if any)
+    // Process any input file and any output file
 
     if (options.file1 == NULL)          // We have no file names
     {
@@ -266,14 +247,49 @@ static void exec_options(void)
         open_files(options.file1, options.file2);
     }
 
+    // Now we're ready to start storing initialization commands in command buffer
+
+    if (options.print)                  // See if we should print command
+    {
+        printf("Commands: ");
+    }
+
+    char cmd[PATH_MAX];
+
+    if (teco_init != NULL)              // Initializaton file is always first
+    {
+        snprintf(cmd, sizeof(cmd), "EI%s\e ", teco_init);
+
+        store_cmd(cmd);
+    }
+
+    if (teco_vtedit != NULL)            // Initialize display next
+    {
+        snprintf(cmd, sizeof(cmd), "EI%s\e ", teco_vtedit);
+
+        store_cmd(cmd);
+    }
+
+    // Now process all options we saw
+
+    for (int i = 0; i < next_cmd; ++i)
+    {
+        store_cmd(cmd_list[i]);
+    }
+
     if (options.exit)                   // Should we exit at end of commands?
     {
-        store_cmd("EX");
+        store_cmd("EX ");
     }
 
     if (cbuf->len != 0)                 // Anything stored?
     {
         store_cmd("\e\e");
+    }
+
+    if (options.print)                  // See if we should print command
+    {
+        fputc('\n', stdout);
     }
 }
 
@@ -389,7 +405,10 @@ void init_options(
 
     free_mem(&cmd_list);
 
-    print_initial();                    // Maybe print initial command string
+    if (options.quit)
+    {
+        exit(EXIT_SUCCESS);
+    }
 }
 
 
@@ -429,7 +448,7 @@ static void open_files(const char *infile, const char *outfile)
 
         if (options.readonly)
         {
-            store_cmd(":^A?How can I inspect nothing?\1");
+            store_cmd(":^A?How can I inspect nothing?\1 ");
 
             options.exit = true;
         }
@@ -439,9 +458,16 @@ static void open_files(const char *infile, const char *outfile)
 
     // Here if we have an input file
 
-    if (outfile == NULL)                // Any output file?
+    if (outfile == NULL)                // If no output file, use EW or EB
     {
-        store_EB(infile);               // No, try to open for backup
+        if (access(infile, F_OK) != 0 && options.create)
+        {
+            store_EW(infile);           // EW if no file and okay to create one
+        }
+        else
+        {
+            store_EB(infile);           // Else try EB
+        }
     }
     else                                // Open separate input and output files
     {
@@ -523,7 +549,7 @@ static void parse_D(void)
 
     if (!f.e0.i_redir || options.exit)
     {
-        save_next("-1W");
+        save_next("-1W ");
 
         options.display = true;
     }
@@ -549,7 +575,7 @@ static void parse_eflag(const char *option)
     }
 
     parse_args(option);
-    save_next("%s%s\e", args, option);
+    save_next("%s%s\e ", args, option);
 }
 
 #endif
@@ -638,8 +664,8 @@ static void parse_keys(void)
 
 static void parse_L(void)
 {
-    check_file("-L or --log option");
-    save_next("EL%s\e", optarg);
+    check_file("-L or --log");
+    save_next("EL%s\e ", optarg);
 }
 
 
@@ -671,7 +697,7 @@ static void parse_mung(const char *file)
         if (first == last && (first == '"' || first == '\''))
         {
             nbytes -= 2;
-            save_next("%.*s\e", (int)nbytes, file + 1);
+            save_next("%.*s\e ", (int)nbytes, file + 1);
 
             return;
         }
@@ -682,7 +708,7 @@ static void parse_mung(const char *file)
         args = "";
     }
 
-    save_next("%sEI%s\e", args, file);
+    save_next("%sEI%s\e ", args, file);
 }
 
 
@@ -695,7 +721,7 @@ static void parse_mung(const char *file)
 
 static void parse_M(void)
 {
-    check_file("-M or --memory option");
+    check_file("-M or --memory");
 
     teco_memory = optarg;
 }
@@ -713,8 +739,6 @@ static void parse_n(void)
     teco_init   = NULL;
     teco_memory = NULL;
     teco_vtedit = NULL;
-
-    options.create  = false;
 }
 
 
@@ -730,7 +754,7 @@ static void parse_S(void)
     // If argument exists, confirm that it's of the "ddd", where
     // "ddd" is a decimal integer.
 
-    check_arg("argument", "-S or --scroll option");
+    check_arg("argument", "-S or --scroll");
 
     const char *p = optarg;
     int count;
@@ -741,7 +765,7 @@ static void parse_S(void)
         p += count;
     }
 
-    if (*p != NUL)
+    if (*p != NUL || c <= 0)
     {
         printf("Invalid value '%s' for -S or --scroll option\n", optarg);
 
@@ -757,7 +781,7 @@ static void parse_S(void)
             parse_D();
         }
 
-        save_next("%s,7:W\e", optarg);
+        save_next("%s,7:W\e ", optarg);
     }
 }
 
@@ -771,8 +795,8 @@ static void parse_S(void)
 
 static void parse_T(void)
 {
-    check_arg("argument", "-T or --text option");
-    save_next("I%s\e", optarg);
+    check_arg("argument", "-T or --text");
+    save_next("I%s\e ", optarg);
 }
 
 
@@ -785,7 +809,7 @@ static void parse_T(void)
 
 static void parse_V(void)
 {
-    check_file("-V or --vtedit option");
+    check_file("-V or --vtedit");
 
     // No display mode if input is redirected or if we're exiting immediately
 
@@ -818,82 +842,6 @@ static void parse_version(void)
     printf("Copyright (C) 2019-2023 Nowwith Treble Software\n");
 
     exit(EXIT_SUCCESS);
-}
-
-
-///
-///  @brief    If --print option was specified, print initial command string
-///            that we created from the command-line options. If the -X option
-///            was also specified, then we will also exit.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void print_initial(void)
-{
-    if (!options.print)                 // Should we print the command string?
-    {
-        return;
-    }
-
-    tprint("Commands: ");
-
-    for (uint i = 0; i < cbuf->len; ++i)
-    {
-        int c = cbuf->data[i];
-
-        switch (c)
-        {
-            case BS:
-                fputs("\\b", stdout);
-                break;
-
-            case HT:
-                fputs("\\t", stdout);
-                break;
-
-            case LF:
-                fputs("\\n", stdout);
-                break;
-
-            case VT:
-                fputs("\\v", stdout);
-                break;
-
-            case FF:
-                fputs("\\f", stdout);
-                break;
-
-            case CR:
-                fputs("\\r", stdout);
-                break;
-
-            case ESC:
-                fputs("\\e", stdout);
-                break;
-
-            default:
-                if (iscntrl(c))
-                {
-                    printf("\\%d", c);
-                }
-                else
-                {
-                    fputc(c, stdout);
-                }
-                break;
-        }
-    }
-
-    tprint("\n");
-
-    (void)fflush(stdout);
-
-    if (options.quit)
-    {
-        exit(EXIT_SUCCESS);
-    }
 }
 
 
@@ -936,8 +884,8 @@ static void read_options(
             case OPTION_c: options.create = false;      break;
             case OPTION_D: parse_D();                   break;
             case OPTION_E: parse_E();                   break;
-            case OPTION_F: save_next("1,0E3");          break;
-            case OPTION_f: save_next("0,1E3");          break;
+            case OPTION_F: save_next("1,0E3 ");         break;
+            case OPTION_f: save_next("0,1E3 ");         break;
             case OPTION_H: parse_H();                   break;
             case OPTION_I: parse_I();                   break;
             case OPTION_i: teco_init = NULL;            break;
@@ -1028,18 +976,9 @@ static void save_next(const char *format, ...)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void store_cmd(const char *format, ...)
+static void store_cmd(const char *cmd)
 {
-    assert(format != NULL);
-
-    char cmd[PATH_MAX];
-    va_list args;
-
-    va_start(args, format);
-
-    vsnprintf(cmd, sizeof(cmd), format, args);
-
-    va_end(args);
+    assert(cmd != NULL);
 
     int c;
     const char *p = cmd;
@@ -1047,9 +986,52 @@ static void store_cmd(const char *format, ...)
     while ((c = *p++) != NUL)
     {
         store_cbuf(c);
-    }
 
-    store_cbuf(' ');
+        if (options.print)              // See if we should print character
+        {
+            switch (c)
+            {
+                case BS:
+                    fputs("\\b", stdout);
+                    break;
+
+                case HT:
+                    fputs("\\t", stdout);
+                    break;
+
+                case LF:
+                    fputs("\\n", stdout);
+                    break;
+
+                case VT:
+                    fputs("\\v", stdout);
+                    break;
+
+                case FF:
+                    fputs("\\f", stdout);
+                    break;
+
+                case CR:
+                    fputs("\\r", stdout);
+                    break;
+
+                case ESC:
+                    fputs("\\e", stdout);
+                    break;
+
+                default:
+                    if (iscntrl(c))
+                    {
+                        printf("\\%d", c);
+                    }
+                    else
+                    {
+                        fputc(c, stdout);
+                    }
+                    break;
+            }
+        }
+    }
 }
 
 
@@ -1070,7 +1052,7 @@ static void store_EB(const char *file)
     }
     else                                // No -- open for backup
     {
-        store_cmd("EB%s\e Y :^AEditing file: %s\1", file, file);
+        save_next("EB%s\e Y :^AEditing file: %s\1 ", file, file);
     }
 }
 
@@ -1086,7 +1068,7 @@ static void store_EB(const char *file)
 
 static void store_ER(const char *file)
 {
-    store_cmd("ER%s\e Y :^AReading file: %s\1", file, file);
+    save_next("ER%s\e Y :^AReading file: %s\1 ", file, file);
 }
 
 
@@ -1099,5 +1081,5 @@ static void store_ER(const char *file)
 
 static void store_EW(const char *file)
 {
-    store_cmd(":^AWriting file: %s\1 EW%s\e", file, file);
+    save_next(":^AWriting file: %s\1 EW%s\e ", file, file);
 }

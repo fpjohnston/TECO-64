@@ -126,7 +126,7 @@ specified with a subsequent --execute option.
 
 -C, --create (default)
  - If the specified file does not exist, then create it (using the EW command).
-This is effectively a *make* command in other versions of TECO.
+This is similar to a *make* command in other versions of TECO.
 
 -c, --nocreate
  - If the specified file does not exist, then issue an error and exit.
@@ -171,7 +171,7 @@ name of a file which contains the name of the last file edited.
  - Do not use TECO_MEMORY to find the name of the last edited file.
 
 -n, --nodefaults
- - Disable all defaults (equivalent to -c -i -m -v).
+ - Equivalent to --noinitialize --nomemory --novtedit.
 
 -R, --readonly
  - Open specified for inspection (using the ER command), and read in first page.
