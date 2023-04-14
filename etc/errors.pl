@@ -204,7 +204,7 @@ sub make_errors
         my @details = @{ $errors{$code}{details} };
         my $details = join q{ }, @details;
 
-        $errors .= sprintf "| <nobr>?%s</nobr> | <nobr>%s</nobr> | %s |\n",
+        $errors .= sprintf "| <span>?%s</span> | <span>%s</span> | %s |\n",
           $code, $message, $details;
     }
 

@@ -1,5 +1,11 @@
 ## TECO-64 - Error Messages
 
+<style>
+    span {
+        white-space: nowrap;
+    }
+</style>
+
 If TECO is unable to execute a command, either because of a syntax,
 system, or other error, it aborts execution of the command, prints an
 error message, ignores all following commands, resets its state, and
@@ -22,8 +28,8 @@ command being executed.
 
 | Message | Description |
 | ------- | ----------- |
-| <nobr>\%Superseding existing file</nobr> | The file specified to an EW command already exists, and the old copy will be deleted if the file is closed with an EC or EX command. The EK command may be used to undo the EW command. |
-| <nobr>\%Search failure in loop</nobr> | A search command has failed inside a loop. A ; (semi-colon) command immediately following the search command can be used to suppress this message. After printing the message, the iteration is terminated, i.e., TECO simulates an F> command. |
+| <span>\%Superseding existing file</span> | The file specified to an EW command already exists, and the old copy will be deleted if the file is closed with an EC or EX command. The EK command may be used to undo the EW command. |
+| <span>\%Search failure in loop</span> | A search command has failed inside a loop. A ; (semi-colon) command immediately following the search command can be used to suppress this message. After printing the message, the iteration is terminated, i.e., TECO simulates an F> command. |
 
 The following error messages are listed alphabetically by their three-letter
 code.

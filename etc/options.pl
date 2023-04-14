@@ -69,7 +69,6 @@ my %options = ();
 my %header = (
     help  => undef,     # Help text
     enums => undef,     # Cases for command-line options
-    debug => undef,     # Defines for debug options
     short => undef,     # Short options for getopt_long()
     long  => undef,     # Long options for getopt_long()
 );
@@ -125,8 +124,6 @@ sub main
 
 sub build_strings
 {
-    my $debug_enums = q{};
-
     foreach my $short ( sort keys %options )
     {
         my %option = %{ $options{$short} };
@@ -145,15 +142,14 @@ sub build_strings
 
         if ($debug)
         {
-            $short = sprintf '%3u   ', $short;
-            $header{debug} .= sprintf "#define DEBUG_$debug $short"
-              . "          ///< Debug command-line option $long\n";
+            $header{enums} .= sprintf "    OPTION_%-7s = $short,\n", $long;
+            $short = $long;
         }
         else
         {
             $header{short} .= $short;
-            $header{enums} .= "    OPTION_$short = '$short',\n";
-            $short = "'$short'   ";
+            $header{enums} .= sprintf "    OPTION_%-7s = '$short',\n", $short;
+            $short = "$short";
         }
 
         if ( $argtype =~ /required_argument/ms )
@@ -165,20 +161,14 @@ sub build_strings
             $header{short} .= q{::};
         }
 
-        $header{long} .= sprintf "    { %-17s %-18s  NULL,  $short },\n",
-          "\"$long\",", "$argtype,";
-    }
-
-    if ( !defined $header{debug} )
-    {
-        $header{debug} = "// No debug options in this build\n";
+        $header{long} .= sprintf "    { %-17s %-18s  NULL,  OPTION_%-7s },\n",
+          "\"$long\",", "$argtype,", $short;
     }
 
     chomp $header{help};
     chomp $header{long};
     chomp $header{enums};
-    chomp $header{debug};
-    chop $header{enums};
+    chomp $header{enums};
 
     return;
 }
@@ -293,7 +283,6 @@ sub make_options
     my %changes = (
         'HELP OPTIONS'  => $header{help},
         'ENUM OPTIONS'  => $header{enums},
-        'DEBUG OPTIONS' => $header{debug},
         'SHORT OPTIONS' => $header{short},
         'LONG OPTIONS'  => $header{long},
     );

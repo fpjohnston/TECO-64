@@ -117,7 +117,7 @@
         <option>
             <short_name>n</short_name>
             <long_name>nodefaults</long_name>
-            <help>Disable all defaults (equivalent to -c -i -m -v).</help>
+            <help>Equivalent to --noinitialize -nomemory --novtedit).</help>
         </option>
         <option>
             <short_name>X</short_name>

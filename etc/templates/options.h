@@ -67,9 +67,11 @@ static const char * const help_text[] =
 enum option_t
 {
 /* (INSERT: ENUM OPTIONS) */
+    OPTION_version = 1,
+    OPTION_mung,
+    OPTION_print,
+    OPTION_quit
 };
-
-/* (INSERT: DEBUG OPTIONS) */
 
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
@@ -82,10 +84,10 @@ static const char * const optstring = ":/* (INSERT: SHORT OPTIONS) */";
 static const struct option long_options[] =
 {
 /* (INSERT: LONG OPTIONS) */
-    { "version",        no_argument,        NULL,  1      },  // --version option (hidden)
-    { "mung",           no_argument,        NULL,  2      },  // --mung option (hidden)
-    { "quit",           no_argument,        NULL,  3      },  // --quit option (hidden)
-    { "print",          no_argument,        NULL,  4      },  // --print option (hidden)
-    { NULL,             no_argument,        NULL,  0      },  // Markers for end of list
+    { "version",        no_argument,        NULL,  OPTION_version },  // --version option (hidden)
+    { "mung",           no_argument,        NULL,  OPTION_mung    },  // --mung option (hidden)
+    { "print",          no_argument,        NULL,  OPTION_print   },  // --print option (hidden)
+    { "quit",           no_argument,        NULL,  OPTION_quit    },  // --quit option (hidden)
+    { NULL,             no_argument,        NULL,  0              },  // Markers for end of list
 };
 

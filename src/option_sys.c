@@ -40,15 +40,15 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "file.h"
+#include "options.h"
 #include "term.h"
 #include "version.h"
 
-#include "cbuf.h"
-#include "options.h"
 
-#define MAX_CMDS        100             ///< Maximum no. of command-line arguments
+#define MAX_CMDS        32              ///< Maximum no. of command-line arguments
 
 static char **cmd_list = NULL;          ///< List of command-line arguments
 static int next_cmd;                    ///< No. of command-line arguments found
@@ -61,16 +61,17 @@ static int next_cmd;                    ///< No. of command-line arguments found
 
 struct options
 {
-    const char *file1;      ///< Input file
+    const char *file1;      ///< Input file, or file to mung
     const char *file2;      ///< Output file
-    const char *args;       ///< -A or --arguments
-    bool create;            ///< -C or --create
-    bool display;           ///< -D or --display
-    bool readonly;          ///< -R or --readonly
-    bool exit;              ///< -X or --exit
-    bool mung;              ///< --mung (hidden)
-    bool print;             ///< --print (hidden)
-    bool quit;              ///< --quit (hidden)
+    const char *args;       ///< --arguments option
+    int scroll;             ///< --scroll option
+    bool create;            ///< --create option
+    bool display;           ///< --display option
+    bool readonly;          ///< --read-only option
+    bool exit;              ///< --exit option
+    bool mung;              ///< --mung option
+    bool print;             ///< --print option
+    bool quit;              ///< --quit option
 };
 
 ///
@@ -84,6 +85,7 @@ static struct options options =
     .file1    = NULL,
     .file2    = NULL,
     .args     = NULL,
+    .scroll   = 0,
     .create   = true,
     .display  = false,
     .readonly = false,
@@ -108,8 +110,6 @@ static void open_files(const char *infile, const char *outfile);
 static void parse_args(const char *args);
 
 static void parse_A(void);
-
-static void parse_D(void);
 
 #if     defined(DEBUG)
 
@@ -249,23 +249,11 @@ static void exec_options(void)
 
     // Now we're ready to start storing initialization commands in command buffer
 
-    if (options.print)                  // See if we should print command
-    {
-        printf("Commands: ");
-    }
-
     char cmd[PATH_MAX];
 
     if (teco_init != NULL)              // Initializaton file is always first
     {
         snprintf(cmd, sizeof(cmd), "EI%s\e ", teco_init);
-
-        store_cmd(cmd);
-    }
-
-    if (teco_vtedit != NULL)            // Initialize display next
-    {
-        snprintf(cmd, sizeof(cmd), "EI%s\e ", teco_vtedit);
 
         store_cmd(cmd);
     }
@@ -281,15 +269,29 @@ static void exec_options(void)
     {
         store_cmd("EX ");
     }
+    else if (!f.e0.i_redir)
+    {
+        if (teco_vtedit != NULL)        // Do we have a display initialization file?
+        {
+            snprintf(cmd, sizeof(cmd), "EI%s\e ", teco_vtedit);
+            store_cmd(cmd);
+        }
+
+        if (options.display)            // Enable display if requested
+        {
+            store_cmd("-1W ");
+
+            if (options.scroll != 0)    // Set up scrolling if requested
+            {
+                snprintf(cmd, sizeof(cmd), "%u,7:W\e ", options.scroll);
+                store_cmd(cmd);
+            }
+        }
+    }
 
     if (cbuf->len != 0)                 // Anything stored?
     {
         store_cmd("\e\e");
-    }
-
-    if (options.print)                  // See if we should print command
-    {
-        fputc('\n', stdout);
     }
 }
 
@@ -342,15 +344,6 @@ void init_options(
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
 
-    // Disable display mode if stdin has been redirected
-
-    if (f.e0.i_redir)
-    {
-        options.display = false;
-
-        teco_vtedit = NULL;
-    }
-
     // Allocate list of command-line options we've processed
 
     cmd_list = alloc_mem((uint)sizeof(const char *) * MAX_CMDS);
@@ -362,6 +355,11 @@ void init_options(
     }
 
     read_options(argc, argv);
+
+    if (options.quit)                   // --quit implies --print
+    {
+        options.print = true;
+    }
 
     // See if we have any file arguments
 
@@ -391,7 +389,17 @@ void init_options(
         }
     }
 
+    if (options.print)
+    {
+        printf("Commands: ");
+    }
+
     exec_options();
+
+    if (options.print)
+    {
+        fputc('\n', stdout);
+    }
 
     // Free up memory for command-line options
 
@@ -533,26 +541,6 @@ static void parse_A(void)
     check_arg("value", option);
     parse_args(option);
     options.args = optarg;
-}
-
-
-///
-///  @brief    Parse -D or --display option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_D(void)
-{
-    // No display mode if input is redirected or if we're exiting immediately
-
-    if (!f.e0.i_redir || options.exit)
-    {
-        save_next("-1W ");
-
-        options.display = true;
-    }
 }
 
 
@@ -772,17 +760,8 @@ static void parse_S(void)
         exit(EXIT_FAILURE);
     }
 
-    // No display mode if input is redirected or if we're exiting immediately
-
-    if (!f.e0.i_redir || options.exit)
-    {
-        if (!options.display)
-        {
-            parse_D();
-        }
-
-        save_next("%s,7:W\e ", optarg);
-    }
+    options.scroll = c;
+    options.display = true;
 }
 
 
@@ -811,12 +790,7 @@ static void parse_V(void)
 {
     check_file("-V or --vtedit");
 
-    // No display mode if input is redirected or if we're exiting immediately
-
-    if (!f.e0.i_redir || options.exit)
-    {
-        teco_vtedit = optarg;
-    }
+    teco_vtedit = optarg;
 }
 
 
@@ -882,7 +856,7 @@ static void read_options(
             case OPTION_A: parse_A();                   break;
             case OPTION_C: options.create = true;       break;
             case OPTION_c: options.create = false;      break;
-            case OPTION_D: parse_D();                   break;
+            case OPTION_D: options.display = true;      break;
             case OPTION_E: parse_E();                   break;
             case OPTION_F: save_next("1,0E3 ");         break;
             case OPTION_f: save_next("0,1E3 ");         break;
@@ -898,25 +872,25 @@ static void read_options(
             case OPTION_S: parse_S();                   break;
             case OPTION_T: parse_T();                   break;
             case OPTION_V: parse_V();                   break;
-            case OPTION_X: options.exit = true;         //lint -fallthrough
             case OPTION_v: teco_vtedit = NULL;          break;
+            case OPTION_X: options.exit = true;         break;
 
             // Hidden options start here
 
-            case 1: parse_version();                    break;
-            case 2: options.mung = true;                break;
-            case 3: options.quit  = true;               //lint -fallthrough
-            case 4: options.print = true;               break;
+            case OPTION_version: parse_version();       break;
+            case OPTION_mung:    options.mung = true;   break;
+            case OPTION_print:   options.print = true;  break;
+            case OPTION_quit:    options.quit  = true;  break;
 
 #if     defined(DEBUG)
 
             // Debug options start here
 
-            case 200: parse_keys();                     break;
-            case 201: parse_eflag("E1");                break;
-            case 202: parse_eflag("E2");                break;
-            case 203: parse_eflag("E3");                break;
-            case 204: parse_eflag("E4");                break;
+            case OPTION_keys: parse_keys();             break;
+            case OPTION_E1:   parse_eflag("E1 ");       break;
+            case OPTION_E2:   parse_eflag("E2 ");       break;
+            case OPTION_E3:   parse_eflag("E3 ");       break;
+            case OPTION_E4:   parse_eflag("E4 ");       break;
 
 #endif
 
