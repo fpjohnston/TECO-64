@@ -48,10 +48,28 @@
 #include "version.h"
 
 
-#define MAX_CMDS        32              ///< Maximum no. of command-line arguments
+///
+///   @struct  cmdq
+///
+///   @brief   Structure for queueing commands created from command-line options.
+///
 
-static char **cmd_list = NULL;          ///< List of command-line arguments
-static int next_cmd;                    ///< No. of command-line arguments found
+struct cmdq
+{
+    struct cmdq *next;                  ///< Next in queue
+    char *text;                         ///< TECO command
+};
+
+static struct cmdq *qhead;              ///< Command list head
+static struct cmdq *qtail;              ///< Command list tail
+
+//  Queue insertion options
+
+enum
+{
+    HEAD = 1,               ///< Push at head of queue
+    TAIL                    ///< Push at tail of queue
+};
 
 ///
 ///   @struct  options
@@ -145,17 +163,19 @@ static void parse_V(void);
 
 static void parse_version(void);
 
+static void pop_cmds(void);
+
+static void print_cmd(const char *cmd);
+
+static void push_cmd(int where, const char *format, ...);
+
+static void push_EB(const char *file);
+
+static void push_ER(const char *file);
+
+static void push_EW(const char *file);
+
 static void read_options(int argc, const char *const argv[]);
-
-static void save_next(const char *format, ...);
-
-static void store_cmd(const char *cmd);
-
-static void store_EB(const char *file);
-
-static void store_ER(const char *file);
-
-static void store_EW(const char *file);
 
 
 ///
@@ -206,6 +226,11 @@ static void check_file(const char *option)
 
 static void exec_options(void)
 {
+    if (teco_init != NULL)              // Initializaton file is always first
+    {
+        push_cmd(HEAD, "EI%s\e ", teco_init);
+    }
+
     // Process any input file and any output file
 
     if (options.file1 == NULL)          // We have no file names
@@ -247,52 +272,34 @@ static void exec_options(void)
         open_files(options.file1, options.file2);
     }
 
-    // Now we're ready to start storing initialization commands in command buffer
-
-    char cmd[PATH_MAX];
-
-    if (teco_init != NULL)              // Initializaton file is always first
-    {
-        snprintf(cmd, sizeof(cmd), "EI%s\e ", teco_init);
-
-        store_cmd(cmd);
-    }
-
-    // Now process all options we saw
-
-    for (int i = 0; i < next_cmd; ++i)
-    {
-        store_cmd(cmd_list[i]);
-    }
-
     if (options.exit)                   // Should we exit at end of commands?
     {
-        store_cmd("EX ");
+        push_cmd(TAIL, "EX ");
     }
     else if (!f.e0.i_redir)
     {
         if (teco_vtedit != NULL)        // Do we have a display initialization file?
         {
-            snprintf(cmd, sizeof(cmd), "EI%s\e ", teco_vtedit);
-            store_cmd(cmd);
+            push_cmd(TAIL, "EI%s\e ", teco_vtedit);
         }
 
         if (options.display)            // Enable display if requested
         {
-            store_cmd("-1W ");
+            push_cmd(TAIL, "-1W ");
 
             if (options.scroll != 0)    // Set up scrolling if requested
             {
-                snprintf(cmd, sizeof(cmd), "%u,7:W\e ", options.scroll);
-                store_cmd(cmd);
+                push_cmd(TAIL, "%u,7:W\e ", options.scroll);
             }
         }
     }
 
-    if (cbuf->len != 0)                 // Anything stored?
+    if (qhead != NULL)                  // Anything stored?
     {
-        store_cmd("\e\e");
+        push_cmd(TAIL, "\e\e");
     }
+
+    pop_cmds();                         // Now pop all commands and store them
 }
 
 
@@ -344,15 +351,8 @@ void init_options(
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
 
-    // Allocate list of command-line options we've processed
-
-    cmd_list = alloc_mem((uint)sizeof(const char *) * MAX_CMDS);
-    next_cmd = 0;
-
-    for (int i = 0; i < MAX_CMDS; ++i)
-    {
-        cmd_list[i] = NULL;
-    }
+    assert(qhead == NULL);
+    assert(qtail == NULL);
 
     read_options(argc, argv);
 
@@ -401,18 +401,6 @@ void init_options(
         fputc('\n', stdout);
     }
 
-    // Free up memory for command-line options
-
-    for (int i = 0; i < MAX_CMDS; ++i)
-    {
-        if (cmd_list[i] != NULL)
-        {
-            free_mem(&cmd_list[i]);
-        }
-    }
-
-    free_mem(&cmd_list);
-
     if (options.quit)
     {
         exit(EXIT_SUCCESS);
@@ -445,7 +433,7 @@ static void open_files(const char *infile, const char *outfile)
 
             if (memory[0] != NUL)
             {
-                store_EB(memory);
+                push_EB(memory);
 
                 return;
             }
@@ -456,7 +444,7 @@ static void open_files(const char *infile, const char *outfile)
 
         if (options.readonly)
         {
-            store_cmd(":^A?How can I inspect nothing?\1 ");
+            push_cmd(TAIL, ":^A?How can I inspect nothing?\1 ");
 
             options.exit = true;
         }
@@ -470,17 +458,17 @@ static void open_files(const char *infile, const char *outfile)
     {
         if (access(infile, F_OK) != 0 && options.create)
         {
-            store_EW(infile);           // EW if no file and okay to create one
+            push_EW(infile);            // EW if no file and okay to create one
         }
         else
         {
-            store_EB(infile);           // Else try EB
+            push_EB(infile);            // Else try EB
         }
     }
     else                                // Open separate input and output files
     {
-        store_ER(infile);
-        store_EW(outfile);
+        push_ER(infile);
+        push_EW(outfile);
 
         teco_memory = NULL;             // Don't save file name on exit
     }
@@ -563,7 +551,7 @@ static void parse_eflag(const char *option)
     }
 
     parse_args(option);
-    save_next("%s%s\e ", args, option);
+    push_cmd(TAIL, "%s%s\e ", args, option);
 }
 
 #endif
@@ -653,7 +641,7 @@ static void parse_keys(void)
 static void parse_L(void)
 {
     check_file("-L or --log");
-    save_next("EL%s\e ", optarg);
+    push_cmd(TAIL, "EL%s\e ", optarg);
 }
 
 
@@ -685,7 +673,7 @@ static void parse_mung(const char *file)
         if (first == last && (first == '"' || first == '\''))
         {
             nbytes -= 2;
-            save_next("%.*s\e ", (int)nbytes, file + 1);
+            push_cmd(TAIL, "%.*s\e ", (int)nbytes, file + 1);
 
             return;
         }
@@ -696,7 +684,7 @@ static void parse_mung(const char *file)
         args = "";
     }
 
-    save_next("%sEI%s\e ", args, file);
+    push_cmd(TAIL, "%sEI%s\e ", args, file);
 }
 
 
@@ -775,7 +763,7 @@ static void parse_S(void)
 static void parse_T(void)
 {
     check_arg("argument", "-T or --text");
-    save_next("I%s\e ", optarg);
+    push_cmd(TAIL, "I%s\e ", optarg);
 }
 
 
@@ -820,6 +808,208 @@ static void parse_version(void)
 
 
 ///
+///  @brief    Pop all commands off queue and store them in command buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void pop_cmds(void)
+{
+    struct cmdq *cmd;
+
+    qtail = NULL;
+
+    while ((cmd = qhead) != NULL)
+    {
+        int c;
+        const char *p = cmd->text;
+
+        if (options.print)
+        {
+            print_cmd(cmd->text);
+        }
+
+        while ((c = *p++) != NUL)
+        {
+            store_cbuf(c);
+        }
+
+        qhead = cmd->next;
+
+        free_mem(&cmd->text);
+        free_mem(&cmd);
+    }
+}
+
+
+///
+///  @brief    Print command in queue if --print option seen.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void print_cmd(const char *cmd)
+{
+    assert(cmd != NULL);
+
+    int c;
+
+    while ((c = *cmd++) != NUL)
+    {
+        switch (c)
+        {
+            case BS:
+                fputs("\\b", stdout);
+                break;
+
+            case HT:
+                fputs("\\t", stdout);
+                break;
+
+            case LF:
+                fputs("\\n", stdout);
+                break;
+
+            case VT:
+                fputs("\\v", stdout);
+                break;
+
+            case FF:
+                fputs("\\f", stdout);
+                break;
+
+            case CR:
+                fputs("\\r", stdout);
+                break;
+
+            case ESC:
+                fputs("\\e", stdout);
+                break;
+
+            default:
+                if (iscntrl(c))
+                {
+                    printf("\\%d", c);
+                }
+                else
+                {
+                    fputc(c, stdout);
+                }
+                break;
+        }
+    }
+}
+
+
+///
+///  @brief    Save next command in command list.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void push_cmd(int where, const char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+
+    // First figure out how many bytes we'll need for this string
+
+    int nbytes = vsnprintf(NULL, 0uL, format, args);
+
+    va_end(args);
+
+    assert(nbytes >= 0);
+
+    uint size = (uint)nbytes;
+
+    // Allocate a command block and initialize it
+
+    struct cmdq *cmd = alloc_mem((uint)sizeof(struct cmdq));
+
+    cmd->next = NULL;
+    cmd->text = alloc_mem(size + 1);
+    
+    // Now copy the command for real
+
+    va_start(args, format);
+
+    vsnprintf(cmd->text, (size_t)size + 1, format, args);
+
+    va_end(args);
+
+    if (qhead == NULL)
+    {
+        qhead = qtail = cmd;
+    }
+    else if (where == HEAD)             // Add to head of queue?
+    {
+        cmd->next = qhead;
+        qhead = cmd;
+    }
+    else                                // No, add to tail
+    {
+        qtail->next = cmd;
+        qtail = cmd;
+    }
+
+}
+
+
+///
+///  @brief    Store EB command. Note that if the file open fails, the rest of
+//             the command string will be aborted, which means that the CTRL/A
+//             command won't be executed.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void push_EB(const char *file)
+{
+    if (options.readonly)               // Should we open for read only?
+    {
+        push_ER(file);
+    }
+    else                                // No -- open for backup
+    {
+        push_cmd(TAIL, "EB%s\e Y :^AEditing file: %s\1 ", file, file);
+    }
+}
+
+
+///
+///  @brief    Store ER command. Note that if the file open fails, the rest of
+//             the command string will be aborted, which means that the CTRL/A
+//             command won't be executed.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void push_ER(const char *file)
+{
+    push_cmd(TAIL, "ER%s\e Y :^AReading file: %s\1 ", file, file);
+}
+
+
+///
+///  @brief    Store EW command.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void push_EW(const char *file)
+{
+    push_cmd(TAIL, ":^AWriting file: %s\1 EW%s\e ", file, file);
+}
+
+
+///
 ///  @brief    Read command-line options.
 ///
 ///            Note that we use printf() instead of tprint() here because we
@@ -858,8 +1048,8 @@ static void read_options(
             case OPTION_c: options.create = false;      break;
             case OPTION_D: options.display = true;      break;
             case OPTION_E: parse_E();                   break;
-            case OPTION_F: save_next("1,0E3 ");         break;
-            case OPTION_f: save_next("0,1E3 ");         break;
+            case OPTION_F: push_cmd(TAIL, "1,0E3 ");    break;
+            case OPTION_f: push_cmd(TAIL, "0,1E3 ");    break;
             case OPTION_H: parse_H();                   break;
             case OPTION_I: parse_I();                   break;
             case OPTION_i: teco_init = NULL;            break;
@@ -906,154 +1096,4 @@ static void read_options(
                 exit(EXIT_FAILURE);
         }
     }
-}
-
-
-///
-///  @brief    Save next command in command list.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void save_next(const char *format, ...)
-{
-    if (next_cmd == MAX_CMDS)
-    {
-        printf("Too many command-line options\n");
-
-        exit(EXIT_FAILURE);
-    }
-
-    char cmd[PATH_MAX];
-    va_list args;
-
-    va_start(args, format);
-
-    vsnprintf(cmd, sizeof(cmd), format, args);
-
-    va_end(args);
-
-    size_t nbytes = strlen(cmd);
-
-    cmd_list[next_cmd] = alloc_mem((uint)nbytes + 1);
-    sprintf(cmd_list[next_cmd], "%s", cmd);
-
-    ++next_cmd;
-}
-
-
-///
-///  @brief    Store a formatted command string in the command buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void store_cmd(const char *cmd)
-{
-    assert(cmd != NULL);
-
-    int c;
-    const char *p = cmd;
-
-    while ((c = *p++) != NUL)
-    {
-        store_cbuf(c);
-
-        if (options.print)              // See if we should print character
-        {
-            switch (c)
-            {
-                case BS:
-                    fputs("\\b", stdout);
-                    break;
-
-                case HT:
-                    fputs("\\t", stdout);
-                    break;
-
-                case LF:
-                    fputs("\\n", stdout);
-                    break;
-
-                case VT:
-                    fputs("\\v", stdout);
-                    break;
-
-                case FF:
-                    fputs("\\f", stdout);
-                    break;
-
-                case CR:
-                    fputs("\\r", stdout);
-                    break;
-
-                case ESC:
-                    fputs("\\e", stdout);
-                    break;
-
-                default:
-                    if (iscntrl(c))
-                    {
-                        printf("\\%d", c);
-                    }
-                    else
-                    {
-                        fputc(c, stdout);
-                    }
-                    break;
-            }
-        }
-    }
-}
-
-
-///
-///  @brief    Store EB command. Note that if the file open fails, the rest of
-//             the command string will be aborted, which means that the CTRL/A
-//             command won't be executed.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void store_EB(const char *file)
-{
-    if (options.readonly)               // Should we open for read only?
-    {
-        store_ER(file);
-    }
-    else                                // No -- open for backup
-    {
-        save_next("EB%s\e Y :^AEditing file: %s\1 ", file, file);
-    }
-}
-
-
-///
-///  @brief    Store ER command. Note that if the file open fails, the rest of
-//             the command string will be aborted, which means that the CTRL/A
-//             command won't be executed.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void store_ER(const char *file)
-{
-    save_next("ER%s\e Y :^AReading file: %s\1 ", file, file);
-}
-
-
-///
-///  @brief    Store EW command.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void store_EW(const char *file)
-{
-    save_next(":^AWriting file: %s\1 EW%s\e ", file, file);
 }
