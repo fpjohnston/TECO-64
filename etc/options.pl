@@ -142,13 +142,13 @@ sub build_strings
 
         if ($debug)
         {
-            $header{enums} .= sprintf "    OPTION_%-7s = $short,\n", $long;
+            $header{enums} .= sprintf "    OPT_%-7s = $short,\n", $long;
             $short = $long;
         }
         else
         {
             $header{short} .= $short;
-            $header{enums} .= sprintf "    OPTION_%-7s = '$short',\n", $short;
+            $header{enums} .= sprintf "    OPT_%-7s = '$short',\n", $short;
             $short = "$short";
         }
 
@@ -161,7 +161,7 @@ sub build_strings
             $header{short} .= q{::};
         }
 
-        $header{long} .= sprintf "    { %-17s %-18s  NULL,  OPTION_%-7s },\n",
+        $header{long} .= sprintf "    { %-17s %-18s  NULL,  OPT_%-7s },\n",
           "\"$long\",", "$argtype,", $short;
     }
 

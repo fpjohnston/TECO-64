@@ -101,31 +101,31 @@ static const char * const help_text[] =
 
 enum option_t
 {
-    OPTION_A       = 'A',
-    OPTION_C       = 'C',
-    OPTION_D       = 'D',
-    OPTION_E       = 'E',
-    OPTION_F       = 'F',
-    OPTION_H       = 'H',
-    OPTION_I       = 'I',
-    OPTION_L       = 'L',
-    OPTION_M       = 'M',
-    OPTION_R       = 'R',
-    OPTION_S       = 'S',
-    OPTION_T       = 'T',
-    OPTION_V       = 'V',
-    OPTION_X       = 'X',
-    OPTION_c       = 'c',
-    OPTION_f       = 'f',
-    OPTION_i       = 'i',
-    OPTION_m       = 'm',
-    OPTION_n       = 'n',
-    OPTION_r       = 'r',
-    OPTION_v       = 'v',
-    OPTION_version = 1,
-    OPTION_mung,
-    OPTION_print,
-    OPTION_quit
+    OPT_A       = 'A',
+    OPT_C       = 'C',
+    OPT_D       = 'D',
+    OPT_E       = 'E',
+    OPT_F       = 'F',
+    OPT_H       = 'H',
+    OPT_I       = 'I',
+    OPT_L       = 'L',
+    OPT_M       = 'M',
+    OPT_R       = 'R',
+    OPT_S       = 'S',
+    OPT_T       = 'T',
+    OPT_V       = 'V',
+    OPT_X       = 'X',
+    OPT_c       = 'c',
+    OPT_f       = 'f',
+    OPT_i       = 'i',
+    OPT_m       = 'm',
+    OPT_n       = 'n',
+    OPT_r       = 'r',
+    OPT_v       = 'v',
+    OPT_version = 1,
+    OPT_mung,
+    OPT_print,
+    OPT_quit
 };
 
 ///  @var optstring
@@ -138,31 +138,31 @@ static const char * const optstring = ":A:CDE:FHI:L:MRS:T:V:Xcfimnrv";
 
 static const struct option long_options[] =
 {
-    { "arguments",      required_argument,  NULL,  OPTION_A       },
-    { "create",         no_argument,        NULL,  OPTION_C       },
-    { "display",        no_argument,        NULL,  OPTION_D       },
-    { "execute",        required_argument,  NULL,  OPTION_E       },
-    { "formfeed",       no_argument,        NULL,  OPTION_F       },
-    { "help",           no_argument,        NULL,  OPTION_H       },
-    { "initialize",     required_argument,  NULL,  OPTION_I       },
-    { "log",            required_argument,  NULL,  OPTION_L       },
-    { "memory",         no_argument,        NULL,  OPTION_M       },
-    { "read-only",      no_argument,        NULL,  OPTION_R       },
-    { "scroll",         required_argument,  NULL,  OPTION_S       },
-    { "text",           required_argument,  NULL,  OPTION_T       },
-    { "vtedit",         required_argument,  NULL,  OPTION_V       },
-    { "exit",           no_argument,        NULL,  OPTION_X       },
-    { "nocreate",       no_argument,        NULL,  OPTION_c       },
-    { "noformfeed",     no_argument,        NULL,  OPTION_f       },
-    { "noinitialize",   no_argument,        NULL,  OPTION_i       },
-    { "nomemory",       no_argument,        NULL,  OPTION_m       },
-    { "nodefaults",     no_argument,        NULL,  OPTION_n       },
-    { "noread-only",    no_argument,        NULL,  OPTION_r       },
-    { "novtedit",       no_argument,        NULL,  OPTION_v       },
-    { "version",        no_argument,        NULL,  OPTION_version },  // --version option (hidden)
-    { "mung",           no_argument,        NULL,  OPTION_mung    },  // --mung option (hidden)
-    { "print",          no_argument,        NULL,  OPTION_print   },  // --print option (hidden)
-    { "quit",           no_argument,        NULL,  OPTION_quit    },  // --quit option (hidden)
-    { NULL,             no_argument,        NULL,  0              },  // Markers for end of list
+    { "arguments",      required_argument,  NULL,  OPT_A       },
+    { "create",         no_argument,        NULL,  OPT_C       },
+    { "display",        no_argument,        NULL,  OPT_D       },
+    { "execute",        required_argument,  NULL,  OPT_E       },
+    { "formfeed",       no_argument,        NULL,  OPT_F       },
+    { "help",           no_argument,        NULL,  OPT_H       },
+    { "initialize",     required_argument,  NULL,  OPT_I       },
+    { "log",            required_argument,  NULL,  OPT_L       },
+    { "memory",         no_argument,        NULL,  OPT_M       },
+    { "read-only",      no_argument,        NULL,  OPT_R       },
+    { "scroll",         required_argument,  NULL,  OPT_S       },
+    { "text",           required_argument,  NULL,  OPT_T       },
+    { "vtedit",         required_argument,  NULL,  OPT_V       },
+    { "exit",           no_argument,        NULL,  OPT_X       },
+    { "nocreate",       no_argument,        NULL,  OPT_c       },
+    { "noformfeed",     no_argument,        NULL,  OPT_f       },
+    { "noinitialize",   no_argument,        NULL,  OPT_i       },
+    { "nomemory",       no_argument,        NULL,  OPT_m       },
+    { "nodefaults",     no_argument,        NULL,  OPT_n       },
+    { "noread-only",    no_argument,        NULL,  OPT_r       },
+    { "novtedit",       no_argument,        NULL,  OPT_v       },
+    { "version",        no_argument,        NULL,  OPT_version },  // --version option (hidden)
+    { "mung",           no_argument,        NULL,  OPT_mung    },  // --mung option (hidden)
+    { "print",          no_argument,        NULL,  OPT_print   },  // --print option (hidden)
+    { "quit",           no_argument,        NULL,  OPT_quit    },  // --quit option (hidden)
+    { NULL,             no_argument,        NULL,  0           },  // Markers for end of list
 };
 

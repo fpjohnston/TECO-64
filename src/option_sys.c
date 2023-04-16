@@ -49,29 +49,6 @@
 
 
 ///
-///   @struct  cmdq
-///
-///   @brief   Structure for queueing commands created from command-line options.
-///
-
-struct cmdq
-{
-    struct cmdq *next;                  ///< Next in queue
-    char *text;                         ///< TECO command
-};
-
-static struct cmdq *qhead;              ///< Command list head
-static struct cmdq *qtail;              ///< Command list tail
-
-//  Queue insertion options
-
-enum
-{
-    HEAD = 1,               ///< Push at head of queue
-    TAIL                    ///< Push at tail of queue
-};
-
-///
 ///   @struct  options
 ///
 ///   @brief   Structure for holding information on configuration options.
@@ -119,63 +96,61 @@ static void check_arg(const char *str, const char *option);
 
 static void check_file(const char *option);
 
-static void exec_options(void);
-
 static int get_info(const char *file, dev_t *dev, ino_t *ino);
 
 static void open_files(const char *infile, const char *outfile);
 
+static void opt_arguments(void);
+
+static void opt_execute(void);
+
+#if     defined(DEBUG)
+
+static void opt_E1(const char *cmd);
+
+#endif
+
+static void opt_help(void);
+
+static void opt_initialize(void);
+
+#if     defined(DEBUG)
+
+static void opt_keys(void);
+
+#endif
+
+static void opt_log(void);
+
+static void opt_mung(const char *file);
+
+static void opt_memory(void);
+
+static void opt_nodefaults(void);
+
+static void opt_scroll(void);
+
+static void opt_text(void);
+
+static void opt_vtedit(void);
+
+static void opt_version(void);
+
 static void parse_args(const char *args);
 
-static void parse_A(void);
-
-#if     defined(DEBUG)
-
-static void parse_eflag(const char *cmd);
-
-#endif
-
-static void parse_E(void);
-
-static void parse_H(void);
-
-static void parse_I(void);
-
-#if     defined(DEBUG)
-
-static void parse_keys(void);
-
-#endif
-
-static void parse_L(void);
-
-static void parse_mung(const char *file);
-
-static void parse_M(void);
-
-static void parse_n(void);
-
-static void parse_S(void);
-
-static void parse_T(void);
-
-static void parse_V(void);
-
-static void parse_version(void);
-
-static void pop_cmds(void);
+static void parse_options(int argc, const char *const argv[]);
 
 static void print_cmd(const char *cmd);
 
-static void push_cmd(int where, const char *format, ...);
+static void store_cmd(const char *format, ...);
 
-static void push_EB(const char *file);
+static void store_EB(const char *file);
 
-static void push_ER(const char *file);
+static void store_ER(const char *file);
 
-static void push_EW(const char *file);
+static void store_EW(const char *file);
 
-static void read_options(int argc, const char *const argv[]);
+static uint verify_size(int nbytes);
 
 
 ///
@@ -213,93 +188,6 @@ static void check_file(const char *option)
 
         exit(EXIT_FAILURE);
     }
-}
-
-
-///
-///  @brief    Store all command-line options in command buffer for execution
-///            when TECO starts.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void exec_options(void)
-{
-    if (teco_init != NULL)              // Initializaton file is always first
-    {
-        push_cmd(HEAD, "EI%s\e ", teco_init);
-    }
-
-    // Process any input file and any output file
-
-    if (options.file1 == NULL)          // We have no file names
-    {
-        open_files(NULL, NULL);
-    }
-    else if (options.file2 == NULL)     // We only have one file name
-    {
-        open_files(options.file1, NULL);
-    }
-    else                                // We have two file names
-    {
-        dev_t dev1, dev2;
-        ino_t ino1, ino2;
-        int err1 = get_info(options.file1, &dev1, &ino1);
-        int err2 = get_info(options.file2, &dev2, &ino2);
-
-        // See if the two files are actually the same. There are basically two
-        // possibilities: either both files exist and have the same device IDs
-        // and inode numbers, or neither exist, but their file names match. In
-        // either case, we skip using the second file name, and just use an EB
-        // command to open the file.
-
-        if (err1 == 0 && err2 == 0)
-        {
-            if (dev1 == dev2 && ino1 == ino2)
-            {
-                options.file2 = NULL;
-            }
-        }
-        else if (err1 == ENOENT && err2 == ENOENT)
-        {
-            if (!strcmp(options.file1, options.file2))
-            {
-                options.file2 = NULL;
-            }
-        }
-
-        open_files(options.file1, options.file2);
-    }
-
-    if (options.exit)                   // Should we exit at end of commands?
-    {
-        push_cmd(TAIL, "EX ");
-    }
-    else if (!f.e0.i_redir)
-    {
-        if (teco_vtedit != NULL)        // Do we have a display initialization file?
-        {
-            push_cmd(TAIL, "EI%s\e ", teco_vtedit);
-        }
-
-        if (options.display)            // Enable display if requested
-        {
-            push_cmd(TAIL, "-1W ");
-
-            if (options.scroll != 0)    // Set up scrolling if requested
-            {
-                push_cmd(TAIL, "%u,7:W\e ", options.scroll);
-            }
-        }
-    }
-
-    if (qhead != NULL)                  // Anything stored?
-    {
-        push_cmd(TAIL, "\e\e");
-    }
-
-    pop_cmds();                         // Now pop all commands and store them
 }
 
 
@@ -351,54 +239,94 @@ void init_options(
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
 
-    assert(qhead == NULL);
-    assert(qtail == NULL);
+    parse_options(argc, argv);
 
-    read_options(argc, argv);
+    // If we have an initialization file, then it will be processed by TECO
+    // first. This means we have to shift over any other commands in the buffer
+    // to make room for this command.
 
-    if (options.quit)                   // --quit implies --print
+    if (teco_init != NULL)              // Initialization file is always first
     {
-        options.print = true;
+        char initbuf[KB];
+        int retval = snprintf(initbuf, sizeof(initbuf), "EI%s\e ", teco_init);
+        uint size = verify_size(retval);
+
+        memmove(cbuf->data + size, cbuf->data, (size_t)cbuf->len);
+        memcpy(cbuf->data, initbuf, (size_t)size);
+
+        cbuf->len += size;
+        cbuf->data[cbuf->len] = NUL;
     }
 
-    // See if we have any file arguments
+    // Process any input file and any output file
 
-    if (optind < argc)
+    if (options.file1 == NULL)          // We have no file names
     {
-        if (options.mung)
-        {
-            parse_mung(argv[optind++]);
-        }
-        else
-        {
-            options.file1 = argv[optind++];
+        open_files(NULL, NULL);
+    }
+    else if (options.file2 == NULL)     // We only have one file name
+    {
+        open_files(options.file1, NULL);
+    }
+    else                                // We have two file names
+    {
+        dev_t dev1, dev2;
+        ino_t ino1, ino2;
+        int err1 = get_info(options.file1, &dev1, &ino1);
+        int err2 = get_info(options.file2, &dev2, &ino2);
 
-            // Check for an output file name
+        // See if the two files are actually the same. There are basically two
+        // possibilities: either both files exist and have the same device IDs
+        // and inode numbers, or neither exist, but their file names match. In
+        // either case, we skip using the second file name, and just use an EB
+        // command to open the file.
 
-            if (!options.readonly && optind < argc)
+        if (err1 == 0 && err2 == 0)
+        {
+            if (dev1 == dev2 && ino1 == ino2)
             {
-                options.file2 = argv[optind++];
+                options.file2 = NULL;
+            }
+        }
+        else if (err1 == ENOENT && err2 == ENOENT)
+        {
+            if (!strcmp(options.file1, options.file2))
+            {
+                options.file2 = NULL;
             }
         }
 
-        if (optind < argc)
-        {
-            printf("?Too many file arguments\n");
+        open_files(options.file1, options.file2);
+    }
 
-            exit(EXIT_FAILURE);
+    // Add display options on the end, unless we're exiting immediately
+
+    if (options.exit)                   // Should we exit at end of commands?
+    {
+        store_cmd("EX ");
+    }
+    else if (!f.e0.i_redir)
+    {
+        if (teco_vtedit != NULL)        // Do we have a display initialization file?
+        {
+            store_cmd("EI%s\e ", teco_vtedit);
+        }
+
+        if (options.display)            // Enable display if requested
+        {
+            store_cmd("-1W ");
+
+            if (options.scroll != 0)    // Set up scrolling if requested
+            {
+                store_cmd("%u,7:W\e ", options.scroll);
+            }
         }
     }
 
-    if (options.print)
+    if (cbuf->len != 0)                 // Anything stored?
     {
-        printf("Commands: ");
-    }
-
-    exec_options();
-
-    if (options.print)
-    {
-        fputc('\n', stdout);
+        store_cmd("\e\e");              // Terminate command w/ double ESCape
+        print_cmd(cbuf->data);
     }
 
     if (options.quit)
@@ -433,7 +361,7 @@ static void open_files(const char *infile, const char *outfile)
 
             if (memory[0] != NUL)
             {
-                push_EB(memory);
+                store_EB(memory);
 
                 return;
             }
@@ -444,7 +372,7 @@ static void open_files(const char *infile, const char *outfile)
 
         if (options.readonly)
         {
-            push_cmd(TAIL, ":^A?How can I inspect nothing?\1 ");
+            store_cmd(":^A?How can I inspect nothing?\1 ");
 
             options.exit = true;
         }
@@ -458,17 +386,17 @@ static void open_files(const char *infile, const char *outfile)
     {
         if (access(infile, F_OK) != 0 && options.create)
         {
-            push_EW(infile);            // EW if no file and okay to create one
+            store_EW(infile);            // EW if no file and okay to create one
         }
         else
         {
-            push_EB(infile);            // Else try EB
+            store_EB(infile);            // Else try EB
         }
     }
     else                                // Open separate input and output files
     {
-        push_ER(infile);
-        push_EW(outfile);
+        store_ER(infile);
+        store_EW(outfile);
 
         teco_memory = NULL;             // Don't save file name on exit
     }
@@ -476,7 +404,299 @@ static void open_files(const char *infile, const char *outfile)
 
 
 ///
-///  @brief    Parse m,n arguments for flag option.
+///  @brief    Parse -A or --arguments option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_arguments(void)
+{
+    const char *option = "-A or --arguments";
+
+    check_arg("value", option);
+    parse_args(option);
+    options.args = optarg;
+}
+
+
+///
+///  @brief    Parse -E or --execute option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_execute(void)
+{
+    check_file("-E or --execute");
+    opt_mung(optarg);
+}
+
+
+///
+///  @brief    Parse --E1, --E2, --E3, and --E4 options.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DEBUG)
+
+static void opt_E1(const char *option)
+{
+    const char *args = optarg;
+
+    if (args == NULL)
+    {
+        args = "-1";
+    }
+
+    parse_args(option);
+    store_cmd("%s%s\e ", args, option);
+}
+
+#endif
+
+
+///
+///  @brief    Parse -H or --help option.
+///
+///  @returns  Exits from TECO.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_help(void)
+{
+    const char *p;
+    uint i = 0;
+
+    while ((p = help_text[i++]) != NULL)
+    {
+        printf("%s\n", p);
+    }
+
+    exit(EXIT_SUCCESS);
+}
+
+
+///
+///  @brief    Parse -I or --initialize option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_initialize(void)
+{
+    check_file("-I or --initialize");
+
+    teco_init = optarg;
+}
+
+
+///
+///  @brief    Parse --keys option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     defined(DEBUG)
+
+static void opt_keys(void)
+{
+    if (optarg != NULL && optarg[0] != '-')
+    {
+        key_name = optarg;
+    }
+    else
+    {
+        key_name = NULL;
+    }
+}
+
+#endif
+
+
+///
+///  @brief    Parse -L or --log option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_log(void)
+{
+    check_file("-L or --log");
+    store_cmd("EL%s\e ", optarg);
+}
+
+
+///
+///  @brief    Parse --mung option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_mung(const char *file)
+{
+    assert(file != NULL);
+
+    // If file name starts and ends with single or double quotes, then it's
+    // really a TECO command string.
+
+    size_t nbytes = strlen(file);
+    const char *args = options.args;
+
+    options.args = NULL;
+    teco_memory  = NULL;
+    
+    if (nbytes > 2)
+    {
+        int first = file[0];
+        int last = file[nbytes - 1];
+
+        if (first == last && (first == '"' || first == '\''))
+        {
+            nbytes -= 2;
+            store_cmd("%.*s\e ", (int)nbytes, file + 1);
+
+            return;
+        }
+    }
+
+    if (args == NULL)
+    {
+        args = "";
+    }
+
+    store_cmd("%sEI%s\e ", args, file);
+}
+
+
+///
+///  @brief    Parse -M or --memory option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_memory(void)
+{
+    check_file("-M or --memory");
+
+    teco_memory = optarg;
+}
+
+
+///
+///  @brief    Parse -n option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_nodefaults(void)
+{
+    teco_init   = NULL;
+    teco_memory = NULL;
+    teco_vtedit = NULL;
+}
+
+
+///
+///  @brief    Parse -S or --scroll option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_scroll(void)
+{
+    // If argument exists, confirm that it's of the "ddd", where
+    // "ddd" is a decimal integer.
+
+    check_arg("argument", "-S or --scroll");
+
+    const char *p = optarg;
+    int count;
+    int c;
+
+    if (sscanf(p, "%d%n", &c, &count) == 1)
+    {
+        p += count;
+    }
+
+    if (*p != NUL || c <= 0)
+    {
+        printf("Invalid value '%s' for -S or --scroll option\n", optarg);
+
+        exit(EXIT_FAILURE);
+    }
+
+    options.scroll = c;
+    options.display = true;
+}
+
+
+///
+///  @brief    Parse -T or --text option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_text(void)
+{
+    check_arg("argument", "-T or --text");
+    store_cmd("I%s\e ", optarg);
+}
+
+
+///
+///  @brief    Parse -V or --vtedit option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_vtedit(void)
+{
+    check_file("-V or --vtedit");
+
+    teco_vtedit = optarg;
+}
+
+
+///
+///  @brief    Parse --version option.
+///
+///  @returns  Exits from TECO.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_version(void)
+{
+    fputs("teco (TECO text editor) version ", stdout);
+
+#if     defined(DEBUG)
+
+    fputc('X', stdout);     // Say that it's a debug version
+
+#endif
+
+    printf("%d.%d.%d\n", major_version, minor_version, patch_version);
+
+    printf("Copyright (C) 2019-2023 Nowwith Treble Software\n");
+
+    exit(EXIT_SUCCESS);
+}
+
+
+///
+///  @brief    Parse m,n arguments for -A, --E1, --E2, --E3, and --E4 options.
 ///
 ///  @returns  Nothing.
 ///
@@ -516,329 +736,123 @@ static void parse_args(const char *option)
 
 
 ///
-///  @brief    Parse -A or --arguments option.
+///  @brief    Parse command-line options.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void parse_A(void)
+static void parse_options(
+    int argc,                           ///< No. of arguments
+    const char *const argv[])           ///< List of arguments
 {
-    const char *option = "-A or --arguments";
+    assert(argv != NULL);               // Error if no argument list
+    assert(argv[0] != NULL);            // Error if no strings in list
 
-    check_arg("value", option);
-    parse_args(option);
-    options.args = optarg;
-}
+    // These two assertions confirm the standard behavior of getopt_long()
+    // regarding the ordering of option and non-option arguments.
 
+    assert(optstring[0] != '+' && optstring[0] != '-'); // Verify assumptions
+    assert(getenv("POSIXLY_CORRECT") == NULL); // Verify assumptions
 
-///
-///  @brief    Parse --E1, --E2, --E3, and --E4 options.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
+    optind = 0;                         // Reset from any previous calls
+    opterr = 0;                         // Suppress any error messages
 
-#if     defined(DEBUG)
-
-static void parse_eflag(const char *option)
-{
-    const char *args = optarg;
-
-    if (args == NULL)
-    {
-        args = "-1";
-    }
-
-    parse_args(option);
-    push_cmd(TAIL, "%s%s\e ", args, option);
-}
-
-#endif
-
-
-///
-///  @brief    Parse -E or --execute option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_E(void)
-{
-    check_file("-E or --execute");
-    parse_mung(optarg);
-}
-
-
-///
-///  @brief    Parse -H or --help option.
-///
-///  @returns  Exits from TECO.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_H(void)
-{
-    const char *p;
-    uint i = 0;
-
-    while ((p = help_text[i++]) != NULL)
-    {
-        printf("%s\n", p);
-    }
-
-    exit(EXIT_SUCCESS);
-}
-
-
-///
-///  @brief    Parse -I or --initialize option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_I(void)
-{
-    check_file("-I or --initialize");
-
-    teco_init = optarg;
-}
-
-
-///
-///  @brief    Parse --keys option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DEBUG)
-
-static void parse_keys(void)
-{
-    if (optarg != NULL && optarg[0] != '-')
-    {
-        key_name = optarg;
-    }
-    else
-    {
-        key_name = NULL;
-    }
-}
-
-#endif
-
-
-///
-///  @brief    Parse -L or --log option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_L(void)
-{
-    check_file("-L or --log");
-    push_cmd(TAIL, "EL%s\e ", optarg);
-}
-
-
-///
-///  @brief    Parse --mung option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_mung(const char *file)
-{
-    assert(file != NULL);
-
-    // If file name starts and ends with single or double quotes, then it's
-    // really a TECO command string.
-
-    size_t nbytes = strlen(file);
-    const char *args = options.args;
-
-    options.args = NULL;
-    teco_memory  = NULL;
-    
-    if (nbytes > 2)
-    {
-        int first = file[0];
-        int last = file[nbytes - 1];
-
-        if (first == last && (first == '"' || first == '\''))
-        {
-            nbytes -= 2;
-            push_cmd(TAIL, "%.*s\e ", (int)nbytes, file + 1);
-
-            return;
-        }
-    }
-
-    if (args == NULL)
-    {
-        args = "";
-    }
-
-    push_cmd(TAIL, "%sEI%s\e ", args, file);
-}
-
-
-///
-///  @brief    Parse -M or --memory option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_M(void)
-{
-    check_file("-M or --memory");
-
-    teco_memory = optarg;
-}
-
-
-///
-///  @brief    Parse -n option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_n(void)
-{
-    teco_init   = NULL;
-    teco_memory = NULL;
-    teco_vtedit = NULL;
-}
-
-
-///
-///  @brief    Parse -S or --scroll option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_S(void)
-{
-    // If argument exists, confirm that it's of the "ddd", where
-    // "ddd" is a decimal integer.
-
-    check_arg("argument", "-S or --scroll");
-
-    const char *p = optarg;
-    int count;
     int c;
+    int idx = 0;
 
-    if (sscanf(p, "%d%n", &c, &count) == 1)
+    while ((c = getopt_long(argc, (char * const *)argv,
+                            optstring, long_options, &idx)) != -1)
     {
-        p += count;
-    }
+        switch (c)
+        {
+            // Options that set values
 
-    if (*p != NUL || c <= 0)
-    {
-        printf("Invalid value '%s' for -S or --scroll option\n", optarg);
+            case OPT_C:       options.create = true;     break;
+            case OPT_c:       options.create = false;    break;
+            case OPT_D:       options.display = true;    break;
+            case OPT_i:       teco_init = NULL;          break;
+            case OPT_m:       teco_memory = NULL;        break;
+            case OPT_R:       options.readonly = true;   break;
+            case OPT_r:       options.readonly = false;  break;
+            case OPT_v:       teco_vtedit = NULL;        break;
+            case OPT_X:       options.exit = true;       break;
+            case OPT_mung:    options.mung = true;       break; // Hidden
+            case OPT_print:   options.print = true;      break; // Hidden
+            case OPT_quit:    options.quit  = true;      break; // Hidden
 
-        exit(EXIT_FAILURE);
-    }
+            // Options that call functions
 
-    options.scroll = c;
-    options.display = true;
-}
-
-
-///
-///  @brief    Parse -T or --text option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_T(void)
-{
-    check_arg("argument", "-T or --text");
-    push_cmd(TAIL, "I%s\e ", optarg);
-}
-
-
-///
-///  @brief    Parse -V or --vtedit option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_V(void)
-{
-    check_file("-V or --vtedit");
-
-    teco_vtedit = optarg;
-}
-
-
-///
-///  @brief    Parse --version option.
-///
-///  @returns  Exits from TECO.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void parse_version(void)
-{
-    fputs("teco (TECO text editor) version ", stdout);
+            case OPT_A:       opt_arguments();           break;
+            case OPT_E:       opt_execute();             break;
+            case OPT_F:       store_cmd("1,0E3 ");       break;
+            case OPT_f:       store_cmd("0,1E3 ");       break;
+            case OPT_H:       opt_help();                break;
+            case OPT_I:       opt_initialize();          break;
+            case OPT_L:       opt_log();                 break;
+            case OPT_M:       opt_memory();              break;
+            case OPT_n:       opt_nodefaults();          break;
+            case OPT_S:       opt_scroll();              break;
+            case OPT_T:       opt_text();                break;
+            case OPT_V:       opt_vtedit();              break;
+            case OPT_version: opt_version();             break; // Hidden
 
 #if     defined(DEBUG)
 
-    fputc('X', stdout);     // Say that it's a debug version
+            // Debug options
+
+            case OPT_keys:    opt_keys();                break;
+            case OPT_E1:      opt_E1("E1 ");             break;
+            case OPT_E2:      opt_E1("E2 ");             break;
+            case OPT_E3:      opt_E1("E3 ");             break;
+            case OPT_E4:      opt_E1("E4 ");             break;
 
 #endif
 
-    printf("%d.%d.%d\n", major_version, minor_version, patch_version);
+            case ':':
+                printf("Argument required for %s option\n", argv[optind - 1]);
 
-    printf("Copyright (C) 2019-2023 Nowwith Treble Software\n");
+                exit(EXIT_FAILURE);
 
-    exit(EXIT_SUCCESS);
-}
+            default:
+                printf("Unknown option '%s': use --help for list of "
+                       "options\n", argv[optind - 1]);
 
+                exit(EXIT_FAILURE);
+        }
+    }
 
-///
-///  @brief    Pop all commands off queue and store them in command buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void pop_cmds(void)
-{
-    struct cmdq *cmd;
-
-    qtail = NULL;
-
-    while ((cmd = qhead) != NULL)
+    if (options.quit)                   // --quit implies --print
     {
-        int c;
-        const char *p = cmd->text;
+        options.print = true;
+    }
 
-        if (options.print)
+    // Check for file arguments
+
+    if (optind < argc)
+    {
+        if (options.mung)
         {
-            print_cmd(cmd->text);
+            opt_mung(argv[optind++]);
+        }
+        else
+        {
+            options.file1 = argv[optind++];
+
+            // Check for an output file name
+
+            if (!options.readonly && optind < argc)
+            {
+                options.file2 = argv[optind++];
+            }
         }
 
-        while ((c = *p++) != NUL)
+        if (optind < argc)
         {
-            store_cbuf(c);
+            printf("?Too many file arguments\n");
+
+            exit(EXIT_FAILURE);
         }
-
-        qhead = cmd->next;
-
-        free_mem(&cmd->text);
-        free_mem(&cmd);
     }
 }
 
@@ -854,7 +868,14 @@ static void print_cmd(const char *cmd)
 {
     assert(cmd != NULL);
 
+    if (!options.print)
+    {
+        return;
+    }
+
     int c;
+
+    printf("Commands: ");
 
     while ((c = *cmd++) != NUL)
     {
@@ -900,6 +921,8 @@ static void print_cmd(const char *cmd)
                 break;
         }
     }
+
+    fputc('\n', stdout);
 }
 
 
@@ -910,52 +933,20 @@ static void print_cmd(const char *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void push_cmd(int where, const char *format, ...)
+static void store_cmd(const char *format, ...)
 {
     va_list args;
 
     va_start(args, format);
 
-    // First figure out how many bytes we'll need for this string
-
-    int nbytes = vsnprintf(NULL, 0uL, format, args);
-
-    va_end(args);
-
-    assert(nbytes >= 0);
-
-    uint size = (uint)nbytes;
-
-    // Allocate a command block and initialize it
-
-    struct cmdq *cmd = alloc_mem((uint)sizeof(struct cmdq));
-
-    cmd->next = NULL;
-    cmd->text = alloc_mem(size + 1);
-    
-    // Now copy the command for real
-
-    va_start(args, format);
-
-    vsnprintf(cmd->text, (size_t)size + 1, format, args);
+    size_t size = cbuf->size - cbuf->len;
+    int retval = vsnprintf(cbuf->data + cbuf->len, size, format, args);
 
     va_end(args);
 
-    if (qhead == NULL)
-    {
-        qhead = qtail = cmd;
-    }
-    else if (where == HEAD)             // Add to head of queue?
-    {
-        cmd->next = qhead;
-        qhead = cmd;
-    }
-    else                                // No, add to tail
-    {
-        qtail->next = cmd;
-        qtail = cmd;
-    }
+    cbuf->len += verify_size(retval);
 
+    cbuf->data[cbuf->len] = NUL;
 }
 
 
@@ -968,15 +959,15 @@ static void push_cmd(int where, const char *format, ...)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void push_EB(const char *file)
+static void store_EB(const char *file)
 {
     if (options.readonly)               // Should we open for read only?
     {
-        push_ER(file);
+        store_ER(file);
     }
     else                                // No -- open for backup
     {
-        push_cmd(TAIL, "EB%s\e Y :^AEditing file: %s\1 ", file, file);
+        store_cmd("EB%s\e Y :^AEditing file: %s\1 ", file, file);
     }
 }
 
@@ -990,9 +981,9 @@ static void push_EB(const char *file)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void push_ER(const char *file)
+static void store_ER(const char *file)
 {
-    push_cmd(TAIL, "ER%s\e Y :^AReading file: %s\1 ", file, file);
+    store_cmd("ER%s\e Y :^AReading file: %s\1 ", file, file);
 }
 
 
@@ -1003,97 +994,32 @@ static void push_ER(const char *file)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void push_EW(const char *file)
+static void store_EW(const char *file)
 {
-    push_cmd(TAIL, ":^AWriting file: %s\1 EW%s\e ", file, file);
+    store_cmd(":^AWriting file: %s\1 EW%s\e ", file, file);
 }
 
 
 ///
-///  @brief    Read command-line options.
+///  @brief    Verify that there's room in the option buffer for the next
+///            command.
 ///
-///            Note that we use printf() instead of tprint() here because we
-///            are called before terminal characteristics have been changed.
-///
-///  @returns  Nothing.
+///  @returns  No. of bytes to store.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void read_options(
-    int argc,                           ///< No. of arguments
-    const char *const argv[])           ///< List of arguments
+static uint verify_size(int retval)
 {
-    assert(argv != NULL);               // Error if no argument list
-    assert(argv[0] != NULL);            // Error if no strings in list
+    assert(retval > 0);
 
-    // These two assertions confirm the standard behavior of getopt_long()
-    // regarding the ordering of option and non-option arguments.
+    uint size = (uint)retval;
 
-    assert(optstring[0] != '+' && optstring[0] != '-'); // Verify assumptions
-    assert(getenv("POSIXLY_CORRECT") == NULL); // Verify assumptions
-
-    optind = 0;                         // Reset from any previous calls
-    opterr = 0;                         // Suppress any error messages
-
-    int c;
-    int idx = 0;
-
-    while ((c = getopt_long(argc, (char * const *)argv,
-                            optstring, long_options, &idx)) != -1)
+    if (cbuf->len + size >= cbuf->size)
     {
-        switch (c)
-        {
-            case OPTION_A: parse_A();                   break;
-            case OPTION_C: options.create = true;       break;
-            case OPTION_c: options.create = false;      break;
-            case OPTION_D: options.display = true;      break;
-            case OPTION_E: parse_E();                   break;
-            case OPTION_F: push_cmd(TAIL, "1,0E3 ");    break;
-            case OPTION_f: push_cmd(TAIL, "0,1E3 ");    break;
-            case OPTION_H: parse_H();                   break;
-            case OPTION_I: parse_I();                   break;
-            case OPTION_i: teco_init = NULL;            break;
-            case OPTION_L: parse_L();                   break;
-            case OPTION_M: parse_M();                   break;
-            case OPTION_m: teco_memory = NULL;          break;
-            case OPTION_n: parse_n();                   break;
-            case OPTION_R: options.readonly = true;     break;
-            case OPTION_r: options.readonly = false;    break;
-            case OPTION_S: parse_S();                   break;
-            case OPTION_T: parse_T();                   break;
-            case OPTION_V: parse_V();                   break;
-            case OPTION_v: teco_vtedit = NULL;          break;
-            case OPTION_X: options.exit = true;         break;
+        printf("No memory for command-line options\n");
 
-            // Hidden options start here
-
-            case OPTION_version: parse_version();       break;
-            case OPTION_mung:    options.mung = true;   break;
-            case OPTION_print:   options.print = true;  break;
-            case OPTION_quit:    options.quit  = true;  break;
-
-#if     defined(DEBUG)
-
-            // Debug options start here
-
-            case OPTION_keys: parse_keys();             break;
-            case OPTION_E1:   parse_eflag("E1 ");       break;
-            case OPTION_E2:   parse_eflag("E2 ");       break;
-            case OPTION_E3:   parse_eflag("E3 ");       break;
-            case OPTION_E4:   parse_eflag("E4 ");       break;
-
-#endif
-
-            case ':':
-                printf("Argument required for %s option\n", argv[optind - 1]);
-
-                exit(EXIT_FAILURE);
-
-            default:
-                printf("Unknown option '%s': use --help for list of "
-                       "options\n", argv[optind - 1]);
-
-                exit(EXIT_FAILURE);
-        }
+        exit(EXIT_FAILURE);
     }
+
+    return size;
 }
