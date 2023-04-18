@@ -101,26 +101,26 @@ static void add_mblock(void *p1, uint_t size)
 
     // Note: We don't call alloc_mem() here, since it calls us.
 
-    struct mblock *mblock = calloc(1ul, sizeof(*mblock));
+    struct mblock *p = calloc(1ul, sizeof(*p));
 
-    assert(mblock != NULL);             // Error if calloc() failed
+    assert(p != NULL);                  // Error if calloc() failed
 
-    mblock->prev = NULL;
-    mblock->next = mroot;
+    p->prev = NULL;
+    p->next = mroot;
 
     if (mroot != NULL)
     {
-        mroot->prev = mblock;
+        mroot->prev = p;
     }
 
-    mblock->addr = p1;
-    mblock->size = size;
-    mblock->count = ++mcount;
+    p->addr = p1;
+    p->size = size;
+    p->count = ++mcount;
     msize += size;
-    mroot = mblock;
+    mroot = p;
 
-    tprint("%s(): block #%u at %p, size = %lu\n", __func__, mcount,
-           mblock->addr, (size_t)mblock->size);
+    tprint("%s(): block #%u at %p, size = %lu\n", __func__, p->count,
+           p->addr, (size_t)p->size);
 
     ++nallocs;
 
@@ -226,6 +226,9 @@ static void delete_mblock(void *p1)
                 p->next->prev = p->prev;
             }
 
+            tprint("%s(): block #%u at %p, size = %lu\n", __func__, p->count,
+                   p->addr, (size_t)p->size);
+            
             p->next = p->prev = NULL;
             p->addr = NULL;
             p->size = 0;
