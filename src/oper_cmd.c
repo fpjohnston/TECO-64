@@ -169,9 +169,10 @@ bool scan_lparen(struct cmd *cmd)
 ///            +  addition
 ///            -  subtraction
 ///            *  multiplication
-///            /  division
 ///            #  logical OR
 ///            &  logical AND
+///
+///            N.B: the division operator is handled by a separate function.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
