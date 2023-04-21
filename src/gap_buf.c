@@ -474,11 +474,11 @@ void delete_edit(int_t nbytes)
             eb.t.nextc = find_edit(1);
         }
 
-        eb.t.pos = eb.t.dot - count_prev(0);
-        eb.t.len = eb.t.pos + count_next(1);
-
         eb.gap += (uint_t)nbytes;       // Increase the gap
         eb.t.Z -= nbytes;               //  and decrease the total
+
+        eb.t.pos = eb.t.dot - count_prev(0);
+        eb.t.len = count_next(1) - eb.t.dot;
 
         f.e0.window = true;             // Window refresh needed
     }
