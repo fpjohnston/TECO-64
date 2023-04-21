@@ -80,7 +80,8 @@ static void scan_text(int delim, tstring *text);
 ///
 ///  @brief    Check to see if we want to echo current command/character.
 ///
-///  @returns  Nothing.
+///  @returns  true if should execute command, false if command is just
+///            whitespace that we can ignore.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -191,7 +192,7 @@ void exec_cmd(struct cmd *cmd)
     {
         if (f.trace.flag != 0 && !echo_cmd(c))
         {
-            continue;
+            continue;                   // Just ignore whitespace
         }
 
         const struct cmd_table *entry;
