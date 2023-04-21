@@ -164,7 +164,7 @@ static inline void reduce(void)
 {
     // Try to reduce the expression stack if 4 or more items - this is used
     // for expressions such A+-B or X-+Y, where the second operator is actually
-    // as unary operator.
+    // a unary operator.
 
     while (x.level >= x.base + 4 && reduce4())
     {
