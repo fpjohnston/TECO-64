@@ -744,6 +744,7 @@ sub prove_test
     }
 
     $actual =~ s/add_mblock.+?\n//gms;
+    $actual =~ s/delete_mblock.+?\n//gms;
     $actual =~ s/exit_mem.+?\n//gms;
     $actual =~ s/expand_mem.+?\n//gms;
     $actual =~ s/shrink_mem.+?\n//gms;
