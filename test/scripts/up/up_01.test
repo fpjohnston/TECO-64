@@ -19,9 +19,9 @@
 ! Test: ^^ with ASCII   7 ! ^^ UB MA
 ! Test: ^^ with ASCII   8 ! ^^ UB MA
 ! Test: ^^ with ASCII   9 ! ^^	 UB MA
-! Test: ^^ with ASCII  10 ! %A          ! Skip for TECO-32 !
+! Test: ^^ with ASCII  10 ! %A        ! Skip for TECO-32 !
 ! Test: ^^ with ASCII  11 ! ^^ UB MA
-! Test: ^^ with ASCII  12 ! %A          ! Skip for TECO C !
+! Test: ^^ with ASCII  12 ! %A        ! Skip for TECO C !
 ! Test: ^^ with ASCII  13 ! ^^ UB MA
 ! Test: ^^ with ASCII  14 ! ^^ UB MA
 ! Test: ^^ with ASCII  15 ! ^^ UB MA
