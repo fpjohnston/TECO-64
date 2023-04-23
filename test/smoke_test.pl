@@ -753,7 +753,7 @@ sub prove_test
     {
         print "$report TIMEOUT\n";
     }
-    elsif ( $actual =~ / core \s dumped /imsx )
+    elsif ( $actual =~ / Fatal \s error /imsx or $actual =~ / core \s dumped /imsx )
     {
         # This is handled specially without regard to the desired result,
         # because it was found that some tests could complete successfully,
@@ -761,7 +761,7 @@ sub prove_test
         # first check to see if there was an abort in the output, and only
         # then verify desired success or failure.
 
-        print "$report ABORTED\n";
+        print "$report CRASHED\n";
     }
     elsif ( $expects eq 'PASS' )
     {

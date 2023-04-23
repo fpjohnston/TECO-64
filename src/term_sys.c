@@ -217,6 +217,7 @@ void init_term(void)
     sigaction(SIGINT, &sa, NULL);       // This catches Ctrl/C
     sigaction(SIGABRT, &sa, NULL);      // This catches assertion failures
     sigaction(SIGQUIT, &sa, NULL);      // This catches Ctrl-Backslash
+    sigaction(SIGSEGV, &sa, NULL);      // This catches segmentation faults
 
 #if     !defined(__DECC)
 
@@ -420,6 +421,11 @@ static void sig_handler(int signum)
 
         case SIGQUIT:                   // Ctrl-\ causes this
             runaway("Interrupt");       // Print message and exit
+
+            break;
+
+        case SIGSEGV:                   // Segmentation fault
+            runaway("Fatal error");     // Print message and exit
 
             break;
 
