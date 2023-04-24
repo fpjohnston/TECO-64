@@ -36,7 +36,27 @@
 
 
 ///
-///  @brief    Scan & command: logical AND operator
+///  @brief    Scan + command: addition or unary plus operator.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_add(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    store_add();
+
+    return true;
+}
+
+
+///
+///  @brief    Scan & command: logical AND operator.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -182,27 +202,7 @@ bool scan_lparen(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan - command: subtraction operator
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_minus(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
-
-    store_minus();
-
-    return true;
-}
-
-
-///
-///  @brief    Scan * command: multiplication operator
+///  @brief    Scan * command: multiplication operator.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -222,7 +222,7 @@ bool scan_mul(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan # command: logical OR operator
+///  @brief    Scan # command: logical OR operator.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
@@ -242,20 +242,20 @@ bool scan_or(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan + command: addition operator
+///  @brief    Scan - command: subtraction or unary minus operator.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_plus(struct cmd *cmd)
+bool scan_sub(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    store_plus();
+    store_sub();
 
     return true;
 }

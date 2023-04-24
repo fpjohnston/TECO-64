@@ -53,9 +53,9 @@
         <command name='('               scan='lparen'                     />
         <command name=')'               scan='rparen'                     />
         <command name='*'               scan='mul'                        />
-        <command name='+'               scan='plus'                       />
+        <command name='+'               scan='add'                        />
         <command name=','               scan='comma'                      />
-        <command name='-'               scan='minus'                      />
+        <command name='-'               scan='sub'                        />
         <command name='.'               scan='dot'                        />
         <command name='/'               scan='div'                        />
         <command name='0'               scan='number'                     />

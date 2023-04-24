@@ -53,40 +53,43 @@ enum order
 };
 
 ///  @var      operator
-///  @brief    Definition of operator characteristics, including the number of
-///            required operands, the operator precedence, and the associativity
-///            order.
+///  @brief    Definition of operator characteristics, including the operator
+//             precedence, (the same as for C), the number of required operands,
+//             and the associativity order (right or left).
+//
+//             This table is ordered by precedence for easier reading, and not
+//             by the order of the operator definitions.
 
 static const struct
 {
-    uint operands;              ///< No. of required operands
     uint precedence;            ///< Operator precedence
+    uint operands;              ///< No. of required operands
     enum order order;           ///< Operator associativity
 } operator[X_MAX] =
 {
-    [X_NULL]    = { .operands = 0, .precedence = 0, .order = NONE  },
-    [X_1S_COMP] = { .operands = 1, .precedence = 1, .order = LEFT  }, // x^_
-    [X_AND]     = { .operands = 2, .precedence = 2, .order = LEFT  }, // x & y
-    [X_DIV]     = { .operands = 2, .precedence = 2, .order = LEFT  }, // x / y
-    [X_EQ]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x == y)
-    [X_GE]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x >= y
-    [X_GT]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x > y)
-    [X_LE]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x <= y)
-    [X_LPAREN]  = { .operands = 0, .precedence = 0, .order = NONE  }, // (
-    [X_LSHIFT]  = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x << y)
-    [X_LT]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x < y)
-    [X_MUL]     = { .operands = 2, .precedence = 2, .order = LEFT  }, // x * y
-    [X_MINUS]   = { .operands = 2, .precedence = 2, .order = LEFT  }, // x - y
-    [X_NE]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x <> y)
-    [X_NOT]     = { .operands = 1, .precedence = 3, .order = RIGHT }, // !x
-    [X_OR]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // x # y
-    [X_PLUS]    = { .operands = 2, .precedence = 2, .order = LEFT  }, // x + y
-    [X_REM]     = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x // y)
-    [X_RPAREN]  = { .operands = 0, .precedence = 0, .order = NONE  }, // )
-    [X_RSHIFT]  = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x >> y)
-    [X_UMINUS]  = { .operands = 1, .precedence = 3, .order = RIGHT }, // -x
-    [X_UPLUS]   = { .operands = 1, .precedence = 3, .order = RIGHT }, // +x
-    [X_XOR]     = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x ~ y)
+    [X_NULL]    = { .precedence =  0, .operands = 0, .order = NONE  },
+    [X_LPAREN]  = { .precedence =  1, .operands = 0, .order = LEFT  }, // (
+    [X_RPAREN]  = { .precedence =  1, .operands = 0, .order = LEFT  }, // )
+    [X_NOT]     = { .precedence =  2, .operands = 1, .order = RIGHT }, // !x
+    [X_1S_COMP] = { .precedence =  2, .operands = 1, .order = LEFT  }, // x^_
+    [X_MINUS]   = { .precedence =  2, .operands = 1, .order = RIGHT }, // -x
+    [X_PLUS]    = { .precedence =  2, .operands = 1, .order = RIGHT }, // +x
+    [X_MUL]     = { .precedence =  3, .operands = 2, .order = LEFT  }, // x * y
+    [X_DIV]     = { .precedence =  3, .operands = 2, .order = LEFT  }, // x / y
+    [X_REM]     = { .precedence =  3, .operands = 2, .order = LEFT  }, // (x // y)
+    [X_ADD]     = { .precedence =  4, .operands = 2, .order = LEFT  }, // x + y
+    [X_SUB]     = { .precedence =  4, .operands = 2, .order = LEFT  }, // x - y
+    [X_LSHIFT]  = { .precedence =  5, .operands = 2, .order = LEFT  }, // (x << y)
+    [X_RSHIFT]  = { .precedence =  5, .operands = 2, .order = LEFT  }, // (x >> y)
+    [X_GE]      = { .precedence =  6, .operands = 2, .order = LEFT  }, // (x >= y
+    [X_GT]      = { .precedence =  6, .operands = 2, .order = LEFT  }, // (x > y)
+    [X_LE]      = { .precedence =  6, .operands = 2, .order = LEFT  }, // (x <= y)
+    [X_LT]      = { .precedence =  6, .operands = 2, .order = LEFT  }, // (x < y)
+    [X_EQ]      = { .precedence =  7, .operands = 2, .order = LEFT  }, // (x == y)
+    [X_NE]      = { .precedence =  7, .operands = 2, .order = LEFT  }, // (x <> y)
+    [X_AND]     = { .precedence =  8, .operands = 2, .order = LEFT  }, // x & y
+    [X_XOR]     = { .precedence =  9, .operands = 2, .order = LEFT  }, // (x ~ y)
+    [X_OR]      = { .precedence = 10, .operands = 2, .order = LEFT  }, // x # y
 };
 
 
@@ -209,6 +212,7 @@ static void exec_oper(void)
     switch (type)
     {
         case X_1S_COMP: n = (int_t)~(uint)a;       break;
+        case X_ADD:     n = a + b;                 break;
         case X_AND:     n = a & b;                 break;
         case X_EQ:      n = (a == b ? -1 : 0);     break;
         case X_GE:      n = (a >= b ? -1 : 0);     break;
@@ -216,14 +220,13 @@ static void exec_oper(void)
         case X_LE:      n = (a <= b ? -1 : 0);     break;
         case X_LSHIFT:  n = (int_t)((uint)a << b); break;
         case X_LT:      n = (a < b ? -1 : 0);      break;
-        case X_MINUS:   n = a - b;                 break;
+        case X_SUB:     n = a - b;                 break;
         case X_MUL:     n = a * b;                 break;
         case X_NE:      n = (a != b ? -1 : 0);     break;
         case X_OR:      n = a | b;                 break;
-        case X_PLUS:    n = a + b;                 break;
         case X_RSHIFT:  n = (int_t)((uint)a >> b); break;
-        case X_UMINUS:  n = -a;                    break;
-        case X_UPLUS:   n = a;                     break;
+        case X_MINUS:   n = -a;                    break;
+        case X_PLUS:    n = a;                     break;
         case X_XOR:     n = a ^ b;                 break;
 
         case X_DIV:
@@ -511,15 +514,15 @@ void store_1s_comp(void)
 
 
 ///
-///  @brief    Store - operator on operator stack.
+///  @brief    Store addition or unary plus operator on operator stack.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void store_minus(void)
+void store_add(void)
 {
-    store_oper(x->operand ? X_MINUS : X_UMINUS);
+    store_oper(x->operand ? X_ADD : X_PLUS);
 }
 
 
@@ -547,7 +550,7 @@ void store_oper(enum x_oper o1)
 
             uint p2 = operator[o2].precedence;
 
-            if ((p2 > p1) || (p1 == p2 && operator[o1].order == LEFT))
+            if ((p2 < p1) || (p1 == p2 && operator[o1].order == LEFT))
             {
                 exec_oper();
             }
@@ -570,15 +573,15 @@ void store_oper(enum x_oper o1)
 
 
 ///
-///  @brief    Store + operator on operator stack.
+///  @brief    Store subtraction or unary minus operator on operator stack.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void store_plus(void)
+void store_sub(void)
 {
-    store_oper(x->operand ? X_PLUS : X_UPLUS);
+    store_oper(x->operand ? X_SUB : X_MINUS);
 }
 
 
@@ -611,7 +614,7 @@ void store_val(int_t value)
 
 bool unary_x(void)
 {
-    if (x->nopers > 0 && x->oper[x->nopers - 1] == X_UMINUS)
+    if (x->nopers > 0 && x->oper[x->nopers - 1] == X_MINUS)
     {
         --x->nopers;
 
