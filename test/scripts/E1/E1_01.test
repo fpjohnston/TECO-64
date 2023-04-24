@@ -21,7 +21,7 @@ E1 U1
 0,256   E1 E1&256   "E [[FAIL]] '   ! Test: set E1&256 !
 0,512   E1 E1&512   "E [[FAIL]] '   ! Test: set E1&512 !
 0,1024  E1 E1&1024  "E [[FAIL]] '   ! Test: set E1&1024 !
-0,2048  E1 E1&2048  "N [[FAIL]] '   ! Test: set E1&2048 !
+0,2048  E1 E1&2048  "E [[FAIL]] '   ! Test: set E1&2048 !
 0,4096  E1 E1&4096  "N [[FAIL]] '   ! Test: set E1&4096 !
 0,8192  E1 E1&8192  "N [[FAIL]] '   ! Test: set E1&8192 !
 0,16384 E1 E1&16384 "E [[FAIL]] '   ! Test: set E1&16384 !

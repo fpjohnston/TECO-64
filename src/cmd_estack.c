@@ -550,6 +550,11 @@ void store_oper(enum x_oper o1)
 
             uint p2 = operator[o2].precedence;
 
+            if (!f.e1.c_oper)           // If not using C precedence rules,
+            {
+                p2 = p1;                //  then make sure operators match
+            }
+
             if ((p2 < p1) || (p1 == p2 && operator[o1].order == LEFT))
             {
                 exec_oper();

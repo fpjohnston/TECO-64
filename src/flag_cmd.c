@@ -164,6 +164,7 @@ void exec_E1(struct cmd *cmd)
     f.e1.dollar  = e1.dollar;
     f.e1.insert  = e1.insert;
     f.e1.percent = e1.percent;
+    f.e1.c_oper  = e1.c_oper;
 
 #if     defined(DEBUG)
 

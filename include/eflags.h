@@ -78,7 +78,7 @@ union e1_flag
         uint dollar  : 1;       ///< Echo delimiter as ESCape
         uint insert  : 1;       ///< Allow nI w/o ESCape or delimiter
         uint percent : 1;       ///< Allow :%q
-        uint         : 1;       ///< (unused)
+        uint c_oper  : 1;       ///< Use C precedence for operators
         uint         : 1;       ///< (unused)
         uint         : 1;       ///< (unused)
         uint repeat  : 1;       ///< Double Ctrl-] repeats command

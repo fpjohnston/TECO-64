@@ -76,6 +76,7 @@ struct flags f =                    ///< Global flag variables
     .e1.dollar  = false,            // Do not echo delimiter as ESCape
     .e1.insert  = true,             // Allow nI w/o requiring n@I
     .e1.percent = true,             // Allow :%q
+    .e1.c_oper  = true,             // Use C precedence for operators
 
 #if     defined(DEBUG)
 
