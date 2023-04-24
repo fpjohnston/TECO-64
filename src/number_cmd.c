@@ -229,13 +229,8 @@ bool scan_number(struct cmd *cmd)
 
     int_t n = digits[c];                // Store 1st digit
 
-    for (;;)
+    while ((c = peek_cbuf()) != EOF && c >= '0')
     {
-        if ((c = peek_cbuf()) == EOF || c < '0')
-        {
-            break;                      // Buffer empty, or non-digit
-        }
-
         if (radix == 10)
         {
             if (c > '9')
