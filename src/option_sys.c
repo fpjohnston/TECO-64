@@ -759,10 +759,9 @@ static void parse_options(
     opterr = 0;                         // Suppress any error messages
 
     int c;
-    int idx = 0;
 
     while ((c = getopt_long(argc, (char * const *)argv,
-                            optstring, long_options, &idx)) != -1)
+                            optstring, long_options, NULL)) != -1)
     {
         switch (c)
         {
@@ -814,9 +813,40 @@ static void parse_options(
 
                 exit(EXIT_FAILURE);
 
+            case '?':
             default:
-                printf("Unknown option '%s': use --help for list of "
-                       "options\n", argv[optind - 1]);
+                printf("Unknown option ");
+
+                //  The following fixes the problem that arises if an invalid
+                //  short option is combined with another short option (either
+                //  valid or invalid), which causes an error to be returned
+                //  without updating optind. This means that argv[optind - 1]
+                //  will point to the previous argument instead of the current
+                //  one.
+                //
+                //  Consider the following cases with invalid short options:
+                //
+                //      Command          Result
+                //      -----------      ---------------------
+                //      teco -n -x       Unknown option '-x'
+                //      teco -n -xc      Unknown option '-n'
+                //      teco -xc         Unknown option 'teco'
+                //
+                //  To ensure correct output, we examine optopt, which will have
+                //  the ASCII code for a short option if and only if that option
+                //  is invalid, and print that code instead of using optind to
+                //  get the string representing the option.
+
+                if (optopt != 0)
+                {
+                    printf("'-%c'", optopt);
+                }
+                else
+                {
+                    printf("\"%s\"", argv[optind - 1]);
+                }
+
+                printf(": use --help for list of options\n");
 
                 exit(EXIT_FAILURE);
         }
