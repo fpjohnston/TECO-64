@@ -759,6 +759,7 @@ static void parse_options(
     opterr = 0;                         // Suppress any error messages
 
     int c;
+    int lastopt = 1;
 
     while ((c = getopt_long(argc, (char * const *)argv,
                             optstring, long_options, NULL)) != -1)
@@ -832,12 +833,22 @@ static void parse_options(
                 //      teco -n -xc      Unknown option '-n'
                 //      teco -xc         Unknown option 'teco'
                 //
-                //  To ensure correct output, we examine optopt, which will have
-                //  the ASCII code for a short option if and only if that option
-                //  is invalid, and print that code instead of using optind to
-                //  get the string representing the option.
+                //  To ensure correct output, if optopt is non-zero, meaning
+                //  that it contains the ASCII for a invalid short option, and
+                //  if optind has not been incremented since the last option,
+                //  then that short option was combined with another option,
+                //  and we have to use optopt to print the error. Otherwise we
+                //  either have an invalid long option, or an invalid short
+                //  option that was not combined with another option, and we
+                //  should use optind to print the error.
+                //
+                //      Command          Action
+                //      -----------      ---------------------
+                //      teco -xc         optopt contains bad option.
+                //      teco -x          argv[optind-1] points to option.
+                //      teco --x         argv[optind-1] points to option.
 
-                if (optopt != 0)
+                if (optopt != 0 && optind == lastopt)
                 {
                     printf("'-%c'", optopt);
                 }
@@ -850,6 +861,8 @@ static void parse_options(
 
                 exit(EXIT_FAILURE);
         }
+
+        lastopt = optind;
     }
 
     if (options.quit)                   // --quit implies --print
