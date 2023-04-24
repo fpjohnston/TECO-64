@@ -477,7 +477,7 @@ bool scan_EJ(struct cmd *cmd)
 
     n = teco_env(n, cmd->colon);        // Do the system-dependent part
 
-    push_x((int_t)n, X_OPERAND);        // Now return the result
+    store_val((int_t)n);        // Now return the result
 
     cmd->colon = false;
 
@@ -508,7 +508,7 @@ bool scan_flag1(struct cmd *cmd)
     switch (cmd->c1)
     {
         case CTRL_E:
-            push_x(f.ctrl_e ? SUCCESS : FAILURE, X_OPERAND);
+            store_val(f.ctrl_e ? SUCCESS : FAILURE);
 
             return true;
 
@@ -519,13 +519,13 @@ bool scan_flag1(struct cmd *cmd)
             struct ifile *ifile = &ifiles[istream];
             int_t eof = feof(ifile->fp) ? -1 : 0;
 
-            push_x(eof, X_OPERAND);
+            store_val(eof);
 
             return true;
         }
 
         case CTRL_X:
-            push_x((int_t)f.ctrl_x, X_OPERAND);
+            store_val((int_t)f.ctrl_x);
 
             return true;
 
@@ -535,19 +535,19 @@ bool scan_flag1(struct cmd *cmd)
             {
                 case 'E':               // EE
                 case 'e':
-                    push_x((int_t)f.ee, X_OPERAND);
+                    store_val((int_t)f.ee);
 
                     return true;
 
                 case 'O':               // EO
                 case 'o':
-                    push_x((int_t)f.eo, X_OPERAND);
+                    store_val((int_t)f.eo);
 
                     return true;
 
                 case 'U':               // EU
                 case 'u':
-                    push_x((int_t)f.eu, X_OPERAND);
+                    store_val((int_t)f.eu);
 
                     return true;
 
@@ -589,52 +589,52 @@ bool scan_flag2(struct cmd *cmd)
     switch (cmd->c2)
     {
         case '1':                       // E1
-            push_x((int_t)f.e1.flag, X_OPERAND);
+            store_val((int_t)f.e1.flag);
 
             return true;
 
         case '2':                       // E2
-            push_x((int_t)f.e2.flag, X_OPERAND);
+            store_val((int_t)f.e2.flag);
 
             return true;
 
         case '3':                       // E3
-            push_x((int_t)f.e3.flag, X_OPERAND);
+            store_val((int_t)f.e3.flag);
 
             return true;
 
         case '4':                       // E4
-            push_x((int_t)f.e4.flag, X_OPERAND);
+            store_val((int_t)f.e4.flag);
 
             return true;
 
         case 'D':                       // ED
         case 'd':
-            push_x((int_t)f.ed.flag, X_OPERAND);
+            store_val((int_t)f.ed.flag);
 
             return true;
 
         case 'H':                       // EH
         case 'h':
-            push_x((int_t)f.eh.flag, X_OPERAND);
+            store_val((int_t)f.eh.flag);
 
             return true;
 
         case 'S':                       // ES
         case 's':
-            push_x((int_t)f.es, X_OPERAND);
+            store_val((int_t)f.es);
 
             return true;
 
         case 'T':                       // ET
         case 't':
-            push_x((int_t)f.et.flag, X_OPERAND);
+            store_val((int_t)f.et.flag);
 
             return true;
 
         case 'V':                       // EV
         case 'v':
-            push_x((int_t)f.ev, X_OPERAND);
+            store_val((int_t)f.ev);
 
             return true;
 

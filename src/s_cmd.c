@@ -95,7 +95,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
         if (cmd->n_set && cmd->n_arg < 0)
         {
-            push_x(FAILURE, X_OPERAND);
+            store_val(FAILURE);
 
             return;
         }

@@ -84,7 +84,7 @@ void exec_E_pct(struct cmd *cmd)
 
             if (cmd->colon)
             {
-                push_x(SUCCESS, X_OPERAND);
+                store_val(SUCCESS);
             }
 
             return;
@@ -93,5 +93,5 @@ void exec_E_pct(struct cmd *cmd)
 
     // Only here if error occurred when colon modifier specified.
 
-    push_x(FAILURE, X_OPERAND);
+    store_val(FAILURE);
 }

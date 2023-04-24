@@ -68,7 +68,7 @@ void exec_EG(struct cmd *cmd)
 
         int status = find_eg(syscmd);
 
-        push_x((int_t)status, X_OPERAND);
+        store_val((int_t)status);
 
         return;
     }

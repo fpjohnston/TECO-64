@@ -86,7 +86,7 @@ void exec_EI(struct cmd *cmd)
 
             if (cmd->colon)
             {
-                push_x(SUCCESS, X_OPERAND);
+                store_val(SUCCESS);
             }
 
             return;
@@ -106,7 +106,7 @@ void exec_EI(struct cmd *cmd)
 
                 if (cmd->colon)
                 {
-                    push_x(SUCCESS, X_OPERAND);
+                    store_val(SUCCESS);
                 }
 
                 if (ei_macro.size != 0)
@@ -137,7 +137,7 @@ void exec_EI(struct cmd *cmd)
 
                 if (cmd->colon)
                 {
-                    push_x(SUCCESS, X_OPERAND);
+                    store_val(SUCCESS);
                 }
 
                 return;
@@ -147,7 +147,7 @@ void exec_EI(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(FAILURE, X_OPERAND);
+        store_val(FAILURE);
     }
 }
 

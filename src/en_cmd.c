@@ -56,13 +56,13 @@ void exec_EN(struct cmd *cmd)
                 throw(E_FNF, "");       // No more matches
             }
 
-            push_x(FAILURE, X_OPERAND);
+            store_val(FAILURE);
         }
         else
         {
             if (cmd->colon)
             {
-                push_x(SUCCESS, X_OPERAND);
+                store_val(SUCCESS);
             }
         }
     }
@@ -74,14 +74,14 @@ void exec_EN(struct cmd *cmd)
         {
             if (cmd->colon)
             {
-                push_x(SUCCESS, X_OPERAND);
+                store_val(SUCCESS);
             }
         }
         else
         {
             if (cmd->colon)
             {
-                push_x(FAILURE, X_OPERAND);
+                store_val(FAILURE);
             }
         }
     }

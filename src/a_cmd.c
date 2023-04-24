@@ -106,7 +106,7 @@ void exec_A(struct cmd *cmd)
     {
         bool success = append(cmd->n_set, cmd->n_arg, cmd->colon);
 
-        push_x(success ? SUCCESS : FAILURE, X_OPERAND);
+        store_val(success ? SUCCESS : FAILURE);
     }
     else if (!cmd->n_set)               // A command
     {
@@ -133,7 +133,7 @@ bool scan_A(struct cmd *cmd)
 
     int_t n = read_edit(cmd->n_arg);
 
-    push_x(n, X_OPERAND);               // Note: n may be EOF (-1)
+    store_val(n);               // Note: n may be EOF (-1)
 
     return true;
 }

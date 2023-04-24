@@ -73,7 +73,7 @@ void exec_EQ(struct cmd *cmd)
 
             if (cmd->colon)
             {
-                push_x(SUCCESS, X_OPERAND);
+                store_val(SUCCESS);
             }
 
             return;
@@ -82,7 +82,7 @@ void exec_EQ(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(FAILURE, X_OPERAND);
+        store_val(FAILURE);
     }
 }
 

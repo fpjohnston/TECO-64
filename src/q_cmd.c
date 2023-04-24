@@ -67,7 +67,7 @@ bool scan_Q(struct cmd *cmd)
         n = get_qnum(cmd->qindex);
     }
 
-    push_x(n, X_OPERAND);
+    store_val(n);
 
     cmd->colon = cmd->dcolon = false;   // Reset for next command
     cmd->qlocal = false;

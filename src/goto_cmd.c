@@ -311,7 +311,7 @@ bool scan_bang(struct cmd *cmd)
         reject_n(cmd->n_set);
         reject_atsign(cmd->atsign);
 
-        push_x((int_t)0, X_NOT);
+        store_oper(X_NOT);
 
         return true;
     }

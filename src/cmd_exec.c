@@ -218,7 +218,7 @@ void exec_cmd(struct cmd *cmd)
 
             if (entry->mn_args && cmd->n_set)
             {
-                push_x(cmd->n_arg, X_OPERAND);
+                store_val(cmd->n_arg);
 
                 bool m_set = cmd->m_set;
                 int_t m_arg = cmd->m_arg;
@@ -385,7 +385,7 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 
                 trace_cbuf(c);
 
-                push_x((int_t)c, X_OPERAND);
+                store_val((int_t)c);
 
                 return NULL;
             }

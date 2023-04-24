@@ -223,11 +223,11 @@ bool scan_equals(struct cmd *cmd)
         {
             cmd->n_set = false;
 
-            push_x(cmd->n_arg, X_OPERAND);
+            store_val(cmd->n_arg);
         }
 
         trace_cbuf('=');
-        push_x((int_t)0, X_EQ);
+        store_oper(X_EQ);
 
         return true;
     }

@@ -53,7 +53,7 @@ void exec_pct(struct cmd *cmd)
 
     if (!cmd->colon)
     {
-        push_x(cmd->n_arg, X_OPERAND);
+        store_val(cmd->n_arg);
     }
     else if (!f.e1.percent)             // :%q, but is it allowed?
     {

@@ -162,7 +162,7 @@ void exec_bslash(struct cmd *cmd)
             set_dot(t->dot + pos - 1);
         }
 
-        push_x(n, X_OPERAND);
+        store_val(n);
     }
 }
 
@@ -266,7 +266,7 @@ bool scan_number(struct cmd *cmd)
         n += digits[c];                 // And add in the new digit
     }
 
-    push_x(n, X_OPERAND);
+    store_val(n);
 
     return true;
 }

@@ -91,6 +91,6 @@ void exec_ctrl_R(struct cmd *cmd)
     }
     else
     {
-        push_x(f.radix, X_OPERAND);     // No, just save what we have
+        store_val(f.radix);     // No, just save what we have
     }
 }

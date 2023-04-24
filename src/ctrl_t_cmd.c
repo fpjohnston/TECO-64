@@ -91,7 +91,7 @@ void exec_ctrl_T(struct cmd *cmd)
             type_out(c);
         }
 
-        push_x((int_t)c, X_OPERAND);
+        store_val((int_t)c);
     }
 }
 

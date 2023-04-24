@@ -70,7 +70,7 @@ void exec_EL(struct cmd *cmd)
         {
             if (cmd->colon)
             {
-                push_x(SUCCESS, X_OPERAND);
+                store_val(SUCCESS);
             }
 
             if (cmd->n_set)
@@ -85,7 +85,7 @@ void exec_EL(struct cmd *cmd)
 
     // Only here if error occurred when colon modifier specified.
 
-    push_x(FAILURE, X_OPERAND);
+    store_val(FAILURE);
 }
 
 

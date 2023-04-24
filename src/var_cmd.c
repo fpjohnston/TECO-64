@@ -52,7 +52,7 @@ bool scan_ctrl_P(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    push_x((int_t)page_count(), X_OPERAND);
+    store_val((int_t)page_count());
 
     return true;
 }
@@ -84,7 +84,7 @@ bool scan_ctrl_Q(struct cmd *cmd)
         nchrs = t->pos;
     }
 
-    push_x(nchrs, X_OPERAND);
+    store_val(nchrs);
 
     return true;
 }
@@ -106,7 +106,7 @@ bool scan_ctrl_S(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    push_x(-(int_t)last_len, X_OPERAND);
+    store_val(-(int_t)last_len);
 
     return true;
 }
@@ -144,7 +144,7 @@ bool scan_ctrl_Y(struct cmd *cmd)
     cmd->m_set = true;
     cmd->m_arg = t->dot - (int_t)last_len;
 
-    push_x(t->dot, X_OPERAND);
+    store_val(t->dot);
 
     return true;
 }
@@ -166,7 +166,7 @@ bool scan_ctrl_Z(struct cmd *cmd)
 
     int_t n = (int_t)get_qall();
 
-    push_x(n, X_OPERAND);
+    store_val(n);
 
     return true;
 }
@@ -187,7 +187,7 @@ bool scan_ctrl_up(struct cmd *cmd)
 
     trace_cbuf(c);
 
-    push_x((int_t)c, X_OPERAND);
+    store_val((int_t)c);
 
     return true;
 }
@@ -207,7 +207,7 @@ bool scan_dot(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    push_x(t->dot, X_OPERAND);
+    store_val(t->dot);
 
     return true;
 }
@@ -227,7 +227,7 @@ bool scan_B(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    push_x(t->B, X_OPERAND);
+    store_val(t->B);
 
     return true;
 }
@@ -265,7 +265,7 @@ bool scan_H(struct cmd *cmd)
     cmd->m_set = true;
     cmd->m_arg = t->B;
 
-    push_x(t->Z, X_OPERAND);
+    store_val(t->Z);
 
     return true;
 }
@@ -285,7 +285,7 @@ bool scan_Z(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    push_x(t->Z, X_OPERAND);
+    store_val(t->Z);
 
     return true;
 }

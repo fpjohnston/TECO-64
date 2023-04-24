@@ -463,7 +463,7 @@ void search_failure(struct cmd *cmd, uint keepdot)
 
     if (cmd->colon)
     {
-        push_x(FAILURE, X_OPERAND);
+        store_val(FAILURE);
     }
     else
     {
@@ -680,6 +680,6 @@ void search_success(struct cmd *cmd)
 
     if (cmd->colon || (check_loop() && check_semi()))
     {
-        push_x(SUCCESS, X_OPERAND);
+        store_val(SUCCESS);
     }
 }

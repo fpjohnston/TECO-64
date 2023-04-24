@@ -191,7 +191,7 @@ static int_t get_w(int_t n)
 bool scan_F0(struct cmd *cmd)
 {
     scan_x(cmd);
-    push_x((int_t)w.topdot, X_OPERAND);
+    store_val((int_t)w.topdot);
 
     return true;
 }
@@ -213,7 +213,7 @@ bool scan_FH(struct cmd *cmd)
     cmd->m_set = true;
     cmd->m_arg = w.topdot;
 
-    push_x(w.botdot, X_OPERAND);
+    store_val(w.botdot);
 
     return true;
 }
@@ -230,7 +230,7 @@ bool scan_FZ(struct cmd *cmd)
 {
     scan_x(cmd);
 
-    push_x(w.botdot, X_OPERAND);
+    store_val(w.botdot);
 
     return true;
 }
@@ -278,7 +278,7 @@ bool scan_W(struct cmd *cmd)
 
         int_t n = get_w(cmd->n_arg);
 
-        push_x(n, X_OPERAND);
+        store_val(n);
 
         return true;
     }

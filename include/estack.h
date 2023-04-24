@@ -31,6 +31,13 @@
 #include <stdbool.h>            //lint !e451
 #include <sys/types.h>          //lint !e451
 
+// Temporary changes start here...
+
+#define store_oper(x)   push_x(OPER, x)
+
+#define store_val(x)    push_x(x, X_OPERAND)
+
+// ... temporary changes end here
 
 #define OPER    ((int_t)0)          ///< 'value' for expression operators
 
@@ -63,6 +70,7 @@ enum x_type
     X_LSHIFT  = 'S',                // Left shift (<<)
     X_RSHIFT  = 'U'                 // Right shift (>>)
 };
+
 
 ///  @struct xstack
 ///  @brief  Definition of expression stack.

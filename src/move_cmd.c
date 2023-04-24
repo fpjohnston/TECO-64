@@ -139,15 +139,15 @@ void exec_L(struct cmd *cmd)
 
     if (n < 0)
     {
-        push_x(before_dot(), X_OPERAND);
+        store_val(before_dot());
     }
     else if (n > 0)
     {
-        push_x(after_dot(), X_OPERAND);
+        store_val(after_dot());
     }
     else
     {
-        push_x(before_dot() + after_dot(), X_OPERAND);
+        store_val(before_dot() + after_dot());
     }
 }
 
@@ -181,7 +181,7 @@ static void exec_move(struct cmd *cmd, int_t pos, bool pop, int chr)
             }
         }
 
-        push_x(FAILURE, X_OPERAND);
+        store_val(FAILURE);
 
         return;
     }
@@ -190,7 +190,7 @@ static void exec_move(struct cmd *cmd, int_t pos, bool pop, int chr)
 
     if (cmd->colon)
     {
-        push_x(SUCCESS, X_OPERAND);
+        store_val(SUCCESS);
     }
 }
 

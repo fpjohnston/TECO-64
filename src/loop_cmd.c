@@ -469,7 +469,7 @@ bool scan_gt(struct cmd *cmd)
     {
         cmd->n_set = false;
 
-        push_x(cmd->n_arg, X_OPERAND);
+        store_val(cmd->n_arg);
     }
 
     int c;
@@ -478,17 +478,17 @@ bool scan_gt(struct cmd *cmd)
     {
         next_cbuf();
         trace_cbuf(c);
-        push_x(OPER, X_GE);
+        store_oper(X_GE);
     }
     else if ((c = peek_cbuf()) == '>')  // >> operator
     {
         next_cbuf();
         trace_cbuf(c);
-        push_x(OPER, X_RSHIFT);
+        store_oper(X_RSHIFT);
     }
     else                                // > operator
     {
-        push_x(OPER, X_GT);
+        store_oper(X_GT);
     }
 
     return true;
@@ -525,7 +525,7 @@ bool scan_lt(struct cmd *cmd)
     {
         cmd->n_set = false;
 
-        push_x(cmd->n_arg, X_OPERAND);
+        store_val(cmd->n_arg);
     }
 
     int c = peek_cbuf();
@@ -534,23 +534,23 @@ bool scan_lt(struct cmd *cmd)
     {
         next_cbuf();
         trace_cbuf(c);
-        push_x(OPER, X_LE);
+        store_oper(X_LE);
     }
     else if (c == '>')                  // <> operator
     {
         next_cbuf();
         trace_cbuf(c);
-        push_x(OPER, X_NE);
+        store_oper(X_NE);
     }
     else if (c == '<')                  // << operator
     {
         next_cbuf();
         trace_cbuf(c);
-        push_x(OPER, X_LSHIFT);
+        store_oper(X_LSHIFT);
     }
     else                                // < operator
     {
-        push_x(OPER, X_LT);
+        store_oper(X_LT);
     }
 
     return true;

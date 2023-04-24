@@ -128,7 +128,7 @@ void exec_FM(struct cmd *cmd)
 
         if (cmd->colon)
         {
-            push_x(SUCCESS, X_OPERAND); // Command succeeded
+            store_val(SUCCESS); // Command succeeded
         }
 
         return;
@@ -146,7 +146,7 @@ void exec_FM(struct cmd *cmd)
             throw(E_KEY, name);         // Keyword 'name' not found
         }
 
-        push_x(FAILURE, X_OPERAND);     // Command failed
+        store_val(FAILURE);     // Command failed
 
         return;
     }
@@ -162,7 +162,7 @@ void exec_FM(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(SUCCESS, X_OPERAND);     // Command succeeded
+        store_val(SUCCESS);     // Command succeeded
     }
 }
 
@@ -189,7 +189,7 @@ void exec_FQ(struct cmd *cmd)
     {
         if (cmd->colon)
         {
-            push_x(SUCCESS, X_OPERAND); // Command succeeded
+            store_val(SUCCESS); // Command succeeded
         }
 
         return;
@@ -205,7 +205,7 @@ void exec_FQ(struct cmd *cmd)
             throw(E_KEY, name);         // Keyword 'name' not found
         }
 
-        push_x(FAILURE, X_OPERAND);     // Command failed
+        store_val(FAILURE);     // Command failed
 
         return;
     }
@@ -215,7 +215,7 @@ void exec_FQ(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        push_x(SUCCESS, X_OPERAND);     // Command succeeded
+        store_val(SUCCESS);     // Command succeeded
     }
 }
 

@@ -158,7 +158,7 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
 
         if (cmd->n_set)
         {
-            push_x(cmd->n_arg, X_OPERAND);
+            store_val(cmd->n_arg);
         }
     }
 

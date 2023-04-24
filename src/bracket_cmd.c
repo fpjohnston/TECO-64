@@ -72,11 +72,11 @@ void exec_rbracket(struct cmd *cmd)
             throw(E_CPQ);               // Can't pop into Q-register
         }
 
-        push_x(FAILURE, X_OPERAND);
+        store_val(FAILURE);
     }
     else if (cmd->colon)
     {
-        push_x(SUCCESS, X_OPERAND);
+        store_val(SUCCESS);
     }
 }
 

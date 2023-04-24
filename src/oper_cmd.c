@@ -86,7 +86,7 @@ bool scan_ctrl_ubar(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    push_x(OPER, X_1S_COMP);
+    store_oper(X_1S_COMP);
 
     return true;
 }
@@ -117,11 +117,11 @@ bool scan_div(struct cmd *cmd)
 
         cmd->c2 = (char)c;
 
-        push_x(OPER, X_REM);
+        store_oper(X_REM);
     }
     else
     {
-        push_x(OPER, X_DIV);
+        store_oper(X_DIV);
     }
 
     return true;
@@ -157,7 +157,7 @@ bool scan_lparen(struct cmd *cmd)
 
     ++nparens;
 
-    push_x(OPER, X_LPAREN);
+    store_oper(X_LPAREN);
 
     return true;
 }
@@ -188,7 +188,7 @@ bool scan_oper(struct cmd *cmd)
     // The following takes advantage of the fact that the operators have the
     // same value as the equivalent expression types (e.g., X_MUL == '*').
 
-    push_x(OPER, cmd->c1);
+    store_oper(cmd->c1);
 
     return true;
 }
@@ -221,7 +221,7 @@ bool scan_rparen(struct cmd *cmd)
         --nparens;
     }
 
-    push_x(OPER, X_RPAREN);
+    store_oper(X_RPAREN);
 
     return true;
 }
@@ -246,7 +246,7 @@ bool scan_tilde(struct cmd *cmd)
         throw(E_ILL, cmd->c1);          // Illegal command
     }
 
-    push_x(OPER, X_XOR);
+    store_oper(X_XOR);
 
     return true;
 }
