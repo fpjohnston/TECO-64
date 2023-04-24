@@ -36,6 +36,26 @@
 
 
 ///
+///  @brief    Scan & command: logical AND operator
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_and(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    store_oper(X_AND);
+
+    return true;
+}
+
+
+///
 ///  @brief    Scan , (comma) command: separate m and n arguments.
 ///
 ///  @returns  true if command is an operand or operator, else false.
@@ -54,14 +74,13 @@ bool scan_comma(struct cmd *cmd)
         throw(E_ARG);                   // Invalid arguments
     }
 
-    if (isoperand())                    // Any m argument specified?
+    if (check_x(&cmd->m_arg))      // Any m argument specified?
     {
         // If we've seen a comma, then what was on the expression stack was
         // an "m" argument, not an "n" argument (numeric arguments can take
         // the form m,n).
 
         cmd->m_set = true;
-        cmd->m_arg = pop_x();
     }
     else if (f.e2.comma)                // No m arg. - is that an error?
     {
@@ -86,7 +105,7 @@ bool scan_ctrl_ubar(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    store_oper(X_1S_COMP);
+    store_1s_comp();
 
     return true;
 }
@@ -150,10 +169,9 @@ bool scan_lparen(struct cmd *cmd)
     // Q-register, a preceding value would return the ASCII value of the nth
     // character in the Q-register text string.
 
-    if (isoperand())                    // Operand on stack?
-    {
-        (void)pop_x();                  // Yes, just discard it
-    }
+    int_t n;
+
+    (void)check_x(&n);                  // Discard any operand on stack
 
     ++nparens;
 
@@ -164,64 +182,80 @@ bool scan_lparen(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan operator commands. This is called for the following:
-///
-///            +  addition
-///            -  subtraction
-///            *  multiplication
-///            #  logical OR
-///            &  logical AND
-///
-///            N.B: the division operator is handled by a separate function.
+///  @brief    Scan - command: subtraction operator
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_oper(struct cmd *cmd)
+bool scan_minus(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    // The following takes advantage of the fact that the operators have the
-    // same value as the equivalent expression types (e.g., X_MUL == '*').
-
-    store_oper(cmd->c1);
+    store_minus();
 
     return true;
 }
 
 
 ///
-///  @brief    Scan ) command: expression grouping.
+///  @brief    Scan * command: multiplication operator
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_rparen(struct cmd *cmd)
+bool scan_mul(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    if (nparens == 0)                   // Can't have ) without (
-    {
-        throw(E_MLP);                   // Missing left parenthesis
-    }
-    else if (!isoperand())              // Is there an operand available?
-    {
-        throw(E_NAP);                   // No argument before )
-    }
-    else
-    {
-        --nparens;
-    }
+    store_oper(X_MUL);
 
-    store_oper(X_RPAREN);
+    return true;
+}
+
+
+///
+///  @brief    Scan # command: logical OR operator
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_or(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    store_oper(X_OR);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan + command: addition operator
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_plus(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    store_plus();
 
     return true;
 }

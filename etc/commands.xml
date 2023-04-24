@@ -45,17 +45,17 @@
         <command name='SPACE'           scan='nop'                        />
         <command name='!'               scan='bang'      exec='bang!'     />
         <command name='"'               scan='quote'     exec='quote'     />
-        <command name='#'               scan='oper'                       />
+        <command name='#'               scan='or'                         />
         <command name='$'               scan='bad'                        />
         <command name='%'               scan='pct'       exec='pct'       />
-        <command name='&amp;'           scan='oper'                       />
+        <command name='&amp;'           scan='and'                        />
         <command name='&apos;'                           exec='apos'      />
         <command name='('               scan='lparen'                     />
         <command name=')'               scan='rparen'                     />
-        <command name='*'               scan='oper'                       />
-        <command name='+'               scan='oper'                       />
+        <command name='*'               scan='mul'                        />
+        <command name='+'               scan='plus'                       />
         <command name=','               scan='comma'                      />
-        <command name='-'               scan='oper'                       />
+        <command name='-'               scan='minus'                      />
         <command name='.'               scan='dot'                        />
         <command name='/'               scan='div'                        />
         <command name='0'               scan='number'                     />

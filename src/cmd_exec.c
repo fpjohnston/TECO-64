@@ -442,10 +442,9 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 
     if (entry->exec != NULL)
     {
-        if (isoperand())
+        if (check_x(&cmd->n_arg))
         {
             cmd->n_set = true;
-            cmd->n_arg = pop_x();
         }
         else if (!cmd->n_set && unary_x())
         {
@@ -657,10 +656,11 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     // the entire stack will be reset elsewhere.
 
     bool match = false;                 // Assume failure
-    uint saved_level = x.level;
     bool saved_exec = f.e0.exec;
     int saved_trace = f.trace.flag;
     int c;
+
+    push_x();                           // Save current expression stack
 
     f.e0.exec = false;
     f.trace.flag = 0;
@@ -689,7 +689,8 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
 
     f.trace.flag = saved_trace;
     f.e0.exec = saved_exec;
-    x.level = saved_level;
+
+    pop_x();                            // Restore previous expression stack
 
     return match;
 }

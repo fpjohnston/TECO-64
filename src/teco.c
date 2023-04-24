@@ -274,6 +274,7 @@ static void exit_teco(void)
     exit_qreg();                        // Deallocate memory for Q-registers
     exit_edit();                        // Deallocate memory for edit buffer
     exit_cbuf();                        // Deallocate memory for command buffer
+    exit_x();                           // Deallocate memory for expression stack
     exit_tbuf();                        // Deallocate memory for terminal buffer
 
 #if     defined(MEMCHECK)
@@ -323,6 +324,7 @@ static void init_teco(int argc, const char * const argv[])
     init_cbuf();                        // Initialize command buffer
     init_edit();                        // Initialize edit buffer
     init_qreg();                        // Initialize Q-registers
+    init_x();                           // Initialize expression stack
     init_options(argc, argv);           // Initialize command-line options
 
     // Change terminal characteristics and set signal handlers.

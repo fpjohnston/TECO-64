@@ -54,9 +54,9 @@ bool scan_Q(struct cmd *cmd)
 
     int_t n;
 
-    if (isoperand())                    // nQq
+    if (check_x(&n))               // nQq
     {
-        n = (int_t)get_qchr(cmd->qindex, (uint)pop_x());
+        n = (int_t)get_qchr(cmd->qindex, (uint)n);
     }
     else if (cmd->colon)                // :Qq
     {

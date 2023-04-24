@@ -74,10 +74,11 @@ bool scan_ctrl_Q(struct cmd *cmd)
     reject_atsign(cmd->atsign);
 
     int_t nchrs;
+    int_t n;
 
-    if (isoperand())
+    if (check_x(&n))
     {
-        nchrs = len_edit(pop_x());
+        nchrs = len_edit(n);
     }
     else
     {
@@ -128,17 +129,17 @@ bool scan_ctrl_Y(struct cmd *cmd)
 
     // The following prevents expressions such as 123+^Y.
 
+    int_t n;
+
     if (f.e2.args)
     {
-        if (isoperand() || cmd->m_set)
+        if (check_x(&n) || cmd->m_set)
         {
             throw(E_ARG);               // Invalid arguments
         }
     }
-    else if (isoperand())
-    {
-        (void)pop_x();                  // Ignore any existing operand
-    }
+
+    (void)check_x(&n);                  // Ignore any existing operand
 
     cmd->ctrl_y = true;
     cmd->m_set = true;
@@ -249,17 +250,17 @@ bool scan_H(struct cmd *cmd)
 
     // The following prevents expressions such as 123+H.
 
+    int_t n;
+
     if (f.e2.args)
     {
-        if (isoperand() || cmd->m_set)
+        if (check_x(&n) || cmd->m_set)
         {
             throw(E_ARG);               // Invalid arguments
         }
     }
-    else if (isoperand())
-    {
-        (void)pop_x();                  // Ignore any existing operand
-    }
+
+    (void)check_x(&n);                  // Ignore any existing operand
 
     cmd->h = true;
     cmd->m_set = true;

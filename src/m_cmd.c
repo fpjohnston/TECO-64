@@ -130,7 +130,6 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
 
     // Save current state
 
-    uint expr_base      = set_x();      // Save expression stack level
     uint loop_base      = getloop_depth();
     uint_t saved_line   = cmd_line;
     uint saved_if       = getif_depth();
@@ -140,6 +139,7 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
 
     // Initialize for new command string
 
+    push_x();                           // Save expression stack
     setloop_base(loop_base);
     setif_depth(0);
 
@@ -168,12 +168,11 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
 
     if (cmd != NULL)
     {
-        if (isoperand())
+        if (check_x(&cmd->n_arg))
         {
             cmd->m_set = newcmd.m_set;
             cmd->m_arg = newcmd.m_arg;
             cmd->n_set = true;
-            cmd->n_arg = pop_x();
         }
         else
         {
@@ -192,7 +191,7 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
 
     setif_depth(saved_if);
     setloop_base(loop_base);
-    reset_x(expr_base);                 // Restore expression stack level
+    pop_x();                            // Restore expression stack
 }
 
 

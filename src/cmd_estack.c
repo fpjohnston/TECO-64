@@ -31,29 +31,304 @@
 #include <stdlib.h>
 
 #include "teco.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
+#include "exec.h"
 
 
-///  @struct  x
-///  @brief   Expression stack used for parsing command strings.
+#define MAX_OPERS   8           ///< Max. no. of consecutive arithmetic operators
 
-struct xstack x;
+#define MAX_VALUES  64          ///< Max. no. of expression values
+
+///  @enum   order
+///  @brief  Definitions for operator associativity
+
+enum order
+{
+    NONE,
+    LEFT,
+    RIGHT
+};
+
+///  @var      operator
+///  @brief    Definition of operator characteristics, including the number of
+///            required operands, the operator precedence, and the associativity
+///            order.
+
+static const struct
+{
+    uint operands;              ///< No. of required operands
+    uint precedence;            ///< Operator precedence
+    enum order order;           ///< Operator associativity
+} operator[X_MAX] =
+{
+    [X_NULL]    = { .operands = 0, .precedence = 0, .order = NONE  },
+    [X_1S_COMP] = { .operands = 1, .precedence = 1, .order = LEFT  }, // x^_
+    [X_AND]     = { .operands = 2, .precedence = 2, .order = LEFT  }, // x & y
+    [X_DIV]     = { .operands = 2, .precedence = 2, .order = LEFT  }, // x / y
+    [X_EQ]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x == y)
+    [X_GE]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x >= y
+    [X_GT]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x > y)
+    [X_LE]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x <= y)
+    [X_LPAREN]  = { .operands = 0, .precedence = 0, .order = NONE  }, // (
+    [X_LSHIFT]  = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x << y)
+    [X_LT]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x < y)
+    [X_MUL]     = { .operands = 2, .precedence = 2, .order = LEFT  }, // x * y
+    [X_MINUS]   = { .operands = 2, .precedence = 2, .order = LEFT  }, // x - y
+    [X_NE]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x <> y)
+    [X_NOT]     = { .operands = 1, .precedence = 3, .order = RIGHT }, // !x
+    [X_OR]      = { .operands = 2, .precedence = 2, .order = LEFT  }, // x # y
+    [X_PLUS]    = { .operands = 2, .precedence = 2, .order = LEFT  }, // x + y
+    [X_REM]     = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x // y)
+    [X_RPAREN]  = { .operands = 0, .precedence = 0, .order = NONE  }, // )
+    [X_RSHIFT]  = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x >> y)
+    [X_UMINUS]  = { .operands = 1, .precedence = 3, .order = RIGHT }, // -x
+    [X_UPLUS]   = { .operands = 1, .precedence = 3, .order = RIGHT }, // +x
+    [X_XOR]     = { .operands = 2, .precedence = 2, .order = LEFT  }, // (x ~ y)
+};
+
+
+///  @struct   xstack
+///  @brief    Definition of expression stack, used to process arithmetic
+///            expressions with operands and operators, including parentheses.
+///            The data below facilitates the create of the shunting yard
+///            algorithm first described by Edsger Dijkstra as a way to convert
+///            standard infix notation to RPN notation. The approach taken in
+///            the code below avoids the storage of operators in the output
+///            (or value) stack by instead applying relevant operators to the
+///            operands already stored as the operators are popped off the
+///            operator stack.
+///
+///            We also apply for a linked list of stacks, since some TECO
+///            commands, such as those that process macros, require their
+///            own context with their own expression stack.
+///
+
+struct xstack
+{
+    struct xstack *next;            ///< Next expression stack block
+    int_t value[MAX_VALUES];        ///< Stored numeric values
+    uint nvalues;                   ///< No.of stored values
+    enum x_oper oper[MAX_OPERS];    ///< Stored operators
+    uint nopers;                    ///< No. of stored operators
+    bool operand;                   ///< Last item seen was an operand
+};
+
+
+static struct xstack *x = NULL;     ///< List of expression stacks
 
 // Local functions
 
-static inline void reduce(void);
+static void exec_oper(void);
 
-static inline bool reduce2(void);
+static int_t fetch_val(void);
 
-static inline bool reduce3(void);
+static struct xstack *make_x(void);
 
-static inline bool reduce4(void);
+static void reset_x(struct xstack *stack);
 
 
 ///
-///  @brief    Initialize expression stack.
+///  @brief    Check to see if there's a value (operand) available on stack.
+///
+///  @returns  true if operand next in output queue, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool check_x(int_t *n)
+{
+    if (!x->operand)
+    {
+        return false;
+    }
+
+    while (x->nopers > 0 && x->oper[x->nopers - 1] != X_LPAREN)
+    {
+        exec_oper();
+    }
+
+    if (x->nvalues == 0)
+    {
+        return false;
+    }
+
+    if (n != NULL)
+    {
+        *n = fetch_val();
+    }
+
+    if (x->nopers == 0)
+    {
+        x->nvalues = 0;
+    }
+
+    if (x->nvalues == 0)
+    {
+        x->operand = false;
+    }
+
+    return true;
+}
+
+
+///
+///  @brief    Push value onto output queue.
+///
+///  @returns  true if we could pop operator from stack, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void exec_oper(void)
+{
+    assert(x->nopers > 0);
+
+    enum x_oper type = x->oper[x->nopers - 1];
+    uint operands = operator[type].operands;
+    int_t a = 0, b = 0, n;
+
+    assert(operands <= 2);
+
+    --x->nopers;
+
+    if (operands > x->nvalues)          // Need more operands than we have?
+    {
+        throw(E_IFE);                   // Ill-formed expression
+    }
+    else if (operands == 1)             // Unary operator
+    {
+        a = fetch_val();
+    }
+    else if (operands == 2)             // Binary operator
+    {
+        b = fetch_val();
+        a = fetch_val();
+    }
+
+    switch (type)
+    {
+        case X_1S_COMP: n = (int_t)~(uint)a;       break;
+        case X_AND:     n = a & b;                 break;
+        case X_EQ:      n = (a == b ? -1 : 0);     break;
+        case X_GE:      n = (a >= b ? -1 : 0);     break;
+        case X_GT:      n = (a > b ? -1 : 0);      break;
+        case X_LE:      n = (a <= b ? -1 : 0);     break;
+        case X_LSHIFT:  n = (int_t)((uint)a << b); break;
+        case X_LT:      n = (a < b ? -1 : 0);      break;
+        case X_MINUS:   n = a - b;                 break;
+        case X_MUL:     n = a * b;                 break;
+        case X_NE:      n = (a != b ? -1 : 0);     break;
+        case X_OR:      n = a | b;                 break;
+        case X_PLUS:    n = a + b;                 break;
+        case X_RSHIFT:  n = (int_t)((uint)a >> b); break;
+        case X_UMINUS:  n = -a;                    break;
+        case X_UPLUS:   n = a;                     break;
+        case X_XOR:     n = a ^ b;                 break;
+
+        case X_DIV:
+            if (b == 0)
+            {
+                if (f.e2.zero)
+                {
+                    throw(E_DIV);       // Division by zero
+                }
+
+                n = 0;
+            }
+            else
+            {
+                n = a / b;
+            }
+
+            break;
+
+        case X_REM:
+            if (b == 0)
+            {
+                if (f.e2.zero)
+                {
+                    throw(E_DIV);       // Division by zero
+                }
+
+                n = 0;
+            }
+            else
+            {
+                n = a % b;
+            }
+
+            break;
+
+        case X_NOT:
+            while (x->nopers > 0)
+            {
+                a = (a != 0) ? 0 : -1;
+
+                if (x->nopers > 0 && x->oper[x->nopers - 1] == X_NOT)
+                {
+                    --x->nopers;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            n = a;
+
+            break;
+
+        case X_NULL:
+        case X_LPAREN:
+        case X_RPAREN:
+        case X_MAX:
+        default:
+            throw(E_ARG);
+    }
+
+    store_val(n);                       // Save the calculated value
+}
+
+
+///
+///  @brief    Deallocate memory for expression stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exit_x(void)
+{
+    do
+    {
+        pop_x();                        // Free up temporary stacks
+    } while (x->next != NULL);
+
+    free_mem(&x);                       // Now delete root stack
+}
+
+
+///
+///  @brief    Fetch value from top of output stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int_t fetch_val(void)
+{
+    if (x->nvalues == 0)
+    {
+        throw(E_IFE);                   // Ill-formed expression
+    }
+
+    return x->value[--x->nvalues];
+}
+
+
+///
+///  @brief    Initialize or reinitialize expression stack.
 ///
 ///  @returns  Nothing.
 ///
@@ -61,444 +336,268 @@ static inline bool reduce4(void);
 
 void init_x(void)
 {
-    x.base    = 0;
-    x.level   = 0;
-    x.opflag  = false;
-    x.operand = x.operands;
-    x.type    = x.types;
-
-    int_t *p1       = x.operand;
-    enum x_type *p2 = x.type;
-    uint count      = XSTACK_SIZE;
-
-    while (count-- > 0)
+    if (x == NULL)
     {
-        *p1++ = 0;
-        *p2++ = 0;
+        x = make_x();
+    }
+    else
+    {
+        struct xstack *next;
+
+        while ((next = x->next) != NULL)
+        {
+            free_mem(&x);
+
+            x = next;
+        }
+
+        reset_x(x);
     }
 }
 
 
 ///
-///  @brief    Fetch operand from top of stack. Note that we presume that the
-///            caller confirmed that an operand is available, using isoperand().
+///  @brief    Create a new expression stack.
 ///
-///  @returns  Returned operand.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-int_t pop_x(void)
+static struct xstack *make_x(void)
 {
-    x.opflag = false;                   // No operand on top after we return
+    struct xstack *stack = alloc_mem((uint)sizeof(*stack));
 
-    // A leading minus sign without a previous operand is equivalent
-    // to an operand of -1; any other leading operator is an error.
+    stack->next = NULL;
 
-    if (x.level == x.base + 1 && x.type[-1] == X_MINUS)
+    reset_x(stack);
+
+    return stack;
+}
+
+
+///
+///  @brief    Restore previous expression stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void pop_x(void)
+{
+    if (x->next != NULL)
     {
-        --x.operand;
-        --x.type;
-        --x.level;
+        struct xstack *stack = x;
 
-        return -1;
-    }
-    else                                // Must be operand
-    {
-        assert(x.level != x.base);
-        assert(x.type[-1] == X_OPERAND);
+        x = x->next;
 
-        --x.type;
-        --x.level;
-
-        return *--x.operand;
+        free_mem(&stack);
     }
 }
 
 
 ///
-///  @brief    Push operator or operand on expression stack.
+///  @brief    Set new expression stack.
 ///
-///            This function pushes an value onto the expression stack. The
-///            expression stack implement's TECO's expression handling capa-
-///            bility. For instance, if a command like 10+qa=$ is executed,
-///            then three values are pushed onto the expression stack: 10,
-///            the plus sign and the value of qa. Each time a value is pushed
-///            onto the expression stack, the reduce() function is called
-///            to see if the stack can be reduced. In the above example, re-
-///            duce() would cause the stack to be reduced when the value of
-///            qa is pushed, because the expression can be evaluated then.
+///  @returns  Nothing
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void push_x(void)
+{
+    struct xstack *stack = make_x();
+
+    stack->next = x;
+
+    x = stack;
+}
+
+
+///
+///  @brief    Reset an expression stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void reset_x(struct xstack *stack)
+{
+    assert(stack != NULL);
+
+    for (uint i = 0; i < countof(stack->value); ++i)
+    {
+        stack->value[i] = 0;
+    }
+
+    for (uint i = 0; i < countof(stack->oper); ++i)
+    {
+        stack->oper[i] = X_NULL;
+    }
+
+    stack->nvalues = 0;
+    stack->nopers = 0;
+    stack->operand = false;
+}
+
+
+///
+///  @brief    Scan ) command: expression grouping.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_rparen(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    if (nparens != 0)
+    {
+        --nparens;
+    }
+
+    // Try to process everything since the last left parenthesis
+
+    while (x->nopers > 0 && x->oper[x->nopers - 1] != X_LPAREN)
+    {
+        exec_oper();
+    }
+
+    // Here to see if we have a matching parenthesis
+
+    if (x->nopers-- == 0)
+    {
+        throw(E_MLP);                   // Missing left parenthesis
+    }
+
+    // Try again to process everything since the last left parenthesis
+
+    while (x->nopers > 0 && x->oper[x->nopers - 1] != X_LPAREN)
+    {
+        exec_oper();
+    }
+
+    if (x->nvalues > 0 && x->nopers == 0)
+    {
+        x->operand = true;
+    }
+    else
+    {
+        x->operand = false;
+    }
+
+    return true;
+}
+
+
+///
+///  @brief    Store ^_ operator on operator stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void store_1s_comp(void)
+{
+    store_oper(X_1S_COMP);
+
+    if (x->nvalues > 0)
+    {
+        x->operand = true;
+    }
+}
+
+
+///
+///  @brief    Store - operator on operator stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void store_minus(void)
+{
+    store_oper(x->operand ? X_MINUS : X_UMINUS);
+}
+
+
+///
+///  @brief    Save an operator on the expression stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void store_oper(enum x_oper o1)
+{
+    if (o1 != X_LPAREN)
+    {
+        uint p1 = operator[o1].precedence;
+
+        while (x->nopers > 0)
+        {
+            enum x_oper o2 = x->oper[x->nopers - 1];
+
+            if (o2 == X_LPAREN)
+            {
+                break;
+            }
+
+            uint p2 = operator[o2].precedence;
+
+            if ((p2 > p1) || (p1 == p2 && operator[o1].order == LEFT))
+            {
+                exec_oper();
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+    if (x->nopers == MAX_OPERS)
+    {
+        throw(E_PDO);                   // Push-down list overflow
+    }
+
+    x->oper[x->nopers++] = o1;
+
+    x->operand = false;
+}
+
+
+///
+///  @brief    Store + operator on operator stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void store_plus(void)
+{
+    store_oper(x->operand ? X_PLUS : X_UPLUS);
+}
+
+
+///
+///  @brief    Store operand in expression queue.
 ///
 ///  @returns  Nothing (return to main loop if error).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void push_x(int_t operand, enum x_type type)
+void store_val(int_t value)
 {
-    if (x.level == XSTACK_SIZE)
+    if (x->nvalues == MAX_VALUES)
     {
         throw(E_PDO);                   // Push-down list overflow
     }
 
-    *x.operand++ = operand;
-    *x.type++    = type;
-
-    if (++x.level == x.base + 1)
-    {
-        x.opflag = (type == X_OPERAND);
-    }
-    else
-    {
-        reduce();
-    }
-}
-
-
-///
-///  @brief    Reduce expression stack.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void reduce(void)
-{
-    // Try to reduce the expression stack if 4 or more items - this is used
-    // for expressions such A+-B or X-+Y, where the second operator is actually
-    // a unary operator.
-
-    while (x.level >= x.base + 4 && reduce4())
-    {
-        ;
-    }
-
-    // Try to reduce the expression stack if 3 or more items
-
-    while (x.level >= x.base + 3 && reduce3())
-    {
-        ;
-    }
-
-    // Try to reduce the expression stack if 2 or more items
-
-    while (x.level >= x.base + 2 && reduce2())
-    {
-        ;
-    }
-
-    // If the top of the expression stack is a 1's complement operator,
-    // and there's no operand preceding it, that's an error.
-
-    if (x.level >= x.base + 1 && x.type[-1] == X_1S_COMP)
-    {
-        if (x.level == x.base + 1 || x.type[-1] != X_OPERAND)
-        {
-            throw(E_NAB);               // No argument before ^_
-        }
-    }
-
-    // Set flag based on whether the top stack item is an operand
-    // (or a minus sign if it's the only item on the stack).
-
-    if (x.level != x.base &&
-        (x.type[-1] == X_OPERAND ||
-         (x.type[-1] == X_MINUS && x.level == x.base + 1)))
-    {
-        x.opflag = true;
-    }
-    else
-    {
-        x.opflag = false;
-    }
-}
-
-
-///
-///  @brief    Reduce top two items on expression stack if possible.
-///
-///  @returns  true if we reduced expression stack, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline bool reduce2(void)
-{
-    // The following prevents expressions such as these:
-    //
-    //     12!34   (use of logical NOT following an operand)
-    //     BZ+34   (two operands with no operator)
-    //     12++34  (two operators with no operand)
-
-    if (f.e2.oper)
-    {
-        if ((x.type[-1] == X_NOT     && x.type[-2] == X_OPERAND) ||
-            (x.type[-1] == X_OPERAND && x.type[-2] == X_OPERAND) ||
-            (x.type[-1] >  X_OPERAND && x.type[-2] >  X_OPERAND))
-        {
-            throw(E_IFE);               // Ill-formed numeric expression
-        }
-    }
-
-    int_t operand;
-
-    if (x.type[-1] == X_OPERAND && x.type[-2] == X_PLUS)
-    {
-        operand = x.operand[-1];
-    }
-    else if (x.type[-1] == X_OPERAND && x.type[-2] == X_MINUS)
-    {
-        operand = -x.operand[-1];
-    }
-    else if (x.type[-1] == X_OPERAND && x.type[-2] == X_NOT)
-    {
-        // Logical NOT yields -1 for true and 0 for false.
-
-        operand = !x.operand[-1] ? SUCCESS : FAILURE;
-    }
-    else if (x.type[-1] == X_1S_COMP && x.type[-2] == X_OPERAND)
-    {
-        operand = (int_t)~(uint_t)x.operand[-2];
-    }
-    else
-    {
-        return false;
-    }
-
-    --x.operand;
-    --x.type;
-    --x.level;
-
-    x.operand[-1] = operand;
-    x.type[-1]    = X_OPERAND;
-
-    return true;
-}
-
-
-///
-///  @brief    Reduce top three items on expression stack if possible.
-///
-///  @returns  true if we were able to reduce expression stack, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline bool reduce3(void)
-{
-    // Reduce (x) to x
-
-    if (x.type[-3] == X_LPAREN && x.type[-2] == X_OPERAND &&
-        x.type[-1] == X_RPAREN)
-    {
-        x.operand[-3] = x.operand[-2];
-        x.type[-3]    = X_OPERAND;
-
-        x.operand -= 2;
-        x.type    -= 2;
-        x.level   -= 2;
-
-        return true;
-    }
-
-    // Anything else has to be of the form x <operator> y.
-
-    if (x.type[-3] != X_OPERAND || x.type[-2] == X_OPERAND ||
-        x.type[-1] != X_OPERAND)
-    {
-        return false;
-    }
-
-    // Here to process arithmetic and logical operators
-
-    switch ((int)x.type[-2])
-    {
-        case X_PLUS:
-            x.operand[-3] += x.operand[-1];
-
-            break;
-
-        case X_MINUS:
-            x.operand[-3] -= x.operand[-1];
-
-            break;
-
-        case X_MUL:
-            x.operand[-3] *= x.operand[-1];
-
-            break;
-
-        case X_DIV:
-            if (x.operand[-1] == 0)
-            {
-                if (f.e2.zero)
-                {
-                    throw(E_DIV);       // Division by zero
-                }
-
-                x.operand[-3] = 0;
-            }
-            else
-            {
-                x.operand[-3] /= x.operand[-1];
-            }
-
-            break;
-
-        case X_AND:
-            x.operand[-3] &= x.operand[-1];
-
-            break;
-
-        case X_OR:
-            x.operand[-3] |= x.operand[-1];
-
-            break;
-
-        case X_XOR:
-            x.operand[-3] ^= x.operand[-1];
-            break;
-
-        case X_REM:
-            if (x.operand[-1] == 0)
-            {
-                if (f.e2.zero)
-                {
-                    throw(E_DIV);       // Division by zero
-                }
-
-                x.operand[-3] = 0;
-            }
-            else
-            {
-                x.operand[-3] %= x.operand[-1];
-            }
-
-            break;
-
-        case X_EQ:
-            x.operand[-3] = (x.operand[-3] == x.operand[-1]) ? -1 : 0;
-
-            break;
-
-        case X_NE:
-            x.operand[-3] = (x.operand[-3] != x.operand[-1]) ? -1 : 0;
-
-            break;
-
-        case X_LT:
-            x.operand[-3] = (x.operand[-3] < x.operand[-1]) ? -1 : 0;
-
-            break;
-
-        case X_LE:
-            x.operand[-3] = (x.operand[-3] <= x.operand[-1]) ? -1 : 0;
-
-            break;
-
-        case X_GT:
-            x.operand[-3] = (x.operand[-3] > x.operand[-1]) ? -1 : 0;
-
-            break;
-
-        case X_GE:
-            x.operand[-3] = (x.operand[-3] >= x.operand[-1]) ? -1 : 0;
-
-            break;
-
-        case X_LSHIFT:
-            x.operand[-3] = (int)((uint)x.operand[-3] << x.operand[-1]);
-
-            break;
-
-        case X_RSHIFT:
-            x.operand[-3] = (int)((uint)x.operand[-3] >> x.operand[-1]);
-
-            break;
-
-        default:
-            throw(E_ARG);               // Improper arguments
-    }
-
-    x.type[-3] = X_OPERAND;
-    x.operand -= 2;
-    x.type    -= 2;
-    x.level   -= 2;
-
-    return true;
-}
-
-
-///
-///  @brief    Reduce top four items on expression stack if possible.
-///
-///  @returns  true if we were able to reduce expression stack, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline bool reduce4(void)
-{
-    if (x.type[-1] != X_OPERAND || x.type[-2] == X_OPERAND
-        || x.type[-3] == X_OPERAND || x.type[-4] != X_OPERAND)
-    {
-        return false;
-    }
-
-    int oper = x.type[-2];
-
-    if (oper == X_PLUS)
-    {
-        x.operand[-2] = x.operand[-1];
-        x.type[-2] = X_OPERAND;
-
-        --x.operand;
-        --x.type;
-        --x.level;
-    }
-    else if (oper == X_MINUS)
-    {
-        x.operand[-2] = -x.operand[-1];
-        x.type[-2] = X_OPERAND;
-
-        --x.operand;
-        --x.type;
-        --x.level;
-    }
-    else
-    {
-        return false;
-    }
-
-    return true;
-}
-
-
-///
-///  @brief    Reset base of expression stack.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void reset_x(uint base)
-{
-    x.base = base;
-
-    reduce();
-}
-
-
-///
-///  @brief    Set base of expression stack.
-///
-///  @returns  Old base.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-uint set_x(void)
-{
-    uint base = x.base;
-
-    x.base   = x.level;
-    x.opflag = false;
-
-    return base;
+    x->value[x->nvalues++] = value;
+    x->operand = true;
 }
 
 
@@ -512,14 +611,14 @@ uint set_x(void)
 
 bool unary_x(void)
 {
-    if (x.level != x.base + 1 || x.type[-1] != X_MINUS)
+    if (x->nopers > 0 && x->oper[x->nopers - 1] == X_UMINUS)
+    {
+        --x->nopers;
+
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    --x.operand;
-    --x.type;
-    --x.level;
-
-    return true;
 }

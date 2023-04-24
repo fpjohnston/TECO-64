@@ -31,78 +31,61 @@
 #include <stdbool.h>            //lint !e451
 #include <sys/types.h>          //lint !e451
 
-// Temporary changes start here...
-
-#define store_oper(x)   push_x(OPER, x)
-
-#define store_val(x)    push_x(x, X_OPERAND)
-
-// ... temporary changes end here
 
 #define OPER    ((int_t)0)          ///< 'value' for expression operators
 
-#define XSTACK_SIZE          64     ///< Size of expression stack
-
-///  @enum   x_type
+///  @enum   x_oper
 ///  @brief  Type of item stored on expression stack.
 
-enum x_type
+enum x_oper
 {
-    X_LPAREN  = -2,                 // Left parenthesis
-    X_RPAREN  = -1,                 // Right parenthesis
-    X_OPERAND = 0,                  // Operand
-    X_1S_COMP = '\x1F',             // 1's complement
-    X_OR      = '#',                // Bitwise OR
-    X_AND     = '&',                // Bitwise AND
-    X_XOR     = '~',                // Bitwise XOR
-    X_MUL     = '*',                // Multiplication
-    X_PLUS    = '+',                // Addition and unary plus
-    X_MINUS   = '-',                // Subtraction and unary minus
-    X_DIV     = '/',                // Division w/ quotient
-    X_REM     = '%',                // Division w/ remainder (//)
-    X_NOT     = '!',                // Logical NOT
-    X_LT      = '<',                // Less than
-    X_GT      = '>',                // Greater than
-    X_EQ      = '=',                // Equals (==)
-    X_NE      = 'N',                // Not equals (<>)
-    X_LE      = 'L',                // Less than or equal (<=)
-    X_GE      = 'G',                // Greater than or equal (>=)
-    X_LSHIFT  = 'S',                // Left shift (<<)
-    X_RSHIFT  = 'U'                 // Right shift (>>)
+    X_NULL = 0,         // Null type
+    X_1S_COMP,          // 1's complement
+    X_AND,              // Bitwise AND
+    X_DIV,              // Division w/ quotient
+    X_EQ,               // Equals (==)
+    X_GE,               // Greater than or equal (>=)
+    X_GT,               // Greater than
+    X_LE,               // Less than or equal (<=)
+    X_LPAREN,           // Left parenthesis
+    X_LSHIFT,           // Left shift (<<)
+    X_LT,               // Less than
+    X_MUL,              // Multiplication
+    X_MINUS,            // Subtraction
+    X_NE,               // Not equals (<>)
+    X_NOT,              // Logical NOT
+    X_OR,               // Bitwise OR
+    X_PLUS,             // Addition
+    X_REM,              // Division w/ remainder (//)
+    X_RPAREN,           // Right parenthesis
+    X_RSHIFT,           // Right shift (>>)
+    X_UMINUS,           // Unary minus
+    X_UPLUS,            // Unary plus
+    X_XOR,              // Bitwise XOR
+    X_MAX               // Total no. of values
 };
-
-
-///  @struct xstack
-///  @brief  Definition of expression stack.
-
-struct xstack
-{
-    uint level;                     ///< Expression stack level
-    uint base;                      ///< Expression stack base
-    bool opflag;                    ///< Top of stack is an operand
-    int_t *operand;                 ///< Next operand
-    enum x_type *type;              ///< Next type
-    int_t operands[XSTACK_SIZE];    ///< Expression operands
-    enum x_type types[XSTACK_SIZE]; ///< Expression types
-};
-
-#define isoperand() x.opflag        ///< true if expression stack top is operand
-
-// Global variables
-
-extern struct xstack x;             ///< Expression stack
 
 // Expression stack functions
 
+extern void exit_x(void);
+
 extern void init_x(void);
 
-extern int_t pop_x(void);
+extern bool check_x(int_t *n);
 
-extern void push_x(int_t value, enum x_type type);
+extern void pop_x(void);
 
-extern void reset_x(uint base);
+extern void push_x(void);
 
-extern uint set_x(void);
+extern void store_1s_comp(void);
+
+extern void store_minus(void);
+
+extern void store_oper(enum x_oper type);
+
+extern void store_plus(void);
+
+extern void store_val(int_t value);
 
 extern bool unary_x(void);
 
