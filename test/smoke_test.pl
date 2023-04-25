@@ -619,8 +619,6 @@ sub prove_fail
 {
     my ( $report, $expected, $actual ) = @_;
 
-    # Here if test was supposed to fail
-
     if ( $actual !~ /!FAIL\d+!/ms )
     {
         if ( $actual =~ / ( \N{QUESTION MARK} \w\w\w )/msx )
@@ -753,7 +751,7 @@ sub prove_test
     {
         print "$report TIMEOUT\n";
     }
-    elsif ( $actual =~ / Fatal \s error /imsx or $actual =~ / core \s dumped /imsx )
+    elsif ( $actual =~ / Fatal \s error /imsx )
     {
         # This is handled specially without regard to the desired result,
         # because it was found that some tests could complete successfully,
@@ -871,11 +869,6 @@ sub setup_test
         local $ENV{TEC_VTEDIT}  = 'TEC_VTEDIT';
 
         $actual = run_test($command);
-
-        if ($actual =~ /core dumped/ims)
-        {
-            system 'reset -I';
-        }
     }
     elsif ( $target eq 'TECO-32' )
     {

@@ -326,8 +326,9 @@ void init_options(
     if (cbuf->len != 0)                 // Anything stored?
     {
         store_cmd("\e\e");              // Terminate command w/ double ESCape
-        print_cmd(cbuf->data);
     }
+
+    print_cmd(cbuf->data);
 
     if (options.quit)
     {
