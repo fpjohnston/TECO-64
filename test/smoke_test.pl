@@ -48,7 +48,7 @@ my $execute = 1;
 my $make = 1;
 my $orphans;
 my $prove = 1;
-my $set = q{};
+my $subdir = q{};
 my $skip;
 my $target  = 'TECO-64';
 my $verbose = q{};
@@ -163,7 +163,7 @@ my @jabberwocky = (
 
 initialize();
 
-find( { wanted => \&wanted, follow => 1 }, "$testdir/scripts/$set" );
+find( { wanted => \&wanted, follow => 1 }, "$testdir/scripts/$subdir" );
 
 # If we found any .tec files in the scripts directory, then they're helper
 # files for the test scripts, so copy them to the cases directory.
@@ -176,10 +176,7 @@ while ( defined( my $file = pop @teco_files ) )
 
 make_tests();
 
-if ($execute)
-{
-    exec_tests();
-}
+exec_tests() if $execute;
 
 if ($make)
 {
@@ -190,14 +187,14 @@ if ($make)
     printf "% 4u test script%s (%s skipped)\n", $nscripts,
         $nscripts == 1 ? q{} : 's', $nskipped;
 
-    printf "% 4u test file%s, ", $nfiles, $nfiles == 1 ? q{} : 's';
+    printf '% 4u test file%s, ', $nfiles, $nfiles == 1 ? q{} : 's';
 
     printf "%u case%s\n", $ntests, $ntests == 1 ? q{} : 's';
 
     printf "% 4u completed OK\n", $okay;
 }
 
-exit 0;
+exit ( $okay == $nfiles ? 0 : 1 );      # Return success (0) or failure (1)
 
 
 # Check to see that the test script specifies a valid TECO.
@@ -318,7 +315,7 @@ sub initialize
         'make!'    => \$make,
         'orphans!' => \$orphans,
         'prove!'   => \$prove,
-        'set=s'    => \$set,
+        'set=s'    => \$subdir,
         'skip!'    => \$skip,
         'tecoc'    => \$tecoc,
         'teco32'   => \$teco32,
@@ -345,12 +342,12 @@ sub initialize
         croak 'Too many arguments';
     }
 
-    if ($set ne q{} && $set =~ /^\/(.+)/)
+    if ($subdir ne q{} && $subdir =~ /^\/(.+)/ms)
     {
-        $set = $1;                      # If specified, strip off leading slash
+        $subdir = $1;                   # If specified, strip off leading slash
     }
 
-    croak "Can't find directory: $testdir/scripts/$set" if !-d "$testdir/scripts/$set";
+    croak "Can't find directory: $testdir/scripts/$subdir" if !-d "$testdir/scripts/$subdir";
     croak "Can\'t find directory: $testdir/benchmarks" if !-d "$testdir/benchmarks";
 
     if (!-e "$testdir/cases")

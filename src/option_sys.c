@@ -535,6 +535,21 @@ static void opt_log(void)
 
 
 ///
+///  @brief    Parse -M or --memory option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_memory(void)
+{
+    check_file("-M or --memory");
+
+    teco_memory = optarg;
+}
+
+
+///
 ///  @brief    Parse --mung option.
 ///
 ///  @returns  Nothing.
@@ -578,21 +593,6 @@ static void opt_mung(const char *file)
 
 
 ///
-///  @brief    Parse -M or --memory option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void opt_memory(void)
-{
-    check_file("-M or --memory");
-
-    teco_memory = optarg;
-}
-
-
-///
 ///  @brief    Parse -n option.
 ///
 ///  @returns  Nothing.
@@ -604,6 +604,22 @@ static void opt_nodefaults(void)
     teco_init   = NULL;
     teco_memory = NULL;
     teco_vtedit = NULL;
+}
+
+
+///
+///  @brief    Parse --quit option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_quit(void)
+{
+    options.quit = true;
+    options.print = true;
+
+    opt_nodefaults();
 }
 
 
@@ -780,7 +796,6 @@ static void parse_options(
             case OPT_X:       options.exit = true;       break;
             case OPT_mung:    options.mung = true;       break; // Hidden
             case OPT_print:   options.print = true;      break; // Hidden
-            case OPT_quit:    options.quit  = true;      break; // Hidden
 
             // Options that call functions
 
@@ -797,6 +812,7 @@ static void parse_options(
             case OPT_T:       opt_text();                break;
             case OPT_V:       opt_vtedit();              break;
             case OPT_version: opt_version();             break; // Hidden
+            case OPT_quit:    opt_quit();                break; // Hidden
 
 #if     defined(DEBUG)
 
@@ -864,11 +880,6 @@ static void parse_options(
         }
 
         lastopt = optind;
-    }
-
-    if (options.quit)                   // --quit implies --print
-    {
-        options.print = true;
     }
 
     // Check for file arguments

@@ -356,7 +356,7 @@ sub parse_xml
                 line    => $option->line_number(),
                 debug   => $option->getAttribute('debug'),
                 short   => get_child( $option, 'short_name', $line ),
-                long    => get_child( $option, 'long_name', $line ),
+                long    => get_child( $option, 'long_name',  $line ),
                 argtype => get_argument( $option, 'argument', $line ),
                 help    => \@help,
             );
