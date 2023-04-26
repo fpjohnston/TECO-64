@@ -65,8 +65,14 @@ struct options
     bool readonly;          ///< --read-only option
     bool exit;              ///< --exit option
     bool mung;              ///< --mung option
+
+#if     defined(DEBUG)
+
     bool print;             ///< --print option
     bool quit;              ///< --quit option
+
+#endif
+
 };
 
 ///
@@ -86,8 +92,14 @@ static struct options options =
     .readonly = false,
     .exit     = false,
     .mung     = false,
+
+#if     defined(DEBUG)
+
     .print    = false,
     .quit     = false,
+
+#endif
+
 };
 
 // Local functions
@@ -104,21 +116,9 @@ static void opt_arguments(void);
 
 static void opt_execute(void);
 
-#if     defined(DEBUG)
-
-static void opt_E1(const char *cmd);
-
-#endif
-
 static void opt_help(void);
 
 static void opt_initialize(void);
-
-#if     defined(DEBUG)
-
-static void opt_keys(void);
-
-#endif
 
 static void opt_log(void);
 
@@ -134,13 +134,9 @@ static void opt_text(void);
 
 static void opt_vtedit(void);
 
-static void opt_version(void);
-
 static void parse_args(const char *args);
 
 static void parse_options(int argc, const char *const argv[]);
-
-static void print_cmd(const char *cmd);
 
 static void store_cmd(const char *format, ...);
 
@@ -151,6 +147,17 @@ static void store_ER(const char *file);
 static void store_EW(const char *file);
 
 static uint verify_size(int nbytes);
+
+
+#if     defined(DEBUG)
+
+static void opt_keys(void);
+
+static void opt_version(void);
+
+static void print_cmd(const char *cmd);
+
+#endif
 
 
 ///
@@ -328,12 +335,17 @@ void init_options(
         store_cmd("\e\e");              // Terminate command w/ double ESCape
     }
 
+#if     defined(DEBUG)
+
     print_cmd(cbuf->data);
 
     if (options.quit)
     {
         exit(EXIT_SUCCESS);
     }
+
+#endif
+
 }
 
 
@@ -433,31 +445,6 @@ static void opt_execute(void)
     check_file("-E or --execute");
     opt_mung(optarg);
 }
-
-
-///
-///  @brief    Parse --E1, --E2, --E3, and --E4 options.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DEBUG)
-
-static void opt_E1(const char *option)
-{
-    const char *args = optarg;
-
-    if (args == NULL)
-    {
-        args = "-1";
-    }
-
-    parse_args(option);
-    store_cmd("%s%s\e ", args, option);
-}
-
-#endif
 
 
 ///
@@ -614,6 +601,8 @@ static void opt_nodefaults(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+#if     defined(DEBUG)
+
 static void opt_quit(void)
 {
     options.quit = true;
@@ -621,6 +610,8 @@ static void opt_quit(void)
 
     opt_nodefaults();
 }
+
+#endif
 
 
 ///
@@ -795,7 +786,6 @@ static void parse_options(
             case OPT_v:       teco_vtedit = NULL;        break;
             case OPT_X:       options.exit = true;       break;
             case OPT_mung:    options.mung = true;       break; // Hidden
-            case OPT_print:   options.print = true;      break; // Hidden
 
             // Options that call functions
 
@@ -812,17 +802,14 @@ static void parse_options(
             case OPT_T:       opt_text();                break;
             case OPT_V:       opt_vtedit();              break;
             case OPT_version: opt_version();             break; // Hidden
-            case OPT_quit:    opt_quit();                break; // Hidden
 
 #if     defined(DEBUG)
 
             // Debug options
 
+            case OPT_print:   options.print = true;      break;
+            case OPT_quit:    opt_quit();                break;
             case OPT_keys:    opt_keys();                break;
-            case OPT_E1:      opt_E1("E1 ");             break;
-            case OPT_E2:      opt_E1("E2 ");             break;
-            case OPT_E3:      opt_E1("E3 ");             break;
-            case OPT_E4:      opt_E1("E4 ");             break;
 
 #endif
 
@@ -919,6 +906,9 @@ static void parse_options(
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+
+#if     defined(DEBUG)
+
 static void print_cmd(const char *cmd)
 {
     assert(cmd != NULL);
@@ -979,6 +969,8 @@ static void print_cmd(const char *cmd)
 
     fputc('\n', stdout);
 }
+
+#endif
 
 
 ///

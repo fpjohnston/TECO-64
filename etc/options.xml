@@ -125,29 +125,17 @@
             <help>Exit from TECO after executing all command-line options.</help>
         </option>
         <option debug="200">
-            <long_name>keys</long_name>
-            <argument>required</argument>
-            <help>Saves keystrokes in file 'xyz'.</help>
+            <long_name>print</long_name>
+            <help>Print initial command string before execution.</help>
         </option>
         <option debug="201">
-            <long_name>E1</long_name>
-            <argument>optional</argument>
-            <help>Set E1 variable to 'n' (default value is -1).</help>
+            <long_name>quit</long_name>
+            <help>Print initial command string and then exit.</help>
         </option>
         <option debug="202">
-            <long_name>E2</long_name>
-            <argument>optional</argument>
-            <help>Set E2 variable to 'n' (default value is -1).</help>
-        </option>
-        <option debug="203">
-            <long_name>E3</long_name>
-            <argument>optional</argument>
-            <help>Set E3 variable to 'n' (default value is -1).</help>
-        </option>
-        <option debug="204">
-            <long_name>E4</long_name>
-            <argument>optional</argument>
-            <help>Set E4 variable to 'n' (default value is -1).</help>
+            <long_name>keys</long_name>
+            <argument>required</argument>
+            <help>Save keystrokes in file 'xyz'.</help>
         </option>
     </section>
 </teco>

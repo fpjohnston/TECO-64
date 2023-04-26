@@ -123,9 +123,7 @@ enum option_t
     OPT_r       = 'r',
     OPT_v       = 'v',
     OPT_version = 1,
-    OPT_mung,
-    OPT_print,
-    OPT_quit
+    OPT_mung
 };
 
 ///  @var optstring
@@ -161,8 +159,6 @@ static const struct option long_options[] =
     { "novtedit",       no_argument,        NULL,  OPT_v       },
     { "version",        no_argument,        NULL,  OPT_version },  // --version option (hidden)
     { "mung",           no_argument,        NULL,  OPT_mung    },  // --mung option (hidden)
-    { "print",          no_argument,        NULL,  OPT_print   },  // --print option (hidden)
-    { "quit",           no_argument,        NULL,  OPT_quit    },  // --quit option (hidden)
     { NULL,             no_argument,        NULL,  0           },  // Markers for end of list
 };
 

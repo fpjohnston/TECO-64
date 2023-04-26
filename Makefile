@@ -68,8 +68,6 @@ INCLUDES = -I ../$(INCDIR)
 LIBS     =                              # Default is no libraries
 STRIP    = -s                           # Strip symbol table when linking
 
-export PATH := etc/:${PATH}
-
 #  Enable verbosity if requested.
 
 ifdef   verbose
@@ -80,14 +78,14 @@ else
     NULL = >/dev/null 2>&1
 endif
 
-include etc/make/sources.mk             # Source files
-include etc/make/display.mk             # Display node option
-include etc/make/buffer.mk              # Buffer handler option
-include etc/make/paging.mk              # Page handler option
-include etc/make/integer.mk             # Integer option
-include etc/make/debug.mk               # Debugging options
-include etc/make/optimize.mk            # Optimization options
-include etc/make/release.mk             # Release option
+include etc/build/sources.mk            # Source files
+include etc/build/display.mk            # Display node option
+include etc/build/buffer.mk             # Buffer handler option
+include etc/build/paging.mk             # Page handler option
+include etc/build/integer.mk            # Integer option
+include etc/build/debug.mk              # Debugging options
+include etc/build/optimize.mk           # Optimization options
+include etc/build/release.mk            # Release option
 
 DFILES  = $(SOURCES:.c=.d)
 LOBS    = $(SOURCES:.c=.lob)
@@ -136,22 +134,22 @@ HEADERS = include/commands.h include/errcodes.h include/errtables.h \
 headers: $(HEADERS)
 
 include/commands.h: etc/commands.xml etc/templates/commands.h
-	$(AT)commands.pl $^ --out $@
+	$(AT)etc/commands.pl $^ --out $@
 
 include/errcodes.h: etc/errors.xml etc/templates/errcodes.h
-	$(AT)errors.pl $^ --out $@
+	$(AT)etc/errors.pl $^ --out $@
 
 include/errtables.h: etc/errors.xml etc/templates/errtables.h
-	$(AT)errors.pl $^ --out $@
+	$(AT)etc/errors.pl $^ --out $@
 
 include/exec.h: etc/commands.xml etc/templates/exec.h
-	$(AT)commands.pl $^ --out $@
+	$(AT)etc/commands.pl $^ --out $@
 
 include/options.h: etc/options.xml etc/templates/options.h
-	$(AT)options.pl etc/options.xml etc/templates/options.h --out $@ $(OPTIONS)
+	$(AT)etc/options.pl etc/options.xml etc/templates/options.h --out $@ $(OPTIONS)
 
 include/version.h: distclean
-	$(AT)version.pl include/version.h etc/templates/$(@F) --out $@ --release=$(release)
+	$(AT)etc/version.pl include/version.h etc/templates/$(@F) --out $@ --release=$(release)
 
 #
 #  Define how to compile source files.
@@ -180,7 +178,7 @@ bin/$(TARGET): $(OBJECTS) bin
 #  Define help target.
 #
 
-include etc/make/help.mk                # Help target
+include etc/build/help.mk               # Help target
 
 #
 #  Define targets that build documentation
@@ -190,7 +188,7 @@ DOXYGEN   = "DOXYGEN"
 
 .PHONY: doc
 doc: html/options.html doc/errors.md
-	-$(AT)echo "Making Doxygen documents"
+	-$(AT)echo Making Doxygen documents...
 	-$(AT)cp etc/Doxyfile obj/Doxyfile
 	-$(AT)echo "PREDEFINED = $(DOXYGEN)" >>obj/Doxyfile
 	-$(AT)doxygen obj/Doxyfile
@@ -199,7 +197,7 @@ html:
 	-$(AT)mkdir -p html
 
 html/options.html: html etc/options.xml etc/options.xsl
-	-$(AT)echo "Making HTML options file"
+	-$(AT)echo Making HTML options file...
 	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html
 
 doc/errors.md: etc/errors.xml etc/templates/errors.md
@@ -253,8 +251,10 @@ LINT = flint -b -zero -i$(HOME)/flint/lnt $(DEFINES) ../etc/std.lnt \
 #
 
 .PHONY: lint
-lint: obj $(LOBS)
-	@echo Linting object files
+lint: obj
+	@echo Linting source files...
+	@$(MAKE) $(LOBS)
+	@echo Linting .lob files...
 	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
 
 .PHONY: lobs
@@ -266,10 +266,14 @@ lobs: obj $(LOBS)
 
 PHONY: smoke
 smoke:
-	@echo Rebuilding teco for smoke testing
-	cd . && $(MAKE) -B debug=1 memcheck=1 include/options.h
-	cd . && $(MAKE) debug=1 memcheck=1 teco
-	@echo Checking $(TARGET) command-line options
+	@echo Checking Perl scripts...
+	$(MAKE) debug=1 memcheck=1 critic
+	$(MAKE) -B debug=1 memcheck=1 include/options.h
+	@echo Linting source files...
+	$(MAKE) debug=1 memcheck=1 lint
+	@echo Compiling and linking TECO...
+	$(MAKE) debug=1 memcheck=1 teco
+	@echo Testing TECO command-line options...
 	$(AT)test/option_test.pl --summary
-	@echo Smoke testing $(TARGET)
+	@echo Running smoke tests...
 	$(AT)test/smoke_test.pl test/
