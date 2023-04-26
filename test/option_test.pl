@@ -30,14 +30,13 @@ use version; our $VERSION = '1.0.0';
 
 use Carp;
 use English qw( -no_match_vars );
-use autodie qw( open close );
 use Getopt::Long;
 use Readonly;
 
-my $brief   = 1;
-my $summary = 1;
-my $verbose = q{};
-my $detail  = q{};
+my $brief   = undef;
+my $summary = undef;
+my $verbose = undef;
+my $detail  = undef;
 
 Readonly my @OPTIONS => (
     {
@@ -332,6 +331,8 @@ sub initialize
         'summary' => \$summary,
         'verbose' => \$verbose,
     );
+
+    $brief = 1 if !$summary && !$brief && !$verbose && !$detail;
 
     $verbose = 1 if $detail;
     $brief   = 1 if $verbose;

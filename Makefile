@@ -269,6 +269,7 @@ smoke:
 	@echo Rebuilding teco for smoke testing
 	cd . && $(MAKE) -B debug=1 memcheck=1 include/options.h
 	cd . && $(MAKE) debug=1 memcheck=1 teco
+	@echo Checking $(TARGET) command-line options
+	$(AT)test/option_test.pl --summary
 	@echo Smoke testing $(TARGET)
-	$(AT)test/option_test.pl
 	$(AT)test/smoke_test.pl test/
