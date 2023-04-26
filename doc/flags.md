@@ -41,7 +41,7 @@ used to customize which bits are set or cleared.
 | E1&256 | Unused. |
 | E1&512 | If set, an *n*I command is equivalent to *n*I&lt;ESC> or *n*@I//. If clear, any *n*I command must be terminated with either an ESCape or a delimiter. |
 | E1&1024 | If set, *n*% commands may include a colon modifier that causes the return value to be discarded (obviating the need to include an ESCape in order to avoid passing that value to the next command). If clear, colon modifiers preceding *n*% commands have no special meaning. |
-| E1&2048 | If set, operators in arithmetic expression have the same precedence as in C. If clear, expression operators all have the same precedence, as in classic TECO. |
+| E1&2048 | If set, operators in arithmetic expression have the same precedence as in C. If clear, expression operators all have the same precedence, as in classic TECO.<br><br>Any changes to this bit will take effect at the end of the execution of the current command string or macro. |
 | E1&4096 | Unused. |
 | E1&8192 | Unused. |
 | E1&16384 | Reserved for future use. |

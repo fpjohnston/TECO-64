@@ -6,7 +6,7 @@
 
 [[enter]]
 
-0,3 E1
+0,(1+2+2048) E1
 
 0 UF            ! Count of failures !
 
