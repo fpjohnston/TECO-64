@@ -54,17 +54,17 @@ bool scan_Q(struct cmd *cmd)
 
     int_t n;
 
-    if (check_x(&n))               // nQq
+    if (check_x(&n))                    // nQq
     {
         n = (int_t)get_qchr(cmd->qindex, (uint)n);
     }
-    else if (cmd->colon)                // :Qq
-    {
-        n = (int_t)get_qsize(cmd->qindex);
-    }
-    else                                // Qq
+    else if (!cmd->colon)               // Qq
     {
         n = get_qnum(cmd->qindex);
+    }
+    else                                // :Qq
+    {
+        n = (int_t)get_qsize(cmd->qindex);
     }
 
     store_val(n);

@@ -52,20 +52,54 @@ enum order
     RIGHT
 };
 
-///  @var      operator
-///  @brief    Definition of operator characteristics, including the operator
-//             precedence, (the same as for C), the number of required operands,
-//             and the associativity order (right or left).
-//
-//             This table is ordered by precedence for easier reading, and not
-//             by the order of the operator definitions.
+///  @struct   oper
+///  @brief    Definition of characteristics for each operator, including the
+//             precedence, number of required operands, and associativity order
+//             (right or left).
 
-static const struct
+struct oper
 {
     uint precedence;            ///< Operator precedence
     uint operands;              ///< No. of required operands
     enum order order;           ///< Operator associativity
-} operator[X_MAX] =
+};
+
+///  @var      oldoper
+///  @brief    Table of operator characteristics when using classic TECO
+//             precedence and associativity rules.
+
+static const struct oper oldoper[X_MAX] =
+{
+    [X_NULL]    = { .precedence =  0, .operands = 0, .order = NONE  },
+    [X_LPAREN]  = { .precedence =  0, .operands = 0, .order = LEFT  }, // (
+    [X_RPAREN]  = { .precedence =  0, .operands = 0, .order = LEFT  }, // )
+    [X_NOT]     = { .precedence =  0, .operands = 1, .order = LEFT  }, // !x
+    [X_1S_COMP] = { .precedence =  0, .operands = 1, .order = LEFT  }, // x^_
+    [X_MINUS]   = { .precedence =  0, .operands = 1, .order = LEFT  }, // -x
+    [X_PLUS]    = { .precedence =  0, .operands = 1, .order = LEFT  }, // +x
+    [X_MUL]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x * y
+    [X_DIV]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x / y
+    [X_REM]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x // y)
+    [X_ADD]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x + y
+    [X_SUB]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x - y
+    [X_LSHIFT]  = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x << y)
+    [X_RSHIFT]  = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x >> y)
+    [X_GE]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x >= y
+    [X_GT]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x > y)
+    [X_LE]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x <= y)
+    [X_LT]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x < y)
+    [X_EQ]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x == y)
+    [X_NE]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x <> y)
+    [X_AND]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x & y
+    [X_XOR]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x ~ y)
+    [X_OR]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // x # y
+};
+
+///  @var      newoper
+///  @brief    Table of operator characteristics when using standard C
+///            precedence and associativity rules.
+
+static const struct oper newoper[X_MAX] =
 {
     [X_NULL]    = { .precedence =  0, .operands = 0, .order = NONE  },
     [X_LPAREN]  = { .precedence =  1, .operands = 0, .order = LEFT  }, // (
@@ -92,6 +126,7 @@ static const struct
     [X_OR]      = { .precedence = 10, .operands = 2, .order = LEFT  }, // x # y
 };
 
+static const struct oper *operator = newoper; ///< Current operator table
 
 ///  @struct   xstack
 ///  @brief    Definition of expression stack, used to process arithmetic
@@ -126,7 +161,7 @@ static struct xstack *x = NULL;     ///< List of expression stacks
 
 static void exec_oper(void);
 
-static int_t fetch_val(void);
+static inline int_t fetch_val(void);
 
 static struct xstack *make_x(void);
 
@@ -319,7 +354,7 @@ void exit_x(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static int_t fetch_val(void)
+static inline int_t fetch_val(void)
 {
     if (x->nvalues == 0)
     {
@@ -339,6 +374,15 @@ static int_t fetch_val(void)
 
 void init_x(void)
 {
+    if (f.e1.c_oper)
+    {
+        operator = newoper;
+    }
+    else
+    {
+        operator = oldoper;
+    }
+
     if (x == NULL)
     {
         x = make_x();
@@ -550,11 +594,6 @@ void store_oper(enum x_oper o1)
 
             uint p2 = operator[o2].precedence;
 
-            if (!f.e1.c_oper)           // If not using C precedence rules,
-            {
-                p2 = p1;                //  then make sure operators match
-            }
-
             if ((p2 < p1) || (p1 == p2 && operator[o1].order == LEFT))
             {
                 exec_oper();
@@ -572,7 +611,6 @@ void store_oper(enum x_oper o1)
     }
 
     x->oper[x->nopers++] = o1;
-
     x->operand = false;
 }
 
