@@ -270,16 +270,13 @@ void init_dpy(void)
 
         initscr();
 
-        check( cbreak()                       == OK   );
-        check( noecho()                       == OK   );
-        check( nonl()                         == OK   );
-        check( notimeout(stdscr, (bool)TRUE)  == OK   );
-        check( idlok(stdscr,     (bool)TRUE)  == OK   );
-        check( has_colors()                   == TRUE );
-        check( start_color()                  == OK   );
+        check( cbreak()      == OK   );
+        check( noecho()      == OK   );
+        check( nonl()        == OK   );
+        check( has_colors()  == TRUE );
+        check( start_color() == OK   );
 
         set_escdelay(0);
-        keypad(stdscr, f.ed.escape ? (bool)TRUE : (bool)FALSE);
         reset_dpy((bool)true);
         check_colors();
     }
@@ -403,21 +400,21 @@ static void init_windows(void)
         init_window(&d.fence, LINE, line_top, line_top, 0, d.ncols);
     }
 
-    w.width = d.ncols;
+    int width = w.width = d.ncols;
+    bool escape = f.ed.escape ? (bool)TRUE : (bool)FALSE;
 
     if (f.e4.status)
     {
-        int width = d.ncols;
-
         width -= (w.status == 0) ? STATUS_WIDTH : w.status;
 
         init_window(&d.status, STATUS, cmd_top, cmd_bot, width, w.status);
-        init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, width);
     }
-    else
-    {
-        init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, w.width);
-    }
+
+    init_window(&d.cmd, CMD, cmd_top, cmd_bot, 0, width);
+
+    check( notimeout(d.cmd, (bool)TRUE)  == OK );
+    check( idlok(d.cmd,     (bool)TRUE)  == OK );
+    check( keypad(d.cmd, escape)         == OK );
 
     scrollok(d.cmd, (bool)TRUE);
     wsetscrreg(d.cmd, cmd_top, cmd_bot);
@@ -709,7 +706,13 @@ void reset_dpy(bool all)
 
         if (w.nlines == 0 || w.noscroll)
         {
+            bool escape = f.ed.escape ? (bool)TRUE : (bool)FALSE;
+
             d.cmd = stdscr;
+
+            check( notimeout(d.cmd, (bool)TRUE)  == OK );
+            check( idlok(d.cmd,     (bool)TRUE)  == OK );
+            check( keypad(d.cmd, escape)         == OK );
 
             refresh();
 
