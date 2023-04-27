@@ -36,6 +36,7 @@ E1 U1                                   ! Save extended features flag !
 @^U1{Q1:@=/E1 = 0x%x: /
     Q1&32768 "N @^A/newline / '
     Q1&16384 "N @^A/repeat / '
+    Q1&2048  "N @^A/c_oper / '
     Q1&1024  "N @^A/percent / '
     Q1&512   "N @^A/insert / '
     Q1&256   "N @^A/dollar / '
