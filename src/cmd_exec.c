@@ -190,25 +190,29 @@ void exec_cmd(struct cmd *cmd)
 
     while ((c = fetch_cbuf()) != EOF)
     {
-        if (f.trace.flag != 0 && !echo_cmd(c))
-        {
-            continue;                   // Just ignore whitespace
-        }
-
         const struct cmd_table *entry;
 
-        // The specific check for a space is an optimization which was found
-        // through testing to make a noticeable difference with some macros.
+        //  Skip execution of command if:
+        //
+        //  1. The trace flag is set and we shouldn't echo the command.
+        //  2. The command is just a space (this is an optimization which was
+        //     found through testing to make a noticeable difference with some
+        //     macros).
+        //  3. There is no exec function that we have and should process.
 
-        if (c == SPACE || (entry = scan_cmd(cmd, c)) == NULL
-            || entry->exec == NULL)
+        if ((f.trace.flag != 0 && !echo_cmd(c))
+            || c == SPACE
+            || (entry = scan_cmd(cmd, c)) == NULL)
         {
             continue;
         }
-
-        if (entry->exec != NULL && f.e0.exec)
+        else if (!f.e0.exec)            // Are we suppressing execution?
         {
-            (*entry->exec)(cmd);
+            *cmd = null_cmd;            // Yes, just reset for next command
+        }
+        else
+        {
+            (*entry->exec)(cmd);        // Execute command
 
             // We normally reset the command block after every command we
             // execute. However, '[', ']', and '!' pass through m and n
@@ -230,12 +234,8 @@ void exec_cmd(struct cmd *cmd)
             }
             else
             {
-                *cmd = null_cmd;
+                *cmd = null_cmd;        // Done with command; reset to next one
             }
-        }
-        else
-        {
-            *cmd = null_cmd;
         }
 
 #if     defined(DEBUG)
@@ -453,7 +453,7 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
         }
     }
 
-    if (entry->scan != NULL && (*entry->scan)(cmd))
+    if ((entry->scan != NULL && (*entry->scan)(cmd)) || entry->exec == NULL)
     {
         return NULL;
     }
