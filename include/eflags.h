@@ -45,7 +45,7 @@ union e0_flag
     {
         uint exec    : 1;       ///< Executing command
         uint error   : 1;       ///< Last command caused error
-        uint ctrl_c  : 1;       ///< CTRL/C seen
+        uint sigint  : 1;       ///< Ctrl/C seen (SIGINT signal)
         uint lower   : 1;       ///< Force string arguments to lower case
         uint upper   : 1;       ///< Force string arguments to upper case
         uint display : 1;       ///< Display mode is active
@@ -54,6 +54,7 @@ union e0_flag
         uint init    : 1;       ///< TECO is initializing
         uint i_redir : 1;       ///< stdin has been redirected
         uint o_redir : 1;       ///< stdout has been redirected
+        uint ctrl_t  : 1;       ///< Reading input for CTRL/T command
     };
 };
 

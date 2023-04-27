@@ -320,7 +320,7 @@ int getc_term(bool wait)
         return getc_term(wait);         // Recurse to get next character
     }
 
-    f.e0.ctrl_c = false;                // Normal character, not CTRL/C
+    f.e0.sigint = false;                // Normal character, not CTRL/C
 
     if (f.e3.CR_in && c == LF)
     {
@@ -704,13 +704,15 @@ static int read_first(void)
 ///               the CTRL/C, if so requested by the ET flag, or we will issue
 ///               an XAB error.
 ///
-///            2. If any error other than EINTR occurs, we will issue a SYS
+///            2. If any error other than EINTR occurs, we will issue an XAB
 ///               error.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 static int read_wait(void)
 {
+    bool ctrl_c = f.et.ctrl_c;
+
     if (f.e0.display)                   // Display mode active?
     {
         int c = get_wait();
@@ -739,23 +741,27 @@ static int read_wait(void)
 
     if (errno != EINTR)                 // Interrupted by CTRL/C?
     {
-        f.e0.ctrl_c = false;            // No, so reset system flag
-
         throw(E_ERR, NULL);             // General error
     }
-    else if (f.et.ctrl_c)               // Trapping CTRL/C?
+    else if (ctrl_c)                    // Trapping CTRL/C?
     {
-        f.et.ctrl_c = false;            // Yes -- reset flag
-        f.e0.ctrl_c = false;            // Reset system flag
+        f.e0.sigint = false;            // No, reset system flag
 
         return CTRL_C;                  // And return CTRL/C to caller
     }
 
     // Here if not trapping CTRL/C
 
-    echo_in(CTRL_C);                    // No, so issue XAB error
+    if (f.e0.ctrl_t)
+    {
+        throw(E_XAB);                   // Execution aborted
+    }
+    else
+    {
+        echo_in(CTRL_C);                // Print alert message
 
-    throw(E_XAB);                       // Execution aborted
+        longjmp(jump_main, MAIN_CTRLC);
+    }
 }
 
 

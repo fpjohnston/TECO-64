@@ -219,6 +219,7 @@ int main(int argc, const char * const argv[])
 
             case MAIN_ERROR:            // Error
                 f.e0.error = true;      // Flag the error
+                f.e0.sigint = false;    // Reset CTRL/C count
 
                 f.et.image  = false;    // Disable image output
                 f.et.noecho = false;    // Enable echo for CTRL/T
@@ -237,6 +238,7 @@ int main(int argc, const char * const argv[])
         }
 
         f.e0.exec = false;              // No command active
+        f.e0.ctrl_t = false;            // No CTRL/T active
         f.et.abort = false;             // Don't abort on error
 
         if (f.e0.init)

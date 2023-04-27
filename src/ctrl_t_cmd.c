@@ -84,7 +84,11 @@ void exec_ctrl_T(struct cmd *cmd)
     }
     else                                // ^T -> read character from terminal
     {
+        f.e0.ctrl_t = true;             // Flag this as CTRL/T input
+
         int c = getc_term((bool)!f.et.nowait);
+
+        f.e0.ctrl_t = false;
 
         if (!f.et.noecho && c != -1)
         {

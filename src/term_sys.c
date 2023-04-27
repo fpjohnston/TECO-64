@@ -408,13 +408,18 @@ static void sig_handler(int signum)
             break;
 
         case SIGINT:                    // Ctrl-C causes this
-            if (f.et.abort || f.e0.ctrl_c) // Should we abort?
+            if (f.et.abort || f.e0.sigint) // Should we abort?
             {
                 runaway("Cancel");      // Print message and exit
             }
-            else                        // Just process as normal input
+            else if (f.et.ctrl_c)       // Trapping CTRL/C?
             {
-                f.e0.ctrl_c = true;     // Set flag saying we saw Ctrl-C
+                f.et.ctrl_c = false;    // Say we've seen CTRL/C
+            }
+            else
+            {
+                f.e0.sigint = true;     // Say that we've seen SIGINT
+                f.e0.exec = false;      // Stop any command execution
             }
 
             break;

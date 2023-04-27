@@ -361,13 +361,13 @@ void print_verbose(int error)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-noreturn void (throw)(
 
 #if     defined(DEBUG)
-    const char *func, unsigned int line,
+noreturn void (throw)(const char *func, unsigned int line, int error, ...)
+#else
+noreturn void (throw)(int error, ...)
 #endif
 
-    int error, ...)
 {
     const char *file_str = NULL;
     const char *err_str;
@@ -443,23 +443,18 @@ noreturn void (throw)(
         sprintf(last_command, "%.*s", (int)cbuf->pos, cbuf->data);
     }
 
-    // If CTRL/C and we're not executing a command, don't print error.
-
-    if (error != E_XAB || f.e0.exec)
-    {
-        print_error(
-
 #if     defined(DEBUG)
-            func, line,
+    print_error(func, line, error, err_str, file_str);
+#else
+    print_error(error, err_str, file_str);
 #endif
-
-            error, err_str, file_str);
-    }
 
     if (f.et.abort)                     // Abort on error?
     {
         exit(EXIT_FAILURE);
     }
-
-    longjmp(jump_main, MAIN_ERROR);     // Back to the shadows again!
+    else
+    {
+        longjmp(jump_main, MAIN_ERROR); // Back to the shadows again!
+    }
 }

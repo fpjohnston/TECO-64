@@ -195,12 +195,10 @@ void exec_cmd(struct cmd *cmd)
         //  Skip execution of command if:
         //
         //  1. The trace flag is set and we shouldn't echo the command.
-        //  2. The command is just a space (this is an optimization which was
-        //     found through testing to make a noticeable difference with some
-        //     macros).
+        //  2. The command is a space.
         //  3. There is no exec function that we have and should process.
 
-        if ((f.trace.flag != 0 && !echo_cmd(c))
+        if ((f.trace.flag && !echo_cmd(c))
             || c == SPACE
             || (entry = scan_cmd(cmd, c)) == NULL)
         {
@@ -251,19 +249,11 @@ void exec_cmd(struct cmd *cmd)
 
 #endif
 
-        if (f.e0.ctrl_c)
-        {
-            if (f.et.ctrl_c)
-            {
-                f.et.ctrl_c = false;
-            }
-            else
-            {
-                f.e0.ctrl_c = false;
+    }
 
-                throw(E_XAB);
-            }
-        }
+    if (f.e0.sigint)                    // Did we stop because of a CTRL/C?
+    {
+        throw(E_XAB);
     }
 
 #if     defined(DEBUG)
