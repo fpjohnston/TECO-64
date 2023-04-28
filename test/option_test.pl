@@ -44,10 +44,10 @@ Readonly my @OPTIONS => (
         tests => [
             { cmd => '-Ex.tmp -A2,3',         result => ' EIx.tmp' },
             { cmd => '-A2,3 --execute=x.tmp', result => '2,3EIx.tmp' },
-            { cmd => '?-A',                   result => 'Argument required' },
-            { cmd => '?-Ax',                  result => 'Invalid value' },
-            { cmd => '?-A2,x',                result => 'Invalid value' },
-            { cmd => '?-A2,3x',               result => 'Invalid value' },
+            { cmd => '-A',                    result => 'Argument required' },
+            { cmd => '-Ax',                   result => 'Invalid value' },
+            { cmd => '-A2,x',                 result => 'Invalid value' },
+            { cmd => '-A2,3x',                result => 'Invalid value' },
         ],
     },
     {
@@ -58,7 +58,7 @@ Readonly my @OPTIONS => (
                 cmd    => '--arguments=2,3 --execute=x.tmp',
                 result => '2,3EIx.tmp'
             },
-            { cmd => '?--arguments', result => 'Argument required' },
+            { cmd => '--arguments', result => 'Argument required' },
         ],
     },
     {
@@ -82,8 +82,8 @@ Readonly my @OPTIONS => (
     {
         name  => q{--nocreate},
         tests => [
-            { cmd => '--nocreate x.tmp',  result => 'Editing file' },
-            { cmd => '?--nocreate=x.tmp', result => 'Unknown option' },
+            { cmd => '--nocreate x.tmp', result => 'Editing file' },
+            { cmd => '--nocreate=x.tmp', result => 'Unknown option' },
         ],
     },
     {
@@ -98,14 +98,14 @@ Readonly my @OPTIONS => (
         name  => q{-E},
         tests => [
             { cmd => '-Ex.tmp', result => 'EIx.tmp' },
-            { cmd => '?-E',     result => 'Argument required' },
+            { cmd => '-E',      result => 'Argument required' },
         ],
     },
     {
         name  => q{--execute},
         tests => [
             { cmd => '--execute=x.tmp', result => 'EIx.tmp' },
-            { cmd => '?--execute',      result => 'Argument required' },
+            { cmd => '--execute',       result => 'Argument required' },
         ],
     },
     {
@@ -125,49 +125,83 @@ Readonly my @OPTIONS => (
         tests => [ { cmd => '--noformfeed', result => '0,1E3' }, ],
     },
     {
+        name  => q{-H},
+        tests => [
+            { cmd => '-H', result => 'Usage: teco' },
+        ],
+    },
+    {
+        name  => q{--help},
+        tests => [
+            { cmd => '--help', result => 'Usage: teco' },
+        ],
+    },
+    {
         name  => q{-I},
         tests => [
             { cmd => '-Ix.tmp', result => 'EIx.tmp' },
-            { cmd => '?-I',     result => 'Argument required' },
+            { cmd => '-I',      result => 'Argument required' },
         ],
     },
     {
         name  => q{--initialize},
         tests => [
             { cmd => '--initialize=x.tmp', result => 'EIx.tmp' },
-            { cmd => '?--initialize',      result => 'Argument required' },
+            { cmd => '--initialize',       result => 'Argument required' },
         ],
     },
     {
         name  => q{-i},
-        tests => [ { cmd => '-i', result => ': ' }, ],
+        tests => [ { cmd => '-i', result => 'null' }, ],
     },
     {
         name  => q{--noinitialize},
         tests => [
-            { cmd => '--noinitialize',    result => ': ' },
-            { cmd => '?--noinitialize=1', result => 'Unknown option' },
+            { cmd => '--noinitialize',    result => 'null' },
+            { cmd => '--noinitialize=1', result => 'Unknown option' },
         ],
     },
     {
         name  => q{-L},
         tests => [
             { cmd => '-Lx.tmp', result => 'ELx.tmp' },
-            { cmd => '?-L',     result => 'Argument required' },
+            { cmd => '-L',      result => 'Argument required' },
         ],
     },
     {
         name  => q{--log},
         tests => [
             { cmd => '--log=x.tmp', result => 'ELx.tmp' },
-            { cmd => '?--log',      result => 'Argument required' },
+            { cmd => '--log',       result => 'Argument required' },
+        ],
+    },
+    {
+        name  => q{-m},
+        tests => [ { cmd => '-m', result => 'null' }, ],
+    },
+    {
+        name  => q{--nomemory},
+        tests => [
+            { cmd => '--nomemory',       result => 'null' },
+            { cmd => '--nomemory=x.tmp', result => 'Unknown option' },
+        ],
+    },
+    {
+        name  => q{-n},
+        tests => [ { cmd => '-n', result => 'null' }, ],
+    },
+    {
+        name  => q{--nodefaults},
+        tests => [
+            { cmd => '--nodefaults',       result => 'null' },
+            { cmd => '--nodefaults=x.tmp', result => 'Unknown option' },
         ],
     },
     {
         name  => q{-R},
         tests => [
             { cmd => '-R x.tmp', result => 'Reading file' },
-            { cmd => '?-R',      result => 'inspect nothing' },
+            { cmd => '-R',       result => 'inspect nothing' },
         ],
     },
     {
@@ -180,61 +214,79 @@ Readonly my @OPTIONS => (
     },
     {
         name  => q{--noread-only},
-        tests => [ { cmd => '--noread-only x.tmp', result => ': ' }, ],
+        tests => [ { cmd => '--noread-only x.tmp', result => 'Editing file' }, ],
     },
     {
         name  => q{-S},
         tests => [
-            { cmd => '-S5',   result => '-1W 5,7:W' },
-            { cmd => '?-S',   result => 'Argument required' },
-            { cmd => '?-Sx',  result => 'Invalid value' },
-            { cmd => '?-S2x', result => 'Invalid value' },
+            { cmd => '-S5',  result => '-1W 5,7:W' },
+            { cmd => '-S',   result => 'Argument required' },
+            { cmd => '-Sx',  result => 'Invalid value' },
+            { cmd => '-S2x', result => 'Invalid value' },
         ],
     },
     {
         name  => q{--scroll},
         tests => [
             { cmd => '--scroll=5', result => '-1W 5,7:W' },
-            { cmd => '?--scroll',  result => 'Argument required' },
+            { cmd => '--scroll',   result => 'Argument required' },
         ],
     },
     {
         name  => q{-T},
         tests => [
             { cmd => '-Tx.tmp', result => 'Ix.tmp' },
-            { cmd => '?-T',     result => 'Argument required' },
+            { cmd => '-T',      result => 'Argument required' },
         ],
     },
     {
         name  => q{--text},
         tests => [
             { cmd => '--text=x.tmp', result => 'Ix.tmp' },
-            { cmd => '?--text',      result => 'Argument required' },
+            { cmd => '--text',       result => 'Argument required' },
         ],
     },
     {
         name  => q{-V},
         tests => [
             { cmd => '-Vx.tmp', result => 'EIx.tmp' },
-            { cmd => '?-V',     result => 'Argument required' },
+            { cmd => '-V',      result => 'Argument required' },
         ],
     },
     {
         name  => q{--vtedit},
         tests => [
             { cmd => '--vtedit=x.tmp', result => 'EIx.tmp' },
-            { cmd => '?--vtedit',      result => 'Argument required' },
+            { cmd => '--vtedit',       result => 'Argument required' },
         ],
     },
     {
         name  => q{-v},
-        tests => [ { cmd => '-v', result => ': ' }, ],
+        tests => [ { cmd => '-v', result => 'null' }, ],
     },
     {
         name  => q{--novtedit},
         tests => [
-            { cmd => '--novtedit',        result => ': ' },
-            { cmd => '?--novtedit=x.tmp', result => 'Unknown option' },
+            { cmd => '--novtedit',        result => 'null' },
+            { cmd => '--novtedit=x.tmp',  result => 'Unknown option' },
+        ],
+    },
+    {
+        name  => q{--version},
+        tests => [
+            { cmd => '--version', result => 'version X200' },
+        ],
+    },
+    {
+        name  => q{-X},
+        tests => [
+            { cmd => '-X', result => 'EX' },
+        ],
+    },
+    {
+        name  => q{--exit},
+        tests => [
+            { cmd => '--exit', result => 'EX' },
         ],
     },
     {
@@ -296,14 +348,6 @@ sub exec_command
     my ($command) = @_;
     my $error = 0;
 
-    # If command string starts with a question mark, strip it off and note that
-    # we are expecting that command to fail.
-
-    if ( $command =~ s/ \N{QUESTION MARK} (.+) /$1/imsx )
-    {
-        $error = 1;
-    }
-
     $command = "teco --quit $command";
 
     print "    Executing \"$command\"..." if $verbose;
@@ -311,6 +355,14 @@ sub exec_command
     $command = "touch x.tmp; rm -f y.tmp; $command; rm -f x.tmp";
 
     my $result = run_test($command);
+
+    $result =~ s/add_mblock.+?\n//gms;
+    $result =~ s/delete_mblock.+?\n//gms;
+    $result =~ s/exit_mem.+?\n//gms;
+    $result =~ s/expand_mem.+?\n//gms;
+    $result =~ s/shrink_mem.+?\n//gms;
+
+    $result = (split /\n/, $result)[0];
 
     chomp $result;
 

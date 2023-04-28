@@ -67,12 +67,6 @@
             <help>Ignore TECO_INIT environment variable.</help>
         </option>
         <option>
-            <short_name>M</short_name>
-            <long_name>memory</long_name>
-            <default/>
-            <help>Use TECO_MEMORY to get name of last file edited.</help>
-        </option>
-        <option>
             <short_name>m</short_name>
             <long_name>nomemory</long_name>
             <help>Ignore TECO_MEMORY environment variable.</help>

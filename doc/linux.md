@@ -163,12 +163,8 @@ file specified using the TECO_INIT environment variable.
  - Open *logfile* as a log file for TECO input and/or output (the E3 flag
 variable controls whether either or both are logged).
 
--M, --memory (default)
- - If no file is specified, then use the TECO_MEMORY environment to find the
-name of a file which contains the name of the last file edited.
-
 -m, --nomemory
- - Do not use TECO_MEMORY to find the name of the last edited file.
+ - Do not use the TECO_MEMORY environment variable to find the name of the last edited file.
 
 -n, --nodefaults
  - Equivalent to --noinitialize --nomemory --novtedit.

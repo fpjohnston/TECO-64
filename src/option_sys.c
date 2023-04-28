@@ -124,8 +124,6 @@ static void opt_log(void);
 
 static void opt_mung(const char *file);
 
-static void opt_memory(void);
-
 static void opt_nodefaults(void);
 
 static void opt_scroll(void);
@@ -330,6 +328,15 @@ void init_options(
         }
     }
 
+#if     defined(DEBUG)
+
+    if (cbuf->len == 0)                 // Anything stored?
+    {
+        store_cmd("! null ! ");
+    }
+
+#endif
+
     if (cbuf->len != 0)                 // Anything stored?
     {
         store_cmd("\e\e");              // Terminate command w/ double ESCape
@@ -518,21 +525,6 @@ static void opt_log(void)
 {
     check_file("-L or --log");
     store_cmd("EL%s\e ", optarg);
-}
-
-
-///
-///  @brief    Parse -M or --memory option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void opt_memory(void)
-{
-    check_file("-M or --memory");
-
-    teco_memory = optarg;
 }
 
 
@@ -796,7 +788,6 @@ static void parse_options(
             case OPT_H:       opt_help();                break;
             case OPT_I:       opt_initialize();          break;
             case OPT_L:       opt_log();                 break;
-            case OPT_M:       opt_memory();              break;
             case OPT_n:       opt_nodefaults();          break;
             case OPT_S:       opt_scroll();              break;
             case OPT_T:       opt_text();                break;

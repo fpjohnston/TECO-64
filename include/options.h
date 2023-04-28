@@ -77,7 +77,6 @@ static const char * const help_text[] =
     "",
     "  -I, --initialize=xyz   Use initialization file 'xyz' at startup.",
     "  -i, --noinitialize     Ignore TECO_INIT environment variable.",
-    "  -M, --memory           Use TECO_MEMORY to get name of last file edited.",
     "  -m, --nomemory         Ignore TECO_MEMORY environment variable.",
     "",
     "Display options:",
@@ -109,7 +108,6 @@ enum option_t
     OPT_H       = 'H',
     OPT_I       = 'I',
     OPT_L       = 'L',
-    OPT_M       = 'M',
     OPT_R       = 'R',
     OPT_S       = 'S',
     OPT_T       = 'T',
@@ -129,7 +127,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = ":A:CDE:FHI:L:MRS:T:V:Xcfimnrv";
+static const char * const optstring = ":A:CDE:FHI:L:RS:T:V:Xcfimnrv";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -144,7 +142,6 @@ static const struct option long_options[] =
     { "help",           no_argument,        NULL,  OPT_H       },
     { "initialize",     required_argument,  NULL,  OPT_I       },
     { "log",            required_argument,  NULL,  OPT_L       },
-    { "memory",         no_argument,        NULL,  OPT_M       },
     { "read-only",      no_argument,        NULL,  OPT_R       },
     { "scroll",         required_argument,  NULL,  OPT_S       },
     { "text",           required_argument,  NULL,  OPT_T       },
