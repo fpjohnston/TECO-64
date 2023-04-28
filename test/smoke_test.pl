@@ -890,7 +890,7 @@ sub setup_test
         }
         else
         {
-            $command .= ' -v -i --mung';
+            $command .= ' -d -i --mung';
         }
 
         $command .= " $file 2>&1";

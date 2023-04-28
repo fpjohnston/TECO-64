@@ -59,20 +59,13 @@ struct options
     const char *file1;      ///< Input file, or file to mung
     const char *file2;      ///< Output file
     const char *args;       ///< --arguments option
+    const char *display;    ///< --display option
     int scroll;             ///< --scroll option
     bool create;            ///< --create option
-    bool display;           ///< --display option
     bool readonly;          ///< --read-only option
     bool exit;              ///< --exit option
-    bool mung;              ///< --mung option
-
-#if     defined(DEBUG)
-
-    bool print;             ///< --print option
-    bool quit;              ///< --quit option
-
-#endif
-
+    bool mung;              ///< --mung option (hidden)
+    bool practice;          ///< --practice option (hidden)
 };
 
 ///
@@ -83,24 +76,18 @@ struct options
 
 static struct options options =
 {
-    .file1    = NULL,
-    .file2    = NULL,
-    .args     = NULL,
-    .scroll   = 0,
-    .create   = true,
-    .display  = false,
-    .readonly = false,
-    .exit     = false,
-    .mung     = false,
-
-#if     defined(DEBUG)
-
-    .print    = false,
-    .quit     = false,
-
-#endif
-
+    .file1      = NULL,
+    .file2      = NULL,
+    .args       = NULL,
+    .display    = NULL,
+    .scroll     = 0,
+    .create     = true,
+    .readonly   = false,
+    .exit       = false,
+    .mung       = false,
+    .practice   = false,
 };
+
 
 // Local functions
 
@@ -120,21 +107,27 @@ static void opt_help(void);
 
 static void opt_initialize(void);
 
+static void opt_keys(void);
+
 static void opt_log(void);
 
 static void opt_mung(const char *file);
 
 static void opt_nodefaults(void);
 
+static void opt_practice(void);
+
 static void opt_scroll(void);
 
 static void opt_text(void);
 
-static void opt_vtedit(void);
+static void opt_version(void);
 
 static void parse_args(const char *args);
 
 static void parse_options(int argc, const char *const argv[]);
+
+static void print_cmd(const char *cmd);
 
 static void store_cmd(const char *format, ...);
 
@@ -145,17 +138,6 @@ static void store_ER(const char *file);
 static void store_EW(const char *file);
 
 static uint verify_size(int nbytes);
-
-
-#if     defined(DEBUG)
-
-static void opt_keys(void);
-
-static void opt_version(void);
-
-static void print_cmd(const char *cmd);
-
-#endif
 
 
 ///
@@ -193,6 +175,64 @@ static void check_file(const char *option)
 
         exit(EXIT_FAILURE);
     }
+}
+
+
+///
+///  @brief    Check obsolete options -V, -v, --vtedit, and --novtedit.
+///
+///            THIS IS A TEMPORARY FUNCTION, AND WILL BE REMOVED IN A FUTURE RELEASE.
+///
+///  @returns  Exits if obsolete option found
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void check_vtedit(const char *const argv[], int lastopt);
+
+static void check_vtedit(const char *const argv[], int lastopt)
+{
+    assert(argv != NULL);
+
+    const char *option = argv[optind - 1];
+    const char *error = "-V";           // Assume a default error
+    const char *alt = "-D or --display"; // And a default alternate command
+
+    if (optopt != 0 && optind == lastopt)
+    {
+        if (optopt == 'v')
+        {
+            error = "-v";
+            alt = "-d or --nodisplay";
+        }
+        else if (optopt != 'V')
+        {
+            return;
+        }
+    }
+    else if (strcmp(option, "-v") == 0)
+    {
+        error = "-v";
+        alt = "-d or --nodisplay";
+    }
+    else if (strstr(option, "--nov") == option)
+    {
+        error = "--novtedit";
+        alt = "-d or --nodisplay";
+    }
+    else if (strstr(option, "--vt") == option)
+    {
+        error = "--vtedit";
+    }
+    else if (strcmp(option, "-V") != 0)
+    {
+        return;
+    }
+
+    // Here if we know we have an obsolete error
+
+    printf("Obsolete option '%s' -- use %s instead\n", error, alt);
+
+    exit(EXIT_FAILURE);
 }
 
 
@@ -243,6 +283,8 @@ void init_options(
 {
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
+
+    options.display = teco_vtedit;
 
     parse_options(argc, argv);
 
@@ -312,47 +354,44 @@ void init_options(
     }
     else if (!f.e0.i_redir)
     {
-        if (teco_vtedit != NULL)        // Do we have a display initialization file?
+        if (options.display != NULL)    // Do we have a display initialization file?
         {
-            store_cmd("EI%s\e ", teco_vtedit);
-        }
-
-        if (options.display)            // Enable display if requested
-        {
-            store_cmd("-1W ");
-
-            if (options.scroll != 0)    // Set up scrolling if requested
+            if (options.display[0] == NUL)
             {
-                store_cmd("%u,7:W\e ", options.scroll);
+                store_cmd("-1W ");
+            }
+            else
+            {
+                store_cmd("EI%s\e ", options.display);
             }
         }
-    }
 
-#if     defined(DEBUG)
+        if (options.scroll != 0)        // Set up scrolling if requested
+        {
+            if (options.display == NULL) // Ensure that display is enabled
+            {
+                store_cmd("-1W ");
+            }
+
+            store_cmd("%u,7:W\e ", options.scroll);
+        }
+    }
 
     if (cbuf->len == 0)                 // Anything stored?
     {
-        store_cmd("! null ! ");
+        store_cmd("!dummy! \e\e");      // No, add something for option_test.pl
     }
-
-#endif
-
-    if (cbuf->len != 0)                 // Anything stored?
+    else
     {
         store_cmd("\e\e");              // Terminate command w/ double ESCape
     }
 
-#if     defined(DEBUG)
-
     print_cmd(cbuf->data);
 
-    if (options.quit)
+    if (options.practice)
     {
         exit(EXIT_SUCCESS);
     }
-
-#endif
-
 }
 
 
@@ -441,6 +480,26 @@ static void opt_arguments(void)
 
 
 ///
+///  @brief    Parse -D or --display option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_display(void)
+{
+    if (optarg == NULL)
+    {
+        options.display = "";
+    }
+    else
+    {
+        options.display = optarg;
+    }
+}
+
+
+///
 ///  @brief    Parse -E or --execute option.
 ///
 ///  @returns  Nothing.
@@ -497,10 +556,9 @@ static void opt_initialize(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DEBUG)
-
 static void opt_keys(void)
 {
+#if     defined(DEBUG)
     if (optarg != NULL && optarg[0] != '-')
     {
         key_name = optarg;
@@ -509,9 +567,12 @@ static void opt_keys(void)
     {
         key_name = NULL;
     }
-}
+#else
+    printf("--keys option is only available in debug builds\n");
 
+    exit(EXIT_SUCCESS);
 #endif
+}
 
 
 ///
@@ -587,23 +648,18 @@ static void opt_nodefaults(void)
 
 
 ///
-///  @brief    Parse --quit option.
+///  @brief    Parse --practice option.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DEBUG)
-
-static void opt_quit(void)
+static void opt_practice(void)
 {
-    options.quit = true;
-    options.print = true;
+    options.practice = true;
 
     opt_nodefaults();
 }
-
-#endif
 
 
 ///
@@ -637,7 +693,6 @@ static void opt_scroll(void)
     }
 
     options.scroll = c;
-    options.display = true;
 }
 
 
@@ -656,21 +711,6 @@ static void opt_text(void)
 
 
 ///
-///  @brief    Parse -V or --vtedit option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void opt_vtedit(void)
-{
-    check_file("-V or --vtedit");
-
-    teco_vtedit = optarg;
-}
-
-
-///
 ///  @brief    Parse --version option.
 ///
 ///  @returns  Exits from TECO.
@@ -679,15 +719,16 @@ static void opt_vtedit(void)
 
 static void opt_version(void)
 {
-    fputs("teco (TECO text editor) version ", stdout);
+    printf("teco (TECO text editor) version %d.%d.%d", major_version,
+           minor_version, patch_version);
 
 #if     defined(DEBUG)
 
-    fputc('X', stdout);     // Say that it's a debug version
+    fputs(" (DEBUG)", stdout);          // Say that it's a debug version
 
 #endif
 
-    printf("%d.%d.%d\n", major_version, minor_version, patch_version);
+    fputc('\n', stdout);
 
     printf("Copyright (C) 2019-2023 Nowwith Treble Software\n");
 
@@ -766,43 +807,34 @@ static void parse_options(
     {
         switch (c)
         {
-            // Options that set values
+            // Options that just set values
 
-            case OPT_C:       options.create = true;     break;
-            case OPT_c:       options.create = false;    break;
-            case OPT_D:       options.display = true;    break;
-            case OPT_i:       teco_init = NULL;          break;
-            case OPT_m:       teco_memory = NULL;        break;
-            case OPT_R:       options.readonly = true;   break;
-            case OPT_r:       options.readonly = false;  break;
-            case OPT_v:       teco_vtedit = NULL;        break;
-            case OPT_X:       options.exit = true;       break;
-            case OPT_mung:    options.mung = true;       break; // Hidden
+            case OPT_create:       options.create = true;     break;
+            case OPT_nocreate:     options.create = false;    break;
+            case OPT_nodisplay:    options.display = NULL;    break;
+            case OPT_noinitialize: teco_init = NULL;          break;
+            case OPT_nomemory:     teco_memory = NULL;        break;
+            case OPT_read_only:    options.readonly = true;   break;
+            case OPT_noread_only:  options.readonly = false;  break;
+            case OPT_exit:         options.exit = true;       break;
+            case OPT_mung:         options.mung = true;       break; // Hidden
 
             // Options that call functions
 
-            case OPT_A:       opt_arguments();           break;
-            case OPT_E:       opt_execute();             break;
-            case OPT_F:       store_cmd("1,0E3 ");       break;
-            case OPT_f:       store_cmd("0,1E3 ");       break;
-            case OPT_H:       opt_help();                break;
-            case OPT_I:       opt_initialize();          break;
-            case OPT_L:       opt_log();                 break;
-            case OPT_n:       opt_nodefaults();          break;
-            case OPT_S:       opt_scroll();              break;
-            case OPT_T:       opt_text();                break;
-            case OPT_V:       opt_vtedit();              break;
-            case OPT_version: opt_version();             break; // Hidden
-
-#if     defined(DEBUG)
-
-            // Debug options
-
-            case OPT_print:   options.print = true;      break;
-            case OPT_quit:    opt_quit();                break;
-            case OPT_keys:    opt_keys();                break;
-
-#endif
+            case OPT_arguments:    opt_arguments();           break;
+            case OPT_display:      opt_display();             break;
+            case OPT_execute:      opt_execute();             break;
+            case OPT_formfeed:     store_cmd("1,0E3 ");       break;
+            case OPT_noformfeed:   store_cmd("0,1E3 ");       break;
+            case OPT_help:         opt_help();                break;
+            case OPT_initialize:   opt_initialize();          break;
+            case OPT_keys:         opt_keys();                break;
+            case OPT_log:          opt_log();                 break;
+            case OPT_nodefaults:   opt_nodefaults();          break;
+            case OPT_practice:     opt_practice();            break;
+            case OPT_scroll:       opt_scroll();              break;
+            case OPT_text:         opt_text();                break;
+            case OPT_version:      opt_version();             break; // Hidden
 
             case ':':
                 printf("Argument required for %s option\n", argv[optind - 1]);
@@ -810,6 +842,10 @@ static void parse_options(
                 exit(EXIT_FAILURE);
 
             case '?':
+                check_vtedit(argv, lastopt); // TODO: REMOVE IN FUTURE RELEASE
+
+                //lint -fallthrough
+
             default:
                 printf("Unknown option ");
 
@@ -897,14 +933,11 @@ static void parse_options(
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-
-#if     defined(DEBUG)
-
 static void print_cmd(const char *cmd)
 {
     assert(cmd != NULL);
 
-    if (!options.print)
+    if (!options.practice)
     {
         return;
     }
@@ -960,8 +993,6 @@ static void print_cmd(const char *cmd)
 
     fputc('\n', stdout);
 }
-
-#endif
 
 
 ///

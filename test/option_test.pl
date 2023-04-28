@@ -88,11 +88,23 @@ Readonly my @OPTIONS => (
     },
     {
         name  => q{-D},
-        tests => [ { cmd => '-D', result => '-1W' }, ],
+        tests => [ { cmd => '-D',      result => '-1W' }, ],
+        tests => [ { cmd => '-Dx.tmp', result => 'EIx.tmp' }, ],
     },
     {
         name  => q{--display},
-        tests => [ { cmd => '--display', result => '-1W' }, ],
+        tests => [ { cmd => '--display',       result => '-1W' }, ],
+        tests => [ { cmd => '--display=x.tmp', result => 'EIx.tmp' }, ],
+    },
+    {
+        name  => q{-d},
+        tests => [ { cmd => '-d', result => 'dummy' }, ],
+    },
+    {
+        name  => q{--nodisplay},
+        tests => [ { cmd => '--nodisplay', result => 'dummy' }, ],
+        tests =>
+          [ { cmd => '--nodisplay=x.tmp', result => 'Unknown option' }, ],
     },
     {
         name  => q{-E},
@@ -126,15 +138,11 @@ Readonly my @OPTIONS => (
     },
     {
         name  => q{-H},
-        tests => [
-            { cmd => '-H', result => 'Usage: teco' },
-        ],
+        tests => [ { cmd => '-H', result => 'Usage: teco' }, ],
     },
     {
         name  => q{--help},
-        tests => [
-            { cmd => '--help', result => 'Usage: teco' },
-        ],
+        tests => [ { cmd => '--help', result => 'Usage: teco' }, ],
     },
     {
         name  => q{-I},
@@ -152,12 +160,12 @@ Readonly my @OPTIONS => (
     },
     {
         name  => q{-i},
-        tests => [ { cmd => '-i', result => 'null' }, ],
+        tests => [ { cmd => '-i', result => 'dummy' }, ],
     },
     {
         name  => q{--noinitialize},
         tests => [
-            { cmd => '--noinitialize',    result => 'null' },
+            { cmd => '--noinitialize',   result => 'dummy' },
             { cmd => '--noinitialize=1', result => 'Unknown option' },
         ],
     },
@@ -177,23 +185,23 @@ Readonly my @OPTIONS => (
     },
     {
         name  => q{-m},
-        tests => [ { cmd => '-m', result => 'null' }, ],
+        tests => [ { cmd => '-m', result => 'dummy' }, ],
     },
     {
         name  => q{--nomemory},
         tests => [
-            { cmd => '--nomemory',       result => 'null' },
+            { cmd => '--nomemory',       result => 'dummy' },
             { cmd => '--nomemory=x.tmp', result => 'Unknown option' },
         ],
     },
     {
         name  => q{-n},
-        tests => [ { cmd => '-n', result => 'null' }, ],
+        tests => [ { cmd => '-n', result => 'dummy' }, ],
     },
     {
         name  => q{--nodefaults},
         tests => [
-            { cmd => '--nodefaults',       result => 'null' },
+            { cmd => '--nodefaults',       result => 'dummy' },
             { cmd => '--nodefaults=x.tmp', result => 'Unknown option' },
         ],
     },
@@ -214,7 +222,8 @@ Readonly my @OPTIONS => (
     },
     {
         name  => q{--noread-only},
-        tests => [ { cmd => '--noread-only x.tmp', result => 'Editing file' }, ],
+        tests =>
+          [ { cmd => '--noread-only x.tmp', result => 'Editing file' }, ],
     },
     {
         name  => q{-S},
@@ -247,53 +256,50 @@ Readonly my @OPTIONS => (
         ],
     },
     {
+        name  => q{--version},
+        tests => [ { cmd => '--version', result => 'version X?200' }, ],
+    },
+    {
         name  => q{-V},
         tests => [
-            { cmd => '-Vx.tmp', result => 'EIx.tmp' },
-            { cmd => '-V',      result => 'Argument required' },
+            { cmd => '-V',  result => 'Obsolete option' },
+            { cmd => '-Vx', result => 'Obsolete option' },
+        ],
+    },
+    {
+        name  => q{-v},
+        tests => [
+            { cmd => '-v',  result => 'Obsolete option' },
+            { cmd => '-vx', result => 'Obsolete option' },
         ],
     },
     {
         name  => q{--vtedit},
         tests => [
-            { cmd => '--vtedit=x.tmp', result => 'EIx.tmp' },
-            { cmd => '--vtedit',       result => 'Argument required' },
+            { cmd => '--vtedit',       result => 'Obsolete option' },
+            { cmd => '--vtedit=x.tmp', result => 'Obsolete option' },
         ],
-    },
-    {
-        name  => q{-v},
-        tests => [ { cmd => '-v', result => 'null' }, ],
     },
     {
         name  => q{--novtedit},
         tests => [
-            { cmd => '--novtedit',        result => 'null' },
-            { cmd => '--novtedit=x.tmp',  result => 'Unknown option' },
-        ],
-    },
-    {
-        name  => q{--version},
-        tests => [
-            { cmd => '--version', result => 'version X200' },
+            { cmd => '--novtedit',       result => 'Obsolete option' },
+            { cmd => '--novtedit=x.tmp', result => 'Obsolete option' },
         ],
     },
     {
         name  => q{-X},
-        tests => [
-            { cmd => '-X', result => 'EX' },
-        ],
+        tests => [ { cmd => '-X', result => 'EX' }, ],
     },
     {
         name  => q{--exit},
-        tests => [
-            { cmd => '--exit', result => 'EX' },
-        ],
+        tests => [ { cmd => '--exit', result => 'EX' }, ],
     },
     {
         name  => q{general},
         tests => [
             {
-                cmd    => '--vtedit=z.tmp --execute=y.tmp --init=x.tmp',
+                cmd    => '--display=z.tmp --execute=y.tmp --init=x.tmp',
                 result => 'EIx.tmp.e EIy.tmp.e EIz.tmp'
             },
             { cmd => '?x.tmp y.tmp.tmp z.tmp', result => 'Too many file' },
@@ -348,7 +354,7 @@ sub exec_command
     my ($command) = @_;
     my $error = 0;
 
-    $command = "teco --quit $command";
+    $command = "teco --practice $command";
 
     print "    Executing \"$command\"..." if $verbose;
 
@@ -362,7 +368,7 @@ sub exec_command
     $result =~ s/expand_mem.+?\n//gms;
     $result =~ s/shrink_mem.+?\n//gms;
 
-    $result = (split /\n/, $result)[0];
+    $result = ( split /\n/ms, $result )[0];
 
     chomp $result;
 

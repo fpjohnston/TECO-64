@@ -45,13 +45,13 @@
             <short_name>E</short_name>
             <long_name>execute</long_name>
             <argument>required</argument>
-            <help>Execute TECO macro in file 'xyz'.</help>
+            <help>Execute TECO macro in file 'foo'.</help>
         </option>
         <option>
             <short_name>T</short_name>
             <long_name>text</long_name>
             <argument>required</argument>
-            <help>Store text 'xyz' in edit buffer.</help>
+            <help>Store text 'foo' in edit buffer.</help>
         </option>
     </section>
     <section title="Initialization options">
@@ -59,7 +59,7 @@
             <short_name>I</short_name>
             <long_name>initialize</long_name>
             <argument>required</argument>
-            <help>Use initialization file 'xyz' at startup.</help>
+            <help>Use initialization file 'foo' at startup.</help>
         </option>
         <option>
             <short_name>i</short_name>
@@ -76,7 +76,13 @@
         <option>
             <short_name>D</short_name>
             <long_name>display</long_name>
-            <help>Enable display mode.</help>
+            <argument>optional</argument>
+            <help>Enable display mode, optionally using file 'foo'</help>
+        </option>
+        <option>
+            <short_name>d</short_name>
+            <long_name>nodisplay</long_name>
+            <help>Disable display mode.</help>
         </option>
         <option>
             <short_name>S</short_name>
@@ -84,52 +90,44 @@
             <argument>required</argument>
             <help>Use 'n' lines for scrolling region (implies -D).</help>
         </option>
-        <option>
-            <short_name>V</short_name>
-            <long_name>vtedit</long_name>
-            <argument>required</argument>
-            <help>Use macro in file 'xyz' to initialize display.</help>
-        </option>
-        <option>
-            <short_name>v</short_name>
-            <long_name>novtedit</long_name>
-            <help>Ignore TECO_VTEDIT environment variable.</help>
-        </option>
     </section>l
     <section title="Miscellaneous options">
+        <option>
+            <short_name>n</short_name>
+            <long_name>nodefaults</long_name>
+            <help>Equivalent to --noinitialize --nomemory --nodisplay.</help>
+        </option>
+        <option>
+            <short_name>L</short_name>
+            <long_name>log</long_name>
+            <argument>required</argument>
+            <help>Saves input and output in log file 'foo'.</help>
+        </option>
+         <option>
+            <short_name>X</short_name>
+            <long_name>exit</long_name>
+            <help>Exit from TECO after executing all command-line options.</help>
+        </option>
         <option>
             <short_name>H</short_name>
             <long_name>help</long_name>
             <help>Print this help message.</help>
         </option>
         <option>
-            <short_name>L</short_name>
-            <long_name>log</long_name>
-            <argument>required</argument>
-            <help>Saves input and output in log file 'xyz'.</help>
+            <long_name>version</long_name>
+            <help>Print version and copyright information.</help>
         </option>
-        <option>
-            <short_name>n</short_name>
-            <long_name>nodefaults</long_name>
-            <help>Equivalent to --noinitialize -nomemory --novtedit).</help>
+        <option type="hidden">
+            <long_name>mung</long_name>
         </option>
-        <option>
-            <short_name>X</short_name>
-            <long_name>exit</long_name>
-            <help>Exit from TECO after executing all command-line options.</help>
+        <option type="hidden">
+            <short_name>p</short_name>
+            <long_name>practice</long_name>
         </option>
-        <option debug="200">
-            <long_name>print</long_name>
-            <help>Print initial command string before execution.</help>
-        </option>
-        <option debug="201">
-            <long_name>quit</long_name>
-            <help>Print initial command string and then exit.</help>
-        </option>
-        <option debug="202">
+       <option type="hidden">
+            <short_name>k</short_name>
             <long_name>keys</long_name>
             <argument>required</argument>
-            <help>Save keystrokes in file 'xyz'.</help>
         </option>
     </section>
 </teco>

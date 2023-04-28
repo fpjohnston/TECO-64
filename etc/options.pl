@@ -56,7 +56,6 @@ use Teco qw(teco_read teco_write);
 
 my %args = (
     input  => undef,    # Options file (usually options.xml)
-    debug  => undef,    # Enable processing of debugging options
     output => undef,    # Output file (usually options.h)
 );
 
@@ -73,10 +72,9 @@ my %header = (
     long  => undef,     # Long options for getopt_long()
 );
 
-Readonly my $MIN_DEBUG => 200;
-Readonly my $MAX_DEBUG => 255;
-
 my $max_length = 0;
+
+my $auto = 0;           # Next automatically-assigned option value
 
 #
 #  Main program entry.
@@ -124,51 +122,46 @@ sub main
 
 sub build_strings
 {
-    foreach my $short ( sort keys %options )
+    foreach my $long ( sort keys %options )
     {
-        my %option = %{ $options{$short} };
+        my %option = %{ $options{$long} };
 
-        my $long    = $option{long};
-        my $debug   = $option{debug};
-        my $argtype = $option{argtype};
-        my $help    = $option{help};
+        my $short = $option{short};
+        my $type  = $option{type};
+        my $arg   = $option{arg};
+        my $help  = $option{help};
+        my $enum  = $long =~ s/-/_/mgrs;
 
-        if ( !length $long )
+        if ( defined $short )
         {
-            die "short option '$short' has no long option\n";
-        }
+            $header{short} .= $short;
 
-        next if ( $debug && !$args{debug} );
-
-        if ($debug)
-        {
-            $header{enums} .= sprintf "    OPT_%-7s = $short,\n", $long;
-            $short = $long;
+            if ( $arg =~ /required_argument/ms )
+            {
+                $header{short} .= q{:};
+            }
+            elsif ( $arg =~ /optional_argument/ms )
+            {
+                $header{short} .= q{::};
+            }
         }
         else
         {
-            $header{short} .= $short;
-            $header{enums} .= sprintf "    OPT_%-7s = '$short',\n", $short;
-            $short = "$short";
+            $short = $auto++;
         }
 
-        if ( $argtype =~ /required_argument/ms )
-        {
-            $header{short} .= q{:};
-        }
-        elsif ( $argtype =~ /optional_argument/ms )
-        {
-            $header{short} .= q{::};
-        }
+        $header{enums} .= sprintf "    OPT_%-12s = '%s',\n", $enum, $short;
 
-        $header{long} .= sprintf "    { %-17s %-18s  NULL,  OPT_%-7s },\n",
-          "\"$long\",", "$argtype,", $short;
+        $header{long} .= sprintf "    { %-17s %-18s  NULL, OPT_%-12s },\n",
+          "\"$long\",", "$arg,", $enum;
     }
 
     chomp $header{help};
     chomp $header{long};
     chomp $header{enums};
     chomp $header{enums};
+
+    chop $header{enums};    # No trailing comma on last enum value
 
     return;
 }
@@ -179,20 +172,33 @@ sub build_strings
 
 sub check_option
 {
-    my ( $line, $option, $short, $max_help ) = @_;
+    my ( $line, $long, $type, $max_help ) = @_;
 
-    if ( defined $options{$short} )
+    if ( defined $options{$long} )
     {
-        print "Duplicate $option option at line $line\n";
+        print "Duplicate option '--$long' at line $line\n";
 
         exit 1;
     }
 
-    if ( $max_help < 0 )
+    if ( $max_help < 0 )    # No help text
     {
-        print "No help text found for option '$option' at line $line\n";
+        if ( $type eq 'standard' )    # Must have help for standard option
+        {
+            print "No help text found for option '$long' at line $line\n";
 
-        exit 1;
+            exit 1;
+        }
+    }
+    else    # We have help text
+    {
+        if ( $type ne 'standard' )    # That's only okay for std. options
+        {
+            print "Unexpected help text found for hidden option '$long'"
+              . " at line $line\n";
+
+            exit 1;
+        }
     }
 
     return;
@@ -258,6 +264,11 @@ sub get_details
 
     if ( $#child < 0 )
     {
+        if ( $child eq 'help' )    # Hidden options have no help text
+        {
+            return ();
+        }
+
         print "Missing <$child> tag at line $lineno\n";
 
         exit 1;
@@ -298,10 +309,7 @@ sub make_options
 
 sub parse_options
 {
-    GetOptions(
-        'debug'    => \$args{debug},
-        'output=s' => \$args{output}
-    );
+    GetOptions( 'output=s' => \$args{output} );
 
     die "Not enough input files\n" if $#ARGV < 1;
     die "Too many input files\n"   if $#ARGV > 1;
@@ -352,13 +360,13 @@ sub parse_xml
         {
             my @help   = get_details( $option, 'help', $line );
             my %option = (
-                pass    => $pass,
-                line    => $option->line_number(),
-                debug   => $option->getAttribute('debug'),
-                short   => get_child( $option, 'short_name', $line ),
-                long    => get_child( $option, 'long_name',  $line ),
-                argtype => get_argument( $option, 'argument', $line ),
-                help    => \@help,
+                pass  => $pass,
+                line  => $option->line_number(),
+                type  => $option->getAttribute('type'),
+                short => get_child( $option, 'short_name', $line ),
+                long  => get_child( $option, 'long_name',  $line ),
+                arg   => get_argument( $option, 'argument', $line ),
+                help  => \@help,
             );
 
             save_option(%option);
@@ -376,55 +384,54 @@ sub save_option
 {
     my %option = @_;
 
-    my $pass    = $option{pass};
-    my $line    = $option{line};
-    my $debug   = $option{debug};
-    my $short   = $option{short};
-    my $long    = $option{long};
-    my $argtype = $option{argtype};
-    my @help    = @{ $option{help} };
+    my $pass  = $option{pass};
+    my $line  = $option{line};
+    my $type  = $option{type};
+    my $short = $option{short};
+    my $long  = $option{long};
+    my $arg   = $option{arg};
+    my @help  = @{ $option{help} };
 
     croak "Missing long option at line $line\n" if !length $long;
 
-    if ($debug)
+    if ( !defined $type )
     {
-        if ( length $short != 0 )
-        {
-            die "Unexpected short name for debug option '--$long' at "
-              . "line $line\n";
-        }
-
-        return if !$args{debug};
-
-        if ( $debug < $MIN_DEBUG or $debug > $MAX_DEBUG )
-        {
-            die "Debug option out of range at line $line\n";
-        }
-
-        $short = $debug;
-
-        if ( length $short == 0 )
-        {
-            die "Invalid debug option '--$long' at line $line\n";
-        }
-
-        check_option( $line, "--$long", $short, $#help );
+        $type = 'standard';
     }
-    else
+    elsif ( $type ne 'hidden' )
+    {
+        croak "Invalid type '$type' for option '--$long' at line $line\n"
+          if !length $long;
+    }
+
+    check_option( $line, "--$long", $type, $#help );
+
+    my $options;    # Option info to return to caller
+    my $help;       # 1st line of help text
+
+    # The following is for the help text. Figure out whether we just have
+    # a long option, or both a long and a short option.
+
+    if ( defined $short )
     {
         if ( length $short == 0 )
         {
-            die "Missing short name for option at line $line\n";
+            undef $short;
         }
-
-        check_option( $line, "-$short", $short, $#help );
+        else
+        {
+            $options = "-$short, ";
+        }
     }
 
-    my $options;
-    my $help;    # 1st line of help text
+    $options .= "--$long";
+
+    # If we have help text, figure out whether there's a string, such
+    # as a file name, that we need to use in the option example.
 
     if (
-        $help[0] =~ m{
+        defined $help[0]
+        && $help[0] =~ m{
                       (.*)              # Start of text
                       \'                # Value delimiter
                       (.+)              # Option value
@@ -433,13 +440,12 @@ sub save_option
                      }msx
       )
     {
-        $help    = sprintf "$1$3";
-        $options = sprintf "%s--$long=$2", $debug ? q{} : "-$short, ";
+        $help = sprintf "$1$3";
+        $options .= "=$2";
     }
     else
     {
-        $help    = $help[0];
-        $options = sprintf "%s--$long", $debug ? q{} : "-$short, ";
+        $help = $help[0];
     }
 
     # First pass is just to figure out how much space we need between the
@@ -455,6 +461,8 @@ sub save_option
         return;
     }
 
+    # Here only for pass 2, to save everything we processed
+
     my $format = "    \"  %-*s   %s\",\n";
 
     for my $i ( 0 .. $#help )
@@ -463,12 +471,12 @@ sub save_option
         $options = q{    };
     }
 
-    $options{$short} = {
-        line    => $line,
-        long    => $long,
-        argtype => $argtype,
-        help    => $help,
-        debug   => $debug,
+    $options{$long} = {
+        line  => $line,
+        short => $short,
+        arg   => $arg,
+        help  => $help,
+        type  => $type,
     };
 
     return;

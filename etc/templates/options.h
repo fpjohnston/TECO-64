@@ -45,11 +45,11 @@ static const char * const help_text[] =
     "",
     "Examples:",
     "",
-    "  teco abc               Open 'abc' for input and output.",
-    "  teco -R abc            Open 'abc' for input only.",
-    "  teco abc xyz           Open 'abc' for input and 'xyz' for output.",
-    "  teco abc -O xyz        Equivalent to 'teco abc xyz'",
-    "  teco -E abc            Execute the file 'abc' as a TECO macro.",
+    "  teco foo               Open 'foo' for input and output.",
+    "  teco -R foo            Open 'foo' for input only.",
+    "  teco foo baz           Open 'foo' for input and 'baz' for output.",
+    "  teco foo -O baz        Equivalent to 'teco foo baz'",
+    "  teco -E foo            Execute the file 'foo' as a TECO macro.",
     "",
     "Environment variables:",
     "",
@@ -67,8 +67,6 @@ static const char * const help_text[] =
 enum option_t
 {
 /* (INSERT: ENUM OPTIONS) */
-    OPT_version = 1,
-    OPT_mung
 };
 
 ///  @var optstring
@@ -82,8 +80,6 @@ static const char * const optstring = ":/* (INSERT: SHORT OPTIONS) */";
 static const struct option long_options[] =
 {
 /* (INSERT: LONG OPTIONS) */
-    { "version",        no_argument,        NULL,  OPT_version },  // --version option (hidden)
-    { "mung",           no_argument,        NULL,  OPT_mung    },  // --mung option (hidden)
-    { NULL,             no_argument,        NULL,  0           },  // Markers for end of list
+    { NULL,             no_argument,        NULL,  0               },  // Markers for end of list
 };
 
