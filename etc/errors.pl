@@ -37,11 +37,15 @@ use Teco qw(teco_read teco_write);
 
 # Command-line arguments
 
+#<<< perltidy: preserve format
+
 my %args = (
-    input    => undef,                  # Input XML file
-    template => undef,                  # Template file
-    output   => undef,                  # Output file
+    input    => undef,          # Input XML file
+    template => undef,          # Template file
+    output   => undef,          # Output file
 );
+
+#>>>
 
 #
 #  Main program entry.

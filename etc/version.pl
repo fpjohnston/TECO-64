@@ -36,12 +36,16 @@ use Teco qw(teco_read teco_write);
 
 # Command-line arguments
 
+#<<< perltidy: preserve format
+
 my %args = (
-    input    => undef,                  # Input header file
-    output   => undef,                  # Output header file
-    template => undef,                  # Template file
-    release  => undef,                  # Release type (major, minor, patch)
+    input    => undef,          # Input header file
+    output   => undef,          # Output header file
+    template => undef,          # Template file
+    release  => undef,          # Release type (major, minor, patch)
 );
+
+#>>>
 
 my %version;
 

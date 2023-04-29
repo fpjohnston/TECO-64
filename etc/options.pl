@@ -54,10 +54,14 @@ use Teco qw(teco_read teco_write);
 
 # Command-line arguments
 
+#<<< perltidy:: preserve format
+
 my %args = (
-    input  => undef,                    # Options file (usually options.xml)
-    output => undef,                    # Output file (usually options.h)
+    input  => undef,            # Options file (usually options.xml)
+    output => undef,            # Output file (usually options.h)
 );
+
+#>>>
 
 # Configuration options read from XML file
 
