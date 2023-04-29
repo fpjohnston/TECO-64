@@ -34,76 +34,73 @@ E1 U1                                   ! Save extended features flag !
 }
 
 @^U1{Q1:@=/E1 = 0x%x: /
-    Q1&32768 "N @^A/newline / '
-    Q1&16384 "N @^A/repeat / '
-    Q1&2048  "N @^A/c_oper / '
-    Q1&1024  "N @^A/percent / '
-    Q1&512   "N @^A/insert / '
-    Q1&256   "N @^A/dollar / '
-    Q1&128   "N @^A/radix / '
-    Q1&64    "N @^A/prompt / '
-    Q1&32    "N @^A/bang / '
-    Q1&16    "N @^A/eimacro / '
-    Q1&8     "N @^A/equals / '
-    Q1&4     "N @^A/ctrl_a / '
-    Q1&2     "N @^A/text / '
     Q1&1     "N @^A/xoper / '
+    Q1&2     "N @^A/text / '
+    Q1&4     "N @^A/ctrl_a / '
+    Q1&8     "N @^A/equals / '
+    Q1&16    "N @^A/eimacro / '
+    Q1&32    "N @^A/bang / '
+    Q1&64    "N @^A/prompt / '
+    Q1&128   "N @^A/radix / '
+    Q1&256   "N @^A/dollar / '
+    Q1&512   "N @^A/insert / '
+    Q1&1024  "N @^A/percent / '
+    Q1&2048  "N @^A/c_oper / '
+    Q1&16384 "N @^A/repeat / '
+    Q1&32768 "N @^A/newline / '
     -1^T
 }
 
 @^U2{
     E2:@=/E2 = 0x%x: /
-    E2&1024 "N @^A/args / '
-    E2&512  "N @^A/page / '
-    E2&256  "N @^A/quote / ' 
-    E2&128  "N @^A/loop / '
-    E2&64   "N @^A/n_arg / '
-    E2&32   "N @^A/m_arg / '
-    E2&16   "N @^A/comma / '
-    E2&8    "N @^A/colon / '
-    E2&4    "N @^A/atsign / '
-    E2&2    "N @^A/oper / '
     E2&1    "N @^A/zero / '
+    E2&2    "N @^A/oper / '
+    E2&4    "N @^A/atsign / '
+    E2&8    "N @^A/colon / '
+    E2&16   "N @^A/comma / '
+    E2&32   "N @^A/m_arg / '
+    E2&64   "N @^A/n_arg / '
+    E2&128  "N @^A/loop / '
+    E2&256  "N @^A/quote / ' 
+    E2&512  "N @^A/page / '
+    E2&1024 "N @^A/args / '
     -1^T
 }
 
 @^U3{
     E3:@=/E3 = 0x%x: /
-    E3&256 "N @^A/CR_type / '
-    E3&128 "N @^A/keepnul / '
-    E3&32  "N @^A/noout / '
-    E3&16  "N @^A/noin / '
-    E3&8   "N @^A/CR_out / '
-    E3&4   "N @^A/CR_in / '
-    E3&2   "N @^A/smart / '
     E3&1   "N @^A/nopage / '
+    E3&2   "N @^A/smart / '
+    E3&4   "N @^A/CR_in / '
+    E3&8   "N @^A/CR_out / '
+    E3&16  "N @^A/noin / '
+    E3&32  "N @^A/noout / '
+    E3&128 "N @^A/keepnul / '
+    E3&256 "N @^A/CR_type / '
     -1^T
 }
 
 @^U4{
     E4:@=/E4 = 0x%x: /
-    E4&4 "N @^A/status / '
-    E4&2 "N @^A/fence / '
     E4&1 "N @^A/invert / '
+    E4&2 "N @^A/fence / '
+    E4&4 "N @^A/status / '
     -1^T
 }
 
 @^UD{
     ED :@=/ED = 0x%x: /
-    ED&256 "N @^A/nobuffer / '
-    ED&64  "N @^A/movedot / '
-    ED&32  "N @^A/escape / '
-    ED&16  "N @^A/keepdot / '
-    ED&2   "N @^A/yank / '
     ED&1   "N @^A/caret / '
+    ED&2   "N @^A/yank / '
+    ED&16  "N @^A/keepdot / '
+    ED&32  "N @^A/escape / '
+    ED&64  "N @^A/movedot / '
+    ED&256 "N @^A/nobuffer / '
     -1^T
 }
 
 @^UH{
     EH :@=/EH = 0x%x: /
-    EH&16 "N @^A/who / '
-    EH&8  "N @^A/where / '
-    EH&4  "N @^A/what / '
     @^A/why=/
     EH&3 - 1 "E
         @^A/terse/
@@ -114,23 +111,26 @@ E1 U1                                   ! Save extended features flag !
             @^A/concise/
         '
     '
+    EH&4  "N @^A/what / '
+    EH&8  "N @^A/where / '
+    EH&16 "N @^A/who / '
     -1^T
 }
 
 @^UT{
     ET :@=/ET = 0x%x: /
-    ET&32768 "N @^A/ctrl_c / '
-    ET&8192  "N @^A/accent / '
-    ET&4096  "N @^A/eightbit / '
-    ET&512   "N @^A/scope / '
-    ET&256   "N @^A/truncate / '
-    ET&128   "N @^A/abort / '
-    ET&64    "N @^A/detach / '
-    ET&32    "N @^A/nowait / '
-    ET&8     "N @^A/noecho / '
-    ET&4     "N @^A/lower / '
-    ET&2     "N @^A/rubout / '
     ET&1     "N @^A/image / '
+    ET&2     "N @^A/rubout / '
+    ET&4     "N @^A/lower / '
+    ET&8     "N @^A/noecho / '
+    ET&32    "N @^A/nowait / '
+    ET&64    "N @^A/detach / '
+    ET&128   "N @^A/abort / '
+    ET&256   "N @^A/truncate / '
+    ET&512   "N @^A/scope / '
+    ET&4096  "N @^A/eightbit / '
+    ET&8192  "N @^A/accent / '
+    ET&32768 "N @^A/ctrl_c / '
     -1^T
 }
 

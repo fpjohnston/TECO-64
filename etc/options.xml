@@ -77,7 +77,7 @@
             <short_name>D</short_name>
             <long_name>display</long_name>
             <argument>optional</argument>
-            <help>Enable display mode, optionally using file 'foo'</help>
+            <help>Enable display mode, optionally using file 'foo'.</help>
         </option>
         <option>
             <short_name>d</short_name>

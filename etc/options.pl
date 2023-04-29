@@ -410,7 +410,6 @@ sub save_option
                   }msx
       )
     {
-        $help = sprintf "$1$3";
         $options .= "=$2";
     }
 
