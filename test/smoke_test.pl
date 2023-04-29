@@ -29,7 +29,7 @@ use warnings;
 use version; our $VERSION = '1.0.0';
 
 use Carp;
-use Cwd qw(getcwd abs_path);
+use Cwd     qw(getcwd abs_path);
 use English qw( -no_match_vars );
 use autodie qw( open close );
 use Getopt::Long;
@@ -45,9 +45,9 @@ use Readonly;
 
 my $init;
 my $execute = 1;
-my $make = 1;
+my $make    = 1;
 my $orphans;
-my $prove = 1;
+my $prove  = 1;
 my $subdir = q{};
 my $skip;
 my $target  = 'TECO-64';
@@ -66,53 +66,53 @@ my @teco_files = ();
 # Define tokens we will use to translate scripts into test sets,
 # depending on the TECO we are targeting.
 
-my %tokens   = (
+my %tokens = (
     common => {
-        'cmd1'  =>  q{cmd1.tmp},
-        'cmd2'  =>  q{cmd2.tmp},
-        'in1'   =>  q{in1.tmp},
-        'in2'   =>  q{in2.tmp},
-        'log1'  =>  q{log1.tmp},
-        'out1'  =>  q{out1.tmp},
-        'out2'  =>  q{out2.tmp},
-        '"E'    =>  q{"E [[FAIL]] '},
-        '"G'    =>  q{"G [[FAIL]] '},
-        '"L'    =>  q{"L [[FAIL]] '},
-        '"N'    =>  q{"N [[FAIL]] '},
-        '"S'    =>  q{"S [[FAIL]] '},
-        '"U'    =>  q{"U [[FAIL]] '},
-        'I'     =>  q{13@I// 10@I//},
-        '^T'    =>  q{13^T 10^T},
+        'cmd1'  => q{cmd1.tmp},
+        'cmd2'  => q{cmd2.tmp},
+        'in1'   => q{in1.tmp},
+        'in2'   => q{in2.tmp},
+        'log1'  => q{log1.tmp},
+        'out1'  => q{out1.tmp},
+        'out2'  => q{out2.tmp},
+        '"E'    => q{"E [[FAIL]] '},
+        '"G'    => q{"G [[FAIL]] '},
+        '"L'    => q{"L [[FAIL]] '},
+        '"N'    => q{"N [[FAIL]] '},
+        '"S'    => q{"S [[FAIL]] '},
+        '"U'    => q{"U [[FAIL]] '},
+        'I'     => q{13@I// 10@I//},
+        '^T'    => q{13^T 10^T},
         'PASS'  => qq{@^A/!PASS!/ [[^T]]},
-        'FAIL'  =>  q{[[error]] ^C},
+        'FAIL'  => q{[[error]] ^C},
         'error' => qq{@^A/!FAIL!/ [[^T]]},
-        'enter' =>  q{0,128ET HK},
-        'exit'  =>  q{^D EK HK [[PASS]] EX},
-        '8'     =>  q{},
+        'enter' => q{0,128ET HK},
+        'exit'  => q{^D EK HK [[PASS]] EX},
+        '8'     => q{},
     },
     teco32 => {
-        'bad'   =>  q{[TECO]},
-        'expr'  =>  q{64},
-        'LOOP'  =>  q{32},
-        'Q'     =>  q{64},
-        'EG'    =>  q{type hello.tmp}
+        'bad'  => q{[TECO]},
+        'expr' => q{64},
+        'LOOP' => q{32},
+        'Q'    => q{64},
+        'EG'   => q{type hello.tmp}
     },
     teco64 => {
-        '8'     =>  q{4096,0 ET},
-        'bad'   =>  q{/dev/teco},
-        'enter' =>  q{0,128ET HK 0E1 1,0E3},
-        'expr'  =>  q{64},
-        'LOOP'  =>  q{32},
-        'Q'     =>  q{64},
-        '^T'    =>  q{10^T},
-        'EG'    =>  qq{echo 'hello, world!\n!PASS!'},
+        '8'     => q{4096,0 ET},
+        'bad'   => q{/dev/teco},
+        'enter' => q{0,128ET HK 0E1 1,0E3},
+        'expr'  => q{64},
+        'LOOP'  => q{32},
+        'Q'     => q{64},
+        '^T'    => q{10^T},
+        'EG'    => qq{echo 'hello, world!\n!PASS!'},
     },
     tecoc => {
-        'bad'   =>  q{/dev/teco},
-        'expr'  =>  q{63},
-        'LOOP'  =>  q{31},
-        'Q'     =>  q{21},
-        'EG'    =>  qq{echo 'hello, world!\n!PASS!'},
+        'bad'  => q{/dev/teco},
+        'expr' => q{63},
+        'LOOP' => q{31},
+        'Q'    => q{21},
+        'EG'   => qq{echo 'hello, world!\n!PASS!'},
     },
 );
 
@@ -155,7 +155,7 @@ my @jabberwocky = (
     'All mimsy were the borogoves,',
     '     And the mome raths outgrabe.',
     q{/},
-    );
+);
 
 #
 #  Main program start
@@ -185,7 +185,7 @@ if ($make)
     print "Test results:\n";
 
     printf "% 4u test script%s (%s skipped)\n", $nscripts,
-        $nscripts == 1 ? q{} : 's', $nskipped;
+      $nscripts == 1 ? q{} : 's', $nskipped;
 
     printf '% 4u test file%s, ', $nfiles, $nfiles == 1 ? q{} : 's';
 
@@ -194,8 +194,7 @@ if ($make)
     printf "% 4u completed OK\n", $okay;
 }
 
-exit ( $okay == $nfiles ? 0 : 1 );      # Return success (0) or failure (1)
-
+exit( $okay == $nfiles ? 0 : 1 );       # Return success (0) or failure (1)
 
 # Check to see that the test script specifies a valid TECO.
 
@@ -203,9 +202,9 @@ sub check_teco
 {
     my ( $infile, $teco, $redirect ) = @_;
 
-    if (   ( $teco eq 'TECO C'  && $target eq 'TECO-32' )
+    if (   ( $teco eq 'TECO C' && $target eq 'TECO-32' )
         || ( $teco eq 'TECO-10' && $target ne 'TECO-64' )
-        || ( $teco eq 'TECO-32' && $target eq 'TECO C'  )
+        || ( $teco eq 'TECO-32' && $target eq 'TECO C' )
         || ( $teco eq 'TECO-64' && $target ne 'TECO-64' ) )
     {
         ++$nskipped;
@@ -239,7 +238,6 @@ sub check_teco
     return $teco;
 }
 
-
 # Execute tests
 
 sub exec_tests
@@ -255,11 +253,11 @@ sub exec_tests
 
     # Tell user which benchmark files were superfluous
 
-    if ($orphans && keys %benchmark_files != 0)
+    if ( $orphans && keys %benchmark_files != 0 )
     {
         print "Orphan benchmark files:\n";
 
-        foreach my $file (sort keys %benchmark_files)
+        foreach my $file ( sort keys %benchmark_files )
         {
             print "    $file\n";
         }
@@ -267,7 +265,6 @@ sub exec_tests
 
     return;
 }
-
 
 # Get data from text file, containing expected or actual test results.
 
@@ -284,7 +281,7 @@ sub get_data
 
     if ($text)
     {
-        if ($text =~ /!START! . (.+) /msx)
+        if ( $text =~ /!START! . (.+) /msx )
         {
             $text = $1;
         }
@@ -293,8 +290,9 @@ sub get_data
     return $text;
 }
 
-
 # Initialize command-line arguments and options.
+
+## no critic (ProhibitExcessComplexity)
 
 sub initialize
 {
@@ -328,11 +326,11 @@ sub initialize
     $target = 'TECO-32' if $teco32;
     $target = 'TECO-64' if $teco64;
 
-    if ($#ARGV + 1 == 0)
+    if ( $#ARGV + 1 == 0 )
     {
         $testdir = q{.};
     }
-    elsif ($#ARGV == 0)
+    elsif ( $#ARGV == 0 )
     {
         $testdir = $ARGV[0];
         $testdir =~ s{(.+)/}{$1}ms;
@@ -342,20 +340,22 @@ sub initialize
         croak 'Too many arguments';
     }
 
-    if ($subdir ne q{} && $subdir =~ /^\/(.+)/ms)
+    if ( $subdir ne q{} && $subdir =~ /^\/(.+)/ms )
     {
         $subdir = $1;                   # If specified, strip off leading slash
     }
 
-    croak "Can't find directory: $testdir/scripts/$subdir" if !-d "$testdir/scripts/$subdir";
-    croak "Can\'t find directory: $testdir/benchmarks" if !-d "$testdir/benchmarks";
+    croak "Can't find directory: $testdir/scripts/$subdir"
+      if !-d "$testdir/scripts/$subdir";
+    croak "Can\'t find directory: $testdir/benchmarks"
+      if !-d "$testdir/benchmarks";
 
-    if (!-e "$testdir/cases")
+    if ( !-e "$testdir/cases" )
     {
         mkdir "$testdir/cases" or croak;
     }
 
-    if (!-e "$testdir/results")
+    if ( !-e "$testdir/results" )
     {
         mkdir "$testdir/results" or croak;
     }
@@ -410,6 +410,7 @@ sub initialize
     return;
 }
 
+## use critic
 
 # Make test scripts.
 
@@ -430,7 +431,7 @@ sub make_tests
 
         my $outfile = "$file.tec";
         my ( $report, $text, $expects, $redirect ) =
-            parse_script( $infile, $outfile, @input );
+          parse_script( $infile, $outfile, @input );
 
         next unless $report;
 
@@ -448,9 +449,11 @@ sub make_tests
             {
                 my $cwd = getcwd;
 
-                chdir "$testdir/cases" or croak "Can't change directory to $testdir/cases";
+                chdir "$testdir/cases"
+                  or croak "Can't change directory to $testdir/cases";
 
-                my $actual = setup_test( $outfile, $report, $expects, $redirect );
+                my $actual =
+                  setup_test( $outfile, $report, $expects, $redirect );
 
                 chdir $cwd or croak "Can't change directory to $cwd";
 
@@ -472,6 +475,8 @@ sub make_tests
 }
 
 # Read a test script header, and figure out how we need to proceed.
+
+## no critic (ProhibitExcessComplexity)
 
 sub parse_script
 {
@@ -560,6 +565,7 @@ sub parse_script
     return ( $report, $text, $expects, $redirect );
 }
 
+## use critic
 
 # Verify that we got the test resulted in the expected TECO error.
 
@@ -609,7 +615,6 @@ sub prove_error
     return;
 }
 
-
 # Verify that we got the test resulted in the expected failure.
 
 sub prove_fail
@@ -646,7 +651,6 @@ sub prove_fail
 
     return;
 }
-
 
 # Verify that we got the test resulted in the expected success.
 
@@ -691,7 +695,6 @@ sub prove_pass
     return;
 }
 
-
 # Verify the test results.
 
 sub prove_test
@@ -700,7 +703,7 @@ sub prove_test
 
     my $actual = get_data("$testdir/results/$file.lis");
 
-    if (!$actual)
+    if ( !$actual )
     {
         system 'reset -I';
 
@@ -711,12 +714,12 @@ sub prove_test
 
     my $expected = get_data("$testdir/benchmarks/$file.lis");
 
-    delete $benchmark_files{"$file.lis"}; # Delete this key
+    delete $benchmark_files{"$file.lis"};    # Delete this key
 
     # TECO C sometimes terminates lines with CR/LF, and sometimes with LF/CR.
     # Removing all instances of CR just makes comparisons much easier.
 
-    if ($target eq 'TECO C' || $target eq 'TECO-32')
+    if ( $target eq 'TECO C' || $target eq 'TECO-32' )
     {
         $actual   =~ s/\r//gms;
         $expected =~ s/\r//gms if $expected;
@@ -731,7 +734,7 @@ sub prove_test
         $report .= ' ->';
     }
 
-    if ($actual =~ /lost block/gms)
+    if ( $actual =~ /lost block/gms )
     {
         print "$report MEMORY\n";
 
@@ -743,6 +746,8 @@ sub prove_test
     $actual =~ s/exit_mem.+?\n//gms;
     $actual =~ s/expand_mem.+?\n//gms;
     $actual =~ s/shrink_mem.+?\n//gms;
+
+    ## no critic (ProhibitCascadingIfElse)
 
     if ( $actual eq 'TIMEOUT' )
     {
@@ -766,14 +771,15 @@ sub prove_test
     {
         prove_fail( $report, $expected, $actual );
     }
-    else    # Here if test failed or should fail
+    else                                # Here if test failed or should fail
     {
         prove_error( $report, $expects, $actual );
     }
 
+    ## use critic
+
     return;
 }
-
 
 # Execute a given test set. The reason for the alarm is that some of the tests
 # cause TECO C to hang, and we need a way to bail out. The execution of the
@@ -783,8 +789,8 @@ sub prove_test
 sub run_test
 {
     my ($command) = @_;
-    my $result = q{};
-    my $status = eval {
+    my $result    = q{};
+    my $status    = eval {
         local $SIG{ALRM} = sub { croak 'TECO alarm' };
 
         alarm 1;                        # Should be long enough for any TECO test
@@ -796,7 +802,7 @@ sub run_test
 
     alarm 0;                            # Race condition protection
 
-    if (!defined $status || ($EVAL_ERROR && $EVAL_ERROR =~ 'TECO alarm'))
+    if ( !defined $status || ( $EVAL_ERROR && $EVAL_ERROR =~ 'TECO alarm' ) )
     {
         $result = 'TIMEOUT';
 
@@ -805,7 +811,6 @@ sub run_test
 
     return $result;
 }
-
 
 # Set up to run a test.
 
@@ -835,7 +840,7 @@ sub setup_test
     {
         $command = 'tecoc';
 
-        if (qx{which $command} eq q{})
+        if ( qx{which $command} eq q{} )
         {
             print "Can't find $command executable\n";
 
@@ -875,7 +880,7 @@ sub setup_test
     {
         $command = 'teco';
 
-        if (qx{which $command} eq q{})
+        if ( qx{which $command} eq q{} )
         {
             print "Can't find $command executable\n";
 
@@ -928,7 +933,6 @@ sub setup_test
     return $actual;
 }
 
-
 # Translate tokens in test script, depending on target TECO.
 
 sub translate_tokens
@@ -937,15 +941,15 @@ sub translate_tokens
     my $sequence = 0;
     my $teco;
 
-    if ($target eq 'TECO-64')
+    if ( $target eq 'TECO-64' )
     {
         $teco = 'teco64';
     }
-    elsif ($target eq 'TECO-32')
+    elsif ( $target eq 'TECO-32' )
     {
         $teco = 'teco32';
     }
-    elsif ($target eq 'TECO C')
+    elsif ( $target eq 'TECO C' )
     {
         $teco = 'tecoc';
     }
@@ -961,15 +965,15 @@ sub translate_tokens
         my $after  = $3;
         my $middle;
 
-        if ($token eq 'JABBERWOCKY')
+        if ( $token eq 'JABBERWOCKY' )
         {
             $middle = join "\n", @jabberwocky;
         }
-        elsif (exists $tokens{$teco}{$2})
+        elsif ( exists $tokens{$teco}{$2} )
         {
             $middle = $tokens{$teco}{$2};
         }
-        elsif (exists $tokens{common}{$2})
+        elsif ( exists $tokens{common}{$2} )
         {
             $middle = $tokens{common}{$2};
         }
@@ -1004,7 +1008,6 @@ sub translate_tokens
     return $text;
 }
 
-
 # Helper function for find().
 
 sub wanted
@@ -1027,7 +1030,6 @@ sub wanted
     return;
 }
 
-
 # Write test result to new file.
 
 sub write_result
@@ -1042,7 +1044,6 @@ sub write_result
 
     return;
 }
-
 
 # Write translated test script to new file.
 
