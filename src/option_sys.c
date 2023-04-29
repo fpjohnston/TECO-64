@@ -154,7 +154,7 @@ static void check_arg(const char *str, const char *option)
         printf("Missing %s for %s option\n", str, option);
 
         exit(EXIT_FAILURE);
-    }        
+    }
 }
 
 
@@ -413,7 +413,7 @@ static void open_files(const char *infile, const char *outfile)
     if (infile == NULL)
     {
         char memory[PATH_MAX] = { '\0'}; // File name from memory file
-        
+
         if (teco_memory != NULL)        // Try to read memory file
         {
             read_memory(memory, (uint)sizeof(memory));
@@ -608,7 +608,7 @@ static void opt_mung(const char *file)
 
     options.args = NULL;
     teco_memory  = NULL;
-    
+
     if (nbytes > 2)
     {
         int first = file[0];

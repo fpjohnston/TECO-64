@@ -228,7 +228,7 @@ static void delete_mblock(void *p1)
 
             tprint("%s(): block #%u at %p, size = %lu\n", __func__, p->count,
                    p->addr, (size_t)p->size);
-            
+
             p->next = p->prev = NULL;
             p->addr = NULL;
             p->size = 0;

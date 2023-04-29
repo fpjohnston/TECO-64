@@ -172,7 +172,7 @@ sub build_strings
 
 sub check_option
 {
-    my ( $line, $long, $type, $max_help ) = @_;
+    my ( $line, $long, $type, $help ) = @_;
 
     if ( defined $options{$long} )
     {
@@ -181,7 +181,7 @@ sub check_option
         exit 1;
     }
 
-    if ( $max_help < 0 )    # No help text
+    if ( length $help == 0 )    # No help text
     {
         if ( $type eq 'standard' )    # Must have help for standard option
         {
@@ -250,38 +250,6 @@ sub get_child
     return q{ } if length $child[0]->textContent() == 0;
 
     return $child[0]->textContent;
-}
-
-#
-#  Get 'detail' child elements of current node, and validate it.
-#
-
-sub get_details
-{
-    my ( $tag, $child, $lineno ) = @_;
-
-    my @child = $tag->findnodes("./$child");
-
-    if ( $#child < 0 )
-    {
-        if ( $child eq 'help' )    # Hidden options have no help text
-        {
-            return ();
-        }
-
-        print "Missing <$child> tag at line $lineno\n";
-
-        exit 1;
-    }
-
-    my @details = ();
-
-    for my $child (@child)
-    {
-        push @details, $child->textContent();
-    }
-
-    return @details;
 }
 
 #
@@ -358,15 +326,14 @@ sub parse_xml
 
         foreach my $option ( $section->findnodes('./option') )
         {
-            my @help   = get_details( $option, 'help', $line );
             my %option = (
                 pass  => $pass,
                 line  => $option->line_number(),
                 type  => $option->getAttribute('type'),
                 short => get_child( $option, 'short_name', $line ),
                 long  => get_child( $option, 'long_name',  $line ),
+                help  => get_child( $option, 'help',       $line ),
                 arg   => get_argument( $option, 'argument', $line ),
-                help  => \@help,
             );
 
             save_option(%option);
@@ -390,7 +357,7 @@ sub save_option
     my $short = $option{short};
     my $long  = $option{long};
     my $arg   = $option{arg};
-    my @help  = @{ $option{help} };
+    my $help  = $option{help};
 
     croak "Missing long option at line $line\n" if !length $long;
 
@@ -404,10 +371,9 @@ sub save_option
           if !length $long;
     }
 
-    check_option( $line, "--$long", $type, $#help );
+    check_option( $line, "--$long", $type, $help );
 
     my $options;    # Option info to return to caller
-    my $help;       # 1st line of help text
 
     # The following is for the help text. Figure out whether we just have
     # a long option, or both a long and a short option.
@@ -430,22 +396,18 @@ sub save_option
     # as a file name, that we need to use in the option example.
 
     if (
-        defined $help[0]
-        && $help[0] =~ m{
-                      (.*)              # Start of text
-                      \'                # Value delimiter
-                      (.+)              # Option value
-                      \'                # Value delimiter
-                      (.*)              # Remainder of text
-                     }msx
+        defined $help
+        && $help =~ m{
+                   (.*)              # Start of text
+                   \'                # Value delimiter
+                   (.+)              # Option value
+                   \'                # Value delimiter
+                   (.*)              # Remainder of text
+                  }msx
       )
     {
         $help = sprintf "$1$3";
         $options .= "=$2";
-    }
-    else
-    {
-        $help = $help[0];
     }
 
     # First pass is just to figure out how much space we need between the
@@ -453,22 +415,18 @@ sub save_option
 
     if ( $pass == 1 )
     {
-        if ( $max_length < length $options )
-        {
-            $max_length = length $options;
-        }
+        $max_length = length $options if $max_length < length $options;
 
         return;
     }
 
     # Here only for pass 2, to save everything we processed
 
-    my $format = "    \"  %-*s   %s\",\n";
-
-    for my $i ( 0 .. $#help )
+    if ( length $help > 0 )
     {
-        $header{help} .= sprintf $format, $max_length, $options, $help[$i];
-        $options = q{    };
+        my $format = "    \"  %-*s   %s\",\n";
+
+        $header{help} .= sprintf $format, $max_length, $options, $help;
     }
 
     $options{$long} = {
