@@ -644,6 +644,8 @@ static void opt_nodefaults(void)
     teco_init   = NULL;
     teco_memory = NULL;
     teco_vtedit = NULL;
+
+    options.display = NULL;
 }
 
 
