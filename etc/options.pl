@@ -55,8 +55,8 @@ use Teco qw(teco_read teco_write);
 # Command-line arguments
 
 my %args = (
-    input  => undef,    # Options file (usually options.xml)
-    output => undef,    # Output file (usually options.h)
+    input  => undef,                    # Options file (usually options.xml)
+    output => undef,                    # Output file (usually options.h)
 );
 
 # Configuration options read from XML file
@@ -66,15 +66,15 @@ my %options = ();
 # Sections to output to header file
 
 my %header = (
-    help  => undef,     # Help text
-    enums => undef,     # Cases for command-line options
-    short => undef,     # Short options for getopt_long()
-    long  => undef,     # Long options for getopt_long()
+    help  => undef,                     # Help text
+    enums => undef,                     # Cases for command-line options
+    short => undef,                     # Short options for getopt_long()
+    long  => undef,                     # Long options for getopt_long()
 );
 
 my $max_length = 0;
 
-my $auto = 0;           # Next automatically-assigned option value
+my $auto = 0;                           # Next automatically-assigned option value
 
 #
 #  Main program entry.
@@ -110,8 +110,8 @@ sub main
 
     printf "...%u option%s found\n", $nopts, $nopts == 1 ? q{} : 's';
 
-    build_strings();            # Build data strings for header file
-    make_options($template);    # Create new header file
+    build_strings();                    # Build data strings for header file
+    make_options($template);            # Create new header file
 
     return;
 }
@@ -161,7 +161,7 @@ sub build_strings
     chomp $header{enums};
     chomp $header{enums};
 
-    chop $header{enums};    # No trailing comma on last enum value
+    chop $header{enums};                # No trailing comma on last enum value
 
     return;
 }
@@ -181,18 +181,18 @@ sub check_option
         exit 1;
     }
 
-    if ( length $help == 0 )    # No help text
+    if ( length $help == 0 )            # No help text
     {
-        if ( $type eq 'standard' )    # Must have help for standard option
+        if ( $type eq 'standard' )      # Must have help for standard option
         {
             print "No help text found for option '$long' at line $line\n";
 
             exit 1;
         }
     }
-    else    # We have help text
+    else                                # We have help text
     {
-        if ( $type ne 'standard' )    # That's only okay for std. options
+        if ( $type ne 'standard' )      # That's only okay for std. options
         {
             print "Unexpected help text found for hidden option '$long'"
               . " at line $line\n";
@@ -373,7 +373,7 @@ sub save_option
 
     check_option( $line, "--$long", $type, $help );
 
-    my $options;    # Option info to return to caller
+    my $options;                        # Option info to return to caller
 
     # The following is for the help text. Figure out whether we just have
     # a long option, or both a long and a short option.
@@ -398,11 +398,11 @@ sub save_option
     if (
         defined $help
         && $help =~ m{
-                   (.*)              # Start of text
-                   \'                # Value delimiter
-                   (.+)              # Option value
-                   \'                # Value delimiter
-                   (.*)              # Remainder of text
+                   (.*)                 # Start of text
+                   \'                   # Value delimiter
+                   (.+)                 # Option value
+                   \'                   # Value delimiter
+                   (.*)                 # Remainder of text
                   }msx
       )
     {
