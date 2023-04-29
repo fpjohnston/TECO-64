@@ -234,6 +234,8 @@ critic:
 	$(AT)perlcritic etc/errors.pl
 	$(AT)perlcritic etc/options.pl
 	$(AT)perlcritic etc/version.pl
+	$(AT)perlcritic test/option_test.pl
+	$(AT)perlcritic test/smoke_test.pl
 
 #
 #  Define how to lint source files.
