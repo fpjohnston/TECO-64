@@ -345,7 +345,7 @@ if ($summary)
     printf "$okay completed OK, $failed failed\n";
 }
 
-exit( $okay == $ntests ? 0 : 1 );    # Return success (0) or failure (1)
+exit( $okay == $ntests ? 0 : 1 );       # Return success (0) or failure (1)
 
 # Execute command and return result
 
@@ -439,14 +439,14 @@ sub run_test
     my $status    = eval {
         local $SIG{ALRM} = sub { croak 'TECO alarm' };
 
-        alarm 1;    # Should be long enough for any TECO test
+        alarm 1;                        # Should be long enough for any TECO test
 
         $result = qx($command);
 
         alarm 0;
     };
 
-    alarm 0;    # Race condition protection
+    alarm 0;                            # Race condition protection
 
     if ( !defined $status || ( $EVAL_ERROR && $EVAL_ERROR =~ 'TECO alarm' ) )
     {
