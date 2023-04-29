@@ -37,10 +37,10 @@ use Teco qw(teco_read teco_write);
 # Command-line arguments
 
 my %args = (
-    input    => undef,    # Input header file
-    output   => undef,    # Output header file
-    template => undef,    # Template file
-    release  => undef,    # Release type (major, minor, patch)
+    input    => undef,                  # Input header file
+    output   => undef,                  # Output header file
+    template => undef,                  # Template file
+    release  => undef,                  # Release type (major, minor, patch)
 );
 
 my %version;
@@ -91,25 +91,25 @@ sub advance_version
 {
     my ($release) = @_;
 
-    if ( !defined $release )    # Just print current release
+    if ( !defined $release )            # Just print current release
     {
         print 'Current TECO release version: '
           . "$version{major}.$version{minor}.$version{patch}\n";
 
         exit 1;
     }
-    elsif ( length $release == 0 )    # What user specified was bogus
+    elsif ( length $release == 0 )      # What user specified was bogus
     {
         die "No argument found for --release\n";
     }
 
     my $previous = $version{full};
 
-    if ( $release =~ /major/ims )     # User specified major version,
+    if ( $release =~ /major/ims )       # User specified major version,
     {
-        ++$version{major};            #  so increment it,
+        ++$version{major};              #  so increment it,
 
-        $version{minor} = 0;          #  and reset minor and patch versions
+        $version{minor} = 0;            #  and reset minor and patch versions
         $version{patch} = 0;
     }
     elsif ( $release =~ /minor/ims )    # User specified minor version,
