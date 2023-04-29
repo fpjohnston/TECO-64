@@ -39,9 +39,9 @@ use Teco qw(teco_read teco_write);
 # Command-line arguments
 
 my %args = (
-    input    => undef,    # Input XML file
-    output   => undef,    # Output header file
-    template => undef,    # Template file
+    input    => undef,                  # Input XML file
+    output   => undef,                  # Output header file
+    template => undef,                  # Template file
 );
 
 #
@@ -192,12 +192,12 @@ sub make_exec
 
         if ( $scan ne 'NULL' )
         {
-            $scan_funcs{$scan} = 1;    # We found a real scan function
+            $scan_funcs{$scan} = 1;     # We found a real scan function
         }
 
         if ( defined $exec )
         {
-            $exec_funcs{$exec} = 1;    # We found a real exec function
+            $exec_funcs{$exec} = 1;     # We found a real exec function
         }
     }
 
@@ -300,7 +300,7 @@ sub parse_xml
 
             if ( $name =~ /^\[(.)\]/msx )
             {
-                $name = $1;    # Convert [^] to ^
+                $name = $1;             # Convert [^] to ^
             }
 
             push @commands,
