@@ -354,7 +354,7 @@ sub exec_command
     my ($command) = @_;
     my $error = 0;
 
-    $command = "teco --practice $command";
+    $command = "teco --practice -n $command";
 
     print "    Executing \"$command\"..." if $verbose;
 

@@ -59,7 +59,6 @@ struct options
     const char *file1;      ///< Input file, or file to mung
     const char *file2;      ///< Output file
     const char *args;       ///< --arguments option
-    const char *display;    ///< --display option
     int scroll;             ///< --scroll option
     bool create;            ///< --create option
     bool readonly;          ///< --read-only option
@@ -79,7 +78,6 @@ static struct options options =
     .file1      = NULL,
     .file2      = NULL,
     .args       = NULL,
-    .display    = NULL,
     .scroll     = 0,
     .create     = true,
     .readonly   = false,
@@ -284,8 +282,6 @@ void init_options(
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
 
-    options.display = teco_vtedit;
-
     parse_options(argc, argv);
 
     // If we have an initialization file, then it will be processed by TECO
@@ -354,21 +350,21 @@ void init_options(
     }
     else if (!f.e0.i_redir)
     {
-        if (options.display != NULL)    // Do we have a display initialization file?
+        if (teco_vtedit != NULL)        // Do we have a display initialization file?
         {
-            if (options.display[0] == NUL)
+            if (teco_vtedit[0] == NUL)
             {
                 store_cmd("-1W ");
             }
             else
             {
-                store_cmd("EI%s\e ", options.display);
+                store_cmd("EI%s\e ", teco_vtedit);
             }
         }
 
         if (options.scroll != 0)        // Set up scrolling if requested
         {
-            if (options.display == NULL) // Ensure that display is enabled
+            if (teco_vtedit == NULL)    // Ensure that display is enabled
             {
                 store_cmd("-1W ");
             }
@@ -490,11 +486,11 @@ static void opt_display(void)
 {
     if (optarg == NULL)
     {
-        options.display = "";
+        teco_vtedit = "";
     }
     else
     {
-        options.display = optarg;
+        teco_vtedit = optarg;
     }
 }
 
@@ -644,8 +640,6 @@ static void opt_nodefaults(void)
     teco_init   = NULL;
     teco_memory = NULL;
     teco_vtedit = NULL;
-
-    options.display = NULL;
 }
 
 
@@ -659,8 +653,6 @@ static void opt_nodefaults(void)
 static void opt_practice(void)
 {
     options.practice = true;
-
-    opt_nodefaults();
 }
 
 
@@ -813,7 +805,7 @@ static void parse_options(
 
             case OPT_create:       options.create = true;     break;
             case OPT_nocreate:     options.create = false;    break;
-            case OPT_nodisplay:    options.display = NULL;    break;
+            case OPT_nodisplay:    teco_vtedit = NULL;        break;
             case OPT_noinitialize: teco_init = NULL;          break;
             case OPT_nomemory:     teco_memory = NULL;        break;
             case OPT_read_only:    options.readonly = true;   break;
