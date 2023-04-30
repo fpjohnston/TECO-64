@@ -73,10 +73,10 @@ static const struct oper oldoper[X_MAX] =
     [X_NULL]    = { .precedence =  0, .operands = 0, .order = NONE  },
     [X_LPAREN]  = { .precedence =  0, .operands = 0, .order = LEFT  }, // (
     [X_RPAREN]  = { .precedence =  0, .operands = 0, .order = LEFT  }, // )
-    [X_NOT]     = { .precedence =  0, .operands = 1, .order = LEFT  }, // !x
+    [X_NOT]     = { .precedence =  0, .operands = 1, .order = RIGHT }, // (!x)
     [X_1S_COMP] = { .precedence =  0, .operands = 1, .order = LEFT  }, // x^_
-    [X_MINUS]   = { .precedence =  0, .operands = 1, .order = LEFT  }, // -x
-    [X_PLUS]    = { .precedence =  0, .operands = 1, .order = LEFT  }, // +x
+    [X_MINUS]   = { .precedence =  0, .operands = 1, .order = RIGHT }, // -x
+    [X_PLUS]    = { .precedence =  0, .operands = 1, .order = RIGHT }, // +x
     [X_MUL]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x * y
     [X_DIV]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x / y
     [X_REM]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x // y)
@@ -97,14 +97,16 @@ static const struct oper oldoper[X_MAX] =
 
 ///  @var      newoper
 ///  @brief    Table of operator characteristics when using standard C
-///            precedence and associativity rules.
+///            precedence and associativity rules. Table is ordered from
+///            highest to lowest precedence, but the parentheses are
+///            handled specially, so their precedence isn't checked.
 
 static const struct oper newoper[X_MAX] =
 {
     [X_NULL]    = { .precedence =  0, .operands = 0, .order = NONE  },
     [X_LPAREN]  = { .precedence =  1, .operands = 0, .order = LEFT  }, // (
     [X_RPAREN]  = { .precedence =  1, .operands = 0, .order = LEFT  }, // )
-    [X_NOT]     = { .precedence =  2, .operands = 1, .order = RIGHT }, // !x
+    [X_NOT]     = { .precedence =  2, .operands = 1, .order = RIGHT }, // (!x)
     [X_1S_COMP] = { .precedence =  2, .operands = 1, .order = LEFT  }, // x^_
     [X_MINUS]   = { .precedence =  2, .operands = 1, .order = RIGHT }, // -x
     [X_PLUS]    = { .precedence =  2, .operands = 1, .order = RIGHT }, // +x
