@@ -42,7 +42,7 @@ my %args = (
     input    => undef,          # Input header file
     output   => undef,          # Output header file
     template => undef,          # Template file
-    release  => undef,          # Release type (major, minor, patch)
+    version  => undef,          # Version type (major, minor, patch)
 );
 
 #>>>
@@ -71,7 +71,7 @@ sub main
     my $template_data = teco_read( $args{template} );
 
     find_version($header_data);
-    advance_version( $args{release} );
+    advance_version( $args{version} );
 
     my %changes = (
         'MAJOR VERSION' => "    major_version = $version{major},",
@@ -93,42 +93,42 @@ sub main
 
 sub advance_version
 {
-    my ($release) = @_;
+    my ($version) = @_;
 
-    if ( !defined $release )            # Just print current release
+    if ( !defined $version )            # Just print current version
     {
         print 'Current TECO release version: '
           . "$version{major}.$version{minor}.$version{patch}\n";
 
         exit 1;
     }
-    elsif ( length $release == 0 )      # What user specified was bogus
+    elsif ( length $version == 0 )      # What user specified was bogus
     {
-        die "No argument found for --release\n";
+        die "No argument found for --version\n";
     }
 
     my $previous = $version{full};
 
-    if ( $release =~ /major/ims )       # User specified major version,
+    if ( $version =~ /major/ims )       # User specified major version,
     {
         ++$version{major};              #  so increment it,
 
         $version{minor} = 0;            #  and reset minor and patch versions
         $version{patch} = 0;
     }
-    elsif ( $release =~ /minor/ims )    # User specified minor version,
+    elsif ( $version =~ /minor/ims )    # User specified minor version,
     {
         ++$version{minor};              #  so increment it,
 
         $version{patch} = 0;            #  and reset patch version
     }
-    elsif ( $release =~ /patch/ims )    # User specified patch version,
+    elsif ( $version =~ /patch/ims )    # User specified patch version,
     {
         ++$version{patch};              #  so increment it
     }
     else                                # What user specified was bogus
     {
-        die "Invalid argument '$release' for --release\n";
+        die "Invalid argument '$version' for --version\n";
     }
 
     $version{previous} = $version{full};
@@ -182,7 +182,7 @@ sub parse_options
 {
     GetOptions(
         'output=s'  => \$args{output},
-        'release:s' => \$args{release},
+        'version:s' => \$args{version},
     );
 
     die "Not enough input files\n" if $#ARGV < 1;

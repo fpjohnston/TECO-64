@@ -22,98 +22,64 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
 #
-#  Build targets:
-#
-#      all          Equivalent to 'teco' target.
-#      clean        Clean object files and executables.
-#      distclean    Clean everything.
-#      doc          Create or update documentation.
-#      help         Print help message.
-#      install      Build executable and copy to /usr/local/bin.
-#      mostlyclean  Clean object files.
-#      teco         Build TECO-64 text editor. [default]
-#
-#  Build options:
-#
-#      buffer=gap   Use gap buffer for editing text. [default]
-#      display=on   Enable display mode. [default]
-#      display=off  Disable display mode.
-#      headers      Regenerate header files if needed.
-#      int=32       Use 32-bit integers. [default]
-#      int=64       Use 64-bit integers.
-#      paging=std   Use standard paging.
-#      paging=vm    Use virtual memory paging. [default]
-#
-#  Debugging options:
-#
-#      lint         Lint .c and .lob files (requires PC-lint).
-#      lobs         Lint .c files (requires PC-lint).
-#      gdb=1        Enable use of GDB debugger.
-#      gprof=1      Enable use of GPROF profiler.
-#      memcheck=1   Enable checks for memory leaks.
-#      verbose=1    Enable verbosity during build.
-#
-#  Optimization options:
-#
-#      ndebug=1     Disable run-time assertions.
-#      nostrict=1   Disable run-time syntax checking.
+#  See etc/build/help.mk for a list of build targets and options.
 #
 ################################################################################
 
 TARGET   = teco
-VPATH    = src:obj
+VPATH    = src:obj:include
 CC       = gcc
 INCDIR   = include
-INCLUDES = -I ../$(INCDIR)
+INCLUDES = -I $(INCDIR)
 LIBS     =                              # Default is no libraries
-STRIP    = -s                           # Strip symbol table when linking
 
-#  Enable verbosity if requested.
+# Strip symbols from executable image. Will be undefined if debugging.
+
+STRIP    = -s
+MAKE     := $(MAKE) --no-print-directory
+
+#  If verbose=1 is included when invoking make, we will print the actual
+#  commands being executed, and will suppress the user-friendly messages
+#  normally output.
 
 ifdef   verbose
-    AT   =
-    NULL = 
-else
-    AT   = @
+
+    AT =
     NULL = >/dev/null 2>&1
+
+else
+
+    AT = @
+
 endif
 
-include etc/build/sources.mk            # Source files
-include etc/build/display.mk            # Display node option
-include etc/build/buffer.mk             # Buffer handler option
-include etc/build/paging.mk             # Page handler option
-include etc/build/integer.mk            # Integer option
-include etc/build/debug.mk              # Debugging options
-include etc/build/optimize.mk           # Optimization options
-include etc/build/release.mk            # Release option
+
+include etc/build/sources.mk            # List of source files
+include etc/build/variables.mk          # Variable definitions
+
+OPTIONS = -c -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums
+OPTIONS += $(INCLUDES) $(OPTIMIZE) $(DEBUG) $(DEFINES) -MMD
 
 DFILES  = $(SOURCES:.c=.d)
 LOBS    = $(SOURCES:.c=.lob)
 OBJECTS = $(SOURCES:.c=.o)
+OBJECTS := $(patsubst %,obj/%,$(OBJECTS))
 
-CFLAGS = -c -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums \
-         -O$(OPT) $(INCLUDES) $(OPT_OPT) $(DEBUG) $(DEFINES) -MMD
-
-#  Define default target ('teco'). This may also update the release version.
+#  Define default target ('teco').
 
 .PHONY: $(TARGET) 
-$(TARGET): $(VERSION) bin/$(TARGET)
+$(TARGET): bin/$(TARGET)
 
 .PHONY: all
 all: $(TARGET)                          # Equivalent to default target.
 
-.PHONY: install
-install: $(TARGET)
-	$(AT)install -v -C bin/teco /usr/local/bin
-	$(AT)install -v -d /usr/local/lib/teco
-	$(AT)install -v -C --mode=0644 lib/*.tec /usr/local/lib/teco
-
-.PHONY: version
-version: include/version.h
-
+#  The following targets are present because git repositories only allow for
+#  files in directories, not for directories that contain no files. So before
+#  we start compiling and linking, we make sure that these two directories
+#  exist.
 #
-#  Define targets that create directories.
-#
+#  Note that once created, these will remain in the directory tree, and will
+#  not be deleted by any targets.
 
 bin:
 	$(AT)mkdir -p bin
@@ -121,161 +87,63 @@ bin:
 obj:
 	$(AT)mkdir -p obj
 
-#
-#  Define targets that create header files from XML files and template files.
-#  This is done to avoid duplicating information pertaining to such things as
-#  commands, error codes, or start-up options.
-#
+#  Always compile source files if compiler options have changed.
 
-HEADERS = include/commands.h include/errcodes.h include/errtables.h \
-		  include/exec.h include/options.h
+$(OBJECTS): obj/OPTIONS
 
-.PHONY: headers
-headers: $(HEADERS)
+obj/OPTIONS: obj                        # Create compiler options file
+	-$(AT)@echo '$(OPTIONS)' | cmp -s - $@ || echo '$(OPTIONS)' > $@
 
-include/commands.h: etc/commands.xml etc/templates/commands.h
-	$(AT)etc/commands.pl $^ --out $@
+obj/%.o: %.c                            # Compile source file
+	@echo Making $@ $(NULL)
+	$(AT)$(CC) @obj/OPTIONS $< -o obj/$(@F)
 
-include/errcodes.h: etc/errors.xml etc/templates/errcodes.h
-	$(AT)etc/errors.pl $^ --out $@
+bin/$(TARGET): $(OBJECTS) bin           # Link object files, create executable
+	@echo Making $(@F) $(NULL)
+	$(AT)$(CC) $(DEBUG) $(STRIP) -o $@ $(OBJECTS) $(LIBS)
 
-include/errtables.h: etc/errors.xml etc/templates/errtables.h
-	$(AT)etc/errors.pl $^ --out $@
+#  Copy executable image and library files to system directories.
 
-include/exec.h: etc/commands.xml etc/templates/exec.h
-	$(AT)etc/commands.pl $^ --out $@
+.PHONY: install
+install: $(TARGET)
+	$(AT)install -v -C bin/teco /usr/local/bin
+	$(AT)install -v -d /usr/local/lib/teco
+	$(AT)install -v -C --mode=0644 lib/*.tec /usr/local/lib/teco
 
-include/options.h: etc/options.xml etc/templates/options.h
-	$(AT)etc/options.pl etc/options.xml etc/templates/options.h --out $@ $(OPTIONS)
+#  Update release version number.
 
-include/version.h: distclean
-	$(AT)etc/version.pl include/version.h etc/templates/$(@F) --out $@ --release=$(release)
+ifeq ($(version),major)
 
-#
-#  Define how to compile source files.
-#
+else ifeq ($(version),minor)
 
-$(OBJECTS): obj/CFLAGS
+else ifeq ($(version),patch)
 
-obj/CFLAGS: obj
-	-$(AT)echo '$(CFLAGS)' | cmp -s - $@ || echo '$(CFLAGS)' > $@
+else ifdef release
 
--include $(DFILES)
+    $(error Invalid release version option: $(version))
 
-%.o: %.c $(HEADERS)
-	@echo Making $@
-	$(AT)cd obj && $(CC) @CFLAGS ../$<
+endif
 
-#
-#  Define how to link object files and create executable image.
-#
+#  Define release target, used to update version number and create
+#  a new public release of TECO.
 
-bin/$(TARGET): $(OBJECTS) bin
-	@echo Making $(@F)
-	$(AT)cd obj && $(CC) $(DEBUG) $(STRIP) -o ../$@ $(OBJECTS) $(LIBS)
+.PHONY: release
+release:
+	$(AT)etc/version.pl include/version.h etc/templates/version.h \
+		--out include/version.h --version=$(version)
+	$(AT)$(MAKE) -B -s include/version.h
+	$(AT)$(MAKE) $(TARGET)
 
-#
-#  Define help target.
-#
+# Additional targets
 
-include etc/build/help.mk               # Help target
+-include $(DFILES)                      # Add in dependency targets
 
-#
-#  Define targets that build documentation
-#
+include etc/build/headers.mk            # Header file targets
 
-DOXYGEN   = "DOXYGEN"
+include etc/build/help.mk               # Help message target
 
-.PHONY: doc
-doc: html/options.html doc/errors.md
-	-$(AT)echo Making Doxygen documents...
-	-$(AT)cp etc/Doxyfile obj/Doxyfile
-	-$(AT)echo "PREDEFINED = $(DOXYGEN)" >>obj/Doxyfile
-	-$(AT)doxygen obj/Doxyfile
+include etc/build/doc.mk                # Documentation targets
 
-html:
-	-$(AT)mkdir -p html
+include etc/build/test.mk               # Test targets
 
-html/options.html: html etc/options.xml etc/options.xsl
-	-$(AT)echo Making HTML options file...
-	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html
-
-doc/errors.md: etc/errors.xml etc/templates/errors.md
-	$(AT)etc/errors.pl $^ -o $@
-
-#
-#  Define targets that clean things up
-#
-
-.PHONY: clean
-clean: mostlyclean
-	-$(AT)cd bin && rm -f $(TARGET) $(TARGET).map $(NULL)
-
-.PHONY: distclean
-distclean: obj bin mostlyclean clean
-	-$(AT)rm -f obj/CFLAGS obj/Doxyfile $(NULL) 
-	-$(AT)rm -rf html $(NULL) 
-	-$(AT)cd src && rm -f *.bak $(NULL)
-	-$(AT)cd test && rm -f cases/* results/* $(NULL)
-	-$(AT)cd $(INCDIR) && rm -f *.bak $(NULL)
-
-.PHONY: mostlyclean
-mostlyclean: obj
-	-$(AT)cd obj && rm -f *.o *.d *.lob $(NULL)
-
-#
-#  Define targets that verify Perl scripts.
-#
-
-.PHONY: critic
-critic:
-	$(AT)perlcritic etc/Teco.pm
-	$(AT)perlcritic etc/commands.pl
-	$(AT)perlcritic etc/errors.pl
-	$(AT)perlcritic etc/options.pl
-	$(AT)perlcritic etc/version.pl
-	$(AT)perlcritic test/option_test.pl
-	$(AT)perlcritic test/smoke_test.pl
-
-#
-#  Define how to lint source files.
-#
-
-LINT = flint -b -zero -i$(HOME)/flint/lnt $(DEFINES) ../etc/std.lnt \
-             -e126 -e786 -e818 -e830 -e843 -e844 +fan +fas
-
-%.lob: %.c obj
-	@echo Making $@
-	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
-
-#
-#  Define how to lint .lob (lint object) files.
-#
-
-.PHONY: lint
-lint: obj
-	@echo Linting source files...
-	@$(MAKE) $(LOBS)
-	@echo Linting .lob files...
-	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
-
-.PHONY: lobs
-lobs: obj $(LOBS)
-
-#
-#  Define target to smoke test executable image.
-#
-
-PHONY: smoke
-smoke:
-	@echo Checking Perl scripts...
-	$(MAKE) debug=1 memcheck=1 critic
-	$(MAKE) -B debug=1 memcheck=1 include/options.h
-	@echo Linting source files...
-	$(MAKE) debug=1 memcheck=1 lint
-	@echo Compiling and linking TECO...
-	$(MAKE) debug=1 memcheck=1 teco
-	@echo Testing TECO command-line options...
-	$(AT)test/option_test.pl --summary
-	@echo Running smoke tests...
-	$(AT)test/smoke_test.pl test/
+include etc/build/clean.mk              # Clean targets
