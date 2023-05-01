@@ -59,76 +59,57 @@ enum order
 
 struct oper
 {
-    uint precedence;            ///< Operator precedence
     uint operands;              ///< No. of required operands
+    uint precedence;            ///< Operator precedence
     enum order order;           ///< Operator associativity
 };
 
-///  @var      oldoper
-///  @brief    Table of operator characteristics when using classic TECO
-//             precedence and associativity rules.
-
-static const struct oper oldoper[X_MAX] =
-{
-    [X_NULL]    = { .precedence =  0, .operands = 0, .order = NONE  },
-    [X_LPAREN]  = { .precedence =  0, .operands = 0, .order = LEFT  }, // (
-    [X_RPAREN]  = { .precedence =  0, .operands = 0, .order = LEFT  }, // )
-    [X_NOT]     = { .precedence =  0, .operands = 1, .order = RIGHT }, // (!x)
-    [X_1S_COMP] = { .precedence =  0, .operands = 1, .order = LEFT  }, // x^_
-    [X_MINUS]   = { .precedence =  0, .operands = 1, .order = RIGHT }, // -x
-    [X_PLUS]    = { .precedence =  0, .operands = 1, .order = RIGHT }, // +x
-    [X_MUL]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x * y
-    [X_DIV]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x / y
-    [X_REM]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x // y)
-    [X_ADD]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x + y
-    [X_SUB]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x - y
-    [X_LSHIFT]  = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x << y)
-    [X_RSHIFT]  = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x >> y)
-    [X_GE]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x >= y
-    [X_GT]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x > y)
-    [X_LE]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x <= y)
-    [X_LT]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x < y)
-    [X_EQ]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x == y)
-    [X_NE]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x <> y)
-    [X_AND]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // x & y
-    [X_XOR]     = { .precedence =  0, .operands = 2, .order = LEFT  }, // (x ~ y)
-    [X_OR]      = { .precedence =  0, .operands = 2, .order = LEFT  }, // x # y
-};
-
-///  @var      newoper
+///  @var      oper
 ///  @brief    Table of operator characteristics when using standard C
 ///            precedence and associativity rules. Table is ordered from
 ///            highest to lowest precedence, but the parentheses are
 ///            handled specially, so their precedence isn't checked.
 
-static const struct oper newoper[X_MAX] =
+static const struct oper oper[X_MAX] =
 {
-    [X_NULL]    = { .precedence =  0, .operands = 0, .order = NONE  },
-    [X_LPAREN]  = { .precedence =  1, .operands = 0, .order = LEFT  }, // (
-    [X_RPAREN]  = { .precedence =  1, .operands = 0, .order = LEFT  }, // )
-    [X_NOT]     = { .precedence =  2, .operands = 1, .order = RIGHT }, // (!x)
-    [X_1S_COMP] = { .precedence =  2, .operands = 1, .order = LEFT  }, // x^_
-    [X_MINUS]   = { .precedence =  2, .operands = 1, .order = RIGHT }, // -x
-    [X_PLUS]    = { .precedence =  2, .operands = 1, .order = RIGHT }, // +x
-    [X_MUL]     = { .precedence =  3, .operands = 2, .order = LEFT  }, // x * y
-    [X_DIV]     = { .precedence =  3, .operands = 2, .order = LEFT  }, // x / y
-    [X_REM]     = { .precedence =  3, .operands = 2, .order = LEFT  }, // (x // y)
-    [X_ADD]     = { .precedence =  4, .operands = 2, .order = LEFT  }, // x + y
-    [X_SUB]     = { .precedence =  4, .operands = 2, .order = LEFT  }, // x - y
-    [X_LSHIFT]  = { .precedence =  5, .operands = 2, .order = LEFT  }, // (x << y)
-    [X_RSHIFT]  = { .precedence =  5, .operands = 2, .order = LEFT  }, // (x >> y)
-    [X_GE]      = { .precedence =  6, .operands = 2, .order = LEFT  }, // (x >= y
-    [X_GT]      = { .precedence =  6, .operands = 2, .order = LEFT  }, // (x > y)
-    [X_LE]      = { .precedence =  6, .operands = 2, .order = LEFT  }, // (x <= y)
-    [X_LT]      = { .precedence =  6, .operands = 2, .order = LEFT  }, // (x < y)
-    [X_EQ]      = { .precedence =  7, .operands = 2, .order = LEFT  }, // (x == y)
-    [X_NE]      = { .precedence =  7, .operands = 2, .order = LEFT  }, // (x <> y)
-    [X_AND]     = { .precedence =  8, .operands = 2, .order = LEFT  }, // x & y
-    [X_XOR]     = { .precedence =  9, .operands = 2, .order = LEFT  }, // (x ~ y)
-    [X_OR]      = { .precedence = 10, .operands = 2, .order = LEFT  }, // x # y
+    [X_NULL]    = { .operands = 0, .precedence =  0, .order = NONE  },
+    [X_LPAREN]  = { .operands = 0, .precedence =  1, .order = LEFT  }, // (
+    [X_RPAREN]  = { .operands = 0, .precedence =  1, .order = LEFT  }, // )
+    [X_NOT]     = { .operands = 1, .precedence =  2, .order = RIGHT }, // (!x)
+    [X_1S_COMP] = { .operands = 1, .precedence =  2, .order = LEFT  }, // x^_
+    [X_MINUS]   = { .operands = 1, .precedence =  2, .order = RIGHT }, // -x
+    [X_PLUS]    = { .operands = 1, .precedence =  2, .order = RIGHT }, // +x
+    [X_MUL]     = { .operands = 2, .precedence =  3, .order = LEFT  }, // x * y
+    [X_DIV]     = { .operands = 2, .precedence =  3, .order = LEFT  }, // x / y
+    [X_REM]     = { .operands = 2, .precedence =  3, .order = LEFT  }, // (x // y)
+    [X_ADD]     = { .operands = 2, .precedence =  4, .order = LEFT  }, // x + y
+    [X_SUB]     = { .operands = 2, .precedence =  4, .order = LEFT  }, // x - y
+    [X_LSHIFT]  = { .operands = 2, .precedence =  5, .order = LEFT  }, // (x << y)
+    [X_RSHIFT]  = { .operands = 2, .precedence =  5, .order = LEFT  }, // (x >> y)
+    [X_GE]      = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x >= y
+    [X_GT]      = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x > y)
+    [X_LE]      = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x <= y)
+    [X_LT]      = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x < y)
+    [X_EQ]      = { .operands = 2, .precedence =  7, .order = LEFT  }, // (x == y)
+    [X_NE]      = { .operands = 2, .precedence =  7, .order = LEFT  }, // (x <> y)
+    [X_AND]     = { .operands = 2, .precedence =  8, .order = LEFT  }, // x & y
+    [X_XOR]     = { .operands = 2, .precedence =  9, .order = LEFT  }, // (x ~ y)
+    [X_OR]      = { .operands = 2, .precedence = 10, .order = LEFT  }, // x # y
 };
 
-static const struct oper *operator = newoper; ///< Current operator table
+//  The following table allows us to switch back between the operator precedence
+//  in the structure above, and the behavior of classic TECO, in which all
+//  operators have equal precedence. This is controlled by the f.e1.c_oper bit,
+//  and the init_x() function, which is called before execution of each command
+//  string. Note that we always use the operator associativity specified in C,
+//  even though classic TECO states that all associativity should be left to
+//  right. This is because it was determined that classic TECO simply ignores
+//  any operators preceding a unary minus or plus, so using C's associativity
+//  rules simply made more sense (this is also done for the logical NOT
+//  operator, which did not exist in classic TECO).
+
+static uint precedence[X_MAX];          ///< Current precedence table
+
 
 ///  @struct   xstack
 ///  @brief    Definition of expression stack, used to process arithmetic
@@ -224,8 +205,8 @@ static void exec_oper(void)
 {
     assert(x->nopers > 0);
 
-    enum x_oper type = x->oper[x->nopers - 1];
-    uint operands = operator[type].operands;
+    const enum x_oper type = x->oper[x->nopers - 1];
+    const uint operands = oper[type].operands;
     int_t a = 0, b = 0, n;
 
     assert(operands <= 2);
@@ -376,13 +357,27 @@ static inline int_t fetch_val(void)
 
 void init_x(void)
 {
+    // If user changed operator precedence, then update our table.
+
     if (f.e1.c_oper)
     {
-        operator = newoper;
+        if (precedence[X_ADD] == 0)
+        {
+            for (uint i = 0; i < countof(precedence); ++i)
+            {
+                precedence[i] = oper[i].precedence;
+            }
+        }
     }
     else
     {
-        operator = oldoper;
+        if (precedence[X_ADD] != 0)
+        {
+            for (uint i = 0; i < countof(precedence); ++i)
+            {
+                precedence[i] = 0;
+            }
+        }
     }
 
     if (x == NULL)
@@ -583,7 +578,7 @@ void store_oper(enum x_oper o1)
 {
     if (o1 != X_LPAREN)
     {
-        uint p1 = operator[o1].precedence;
+        uint p1 = precedence[o1];
 
         while (x->nopers > 0)
         {
@@ -594,9 +589,9 @@ void store_oper(enum x_oper o1)
                 break;
             }
 
-            uint p2 = operator[o2].precedence;
+            uint p2 = precedence[o2];
 
-            if ((p2 < p1) || (p1 == p2 && operator[o1].order == LEFT))
+            if ((p2 < p1) || (p1 == p2 && oper[o1].order == LEFT))
             {
                 exec_oper();
             }
