@@ -191,11 +191,16 @@ ifeq (${paging}, vm)
 
 else ifeq (${paging}, file)
 
+	#  This is a placeholder for eventual implementation of a method for using
+	#  a "holding file" to allow backwards paging, as described in The Craft of
+	#  Text Editing, by Craig A. Finseth.
+
     $(error Holding file paging is not yet implemented)
 
 else ifeq (${paging}, std)
 
     SOURCES += page_std.c
+
 else ifeq (${paging}, )
 
     SOURCES += page_vm.c
