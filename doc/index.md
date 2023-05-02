@@ -118,13 +118,13 @@
 | &lt;=            | [Relational comparison for less than or equal](oper.md) |
 | &lt;&lt;           | [Arithmetic left shift](oper.md) |
 | &lt;>           | [Relational comparison for inequality](oper.md) |
-| =              | [Type in decimal](oper.md) |
-| ==             | [Type in octal](oper.md) |
+| =              | [Type in decimal](typeout.md) |
+| ==             | [Type in octal](typeout.md) |
 | ==             | [Relational comparison for equality](oper.md) |
-| ===            | [Type in hexadecimal](oper.md) |
-| :=             | [Type in decimal, no CR/LF](oper.md) |
-| :==            | [Type in octal, no CR/LF](oper.md) |
-| :===           | [Type in hexadecimal, no CR/LF](oper.md) |
+| ===            | [Type in hexadecimal](typeout.md) |
+| :=             | [Type in decimal, no CR/LF](typeout.md) |
+| :==            | [Type in octal, no CR/LF](typeout.md) |
+| :===           | [Type in hexadecimal, no CR/LF](typeout.md) |
 | >             | [End loop](loops.md) |
 | >             | [Relational comparison for greater than](oper.md) |
 | &lt;=            | [Relational comparison for greater than or equal](oper.md) |
