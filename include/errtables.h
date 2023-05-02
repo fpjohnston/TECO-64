@@ -93,7 +93,6 @@ static struct errlist errlist[] =
     [E_NAP] = { "NAP",  "No argument before right parenthesis" },
     [E_NAQ] = { "NAQ",  "No argument before quote" },
     [E_NAS] = { "NAS",  "No argument before semi-colon" },
-    [E_NAT] = { "NAT",  "Cannot have n argument and text string" },
     [E_NAU] = { "NAU",  "No argument before U command" },
     [E_NCA] = { "NCA",  "Negative argument to comma" },
     [E_NFI] = { "NFI",  "No file for input" },
@@ -248,8 +247,6 @@ static const char *errhelp[] =
               "numeric argument on which the decision to "
               "execute the following commands or skip to "
               "the matching > is based.",
-    [E_NAT] = "Both an n argument and a string were specified for "
-              "a command which does not allow more than one.",
     [E_NAU] = "The U command must be preceded by either a specific "
               "numeric argument or a command that returns a "
               "numeric value.",

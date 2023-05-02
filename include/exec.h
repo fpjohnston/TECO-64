@@ -229,8 +229,6 @@ extern char eg_command[];
 
 extern tstring ez;
 
-extern uint nparens;
-
 extern const struct cmd null_cmd;
 
 // Functions that scan commands
@@ -331,8 +329,6 @@ extern bool scan_atsign(struct cmd *cmd);
 
 extern bool scan_bad(struct cmd *cmd);
 
-extern bool scan_bang(struct cmd *cmd);
-
 extern bool scan_case(struct cmd *cmd);
 
 extern bool scan_colon(struct cmd *cmd);
@@ -369,7 +365,7 @@ extern bool scan_div(struct cmd *cmd);
 
 extern bool scan_dot(struct cmd *cmd);
 
-extern bool scan_equals(struct cmd *cmd);
+extern bool scan_eq(struct cmd *cmd);
 
 extern bool scan_flag1(struct cmd *cmd);
 
@@ -387,6 +383,8 @@ extern bool scan_mul(struct cmd *cmd);
 
 extern bool scan_nop(struct cmd *cmd);
 
+extern bool scan_not(struct cmd *cmd);
+
 extern bool scan_number(struct cmd *cmd);
 
 extern bool scan_or(struct cmd *cmd);
@@ -403,11 +401,11 @@ extern bool scan_semi(struct cmd *cmd);
 
 extern bool scan_sub(struct cmd *cmd);
 
-extern bool scan_tilde(struct cmd *cmd);
-
 extern bool scan_ubar(struct cmd *cmd);
 
 extern bool scan_x(struct cmd *cmd);
+
+extern bool scan_xor(struct cmd *cmd);
 
 
 // Functions that execute commands
@@ -617,6 +615,10 @@ extern void exec_vbar(struct cmd *cmd);
 
 extern bool append(bool n_set, int_t n_arg, bool colon_set);
 
+extern void check_parens(void);
+
+extern bool check_radix(void);
+
 extern bool check_semi(void);
 
 extern void close_files(void);
@@ -654,6 +656,12 @@ extern void reset_indirect(void);
 extern void reset_loop(void);
 
 extern void reset_search(void);
+
+extern bool scan_bang(struct cmd *cmd);
+
+extern bool scan_equals(struct cmd *cmd);
+
+extern void scan_greg(struct cmd *cmd);
 
 extern bool skip_cmd(struct cmd *cmd, const char *skip);
 

@@ -196,7 +196,7 @@ bool scan_number(struct cmd *cmd)
     int_t radix;
     bool hex = false;                   // Assume hex digits are disallowed
 
-    if (!f.e1.radix || nparens == 0)    // Auto-detect radix?
+    if (!check_radix())                 // Auto-detect radix?
     {
         radix = f.radix;                // No - use default
     }

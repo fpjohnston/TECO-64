@@ -331,12 +331,6 @@
             <detail>the matching > is based.</detail>
         </error>
         <error>
-            <code>NAT</code>
-            <message>Cannot have n argument and text string</message>
-            <detail>Both an n argument and a string were specified for</detail>
-            <detail>a command which does not allow more than one.</detail>
-        </error>
-        <error>
             <code>NAU</code>
             <message>No argument before U command</message>
             <detail>The U command must be preceded by either a specific</detail>

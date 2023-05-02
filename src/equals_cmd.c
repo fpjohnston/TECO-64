@@ -205,33 +205,6 @@ bool scan_equals(struct cmd *cmd)
 
     int c;
 
-    // An equals sign inside parentheses might be an extended operator.
-
-    if (nparens != 0 && f.e1.xoper)
-    {
-        reject_m(cmd->m_set);
-        reject_m(cmd->m_set);
-        reject_colon(cmd->colon);
-        reject_atsign(cmd->atsign);
-
-        if (require_cbuf() != '=')
-        {
-            throw(E_ARG);
-        }
-
-        if (cmd->n_set)
-        {
-            cmd->n_set = false;
-
-            store_val(cmd->n_arg);
-        }
-
-        trace_cbuf('=');
-        store_oper(X_EQ);
-
-        return true;
-    }
-
     reject_m(cmd->m_set);
     reject_dcolon(cmd->dcolon);
 

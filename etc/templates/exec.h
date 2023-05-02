@@ -229,8 +229,6 @@ extern char eg_command[];
 
 extern tstring ez;
 
-extern uint nparens;
-
 extern const struct cmd null_cmd;
 
 // Functions that scan commands
@@ -244,6 +242,10 @@ extern const struct cmd null_cmd;
 // Helper functions for executing commands
 
 extern bool append(bool n_set, int_t n_arg, bool colon_set);
+
+extern void check_parens(void);
+
+extern bool check_radix(void);
 
 extern bool check_semi(void);
 
@@ -282,6 +284,12 @@ extern void reset_indirect(void);
 extern void reset_loop(void);
 
 extern void reset_search(void);
+
+extern bool scan_bang(struct cmd *cmd);
+
+extern bool scan_equals(struct cmd *cmd);
+
+extern void scan_greg(struct cmd *cmd);
 
 extern bool skip_cmd(struct cmd *cmd, const char *skip);
 

@@ -41,7 +41,7 @@
 ///  @var    qtable
 ///  @brief  Table to convert a Q-register name to the corresponding index.
 
-static char qtable[] =
+static char qtable[UCHAR_MAX] =
 {
     ['0'] = 1 + 0,                  //lint !e835
     ['1'] = 1 + 1,
@@ -356,7 +356,7 @@ int get_qindex(int qname, bool qlocal)
 {
     int qindex;
 
-    if ((uint)qname > countof(qtable) || (qindex = qtable[qname]) <= 0)
+    if ((qindex = qtable[(uchar)qname]) <= 0)
     {
         return -1;
     }
@@ -641,6 +641,50 @@ void reset_qreg(void)
 
 
 ///
+///  @brief    Scan Q-register following G command. This works pretty much like
+///            scan_qreg(), but we make special allowance for G*, G+, and G_
+///            commands, and also disallow the use of the local Q-register flag
+///            '.' in those cases.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_greg(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    int c = require_cbuf();             // Get the Q-register name
+    int offset = 0;
+    int qindex;
+
+    trace_cbuf(c);
+
+    if (c == '.')                       // Local Q-register?
+    {
+        cmd->qlocal = true;             // Yes, mark it
+
+        c = require_cbuf();
+        offset = QCOUNT;
+
+        trace_cbuf(c);
+    }
+
+    if ((qindex = qtable[(uchar)c]) == 0 || (qindex < 0 && cmd->qlocal))
+    {
+        throw(E_IQN, c);                // Invalid Q-register name
+    }
+    else if (cmd->qlocal)
+    {
+        qindex += QCOUNT;
+    }
+
+    cmd->qname = (char)c;               // Save the name
+    cmd->qindex = qindex + offset - 1;  // Make it zero-based
+}
+
+
+///
 ///  @brief    Scan Q-register following command.
 ///
 ///  @returns  Nothing.
@@ -652,6 +696,8 @@ void scan_qreg(struct cmd *cmd)
     assert(cmd != NULL);
 
     int c = require_cbuf();
+    int offset = 0;
+    int qindex;
 
     trace_cbuf(c);
 
@@ -660,39 +706,18 @@ void scan_qreg(struct cmd *cmd)
         cmd->qlocal = true;             // Yes, mark it
 
         c = require_cbuf();
+        offset = QCOUNT;
 
         trace_cbuf(c);
     }
 
+    if ((qindex = qtable[(uchar)c]) <= 0)
+    {
+        throw(E_IQN, c);                // Invalid Q-register name
+    }
+
     cmd->qname = (char)c;               // Save the name
-
-    if ((uint)c > countof(qtable) || (cmd->qindex = qtable[c]) == 0)
-    {
-        if (cmd->qname == ESC)          // ESCape means no Q-register
-        {
-            throw(E_MQN);               // Missing Q-register name
-        }
-        else
-        {
-            throw(E_IQN, cmd->qname);   // Invalid Q-register name
-        }
-    }
-
-    if (cmd->qindex == -1)              // Special Q-registers?
-    {
-        if (toupper(cmd->c1) == 'G')    // Yes, is this a G command?
-        {
-            return;                     // Yes
-        }
-
-        throw(E_IQN, cmd->qname);       // Invalid Q-register name
-    }
-    else if (cmd->qlocal)
-    {
-        cmd->qindex += QCOUNT;
-    }
-
-    --cmd->qindex;                      // Make it zero-based
+    cmd->qindex = qindex + offset - 1;  // Make it zero-based
 }
 
 

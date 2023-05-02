@@ -1,0 +1,72 @@
+! Smoke test for TECO text editor !
+
+! Function: Test global Q-register names !
+!  Command: U !
+!     TECO: PASS !
+
+[[enter]]
+
+123 UA                              ! Test: UA !
+123 UB                              ! Test: UB !
+123 UC                              ! Test: UC !
+123 UD                              ! Test: UD !
+123 UE                              ! Test: UE !
+123 UF                              ! Test: UF !
+123 UG                              ! Test: UG !
+123 UH                              ! Test: UH !
+123 UI                              ! Test: UI !
+123 UJ                              ! Test: UJ !
+123 UK                              ! Test: UK !
+123 UL                              ! Test: UL !
+123 UM                              ! Test: UM !
+123 UN                              ! Test: UN !
+123 UO                              ! Test: UO !
+123 UP                              ! Test: UP !
+123 UQ                              ! Test: UQ !
+123 UR                              ! Test: UR !
+123 US                              ! Test: US !
+123 UT                              ! Test: UT !
+123 UU                              ! Test: UU !
+123 UV                              ! Test: UV !
+123 UW                              ! Test: UW !
+123 UX                              ! Test: UX !
+123 UY                              ! Test: UY !
+123 UZ                              ! Test: UZ !
+123 Ua                              ! Test: Ua !
+123 Ub                              ! Test: Ub !
+123 Uc                              ! Test: Uc !
+123 Ud                              ! Test: Ud !
+123 Ue                              ! Test: Ue !
+123 Uf                              ! Test: Uf !
+123 Ug                              ! Test: Ug !
+123 Uh                              ! Test: Uh !
+123 Ui                              ! Test: Ui !
+123 Uj                              ! Test: Uj !
+123 Uk                              ! Test: Uk !
+123 Ul                              ! Test: Ul !
+123 Um                              ! Test: Um !
+123 Un                              ! Test: Un !
+123 Uo                              ! Test: Uo !
+123 Up                              ! Test: Up !
+123 Uq                              ! Test: Uq !
+123 Ur                              ! Test: Ur !
+123 Us                              ! Test: Us !
+123 Ut                              ! Test: Ut !
+123 Uu                              ! Test: Uu !
+123 Uv                              ! Test: Uv !
+123 Uw                              ! Test: Uw !
+123 Ux                              ! Test: Ux !
+123 Uy                              ! Test: Uy !
+123 Uz                              ! Test: Uz !
+123 U0                              ! Test: U0 !
+123 U1                              ! Test: U1 !
+123 U2                              ! Test: U2 !
+123 U3                              ! Test: U3 !
+123 U4                              ! Test: U4 !
+123 U5                              ! Test: U5 !
+123 U6                              ! Test: U6 !
+123 U7                              ! Test: U7 !
+123 U8                              ! Test: U8 !
+123 U9                              ! Test: U9 !
+
+[[exit]]

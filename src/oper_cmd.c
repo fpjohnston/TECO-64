@@ -69,7 +69,7 @@ bool scan_and(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    store_oper(X_AND);
+    store_and();
 
     return true;
 }
@@ -132,76 +132,6 @@ bool scan_ctrl_ubar(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan / command: division operator.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_div(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
-
-    // Check for double slash remainder operator.
-
-    int c;
-
-    if (f.e1.xoper && nparens != 0 && (c = peek_cbuf()) == '/')
-    {
-        next_cbuf();
-        trace_cbuf(c);
-
-        cmd->c2 = (char)c;
-
-        store_oper(X_REM);
-    }
-    else
-    {
-        store_oper(X_DIV);
-    }
-
-    return true;
-}
-
-
-///
-///  @brief    Scan ( command: expression grouping.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_lparen(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
-
-    // The following means that a command string such as mmm (nnn) just has a
-    // value of nnn; the mmm is discarded. This allows for enclosing Q and other
-    // commands in parentheses to guard against being affected (and the command
-    // possibly being completely changed) by a preceding value. In the case of
-    // a Q command, for example, instead of returning the numeric value in the
-    // Q-register, a preceding value would return the ASCII value of the nth
-    // character in the Q-register text string.
-
-    int_t n;
-
-    (void)check_x(&n);                  // Discard any operand on stack
-
-    ++nparens;
-
-    store_oper(X_LPAREN);
-
-    return true;
-}
-
-
-///
 ///  @brief    Scan * command: multiplication operator.
 ///
 ///  @returns  true if command is an operand or operator, else false.
@@ -215,7 +145,7 @@ bool scan_mul(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    store_oper(X_MUL);
+    store_mul();
 
     return true;
 }
@@ -235,7 +165,7 @@ bool scan_or(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    store_oper(X_OR);
+    store_or();
 
     return true;
 }
@@ -256,31 +186,6 @@ bool scan_sub(struct cmd *cmd)
     reject_atsign(cmd->atsign);
 
     store_sub();
-
-    return true;
-}
-
-
-///
-///  @brief    Scan ~ command: exclusive OR operator.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_tilde(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
-
-    if (!f.e1.xoper || nparens == 0)
-    {
-        throw(E_ILL, cmd->c1);          // Illegal command
-    }
-
-    store_oper(X_XOR);
 
     return true;
 }

@@ -81,7 +81,11 @@ extern void store_1s_comp(void);
 
 extern void store_add(void);
 
-extern void store_oper(enum x_oper type);
+extern void store_and(void);
+
+extern void store_mul(void);
+
+extern void store_or(void);
 
 extern void store_sub(void);
 

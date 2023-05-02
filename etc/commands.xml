@@ -43,7 +43,7 @@
         <command name='CTRL_UP'         scan='ctrl_up'                    />
         <command name='CTRL_UNDER'      scan='ctrl_ubar'                  />
         <command name='SPACE'           scan='nop'                        />
-        <command name='!'               scan='bang'      exec='bang!'     />
+        <command name='!'               scan='not'       exec='bang!'     />
         <command name='"'               scan='quote'     exec='quote'     />
         <command name='#'               scan='or'                         />
         <command name='$'               scan='bad'                        />
@@ -71,7 +71,7 @@
         <command name=':'               scan='colon'                      />
         <command name=';'               scan='semi'      exec='semi'      />
         <command name='&lt;'            scan='lt'        exec='lt'        />
-        <command name='='               scan='equals'    exec='equals'    />
+        <command name='='               scan='eq'        exec='equals'    />
         <command name='&gt;'            scan='gt'        exec='gt'        />
         <command name='?'               scan='x'         exec='trace'     />
         <command name='@'               scan='atsign'                     />
@@ -110,7 +110,7 @@
         <command name='{'               scan='bad'                        />
         <command name='|'                                exec='vbar'      />
         <command name='}'               scan='bad'                        />
-        <command name='~'               scan='tilde'                      />
+        <command name='~'               scan='xor'                        />
         <command name='DEL'             scan='bad'                        />
 
         <!-- E commands -->

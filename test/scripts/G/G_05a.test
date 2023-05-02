@@ -1,0 +1,75 @@
+! Smoke test for TECO text editor !
+
+! Function: Test global Q-register names !
+!  Command: G !
+!     TECO: PASS !
+
+[[enter]]
+
+GA                                  ! Test: GA !
+GB                                  ! Test: GB !
+GC                                  ! Test: GC !
+GD                                  ! Test: GD !
+GE                                  ! Test: GE !
+GF                                  ! Test: GF !
+GG                                  ! Test: GG !
+GH                                  ! Test: GH !
+GI                                  ! Test: GI !
+GJ                                  ! Test: GJ !
+GK                                  ! Test: GK !
+GL                                  ! Test: GL !
+GM                                  ! Test: GM !
+GN                                  ! Test: GN !
+GO                                  ! Test: GO !
+GP                                  ! Test: GP !
+GQ                                  ! Test: GQ !
+GR                                  ! Test: GR !
+GS                                  ! Test: GS !
+GT                                  ! Test: GT !
+GU                                  ! Test: GU !
+GV                                  ! Test: GV !
+GW                                  ! Test: GW !
+GX                                  ! Test: GX !
+GY                                  ! Test: GY !
+GZ                                  ! Test: GZ !
+Ga                                  ! Test: Ga !
+Gb                                  ! Test: Gb !
+Gc                                  ! Test: Gc !
+Gd                                  ! Test: Gd !
+Ge                                  ! Test: Ge !
+Gf                                  ! Test: Gf !
+Gg                                  ! Test: Gg !
+Gh                                  ! Test: Gh !
+Gi                                  ! Test: Gi !
+Gj                                  ! Test: Gj !
+Gk                                  ! Test: Gk !
+Gl                                  ! Test: Gl !
+Gm                                  ! Test: Gm !
+Gn                                  ! Test: Gn !
+Go                                  ! Test: Go !
+Gp                                  ! Test: Gp !
+Gq                                  ! Test: Gq !
+Gr                                  ! Test: Gr !
+Gs                                  ! Test: Gs !
+Gt                                  ! Test: Gt !
+Gu                                  ! Test: Gu !
+Gv                                  ! Test: Gv !
+Gw                                  ! Test: Gw !
+Gx                                  ! Test: Gx !
+Gy                                  ! Test: Gy !
+Gz                                  ! Test: Gz !
+G0                                  ! Test: G0 !
+G1                                  ! Test: G1 !
+G2                                  ! Test: G2 !
+G3                                  ! Test: G3 !
+G4                                  ! Test: G4 !
+G5                                  ! Test: G5 !
+G6                                  ! Test: G6 !
+G7                                  ! Test: G7 !
+G8                                  ! Test: G8 !
+G9                                  ! Test: G9 !
+G*                                  ! Test: G* !
+G_                                  ! Test: G_ !
+G+                                  ! Test: G+ !
+
+[[exit]]

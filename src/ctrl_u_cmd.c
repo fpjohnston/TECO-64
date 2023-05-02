@@ -50,11 +50,6 @@ void exec_ctrl_U(struct cmd *cmd)
 
     if (cmd->n_set)                     // n^Uq`?
     {
-        if (cmd->text1.len != 0)        // Does it have a text string?
-        {
-            throw(E_NAT);               // Invalid n argument and text string
-        }
-
         if (cmd->colon)                 // n:^Uq`?
         {
             append_qchr(cmd->qindex, (int)cmd->n_arg);
@@ -108,6 +103,13 @@ bool scan_ctrl_U(struct cmd *cmd)
     reject_dcolon(cmd->dcolon);
     scan_qreg(cmd);
     scan_texts(cmd, 1, ESC);
+
+    // Can't have both a numeric value and a text argument
+
+    if (cmd->n_set && cmd->text1.len != 0)
+    {
+        throw(E_IIA);                   // Illegal insert argument
+    }
 
     return false;
 }

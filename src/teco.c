@@ -201,8 +201,6 @@ int main(int argc, const char * const argv[])
 
                 f.trace.flag = 0;       // Switch off all tracing bits
 
-                nparens = 0;            // Reset parenthesis count
-
                 if (!f.e0.init && !read_EI())
                 {
                     read_cmd();         // Read input from terminal
@@ -327,7 +325,6 @@ static void init_teco(int argc, const char * const argv[])
     init_cbuf();                        // Initialize command buffer
     init_edit();                        // Initialize edit buffer
     init_qreg();                        // Initialize Q-registers
-    init_x();                           // Initialize expression stack
     init_options(argc, argv);           // Initialize command-line options
 
     // Change terminal characteristics and set signal handlers.

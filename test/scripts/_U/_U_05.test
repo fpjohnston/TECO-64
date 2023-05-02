@@ -1,0 +1,14 @@
+! Smoke test for TECO text editor !
+
+! Function: Copy both value and text to Q-register !
+!  Command: n@^U/text/ !
+!     TECO: ?IIA !
+
+[[enter]]
+
+^^X @^UA/text/                      ! Test: This should fail !
+
+!START!
+:GA [[^T]]
+
+[[exit]]

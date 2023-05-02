@@ -117,7 +117,7 @@ static const struct cmd_table cmd_table[] =
     ENTRY(CTRL_UP,     scan_ctrl_up,    NULL,            NO_ARGS),
     ENTRY(CTRL_UNDER,  scan_ctrl_ubar,  NULL,            NO_ARGS),
     ENTRY(SPACE,       scan_nop,        NULL,            NO_ARGS),
-    ENTRY('!',         scan_bang,       exec_bang,       MN_ARGS),
+    ENTRY('!',         scan_not,        exec_bang,       MN_ARGS),
     ENTRY('"',         scan_quote,      exec_quote,      NO_ARGS),
     ENTRY('#',         scan_or,         NULL,            NO_ARGS),
     ENTRY('$',         scan_bad,        NULL,            NO_ARGS),
@@ -145,7 +145,7 @@ static const struct cmd_table cmd_table[] =
     ENTRY(':',         scan_colon,      NULL,            NO_ARGS),
     ENTRY(';',         scan_semi,       exec_semi,       NO_ARGS),
     ENTRY('<',         scan_lt,         exec_lt,         NO_ARGS),
-    ENTRY('=',         scan_equals,     exec_equals,     NO_ARGS),
+    ENTRY('=',         scan_eq,         exec_equals,     NO_ARGS),
     ENTRY('>',         scan_gt,         exec_gt,         NO_ARGS),
     ENTRY('?',         scan_x,          exec_trace,      NO_ARGS),
     ENTRY('@',         scan_atsign,     NULL,            NO_ARGS),
@@ -210,7 +210,7 @@ static const struct cmd_table cmd_table[] =
     ENTRY('{',         scan_bad,        NULL,            NO_ARGS),
     ENTRY('|',         NULL,            exec_vbar,       NO_ARGS),
     ENTRY('}',         scan_bad,        NULL,            NO_ARGS),
-    ENTRY('~',         scan_tilde,      NULL,            NO_ARGS),
+    ENTRY('~',         scan_xor,        NULL,            NO_ARGS),
     ENTRY(DEL,         scan_bad,        NULL,            NO_ARGS),
 };
 

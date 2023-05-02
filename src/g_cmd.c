@@ -57,21 +57,33 @@ static void copy_G(struct cmd *cmd)
     assert(cmd != NULL);
 
     struct qreg *qreg;
+    uint_t len;
 
     switch (cmd->qname)
     {
         case '*':                       // Copy filespec string
-            exec_insert(last_file, (uint_t)strlen(last_file));
+            len = (uint_t)strlen(last_file);
+
+            if (len != 0)
+            {
+                exec_insert(last_file, len);
+            }
 
             break;
 
         case '+':                       // Copy EZ result
-            exec_insert(ez.data, ez.len);
+            if (ez.len != 0)
+            {
+                exec_insert(ez.data, ez.len);
+            }
 
             break;
 
         case '_':                       // Copy search result
-            exec_insert(last_search.data, last_search.len);
+            if (last_search.len != 0)
+            {
+                exec_insert(last_search.data, last_search.len);
+            }
 
             break;
 
@@ -127,7 +139,8 @@ bool scan_G(struct cmd *cmd)
     reject_m(cmd->m_set);
     reject_dcolon(cmd->dcolon);
     reject_atsign(cmd->atsign);
-    scan_qreg(cmd);
+
+    scan_greg(cmd);
 
     return false;
 }

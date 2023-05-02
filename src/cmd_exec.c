@@ -38,7 +38,6 @@
 #include "cbuf.h"
 #include "commands.h"
 
-uint nparens;                       ///< Parenthesis nesting count
 
 ///  @var    null_cmd
 ///
@@ -276,9 +275,9 @@ void exec_cmd(struct cmd *cmd)
     {
         throw(E_MRA);                   // Missing right angle bracket
     }
-    else if (nparens != 0)
+    else
     {
-        throw(E_MRP);                   // Missing right parenthesis
+        check_parens();                 // Make sure we used all parentheses
     }
 
     cbuf->pos = cbuf->len = 0;          // Reset for next command string

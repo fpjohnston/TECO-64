@@ -304,18 +304,6 @@ bool scan_bang(struct cmd *cmd)
     assert(cmd != NULL);
 
     reject_colon(cmd->colon);
-
-    if (f.e1.xoper && nparens != 0)     // Check for ! operator
-    {
-        reject_m(cmd->m_set);
-        reject_n(cmd->n_set);
-        reject_atsign(cmd->atsign);
-
-        store_oper(X_NOT);
-
-        return true;
-    }
-
     require_n(cmd->m_set, cmd->n_set);
 
     // If feature enabled, !! starts a comment that ends with LF

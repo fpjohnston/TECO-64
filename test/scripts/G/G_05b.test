@@ -1,0 +1,72 @@
+! Smoke test for TECO text editor !
+
+! Function: Test local Q-register names !
+!  Command: U !
+!     TECO: PASS !
+
+[[enter]]
+
+G.A                                 ! Test: G.A !
+G.B                                 ! Test: G.B !
+G.C                                 ! Test: G.C !
+G.D                                 ! Test: G.D !
+G.E                                 ! Test: G.E !
+G.F                                 ! Test: G.F !
+G.G                                 ! Test: G.G !
+G.H                                 ! Test: G.H !
+G.I                                 ! Test: G.I !
+G.J                                 ! Test: G.J !
+G.K                                 ! Test: G.K !
+G.L                                 ! Test: G.L !
+G.M                                 ! Test: G.M !
+G.N                                 ! Test: G.N !
+G.O                                 ! Test: G.O !
+G.P                                 ! Test: G.P !
+G.Q                                 ! Test: G.Q !
+G.R                                 ! Test: G.R !
+G.S                                 ! Test: G.S !
+G.T                                 ! Test: G.T !
+G.U                                 ! Test: G.U !
+G.V                                 ! Test: G.V !
+G.W                                 ! Test: G.W !
+G.X                                 ! Test: G.X !
+G.Y                                 ! Test: G.Y !
+G.Z                                 ! Test: G.Z !
+G.a                                 ! Test: G.a !
+G.b                                 ! Test: G.b !
+G.c                                 ! Test: G.c !
+G.d                                 ! Test: G.d !
+G.e                                 ! Test: G.e !
+G.f                                 ! Test: G.f !
+G.g                                 ! Test: G.g !
+G.h                                 ! Test: G.h !
+G.i                                 ! Test: G.i !
+G.j                                 ! Test: G.j !
+G.k                                 ! Test: G.k !
+G.l                                 ! Test: G.l !
+G.m                                 ! Test: G.m !
+G.n                                 ! Test: G.n !
+G.o                                 ! Test: G.o !
+G.p                                 ! Test: G.p !
+G.q                                 ! Test: G.q !
+G.r                                 ! Test: G.r !
+G.s                                 ! Test: G.s !
+G.t                                 ! Test: G.t !
+G.u                                 ! Test: G.u !
+G.v                                 ! Test: G.v !
+G.w                                 ! Test: G.w !
+G.x                                 ! Test: G.x !
+G.y                                 ! Test: G.y !
+G.z                                 ! Test: G.z !
+G.0                                 ! Test: G.0 !
+G.1                                 ! Test: G.1 !
+G.2                                 ! Test: G.2 !
+G.3                                 ! Test: G.3 !
+G.4                                 ! Test: G.4 !
+G.5                                 ! Test: G.5 !
+G.6                                 ! Test: G.6 !
+G.7                                 ! Test: G.7 !
+G.8                                 ! Test: G.8 !
+G.9                                 ! Test: G.9 !
+
+[[exit]]

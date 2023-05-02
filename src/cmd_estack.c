@@ -134,6 +134,7 @@ struct xstack
     uint nvalues;                   ///< No.of stored values
     enum x_oper oper[MAX_OPERS];    ///< Stored operators
     uint nopers;                    ///< No. of stored operators
+    uint nparens;                   ///< No. of left parentheses seen
     bool operand;                   ///< Last item seen was an operand
 };
 
@@ -142,13 +143,90 @@ static struct xstack *x = NULL;     ///< List of expression stacks
 
 // Local functions
 
-static void exec_oper(void);
+static void check_oper(enum x_oper o1);
 
-static inline int_t fetch_val(void);
+static void exec_oper(enum x_oper oper);
+
+static int_t fetch_val(void);
 
 static struct xstack *make_x(void);
 
 static void reset_x(struct xstack *stack);
+
+static void store_oper(enum x_oper type);
+
+
+///
+///  @brief    Check to see if operator already on stack before storing another
+///            operator.
+///
+///            Note that this function should never be called to process left
+///            or right parentheses, as those are processed elsewhere.
+///            
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void check_oper(enum x_oper o1)
+{
+    enum x_oper o2;
+
+    while (x->nopers > 0 && ((o2 = x->oper[x->nopers - 1]) != X_LPAREN))
+    {
+        uint p1 = precedence[o1];
+        uint p2 = precedence[o2];
+
+        if ((p2 < p1) || (p1 == p2 && oper[o1].order == LEFT))
+        {
+            --x->nopers;
+
+            exec_oper(o2);
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    store_oper(o1);
+}
+
+
+///
+///  @brief    Check to see if our parenthesis count is zero.
+///
+///  @returns  Nothing if count is zero, else error is issued.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void check_parens(void)
+{
+    if (x->nparens != 0)
+    {
+        throw(E_MRP);                   // Missing right parenthesis
+    }
+}
+
+
+///
+///  @brief    Check to see if auto detection of number radix is possible.
+///
+///  @returns  true if we can do auto detect of radix, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool check_radix(void)
+{
+    if (f.e1.radix && x->nparens != 0)  // Auto-detect radix?
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 ///
@@ -160,30 +238,46 @@ static void reset_x(struct xstack *stack);
 
 bool check_x(int_t *n)
 {
+    assert(n != NULL);
+
+    // Last item saved was not an operand
+
     if (!x->operand)
     {
         return false;
     }
 
-    while (x->nopers > 0 && x->oper[x->nopers - 1] != X_LPAREN)
+    // Here if an operand was the last item processed, so we have one or more
+    // operands on the output queue. If we have anything on the operator stack,
+    // try to use them up.
+
+    enum x_oper type;
+
+    while (x->nopers > 0 && (type = x->oper[x->nopers - 1]) != X_LPAREN) 
     {
-        exec_oper();
+        --x->nopers;
+
+        exec_oper(type);
     }
 
-    if (x->nvalues == 0)
-    {
-        return false;
-    }
+    // Here when we are either out of operators, or the first operator on the
+    // stack is a left parenthesis. We have at least one operand available,
+    // since x->operand is set, and because although exec_oper() may have used
+    // up one or two operands, it will always add one to the output queue.
 
-    if (n != NULL)
-    {
-        *n = fetch_val();
-    }
+    *n = fetch_val();
+
+    // Because of such things as values being passed through macros, we can end
+    // up with multiple values on the output queue if there are no operators on
+    // the stack. For example, with a command such as "42MB 27UA QA=". If this
+    // happens, we should reset the output queue.
 
     if (x->nopers == 0)
     {
         x->nvalues = 0;
     }
+
+    // Reset operand flag if we used up all operands
 
     if (x->nvalues == 0)
     {
@@ -195,23 +289,20 @@ bool check_x(int_t *n)
 
 
 ///
-///  @brief    Push value onto output queue.
+///  @brief    We have seen an operator that requires existing operands. Check
+///            to see if we have them, and if so, calculate the value of the
+///            expression, and then push the new value on the output queue.
 ///
-///  @returns  true if we could pop operator from stack, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void exec_oper(void)
+static void exec_oper(enum x_oper type)
 {
-    assert(x->nopers > 0);
-
-    const enum x_oper type = x->oper[x->nopers - 1];
     const uint operands = oper[type].operands;
     int_t a = 0, b = 0, n;
 
     assert(operands <= 2);
-
-    --x->nopers;
 
     if (operands > x->nvalues)          // Need more operands than we have?
     {
@@ -337,7 +428,7 @@ void exit_x(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline int_t fetch_val(void)
+static int_t fetch_val(void)
 {
     if (x->nvalues == 0)
     {
@@ -467,6 +558,8 @@ static void reset_x(struct xstack *stack)
 {
     assert(stack != NULL);
 
+#if     defined(DEBUG)
+
     for (uint i = 0; i < countof(stack->value); ++i)
     {
         stack->value[i] = 0;
@@ -477,9 +570,269 @@ static void reset_x(struct xstack *stack)
         stack->oper[i] = X_NULL;
     }
 
+#endif
+
     stack->nvalues = 0;
     stack->nopers = 0;
+    stack->nparens = 0;
     stack->operand = false;
+}
+
+
+///
+///  @brief    Scan / command: division operator.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_div(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    // Check for double slash remainder operator.
+
+    int c;
+
+    if (f.e1.xoper && x->nparens != 0 && (c = peek_cbuf()) == '/')
+    {
+        next_cbuf();
+        trace_cbuf(c);
+
+        cmd->c2 = (char)c;
+
+        check_oper(X_REM);
+    }
+    else
+    {
+        check_oper(X_DIV);
+    }
+
+    return true;
+}
+
+
+///
+///  @brief    Scan for possible == operator.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_eq(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    // If extended operators are not enabled, or we're not inside any
+    // parentheses, then the equals sign is not part of an operator, but
+    // is instead a command.
+
+    if (!f.e1.xoper || x->nparens == 0)
+    {
+        return scan_equals(cmd);
+    }
+
+    reject_m(cmd->m_set);
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    if (require_cbuf() != '=')          // If we have one '=', we must have two
+    {
+        throw(E_ARG);
+    }
+
+    if (cmd->n_set)
+    {
+        cmd->n_set = false;
+
+        store_val(cmd->n_arg);
+    }
+
+    trace_cbuf('=');
+    check_oper(X_EQ);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan > command: relational operator.
+///
+///  @returns  true if extended operator found, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_gt(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    scan_x(cmd);
+
+    // ">" is a relational operator only if it's in parentheses; otherwise,
+    // it's the end of a loop.
+
+    if (!f.e1.xoper || x->nparens == 0)
+    {
+        return false;
+    }
+
+    // The following is necessary to handle the situation where a '>' command
+    // is a relational operator (or part of one) and not the end of a loop.
+
+    if (cmd->n_set)
+    {
+        cmd->n_set = false;
+
+        store_val(cmd->n_arg);
+    }
+
+    int c;
+
+    if ((c = peek_cbuf()) == '=')       // >= operator
+    {
+        next_cbuf();
+        trace_cbuf(c);
+        check_oper(X_GE);
+    }
+    else if ((c = peek_cbuf()) == '>')  // >> operator
+    {
+        next_cbuf();
+        trace_cbuf(c);
+        check_oper(X_RSHIFT);
+    }
+    else                                // > operator
+    {
+        check_oper(X_GT);
+    }
+
+    return true;
+}
+
+
+///
+///  @brief    Scan ( command: expression grouping.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_lparen(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    // The following means that a command string such as mmm (nnn) just has a
+    // value of nnn; the mmm is discarded. This allows for enclosing Q and other
+    // commands in parentheses to guard against being affected (and the command
+    // possibly being completely changed) by a preceding value. In the case of
+    // a Q command, for example, instead of returning the numeric value in the
+    // Q-register, a preceding value would return the ASCII value of the nth
+    // character in the Q-register text string.
+
+    int_t n;
+
+    (void)check_x(&n);                  // Discard any operand on stack
+
+    ++x->nparens;
+
+    store_oper(X_LPAREN);
+
+    return true;
+}
+
+
+///
+///  @brief    Scan < command: relational operator or start of loop.
+///
+///  @returns  true if extended operator found, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_lt(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    // "<" is a relational operator only if it's in parentheses; otherwise,
+    // it's the start of a loop.
+
+    if (!f.e1.xoper || x->nparens == 0)
+    {
+        return false;
+    }
+
+    // The following is necessary to handle the situation where a '<' command
+    // is a relational operator (or part therefore) and not the start of a loop.
+
+    if (cmd->n_set)
+    {
+        cmd->n_set = false;
+
+        store_val(cmd->n_arg);
+    }
+
+    int c = peek_cbuf();
+
+    if (c == '=')                       // <= operator
+    {
+        next_cbuf();
+        trace_cbuf(c);
+        check_oper(X_LE);
+    }
+    else if (c == '>')                  // <> operator
+    {
+        next_cbuf();
+        trace_cbuf(c);
+        check_oper(X_NE);
+    }
+    else if (c == '<')                  // << operator
+    {
+        next_cbuf();
+        trace_cbuf(c);
+        check_oper(X_LSHIFT);
+    }
+    else                                // < operator
+    {
+        check_oper(X_LT);
+    }
+
+    return true;
+}
+
+
+///
+///  @brief    Scan for '!' operator.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_not(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (!f.e1.xoper || x->nparens == 0) // Is it really a '!' command?
+    {
+        return scan_bang(cmd);
+    }
+
+    reject_colon(cmd->colon);
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_atsign(cmd->atsign);
+
+    check_oper(X_NOT);
+
+    return true;
 }
 
 
@@ -497,40 +850,77 @@ bool scan_rparen(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    if (nparens != 0)
-    {
-        --nparens;
-    }
-
     // Try to process everything since the last left parenthesis
 
-    while (x->nopers > 0 && x->oper[x->nopers - 1] != X_LPAREN)
+    enum x_oper type;
+
+    while (x->nopers > 0)
     {
-        exec_oper();
+        if ((type = x->oper[--x->nopers]) == X_LPAREN)
+        {
+            assert(x->nparens != 0);
+
+            --x->nparens;
+
+            // We found a matching left parenthesis. Try to process any
+            // operators preceding it, up to any previous left parenthesis.
+
+            while (x->nopers > 0)
+            {
+                if ((type = x->oper[--x->nopers]) == X_LPAREN)
+                {
+                    ++x->nopers;        // Recover left parenthesis
+
+                    return true;        // Say that we found an operator
+                }
+                else
+                {
+                    exec_oper(type);    // Process the operator
+                }
+            }
+
+            // Here if we're out of operators, so ensure flag is set if there
+            // are still any values on the output queue.
+
+            if (x->nvalues > 0)
+            {
+                x->operand = true;
+            }
+
+            return true;                // Say that we found an operator
+        }
+        else
+        {
+            exec_oper(type);            // Process the operator
+        }
     }
 
-    // Here to see if we have a matching parenthesis
+    // Here if we ran out of operators before finding a left parenthesis
 
-    if (x->nopers-- == 0)
+    throw(E_MLP);                       // Missing left parenthesis
+}
+
+
+///
+///  @brief    Scan ~ command: exclusive OR operator.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_xor(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    if (!f.e1.xoper || x->nparens == 0)
     {
-        throw(E_MLP);                   // Missing left parenthesis
+        throw(E_ILL, cmd->c1);          // Illegal command
     }
 
-    // Try again to process everything since the last left parenthesis
-
-    while (x->nopers > 0 && x->oper[x->nopers - 1] != X_LPAREN)
-    {
-        exec_oper();
-    }
-
-    if (x->nvalues > 0 && x->nopers == 0)
-    {
-        x->operand = true;
-    }
-    else
-    {
-        x->operand = false;
-    }
+    check_oper(X_XOR);
 
     return true;
 }
@@ -545,7 +935,7 @@ bool scan_rparen(struct cmd *cmd)
 
 void store_1s_comp(void)
 {
-    store_oper(X_1S_COMP);
+    check_oper(X_1S_COMP);
 
     if (x->nvalues > 0)
     {
@@ -563,52 +953,65 @@ void store_1s_comp(void)
 
 void store_add(void)
 {
-    store_oper(x->operand ? X_ADD : X_PLUS);
+    check_oper(x->operand ? X_ADD : X_PLUS);
 }
 
 
 ///
-///  @brief    Save an operator on the expression stack.
+///  @brief    Store logical AND operator.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void store_oper(enum x_oper o1)
+void store_and(void)
 {
-    if (o1 != X_LPAREN)
-    {
-        uint p1 = precedence[o1];
+    check_oper(X_AND);
+}
 
-        while (x->nopers > 0)
-        {
-            enum x_oper o2 = x->oper[x->nopers - 1];
 
-            if (o2 == X_LPAREN)
-            {
-                break;
-            }
+///
+///  @brief    Store multiplication operator.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
 
-            uint p2 = precedence[o2];
+void store_mul(void)
+{
+    check_oper(X_MUL);
+}
 
-            if ((p2 < p1) || (p1 == p2 && oper[o1].order == LEFT))
-            {
-                exec_oper();
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
 
+///
+///  @brief    Store operator on stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void store_oper(enum x_oper type)
+{
     if (x->nopers == MAX_OPERS)
     {
         throw(E_PDO);                   // Push-down list overflow
     }
 
-    x->oper[x->nopers++] = o1;
+    x->oper[x->nopers++] = type;
     x->operand = false;
+}
+
+
+///
+///  @brief    Store logical OR operator.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void store_or(void)
+{
+    check_oper(X_OR);
 }
 
 
@@ -621,7 +1024,7 @@ void store_oper(enum x_oper o1)
 
 void store_sub(void)
 {
-    store_oper(x->operand ? X_SUB : X_MINUS);
+    check_oper(x->operand ? X_SUB : X_MINUS);
 }
 
 
