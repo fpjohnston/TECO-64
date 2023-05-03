@@ -412,12 +412,15 @@ static void exec_oper(enum x_oper type)
 
 void exit_x(void)
 {
-    do
+    if (x != NULL)
     {
-        pop_x();                        // Free up temporary stacks
-    } while (x->next != NULL);
+        do
+        {
+            pop_x();                    // Free up temporary stacks
+        } while (x->next != NULL);
 
-    free_mem(&x);                       // Now delete root stack
+        free_mem(&x);                   // Now delete root stack
+    }
 }
 
 
