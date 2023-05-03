@@ -111,7 +111,7 @@ static char qtable[UCHAR_MAX] =
     ['+'] = -1,
     ['*'] = -1,
     ['_'] = -1,
-};
+};                                  //lint !e785
 
 
 #define QLOCAL_MAX      64          ///< Maximum local Q-register nesting
