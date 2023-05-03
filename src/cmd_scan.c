@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -40,21 +41,24 @@
 
 
 ///
-///  @brief    Scan commands with no arguments.
+///  @brief    Scan simple commands such as ^D or EP that use no numeric or
+///            text arguments, nor any colon or atsign modifiers. We can also
+///            be conditionally called, such when an EW commands is executed
+///            without a text argument, or called for commands such as F0 or FZ
+///            that require additional processing after we return.
 ///
 ///  @returns  false (command is not an operand or operator).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_x(struct cmd *cmd)
+bool scan_simple(struct cmd *cmd)
 {
-    if (cmd != NULL)
-    {
-        reject_m(cmd->m_set);
-        reject_n(cmd->n_set);
-        reject_colon(cmd->colon);
-        reject_atsign(cmd->atsign);
-    }
+    assert(cmd != NULL);
+
+    reject_m(cmd->m_set);
+    reject_n(cmd->n_set);
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
 
     return false;
 }

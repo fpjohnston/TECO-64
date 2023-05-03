@@ -128,7 +128,7 @@ endif
 #  a new public release of TECO.
 
 .PHONY: release
-release:
+release: distclean
 	$(AT)etc/version.pl include/version.h etc/templates/version.h \
 		--out include/version.h --version=$(version)
 	$(AT)$(MAKE) -B -s include/version.h

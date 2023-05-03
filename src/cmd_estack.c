@@ -673,7 +673,7 @@ bool scan_gt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    scan_x(cmd);
+    scan_simple(cmd);                   // > command
 
     // ">" is a relational operator only if it's in parentheses; otherwise,
     // it's the end of a loop.

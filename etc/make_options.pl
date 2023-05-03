@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #
-#  options.pl - Build-process tool for TECO-64 text editor.
+#  make_options.pl - Build-process tool for TECO-64 text editor.
 #
 #  This script reads data from options.xml to determine command-line options and
 #  program information for the teco utility. This data is output to a C header

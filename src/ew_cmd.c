@@ -52,7 +52,7 @@ void exec_EW(struct cmd *cmd)
 
     if (len == 0)                       // EW`?
     {
-        scan_x(cmd);
+        scan_simple(cmd);               // EW` command
 
         ostream = OFILE_PRIMARY;        // Yes, switch to primary output stream
         set_last(ofiles[ostream].name);

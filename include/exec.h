@@ -399,11 +399,11 @@ extern bool scan_rparen(struct cmd *cmd);
 
 extern bool scan_semi(struct cmd *cmd);
 
+extern bool scan_simple(struct cmd *cmd);
+
 extern bool scan_sub(struct cmd *cmd);
 
 extern bool scan_ubar(struct cmd *cmd);
-
-extern bool scan_x(struct cmd *cmd);
 
 extern bool scan_xor(struct cmd *cmd);
 

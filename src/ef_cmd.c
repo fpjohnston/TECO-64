@@ -36,17 +36,24 @@
 ///  @brief    Execute EF command: close output file without writing out
 ///            current buffer.
 ///
+///            Note that we can be called to close out an output file when an
+///            EC command is executed, in which case we won't have a command
+///            block.
+///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 void exec_EF(struct cmd *cmd)
 {
-    scan_x(cmd);
+    if (cmd != NULL)
+    {
+        scan_simple(cmd);               // EF command
+    }
 
     struct ofile *ofile = &ofiles[ostream];
 
-    rename_output(ofile);              // Handle any required file renaming
+    rename_output(ofile);               // Handle any required file renaming
 
     close_output(ostream);
 }

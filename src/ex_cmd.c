@@ -45,7 +45,7 @@
 
 void exec_EX(struct cmd *cmd)
 {
-    scan_x(cmd);
+    scan_simple(cmd);                   // EX command
 
     struct ofile *ofile = &ofiles[ostream];
 

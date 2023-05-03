@@ -14,10 +14,10 @@ doc: html/options.html doc/errors.md
 html:
 	-$(AT)mkdir -p html
 
-html/options.html: html etc/options.xml etc/options.xsl
+html/options.html: html etc/xml/options.xml etc/xml/options.xsl
 	-$(AT)echo Making HTML options file...
-	$(AT)xalan -in etc/options.xml -xsl etc/options.xsl -out html/options.html
+	$(AT)xalan -in etc/xml/options.xml -xsl etc/xml/options.xsl -out html/options.html
 
-doc/errors.md: etc/errors.xml etc/templates/errors.md
-	$(AT)etc/errors.pl $^ -o $@
+doc/errors.md: etc/xml/errors.xml etc/templates/errors.md
+	$(AT)etc/make_errors.pl $^ -o $@
 

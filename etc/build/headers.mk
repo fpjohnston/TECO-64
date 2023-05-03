@@ -12,17 +12,17 @@ headers: include/commands.h \
 		 include/exec.h \
 		 include/options.h
 
-include/commands.h: etc/commands.pl etc/commands.xml etc/templates/commands.h
+include/commands.h: etc/make_commands.pl etc/xml/commands.xml etc/templates/commands.h
 	$(AT)$^ --out $@
 
-include/errcodes.h: etc/errors.pl etc/errors.xml etc/templates/errcodes.h
+include/errcodes.h: etc/make_errors.pl etc/xml/errors.xml etc/templates/errcodes.h
 	$(AT)$^ --out $@
 
-include/errtables.h: etc/errors.pl etc/errors.xml etc/templates/errtables.h
+include/errtables.h: etc/make_errors.pl etc/xml/errors.xml etc/templates/errtables.h
 	$(AT)$^ --out $@
 
-include/exec.h: etc/commands.pl etc/commands.xml etc/templates/exec.h
+include/exec.h: etc/make_commands.pl etc/xml/commands.xml etc/templates/exec.h
 	$(AT)$^ --out $@
 
-include/options.h: etc/options.pl etc/options.xml etc/templates/options.h
+include/options.h: etc/make_options.pl etc/xml/options.xml etc/templates/options.h
 	$(AT)$^ --out $@

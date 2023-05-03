@@ -37,34 +37,34 @@ critic:
 	@$(MAKE) -s obj/errors.tmp
 	@$(MAKE) -s obj/options.tmp
 	@$(MAKE) -s obj/version.tmp
-	@$(MAKE) -s obj/option_test.tmp
-	@$(MAKE) -s obj/smoke_test.tmp
+	@$(MAKE) -s obj/test_options.tmp
+	@$(MAKE) -s obj/test_commands.tmp
 
 obj/Teco.tmp: etc/Teco.pm
 	$(AT)perlcritic $<
 	$(AT)touch $@
 
-obj/commands.tmp: etc/commands.pl
+obj/commands.tmp: etc/make_commands.pl
 	$(AT)perlcritic $<
 	$(AT)touch $@
 
-obj/errors.tmp: etc/errors.pl
+obj/errors.tmp: etc/make_errors.pl
 	$(AT)perlcritic $<
 	$(AT)touch $@
 
-obj/options.tmp: etc/options.pl
+obj/options.tmp: etc/make_options.pl
 	$(AT)perlcritic $<
 	$(AT)touch $@
 
-obj/version.tmp: etc/version.pl
+obj/version.tmp: etc/make_version.pl
 	$(AT)perlcritic $<
 	$(AT)touch $@
 
-obj/option_test.tmp: test/option_test.pl
+obj/test_options.tmp: etc/test_options.pl
 	$(AT)perlcritic $<
 	$(AT)touch $@
 
-obj/smoke_test.tmp: test/smoke_test.pl
+obj/test_commands.tmp: etc/test_commands.pl
 	$(AT)perlcritic $<
 	$(AT)touch $@
 
@@ -102,12 +102,12 @@ test:
 	@$(MAKE) debug=1 memcheck=1 teco
 
 #
-#  Define target to smoke test executable image.
+#  Define target to smoke test scripts, files, and executable image.
 #
 
 PHONY: smoke
 smoke: critic lint test
 	@echo Testing TECO options...
-	$(AT)test/option_test.pl --summary
+	$(AT)etc/test_options.pl --summary
 	@echo Testing TECO commands...
-	$(AT)test/smoke_test.pl test/
+	$(AT)etc/test_commands.pl test/

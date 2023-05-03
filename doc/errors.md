@@ -87,7 +87,6 @@ code.
 | <span>?NAP</span> | <span>No argument before right parenthesis</span> | A right parenthesis has been encountered and is not properly preceded by a specific numeric argument or a command that returns a numeric value. |
 | <span>?NAQ</span> | <span>No argument before quote</span> | The " commands must be preceded by a single numeric argument on which the decision to execute the following commands or skip to the matching ' is based. |
 | <span>?NAS</span> | <span>No argument before semi-colon</span> | The ; command must be preceded by a single numeric argument on which the decision to execute the following commands or skip to the matching > is based. |
-| <span>?NAT</span> | <span>Cannot have n argument and text string</span> | Both an n argument and a string were specified for a command which does not allow more than one. |
 | <span>?NAU</span> | <span>No argument before U command</span> | The U command must be preceded by either a specific numeric argument or a command that returns a numeric value. |
 | <span>?NCA</span> | <span>Negative argument to comma</span> | A comma was preceded by a negative number. |
 | <span>?NFI</span> | <span>No file for input</span> | Before issuing an input command, such as Y, it is necessary to open an input file by use of a command such as ER or EB. |

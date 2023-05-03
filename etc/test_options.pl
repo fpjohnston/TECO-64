@@ -1,4 +1,5 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
+
 #
 #  options_test.pl - Test command-line options for TECO text editor.
 #

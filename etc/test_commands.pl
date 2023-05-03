@@ -1,6 +1,7 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
+
 #
-#  smoke_tests.pl - Create and run smoke tests for TECO text editor.
+#  test_commands.pl - Create and run tests for TECO text editor commands.
 #
 #  @copyright 2021-2023 Franklin P. Johnston / Nowwith Treble Software
 #

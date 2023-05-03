@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #
-#  errors.pl - Build-process tool for TECO-64 text editor.
+#  make_errors.pl - Build-process tool for TECO-64 text editor.
 #
 #  @copyright 2020-2023 Franklin P. Johnston / Nowwith Treble Software
 #

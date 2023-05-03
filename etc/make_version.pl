@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #
-#  version.pl - Build-process tool for TECO-64 text editor.
+#  make_version.pl - Build-process tool for TECO-64 text editor.
 #
 #  @copyright 2022-2023 Franklin P. Johnston / Nowwith Treble Software
 #

@@ -54,7 +54,7 @@ void exec_ER(struct cmd *cmd)
 
     if (len == 0)                       // ER`?
     {
-        scan_x(cmd);
+        scan_simple(cmd);               // ER` command
 
         istream = IFILE_PRIMARY;
 
