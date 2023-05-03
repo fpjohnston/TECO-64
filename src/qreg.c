@@ -663,20 +663,15 @@ void scan_greg(struct cmd *cmd)
     if (c == '.')                       // Local Q-register?
     {
         cmd->qlocal = true;             // Yes, mark it
-
-        c = require_cbuf();
         offset = QCOUNT;
 
+        c = require_cbuf();
         trace_cbuf(c);
     }
 
     if ((qindex = qtable[(uchar)c]) == 0 || (qindex < 0 && cmd->qlocal))
     {
         throw(E_IQN, c);                // Invalid Q-register name
-    }
-    else if (cmd->qlocal)
-    {
-        qindex += QCOUNT;
     }
 
     cmd->qname = (char)c;               // Save the name
@@ -704,10 +699,9 @@ void scan_qreg(struct cmd *cmd)
     if (c == '.')                       // Local Q-register?
     {
         cmd->qlocal = true;             // Yes, mark it
-
-        c = require_cbuf();
         offset = QCOUNT;
 
+        c = require_cbuf();
         trace_cbuf(c);
     }
 
