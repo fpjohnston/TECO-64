@@ -34,7 +34,7 @@ Q.Y & 3 "=               !! correct for leap years
     1%.W
   '
 '
-Q.Y + Q.W + (Q.Y - 1 / 4) U.1
+Q.Y + Q.W + ((Q.Y - 1) / 4) U.1
 (Q.1 // 7) U.1
 Q.1-0"= @^U.W%Sunday%    |
 Q.1-1"= @^U.W%Monday%    |
