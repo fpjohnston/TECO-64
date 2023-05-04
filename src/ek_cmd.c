@@ -45,7 +45,10 @@
 
 void exec_EK(struct cmd *cmd)
 {
-    scan_simple(cmd);                   // EK command
+    if (cmd != NULL)
+    {
+        scan_simple(cmd);               // EK command
+    }
 
     struct ofile *ofile = &ofiles[ostream];
 
