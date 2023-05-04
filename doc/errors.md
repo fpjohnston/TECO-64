@@ -95,7 +95,7 @@ code.
 | <span>?NOT</span> | <span>O command has no tag</span> | No tag was found for an O command. |
 | <span>?NPA</span> | <span>Negative or 0 argument to P</span> | A P command was preceded by a negative or 0 argument. |
 | <span>?NYA</span> | <span>Numeric argument with Y</span> | The Y command must not be preceded by either a numeric argument or a command that returns a numeric value. |
-| <span>?NYI</span> | <span>Not yet implemented</span> | A command was issued that is not yet implemented in this version of TECO. |
+| <span>?NYI</span> | <span>Not yet implemented</span> | A command was issued that is not yet implemented in this version of TECO, or not enabled in this build. |
 | <span>?OFO</span> | <span>Output file already open</span> | A command has been executed which tried to create an output file, but an output file currently is open. It is typically appropriate to use the EC or EK command as the situation calls for to close the output file. |
 | <span>?PDO</span> | <span>Push-down list overflow</span> | The command string has become too complex. Simplify it. |
 | <span>?POP</span> | <span>Attempt to move pointer off page with '*x*'</span> | A J, C or R command has been executed which attempted to move the pointer off the page. The result of executing one of these commands must leave the pointer between 0 and Z, The characters referenced by a D or nA command must also be within the buffer limits. |

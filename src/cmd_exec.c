@@ -69,99 +69,11 @@ uint_t cmd_line;                    ///< Line number in current command/macro
 
 // Local functions
 
-static bool echo_cmd(int c);
-
 static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c);
 
 static void scan_text(int delim, tstring *text);
 
-
-///
-///  @brief    Check to see if we want to echo current command/character.
-///
-///  @returns  true if should execute command, false if command is just
-///            whitespace that we can ignore.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static bool echo_cmd(int c)
-{
-    if (c == SPACE)
-    {
-        if (f.trace.nospace)            // Skipping spaces?
-        {
-            return false;               // Don't execute space
-        }
-        else if (f.trace.noblank)       // Skipping blank lines?
-        {
-            uint_t pos = cbuf->pos;     // Save start of line
-
-            while ((c = peek_cbuf()) != EOF)
-            {
-                if (isspace(c) && c != TAB)
-                {
-                    cbuf->pos = pos;    // Reset to start of line
-
-                    return true;        // Execute non-blank line
-                }
-
-                next_cbuf();
-
-                if (c == LF)            // At end of blank line?
-                {
-                    break;
-                }
-            }
-
-            return false;
-        }
-    }
-    else if (c == LF)
-    {
-        if (f.trace.nowhite)            // Echoing line delimiters?
-        {
-            return false;               // Don't execute line delimiter
-        }
-        else if (f.trace.noblank && term_pos == 0)
-        {
-            return false;               // Don't execute blank line
-        }
-    }
-    else if (c == CR || c == VT || c == FF)
-    {
-        if (f.trace.nowhite)            // Echoing line delimiters?
-        {
-            return false;               // Don't execute line delimiter
-        }
-    }
-    else if (c == '!')                  // Check for echoing comments
-    {
-        if (f.trace.nobang && peek_cbuf() == ' ')
-        {
-            do
-            {
-                next_cbuf();
-            } while (peek_cbuf() != '!');
-
-            next_cbuf();
-
-            return false;               // Don't execute comment
-        }
-        else if (f.trace.nobang2 && peek_cbuf() == '!' && f.e1.bang)
-        {
-            do
-            {
-                next_cbuf();
-            } while (peek_cbuf() != LF);
-
-            return false;               // Don't execute comment
-        }
-    }
-
-    echo_in(c);
-
-    return true;                        // Execute command
-}
+static inline bool trace_cmd(int c);
 
 
 ///
@@ -193,13 +105,13 @@ void exec_cmd(struct cmd *cmd)
 
         //  Skip execution of command if:
         //
-        //  1. The trace flag is set and we shouldn't echo the command.
-        //  2. The command is a space.
+        //  1. We shouldn't trace the command.
+        //  2. The command is a space (which is a no-op). This is an optimization
+        //     that was found through testing to make a measurable difference in
+        //     performance.
         //  3. There is no exec function that we have and should process.
 
-        if ((f.trace.flag && !echo_cmd(c))
-            || c == SPACE
-            || (entry = scan_cmd(cmd, c)) == NULL)
+        if (!trace_cmd(c) || c == SPACE || (entry = scan_cmd(cmd, c)) == NULL)
         {
             continue;
         }
@@ -682,4 +594,112 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     pop_x();                            // Restore previous expression stack
 
     return match;
+}
+
+
+///
+///  @brief    Check to see if we want to trace current command/character.
+///
+///  @returns  true if should execute command, false if command is just
+///            whitespace that we can ignore.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static inline bool trace_cmd(int c)
+{
+
+#if     !defined(NOTRACE)
+
+    if (f.trace.flag == 0)
+    {
+        return true;
+    }
+
+    switch (c)
+    {
+        case SPACE:
+            if (f.trace.nospace)        // Skipping spaces?
+            {
+                return false;           // Don't execute space
+            }
+            else if (f.trace.noblank)   // Skipping blank lines?
+            {
+                uint_t pos = cbuf->pos; // Save start of line
+
+                while ((c = peek_cbuf()) != EOF)
+                {
+                    if (isspace(c) && c != TAB)
+                    {
+                        cbuf->pos = pos;// Reset to start of line
+
+                        return true;    // Execute non-blank line
+                    }
+
+                    next_cbuf();
+
+                    if (c == LF)        // At end of blank line?
+                    {
+                        break;
+                    }
+                }
+
+                return false;
+            }
+
+            break;
+
+        case LF:
+            if (f.trace.nowhite)        // Echoing line delimiters?
+            {
+                return false;           // Don't execute line delimiter
+            }
+            else if (f.trace.noblank && term_pos == 0)
+            {
+                return false;           // Don't execute blank line
+            }
+
+            break;
+
+        case CR:
+        case VT:
+        case FF:
+            if (f.trace.nowhite)        // Echoing line delimiters?
+            {
+                return false;           // Don't execute line delimiter
+            }
+
+            break;
+
+        case '!':                       // Check for echoing comments
+            if (f.trace.nobang && peek_cbuf() == ' ')
+            {
+                do
+                {
+                    next_cbuf();
+                } while (peek_cbuf() != '!');
+
+                next_cbuf();
+
+                return false;           // Don't execute comment
+            }
+            else if (f.trace.nobang2 && peek_cbuf() == '!' && f.e1.bang)
+            {
+                do
+                {
+                    next_cbuf();
+                } while (peek_cbuf() != LF);
+
+                return false;           // Don't execute comment
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    echo_in(c);
+
+#endif
+
+    return true;                        // Execute command
 }

@@ -133,10 +133,16 @@ static inline int require_cbuf(void)
 
 static inline void trace_cbuf(int c)
 {
+
+#if     !defined(NOTRACE)
+
     if (f.trace.enable)
     {
         echo_in(c);
     }
+
+#endif
+
 }
 
 

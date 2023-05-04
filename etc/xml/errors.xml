@@ -381,8 +381,8 @@
         <error>
             <code>NYI</code>
             <message>Not yet implemented</message>
-            <detail>A command was issued that is not yet implemented</detail>
-            <detail>in this version of TECO.</detail>
+            <detail>A command was issued that is not yet implemented in</detail>
+            <detail>this version of TECO, or not enabled in this build.</detail>
         </error>
         <error>
             <code>OFO</code>

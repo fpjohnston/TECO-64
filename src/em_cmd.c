@@ -42,6 +42,13 @@
 
 void exec_EM(struct cmd *cmd)
 {
+
+#if     defined(NOTRACE)
+
+    throw(E_NYI);                       // Feature not enabled
+
+#else
+
     assert(cmd != NULL);
 
     struct qreg *qreg = get_qreg(cmd->qindex);
@@ -58,11 +65,6 @@ void exec_EM(struct cmd *cmd)
     bool saved_exec = f.e0.exec;
 
     f.trace.enable  = true;
-    f.trace.nospace = false;
-    f.trace.noblank = false;
-    f.trace.nowhite = false;
-    f.trace.nobang  = false;
-    f.trace.nobang2 = false;
 
     if (cmd->n_set)
     {
@@ -72,6 +74,14 @@ void exec_EM(struct cmd *cmd)
         f.trace.nobang  = (cmd->n_arg & 8)  ? true : false;
         f.trace.nobang2 = (cmd->n_arg & 16) ? true : false;
     }
+    else
+    {
+        f.trace.nospace = false;
+        f.trace.noblank = false;
+        f.trace.nowhite = false;
+        f.trace.nobang  = false;
+        f.trace.nobang2 = false;
+    }
 
     f.e0.exec = false;                  // Don't actually execute commands
 
@@ -79,6 +89,9 @@ void exec_EM(struct cmd *cmd)
 
     f.e0.exec = saved_exec;
     f.trace.flag = saved_trace;
+
+#endif
+
 }
 
 

@@ -172,6 +172,18 @@ ifdef   nostrict
 endif
 
 #
+#  Disable command tracing.
+#
+################################################################################
+
+ifdef   notrace
+
+    DEFINES += -D NOTRACE
+    DOXYGEN +=    NOTRACE
+
+endif
+
+#
 #  Define default optimization level.
 #
 ################################################################################
@@ -191,9 +203,9 @@ ifeq (${paging}, vm)
 
 else ifeq (${paging}, file)
 
-	#  This is a placeholder for eventual implementation of a method for using
-	#  a "holding file" to allow backwards paging, as described in The Craft of
-	#  Text Editing, by Craig A. Finseth.
+    #  This is a placeholder for eventual implementation of a method for using
+    #  a "holding file" to allow backwards paging, as described in The Craft of
+    #  Text Editing, by Craig A. Finseth.
 
     $(error Holding file paging is not yet implemented)
 

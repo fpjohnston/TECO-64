@@ -263,8 +263,8 @@ static const char *errhelp[] =
     [E_NYA] = "The Y command must not be preceded by either a "
               "numeric argument or a command that returns a "
               "numeric value.",
-    [E_NYI] = "A command was issued that is not yet implemented "
-              "in this version of TECO.",
+    [E_NYI] = "A command was issued that is not yet implemented in "
+              "this version of TECO, or not enabled in this build.",
     [E_OFO] = "A command has been executed which tried to "
               "create an output file, but an output file "
               "currently is open. It is typically appropriate "

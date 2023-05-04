@@ -40,7 +40,17 @@
 
 void exec_trace(struct cmd *cmd)
 {
+
+#if     defined(NOTRACE)
+
+    throw(E_NYI);                       // Feature not enabled
+
+#else
+
     scan_simple(cmd);                   // ? command
 
     f.trace.enable = !f.trace.enable;   // Invert current tracing state
+
+#endif
+
 }
