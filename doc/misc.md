@@ -100,7 +100,7 @@ These bits may be OR'd together. If *n* is -1, this is equivalent to setting all
 
 The *squish.tec* indirect command file may be used to squish macros, as in the following example, in which the *n* argument is set by the -A command-line option:
 
-    teco -E squish -B macro.tec -A -1 -X >newmacro.tec
+    teco -T macro.tec -A -1 -E squish -X >newmacro.tec
 
 ### Memory Commands
 
