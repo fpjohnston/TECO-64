@@ -265,6 +265,8 @@ extern void exit_loop(struct cmd *cmd);
 
 extern int find_eg(char *buf);
 
+extern bool finish_cmd(struct cmd *cmd, int c);
+
 #if     defined(DEBUG)
 
 extern void insert_newline(void);

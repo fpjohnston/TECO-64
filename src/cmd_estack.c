@@ -306,7 +306,14 @@ static void exec_oper(enum x_oper type)
 
     if (operands > x->nvalues)          // Need more operands than we have?
     {
-        throw(E_IFE);                   // Ill-formed expression
+        if (f.e0.exec)                  // Are we executing?
+        {
+            throw(E_IFE);               // Ill-formed expression
+        }
+        else                            // Not executing, so just return
+        {
+            return;
+        }
     }
     else if (operands == 1)             // Unary operator
     {
@@ -427,7 +434,7 @@ void exit_x(void)
 ///
 ///  @brief    Fetch value from top of output stack.
 ///
-///  @returns  Nothing.
+///  @returns  Returned value.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -435,7 +442,14 @@ static int_t fetch_val(void)
 {
     if (x->nvalues == 0)
     {
-        throw(E_IFE);                   // Ill-formed expression
+        if (f.e0.exec)                  // Are we executing?
+        {
+            throw(E_IFE);               // Ill-formed expression
+        }
+        else                            // Not executing, so just return
+        {
+            return 0;
+        }
     }
 
     return x->value[--x->nvalues];
@@ -603,7 +617,6 @@ bool scan_div(struct cmd *cmd)
     if (f.e1.xoper && x->nparens != 0 && (c = peek_cbuf()) == '/')
     {
         next_cbuf();
-        trace_cbuf(c);
 
         cmd->c2 = (char)c;
 
@@ -655,7 +668,6 @@ bool scan_eq(struct cmd *cmd)
         store_val(cmd->n_arg);
     }
 
-    trace_cbuf('=');
     check_oper(X_EQ);
 
     return true;
@@ -693,18 +705,14 @@ bool scan_gt(struct cmd *cmd)
         store_val(cmd->n_arg);
     }
 
-    int c;
-
-    if ((c = peek_cbuf()) == '=')       // >= operator
+    if (peek_cbuf() == '=')             // >= operator
     {
         next_cbuf();
-        trace_cbuf(c);
         check_oper(X_GE);
     }
-    else if ((c = peek_cbuf()) == '>')  // >> operator
+    else if (peek_cbuf() == '>')        // >> operator
     {
         next_cbuf();
-        trace_cbuf(c);
         check_oper(X_RSHIFT);
     }
     else                                // > operator
@@ -788,19 +796,16 @@ bool scan_lt(struct cmd *cmd)
     if (c == '=')                       // <= operator
     {
         next_cbuf();
-        trace_cbuf(c);
         check_oper(X_LE);
     }
     else if (c == '>')                  // <> operator
     {
         next_cbuf();
-        trace_cbuf(c);
         check_oper(X_NE);
     }
     else if (c == '<')                  // << operator
     {
         next_cbuf();
-        trace_cbuf(c);
         check_oper(X_LSHIFT);
     }
     else                                // < operator
@@ -918,7 +923,7 @@ bool scan_xor(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    if (!f.e1.xoper || x->nparens == 0)
+    if (f.e0.exec && (!f.e1.xoper || x->nparens == 0))
     {
         throw(E_ILL, cmd->c1);          // Illegal command
     }

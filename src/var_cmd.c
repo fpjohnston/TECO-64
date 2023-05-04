@@ -186,8 +186,6 @@ bool scan_ctrl_up(struct cmd *cmd)
 
     int c = require_cbuf();
 
-    trace_cbuf(c);
-
     store_val((int_t)c);
 
     return true;

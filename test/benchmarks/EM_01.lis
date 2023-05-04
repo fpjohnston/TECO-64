@@ -1,21 +1,46 @@
-   65   ^T     ! Comment !
+   65   ^T     ! Classic TECO comment !
 
-66 ^T               ! Another comment !
+! Multi-line
+    comment !
 
------
-65^T! Comment !
-66^T! Another comment !
------
-   65   ^T     ! Comment !66 ^T               ! Another comment !-----
-   65   ^T     ! Comment !
+66 ^T               !! Single line comment
 
-66 ^T               ! Another comment !
 
------
-   65   ^T     ! Comment !
+----------
+65^T! Classic TECO comment !
 
-66 ^T               ! Another comment !
+! Multi-line
+    comment !
 
------
-65^T66^T-----
+66^T!! Single line comment
+
+
+----------
+   65   ^T     ! Classic TECO comment !
+! Multi-line
+    comment !
+66 ^T               !! Single line comment
+
+----------
+   65   ^T     ! Classic TECO comment !! Multi-line
+    comment !66 ^T               
+----------
+   65   ^T     
+
+
+
+66 ^T               !! Single line comment
+
+
+----------
+   65   ^T     ! Classic TECO comment !
+
+! Multi-line
+    comment !
+
+66 ^T               
+
+----------
+65^T66^T
+----------
 !PASS!

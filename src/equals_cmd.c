@@ -211,14 +211,12 @@ bool scan_equals(struct cmd *cmd)
     if ((c = peek_cbuf()) == '=')
     {
         next_cbuf();
-        trace_cbuf(c);
 
         cmd->c2 = (char)c;
 
         if ((c = peek_cbuf()) == '=')
         {
             next_cbuf();
-            trace_cbuf(c);
 
             cmd->c3 = (char)c;
         }

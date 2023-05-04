@@ -89,7 +89,9 @@ bool scan_atsign(struct cmd *cmd)
 ///
 ///  @brief    Scan bad command.
 ///
-///  @returns  Nothing (we throw an exception).
+///  @returns  If executing a command, we throw an exception. Otherwise, we
+///            return false to indicate that the command was neither an operand
+///            nor an operator.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -97,7 +99,14 @@ bool scan_bad(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    throw(E_ILL, cmd->c1);              // Illegal command
+    if (f.e0.exec)
+    {
+        throw(E_ILL, cmd->c1);          // Illegal command
+    }
+    else
+    {
+        return false;
+    }
 }
 
 
@@ -112,17 +121,14 @@ bool scan_colon(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int c;
-
-    if ((c = peek_cbuf()) == ':')       // Double colon?
+    if (peek_cbuf() == ':')             // Double colon?
     {
+        next_cbuf();                    // Yes, count it
+
         if (cmd->dcolon && f.e2.colon)
         {
             throw(E_COL);               // Too many colons
         }
-
-        next_cbuf();                    // Yes, count it
-        trace_cbuf(c);
 
         cmd->dcolon = true;             // And flag it
     }

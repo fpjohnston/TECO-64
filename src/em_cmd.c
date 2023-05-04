@@ -25,11 +25,35 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <ctype.h>
 
 #include "teco.h"
-#include "eflags.h"
+#include "ascii.h"
+#include "cbuf.h"
+#include "estack.h"
 #include "exec.h"
 #include "qreg.h"
+
+
+///  @struct  strip
+///
+///  @brief   Flags that are used to determine whether to ignore the echoing
+///           of commands that don't actually affect execution (such as spaces
+///           and comments).
+
+struct strip
+{
+    uint space : 1;                 ///< Strip spaces
+    uint blank : 1;                 ///< Strip blank lines (ending w/ LF)
+    uint white : 1;                 ///< Strip VT, FF, or CR
+    uint bang  : 1;                 ///< Strip comments
+    uint bang2 : 1;                 ///< Strip EOL comments
+};
+
+
+// Local functions
+
+static bool strip_cmd(int c, const struct strip strip);
 
 
 ///
@@ -42,13 +66,6 @@
 
 void exec_EM(struct cmd *cmd)
 {
-
-#if     defined(NOTRACE)
-
-    throw(E_NYI);                       // Feature not enabled
-
-#else
-
     assert(cmd != NULL);
 
     struct qreg *qreg = get_qreg(cmd->qindex);
@@ -60,38 +77,60 @@ void exec_EM(struct cmd *cmd)
         return;
     }
 
-    tbuffer macro = qreg->text;
-    int saved_trace = f.trace.flag;
-    bool saved_exec = f.e0.exec;
-
-    f.trace.enable  = true;
+    struct strip strip;
 
     if (cmd->n_set)
     {
-        f.trace.nospace = (cmd->n_arg & 1)  ? true : false;
-        f.trace.noblank = (cmd->n_arg & 2)  ? true : false;
-        f.trace.nowhite = (cmd->n_arg & 4)  ? true : false;
-        f.trace.nobang  = (cmd->n_arg & 8)  ? true : false;
-        f.trace.nobang2 = (cmd->n_arg & 16) ? true : false;
+        strip.space = (cmd->n_arg & 1)  ? true : false;
+        strip.blank = (cmd->n_arg & 2)  ? true : false;
+        strip.white = (cmd->n_arg & 4)  ? true : false;
+        strip.bang  = (cmd->n_arg & 8)  ? true : false;
+        strip.bang2 = (cmd->n_arg & 16) ? true : false;
     }
     else
     {
-        f.trace.nospace = false;
-        f.trace.noblank = false;
-        f.trace.nowhite = false;
-        f.trace.nobang  = false;
-        f.trace.nobang2 = false;
+        strip.space = false;
+        strip.blank = false;
+        strip.white = false;
+        strip.bang  = false;
+        strip.bang2 = false;
     }
+
+    tbuffer *saved_cbuf = cbuf;
+    bool saved_trace = f.trace;
+    bool saved_exec = f.e0.exec;
+    uint_t saved_pos = qreg->text.pos;
+
+    cbuf = &qreg->text;                 // Switch command strings
+    cbuf->pos = 0;
 
     f.e0.exec = false;                  // Don't actually execute commands
 
-    exec_macro(&macro, NULL);
+    push_x();                           // Save expression stack
 
+    // Loop for all commands in command string.
+
+    struct cmd newcmd = null_cmd;       // Initialize new command
+    int c;
+
+    while ((c = peek_cbuf()) != EOF)
+    {
+        f.trace = strip_cmd(c, strip);
+
+        next_cbuf();                    // Accept character and maybe trace it
+
+        if (finish_cmd(&newcmd, c))
+        {
+            newcmd = null_cmd;
+        }
+    }
+
+    pop_x();                            // Restore expression stack
+
+    cbuf = saved_cbuf;                  // Restore previous command string
+    qreg->text.pos = saved_pos;
     f.e0.exec = saved_exec;
-    f.trace.flag = saved_trace;
-
-#endif
-
+    f.trace = saved_trace;
 }
 
 
@@ -112,4 +151,97 @@ bool scan_EM(struct cmd *cmd)
     scan_qreg(cmd);
 
     return false;
+}
+
+
+///
+///  @brief    See if we should echo the current command.
+///
+///  @returns  true if should echo command, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static bool strip_cmd(int c, const struct strip strip)
+{
+    switch (c)
+    {
+        case SPACE:
+            if (strip.space)            // Stripping spaces?
+            {
+                return false;           // Don't trace space
+            }
+            else if (strip.blank)       // Stripping blank lines?
+            {
+                uint_t pos = cbuf->pos; // Save current position
+
+                f.trace = false;
+
+                while ((c = peek_cbuf()) != EOF)
+                {
+                    if (!isspace(c) || c == TAB)
+                    {
+                        cbuf->pos = pos; // Restore original position
+
+                        return true;    // Don't strip non-blank line
+                    }
+
+                    next_cbuf();        // Skip whitespace character
+
+                    if (isdelim(c))     // At end of blank line?
+                    {
+                        break;
+                    }
+                }
+
+                return false;
+            }
+
+            break;
+
+        case LF:
+            if (strip.white)            // Stripping line delimiters?
+            {
+                return false;           // Don't trace line feed
+            }
+            else if (strip.blank && term_pos == 0)
+            {
+                return false;           // Don't trace blank line
+            }
+
+            break;
+
+        case CR:
+        case VT:
+        case FF:
+            if (strip.white)            // Stripping line delimiters?
+            {
+                return false;           // Don't trace CR, VT, or FF
+            }
+
+            break;
+
+        case '!':                       // Check for tracing comments
+        {
+            uint next = cbuf->pos + 1;
+
+            if (strip.bang && cbuf->data[next] == ' ')
+            {
+                return false;           // Don't trace comment
+            }
+            else if (f.e1.bang && cbuf->data[next] == '!')
+            {
+                if (strip.bang2 || strip.white)
+                {
+                    return false;       // Don't trace comment
+                }
+            }
+
+            break;
+        }
+
+        default:
+            break;
+    }
+
+    return true; 
 }

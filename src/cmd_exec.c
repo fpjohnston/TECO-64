@@ -69,11 +69,9 @@ uint_t cmd_line;                    ///< Line number in current command/macro
 
 // Local functions
 
-static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c);
+static const struct cmd_table *scan_cmd(struct cmd *cmd, int c);
 
 static void scan_text(int delim, tstring *text);
-
-static inline bool trace_cmd(int c);
 
 
 ///
@@ -105,13 +103,12 @@ void exec_cmd(struct cmd *cmd)
 
         //  Skip execution of command if:
         //
-        //  1. We shouldn't trace the command.
-        //  2. The command is a space (which is a no-op). This is an optimization
+        //  1. The command is a space (which is a no-op). This is an optimization
         //     that was found through testing to make a measurable difference in
         //     performance.
-        //  3. There is no exec function that we have and should process.
+        //  2. There is no exec function that we have and should process.
 
-        if (!trace_cmd(c) || c == SPACE || (entry = scan_cmd(cmd, c)) == NULL)
+        if (c == SPACE || (entry = scan_cmd(cmd, c)) == NULL)
         {
             continue;
         }
@@ -244,19 +241,48 @@ void exec_str(const char *str)
 
 
 ///
+///  @brief    Scan command and see if we're finished with it.
+///
+///  @returns  true if command is complete, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool finish_cmd(struct cmd *cmd, int c)
+{
+    assert(cmd != NULL);
+
+    if (scan_cmd(cmd, c) == NULL)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
+///
 ///  @brief    Scan for secondary commands (E, F, and ^).
 ///
 ///  @returns  Table entry if need to execute command, NULL if done scanning.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
+static const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 {
     assert(cmd != NULL);
 
     if ((uint)c >= cmd_max)
     {
-        throw(E_ILL, c);                // Illegal command
+        if (f.e0.exec)
+        {
+            throw(E_ILL, c);            // Illegal command
+        }
+        else
+        {
+            return NULL;
+        }
     }
 
     cmd->c1 = (char)c;
@@ -276,15 +302,11 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
         {
             c = require_cbuf();
 
-            trace_cbuf(c);
-
             if (c == '^')               // Command is ^^x
             {
                 scan_simple(cmd);       // ^^ command
 
                 c = require_cbuf();
-
-                trace_cbuf(c);
 
                 store_val((int_t)c);
 
@@ -306,8 +328,6 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
         {
             c = require_cbuf();         // Get 2nd chr. in E command
 
-            trace_cbuf(c);
-
             if ((uint)c > e_max || (e_table[c].scan == NULL &&
                                     e_table[c].exec == NULL))
             {
@@ -321,8 +341,6 @@ static inline const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
         else if (c == 'F' || c == 'f')
         {
             c = require_cbuf();         // Get 2nd chr. in F command
-
-            trace_cbuf(c);
 
             if ((uint)c > f_max || (f_table[c].scan == NULL &&
                                     f_table[c].exec == NULL))
@@ -413,14 +431,11 @@ static void scan_text(int delim, tstring *text)
     // terminates a comment; otherwise, what follows would then become part of
     // the comment.
 
-    if (f.trace.enable)
-    {
-        p = start;
+    p = start;
 
-        for (uint i = 0; i < text->len + 1; ++i)
-        {
-            echo_in(*p++);
-        }
+    for (uint i = 0; i < text->len + 1; ++i)
+    {
+        trace_cbuf(*p++);
     }
 
     cbuf->pos += text->len + 1;
@@ -454,8 +469,6 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
         if (isgraph(c) || (c >= CTRL_A && c <= CTRL_Z))
         {
-            trace_cbuf(c);
-
             delim = (char)c;
         }
         else
@@ -523,8 +536,6 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
         throw(E_TXT, c);                // Invalid text delimiter
     }
 
-    trace_cbuf(c);
-
     scan_text(*end, &cmd->text2);
 }
 
@@ -558,13 +569,13 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
 
     bool match = false;                 // Assume failure
     bool saved_exec = f.e0.exec;
-    int saved_trace = f.trace.flag;
+    bool saved_trace = f.trace;
     int c;
 
     push_x();                           // Save current expression stack
 
     f.e0.exec = false;
-    f.trace.flag = 0;
+    f.trace = false;
 
     while ((c = fetch_cbuf()) != EOF)
     {
@@ -588,118 +599,10 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
         *cmd = null_cmd;
     }
 
-    f.trace.flag = saved_trace;
+    f.trace = saved_trace;
     f.e0.exec = saved_exec;
 
     pop_x();                            // Restore previous expression stack
 
     return match;
-}
-
-
-///
-///  @brief    Check to see if we want to trace current command/character.
-///
-///  @returns  true if should execute command, false if command is just
-///            whitespace that we can ignore.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline bool trace_cmd(int c)
-{
-
-#if     !defined(NOTRACE)
-
-    if (f.trace.flag == 0)
-    {
-        return true;
-    }
-
-    switch (c)
-    {
-        case SPACE:
-            if (f.trace.nospace)        // Skipping spaces?
-            {
-                return false;           // Don't execute space
-            }
-            else if (f.trace.noblank)   // Skipping blank lines?
-            {
-                uint_t pos = cbuf->pos; // Save start of line
-
-                while ((c = peek_cbuf()) != EOF)
-                {
-                    if (isspace(c) && c != TAB)
-                    {
-                        cbuf->pos = pos;// Reset to start of line
-
-                        return true;    // Execute non-blank line
-                    }
-
-                    next_cbuf();
-
-                    if (c == LF)        // At end of blank line?
-                    {
-                        break;
-                    }
-                }
-
-                return false;
-            }
-
-            break;
-
-        case LF:
-            if (f.trace.nowhite)        // Echoing line delimiters?
-            {
-                return false;           // Don't execute line delimiter
-            }
-            else if (f.trace.noblank && term_pos == 0)
-            {
-                return false;           // Don't execute blank line
-            }
-
-            break;
-
-        case CR:
-        case VT:
-        case FF:
-            if (f.trace.nowhite)        // Echoing line delimiters?
-            {
-                return false;           // Don't execute line delimiter
-            }
-
-            break;
-
-        case '!':                       // Check for echoing comments
-            if (f.trace.nobang && peek_cbuf() == ' ')
-            {
-                do
-                {
-                    next_cbuf();
-                } while (peek_cbuf() != '!');
-
-                next_cbuf();
-
-                return false;           // Don't execute comment
-            }
-            else if (f.trace.nobang2 && peek_cbuf() == '!' && f.e1.bang)
-            {
-                do
-                {
-                    next_cbuf();
-                } while (peek_cbuf() != LF);
-
-                return false;           // Don't execute comment
-            }
-            break;
-
-        default:
-            break;
-    }
-
-    echo_in(c);
-
-#endif
-
-    return true;                        // Execute command
 }

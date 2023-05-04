@@ -45,6 +45,8 @@ extern void reset_cbuf(void);
 
 extern void store_cbuf(int c);
 
+static inline void trace_cbuf(int c);
+
 
 // *** Note that the following functions are inline as an optimization. ***
 
@@ -65,12 +67,14 @@ static inline int fetch_cbuf(void)
 
     int c = cbuf->data[cbuf->pos++];
 
+    trace_cbuf(c);
+
     return c;
 }
 
 
 ///
-///  @brief    Skip past current character in command string.
+///  @brief    Echo and advance past character we've already peeked at.
 ///
 ///  @returns  Nothing.
 ///
@@ -80,7 +84,7 @@ static inline void next_cbuf(void)
 {
     if (cbuf->pos < cbuf->len)
     {
-        ++cbuf->pos;
+        trace_cbuf(cbuf->data[cbuf->pos++]);
     }
 }
 
@@ -113,12 +117,12 @@ static inline int peek_cbuf(void)
 
 static inline int require_cbuf(void)
 {
-    if (cbuf->pos == cbuf->len)
+    int c = fetch_cbuf();
+
+    if (c == EOF)
     {
         abort_cbuf();
     }
-
-    int c = cbuf->data[cbuf->pos++];
 
     return c;
 }
@@ -136,7 +140,7 @@ static inline void trace_cbuf(int c)
 
 #if     !defined(NOTRACE)
 
-    if (f.trace.enable)
+    if (f.trace)
     {
         echo_in(c);
     }

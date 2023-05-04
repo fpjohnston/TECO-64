@@ -207,7 +207,6 @@ bool scan_number(struct cmd *cmd)
     else if ((cx = peek_cbuf()) != EOF && (cx == 'x' || cx == 'X'))
     {
         next_cbuf();                    // Discard the x or X
-        trace_cbuf(c);
 
         c = require_cbuf();             // Get the first digit for base 16
 
@@ -215,8 +214,6 @@ bool scan_number(struct cmd *cmd)
         {
             throw(E_ILN);               // Invalid number
         }
-
-        trace_cbuf(c);
 
         radix = 16;
 
@@ -260,7 +257,6 @@ bool scan_number(struct cmd *cmd)
         }
 
         next_cbuf();                    // Accept the next digit
-        trace_cbuf(c);
 
         n *= radix;                     // Shift over existing digits
         n += digits[c];                 // And add in the new digit

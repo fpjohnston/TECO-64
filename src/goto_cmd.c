@@ -209,7 +209,7 @@ static void find_tag(const char *orig_tag)
 
                     // We found the tag, so print it if tracing.
 
-                    if (f.trace.enable)
+                    if (f.trace)
                     {
                         tprint("!%.*s!", (int)cmd.text1.len, cmd.text1.data);
                     }
@@ -309,17 +309,14 @@ bool scan_bang(struct cmd *cmd)
     // If feature enabled, !! starts a comment that ends with LF
     // (but note that the LF is not counted as part of the command).
 
-    int c;
-
-    if ((c = peek_cbuf()) == '!')
+    if (peek_cbuf() == '!')
     {
+        next_cbuf();
+
         if (!f.e1.bang)                 // Is !! enabled?
         {
             throw(E_EXT);
         }
-
-        next_cbuf();
-        trace_cbuf(c);
 
         scan_texts(cmd, 1, LF);
 

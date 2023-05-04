@@ -127,7 +127,7 @@ static void endif(struct cmd *unused, bool else_ok)
         }
         else if (cmd->c1 == '\'')       // Conditional end
         {
-            if (f.trace.enable && quote.depth == start_if)
+            if (f.trace && quote.depth == start_if)
             {
                 echo_in(cmd->c1);
             }
@@ -147,7 +147,7 @@ static void endif(struct cmd *unused, bool else_ok)
 
                 if (quote.depth == start_if)
                 {
-                    if (f.trace.enable)
+                    if (f.trace)
                     {
                         echo_in(cmd->c1);
                     }
@@ -490,8 +490,6 @@ bool scan_quote(struct cmd *cmd)
     reject_atsign(cmd->atsign);
 
     int c = require_cbuf();             // Get test condition
-
-    trace_cbuf(c);
 
     cmd->c2 = (char)c;
 

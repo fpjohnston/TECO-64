@@ -658,15 +658,12 @@ void scan_greg(struct cmd *cmd)
     int offset = 0;
     int qindex;
 
-    trace_cbuf(c);
-
     if (c == '.')                       // Local Q-register?
     {
         cmd->qlocal = true;             // Yes, mark it
         offset = QCOUNT;
 
         c = require_cbuf();
-        trace_cbuf(c);
     }
 
     if ((qindex = qtable[(uchar)c]) == 0 || (qindex < 0 && cmd->qlocal))
@@ -694,15 +691,12 @@ void scan_qreg(struct cmd *cmd)
     int offset = 0;
     int qindex;
 
-    trace_cbuf(c);
-
     if (c == '.')                       // Local Q-register?
     {
         cmd->qlocal = true;             // Yes, mark it
         offset = QCOUNT;
 
         c = require_cbuf();
-        trace_cbuf(c);
     }
 
     if ((qindex = qtable[(uchar)c]) <= 0)

@@ -234,26 +234,6 @@ union et_flag
     };
 };
 
-///  @struct  trace
-///
-///  @brief   Definition of flags that are used to handle the tracing of
-///           commands during execution.
-
-union trace
-{
-    int flag;                   ///< Entire trace flag
-
-    struct
-    {
-        uint enable  : 1;       ///< Enable tracing
-        uint nospace : 1;       ///< Don't trace spaces
-        uint noblank : 1;       ///< Don't trace blank lines (ending w/ LF)
-        uint nowhite : 1;       ///< Don't trace VT, FF, or CR
-        uint nobang  : 1;       ///< Don't trace tags starting with "! "
-        uint nobang2 : 1;       ///< Don't trace tags starting with "!!"
-    };
-};
-
 ///  @struct  flags
 ///
 ///  @brief   Master flag structure.
@@ -277,7 +257,7 @@ struct flags
     int_t          eu;          ///< Upper/lower case flag
     int_t          ev;          ///< Edit verify flag
     int_t       radix;          ///< Current input radix
-    union trace trace;          ///< Command trace flag
+    bool        trace;          ///< Command trace flag
 };
 
 ///  @var    f

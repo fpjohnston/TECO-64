@@ -81,7 +81,7 @@ struct flags f =                    ///< Global flag variables
 #if     defined(DEBUG)
 
     .e1.repeat  = true,             // Double CTRL-] repeats command
-    .e1.newline = true,             // LF acts like double ESCape
+    .e1.newline = false,            // LF acts like double ESCape
 
 #else
 
@@ -151,7 +151,7 @@ struct flags f =                    ///< Global flag variables
     .eu = -1,                       // No case flagging
     .ev = 0,                        // Don't print any lines before prompt
     .radix = 10,                    // Use decimal radix
-    .trace.flag = 0,                // All trace bits off
+    .trace = false,                 // Tracing is not enabled
 };
 
 //lint -restore
@@ -199,7 +199,7 @@ int main(int argc, const char * const argv[])
             case MAIN_NORMAL:           // Normal entry
                 refresh_dpy();          // Update display if enabled
 
-                f.trace.flag = 0;       // Switch off all tracing bits
+                f.trace = false;        // Switch off all tracing bits
 
                 if (!f.e0.init && !read_EI())
                 {
