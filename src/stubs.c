@@ -127,7 +127,7 @@ void exec_FM(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        store_val(FAILURE);     // Command failed
+        store_val(FAILURE);             // Command failed
     }
 }
 
@@ -145,7 +145,7 @@ void exec_FQ(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        store_val(FAILURE);     // Command failed
+        store_val(FAILURE);             // Command failed
     }
 }
 
