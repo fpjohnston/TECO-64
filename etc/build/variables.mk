@@ -110,7 +110,6 @@ endif
 
 ifeq ($(option),enable)
 
-    DEFINES += -D DISPLAY_MODE
     LIBS    += -l ncurses
     SOURCES += display.c color_cmd.c key_cmd.c map_cmd.c status.c
 
