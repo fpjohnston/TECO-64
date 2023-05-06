@@ -1,117 +1,101 @@
-#
-#  Edit buffer variables.
-#
 ################################################################################
+#
+#  Edit buffer options.
+#
 
-ifeq (${buffer}, rope)
+ifeq (${buffer}, )                  # Default is gap buffer
+
+    SOURCES += gap_buf.c
+
+else ifeq (${buffer}, gap)          # Did user ask for a gap buffer?
+
+    SOURCES += gap_buf.c
+
+else ifeq (${buffer}, rope)         # Did user ask for a rope buffer?
 
 	$(error Rope buffer handler is not yet implemented)
 
-else ifeq (${buffer}, gap)
-
-    SOURCES += gap_buf.c
-
-else ifeq (${buffer}, )
-
-    SOURCES += gap_buf.c
-
-else
+else                                # We don't know what the user wants
 
 	$(error Unknown buffer handler: ${buffer})
 
 endif
 
-#
-#  Debugging variables.
-#
 ################################################################################
+#
+#  Debugging and compiler optimization options.
+#
 
-ifdef   gdb
+ifdef   gdb                         # Can't build for both gdb and gprof
 ifdef   gprof
 
     $(error gdb and gprof options cannot both be included for a build)
 
-else
-
-    DEBUG += -g
-    OPTIMIZE = -O0
-    STRIP =
-
 endif
 endif
 
-#  Enable use of GPROF.
+ifdef   gdb                         # Enable use of gdb.
 
-ifdef   gprof
+    CC_OPTS += -O0 -g
+    LINKOPTS = -g
 
-    DEBUG += -pg
-    OPTIMIZE = -O3
-    STRIP =
+else ifdef gprof                    # Enable use of gprof.
 
-endif
+    CC_OPTS += -O3 -pg
+    LINKOPTS += -pg
 
-#  Enable basic memory checks. This is only intended as a quick and lightweight
-#  version of tools such as valgrind, and not a replacement.
+else                                # Neither gdb nor gprof.
 
-ifdef   memcheck
-
-    DEFINES += -D MEMCHECK
-    DOXYGEN += MEMCHECK
-    STRIP =
+	CC_OPTS += -Ofast
+    LINKOPTS += -s
 
 endif
 
-#  Enable debug mode.
-
-ifdef   debug
+ifdef   debug                       # Enable basic internal debugging
 
     DEFINES += -D DEBUG
     DOXYGEN += DEBUG
-    STRIP =
 
 endif
 
-#
-#  Check display variables.
-#
+ifdef   memcheck                    # Enable basic internal memory checks
+
+    DEFINES += -D MEMCHECK
+    DOXYGEN += MEMCHECK
+
+endif
+
 ################################################################################
+#
+#  Display mode options.
+#
 
-option = disable
+option = enable
 
-ifeq ($(display),disable)
-else ifeq ($(display),off)
-else ifeq ($(display),no)
-else ifeq ($(display),0)
-else ifeq ($(display),enable)
-
-    option = enable
-
+ifndef display                      # Default is to enable display
+else ifeq ($(display),enable)       # Did user ask for to enable display?
 else ifeq ($(display),on)
-
-    option = enable
-
 else ifeq ($(display),yes)
-
-    option = enable
-
 else ifeq ($(display),1)
-
-    option = enable
-
-else ifndef display
-
-    option = enable
-
 else
 
-    $(error Invalid display mode option: $(display))
+    option = disable
 
+    ifeq ($(display),disable)       # Did user ask for to disable display?
+    else ifeq ($(display),off)
+    else ifeq ($(display),no)
+    else ifeq ($(display),0)
+    else                            # We don't know what the user wants
+
+        $(error Invalid display mode option: $(display))
+
+    endif
 endif
 
 ifeq ($(option),enable)
 
-    LIBS    += -l ncurses
-    SOURCES += display.c color_cmd.c key_cmd.c map_cmd.c status.c
+    LINKOPTS += -l ncurses
+    SOURCES  += display.c color_cmd.c key_cmd.c map_cmd.c status.c
 
 else
 
@@ -121,86 +105,80 @@ endif
 
 option =
 
-#
-#  Check to see if TECO commands should use 32-bit or 64-bit integers.
-#
 ################################################################################
+#
+#  Integer size options.
+#
 
-ifeq      (${int}, 64)
+ifeq (${int}, )                     # Default is 32-bit integers
+
+    DEFINES += -D INT_T=32
+    DOXYGEN +=    INT_T=32
+
+else ifeq (${int}, 32)              # Did user ask for 32-bit integers?
+
+    DEFINES += -D INT_T=32
+    DOXYGEN +=    INT_T=32
+
+else ifeq (${int}, 64)              # Did user ask for 64-bit integers?
 
     DEFINES += -D INT_T=64
     DOXYGEN +=    INT_T=64
 
-else ifeq (${int}, 32)
-
-    DEFINES += -D INT_T=32
-    DOXYGEN +=    INT_T=32
-
-else ifeq (${int}, )
-
-    DEFINES += -D INT_T=32
-    DOXYGEN +=    INT_T=32
-
-else
+else                                # We don't know what the user wants
 
     $(error Unknown integer size: ${int}: expected 32 or 64)
 
 endif
 
-#
-#  Disable run-time assertions.
-#
 ################################################################################
+#
+#  Speed options.
+#
 
-ifdef   ndebug
+ifdef   ndebug                      # Disable run-time assertions
 
     DEFINES += -D NDEBUG
     DOXYGEN +=    NDEBUG
 
 endif
 
-#
-#  Disable strict syntax checking.
-#
-################################################################################
-
-ifdef   nostrict
+ifdef   nostrict                    # Disable strict syntax checking
 
     DEFINES += -D NOSTRICT
+    DOXYGEN +=    NOSTRICT
 
 endif
 
-#
-#  Disable command tracing.
-#
-################################################################################
-
-ifdef   notrace
+ifdef   notrace                     # Disable command tracing
 
     DEFINES += -D NOTRACE
     DOXYGEN +=    NOTRACE
 
 endif
 
-#
-#  Define default optimization level.
-#
 ################################################################################
-
-OPTIMIZE ?= -Ofast
-
 #
-#  Check to see which paging handler we should use
+#  Memory paging options.
 #
-################################################################################
 
-ifeq (${paging}, vm)
+ifeq (${paging}, )                  # Default is virtual memory paging
 
     SOURCES += page_vm.c
     DEFINES += -D PAGE_VM
     DOXYGEN +=    PAGE_VM
 
-else ifeq (${paging}, file)
+else ifeq (${paging}, vm)           # Did user ask for virtual memory paging?
+
+    SOURCES += page_vm.c
+    DEFINES += -D PAGE_VM
+    DOXYGEN +=    PAGE_VM
+
+else ifeq (${paging}, std)          # Did user ask for standard TECO paging?
+
+    SOURCES += page_std.c
+
+else ifeq (${paging}, file)         # Did user ask for holding file paging?
 
     #  This is a placeholder for eventual implementation of a method for using
     #  a "holding file" to allow backwards paging, as described in The Craft of
@@ -208,17 +186,7 @@ else ifeq (${paging}, file)
 
     $(error Holding file paging is not yet implemented)
 
-else ifeq (${paging}, std)
-
-    SOURCES += page_std.c
-
-else ifeq (${paging}, )
-
-    SOURCES += page_vm.c
-    DEFINES += -D PAGE_VM
-    DOXYGEN +=    PAGE_VM
-
-else
+else                                # We don't know what the user wants
 
     $(error Unknown paging handler: ${paging})
 

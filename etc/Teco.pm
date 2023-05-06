@@ -119,7 +119,7 @@ sub teco_write
         }
     }
 
-    print "Creating $file\n";
+    print "creating $file\n";
 
     open my $fh, '>', $file or croak "Can't open $file\n";
 

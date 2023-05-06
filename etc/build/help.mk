@@ -25,7 +25,6 @@ help:
 	@echo "    int=64       Use 64-bit integers in target."
 	@echo "    paging=std   Use standard paging in target."
 	@echo "    paging=vm    Use virtual memory paging in target. [default]"
-	@echo "    verbose=1    Print all make commands during build."
 	@echo ""
 	@echo "Development targets:"
 	@echo ""

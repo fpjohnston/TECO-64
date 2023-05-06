@@ -26,44 +26,30 @@
 #
 ################################################################################
 
-TARGET   = teco
-VPATH    = src:obj:include
-CC       = gcc
-INCDIR   = include
-INCLUDES = -I $(INCDIR)
-LIBS     =                              # Default is no libraries
+TARGET  = teco
+SHELL   = /bin/sh
+VPATH   = src:obj:include
+CC      = gcc
+INCLUDE = include/
 
-# Strip symbols from executable image. Will be undefined if debugging.
-
-STRIP    = -s
 MAKE     := $(MAKE) --no-print-directory
 
-#  If verbose=1 is included when invoking make, we will print the actual
-#  commands being executed, and will suppress the user-friendly messages
-#  normally output.
+.SUFFIXES:
+.SUFFIXES: .c .o .lob
 
-ifdef   verbose
+CC_OPTS = -c -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums -MMD
+CC_OPTS += -I $(INCLUDE)
 
-    AT =
-    NULL = >/dev/null 2>&1
-
-else
-
-    AT = @
-
-endif
-
+HEADERS = $(INCLUDE)commands.h $(INCLUDE)errcodes.h $(INCLUDE)errtables.h \
+		$(INCLUDE)exec.h $(INCLUDE)options.h
 
 include etc/build/sources.mk            # List of source files
 include etc/build/variables.mk          # Variable definitions
 
-OPTIONS = -c -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums
-OPTIONS += $(INCLUDES) $(OPTIMIZE) $(DEBUG) $(DEFINES) -MMD
-
+CC_OPTS += $(DEFINES)
 DFILES  = $(SOURCES:.c=.d)
-LOBS    = $(SOURCES:.c=.lob)
-OBJECTS = $(SOURCES:.c=.o)
-OBJECTS := $(patsubst %,obj/%,$(OBJECTS))
+O_FILES = $(SOURCES:.c=.o)
+O_FILES := $(patsubst %,obj/%,$(O_FILES))
 
 #  Define default target ('teco').
 
@@ -72,6 +58,31 @@ $(TARGET): bin/$(TARGET)
 
 .PHONY: all
 all: $(TARGET)                          # Equivalent to default target.
+
+#
+#  Define targets that create header files from XML files and template files.
+#  This is done to avoid duplicating information in multiple header or source
+#  files, regarding such things as TECO commands, error codes, and command-line
+#  options.
+#
+
+.PHONY: headers
+headers: $(HEADERS)
+
+include/commands.h: etc/make_commands.pl etc/xml/commands.xml etc/templates/commands.h
+	$^ --out $@
+
+include/errcodes.h: etc/make_errors.pl etc/xml/errors.xml etc/templates/errcodes.h
+	$^ --out $@
+
+include/errtables.h: etc/make_errors.pl etc/xml/errors.xml etc/templates/errtables.h
+	$^ --out $@
+
+include/exec.h: etc/make_commands.pl etc/xml/commands.xml etc/templates/exec.h
+	$^ --out $@
+
+include/options.h: etc/make_options.pl etc/xml/options.xml etc/templates/options.h
+	$^ --out $@
 
 #  The following targets are present because git repositories only allow for
 #  files in directories, not for directories that contain no files. So before
@@ -82,68 +93,87 @@ all: $(TARGET)                          # Equivalent to default target.
 #  not be deleted by any targets.
 
 bin:
-	$(AT)mkdir -p bin
+	@mkdir -p bin
 
 obj:
-	$(AT)mkdir -p obj
+	@mkdir -p obj
 
 #  Always compile source files if compiler options have changed.
 
-$(OBJECTS): obj/OPTIONS
+$(O_FILES): $(HEADERS) obj/cc_opts
 
-obj/OPTIONS: obj                        # Create compiler options file
-	-$(AT)@echo '$(OPTIONS)' | cmp -s - $@ || echo '$(OPTIONS)' > $@
+obj/cc_opts: obj                       # Create compiler options file
+	-@echo '$(CC_OPTS)' | cmp -s - $@ || echo '$(CC_OPTS)' > $@
 
 obj/%.o: %.c                            # Compile source file
-	@echo Making $@ $(NULL)
-	$(AT)$(CC) @obj/OPTIONS $< -o obj/$(@F)
+	$(CC) -o obj/$(@F) $< @obj/cc_opts
 
-bin/$(TARGET): $(OBJECTS) bin           # Link object files, create executable
-	@echo Making $(@F) $(NULL)
-	$(AT)$(CC) $(DEBUG) $(STRIP) -o $@ $(OBJECTS) $(LIBS)
+bin/$(TARGET): $(O_FILES) bin           # Link object files, create executable
+	@echo $(O_FILES) > obj/o_files.lis
+	$(CC) -o $@ @obj/o_files.lis $(LINKOPTS)
 
 #  Copy executable image and library files to system directories.
 
 .PHONY: install
 install: $(TARGET)
-	$(AT)install -v -C bin/teco /usr/local/bin
-	$(AT)install -v -d /usr/local/lib/teco
-	$(AT)install -v -C --mode=0644 lib/*.tec /usr/local/lib/teco
+	install -v -C bin/teco /usr/local/bin
+	install -v -d /usr/local/lib/teco
+	install -v -C --mode=0644 lib/*.tec /usr/local/lib/teco
 
-#  Update release version number.
-
-ifeq ($(version),major)
-
-else ifeq ($(version),minor)
-
-else ifeq ($(version),patch)
-
-else ifdef release
-
-    $(error Invalid release version option: $(version))
-
-endif
-
-#  Define release target, used to update version number and create
-#  a new public release of TECO.
+#  Create new public release of TECO with updated version number.
 
 .PHONY: release
 release: distclean
-	$(AT)etc/version.pl include/version.h etc/templates/version.h \
+	etc/make_version.pl include/version.h etc/templates/version.h \
 		--out include/version.h --version=$(version)
-	$(AT)$(MAKE) -B -s include/version.h
-	$(AT)$(MAKE) $(TARGET)
+	$(MAKE) -B -s include/version.h
+	$(MAKE) $(TARGET)
+
+#  Clean binary files, object files, and temporary files.
+
+.PHONY: clean
+clean:
+	-rm -f bin/$(TARGET) bin/$(TARGET).map obj/*
+
+#  Clean everything.
+
+.PHONY: distclean
+distclean: obj bin clean
+	-rm -f include*.bak src/*.bak
+	-rm -f test/cases/* test/results/*
+	-rm -rf html 
+
+# Create HTML documentation with Doxygen
+
+.PHONY: doc
+doc: html/options.html doc/errors.md | html
+	-@cp etc/Doxyfile html/Doxyfile
+	-@echo "PREDEFINED = DOXYGEN" >>html/Doxyfile
+	-doxygen html/Doxyfile
+
+html:
+	-@mkdir -p html
+
+# Create HTML documentation for TECO command-line options.
+
+html/options.html: etc/xml/options.xml etc/xml/options.xsl | html
+	xalan -in etc/xml/options.xml -xsl etc/xml/options.xsl -out html/options.html
+
+# Create Markdown documentation for TECO run-time errors.
+
+doc/errors.md: etc/make_errors.pl etc/xml/errors.xml etc/templates/errors.md
+	$^ -o $@
 
 # Additional targets
 
 -include $(DFILES)                      # Add in dependency targets
 
-include etc/build/headers.mk            # Header file targets
-
 include etc/build/help.mk               # Help message target
-
-include etc/build/doc.mk                # Documentation targets
 
 include etc/build/test.mk               # Test targets
 
-include etc/build/clean.mk              # Clean targets
+ifdef   FLINT
+
+include etc/build/lint.mk
+
+endif

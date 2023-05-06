@@ -68,7 +68,7 @@ sub main
     my $xml      = teco_read( $args{input} );
     my $template = teco_read( $args{template} );
 
-    print "Reading configuration file $args{input}...\n";
+    print "Reading $args{input}...";
 
     my %errors;
 

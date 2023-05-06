@@ -101,7 +101,7 @@ sub main
     my $input    = teco_read( $args{input} );
     my $template = teco_read( $args{template} );
 
-    print "Reading configuration file $args{input}...\n";
+    print "Reading $args{input}...";
 
     parse_xml( $input, 1 );
 
@@ -112,7 +112,7 @@ sub main
         print "No options found in $args{input}\n";
     }
 
-    printf "...%u option%s found\n", $nopts, $nopts == 1 ? q{} : 's';
+    printf '%u option%s found...', $nopts, $nopts == 1 ? q{} : 's';
 
     build_strings();                    # Build data strings for header file
     make_options($template);            # Create new header file

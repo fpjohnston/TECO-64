@@ -32,65 +32,41 @@ fast:
 .PHONY: critic
 critic:
 	@echo Checking Perl scripts...
-	@$(MAKE) -s obj/Teco.tmp
-	@$(MAKE) -s obj/commands.tmp
-	@$(MAKE) -s obj/errors.tmp
-	@$(MAKE) -s obj/options.tmp
-	@$(MAKE) -s obj/version.tmp
-	@$(MAKE) -s obj/test_options.tmp
-	@$(MAKE) -s obj/test_commands.tmp
+	@$(MAKE) obj/Teco.tmp
+	@$(MAKE) obj/commands.tmp
+	@$(MAKE) obj/errors.tmp
+	@$(MAKE) obj/options.tmp
+	@$(MAKE) obj/version.tmp
+	@$(MAKE) obj/test_options.tmp
+	@$(MAKE) obj/test_commands.tmp
 
 obj/Teco.tmp: etc/Teco.pm
-	$(AT)perlcritic $<
-	$(AT)touch $@
+	perlcritic $<
+	@touch $@
 
 obj/commands.tmp: etc/make_commands.pl
-	$(AT)perlcritic $<
-	$(AT)touch $@
+	perlcritic $<
+	@touch $@
 
 obj/errors.tmp: etc/make_errors.pl
-	$(AT)perlcritic $<
-	$(AT)touch $@
+	perlcritic $<
+	@touch $@
 
 obj/options.tmp: etc/make_options.pl
-	$(AT)perlcritic $<
-	$(AT)touch $@
+	perlcritic $<
+	@touch $@
 
 obj/version.tmp: etc/make_version.pl
-	$(AT)perlcritic $<
-	$(AT)touch $@
+	perlcritic $<
+	@touch $@
 
 obj/test_options.tmp: etc/test_options.pl
-	$(AT)perlcritic $<
-	$(AT)touch $@
+	perlcritic $<
+	@touch $@
 
 obj/test_commands.tmp: etc/test_commands.pl
-	$(AT)perlcritic $<
-	$(AT)touch $@
-
-#
-#  Define how to lint source files.
-#
-
-LINT = flint -b -zero -i$(HOME)/flint/lnt $(DEFINES) ../etc/std.lnt \
-             -e126 -e786 -e818 -e830 -e843 -e844 +fan +fas
-
-%.lob: %.c obj
-	@echo Making $@
-	$(AT)cd src && $(LINT) -u $(INCLUDES) -oo\(../obj/$@\) ../$<
-
-#
-#  Define how to lint .lob (lint object) files.
-#
-
-.PHONY: lint
-lint: obj
-	@echo Linting source files...
-	@$(MAKE) -s $(LOBS)
-	$(AT)cd obj && $(LINT) -e768 -e769 -summary *.lob
-
-.PHONY: lobs
-lobs: obj $(LOBS)
+	perlcritic $<
+	@touch $@
 
 #
 #  Define target to include required test features
@@ -108,6 +84,6 @@ test:
 PHONY: smoke
 smoke: critic lint test
 	@echo Testing TECO options...
-	$(AT)etc/test_options.pl --summary
+	etc/test_options.pl --summary
 	@echo Testing TECO commands...
-	$(AT)etc/test_commands.pl test/
+	etc/test_commands.pl test/
