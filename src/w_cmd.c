@@ -263,28 +263,23 @@ bool scan_W(struct cmd *cmd)
         cmd->n_arg = 0;                 // :W = 0:W
     }
 
-    if (cmd->m_set && f.e0.exec)        // m,n:W
+    if (cmd->m_set && !f.e0.skip)       // m,n:W
     {
         set_w(cmd->m_arg, cmd->n_arg);
     }
 
+    // Reset these for any following command.
+
     cmd->m_set = false;
     cmd->m_arg = 0;
+    cmd->colon = false;
+    cmd->dcolon = false;
 
-    if (cmd->colon)
-    {
-        cmd->colon = cmd->dcolon = false; // Reset for next command
+    int_t n = get_w(cmd->n_arg);
 
-        int_t n = get_w(cmd->n_arg);
+    store_val(n);
 
-        store_val(n);
-
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return true;
 }
 
 

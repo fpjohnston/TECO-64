@@ -46,6 +46,16 @@ my %args = (
     template => undef,                  # Template file
 );
 
+my %types = (
+    q{?} => 'c_none ',
+    q{+} => 'c_LF   ',
+    q{^} => 'c_UP   ',
+    q{ } => 'c_WHITE',
+    q{E} => 'c_E    ',
+    q{F} => 'c_F    ',
+    q{!} => 'c_M    ',
+);
+
 #>>>
 
 #
@@ -71,7 +81,7 @@ sub main
 
     print "Reading $args{input}...";
 
-    my $array_ref = parse_xml( $xmlfile, 1 );
+    my $array_ref = parse_xml($xmlfile);
 
     if ( $args{output} =~ /commands.h/msx )
     {
@@ -109,10 +119,10 @@ sub make_commands
 
     foreach (@commands)
     {
-        my $name    = $_->{name};
-        my $scan    = $_->{scan};
-        my $exec    = $_->{exec};
-        my $mn_args = $_->{mn_args};
+        my $name = $_->{name};
+        my $scan = $_->{scan};
+        my $exec = $_->{exec};
+        my $type = $_->{type};
 
         if ( $name eq q{'} || $name eq q{\\} )
         {
@@ -149,12 +159,11 @@ sub make_commands
         $name .= q{,};
         $name = sprintf '%-11s', $name;
 
-        my $entry = sprintf '%s', "    ENTRY($name  $scan  $exec  $mn_args),\n";
+        my $entry = sprintf '%s', "    ENTRY($name  $scan  $exec  $type),\n";
 
         if ( $name =~ s/^('[[:upper:]]',)/\L$1/msx )
         {
-            $entry .= sprintf '%s',
-              "    ENTRY($name  $scan  $exec  $mn_args),\n";
+            $entry .= sprintf '%s', "    ENTRY($name  $scan  $exec  $type),\n";
         }
 
         if ( $_->{name} =~ /^E.$/msx )
@@ -251,7 +260,7 @@ sub parse_options
 
 sub parse_xml
 {
-    my ( $xml, $type ) = @_;
+    my ($xml) = @_;
     my $dom = XML::LibXML->load_xml( string => $xml, line_numbers => 1 );
 
     ## no critic (ProhibitInterpolationOfLiterals)
@@ -277,15 +286,22 @@ sub parse_xml
 
         foreach my $command ( $section->findnodes('./command') )
         {
-            my $name    = $command->getAttribute('name');
-            my $scan    = $command->getAttribute('scan');
-            my $exec    = $command->getAttribute('exec');
-            my $mn_args = 'NO_ARGS';
+            my $name = $command->getAttribute('name');
+            my $scan = $command->getAttribute('scan');
+            my $exec = $command->getAttribute('exec');
+            my $type = $command->getAttribute('type');
 
-            if ( defined $exec && $exec =~ / (.+) ! /msx )
+            if ( defined $types{$type} )
             {
-                $mn_args = 'MN_ARGS';
-                $exec =~ s/ (.+) ! /$1/msx;
+                $type = "$types{$type} ";
+            }
+            elsif ( length $type == 0 )
+            {
+                $type = "$types{'?'} ";
+            }
+            else
+            {
+                die "Invalid command type: '$type'\n";
             }
 
             if ( defined $scan )
@@ -309,10 +325,10 @@ sub parse_xml
 
             push @commands,
               {
-                name    => $name,
-                scan    => $scan,
-                exec    => $exec,
-                mn_args => $mn_args
+                name => $name,
+                scan => $scan,
+                exec => $exec,
+                type => $type
               };
         }
     }

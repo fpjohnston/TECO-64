@@ -28,6 +28,19 @@
 
 #include "ascii.h"
 
+// Command types
+
+enum
+{
+    c_none,                     ///< General command
+    c_LF,                       ///< Line feed
+    c_WHITE,                    ///< Whitespace other than LF
+    c_UP,                       ///< Uparrow
+    c_E,                        ///< E commands
+    c_F,                        ///< F commands
+    c_M                         ///< M, !, [, ], and ESCape
+};
+
 // Command table definitions
 
 ///  @typedef scan_func
@@ -48,7 +61,7 @@ struct cmd_table
 {
     scan_func *scan;                ///< Scan function
     exec_func *exec;                ///< Execute function
-    bool mn_args;                   ///< true if exec preserves m and n args
+    int type;                       ///< Command type
 
 #if     defined(TECO_TRACE)
 
@@ -68,11 +81,11 @@ struct cmd_table
 
 #if     defined(TECO_TRACE)
 
-#define ENTRY(chr, scan, exec, mn) [chr] = { scan, exec, mn, #scan, #exec }
+#define ENTRY(chr, scan, exec, type) [chr] = { scan, exec, type, #scan, #exec }
 
 #else
 
-#define ENTRY(chr, scan, exec, mn) [chr] = { scan, exec, mn }
+#define ENTRY(chr, scan, exec, type) [chr] = { scan, exec, type }
 
 #endif
 

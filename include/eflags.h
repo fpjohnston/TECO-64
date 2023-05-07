@@ -43,9 +43,10 @@ union e0_flag
 
     struct
     {
-        uint exec    : 1;       ///< Executing command
+        uint exec    : 1;       ///< Executing command (reset by CTRL/C)
+        uint skip    : 1;       ///< Skipping command
         uint error   : 1;       ///< Last command caused error
-        uint sigint  : 1;       ///< Ctrl/C seen (SIGINT signal)
+        uint sigint  : 1;       ///< SIGINT signal seen once
         uint lower   : 1;       ///< Force string arguments to lower case
         uint upper   : 1;       ///< Force string arguments to upper case
         uint display : 1;       ///< Display mode is active

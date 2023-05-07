@@ -88,13 +88,13 @@ bool exec_ctrl_F(int c)
     buf.len  = buf.size;
     buf.pos  = 0;
 
-    bool saved_exec = f.e0.exec;
+    bool exec = f.e0.exec;
 
-    f.e0.exec = true;                   // Force execution
+    f.e0.exec = true;
 
     exec_macro(&buf, NULL);
 
-    f.e0.exec = saved_exec;
+    f.e0.exec = exec;
 
     return true;
 }

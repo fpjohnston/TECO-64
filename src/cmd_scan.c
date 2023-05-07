@@ -87,30 +87,6 @@ bool scan_atsign(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan bad command.
-///
-///  @returns  If executing a command, we throw an exception. Otherwise, we
-///            return false to indicate that the command was neither an operand
-///            nor an operator.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_bad(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (f.e0.exec)
-    {
-        throw(E_ILL, cmd->c1);          // Illegal command
-    }
-    else
-    {
-        return false;
-    }
-}
-
-
-///
 ///  @brief    Scan colon command.
 ///
 ///  @returns  true if command is an operand or operator, else false.
@@ -173,26 +149,6 @@ bool scan_FM(struct cmd *cmd)
     reject_n(cmd->n_set);
     reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 2, ESC);
-
-    return false;
-}
-
-
-///
-///  @brief    Scan nothing.
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_nop(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (cmd->c1 == LF && cmd_line != 0)
-    {
-        ++cmd_line;
-    }
 
     return false;
 }

@@ -373,14 +373,20 @@ void init_options(
         }
     }
 
-    if (cbuf->len == 0)                 // Anything stored?
-    {
-        store_cmd("!dummy! \e\e");      // No, add something for option_test.pl
-    }
-    else
+
+    if (cbuf->len != 0)                 // Have we stored any commands?
     {
         store_cmd("\e\e");              // Terminate command w/ double ESCape
     }
+
+#if     defined(TEST)
+
+    else
+    {
+        store_cmd("!dummy! \e\e");      // No, add something for option_test.pl
+    }
+
+#endif
 
     print_cmd(cbuf->data);
 

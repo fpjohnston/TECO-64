@@ -39,6 +39,17 @@
 #include "commands.h"
 
 
+#if      defined(PROFILE)
+
+#define INLINE
+
+#else
+
+#define INLINE      inline
+
+#endif
+
+
 ///  @var    null_cmd
 ///
 ///  @brief  Initial command block values.
@@ -69,7 +80,9 @@ uint_t cmd_line;                    ///< Line number in current command/macro
 
 // Local functions
 
-static const struct cmd_table *scan_cmd(struct cmd *cmd, int c);
+static INLINE bool scan_cmd(struct cmd *cmd);
+
+static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int type);
 
 static void scan_text(int delim, tstring *text);
 
@@ -89,89 +102,19 @@ void exec_cmd(struct cmd *cmd)
 
     int c;
 
-#if     defined(DEBUG)
-
-    bool insert = false;
-
-#endif
-
     // Loop for all commands in command string.
 
-    while ((c = fetch_cbuf()) != EOF)
+    while (f.e0.exec && (c = fetch_cbuf()) != EOF)
     {
-        const struct cmd_table *entry;
+        cmd->c1 = (char)c;
 
-        //  Skip execution of command if:
-        //
-        //  1. The command is a space (which is a no-op). This is an optimization
-        //     that was found through testing to make a measurable difference in
-        //     performance.
-        //  2. There is no exec function that we have and should process.
-
-        if (c == SPACE || (entry = scan_cmd(cmd, c)) == NULL)
-        {
-            continue;
-        }
-        else if (!f.e0.exec)            // Are we suppressing execution?
-        {
-            *cmd = null_cmd;            // Yes, just reset for next command
-        }
-        else
-        {
-            (*entry->exec)(cmd);        // Execute command
-
-            // We normally reset the command block after every command we
-            // execute. However, '[', ']', and '!' pass through m and n
-            // arguments unused. Also, a double ESCape in a macro passes
-            // through m and n arguments, and 'M' commands allow m and n
-            // arguments to be returned to the caller.
-
-            if (entry->mn_args && cmd->n_set)
-            {
-                store_val(cmd->n_arg);
-
-                bool m_set = cmd->m_set;
-                int_t m_arg = cmd->m_arg;
-
-                *cmd = null_cmd;
-
-                cmd->m_set = m_set;
-                cmd->m_arg = m_arg;
-            }
-            else
-            {
-                *cmd = null_cmd;        // Done with command; reset to next one
-            }
-        }
-
-#if     defined(DEBUG)
-
-        if (c == 'I' || c == 'i')
-        {
-            insert = true;
-        }
-        else if (c != ESC)
-        {
-            insert = false;
-        }
-
-#endif
-
+        (void)scan_cmd(cmd);
     }
 
     if (f.e0.sigint)                    // Did we stop because of a CTRL/C?
     {
         throw(E_XAB);
     }
-
-#if     defined(DEBUG)
-
-    if (insert && f.e1.newline)
-    {
-        insert_newline();
-    }
-
-#endif
 
     // Here to make sure that all conditionals, loops, and parenthetical
     // expressions were complete within the command string just executed.
@@ -211,7 +154,7 @@ void exec_str(const char *str)
     assert(str != NULL);
     assert(str[0] != NUL);
 
-    bool saved_exec = f.e0.exec;
+    bool exec = f.e0.exec;
     size_t nbytes = strlen(str);
     char text[nbytes + 1];
     tbuffer buf =
@@ -236,7 +179,7 @@ void exec_str(const char *str)
 
     exec_macro(&buf, NULL);
 
-    f.e0.exec = saved_exec;             // Restore previous state
+    f.e0.exec = exec;                   // Restore previous state
 }
 
 
@@ -251,60 +194,139 @@ bool finish_cmd(struct cmd *cmd, int c)
 {
     assert(cmd != NULL);
 
-    if (scan_cmd(cmd, c) == NULL)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    cmd->c1 = (char)c;
+
+    return scan_cmd(cmd);
 }
 
 
 ///
-///  @brief    Scan for secondary commands (E, F, and ^).
+///  @brief   Scan command.
 ///
-///  @returns  Table entry if need to execute command, NULL if done scanning.
+///  Returns: true if we processed the end of the command, else false if we
+///           need to continue scanning.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
+static INLINE bool scan_cmd(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if ((uint)c >= cmd_max)
+    int type;
+    int c = cmd->c1;
+    const struct cmd_table *entry;
+    const struct cmd_table badcmd = { .scan=NULL, .exec=NULL, .type=c_none };
+
+    if ((uint)c < cmd_max)
     {
-        if (f.e0.exec)
+        entry = &cmd_table[c];
+        type = entry->type;
+    }
+    else
+    {
+        entry = &badcmd;
+        type = c_none;
+    }
+
+    if (entry->exec == NULL)
+    {
+        // No exec function. See if we have a scan function.
+
+        if (entry->scan != NULL)
         {
-            throw(E_ILL, c);            // Illegal command
+            (void)(*entry->scan)(cmd);
+
+            return false;
         }
-        else
+        else if ((entry = scan_special(cmd, type)) == NULL)
         {
-            return NULL;
+            return false;
         }
     }
 
-    cmd->c1 = (char)c;
+    //  Here if we have an exec function. See if we have a numeric argument on
+    //  the expression stack. If not, then check for a unary minus, which we
+    //  will treat as equivalent to -1 (for example, -P is the same as -1P).
 
-    const struct cmd_table *entry = &cmd_table[c];
-
-    // Check for secondary commands (E, F, and ^).
-
-    if (entry->scan == NULL && entry->exec == NULL)
+    if (check_x(&cmd->n_arg))
     {
-        // Note that the order of the conditional tests below are based on
-        // the anticipated frequency of the respective commands. That is,
-        // we anticipate ^ commands more often than E commands, which in
-        // turn are more frequent than F commands.
+        cmd->n_set = true;
+    }
+    else if (!cmd->n_set && unary_x())
+    {
+        cmd->n_set = true;
+        cmd->n_arg = -1;
+    }
 
-        if (c == '^')
+    if (entry->scan != NULL && (*entry->scan)(cmd))
+    {
+        return false;
+    }
+    else if (!f.e0.skip)
+    {
+        (*entry->exec)(cmd);            // Execute command
+
+        // We normally reset the command block after every command we execute.
+        // However, the '[', ']', and '!' commands through m and n arguments
+        // unused. Also, a double ESCape in a macro passes through m and n
+        // arguments, and 'M' commands allow m and n arguments to be returned
+        // to the caller.
+
+        if (entry->type == c_M && cmd->n_set)
         {
+            store_val(cmd->n_arg);
+
+            bool m_set = cmd->m_set;
+            int_t m_arg = cmd->m_arg;
+
+            *cmd = null_cmd;
+
+            cmd->m_set = m_set;
+            cmd->m_arg = m_arg;
+        }
+        else
+        {
+            *cmd = null_cmd;
+        }
+    }
+
+    return true;
+}
+
+
+///
+///  @brief   Scan special command. This includes E and F commands, as well
+///           as ^x and ^^x commands, and whitespace characters.
+///
+///  Returns: Pointer to command table, or NULL if need to keep scanning.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
+{
+    assert(cmd != NULL);
+
+    int c;
+
+    switch (attr)
+    {
+        case c_WHITE:
+            return NULL;
+
+        case c_LF:
+            if (cmd_line != 0)
+            {
+                ++cmd_line;
+            }
+
+            return NULL;
+
+        case c_UP:                      // ^x and ^^x commands
             c = require_cbuf();
 
-            if (c == '^')               // Command is ^^x
+            if (c == '^')
             {
-                scan_simple(cmd);       // ^^ command
+                scan_simple(cmd);
 
                 c = require_cbuf();
 
@@ -322,11 +344,21 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 
             cmd->c1 = (char)c;
 
-            entry = &cmd_table[c];
-        }
-        else if (c == 'E' || c == 'e')
-        {
-            c = require_cbuf();         // Get 2nd chr. in E command
+            const struct cmd_table *entry = &cmd_table[c];
+
+            if (entry->exec == NULL)
+            {
+                assert(entry->scan != NULL);
+
+                (void)(*entry->scan)(cmd);
+
+                return NULL;
+            }
+
+            return entry;
+
+        case c_E:                       // E commands
+            c = require_cbuf();
 
             if ((uint)c > e_max || (e_table[c].scan == NULL &&
                                     e_table[c].exec == NULL))
@@ -336,11 +368,10 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 
             cmd->c2 = (char)c;
 
-            entry = &e_table[c];
-        }
-        else if (c == 'F' || c == 'f')
-        {
-            c = require_cbuf();         // Get 2nd chr. in F command
+            return &e_table[c];
+
+        case c_F:                       // F commands
+            c = require_cbuf();
 
             if ((uint)c > f_max || (f_table[c].scan == NULL &&
                                     f_table[c].exec == NULL))
@@ -350,34 +381,19 @@ static const struct cmd_table *scan_cmd(struct cmd *cmd, int c)
 
             cmd->c2 = (char)c;
 
-            entry = &f_table[c];
-        }
+            return &f_table[c];
+
+        case c_none:
+        default:
+            if (!f.e0.skip)
+            {
+                throw(E_ILL, cmd->c1); // Illegal command
+            }
+            else
+            {
+                return NULL;
+            }
     }
-
-    // If we will execute a command after scanning it, then see if we
-    // have an n argument we can pop off the expression stack. If not,
-    // then check to see if we have a unary minus, which we will treat
-    // as equivalent to a -1 argument (that is, -P is the same as -1P).
-
-    if (entry->exec != NULL)
-    {
-        if (check_x(&cmd->n_arg))
-        {
-            cmd->n_set = true;
-        }
-        else if (!cmd->n_set && unary_x())
-        {
-            cmd->n_set = true;
-            cmd->n_arg = -1;
-        }
-    }
-
-    if ((entry->scan != NULL && (*entry->scan)(cmd)) || entry->exec == NULL)
-    {
-        return NULL;
-    }
-
-    return entry;
 }
 
 
@@ -568,39 +584,35 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     // the entire stack will be reset elsewhere.
 
     bool match = false;                 // Assume failure
-    bool saved_exec = f.e0.exec;
-    bool saved_trace = f.trace;
+    bool trace = f.trace;
     int c;
 
     push_x();                           // Save current expression stack
 
-    f.e0.exec = false;
+    f.e0.skip = true;
     f.trace = false;
 
     while ((c = fetch_cbuf()) != EOF)
     {
-        // The specific check for a space is an optimization which was found
-        // through testing to make a noticeable difference with some macros.
+        cmd->c1 = (char)c;
 
-        if (c == SPACE || scan_cmd(cmd, c) == NULL)
+        if (scan_cmd(cmd))
         {
-            continue;
+            if (strchr(skip, c) != NULL) // Is this the command we want?
+            {
+                match = true;
+
+                break;
+            }
+            else
+            {
+                *cmd = null_cmd;
+            }
         }
-
-        // If this command matches what we're looking for, then exit.
-
-        if (strchr(skip, c) != NULL)
-        {
-            match = true;
-
-            break;
-        }
-
-        *cmd = null_cmd;
     }
 
-    f.trace = saved_trace;
-    f.e0.exec = saved_exec;
+    f.trace = trace;
+    f.e0.skip = false;
 
     pop_x();                            // Restore previous expression stack
 

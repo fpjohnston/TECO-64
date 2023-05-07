@@ -122,13 +122,11 @@ void exec_EM(struct cmd *cmd)
 
     tbuffer *saved_cbuf = cbuf;
     bool saved_trace = f.trace;
-    bool saved_exec = f.e0.exec;
     uint_t saved_pos = qreg->text.pos;
 
     cbuf = &qreg->text;                 // Switch command strings
     cbuf->pos = 0;
-
-    f.e0.exec = false;                  // Don't actually execute commands
+    f.e0.skip = true;                   // Just skip over commands
 
     push_x();                           // Save expression stack
 
@@ -136,10 +134,10 @@ void exec_EM(struct cmd *cmd)
 
     pop_x();                            // Restore expression stack
 
+    f.e0.skip = false;
+    f.trace = saved_trace;
     cbuf = saved_cbuf;                  // Restore previous command string
     qreg->text.pos = saved_pos;
-    f.e0.exec = saved_exec;
-    f.trace = saved_trace;
 }
 
 

@@ -306,7 +306,7 @@ static void exec_oper(enum x_oper type)
 
     if (operands > x->nvalues)          // Need more operands than we have?
     {
-        if (f.e0.exec)                  // Are we executing?
+        if (!f.e0.skip)                 // Are we skipping commands??
         {
             throw(E_IFE);               // Ill-formed expression
         }
@@ -442,7 +442,7 @@ static int_t fetch_val(void)
 {
     if (x->nvalues == 0)
     {
-        if (f.e0.exec)                  // Are we executing?
+        if (!f.e0.skip)                 // Are we skipping commands?
         {
             throw(E_IFE);               // Ill-formed expression
         }
@@ -923,7 +923,7 @@ bool scan_xor(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    if (f.e0.exec && (!f.e1.xoper || x->nparens == 0))
+    if (!f.e0.skip && (!f.e1.xoper || x->nparens == 0))
     {
         throw(E_ILL, cmd->c1);          // Illegal command
     }

@@ -235,7 +235,8 @@ int main(int argc, const char * const argv[])
                 break;
         }
 
-        f.e0.exec = false;              // No command active
+        f.e0.exec = false;              // Not executing commands
+        f.e0.skip = false;              // Not skipping commands
         f.e0.ctrl_t = false;            // No CTRL/T active
         f.et.abort = false;             // Don't abort on error
 

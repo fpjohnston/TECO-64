@@ -43,6 +43,7 @@ else ifdef gprof                    # Enable use of gprof.
 
     CC_OPTS += -O3 -pg
     LINKOPTS += -pg
+    DEFINES += -D PROFILE
 
 else                                # Neither gdb nor gprof.
 
@@ -60,7 +61,7 @@ endif
 
 ifdef   memcheck                    # Enable basic internal memory checks
 
-    DEFINES += -D MEMCHECK
+    DEFINES += -D MEMCHECK -D TEST
     DOXYGEN += MEMCHECK
 
 endif
