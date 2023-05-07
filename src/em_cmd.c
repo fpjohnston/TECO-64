@@ -34,31 +34,49 @@
 #include "exec.h"
 #include "qreg.h"
 
+#if     defined(NOTRACE)
 
-///  @struct  strip
+// EM command does not work if tracing is disabled in this build.
+
+void exec_EM(struct cmd *unused)
+{
+    throw(E_NYI);                       // Not yet implemented
+}
+
+bool scan_EM(struct cmd *unused)
+{
+    return false;
+}
+
+#else
+
+
+///  @var     strip
 ///
 ///  @brief   Flags that are used to determine whether to ignore the echoing
 ///           of commands that don't actually affect execution (such as spaces
 ///           and comments).
 
-struct strip
+static struct
 {
-    uint space : 1;                 ///< Strip spaces
-    uint blank : 1;                 ///< Strip blank lines (ending w/ LF)
-    uint white : 1;                 ///< Strip VT, FF, or CR
-    uint bang  : 1;                 ///< Strip comments
-    uint bang2 : 1;                 ///< Strip EOL comments
-};
-
+    uint space   : 1;           ///< Strip spaces
+    uint blank   : 1;           ///< Strip blank lines (ending w/ LF)
+    uint white   : 1;           ///< Strip VT, FF, or CR
+    uint comment : 1;           ///< Strip tags starting w/ !<space>
+    uint bang    : 1;           ///< Strip comments (starting w/ !!)
+} strip;
 
 // Local functions
 
-static bool strip_cmd(int c, const struct strip strip);
+static bool scan_blank(void);
+
+static void squish_cmd(int comment);
 
 
 ///
 ///  @brief    Execute EM command: echo macro in Q-register according to bits
-///            set in specified Q-register. Used to "squish" macros.
+///            set in specified Q-register. Used to "squish" macros in a manner
+///            similar to the squ.tec file used in classic TECO.
 ///
 ///  @returns  Nothing.
 ///
@@ -77,23 +95,29 @@ void exec_EM(struct cmd *cmd)
         return;
     }
 
-    struct strip strip;
-
     if (cmd->n_set)
     {
-        strip.space = (cmd->n_arg & 1)  ? true : false;
-        strip.blank = (cmd->n_arg & 2)  ? true : false;
-        strip.white = (cmd->n_arg & 4)  ? true : false;
-        strip.bang  = (cmd->n_arg & 8)  ? true : false;
-        strip.bang2 = (cmd->n_arg & 16) ? true : false;
+        strip.space   = (cmd->n_arg & 1)  ? true : false;
+        strip.blank   = (cmd->n_arg & 2)  ? true : false;
+        strip.white   = (cmd->n_arg & 4)  ? true : false;
+        strip.comment = (cmd->n_arg & 8)  ? true : false;
+        strip.bang    = (cmd->n_arg & 16) ? true : false;
     }
     else
     {
-        strip.space = false;
-        strip.blank = false;
-        strip.white = false;
-        strip.bang  = false;
-        strip.bang2 = false;
+        strip.space   = false;
+        strip.blank   = false;
+        strip.white   = false;
+        strip.comment = false;
+        strip.bang    = false;
+    }
+
+    if (strip.comment)
+    {
+        if (!cmd->m_set || cmd->m_arg == NUL || cmd->m_arg == '!' || cmd->m_arg >= DEL)
+        {
+            cmd->m_arg = SPACE;
+        }
     }
 
     tbuffer *saved_cbuf = cbuf;
@@ -108,22 +132,7 @@ void exec_EM(struct cmd *cmd)
 
     push_x();                           // Save expression stack
 
-    // Loop for all commands in command string.
-
-    struct cmd newcmd = null_cmd;       // Initialize new command
-    int c;
-
-    while ((c = peek_cbuf()) != EOF)
-    {
-        f.trace = strip_cmd(c, strip);
-
-        next_cbuf();                    // Accept character and maybe trace it
-
-        if (finish_cmd(&newcmd, c))
-        {
-            newcmd = null_cmd;
-        }
-    }
+    squish_cmd(cmd->m_arg);             // Squish the command string
 
     pop_x();                            // Restore expression stack
 
@@ -131,6 +140,41 @@ void exec_EM(struct cmd *cmd)
     qreg->text.pos = saved_pos;
     f.e0.exec = saved_exec;
     f.trace = saved_trace;
+}
+
+
+///
+///  @brief    Scan line to see if it's blank.
+///
+///  @returns  true if line is blank, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static bool scan_blank(void)
+{
+    uint_t pos = cbuf->pos;             // Save current position
+    int c;
+
+    while ((c = peek_cbuf()) != EOF)
+    {
+        if (!isspace(c) || c == TAB)
+        {
+            cbuf->pos = pos;            // Restore original position
+
+            return false;               // Don't strip non-blank line
+        }
+
+        f.trace = false;
+
+        next_cbuf();                    // Skip whitespace character
+
+        if (c == LF || c == FF || c == CR) // At end of blank line?
+        {
+            break;
+        }
+    }
+
+    return true;
 }
 
 
@@ -145,7 +189,6 @@ bool scan_EM(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
     scan_qreg(cmd);
@@ -155,93 +198,69 @@ bool scan_EM(struct cmd *cmd)
 
 
 ///
-///  @brief    See if we should echo the current command.
+///  @brief    Squish the current command string and echo the results.
 ///
-///  @returns  true if should echo command, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool strip_cmd(int c, const struct strip strip)
+static void squish_cmd(int comment)
 {
-    switch (c)
+    struct cmd newcmd = null_cmd;       // Initialize new command
+    int c;
+
+    // Loop for all commands in command string.
+
+    while ((c = peek_cbuf()) != EOF)
     {
-        case SPACE:
-            if (strip.space)            // Stripping spaces?
-            {
-                return false;           // Don't trace space
-            }
-            else if (strip.blank)       // Stripping blank lines?
-            {
-                uint_t pos = cbuf->pos; // Save current position
+        f.trace = true;                 // Assume we'll trace the command
 
-                f.trace = false;
-
-                while ((c = peek_cbuf()) != EOF)
-                {
-                    if (!isspace(c) || c == TAB)
-                    {
-                        cbuf->pos = pos; // Restore original position
-
-                        return true;    // Don't strip non-blank line
-                    }
-
-                    next_cbuf();        // Skip whitespace character
-
-                    if (isdelim(c))     // At end of blank line?
-                    {
-                        break;
-                    }
-                }
-
-                return false;
-            }
-
-            break;
-
-        case LF:
-            if (strip.white)            // Stripping line delimiters?
-            {
-                return false;           // Don't trace line feed
-            }
-            else if (strip.blank && term_pos == 0)
-            {
-                return false;           // Don't trace blank line
-            }
-
-            break;
-
-        case CR:
-        case VT:
-        case FF:
-            if (strip.white)            // Stripping line delimiters?
-            {
-                return false;           // Don't trace CR, VT, or FF
-            }
-
-            break;
-
-        case '!':                       // Check for tracing comments
+        if (isgraph(c))
         {
-            uint next = cbuf->pos + 1;
+            if (c == '!')
+            {
+                uint next = cbuf->pos + 1;
 
-            if (strip.bang && cbuf->data[next] == ' ')
-            {
-                return false;           // Don't trace comment
-            }
-            else if (f.e1.bang && cbuf->data[next] == '!')
-            {
-                if (strip.bang2 || strip.white)
+                if (strip.comment && cbuf->data[next] == comment)
                 {
-                    return false;       // Don't trace comment
+                    f.trace = false;
+                }
+                else if (f.e1.bang && cbuf->data[next] == '!')
+                {
+                    if (strip.bang || strip.white)
+                    {
+                        f.trace = false;
+                    }
                 }
             }
-
-            break;
+        }
+        else if (strip.white && (c == LF || c == CR))
+        {
+            f.trace = false;
+        }
+        else if (c == LF && strip.blank && term_pos == 0)
+        {
+            f.trace = false;
+        }
+        else if (c == SPACE)
+        {
+            if (strip.space)
+            {
+                f.trace = false;
+            }
+            else if (strip.blank)
+            {
+                f.trace = !scan_blank();
+            }
         }
 
-        default:
-            break;
-    }
+        next_cbuf();                    // Accept character and maybe trace it
 
-    return true; 
+        if (finish_cmd(&newcmd, c))
+        {
+            newcmd = null_cmd;
+        }
+    } 
 }
+
+#endif
