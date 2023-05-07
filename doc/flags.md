@@ -34,7 +34,7 @@ used to customize which bits are set or cleared.
 | E1&2 | If set, paired parentheses, braces, square brackets, or angle brackets may be used to delimit text strings. If clear, parentheses, braces, and brackets have no special meaning in text arguments. |
 | E1&4 | If set, a colon modifier for a CTRL/A command will cause it to print a newline after the text message . If clear, CTRL/A commands will ignore any colon modifiers. |
 | E1&8 | If set, an at-sign modifier may be used with an '=' command, which allows the use of a text argument containing an *sprintf()* format string. If clear, '=' commands will ignore any at-sign modifiers. |
-| E1&16 | If set, EI commands are executed immediately, as though they were macros, rather being executed after completion of the current command string. The latter method is how EI commands were classically executed in TECO, while the former method is new to TECO-64. |
+| E1&16 | If set, EI commands are executed immediately, as though they were macros, rather being executed after completion of the current command string. The latter method is how EI commands were executed in classic TECO, while the former method is new to TECO-64. |
 | E1&32 | If set, "!!" may be used start a comment that extends to the next line terminator (LF, VT, or FF). |
 | E1&64 | If set, CR/LF will be output if needed to ensure that TECO's prompt is printed at the start of a new line. |
 | E1&128 | If set, the radix of an input number will be determined as follows: if the first  two characters are 0x or 0X, the number is assumed to be decimal; if the first character is 1-9, it is assumed to be decimal; and if the first character is 0, it is assumed to be octal. |

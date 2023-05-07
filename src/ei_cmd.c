@@ -168,6 +168,11 @@ bool read_EI(void)
 
     if (ei_command->pos == ei_command->len) // Used up all data in current buffer?
     {
+        if (ei_command == cbuf)
+        {
+            reset_cbuf();
+        }
+
         free_mem(&ei_command->data);    // Yes, free it up
 
         ei_command = (ei_command == &ei_secondary) ? &ei_primary : &ei_secondary;
