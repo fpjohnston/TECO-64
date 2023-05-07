@@ -8,15 +8,6 @@ debug:
 	@$(MAKE) gdb=1 debug=1 teco
 
 #
-#  Define profile target (for use with gprof).
-#
-
-.PHONY: profile
-profile:
-	@echo Building TECO for profiling...
-	@$(MAKE) gprof=1 nostrict=1 ndebug=1 teco
-
-#
 #  Define fast target without assertions or strict checks.
 #
 
@@ -24,6 +15,15 @@ profile:
 fast:
 	@echo Building TECO for speed...
 	@$(MAKE) ndebug=1 nostrict=1 notrace=1 teco
+
+#
+#  Define profile target (for use with gprof).
+#
+
+.PHONY: profile
+profile:
+	@echo Building TECO for profiling...
+	@$(MAKE) gprof=1 nostrict=1 ndebug=1 teco
 
 #
 #  Define targets that verify Perl scripts.
@@ -82,7 +82,7 @@ test:
 #
 
 PHONY: smoke
-smoke: critic lint test
+smoke: distclean critic lint test
 	@echo Testing TECO options...
 	etc/test_options.pl --summary
 	@echo Testing TECO commands...
