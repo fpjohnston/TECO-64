@@ -62,7 +62,7 @@ static struct
     uint space   : 1;           ///< Strip spaces
     uint blank   : 1;           ///< Strip blank lines (ending w/ LF)
     uint white   : 1;           ///< Strip VT, FF, or CR
-    uint comment : 1;           ///< Strip tags starting w/ !<space>
+    uint comment : 1;           ///< Strip tags starting w/ ! and space
     uint bang    : 1;           ///< Strip comments (starting w/ !!)
 } strip;
 

@@ -41,11 +41,11 @@
 
 #if      defined(PROFILE)
 
-#define INLINE
+#define INLINE                      ///< If profiling, don't inline code
 
 #else
 
-#define INLINE      inline
+#define INLINE      inline          ///< If not profiling, inline code
 
 #endif
 
