@@ -61,7 +61,7 @@ endif
 
 ifdef   memcheck                    # Enable basic internal memory checks
 
-    DEFINES += -D MEMCHECK -D TEST
+    DEFINES += -D MEMCHECK
     DOXYGEN += MEMCHECK
 
 endif

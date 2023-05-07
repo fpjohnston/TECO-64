@@ -379,15 +379,6 @@ void init_options(
         store_cmd("\e\e");              // Terminate command w/ double ESCape
     }
 
-#if     defined(TEST)
-
-    else
-    {
-        store_cmd("!dummy! \e\e");      // No, add something for option_test.pl
-    }
-
-#endif
-
     print_cmd(cbuf->data);
 
     if (options.practice)

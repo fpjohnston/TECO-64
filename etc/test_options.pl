@@ -99,11 +99,11 @@ Readonly my @OPTIONS => (
     },
     {
         name  => q{-d},
-        tests => [ { cmd => '-d', result => 'dummy' }, ],
+        tests => [ { cmd => '-d -X', result => 'EX' }, ],
     },
     {
         name  => q{--nodisplay},
-        tests => [ { cmd => '--nodisplay', result => 'dummy' }, ],
+        tests => [ { cmd => '--nodisplay -X', result => 'EX' }, ],
         tests =>
           [ { cmd => '--nodisplay=x.tmp', result => 'Unknown option' }, ],
     },
@@ -161,13 +161,13 @@ Readonly my @OPTIONS => (
     },
     {
         name  => q{-i},
-        tests => [ { cmd => '-i', result => 'dummy' }, ],
+        tests => [ { cmd => '-i -X', result => 'EX' }, ],
     },
     {
         name  => q{--noinitialize},
         tests => [
-            { cmd => '--noinitialize',   result => 'dummy' },
-            { cmd => '--noinitialize=1', result => 'Unknown option' },
+            { cmd => '--noinitialize -X', result => 'EX' },
+            { cmd => '--noinitialize=1',  result => 'Unknown option' },
         ],
     },
     {
@@ -186,23 +186,23 @@ Readonly my @OPTIONS => (
     },
     {
         name  => q{-m},
-        tests => [ { cmd => '-m', result => 'dummy' }, ],
+        tests => [ { cmd => '-m -X', result => 'EX' }, ],
     },
     {
         name  => q{--nomemory},
         tests => [
-            { cmd => '--nomemory',       result => 'dummy' },
+            { cmd => '--nomemory -X',    result => 'EX' },
             { cmd => '--nomemory=x.tmp', result => 'Unknown option' },
         ],
     },
     {
         name  => q{-n},
-        tests => [ { cmd => '-n', result => 'dummy' }, ],
+        tests => [ { cmd => '-n -X', result => 'EX' }, ],
     },
     {
         name  => q{--nodefaults},
         tests => [
-            { cmd => '--nodefaults',       result => 'dummy' },
+            { cmd => '--nodefaults -X',    result => 'EX' },
             { cmd => '--nodefaults=x.tmp', result => 'Unknown option' },
         ],
     },
