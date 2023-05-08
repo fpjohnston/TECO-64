@@ -18,7 +18,7 @@ endif
 
 #  Each .lob file is created from a .c source file.
 
-LOBS = $(patsubst %,obj/%,$(SOURCES:.c=.lob))
+LOBS = $(patsubst src/%,obj/%,$(SOURCES:.c=.lob))
 
 #  Each .lob file depends on the lint configuration files we use.
 
@@ -35,7 +35,7 @@ obj/teco.lnt: etc/std.lnt | obj
 
 #  Create lint object files from C source files.
 
-obj/%.lob: %.c
+obj/%.lob: src/%.c
 	$(flint) -b obj/teco.lnt -u -oo[$@] $<
 
 #  Lint all C source files and then lint object files.

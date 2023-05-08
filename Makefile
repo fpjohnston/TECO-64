@@ -26,38 +26,44 @@
 #
 ################################################################################
 
-TARGET  = teco
+TECO    = teco
 SHELL   = /bin/sh
-VPATH   = src:obj:include
 CC      = gcc
 INCLUDE = include/
 
-MAKE     := $(MAKE) --no-print-directory
+MAKE := $(MAKE) --no-print-directory
 
-.SUFFIXES:
-.SUFFIXES: .c .o .lob
+EXCLUDES =
 
-CC_OPTS = -c -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums -MMD
-CC_OPTS += -I $(INCLUDE)
+# Get the list of all possible source files.
 
-HEADERS = $(INCLUDE)commands.h $(INCLUDE)errcodes.h $(INCLUDE)errtables.h \
-		$(INCLUDE)exec.h $(INCLUDE)options.h
+SOURCES = $(wildcard src/*.c)
 
-include etc/build/sources.mk            # List of source files
-include etc/build/variables.mk          # Variable definitions
+CFLAGS = -c -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums -MMD
 
-CC_OPTS += $(DEFINES)
-DFILES  = $(SOURCES:.c=.d)
-O_FILES = $(SOURCES:.c=.o)
-O_FILES := $(patsubst %,obj/%,$(O_FILES))
+include etc/build/init.mk           # Initialize variables we'll need
 
-#  Define default target ('teco').
+CFLAGS += -I $(INCLUDE) $(DEFINES)
 
-.PHONY: $(TARGET) 
-$(TARGET): bin/$(TARGET)
+# Filter out source files not needed for this build.
+
+EXCLUDES := $(patsubst %,src/%,$(EXCLUDES))
+
+SOURCES := $(filter-out $(EXCLUDES),$(SOURCES))
+
+OBJECTS = $(patsubst src/%.c,obj/%.o,$(SOURCES))
+
+#  Define default target.
+
+.PHONY: teco
+teco: bin/teco
+
+bin/teco: $(OBJECTS) bin                # Link object files, create executable
+	@echo $(OBJECTS) > obj/objects.lis
+	$(CC) -o $@ @obj/objects.lis $(LINKOPTS)
 
 .PHONY: all
-all: $(TARGET)                          # Equivalent to default target.
+all: $(TECO)
 
 #
 #  Define targets that create header files from XML files and template files.
@@ -66,8 +72,13 @@ all: $(TARGET)                          # Equivalent to default target.
 #  options.
 #
 
+HEADERS = $(INCLUDE)commands.h $(INCLUDE)errcodes.h $(INCLUDE)errtables.h \
+		$(INCLUDE)exec.h $(INCLUDE)options.h
+
 .PHONY: headers
 headers: $(HEADERS)
+
+$(OBJECTS): $(HEADERS) obj/cflags
 
 include/commands.h: etc/make_commands.pl etc/xml/commands.xml etc/templates/commands.h
 	$^ --out $@
@@ -88,9 +99,6 @@ include/options.h: etc/make_options.pl etc/xml/options.xml etc/templates/options
 #  files in directories, not for directories that contain no files. So before
 #  we start compiling and linking, we make sure that these two directories
 #  exist.
-#
-#  Note that once created, these will remain in the directory tree, and will
-#  not be deleted by any targets.
 
 bin:
 	@mkdir -p bin
@@ -100,22 +108,16 @@ obj:
 
 #  Always compile source files if compiler options have changed.
 
-$(O_FILES): $(HEADERS) obj/cc_opts
+obj/cflags: obj                             # Create compiler options file
+	-@echo '$(CFLAGS)' | cmp -s - $@ || echo '$(CFLAGS)' > $@
 
-obj/cc_opts: obj                       # Create compiler options file
-	-@echo '$(CC_OPTS)' | cmp -s - $@ || echo '$(CC_OPTS)' > $@
-
-obj/%.o: %.c                            # Compile source file
-	$(CC) -o obj/$(@F) $< @obj/cc_opts
-
-bin/$(TARGET): $(O_FILES) bin           # Link object files, create executable
-	@echo $(O_FILES) > obj/o_files.lis
-	$(CC) -o $@ @obj/o_files.lis $(LINKOPTS)
+obj/%.o: src/%.c                                # Compile source file
+	gcc -o $@ $< @obj/cflags
 
 #  Copy executable image and library files to system directories.
 
 .PHONY: install
-install: $(TARGET)
+install: $(TECO)
 	install -v -C bin/teco /usr/local/bin
 	install -v -d /usr/local/lib/teco
 	install -v -C --mode=0644 lib/*.tec /usr/local/lib/teco
@@ -127,13 +129,13 @@ release: distclean
 	etc/make_version.pl include/version.h etc/templates/version.h \
 		--out include/version.h --version=$(version)
 	$(MAKE) -B -s include/version.h
-	$(MAKE) $(TARGET)
+	$(MAKE) $(TECO)
 
 #  Clean binary files, object files, and temporary files.
 
 .PHONY: clean
 clean:
-	-rm -f bin/$(TARGET) bin/$(TARGET).map obj/*
+	-rm -f bin/$(TECO) bin/$(TECO).map obj/*
 
 #  Clean everything.
 
@@ -165,6 +167,8 @@ doc/errors.md: etc/make_errors.pl etc/xml/errors.xml etc/templates/errors.md
 	$^ -o $@
 
 # Additional targets
+
+DFILES = $(SOURCES:.c=.d)
 
 -include $(DFILES)                      # Add in dependency targets
 

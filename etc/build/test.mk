@@ -23,7 +23,7 @@ fast:
 .PHONY: profile
 profile:
 	@echo Building TECO for profiling...
-	@$(MAKE) gprof=1 nostrict=1 ndebug=1 teco
+	@$(MAKE) gprof=1 nostrict=1 ndebug=1 notrace=1 teco
 
 #
 #  Define targets that verify Perl scripts.
