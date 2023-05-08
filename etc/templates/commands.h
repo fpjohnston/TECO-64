@@ -100,8 +100,6 @@ static const struct cmd_table cmd_table[] =
 /* (INSERT: GENERAL COMMANDS) */
 };
 
-static const uint cmd_max = countof(cmd_table); ///< Maximum command
-
 
 ///  @var    e_table
 ///  @brief  Table for all commands starting with E.
@@ -111,8 +109,6 @@ static const struct cmd_table e_table[] =
 /* (INSERT: E COMMANDS) */
 };
 
-static const uint e_max = countof(e_table); ///< Maximum E command
-
 
 ///  @var    f_table
 ///  @brief  Table for all commands starting with F.
@@ -121,5 +117,3 @@ static const struct cmd_table f_table[] =
 {
 /* (INSERT: F COMMANDS) */
 };
-
-static const uint f_max = countof(f_table); ///< Maximum F command

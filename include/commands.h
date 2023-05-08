@@ -227,8 +227,6 @@ static const struct cmd_table cmd_table[] =
     ENTRY(DEL,         NULL,            NULL,            c_none  ),
 };
 
-static const uint cmd_max = countof(cmd_table); ///< Maximum command
-
 
 ///  @var    e_table
 ///  @brief  Table for all commands starting with E.
@@ -295,8 +293,6 @@ static const struct cmd_table e_table[] =
     ENTRY('_',         scan_E_ubar,     exec_E_ubar,     c_none  ),
 };
 
-static const uint e_max = countof(e_table); ///< Maximum E command
-
 
 ///  @var    f_table
 ///  @brief  Table for all commands starting with F.
@@ -342,5 +338,3 @@ static const struct cmd_table f_table[] =
     ENTRY('_',         scan_F_ubar,     exec_F_ubar,     c_none  ),
     ENTRY('|',         NULL,            exec_F_vbar,     c_none  ),
 };
-
-static const uint f_max = countof(f_table); ///< Maximum F command

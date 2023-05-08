@@ -217,7 +217,7 @@ static INLINE bool scan_cmd(struct cmd *cmd)
     const struct cmd_table *entry;
     const struct cmd_table badcmd = { .scan=NULL, .exec=NULL, .type=c_none };
 
-    if ((uint)c < cmd_max)
+    if ((uint)c < countof(cmd_table))
     {
         entry = &cmd_table[c];
         type = entry->type;
@@ -360,7 +360,7 @@ static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
         case c_E:                       // E commands
             c = require_cbuf();
 
-            if ((uint)c > e_max || (e_table[c].scan == NULL &&
+            if ((uint)c > countof(e_table) || (e_table[c].scan == NULL &&
                                     e_table[c].exec == NULL))
             {
                 throw(E_IEC, c);        // Invalid E character
@@ -373,7 +373,7 @@ static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
         case c_F:                       // F commands
             c = require_cbuf();
 
-            if ((uint)c > f_max || (f_table[c].scan == NULL &&
+            if ((uint)c > countof(f_table) || (f_table[c].scan == NULL &&
                                     f_table[c].exec == NULL))
             {
                 throw(E_IFC, c);        // Invalid F character
