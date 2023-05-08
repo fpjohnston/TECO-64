@@ -83,8 +83,8 @@ union e1_flag
         uint c_oper  : 1;       ///< Use C precedence for operators
         uint         : 1;       ///< (unused)
         uint         : 1;       ///< (unused)
+        uint         : 1;       ///< (unused)
         uint repeat  : 1;       ///< Double Ctrl-] repeats command
-        uint newline : 1;       ///< LF acts like double ESCape
     };
 };
 

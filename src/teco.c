@@ -81,12 +81,10 @@ struct flags f =                    ///< Global flag variables
 #if     defined(DEBUG)
 
     .e1.repeat  = true,             // Double CTRL-] repeats command
-    .e1.newline = false,            // LF acts like double ESCape
 
 #else
 
     .e1.repeat  = false,            // Double CTRL-] does not repeat command
-    .e1.newline = false,            // LF does not act like double ESCape
 
 #endif
 

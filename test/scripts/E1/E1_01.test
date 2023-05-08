@@ -24,7 +24,6 @@ E1 U1
 0,2048  E1 E1&2048  "E [[FAIL]] '   ! Test: set E1&2048 !
 0,4096  E1 E1&4096  "N [[FAIL]] '   ! Test: set E1&4096 !
 0,8192  E1 E1&8192  "N [[FAIL]] '   ! Test: set E1&8192 !
-0,16384 E1 E1&16384 "E [[FAIL]] '   ! Test: set E1&16384 !
 0,32768 E1 E1&32768 "E [[FAIL]] '   ! Test: set E1&32768 !
 
 1,0     E1 E1&1     "N [[FAIL]] '   ! Test: clear E1&1 !
@@ -41,7 +40,6 @@ E1 U1
 2048,0  E1 E1&2048  "N [[FAIL]] '   ! Test: clear E1&2048 !
 4096,0  E1 E1&4096  "N [[FAIL]] '   ! Test: clear E1&4096 !
 8192,0  E1 E1&8192  "N [[FAIL]] '   ! Test: clear E1&8192 !
-16384,0 E1 E1&16384 "N [[FAIL]] '   ! Test: clear E1&16384 !
 32768,0 E1 E1&32768 "N [[FAIL]] '   ! Test: clear E1&32768 !
 
 Q1 E1
