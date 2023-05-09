@@ -129,17 +129,26 @@ static uint precedence[X_MAX];          ///< Current precedence table
 
 struct xstack
 {
-    struct xstack *next;            ///< Next expression stack block
-    int_t value[MAX_VALUES];        ///< Stored numeric values
-    uint nvalues;                   ///< No.of stored values
-    enum x_oper oper[MAX_OPERS];    ///< Stored operators
-    uint nopers;                    ///< No. of stored operators
-    uint nparens;                   ///< No. of left parentheses seen
-    bool operand;                   ///< Last item seen was an operand
+    struct xstack *next;            ///< Next block in linked list
+    struct
+    {
+        int_t stack[MAX_VALUES];    ///< Operand stack
+        int_t *top;                 ///< Top of operand stack
+        uint size;                  ///< No.of stored elements
+        bool last;                  ///< Last element pushed was a number
+    } number;
+    struct
+    {
+        enum x_oper stack[MAX_OPERS]; ///< Operator stack
+        enum x_oper *top;           ///< Top of operator stack
+        uint size;                  ///< No.of stored elements
+        uint nesting;               ///< Nesting level for parentheses
+    } oper;
 };
 
 
 static struct xstack *x = NULL;     ///< List of expression stacks
+
 
 // Local functions
 
@@ -172,14 +181,15 @@ static void check_oper(enum x_oper o1)
 {
     enum x_oper o2;
 
-    while (x->nopers > 0 && ((o2 = x->oper[x->nopers - 1]) != X_LPAREN))
+    while (x->oper.size > 0 && ((o2 = x->oper.top[-1]) != X_LPAREN))
     {
         uint p1 = precedence[o1];
         uint p2 = precedence[o2];
 
         if ((p2 < p1) || (p1 == p2 && oper[o1].order == LEFT))
         {
-            --x->nopers;
+            --x->oper.size;
+            --x->oper.top;
 
             exec_oper(o2);
         }
@@ -202,7 +212,7 @@ static void check_oper(enum x_oper o1)
 
 void check_parens(void)
 {
-    if (x->nparens != 0)
+    if (x->oper.nesting != 0)
     {
         throw(E_MRP);                   // Missing right parenthesis
     }
@@ -218,7 +228,7 @@ void check_parens(void)
 
 bool check_radix(void)
 {
-    if (f.e1.radix && x->nparens != 0)  // Auto-detect radix?
+    if (f.e1.radix && x->oper.nesting != 0)  // Auto-detect radix?
     {
         return true;
     }
@@ -242,7 +252,7 @@ bool check_x(int_t *n)
 
     // Last item saved was not an operand
 
-    if (!x->operand)
+    if (!x->number.last)
     {
         return false;
     }
@@ -253,16 +263,17 @@ bool check_x(int_t *n)
 
     enum x_oper type;
 
-    while (x->nopers > 0 && (type = x->oper[x->nopers - 1]) != X_LPAREN) 
+    while (x->oper.size > 0 && (type = x->oper.top[-1]) != X_LPAREN) 
     {
-        --x->nopers;
+        --x->oper.size;
+        --x->oper.top;
 
         exec_oper(type);
     }
 
     // Here when we are either out of operators, or the first operator on the
     // stack is a left parenthesis. We have at least one operand available,
-    // since x->operand is set, and because although exec_oper() may have used
+    // since x->number.last is set, and because although exec_oper() may have used
     // up one or two operands, it will always add one to the output queue.
 
     *n = fetch_val();
@@ -272,16 +283,17 @@ bool check_x(int_t *n)
     // the stack. For example, with a command such as "42MB 27UA QA=". If this
     // happens, we should reset the output queue.
 
-    if (x->nopers == 0)
+    if (x->oper.size == 0)
     {
-        x->nvalues = 0;
+        x->number.size = 0;
+        x->number.top = x->number.stack;
     }
 
     // Reset operand flag if we used up all operands
 
-    if (x->nvalues == 0)
+    if (x->number.size == 0)
     {
-        x->operand = false;
+        x->number.last = false;
     }
 
     return true;
@@ -304,7 +316,7 @@ static void exec_oper(enum x_oper type)
 
     assert(operands <= 2);
 
-    if (operands > x->nvalues)          // Need more operands than we have?
+    if (operands > x->number.size)      // Need more operands than we have?
     {
         if (!f.e0.skip)                 // Are we skipping commands??
         {
@@ -380,13 +392,14 @@ static void exec_oper(enum x_oper type)
             break;
 
         case X_NOT:
-            while (x->nopers > 0)
+            while (x->oper.size > 0)
             {
                 a = (a != 0) ? 0 : -1;
 
-                if (x->nopers > 0 && x->oper[x->nopers - 1] == X_NOT)
+                if (x->oper.size > 0 && x->oper.top[-1] == X_NOT)
                 {
-                    --x->nopers;
+                    --x->oper.size;
+                    --x->oper.top;
                 }
                 else
                 {
@@ -440,8 +453,10 @@ void exit_x(void)
 
 static int_t fetch_val(void)
 {
-    if (x->nvalues == 0)
+    if (x->number.size-- == 0)
     {
+        ++x->number.size;
+
         if (!f.e0.skip)                 // Are we skipping commands?
         {
             throw(E_IFE);               // Ill-formed expression
@@ -452,7 +467,7 @@ static int_t fetch_val(void)
         }
     }
 
-    return x->value[--x->nvalues];
+    return *--x->number.top;
 }
 
 
@@ -517,13 +532,13 @@ void init_x(void)
 
 static struct xstack *make_x(void)
 {
-    struct xstack *stack = alloc_mem((uint)sizeof(*stack));
+    struct xstack *ptr = alloc_mem((uint)sizeof(*ptr));
 
-    stack->next = NULL;
+    ptr->next = NULL;
 
-    reset_x(stack);
+    reset_x(ptr);
 
-    return stack;
+    return ptr;
 }
 
 
@@ -538,11 +553,11 @@ void pop_x(void)
 {
     if (x->next != NULL)
     {
-        struct xstack *stack = x;
+        struct xstack *ptr = x;
 
-        x = x->next;
+        x = ptr->next;
 
-        free_mem(&stack);
+        free_mem(&ptr);
     }
 }
 
@@ -556,11 +571,11 @@ void pop_x(void)
 
 void push_x(void)
 {
-    struct xstack *stack = make_x();
+    struct xstack *ptr = make_x();
 
-    stack->next = x;
+    ptr->next = x;
 
-    x = stack;
+    x = ptr;
 }
 
 
@@ -571,28 +586,30 @@ void push_x(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void reset_x(struct xstack *stack)
+static void reset_x(struct xstack *ptr)
 {
-    assert(stack != NULL);
+    assert(ptr != NULL);
 
 #if     defined(DEBUG)
 
-    for (uint i = 0; i < countof(stack->value); ++i)
+    for (uint i = 0; i < countof(ptr->number.stack); ++i)
     {
-        stack->value[i] = 0;
+        ptr->number.stack[i] = 0;
     }
 
-    for (uint i = 0; i < countof(stack->oper); ++i)
+    for (uint i = 0; i < countof(ptr->oper.stack); ++i)
     {
-        stack->oper[i] = X_NULL;
+        ptr->oper.stack[i] = X_NULL;
     }
 
 #endif
 
-    stack->nvalues = 0;
-    stack->nopers = 0;
-    stack->nparens = 0;
-    stack->operand = false;
+    ptr->number.top = ptr->number.stack;
+    ptr->number.size = 0;
+    ptr->number.last = false;
+    ptr->oper.top = ptr->oper.stack;
+    ptr->oper.size = 0;
+    ptr->oper.nesting = 0;
 }
 
 
@@ -614,7 +631,7 @@ bool scan_div(struct cmd *cmd)
 
     int c;
 
-    if (f.e1.xoper && x->nparens != 0 && (c = peek_cbuf()) == '/')
+    if (f.e1.xoper && x->oper.nesting != 0 && (c = peek_cbuf()) == '/')
     {
         next_cbuf();
 
@@ -646,7 +663,7 @@ bool scan_eq(struct cmd *cmd)
     // parentheses, then the equals sign is not part of an operator, but
     // is instead a command.
 
-    if (!f.e1.xoper || x->nparens == 0)
+    if (!f.e1.xoper || x->oper.nesting == 0)
     {
         return scan_equals(cmd);
     }
@@ -690,7 +707,7 @@ bool scan_gt(struct cmd *cmd)
     // ">" is a relational operator only if it's in parentheses; otherwise,
     // it's the end of a loop.
 
-    if (!f.e1.xoper || x->nparens == 0)
+    if (!f.e1.xoper || x->oper.nesting == 0)
     {
         return false;
     }
@@ -750,7 +767,7 @@ bool scan_lparen(struct cmd *cmd)
 
     (void)check_x(&n);                  // Discard any operand on stack
 
-    ++x->nparens;
+    ++x->oper.nesting;
 
     store_oper(X_LPAREN);
 
@@ -776,7 +793,7 @@ bool scan_lt(struct cmd *cmd)
     // "<" is a relational operator only if it's in parentheses; otherwise,
     // it's the start of a loop.
 
-    if (!f.e1.xoper || x->nparens == 0)
+    if (!f.e1.xoper || x->oper.nesting == 0)
     {
         return false;
     }
@@ -828,7 +845,7 @@ bool scan_not(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!f.e1.xoper || x->nparens == 0) // Is it really a '!' command?
+    if (!f.e1.xoper || x->oper.nesting == 0) // Is it really a '!' command?
     {
         return scan_bang(cmd);
     }
@@ -862,27 +879,29 @@ bool scan_rparen(struct cmd *cmd)
 
     enum x_oper type;
 
-    while (x->nopers > 0)
+    while (x->oper.size-- > 0)
     {
-        if ((type = x->oper[--x->nopers]) == X_LPAREN)
+        if ((type = *--x->oper.top) == X_LPAREN)
         {
-            assert(x->nparens != 0);
+            assert(x->oper.nesting != 0);
 
-            --x->nparens;
+            --x->oper.nesting;
 
             // We found a matching left parenthesis. Try to process any
             // operators preceding it, up to any previous left parenthesis.
 
-            while (x->nopers > 0)
+            while (x->oper.size > 0)
             {
-                if ((type = x->oper[--x->nopers]) == X_LPAREN)
+                if ((type = *--x->oper.top) == X_LPAREN)
                 {
-                    ++x->nopers;        // Recover left parenthesis
+                    ++x->oper.top;
 
                     return true;        // Say that we found an operator
                 }
                 else
                 {
+                    --x->oper.size;
+
                     exec_oper(type);    // Process the operator
                 }
             }
@@ -890,9 +909,9 @@ bool scan_rparen(struct cmd *cmd)
             // Here if we're out of operators, so ensure flag is set if there
             // are still any values on the output queue.
 
-            if (x->nvalues > 0)
+            if (x->number.size > 0)
             {
-                x->operand = true;
+                x->number.last = true;
             }
 
             return true;                // Say that we found an operator
@@ -902,6 +921,8 @@ bool scan_rparen(struct cmd *cmd)
             exec_oper(type);            // Process the operator
         }
     }
+
+    ++x->oper.size;
 
     // Here if we ran out of operators before finding a left parenthesis
 
@@ -923,7 +944,7 @@ bool scan_xor(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    if (!f.e0.skip && (!f.e1.xoper || x->nparens == 0))
+    if (!f.e0.skip && (!f.e1.xoper || x->oper.nesting == 0))
     {
         throw(E_ILL, cmd->c1);          // Illegal command
     }
@@ -945,9 +966,9 @@ void store_1s_comp(void)
 {
     check_oper(X_1S_COMP);
 
-    if (x->nvalues > 0)
+    if (x->number.size > 0)
     {
-        x->operand = true;
+        x->number.last = true;
     }
 }
 
@@ -961,7 +982,14 @@ void store_1s_comp(void)
 
 void store_add(void)
 {
-    check_oper(x->operand ? X_ADD : X_PLUS);
+    if (x->number.last)                 // Did we just see an operand?
+    {
+        check_oper(X_ADD);              // Yes, we're doing binary arithmetic
+    }
+    else
+    {
+        check_oper(X_PLUS);             // No, we're doing a unary plus
+    }
 }
 
 
@@ -1000,13 +1028,15 @@ void store_mul(void)
 
 static void store_oper(enum x_oper type)
 {
-    if (x->nopers == MAX_OPERS)
+    if (x->oper.size++ == MAX_OPERS)
     {
+        --x->oper.size;
+
         throw(E_PDO);                   // Push-down list overflow
     }
 
-    x->oper[x->nopers++] = type;
-    x->operand = false;
+    *x->oper.top++ = type;
+    x->number.last = false;
 }
 
 
@@ -1032,7 +1062,14 @@ void store_or(void)
 
 void store_sub(void)
 {
-    check_oper(x->operand ? X_SUB : X_MINUS);
+    if (x->number.last)                 // Did we just see an operand?
+    {
+        check_oper(X_SUB);              // Yes, we're doing binary subtraction
+    }
+    else
+    {
+        check_oper(X_MINUS);            // No, we're doing a unary minus
+    }
 }
 
 
@@ -1045,13 +1082,15 @@ void store_sub(void)
 
 void store_val(int_t value)
 {
-    if (x->nvalues == MAX_VALUES)
+    if (x->number.size++ == MAX_VALUES)
     {
+        --x->number.size;
+
         throw(E_PDO);                   // Push-down list overflow
     }
 
-    x->value[x->nvalues++] = value;
-    x->operand = true;
+    *x->number.top++ = value;
+    x->number.last = true;
 }
 
 
@@ -1065,9 +1104,10 @@ void store_val(int_t value)
 
 bool unary_x(void)
 {
-    if (x->nopers > 0 && x->oper[x->nopers - 1] == X_MINUS)
+    if (x->oper.size > 0 && x->oper.top[-1] == X_MINUS)
     {
-        --x->nopers;
+        --x->oper.size;
+        --x->oper.top;
 
         return true;
     }

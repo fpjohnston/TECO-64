@@ -361,7 +361,7 @@ static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
             c = require_cbuf();
 
             if ((uint)c > countof(e_table) || (e_table[c].scan == NULL &&
-                                    e_table[c].exec == NULL))
+                                               e_table[c].exec == NULL))
             {
                 throw(E_IEC, c);        // Invalid E character
             }
@@ -374,7 +374,7 @@ static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
             c = require_cbuf();
 
             if ((uint)c > countof(f_table) || (f_table[c].scan == NULL &&
-                                    f_table[c].exec == NULL))
+                                               f_table[c].exec == NULL))
             {
                 throw(E_IFC, c);        // Invalid F character
             }
