@@ -179,13 +179,14 @@ bool scan_T(struct cmd *cmd)
 
     if (cmd->m_set)
     {
-        default_n(cmd, (int_t)0);       // m,T => m,1T
+        default_n(cmd, (int_t)0);       // m,T => m,0T
 
         if (cmd->m_arg > cmd->n_arg)    // Swap m and n if m > n
         {
-            cmd->m_arg ^= cmd->n_arg;
-            cmd->n_arg ^= cmd->m_arg;
-            cmd->m_arg ^= cmd->n_arg;
+            int_t n_arg= cmd->n_arg;
+
+            cmd->n_arg = cmd->m_arg;
+            cmd->m_arg = n_arg;
         }
     }
     else
