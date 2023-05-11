@@ -71,7 +71,7 @@ enum
     NO_M_ONLY,                      ///< Don't allow m without n
     NO_N,                           ///< Don't allow n argument
     NO_NEG_M,                       ///< Don't allow negative m
-    NO_NEG_N,                       ///< Don't allow negative n
+    NO_NEG_N                        ///< Don't allow negative n
 };
 
 #if     defined(NOSTRICT)       // Disable strict syntax checking

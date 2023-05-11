@@ -104,11 +104,12 @@ void confirm_cmd(struct cmd *cmd, ...)
     assert(cmd != NULL);
 
     va_list args;
-    int c;
 
     va_start(args, cmd);
 
-    while ((c = (char)va_arg(args, int)) != NO_EXIT)
+    int c = va_arg(args, int);
+
+    while (c != NO_EXIT)
     {
         switch (c)
         {
@@ -122,6 +123,8 @@ void confirm_cmd(struct cmd *cmd, ...)
             case NO_NEG_N:  if (cmd->n_set && cmd->n_arg < 0) throw(E_NCA); break;
             default:                                                        break;
         }
+
+        c = va_arg(args, int);
     }
 
     va_end(args);
