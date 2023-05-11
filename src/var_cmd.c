@@ -39,30 +39,10 @@
 
 
 ///
-///  @brief    Scan CTRL/P command: get current page number.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_ctrl_P(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
-
-    store_val((int_t)page_count());
-
-    return true;
-}
-
-
-///
-///  @brief    Scan CTRL/Q command: get no. of characters between dot and nth
+///  @brief    Execute CTRL/Q command: get no. of characters between dot and nth
 ///            line terminator. n may be negative.
 ///
-///  @returns  true if command is an operand or operator, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -84,12 +64,38 @@ void exec_ctrl_Q(struct cmd *cmd)
     store_val(nchrs);
 }
 
+
+///
+///  @brief    Scan CTRL/P command: get current page number.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_ctrl_P(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    confirm(cmd, NO_COLON, NO_ATSIGN);
+
+    store_val((int_t)page_count());
+
+    return true;
+}
+
+
+///
+///  @brief    Scan CTRL/Q command.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
 bool scan_ctrl_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     return false;
 }
@@ -108,8 +114,7 @@ bool scan_ctrl_S(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     store_val(-(int_t)last_len);
 
@@ -128,8 +133,7 @@ bool scan_ctrl_Y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     // The following prevents expressions such as 123+^Y.
 
@@ -166,8 +170,7 @@ bool scan_ctrl_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     int_t n = (int_t)get_qall();
 
@@ -207,8 +210,7 @@ bool scan_dot(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     store_val(t->dot);
 
@@ -227,8 +229,7 @@ bool scan_B(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     store_val(t->B);
 
@@ -247,8 +248,7 @@ bool scan_H(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     // The following prevents expressions such as 123+H.
 
@@ -285,8 +285,7 @@ bool scan_Z(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     store_val(t->Z);
 

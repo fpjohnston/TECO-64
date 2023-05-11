@@ -107,9 +107,7 @@ bool scan_EO(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
 
     return false;
 }

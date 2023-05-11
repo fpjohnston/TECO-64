@@ -132,18 +132,18 @@ struct xstack
     struct xstack *next;            ///< Next block in linked list
     struct
     {
-        int_t stack[MAX_VALUES];    ///< Operand stack
+        int_t stack[MAX_VALUES];    ///< Operand list
         int_t *top;                 ///< Top of operand stack
         uint count;                 ///< No.of stored elements
-    } number;
+    } number;                       ///< Operand stack
     struct
     {
-        enum x_oper stack[MAX_OPERS]; ///< Operator stack
+        enum x_oper stack[MAX_OPERS]; ///< Operator list
         enum x_oper *top;           ///< Top of operator stack
         uint count;                 ///< No.of stored elements
         bool last;                  ///< Last element pushed was an operator 
         uint nesting;               ///< Nesting level for parentheses
-    } oper;
+    } oper;                         ///< Operator stack
 };
 
 
@@ -626,8 +626,7 @@ bool scan_div(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     // Check for double slash remainder operator.
 
@@ -670,10 +669,7 @@ bool scan_eq(struct cmd *cmd)
         return scan_equals(cmd);
     }
 
-    reject_m(cmd->m_set);
-    reject_m(cmd->m_set);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M, NO_COLON, NO_ATSIGN);
 
     if (require_cbuf() != '=')          // If we have one '=', we must have two
     {
@@ -754,8 +750,7 @@ bool scan_lparen(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     // The following means that a command string such as mmm (nnn) just has a
     // value of nnn; the mmm is discarded. This allows for enclosing Q and other
@@ -788,9 +783,7 @@ bool scan_lt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M, NO_COLON, NO_ATSIGN);
 
     // "<" is a relational operator only if it's in parentheses; otherwise,
     // it's the start of a loop.
@@ -852,10 +845,7 @@ bool scan_not(struct cmd *cmd)
         return scan_bang(cmd);
     }
 
-    reject_colon(cmd->colon);
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M, NO_N, NO_COLON, NO_ATSIGN);
 
     store_oper(X_NOT);
 
@@ -874,8 +864,7 @@ bool scan_rparen(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     // Try to process everything since the last left parenthesis
 
@@ -964,8 +953,7 @@ bool scan_xor(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     if (!f.e0.skip && (!f.e1.xoper || !isparen()))
     {

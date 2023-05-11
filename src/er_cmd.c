@@ -99,9 +99,8 @@ bool scan_ER(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_dcolon(cmd->dcolon);
+    confirm(cmd, NO_M, NO_N, NO_DCOLON);
+
     scan_texts(cmd, 1, ESC);
 
     return false;

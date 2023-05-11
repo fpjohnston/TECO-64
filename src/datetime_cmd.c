@@ -54,8 +54,7 @@ bool scan_ctrl_B(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     time_t t = time(NULL);
     struct tm tm;
@@ -82,8 +81,7 @@ bool scan_ctrl_H(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     time_t t = time(NULL);
     struct tm tm;

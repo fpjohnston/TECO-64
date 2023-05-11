@@ -147,9 +147,9 @@ bool scan_FB(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    confirm(cmd, NO_NEG_M, NO_DCOLON);
+
     default_n(cmd, (int_t)1);           // FB => 1FB
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);
 
     return false;
@@ -168,8 +168,8 @@ bool scan_FC(struct cmd *cmd)
     assert(cmd != NULL);
 
     default_n(cmd, (int_t)1);           // FC => 1FC
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    reject_dcolon(cmd->dcolon);
+    confirm(cmd, NO_NEG_M);
+    confirm(cmd, NO_DCOLON);
     scan_texts(cmd, 2, ESC);
 
     return false;

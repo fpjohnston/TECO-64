@@ -60,167 +60,34 @@ struct cmd
     tstring text2;                  ///< 2nd text string
 };
 
+
+enum
+{
+    NO_EXIT,                        ///< End of list
+    NO_ATSIGN,                      ///< Don't allow atsign
+    NO_COLON,                       ///< Don't allow colon
+    NO_DCOLON,                      ///< Don't allow double colon
+    NO_M,                           ///< Don't allow m argument
+    NO_M_ONLY,                      ///< Don't allow m without n
+    NO_N,                           ///< Don't allow n argument
+    NO_NEG_M,                       ///< Don't allow negative m
+    NO_NEG_N,                       ///< Don't allow negative n
+};
+
 #if     defined(NOSTRICT)       // Disable strict syntax checking
 
-#define reject_atsign(atsign)
-#define reject_colon(colon)
-#define reject_dcolon(dcolon)
-#define reject_m(m_set)
-#define reject_neg_m(m_set, m_arg)
-#define reject_neg_n(n_set, n_arg)
-#define reject_n(n_set)
-#define require_n(m_set, n_set)
+#define confirm(cmd, ...)
 
 #else
 
-// *** Note that the following functions are inline as an optimization. ***
+/// @def    confirm
+/// @brief  Tests restrictions on command syntax.
 
+#define confirm(cmd, ...) if (f.e0.exec) confirm_cmd(cmd, ## __VA_ARGS__, NO_EXIT)
 
-///
-///  @brief    Error if at sign and command doesn't allow it.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void reject_atsign(bool atsign)
-{
-    if (f.e0.exec && f.e2.atsign && atsign)
-    {
-        throw(E_ATS);
-    }
-}
-
-
-///
-///  @brief    Error if colon and command doesn't allow it.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void reject_colon(bool colon)
-{
-    if (f.e0.exec && f.e2.colon && colon)
-    {
-        throw(E_COL);
-    }
-}
-
-
-///
-///  @brief    Error if dcolon and command doesn't allow it.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void reject_dcolon(bool dcolon)
-{
-    if (f.e0.exec && f.e2.colon && dcolon)
-    {
-        throw(E_COL);
-    }
-}
-
-
-///
-///  @brief    Error if m argument and command doesn't allow it.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void reject_m(bool m_set)
-{
-    if (f.e0.exec && f.e2.m_arg && m_set)
-    {
-        throw(E_IMA);
-    }
-}
-
-
-///
-///  @brief    Error if m argument is negative.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void reject_neg_m(bool m_set, int_t m_arg)
-{
-    if (f.e0.exec && m_set && m_arg < 0)
-    {
-        throw(E_NCA);
-    }
-}
-
-
-///
-///  @brief    Error if n argument is negative.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void reject_neg_n(bool n_set, int_t n_arg)
-{
-    if (f.e0.exec && n_set && n_arg < 0)
-    {
-        throw(E_NCA);
-    }
-}
-
-
-///
-///  @brief    Error if n argument and command doesn't allow it.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void reject_n(bool n_set)
-{
-    if (f.e0.exec && f.e2.n_arg && n_set)
-    {
-        throw(E_INA);
-    }
-}
-
-///
-///  @brief    Error if m argument not followed by n argument.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void require_n(bool m_set, bool n_set)
-{
-    if (f.e0.exec && m_set && !n_set)
-    {
-        throw(E_NON);
-    }
-}
+void confirm_cmd(struct cmd *cmd, ...);
 
 #endif
-
-///
-///  @brief    Set default value for n if needed.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void default_n(struct cmd *cmd, int_t n_default)
-{
-    assert(cmd != NULL);
-
-    if (!cmd->n_set)
-    {
-        cmd->n_set = true;
-        cmd->n_arg = n_default;
-    }
-}
 
 
 // Global variables
@@ -244,6 +111,8 @@ extern const struct cmd null_cmd;
 extern bool append(bool n_set, int_t n_arg, bool colon_set);
 
 extern bool check_semi(void);
+
+extern void default_n(struct cmd *cmd, int_t n_default);
 
 extern void close_files(void);
 

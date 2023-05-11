@@ -135,8 +135,7 @@ void exec_ctrl_C(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     if (f.et.abort)
     {

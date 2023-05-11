@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <stdarg.h>
 #include <string.h>
 
 #include "teco.h"
@@ -85,6 +86,67 @@ static INLINE bool scan_cmd(struct cmd *cmd);
 static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int type);
 
 static void scan_text(int delim, tstring *text);
+
+
+///
+///  @brief    Test restrictions for TECO command syntax. Many of these are not
+///            errors in classic TECO, and therefore are contingent on bits
+///            being set in the E2 flag.
+///
+///  @returns  Nothing (will throw error if violation found).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     !defined(NOSTRICT)
+
+void confirm_cmd(struct cmd *cmd, ...)
+{
+    assert(cmd != NULL);
+
+    va_list args;
+    int c;
+
+    va_start(args, cmd);
+
+    while ((c = (char)va_arg(args, int)) != NO_EXIT)
+    {
+        switch (c)
+        {
+            case NO_ATSIGN: if (f.e2.atsign && cmd->atsign)   throw(E_ATS); break;
+            case NO_COLON:  if (f.e2.colon && cmd->colon)     throw(E_COL); break;
+            case NO_DCOLON: if (f.e2.colon && cmd->dcolon)    throw(E_COL); break;
+            case NO_M:      if (f.e2.m_arg && cmd->m_set)     throw(E_IMA); break;
+            case NO_M_ONLY: if (cmd->m_set && !cmd->n_set)    throw(E_NON); break;
+            case NO_N:      if (f.e2.n_arg && cmd->n_set)     throw(E_INA); break;
+            case NO_NEG_M:  if (cmd->m_set && cmd->m_arg < 0) throw(E_NCA); break;
+            case NO_NEG_N:  if (cmd->n_set && cmd->n_arg < 0) throw(E_NCA); break;
+            default:                                                        break;
+        }
+    }
+
+    va_end(args);
+}
+
+#endif
+
+
+///
+///  @brief    Set default value for n if needed.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void default_n(struct cmd *cmd, int_t n_default)
+{
+    assert(cmd != NULL);
+
+    if (!cmd->n_set)
+    {
+        cmd->n_set = true;
+        cmd->n_arg = n_default;
+    }
+}
 
 
 ///

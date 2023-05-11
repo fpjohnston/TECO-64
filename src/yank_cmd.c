@@ -159,10 +159,7 @@ bool scan_Y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M, NO_N, NO_DCOLON, NO_ATSIGN);
 
     return false;
 }

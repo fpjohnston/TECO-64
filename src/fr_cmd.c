@@ -93,9 +93,9 @@ bool scan_FR(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    confirm(cmd, NO_NEG_M, NO_DCOLON);
+
     default_n(cmd, -(int_t)last_len);   // FRtext` => ^SFRtext`
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);
 
     return false;

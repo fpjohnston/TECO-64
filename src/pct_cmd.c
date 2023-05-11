@@ -73,10 +73,9 @@ bool scan_pct(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
+
     default_n(cmd, (int_t)1);           // % => 1%
-    reject_m(cmd->m_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
     scan_qreg(cmd);
 
     return false;

@@ -153,8 +153,7 @@ void exec_F_gt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     if (nloops == 0)                    // Outside of loop?
     {
@@ -198,8 +197,7 @@ void exec_F_lt(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     if (nloops == 0)                    // Outside of loop?
     {
@@ -455,9 +453,7 @@ bool scan_semi(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
 
     return false;
 }

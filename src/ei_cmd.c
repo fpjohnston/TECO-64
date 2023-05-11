@@ -222,8 +222,8 @@ bool scan_EI(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
+    confirm(cmd, NO_M_ONLY, NO_DCOLON);
+
     scan_texts(cmd, 1, ESC);
 
     return false;

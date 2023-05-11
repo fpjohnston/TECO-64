@@ -100,8 +100,8 @@ bool scan_EL(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_dcolon(cmd->dcolon);
+    confirm(cmd, NO_M, NO_DCOLON);
+
     scan_texts(cmd, 1, ESC);
 
     return false;

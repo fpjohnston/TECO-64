@@ -303,8 +303,7 @@ bool scan_bang(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    require_n(cmd->m_set, cmd->n_set);
+    confirm(cmd, NO_M_ONLY, NO_COLON);
 
     // If feature enabled, !! starts a comment that ends with LF
     // (but note that the LF is not counted as part of the command).
@@ -342,9 +341,9 @@ bool scan_bang(struct cmd *cmd)
 bool scan_O(struct cmd *cmd)
 {
     assert(cmd != NULL);
-    reject_neg_n(cmd->n_set, cmd->n_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
+
+    confirm(cmd, NO_NEG_N, NO_M_ONLY, NO_COLON);
+
     scan_texts(cmd, 1, ESC);
 
     return false;

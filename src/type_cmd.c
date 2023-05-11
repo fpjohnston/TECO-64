@@ -174,8 +174,7 @@ bool scan_T(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     if (cmd->m_set)
     {
@@ -215,9 +214,7 @@ bool scan_V(struct cmd *cmd)
         cmd->n_arg = 1;
     }
 
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_NEG_M, NO_COLON, NO_ATSIGN);
 
     return false;
 }

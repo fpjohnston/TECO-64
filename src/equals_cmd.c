@@ -205,8 +205,7 @@ bool scan_equals(struct cmd *cmd)
 
     int c;
 
-    reject_m(cmd->m_set);
-    reject_dcolon(cmd->dcolon);
+    confirm(cmd, NO_M, NO_DCOLON);
 
     if ((c = peek_cbuf()) == '=')
     {

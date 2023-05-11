@@ -74,10 +74,8 @@ bool scan_U(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_COLON, NO_ATSIGN);
+
     scan_qreg(cmd);
 
     return false;

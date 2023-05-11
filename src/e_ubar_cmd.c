@@ -103,9 +103,9 @@ bool scan_E_ubar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    confirm(cmd, NO_M, NO_DCOLON);
+
     default_n(cmd, (int_t)1);       // E_ => 1E_
-    reject_m(cmd->m_set);
-    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);
 
     return false;

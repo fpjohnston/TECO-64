@@ -55,10 +55,7 @@ bool scan_simple(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M, NO_N, NO_COLON, NO_ATSIGN);
 
     return false;
 }
@@ -126,8 +123,8 @@ bool scan_F1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
+    confirm(cmd, NO_M_ONLY, NO_COLON);
+
     scan_texts(cmd, 2, ESC);
 
     return false;
@@ -145,9 +142,8 @@ bool scan_FM(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_dcolon(cmd->dcolon);
+    confirm(cmd, NO_M, NO_N, NO_DCOLON);
+
     scan_texts(cmd, 2, ESC);
 
     return false;

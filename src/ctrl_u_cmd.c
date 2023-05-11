@@ -98,9 +98,8 @@ bool scan_ctrl_U(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
+    confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_DCOLON);
+
     scan_qreg(cmd);
     scan_texts(cmd, 1, ESC);
 

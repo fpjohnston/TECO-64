@@ -152,8 +152,9 @@ bool scan_F_ubar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    confirm(cmd, NO_DCOLON);
+
     default_n(cmd, (int_t)1);           // F_ => 1F_
-    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 2, ESC);
 
     return false;
@@ -171,9 +172,9 @@ bool scan_ubar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    confirm(cmd, NO_M, NO_DCOLON);
+
     default_n(cmd, (int_t)1);           // _ => 1_
-    reject_m(cmd->m_set);
-    reject_dcolon(cmd->dcolon);
     scan_texts(cmd, 1, ESC);
 
     return false;

@@ -464,9 +464,7 @@ bool scan_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
 
     int n = 0;                          // 0EJ is default command
 
@@ -496,9 +494,7 @@ bool scan_flag1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M, NO_COLON, NO_ATSIGN);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -514,7 +510,7 @@ bool scan_flag1(struct cmd *cmd)
 
         case CTRL_N:
         {
-            reject_n(cmd->n_set);
+            confirm(cmd, NO_N);
 
             struct ifile *ifile = &ifiles[istream];
             int_t eof = feof(ifile->fp) ? -1 : 0;
@@ -575,9 +571,7 @@ bool scan_flag2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_ATSIGN);
 
     if (cmd->n_set)                     // n argument?
     {

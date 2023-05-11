@@ -219,10 +219,9 @@ bool scan_C(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
+
     default_n(cmd, (int_t)1);           // C => 1C, R => 1R, L => 1L
-    reject_m(cmd->m_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
 
     return false;
 }
@@ -239,10 +238,9 @@ bool scan_J(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
+
     default_n(cmd, (int_t)0);           // J => 0J
-    reject_m(cmd->m_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
 
     return false;
 }

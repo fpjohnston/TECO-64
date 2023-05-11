@@ -160,9 +160,8 @@ bool scan_ctrl_I(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_n(cmd->n_set);
-    reject_colon(cmd->colon);
+    confirm(cmd, NO_M, NO_N, NO_COLON);
+
     scan_texts(cmd, 1, ESC);
 
     return false;
@@ -180,9 +179,7 @@ bool scan_I(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
+    confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_COLON);
 
     if (!cmd->n_set || cmd->atsign || !f.e1.insert)
     {

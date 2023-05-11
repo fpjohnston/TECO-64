@@ -172,8 +172,7 @@ void exec_apos(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     if (quote.depth == 0)
     {
@@ -202,8 +201,7 @@ void exec_F_apos(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     endif(cmd, NO_ELSE);                // Skip any else statement.
 
@@ -222,8 +220,7 @@ void exec_F_vbar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     endif(cmd, ELSE_OK);
 
@@ -387,8 +384,7 @@ void exec_vbar(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_COLON, NO_ATSIGN);
 
     if (quote.depth == 0)
     {
@@ -485,9 +481,7 @@ bool scan_quote(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M, NO_COLON, NO_ATSIGN);
 
     int c = require_cbuf();             // Get test condition
 

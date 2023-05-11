@@ -47,9 +47,8 @@ bool scan_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_m(cmd->m_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
+
     scan_qreg(cmd);
 
     int_t n;

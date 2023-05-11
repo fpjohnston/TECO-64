@@ -92,10 +92,9 @@ bool scan_lbracket(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    require_n(cmd->m_set, cmd->n_set);
-    reject_colon(cmd->colon);
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_ATSIGN);
+
     scan_qreg(cmd);
-    reject_atsign(cmd->atsign);
 
     return false;
 }
@@ -112,10 +111,8 @@ bool scan_rbracket(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_neg_m(cmd->m_set, cmd->m_arg);
-    require_n(cmd->m_set, cmd->n_set);
-    reject_dcolon(cmd->dcolon);
-    reject_atsign(cmd->atsign);
+    confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
+
     scan_qreg(cmd);
 
     return false;
