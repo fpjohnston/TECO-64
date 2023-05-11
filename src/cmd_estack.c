@@ -152,7 +152,13 @@ static struct xstack *x = NULL;     ///< List of expression stacks
 
 // Local functions
 
+static inline int_t exec_div(int_t a, int_t b);
+
 static void exec_oper(enum x_oper oper);
+
+static inline int_t exec_not(int_t a);
+
+static inline int_t exec_rem(int_t a, int_t b);
 
 static int_t fetch_val(void);
 
@@ -202,6 +208,31 @@ void confirm_parens(void)
 
 
 ///
+///  @brief    Do binary division, yielding quotient.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static inline int_t exec_div(int_t a, int_t b)
+{
+    if (b == 0)
+    {
+        if (f.e2.zero)
+        {
+            throw(E_DIV);               // Division by zero
+        }
+
+        return 0;
+    }
+    else
+    {
+        return a / b;
+    }
+}
+
+
+///
 ///  @brief    We have seen an operator that requires existing operands. Check
 ///            to see if we have them, and if so, calculate the value of the
 ///            expression, and then push the new value on the output queue.
@@ -240,77 +271,26 @@ static void exec_oper(enum x_oper type)
 
     switch (type)
     {
-        case X_COMPL:  n = (int_t)~(uint)a;       break;
         case X_ADD:    n = a + b;                 break;
         case X_AND:    n = a & b;                 break;
+        case X_COMPL:  n = (int_t)~(uint)a;       break;
+        case X_DIV:    n = exec_div(a, b);        break;
         case X_EQ:     n = (a == b ? -1 : 0);     break;
         case X_GE:     n = (a >= b ? -1 : 0);     break;
         case X_GT:     n = (a > b ? -1 : 0);      break;
         case X_LE:     n = (a <= b ? -1 : 0);     break;
         case X_LSHIFT: n = (int_t)((uint)a << b); break;
         case X_LT:     n = (a < b ? -1 : 0);      break;
-        case X_SUB:    n = a - b;                 break;
+        case X_MINUS:  n = -a;                    break;
         case X_MUL:    n = a * b;                 break;
         case X_NE:     n = (a != b ? -1 : 0);     break;
+        case X_NOT:    n = exec_not(a);           break;
         case X_OR:     n = a | b;                 break;
-        case X_RSHIFT: n = (int_t)((uint)a >> b); break;
-        case X_MINUS:  n = -a;                    break;
         case X_PLUS:   n = a;                     break;
+        case X_REM:    n = exec_rem(a, b);        break;
+        case X_RSHIFT: n = (int_t)((uint)a >> b); break;
+        case X_SUB:    n = a - b;                 break;
         case X_XOR:    n = a ^ b;                 break;
-
-        case X_DIV:
-            if (b == 0)
-            {
-                if (f.e2.zero)
-                {
-                    throw(E_DIV);       // Division by zero
-                }
-
-                n = 0;
-            }
-            else
-            {
-                n = a / b;
-            }
-
-            break;
-
-        case X_REM:
-            if (b == 0)
-            {
-                if (f.e2.zero)
-                {
-                    throw(E_DIV);       // Division by zero
-                }
-
-                n = 0;
-            }
-            else
-            {
-                n = a % b;
-            }
-
-            break;
-
-        case X_NOT:
-            while (x->oper.count != 0)
-            {
-                a = (a != 0) ? 0 : -1;
-
-                if (x->oper.count != 0 && x->oper.top[-1] == X_NOT)
-                {
-                    --x->oper.count;
-                    --x->oper.top;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            n = a;
-
-            break;
 
         case X_NULL:
         case X_LPAREN:
@@ -321,6 +301,59 @@ static void exec_oper(enum x_oper type)
     }
 
     store_val(n);                       // Save the calculated value
+}
+
+
+///
+///  @brief    Do unary negation.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static inline int_t exec_not(int_t a)
+{
+    while (x->oper.count != 0)
+    {
+        a = (a != 0) ? 0 : -1;
+
+        if (x->oper.count != 0 && x->oper.top[-1] == X_NOT)
+        {
+            --x->oper.count;
+            --x->oper.top;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return a;
+}
+
+
+///
+///  @brief    Do binary divison, yielding remainder.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static inline int_t exec_rem(int_t a, int_t b)
+{
+    if (b == 0)
+    {
+        if (f.e2.zero)
+        {
+            throw(E_DIV);               // Division by zero
+        }
+
+        return 0;
+    }
+    else
+    {
+        return a % b;
+    }
 }
 
 

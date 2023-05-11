@@ -131,7 +131,7 @@ void confirm_cmd(struct cmd *cmd, ...)
 
 
 ///
-///  @brief    Set default value for n if needed.
+///  @brief    Set default value for n argument if needed.
 ///
 ///  @returns  Nothing.
 ///
