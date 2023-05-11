@@ -243,10 +243,6 @@ extern const struct cmd null_cmd;
 
 extern bool append(bool n_set, int_t n_arg, bool colon_set);
 
-extern void check_parens(void);
-
-extern bool check_radix(void);
-
 extern bool check_semi(void);
 
 extern void close_files(void);

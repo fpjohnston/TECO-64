@@ -54,7 +54,7 @@ bool scan_Q(struct cmd *cmd)
 
     int_t n;
 
-    if (check_x(&n))                    // nQq
+    if (query_x(&n))                    // nQq
     {
         n = (int_t)get_qchr(cmd->qindex, (uint)n);
     }

@@ -66,19 +66,15 @@ bool scan_ctrl_P(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_ctrl_Q(struct cmd *cmd)
+void exec_ctrl_Q(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    reject_colon(cmd->colon);
-    reject_atsign(cmd->atsign);
-
     int_t nchrs;
-    int_t n;
 
-    if (check_x(&n))
+    if (cmd->n_set)
     {
-        nchrs = len_edit(n);
+        nchrs = len_edit(cmd->n_arg);
     }
     else
     {
@@ -86,8 +82,16 @@ bool scan_ctrl_Q(struct cmd *cmd)
     }
 
     store_val(nchrs);
+}
 
-    return true;
+bool scan_ctrl_Q(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    reject_colon(cmd->colon);
+    reject_atsign(cmd->atsign);
+
+    return false;
 }
 
 
@@ -133,13 +137,13 @@ bool scan_ctrl_Y(struct cmd *cmd)
 
     if (f.e2.args)
     {
-        if (check_x(&n) || cmd->m_set)
+        if (query_x(&n) || cmd->m_set)
         {
             throw(E_ARG);               // Invalid arguments
         }
     }
 
-    (void)check_x(&n);                  // Ignore any existing operand
+    (void)query_x(&n);                  // Ignore any existing operand
 
     cmd->ctrl_y = true;
     cmd->m_set = true;
@@ -252,13 +256,13 @@ bool scan_H(struct cmd *cmd)
 
     if (f.e2.args)
     {
-        if (check_x(&n) || cmd->m_set)
+        if (query_x(&n) || cmd->m_set)
         {
             throw(E_ARG);               // Invalid arguments
         }
     }
 
-    (void)check_x(&n);                  // Ignore any existing operand
+    (void)query_x(&n);                  // Ignore any existing operand
 
     cmd->h = true;
     cmd->m_set = true;

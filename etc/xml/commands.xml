@@ -27,7 +27,7 @@
         <command name='CTRL_N'      scan='flag1'                      type=''  />
         <command name='CTRL_O'      scan='simple'    exec='ctrl_O'    type=''  />
         <command name='CTRL_P'      scan='ctrl_P'                     type=''  />
-        <command name='CTRL_Q'      scan='ctrl_Q'                     type=''  />
+        <command name='CTRL_Q'      scan='ctrl_Q'    exec='ctrl_Q'    type=''  />
         <command name='CTRL_R'                       exec='ctrl_R'    type=''  />
         <command name='CTRL_S'      scan='ctrl_S'                     type=''  />
         <command name='CTRL_T'      scan='ctrl_T'    exec='ctrl_T'    type=''  />
@@ -41,7 +41,7 @@
         <command name='CTRL_BACK'                                     type='?' />
         <command name='CTRL_RIGHT'                                    type='?' />
         <command name='CTRL_UP'     scan='ctrl_up'                    type=''  />
-        <command name='CTRL_UNDER'  scan='ctrl_ubar'                  type=''  />
+        <command name='CTRL_UBAR'   scan='ctrl_ubar'                  type=''  />
         <command name='SPACE'                                         type=' ' />
         <command name='!'           scan='not'       exec='bang'      type='!' />
         <command name='"'           scan='quote'     exec='quote'     type=''  />

@@ -69,16 +69,16 @@ enum ascii
     CTRL_X,
     CTRL_Y,
     CTRL_Z,
-    CTRL_LEFT,
+    CTRL_LEFT,                          ///< Ctrl-Left bracket
     ESC = CTRL_LEFT,
-    CTRL_BACK,
+    CTRL_BACK,                          ///< Ctrl-Backslash
     FS = CTRL_BACK,
-    CTRL_RIGHT,
+    CTRL_RIGHT,                         ///< Ctrl-Right bracket
     GS = CTRL_RIGHT,
-    CTRL_UP,
+    CTRL_UP,                            ///< Ctrl-Uparrow
     RS = CTRL_UP,
-    CTRL_UNDER,
-    US = CTRL_UNDER,
+    CTRL_UBAR,                          ///< Ctrl-Underscore
+    US = CTRL_UBAR,
     SPACE   = ' ',                      ///< Space character
     ACCENT  = '`',                      ///< Accent grave
     DEL     = 127                       ///< DELETE/RUBOUT

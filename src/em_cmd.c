@@ -128,11 +128,11 @@ void exec_EM(struct cmd *cmd)
     cbuf->pos = 0;
     f.e0.skip = true;                   // Just skip over commands
 
-    push_x();                           // Save expression stack
+    new_x();                            // Make new expression stack
 
     squish_cmd(cmd->m_arg);             // Squish the command string
 
-    pop_x();                            // Restore expression stack
+    delete_x();                         // Restore previous expression stack
 
     f.e0.skip = false;
     f.trace = saved_trace;

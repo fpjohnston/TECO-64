@@ -129,7 +129,7 @@ void exec_cmd(struct cmd *cmd)
     }
     else
     {
-        check_parens();                 // Make sure we used all parentheses
+        confirm_parens();               // Make sure we used all parentheses
     }
 
     cbuf->pos = cbuf->len = 0;          // Reset for next command string
@@ -244,19 +244,7 @@ static INLINE bool scan_cmd(struct cmd *cmd)
         }
     }
 
-    //  Here if we have an exec function. See if we have a numeric argument on
-    //  the expression stack. If not, then check for a unary minus, which we
-    //  will treat as equivalent to -1 (for example, -P is the same as -1P).
-
-    if (check_x(&cmd->n_arg))
-    {
-        cmd->n_set = true;
-    }
-    else if (!cmd->n_set && unary_x())
-    {
-        cmd->n_set = true;
-        cmd->n_arg = -1;
-    }
+    scan_x(cmd);
 
     if (entry->scan != NULL && (*entry->scan)(cmd))
     {
@@ -587,7 +575,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     bool trace = f.trace;
     int c;
 
-    push_x();                           // Save current expression stack
+    new_x();                           // Save current expression stack
 
     f.e0.skip = true;
     f.trace = false;
@@ -614,7 +602,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     f.trace = trace;
     f.e0.skip = false;
 
-    pop_x();                            // Restore previous expression stack
+    delete_x();                            // Restore previous expression stack
 
     return match;
 }

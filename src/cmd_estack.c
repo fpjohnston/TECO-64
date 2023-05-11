@@ -38,10 +38,6 @@
 #include "exec.h"
 
 
-#define MAX_OPERS   8           ///< Max. no. of consecutive arithmetic operators
-
-#define MAX_VALUES  64          ///< Max. no. of expression values
-
 ///  @enum   order
 ///  @brief  Definitions for operator associativity
 
@@ -72,29 +68,29 @@ struct oper
 
 static const struct oper oper[X_MAX] =
 {
-    [X_NULL]    = { .operands = 0, .precedence =  0, .order = NONE  },
-    [X_LPAREN]  = { .operands = 0, .precedence =  1, .order = LEFT  }, // (
-    [X_RPAREN]  = { .operands = 0, .precedence =  1, .order = LEFT  }, // )
-    [X_NOT]     = { .operands = 1, .precedence =  2, .order = RIGHT }, // (!x)
-    [X_1S_COMP] = { .operands = 1, .precedence =  2, .order = LEFT  }, // x^_
-    [X_MINUS]   = { .operands = 1, .precedence =  2, .order = RIGHT }, // -x
-    [X_PLUS]    = { .operands = 1, .precedence =  2, .order = RIGHT }, // +x
-    [X_MUL]     = { .operands = 2, .precedence =  3, .order = LEFT  }, // x * y
-    [X_DIV]     = { .operands = 2, .precedence =  3, .order = LEFT  }, // x / y
-    [X_REM]     = { .operands = 2, .precedence =  3, .order = LEFT  }, // (x // y)
-    [X_ADD]     = { .operands = 2, .precedence =  4, .order = LEFT  }, // x + y
-    [X_SUB]     = { .operands = 2, .precedence =  4, .order = LEFT  }, // x - y
-    [X_LSHIFT]  = { .operands = 2, .precedence =  5, .order = LEFT  }, // (x << y)
-    [X_RSHIFT]  = { .operands = 2, .precedence =  5, .order = LEFT  }, // (x >> y)
-    [X_GE]      = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x >= y
-    [X_GT]      = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x > y)
-    [X_LE]      = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x <= y)
-    [X_LT]      = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x < y)
-    [X_EQ]      = { .operands = 2, .precedence =  7, .order = LEFT  }, // (x == y)
-    [X_NE]      = { .operands = 2, .precedence =  7, .order = LEFT  }, // (x <> y)
-    [X_AND]     = { .operands = 2, .precedence =  8, .order = LEFT  }, // x & y
-    [X_XOR]     = { .operands = 2, .precedence =  9, .order = LEFT  }, // (x ~ y)
-    [X_OR]      = { .operands = 2, .precedence = 10, .order = LEFT  }, // x # y
+    [X_NULL]   = { .operands = 0, .precedence =  0, .order = NONE  },
+    [X_LPAREN] = { .operands = 0, .precedence =  1, .order = LEFT  }, // (
+    [X_RPAREN] = { .operands = 0, .precedence =  1, .order = LEFT  }, // )
+    [X_NOT]    = { .operands = 1, .precedence =  2, .order = RIGHT }, // (!x)
+    [X_COMPL]  = { .operands = 1, .precedence =  2, .order = LEFT  }, // x^_
+    [X_MINUS]  = { .operands = 1, .precedence =  2, .order = RIGHT }, // -x
+    [X_PLUS]   = { .operands = 1, .precedence =  2, .order = RIGHT }, // +x
+    [X_MUL]    = { .operands = 2, .precedence =  3, .order = LEFT  }, // x * y
+    [X_DIV]    = { .operands = 2, .precedence =  3, .order = LEFT  }, // x / y
+    [X_REM]    = { .operands = 2, .precedence =  3, .order = LEFT  }, // (x // y)
+    [X_ADD]    = { .operands = 2, .precedence =  4, .order = LEFT  }, // x + y
+    [X_SUB]    = { .operands = 2, .precedence =  4, .order = LEFT  }, // x - y
+    [X_LSHIFT] = { .operands = 2, .precedence =  5, .order = LEFT  }, // (x << y)
+    [X_RSHIFT] = { .operands = 2, .precedence =  5, .order = LEFT  }, // (x >> y)
+    [X_GE]     = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x >= y
+    [X_GT]     = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x > y)
+    [X_LE]     = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x <= y)
+    [X_LT]     = { .operands = 2, .precedence =  6, .order = LEFT  }, // (x < y)
+    [X_EQ]     = { .operands = 2, .precedence =  7, .order = LEFT  }, // (x == y)
+    [X_NE]     = { .operands = 2, .precedence =  7, .order = LEFT  }, // (x <> y)
+    [X_AND]    = { .operands = 2, .precedence =  8, .order = LEFT  }, // x & y
+    [X_XOR]    = { .operands = 2, .precedence =  9, .order = LEFT  }, // (x ~ y)
+    [X_OR]     = { .operands = 2, .precedence = 10, .order = LEFT  }, // x # y
 };
 
 //  The following table allows us to switch back between the operator precedence
@@ -110,6 +106,10 @@ static const struct oper oper[X_MAX] =
 
 static uint precedence[X_MAX];          ///< Current precedence table
 
+
+#define MAX_OPERS   8           ///< Max. no. of consecutive arithmetic operators
+
+#define MAX_VALUES  64          ///< Max. no. of expression values
 
 ///  @struct   xstack
 ///  @brief    Definition of expression stack, used to process arithmetic
@@ -134,14 +134,14 @@ struct xstack
     {
         int_t stack[MAX_VALUES];    ///< Operand stack
         int_t *top;                 ///< Top of operand stack
-        uint size;                  ///< No.of stored elements
-        bool last;                  ///< Last element pushed was a number
+        uint count;                 ///< No.of stored elements
     } number;
     struct
     {
         enum x_oper stack[MAX_OPERS]; ///< Operator stack
         enum x_oper *top;           ///< Top of operator stack
-        uint size;                  ///< No.of stored elements
+        uint count;                 ///< No.of stored elements
+        bool last;                  ///< Last element pushed was an operator 
         uint nesting;               ///< Nesting level for parentheses
     } oper;
 };
@@ -152,11 +152,11 @@ static struct xstack *x = NULL;     ///< List of expression stacks
 
 // Local functions
 
-static void check_oper(enum x_oper o1);
-
 static void exec_oper(enum x_oper oper);
 
 static int_t fetch_val(void);
+
+static inline bool isparen(void);
 
 static struct xstack *make_x(void);
 
@@ -166,67 +166,13 @@ static void store_oper(enum x_oper type);
 
 
 ///
-///  @brief    Check to see if operator already on stack before storing another
-///            operator.
-///
-///            Note that this function should never be called to process left
-///            or right parentheses, as those are processed elsewhere.
-///            
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void check_oper(enum x_oper o1)
-{
-    enum x_oper o2;
-
-    while (x->oper.size > 0 && ((o2 = x->oper.top[-1]) != X_LPAREN))
-    {
-        uint p1 = precedence[o1];
-        uint p2 = precedence[o2];
-
-        if ((p2 < p1) || (p1 == p2 && oper[o1].order == LEFT))
-        {
-            --x->oper.size;
-            --x->oper.top;
-
-            exec_oper(o2);
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    store_oper(o1);
-}
-
-
-///
-///  @brief    Check to see if our parenthesis count is zero.
-///
-///  @returns  Nothing if count is zero, else error is issued.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void check_parens(void)
-{
-    if (x->oper.nesting != 0)
-    {
-        throw(E_MRP);                   // Missing right parenthesis
-    }
-}
-
-
-///
 ///  @brief    Check to see if auto detection of number radix is possible.
 ///
 ///  @returns  true if we can do auto detect of radix, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool check_radix(void)
+bool auto_radix(void)
 {
     if (f.e1.radix && x->oper.nesting != 0)  // Auto-detect radix?
     {
@@ -240,63 +186,18 @@ bool check_radix(void)
 
 
 ///
-///  @brief    Check to see if there's a value (operand) available on stack.
+///  @brief    Confirm that we used up all parentheses.
 ///
-///  @returns  true if operand next in output queue, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool check_x(int_t *n)
+void confirm_parens(void)
 {
-    assert(n != NULL);
-
-    // Last item saved was not an operand
-
-    if (!x->number.last)
+    if (x->oper.nesting != 0)
     {
-        return false;
+        throw(E_MRP);                   // Missing right parenthesis
     }
-
-    // Here if an operand was the last item processed, so we have one or more
-    // operands on the output queue. If we have anything on the operator stack,
-    // try to use them up.
-
-    enum x_oper type;
-
-    while (x->oper.size > 0 && (type = x->oper.top[-1]) != X_LPAREN) 
-    {
-        --x->oper.size;
-        --x->oper.top;
-
-        exec_oper(type);
-    }
-
-    // Here when we are either out of operators, or the first operator on the
-    // stack is a left parenthesis. We have at least one operand available,
-    // since x->number.last is set, and because although exec_oper() may have used
-    // up one or two operands, it will always add one to the output queue.
-
-    *n = fetch_val();
-
-    // Because of such things as values being passed through macros, we can end
-    // up with multiple values on the output queue if there are no operators on
-    // the stack. For example, with a command such as "42MB 27UA QA=". If this
-    // happens, we should reset the output queue.
-
-    if (x->oper.size == 0)
-    {
-        x->number.size = 0;
-        x->number.top = x->number.stack;
-    }
-
-    // Reset operand flag if we used up all operands
-
-    if (x->number.size == 0)
-    {
-        x->number.last = false;
-    }
-
-    return true;
 }
 
 
@@ -316,7 +217,7 @@ static void exec_oper(enum x_oper type)
 
     assert(operands <= 2);
 
-    if (operands > x->number.size)      // Need more operands than we have?
+    if (operands > x->number.count)     // Need more operands than we have?
     {
         if (!f.e0.skip)                 // Are we skipping commands??
         {
@@ -339,23 +240,23 @@ static void exec_oper(enum x_oper type)
 
     switch (type)
     {
-        case X_1S_COMP: n = (int_t)~(uint)a;       break;
-        case X_ADD:     n = a + b;                 break;
-        case X_AND:     n = a & b;                 break;
-        case X_EQ:      n = (a == b ? -1 : 0);     break;
-        case X_GE:      n = (a >= b ? -1 : 0);     break;
-        case X_GT:      n = (a > b ? -1 : 0);      break;
-        case X_LE:      n = (a <= b ? -1 : 0);     break;
-        case X_LSHIFT:  n = (int_t)((uint)a << b); break;
-        case X_LT:      n = (a < b ? -1 : 0);      break;
-        case X_SUB:     n = a - b;                 break;
-        case X_MUL:     n = a * b;                 break;
-        case X_NE:      n = (a != b ? -1 : 0);     break;
-        case X_OR:      n = a | b;                 break;
-        case X_RSHIFT:  n = (int_t)((uint)a >> b); break;
-        case X_MINUS:   n = -a;                    break;
-        case X_PLUS:    n = a;                     break;
-        case X_XOR:     n = a ^ b;                 break;
+        case X_COMPL:  n = (int_t)~(uint)a;       break;
+        case X_ADD:    n = a + b;                 break;
+        case X_AND:    n = a & b;                 break;
+        case X_EQ:     n = (a == b ? -1 : 0);     break;
+        case X_GE:     n = (a >= b ? -1 : 0);     break;
+        case X_GT:     n = (a > b ? -1 : 0);      break;
+        case X_LE:     n = (a <= b ? -1 : 0);     break;
+        case X_LSHIFT: n = (int_t)((uint)a << b); break;
+        case X_LT:     n = (a < b ? -1 : 0);      break;
+        case X_SUB:    n = a - b;                 break;
+        case X_MUL:    n = a * b;                 break;
+        case X_NE:     n = (a != b ? -1 : 0);     break;
+        case X_OR:     n = a | b;                 break;
+        case X_RSHIFT: n = (int_t)((uint)a >> b); break;
+        case X_MINUS:  n = -a;                    break;
+        case X_PLUS:   n = a;                     break;
+        case X_XOR:    n = a ^ b;                 break;
 
         case X_DIV:
             if (b == 0)
@@ -392,13 +293,13 @@ static void exec_oper(enum x_oper type)
             break;
 
         case X_NOT:
-            while (x->oper.size > 0)
+            while (x->oper.count != 0)
             {
                 a = (a != 0) ? 0 : -1;
 
-                if (x->oper.size > 0 && x->oper.top[-1] == X_NOT)
+                if (x->oper.count != 0 && x->oper.top[-1] == X_NOT)
                 {
-                    --x->oper.size;
+                    --x->oper.count;
                     --x->oper.top;
                 }
                 else
@@ -436,7 +337,7 @@ void exit_x(void)
     {
         do
         {
-            pop_x();                    // Free up temporary stacks
+            delete_x();                    // Free up temporary stacks
         } while (x->next != NULL);
 
         free_mem(&x);                   // Now delete root stack
@@ -447,27 +348,26 @@ void exit_x(void)
 ///
 ///  @brief    Fetch value from top of output stack.
 ///
-///  @returns  Returned value.
+///  @returns  Returned value (error thrown if none available).
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 static int_t fetch_val(void)
 {
-    if (x->number.size-- == 0)
+    if (x->number.count-- != 0)         // Anything to fetch?
     {
-        ++x->number.size;
-
-        if (!f.e0.skip)                 // Are we skipping commands?
-        {
-            throw(E_IFE);               // Ill-formed expression
-        }
-        else                            // Not executing, so just return
-        {
-            return 0;
-        }
+        return *--x->number.top;
     }
+    else if (f.e0.skip)                 // Are we skipping commands?
+    {
+        x->number.count = 0;            // Yes, so reset stack
 
-    return *--x->number.top;
+        return 0;                       // And return a dummy value
+    }
+    else                                // No, so issue an error
+    {
+        throw(E_IFE);                   // Ill-formed expression
+    }
 }
 
 
@@ -526,7 +426,7 @@ void init_x(void)
 ///
 ///  @brief    Create a new expression stack.
 ///
-///  @returns  Nothing.
+///  @returns  New expression stack.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -549,7 +449,7 @@ static struct xstack *make_x(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void pop_x(void)
+void delete_x(void)
 {
     if (x->next != NULL)
     {
@@ -563,19 +463,105 @@ void pop_x(void)
 
 
 ///
+///  @brief    Push operator on stack.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static inline void push_oper(enum x_oper o1)
+{
+    if (x->oper.count++ == MAX_OPERS)
+    {
+        throw(E_PDO);                   // Push-down list overflow
+    }
+
+    *x->oper.top++ = o1;
+    x->oper.last = true;
+}
+
+
+///
 ///  @brief    Set new expression stack.
 ///
 ///  @returns  Nothing
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void push_x(void)
+void new_x(void)
 {
     struct xstack *ptr = make_x();
 
     ptr->next = x;
 
     x = ptr;
+}
+
+
+///
+///  @brief    Check to see if we're in parentheses.
+///
+///  @returns  true if in parentheses, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static inline bool isparen(void)
+{
+    if (x->oper.nesting != 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+///
+///  @brief    Check to see if there's a value (operand) available on stack.
+///
+///  @returns  true if we returned a value, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool query_x(int_t *n)
+{
+    assert(n != NULL);
+
+    if (x->number.count == 0 || x->oper.last)
+    {
+        return false;
+    }
+
+    enum x_oper type;
+
+    while (x->oper.count != 0 && (type = x->oper.top[-1]) != X_LPAREN) 
+    {
+        --x->oper.count;
+        --x->oper.top;
+
+        exec_oper(type);
+    }
+
+    // Here when we are either out of operators, or the first operator on the
+    // stack is a left parenthesis.
+
+    *n = fetch_val();
+
+    // Because of such things as values being passed through macros, we can end
+    // up with multiple values on the output queue if there are no operators on
+    // the stack. For example, with a command such as "42MB 27UA QA=". If this
+    // happens, we should reset the output queue.
+
+    if (x->oper.count == 0)
+    {
+        x->oper.last = false;
+        x->number.count = 0;
+        x->number.top = x->number.stack;
+    }
+
+    return true;
 }
 
 
@@ -605,11 +591,27 @@ static void reset_x(struct xstack *ptr)
 #endif
 
     ptr->number.top = ptr->number.stack;
-    ptr->number.size = 0;
-    ptr->number.last = false;
+    ptr->number.count = 0;
     ptr->oper.top = ptr->oper.stack;
-    ptr->oper.size = 0;
+    ptr->oper.count = 0;
+    ptr->oper.last = false;
     ptr->oper.nesting = 0;
+}
+
+
+///
+///  @brief    Process 1's complement operator. This is handled differently
+///            than other operators, because it is both left-associative and
+///            unary, meaning that we don't need any more operands before
+///            calling exec_oper().
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void store_complement(void)
+{
+    exec_oper(X_COMPL);
 }
 
 
@@ -631,17 +633,17 @@ bool scan_div(struct cmd *cmd)
 
     int c;
 
-    if (f.e1.xoper && x->oper.nesting != 0 && (c = peek_cbuf()) == '/')
+    if ((c = peek_cbuf()) == '/' && f.e1.xoper && isparen())
     {
         next_cbuf();
 
         cmd->c2 = (char)c;
 
-        check_oper(X_REM);
+        store_oper(X_REM);
     }
     else
     {
-        check_oper(X_DIV);
+        store_oper(X_DIV);
     }
 
     return true;
@@ -663,7 +665,7 @@ bool scan_eq(struct cmd *cmd)
     // parentheses, then the equals sign is not part of an operator, but
     // is instead a command.
 
-    if (!f.e1.xoper || x->oper.nesting == 0)
+    if (!f.e1.xoper || !isparen())
     {
         return scan_equals(cmd);
     }
@@ -685,7 +687,7 @@ bool scan_eq(struct cmd *cmd)
         store_val(cmd->n_arg);
     }
 
-    check_oper(X_EQ);
+    store_oper(X_EQ);
 
     return true;
 }
@@ -707,7 +709,7 @@ bool scan_gt(struct cmd *cmd)
     // ">" is a relational operator only if it's in parentheses; otherwise,
     // it's the end of a loop.
 
-    if (!f.e1.xoper || x->oper.nesting == 0)
+    if (!f.e1.xoper || !isparen())
     {
         return false;
     }
@@ -725,16 +727,16 @@ bool scan_gt(struct cmd *cmd)
     if (peek_cbuf() == '=')             // >= operator
     {
         next_cbuf();
-        check_oper(X_GE);
+        store_oper(X_GE);
     }
     else if (peek_cbuf() == '>')        // >> operator
     {
         next_cbuf();
-        check_oper(X_RSHIFT);
+        store_oper(X_RSHIFT);
     }
     else                                // > operator
     {
-        check_oper(X_GT);
+        store_oper(X_GT);
     }
 
     return true;
@@ -765,11 +767,11 @@ bool scan_lparen(struct cmd *cmd)
 
     int_t n;
 
-    (void)check_x(&n);                  // Discard any operand on stack
+    (void)query_x(&n);                  // Discard any operand on stack
 
     ++x->oper.nesting;
 
-    store_oper(X_LPAREN);
+    push_oper(X_LPAREN);
 
     return true;
 }
@@ -793,7 +795,7 @@ bool scan_lt(struct cmd *cmd)
     // "<" is a relational operator only if it's in parentheses; otherwise,
     // it's the start of a loop.
 
-    if (!f.e1.xoper || x->oper.nesting == 0)
+    if (!f.e1.xoper || !isparen())
     {
         return false;
     }
@@ -813,21 +815,21 @@ bool scan_lt(struct cmd *cmd)
     if (c == '=')                       // <= operator
     {
         next_cbuf();
-        check_oper(X_LE);
+        store_oper(X_LE);
     }
     else if (c == '>')                  // <> operator
     {
         next_cbuf();
-        check_oper(X_NE);
+        store_oper(X_NE);
     }
     else if (c == '<')                  // << operator
     {
         next_cbuf();
-        check_oper(X_LSHIFT);
+        store_oper(X_LSHIFT);
     }
     else                                // < operator
     {
-        check_oper(X_LT);
+        store_oper(X_LT);
     }
 
     return true;
@@ -845,7 +847,7 @@ bool scan_not(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (!f.e1.xoper || x->oper.nesting == 0) // Is it really a '!' command?
+    if (!f.e1.xoper || !isparen())      // Is it really a tag?
     {
         return scan_bang(cmd);
     }
@@ -855,7 +857,7 @@ bool scan_not(struct cmd *cmd)
     reject_n(cmd->n_set);
     reject_atsign(cmd->atsign);
 
-    check_oper(X_NOT);
+    store_oper(X_NOT);
 
     return true;
 }
@@ -879,7 +881,7 @@ bool scan_rparen(struct cmd *cmd)
 
     enum x_oper type;
 
-    while (x->oper.size-- > 0)
+    while (x->oper.count-- != 0)
     {
         if ((type = *--x->oper.top) == X_LPAREN)
         {
@@ -890,7 +892,7 @@ bool scan_rparen(struct cmd *cmd)
             // We found a matching left parenthesis. Try to process any
             // operators preceding it, up to any previous left parenthesis.
 
-            while (x->oper.size > 0)
+            while (x->oper.count != 0)
             {
                 if ((type = *--x->oper.top) == X_LPAREN)
                 {
@@ -900,18 +902,10 @@ bool scan_rparen(struct cmd *cmd)
                 }
                 else
                 {
-                    --x->oper.size;
+                    --x->oper.count;
 
                     exec_oper(type);    // Process the operator
                 }
-            }
-
-            // Here if we're out of operators, so ensure flag is set if there
-            // are still any values on the output queue.
-
-            if (x->number.size > 0)
-            {
-                x->number.last = true;
             }
 
             return true;                // Say that we found an operator
@@ -922,11 +916,40 @@ bool scan_rparen(struct cmd *cmd)
         }
     }
 
-    ++x->oper.size;
-
     // Here if we ran out of operators before finding a left parenthesis
 
     throw(E_MLP);                       // Missing left parenthesis
+}
+
+
+///
+///  @brief    Like query_x(), but checks for unary minus as final operator.
+///            Use of this function allows for commands such as -P to be
+///            treated as equivalent to -1P.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void scan_x(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (query_x(&cmd->n_arg))
+    {
+        cmd->n_set = true;
+    }
+    else if (!cmd->n_set)
+    {
+        if (x->oper.count != 0 && x->oper.top[-1] == X_MINUS)
+        {
+            --x->oper.count;
+            --x->oper.top;
+
+            cmd->n_set = true;
+            cmd->n_arg = -1;
+        }
+    }
 }
 
 
@@ -944,32 +967,14 @@ bool scan_xor(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    if (!f.e0.skip && (!f.e1.xoper || x->oper.nesting == 0))
+    if (!f.e0.skip && (!f.e1.xoper || !isparen()))
     {
         throw(E_ILL, cmd->c1);          // Illegal command
     }
 
-    check_oper(X_XOR);
+    store_oper(X_XOR);
 
     return true;
-}
-
-
-///
-///  @brief    Store ^_ operator on operator stack.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void store_1s_comp(void)
-{
-    check_oper(X_1S_COMP);
-
-    if (x->number.size > 0)
-    {
-        x->number.last = true;
-    }
 }
 
 
@@ -982,13 +987,17 @@ void store_1s_comp(void)
 
 void store_add(void)
 {
-    if (x->number.last)                 // Did we just see an operand?
+    //  If the last item processed was an operator, or if we have not processed
+    //  a number, then we have a unary plus operator; otherwise, we have a
+    //  binary addition operator.
+
+    if (x->oper.last || x->number.count == 0)
     {
-        check_oper(X_ADD);              // Yes, we're doing binary arithmetic
+        store_oper(X_PLUS);
     }
     else
     {
-        check_oper(X_PLUS);             // No, we're doing a unary plus
+        store_oper(X_ADD);
     }
 }
 
@@ -1002,7 +1011,7 @@ void store_add(void)
 
 void store_and(void)
 {
-    check_oper(X_AND);
+    store_oper(X_AND);
 }
 
 
@@ -1015,28 +1024,45 @@ void store_and(void)
 
 void store_mul(void)
 {
-    check_oper(X_MUL);
+    store_oper(X_MUL);
 }
 
 
 ///
-///  @brief    Store operator on stack.
+///  @brief    Check to see if operator already on stack before storing another
+///            operator.
+///
+///            Note that this function should never be called to process left
+///            or right parentheses, as those are processed elsewhere.
+///            
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void store_oper(enum x_oper type)
+static void store_oper(enum x_oper o1)
 {
-    if (x->oper.size++ == MAX_OPERS)
-    {
-        --x->oper.size;
+    enum x_oper o2;
 
-        throw(E_PDO);                   // Push-down list overflow
+    while (x->oper.count != 0 && ((o2 = x->oper.top[-1]) != X_LPAREN))
+    {
+        uint p1 = precedence[o1];
+        uint p2 = precedence[o2];
+
+        if ((p2 < p1) || (p1 == p2 && oper[o1].order == LEFT))
+        {
+            --x->oper.count;
+            --x->oper.top;
+
+            exec_oper(o2);
+        }
+        else
+        {
+            break;
+        }
     }
 
-    *x->oper.top++ = type;
-    x->number.last = false;
+    push_oper(o1);
 }
 
 
@@ -1049,7 +1075,7 @@ static void store_oper(enum x_oper type)
 
 void store_or(void)
 {
-    check_oper(X_OR);
+    store_oper(X_OR);
 }
 
 
@@ -1062,13 +1088,17 @@ void store_or(void)
 
 void store_sub(void)
 {
-    if (x->number.last)                 // Did we just see an operand?
+    //  If the last item processed was an operator, or if we have not processed
+    //  a number, then we have a unary minus operator; otherwise, we have a
+    //  binary subtraction operator.
+
+    if (x->oper.last || x->number.count == 0)
     {
-        check_oper(X_SUB);              // Yes, we're doing binary subtraction
+        store_oper(X_MINUS);
     }
     else
     {
-        check_oper(X_MINUS);            // No, we're doing a unary minus
+        store_oper(X_SUB);
     }
 }
 
@@ -1082,37 +1112,11 @@ void store_sub(void)
 
 void store_val(int_t value)
 {
-    if (x->number.size++ == MAX_VALUES)
+    if (x->number.count++ == MAX_VALUES)
     {
-        --x->number.size;
-
         throw(E_PDO);                   // Push-down list overflow
     }
 
     *x->number.top++ = value;
-    x->number.last = true;
-}
-
-
-///
-///  @brief    See if top of stack is a minus sign, which may mean a command
-///            argument of -1.
-///
-///  @returns  true if minus sign found, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool unary_x(void)
-{
-    if (x->oper.size > 0 && x->oper.top[-1] == X_MINUS)
-    {
-        --x->oper.size;
-        --x->oper.top;
-
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    x->oper.last = false;
 }

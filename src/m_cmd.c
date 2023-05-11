@@ -138,7 +138,7 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
 
     // Initialize for new command string
 
-    push_x();                           // Save expression stack
+    new_x();                            // Make new expression stack
     setloop_base(loop_base);
     setif_depth(0);
 
@@ -149,7 +149,13 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
 
     // If we were passed the previous command, then copy any m and n arguments.
 
-    if (cmd != NULL)
+    ++macro_depth;
+
+    if (cmd == NULL)
+    {
+        exec_cmd(&newcmd);
+    }
+    else
     {
         newcmd.m_set = cmd->m_set;
         newcmd.m_arg = cmd->m_arg;
@@ -158,15 +164,10 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
         {
             store_val(cmd->n_arg);
         }
-    }
 
-    ++macro_depth;
-    exec_cmd(&newcmd);
-    --macro_depth;
+        exec_cmd(&newcmd);
 
-    if (cmd != NULL)
-    {
-        if (check_x(&cmd->n_arg))
+        if (query_x(&cmd->n_arg))
         {
             cmd->m_set = newcmd.m_set;
             cmd->m_arg = newcmd.m_arg;
@@ -179,6 +180,8 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
         }
     }
 
+    --macro_depth;
+
     // Restore previous state
 
     cbuf       = saved_cbuf;            // Restore previous command string
@@ -188,7 +191,7 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
 
     setif_depth(saved_if);
     setloop_base(loop_base);
-    pop_x();                            // Restore expression stack
+    delete_x();                         // Restore previous expression stack
 }
 
 

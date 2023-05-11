@@ -99,6 +99,8 @@ void exec_escape(struct cmd *cmd)
     cmd->m_set = cmd->n_set = false;
     cmd->m_arg = cmd->n_arg = 0;
 
+    confirm_parens();                   // Make sure we used all parentheses
+
     init_x();                           // Reinitialize expression stack
 }
 

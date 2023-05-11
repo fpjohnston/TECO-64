@@ -31,6 +31,8 @@
 #include <stdbool.h>            //lint !e451
 #include <sys/types.h>          //lint !e451
 
+#include "exec.h"
+
 
 #define OPER    ((int_t)0)          ///< 'value' for expression operators
 
@@ -40,9 +42,9 @@
 enum x_oper
 {
     X_NULL = 0,         // Null type
-    X_1S_COMP,          // 1's complement
     X_ADD,              // Addition
     X_AND,              // Bitwise AND
+    X_COMPL,            // 1's complement
     X_DIV,              // Division w/ quotient
     X_EQ,               // Equals (==)
     X_GE,               // Greater than or equal (>=)
@@ -67,21 +69,27 @@ enum x_oper
 
 // Expression stack functions
 
+extern bool auto_radix(void);
+
+extern void confirm_parens(void);
+
+extern void delete_x(void);
+
 extern void exit_x(void);
 
 extern void init_x(void);
 
-extern bool check_x(int_t *n);
+extern void new_x(void);
 
-extern void pop_x(void);
+extern bool query_x(int_t *n);
 
-extern void push_x(void);
-
-extern void store_1s_comp(void);
+extern void scan_x(struct cmd *cmd);
 
 extern void store_add(void);
 
 extern void store_and(void);
+
+extern void store_complement(void);
 
 extern void store_mul(void);
 
@@ -90,7 +98,5 @@ extern void store_or(void);
 extern void store_sub(void);
 
 extern void store_val(int_t value);
-
-extern bool unary_x(void);
 
 #endif  // !defined(_XSTACK_H)

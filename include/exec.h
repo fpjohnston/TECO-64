@@ -568,6 +568,8 @@ extern void exec_ctrl_I(struct cmd *cmd);
 
 extern void exec_ctrl_O(struct cmd *cmd);
 
+extern void exec_ctrl_Q(struct cmd *cmd);
+
 extern void exec_ctrl_R(struct cmd *cmd);
 
 extern void exec_ctrl_T(struct cmd *cmd);
@@ -610,10 +612,6 @@ extern void exec_vbar(struct cmd *cmd);
 // Helper functions for executing commands
 
 extern bool append(bool n_set, int_t n_arg, bool colon_set);
-
-extern void check_parens(void);
-
-extern bool check_radix(void);
 
 extern bool check_semi(void);
 

@@ -94,7 +94,7 @@ bool scan_comma(struct cmd *cmd)
         throw(E_ARG);                   // Invalid arguments
     }
 
-    if (check_x(&cmd->m_arg))      // Any m argument specified?
+    if (query_x(&cmd->m_arg))           // Any m argument specified?
     {
         // If we've seen a comma, then what was on the expression stack was
         // an "m" argument, not an "n" argument (numeric arguments can take
@@ -125,7 +125,7 @@ bool scan_ctrl_ubar(struct cmd *cmd)
     reject_colon(cmd->colon);
     reject_atsign(cmd->atsign);
 
-    store_1s_comp();
+    store_complement();
 
     return true;
 }
