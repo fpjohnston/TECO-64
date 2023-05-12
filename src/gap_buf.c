@@ -128,10 +128,6 @@ const struct edit *t = &eb.t;       ///< Read-only pointers to public variables
 
 // Local functions
 
-static int_t count_prev(uint_t nlines);
-
-static int_t count_next(uint_t nlines);
-
 static void dec_dot(void);
 
 static inline int find_edit(int_t pos);
@@ -143,6 +139,10 @@ static void first_dot(void);
 static void inc_dot(void);
 
 static void last_dot(void);
+
+static int_t next_line(uint_t nlines);
+
+static int_t prev_line(uint_t nlines);
 
 static void reset_edit(void);
 
@@ -323,70 +323,6 @@ void change_dot(int c)
 
 
 ///
-///  @brief    Scan forward nlines in edit buffer.
-///
-///  @returns  Position following line terminator (relative to dot).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static int_t count_next(uint_t nlines)
-{
-    for (int_t pos = eb.t.dot; pos < eb.t.Z; ++pos)
-    {
-        int_t i = pos;
-
-        if ((uint_t)pos >= eb.left)     // Is position on right side of gap?
-        {
-            i += (int_t)eb.gap;         // Yes, so add bias
-        }
-
-        int c = eb.buf[i];
-
-        if (isdelim(c) && --nlines == 0)
-        {
-            return ++pos;
-        }
-    }
-
-    // There aren't n lines following the current position, so just return Z.
-
-    return eb.t.Z;
-}
-
-
-///
-///  @brief    Scan backward n lines in edit buffer.
-///
-///  @returns  Position following line terminator (relative to dot).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static int_t count_prev(uint_t nlines)
-{
-    for (int_t pos = eb.t.dot; pos-- > 0; )
-    {
-        int_t i = pos;
-
-        if ((uint_t)pos >= eb.left)     // Is position on right side of gap?
-        {
-            i += (int_t)eb.gap;         // Yes, so add bias
-        }
-
-        int c = eb.buf[i];
-
-        if (isdelim(c) && nlines-- == 0)
-        {
-            return ++pos;
-        }
-    }
-
-    // There aren't n lines preceding the current position, so just return B.
-
-    return 0;
-}
-
-
-///
 ///  @brief    Decrement dot by 1.
 ///
 ///  @returns  Nothing.
@@ -405,7 +341,7 @@ static void dec_dot(void)
 
         if (isdelim(eb.t.c))
         {
-            eb.t.pos = eb.t.dot - count_prev(0);
+            eb.t.pos = eb.t.dot - prev_line(0);
             eb.t.len = eb.t.pos + 1;
         }
         else
@@ -477,8 +413,10 @@ void delete_edit(int_t nbytes)
         eb.gap += (uint_t)nbytes;       // Increase the gap
         eb.t.Z -= nbytes;               //  and decrease the total
 
-        eb.t.pos = eb.t.dot - count_prev(0);
-        eb.t.len = count_next(1) - eb.t.dot;
+        int_t prev = prev_line(0);      // Position of start of line
+
+        eb.t.pos = eb.t.dot - prev;
+        eb.t.len = next_line(1) - prev;
 
         f.e0.window = true;             // Window refresh needed
     }
@@ -542,9 +480,10 @@ static void finish_insert(uint_t nbytes)
     eb.t.dot += (int_t)nbytes;
     eb.t.Z   += (int_t)nbytes;
 
-    eb.t.pos  = eb.t.dot - count_prev(0);
-    eb.t.len  = count_next(1) - eb.t.dot;
-    eb.t.len += eb.t.pos;
+    int_t prev = prev_line(0);          // Position of start of line
+
+    eb.t.pos  = eb.t.dot - prev;
+    eb.t.len  = next_line(1) - prev;
 
     if (eb.t.dot == 0)
     {
@@ -584,8 +523,8 @@ static void first_dot(void)
         eb.t.c     = find_edit(0);
         eb.t.nextc = find_edit(1);
 
-        eb.t.len = count_next(1) - eb.t.dot;
         eb.t.pos = 0;
+        eb.t.len = next_line(1);
 
         f.e0.cursor = true;             // Cursor refresh needed
     }
@@ -608,7 +547,7 @@ static void inc_dot(void)
         if (isdelim(eb.t.c))           // About to move across a line delimiter?
         {
             eb.t.pos = 0;
-            eb.t.len = count_next(1) - eb.t.dot;
+            eb.t.len = next_line(1) - prev_line(0);
         }
         else
         {
@@ -702,7 +641,7 @@ static void last_dot(void)
         eb.t.c     = EOF;
         eb.t.nextc = EOF;
 
-        eb.t.pos = eb.t.dot - count_prev(0);
+        eb.t.pos = eb.t.dot - prev_line(0);
         eb.t.len = eb.t.pos;
 
         f.e0.cursor = true;             // Cursor refresh needed
@@ -721,11 +660,11 @@ int_t len_edit(int_t n)
 {
     if (n > 0)
     {
-        return count_next((uint_t)n) - eb.t.dot;
+        return next_line((uint_t)n) - eb.t.dot;
     }
     else
     {
-        return count_prev((uint_t)-n) - eb.t.dot;
+        return prev_line((uint_t)-n) - eb.t.dot;
     }
 }
 
@@ -740,6 +679,70 @@ int_t len_edit(int_t n)
 void move_dot(int_t delta)
 {
     set_dot(eb.t.dot + delta);
+}
+
+
+///
+///  @brief    Scan forward nlines in edit buffer.
+///
+///  @returns  Position following line terminator (relative to dot).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int_t next_line(uint_t nlines)
+{
+    for (int_t pos = eb.t.dot; pos < eb.t.Z; ++pos)
+    {
+        int_t i = pos;
+
+        if ((uint_t)pos >= eb.left)     // Is position on right side of gap?
+        {
+            i += (int_t)eb.gap;         // Yes, so add bias
+        }
+
+        int c = eb.buf[i];
+
+        if (isdelim(c) && --nlines == 0)
+        {
+            return ++pos;
+        }
+    }
+
+    // There aren't n lines following the current position, so just return Z.
+
+    return eb.t.Z;
+}
+
+
+///
+///  @brief    Scan backward n lines in edit buffer.
+///
+///  @returns  Position following line terminator (relative to dot).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int_t prev_line(uint_t nlines)
+{
+    for (int_t pos = eb.t.dot; pos-- > 0; )
+    {
+        int_t i = pos;
+
+        if ((uint_t)pos >= eb.left)     // Is position on right side of gap?
+        {
+            i += (int_t)eb.gap;         // Yes, so add bias
+        }
+
+        int c = eb.buf[i];
+
+        if (isdelim(c) && nlines-- == 0)
+        {
+            return ++pos;
+        }
+    }
+
+    // There aren't n lines preceding the current position, so just return B.
+
+    return 0;
 }
 
 
@@ -835,9 +838,10 @@ void set_dot(int_t dot)
             eb.t.c     = find_edit(0);
             eb.t.nextc = find_edit(1);
 
-            eb.t.pos  = eb.t.dot - count_prev(0);
-            eb.t.len  = count_next(1) - eb.t.dot;
-            eb.t.len += eb.t.pos;
+            int_t prev = prev_line(0);  // Position of start of line
+
+            eb.t.pos  = eb.t.dot - prev;
+            eb.t.len  = next_line(1) - prev;
 
             f.e0.cursor = true;         // Cursor refresh needed
         }
