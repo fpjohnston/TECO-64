@@ -184,7 +184,10 @@ void print_alert(const char *msg)
 
 ///
 ///  @brief    Called to print one or more lines after a successful search, or
-///            before a prompt.
+///            before a prompt. Used to print out text around the current
+///            position before a prompt, based on the settings of the EV flag,
+///            as well as to print out text after a successful search, based on
+///            the settings of the ES flag.
 ///
 ///  @returns  Nothing.
 ///
@@ -204,8 +207,8 @@ void print_flag(int_t flag)
 
     if (flag == -1)
     {
-        m = t->pos;
-        n = t->len - m;
+        m = -t->pos;                    // Starting relative position
+        n = t->len - t->pos;            // Ending relative position
         mark = -1;
     }
     else
@@ -232,8 +235,8 @@ void print_flag(int_t flag)
 
         if (m == 0)
         {
-            m = t->pos;
-            n = t->len - m;
+            m = -t->pos;                // Starting relative position
+            n = t->len - t->pos;        // Ending relative position
         }
         else
         {
