@@ -22,7 +22,7 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
 #
-#  See etc/build/help.mk for a list of build targets and options.
+#  See help target below for a list of build targets and options.
 #
 ################################################################################
 
@@ -30,6 +30,10 @@ TECO    = teco
 SHELL   = /bin/sh
 CC      = gcc
 INCLUDE = include/
+VPATH   = %h $(INCLUDE)
+VPATH   = %c src
+VPATH   = %o obj lob
+LINT    =
 
 MAKE := $(MAKE) --no-print-directory
 
@@ -65,35 +69,17 @@ bin/teco: $(OBJECTS) bin                # Link object files, create executable
 .PHONY: all
 all: $(TECO)
 
-#
-#  Define targets that create header files from XML files and template files.
-#  This is done to avoid duplicating information in multiple header or source
-#  files, regarding such things as TECO commands, error codes, and command-line
-#  options.
-#
+$(eval PERL=$(shell which perl))
 
-HEADERS = $(INCLUDE)commands.h $(INCLUDE)errcodes.h $(INCLUDE)errtables.h \
-		$(INCLUDE)exec.h $(INCLUDE)options.h
+ifneq ($(PERL), )
 
-.PHONY: headers
-headers: $(HEADERS)
+PERL := perl
+
+endif
+
+include etc/build/headers.mk            # Header targets
 
 $(OBJECTS): $(HEADERS) obj/cflags
-
-include/commands.h: etc/make_commands.pl etc/xml/commands.xml etc/templates/commands.h
-	$^ --out $@
-
-include/errcodes.h: etc/make_errors.pl etc/xml/errors.xml etc/templates/errcodes.h
-	$^ --out $@
-
-include/errtables.h: etc/make_errors.pl etc/xml/errors.xml etc/templates/errtables.h
-	$^ --out $@
-
-include/exec.h: etc/make_commands.pl etc/xml/commands.xml etc/templates/exec.h
-	$^ --out $@
-
-include/options.h: etc/make_options.pl etc/xml/options.xml etc/templates/options.h
-	$^ --out $@
 
 #  The following targets are present because git repositories only allow for
 #  files in directories, not for directories that contain no files. So before
@@ -145,39 +131,54 @@ distclean: obj bin clean
 	-rm -f test/cases/* test/results/*
 	-rm -rf html 
 
-# Create HTML documentation with Doxygen
+#  Print help message
 
-.PHONY: doc
-doc: html/options.html doc/errors.md | html
-	-@cp etc/Doxyfile html/Doxyfile
-	-@echo "PREDEFINED = DOXYGEN" >>html/Doxyfile
-	-doxygen html/Doxyfile
-
-html:
-	-@mkdir -p html
-
-# Create HTML documentation for TECO command-line options.
-
-html/options.html: etc/xml/options.xml etc/xml/options.xsl | html
-	xalan -in etc/xml/options.xml -xsl etc/xml/options.xsl -out html/options.html
-
-# Create Markdown documentation for TECO run-time errors.
-
-doc/errors.md: etc/make_errors.pl etc/xml/errors.xml etc/templates/errors.md
-	$^ -o $@
+.PHONY: help
+help:
+	@echo "Build targets:"
+	@echo ""
+	@echo "    teco         Build TECO-64 text editor. [default]"
+	@echo "    all          Equivalent to 'teco' target."
+	@echo "    clean        Clean object files and executables."
+	@echo "    distclean    Clean everything."
+	@echo "    doc          Create documentation w/ Doxygen."
+	@echo "    help         Print this message."
+	@echo "    install      Build executable and copy to /usr/local/bin."
+	@echo ""
+	@echo "Build options:"
+	@echo ""
+	@echo "    buffer=gap   Use gap buffer for editing text in target. [default]"
+	@echo "    display=on   Enable display mode in target. [default]"
+	@echo "    display=off  Enable display mode in target."
+	@echo "    headers      Rebuild header files."
+	@echo "    int=32       Use 32-bit integers in target. [default]."
+	@echo "    int=64       Use 64-bit integers in target."
+	@echo "    paging=std   Use standard paging in target."
+	@echo "    paging=vm    Use virtual memory paging in target. [default]"
+	@echo ""
+	@echo "Development targets:"
+	@echo ""
+	@echo "    critic       Do static code analysis of Perl scripts."
+	@echo "    debug        Build TECO for debugging w/ gdb."
+	@echo "    fast         Build TECO w/ minimal run-time checks."
+	@echo "    lint         Lint C source files."
+	@echo "    profile      Build TECO for profiling w/ gprof."
+	@echo "    smoke        Run all smoke tests."
+	@echo "    test         Build TECO for testing."
+	@echo ""
 
 # Additional targets
 
 DFILES = $(SOURCES:.c=.d)
 
--include $(DFILES)                      # Add in dependency targets
+-include $(DFILES)                      # Dependency targets
 
-include etc/build/help.mk               # Help message target
-
-include etc/build/test.mk               # Test targets
+include etc/build/doc.mk                # Documentation targets
 
 ifdef   FLINT
 
-include etc/build/lint.mk
+include etc/build/lint.mk               # Lint targets
 
 endif
+
+include etc/build/test.mk               # Test targets

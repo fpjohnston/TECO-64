@@ -4,7 +4,6 @@
 
 .PHONY: debug
 debug:
-	@echo Building TECO for debugging...
 	@$(MAKE) gdb=1 debug=1 teco
 
 #
@@ -13,7 +12,6 @@ debug:
 
 .PHONY: fast
 fast:
-	@echo Building TECO for speed...
 	@$(MAKE) ndebug=1 nostrict=1 notrace=1 teco
 
 #
@@ -22,16 +20,20 @@ fast:
 
 .PHONY: profile
 profile:
-	@echo Building TECO for profiling...
 	@$(MAKE) gprof=1 nostrict=1 ndebug=1 notrace=1 teco
 
 #
 #  Define targets that verify Perl scripts.
 #
 
+$(eval PERLCRITIC=$(shell which perlcritic))
+
+ifneq ($(PERLCRITIC), )
+
+    CRITIC := critic
+
 .PHONY: critic
 critic:
-	@echo Checking Perl scripts...
 	@$(MAKE) obj/Teco.tmp
 	@$(MAKE) obj/commands.tmp
 	@$(MAKE) obj/errors.tmp
@@ -41,32 +43,41 @@ critic:
 	@$(MAKE) obj/test_commands.tmp
 
 obj/Teco.tmp: etc/Teco.pm
-	perlcritic $<
+	@perlcritic $<
 	@touch $@
 
 obj/commands.tmp: etc/make_commands.pl
-	perlcritic $<
+	@perlcritic $<
 	@touch $@
 
 obj/errors.tmp: etc/make_errors.pl
-	perlcritic $<
+	@perlcritic $<
 	@touch $@
 
 obj/options.tmp: etc/make_options.pl
-	perlcritic $<
+	@perlcritic $<
 	@touch $@
 
 obj/version.tmp: etc/make_version.pl
-	perlcritic $<
+	@perlcritic $<
 	@touch $@
 
 obj/test_options.tmp: etc/test_options.pl
-	perlcritic $<
+	@perlcritic $<
 	@touch $@
 
 obj/test_commands.tmp: etc/test_commands.pl
-	perlcritic $<
+	@perlcritic $<
 	@touch $@
+
+else
+
+.PHONY: critic
+critic:
+	@$(error Make target 'critic' requires perlcritic)
+
+endif
+
 
 #
 #  Define target to include required test features
@@ -74,16 +85,25 @@ obj/test_commands.tmp: etc/test_commands.pl
 
 .PHONY: test
 test:
-	@echo Compiling and linking TECO...
 	@$(MAKE) debug=1 memcheck=1 teco
 
 #
 #  Define target to smoke test scripts, files, and executable image.
 #
 
-PHONY: smoke
-smoke: distclean critic lint test
+ifneq ($(PERL), )
+
+.PHONY: smoke
+smoke: distclean $(CRITIC) $(LINT) test
 	@echo Testing TECO options...
 	etc/test_options.pl --summary
 	@echo Testing TECO commands...
 	etc/test_commands.pl test/
+
+else
+
+.PHONY: smoke
+smoke:
+	@$(error Make target '$@' requires Perl)
+
+endif

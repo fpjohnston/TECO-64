@@ -2,19 +2,7 @@
 #  directory pointed to by FLINT. If FLINT is not defined, then we shouldn't
 #  get here.
 
-$(eval flint=$(shell which flint))
-
-ifneq ($(flint), )
-
-    flint := flint
-
-else
-ifneq ($(FLINT), )
-
-    flint := $(FLINT)/flint
-
-endif
-endif
+LINT = lint
 
 #  Each .lob file is created from a .c source file.
 
@@ -36,18 +24,18 @@ obj/teco.lnt: etc/std.lnt | obj
 #  Create lint object files from C source files.
 
 obj/%.lob: src/%.c
-	$(flint) -b obj/teco.lnt -u -oo[$@] $<
+	$(FLINT)/flint -b obj/teco.lnt -u -oo[$@] $<
 
 #  Lint all C source files and then lint object files.
 
-.PHONY: lint
-lint: obj/lobs.lnt
+.PHONY: $(LINT)
+$(LINT): obj/lobs.lnt
 
 #  Create list of lint object files and lint all of them.
 
 obj/lobs.lnt: $(LOBS)
 	@echo $(subst $() $(),\\n,$(LOBS)) > obj/lobs.lnt
-	$(flint) -b obj/teco.lnt -summary -e768 -e769 obj/lobs.lnt
+	$(FLINT)/flint -b obj/teco.lnt -summary -e768 -e769 obj/lobs.lnt
 
 #  Create all lint object files
 
