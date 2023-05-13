@@ -32,12 +32,9 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "display.h"
 #include "editbuf.h"
 #include "eflags.h"
-#include "file.h"
 #include "page.h"
-#include "term.h"
 
 
 #if     !defined(EDIT_MAX)
