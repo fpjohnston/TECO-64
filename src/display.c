@@ -490,13 +490,8 @@ void refresh_dpy(void)
         {
             int delta = before - d.line; // Get difference from last line
 
-            d.row += delta;
-            d.col = find_column();
-        }
-        else
-        {
-            d.row = d.newrow;
-            d.col = d.newcol;
+            d.newrow = d.row + delta;
+            d.newcol = find_column();
         }
 
         // The following is a (hopefully temporary) hack to handle the situation
@@ -506,29 +501,42 @@ void refresh_dpy(void)
         {
             if (t->Z != 0 && t->dot == t->Z)
             {
-                d.row = 1;
-                d.col = 0;
+                d.newrow = 1;
+                d.newcol = 0;
             }
             else
             {
-                d.row = 0;
-                d.col = find_column();
+                d.newrow = 0;
+                d.newcol = find_column();
             }
         }
 
         // If row isn't in current window, then correct value and repaint screen
 
-        if (d.row < 0)
+        if (d.newrow < 0)
         {
-            d.row = 0;
+            d.newrow = 0;
             f.e0.window = true;
         }
-        else if (d.row >= d.nrows)
+        else if (d.newrow >= d.nrows)
         {
-            d.row = d.nrows - 1;
+            //  If we jumped forward by more than a screenful, then don't bother
+            //  to scroll the screen. Just go to top of next screenful.
+
+            if (d.newrow - d.row >= d.nrows)
+            {
+                d.newrow = 0;
+            }
+            else
+            {
+                d.newrow = d.nrows - 1;
+            }
+
             f.e0.window = true;
         }
 
+        d.row = d.newrow;
+        d.col = d.newcol;
         d.ybias = d.row;
 
         if (f.e0.window)
