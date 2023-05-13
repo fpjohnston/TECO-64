@@ -110,7 +110,7 @@ static void exec_ctrl_G(void)
 {
     echo_in(CTRL_G);                    // Echo ^G
 
-    int c = getc_term((bool)WAIT);      // Get next character
+    int c = getc_term(WAIT);            // Get next character
 
     switch (c)
     {
@@ -247,7 +247,7 @@ static void exec_star(void)
 {
     echo_in('*');
 
-    int qname = getc_term((bool)WAIT);  // Get Q-register name
+    int qname = getc_term(WAIT);        // Get Q-register name
     bool qlocal = (qname == '.');
     int qindex;
 
@@ -255,7 +255,7 @@ static void exec_star(void)
     {
         echo_in('.');                   // Yes, echo the dot
 
-        qname = getc_term((bool)WAIT);  // Get Q-register name for real
+        qname = getc_term(WAIT);        // Get Q-register name for real
     }
 
     echo_in(qname);                     // Echo Q-register name
@@ -471,7 +471,7 @@ void read_cmd(void)
         }
 
         last_in = c;                    // Save last character
-        c = getc_term((bool)WAIT);      // And get new character
+        c = getc_term(WAIT);            // And get new character
     }
 }
 
@@ -496,7 +496,7 @@ static int read_first(void)
 
     for (;;)
     {
-        int c = getc_term((bool)WAIT);
+        int c = getc_term(WAIT);
 
         if ((c = exec_key(c)) == EOF)
         {
@@ -540,7 +540,7 @@ static int read_first(void)
             case CTRL_F:
                 echo_in(CTRL_F);
 
-                c = getc_term((bool)WAIT);
+                c = getc_term(WAIT);
 
                 echo_in(c);
 
@@ -595,7 +595,7 @@ static int read_first(void)
                 {
                     echo_in(c);         // Echo ^]
 
-                    c = getc_term((bool)WAIT);
+                    c = getc_term(WAIT);
 
                     if (c == CTRL_RIGHT)
                     {

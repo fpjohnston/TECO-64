@@ -102,8 +102,6 @@ typedef unsigned int uint_t;        ///< Use regular unsigned int
 
 #define countof(array) (sizeof(array) / sizeof(array[0]))
 
-#define WAIT             true           ///< Wait for terminal input
-
 typedef unsigned char uchar;            ///< Unsigned character shortcut
 
 //

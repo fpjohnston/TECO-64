@@ -37,6 +37,10 @@
 
 #define TAB_WIDTH   8           ///< Horizontal tab stop width
 
+#define WAIT    (bool)true      ///< Wait for terminal input
+
+#define NO_WAIT (bool)false     ///< Don't wait for terminal input
+
 #if     defined(DEBUG)
 
 extern const char *key_name;

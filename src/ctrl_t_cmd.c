@@ -86,7 +86,16 @@ void exec_ctrl_T(struct cmd *cmd)
     {
         f.e0.ctrl_t = true;             // Flag this as CTRL/T input
 
-        int c = getc_term((bool)!f.et.nowait);
+        int c;
+
+        if (f.et.nowait)
+        {
+            c = getc_term(NO_WAIT);
+        }
+        else
+        {
+            c = getc_term(WAIT);
+        }
 
         f.e0.ctrl_t = false;
 
