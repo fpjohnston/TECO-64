@@ -472,6 +472,11 @@ void refresh_dpy(void)
 
     if (f.e0.window || f.e0.cursor)
     {
+        if (f.e0.cursor)
+        {
+            d.oldcol = 0;
+        }
+
         f.e0.cursor = false;
 
         reset_cursor();
