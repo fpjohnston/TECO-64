@@ -361,88 +361,86 @@ int exec_key(int key)
     {
         d.ybias = d.nrows - 1;
     }
-    else if (key == KEY_HOME || key == KEY_C_HOME)
+    else
     {
-        exec_home(key);
-    }
-    else if (key == KEY_END || key == KEY_C_END)
-    {
-        exec_end(key);
-    }
-    else                                // Neither Home nor End
-    {
-        if (key == KEY_UP || key == KEY_C_UP)
-        {
-            exec_up(key);
-            refresh_dpy();
+        char cmd[CMDBUF_SIZE];
+        int n;
 
-            return EOF;
-        }
-        else if (key == KEY_DOWN || key == KEY_C_DOWN)
+        switch (key)
         {
-            exec_down(key);
-            refresh_dpy();
+            case KEY_HOME:
+            case KEY_C_HOME:
+                exec_home(key);
 
-            return EOF;
-        }
-        else if (key == KEY_LEFT || key == KEY_C_LEFT)
-        {
-            exec_left(key);
-        }
-        else if (key == KEY_RIGHT || key == KEY_C_RIGHT)
-        {
-            exec_right(key);
-        }
-        else                            // Not an arrow key
-        {
-            char cmd[CMDBUF_SIZE];
+                break;
 
-            if (key == KEY_PPAGE)
-            {
+            case KEY_END:
+            case KEY_C_END:
+                exec_end(key);
+
+                break;
+
+            case KEY_UP:
+            case KEY_C_UP:
+                exec_up(key);
+                refresh_dpy();
+
+                return EOF;
+
+            case KEY_DOWN:
+            case KEY_C_DOWN:
+                exec_down(key);
+                refresh_dpy();
+
+                return EOF;
+
+            case KEY_LEFT:
+            case KEY_C_LEFT:
+                exec_left(key);
+
+                break;
+
+            case KEY_RIGHT:
+            case KEY_C_RIGHT:
+                exec_right(key);
+
+                break;
+
+            case KEY_PPAGE:
                 d.ybias = 0;
 
                 snprintf(cmd, sizeof(cmd), "%dL", -d.nrows);
                 exec_str(cmd);
-            }
-            else if (key == KEY_NPAGE)
-            {
+
+                break;
+
+            case KEY_NPAGE:
                 d.ybias = 0;
 
                 snprintf(cmd, sizeof(cmd), "%dL", d.nrows);
                 exec_str(cmd);
-            }
-            else if (key == KEY_C_PGUP)
-            {
-                int n =  d.nrows / 2;
 
+                break;
+
+            case KEY_C_PGUP:
+                n = d.nrows / 2;
                 d.ybias = (d.nrows - (d.row + n)) % d.nrows;
 
                 snprintf(cmd, sizeof(cmd), "-%uL", n);
                 exec_str(cmd);
-            }
-            else if (key == KEY_C_PGDN)
-            {
-                int n = d.nrows / 2;
 
+                break;
+
+            case KEY_C_PGDN:
+                n = d.nrows / 2;
                 d.ybias = (n + d.row) % d.nrows;
 
                 snprintf(cmd, sizeof(cmd), "%uL", n);
                 exec_str(cmd);
-            }
-            else if (key == LF || key == ESC ||
-                     (key == ACCENT && f.et.accent) || key == f.ee)
-            {
-                if (w.nlines == 0 || w.noscroll)
-                {
-                    exec_str(".-Z \"N L T '");
-                }
-                else
-                {
-                    exec_str("L");
-                }
-            }
-            else if (key == BS)
-            {
+
+                break;
+
+            case BS:
                 if (w.nlines == 0 || w.noscroll)
                 {
                     exec_str(".-B \"N -L T '");
@@ -451,15 +449,32 @@ int exec_key(int key)
                 {
                     exec_str("-L");
                 }
-            }
-            else                        // Not a special key
-            {
-                return key;
-            }
+
+                break;
+
+            default:
+                if (key != f.ee && (key != ACCENT || !f.et.accent))
+                {
+                    return key;
+                }
+                //lint -fallthrough
+
+            case LF:
+            case ESC:
+                if (w.nlines == 0 || w.noscroll)
+                {
+                    exec_str(".-Z \"N L T '");
+                }
+                else
+                {
+                    exec_str("L");
+                }
+
+                break;
         }
     }
 
-    d.oldcol = 0;
+    f.e0.cursor = true;                 // Cursor refresh needed
 
     refresh_dpy();
 
