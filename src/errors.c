@@ -33,14 +33,14 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "cbuf.h"
 #include "display.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "exec.h"
 #include "term.h"
 
-#include "cbuf.h"
-#include "errtables.h"
+#include "_errors.c"                // Include error tables
 
 
 #define ERR_BUF_SIZE    64          ///< Size of error buffer

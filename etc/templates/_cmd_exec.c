@@ -1,6 +1,7 @@
 ///
-///  @file    commands.h
-///  @brief   Data tables used in executing command strings.
+///  @file    _cmd_exec.c
+///
+///  @brief   Auxiliary file for cmd_exec.c, containing command tables.
 ///
 /* (INSERT: WARNING NOTICE) */
 ///
@@ -25,8 +26,6 @@
 ///  THE SOFTWARE.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#include "ascii.h"
 
 // Command types
 

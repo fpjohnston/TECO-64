@@ -82,7 +82,7 @@ sub main
     {
         make_errors( $template, $hash_ref );
     }
-    elsif ( $args{output} =~ /errtables.h/msx )
+    elsif ( $args{output} =~ /_errors.c/msx )
     {
         make_errtables( $template, $hash_ref );
     }

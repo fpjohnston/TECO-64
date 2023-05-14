@@ -1,6 +1,7 @@
 ///
-///  @file    errtables.h
-///  @brief   TECO error tables
+///  @file    _errors.c
+///
+///  @brief   Auxiliary file for errors.c, containing error tables.
 ///
 /* (INSERT: WARNING NOTICE) */
 ///

@@ -83,7 +83,7 @@ sub main
 
     my $array_ref = parse_xml($xmlfile);
 
-    if ( $args{output} =~ /commands.h/msx )
+    if ( $args{output} =~ /_cmd_exec.c/msx )
     {
         my ( $cmds, $e_cmds, $f_cmds ) = make_commands($array_ref);
 

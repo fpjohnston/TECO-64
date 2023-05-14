@@ -1,7 +1,7 @@
 ///
-///  @file       options.h
+///  @file       _option_sys.c
 ///
-///  @brief      Header file for teco utility.
+///  @brief      Auxiliary file for option_sys.c, containing help message.
 ///
 /* (INSERT: WARNING NOTICE) */
 ///

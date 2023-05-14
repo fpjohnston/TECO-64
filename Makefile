@@ -77,9 +77,18 @@ PERL := perl
 
 endif
 
-include etc/build/headers.mk            # Header targets
+ifneq ($(PERL), )
 
-$(OBJECTS): $(HEADERS) obj/cflags
+    ANCILLARY = $(INCLUDE)_cmd_exec.c $(INCLUDE)errcodes.h $(INCLUDE)_errors.c \
+			$(INCLUDE)exec.h $(INCLUDE)_option_sys.c
+
+else
+
+	ANCILLARY =
+
+endif
+
+$(OBJECTS): $(ANCILLARY) obj/cflags
 
 #  The following targets are present because git repositories only allow for
 #  files in directories, not for directories that contain no files. So before
@@ -150,7 +159,6 @@ help:
 	@echo "    buffer=gap   Use gap buffer for editing text in target. [default]"
 	@echo "    display=on   Enable display mode in target. [default]"
 	@echo "    display=off  Enable display mode in target."
-	@echo "    headers      Rebuild header files."
 	@echo "    int=32       Use 32-bit integers in target. [default]."
 	@echo "    int=64       Use 64-bit integers in target."
 	@echo "    paging=std   Use standard paging in target."
@@ -182,3 +190,53 @@ include etc/build/lint.mk               # Lint targets
 endif
 
 include etc/build/test.mk               # Test targets
+
+
+#  Define targets that build ancillary files from XML files, which contain such
+#  information as TECO commands, error codes, and command-line options. If the
+#  user does not have Perl, the supplied copies of these files may still be used,
+#  but the targets will below either not be called within the Makefile, or will
+#  generate errors if explicitly specified by the user.
+
+ifneq ($(PERL), )
+
+.PHONY: ancillary
+ancillary: $(AUX)
+
+$(INCLUDE)_cmd_exec.c: etc/make_commands.pl etc/xml/commands.xml etc/templates/_cmd_exec.c
+	$^ --out $@
+
+$(INCLUDE)/errcodes.h: etc/make_errors.pl etc/xml/errors.xml etc/templates/errcodes.h
+	$^ --out $@
+
+$(INCLUDE)_errors.c: etc/make_errors.pl etc/xml/errors.xml etc/templates/_errors.c
+	$^ --out $@
+
+$(INCLUDE)/exec.h: etc/make_commands.pl etc/xml/commands.xml etc/templates/exec.h
+	$^ --out $@
+
+$(INCLUDE)_option_sys.c: etc/make_options.pl etc/xml/options.xml etc/templates/_option_sys.c
+	$^ --out $@
+
+else
+
+.PHONY: ancillary
+ancillary:
+	@$(error Make target '$@' requires Perl)
+
+$(INCLUDE)_commands.c:
+	@$(error Make target '$@' requires Perl)
+
+$(INCLUDE)/errcodes.h:
+	@$(error Make target '$@' requires Perl)
+
+$(INCLUDE)_errtables.c:
+	@$(error Make target '$@' requires Perl)
+
+$(INCLUDE)/exec.h:
+	@$(error Make target '$@' requires Perl)
+
+$(INCLUDE)_option_sys.c:
+	@$(error Make target '$@' requires Perl)
+
+endif

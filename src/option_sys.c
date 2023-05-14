@@ -43,9 +43,10 @@
 #include "cbuf.h"
 #include "eflags.h"
 #include "file.h"
-#include "options.h"
 #include "term.h"
 #include "version.h"
+
+#include "_option_sys.c"                // Include text for --help option
 
 
 ///

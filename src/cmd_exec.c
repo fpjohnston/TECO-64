@@ -30,15 +30,15 @@
 #include <string.h>
 
 #include "teco.h"
+#include "ascii.h"
+#include "cbuf.h"
 #include "eflags.h"
 #include "errcodes.h"
 #include "estack.h"
 #include "exec.h"
 #include "term.h"
 
-#include "cbuf.h"
-#include "commands.h"
-
+#include "_cmd_exec.c"              // Include command tables
 
 #if      defined(PROFILE)
 
