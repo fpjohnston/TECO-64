@@ -28,11 +28,7 @@
 
 #define _KEYS_H
 
-#if     !defined(__NCURSES_H)
 #include <ncurses.h>
-#endif
-
-#include <stdbool.h>
 
 // NOTE: some key codes changed when upgrading to Ubuntu 21.04, which may have
 // involved consequent changes to the C library, ncurses, or other components.

@@ -28,10 +28,7 @@
 
 #define _DISPLAY_H
 
-#include <limits.h>             //lint !e451
 #include <stdbool.h>            //lint !e451
-
-#include "teco.h"
 
 
 #define STATUS_WIDTH        22      ///< Width of status window

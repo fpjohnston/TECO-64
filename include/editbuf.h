@@ -29,7 +29,6 @@
 #define _EDITBUF_H
 
 #include <stdbool.h>            //lint !e451
-#include <sys/types.h>          //lint !e451
 
 #include "file.h"
 

@@ -40,7 +40,15 @@ extern tbuffer *cbuf;
 
 // Command buffer functions
 
+static inline int fetch_cbuf(void);
+
 extern void init_cbuf(void);
+
+static inline void next_cbuf(void);
+
+static inline int peek_cbuf(void);
+
+static inline int require_cbuf(void);
 
 extern void reset_cbuf(void);
 

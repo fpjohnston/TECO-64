@@ -24,12 +24,11 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     !defined(_XSTACK_H)
+#if     !defined(_ESTACK_H)
 
-#define _XSTACK_H
+#define _ESTACK_H
 
 #include <stdbool.h>            //lint !e451
-#include <sys/types.h>          //lint !e451
 
 #include "exec.h"
 
@@ -99,4 +98,4 @@ extern void store_sub(void);
 
 extern void store_val(int_t value);
 
-#endif  // !defined(_XSTACK_H)
+#endif  // !defined(_ESTACK_H)
