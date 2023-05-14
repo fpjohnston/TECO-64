@@ -470,7 +470,7 @@ static void scan_text(int delim, tstring *text)
 
     if (end == NULL)
     {
-        abort_cbuf();
+        throw(E_BALK);                  // Unexpected end of command or macro
     }
 
     text->len = (uint_t)(int_t)(end - start);

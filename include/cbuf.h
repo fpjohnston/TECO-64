@@ -28,7 +28,10 @@
 
 #define _CBUF_H
 
+#include <stdio.h>
+
 #include "eflags.h"
+#include "errcodes.h"
 #include "term.h"
 
 // Command buffer variable
@@ -36,8 +39,6 @@
 extern tbuffer *cbuf;
 
 // Command buffer functions
-
-extern noreturn void abort_cbuf(void);
 
 extern void init_cbuf(void);
 
@@ -121,7 +122,7 @@ static inline int require_cbuf(void)
 
     if (c == EOF)
     {
-        abort_cbuf();
+        throw(E_BALK);                  // Unexpected end of command or macro
     }
 
     return c;

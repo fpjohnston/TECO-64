@@ -32,7 +32,6 @@
 #include "ascii.h"
 #include "cbuf.h"
 #include "eflags.h"
-#include "errcodes.h"
 #include "exec.h"
 #include "term.h"
 
@@ -40,26 +39,6 @@
 tbuffer *cbuf;                      ///< Current command string buffer
 
 static tbuffer *root;               ///< Command string buffer root
-
-
-///
-///  @brief    Throw exception because of premature end of command string.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-noreturn void abort_cbuf(void)
-{
-    if (check_macro())
-    {
-        throw(E_UTM);
-    }
-    else
-    {
-        throw(E_UTC);
-    }
-}
 
 
 ///

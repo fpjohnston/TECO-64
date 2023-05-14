@@ -377,6 +377,18 @@ noreturn void (throw)(int error, ...)
 
     va_start(args, error);
 
+    if (error == E_BALK)                // Unexpected end of command or macro?
+    {
+        if (check_macro())              // Was it in a macro?
+        {
+            error = E_UTM;              // Yes
+        }
+        else
+        {
+            error = E_UTC;              // No, in user's command string
+        }
+    }
+
     switch (error)
     {
         case E_IEC:

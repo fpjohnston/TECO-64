@@ -35,16 +35,6 @@
 #include <sys/types.h>          //lint !e451
 
 
-#if     defined(__DECC)
-
-#define noreturn
-
-#else
-
-#include <stdnoreturn.h>
-
-#endif
-
 //
 //  Define the int_t and uint_t types that we will subsequently use whenever we
 //  require an integral type that can vary depending on the environment we've

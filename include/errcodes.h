@@ -30,6 +30,16 @@
 
 #define _ERRCODES_H
 
+#if     defined(__DECC)
+
+    #define noreturn
+
+#else
+
+    #include <stdnoreturn.h>
+
+#endif
+
 extern int last_error;
 
 ///  @enum   errcodes
@@ -110,7 +120,8 @@ enum errcodes
     E_XAB,          ///< Execution aborted
     E_YCA,          ///< Y command aborted
 
-    NERRORS         ///< Total number of errors
+    NERRORS,        ///< Total number of errors
+    E_BALK          ///< Unexpected end of command or macro
 };
 
 extern void print_command(void);
