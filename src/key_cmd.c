@@ -407,16 +407,12 @@ int exec_key(int key)
                 break;
 
             case KEY_PPAGE:
-                d.ybias = 0;
-
-                snprintf(cmd, sizeof(cmd), "%dL", -d.nrows);
+                snprintf(cmd, sizeof(cmd), "-%dL", d.nrows);
                 exec_str(cmd);
 
                 break;
 
             case KEY_NPAGE:
-                d.ybias = 0;
-
                 snprintf(cmd, sizeof(cmd), "%dL", d.nrows);
                 exec_str(cmd);
 
