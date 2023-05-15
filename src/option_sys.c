@@ -59,6 +59,9 @@ struct options
     const char *args;       ///< --arguments option
     int scroll;             ///< --scroll option
     bool create;            ///< --create option
+    bool display;           ///< --display and --nodisplay options
+    bool init;              ///< --initialize and --noinitialize option s
+    bool memory;            ///< --nomemory option 
     bool readonly;          ///< --read-only option
     bool exit;              ///< --exit option
     bool mung;              ///< --mung option (hidden)
@@ -73,15 +76,18 @@ struct options
 
 static struct options options =
 {
-    .file1      = NULL,
-    .file2      = NULL,
-    .args       = NULL,
-    .scroll     = 0,
-    .create     = true,
-    .readonly   = false,
-    .exit       = false,
-    .mung       = false,
-    .practice   = false,
+    .file1    = NULL,
+    .file2    = NULL,
+    .args     = NULL,
+    .scroll   = 0,
+    .create   = true,
+    .display  = true,
+    .init     = true,
+    .memory   = true,
+    .readonly = false,
+    .exit     = false,
+    .mung     = false,
+    .practice = false,
 };
 
 
@@ -97,6 +103,8 @@ static void open_files(const char *infile, const char *outfile);
 
 static void opt_arguments(void);
 
+static void opt_display(void);
+
 static void opt_execute(void);
 
 static void opt_help(void);
@@ -110,6 +118,8 @@ static void opt_log(void);
 static void opt_mung(const char *file);
 
 static void opt_nodefaults(void);
+
+static void opt_nodisplay(void);
 
 static void opt_practice(void);
 
@@ -280,14 +290,20 @@ void init_options(
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
 
+    options.display = (teco_vtedit != NULL);
+    options.init    = (teco_init   != NULL);
+    options.memory  = (teco_memory != NULL);
+
     parse_options(argc, argv);
 
     // If we have an initialization file, then it will be processed by TECO
     // first. This means we have to shift over any other commands in the buffer
     // to make room for this command.
 
-    if (teco_init != NULL)              // Initialization file is always first
+    if (options.init)                   // Initialization file is always first
     {
+        assert(teco_init != NULL);
+
         char initbuf[KB];
         int retval = snprintf(initbuf, sizeof(initbuf), "EI%s\e ", teco_init);
         uint size = verify_size(retval);
@@ -346,11 +362,11 @@ void init_options(
     {
         store_cmd("EX ");
     }
-    else if (!f.e0.i_redir)
+    else if (!f.e0.i_redir)             // No display if input redirected
     {
-        if (teco_vtedit != NULL)        // Do we have a display initialization file?
+        if (options.display)            // Do we have a display initialization file?
         {
-            if (teco_vtedit[0] == NUL)
+            if (teco_vtedit == NULL)
             {
                 store_cmd("-1W ");
             }
@@ -360,17 +376,11 @@ void init_options(
             }
         }
 
-        if (options.scroll != 0)        // Set up scrolling if requested
+        if (options.scroll != 0)        // Add scrolling if requested
         {
-            if (teco_vtedit == NULL)    // Ensure that display is enabled
-            {
-                store_cmd("-1W ");
-            }
-
             store_cmd("%u,7:W\e ", options.scroll);
         }
     }
-
 
     if (cbuf->len != 0)                 // Have we stored any commands?
     {
@@ -405,8 +415,10 @@ static void open_files(const char *infile, const char *outfile)
     {
         char memory[PATH_MAX] = { '\0'}; // File name from memory file
 
-        if (teco_memory != NULL)        // Try to read memory file
+        if (options.memory)             // Try to read memory file
         {
+            assert(teco_memory != NULL);
+
             read_memory(memory, (uint)sizeof(memory));
 
             if (memory[0] != NUL)
@@ -479,14 +491,12 @@ static void opt_arguments(void)
 
 static void opt_display(void)
 {
-    if (optarg == NULL)
-    {
-        teco_vtedit = "";
-    }
-    else
+    if (optarg != NULL)
     {
         teco_vtedit = optarg;
     }
+
+    options.display = true;
 }
 
 
@@ -537,6 +547,7 @@ static void opt_initialize(void)
     check_file("-I or --initialize");
 
     teco_init = optarg;
+    options.init = true;
 }
 
 
@@ -598,7 +609,7 @@ static void opt_mung(const char *file)
     const char *args = options.args;
 
     options.args = NULL;
-    teco_memory  = NULL;
+    options.memory = false;             // Don't read memory file if munging
 
     if (nbytes > 2)
     {
@@ -632,9 +643,23 @@ static void opt_mung(const char *file)
 
 static void opt_nodefaults(void)
 {
-    teco_init   = NULL;
-    teco_memory = NULL;
+    options.display = false;
+    options.init    = false;
+    options.memory  = false;
+}
+
+
+///
+///  @brief    Parse -d or --nodisplay option.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void opt_nodisplay(void)
+{
     teco_vtedit = NULL;
+    options.display = false;
 }
 
 
@@ -682,6 +707,7 @@ static void opt_scroll(void)
     }
 
     options.scroll = c;
+    options.display = true;
 }
 
 
@@ -800,9 +826,8 @@ static void parse_options(
 
             case OPT_create:       options.create = true;     break;
             case OPT_nocreate:     options.create = false;    break;
-            case OPT_nodisplay:    teco_vtedit = NULL;        break;
-            case OPT_noinitialize: teco_init = NULL;          break;
-            case OPT_nomemory:     teco_memory = NULL;        break;
+            case OPT_noinitialize: options.init = false;      break;
+            case OPT_nomemory:     options.memory = false;    break;
             case OPT_read_only:    options.readonly = true;   break;
             case OPT_noread_only:  options.readonly = false;  break;
             case OPT_exit:         options.exit = true;       break;
@@ -820,6 +845,7 @@ static void parse_options(
             case OPT_keys:         opt_keys();                break;
             case OPT_log:          opt_log();                 break;
             case OPT_nodefaults:   opt_nodefaults();          break;
+            case OPT_nodisplay:    opt_nodisplay();           break;
             case OPT_practice:     opt_practice();            break;
             case OPT_scroll:       opt_scroll();              break;
             case OPT_text:         opt_text();                break;

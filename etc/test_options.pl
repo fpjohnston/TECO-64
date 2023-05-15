@@ -229,17 +229,19 @@ Readonly my @OPTIONS => (
     {
         name  => q{-S},
         tests => [
-            { cmd => '-S5',  result => '-1W 5,7:W' },
-            { cmd => '-S',   result => 'Argument required' },
-            { cmd => '-Sx',  result => 'Invalid value' },
-            { cmd => '-S2x', result => 'Invalid value' },
+            { cmd => '-S5',       result => '5,7:W' },
+            { cmd => '-S5 -d -D', result => '-1W 5,7:W' },
+            { cmd => '-S',        result => 'Argument required' },
+            { cmd => '-Sx',       result => 'Invalid value' },
+            { cmd => '-S2x',      result => 'Invalid value' },
         ],
     },
     {
         name  => q{--scroll},
         tests => [
-            { cmd => '--scroll=5', result => '-1W 5,7:W' },
-            { cmd => '--scroll',   result => 'Argument required' },
+            { cmd => '--scroll=5',    result => '5,7:W' },
+            { cmd => '--scroll=5 -d', result => '5,7:W' },
+            { cmd => '--scroll',      result => 'Argument required' },
         ],
     },
     {
