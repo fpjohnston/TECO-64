@@ -29,6 +29,13 @@
 #include <setjmp.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#if     defined(DEBUG)
+
+#include <string.h>
+
+#endif
+
 #include <unistd.h>
 
 #include "teco.h"
