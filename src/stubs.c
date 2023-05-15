@@ -25,9 +25,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <stdio.h>
 
 #include "teco.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 
 
