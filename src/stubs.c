@@ -28,7 +28,7 @@
 
 #include "teco.h"
 #include "display.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 

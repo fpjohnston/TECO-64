@@ -34,7 +34,7 @@
 #include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "file.h"

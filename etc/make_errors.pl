@@ -74,7 +74,7 @@ sub main
 
     my $hash_ref = parse_xml( $xml, 2 );
 
-    if ( $args{output} =~ /errcodes.h/msx )
+    if ( $args{output} =~ /errors.h/msx )
     {
         make_errcodes( $template, $hash_ref );
     }

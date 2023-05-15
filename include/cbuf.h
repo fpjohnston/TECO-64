@@ -31,7 +31,7 @@
 #include <stdio.h>
 
 #include "eflags.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "term.h"
 
 // Command buffer variable

@@ -30,8 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
-#include "errcodes.h"
-#include "exec.h"
+#include "errors.h"
 
 
 // The following conditional code is used to check for memory leaks when we
@@ -40,6 +39,8 @@
 // as Valgrind.
 
 #if     defined(MEMCHECK)
+
+#include "exec.h"
 
 #define plural(x) (((x) == 1) ? "" : "s") ///< Check for plural/non-plural no.
 

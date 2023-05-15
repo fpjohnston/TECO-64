@@ -30,7 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "exec.h"
 #include "file.h"
 #include "page.h"

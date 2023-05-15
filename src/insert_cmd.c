@@ -33,7 +33,7 @@
 #include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "exec.h"
 
 

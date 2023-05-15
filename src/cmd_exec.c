@@ -33,10 +33,9 @@
 #include "ascii.h"
 #include "cbuf.h"
 #include "eflags.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "estack.h"
 #include "exec.h"
-#include "term.h"
 
 #include "_cmd_exec.c"              // Include command tables
 

@@ -39,7 +39,7 @@
 #include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "file.h"
 #include "page.h"
 #include "term.h"

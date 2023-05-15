@@ -32,7 +32,7 @@
 #include "ascii.h"
 #include "cbuf.h"
 #include "eflags.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "term.h"

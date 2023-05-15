@@ -36,7 +36,7 @@
 #include "cbuf.h"
 #include "display.h"
 #include "eflags.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "exec.h"
 #include "term.h"
 

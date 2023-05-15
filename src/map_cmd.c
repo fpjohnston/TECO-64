@@ -32,7 +32,7 @@
 #include "ascii.h"
 #include "display.h"
 #include "eflags.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "keys.h"

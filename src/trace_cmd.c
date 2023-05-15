@@ -28,6 +28,13 @@
 
 #include "teco.h"
 #include "eflags.h"
+
+#if     defined(NOTRACE)
+
+#include "errors.h"
+
+#endif
+
 #include "exec.h"
 
 

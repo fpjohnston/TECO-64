@@ -32,7 +32,7 @@
 
 #include "teco.h"
 #include "editbuf.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "exec.h"
 
 

@@ -30,7 +30,7 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "errcodes.h"
+#include "errors.h"
 #include "eflags.h"
 #include "estack.h"
 #include "file.h"

@@ -1,5 +1,5 @@
 ///
-///  @file    errcodes.h
+///  @file    errors.h
 ///  @brief   TECO error codes
 ///
 /* (INSERT: WARNING NOTICE) */
@@ -26,9 +26,9 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     !defined(_ERRCODES_H)
+#if     !defined(_ERRORS_H)
 
-#define _ERRCODES_H
+#define _ERRORS_H
 
 #if     defined(__DECC)
 
@@ -76,4 +76,4 @@ extern noreturn void throw(int err_teco, ...);
 
 #endif
 
-#endif  // !defined(_ERRCODES_H)
+#endif  // !defined(_ERRORS_H)

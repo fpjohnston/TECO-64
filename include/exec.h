@@ -32,9 +32,7 @@
 
 #include <assert.h>             //lint !e451
 
-#include "teco.h"
 #include "eflags.h"
-#include "errcodes.h"
 
 ///  @struct cmd
 ///  @brief  Command block structure.

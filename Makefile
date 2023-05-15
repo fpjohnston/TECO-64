@@ -79,8 +79,8 @@ endif
 
 ifneq ($(PERL), )
 
-    ANCILLARY = $(INCLUDE)_cmd_exec.c $(INCLUDE)errcodes.h $(INCLUDE)_errors.c \
-			$(INCLUDE)exec.h $(INCLUDE)_option_sys.c
+    ANCILLARY = $(INCLUDE)errors.h $(INCLUDE)exec.h $(INCLUDE)_cmd_exec.c \
+            $(INCLUDE)_errors.c $(INCLUDE)_option_sys.c
 
 else
 
@@ -201,18 +201,18 @@ include etc/build/test.mk               # Test targets
 ifneq ($(PERL), )
 
 .PHONY: ancillary
-ancillary: $(AUX)
+ancillary: $(ANCILLARY)
+
+$(INCLUDE)errors.h: etc/make_errors.pl etc/xml/errors.xml etc/templates/errors.h
+	$^ --out $@
+
+$(INCLUDE)exec.h: etc/make_commands.pl etc/xml/commands.xml etc/templates/exec.h
+	$^ --out $@
 
 $(INCLUDE)_cmd_exec.c: etc/make_commands.pl etc/xml/commands.xml etc/templates/_cmd_exec.c
 	$^ --out $@
 
-$(INCLUDE)/errcodes.h: etc/make_errors.pl etc/xml/errors.xml etc/templates/errcodes.h
-	$^ --out $@
-
 $(INCLUDE)_errors.c: etc/make_errors.pl etc/xml/errors.xml etc/templates/_errors.c
-	$^ --out $@
-
-$(INCLUDE)/exec.h: etc/make_commands.pl etc/xml/commands.xml etc/templates/exec.h
 	$^ --out $@
 
 $(INCLUDE)_option_sys.c: etc/make_options.pl etc/xml/options.xml etc/templates/_option_sys.c
@@ -224,16 +224,16 @@ else
 ancillary:
 	@$(error Make target '$@' requires Perl)
 
-$(INCLUDE)_commands.c:
+$(INCLUDE)errors.h:
 	@$(error Make target '$@' requires Perl)
 
-$(INCLUDE)/errcodes.h:
+$(INCLUDE)exec.h:
 	@$(error Make target '$@' requires Perl)
 
-$(INCLUDE)_errtables.c:
+$(INCLUDE)_cmd_exec.c:
 	@$(error Make target '$@' requires Perl)
 
-$(INCLUDE)/exec.h:
+$(INCLUDE)_errors.c:
 	@$(error Make target '$@' requires Perl)
 
 $(INCLUDE)_option_sys.c:

@@ -32,6 +32,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "editbuf.h"
+#include "errors.h"
 #include "exec.h"
 
 
