@@ -25,18 +25,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
 #include "display.h"
-#include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "keys.h"
-#include "qreg.h"
 
 
 /// @def    _

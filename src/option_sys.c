@@ -28,22 +28,19 @@
 #include <ctype.h>
 #include <errno.h>
 #include <getopt.h>
-#include <limits.h>
+#include <limits.h>                 //lint !e451
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#include <sys/stat.h>                   // for stat()
+#include <sys/stat.h>               // for stat()
 
 #include "teco.h"
 #include "ascii.h"
 #include "cbuf.h"
-#include "eflags.h"
 #include "file.h"
-#include "term.h"
 #include "version.h"
 
 #include "_option_sys.c"                // Include text for --help option

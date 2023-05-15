@@ -31,10 +31,8 @@
 
 #include "teco.h"
 #include "editbuf.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
-#include "file.h"
 #include "page.h"
 
 

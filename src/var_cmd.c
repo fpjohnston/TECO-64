@@ -25,17 +25,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+#include <stdio.h>
 
 #include "teco.h"
 #include "cbuf.h"
 #include "editbuf.h"
-#include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "page.h"
 #include "qreg.h"
-#include "term.h"
 
 
 ///

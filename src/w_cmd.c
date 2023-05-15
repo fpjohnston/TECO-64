@@ -26,7 +26,6 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "teco.h"
 #include "display.h"
@@ -34,7 +33,6 @@
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
-#include "term.h"
 
 
 #define DEFAULT_HEIGHT          24      ///< Default terminal rows

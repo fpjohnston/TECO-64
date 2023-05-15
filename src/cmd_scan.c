@@ -30,14 +30,9 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "errors.h"
-#include "eflags.h"
-#include "estack.h"
-#include "file.h"
-#include "qreg.h"
-#include "term.h"
-
 #include "cbuf.h"
+#include "errors.h"
+#include "exec.h"
 
 
 ///
@@ -53,8 +48,6 @@
 
 bool scan_simple(struct cmd *cmd)
 {
-    assert(cmd != NULL);
-
     confirm(cmd, NO_M, NO_N, NO_COLON, NO_ATSIGN);
 
     return false;

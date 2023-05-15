@@ -25,18 +25,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
+#include <limits.h>                 //lint !e451
+#include <stdio.h>
 #include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
+#include "cbuf.h"
 #include "errors.h"
 #include "exec.h"
 #include "qreg.h"
 #include "term.h"
 
-#include "cbuf.h"
 
 ///  @var    qtable
 ///  @brief  Table to convert a Q-register name to the corresponding index.

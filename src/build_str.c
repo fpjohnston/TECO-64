@@ -26,14 +26,13 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <limits.h>
+#include <limits.h>                 //lint !e451
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "file.h"
 #include "qreg.h"

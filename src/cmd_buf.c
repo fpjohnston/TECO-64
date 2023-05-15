@@ -31,9 +31,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "cbuf.h"
-#include "eflags.h"
 #include "exec.h"
-#include "term.h"
 
 
 tbuffer *cbuf;                      ///< Current command string buffer

@@ -25,7 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <limits.h>
+#include <limits.h>                 //lint !e451
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -35,7 +36,6 @@
 #include "errors.h"
 #include "exec.h"
 #include "file.h"
-#include "term.h"
 
 
 const char *teco_init = NULL;           ///< Name of initialization macro

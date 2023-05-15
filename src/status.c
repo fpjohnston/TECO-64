@@ -248,6 +248,9 @@ void refresh_status(void)
 
 static void status_line(int line, const char *header, const char *data)
 {
+    assert(header != NULL);
+    assert(data != NULL);
+
     char buf[STATUS_WIDTH - 1];
     int nbytes = snprintf(buf, sizeof(buf), " %s", header);
     int rem = (int)sizeof(buf) - nbytes;

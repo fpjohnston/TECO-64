@@ -121,6 +121,8 @@ extern void set_tab(int n);
 
 #if     defined(DISPLAY_INTERNAL)
 
+#include <limits.h>                 //lint !e451
+
 ///  @var     pair
 ///  @brief   Values of foreground/background pairs for defined windows.
 

@@ -25,9 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <ctype.h>
 #include <errno.h>
-#include <fcntl.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -45,11 +43,8 @@
 #include "ascii.h"
 #include "display.h"
 #include "editbuf.h"
-#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
-#include "file.h"
-#include "page.h"
 #include "term.h"
 
 

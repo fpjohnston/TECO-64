@@ -35,7 +35,6 @@
 #include "eflags.h"
 #include "file.h"
 #include "page.h"
-#include "term.h"
 
 
 ///  @struct   page

@@ -27,9 +27,7 @@
 #include <assert.h>
 
 #include "teco.h"
-#include "display.h"
 #include "errors.h"
-#include "estack.h"
 #include "exec.h"
 
 

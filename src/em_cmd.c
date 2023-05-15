@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <stdio.h>
 
 #include "teco.h"
 #include "ascii.h"

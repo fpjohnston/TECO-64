@@ -25,11 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <limits.h>
+#include <limits.h>                 //lint !e451
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 #include "teco.h"
 #include "ascii.h"

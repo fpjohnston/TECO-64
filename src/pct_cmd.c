@@ -26,10 +26,8 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "teco.h"
-#include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"

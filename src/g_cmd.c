@@ -26,16 +26,13 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "teco.h"
-#include "eflags.h"
 #include "exec.h"
 #include "file.h"
 #include "qreg.h"
 #include "search.h"
-#include "term.h"
 
 
 // Local functions

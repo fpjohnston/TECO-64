@@ -27,22 +27,17 @@
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
-#include <glob.h>                       // for glob()
-#include <libgen.h>                     // for dirname()
-#include <limits.h>
+#include <glob.h>                   // for glob()
+#include <limits.h>                 //lint !e451
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>                     // for access()
-
-#include <sys/stat.h>                   // for stat()
+#include <sys/stat.h>               // for stat()
 
 #include "teco.h"
 #include "ascii.h"
-#include "eflags.h"
 #include "errors.h"
 #include "file.h"
-#include "term.h"
 
 
 #define TEC_TYPE    ".tec"              ///< Command file extension ("source")

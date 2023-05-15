@@ -38,7 +38,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <limits.h>
+#include <limits.h>                 //lint !e451
 #include <setjmp.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -55,6 +55,7 @@
 #include "file.h"
 #include "qreg.h"
 #include "term.h"
+
 
 //lint -save -e10 -e65 -e133 -e485 -e651
 

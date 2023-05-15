@@ -26,7 +26,7 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <limits.h>
+#include <limits.h>                 //lint !e451
 #include <ncurses.h>
 #include <stdio.h>
 #include <string.h>

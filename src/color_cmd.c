@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <ncurses.h>
+#include <stdio.h>
 #include <string.h>
 
 #define DISPLAY_INTERNAL            ///< Enable internal definitions

@@ -31,7 +31,6 @@
 #include <sys/time.h>
 
 #include "teco.h"
-#include "eflags.h"
 #include "estack.h"
 #include "exec.h"
 

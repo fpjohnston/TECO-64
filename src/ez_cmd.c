@@ -25,18 +25,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include <limits.h>
+#include <limits.h>                 //lint !e451
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 #include "teco.h"
-#include "editbuf.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
-#include "file.h"
 
 
 #define EZ_SIZE         (KB * 4)        ///< Allocate memory in 4 KB chunks

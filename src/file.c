@@ -27,7 +27,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
-#include <limits.h>
+#include <limits.h>                 //lint !e451
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -37,12 +37,10 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "file.h"
 #include "page.h"
-#include "term.h"
 
 
 struct ifile ifiles[IFILE_MAX];         ///< Input file descriptors

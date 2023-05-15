@@ -24,14 +24,15 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <assert.h>
-
 #include "teco.h"
-#include "eflags.h"
 
 #if     defined(NOTRACE)
 
 #include "errors.h"
+
+#else
+
+#include "eflags.h"
 
 #endif
 
