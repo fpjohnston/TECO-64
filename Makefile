@@ -69,7 +69,7 @@ bin/teco: $(OBJECTS) bin                # Link object files, create executable
 .PHONY: all
 all: $(TECO)
 
-$(eval PERL=$(shell which perl))
+PERL = $(shell which perl)
 
 ifneq ($(PERL), )
 

@@ -18,7 +18,7 @@ doc/errors.md:
 
 endif
 
-$(eval XALAN=$(shell which xalan))
+XALAN = $(shell which xalan)
 
 ifneq ($(XALAN), )
 
@@ -38,7 +38,7 @@ endif
 
 #  Create doc target (if we have Doxygen).
 
-$(eval DOXYGEN=$(shell which doxygen))
+DOXYGEN = $(shell which doxygen)
 
 ifneq ($(DOXYGEN), )
 

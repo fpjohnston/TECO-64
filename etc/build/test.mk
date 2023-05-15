@@ -26,7 +26,7 @@ profile:
 #  Define targets that verify Perl scripts.
 #
 
-$(eval PERLCRITIC=$(shell which perlcritic))
+PERLCRITIC = $(shell which perlcritic)
 
 ifneq ($(PERLCRITIC), )
 
