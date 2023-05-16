@@ -30,6 +30,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "errors.h"
 #include "exec.h"
 #include "term.h"

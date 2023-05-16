@@ -31,6 +31,7 @@
 #include <sys/time.h>
 
 #include "teco.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "estack.h"
 #include "exec.h"
 

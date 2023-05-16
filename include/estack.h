@@ -28,9 +28,7 @@
 
 #define _ESTACK_H
 
-#include <stdbool.h>            //lint !e451
-
-#include "exec.h"
+#include <stdbool.h>
 
 
 #define OPER    ((int_t)0)          ///< 'value' for expression operators

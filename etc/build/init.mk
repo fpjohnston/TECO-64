@@ -122,6 +122,14 @@ endif
 
 #  Options that remove features or restrictions in order to improve speed.
 
+ifdef   inline                      # Enable inline optimizations
+
+    DEFINES += -D INLINE
+    DOXYGEN +=    INLINE
+    CFLAGS  += -flto
+
+endif
+
 ifdef   ndebug                      # Disable run-time assertions
 
     DEFINES += -D NDEBUG

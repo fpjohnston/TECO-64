@@ -28,7 +28,7 @@
 
 #define _DISPLAY_H
 
-#include <stdbool.h>            //lint !e451
+#include <stdbool.h>
 
 
 #define STATUS_WIDTH        22      ///< Width of status window

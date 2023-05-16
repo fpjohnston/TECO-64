@@ -32,11 +32,23 @@
 #include "teco.h"
 #include "ascii.h"
 #include "cbuf.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "errors.h"
 #include "exec.h"
 #include "qreg.h"
 #include "term.h"
 
+
+#if     defined(INLINE)
+
+#undef INLINE
+#define INLINE  inline
+
+#else
+
+#define INLINE
+
+#endif
 
 ///  @var    qtable
 ///  @brief  Table to convert a Q-register name to the corresponding index.
@@ -170,7 +182,7 @@ static struct qlist *list_head = NULL;
 
 // Local functions
 
-static inline struct qreg *qregister(int qindex);
+static INLINE struct qreg *qregister(int qindex);
 
 
 ///
@@ -594,7 +606,7 @@ bool push_qreg(int qindex)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline struct qreg *qregister(int qindex)
+static INLINE struct qreg *qregister(int qindex)
 {
     if (qindex < QCOUNT)
     {

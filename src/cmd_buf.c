@@ -33,6 +33,14 @@
 #include "cbuf.h"
 #include "exec.h"
 
+#if     !defined(INLINE)
+
+#include "eflags.h"
+#include "errors.h"
+#include "term.h"
+
+#endif
+
 
 tbuffer *cbuf;                      ///< Current command string buffer
 
@@ -109,6 +117,32 @@ void exit_cbuf(void)
 
 
 ///
+///  @brief    Fetch next character from command string.
+///
+///  @returns  Next character, or EOF if at end of string.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     !defined(INLINE)
+
+int fetch_cbuf(void)
+{
+    if (cbuf->pos == cbuf->len)
+    {
+        return EOF;
+    }
+
+    int c = cbuf->data[cbuf->pos++];
+
+    trace_cbuf(c);
+
+    return c;
+}
+
+#endif
+
+
+///
 ///  @brief    Initialize command buffer.
 ///
 ///  @returns  Nothing.
@@ -126,6 +160,73 @@ void init_cbuf(void)
 
     cbuf = root;
 }
+
+
+///
+///  @brief    Echo and advance past character we've already peeked at.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     !defined(INLINE)
+
+void next_cbuf(void)
+{
+    if (cbuf->pos < cbuf->len)
+    {
+        trace_cbuf(cbuf->data[cbuf->pos++]);
+    }
+}
+
+#endif
+
+
+///
+///  @brief    Peek at next character in command string.
+///
+///  @returns  Next character, or EOF if at end of string.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     !defined(INLINE)
+
+int peek_cbuf(void)
+{
+    if (cbuf->pos == cbuf->len)
+    {
+        return EOF;
+    }
+
+    return cbuf->data[cbuf->pos];
+}
+
+#endif
+
+
+///
+///  @brief    Fetch next character from command string (like fetch_cbuf(), but
+///            throws exception if no more characters).
+///
+///  @returns  Next character, or error if at end of string.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     !defined(INLINE)
+
+int require_cbuf(void)
+{
+    int c = fetch_cbuf();
+
+    if (c == EOF)
+    {
+        throw(E_BALK);                  // Unexpected end of command or macro
+    }
+
+    return c;
+}
+
+#endif
 
 
 ///
@@ -182,3 +283,30 @@ void store_cbuf(int c)
     cbuf->data[cbuf->len++] = (char)c;
     cbuf->data[cbuf->len] = NUL;
 }
+
+
+///
+///  @brief    Echo character if tracing.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+#if     !defined(INLINE)
+
+void trace_cbuf(int c)
+{
+
+#if     !defined(NOTRACE)
+
+    if (f.trace)
+    {
+        echo_in(c);
+    }
+
+#endif
+
+}
+
+#endif
+

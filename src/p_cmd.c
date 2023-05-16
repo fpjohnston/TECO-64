@@ -30,9 +30,11 @@
 #include "teco.h"
 #include "cbuf.h"
 #include "editbuf.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
+#include "file.h"
 #include "page.h"
 
 

@@ -28,8 +28,8 @@
 
 #define _EFLAGS_H
 
-#include <stdbool.h>            //lint !e451
-#include <sys/types.h>          //lint !e451
+#include <stdbool.h>
+#include <sys/types.h>
 
 
 ///  @struct  e0_flag

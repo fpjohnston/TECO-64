@@ -28,9 +28,7 @@
 
 #define _QREG_H
 
-#include <stdbool.h>            //lint !e451
-
-#include "exec.h"
+#include <stdbool.h>
 
 
 ///  @struct  qreg

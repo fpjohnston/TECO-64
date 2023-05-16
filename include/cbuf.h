@@ -28,21 +28,39 @@
 
 #define _CBUF_H
 
-#include <stdio.h>
-
-#include "eflags.h"
-#include "errors.h"
-#include "term.h"
-
 // Command buffer variable
 
 extern tbuffer *cbuf;
 
 // Command buffer functions
 
-static inline int fetch_cbuf(void);
-
 extern void init_cbuf(void);
+
+extern void reset_cbuf(void);
+
+extern void store_cbuf(int c);
+
+#if     !defined(INLINE)
+
+extern int fetch_cbuf(void);
+
+extern void next_cbuf(void);
+
+extern int peek_cbuf(void);
+
+extern int require_cbuf(void);
+
+extern void trace_cbuf(int c);
+
+#else
+
+#include <stdio.h>
+
+#include "eflags.h"             // Only when optimizing for speed
+#include "errors.h"             // Only when optimizing for speed
+#include "term.h"               // Only when optimizing for speed
+
+static inline int fetch_cbuf(void);
 
 static inline void next_cbuf(void);
 
@@ -50,14 +68,7 @@ static inline int peek_cbuf(void);
 
 static inline int require_cbuf(void);
 
-extern void reset_cbuf(void);
-
-extern void store_cbuf(int c);
-
 static inline void trace_cbuf(int c);
-
-
-// *** Note that the following functions are inline as an optimization. ***
 
 
 ///
@@ -158,5 +169,6 @@ static inline void trace_cbuf(int c)
 
 }
 
+#endif  // !defined(INLINE)
 
 #endif  // !defined(_CBUF_H)

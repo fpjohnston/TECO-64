@@ -29,6 +29,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "exec.h"
 #include "file.h"
 #include "qreg.h"

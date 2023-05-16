@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "teco.h"
@@ -39,16 +40,17 @@
 
 #include "_cmd_exec.c"              // Include command tables
 
-#if      defined(PROFILE)
 
-#define INLINE                      ///< If profiling, don't inline code
+#if     defined(INLINE)
+
+#undef INLINE
+#define INLINE  inline
 
 #else
 
-#define INLINE      inline          ///< If not profiling, inline code
+#define INLINE
 
 #endif
-
 
 ///  @var    null_cmd
 ///

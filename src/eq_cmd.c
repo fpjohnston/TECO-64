@@ -29,6 +29,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "estack.h"
 #include "exec.h"
 #include "file.h"

@@ -28,10 +28,11 @@
 
 #define _TECO_H
 
-#include <limits.h>             //lint !e451
-#include <setjmp.h>             //lint !e451
-#include <stdbool.h>            //lint !e451
-#include <sys/types.h>          //lint !e451
+#include <limits.h>                 //lint !e451
+#include <setjmp.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <sys/types.h>
 
 
 //
@@ -151,6 +152,54 @@ struct tstring
 };
 
 typedef struct tstring tstring;     ///< TECO string
+
+
+///  @struct cmd
+///  @brief  Command block structure.
+
+struct cmd
+{
+    char c1;                        ///< 1st command character
+    char c2;                        ///< 2nd command character
+    char c3;                        ///< 3rd command character
+    char qname;                     ///< Q-register name
+    bool qlocal;                    ///< Q-register is local
+    int qindex;                     ///< Q-register index (if not -1)
+    bool m_set;                     ///< m argument is valid
+    int_t m_arg;                    ///< m argument
+    bool n_set;                     ///< n argument is valid
+    int_t n_arg;                    ///< n argument
+    bool h;                         ///< H found
+    bool ctrl_y;                    ///< CTRL/Y found
+    bool colon;                     ///< : found
+    bool dcolon;                    ///< :: found
+    bool atsign;                    ///< @ found
+    tstring text1;                  ///< 1st text string
+    tstring text2;                  ///< 2nd text string
+};
+
+
+///  @struct  ifile
+///  @brief   Definition of variables used to keep track of input files.
+
+struct ifile
+{
+    FILE *fp;                       ///< Input file stream
+    char *name;                     ///< Input file name
+    uint_t size;                    ///< Input file size
+    bool LF;                        ///< First LF has been read
+};
+
+///  @struct  ofile
+///  @brief   Definition of variables used to keep track of output files.
+
+struct ofile
+{
+    FILE *fp;                       ///< Output file stream
+    char *name;                     ///< Output file name
+    char *temp;                     ///< Temporary file name
+    bool backup;                    ///< File is open for backup
+};
 
 
 // Global variables

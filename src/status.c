@@ -34,7 +34,7 @@
 #include "teco.h"
 #include "display.h"
 #include "editbuf.h"
-#include "exec.h"
+#include "eflags.h"
 #include "page.h"
 #include "term.h"
 

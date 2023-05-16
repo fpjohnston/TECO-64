@@ -28,7 +28,7 @@
 
 #define _TERM_H
 
-#include <stdbool.h>            //lint !e451
+#include <stdbool.h>
 
 
 #define FF_LINES    8           ///< No. of horizontal lines for form feed

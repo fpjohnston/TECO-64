@@ -28,20 +28,8 @@
 
 #define _FILE_H
 
-#include <stdio.h>              //lint !e451
-#include <stdbool.h>            //lint !e451
+#include <stdbool.h>
 
-
-///  @struct  ifile
-///  @brief   Definition of variables used to keep track of input files.
-
-struct ifile
-{
-    FILE *fp;                       ///< Input file stream
-    char *name;                     ///< Input file name
-    uint_t size;                    ///< Input file size
-    bool LF;                        ///< First LF has been read
-};
 
 ///  @enum    itype
 ///  @brief   Definition of input file stream types.
@@ -53,17 +41,6 @@ enum itype
     IFILE_QREGISTER,                ///< EQ input stream
     IFILE_INDIRECT,                 ///< EI command stream
     IFILE_MAX                       ///< Maximum input files
-};
-
-///  @struct  ofile
-///  @brief   Definition of variables used to keep track of output files.
-
-struct ofile
-{
-    FILE *fp;                       ///< Output file stream
-    char *name;                     ///< Output file name
-    char *temp;                     ///< Temporary file name
-    bool backup;                    ///< File is open for backup
 };
 
 ///  @enum    otype

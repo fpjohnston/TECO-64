@@ -28,9 +28,8 @@
 
 #define _EDITBUF_H
 
-#include <stdbool.h>            //lint !e451
+#include <stdbool.h>
 
-#include "file.h"
 
 ///  @struct  edit
 ///
@@ -49,7 +48,7 @@ struct edit
     int pos;                    ///< Position in line
 };
 
-extern const struct edit *t;
+extern const struct edit *t;    ///< Read-only pointer to text in edit buffer
 
 // Get no. of lines after dot.
 

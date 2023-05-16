@@ -28,8 +28,8 @@
 
 #define _PAGE_H
 
-#include <stdbool.h>            //lint !e451
-#include <stdio.h>              //lint !e451
+#include <stdbool.h>
+#include <stdio.h>
 
 extern bool page_backward(int_t count, bool ff);
 

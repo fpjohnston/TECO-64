@@ -31,6 +31,7 @@
 #include "ascii.h"
 #include "editbuf.h"
 #include "errors.h"
+#include "eflags.h"
 #include "exec.h"
 #include "term.h"
 

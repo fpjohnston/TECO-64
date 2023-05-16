@@ -168,7 +168,7 @@ help:
 	@echo ""
 	@echo "    critic       Do static code analysis of Perl scripts."
 	@echo "    debug        Build TECO for debugging w/ gdb."
-	@echo "    fast         Build TECO w/ minimal run-time checks."
+	@echo "    fast         Build TECO for speed."
 	@echo "    lint         Lint C source files."
 	@echo "    profile      Build TECO for profiling w/ gprof."
 	@echo "    smoke        Run all smoke tests."

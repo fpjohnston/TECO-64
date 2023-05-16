@@ -30,6 +30,7 @@
 #include "teco.h"
 #include "ascii.h"
 #include "editbuf.h"
+#include "eflags.h"
 #include "estack.h"
 #include "exec.h"
 #include "search.h"

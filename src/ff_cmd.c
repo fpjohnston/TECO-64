@@ -26,10 +26,12 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"

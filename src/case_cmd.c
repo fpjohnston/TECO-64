@@ -32,6 +32,7 @@
 
 #include "teco.h"
 #include "editbuf.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "errors.h"
 #include "exec.h"
 

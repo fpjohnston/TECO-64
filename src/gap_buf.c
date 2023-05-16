@@ -35,6 +35,17 @@
 #include "page.h"
 
 
+#if     defined(INLINE)
+
+#undef INLINE
+#define INLINE  inline
+
+#else
+
+#define INLINE
+
+#endif
+
 #if     !defined(EDIT_MAX)
 
 #if     INT_T == 64
@@ -125,7 +136,7 @@ const struct edit *t = &eb.t;       ///< Read-only pointers to public variables
 
 static void dec_dot(void);
 
-static inline int find_edit(int_t pos);
+static INLINE int find_edit(int_t pos);
 
 static void finish_insert(uint_t nbytes);
 
@@ -432,14 +443,14 @@ void exit_edit(void)
 
 
 ///
-///  @brief    Get ASCII value of nth character before or after dot. Inline
-///            and internal version of read_edit().
+///  @brief    Get ASCII value of nth character before or after dot. Internal
+///            version of read_edit().
 ///
 ///  @returns  ASCII value, or EOF if character outside of edit buffer.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline int find_edit(int_t pos)
+static INLINE int find_edit(int_t pos)
 {
     uint_t i = (uint_t)(eb.t.dot + pos); // Make relative position absolute
 

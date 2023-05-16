@@ -44,7 +44,9 @@
 #include "display.h"
 #include "editbuf.h"
 #include "errors.h"
+#include "eflags.h"
 #include "exec.h"
+#include "file.h"
 #include "term.h"
 
 

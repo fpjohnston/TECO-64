@@ -40,10 +40,12 @@
 #include "teco.h"
 #include "ascii.h"
 #include "cbuf.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "file.h"
+#include "term.h"
 #include "version.h"
 
-#include "_option_sys.c"                // Include text for --help option
+#include "_option_sys.c"            // Include text for --help option
 
 
 ///

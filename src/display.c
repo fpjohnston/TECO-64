@@ -36,10 +36,21 @@
 #include "ascii.h"
 #include "display.h"
 #include "editbuf.h"
+#include "eflags.h"
 #include "errors.h"
-#include "exec.h"
 #include "term.h"
 
+
+#if     defined(INLINE)
+
+#undef INLINE
+#define INLINE  inline
+
+#else
+
+#define INLINE
+
+#endif
 
 #define MIN_ROWS            10      ///< Minimum no. of rows for edit window
 
@@ -82,10 +93,10 @@ struct display d =
 
 #endif
 
+
 // Local functions
 
-
-static inline void (check)(bool cond);
+static INLINE void (check)(bool cond);
 
 static void init_window(WINDOW **win, int pair, int top, int bot, int col, int width);
 
@@ -106,9 +117,9 @@ static void set_cursor(void);
 ////////////////////////////////////////////////////////////////////////////////
 
 #if     defined(DOXYGEN)
-static inline void check(bool cond)
+static INLINE void check(bool cond)
 #else
-static inline void (check)(bool cond)
+static INLINE void (check)(bool cond)
 #endif
 {
     if (!cond)

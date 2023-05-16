@@ -33,6 +33,7 @@
 
 #include "teco.h"
 #include "ascii.h"
+#include "eflags.h"
 #include "errors.h"
 #include "file.h"
 #include "qreg.h"

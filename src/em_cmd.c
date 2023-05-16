@@ -31,9 +31,12 @@
 #include "teco.h"
 #include "ascii.h"
 #include "cbuf.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
+#include "term.h"
+
 
 #if     defined(NOTRACE)
 

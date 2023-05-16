@@ -38,6 +38,17 @@
 #include "exec.h"
 
 
+#if     defined(INLINE)
+
+#undef INLINE
+#define INLINE  inline
+
+#else
+
+#define INLINE
+
+#endif
+
 ///  @enum   order
 ///  @brief  Definitions for operator associativity
 
@@ -152,17 +163,17 @@ static struct xstack *x = NULL;     ///< List of expression stacks
 
 // Local functions
 
-static inline int_t exec_div(int_t a, int_t b);
+static INLINE int_t exec_div(int_t a, int_t b);
 
 static void exec_oper(enum x_oper oper);
 
-static inline int_t exec_not(int_t a);
+static INLINE int_t exec_not(int_t a);
 
-static inline int_t exec_rem(int_t a, int_t b);
+static INLINE int_t exec_rem(int_t a, int_t b);
 
 static int_t fetch_val(void);
 
-static inline bool isparen(void);
+static INLINE bool isparen(void);
 
 static struct xstack *make_x(void);
 
@@ -214,7 +225,7 @@ void confirm_parens(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline int_t exec_div(int_t a, int_t b)
+static INLINE int_t exec_div(int_t a, int_t b)
 {
     if (b == 0)
     {
@@ -311,7 +322,7 @@ static void exec_oper(enum x_oper type)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline int_t exec_not(int_t a)
+static INLINE int_t exec_not(int_t a)
 {
     while (x->oper.count != 0)
     {
@@ -339,7 +350,7 @@ static inline int_t exec_not(int_t a)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline int_t exec_rem(int_t a, int_t b)
+static INLINE int_t exec_rem(int_t a, int_t b)
 {
     if (b == 0)
     {
@@ -502,7 +513,7 @@ void delete_x(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline void push_oper(enum x_oper o1)
+static INLINE void push_oper(enum x_oper o1)
 {
     if (x->oper.count++ == MAX_OPERS)
     {
@@ -538,7 +549,7 @@ void new_x(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static inline bool isparen(void)
+static INLINE bool isparen(void)
 {
     if (x->oper.nesting != 0)
     {

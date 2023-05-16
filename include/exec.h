@@ -30,35 +30,6 @@
 
 #define _EXEC_H
 
-#include <assert.h>             //lint !e451
-
-#include "eflags.h"
-
-///  @struct cmd
-///  @brief  Command block structure.
-
-struct cmd
-{
-    char c1;                        ///< 1st command character
-    char c2;                        ///< 2nd command character
-    char c3;                        ///< 3rd command character
-    char qname;                     ///< Q-register name
-    bool qlocal;                    ///< Q-register is local
-    int qindex;                     ///< Q-register index (if not -1)
-    bool m_set;                     ///< m argument is valid
-    int_t m_arg;                    ///< m argument
-    bool n_set;                     ///< n argument is valid
-    int_t n_arg;                    ///< n argument
-    bool h;                         ///< H found
-    bool ctrl_y;                    ///< CTRL/Y found
-    bool colon;                     ///< : found
-    bool dcolon;                    ///< :: found
-    bool atsign;                    ///< @ found
-    tstring text1;                  ///< 1st text string
-    tstring text2;                  ///< 2nd text string
-};
-
-
 enum
 {
     NO_EXIT,                        ///< End of list

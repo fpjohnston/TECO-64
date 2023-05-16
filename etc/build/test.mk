@@ -7,12 +7,13 @@ debug:
 	@$(MAKE) gdb=1 debug=1 teco
 
 #
-#  Define fast target without assertions or strict checks.
+#  Optimize for speed by inlining functions, removing all assertions, removing
+#  strict checks on command syntax, and removing command tracing.
 #
 
 .PHONY: fast
 fast:
-	@$(MAKE) ndebug=1 nostrict=1 notrace=1 teco
+	@$(MAKE) inline=1 ndebug=1 nostrict=1 notrace=1 teco
 
 #
 #  Define profile target (for use with gprof).

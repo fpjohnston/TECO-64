@@ -28,6 +28,7 @@
 #include <stdio.h>
 
 #include "teco.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"

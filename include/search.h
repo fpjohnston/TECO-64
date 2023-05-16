@@ -27,9 +27,7 @@
 #if     !defined(_SEARCH_H)
 #define _SEARCH_H
 
-#include <stdbool.h>            //lint !e451
-
-#include "exec.h"
+#include <stdbool.h>
 
 
 ///  @enum   search_type
