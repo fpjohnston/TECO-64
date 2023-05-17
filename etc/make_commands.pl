@@ -43,7 +43,7 @@ use Teco qw(teco_read teco_write);
 my %args = (
     input    => undef,                  # Input XML file
     output   => undef,                  # Output header file
-    template => undef,                  # Template file
+    pattern => undef,                   # Pattern file
 );
 
 my %types = (
@@ -76,8 +76,8 @@ sub main
 {
     parse_options();
 
-    my $xmlfile  = teco_read( $args{input} );
-    my $template = teco_read( $args{template} );
+    my $xmlfile = teco_read( $args{input} );
+    my $pattern = teco_read( $args{pattern} );
 
     print "Reading $args{input}...";
 
@@ -87,13 +87,13 @@ sub main
     {
         my ( $cmds, $e_cmds, $f_cmds ) = make_commands($array_ref);
 
-        write_commands( $template, $cmds, $e_cmds, $f_cmds );
+        write_commands( $pattern, $cmds, $e_cmds, $f_cmds );
     }
     elsif ( $args{output} =~ /exec.h/msx )
     {
         my ( $scan_list, $exec_list ) = make_exec($array_ref);
 
-        write_exec( $template, $scan_list, $exec_list );
+        write_exec( $pattern, $scan_list, $exec_list );
     }
     else
     {
@@ -245,8 +245,8 @@ sub parse_options
     die "Not enough input files\n" if $#ARGV < 1;
     die "Too many input files\n"   if $#ARGV > 1;
 
-    $args{input}    = $ARGV[0];
-    $args{template} = $ARGV[1];
+    $args{input}   = $ARGV[0];
+    $args{pattern} = $ARGV[1];
 
     return;
 }
@@ -342,14 +342,14 @@ sub parse_xml
 
 sub write_commands
 {
-    my ( $template, $cmds, $e_cmds, $f_cmds ) = @_;
+    my ( $pattern, $cmds, $e_cmds, $f_cmds ) = @_;
     my %changes = (
         'GENERAL COMMANDS' => $cmds,
         'E COMMANDS'       => $e_cmds,
         'F COMMANDS'       => $f_cmds,
     );
 
-    teco_write( $template, $args{output}, %changes );
+    teco_write( $pattern, $args{output}, %changes );
 
     return;
 }
@@ -360,13 +360,13 @@ sub write_commands
 
 sub write_exec
 {
-    my ( $template, $scan_list, $exec_list ) = @_;
+    my ( $pattern, $scan_list, $exec_list ) = @_;
     my %changes = (
         'SCAN FUNCTIONS' => $scan_list,
         'EXEC FUNCTIONS' => $exec_list
     );
 
-    teco_write( $template, $args{output}, %changes );
+    teco_write( $pattern, $args{output}, %changes );
 
     return;
 }

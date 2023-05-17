@@ -6,7 +6,7 @@ ERRORS_MD = doc/errors.md
 
 # Create Markdown documentation for TECO run-time errors (if we have Perl).
 
-doc/errors.md: etc/make_errors.pl etc/xml/errors.xml etc/templates/errors.md
+doc/errors.md: etc/make_errors.pl etc/xml/errors.xml etc/pattern/errors.md
 	$^ -o $@
 
 else

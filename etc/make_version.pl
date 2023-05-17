@@ -39,10 +39,10 @@ use Teco qw(teco_read teco_write);
 #<<< perltidy: preserve format
 
 my %args = (
-    input    => undef,          # Input header file
-    output   => undef,          # Output header file
-    template => undef,          # Template file
-    version  => undef,          # Version type (major, minor, patch)
+    input   => undef,           # Input header file
+    output  => undef,           # Output header file
+    pattern => undef,           # Pattern file
+    version => undef,           # Version type (major, minor, patch)
 );
 
 #>>>
@@ -67,8 +67,8 @@ sub main
 {
     parse_options();
 
-    my $header_data   = teco_read( $args{input} );
-    my $template_data = teco_read( $args{template} );
+    my $header_data  = teco_read( $args{input} );
+    my $pattern_data = teco_read( $args{pattern} );
 
     find_version($header_data);
     advance_version( $args{version} );
@@ -79,7 +79,7 @@ sub main
         'PATCH VERSION' => "    patch_version = $version{patch}",
     );
 
-    teco_write( $template_data, $args{output}, %changes );
+    teco_write( $pattern_data, $args{output}, %changes );
 
     print "Updated TECO release version from $version{previous}"
       . " to $version{full}\n";
@@ -188,8 +188,8 @@ sub parse_options
     die "Not enough input files\n" if $#ARGV < 1;
     die "Too many input files\n"   if $#ARGV > 1;
 
-    $args{input}    = $ARGV[0];
-    $args{template} = $ARGV[1];
+    $args{input}   = $ARGV[0];
+    $args{pattern} = $ARGV[1];
 
     return;
 }

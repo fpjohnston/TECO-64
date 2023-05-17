@@ -79,16 +79,16 @@ endif
 
 ifneq ($(PERL), )
 
-    ANCILLARY = $(INCLUDE)errors.h $(INCLUDE)exec.h $(INCLUDE)_cmd_exec.c \
-            $(INCLUDE)_errors.c $(INCLUDE)_option_sys.c
+    PATTERN = $(INCLUDE)errors.h $(INCLUDE)exec.h $(INCLUDE)_cmd_exec.c \
+              $(INCLUDE)_errors.c $(INCLUDE)_option_sys.c
 
 else
 
-	ANCILLARY =
+	PATTERN =
 
 endif
 
-$(OBJECTS): $(ANCILLARY) obj/cflags
+$(OBJECTS): $(PATTERN) obj/cflags
 
 #  The following targets are present because git repositories only allow for
 #  files in directories, not for directories that contain no files. So before
@@ -121,7 +121,7 @@ install: $(TECO)
 
 .PHONY: release
 release: distclean
-	etc/make_version.pl include/version.h etc/templates/version.h \
+	etc/make_version.pl include/version.h etc/pattern/version.h \
 		--out include/version.h --version=$(version)
 	$(MAKE) -B -s include/version.h
 	$(MAKE) $(TECO)
@@ -192,7 +192,7 @@ endif
 include etc/build/test.mk               # Test targets
 
 
-#  Define targets that build ancillary files from XML files, which contain such
+#  Define targets that build pattern files from XML files, which contain such
 #  information as TECO commands, error codes, and command-line options. If the
 #  user does not have Perl, the supplied copies of these files may still be used,
 #  but the targets will below either not be called within the Makefile, or will
@@ -200,29 +200,29 @@ include etc/build/test.mk               # Test targets
 
 ifneq ($(PERL), )
 
-.PHONY: ancillary
-ancillary: $(ANCILLARY)
+.PHONY: pattern
+pattern: $(PATTERN)
 
-$(INCLUDE)errors.h: etc/make_errors.pl etc/xml/errors.xml etc/templates/errors.h
+$(INCLUDE)errors.h: etc/make_errors.pl etc/xml/errors.xml etc/pattern/errors.h
 	$^ --out $@
 
-$(INCLUDE)exec.h: etc/make_commands.pl etc/xml/commands.xml etc/templates/exec.h
+$(INCLUDE)exec.h: etc/make_commands.pl etc/xml/commands.xml etc/pattern/exec.h
 	$^ --out $@
 
-$(INCLUDE)_cmd_exec.c: etc/make_commands.pl etc/xml/commands.xml etc/templates/_cmd_exec.c
+$(INCLUDE)_cmd_exec.c: etc/make_commands.pl etc/xml/commands.xml etc/pattern/_cmd_exec.c
 	$^ --out $@
 
-$(INCLUDE)_errors.c: etc/make_errors.pl etc/xml/errors.xml etc/templates/_errors.c
+$(INCLUDE)_errors.c: etc/make_errors.pl etc/xml/errors.xml etc/pattern/_errors.c
 	$^ --out $@
 
-$(INCLUDE)_option_sys.c: etc/make_options.pl etc/xml/options.xml etc/templates/_option_sys.c
+$(INCLUDE)_option_sys.c: etc/make_options.pl etc/xml/options.xml etc/pattern/_option_sys.c
 	$^ --out $@
 
 else
 
-.PHONY: ancillary
-ancillary:
-	@$(error Make target '$@' requires Perl)
+#.PHONY: pattern
+#pattern:
+#	@$(error Make target '$@' requires Perl)
 
 $(INCLUDE)errors.h:
 	@$(error Make target '$@' requires Perl)

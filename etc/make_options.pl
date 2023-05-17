@@ -98,8 +98,8 @@ sub main
 {
     parse_options();
 
-    my $input    = teco_read( $args{input} );
-    my $template = teco_read( $args{template} );
+    my $input   = teco_read( $args{input} );
+    my $pattern = teco_read( $args{pattern} );
 
     print "Reading $args{input}...";
 
@@ -115,7 +115,7 @@ sub main
     printf '%u option%s found...', $nopts, $nopts == 1 ? q{} : 's';
 
     build_strings();                    # Build data strings for header file
-    make_options($template);            # Create new header file
+    make_options($pattern);             # Create new header file
 
     return;
 }
@@ -262,7 +262,7 @@ sub get_child
 
 sub make_options
 {
-    my ($template) = @_;
+    my ($pattern) = @_;
     my %changes = (
         'HELP OPTIONS'  => $header{help},
         'ENUM OPTIONS'  => $header{enums},
@@ -270,7 +270,7 @@ sub make_options
         'LONG OPTIONS'  => $header{long},
     );
 
-    teco_write( $template, $args{output}, %changes );
+    teco_write( $pattern, $args{output}, %changes );
 
     return;
 }
@@ -286,8 +286,8 @@ sub parse_options
     die "Not enough input files\n" if $#ARGV < 1;
     die "Too many input files\n"   if $#ARGV > 1;
 
-    $args{input}    = $ARGV[0];
-    $args{template} = $ARGV[1];
+    $args{input}   = $ARGV[0];
+    $args{pattern} = $ARGV[1];
 
     return;
 }

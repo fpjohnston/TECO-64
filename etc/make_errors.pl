@@ -40,9 +40,9 @@ use Teco qw(teco_read teco_write);
 #<<< perltidy: preserve format
 
 my %args = (
-    input    => undef,          # Input XML file
-    template => undef,          # Template file
-    output   => undef,          # Output file
+    input   => undef,           # Input XML file
+    pattern => undef,           # Pattern file
+    output  => undef,           # Output file
 );
 
 #>>>
@@ -65,8 +65,8 @@ sub main
 {
     parse_options();
 
-    my $xml      = teco_read( $args{input} );
-    my $template = teco_read( $args{template} );
+    my $xml     = teco_read( $args{input} );
+    my $pattern = teco_read( $args{pattern} );
 
     print "Reading $args{input}...";
 
@@ -76,15 +76,15 @@ sub main
 
     if ( $args{output} =~ /errors.h/msx )
     {
-        make_errcodes( $template, $hash_ref );
+        make_errcodes( $pattern, $hash_ref );
     }
     elsif ( $args{output} =~ /errors.md/msx )
     {
-        make_errors( $template, $hash_ref );
+        make_errors( $pattern, $hash_ref );
     }
     elsif ( $args{output} =~ /_errors.c/msx )
     {
-        make_errtables( $template, $hash_ref );
+        make_errtables( $pattern, $hash_ref );
     }
     else
     {
@@ -151,7 +151,7 @@ sub get_details
 
 sub make_errcodes
 {
-    my ( $template, $hash_ref ) = @_;
+    my ( $pattern, $hash_ref ) = @_;
     my %errors = %{$hash_ref};
     my $errcodes;
 
@@ -175,7 +175,7 @@ sub make_errcodes
 
     my %changes = ( 'ERROR CODES' => $errcodes, );
 
-    teco_write( $template, $args{output}, %changes );
+    teco_write( $pattern, $args{output}, %changes );
 
     return;
 }
@@ -186,7 +186,7 @@ sub make_errcodes
 
 sub make_errors
 {
-    my ( $template, $hash_ref ) = @_;
+    my ( $pattern, $hash_ref ) = @_;
     my %errors = %{$hash_ref};
     my $errors;
 
@@ -214,7 +214,7 @@ sub make_errors
 
     my %changes = ( 'ERROR CODES' => $errors, );
 
-    teco_write( $template, $args{output}, %changes );
+    teco_write( $pattern, $args{output}, %changes );
 
     return;
 }
@@ -225,7 +225,7 @@ sub make_errors
 
 sub make_errtables
 {
-    my ( $template, $hash_ref ) = @_;
+    my ( $pattern, $hash_ref ) = @_;
     my %errors = %{$hash_ref};
     my $errlist;
     my $errhelp;
@@ -255,7 +255,7 @@ sub make_errtables
         'ERROR DETAILS'  => $errhelp,
     );
 
-    teco_write( $template, $args{output}, %changes );
+    teco_write( $pattern, $args{output}, %changes );
 
     return;
 }
@@ -267,16 +267,16 @@ sub make_errtables
 sub parse_options
 {
     GetOptions(
-        'input=s'    => \$args{input},
-        'template=s' => \$args{template},
-        'output=s'   => \$args{output}
+        'input=s'   => \$args{input},
+        'pattern=s' => \$args{pattern},
+        'output=s'  => \$args{output}
     );
 
     die "Not enough input files\n" if $#ARGV < 1;
     die "Too many input files\n"   if $#ARGV > 1;
 
-    $args{input}    = $ARGV[0];
-    $args{template} = $ARGV[1];
+    $args{input}   = $ARGV[0];
+    $args{pattern} = $ARGV[1];
 
     return;
 }

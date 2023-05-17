@@ -87,12 +87,12 @@ sub teco_read
 }
 
 #
-#  Translate strings in template data and write new file.
+#  Translate strings in pattern data and write new file.
 #
 
 sub teco_write
 {
-    my ( $template, $file, %changes ) = @_;
+    my ( $pattern, $file, %changes ) = @_;
 
     if ( !$file )
     {
@@ -105,14 +105,14 @@ sub teco_write
 
     foreach my $key ( sort keys %changes )
     {
-        my $pattern = "/\\\* \\\(INSERT: $key\\\) \\\*/";
+        my $target = "/\\\* \\\(INSERT: $key\\\) \\\*/";
 
-        if ( $template !~ s/$pattern/$changes{$key}/ms )
+        if ( $pattern !~ s/$target/$changes{$key}/ms )
         {
             if (   $file !~ /errors\N{FULL STOP}md/ms
                 || $key ne 'WARNING NOTICE' )
             {
-                print "Can't find $pattern in input file\n";
+                print "Can't find $target in input file\n";
 
                 exit 1;
             }
@@ -123,7 +123,7 @@ sub teco_write
 
     open my $fh, '>', $file or croak "Can't open $file\n";
 
-    print {$fh} $template or croak "Can't print to $file\n";
+    print {$fh} $pattern or croak "Can't print to $file\n";
 
     close $fh or croak "Can't close $file\n";
 
