@@ -1,85 +1,52 @@
-co-gcc.lnt   // Basic gcc configuration
+co-gcc.lnt                              // Basic gcc configuration
 
-// prevent the GCC version of offsetof being used
-// the semantics of the builtin version are unknown
-// suppress the warnings due to the 0 pointer used
-++"doffsetof(type,member)=((size_t)&((type*)0)->member)"
--emacro(413,offsetof)
--emacro(545,offsetof)
--emacro(10,va_arg)
--emacro(26,va_arg)
--emacro(48,va_arg)
--emacro(64,va_arg)
+-v                                      // Output messages to stdout
+-width(0)                               // Message width (don't break lines)
+-HF1                                    // Message height (1 line, w/ file name)
 
 -passes(2)
--A(C2011)           // Enable ANSI C 2011 standard
--w3                 // Turn on all messages except notes
-+fie                // Treat enums and ints as distinct
-+fsc                // Assume string constants are const char *
-+fpn                // Warn about use of pointers if possibly NULL
-+fas                // Allow anonymous structs
-+fan                // Allow anonymous unions
--ffc                // Functions generally don't take custody of pointers
+-A(C2011)                               // Enable ANSI C 2011 standard
+-w3                                     // Error, Warning, and Informational messages
+
++fie                                    // Treat enums and ints as distinct
++fsc                                    // Assume string constants are const char *
++fpn                                    // Warn about use of pointers if possibly NULL
++fas                                    // Allow anonymous structs
++fan                                    // Allow anonymous unions
+-ffc                                    // Functions generally don't take custody of pointers
+
 +libclass(angle, ansi)
 
-// Formatting options
+// Configuration options for library header files
 
--width(0)
--HF1
--v
-
-// Local options
+++"doffsetof(type,member)=((size_t)&((type*)0)->member)"
 
 -d_Noreturn=
--esym(379,unused*) // Ignore unused parameters if named unused???
--esym(715,unused*) // Ignore unused parameters if named unused???
--esym(818,unused*) // Ignore unused parameters if named unused???
--esym(123,refresh)
--esym(516,__builtin_constant_p)
--esym(526,__builtin_constant_p)
--esym(628,__builtin_constant_p)
--esym(644,__v)
--e606
-//-passes(4)
 
--esym(526,__builtin_va_start)
--esym(628,__builtin_va_start)
+-efile(537,limits.h,stdbool.h,ncurses.h,setjmp.h,stdio.h,sys/types.h)
 
--function(exit, abort_cbuf, throw, execlp)
--function(printf, tprint)
+-elibmacro(10,26,48,64)
 
-// Ensure that prototypes are in scope before functions are defined
+-elibsym(534)
 
--e537
-+e957
-+elib(957)
--emacro(124,va_arg)
--emacro(530,va_start)
--emacro(413,offsetof)
--emacro(845,offsetof)
--emacro(502,FD_CLR)
--emacro(529,FD_ZERO)
--emacro(703,FD_CLR)
--emacro(703,FD_SET)
--emacro(703,FD_ISSET)
--emacro(717,FD_ZERO)
+// Configuration options for TECO files
 
--elib(10,18,19,30,31,36,38,43,46,49,101,104,129,132,145,148,957)
--elibmacro(160,506,866)
--elib(169)
--esym(534,snprintf,vsnprintf,tprint)
--esym(534,assume_default_colors,init_color,wprintw,whline,wrefresh,wmove)
--esym(534,nodelay,wclrtoeol,wclear,waddch,wdelch,winsch,init_pair,endwin)
--esym(534,wsetscrreg,keypad,initscr,set_escdelay,wbkgd,resizeterm,delwin)
--esym(534,setvbuf,scrollok,set_tabsize,meta,wtouchln,wclrtobot,wchgat,wscrl)
--esym(534,mvwprintw,wvline,waddnstr,atexit,prefresh,newpad)
--esym(534,sigaction,sigfillset,setvbuf,tcgetattr,tcsetattr,ungetc)
--esym(534,localtime_r,gettimeofday,init_color,init_pair,fchmod)
--esym(534,scan_simple,pair_content)
--esym(759,reset_term,table_8bit,move_dot,inc_dot,dec_dot)
--esym(765,reset_term,table_8bit,move_dot,inc_dot,dec_dot)
--esym(714,move_dot)
--elib(126)
--elibcall(126)
--elibmacro(126)
--elibsym(126)
++e957                                   // Complain about repeated include files
+
+-e606                                   // Non-ANSI escape sequences are OK
+-e786                                   // Allow string concatenation within initializer
+-e818                                   // Pointer does not need to point to const
+-e843                                   // Variable does not need to be const
+-e844                                   // Pointer does not need to point to const
+
+-esym(715,unused*)                      // Ignore unused parameters
+-esym(534,scan_simple)                  // OK to ignore return value
+-esym(534,tprint)                       // OK to ignore return value
+
+// Suppress messages for unused functions and data in conditional code
+
+-esym(714,exec_str,move_dot)
+-esym(759,exec_str,move_dot,reset_term,table_8bit)
+-esym(765,exec_str,move_dot,reset_term,table_8bit)
+
+-function(exit, throw)                  // throw() works like exit()

@@ -103,10 +103,10 @@ obj:
 
 #  Always compile source files if compiler options have changed.
 
-obj/cflags: obj                             # Create compiler options file
+obj/cflags: obj                         # Create compiler options file
 	-@echo '$(CFLAGS)' | cmp -s - $@ || echo '$(CFLAGS)' > $@
 
-obj/%.o: src/%.c                                # Compile source file
+obj/%.o: src/%.c                        # Compile source file
 	gcc -o $@ $< @obj/cflags
 
 #  Copy executable image and library files to system directories.
