@@ -3,6 +3,13 @@
 ///
 ///  @brief   Auxiliary file for cmd_exec.c, containing command tables.
 ///
+///           This file defines data that is statically stored, rather than
+///           just being declared, and is intended to be used by only one
+///           source file, through use of the #include directive. This is why
+///           it is created in the include/ directory, with a file type of
+///           .c, and with the same name (prefaced by a leading underscore)
+///           as the file which will use it.
+///
 /* (INSERT: WARNING NOTICE) */
 ///
 ///  @copyright 2020-2023 Franklin P. Johnston / Nowwith Treble Software

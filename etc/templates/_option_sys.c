@@ -1,15 +1,22 @@
 ///
-///  @file       _option_sys.c
+///  @file    _option_sys.c
 ///
-///  @brief      Auxiliary file for option_sys.c, containing help message.
+///  @brief   Auxiliary file for option_sys.c, containing help message.
+///
+///           This file defines data that is statically stored, rather than
+///           just being declared, and is intended to be used by only one
+///           source file, through use of the #include directive. This is why
+///           it is created in the include/ directory, with a file type of
+///           .c, and with the same name (prefaced by a leading underscore)
+///           as the file which will use it.
 ///
 /* (INSERT: WARNING NOTICE) */
 ///
-///  @brief      External resources:
+///  @brief   External resources:
 ///
 ///  <a href="options.html">List of Command-line options</a>
 ///
-///  @brief      Process command-line options for TECO editor.
+///  @brief   Process command-line options for TECO editor.
 ///
 ///  @copyright 2019-2023 Franklin P. Johnston / Nowwith Treble Software
 ///
