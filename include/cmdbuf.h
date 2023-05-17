@@ -1,5 +1,5 @@
 ///
-///  @file    cbuf.h
+///  @file    cmdbuf.h
 ///  @brief   Header file for command buffer definitions.
 ///
 ///  @copyright 2020-2023 Franklin P. Johnston / Nowwith Treble Software

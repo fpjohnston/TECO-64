@@ -28,7 +28,7 @@
 #include <stdio.h>
 
 #include "teco.h"
-#include "cbuf.h"
+#include "cmdbuf.h"
 #include "editbuf.h"
 #include "eflags.h"                 // Needed for confirm()
 #include "errors.h"

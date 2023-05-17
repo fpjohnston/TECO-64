@@ -39,7 +39,7 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "cbuf.h"
+#include "cmdbuf.h"
 #include "eflags.h"                 // Needed for confirm()
 #include "file.h"
 #include "term.h"

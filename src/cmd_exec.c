@@ -32,7 +32,7 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "cbuf.h"
+#include "cmdbuf.h"
 #include "eflags.h"
 #include "errors.h"
 #include "estack.h"

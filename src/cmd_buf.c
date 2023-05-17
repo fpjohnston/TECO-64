@@ -30,7 +30,7 @@
 
 #include "teco.h"
 #include "ascii.h"
-#include "cbuf.h"
+#include "cmdbuf.h"
 #include "exec.h"
 
 #if     !defined(INLINE)
