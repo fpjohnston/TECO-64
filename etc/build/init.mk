@@ -106,17 +106,10 @@ else                                # Neither gdb nor gprof.
 
 endif
 
-ifdef   debug                       # Enable basic internal debugging
+ifdef   debug                       # Enable debugging
 
-    DEFINES += -D DEBUG
-    DOXYGEN += DEBUG
-
-endif
-
-ifdef   memcheck                    # Enable basic internal memory checks
-
-    DEFINES += -D MEMCHECK
-    DOXYGEN += MEMCHECK
+    DEFINES += -D DEBUG=$(debug)
+    DOXYGEN += DEBUG=$(debug)
 
 endif
 

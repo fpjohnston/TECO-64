@@ -735,7 +735,7 @@ sub prove_test
         $report .= ' ->';
     }
 
-    if ( $actual =~ /lost block/gms )
+    if ( $actual =~ /not deallocated/gms )
     {
         print "$report MEMORY\n";
 

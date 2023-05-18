@@ -250,11 +250,7 @@ extern void exit_files(void);
 
 extern void exit_map(void);
 
-#if     defined(MEMCHECK)
-
 extern void exit_mem(void);
-
-#endif
 
 extern void exit_qreg(void);
 

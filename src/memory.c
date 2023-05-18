@@ -32,13 +32,36 @@
 #include "teco.h"
 #include "errors.h"
 
+//  The following ensures that we have a numeric value for DEBUG, so that we can
+//  use relational operators (e.g., "#if DEBUG >= "). The possible values are:
+//
+//      0 = No debugging
+//      1 = Basic debugging
+//      2 = Debugging + memory errors
+//      3 = Debugging + memory detail
+
+#if     defined(DEBUG)
+
+    #if     DEBUG != 2 && DEBUG != 3
+
+        #undef  DEBUG
+        #define DEBUG   1
+
+    #endif
+
+#else
+
+    #define DEBUG   0
+
+#endif
+
 
 // The following conditional code is used to check for memory leaks when we
 // exit. It is an early warning system to alert the user that there is a bug
 // that needs to be investigated and resolved, possibly with better tools such
 // as Valgrind.
 
-#if     defined(MEMCHECK)
+#if     DEBUG >= 2
 
 #include "exec.h"
 
@@ -68,7 +91,11 @@ static struct mblock *mroot = NULL;     ///< Root of memory block list
 
 static uint_t msize = 0;                ///< Total memory allocated, in bytes
 
+#if     DEBUG == 3
+
 static uint nallocs = 0;                ///< Total no. of blocks allocated
+
+#endif
 
 static uint nblocks = 0;                ///< No. of blocks currently allocated
 
@@ -94,7 +121,7 @@ static struct mblock*find_mblock(void *p1);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(MEMCHECK)
+#if     DEBUG >= 2
 
 static void add_mblock(void *p1, uint_t size)
 {
@@ -120,10 +147,14 @@ static void add_mblock(void *p1, uint_t size)
     msize += size;
     mroot = p;
 
+#if     DEBUG == 3
+
     tprint("%s(): block #%u at %p, size = %lu\n", __func__, p->count,
            p->addr, (size_t)p->size);
 
     ++nallocs;
+
+#endif
 
     if (maxblocks < ++nblocks)
     {
@@ -158,7 +189,7 @@ void *alloc_mem(uint_t size)
         throw(E_MEM);                   // Memory overflow
     }
 
-#if     defined(MEMCHECK)
+#if     DEBUG >= 2
 
     add_mblock(p1, size);
 
@@ -199,7 +230,7 @@ tbuffer alloc_tbuf(uint_t size)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(MEMCHECK)
+#if     DEBUG >= 2
 
 static void delete_mblock(void *p1)
 {
@@ -227,8 +258,12 @@ static void delete_mblock(void *p1)
                 p->next->prev = p->prev;
             }
 
+#if     DEBUG == 3
+
             tprint("%s(): block #%u at %p, size = %lu\n", __func__, p->count,
                    p->addr, (size_t)p->size);
+
+#endif
 
             p->next = p->prev = NULL;
             p->addr = NULL;
@@ -246,7 +281,12 @@ static void delete_mblock(void *p1)
         p = p->next;
     }
 
-    tprint("?Can't find memory block: %p\n", p1);
+#if     DEBUG == 3
+
+    tprint("%s(): Can't find memory block: %p\n", __func__, p1);
+
+#endif
+
 }
 
 #endif
@@ -259,8 +299,6 @@ static void delete_mblock(void *p1)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(MEMCHECK)
-
 void exit_mem(void)
 {
     // We free this memory here because exit_EG() has to be the last function
@@ -268,10 +306,16 @@ void exit_mem(void)
     // before that, and if we didn't free it here, then the code below would
     // assume that there's a memory leak.
 
+#if     DEBUG >= 2
+
     free_mem(&ez.data);
+
+#if     DEBUG == 3
 
     tprint("%s(): %u block%s allocated, high water mark = %u block%s\n",
            __func__, nallocs, plural(nallocs), maxblocks, plural(maxblocks));
+
+#endif
 
     struct mblock *p = mroot;
     struct mblock *next;
@@ -284,8 +328,13 @@ void exit_mem(void)
 
     while (p != NULL)
     {
+
+#if     DEBUG == 3
+
         tprint("%s(): lost block #%u at %p, %lu byte%s\n", __func__, p->count,
                p->addr, (size_t)p->size, plural(p->size));
+
+#endif
 
         next = p->next;
         msize -= p->size;
@@ -297,9 +346,10 @@ void exit_mem(void)
 
         p = next;
     }
-}
 
 #endif
+
+}
 
 
 ///
@@ -317,7 +367,7 @@ void *expand_mem(void *p1, uint_t size, uint_t delta)
 
     char *p2;
 
-#if     defined(MEMCHECK)
+#if     DEBUG >= 2
 
     struct mblock *mblock = find_mblock(p1);
 
@@ -334,20 +384,29 @@ void *expand_mem(void *p1, uint_t size, uint_t delta)
         throw(E_MEM);                   // Memory overflow
     }
 
-#if     defined(MEMCHECK)
+#if     DEBUG >= 2
 
     if (mblock != NULL)
     {
         msize -= mblock->size;
         msize += size + delta;
 
+#if     DEBUG == 3
+
         uint_t oldsize = mblock->size;
+
+#endif
 
         mblock->addr = p2;
         mblock->size = size + delta;
 
+#if     DEBUG == 3
+
         tprint("%s(): block #%u at %p increased from %lu to %lu\n", __func__,
                mblock->count, mblock->addr, (size_t)oldsize, (size_t)mblock->size);
+
+#endif
+
     }
 
 #endif
@@ -367,7 +426,7 @@ void *expand_mem(void *p1, uint_t size, uint_t delta)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(MEMCHECK)
+#if     DEBUG >= 2
 
 static struct mblock*find_mblock(void *p1)
 {
@@ -385,7 +444,11 @@ static struct mblock*find_mblock(void *p1)
         mblock = mblock->next;
     }
 
-    tprint("?Can't find memory block: %p\n", p1);
+#if     DEBUG == 3
+
+    tprint("%s(): Can't find memory block: %p\n", __func__, p1);
+
+#endif
 
     return NULL;
 }
@@ -409,7 +472,7 @@ void free_mem(void *p1)
     if (*p2 != NULL)
     {
 
-#if     defined(MEMCHECK)
+#if     DEBUG >= 2
 
         delete_mblock(*p2);
 
@@ -438,7 +501,7 @@ void *shrink_mem(void *p1, uint_t size, uint_t delta)
 
     char *p2;
 
-#if     defined(MEMCHECK)
+#if     DEBUG >= 2
 
     struct mblock *mblock = find_mblock(p1);
 
@@ -455,20 +518,29 @@ void *shrink_mem(void *p1, uint_t size, uint_t delta)
         throw(E_MEM);                   // Memory overflow
     }
 
-#if     defined(MEMCHECK)
+#if     DEBUG >= 2
 
     if (mblock != NULL)
     {
         msize -= mblock->size;
         msize += size - delta;
 
+#if     DEBUG == 3
+
         uint_t oldsize = mblock->size;
+
+#endif
 
         mblock->addr = p2;
         mblock->size = size - delta;
 
+#if     DEBUG == 3
+
         tprint("%s(): block #%u at %p decreased from %lu to %lu\n", __func__,
                mblock->count, mblock->addr, (size_t)oldsize, (size_t)mblock->size);
+
+#endif
+
     }
 
 #endif

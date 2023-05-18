@@ -21,7 +21,7 @@ fast:
 
 .PHONY: profile
 profile:
-	@$(MAKE) gprof=1 nostrict=1 ndebug=1 notrace=1 teco
+	@$(MAKE) gprof=1 ndebug=1 nostrict=1 notrace=1 teco
 
 #
 #  Define targets that verify Perl scripts.
@@ -79,14 +79,13 @@ critic:
 
 endif
 
-
 #
 #  Define target to include required test features
 #
 
 .PHONY: test
 test:
-	@$(MAKE) debug=1 memcheck=1 teco
+	@$(MAKE) debug=2 teco
 
 #
 #  Define target to smoke test scripts, files, and executable image.

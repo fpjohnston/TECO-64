@@ -55,7 +55,7 @@ EXCLUDES := $(patsubst %,src/%,$(EXCLUDES))
 
 SOURCES := $(filter-out $(EXCLUDES),$(SOURCES))
 
-OBJECTS = $(patsubst src/%.c,obj/%.o,$(SOURCES))
+OBJECTS = $(patsubst src/%,obj/%,$(SOURCES:.c=.o))
 
 #  Define default target.
 
@@ -103,7 +103,8 @@ obj:
 
 #  Always compile source files if compiler options have changed.
 
-obj/cflags: obj                         # Create compiler options file
+.PHONY: cflags
+obj/cflags: cflags                      # Create compiler options file
 	-@echo '$(CFLAGS)' | cmp -s - $@ || echo '$(CFLAGS)' > $@
 
 obj/%.o: src/%.c                        # Compile source file
