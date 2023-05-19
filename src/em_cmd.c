@@ -40,6 +40,8 @@
 
 #if     defined(NOTRACE)
 
+#include "errors.h"
+
 // EM command does not work if tracing is disabled in this build.
 
 void exec_EM(struct cmd *unused)
