@@ -90,19 +90,19 @@ endif
 
 ifdef   gdb                         # Enable use of gdb.
 
-    CFLAGS += -O0 -g
-    LINKOPTS += -g
+    CFLAGS   += -g -O0
+    LINKOPTS += -g -O0
 
 else ifdef gprof                    # Enable use of gprof.
 
-    CFLAGS += -O3 -pg
-    LINKOPTS += -pg
+    CFLAGS   += -pg -O3
+    LINKOPTS += -pg -O3
     DEFINES += -D PROFILE
 
 else                                # Neither gdb nor gprof.
 
-	CFLAGS += -Ofast
-    LINKOPTS += -s
+	CFLAGS   += -Ofast
+    LINKOPTS += -Ofast -s
 
 endif
 
@@ -119,7 +119,13 @@ ifdef   inline                      # Enable inline optimizations
 
     DEFINES += -D INLINE
     DOXYGEN +=    INLINE
-    CFLAGS  += -flto
+
+endif
+
+ifdef   lto                         # Enable link-time optimization
+
+    CFLAGS += -flto=2
+    LINKOPTS += -flto=2
 
 endif
 
