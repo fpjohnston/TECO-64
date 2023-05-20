@@ -67,7 +67,11 @@ const char *table_8bit[] =          ///< 8-bit characters
 
 // Local functions
 
-static void tputc(int c, int input);
+static void term_echo(int c);
+
+static void term_out(int c);
+
+static void term_type(int c);
 
 
 ///
@@ -88,7 +92,7 @@ void echo_in(int c)
 
     if (isprint(c))
     {
-        tputc(c, true);
+        term_echo(c);
     }
     else if (iscntrl(c))
     {
@@ -97,8 +101,8 @@ void echo_in(int c)
             case CTRL_C:
                 if (!f.et.rubout || f.e0.display)
                 {
-                    tputc(c, true);
-                    tputc(LF, true);
+                    term_echo(c);
+                    term_echo(LF);
                 }
                 else
                 {
@@ -108,21 +112,21 @@ void echo_in(int c)
                 break;
 
             case LF:
-                tputc(CR, true);
+                term_echo(CR);
                 //lint -fallthrough
 
             case BS:
             case HT:
             case CR:
-                tputc(c, true);
+                term_echo(c);
 
                 break;
 
             case VT:
                 for (uint i = 0; i < VT_LINES; ++i)
                 {
-                    tputc(CR, true);
-                    tputc(LF, true);
+                    term_echo(CR);
+                    term_echo(LF);
                 }
 
                 break;
@@ -130,8 +134,8 @@ void echo_in(int c)
             case FF:
                 for (uint i = 0; i < FF_LINES; ++i)
                 {
-                    tputc(CR, true);
-                    tputc(LF, true);
+                    term_echo(CR);
+                    term_echo(LF);
                 }
 
                 break;
@@ -142,25 +146,30 @@ void echo_in(int c)
             case ESC:
                 if (!f.e1.dollar && (f.et.accent || f.ee != NUL))
                 {
-                    tputc('`', false);
+                    term_echo('`');
                 }
                 else
                 {
-                    tputc('$', false);
+                    term_echo('$');
                 }
 
                 break;
 
             default:                    // Display as ^c
-                tputc('^', true);
-                tputc(c + 'A' - 1, true);
+                term_echo('^');
+                term_echo(c + 'A' - 1);
 
                 break;
          }
     }
     else
     {
-        tprint("%s", table_8bit[c & 0x7f]);
+        const char *p = table_8bit[c & 0x7f];
+
+        while ((c = *p++) != NUL)
+        {
+            term_echo(c);;
+        }
     }
 }
 
@@ -250,7 +259,7 @@ void print_flag(int_t flag)
     {
         if (i == 0 && mark != -1)
         {
-            tputc(mark, false);
+            term_type(mark);
         }
 
         int c = read_edit(i);
@@ -291,6 +300,94 @@ void print_prompt(void)
 
 
 ///
+///  @brief    Echo character to terminal.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void term_echo(int c)
+{
+    term_out(c);                        // Use common output function
+
+    FILE *fp = ofiles[OFILE_LOG].fp;    // Check for log file
+
+    if (fp != NULL && !f.e3.noin)       // If open and we're logging input,
+    {
+        fputc(c, fp);                   //  then output character
+    }
+}
+
+
+///
+///  @brief    Output character to terminal or display. Note that ALL terminal
+///            output is done here, other than output specific to display mode.
+///            This is necessary because ncurses will get messed up if we write
+///            to the terminal both with its functions and with Standard C func-
+///            tions such as printf(). Also, having one function for output
+///            makes it easier to handle such things as updating the terminal
+///            positiob and checking for truncation.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void term_out(int c)
+{
+    switch (c)
+    {
+        case BS:
+            if (term_pos > 0)
+            {
+                --term_pos;
+            }
+
+            break;
+
+        case LF:
+        case VT:
+        case FF:
+        case CR:
+            term_pos = 0;
+
+            break;
+
+        default:
+            ++term_pos;
+    }
+
+    if (f.e0.display)                   // Is display active?
+    {
+        putc_cmd(c);                    // Output to command window
+    }
+    else if (!f.et.truncate || term_pos < w.width)
+    {
+        fputc(c, stdout);
+    }
+}
+
+
+///
+///  @brief    Type a single character.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void term_type(int c)
+{
+    term_out(c);                        // Use common output function
+
+    FILE *fp = ofiles[OFILE_LOG].fp;    // Check for log file
+
+    if (fp != NULL && !f.e3.noout)      // If open and we're logging output,
+    {
+        fputc(c, fp);                   //  then output character
+    }
+}
+
+
+///
 ///  @brief    Output NUL-terminated string to terminal, and possibly also to
 ///            log file.
 ///
@@ -320,10 +417,10 @@ int tprint(
         {
             if (buf[i] == LF)
             {
-                tputc(CR, false);
+                term_type(CR);
             }
 
-            tputc(buf[i], false);
+            term_type(buf[i]);
         }
     }
 
@@ -332,50 +429,20 @@ int tprint(
 
 
 ///
-///  @brief    Output character to terminal or display. Note that ALL output is
-///            done here, other than output specific to display mode, such as a
-///            status line. This is necessary because ncurses will get messed up
-///            if we do output both with its functions and with Standard C func-
-///            tions such as printf(). Also, having one lowest-level function
-///            for output makes it easier to handle such things as updating
-///            the terminal position, checking for truncation, and handling any
-///            output to a possible log file.
+///  @brief    Type newline character(s).
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void tputc(int c, int input)
+void type_newline(void)
 {
-    if (isdelim(c) || c == CR)
+    if (f.e3.CR_type)       // TODO: f.e3.CR_out?
     {
-        term_pos = 0;
-    }
-    else if (c != BS)
-    {
-        ++term_pos;
-    }
-    else if (term_pos > 0)
-    {
-        --term_pos;
+        term_type(CR);
     }
 
-    if (putc_cmd(c))
-    {
-        return;
-    }
-
-    if (!f.et.truncate || term_pos < w.width)
-    {
-        fputc(c, stdout);
-
-        FILE *fp = ofiles[OFILE_LOG].fp;
-
-        if (fp != NULL && ((input && !f.e3.noin) || (!input && !f.e3.noout)))
-        {
-            fputc(c, fp);
-        }
-    }
+    term_type(LF);
 }
 
 
@@ -388,41 +455,29 @@ static void tputc(int c, int input)
 
 void type_out(int c)
 {
-    if (c == NL)
-    {
-        if (f.e3.CR_type)
-        {
-            tputc(CR, false);
-        }
-
-        tputc(LF, false);
-
-        return;
-    }
-
     c &= 0xFF;                          // Ensure we only print 8 bits
 
     if (f.et.image)
     {
-        tputc(c, false);
+        term_type(c);
     }
     else if (islower(c) && f.eu != -1)
     {
         if (f.eu == 0)
         {
-            tputc('\'', false);
+            term_type('\'');
         }
 
-        tputc(toupper(c), false);
+        term_type(toupper(c));
     }
     else if (isupper(c) && f.eu == 1)
     {
-        tputc('\'', false);
-        tputc(c, false);
+        term_type('\'');
+        term_type(c);
     }
     else if (isprint(c))
     {
-        tputc(c, false);
+        term_type(c);
     }
     else if (iscntrl(c))                // ASCII character?
     {
@@ -435,7 +490,7 @@ void type_out(int c)
 
                 for (int i = 0; i < nspaces; ++i)
                 {
-                    tputc(' ', false);
+                    term_type(' ');
                 }
 
                 break;
@@ -445,7 +500,7 @@ void type_out(int c)
             case VT:
             case FF:
             case CR:
-                tputc(c, false);
+                term_type(c);
 
                 break;
 
@@ -455,18 +510,18 @@ void type_out(int c)
             case ESC:
                 if (!f.e1.dollar && (f.et.accent || f.ee != NUL))
                 {
-                    tputc('`', false);
+                    term_type('`');
                 }
                 else
                 {
-                    tputc('$', false);
+                    term_type('$');
                 }
 
                 break;
 
             default:                    // Display as ^c
-                tputc('^', false);
-                tputc(c + 'A' - 1, false);
+                term_type('^');
+                term_type(c + 'A' - 1);
 
                 break;
          }
@@ -516,7 +571,7 @@ void type_out(int c)
         }
         else
         {
-            tputc(c, false);
+            term_type(c);
         }
     }
 }

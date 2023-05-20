@@ -100,7 +100,7 @@ extern void init_dpy(void);
 
 extern void init_keys(void);
 
-extern bool putc_cmd(int c);
+extern void putc_cmd(int c);
 
 extern void refresh_dpy(void);
 

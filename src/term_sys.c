@@ -288,7 +288,7 @@ void init_term(void)
             mode.c_lflag &= ~ECHO;      // Disable echo
             mode.c_iflag |=  ICRNL;     // Map CR to NL on input
             mode.c_iflag &= ~INLCR;     // Don't map NL to CR on input
-            mode.c_oflag &= ~ONLCR;     // Don't map CR to CR/NL on output
+            mode.c_oflag |=  ONLCR;     // Map CR to CR/NL on output
 
             tcsetattr(fileno(stdin), TCSAFLUSH, &mode);
         }

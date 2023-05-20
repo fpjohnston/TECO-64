@@ -443,23 +443,16 @@ static void init_windows(void)
 ///            So, not only is CR not necessary, but if it preceded LF, this
 ///            would result in the current line getting blanked.
 ///
-///  @returns  true if character output, false if display not active.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool putc_cmd(int c)
+void putc_cmd(int c)
 {
-    if (!f.e0.display)
-    {
-        return false;
-    }
-
     if (c != CR)
     {
         waddch(d.cmd, (chtype)c);
     }
-
-    return true;
 }
 
 

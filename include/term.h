@@ -97,6 +97,8 @@ extern void reset_term(void);
 
 extern void retype_line(uint_t pos);
 
+extern void type_newline(void);
+
 extern void type_out(int c);
 
 #endif  // !defined(_TERM_H)

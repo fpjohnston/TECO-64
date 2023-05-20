@@ -259,7 +259,7 @@ static void print_error(
 
 #endif
 
-    type_out(NL);
+    type_newline();
 
     if (f.eh.why == HELP_VERBOSE)
     {
@@ -305,7 +305,7 @@ void print_verbose(int error)
     {
         if (pos + (int)strlen(token) >= width)
         {
-            type_out(NL);
+            type_newline();
 
             pos = tprint("    ");
         }
@@ -314,7 +314,7 @@ void print_verbose(int error)
 
     } while ((token = strtok_r(NULL, " ", &saveptr)) != NULL);
 
-    type_out(NL);
+    type_newline();
 }
 
 

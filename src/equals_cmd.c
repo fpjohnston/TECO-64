@@ -188,7 +188,7 @@ void exec_equals(struct cmd *cmd)
 
     if (!cmd->colon)                    // Suppress CR/LF?
     {
-        type_out(NL);
+        type_newline();
     }
 }
 

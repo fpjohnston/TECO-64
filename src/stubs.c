@@ -245,13 +245,13 @@ void init_keys(void)
 ///
 ///  @brief    Output character to command window.
 ///
-///  @returns  Always false (because display is never active).
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool putc_cmd(int unused)
+void putc_cmd(int unused)
 {
-    return false;
+    ;
 }
 
 
