@@ -620,7 +620,7 @@ static void reset_x(struct xstack *ptr)
 {
     assert(ptr != NULL);
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Reset expression stack data
 
     for (uint i = 0; i < countof(ptr->number.stack); ++i)
     {

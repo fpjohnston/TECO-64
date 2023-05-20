@@ -80,13 +80,9 @@ struct flags f =                    ///< Global flag variables
     .e1.percent = true,             // Allow :%q
     .e1.c_oper  = true,             // Use C precedence for operators
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include CTRL/] command
 
     .e1.repeat  = true,             // Double CTRL-] repeats command
-
-#else
-
-    .e1.repeat  = false,            // Double CTRL-] does not repeat command
 
 #endif
 
@@ -137,10 +133,10 @@ struct flags f =                    ///< Global flag variables
     .eh.why = HELP_CONCISE,         // Use standard verbosity for error msgs.
     .eh.what = false,               // Don't print failing command
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include function name & line no. for errors
 
-    .eh.where = true,               // Include line number for errors in macros
-    .eh.who = true,                 // Include function information
+    .eh.where = true,               // Include line number
+    .eh.who = true,                 // Include function name
 
 #endif
 

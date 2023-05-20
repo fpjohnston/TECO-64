@@ -41,7 +41,7 @@
 
 #define NO_WAIT (bool)false     ///< Don't wait for terminal input
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include --key option
 
 extern const char *key_name;
 

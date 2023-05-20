@@ -164,7 +164,7 @@ void exec_E1(struct cmd *cmd)
     f.e1.percent = e1.percent;
     f.e1.c_oper  = e1.c_oper;
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include CTRL/] command
 
     f.e1.repeat  = e1.repeat;
 
@@ -326,7 +326,7 @@ void exec_EH(struct cmd *cmd)
     f.eh.why   = eh.why;                // Print why we failed
     f.eh.what  = eh.what;               // Print command (what failed)
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include function name & line no. for errors
 
     f.eh.where = eh.where;              // Print line no. (where error occurred)
     f.eh.who   = eh.who;                // Print function (who issued error)

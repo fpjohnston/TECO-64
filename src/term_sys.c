@@ -58,7 +58,7 @@ static struct termios saved_mode;       ///< Saved terminal mode
 
 static bool term_active = false;        ///< Are terminal settings active?
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include --key option
 
 const char *key_name = NULL;            ///< Name of file for keystrokes
 
@@ -148,7 +148,7 @@ void detach_term(void)
 void exit_term(void)
 {
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include --key option
 
     if (key_fp != NULL)
     {
@@ -251,7 +251,7 @@ void init_term(void)
 
         getsize();                      // Get the current window size
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include --key option
 
         if (key_name != NULL)
         {
@@ -306,7 +306,7 @@ void init_term(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include --key option
 
 void putc_key(int c)
 {

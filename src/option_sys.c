@@ -562,7 +562,9 @@ static void opt_initialize(void)
 
 static void opt_keys(void)
 {
-#if     defined(DEBUG)
+
+#if     defined(DEBUG)          // Include --key option
+
     if (optarg != NULL && optarg[0] != '-')
     {
         key_name = optarg;
@@ -571,11 +573,15 @@ static void opt_keys(void)
     {
         key_name = NULL;
     }
+
 #else
+
     printf("--keys option is only available in debug builds\n");
 
     exit(EXIT_SUCCESS);
+
 #endif
+
 }
 
 
@@ -739,7 +745,7 @@ static void opt_version(void)
     printf("teco (TECO text editor) version %d.%d.%d", major_version,
            minor_version, patch_version);
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include debug status for --version
 
     fputs(" (DEBUG)", stdout);          // Say that it's a debug version
 

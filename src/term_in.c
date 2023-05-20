@@ -29,13 +29,7 @@
 #include <setjmp.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#if     defined(DEBUG)
-
 #include <string.h>
-
-#endif
-
 #include <unistd.h>
 
 #include "teco.h"
@@ -345,7 +339,7 @@ int getc_term(bool wait)
         }
     }
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include --key option
 
     putc_key(c);                        // Write character to keystroke file
 
@@ -556,7 +550,7 @@ static int read_first(void)
                 {
                     echo_in(LF);
 
-                    (void)exec_ctrl_F(c);
+                    exec_ctrl_F(c);
                 }
                 else
                 {
@@ -593,7 +587,7 @@ static int read_first(void)
 
                 break;
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include CTRL/] command
 
             case CTRL_RIGHT:
                 if (f.e1.repeat)
@@ -616,7 +610,7 @@ static int read_first(void)
                             strcpy(temp, cbuf->data);
 
                             exec_str(temp); // Re-execute last command string
-                            refresh_dpy();  // Do any necessary screen update
+                            refresh_dpy(); // Do any necessary screen update
                         }
 
                         break;

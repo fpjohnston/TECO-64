@@ -59,8 +59,10 @@ static void convert(char *buf, uint bufsize, const char *err_str, uint len);
 
 static void print_error(
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include function name and line no. for errors
+
     const char *func, unsigned int line,
+
 #endif
 
     int error, const char *err_str, const char *file_str);
@@ -202,14 +204,16 @@ void print_command(void)
 
 static void print_error(
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include function name and line no. for errors
+
     const char *func, unsigned int line,
+
 #endif
 
     int error, const char *err_str, const char *file_str)
 {
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include function name and line no. for errors
 
     assert(func != NULL);
 
@@ -239,7 +243,7 @@ static void print_error(
     // and therefore it is not necessary to tell the user which line the error
     // occurred on.
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include function name and line no. for errors
 
     if (f.eh.where)
     {
@@ -362,10 +366,14 @@ void print_verbose(int error)
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include function name and line no. for errors
+
 noreturn void (throw)(const char *func, unsigned int line, int error, ...)
+
 #else
+
 noreturn void (throw)(int error, ...)
+
 #endif
 
 {
@@ -455,10 +463,14 @@ noreturn void (throw)(int error, ...)
         sprintf(last_command, "%.*s", (int)cbuf->pos, cbuf->data);
     }
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Include function name and line no. for errors
+
     print_error(func, line, error, err_str, file_str);
+
 #else
+
     print_error(error, err_str, file_str);
+
 #endif
 
     if (f.et.abort)                     // Abort on error?

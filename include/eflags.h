@@ -84,7 +84,13 @@ union e1_flag
         uint         : 1;       ///< (unused)
         uint         : 1;       ///< (unused)
         uint         : 1;       ///< (unused)
+
+#if     defined(DEBUG)          // Include CTRL/] command
+
         uint repeat  : 1;       ///< Double Ctrl-] repeats command
+
+#endif
+
     };
 };
 
@@ -185,10 +191,10 @@ union eh_flag
     {
         uint why       : 2;     ///< Why the error occurred
         uint what      : 1;     ///< What command caused the error
+
+#if     defined(DEBUG)          // Include function name & line no. for errors
+
         uint where     : 1;     ///< Where the error occurred (line no.)
-
-#if     defined(DEBUG)
-
         uint who       : 1;     ///< Who issued the error (function name)
 
 #endif

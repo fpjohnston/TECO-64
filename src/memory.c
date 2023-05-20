@@ -40,7 +40,7 @@
 //      2 = Debugging + memory errors
 //      3 = Debugging + memory detail
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Check for enabling memory debugging
 
     #if     DEBUG != 2 && DEBUG != 3
 
