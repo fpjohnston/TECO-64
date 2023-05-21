@@ -38,32 +38,33 @@
 
 // Local functions
 
-static bool end_cmd(void);
+static bool double_escape(void);
 
 
 ///
-///  @brief    Check to see if we have a double ESCape, or we're at the end
-///            of our command string.
+///  @brief    Check to see if we have a double ESCape.
 ///
-///  @returns  true if at end, else false.
+///  @returns  true if double escape, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool end_cmd(void)
+static bool double_escape(void)
 {
-    if (cbuf->pos >= cbuf->len)
+    if (cbuf->pos < cbuf->len)          // Any more characters?
     {
-        return true;                    // We have <ESC> at end of string
+        if (cbuf->data[cbuf->pos] == ESC)
+        {
+            return true;                // We have <ESC><ESC>
+        }
+        else if (cbuf->pos < cbuf->len - 1
+                 && !memcmp(&cbuf->data[cbuf->pos], "^[", (size_t)2))
+        {
+            return true;                // We have <ESC>^[
+        }
     }
-    else if (cbuf->data[cbuf->pos] == ESC)
-    {
-        return true;                    // We have <ESC><ESC>
-    }
-    else if (cbuf->pos < cbuf->len - 1
-             && !memcmp(&cbuf->data[cbuf->pos], "^[", (size_t)2))
-    {
-        return true;                    // We have <ESC>^[
-    }
+
+    //  Here for a single ESCape, either at the end of the command string,
+    //  or followed by a non-ESCape.
 
     return false;
 }
@@ -87,7 +88,7 @@ void exec_escape(struct cmd *cmd)
     // If we're ending this command string, stop processing any more commands.
     // If we're also in a macro, return to caller, preserving numeric arguments.
 
-    if (end_cmd())
+    if (double_escape())
     {
         cbuf->pos = cbuf->len;          // Move to end of command string
 

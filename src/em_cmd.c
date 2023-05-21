@@ -264,7 +264,7 @@ static void squish_cmd(int comment)
         {
             unsigned long nbytes = cbuf->pos - start;
 
-            write(STDOUT_FILENO, cbuf->data + start, nbytes);
+            (void)write(STDOUT_FILENO, cbuf->data + start, nbytes);
         }
     } 
 
