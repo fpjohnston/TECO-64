@@ -549,7 +549,6 @@ static int read_first(void)
                 if (c == CTRL_F || isdigit(c))
                 {
                     echo_in(LF);
-
                     exec_ctrl_F(c);
                 }
                 else
