@@ -33,6 +33,7 @@
 #include "ascii.h"
 #include "cmdbuf.h"
 #include "eflags.h"                 // Needed for confirm()
+#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
@@ -264,7 +265,10 @@ static void squish_cmd(int comment)
         {
             unsigned long nbytes = cbuf->pos - start;
 
-            (void)write(STDOUT_FILENO, cbuf->data + start, nbytes);
+            if (write(STDOUT_FILENO, cbuf->data + start, nbytes) == -1)
+            {
+                throw(E_ERR, NULL);
+            }
         }
     } 
 
