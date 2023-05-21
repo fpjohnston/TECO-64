@@ -55,51 +55,35 @@ static char *ctrl_f_cmd[MAX_CTRL_F];    ///< Command strings for CTRL/F
 
 void exec_ctrl_F(int c)
 {
-    static int saved_index = 0;         ///< Last index used
+    static int i = 0;                   ///< Last index used
 
     if (isdigit(c))
     {
-        saved_index = c - '0';          // Set index and default
+        i = c - '0';                    // Set index and default
     }
     else
     {
         assert(c == CTRL_F);
     }
 
-#if     defined(DEBUG)
-
-    if (saved_index == 0 && ctrl_f_cmd[0] == NULL)
+    if (ctrl_f_cmd[i] != NULL && *ctrl_f_cmd[i] != NUL)
     {
-        const char *p = "EK HK EX";
+        uint_t size = (uint_t)strlen(ctrl_f_cmd[i]);
+        bool exec = f.e0.exec;          // Save current state
+        tbuffer buf =
+        {
+            .data = ctrl_f_cmd[i],
+            .size = size,
+            .len  = size,
+            .pos  = 0,
+        };
 
-        ctrl_f_cmd[0] = alloc_mem((uint_t)strlen(p) + 1);
+        f.e0.exec = true;               // Ensure that we execute this
 
-        strcpy(ctrl_f_cmd[0], p);
+        exec_macro(&buf, NULL);
+
+        f.e0.exec = exec;
     }
-
-#endif
-
-    if (ctrl_f_cmd[saved_index] == NULL || *ctrl_f_cmd[saved_index] == NUL)
-    {
-        return;
-    }
-
-    tbuffer buf;
-
-    buf.data = ctrl_f_cmd[saved_index];
-    buf.size = (uint_t)strlen(ctrl_f_cmd[saved_index]);
-    buf.len  = buf.size;
-    buf.pos  = 0;
-
-    bool exec = f.e0.exec;
-
-    f.e0.exec = true;
-
-    exec_macro(&buf, NULL);
-
-    f.e0.exec = exec;
-
-    return;
 }
 
 
@@ -151,7 +135,7 @@ void exec_FF(struct cmd *cmd)
 
     if (cmd->colon)
     {
-        store_val(SUCCESS);     // Command succeeded
+        store_val(SUCCESS);             // Command succeeded
     }
 }
 
