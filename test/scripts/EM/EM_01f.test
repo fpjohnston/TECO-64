@@ -1,0 +1,16 @@
+! Smoke test for TECO text editor !
+
+! Function: Type macro in Q-register !
+!  Command: EMq !
+!  TECO-64: PASS !
+
+[[enter]]
+
+0,32E1
+
+@^UA/ 1 + 2 =              !! Single line comment
+/
+
+16 EMA                              ! Test: 16 EMA !
+
+[[exit]]

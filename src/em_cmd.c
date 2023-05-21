@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include "teco.h"
 #include "ascii.h"
@@ -67,7 +68,7 @@ static struct
 {
     uint space   : 1;           ///< Strip spaces
     uint blank   : 1;           ///< Strip blank lines (ending w/ LF)
-    uint white   : 1;           ///< Strip VT, FF, or CR
+    uint white   : 1;           ///< Strip all whitespace
     uint comment : 1;           ///< Strip tags starting w/ ! and space
     uint bang    : 1;           ///< Strip comments (starting w/ !!)
 } strip;
@@ -127,23 +128,15 @@ void exec_EM(struct cmd *cmd)
     }
 
     tbuffer *saved_cbuf = cbuf;
-    bool saved_trace = f.trace;
     uint_t saved_pos = qreg->text.pos;
 
     cbuf = &qreg->text;                 // Switch command strings
     cbuf->pos = 0;
-    f.e0.skip = true;                   // Just skip over commands
-
-    new_x();                            // Make new expression stack
 
     squish_cmd(cmd->m_arg);             // Squish the command string
 
-    delete_x();                         // Restore previous expression stack
-
-    f.e0.skip = false;
-    f.trace = saved_trace;
-    cbuf = saved_cbuf;                  // Restore previous command string
     qreg->text.pos = saved_pos;
+    cbuf = saved_cbuf;                  // Restore previous command string
 }
 
 
@@ -167,8 +160,6 @@ static bool scan_blank(void)
 
             return false;               // Don't strip non-blank line
         }
-
-        f.trace = false;
 
         next_cbuf();                    // Skip whitespace character
 
@@ -213,58 +204,73 @@ static void squish_cmd(int comment)
     struct cmd newcmd = null_cmd;       // Initialize new command
     int c;
 
+    f.e0.skip = true;                   // Just skip over commands
+
+    new_x();                            // Make new expression stack
+
     // Loop for all commands in command string.
 
-    while ((c = peek_cbuf()) != EOF)
+    while ((c = fetch_cbuf()) != EOF)
     {
-        f.trace = true;                 // Assume we'll trace the command
+        bool echo = true;
 
         if (isgraph(c))
         {
-            if (c == '!')
+            if (c == '!' && cbuf->pos < cbuf->len)
             {
-                uint next = cbuf->pos + 1;
+                uint next = cbuf->pos;
 
                 if (strip.comment && cbuf->data[next] == comment)
                 {
-                    f.trace = false;
+                    echo = false;
                 }
                 else if (f.e1.bang && cbuf->data[next] == '!')
                 {
                     if (strip.bang || strip.white)
                     {
-                        f.trace = false;
+                        echo = false;
                     }
                 }
             }
         }
-        else if (strip.white && (c == LF || c == CR))
+        else if (strip.white && isspace(c) && c != TAB)
         {
-            f.trace = false;
+            echo = false;
         }
         else if (c == LF && strip.blank && term_pos == 0)
         {
-            f.trace = false;
+            echo = false;
         }
         else if (c == SPACE)
         {
             if (strip.space)
             {
-                f.trace = false;
+                echo = false;
             }
-            else if (strip.blank)
+            else if (strip.blank && scan_blank())
             {
-                f.trace = !scan_blank();
+                echo = false;
             }
         }
 
-        next_cbuf();                    // Accept character and maybe trace it
-
-        if (finish_cmd(&newcmd, c))
+        uint_t start = cbuf->pos - 1;   // Start of current command
+            
+        if (finish_cmd(&newcmd, c))     // Parse the rest of the command
         {
-            newcmd = null_cmd;
+            newcmd = null_cmd;          // If done with command, start next one
+        }
+
+        if (echo)
+        {
+            unsigned long nbytes = cbuf->pos - start;
+
+            write(STDOUT_FILENO, cbuf->data + start, nbytes);
         }
     } 
+
+    delete_x();                         // Restore previous expression stack
+
+    f.e0.skip = false;
 }
 
 #endif
