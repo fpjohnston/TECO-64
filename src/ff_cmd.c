@@ -49,11 +49,11 @@ static char *ctrl_f_cmd[MAX_CTRL_F];    ///< Command strings for CTRL/F
 ///                               'x' may range from '0' to '9'.
 ///            <CTRL_F><CTRL_F> - Repeats last CTRL/F<digit>.
 ///
-///  @returns  true if executed command, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool exec_ctrl_F(int c)
+void exec_ctrl_F(int c)
 {
     static int saved_index = 0;         ///< Last index used
 
@@ -81,7 +81,7 @@ bool exec_ctrl_F(int c)
 
     if (ctrl_f_cmd[saved_index] == NULL || *ctrl_f_cmd[saved_index] == NUL)
     {
-        return false;
+        return;
     }
 
     tbuffer buf;
@@ -99,7 +99,7 @@ bool exec_ctrl_F(int c)
 
     f.e0.exec = exec;
 
-    return true;
+    return;
 }
 
 
