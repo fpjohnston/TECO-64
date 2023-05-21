@@ -212,6 +212,17 @@ enum help
     HELP_VERBOSE = 3
 };
 
+///  @union   eo_flag
+///
+///  @brief   Definition of flags that affect terminal input and output.
+
+struct eo_flag
+{
+    int_t major;                ///< Major version number
+    int_t minor;                ///< Minor version number
+    int_t patch;                ///< Patch version number
+};
+
 ///  @union   et_flag
 ///
 ///  @brief   Definition of flags that affect terminal input and output.
@@ -258,7 +269,7 @@ struct flags
     int_t          ee;          ///< ESCape surrogate
     union  eh_flag eh;          ///< Help message flags
     int_t          ej;          ///< Operating system type
-    int_t          eo;          ///< TECO version number
+    struct eo_flag eo;          ///< TECO version number
     int_t          es;          ///< Search verification flag
     union  et_flag et;          ///< Terminal flags
     int_t          eu;          ///< Upper/lower case flag

@@ -56,6 +56,7 @@
 #include "file.h"
 #include "qreg.h"
 #include "term.h"
+#include "version.h"
 
 
 //lint -save -e10 -e65 -e133 -e485 -e651
@@ -141,7 +142,11 @@ struct flags f =                    ///< Global flag variables
 #endif
 
     .ej = 0,                        // Operating system type
-    .eo = 0,                        // TECO version number
+
+    .eo.major = major_version,      // Major version number
+    .eo.minor = minor_version,      // Minor version number
+    .eo.patch = patch_version,      // Patch version number
+
     .es = 0,                        // Search verification flag
     .et.accent  = true,             // Use accent grave as delimiter
     .eu = -1,                       // No case flagging

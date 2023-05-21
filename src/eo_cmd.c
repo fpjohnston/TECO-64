@@ -32,19 +32,12 @@
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
-#include "version.h"
 
 
 ///
-///  @brief    Execute EO command: read or set TECO version number.
-///
-///               EO - Major version.
-///              :EO - Same as EO.
-///             0:EO - Same as EO.
-///            -1:EO - Minor version.
-///            -2:EO - Patch version.
-///
-///            nEO - Error (not currently possible to set version number).
+///  @brief    Execute nEO command: set TECO version number. This is a no-op
+///            unless we are trying to change the version, in which case we
+///            issue an error.
 ///
 ///  @returns  Nothing.
 ///
@@ -53,47 +46,12 @@
 void exec_EO(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    assert(cmd->n_set);
+    assert(!cmd->colon);
 
-    // If not trying to set value, then just return major version
-
-    if (!cmd->n_set)
+    if (cmd->n_arg != f.eo.major)       // Error unless current version
     {
-        store_val((int_t)major_version);
-
-        return;
-    }
-
-    // If n specified without colon, that's an error
-
-    if (!cmd->colon)                    // :EO?
-    {
-        if (cmd->n_arg == major_version)
-        {
-            return;                     // Setting current version is okay
-        }
-
         throw(E_NYI);                   // Not yet implemented
-    }
-
-    // Here if we have n:EO - figure out which version to return
-
-    switch (cmd->n_arg)
-    {
-        case -2:
-            store_val((int_t)patch_version);
-
-            break;
-
-        case -1:
-            store_val((int_t)minor_version);
-
-            break;
-
-        case 0:
-        default:
-            store_val((int_t)major_version);
-
-            break;
     }
 }
 
@@ -101,7 +59,7 @@ void exec_EO(struct cmd *cmd)
 ///
 ///  @brief    Scan EO command.
 ///
-///  @returns  false (command is not an operand or operator).
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -111,5 +69,37 @@ bool scan_EO(struct cmd *cmd)
 
     confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
 
-    return false;
+    if (!cmd->n_set)                    // EO?
+    {
+        store_val(f.eo.major);
+
+        return true;
+    }
+    else if (!cmd->colon)               // nEO?
+    {
+        return false;
+    }
+    else                                // n:EO
+    {
+        switch (cmd->n_arg)
+        {
+            case -2:
+                store_val(f.eo.patch);
+
+                break;
+
+            case -1:
+                store_val(f.eo.minor);
+
+                break;
+
+            case 0:
+            default:
+                store_val(f.eo.major);
+
+                break;
+        }
+
+        return true;
+    }
 }

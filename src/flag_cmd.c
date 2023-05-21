@@ -473,7 +473,7 @@ bool scan_EJ(struct cmd *cmd)
 
     n = teco_env(n, cmd->colon);        // Do the system-dependent part
 
-    store_val((int_t)n);        // Now return the result
+    store_val((int_t)n);                // Now return the result
 
     cmd->colon = false;
 
@@ -533,12 +533,6 @@ bool scan_flag1(struct cmd *cmd)
 
                     return true;
 
-                case 'O':               // EO
-                case 'o':
-                    store_val((int_t)f.eo);
-
-                    return true;
-
                 case 'U':               // EU
                 case 'u':
                     store_val((int_t)f.eu);
@@ -548,6 +542,7 @@ bool scan_flag1(struct cmd *cmd)
                 default:
                     break;
             }
+
             break;
 
         default:
