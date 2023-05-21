@@ -452,7 +452,10 @@ static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
 
 
 ///
-///  @brief    Scan the text string following the command.
+///  @brief    Scan the text string following the command. Note that the
+///            delimiter passed to us is the closing delimiter for the string,
+///            which is usually, but not always, the same as the opening
+///            delimiter.
 ///
 ///  @returns  Nothing.
 ///
@@ -467,48 +470,66 @@ static void scan_text(int delim, tstring *text)
     size_t nbytes = cbuf->len - cbuf->pos;
     const char *start = text->data;
     const char *end = memchr(start, delim, (size_t)nbytes);
-    const char *p;
+    uint len, tail = 1;
 
-    if (end == NULL)
+    if (end != NULL)
+    {
+        len = (uint)(end - start);
+
+        // If we're counting lines, then count any LFs in the text string.
+
+        if (cmd_line != 0)
+        {
+            const char *p = start;
+
+            for (uint i = 0; i < len; ++i)
+            {
+                if (*p++ == LF)
+                {
+                    ++cmd_line;
+                }
+            }
+
+            if (delim == LF)            // Is LF the delimiter (for !! tags)?
+            {
+                ++cmd_line;             // Yes, so count that also
+            }
+        }
+    }
+    else if (delim == LF)               // Processing a one-line comment?
+    {
+        end = memchr(start, ESC, (size_t)nbytes);
+
+        if (end != NULL)                // Did we find an ESCape?
+        {
+            len = (uint)(end - start);
+        }
+        else                            // No, just consume remainder of line
+        {
+            len = (uint)nbytes;
+        }
+
+        tail = 0;                       // No closing delimiter
+    }
+    else
     {
         throw(E_BALK);                  // Unexpected end of command or macro
     }
 
-    text->len = (uint_t)(int_t)(end - start);
+    // If tracing, echo remainder of text string, including the closing delimiter.
 
-    // If we're counting lines, then count any LFs in the text string.
-
-    if (cmd_line != 0)
+    if (f.trace)
     {
-        p = start;
+        const char *p = start;
 
-        for (int i = 0; i < (int)(end - start); ++i)
+        for (uint i = 0; i < len + tail; ++i)
         {
-            if (*p++ == LF)
-            {
-                ++cmd_line;
-            }
-        }
-
-        if (*p == LF)                   // Is LF the delimiter (for !! tags)?
-        {
-            ++cmd_line;                 // Yes, so count that also
+            trace_cbuf(*p++);
         }
     }
 
-    // Echo text string or comment if tracing. In order to ensure that this will
-    // work when executing an EM command, note that we must echo the LF that
-    // terminates a comment; otherwise, what follows would then become part of
-    // the comment.
-
-    p = start;
-
-    for (uint i = 0; i < text->len + 1; ++i)
-    {
-        trace_cbuf(*p++);
-    }
-
-    cbuf->pos += text->len + 1;
+    cbuf->pos += len + tail;
+    text->len = len;
 }
 
 
