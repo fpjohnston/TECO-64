@@ -63,7 +63,7 @@ struct options
     bool create;            ///< --create option
     bool display;           ///< --display and --nodisplay options
     bool init;              ///< --initialize and --noinitialize option s
-    bool memory;            ///< --nomemory option 
+    bool memory;            ///< --nomemory option
     bool readonly;          ///< --read-only option
     bool exit;              ///< --exit option
     bool mung;              ///< --mung option (hidden)

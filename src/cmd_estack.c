@@ -152,7 +152,7 @@ struct xstack
         enum x_oper stack[MAX_OPERS]; ///< Operator list
         enum x_oper *top;           ///< Top of operator stack
         uint count;                 ///< No.of stored elements
-        bool last;                  ///< Last element pushed was an operator 
+        bool last;                  ///< Last element pushed was an operator
         uint nesting;               ///< Nesting level for parentheses
     } oper;                         ///< Operator stack
 };
@@ -580,7 +580,7 @@ bool query_x(int_t *n)
 
     enum x_oper type;
 
-    while (x->oper.count != 0 && (type = x->oper.top[-1]) != X_LPAREN) 
+    while (x->oper.count != 0 && (type = x->oper.top[-1]) != X_LPAREN)
     {
         --x->oper.count;
         --x->oper.top;
@@ -1066,7 +1066,7 @@ void store_mul(void)
 ///
 ///            Note that this function should never be called to process left
 ///            or right parentheses, as those are processed elsewhere.
-///            
+///
 ///
 ///  @returns  Nothing.
 ///

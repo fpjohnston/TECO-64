@@ -255,7 +255,7 @@ static void squish_cmd(int comment)
         }
 
         uint_t start = cbuf->pos - 1;   // Start of current command
-            
+
         if (finish_cmd(&newcmd, c))     // Parse the rest of the command
         {
             newcmd = null_cmd;          // If done with command, start next one
@@ -270,7 +270,7 @@ static void squish_cmd(int comment)
                 throw(E_ERR, NULL);
             }
         }
-    } 
+    }
 
     delete_x();                         // Restore previous expression stack
 
