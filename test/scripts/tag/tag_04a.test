@@ -1,0 +1,15 @@
+! Smoke test for TECO text editor !
+
+! Function: Test tag in macro !
+!  Command: bang !
+!  TECO-64: ?UTM !
+
+[[enter]]
+
+0,32 E1
+
+@^UA/! Test: tag in macro /
+
+MA
+
+[[exit]]
