@@ -44,12 +44,12 @@
         <command name='CTRL_UNDER'  scan='ctrl_under'                  type=''  />
         <command name='SPACE'                                          type=' ' />
         <command name='!'           scan='not'        exec='bang'      type='!' />
-        <command name='"'           scan='quote'      exec='quote'     type=''  />
+        <command name='"'           scan='if'         exec='if'        type=''  />
         <command name='#'           scan='or'                          type=''  />
         <command name='$'                                              type='?' />
         <command name='%'           scan='pct'        exec='pct'       type=''  />
         <command name='&amp;'       scan='and'                         type=''  />
-        <command name='&apos;'                        exec='apos'      type=''  />
+        <command name='&apos;'                        exec='endif'     type=''  />
         <command name='('           scan='open'                        type=''  />
         <command name=')'           scan='close'                       type=''  />
         <command name='*'           scan='mul'                         type=''  />
@@ -108,7 +108,7 @@
         <command name='_'           scan='under'      exec='under'     type=''  />
         <command name='`'                                              type='?' />
         <command name='{'                                              type='?' />
-        <command name='|'                             exec='vbar'      type=''  />
+        <command name='|'                             exec='else'      type=''  />
         <command name='}'                                              type='?' />
         <command name='~'           scan='xor'                         type=''  />
         <command name='DEL'                                            type='?' />
@@ -150,7 +150,7 @@
 
         <!-- F commands -->
 
-        <command name='F&apos;'                       exec='F_apos'    type=''  />
+        <command name='F&apos;'                       exec='F_endif'   type=''  />
         <command name='F0'          scan='F0'         exec='nop'       type=''  />
         <command name='F1'          scan='F1'         exec='F1'        type=''  />
         <command name='F2'          scan='F1'         exec='F2'        type=''  />
@@ -173,7 +173,7 @@
         <command name='FU'          scan='case'       exec='FU'        type=''  />
         <command name='FZ'          scan='FZ'         exec='nop'       type=''  />
         <command name='F_'          scan='F_under'    exec='F_under'   type=''  />
-        <command name='F|'                            exec='F_vbar'    type=''  />
+        <command name='F|'                            exec='F_else'    type=''  />
     </section>
 </teco>
 

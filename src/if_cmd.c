@@ -163,13 +163,47 @@ static void endif(struct cmd *unused, bool else_ok)
 
 
 ///
+///  @brief    Execute | command: else clause of conditional statement.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_else(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    confirm(cmd, NO_COLON, NO_ATSIGN);
+
+    if (quote.depth == 0)
+    {
+        throw(E_MSC);                   // Missing start of conditional
+    }
+
+    if (f.e2.quote)
+    {
+        if (getloop_depth() != quote.loop[quote.depth])
+        {
+            throw(E_MRA);               // Missing right angle bracket
+        }
+    }
+
+    quote.start_else[quote.depth] = cbuf->pos;
+
+    endif(cmd, NO_ELSE);
+
+    init_x();                           // Reinitialize expression stack
+}
+
+
+///
 ///  @brief    Execute ' command: end conditional statement.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_apos(struct cmd *cmd)
+void exec_endif(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -192,38 +226,38 @@ void exec_apos(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute F' command: flow to end of conditional statement.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_F_apos(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    confirm(cmd, NO_COLON, NO_ATSIGN);
-
-    endif(cmd, NO_ELSE);                // Skip any else statement.
-
-    init_x();                           // Reinitialize expression stack
-}
-
-
-///
 ///  @brief    Execute F| command: flow to else clause of conditional statement.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_F_vbar(struct cmd *cmd)
+void exec_F_else(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
     confirm(cmd, NO_COLON, NO_ATSIGN);
 
     endif(cmd, ELSE_OK);
+
+    init_x();                           // Reinitialize expression stack
+}
+
+
+///
+///  @brief    Execute F' command: flow to end of conditional statement.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_F_endif(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    confirm(cmd, NO_COLON, NO_ATSIGN);
+
+    endif(cmd, NO_ELSE);                // Skip any else statement.
 
     init_x();                           // Reinitialize expression stack
 }
@@ -254,7 +288,7 @@ void exec_F_vbar(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_quote(struct cmd *cmd)
+void exec_if(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -375,40 +409,6 @@ void exec_quote(struct cmd *cmd)
 
 
 ///
-///  @brief    Execute | command: else clause of conditional statement.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_vbar(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    confirm(cmd, NO_COLON, NO_ATSIGN);
-
-    if (quote.depth == 0)
-    {
-        throw(E_MSC);                   // Missing start of conditional
-    }
-
-    if (f.e2.quote)
-    {
-        if (getloop_depth() != quote.loop[quote.depth])
-        {
-            throw(E_MRA);               // Missing right angle bracket
-        }
-    }
-
-    quote.start_else[quote.depth] = cbuf->pos;
-
-    endif(cmd, NO_ELSE);
-
-    init_x();                           // Reinitialize expression stack
-}
-
-
-///
 ///  @brief    Get conditional depth.
 ///
 ///  @returns  Conditional depth.
@@ -478,7 +478,7 @@ void reset_if(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_quote(struct cmd *cmd)
+bool scan_if(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

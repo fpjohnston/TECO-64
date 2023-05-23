@@ -137,12 +137,12 @@ static const struct cmd_table cmd_table[] =
     ENTRY(CTRL_UNDER,  scan_ctrl_under,  NULL,            c_none  ),
     ENTRY(SPACE,       NULL,            NULL,            c_WHITE ),
     ENTRY('!',         scan_not,        exec_bang,       c_M     ),
-    ENTRY('"',         scan_quote,      exec_quote,      c_none  ),
+    ENTRY('"',         scan_if,         exec_if,         c_none  ),
     ENTRY('#',         scan_or,         NULL,            c_none  ),
     ENTRY('$',         NULL,            NULL,            c_none  ),
     ENTRY('%',         scan_pct,        exec_pct,        c_none  ),
     ENTRY('&',         scan_and,        NULL,            c_none  ),
-    ENTRY('\'',        NULL,            exec_apos,       c_none  ),
+    ENTRY('\'',        NULL,            exec_endif,      c_none  ),
     ENTRY('(',         scan_open,       NULL,            c_none  ),
     ENTRY(')',         scan_close,      NULL,            c_none  ),
     ENTRY('*',         scan_mul,        NULL,            c_none  ),
@@ -227,7 +227,7 @@ static const struct cmd_table cmd_table[] =
     ENTRY('_',         scan_under,      exec_under,      c_none  ),
     ENTRY('`',         NULL,            NULL,            c_none  ),
     ENTRY('{',         NULL,            NULL,            c_none  ),
-    ENTRY('|',         NULL,            exec_pipe,       c_none  ),
+    ENTRY('|',         NULL,            exec_else,       c_none  ),
     ENTRY('}',         NULL,            NULL,            c_none  ),
     ENTRY('~',         scan_xor,        NULL,            c_none  ),
     ENTRY(DEL,         NULL,            NULL,            c_none  ),
@@ -305,7 +305,7 @@ static const struct cmd_table e_table[] =
 
 static const struct cmd_table f_table[] =
 {
-    ENTRY('\'',        NULL,            exec_F_apos,     c_none  ),
+    ENTRY('\'',        NULL,            exec_F_endif,    c_none  ),
     ENTRY('0',         scan_F0,         exec_nop,        c_none  ),
     ENTRY('1',         scan_F1,         exec_F1,         c_none  ),
     ENTRY('2',         scan_F1,         exec_F2,         c_none  ),
@@ -342,5 +342,5 @@ static const struct cmd_table f_table[] =
     ENTRY('Z',         scan_FZ,         exec_nop,        c_none  ),
     ENTRY('z',         scan_FZ,         exec_nop,        c_none  ),
     ENTRY('_',         scan_F_under,    exec_F_under,    c_none  ),
-    ENTRY('|',         NULL,            exec_F_vbar,     c_none  ),
+    ENTRY('|',         NULL,            exec_F_else,     c_none  ),
 };
