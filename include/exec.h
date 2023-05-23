@@ -388,9 +388,9 @@ extern void exec_Y(struct cmd *cmd);
 
 extern void exec_apos(struct cmd *cmd);
 
-extern void exec_bang(struct cmd *cmd);
+extern void exec_back(struct cmd *cmd);
 
-extern void exec_bslash(struct cmd *cmd);
+extern void exec_bang(struct cmd *cmd);
 
 extern void exec_ctrl_A(struct cmd *cmd);
 

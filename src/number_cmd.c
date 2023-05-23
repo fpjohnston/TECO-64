@@ -80,7 +80,7 @@ static const char digits[] =
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bslash(struct cmd *cmd)
+void exec_back(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

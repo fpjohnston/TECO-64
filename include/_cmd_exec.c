@@ -221,7 +221,7 @@ static const struct cmd_table cmd_table[] =
     ENTRY('Z',         scan_Z,          NULL,            c_none  ),
     ENTRY('z',         scan_Z,          NULL,            c_none  ),
     ENTRY('[',         scan_lbracket,   exec_lbracket,   c_M     ),
-    ENTRY('\\',        NULL,            exec_bslash,     c_none  ),
+    ENTRY('\\',        NULL,            exec_back,       c_none  ),
     ENTRY(']',         scan_rbracket,   exec_rbracket,   c_M     ),
     ENTRY('^',         NULL,            NULL,            c_UP    ),
     ENTRY('_',         scan_ubar,       exec_ubar,       c_none  ),

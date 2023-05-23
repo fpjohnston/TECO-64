@@ -102,7 +102,7 @@
         <command name='Y'           scan='Y'         exec='Y'         type=''  />
         <command name='Z'           scan='Z'                          type=''  />
         <command name='['           scan='lbracket'  exec='lbracket'  type='!' />
-        <command name='\'                            exec='bslash'    type=''  />
+        <command name='\'                            exec='back'      type=''  />
         <command name=']'           scan='rbracket'  exec='rbracket'  type='!' />
         <command name='^'                                             type='^' />
         <command name='_'           scan='ubar'      exec='ubar'      type=''  />
