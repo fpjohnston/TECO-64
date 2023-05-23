@@ -134,7 +134,7 @@ static const struct cmd_table cmd_table[] =
     ENTRY(CTRL_BACK,   NULL,            NULL,            c_none  ),
     ENTRY(CTRL_RIGHT,  NULL,            NULL,            c_none  ),
     ENTRY(CTRL_UP,     scan_ctrl_up,    NULL,            c_none  ),
-    ENTRY(CTRL_UBAR,   scan_ctrl_ubar,  NULL,            c_none  ),
+    ENTRY(CTRL_UNDER,  scan_ctrl_under,  NULL,            c_none  ),
     ENTRY(SPACE,       NULL,            NULL,            c_WHITE ),
     ENTRY('!',         scan_not,        exec_bang,       c_M     ),
     ENTRY('"',         scan_quote,      exec_quote,      c_none  ),
@@ -224,10 +224,10 @@ static const struct cmd_table cmd_table[] =
     ENTRY('\\',        NULL,            exec_back,       c_none  ),
     ENTRY(']',         scan_pop,        exec_pop,        c_M     ),
     ENTRY('^',         NULL,            NULL,            c_UP    ),
-    ENTRY('_',         scan_ubar,       exec_ubar,       c_none  ),
+    ENTRY('_',         scan_under,      exec_under,      c_none  ),
     ENTRY('`',         NULL,            NULL,            c_none  ),
     ENTRY('{',         NULL,            NULL,            c_none  ),
-    ENTRY('|',         NULL,            exec_vbar,       c_none  ),
+    ENTRY('|',         NULL,            exec_pipe,       c_none  ),
     ENTRY('}',         NULL,            NULL,            c_none  ),
     ENTRY('~',         scan_xor,        NULL,            c_none  ),
     ENTRY(DEL,         NULL,            NULL,            c_none  ),
@@ -296,7 +296,7 @@ static const struct cmd_table e_table[] =
     ENTRY('y',         scan_Y,          exec_EY,         c_none  ),
     ENTRY('Z',         scan_ER,         exec_EZ,         c_none  ),
     ENTRY('z',         scan_ER,         exec_EZ,         c_none  ),
-    ENTRY('_',         scan_E_ubar,     exec_E_ubar,     c_none  ),
+    ENTRY('_',         scan_E_under,    exec_E_under,    c_none  ),
 };
 
 
@@ -341,6 +341,6 @@ static const struct cmd_table f_table[] =
     ENTRY('u',         scan_case,       exec_FU,         c_none  ),
     ENTRY('Z',         scan_FZ,         exec_nop,        c_none  ),
     ENTRY('z',         scan_FZ,         exec_nop,        c_none  ),
-    ENTRY('_',         scan_F_ubar,     exec_F_ubar,     c_none  ),
+    ENTRY('_',         scan_F_under,    exec_F_under,    c_none  ),
     ENTRY('|',         NULL,            exec_F_vbar,     c_none  ),
 };

@@ -48,7 +48,7 @@ static void exec_search(struct cmd *cmd, bool replace);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_F_ubar(struct cmd *cmd)
+void exec_F_under(struct cmd *cmd)
 {
     exec_search(cmd, (bool)true);
 }
@@ -61,7 +61,7 @@ void exec_F_ubar(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ubar(struct cmd *cmd)
+void exec_under(struct cmd *cmd)
 {
     exec_search(cmd, (bool)false);
 }
@@ -145,7 +145,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_F_ubar(struct cmd *cmd)
+bool scan_F_under(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -165,7 +165,7 @@ bool scan_F_ubar(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_ubar(struct cmd *cmd)
+bool scan_under(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

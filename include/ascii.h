@@ -77,8 +77,8 @@ enum ascii
     GS = CTRL_RIGHT,
     CTRL_UP,                            ///< Ctrl-Uparrow
     RS = CTRL_UP,
-    CTRL_UBAR,                          ///< Ctrl-Underscore
-    US = CTRL_UBAR,
+    CTRL_UNDER,                         ///< Ctrl-Underscore
+    US = CTRL_UNDER,
     SPACE   = ' ',                      ///< Space character
     ACCENT  = '`',                      ///< Accent grave
     DEL     = 127                       ///< DELETE/RUBOUT

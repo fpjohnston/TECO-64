@@ -43,7 +43,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_ubar(struct cmd *cmd)
+void exec_E_under(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -96,7 +96,7 @@ void exec_E_ubar(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_E_ubar(struct cmd *cmd)
+bool scan_E_under(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

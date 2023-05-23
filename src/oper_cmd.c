@@ -114,7 +114,7 @@ bool scan_comma(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_ctrl_ubar(struct cmd *cmd)
+bool scan_ctrl_under(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

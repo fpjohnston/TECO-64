@@ -91,7 +91,7 @@ extern bool scan_EQ(struct cmd *cmd);
 
 extern bool scan_ER(struct cmd *cmd);
 
-extern bool scan_E_ubar(struct cmd *cmd);
+extern bool scan_E_under(struct cmd *cmd);
 
 extern bool scan_F0(struct cmd *cmd);
 
@@ -119,7 +119,7 @@ extern bool scan_FS(struct cmd *cmd);
 
 extern bool scan_FZ(struct cmd *cmd);
 
-extern bool scan_F_ubar(struct cmd *cmd);
+extern bool scan_F_under(struct cmd *cmd);
 
 extern bool scan_G(struct cmd *cmd);
 
@@ -193,7 +193,7 @@ extern bool scan_ctrl_Y(struct cmd *cmd);
 
 extern bool scan_ctrl_Z(struct cmd *cmd);
 
-extern bool scan_ctrl_ubar(struct cmd *cmd);
+extern bool scan_ctrl_under(struct cmd *cmd);
 
 extern bool scan_ctrl_up(struct cmd *cmd);
 
@@ -235,7 +235,7 @@ extern bool scan_simple(struct cmd *cmd);
 
 extern bool scan_sub(struct cmd *cmd);
 
-extern bool scan_ubar(struct cmd *cmd);
+extern bool scan_under(struct cmd *cmd);
 
 extern bool scan_xor(struct cmd *cmd);
 
@@ -308,7 +308,7 @@ extern void exec_EZ(struct cmd *cmd);
 
 extern void exec_E_pct(struct cmd *cmd);
 
-extern void exec_E_ubar(struct cmd *cmd);
+extern void exec_E_under(struct cmd *cmd);
 
 extern void exec_F1(struct cmd *cmd);
 
@@ -348,7 +348,7 @@ extern void exec_F_greater(struct cmd *cmd);
 
 extern void exec_F_less(struct cmd *cmd);
 
-extern void exec_F_ubar(struct cmd *cmd);
+extern void exec_F_under(struct cmd *cmd);
 
 extern void exec_F_vbar(struct cmd *cmd);
 
@@ -430,6 +430,8 @@ extern void exec_nop(struct cmd *cmd);
 
 extern void exec_pct(struct cmd *cmd);
 
+extern void exec_pipe(struct cmd *cmd);
+
 extern void exec_pop(struct cmd *cmd);
 
 extern void exec_push(struct cmd *cmd);
@@ -440,9 +442,7 @@ extern void exec_semi(struct cmd *cmd);
 
 extern void exec_trace(struct cmd *cmd);
 
-extern void exec_ubar(struct cmd *cmd);
-
-extern void exec_vbar(struct cmd *cmd);
+extern void exec_under(struct cmd *cmd);
 
 
 // Helper functions for executing commands
