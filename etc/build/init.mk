@@ -88,18 +88,18 @@ ifdef   gprof
 endif
 endif
 
-ifdef   gdb                         # Enable use of gdb.
+ifdef   gdb                         # Enable use of gdb
 
-    CFLAGS   += -g -O0
-    LINKOPTS += -g -O0
+    CFLAGS   += -g -Og
+    LINKOPTS += -g -Og
 
-else ifdef gprof                    # Enable use of gprof.
+else ifdef gprof                    # Enable use of gprof
 
     CFLAGS   += -pg -O3
     LINKOPTS += -pg -O3
     DEFINES += -D PROFILE
 
-else                                # Neither gdb nor gprof.
+else                                # Default if neither gdb nor gprof
 
 	CFLAGS   += -Ofast
     LINKOPTS += -Ofast -s
