@@ -644,18 +644,60 @@ static void reset_x(struct xstack *ptr)
 
 
 ///
-///  @brief    Process 1's complement operator. This is handled differently
-///            than other operators, because it is both left-associative and
-///            unary, meaning that we don't need any more operands before
-///            calling exec_oper().
+///  @brief    Scan ) command: expression grouping.
 ///
-///  @returns  Nothing.
+///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void store_complement(void)
+bool scan_close(struct cmd *cmd)
 {
-    exec_oper(X_COMPL);
+    assert(cmd != NULL);
+
+    confirm(cmd, NO_COLON, NO_ATSIGN);
+
+    // Try to process everything since the last left parenthesis
+
+    enum x_oper type;
+
+    while (x->oper.count-- != 0)
+    {
+        if ((type = *--x->oper.top) == X_LPAREN)
+        {
+            assert(x->oper.nesting != 0);
+
+            --x->oper.nesting;
+
+            // We found a matching left parenthesis. Try to process any
+            // operators preceding it, up to any previous left parenthesis.
+
+            while (x->oper.count != 0)
+            {
+                if ((type = *--x->oper.top) == X_LPAREN)
+                {
+                    ++x->oper.top;
+
+                    return true;        // Say that we found an operator
+                }
+                else
+                {
+                    --x->oper.count;
+
+                    exec_oper(type);    // Process the operator
+                }
+            }
+
+            return true;                // Say that we found an operator
+        }
+        else
+        {
+            exec_oper(type);            // Process the operator
+        }
+    }
+
+    // Here if we ran out of operators before finding a left parenthesis
+
+    throw(E_MLP);                       // Missing left parenthesis
 }
 
 
@@ -784,39 +826,6 @@ bool scan_gt(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan ( command: expression grouping.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_lparen(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    confirm(cmd, NO_COLON, NO_ATSIGN);
-
-    // The following means that a command string such as mmm (nnn) just has a
-    // value of nnn; the mmm is discarded. This allows for enclosing Q and other
-    // commands in parentheses to guard against being affected (and the command
-    // possibly being completely changed) by a preceding value. In the case of
-    // a Q command, for example, instead of returning the numeric value in the
-    // Q-register, a preceding value would return the ASCII value of the nth
-    // character in the Q-register text string.
-
-    int_t n;
-
-    (void)query_x(&n);                  // Discard any operand on stack
-
-    ++x->oper.nesting;
-
-    push_oper(X_LPAREN);
-
-    return true;
-}
-
-
-///
 ///  @brief    Scan < command: relational operator or start of loop.
 ///
 ///  @returns  true if extended operator found, else false.
@@ -898,60 +907,35 @@ bool scan_not(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan ) command: expression grouping.
+///  @brief    Scan ( command: expression grouping.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_rparen(struct cmd *cmd)
+bool scan_open(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
     confirm(cmd, NO_COLON, NO_ATSIGN);
 
-    // Try to process everything since the last left parenthesis
+    // The following means that a command string such as mmm (nnn) just has a
+    // value of nnn; the mmm is discarded. This allows for enclosing Q and other
+    // commands in parentheses to guard against being affected (and the command
+    // possibly being completely changed) by a preceding value. In the case of
+    // a Q command, for example, instead of returning the numeric value in the
+    // Q-register, a preceding value would return the ASCII value of the nth
+    // character in the Q-register text string.
 
-    enum x_oper type;
+    int_t n;
 
-    while (x->oper.count-- != 0)
-    {
-        if ((type = *--x->oper.top) == X_LPAREN)
-        {
-            assert(x->oper.nesting != 0);
+    (void)query_x(&n);                  // Discard any operand on stack
 
-            --x->oper.nesting;
+    ++x->oper.nesting;
 
-            // We found a matching left parenthesis. Try to process any
-            // operators preceding it, up to any previous left parenthesis.
+    push_oper(X_LPAREN);
 
-            while (x->oper.count != 0)
-            {
-                if ((type = *--x->oper.top) == X_LPAREN)
-                {
-                    ++x->oper.top;
-
-                    return true;        // Say that we found an operator
-                }
-                else
-                {
-                    --x->oper.count;
-
-                    exec_oper(type);    // Process the operator
-                }
-            }
-
-            return true;                // Say that we found an operator
-        }
-        else
-        {
-            exec_oper(type);            // Process the operator
-        }
-    }
-
-    // Here if we ran out of operators before finding a left parenthesis
-
-    throw(E_MLP);                       // Missing left parenthesis
+    return true;
 }
 
 
@@ -1044,6 +1028,22 @@ void store_add(void)
 void store_and(void)
 {
     store_oper(X_AND);
+}
+
+
+///
+///  @brief    Process 1's complement operator. This is handled differently
+///            than other operators, because it is both left-associative and
+///            unary, meaning that we don't need any more operands before
+///            calling exec_oper().
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void store_complement(void)
+{
+    exec_oper(X_COMPL);
 }
 
 

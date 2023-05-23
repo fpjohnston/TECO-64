@@ -50,8 +50,8 @@
         <command name='%'           scan='pct'       exec='pct'       type=''  />
         <command name='&amp;'       scan='and'                        type=''  />
         <command name='&apos;'                       exec='apos'      type=''  />
-        <command name='('           scan='lparen'                     type=''  />
-        <command name=')'           scan='rparen'                     type=''  />
+        <command name='('           scan='open'                       type=''  />
+        <command name=')'           scan='close'                      type=''  />
         <command name='*'           scan='mul'                        type=''  />
         <command name='+'           scan='add'                        type=''  />
         <command name=','           scan='comma'                      type=''  />
