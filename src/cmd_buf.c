@@ -134,7 +134,14 @@ int fetch_cbuf(void)
 
     int c = cbuf->data[cbuf->pos++];
 
-    trace_cbuf(c);
+#if     !defined(NOTRACE)
+
+    if (f.trace)
+    {
+        echo_in(c);
+    }
+
+#endif
 
     return c;
 }
@@ -175,7 +182,22 @@ void next_cbuf(void)
 {
     if (cbuf->pos < cbuf->len)
     {
-        trace_cbuf(cbuf->data[cbuf->pos++]);
+
+#if     !defined(NOTRACE)
+
+        int c = cbuf->data[cbuf->pos++];
+
+        if (f.trace)
+        {
+            echo_in(c);
+        }
+
+#else
+
+        ++cbuf->pos;
+
+#endif
+
     }
 }
 
@@ -283,30 +305,3 @@ void store_cbuf(int c)
     cbuf->data[cbuf->len++] = (char)c;
     cbuf->data[cbuf->len] = NUL;
 }
-
-
-///
-///  @brief    Echo character if tracing.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-#if     !defined(INLINE)
-
-void trace_cbuf(int c)
-{
-
-#if     !defined(NOTRACE)
-
-    if (f.trace)
-    {
-        echo_in(c);
-    }
-
-#endif
-
-}
-
-#endif
-

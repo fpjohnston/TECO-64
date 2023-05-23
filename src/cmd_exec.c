@@ -37,6 +37,7 @@
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
+#include "term.h"
 
 #include "_cmd_exec.c"              // Include command tables
 
@@ -516,6 +517,8 @@ static void scan_text(int delim, tstring *text)
         throw(E_BALK);                  // Unexpected end of command or macro
     }
 
+#if     !defined(NOTRACE)
+
     // If tracing, echo remainder of text string, including the closing delimiter.
 
     if (f.trace)
@@ -524,9 +527,11 @@ static void scan_text(int delim, tstring *text)
 
         for (uint i = 0; i < len + tail; ++i)
         {
-            trace_cbuf(*p++);
+            echo_in(*p++);
         }
     }
+
+#endif
 
     cbuf->pos += len + tail;
     text->len = len;

@@ -50,8 +50,6 @@ extern int peek_cbuf(void);
 
 extern int require_cbuf(void);
 
-extern void trace_cbuf(int c);
-
 #else
 
 #include <stdio.h>
@@ -67,8 +65,6 @@ static inline void next_cbuf(void);
 static inline int peek_cbuf(void);
 
 static inline int require_cbuf(void);
-
-static inline void trace_cbuf(int c);
 
 
 ///
@@ -87,7 +83,14 @@ static inline int fetch_cbuf(void)
 
     int c = cbuf->data[cbuf->pos++];
 
-    trace_cbuf(c);
+#if     !defined(NOTRACE)
+
+    if (f.trace)
+    {
+        echo_in(c);
+    }
+
+#endif
 
     return c;
 }
@@ -104,7 +107,22 @@ static inline void next_cbuf(void)
 {
     if (cbuf->pos < cbuf->len)
     {
-        trace_cbuf(cbuf->data[cbuf->pos++]);
+
+#if     !defined(NOTRACE)
+
+        int c = cbuf->data[cbuf->pos++];
+
+        if (f.trace)
+        {
+            echo_in(c);
+        }
+
+#else
+
+        ++cbuf->pos;
+
+#endif
+
     }
 }
 
@@ -145,28 +163,6 @@ static inline int require_cbuf(void)
     }
 
     return c;
-}
-
-
-///
-///  @brief    Echo character if tracing.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static inline void trace_cbuf(int c)
-{
-
-#if     !defined(NOTRACE)
-
-    if (f.trace)
-    {
-        echo_in(c);
-    }
-
-#endif
-
 }
 
 #endif  // !defined(INLINE)
