@@ -34,6 +34,7 @@
 #include "cmdbuf.h"
 #include "eflags.h"                 // Needed for confirm()
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 
 
@@ -89,6 +90,40 @@ bool scan_colon(struct cmd *cmd)
 
 
 ///
+///  @brief    Scan / command: division operator.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_div(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    confirm(cmd, NO_COLON, NO_ATSIGN);
+
+    // Check for double slash remainder operator.
+
+    int c;
+
+    if ((c = peek_cbuf()) == '/' && f.e1.xoper && check_parens())
+    {
+        next_cbuf();
+
+        cmd->c2 = (char)c;
+
+        store_oper(X_REM);
+    }
+    else
+    {
+        store_oper(X_DIV);
+    }
+
+    return true;
+}
+
+
+///
 ///  @brief    Scan F1, F2, F3, and F4 commands.
 ///
 ///  @returns  false (command is not an operand or operator).
@@ -127,6 +162,30 @@ bool scan_FM(struct cmd *cmd)
 
 
 ///
+///  @brief    Scan for '!' operator.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_not(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (!f.e1.xoper || !check_parens()) // Is it really a tag?
+    {
+        return scan_bang(cmd);
+    }
+
+    confirm(cmd, NO_M, NO_N, NO_COLON, NO_ATSIGN);
+
+    store_oper(X_NOT);
+
+    return true;
+}
+
+
+///
 ///  @brief    Scan simple commands such as ^D or EP that use no numeric or
 ///            text arguments, nor any colon or atsign modifiers. We can also
 ///            be conditionally called, such when an EW commands is executed
@@ -142,4 +201,28 @@ bool scan_simple(struct cmd *cmd)
     confirm(cmd, NO_M, NO_N, NO_COLON, NO_ATSIGN);
 
     return false;
+}
+
+
+///
+///  @brief    Scan ~ command: exclusive OR operator.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_xor(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    confirm(cmd, NO_COLON, NO_ATSIGN);
+
+    if (!f.e0.skip && (!f.e1.xoper || !check_parens()))
+    {
+        throw(E_ILL, cmd->c1);          // Illegal command
+    }
+
+    store_oper(X_XOR);
+
+    return true;
 }

@@ -70,9 +70,9 @@
         <command name='9'           scan='number'                     type=''  />
         <command name=':'           scan='colon'                      type=''  />
         <command name=';'           scan='semi'      exec='semi'      type=''  />
-        <command name='&lt;'        scan='lt'        exec='lt'        type=''  />
-        <command name='='           scan='eq'        exec='equals'    type=''  />
-        <command name='&gt;'        scan='gt'        exec='gt'        type=''  />
+        <command name='&lt;'        scan='less'      exec='less'      type=''  />
+        <command name='='           scan='equals'    exec='equals'    type=''  />
+        <command name='&gt;'        scan='greater'   exec='greater'   type=''  />
         <command name='?'           scan='simple'    exec='trace'     type=''  />
         <command name='@'           scan='atsign'                     type=''  />
         <command name='A'           scan='A'         exec='A'         type=''  />
@@ -156,8 +156,8 @@
         <command name='F2'          scan='F1'        exec='F2'        type=''  />
         <command name='F3'          scan='F1'        exec='F3'        type=''  />
         <command name='F4'          scan='F1'        exec='F4'        type=''  />
-        <command name='F&lt;'                        exec='F_lt'      type=''  />
-        <command name='F&gt;'                        exec='F_gt'      type=''  />
+        <command name='F&lt;'                        exec='F_less'    type=''  />
+        <command name='F&gt;'                        exec='F_greater' type=''  />
         <command name='FB'          scan='FB'        exec='FB'        type=''  />
         <command name='FC'          scan='FC'        exec='FC'        type=''  />
         <command name='FD'          scan='FD'        exec='FD'        type=''  />

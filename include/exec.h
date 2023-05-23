@@ -201,15 +201,15 @@ extern bool scan_div(struct cmd *cmd);
 
 extern bool scan_dot(struct cmd *cmd);
 
-extern bool scan_eq(struct cmd *cmd);
+extern bool scan_equals(struct cmd *cmd);
 
 extern bool scan_flag1(struct cmd *cmd);
 
 extern bool scan_flag2(struct cmd *cmd);
 
-extern bool scan_gt(struct cmd *cmd);
+extern bool scan_greater(struct cmd *cmd);
 
-extern bool scan_lt(struct cmd *cmd);
+extern bool scan_less(struct cmd *cmd);
 
 extern bool scan_mul(struct cmd *cmd);
 
@@ -344,9 +344,9 @@ extern void exec_FU(struct cmd *cmd);
 
 extern void exec_F_apos(struct cmd *cmd);
 
-extern void exec_F_gt(struct cmd *cmd);
+extern void exec_F_greater(struct cmd *cmd);
 
-extern void exec_F_lt(struct cmd *cmd);
+extern void exec_F_less(struct cmd *cmd);
 
 extern void exec_F_ubar(struct cmd *cmd);
 
@@ -422,9 +422,9 @@ extern void exec_equals(struct cmd *cmd);
 
 extern void exec_escape(struct cmd *cmd);
 
-extern void exec_gt(struct cmd *cmd);
+extern void exec_greater(struct cmd *cmd);
 
-extern void exec_lt(struct cmd *cmd);
+extern void exec_less(struct cmd *cmd);
 
 extern void exec_nop(struct cmd *cmd);
 
@@ -486,8 +486,6 @@ extern void reset_loop(void);
 extern void reset_search(void);
 
 extern bool scan_bang(struct cmd *cmd);
-
-extern bool scan_equals(struct cmd *cmd);
 
 extern void scan_greg(struct cmd *cmd);
 

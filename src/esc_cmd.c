@@ -33,6 +33,7 @@
 #include "cmdbuf.h"
 #include "eflags.h"                 // Needed for confirm()
 #include "estack.h"
+#include "errors.h"
 #include "exec.h"
 
 
@@ -101,7 +102,10 @@ void exec_escape(struct cmd *cmd)
     cmd->m_set = cmd->n_set = false;
     cmd->m_arg = cmd->n_arg = 0;
 
-    confirm_parens();                   // Make sure we used all parentheses
+    if (check_parens())
+    {
+        throw(E_MRP);                   // Missing right parenthesis
+    }
 
     init_x();                           // Reinitialize expression stack
 }

@@ -68,9 +68,11 @@ enum x_oper
 
 extern bool auto_radix(void);
 
-extern void confirm_parens(void);
+extern bool check_parens(void);
 
 extern void delete_x(void);
+
+extern void exec_oper(enum x_oper oper);
 
 extern void exit_x(void);
 
@@ -89,6 +91,8 @@ extern void store_and(void);
 extern void store_complement(void);
 
 extern void store_mul(void);
+
+extern void store_oper(enum x_oper type);
 
 extern void store_or(void);
 

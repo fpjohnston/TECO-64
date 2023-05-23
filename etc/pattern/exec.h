@@ -117,8 +117,6 @@ extern void reset_search(void);
 
 extern bool scan_bang(struct cmd *cmd);
 
-extern bool scan_equals(struct cmd *cmd);
-
 extern void scan_greg(struct cmd *cmd);
 
 extern bool skip_cmd(struct cmd *cmd, const char *skip);

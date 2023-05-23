@@ -194,9 +194,9 @@ void exec_cmd(struct cmd *cmd)
     {
         throw(E_MRA);                   // Missing right angle bracket
     }
-    else
+    else if (check_parens())
     {
-        confirm_parens();               // Make sure we used all parentheses
+        throw(E_MRP);                   // Missing right parenthesis
     }
 
     cbuf->pos = cbuf->len = 0;          // Reset for next command string

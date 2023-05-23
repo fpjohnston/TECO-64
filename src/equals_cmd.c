@@ -204,6 +204,35 @@ bool scan_equals(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    assert(cmd != NULL);
+
+    // If extended operators are not enabled, or we're not inside any
+    // parentheses, then the equals sign is not part of an operator, but
+    // is instead a command.
+
+    if (f.e1.xoper && check_parens())
+    {
+        confirm(cmd, NO_M, NO_COLON, NO_ATSIGN);
+
+        if (require_cbuf() != '=')      // If we have one '=', we must have two
+        {
+            throw(E_ARG);
+        }
+
+        if (cmd->n_set)
+        {
+            cmd->n_set = false;
+
+            store_val(cmd->n_arg);
+        }
+
+        store_oper(X_EQ);
+
+        return true;
+    }
+
+    // Here if equals sign is a command and not part of a relational operator.
+
     int c;
 
     confirm(cmd, NO_M, NO_DCOLON);

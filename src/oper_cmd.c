@@ -66,7 +66,7 @@ bool scan_and(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_ATSIGN);
 
-    store_and();
+    store_oper(X_AND);
 
     return true;
 }
@@ -120,7 +120,7 @@ bool scan_ctrl_ubar(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_ATSIGN);
 
-    store_complement();
+    exec_oper(X_COMPL);
 
     return true;
 }
@@ -139,7 +139,7 @@ bool scan_mul(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_ATSIGN);
 
-    store_mul();
+    store_oper(X_MUL);
 
     return true;
 }
@@ -158,7 +158,7 @@ bool scan_or(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_ATSIGN);
 
-    store_or();
+    store_oper(X_OR);
 
     return true;
 }

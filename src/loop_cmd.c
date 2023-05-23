@@ -149,7 +149,7 @@ static void endloop(struct cmd *cmd, bool pop_ok)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_F_gt(struct cmd *cmd)
+void exec_F_greater(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -193,7 +193,7 @@ void exec_F_gt(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_F_lt(struct cmd *cmd)
+void exec_F_less(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -221,7 +221,7 @@ void exec_F_lt(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_gt(struct cmd *cmd)
+void exec_greater(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -261,7 +261,7 @@ void exec_gt(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_lt(struct cmd *cmd)
+void exec_less(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -439,6 +439,113 @@ static void push_loop(int_t count)
 void reset_loop(void)
 {
     nloops = loop_base = 0;
+}
+
+
+///
+///  @brief    Scan > command: relational operator.
+///
+///  @returns  true if extended operator found, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_greater(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    scan_simple(cmd);                   // > command
+
+    // ">" is a relational operator only if it's in parentheses; otherwise,
+    // it's the end of a loop.
+
+    if (!f.e1.xoper || !check_parens())
+    {
+        return false;
+    }
+
+    // The following is necessary to handle the situation where a '>' command
+    // is a relational operator (or part of one) and not the end of a loop.
+
+    if (cmd->n_set)
+    {
+        cmd->n_set = false;
+
+        store_val(cmd->n_arg);
+    }
+
+    if (peek_cbuf() == '=')             // >= operator
+    {
+        next_cbuf();
+        store_oper(X_GE);
+    }
+    else if (peek_cbuf() == '>')        // >> operator
+    {
+        next_cbuf();
+        store_oper(X_RSHIFT);
+    }
+    else                                // > operator
+    {
+        store_oper(X_GT);
+    }
+
+    return true;
+}
+
+
+///
+///  @brief    Scan < command: relational operator or start of loop.
+///
+///  @returns  true if extended operator found, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_less(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    confirm(cmd, NO_M, NO_COLON, NO_ATSIGN);
+
+    // "<" is a relational operator only if it's in parentheses; otherwise,
+    // it's the start of a loop.
+
+    if (!f.e1.xoper || !check_parens())
+    {
+        return false;
+    }
+
+    // The following is necessary to handle the situation where a '<' command
+    // is a relational operator (or part therefore) and not the start of a loop.
+
+    if (cmd->n_set)
+    {
+        cmd->n_set = false;
+
+        store_val(cmd->n_arg);
+    }
+
+    int c = peek_cbuf();
+
+    if (c == '=')                       // <= operator
+    {
+        next_cbuf();
+        store_oper(X_LE);
+    }
+    else if (c == '>')                  // <> operator
+    {
+        next_cbuf();
+        store_oper(X_NE);
+    }
+    else if (c == '<')                  // << operator
+    {
+        next_cbuf();
+        store_oper(X_LSHIFT);
+    }
+    else                                // < operator
+    {
+        store_oper(X_LT);
+    }
+
+    return true;
 }
 
 
