@@ -43,7 +43,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_lbracket(struct cmd *cmd)
+void exec_push(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -61,7 +61,7 @@ void exec_lbracket(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_rbracket(struct cmd *cmd)
+void exec_pop(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -88,7 +88,7 @@ void exec_rbracket(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_lbracket(struct cmd *cmd)
+bool scan_push(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -107,7 +107,7 @@ bool scan_lbracket(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_rbracket(struct cmd *cmd)
+bool scan_pop(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

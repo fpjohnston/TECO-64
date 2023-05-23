@@ -209,8 +209,6 @@ extern bool scan_flag2(struct cmd *cmd);
 
 extern bool scan_gt(struct cmd *cmd);
 
-extern bool scan_lbracket(struct cmd *cmd);
-
 extern bool scan_lt(struct cmd *cmd);
 
 extern bool scan_mul(struct cmd *cmd);
@@ -225,9 +223,11 @@ extern bool scan_or(struct cmd *cmd);
 
 extern bool scan_pct(struct cmd *cmd);
 
-extern bool scan_quote(struct cmd *cmd);
+extern bool scan_pop(struct cmd *cmd);
 
-extern bool scan_rbracket(struct cmd *cmd);
+extern bool scan_push(struct cmd *cmd);
+
+extern bool scan_quote(struct cmd *cmd);
 
 extern bool scan_semi(struct cmd *cmd);
 
@@ -424,17 +424,17 @@ extern void exec_escape(struct cmd *cmd);
 
 extern void exec_gt(struct cmd *cmd);
 
-extern void exec_lbracket(struct cmd *cmd);
-
 extern void exec_lt(struct cmd *cmd);
 
 extern void exec_nop(struct cmd *cmd);
 
 extern void exec_pct(struct cmd *cmd);
 
-extern void exec_quote(struct cmd *cmd);
+extern void exec_pop(struct cmd *cmd);
 
-extern void exec_rbracket(struct cmd *cmd);
+extern void exec_push(struct cmd *cmd);
+
+extern void exec_quote(struct cmd *cmd);
 
 extern void exec_semi(struct cmd *cmd);
 
