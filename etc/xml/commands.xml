@@ -101,9 +101,9 @@
         <command name='X'           scan='X'          exec='X'         type=''  />
         <command name='Y'           scan='Y'          exec='Y'         type=''  />
         <command name='Z'           scan='Z'                           type=''  />
-        <command name='['           scan='push'       exec='push'      type='!' />
+        <command name='['           scan='pushQ'      exec='pushQ'     type='!' />
         <command name='\'                             exec='back'      type=''  />
-        <command name=']'           scan='pop'        exec='pop'       type='!' />
+        <command name=']'           scan='popQ'       exec='popQ'      type='!' />
         <command name='^'                                              type='^' />
         <command name='_'           scan='under'      exec='under'     type=''  />
         <command name='`'                                              type='?' />

@@ -225,9 +225,9 @@ extern bool scan_or(struct cmd *cmd);
 
 extern bool scan_pct(struct cmd *cmd);
 
-extern bool scan_pop(struct cmd *cmd);
+extern bool scan_popQ(struct cmd *cmd);
 
-extern bool scan_push(struct cmd *cmd);
+extern bool scan_pushQ(struct cmd *cmd);
 
 extern bool scan_semi(struct cmd *cmd);
 
@@ -434,9 +434,9 @@ extern void exec_nop(struct cmd *cmd);
 
 extern void exec_pct(struct cmd *cmd);
 
-extern void exec_pop(struct cmd *cmd);
+extern void exec_popQ(struct cmd *cmd);
 
-extern void exec_push(struct cmd *cmd);
+extern void exec_pushQ(struct cmd *cmd);
 
 extern void exec_semi(struct cmd *cmd);
 

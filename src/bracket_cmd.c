@@ -37,31 +37,13 @@
 
 
 ///
-///  @brief    Execute [ command - Push Q-register onto push-down list.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_push(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (!push_qreg(cmd->qindex))
-    {
-        throw(E_PDO);                   // Push-down list is full
-    }
-}
-
-
-///
 ///  @brief    Execute ] command: pop Q-register from push-down list.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_pop(struct cmd *cmd)
+void exec_popQ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -82,21 +64,20 @@ void exec_pop(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan [ command.
+///  @brief    Execute [ command - Push Q-register onto push-down list.
 ///
-///  @returns  false (command is not an operand or operator).
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_push(struct cmd *cmd)
+void exec_pushQ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_M_ONLY, NO_COLON, NO_ATSIGN);
-
-    scan_qreg(cmd);
-
-    return false;
+    if (!push_qreg(cmd->qindex))
+    {
+        throw(E_PDO);                   // Push-down list is full
+    }
 }
 
 
@@ -107,11 +88,30 @@ bool scan_push(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_pop(struct cmd *cmd)
+bool scan_popQ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
     confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
+
+    scan_qreg(cmd);
+
+    return false;
+}
+
+
+///
+///  @brief    Scan [ command.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_pushQ(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_ATSIGN);
 
     scan_qreg(cmd);
 
