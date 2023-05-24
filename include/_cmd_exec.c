@@ -136,7 +136,7 @@ static const struct cmd_table cmd_table[] =
     ENTRY(CTRL_UP,     scan_ctrl_up,    NULL,            c_none  ),
     ENTRY(CTRL_UNDER,  scan_ctrl_under,  NULL,            c_none  ),
     ENTRY(SPACE,       NULL,            NULL,            c_WHITE ),
-    ENTRY('!',         scan_not,        exec_bang,       c_M     ),
+    ENTRY('!',         scan_tag,        exec_tag,        c_M     ),
     ENTRY('"',         scan_if,         exec_if,         c_none  ),
     ENTRY('#',         scan_or,         NULL,            c_none  ),
     ENTRY('$',         NULL,            NULL,            c_none  ),

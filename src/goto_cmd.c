@@ -64,9 +64,9 @@ static bool validate_tag(tstring *tag);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_bang(struct cmd *cmd)
+void exec_tag(struct cmd *unused)
 {
-    assert(cmd != NULL);
+    ;
 }
 
 
@@ -298,9 +298,20 @@ static void find_taglist(const char *taglist, int arg)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_bang(struct cmd *cmd)
+bool scan_tag(struct cmd *cmd)
 {
     assert(cmd != NULL);
+
+    if (f.e1.xoper && check_parens())   // Is it a logical NOT operator?
+    {
+        confirm(cmd, NO_M, NO_N, NO_COLON, NO_ATSIGN);
+
+        store_oper(X_NOT);
+
+        return true;
+    }
+
+    // Here if we have either a GOTO label or a comment.
 
     confirm(cmd, NO_M_ONLY, NO_COLON);
 

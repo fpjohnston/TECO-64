@@ -162,30 +162,6 @@ bool scan_FM(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan for '!' operator.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_not(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    if (!f.e1.xoper || !check_parens()) // Is it really a tag?
-    {
-        return scan_bang(cmd);
-    }
-
-    confirm(cmd, NO_M, NO_N, NO_COLON, NO_ATSIGN);
-
-    store_oper(X_NOT);
-
-    return true;
-}
-
-
-///
 ///  @brief    Scan simple commands such as ^D or EP that use no numeric or
 ///            text arguments, nor any colon or atsign modifiers. We can also
 ///            be conditionally called, such when an EW commands is executed

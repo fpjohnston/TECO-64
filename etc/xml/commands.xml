@@ -43,7 +43,7 @@
         <command name='CTRL_UP'     scan='ctrl_up'                     type=''  />
         <command name='CTRL_UNDER'  scan='ctrl_under'                  type=''  />
         <command name='SPACE'                                          type=' ' />
-        <command name='!'           scan='not'        exec='bang'      type='!' />
+        <command name='!'           scan='tag'        exec='tag'       type='!' />
         <command name='"'           scan='if'         exec='if'        type=''  />
         <command name='#'           scan='or'                          type=''  />
         <command name='$'                                              type='?' />
