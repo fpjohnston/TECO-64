@@ -76,7 +76,11 @@ bool scan_percent(struct cmd *cmd)
     confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)1);           // % => 1%
-    scan_qreg(cmd);
+
+    if (!scan_qreg(cmd))
+    {
+        throw(E_IQN, cmd->qname);       // Invalid Q-register name
+    }
 
     return false;
 }

@@ -34,7 +34,6 @@
 #include "cmdbuf.h"
 #include "eflags.h"                 // Needed for confirm()
 #include "errors.h"
-#include "exec.h"
 #include "qreg.h"
 #include "term.h"
 
@@ -117,12 +116,6 @@ static char qtable[UCHAR_MAX] =
     ['y'] = 1 + 34,
     ['Z'] = 1 + 35,
     ['z'] = 1 + 35,
-
-    // The following are special for G commands
-
-    ['+'] = -1,
-    ['*'] = -1,
-    ['_'] = -1,
 };                                  //lint !e785
 
 
@@ -653,49 +646,13 @@ void reset_qreg(void)
 
 
 ///
-///  @brief    Scan Q-register following G command. This works pretty much like
-///            scan_qreg(), but we make special allowance for G*, G+, and G_
-///            commands, and also disallow the use of the local Q-register flag
-///            '.' in those cases.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void scan_greg(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    int c = require_cbuf();             // Get the Q-register name
-    int offset = 0;
-    int qindex;
-
-    if (c == '.')                       // Local Q-register?
-    {
-        cmd->qlocal = true;             // Yes, mark it
-        offset = QCOUNT;
-
-        c = require_cbuf();
-    }
-
-    if ((qindex = qtable[(uchar)c]) == 0 || (qindex < 0 && cmd->qlocal))
-    {
-        throw(E_IQN, c);                // Invalid Q-register name
-    }
-
-    cmd->qname = (char)c;               // Save the name
-    cmd->qindex = qindex + offset - 1;  // Make it zero-based
-}
-
-
-///
 ///  @brief    Scan Q-register following command.
 ///
-///  @returns  Nothing.
+///  @returns  true if Q-register was valid, otherwise false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void scan_qreg(struct cmd *cmd)
+bool scan_qreg(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -711,13 +668,16 @@ void scan_qreg(struct cmd *cmd)
         c = require_cbuf();
     }
 
-    if ((qindex = qtable[(uchar)c]) <= 0)
+    cmd->qname = (char)c;               // Save the name
+
+    if ((qindex = qtable[(uchar)c]) == 0)
     {
-        throw(E_IQN, c);                // Invalid Q-register name
+        return false;                   // Q-register name is invalid
     }
 
-    cmd->qname = (char)c;               // Save the name
     cmd->qindex = qindex + offset - 1;  // Make it zero-based
+
+    return true;
 }
 
 

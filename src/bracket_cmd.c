@@ -94,7 +94,10 @@ bool scan_popQ(struct cmd *cmd)
 
     confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
 
-    scan_qreg(cmd);
+    if (!scan_qreg(cmd))
+    {
+        throw(E_IQN, cmd->qname);       // Invalid Q-register name
+    }
 
     return false;
 }
@@ -113,7 +116,10 @@ bool scan_pushQ(struct cmd *cmd)
 
     confirm(cmd, NO_M_ONLY, NO_COLON, NO_ATSIGN);
 
-    scan_qreg(cmd);
+    if (!scan_qreg(cmd))
+    {
+        throw(E_IQN, cmd->qname);       // Invalid Q-register name
+    }
 
     return false;
 }

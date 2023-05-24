@@ -30,6 +30,7 @@
 
 #include "teco.h"
 #include "eflags.h"                 // Needed for confirm()
+#include "errors.h"
 #include "exec.h"
 #include "file.h"
 #include "qreg.h"
@@ -135,7 +136,14 @@ bool scan_G(struct cmd *cmd)
 
     confirm(cmd, NO_N, NO_M, NO_DCOLON, NO_ATSIGN);
 
-    scan_greg(cmd);
+    if (!scan_qreg(cmd))
+    {
+        if ((cmd->qname != '*' && cmd->qname != '_' && cmd->qname != '+')
+            || cmd->qlocal)
+        {
+            throw(E_IQN, cmd->qname);   // Invalid Q-register name
+        }
+    }
 
     return false;
 }

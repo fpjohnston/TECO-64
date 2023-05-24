@@ -187,7 +187,10 @@ bool scan_EM(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_ATSIGN);
 
-    scan_qreg(cmd);
+    if (!scan_qreg(cmd))
+    {
+        throw(E_IQN, cmd->qname);       // Invalid Q-register name
+    }
 
     return false;
 }

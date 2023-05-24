@@ -101,7 +101,11 @@ bool scan_ctrl_U(struct cmd *cmd)
 
     confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_DCOLON);
 
-    scan_qreg(cmd);
+    if (!scan_qreg(cmd))
+    {
+        throw(E_IQN, cmd->c1);          // Invalid Q-register name
+    }
+
     scan_texts(cmd, 1, ESC);
 
     // Can't have both a numeric value and a text argument

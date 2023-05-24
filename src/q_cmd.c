@@ -29,6 +29,7 @@
 
 #include "teco.h"
 #include "eflags.h"                 // Needed for confirm()
+#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "qreg.h"
@@ -48,7 +49,10 @@ bool scan_Q(struct cmd *cmd)
 
     confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
 
-    scan_qreg(cmd);
+    if (!scan_qreg(cmd))
+    {
+        throw(E_IQN, cmd->qname);       // Invalid Q-register name
+    }
 
     int_t n;
 

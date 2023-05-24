@@ -134,7 +134,11 @@ bool scan_X(struct cmd *cmd)
     confirm(cmd, NO_NEG_M, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)1);           // X => 1X
-    scan_qreg(cmd);
+
+    if (!scan_qreg(cmd))
+    {
+        throw(E_IQN, cmd->qname);       // Invalid Q-register name
+    }
 
     return false;
 }

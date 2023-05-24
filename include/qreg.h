@@ -85,7 +85,7 @@ extern void reset_macro(void);
 
 extern void reset_qreg(void);
 
-extern void scan_qreg(struct cmd *cmd);
+extern bool scan_qreg(struct cmd *cmd);
 
 extern void store_qchr(int qindex, int c);
 

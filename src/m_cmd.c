@@ -223,7 +223,10 @@ bool scan_M(struct cmd *cmd)
 
     confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
 
-    scan_qreg(cmd);
+    if (!scan_qreg(cmd))
+    {
+        throw(E_IQN, cmd->qname);       // Invalid Q-register name
+    }
 
     return false;
 }
