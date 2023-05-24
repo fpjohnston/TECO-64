@@ -221,7 +221,7 @@ extern bool scan_open(struct cmd *cmd);
 
 extern bool scan_or(struct cmd *cmd);
 
-extern bool scan_pct(struct cmd *cmd);
+extern bool scan_percent(struct cmd *cmd);
 
 extern bool scan_popQ(struct cmd *cmd);
 
@@ -306,7 +306,7 @@ extern void exec_EY(struct cmd *cmd);
 
 extern void exec_EZ(struct cmd *cmd);
 
-extern void exec_E_pct(struct cmd *cmd);
+extern void exec_E_percent(struct cmd *cmd);
 
 extern void exec_E_under(struct cmd *cmd);
 
@@ -430,7 +430,7 @@ extern void exec_less(struct cmd *cmd);
 
 extern void exec_nop(struct cmd *cmd);
 
-extern void exec_pct(struct cmd *cmd);
+extern void exec_percent(struct cmd *cmd);
 
 extern void exec_popQ(struct cmd *cmd);
 

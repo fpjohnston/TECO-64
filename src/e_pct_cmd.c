@@ -42,7 +42,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_E_pct(struct cmd *cmd)
+void exec_E_percent(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

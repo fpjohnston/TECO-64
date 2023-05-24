@@ -140,7 +140,7 @@ static const struct cmd_table cmd_table[] =
     ENTRY('"',         scan_if,         exec_if,         c_none  ),
     ENTRY('#',         scan_or,         NULL,            c_none  ),
     ENTRY('$',         NULL,            NULL,            c_none  ),
-    ENTRY('%',         scan_pct,        exec_pct,        c_none  ),
+    ENTRY('%',         scan_percent,    exec_percent,    c_none  ),
     ENTRY('&',         scan_and,        NULL,            c_none  ),
     ENTRY('\'',        NULL,            exec_endif,      c_none  ),
     ENTRY('(',         scan_open,       NULL,            c_none  ),
@@ -239,7 +239,7 @@ static const struct cmd_table cmd_table[] =
 
 static const struct cmd_table e_table[] =
 {
-    ENTRY('%',         scan_EQ,         exec_E_pct,      c_none  ),
+    ENTRY('%',         scan_EQ,         exec_E_percent,  c_none  ),
     ENTRY('1',         scan_flag2,      exec_E1,         c_none  ),
     ENTRY('2',         scan_flag2,      exec_E2,         c_none  ),
     ENTRY('3',         scan_flag2,      exec_E3,         c_none  ),

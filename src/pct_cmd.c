@@ -43,7 +43,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_pct(struct cmd *cmd)
+void exec_percent(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -69,7 +69,7 @@ void exec_pct(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_pct(struct cmd *cmd)
+bool scan_percent(struct cmd *cmd)
 {
     assert(cmd != NULL);
 

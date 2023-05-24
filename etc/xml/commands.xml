@@ -47,7 +47,7 @@
         <command name='"'           scan='if'         exec='if'        type=''  />
         <command name='#'           scan='or'                          type=''  />
         <command name='$'                                              type='?' />
-        <command name='%'           scan='pct'        exec='pct'       type=''  />
+        <command name='%'           scan='percent'    exec='percent'   type=''  />
         <command name='&amp;'       scan='and'                         type=''  />
         <command name='&apos;'                        exec='endif'     type=''  />
         <command name='('           scan='open'                        type=''  />
@@ -115,7 +115,7 @@
 
         <!-- E commands -->
 
-        <command name='E%'          scan='EQ'         exec='E_pct'     type=''  />
+        <command name='E%'          scan='EQ'         exec='E_percent' type=''  />
         <command name='E1'          scan='flag2'      exec='E1'        type=''  />
         <command name='E2'          scan='flag2'      exec='E2'        type=''  />
         <command name='E3'          scan='flag2'      exec='E3'        type=''  />
