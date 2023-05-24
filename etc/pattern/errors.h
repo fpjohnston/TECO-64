@@ -57,7 +57,7 @@ extern void print_command(void);
 
 extern void print_verbose(int err_teco);
 
-#if     defined(DEBUG)
+#if     defined(DEBUG)          // Add function and line number to throw()
 
 //lint -save -e652
 
