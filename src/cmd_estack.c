@@ -614,13 +614,46 @@ static void reset_x(struct xstack *ptr)
 
 
 ///
+///  @brief    Scan ( command: expression grouping.
+///
+///  @returns  true if command is an operand or operator, else false.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_left(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    confirm(cmd, NO_COLON, NO_ATSIGN);
+
+    // The following means that a command string such as mmm (nnn) just has a
+    // value of nnn; the mmm is discarded. This allows for enclosing Q and other
+    // commands in parentheses to guard against being affected (and the command
+    // possibly being completely changed) by a preceding value. In the case of
+    // a Q command, for example, instead of returning the numeric value in the
+    // Q-register, a preceding value would return the ASCII value of the nth
+    // character in the Q-register text string.
+
+    int_t n;
+
+    (void)query_x(&n);                  // Discard any operand on stack
+
+    ++x->oper.nesting;
+
+    push_oper(X_LPAREN);
+
+    return true;
+}
+
+
+///
 ///  @brief    Scan ) command: expression grouping.
 ///
 ///  @returns  true if command is an operand or operator, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-bool scan_close(struct cmd *cmd)
+bool scan_right(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
@@ -668,39 +701,6 @@ bool scan_close(struct cmd *cmd)
     // Here if we ran out of operators before finding a left parenthesis
 
     throw(E_MLP);                       // Missing left parenthesis
-}
-
-
-///
-///  @brief    Scan ( command: expression grouping.
-///
-///  @returns  true if command is an operand or operator, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_open(struct cmd *cmd)
-{
-    assert(cmd != NULL);
-
-    confirm(cmd, NO_COLON, NO_ATSIGN);
-
-    // The following means that a command string such as mmm (nnn) just has a
-    // value of nnn; the mmm is discarded. This allows for enclosing Q and other
-    // commands in parentheses to guard against being affected (and the command
-    // possibly being completely changed) by a preceding value. In the case of
-    // a Q command, for example, instead of returning the numeric value in the
-    // Q-register, a preceding value would return the ASCII value of the nth
-    // character in the Q-register text string.
-
-    int_t n;
-
-    (void)query_x(&n);                  // Discard any operand on stack
-
-    ++x->oper.nesting;
-
-    push_oper(X_LPAREN);
-
-    return true;
 }
 
 

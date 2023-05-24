@@ -165,8 +165,6 @@ extern bool scan_atsign(struct cmd *cmd);
 
 extern bool scan_case(struct cmd *cmd);
 
-extern bool scan_close(struct cmd *cmd);
-
 extern bool scan_colon(struct cmd *cmd);
 
 extern bool scan_comma(struct cmd *cmd);
@@ -211,13 +209,13 @@ extern bool scan_greater(struct cmd *cmd);
 
 extern bool scan_if(struct cmd *cmd);
 
+extern bool scan_left(struct cmd *cmd);
+
 extern bool scan_less(struct cmd *cmd);
 
 extern bool scan_mul(struct cmd *cmd);
 
 extern bool scan_number(struct cmd *cmd);
-
-extern bool scan_open(struct cmd *cmd);
 
 extern bool scan_or(struct cmd *cmd);
 
@@ -226,6 +224,8 @@ extern bool scan_percent(struct cmd *cmd);
 extern bool scan_popQ(struct cmd *cmd);
 
 extern bool scan_pushQ(struct cmd *cmd);
+
+extern bool scan_right(struct cmd *cmd);
 
 extern bool scan_semi(struct cmd *cmd);
 

@@ -50,8 +50,8 @@
         <command name='%'           scan='percent'    exec='percent'   type=''  />
         <command name='&amp;'       scan='and'                         type=''  />
         <command name='&apos;'                        exec='endif'     type=''  />
-        <command name='('           scan='open'                        type=''  />
-        <command name=')'           scan='close'                       type=''  />
+        <command name='('           scan='left'                        type=''  />
+        <command name=')'           scan='right'                       type=''  />
         <command name='*'           scan='mul'                         type=''  />
         <command name='+'           scan='add'                         type=''  />
         <command name=','           scan='comma'                       type=''  />
