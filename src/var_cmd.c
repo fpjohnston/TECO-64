@@ -149,7 +149,6 @@ bool scan_ctrl_Y(struct cmd *cmd)
 
     (void)query_x(&n);                  // Ignore any existing operand
 
-    cmd->ctrl_y = true;
     cmd->m_set = true;
     cmd->m_arg = t->dot - (int_t)last_len;
 

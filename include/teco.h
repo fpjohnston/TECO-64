@@ -170,7 +170,6 @@ struct cmd
     bool n_set;                     ///< n argument is valid
     int_t n_arg;                    ///< n argument
     bool h;                         ///< H found
-    bool ctrl_y;                    ///< CTRL/Y found
     bool colon;                     ///< : found
     bool dcolon;                    ///< :: found
     bool atsign;                    ///< @ found

@@ -70,7 +70,6 @@ const struct cmd null_cmd =
     .n_set  = false,
     .n_arg  = 0,
     .h      = false,
-    .ctrl_y = false,
     .colon  = false,
     .dcolon = false,
     .atsign = false,
