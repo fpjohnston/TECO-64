@@ -605,7 +605,7 @@ bool scan_left(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
 #if     !defined(NOSTRICT)
 
@@ -644,7 +644,7 @@ bool scan_right(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
 #if     !defined(NOSTRICT)
 

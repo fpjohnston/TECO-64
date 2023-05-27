@@ -212,7 +212,7 @@ bool scan_equals(struct cmd *cmd)
 
     if (f.e1.xoper && check_parens())
     {
-        confirm(cmd, NO_M, NO_COLON, NO_ATSIGN);
+        confirm(cmd, NO_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
         if (require_cbuf() != '=')      // If we have one '=', we must have two
         {

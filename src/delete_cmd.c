@@ -173,7 +173,7 @@ bool scan_K(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_NEG_M, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_NEG_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)1);           // K => 1K
 

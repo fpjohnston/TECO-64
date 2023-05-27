@@ -304,7 +304,7 @@ bool scan_tag(struct cmd *cmd)
 
     if (f.e1.xoper && check_parens())   // Is it a logical NOT operator?
     {
-        confirm(cmd, NO_M, NO_N, NO_COLON, NO_ATSIGN);
+        confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
         store_oper(X_NOT);
 
@@ -313,7 +313,7 @@ bool scan_tag(struct cmd *cmd)
 
     // Here if we have either a GOTO label or a comment.
 
-    confirm(cmd, NO_M_ONLY, NO_COLON);
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON);
 
     // If feature enabled, !! starts a comment that ends with LF
     // (but note that the LF is not counted as part of the command).
@@ -352,7 +352,7 @@ bool scan_O(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_NEG_N, NO_M_ONLY, NO_COLON);
+    confirm(cmd, NO_NEG_N, NO_M_ONLY, NO_COLON, NO_DCOLON);
 
     scan_texts(cmd, 1, ESC);
 

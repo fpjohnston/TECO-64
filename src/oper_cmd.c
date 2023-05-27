@@ -45,7 +45,7 @@ bool scan_add(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     store_add();
 
@@ -64,7 +64,7 @@ bool scan_and(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     store_oper(X_AND);
 
@@ -83,7 +83,7 @@ bool scan_comma(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (cmd->m_set)                     // Already seen m argument?
     {
@@ -118,7 +118,7 @@ bool scan_ctrl_under(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     exec_oper(X_COMPL);
 
@@ -137,7 +137,7 @@ bool scan_mul(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     store_oper(X_MUL);
 
@@ -156,7 +156,7 @@ bool scan_or(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     store_oper(X_OR);
 
@@ -175,7 +175,7 @@ bool scan_sub(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     store_sub();
 

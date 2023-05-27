@@ -104,7 +104,7 @@ bool scan_div(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     // Check for double slash remainder operator.
 
@@ -138,7 +138,7 @@ bool scan_F1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_M_ONLY, NO_COLON);
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON);
 
     scan_texts(cmd, 2, ESC);
 
@@ -178,7 +178,7 @@ bool scan_FM(struct cmd *cmd)
 
 bool scan_simple(struct cmd *cmd)
 {
-    confirm(cmd, NO_M, NO_N, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     return false;
 }
@@ -195,7 +195,7 @@ bool scan_xor(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (!f.e0.skip && (!f.e1.xoper || !check_parens()))
     {

@@ -173,7 +173,7 @@ void exec_else(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (quote.depth == 0)
     {
@@ -207,7 +207,7 @@ void exec_endif(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (quote.depth == 0)
     {
@@ -236,7 +236,7 @@ void exec_F_else(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     endif(cmd, ELSE_OK);
 
@@ -255,7 +255,7 @@ void exec_F_endif(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     endif(cmd, NO_ELSE);                // Skip any else statement.
 
@@ -482,7 +482,7 @@ bool scan_if(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_M, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     int c = require_cbuf();             // Get test condition
 

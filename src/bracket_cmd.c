@@ -114,7 +114,7 @@ bool scan_pushQ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_M_ONLY, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (!scan_qreg(cmd))
     {

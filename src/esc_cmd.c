@@ -84,7 +84,7 @@ void exec_escape(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     // If we're ending this command string, stop processing any more commands.
     // If we're also in a macro, return to caller, preserving numeric arguments.

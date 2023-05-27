@@ -172,7 +172,7 @@ bool scan_T(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (cmd->m_set)
     {
@@ -212,7 +212,7 @@ bool scan_V(struct cmd *cmd)
         cmd->n_arg = 1;
     }
 
-    confirm(cmd, NO_NEG_M, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_NEG_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     return false;
 }

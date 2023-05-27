@@ -153,7 +153,7 @@ void exec_F_greater(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (nloops == 0)                    // Outside of loop?
     {
@@ -197,7 +197,7 @@ void exec_F_less(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (nloops == 0)                    // Outside of loop?
     {
@@ -503,7 +503,7 @@ bool scan_less(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_M, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     // "<" is a relational operator only if it's in parentheses; otherwise,
     // it's the start of a loop.

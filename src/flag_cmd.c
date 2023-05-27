@@ -493,7 +493,7 @@ bool scan_flag1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_M, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (cmd->n_set)                     // n argument?
     {
@@ -565,7 +565,7 @@ bool scan_flag2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_M_ONLY, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (cmd->n_set)                     // n argument?
     {

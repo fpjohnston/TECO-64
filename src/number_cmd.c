@@ -55,7 +55,7 @@ void exec_back(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_M, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (cmd->n_set)                     // n\`?
     {
@@ -164,7 +164,7 @@ bool scan_number(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    confirm(cmd, NO_COLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     int c = cmd->c1;
     int_t radix;
