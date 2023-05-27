@@ -239,6 +239,8 @@ int main(int argc, const char * const argv[])
         f.e0.exec = false;              // Not executing commands
         f.e0.skip = false;              // Not skipping commands
         f.e0.ctrl_t = false;            // No CTRL/T active
+        f.e0.digit = false;             // Last command was not a digit
+
         f.et.abort = false;             // Don't abort on error
 
         if (f.e0.init)

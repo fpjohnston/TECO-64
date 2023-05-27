@@ -43,35 +43,6 @@
 
 #define MAX_DIGITS      22
 
-///  @var    digits
-///  @brief  Convert ASCII character to hex digit.
-
-static const char digits[] =
-{
-    ['0'] = 0,
-    ['1'] = 1,
-    ['2'] = 2,
-    ['3'] = 3,
-    ['4'] = 4,
-    ['5'] = 5,
-    ['6'] = 6,
-    ['7'] = 7,
-    ['8'] = 8,
-    ['9'] = 9,
-    ['A'] = 10,
-    ['a'] = 10,
-    ['B'] = 11,
-    ['b'] = 11,
-    ['C'] = 12,
-    ['c'] = 12,
-    ['D'] = 13,
-    ['d'] = 13,
-    ['E'] = 14,
-    ['e'] = 14,
-    ['F'] = 15,
-    ['f'] = 15,
-};
-
 
 ///
 ///  @brief    Execute \ command: read digit string.
@@ -88,7 +59,7 @@ void exec_back(struct cmd *cmd)
 
     if (cmd->n_set)                     // n\`?
     {
-        char string[MAX_DIGITS];
+        char string[MAX_DIGITS + 1];
         const char *format = "%d";
 
         if (f.radix == 8)
@@ -130,14 +101,20 @@ void exec_back(struct cmd *cmd)
 
         while (c != EOF)
         {
-            if (!isxdigit(c))
+            if (isdigit(c))
+            {
+                c -= '0';              // Remove ASCII bias
+            }
+            else if (isxdigit(c))
+            {
+                c = 10 + toupper(c) - 'A'; // Change [A,F] to [10,15].
+            }
+            else
             {
                 break;
             }
 
-            int digit = digits[c];
-
-            if ((f.radix == 8 && digit >= 8) || (f.radix == 10 && digit >= 10))
+            if ((f.radix == 8 && c >= 8) || (f.radix == 10 && c >= 10))
             {
                 break;
             }
@@ -145,7 +122,7 @@ void exec_back(struct cmd *cmd)
             ++ndigits;
 
             n *= f.radix;
-            n += digit;
+            n += c;
 
             c = read_edit(pos++);
         }
@@ -169,8 +146,9 @@ void exec_back(struct cmd *cmd)
 ///  @brief    Scan a number in a command string, which can be decimal or octal,
 ///            depending on the current radix.
 ///
-///            If f.e1.radix is set, then we allow the radix to be specified in
-///            string, per C conventions:
+///            If f.e1.radix is set, and the number was specified within
+///            parentheses, then we allow the radix to be specified per
+///            C conventions:
 ///
 ///            If it starts with 1-9, it's a decimal number.
 ///
@@ -189,11 +167,10 @@ bool scan_number(struct cmd *cmd)
     confirm(cmd, NO_COLON, NO_ATSIGN);
 
     int c = cmd->c1;
-    int cx;
     int_t radix;
-    bool hex = false;                   // Assume hex digits are disallowed
+    int_t n = 0;
 
-    if (!auto_radix())                  // Auto-detect radix?
+    if (!f.e1.radix || !check_parens()) // Auto-detect radix?
     {
         radix = f.radix;                // No - use default
     }
@@ -201,65 +178,92 @@ bool scan_number(struct cmd *cmd)
     {
         radix = 10;                     // No, must be base 10
     }
-    else if ((cx = peek_cbuf()) != EOF && (cx == 'x' || cx == 'X'))
+    else if (toupper(peek_cbuf()) == 'X') // Was it 0x or 0X for hex number?
     {
         next_cbuf();                    // Discard the x or X
 
         c = require_cbuf();             // Get the first digit for base 16
 
-        if (!isxdigit(c))               // At least one valid hex digit?
+        if (!isxdigit(c))               // Hexadecimal digit?
         {
             throw(E_ILN);               // Invalid number
         }
+        else if (isalpha(c))             // [A-F]?
+        {
+            c = '9' + 1 + toupper(c) - 'A'; // Convert to [10,15]
+        }
 
         radix = 16;
-
-        hex = true;                     // We can allow hex digits
     }
     else                                // Must be base 8
     {
         radix = 8;
     }
 
-    int_t n = digits[c];                // Store 1st digit
+#if     !defined(NOSTRICT)
 
-    while ((c = peek_cbuf()) != EOF && c >= '0')
+    //  The following ensures that numbers are in canonical form, which means
+    //  that digits are consecutive, with no intervening whitespace, and no
+    //  preceding or intevening colons or at-signs. This is just an optional
+    //  restriction of TECO-64, and not a feature of classic TECO.
+
+    if (f.e2.number)
     {
-        if (radix == 10)
+        if (f.e0.digit)
         {
-            if (c > '9')
-            {
-                break;                  // Not a decimal digit
-            }
+            throw(E_ILN);               // Illegal number
         }
-        else if (radix == 16)
+    }
+    else if (query_x(&n))
+    {
+        if (f.e0.digit)
         {
-            if (!isxdigit(c))
-            {
-                break;                  // Not a hex digit
-            }
-            else if (!isdigit(c) && !hex)
-            {
-                break;
-            }
+            n *= radix;                 // Multiply by 8, 10, or 16
         }
-        else if (c > '7')               // Must be octal
+        else
         {
-            if (c > '9')                // Non-digit?
-            {
-                break;                  // Not an octal digit
-            }
+            n = 0;
+        }
+    }
 
-            throw(E_ILN);               // Invalid octal number
+#endif
+
+    n += c - '0';                       // Convert ASCII digit to binary and save
+
+    while ((c = peek_cbuf()) != EOF)
+    {
+        if (isdigit(c))                 // Octal, decimal, or hexadecimal digit
+        {
+            if (radix == 8 && c >= '8') // Valid octal digit?
+            {
+                throw(E_ILN);           // Invalid octal number
+            }
+        }
+        else if (radix == 16 && isxdigit(c)) // [A,F]?
+        {
+            c = '9' + 1 + toupper(c) - 'A';  // Convert to [10,15]
+        }
+        else 
+        {
+            break;                      // No more valid digits for radix
         }
 
         next_cbuf();                    // Accept the next digit
 
         n *= radix;                     // Shift over existing digits
-        n += digits[c];                 // And add in the new digit
+        n += c - '0';                   // Convert ASCII digit to binary and save
     }
 
     store_val(n);
+
+#if     !defined(NOSTRICT)
+
+    if (!f.e2.number)
+    {
+        f.e0.digit = true;              // Last command was digit
+    }
+
+#endif
 
     return true;
 }

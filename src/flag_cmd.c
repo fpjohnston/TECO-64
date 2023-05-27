@@ -199,6 +199,7 @@ void exec_E2(struct cmd *cmd)
     f.e2.quote  = e2.quote;
     f.e2.page   = e2.page;
     f.e2.args   = e2.args;
+    f.e2.number = e2.number;
 }
 
 

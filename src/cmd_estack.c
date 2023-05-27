@@ -114,12 +114,13 @@ static const struct oper oper[X_MAX] =
 //  rules simply made more sense (this is also done for the logical NOT
 //  operator, which did not exist in classic TECO).
 
-static uint precedence[X_MAX];          ///< Current precedence table
+static uint precedence[X_MAX];      ///< Current precedence table
 
 
-#define MAX_OPERS   8           ///< Max. no. of consecutive arithmetic operators
+#define MAX_VALUES  (64 + 1)        ///< Maximum expression values
 
-#define MAX_VALUES  64          ///< Max. no. of expression values
+#define MAX_OPERS   (MAX_VALUES * 2) ///< Maximum consecutive arithmetic operators
+
 
 ///  @struct   xstack
 ///  @brief    Definition of expression stack, used to process arithmetic
@@ -173,26 +174,6 @@ static int_t fetch_val(void);
 static struct xstack *make_x(void);
 
 static void reset_x(struct xstack *stack);
-
-
-///
-///  @brief    Check to see if auto detection of number radix is possible.
-///
-///  @returns  true if we can do auto detect of radix, else false.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool auto_radix(void)
-{
-    if (f.e1.radix && x->oper.nesting != 0)  // Auto-detect radix?
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
 
 
 ///
@@ -626,6 +607,12 @@ bool scan_left(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_ATSIGN);
 
+#if     !defined(NOSTRICT)
+
+    f.e0.digit = false;                 // Last command wasn't a digit
+
+#endif
+
     // The following means that a command string such as mmm (nnn) just has a
     // value of nnn; the mmm is discarded. This allows for enclosing Q and other
     // commands in parentheses to guard against being affected (and the command
@@ -658,6 +645,12 @@ bool scan_right(struct cmd *cmd)
     assert(cmd != NULL);
 
     confirm(cmd, NO_COLON, NO_ATSIGN);
+
+#if     !defined(NOSTRICT)
+
+    f.e0.digit = false;                 // Last command wasn't a digit
+
+#endif
 
     // Try to process everything since the last left parenthesis
 
@@ -775,6 +768,12 @@ void store_oper(enum x_oper o1)
 {
     enum x_oper o2;
 
+#if     !defined(NOSTRICT)
+
+    f.e0.digit = false;                 // Last command wasn't a digit
+
+#endif
+
     while (x->oper.count != 0 && ((o2 = x->oper.top[-1]) != X_LPAREN))
     {
         uint p1 = precedence[o1];
@@ -830,6 +829,13 @@ void store_sub(void)
 
 void store_val(int_t value)
 {
+
+#if     !defined(NOSTRICT)
+
+    f.e0.digit = false;                 // Last command wasn't a digit
+
+#endif
+
     if (x->number.count++ == MAX_VALUES)
     {
         throw(E_PDO);                   // Push-down list overflow

@@ -66,8 +66,6 @@ enum x_oper
 
 // Expression stack functions
 
-extern bool auto_radix(void);
-
 extern bool check_parens(void);
 
 extern void delete_x(void);

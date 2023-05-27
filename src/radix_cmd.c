@@ -88,6 +88,6 @@ void exec_ctrl_R(struct cmd *cmd)
     }
     else
     {
-        store_val(f.radix);     // No, just save what we have
+        store_val(f.radix);             // No, just save what we have
     }
 }

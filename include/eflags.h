@@ -56,6 +56,7 @@ union e0_flag
         uint i_redir : 1;       ///< stdin has been redirected
         uint o_redir : 1;       ///< stdout has been redirected
         uint ctrl_t  : 1;       ///< Reading input for CTRL/T command
+        uint digit   : 1;       ///< Last command was a digit
     };
 };
 
@@ -115,6 +116,7 @@ union e2_flag
         uint quote  : 1;        ///< Conditional not complete within loop
         uint page   : 1;        ///< m,n:P or H:P or :PW
         uint args   : 1;        ///< Too many arguments for command
+        uint number : 1;        ///< Require canonical form for numbers
     };
 };
 

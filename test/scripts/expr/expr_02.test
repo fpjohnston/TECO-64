@@ -8,6 +8,9 @@
 
 [[expr]]+1 UA                       ! No. of values we'll push on expression stack !
 
-QA < :@^UA/123 / MA >               ! Test: push numeric values !
+QA < :@^UA/1+(/ >
+:@^UA/1/
+QA < :@^UA/)/ >
+MA                                  ! Test: push numeric values !
 
 [[exit]]
