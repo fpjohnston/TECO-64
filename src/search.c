@@ -459,7 +459,7 @@ void search_failure(struct cmd *cmd, uint keepdot)
         set_dot(t->B);
     }
 
-    if (cmd->colon)
+    if (cmd->colon || cmd->dcolon)
     {
         store_val(FAILURE);
     }
@@ -676,7 +676,7 @@ void search_success(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->colon || (check_loop() && check_semi()))
+    if (cmd->colon || cmd->dcolon || (check_loop() && check_semi()))
     {
         store_val(SUCCESS);
     }

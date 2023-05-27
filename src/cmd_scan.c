@@ -71,19 +71,23 @@ bool scan_colon(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (peek_cbuf() == ':')             // Double colon?
+    if (!cmd->colon)
+    {
+        cmd->colon = true;              // Flag the first colon
+
+        return true;
+    }
+    else if (f.e2.colon)
+    {
+        throw(E_COL);
+    }
+    else if (peek_cbuf() == ':')        // Another colon?
     {
         next_cbuf();                    // Yes, count it
-
-        if (cmd->dcolon && f.e2.colon)
-        {
-            throw(E_COL);               // Too many colons
-        }
-
-        cmd->dcolon = true;             // And flag it
     }
 
-    cmd->colon = true;                  // Flag the first colon
+    cmd->dcolon = true;                 // Flag double colon
+    cmd->colon = false;                 // But reset single colon
 
     return true;
 }
