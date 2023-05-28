@@ -72,7 +72,7 @@ code.
 | <span>?ISS</span> | <span>Invalid search string</span> | One of the search string special characters (^Q, ^V, ^W, etc.) would have modified the search string delimiter (usually <ESC>). |
 | <span>?IUC</span> | <span>Invalid character '*x*' following ^</span> | The character following a ^ must have an ASCII value between 64 and 95 inclusive, or between 141 and 172 inclusive. |
 | <span>?KEY</span> | <span>Keyword 'foo' not found</span> | An invalid keyword was specified for an F1, F2, F3, F4, FM, or FQ command. |
-| <span>?LOC</span> | <span>Invalid location for tag '!foo!'</span> | An O command cannot jump to a location inside a loop, other than the one the O command may be in, or inside a conditional. |
+| <span>?LOC</span> | <span>Invalid location for tag '!foo!'</span> | An O command inside a loop or nested loop cannot jump backward before the start of the outermost loop. It also cannot jump into the middle of any loop it is not currently inside of. |
 | <span>?MAP</span> | <span>Missing apostrophe</span> | Every conditional (started with the " command) must be closed with the ' command. |
 | <span>?MAX</span> | <span>Internal program limit reached</span> | Loops and conditionals are limited to a maximum of 32 levels, macros are limited to a depth of 64 levels, and file names are limited to 4095 characters. |
 | <span>?MEM</span> | <span>Memory overflow</span> | Insufficient memory available to complete the current command. |

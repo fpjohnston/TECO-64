@@ -53,6 +53,17 @@
 
 #endif
 
+///  @var    ctrl
+///
+///  @brief  Initial command block values.
+
+struct ctrl ctrl =
+{
+    .depth = 0,
+    .level = 0,
+    .loop = { { 0 } },
+};
+
 ///  @var    null_cmd
 ///
 ///  @brief  Initial command block values.
@@ -186,11 +197,11 @@ void exec_cmd(struct cmd *cmd)
     // Here to make sure that all conditionals, loops, and parenthetical
     // expressions were complete within the command string just executed.
 
-    if (getif_depth() != 0)
+    if (ctrl.depth != 0)
     {
         throw(E_MAP);                   // Missing apostrophe
     }
-    else if (getloop_depth() != getloop_base())
+    else if (ctrl.level != 0)
     {
         throw(E_MRA);                   // Missing right angle bracket
     }
@@ -320,6 +331,8 @@ static INLINE bool scan_cmd(struct cmd *cmd)
     else if (!f.e0.skip)
     {
         (*entry->exec)(cmd);            // Execute command
+
+        f.e0.digit = false;
 
         // We normally reset the command block after every command we execute.
         // However, the '[', ']', and '!' commands through m and n arguments
@@ -677,6 +690,8 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     while ((c = fetch_cbuf()) != EOF)
     {
         cmd->c1 = (char)c;
+
+        f.e0.digit = false;
 
         if (scan_cmd(cmd))
         {

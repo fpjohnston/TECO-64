@@ -213,9 +213,10 @@ static const char *errhelp[] =
               "141 and 172 inclusive.",
     [E_KEY] = "An invalid keyword was specified for an F1, F2, "
               "F3, F4, FM, or FQ command.",
-    [E_LOC] = "An O command cannot jump to a location inside a "
-              "loop, other than the one the O command may be in, "
-              "or inside a conditional.",
+    [E_LOC] = "An O command inside a loop or nested loop cannot "
+              "jump backward before the start of the outermost "
+              "loop. It also cannot jump into the middle of any "
+              "loop it is not currently inside of.",
     [E_MAP] = "Every conditional (started with the \" "
               "command) must be closed with the ' command.",
     [E_MAX] = "Loops and conditionals are limited to a maximum "

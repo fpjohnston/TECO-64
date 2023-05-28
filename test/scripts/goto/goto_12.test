@@ -3,7 +3,7 @@
 ! Function: Branch backward within nested loop !
 !  Command: O !
 !     TECO: ?TAG !
-!  TECO-64: ?LOC !
+!  TECO-64: PASS !
 
 [[enter]]
 
@@ -14,9 +14,7 @@
 
     !tag2!
 
-    [[PASS]]
-
-    [[FAIL]]
+    [[PASS]] ^C
 
     !tag1!
 

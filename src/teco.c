@@ -87,7 +87,25 @@ struct flags f =                    ///< Global flag variables
 
 #endif
 
-    .e2.flag = 0,                   // All bits off in E2 flag
+#if     defined(DEBUG)          // Enable E2 restrictions
+
+    .e2.zero   = true,              // Division by zero
+    .e2.oper   = true,              // Double operators in expressions
+    .e2.atsign = true,              // Invalid @, or more than one @
+    .e2.colon  = true,              // Invalid :, or more than two colons
+    .e2.number = true,              // Require canonical form for numbers
+    .e2.m_arg  = true,              // Invalid m argument
+    .e2.n_arg  = true,              // Invalid n argument
+    .e2.loop   = true,              // Loop not complete within conditional
+    .e2.quote  = true,              // Conditional not complete within loop
+    .e2.page   = true,              // m,n:P or H:P or :PW
+    .e2.args   = true,              // Too many arguments for command
+
+#else
+
+    .e2.flag   = 0,                 // Disable all restrictions
+
+#endif
 
 #if     defined(__vms)
 
@@ -239,7 +257,7 @@ int main(int argc, const char * const argv[])
         f.e0.exec = false;              // Not executing commands
         f.e0.skip = false;              // Not skipping commands
         f.e0.ctrl_t = false;            // No CTRL/T active
-        f.e0.digit = false;             // Last command was not a digit
+        f.e0.digit = false;             // No digit seen yet
 
         f.et.abort = false;             // Don't abort on error
 
@@ -270,7 +288,6 @@ static void exit_teco(void)
     exit_term();                        // Restore terminal settings next
     exit_files();                       // Close any open files
 
-    reset_loop();                       // Deallocate memory for loops
     reset_indirect();                   // Deallocate memory for EI commands
     reset_search();                     // Deallocate memory for last search
 
@@ -374,8 +391,8 @@ void print_size(uint_t size)
 static void reset_teco(void)
 {
     init_x();                           // Reinitialize expression stack
-    reset_if();                         // Reset conditional stack
-    reset_loop();                       // Reset loop stack
+    ctrl.level = 0;
+    ctrl.depth = 0;
     reset_cbuf();                       // Reset the input buffer
     reset_qreg();                       // Free up local Q-register storage
     reset_macro();                      // Reset macro stack

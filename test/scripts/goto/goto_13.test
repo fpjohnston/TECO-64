@@ -2,7 +2,7 @@
 
 ! Function: Branch forward into a conditional !
 !  Command: O !
-!     TECO: ?LOC !
+!     TECO: PASS !
 
 [[enter]]
 
@@ -16,8 +16,7 @@
 
     [[PASS]]
 
-    [[FAIL]]
-
+    ^C
 '
 
 [[exit]]

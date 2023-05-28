@@ -165,7 +165,7 @@ struct cmd
     char qname;                     ///< Q-register name
     bool qlocal;                    ///< Q-register is local
     int qindex;                     ///< Q-register index (if not -1)
-    bool m_set;                     ///< m argument is valid
+    bool m_set;                     ///< m argument is valid (comma seen)
     int_t m_arg;                    ///< m argument
     bool n_set;                     ///< n argument is valid
     int_t n_arg;                    ///< n argument
@@ -177,6 +177,29 @@ struct cmd
     tstring text2;                  ///< 2nd text string
 };
 
+
+#define MAX_LOOPS   (32)            ///< Maximum nesting level for loops
+
+///  @struct  loop
+///  @brief   Variables we need to keep track of for each loop level.
+
+struct loop
+{
+    int_t iter;                     ///< Iteration count for loop
+    uint_t pos;                     ///< Starting position of loop
+    uint_t line;                    ///< Line number of loop start
+    uint depth;                     ///< Depth of if statements
+};
+
+///  @struct  ctrl
+///  @brief   Command control structure.
+
+struct ctrl
+{
+    uint depth;                     ///< Conditional nesting depth
+    uint level;                     ///< Current loop level
+    struct loop loop[MAX_LOOPS];    ///< Nested loop array
+};
 
 ///  @struct  ifile
 ///  @brief   Definition of variables used to keep track of input files.
@@ -261,8 +284,6 @@ extern void *expand_mem(void *p1, uint_t size, uint_t delta);
 
 extern void free_mem(void *ptr);
 
-extern uint getif_depth(void);
-
 extern uint getloop_base(void);
 
 extern uint getloop_depth(void);
@@ -278,8 +299,6 @@ extern void print_flag(int_t flag);
 extern void print_size(uint_t size);
 
 extern void reset_map(void);
-
-extern void setif_depth(uint depth);
 
 extern void setloop_depth(uint depth);
 

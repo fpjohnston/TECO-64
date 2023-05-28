@@ -2,7 +2,7 @@
 
 ! Function: Branch forward within nested loop !
 !  Command: O !
-!     TECO: ?LOC !
+!     TECO: PASS !
 
 [[enter]]
 
@@ -16,8 +16,6 @@
     !tag1!
 
     [[PASS]]
-
-    [[FAIL]]
 >
 
 [[exit]]

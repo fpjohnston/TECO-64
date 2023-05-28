@@ -200,33 +200,28 @@ bool scan_number(struct cmd *cmd)
         radix = 8;
     }
 
-#if     !defined(NOSTRICT)
+    //  Note that we just got a digit. We will process all consecutive digits,
+    //  but will stop if we see anything else. So if the digit flag is set when
+    //  we get here, it means that we saw a digit after other characters, such
+    //  whitespace (e.g., "12 34") or perhaps colons or at-signs (e.g., 12:34).
+    //  We will allow this since classic TECO does, but if numbers should be
+    //  in "canonical" form, we will issue an error.
 
-    //  The following ensures that numbers are in canonical form, which means
-    //  that digits are consecutive, with no intervening whitespace, and no
-    //  preceding or intevening colons or at-signs. This is just an optional
-    //  restriction of TECO-64, and not a feature of classic TECO.
-
-    if (f.e2.number)
+    if (f.e0.digit)
     {
-        if (f.e0.digit)
+        if (f.e2.number)
         {
-            throw(E_ILN);               // Illegal number
+            throw(E_ILN);               // Invalid number
+        }
+        else if (query_x(&n))           // Recover previous number
+        {
+            n *= radix;                 // And shift it over
+        }
+        else                            // If nothing there,
+        {
+            n = 0;                      //  just do the best we can
         }
     }
-    else if (query_x(&n))
-    {
-        if (f.e0.digit)
-        {
-            n *= radix;                 // Multiply by 8, 10, or 16
-        }
-        else
-        {
-            n = 0;
-        }
-    }
-
-#endif
 
     n += c - '0';                       // Convert ASCII digit to binary and save
 
@@ -243,7 +238,7 @@ bool scan_number(struct cmd *cmd)
         {
             c = '9' + 1 + toupper(c) - 'A';  // Convert to [10,15]
         }
-        else 
+        else
         {
             break;                      // No more valid digits for radix
         }
@@ -255,15 +250,7 @@ bool scan_number(struct cmd *cmd)
     }
 
     store_val(n);
-
-#if     !defined(NOSTRICT)
-
-    if (!f.e2.number)
-    {
-        f.e0.digit = true;              // Last command was digit
-    }
-
-#endif
+    f.e0.digit = true;                  // Set digit flag (AFTER calling store_val)
 
     return true;
 }

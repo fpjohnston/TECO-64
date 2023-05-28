@@ -2,7 +2,7 @@
 
 ! Function: Branch backward outside loop !
 !  Command: O !
-!     TECO: PASS !
+!     TECO: ?LOC !
 
 [[enter]]
 

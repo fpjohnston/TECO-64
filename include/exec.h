@@ -65,6 +65,8 @@ extern char eg_command[];
 
 extern tstring ez;
 
+extern struct ctrl ctrl;
+
 extern const struct cmd null_cmd;
 
 // Functions that scan commands

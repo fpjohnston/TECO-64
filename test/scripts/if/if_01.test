@@ -1,6 +1,6 @@
 ! Smoke test for TECO text editor !
 
-! Function: Test nesting maximum conditionals !
+! Function: Test nesting conditionals !
 !  Command: "x !
 !     TECO: PASS !
 

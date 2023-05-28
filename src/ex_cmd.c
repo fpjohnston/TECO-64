@@ -57,10 +57,5 @@ void exec_EX(struct cmd *cmd)
 
     close_files();                      // Close everything normally
 
-    // The following allow for the use of EX inside of a conditional or loop.
-
-    reset_if();
-    reset_loop();
-
     exit(EXIT_SUCCESS);
 }

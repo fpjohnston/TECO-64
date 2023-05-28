@@ -33,39 +33,14 @@
 #include "errors.h"
 #include "estack.h"
 #include "exec.h"
+#include "term.h"
 
-
-#define NO_POP      (bool)false     ///< Pop loop stack at end of loop
-#define POP_OK      (bool)true      ///< Don't pop loop stack at end of loop
 
 #define INFINITE    (0)             ///< Infinite loop count
 
-#define MAX_LOOPS   (32)            ///< Maximum nesting level for loops
-
-///  @struct  loop
-///  @brief   Variables we need to keep track of for each loop level.
-
-struct loop
-{
-    int_t count;                    ///< Iteration count for loop
-    uint_t start;                   ///< Starting position of loop
-    uint_t line;                    ///< Line number of loop
-    uint if_depth;                  ///< Depth of if statements
-};
-
-static struct loop loop[MAX_LOOPS]; ///< Nested loop array
-
-static uint nloops = 0;             ///< Current loop level
-
-static uint loop_base = 0;          ///< Current loop base
-
 // Local functions
 
-static void endloop(struct cmd *cmd, bool pop_ok);
-
-static void pop_loop(bool pop_ok);
-
-static void push_loop(int_t count);
+static void skip_loop(void);
 
 
 ///
@@ -77,7 +52,7 @@ static void push_loop(int_t count);
 
 bool check_loop(void)
 {
-    if (nloops != 0)
+    if (ctrl.level != 0)
     {
         return true;
     }
@@ -85,60 +60,6 @@ bool check_loop(void)
     {
         return false;
     }
-}
-
-
-///
-///  @brief    Flow to end of loop
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void endloop(struct cmd *cmd, bool pop_ok)
-{
-    assert(cmd != NULL);
-
-    uint level = 1;                     // Nesting level
-    uint if_depth = getif_depth();      // Conditional depth
-
-    do
-    {
-        if (!skip_cmd(cmd, "\"'<>"))
-        {
-            throw(E_MRA);               // Missing right angle bracket
-        }
-
-        if (cmd->c1 == '"')             // Start of a new conditional?
-        {
-            ++if_depth;
-        }
-        else if (cmd->c1 == '\'')       // End of a conditional?
-        {
-            --if_depth;
-        }
-
-        if (f.e2.loop && f.e2.quote)
-        {
-            if (nloops != 0 && loop[nloops - 1].if_depth > getif_depth())
-            {
-                throw(E_MAP);           // Missing apostrophe
-            }
-        }
-
-        if (cmd->c1 == '<')             // Start of a new loop?
-        {
-            ++level;
-        }
-        else if (cmd->c1 == '>')        // End of a loop?
-        {
-            --level;
-        }
-    } while (level > 0);
-
-    setif_depth(if_depth);
-
-    pop_loop(pop_ok);
 }
 
 
@@ -155,30 +76,30 @@ void exec_F_greater(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
-    if (nloops == 0)                    // Outside of loop?
+    if (ctrl.level == 0)                // Outside of loop?
     {
         cbuf->pos = cbuf->len;          // Yes, end the command string
     }
     else
     {
+        uint i = ctrl.level - 1;
+
         if (f.e2.loop)
         {
-            if (loop[nloops - 1].if_depth != getif_depth())
+            if (ctrl.loop[i].depth != ctrl.depth)
             {
                 throw(E_MAP);           // Missing apostrophe
             }
         }
 
-        if (loop[nloops - 1].count == INFINITE || --loop[nloops - 1].count > 0)
+        if (ctrl.loop[i].iter == INFINITE || --ctrl.loop[i].iter > 0)
         {
-            cbuf->pos = loop[nloops - 1].start;
-                                        // Go back to start of loop
-            cmd_line = loop[nloops - 1].line;
-                                        // Reset line number
+            cbuf->pos = ctrl.loop[i].pos; // Go back to start of loop
+            cmd_line = ctrl.loop[i].line; // Reset line number
         }
         else
         {
-            endloop(cmd, POP_OK);
+            skip_loop();
         }
 
         reset_x();                      // Reset expression stack
@@ -199,13 +120,15 @@ void exec_F_less(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
-    if (nloops == 0)                    // Outside of loop?
+    if (ctrl.level == 0)                // Outside of loop?
     {
         cbuf->pos = 0;                  // Yes, reset to start of command
     }
     else                                // No, restart the loop
     {
-        cbuf->pos = loop[nloops - 1].start;
+        uint i = ctrl.level - 1;
+
+        cbuf->pos = ctrl.loop[i].pos;
     }
 
     reset_x();                          // Reset expression stack
@@ -225,29 +148,29 @@ void exec_greater(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (nloops == 0)
+    if (ctrl.level == 0)
     {
         throw(E_BNI);                   // Right angle bracket not in iteration
     }
 
+    uint i = ctrl.level - 1;
+
     if (f.e2.loop)
     {
-        if (loop[nloops - 1].if_depth != getif_depth())
+        if (ctrl.loop[i].depth != ctrl.depth)
         {
             throw(E_MAP);               // Missing apostrophe
         }
     }
 
-    if (loop[nloops - 1].count == INFINITE || --loop[nloops - 1].count > 0)
+    if (ctrl.loop[i].iter == INFINITE || --ctrl.loop[i].iter > 0)
     {
-        cbuf->pos = loop[nloops - 1].start;
-                                        // Go back to start of loop
-        cmd_line = loop[nloops - 1].line;
-                                        // Reset line number
+        cbuf->pos = ctrl.loop[i].pos;   // Go back to start of loop
+        cmd_line = ctrl.loop[i].line;   // Reset line number
     }
     else
     {
-        pop_loop(POP_OK);
+        --ctrl.level;                   // Done with loop
     }
 
     reset_x();                          // Reset expression stack
@@ -265,15 +188,27 @@ void exec_less(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int_t count = INFINITE;             // Assume infinite loop
+    int_t iter = INFINITE;              // Assume infinite loop
 
-    if (cmd->n_set && (count = cmd->n_arg) <= 0)
+    if (cmd->n_set && (iter = cmd->n_arg) <= 0)
     {
-        endloop(cmd, NO_POP);           // End loop if count is <= 0
+        ++ctrl.level;
+
+        skip_loop();                    // Skip loop if count is <= 0
     }
     else
     {
-        push_loop(count);
+        if (ctrl.level == MAX_LOOPS)
+        {
+            throw(E_MAX);               // Internal program limit reached
+        }
+
+        uint i = ctrl.level++;
+
+        ctrl.loop[i].iter  = iter;
+        ctrl.loop[i].pos   = cbuf->pos;
+        ctrl.loop[i].line  = cmd_line;
+        ctrl.loop[i].depth = ctrl.depth;
     }
 
     reset_x();                          // Reset expression stack
@@ -291,7 +226,7 @@ void exec_semi(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (nloops == 0)
+    if (ctrl.level == 0)
     {
         throw(E_SNI);                   // Semi-colon not in loop
     }
@@ -316,8 +251,7 @@ void exec_semi(struct cmd *cmd)
         }
     }
 
-    endloop(cmd, POP_OK);
-
+    skip_loop();
     reset_x();                          // Reset expression stack
 }
 
@@ -333,112 +267,8 @@ void exit_loop(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    endloop(cmd, POP_OK);
-
+    skip_loop();
     reset_x();                          // Reset expression stack
-}
-
-
-///
-///  @brief    Get current loop base.
-///
-///  @returns  Loop base.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-uint getloop_base(void)
-{
-    return loop_base;
-}
-
-
-///
-///  @brief    Get current loop depth.
-///
-///  @returns  Loop depth.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-uint getloop_depth(void)
-{
-    return nloops;
-}
-
-
-///
-///  @brief    Get current loop start.
-///
-///  @returns  Starting position of loop (EOF if not in a loop).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-uint_t getloop_start(void)
-{
-    if (nloops != 0)
-    {
-        return loop[nloops - 1].start;
-    }
-    else
-    {
-        return (uint_t)EOF;
-    }
-}
-
-
-///
-///  @brief    Pop loop block from linked list stack.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void pop_loop(bool pop_ok)
-{
-    if (pop_ok && nloops >= loop_base)
-    {
-        --nloops;
-    }
-
-    if (loop_base > nloops)
-    {
-        loop_base = nloops;
-    }
-}
-
-
-///
-///  @brief    Push loop block onto linked list stack.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void push_loop(int_t count)
-{
-    if (nloops == MAX_LOOPS)
-    {
-        throw(E_MAX);                   // Internal program limit reached
-    }
-
-    loop[nloops].count = count;
-    loop[nloops].start = cbuf->pos;
-    loop[nloops].line = cmd_line;
-    loop[nloops].if_depth = getif_depth();
-
-    ++nloops;
-}
-
-
-///
-///  @brief    Reset loop structures.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void reset_loop(void)
-{
-    nloops = loop_base = 0;
 }
 
 
@@ -567,30 +397,58 @@ bool scan_semi(struct cmd *cmd)
 
 
 ///
-///  @brief    Set current loop base.
+///  @brief    Flow to end of loop.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void setloop_base(uint base)
+static void skip_loop(void)
 {
-    assert(base < MAX_LOOPS);
+    assert(ctrl.level > 0);
 
-    loop_base = base;
-}
+    struct cmd cmd;
+    uint level = ctrl.level--;
 
+    while (skip_cmd(&cmd, "<>\"'"))
+    {
+        switch (cmd.c1)
+        {
+            case '<':                   // Start of loop
+                ++level;
 
-///
-///  @brief    Set current loop depth.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
+                break;
 
-void setloop_depth(uint depth)
-{
-    assert(depth < MAX_LOOPS);
+            case '>':                   // End of loop
+                if (--level == ctrl.level)
+                {
+                    if (f.trace)
+                    {
+                        echo_in(cmd.c1);
+                    }
 
-    nloops = depth;
+                    return;
+                }
+
+                break;
+
+            case '"':                   // Start of conditional
+                ++ctrl.depth;
+
+                break;
+
+            case '\'':                  // End of conditional
+                if (ctrl.depth-- == 0)
+                {
+                    throw(E_MSC);       // Missing start of conditional
+                }
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    throw(E_MRA);                       // Missing right angle bracket
 }

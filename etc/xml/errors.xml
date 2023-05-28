@@ -231,9 +231,10 @@
         <error>
             <code>LOC</code>
             <message>Invalid location for tag &apos;!%s!&apos;</message>
-            <detail>An O command cannot jump to a location inside a</detail>
-            <detail>loop, other than the one the O command may be in,</detail>
-            <detail>or inside a conditional.</detail>
+            <detail>An O command inside a loop or nested loop cannot</detail>
+            <detail>jump backward before the start of the outermost</detail>
+            <detail>loop. It also cannot jump into the middle of any</detail>
+            <detail>loop it is not currently inside of.</detail>
         </error>
         <error>
             <code>MAP</code>

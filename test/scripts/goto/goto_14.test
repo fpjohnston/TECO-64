@@ -2,7 +2,7 @@
 
 ! Function: Branch backward into a conditional !
 !  Command: O !
-!     TECO: ?LOC !
+!     TECO: PASS !
 
 [[enter]]
 

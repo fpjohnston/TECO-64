@@ -31,7 +31,6 @@
 #include "cmdbuf.h"
 #include "editbuf.h"
 #include "eflags.h"                 // Needed for confirm()
-#include "errors.h"
 #include "estack.h"
 #include "exec.h"
 #include "page.h"
@@ -134,8 +133,6 @@ bool scan_ctrl_Y(struct cmd *cmd)
     assert(cmd != NULL);
 
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
-
-    // The following prevents expressions such as 123+^Y.
 
     int_t n;
 
@@ -240,8 +237,6 @@ bool scan_H(struct cmd *cmd)
     assert(cmd != NULL);
 
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
-
-    // The following prevents expressions such as 123+H.
 
     int_t n;
 

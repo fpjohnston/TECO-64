@@ -119,106 +119,50 @@ static void find_tag(const char *orig_tag)
     // Check for string building characters to create tag
 
     tstring tag = build_string(orig_tag, (uint_t)strlen(orig_tag));
+    struct cmd cmd;                     // Dummy command block for skip_cmd()
+    uint old_pos = cbuf->pos;           // Save command buffer position
+    uint_t old_line = cmd_line;         // Save current line number
+    uint tag_pos = 0;                   // Position of tag
+    uint level = 0;
+    uint depth = 0;
 
     if (!validate_tag(&tag))
     {
         throw(E_BAT, tag.data);         // Bad tag
     }
 
-    struct cmd cmd = null_cmd;          // Dummy command block for skip_cmd()
-    uint_t loop_start = getloop_start(); // Start of current loop (0 if none)
-    uint_t loop_end = (uint_t)EOF;      // End of current loop
-    uint loop_depth = 0;                // Initial loop depth
-    uint if_depth = 0;                  // Current if/else depth
-    uint_t tag_pos = 0;                 // Position of tag
-    uint_t tag_line = 0;                // Line number for tag
-    uint tag_loop = 0;                  // Loop depth for tag
-    uint tag_if = 0;                    // If depth for tag
-    uint_t saved_line = cmd_line;       // Save current line number
+    //  Start at the beginning of the command string, and search for the tag.
 
-    cmd_line = 1;                       // Start command at line 1
-    cbuf->pos = 0;                      // Start at beginning of command
+    cbuf->pos = 0;
 
-    // Scan entire command string to verify that we have
-    // one and only one instance of the specified tag.
-
-    while (cbuf->pos < cbuf->len && skip_cmd(&cmd, "!\"'<>"))
+    while (skip_cmd(&cmd, "!"))
     {
         switch (cmd.c1)
         {
-            case '"':                   // Start of conditional
-                ++if_depth;
+            case '"':                   // 'if' command
+                ++depth;
 
                 break;
 
-            case '\'':                  // End of conditional
-                --if_depth;
+            case '\'':                  // 'endif' command
+                --depth;
 
                 break;
 
-            case '<':                   // Start of loop
-                ++loop_depth;
-
-                break;
-
-            case '>':                   // End of loop
-                --loop_depth;
-
-                // Check for end of loop the O command may be in
-
-                if (loop_start != 0 && loop_end == (uint_t)EOF)
-                {
-                    loop_end = cbuf->pos;
-                }
-
-                break;
-
-            case '!':                   // Start of tag/comment
-                if (cmd.c2 != '!'
-                    && cmd.text1.len == tag.len
+            case '!':                   // Tag (label or comment)
+                if (cmd.c2 != '!' && cmd.text1.len == tag.len
                     && !memcmp(cmd.text1.data, tag.data, (size_t)tag.len))
                 {
-                    // Error if duplicate tag
-
                     if (tag_pos != 0)
                     {
-                        cmd_line = saved_line;  // Restore original line number
+                        cmd_line = old_line; // Restore line number for throw()
 
                         throw(E_DUP, tag.data); // Duplicate tag
                     }
-
-                    // Error if jumping into a conditional
-
-                    if (if_depth != 0)
+                    else
                     {
-                        cmd_line = saved_line;  // Restore original line number
-
-                        throw(E_LOC, tag.data); // Invalid location
+                        tag_pos = cbuf->pos;
                     }
-
-                    // Error if jumping into a loop (other than current loop).
-
-                    if (loop_depth != 0
-                        && (cbuf->pos < loop_start || cbuf->pos > loop_end))
-                    {
-                        cmd_line = saved_line;  // Restore original line number
-
-                        throw(E_LOC, tag.data); // Invalid location
-                    }
-
-                    // We found the tag, so print it if tracing.
-
-                    if (f.trace)
-                    {
-                        tprint("!%.*s!", (int)cmd.text1.len, cmd.text1.data);
-                    }
-
-                    // Save state for tag in case we decide to use it
-
-                    tag_pos  = cbuf->pos;
-                    tag_line = cmd_line;
-                    tag_loop = loop_depth + getloop_depth();
-                    tag_if   = if_depth;
                 }
 
                 break;
@@ -228,20 +172,117 @@ static void find_tag(const char *orig_tag)
         }
     }
 
-    if (tag_pos == 0)                   // Did we find the tag?
+    //  Issue error if we couldn't find the tag, or if we're in a loop or
+    //  nested loop and the tag is before the start of the outermost loop.
+
+    if (tag_pos == 0)
     {
-        cmd_line = saved_line;          // Restore original line number
+        cmd_line = old_line;            // Restore line number for throw()
 
         throw(E_TAG, tag.data);         // Missing tag
     }
+    else if (ctrl.level != 0 && tag_pos < ctrl.loop[0].pos)
+    {
+        cmd_line = old_line;            // Restore line number for throw()
 
-    reset_x();                          // Reset expression stack
+        throw(E_LOC, tag.data);         // Tag location is invalid
+    }
 
-    setloop_depth(tag_loop);
-    setif_depth(tag_if);
+    //  Now that we know that we have a tag, and where it is, we can determine
+    //  how to proceed. There are basically three possibilities:
+    //
+    //  - The tag is after the O command, so we don't need to adjust the depth
+    //    of the conditional statements, or the line number.
+    //  - The tag is before the O command, and:
+    //    - we are not in any loop, so we just start at the beginning of the
+    //      command string.
+    //    - we are in a loop, or nested loop, so we cannot start before the
+    //      start of the outermost loop.
 
-    cmd_line = tag_line;                // Use the tag's line number
-    cbuf->pos = tag_pos;                // Execute goto
+    if (old_pos < tag_pos)
+    {
+        cbuf->pos = old_pos;
+    }
+    else
+    {
+        ctrl.depth = depth;
+
+        if (ctrl.level == 0)
+        {
+            cmd_line = 1;
+            cbuf->pos = 0;
+        }
+        else
+        {
+            cmd_line = ctrl.loop[0].line;
+            cbuf->pos = ctrl.loop[0].pos;
+        }
+    }
+
+    //  Scan command string to find the tag again. Note: when scanning for
+    //  loops, we distinguish between the loop (or nested loop) we may be
+    //  inside of, and any new loops that we may encounter, in order that
+    //  we not jump into any loops not already in progress.
+
+    while (skip_cmd(&cmd, "<>\"'!"))
+    {
+        switch (cmd.c1)
+        {
+            case '<':                   // Start of loop
+                ++level;
+
+                break;
+
+            case '>':                   // End of loop
+                if (level != 0)
+                {
+                    --level;
+                }
+                else if (ctrl.level != 0)
+                {
+                    --ctrl.level;
+                }
+                else
+                {
+                    throw(E_BNI);
+                }
+
+                break;
+
+            case '"':                   // 'if' command
+                ++ctrl.depth;
+
+                break;
+
+            case '\'':                  // 'endif' command
+                --ctrl.depth;
+
+                break;
+
+            case '!':                   // Start of tag/comment
+                if (cbuf->pos == tag_pos && level == 0)
+                {
+                    // The +2 is for the delimiting exclamation marks.
+
+                    cbuf->pos -= tag.len + 2;
+
+                    reset_x();
+
+                    return;
+                }
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    // We get here for such things as trying to jump forward into a loop.
+
+    cmd_line = old_line;                // Restore line number for throw()
+
+    throw(E_LOC, tag.data);             // Invalid tag location
 }
 
 
@@ -313,7 +354,7 @@ bool scan_tag(struct cmd *cmd)
 
     // Here if we have either a GOTO label or a comment.
 
-    confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON);
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     // If feature enabled, !! starts a comment that ends with LF
     // (but note that the LF is not counted as part of the command).

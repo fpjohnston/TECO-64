@@ -85,7 +85,7 @@ bool scan_comma(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
-    if (cmd->m_set)                     // Already seen m argument?
+    if (cmd->m_set)                     // Already seen comma?
     {
         throw(E_ARG);                   // Invalid arguments
     }
@@ -97,8 +97,9 @@ bool scan_comma(struct cmd *cmd)
         // the form m,n).
 
         cmd->m_set = true;
+        f.e0.digit = false;
     }
-    else if (f.e2.comma)                // No m arg. - is that an error?
+    else
     {
         throw(E_NAC);                   // No argument before comma
     }

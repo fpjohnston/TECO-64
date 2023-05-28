@@ -190,16 +190,15 @@ void exec_E2(struct cmd *cmd)
 
     f.e2.zero   = e2.zero;
     f.e2.oper   = e2.oper;
-    f.e2.atsign = e2.atsign;
-    f.e2.colon  = e2.colon;
-    f.e2.comma  = e2.comma;
+    f.e2.number = e2.number;
     f.e2.m_arg  = e2.m_arg;
     f.e2.n_arg  = e2.n_arg;
+    f.e2.colon  = e2.colon;
+    f.e2.atsign = e2.atsign;
     f.e2.loop   = e2.loop;;
     f.e2.quote  = e2.quote;
     f.e2.page   = e2.page;
     f.e2.args   = e2.args;
-    f.e2.number = e2.number;
 }
 
 

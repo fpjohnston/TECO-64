@@ -26,7 +26,6 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <stdio.h>
 
 #include "teco.h"
 #include "cmdbuf.h"
@@ -40,130 +39,16 @@
 #define NO_ELSE     (bool)false         ///< Don't execute | command
 #define ELSE_OK     (bool)true          ///< Execute | command if found
 
-#define MAX_IF      32                  ///< Maximum nesting depth
-
-///  @var     quote
-///
-///  @brief   Conditional command state
-
-static struct
-{
-    uint depth;
-    uint_t start_if[MAX_IF];
-    uint_t start_else[MAX_IF];
-    uint loop[MAX_IF];
-} quote =
-{
-    .depth = 0,
-};
-
 // Local functions
 
-static void endif(struct cmd *cmd, bool vbar);
-
-static void pop_if(void);
-
-static void push_if(void);
+static void skip_if(bool else_ok);
 
 
 ///
-///  @brief    Flow to end of conditional statement.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void endif(struct cmd *unused, bool else_ok)
-{
-    struct cmd cmdblock;
-    struct cmd *cmd = &cmdblock;
-
-    assert(cmd != NULL);
-
-    if (quote.depth == 0)
-    {
-        throw(E_MAP);                   // Missing apostrophe
-    }
-
-    const uint start_if = quote.depth;  // Initial conditional depth
-
-    do
-    {
-        if (!skip_cmd(cmd, "\"'<>|"))
-        {
-            throw(E_MAP);               // Missing apostrophe
-        }
-
-        //  The following code ensures that a loop begun after a " command ends
-        //  before the corresponding | or ' command, and that a loop begun after
-        //  a | command ends before the corresponding ' command.
-        //
-        //  Simplified examples ("Q means any conditional):
-        //
-        //      "Q < > '        OK
-        //      "Q | < > '      OK
-        //      "Q < > | < > '  OK
-        //      "Q < ' >        ERROR
-        //      "Q < | > '      ERROR
-        //      "Q | < ' >      ERROR
-        //      "Q > '          ERROR
-        //      "Q | > '        ERROR
-
-        if (cmd->c1 == '<')             // Loop start
-        {
-            setloop_depth(getloop_depth() + 1);
-        }
-        else if (cmd->c1 == '>')        // Loop end
-        {
-            setloop_depth(getloop_depth() - 1);
-
-            if (f.e2.quote && getloop_depth() < quote.loop[quote.depth - 1])
-            {
-                throw(E_MRA);           // Missing right angle bracket
-            }
-        }
-        else if (cmd->c1 == '"')        // Conditional start
-        {
-            push_if();
-        }
-        else if (cmd->c1 == '\'')       // Conditional end
-        {
-            if (f.trace && quote.depth == start_if)
-            {
-                echo_in(cmd->c1);
-            }
-
-            pop_if();
-        }
-        else if (cmd->c1 == '|')        // Conditional else
-        {
-            if (f.e2.quote && getloop_depth() != quote.loop[quote.depth - 1])
-            {
-                throw(E_MRA);           // Missing right angle bracket
-            }
-
-            if (else_ok)
-            {
-                quote.start_else[quote.depth] = cbuf->pos;
-
-                if (quote.depth == start_if)
-                {
-                    if (f.trace)
-                    {
-                        echo_in(cmd->c1);
-                    }
-
-                    break;
-                }
-            }
-        }
-
-    } while (quote.depth >= start_if);
-}
-
-
-///
-///  @brief    Execute | command: else clause of conditional statement.
+///  @brief    Execute | command: 'else' clause of conditional statement. We get
+///            here when we encounter a vertical bar while executing commands
+///            after a quote command, and therefore need to skip past the 'else'
+///            clause.
 ///
 ///  @returns  Nothing.
 ///
@@ -175,22 +60,12 @@ void exec_else(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
-    if (quote.depth == 0)
+    if (ctrl.depth == 0)
     {
         throw(E_MSC);                   // Missing start of conditional
     }
 
-    if (f.e2.quote)
-    {
-        if (getloop_depth() != quote.loop[quote.depth])
-        {
-            throw(E_MRA);               // Missing right angle bracket
-        }
-    }
-
-    quote.start_else[quote.depth] = cbuf->pos;
-
-    endif(cmd, NO_ELSE);
+    skip_if(NO_ELSE);                   // Skip to end of conditional
 
     reset_x();                          // Reset expression stack
 }
@@ -209,17 +84,10 @@ void exec_endif(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
-    if (quote.depth == 0)
+    if (ctrl.depth-- == 0)
     {
         throw(E_MSC);                   // Missing start of conditional
     }
-
-    if (f.e2.quote && getloop_depth() != quote.loop[quote.depth - 1])
-    {
-        throw(E_MRA);                   // Missing right angle bracket
-    }
-
-    pop_if();
 
     reset_x();                          // Reset expression stack
 }
@@ -238,7 +106,12 @@ void exec_F_else(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
-    endif(cmd, ELSE_OK);
+    if (ctrl.depth == 0)
+    {
+        ++ctrl.depth;
+    }
+
+    skip_if(ELSE_OK);                   // Skip to 'else'
 
     reset_x();                          // Reset expression stack
 }
@@ -257,7 +130,12 @@ void exec_F_endif(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
-    endif(cmd, NO_ELSE);                // Skip any else statement.
+    if (ctrl.depth == 0)
+    {
+        ++ctrl.depth;
+    }
+
+    skip_if(NO_ELSE);                   // Skip to end of conditional
 
     reset_x();                          // Reset expression stack
 }
@@ -299,8 +177,9 @@ void exec_if(struct cmd *cmd)
 
     int c = (int)cmd->n_arg;
 
+    ++ctrl.depth;                       // Increase conditional depth
+
     reset_x();                          // Reset expression stack
-    push_if();
 
     switch (cmd->c2)
     {
@@ -404,70 +283,7 @@ void exec_if(struct cmd *cmd)
 
     // Here if the test was unsuccessful
 
-    endif(cmd, ELSE_OK);
-}
-
-
-///
-///  @brief    Get conditional depth.
-///
-///  @returns  Conditional depth.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-uint getif_depth(void)
-{
-    return quote.depth;
-}
-
-
-///
-///  @brief    End a conditional.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void pop_if(void)
-{
-    assert(quote.depth > 0);            // Error if not in conditional
-
-    --quote.depth;
-}
-
-
-///
-///  @brief    Start a new conditional.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void push_if(void)
-{
-    if (quote.depth >= MAX_IF)
-    {
-        throw(E_MAX);                   // Internal program limit reached
-    }
-
-    quote.loop[quote.depth] = getloop_depth();
-    quote.start_if[quote.depth] = cbuf->pos;
-    quote.start_else[quote.depth] = (uint_t)EOF;
-
-    ++quote.depth;
-}
-
-
-///
-///  @brief    Reset conditional statement depth.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void reset_if(void)
-{
-    quote.depth = 0;
+    skip_if(ELSE_OK);
 }
 
 
@@ -493,15 +309,95 @@ bool scan_if(struct cmd *cmd)
 
 
 ///
-///  @brief    Set conditional depth.
+///  @brief    Skip to end of conditional statement, or to 'else' statement,
+///            checking for conditional statements nested within the current
+///            statement. We also have to check for any loops that start or
+///            end while we are skipping commands, as shown in the table
+///            below (where "Q means any conditional):
+///
+///            "Q '            OK
+///            "Q | '          OK
+///            "Q < > '        OK
+///            "Q | < > '      OK
+///            "Q < > | < > '  OK
+///            "Q < ' >        ERROR
+///            "Q < | > '      ERROR
+///            "Q | < ' >      ERROR
+///            "Q > '          ERROR
+///            "Q | > '        ERROR
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void setif_depth(uint depth)
+static void skip_if(bool else_ok)
 {
-    quote.depth = depth;
+    assert(ctrl.depth > 0);
+
+    struct cmd cmd;                     // Scrap command block for skip_cmd()
+    uint level = 0;
+    uint start = ctrl.depth;
+
+    while (skip_cmd(&cmd, "<>\"'|"))
+    {
+        switch (cmd.c1)
+        {
+            case '<':                   // Start of loop
+                ++level;
+
+                break;
+
+            case '>':                   // End of loop
+                if (level-- == 0)
+                {
+                    throw(E_BNI);       // Right angle bracket not in iteration
+                }
+
+                break;
+
+            case '"':                   // 'if' command
+                ++ctrl.depth;
+
+                break;
+
+            case '\'':                  // 'endif' command
+                if (ctrl.depth-- == start)
+                {
+                    if (level != 0)     // Can't jump into a loop
+                    {
+                        throw(E_MRA);   // Missing right angle bracket
+                    }
+
+                    if (f.trace)
+                    {
+                        echo_in(cmd.c1);
+                    }
+
+                    return;
+                }
+
+                break;
+
+            case '|':                   // 'else' command
+                if (ctrl.depth == start)
+                {
+                    if (else_ok)
+                    {
+                        if (f.trace)
+                        {
+                            echo_in(cmd.c1);
+                        }
+
+                        return;
+                    }
+                }
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    throw(E_MAP);                       // Missing apostrophe
 }
-
-

@@ -573,6 +573,8 @@ void reset_x(void)
     x->oper.count = 0;
     x->oper.last = false;
     x->oper.nesting = 0;
+
+    f.e0.digit = false;
 }
 
 
