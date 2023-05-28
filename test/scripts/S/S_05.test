@@ -17,11 +17,11 @@
 
 ZJ
 
-@-S/abc/ .=                         ! Test: -S !
-@-1S/abc/ .=                        ! Test: -1S !
-@-2S/abc/ .=                        ! Test: -2S !
-@-3S/abc/ .=                        ! Test: -3S !
+-@S/abc/ .=                         ! Test: -S !
+-1@S/abc/ .=                        ! Test: -1S !
+-2@S/abc/ .=                        ! Test: -2S !
+-3@S/abc/ .=                        ! Test: -3S !
 
-@-S/line 1/ .=                      ! Test: -S !
+-@S/line 1/ .=                      ! Test: -S !
 
 [[exit]]

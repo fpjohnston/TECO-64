@@ -15,7 +15,7 @@
 @^A/[Executing HK]/   [[^T]] HK
 @^A/[Executing :GC]/  MB :GC [[^T]]
 @^A/[Executing EW]/   [[^T]] :@EW/^EQA1.tmp/ "E :@^A/EW command failed/ [[FAIL]] '
-@^A/[Executing I]/    [[^T]] :@I/This is a test/ 13@I// 10@I//
+@^A/[Executing I]/    [[^T]] @I/This is a test/ 13@I// 10@I//
 @^A/[Executing HT]/   MC MB HT
 @^A/[Executing EC]/   [[^T]] EC
 @^A/[Executing HT]/   MC MB HT [[^T]]

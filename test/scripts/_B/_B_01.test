@@ -24,13 +24,13 @@ QY =
 ! 1 to 31, months are in the range of 1 to 12, and years are in the !
 ! (adjusted) range of 2000 to 2100. !
     
-QD - 1     ML
-QD - 31    MG
+QD - 1     [["L]]
+QD - 31    [["G]]
 
-QM - 1     ML
-QM - 12    MG
+QM - 1     [["L]]
+QM - 12    [["G]]
 
-QY - 2000  ML
-QY - 2100  MG
+QY - 2000  [["L]]
+QY - 2100  [["G]]
 
 [[exit]]

@@ -8,8 +8,8 @@
  
 HK Iabc Z-3 [["N]]                        ! Test: simple insert !
 
-HK Iabc @10I//
-Idef @10I//
+HK Iabc 10@I//
+Idef 10@I//
 
 Z=
 Z-8 [["N]]                                  ! Test: multi-line insert !
