@@ -174,13 +174,18 @@ void exec_equals(struct cmd *cmd)
 
     tstring result = { .data = NULL };
 
-    if (cmd->atsign && cmd->text1.len != 0)
+    if (cmd->atsign)
     {
-        result = build_string(cmd->text1.data, cmd->text1.len);
+        cmd->atsign = false;
 
-        if (check_format(result.data))
+        if (cmd->text1.len != 0)
         {
-            format = result.data;
+            result = build_string(cmd->text1.data, cmd->text1.len);
+
+            if (check_format(result.data))
+            {
+                format = result.data;
+            }
         }
     }
 
@@ -263,6 +268,8 @@ bool scan_equals(struct cmd *cmd)
         }
 
         scan_texts(cmd, 1, ESC);
+
+        cmd->atsign = true;             // Re-set after scan_texts() clears flag
     }
 
     return false;

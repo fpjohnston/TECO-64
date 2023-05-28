@@ -553,6 +553,8 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
     if (cmd->atsign)                    // @ modifier?
     {
+        cmd->atsign = false;
+
         int c;
 
         while ((c = peek_cbuf()) != TAB && isspace(c))
