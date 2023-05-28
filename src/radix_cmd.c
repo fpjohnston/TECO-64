@@ -43,7 +43,7 @@
 
 void exec_ctrl_D(struct cmd *cmd)
 {
-    scan_simple(cmd);                   // ^D command
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     f.radix = 10;                       // Set radix to decimal
 }
@@ -58,7 +58,7 @@ void exec_ctrl_D(struct cmd *cmd)
 
 void exec_ctrl_O(struct cmd *cmd)
 {
-    scan_simple(cmd);                   // ^O command
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     f.radix = 8;                        // Set radix to octal
 }

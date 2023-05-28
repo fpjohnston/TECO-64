@@ -380,7 +380,7 @@ static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
 
             if (c == '^')
             {
-                scan_simple(cmd);
+                confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
                 c = require_cbuf();
 
@@ -693,7 +693,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     f.trace = trace;
     f.e0.skip = false;
 
-    delete_x();                            // Restore previous expression stack
+    delete_x();                         // Restore previous expression stack
 
     return match;
 }

@@ -14,7 +14,7 @@
         <command name='CTRL_A'      scan='ctrl_A'     exec='ctrl_A'    type=''  />
         <command name='CTRL_B'      scan='ctrl_B'                      type=''  />
         <command name='CTRL_C'                        exec='ctrl_C'    type=''  />
-        <command name='CTRL_D'      scan='simple'     exec='ctrl_D'    type=''  />
+        <command name='CTRL_D'                        exec='ctrl_D'    type=''  />
         <command name='CTRL_E'      scan='flag1'      exec='ctrl_E'    type=''  />
         <command name='CTRL_F'                                         type='?' />
         <command name='CTRL_G'                                         type='?' />
@@ -25,7 +25,7 @@
         <command name='CTRL_L'                                         type=' ' />
         <command name='CTRL_M'                                         type=' ' />
         <command name='CTRL_N'      scan='flag1'                       type=''  />
-        <command name='CTRL_O'      scan='simple'     exec='ctrl_O'    type=''  />
+        <command name='CTRL_O'                        exec='ctrl_O'    type=''  />
         <command name='CTRL_P'      scan='ctrl_P'                      type=''  />
         <command name='CTRL_Q'      scan='ctrl_Q'     exec='ctrl_Q'    type=''  />
         <command name='CTRL_R'                        exec='ctrl_R'    type=''  />
@@ -73,7 +73,7 @@
         <command name='&lt;'        scan='less'       exec='less'      type=''  />
         <command name='='           scan='equals'     exec='equals'    type=''  />
         <command name='&gt;'        scan='greater'    exec='greater'   type=''  />
-        <command name='?'           scan='simple'     exec='trace'     type=''  />
+        <command name='?'                             exec='trace'     type=''  />
         <command name='@'           scan='atsign'                      type=''  />
         <command name='A'           scan='A'          exec='A'         type=''  />
         <command name='B'           scan='B'                           type=''  />
@@ -120,22 +120,22 @@
         <command name='E2'          scan='flag2'      exec='E2'        type=''  />
         <command name='E3'          scan='flag2'      exec='E3'        type=''  />
         <command name='E4'          scan='flag2'      exec='E4'        type=''  />
-        <command name='EA'          scan='simple'     exec='EA'        type=''  />
+        <command name='EA'                            exec='EA'        type=''  />
         <command name='EB'          scan='ER'         exec='EB'        type=''  />
         <command name='EC'                            exec='EC'        type=''  />
         <command name='ED'          scan='flag2'      exec='ED'        type=''  />
         <command name='EE'          scan='flag1'      exec='EE'        type=''  />
-        <command name='EF'          scan='simple'     exec='EF'        type=''  />
+        <command name='EF'                            exec='EF'        type=''  />
         <command name='EG'          scan='ER'         exec='EG'        type=''  />
         <command name='EH'          scan='flag2'      exec='EH'        type=''  />
         <command name='EI'          scan='EI'         exec='EI'        type=''  />
         <command name='EJ'          scan='EJ'         exec='nop'       type=''  />
-        <command name='EK'          scan='simple'     exec='EK'        type=''  />
+        <command name='EK'                            exec='EK'        type=''  />
         <command name='EL'          scan='EL'         exec='EL'        type=''  />
         <command name='EM'          scan='EM'         exec='EM'        type=''  />
         <command name='EN'          scan='ER'         exec='EN'        type=''  />
         <command name='EO'          scan='EO'         exec='EO'        type=''  />
-        <command name='EP'          scan='simple'     exec='EP'        type=''  />
+        <command name='EP'                            exec='EP'        type=''  />
         <command name='EQ'          scan='EQ'         exec='EQ'        type=''  />
         <command name='ER'          scan='ER'         exec='ER'        type=''  />
         <command name='ES'          scan='flag2'      exec='ES'        type=''  />
@@ -143,7 +143,7 @@
         <command name='EU'          scan='flag1'      exec='EU'        type=''  />
         <command name='EV'          scan='flag2'      exec='EV'        type=''  />
         <command name='EW'          scan='ER'         exec='EW'        type=''  />
-        <command name='EX'          scan='simple'     exec='EX'        type=''  />
+        <command name='EX'                            exec='EX'        type=''  />
         <command name='EY'          scan='Y'          exec='EY'        type=''  />
         <command name='EZ'          scan='ER'         exec='EZ'        type=''  />
         <command name='E_'          scan='E_under'    exec='E_under'   type=''  />

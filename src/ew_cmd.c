@@ -28,6 +28,7 @@
 #include <stdio.h>
 
 #include "teco.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "estack.h"
 #include "exec.h"
 #include "file.h"
@@ -49,7 +50,7 @@ void exec_EW(struct cmd *cmd)
 
     if (len == 0)                       // EW`?
     {
-        scan_simple(cmd);               // EW` command
+        confirm(cmd, NO_COLON, NO_ATSIGN);
 
         ostream = OFILE_PRIMARY;        // Yes, switch to primary output stream
         set_last(ofiles[ostream].name);

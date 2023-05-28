@@ -453,7 +453,7 @@ bool scan_greater(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    scan_simple(cmd);                   // > command
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     // ">" is a relational operator only if it's in parentheses; otherwise,
     // it's the end of a loop.

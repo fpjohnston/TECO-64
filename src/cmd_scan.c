@@ -166,25 +166,6 @@ bool scan_FM(struct cmd *cmd)
 
 
 ///
-///  @brief    Scan simple commands such as ^D or EP that use no numeric or
-///            text arguments, nor any colon or atsign modifiers. We can also
-///            be conditionally called, such when an EW commands is executed
-///            without a text argument, or called for commands such as F0 or FZ
-///            that require additional processing after we return.
-///
-///  @returns  false (command is not an operand or operator).
-///
-////////////////////////////////////////////////////////////////////////////////
-
-bool scan_simple(struct cmd *cmd)
-{
-    confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
-
-    return false;
-}
-
-
-///
 ///  @brief    Scan ~ command: exclusive OR operator.
 ///
 ///  @returns  true if command is an operand or operator, else false.

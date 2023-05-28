@@ -52,7 +52,7 @@ void exec_ER(struct cmd *cmd)
 
     if (len == 0)                       // ER`?
     {
-        scan_simple(cmd);               // ER` command
+        confirm(cmd, NO_COLON, NO_ATSIGN);
 
         istream = IFILE_PRIMARY;
 

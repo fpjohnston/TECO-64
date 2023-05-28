@@ -189,7 +189,8 @@ static int_t get_w(int_t n)
 
 bool scan_F0(struct cmd *cmd)
 {
-    scan_simple(cmd);                   // F0 command
+    confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
+
     store_val((int_t)w.topdot);
 
     return true;
@@ -207,7 +208,7 @@ bool scan_FH(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    scan_simple(cmd);                   // FH command
+    confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     cmd->m_set = true;
     cmd->m_arg = w.topdot;
@@ -227,7 +228,8 @@ bool scan_FH(struct cmd *cmd)
 
 bool scan_FZ(struct cmd *cmd)
 {
-    scan_simple(cmd);                   // FZ command
+    confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
+
     store_val(w.botdot);
 
     return true;

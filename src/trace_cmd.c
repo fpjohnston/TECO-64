@@ -57,7 +57,7 @@ void exec_trace(struct cmd *cmd)
 
 #else
 
-    scan_simple(cmd);                   // ? command
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     f.trace = !f.trace;                 // Invert current tracing state
 

@@ -31,6 +31,7 @@
 
 #include "teco.h"
 #include "editbuf.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "errors.h"
 #include "exec.h"
 #include "file.h"
@@ -45,8 +46,8 @@
 
 void exec_EX(struct cmd *cmd)
 {
-    scan_simple(cmd);                   // EX command
-
+    confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
+ 
     struct ofile *ofile = &ofiles[ostream];
 
     if (ofile->fp == NULL && t->Z != 0)

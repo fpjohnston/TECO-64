@@ -229,8 +229,6 @@ extern bool scan_right(struct cmd *cmd);
 
 extern bool scan_semi(struct cmd *cmd);
 
-extern bool scan_simple(struct cmd *cmd);
-
 extern bool scan_sub(struct cmd *cmd);
 
 extern bool scan_tag(struct cmd *cmd);

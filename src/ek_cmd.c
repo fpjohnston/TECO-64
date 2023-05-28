@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "teco.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "errors.h"
 #include "exec.h"
 #include "file.h"
@@ -47,7 +48,7 @@ void exec_EK(struct cmd *cmd)
 {
     if (cmd != NULL)
     {
-        scan_simple(cmd);               // EK command
+        confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
     }
 
     struct ofile *ofile = &ofiles[ostream];

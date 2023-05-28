@@ -28,6 +28,7 @@
 #include <stdio.h>
 
 #include "teco.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "exec.h"
 #include "file.h"
 
@@ -41,7 +42,7 @@
 
 void exec_EA(struct cmd *cmd)
 {
-    scan_simple(cmd);                   // EA command
+    confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     ostream = OFILE_SECONDARY;
 

@@ -28,6 +28,7 @@
 #include <stdio.h>
 
 #include "teco.h"
+#include "eflags.h"                 // Needed for confirm()
 #include "exec.h"
 #include "file.h"
 
@@ -48,7 +49,7 @@ void exec_EF(struct cmd *cmd)
 {
     if (cmd != NULL)
     {
-        scan_simple(cmd);               // EF command
+        confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
     }
 
     struct ofile *ofile = &ofiles[ostream];
