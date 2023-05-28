@@ -192,7 +192,7 @@ void exec_else(struct cmd *cmd)
 
     endif(cmd, NO_ELSE);
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
 }
 
 
@@ -221,7 +221,7 @@ void exec_endif(struct cmd *cmd)
 
     pop_if();
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
 }
 
 
@@ -240,7 +240,7 @@ void exec_F_else(struct cmd *cmd)
 
     endif(cmd, ELSE_OK);
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
 }
 
 
@@ -259,7 +259,7 @@ void exec_F_endif(struct cmd *cmd)
 
     endif(cmd, NO_ELSE);                // Skip any else statement.
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
 }
 
 
@@ -299,7 +299,7 @@ void exec_if(struct cmd *cmd)
 
     int c = (int)cmd->n_arg;
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
     push_if();
 
     switch (cmd->c2)

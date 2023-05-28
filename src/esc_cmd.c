@@ -107,7 +107,7 @@ void exec_escape(struct cmd *cmd)
         throw(E_MRP);                   // Missing right parenthesis
     }
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
 }
 
 

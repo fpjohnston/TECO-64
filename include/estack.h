@@ -80,6 +80,8 @@ extern void new_x(void);
 
 extern bool query_x(int_t *n);
 
+extern void reset_x(void);
+
 extern void scan_x(struct cmd *cmd);
 
 extern void store_add(void);

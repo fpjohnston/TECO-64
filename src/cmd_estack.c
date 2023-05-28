@@ -171,10 +171,6 @@ static INLINE int_t exec_rem(int_t a, int_t b);
 
 static int_t fetch_val(void);
 
-static struct xstack *make_x(void);
-
-static void reset_x(struct xstack *stack);
-
 
 ///
 ///  @brief    Check to see if we're in the middle of parentheses.
@@ -440,7 +436,11 @@ void init_x(void)
 
     if (x == NULL)
     {
-        x = make_x();
+        x = alloc_mem((uint)sizeof(*x));
+
+        x->next = NULL;
+
+        reset_x();
     }
     else
     {
@@ -453,44 +453,26 @@ void init_x(void)
             x = next;
         }
 
-        reset_x(x);
+        reset_x();
     }
-}
-
-
-///
-///  @brief    Create a new expression stack.
-///
-///  @returns  New expression stack.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static struct xstack *make_x(void)
-{
-    struct xstack *ptr = alloc_mem((uint)sizeof(*ptr));
-
-    ptr->next = NULL;
-
-    reset_x(ptr);
-
-    return ptr;
 }
 
 
 ///
 ///  @brief    Set new expression stack.
 ///
-///  @returns  Nothing
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 void new_x(void)
 {
-    struct xstack *ptr = make_x();
+    struct xstack *p = alloc_mem((uint)sizeof(*p));
 
-    ptr->next = x;
+    p->next = x;
+    x = p;
 
-    x = ptr;
+    reset_x();
 }
 
 
@@ -567,30 +549,30 @@ bool query_x(int_t *n)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void reset_x(struct xstack *ptr)
+void reset_x(void)
 {
-    assert(ptr != NULL);
+    assert(x != NULL);
 
 #if     defined(DEBUG)          // Reset expression stack data
 
-    for (uint i = 0; i < countof(ptr->number.stack); ++i)
+    for (uint i = 0; i < countof(x->number.stack); ++i)
     {
-        ptr->number.stack[i] = 0;
+        x->number.stack[i] = 0;
     }
 
-    for (uint i = 0; i < countof(ptr->oper.stack); ++i)
+    for (uint i = 0; i < countof(x->oper.stack); ++i)
     {
-        ptr->oper.stack[i] = X_NULL;
+        x->oper.stack[i] = X_NULL;
     }
 
 #endif
 
-    ptr->number.top = ptr->number.stack;
-    ptr->number.count = 0;
-    ptr->oper.top = ptr->oper.stack;
-    ptr->oper.count = 0;
-    ptr->oper.last = false;
-    ptr->oper.nesting = 0;
+    x->number.top = x->number.stack;
+    x->number.count = 0;
+    x->oper.top = x->oper.stack;
+    x->oper.count = 0;
+    x->oper.last = false;
+    x->oper.nesting = 0;
 }
 
 

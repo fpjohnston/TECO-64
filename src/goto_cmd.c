@@ -235,7 +235,7 @@ static void find_tag(const char *orig_tag)
         throw(E_TAG, tag.data);         // Missing tag
     }
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
 
     setloop_depth(tag_loop);
     setif_depth(tag_if);

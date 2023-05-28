@@ -181,7 +181,7 @@ void exec_F_greater(struct cmd *cmd)
             endloop(cmd, POP_OK);
         }
 
-        init_x();                       // Reinitialize expression stack
+        reset_x();                      // Reset expression stack
     }
 }
 
@@ -208,7 +208,7 @@ void exec_F_less(struct cmd *cmd)
         cbuf->pos = loop[nloops - 1].start;
     }
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
 
     return;
 }
@@ -250,7 +250,7 @@ void exec_greater(struct cmd *cmd)
         pop_loop(POP_OK);
     }
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
 }
 
 
@@ -276,7 +276,7 @@ void exec_less(struct cmd *cmd)
         push_loop(count);
     }
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
 }
 
 
@@ -318,7 +318,7 @@ void exec_semi(struct cmd *cmd)
 
     endloop(cmd, POP_OK);
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
 }
 
 
@@ -335,7 +335,7 @@ void exit_loop(struct cmd *cmd)
 
     endloop(cmd, POP_OK);
 
-    init_x();                           // Reinitialize expression stack
+    reset_x();                          // Reset expression stack
 }
 
 
