@@ -109,6 +109,7 @@ void confirm_cmd(struct cmd *cmd, ...)
     va_start(args, cmd);
 
     int c = va_arg(args, int);
+    bool mn_args = (cmd->m_set && cmd->n_set);
 
     while (c != NO_EXIT)
     {
@@ -117,7 +118,7 @@ void confirm_cmd(struct cmd *cmd, ...)
             case NO_ATSIGN: if (f.e2.atsign && cmd->atsign)   throw(E_ATS); break;
             case NO_COLON:  if (f.e2.colon && cmd->colon)     throw(E_COL); break;
             case NO_DCOLON: if (f.e2.colon && cmd->dcolon)    throw(E_COL); break;
-            case NO_M:      if (f.e2.m_arg && cmd->m_set)     throw(E_IMA); break;
+            case NO_M:      if (f.e2.m_arg && mn_args)        throw(E_IMA); break;
             case NO_M_ONLY: if (cmd->m_set && !cmd->n_set)    throw(E_NON); break;
             case NO_N:      if (f.e2.n_arg && cmd->n_set)     throw(E_INA); break;
             case NO_NEG_M:  if (cmd->m_set && cmd->m_arg < 0) throw(E_NCA); break;
