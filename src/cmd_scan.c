@@ -73,21 +73,26 @@ bool scan_colon(struct cmd *cmd)
 
     if (!cmd->colon)
     {
-        cmd->colon = true;              // Flag the first colon
+        if (peek_cbuf() == ':')        // Another colon?
+        {
+            next_cbuf();               // Yes, count it
 
-        return true;
+            cmd->dcolon = true;        // Flag double colon
+        }
+        else
+        {
+            cmd->colon = true;          // Flag the first colon
+        }
     }
     else if (f.e2.colon)
     {
         throw(E_COL);
     }
-    else if (peek_cbuf() == ':')        // Another colon?
+    else
     {
-        next_cbuf();                    // Yes, count it
+        cmd->dcolon = true;             // Flag double colon
+        cmd->colon = false;             // Flag the first colon
     }
-
-    cmd->dcolon = true;                 // Flag double colon
-    cmd->colon = false;                 // But reset single colon
 
     return true;
 }
