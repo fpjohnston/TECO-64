@@ -139,14 +139,6 @@ bool scan_ctrl_Y(struct cmd *cmd)
 
     int_t n;
 
-    if (f.e2.args)
-    {
-        if (query_x(&n) || cmd->m_set)
-        {
-            throw(E_ARG);               // Invalid arguments
-        }
-    }
-
     (void)query_x(&n);                  // Ignore any existing operand
 
     cmd->m_set = true;
@@ -252,14 +244,6 @@ bool scan_H(struct cmd *cmd)
     // The following prevents expressions such as 123+H.
 
     int_t n;
-
-    if (f.e2.args)
-    {
-        if (query_x(&n) || cmd->m_set)
-        {
-            throw(E_ARG);               // Invalid arguments
-        }
-    }
 
     (void)query_x(&n);                  // Ignore any existing operand
 
