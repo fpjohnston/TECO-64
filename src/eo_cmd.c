@@ -81,6 +81,8 @@ bool scan_EO(struct cmd *cmd)
     }
     else                                // n:EO
     {
+        cmd->colon = false;
+
         switch (cmd->n_arg)
         {
             case -2:
