@@ -90,8 +90,8 @@ endif
 
 ifdef   gdb                         # Enable use of gdb
 
-    CFLAGS   += -g -Og
-    LINKOPTS += -g -Og
+    CFLAGS   += -g -O0
+    LINKOPTS += -g -O0
 
 else ifdef gprof                    # Enable use of gprof
 
