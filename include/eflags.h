@@ -50,8 +50,9 @@ union e0_flag
         uint lower   : 1;       ///< Force string arguments to lower case
         uint upper   : 1;       ///< Force string arguments to upper case
         uint display : 1;       ///< Display mode is active
-        uint window  : 1;       ///< Window refresh needed
-        uint cursor  : 1;       ///< Cursor update needed
+        uint window  : 1;       ///< Refresh entire window
+        uint cursor  : 1;       ///< Only refresh cursor
+        uint updown  : 1;       ///< Last command was up key or down key
         uint init    : 1;       ///< TECO is initializing
         uint i_redir : 1;       ///< stdin has been redirected
         uint o_redir : 1;       ///< stdout has been redirected

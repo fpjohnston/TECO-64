@@ -168,6 +168,7 @@ static void exec_down(int key)
     }
 
     d.newcol = find_column();
+    f.e0.updown = true;
 }
 
 
@@ -217,9 +218,7 @@ static void exec_end(int key)
     }
     else if (t->dot < w.botdot - 1)     // If not at end of window
     {
-        int_t line = after_dot() - 1;
-
-        d.newrow += line;
+        d.newrow += t->line;
 
         set_dot(w.botdot - 1);
     }
@@ -319,12 +318,10 @@ static void exec_home(int key)
     }
     else                               // Go to top of buffer
     {
-        int line = before_dot();
-
         d.newrow = 0;
         d.xbias = 0;
 
-        if (key == KEY_HOME || line <= d.nrows)
+        if (key == KEY_HOME || t->line <= d.nrows)
         {
             set_dot(t->B);
         }
@@ -384,16 +381,14 @@ int exec_key(int key)
             case KEY_UP:
             case KEY_C_UP:
                 exec_up(key);
-                refresh_dpy();
 
-                return EOF;
+                break;
 
             case KEY_DOWN:
             case KEY_C_DOWN:
                 exec_down(key);
-                refresh_dpy();
 
-                return EOF;
+                break;
 
             case KEY_LEFT:
             case KEY_C_LEFT:
@@ -470,8 +465,6 @@ int exec_key(int key)
                 break;
         }
     }
-
-    f.e0.cursor = true;                 // Cursor refresh needed
 
     refresh_dpy();
 
@@ -595,7 +588,7 @@ static void exec_up(int key)
 
     move_dot(delta);
 
-    if (key == KEY_C_UP && d.ybias <= before_dot())
+    if (key == KEY_C_UP && d.ybias <= t->line)
     {
         f.e0.window = true;
     }
@@ -605,6 +598,7 @@ static void exec_up(int key)
     }
 
     d.newcol = find_column();
+    f.e0.updown = true;
 }
 
 

@@ -71,7 +71,7 @@ static void status_line(int line, const char *header, const char *data);
 static void print_status(int maxline)
 {
     char buf[STATUS_WIDTH + 1];
-    int line = 0;
+    int row = 0;
 
     // Output current character value
 
@@ -95,63 +95,63 @@ static void print_status(int maxline)
         snprintf(buf, sizeof(buf), FMT "=%s", t->c, chr);
     }
 
-    status_line(line++, "character", buf);
-    check_line(line, maxline);
+    status_line(row++, "character", buf);
+    check_line(row, maxline);
 
     // Output current position ('dot') and total no. of chrs.
 
     snprintf(buf, sizeof(buf), FMT "," FMT, t->dot, t->Z);
-    status_line(line++, "dot,Z", buf);
-    check_line(line, maxline);
+    status_line(row++, "dot,Z", buf);
+    check_line(row, maxline);
 
     // Output current line no. and total no. of lines.
 
-    int before = before_dot();
-    int total  = before + after_dot();
+    int line = t->line;
+    int nlines  = t->nlines;
 
     // The following is a (hopefully temporary) hack to handle the situation
     // where the buffer has data but no line delimiter.
 
-    if (total == 0 && t->Z != 0)
+    if (nlines == 0 && t->Z != 0)
     {
-        total = 1;                      // Must have at least 1 line if data
+        nlines = 1;                     // Must have at least 1 line if data
     }
 
     if (t->dot < t->Z)
     {
         if (t->Z != 0)
         {
-            ++before;
+            ++line;
         }
 
-        snprintf(buf, sizeof(buf), FMT "/" FMT, before, total);
+        snprintf(buf, sizeof(buf), FMT "/" FMT, line, nlines);
     }
     else
     {
-        snprintf(buf, sizeof(buf), "EOF/" FMT, total);
+        snprintf(buf, sizeof(buf), "EOF/" FMT, nlines);
     }
 
-    status_line(line++, "line", buf);
-    check_line(line, maxline);
+    status_line(row++, "line", buf);
+    check_line(row, maxline);
 
     // Output current position in line and length of line
 
     snprintf(buf, sizeof(buf), FMT "/" FMT, t->pos, t->len);
 
-    status_line(line++, "offset", buf);
-    check_line(line, maxline);
+    status_line(row++, "offset", buf);
+    check_line(row, maxline);
 
     // Output current column and maximum allowed column
 
     snprintf(buf, sizeof(buf), FMT "/" FMT, d.col, w.maxline);
-    status_line(line++, "column", buf);
-    check_line(line, maxline);
+    status_line(row++, "column", buf);
+    check_line(row, maxline);
 
     // Output page count
 
     snprintf(buf, sizeof(buf), FMT, page_count());
-    status_line(line++, "page", buf);
-    check_line(line, maxline);
+    status_line(row++, "page", buf);
+    check_line(row, maxline);
 
     // Output memory size
 
@@ -177,8 +177,8 @@ static void print_status(int maxline)
     // Output memory size
 
     snprintf(buf, sizeof(buf), FMT " %s", memsize, memtype);
-    status_line(line++, "memory", buf);
-    check_line(line, maxline);
+    status_line(row++, "memory", buf);
+    check_line(row, maxline);
 }
 
 

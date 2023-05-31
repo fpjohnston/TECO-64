@@ -95,8 +95,8 @@ ifdef   gdb                         # Enable use of gdb
 
 else ifdef gprof                    # Enable use of gprof
 
-    CFLAGS   += -pg -O3
-    LINKOPTS += -pg -O3
+    CFLAGS   += -pg -O0
+    LINKOPTS += -pg -O0
     DEFINES += -D PROFILE
 
 else                                # Default if neither gdb nor gprof

@@ -108,6 +108,8 @@ static void reset_cursor(void);
 
 static void set_cursor(void);
 
+static void update_window(void);
+
 
 ///
 ///  @brief    Issue an error if caller's function call failed.
@@ -477,83 +479,21 @@ void refresh_dpy(void)
 
     if (f.e0.window || f.e0.cursor)
     {
-        if (f.e0.cursor)
+        if (!f.e0.updown)               // Was last command up or down key?
         {
-            d.oldcol = 0;
+            d.oldcol = 0;               // No, so reset virtual column
         }
 
-        f.e0.cursor = false;
+        f.e0.cursor = f.e0.updown = false;
 
-        reset_cursor();
-
-        // We can safely change d.row and d.col after resetting cursor
-
-        int before = before_dot();
-        int total  = before + after_dot(); // Total no. of line terminators
-
-        if (d.newrow == -1)             // New cursor coordinates valid?
-        {
-            int delta = before - d.line; // Get difference from last line
-
-            d.newrow = d.row + delta;
-            d.newcol = find_column();
-        }
-
-        // The following is a (hopefully temporary) hack to handle the situation
-        // where the buffer has data but no line delimiter.
-
-        if (total == 0)
-        {
-            if (t->Z != 0 && t->dot == t->Z)
-            {
-                d.newrow = 1;
-                d.newcol = 0;
-            }
-            else
-            {
-                d.newrow = 0;
-                d.newcol = find_column();
-            }
-        }
-
-        // If row isn't in current window, then correct value and repaint screen
-
-        if (d.newrow < 0)
-        {
-            d.newrow = 0;
-            f.e0.window = true;
-        }
-        else if (d.newrow >= d.nrows)
-        {
-            //  If we jumped forward by more than a screenful, then don't bother
-            //  to scroll the screen. Just go to top of next screenful.
-
-            if (d.newrow - d.row >= d.nrows)
-            {
-                d.newrow = 0;
-            }
-            else
-            {
-                d.newrow = d.nrows - 1;
-            }
-
-            f.e0.window = true;
-        }
-
-        d.row = d.newrow;
-        d.col = d.newcol;
-        d.ybias = d.row;
+        reset_cursor();                 // Un-mark the old cursor
+        update_window();
 
         if (f.e0.window)
         {
             f.e0.window = false;
 
             refresh_edit();
-        }
-
-        if (d.col - d.xbias > d.ncols)
-        {
-            d.xbias = d.col - (d.ncols / 2);
         }
 
         set_cursor();                   // Mark the new cursor
@@ -790,6 +730,80 @@ static void set_cursor(void)
         }
     }
 
-    d.line = before_dot();              // Save current line number
+    d.line = t->line;                   // Save current line number
     d.newrow = d.newcol = -1;           // Reinitialize new cursor coordinates
+}
+
+
+///
+///  @brief    Recalculate column and row to determine what to display in window.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void update_window(void)
+{
+    // We can safely change d.row and d.col after resetting cursor
+
+    int line = t->line;                 // Current line
+    int nlines  = t->nlines;            // Total no. of lines
+
+    if (d.newrow == -1)                 // New cursor coordinates valid?
+    {
+        int delta = line - d.line;     // Get difference from last line
+
+        d.newrow = d.row + delta;
+        d.newcol = find_column();
+    }
+
+    // The following is a (hopefully temporary) hack to handle the situation
+    // where the buffer has data but no line delimiter.
+
+    if (nlines == 0)
+    {
+        if (t->Z != 0 && t->dot == t->Z)
+        {
+            d.newrow = 1;
+            d.newcol = 0;
+        }
+        else
+        {
+            d.newrow = 0;
+            d.newcol = find_column();
+        }
+    }
+
+    // If row isn't in current window, then correct value and repaint screen
+
+    if (d.newrow < 0)
+    {
+        d.newrow = 0;
+        f.e0.window = true;
+    }
+    else if (d.newrow >= d.nrows)
+    {
+        //  If we jumped forward by more than a screenful, then don't bother
+        //  to scroll the screen. Just go to top of next screenful.
+
+        if (d.newrow - d.row >= d.nrows)
+        {
+            d.newrow = 0;
+        }
+        else
+        {
+            d.newrow = d.nrows - 1;
+        }
+
+        f.e0.window = true;
+    }
+
+    d.row = d.newrow;
+    d.col = d.newcol;
+    d.ybias = d.row;
+
+    if (d.col - d.xbias > d.ncols)
+    {
+        d.xbias = d.col - (d.ncols / 2);
+    }
 }

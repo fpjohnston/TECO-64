@@ -25,7 +25,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
+
+#if     !defined(NDEBUG)
+
+#include <ctype.h>
+
+#endif
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "teco.h"
@@ -117,15 +125,17 @@ static struct
     .gap    = EDIT_INIT,
     .t =
     {
-        .size  = EDIT_INIT,
-        .B     = 0,
-        .Z     = 0,
-        .dot   = 0,
-        .nextc = EOF,
-        .c     = EOF,
-        .lastc = EOF,
-        .len   = 0,
-        .pos   = 0,
+        .size   = EDIT_INIT,
+        .B      = 0,
+        .Z      = 0,
+        .dot    = 0,
+        .nextc  = EOF,
+        .c      = EOF,
+        .lastc  = EOF,
+        .len    = 0,
+        .pos    = 0,
+        .line   = 0,
+        .nlines = 0,
     },
 };
 
@@ -134,17 +144,9 @@ const struct edit *t = &eb.t;       ///< Read-only pointers to public variables
 
 // Local functions
 
-static void dec_dot(void);
+static void end_insert(uint_t nbytes);
 
 static INLINE int find_edit(int_t pos);
-
-static void finish_insert(uint_t nbytes);
-
-static void first_dot(void);
-
-static void inc_dot(void);
-
-static void last_dot(void);
 
 static int_t next_line(uint_t nlines);
 
@@ -160,7 +162,9 @@ static bool start_insert(uint_t size);
 
 
 ///
-///  @brief    Get no. of lines after dot.
+///  @brief    Get no. of lines after dot. This is only used by :L commands,
+///            but if display mode is active, we can take advantage of the
+///            eb.t.line and eb.t.nlines variables.
 ///
 ///  @returns  No. of lines.
 ///
@@ -168,19 +172,26 @@ static bool start_insert(uint_t size);
 
 int_t after_dot(void)
 {
-    int_t nlines = 0;
-
-    for (int_t pos = 0; pos < eb.t.Z; ++pos)
+    if (f.e0.display)                   // Use optimization if display active
     {
-        int c = find_edit(pos);
-
-        if (c != EOF && isdelim(c))
-        {
-            ++nlines;
-        }
+        return eb.t.nlines - eb.t.line;
     }
+    else
+    {
+        int_t nlines = 0;
 
-    return nlines;
+        for (int_t pos = 0; pos < eb.t.Z; ++pos)
+        {
+            int c = find_edit(pos);
+
+            if (c != EOF && isdelim(c))
+            {
+                ++nlines;
+            }
+        }
+
+        return nlines;
+    }
 }
 
 
@@ -205,6 +216,7 @@ bool append_edit(struct ifile *ifile, bool single)
     int c;
     int next;
     uchar *p = eb.buf + eb.left;
+    int ndelims = 0;
 
     // Read characters until end of file or end of page
 
@@ -253,6 +265,8 @@ bool append_edit(struct ifile *ifile, bool single)
         }
         else if (c == FF && !f.e3.nopage)
         {
+            ++ndelims;
+
             f.ctrl_e = true;            // Flag FF, but don't store it
 
             break;
@@ -264,17 +278,24 @@ bool append_edit(struct ifile *ifile, bool single)
 
         *p++ = (uchar)c;
 
-        if (single && isdelim(c))       // Delimiter seen for single line?
+        if (isdelim(c))
         {
-            break;
+            ++ndelims;
+
+            if (single)                 // If just appending single line,
+            {
+                break;                  //  then we're done
+            }
         }
     }
+
+    eb.t.nlines += ndelims;
 
     uint_t nbytes = (uint_t)(p - (eb.buf + eb.left));
 
     if (nbytes != 0)
     {
-        finish_insert(nbytes);
+        end_insert(nbytes);
     }
 
     return (c == EOF) ? false : true;
@@ -282,7 +303,9 @@ bool append_edit(struct ifile *ifile, bool single)
 
 
 ///
-///  @brief    Get no. of lines before dot.
+///  @brief    Get no. of lines before dot. This is only used by :L commands,
+///            but if display mode is active, we can take advantage of the
+///            eb.t.line variable.
 ///
 ///  @returns  No. of lines.
 ///
@@ -290,24 +313,33 @@ bool append_edit(struct ifile *ifile, bool single)
 
 int_t before_dot(void)
 {
-    int_t nlines = 0;
-
-    for (int_t pos = -eb.t.dot; pos < 0; ++pos)
+    if (f.e0.display)                   // Use optimization if display active
     {
-        int c = find_edit(pos);
-
-        if (c != EOF && isdelim(c))
-        {
-            ++nlines;
-        }
+        return eb.t.line;
     }
+    else
+    {
+        int_t nlines = 0;
 
-    return nlines;
+        for (int_t pos = -eb.t.dot; pos < 0; ++pos)
+        {
+            int c = find_edit(pos);
+
+            if (c != EOF && isdelim(c))
+            {
+                ++nlines;
+            }
+        }
+
+        return nlines;
+    }
 }
 
 
 ///
-///  @brief    Change character at current position of dot.
+///  @brief    Change case of character at current position of dot. Since this
+///            will never add or delete any delimiters, it won't affect our
+///            line number, or the total number of lines in the buffer.
 ///
 ///  @returns  Nothing.
 ///
@@ -315,6 +347,8 @@ int_t before_dot(void)
 
 void change_dot(int c)
 {
+    assert(isalpha(c));
+
     uint_t i = (uint_t)eb.t.dot;
 
     if (i >= eb.left)
@@ -325,38 +359,6 @@ void change_dot(int c)
     eb.buf[i] = eb.t.c = (uchar)c;
 
     f.e0.window = true;                 // Window refresh needed
-}
-
-
-///
-///  @brief    Decrement dot by 1.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void dec_dot(void)
-{
-    if (eb.t.dot > eb.t.B)
-    {
-        --eb.t.dot;
-
-        eb.t.nextc = eb.t.c;
-        eb.t.c     = eb.t.lastc;
-        eb.t.lastc = find_edit(-1);
-
-        if (isdelim(eb.t.c))
-        {
-            eb.t.pos = eb.t.dot - prev_line(0);
-            eb.t.len = eb.t.pos + 1;
-        }
-        else
-        {
-            --eb.t.pos;
-        }
-
-        f.e0.cursor = true;             // Cursor refresh needed
-    }
 }
 
 
@@ -374,7 +376,7 @@ void delete_edit(int_t nbytes)
         return;
     }
 
-    if (eb.t.dot == 0 && nbytes == eb.t.Z)    // Special case for HK command
+    if (eb.t.dot == 0 && nbytes == eb.t.Z)    // Killing entire buffer?
     {
         kill_edit();
     }
@@ -399,6 +401,27 @@ void delete_edit(int_t nbytes)
         {
             nbytes = -nbytes;
 
+            assert(nbytes <= eb.t.dot);
+
+            if (f.e0.display)
+            {
+                int ndelims = 0;
+                uchar *p = eb.buf + eb.left;
+
+                for (int i = 0; i < nbytes; ++i)
+                {
+                    int c = *--p;
+
+                    if (isdelim(c))
+                    {
+                        ++ndelims;
+                    }
+                }
+
+                eb.t.nlines -= ndelims;
+                eb.t.line -= ndelims;
+            }
+
             assert((uint_t)nbytes <= eb.left);
 
             eb.left -= (uint_t)nbytes;
@@ -408,6 +431,26 @@ void delete_edit(int_t nbytes)
         }
         else                            // Deleting forward in [right]
         {
+            assert(nbytes <= eb.t.Z - eb.t.dot);
+
+            if (f.e0.display)
+            {
+                int ndelims = 0;
+                uchar *p = eb.buf + eb.left + eb.gap;
+
+                for (int i = 0; i < nbytes; ++i)
+                {
+                    int c = *p++;
+
+                    if (isdelim(c))
+                    {
+                        ++ndelims;
+                    }
+                }
+
+                eb.t.nlines -= ndelims;
+            }
+
             assert((uint_t)nbytes <= eb.right);
 
             eb.right -= (uint_t)nbytes;
@@ -426,6 +469,51 @@ void delete_edit(int_t nbytes)
 
         f.e0.window = true;             // Window refresh needed
     }
+}
+
+
+///
+///  @brief    Finish insertion into buffer.
+///
+///  @returns  Nothing.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static void end_insert(uint_t nbytes)
+{
+    assert(nbytes != 0);
+
+    // Now fix up some variables
+
+    eb.left  += nbytes;
+    eb.gap   -= nbytes;
+    eb.t.dot += (int_t)nbytes;
+    eb.t.Z   += (int_t)nbytes;
+
+    int_t prev = prev_line(0);          // Position of start of line
+
+    eb.t.pos  = eb.t.dot - prev;
+    eb.t.len  = next_line(1) - prev;
+
+    if (eb.t.dot == 0)
+    {
+        eb.t.lastc = EOF;
+    }
+    else
+    {
+        eb.t.lastc = eb.buf[eb.left - 1];
+    }
+
+    eb.t.c = eb.buf[eb.left];
+
+    //eb.t.nextc = ...                  // Next character doesn't change
+
+    if (eb.t.Z != 0 && page_count() == 0)
+    {
+        set_page(1);
+    }
+
+    f.e0.window = true;                 // Window refresh needed
 }
 
 
@@ -469,107 +557,6 @@ static INLINE int find_edit(int_t pos)
 
 
 ///
-///  @brief    Finish insertion into buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void finish_insert(uint_t nbytes)
-{
-    assert(nbytes != 0);
-
-    // Now fix up some variables
-
-    eb.left  += nbytes;
-    eb.gap   -= nbytes;
-    eb.t.dot += (int_t)nbytes;
-    eb.t.Z   += (int_t)nbytes;
-
-    int_t prev = prev_line(0);          // Position of start of line
-
-    eb.t.pos  = eb.t.dot - prev;
-    eb.t.len  = next_line(1) - prev;
-
-    if (eb.t.dot == 0)
-    {
-        eb.t.lastc = EOF;
-    }
-    else
-    {
-        eb.t.lastc = eb.buf[eb.left - 1];
-    }
-
-    eb.t.c = eb.buf[eb.left];
-
-    //eb.t.nextc = ...                  // Next character doesn't change
-
-    if (eb.t.Z != 0 && page_count() == 0)
-    {
-        set_page(1);
-    }
-
-    f.e0.window = true;                 // Window refresh needed
-}
-
-
-///
-///  @brief    Move dot to start of buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void first_dot(void)
-{
-    if (eb.t.dot > eb.t.B)
-    {
-        eb.t.dot   = eb.t.B;
-        eb.t.lastc = EOF;
-        eb.t.c     = find_edit(0);
-        eb.t.nextc = find_edit(1);
-
-        eb.t.pos = 0;
-        eb.t.len = next_line(1);
-
-        f.e0.cursor = true;             // Cursor refresh needed
-    }
-}
-
-
-///
-///  @brief    Increment dot by 1.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void inc_dot(void)
-{
-    if (eb.t.dot < eb.t.Z)
-    {
-        ++eb.t.dot;
-
-        if (isdelim(eb.t.c))           // About to move across a line delimiter?
-        {
-            eb.t.pos = 0;
-            eb.t.len = next_line(1) - prev_line(0);
-        }
-        else
-        {
-            ++eb.t.pos;
-        }
-
-        eb.t.lastc = eb.t.c;
-        eb.t.c     = eb.t.nextc;
-        eb.t.nextc = find_edit(1);
-
-        f.e0.cursor = true;             // Cursor refresh needed
-    }
-}
-
-
-///
 ///  @brief    Initialize edit buffer. All that we need to do here is allocate
 ///            the memory for the buffer, since the rest of the initialization
 ///            for the 'eb' and 't' structures is done statically, above.
@@ -607,7 +594,25 @@ bool insert_edit(const char *buf, size_t nbytes)
 
     memcpy(eb.buf + eb.left, buf, nbytes);
 
-    finish_insert((uint_t)nbytes);
+    if (f.e0.display)
+    {
+        int ndelims = 0;
+        const char *p = buf;
+
+        for (uint i = 0; i < nbytes; ++i)
+        {
+            int c = *p++;
+
+            if (isdelim(c))
+            {
+                ++ndelims;
+            }
+        }
+
+        eb.t.nlines += ndelims;
+    }
+
+    end_insert((uint_t)nbytes);
 
     return true;                        // Insertion was successful
 }
@@ -632,31 +637,7 @@ void kill_edit(void)
 
 
 ///
-///  @brief    Move dot to end of buffer.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void last_dot(void)
-{
-    if (eb.t.dot < eb.t.Z)
-    {
-        eb.t.dot   = eb.t.Z;
-        eb.t.lastc = find_edit(-1);
-        eb.t.c     = EOF;
-        eb.t.nextc = EOF;
-
-        eb.t.pos = eb.t.dot - prev_line(0);
-        eb.t.len = eb.t.pos;
-
-        f.e0.cursor = true;             // Cursor refresh needed
-    }
-}
-
-
-///
-///  @brief    Return length of string between dot and nth line terminator.
+///  @brief    Return number of bytes between dot and nth line terminator.
 ///
 ///  @returns  Number of characters relative to dot (can be plus or minus).
 ///
@@ -797,6 +778,8 @@ static void reset_edit(void)
     eb.t.lastc  = EOF;
     eb.t.len    = 0;
     eb.t.pos    = 0;
+    eb.t.line   = 0;
+    eb.t.nlines = 0;
 }
 
 
@@ -811,45 +794,131 @@ void set_dot(int_t dot)
 {
     if (dot < eb.t.B)
     {
-        dot = eb.t.B;
+        dot = eb.t.B;                   // Can't move before start of buffer
     }
     else if (dot > eb.t.Z)
     {
-        dot = eb.t.Z;
+        dot = eb.t.Z;                   // Can't move after end of buffer
     }
 
-    if (eb.t.dot != dot)
+    if (eb.t.dot == dot)
     {
-        if (dot == eb.t.dot + 1)
-        {
-            inc_dot();
-        }
-        else if (dot == eb.t.dot - 1)
-        {
-            dec_dot();
-        }
-        else if (dot == eb.t.B)
-        {
-            first_dot();
-        }
-        else if (dot == eb.t.Z)
-        {
-            last_dot();
-        }
-        else
-        {
-            eb.t.dot = dot;
+        return;                         // Nothing to do if no change
+    }
 
+    // Here if position within edit buffer has changed.
+
+    f.e0.cursor = true;                 // Tell display to update cursor
+
+    if (dot == eb.t.B)                  // Moving to start of buffer
+    {
+        eb.t.dot   = dot;
+        eb.t.lastc = EOF;
+        eb.t.c     = find_edit(0);
+        eb.t.nextc = find_edit(1);
+        eb.t.pos   = 0;
+        eb.t.len   = next_line(1);
+        eb.t.line  = 0;
+    }
+    else if (dot == eb.t.Z)             // Moving to end of buffer
+    {
+        eb.t.dot   = dot;
+        eb.t.lastc = find_edit(-1);
+        eb.t.c     = EOF;
+        eb.t.nextc = EOF;
+        eb.t.pos   = eb.t.dot - prev_line(0);
+        eb.t.len   = eb.t.pos;
+        eb.t.line  = eb.t.nlines;
+    }
+    else
+    {
+        int delta = dot - eb.t.dot;     // How much are we moving?
+
+        if (delta == 1)                 // Moving one character forward?
+        {
+            ++eb.t.dot;
+
+            eb.t.lastc = eb.t.c;
+            eb.t.c     = eb.t.nextc;
+            eb.t.nextc = find_edit(1);
+
+            if (isdelim(eb.t.lastc))    // Moving to next line?
+            {
+                eb.t.pos = 0;
+                eb.t.len = next_line(1) - prev_line(0);
+
+                ++eb.t.line;
+            }
+            else
+            {
+                ++eb.t.pos;
+            }
+        }
+        else if (delta == -1)           // Moving one character backward?
+        {
+            --eb.t.dot;
+
+            eb.t.nextc = eb.t.c;
+            eb.t.c     = eb.t.lastc;
+            eb.t.lastc = find_edit(-1);
+
+            if (isdelim(eb.t.c))        // Moving to previous line?
+            {
+                eb.t.pos = eb.t.dot - prev_line(0);
+                eb.t.len = eb.t.pos + 1;
+
+                --eb.t.line;
+            }
+            else
+            {
+                --eb.t.pos;
+            }
+        }
+        else                            // Moving more than one character
+        {
+            eb.t.dot   = dot;
             eb.t.lastc = find_edit(-1);
             eb.t.c     = find_edit(0);
             eb.t.nextc = find_edit(1);
+            eb.t.pos   += delta;
 
-            int_t prev = prev_line(0);  // Position of start of line
+            //  If we moved to a new line, recalculate line position and length.
 
-            eb.t.pos  = eb.t.dot - prev;
-            eb.t.len  = next_line(1) - prev;
+            if (eb.t.pos < 0 || eb.t.pos >= eb.t.len)
+            {
+                int_t prev = prev_line(0);
 
-            f.e0.cursor = true;         // Cursor refresh needed
+                eb.t.pos = eb.t.dot - prev;
+                eb.t.len = next_line(1) - prev;
+
+                if (f.e0.display)
+                {
+                    if (delta < 0)
+                    {
+                        for (int i = 0; i < -delta; ++i)
+                        {
+                            int c = find_edit(i);
+
+                            if (isdelim(c))
+                            {
+                                --eb.t.line;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = -delta; i < 0; ++i)
+                        {
+                            int c = find_edit(i);
+
+                            if (isdelim(c))
+                            {
+                                ++eb.t.line;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

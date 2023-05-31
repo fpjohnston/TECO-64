@@ -46,6 +46,8 @@ struct edit
     int nextc;                  ///< Next character (or EOF)
     int len;                    ///< Length of current line in bytes
     int pos;                    ///< Position in line
+    int line;                   ///< Current line number (0+)
+    int nlines;                 ///< Total no. of lines
 };
 
 extern const struct edit *t;    ///< Read-only pointer to text in edit buffer
