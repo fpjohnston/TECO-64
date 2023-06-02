@@ -484,7 +484,7 @@ static void scan_text(int delim, tstring *text)
     size_t nbytes = cbuf->len - cbuf->pos;
     const char *start = text->data;
     const char *end = memchr(start, delim, (size_t)nbytes);
-    uint len, tail = 1;
+    uint_t len, tail = 1;
 
     if (end != NULL)
     {

@@ -271,13 +271,13 @@ void exec_oper(enum x_oper type)
     {
         case X_ADD:    n = a + b;                 break;
         case X_AND:    n = a & b;                 break;
-        case X_COMPL:  n = (int_t)~(uint)a;       break;
+        case X_COMPL:  n = (int_t)~(uint_t)a;       break;
         case X_DIV:    n = exec_div(a, b);        break;
         case X_EQ:     n = (a == b ? -1 : 0);     break;
         case X_GE:     n = (a >= b ? -1 : 0);     break;
         case X_GT:     n = (a > b ? -1 : 0);      break;
         case X_LE:     n = (a <= b ? -1 : 0);     break;
-        case X_LSHIFT: n = (int_t)((uint)a << b); break;
+        case X_LSHIFT: n = (int_t)((uint_t)a << b); break;
         case X_LT:     n = (a < b ? -1 : 0);      break;
         case X_MINUS:  n = -a;                    break;
         case X_MUL:    n = a * b;                 break;
@@ -286,7 +286,7 @@ void exec_oper(enum x_oper type)
         case X_OR:     n = a | b;                 break;
         case X_PLUS:   n = a;                     break;
         case X_REM:    n = exec_rem(a, b);        break;
-        case X_RSHIFT: n = (int_t)((uint)a >> b); break;
+        case X_RSHIFT: n = (int_t)((uint_t)a >> b); break;
         case X_SUB:    n = a - b;                 break;
         case X_XOR:    n = a ^ b;                 break;
 
@@ -436,7 +436,7 @@ void init_x(void)
 
     if (x == NULL)
     {
-        x = alloc_mem((uint)sizeof(*x));
+        x = alloc_mem((uint_t)sizeof(*x));
 
         x->next = NULL;
 
@@ -467,7 +467,7 @@ void init_x(void)
 
 void new_x(void)
 {
-    struct xstack *p = alloc_mem((uint)sizeof(*p));
+    struct xstack *p = alloc_mem((uint_t)sizeof(*p));
 
     p->next = x;
     x = p;

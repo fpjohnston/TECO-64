@@ -700,7 +700,7 @@ void reset_dpy(bool all)
 
 static void set_cursor(void)
 {
-    int c = d.cursor = read_edit(0);    // Save cursor character (for reset)
+    int c = read_edit((int_t)0);
 
     if (c == HT && !w.seeall)
     {
@@ -730,6 +730,7 @@ static void set_cursor(void)
         }
     }
 
+    d.cursor = c;                       // Save character at cursor (for reset)
     d.line = t->line;                   // Save current line number
     d.newrow = d.newcol = -1;           // Reinitialize new cursor coordinates
 }
@@ -754,7 +755,7 @@ static void update_window(void)
         int delta = line - d.line;     // Get difference from last line
 
         d.newrow = d.row + delta;
-        d.newcol = find_column();
+        d.newcol = (int)find_column();
     }
 
     // The following is a (hopefully temporary) hack to handle the situation
@@ -770,7 +771,7 @@ static void update_window(void)
         else
         {
             d.newrow = 0;
-            d.newcol = find_column();
+            d.newcol = (int)find_column();
         }
     }
 
