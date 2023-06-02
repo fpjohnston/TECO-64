@@ -43,17 +43,6 @@
 #include "page.h"
 
 
-#if     defined(INLINE)
-
-#undef INLINE
-#define INLINE  inline
-
-#else
-
-#define INLINE
-
-#endif
-
 #if     !defined(EDIT_MAX)
 
 #if     INT_T == 64
@@ -146,8 +135,6 @@ const struct edit *t = &eb.t;       ///< Read-only pointers to public variables
 
 static void end_insert(uint_t nbytes);
 
-static INLINE int find_edit(int_t pos);
-
 static int_t next_line(uint_t nlines);
 
 static int_t prev_line(uint_t nlines);
@@ -159,40 +146,6 @@ static void shift_left(uint_t nbytes);
 static void shift_right(uint_t nbytes);
 
 static bool start_insert(uint_t size);
-
-
-///
-///  @brief    Get no. of lines after dot. This is only used by :L commands,
-///            but if display mode is active, we can take advantage of the
-///            eb.t.line and eb.t.nlines variables.
-///
-///  @returns  No. of lines.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int_t after_dot(void)
-{
-    if (f.e0.display)                   // Use optimization if display active
-    {
-        return eb.t.nlines - eb.t.line;
-    }
-    else
-    {
-        int_t nlines = 0;
-
-        for (int_t pos = 0; pos < eb.t.Z; ++pos)
-        {
-            int c = find_edit(pos);
-
-            if (c != EOF && isdelim(c))
-            {
-                ++nlines;
-            }
-        }
-
-        return nlines;
-    }
-}
 
 
 ///
@@ -303,40 +256,6 @@ bool append_edit(struct ifile *ifile, bool single)
 
 
 ///
-///  @brief    Get no. of lines before dot. This is only used by :L commands,
-///            but if display mode is active, we can take advantage of the
-///            eb.t.line variable.
-///
-///  @returns  No. of lines.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-int_t before_dot(void)
-{
-    if (f.e0.display)                   // Use optimization if display active
-    {
-        return eb.t.line;
-    }
-    else
-    {
-        int_t nlines = 0;
-
-        for (int_t pos = -eb.t.dot; pos < 0; ++pos)
-        {
-            int c = find_edit(pos);
-
-            if (c != EOF && isdelim(c))
-            {
-                ++nlines;
-            }
-        }
-
-        return nlines;
-    }
-}
-
-
-///
 ///  @brief    Change case of character at current position of dot. Since this
 ///            will never add or delete any delimiters, it won't affect our
 ///            line number, or the total number of lines in the buffer.
@@ -427,7 +346,7 @@ void delete_edit(int_t nbytes)
             eb.left -= (uint_t)nbytes;
             eb.t.dot -= nbytes;         // Backwards delete affects dot
 
-            eb.t.lastc  = find_edit(-1);
+            eb.t.lastc  = read_edit(-1);
         }
         else                            // Deleting forward in [right]
         {
@@ -455,8 +374,8 @@ void delete_edit(int_t nbytes)
 
             eb.right -= (uint_t)nbytes;
 
-            eb.t.c    = find_edit(0);
-            eb.t.nextc = find_edit(1);
+            eb.t.c     = read_edit(0);
+            eb.t.nextc = read_edit(1);
         }
 
         eb.gap += (uint_t)nbytes;       // Increase the gap
@@ -527,32 +446,6 @@ static void end_insert(uint_t nbytes)
 void exit_edit(void)
 {
     free_mem(&eb.buf);
-}
-
-
-///
-///  @brief    Get ASCII value of nth character before or after dot. Internal
-///            version of read_edit().
-///
-///  @returns  ASCII value, or EOF if character outside of edit buffer.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static INLINE int find_edit(int_t pos)
-{
-    uint_t i = (uint_t)(eb.t.dot + pos); // Make relative position absolute
-
-    if (i < eb.left + eb.right)
-    {
-        if (i >= eb.left)
-        {
-            i += eb.gap;
-        }
-
-        return eb.buf[i];
-    }
-
-    return EOF;
 }
 
 
@@ -814,8 +707,8 @@ void set_dot(int_t dot)
     {
         eb.t.dot   = dot;
         eb.t.lastc = EOF;
-        eb.t.c     = find_edit(0);
-        eb.t.nextc = find_edit(1);
+        eb.t.c     = read_edit(0);
+        eb.t.nextc = read_edit(1);
         eb.t.pos   = 0;
         eb.t.len   = next_line(1);
         eb.t.line  = 0;
@@ -823,7 +716,7 @@ void set_dot(int_t dot)
     else if (dot == eb.t.Z)             // Moving to end of buffer
     {
         eb.t.dot   = dot;
-        eb.t.lastc = find_edit(-1);
+        eb.t.lastc = read_edit(-1);
         eb.t.c     = EOF;
         eb.t.nextc = EOF;
         eb.t.pos   = eb.t.dot - prev_line(0);
@@ -840,7 +733,7 @@ void set_dot(int_t dot)
 
             eb.t.lastc = eb.t.c;
             eb.t.c     = eb.t.nextc;
-            eb.t.nextc = find_edit(1);
+            eb.t.nextc = read_edit(1);
 
             if (isdelim(eb.t.lastc))    // Moving to next line?
             {
@@ -860,7 +753,7 @@ void set_dot(int_t dot)
 
             eb.t.nextc = eb.t.c;
             eb.t.c     = eb.t.lastc;
-            eb.t.lastc = find_edit(-1);
+            eb.t.lastc = read_edit(-1);
 
             if (isdelim(eb.t.c))        // Moving to previous line?
             {
@@ -877,9 +770,9 @@ void set_dot(int_t dot)
         else                            // Moving more than one character
         {
             eb.t.dot   = dot;
-            eb.t.lastc = find_edit(-1);
-            eb.t.c     = find_edit(0);
-            eb.t.nextc = find_edit(1);
+            eb.t.lastc = read_edit(-1);
+            eb.t.c     = read_edit(0);
+            eb.t.nextc = read_edit(1);
             eb.t.pos   += delta;
 
             //  If we moved to a new line, recalculate line position and length.
@@ -897,7 +790,7 @@ void set_dot(int_t dot)
                     {
                         for (int i = 0; i < -delta; ++i)
                         {
-                            int c = find_edit(i);
+                            int c = read_edit(i);
 
                             if (isdelim(c))
                             {
@@ -909,7 +802,7 @@ void set_dot(int_t dot)
                     {
                         for (int i = -delta; i < 0; ++i)
                         {
-                            int c = find_edit(i);
+                            int c = read_edit(i);
 
                             if (isdelim(c))
                             {

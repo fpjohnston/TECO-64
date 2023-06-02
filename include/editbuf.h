@@ -52,17 +52,9 @@ struct edit
 
 extern const struct edit *t;    ///< Read-only pointer to text in edit buffer
 
-// Get no. of lines after dot.
-
-extern int_t after_dot(void);
-
 // Append file to buffer.
 
 extern bool append_edit(struct ifile *ifile, bool single);
-
-// Get no. of lines before dot.
-
-extern int_t before_dot(void);
 
 // Change character at dot.
 

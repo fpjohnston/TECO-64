@@ -28,6 +28,7 @@
 #include <stdio.h>
 
 #include "teco.h"
+#include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"                 // Needed for confirm
 #include "errors.h"
@@ -36,6 +37,10 @@
 
 
 // Local functions
+
+static int_t lines_after(void);
+
+static int_t lines_before(void);
 
 static void exec_c_r(struct cmd *cmd, int sign, int chr);
 
@@ -138,15 +143,15 @@ void exec_L(struct cmd *cmd)
 
     if (n < 0)
     {
-        store_val(before_dot());
+        store_val(lines_before());
     }
     else if (n > 0)
     {
-        store_val(after_dot());
+        store_val(lines_after());
     }
     else
     {
-        store_val(before_dot() + after_dot());
+        store_val(lines_before() + lines_after());
     }
 }
 
@@ -204,6 +209,74 @@ static void exec_move(struct cmd *cmd, int_t pos, bool pop, int chr)
 void exec_R(struct cmd *cmd)
 {
     exec_c_r(cmd, -1, 'R');             // Reverse of C command
+}
+
+
+///
+///  @brief    Get no. of lines after dot. This is only used by :L commands,
+///            but if display mode is active, we can take advantage of the
+///            t->line and t->nlines variables.
+///
+///  @returns  No. of lines.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int_t lines_after(void)
+{
+    if (f.e0.display)                   // Use optimization if display active
+    {
+        return t->nlines - t->line;
+    }
+    else
+    {
+        int_t nlines = 0;
+
+        for (int_t pos = 0; pos < t->Z; ++pos)
+        {
+            int c = read_edit(pos);
+
+            if (c != EOF && isdelim(c))
+            {
+                ++nlines;
+            }
+        }
+
+        return nlines;
+    }
+}
+
+
+///
+///  @brief    Get no. of lines before dot. This is only used by :L commands,
+///            but if display mode is active, we can take advantage of the
+///            t->line variable.
+///
+///  @returns  No. of lines.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static int_t lines_before(void)
+{
+    if (f.e0.display)                   // Use optimization if display active
+    {
+        return t->line;
+    }
+    else
+    {
+        int_t nlines = 0;
+
+        for (int_t pos = -t->dot; pos < 0; ++pos)
+        {
+            int c = read_edit(pos);
+
+            if (c != EOF && isdelim(c))
+            {
+                ++nlines;
+            }
+        }
+
+        return nlines;
+    }
 }
 
 
