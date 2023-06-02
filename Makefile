@@ -178,7 +178,7 @@ help:
 
 # Additional targets
 
-DFILES = $(SOURCES:.c=.d)
+DFILES = $(OBJECTS:.o=.d)
 
 -include $(DFILES)                      # Dependency targets
 
