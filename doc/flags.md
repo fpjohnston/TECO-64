@@ -78,26 +78,26 @@ where the handling of file operations was operating-system dependent.
 
 | Bit | Function |
 | --- | -------- |
-| E3&1 | If this bit is set, set, FF is a normal input character and not a page separator. If this bit is clear, FF is a page separator, and is not normally included in edit buffers. |
-| E3&2 | Specifies whether “smart” line terminator mode is in effect. If this bit is set, the line terminator for the first line read sets the next two bits. If the first line ends with LF, then all CR/LF is translated to LF on input, and lines are output with LF only. If the first line ends with CR/LF, then all input lines will end with CR/LF, as will all output lines. If this bit is clear, then the next two bits determine what line terminators are used for input and output. |
-| E3&4 | Specifies whether the line delimiter for input files is LF or CR/LF. If this bit is set, LF is translated to CR/LF on input. If this bit is clear, CR/LF is translated to LF on input. The default setting is clear for Linux and MacOS, and set for Windows and VMS. <br><br>Note that this bit affects terminal input just as it affects file input: if set, any input LF is translated to CR/LF, and if clear, any input CR/LF is translated to LF. |
-| E3&8 | Specifies whether the line delimiter for output files is LF or CR/LF. If this bit is set, LF is translated to CR/LF on output. If this bit is clear, the delimiter is LF. The default setting is clear for Linux and MacOS, and set for Windows and VMS. |
-| E3&16 | This bit affects the behavior of echoed input to log files (opened with the EL command). If the bit is set, echoed input is not written to the log file. If the bit is clear, all echoed input is written to the log file. |
-| E3&32 | This bit affects the behavior of output messages to log files (opened with the EL command). If the bit is set, output is not written to the log file. If the bit is clear, all output is written to the log file. |
-| E3&64 | Unused. |
- | E3&128 | If set, keep NUL characters found in input files. If the bit is clear, discard NUL characters in input files. |
+| E3&1 | If set, set, FF is a normal input character and not a page separator. If bit clear, FF is a page separator, and is not normally included in edit buffers. |
+| E3&2 | Specifies whether “smart” line terminator mode is in effect. If set, the line terminator for the first line read sets the next two bits, as follows: if the first line ends with LF, then all CR/LF is translated to LF on input, and lines are output with LF only, but if the first line ends with CR/LF, then all input lines will end with CR/LF, as will all output lines. If clear, then the next two bits determine what line terminators are used for input and output. |
+| E3&4 | Specifies whether the line delimiter for input files is LF or CR/LF. If set, LF is translated to CR/LF on input. If clear, CR/LF is translated to LF on input. The default setting is clear for Linux and MacOS, and set for Windows and VMS. <br><br>Note that this bit affects terminal input just as it affects file input: if set, any input LF is translated to CR/LF, and if clear, any input CR/LF is translated to LF. |
+| E3&8 | Specifies whether the line delimiter for output files is LF or CR/LF. If set, LF is translated to CR/LF on output. If clear, the delimiter is LF. The default setting is clear for Linux and MacOS, and set for Windows and VMS. |
+| E3&16 | This bit affects the behavior of echoed input to log files (opened with the EL command). If set, echoed input is not written to the log file. If clear, all echoed input is written to the log file. |
+| E3&32 | This bit affects the behavior of output messages to log files (opened with the EL command). If set, output is not written to the log file. If clear, all output is written to the log file. |
+| E3&64 | If set, allow Unicode characters for both input and output. If clear, characters are formatted as in TECO-32. |
+ | E3&128 | If set, keep NUL characters found in input files. If clear, discard NUL characters in input files. |
  | E3&256 | This bit affects the type out of LF with CTRL/A, CTRL/T, :G*q*, T, and V commands. If set, LF is converted to CR/LF. If clear, LF is output as is. |
  
 ### E4 - Display Mode Flag
 
 The E4 flag contains bit-encoded information that controls the appearance of
-the TECO's display window, when the -1W has been executed.
+the TECO's display window, when the -1W command has been executed.
 
 | Bit | Function |
 | --- | -------- |
-| E4&1 | Controls whether the text window is above or below the command window. If this bit is set, the text window is below the command window. If this bit is clear, the text window is above the command window. |
-| E4&2 | Controls whether there should be a line between the text and command windows. If this bit is set, there is a line separating the text and command windows. If this bit is clear, no line is displayed. |
-| E4&4 | Controls whether status information should be included on the status line. If the bit is set, then information about the position within the file as well as the date and time are included. If the bit is clear, there is no information displayed. |
+| E4&1 | Controls whether the text window is above or below the command window. If set, the text window is below the command window. If clear, the text window is above the command window. |
+| E4&2 | Controls whether there should be a line between the text and command windows. If set, there is a line separating the text and command windows. If clear, no line is displayed. |
+| E4&4 | Controls whether status information should be included on the status line. If set, then information about the position within the file as well as the date and time are included. If clear, there is no information displayed. |
 
 ### ED - Edit Level Flag
 
@@ -183,7 +183,7 @@ Any combination of the individual bits may be set.
 | ET&4096 | This bit reflects the terminal is capable of handling eight-bit character codes. <br><br> Because the data manipulated (edited) by TECO can consist of all 256 possible byte codes, the way data characters are displayed (typed out) at the terminal varies depending upon the setting of the 4096 ET bit. <br><br> Unprintable or invalid codes in the 128 to 255 range are typed out as [ab] (where ab is the corresponding hexadecimal code). The display mode feature (controlled by the W commands) always uses the &lt;xy> and [ab] notations. |
 | ET&8192 | Accent grave as ESCape surrogate. If this bit is set, TECO recognizes the \` (accent grave) character as an ESCAPE surrogate. That is, an ` character typed at the terminal will be recognized as a command &lt;*delim*> character, and passed to TECO as an ESCape. (This interpretation applies only to &lt;*delim*> characters typed at the terminal; ESCape characters must still be used in macros and indirect command files.) When an ESCape surrogate is set, an ESCape received by TECO echoes as an accent grave; when none is set, an ESCape received by TECO echoes as a dollar sign. This feature is provided for the benefit of certain newer terminals which lack an ESCape key. (See also the Introduction, and the EE flag.) |
 | ET&16384 | Unused. |
-| ET&32768 | If this bit is set and a &lt;CTRL/C> is typed, the bit is turned off, but execution of the current command string is allowed to continue. This allows a TECO macro to detect typed &lt;CTRL/C> characters. |
+| ET&32768 | If this bit is set and a &lt;CTRL/C> is typed, this bit is turned off, but execution of the current command string is allowed to continue. This allows a TECO macro to detect typed &lt;CTRL/C> characters. |
 
 When TECO is initialized, ET&2, ET&4, ET&512, ET&4096, and ET&8192 are set,
 and all other bits are clear. Furthermore, ET&128 and ET&32768 are always

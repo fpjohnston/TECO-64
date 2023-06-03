@@ -137,10 +137,12 @@ struct flags f =                    ///< Global flag variables
 
 #if   defined(__vms)
 
+    .e3.unicode = false,            // Don't allow UTF-8 characters
     .e3.keepNUL = true,             // Don't discard input NUL chrs.
 
 #else
 
+    .e3.unicode = true,             // Allow UTF-8 characters
     .e3.keepNUL = false,            // Discard input NUL chrs.
 
 #endif

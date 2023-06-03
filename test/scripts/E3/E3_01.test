@@ -16,7 +16,7 @@ E3 U1
 0,8     E3 E3&8     "E [[FAIL]] '   ! Test: set E3&8 !
 0,16    E3 E3&16    "E [[FAIL]] '   ! Test: set E3&16 !
 0,32    E3 E3&32    "E [[FAIL]] '   ! Test: set E3&32 !
-0,64    E3 E3&64    "N [[FAIL]] '   ! Test: set E3&64 !
+0,64    E3 E3&64    "E [[FAIL]] '   ! Test: set E3&64 !
 0,128   E3 E3&128   "E [[FAIL]] '   ! Test: set E3&128 !
 0,256   E3 E3&256   "E [[FAIL]] '   ! Test: set E3&256 !
 0,512   E3 E3&512   "N [[FAIL]] '   ! Test: set E3&512 !

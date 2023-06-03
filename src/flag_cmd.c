@@ -223,6 +223,7 @@ void exec_E3(struct cmd *cmd)
     f.e3.CR_out  = e3.CR_out;
     f.e3.noin    = e3.noin;
     f.e3.noout   = e3.noout;
+    f.e3.unicode = e3.unicode;
     f.e3.keepNUL = e3.keepNUL;
     f.e3.CR_type = e3.CR_type;
 }

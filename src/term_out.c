@@ -162,6 +162,10 @@ void echo_in(int c)
                 break;
          }
     }
+    else if (f.e3.unicode)
+    {
+        term_echo(c);
+    }
     else
     {
         const char *p = table_8bit[c & 0x7f];
@@ -565,13 +569,13 @@ void type_out(int c)
 
 #endif
 
-        if (convert_chr)
+        if (f.e3.unicode || !convert_chr)
         {
-            tprint("%s", table_8bit[c & 0x7f]);
+            term_type(c);
         }
         else
         {
-            term_type(c);
+            tprint("%s", table_8bit[c & 0x7f]);
         }
     }
 }

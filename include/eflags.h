@@ -136,7 +136,7 @@ union e3_flag
         uint CR_out  : 1;       ///< Convert LF to CR/LF writing output
         uint noin    : 1;       ///< Don't type input to log file
         uint noout   : 1;       ///< Don't type output to log file
-        uint         : 1;       ///< (unused)
+        uint unicode : 1;       ///< Allow Unicode characters
         uint keepNUL : 1;       ///< Keep NUL chrs. in input files
         uint CR_type : 1;       ///< Convert LF to CR/LF on type out
     };
