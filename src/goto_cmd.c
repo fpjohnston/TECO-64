@@ -40,11 +40,9 @@
 
 // Local functions
 
-static void find_tag(const char *tag);
+static void find_tag(const char *text, uint len);
 
-static void find_taglist(const char *taglist, int arg);
-
-static bool validate_tag(tstring *tag);
+static void validate_tag(tstring *tag);
 
 
 ///
@@ -81,26 +79,32 @@ void exec_O(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    if (cmd->text1.len == 0)            // Is there a tag?
-    {
-        throw(E_NOT);                   // O command has no tag
-    }
-
-    char tag[cmd->text1.len + 1];
-
-    sprintf(tag, "%.*s", (int)cmd->text1.len, cmd->text1.data);
-
     if (cmd->n_set)                     // Computed GOTO
     {
-        find_taglist(tag, (int)cmd->n_arg);
-    }
-    else if (strchr(tag, ',') != NULL)  // Tag cannot contain a comma
-    {
-        throw(E_BAT, tag);              // Bad tag
+        // Look for the nth tag in the comma-separated list
+
+        char list[cmd->text1.len + 1];
+        char *tag = list;
+        char *token;
+
+        sprintf(tag, "%.*s", (int)cmd->text1.len, cmd->text1.data);
+
+        while ((token = strsep(&tag, ",")) != NULL)
+        {
+            if (--cmd->n_arg == 0)
+            {
+                if (token[0] != NUL)
+                {
+                    find_tag(token, (uint)strlen(token));
+                }
+
+                break;
+            }
+        }
     }
     else                                // Simple GOTO
     {
-        find_tag(tag);
+        find_tag(cmd->text1.data, cmd->text1.len);
     }
 }
 
@@ -112,24 +116,21 @@ void exec_O(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void find_tag(const char *orig_tag)
+static void find_tag(const char *text, uint len)
 {
-    assert(orig_tag != NULL);           // Error if no tag string
+    assert(text != NULL);               // Error if no tag name
 
     // Check for string building characters to create tag
 
-    tstring tag = build_string(orig_tag, (uint_t)strlen(orig_tag));
+    tstring tag = build_string(text, len);
     struct cmd cmd;                     // Dummy command block for skip_cmd()
     uint old_pos = cbuf->pos;           // Save command buffer position
     uint_t old_line = cmd_line;         // Save current line number
     uint tag_pos = 0;                   // Position of tag
-    uint level = 0;
-    uint depth = 0;
+    uint level = 0;                     // Loop command level
+    uint depth = 0;                     // Conditional command depth
 
-    if (!validate_tag(&tag))
-    {
-        throw(E_BAT, tag.data);         // Bad tag
-    }
+    validate_tag(&tag);                 // Trim spaces and verify format
 
     //  Start at the beginning of the command string, and search for the tag.
 
@@ -172,8 +173,10 @@ static void find_tag(const char *orig_tag)
         }
     }
 
-    //  Issue error if we couldn't find the tag, or if we're in a loop or
-    //  nested loop and the tag is before the start of the outermost loop.
+    //  Issue error if we couldn't find the tag, or if we're in a loop and the
+    //  tag was found the start of the loop. The reason for the latter error is
+    //  because we cannot easily ensure that we wouldn't be jumping into a loop
+    //  that we are not currently inside of. 
 
     if (tag_pos == 0)
     {
@@ -181,11 +184,11 @@ static void find_tag(const char *orig_tag)
 
         throw(E_TAG, tag.data);         // Missing tag
     }
-    else if (ctrl.level != 0 && tag_pos < ctrl.loop[0].pos)
+    else if (ctrl.level != 0 && tag_pos < ctrl.loop[ctrl.level - 1].pos)
     {
         cmd_line = old_line;            // Restore line number for throw()
 
-        throw(E_LOC, tag.data);         // Tag location is invalid
+        throw(E_LOC, tag.data);         // Invalid tag location
     }
 
     //  Now that we know that we have a tag, and where it is, we can determine
@@ -197,7 +200,7 @@ static void find_tag(const char *orig_tag)
     //    - we are not in any loop, so we just start at the beginning of the
     //      command string.
     //    - we are in a loop, or nested loop, so we cannot start before the
-    //      start of the outermost loop.
+    //      start of the innermost loop.
 
     if (old_pos < tag_pos)
     {
@@ -214,15 +217,16 @@ static void find_tag(const char *orig_tag)
         }
         else
         {
-            cmd_line = ctrl.loop[0].line;
-            cbuf->pos = ctrl.loop[0].pos;
+            cmd_line = ctrl.loop[ctrl.level - 1].line;
+            cbuf->pos = ctrl.loop[ctrl.level - 1].pos;
         }
     }
 
     //  Scan command string to find the tag again. Note: when scanning for
-    //  loops, we distinguish between the loop (or nested loop) we may be
-    //  inside of, and any new loops that we may encounter, in order that
-    //  we not jump into any loops not already in progress.
+    //  loops, we distinguish between the loop we may be enclosed by, and
+    //  any new loops that we may find preceding our position, in order that
+    //  we not jump into the middle of any loops. We also check that we don't
+    //  jump into the middle of any loops following our position.
 
     while (skip_cmd(&cmd, "<>\"'!"))
     {
@@ -238,13 +242,13 @@ static void find_tag(const char *orig_tag)
                 {
                     --level;
                 }
-                else if (ctrl.level != 0)
+                else if (ctrl.level != 0) // Exiting current (nested) loop?
                 {
-                    --ctrl.level;
+                    --ctrl.level;       // Yes
                 }
                 else
                 {
-                    throw(E_BNI);
+                    throw(E_BNI);       // Right angle bracket not in iteration
                 }
 
                 break;
@@ -259,7 +263,7 @@ static void find_tag(const char *orig_tag)
 
                 break;
 
-            case '!':                   // Start of tag/comment
+            case '!':                   // Start of tag
                 if (cbuf->pos == tag_pos && level == 0)
                 {
                     // The +2 is for the delimiting exclamation marks.
@@ -278,56 +282,11 @@ static void find_tag(const char *orig_tag)
         }
     }
 
-    // We get here for such things as trying to jump forward into a loop.
+    //  Here if trying to jump into the middle of a loop (other than ours).
 
     cmd_line = old_line;                // Restore line number for throw()
 
     throw(E_LOC, tag.data);             // Invalid tag location
-}
-
-
-///
-///  @brief    Search a taglist for a specific tag.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void find_taglist(const char *taglist, int arg)
-{
-    assert(taglist != NULL);
-
-    // Here to handle a computed GOTO.
-
-    const char *next = taglist;
-    int ntags = 0;
-
-    // Find all tags, looking for the one matching the n argument.
-
-    while (++ntags <= arg && *next != NUL)
-    {
-        uint_t len = (uint_t)strcspn(next, ",");
-        char tag[len + 1];
-
-        snprintf(tag, sizeof(tag), "%.*s", (int)len, next);
-
-        if (ntags == arg)
-        {
-            if (len != 0)
-            {
-                find_tag(tag);
-            }
-
-            break;
-        }
-
-        next += len;
-
-        if (*next == ',')
-        {
-            ++next;
-        }
-    }
 }
 
 
@@ -402,46 +361,53 @@ bool scan_O(struct cmd *cmd)
 
 
 ///
-///  @brief    Validate tag, skipping any leading or trailing spaces.
+///  @brief    Validate tag, by first trimming any leading or trailing spaces,
+///            and then confirming that what remains consists only of graphic
+///            characters other than commas or exclamation marks.
 ///
-///  @returns  true if valid tag, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static bool validate_tag(tstring *tag)
+static void validate_tag(tstring *tag)
 {
     assert(tag != NULL);
+    assert(tag->data != NULL);
 
     // Trim leading spaces
 
-    while (*tag->data != NUL && *tag->data == ' ')
-    {
-        ++tag->data;
-        --tag->len;
-    }
+    uint len = (uint)strspn(tag->data, " ");
+
+    tag->data += len;
+    tag->len -= len;
 
     // Trim trailing spaces
 
-    while (tag->data[tag->len - 1] == ' ')
+    while (tag->len != 0 && tag->data[tag->len - 1] == ' ')
     {
         tag->data[--tag->len] = NUL;
     }
 
-    // Verify that tag does not contain any commas (since these are used for
-    // computed GOTOs), nor any control characters. Note that this restriction
-    // only applies to tags used in O commands, not the tags themselves (which
-    // may actually be comments).
-
-    const char *p = tag->data;
-    int c;
-
-    while ((c = *p++) != NUL)
+    if (tag->len == 0)
     {
-        if (iscntrl(c) || c == ',')
-        {
-            return false;
-        }
+        throw(E_NOT);                   // No tag
     }
 
-    return true;
+    const char *p = tag->data;
+
+    //  Verify that tag does not contain any commas (since those are used for
+    //  computed GOTOs), nor any exclamation marks (since those are used to
+    //  delimit tags), nor any control characters. Note that this restriction
+    //  only applies to tags used in O commands, not the tags themselves (which
+    //  may actually be comments).
+
+    for (uint i = 0; i < tag->len; ++i)
+    {
+        int c = *p++;
+
+        if (!isgraph(c) || c == ',' || c == '!')
+        {
+            throw(E_BAT, tag->data);    // Bad tag
+        }
+    }
 }

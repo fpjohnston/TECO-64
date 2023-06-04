@@ -1,15 +1,16 @@
 ! Smoke test for TECO text editor !
 
-! Function: Branch forward outside a conditional !
+! Function: Branch forward out of conditional !
 !  Command: O !
 !     TECO: PASS !
 
 [[enter]]
 
-0 "E
+1 "N
     @O!tag1!                        ! Test: branch forward !
 
     [[FAIL]]
+|
 '
 
 !tag1!

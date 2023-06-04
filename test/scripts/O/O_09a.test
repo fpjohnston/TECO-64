@@ -7,17 +7,9 @@
 [[enter]]
 
 1 <
-    @O!tag1!
+    0"N !tag! [[PASS]] ^C '
 
-    !tag2!
-
-    [[PASS]]
-
-    ^C
-
-    !tag1!
-
-    @O!tag2!                        ! Test: branch backward !
+    @O!tag!                         ! Test: branch backward !
 
     [[FAIL]]
 >

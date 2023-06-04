@@ -1,0 +1,16 @@
+! Smoke test for TECO text editor !
+
+! Function: Branch with duplicate tags !
+!  Command: O !
+!     TECO: ?TAG !
+!  TECO-64: ?DUP !
+
+[[enter]]
+
+!tag1!
+
+@O!tag1!                            ! Test: branch to duplicate tag !
+
+!tag1!
+
+[[exit]]

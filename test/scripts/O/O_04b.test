@@ -1,0 +1,12 @@
+! Smoke test for TECO text editor !
+
+! Function: Branch to bad tag !
+!  Command: O !
+!     TECO: PASS !
+!  TECO-64: ?BAT !
+
+[[enter]]
+
+@O/X,Y/                             ! Test: branch to bad tag !
+
+[[exit]]

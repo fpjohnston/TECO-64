@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Branch to null tag !
+!  Command: O !
+!     TECO: ?NOT !
+
+[[enter]]
+
+@O!!                                ! Test: branch to null tag !
+
+[[exit]]

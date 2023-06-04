@@ -1,0 +1,13 @@
+! Smoke test for TECO text editor !
+
+! Function: Duplicate tags without O !
+!  Command: O !
+!     TECO: PASS !
+
+[[enter]]
+
+!tag1!
+
+!tag1!
+
+[[exit]]

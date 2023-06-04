@@ -1,6 +1,6 @@
 ! Smoke test for TECO text editor !
 
-! Function: Branch backward into a conditional !
+! Function: Branch backward into conditional !
 !  Command: O !
 !     TECO: PASS !
 
@@ -8,8 +8,8 @@
 
 @O!tag1!
 
-0 "E
-
+1 "N
+|
     !tag2!
 
     [[PASS]]

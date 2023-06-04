@@ -1,0 +1,23 @@
+! Smoke test for TECO text editor !
+
+! Function: Branch forward into loop from nested loop !
+!  Command: O !
+!  TECO-64: ?LOC !
+
+[[enter]]
+
+1 <
+    1 <
+        @O!tag1!                    ! Test: branch forward !
+    >
+>
+
+[[FAIL]]
+
+1<
+    !tag1!
+>
+
+[[FAIL]]
+
+[[exit]]
