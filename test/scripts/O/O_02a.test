@@ -2,7 +2,7 @@
 
 ! Function: Branch to null tag !
 !  Command: O !
-!     TECO: ?NOT !
+!  TECO-64: ?NOT !
 
 [[enter]]
 

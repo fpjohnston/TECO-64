@@ -54,11 +54,11 @@ E1 U1                                   ! Save extended features flag !
     E2:@=/E2 = 0x%x: /
     E2&1    "N @^A/zero / '
     E2&2    "N @^A/oper / '
-    E2&4    "N @^A/atsign / '
-    E2&8    "N @^A/colon / '
-    E2&16   "N @^A/comma / '
-    E2&32   "N @^A/m_arg / '
-    E2&64   "N @^A/n_arg / '
+    E2&4    "N @^A/number / '
+    E2&8    "N @^A/m_arg / '
+    E2&16   "N @^A/n_arg / '
+    E2&32   "N @^A/colon / '
+    E2&64   "N @^A/atsign / '
     E2&128  "N @^A/loop / '
     E2&256  "N @^A/quote / ' 
     E2&512  "N @^A/page / '
@@ -74,6 +74,7 @@ E1 U1                                   ! Save extended features flag !
     E3&8   "N @^A/CR_out / '
     E3&16  "N @^A/noin / '
     E3&32  "N @^A/noout / '
+    E3&64  "N @^A/unicode / '
     E3&128 "N @^A/keepnul / '
     E3&256 "N @^A/CR_type / '
     -1^T
@@ -110,9 +111,9 @@ E1 U1                                   ! Save extended features flag !
             @^A/concise/
         '
     '
-    EH&4  "N @^A/what / '
-    EH&8  "N @^A/where / '
-    EH&16 "N @^A/who / '
+    EH&4  "N @^A/ what/ '
+    EH&8  "N @^A/ where/ '
+    EH&16 "N @^A/ who/ '
     -1^T
 }
 

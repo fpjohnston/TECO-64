@@ -45,13 +45,13 @@
     #if     DEBUG != 2 && DEBUG != 3
 
         #undef  DEBUG
-        #define DEBUG   1
+        #define DEBUG   1           ///< Enable basic debugging features
 
     #endif
 
 #else
 
-    #define DEBUG   0
+    #define DEBUG   0               ///< Disable debugging features
 
 #endif
 

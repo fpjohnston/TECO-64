@@ -284,12 +284,6 @@ extern void *expand_mem(void *p1, uint_t size, uint_t delta);
 
 extern void free_mem(void *ptr);
 
-extern uint getloop_base(void);
-
-extern uint getloop_depth(void);
-
-extern uint_t getloop_start(void);
-
 extern void init_env(void);
 
 extern void init_options(int argc, const char * const argv[]);
@@ -299,10 +293,6 @@ extern void print_flag(int_t flag);
 extern void print_size(uint_t size);
 
 extern void reset_map(void);
-
-extern void setloop_depth(uint depth);
-
-extern void setloop_base(uint base);
 
 extern void *shrink_mem(void *p1, uint_t size, uint_t delta);
 

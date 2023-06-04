@@ -41,11 +41,11 @@
 #if     defined(INLINE)
 
 #undef INLINE
-#define INLINE  inline
+#define INLINE  inline              ///< Enable inline functions
 
 #else
 
-#define INLINE
+#define INLINE                      ///< Disable inline functions
 
 #endif
 

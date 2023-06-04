@@ -477,11 +477,7 @@ extern bool next_yank(void);
 
 extern bool read_EI(void);
 
-extern void reset_if(void);
-
 extern void reset_indirect(void);
-
-extern void reset_loop(void);
 
 extern void reset_search(void);
 
