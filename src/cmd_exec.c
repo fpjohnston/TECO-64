@@ -416,11 +416,16 @@ static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
 
             if (entry->exec == NULL)
             {
-                assert(entry->scan != NULL);
+                if (entry->scan == NULL)
+                {
+                    throw(E_ILL, cmd->c1); // Illegal command
+                }
+                else
+                {
+                    (void)(*entry->scan)(cmd);
 
-                (void)(*entry->scan)(cmd);
-
-                return NULL;
+                    return NULL;
+                }
             }
 
             return entry;
