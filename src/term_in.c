@@ -543,13 +543,13 @@ static int read_first(void)
 
                 echo_in(c);
 
-                // Current format is: CTRL/F followed by a digit, or another
-                // CTRL/F. Anything else is an error.
+                //  Current format is: CTRL/F followed by a decimal digit.
+                //  Anything else is an error.
 
-                if (c == CTRL_F || isdigit(c))
+                if (isdigit(c))
                 {
                     echo_in(LF);
-                    exec_ctrl_F(c);
+                    exec_ctrl_F((uint)(c - '0'));
                 }
                 else
                 {

@@ -37,34 +37,27 @@
 #include "exec.h"
 
 
-#define MAX_CTRL_F      (('9' - '0') + 1) ///< Maximum CTRL/F commands
-
-static char *ctrl_f_cmd[MAX_CTRL_F];    ///< Command strings for CTRL/F
+static char *ctrl_f_cmd[10];        ///< Command strings for CTRL/F
 
 
 ///
-///  @brief    Execute CTRL/F command. This may take one of two forms:
+///  @brief    Execute CTRL/F command. This may take the following form:
 ///
-///            <CTRL_F>x        - Execute command string for command string 'x';
-///                               'x' may range from '0' to '9'.
-///            <CTRL_F><CTRL_F> - Repeats last CTRL/F<digit>.
+///            <CTRL_F><CTRL/x> - Execute stored command string 'x'; 'x' may
+///                               range from 'A' to 'Z'.
+///
+///            THIS COMMAND IS EXPERIMENTAL, AND IS INTENDED FOR TESTING AND
+///            DEBUGGING PURPOSES. ITS USE IS NOT DOCUMENTED, AS IT MAY BE
+///            DELETED OR CHANGED AT ANY TIME, AND NO ASSUMPTION SHOULD BE
+///            MADE ABOUT ITS FORMAT OR FUNCTIONALITY.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_ctrl_F(int c)
+void exec_ctrl_F(uint i)
 {
-    static int i = 0;                   ///< Last index used
-
-    if (isdigit(c))
-    {
-        i = c - '0';                    // Set index and default
-    }
-    else
-    {
-        assert(c == CTRL_F);
-    }
+    assert(i < countof(ctrl_f_cmd));
 
     if (ctrl_f_cmd[i] != NULL && *ctrl_f_cmd[i] != NUL)
     {
@@ -94,9 +87,9 @@ void exec_ctrl_F(int c)
 ///            @FF//     - Unmap key.
 ///
 ///            THIS COMMAND IS EXPERIMENTAL, AND IS INTENDED FOR TESTING AND
-///            DEBUGGING PURPOSES. ITS USE IS NOT DESCRIBED IN THE MARKDOWN
-///            DOCUMENTATION, AS IT MAY BE DELETED OR CHANGED AT ANY TIME, AND
-///            NO ASSUMPTION SHOULD BE MADE ABOUT ITS FORMAT OR FUNCTIONALITY.
+///            DEBUGGING PURPOSES. ITS USE IS NOT DOCUMENTED, AS IT MAY BE
+///            DELETED OR CHANGED AT ANY TIME, AND NO ASSUMPTION SHOULD BE
+///            MADE ABOUT ITS FORMAT OR FUNCTIONALITY.
 ///
 ///  @returns  Nothing.
 ///
@@ -106,13 +99,13 @@ void exec_FF(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    int_t i = 0;                        // Index into CTRL/F array
+    uint i = 0;                         // Index into CTRL/F array
 
-    if (cmd->n_set && ((i = cmd->n_arg - '0') < 0 || i > 9))
+    if (cmd->n_set && (i = (uint)cmd->n_arg) >= countof(ctrl_f_cmd))
     {
         if (cmd->colon)
         {
-            store_val(FAILURE); // Command failed
+            store_val(FAILURE);         // Command failed
 
             return;
         }

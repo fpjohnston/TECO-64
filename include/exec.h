@@ -457,7 +457,7 @@ extern void close_files(void);
 
 extern void exec_cmd(struct cmd *cmd);
 
-extern void exec_ctrl_F(int key);
+extern void exec_ctrl_F(uint key);
 
 extern void exec_macro(tbuffer *macro, struct cmd *cmd);
 
