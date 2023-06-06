@@ -437,6 +437,34 @@ void read_cmd(void)
         {
             exec_cancel();
         }
+
+#if     defined(DEBUG)
+
+        else if (c == LF && f.e1.newline)
+        {
+            echo_in(LF);
+
+            if (check_help())
+            {
+                throw(E_NYI);           // No help available yet
+            }
+
+            store_tbuf(ESC);
+            store_tbuf(ESC);
+
+            while ((c = fetch_tbuf()) != EOF)
+            {
+                if (c != CR)            // Skip any CR
+                {
+                    store_cbuf(c);      // Copy command string
+                }
+            }
+
+            return;                     // Return to execute it
+        }
+
+#endif
+
         else if (c == ESC)
         {
             store_tbuf(ESC);

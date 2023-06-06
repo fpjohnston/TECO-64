@@ -46,7 +46,8 @@ E1 U1                                   ! Save extended features flag !
     Q1&512   "N @^A/insert / '
     Q1&1024  "N @^A/percent / '
     Q1&2048  "N @^A/c_oper / '
-    Q1&32768 "N @^A/repeat / '
+    Q1&16384 "N @^A/repeat / '
+    Q1&32768 "N @^A/newline / '
     -1^T
 }
 

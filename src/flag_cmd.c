@@ -167,6 +167,7 @@ void exec_E1(struct cmd *cmd)
 #if     defined(DEBUG)          // Include CTRL/] command
 
     f.e1.repeat  = e1.repeat;
+    f.e1.newline = e1.newline;
 
 #endif
 
