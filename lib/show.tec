@@ -75,7 +75,7 @@ E1 U1                                   ! Save extended features flag !
     E3&8   "N @^A/CR_out / '
     E3&16  "N @^A/noin / '
     E3&32  "N @^A/noout / '
-    E3&64  "N @^A/unicode / '
+    E3&64  "N @^A/utf8 / '
     E3&128 "N @^A/keepnul / '
     E3&256 "N @^A/CR_type / '
     -1^T

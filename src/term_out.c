@@ -162,7 +162,7 @@ void echo_in(int c)
                 break;
          }
     }
-    else if (f.e3.unicode)
+    else if (f.e3.utf8)
     {
         term_echo(c);
     }
@@ -569,7 +569,7 @@ void type_out(int c)
 
 #endif
 
-        if (f.e3.unicode || !convert_chr)
+        if (f.e3.utf8 || !convert_chr)
         {
             term_type(c);
         }
