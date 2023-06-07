@@ -43,7 +43,7 @@ EXCLUDES =
 
 SOURCES = $(wildcard src/*.c)
 
-CFLAGS = -c -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums -MMD
+CFLAGS = -c -std=gnu11 -Wall -Wextra -Wno-unused-parameter -fshort-enums -funsigned-char -MMD
 
 include etc/build/init.mk           # Initialize variables we'll need
 

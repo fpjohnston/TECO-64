@@ -361,7 +361,7 @@ int get_qindex(int qname, bool qlocal)
 {
     int qindex;
 
-    if ((qindex = qtable[(uchar)qname]) <= 0)
+    if ((qindex = qtable[(uchar)qname]) == 0)
     {
         return -1;
     }

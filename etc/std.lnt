@@ -13,7 +13,8 @@ co-gcc.lnt                              // Basic gcc configuration
 +fpn                                    // Warn about use of pointers if possibly NULL
 +fas                                    // Allow anonymous structs
 +fan                                    // Allow anonymous unions
--ffc                                    // Functions generally don't take custody of pointers
++fcu                                    // Plain 'char' is unsigned
+-ffc                                    // Functions generally don't take custody of pointers\
 
 +libclass(angle, ansi)
 
