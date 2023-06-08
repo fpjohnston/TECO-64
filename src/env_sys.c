@@ -63,7 +63,7 @@ const char *teco_vtedit = NULL;         ///< Name of VTEDIT macro
 #elif   defined(__APPLE__)
 
 #define TECO_OS          30             ///< MacOS
-#define TECO_HW          20             ///< x86
+#define TECO_HW          20             ///< M1/M2
 
 #elif   defined(__vms)
 
