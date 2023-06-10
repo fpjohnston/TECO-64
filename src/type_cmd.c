@@ -32,6 +32,7 @@
 #include "editbuf.h"
 #include "errors.h"
 #include "eflags.h"
+#include "estack.h"
 #include "exec.h"
 #include "term.h"
 
@@ -172,6 +173,7 @@ bool scan_T(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (cmd->m_set)
@@ -206,13 +208,14 @@ bool scan_V(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
+    confirm(cmd, NO_NEG_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
+
     if (!cmd->n_set || cmd->n_arg == 0) // V => 1V, 0V => 1V
     {
         cmd->n_set = true;
         cmd->n_arg = 1;
     }
-
-    confirm(cmd, NO_NEG_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     return false;
 }

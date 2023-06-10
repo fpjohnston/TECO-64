@@ -32,6 +32,7 @@
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 #include "search.h"
 
@@ -100,6 +101,7 @@ bool scan_FD(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_NEG_M, NO_DCOLON);
 
     default_n(cmd, (int_t)1);           // FD => 1FD

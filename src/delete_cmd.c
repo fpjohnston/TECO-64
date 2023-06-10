@@ -154,6 +154,7 @@ bool scan_D(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_NEG_M, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)1);           // D => 1D
@@ -173,6 +174,7 @@ bool scan_K(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_NEG_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)1);           // K => 1K

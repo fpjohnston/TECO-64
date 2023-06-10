@@ -31,6 +31,7 @@
 #include "teco.h"
 #include "eflags.h"                 // Needed for confirm()
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 #include "file.h"
 #include "qreg.h"
@@ -134,6 +135,7 @@ bool scan_G(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_N, NO_M, NO_DCOLON, NO_ATSIGN);
 
     if (!scan_qreg(cmd))

@@ -31,6 +31,7 @@
 #include "editbuf.h"
 #include "eflags.h"                 // Needed for confirm()
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 #include "qreg.h"
 
@@ -131,6 +132,7 @@ bool scan_X(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_NEG_M, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)1);           // X => 1X

@@ -46,16 +46,6 @@ my %args = (
     pattern => undef,                   # Pattern file
 );
 
-my %types = (
-    q{?} => 'c_none ',
-    q{+} => 'c_LF   ',
-    q{^} => 'c_UP   ',
-    q{ } => 'c_WHITE',
-    q{E} => 'c_E    ',
-    q{F} => 'c_F    ',
-    q{!} => 'c_M    ',
-);
-
 #>>>
 
 #
@@ -122,7 +112,6 @@ sub make_commands
         my $name = $_->{name};
         my $scan = $_->{scan};
         my $exec = $_->{exec};
-        my $type = $_->{type};
 
         if ( $name eq q{'} || $name eq q{\\} )
         {
@@ -143,9 +132,8 @@ sub make_commands
         }
 
         $scan .= q{,};
-        $scan = sprintf '%-15s', $scan;
-        $exec .= q{,};
-        $exec = sprintf '%-15s', $exec;
+        $scan = sprintf '%-16s', $scan;
+        $exec = sprintf '%-16s', $exec;
 
         if ( $name =~ /^E(.)$/ms )
         {
@@ -159,11 +147,11 @@ sub make_commands
         $name .= q{,};
         $name = sprintf '%-11s', $name;
 
-        my $entry = sprintf '%s', "    ENTRY($name  $scan  $exec  $type),\n";
+        my $entry = sprintf '%s', "    ENTRY($name  $scan  $exec),\n";
 
         if ( $name =~ s/^('[[:upper:]]',)/\L$1/msx )
         {
-            $entry .= sprintf '%s', "    ENTRY($name  $scan  $exec  $type),\n";
+            $entry .= sprintf '%s', "    ENTRY($name  $scan  $exec),\n";
         }
 
         if ( $_->{name} =~ /^E.$/msx )
@@ -289,20 +277,6 @@ sub parse_xml
             my $name = $command->getAttribute('name');
             my $scan = $command->getAttribute('scan');
             my $exec = $command->getAttribute('exec');
-            my $type = $command->getAttribute('type');
-
-            if ( defined $types{$type} )
-            {
-                $type = "$types{$type} ";
-            }
-            elsif ( length $type == 0 )
-            {
-                $type = "$types{'?'} ";
-            }
-            else
-            {
-                die "Invalid command type: '$type'\n";
-            }
 
             if ( defined $scan )
             {
@@ -328,7 +302,6 @@ sub parse_xml
                 name => $name,
                 scan => $scan,
                 exec => $exec,
-                type => $type
               };
         }
     }

@@ -97,6 +97,7 @@ bool scan_ER(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_N, NO_DCOLON);
 
     scan_texts(cmd, 1, ESC);

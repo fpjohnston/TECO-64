@@ -574,7 +574,12 @@ void reset_x(void)
     x->oper.last = false;
     x->oper.nesting = 0;
 
+#if     !defined(NOSTRICT)
+
     f.e0.digit = false;
+
+#endif
+
 }
 
 

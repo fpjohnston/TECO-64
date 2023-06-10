@@ -464,6 +464,7 @@ bool scan_EJ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
 
     int n = 0;                          // 0EJ is default command
@@ -494,6 +495,7 @@ bool scan_flag1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (cmd->n_set)                     // n argument?
@@ -566,6 +568,7 @@ bool scan_flag2(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (cmd->n_set)                     // n argument?

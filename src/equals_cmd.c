@@ -209,8 +209,6 @@ bool scan_equals(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
-    assert(cmd != NULL);
-
     // If extended operators are not enabled, or we're not inside any
     // parentheses, then the equals sign is not part of an operator, but
     // is instead a command.
@@ -240,6 +238,7 @@ bool scan_equals(struct cmd *cmd)
 
     int c;
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_DCOLON);
 
     if ((c = peek_cbuf()) == '=')

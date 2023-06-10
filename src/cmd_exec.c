@@ -84,6 +84,8 @@ const struct cmd null_cmd =
     .colon  = false,
     .dcolon = false,
     .atsign = false,
+    .keep   = false,
+    .final  = false,
     .text1  = { .data = NULL, .len = 0 },
     .text2  = { .data = NULL, .len = 0 },
 };
@@ -93,9 +95,9 @@ uint_t cmd_line;                    ///< Line number in current command/macro
 
 // Local functions
 
-static INLINE bool scan_cmd(struct cmd *cmd);
+static INLINE void scan_cmd(struct cmd *cmd);
 
-static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int type);
+static INLINE const struct cmd_table *scan_special(struct cmd *cmd);
 
 static void scan_text(int delim, tstring *text);
 
@@ -122,7 +124,7 @@ void confirm_cmd(struct cmd *cmd, ...)
     int c = va_arg(args, int);
     bool mn_args = (cmd->m_set && cmd->n_set);
 
-    while (c != NO_EXIT)
+    while (c != END_LIST)
     {
         switch (c)
         {
@@ -137,7 +139,7 @@ void confirm_cmd(struct cmd *cmd, ...)
             default:                                                        break;
         }
 
-        c = va_arg(args, int);
+        c = va_arg(args, int);          // Get next item
     }
 
     va_end(args);
@@ -186,7 +188,7 @@ void exec_cmd(struct cmd *cmd)
     {
         cmd->c1 = (char)c;
 
-        (void)scan_cmd(cmd);
+        scan_cmd(cmd);
     }
 
     if (f.e0.sigint)                    // Did we stop because of a CTRL/C?
@@ -274,91 +276,113 @@ bool finish_cmd(struct cmd *cmd, int c)
 
     cmd->c1 = (char)c;
 
-    return scan_cmd(cmd);
+    scan_cmd(cmd);
+
+    return cmd->final;
 }
 
 
 ///
 ///  @brief   Scan command.
 ///
-///  Returns: true if we processed the end of the command, else false if we
-///           need to continue scanning.
+///  Returns: Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static INLINE bool scan_cmd(struct cmd *cmd)
+static INLINE void scan_cmd(struct cmd *cmd)
 {
+    static const struct cmd_table badcmd = { .scan=NULL, .exec=exec_bad };
+
     assert(cmd != NULL);
 
-    int type;
     int c = cmd->c1;
     const struct cmd_table *entry;
-    const struct cmd_table badcmd = { .scan=NULL, .exec=NULL, .type=c_none };
 
     if ((uint)c < countof(cmd_table))
     {
         entry = &cmd_table[c];
-        type = entry->type;
     }
     else
     {
         entry = &badcmd;
-        type = c_none;
     }
 
-    if (entry->exec == NULL)
+    //  We should have either a scan function, or an exec function, or both. If
+    //  we have a scan function, then call it, and return to the caller if we're
+    //  done with the current command. Otherwise, check for 2-character commands
+    //  (^, E, and F), and repeat the check for a scan function. If we haven't
+    //  yet returned, then we must have a terminal character for the command, so
+    //  process it.
+
+    if (entry->scan != NULL)
     {
-        // No exec function. See if we have a scan function.
-
-        if (entry->scan != NULL)
+        if ((*entry->scan)(cmd))
         {
-            (void)(*entry->scan)(cmd);
-
-            return false;
+            return;
         }
-        else if ((entry = scan_special(cmd, type)) == NULL)
+        else if (entry->exec == NULL)
         {
-            return false;
+            if ((entry = scan_special(cmd)) == NULL)
+            {
+                return;
+            }
+            else if (entry->scan != NULL)
+            {
+                if ((*entry->scan)(cmd))
+                {
+                    return;
+                }
+            }
         }
     }
 
-    scan_x(cmd);
-
-    if (entry->scan != NULL && (*entry->scan)(cmd))
+    if (f.e0.skip)                      // All done if skipping command
     {
-        return false;
+        cmd->final = true;              // Say that we saw last chr. in command
+
+        return;
     }
-    else if (!f.e0.skip)
+
+    assert(entry->exec != NULL);
+
+    (*entry->exec)(cmd);                // Execute command
+
+#if     !defined(NOSTRICT)
+
+    f.e0.digit = false;
+
+#endif
+
+    //  We normally reset the entire command block after every executed command,
+    //  but some commands do not use their numeric arguments and just pass them
+    //  to the next command:
+    //
+    //      [q - Push Q-register.
+    //      ]q - Pop Q-register.
+    //      !  - Tag. This allows comments to be used between commands, one of
+    //           which generates numeric arguments, and the other which uses
+    //           them.
+    //
+    //  Also, M commands pass through any numeric arguments to the Q-register
+    //  being executed, and a double ESCape within a macro can return numeric
+    //  arguments which will then be passed to the next command following the M.
+
+    if (cmd->keep && cmd->n_set)        // Are we retaining m & n arguments?
     {
-        (*entry->exec)(cmd);            // Execute command
+        store_val(cmd->n_arg);          // Put n back on expression stack
 
-        f.e0.digit = false;
+        bool m_set = cmd->m_set;        // Save m argument (if any)
+        int_t m_arg = cmd->m_arg;
 
-        // We normally reset the command block after every command we execute.
-        // However, the '[', ']', and '!' commands through m and n arguments
-        // unused. Also, a double ESCape in a macro passes through m and n
-        // arguments, and 'M' commands allow m and n arguments to be returned
-        // to the caller.
+        *cmd = null_cmd;
 
-        if (entry->type == c_M && cmd->n_set)
-        {
-            store_val(cmd->n_arg);
-
-            bool m_set = cmd->m_set;
-            int_t m_arg = cmd->m_arg;
-
-            *cmd = null_cmd;
-
-            cmd->m_set = m_set;
-            cmd->m_arg = m_arg;
-        }
-        else
-        {
-            *cmd = null_cmd;
-        }
+        cmd->m_set = m_set;             // Restore any m argument
+        cmd->m_arg = m_arg;
     }
-
-    return true;
+    else
+    {
+        *cmd = null_cmd;
+    }
 }
 
 
@@ -370,30 +394,20 @@ static INLINE bool scan_cmd(struct cmd *cmd)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
+static INLINE const struct cmd_table *scan_special(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
     int c;
 
-    switch (attr)
+    switch (cmd->c1)
     {
-        case c_WHITE:
-            return NULL;
-
-        case c_LF:
-            if (cmd_line != 0)
-            {
-                ++cmd_line;
-            }
-
-            return NULL;
-
-        case c_UP:                      // ^x and ^^x commands
+        case '^':                       // ^x and ^^x commands
             c = require_cbuf();
 
             if (c == '^')
             {
+                scan_x(cmd);
                 confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
                 c = require_cbuf();
@@ -430,7 +444,8 @@ static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
 
             return entry;
 
-        case c_E:                       // E commands
+        case 'E':                       // E commands
+        case 'e':                       // E commands
             c = require_cbuf();
 
             if ((uint)c > countof(e_table) || (e_table[c].scan == NULL &&
@@ -443,7 +458,8 @@ static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
 
             return &e_table[c];
 
-        case c_F:                       // F commands
+        case 'F':                       // F commands
+        case 'f':                       // f commands
             c = require_cbuf();
 
             if ((uint)c > countof(f_table) || (f_table[c].scan == NULL &&
@@ -456,16 +472,8 @@ static INLINE const struct cmd_table *scan_special(struct cmd *cmd, int attr)
 
             return &f_table[c];
 
-        case c_none:
         default:
-            if (!f.e0.skip)
-            {
-                throw(E_ILL, cmd->c1); // Illegal command
-            }
-            else
-            {
-                return NULL;
-            }
+            return NULL;
     }
 }
 
@@ -694,11 +702,18 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
 
     while ((c = fetch_cbuf()) != EOF)
     {
-        cmd->c1 = (char)c;
+
+#if     !defined(NOSTRICT)
 
         f.e0.digit = false;
 
-        if (scan_cmd(cmd))
+#endif
+
+        cmd->c1 = (char)c;
+
+        scan_cmd(cmd);
+
+        if (cmd->final)
         {
             if (strchr(skip, c) != NULL) // Is this the command we want?
             {

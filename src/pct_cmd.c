@@ -73,6 +73,7 @@ bool scan_percent(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)1);           // % => 1%

@@ -173,6 +173,8 @@ struct cmd
     bool colon;                     ///< : found
     bool dcolon;                    ///< :: found
     bool atsign;                    ///< @ found
+    bool keep;                      ///< Retain m and n arguments
+    bool final;                     ///< Final character scanned
     tstring text1;                  ///< 1st text string
     tstring text2;                  ///< 2nd text string
 };

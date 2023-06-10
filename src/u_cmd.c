@@ -73,6 +73,7 @@ bool scan_U(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (!scan_qreg(cmd))

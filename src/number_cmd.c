@@ -55,6 +55,7 @@ void exec_back(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (cmd->n_set)                     // n\`?
@@ -207,6 +208,8 @@ bool scan_number(struct cmd *cmd)
     //  We will allow this since classic TECO does, but if numbers should be
     //  in "canonical" form, we will issue an error.
 
+#if     !defined(NOSTRICT)
+
     if (f.e0.digit)
     {
         if (f.e2.number)
@@ -222,6 +225,8 @@ bool scan_number(struct cmd *cmd)
             n = 0;                      //  just do the best we can
         }
     }
+
+#endif
 
     n += c - '0';                       // Convert ASCII digit to binary and save
 
@@ -250,7 +255,12 @@ bool scan_number(struct cmd *cmd)
     }
 
     store_val(n);
+
+#if     !defined(NOSTRICT)
+
     f.e0.digit = true;                  // Set digit flag (AFTER calling store_val)
+
+#endif
 
     return true;
 }

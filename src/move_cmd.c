@@ -291,6 +291,7 @@ bool scan_C(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)1);           // C => 1C, R => 1R, L => 1L
@@ -310,6 +311,7 @@ bool scan_J(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)0);           // J => 0J

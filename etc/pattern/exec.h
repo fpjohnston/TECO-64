@@ -32,7 +32,7 @@
 
 enum
 {
-    NO_EXIT,                        ///< End of list
+    END_LIST,                       ///< End of list
     NO_ATSIGN,                      ///< Don't allow atsign
     NO_COLON,                       ///< Don't allow colon
     NO_DCOLON,                      ///< Don't allow double colon
@@ -52,7 +52,7 @@ enum
 /// @def    confirm
 /// @brief  Tests restrictions on command syntax.
 
-#define confirm(cmd, ...) if (f.e0.exec) confirm_cmd(cmd, ## __VA_ARGS__, NO_EXIT)
+#define confirm(cmd, ...) if (f.e0.exec) confirm_cmd(cmd, ## __VA_ARGS__, END_LIST)
 
 void confirm_cmd(struct cmd *cmd, ...);
 

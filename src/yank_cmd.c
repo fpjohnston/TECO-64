@@ -157,6 +157,7 @@ bool scan_Y(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_N, NO_DCOLON, NO_ATSIGN);
 
     return false;

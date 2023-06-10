@@ -32,7 +32,7 @@
 
 enum
 {
-    NO_EXIT,                        ///< End of list
+    END_LIST,                       ///< End of list
     NO_ATSIGN,                      ///< Don't allow atsign
     NO_COLON,                       ///< Don't allow colon
     NO_DCOLON,                      ///< Don't allow double colon
@@ -52,7 +52,7 @@ enum
 /// @def    confirm
 /// @brief  Tests restrictions on command syntax.
 
-#define confirm(cmd, ...) if (f.e0.exec) confirm_cmd(cmd, ## __VA_ARGS__, NO_EXIT)
+#define confirm(cmd, ...) if (f.e0.exec) confirm_cmd(cmd, ## __VA_ARGS__, END_LIST)
 
 void confirm_cmd(struct cmd *cmd, ...);
 
@@ -203,6 +203,8 @@ extern bool scan_dot(struct cmd *cmd);
 
 extern bool scan_equals(struct cmd *cmd);
 
+extern bool scan_false(struct cmd *cmd);
+
 extern bool scan_flag1(struct cmd *cmd);
 
 extern bool scan_flag2(struct cmd *cmd);
@@ -236,6 +238,8 @@ extern bool scan_sub(struct cmd *cmd);
 extern bool scan_tag(struct cmd *cmd);
 
 extern bool scan_under(struct cmd *cmd);
+
+extern bool scan_white(struct cmd *cmd);
 
 extern bool scan_xor(struct cmd *cmd);
 
@@ -388,6 +392,8 @@ extern void exec_Y(struct cmd *cmd);
 
 extern void exec_back(struct cmd *cmd);
 
+extern void exec_bad(struct cmd *cmd);
+
 extern void exec_ctrl_A(struct cmd *cmd);
 
 extern void exec_ctrl_C(struct cmd *cmd);
@@ -427,8 +433,6 @@ extern void exec_greater(struct cmd *cmd);
 extern void exec_if(struct cmd *cmd);
 
 extern void exec_less(struct cmd *cmd);
-
-extern void exec_nop(struct cmd *cmd);
 
 extern void exec_percent(struct cmd *cmd);
 

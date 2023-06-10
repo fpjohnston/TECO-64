@@ -96,6 +96,7 @@ bool scan_EQ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_N, NO_DCOLON);
 
     if (!scan_qreg(cmd))

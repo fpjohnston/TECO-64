@@ -57,7 +57,13 @@ union e0_flag
         uint i_redir : 1;       ///< stdin has been redirected
         uint o_redir : 1;       ///< stdout has been redirected
         uint ctrl_t  : 1;       ///< Reading input for CTRL/T command
+
+#if     !defined(NOSTRICT)
+
         uint digit   : 1;       ///< Literal digit scanned
+
+#endif
+
     };
 };
 

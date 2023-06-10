@@ -62,9 +62,11 @@ static void validate_tag(tstring *tag);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void exec_tag(struct cmd *unused)
+void exec_tag(struct cmd *cmd)
 {
-    ;
+    assert(cmd != NULL);
+
+    cmd->keep = true;                   // Say we need to retain m & n args.
 }
 
 
@@ -313,6 +315,7 @@ bool scan_tag(struct cmd *cmd)
 
     // Here if we have either a GOTO label or a comment.
 
+    scan_x(cmd);
     confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     // If feature enabled, !! starts a comment that ends with LF
@@ -352,6 +355,7 @@ bool scan_O(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_NEG_N, NO_M_ONLY, NO_COLON, NO_DCOLON);
 
     scan_texts(cmd, 1, ESC);

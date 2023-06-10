@@ -75,6 +75,7 @@ void exec_ctrl_R(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (cmd->n_set)                     // n^R?

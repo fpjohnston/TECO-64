@@ -60,6 +60,8 @@ void exec_popQ(struct cmd *cmd)
     {
         store_val(SUCCESS);
     }
+
+    cmd->keep = true;                   // Say we need to retain m & n args.
 }
 
 
@@ -78,6 +80,8 @@ void exec_pushQ(struct cmd *cmd)
     {
         throw(E_PDO);                   // Push-down list is full
     }
+
+    cmd->keep = true;                   // Say we need to retain m & n args.
 }
 
 
@@ -92,6 +96,7 @@ bool scan_popQ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
 
     if (!scan_qreg(cmd))
@@ -114,6 +119,7 @@ bool scan_pushQ(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (!scan_qreg(cmd))

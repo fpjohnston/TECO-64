@@ -33,6 +33,7 @@
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 #include "file.h"
 #include "page.h"
@@ -85,6 +86,7 @@ void exec_EC(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (!cmd->n_set)

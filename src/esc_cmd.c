@@ -84,6 +84,7 @@ void exec_escape(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     // If we're ending this command string, stop processing any more commands.
@@ -95,6 +96,8 @@ void exec_escape(struct cmd *cmd)
 
         if (check_macro())
         {
+            cmd->keep = true;           // Say we need to retain m & n args.
+
             return;
         }
     }
@@ -108,16 +111,4 @@ void exec_escape(struct cmd *cmd)
     }
 
     reset_x();                          // Reset expression stack
-}
-
-
-///
-///  @brief    Execute no-op command.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-void exec_nop(struct cmd *unused)
-{
 }

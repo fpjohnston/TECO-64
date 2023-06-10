@@ -39,6 +39,19 @@
 
 
 ///
+///  @brief    Scan invalid command.
+///
+///  @returns  true (not a full command).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+void exec_bad(struct cmd *unused)
+{
+    throw(E_ILL);                       // Invalid command
+}
+
+
+///
 ///  @brief    Scan at sign command.
 ///
 ///  @returns  true if command is an operand or operator, else false.
@@ -143,10 +156,24 @@ bool scan_F1(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON);
 
     scan_texts(cmd, 2, ESC);
 
+    return false;
+}
+
+
+///
+///  @brief    Dummy scan routine for ^, E, and F commands.
+///
+///  @returns  false (command is not an operand or operator).
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_false(struct cmd *unused)
+{
     return false;
 }
 
@@ -162,11 +189,32 @@ bool scan_FM(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_N, NO_DCOLON);
 
     scan_texts(cmd, 2, ESC);
 
     return false;
+}
+
+
+///
+///  @brief    Execute whitespace characters.
+///
+///  @returns  true: command is a (quasi) operand or operator.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+bool scan_white(struct cmd *cmd)
+{
+    assert(cmd != NULL);
+
+    if (cmd->c1 == LF && cmd_line != 0)
+    {
+        ++cmd_line;
+    }
+
+    return true;
 }
 
 

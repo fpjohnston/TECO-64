@@ -31,6 +31,7 @@
 #include "ascii.h"
 #include "editbuf.h"
 #include "eflags.h"
+#include "estack.h"
 #include "exec.h"
 #include "search.h"
 
@@ -83,6 +84,7 @@ bool scan_FK(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_NEG_M, NO_DCOLON);
 
     default_n(cmd, (int_t)1);           // FKtext` => 1FKtext`

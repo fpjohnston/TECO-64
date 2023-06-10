@@ -32,6 +32,7 @@
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 #include "search.h"
 
@@ -149,7 +150,11 @@ bool scan_FN(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
+    confirm(cmd, NO_M, NO_DCOLON);
+
     default_n(cmd, (int_t)1);           // FN => 1FN
+
     scan_texts(cmd, 2, ESC);
 
     return false;
@@ -167,7 +172,11 @@ bool scan_N(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
+    confirm(cmd, NO_M, NO_DCOLON);
+
     default_n(cmd, (int_t)1);           // N => 1N
+
     scan_texts(cmd, 1, ESC);
 
     return false;

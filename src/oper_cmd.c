@@ -97,7 +97,13 @@ bool scan_comma(struct cmd *cmd)
         // the form m,n).
 
         cmd->m_set = true;
+
+#if     !defined(NOSTRICT)
+
         f.e0.digit = false;
+
+#endif
+
     }
     else
     {

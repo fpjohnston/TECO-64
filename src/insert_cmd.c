@@ -32,6 +32,7 @@
 #include "editbuf.h"
 #include "eflags.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 
 
@@ -136,6 +137,7 @@ bool scan_ctrl_I(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON);
 
     scan_texts(cmd, 1, ESC);
@@ -155,6 +157,7 @@ bool scan_I(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_COLON, NO_DCOLON);
 
     if (!cmd->n_set || cmd->atsign || !f.e1.insert)

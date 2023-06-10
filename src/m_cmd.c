@@ -145,7 +145,12 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
     cbuf->pos = 0;
     ctrl.depth = 0;
     ctrl.level = 0;
+
+#if     !defined(NOSTRICT)
+
     f.e0.digit = false;
+
+#endif
 
     struct cmd newcmd = null_cmd;       // Initialize new command
 
@@ -174,6 +179,7 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
             cmd->m_set = newcmd.m_set;
             cmd->m_arg = newcmd.m_arg;
             cmd->n_set = true;
+            cmd->keep = true;           // Say we need to retain m & n args.
         }
         else
         {
@@ -219,6 +225,7 @@ bool scan_M(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
 
     if (!scan_qreg(cmd))

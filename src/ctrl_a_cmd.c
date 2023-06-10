@@ -32,6 +32,7 @@
 #include "ascii.h"
 #include "eflags.h"
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 #include "term.h"
 
@@ -95,6 +96,7 @@ bool scan_ctrl_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_N, NO_DCOLON);
 
     scan_texts(cmd, 1, CTRL_A);

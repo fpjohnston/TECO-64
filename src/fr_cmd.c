@@ -32,6 +32,7 @@
 #include "editbuf.h"
 #include "eflags.h"                 // Needed for confirm()
 #include "errors.h"
+#include "estack.h"
 #include "exec.h"
 
 
@@ -93,6 +94,7 @@ bool scan_FR(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_NEG_M, NO_DCOLON);
 
     default_n(cmd, -(int_t)last_len);   // FRtext` => ^SFRtext`

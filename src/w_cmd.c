@@ -247,6 +247,7 @@ bool scan_W(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
 
     if (!cmd->colon)

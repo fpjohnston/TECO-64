@@ -124,6 +124,9 @@ bool scan_A(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
+    confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
+
     if (!cmd->n_set || cmd->colon)      // A, :A, or n:A command
     {
         return false;
@@ -131,7 +134,7 @@ bool scan_A(struct cmd *cmd)
 
     int_t n = read_edit(cmd->n_arg);
 
-    store_val(n);               // Note: n may be EOF (-1)
+    store_val(n);                       // Note: n may be EOF (-1)
 
     return true;
 }

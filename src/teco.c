@@ -260,7 +260,12 @@ int main(int argc, const char * const argv[])
         f.e0.exec = false;              // Not executing commands
         f.e0.skip = false;              // Not skipping commands
         f.e0.ctrl_t = false;            // No CTRL/T active
+
+#if     !defined(NOSTRICT)
+
         f.e0.digit = false;             // No digit seen yet
+
+#endif
 
         f.et.abort = false;             // Don't abort on error
 

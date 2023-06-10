@@ -185,6 +185,7 @@ bool scan_EM(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (!scan_qreg(cmd))

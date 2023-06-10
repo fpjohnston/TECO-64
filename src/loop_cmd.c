@@ -283,6 +283,7 @@ bool scan_greater(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     // ">" is a relational operator only if it's in parentheses; otherwise,
@@ -333,6 +334,7 @@ bool scan_less(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     // "<" is a relational operator only if it's in parentheses; otherwise,
@@ -390,6 +392,7 @@ bool scan_semi(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_DCOLON, NO_ATSIGN);
 
     return false;

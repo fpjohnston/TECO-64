@@ -220,7 +220,10 @@ bool scan_FS(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
+
     default_n(cmd, (int_t)1);           // FS => 1FS
+
     scan_texts(cmd, 2, ESC);
 
     return false;
@@ -238,7 +241,10 @@ bool scan_S(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
+
     default_n(cmd, (int_t)1);           // S => 1S
+
     scan_texts(cmd, 1, ESC);
 
     return false;

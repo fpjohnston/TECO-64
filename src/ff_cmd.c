@@ -162,6 +162,7 @@ bool scan_FF(struct cmd *cmd)
 {
     assert(cmd != NULL);
 
+    scan_x(cmd);
     confirm(cmd, NO_M, NO_M_ONLY, NO_DCOLON);
 
     scan_texts(cmd, 1, ESC);
