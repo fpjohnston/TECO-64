@@ -135,8 +135,6 @@ static void parse_args(const char *args);
 
 static void parse_options(int argc, const char *const argv[]);
 
-static void print_cmd(const char *cmd);
-
 static void store_cmd(const char *format, ...);
 
 static void store_EB(const char *file);
@@ -145,7 +143,7 @@ static void store_ER(const char *file);
 
 static void store_EW(const char *file);
 
-static uint verify_size(int nbytes);
+static void verify_size(uint size);
 
 
 ///
@@ -308,7 +306,12 @@ void init_options(
 
         char initbuf[KB];
         int retval = snprintf(initbuf, sizeof(initbuf), "EI%s\e ", teco_init);
-        uint size = verify_size(retval);
+
+        assert(retval >= 0);
+
+        uint size = (uint)retval;
+
+        verify_size(size);
 
         memmove(cbuf->data + size, cbuf->data, (size_t)cbuf->len);
         memcpy(cbuf->data, initbuf, (size_t)size);
@@ -389,10 +392,30 @@ void init_options(
         store_cmd("\e\e");              // Terminate command w/ double ESCape
     }
 
-    print_cmd(cbuf->data);
-
     if (options.practice)
     {
+        printf("Commands: ");
+
+        for (uint i = 0; i < cbuf->len; ++i)
+        {
+            int c = cbuf->data[i];
+
+            if (c == DEL || !isascii(c))
+            {
+                printf("[%02x]", c);
+            }
+            else if (iscntrl(c))
+            {
+                printf("^%c", c + 'A' - 1);
+            }
+            else
+            {
+                fputc(c, stdout);
+            }
+        }
+
+        fputc('\n', stdout);
+
         exit(EXIT_SUCCESS);
     }
 }
@@ -950,75 +973,6 @@ static void parse_options(
 
 
 ///
-///  @brief    Print command in queue if --print option seen.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void print_cmd(const char *cmd)
-{
-    assert(cmd != NULL);
-
-    if (!options.practice)
-    {
-        return;
-    }
-
-    int c;
-
-    printf("Commands: ");
-
-    while ((c = *cmd++) != NUL)
-    {
-        switch (c)
-        {
-            case BS:
-                fputs("\\b", stdout);
-                break;
-
-            case HT:
-                fputs("\\t", stdout);
-                break;
-
-            case LF:
-                fputs("\\n", stdout);
-                break;
-
-            case VT:
-                fputs("\\v", stdout);
-                break;
-
-            case FF:
-                fputs("\\f", stdout);
-                break;
-
-            case CR:
-                fputs("\\r", stdout);
-                break;
-
-            case ESC:
-                fputs("\\e", stdout);
-                break;
-
-            default:
-                if (iscntrl(c))
-                {
-                    printf("\\%d", c);
-                }
-                else
-                {
-                    fputc(c, stdout);
-                }
-                break;
-        }
-    }
-
-    fputc('\n', stdout);
-}
-
-
-///
 ///  @brief    Save next command in command list.
 ///
 ///  @returns  Nothing.
@@ -1031,14 +985,18 @@ static void store_cmd(const char *format, ...)
 
     va_start(args, format);
 
-    size_t size = cbuf->size - cbuf->len;
-    int retval = vsnprintf(cbuf->data + cbuf->len, size, format, args);
+    uint size = cbuf->size - cbuf->len;
+    int retval = vsnprintf(cbuf->data + cbuf->len, (size_t)size, format, args);
 
     va_end(args);
 
-    cbuf->len += verify_size(retval);
+    assert(retval >= 0);
 
-    cbuf->data[cbuf->len] = NUL;
+    size = (uint)retval;
+
+    verify_size(size);                  // Was there room for the string?
+
+    cbuf->len += size;
 }
 
 
@@ -1096,22 +1054,16 @@ static void store_EW(const char *file)
 ///  @brief    Verify that there's room in the option buffer for the next
 ///            command.
 ///
-///  @returns  No. of bytes to store.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static uint verify_size(int retval)
+static void verify_size(uint size)
 {
-    assert(retval > 0);
-
-    uint size = (uint)retval;
-
-    if (cbuf->len + size >= cbuf->size)
+    if (cbuf->len + size > cbuf->size)
     {
         printf("No memory for command-line options\n");
 
         exit(EXIT_FAILURE);
     }
-
-    return size;
 }

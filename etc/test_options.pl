@@ -260,7 +260,7 @@ Readonly my @OPTIONS => (
     },
     {
         name  => q{--version},
-        tests => [ { cmd => '--version', result => 'version X?200' }, ],
+        tests => [ { cmd => '--version', result => 'version 200.' } ],
     },
     {
         name  => q{-V},
@@ -303,7 +303,7 @@ Readonly my @OPTIONS => (
         tests => [
             {
                 cmd    => '--display=z.tmp --execute=y.tmp --init=x.tmp',
-                result => 'EIx.tmp.e EIy.tmp.e EIz.tmp'
+                result => 'EIx.tmp^[ EIy.tmp^[ EIz.tmp^[ ^[^['
             },
             { cmd => '?x.tmp y.tmp.tmp z.tmp', result => 'Too many file' },
         ],
@@ -410,7 +410,7 @@ sub prove_test
 
     # Here to see whether the command returned the expected results
 
-    if ( $actual =~ /$expected/ms )
+    if ( index($actual, $expected) != -1 )
     {
         ++$okay;
 
