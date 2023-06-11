@@ -28,7 +28,7 @@
 
 #include "teco.h"
 
-#if     defined(NOTRACE)
+#if     defined(NTRACE)
 
 #include "errors.h"
 
@@ -51,7 +51,7 @@
 void exec_trace(struct cmd *cmd)
 {
 
-#if     defined(NOTRACE)
+#if     defined(NTRACE)
 
     throw(E_NYI);                       // Feature not enabled
 

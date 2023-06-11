@@ -146,7 +146,7 @@ void exec_macro(tbuffer *macro, struct cmd *cmd)
     ctrl.depth = 0;
     ctrl.level = 0;
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
     f.e0.digit = false;
 

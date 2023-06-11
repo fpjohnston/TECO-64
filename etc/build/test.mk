@@ -13,7 +13,7 @@ debug:
 
 .PHONY: fast
 fast:
-	@$(MAKE) inline=1 ndebug=1 nostrict=1 notrace=1 lto=1 teco
+	@$(MAKE) inline=1 ndebug=1 nstrict=1 ntrace=1 lto=1 teco
 
 #
 #  Define profile target (for use with gprof).
@@ -21,7 +21,7 @@ fast:
 
 .PHONY: profile
 profile:
-	@$(MAKE) gprof=1 inline=1 ndebug=1 nostrict=1 notrace=1 teco
+	@$(MAKE) gprof=1 inline=1 ndebug=1 nstrict=1 ntrace=1 teco
 
 #
 #  Define targets that verify Perl scripts.

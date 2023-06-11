@@ -574,7 +574,7 @@ void reset_x(void)
     x->oper.last = false;
     x->oper.nesting = 0;
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
     f.e0.digit = false;
 
@@ -596,7 +596,7 @@ bool scan_left(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
     f.e0.digit = false;                 // Last command wasn't a digit
 
@@ -635,7 +635,7 @@ bool scan_right(struct cmd *cmd)
 
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
     f.e0.digit = false;                 // Last command wasn't a digit
 
@@ -757,7 +757,7 @@ void store_oper(enum x_oper o1)
 {
     enum x_oper o2;
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
     f.e0.digit = false;                 // Last command wasn't a digit
 
@@ -819,7 +819,7 @@ void store_sub(void)
 void store_val(int_t value)
 {
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
     f.e0.digit = false;                 // Last command wasn't a digit
 

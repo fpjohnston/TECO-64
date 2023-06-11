@@ -83,7 +83,7 @@ static inline int fetch_cbuf(void)
 
     int c = cbuf->data[cbuf->pos++];
 
-#if     !defined(NOTRACE)
+#if     !defined(NTRACE)
 
     if (f.trace)
     {
@@ -108,7 +108,7 @@ static inline void next_cbuf(void)
     if (cbuf->pos < cbuf->len)
     {
 
-#if     !defined(NOTRACE)
+#if     !defined(NTRACE)
 
         int c = cbuf->data[cbuf->pos++];
 

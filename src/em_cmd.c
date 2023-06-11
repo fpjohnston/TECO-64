@@ -40,7 +40,7 @@
 #include "term.h"
 
 
-#if     defined(NOTRACE)
+#if     defined(NTRACE)
 
 #include "errors.h"
 

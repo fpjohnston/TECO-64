@@ -111,7 +111,7 @@ static void scan_text(int delim, tstring *text);
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
 void confirm_cmd(struct cmd *cmd, ...)
 {
@@ -347,7 +347,7 @@ static INLINE void scan_cmd(struct cmd *cmd)
 
     (*entry->exec)(cmd);                // Execute command
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
     f.e0.digit = false;
 
@@ -543,7 +543,7 @@ static void scan_text(int delim, tstring *text)
         throw(E_BALK);                  // Unexpected end of command or macro
     }
 
-#if     !defined(NOTRACE)
+#if     !defined(NTRACE)
 
     // If tracing, echo remainder of text string, including the closing delimiter.
 
@@ -703,7 +703,7 @@ bool skip_cmd(struct cmd *cmd, const char *skip)
     while ((c = fetch_cbuf()) != EOF)
     {
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
         f.e0.digit = false;
 

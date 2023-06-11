@@ -98,7 +98,7 @@ bool scan_comma(struct cmd *cmd)
 
         cmd->m_set = true;
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
         f.e0.digit = false;
 

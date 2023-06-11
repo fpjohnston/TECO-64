@@ -43,7 +43,7 @@ enum
     NO_NEG_N                        ///< Don't allow negative n
 };
 
-#if     defined(NOSTRICT)       // Disable strict syntax checking
+#if     defined(NSTRICT)        // Disable strict syntax checking
 
 #define confirm(cmd, ...)
 

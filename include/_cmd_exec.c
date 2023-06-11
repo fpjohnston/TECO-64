@@ -55,12 +55,12 @@ struct cmd_table
     scan_func *scan;                ///< Scan function
     exec_func *exec;                ///< Execute function
 
-#if     defined(TECO_TRACE)
+//#if     defined(TRACE)
 
-    const char *scan_name;          ///< Name of scan function
-    const char *exec_name;          ///< Name of execute function
+//    const char *scan_name;          ///< Name of scan function
+//    const char *exec_name;          ///< Name of execute function
 
-#endif
+//#endif
 
 };
 
@@ -71,15 +71,15 @@ struct cmd_table
 /// @def    ENTRY(chr, scan, exec)
 /// @brief  Defines entries in command table.
 
-#if     defined(TECO_TRACE)
+//#if     defined(TRACE)
 
-#define ENTRY(chr, scan, exec) [chr] = { scan, exec, #scan, #exec }
+//#define ENTRY(chr, scan, exec) [chr] = { scan, exec, #scan, #exec }
 
-#else
+//#else
 
 #define ENTRY(chr, scan, exec) [chr] = { scan, exec }
 
-#endif
+//#endif
 
 ///
 ///  @var    cmd_table

@@ -136,16 +136,16 @@ ifdef   ndebug                      # Disable run-time assertions
 
 endif
 
-ifdef   nostrict                    # Disable strict syntax checking
+ifdef   nstrict                     # Disable strict syntax checking
 
-    DEFINES += -D NOSTRICT
-    DOXYGEN +=    NOSTRICT
+    DEFINES += -D NSTRICT
+    DOXYGEN +=    NSTRICT
 
 endif
 
-ifdef   notrace                     # Disable command tracing
+ifdef   ntrace                      # Disable command tracing
 
-    DEFINES += -D NOTRACE
-    DOXYGEN +=    NOTRACE
+    DEFINES += -D NTRACE
+    DOXYGEN +=    NTRACE
 
 endif

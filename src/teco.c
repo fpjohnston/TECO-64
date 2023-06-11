@@ -261,7 +261,7 @@ int main(int argc, const char * const argv[])
         f.e0.skip = false;              // Not skipping commands
         f.e0.ctrl_t = false;            // No CTRL/T active
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
         f.e0.digit = false;             // No digit seen yet
 

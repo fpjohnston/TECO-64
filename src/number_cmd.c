@@ -208,7 +208,7 @@ bool scan_number(struct cmd *cmd)
     //  We will allow this since classic TECO does, but if numbers should be
     //  in "canonical" form, we will issue an error.
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
     if (f.e0.digit)
     {
@@ -256,7 +256,7 @@ bool scan_number(struct cmd *cmd)
 
     store_val(n);
 
-#if     !defined(NOSTRICT)
+#if     !defined(NSTRICT)
 
     f.e0.digit = true;                  // Set digit flag (AFTER calling store_val)
 
