@@ -45,7 +45,7 @@ Readonly my @OPTIONS => (
         tests => [
             { cmd => '-Ex.tmp -A2,3',         result => ' EIx.tmp' },
             { cmd => '-A2,3 --execute=x.tmp', result => '2,3EIx.tmp' },
-            { cmd => '-A',                    result => 'Argument required' },
+            { cmd => '-A',                    result => 'Missing argument' },
             { cmd => '-Ax',                   result => 'Invalid value' },
             { cmd => '-A2,x',                 result => 'Invalid value' },
             { cmd => '-A2,3x',                result => 'Invalid value' },
@@ -59,21 +59,21 @@ Readonly my @OPTIONS => (
                 cmd    => '--arguments=2,3 --execute=x.tmp',
                 result => '2,3EIx.tmp'
             },
-            { cmd => '--arguments', result => 'Argument required' },
+            { cmd => '--arguments', result => 'Missing argument' },
         ],
     },
     {
         name  => q{-C},
         tests => [
             { cmd => '-C x.tmp', result => 'Editing file' },
-            { cmd => '-C y.tmp', result => 'Writing file' },
+            { cmd => '-C y.tmp', result => 'Creating new file' },
         ],
     },
     {
         name  => q{--create},
         tests => [
             { cmd => '--create x.tmp', result => 'Editing file' },
-            { cmd => '--create y.tmp', result => 'Writing file' },
+            { cmd => '--create y.tmp', result => 'Creating new file' },
         ],
     },
     {
@@ -84,7 +84,7 @@ Readonly my @OPTIONS => (
         name  => q{--nocreate},
         tests => [
             { cmd => '--nocreate x.tmp', result => 'Editing file' },
-            { cmd => '--nocreate=x.tmp', result => 'Unknown option' },
+            { cmd => '--nocreate=x.tmp', result => 'No arguments allowed' },
         ],
     },
     {
@@ -99,26 +99,26 @@ Readonly my @OPTIONS => (
     },
     {
         name  => q{-d},
-        tests => [ { cmd => '-d -X', result => 'EX' }, ],
+        tests => [ { cmd => '-d', result => '!begin! !end!' }, ],
     },
     {
         name  => q{--nodisplay},
-        tests => [ { cmd => '--nodisplay -X', result => 'EX' }, ],
+        tests => [ { cmd => '--nodisplay -X', result => '!begin! !end!' }, ],
         tests =>
-          [ { cmd => '--nodisplay=x.tmp', result => 'Unknown option' }, ],
+          [ { cmd => '--nodisplay=x.tmp', result => 'No arguments allowed' }, ],
     },
     {
         name  => q{-E},
         tests => [
             { cmd => '-Ex.tmp', result => 'EIx.tmp' },
-            { cmd => '-E',      result => 'Argument required' },
+            { cmd => '-E',      result => 'Missing argument' },
         ],
     },
     {
         name  => q{--execute},
         tests => [
             { cmd => '--execute=x.tmp', result => 'EIx.tmp' },
-            { cmd => '--execute',       result => 'Argument required' },
+            { cmd => '--execute',       result => 'Missing argument' },
         ],
     },
     {
@@ -149,61 +149,78 @@ Readonly my @OPTIONS => (
         name  => q{-I},
         tests => [
             { cmd => '-Ix.tmp', result => 'EIx.tmp' },
-            { cmd => '-I',      result => 'Argument required' },
+            { cmd => '-I',      result => 'Missing argument' },
         ],
     },
     {
         name  => q{--initialize},
         tests => [
             { cmd => '--initialize=x.tmp', result => 'EIx.tmp' },
-            { cmd => '--initialize',       result => 'Argument required' },
+            { cmd => '--initialize',       result => 'Missing argument' },
         ],
     },
     {
         name  => q{-i},
-        tests => [ { cmd => '-i -X', result => 'EX' }, ],
+        tests => [ { cmd => '-i', result => '!begin! !end!' }, ],
     },
     {
         name  => q{--noinitialize},
         tests => [
-            { cmd => '--noinitialize -X', result => 'EX' },
-            { cmd => '--noinitialize=1',  result => 'Unknown option' },
+            { cmd => '--noinitialize',   result => '!begin! !end!' },
+            { cmd => '--noinitialize=1', result => 'No arguments allowed' },
         ],
     },
     {
         name  => q{-L},
         tests => [
             { cmd => '-Lx.tmp', result => 'ELx.tmp' },
-            { cmd => '-L',      result => 'Argument required' },
+            { cmd => '-L',      result => 'Missing argument' },
         ],
     },
     {
         name  => q{--log},
         tests => [
             { cmd => '--log=x.tmp', result => 'ELx.tmp' },
-            { cmd => '--log',       result => 'Argument required' },
+            { cmd => '--log',       result => 'Missing argument' },
         ],
     },
     {
         name  => q{-m},
-        tests => [ { cmd => '-m -X', result => 'EX' }, ],
+        tests => [ { cmd => '-m', result => '!begin! !end!' }, ],
+    },
+    {
+        name  => q{--make},
+        tests => [
+            { cmd => '--make x.tmp',   result => 'EWx.tmp' },
+            { cmd => '--make foo baz', result => 'Too many files' },
+            { cmd => '--make love',    result => 'Not war?' },
+            { cmd => '--make',         result => 'make nothing' },
+        ],
+    },
+    {
+        name  => q{--mung},
+        tests => [
+            { cmd => '--mung x.tmp',   result => 'EIx.tmp' },
+            { cmd => '--make foo baz', result => 'Too many files' },
+            { cmd => '--mung',         result => 'mung nothing' },
+        ],
     },
     {
         name  => q{--nomemory},
         tests => [
-            { cmd => '--nomemory -X',    result => 'EX' },
-            { cmd => '--nomemory=x.tmp', result => 'Unknown option' },
+            { cmd => '--nomemory',       result => '!begin! !end!' },
+            { cmd => '--nomemory=x.tmp', result => 'No arguments allowed' },
         ],
     },
     {
         name  => q{-n},
-        tests => [ { cmd => '-n -X', result => 'EX' }, ],
+        tests => [ { cmd => '-n', result => '!begin! !end!' }, ],
     },
     {
         name  => q{--nodefaults},
         tests => [
-            { cmd => '--nodefaults -X',    result => 'EX' },
-            { cmd => '--nodefaults=x.tmp', result => 'Unknown option' },
+            { cmd => '--nodefaults',       result => '!begin! !end!' },
+            { cmd => '--nodefaults=x.tmp', result => 'No arguments allowed' },
         ],
     },
     {
@@ -231,7 +248,7 @@ Readonly my @OPTIONS => (
         tests => [
             { cmd => '-S5',       result => '5,7:W' },
             { cmd => '-S5 -d -D', result => '-1W 5,7:W' },
-            { cmd => '-S',        result => 'Argument required' },
+            { cmd => '-S',        result => 'Missing argument' },
             { cmd => '-Sx',       result => 'Invalid value' },
             { cmd => '-S2x',      result => 'Invalid value' },
         ],
@@ -241,21 +258,21 @@ Readonly my @OPTIONS => (
         tests => [
             { cmd => '--scroll=5',    result => '5,7:W' },
             { cmd => '--scroll=5 -d', result => '5,7:W' },
-            { cmd => '--scroll',      result => 'Argument required' },
+            { cmd => '--scroll',      result => 'Missing argument' },
         ],
     },
     {
         name  => q{-T},
         tests => [
             { cmd => '-Tx.tmp', result => 'Ix.tmp' },
-            { cmd => '-T',      result => 'Argument required' },
+            { cmd => '-T',      result => 'Missing argument' },
         ],
     },
     {
         name  => q{--text},
         tests => [
             { cmd => '--text=x.tmp', result => 'Ix.tmp' },
-            { cmd => '--text',       result => 'Argument required' },
+            { cmd => '--text',       result => 'Missing argument' },
         ],
     },
     {
@@ -263,40 +280,12 @@ Readonly my @OPTIONS => (
         tests => [ { cmd => '--version', result => 'version 200.' } ],
     },
     {
-        name  => q{-V},
-        tests => [
-            { cmd => '-V',  result => 'Obsolete option' },
-            { cmd => '-Vx', result => 'Obsolete option' },
-        ],
-    },
-    {
-        name  => q{-v},
-        tests => [
-            { cmd => '-v',  result => 'Obsolete option' },
-            { cmd => '-vx', result => 'Obsolete option' },
-        ],
-    },
-    {
-        name  => q{--vtedit},
-        tests => [
-            { cmd => '--vtedit',       result => 'Obsolete option' },
-            { cmd => '--vtedit=x.tmp', result => 'Obsolete option' },
-        ],
-    },
-    {
-        name  => q{--novtedit},
-        tests => [
-            { cmd => '--novtedit',       result => 'Obsolete option' },
-            { cmd => '--novtedit=x.tmp', result => 'Obsolete option' },
-        ],
-    },
-    {
         name  => q{-X},
-        tests => [ { cmd => '-X', result => 'EX' }, ],
+        tests => [ { cmd => '-X', result => '!begin! EX' }, ],
     },
     {
         name  => q{--exit},
-        tests => [ { cmd => '--exit', result => 'EX' }, ],
+        tests => [ { cmd => '--exit', result => '!begin! EX' }, ],
     },
     {
         name  => q{general},
@@ -305,7 +294,11 @@ Readonly my @OPTIONS => (
                 cmd    => '--display=z.tmp --execute=y.tmp --init=x.tmp',
                 result => 'EIx.tmp^[ EIy.tmp^[ EIz.tmp^[ ^[^['
             },
-            { cmd => '?x.tmp y.tmp.tmp z.tmp', result => 'Too many file' },
+            { cmd => 'x.tmp y.tmp z.tmp', result => 'Too many files' },
+            { cmd => 'x.tmp x.tmp',       result => 'same file' },
+            { cmd => 'y.tmp',             result => 'Can\'t find file' },
+            { cmd => '-z',                result => 'Unknown option' },
+            { cmd => '--foo',             result => 'Unknown option' },
         ],
     },
 );
@@ -410,7 +403,7 @@ sub prove_test
 
     # Here to see whether the command returned the expected results
 
-    if ( index($actual, $expected) != -1 )
+    if ( index( $actual, $expected ) + 1 != 0 )
     {
         ++$okay;
 

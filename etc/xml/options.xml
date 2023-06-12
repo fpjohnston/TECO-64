@@ -33,6 +33,10 @@
             <default/>
             <help>Open file for input and output.</help>
         </option>
+        <option>
+            <long_name>make</long_name>
+            <help>Equivalent to TECO MAKE command.</help>
+        </option>
     </section>
     <section title="Indirect command file options">
         <option>
@@ -52,6 +56,10 @@
             <long_name>text</long_name>
             <argument>required</argument>
             <help>Store text 'foo' in edit buffer.</help>
+        </option>
+        <option>
+            <long_name>mung</long_name>
+            <help>Equivalent to TECO MUNG command.</help>
         </option>
     </section>
     <section title="Initialization options">
@@ -116,9 +124,6 @@
         <option>
             <long_name>version</long_name>
             <help>Print version and copyright information.</help>
-        </option>
-        <option type="hidden">
-            <long_name>mung</long_name>
         </option>
         <option type="hidden">
             <short_name>p</short_name>

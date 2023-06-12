@@ -73,12 +73,14 @@ static const char * const help_text[] =
     "  -f, --noformfeed       Disables FF as a page delimiter.",
     "  -R, --read-only        Open file for input only.",
     "  -r, --noread-only      Open file for input and output.",
+    "  --make                 Equivalent to TECO MAKE command.",
     "",
     "Indirect command file options:",
     "",
     "  -A, --arguments        Specify n or m,n arguments for command file.",
     "  -E, --execute=foo      Execute TECO macro in file 'foo'.",
     "  -T, --text=foo         Store text 'foo' in edit buffer.",
+    "  --mung                 Equivalent to TECO MUNG command.",
     "",
     "Initialization options:",
     "",
@@ -117,7 +119,8 @@ enum option_t
     OPT_initialize   = 'I',
     OPT_keys         = 'k',
     OPT_log          = 'L',
-    OPT_mung         = '0',
+    OPT_make         = '0',
+    OPT_mung         = '1',
     OPT_nocreate     = 'c',
     OPT_nodefaults   = 'n',
     OPT_nodisplay    = 'd',
@@ -129,7 +132,7 @@ enum option_t
     OPT_read_only    = 'R',
     OPT_scroll       = 'S',
     OPT_text         = 'T',
-    OPT_version      = '1'
+    OPT_version      = '2'
 };
 
 ///  @var optstring
@@ -152,6 +155,7 @@ static const struct option long_options[] =
     { "initialize",     required_argument,  NULL, OPT_initialize   },
     { "keys",           required_argument,  NULL, OPT_keys         },
     { "log",            required_argument,  NULL, OPT_log          },
+    { "make",           no_argument,        NULL, OPT_make         },
     { "mung",           no_argument,        NULL, OPT_mung         },
     { "nocreate",       no_argument,        NULL, OPT_nocreate     },
     { "nodefaults",     no_argument,        NULL, OPT_nodefaults   },

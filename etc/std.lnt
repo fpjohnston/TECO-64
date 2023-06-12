@@ -50,4 +50,4 @@ co-gcc.lnt                              // Basic gcc configuration
 -esym(759,exec_str,move_dot,reset_term,table_8bit)
 -esym(765,exec_str,move_dot,reset_term,table_8bit)
 
--function(exit, throw)                  // throw() works like exit()
+-function(exit, throw, quit)            // Functions that work like exit()
