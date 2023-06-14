@@ -103,29 +103,23 @@ static struct options options =
 };
 
 
-/// @def    test()
-/// @brief  Test condition and call quit() if true.
-
-#define test(cond, format, ...) if (cond) quit(format, ## __VA_ARGS__)
-
-
 // Local functions
 
-static void opt_arguments(void);
+static void opt_arguments(const char *const argv[]);
 
 static void opt_display(void);
 
-static void opt_execute(void);
+static void opt_execute(const char *const argv[]);
 
 static void opt_help(void);
 
-static void opt_initialize(void);
+static void opt_initialize(const char *const argv[]);
 
 static void opt_keys(void);
 
-static void opt_log(void);
+static void opt_log(const char *const argv[]);
 
-static void opt_scroll(void);
+static void opt_scroll(const char *const argv[]);
 
 static void opt_version(void);
 
@@ -176,7 +170,10 @@ void init_options(
 
     parse_files(argc, argv);
 
-    test(optind < argc, "Too many files");
+    if (optind < argc)
+    {
+        quit("Too many files");
+    }
 
     // Add display options on the end, unless we're exiting immediately
 
@@ -239,22 +236,28 @@ void init_options(
 
 
 ///
-///  @brief    Parse --arguments option.
+///  @brief    Parse -A and --arguments options. These are only used to provide
+///            numeric arguments for a subsequent EI command specified by a -E
+///            or --execute option.
+///
+///            Examples:
+///
+//                -A 123 --execute=foo      => 123@EI/foo/
+//                --arguments=456,789 -Ebaz => 456,789@EI/baz/
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void opt_arguments(void)
+static void opt_arguments(const char *const argv[])
 {
-    // If argument exists, confirm that it's of the form "ddd" or "ddd,ddd",
-    // where "ddd" is a positive or negative decimal integer.
+    assert(argv != NULL);
 
     const char *p = optarg;
     int nbytes;
-    int c;
+    int n;
 
-    if (sscanf(p, "%d%n", &c, &nbytes) == 1)
+    if (sscanf(p, "%d%n", &n, &nbytes) == 1)
     {
         p += nbytes;
 
@@ -262,21 +265,28 @@ static void opt_arguments(void)
         {
             ++p;
 
-            if (sscanf(p, "%d%n", &c, &nbytes) == 1)
+            if (sscanf(p, "%d%n", &n, &nbytes) == 1)
             {
                 p += nbytes;
             }
         }
+
+        if (*p == NUL)
+        {
+            push_opt('A', optarg);
+
+            return;
+        }
     }
 
-    test(*p != NUL, "Invalid value '%s' for --arguments option", optarg);
+    assert(optind >= 2);
 
-    push_opt('A', optarg);
+    quit("Invalid value '%s' for %s option", optarg, argv[optind - 2]);
 }
 
 
 ///
-///  @brief    Parse --display option.
+///  @brief    Parse -D and --display options.
 ///
 ///  @returns  Nothing.
 ///
@@ -294,22 +304,29 @@ static void opt_display(void)
 
 
 ///
-///  @brief    Parse --execute option.
+///  @brief    Parse -E and --execute options.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void opt_execute(void)
+static void opt_execute(const char *const argv[])
 {
-    test(optarg[0] == '-', "Invalid file name for --execute option");
+    assert(argv != NULL);
+
+    if (optarg[0] == '-')
+    {
+        assert(optind >= 2);
+
+        quit("Invalid file name for  %s option", argv[optind - 2]);
+    }
 
     push_opt('E', optarg);
 }
 
 
 ///
-///  @brief    Parse --help option.
+///  @brief    Parse -H and --help options.
 ///
 ///  @returns  Exits from TECO.
 ///
@@ -330,15 +347,22 @@ static void opt_help(void)
 
 
 ///
-///  @brief    Parse --initialize option.
+///  @brief    Parse -I and --initialize options.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void opt_initialize(void)
+static void opt_initialize(const char *const argv[])
 {
-    test(optarg[0] == '-', "Invalid file name for --initialize option");
+    assert(argv != NULL);
+
+    if (optarg[0] == '-')
+    {
+        assert(optind >= 2);
+
+        quit("Invalid file name for %s option", argv[optind - 2]);
+    }
 
     teco_init = optarg;
 }
@@ -375,20 +399,35 @@ static void opt_keys(void)
 
 
 ///
-///  @brief    Parse --log option.
+///  @brief    Parse -L and --log options.
 ///
 ///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void opt_log(void)
+static void opt_log(const char *const argv[])
 {
-    test(optarg[0] == '-', "Invalid file name for --log option");
+    assert(argv != NULL);
+
+    if (optarg[0] == '-')
+    {
+        assert(optind >= 2);
+
+        quit("Invalid file name for %s option", argv[optind - 2]);
+    }
 
     push_opt('L', optarg);
 }
 
 
+///
+///  @brief    Parse -S and --scroll options. These are used to specify the
+///            size of the command window in display mode.
+///
+///            Examples:
+///
+///               -S 10      => 10,7:W
+///               --scroll=5 => 5,7:W
 ///
 ///  @brief    Parse --scroll option.
 ///
@@ -396,24 +435,27 @@ static void opt_log(void)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void opt_scroll(void)
+static void opt_scroll(const char *const argv[])
 {
-    // If argument exists, confirm that it's of the form "ddd", where
-    // "ddd" is a positive decimal integer.
+    assert(argv != NULL);
 
-    const char *p = optarg;
-    int count;
     int nlines;
+    int nbytes;
 
-    if (sscanf(p, "%d%n", &nlines, &count) == 1)
+    if (sscanf(optarg, "%d%n", &nlines, &nbytes) == 1)
     {
-        p += count;
+        if (optarg[nbytes] == NUL && nlines > 0)
+        {
+            options.scroll = nlines;
+            options.display = true;
+
+            return;
+        }
     }
 
-    test(*p != NUL || nlines <= 0, "Invalid value '%s' for --scroll option", optarg);
+    assert(optind >= 2);
 
-    options.scroll = nlines;
-    options.display = true;
+    quit("Invalid value '%s' for %s option", optarg, argv[optind - 2]);
 }
 
 
@@ -446,7 +488,7 @@ static void opt_version(void)
 ///
 ///  @brief    Parse file options.
 ///
-///  @returns  true if found at least one valid file, else false.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -466,12 +508,16 @@ static void parse_files(
     }
     else if (optind >= argc)            // Do have have any files?
     {
-        // --mung and --make both require files
+        if (options.mung)               //--mung requires a file
+        {
+            quit("How can I mung nothing?");
+        }
+        else if (options.make)          // --make requires a file
+        {
+            quit("How can I make nothing?");
+        }
 
-        test(options.mung, "How can I mung nothing?");
-        test(options.make, "How can I make nothing?");
-
-        // No file name. See if we have one saved from a previous edit.
+        // See if there is a memory file we can use
 
         if (teco_memory != NULL)
         {
@@ -479,7 +525,7 @@ static void parse_files(
 
             read_memory(file, (uint)sizeof(file));
 
-            if (file[0] != NUL)
+            if (file[0] != NUL)         // Does memory file contain anything?
             {
                 if (access(file, F_OK) != 0)
                 {
@@ -499,10 +545,10 @@ static void parse_files(
             }
         }
 
-        //  --read-only requires a file, which must either be specified
-        //  on the command line or in a memory file.
-
-        test(options.readonly, "How can I inspect nothing?");
+        if (options.readonly)           // --read-only requires a file
+        {
+            quit("How can I inspect nothing?");
+        }
 
         return;
     }
@@ -540,9 +586,12 @@ static void parse_files(
         if (error != 0 || stat_info(arg2, &device2, &inode2) != 0 ||
             device1 != device2 || inode1 != inode2)
         {
-            // Input file must be readable
+            // Input file must exist
 
-            test(access(arg1, F_OK) != 0, "Can't find file '%s'", arg1);
+            if (access(arg1, F_OK) != 0)
+            {
+                quit("Can't find file '%s'", arg1);
+            }
 
             store_cmd(ER_cmd, arg1, arg1);
             store_cmd(EW_cmd, arg2, arg2);
@@ -555,7 +604,7 @@ static void parse_files(
         //  Here if the two files are effectively the same, either because they
         //  have the same path, or the same device IDs and inode numbers.
 
-        printf("'%s' and '%s' are the same file\n", arg1, arg2);
+        store_cmd(":^A'%s' and '%s' are the same file\1", arg1, arg2);
     }
     else if (access(arg1, F_OK) != 0)   // Write new file if it doesn't exist
     {
@@ -579,18 +628,18 @@ static void parse_files(
 
 
 ///
-///  @brief    Parse argument for --execute and --mung options.
+///  @brief    Parse argument for --execute and --mung options. There are
+///            basically two options: a file name, and a command string. The
+///            latter is denoted by an argument more than two characters in
+///            length that starts and ends with single or double quotes.
 ///
-///  @returns  Exits from TECO.
+///  @returns  Nothing.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 static void parse_mung(const char *p)
 {
     assert(p != NULL);
-
-    // If file name starts and ends with single or double quotes,
-    // then it's really a TECO command string.
 
     uint nbytes = (uint)strlen(p);
 
@@ -636,6 +685,9 @@ static void parse_options(
     int argc,                           ///< No. of arguments
     const char *const argv[])           ///< List of arguments
 {
+    static const char *badopt  = "Unknown option";
+    static const char *usehelp = "use --help for a list of options";
+
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
 
@@ -650,7 +702,6 @@ static void parse_options(
 
     int c;
     int lastopt = 1;                    // Used to analyze errors (see below)
-    char error[128];                    // Error text
 
     while ((c = getopt_long(argc, (char * const *)argv,
                             optstring, long_options, NULL)) != -1)
@@ -664,9 +715,9 @@ static void parse_options(
             case OPT_make:         options.make     = true;     break;
             case OPT_mung:         options.mung     = true;     break;
             case OPT_nocreate:     options.create   = -1;       break;
-            case OPT_nodefaults:   options.display  = false;
-                                   teco_init        = NULL;
-                                   teco_memory      = false;    break;
+            case OPT_nodefaults:   teco_init        = NULL;
+                                   teco_memory      = NULL;
+                                   //lint -fallthrough
             case OPT_nodisplay:    options.display  = false;
                                    teco_vtedit      = NULL;     break;
             case OPT_noinitialize: teco_init        = NULL;     break;
@@ -677,16 +728,16 @@ static void parse_options(
 
             // Options that call functions
 
-            case OPT_arguments:    opt_arguments();             break;
+            case OPT_arguments:    opt_arguments(argv);         break;
             case OPT_display:      opt_display();               break;
-            case OPT_execute:      opt_execute();               break;
+            case OPT_execute:      opt_execute(argv);           break;
             case OPT_formfeed:     push_opt('F', NULL);         break;
             case OPT_help:         opt_help();                  break;
-            case OPT_initialize:   opt_initialize();            break;
+            case OPT_initialize:   opt_initialize(argv);        break;
             case OPT_keys:         opt_keys();                  break;
-            case OPT_log:          opt_log();                   break;
+            case OPT_log:          opt_log(argv);               break;
             case OPT_noformfeed:   push_opt('f', NULL);         break;
-            case OPT_scroll:       opt_scroll();                break;
+            case OPT_scroll:       opt_scroll(argv);            break;
             case OPT_text:         push_opt('T', optarg);       break;
             case OPT_version:      opt_version();               break;
 
@@ -727,7 +778,7 @@ static void parse_options(
 
                 if (optopt != 0 && optind == lastopt)
                 {
-                    snprintf(error, sizeof(error), "-%c", optopt);
+                    quit("%s '-%c': %s", badopt, optopt, usehelp);
                 }
                 else
                 {
@@ -743,15 +794,14 @@ static void parse_options(
 
                     if ((p = strchr(arg, '=')) != NULL)
                     {
-                        quit("No arguments allowed for option '%.*s'", p - arg,
-                             arg);
+                        quit("No arguments allowed for option '%.*s'",
+                             p - arg, arg);
                     }
-
-                    snprintf(error, sizeof(error), "%s", arg);
+                    else
+                    {
+                        quit("%s '%s': %s", badopt, arg, usehelp);
+                    }
                 }
-
-                quit("Unknown option '%s': use --help for a list of options",
-                     error);
         }
 
         lastopt = optind;
@@ -805,7 +855,10 @@ static void pop_opts(void)
 
 static void push_opt(char option, const char *arg)
 {
-    test(options.next == NOPTIONS, "Too many options");
+    if (options.next == NOPTIONS)
+    {
+        quit("Too many options");
+    }
 
     options.stack[options.next] = option;
     options.args[options.next] = arg;
@@ -891,7 +944,10 @@ static void store_cmd(const char *format, ...)
 
     size = (uint)retval;
 
-    test(cbuf->len + size > cbuf->size, "No memory for command-line options");
+    if (cbuf->len + size > cbuf->size)
+    {
+        quit("No memory for command-line options");
+    }
 
     cbuf->len += size;
 
