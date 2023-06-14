@@ -77,18 +77,7 @@ PERL := perl
 
 endif
 
-ifneq ($(PERL), )
-
-    PATTERN = $(INCLUDE)errors.h $(INCLUDE)exec.h $(INCLUDE)_cmd_exec.c \
-              $(INCLUDE)_errors.c $(INCLUDE)_option_sys.c
-
-else
-
-	PATTERN =
-
-endif
-
-$(OBJECTS): $(PATTERN) obj/cflags
+$(OBJECTS): obj/cflags
 
 #  The following targets are present because git repositories only allow for
 #  files in directories, not for directories that contain no files. So before
@@ -202,7 +191,7 @@ include etc/build/test.mk               # Test targets
 ifneq ($(PERL), )
 
 .PHONY: pattern
-pattern: $(PATTERN)
+pattern: include/errors.h include/exec.h include/_cmd_exec.c include/_errors.c include/_option_sys.c
 
 $(INCLUDE)errors.h: etc/make_errors.pl etc/xml/errors.xml etc/pattern/errors.h
 	$^ --out $@
@@ -221,9 +210,9 @@ $(INCLUDE)_option_sys.c: etc/make_options.pl etc/xml/options.xml etc/pattern/_op
 
 else
 
-#.PHONY: pattern
-#pattern:
-#	@$(error Make target '$@' requires Perl)
+.PHONY: pattern
+pattern:
+	@$(error Make target '$@' requires Perl)
 
 $(INCLUDE)errors.h:
 	@$(error Make target '$@' requires Perl)
