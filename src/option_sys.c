@@ -318,7 +318,7 @@ static void opt_execute(const char *const argv[])
     {
         assert(optind >= 2);
 
-        quit("Invalid file name for  %s option", argv[optind - 2]);
+        quit("Invalid file name for %s option", argv[optind - 2]);
     }
 
     push_opt('E', optarg);
