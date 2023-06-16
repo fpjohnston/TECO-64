@@ -608,10 +608,17 @@ static void parse_files(
     }
     else if (access(arg1, F_OK) != 0)   // Write new file if it doesn't exist
     {
-        store_cmd(":^ACan't find file '%s'\1", arg1);
-        store_cmd(EW_cmd, arg1, arg1);
+        if (options.create == -1)
+        {
+            quit("Can't find file '%s'", arg1);
+        }
+        else
+        {
+            store_cmd(":^ACan't find file '%s'\1", arg1);
+            store_cmd(EW_cmd, arg1, arg1);
 
-        return;
+            return;
+        }
     }
 
     //  Here if we only have one file
@@ -794,7 +801,7 @@ static void parse_options(
 
                     if ((p = strchr(arg, '=')) != NULL)
                     {
-                        quit("No arguments allowed for option '%.*s'",
+                        quit("Extraneous argument for option '%.*s'",
                              p - arg, arg);
                     }
                     else

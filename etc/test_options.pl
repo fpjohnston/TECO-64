@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-
 #
 #  options_test.pl - Test command-line options for TECO text editor.
 #
@@ -41,283 +40,167 @@ my $detail  = undef;
 
 #<<< perltidy:: preserve format
 
+Readonly my $TECO   => 'teco -p';             # Base command
+Readonly my $OWL    => 'TECO_MEMORY=_owl';    # Memory file w/ existing file
+Readonly my $KANGA  => 'TECO_MEMORY=_kanga';  # Memory file w/ non-existent file
+Readonly my $EEYORE => 'TECO_INIT=_eeyore';   # Dummy initialization file
+Readonly my $TIGGER => 'TECO_VTEDIT=_tigger'; # Dummy initialization file
+
 Readonly my @OPTIONS => (
     {
-        name  => q{-A},
+        name  => q{opening files},
         tests => [
-            { cmd => 'teco -pn -Ex.tmp -A2,3',         result => ' EIx.tmp' },
-            { cmd => 'teco -pn -A2,3 --execute=x.tmp', result => '2,3EIx.tmp' },
-            { cmd => 'teco -pn -A',                    result => 'Missing argument' },
-            { cmd => 'teco -pn -Ax',                   result => 'Invalid value' },
-            { cmd => 'teco -pn -A2,x',                 result => 'Invalid value' },
-            { cmd => 'teco -pn -A2,3x',                result => 'Invalid value' },
+            { cmd => "$TECO -C _pooh",            result => 'Editing file' },
+            { cmd => "$TECO -C _piglet",          result => 'Creating new file' },
+            { cmd => "$TECO -R _pooh",            result => 'Reading file' },
+            { cmd => "$TECO -c _pooh",            result => 'Editing file' },
+            { cmd => "$TECO -r _pooh",            result => 'Editing file' },
+            { cmd => "$TECO --create _pooh",      result => 'Editing file' },
+            { cmd => "$TECO --create _piglet",    result => 'Creating new file' },
+            { cmd => "$TECO --make _pooh",        result => 'Creating new file' },
+            { cmd => "$TECO --make love",         result => 'Not war?' },
+            { cmd => "$TECO --read-only _pooh",   result => 'Reading file' },
+            { cmd => "$TECO --nocreate _pooh",    result => 'Editing file' },
+            { cmd => "$TECO --noread-only _pooh", result => 'Editing file' },
+            { cmd => "$TECO _pooh _pooh",         result => 'same file' },
+            { cmd => "$OWL $TECO ",               result => 'Editing file' },
+            { cmd => "$KANGA $TECO ",             result => 'Ignoring TECO\'s memory' },
         ],
     },
     {
-        name  => q{--arguments},
+        name  => q{missing files},
         tests => [
-            { cmd => 'teco -pn --arguments=2,3 -Ex.tmp', result => '2,3EIx.tmp' },
-            {
-                cmd    => 'teco -pn --arguments=2,3 --execute=x.tmp',
-                result => '2,3EIx.tmp'
-            },
-            { cmd => 'teco -pn --arguments', result => 'Missing argument' },
+            { cmd => "$TECO -R",                 result => 'inspect nothing' },
+            { cmd => "$TECO --make",             result => 'make nothing'    },
+            { cmd => "$TECO --mung",             result => 'mung nothing'    },
+            { cmd => "$TECO --read-only",        result => 'inspect nothing' },
+            { cmd => "$TECO _piglet",            result => 'Can\'t find file' },
+            { cmd => "$TECO --nocreate _piglet", result => 'Can\'t find file' },
         ],
     },
     {
-        name  => q{-C},
+        name  => q{too many files},
         tests => [
-            { cmd => 'teco -pn -C x.tmp', result => 'Editing file' },
-            { cmd => 'teco -pn -C y.tmp', result => 'Creating new file' },
+            { cmd => "$TECO _pooh _piglet _owl",   result => 'Too many files' },
+            { cmd => "$TECO --make _pooh _piglet", result => 'Too many files' },
+            { cmd => "$TECO --make _pooh _piglet", result => 'Too many files' },
         ],
     },
     {
-        name  => q{--create},
+        name  => q{command file options},
         tests => [
-            { cmd => 'teco -pn --create x.tmp', result => 'Editing file' },
-            { cmd => 'teco -pn --create y.tmp', result => 'Creating new file' },
+            { cmd => "$TECO -E_pooh -A2,3",                   result => ' EI_pooh' },
+            { cmd => "$TECO -A2,3 --execute=_pooh",           result => '2,3EI_pooh' },
+            { cmd => "$TECO -E_pooh",                         result => 'EI_pooh' },
+            { cmd => "$TECO -I_pooh",                         result => 'EI_pooh' },
+            { cmd => "$EEYORE $TECO -i",                      result => '!begin! !end!' },
+            { cmd => "$TECO --arguments=2,3 -E_pooh",         result => '2,3EI_pooh' },
+            { cmd => "$TECO --arguments=2,3 --execute=_pooh", result => '2,3EI_pooh' },
+            { cmd => "$TECO --execute=_pooh",                 result => 'EI_pooh' },
+            { cmd => "$TECO --initialize=_pooh",              result => 'EI_pooh' },
+            { cmd => "$TECO --mung _pooh",                    result => 'EI_pooh' },
+            { cmd => "$EEYORE $TECO --noinitialize",          result => '!begin! !end!' },
         ],
     },
     {
-        name  => q{-c},
-        tests => [ { cmd => 'teco -pn -c x.tmp', result => 'Editing file' }, ],
-    },
-    {
-        name  => q{--nocreate},
+        name  => q{display mode options},
         tests => [
-            { cmd => 'teco -pn --nocreate x.tmp', result => 'Editing file' },
-            { cmd => 'teco -pn --nocreate=x.tmp', result => 'No arguments allowed' },
+            { cmd => "$TECO -D",                 result => '!begin! -1W' },
+            { cmd => "$TECO -D_pooh",            result => 'EI_pooh' },
+            { cmd => "$TIGGER $TECO",            result => 'EI_tigger' },
+            { cmd => "$TIGGER $TECO -d",         result => '!begin! !end!' },
+            { cmd => "$TECO -D_piglet",          result => 'EI_piglet' },
+            { cmd => "$TIGGER $TECO -S5",        result => 'EI_tigger^[ 5,7:W' },
+            { cmd => "$TECO -S5 -d -D",          result => '-1W 5,7:W' },
+            { cmd => "$TECO --nodisplay",        result => '!begin! !end!' },
+            { cmd => "$TECO --display",          result => '-1W' },
+            { cmd => "$TECO --display=_pooh",    result => 'EI_pooh' },
+            { cmd => "$TIGGER $TECO --scroll=5", result => 'EI_tigger^[ 5,7:W' },
+            { cmd => "$TECO --scroll=5 -d",      result => '!begin! 5,7:W' },
         ],
     },
     {
-        name  => q{-D},
+        name  => q{miscellaneous options},
         tests => [
-            { cmd => 'teco -pn -D',      result => '-1W' },
-            { cmd => 'teco -pn -Dx.tmp', result => 'EIx.tmp' },
-            {
-                cmd    => 'TECO_VTEDIT=x.tmp teco -pim',
-                result => 'EIx.tmp'
-            },
-            {
-                cmd    => 'TECO_VTEDIT=x.tmp teco -pimd',
-                result => '!begin! !end!'
-            },
-            {
-                cmd    => 'TECO_VTEDIT=x.tmp teco -pim -Dy.tmp',
-                result => 'EIy.tmp'
-            },
+            { cmd => "$TECO -F",                                result => '1,0E3' },
+            { cmd => "$TECO -f",                                result => '0,1E3' },
+            { cmd => "$EEYORE $TIGGER $OWL $TECO -m",           result => 'EI_eeyore^[ EI_tigger^[ ^[' },
+            { cmd => "$TECO",                                   result => '!begin! !end!' },
+            { cmd => "$TECO -H",                                result => 'Usage: teco' },
+            { cmd => "$TECO -L_pooh",                           result => 'EL_pooh' },
+            { cmd => "$TECO -T_pooh",                           result => 'I_pooh' },
+            { cmd => "$TECO -X",                                result => '!begin! EX' },
+            { cmd => "$TECO -n --exit",                         result => '!begin! EX' },
+            { cmd => "$TECO --formfeed",                        result => '1,0E3' },
+            { cmd => "$TECO --help",                            result => 'Usage: teco' },
+            { cmd => "$TECO --log=_pooh",                       result => 'EL_pooh' },
+            { cmd => "$EEYORE $TIGGER $OWL $TECO --nodefaults", result => '!begin! !end!' },
+            { cmd => "$EEYORE $TIGGER $TECO --nodisplay",       result => 'EI_eeyore^[ ^[' },
+            { cmd => "$TECO --noformfeed",                      result => '0,1E3' },
+            { cmd => "$EEYORE $TIGGER $OWL $TECO --nomemory",   result => 'EI_eeyore^[ EI_tigger^[ ^[' },
+            { cmd => "$TECO --text=_pooh",                      result => 'I_pooh' },
+            { cmd => "$TECO --version",                         result => 'version 200.' },
         ],
     },
     {
-        name  => q{--display},
+        name  => q{unknown options},
         tests => [
-            { cmd => 'teco -pn --display',       result => '-1W' },
-            { cmd => 'teco -pn --display=x.tmp', result => 'EIx.tmp' },
+            { cmd => "$TECO -z",    result => 'Unknown option' },
+            { cmd => "$TECO --foo", result => 'Unknown option' },
         ],
     },
     {
-        name  => q{-d},
-        tests => [ { cmd => 'teco -pn -d', result => '!begin! !end!' }, ],
-    },
-    {
-        name  => q{--nodisplay},
+        name  => q{missing arguments},
         tests => [
-            { cmd => 'teco -pn --nodisplay',       result => '!begin! !end!' },
-            { cmd => 'teco -pn --nodisplay=x.tmp', result => 'No arguments allowed' },
+            { cmd => "$TECO -A",           result => 'Missing argument' },
+            { cmd => "$TECO -E",           result => 'Missing argument' },
+            { cmd => "$TECO -I",           result => 'Missing argument' },
+            { cmd => "$TECO -L",           result => 'Missing argument' },
+            { cmd => "$TECO -S",           result => 'Missing argument' },
+            { cmd => "$TECO -T",           result => 'Missing argument' },
+            { cmd => "$TECO --arguments",  result => 'Missing argument' },
+            { cmd => "$TECO --execute",    result => 'Missing argument' },
+            { cmd => "$TECO --initialize", result => 'Missing argument' },
+            { cmd => "$TECO --log",        result => 'Missing argument' },
+            { cmd => "$TECO --scroll",     result => 'Missing argument' },
+            { cmd => "$TECO --text",       result => 'Missing argument' },
         ],
     },
     {
-        name  => q{-E},
+        name  => q{extraneous arguments},
         tests => [
-            { cmd => 'teco -pn -Ex.tmp', result => 'EIx.tmp' },
-            { cmd => 'teco -pn -E',      result => 'Missing argument' },
+            { cmd => "$TECO --create=_pooh",       result => 'Extraneous argument' },
+            { cmd => "$TECO --exit=_pooh",         result => 'Extraneous argument' },
+            { cmd => "$TECO --formfeed=_pooh",     result => 'Extraneous argument' },
+            { cmd => "$TECO --help=_pooh",         result => 'Extraneous argument' },
+            { cmd => "$TECO --nocreate=_pooh",     result => 'Extraneous argument' },
+            { cmd => "$TECO --nodefaults=_pooh",   result => 'Extraneous argument' },
+            { cmd => "$TECO --nodisplay=_pooh",    result => 'Extraneous argument' },
+            { cmd => "$TECO --noformfeed=_pooh",   result => 'Extraneous argument' },
+            { cmd => "$TECO --noinitialize=_pooh", result => 'Extraneous argument' },
+            { cmd => "$TECO --nomemory=_pooh",     result => 'Extraneous argument' },
+            { cmd => "$TECO --noread-only=_pooh",  result => 'Extraneous argument' },
+            { cmd => "$TECO --read-only=_pooh",    result => 'Extraneous argument' },
         ],
     },
     {
-        name  => q{--execute},
+        name  => q{invalid arguments},
         tests => [
-            { cmd => 'teco -pn --execute=x.tmp', result => 'EIx.tmp' },
-            { cmd => 'teco -pn --execute',       result => 'Missing argument' },
-        ],
-    },
-    {
-        name  => q{-F},
-        tests => [ { cmd => 'teco -pn -F', result => '1,0E3' }, ],
-    },
-    {
-        name  => q{--formfeed},
-        tests => [ { cmd => 'teco -pn --formfeed', result => '1,0E3' }, ],
-    },
-    {
-        name  => q{-f},
-        tests => [ { cmd => 'teco -pn -f', result => '0,1E3' }, ],
-    },
-    {
-        name  => q{--noformfeed},
-        tests => [ { cmd => 'teco -pn --noformfeed', result => '0,1E3' }, ],
-    },
-    {
-        name  => q{-H},
-        tests => [ { cmd => 'teco -pn -H', result => 'Usage: teco' }, ],
-    },
-    {
-        name  => q{--help},
-        tests => [ { cmd => 'teco -pn --help', result => 'Usage: teco' }, ],
-    },
-    {
-        name  => q{-I},
-        tests => [
-            { cmd => 'teco -pn -Ix.tmp', result => 'EIx.tmp' },
-            { cmd => 'teco -pn -I',      result => 'Missing argument' },
-        ],
-    },
-    {
-        name  => q{--initialize},
-        tests => [
-            { cmd => 'teco -pn --initialize=x.tmp', result => 'EIx.tmp' },
-            { cmd => 'teco -pn --initialize',       result => 'Missing argument' },
-        ],
-    },
-    {
-        name  => q{-i},
-        tests => [ { cmd => 'teco -pn -i', result => '!begin! !end!' }, ],
-    },
-    {
-        name  => q{--noinitialize},
-        tests => [
-            { cmd => 'teco -pn --noinitialize',   result => '!begin! !end!' },
-            { cmd => 'teco -pn --noinitialize=1', result => 'No arguments allowed' },
-        ],
-    },
-    {
-        name  => q{-L},
-        tests => [
-            { cmd => 'teco -pn -Lx.tmp', result => 'ELx.tmp' },
-            { cmd => 'teco -pn -L',      result => 'Missing argument' },
-        ],
-    },
-    {
-        name  => q{--log},
-        tests => [
-            { cmd => 'teco -pn --log=x.tmp', result => 'ELx.tmp' },
-            { cmd => 'teco -pn --log',       result => 'Missing argument' },
-        ],
-    },
-    {
-        name  => q{-m},
-        tests => [ { cmd => 'teco -pn -m', result => '!begin! !end!' }, ],
-    },
-    {
-        name  => q{--make},
-        tests => [
-            { cmd => 'teco -pn --make x.tmp',   result => 'EWx.tmp' },
-            { cmd => 'teco -pn --make foo baz', result => 'Too many files' },
-            { cmd => 'teco -pn --make love',    result => 'Not war?' },
-            { cmd => 'teco -pn --make',         result => 'make nothing' },
-        ],
-    },
-    {
-        name  => q{--mung},
-        tests => [
-            { cmd => 'teco -pn --mung x.tmp',   result => 'EIx.tmp' },
-            { cmd => 'teco -pn --make foo baz', result => 'Too many files' },
-            { cmd => 'teco -pn --mung',         result => 'mung nothing' },
-        ],
-    },
-    {
-        name  => q{--nomemory},
-        tests => [
-            { cmd => 'teco -pn --nomemory',       result => '!begin! !end!' },
-            { cmd => 'teco -pn --nomemory=x.tmp', result => 'No arguments allowed' },
-        ],
-    },
-    {
-        name  => q{-n},
-        tests => [ { cmd => 'teco -pn -n', result => '!begin! !end!' }, ],
-    },
-    {
-        name  => q{--nodefaults},
-        tests => [
-            { cmd => 'teco -pn --nodefaults',       result => '!begin! !end!' },
-            { cmd => 'teco -pn --nodefaults=x.tmp', result => 'No arguments allowed' },
-        ],
-    },
-    {
-        name  => q{-R},
-        tests => [
-            { cmd => 'teco -pn -R x.tmp', result => 'Reading file' },
-            { cmd => 'teco -pn -R',       result => 'inspect nothing' },
-        ],
-    },
-    {
-        name  => q{--read-only},
-        tests => [ { cmd => 'teco -pn --read-only x.tmp', result => 'Reading file' }, ],
-    },
-    {
-        name  => q{-r},
-        tests => [ { cmd => 'teco -pn -r x.tmp', result => 'Editing file' }, ],
-    },
-    {
-        name  => q{--noread-only},
-        tests =>
-          [ { cmd => 'teco -pn --noread-only x.tmp', result => 'Editing file' }, ],
-    },
-    {
-        name  => q{-S},
-        tests => [
-            { cmd => 'teco -pn -S5',       result => '5,7:W' },
-            { cmd => 'teco -pn -S5 -d -D', result => '-1W 5,7:W' },
-            { cmd => 'teco -pn -S',        result => 'Missing argument' },
-            { cmd => 'teco -pn -Sx',       result => 'Invalid value' },
-            { cmd => 'teco -pn -S2x',      result => 'Invalid value' },
-        ],
-    },
-    {
-        name  => q{--scroll},
-        tests => [
-            { cmd => 'teco -pn --scroll=5',    result => '5,7:W' },
-            { cmd => 'teco -pn --scroll=5 -d', result => '5,7:W' },
-            { cmd => 'teco -pn --scroll',      result => 'Missing argument' },
-        ],
-    },
-    {
-        name  => q{-T},
-        tests => [
-            { cmd => 'teco -pn -Tx.tmp', result => 'Ix.tmp' },
-            { cmd => 'teco -pn -T',      result => 'Missing argument' },
-        ],
-    },
-    {
-        name  => q{--text},
-        tests => [
-            { cmd => 'teco -pn --text=x.tmp', result => 'Ix.tmp' },
-            { cmd => 'teco -pn --text',       result => 'Missing argument' },
-        ],
-    },
-    {
-        name  => q{--version},
-        tests => [ { cmd => 'teco -pn --version', result => 'version 200.' } ],
-    },
-    {
-        name  => q{-X},
-        tests => [ { cmd => 'teco -pn -X', result => '!begin! EX' }, ],
-    },
-    {
-        name  => q{--exit},
-        tests => [ { cmd => 'teco -pn --exit', result => '!begin! EX' }, ],
-    },
-    {
-        name  => q{general},
-        tests => [
-            {
-                cmd    => 'teco -pn --display=z.tmp --execute=y.tmp --init=x.tmp',
-                result => 'EIx.tmp^[ EIy.tmp^[ EIz.tmp^[ ^[^['
-            },
-            { cmd => 'teco -pn x.tmp y.tmp z.tmp', result => 'Too many files' },
-            { cmd => 'teco -pn x.tmp x.tmp',       result => 'same file' },
-            { cmd => 'teco -pn y.tmp',             result => 'Can\'t find file' },
-            { cmd => 'teco -pn -z',                result => 'Unknown option' },
-            { cmd => 'teco -pn --foo',             result => 'Unknown option' },
+            { cmd => "$TECO -Ax",              result => 'Invalid value' },
+            { cmd => "$TECO -A2,x",            result => 'Invalid value' },
+            { cmd => "$TECO -A2,3x",           result => 'Invalid value' },
+            { cmd => "$TECO -A -Z",            result => 'Invalid value' },
+            { cmd => "$TECO -Sx",              result => 'Invalid value' },
+            { cmd => "$TECO -S2x",             result => 'Invalid value' },
+            { cmd => "$TECO -S -Z",            result => 'Invalid value' },
+            { cmd => "$TECO --arguments=x",    result => 'Invalid value' },
+            { cmd => "$TECO --arguments=2,x",  result => 'Invalid value' },
+            { cmd => "$TECO --arguments=2,3x", result => 'Invalid value' },
+            { cmd => "$TECO --arguments -Z",   result => 'Invalid value' },
+            { cmd => "$TECO --scroll=x",       result => 'Invalid value' },
+            { cmd => "$TECO --scroll=2x",      result => 'Invalid value' },
+            { cmd => "$TECO --scroll=2,3x",    result => 'Invalid value' },
+            { cmd => "$TECO --scroll -Z",      result => 'Invalid value' },
         ],
     },
 );
@@ -334,17 +217,21 @@ my $ntests = 0;
 
 for my $href (@OPTIONS)
 {
-    my $option  = $href->{name};
-    my $general = ( $option eq 'general' );
-    my @tests   = @{ $href->{tests} };
+    my $option = $href->{name};
+    my @tests  = @{ $href->{tests} };
 
     if ($brief)
     {
-        printf "Testing $option option%s...\n", $general ? 's' : q{};
+        my $count = scalar @tests;
+
+        printf "Executing $count test%s for $option...\n",
+          $count == 1 ? q{} : 's';
     }
 
-    system 'touch x.tmp';               # Make sure this file exists
-    system 'rm -f y.tmp';               # Make sure this file does not exist
+    system 'touch _pooh';               # Create dummy file to edit
+    system 'echo _pooh > _owl';         # Create memory file w/ real file
+    system 'echo _roo > _kanga';        # Create memory file w/ non-existent file
+    system 'rm -f _piglet';             # Ensure this file does not exist
 
     foreach my $test (@tests)
     {
@@ -358,7 +245,7 @@ for my $href (@OPTIONS)
         ++$ntests;
     }
 
-    system 'rm -f x.tmp';               # Discard temporary file
+    system 'rm -f _pooh _owl _kanga';   # Discard temporary files
 }
 
 if ($summary)
@@ -377,6 +264,8 @@ sub exec_command
     my $error = 0;
 
     print "    Executing \"$command\"..." if $verbose;
+
+    $command = "TECO_INIT= TECO_VTEDIT= TECO_MEMORY= $command";
 
     my $result = run_test($command);
 
@@ -429,21 +318,23 @@ sub prove_test
     {
         ++$okay;
 
-        print "OK\n" if $verbose;
+        print 'OK' if $verbose;
     }
     else
     {
         ++$failed;
 
-        print "FAILED\n" if $verbose;
+        print 'FAILED' if $verbose;
     }
 
     if ($detail)
     {
         $actual =~ s/ Commands: \N{SPACE} //imsx;    # Trim off any header
 
-        print "    Result: $actual\n\n";
+        print ", result: $actual";
     }
+
+    print "\n" if $verbose || $detail;
 
     return;
 }
