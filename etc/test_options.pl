@@ -147,6 +147,7 @@ Readonly my @OPTIONS => (
         tests => [
             { cmd => "$TECO -z",    result => 'Unknown option' },
             { cmd => "$TECO --foo", result => 'Unknown option' },
+            { cmd => 'teco --baz',  result => 'Unknown option' },
         ],
     },
     {

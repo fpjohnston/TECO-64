@@ -581,7 +581,7 @@ static void parse_options(
     opterr = 0;                         // Suppress any error messages
 
     int c;                              // Current option
-    int lastind = optind;               // Used to analyze errors (see below)
+    int lastind = 1;                    // Used to analyze errors (see below)
 
     while ((c = getopt_long(argc, (char * const *)argv,
                             optstring, long_options, NULL)) != -1)
