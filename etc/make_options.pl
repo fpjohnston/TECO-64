@@ -156,7 +156,7 @@ sub build_strings
 
         $header{enums} .= sprintf "    OPT_%-12s = '%s',\n", $enum, $short;
 
-        $header{long} .= sprintf "    { %-17s %-18s  NULL, OPT_%-12s },\n",
+        $header{long} .= sprintf "    { %-17s %-18s  NULL, -OPT_%-12s },\n",
           "\"$long\",", "$arg,", $enum;
     }
 

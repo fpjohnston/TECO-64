@@ -87,6 +87,6 @@ static const char * const optstring = ":/* (INSERT: SHORT OPTIONS) */";
 static const struct option long_options[] =
 {
 /* (INSERT: LONG OPTIONS) */
-    { NULL,             no_argument,        NULL,  0               },  // Markers for end of list
+    { NULL,             no_argument,        NULL,  0                },  // Markers for end of list
 };
 

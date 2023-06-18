@@ -105,21 +105,11 @@ static struct options options =
 
 // Local functions
 
-static void opt_arguments(const char *const argv[]);
-
-static void opt_display(void);
-
-static void opt_execute(const char *const argv[]);
+static void opt_arguments(bool optlong, const char *const argv[]);
 
 static void opt_help(void);
 
-static void opt_initialize(const char *const argv[]);
-
-static void opt_keys(void);
-
-static void opt_log(const char *const argv[]);
-
-static void opt_scroll(const char *const argv[]);
+static void opt_scroll(bool optlong, const char *const argv[]);
 
 static void opt_version(void);
 
@@ -249,9 +239,10 @@ void init_options(
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void opt_arguments(const char *const argv[])
+static void opt_arguments(bool optlong, const char *const argv[])
 {
     assert(argv != NULL);
+    assert(optarg != NULL);
 
     const char *p = optarg;
     int nbytes;
@@ -279,49 +270,7 @@ static void opt_arguments(const char *const argv[])
         }
     }
 
-    assert(optind >= 2);
-
-    quit("Invalid value '%s' for %s option", optarg, argv[optind - 2]);
-}
-
-
-///
-///  @brief    Parse -D and --display options.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void opt_display(void)
-{
-    if (optarg != NULL)
-    {
-        teco_vtedit = optarg;
-    }
-
-    options.display = true;
-}
-
-
-///
-///  @brief    Parse -E and --execute options.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void opt_execute(const char *const argv[])
-{
-    assert(argv != NULL);
-
-    if (optarg[0] == '-')
-    {
-        assert(optind >= 2);
-
-        quit("Invalid file name for %s option", argv[optind - 2]);
-    }
-
-    push_opt('E', optarg);
+    quit("Invalid value '%s' for %s option", optarg, optlong ? "--arguments" : "-A");
 }
 
 
@@ -347,80 +296,6 @@ static void opt_help(void)
 
 
 ///
-///  @brief    Parse -I and --initialize options.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void opt_initialize(const char *const argv[])
-{
-    assert(argv != NULL);
-
-    if (optarg[0] == '-')
-    {
-        assert(optind >= 2);
-
-        quit("Invalid file name for %s option", argv[optind - 2]);
-    }
-
-    teco_init = optarg;
-}
-
-
-///
-///  @brief    Parse --keys option.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void opt_keys(void)
-{
-
-#if     defined(DEBUG)          // Include --key option
-
-    if (optarg != NULL && optarg[0] != '-')
-    {
-        key_name = optarg;
-    }
-    else
-    {
-        key_name = NULL;
-    }
-
-#else
-
-    quit("--keys option is only available in debug builds");
-
-#endif
-
-}
-
-
-///
-///  @brief    Parse -L and --log options.
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-static void opt_log(const char *const argv[])
-{
-    assert(argv != NULL);
-
-    if (optarg[0] == '-')
-    {
-        assert(optind >= 2);
-
-        quit("Invalid file name for %s option", argv[optind - 2]);
-    }
-
-    push_opt('L', optarg);
-}
-
-
-///
 ///  @brief    Parse -S and --scroll options. These are used to specify the
 ///            size of the command window in display mode.
 ///
@@ -435,7 +310,7 @@ static void opt_log(const char *const argv[])
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void opt_scroll(const char *const argv[])
+static void opt_scroll(bool optlong, const char *const argv[])
 {
     assert(argv != NULL);
 
@@ -453,9 +328,7 @@ static void opt_scroll(const char *const argv[])
         }
     }
 
-    assert(optind >= 2);
-
-    quit("Invalid value '%s' for %s option", optarg, argv[optind - 2]);
+    quit("Invalid value '%s' for %s option", optarg, optlong ? "--scroll" : "-S");
 }
 
 
@@ -498,7 +371,7 @@ static void parse_files(
 {
     static const char *EB_cmd = "EB%s\e Y :^AEditing file '%s'\1";
     static const char *ER_cmd = "ER%s\e Y :^AReading file '%s'\1";
-    static const char *EW_cmd = ":^ACreating new file '%s'\1 EW%s\e";
+    static const char *EW_cmd = "%d\"L :^ACreating new file '%s'\1 ' EW%s\e";
 
     assert(argv != NULL);               // Error if no argument list
 
@@ -570,7 +443,7 @@ static void parse_files(
             store_cmd(":^ANot war?\1"); // Classic TECO message
         }
 
-        store_cmd(EW_cmd, arg1, arg1);
+        store_cmd(EW_cmd, access(arg1, F_OK), arg1, arg1);
 
         return;
     }
@@ -594,7 +467,7 @@ static void parse_files(
             }
 
             store_cmd(ER_cmd, arg1, arg1);
-            store_cmd(EW_cmd, arg2, arg2);
+            store_cmd(EW_cmd, access(arg2, F_OK), arg2, arg2);
 
             teco_memory = NULL;         // Don't save file name on exit
 
@@ -615,7 +488,7 @@ static void parse_files(
         else
         {
             store_cmd(":^ACan't find file '%s'\1", arg1);
-            store_cmd(EW_cmd, arg1, arg1);
+            store_cmd(EW_cmd, -1, arg1, arg1);
 
             return;
         }
@@ -707,46 +580,91 @@ static void parse_options(
     optind = 0;                         // Reset from any previous calls
     opterr = 0;                         // Suppress any error messages
 
-    int c;
-    int lastopt = 1;                    // Used to analyze errors (see below)
+    int c;                              // Current option
+    int lastind = optind;               // Used to analyze errors (see below)
 
     while ((c = getopt_long(argc, (char * const *)argv,
                             optstring, long_options, NULL)) != -1)
     {
-        switch (c)
+        //  The following handles the case where an option is missing a
+        //  required argument, but is followed by one or more other options.
+
+        if (optarg != NULL && optarg[0] == '-')
         {
-            // Options that just set values
+            quit("Missing argument for %s option", argv[optind - 2]);
+        }
 
-            case OPT_create:       options.create   = 1;        break;
-            case OPT_exit:         options.exit     = true;     break;
-            case OPT_make:         options.make     = true;     break;
-            case OPT_mung:         options.mung     = true;     break;
-            case OPT_nocreate:     options.create   = -1;       break;
-            case OPT_nodefaults:   teco_init        = NULL;
-                                   teco_memory      = NULL;
-                                   //lint -fallthrough
-            case OPT_nodisplay:    options.display  = false;
-                                   teco_vtedit      = NULL;     break;
-            case OPT_noinitialize: teco_init        = NULL;     break;
-            case OPT_nomemory:     teco_memory      = false;    break;
-            case OPT_noread_only:  options.readonly = false;    break;
-            case OPT_practice:     options.practice = true;     break; // (Hidden)
-            case OPT_read_only:    options.readonly = true;     break;
+        bool optlong = (c < 0);         // true if long option, else false
 
-            // Options that call functions
+        switch (abs(c))                 // long option = -(short option)
+        {
+            case OPT_arguments:    opt_arguments(optlong, argv);  break;
 
-            case OPT_arguments:    opt_arguments(argv);         break;
-            case OPT_display:      opt_display();               break;
-            case OPT_execute:      opt_execute(argv);           break;
-            case OPT_formfeed:     push_opt('F', NULL);         break;
-            case OPT_help:         opt_help();                  break;
-            case OPT_initialize:   opt_initialize(argv);        break;
-            case OPT_keys:         opt_keys();                  break;
-            case OPT_log:          opt_log(argv);               break;
-            case OPT_noformfeed:   push_opt('f', NULL);         break;
-            case OPT_scroll:       opt_scroll(argv);            break;
-            case OPT_text:         push_opt('T', optarg);       break;
-            case OPT_version:      opt_version();               break;
+            case OPT_create:       options.create = 1;            break;
+
+            case OPT_display:
+                options.display = true;
+
+                if (optarg != NULL)
+                {
+                    teco_vtedit = optarg;
+                }
+
+                break;
+
+            case OPT_execute:      push_opt('E', optarg);         break;
+
+            case OPT_exit:         options.exit = true;           break;
+
+            case OPT_formfeed:     push_opt('F', NULL);           break;
+
+            case OPT_help:         opt_help();                    break;
+
+            case OPT_initialize:   teco_init = optarg;            break;
+
+#if     defined(DEBUG)          // Include --keys option
+
+            case OPT_keys:        key_name = optarg;              break;
+
+#else
+
+            case OPT_keys:
+                quit("--keys option is only available in debug builds");
+
+#endif
+
+            case OPT_log:          push_opt('L', optarg);         break;
+
+            case OPT_make:         options.make = true;           break;
+
+            case OPT_mung:         options.mung = true;           break;
+
+            case OPT_nocreate:     options.create = -1;           break;
+
+            case OPT_nodefaults:   teco_init = NULL;
+                                   teco_memory = NULL;
+                                    //lint -fallthrough
+
+            case OPT_nodisplay:    options.display = false;
+                                   teco_vtedit = NULL;            break;
+
+            case OPT_noformfeed:   push_opt('f', NULL);           break;
+
+            case OPT_noinitialize: teco_init = NULL;              break;
+
+            case OPT_nomemory:     teco_memory = false;           break;
+
+            case OPT_noread_only:  options.readonly = false;      break;
+
+            case OPT_practice:     options.practice = true;       break; // (Hidden)
+
+            case OPT_read_only:    options.readonly = true;       break;
+
+            case OPT_scroll:       opt_scroll(optlong, argv);     break;
+
+            case OPT_text:         push_opt('T', optarg);         break;
+
+            case OPT_version:      opt_version();                 break;
 
             case ':':
                 quit("Missing argument for %s option", argv[optind - 1]);
@@ -783,7 +701,7 @@ static void parse_options(
                 //      teco -x          argv[optind-1] points to option.
                 //      teco --x         argv[optind-1] points to option.
 
-                if (optopt != 0 && optind == lastopt)
+                if (optopt != 0 && optind == lastind)
                 {
                     quit("%s '-%c': %s", badopt, optopt, usehelp);
                 }
@@ -796,7 +714,7 @@ static void parse_options(
                     //  about the extraneous argument rather than carping
                     //  about an unknown option.
 
-                    const char *arg = argv[optind - 1];
+                    const char *arg = argv[lastind];
                     const char *p;
 
                     if ((p = strchr(arg, '=')) != NULL)
@@ -811,7 +729,7 @@ static void parse_options(
                 }
         }
 
-        lastopt = optind;
+        lastind = optind;
     }
 }
 

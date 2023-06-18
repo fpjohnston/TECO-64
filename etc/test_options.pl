@@ -152,18 +152,30 @@ Readonly my @OPTIONS => (
     {
         name  => q{missing arguments},
         tests => [
-            { cmd => "$TECO -A",           result => 'Missing argument' },
-            { cmd => "$TECO -E",           result => 'Missing argument' },
-            { cmd => "$TECO -I",           result => 'Missing argument' },
-            { cmd => "$TECO -L",           result => 'Missing argument' },
-            { cmd => "$TECO -S",           result => 'Missing argument' },
-            { cmd => "$TECO -T",           result => 'Missing argument' },
-            { cmd => "$TECO --arguments",  result => 'Missing argument' },
-            { cmd => "$TECO --execute",    result => 'Missing argument' },
-            { cmd => "$TECO --initialize", result => 'Missing argument' },
-            { cmd => "$TECO --log",        result => 'Missing argument' },
-            { cmd => "$TECO --scroll",     result => 'Missing argument' },
-            { cmd => "$TECO --text",       result => 'Missing argument' },
+            { cmd => "$TECO -A",              result => 'Missing argument' },
+            { cmd => "$TECO -A --zero",       result => 'Missing argument' },
+            { cmd => "$TECO -E",              result => 'Missing argument' },
+            { cmd => "$TECO -E --zero",       result => 'Missing argument' },
+            { cmd => "$TECO -I",              result => 'Missing argument' },
+            { cmd => "$TECO -I --zero",       result => 'Missing argument' },
+            { cmd => "$TECO -L",              result => 'Missing argument' },
+            { cmd => "$TECO -L --zero",       result => 'Missing argument' },
+            { cmd => "$TECO -S",              result => 'Missing argument' },
+            { cmd => "$TECO -S --zero",       result => 'Missing argument' },
+            { cmd => "$TECO -T",              result => 'Missing argument' },
+            { cmd => "$TECO -T --zero",       result => 'Missing argument' },
+            { cmd => "$TECO --arguments",     result => 'Missing argument' },
+            { cmd => "$TECO --arguments -Z",  result => 'Missing argument' },
+            { cmd => "$TECO --execute",       result => 'Missing argument' },
+            { cmd => "$TECO --execute -Z",    result => 'Missing argument' },
+            { cmd => "$TECO --initialize",    result => 'Missing argument' },
+            { cmd => "$TECO --initialize -Z", result => 'Missing argument' },
+            { cmd => "$TECO --log",           result => 'Missing argument' },
+            { cmd => "$TECO --log -Z",        result => 'Missing argument' },
+            { cmd => "$TECO --scroll",        result => 'Missing argument' },
+            { cmd => "$TECO --scroll -Z",     result => 'Missing argument' },
+            { cmd => "$TECO --text",          result => 'Missing argument' },
+            { cmd => "$TECO --text -Z",       result => 'Missing argument' },
         ],
     },
     {
@@ -189,18 +201,14 @@ Readonly my @OPTIONS => (
             { cmd => "$TECO -Ax",              result => 'Invalid value' },
             { cmd => "$TECO -A2,x",            result => 'Invalid value' },
             { cmd => "$TECO -A2,3x",           result => 'Invalid value' },
-            { cmd => "$TECO -A -Z",            result => 'Invalid value' },
             { cmd => "$TECO -Sx",              result => 'Invalid value' },
             { cmd => "$TECO -S2x",             result => 'Invalid value' },
-            { cmd => "$TECO -S -Z",            result => 'Invalid value' },
             { cmd => "$TECO --arguments=x",    result => 'Invalid value' },
             { cmd => "$TECO --arguments=2,x",  result => 'Invalid value' },
             { cmd => "$TECO --arguments=2,3x", result => 'Invalid value' },
-            { cmd => "$TECO --arguments -Z",   result => 'Invalid value' },
             { cmd => "$TECO --scroll=x",       result => 'Invalid value' },
             { cmd => "$TECO --scroll=2x",      result => 'Invalid value' },
             { cmd => "$TECO --scroll=2,3x",    result => 'Invalid value' },
-            { cmd => "$TECO --scroll -Z",      result => 'Invalid value' },
         ],
     },
 );
@@ -250,8 +258,9 @@ for my $href (@OPTIONS)
 
 if ($summary)
 {
-    printf "Executed %d test%s\n", $ntests, $ntests == 1 ? q{} : 's';
-    printf "$okay completed OK, $failed failed\n";
+    printf "%d test%s executed with %d failure%s\n",
+      $ntests, $ntests == 1 ? q{} : 's',
+      $failed, $failed == 1 ? q{} : 's';
 }
 
 exit( $okay == $ntests ? 0 : 1 );       # Return success (0) or failure (1)
