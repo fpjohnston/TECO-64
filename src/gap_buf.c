@@ -161,11 +161,6 @@ bool append_edit(struct ifile *ifile, bool single)
 {
     assert(ifile != NULL);
 
-    if (!start_insert(ifile->size))
-    {
-        return false;
-    }
-
     int c;
     int next;
     uchar *p = eb.buf + eb.left;
@@ -173,7 +168,7 @@ bool append_edit(struct ifile *ifile, bool single)
 
     // Read characters until end of file or end of page
 
-    while ((c = getc(ifile->fp)) != EOF)
+    while ((c = fgetc(ifile->fp)) != EOF)
     {
         if (c == LF)
         {
@@ -918,11 +913,6 @@ uint_t size_edit(uint_t size)
 
 static bool start_insert(uint_t nbytes)
 {
-    if (nbytes == 0)
-    {
-        return false;
-    }
-
     // Make sure data can fit in the space we have. If not, increase by 50%.
 
     while (eb.gap < nbytes)
