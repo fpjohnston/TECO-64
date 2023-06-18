@@ -73,6 +73,7 @@ my %tokens = (
         'cmd2'  => q{cmd2.tmp},
         'in1'   => q{in1.tmp},
         'in2'   => q{in2.tmp},
+        'in3'   => q{in3.tmp},
         'log1'  => q{log1.tmp},
         'out1'  => q{out1.tmp},
         'out2'  => q{out2.tmp},
@@ -825,6 +826,10 @@ sub setup_test
     open $fh, '>', 'in1.tmp' or die "Can't create in1.tmp: $OS_ERROR\n";
 
     print {$fh} "hello, world!\n";
+
+    close $fh;
+
+    open $fh, '>', 'in3.tmp' or die "Can't create in3.tmp: $OS_ERROR\n";
 
     close $fh;
 
