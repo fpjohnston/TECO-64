@@ -162,8 +162,13 @@ option is specified by the user.
 ### Command-Line Options
 
 In addition to the name of a file to edit, there are a number of command-line
-options that may be specified when starting TECO.
-These are described below.
+options that may be specified when starting TECO, as described below.
+
+Neither the --make or --mung options may be specified more than once, and
+they may not be both specified.
+Other options may be specified multiple times.
+For example, the --execute option may be specified repeatedly in order to
+invoke multiple indirect command files.
 
 -A*nn*, --arguments=*nn*
  - Pass numeric argument *nn* to the next indirect command file specified with
@@ -229,11 +234,11 @@ variable or any previous -I or --initialize option.
 -m, --nomemory
  - Ignore the TECO_MEMORY environment variable.
 
---make *file*
+--make=*file*
  - Create the specified file, even if it already exists.
 This is similar to the TECO MAKE command.
 
---mung *file*
+--mung=*file*
  - Execute the specified file as an indirect command file.
 This is similar to the TECO MUNG command.
 

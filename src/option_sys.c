@@ -71,12 +71,10 @@ struct options
     uint next;                      ///< Next option on stack
     const char *mn_args;            ///< Current numeric arguments (from -A)
     int scroll;                     ///< --scroll option
-    int create;                     ///< --create option
+    bool create;                    ///< --create option
     bool display;                   ///< --display option
     bool readonly;                  ///< --read-only option
     bool exit;                      ///< --exit option
-    bool mung;                      ///< --mung option
-    bool make;                      ///< --make option
     bool practice;                  ///< --practice option (hidden)
 };
 
@@ -93,14 +91,18 @@ static struct options options =
     .next     = 0,
     .mn_args  = NULL,
     .scroll   = 0,
-    .create   = 0,
+    .create   = false,
     .display  = true,
     .readonly = false,
     .exit     = false,
-    .mung     = false,
-    .make     = false,
     .practice = false,
 };
+
+///   @var      EW_cmd
+///
+///   @brief    String for executing EW command.
+
+static const char *EW_cmd = "%d\"L :^ACreating new file '%s'\1 ' EW%s\e";
 
 
 // Local functions
@@ -119,7 +121,7 @@ static void parse_mung(const char *p);
 
 static void parse_options(int argc, const char *const argv[]);
 
-static void pop_opts(void);
+static bool pop_opts(void);
 
 static void push_opt(char option, const char *arg);
 
@@ -156,9 +158,10 @@ void init_options(
         store_cmd("EI%s\e", teco_init);
     }
 
-    pop_opts();                         // Pop any options saved on stack
-
-    parse_files(argc, argv);
+    if (pop_opts())                     // Pop any options saved on stack
+    {
+        parse_files(argc, argv);        // Then parse files to edit
+    }
 
     if (optind < argc)
     {
@@ -371,7 +374,6 @@ static void parse_files(
 {
     static const char *EB_cmd = "EB%s\e Y :^AEditing file '%s'\1";
     static const char *ER_cmd = "ER%s\e Y :^AReading file '%s'\1";
-    static const char *EW_cmd = "%d\"L :^ACreating new file '%s'\1 ' EW%s\e";
 
     assert(argv != NULL);               // Error if no argument list
 
@@ -381,15 +383,6 @@ static void parse_files(
     }
     else if (optind >= argc)            // Do have have any files?
     {
-        if (options.mung)               //--mung requires a file
-        {
-            quit("How can I mung nothing?");
-        }
-        else if (options.make)          // --make requires a file
-        {
-            quit("How can I make nothing?");
-        }
-
         // See if there is a memory file we can use
 
         if (teco_memory != NULL)
@@ -430,24 +423,7 @@ static void parse_files(
 
     const char *arg1 = argv[optind++];
 
-    if (options.mung)
-    {
-        parse_mung(arg1);
-
-        return;
-    }
-    else if (options.make)
-    {
-        if (!strcasecmp(arg1, "love"))
-        {
-            store_cmd(":^ANot war?\1"); // Classic TECO message
-        }
-
-        store_cmd(EW_cmd, access(arg1, F_OK), arg1, arg1);
-
-        return;
-    }
-    else if (optind < argc)             // Do we have a second file?
+    if (optind < argc)                  // Do we have a second file?
     {
         const char *arg2 = argv[optind++];
         dev_t device1, device2;         // Device IDs
@@ -481,7 +457,7 @@ static void parse_files(
     }
     else if (access(arg1, F_OK) != 0)   // Write new file if it doesn't exist
     {
-        if (options.create == -1)
+        if (!options.create)
         {
             quit("Can't find file '%s'", arg1);
         }
@@ -591,7 +567,7 @@ static void parse_options(
 
         if (optarg != NULL && optarg[0] == '-')
         {
-            quit("Missing argument for %s option", argv[optind - 2]);
+            quit("Argument required for %s option", argv[optind - 2]);
         }
 
         bool optlong = (c < 0);         // true if long option, else false
@@ -600,17 +576,9 @@ static void parse_options(
         {
             case OPT_arguments:    opt_arguments(optlong, argv);  break;
 
-            case OPT_create:       options.create = 1;            break;
+            case OPT_create:       options.create = true;         break;
 
-            case OPT_display:
-                options.display = true;
-
-                if (optarg != NULL)
-                {
-                    teco_vtedit = optarg;
-                }
-
-                break;
+            case OPT_display:      push_opt('D', optarg);         break;
 
             case OPT_execute:      push_opt('E', optarg);         break;
 
@@ -624,7 +592,7 @@ static void parse_options(
 
 #if     defined(DEBUG)          // Include --keys option
 
-            case OPT_keys:        key_name = optarg;              break;
+            case OPT_keys:         key_name = optarg;             break;
 
 #else
 
@@ -635,11 +603,11 @@ static void parse_options(
 
             case OPT_log:          push_opt('L', optarg);         break;
 
-            case OPT_make:         options.make = true;           break;
+            case OPT_make:         push_opt('M', optarg);         break;
 
-            case OPT_mung:         options.mung = true;           break;
+            case OPT_mung:         push_opt('m', optarg);         break;
 
-            case OPT_nocreate:     options.create = -1;           break;
+            case OPT_nocreate:     options.create = false;        break;
 
             case OPT_nodefaults:   teco_init = NULL;
                                    teco_memory = NULL;
@@ -667,7 +635,18 @@ static void parse_options(
             case OPT_version:      opt_version();                 break;
 
             case ':':
-                quit("Missing argument for %s option", argv[optind - 1]);
+                if (optopt == -OPT_make)
+                {
+                    quit("How can I make nothing?");
+                }
+                else if (optopt == -OPT_mung)
+                {
+                    quit("How can I mung nothing?");
+                }
+                else
+                {
+                    quit("Argument required for %s option", argv[optind - 1]);
+                }
 
             case '?':
             default:
@@ -737,35 +716,95 @@ static void parse_options(
 ///
 ///  @brief    Pop command-line options from stack.
 ///
-///  @returns  Nothing.
+///  @returns  true if it's okay to parse files, else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-static void pop_opts(void)
+static bool pop_opts(void)
 {
+    bool mung = false;
+    bool make = false;
+
     for (uint i = 0; i < options.next; ++i)
     {
         const char *arg = options.args[i];
 
         switch (options.stack[i])
         {
-            case 'A': options.mn_args = arg;    break;
+            case 'A':
+                options.mn_args = arg;
 
-            case 'E': parse_mung(arg);          break;
+                break;
 
-            case 'F': store_cmd("1,0E3");       break;
+            case 'E':
+                parse_mung(arg);
 
-            case 'f': store_cmd("0,1E3");       break;
+                break;
 
-            case 'L': store_cmd("EL%s\e", arg); break;
+            case 'F':
+                store_cmd("1,0E3");
 
-            case 'T': store_cmd("I%s\e", arg);  break;
+                break;
 
-            default:                            break;
+            case 'f':
+                store_cmd("0,1E3");
+
+                break;
+
+            case 'L':
+                store_cmd("EL%s\e", arg);
+
+                break;
+
+            case 'M':
+                if (make)
+                {
+                    quit("Duplicate --make option");
+                }
+
+                make = true;
+
+                // Can't skip the classic TECO message
+
+                if (!strcasecmp(arg, "love"))
+                {
+                    store_cmd(":^ANot war?\1");
+                }
+
+                store_cmd(EW_cmd, access(arg, F_OK), arg, arg);
+
+                break;
+
+            case 'm':
+                if (mung)
+                {
+                    quit("Duplicate --mung option");
+                }
+
+                mung = true;
+
+                parse_mung(arg);
+
+                break;
+
+            case 'T':
+                store_cmd("I%s\e", arg);
+
+                break;
+
+            default:
+                break;
         }
     }
 
+    if (make && mung)
+    {
+        quit("Conflicting options");
+    }
+
     options.next = 0;
+
+    return !make && !mung;              // Don't parse files if --make or --mung
 }
 
 
@@ -783,6 +822,18 @@ static void push_opt(char option, const char *arg)
     if (options.next == NOPTIONS)
     {
         quit("Too many options");
+    }
+
+    if (option == 'D')
+    {
+        options.display = true;
+
+        if (arg != NULL)
+        {
+            teco_vtedit = arg;
+        }
+
+        return;
     }
 
     options.stack[options.next] = option;

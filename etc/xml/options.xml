@@ -35,7 +35,8 @@
         </option>
         <option>
             <long_name>make</long_name>
-            <help>Equivalent to TECO MAKE command.</help>
+            <argument>required</argument>
+            <help>Create new file 'foo'. Similar to TECO MAKE command.</help>
         </option>
     </section>
     <section title="Indirect command file options">
@@ -49,7 +50,7 @@
             <short_name>E</short_name>
             <long_name>execute</long_name>
             <argument>required</argument>
-            <help>Execute TECO macro in file 'foo'.</help>
+            <help>Execute macro in file 'foo'.</help>
         </option>
         <option>
             <short_name>T</short_name>
@@ -59,7 +60,8 @@
         </option>
         <option>
             <long_name>mung</long_name>
-            <help>Equivalent to TECO MUNG command.</help>
+            <argument>required</argument>
+            <help>Execute macro in file 'foo'. Similar to TECO MUNG command.</help>
         </option>
     </section>
     <section title="Initialization options">
