@@ -592,7 +592,14 @@ void scan_texts(struct cmd *cmd, int ntexts, int delim)
 
         c = require_cbuf();             // Get text string delimiter
 
-        if (isgraph(c) || (c >= CTRL_A && c <= CTRL_Z))
+        //  The n@O/list/ command expects a comma-separated list, so a comma
+        //  as a delimiter for the text string isn't allowed.
+
+        if (c == ',' && toupper(cmd->c1) == 'O')
+        {
+            throw(E_TXT, c);            // Invalid text delimiter
+        }
+        else if (isgraph(c) || (c >= CTRL_A && c <= CTRL_Z))
         {
             delim = (char)c;
         }
