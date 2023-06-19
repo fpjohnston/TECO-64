@@ -106,8 +106,11 @@ name *baz* on exit.
 
 ### Environment Variables
 
-All of the following environment variables are optional; none of them need to
-be defined prior to invoking TECO.
+TECO is able to make use of several environment variables, as described below.
+These are often for purposes of setting up commonly-used parameters in editing
+sessions, or for defining shortcuts for sequences of commands.
+These are provided as a convenience to the user, and none are required in
+order to use TECO.
 
 TECO_INIT
  - This specifies a relative or absolute path of a file containing TECO commands
@@ -246,7 +249,8 @@ This is similar to the TECO MUNG command.
 -S*nn*, --scroll=*nn*
  - Start TECO in split-screen display mode, with *nn* lines for a command window
 (a.k.a. scrolling region).
- - This option implies the --display option.
+ - This option implies the --display option, with the same conditions as
+described above.
 
 -T*string*, --text=*string*
  - Insert *string* into edit buffer as text before TECO starts.
