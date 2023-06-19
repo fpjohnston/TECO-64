@@ -37,7 +37,7 @@
         ^^]^T                       ! Terminate the announcement !
         [[^T]]                          ! End the line !
     '
-    Q4 "N %1 | %2 '                 ! Increment success/failure count !
+    Q4 "N %1 ^[ | %2 ^[ '           ! Increment success/failure count !
 $                                   ! Q-register 2 is complete now !
 
 ! Q-register 1 contains the name of each key we're trying to map !

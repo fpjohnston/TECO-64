@@ -119,7 +119,6 @@ union e2_flag
         uint n_arg  : 1;        ///< Invalid n argument
         uint colon  : 1;        ///< Invalid :, or more than two colons
         uint atsign : 1;        ///< Invalid @, or more than one @
-        uint loop   : 1;        ///< Loop not complete within conditional
         uint quote  : 1;        ///< Conditional not complete within loop
         uint page   : 1;        ///< m,n:P or H:P or :PW
         uint args   : 1;        ///< Too many arguments for command

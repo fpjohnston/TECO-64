@@ -84,14 +84,6 @@ void exec_F_greater(struct cmd *cmd)
     {
         uint i = ctrl.level - 1;
 
-        if (f.e2.loop)
-        {
-            if (ctrl.loop[i].depth != ctrl.depth)
-            {
-                throw(E_MAP);           // Missing apostrophe
-            }
-        }
-
         if (ctrl.loop[i].iter == INFINITE || --ctrl.loop[i].iter > 0)
         {
             cbuf->pos = ctrl.loop[i].pos; // Go back to start of loop
@@ -154,14 +146,6 @@ void exec_greater(struct cmd *cmd)
     }
 
     uint i = ctrl.level - 1;
-
-    if (f.e2.loop)
-    {
-        if (ctrl.loop[i].depth != ctrl.depth)
-        {
-            throw(E_MAP);               // Missing apostrophe
-        }
-    }
 
     if (ctrl.loop[i].iter == INFINITE || --ctrl.loop[i].iter > 0)
     {

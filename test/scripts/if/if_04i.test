@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Test if statement with right angle  !
+!  Command: "E | ' !
+!     TECO: ?BNI !
+
+[[enter]]
+
+0 "E > '                                ! Test: "E ' !
+
+[[exit]]

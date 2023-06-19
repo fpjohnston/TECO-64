@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Test if/else statement with loop  !
+!  Command: "E ' !
+!     TECO: ?MRA !
+
+[[enter]]
+
+1 "E 1< ' >                             ! Test: "E ' !
+
+[[exit]]

@@ -68,6 +68,8 @@ void exec_else(struct cmd *cmd)
 
     skip_if(NO_ELSE);                   // Skip to end of conditional
 
+    cmd->keep = true;                   // Say we need to retain m & n args.
+
     reset_x();                          // Reset expression stack
 }
 
@@ -86,10 +88,16 @@ void exec_endif(struct cmd *cmd)
     scan_x(cmd);
     confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
-    if (ctrl.depth-- == 0)
+    //  We don't allow an end of conditional unless we have the start of a
+    //  conditional. And all conditionals must be complete within a loop.
+
+    if ((ctrl.level > 0 && ctrl.depth <= ctrl.loop[ctrl.level - 1].depth) ||
+        ctrl.depth-- == 0)
     {
         throw(E_MSC);                   // Missing start of conditional
     }
+
+    cmd->keep = true;                   // Say we need to retain m & n args.
 
     reset_x();                          // Reset expression stack
 }
@@ -140,6 +148,8 @@ void exec_F_endif(struct cmd *cmd)
     }
 
     skip_if(NO_ELSE);                   // Skip to end of conditional
+
+    cmd->keep = true;                   // Say we need to retain m & n args.
 
     reset_x();                          // Reset expression stack
 }

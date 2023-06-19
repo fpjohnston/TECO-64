@@ -1,0 +1,12 @@
+! Smoke test for TECO text editor !
+
+! Function: Test basic if statement !
+!  Command: "E ' !
+!     TECO: FAIL !
+
+[[enter]]
+
+1 "E @O!exit! ' [[FAIL]]                ! Test: "E ' !
+
+!exit!
+[[exit]]

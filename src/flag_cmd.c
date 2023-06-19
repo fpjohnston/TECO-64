@@ -196,7 +196,6 @@ void exec_E2(struct cmd *cmd)
     f.e2.n_arg  = e2.n_arg;
     f.e2.colon  = e2.colon;
     f.e2.atsign = e2.atsign;
-    f.e2.loop   = e2.loop;;
     f.e2.quote  = e2.quote;
     f.e2.page   = e2.page;
     f.e2.args   = e2.args;

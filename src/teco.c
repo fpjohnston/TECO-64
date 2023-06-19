@@ -97,7 +97,6 @@ struct flags f =                    ///< Global flag variables
     .e2.number = true,              // Require canonical form for numbers
     .e2.m_arg  = true,              // Invalid m argument
     .e2.n_arg  = true,              // Invalid n argument
-    .e2.loop   = true,              // Loop not complete within conditional
     .e2.quote  = true,              // Conditional not complete within loop
     .e2.page   = true,              // m,n:P or H:P or :PW
     .e2.args   = true,              // Too many arguments for command

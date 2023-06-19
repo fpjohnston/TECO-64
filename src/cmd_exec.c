@@ -359,6 +359,7 @@ static INLINE void scan_cmd(struct cmd *cmd)
     //
     //      [q - Push Q-register.
     //      ]q - Pop Q-register.
+    //      '  - End of conditional.
     //      !  - Tag. This allows comments to be used between commands, one of
     //           which generates numeric arguments, and the other which uses
     //           them.

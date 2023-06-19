@@ -59,15 +59,14 @@ are set or cleared.
 | --- | -------- |
 | E2&1 | If set, issue DIV error if attempt is made to divide by zero. |
 | E2&2 | If set, issue IFE error if double operators are used in expressions (for example, 2**3). |
-| E2&4 | If set, issue ATS error if command does not allow an at sign modifier, or if more than one at sign modifier is seen. |
-| E2&8 | If set, issue COL error if command does not allow a colon modifier, or if more than two colon modifiers are seen. |
-| E2&16 | If set, issue MCA error if missing m argument before comma command. |
-| E2&32 | If set, issue IMA error if command does not allow an m argument. |
-| E2&64 | If set, issue INA error if command does not allow an n argument. |
-| E2&128 | If set, issue MAP error if loop is not complete within a conditional. |
-| E2&256 | If set, issue BNI error if conditional is not complete within a loop. |
-| E2&512 | If set, issue NAT error for m,n:P or H:P or :PW. |
-| E2&1024 | If set, issue ARG error if command has too many arguments. |
+| E2&4 | If set, require canonical form for numbers (no characters between digits). |
+| E2&8 | If set, issue IMA error if command does not allow an m argument. |
+| E2&16 | If set, issue INA error if command does not allow an n argument. |
+| E2&32 | If set, issue COL error if command does not allow a colon modifier, or if more than two colon modifiers are seen. |
+| E2&64 | If set, issue ATS error if command does not allow an at sign modifier, or if more than one at sign modifier is seen. |
+| E2&128 | If set, issue BNI error if conditional is not complete within a loop. |
+| E2&256 | If set, issue NAT error for m,n:P or H:P or :PW. |
+| E2&512 | If set, issue ARG error if command has too many arguments. |
 
 ### E3 - File Operations Flag
 
