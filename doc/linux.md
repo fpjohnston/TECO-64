@@ -43,7 +43,7 @@ built by typing:
 #### Virtual Memory Paging
 
 TECO normally expects to be able to use virtual memory, which is required for
-certain commands such as -P or -N that need to page backwards through a file.
+certain commands such as -P or -N that page backwards through a file.
 
 If virtual memory is unavailable, or backwards paging is not needed, or it is
 necessary or desirable to keep memory use to a minimum, it is possible to build
@@ -80,8 +80,8 @@ teco
 
 TECO can generally edit only one file at a time, although it is possible
 to read one file and write another.
-Also, TECO allows for what are called primary and secondary input and output
-streams, and the ability to switch between them.
+Also, TECO allows for primary and secondary streams for both input and output,
+and the ability to switch between them.
 
 The following outlines some simple ways to start an editing session.
 
@@ -93,109 +93,16 @@ TECO_MEMORY environment variable (described below) is defined.
 edited.
 
 teco *foo*
- - Open *foo* for editing (using the EB command) and read in the first page.
+ - Open *foo* for editing and read in the first page.
  - If the TECO_MEMORY environment variable is defined, then save the file
 name *foo* on exit.
 
 teco *foo* *baz*
- - Open *foo* for input (using the ER command) and read in the first page,
-and open *baz* for output (using the EW command), overwriting any existing file.
+ - Open *foo* for input and read in the first page, and open *baz* for output,
+overwriting any existing file.
 The EK command may be used to undo this and recover the original file.
  - If the TECO_MEMORY environment variable is defined, then save the file
 name *baz* on exit.
-
-### Command-Line Options
-
-In addition to the name of a file to edit, there are a number of command-line
-options that may be specified when starting TECO.
-These are described below.
-
-Note that some options (-E, -I, and -V) allow quoted strings to be used
-as arguments.
-Depending on the shell or command interpreter, some characters, such as
-single or double quotes, may need to be escaped so that they will be
-properly passed to TECO.
-
--A*nn*, --arguments=*nn*
- - Pass numeric argument *nn* to an indirect command file
-specified with a subsequent --execute option.
-
--A*mm*,*nn*, --arguments=*mm*,*nn*
- - Pass *mm* and *nn* numeric arguments to an indirect command file
-specified with a subsequent --execute option.
-
--C, --create (default)
- - If the specified file does not exist, then create it (using the EW command).
-This is similar to a *make* command in other versions of TECO.
-
--c, --nocreate
- - If the specified file does not exist, then issue an error and exit.
-
--D, --display
- - Start TECO in display mode (using the -W command).
-
--E*command*, --execute=*command*
- - Open *command* as an indirect command file (using the EI command). If file does
-not exist, TECO will try opening *command.tec*. This is similar to a *mung* command
-in other versions of TECO.
-
- - If *command* is a string in single or double quotes, then TECO will execute that
-as a command string instead of opening any file.
-
--F, --formfeed
- - Enables FF as a page delimiter.
-
--f, --noformfeed (default)
- - Disables FF as a page delimiter.
-
--H, --help
- - Print help message and exit.
-
--I*initfile*, --initialize=*initfile*
- - Open *initfile* as an indirect command file (using the EI command). If file does
-not exist, TECO will try opening *initfile.tec*. This overrides any initialization
-file specified using the TECO_INIT environment variable.
-
--i, --noinitialize
- - Do not use any initialization file, and do not check TECO_INIT.
-
--L*logfile*, --log=*logfile*
- - Open *logfile* as a log file for TECO input and/or output (the E3 flag
-variable controls whether either or both are logged).
-
--m, --nomemory
- - Do not use the TECO_MEMORY environment variable to find the name of the last edited file.
-
--n, --nodefaults
- - Equivalent to --noinitialize --nomemory --novtedit.
-
--R, --readonly
- - Open specified for inspection (using the ER command), and read in first page.
-
--r, --noreadonly (default)
- - Open specified file for input and output (using the EB command).
-
--S*nn*, --scroll=*nn*
- - Start TECO in split-screen display mode, with *nn* lines for a command window
-(a.k.a. scrolling region), using the -W and nn,7:W commands.
-
--T*string*, --text=*string*
- - Insert *string* into edit buffer as text before TECO starts (using the I command).
-Normally used in conjunction using the –execute option.
-
--V --vtedit=*vtfile*
- - Open *vtfile* as an indirect command file (using the EI command). If file does
-not exist, TECO will try opening *vtfile.tec*. This overrides any initialization
-file specified using the TECO_VTEDIT environment variable.
-
--v, --novtedit
- - Ignore TECO_VTEDIT environment and don't use any indirect command file to
-initialize the display.
-
--X, --exit
- - Used with -E to exit from TECO (using the EX command) once the indirect
-command file has been processed. Because of that, this option implicitly
-disables display mode (as though a --novtedit or -v option was used).
 
 ### Environment Variables
 
@@ -211,10 +118,6 @@ settings for flag variables.
 
  - If there is no period ('.') in the file name, it is assumed to end in '.tec'.
 
- - If TECO_INIT translates to a command string in single or double quotes,
-that string is executed as a series of TECO commands at start-up.
-
-
 | Example | Description |
 | ------- | ----------- |
 | TECO_INIT=init.tec | Use *init.tec* in current directory. |
@@ -228,9 +131,9 @@ TECO_LIBRARY
 file is not found in the local directory.
 
  - If the file specification includes a relative path, that will be appended
-to the library directory (so if TECO_LIBRARY translates to *lib*, and the
-indirect command file is *test/foo*, then the EI command will search first
-in *test/foo*, and then in *lib/test/foo*.
+to the library directory if necessary (for example, if TECO_LIBRARY translates to
+*lib*, and the indirect command file is *foo*, then the EI command will search first
+in the current directory, and then in *lib/foo*).
 
  - This environment variable is also used with any initialization file specified
 with the TECO_INIT or TECO_VTEDIT environment variables.
@@ -248,10 +151,113 @@ environment variable can be used to define an alternate prompt.
 TECO_VTEDIT
  - This specifies a relative or absolute path for a file containing commands to be
 used for editing in display mode.
-These will be executed when TECO is initialized, unless the -v or --novtedit
-option is specified.
+This file will be executed when TECO is initialized, unless the -d or --nodisplay
+option is specified by the user.
 
  - If there is no period ('.') in the file name, it is assumed to end in '.tec'.
 
- - If TECO_VTEDIT translates to a command string in single or double quotes,
-that string is executed as a series of TECO commands at start-up.
+### Command-Line Options
+
+In addition to the name of a file to edit, there are a number of command-line
+options that may be specified when starting TECO.
+These are described below.
+
+-A*nn*, --arguments=*nn*
+ - Pass numeric argument *nn* to the next indirect command file specified with
+a -E or --execute option.
+
+-A*mm*,*nn*, --arguments=*mm*,*nn*
+ - Pass *mm* and *nn* numeric arguments to the next indirect command file
+specified with a -E or --execute option.
+
+-C, --create (default)
+ - If the specified file does not exist, then create it.
+
+-c, --nocreate
+ - If the specified file does not exist, then issue an error and exit.
+
+-D*file*, --display=*file*
+ - Execute *file* as an initialization file for display mode.
+This takes precedence over a file specified by the TECO_VTEDIT environment
+variable.
+
+-D, --display
+- If an initialization file was specified by the TECO_VTEDIT environment
+variable or a --display=*file* command, then this option is a no-op.
+Otherwise, it executes a -1W command to start display mode.
+
+-d, --nodisplay
+ - Ignore any initialization file for display mode specified by the
+TECO_VTEDIT environment variable or a previous -D or --display option.
+
+-E*file*, --execute=*file*
+ - Open *file* as an indirect command file, and execute any TECO commands
+within it.
+
+ - If *command* is a string in single or double quotes, then TECO will directly
+execute that string as a sequence of TECO commands (note that depending
+on the shell being used, some characters may need to be escaped in order
+to be properly passed to TECO).
+
+- The --execute option may be specified multiple times, each optionally
+preceded by --arguments or --text options.
+
+-F, --formfeed
+ - Specifies that any form feed characters in edited files are page delimiters.
+
+-f, --noformfeed (default)
+ - Specifies that form feed characters in edited files are not treated specially.
+
+-H, --help
+ - Print help message and exit.
+
+-I*file*, --initialize=*file*
+ - Open *file* as an indirect command file.
+This takes precedence over a file specified by the TECO_INIT environment
+variable.
+
+-i, --noinitialize
+ - Ignore any initialization file specified by the TECO_INIT environment
+variable or any previous -I or --initialize option.
+
+-L*file*, --log=*file*
+ - Open *file* as a log file for TECO input and/or output.
+
+-m, --nomemory
+ - Ignore the TECO_MEMORY environment variable.
+
+--make *file*
+ - Create the specified file, even if it already exists.
+This is similar to the TECO MAKE command.
+
+--mung *file*
+ - Execute the specified file as an indirect command file.
+This is similar to the TECO MUNG command.
+
+-n, --nodefaults
+ - Equivalent to --noinitialize --nodisplay --nomemory.
+
+-R, --readonly
+ - Open any specified file for input.
+
+-r, --noreadonly (default)
+ - Open any specified file for input and output.
+
+-S*nn*, --scroll=*nn*
+ - Start TECO in split-screen display mode, with *nn* lines for a command window
+(a.k.a. scrolling region).
+ - This option implies the --display option.
+
+-T*string*, --text=*string*
+ - Insert *string* into edit buffer as text before TECO starts.
+Normally used in conjunction with the –execute option.
+
+--version
+ - Print version and copyright information.
+
+-X, --exit
+ - Exits from TECO after all other options have been processed.
+It is normally used in conjunction with the --execute option.
+ - This option implies the --nodisplay option.
+
+
