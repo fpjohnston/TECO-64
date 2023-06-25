@@ -44,30 +44,37 @@ critic:
 	@$(MAKE) obj/test_commands.tmp
 
 obj/Teco.tmp: etc/Teco.pm
+	@mkdir -p $(@D)
 	@perlcritic $<
 	@touch $@
 
 obj/commands.tmp: etc/make_commands.pl
+	@mkdir -p $(@D)
 	@perlcritic $<
 	@touch $@
 
 obj/errors.tmp: etc/make_errors.pl
+	@mkdir -p $(@D)
 	@perlcritic $<
 	@touch $@
 
 obj/options.tmp: etc/make_options.pl
+	@mkdir -p $(@D)
 	@perlcritic $<
 	@touch $@
 
 obj/version.tmp: etc/make_version.pl
+	@mkdir -p $(@D)
 	@perlcritic $<
 	@touch $@
 
 obj/test_options.tmp: etc/test_options.pl
+	@mkdir -p $(@D)
 	@perlcritic $<
 	@touch $@
 
 obj/test_commands.tmp: etc/test_commands.pl
+	@mkdir -p $(@D)
 	@perlcritic $<
 	@touch $@
 

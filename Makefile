@@ -57,8 +57,6 @@ SOURCES := $(filter-out $(EXCLUDES),$(SOURCES))
 
 OBJECTS = $(patsubst src/%,obj/%,$(SOURCES:.c=.o))
 
-$(shell mkdir -p bin html obj)
-
 #  Define default target.
 
 .PHONY: teco
@@ -66,6 +64,7 @@ teco: bin/teco
 
 bin/teco: $(OBJECTS)                    # Link object files, create executable
 	@echo $(OBJECTS) > obj/objects.lis
+	@mkdir -p $(@D)
 	$(CC) -o $@ @obj/objects.lis $(LINKOPTS)
 
 .PHONY: all
@@ -86,9 +85,11 @@ $(OBJECTS): obj/cflags
 .PHONY: cflags
 
 obj/cflags: cflags                      # Create compiler options file
+	@mkdir -p $(@D)
 	-@echo '$(CFLAGS)' | cmp -s - $@ || echo '$(CFLAGS)' > $@
 
 obj/%.o: src/%.c                        # Compile source file
+	@mkdir -p $(@D)
 	gcc -o $@ $< @obj/cflags
 
 #  Copy executable image and library files to system directories.
