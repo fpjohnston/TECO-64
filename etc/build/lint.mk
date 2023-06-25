@@ -10,11 +10,11 @@ LOBS = $(patsubst src/%,obj/%,$(SOURCES:.c=.lob))
 
 #  Each .lob file depends on the lint configuration files we use.
 
-$(LOBS): obj/cflags obj/teco.lnt | obj
+$(LOBS): obj/cflags obj/teco.lnt
 
 #  Create configuration file
 
-obj/teco.lnt: etc/std.lnt | obj
+obj/teco.lnt: etc/std.lnt
 	@echo -i $(FLINT)/lnt -I $(INCLUDE) $(DEFINES) > $@
 	@cat etc/std.lnt >> $@
 

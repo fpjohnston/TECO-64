@@ -57,12 +57,14 @@ SOURCES := $(filter-out $(EXCLUDES),$(SOURCES))
 
 OBJECTS = $(patsubst src/%,obj/%,$(SOURCES:.c=.o))
 
+$(shell mkdir -p bin html obj)
+
 #  Define default target.
 
 .PHONY: teco
 teco: bin/teco
 
-bin/teco: $(OBJECTS) bin                # Link object files, create executable
+bin/teco: $(OBJECTS)                    # Link object files, create executable
 	@echo $(OBJECTS) > obj/objects.lis
 	$(CC) -o $@ @obj/objects.lis $(LINKOPTS)
 
@@ -79,20 +81,10 @@ endif
 
 $(OBJECTS): obj/cflags
 
-#  The following targets are present because git repositories only allow for
-#  files in directories, not for directories that contain no files. So before
-#  we start compiling and linking, we make sure that these two directories
-#  exist.
-
-bin:
-	@mkdir -p bin
-
-obj:
-	@mkdir -p obj
-
 #  Always compile source files if compiler options have changed.
 
 .PHONY: cflags
+
 obj/cflags: cflags                      # Create compiler options file
 	-@echo '$(CFLAGS)' | cmp -s - $@ || echo '$(CFLAGS)' > $@
 
@@ -116,19 +108,27 @@ release: distclean
 	$(MAKE) -B -s include/version.h
 	$(MAKE) $(TECO)
 
-#  Clean binary files, object files, and temporary files.
+#  Clean generated binary files and object files
 
 .PHONY: clean
 clean:
-	-rm -f bin/$(TECO) bin/$(TECO).map obj/*
+	-rm -f bin/$(TECO) bin/$(TECO).map obj/cflags obj/*.*
 
-#  Clean everything.
+#  Clean generated test files and documentation files
+
+.PHONY: mostlyclean
+mostlyclean: clean
+	-rm -f test/cases/*.* test/results/*.*
+	-rm -f html/search/*.*
+	-rm -f html/Doxyfile html/*.*
+
+#  Clean generated directories, temporary files, and backup files
 
 .PHONY: distclean
-distclean: obj bin clean
-	-rm -f include*.bak src/*.bak
-	-rm -f test/cases/* test/results/*
-	-rm -rf html 
+distclean: mostlyclean
+	-rm -rf bin html obj
+	-rm -f *.tmp
+	-rm -f include/*.bak src/*.bak
 
 #  Print help message
 
@@ -143,6 +143,7 @@ help:
 	@echo "    doc          Create documentation w/ Doxygen."
 	@echo "    help         Print this message."
 	@echo "    install      Build executable and copy to /usr/local/bin."
+	@echo "    mostlyclean  Clean almost everything."
 	@echo ""
 	@echo "Build options:"
 	@echo ""

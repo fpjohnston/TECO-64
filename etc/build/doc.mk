@@ -26,7 +26,7 @@ OPTIONS_HTML = html/options.html
 
 # Create HTML documentation for TECO command-line options (if we have xalan).
 
-html/options.html: etc/xml/options.xml etc/xml/options.xsl | html
+html/options.html: etc/xml/options.xml etc/xml/options.xsl
 	xalan -in etc/xml/options.xml -xsl etc/xml/options.xsl -out html/options.html
 
 else
@@ -43,7 +43,7 @@ DOXYGEN = $(shell which doxygen)
 ifneq ($(DOXYGEN), )
 
 .PHONY: doc
-doc: $(OPTIONS_HTML) $(ERRORS_MD) | html
+doc: $(OPTIONS_HTML) $(ERRORS_MD)
 	-@cp etc/Doxyfile html/Doxyfile
 	-@echo "PREDEFINED = DOXYGEN" >>html/Doxyfile
 	-doxygen html/Doxyfile
@@ -55,8 +55,3 @@ doc:
 	@$(error Make target '$@' requires Doxygen)
 
 endif
-
-html:
-	-@mkdir -p html
-
-
