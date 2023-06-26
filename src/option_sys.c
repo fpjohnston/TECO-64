@@ -381,39 +381,31 @@ static void parse_files(
     {
         return;
     }
-    else if (optind >= argc)            // Do have have any files?
+    else if (optind >= argc)
     {
-        // See if there is a memory file we can use
+        // No files, so find what we used in the last editing session
 
-        if (teco_memory != NULL)
+        char file[PATH_MAX] = { NUL };
+
+        if (!read_memory(file, (uint)sizeof(file)))
         {
-            char file[PATH_MAX] = { NUL };
-
-            read_memory(file, (uint)sizeof(file));
-
-            if (file[0] != NUL)         // Does memory file contain anything?
+            if (options.readonly)       // --read-only requires a file
             {
-                if (access(file, F_OK) != 0)
-                {
-                    store_cmd(":^ACan't find file '%s'\1", file);
-                    store_cmd(":^AIgnoring TECO's memory\1");
-                }
-                else if (options.readonly)
-                {
-                    store_cmd(ER_cmd, file, file);
-                }
-                else
-                {
-                    store_cmd(EB_cmd, file, file);
-                }
-
-                return;
+                quit("How can I inspect nothing?");
             }
         }
-
-        if (options.readonly)           // --read-only requires a file
+        else if (access(file, F_OK) != 0)
         {
-            quit("How can I inspect nothing?");
+            store_cmd(":^ACan't find file '%s'\1", file);
+            store_cmd(":^AIgnoring TECO's memory\1");
+        }
+        else if (options.readonly)
+        {
+            store_cmd(ER_cmd, file, file);
+        }
+        else
+        { 
+            store_cmd(EB_cmd, file, file);
         }
 
         return;

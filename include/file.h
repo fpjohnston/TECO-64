@@ -90,7 +90,7 @@ extern FILE *open_temp(const char *oname, uint stream);
 
 extern void read_command(struct ifile *ifile, uint stream, tbuffer *text);
 
-extern void read_memory(char *p, uint len);
+extern bool read_memory(char *p, uint len);
 
 extern void rename_output(struct ofile *ofile);
 

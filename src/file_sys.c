@@ -318,39 +318,52 @@ static uint_t parse_file(const char *file, char *dir, char *base)
 ///
 ///  @brief    Read file specification from memory file.
 ///
-///  @returns  Nothing.
+///  @returns  true if we found a memory file and it contains a file name,
+///            else false.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-void read_memory(char *p, uint len)
+bool read_memory(char *p, uint len)
 {
     assert(p != NULL);                  // Error if no place to store data
+    assert(len > 0);
 
     if (teco_memory != NULL)
     {
         FILE *fp = fopen(teco_memory, "r");
 
-        if (fp == NULL)
+        if (fp != NULL)
         {
-            if (errno != ENOENT && errno != ENODEV)
+            if (fgets(p, (int)len, fp) != NULL)
             {
-                tprint("%%Can't open memory file '%s'\n", teco_memory);
-            }
-        }
-        else
-        {
-            int c;
+                len = (uint)strlen(p);
 
-            while (--len > 0 && (c = fgetc(fp)) != EOF && isgraph(c))
-            {
-                *p++ = (char)c;
+                while (len > 0 && isspace(p[len - 1]))
+                {
+                    p[--len] = NUL;
+                }
             }
 
             fclose(fp);
+
+            if (len > 0)
+            {
+                return true;
+            }
         }
+
+#if     defined(DEBUG)          // Memory file error
+
+        else if (errno != ENOENT)
+        {
+            throw(E_ERR, teco_memory);
+        }
+
+#endif
+
     }
 
-    *p = NUL;
+    return false;
 }
 
 
@@ -442,7 +455,7 @@ bool set_wild(const char *filename)
 
 
 ///
-///  @brief    Write EB or EW file to memory file.
+///  @brief    Write EB or EW file name to memory file.
 ///
 ///  @returns  Nothing.
 ///
@@ -452,22 +465,25 @@ void write_memory(const char *file)
 {
     assert(file != NULL);               // Error if no output file
 
-    FILE *fp;
-
-    if (teco_memory == NULL)
+    if (teco_memory != NULL)
     {
-        return;
+        FILE *fp = fopen(teco_memory, "w");
+
+        if (fp != NULL)
+        {
+            fprintf(fp, "%s\n", file);
+
+            fclose(fp);
+        }
+
+#if     defined(DEBUG)          // Memory file error
+
+        else
+        {
+            throw(E_ERR, teco_memory);
+        }
+
+#endif
+
     }
-
-    if ((fp = fopen(teco_memory, "w")) == NULL)
-    {
-        tprint("%%Can't open memory file '%s'\n", teco_memory);
-
-        return;
-    }
-
-    fprintf(fp, "%s\n", file);
-
-    fclose(fp);
-
 }
