@@ -469,7 +469,7 @@ void search_failure(struct cmd *cmd, uint keepdot)
         {
             if (!check_semi())
             {
-                tprint("%%Search failure in loop\n");
+                tprint("Search failure in iteration\n");
             }
 
             exit_loop(cmd);
