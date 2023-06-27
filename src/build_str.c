@@ -314,10 +314,18 @@ const char *build_trimmed(const char *src, uint_t len)
 static int getc_src(const char *src, uint_t len, int error)
 {
     assert(src != NULL);
+    assert(error == E_ISS || error == E_MQN);
 
     if (len == 0)
     {
-        throw(error);
+        if (error == E_ISS)
+        {
+            throw(E_ISS);
+        }
+        else
+        {
+            throw(E_MQN);
+        }
     }
 
     return *src;
