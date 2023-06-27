@@ -248,13 +248,17 @@ void exec_oper(enum x_oper type)
 
     if (operands > x->number.count)     // Need more operands than we have?
     {
-        if (!f.e0.skip)                 // Are we skipping commands??
+        if (f.e0.skip)                  // Are we skipping commands??
+        {
+            return;                     // Yes, just exit
+        } 
+        else if (type == X_COMPL)
+        {
+            throw(E_NAB);               // No argument for 1's complement
+        }
+        else
         {
             throw(E_IFE);               // Ill-formed expression
-        }
-        else                            // Not executing, so just return
-        {
-            return;
         }
     }
     else if (operands == 1)             // Unary operator
@@ -269,26 +273,26 @@ void exec_oper(enum x_oper type)
 
     switch (type)
     {
-        case X_ADD:    n = a + b;                 break;
-        case X_AND:    n = a & b;                 break;
+        case X_ADD:    n = a + b;                   break;
+        case X_AND:    n = a & b;                   break;
         case X_COMPL:  n = (int_t)~(uint_t)a;       break;
-        case X_DIV:    n = exec_div(a, b);        break;
-        case X_EQ:     n = (a == b ? -1 : 0);     break;
-        case X_GE:     n = (a >= b ? -1 : 0);     break;
-        case X_GT:     n = (a > b ? -1 : 0);      break;
-        case X_LE:     n = (a <= b ? -1 : 0);     break;
+        case X_DIV:    n = exec_div(a, b);          break;
+        case X_EQ:     n = (a == b ? -1 : 0);       break;
+        case X_GE:     n = (a >= b ? -1 : 0);       break;
+        case X_GT:     n = (a > b ? -1 : 0);        break;
+        case X_LE:     n = (a <= b ? -1 : 0);       break;
         case X_LSHIFT: n = (int_t)((uint_t)a << b); break;
-        case X_LT:     n = (a < b ? -1 : 0);      break;
-        case X_MINUS:  n = -a;                    break;
-        case X_MUL:    n = a * b;                 break;
-        case X_NE:     n = (a != b ? -1 : 0);     break;
-        case X_NOT:    n = exec_not(a);           break;
-        case X_OR:     n = a | b;                 break;
-        case X_PLUS:   n = a;                     break;
-        case X_REM:    n = exec_rem(a, b);        break;
+        case X_LT:     n = (a < b ? -1 : 0);        break;
+        case X_MINUS:  n = -a;                      break;
+        case X_MUL:    n = a * b;                   break;
+        case X_NE:     n = (a != b ? -1 : 0);       break;
+        case X_NOT:    n = exec_not(a);             break;
+        case X_OR:     n = a | b;                   break;
+        case X_PLUS:   n = a;                       break;
+        case X_REM:    n = exec_rem(a, b);          break;
         case X_RSHIFT: n = (int_t)((uint_t)a >> b); break;
-        case X_SUB:    n = a - b;                 break;
-        case X_XOR:    n = a ^ b;                 break;
+        case X_SUB:    n = a - b;                   break;
+        case X_XOR:    n = a ^ b;                   break;
 
         case X_NULL:
         case X_LPAREN:
@@ -652,6 +656,11 @@ bool scan_right(struct cmd *cmd)
             assert(x->oper.nesting != 0);
 
             --x->oper.nesting;
+
+            if (x->oper.last)
+            {
+                throw(E_NAP);           // No argument before right parenthesis
+            }
 
             // We found a matching left parenthesis. Try to process any
             // operators preceding it, up to any previous left parenthesis.
