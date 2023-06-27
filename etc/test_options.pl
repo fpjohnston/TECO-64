@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  options_test.pl - Test command-line options for TECO text editor.
+#  test_options.pl - Test command-line options for TECO text editor.
 #
 #  @copyright 2023 Franklin P. Johnston / Nowwith Treble Software
 #
