@@ -390,11 +390,11 @@ noreturn void (throw)(int error, ...)
     {
         if (check_macro())              // Was it in a macro?
         {
-            error = E_UTM;              // Yes
+            error = E_UTM;              // Yes, make it equivalent to throw(E_UTM)
         }
         else
         {
-            error = E_UTC;              // No, in user's command string
+            error = E_UTC;              // No, make it equivalent to throw(E_UTC)
         }
     }
 
