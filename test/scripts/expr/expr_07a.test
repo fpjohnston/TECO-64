@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Test 1's complement operator !
+!  Command: ^_ !
+!     TECO: ?NAB !
+
+[[enter]]
+
+^_=                                 ! Test: 1's complement operator !
+
+[[exit]]

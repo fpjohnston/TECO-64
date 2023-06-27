@@ -245,7 +245,7 @@ for my $href (@OPTIONS)
     my $option = $href->{name};
     my @tests  = @{ $href->{tests} };
 
-    if ($brief)
+    if ($summary)
     {
         my $count = scalar @tests;
 
@@ -273,7 +273,7 @@ for my $href (@OPTIONS)
     system 'rm -f _pooh _owl _kanga';   # Discard temporary files
 }
 
-if ($summary)
+if ($brief)
 {
     printf "%d test%s executed with %d failure%s\n",
       $ntests, $ntests == 1 ? q{} : 's',
@@ -323,11 +323,11 @@ sub initialize
         'verbose' => \$verbose,
     );
 
-    $brief = 1 if !$summary && !$brief && !$verbose && !$detail;
+    $summary = 1 if !$summary && !$brief && !$verbose && !$detail;
 
     $verbose = 1 if $detail;
-    $brief   = 1 if $verbose;
-    $summary = 1 if $brief;
+    $summary = 1 if $verbose;
+    $brief   = 1 if $summary;
 
     return;
 }

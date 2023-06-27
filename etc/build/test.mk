@@ -40,6 +40,7 @@ critic:
 	@$(MAKE) obj/errors.tmp
 	@$(MAKE) obj/options.tmp
 	@$(MAKE) obj/version.tmp
+	@$(MAKE) obj/test_errors.tmp
 	@$(MAKE) obj/test_options.tmp
 	@$(MAKE) obj/test_commands.tmp
 
@@ -64,6 +65,11 @@ obj/options.tmp: etc/make_options.pl
 	@touch $@
 
 obj/version.tmp: etc/make_version.pl
+	@mkdir -p $(@D)
+	@perlcritic $<
+	@touch $@
+
+obj/test_errors.tmp: etc/test_errors.pl
 	@mkdir -p $(@D)
 	@perlcritic $<
 	@touch $@
@@ -102,8 +108,10 @@ ifneq ($(PERL), )
 
 .PHONY: smoke
 smoke: distclean $(CRITIC) $(LINT) test
+	@echo Testing TECO errors...
+	etc/test_errors.pl --brief include/errors.h src/*.c
 	@echo Testing TECO options...
-	etc/test_options.pl --summary
+	etc/test_options.pl --brief
 	@echo Testing TECO commands...
 	etc/test_commands.pl test/
 

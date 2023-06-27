@@ -1,0 +1,11 @@
+! Smoke test for TECO text editor !
+
+! Function: Test parentheses w/o argument !
+!  Command: () !
+!     TECO: ?NAP !
+
+[[enter]]
+
+()                                  ! Test: parentheses w/o argument !
+
+[[exit]]
