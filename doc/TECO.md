@@ -91,7 +91,9 @@ enough to handle even complicated editing tasks.
 
 ## Appendices
 
-- [Error Messages](errors.md)
+- [Command Errors](errors.md)
+
+- [Additional Messages](messages.md)
 
 - [Glossary of Terms](glossary.md)
 

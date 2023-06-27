@@ -143,29 +143,31 @@ Readonly my @OPTIONS => (
         ],
     },
     {
-        name  => q{duplicate options},
-        tests => [
-            { cmd => "$TECO --make _pooh --make _piglet", result => 'Duplicate --make' },
-            { cmd => "$TECO --mung _pooh --mung _piglet", result => 'Duplicate --mung' },
-        ],
-    },
-    {
         name  => q{conflicting options},
         tests => [
-            { cmd => "$TECO --make _pooh --mung _piglet",    result => 'Conflicting options' },
-            { cmd => "$TECO --mung _pooh --make _piglet",    result => 'Conflicting options' },
+            { cmd => "$TECO --make _pooh --make _piglet", result => 'Conflicting option' },
+            { cmd => "$TECO --mung _pooh --mung _piglet", result => 'Conflicting option' },
+            { cmd => "$TECO --make _pooh --mung _piglet", result => 'Conflicting option' },
+            { cmd => "$TECO --mung _pooh --make _piglet", result => 'Conflicting option' },
         ],
     },
     {
-        name  => q{unknown options},
+        name  => q{too many options},
         tests => [
-            { cmd => "$TECO -O",     result => 'Unknown option \'-O' },
-            { cmd => "$TECO --roo",  result => 'Unknown option \'--roo' },
-            { cmd => 'teco --kanga', result => 'Unknown option \'--kanga' },
+            { cmd => "$TECO -n -FFFFFFFFFFFFFFFFFFFFFFFFF",  result => '!begin! 1,0E3' },
+            { cmd => "$TECO -n -FFFFFFFFFFFFFFFFFFFFFFFFFF", result => 'Too many options' },
         ],
     },
     {
-        name  => q{missing arguments},
+        name  => q{invalid options},
+        tests => [
+            { cmd => "$TECO -O",     result => 'Invalid option: -O' },
+            { cmd => "$TECO --roo",  result => 'Invalid option: --roo' },
+            { cmd => 'teco --kanga', result => 'Invalid option: --kanga' },
+        ],
+    },
+    {
+        name  => q{required arguments},
         tests => [
             { cmd => "$TECO -A",              result => 'Argument required' },
             { cmd => "$TECO -A --zero",       result => 'Argument required' },
@@ -194,36 +196,36 @@ Readonly my @OPTIONS => (
         ],
     },
     {
-        name  => q{extraneous arguments},
+        name  => q{disallowed arguments},
         tests => [
-            { cmd => "$TECO --create=_pooh",       result => 'Extraneous argument' },
-            { cmd => "$TECO --exit=_pooh",         result => 'Extraneous argument' },
-            { cmd => "$TECO --formfeed=_pooh",     result => 'Extraneous argument' },
-            { cmd => "$TECO --help=_pooh",         result => 'Extraneous argument' },
-            { cmd => "$TECO --nocreate=_pooh",     result => 'Extraneous argument' },
-            { cmd => "$TECO --nodefaults=_pooh",   result => 'Extraneous argument' },
-            { cmd => "$TECO --nodisplay=_pooh",    result => 'Extraneous argument' },
-            { cmd => "$TECO --noformfeed=_pooh",   result => 'Extraneous argument' },
-            { cmd => "$TECO --noinitialize=_pooh", result => 'Extraneous argument' },
-            { cmd => "$TECO --nomemory=_pooh",     result => 'Extraneous argument' },
-            { cmd => "$TECO --noread-only=_pooh",  result => 'Extraneous argument' },
-            { cmd => "$TECO --read-only=_pooh",    result => 'Extraneous argument' },
+            { cmd => "$TECO --create=_pooh",       result => 'Useless argument' },
+            { cmd => "$TECO --exit=_pooh",         result => 'Useless argument' },
+            { cmd => "$TECO --formfeed=_pooh",     result => 'Useless argument' },
+            { cmd => "$TECO --help=_pooh",         result => 'Useless argument' },
+            { cmd => "$TECO --nocreate=_pooh",     result => 'Useless argument' },
+            { cmd => "$TECO --nodefaults=_pooh",   result => 'Useless argument' },
+            { cmd => "$TECO --nodisplay=_pooh",    result => 'Useless argument' },
+            { cmd => "$TECO --noformfeed=_pooh",   result => 'Useless argument' },
+            { cmd => "$TECO --noinitialize=_pooh", result => 'Useless argument' },
+            { cmd => "$TECO --nomemory=_pooh",     result => 'Useless argument' },
+            { cmd => "$TECO --noread-only=_pooh",  result => 'Useless argument' },
+            { cmd => "$TECO --read-only=_pooh",    result => 'Useless argument' },
         ],
     },
     {
         name  => q{invalid arguments},
         tests => [
-            { cmd => "$TECO -Ax",              result => 'Invalid value' },
-            { cmd => "$TECO -A2,x",            result => 'Invalid value' },
-            { cmd => "$TECO -A2,3x",           result => 'Invalid value' },
-            { cmd => "$TECO -Sx",              result => 'Invalid value' },
-            { cmd => "$TECO -S2x",             result => 'Invalid value' },
-            { cmd => "$TECO --arguments=x",    result => 'Invalid value' },
-            { cmd => "$TECO --arguments=2,x",  result => 'Invalid value' },
-            { cmd => "$TECO --arguments=2,3x", result => 'Invalid value' },
-            { cmd => "$TECO --scroll=x",       result => 'Invalid value' },
-            { cmd => "$TECO --scroll=2x",      result => 'Invalid value' },
-            { cmd => "$TECO --scroll=2,3x",    result => 'Invalid value' },
+            { cmd => "$TECO -Ax",              result => 'Invalid argument' },
+            { cmd => "$TECO -A2,x",            result => 'Invalid argument' },
+            { cmd => "$TECO -A2,3x",           result => 'Invalid argument' },
+            { cmd => "$TECO -Sx",              result => 'Invalid argument' },
+            { cmd => "$TECO -S2x",             result => 'Invalid argument' },
+            { cmd => "$TECO --arguments=x",    result => 'Invalid argument' },
+            { cmd => "$TECO --arguments=2,x",  result => 'Invalid argument' },
+            { cmd => "$TECO --arguments=2,3x", result => 'Invalid argument' },
+            { cmd => "$TECO --scroll=x",       result => 'Invalid argument' },
+            { cmd => "$TECO --scroll=2x",      result => 'Invalid argument' },
+            { cmd => "$TECO --scroll=2,3x",    result => 'Invalid argument' },
         ],
     },
 );
@@ -247,8 +249,8 @@ for my $href (@OPTIONS)
     {
         my $count = scalar @tests;
 
-        printf "Executing $count test%s for $option...\n",
-          $count == 1 ? q{} : 's';
+        printf "Executing % 2s test%s for $option...\n", $count,
+          $count == 1 ? q{ } : 's';
     }
 
     system 'touch _pooh';               # Create dummy file to edit
@@ -374,7 +376,9 @@ sub run_test
 
         alarm 1;                        # Should be long enough for any TECO test
 
-        $result = qx($command);
+        my @result = qx($command);
+
+        $result = $result[0];
 
         alarm 0;
     };
