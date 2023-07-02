@@ -162,6 +162,8 @@ Readonly my @OPTIONS => (
         name  => q{invalid options},
         tests => [
             { cmd => "$TECO -O",     result => 'Invalid option: -O' },
+            { cmd => "$TECO -cO",    result => 'Invalid option: -O' },
+            { cmd => "$TECO -Oc",    result => 'Invalid option: -O' },
             { cmd => "$TECO --roo",  result => 'Invalid option: --roo' },
             { cmd => 'teco --kanga', result => 'Invalid option: --kanga' },
         ],

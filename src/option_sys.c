@@ -125,6 +125,8 @@ static void opt_help(void);
 
 static void opt_scroll(bool optlong, const char *const argv[]);
 
+static noreturn void opt_unknown(const char *option);
+
 static void opt_version(void);
 
 static void parse_files(int argc, const char *const argv[]);
@@ -348,6 +350,53 @@ static void opt_scroll(bool optlong, const char *const argv[])
 
 
 ///
+///  @brief    Process unknown command-line option.
+///
+///  If optopt > 0, then we found an invalid short option and optopt was set to
+//   the ASCII code for that option.
+///
+///  If there is no equals sign in the string pointed to by argv[optind-1], then
+///  we have an invalid long option.
+///
+///  If optopt = 0, then we found an invalid long option and argv[optind-1]
+///  points to the option plus the argument.
+///
+///  If optopt < 0, then we found a valid long option with an invalid argument
+//   and argv[optind-1] points to the option.
+///
+///  @returns  We don't.
+///
+////////////////////////////////////////////////////////////////////////////////
+
+static noreturn void opt_unknown(
+    const char *option)                 ///< Unknown option
+{
+    static const char *badopt  = "Invalid option:";
+
+    assert(option != NULL);
+
+    const char *p;
+
+    if (optopt > 0)
+    {
+        quit("%s -%c", badopt, optopt);
+    }
+    else if ((p = strchr(option, '=')) == NULL)
+    {
+        quit("%s %s", badopt, option);
+    }
+    else if (optopt == 0)
+    {
+        quit("%s %.*s", badopt, p - option, option);
+    }
+    else
+    {
+        quit("Useless argument for option: %.*s", p - option, option);
+    }
+}
+
+
+///
 ///  @brief    Parse --version option.
 ///
 ///  @returns  Exits from TECO.
@@ -499,7 +548,6 @@ static void parse_options(
     const char *const argv[])           ///< List of arguments
 {
     static const char *no_arg  = "Argument required for option %s";
-    static const char *badopt  = "Invalid option:";
 
     assert(argv != NULL);               // Error if no argument list
     assert(argv[0] != NULL);            // Error if no strings in list
@@ -514,7 +562,6 @@ static void parse_options(
     opterr = 0;                         // Suppress any error messages
 
     int c;                              // Current option
-    int lastind = 1;                    // Used to analyze errors (see below)
 
     while ((c = getopt_long(argc, (char * const *)argv,
                             optstring, long_options, NULL)) != -1)
@@ -587,65 +634,8 @@ static void parse_options(
 
             case '?':
             default:
-                //  The following fixes the problem that arises if an invalid
-                //  short option is combined with another short option (either
-                //  valid or invalid), which causes an error to be returned
-                //  without updating optind. This means that argv[optind - 1]
-                //  will point to the previous argument instead of the current
-                //  one.
-                //
-                //  Consider the following cases with invalid short options:
-                //
-                //      Command          Result
-                //      -----------      ---------------------
-                //      teco -n -x       Unknown option '-x'
-                //      teco -n -xc      Unknown option '-n'
-                //      teco -xc         Unknown option 'teco'
-                //
-                //  To ensure correct output, if optopt is non-zero, meaning
-                //  that it contains the ASCII for a invalid short option, and
-                //  if optind has not been incremented since the last option,
-                //  then that short option was combined with another option,
-                //  and we have to use optopt to print the error. Otherwise we
-                //  either have an invalid long option, or an invalid short
-                //  option that was not combined with another option, and we
-                //  should use optind to print the error.
-                //
-                //      Command          Action
-                //      -----------      ---------------------
-                //      teco -xc         optopt contains bad option.
-                //      teco -x          argv[optind-1] points to option.
-                //      teco --x         argv[optind-1] points to option.
-
-                if (optopt != 0 && optind == lastind)
-                {
-                    quit("%s -%c", badopt, optopt);
-                }
-                else
-                {
-                    //  If an option has an argument which isn't required or
-                    //  allowed, getopt_long() treats the entire string as an
-                    //  option. So we look for an equals sign delimiting the
-                    //  option from the argument, and if found we complain
-                    //  about the extraneous argument rather than carping
-                    //  about an unknown option.
-
-                    const char *arg = argv[lastind];
-                    const char *p;
-
-                    if ((p = strchr(arg, '=')) != NULL)
-                    {
-                        quit("Useless argument for option: %.*s",
-                             p - arg, arg);
-                    }
-                    else
-                    {
-                        quit("%s %s", badopt, arg);
-                    }
-                }
+                opt_unknown(argv[optind - 1]);
         }
-
-        lastind = optind;
     }
 }
 
