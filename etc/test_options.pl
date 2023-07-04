@@ -161,11 +161,10 @@ Readonly my @OPTIONS => (
     {
         name  => q{invalid options},
         tests => [
-            { cmd => "$TECO -O",     result => 'Invalid option: -O' },
-            { cmd => "$TECO -cO",    result => 'Invalid option: -O' },
-            { cmd => "$TECO -Oc",    result => 'Invalid option: -O' },
-            { cmd => "$TECO --roo",  result => 'Invalid option: --roo' },
-            { cmd => 'teco --kanga', result => 'Invalid option: --kanga' },
+            { cmd => "$TECO -O",     result => 'Invalid option: -O !end!' },
+            { cmd => "$TECO -cO",    result => 'Invalid option: -O !end!' },
+            { cmd => "$TECO -Oc",    result => 'Invalid option: -O !end!' },
+            { cmd => "$TECO --roo",  result => 'Invalid option: --roo !end!' },
         ],
     },
     {
@@ -242,6 +241,11 @@ my $okay   = 0;
 my $failed = 0;
 my $ntests = 0;
 
+system 'touch _pooh';                   # Create dummy file to edit
+system 'echo _pooh > _owl';             # Create memory file w/ real file
+system 'echo _roo > _kanga';            # Create memory file w/ non-existent file
+system 'rm -f _piglet';                 # Ensure this file does not exist
+
 for my $href (@OPTIONS)
 {
     my $option = $href->{name};
@@ -255,11 +259,6 @@ for my $href (@OPTIONS)
           $count == 1 ? q{ } : 's';
     }
 
-    system 'touch _pooh';               # Create dummy file to edit
-    system 'echo _pooh > _owl';         # Create memory file w/ real file
-    system 'echo _roo > _kanga';        # Create memory file w/ non-existent file
-    system 'rm -f _piglet';             # Ensure this file does not exist
-
     foreach my $test (@tests)
     {
         my $command  = $test->{cmd};
@@ -271,9 +270,9 @@ for my $href (@OPTIONS)
 
         ++$ntests;
     }
-
-    system 'rm -f _pooh _owl _kanga';   # Discard temporary files
 }
+
+system 'rm -f _pooh _owl _kanga';       # Discard temporary files
 
 if ($brief)
 {
@@ -293,7 +292,7 @@ sub exec_command
 
     print "    Executing \"$command\"..." if $verbose;
 
-    $command = "TECO_INIT= TECO_VTEDIT= TECO_MEMORY= $command";
+    $command = "TECO_INIT= TECO_VTEDIT= TECO_MEMORY= $command 2>&1";
 
     my $result = run_test($command);
 

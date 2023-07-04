@@ -104,17 +104,29 @@ static struct options options =
     .practice = false,
 };
 
-///   @var      creating_file
+///   @var      begin_tag
+///
+///   @brief    String for marking beginning of practice run.
+
+static const char *begin_tag = "!begin!";
+
+///   @var      create_file
 ///
 ///   @brief    String for executing EW command.
 
-static const char *creating_file = "%d\"L :^ACreating new file '%s'\1 ' EW%s\e";
+static const char *create_file = "%d\"L :^ACreating new file '%s'\1 ' EW%s\e";
 
-///   @var      too_many_options
+///   @var      end_tag
+///
+///   @brief    String for marking end of practice run.
+
+static const char *end_tag = "!end!";
+
+///   @var      option_limit
 ///
 ///   @brief    Error when out of memory for processing command-line options.
 
-static const char *too_many_options = "Too many options";
+static const char *option_limit = "Too many options";
 
 
 // Local functions
@@ -125,7 +137,7 @@ static void opt_help(void);
 
 static void opt_scroll(bool optlong, const char *const argv[]);
 
-static noreturn void opt_unknown(const char *option);
+static noreturn void opt_unknown(const char *const argv[]);
 
 static void opt_version(void);
 
@@ -213,7 +225,7 @@ void init_options(
 
     if (options.practice)
     {
-        fputs("!begin! ", stdout);
+        fprintf(stderr, "%s ", begin_tag);
 
         for (uint i = 0; i < cbuf->len; ++i)
         {
@@ -221,19 +233,19 @@ void init_options(
 
             if (c == DEL || !isascii(c))
             {
-                printf("[%02x]", c);
+                fprintf(stderr, "[%02x]", c);
             }
             else if (iscntrl(c))
             {
-                printf("^%c", c + 'A' - 1);
+                fprintf(stderr, "^%c", c + 'A' - 1);
             }
             else
             {
-                fputc(c, stdout);
+                fputc(c, stderr);
             }
         }
 
-        fputs("!end!\n", stdout);
+        fputs(end_tag, stderr);
 
         exit(EXIT_SUCCESS);
     }
@@ -369,19 +381,23 @@ static void opt_scroll(bool optlong, const char *const argv[])
 ////////////////////////////////////////////////////////////////////////////////
 
 static noreturn void opt_unknown(
-    const char *option)                 ///< Unknown option
+    const char *const argv[])           ///< List of arguments
 {
     static const char *badopt  = "Invalid option:";
-
-    assert(option != NULL);
-
-    const char *p;
 
     if (optopt > 0)
     {
         quit("%s -%c", badopt, optopt);
     }
-    else if ((p = strchr(option, '=')) == NULL)
+
+    assert(argv != NULL);
+
+    const char *p;
+    const char *option = argv[optind - 1];
+
+    assert(option != NULL);
+
+    if ((p = strchr(option, '=')) == NULL)
     {
         quit("%s %s", badopt, option);
     }
@@ -433,8 +449,8 @@ static void parse_files(
     int argc,                           ///< No. of arguments
     const char *const argv[])           ///< List of arguments
 {
-    static const char *editing_file = "EB%s\e Y :^AEditing file '%s'\1";
-    static const char *reading_file = "ER%s\e Y :^AReading file '%s'\1";
+    static const char *edit_file = "EB%s\e Y :^AEditing file '%s'\1";
+    static const char *read_file = "ER%s\e Y :^AReading file '%s'\1";
 
     assert(argv != NULL);               // Error if no argument list
 
@@ -462,11 +478,11 @@ static void parse_files(
         }
         else if (options.readonly)
         {
-            store_cmd(reading_file, file, file);
+            store_cmd(read_file, file, file);
         }
         else
         { 
-            store_cmd(editing_file, file, file);
+            store_cmd(edit_file, file, file);
         }
 
         return;
@@ -495,8 +511,8 @@ static void parse_files(
                 quit("Can't find file '%s'", arg1);
             }
 
-            store_cmd(reading_file, arg1, arg1);
-            store_cmd(creating_file, access(arg2, F_OK), arg2, arg2);
+            store_cmd(read_file, arg1, arg1);
+            store_cmd(create_file, access(arg2, F_OK), arg2, arg2);
 
             teco_memory = NULL;         // Don't save file name on exit
 
@@ -517,7 +533,7 @@ static void parse_files(
         else
         {
             store_cmd(":^ACan't find file '%s'\1", arg1);
-            store_cmd(creating_file, -1, arg1, arg1);
+            store_cmd(create_file, -1, arg1, arg1);
 
             return;
         }
@@ -527,11 +543,11 @@ static void parse_files(
 
     if (options.readonly)               // Should we open for read only?
     {
-        store_cmd(reading_file, arg1, arg1);
+        store_cmd(read_file, arg1, arg1);
     }
     else                                // No -- open for backup
     {
-        store_cmd(editing_file, arg1, arg1);
+        store_cmd(edit_file, arg1, arg1);
     }
 }
 
@@ -581,6 +597,7 @@ static void parse_options(
             case OPT_display:
             case OPT_execute:
             case OPT_formfeed:
+            case OPT_keys:
             case OPT_log:
             case OPT_make:
             case OPT_mung:
@@ -607,17 +624,6 @@ static void parse_options(
             case OPT_nodisplay:    options.display  = false;
                                    teco_vtedit      = NULL;       break;
 
-#if     defined(DEBUG)          // Include --keys option
-
-            case OPT_keys:         key_name = optarg;             break;
-
-#else
-
-            case OPT_keys:
-                quit("Option --keys is only available in debug builds");
-
-#endif
-
             case ':':
                 if (optopt == -OPT_make)
                 {
@@ -634,7 +640,7 @@ static void parse_options(
 
             case '?':
             default:
-                opt_unknown(argv[optind - 1]);
+                opt_unknown(argv);
         }
     }
 }
@@ -651,9 +657,9 @@ static bool pop_opts(void)
 {
     for (uint i = 0; i < options.next; ++i)
     {
-        const char *arg = options.args[i];
         int c = options.stack[i];
-        uint nbytes;
+        const char *arg = options.args[i];
+        int nbytes;
 
         switch (c)
         {
@@ -662,18 +668,11 @@ static bool pop_opts(void)
 
                 break;
 
-            case OPT_mung:
             case OPT_execute:
-                //  Parse argument for --execute and --mung options. This is
-                //  usually a file name, but may also be a command string of
-                //  two or more characters that starts and ends with single
-                //  or double quotes.
+                //  See if the option argument is a literal command string
+                //  delimited by a pair of single or double quotes.
 
-                nbytes = (uint)strlen(arg);
-
-                teco_memory = NULL;     // Don't read memory file if munging
-
-                if (nbytes >= 2)
+                if ((nbytes = (int)strlen(arg)) >= 2)
                 {
                     int first = arg[0];
                     int last = arg[nbytes - 1];
@@ -681,14 +680,17 @@ static bool pop_opts(void)
                     if (first == last && (first == '"' || first == '\''))
                     {
                         nbytes -= 2;
-                        store_cmd("%.*s\e", (int)nbytes, arg + 1);
+                        store_cmd("%.*s\e", nbytes, arg + 1);
 
                         break;
                     }
                 }
+                
+                //  Here if we have a file name. Process the same as --mung.
 
-                // Here when we know we don't have a command string.
+                //lint -fallthrough
 
+            case OPT_mung:
                 if (options.mn_args != NULL)
                 {
                     store_cmd("%sEI%s\e", options.mn_args, arg);
@@ -725,7 +727,7 @@ static bool pop_opts(void)
                     store_cmd(":^ANot war?\1");
                 }
 
-                store_cmd(creating_file, access(arg, F_OK), arg, arg);
+                store_cmd(create_file, access(arg, F_OK), arg, arg);
 
                 break;
 
@@ -760,7 +762,7 @@ static bool pop_opts(void)
 
 static void push_opt(int option, const char *arg)
 {
-    static const char *conflicting = "Conflicting option: %s";
+    static const char *opt_conflict = "Conflicting option: %s";
 
     switch (option)
     {
@@ -778,27 +780,44 @@ static void push_opt(int option, const char *arg)
         case OPT_execute:
             if (options.make || options.mung)
             {
-                quit(conflicting, "-E");
+                quit(opt_conflict, "-E");
             }
 
             options.execute = true;
+            teco_memory = NULL;         // Don't use memory file
 
             break;
 
         case -OPT_execute:
             if (options.make || options.mung)
             {
-                quit(conflicting, "--execute");
+                quit(opt_conflict, "--execute");
             }
 
             options.execute = true;
+            teco_memory = NULL;         // Don't use memory file
 
             break;
+
+        case OPT_keys:
+        case -OPT_keys:
+
+#if     defined(DEBUG)          // Include --keys option
+
+            key_name = optarg;
+
+            return;
+
+#else
+
+            quit("Option --keys is only available in debug builds");
+
+#endif
 
         case -OPT_make:
             if (options.execute || options.make || options.mung)
             {
-                quit(conflicting, "--make");
+                quit(opt_conflict, "--make");
             }
 
             options.make = true;
@@ -809,10 +828,11 @@ static void push_opt(int option, const char *arg)
         case -OPT_mung:
             if (options.execute || options.make || options.mung)
             {
-                quit(conflicting, "--mung");
+                quit(opt_conflict, "--mung");
             }
 
             options.mung = true;
+            teco_memory = NULL;         // Don't use memory file
 
             break;
 
@@ -822,7 +842,7 @@ static void push_opt(int option, const char *arg)
 
     if (options.next == NOPTIONS)
     {
-        quit(too_many_options);
+        quit(option_limit);
     }
 
     options.stack[options.next] = (char)abs(option);
@@ -834,7 +854,7 @@ static void push_opt(int option, const char *arg)
 
 ///
 ///  @brief    Print error message and exit with failure. Note that we add a
-///            newline to the output text.
+///            newline to the output text, so our callers don't need to do so.
 ///
 ///  @returns  Nothing.
 ///
@@ -844,14 +864,26 @@ static noreturn void quit(const char *format, ...)
 {
     assert(format != NULL);
 
+    if (options.practice)
+    {
+        fprintf(stderr, "%s ", begin_tag);
+    }
+
     va_list args;
 
     va_start(args, format);
-    vfprintf(stdout, format, args);
+    vfprintf(stderr, format, args);
     va_end(args);
 
-    fputc('\n', stdout);
-    fputs("Try 'teco --help' for more information\n", stdout);
+    if (options.practice)
+    {
+        fprintf(stderr, " %s\n", end_tag);
+    }
+    else
+    {
+        fputc('\n', stderr);
+        fputs("Try 'teco --help' for more information\n", stderr);
+    }
 
     exit(EXIT_FAILURE);
 }
@@ -912,7 +944,7 @@ static void store_cmd(const char *format, ...)
 
     if (cbuf->len + size > cbuf->size)
     {
-        quit(too_many_options);
+        quit(option_limit);
     }
 
     cbuf->len += size;
