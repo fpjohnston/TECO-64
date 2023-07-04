@@ -339,12 +339,6 @@ int getc_term(bool wait)
         }
     }
 
-#if     defined(DEBUG)          // Include --key option
-
-    putc_key(c);                        // Write character to keystroke file
-
-#endif
-
     return c;
 }
 

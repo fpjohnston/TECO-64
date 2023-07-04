@@ -597,7 +597,6 @@ static void parse_options(
             case OPT_display:
             case OPT_execute:
             case OPT_formfeed:
-            case OPT_keys:
             case OPT_log:
             case OPT_make:
             case OPT_mung:
@@ -798,21 +797,6 @@ static void push_opt(int option, const char *arg)
             teco_memory = NULL;         // Don't use memory file
 
             break;
-
-        case OPT_keys:
-        case -OPT_keys:
-
-#if     defined(DEBUG)          // Include --keys option
-
-            key_name = optarg;
-
-            return;
-
-#else
-
-            quit("Option --keys is only available in debug builds");
-
-#endif
 
         case -OPT_make:
             if (options.execute || options.make || options.mung)

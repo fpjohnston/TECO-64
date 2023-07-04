@@ -117,7 +117,6 @@ enum option_t
     OPT_formfeed     = 'F',
     OPT_help         = 'H',
     OPT_initialize   = 'I',
-    OPT_keys         = 'k',
     OPT_log          = 'L',
     OPT_make         = '0',
     OPT_mung         = '1',
@@ -138,7 +137,7 @@ enum option_t
 ///  @var optstring
 ///  String of short options parsed by getopt_long().
 
-static const char * const optstring = ":A:CD::E:XFHI:k:L:cndfimrpRS:T:";
+static const char * const optstring = ":A:CD::E:XFHI:L:cndfimrpRS:T:";
 
 ///  @var    long_options[]
 ///  @brief  Table of command-line options parsed by getopt_long().
@@ -153,7 +152,6 @@ static const struct option long_options[] =
     { "formfeed",       no_argument,        NULL, -OPT_formfeed     },
     { "help",           no_argument,        NULL, -OPT_help         },
     { "initialize",     required_argument,  NULL, -OPT_initialize   },
-    { "keys",           required_argument,  NULL, -OPT_keys         },
     { "log",            required_argument,  NULL, -OPT_log          },
     { "make",           required_argument,  NULL, -OPT_make         },
     { "mung",           required_argument,  NULL, -OPT_mung         },

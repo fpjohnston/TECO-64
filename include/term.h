@@ -41,13 +41,6 @@
 
 #define NO_WAIT (bool)false     ///< Don't wait for terminal input
 
-#if     defined(DEBUG)          // Include --key option
-
-extern const char *key_name;
-
-extern void putc_key(int c);
-
-#endif
 
 extern const char *table_8bit[];
 

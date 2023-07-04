@@ -131,10 +131,5 @@
             <short_name>p</short_name>
             <long_name>practice</long_name>
         </option>
-       <option type="hidden">
-            <short_name>k</short_name>
-            <long_name>keys</long_name>
-            <argument>required</argument>
-        </option>
     </section>
 </teco>

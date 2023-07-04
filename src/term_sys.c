@@ -58,14 +58,6 @@ static struct termios saved_mode;       ///< Saved terminal mode
 
 static bool term_active = false;        ///< Are terminal settings active?
 
-#if     defined(DEBUG)          // Include --key option
-
-const char *key_name = NULL;            ///< Name of file for keystrokes
-
-static FILE *key_fp = NULL;             ///< Keystroke file descriptor
-
-#endif
-
 static struct sigaction old_act;        ///< Saved action for SIGWINCH signal
 
 static bool old_saved = false;          ///< true if old_act has valid data
@@ -147,18 +139,6 @@ void detach_term(void)
 
 void exit_term(void)
 {
-
-#if     defined(DEBUG)          // Include --key option
-
-    if (key_fp != NULL)
-    {
-        fclose(key_fp);
-
-        key_fp = NULL;
-    }
-
-#endif
-
     reset_term();
 }
 
@@ -250,21 +230,6 @@ void init_term(void)
         f.et.eightbit  = true;          // Terminal can use 8-bit characters
 
         getsize();                      // Get the current window size
-
-#if     defined(DEBUG)          // Include --key option
-
-        if (key_name != NULL)
-        {
-            if ((key_fp = fopen(key_name, "w+")) != NULL)
-            {
-                // Write output immediately and do not buffer.
-
-                setvbuf(key_fp, NULL, _IONBF, 0uL);
-            }
-        }
-
-#endif
-
     }
 
     // The following is needed only if there is no display active and we haven't
@@ -297,26 +262,6 @@ void init_term(void)
 
     }
 }
-
-
-///
-///  @brief    Output character to keystroke file (if we have one).
-///
-///  @returns  Nothing.
-///
-////////////////////////////////////////////////////////////////////////////////
-
-#if     defined(DEBUG)          // Include --key option
-
-void putc_key(int c)
-{
-    if (key_fp != NULL)
-    {
-        fputc(c, key_fp);
-    }
-}
-
-#endif
 
 
 ///
