@@ -2,34 +2,91 @@
 
 ### Overview
 
-This document describes how to prepare a new TECO version for general release.
+This document describes the steps for preparing a new version for general release.
 It is intended for the benefit of developers, and is not necessary for end users.
 
-Note the sections for linting, testing, and building may need to be enhanced for
-64-bit builds eventually.
+### Software Requirements
 
-### Create Release Build
+- *GNU make*
+- *gcc*
+- *gdb* (optional, for debugging)
+- *gprof* (optional, for profiling)
+- *git* (optional, for version control)
+- *ncurses* (optional, for display mode)
+- *perl* (optional, for processing pattern files)
+- *perlcritic* (optional, for checking Perl scripts)
+- PC-Lint (optional, for linting source files)
+- *Doxygen* (optional, for documentation)
+- *xalan* (optional, for documentation)
 
-- Confirm that all code changes have been checked in, using *git status*.
-- Build release with *make release version=(major,minor,patch)*.
-- Confirm that *include/version.h* is the only staged or unstaged file, and
-check it in with *git add* and *git *commit*.
+### Create New Version
+
+Confirm that all code changes have been checked in.
+
+`git status`
+
+Execute one of the following.
+
+`make release version=patch`
+
+`make release version=minor`
+
+`make release version=major`
+
+Take note of the version number, specified in the form x.y.z
+(for example 200.37.0).
+This will be used in the steps below.
+
+### Check In New Version.
+
+`git add include/version.h`
+
+`git commit --message="Updated version number to x.y.z."`
+
+### Test Build Variants
+
+`make paging=std teco`
+
+`make display=off teco`
 
 ### Run Smoke Tests
 
-- *make distclean smoke*
+`make smoke`
 
-### Create Common Builds and Documentation
+This will build a debug version and then do the following.
 
-- *make paging=std teco*
-- *make display=off teco*
-- *make teco*
-- *make doc*
+- Confirm usage of all defined error codes.
+- Test all command-line options.
+- Test all TECO commands.
 
-### Install and Post Release
+If *perl* and *perlcritic* are available, it will also validate all Perl scripts
+in the *etc/* directory.
 
-- *sudo make install*
-- Add new tag with *git tag -a x.y.z -m "TECO-64 version x.y.z"*.
-- Confirm new tag with *git log*.
-- *git push*
-- Draft a new release on *github*.
+If PC-Lint is available, all source code will be linted.
+
+If any of these steps result in an error, the build will be aborted.
+
+### Create Documentation
+
+`make doc`
+
+This step may be skipped if Doxygen is not installed.
+
+### Create Final Build and Install
+
+`make distclean teco`
+
+`sudo make install`
+
+### Add and Verify New Tag
+
+`git tag -a x.y.z -m "TECO-64 version x.y.z"`
+
+`git log`
+
+### Post New Release
+
+`git push`
+
+Draft new release on GitHub.
+
