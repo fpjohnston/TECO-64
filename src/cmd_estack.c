@@ -251,7 +251,7 @@ void exec_oper(enum x_oper type)
         if (f.e0.skip)                  // Are we skipping commands??
         {
             return;                     // Yes, just exit
-        } 
+        }
         else if (type == X_COMPL)
         {
             throw(E_NAB);               // No argument for 1's complement

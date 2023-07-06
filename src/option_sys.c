@@ -66,7 +66,7 @@
 
 struct options
 {
-    char stack[NOPTIONS];           ///< Option stack 
+    char stack[NOPTIONS];           ///< Option stack
     const char *args[NOPTIONS];     ///< Stack arguments
     uint next;                      ///< Next option on stack
     const char *mn_args;            ///< Current numeric arguments (from -A)
@@ -481,7 +481,7 @@ static void parse_files(
             store_cmd(read_file, file, file);
         }
         else
-        { 
+        {
             store_cmd(edit_file, file, file);
         }
 
@@ -684,7 +684,7 @@ static bool pop_opts(void)
                         break;
                     }
                 }
-                
+
                 //  Here if we have a file name. Process the same as --mung.
 
                 //lint -fallthrough

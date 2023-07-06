@@ -178,7 +178,7 @@ static void find_tag(const char *text, uint len)
     //  Issue error if we couldn't find the tag, or if we're in a loop and the
     //  tag was found the start of the loop. The reason for the latter error is
     //  because we cannot easily ensure that we wouldn't be jumping into a loop
-    //  that we are not currently inside of. 
+    //  that we are not currently inside of.
 
     if (tag_pos == 0)
     {

@@ -47,7 +47,7 @@
 void exec_EX(struct cmd *cmd)
 {
     confirm(cmd, NO_M, NO_N, NO_COLON, NO_DCOLON, NO_ATSIGN);
- 
+
     struct ofile *ofile = &ofiles[ostream];
 
     if (ofile->fp == NULL && t->Z != 0)
