@@ -64,7 +64,7 @@
 | \^Y            | [Equivalent to ".+\^S,."](variables.md) |
 | \^Z            | [Size of text in all Q-registers](variables.md) |
 | ESC            | [String and command terminator](action.md) |
-| \^[            | [String and command terminator](action.md) |
+| \^\[           | [String and command terminator](action.md) |
 | \^\\           | Causes TECO to immediately abort. Use with caution. No recovery is possible. |
 | \^]            | [Repeats last command](action.md) |
 | \^\^*x*        | [ASCII value of *x*](variables.md) |
@@ -245,7 +245,7 @@
 | *m*,*n*:X*q*   | [Append characters *m* to *n* into Q-register *q*](qregister.md) |
 | Y              | [Read into buffer](page.md) |
 | Z              | [End of buffer value](variables.md) |
-| [*q*           | [Push Q-register *q* onto stack](qregister.md) |
+| \[*q*          | [Push Q-register *q* onto stack](qregister.md) |
 | \\             | [Value of digit string in buffer](variables.md) |
 | *n*\\          | [Insert digit string in buffer](insert.md) |
 | ]*q*           | [Pop from stack into Q-register *q*](qregister.md) |
