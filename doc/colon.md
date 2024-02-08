@@ -51,14 +51,14 @@ having TECO issue an error and abort processing of a macro or command string.
 ### Other Commands
 
 For other commands, the effect of using a colon modifier can range from being
-relatively minor, as in the case of :^A commands, to completely changing the
+relatively minor, as in the case of :\^A commands, to completely changing the
 command, as in the case of :EG commands.
 
 | Command  | Description |
 | -------- | ----------- |
-| :^A      | Output text string, followed by newline (LF or CR/LF). |
-| :^T      | Output character in binary mode. |
-| :^U      | Append character or text to Q-register. |
+| :\^A     | Output text string, followed by newline (LF or CR/LF). |
+| :\^T     | Output character in binary mode. |
+| :\^U     | Append character or text to Q-register. |
 | :%       | Increment Q-register and discard returned value. |
 | :=       | Print numeric value, but don't add newline (LF or CR/LF). |
 | :;       | Exit iteration on success. |

@@ -107,7 +107,7 @@ functions:
 
 | Bit | Function |
 | --- | -------- |
-| ED&1 | Allow caret (^) in search strings. If this bit is clear, a caret (^) in a search string modifies the immediately following character to become a control character. When this bit is set, a caret in a search string is simply the literal character caret. If you are editing a file that contains many caret characters, you will want to set this bit. (For control of upper/lower case matching in search strings, see the ^X flag.) |
+| ED&1 | Allow caret (\^) in search strings. If this bit is clear, a caret (\^) in a search string modifies the immediately following character to become a control character. When this bit is set, a caret in a search string is simply the literal character caret. If you are editing a file that contains many caret characters, you will want to set this bit. (For control of upper/lower case matching in search strings, see the \^X flag.) |
 | ED&2 | Allow all Y and _ commands. If this bit is set, the Y and _ commands work unconditionally as described earlier in the manual. If clear, the behavior of the Y and _ commands are modified as follows: If an output file is open and text exists in the edit buffer, the Y or _ command will produce an error message and the command will be aborted leaving the edit buffer unchanged. Note that if no output file is open the Y and _ commands act normally. Furthermore, if the edit buffer is empty the Y command can be used to bring in a page of text whether or not an output file is open (HKY will always work). The _ command will succeed in bringing one page of text into an empty edit buffer but will fail to bring in successive pages if an output file is open. |
 | ED&4 | Unused in TECO-64. |
 | ED&8 | Unused in TECO-64. |
@@ -167,12 +167,12 @@ Any combination of the individual bits may be set.
 
 | Bit | Function |
 | --- | -------- |
-| ET&1 | Type out in image mode. Setting this bit inhibits all of TECO’s type out conversions. All characters are output to the terminal exactly as they appear in the buffer or ^A command. For example, the changing of control characters into the "caret/character" form, and the conversion of &lt;ESCAPE> to \` (accent grave) or to $ (dollar sign) are suppressed. This mode is useful for driving displays. |
+| ET&1 | Type out in image mode. Setting this bit inhibits all of TECO’s type out conversions. All characters are output to the terminal exactly as they appear in the buffer or \^A command. For example, the changing of control characters into the "caret/character" form, and the conversion of &lt;ESCAPE> to \` (accent grave) or to $ (dollar sign) are suppressed. This mode is useful for driving displays. |
 | ET&2 | Process DELETEs and &lt;CTRL/U> characters by using "scope mode". Scope mode processing uses the cursor control features of monitors to handle character deletion by actually erasing characters from the screen. |
-| ET&4 | Read lower case. TECO normally converts all lower case alphabetics to upper case on input. Setting this bit causes lower case alphabetics to be input as lower case. TECO commands and file specifiers may be typed in either upper or lower case. For the purpose of searches, however, upper and lower case may be treated as different characters. (See ^X flag). |
-| ET&8 | Read without echo for ^T commands. This allows data to be read by the ^T command without having the characters echo at the terminal. Normal command input to TECO will echo. |
+| ET&4 | Read lower case. TECO normally converts all lower case alphabetics to upper case on input. Setting this bit causes lower case alphabetics to be input as lower case. TECO commands and file specifiers may be typed in either upper or lower case. For the purpose of searches, however, upper and lower case may be treated as different characters. (See \^X flag). |
+| ET&8 | Read without echo for \^T commands. This allows data to be read by the \^T command without having the characters echo at the terminal. Normal command input to TECO will echo. |
 | ET&16 | Unused. |
-| ET&32 | Read with no wait. This enables the ^T command to test if a character is available at the user terminal. If a character has been typed, ^T returns the value of the character as always. If no character has been typed, ^T immediately returns a value of -1 and execution continues without waiting for a character. |
+| ET&32 | Read with no wait. This enables the \^T command to test if a character is available at the user terminal. If a character has been typed, \^T returns the value of the character as always. If no character has been typed, \^T immediately returns a value of -1 and execution continues without waiting for a character. |
 | ET&64 | Detach TECO from the user's terminal, but continue execution of the command string. An error will be issued if this feature is not supported in the current operating environment. <br><br> While detaching with open files should work in at least some environments, it is safer and more portable to detach from a terminal before executing EB, ER, EW, or other commands that open files. However, this does not apply to an EI command, since the data from any indirect command file is read, and the file closed, before execution of the commands contained therein. |
 | ET&128 | "Abort-on-error" bit. Initially set, when TECO starts up; cleared each time TECO issues its asterisk prompt. When this bit is set: 1) all informational messages are suppressed, 2) any &lt;CTRL/C> causes the immediate termination of TECO, and 3) any error causes the termination of TECO after the error message is printed. |
 | ET&256 | If this bit is set, all lines output to the terminal are truncated to the terminal’s width if needed. |
@@ -213,13 +213,13 @@ should be output to the terminal, according to the table below.
 
 The initial value of the EV flag is 0.
 
-### ^X - Search Mode Flag
+### \^X - Search Mode Flag
 
 | Command | Function |
 | ------- | -------- |
-| 0^X | The text argument in a search command will match text in the text buffer independent of case in either the search argument or the text buffer. The lower case alphabetics match the upper case alphabetics, and "`", "{", " | ", "}", "~" match "@", "[", "\ ", "]", "^" respectively. |
-| -1^X | The search will succeed only if the text argument is identical to text in the text buffer. (This means that lower case does NOT match upper case). |
-| 1^X | The text argument in a search command will match text in the text buffer independent of case in either the search argument or the text buffer. |
+| 0\^X | The text argument in a search command will match text in the text buffer independent of case in either the search argument or the text buffer. The lower case alphabetics match the upper case alphabetics, and "`", "{", " | ", "}", "~" match "@", "[", "\ ", "]", "\^" respectively. |
+| -1\^X | The search will succeed only if the text argument is identical to text in the text buffer. (This means that lower case does NOT match upper case). |
+| 1\^X | The text argument in a search command will match text in the text buffer independent of case in either the search argument or the text buffer. |
 
-The initial value of the ^X flag is 1. (For control of caret or
+The initial value of the \^X flag is 1. (For control of caret or
 uparrow treatment in search strings, see the ED&1 flag bit.)

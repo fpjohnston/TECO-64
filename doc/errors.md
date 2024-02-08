@@ -46,7 +46,7 @@ code.
 | <span>?FIL</span> | <span>Invalid file 'foo'</span> | An attempt was made to open a directory, FIFO, socket, or similar file specification instead of a regular file. |
 | <span>?FNF</span> | <span>File not found 'foo'</span> | The requested input file could not be located. If this occurred within a macro, the colon-modified command may be necessary. |
 | <span>?IAA</span> | <span>Invalid A argument</span> | The argument preceding a :A command is negative or zero. |
-| <span>?ICE</span> | <span>Invalid ^E command in search argument</span> | A search argument contains a ^E command that is either not defined or incomplete. |
+| <span>?ICE</span> | <span>Invalid \^E command in search argument</span> | A search argument contains a \^E command that is either not defined or incomplete. |
 | <span>?IEC</span> | <span>Invalid character '*x*' after E</span> | An invalid E command has been executed. |
 | <span>?IFC</span> | <span>Invalid character '*x*' after F</span> | An invalid F command has been executed. |
 | <span>?IFE</span> | <span>Ill-formed numeric expression</span> | The numeric expression preceding a command doesn't make sense. For example, 5+ isn't a complete expression. |
@@ -59,10 +59,10 @@ code.
 | <span>?IPA</span> | <span>Invalid P argument</span> | The argument preceding a P or PW command is negative or zero. |
 | <span>?IQC</span> | <span>Invalid quote character</span> | One of the valid " qualifiers did not follow the quote character. |
 | <span>?IQN</span> | <span>Invalid Q-register name '*x*'</span> | An invalid Q-register name was specified in one of the Q-register commands. |
-| <span>?IRA</span> | <span>Invalid radix argument to ^R</span> | The argument to a ^R radix command must be 8, 10 or 16. |
+| <span>?IRA</span> | <span>Invalid radix argument to \^R</span> | The argument to a \^R radix command must be 8, 10 or 16. |
 | <span>?ISA</span> | <span>Invalid search argument</span> | The argument preceding a search command is 0. This argument must not be 0. |
-| <span>?ISS</span> | <span>Invalid search string</span> | One of the search string special characters (^Q, ^V, ^W, etc.) would have modified the search string delimiter (usually <ESC>). |
-| <span>?IUC</span> | <span>Invalid character '*x*' following ^</span> | The character following a ^ must have an ASCII value between 64 and 95 inclusive, or between 141 and 172 inclusive. |
+| <span>?ISS</span> | <span>Invalid search string</span> | One of the search string special characters (\^Q, \^V, \^W, etc.) would have modified the search string delimiter (usually <ESC>). |
+| <span>?IUC</span> | <span>Invalid character '*x*' following \^</span> | The character following a \^ must have an ASCII value between 64 and 95 inclusive, or between 141 and 172 inclusive. |
 | <span>?KEY</span> | <span>Keyword 'foo' not found</span> | An invalid keyword was specified for an F1, F2, F3, F4, FM, or FQ command. |
 | <span>?LOC</span> | <span>Invalid location for tag '!foo!'</span> | An O command inside a loop or nested loop cannot jump backward before the start of the outermost loop. It also cannot jump into the middle of any loop it is not currently inside of. |
 | <span>?MAP</span> | <span>Missing apostrophe</span> | Every conditional (started with the " command) must be closed with the ' command. |
@@ -73,7 +73,7 @@ code.
 | <span>?MRA</span> | <span>Missing right angle bracket</span> | There is a left angle bracket that has no matching right angle bracket. A loop must be complete within a macro or command string. |
 | <span>?MRP</span> | <span>Missing right parenthesis</span> | There is a left parenthesis that is not matched by a corresponding right parenthesis. |
 | <span>?MSC</span> | <span>Missing start of conditional</span> | A ' command (end of conditional) was encountered. Every ' command must be matched by a preceding " (start of a conditional) command. |
-| <span>?NAB</span> | <span>No argument before 1's complement operator</span> | The ^_ command must be preceded by either a specific numeric argument or a command that returns a numeric value. |
+| <span>?NAB</span> | <span>No argument before 1's complement operator</span> | The \^_ command must be preceded by either a specific numeric argument or a command that returns a numeric value. |
 | <span>?NAC</span> | <span>No argument before comma</span> | A command has been executed in which a , is not preceded by a numeric argument. |
 | <span>?NAE</span> | <span>No argument before equals sign</span> | The =, ==, or === command must be preceded by either a specific numeric argument or a command that returns a numeric value. |
 | <span>?NAP</span> | <span>No argument before right parenthesis</span> | A right parenthesis has been encountered and is not properly preceded by a specific numeric argument or a command that returns a numeric value. |
@@ -95,7 +95,7 @@ code.
 | <span>?SRH</span> | <span>Search failure: 'foo'</span> | A search command not preceded by a colon modifier and not within an iteration has failed to find the specified " command. After an S search fails the pointer is left at the beginning of the buffer. After an N or _ search fails the last page of the input file has been input and, in the case of N, output, and the buffer is cleared. In the case of an N search it is usually necessary to close the output file and reopen it. |
 | <span>?TAG</span> | <span>Missing tag: '!foo!'</span> | The tag specified by an O command cannot be found. This tag must be in the same macro level as the O command referencing it. |
 | <span>?TXT</span> | <span>Invalid text delimiter '*x*'</span> | Text delimiters must be graphic ASCII characters in the range of [33,126], or control characters in the range of [1,26]. Characters such as spaces or ESCapes may not be used for delimiters. |
-| <span>?UTC</span> | <span>Unterminated command string</span> | This is a general error which is usually caused by an unterminated insert, search, or filename argument, an unterminated ^A message, an unterminated tag or comment (i.e., unterminated ! construct), or a missing ' character which closes a conditional execution command. |
+| <span>?UTC</span> | <span>Unterminated command string</span> | This is a general error which is usually caused by an unterminated insert, search, or filename argument, an unterminated \^A message, an unterminated tag or comment (i.e., unterminated ! construct), or a missing ' character which closes a conditional execution command. |
 | <span>?UTM</span> | <span>Unterminated macro</span> | This error is that same as the ?UTC error except that the unterminated command was executing from a Q-register (i.e., it was a macro). (Note: An entire command sequence stored in a Q-register must be complete within the Q-register.) |
 | <span>?XAB</span> | <span>Execution aborted</span> | Execution of TECO was aborted. This is usually due to the typing of <CTRL/C>. |
 | <span>?YCA</span> | <span>Y command aborted</span> | An attempt has been made to execute a Y or _ search command with an output file open, that would cause text in the edit buffer to be erased without outputting it to the output file. The ED command controls this check. |

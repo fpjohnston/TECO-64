@@ -8,13 +8,13 @@ These commands do not move *dot*.
 | Command | Function |
 | ------- | -------- |
 | \^A*text*&lt;CTRL/A> | Types *text* on the terminal. While the command may begin with &lt;CTRL/A> or \^A, closing character must be a &lt;CTRL/A>. |
-| @^A/*text*/ | Equivalent to \^A*text*&lt;CTRL/A>. |
+| @\^A/*text*/ | Equivalent to \^A*text*&lt;CTRL/A>. |
 | :\^A*text*&lt;CTRL/A> | Equivalent to \^A*text*&lt;CTRL/A> 13\^T 10\^T. |
 | :@\^A/*text*/ | Equivalent to \^A/*text*/ 13\^T 10\^T. |
-| *n*^T | Types out to the terminal the character whose ASCII value is *n*. Whatever normal type-out conversions may currently be in effect and applicable (such as translation of control characters to up-arrow format) are done. The value of *n* is used modulo 256 (except if it is -1; see below). |
-| *n*:^T | Outputs to the terminal the character whose ASCII value is *n*. Output is done in "one-shot" binary mode; no type-out translations are done. The value of *n* is used modulo 256 (except if it is -1; see below). |
-| -1^T | Types CR/LF. Equivalent to 13^T 10^T. |
-| *m*,*n*^T | Specifies a repeat count of *m* for the character whose ASCII value is *n*. *n* may be -1. |
+| *n*\^T | Types out to the terminal the character whose ASCII value is *n*. Whatever normal type-out conversions may currently be in effect and applicable (such as translation of control characters to up-arrow format) are done. The value of *n* is used modulo 256 (except if it is -1; see below). |
+| *n*:\^T | Outputs to the terminal the character whose ASCII value is *n*. Output is done in "one-shot" binary mode; no type-out translations are done. The value of *n* is used modulo 256 (except if it is -1; see below). |
+| -1\^T | Types CR/LF. Equivalent to 13\^T 10\^T. |
+| *m*,*n*\^T | Specifies a repeat count of *m* for the character whose ASCII value is *n*. *n* may be -1. |
 | *n*= | This command causes the value of *n* to be output at the terminal in decimal followed by a carriage return and line feed. Decimal numeric conversion is signed. TECO's radix is unaltered. |
 | *n*== | This command causes the value of *n* to be output at the terminal in octal (base 8) followed by a carriage return and line feed. Octal numeric conversion is unsigned. TECO’s radix is unaltered. |
 | *n*=== | This command causes the value of *n* to be output at the terminal in hexadecimal (base 16) followed by a CR/LF. Hexadecimal output is unsigned. radix is unaltered. |

@@ -137,11 +137,11 @@ specified by the &lt;else-clause> are executed.
 An ASCII character whose octal code is in the range 0-31. Usually denoted in
 this manual by &lt;CTRL/X> where X is the character whose ASCII code is 100
 (octal) greater than the ASCII code for the control character being represented.
-TECO displays such a character as ^X (Caret-X) except for &lt;TAB>, &lt;LF>, &lt;VT>,
+TECO displays such a character as \^X (Caret-X) except for &lt;TAB>, &lt;LF>, &lt;VT>,
 &lt;FF>, and &lt;CR> which have their normal display, and &lt;ESC> which is displayed
 as $ (dollar sign) or, if a user-designated ESCAPE surrogate is in effect, as `
 (accent grave). Anytime a single control-character, &lt;CTRL/X> is a valid TECO
-command, the two-character sequence, ^X, may be used instead.
+command, the two-character sequence, \^X, may be used instead.
 
 **&lt;CTRL/C> trapping**
 
@@ -201,7 +201,7 @@ One of several two-character TECO commands that start with the letter ’E’.
 **Echo mode**
 
 A normal mode of operation in which TECO will automatically echo (display) each
-character that is typed in response to a ^T command. Opposite of no-echo mode.
+character that is typed in response to a \^T command. Opposite of no-echo mode.
 This mode is controlled by the ET&8 flag bit. (0 means no-echo mode.)
 
 **ED flag**
@@ -246,7 +246,7 @@ characters within the conditional construct.
 
 **End-of-file flag**
 
-A read-only flag, referenced by the ^N command that specifies whether or not
+A read-only flag, referenced by the \^N command that specifies whether or not
 end-of-file has been seen on the currently selected input stream. A value of 0
 means that end-of-file has not been seen; a value of -1 means that end-of-file has
 been reached. This flag is initially 0 and is reset to 0 each time a new file is
@@ -305,7 +305,7 @@ One of several two-character TECO commands that start with the letter ’F’.
 A data register used by TECO to control various modes of operation. The
 contents of the flag are set by specifying the new value before the flag name; and
 the contents are returned by using the flag name without a numeric argument.
-The TECO flags are: ^X, ^E, ^N, ED, EE, EH, EO, ES, ET, EU, and EV.
+The TECO flags are: \^X, \^E, \^N, ED, EE, EH, EO, ES, ET, EU, and EV.
 
 **Flow command**
 
@@ -314,7 +314,7 @@ character. The flow commands are F&lt;, F>, F’, and F | .
 
 **Form feed flag**
 
-A read-only flag, referenced by the ^E command that specifies whether the
+A read-only flag, referenced by the \^E command that specifies whether the
 previous append from the input file terminated because of encountering a form
 feed character in the input file, or because the edit buffer became nearly full. The
 value of this flag is automatically set to -1 by TECO if input is terminated by the
@@ -366,7 +366,7 @@ to be moved by one line and the new current line to be typed out. Examples are
 **Immediate action commands**
 
 Commands which may be typed right after TECO’s prompting asterisk,
-such as the \*q to save the previously-typed command in a Q-register or the ^W to
+such as the \*q to save the previously-typed command in a Q-register or the \^W to
 re-display a scrolling buffer window.
 
 **Immediate ESCape sequence commands**
@@ -403,12 +403,12 @@ continued on the next line. Opposite of truncate mode.
 **Literal type-out mode**
 
 A mode that TECO can be put into by setting the ET&1 flag bit, or (for a
-single character on a one-shot basis) by using the :^T command. In this mode,
+single character on a one-shot basis) by using the :\^T command. In this mode,
 any characters typed by a TECO program via use of one of the commands T,
-V, ^A, or :G, will be displayed on the user’s terminal without any modification.
+V, \^A, or :G, will be displayed on the user’s terminal without any modification.
 When not in this mode, TECO will convert characters that normally do not print
 to a form that can be displayed on the user’s terminal (e.g. &lt;CTRL/X> displays as
-^X and &lt;ESCape> displays as $ or, if a user-designated ESCape surrogate is in
+\^X and &lt;ESCape> displays as $ or, if a user-designated ESCape surrogate is in
 effect, as `). Literal type out mode is useful when trying to do real-time displays
 on a display terminal. Normal (up-arrow) mode is particularly useful to let you see
 what characters are really in your file.
@@ -463,7 +463,7 @@ users to their source files.
 **No-echo mode**
 
 A mode of operation in which TECO will not automatically echo (display) the
-character typed by the user in response to the ^T command. This mode is entered
+character typed by the user in response to the \^T command. This mode is entered
 by setting the ET&8 flag bit. Opposite of echo mode.
 
 **Page**
@@ -513,9 +513,9 @@ Q-registers.
 
 **Read-with-no-wait mode**
 
-A mode of operation in which the ^T command will not hang until a key is typed
+A mode of operation in which the \^T command will not hang until a key is typed
 on the user’s terminal. In this mode, if no key has been struck, TECO returns a
--1 as the value of the ^T command. This mode is entered by setting the ET&32 flag
+-1 as the value of the \^T command. This mode is entered by setting the ET&32 flag
 bit.
 
 **Scrolling**
@@ -543,10 +543,10 @@ terminal.
 
 **Search mode flag**
 
-A flag, referenced by the ^X command, that controls how TECO treats
+A flag, referenced by the \^X command, that controls how TECO treats
 alphabetical characters within search strings. This flag is used to put TECO into
-either exact-case mode, or either-case mode. If the ^X flag is set to 0, then either
-case matches in searches. If the ^X flag is set to 1, then exact case matches are
+either exact-case mode, or either-case mode. If the \^X flag is set to 0, then either
+case matches in searches. If the \^X flag is set to 1, then exact case matches are
 required.
 
 **Secondary input stream**
@@ -631,8 +631,8 @@ the type out.
 **Up-arrow mode**
 
 A standard mode of operation wherein upon type out, TECO will display control
-characters by typing the visible two-character sequence ^X to represent the
-control character &lt;CTRL/X>. On many older terminals, the caret character (^),
+characters by typing the visible two-character sequence \^X to represent the
+control character &lt;CTRL/X>. On many older terminals, the caret character (\^),
 whose octal ASCII code is 136, prints as an up-arrow. Some control characters
 are not printed in up-arrow mode, notably &lt;TAB>, &lt;LF>, &lt;VT>, &lt;FF>, and &lt;CR>.
 

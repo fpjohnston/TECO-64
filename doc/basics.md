@@ -66,7 +66,7 @@ commands use all of these fields.
 | *n*   | Second (or only) numeric argument. | 42R |
 | : | Colon modifier. Affects the behavior of the following command, often in order to return a value indicating success or failure of the command rather than aborting execution and issuing an error. | \:ERinput.c\` |
 | :: | Double colon modifier. Affects the behavior of the following command, but differently than :. Often used for "anchored" searches. | \:\:Sbaz\` |
-| @ | At signed modifier. Specifies an alternative delimiter will be used for text arguments that follow the command, using a matched pair of characters. | \@^A/hello/ @FC/baz/foo/ |
+| @ | At signed modifier. Specifies an alternative delimiter will be used for text arguments that follow the command, using a matched pair of characters. | \@\^A/hello/ @FC/baz/foo/ |
 | command | The TECO command to be executed. | V, ET, === |
 | *q* | The name of the Q-register that the command will use. | 1XA |
 | *text1* | The first text argument for the command. See description below. | Ifoobaz\` |
@@ -105,8 +105,8 @@ details.
 
 TECO can be built for either 32- or 64-bit support. If it has been
 build for the former, then numeric arguments may range from
--2^31 to 2^32-1. If it has been built for the latter, then numeric
-arguments may range from -2^63 to 2^32-1.
+-2\^31 to 2\^32-1. If it has been built for the latter, then numeric
+arguments may range from -2\^63 to 2\^32-1.
 
 ### Colon Modifiers
 
@@ -133,13 +133,13 @@ Commands that allow a single text argument are normally delimited as follows:
 | Command | Description |
 | ------- | ----------- |
 | command&lt;*delim*> | General command, where &lt;*delim*> is ESCape or an alternative delimiter such as accent grave. |
-| <span>^Ahello, world!&lt;CTRL/A></span> | The type-out command may start with a CTRL/A or literal ^A, but it must be terminated by a CTRL/A.
+| <span>\^Ahello, world!&lt;CTRL/A></span> | The type-out command may start with a CTRL/A or literal \^A, but it must be terminated by a CTRL/A.
 | !tag! | Any tag or comment must be start and end with an exclamation mark. |
 
 | Example | Description |
 | ------- | ----------- |
 | Sabc\`  | Search for the string "abc" |
-| ^UAhello, world!\` | Insert the text "hello, world!" into Q-register A |
+| \^UAhello, world!\` | Insert the text "hello, world!" into Q-register A |
 | OBEGIN\` | Branch to the tag specified by the string "BEGIN" |
 
 Depending on the command, it may also be possible to use a "null" text
