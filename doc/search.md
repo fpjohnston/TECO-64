@@ -50,7 +50,7 @@ immediately following the edit buffer pointer.
 
 | Command | Function |
 | ------- | -------- |
-| *m*,*n*S*text*\` | Performs the same function as the *n*S command, but *m* serves a bound limit for the search. If the search string can be found without moving the pointer more than ABS(*m*)-1 places, the search succeeds and the pointer is repositioned to immediately after the last character of the string. Otherwise, the pointer is left unchanged. The ^Q operator is useful in conjunction with this command. <br><br>Note that m,Stext$ is identical to m,1Stext$ and m,-Stext$ is identical to m,-1Stext$.|
+| *m*,*n*S*text*\` | Performs the same function as the *n*S command, but *m* serves a bound limit for the search. If the search string can be found without moving the pointer more than ABS(*m*)-1 places, the search succeeds and the pointer is repositioned to immediately after the last character of the string. Otherwise, the pointer is left unchanged. The \^Q operator is useful in conjunction with this command. <br><br>Note that m,Stext$ is identical to m,1Stext$ and m,-Stext$ is identical to m,-1Stext$.|
 | *m*,*n*FB*text*\` | Performs the same function as the *n*S*text*` command, but *m* and *n* (inclusive) serve as bounds for the search. In order for a search to be successful, the first character to match must occur between buffer pointer positions *m* and *n*. The string that is matched is permitted to extend beyond the search limits specified, provided that it begins within bounds. If *m* &lt; *n*, then the search proceeds in a forwards direction. If *m* > *n*, then the search proceeds in the reverse direction. |
 | *n*FB*text*` | Performs a bounded search over the next *n* lines. If *n* is positive, the search proceeds forward over the next *n* lines; if *n* is negative the search proceeds backwards over the *n* preceding lines; if *n* is zero, the search proceeds backwards over the portion of the line preceding the pointer. |
 | FB*text*\` | Equivalent to 1FB*text*`. |
@@ -92,8 +92,8 @@ function of the caret can be disabled by using the ED flag.
 | &lt;CTRL/V>*x* | Convert *x* to lower case. |
 | &lt;CTRL/W>&lt;CTRL/W> | Convert all following alphabetic characters in this string to upper case unless an explicit &lt;CTRL/V> is encountered to temporarily override this state. This state continues until the end of the string or until a &lt;CTRL/V>&lt;CTRL/V> construct is encountered. |
 | &lt;CTRL/W>*x* | Convert *x* to upper case. |
-| &lt;CTRL/E>Q*q* | Specifies that the string stored in Q-register *q* is to be used in the position occupied by the ^EQ*q* in the search string. |
-| &lt;CTRL/E>U*q* | Specifies that the character whose ASCII code is specified by the numeric storage area of Q-register *q* is to be used in the position occupied by the ^EU*q* in the search string. |
+| &lt;CTRL/E>Q*q* | Specifies that the string stored in Q-register *q* is to be used in the position occupied by the \^EQ*q* in the search string. |
+| &lt;CTRL/E>U*q* | Specifies that the character whose ASCII code is specified by the numeric storage area of Q-register *q* is to be used in the position occupied by the \^EU*q* in the search string. |
 
 String build characters are also permitted inside the string arguments
 of the O, EB, ER, EW, and EG commands.

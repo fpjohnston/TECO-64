@@ -35,7 +35,7 @@ mode information.
 | 9:W | Read-only terminal mask. For compatibility with older TECO macros, all bits are set, but none are used within TECO-64.<br><br>1 - Is ANSI CRT.<br>2 - Has EDIT mode features. <br>4 - Can do reverse scrolling. <br>8 - Has special graphics. <br>16 - Can do reverse video. <br>32 - Can change width. <br>64 - Has scrolling regions. <br>128 - Can erase to end-of-screen. |
 | 10:W | Returns or sets the number of spaces for each tab size. The default value is 8, which is also the value used when setting this value to 0. |
 | 11:W | Returns or sets the maximum length of lines in the edit buffer. This value should be longer than the maximum desired line length in order to ensure that file contents are correctly displayed in the edit window. |
-| *m*,*n*:W | Sets the parameter represented by *n*:W to *m* and returns a value. If the new setting has been accepted, the returned value is *m*. Elsewise, the returned value is either the old value associated with *n*:W or whatever new setting was actually set. In all cases, the returned value reflects the new current setting. <br><br>Note that each *m*,*n*:W command returns a value, even if your only intent is to set something. Good programming practice suggests following any command which returns a value with *delim* or ^[ if you don’t intend that value to be passed to the following command. |
+| *m*,*n*:W | Sets the parameter represented by *n*:W to *m* and returns a value. If the new setting has been accepted, the returned value is *m*. Elsewise, the returned value is either the old value associated with *n*:W or whatever new setting was actually set. In all cases, the returned value reflects the new current setting. <br><br>Note that each *m*,*n*:W command returns a value, even if your only intent is to set something. Good programming practice suggests following any command which returns a value with *delim* or \^[ if you don’t intend that value to be passed to the following command. |
 
 ### Color Commands
 
@@ -56,7 +56,7 @@ These commands may optionally set the foreground and background
 saturation levels, which may range from 0 (completely black) to
 100 (maximum brightness).
 
-The ^K command may be used to reset colors for all windows to their
+The \^K command may be used to reset colors for all windows to their
 defaults, to recover from a situation in which the a window has become
 unreadable due to the foreground and background colors being set to
 the same color.

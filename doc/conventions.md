@@ -46,7 +46,7 @@ the ESCape character at that position.
 | &lt;ESC>         | 27            | ESCape |
 | &lt;CTRL/*x*>    | -             | Control-*x* |
 | &lt;SPACE>       | 20            | Space |
-| ^*x*            | -             | When used to illustrate TECO output, it indicates the equivalent control character, &lt;CTRL/*x*>. So, "^A" would mean &lt;CTRL/A>. <br><br> When used to illustrate a command, it means that either the literal two character sequence, with a caret (^) followed by an alphabetic or special character, *or* the equivalent control character is allowed. If the example uses &lt;CTRL/X>, that means that the ^*x* sequence is not allowed in that situation. |
+| \^*x*            | -             | When used to illustrate TECO output, it indicates the equivalent control character, &lt;CTRL/*x*>. So, "\^A" would mean &lt;CTRL/A>. <br><br> When used to illustrate a command, it means that either the literal two character sequence, with a caret (\^) followed by an alphabetic or special character, *or* the equivalent control character is allowed. If the example uses &lt;CTRL/X>, that means that the \^*x* sequence is not allowed in that situation. |
 | \`              | 96            | Accent grave. Not a TECO command, but used in example code in this manual to indicate a general delimiter, whether ESCape, accent grave, or other character. |
 | &lt;DEL>         | 127           | Delete |
 | &lt;*delim*>     | \-            | Refers to any character which is used as a delimiter for a command or command string. Originally, TECO only used &lt;ESC>, but later versions allowed users to specify an alternate delimiter (often accent grave), either with the ET&8192 flag bit, or the EE flag. <br><br>If an alternate delimiter has been defined, then it will always be echoed as an accent grave, as will ESCape. If no alternate delimiter has been defined, ESCape will echo as a dollar sign ($). <br><br>Since an alternate delimiter can be user-defined, and since there can be as many as three delimiters in effect at a given time, &lt;*delim*> is used throughout this manual to refer to any character that may be in use as a command delimiter. <br><br>Note that although alternate delimiters may be used when typing in TECO commands, they may not be used in macros or indirect command files. In those cases, the only delimiter allowed is ESCape. |
@@ -54,7 +54,7 @@ the ESCape character at that position.
 ### Digit Strings
 
 Numbers may be specified as a string of digits in either decimal or octal.
-The ^D, ^O, and ^R commands are used to set the current radix. If the radix
+The \^D, \^O, and \^R commands are used to set the current radix. If the radix
 is octal, the digits 8 and 9 are invalid and will result in a ILN error.
 
 If the radix is hexadecimal, only digits 0 through 9 may be used; there is

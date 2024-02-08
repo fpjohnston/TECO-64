@@ -42,30 +42,30 @@ being returned if the open succeeded, and 0 if it failed.
 
 ### Commands
 
-[^A - Print text](typeout.md)
+[\^A - Print text](typeout.md)
 - Added colon modifier for adding CR/LF after text.
 
-[^E - Match control constructs](search.md)
-- Added ^E*nnn*.
+[\^E - Match control constructs](search.md)
+- Added \^E*nnn*.
 
-[^F - Reserved for future use]
+[\^F - Reserved for future use]
 
-[^K - Reset display colors](action.md)
+[\^K - Reset display colors](action.md)
 
-[^P - Current page number](variables.md) (TECO-10)
+[\^P - Current page number](variables.md) (TECO-10)
 
-[^T - Type character](typeout.md)
+[\^T - Type character](typeout.md)
 - Added repeat count.
 - Allowed -1 for printing CR/LF.
 
-[^U - Add/Delete Q-register text](qregister.md)
+[\^U - Add/Delete Q-register text](qregister.md)
 - Added ability to delete text.
 
-[^V - Lower case text](misc.md) (TECO-10)
+[\^V - Lower case text](misc.md) (TECO-10)
 
-[^W - Upper case text](misc.md) (TECO-10)
+[\^W - Upper case text](misc.md) (TECO-10)
 
-[^X- Search mode flag](flags.md)
+[\^X- Search mode flag](flags.md)
 - Flag may be set to 1, in addition to 0 and -1.
 
 [; - Branch out of current iteration](loops.md)

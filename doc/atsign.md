@@ -7,8 +7,8 @@ TECO will issue a ATS error.
 
 | Command | Description |
 | ------- | ----------- |
-| ^A      | Output text string |
-| ^U      | Copy text to Q-register |
+| \^A     | Output text string |
+| \^U     | Copy text to Q-register |
 | !       | Tag or comment |
 | =       | Print numeric value |
 | E%      | Write Q-register to file |

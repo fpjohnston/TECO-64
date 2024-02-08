@@ -53,14 +53,14 @@ list through the use of local Q-registers.
 
 ### Alternate Command Forms
 
-The ^U commands can be modified with at signs, as shown in the table below.
+The \^U commands can be modified with at signs, as shown in the table below.
 
 | Command | Description |
 | ------- | -------- |
-| ^U*qtext*\` | Classic form of command, using accent grave (or possibly ESCape) as a delimiter for the file name. |
-| @^U*q*/*text*/ | Equivalent to ^U*qtext* \`, except that a pair of slashes are used to delimit the file name. Other characters may be used instead of slashes, as long as they match. If the E1&4 flag bit is set, then the text string may be enclosed in paired braces (e.g., @^U*q*\{*text*\}). |
+| \^U*qtext*\` | Classic form of command, using accent grave (or possibly ESCape) as a delimiter for the file name. |
+| @\^U*q*/*text*/ | Equivalent to \^U*qtext* \`, except that a pair of slashes are used to delimit the file name. Other characters may be used instead of slashes, as long as they match. If the E1&4 flag bit is set, then the text string may be enclosed in paired braces (e.g., @\^U*q*\{*text*\}). |
 
-In the descriptions below, the at sign form of ^U commands will be used
+In the descriptions below, the at sign form of \^U commands will be used
 for clarity.
 
 ### Q-Register Loading Commands
@@ -74,14 +74,14 @@ loaded into Q-registers.
 | *m*,*n*U*q* | Equivalent to *n*U*qm*. That is, this command puts the number *n* into the numeric storage area of Q-register *q* and then returns the number *m* as a value. The command "UA UB" is useful at the beginning of a macro to save the two arguments specified on the macro call. (See the *m*,*n*M*q* command below.) |
 | *n*%*q* | Add *n* to the contents of the number storage area of Q-register *q*. The updated contents of Q-register *q* are also returned as a value to be passed to the next command. If your intent is only to update the Q-register, use the *n*:%*q* command, described below, to avoid unintentionally affecting the following command. |
 | *n*:%*q* | Equivalent to *n*%*q*, but discards the returned value. |
-| *n*%*q*` | Same as *n*:%*q*. Note that the "^[" sequence may be substituted for a delimiter in this situation. |
+| *n*%*q*` | Same as *n*:%*q*. Note that the "\^[" sequence may be substituted for a delimiter in this situation. |
 | %*q* | Equivalent to 1%*q*. |
 | :%*q* | Equivalent to 1:%*q*. |
-| @^U*q*/*text*/ | This command inserts character string *text* into the text storage area of Q-register *q*. When entering a command string from the terminal, you must specify ^U using the caret/U format, since the <CTRL/U> character is the line erase immediate action command. |
-| :@^U*q*/*text*/ | This command appends character string *text* to the text storage area of Q-register *q*. |
-| *n*^U*q* | Inserts one character, whose ASCII code is *n* (module 256), into the text area of Q-register *q*. |
-| *n*:^U*q* | Appends the character, whose ASCII code is *n* (module 256), into the text area of Q-register *q*. |
-| @^U*q*// | Delete all text in Q-register *q*. |
+| @\^U*q*/*text*/ | This command inserts character string *text* into the text storage area of Q-register *q*. When entering a command string from the terminal, you must specify \^U using the caret/U format, since the <CTRL/U> character is the line erase immediate action command. |
+| :@\^U*q*/*text*/ | This command appends character string *text* to the text storage area of Q-register *q*. |
+| *n*\^U*q* | Inserts one character, whose ASCII code is *n* (module 256), into the text area of Q-register *q*. |
+| *n*:\^U*q* | Appends the character, whose ASCII code is *n* (module 256), into the text area of Q-register *q*. |
+| @\^U*q*// | Delete all text in Q-register *q*. |
 | *n*X*q* | Clear Q-register *q* and copy *n* lines into it, where *n* is a signed integer. <br><br>If *n* is positive, the *n* lines following the current pointer position are copied into the text storage area of Q-register *q*. <br><br>If *n* is negative, the *n* lines preceding the pointer are copied. <br><br>If *n* is zero, the contents of the buffer from the beginning of the line on which the pointer is located up to the pointer is copied. <br><br>The pointer is not moved. The text is not deleted. |
 | -X*q* | Equivalent to -1X*q*. |
 | *m*,*n*X*q* | Copy the contents of the buffer from the *m*+1th character through and including the *n*th character into the text storage area of Q-register *q*. *m* and *n* must be positive, and *m* should be less than *n*. |
@@ -133,6 +133,6 @@ Elsewhere in this manual, "q" indicates either a global or local Q-register name
 | M.*q*, :M.*q* | Execute the contents of the text storage area of local Q-register .*q* as a command string. No new set of local Q-registers is created. |
 | *n*M.*q*, *n*:M.*q* | Execute the M.*q* command as above, using *n* as a numeric argument for the first command contained in local Q-register .*q*. No new set of local Q-registers is created. |
 | *m*,*n*M.*q*, *m*,*n*:M.*q* | Execute the M.*q* command as above, using *m*,*n* as numeric arguments for the first command contained in local Q-register .*q*. No new set of local Q-registers is created. |
-| $$ | The &lt;ESC>&lt;ESC> command causes TECO to exit from the current macro level. If this command is issued from top level (not from within a macro), then the command string execution is terminated and TECO returns to prompt level. Note that the second &lt;ESC> must be a true ESCape and may not be a ^[. Also, note that both ESCapes must be true TECO commands and not part of the syntax of some previous command. That is, the first &lt;ESC> does not count if it is the delimiting ESCape of a string. Finally, note that these must be real ESCape characters, and not the user-designated &lt;*delim*> character (which TECO understands as an ESCape only when typed at the terminal). |
+| $$ | The &lt;ESC>&lt;ESC> command causes TECO to exit from the current macro level. If this command is issued from top level (not from within a macro), then the command string execution is terminated and TECO returns to prompt level. Note that the second &lt;ESC> must be a true ESCape and may not be a \^[. Also, note that both ESCapes must be true TECO commands and not part of the syntax of some previous command. That is, the first &lt;ESC> does not count if it is the delimiting ESCape of a string. Finally, note that these must be real ESCape characters, and not the user-designated &lt;*delim*> character (which TECO understands as an ESCape only when typed at the terminal). |
 | *n*$$ | This command causes TECO to exit from the current macro level, returning the number *n* as a value. This value will be used as the numeric argument to the first command following the macro call. |
 | *m*,*n*$$ | This command causes TECO to exit from the current macro level, returning the pair of values *m* and *n* as arguments to the first command following the macro call. Good programming practice dictates that all ways of exiting a macro return the same number of arguments. |

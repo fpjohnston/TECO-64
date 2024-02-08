@@ -9,7 +9,7 @@ where *tag* is a location named elsewhere in the command string and *`*
 signifies a &lt;*delim*>.
 The text argument in the O command has the same format as the text
 arguments in search commands, which includes the use of
-string building characters such as ^EQq.
+string building characters such as \^EQq.
 Also, the O command may be modified with an at-sign, in which case
 the syntax of the command would be @O/*tag*/.
 

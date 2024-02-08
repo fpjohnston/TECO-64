@@ -19,9 +19,9 @@ continuation, or FORTRAN carriage control.
 
 ### Unimplemented Commands
 
-^T - Read ASCII character
-- :^T - Reads and decodes the next keystroke typed at the terminal.
-Note that only the colon-modified ^T command is unimplemented.
+\^T - Read ASCII character
+- :\^T - Reads and decodes the next keystroke typed at the terminal.
+Note that only the colon-modified \^T command is unimplemented.
 The colon-modified command is used to detect ESCape sequences.
 
 ED - Edit Level Flag
