@@ -86,7 +86,7 @@ static void exec_search(struct cmd *cmd, bool replace)
 
     struct search s;
 
-    if (!replace && cmd->dcolon)        // ::Stext` => (text len),1:Stext`
+    if (cmd->dcolon)                     // ::Stext` => (text len),1:Stext`
     {
         // Backwards compares always fail
 
