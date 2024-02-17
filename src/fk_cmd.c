@@ -46,6 +46,7 @@
 void exec_FK(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_M);
 
     if (cmd->text1.len != 0)
     {
@@ -85,7 +86,7 @@ bool scan_FK(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_DCOLON);
+    confirm(cmd, NO_DCOLON);
 
     default_n(cmd, (int_t)1);           // FKtext` => 1FKtext`
     scan_texts(cmd, 1, ESC);

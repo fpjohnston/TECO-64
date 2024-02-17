@@ -47,6 +47,7 @@
 void exec_D(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_M);
 
     int_t n = cmd->n_arg;
     int_t m;
@@ -103,6 +104,7 @@ void exec_D(struct cmd *cmd)
 void exec_K(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_M);
 
     if (cmd->h)                         // HK?
     {
@@ -155,7 +157,7 @@ bool scan_D(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_DCOLON, NO_ATSIGN);
+    confirm(cmd, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)1);           // D => 1D
 
@@ -175,7 +177,7 @@ bool scan_K(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)1);           // K => 1K
 

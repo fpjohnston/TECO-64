@@ -47,6 +47,7 @@
 void exec_FD(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_M);
 
     if (cmd->n_arg == 0)                // 0FDtext` isn't allowed
     {
@@ -102,7 +103,7 @@ bool scan_FD(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_DCOLON);
+    confirm(cmd, NO_DCOLON);
 
     default_n(cmd, (int_t)1);           // FD => 1FD
     scan_texts(cmd, 1, ESC);

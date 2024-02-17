@@ -48,6 +48,7 @@
 void exec_P(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_M);
 
     struct ofile *ofile = &ofiles[ostream];
 
@@ -216,7 +217,7 @@ bool scan_P(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
+    confirm(cmd, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
 
     int c = peek_cbuf();
 

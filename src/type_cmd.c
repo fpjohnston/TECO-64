@@ -143,6 +143,7 @@ static void exec_type(int_t m, int_t n)
 void exec_V(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_M);
 
     int_t m = cmd->m_arg;
     int_t n = cmd->n_arg;
@@ -209,7 +210,7 @@ bool scan_V(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_COLON, NO_DCOLON, NO_ATSIGN);
+    confirm(cmd, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (!cmd->n_set || cmd->n_arg == 0) // V => 1V, 0V => 1V
     {

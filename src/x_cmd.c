@@ -46,6 +46,7 @@
 void exec_X(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_M);
 
     int_t n = 1;
     int_t m;
@@ -133,7 +134,7 @@ bool scan_X(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_DCOLON, NO_ATSIGN);
+    confirm(cmd, NO_DCOLON, NO_ATSIGN);
 
     default_n(cmd, (int_t)1);           // X => 1X
 

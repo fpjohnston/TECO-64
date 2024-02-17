@@ -50,6 +50,7 @@ static void exec_search(struct cmd *cmd, bool replace);
 
 void exec_FB(struct cmd *cmd)
 {
+    confirm(cmd, NO_NEG_M);
     exec_search(cmd, (bool)false);
 }
 
@@ -63,6 +64,7 @@ void exec_FB(struct cmd *cmd)
 
 void exec_FC(struct cmd *cmd)
 {
+    confirm(cmd, NO_NEG_M);
     exec_search(cmd, (bool)true);
 }
 
@@ -146,7 +148,7 @@ bool scan_FB(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_DCOLON);
+    confirm(cmd, NO_DCOLON);
 
     default_n(cmd, (int_t)1);           // FB => 1FB
     scan_texts(cmd, 1, ESC);
@@ -167,7 +169,7 @@ bool scan_FC(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_DCOLON);
+    confirm(cmd, NO_DCOLON);
 
     default_n(cmd, (int_t)1);           // FC => 1FC
     scan_texts(cmd, 2, ESC);
