@@ -79,6 +79,7 @@ void exec_FU(struct cmd *cmd)
 static void exec_case(struct cmd *cmd, bool lower)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_M);
 
     int_t dot = t->dot;
     int_t Z   = t->Z;
@@ -177,7 +178,7 @@ bool scan_case(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_COLON, NO_DCOLON, NO_ATSIGN);
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     return false;
 }

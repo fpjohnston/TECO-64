@@ -226,7 +226,7 @@ bool scan_M(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_DCOLON, NO_ATSIGN);
+    confirm(cmd, NO_DCOLON, NO_ATSIGN);
 
     if (!scan_qreg(cmd))
     {

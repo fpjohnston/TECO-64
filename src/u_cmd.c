@@ -45,6 +45,7 @@
 void exec_U(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_M);
 
     if (!cmd->n_set)                    // n argument?
     {
@@ -74,7 +75,7 @@ bool scan_U(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_COLON, NO_DCOLON, NO_ATSIGN);
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON, NO_ATSIGN);
 
     if (!scan_qreg(cmd))
     {

@@ -80,6 +80,7 @@ void exec_tag(struct cmd *cmd)
 void exec_O(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_N);
 
     if (cmd->n_set)                     // Computed GOTO
     {
@@ -356,7 +357,7 @@ bool scan_O(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_N, NO_M_ONLY, NO_COLON, NO_DCOLON);
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON);
 
     scan_texts(cmd, 1, ESC);
 

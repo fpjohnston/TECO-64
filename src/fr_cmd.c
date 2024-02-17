@@ -53,6 +53,7 @@ uint_t last_len;
 void exec_FR(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_M);
 
     int_t n = cmd->n_arg;
     int_t m;
@@ -95,7 +96,7 @@ bool scan_FR(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_DCOLON);
+    confirm(cmd, NO_DCOLON);
 
     default_n(cmd, -(int_t)last_len);   // FRtext` => ^SFRtext`
     scan_texts(cmd, 1, ESC);

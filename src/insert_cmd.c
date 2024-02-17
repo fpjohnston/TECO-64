@@ -66,6 +66,7 @@ void exec_ctrl_I(struct cmd *cmd)
 void exec_I(struct cmd *cmd)
 {
     assert(cmd != NULL);
+    confirm(cmd, NO_NEG_M);
 
     if (cmd->n_set && cmd->text1.len != 0) // nItext`?
     {
@@ -158,7 +159,7 @@ bool scan_I(struct cmd *cmd)
     assert(cmd != NULL);
 
     scan_x(cmd);
-    confirm(cmd, NO_NEG_M, NO_M_ONLY, NO_COLON, NO_DCOLON);
+    confirm(cmd, NO_M_ONLY, NO_COLON, NO_DCOLON);
 
     if (!cmd->n_set || cmd->atsign || !f.e1.insert)
     {
